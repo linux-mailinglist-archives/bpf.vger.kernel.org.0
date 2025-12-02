@@ -1,301 +1,330 @@
-Return-Path: <bpf+bounces-75871-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75872-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EA95C9B38C
-	for <lists+bpf@lfdr.de>; Tue, 02 Dec 2025 11:51:32 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8D61C9B3AD
+	for <lists+bpf@lfdr.de>; Tue, 02 Dec 2025 11:54:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 581F83A5F23
-	for <lists+bpf@lfdr.de>; Tue,  2 Dec 2025 10:51:31 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 110464E34D0
+	for <lists+bpf@lfdr.de>; Tue,  2 Dec 2025 10:54:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8224A30146B;
-	Tue,  2 Dec 2025 10:51:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C9F630DD1F;
+	Tue,  2 Dec 2025 10:54:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="D6v+npYt"
+	dkim=pass (1024-bit key) header.d=siteground.com header.i=@siteground.com header.b="P4IU+I2P"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C64727FD5A
-	for <bpf@vger.kernel.org>; Tue,  2 Dec 2025 10:51:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A609928506B
+	for <bpf@vger.kernel.org>; Tue,  2 Dec 2025 10:53:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764672688; cv=none; b=Tnq59z2d7WPefml29dkFDmpQ0I5aTl8NL88md6UW3Ch7L/KIy+xjc1J6HN6XLK3gmnjXplyf/p7wOsn+hGD7devZc9/lQVIIKMiQETcJjW6fZTRkfb039HilmoEbf+DF/+ORjF9ulVlTpyeNfD8YZgMttqTR679b2OL9uYRSI+0=
+	t=1764672841; cv=none; b=slWH8puYQfbhrH+Lc5KH8KCBB7dSZzZLas221OxB3OTxE17MXS9HmNwzKn+6AD8KyioiE5BZ+M+LkPuf3EUa5o2Ym0y0plA5Px229I0KHolWf7R8rH0UHGOxKlMJ0vtXJnQuSYxIR6rQAIQ39pB9NBuFQptk0FQ7Zlpr0PoPhRI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764672688; c=relaxed/simple;
-	bh=N93bf/KZw0h+VJH4mzQ3LTBQpyL19LRzVwWCH9yZjAk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IhavSIdPjh0YH/43tpQtoe9ZJvBKqzgTxqcCQCEDPCktelakuQ+dz8cUBXDxoSKPrf/MvzxU3+xWpoQIDNLo+03laRrQ8OvWIQUHSe7ZK/7ladjEtL31g84jaYry1KulNQa1DOLekR6BPm7/635dHZFNkOT/D7pw+N/VmkosIos=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=D6v+npYt; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-4777771ed1aso33985725e9.2
-        for <bpf@vger.kernel.org>; Tue, 02 Dec 2025 02:51:25 -0800 (PST)
+	s=arc-20240116; t=1764672841; c=relaxed/simple;
+	bh=kzPjRKrFxCJwZ0QptP/JKur/1ZW6miGYEC6D7MgVokw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MYfejA03gAwO8ju9AFNnKfI4ahYsi0xL6faNa82/AGCKLlqcdbU85Af16/DeeARobBFZ1OKaW52wRB2YtsIcUFaXMI+ubKBVWIA6Qk+TxXo6fOoy0Ek7m0UTRyWJ7uKDCiMYV8ihCm3OFdBwghBswtNmBMZ53fqkpxRPg1X3V/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=siteground.com; spf=pass smtp.mailfrom=siteground.com; dkim=pass (1024-bit key) header.d=siteground.com header.i=@siteground.com header.b=P4IU+I2P; arc=none smtp.client-ip=209.85.167.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=siteground.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=siteground.com
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-59583505988so6792979e87.1
+        for <bpf@vger.kernel.org>; Tue, 02 Dec 2025 02:53:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1764672684; x=1765277484; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=on3Kan0NbvHupUMJLZOKeYAcH+YqhDINUzUWKZMJC6Y=;
-        b=D6v+npYtu8tgUo8IF0GU/JqlN7N4i5DXXhmNZTzGAKsHSxzETIR3B30LMAfq3G1UXe
-         kA4OmL0Kx7ueMjNBolGgpUn3yNgOFMnYN4vNERJ7uD1ecOHO288oL0neIFWFJI+Rut/d
-         8qkDMHMx8pltxgl+L0kRvSqCQPMsfQGKcu7x+Gd6YXUvu6OeMlsd0HsfUwQZ4FvJDmbE
-         oothnQEJ26tA0R4d6kxJmdCV6K+/gV1eRyDxSfcrNUSI2GSYnmTkHkhAUZ4GDSZuwwhm
-         Pqul/opVAcNR2n9iPyLCB214zXy3Am34BgftrBuZWrSShCplOApn9iLOUKalXrcBDfZL
-         b8Pw==
+        d=siteground.com; s=google; t=1764672837; x=1765277637; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DW9NjMB8nxFe7q45WwvHBBBncnM13/ZvpsYHaclBc9A=;
+        b=P4IU+I2P0Rs3rXlme/njWaI1u7o65FMxKuiPjMXsjOlOHEnuNrlpiVohWMiDYzLjko
+         Ygikr35F3fZwKScKZYRcdH0Em0HC+h1Qm0Vj6P90TWVMKuO0EDPJBLxy9lx89Y+00Wb0
+         Qen5nmFX9dc/cO4IEtId0S0jrw2i/XVqa0GCc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764672684; x=1765277484;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=on3Kan0NbvHupUMJLZOKeYAcH+YqhDINUzUWKZMJC6Y=;
-        b=ImdytnzF3/2loHRyTckQb95BzY/++dS9PziiO16Z0DfJ3K+3yl7ybPrsgwYaiP4frx
-         ucyosyz2niAScbzKON+shpY8swGMUoaTyFr+Dzypg6rY3vR3NjmLnDjCy28wbdoiTESW
-         4NTgvJl1NSBEFl2wfTT5dsY2aMcmv6rqsIOYGpUq6b86ltB/wpdy6/xx/nSevrIiYVIv
-         yWxlXdlXmc7wq00TyA6GINHRyC/ZvCaNcOXtvjZd/qEfaW4cG+yS6pn4NErQysTV5Tp6
-         LJymcvvHViknfanT8UVSvvlDQ1CcNKg0fqh06SHjQ6xz/X1OPsiRdBXJF7UYife5lca0
-         2ung==
-X-Forwarded-Encrypted: i=1; AJvYcCXmSSVUpsBZAPyMTXB1x5h0BDTy+ZFKcM0NtxlPdiCxsOnLhPUfS+d1KSEG4yrjwlFPZQg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxB3sBpdYVQHuzE4runv/Y4cnZyah6VOxfnjbvVBVgwWbhr94tj
-	Up4YyFNQ9Rl5X64zC523PtKhHbjbWkyPmsexKPdsYt6IISt7S7hJmywLUMq3gihhWg==
-X-Gm-Gg: ASbGncscXsecIFKxWXKC5gI/8w4YUppzkAV/CW3Rq2XoKZzQnDiB42LSclD12agcpIt
-	O3EyeMeMWwDwD7Ef/ciQuVnbzNXX8gL7M8CAkNEMq84/2KNHVb+FbzXQY2CHUbl7lfzEZJ4Yl5o
-	CQ5xvYy0FkniDwb7/uxYkQI0vH4zhwW0rXwOHI4UE6gbuzskszHkq3Daf05Ru7l17/kZI8x2U5E
-	y9wGIyDF6k/FdjsRHrH3IdCR3qRGAlHMpZ2xTRtkjoeTJ0DKWlNydOyFOWJbR7kcRT4Amhp1wml
-	MHuGD+oI2InbEXRcB67ip0NHIhwx7xbDuh53sgFu0OFWnqMe4brEqjDhg0nGTv4YIteLuCKJmv2
-	6z1pGsuvSKDOshphgHzxFJRaDsA6bcwK4PyQS6TMbbt6ZX22CLqOplRLfnmV1Zsn9CdRKBeOBNA
-	MsvT03yvP7lucU2tgpIUzJ6T5YwsxkuMena0dFDPRSUOEQ/DvN8ZXbipvrBguWRr/AhXg=
-X-Google-Smtp-Source: AGHT+IFfI32AxldlfwCLkGNskF/o6XCATWWX6oiTRLGmi8WmK+KLfPtB4E3WKWIeymgEdapC8W5o3Q==
-X-Received: by 2002:a05:600c:1f8f:b0:477:a0dd:b2af with SMTP id 5b1f17b1804b1-477c01ea502mr377572095e9.33.1764672683650;
-        Tue, 02 Dec 2025 02:51:23 -0800 (PST)
-Received: from google.com (49.185.141.34.bc.googleusercontent.com. [34.141.185.49])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4790adc6f7bsm375078255e9.2.2025.12.02.02.51.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Dec 2025 02:51:23 -0800 (PST)
-Date: Tue, 2 Dec 2025 10:51:19 +0000
-From: Matt Bobrowski <mattbobrowski@google.com>
-To: Shuran Liu <electronlsr@gmail.com>, g@google.com
-Cc: song@kernel.org, bpf@vger.kernel.org, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-	eddyz87@gmail.com, yonghong.song@linux.dev,
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
-	haoluo@google.com, jolsa@kernel.org, rostedt@goodmis.org,
-	mhiramat@kernel.org, mathieu.desnoyers@efficios.com,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	Zesen Liu <ftyg@live.com>, Peili Gao <gplhust955@gmail.com>,
-	Haoran Ni <haoran.ni.cs@gmail.com>
-Subject: Re: [PATCH bpf v2 2/2] selftests/bpf: fix and consolidate d_path LSM
- regression test
-Message-ID: <aS7Ep6980hOjICSF@google.com>
-References: <20251202075441.1409-1-electronlsr@gmail.com>
- <20251202075441.1409-3-electronlsr@gmail.com>
- <aS6qfN4cXoEO82bE@google.com>
- <F1F96C9B-EAD1-4FD7-A053-EE072A5F4E53@gmail.com>
+        d=1e100.net; s=20230601; t=1764672837; x=1765277637;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=DW9NjMB8nxFe7q45WwvHBBBncnM13/ZvpsYHaclBc9A=;
+        b=q9IZ2pFT5aVTCLa7o0yIJR+C7/F0kHYAq6ZguzvtMTEUpRuJU1F81xmM1OruB9+9wg
+         jyG1gSejPrXh0Lb6ALPvgipkRMlSvfxk9Z/T1cdLnyt21ihFmbpi2NrnDtUG86VPSbpF
+         0uJbloUkV+SUxu3Z2IC7izh97PNifIyq3FWpo2nVBZhiqy5z2hl/bfji00kqxV+ENGG6
+         P/CRStZwQAZCw3e6gIeIkFoT59a2/N8RGoZ3uSTw1SecA2krfTgh6U24VmLwidpoBbUp
+         DI5HhKz0ll8Gd5+ee7tTlsWtogesWrzCM83NUbw1gPLepQdm7DyyYJwPAL7IoJPb7z8f
+         u1JQ==
+X-Gm-Message-State: AOJu0YwBGQ/hDQmdWOIG6HlHwD72ILgvT9Ogsu0TfyhHtzgIVuLw2i4A
+	wKOAt7M+1bfa8jqIiOUPkChGI/sQzHfTt9LvwnHDaprQOIXxG/Nis3ieA2AngK2X029pfKwam/x
+	gHA1jANXSCHpvt4XmU9JWMpjoc/dlNaqjsVsbGShDDw==
+X-Gm-Gg: ASbGnctQK0qO03G2nb3MOCgWc8b7qadhCZP5Mr7XleIRY6Dt+Ti808ijeEGpTnhmL5x
+	8hguMF3JNtPHO2i174gfkLQ7RAI/2R9FQ5kBCllq5Cil1k/bWbBT5r74SeLGHM7FT8KsDx7bhaQ
+	vSvJE1nF474q4sQqR6pHOZiBxGlNePnSyEOzNhlQ7rSEje+k3SXMcv8h4NT7DqxDwd55HgDhQGC
+	HMEo2XR8oF0geWIymgknh4PxJLhWVzAenJC8bj9DAALpRlz716QsPnD+e+uPobixUlC9Jnecmya
+	PiGmGoU=
+X-Google-Smtp-Source: AGHT+IEqHxG+QeVtey8UkpPxSV5j1H44OBS27vCvhjZrMF5iWilIWgu6GrWrKF7xrWdNwj+AftXkeuHdDCTaUCszcQ8=
+X-Received: by 2002:a05:6512:1081:b0:594:27de:77e7 with SMTP id
+ 2adb3069b0e04-597cfb0430dmr783607e87.15.1764672836640; Tue, 02 Dec 2025
+ 02:53:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <F1F96C9B-EAD1-4FD7-A053-EE072A5F4E53@gmail.com>
+References: <20251125125634.2671-1-dimitar.kanaliev@siteground.com>
+ <20251125125634.2671-3-dimitar.kanaliev@siteground.com> <cad6577291b778e6caad2f06fae304b2ec07f752.camel@gmail.com>
+In-Reply-To: <cad6577291b778e6caad2f06fae304b2ec07f752.camel@gmail.com>
+From: Dimitar Kanaliev <dimitar.kanaliev@siteground.com>
+Date: Tue, 2 Dec 2025 12:53:45 +0200
+X-Gm-Features: AWmQ_bk7aKlIm5nWLtu_SZEEbaj21oywY7HKS5aHLPy8TUM4srnVLGy2cQqcTws
+Message-ID: <CAHx3w9JOXv-p_LeTiS9Z=C+wvPn-PAbm6u-i8a3jnSTTqJo3eg@mail.gmail.com>
+Subject: Re: [PATCH v1 2/3] bpf: verifier: Simplify register sign extension
+ with tnum_scast
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 02, 2025 at 05:30:15PM +0800, Shuran Liu wrote:
-> Hi Matt,
-> 
-> Thanks a lot for the review and for re-sending your Reviewed-by tag.
-> 
-> In the next version of the series I’ll add your
-> 
-> Reviewed-by: Matt Bobrowski <mattbobrowski@google.com>
-> 
-> to the patch that introduces the new selftest, and I’ll also make sure to
-> remove /tmp/bpf_d_path_test in the test cleanup path as you suggested.
+On Tue, Dec 2, 2025 at 1:50=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com>=
+ wrote:
+>
+> On Tue, 2025-11-25 at 14:56 +0200, Dimitar Kanaliev wrote:
+>
+> [...]
+>
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 766695491bc5..c9a6bf85b4ad 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -6876,147 +6876,57 @@ static void coerce_reg_to_size(struct bpf_reg_=
+state *reg, int size)
+> >       reg_bounds_sync(reg);
+> >  }
+> >
+> > -static void set_sext64_default_val(struct bpf_reg_state *reg, int size=
+)
+> > -{
+> > -     if (size =3D=3D 1) {
+> > -             reg->smin_value =3D reg->s32_min_value =3D S8_MIN;
+> > -             reg->smax_value =3D reg->s32_max_value =3D S8_MAX;
+> > -     } else if (size =3D=3D 2) {
+> > -             reg->smin_value =3D reg->s32_min_value =3D S16_MIN;
+> > -             reg->smax_value =3D reg->s32_max_value =3D S16_MAX;
+> > -     } else {
+> > -             /* size =3D=3D 4 */
+> > -             reg->smin_value =3D reg->s32_min_value =3D S32_MIN;
+> > -             reg->smax_value =3D reg->s32_max_value =3D S32_MAX;
+> > -     }
+> > -     reg->umin_value =3D reg->u32_min_value =3D 0;
+> > -     reg->umax_value =3D U64_MAX;
+> > -     reg->u32_max_value =3D U32_MAX;
+> > -     reg->var_off =3D tnum_unknown;
+> > -}
+> > -
+> >  static void coerce_reg_to_size_sx(struct bpf_reg_state *reg, int size)
+> >  {
+> > -     s64 init_s64_max, init_s64_min, s64_max, s64_min, u64_cval;
+> > -     u64 top_smax_value, top_smin_value;
+> > -     u64 num_bits =3D size * 8;
+> > +     s64 smin_value, smax_value;
+> >
+> > -     if (tnum_is_const(reg->var_off)) {
+> > -             u64_cval =3D reg->var_off.value;
+> > -             if (size =3D=3D 1)
+> > -                     reg->var_off =3D tnum_const((s8)u64_cval);
+> > -             else if (size =3D=3D 2)
+> > -                     reg->var_off =3D tnum_const((s16)u64_cval);
+> > -             else
+> > -                     /* size =3D=3D 4 */
+> > -                     reg->var_off =3D tnum_const((s32)u64_cval);
+> > -
+> > -             u64_cval =3D reg->var_off.value;
+> > -             reg->smax_value =3D reg->smin_value =3D u64_cval;
+> > -             reg->umax_value =3D reg->umin_value =3D u64_cval;
+> > -             reg->s32_max_value =3D reg->s32_min_value =3D u64_cval;
+> > -             reg->u32_max_value =3D reg->u32_min_value =3D u64_cval;
+> > +     if (size >=3D 8)
+> >               return;
+> > -     }
+> >
+> > -     top_smax_value =3D ((u64)reg->smax_value >> num_bits) << num_bits=
+;
+> > -     top_smin_value =3D ((u64)reg->smin_value >> num_bits) << num_bits=
+;
+> > +     reg->var_off =3D tnum_scast(reg->var_off, size);
+> >
+> > -     if (top_smax_value !=3D top_smin_value)
+> > -             goto out;
+> > +     smin_value =3D -(1LL << (size * 8 - 1));
+> > +     smax_value =3D (1LL << (size * 8 - 1)) - 1;
+> >
+> > -     /* find the s64_min and s64_min after sign extension */
+> > -     if (size =3D=3D 1) {
+> > -             init_s64_max =3D (s8)reg->smax_value;
+> > -             init_s64_min =3D (s8)reg->smin_value;
+> > -     } else if (size =3D=3D 2) {
+> > -             init_s64_max =3D (s16)reg->smax_value;
+> > -             init_s64_min =3D (s16)reg->smin_value;
+> > -     } else {
+> > -             init_s64_max =3D (s32)reg->smax_value;
+> > -             init_s64_min =3D (s32)reg->smin_value;
+> > -     }
+> > -
+> > -     s64_max =3D max(init_s64_max, init_s64_min);
+> > -     s64_min =3D min(init_s64_max, init_s64_min);
+> > +     reg->smin_value =3D smin_value;
+> > +     reg->smax_value =3D smax_value;
+> >
+> > -     /* both of s64_max/s64_min positive or negative */
+> > -     if ((s64_max >=3D 0) =3D=3D (s64_min >=3D 0)) {
+> > -             reg->s32_min_value =3D reg->smin_value =3D s64_min;
+> > -             reg->s32_max_value =3D reg->smax_value =3D s64_max;
+> > -             reg->u32_min_value =3D reg->umin_value =3D s64_min;
+> > -             reg->u32_max_value =3D reg->umax_value =3D s64_max;
+> > -             reg->var_off =3D tnum_range(s64_min, s64_max);
+> > -             return;
+> > -     }
+> > +     reg->s32_min_value =3D (s32)smin_value;
+> > +     reg->s32_max_value =3D (s32)smax_value;
+> >
+> > -out:
+> > -     set_sext64_default_val(reg, size);
+> > -}
+>
+> Assume that size =3D=3D 1, s64_min =3D 0b000, s64_max =3D=3D 0b100.
+> This corresponds to tnum with value =3D=3D 0b000 and mask =3D=3D 0b111.
+> Old algorithm computes more precise range in this situation.
+> Old:
+>
+>   0: (85) call bpf_get_prandom_u32#7    ; R0=3Dscalar()
+>   1: (25) if r0 > 0x4 goto pc+2         ; R0=3Dscalar(smin=3Dsmin32=3D0,s=
+max=3Dumax=3Dsmax32=3Dumax32=3D4,var_off=3D(0x0; 0x7))
+>   2: (7b) *(u64 *)(r10 -8) =3D r0         ; R0=3Dscalar(id=3D1,smin=3Dsmi=
+n32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D4,var_off=3D(0x0; 0x7)) ...
+>   3: (91) r0 =3D *(s8 *)(r10 -8)          ; R0=3Dscalar(id=3D1,smin=3Dsmi=
+n32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D4,var_off=3D(0x0; 0x7)) ...
+>   4: (b7) r0 =3D 0                        ; R0=3D0
+>   5: (95) exit
+>
+> New:
+>
+>   0: (85) call bpf_get_prandom_u32#7    ; R0=3Dscalar()
+>   1: (25) if r0 > 0x4 goto pc+2         ; R0=3Dscalar(smin=3Dsmin32=3D0,s=
+max=3Dumax=3Dsmax32=3Dumax32=3D4,var_off=3D(0x0; 0x7))
+>   2: (7b) *(u64 *)(r10 -8) =3D r0         ; R0=3Dscalar(id=3D1,smin=3Dsmi=
+n32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D4,var_off=3D(0x0; 0x7)) ...
+>   3: (91) r0 =3D *(s8 *)(r10 -8)          ; R0=3Dscalar(id=3D1,smin=3Dsmi=
+n32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D7,var_off=3D(0x0; 0x7)) ...
+>   4: (b7) r0 =3D 0                        ; R0=3D0
+>   5: (95) exit
+>
+> Note that range for R0 at (3) is 0..4 for old algorithm and 0..7 for
+> new algorithm.
+>
+> Can we keep both algorithms by e.g. replacing set_sext64_default_val()
+> implementation with tnum_scast() adding tnum_scast() in
+> coerce_reg_to_size_sx()?
+>
+> In general, for such kinds of patch-sets it is interesting to see how
+> much precision is gained/lost with the change. It shouldn't be hard to
+> collect such data for e.g. complete s8 range by writing a small
+> user-space program that enumerates the s8 x s8 range and applies both
+> old an new range computations.
+>
+> [...]
 
-SGTM.
+I was mostly focused on preserving the info from tnum for sparse ranges, so
+I kind of forgot about continuous ranges entirely.
+As per your suggestion, I plucked out anything relevant from the kernel,
+and compared the smax / smin values for the entire -1024,1024 range in a
+loop, like so:
 
-> I also noticed that the CI is currently failing due to the `#pragma unroll`
-> around the loop in prog_lsm(). Would you prefer that I simply drop the pragma
-> in the next version, given that the loop bound is small and constant anyway,
-> or is there a better way you’d recommend to handle this?
+  struct bpf_reg_state r_old, r_new;
 
-Yeah, I don't think the use of this directive is required here given
-the iteration count is tiny. Alternatively, perhaps you could switch
-over to using a more BPF verifier preferred alternative
-(i.e. bpf_for() or better yet and simpler bpf_repeat())?
+  init_reg(&r_old, start, end);
+  r_new =3D r_old;
 
-> > On Tue, Dec 02, 2025 at 00:59:45AM -0800, Matt Bobrowski wrote：
-> > 
-> > On Tue, Dec 02, 2025 at 03:54:41PM +0800, Shuran Liu wrote:
-> >> Add a regression test for bpf_d_path() when invoked from an LSM program.
-> >> The test attaches to the bprm_check_security hook, calls bpf_d_path() on
-> >> the binary being executed, and verifies that a simple prefix comparison on
-> >> the returned pathname behaves correctly after the fix in patch 1.
-> >> 
-> >> To avoid nondeterminism, the LSM program now filters based on the
-> >> expected PID, which is populated from userspace before the test binary is
-> >> executed. This prevents unrelated processes that also trigger the
-> >> bprm_check_security LSM hook from overwriting test results. Parent and
-> >> child processes are synchronized through a pipe to ensure the PID is set
-> >> before the child execs the test binary.
-> >> 
-> >> Per review feedback, the new test is merged into the existing d_path
-> >> selftest rather than adding new prog_tests/ or progs/ files.
-> >> 
-> >> Co-developed-by: Zesen Liu <ftyg@live.com>
-> >> Signed-off-by: Zesen Liu <ftyg@live.com>
-> >> Co-developed-by: Peili Gao <gplhust955@gmail.com>
-> >> Signed-off-by: Peili Gao <gplhust955@gmail.com>
-> >> Co-developed-by: Haoran Ni <haoran.ni.cs@gmail.com>
-> >> Signed-off-by: Haoran Ni <haoran.ni.cs@gmail.com>
-> >> Signed-off-by: Shuran Liu <electronlsr@gmail.com>
-> > 
-> > Feel free to add:
-> > 
-> > Reviewed-by: Matt Bobrowski <mattbobrowski@google.com <mailto:mattbobrowski@google.com>>
-> > 
-> >> ---
-> >> .../testing/selftests/bpf/prog_tests/d_path.c | 64 +++++++++++++++++++
-> >> .../testing/selftests/bpf/progs/test_d_path.c | 33 ++++++++++
-> >> 2 files changed, 97 insertions(+)
-> >> 
-> >> diff --git a/tools/testing/selftests/bpf/prog_tests/d_path.c b/tools/testing/selftests/bpf/prog_tests/d_path.c
-> >> index ccc768592e66..2909ca3bae0f 100644
-> >> --- a/tools/testing/selftests/bpf/prog_tests/d_path.c
-> >> +++ b/tools/testing/selftests/bpf/prog_tests/d_path.c
-> >> @@ -195,6 +195,67 @@ static void test_d_path_check_types(void)
-> >> 	test_d_path_check_types__destroy(skel);
-> >> }
-> >> 
-> >> +static void test_d_path_lsm(void)
-> >> +{
-> >> +	struct test_d_path *skel;
-> >> +	int err;
-> >> +	int pipefd[2];
-> >> +	pid_t pid;
-> >> +
-> >> +	skel = test_d_path__open_and_load();
-> >> +	if (!ASSERT_OK_PTR(skel, "d_path skeleton failed"))
-> >> +		return;
-> >> +
-> >> +	err = test_d_path__attach(skel);
-> >> +	if (!ASSERT_OK(err, "attach failed"))
-> >> +		goto cleanup;
-> >> +
-> >> +	/* Prepare the test binary */
-> >> +	system("cp /bin/true /tmp/bpf_d_path_test 2>/dev/null || :");
-> > 
-> > I'd much prefer if we also cleaned up after ourselves, but it's not
-> > that much of an issue I guess.
-> > 
-> >> +	if (!ASSERT_OK(pipe(pipefd), "pipe failed"))
-> >> +		goto cleanup;
-> >> +
-> >> +	pid = fork();
-> >> +	if (!ASSERT_GE(pid, 0, "fork failed")) {
-> >> +		close(pipefd[0]);
-> >> +		close(pipefd[1]);
-> >> +		goto cleanup;
-> >> +	}
-> >> +
-> >> +	if (pid == 0) {
-> >> +		/* Child */
-> >> +		char buf;
-> >> +
-> >> +		close(pipefd[1]);
-> >> +		/* Wait for parent to set PID in BPF map */
-> >> +		if (read(pipefd[0], &buf, 1) != 1)
-> >> +			exit(1);
-> >> +		close(pipefd[0]);
-> >> +		execl("/tmp/bpf_d_path_test", "/tmp/bpf_d_path_test", NULL);
-> >> +		exit(1);
-> >> +	}
-> >> +
-> >> +	/* Parent */
-> >> +	close(pipefd[0]);
-> >> +
-> >> +	/* Update BPF map with child PID */
-> >> +	skel->bss->my_pid = pid;
-> >> +
-> >> +	/* Signal child to proceed */
-> >> +	write(pipefd[1], "G", 1);
-> >> +	close(pipefd[1]);
-> >> +
-> >> +	/* Wait for child */
-> >> +	waitpid(pid, NULL, 0);
-> >> +
-> >> +	ASSERT_EQ(skel->bss->called_lsm, 1, "lsm hook called");
-> >> +	ASSERT_EQ(skel->bss->lsm_match, 1, "lsm match");
-> >> +
-> >> +cleanup:
-> >> +	test_d_path__destroy(skel);
-> >> +}
-> >> +
-> >> void test_d_path(void)
-> >> {
-> >> 	if (test__start_subtest("basic"))
-> >> @@ -205,4 +266,7 @@ void test_d_path(void)
-> >> 
-> >> 	if (test__start_subtest("check_alloc_mem"))
-> >> 		test_d_path_check_types();
-> >> +
-> >> +	if (test__start_subtest("lsm"))
-> >> +		test_d_path_lsm();
-> >> }
-> >> diff --git a/tools/testing/selftests/bpf/progs/test_d_path.c b/tools/testing/selftests/bpf/progs/test_d_path.c
-> >> index 84e1f883f97b..7f65c282069a 100644
-> >> --- a/tools/testing/selftests/bpf/progs/test_d_path.c
-> >> +++ b/tools/testing/selftests/bpf/progs/test_d_path.c
-> >> @@ -17,6 +17,8 @@ int rets_close[MAX_FILES] = {};
-> >> 
-> >> int called_stat = 0;
-> >> int called_close = 0;
-> >> +int called_lsm = 0;
-> >> +int lsm_match = 0;
-> >> 
-> >> SEC("fentry/security_inode_getattr")
-> >> int BPF_PROG(prog_stat, struct path *path, struct kstat *stat,
-> >> @@ -62,4 +64,35 @@ int BPF_PROG(prog_close, struct file *file, void *id)
-> >> 	return 0;
-> >> }
-> >> 
-> >> +SEC("lsm/bprm_check_security")
-> >> +int BPF_PROG(prog_lsm, struct linux_binprm *bprm)
-> >> +{
-> >> +	pid_t pid = bpf_get_current_pid_tgid() >> 32;
-> >> +	char path[MAX_PATH_LEN] = {};
-> >> +	int ret;
-> >> +
-> >> +	if (pid != my_pid)
-> >> +		return 0;
-> >> +
-> >> +	called_lsm = 1;
-> >> +	ret = bpf_d_path(&bprm->file->f_path, path, MAX_PATH_LEN);
-> >> +	if (ret < 0)
-> >> +		return 0;
-> >> +
-> >> +	{
-> >> +		static const char target_dir[] = "/tmp/";
-> >> +
-> >> +#pragma unroll
-> >> +		for (int i = 0; i < sizeof(target_dir) - 1; i++) {
-> >> +			if (path[i] != target_dir[i]) {
-> >> +				lsm_match = -1; /* mismatch */
-> >> +				return 0;
-> >> +			}
-> >> +		}
-> >> +	}
-> >> +
-> >> +	lsm_match = 1; /* prefix match */
-> >> +	return 0;
-> >> +}
-> >> +
-> >> char _license[] SEC("license") = "GPL";
-> >> -- 
-> >> 2.52.0
-> 
+  coerce_reg_to_size_sx_old(&r_old, size);
+  coerce_reg_to_size_sx_new(&r_new, size);
+
+  s64 range_old =3D r_old.smax_value - r_old.smin_value;
+  s64 range_new =3D r_new.smax_value - r_new.smin_value;
+
+  if (range_old < range_new) { ...
+
+In these continous ranges, the old implementation is much better:
+
+  [-1024, 1024]:
+  Old Better: 128016
+  New Better: 0
+  Equal: 1972209
+
+So I endeed up drafting this:
+
+  static void coerce_reg_to_size_sx(struct bpf_reg_state *reg, int size)
+  {
+    s64 smin_value, smax_value;
+    u64 num_bits =3D size * 8;
+    u64 top_smax_value, top_smin_value;
+
+    reg->var_off =3D tnum_scast(reg->var_off, size);
+
+    top_smax_value =3D ((u64)reg->smax_value >> num_bits) << num_bits;
+    top_smin_value =3D ((u64)reg->smin_value >> num_bits) << num_bits;
+
+    if (top_smax_value =3D=3D top_smin_value) {
+            if (size =3D=3D 1) {
+                smin_value =3D (s8)reg->smin_value;
+                smax_value =3D (s8)reg->smax_value;
+            } else if (size =3D=3D 2) {
+                smin_value =3D (s16)reg->smin_value;
+                smax_value =3D (s16)reg->smax_value;
+            } else {
+                smin_value =3D (s32)reg->smin_value;
+                smax_value =3D (s32)reg->smax_value;
+            }
+        } else {
+            smin_value =3D -(1LL << (num_bits - 1));
+            smax_value =3D (1LL << (num_bits - 1)) - 1;
+        }
+
+        reg->smin_value =3D smin_value;
+        reg->smax_value =3D smax_value;
+
+        reg->umin_value =3D 0;
+        reg->umax_value =3D U64_MAX;
+
+        reg->s32_min_value =3D (s32)smin_value;
+        reg->s32_max_value =3D (s32)smax_value;
+        reg->u32_min_value =3D 0;
+        reg->u32_max_value =3D U32_MAX;
+
+        __update_reg_bounds(reg);
+}
+
+I'm trying to always perform tnum_scast in order to preserve bitwise
+info, but attempt to use the old numeric logic first. If the range fits
+into the target size, we preserve the existing numeric bounds. If not, we
+fall back to the type limits and let __update_reg_bounds reconstruct the
+range from var_off. The imeplementation is similar for the subreg variant.
+
+Rerunning the comparison for the same range looks much better, we should be
+consistently seeing precision gains in the cases where the original
+implementation bails out via goto:
+
+  [-1024, 1024]:
+  Old Better: 0
+  New Better: 131072
+  Equal: 1969153
+
+I also went through the CI, the existing selftest in the series still
+covers the change.
+
+wdyt?
 
