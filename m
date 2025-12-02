@@ -1,143 +1,236 @@
-Return-Path: <bpf+bounces-75902-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75903-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0E86C9C66A
-	for <lists+bpf@lfdr.de>; Tue, 02 Dec 2025 18:32:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D2C96C9C679
+	for <lists+bpf@lfdr.de>; Tue, 02 Dec 2025 18:32:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A68E53A5A2D
-	for <lists+bpf@lfdr.de>; Tue,  2 Dec 2025 17:32:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 744293A7BB0
+	for <lists+bpf@lfdr.de>; Tue,  2 Dec 2025 17:32:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66B012BEFE0;
-	Tue,  2 Dec 2025 17:32:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7BB42C0F8E;
+	Tue,  2 Dec 2025 17:32:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="huZ5mDda"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D+SqlccW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42C8228468D
-	for <bpf@vger.kernel.org>; Tue,  2 Dec 2025 17:32:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4355E201004;
+	Tue,  2 Dec 2025 17:32:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764696730; cv=none; b=FZGTd3zhha6PPbhkmHwB4JsIxVewqOvqrURFEHRn+bn4Gg2NjEcDrLZDTX7wOaozvPyRDfFHik/PHgXh8yyYwB6ugbTJfbrm0fU+S/BRzQdYCm21f1skJzQ3VYmtFqy14Gw9Fp5+n97ok1092yHCTiKCisSlncQxwMs5/+03RGk=
+	t=1764696749; cv=none; b=BWHME5SdfZJjHP4WtP7/K+O8pQ6e1eU8FpiYaldZvLZC8pHx1rf0RQi4Ldwe6qZ00ui4FSykVlEGZPOTSC78Jo3kunIZwWEIv6KEpGKecO+f9CarDjeo02+ijveV3iq7V1l1Musur45nrfpyU67P7XFgJwx5YCcSYetSLcvoOYY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764696730; c=relaxed/simple;
-	bh=0xAiPLicgB03cktuxcQuchZBR+UbZFRbsMP564Obddc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=c8NqFhEepxYGyBpKDYMkCfLeUnV7a8vu98OJiwOvpRtM/xSfgDbo1n6AdChsyTHFTkoxl7E2VE7R9tlnirZ5igUpT0vouc+LEs+vW+MNBZRrMhnbDJeGipSri3GtzrRK6KRthvP558piYPzaGc8di0iDTUGGZ6WzdoezcOFWhDc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=huZ5mDda; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-42e2b78d45bso1569936f8f.0
-        for <bpf@vger.kernel.org>; Tue, 02 Dec 2025 09:32:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764696726; x=1765301526; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nZFItyLY22Boxo7GM+d0AYn069sCXHjKGVjBq4SXALY=;
-        b=huZ5mDdamWjyaEE60MqnOA5maWKL99SypcSNchj5RcUI9bcuZUEMrGsI+Vk2VudkLv
-         4rbuzgWKwMkjTXYS29+PQxdRxT+UiO5OC2v/9v1tmKxdTw/Q1qe4vCA4pVoW4immU1/J
-         anze5BGTnxtq4fEan8jByrm/cI5Qmcw58O8o/KA2OwGatX272E7JJfGAbOvVkhi77FrV
-         QbvBLnkZhhXaeQUt6aUrrpPWvd06vyVPYL8tdVEab7tXS2KcHnGWX5+8gRR7NQbTJixa
-         hhS44pLhaKk04rL548s1uUryO8fWoGkX+ONqumXrR4TuExNrMF/oYWkAKedoKlx1qq1F
-         TqtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764696726; x=1765301526;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=nZFItyLY22Boxo7GM+d0AYn069sCXHjKGVjBq4SXALY=;
-        b=Kw1Ak+EpCQjhpz7DeM/IDrNh/Yj8K0v9BPf9UnPXmrzMVwwb4kfF67NhH+1Wvy5rY/
-         W5Dt6atHKiaarsfCM1RaEcQJ6NHjfvGTo+qNZSLuaB8Ieylo2CJEgk1C/I+Hf74GuFtP
-         n+y4U2OyWnkSpq5KkjAoDPAnwATDe/Xl77GM4zH43eTBcqCTqaGTBb3ojdTPfNR1ZLpa
-         a3F751uoPkCQuUlg+lErYq4iZO5Xb9vec/YugHD6udkWsuNdSQK1x1qaCtsuZ8YdM3R0
-         S0I4/FoHOnHFp647t2t3MD2ZTHO0HR9j8iy4wL8lagvs6bSPgfZGlnP81e1oh0xIURZ+
-         9dYw==
-X-Gm-Message-State: AOJu0Yw3hxIc1CEs8/p0CH1JhfeeEqX7cyw2jspGc9M1DKkgarotG9Bf
-	7Np/eCFMAxf3aG1xSGkS3+Rk3RnuSzsceS+sg5qxrbPldjK7yYqpIO7DG3/cfrLDhuoymi4j/Gf
-	Os1nVPyOOO8zmYsxsCDhhOhnSB9kxJ+I=
-X-Gm-Gg: ASbGncuKJDywpDiuu6mgZEOs05tyLoS2FKpUuffxtYSgkGZusLW/pChv2rp7LRdoNCA
-	Wqaqd6/iN/GsyLzYx1yivkruBBZ3fPfNEFlvTGfWWCyCCV6aHFClnFQF1injAcgtvzXa5vqe696
-	+rVa9xqGoHVbm9EqpTXug1Ai0wJiYgVvCMNZr/9l3bAKiSCrLG/IA1FUW3w+8bOm1B5aR+Uf9cA
-	8mfnQwpDtyDmMQ7FPwWYrLNe7Jis90Xq9I5aeEquuHRPljDp7UVUckXn0RakqCl9KrXUHu7TW1e
-	dfUuP3QZgf8ep71RoUyffhAeFZNp
-X-Google-Smtp-Source: AGHT+IEAFgWi6gP2U+zqOrhDN9UN8+v6KtZ+Qnk7WwAuexnI0r211s/FhNyKtGzUTYaYH0Q4SdHFHpeqneIOWU1FExM=
-X-Received: by 2002:a05:6000:1a8e:b0:429:cf88:f7ac with SMTP id
- ffacd0b85a97d-42cc1d35d6dmr43796524f8f.44.1764696726355; Tue, 02 Dec 2025
- 09:32:06 -0800 (PST)
+	s=arc-20240116; t=1764696749; c=relaxed/simple;
+	bh=EQlF8JKvmA+R/ZoGQgMxtrT9hlH3Gx80adCz2Z/N7Es=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=n48vRYm72rjKbKVb9zH8DzdszQW4MKRZxbwq6P0QMQh1dJbmT5pUr9E1TM/rYDsetErl3javLBfnen2ndaj/A7z7c4KOEm0q7mHogUV4dchHYgS1ZoshpPEJ3NcVv1OTPJSlwDLVkF2e835T49s2D2OKuaxWOY+EMTUxEOR5HME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D+SqlccW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A2B7C4CEF1;
+	Tue,  2 Dec 2025 17:32:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1764696748;
+	bh=EQlF8JKvmA+R/ZoGQgMxtrT9hlH3Gx80adCz2Z/N7Es=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=D+SqlccWWbwYbb3alct9SwSGdx7ey2TIdqVcHS+53TLh9RQWAvYxfsNAICuhfJnO/
+	 G2zqHeWCj2S8euNKW08k2cPgej2S7+8zbkRV2HcBJCWywBsKhxd10LKOeWLcUaNkaa
+	 0Z6IZNg1WQBetpjOhAMJ78otOZyPGz3rp9cuIritiuP+FSEblIVi+/YCsMajkUKb+B
+	 rweJhgq2ZDwGNPSVPTsF3qdzng5ic3dZqYElCq4J4ckba/XsgyRpjXjiUj8JfZzlvY
+	 i+n5RvAIZHftaGFBzlWtHPQzGLNcNHDnwdFWzi4/M4shSMQaw8adjfg5lIeWiPTp/R
+	 IC6+yWPtxJU1w==
+Message-ID: <c04b51c6-bc03-410e-af41-64f318b8960f@kernel.org>
+Date: Tue, 2 Dec 2025 18:32:23 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251202171615.1027536-1-ameryhung@gmail.com>
-In-Reply-To: <20251202171615.1027536-1-ameryhung@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 2 Dec 2025 09:31:55 -0800
-X-Gm-Features: AWmQ_bmnMVc5ThyHPiVbWV1Iz9SOLG4q3niwo-bZHB9zmrHf3MJLwg2YOziSTbg
-Message-ID: <CAADnVQKvRYnKME8-Q24=CqaNz24ibqfbczrRB4_BJxbNcj2oNQ@mail.gmail.com>
-Subject: Re: [PATCH bpf v2 1/2] bpf: Disallow tail call to programs that use
- cgroup storage
-To: Amery Hung <ameryhung@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Eduard <eddyz87@gmail.com>, 
-	Kernel Team <kernel-team@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v2 5/9] tun: use bulk NAPI cache allocation in
+ tun_xdp_one
+To: Jon Kohler <jon@nutanix.com>, Jason Wang <jasowang@redhat.com>
+Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Stanislav Fomichev <sdf@fomichev.me>,
+ open list <linux-kernel@vger.kernel.org>,
+ "open list:XDP (eXpress Data Path):Keyword:(?:b|_)xdp(?:b|_)"
+ <bpf@vger.kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Alexander Lobakin <aleksander.lobakin@intel.com>
+References: <20251125200041.1565663-1-jon@nutanix.com>
+ <20251125200041.1565663-6-jon@nutanix.com>
+ <CACGkMEsDCVKSzHSKACAPp3Wsd8LscUE0GO4Ko9GPGfTR0vapyg@mail.gmail.com>
+ <CF8FF91A-2197-47F7-882B-33967C9C6089@nutanix.com>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <CF8FF91A-2197-47F7-882B-33967C9C6089@nutanix.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Dec 2, 2025 at 9:16=E2=80=AFAM Amery Hung <ameryhung@gmail.com> wro=
-te:
->
-> Mitigate a possible NULL pointer dereference in bpf_get_local_storage()
-> by disallowing tail call to programs that use cgroup storage. Cgroup
-> storage is allocated lazily when attaching a cgroup bpf program. With
-> tail call, it is possible for a callee BPF program to see a NULL
-> storage pointer if the caller prorgam does not use cgroup storage.
->
-> Reported-by: Yinhao Hu <dddddd@hust.edu.cn>
-> Reported-by: Kaiyan Mei <M202472210@hust.edu.cn>
-> Reported-by: Dongliang Mu <dzm91@hust.edu.cn>
-> Closes: https://lore.kernel.org/bpf/c9ac63d7-73be-49c5-a4ac-eb07f7521adb@=
-hust.edu.cn/
-> Signed-off-by: Amery Hung <ameryhung@gmail.com>
-> ---
->  kernel/bpf/arraymap.c | 11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-> index 1eeb31c5b317..9c3f86ef9d16 100644
-> --- a/kernel/bpf/arraymap.c
-> +++ b/kernel/bpf/arraymap.c
-> @@ -884,8 +884,9 @@ int bpf_fd_array_map_update_elem(struct bpf_map *map,=
- struct file *map_file,
->                                  void *key, void *value, u64 map_flags)
->  {
->         struct bpf_array *array =3D container_of(map, struct bpf_array, m=
-ap);
-> +       u32 i, index =3D *(u32 *)key, ufd;
->         void *new_ptr, *old_ptr;
-> -       u32 index =3D *(u32 *)key, ufd;
-> +       struct bpf_prog *prog;
->
->         if (map_flags !=3D BPF_ANY)
->                 return -EINVAL;
-> @@ -898,6 +899,14 @@ int bpf_fd_array_map_update_elem(struct bpf_map *map=
-, struct file *map_file,
->         if (IS_ERR(new_ptr))
->                 return PTR_ERR(new_ptr);
->
-> +       if (map->map_type =3D=3D BPF_MAP_TYPE_PROG_ARRAY) {
-> +               prog =3D (struct bpf_prog *)new_ptr;
-> +
-> +               for_each_cgroup_storage_type(i)
-> +                       if (prog->aux->cgroup_storage[i])
-> +                               return -EINVAL;
 
-hmm. I think AI was right that prog refcnt is leaked.
+
+On 02/12/2025 17.49, Jon Kohler wrote:
+> 
+> 
+>> On Nov 27, 2025, at 10:02 PM, Jason Wang <jasowang@redhat.com> wrote:
+>>
+>> On Wed, Nov 26, 2025 at 3:19 AM Jon Kohler <jon@nutanix.com> wrote:
+>>>
+>>> Optimize TUN_MSG_PTR batch processing by allocating sk_buff structures
+>>> in bulk from the per-CPU NAPI cache using napi_skb_cache_get_bulk.
+>>> This reduces allocation overhead and improves efficiency, especially
+>>> when IFF_NAPI is enabled and GRO is feeding entries back to the cache.
+>>
+>> Does this mean we should only enable this when NAPI is used?
+> 
+> No, it does not mean that at all, but I see what that would be confusing.
+> I can clean up the commit msg on the next go around
+> 
+>>>
+>>> If bulk allocation cannot fully satisfy the batch, gracefully drop only
+>>> the uncovered portion, allowing the rest of the batch to proceed, which
+>>> is what already happens in the previous case where build_skb() would
+>>> fail and return -ENOMEM.
+>>>
+>>> Signed-off-by: Jon Kohler <jon@nutanix.com>
+>>
+>> Do we have any benchmark result for this?
+> 
+> Yes, it is in the cover letter:
+> https://patchwork.kernel.org/project/netdevbpf/cover/20251125200041.1565663-1-jon@nutanix.com/
+> 
+>>> ---
+>>> drivers/net/tun.c | 30 ++++++++++++++++++++++++------
+>>> 1 file changed, 24 insertions(+), 6 deletions(-)
+>>>
+>>> diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+>>> index 97f130bc5fed..64f944cce517 100644
+>>> --- a/drivers/net/tun.c
+>>> +++ b/drivers/net/tun.c
+[...]
+>>> @@ -2454,6 +2455,7 @@ static int tun_xdp_one(struct tun_struct *tun,
+>>>                 ret = tun_xdp_act(tun, xdp_prog, xdp, act);
+>>>                 if (ret < 0) {
+>>>                         /* tun_xdp_act already handles drop statistics */
+>>> +                       kfree_skb_reason(skb, SKB_DROP_REASON_XDP);
+>>
+>> This should belong to previous patches?
+> 
+> Well, not really, as we did not even have an SKB to free at this point
+> in the previous code
+>>
+>>>                         put_page(virt_to_head_page(xdp->data));
+
+This calling put_page() directly also looks dubious.
+
+>>>                         return ret;
+>>>                 }
+>>> @@ -2463,6 +2465,7 @@ static int tun_xdp_one(struct tun_struct *tun,
+>>>                         *flush = true;
+>>>                         fallthrough;
+>>>                 case XDP_TX:
+>>> +                       napi_consume_skb(skb, 1);
+>>>                         return 0;
+>>>                 case XDP_PASS:
+>>>                         break;
+>>> @@ -2475,13 +2478,15 @@ static int tun_xdp_one(struct tun_struct *tun,
+>>>                                 tpage->page = page;
+>>>                                 tpage->count = 1;
+>>>                         }
+>>> +                       napi_consume_skb(skb, 1);
+>>
+>> I wonder if this would have any side effects since tun_xdp_one() is
+>> not called by a NAPI.
+> 
+> As far as I can tell, this napi_consume_skb is really just an artifact of
+> how it was named and how it was traditionally used.
+> 
+> Now this is really just a napi_consume_skb within a bh disable/enable
+> section, which should meet the requirements of how that interface
+> should be used (again, AFAICT)
+> 
+
+Yicks - this sounds super ugly.  Just wrapping napi_consume_skb() in bh
+disable/enable section and then assuming you get the same protection as
+NAPI is really dubious.
+
+Cc Sebastian as he is trying to cleanup these kind of use-case, to make
+kernel preemption work.
+
+
+>>
+>>>                         return 0;
+>>>                 }
+>>>         }
+>>>
+>>> build:
+>>> -       skb = build_skb(xdp->data_hard_start, buflen);
+>>> +       skb = build_skb_around(skb, xdp->data_hard_start, buflen);
+>>>         if (!skb) {
+>>> +               kfree_skb_reason(skb, SKB_DROP_REASON_NOMEM);
+> 
+> Though to your point, I dont think this actually does anything given
+> that if the skb was somehow nuked as part of build_skb_around, there
+> would not be an skb to free. Doesn’t hurt though, from a self documenting
+> code perspective tho?
+> 
+>>>                 dev_core_stats_rx_dropped_inc(tun->dev);
+>>>                 return -ENOMEM;
+>>>         }
+>>> @@ -2566,9 +2571,11 @@ static int tun_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
+>>>         if (m->msg_controllen == sizeof(struct tun_msg_ctl) &&
+>>>             ctl && ctl->type == TUN_MSG_PTR) {
+>>>                 struct bpf_net_context __bpf_net_ctx, *bpf_net_ctx;
+>>> +               int flush = 0, queued = 0, num_skbs = 0;
+>>>                 struct tun_page tpage;
+>>>                 int n = ctl->num;
+>>> -               int flush = 0, queued = 0;
+>>> +               /* Max size of VHOST_NET_BATCH */
+>>> +               void *skbs[64];
+>>
+>> I think we need some tweaks
+>>
+>> 1) TUN is decoupled from vhost, so it should have its own value (a
+>> macro is better)
+> 
+> Sure, I can make another constant that does a similar thing
+> 
+>> 2) Provide a way to fail or handle the case when more than 64
+> 
+> What if we simply assert that the maximum here is 64, which I think
+> is what it actually is in practice?
+> 
+>>
+>>>
+>>>                 memset(&tpage, 0, sizeof(tpage));
+>>>
+>>> @@ -2576,13 +2583,24 @@ static int tun_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
+>>>                 rcu_read_lock();
+>>>                 bpf_net_ctx = bpf_net_ctx_set(&__bpf_net_ctx);
+>>>
+>>> -               for (i = 0; i < n; i++) {
+>>> +               num_skbs = napi_skb_cache_get_bulk(skbs, n);
+>>
+>> Its document said:
+>>
+>> """
+>> * Must be called *only* from the BH context.
+>> “"”
+> We’re in a bh_disable section here, is that not good enough?
+
+Again this feels very ugly and prone to painting ourselves into a
+corner, assuming BH-disabled sections have same protection as NAPI.
+
+(The napi_skb_cache_get/put function are operating on per CPU arrays
+without any locking.)
+
+--Jesper
 
