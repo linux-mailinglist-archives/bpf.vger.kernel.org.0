@@ -1,164 +1,161 @@
-Return-Path: <bpf+bounces-75860-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75861-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB0FEC9A2E1
-	for <lists+bpf@lfdr.de>; Tue, 02 Dec 2025 07:04:34 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80658C9A5D9
+	for <lists+bpf@lfdr.de>; Tue, 02 Dec 2025 07:45:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B077C4E3786
-	for <lists+bpf@lfdr.de>; Tue,  2 Dec 2025 06:04:05 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id A9A3534718E
+	for <lists+bpf@lfdr.de>; Tue,  2 Dec 2025 06:44:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 821812FF649;
-	Tue,  2 Dec 2025 06:04:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AAA7301716;
+	Tue,  2 Dec 2025 06:43:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IsF8+MBR";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="sDXbrG88"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Cumvfgwy"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7CB02FE599
-	for <bpf@vger.kernel.org>; Tue,  2 Dec 2025 06:03:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 365B73019A1
+	for <bpf@vger.kernel.org>; Tue,  2 Dec 2025 06:43:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764655440; cv=none; b=G+E5rS4OV/AVJUK3UndfxnxLC+g8Vska0NisyPEZXblE1n2CXEOgJehlL5Td2h0kGwv1I8VAOgXZRzhg6rMzEBcJXsVoPdv8BWOROAttYot1NlkrFQFwoJf8napnvjCa47fpsp8pIPTBtAyVREmYROcuD6o3t45ytsSTT5yVxNw=
+	t=1764657824; cv=none; b=YBtycTOes5eUm+LH8waFDuBjjf3VXc//My8FO0PsmTbCzV6BC5ZZC2jrbfkjc5Tg0cT3JuIcOurtugp7Z6lRm8ZRt8nC2EVcFGg4sRlnibEQ78nPBXMnf7UU9tSjIa4xgv5Fc+9k34ae8zZwC5z4SQrYf/KjXmMxYWJjrCtk45I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764655440; c=relaxed/simple;
-	bh=9yZtKrMIr+oRDcDzNymlk5LC69nAsOOxWz1MSteFcvk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pNzTnYZpthbShtyiSt20PajJ6p5p2nQkTQfa/wyNV6WQzpucFmNEZ+TDcTGw9gPONZRnmiKh9Guz0HKS6/itnoeViaighw/POcqGHEyEB7/fNq0NCGt5P4+AWtryzdSoQJtWAFQ8QdOhGiY1nQAdCKcPmq0Vty1PviRopSRhUag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IsF8+MBR; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=sDXbrG88; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1764655435;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9yZtKrMIr+oRDcDzNymlk5LC69nAsOOxWz1MSteFcvk=;
-	b=IsF8+MBRu6EcOt7q+OVy/lq6KhBVbbkFhGHDnWH77voz0aIvxCkJXHKYqgoV2CEXiT9J/q
-	7VnMhWo9vovWWnYtYmJx3JZb6Tyo4IPQyxCB4SN9CIeUWbcrefvC6gBSUslDETGxMVbtVB
-	jp0JH1crv796JuO1G3beepVyCHoyjmo=
-Received: from mail-vs1-f70.google.com (mail-vs1-f70.google.com
- [209.85.217.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-66-weUCEsADO3emftarGTeNzg-1; Tue, 02 Dec 2025 01:03:51 -0500
-X-MC-Unique: weUCEsADO3emftarGTeNzg-1
-X-Mimecast-MFC-AGG-ID: weUCEsADO3emftarGTeNzg_1764655431
-Received: by mail-vs1-f70.google.com with SMTP id ada2fe7eead31-5dbcb1740ccso1514902137.1
-        for <bpf@vger.kernel.org>; Mon, 01 Dec 2025 22:03:51 -0800 (PST)
+	s=arc-20240116; t=1764657824; c=relaxed/simple;
+	bh=Jf9gVgouUS6WA1WmAKl+iapmoVqz/JtN0fwXRs+b4qY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QWG03LQ+jT3A9+gQY9w181NT+pux021DfQmJH3hEj09zWYM2Ib0HRgtDlvRQ6/KYZUSNzqiUWNSToIaf7gj2Q93Ikcbxg7Izejf+5YAENobpZfJmv3lUO+mKLjSQp1tXC5LX+UfiBohmuRbynUHVCrs5KE4zBKDHYkcNP84nmRY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Cumvfgwy; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-29853ec5b8cso62285065ad.3
+        for <bpf@vger.kernel.org>; Mon, 01 Dec 2025 22:43:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1764655431; x=1765260231; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9yZtKrMIr+oRDcDzNymlk5LC69nAsOOxWz1MSteFcvk=;
-        b=sDXbrG88V4C9LQomRHNf9PjDcb1jy0bE83igTOG7WIJl+xFC9mt8L6dhG6kpDmO+ba
-         /3NDAe21G5VPqIAVVu4XK9L+zE3ERME818bEoxcnsOIil9jmPiZa1upqLKJx97XjxcOo
-         uN/IX1rfxHYSDFZDmyN44gN2IRlxMaBhH1zW1e5aFGGOfJGWcjyDrdBeGQsElB2siv7/
-         y0pXuWXCwtAJZvRsTlAFmycgDq7P7fxsG9WJMuoyRPYAt2XS3bDG/cY8NLYGYLLKno3Y
-         geZwKmluk+XJYPuy6duEvV4pDv+K3mcMFPxJ3I/ZquYqMHc1OBw7PSrnvjwbAaar4b5p
-         1ATQ==
+        d=linaro.org; s=google; t=1764657821; x=1765262621; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=htyZzDjpItfBeC/qRXvnJ6nxzkqeSejC8MJ5WVXPcQY=;
+        b=CumvfgwykknWCLlGYfxl+aWzXM+wsXYC464qBApiNydWyo/GCG1/7RTtXpXKc+dHrx
+         991hAxia7u5AdoccVPsITEX81DXNJZiWLee1gga39SLmNdYh4wvcwVEe6YcYHtDNtmk/
+         UhEl3Wa2dAa4we0KkOidLr8rkfrEcU/r/iLX3OS3+dXn4CjlZkw941vAi4dUsmagCMCC
+         V3DpQQ/B5cYX8ef5Niy23jwcZGhwC+6mMHvo1IYQVKF8Rl7CqQpTtt5KZ+Ao0Nov0Pj/
+         Z2Yd2aCcCtCkf3hZ7KuZbH8rzgvwo5tk8Q23Ip+T/rn6ftht8h1Qxp91cAuTVcu6RQJ8
+         N6pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764655431; x=1765260231;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=9yZtKrMIr+oRDcDzNymlk5LC69nAsOOxWz1MSteFcvk=;
-        b=pfJAGNI6M4IztgaPLIm+3lCMFzZDRkxI3aXm0Ktr+J2TxeAODEFOu3iMIHpQagspFA
-         2NvY/PP5OjVTumBTBLDl0Fy1J+hK/AII1AE1HXRApUnv7+ilkt/dX/qlkaRF6jx2x3yi
-         iRVAWGTp5Dlnk7NntAZ9xOmOqL37MBGnBNLm3/gK1y02LwQAAV8mENNjHqooDLiNoA+/
-         bY+E1yy7eJpiDduMIvfaCm5kBFoXOveO01mDZarsAgLkgvmFNcNYSpEFZKRlpUlA+dzJ
-         a2CmdW0Er6FnH/+cfFX6CXSGVTqCDiRHqvtOY8eQuhYyPUkM5oUPkQMFB9Se8Dh1dpSl
-         oVnA==
-X-Forwarded-Encrypted: i=1; AJvYcCWr1P2ou97Fm6zAFy/fWvBK1gfALVrUezpZbmR7Na/Tt59tOcO2Iup6H2FJBMLHBThxj4c=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzO0Vbi2ob+r5ZU7JOivFx7c8B4ZGAV6snVya2fQ6CjjeXjxzl3
-	oV9OhFyQRiraNc87+usWDQu+QBhYhZLVCmeH3PrADzc07riMzVPebjWfXq0GMX1d/439q6BJfq6
-	Tuw3LmqoiFgDirZDkClG4S+yJv1PuiYoSH8h8AVhus7SfJ/aM6mAW/rHbdemnvyXFjCPscVUJTg
-	jD1LtbdmYtXcdLhlRPdb/f3WwzIYGx
-X-Gm-Gg: ASbGncvtil5NzYYR8Gjf67TW/pPfPPDPHCJycXIhfkv3u9HZUWKpdvp2w38u8BUFWrM
-	fJ0WL+0l88YpoT1rGzwkAw8JUN5BhsDgQaWJ+RjOwwgwHNj41T+mUrzdpQaemhrgU0UJxgX/oyl
-	WjKb5Pki8HAdZ0kHU5yDguYr66EtQKGVhuXxzRMlMA+hf1+fH2oUJ0+4wwMbee1C9ymGU=
-X-Received: by 2002:a05:6102:943:b0:5e1:ef48:271f with SMTP id ada2fe7eead31-5e2243b0ae6mr10533772137.24.1764655431107;
-        Mon, 01 Dec 2025 22:03:51 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHwP5aHgNd3I5TiBLGyqEh9KU4ibLdE1nzCHwWBtB5W9yqrcXhSdXjvk1r3jTbN6h8btYD3Zn35q6xLUh9X/dc=
-X-Received: by 2002:a05:6102:943:b0:5e1:ef48:271f with SMTP id
- ada2fe7eead31-5e2243b0ae6mr10533766137.24.1764655430705; Mon, 01 Dec 2025
- 22:03:50 -0800 (PST)
+        d=1e100.net; s=20230601; t=1764657821; x=1765262621;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=htyZzDjpItfBeC/qRXvnJ6nxzkqeSejC8MJ5WVXPcQY=;
+        b=jlJOApQ27DegF4ePw8YdW2TKFNEynqkJRCUHgqzQC2pQQVu1nWCLVY151AyvebyI61
+         Nvf24hQM/DATdiJgDXX32EY3JWW434xM3JUOYPZbGFfxTlqzvIcT3Z3gc9xgSdhduIcj
+         qwLIIOFBDUY6cuS+/I6aacY11/C/YYQhdMtlwlBbGYwOKjXcsRTpe44Rk7CZhVnZdocT
+         LhZoG89cGTHEMUxAkP7TN2hu/XBfLkCyKm9B5ZcPEdm5OkBdCQYb+OODnSHvSZLFkfpw
+         4nbjgoahprxD2l88oz50rpgHiSG6VQ7m+BbUDVEMFd5q/lqMWj/kXME12lCKz0QWQ7Nx
+         1VwQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXki/la1RfxV9ChAHyhhco1MSUt0I38il10eJ5mobPWcLEVfWU1+RotDpM398BYtfBBlBM=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy8+IN9rTe5geut1YZ7D5SiDy7DwUSfNlF6Sr7RMjabcRa+dBGl
+	HJGRiwnhE7hJLW32aLRnatDI/QlUC7YVTSv2up5hFike12FQATnVUQbCJ9gt1gFunJw=
+X-Gm-Gg: ASbGncsDAjCUZ7DS0HE4HBJ0PP2edEP2j5BlJ6DKLXzTwZlxdzQKQ5m/QZPCw6W7Ydo
+	sTdmpCdFHYVbWDV+4cxJAsoL1sho6l/h3xnJSSYRhAoZsY/iYJ2KgWuiIxBHO+LO3/QRrV2Q30u
+	iMwkM0JUAEhhlkRrOTyehLqcbDXPQ8YhO6GLrfQetCd1eG93XXaZR5QYGanC2xgURRCKbspsIRj
+	RRdmtsyKwiVWImH9AqYRSKxoLfmqzZqVOa5r9OcQj54dkNKjqkZi5tho4bVT7cnihSkjgJkrn/0
+	N92e62K4UpdkDjh0b0cK4LYQFwzFxx8SHO88VdS68ig2n4wgApJqvwAfrsWyEZBsJMJqogmPUV9
+	keeTxkBq0M3rlsKWTPNm3hknlz3ER6tBf8a9VqCb7w1BpxT6iZTjSUr20uIWVLs/ybhLkKMhpRn
+	UK9sJEccxTjaWoOFWZRRhZlA==
+X-Google-Smtp-Source: AGHT+IElB/55iOL3pFkt4jDnVftx8SMwzLAFev+IFE16AlTrASn4wJp/yshPqxy/pYWD5aWdbmoY1g==
+X-Received: by 2002:a17:903:2b0f:b0:297:e66a:2065 with SMTP id d9443c01a7336-29b6c6d0d46mr435400315ad.56.1764657821143;
+        Mon, 01 Dec 2025 22:43:41 -0800 (PST)
+Received: from localhost ([122.172.86.94])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29bce4418c4sm139899275ad.24.2025.12.01.22.43.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Dec 2025 22:43:40 -0800 (PST)
+Date: Tue, 2 Dec 2025 12:13:37 +0530
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: Samuel Wu <wusamuel@google.com>
+Cc: Huang Rui <ray.huang@amd.com>, 
+	"Gautham R. Shenoy" <gautham.shenoy@amd.com>, Mario Limonciello <mario.limonciello@amd.com>, 
+	Perry Yuan <perry.yuan@amd.com>, Jonathan Corbet <corbet@lwn.net>, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, Len Brown <lenb@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, 
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	James Clark <james.clark@linaro.org>, christian.loehle@arm.com, kernel-team@android.com, 
+	linux-pm@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH v3 0/2] Replace trace_cpu_frequency with
+ trace_policy_frequency
+Message-ID: <inifvm4pxifvdazsfyi2ppzfwum6ukzujx5sfiux4s2iv55z4p@otoaj35vr47c>
+References: <20251201202437.3750901-1-wusamuel@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <40af2b73239850e7bf1a81abb71ee99f1b563b9c.1764226734.git.mst@redhat.com>
- <a61dc7ee-d00b-41b4-b6fd-8a5152c3eae3@gmail.com> <CACGkMEuJFVUDQ7SKt93mCVkbDHxK+A74Bs9URpdGR+0mtjxmAg@mail.gmail.com>
- <a9718b11-76d5-4228-9256-6a4dee90c302@gmail.com>
-In-Reply-To: <a9718b11-76d5-4228-9256-6a4dee90c302@gmail.com>
-From: Jason Wang <jasowang@redhat.com>
-Date: Tue, 2 Dec 2025 14:03:32 +0800
-X-Gm-Features: AWmQ_blpD6OfG3aBJ7E21a-JAzhs-ua7-f4l8pJe0A5pP3XukKz4YUOSlliVbTY
-Message-ID: <CACGkMEvFzYiRNxMdJ9xNPcZmotY-9pD+bfF4BD5z+HnaAt1zug@mail.gmail.com>
-Subject: Re: [PATCH RFC] virtio_net: gate delayed refill scheduling
-To: Bui Quang Minh <minhquangbui99@gmail.com>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org, 
-	Paolo Abeni <pabeni@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, 
-	=?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	Stanislav Fomichev <sdf@fomichev.me>, virtualization@lists.linux.dev, netdev@vger.kernel.org, 
-	bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251201202437.3750901-1-wusamuel@google.com>
 
-On Mon, Dec 1, 2025 at 11:04=E2=80=AFPM Bui Quang Minh <minhquangbui99@gmai=
-l.com> wrote:
->
-> On 11/28/25 09:20, Jason Wang wrote:
-> > On Fri, Nov 28, 2025 at 1:47=E2=80=AFAM Bui Quang Minh <minhquangbui99@=
-gmail.com> wrote:
-> >> I think the the requeue in refill_work is not the problem here. In
-> >> virtnet_rx_pause[_all](), we use cancel_work_sync() which is safe to
-> >> use "even if the work re-queues itself". AFAICS, cancel_work_sync()
-> >> will disable work -> flush work -> enable again. So if the work requeu=
-e
-> >> itself in flush work, the requeue will fail because the work is alread=
-y
-> >> disabled.
-> > Right.
-> >
-> >> I think what triggers the deadlock here is a bug in
-> >> virtnet_rx_resume_all(). virtnet_rx_resume_all() calls to
-> >> __virtnet_rx_resume() which calls napi_enable() and may schedule
-> >> refill. It schedules the refill work right after napi_enable the first
-> >> receive queue. The correct way must be napi_enable all receive queues
-> >> before scheduling refill work.
-> > So what you meant is that the napi_disable() is called for a queue
-> > whose NAPI has been disabled?
-> >
-> > cpu0] enable_delayed_refill()
-> > cpu0] napi_enable(queue0)
-> > cpu0] schedule_delayed_work(&vi->refill)
-> > cpu1] napi_disable(queue0)
-> > cpu1] napi_enable(queue0)
-> > cpu1] napi_disable(queue1)
-> >
-> > In this case cpu1 waits forever while holding the netdev lock. This
-> > looks like a bug since the netdev_lock 413f0271f3966 ("net: protect
-> > NAPI enablement with netdev_lock()")?
->
-> Yes, I've tried to fix it in 4bc12818b363 ("virtio-net: disable delayed
-> refill when pausing rx"), but it has flaws.
+On 01-12-25, 12:24, Samuel Wu wrote:
+> This series replaces the cpu_frequency trace event with a new trace event,
+> policy_frequency. Since by definition all CPUs in a policy are of the same
+> frequency, we can emit a frequency change per policy instead of per CPU.
+> This saves some compute and memory from the kernel side, while simplifying
+> analysis from the post-processing of the trace log side.
+> 
+> Any process that relied on cpu_frequency trace event needs to switch to the
+> new policy_frequency trace event in order to maintain functionality. The
+> decision of replacing instead of adding the trace event is intentional. Since
+> emitting once per policy instead of once per CPU is anyways a semantics change
+> that would require a tooling update, the trace event was also appropriately
+> renamed. The presence of the policy_frequency event in a trace log is a clear
+> and obvious signal for tooling to determine kernel version and which trace
+> event to parse.
+> 
+> 1/2: Replaces trace_cpu_frequency with trace_policy_frequency
+> 2/2: Corresponding documentation patch that updates references to
+>      cpu_frequency with policy_frequency
+> 
+> Changes in v3:
+> - Resending v2 properly (accidentally ommited cover letter in v2)
+> 
+> Changes in v2:
+> - Replaced trace_cpu_frequency with trace_policy_frequency (per Christian
+>   and Viresh)
+> - Updated references to cpu_frequency in documentation with
+>   policy_frequency
+> - v1 link: https://lore.kernel.org/all/20251112235154.2974902-1-wusamuel@google.com
+> 
+> Samuel Wu (2):
+>   cpufreq: Replace trace_cpu_frequency with trace_policy_frequency
+>   cpufreq: Documentation update for trace_policy_frequency
+> 
+>  Documentation/admin-guide/pm/amd-pstate.rst   | 10 ++++----
+>  Documentation/admin-guide/pm/intel_pstate.rst | 14 +++++------
+>  Documentation/trace/events-power.rst          |  2 +-
+>  drivers/cpufreq/cpufreq.c                     | 14 ++---------
+>  drivers/cpufreq/intel_pstate.c                |  6 +++--
+>  include/trace/events/power.h                  | 24 ++++++++++++++++---
+>  kernel/trace/power-traces.c                   |  2 +-
+>  samples/bpf/cpustat_kern.c                    |  8 +++----
+>  samples/bpf/cpustat_user.c                    |  6 ++---
+>  tools/perf/builtin-timechart.c                | 12 +++++-----
+>  10 files changed, 54 insertions(+), 44 deletions(-)
 
-I wonder if a simplified version is just restoring the behaviour
-before 413f0271f3966 by using napi_enable_locked() but maybe I miss
-something.
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-Thanks
-
+-- 
+viresh
 
