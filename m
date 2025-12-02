@@ -1,215 +1,143 @@
-Return-Path: <bpf+bounces-75901-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75902-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC34AC9C622
-	for <lists+bpf@lfdr.de>; Tue, 02 Dec 2025 18:27:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0E86C9C66A
+	for <lists+bpf@lfdr.de>; Tue, 02 Dec 2025 18:32:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 3A04534492F
-	for <lists+bpf@lfdr.de>; Tue,  2 Dec 2025 17:27:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A68E53A5A2D
+	for <lists+bpf@lfdr.de>; Tue,  2 Dec 2025 17:32:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DE372C0F6F;
-	Tue,  2 Dec 2025 17:27:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66B012BEFE0;
+	Tue,  2 Dec 2025 17:32:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JiKaFjy7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="huZ5mDda"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53FCB2C0307
-	for <bpf@vger.kernel.org>; Tue,  2 Dec 2025 17:27:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42C8228468D
+	for <bpf@vger.kernel.org>; Tue,  2 Dec 2025 17:32:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764696452; cv=none; b=l7R1ot+m/EMK/MfMKIekPFWEC2mbiQWeA9NXEB2Ai/suWC1dSrRmh8k9w7DnQanPljQb10E4Ra/fID5mSQMLnM2I6BONgBo4sYBevAAXnkbLSphvKcsOnVZDtRoWtRTgQCzfdQlgUZiEM6a76fZc1rO+s2WIPjbOJkwyQujmYKY=
+	t=1764696730; cv=none; b=FZGTd3zhha6PPbhkmHwB4JsIxVewqOvqrURFEHRn+bn4Gg2NjEcDrLZDTX7wOaozvPyRDfFHik/PHgXh8yyYwB6ugbTJfbrm0fU+S/BRzQdYCm21f1skJzQ3VYmtFqy14Gw9Fp5+n97ok1092yHCTiKCisSlncQxwMs5/+03RGk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764696452; c=relaxed/simple;
-	bh=mxt/R3jswEjHEqbIJhpL3n0mcc0dp5i4HmP0UQM4cb4=;
+	s=arc-20240116; t=1764696730; c=relaxed/simple;
+	bh=0xAiPLicgB03cktuxcQuchZBR+UbZFRbsMP564Obddc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZVsWc4x/jXTP5WoDrrmkP55rhU1olrCcTO33NEmjHvu8QzarndhjfXvNg6Z46rzFJauYaOHUrXRiDcqNzCRLAS3thwHIr2zb7EZHVx14ahR1UoekHU8j108GGuXnHa5w9G77R3T75U6oSuYFn8RSOFLC/AUh5U8O9KzDnhu9kfg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JiKaFjy7; arc=none smtp.client-ip=209.85.221.44
+	 To:Cc:Content-Type; b=c8NqFhEepxYGyBpKDYMkCfLeUnV7a8vu98OJiwOvpRtM/xSfgDbo1n6AdChsyTHFTkoxl7E2VE7R9tlnirZ5igUpT0vouc+LEs+vW+MNBZRrMhnbDJeGipSri3GtzrRK6KRthvP558piYPzaGc8di0iDTUGGZ6WzdoezcOFWhDc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=huZ5mDda; arc=none smtp.client-ip=209.85.221.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-42e2e08b27eso1417770f8f.1
-        for <bpf@vger.kernel.org>; Tue, 02 Dec 2025 09:27:30 -0800 (PST)
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-42e2b78d45bso1569936f8f.0
+        for <bpf@vger.kernel.org>; Tue, 02 Dec 2025 09:32:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764696449; x=1765301249; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1764696726; x=1765301526; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qiOxYQJhaO3IlO9NDdk0d3kLgGsdjus6my0jmOXSblY=;
-        b=JiKaFjy7wZPRbCET+4YF7rY/bO+/8aDGNM88OALQT5tSjCUMRKz5kK/Yjp+fbtYJS7
-         xuC45pgo1OdDmbYd66pG4FqaTvP7qulQtO9rMhJlEo3UGpFtZC9gcHUEY9oVi9PwegG7
-         fMM4NtU9p5C4bhVJuTVsfzEdVGXYDTxEkyuU/2RN9fT8Ndui8bukitXMhbtr/09TMMIg
-         EAt+t8/5Rz2eH2QxaaD2KClaZzE1SUkezzmbNBmCHabVtO8WUEOZWX/TcBCWTKk2ozf5
-         iWhN//CulRo4JWc+ererPrcddbVNZMmz1N49iwKOa4+ybYPIhDzhwTtZ4zh7it6MRALi
-         K41Q==
+        bh=nZFItyLY22Boxo7GM+d0AYn069sCXHjKGVjBq4SXALY=;
+        b=huZ5mDdamWjyaEE60MqnOA5maWKL99SypcSNchj5RcUI9bcuZUEMrGsI+Vk2VudkLv
+         4rbuzgWKwMkjTXYS29+PQxdRxT+UiO5OC2v/9v1tmKxdTw/Q1qe4vCA4pVoW4immU1/J
+         anze5BGTnxtq4fEan8jByrm/cI5Qmcw58O8o/KA2OwGatX272E7JJfGAbOvVkhi77FrV
+         QbvBLnkZhhXaeQUt6aUrrpPWvd06vyVPYL8tdVEab7tXS2KcHnGWX5+8gRR7NQbTJixa
+         hhS44pLhaKk04rL548s1uUryO8fWoGkX+ONqumXrR4TuExNrMF/oYWkAKedoKlx1qq1F
+         TqtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764696449; x=1765301249;
+        d=1e100.net; s=20230601; t=1764696726; x=1765301526;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=qiOxYQJhaO3IlO9NDdk0d3kLgGsdjus6my0jmOXSblY=;
-        b=wP6nxiDl0kh0D01QrMkq9PkkhVL/cBmknlBmkThZzpuadZUuEaV7CGCGkHO5bDm0vN
-         U9HzVdxdgjuJ/fb2cDd317WpPjIOLeB9PnQGKOfhR4ogZ25mq79n5ytfv8fQPy5YdunT
-         rscIB/h5mTwHkO+wywNIUcBzL9LBZxU0Ww4BVGLnK3t0eWUdAG1Sdkq/w+3acx7cD5OR
-         IvkJHcNAkr3oEf4+k2GgLJ5R20LPoSWOr8UWGfaXmRUbb3ijQyDApj55Z8uKu93nBJvS
-         m7sBMdwTbcEu83H8xncuSTydk3oyJqlDVxaJuYda3fJf68dl5IWgRVXw5TpTujj2sr8v
-         cGDw==
-X-Forwarded-Encrypted: i=1; AJvYcCWMzgSrGBb50s4CJ1sCP0j8WyVVkmjxGrH7jOYMcH8kTdhtbJwm2ajn1o1IB0znlOIxncI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzNe8X7zRyK0cYCBJGG0caY7Zq0z+izrnJb0RKbrhTzGq96ClMn
-	tIX4AZkw3folz3JLnqqdf7EUgKTrCZx5uy9HpSgb+JKCZBCkseDDOUvfi53BpjL+RKjEPH32rkO
-	YRkBJYIGdJPmZyJVxUG3kM1rpCkoNY8c=
-X-Gm-Gg: ASbGncv10928o7r/4HOUnS4EzywHu1PCtmjHbIuN3fs4WpIJvktwFFZ51f3Cd5Bk/GH
-	LWRxEz/zR1nHlnj8nEPJFC5oFhcU3IbjBgq/9KCNFKPwVuI5MJ2NQtWGjjliAZ1Uqd56/0ZjBxv
-	iNnlAkcebJgkzxJSvHcnC50f2Pd6IBr971cEA2x448tc8w7Dg6+TVOUxnpE8zSLumL8RPCI0GRD
-	4fCMVOQBwL/Z+ufJBc18biD9wFHcOyHlUXg2Q/BVFaNYyDOUR72bmFfA+NX/lxml3zgmrsRq4uD
-	xPhgcAup5q7UivX6YXG17istD47s
-X-Google-Smtp-Source: AGHT+IHcXowkINkhQ3ERa2rsWqjqCYAPEDw4w8SICRKFx3hz55wLbAQS6ONg0lhBh9g54+4p/dlASc+/Ja6COtqNeOQ=
-X-Received: by 2002:a05:6000:2c11:b0:42b:3ee9:4776 with SMTP id
- ffacd0b85a97d-42cc1abe2bbmr45599683f8f.5.1764696448376; Tue, 02 Dec 2025
- 09:27:28 -0800 (PST)
+        bh=nZFItyLY22Boxo7GM+d0AYn069sCXHjKGVjBq4SXALY=;
+        b=Kw1Ak+EpCQjhpz7DeM/IDrNh/Yj8K0v9BPf9UnPXmrzMVwwb4kfF67NhH+1Wvy5rY/
+         W5Dt6atHKiaarsfCM1RaEcQJ6NHjfvGTo+qNZSLuaB8Ieylo2CJEgk1C/I+Hf74GuFtP
+         n+y4U2OyWnkSpq5KkjAoDPAnwATDe/Xl77GM4zH43eTBcqCTqaGTBb3ojdTPfNR1ZLpa
+         a3F751uoPkCQuUlg+lErYq4iZO5Xb9vec/YugHD6udkWsuNdSQK1x1qaCtsuZ8YdM3R0
+         S0I4/FoHOnHFp647t2t3MD2ZTHO0HR9j8iy4wL8lagvs6bSPgfZGlnP81e1oh0xIURZ+
+         9dYw==
+X-Gm-Message-State: AOJu0Yw3hxIc1CEs8/p0CH1JhfeeEqX7cyw2jspGc9M1DKkgarotG9Bf
+	7Np/eCFMAxf3aG1xSGkS3+Rk3RnuSzsceS+sg5qxrbPldjK7yYqpIO7DG3/cfrLDhuoymi4j/Gf
+	Os1nVPyOOO8zmYsxsCDhhOhnSB9kxJ+I=
+X-Gm-Gg: ASbGncuKJDywpDiuu6mgZEOs05tyLoS2FKpUuffxtYSgkGZusLW/pChv2rp7LRdoNCA
+	Wqaqd6/iN/GsyLzYx1yivkruBBZ3fPfNEFlvTGfWWCyCCV6aHFClnFQF1injAcgtvzXa5vqe696
+	+rVa9xqGoHVbm9EqpTXug1Ai0wJiYgVvCMNZr/9l3bAKiSCrLG/IA1FUW3w+8bOm1B5aR+Uf9cA
+	8mfnQwpDtyDmMQ7FPwWYrLNe7Jis90Xq9I5aeEquuHRPljDp7UVUckXn0RakqCl9KrXUHu7TW1e
+	dfUuP3QZgf8ep71RoUyffhAeFZNp
+X-Google-Smtp-Source: AGHT+IEAFgWi6gP2U+zqOrhDN9UN8+v6KtZ+Qnk7WwAuexnI0r211s/FhNyKtGzUTYaYH0Q4SdHFHpeqneIOWU1FExM=
+X-Received: by 2002:a05:6000:1a8e:b0:429:cf88:f7ac with SMTP id
+ ffacd0b85a97d-42cc1d35d6dmr43796524f8f.44.1764696726355; Tue, 02 Dec 2025
+ 09:32:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <5e460d3c.4c3e9.19adde547d8.Coremail.kaiyanm@hust.edu.cn>
- <aS7BvzTJ-2Xo7ncq@google.com> <aS79vYLul06oLPT2@google.com>
-In-Reply-To: <aS79vYLul06oLPT2@google.com>
+References: <20251202171615.1027536-1-ameryhung@gmail.com>
+In-Reply-To: <20251202171615.1027536-1-ameryhung@gmail.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 2 Dec 2025 09:27:17 -0800
-X-Gm-Features: AWmQ_bnlq4JhNpbkhNFxuTrgKuE2gLgLAOiOHOiDkrKg3T9ma9EypN-3NmGfOZw
-Message-ID: <CAADnVQ+NASuOdgu-bD=xXtd8UM_N-83gKci3XQG1RHLbSFfwgQ@mail.gmail.com>
-Subject: Re: bpf: mmap_file LSM hook allows NULL pointer dereference
-To: Matt Bobrowski <mattbobrowski@google.com>
-Cc: =?UTF-8?B?5qKF5byA5b2m?= <kaiyanm@hust.edu.cn>, 
-	Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, hust-os-kernel-patches@googlegroups.com, 
-	Yinhao Hu <dddddd@hust.edu.cn>, dzm91@hust.edu.cn, KP Singh <kpsingh@kernel.org>
+Date: Tue, 2 Dec 2025 09:31:55 -0800
+X-Gm-Features: AWmQ_bmnMVc5ThyHPiVbWV1Iz9SOLG4q3niwo-bZHB9zmrHf3MJLwg2YOziSTbg
+Message-ID: <CAADnVQKvRYnKME8-Q24=CqaNz24ibqfbczrRB4_BJxbNcj2oNQ@mail.gmail.com>
+Subject: Re: [PATCH bpf v2 1/2] bpf: Disallow tail call to programs that use
+ cgroup storage
+To: Amery Hung <ameryhung@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Eduard <eddyz87@gmail.com>, 
+	Kernel Team <kernel-team@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 2, 2025 at 6:55=E2=80=AFAM Matt Bobrowski <mattbobrowski@google=
-.com> wrote:
+On Tue, Dec 2, 2025 at 9:16=E2=80=AFAM Amery Hung <ameryhung@gmail.com> wro=
+te:
 >
-> On Tue, Dec 02, 2025 at 10:38:55AM +0000, Matt Bobrowski wrote:
-> > On Tue, Dec 02, 2025 at 03:09:42PM +0800, =E6=A2=85=E5=BC=80=E5=BD=A6 w=
-rote:
-> > > Our fuzzer tool discovered a NULL pointer dereference vulnerability i=
-n the BPF subsystem. The vulnerability is triggered when a BPF LSM program,=
- attached to the `bpf_lsm_mmap_file`, receives a NULL pointer for the `stru=
-ct file *` argument during an anonymous memory mapping operation but attemp=
-ts to dereference it without a NULL check.
-> > >
-> > > Reported-by: Kaiyan Mei <M202472210@hust.edu.cn>
-> > > Reported-by: Yinhao Hu <dddddd@hust.edu.cn>
-> > > Reviewed-by: Dongliang Mu <dzm91@hust.edu.cn>
-> > >
-> > > ## Root Cause
-> > >
-> > > The crash is caused by a NULL pointer dereference within an eBPF prog=
-ram attached to the `bpf_lsm_mmap_file` LSM hook. The trigger occurs when a=
- user calls the `mmap` syscall with the `MAP_ANONYMOUS` flag. This action c=
-reates a file-less memory mapping, causing the kernel to invoke the `securi=
-ty_mmap_file` hook with a NULL `struct file *` argument. If the attached BP=
-F program assumes this pointer is always valid and attempts to dereference =
-it without a NULL check, it immediately causes a page fault, leading to a k=
-ernel panic.
-> >
-> > Thanks for the report. Can confirm, and a more simplified reproducer
-> > can be found below:
-> >
-> > BPF:
-> > ```
-> > SEC("lsm.s/mmap_file")
-> > int BPF_PROG(mmap_file, struct file *file)
-> > {
-> >         bpf_printk("i_ino=3D%llu", file->f_inode->i_ino);
-> >         return 0;
-> > }
-> > ```
-> >
-> > Stimulus:
-> > ```
-> > #include <stdio.h>
-> > #include <string.h>
-> > #include <sys/mman.h>
-> >
-> > int main(int argc, char** argv) {
-> >   void* p;
-> >
-> >   p =3D mmap(NULL, 4096, PROT_READ | PROT_WRITE | PROT_EXEC,
-> >            MAP_FIXED | MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
-> >   if (p =3D=3D MAP_FAILED) {
-> >     perror("mmap");
-> >     return 1;
-> >   }
-> >
-> >   memset(p, 0, 4096);
-> >   munmap(p, 4096);
-> >   return 0;
-> > }
-> > ```
-> >
-> > My initial thought here is that bpf_lsm_is_trusted() is treating
-> > pointer arguments provided to security_mmap_file() simply as
-> > PTR_TRUSTED, when in reality it should be something like PTR_TRUSTED |
-> > PTR_MAYBE_NULL instead. Anyway, I can take a look and send through an
-> > appropriate fix.
+> Mitigate a possible NULL pointer dereference in bpf_get_local_storage()
+> by disallowing tail call to programs that use cgroup storage. Cgroup
+> storage is allocated lazily when attaching a cgroup bpf program. With
+> tail call, it is possible for a callee BPF program to see a NULL
+> storage pointer if the caller prorgam does not use cgroup storage.
 >
-> So, thinking about this a little I think we have a couple options when
-> it comes to addressing this. We can either:
+> Reported-by: Yinhao Hu <dddddd@hust.edu.cn>
+> Reported-by: Kaiyan Mei <M202472210@hust.edu.cn>
+> Reported-by: Dongliang Mu <dzm91@hust.edu.cn>
+> Closes: https://lore.kernel.org/bpf/c9ac63d7-73be-49c5-a4ac-eb07f7521adb@=
+hust.edu.cn/
+> Signed-off-by: Amery Hung <ameryhung@gmail.com>
+> ---
+>  kernel/bpf/arraymap.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
 >
-> a) Add bpf_lsm_mmap_file() to the untrusted_lsm_hooks set. This will
-> effectively mark the struct file pointer argument passed into
-> bpf_lsm_mmap_file() as being untrusted (i.e. the register will not
-> carry a PTR_TRUSTED type). The caveat with this approach however is
-> that it'll have negative effects (i.e. cannot be supplied to BPF
-> kfuncs that accept KF_TRUSTED_ARGS arguments) on those struct file
-> pointer arguments that are considered to be valid and trusted.
+> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+> index 1eeb31c5b317..9c3f86ef9d16 100644
+> --- a/kernel/bpf/arraymap.c
+> +++ b/kernel/bpf/arraymap.c
+> @@ -884,8 +884,9 @@ int bpf_fd_array_map_update_elem(struct bpf_map *map,=
+ struct file *map_file,
+>                                  void *key, void *value, u64 map_flags)
+>  {
+>         struct bpf_array *array =3D container_of(map, struct bpf_array, m=
+ap);
+> +       u32 i, index =3D *(u32 *)key, ufd;
+>         void *new_ptr, *old_ptr;
+> -       u32 index =3D *(u32 *)key, ufd;
+> +       struct bpf_prog *prog;
 >
-> b) Update the generic LSM_HOOK() declaration for mmap_file
-> (security_mmap_file()) within lsm_hook_defs.h such that the struct
-> file pointer argument name contains a "__nullable" suffix. This will
-> allow btf_ctx_access() to apply the PTR_MAYBE_NULL type onto the
-> backing register holding a reference to the struct file pointer,
-> ultimately forcing the BPF program to perform a NULL check before
-> attempting to dereference it. The caveat with this approach is that
-> BPF program verification, and ultimately its runtime safety
-> guarantees, would be tied in with generic LSM infrastructure which I
-> don't think is a good idea. Subtle breakage could occur literally at
-> any point.
+>         if (map_flags !=3D BPF_ANY)
+>                 return -EINVAL;
+> @@ -898,6 +899,14 @@ int bpf_fd_array_map_update_elem(struct bpf_map *map=
+, struct file *map_file,
+>         if (IS_ERR(new_ptr))
+>                 return PTR_ERR(new_ptr);
 >
-> c) Provide an override declaration/definition for bpf_lsm_mmap_file()
-> within include/linux/bpf_lsm.h and kernel/bpf/bpf_lsm.c such that the
-> struct file pointer argument is named file__nullable instead. Similar
+> +       if (map->map_type =3D=3D BPF_MAP_TYPE_PROG_ARRAY) {
+> +               prog =3D (struct bpf_prog *)new_ptr;
+> +
+> +               for_each_cgroup_storage_type(i)
+> +                       if (prog->aux->cgroup_storage[i])
+> +                               return -EINVAL;
 
-I don't yet see how you can accomplish this, but it's indeed the best
-option.
-There is already:
-FUNC 'bpf_lsm_mmap_file' type_id=3D...
-Magic hack to
-#define LSM_HOOK(RET, DEFAULT, NAME, ...)       \
-noinline RET bpf_lsm_##NAME(__VA_ARGS__)        \
-?
-
-or a flavor named with a distinct suffix ?
-bpf_lsm_mmap_file___suffix(struct file *file__nullable, ...) ?
-
-To address the same issue with tracepoints we went with
-raw_tp_null_args[].
-It's ugly, but gets the job done. We can probably apply it
-to lsm args too.
-
-tbh option (b) could have been a choice or even:
--int security_mmap_file(struct file *file, unsigned long prot,
-+int security_mmap_file(struct file *file__nullable, unsigned long prot,
-
-but it's an operational headache due to different subsystems/maintainers.
-
-Long term the plan is to wait for gcc/pahole to fully support
-btf_decl_tags and switch to that.
+hmm. I think AI was right that prog refcnt is leaked.
 
