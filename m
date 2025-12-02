@@ -1,112 +1,50 @@
-Return-Path: <bpf+bounces-75884-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75885-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F506C9BC16
-	for <lists+bpf@lfdr.de>; Tue, 02 Dec 2025 15:20:51 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65ED8C9BCAC
+	for <lists+bpf@lfdr.de>; Tue, 02 Dec 2025 15:33:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65DB43A72FD
-	for <lists+bpf@lfdr.de>; Tue,  2 Dec 2025 14:20:48 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 45144347289
+	for <lists+bpf@lfdr.de>; Tue,  2 Dec 2025 14:33:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58ACD21D3EC;
-	Tue,  2 Dec 2025 14:20:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9791F238171;
+	Tue,  2 Dec 2025 14:33:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lnhlbduH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MzGRScc/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yx1-f46.google.com (mail-yx1-f46.google.com [74.125.224.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31CB72192FA
-	for <bpf@vger.kernel.org>; Tue,  2 Dec 2025 14:20:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C19618BC3D;
+	Tue,  2 Dec 2025 14:33:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764685244; cv=none; b=lsAhxY+7tk68RMKsebbWcyTa1Yau7WAqvZ+sr/nlpNL2CWCt9rDMbGNsFyKvq+UmtymWTKUjyKj2I0VjX6ephefnxEnogpNi0AMYPqUXoZUztXc98Cb8jDIBynUcSvWnfj3onPy3xPGl5F65TIf4Gz6gsutRKZtkRyNSzIKCl8A=
+	t=1764685990; cv=none; b=os9kUu04yxFY5HNcQB1ZkgMGMgmTzAFyH9wZoXoVtQe31J6/xi/wMe711nPEySCkZT6xGUnHOGq52l/yB8R8rHFiI38H6Lf59zEbCk/T5VGDcvmYtzyn2fXfYHwaWCgZLIqF6jo/L0imV+oXyBefZI5SafLNahYOawo4IdEpFeo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764685244; c=relaxed/simple;
-	bh=7rNRVsnWPfFx3+IF5zUAQsCTaovZHytc40juokjkxX8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fJUhVNQKe0ezrsCiuwdPswMHwKRv/wKjNByiZ+Mu3eHxtVWY2bGVdDNFGS2hTzoRZ05EDJY7Tc5d+A/2rJv67lMpWo+PkmJ1KT58cajy+9m8o/IvdPzAxbKf0HCHGShzb7aB+ozyd3kIsq3DZm4O75u+apmH6QS3cE5DOF5On2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lnhlbduH; arc=none smtp.client-ip=74.125.224.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yx1-f46.google.com with SMTP id 956f58d0204a3-6430834244aso4479687d50.2
-        for <bpf@vger.kernel.org>; Tue, 02 Dec 2025 06:20:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764685242; x=1765290042; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OVNmyf0pWuOFm8GFUHmjQWORKGxH+2nm5rY1pk1lD/A=;
-        b=lnhlbduH/A/gc+80XkbCZnmkBtilJ/XmqhxxW3buysRmJn0OhWi530sHlBek7ap/iX
-         pfkdPzCBmhr3rG9We0u2dQRC5I8TOg9IJeVG5yDaxxUeaIuzp9x4BzQ603k6ZV+Kk2ix
-         mrW8ytd91D//lYWAF+uM9Yzb+po1olqShKaAEvYiWdj2OQE3gDJOuSa1VxagrOcsWPTk
-         EUdReZUNHlac96HrmIXDmoYtwkzL7YF1YF0CAN7inAiTyxeyTRwc8mCkgC60aCBW0Fcj
-         Ru+ESTTEIW9e9CCzk13Uo2vK6/kClWe+LW3C1nHddZewmyKuj6yZ8oZO+HMtApLcjFKi
-         Crsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764685242; x=1765290042;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=OVNmyf0pWuOFm8GFUHmjQWORKGxH+2nm5rY1pk1lD/A=;
-        b=iVK/owDQfSlc6kCQlbIizH94Tn++lSpp6fZd35uYboLxXzWdcOAWfpRt/UfbOd0CHB
-         ptqnTA0v5z+pXZnc+FqeKHzZJXFnlI0jpsk2vwHdzo6iM84Azi71IijEm2QivJjms2tI
-         ZiS/VoTPMqHDIMy80ASGQQXdOHJecuEe32bMr1tTNcyPon8dPBt6CK0g2TEiWdGhR0yd
-         9xRunAQpNfSiAfg3wZIO26rkkLaEdVWB57wSU1WMvGVzL6Rt8mjIfzM6HGZCDnmUcMGm
-         8eBZLaQ/zW7GxzCageZ9Lm6OZeQ7Rjmy2S2uEYz1r7jCnCuoSuaqp8rEPxuMbBwi7dx7
-         q7zQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXpIApY531deCAHqF8aKXdczysI9RBNPhlug9RLl2A19YMsLHMcGXwpobl7wXGOzV9qjsQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz532ORaW0uEqTv4HvaahczUFULp35v0aFDfhRQ9A2Qfq/p02es
-	gR29+0TplAokkIlNfyHNH16u7NIzt2B1hPo0/t+krLQ28CZOlH0+nFSY
-X-Gm-Gg: ASbGncuPeWj7uJjG9lcgAN0W9TViO+dnjd7IqnP2ZzRSkTxghTh9f3c7HBLN19KekGm
-	UvpOW+HBa7igTbrLTsJn1uRqS5Vb1xPHXxHc2rG+plcB7lTkYHgR9paSj7SPxVgU3IHSR4oRFBf
-	/mTSGccnQB5FLSq3rvyTRV4VrWyYFxiCzUJovIDoJ/XWbXzWidiIRZFYQhaemEplCVhkc5RSFf0
-	QjkmrBdysf2abqdtQ0Bd7DeQP5XuZ74b6DvFcCL5jWr2SJX/cAz/aj/uqZUJu3hivhKXsBV+84e
-	XozjJnuYff5Bek9Y5Q4gJFaYCYXBhfIzbIbFnvIcPR93OIfsXBR+d6KMek8U3y7gNmlplfgtFId
-	UVu0YtHyoLbCraILDE3e2xms6RLepknzDxoIfn0XEH9zbtN2JeYKV03I67JKhbpGpS1dNkK2bFB
-	8AEagp2INWtGgPZz3qTxh3GhosIipvyGD9j3ap4ngp0THhlN43oQ0=
-X-Google-Smtp-Source: AGHT+IGXgMLsdqo31zDPO/L8sdWBlgV3+pT1zAXzGDGQV1LdsmvYxvbZjvz0x8ZTJqwbsZUGxS6wuA==
-X-Received: by 2002:a05:690e:2445:b0:63e:1e08:daa8 with SMTP id 956f58d0204a3-643293b93ccmr17101392d50.62.1764685241823;
-        Tue, 02 Dec 2025 06:20:41 -0800 (PST)
-Received: from localhost.localdomain (45.62.117.175.16clouds.com. [45.62.117.175])
-        by smtp.gmail.com with ESMTPSA id 956f58d0204a3-6433c497768sm6257715d50.25.2025.12.02.06.20.36
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 02 Dec 2025 06:20:41 -0800 (PST)
-From: Shuran Liu <electronlsr@gmail.com>
-To: song@kernel.org,
-	mattbobrowski@google.com,
-	bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	rostedt@goodmis.org,
-	mhiramat@kernel.org,
-	mathieu.desnoyers@efficios.com,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	dxu@dxuuu.xyz,
-	linux-kselftest@vger.kernel.org,
-	shuah@kernel.org,
-	electronlsr@gmail.com,
-	Zesen Liu <ftyg@live.com>,
-	Peili Gao <gplhust955@gmail.com>,
-	Haoran Ni <haoran.ni.cs@gmail.com>
-Subject: [PATCH bpf v3 2/2] selftests/bpf: fix and consolidate d_path LSM regression test
-Date: Tue,  2 Dec 2025 22:19:44 +0800
-Message-ID: <20251202141944.2209-3-electronlsr@gmail.com>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <20251202141944.2209-1-electronlsr@gmail.com>
-References: <20251202141944.2209-1-electronlsr@gmail.com>
+	s=arc-20240116; t=1764685990; c=relaxed/simple;
+	bh=Ly/4cWuHRE5Ksuv+Yo/Z1qdg0Fg7JiBJoCRjb1P4hcI=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=OTztHJCpxIfTSUFAmn/o6Q2Y5T2POAyE2zD/xKVCAExvZCasB1rUNZRbgGgnYv6I4vSMnBbuCgOyR2hILZYstjCZdPBTv7RJWF3FoyM8omSH/tUF3i3rWO4IYQjc0u9msjKfntWr0jHi7ZeaKkPIXUAioPXO5o1fcODRisl2q8o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MzGRScc/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8046EC4CEF1;
+	Tue,  2 Dec 2025 14:33:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1764685989;
+	bh=Ly/4cWuHRE5Ksuv+Yo/Z1qdg0Fg7JiBJoCRjb1P4hcI=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=MzGRScc/IvXrcvO07PgdzuZMI416Qfgaa7Lm/majdXSijKvkGq6aQwnFdUrUXDAX9
+	 lb3CNPW9+4V781IzXL+iQnOh0eUXggIp31aaCg75dbm8VI309F+/sCyqL5mSoh0Rid
+	 ViVaYBiAyMjOiCpaIEwAjqk1JY90Glc9dQCCc+ulcAIjanFDr78aQB5aZUpEPrJz3b
+	 DX/dDYB3JH60KzTOHOIdgxshShBrRAUg2F+PKUqTxdfkcZwgHR03iE0KsZKZJfDWkM
+	 RUcefJPNN/nTnqoyF7h9olevuzwKbt70zVQM1vSzzrVKRktgrq5d69E+pc/ZT1gylt
+	 DpNgK+E/8hrhA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 32EA03A54A16;
+	Tue,  2 Dec 2025 14:30:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -114,170 +52,48 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next V2 0/2] net/mlx5e: Disable egress xdp-redirect in
+ default
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <176468580905.3250289.13105138318084701594.git-patchwork-notify@kernel.org>
+Date: Tue, 02 Dec 2025 14:30:09 +0000
+References: <1764497617-1326331-1-git-send-email-tariqt@nvidia.com>
+In-Reply-To: <1764497617-1326331-1-git-send-email-tariqt@nvidia.com>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ andrew+netdev@lunn.ch, davem@davemloft.net, saeedm@nvidia.com,
+ leon@kernel.org, mbloch@nvidia.com, ast@kernel.org, daniel@iogearbox.net,
+ hawk@kernel.org, john.fastabend@gmail.com, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, gal@nvidia.com, moshe@nvidia.com, dtatulea@nvidia.com,
+ witu@nvidia.com, toke@redhat.com
 
-Add a regression test for bpf_d_path() when invoked from an LSM program.
-The test attaches to the bprm_check_security hook, calls bpf_d_path() on
-the binary being executed, and verifies that a simple prefix comparison on
-the returned pathname behaves correctly after the fix in patch 1.
+Hello:
 
-To avoid nondeterminism, the LSM program now filters based on the
-expected PID, which is populated from userspace before the test binary is
-executed. This prevents unrelated processes that also trigger the
-bprm_check_security LSM hook from overwriting test results. Parent and
-child processes are synchronized through a pipe to ensure the PID is set
-before the child execs the test binary.
+This series was applied to netdev/net-next.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
 
-Per review feedback, the new LSM coverage is merged into the existing
-d_path selftest rather than adding new prog_tests/ or progs/ files. The
-loop that checks the pathname prefix now uses bpf_for(), which is a
-verifier-friendly way to express a small, fixed-iteration loop, and the
-temporary /tmp/bpf_d_path_test binary is removed in the test cleanup
-path.
+On Sun, 30 Nov 2025 12:13:35 +0200 you wrote:
+> Hi,
+> 
+> This small series disables the egress xdp-redirect feature in default.
+> It can still be enabled by loading a dummy XDP program.
+> 
+> Patches were previously submitted as part of [1].
+> 
+> [...]
 
-Co-developed-by: Zesen Liu <ftyg@live.com>
-Signed-off-by: Zesen Liu <ftyg@live.com>
-Co-developed-by: Peili Gao <gplhust955@gmail.com>
-Signed-off-by: Peili Gao <gplhust955@gmail.com>
-Co-developed-by: Haoran Ni <haoran.ni.cs@gmail.com>
-Signed-off-by: Haoran Ni <haoran.ni.cs@gmail.com>
-Signed-off-by: Shuran Liu <electronlsr@gmail.com>
-Reviewed-by: Matt Bobrowski <mattbobrowski@google.com>
----
- .../testing/selftests/bpf/prog_tests/d_path.c | 65 +++++++++++++++++++
- .../testing/selftests/bpf/progs/test_d_path.c | 33 ++++++++++
- 2 files changed, 98 insertions(+)
+Here is the summary with links:
+  - [net-next,V2,1/2] net/mlx5e: Update XDP features in switch channels
+    https://git.kernel.org/netdev/net-next/c/96a839506135
+  - [net-next,V2,2/2] net/mlx5e: Support XDP target xmit with dummy program
+    https://git.kernel.org/netdev/net-next/c/d4aa0cc9bd31
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/d_path.c b/tools/testing/selftests/bpf/prog_tests/d_path.c
-index ccc768592e66..202b44e6f482 100644
---- a/tools/testing/selftests/bpf/prog_tests/d_path.c
-+++ b/tools/testing/selftests/bpf/prog_tests/d_path.c
-@@ -195,6 +195,68 @@ static void test_d_path_check_types(void)
- 	test_d_path_check_types__destroy(skel);
- }
- 
-+static void test_d_path_lsm(void)
-+{
-+	struct test_d_path *skel;
-+	int err;
-+	int pipefd[2];
-+	pid_t pid;
-+
-+	skel = test_d_path__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "d_path skeleton failed"))
-+		return;
-+
-+	err = test_d_path__attach(skel);
-+	if (!ASSERT_OK(err, "attach failed"))
-+		goto cleanup;
-+
-+	/* Prepare the test binary */
-+	system("cp /bin/true /tmp/bpf_d_path_test 2>/dev/null || :");
-+
-+	if (!ASSERT_OK(pipe(pipefd), "pipe failed"))
-+		goto cleanup;
-+
-+	pid = fork();
-+	if (!ASSERT_GE(pid, 0, "fork failed")) {
-+		close(pipefd[0]);
-+		close(pipefd[1]);
-+		goto cleanup;
-+	}
-+
-+	if (pid == 0) {
-+		/* Child */
-+		char buf;
-+
-+		close(pipefd[1]);
-+		/* Wait for parent to set PID in BPF map */
-+		if (read(pipefd[0], &buf, 1) != 1)
-+			exit(1);
-+		close(pipefd[0]);
-+		execl("/tmp/bpf_d_path_test", "/tmp/bpf_d_path_test", NULL);
-+		exit(1);
-+	}
-+
-+	/* Parent */
-+	close(pipefd[0]);
-+
-+	/* Update BPF map with child PID */
-+	skel->bss->my_pid = pid;
-+
-+	/* Signal child to proceed */
-+	write(pipefd[1], "G", 1);
-+	close(pipefd[1]);
-+
-+	/* Wait for child */
-+	waitpid(pid, NULL, 0);
-+
-+	ASSERT_EQ(skel->bss->called_lsm, 1, "lsm hook called");
-+	ASSERT_EQ(skel->bss->lsm_match, 1, "lsm match");
-+
-+cleanup:
-+	unlink("/tmp/bpf_d_path_test");
-+	test_d_path__destroy(skel);
-+}
-+
- void test_d_path(void)
- {
- 	if (test__start_subtest("basic"))
-@@ -205,4 +267,7 @@ void test_d_path(void)
- 
- 	if (test__start_subtest("check_alloc_mem"))
- 		test_d_path_check_types();
-+
-+	if (test__start_subtest("lsm"))
-+		test_d_path_lsm();
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_d_path.c b/tools/testing/selftests/bpf/progs/test_d_path.c
-index 84e1f883f97b..9ae36eabcd07 100644
---- a/tools/testing/selftests/bpf/progs/test_d_path.c
-+++ b/tools/testing/selftests/bpf/progs/test_d_path.c
-@@ -17,6 +17,8 @@ int rets_close[MAX_FILES] = {};
- 
- int called_stat = 0;
- int called_close = 0;
-+int called_lsm = 0;
-+int lsm_match = 0;
- 
- SEC("fentry/security_inode_getattr")
- int BPF_PROG(prog_stat, struct path *path, struct kstat *stat,
-@@ -62,4 +64,35 @@ int BPF_PROG(prog_close, struct file *file, void *id)
- 	return 0;
- }
- 
-+SEC("lsm/bprm_check_security")
-+int BPF_PROG(prog_lsm, struct linux_binprm *bprm)
-+{
-+	pid_t pid = bpf_get_current_pid_tgid() >> 32;
-+	char path[MAX_PATH_LEN] = {};
-+	int ret;
-+
-+	if (pid != my_pid)
-+		return 0;
-+
-+	called_lsm = 1;
-+	ret = bpf_d_path(&bprm->file->f_path, path, MAX_PATH_LEN);
-+	if (ret < 0)
-+		return 0;
-+
-+	{
-+		static const char target_dir[] = "/tmp/";
-+		int i;
-+
-+		bpf_for(i, 0, sizeof(target_dir) - 1) {
-+			if (path[i] != target_dir[i]) {
-+				lsm_match = -1; /* mismatch */
-+				return 0;
-+			}
-+		}
-+	}
-+
-+	lsm_match = 1; /* prefix match */
-+	return 0;
-+}
-+
- char _license[] SEC("license") = "GPL";
+You are awesome, thank you!
 -- 
-2.52.0
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
