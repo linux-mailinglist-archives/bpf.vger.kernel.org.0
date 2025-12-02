@@ -1,92 +1,92 @@
-Return-Path: <bpf+bounces-75874-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75875-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDEFBC9B60B
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFBABC9B60C
 	for <lists+bpf@lfdr.de>; Tue, 02 Dec 2025 12:53:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 94D7E4E3C41
-	for <lists+bpf@lfdr.de>; Tue,  2 Dec 2025 11:53:17 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 6BAB1348728
+	for <lists+bpf@lfdr.de>; Tue,  2 Dec 2025 11:53:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D617F313540;
-	Tue,  2 Dec 2025 11:52:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29544313534;
+	Tue,  2 Dec 2025 11:52:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.b="Wzp8t92u"
+	dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.b="SxSAyNzx"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9F7C313526
-	for <bpf@vger.kernel.org>; Tue,  2 Dec 2025 11:52:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECB653126C9
+	for <bpf@vger.kernel.org>; Tue,  2 Dec 2025 11:52:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764676349; cv=none; b=YyoZrXWrnu/S1SDgBSxV8kuvs8uoW9Y/cYobFehMVp4xpwTOV2FfVaWHho3aMUFSVDWmW4QF+kBaj9snNfdNccGexHu5FVDqFr3Wcdl9MgxCrXEpwV10MOa5RI7bTgJKsB1JSLnF9CTOchMrs5SYFzUlDkC96FGywHEuGOgt/OU=
+	t=1764676350; cv=none; b=fQzn+fvfMWcIN3oCwKddABJBlx2U7foqVpvmxmWlixMraj6Ayhk5qNvp9l8yW6Nz9WaZ4Z3zr8qxlMWTUC+mkXe0OBWM3MsujcbUu1btCuxEfLklocFjprCiCm520ylq/utTYwXuzuuz3Y+sbjcxd4veLJS7aLFMMFYIAJohw4s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764676349; c=relaxed/simple;
-	bh=WHNHmF8hIKZpzmu+nrdrjtELRB6j+VLgb2GCwkat2Kc=;
+	s=arc-20240116; t=1764676350; c=relaxed/simple;
+	bh=Awb3M6B2IIzp+0fpByqGQgvW0nRaeWjjbsKoKCOjrl0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tej32S1ITWLSGNbsh0KPo7OVjnq8L9u9EMeOpZkwthlGaePLRbXHY9EaifHgx9kbu5SsyS1MKMxc/KTuK3CI2ej1dNgEG7lpj0vh7WkFhE4EY9nV3CoUi/DiQHQGJsjvwrcRF4N1EKr+vAFzmrHNgMJvigYhKF5EH8Ep91oURO4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.b=Wzp8t92u; arc=none smtp.client-ip=185.125.188.123
+	 MIME-Version:Content-Type; b=B/HV1++5F6W09JwE5ltz0uAVFBXdZojJJS6GSKAMuw3a5TamirRWDm0z4XwnW8l/0LPHVv7OPHcDeNtGF5ZoG/SkGFTaQO0fvLub4pBaIbvTdMxltJ7TObmCsiPqKmV+fe25pRZPMH8ehJGKg7oajHBPUeNXn/W4n1I2WsRYqBc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.b=SxSAyNzx; arc=none smtp.client-ip=185.125.188.123
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=canonical.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 6DEA73F592
-	for <bpf@vger.kernel.org>; Tue,  2 Dec 2025 11:52:20 +0000 (UTC)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 9C656400DF
+	for <bpf@vger.kernel.org>; Tue,  2 Dec 2025 11:52:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20251003; t=1764676340;
-	bh=Ao9gzuH4BGTjv5LjAckU+RfPM0upQZdwIhj7zaaLSko=;
+	s=20251003; t=1764676344;
+	bh=onmmMNhG8kq+R/JLtIWS2e4PsMTEDMPomEnnX1Q/J4Y=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
 	 MIME-Version:Content-Type;
-	b=Wzp8t92uFrSlsaXrlEn83iy4n4pnppYBOf5STM3X57kVFvFl23iRIoP46QvYU2uTN
-	 tFyDxmfSsb3cTeMHZYlk1HYaMYLsJJJSt0q9CtXpzQNTwNj2f23basosHP8plURlMi
-	 yqGwt8hS/HlU3NrHtj2LrSwtXcjYXeLgogXdrK+0j2u1KJhTAEzHxsOV+vp7sUo3G8
-	 nKMRc7zqHh4tIrIr3Yu738ZqAFQOZ84aTYLXHRL6kFm2/feUoTyNlhbdSuDDHg0Z84
-	 ZR4eM0Y6F+DDmNUOVK+FsyrEHpxPwHfbvGDdIiOdTgft35v/w6jlNihq38aMSgUVG5
-	 V1OV5CrCwVtQ+XLLWztdgIu4iYiZtZCmbDWSmzEYBrvoLang0gd2YLqmW+Vz36/OMY
-	 OZ3yp/Z+Ju/58c+cRtDWQsg6PfTSdZCMEmAggd+vT2vj0NMMRc/ZLFlgNlLp/vz2i7
-	 VWk8X6fBxYoksEdstaSR7ZW+IfgRumn+u6lXkFFs7/eis592xmWCv5RcgQVAWNYpxk
-	 G9kR/AIedmD4igFBtSKWb77I3VAWmDBIlrcjbdIvGDhM57owu7sqfEA7w6fxCfo0VZ
-	 ABEDsf2isHh4Qd8glYYAPnu5CXcQdhABPi3xDoX9OG1wsBhb1GD6tDM7KFZAVus/BL
-	 MpxeaeJpU5TnBsiwmKJtk9EM=
-Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-640b8087663so2351506a12.3
-        for <bpf@vger.kernel.org>; Tue, 02 Dec 2025 03:52:20 -0800 (PST)
+	b=SxSAyNzxMKDYYOgYvUoobYwaWjFM13lXT1zgUKpjSsZohikLDIcpIRQQexkQL/bg4
+	 Zq1cMWjW0mc15/hvNigCA8HkMwDCx7XrJWhrmi2VkCeSgw7QVWzoQsbXYkTBCW0djV
+	 wvzcgkuSFvIZ4EFGlpyoMNdn63cR2jHSjGoe6Wam9b6ef4Rd5H/X/DFoYg+SaSJc1R
+	 V4V0KDGC5zdlnBO1Y+t/gpAmrCgTsYz+27AVijYOtH1MteGkQOdn2tHZdCMl9PnvZK
+	 hJHywYCB67VtUWRtUIMvJ1lTZMSF7XDd8haL1fvaQufW8ZtbukNaDafWHixnNXaGSz
+	 zprDpXfWj6kauTgf14qQmhcYeYySPYYP49bAl0TocvPVzwnFawEIBzaQkI8cgDbhky
+	 fTP/eZXqTaZCf8T+SB6wVKcjqAXws5JvGdrLSADneHvDf5phzGqK3dQ7TUuuE/TBQ4
+	 wQPMbeMUQjYBJs2a8Cr6vCW2ZjGJ3kRH10keQSbqEs/1MSZtA0tDoFyy9ATiqhxmuh
+	 +xONHAwMMh55xrEDGzbTagiDD+Wr8hxKgivqIVJ1jLxyi4KmaCnsxyMFVdwb8iPF8K
+	 gcYde8wLoxJRQV7U//sQ6xJegH9Urh+5Y5/DV4rtnOsnDgx1yyNl2xopCQbR3ceAI0
+	 tNLvZwcKiIEqHOapBtO5dRro=
+Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-6409849320cso10813988a12.0
+        for <bpf@vger.kernel.org>; Tue, 02 Dec 2025 03:52:24 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764676336; x=1765281136;
+        d=1e100.net; s=20230601; t=1764676338; x=1765281138;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=Ao9gzuH4BGTjv5LjAckU+RfPM0upQZdwIhj7zaaLSko=;
-        b=dErhrQBo9cAaRumsXxpQO6mluXTwdM3/VL+gogKkboCxfnCCXgDtlCcQyojsTqfizw
-         U9DwkApMhCqBZsggBX2s1mDJ6rSlgs2p9vw4+VDCPzzT+xtKxEfZvgGi/+DpjhpFnSEW
-         iwixeDcZ4+b64HVNS5EXoFab7bskROsUBhbGUm1DVmHl6l1lb/+m2AG5gWcXQRgJis/S
-         p5GpJ1FwVCs3EN1TCprhW6hf5/GX7gniG6VBI/Mr4prpBLkoWMFGwpcrHBBn3vOSVpf9
-         03M9WUOu3i1Zcbvs3mKy0VnjYShr1glCGgb2HeczgdXp98o+N6RDqacosroLsO/1PBtE
-         7kFg==
-X-Forwarded-Encrypted: i=1; AJvYcCWNBUpRS5NecuFw4dGNOjlbPmfBZgpr680URhrtQ+1QHj2VBbCFN6NP2xNgYe7rPH9kWF0=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz3I2YWCYGRowOt14JG7GKD4i3wMgXFbkGT3thxnh6buYLTE5fd
-	ZbILEi7z0Jujv4PX8xI5YxcCq6Y2EO0sV7oMs8twAAu6ksi9EeIWbk8tXLQiJEdKDkZJMhNfwdO
-	LiL0NmUa4wIayc+BumQ3eqPvLG6My1ccBZAz5fEMhdCmsC0ShqzlV3EX75ns55SB/o1mbog==
-X-Gm-Gg: ASbGncuYrXd0iz3ZjDHpq68+GXb50u14TuStTdQhohvo9Q8cZlQLfd8EA0fP3KuBJsp
-	Y2Pb8ZZO9HRPz5TYllmCDlSK41Q6sOsF6eqfR7yigDC0BQ7eeTWUX5JOyz3SMwztPNz1wOUPSj3
-	ESh02dnUDkAegzDDCQ+iJDANvZadLmsL16pxvnqBaj5FYPoKqdY+dG/5xq0K8hvlMcd9jwZuveF
-	4CfI67sdRHC3/emrTEkn/jEz5OOuri0LaaAlzKxWhfvLggf2ZSrCLJ9ia2B+EKmIepbsMdZGfKb
-	lPGaP6BF5A1a6hl+CSfsb8b9+IZ6JY10B479iLMHjUCNLcMc6oxFFzc6BHocw2E9AaJbRY+W9d3
-	0B9JN6oBdLyF6KIvHFa+NxnSMeU3vmSeFE3G2uyh/i4N+utReHzdwutxCAUEtf3QOZQpcr3MQjJ
-	C4r2CbXsUJ3gqWcj/Y6SPPf94=
-X-Received: by 2002:a05:6402:5346:10b0:640:c9ff:c06a with SMTP id 4fb4d7f45d1cf-645eb2530camr26516062a12.15.1764676336433;
-        Tue, 02 Dec 2025 03:52:16 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IH0dPM+LONfO5/1YrOnVnNAEeubJe6IeVmz26gJepHDWE6FmTwEDfIbV84I+xJ8HFdBhqNWBw==
-X-Received: by 2002:a05:6402:5346:10b0:640:c9ff:c06a with SMTP id 4fb4d7f45d1cf-645eb2530camr26516030a12.15.1764676335989;
-        Tue, 02 Dec 2025 03:52:15 -0800 (PST)
+        bh=onmmMNhG8kq+R/JLtIWS2e4PsMTEDMPomEnnX1Q/J4Y=;
+        b=WKPy1sNucqnVJidZQwXB/hYRBEObpU70B5tZMkZsYpmI46HBZCJhGZJAGwaamujD4u
+         yz/QwpX98gaXgzlGgMKDCFlz4K7woQET88fY5ILWT7FCojcmjhizVZwvcMZHZWlshjUu
+         c+4t2P1UGJanA0glIKykpTVfd+Ugj6E0SZ7Ac2k2HP7qXAq5OejQym7NvGEgfYO++8gn
+         YpaQb3OOyPMAeSOE0pc6kYhhUH7Ji+1ZlQ0F2opHzNvzHkcUAFXqGxwVMYyPjUgiKECN
+         eB8cGGDaMf56kVAsDTSiYVqYvENZS7D2cpopsH7dWDKPXbEqtBKzH3xDXd59LAorJX1W
+         Km8g==
+X-Forwarded-Encrypted: i=1; AJvYcCUdp0MA1eRNsWBMt+fiAco/KRbogRYlMqr3PSjoSLfa6wMXHeXUaQhfiRB3+dG6iOEw7E8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzX5A0RBJ6IfTxmboNkfpIeaad0v96VjyUSatZ8VR6Ta0UKVCa4
+	kjhY8T/6TOnMt/T56x9wUUw0q1JBzeE4U4Z8LMW5gct7kUkriRgi2gwl/eCfnSEic147ObdMUnt
+	toitbpk3nc6BNNdc+I4HAoHwntAnI9KKWcYMd+IyRGXdbimvdSn7eDF4IGfWrWgK0C2DGDg==
+X-Gm-Gg: ASbGncvl4dAJ/8x9DJJ4oIiZDrwb/uxnGRyCg/Lq0YacOyfEuMdGL8lF6UHaVL0kVK/
+	GB2rKHij6BjOCwzBOCWMA1N87LoPTdJIPu7DSLbVWXZcAmcAW2JwV6YwO+4RtdnpdmskccvTlzj
+	zFE3Q5sG47nnvAGdc9bBdfipTQPVlxLkzdM6FQAbFNisyY5GavUXQ8iTjGVOoDiYXL5c75f5f6R
+	ZBjoSkSe8MhXnk3hYEsTgDQyj6EPKqlO0sxB31HhdYPA2drj281dyMJKDBtmPppnd1D6QZYtwU5
+	bWtOJ5GXwfEtXulQ1elxzWFou5h0lZeiqOdR0RoGHgx1dmkTv+d21n5nwKH/KlNh9RFaw9H5jWa
+	tnIJvpKD0HzgxyOd5NWGruJEhYw05k+UMmhVOiNcRml1ht/GvTdx8J+Gq9JnmuzwOt8d5tnocRV
+	T+pmbMM8rBhntKSy3WuoyLzhI=
+X-Received: by 2002:a05:6402:1e94:b0:645:d07:8924 with SMTP id 4fb4d7f45d1cf-647897aceffmr2310534a12.16.1764676338235;
+        Tue, 02 Dec 2025 03:52:18 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEca/7GZ5CQrNL3nM3OXTnppoQy+Aj3EXI9b3jTl/xGwssUT9yknoaPt4StNpF0RTzyq9tBFg==
+X-Received: by 2002:a05:6402:1e94:b0:645:d07:8924 with SMTP id 4fb4d7f45d1cf-647897aceffmr2310505a12.16.1764676337726;
+        Tue, 02 Dec 2025 03:52:17 -0800 (PST)
 Received: from amikhalitsyn.lan (p200300cf5702200011ee99ed0f378a51.dip0.t-ipconnect.de. [2003:cf:5702:2000:11ee:99ed:f37:8a51])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-647510519efsm15206765a12.29.2025.12.02.03.52.15
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-647510519efsm15206765a12.29.2025.12.02.03.52.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Dec 2025 03:52:15 -0800 (PST)
+        Tue, 02 Dec 2025 03:52:17 -0800 (PST)
 From: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
 To: kees@kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -100,10 +100,11 @@ Cc: linux-kernel@vger.kernel.org,
 	Andrei Vagin <avagin@gmail.com>,
 	Christian Brauner <brauner@kernel.org>,
 	=?UTF-8?q?St=C3=A9phane=20Graber?= <stgraber@stgraber.org>,
+	Tycho Andersen <tycho@kernel.org>,
 	Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-Subject: [PATCH v2 3/6] seccomp: limit number of listeners in seccomp tree
-Date: Tue,  2 Dec 2025 12:51:55 +0100
-Message-ID: <20251202115200.110646-4-aleksandr.mikhalitsyn@canonical.com>
+Subject: [PATCH v2 4/6] seccomp: handle multiple listeners case
+Date: Tue,  2 Dec 2025 12:51:56 +0100
+Message-ID: <20251202115200.110646-5-aleksandr.mikhalitsyn@canonical.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20251202115200.110646-1-aleksandr.mikhalitsyn@canonical.com>
 References: <20251202115200.110646-1-aleksandr.mikhalitsyn@canonical.com>
@@ -116,18 +117,10 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-We need to limit number of listeners in seccomp tree to
-MAX_LISTENERS_PER_PATH, because we don't want to use dynamic
-memory allocations in a very hot __seccomp_filter() function
-and we use preallocated static array on the stack.
-
-Also, let's return ELOOP to userspace if it attempts to install
-more than MAX_LISTENERS_PER_PATH listeners, instead of ENOMEM as
-we do when userspace hits the limit of cBPF instructions.
-This will make uAPI a bit more convenient.
-
-Notice, that has_duplicate_listener() check is still in place, so this
-change is a preparational.
+If we have more than one listener in the tree and lower listener
+wants us to continue syscall (SECCOMP_USER_NOTIF_FLAG_CONTINUE)
+we must consult with upper listeners first, otherwise it is a
+clear seccomp restrictions bypass scenario.
 
 Cc: linux-kernel@vger.kernel.org
 Cc: bpf@vger.kernel.org
@@ -141,43 +134,65 @@ Cc: Tycho Andersen <tycho@tycho.pizza>
 Cc: Andrei Vagin <avagin@gmail.com>
 Cc: Christian Brauner <brauner@kernel.org>
 Cc: Stéphane Graber <stgraber@stgraber.org>
+Reviewed-by: Tycho Andersen (AMD) <tycho@kernel.org>
 Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
 ---
- kernel/seccomp.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ kernel/seccomp.c | 33 +++++++++++++++++++++++++++++++--
+ 1 file changed, 31 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-index c9a1062a53bd..ded3f6a6430b 100644
+index ded3f6a6430b..262390451ff1 100644
 --- a/kernel/seccomp.c
 +++ b/kernel/seccomp.c
-@@ -931,17 +931,25 @@ static long seccomp_attach_filter(unsigned int flags,
- 				  struct seccomp_filter *filter)
- {
- 	unsigned long total_insns;
-+	unsigned char total_listeners;
- 	struct seccomp_filter *walker;
+@@ -448,8 +448,21 @@ static u32 seccomp_run_filters(const struct seccomp_data *sd,
  
- 	assert_spin_locked(&current->sighand->siglock);
+ 		if (ACTION_ONLY(cur_ret) < ACTION_ONLY(ret)) {
+ 			ret = cur_ret;
++			/*
++			 * No matter what we had before in matches->filters[],
++			 * we need to overwrite it, because current action is more
++			 * restrictive than any previous one.
++			 */
+ 			matches->n = 1;
+ 			matches->filters[0] = f;
++		} else if ((ACTION_ONLY(cur_ret) == ACTION_ONLY(ret)) &&
++			    ACTION_ONLY(cur_ret) == SECCOMP_RET_USER_NOTIF) {
++			/*
++			 * For multiple SECCOMP_RET_USER_NOTIF results, we need to
++			 * track all filters that resulted in the same action, because
++			 * we might need to notify a few of them to get a final decision.
++			 */
++			matches->filters[matches->n++] = f;
+ 		}
+ 	}
+ 	return ret;
+@@ -1362,8 +1375,24 @@ static int __seccomp_filter(int this_syscall, const bool recheck_after_trace)
+ 		return 0;
  
--	/* Validate resulting filter length. */
-+	/* Validate resulting filter length and number of nested listeners. */
- 	total_insns = filter->prog->len;
--	for (walker = current->seccomp.filter; walker; walker = walker->prev)
-+	total_listeners = filter->notif ? 1 : 0;
-+	for (walker = current->seccomp.filter; walker; walker = walker->prev) {
- 		total_insns += walker->prog->len + 4;  /* 4 instr penalty */
-+		total_listeners += walker->notif ? 1 : 0;
-+	}
-+
- 	if (total_insns > MAX_INSNS_PER_PATH)
- 		return -ENOMEM;
+ 	case SECCOMP_RET_USER_NOTIF:
+-		if (seccomp_do_user_notification(match, &sd))
+-			goto skip;
++		for (unsigned char i = 0; i < matches.n; i++) {
++			match = matches.filters[i];
++			/*
++			 * If userspace wants us to skip this syscall, do so.
++			 * But if userspace wants to continue syscall, we
++			 * must consult with the upper-level filters listeners
++			 * and act accordingly.
++			 *
++			 * Note, that if there are multiple filters returned
++			 * SECCOMP_RET_USER_NOTIF, and final result is
++			 * SECCOMP_RET_USER_NOTIF too, then seccomp_run_filters()
++			 * has populated matches.filters[] array with all of them
++			 * in order from the lowest-level (closest to a
++			 * current->seccomp.filter) to the highest-level.
++			 */
++			if (seccomp_do_user_notification(match, &sd))
++				goto skip;
++		}
  
-+	if (total_listeners > MAX_LISTENERS_PER_PATH)
-+		return -ELOOP;
-+
- 	/* If thread sync has been requested, check that it is possible. */
- 	if (flags & SECCOMP_FILTER_FLAG_TSYNC) {
- 		int ret;
+ 		return 0;
+ 
 -- 
 2.43.0
 
