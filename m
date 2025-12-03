@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-75950-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75951-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6546C9E332
-	for <lists+bpf@lfdr.de>; Wed, 03 Dec 2025 09:26:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40777C9E33E
+	for <lists+bpf@lfdr.de>; Wed, 03 Dec 2025 09:26:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9EC23A952C
-	for <lists+bpf@lfdr.de>; Wed,  3 Dec 2025 08:25:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D8C33A9BFF
+	for <lists+bpf@lfdr.de>; Wed,  3 Dec 2025 08:25:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 318BD2D0C8A;
-	Wed,  3 Dec 2025 08:25:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEEFE2D0605;
+	Wed,  3 Dec 2025 08:25:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zn8G+9ZK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QV40A99a"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0C852C21FF;
-	Wed,  3 Dec 2025 08:25:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B70C2C21FF;
+	Wed,  3 Dec 2025 08:25:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764750315; cv=none; b=PE3ud2FSc+sU5K1us3HtInTRo8DdS/Busr4XfAqrVEmamSB2I1cP/wsuvT/yLzWUWVSEPS1LG8q0CFFtxdrbLBLPnV0VDJp4S2Zeo2DrLA8lSqIkG4T0HtBUy6oIAt0al0l2Ihg8JudmAvynoIpmckvg8M7P31F8p3CxK06GrTg=
+	t=1764750326; cv=none; b=EBtKsUzatOazScFnzFOEHA8GFElqcS0oLjpqY9w6dMZli3ntZ/jZfOt8+i2+GbgoJB/KBaQGiB/IRZRA+0aIFWV5F4FEB/HqKbqfgvwPvRcEtRJwtDe59lG6NNugclTzFcG3tRzhLdEGB7iWGVVoGeNAFZEZr49FCToc0Aqqb0s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764750315; c=relaxed/simple;
-	bh=pLgdjqwxCmhdWC6Ct/H1SR3MVjIRGtL9kTHwK/vSQVg=;
+	s=arc-20240116; t=1764750326; c=relaxed/simple;
+	bh=tSOG4mEp4ZPM4CNTyzicNcAGJ8np0EHQKNw1pWrn5Sw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mLGia+tHnAUsXPhFMPjf7gvJdSQN2XfVk90imN77FHirJAJv1q2GrHmPSc/H6cMwQoVEZkREoskjPG/7lAiK3kgfyWS7YqJoT1keMsmJapLRLj2mcERSZWaGyoBeiJe72Ka/GlN6khGzv5jCvdB+1hVZ/Bk8t7G+S3FfsIiOyb0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zn8G+9ZK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6150DC4CEFB;
-	Wed,  3 Dec 2025 08:25:12 +0000 (UTC)
+	 MIME-Version; b=s8hishbr6DVmxw18iItZ6Nyl/TFjRjUXrrtk58Enu7vFU2kKa08kxUk464hsaF/mfe2oJYJWOzPL9JKyTxCdeSsYXth3i/sGvQZ3UAFer5eRO8yevqUaFn9XouRgNJRzx7WxTH1JinDGmqffP5RUjvNDZcn/Wz79CoPDsYNZYBQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QV40A99a; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6F7EC116B1;
+	Wed,  3 Dec 2025 08:25:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764750315;
-	bh=pLgdjqwxCmhdWC6Ct/H1SR3MVjIRGtL9kTHwK/vSQVg=;
+	s=k20201202; t=1764750326;
+	bh=tSOG4mEp4ZPM4CNTyzicNcAGJ8np0EHQKNw1pWrn5Sw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Zn8G+9ZKr+LfhPle/3GxYOBDUz5mKUF0Mk1s4FShEHpgZeVYHOL6VOMlWE22IG9G/
-	 B/g7mAdFI2/PcqVDaurUoITlvirqRV7SiEoP1SR+d6MkLOegg97QTxRcjpP2cE2xKy
-	 2ZUpSYz5ipWao2WmDEj54jLdc29c+5DGLib6QARHRvaRCIQKiVEyYBcSOsyWbRl8Fr
-	 MT/Mxa2X61YnLEk0mxRsa0cYLfSiR0VX5faFFUGlWukljC7DRZvtlK0tG/5iFhwOCw
-	 oGcSeLbidHqlFTcOXNiuXIqhpmuOez/zsQF5FjdF+slLyq7HdoX330uERIfaUywGU4
-	 7t3UOHMKvV/Fw==
+	b=QV40A99aqtdZftxZn8TC8rQBRa7u7h9M77a2Kv2NAIavwJ795lOCNWDbrHi2Hz6D6
+	 3S05RI+WVF7rULr/WBINFG1kEfzUY+XrV4h2A9h3DE4GWF183VG2PhhOsNbfY4jcmu
+	 GvYknkaoweAGWVz4wFklVLSagq+G7B8SarJ9w5FMO12wvNOtP9MsmE3NPya5YbFQif
+	 8XJnfVIkdKvXSZDHHNOHwg82nmdlwwhm6ZAhadgyW8IUum/1Jj7Tx0RikDkFwfUWwC
+	 A6zJ3BVTxloBxTC67phbWl7nv8ZDsJJwmxdlxqSvSyzxO5s9KKEOeUKOCidzhPoKtB
+	 E5hvBkv2T8wTw==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Steven Rostedt <rostedt@kernel.org>,
 	Florent Revest <revest@google.com>,
@@ -54,9 +54,9 @@ Cc: bpf@vger.kernel.org,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Menglong Dong <menglong8.dong@gmail.com>,
 	Song Liu <song@kernel.org>
-Subject: [PATCHv4 bpf-next 6/9] ftrace: Add update_ftrace_direct_mod function
-Date: Wed,  3 Dec 2025 09:23:59 +0100
-Message-ID: <20251203082402.78816-7-jolsa@kernel.org>
+Subject: [PATCHv4 bpf-next 7/9] bpf: Add trampoline ip hash table
+Date: Wed,  3 Dec 2025 09:24:00 +0100
+Message-ID: <20251203082402.78816-8-jolsa@kernel.org>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20251203082402.78816-1-jolsa@kernel.org>
 References: <20251203082402.78816-1-jolsa@kernel.org>
@@ -68,130 +68,129 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding update_ftrace_direct_mod function that modifies all entries
-(ip -> direct) provided in hash argument to direct ftrace ops and
-updates its attachments.
-
-The difference to current modify_ftrace_direct is:
-- hash argument that allows to modify multiple ip -> direct
-  entries at once
-
-This change will allow us to have simple ftrace_ops for all bpf
-direct interface users in following changes.
+Following changes need to lookup trampoline based on its ip address,
+adding hash table for that.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- include/linux/ftrace.h |  6 ++++
- kernel/trace/ftrace.c  | 72 ++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 78 insertions(+)
+ include/linux/bpf.h     |  7 +++++--
+ kernel/bpf/trampoline.c | 30 +++++++++++++++++++-----------
+ 2 files changed, 24 insertions(+), 13 deletions(-)
 
-diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-index bac9dd784826..c27b7381c5f1 100644
---- a/include/linux/ftrace.h
-+++ b/include/linux/ftrace.h
-@@ -552,6 +552,7 @@ int modify_ftrace_direct_nolock(struct ftrace_ops *ops, unsigned long addr);
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 6498be4c44f8..ef44653eae44 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1307,14 +1307,17 @@ struct bpf_tramp_image {
+ };
  
- int update_ftrace_direct_add(struct ftrace_ops *ops, struct ftrace_hash *hash);
- int update_ftrace_direct_del(struct ftrace_ops *ops, struct ftrace_hash *hash);
-+int update_ftrace_direct_mod(struct ftrace_ops *ops, struct ftrace_hash *hash, bool do_direct_lock);
+ struct bpf_trampoline {
+-	/* hlist for trampoline_table */
+-	struct hlist_node hlist;
++	/* hlist for trampoline_key_table */
++	struct hlist_node hlist_key;
++	/* hlist for trampoline_ip_table */
++	struct hlist_node hlist_ip;
+ 	struct ftrace_ops *fops;
+ 	/* serializes access to fields of this trampoline */
+ 	struct mutex mutex;
+ 	refcount_t refcnt;
+ 	u32 flags;
+ 	u64 key;
++	unsigned long ip;
+ 	struct {
+ 		struct btf_func_model model;
+ 		void *addr;
+diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+index b9a358d7a78f..f298bafab76e 100644
+--- a/kernel/bpf/trampoline.c
++++ b/kernel/bpf/trampoline.c
+@@ -24,9 +24,10 @@ const struct bpf_prog_ops bpf_extension_prog_ops = {
+ #define TRAMPOLINE_HASH_BITS 10
+ #define TRAMPOLINE_TABLE_SIZE (1 << TRAMPOLINE_HASH_BITS)
  
- void ftrace_stub_direct_tramp(void);
+-static struct hlist_head trampoline_table[TRAMPOLINE_TABLE_SIZE];
++static struct hlist_head trampoline_key_table[TRAMPOLINE_TABLE_SIZE];
++static struct hlist_head trampoline_ip_table[TRAMPOLINE_TABLE_SIZE];
  
-@@ -589,6 +590,11 @@ static inline int update_ftrace_direct_del(struct ftrace_ops *ops, struct ftrace
- 	return -ENODEV;
+-/* serializes access to trampoline_table */
++/* serializes access to trampoline tables */
+ static DEFINE_MUTEX(trampoline_mutex);
+ 
+ #ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
+@@ -135,15 +136,15 @@ void bpf_image_ksym_del(struct bpf_ksym *ksym)
+ 			   PAGE_SIZE, true, ksym->name);
  }
  
-+static inline int update_ftrace_direct_mod(struct ftrace_ops *ops, struct ftrace_hash *hash, bool do_direct_lock)
-+{
-+	return -ENODEV;
-+}
-+
- /*
-  * This must be implemented by the architecture.
-  * It is the way the ftrace direct_ops helper, when called
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 01e830be20e3..c77f620b3eb3 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -6490,6 +6490,78 @@ int update_ftrace_direct_del(struct ftrace_ops *ops, struct ftrace_hash *hash)
- 	return err;
+-static struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
++static struct bpf_trampoline *bpf_trampoline_lookup(u64 key, unsigned long ip)
+ {
+ 	struct bpf_trampoline *tr;
+ 	struct hlist_head *head;
+ 	int i;
+ 
+ 	mutex_lock(&trampoline_mutex);
+-	head = &trampoline_table[hash_64(key, TRAMPOLINE_HASH_BITS)];
+-	hlist_for_each_entry(tr, head, hlist) {
++	head = &trampoline_key_table[hash_64(key, TRAMPOLINE_HASH_BITS)];
++	hlist_for_each_entry(tr, head, hlist_key) {
+ 		if (tr->key == key) {
+ 			refcount_inc(&tr->refcnt);
+ 			goto out;
+@@ -164,8 +165,12 @@ static struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
+ #endif
+ 
+ 	tr->key = key;
+-	INIT_HLIST_NODE(&tr->hlist);
+-	hlist_add_head(&tr->hlist, head);
++	tr->ip = ftrace_location(ip);
++	INIT_HLIST_NODE(&tr->hlist_key);
++	INIT_HLIST_NODE(&tr->hlist_ip);
++	hlist_add_head(&tr->hlist_key, head);
++	head = &trampoline_ip_table[hash_64(tr->ip, TRAMPOLINE_HASH_BITS)];
++	hlist_add_head(&tr->hlist_ip, head);
+ 	refcount_set(&tr->refcnt, 1);
+ 	mutex_init(&tr->mutex);
+ 	for (i = 0; i < BPF_TRAMP_MAX; i++)
+@@ -846,7 +851,7 @@ void bpf_trampoline_unlink_cgroup_shim(struct bpf_prog *prog)
+ 					 prog->aux->attach_btf_id);
+ 
+ 	bpf_lsm_find_cgroup_shim(prog, &bpf_func);
+-	tr = bpf_trampoline_lookup(key);
++	tr = bpf_trampoline_lookup(key, 0);
+ 	if (WARN_ON_ONCE(!tr))
+ 		return;
+ 
+@@ -866,7 +871,7 @@ struct bpf_trampoline *bpf_trampoline_get(u64 key,
+ {
+ 	struct bpf_trampoline *tr;
+ 
+-	tr = bpf_trampoline_lookup(key);
++	tr = bpf_trampoline_lookup(key, tgt_info->tgt_addr);
+ 	if (!tr)
+ 		return NULL;
+ 
+@@ -902,7 +907,8 @@ void bpf_trampoline_put(struct bpf_trampoline *tr)
+ 	 * fexit progs. The fentry-only trampoline will be freed via
+ 	 * multiple rcu callbacks.
+ 	 */
+-	hlist_del(&tr->hlist);
++	hlist_del(&tr->hlist_key);
++	hlist_del(&tr->hlist_ip);
+ 	if (tr->fops) {
+ 		ftrace_free_filter(tr->fops);
+ 		kfree(tr->fops);
+@@ -1175,7 +1181,9 @@ static int __init init_trampolines(void)
+ 	int i;
+ 
+ 	for (i = 0; i < TRAMPOLINE_TABLE_SIZE; i++)
+-		INIT_HLIST_HEAD(&trampoline_table[i]);
++		INIT_HLIST_HEAD(&trampoline_key_table[i]);
++	for (i = 0; i < TRAMPOLINE_TABLE_SIZE; i++)
++		INIT_HLIST_HEAD(&trampoline_ip_table[i]);
+ 	return 0;
  }
- 
-+int update_ftrace_direct_mod(struct ftrace_ops *ops, struct ftrace_hash *hash, bool do_direct_lock)
-+{
-+	struct ftrace_func_entry *entry, *tmp;
-+	static struct ftrace_ops tmp_ops = {
-+		.func		= ftrace_stub,
-+		.flags		= FTRACE_OPS_FL_STUB,
-+	};
-+	struct ftrace_hash *orig_hash;
-+	unsigned long size, i;
-+	int err = -EINVAL;
-+
-+	if (!hash_count(hash))
-+		return -EINVAL;
-+	if (check_direct_multi(ops))
-+		return -EINVAL;
-+	if (!(ops->flags & FTRACE_OPS_FL_ENABLED))
-+		return -EINVAL;
-+	if (direct_functions == EMPTY_HASH)
-+		return -EINVAL;
-+
-+	if (do_direct_lock)
-+		mutex_lock(&direct_mutex);
-+
-+	orig_hash = ops->func_hash ? ops->func_hash->filter_hash : NULL;
-+	if (!orig_hash)
-+		goto unlock;
-+
-+	/* Enable the tmp_ops to have the same functions as the direct ops */
-+	ftrace_ops_init(&tmp_ops);
-+	tmp_ops.func_hash = ops->func_hash;
-+
-+	err = register_ftrace_function_nolock(&tmp_ops);
-+	if (err)
-+		goto unlock;
-+
-+	/*
-+	 * Call __ftrace_hash_update_ipmodify() here, so that we can call
-+	 * ops->ops_func for the ops. This is needed because the above
-+	 * register_ftrace_function_nolock() worked on tmp_ops.
-+	 */
-+	err = __ftrace_hash_update_ipmodify(ops, orig_hash, orig_hash, true);
-+	if (err)
-+		goto out;
-+
-+	/*
-+	 * Now the ftrace_ops_list_func() is called to do the direct callers.
-+	 * We can safely change the direct functions attached to each entry.
-+	 */
-+	mutex_lock(&ftrace_lock);
-+
-+	size = 1 << hash->size_bits;
-+	for (i = 0; i < size; i++) {
-+		hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
-+			tmp = __ftrace_lookup_ip(direct_functions, entry->ip);
-+			if (!tmp)
-+				continue;
-+			tmp->direct = entry->direct;
-+		}
-+	}
-+
-+	mutex_unlock(&ftrace_lock);
-+
-+out:
-+	/* Removing the tmp_ops will add the updated direct callers to the functions */
-+	unregister_ftrace_function(&tmp_ops);
-+
-+unlock:
-+	if (do_direct_lock)
-+		mutex_unlock(&direct_mutex);
-+	return err;
-+}
-+
- #endif /* CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS */
- 
- /**
+ late_initcall(init_trampolines);
 -- 
 2.52.0
 
