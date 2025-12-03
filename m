@@ -1,398 +1,180 @@
-Return-Path: <bpf+bounces-75953-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75954-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B1DDC9E353
-	for <lists+bpf@lfdr.de>; Wed, 03 Dec 2025 09:27:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 063D4C9E4C7
+	for <lists+bpf@lfdr.de>; Wed, 03 Dec 2025 09:47:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D841A4E19F2
-	for <lists+bpf@lfdr.de>; Wed,  3 Dec 2025 08:26:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B30C33A5D79
+	for <lists+bpf@lfdr.de>; Wed,  3 Dec 2025 08:47:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89D7B2D59F7;
-	Wed,  3 Dec 2025 08:25:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E8B72C21FE;
+	Wed,  3 Dec 2025 08:47:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZAhBi1UU"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="kk/XZp75";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="6B2+T0Q8"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 059ED2D190C;
-	Wed,  3 Dec 2025 08:25:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1235245019;
+	Wed,  3 Dec 2025 08:47:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764750347; cv=none; b=ZUlL4FBGooZyLGajleB48Nrcr4ejMhJ9HID37J5az5lBSPnMy5fkGavJzn9rImoWvqiLk1hkVVXRIwnVP1C/q7ro0+QgZY6up0RbMV7XqIeir9DKv753tU+O7TmB5a/Atr5UeOlC2bhktHuqWI7eK+0D6ZJyQXqR2Dlh92fuBXM=
+	t=1764751639; cv=none; b=gLyDFO4VNcMhlddSh+MPpetlERhcbpTwIpZJXxohZ40XCbTOK/64D0bpL3A4Cvtz0CAy2ZRABZy4UnZqkiKZBw+U5puOLUkrYFq1J2nD4R0Ts6jeD8/i1q5TRU0A7rKhu2PHDYyQwNrFdPWAHJIK8TrE7u/qZ3+r00BVJfvsi40=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764750347; c=relaxed/simple;
-	bh=++f6yMiTdCFKivbaWeEKJoZJDBxCoJ9zz2SvUyi+7IY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rs0iPilEkKMqgy+vTaQ+GPR/7V0rkGsNtvZnNwkIPCrFfECYUglZrdCxnMW9UoPWzLcJMJpqZdSkTW4kmWI1EqDPyCXtOPZ2m73sqG8wJk48l4kP1+VcfcnusAcHULKut7ffleGCy7KvPh3zjtOz5mHWD5wSd+tiPwhjAUetmvw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZAhBi1UU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9231BC2BC86;
-	Wed,  3 Dec 2025 08:25:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764750346;
-	bh=++f6yMiTdCFKivbaWeEKJoZJDBxCoJ9zz2SvUyi+7IY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZAhBi1UUmJik11A52rWsoA5W6YmvvEc/TvhJtPYDFmu9ph/98InowC+hokUTrhAgL
-	 i29Q1NqIbjUvH65rrHwbY0b0ej15AsZsU9KM6uvzPTE4PVOjYAXCJ1HFUpkHVZZFvY
-	 cLPXG/VCkZyj/cLpkurzYSxnBX72fPSY5WBzErAsyX9ri/4msBbCk0qZR1ol4ZXMKk
-	 t+nbw8H4zkYDMJ6BQClhc0y5ePI6UeEAwqxhWStNVLIn8GoGtP2qbmlfKSGPEmwAfC
-	 Sz8FWSD4mNzjAXYVJDsQVPMgUHIOby3hsSXvZ9ZqtD1yXdbldUAPyR+AWtTaHJxNjU
-	 tcnWh1/0HMkGg==
-From: Jiri Olsa <jolsa@kernel.org>
-To: Steven Rostedt <rostedt@kernel.org>,
-	Florent Revest <revest@google.com>,
-	Mark Rutland <mark.rutland@arm.com>
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
+	s=arc-20240116; t=1764751639; c=relaxed/simple;
+	bh=ADK3Ayeg4WcQXxuws22v65U6ZbGl1rBpQy8nvECVAOg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RAMBNwIGg1wtLY640JU+zkJAmM6dJxRp8u6FBJCvKycn/ii9XPFg/8ReNRvbH9ai3E8KId88gCcY8FTHx3Z00erghhxOZcr8nb9bx+E3e+CxYSIyMQSOHOqBEUCEgYJoHua9ETZcDh5OXvrXa6J3/wgxF1BE5EJpx6CzitXAzyE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=kk/XZp75; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=6B2+T0Q8; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Wed, 3 Dec 2025 09:47:08 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1764751630;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/GRGsombs69lKO7dDXV9AxmBXZpYeIv4jXcexpDNGLw=;
+	b=kk/XZp75ZCTN/3s8HzV1zsYz3H/HgIUDwh0mKesFVin5a76/Fg91ooqnWdxTlGZ0zsX623
+	X8Un5hp1DXuss6Fxidw1iXBfNSAZXa4MYQfipWfZLUI/HM1VIcWADtfmTHu1NicQ/G3MrP
+	4dlowT4r3Tr9Ag79g5b/JFVajOTlKm56d/5nPGAW6YaVo8rVw46bSpl+4Uxtn2uzlbDjHl
+	UH3btmFYun48TqGubsdIMlrvySiL9diRxqUHlzFl9H+31XeA9vskVSthIFl4U/Yr1h043G
+	1q/gT6BTHGjA4RkeA+7Gv3GluwWCI0ysw7zX3NxRu1K+X5CAJNs6vH7Tc2RPmQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1764751630;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/GRGsombs69lKO7dDXV9AxmBXZpYeIv4jXcexpDNGLw=;
+	b=6B2+T0Q8ZLgXtb8HyPPz5tWGEul/CHOGZHMqVxnh+uk/vPKG+EpIwVq3Nh7MWgP88IJr8x
+	TEAV0zFbvYf1kTCg==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: Jon Kohler <jon@nutanix.com>, Jason Wang <jasowang@redhat.com>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Menglong Dong <menglong8.dong@gmail.com>,
-	Song Liu <song@kernel.org>
-Subject: [PATCHv4 bpf-next 9/9] bpf,x86: Use single ftrace_ops for direct calls
-Date: Wed,  3 Dec 2025 09:24:02 +0100
-Message-ID: <20251203082402.78816-10-jolsa@kernel.org>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20251203082402.78816-1-jolsa@kernel.org>
-References: <20251203082402.78816-1-jolsa@kernel.org>
+	John Fastabend <john.fastabend@gmail.com>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:XDP (eXpress Data Path):Keyword:(?:b|_)xdp(?:b|_)" <bpf@vger.kernel.org>,
+	Alexander Lobakin <aleksander.lobakin@intel.com>
+Subject: Re: [PATCH net-next v2 5/9] tun: use bulk NAPI cache allocation in
+ tun_xdp_one
+Message-ID: <20251203084708.FKvfWWxW@linutronix.de>
+References: <20251125200041.1565663-1-jon@nutanix.com>
+ <20251125200041.1565663-6-jon@nutanix.com>
+ <CACGkMEsDCVKSzHSKACAPp3Wsd8LscUE0GO4Ko9GPGfTR0vapyg@mail.gmail.com>
+ <CF8FF91A-2197-47F7-882B-33967C9C6089@nutanix.com>
+ <c04b51c6-bc03-410e-af41-64f318b8960f@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <c04b51c6-bc03-410e-af41-64f318b8960f@kernel.org>
 
-Using single ftrace_ops for direct calls update instead of allocating
-ftrace_ops object for each trampoline.
+On 2025-12-02 18:32:23 [+0100], Jesper Dangaard Brouer wrote:
+> > > > +                       napi_consume_skb(skb, 1);
+> > >=20
+> > > I wonder if this would have any side effects since tun_xdp_one() is
+> > > not called by a NAPI.
+> >=20
+> > As far as I can tell, this napi_consume_skb is really just an artifact =
+of
+> > how it was named and how it was traditionally used.
+> >=20
+> > Now this is really just a napi_consume_skb within a bh disable/enable
+> > section, which should meet the requirements of how that interface
+> > should be used (again, AFAICT)
+> >=20
+>=20
+> Yicks - this sounds super ugly.  Just wrapping napi_consume_skb() in bh
+> disable/enable section and then assuming you get the same protection as
+> NAPI is really dubious.
+>=20
+> Cc Sebastian as he is trying to cleanup these kind of use-case, to make
+> kernel preemption work.
 
-With single ftrace_ops object we can use update_ftrace_direct_* api
-that allows multiple ip sites updates on single ftrace_ops object.
+I am actually done with this.
 
-Adding HAVE_SINGLE_FTRACE_DIRECT_OPS config option to be enabled on
-each arch that supports this.
+Wrapping napi_consume_skb(, 1) in bh-disable basically does the trick if
+called from outside-bh section as long as it is not an IRQ section. The
+reason is that the skb-head is cached in a per-CPU cache which accessed
+only within softirq/ NAPI context.
+So you can "return" skbs in NET_TX and have some around in NET_RX.
+Otherwise skb is returned directly to the slab allocator.
+If this about skb recycling, you using page_pool might help. This
+however also expects NAPI/ BH disabled context.
 
-At the moment we can enable this only on x86 arch, because arm relies
-on ftrace_ops object representing just single trampoline image (stored
-in ftrace_ops::direct_call). Ach that do not support this will continue
-to use *_ftrace_direct api.
+> > > > @@ -2576,13 +2583,24 @@ static int tun_sendmsg(struct socket *sock,=
+ struct msghdr *m, size_t total_len)
+> > > >                 rcu_read_lock();
+> > > >                 bpf_net_ctx =3D bpf_net_ctx_set(&__bpf_net_ctx);
+> > > >=20
+> > > > -               for (i =3D 0; i < n; i++) {
+> > > > +               num_skbs =3D napi_skb_cache_get_bulk(skbs, n);
+> > >=20
+> > > Its document said:
+> > >=20
+> > > """
+> > > * Must be called *only* from the BH context.
+> > > =E2=80=9C"=E2=80=9D
+> > We=E2=80=99re in a bh_disable section here, is that not good enough?
+>=20
+> Again this feels very ugly and prone to painting ourselves into a
+> corner, assuming BH-disabled sections have same protection as NAPI.
+>=20
+> (The napi_skb_cache_get/put function are operating on per CPU arrays
+> without any locking.)
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- arch/x86/Kconfig        |   1 +
- kernel/bpf/trampoline.c | 195 ++++++++++++++++++++++++++++++++++------
- kernel/trace/Kconfig    |   3 +
- kernel/trace/ftrace.c   |   7 +-
- 4 files changed, 177 insertions(+), 29 deletions(-)
+This is okay. NAPI means BH is disabled. Nothing more. There are a few
+implications to it.
+The default path is
+ process-context (kernel or userland)
+ * IRQ *
+   -> irq is handled via its handler with disabled interrupts
+   -> handler raises NET_RX aka NAPI
+   -> irq core is done with IRQ handling and notices softirqs have been
+      raised. Disables BH and starts handling softirqs with enabled
+      interrupts before returning back before the interruption.
+   -> softirqs are handled with with BH disabled.
+   * IRQ * fires again.
+     -> irq is handled as previously and NET_RX is set again.
+     -> irq core returns back to previously handled softirqs
+   -> Once NET_RX is done, softirq core would be done and return back
+      but since it noticed that NET_RX is pending (again) it does
+      another round.
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 462250a20311..737dff48342b 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -333,6 +333,7 @@ config X86
- 	select SCHED_SMT			if SMP
- 	select ARCH_SUPPORTS_SCHED_CLUSTER	if SMP
- 	select ARCH_SUPPORTS_SCHED_MC		if SMP
-+	select HAVE_SINGLE_FTRACE_DIRECT_OPS	if X86_64 && DYNAMIC_FTRACE_WITH_DIRECT_CALLS
- 
- config INSTRUCTION_DECODER
- 	def_bool y
-diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index 17af2aad8382..02371db3db3e 100644
---- a/kernel/bpf/trampoline.c
-+++ b/kernel/bpf/trampoline.c
-@@ -33,12 +33,40 @@ static DEFINE_MUTEX(trampoline_mutex);
- #ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
- static int bpf_trampoline_update(struct bpf_trampoline *tr, bool lock_direct_mutex);
- 
-+#ifdef CONFIG_HAVE_SINGLE_FTRACE_DIRECT_OPS
-+static struct bpf_trampoline *direct_ops_ip_lookup(struct ftrace_ops *ops, unsigned long ip)
-+{
-+	struct hlist_head *head_ip;
-+	struct bpf_trampoline *tr;
-+
-+	mutex_lock(&trampoline_mutex);
-+	head_ip = &trampoline_ip_table[hash_64(ip, TRAMPOLINE_HASH_BITS)];
-+	hlist_for_each_entry(tr, head_ip, hlist_ip) {
-+		if (tr->ip == ip)
-+			goto out;
-+	}
-+	tr = NULL;
-+out:
-+	mutex_unlock(&trampoline_mutex);
-+	return tr;
-+}
-+#else
-+static struct bpf_trampoline *direct_ops_ip_lookup(struct ftrace_ops *ops, unsigned long ip)
-+{
-+	return ops->private;
-+}
-+#endif /* CONFIG_HAVE_SINGLE_FTRACE_DIRECT_OPS */
-+
- static int bpf_tramp_ftrace_ops_func(struct ftrace_ops *ops, unsigned long ip,
- 				     enum ftrace_ops_cmd cmd)
- {
--	struct bpf_trampoline *tr = ops->private;
-+	struct bpf_trampoline *tr;
- 	int ret = 0;
- 
-+	tr = direct_ops_ip_lookup(ops, ip);
-+	if (!tr)
-+		return -EINVAL;
-+
- 	if (cmd == FTRACE_OPS_CMD_ENABLE_SHARE_IPMODIFY_SELF) {
- 		/* This is called inside register_ftrace_direct_multi(), so
- 		 * tr->mutex is already locked.
-@@ -137,6 +165,139 @@ void bpf_image_ksym_del(struct bpf_ksym *ksym)
- 			   PAGE_SIZE, true, ksym->name);
- }
- 
-+#ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
-+#ifdef CONFIG_HAVE_SINGLE_FTRACE_DIRECT_OPS
-+/*
-+ * We have only single direct_ops which contains all the direct call
-+ * sites and is the only global ftrace_ops for all trampolines.
-+ *
-+ * We use 'update_ftrace_direct_*' api for attachment.
-+ */
-+struct ftrace_ops direct_ops = {
-+	.ops_func = bpf_tramp_ftrace_ops_func,
-+};
-+
-+static int direct_ops_alloc(struct bpf_trampoline *tr)
-+{
-+	tr->fops = &direct_ops;
-+	return 0;
-+}
-+
-+static void direct_ops_free(struct bpf_trampoline *tr) { }
-+
-+static struct ftrace_hash *hash_from_ip(struct bpf_trampoline *tr, void *ptr)
-+{
-+	unsigned long ip, addr = (unsigned long) ptr;
-+	struct ftrace_hash *hash;
-+
-+	ip = ftrace_location(tr->ip);
-+	if (!ip)
-+		return NULL;
-+	hash = alloc_ftrace_hash(FTRACE_HASH_DEFAULT_BITS);
-+	if (!hash)
-+		return NULL;
-+	if (bpf_trampoline_use_jmp(tr->flags))
-+		addr = ftrace_jmp_set(addr);
-+	if (!add_hash_entry_direct(hash, ip, addr)) {
-+		free_ftrace_hash(hash);
-+		return NULL;
-+	}
-+	return hash;
-+}
-+
-+static int direct_ops_add(struct bpf_trampoline *tr, void *addr)
-+{
-+	struct ftrace_hash *hash = hash_from_ip(tr, addr);
-+	int err = -ENOMEM;
-+
-+	if (hash)
-+		err = update_ftrace_direct_add(tr->fops, hash);
-+	free_ftrace_hash(hash);
-+	return err;
-+}
-+
-+static int direct_ops_del(struct bpf_trampoline *tr, void *addr)
-+{
-+	struct ftrace_hash *hash = hash_from_ip(tr, addr);
-+	int err = -ENOMEM;
-+
-+	if (hash)
-+		err = update_ftrace_direct_del(tr->fops, hash);
-+	free_ftrace_hash(hash);
-+	return err;
-+}
-+
-+static int direct_ops_mod(struct bpf_trampoline *tr, void *addr, bool lock_direct_mutex)
-+{
-+	struct ftrace_hash *hash = hash_from_ip(tr, addr);
-+	int err = -ENOMEM;
-+
-+	if (hash)
-+		err = update_ftrace_direct_mod(tr->fops, hash, lock_direct_mutex);
-+	free_ftrace_hash(hash);
-+	return err;
-+}
-+#else
-+/*
-+ * We allocate ftrace_ops object for each trampoline and it contains
-+ * call site specific for that trampoline.
-+ *
-+ * We use *_ftrace_direct api for attachment.
-+ */
-+static int direct_ops_alloc(struct bpf_trampoline *tr)
-+{
-+	tr->fops = kzalloc(sizeof(struct ftrace_ops), GFP_KERNEL);
-+	if (!tr->fops)
-+		return -ENOMEM;
-+	tr->fops->private = tr;
-+	tr->fops->ops_func = bpf_tramp_ftrace_ops_func;
-+	return 0;
-+}
-+
-+static void direct_ops_free(struct bpf_trampoline *tr)
-+{
-+	if (tr->fops) {
-+		ftrace_free_filter(tr->fops);
-+		kfree(tr->fops);
-+	}
-+}
-+
-+static int direct_ops_add(struct bpf_trampoline *tr, void *ptr)
-+{
-+	unsigned long addr = (unsigned long) ptr;
-+	struct ftrace_ops *ops = tr->fops;
-+	int ret;
-+
-+	if (bpf_trampoline_use_jmp(tr->flags))
-+		addr = ftrace_jmp_set(addr);
-+
-+	ret = ftrace_set_filter_ip(ops, tr->ip, 0, 1);
-+	if (ret)
-+		return ret;
-+	return register_ftrace_direct(ops, addr);
-+}
-+
-+static int direct_ops_del(struct bpf_trampoline *tr, void *addr)
-+{
-+	return unregister_ftrace_direct(tr->fops, (long)addr, false);
-+}
-+
-+static int direct_ops_mod(struct bpf_trampoline *tr, void *ptr, bool lock_direct_mutex)
-+{
-+	unsigned long addr = (unsigned long) ptr;
-+	struct ftrace_ops *ops = tr->fops;
-+
-+	if (bpf_trampoline_use_jmp(tr->flags))
-+		addr = ftrace_jmp_set(addr);
-+	if (lock_direct_mutex)
-+		return modify_ftrace_direct(ops, addr);
-+	return modify_ftrace_direct_nolock(ops, addr);
-+}
-+#endif /* CONFIG_HAVE_SINGLE_FTRACE_DIRECT_OPS */
-+#else
-+static void direct_ops_free(struct bpf_trampoline *tr) { }
-+#endif /* CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS */
-+
- static struct bpf_trampoline *bpf_trampoline_lookup(u64 key, unsigned long ip)
- {
- 	struct bpf_trampoline *tr;
-@@ -155,14 +316,11 @@ static struct bpf_trampoline *bpf_trampoline_lookup(u64 key, unsigned long ip)
- 	if (!tr)
- 		goto out;
- #ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
--	tr->fops = kzalloc(sizeof(struct ftrace_ops), GFP_KERNEL);
--	if (!tr->fops) {
-+	if (direct_ops_alloc(tr)) {
- 		kfree(tr);
- 		tr = NULL;
- 		goto out;
- 	}
--	tr->fops->private = tr;
--	tr->fops->ops_func = bpf_tramp_ftrace_ops_func;
- #endif
- 
- 	tr->key = key;
-@@ -206,7 +364,7 @@ static int unregister_fentry(struct bpf_trampoline *tr, u32 orig_flags,
- 	int ret;
- 
- 	if (tr->func.ftrace_managed)
--		ret = unregister_ftrace_direct(tr->fops, (long)old_addr, false);
-+		ret = direct_ops_del(tr, old_addr);
- 	else
- 		ret = bpf_trampoline_update_fentry(tr, orig_flags, old_addr, NULL);
- 
-@@ -220,15 +378,7 @@ static int modify_fentry(struct bpf_trampoline *tr, u32 orig_flags,
- 	int ret;
- 
- 	if (tr->func.ftrace_managed) {
--		unsigned long addr = (unsigned long) new_addr;
--
--		if (bpf_trampoline_use_jmp(tr->flags))
--			addr = ftrace_jmp_set(addr);
--
--		if (lock_direct_mutex)
--			ret = modify_ftrace_direct(tr->fops, addr);
--		else
--			ret = modify_ftrace_direct_nolock(tr->fops, addr);
-+		ret = direct_ops_mod(tr, new_addr, lock_direct_mutex);
- 	} else {
- 		ret = bpf_trampoline_update_fentry(tr, orig_flags, old_addr,
- 						   new_addr);
-@@ -251,15 +401,7 @@ static int register_fentry(struct bpf_trampoline *tr, void *new_addr)
- 	}
- 
- 	if (tr->func.ftrace_managed) {
--		unsigned long addr = (unsigned long) new_addr;
--
--		if (bpf_trampoline_use_jmp(tr->flags))
--			addr = ftrace_jmp_set(addr);
--
--		ret = ftrace_set_filter_ip(tr->fops, (unsigned long)ip, 0, 1);
--		if (ret)
--			return ret;
--		ret = register_ftrace_direct(tr->fops, addr);
-+		ret = direct_ops_add(tr, new_addr);
- 	} else {
- 		ret = bpf_trampoline_update_fentry(tr, 0, NULL, new_addr);
- 	}
-@@ -910,10 +1052,7 @@ void bpf_trampoline_put(struct bpf_trampoline *tr)
- 	 */
- 	hlist_del(&tr->hlist_key);
- 	hlist_del(&tr->hlist_ip);
--	if (tr->fops) {
--		ftrace_free_filter(tr->fops);
--		kfree(tr->fops);
--	}
-+	direct_ops_free(tr);
- 	kfree(tr);
- out:
- 	mutex_unlock(&trampoline_mutex);
-diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-index 4661b9e606e0..1ad2e307c834 100644
---- a/kernel/trace/Kconfig
-+++ b/kernel/trace/Kconfig
-@@ -50,6 +50,9 @@ config HAVE_DYNAMIC_FTRACE_WITH_REGS
- config HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
- 	bool
- 
-+config HAVE_SINGLE_FTRACE_DIRECT_OPS
-+	bool
-+
- config HAVE_DYNAMIC_FTRACE_WITH_CALL_OPS
- 	bool
- 
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 9582cb374d4f..0bdee1758fa1 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -2605,8 +2605,13 @@ unsigned long ftrace_find_rec_direct(unsigned long ip)
- static void call_direct_funcs(unsigned long ip, unsigned long pip,
- 			      struct ftrace_ops *ops, struct ftrace_regs *fregs)
- {
--	unsigned long addr = READ_ONCE(ops->direct_call);
-+	unsigned long addr;
- 
-+#ifdef CONFIG_HAVE_SINGLE_FTRACE_DIRECT_OPS
-+	addr = ftrace_find_rec_direct(ip);
-+#else
-+	addr = READ_ONCE(ops->direct_call);
-+#endif
- 	if (!addr)
- 		return;
- 
--- 
-2.52.0
+This is how it normally works. If you disable-bh in process context
+(either manually via local_bh_disable() or via spin_lock_bh()) then you
+enter BH context. There is hardly a difference (in_serving_softirq()
+will report a different value but this should not matter to anyone
+outside the core code).
+Any IRQ that raises NET_RX here will not lead to handling softirqs
+because BH is disabled (this maps the "IRQ fires again" case from
+above). This is delayed until local_bh_enable().
 
+Therefore protecting the per-CPU array with local_bh_disable() is okay
+but for PREEMPT_RT reasons, per-CPU data needs this
+local_lock_nested_bh() around it (as napi_skb_cache_get/put does).
+
+> --Jesper
+
+Sebastian
 
