@@ -1,208 +1,128 @@
-Return-Path: <bpf+bounces-75962-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75963-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3264EC9EB6F
-	for <lists+bpf@lfdr.de>; Wed, 03 Dec 2025 11:32:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EAEE7C9EC02
+	for <lists+bpf@lfdr.de>; Wed, 03 Dec 2025 11:41:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 1980E347B77
-	for <lists+bpf@lfdr.de>; Wed,  3 Dec 2025 10:32:25 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 2D0AA34A273
+	for <lists+bpf@lfdr.de>; Wed,  3 Dec 2025 10:41:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD16C2ED860;
-	Wed,  3 Dec 2025 10:32:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 101902EFD80;
+	Wed,  3 Dec 2025 10:40:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DIXlDOcE"
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="WnmC0VPe"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from pdx-out-006.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-006.esa.us-west-2.outbound.mail-perimeter.amazon.com [52.26.1.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CED22ED848
-	for <bpf@vger.kernel.org>; Wed,  3 Dec 2025 10:32:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E95A2ED860;
+	Wed,  3 Dec 2025 10:40:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.26.1.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764757938; cv=none; b=UjsFF6n8nc8AubfWFC5ke93XKvhUDBnJnXJj+ro0RRPgs5zwInpi0kC0NvDkLYjxeW0htB6wuuwK1BceqXeIAVCkvQrjkRCAidBz6SJzE9oQFYd77WvBMLQVEh7VQYzyC0HwfrKpkqO7TympRfBjyI67+S5nE08p6hbTdZbOmss=
+	t=1764758454; cv=none; b=kkvKFpuT5jG5rjbRUhkohb/H37TkuWdoQ17kjzDncjuHC59JHr+luSdwBYjORpCRaa1SMLkeRvsJpFsjuLbrEXy+4aRtmPsb7ZZUwzbngPHM/UcGWa8Qj8eSGqh6z4GLNL9x8fUiF1BVrkaKIGRV4xPWbNY32jBY4YyozHuej7Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764757938; c=relaxed/simple;
-	bh=2aOcCjl3M0B1t8QPIlt4/5AQoGR7I2VJ4KYXHNVnF9A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s2wM8sXg/g2xOMJzgysKrkLUXy1uTeTYgvRJzPp6B7iRyhjMAkDVZA0Bk3H85ekEsFOnJX9zOL7Da6fDMe49QQJZLzmJ4g4rp+n9lGOnYkoeAZAis2ttcDxGzzpA4IGndHCNm5ytmOrL2EEXN+Hj4QNT5Wg0Sg3iDNHwfFv14LI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=DIXlDOcE; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-64074f01a6eso11603858a12.2
-        for <bpf@vger.kernel.org>; Wed, 03 Dec 2025 02:32:16 -0800 (PST)
+	s=arc-20240116; t=1764758454; c=relaxed/simple;
+	bh=6teEcSTtrJgnszeTAzsbDyQDdZwMlpmbiBo5m8ykxrI=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=kTto22kKdhu0BSG4dd26U2zZ6NP3RgzataqMfjSoPu7t8G3FIafrcAwPOIBDNofNiajTT/z37cLfJ+eC9l3Am87Mm1CTLI860LgEqFBNS6JmaPLM57a4rEiUv216l+WlfjhCrVINqA5QKNnBwIk+sElTOSPIvMuTTK6iXSoQyDU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=WnmC0VPe; arc=none smtp.client-ip=52.26.1.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1764757935; x=1765362735; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=UcqkI9Xd4pMaIL7B+Xnf+RODe2LidpZwWFDHvB1Tt0o=;
-        b=DIXlDOcE5HQbNqxjV4C6idorUyGEk13TCgo0TGRCxPjivECC8edEMe088iirAZxzyM
-         sCkYRq06Eam5CaFltpP+Puz1Vv5odDAZOT/+RdIgW6r7bWaV3bU/UXiRN/0WblnUizv4
-         OdhJMbyod0Nexs3Mutz+33KbOj6aIM6PgD0R9Pz0JoFzeNFXGMlDXcPM3c3soSAMZnH2
-         v7QoRhFHimHqF6C+I+pUU/j3tjc8NWQ9HQev554/WkdOzXXOISB/CJTrB8ud1udUF48C
-         ejj0SuZh1/3+ybjcFmxroHaQPSwqebPaKz5f41VDj/y+WJEukmSaK1F4TBE4NyTr4JXc
-         yU1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764757935; x=1765362735;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UcqkI9Xd4pMaIL7B+Xnf+RODe2LidpZwWFDHvB1Tt0o=;
-        b=nFRDtG1PaouFTnchWkJPn8G5clPiLV42U3OmjDQCvaXnTjcNVa2hCWHWaN1XBL625b
-         CUyRvuCL/tzjk7bvRPB4orZqlecydBJrN4cKy9k3n7/1LpTr6bpKHpqvjHzrhrNABssU
-         /Dm6YvA8UJUufLjtEoqzU0hezmPFsSX7jMCOUqGCrQx/Ns8g8/fIo2c5zXza4dTeWyOh
-         MtaZASfnJjbaKZOwYTYWWEeIivRI0IWOMKKI9ynSN0N8AG/shOBsdnYBEC7+2w3yzp07
-         8tNmvEizm8RC93myz4j9ZIfeCNjSM4NfhNGLUaDMWMO/DOJwKgRrQBwzZa9WT/dMOy0P
-         hevQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUI/Qp0EmAMCts0wwqncNUOnTelkytRzaca81d4rx3IQa3eJuBIghnXpd+vet+bzeUTsd0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxvUkUDn6E5DPHM5Ecvjd6NWyCOrzeIHz3zv+AWrbETv159x0uX
-	VJLb5KDwtfo2AVDOk6lV9k30JlHp6TM+R/CDItFB6/9ij8bV7mzihRfu9K85L2bwqA==
-X-Gm-Gg: ASbGnctuWfWUhRxBHA4cMvcAVqabqdKR34cs8Cs4Vc78E0eNHMmzRIJf9hLDSqgJlMZ
-	IHwMm5zg33edP95/fGh+1anWAox+6At9PgNMFxzBGXP+DAcqSAiE9A7cvp0hLxSBF8+1km2t8aj
-	AqmSeSYZj58VGQyrZsvJvrHjBfAwWkB4XyGBCdi0Pw7KbUCBtKxd5vR0ua1+yd0gpS4PpT9uLsP
-	24NXZBTSWAgNb/Y3HMU9Ekmdl0cr+r8P7elnLte4/QKliqdcK6cJ74AH/z0rCAavyAWAJGY4nui
-	BPTwN0z5RV8oChvnnKasbySl5gGa6qFhm7/FScOWYcQWEjFaFbFMPydWDdL+cZpfLvAN912NCG3
-	K12LIrRqHlmfDTwBP9A3SvvtrCowTMXxDeqrAuWgNY/qZ6kLpu7R6h5IIjT3L4NrQ97ll6n218w
-	YE2x/3hz01ZvpNMlaITjntyZsvzAzbH3rThKVzkijdVjXbAyVgtbwoqh8u
-X-Google-Smtp-Source: AGHT+IEAY85Pq3Z+N4w3Oj4K17isL6Bl9lnWw+LXYqAqN863wp8c0ApWNgbwOUam/wsgef5nVp4zjQ==
-X-Received: by 2002:a05:6402:1472:b0:640:80f4:3914 with SMTP id 4fb4d7f45d1cf-6479c4f6ff8mr1426286a12.19.1764757934636;
-        Wed, 03 Dec 2025 02:32:14 -0800 (PST)
-Received: from google.com (49.185.141.34.bc.googleusercontent.com. [34.141.185.49])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-64751062261sm20113764a12.33.2025.12.03.02.32.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Dec 2025 02:32:14 -0800 (PST)
-Date: Wed, 3 Dec 2025 10:32:10 +0000
-From: Matt Bobrowski <mattbobrowski@google.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Shuran Liu <electronlsr@gmail.com>, Song Liu <song@kernel.org>,
-	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>,
-	Daniel Xu <dxu@dxuuu.xyz>,
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
-	Shuah Khan <shuah@kernel.org>, Zesen Liu <ftyg@live.com>,
-	Peili Gao <gplhust955@gmail.com>,
-	Haoran Ni <haoran.ni.cs@gmail.com>
-Subject: Re: [PATCH bpf v3 2/2] selftests/bpf: fix and consolidate d_path LSM
- regression test
-Message-ID: <aTARqrMyC36CXa_L@google.com>
-References: <20251202141944.2209-1-electronlsr@gmail.com>
- <20251202141944.2209-3-electronlsr@gmail.com>
- <CAADnVQJQj=mdFbPf7nmc0+qZVC4RCK5AbJvNQv2W--tvGyzzVA@mail.gmail.com>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1764758453; x=1796294453;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=jXsVFWbj35rMKMy+vwDkpwi9rIVDzao0SnxFiNJEYic=;
+  b=WnmC0VPeXivWBHgx7glRQtTnB+LimAfJyGWmqWOylKWJvrMvIXSpEmxR
+   qvmfs6pl1Hz5pC///vweGjX0vDd8DnSq/Z2gru5idlhxgD4FCCCR9ZPFJ
+   VAbDFJ3N/Xy2Brb9OeZY5UbCNakPeG2Wd2wZxGT7Sby2HfZ7lje0QCcWP
+   F9BZM3gh7eRfpgDTCJ13TvRQgsMKI53netcyWgPuF0kmWZjG0HOltmiMf
+   7B4KAjm37094Rh+hUJbxaw6fa/ypki5Zu7YNAvJsyHvsIi9YzR23KDUwm
+   Bue2RXMj2KD8Nn8gR/Qde25LJDzVDIgQTw4cprhzjs6ZqfnfqXaVTTL/E
+   A==;
+X-CSE-ConnectionGUID: N8Xm2/fSRySWr23rjtng3Q==
+X-CSE-MsgGUID: KQwY1GezQp2wB8EYIe9gxA==
+X-IronPort-AV: E=Sophos;i="6.20,245,1758585600"; 
+   d="scan'208";a="8324630"
+Received: from ip-10-5-6-203.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.6.203])
+  by internal-pdx-out-006.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2025 10:40:50 +0000
+Received: from EX19MTAUWB002.ant.amazon.com [205.251.233.111:24081]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.25.237:2525] with esmtp (Farcaster)
+ id 07a0754c-ba91-4c24-8dc7-78f50d138f6e; Wed, 3 Dec 2025 10:40:50 +0000 (UTC)
+X-Farcaster-Flow-ID: 07a0754c-ba91-4c24-8dc7-78f50d138f6e
+Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
+ EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.29;
+ Wed, 3 Dec 2025 10:40:50 +0000
+Received: from b0be8375a521.amazon.com (10.37.245.10) by
+ EX19D001UWA001.ant.amazon.com (10.13.138.214) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.29;
+ Wed, 3 Dec 2025 10:40:46 +0000
+From: Kohei Enju <enjuk@amazon.com>
+To: <alexei.starovoitov@gmail.com>
+CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
+	<daniel@iogearbox.net>, <davem@davemloft.net>, <eddyz87@gmail.com>,
+	<enjuk@amazon.com>, <haoluo@google.com>, <hawk@kernel.org>,
+	<john.fastabend@gmail.com>, <jolsa@kernel.org>, <kohei.enju@gmail.com>,
+	<kpsingh@kernel.org>, <kuba@kernel.org>, <lorenzo@kernel.org>,
+	<martin.lau@linux.dev>, <netdev@vger.kernel.org>, <sdf@fomichev.me>,
+	<shuah@kernel.org>, <song@kernel.org>, <yonghong.song@linux.dev>
+Subject: Re: [PATCH bpf v1 1/2] bpf: cpumap: propagate underlying error in cpu_map_update_elem()
+Date: Wed, 3 Dec 2025 19:40:34 +0900
+Message-ID: <20251203104037.40660-1-enjuk@amazon.com>
+X-Mailer: git-send-email 2.48.1
+In-Reply-To: <CAADnVQLjw=iv3tDb8UadT_ahm_xuAFSQ6soG-W=eVPEjO_jGZw@mail.gmail.com>
+References: <CAADnVQLjw=iv3tDb8UadT_ahm_xuAFSQ6soG-W=eVPEjO_jGZw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQJQj=mdFbPf7nmc0+qZVC4RCK5AbJvNQv2W--tvGyzzVA@mail.gmail.com>
+X-ClientProxiedBy: EX19D043UWA004.ant.amazon.com (10.13.139.41) To
+ EX19D001UWA001.ant.amazon.com (10.13.138.214)
 
-On Tue, Dec 02, 2025 at 05:21:59PM -0800, Alexei Starovoitov wrote:
-> On Tue, Dec 2, 2025 at 6:20 AM Shuran Liu <electronlsr@gmail.com> wrote:
-> >
-> > Add a regression test for bpf_d_path() when invoked from an LSM program.
-> > The test attaches to the bprm_check_security hook, calls bpf_d_path() on
-> > the binary being executed, and verifies that a simple prefix comparison on
-> > the returned pathname behaves correctly after the fix in patch 1.
-> >
-> > To avoid nondeterminism, the LSM program now filters based on the
-> > expected PID, which is populated from userspace before the test binary is
-> > executed. This prevents unrelated processes that also trigger the
-> > bprm_check_security LSM hook from overwriting test results. Parent and
-> > child processes are synchronized through a pipe to ensure the PID is set
-> > before the child execs the test binary.
-> >
-> > Per review feedback, the new LSM coverage is merged into the existing
-> > d_path selftest rather than adding new prog_tests/ or progs/ files. The
-> > loop that checks the pathname prefix now uses bpf_for(), which is a
-> > verifier-friendly way to express a small, fixed-iteration loop, and the
-> > temporary /tmp/bpf_d_path_test binary is removed in the test cleanup
-> > path.
-> >
-> > Co-developed-by: Zesen Liu <ftyg@live.com>
-> > Signed-off-by: Zesen Liu <ftyg@live.com>
-> > Co-developed-by: Peili Gao <gplhust955@gmail.com>
-> > Signed-off-by: Peili Gao <gplhust955@gmail.com>
-> > Co-developed-by: Haoran Ni <haoran.ni.cs@gmail.com>
-> > Signed-off-by: Haoran Ni <haoran.ni.cs@gmail.com>
-> > Signed-off-by: Shuran Liu <electronlsr@gmail.com>
-> > Reviewed-by: Matt Bobrowski <mattbobrowski@google.com>
-> > ---
-> >  .../testing/selftests/bpf/prog_tests/d_path.c | 65 +++++++++++++++++++
-> >  .../testing/selftests/bpf/progs/test_d_path.c | 33 ++++++++++
-> >  2 files changed, 98 insertions(+)
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/d_path.c b/tools/testing/selftests/bpf/prog_tests/d_path.c
-> > index ccc768592e66..202b44e6f482 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/d_path.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/d_path.c
-> > @@ -195,6 +195,68 @@ static void test_d_path_check_types(void)
-> >         test_d_path_check_types__destroy(skel);
-> >  }
-> >
-> > +static void test_d_path_lsm(void)
-> > +{
-> > +       struct test_d_path *skel;
-> > +       int err;
-> > +       int pipefd[2];
-> > +       pid_t pid;
-> > +
-> > +       skel = test_d_path__open_and_load();
-> > +       if (!ASSERT_OK_PTR(skel, "d_path skeleton failed"))
-> > +               return;
-> > +
-> > +       err = test_d_path__attach(skel);
-> > +       if (!ASSERT_OK(err, "attach failed"))
-> > +               goto cleanup;
-> > +
-> > +       /* Prepare the test binary */
-> > +       system("cp /bin/true /tmp/bpf_d_path_test 2>/dev/null || :");
-> > +
-> > +       if (!ASSERT_OK(pipe(pipefd), "pipe failed"))
-> > +               goto cleanup;
-> > +
-> > +       pid = fork();
-> > +       if (!ASSERT_GE(pid, 0, "fork failed")) {
-> > +               close(pipefd[0]);
-> > +               close(pipefd[1]);
-> > +               goto cleanup;
-> > +       }
-> > +
-> > +       if (pid == 0) {
-> > +               /* Child */
-> > +               char buf;
-> > +
-> > +               close(pipefd[1]);
-> > +               /* Wait for parent to set PID in BPF map */
-> > +               if (read(pipefd[0], &buf, 1) != 1)
-> > +                       exit(1);
-> > +               close(pipefd[0]);
-> > +               execl("/tmp/bpf_d_path_test", "/tmp/bpf_d_path_test", NULL);
-> > +               exit(1);
-> > +       }
-> 
-> No forks please. They often make selftest to be flaky.
-> Use simples possible way to test it.
-> Without forks and pipes.
+On Tue, 2 Dec 2025 17:08:32 -0800, Alexei Starovoitov wrote:
 
-Yeah, I was also a little hesistant about letting this slide.
+>On Fri, Nov 28, 2025 at 8:05 AM Kohei Enju <enjuk@amazon.com> wrote:
+>>
+>> After commit 9216477449f3 ("bpf: cpumap: Add the possibility to attach
+>> an eBPF program to cpumap"), __cpu_map_entry_alloc() may fail with
+>> errors other than -ENOMEM, such as -EBADF or -EINVAL.
+>>
+>> However, __cpu_map_entry_alloc() returns NULL on all failures, and
+>> cpu_map_update_elem() unconditionally converts this NULL into -ENOMEM.
+>> As a result, user space always receives -ENOMEM regardless of the actual
+>> underlying error.
+>>
+>> Examples of unexpected behavior:
+>>   - Nonexistent fd  : -ENOMEM (should be -EBADF)
+>>   - Non-BPF fd      : -ENOMEM (should be -EINVAL)
+>>   - Bad attach type : -ENOMEM (should be -EINVAL)
+>>
+>> Change __cpu_map_entry_alloc() to return ERR_PTR(err) instead of NULL
+>> and have cpu_map_update_elem() propagate this error.
+>>
+>> Fixes: 9216477449f3 ("bpf: cpumap: Add the possibility to attach an eBPF program to cpumap")
+>
+>The current behavior is what it is. It's not a bug and
+>this patch is not a fix. It's probably an ok improvement,
+>but since it changes user visible behavior we have to be careful.
 
-Shuran, change your BPF program such that you're attached to file_open
-instead. That'll make testing from your test runnner far simpler.
+Oops, got it.
+When I resend, I'll remove the tag and send to bpf-next, not to bpf.
+
+Thank you for taking a look.
+
+>
+>I'd like Jesper and/or other cpumap experts to confirm that it's ok.
+>
+
+Sure, I'd like to wait for reactions from cpumap experts.
 
