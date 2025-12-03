@@ -1,135 +1,141 @@
-Return-Path: <bpf+bounces-75981-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75982-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3198FCA03FE
-	for <lists+bpf@lfdr.de>; Wed, 03 Dec 2025 18:03:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A4B6CA0D7B
+	for <lists+bpf@lfdr.de>; Wed, 03 Dec 2025 19:14:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5B72A3064E53
-	for <lists+bpf@lfdr.de>; Wed,  3 Dec 2025 16:54:23 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 19CD0332416D
+	for <lists+bpf@lfdr.de>; Wed,  3 Dec 2025 17:11:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB409368276;
-	Wed,  3 Dec 2025 16:52:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A28C8398FBA;
+	Wed,  3 Dec 2025 16:59:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TvUQFxoM"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HeJ8XFDw"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A31836829B
-	for <bpf@vger.kernel.org>; Wed,  3 Dec 2025 16:52:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B7FD398FAF
+	for <bpf@vger.kernel.org>; Wed,  3 Dec 2025 16:58:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764780723; cv=none; b=S72K6ekBv63KqiD5SECUdxzE0Y2AgT/gXvb46KQmWBY+yFb/mUdNMpdJqgNmhOgMwBzm7zCXFJZ1jEXetdOCbyZYLVdn9/BLDmbvlBYkgV1EbnZgkR7a8Qg/MLoRmPOfNR+TN9sFjgOS8yYpCTrW5XXDPzIrQYip5LRD48xUr+Y=
+	t=1764781140; cv=none; b=UJG9c9yAleXti58AKuZpIlD4+ArTBLSb/3stVYLqpAl+K9rfZtSi1n1cA1z70ntovgTU6EQRcN/Wl87hYAivL5yP6AZ53inKSQTHd4vYaprrIDJ2pmc83VZ8nx30c3DBVXRjV3sIxHO07BOIqE/W55Cbah9XjzWNcwoSf/48xOU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764780723; c=relaxed/simple;
-	bh=TrWS17HYoUnHgvbKDRzjfKX/+vjn4Glt5gwuZekc0Es=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=UbCujc5T0p9EoNhCGdqnAJ16SXOZ8SH2iy1GK58E2aiNoKIxu6XS/tEgoYyEFfU9TPpXAMionFrzcknvYlWZs0nf7QKfwAJ+hSx3UqFEm07SKZRT5vAF/lX/U1qp88kCYIz/MGDfccGpQaIPpFMGsnRquQ9sZ1W6VkRqaALliK0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TvUQFxoM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECB32C116C6;
-	Wed,  3 Dec 2025 16:52:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764780723;
-	bh=TrWS17HYoUnHgvbKDRzjfKX/+vjn4Glt5gwuZekc0Es=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=TvUQFxoMsEIBIRzrjJWztmFYc74Za8xjTtMHaRRzAaOuPI33/YPD/KWSy2YD0tu2o
-	 cHNkc9QzTi8dL65FdcWLLpyQtjGAwFA27Wq3/4QprwvQNyqnPjL+2IAy4MC48MjR27
-	 nxvi+NtkaLHGnuUBBCBq9fTlrilZ0nTpv3fdP5pytYFa8bQUtPrdcwQfAqB4mqM1gO
-	 0BFHupOi7RRZKEMYInBXx0n17K3iy0H7O0klL9TCgsOQgvblHa66jXJmJVoy/jk5q9
-	 QYXC0Su1X+zocxowyoO/IRoulhCahjADmKhg/XcDzcy0FRioHodTUylkaUSKqZYHMd
-	 Y/03shBbATtYw==
-Content-Type: multipart/mixed; boundary="===============4674205723203824665=="
+	s=arc-20240116; t=1764781140; c=relaxed/simple;
+	bh=+w1fh0CLrnEXL5kEY/A4dLuPSBwVUZezWvTx+H8HRaI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XLIRb31aNtrJTK2zMqxcFJOme7QSA8rLxu8vYadsDVcQzTWdMOMTpo2KO0dMTelxNfzlsLhwHnlHzT9qeVq129+p24KCzB0esnUJsSNHn61H/0GLKLlcWzCpf2zt6jyAju0OLstT3ZCSxkUeMI8gDdw05yqjODEgBABP7ab5OM8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=HeJ8XFDw; arc=none smtp.client-ip=209.85.160.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-4ed67a143c5so629281cf.0
+        for <bpf@vger.kernel.org>; Wed, 03 Dec 2025 08:58:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1764781131; x=1765385931; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aWXC9hyoBsRhxJFVF8r6pSxMVZV+OmkuKYv5ee8pQww=;
+        b=HeJ8XFDwdWekDq9V1b9WJsNTFib2PsBhNTiX2rmGrMIcmsVSCkVMDiqiuq9OlqQg9a
+         Ay7EDzHuaOQu3QWfs6/m7Q3KMm4YOTY7Q1RHirjo+KH3AjM+4I020XQpQqigcDGHeMA5
+         PmEoJtrAlSkb4bPPDYI2xhaMFa5a1Z5YCZmmaw3ge5rK/YsJOBM73EXxmtTsMDcTbWKj
+         GhPpH+p7RnOvYWP7fPkg+bOA9V4xqBf7JUrmaPLD9D/VnJExi/NMadW+EEKnZwG6UqP1
+         QzihSSd3ARliBhugxPMbyqOjwJ/r+6UaBuNwML+v7GS1ZWXmBv2jivFhYvOBCflqqwQ4
+         nOfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1764781131; x=1765385931;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=aWXC9hyoBsRhxJFVF8r6pSxMVZV+OmkuKYv5ee8pQww=;
+        b=vXINsqRKKiicWzhRHQ6nqXpBFJxd4sreac8Og/4374+U72EJtMR21FDfCJ3P0V34Jm
+         Uht2WoR12IoTo5Pa/WH8v7Qp9H3Slsbvx3MMu0hT06h6cxm4b++uBam+CbLpmWlOGVBp
+         eBeycgW8ljrXBvbsfsM4vkNcFCBdi1XOMO4aekAFxFgADOs8Jy+0lG88YGQx8G8uGXI7
+         YJsk8mOKmfrjr3Xf3FBKduEibIMdfsOtp2EM8b4CKNsTxyXK/RW5rsGYb+9aU4QU/sTe
+         pGVhpJe2DVfSNS3RJn3IStBRpkYy6N3sbsU2Bo0QzG3Pt/wmtAB/iec5fx8V31vM3P+l
+         MHUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVJyAUcA/2JaMYjfQ/89bVG+wnFDoLuAqNetzf0RVg8xjeoSCXLIVMy1UhgoCzQocYuf2w=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwsBtk6GAoA8ww0mSrobyTaWRpLjy2XTLuVT8w1LOgBa/ZGtZL7
+	zCfX0NeNkbe1CrG4UAjjtYBSrLHN/6SZAByuf8a6y+TRIWYskk0UKwrrLWbovrocjeoj7GWbWA1
+	ZbfSB1JQ1GoZR9kkEongg0n10ZEwAkQ3NvI/Y23IZ
+X-Gm-Gg: ASbGncsJJyaJO6OOIx8t6PrCJQUSHE4TomH+5BxD/avmRaY73s1hWP2hCpoP3au91f8
+	8PCDmiFAeMsxBsGdELFuoGqCxMTr7E7E6GJCv6LprXUAgcHDCeiCrR2W6TF28j1TKtyF/DKaQwd
+	IifKoQG85InJly5Xdnl2cMWJisIfnMfSnJR4YdMmRIxfduPOLQgplKQ577i/6G5jN0fEP/XR1So
+	B6fXqLOcO0ALcx3DEGZm+Ge9u2xSE9uqgQExmQUwG7Zv3N5cuLssdFEXSl60bwS97whylZb4RIK
+	1voquA31IzyWhYi7InFajui4e9V/nz4tcV/f+lh36vqVhs7D4JhlHWTAMzJf
+X-Google-Smtp-Source: AGHT+IEwQDGOVT8Lgzi1wTqV6Us8oL3zoJ/xquBSspLWs/EEWhA+DJcMaq/DF7hunAbCMnNSctvo80o0agoxsFagOgY=
+X-Received: by 2002:a05:622a:15ce:b0:4ed:8103:8c37 with SMTP id
+ d75a77b69052e-4f015798fffmr13757201cf.12.1764781131112; Wed, 03 Dec 2025
+ 08:58:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <45513ae5c2cfe74c5d29d23e6c2eaec62b07e709138bc9167c5fea5ea6dde762@mail.kernel.org>
-In-Reply-To: <20251203162625.13152-4-emil@etsalapatis.com>
-References: <20251203162625.13152-4-emil@etsalapatis.com>
-Subject: Re: [PATCH v2 3/4] libbpf: move arena globals to the end of the arena
-From: bot+bpf-ci@kernel.org
-To: emil@etsalapatis.com,bpf@vger.kernel.org
-Cc: andrii@kernel.org,eddyz87@gmail.com,ast@kernel.org,daniel@iogearbox.net,john.fastabend@gmail.com,memxor@gmail.com,yonghong.song@linux.dev,emil@etsalapatis.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Wed,  3 Dec 2025 16:52:01 +0000 (UTC)
+References: <20251201163800.3965-1-chia-yu.chang@nokia-bell-labs.com> <20251201150509.6cd9fefc@kernel.org>
+In-Reply-To: <20251201150509.6cd9fefc@kernel.org>
+From: Neal Cardwell <ncardwell@google.com>
+Date: Wed, 3 Dec 2025 11:58:34 -0500
+X-Gm-Features: AWmQ_bmmK0qcQ0MMg8A5oddcgrqcwdNw6rP5OvhiWOfo_lx74r4d17hh5ndUNnw
+Message-ID: <CADVnQynFTrWf_waxGPH6VVPSZapSuxUb6LFdFUGj0NfiADAa7Q@mail.gmail.com>
+Subject: Re: [PATCH v7 net-next 00/13] AccECN protocol case handling series
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: chia-yu.chang@nokia-bell-labs.com, pabeni@redhat.com, edumazet@google.com, 
+	parav@nvidia.com, linux-doc@vger.kernel.org, corbet@lwn.net, horms@kernel.org, 
+	dsahern@kernel.org, kuniyu@google.com, bpf@vger.kernel.org, 
+	netdev@vger.kernel.org, dave.taht@gmail.com, jhs@mojatatu.com, 
+	stephen@networkplumber.org, xiyou.wangcong@gmail.com, jiri@resnulli.us, 
+	davem@davemloft.net, andrew+netdev@lunn.ch, donald.hunter@gmail.com, 
+	ast@fiberby.net, liuhangbin@gmail.com, shuah@kernel.org, 
+	linux-kselftest@vger.kernel.org, ij@kernel.org, 
+	koen.de_schepper@nokia-bell-labs.com, g.white@cablelabs.com, 
+	ingemar.s.johansson@ericsson.com, mirja.kuehlewind@ericsson.com, 
+	cheshire@apple.com, rs.ietf@gmx.at, Jason_Livingood@comcast.com, 
+	vidhi_goel@apple.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
---===============4674205723203824665==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 706e7481b..9642d697b 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-
-[ ... ]
-
-> @@ -2991,10 +2992,11 @@ static int init_arena_map_data(struct bpf_object *obj, struct bpf_map *map,
->  			       void *data, size_t data_sz)
->  {
->  	const long page_sz = sysconf(_SC_PAGE_SIZE);
-> +	const size_t data_alloc_sz = roundup(data_sz, page_sz);
->  	size_t mmap_sz;
+On Mon, Dec 1, 2025 at 6:05=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wro=
+te:
 >
->  	mmap_sz = bpf_map_mmap_sz(map);
-> -	if (roundup(data_sz, page_sz) > mmap_sz) {
-> +	if (data_alloc_sz > mmap_sz) {
->  		pr_warn("elf: sec '%s': declared ARENA map size (%zu) is too small to hold global __arena variables of size %zu\n",
->  			sec_name, mmap_sz, data_sz);
->  		return -E2BIG;
-> @@ -3006,6 +3008,9 @@ static int init_arena_map_data(struct bpf_object *obj, struct bpf_map *map,
->  	memcpy(obj->arena_data, data, data_sz);
->  	obj->arena_data_sz = data_sz;
->
-> +	/* place globals at the end of the arena */
-> +	obj->arena_data_off = mmap_sz - data_alloc_sz;
-> +
+> On Mon,  1 Dec 2025 17:37:47 +0100 chia-yu.chang@nokia-bell-labs.com
+> wrote:
+> > Plesae find the v7 AccECN case handling patch series, which covers
+> > several excpetional case handling of Accurate ECN spec (RFC9768),
+> > adds new identifiers to be used by CC modules, adds ecn_delta into
+> > rate_sample, and keeps the ACE counter for computation, etc.
+> >
+> > This patch series is part of the full AccECN patch series, which is ava=
+ilable at
+> > https://github.com/L4STeam/linux-net-next/commits/upstream_l4steam/
 
-Here obj->arena_data_off is a __u32, but the calculation is done in
-size_t (64-bit). For a 4GB arena (which the test verifier_arena_large.c
-uses), mmap_sz is 4GB and the result can approach 4GB - PAGE_SIZE. This
-fits in u32 correctly.
+Hi Chia-Yu,
 
-> @@ -4663,7 +4668,7 @@ static int bpf_program__record_reloc(struct bpf_program *prog,
->  		reloc_desc->type = RELO_DATA;
->  		reloc_desc->insn_idx = insn_idx;
->  		reloc_desc->map_idx = obj->arena_map_idx;
-> -		reloc_desc->sym_off = sym->st_value;
-> +		reloc_desc->sym_off = sym->st_value + obj->arena_data_off;
-                                                 ^^^^^^^^^^^^^^^^^^^^^^
+My understanding is that you still have a set of packetdrill tests you
+have been using to test this AccECN patch series. For the Linux
+networking stack, the recent best practice for a significant patch
+series like this is to add packetdrill tests to the
+tools/testing/selftests/net/packetdrill/ directory as a separate
+commit in the patch series.
 
-Can this overflow when storing to reloc_desc->sym_off? The sym_off field
-is 'int' (signed 32-bit), but arena_data_off can be larger than INT_MAX
-for arenas approaching 4GB in size.
+For a recent example, see:
 
-For example, with a 4GB arena and one page of globals:
-- mmap_sz = 4GB = 0x100000000
-- data_alloc_sz = 4096
-- arena_data_off = 0xFFFFF000 = 4294963200
+  selftest: packetdrill: Add max RTO test for SYN+ACK.
+  https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commi=
+t/?id=3Dffc56c90819e86d3a8c4eff6f831317d1c1476b6
 
-This value (4294963200) exceeds INT_MAX (2147483647), so when stored in
-the signed int sym_off field, it becomes negative.
+When you next post the AccECN patch series for review, can you please
+include a patch at the end of the series that posts your packetdrill
+tests in the tools/testing/selftests/net/packetdrill/ directory? In
+the commit description for that patch, please include a mention of the
+packetdrill SHA1 you are using and a link to the packetdrill branch
+you are using, somewhere on github or similar. Then I will look into
+merging any packetdrill tool changes that you are depending on, if
+there are packetdrill commits that you depend on that I have not
+merged into packetdrill yet.
 
-Later in bpf_object__relocate_data(), this is used as:
-    insn[1].imm = insn[0].imm + relo->sym_off;
-
-With sym_off being negative due to overflow, this produces an incorrect
-offset for accessing arena globals.
-
-Should sym_off be changed to an unsigned type to handle large arena
-offsets correctly?
-
-[ ... ]
-
-
----
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
-
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/19901383089
-
---===============4674205723203824665==--
+Thanks!
+neal
 
