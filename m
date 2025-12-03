@@ -1,316 +1,208 @@
-Return-Path: <bpf+bounces-75961-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75962-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96763C9E864
-	for <lists+bpf@lfdr.de>; Wed, 03 Dec 2025 10:40:58 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3264EC9EB6F
+	for <lists+bpf@lfdr.de>; Wed, 03 Dec 2025 11:32:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 611624E108F
-	for <lists+bpf@lfdr.de>; Wed,  3 Dec 2025 09:40:57 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 1980E347B77
+	for <lists+bpf@lfdr.de>; Wed,  3 Dec 2025 10:32:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9929A2DFA26;
-	Wed,  3 Dec 2025 09:40:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD16C2ED860;
+	Wed,  3 Dec 2025 10:32:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rk6IeChr"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DIXlDOcE"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B12AB2DEA74
-	for <bpf@vger.kernel.org>; Wed,  3 Dec 2025 09:40:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CED22ED848
+	for <bpf@vger.kernel.org>; Wed,  3 Dec 2025 10:32:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764754851; cv=none; b=clIfjuETZZT9ZGAyfcBTN0rhgTXs5/AeVAa5PH5t12g5iU/IgJ42XK66nznGDyRvf5QfdWxopKzSJb+IJViVhG7zcAts5r67Cjk+8t3byeh4w0RJeqgNVbZK3YHL8n4RcqiM8i1dxTC7T799iGR7WxRoCkaSnU025M4963fuiRE=
+	t=1764757938; cv=none; b=UjsFF6n8nc8AubfWFC5ke93XKvhUDBnJnXJj+ro0RRPgs5zwInpi0kC0NvDkLYjxeW0htB6wuuwK1BceqXeIAVCkvQrjkRCAidBz6SJzE9oQFYd77WvBMLQVEh7VQYzyC0HwfrKpkqO7TympRfBjyI67+S5nE08p6hbTdZbOmss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764754851; c=relaxed/simple;
-	bh=IT2goCZ9rdKgCFuOuFhcZua7F3KuujYzbbf+nm17Y0k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Eb/Ru1noGb9ISOf2mSqR+rU2LoqCi05M4KBHTnEPHyjk/4aULpYBDJ8bZOwPtOddC0wMqq2+NXIPuXI+mxREcGO1JEEyJZCYRaBvHxV/RYFds0tN+YlvXYRr5P5YGnoFXwXW0WeGggMnyjCI3f8PJmoP/U1EaT9AxeBl2Qk83rI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rk6IeChr; arc=none smtp.client-ip=209.85.219.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-880499b2bc7so67015216d6.3
-        for <bpf@vger.kernel.org>; Wed, 03 Dec 2025 01:40:48 -0800 (PST)
+	s=arc-20240116; t=1764757938; c=relaxed/simple;
+	bh=2aOcCjl3M0B1t8QPIlt4/5AQoGR7I2VJ4KYXHNVnF9A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=s2wM8sXg/g2xOMJzgysKrkLUXy1uTeTYgvRJzPp6B7iRyhjMAkDVZA0Bk3H85ekEsFOnJX9zOL7Da6fDMe49QQJZLzmJ4g4rp+n9lGOnYkoeAZAis2ttcDxGzzpA4IGndHCNm5ytmOrL2EEXN+Hj4QNT5Wg0Sg3iDNHwfFv14LI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=DIXlDOcE; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-64074f01a6eso11603858a12.2
+        for <bpf@vger.kernel.org>; Wed, 03 Dec 2025 02:32:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764754847; x=1765359647; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NOCCooYX/P0AtyViyqyHM3T168L+EzFewWkmhlG/fG8=;
-        b=Rk6IeChrCbTh0zRTDfubxFo6fcwu6jxkougpwSEt4p3e4agBaq096lycZ5e7dMiusI
-         uSpyMSrN1fjqcYoW0Qy+0F3r9GNZQOrC5K43yCKysU2zMAiuVBSEcpMqAFMTh9gFtkEF
-         0WKlV9aRmtUH8g7SiJPob/Q8+z4Dbe+kYk5q6wFlzkRo7GYIcBHn4yqyF/+Pgux2ZFkk
-         7HB0/SVhbPMLC5LAAue5ae9t6sgaPQj8mjcLpw/7RWRdGp4K/A4US8bbIKBMC0un8f6M
-         ll6z13FFHyOBXesOLGlsZtwPz+H9T3MD9HVTdSdXCxDBGaZD1ExpSNWevqc3K1tFWqVx
-         DccA==
+        d=google.com; s=20230601; t=1764757935; x=1765362735; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=UcqkI9Xd4pMaIL7B+Xnf+RODe2LidpZwWFDHvB1Tt0o=;
+        b=DIXlDOcE5HQbNqxjV4C6idorUyGEk13TCgo0TGRCxPjivECC8edEMe088iirAZxzyM
+         sCkYRq06Eam5CaFltpP+Puz1Vv5odDAZOT/+RdIgW6r7bWaV3bU/UXiRN/0WblnUizv4
+         OdhJMbyod0Nexs3Mutz+33KbOj6aIM6PgD0R9Pz0JoFzeNFXGMlDXcPM3c3soSAMZnH2
+         v7QoRhFHimHqF6C+I+pUU/j3tjc8NWQ9HQev554/WkdOzXXOISB/CJTrB8ud1udUF48C
+         ejj0SuZh1/3+ybjcFmxroHaQPSwqebPaKz5f41VDj/y+WJEukmSaK1F4TBE4NyTr4JXc
+         yU1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764754847; x=1765359647;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=NOCCooYX/P0AtyViyqyHM3T168L+EzFewWkmhlG/fG8=;
-        b=TP++aoKw0HaqWnfMeT5o4x9r5tyNmVhePMtXMgdwm8K/r6vw8U71uj3xL6ph5BnCMM
-         NbuqHLApvLPX7pwQhc26M/RygL7erjCT5UOgNgaFkIE5tMmkE/nMllpsn7OxF5QM/VWm
-         Kz66pTzIWFH5etTEUBHOkgqAOiMdwLm7fHOMn6jy+7Mc3qd0Vtfx94CoLiGWqprkMgdK
-         UA2IcuBsBwFUq5AUqMtwnueEkE9MUfaHrnBXVwmLFwsQiqdQ+P838NFjWQwtC+hoe+dR
-         b21LzWpXCGW0o0FL/TYV7iavPpm12aMZE4s12CU0QQiNonbLiEhX2oRhwuSNsmlQ8mMx
-         irJg==
-X-Forwarded-Encrypted: i=1; AJvYcCXZppwq5d186/n+XGCEfLxHNAaQCbrT8tppc6iGjvChbiFye0SClbrWArnQAbisMeBvq1A=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxQRJzRQpuXD51Qi+po6Cl/qpob3Gl1q9UfCL+1CshsRlJkfaYG
-	USclh4OiNKWathUDaJYVd4l0LevEVEkMPKDrfdEq6lQkNx9KisS9FUHGTOaoMmbQM8AZj4ycD1n
-	P8pc/omop4m08RNw1McnzrRBTQFJkFFU=
-X-Gm-Gg: ASbGncunXFa0Bdv88Nk1ysycRdJHWAXTHXO4am5aXQlIEhaPr1p/64F+qh4hEbptxc6
-	HtGm9A7G4r0rSmQqUiuTlSQAddCSSocK7+ci9e2RDn5ma568slzMz/sHPiyTXZ0QFy0DNjrxh+n
-	YkEvgV3mKr6tUoiTRvJZ2iI/nsjbAMg2RbTmRDxw7s/pT4hi4iWBHmCdMqcMO1D2pBDLKRIm3I5
-	zbhWUv4BedBkOPL+NnH0pw+SPaDqH/6iF+ijWxnzSS8DgYUfVqr2BZ+obhCe0+Ln4H2/aI=
-X-Google-Smtp-Source: AGHT+IEst8jKgkFdU8mRg2R84iMD3tpz+P3Zglcl/DDRuz4mcMHxzQ5gtr6vuR0eXVlgeoTNd+Yeqyl/gzRUYa0BE+o=
-X-Received: by 2002:a05:6214:450b:b0:7c2:d5b7:dd54 with SMTP id
- 6a1803df08f44-888194b6ca8mr21077916d6.18.1764754846918; Wed, 03 Dec 2025
- 01:40:46 -0800 (PST)
+        d=1e100.net; s=20230601; t=1764757935; x=1765362735;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UcqkI9Xd4pMaIL7B+Xnf+RODe2LidpZwWFDHvB1Tt0o=;
+        b=nFRDtG1PaouFTnchWkJPn8G5clPiLV42U3OmjDQCvaXnTjcNVa2hCWHWaN1XBL625b
+         CUyRvuCL/tzjk7bvRPB4orZqlecydBJrN4cKy9k3n7/1LpTr6bpKHpqvjHzrhrNABssU
+         /Dm6YvA8UJUufLjtEoqzU0hezmPFsSX7jMCOUqGCrQx/Ns8g8/fIo2c5zXza4dTeWyOh
+         MtaZASfnJjbaKZOwYTYWWEeIivRI0IWOMKKI9ynSN0N8AG/shOBsdnYBEC7+2w3yzp07
+         8tNmvEizm8RC93myz4j9ZIfeCNjSM4NfhNGLUaDMWMO/DOJwKgRrQBwzZa9WT/dMOy0P
+         hevQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUI/Qp0EmAMCts0wwqncNUOnTelkytRzaca81d4rx3IQa3eJuBIghnXpd+vet+bzeUTsd0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxvUkUDn6E5DPHM5Ecvjd6NWyCOrzeIHz3zv+AWrbETv159x0uX
+	VJLb5KDwtfo2AVDOk6lV9k30JlHp6TM+R/CDItFB6/9ij8bV7mzihRfu9K85L2bwqA==
+X-Gm-Gg: ASbGnctuWfWUhRxBHA4cMvcAVqabqdKR34cs8Cs4Vc78E0eNHMmzRIJf9hLDSqgJlMZ
+	IHwMm5zg33edP95/fGh+1anWAox+6At9PgNMFxzBGXP+DAcqSAiE9A7cvp0hLxSBF8+1km2t8aj
+	AqmSeSYZj58VGQyrZsvJvrHjBfAwWkB4XyGBCdi0Pw7KbUCBtKxd5vR0ua1+yd0gpS4PpT9uLsP
+	24NXZBTSWAgNb/Y3HMU9Ekmdl0cr+r8P7elnLte4/QKliqdcK6cJ74AH/z0rCAavyAWAJGY4nui
+	BPTwN0z5RV8oChvnnKasbySl5gGa6qFhm7/FScOWYcQWEjFaFbFMPydWDdL+cZpfLvAN912NCG3
+	K12LIrRqHlmfDTwBP9A3SvvtrCowTMXxDeqrAuWgNY/qZ6kLpu7R6h5IIjT3L4NrQ97ll6n218w
+	YE2x/3hz01ZvpNMlaITjntyZsvzAzbH3rThKVzkijdVjXbAyVgtbwoqh8u
+X-Google-Smtp-Source: AGHT+IEAY85Pq3Z+N4w3Oj4K17isL6Bl9lnWw+LXYqAqN863wp8c0ApWNgbwOUam/wsgef5nVp4zjQ==
+X-Received: by 2002:a05:6402:1472:b0:640:80f4:3914 with SMTP id 4fb4d7f45d1cf-6479c4f6ff8mr1426286a12.19.1764757934636;
+        Wed, 03 Dec 2025 02:32:14 -0800 (PST)
+Received: from google.com (49.185.141.34.bc.googleusercontent.com. [34.141.185.49])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-64751062261sm20113764a12.33.2025.12.03.02.32.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Dec 2025 02:32:14 -0800 (PST)
+Date: Wed, 3 Dec 2025 10:32:10 +0000
+From: Matt Bobrowski <mattbobrowski@google.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Shuran Liu <electronlsr@gmail.com>, Song Liu <song@kernel.org>,
+	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>,
+	Daniel Xu <dxu@dxuuu.xyz>,
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
+	Shuah Khan <shuah@kernel.org>, Zesen Liu <ftyg@live.com>,
+	Peili Gao <gplhust955@gmail.com>,
+	Haoran Ni <haoran.ni.cs@gmail.com>
+Subject: Re: [PATCH bpf v3 2/2] selftests/bpf: fix and consolidate d_path LSM
+ regression test
+Message-ID: <aTARqrMyC36CXa_L@google.com>
+References: <20251202141944.2209-1-electronlsr@gmail.com>
+ <20251202141944.2209-3-electronlsr@gmail.com>
+ <CAADnVQJQj=mdFbPf7nmc0+qZVC4RCK5AbJvNQv2W--tvGyzzVA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251128134601.54678-1-kerneljasonxing@gmail.com>
- <20251128134601.54678-3-kerneljasonxing@gmail.com> <8fa70565-0f4a-4a73-a464-5530b2e29fa5@redhat.com>
- <CAL+tcoDk0f+p2mRV=2auuYfTLA-cPPe-1az7NfEnw+FFaPR5kA@mail.gmail.com>
- <CAL+tcoBMRdMevWCS1puVD4zEDt+69S6t2r6Ov8tw7zhgq_n=PA@mail.gmail.com> <92e34c61-550a-449f-b183-cd8917fc5f9b@redhat.com>
-In-Reply-To: <92e34c61-550a-449f-b183-cd8917fc5f9b@redhat.com>
-From: Magnus Karlsson <magnus.karlsson@gmail.com>
-Date: Wed, 3 Dec 2025 10:40:36 +0100
-X-Gm-Features: AWmQ_bkjxhlG3TIuQkajuEJP996RM6T3-Kv9j7yyKdunldX43K9YtwHCr89sUXU
-Message-ID: <CAJ8uoz2hjzea40-H3W5VAru7S+iFeVJ-2VoaFWjVqyFm3WpUKg@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 2/3] xsk: use atomic operations around
- cached_prod for copy mode
-To: Paolo Abeni <pabeni@redhat.com>
-Cc: Jason Xing <kerneljasonxing@gmail.com>, davem@davemloft.net, edumazet@google.com, 
-	kuba@kernel.org, bjorn@kernel.org, magnus.karlsson@intel.com, 
-	maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com, sdf@fomichev.me, 
-	ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org, 
-	john.fastabend@gmail.com, horms@kernel.org, andrew+netdev@lunn.ch, 
-	bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	Jason Xing <kernelxing@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQJQj=mdFbPf7nmc0+qZVC4RCK5AbJvNQv2W--tvGyzzVA@mail.gmail.com>
 
-On Wed, 3 Dec 2025 at 10:25, Paolo Abeni <pabeni@redhat.com> wrote:
->
-> On 12/3/25 7:56 AM, Jason Xing wrote:
-> > On Sat, Nov 29, 2025 at 8:55=E2=80=AFAM Jason Xing <kerneljasonxing@gma=
-il.com> wrote:
-> >> On Fri, Nov 28, 2025 at 10:20=E2=80=AFPM Paolo Abeni <pabeni@redhat.co=
-m> wrote:
-> >>> On 11/28/25 2:46 PM, Jason Xing wrote:
-> >>>> From: Jason Xing <kernelxing@tencent.com>
-> >>>>
-> >>>> Use atomic_try_cmpxchg operations to replace spin lock. Technically
-> >>>> CAS (Compare And Swap) is better than a coarse way like spin-lock
-> >>>> especially when we only need to perform a few simple operations.
-> >>>> Similar idea can also be found in the recent commit 100dfa74cad9
-> >>>> ("net: dev_queue_xmit() llist adoption") that implements the lockles=
-s
-> >>>> logic with the help of try_cmpxchg.
-> >>>>
-> >>>> Signed-off-by: Jason Xing <kernelxing@tencent.com>
-> >>>> ---
-> >>>> Paolo, sorry that I didn't try to move the lock to struct xsk_queue
-> >>>> because after investigation I reckon try_cmpxchg can add less overhe=
-ad
-> >>>> when multiple xsks contend at this point. So I hope this approach
-> >>>> can be adopted.
-> >>>
-> >>> I still think that moving the lock would be preferable, because it ma=
-kes
-> >>> sense also from a maintenance perspective.
-> >>
-> >> I can see your point here. Sure, moving the lock is relatively easier
-> >> to understand. But my take is that atomic changes here are not that
-> >> hard to read :) It has the same effect as spin lock because it will
-> >> atomically check, compare and set in try_cmpxchg().
-> >>
-> >>> Can you report the difference
-> >>> you measure atomics vs moving the spin lock?
-> >>
-> >> No problem, hopefully I will give a detailed report next week because
-> >> I'm going to apply it directly in production where we have multiple
-> >> xsk sharing the same umem.
+On Tue, Dec 02, 2025 at 05:21:59PM -0800, Alexei Starovoitov wrote:
+> On Tue, Dec 2, 2025 at 6:20 AM Shuran Liu <electronlsr@gmail.com> wrote:
 > >
-> > I'm done with the test in production where a few applications rely on
-> > multiple xsks sharing the same pool to send UDP packets. Here are
-> > significant numbers from bcc tool that recorded the latency caused by
-> > these particular functions:
+> > Add a regression test for bpf_d_path() when invoked from an LSM program.
+> > The test attaches to the bprm_check_security hook, calls bpf_d_path() on
+> > the binary being executed, and verifies that a simple prefix comparison on
+> > the returned pathname behaves correctly after the fix in patch 1.
 > >
-> > 1. use spin lock
-> > $ sudo ./funclatency xsk_cq_reserve_locked
-> > Tracing 1 functions for "xsk_cq_reserve_locked"... Hit Ctrl-C to end.
-> > ^C
-> >      nsecs               : count     distribution
-> >          0 -> 1          : 0        |                                  =
-      |
-> >          2 -> 3          : 0        |                                  =
-      |
-> >          4 -> 7          : 0        |                                  =
-      |
-> >          8 -> 15         : 0        |                                  =
-      |
-> >         16 -> 31         : 0        |                                  =
-      |
-> >         32 -> 63         : 0        |                                  =
-      |
-> >         64 -> 127        : 0        |                                  =
-      |
-> >        128 -> 255        : 25308114 |**                                =
-      |
-> >        256 -> 511        : 283924647 |**********************           =
-       |
-> >        512 -> 1023       : 501589652 |*********************************=
-*******|
-> >       1024 -> 2047       : 93045664 |*******                           =
-      |
-> >       2048 -> 4095       : 746395   |                                  =
-      |
-> >       4096 -> 8191       : 424053   |                                  =
-      |
-> >       8192 -> 16383      : 1041     |                                  =
-      |
-> >      16384 -> 32767      : 0        |                                  =
-      |
-> >      32768 -> 65535      : 0        |                                  =
-      |
-> >      65536 -> 131071     : 0        |                                  =
-      |
-> >     131072 -> 262143     : 0        |                                  =
-      |
-> >     262144 -> 524287     : 0        |                                  =
-      |
-> >     524288 -> 1048575    : 6        |                                  =
-      |
-> >    1048576 -> 2097151    : 2        |                                  =
-      |
+> > To avoid nondeterminism, the LSM program now filters based on the
+> > expected PID, which is populated from userspace before the test binary is
+> > executed. This prevents unrelated processes that also trigger the
+> > bprm_check_security LSM hook from overwriting test results. Parent and
+> > child processes are synchronized through a pipe to ensure the PID is set
+> > before the child execs the test binary.
 > >
-> > avg =3D 664 nsecs, total: 601186432273 nsecs, count: 905039574
+> > Per review feedback, the new LSM coverage is merged into the existing
+> > d_path selftest rather than adding new prog_tests/ or progs/ files. The
+> > loop that checks the pathname prefix now uses bpf_for(), which is a
+> > verifier-friendly way to express a small, fixed-iteration loop, and the
+> > temporary /tmp/bpf_d_path_test binary is removed in the test cleanup
+> > path.
 > >
-> > 2. use atomic
-> > $ sudo ./funclatency xsk_cq_cached_prod_reserve
-> > Tracing 1 functions for "xsk_cq_cached_prod_reserve"... Hit Ctrl-C to e=
-nd.
-> > ^C
-> >      nsecs               : count     distribution
-> >          0 -> 1          : 0        |                                  =
-      |
-> >          2 -> 3          : 0        |                                  =
-      |
-> >          4 -> 7          : 0        |                                  =
-      |
-> >          8 -> 15         : 0        |                                  =
-      |
-> >         16 -> 31         : 0        |                                  =
-      |
-> >         32 -> 63         : 0        |                                  =
-      |
-> >         64 -> 127        : 0        |                                  =
-      |
-> >        128 -> 255        : 109815401 |*********                        =
-       |
-> >        256 -> 511        : 485028947 |*********************************=
-*******|
-> >        512 -> 1023       : 320121627 |**************************       =
-       |
-> >       1024 -> 2047       : 38538584 |***                               =
-      |
-> >       2048 -> 4095       : 377026   |                                  =
-      |
-> >       4096 -> 8191       : 340961   |                                  =
-      |
-> >       8192 -> 16383      : 549      |                                  =
-      |
-> >      16384 -> 32767      : 0        |                                  =
-      |
-> >      32768 -> 65535      : 0        |                                  =
-      |
-> >      65536 -> 131071     : 0        |                                  =
-      |
-> >     131072 -> 262143     : 0        |                                  =
-      |
-> >     262144 -> 524287     : 0        |                                  =
-      |
-> >     524288 -> 1048575    : 10       |                                  =
-      |
+> > Co-developed-by: Zesen Liu <ftyg@live.com>
+> > Signed-off-by: Zesen Liu <ftyg@live.com>
+> > Co-developed-by: Peili Gao <gplhust955@gmail.com>
+> > Signed-off-by: Peili Gao <gplhust955@gmail.com>
+> > Co-developed-by: Haoran Ni <haoran.ni.cs@gmail.com>
+> > Signed-off-by: Haoran Ni <haoran.ni.cs@gmail.com>
+> > Signed-off-by: Shuran Liu <electronlsr@gmail.com>
+> > Reviewed-by: Matt Bobrowski <mattbobrowski@google.com>
+> > ---
+> >  .../testing/selftests/bpf/prog_tests/d_path.c | 65 +++++++++++++++++++
+> >  .../testing/selftests/bpf/progs/test_d_path.c | 33 ++++++++++
+> >  2 files changed, 98 insertions(+)
 > >
-> > avg =3D 496 nsecs, total: 473682265261 nsecs, count: 954223105
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/d_path.c b/tools/testing/selftests/bpf/prog_tests/d_path.c
+> > index ccc768592e66..202b44e6f482 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/d_path.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/d_path.c
+> > @@ -195,6 +195,68 @@ static void test_d_path_check_types(void)
+> >         test_d_path_check_types__destroy(skel);
+> >  }
 > >
-> > And those numbers were verified over and over again which means they
-> > are quite stable.
-> >
-> > You can see that when using atomic, the avg is smaller and the count
-> > of [128 -> 255] is larger, which shows better performance.
-> >
-> > I will add the above numbers in the commit log after the merge window i=
-s open.
->
-> It's not just a matter of performance. Spinlock additionally give you
-> fairness and lockdep guarantees, beyond being easier to graps for
-> however is going to touch this code in the future, while raw atomic none
-> of them.
->
-> From a maintainability perspective spinlocks are much more preferable.
->
-> IMHO micro-benchmarking is not a strong enough argument to counter the
-> spinlock adavantages: at very _least_ large performance gain should be
-> observed in relevant test-cases and/or real live workloads.
->
-> >>> Have you tried moving cq_prod_lock, too?
-> >>
-> >> Not yet, thanks for reminding me. It should not affect the sending
-> >> rate but the tx completion time, I think.
-> >
-> > I also tried moving this lock, but sadly I noticed that in completion
-> > time the lock was set which led to invalidation of the cache line of
-> > another thread sending packets. It can be obviously proved by perf
-> > cycles:ppp:
-> > 1. before
-> > 8.70% xsk_cq_cached_prod_reserve
-> >
-> > 2. after
-> > 12.31% xsk_cq_cached_prod_reserve
-> >
-> > So I decided not to bring such a modification. Anyway, thanks for your
-> > valuable suggestions and I learnt a lot from those interesting
-> > experiments.
->
-> The goal of such change would be reducing the number of touched
-> cachelines; when I suggested the above, I did not dive into the producer
-> specifics, I assumed the relevant producer data were inside the
-> xsk_queue struct.
->
-> It looks like the data is actually inside 'struct xdp_ring', so the
-> producer lock should be moved there, specifically:
->
-> struct xdp_ring {
->         u32 producer ____cacheline_aligned_in_smp;
->         spinlock_t producer_lock;
->         // ...
+> > +static void test_d_path_lsm(void)
+> > +{
+> > +       struct test_d_path *skel;
+> > +       int err;
+> > +       int pipefd[2];
+> > +       pid_t pid;
+> > +
+> > +       skel = test_d_path__open_and_load();
+> > +       if (!ASSERT_OK_PTR(skel, "d_path skeleton failed"))
+> > +               return;
+> > +
+> > +       err = test_d_path__attach(skel);
+> > +       if (!ASSERT_OK(err, "attach failed"))
+> > +               goto cleanup;
+> > +
+> > +       /* Prepare the test binary */
+> > +       system("cp /bin/true /tmp/bpf_d_path_test 2>/dev/null || :");
+> > +
+> > +       if (!ASSERT_OK(pipe(pipefd), "pipe failed"))
+> > +               goto cleanup;
+> > +
+> > +       pid = fork();
+> > +       if (!ASSERT_GE(pid, 0, "fork failed")) {
+> > +               close(pipefd[0]);
+> > +               close(pipefd[1]);
+> > +               goto cleanup;
+> > +       }
+> > +
+> > +       if (pid == 0) {
+> > +               /* Child */
+> > +               char buf;
+> > +
+> > +               close(pipefd[1]);
+> > +               /* Wait for parent to set PID in BPF map */
+> > +               if (read(pipefd[0], &buf, 1) != 1)
+> > +                       exit(1);
+> > +               close(pipefd[0]);
+> > +               execl("/tmp/bpf_d_path_test", "/tmp/bpf_d_path_test", NULL);
+> > +               exit(1);
+> > +       }
+> 
+> No forks please. They often make selftest to be flaky.
+> Use simples possible way to test it.
+> Without forks and pipes.
 
-This struct is reflected to user space, so we should not put the spin
-lock there. But you could put it in struct xsk_queue, but perhaps you
-would want to call it something more generic as there would be a lock
-present in all queues/rings, though you would only use it for the cq.
-Some of the members in xsk_queue are nearly always used when
-manipulating the ring, so the cache line should be hot.
+Yeah, I was also a little hesistant about letting this slide.
 
-I am just thinking aloud if this would be correct. There is one pool
-per cq. When a pool is shared, the cq belonging to that pool is also
-always shared, so I think that would be correct moving the lock from
-the pool to the cq.
-
-> I'm a bit lost in the structs indirection, but I think the above would
-> be beneficial even for the ZC path.
->
-> /P
->
->
+Shuran, change your BPF program such that you're attached to file_open
+instead. That'll make testing from your test runnner far simpler.
 
