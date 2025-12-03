@@ -1,258 +1,149 @@
-Return-Path: <bpf+bounces-75978-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75979-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 795B9CA0173
-	for <lists+bpf@lfdr.de>; Wed, 03 Dec 2025 17:46:20 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 304D6CA0170
+	for <lists+bpf@lfdr.de>; Wed, 03 Dec 2025 17:46:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 869113060A47
-	for <lists+bpf@lfdr.de>; Wed,  3 Dec 2025 16:39:23 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 154123009816
+	for <lists+bpf@lfdr.de>; Wed,  3 Dec 2025 16:43:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5817435CB94;
-	Wed,  3 Dec 2025 16:26:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5D63361DBB;
+	Wed,  3 Dec 2025 16:43:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="14uyqAgP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GMJmOKBS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E023D35CBAB
-	for <bpf@vger.kernel.org>; Wed,  3 Dec 2025 16:26:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FA2E35FF46;
+	Wed,  3 Dec 2025 16:43:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764779212; cv=none; b=mCO6v8OP9jOxHV8Z+vDllTKWsVg31NpDsxyAD93s7gkgZvkwkrtMJkK7UVDRL7drjCqeSC0nayvHZjz6jzmiO6uZtepqMiSE9xBWxF/JfcQL7zOGwL7lhxXLzDxAUSyeTVFc+08+RvF1qQXcR+TktmNQ/n2GCLWoEaHpFA1QalY=
+	t=1764780201; cv=none; b=CqpeglVf0keKRXA6I+G0M7+pmoO4sl/tV+FIshcu+5f99t2Hulr7nAVj3RLfID+qLHpGxCdxZcGuhQC0qLvY8dwx3F1RuFDwaqhLEJ4j2B0JbpGGoUvaRyUe45a5F7pY+q0PQcvJK3t8Vl7la/YcMftPj+NRrO6rv1Znf+8IauM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764779212; c=relaxed/simple;
-	bh=McAOlS01Me0No7jgJnBBMoU8Xxx/UjcJO/OIXMb19C8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TYCiDGryxkHRH0KBRWmEXPzX/C+GQ8NNjkkUczPbLVp0FFqkSmpXWH4j+cMuQe/erDQa2ucBtnoKHoSs12xa2czkfXMBsfC+K2Bwv/oxxOxmL9C14PULJsvEm/iCHlq4e1NgdDowuZp0mM6jzVn5ctcMUplIMbDBE9WrCfvn51Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=14uyqAgP; arc=none smtp.client-ip=209.85.160.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etsalapatis.com
-Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-4eda26a04bfso75663631cf.2
-        for <bpf@vger.kernel.org>; Wed, 03 Dec 2025 08:26:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1764779210; x=1765384010; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=niFmWnB5Cwa8+Ngb15lqCxx3HXwn1ex97HmxbvafnwA=;
-        b=14uyqAgPYAxN+aF0Ks+BQk0auo4WOEqo11V3pdLAQEGMUQd2JdeHOgqf1fRX77nC1T
-         5IOtUEJ76n0VDHMYyiIeSli740sfJmJmIJsii5PGeeGFOIwIhDZnLF0mT5R3KIfCrlFt
-         cvr6Fvq5KSHFKamkmb2zaXY3t/6fHdOPPlBykfcCGtVIzkwrswTQi2VGRrgoGrrD+AoZ
-         8Bo1t+YNE+1AJrcUyOGhvgJwWLehDjFEYdtQNC8676K15MPk6USOTVUf6LYUCuQrq2r6
-         7f3idL7rIgv/iIpjFQutzIoc7j1rL42feznxKgH/EpvzTkzGtP8qXdz8bNvDtdyrW33U
-         IADQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764779210; x=1765384010;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=niFmWnB5Cwa8+Ngb15lqCxx3HXwn1ex97HmxbvafnwA=;
-        b=t9UMswA3KO0HEAHKSto7w/ahtfKyILzgoJDshsJbvDUYOKRVIfKvRwiq6y0o6E7YGv
-         gBggaksNnZkh8/t3KJRFyxcOe768xrsKO9nif8ygvmdaifjwPexfm6J73IH6rRctzBBi
-         9fdDSG+OvKiK4SUkN9QIoSZ3yg6WLBpMgw0I66+nb4ZymLvBAdN1oGwRfTXDH1GWHjdG
-         4h7DyyCh/WgrFAlaxfwsgCb1GUZ64jQxvIGeSU3gNOH2H0L6mT06zV9EmATiJ+0w30Xj
-         x4rhlj4y35J7oSCLO2neeq7tihVQ76txKuL2o0Btb7gADk942ot1v5S4LfcT+ce3N/R/
-         u4Pg==
-X-Gm-Message-State: AOJu0YxrMXJJSdKcdcPJ3W1r/InjN+Dgff1ykdWWV4MVh5Pj8PWg08Ia
-	C3n89b3ozflFmUM+dGbyiwjtw0jAdla2t10I1pJCIkaAMgKg0LF4aIrhMsiJUyR3ZYhiQmf7Tcu
-	tleh2z60=
-X-Gm-Gg: ASbGnctwScAJdpV1qHCt3r3SjZZ6Yd2kK1fUUJ+MhZm6zBMsaS/RR7X1m1JSloOYWvI
-	6m8VjGIrSreokDYQjDGATmoObQ4R48DAd8RmUtOVP7yeKXBgWuJVwOQ2QtfeWRBW2CmtB2Rwcqo
-	15NMSKuSiebamParvJ7QNlkqEmhEzQtbcWh7CXGvXTeHupiFuZwu5bJyKOPaUk+Qzrv7LWMB2ws
-	8kGSwRJzXcxpDmbeleNl9AkJRGgQQW0EX+NMzjscmjn98sm5K56XffcXLEbh4qL27qmyPjwENCg
-	CeFknLcfnXCoU9Hs6+p3fETkOemQIEIaP+REq0lg/Zoy2TZTw0FPXaIq3pKNCE6eBJcNy2VPZS+
-	d31yVFw0byJ3mp9UE8iAcPSqm7BP+ZaGcCyyPJ2f50JLR7DIv6q8ZtAWXVaO65+Fn6kl+3m+6SO
-	UHs3I2mEftRLqIiwVF+Px4
-X-Google-Smtp-Source: AGHT+IFjBt6zfjpH3eO4JoEvqm29D8FucpU935VgA4J4Gs74u5XxtBAfyi5nlsCeC34r37pfRxK2iw==
-X-Received: by 2002:ac8:574f:0:b0:4ed:b012:9716 with SMTP id d75a77b69052e-4f017696e4dmr39354331cf.80.1764779209492;
-        Wed, 03 Dec 2025 08:26:49 -0800 (PST)
-Received: from boreas.. ([140.174.219.137])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4f0046825d6sm45279411cf.5.2025.12.03.08.26.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Dec 2025 08:26:49 -0800 (PST)
-From: Emil Tsalapatis <emil@etsalapatis.com>
-To: bpf@vger.kernel.org
-Cc: andrii@kernel.org,
-	eddyz87@gmail.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	memxor@gmail.com,
-	yonghong.song@linux.dev,
-	Emil Tsalapatis <emil@etsalapatis.com>
-Subject: [PATCH v2 4/4] selftests/bpf: add tests for the arena offset of globals
-Date: Wed,  3 Dec 2025 11:26:25 -0500
-Message-ID: <20251203162625.13152-5-emil@etsalapatis.com>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20251203162625.13152-1-emil@etsalapatis.com>
-References: <20251203162625.13152-1-emil@etsalapatis.com>
+	s=arc-20240116; t=1764780201; c=relaxed/simple;
+	bh=1XNQS0lbn9FevDFX+NqC8EFfjK6r037ERyxzwj6yRtA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rvWNd1mrXy6u/qJsOIOsTpaCUiJJqFrUaOwkASsG/Pak8hkB8580wTRQngM+8854lq44PR/1GXedcxMeL7cjnavoPGw/01S4cJaLjhzn7VbO0YzpkAlwWuHLyIB5V1Ku6kOnn31pD5QoWnOibCwAiiTzQk7JQh3TGbd84gRj7qY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GMJmOKBS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADB3FC4CEF5;
+	Wed,  3 Dec 2025 16:43:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1764780201;
+	bh=1XNQS0lbn9FevDFX+NqC8EFfjK6r037ERyxzwj6yRtA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GMJmOKBSwDtijIjhVAv3lZAEXFA8Yg75apJnBXD7HeB41Pcbx4cEfrGe5PC453Zwb
+	 0KSjymC4CyxhG91V4UP+V+lgmtigbMB6EdZgdlpZ/KdfV/2cg6Gj5pFEN+HxAxhfxm
+	 ekGvhYvlws2XvOGcvo3spTIC88zChQSeKvrDvJdDArfUveZU4ApFeEcnOwFuCIspv0
+	 FiWrutG1OQHIwSSeJ7oCxlukKtE2D5JRw9uli5xeysT7leY1KC9Do3Ll3Q66hrMJbi
+	 ZzCpg59GJ1gatpTK4jrU3K2cyIdj5YmogAU0MVLmc03HISbQEiNI8GVIbiuUpjU2gz
+	 UF8KLZa5msswQ==
+Date: Wed, 3 Dec 2025 13:43:17 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Jon Kohler <jon@nutanix.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	James Clark <james.clark@linaro.org>,
+	Tomas Glozar <tglozar@redhat.com>, linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH] perf build: build BPF skeletons with fPIC
+Message-ID: <aTBopdY6tmmxbDuu@x1>
+References: <20251203035526.1237602-1-jon@nutanix.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251203035526.1237602-1-jon@nutanix.com>
 
-Add tests for the new libbpf globals arena offset logic. The
-tests cover all three cases: The globals being small enough
-to be placed at the maximum possible offset, being as large as
-the arena itself and being placed at the very beginning, and
-requiring an intermediate offset into the arena.
+On Tue, Dec 02, 2025 at 08:55:26PM -0700, Jon Kohler wrote:
+> Fix Makefile.perf to ensure that bpf skeletons are built with fPIC.
+> 
+> When building with BUILD_BPF_SKEL=1, bpf_skel's was not getting built
+> with fPIC, seeing compilation failures like:
+> 
+> /usr/bin/ld: /builddir/.../tools/perf/util/bpf_skel/.tmp/bootstrap/main.o:
+>   relocation R_X86_64_32 against `.rodata.str1.8' can not be used when
+>   making a PIE object; recompile with -fPIE
+> 
+> Bisected down to 6.18 commit a39516805992 ("tools build: Don't assume
+> libtracefs-devel is always available").
+> 
+> Fixes: a39516805992 ("tools build: Don't assume libtracefs-devel is always available")
 
-Signed-off-by: Emil Tsalapatis <emil@etsalapatis.com>
----
- .../selftests/bpf/prog_tests/verifier.c       |  4 ++
- .../bpf/progs/verifier_arena_globals1.c       | 58 +++++++++++++++++++
- .../bpf/progs/verifier_arena_globals2.c       | 49 ++++++++++++++++
- 3 files changed, 111 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_arena_globals1.c
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_arena_globals2.c
+How come, this patch is just:
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
-index 4b4b081b46cc..5829ffd70f8f 100644
---- a/tools/testing/selftests/bpf/prog_tests/verifier.c
-+++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-@@ -6,6 +6,8 @@
- #include "verifier_and.skel.h"
- #include "verifier_arena.skel.h"
- #include "verifier_arena_large.skel.h"
-+#include "verifier_arena_globals1.skel.h"
-+#include "verifier_arena_globals2.skel.h"
- #include "verifier_array_access.skel.h"
- #include "verifier_async_cb_context.skel.h"
- #include "verifier_basic_stack.skel.h"
-@@ -147,6 +149,8 @@ static void run_tests_aux(const char *skel_name,
- void test_verifier_and(void)                  { RUN(verifier_and); }
- void test_verifier_arena(void)                { RUN(verifier_arena); }
- void test_verifier_arena_large(void)          { RUN(verifier_arena_large); }
-+void test_verifier_arena_globals1(void)       { RUN(verifier_arena_globals1); }
-+void test_verifier_arena_globals2(void)       { RUN(verifier_arena_globals2); }
- void test_verifier_basic_stack(void)          { RUN(verifier_basic_stack); }
- void test_verifier_bitfield_write(void)       { RUN(verifier_bitfield_write); }
- void test_verifier_bounds(void)               { RUN(verifier_bounds); }
-diff --git a/tools/testing/selftests/bpf/progs/verifier_arena_globals1.c b/tools/testing/selftests/bpf/progs/verifier_arena_globals1.c
-new file mode 100644
-index 000000000000..3e68a5e83db8
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/verifier_arena_globals1.c
-@@ -0,0 +1,58 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+
-+#define BPF_NO_KFUNC_PROTOTYPES
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "bpf_experimental.h"
-+#include "bpf_arena_common.h"
-+#include "bpf_misc.h"
-+
-+#define ARENA_PAGES (64)
-+#define GLOBAL_PAGES (16)
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARENA);
-+	__uint(map_flags, BPF_F_MMAPABLE);
-+	__uint(max_entries, ARENA_PAGES); /* Arena of 64 pages */
-+#ifdef __TARGET_ARCH_arm64
-+	__ulong(map_extra, (1ull << 32) | (~0u - __PAGE_SIZE * ARENA_PAGES + 1));
-+#else
-+	__ulong(map_extra, (1ull << 44) | (~0u - __PAGE_SIZE * ARENA_PAGES + 1));
-+#endif
-+} arena SEC(".maps");
-+
-+/*
-+ * Global data small enough that we can apply the maximum
-+ * offset into the arena. Userspace will also use this to
-+ * ensure the offset doesn't unexpectedly change from
-+ * under us.
-+ */
-+char __arena global_data[PAGE_SIZE][GLOBAL_PAGES];
-+
-+SEC("syscall")
-+__success __retval(0)
-+int check_reserve1(void *ctx)
-+{
-+#if defined(__BPF_FEATURE_ADDR_SPACE_CAST)
-+	__u8 __arena *guard, *globals;
-+	int ret;
-+
-+	guard = (void __arena *)arena_base(&arena);
-+	globals = (void __arena *)(arena_base(&arena) + (ARENA_PAGES - GLOBAL_PAGES) * PAGE_SIZE);
-+
-+	/* Reserve the region we've offset the globals by. */
-+	ret = bpf_arena_reserve_pages(&arena, guard, ARENA_PAGES - GLOBAL_PAGES);
-+	if (ret)
-+		return 1;
-+
-+	/* Make sure the globals are placed GLOBALS_PGOFF pages in. */
-+	ret = bpf_arena_reserve_pages(&arena, globals, 1);
-+	if (!ret)
-+		return 2;
-+#endif
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/verifier_arena_globals2.c b/tools/testing/selftests/bpf/progs/verifier_arena_globals2.c
-new file mode 100644
-index 000000000000..9b6a08135de5
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/verifier_arena_globals2.c
-@@ -0,0 +1,49 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+
-+#define BPF_NO_KFUNC_PROTOTYPES
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "bpf_misc.h"
-+#include "bpf_experimental.h"
-+#include "bpf_arena_common.h"
-+
-+#define ARENA_PAGES (32)
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARENA);
-+	__uint(map_flags, BPF_F_MMAPABLE);
-+	__uint(max_entries, ARENA_PAGES); /* Arena of 32 pages (standard offset is 16 pages) */
-+#ifdef __TARGET_ARCH_arm64
-+	__ulong(map_extra, (1ull << 32) | (~0u - __PAGE_SIZE * ARENA_PAGES + 1));
-+#else
-+	__ulong(map_extra, (1ull << 44) | (~0u - __PAGE_SIZE * ARENA_PAGES + 1));
-+#endif
-+} arena SEC(".maps");
-+
-+/*
-+ * Fill the entire arena with global data.
-+ * The offset into the arena should be 0.
-+ */
-+char __arena global_data[PAGE_SIZE][ARENA_PAGES];
-+
-+SEC("syscall")
-+__success __retval(0)
-+int check_reserve2(void *ctx)
-+{
-+#if defined(__BPF_FEATURE_ADDR_SPACE_CAST)
-+	void __arena *guard;
-+	int ret;
-+
-+	guard = (void __arena *)arena_base(&arena);
-+
-+	/* Make sure the data at offset 0 case is properly handled. */
-+	ret = bpf_arena_reserve_pages(&arena, guard, 1);
-+	if (!ret)
-+		return 1;
-+#endif
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.49.0
+diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
+index 9c1a69d26f5121fd..531f8fc4f7df9943 100644
+--- a/tools/build/Makefile.feature
++++ b/tools/build/Makefile.feature
+@@ -83,7 +83,6 @@ FEATURE_TESTS_BASIC :=                  \
+         libpython                       \
+         libslang                        \
+         libtraceevent                   \
+-        libtracefs                      \
+         libcpupower                     \
+         pthread-attr-setaffinity-np     \
+         pthread-barrier                \
+diff --git a/tools/build/feature/test-all.c b/tools/build/feature/test-all.c
+index e1847db6f8e63750..2df593593b6ec15e 100644
+--- a/tools/build/feature/test-all.c
++++ b/tools/build/feature/test-all.c
+@@ -150,10 +150,6 @@
+ # include "test-libtraceevent.c"
+ #undef main
 
+-#define main main_test_libtracefs
+-# include "test-libtracefs.c"
+-#undef main
+-
+ int main(int argc, char *argv[])
+ {
+        main_test_libpython();
+@@ -187,7 +183,6 @@ int main(int argc, char *argv[])
+        main_test_reallocarray();
+        main_test_libzstd();
+        main_test_libtraceevent();
+-       main_test_libtracefs();
+
+        return 0;
+}
+
+
+----
+
+And your patch is touching building bpftool? Seems very unrelated :-\
+
+- Arnaldo
+
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Jon Kohler <jon@nutanix.com>
+> ---
+>  tools/perf/Makefile.perf | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+> index 02f87c49801f..4557c2e89e88 100644
+> --- a/tools/perf/Makefile.perf
+> +++ b/tools/perf/Makefile.perf
+> @@ -1211,7 +1211,7 @@ endif
+>  
+>  $(BPFTOOL): | $(SKEL_TMP_OUT)
+>  	$(Q)CFLAGS= $(MAKE) -C ../bpf/bpftool \
+> -		OUTPUT=$(SKEL_TMP_OUT)/ bootstrap
+> +		EXTRA_CFLAGS="-fPIC" OUTPUT=$(SKEL_TMP_OUT)/ bootstrap
+>  
+>  # Paths to search for a kernel to generate vmlinux.h from.
+>  VMLINUX_BTF_ELF_PATHS ?= $(if $(O),$(O)/vmlinux)			\
+> -- 
+> 2.43.0
 
