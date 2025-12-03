@@ -1,235 +1,316 @@
-Return-Path: <bpf+bounces-75937-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75938-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99044C9D9DE
-	for <lists+bpf@lfdr.de>; Wed, 03 Dec 2025 04:13:39 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10AE0C9DBAD
+	for <lists+bpf@lfdr.de>; Wed, 03 Dec 2025 05:11:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 321763A93A1
-	for <lists+bpf@lfdr.de>; Wed,  3 Dec 2025 03:13:35 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 9140D4E5333
+	for <lists+bpf@lfdr.de>; Wed,  3 Dec 2025 04:11:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF37E254B1F;
-	Wed,  3 Dec 2025 03:13:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38AFB2749E6;
+	Wed,  3 Dec 2025 04:11:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nutanix.com header.i=@nutanix.com header.b="q96kWuOW";
-	dkim=pass (2048-bit key) header.d=nutanix.com header.i=@nutanix.com header.b="gpkPwbhq"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GTVgKrGf";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="G57/Tq/l"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-002c1b01.pphosted.com (mx0a-002c1b01.pphosted.com [148.163.151.68])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13C202B9BA;
-	Wed,  3 Dec 2025 03:13:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=148.163.151.68
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764731609; cv=fail; b=mlhU1hY11t+21iYg1yjRc9gRMPfkAQyEY9v8pI89odt+De2R0IddBqjR3hOQuS3I+qFjzLmdwVjC2b7jo3h6fFljto9EWH5rkZHfEaOZggf6ZFCF/hp4T+99yquZ0q60FKaC6uEfZIypl/KVrdDiid//Mq57vCE4CPHUxdg4mKg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764731609; c=relaxed/simple;
-	bh=wz9rKnDrpa9DlR+6/U91YfYRF7YR69FFMk+Rg3jtRDo=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=Z5l1Zs3cmOcRthueOeb3eSlSYO53Z9m+TYlOt60V4eBCu0fNUdJHMloj+dqb0gjcTb21hRxEKGVrO7FyADANj9G6D7A/Y4kV37z1q8/dWzQQdDo40Ny9OWooaMsymj1ScgoIhjB3DLeLBiVq+coJloDJSHNIm54AFR3aQf68tJY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nutanix.com; spf=pass smtp.mailfrom=nutanix.com; dkim=pass (2048-bit key) header.d=nutanix.com header.i=@nutanix.com header.b=q96kWuOW; dkim=pass (2048-bit key) header.d=nutanix.com header.i=@nutanix.com header.b=gpkPwbhq; arc=fail smtp.client-ip=148.163.151.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nutanix.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nutanix.com
-Received: from pps.filterd (m0127839.ppops.net [127.0.0.1])
-	by mx0a-002c1b01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 5B32wB9t2193908;
-	Tue, 2 Dec 2025 19:13:00 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nutanix.com; h=
-	cc:content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:subject:to; s=proofpoint20171006; bh=d6nBQHf1AzsXN
-	Ia3eWkmbyX9M0c0vuPNNSn+Fo4YM6E=; b=q96kWuOWxZBLzXVnbwjppxIt1DBA7
-	JjcIVZvXFyHzl7L1IJ8nHyPMxoKhXBWWfQLhMNfX4mgz12HXXJskNCfrfo4JsaYy
-	1uvQOy4bBgKUkFuWNPNOelJ9jwi0taLAPcMtK0q9XtauF/OmHaaMfdFSweQnitZt
-	+WYqsNGZevQ44q9PRBmik0hGpe3M1wYyYLCdKXs2oP2ocwLyqC/bHjUeyrqtB61S
-	+cmocT53J2PGlaLaHZ5cK6naeoHy0p/dt1acHHAqesr2zVptAD6dyScIAvA3rGcu
-	axn8CglLN03/QuS7YPf/YO2x0KAEYu+cYwhb6VfGFslMH1q8ZafqEOIyg==
-Received: from bl2pr02cu003.outbound.protection.outlook.com (mail-eastusazon11021132.outbound.protection.outlook.com [52.101.52.132])
-	by mx0a-002c1b01.pphosted.com (PPS) with ESMTPS id 4asttgaeht-1
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Tue, 02 Dec 2025 19:12:59 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=E/Iy/EO68CPYDxuP1KnLVTPWt8Eet3w6QtMKA06jO/fFPfdEFF+lDQxNGy/Xz6iKy+eAjgNkntwQQKyybQSuTPlNjkGBJwWXzcHR0eNRXOTniRU6JgeKH5vLSdI3BGTItrNwsDvK0hVbMK7M6tShRUO7JgFX9qmlR0/+g3rASvo0x96oSOVFky+82haBnHKxoxJ8dtQvLV4p6PRYzlrsek5wUiA6zuTm0awyHPkA/ld3IaywF0hmV14vtNe/Hl4gzWC1qbcjUgiBPbySiRy8BCE3niu913jTfsV4P3H2c8UZxjVivtSC6rRFUGhFy4Gh30rBa2BOruGBeJ3gxxiWBg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=d6nBQHf1AzsXNIa3eWkmbyX9M0c0vuPNNSn+Fo4YM6E=;
- b=NfA2OTEkx+DOm6g6y474nY76r0mTdnJ35UrM+H0vcW4GZkhqKHeyYyxP2OQb8p93eTh2jk1MVF/QxcrQZUXRbQtJNaVulRpUejdOISuYh1ZndJ5YS0431OsPHcZQtnjK8dU4P/McDeRGYVSIsCpKal3kPP9xvctaxU0ewa+gY8hSvPE+m+iN2ABI+puZBYAEtSqD3j67d/0EfzEVWgUbw9GyWjWz6h6opZz/m5FVf1pCmSJlNMFfUS9erF9JaHenarG5LwNXaVPK1/a/VTLckyIrtHwFwQwTBqsbazPEci32yopaJNqQEGpcChOlQ9CHp61BYefOJPOit0KsEYudyw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nutanix.com; dmarc=pass action=none header.from=nutanix.com;
- dkim=pass header.d=nutanix.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nutanix.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=d6nBQHf1AzsXNIa3eWkmbyX9M0c0vuPNNSn+Fo4YM6E=;
- b=gpkPwbhqpH1eJ3Rh8WAjJ+PY4Gv2yivln/BDEzGMXaQFthSqszd34yCMkJjNH5A/hH3JtjKq//slRbcahYakinx3r9PsBN0jZGhhUpNRXQMWka6nJtNOEq1k1e/ctOZ7fYuXbF11K5y4KKRBDcwPAUrc1hCFBhxhDG6U/SPswhri3UvRfs7UvK1ZHTy/zpq2RFJ8RU4lq6xEhHrhrO7YHxvhFQamSRjFFKhoB+CNF4YC5in5Sl82lGVaeMwZkufqX8wayELJsqsfx+DS68sKg68EX3k+st/2y7xg/sagFV39I57XeMulnvHZDGwD638/iylduOnnhW/P6IkWgZvikg==
-Received: from LV0PR02MB11133.namprd02.prod.outlook.com
- (2603:10b6:408:333::18) by BN0PR02MB8030.namprd02.prod.outlook.com
- (2603:10b6:408:16d::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9366.17; Wed, 3 Dec
- 2025 03:12:57 +0000
-Received: from LV0PR02MB11133.namprd02.prod.outlook.com
- ([fe80::10e5:8031:1b1b:b2dc]) by LV0PR02MB11133.namprd02.prod.outlook.com
- ([fe80::10e5:8031:1b1b:b2dc%4]) with mapi id 15.20.9366.012; Wed, 3 Dec 2025
- 03:12:57 +0000
-From: Jon Kohler <jon@nutanix.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        James Clark <james.clark@linaro.org>,
-        Tomas Glozar <tglozar@redhat.com>, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Cc: Jon Kohler <jon@nutanix.com>, stable@vger.kernel.org
-Subject: [PATCH] perf build: build BPF skeletons with fPIC
-Date: Tue,  2 Dec 2025 20:55:26 -0700
-Message-ID: <20251203035526.1237602-1-jon@nutanix.com>
-X-Mailer: git-send-email 2.43.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: PH7P222CA0003.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:510:33a::18) To LV0PR02MB11133.namprd02.prod.outlook.com
- (2603:10b6:408:333::18)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4244F1F91D6
+	for <bpf@vger.kernel.org>; Wed,  3 Dec 2025 04:11:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1764735063; cv=none; b=pXTUhBrkdahLzoStViq7RIx9YZatgSOlo4vzXolWueFjG9xyA3JHeZQ5CjB4PdyvxF2XIN23L2FY4tvAChXz1C3XULlAmUWbDgbOVbJGsTwASxebJzjOs2r9AOLJWstTQOZqI4Zr1sVQLawtxrLGADJoovYv0+KkAI2ni/Cr6iU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1764735063; c=relaxed/simple;
+	bh=KofCMlPEDsYDUCWF8ZZ+V+xpPpKKLVHZybTZyuJPKic=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AvN83wwtfhYqaXeFm8YMcz6euv39uBGBbEtTM21VRkFo6Mj2Zlc+gYWeloY4kXrjhEyhTFE5yNwt/1IIdP1IiK8Wb3InaP8uSv2QHRx7qHFiZt/+xeSBsq6L/sFb02LPMbAMKGj7E0rCo8i32TWSISChUS6ey+PAyX7TMWzwO5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GTVgKrGf; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=G57/Tq/l; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1764735059;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dG4JjPSx0ktmS3X5/y1h/Ri2+EX3xWphwz5l40lCCa8=;
+	b=GTVgKrGfzUKzV51KozgFOsd9XFlGUGjh18Fx+sh3JAKF0Nc2e/YiEaNaOhvoBf/lFJJEUj
+	OM87oIl5we2MXRTErdjsHneAFxPnbsM7DAERnPyMuriPh0j4v9M+Lwf+x6tnyefFO3S/aZ
+	WIUhGBUAWiMei6mvtJhaJoKaoYKg94M=
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
+ [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-504-idKBI7VAP8uJx4qoY7F66Q-1; Tue, 02 Dec 2025 23:10:57 -0500
+X-MC-Unique: idKBI7VAP8uJx4qoY7F66Q-1
+X-Mimecast-MFC-AGG-ID: idKBI7VAP8uJx4qoY7F66Q_1764735057
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-34377900dbcso12415935a91.2
+        for <bpf@vger.kernel.org>; Tue, 02 Dec 2025 20:10:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1764735057; x=1765339857; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dG4JjPSx0ktmS3X5/y1h/Ri2+EX3xWphwz5l40lCCa8=;
+        b=G57/Tq/l+ovOYVNoaWAFho2wIAHknNcXAxiFVdxNAJD9bXQtAr+YiJicS4uT8yoLrN
+         Jt6yL5oLXcMhM8UCefM6+UO9KD471sswfTregDeqGRCMiLOuamUHMJMYLRoUnXQIApmC
+         8VxtQDegwXwKsXo/Chc7kC2MJa9wgeyxxT2XQ6zq+KKLPwbh9Ka3RRydUgecE6wN6kFE
+         f8PZdFgKuzJ9VC6q63NQ9x+RWBGd+rw5N9JQGW69NAhhXmiHpZ4l0S7iW4s02JD3zDtM
+         zBozf7uaNFwC6OJpVlN0TO/ip3l1QtbMGeOIwE7XKJyzRfkfoRtmvc3yqsJf/XTAWK38
+         T0Tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1764735057; x=1765339857;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=dG4JjPSx0ktmS3X5/y1h/Ri2+EX3xWphwz5l40lCCa8=;
+        b=vANsqmPmPm5HqcHWaXwHaEfzjo9uWJvFZXjmWZa/84UImgi3ID5ErFo8JpMlJHKWXt
+         PUhBkpTIdYon++qvlkRHTqY3ERH094aObbZJAXpWHJ7LMplqB1fT+n05LV3uEynedo6P
+         oqVs6fgTagpuRk8zL3bJofTGfX4k1D9MmusS4fkxEA8Z3NdPd3bFoALRpVCpkwrbKjm+
+         lFxVbDWroWZmHrE4oEOY26Gyy3UzoaRokgFRxiE7yP+dYCDyD+eSW+fOwuk+1ltvTYnw
+         lWktTNuczT4pxG3WtDLzSHFLFzCm443phQ2hjzND4sbMFrpL/HzDjrZxch0AVk++0OSA
+         L0Zg==
+X-Forwarded-Encrypted: i=1; AJvYcCUvS5xpMYzzqQ3OJcbev/hXrz4yP/qii/EemS7yKPyZwnqEOz3n8qOp4seFcxaNW93csmE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyULmOMZMpSBukhGWpbQvBuvFVfrdeu9oRGhIofsnijYO/RpRyL
+	gOvIyp7OdrL29Dt7Tn1VHUpAQEzH6ktKudAhMJAIjVJvIZxsf1QWFysRsdtKALCQSSeHo0bgqcD
+	/BjMNr59j6ylyl/M6ioDdxuBpmgL/Q6Iz5TSfn9f/5ph1KZt/Sa2g6hoDwa8SpVb06U07u4Bqyt
+	Tl0Zys6KyPMKaoqrdrtWjGIV/kD3qi
+X-Gm-Gg: ASbGncuzKFvGX7GkM2jXBdLqd0/9U4XOGJCCPPOsPMHBhqH807+mSHoqDtYre8QQRjd
+	otdthMiw2SqeMgnaq+gaWrnw3WLS8FmXSb92b6kbj3tjtaYCvfb39+c6nLflqaIZZhCN4vuwqjs
+	JF+EgcrPcF5J/gNN9C5hhd5jaYGx/QTXpP5zhVJqUfB2ju82HWLRtE7uPSiWqYwNk=
+X-Received: by 2002:a17:90b:2f8c:b0:341:8bdd:5cf3 with SMTP id 98e67ed59e1d1-349125ca2d0mr1323529a91.7.1764735056649;
+        Tue, 02 Dec 2025 20:10:56 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEvb4o2o1NZZnPtkDfJPlcJovxPHB7fhuPrYJvabP9qdQO50SjS7EFvUipjN+PcWvppTdItQFUI8CqUBj3csco=
+X-Received: by 2002:a17:90b:2f8c:b0:341:8bdd:5cf3 with SMTP id
+ 98e67ed59e1d1-349125ca2d0mr1323514a91.7.1764735056181; Tue, 02 Dec 2025
+ 20:10:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV0PR02MB11133:EE_|BN0PR02MB8030:EE_
-X-MS-Office365-Filtering-Correlation-Id: 07c9e2ec-e19d-4baf-5e71-08de3219dbb6
-x-proofpoint-crosstenant: true
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|366016|52116014|376014|7416014|921020|38350700014;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?EErYReQwL0K2YYkhxtKc/2NdJKvsneeIcNguy00EhYcUEpwEkLdavboeLIDv?=
- =?us-ascii?Q?lZrcihVU/gKK3k3AFz8w2yXBIvNpIIF1Qu2CTWWj0x/p7z7Hnzq4WopldatU?=
- =?us-ascii?Q?Y4Eb8MLPMEbE16UVUPrjtMqmD5RjMS9L+ft+b0qdMxYU01t5x02vCfjEqw+C?=
- =?us-ascii?Q?o1aCtnT5tY0T5Ibuu37WyqzCqE2evAu1PCnqZ26PYQOhlvPu8TP6dCsYDTBa?=
- =?us-ascii?Q?fnuyR0RzaiCQZqEDCFDJWMxl4JeRkQuMe7HLCrM5g0N0/zpiRCaJkcaQj/EV?=
- =?us-ascii?Q?kQ0vnZzcSk+uwtqh/EU02NBmyooSnAuP2qnVvVNRM7cO3HxBhJ6cCT8dOuRv?=
- =?us-ascii?Q?1XPl8wH+20IwRk4cHKS4fBO3WMFgZtvDqMSgHq4g2HXbnasvBWX/M1JdOgO3?=
- =?us-ascii?Q?HYGg9lj2Cnmv0+8d4VRU0iHrIfChsP2IXKow6LRjW5j+3px3YwoLRFPZ6TcM?=
- =?us-ascii?Q?v4iXGAxmGH59Ye0594hPh37HQFR6sTma2EzLBjd7gjOuT7Os0DSLPHQ68fks?=
- =?us-ascii?Q?8FCtuZOVdLnH/yNclS/YAiAb2QlOrnWW0mXE+L93efSqaSm/mJC3tt5aCjFj?=
- =?us-ascii?Q?HtkLNCuNCu9NqM1Qd191AuhCfhX5sMviiUMYmg2f2GkQNXNSx7ukZAh0Zje0?=
- =?us-ascii?Q?KqETpyKJV8Y/BDUN0DaKnAPcUCsr4gOS2XlohppYOo2bgINSRxf+tAIZxspj?=
- =?us-ascii?Q?wrT/1zabpKEEhL/H6TUSdmQBnhuVSPcz36I1WQXXoEoPrp4H2OcKRfOrNC4L?=
- =?us-ascii?Q?YLsJVjUXYZYwfnxc6sRX8CsUYPQ26VUSju4U0L8a9WXJbpm4gz16nhCx+X9V?=
- =?us-ascii?Q?uOln1XBuPyniMRsLs7bD7eCZD+FQ4VNLC3qbM9rnEOlXxJgmRqngC1i0t1P7?=
- =?us-ascii?Q?WG0Eqs3Dq26uuvfA2+qztuZn486S/RZCU1ovMSPrit9AGdztuKrA2T+zVaTC?=
- =?us-ascii?Q?3VlmoOa/G3AmYgVJy4gUgzpB1G5GshklakBll4EIS1J/nc0ZQmCBCaYiUBX/?=
- =?us-ascii?Q?kGJPhAJfDXMD823xl2yWygq+4kJYftU5o8TE4YeGkASe8i2EmeqrGOJow2hv?=
- =?us-ascii?Q?+eestwoKf8rQHBqT6+LHv5JwSxrDehWl+1qG6+Vo3XfXRBmobG5Eabhs3BhB?=
- =?us-ascii?Q?9vdepNSI9Czza6Txe5uXWavsyKK351oFJ8hEFwB+5Vgc8TJf9N8s6gEr1l69?=
- =?us-ascii?Q?qj1NepfLxYdCAWeC1sVPpcmjvyAmOJgI+R4Lwj6SbcHryGrYPFk5cfbu1k9V?=
- =?us-ascii?Q?YvASeqKPPncoxySvikEufgsdTFWZwY45EM/bloBvRY5sZzI3fIGQf7QZUHTc?=
- =?us-ascii?Q?P5rvUNGkWptU62/J5u1MGQLl2kTPnL89zF21alHgYGqZDgCZgCWMzs8OkcKr?=
- =?us-ascii?Q?CRS7Cci2j3HvLY5d0808/B+bPeYW+jblZ9BePL3vv3xMNHz4vNl986PeMMTF?=
- =?us-ascii?Q?TfN3wKnbkMIezK87hpWEkWTsQHd4zIFzGImhLQAOddEwDokLEkJXEuD0Dwo/?=
- =?us-ascii?Q?iZbGXLM/X9O0XcH/fqg7JTPcNNJpnJ4uKDcxh/5B1fnhbrKssKI2mWTcGg?=
- =?us-ascii?Q?=3D=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV0PR02MB11133.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(52116014)(376014)(7416014)(921020)(38350700014);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?HQNEl7kzXnP1zI+MNy4cQdmtY3rvC1FP6TTQpFhjpeV7hPyg8rkZF/lGR2cH?=
- =?us-ascii?Q?LzPBk0zG9+xDFb7P45KhPnWsg7hs8sMJlI+Im0TU1B50KAMGS8Nm2ZUk6cVS?=
- =?us-ascii?Q?fiZcxXUS1Xkt4pw7ZJMhveWYbtbtRc9lHLdYe69mtPdXTr2cTgmPjsJAeBwk?=
- =?us-ascii?Q?+J7Dyet/wtjY9Gkzu97PbuFNb5HeuVoATrvcI+ds6XaXC2LmyEItvjid/bYI?=
- =?us-ascii?Q?k5joMc2z1l0zlGlS1/PP0lPP23HuHlW2LLM44/grSodn9xOi5ddybD4P4l8t?=
- =?us-ascii?Q?DHRXgkqkgszq6fq6B2SGDVjt8DdjMIAg+UtaTLgi7WYLSJNrBW6GUC0AoMjL?=
- =?us-ascii?Q?Di9sDKbXqpON4kS0wC6SncU3HlULwuNQCFmxEq9TajAvuNTXtJepIu6vBTJt?=
- =?us-ascii?Q?pmX1Z0pNbirxagjjcWKJT2osMxMSk2McKPPX7jz4u5y2WUnpimDjMbQ+fUtn?=
- =?us-ascii?Q?8mdj7bCPdSYlJ/sdeGbLF+Sj5f0/xin/Xhh5Ed0YQjiuCd29983Ogp1qb9In?=
- =?us-ascii?Q?KLcWO53qT2e2o61lKJxox5sxGW9Rlpj8OIVDv0CBuUGxGCOzXKpRiBm0ubzj?=
- =?us-ascii?Q?9PB+xu7OW5eNrAZTjAwvn/EzGhI7ZADpzv1+3neRpYbS/D+22O5PXSgv3ox5?=
- =?us-ascii?Q?Bj09myxhiSglhvyG0KWymPAvb3g5y9lnjLqrUOQQqIelo/n5veWnaSGQcYSj?=
- =?us-ascii?Q?8RiNjEyj3A3O7qpgona8WuFAHwE+NcusvLfNBAg0T6aUHGSDsOVWJ4NQMrnf?=
- =?us-ascii?Q?G1ZXOV52sujDgbY1sLJUEa98WmIuzZAg7rqML9cpYg0o3uwKesp3ZbYKkTKG?=
- =?us-ascii?Q?if3eI2dpndw43sBWZ4HUp52unmiwKlzJdHiedGaHLHvHiZLWJyENiTw+yxpe?=
- =?us-ascii?Q?w96QieSCPgG0ToNKYYWjY7PwXTGo5/pHaSgeQ4739Fe2yGrckYzj0Hj4Camx?=
- =?us-ascii?Q?uyYzbDOszbgj9+s4aBxCpUGLH6aXCHfjJaZdN4M89wdtgRgmJZ6Q1eKC2Y46?=
- =?us-ascii?Q?7t2jTeusldDgVZCJxRtC1yyf5bZKCg0h5KhZAe0chbb3zBWUUUICgYs0e2hV?=
- =?us-ascii?Q?sJ4Bf2pf48c+E1Ft6aqKwwdM7wKG5oUgdf5wzABGuXgWQiXuQ0XixlIR2UWn?=
- =?us-ascii?Q?aFJpl0Y+OVEzE/e3lo2EAJdc2dHw1zIx6cdRUEtmYwUWyXfWjlPDcvA7f270?=
- =?us-ascii?Q?WWlskL3KgOND0skkMoIjCOoi9QJlIqzlJ9Z1OLUJOtnOI+RF6YeAWi9KKtYa?=
- =?us-ascii?Q?/CbqhwuPDvvRPjBxPSxVYhdfEB3ZYe0LWVLoQkkI6/5GFLsEsmXf2HM2yAk8?=
- =?us-ascii?Q?V4Al6XTVZWEDNEWO8awDzsrf9cMGnARhVHCDrDCcvhQytKLXC7EjpcZYAQk5?=
- =?us-ascii?Q?/Qy/JrDJwHlp2OvyMMV/Kf/sL9HcqHpJBdh8W+4h9T+r+mTPCFUnvTWEyTqG?=
- =?us-ascii?Q?dhpY7dkoLxKFDTCykxe3TuvuVa0G4QTs5VcMVN7EI6l05Gkh3SqiJXhPuuti?=
- =?us-ascii?Q?9yl49hifqUWtmp++A+KIDXkWGQHe8Ml7FfgVS+T6VB2OjC1d7SvLQVh68Ee1?=
- =?us-ascii?Q?/uSpEw7oJZ/6KgDDsZLvLquncAPSxMrYFW2qxaHKRelKqALtctQRpHNJsn1X?=
- =?us-ascii?Q?0w=3D=3D?=
-X-OriginatorOrg: nutanix.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 07c9e2ec-e19d-4baf-5e71-08de3219dbb6
-X-MS-Exchange-CrossTenant-AuthSource: LV0PR02MB11133.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Dec 2025 03:12:57.6355
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: bb047546-786f-4de1-bd75-24e5b6f79043
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mW5/pJ5PjT1bnjxHfUoCxvsDY2oDwwqhfqYESv+dqgUK2cGx6waw4lp6vAHQYNuE2dZi8m32R6IbxyV/5+NAp+LWQ97OT2Uuyl5fwh7tQP4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR02MB8030
-X-Proofpoint-GUID: bMUn9lskt0ZvLuAMXBqcH1EALVv1MlSa
-X-Proofpoint-ORIG-GUID: bMUn9lskt0ZvLuAMXBqcH1EALVv1MlSa
-X-Authority-Analysis: v=2.4 cv=Urdu9uwB c=1 sm=1 tr=0 ts=692faabb cx=c_pps
- a=Jry067FxzTqLSYox7+vmHw==:117 a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19
- a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19
- a=xqWC_Br6kY4A:10 a=wP3pNCr1ah4A:10 a=0kUYKlekyDsA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=VwQbUJbxAAAA:8 a=64Cc0HZtAAAA:8
- a=V6_SfRwt4mKuhsd9XPwA:9
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMjAzMDAyMyBTYWx0ZWRfX35rvGtIQKQ5D
- CCjLSe4vG/DAbS/ySQICUG6A2B9mhz4QxKd2G7fBc/t/qVd6Ejit1QLQJ2E5wadTEuuy4mYakYV
- a9IunkaTgj8oGU9Gn5e7C2wFpGAqrtAELqAAEJpM/Qd/W8bDfvYsVVsiAX9Eq46CWJ+PhRfbXkN
- XoTvuJQiAcSflJw2CScX40QlUlUsLSAa1u6EhsPMeLl2HoZ5benC23R+6y212JqQTWBIRe9gc2T
- 7/x+Z1e+Wq/xH7fuq8EKa6kov8MM11IIi+BHjFofNdA/Aza8jX488K9C4fB6z++GJ+vvw7EQqwO
- n6TUzHycI2UQIHfVxDmB2qT6u4n+VSWU8jaDkq2LoU4331kZoQpNtDtK1qjsiHSFnoxOe4WAFW3
- uLJX4Pn5JQsLpHjmcfGd6q6zOETp1A==
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2025-12-01_01,2025-11-27_02,2025-10-01_01
-X-Proofpoint-Spam-Reason: safe
+References: <20251125200041.1565663-1-jon@nutanix.com> <20251125200041.1565663-6-jon@nutanix.com>
+ <CACGkMEsDCVKSzHSKACAPp3Wsd8LscUE0GO4Ko9GPGfTR0vapyg@mail.gmail.com>
+ <CF8FF91A-2197-47F7-882B-33967C9C6089@nutanix.com> <c04b51c6-bc03-410e-af41-64f318b8960f@kernel.org>
+ <E9CF75DC-118F-44A7-9752-C6001A1BADFF@nutanix.com>
+In-Reply-To: <E9CF75DC-118F-44A7-9752-C6001A1BADFF@nutanix.com>
+From: Jason Wang <jasowang@redhat.com>
+Date: Wed, 3 Dec 2025 12:10:45 +0800
+X-Gm-Features: AWmQ_bnmGq71x6-IR8KR1QQCvFGRY0pv3wc6fzdAGLh_H32MPUY55bc-Fb3Wz9I
+Message-ID: <CACGkMEtLQWzRLL3yGiUEvyM31fhcUiafHoGzFSnuF-XdDN0aUg@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 5/9] tun: use bulk NAPI cache allocation in tun_xdp_one
+To: Jon Kohler <jon@nutanix.com>
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Stanislav Fomichev <sdf@fomichev.me>, open list <linux-kernel@vger.kernel.org>, 
+	"open list:XDP (eXpress Data Path):Keyword:(?:b|_)xdp(?:b|_)" <bpf@vger.kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
+	Alexander Lobakin <aleksander.lobakin@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Fix Makefile.perf to ensure that bpf skeletons are built with fPIC.
+On Wed, Dec 3, 2025 at 1:46=E2=80=AFAM Jon Kohler <jon@nutanix.com> wrote:
+>
+>
+>
+> > On Dec 2, 2025, at 12:32=E2=80=AFPM, Jesper Dangaard Brouer <hawk@kerne=
+l.org> wrote:
+> >
+> >
+> >
+> > On 02/12/2025 17.49, Jon Kohler wrote:
+> >>> On Nov 27, 2025, at 10:02=E2=80=AFPM, Jason Wang <jasowang@redhat.com=
+> wrote:
+> >>>
+> >>> On Wed, Nov 26, 2025 at 3:19=E2=80=AFAM Jon Kohler <jon@nutanix.com> =
+wrote:
+> >>>>
+> >>>> Optimize TUN_MSG_PTR batch processing by allocating sk_buff structur=
+es
+> >>>> in bulk from the per-CPU NAPI cache using napi_skb_cache_get_bulk.
+> >>>> This reduces allocation overhead and improves efficiency, especially
+> >>>> when IFF_NAPI is enabled and GRO is feeding entries back to the cach=
+e.
+> >>>
+> >>> Does this mean we should only enable this when NAPI is used?
+> >> No, it does not mean that at all, but I see what that would be confusi=
+ng.
+> >> I can clean up the commit msg on the next go around
+> >>>>
+> >>>> If bulk allocation cannot fully satisfy the batch, gracefully drop o=
+nly
+> >>>> the uncovered portion, allowing the rest of the batch to proceed, wh=
+ich
+> >>>> is what already happens in the previous case where build_skb() would
+> >>>> fail and return -ENOMEM.
+> >>>>
+> >>>> Signed-off-by: Jon Kohler <jon@nutanix.com>
+> >>>
+> >>> Do we have any benchmark result for this?
+> >> Yes, it is in the cover letter:
+> >> https://urldefense.proofpoint.com/v2/url?u=3Dhttps-3A__patchwork.kerne=
+l.org_project_netdevbpf_cover_20251125200041.1565663-2D1-2Djon-40nutanix.co=
+m_&d=3DDwIDaQ&c=3Ds883GpUCOChKOHiocYtGcg&r=3DNGPRGGo37mQiSXgHKm5rCQ&m=3DD7p=
+iJwOOQSj7C1puBlbh5dmAc-qsLw6E660yC5jJXWZk9ppvjOqT9Xc61ewYSmod&s=3DyUPhRdqt2=
+lVnW5FxiOpvKE34iXKyGEWk502Dko1i3PI&e=3D
 
-When building with BUILD_BPF_SKEL=1, bpf_skel's was not getting built
-with fPIC, seeing compilation failures like:
+Ok but it only covers UDP, I think we want to see how it performs for
+TCP as well as latency. Btw is the test for IFF_NAPI or not?
 
-/usr/bin/ld: /builddir/.../tools/perf/util/bpf_skel/.tmp/bootstrap/main.o:
-  relocation R_X86_64_32 against `.rodata.str1.8' can not be used when
-  making a PIE object; recompile with -fPIE
+> >>>> ---
+> >>>> drivers/net/tun.c | 30 ++++++++++++++++++++++++------
+> >>>> 1 file changed, 24 insertions(+), 6 deletions(-)
+> >>>>
+> >>>> diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+> >>>> index 97f130bc5fed..64f944cce517 100644
+> >>>> --- a/drivers/net/tun.c
+> >>>> +++ b/drivers/net/tun.c
+> > [...]
+> >>>> @@ -2454,6 +2455,7 @@ static int tun_xdp_one(struct tun_struct *tun,
+> >>>>                ret =3D tun_xdp_act(tun, xdp_prog, xdp, act);
+> >>>>                if (ret < 0) {
+> >>>>                        /* tun_xdp_act already handles drop statistic=
+s */
+> >>>> +                       kfree_skb_reason(skb, SKB_DROP_REASON_XDP);
+> >>>
+> >>> This should belong to previous patches?
+> >> Well, not really, as we did not even have an SKB to free at this point
+> >> in the previous code
+> >>>
+> >>>>                        put_page(virt_to_head_page(xdp->data));
+> >
+> > This calling put_page() directly also looks dubious.
+> >
+> >>>>                        return ret;
+> >>>>                }
+> >>>> @@ -2463,6 +2465,7 @@ static int tun_xdp_one(struct tun_struct *tun,
+> >>>>                        *flush =3D true;
+> >>>>                        fallthrough;
+> >>>>                case XDP_TX:
+> >>>> +                       napi_consume_skb(skb, 1);
+> >>>>                        return 0;
+> >>>>                case XDP_PASS:
+> >>>>                        break;
+> >>>> @@ -2475,13 +2478,15 @@ static int tun_xdp_one(struct tun_struct *tu=
+n,
+> >>>>                                tpage->page =3D page;
+> >>>>                                tpage->count =3D 1;
+> >>>>                        }
+> >>>> +                       napi_consume_skb(skb, 1);
+> >>>
+> >>> I wonder if this would have any side effects since tun_xdp_one() is
+> >>> not called by a NAPI.
+> >> As far as I can tell, this napi_consume_skb is really just an artifact=
+ of
+> >> how it was named and how it was traditionally used.
+> >> Now this is really just a napi_consume_skb within a bh disable/enable
+> >> section, which should meet the requirements of how that interface
+> >> should be used (again, AFAICT)
+> >
+> > Yicks - this sounds super ugly.  Just wrapping napi_consume_skb() in bh
+> > disable/enable section and then assuming you get the same protection as
+> > NAPI is really dubious.
+> >
+> > Cc Sebastian as he is trying to cleanup these kind of use-case, to make
+> > kernel preemption work.
+> >
+> >
+> >>>
+> >>>>                        return 0;
+> >>>>                }
+> >>>>        }
+> >>>>
+> >>>> build:
+> >>>> -       skb =3D build_skb(xdp->data_hard_start, buflen);
+> >>>> +       skb =3D build_skb_around(skb, xdp->data_hard_start, buflen);
+> >>>>        if (!skb) {
+> >>>> +               kfree_skb_reason(skb, SKB_DROP_REASON_NOMEM);
+> >> Though to your point, I dont think this actually does anything given
+> >> that if the skb was somehow nuked as part of build_skb_around, there
+> >> would not be an skb to free. Doesn=E2=80=99t hurt though, from a self =
+documenting
+> >> code perspective tho?
+> >>>>                dev_core_stats_rx_dropped_inc(tun->dev);
+> >>>>                return -ENOMEM;
+> >>>>        }
+> >>>> @@ -2566,9 +2571,11 @@ static int tun_sendmsg(struct socket *sock, s=
+truct msghdr *m, size_t total_len)
+> >>>>        if (m->msg_controllen =3D=3D sizeof(struct tun_msg_ctl) &&
+> >>>>            ctl && ctl->type =3D=3D TUN_MSG_PTR) {
+> >>>>                struct bpf_net_context __bpf_net_ctx, *bpf_net_ctx;
+> >>>> +               int flush =3D 0, queued =3D 0, num_skbs =3D 0;
+> >>>>                struct tun_page tpage;
+> >>>>                int n =3D ctl->num;
+> >>>> -               int flush =3D 0, queued =3D 0;
+> >>>> +               /* Max size of VHOST_NET_BATCH */
+> >>>> +               void *skbs[64];
+> >>>
+> >>> I think we need some tweaks
+> >>>
+> >>> 1) TUN is decoupled from vhost, so it should have its own value (a
+> >>> macro is better)
+> >> Sure, I can make another constant that does a similar thing
+> >>> 2) Provide a way to fail or handle the case when more than 64
+> >> What if we simply assert that the maximum here is 64, which I think
+> >> is what it actually is in practice?
 
-Bisected down to 6.18 commit a39516805992 ("tools build: Don't assume
-libtracefs-devel is always available").
+I still prefer a fallback.
 
-Fixes: a39516805992 ("tools build: Don't assume libtracefs-devel is always available")
-Cc: stable@vger.kernel.org
-Signed-off-by: Jon Kohler <jon@nutanix.com>
----
- tools/perf/Makefile.perf | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> >>>
+> >>>>
+> >>>>                memset(&tpage, 0, sizeof(tpage));
+> >>>>
+> >>>> @@ -2576,13 +2583,24 @@ static int tun_sendmsg(struct socket *sock, =
+struct msghdr *m, size_t total_len)
+> >>>>                rcu_read_lock();
+> >>>>                bpf_net_ctx =3D bpf_net_ctx_set(&__bpf_net_ctx);
+> >>>>
+> >>>> -               for (i =3D 0; i < n; i++) {
+> >>>> +               num_skbs =3D napi_skb_cache_get_bulk(skbs, n);
+> >>>
+> >>> Its document said:
+> >>>
+> >>> """
+> >>> * Must be called *only* from the BH context.
+> >>> =E2=80=9C"=E2=80=9D
+> >> We=E2=80=99re in a bh_disable section here, is that not good enough?
+> >
+> > Again this feels very ugly and prone to painting ourselves into a
+> > corner, assuming BH-disabled sections have same protection as NAPI.
+> >
+> > (The napi_skb_cache_get/put function are operating on per CPU arrays
+> > without any locking.)
+>
+> Happy to take suggestions on an alternative approach.
+>
+> Thoughts:
+> 1. Instead of having IFF_NAPI be an opt-in thing, clean up tun so it
+>    is *always* NAPI=E2=80=99d 100% of the time?
 
-diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-index 02f87c49801f..4557c2e89e88 100644
---- a/tools/perf/Makefile.perf
-+++ b/tools/perf/Makefile.perf
-@@ -1211,7 +1211,7 @@ endif
- 
- $(BPFTOOL): | $(SKEL_TMP_OUT)
- 	$(Q)CFLAGS= $(MAKE) -C ../bpf/bpftool \
--		OUTPUT=$(SKEL_TMP_OUT)/ bootstrap
-+		EXTRA_CFLAGS="-fPIC" OUTPUT=$(SKEL_TMP_OUT)/ bootstrap
- 
- # Paths to search for a kernel to generate vmlinux.h from.
- VMLINUX_BTF_ELF_PATHS ?= $(if $(O),$(O)/vmlinux)			\
--- 
-2.43.0
+IFF_NAPI will have some overheads and it is introduced basically for
+testing if I was not wrong.
+
+> Outside of people who have
+>    wired this up in their apps manually, on the virtualization side
+>    there is currently no support from QEMU/Libvirt to enable IFF_NAPI.
+>    Might be a nice simplification/cleanup to just =E2=80=9Cdo it=E2=80=9D=
+ full time?
+>    Then we can play all these sorts of games under the protection of
+>    NAPI?
+
+A full benchmark needs to be run for this to see.
+
+> 2. (Some other non-dubious way of protecting this, without refactoring
+>    for either conditional NAPI (yuck?) or refactoring for full time
+>    NAPI? This would be nice, happy to take tips!
+> 3. ... ?
+>
 
 
