@@ -1,376 +1,212 @@
-Return-Path: <bpf+bounces-75989-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75990-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C4C6CA1807
-	for <lists+bpf@lfdr.de>; Wed, 03 Dec 2025 20:56:19 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D52ECA18BC
+	for <lists+bpf@lfdr.de>; Wed, 03 Dec 2025 21:24:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5DCB0302C20B
-	for <lists+bpf@lfdr.de>; Wed,  3 Dec 2025 19:50:56 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id A9CD13009C11
+	for <lists+bpf@lfdr.de>; Wed,  3 Dec 2025 20:23:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DC09238C1B;
-	Wed,  3 Dec 2025 19:50:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BEE828DB54;
+	Wed,  3 Dec 2025 20:23:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U3LhG1Dh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dAecPv5Q"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92889264A97
-	for <bpf@vger.kernel.org>; Wed,  3 Dec 2025 19:50:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20629305055
+	for <bpf@vger.kernel.org>; Wed,  3 Dec 2025 20:23:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764791455; cv=none; b=niOs/GjtKpYtRc1sr80QpqkayOQpdrGmNbAeVlE35km/cccXnAe9ctOxPSG/e5IWCNONMDsKOpwlUMPEf7CuTr5rNbZm2TatU732Zk7zw0wIyWvxDLNNuJiPQrNtLR5XVZNP0wJbdAzAXgC7Lp5oSPbIX9MDK3c4n1+2EHxT16s=
+	t=1764793434; cv=none; b=UWLjMOstJzCrVqLmWvl5X5rDXBM33zfDRDZ6nah1UydPURisb0w4AB/qRtwuk3tjxCape/kylkc+OFO8TvG4w9uRdQQEEh2b5GlWYk78Y0z5FucAymUnZ62zADiU4KLfFuQ1i2kQwht+7IZjIooxtVhV0PYd5dmFEKz7MoV4bMo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764791455; c=relaxed/simple;
-	bh=TO7n2Xge9oO7TZFk4gJz2+SECUapOyqn75Bqr+qXnNM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Xj55pJum2Yc/c7+fsYGkHVq4hBlQFUROdf4yfC18AUBN01UpoIK6e7XkbQD4jgEbilmStcIP08Ev4WGHVnRS2S2zqQeMeLs21p4ho9rScGSsPY3ZcYkpMNKaaQp1WSEgvggTBLFOlLlIKPB3+S69btA+1OICXIcsL2H+WbkocW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U3LhG1Dh; arc=none smtp.client-ip=209.85.214.181
+	s=arc-20240116; t=1764793434; c=relaxed/simple;
+	bh=H3qq8NXAbCoDl1lI9pvTZNbJD7FkSGRSasmvrrHI8nw=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=j8L2PnaN+T2qSgh6UUEMEtDjzzqRGsFa8pTnqeZAp108DGj2XMBmlL16ykIv8Ku6SD+g77x07RTy8KCZylHVcgp/kPwfXPjPbXNSGxkt4kTUeURUuij29fymDXNye3n+HbcJf5rUmY7g7TVG5qnWY+kE7ro0jalRvVc9PK0nsCQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dAecPv5Q; arc=none smtp.client-ip=209.85.128.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-2958db8ae4fso1623485ad.2
-        for <bpf@vger.kernel.org>; Wed, 03 Dec 2025 11:50:53 -0800 (PST)
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-477a1c28778so2157965e9.3
+        for <bpf@vger.kernel.org>; Wed, 03 Dec 2025 12:23:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764791453; x=1765396253; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XgOttIWXfJgjczBPR9xZTna+eMm29/vqg3UHRM0Hxnw=;
-        b=U3LhG1DhsOmanIh9i8eK4vODbcQGB7aACOZAx1H/+vVIbMuupf7oueSbwTSMf8jg0t
-         MqbOdgVGW/XhAzMEJI0AtvpoGDiHVoYfsbF9rknKz68nO1r0TGP3DrOq30+hndc5gSji
-         KuRchLH1wRwoCbhTLGC6L3C+1ae76bhXqnQeU/mKytsBPCFQex34Flh5xiIih7ShLWUg
-         sPApCrHHG6HR/SDZgluvLbs76f1nGrYVHIuSuN4/s8HPnax8Lverjup1EL57yyM/orsl
-         s5k3bm+R9kSvTizElnfzgom970ucC30TAbWpykAd5MPGR+zMtqgsboBkUUCY+Otm2Ei9
-         mXvg==
+        d=gmail.com; s=20230601; t=1764793430; x=1765398230; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=zi2Tym97Iw47XsW0KDcn1kY+fahoY4a+WRZ6zbXd8IA=;
+        b=dAecPv5QWr1qwfgxSNEAoxGWtuV7+93+QdDtLpVgzPQsow/jkn8r0v6gA4nMB3WAQd
+         yUqLIpD9qHcTSBPKecqpL0lCurp1rs4XvZTvtqW16yF20Dz+/5SPFjtEdrxXM+UyUl/a
+         6poF8y0U5bKA5DfMcbEFaTTHNpjhtDfUV3G0xfKckvlfjZDcNJQAJrna2uBldc8H8rh1
+         NOQaHEExkPrjh8Qx1O5x9JXxPbkncTuE+FC1Br3V7viWLzNS2HiV8txxTrETIZqqawFQ
+         VeMK1I0CJTShm1LXIYT0K9KM6ACvHSJMLeboDNiJlpMTPowM53F8SG2jsJ/kfRrmra5t
+         RXtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764791453; x=1765396253;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=XgOttIWXfJgjczBPR9xZTna+eMm29/vqg3UHRM0Hxnw=;
-        b=olWD66/qEGdm11KNSPpL1I4VcfeoOSlolx2MPEM16+N+eKcf1sWi1AeTibVO4wp05Q
-         ixZf2mZ1iZGHSrrJjiN9qVaM6XN8svzxeMyll+21rG0+Pwtx0JMxgMBUJeImDdVOip0n
-         KDCxWGPu7Jngj3ltn8Nn8hpp5UMQOzZMcM1jBPqx/0HK7n3bNKjMB/SPv8V5LI+qX452
-         PWViFoI5X1BM7A6hBflkkWbdv5f2TIZP67VssAtlNtGVsbwTcOemdA1ycKyNpo4eqd22
-         NwcMd2s5DU2M9unPkF3UOAZa+2mO4KwitRtzFLD1DabXYFxfX7pvbqZiXRaGCfdZhqBg
-         fxwA==
-X-Gm-Message-State: AOJu0YwyobvFwlaGUDK9lPXncOfsrdKHs+7CXNljsORzdqYTT6nOOEM/
-	rP/POp+0b61kAPYkdsgaCVxfGYe4/oTUt+uKc3vO7wQjJgvuU/VWYz7wcbH3Bw==
-X-Gm-Gg: ASbGncugrFVCEzLLpXv5Ai6VYbeA0eK1127rjPoOXv85lxqwgerLN4JjppXjy6hibJ9
-	89cXb3r4QiPuNnFZyR2+M6ZdSxrmtMExn29Dr1AkNq50iGlMr8TNBzaQdVieeuXD73Qh87DZbiB
-	+k0ZHD/g4lnBGE5g5FvsS0BsG/n8toaQUMdpTZnzqVYDLlfOyF8AD3wxmu+jVjO1kxVxgVqq8UK
-	f5/8FY6bIFkUR+Dd9U3YxvJSSr81QTis/zrPSpWGIn7rxEQUqxG1NYF4UZiIr/XDE65mLs2Xr1Z
-	VcARMtr7+JNGTNm0ltZ3SqEoweW8Fzs2IqscbjEuuEUm0YkdPHDKnbZAWfZ4gs2eM1WkN5a+veG
-	n6PkY7j9LhG5JLS6bJrrbXr4Bzo4156n0G4c+N0WwPLvDDQEnpSvvFA0pCuRiG0iOzFmdgAyNE5
-	2mBH31eHc5GXEqyg==
-X-Google-Smtp-Source: AGHT+IHgm4TSB6LgIDVBXKQE+ZZOWSDfRVI9lTM43Fzl56goetJfekyKD5PJeeran8lm0xJLI3U3eg==
-X-Received: by 2002:a17:903:245:b0:295:6c26:933b with SMTP id d9443c01a7336-29d682be6a7mr44294705ad.1.1764791452469;
-        Wed, 03 Dec 2025 11:50:52 -0800 (PST)
-Received: from localhost ([2a03:2880:ff:71::])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29bce40ac99sm192171115ad.7.2025.12.03.11.50.51
+        d=1e100.net; s=20230601; t=1764793430; x=1765398230;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zi2Tym97Iw47XsW0KDcn1kY+fahoY4a+WRZ6zbXd8IA=;
+        b=FxRWQ0kk2QdCer6SKQuuY1ilwwQSpnf4O3Rfw1iXxpOwr/mDOL7w0XxftquQVkXui7
+         dMMFcLSbFVuJbhNqTO3fqHKagQ9N4o0fR9zi0A+xWKDUyqpBwvkh456rM+XLugZ3DYy/
+         FwwtKGdXc5GpHCuefq3An2GqFhtN4PkSNYLzr6fUbFoKaD3bnaZPdmTTi+IlhjoL1FsX
+         vY49fE9gD57PHVsxkMXXTuwxXKJlqZtqUV6dFbp3SnLeV9q7VPzL5tB9kqSygWP3bUUm
+         l/atvaUk6Q5dS89U7xM9vyVXVZb15WQJD3+jm/vZEUuR0A8M/b54yUMXakhMcsGhbReb
+         jA3g==
+X-Forwarded-Encrypted: i=1; AJvYcCU9mHVu+Q/gMP7GSae8sxE3q1Ngsm/8UrJyAJJcvXha3lJQ21ByhD+d0z7FwB1q8cU0fjw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzmS05mmFaKl5Ii5byLfxcwdSGo6+ndVEecxUyqjs4iXWHjW6zY
+	NqeuZhHyHlud7kBmar/DikuHq13/gBB610p7hbkzeSdDWtb7VryDRZmd
+X-Gm-Gg: ASbGncvj9u/5E3ivPBZ+71YJ399N4IdPR2Ej1+Wu+YZddH76EHGkgsIcwnWbFcFpcTE
+	FunzeX5tkch9m4xsrdLjj1GFQSjSa/bRidQbYbXmZVgaQjkdydQ15rgLIBmFMZs1eTGH1kJrDCI
+	6EUBNTB9BQXQn0yQzEMRqFPfko0n5UjyKj3dVgD4Ev6dCFLqFrmKFwER59F3Jhu1kmOQuMsPdhK
+	OmN9Wpz4iO54aMSFDq3cETp5bBytNDVKK9dYeJ+fihKxnzeseXQi3OVNOhFqbZKjCiXJr/XTeB4
+	H6x9/Kz3wMfoL4B8oEzSkmOQyW71qYcbGH5RIoVAQjKyj3fjFauZB2gw6FH/h8nfk+x7xXR5K2R
+	VZ7WlJ8nXQpoNEkZbSfYh5fJ87TJmBBqpWxu0/8PjRRv5hywzj/WpzdRXIFpO2qpg0M/mAFHChe
+	8=
+X-Google-Smtp-Source: AGHT+IHAWH1Cpvq5B81/xkivbTXgTXuutxLETKY/29bdgzeJHM6sjIXHH155EYl31r8m6eHuaFG7fg==
+X-Received: by 2002:a05:6000:22c2:b0:428:4004:8241 with SMTP id ffacd0b85a97d-42f79851c93mr237747f8f.40.1764793429799;
+        Wed, 03 Dec 2025 12:23:49 -0800 (PST)
+Received: from krava ([176.74.159.170])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42e1c5d614asm40900203f8f.12.2025.12.03.12.23.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Dec 2025 11:50:52 -0800 (PST)
-From: Amery Hung <ameryhung@gmail.com>
-To: bpf@vger.kernel.org
-Cc: alexei.starovoitov@gmail.com,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@kernel.org,
-	eddyz87@gmail.com,
-	ameryhung@gmail.com,
-	kernel-team@meta.com
-Subject: [PATCH bpf v3 2/2] selftests/bpf: Test tail call when cgroup storage is used
-Date: Wed,  3 Dec 2025 11:50:50 -0800
-Message-ID: <20251203195050.3215728-2-ameryhung@gmail.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20251203195050.3215728-1-ameryhung@gmail.com>
-References: <20251203195050.3215728-1-ameryhung@gmail.com>
+        Wed, 03 Dec 2025 12:23:49 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Wed, 3 Dec 2025 21:23:47 +0100
+To: Menglong Dong <menglong8.dong@gmail.com>
+Cc: Steven Rostedt <rostedt@kernel.org>, Florent Revest <revest@google.com>,
+	Mark Rutland <mark.rutland@arm.com>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>
+Subject: Re: [PATCHv4 bpf-next 1/9] ftrace,bpf: Remove FTRACE_OPS_FL_JMP
+ ftrace_ops flag
+Message-ID: <aTCcU509ajY9-Dgj@krava>
+References: <20251203082402.78816-1-jolsa@kernel.org>
+ <20251203082402.78816-2-jolsa@kernel.org>
+ <CADxym3awpEbMiSKE5aDcyd2Cg1Cdo7++SLAMSuZmaggt3BSbUA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CADxym3awpEbMiSKE5aDcyd2Cg1Cdo7++SLAMSuZmaggt3BSbUA@mail.gmail.com>
 
-Make sure that if the owner of a program array map uses cgroup storage,
-(1) all callers must use cgroup storage and (2) the cgroup storage map
-used by all callers and callees must be the owner's cgroup storage map.
+On Wed, Dec 03, 2025 at 05:15:52PM +0800, Menglong Dong wrote:
+> On Wed, Dec 3, 2025 at 4:24 PM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > At the moment the we allow the jmp attach only for ftrace_ops that
+> > has FTRACE_OPS_FL_JMP set. This conflicts with following changes
+> > where we use single ftrace_ops object for all direct call sites,
+> > so all could be be attached via just call or jmp.
+> >
+> > We already limit the jmp attach support with config option and bit
+> > (LSB) set on the trampoline address. It turns out that's actually
+> > enough to limit the jmp attach for architecture and only for chosen
+> > addresses (with LSB bit set).
+> >
+> > Each user of register_ftrace_direct or modify_ftrace_direct can set
+> > the trampoline bit (LSB) to indicate it has to be attached by jmp.
+> >
+> > The bpf trampoline generation code uses trampoline flags to generate
+> > jmp-attach specific code and ftrace inner code uses the trampoline
+> > bit (LSB) to handle return from jmp attachment, so there's no harm
+> > to remove the FTRACE_OPS_FL_JMP bit.
+> >
+> > The fexit/fmodret performance stays the same (did not drop),
+> > current code:
+> >
+> >   fentry         :   77.904 ± 0.546M/s
+> >   fexit          :   62.430 ± 0.554M/s
+> >   fmodret        :   66.503 ± 0.902M/s
+> >
+> > with this change:
+> >
+> >   fentry         :   80.472 ± 0.061M/s
+> >   fexit          :   63.995 ± 0.127M/s
+> >   fmodret        :   67.362 ± 0.175M/s
+> >
+> > Fixes: 25e4e3565d45 ("ftrace: Introduce FTRACE_OPS_FL_JMP")
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  include/linux/ftrace.h  |  1 -
+> >  kernel/bpf/trampoline.c | 32 ++++++++++++++------------------
+> >  kernel/trace/ftrace.c   | 14 --------------
+> >  3 files changed, 14 insertions(+), 33 deletions(-)
+> >
+> > diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+> > index 015dd1049bea..505b7d3f5641 100644
+> > --- a/include/linux/ftrace.h
+> > +++ b/include/linux/ftrace.h
+> > @@ -359,7 +359,6 @@ enum {
+> >         FTRACE_OPS_FL_DIRECT                    = BIT(17),
+> >         FTRACE_OPS_FL_SUBOP                     = BIT(18),
+> >         FTRACE_OPS_FL_GRAPH                     = BIT(19),
+> > -       FTRACE_OPS_FL_JMP                       = BIT(20),
+> 
+> Yeah, the FTRACE_OPS_FL_JMP is not necessary. I added
+> it in case that we maybe want to implement such "jmp" for
+> ftrace trampoline in the feature. But it's OK to remove it now.
+> 
+> >  };
+> >
+> >  #ifndef CONFIG_DYNAMIC_FTRACE_WITH_ARGS
+> > diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+> > index 976d89011b15..b9a358d7a78f 100644
+> > --- a/kernel/bpf/trampoline.c
+> > +++ b/kernel/bpf/trampoline.c
+> > @@ -214,10 +214,15 @@ static int modify_fentry(struct bpf_trampoline *tr, u32 orig_flags,
+> >         int ret;
+> >
+> >         if (tr->func.ftrace_managed) {
+> > +               unsigned long addr = (unsigned long) new_addr;
+> > +
+> > +               if (bpf_trampoline_use_jmp(tr->flags))
+> > +                       addr = ftrace_jmp_set(addr);
 
-Signed-off-by: Amery Hung <ameryhung@gmail.com>
----
- .../selftests/bpf/prog_tests/tailcalls.c      | 119 ++++++++++++++++++
- .../bpf/progs/tailcall_cgrp_storage.c         |  45 +++++++
- .../progs/tailcall_cgrp_storage_no_storage.c  |  21 ++++
- .../bpf/progs/tailcall_cgrp_storage_owner.c   |  33 +++++
- 4 files changed, 218 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/tailcall_cgrp_storage.c
- create mode 100644 tools/testing/selftests/bpf/progs/tailcall_cgrp_storage_no_storage.c
- create mode 100644 tools/testing/selftests/bpf/progs/tailcall_cgrp_storage_owner.c
+I wanted to get rid of the  void * -> unsigned long casting in all the
+places.. this way it has to be just on one place above, but maybe we
+could have already direct_ops_add with unsigned long addr, will check
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/tailcalls.c b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-index 0ab36503c3b2..8ae4d101ed66 100644
---- a/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-@@ -8,6 +8,9 @@
- #include "tailcall_freplace.skel.h"
- #include "tc_bpf2bpf.skel.h"
- #include "tailcall_fail.skel.h"
-+#include "tailcall_cgrp_storage_owner.skel.h"
-+#include "tailcall_cgrp_storage_no_storage.skel.h"
-+#include "tailcall_cgrp_storage.skel.h"
- 
- /* test_tailcall_1 checks basic functionality by patching multiple locations
-  * in a single program for a single tail call slot with nop->jmp, jmp->nop
-@@ -1648,6 +1651,116 @@ static void test_tailcall_bpf2bpf_freplace(void)
- 	tc_bpf2bpf__destroy(tc_skel);
- }
- 
-+/*
-+ * test_tail_call_cgrp_storage checks that if the owner program of a program
-+ * array uses cgroup storage, other callers and callees must also use the
-+ * exact same cgroup storage.
-+ */
-+static void test_tailcall_cgrp_storage(void)
-+{
-+	int err, prog_fd, prog_array_fd, storage_map_fd, key = 0;
-+	struct tailcall_cgrp_storage_owner *owner_skel;
-+	struct tailcall_cgrp_storage *skel;
-+
-+	/* Load owner_skel first to make sure it becomes the owner of prog_array */
-+	owner_skel = tailcall_cgrp_storage_owner__open_and_load();
-+	if (!ASSERT_OK_PTR(owner_skel, "tailcall_cgrp_storage_owner__open_and_load"))
-+		return;
-+
-+	prog_array_fd = bpf_map__fd(owner_skel->maps.prog_array);
-+	storage_map_fd = bpf_map__fd(owner_skel->maps.storage_map);
-+
-+	skel = tailcall_cgrp_storage__open();
-+	if (!ASSERT_OK_PTR(skel, "tailcall_cgrp_storage__open")) {
-+		tailcall_cgrp_storage_owner__destroy(owner_skel);
-+		return;
-+	}
-+
-+	err = bpf_map__reuse_fd(skel->maps.prog_array, prog_array_fd);
-+	ASSERT_OK(err, "bpf_map__reuse_fd(prog_array)");
-+
-+	err = bpf_map__reuse_fd(skel->maps.storage_map, storage_map_fd);
-+	ASSERT_OK(err, "bpf_map__reuse_fd(storage_map)");
-+
-+	err = bpf_object__load(skel->obj);
-+	ASSERT_OK(err, "bpf_object__load");
-+
-+	prog_fd = bpf_program__fd(skel->progs.callee_prog);
-+
-+	err = bpf_map_update_elem(prog_array_fd, &key, &prog_fd, BPF_ANY);
-+	ASSERT_OK(err, "bpf_map_update_elem(prog_array)");
-+
-+	tailcall_cgrp_storage__destroy(skel);
-+	tailcall_cgrp_storage_owner__destroy(owner_skel);
-+}
-+
-+/*
-+ * test_tail_call_cgrp_storage_diff_storage checks that a program using tail call
-+ * is rejected if it uses a cgroup storage different from the owner's.
-+ */
-+static void test_tailcall_cgrp_storage_diff_storage(void)
-+{
-+	struct tailcall_cgrp_storage_owner *owner_skel;
-+	struct tailcall_cgrp_storage *skel;
-+	int err, prog_array_fd;
-+
-+	/* Load owner_skel first to make sure it becomes the owner of prog_array */
-+	owner_skel = tailcall_cgrp_storage_owner__open_and_load();
-+	if (!ASSERT_OK_PTR(owner_skel, "tailcall_cgrp_storage_owner__open_and_load"))
-+		return;
-+
-+	prog_array_fd = bpf_map__fd(owner_skel->maps.prog_array);
-+
-+	skel = tailcall_cgrp_storage__open();
-+	if (!ASSERT_OK_PTR(skel, "tailcall_cgrp_storage__open")) {
-+		tailcall_cgrp_storage_owner__destroy(owner_skel);
-+		return;
-+	}
-+
-+	err = bpf_map__reuse_fd(skel->maps.prog_array, prog_array_fd);
-+	ASSERT_OK(err, "bpf_map__reuse_fd(prog_array)");
-+
-+	err = bpf_object__load(skel->obj);
-+	ASSERT_ERR(err, "bpf_object__load");
-+
-+	tailcall_cgrp_storage__destroy(skel);
-+	tailcall_cgrp_storage_owner__destroy(owner_skel);
-+}
-+
-+/*
-+ * test_tail_call_cgrp_storage_no_storage checks that a program using tail call
-+ * is rejected if it does not use cgroup storage while the owner does.
-+ */
-+static void test_tailcall_cgrp_storage_no_storage(void)
-+{
-+	struct tailcall_cgrp_storage_owner *owner_skel;
-+	struct tailcall_cgrp_storage_no_storage *skel;
-+	int err, prog_array_fd, storage_map_fd;
-+
-+	/* Load owner_skel first to make sure it becomes the owner of prog_array */
-+	owner_skel = tailcall_cgrp_storage_owner__open_and_load();
-+	if (!ASSERT_OK_PTR(owner_skel, "tailcall_cgrp_storage_owner__open_and_load"))
-+		return;
-+
-+	prog_array_fd = bpf_map__fd(owner_skel->maps.prog_array);
-+	storage_map_fd = bpf_map__fd(owner_skel->maps.storage_map);
-+
-+	skel = tailcall_cgrp_storage_no_storage__open();
-+	if (!ASSERT_OK_PTR(skel, "tailcall_cgrp_storage_no_storage__open")) {
-+		tailcall_cgrp_storage_owner__destroy(owner_skel);
-+		return;
-+	}
-+
-+	err = bpf_map__reuse_fd(skel->maps.prog_array, prog_array_fd);
-+	ASSERT_OK(err, "bpf_map__reuse_fd(prog_array)");
-+
-+	err = bpf_object__load(skel->obj);
-+	ASSERT_ERR(err, "bpf_object__load");
-+
-+	tailcall_cgrp_storage_no_storage__destroy(skel);
-+	tailcall_cgrp_storage_owner__destroy(owner_skel);
-+}
-+
- static void test_tailcall_failure()
- {
- 	RUN_TESTS(tailcall_fail);
-@@ -1705,6 +1818,12 @@ void test_tailcalls(void)
- 		test_tailcall_freplace();
- 	if (test__start_subtest("tailcall_bpf2bpf_freplace"))
- 		test_tailcall_bpf2bpf_freplace();
-+	if (test__start_subtest("tailcall_cgrp_storage"))
-+		test_tailcall_cgrp_storage();
-+	if (test__start_subtest("tailcall_cgrp_storage_diff_storage"))
-+		test_tailcall_cgrp_storage_diff_storage();
-+	if (test__start_subtest("tailcall_cgrp_storage_no_storage"))
-+		test_tailcall_cgrp_storage_no_storage();
- 	if (test__start_subtest("tailcall_failure"))
- 		test_tailcall_failure();
- }
-diff --git a/tools/testing/selftests/bpf/progs/tailcall_cgrp_storage.c b/tools/testing/selftests/bpf/progs/tailcall_cgrp_storage.c
-new file mode 100644
-index 000000000000..e8356f95fb0a
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/tailcall_cgrp_storage.c
-@@ -0,0 +1,45 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE);
-+	__type(key, struct bpf_cgroup_storage_key);
-+	__type(value, __u64);
-+} storage_map SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
-+	__uint(max_entries, 1);
-+	__uint(key_size, sizeof(__u32));
-+	__uint(value_size, sizeof(__u32));
-+} prog_array SEC(".maps");
-+
-+SEC("cgroup_skb/egress")
-+int caller_prog(struct __sk_buff *skb)
-+{
-+	__u64 *storage;
-+
-+	storage = bpf_get_local_storage(&storage_map, 0);
-+	if (storage)
-+		*storage = 1;
-+
-+	bpf_tail_call(skb, &prog_array, 0);
-+
-+	return 1;
-+}
-+
-+SEC("cgroup_skb/egress")
-+int callee_prog(struct __sk_buff *skb)
-+{
-+	__u64 *storage;
-+
-+	storage = bpf_get_local_storage(&storage_map, 0);
-+	if (storage)
-+		*storage = 1;
-+
-+	return 1;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/tailcall_cgrp_storage_no_storage.c b/tools/testing/selftests/bpf/progs/tailcall_cgrp_storage_no_storage.c
-new file mode 100644
-index 000000000000..2f295e66d488
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/tailcall_cgrp_storage_no_storage.c
-@@ -0,0 +1,21 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
-+	__uint(max_entries, 1);
-+	__uint(key_size, sizeof(__u32));
-+	__uint(value_size, sizeof(__u32));
-+} prog_array SEC(".maps");
-+
-+SEC("cgroup_skb/egress")
-+int caller_prog(struct __sk_buff *skb)
-+{
-+	bpf_tail_call(skb, &prog_array, 0);
-+
-+	return 1;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/tailcall_cgrp_storage_owner.c b/tools/testing/selftests/bpf/progs/tailcall_cgrp_storage_owner.c
-new file mode 100644
-index 000000000000..6ac195b800cf
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/tailcall_cgrp_storage_owner.c
-@@ -0,0 +1,33 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE);
-+	__type(key, struct bpf_cgroup_storage_key);
-+	__type(value, __u64);
-+} storage_map SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
-+	__uint(max_entries, 1);
-+	__uint(key_size, sizeof(__u32));
-+	__uint(value_size, sizeof(__u32));
-+} prog_array SEC(".maps");
-+
-+SEC("cgroup_skb/egress")
-+int prog_array_owner(struct __sk_buff *skb)
-+{
-+	__u64 *storage;
-+
-+	storage = bpf_get_local_storage(&storage_map, 0);
-+	if (storage)
-+		*storage = 1;
-+
-+	bpf_tail_call(skb, &prog_array, 0);
-+
-+	return 1;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.47.3
+jirka
 
+> 
+> nit: It seems that we can remove the variable "addr" can use
+> the "new_addr" directly?
+> 
+> > +
+> >                 if (lock_direct_mutex)
+> > -                       ret = modify_ftrace_direct(tr->fops, (long)new_addr);
+> > +                       ret = modify_ftrace_direct(tr->fops, addr);
+> >                 else
+> > -                       ret = modify_ftrace_direct_nolock(tr->fops, (long)new_addr);
+> > +                       ret = modify_ftrace_direct_nolock(tr->fops, addr);
+> >         } else {
+> >                 ret = bpf_trampoline_update_fentry(tr, orig_flags, old_addr,
+> >                                                    new_addr);
+> > @@ -240,10 +245,15 @@ static int register_fentry(struct bpf_trampoline *tr, void *new_addr)
+> >         }
+> >
+> >         if (tr->func.ftrace_managed) {
+> > +               unsigned long addr = (unsigned long) new_addr;
+> > +
+> > +               if (bpf_trampoline_use_jmp(tr->flags))
+> > +                       addr = ftrace_jmp_set(addr);
+> 
+> And here.
+> 
+> Thanks!
+> Menglong Dong
+> 
+> > +
+> [...]
+> >
 
