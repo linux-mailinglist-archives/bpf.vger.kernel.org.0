@@ -1,128 +1,145 @@
-Return-Path: <bpf+bounces-75967-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-75968-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 767A8C9EFEC
-	for <lists+bpf@lfdr.de>; Wed, 03 Dec 2025 13:31:39 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 81937348F53
-	for <lists+bpf@lfdr.de>; Wed,  3 Dec 2025 12:31:38 +0000 (UTC)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75A30C9F74B
+	for <lists+bpf@lfdr.de>; Wed, 03 Dec 2025 16:30:34 +0100 (CET)
+Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7C84E306E9F7
+	for <lists+bpf@lfdr.de>; Wed,  3 Dec 2025 15:23:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A26A9139579;
-	Wed,  3 Dec 2025 12:31:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B31A132862C;
+	Wed,  3 Dec 2025 15:14:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H8lREmwu"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Fi2U1ydu"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 223A7163;
-	Wed,  3 Dec 2025 12:31:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A53C8325735
+	for <bpf@vger.kernel.org>; Wed,  3 Dec 2025 15:14:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764765093; cv=none; b=WFWy2AXrf0Wz/t4YqvprrHKv9fOxGLScYClHEi84/4bz5di+0hHmq/P3D3Cn+C23aBBiuFw0vHf0jpAhg1gbe+Bqcs2XUIZZNQCUG3FBVPp+xkfWLIowy70+7/CFO9N/VomGn2PfgE5e8KjgedrJ/R/02hINST2IgwDaxHciO0Y=
+	t=1764774869; cv=none; b=IRlw8WZzy7GTIc1IR2+OWECtiOpd03Q90vDxLw/843b3+S0zxN7LVl50DpOFgNJMQiNLSmBoUmckLjMd7NVYWetxVjFwvUBmS973hSSuFv+zt7xiKN4J1G+twUfvRlI1nLgsGBA2AaiA0tQr+9OT6DRajM8IV6cwzYb3uPFczwQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764765093; c=relaxed/simple;
-	bh=ov2tyNTIvijPsGgQW9o0usNlWj/FRBb3dJlRN9sL45s=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ZajjCXjBiuy+XJvdfHr8p5JX7JURCWy2Ll808RCSBEH5P0w1sAlJPkhJqGDbwsBgkFHQymq8xp7PaZYzlmqWv+YYAV9EXduRWcE/7IE8NLlGnXg91tEf7litYRJQ+eLrAhHGAeYw+ZqtKXHTrbhR2xXCA7VPU5wV1KHw6T+j+fM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H8lREmwu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E51EC4CEFB;
-	Wed,  3 Dec 2025 12:31:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764765092;
-	bh=ov2tyNTIvijPsGgQW9o0usNlWj/FRBb3dJlRN9sL45s=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=H8lREmwuHNo8o6lNjloLQ6k80pBMdG0UFUey9SH3lRfGT8tjGQqBWQb+/U3E5miCq
-	 DZBsSf1pT8wQUhMB3nNhBxbgSNUTC5l4b3qZy48UTAAGN9i6VsST2GhRTT66E1Gqei
-	 fEcocMc2lSIfG1dSx9uxHsGfH/Bn6fSwzC/prFa6C8n+jFuidVGIPW5bxqVCQXWG6M
-	 KuiGTs9qSQFndTS9oY9mFkxvovJ1Yk9r+B1MANUUCr25jGUhQpQwqSKc1D1xw5fbcJ
-	 zMu8r7mPew3K1xKO9XS2mnyzpA1G/jRkJMUVNClKSGBWJMdT86PAI+w1eoofMONhi7
-	 mkopBdXFYD7qQ==
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 5FB703B1A1B; Wed, 03 Dec 2025 13:31:29 +0100 (CET)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
-To: Jesper Dangaard Brouer <hawk@kernel.org>, Kohei Enju <enjuk@amazon.com>,
- alexei.starovoitov@gmail.com
-Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
- daniel@iogearbox.net, davem@davemloft.net, eddyz87@gmail.com,
- haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
- kohei.enju@gmail.com, kpsingh@kernel.org, kuba@kernel.org,
- lorenzo@kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org,
- sdf@fomichev.me, shuah@kernel.org, song@kernel.org,
- yonghong.song@linux.dev, kernel-team <kernel-team@cloudflare.com>
-Subject: Re: [PATCH bpf v1 1/2] bpf: cpumap: propagate underlying error in
- cpu_map_update_elem()
-In-Reply-To: <7b6b9d1a-c160-4198-8a58-0586424b56e5@kernel.org>
-References: <CAADnVQLjw=iv3tDb8UadT_ahm_xuAFSQ6soG-W=eVPEjO_jGZw@mail.gmail.com>
- <20251203104037.40660-1-enjuk@amazon.com>
- <7b6b9d1a-c160-4198-8a58-0586424b56e5@kernel.org>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Wed, 03 Dec 2025 13:31:29 +0100
-Message-ID: <87jyz39272.fsf@toke.dk>
+	s=arc-20240116; t=1764774869; c=relaxed/simple;
+	bh=8xU9bgAfQF75D6U15lEpa3GwmcZ4IzP/Zytt/4wQj3o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rLsAdDRCPoHo0UGEvxn7KqNSMQRGBBpbT7uw6cm2+XBPYdPN3yb9F6a8gW6G6xJpecLooQTuGDQWiRGamNd9aL7lv/W849a4dT5+prl11xpJEhc8SQBJYaGbNpzuxlpyOuO8LCrZesLteT28bF3oXEHj7zKsH411J6OeGsJc+Zc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Fi2U1ydu; arc=none smtp.client-ip=91.218.175.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <b35fe921-473e-457b-a7ad-ca84c815788c@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1764774855;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pkXnjZ0hTkjuDzpjasxp3KdLtUkvR20DGjEbN4J8Z9s=;
+	b=Fi2U1yduT9vUj+HWNQhGY9ltENz6VcAwmr6ryaFcR4tpSR6sLSASTX0M47L4RWwV9LysNL
+	RC4ZSTmOYZGlNgwfRA3y7oLIWRE71pG/VzemMUHoJ2dxhZkSCMvyw2xeskQYiKLOiD7WqJ
+	KeyN1UQ8+k+gnbXjayqduJKC7OsA1Wc=
+Date: Wed, 3 Dec 2025 23:14:05 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next 1/3] bpf: Avoid unintended eviction when updating
+ lru_hash maps
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, houtao1@huawei.com
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ Saket Kumar Bhaskar <skb99@linux.ibm.com>,
+ "David S . Miller" <davem@davemloft.net>, LKML
+ <linux-kernel@vger.kernel.org>,
+ "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
+ kernel-patches-bot@fb.com
+References: <20251202153032.10118-1-leon.hwang@linux.dev>
+ <20251202153032.10118-2-leon.hwang@linux.dev>
+ <CAADnVQKrxz6Fa-rT6466U_HjE4TDDrJ9kdU_h28=Av+L92NBgA@mail.gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Leon Hwang <leon.hwang@linux.dev>
+In-Reply-To: <CAADnVQKrxz6Fa-rT6466U_HjE4TDDrJ9kdU_h28=Av+L92NBgA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Jesper Dangaard Brouer <hawk@kernel.org> writes:
 
-> On 03/12/2025 11.40, Kohei Enju wrote:
->> On Tue, 2 Dec 2025 17:08:32 -0800, Alexei Starovoitov wrote:
->>=20
->>> On Fri, Nov 28, 2025 at 8:05=E2=80=AFAM Kohei Enju <enjuk@amazon.com> w=
-rote:
->>>>
->>>> After commit 9216477449f3 ("bpf: cpumap: Add the possibility to attach
->>>> an eBPF program to cpumap"), __cpu_map_entry_alloc() may fail with
->>>> errors other than -ENOMEM, such as -EBADF or -EINVAL.
->>>>
->>>> However, __cpu_map_entry_alloc() returns NULL on all failures, and
->>>> cpu_map_update_elem() unconditionally converts this NULL into -ENOMEM.
->>>> As a result, user space always receives -ENOMEM regardless of the actu=
-al
->>>> underlying error.
->>>>
->>>> Examples of unexpected behavior:
->>>>    - Nonexistent fd  : -ENOMEM (should be -EBADF)
->>>>    - Non-BPF fd      : -ENOMEM (should be -EINVAL)
->>>>    - Bad attach type : -ENOMEM (should be -EINVAL)
->>>>
->>>> Change __cpu_map_entry_alloc() to return ERR_PTR(err) instead of NULL
->>>> and have cpu_map_update_elem() propagate this error.
->>>>
->>>> Fixes: 9216477449f3 ("bpf: cpumap: Add the possibility to attach an eB=
-PF program to cpumap")
->>>
->>> The current behavior is what it is. It's not a bug and
->>> this patch is not a fix. It's probably an ok improvement,
->>> but since it changes user visible behavior we have to be careful.
->>=20
->> Oops, got it.
->> When I resend, I'll remove the tag and send to bpf-next, not to bpf.
->>=20
->> Thank you for taking a look.
->>=20
->>>
->>> I'd like Jesper and/or other cpumap experts to confirm that it's ok.
->>>
->>=20
->> Sure, I'd like to wait for reactions from cpumap experts.
->
-> Skimmed the code changes[1] and they look good to me :-)
 
-We have one example of a use of the cpumap programs in xdp-tools, and
-there we just report the error message to the user. I would guess other
-apps would follow the same pattern rather than react to a specific error
-code; especially since there's only one error code being used here.
+On 2025/12/3 02:10, Alexei Starovoitov wrote:
+> On Tue, Dec 2, 2025 at 7:31 AM Leon Hwang <leon.hwang@linux.dev> wrote:
+>>
+>> When updating an existing element in lru_hash maps, the current
+>> implementation always calls prealloc_lru_pop() to get a new node before
+>> checking if the key already exists. If the map is full, this triggers
+>> LRU eviction and removes an existing element, even though the update
+>> operation only needs to modify the value of an existing key in-place.
+>>
+>> This is problematic because:
+>> 1. Users may unexpectedly lose entries when doing simple value updates
+>> 2. The eviction overhead is unnecessary for existing key updates
+>>
+>> Fix this by first checking if the key exists before allocating a new
+>> node. If the key is found, update the value in-place, refresh the LRU
+>> reference, and return immediately without triggering any eviction.
+>>
+>> Fixes: 29ba732acbee ("bpf: Add BPF_MAP_TYPE_LRU_HASH")
+>> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
+>> ---
+>>  kernel/bpf/hashtab.c | 21 +++++++++++++++++++++
+>>  1 file changed, 21 insertions(+)
+>>
+>> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+>> index c8a9b27f8663..fb624aa76573 100644
+>> --- a/kernel/bpf/hashtab.c
+>> +++ b/kernel/bpf/hashtab.c
+>> @@ -1207,6 +1207,27 @@ static long htab_lru_map_update_elem(struct bpf_map *map, void *key, void *value
+>>         b = __select_bucket(htab, hash);
+>>         head = &b->head;
+>>
+>> +       ret = htab_lock_bucket(b, &flags);
+>> +       if (ret)
+>> +               goto err_lock_bucket;
+>> +
+>> +       l_old = lookup_elem_raw(head, hash, key, key_size);
+>> +
+>> +       ret = check_flags(htab, l_old, map_flags);
+>> +       if (ret)
+>> +               goto err;
+>> +
+>> +       if (l_old) {
+>> +               bpf_lru_node_set_ref(&l_old->lru_node);
+>> +               copy_map_value(&htab->map, htab_elem_value(l_old, map->key_size), value);
+>> +               check_and_free_fields(htab, l_old);
+>> +       }
+> 
+> We cannot do this. It breaks the atomicity of the update.
+> We added htab_map_update_elem_in_place() for a very specific case.
+> See
+> https://lore.kernel.org/all/20250401062250.543403-1-houtao@huaweicloud.com/
+> and discussion in v1,v2.
+> 
+> We cannot do in-place updates for other map types.
+> It will break user expectations.
+> 
 
-So I agree, this should be OK to change.
+After going through the patch set and the related discussions, I
+understand the concerns around breaking update atomicity.
 
--Toke
+I'll look into alternative approaches to address this issue without
+violating the expected atomic semantics.
+
+Thanks,
+Leon
+
 
