@@ -1,118 +1,99 @@
-Return-Path: <bpf+bounces-76087-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76088-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id C319ECA519A
-	for <lists+bpf@lfdr.de>; Thu, 04 Dec 2025 20:17:00 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05D9CCA51CB
+	for <lists+bpf@lfdr.de>; Thu, 04 Dec 2025 20:23:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 77EA1306EE9B
-	for <lists+bpf@lfdr.de>; Thu,  4 Dec 2025 19:16:24 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 821DF3044696
+	for <lists+bpf@lfdr.de>; Thu,  4 Dec 2025 19:23:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8526634AAED;
-	Thu,  4 Dec 2025 19:16:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCCF433A6F8;
+	Thu,  4 Dec 2025 19:23:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XjxC7aFT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E064wMQF"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F34534AB0B
-	for <bpf@vger.kernel.org>; Thu,  4 Dec 2025 19:16:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D9C52777F3;
+	Thu,  4 Dec 2025 19:23:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764875777; cv=none; b=avcNi87FvG2s/tUl9iviocC3NpDSHdmqOURgxalcwUPHzJTcUM0mqxvqgq/a56Urv+RJrW5KfUVTdnG5IlKA7fEC4AmZpegRmddzfZpB0fyj0PN4+70qor+pY+VBJKw3VKfcS/bCQWsqeHj4+9ySlmHmqKZmFeJIoXdsyWQ2r+o=
+	t=1764876188; cv=none; b=XYFzdi1xemNvpuW1wJV/Y0kfsR7JSK+dWZgkhlwW2K2LoCClAYcVCEXZgChtPwG7JSG/k/yV89tljBt1PUIg+DvN9XguWKlwskej+BTADgrcn/UFEhzjZ3M7Ru9dSJa07346J8kKbbyZxTM6Mrux5pcvNxmGHpdVnv+suGB0t+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764875777; c=relaxed/simple;
-	bh=8QqMHn395gjILbfWZLrNtsZLdkM7F9T77/AVK16lBwc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HAJQDJTdpckFvrEwJ2wZGo7+uIqk7WvJgoSuOQQxqsJHmWHeBOS4eW5xOjq0zWy01tMkS32keb+uvgmp97XGHgJb5mEOlsbUTQG+hRqwTJjRi2znroBYKDD5r+M/qNal+mCRlrSK79H8YvzMPMHfjpQHuvlWf72h5R/ZOjfCk1o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XjxC7aFT; arc=none smtp.client-ip=91.218.175.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <33750d4d-a451-40e7-8642-5c3a3b5e001c@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1764875759;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6SqJVsgPXrE/NXdzxz+yXxv/Ri3/90MygDa9S80ailo=;
-	b=XjxC7aFTKVRuJs3xK3Z9gC7JLLz5BTXTMVmtPqWIrNqmdS0qcT38hAe36UfBOt/Kk5fUw0
-	oR4i9yoe0ntvSyJZkw7RBLaHk+M5jCZZIPCpqIyhQWpo2bbfl7H4XqN9YWyeZ2hdSDFneo
-	PqXOJPwf5Al2tRTZek9gPZ5yF1nqO0Y=
-Date: Thu, 4 Dec 2025 11:15:35 -0800
+	s=arc-20240116; t=1764876188; c=relaxed/simple;
+	bh=H+6vKkQlR+H9nBX7nMyb0WD8+vU1U+IUd1j9QYRXQ4g=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=FY6Tyb70uwWBugTB72OhxDu3MX82AshmlT6QygpjELxVmLknYn07IMvYRfYaYyGZJOxHSFqsiKUAWVipG0JMKnYFqYRyfqg2b2pzRXOJbljaHuKl8ehyQUHWfE6cjQEykUZv0wbB/siG6X5b9TFkd4qd1q3BuGFY+RLu47T8FhY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E064wMQF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 214F8C4CEFB;
+	Thu,  4 Dec 2025 19:23:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1764876188;
+	bh=H+6vKkQlR+H9nBX7nMyb0WD8+vU1U+IUd1j9QYRXQ4g=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=E064wMQFuS60Odu0hSm+JFYbkh9bsawGe0h/bNiczluRcr7ZTZt0Nk7dK4kLWhYiz
+	 EC25x3lfUM3u97Cvqn29RMimXyPlWZ7mo7s9rXIvYExp07ylYwDIOp761SZUYwT3ih
+	 oPS3C/ZYm1N6o5SAJuRN2VA8XGFZWZbVER2iaPRccYCqPWjlxUI/j6BDB3wbW6eO+E
+	 COHdQG/nyHCBdd+OvKnafedyVTOoEI+1koKxAuT+rrkGSqGL753FWKCmqcqVrbklsn
+	 TLpGXYadVspRtU02arDW4+MXFMHK2vsj6PM/EKgrTnSUq9iy9ATbJIFRLIcIj8Pp4U
+	 1sUYZdQs2mNXw==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 7892C380048B;
+	Thu,  4 Dec 2025 19:20:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 2/2] net: smc: SMC_HS_CTRL_BPF should depend on BPF_JIT
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Kui-Feng Lee <thinker.li@gmail.com>, "D . Wythe"
- <alibuda@linux.alibaba.com>, Dust Li <dust.li@linux.alibaba.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Sidraya Jayagond <sidraya@linux.ibm.com>, Wenjia Zhang
- <wenjia@linux.ibm.com>, Mahanta Jambigi <mjambigi@linux.ibm.com>,
- Tony Lu <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>,
- "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
- bpf@vger.kernel.org, linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1764843951.git.geert@linux-m68k.org>
- <988c61e5fea280872d81b3640f1f34d0619cfbbf.1764843951.git.geert@linux-m68k.org>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <988c61e5fea280872d81b3640f1f34d0619cfbbf.1764843951.git.geert@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Subject: Re: [PATCH 0/2] bpf, net: Fix smc for CONFIG_BPF_JIT=n
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <176487600628.940161.471761997237181377.git-patchwork-notify@kernel.org>
+Date: Thu, 04 Dec 2025 19:20:06 +0000
+References: <cover.1764843476.git.geert@linux-m68k.org>
+In-Reply-To: <cover.1764843476.git.geert@linux-m68k.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: thinker.li@gmail.com, martin.lau@linux.dev, alibuda@linux.alibaba.com,
+ dust.li@linux.alibaba.com, ast@kernel.org, daniel@iogearbox.net,
+ john.fastabend@gmail.com, sidraya@linux.ibm.com, wenjia@linux.ibm.com,
+ mjambigi@linux.ibm.com, tonylu@linux.alibaba.com, guwen@linux.alibaba.com,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ horms@kernel.org, bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 
-On 12/4/25 2:29 AM, Geert Uytterhoeven wrote:
-> If CONFIG_BPF_SYSCALL=y, but CONFIG_BPF_JIT=n:
-> 
->      net/smc/smc_hs_bpf.c: In function ‘bpf_smc_hs_ctrl_init’:
->      include/linux/bpf.h:2068:50: error: statement with no effect [-Werror=unused-value]
->       2068 | #define register_bpf_struct_ops(st_ops, type) ({ (void *)(st_ops); 0; })
-> 	  |                                                  ^~~~~~~~~~~~~~~~
->      net/smc/smc_hs_bpf.c:139:16: note: in expansion of macro ‘register_bpf_struct_ops’
->        139 |         return register_bpf_struct_ops(&bpf_smc_hs_ctrl_ops, smc_hs_ctrl);
-> 	  |                ^~~~~~~~~~~~~~~~~~~~~~~
-> 
-> While this compile error is caused by a bug in <linux/bpf.h>, none of
-> the code in net/smc/smc_hs_bpf.c becomes effective if CONFIG_BPF_JIT is
-> not enabled.  Hence add a dependency on BPF_JIT.
-> 
-> While at it, add the missing newline at the end of the file.
-> 
-> Fixes: 15f295f55656658e ("net/smc: bpf: Introduce generic hook for handshake flow")
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> ---
->   net/smc/Kconfig | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/net/smc/Kconfig b/net/smc/Kconfig
-> index 325addf83cc69f6c..277ef504bc26ef89 100644
-> --- a/net/smc/Kconfig
-> +++ b/net/smc/Kconfig
-> @@ -22,10 +22,10 @@ config SMC_DIAG
->   
->   config SMC_HS_CTRL_BPF
->   	bool "Generic eBPF hook for SMC handshake flow"
-> -	depends on SMC && BPF_SYSCALL
-> +	depends on SMC && BPF_JIT && BPF_SYSCALL
->   	default y
->   	help
->   	  SMC_HS_CTRL_BPF enables support to register generic eBPF hook for SMC
->   	  handshake flow, which offer much greater flexibility in modifying the behavior
->   	  of the SMC protocol stack compared to a complete kernel-based approach. Select
-> -	  this option if you want filtring the handshake process via eBPF programs.
-> \ No newline at end of file
-> +	  this option if you want filtring the handshake process via eBPF programs.
+Hello:
 
-I have applied patch 2 to the bpf tree. Thanks.
+This series was applied to bpf/bpf.git (master)
+by Martin KaFai Lau <martin.lau@kernel.org>:
+
+On Thu,  4 Dec 2025 11:29:14 +0100 you wrote:
+> Hi all,
+> 
+> If CONFIG_BPF_SYSCALL=y, but CONFIG_BPF_JIT=n (e.g. m68k/allmodconfig),
+> net/smc/smc_hs_bpf.c fails to build.
+> 
+> This patch series fix the issue in two ways, by:
+>   1. fixing the dummy variant of register_bpf_struct_ops(),
+>   2. making SMC_HS_CTRL_BPF depend on BPF_JIT.
+> 
+> [...]
+
+Here is the summary with links:
+  - [1/2] bpf: Fix register_bpf_struct_ops() dummy
+    (no matching commit)
+  - [2/2] net: smc: SMC_HS_CTRL_BPF should depend on BPF_JIT
+    https://git.kernel.org/bpf/bpf/c/861111b69896
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
