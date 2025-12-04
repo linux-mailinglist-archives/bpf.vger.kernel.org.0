@@ -1,204 +1,133 @@
-Return-Path: <bpf+bounces-76051-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76052-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49156CA4873
-	for <lists+bpf@lfdr.de>; Thu, 04 Dec 2025 17:35:01 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6A6BCA4BC4
+	for <lists+bpf@lfdr.de>; Thu, 04 Dec 2025 18:22:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5250B3063F7D
-	for <lists+bpf@lfdr.de>; Thu,  4 Dec 2025 16:28:55 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 7235A3044E06
+	for <lists+bpf@lfdr.de>; Thu,  4 Dec 2025 17:22:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D09C30171F;
-	Thu,  4 Dec 2025 16:16:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A176530ACE3;
+	Thu,  4 Dec 2025 16:17:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N2s3rbB/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JC729Wfd"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F5D021D3CA;
-	Thu,  4 Dec 2025 16:16:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9C9F304BB3
+	for <bpf@vger.kernel.org>; Thu,  4 Dec 2025 16:17:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764865019; cv=none; b=brt6YVlzcWDqqN1v5juNHVK7P/4f/yTzV34ckqH/+MH0LgnR2ddGKlo5BqBE5GAKaiF/opbt7FoHEZA0qnFFMwApgv76ZruAeTC2tJKAKIW36pMrK7ac3VhCWuW9kv/etzuhQa0gKV+RAVrtbCtqviiKBaB7xJl7qiB64pM8qIY=
+	t=1764865056; cv=none; b=sYHd4qoiWERRy3wBiUVTi6pfARKlBX2/zcyJTaYjcjeEsixMJxE5AuPnw1ZmKzNmaMKyQtlUmMeU0ld3IZG2LT7ZlOE7bBuAXsWJ48E3gBXkxdgkqmcvSXXFEhJFIPs05Ej1Q8Fg3kILOh+IDFJsi9ZwHkAgP7c5uAWvtdMx5J0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764865019; c=relaxed/simple;
-	bh=w+bnQF747FRQPyfTU7XxB1/U2YspG4WLg9S8Pf1uVqs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e004Fgo4rq7u3/D/UCYoSiF3XJC78TSJzh/PapNxyB3cfLjt6gNWmMlc1jVXd/PupUAbWyZ/CCUmsaZCrtX4qi+FgKIuAaVNGrXeESmbKDZAoWEivnefcLNg3jLHUX5V9D8aEP1P17hGe4LhH7OGxIxs6ARnvfA22HABDTeZkOY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N2s3rbB/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C30DC4CEFB;
-	Thu,  4 Dec 2025 16:16:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764865018;
-	bh=w+bnQF747FRQPyfTU7XxB1/U2YspG4WLg9S8Pf1uVqs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=N2s3rbB/RF8vdWIZapqNzqzkjCbLI4ZNFJ79pf5Iaq7dPT4R1zjOT3WQmTpcGKFtf
-	 z4V50sC8cCxGEXYRnMOFCuqGZ+/7eb9UQJdg6jZKM3i7oK2XGHV110BUH9is7plmSN
-	 FMpoVIHqfKDLS/EsWJFcN1yavMFOfosZo8I2PhR5K6FGcVa3dyjvEEQXuO/5Mm71Zr
-	 ySwO+AaZ0IdggFbintKdMh5L0AyXpqURBMf7/rLeNwzEWnzu7gUvk3GcoaKAEGmSi4
-	 LLIkg6dLcYnfmza5DHXL3MtH50ULa+s7l3xFxOvkyC4L05Qv/reSoR9BMDtkxfiiEv
-	 tGgCzXMKAMb+Q==
-Date: Thu, 4 Dec 2025 13:16:54 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Ian Rogers <irogers@google.com>
-Cc: Quentin Monnet <qmo@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-	bpf@vger.kernel.org, James Clark <james.clark@linaro.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH 1/2] tools/build: Add a feature test for libopenssl
-Message-ID: <aTGz9kFQk2xNvsbC@x1>
-References: <20251203232924.1119206-1-namhyung@kernel.org>
- <CAP-5=fU=G75jpsG-X6pa8_rdKapxVc615CqvcdSPBFesj02D6A@mail.gmail.com>
+	s=arc-20240116; t=1764865056; c=relaxed/simple;
+	bh=gzLs8cHkNcBOmjzqsUvEBw+4jkBx9B1WlBta8JzQ6x0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VwpSUC1z/wbZ7wYR4JMvbT101k1KJdyiwwy3Oars5kbI+96K8/xhQsrdXpe/wn1dNszwYcv5yqNAfj3YMkSqPETuueG16HrwHWIfRSiyQcXHzgpLdGvx00pOxl8lRJ1ew9ZGUnDY5H5yBewrdrOc8kCLzrpVWE/JeJWVOAW5FU8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JC729Wfd; arc=none smtp.client-ip=209.85.216.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-343f35d0f99so973395a91.0
+        for <bpf@vger.kernel.org>; Thu, 04 Dec 2025 08:17:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1764865054; x=1765469854; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=2C4Shuc2pUkek0loEVubh36sMLFCuTDFArc/gXySHxU=;
+        b=JC729Wfd5L9BDOJQZsDM4iSthWv4Tx/pqJWxdTLw4IwOrhIncFI+v9a8P7uvHL8QXV
+         fx/pH22faCHHrtNQhGZCt8j03fMNeNSMiU1xVMFnX6soMlKYCDZZvSv37CICepe5G/pd
+         YPLlECotE7FH9ZWfzQaiaRm5IcaUSaFIYGjnlYmm2lEmTRFwZ6OsF9wsrnEwQbE7tIzN
+         rn3sdJW7TatcYxgXsIGtxgQK203OpQdnO7gTZ54oHZjgx45T3OCwauKy/UFIL0JdA/ES
+         k3pDMoZJmdPvFxHUUYL+RnJXzEbS+BuEo8dA0FPKd3kUgp+v1fPwYH55DvNfzHGRn8Xf
+         BdJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1764865054; x=1765469854;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2C4Shuc2pUkek0loEVubh36sMLFCuTDFArc/gXySHxU=;
+        b=IXraYtiZtLqx701T0Y7pSLV/xwaDAWvfAbJiNfC+kD6MQlSi7BJLhzmcjuiKj68igD
+         b4BJ7JypL1EaBWKs3ZwIGY6eSgn7oA4jfJwOo6cS6QCocD9A3o3pahCtgHLV2zs8/Ire
+         nrYdfta4XTDRlkk+zT7Jg4Jf6W0u59PCI/lHFHcL9gNUCxCjAhvSZPExHtX1laae9knW
+         f80BZ74pEJTsQByBzLGPNMrTC3y9JfmvCQFx/3huNrcUXiAMAn4va0utAjGSj5nG8I+O
+         /LCFm2EbV9C4IBK+tpixXIGfKsOskKN1zVyLyHKJbM7/w7oY05rDrrgkp5WtXcFMFD+p
+         DNNA==
+X-Forwarded-Encrypted: i=1; AJvYcCXp8xy4d24NLzlaQyEu82WcIwghBJLC9WyOP0/8F22IOhYKoomrsROIAP13JoQMF7WXsIM=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxmp8IWjwBOVCGF8T/wXIxsl4mMu7f++UemWy3iMfQNbOichhQ/
+	GF5gXAP2aPdSmUU6LBsiaawdSR3S57cPOdjDCQdTO8GIRHOijh91jjdn
+X-Gm-Gg: ASbGncsQyb2/REs5xwWpsOuknZvI6v4sHhrVoZZDL5ryAK/WUNq21ohnigZpraALAMK
+	OhoQGhFHGpo/tUoYsYL3P8yqjlm90hrMdJccZ6UypIgh14V9rk+vRB+Gte8gWIUUsM7A8a3gFdq
+	fyo++I3CEEIVadl/uy2N4mJODuVqmtfeOk63MZXsrYezmf60RCURXv/Y4zXBKRn3S/zMTZesd0g
+	sMHgkJ/5kcIs9HrHBeDDZVTL0gUevp0HvgMF88eUcV2KKHVLx2ZTD6Gu8slAh98MGwT9RTDm0k1
+	+/COf4TbCFsjrJFfpRqkQE2pMs1NsHPSx/r+vLM0gP0l1z2Kp5UPnwiDq/JfMRABi1Vr3TYBmKJ
+	sSk+7nZv3dvs6d9+zAZ7c2FHJBmEU/vlHgSILm2psf8T7vBheLtAz8bRbeJcy0TSddkMHxqONFz
+	KkSWqOftxSoQKRARAYd8jgUjoFFblZqlU6qw==
+X-Google-Smtp-Source: AGHT+IGUb5OCyLlu/xRJZk4tuT9BSuBNLmXZkJmmtQJN4OxIZEiB2Z/OnHD/QTUXMM+QYl2sFQTNCQ==
+X-Received: by 2002:a17:90b:2e46:b0:349:30b4:6365 with SMTP id 98e67ed59e1d1-34947f1afb6mr3587048a91.27.1764865053868;
+        Thu, 04 Dec 2025 08:17:33 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:da43:aeff:fecc:bfd5])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3494f38a27asm2278321a91.4.2025.12.04.08.17.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Dec 2025 08:17:33 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From: Guenter Roeck <linux@roeck-us.net>
+To: Shuah Khan <shuah@kernel.org>
+Cc: Christian Brauner <brauner@kernel.org>,
+	Elizabeth Figura <zfigura@codeweavers.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Kees Cook <kees@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	wine-devel@winehq.org,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org,
+	Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 00/13] selftests: Fix problems seen when building with -Werror
+Date: Thu,  4 Dec 2025 08:17:14 -0800
+Message-ID: <20251204161729.2448052-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fU=G75jpsG-X6pa8_rdKapxVc615CqvcdSPBFesj02D6A@mail.gmail.com>
 
-On Wed, Dec 03, 2025 at 04:34:56PM -0800, Ian Rogers wrote:
-> On Wed, Dec 3, 2025 at 3:29 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > It's used by bpftool and the kernel build.  Let's add a feature test so
-> > that perf can decide what to do based on the availability.
-> 
-> It seems strange to add a feature test that bpftool is missing and
-> then use it only in the perf build. The signing of bpf programs isn't
+This series fixes build errors observed when trying to build selftests
+with -Werror.
 
-It is strange indeed, I agree that since we don't use BPF signing at
-this point in the perf BPf skels, then we could just bootstrap a bpftool
-without such feature and continue building the existing features.
+----------------------------------------------------------------
+Guenter Roeck (13):
+      clone3: clone3_cap_checkpoint_restore: Fix build errors seen with -Werror
+      selftests: ntsync: Fix build errors -seen with -Werror
+      selftests/filesystems: fclog: Fix build errors seen with -Werror
+      selftests/filesystems: file_stressor: Fix build error seen with -Werror
+      selftests/filesystems: anon_inode_test: Fix build error seen with -Werror
+      selftest: af_unix: Support compilers without flex-array-member-not-at-end support
+      selftest/futex: Comment out test_futex_mpol
+      selftests: net: netlink-dumps: Avoid uninitialized variable error
+      selftests/seccomp: Fix build error seen with -Werror
+      selftests: net: Work around build error seen with -Werror
+      selftests/fs/mount-notify: Fix build failure seen with -Werror
+      selftests/fs/mount-notify-ns: Fix build failures seen with -Werror
+      selftests: net: tfo: Fix build error seen with -Werror
 
-Adding the bpftool maintainer to the CC list, Quentin?
-
-- Arnaldo
-
-> something I think we need for skeleton support in perf. I like the
-> feature test, could we add it and use it in bpftool? The only two
-> functions using openssl appear to be:
-> 
->   __u32 register_session_key(const char *key_der_path)
->   int bpftool_prog_sign(struct bpf_load_and_run_opts *opts)
-> 
-> so we can do the whole feature test then #ifdef HAVE_FEATURE... stub
-> static inline versions of the functions game?
-> 
-> Perhaps we only need the bootstrap version of bpftool in perf and we
-> can just avoid dependencies that way. Looking at bpftool's build I see
-> that sign.o/c with those functions in is part of the bootstrap version
-> of bpftool :-(
-> 
-> Thanks,
-> Ian
-> 
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> >  tools/build/Makefile.feature          | 6 ++++--
-> >  tools/build/feature/Makefile          | 8 ++++++--
-> >  tools/build/feature/test-all.c        | 5 +++++
-> >  tools/build/feature/test-libopenssl.c | 7 +++++++
-> >  4 files changed, 22 insertions(+), 4 deletions(-)
-> >  create mode 100644 tools/build/feature/test-libopenssl.c
-> >
-> > diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
-> > index fc6abe369f7373c5..bc6d85bad379321b 100644
-> > --- a/tools/build/Makefile.feature
-> > +++ b/tools/build/Makefile.feature
-> > @@ -99,7 +99,8 @@ FEATURE_TESTS_BASIC :=                  \
-> >          libzstd                                \
-> >          disassembler-four-args         \
-> >          disassembler-init-styled       \
-> > -        file-handle
-> > +        file-handle                    \
-> > +        libopenssl
-> >
-> >  # FEATURE_TESTS_BASIC + FEATURE_TESTS_EXTRA is the complete list
-> >  # of all feature tests
-> > @@ -147,7 +148,8 @@ FEATURE_DISPLAY ?=              \
-> >           lzma                   \
-> >           bpf                   \
-> >           libaio                        \
-> > -         libzstd
-> > +         libzstd               \
-> > +         libopenssl
-> >
-> >  #
-> >  # Declare group members of a feature to display the logical OR of the detection
-> > diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
-> > index 7c90e0d0157ac9b1..3fd5ad0db2109778 100644
-> > --- a/tools/build/feature/Makefile
-> > +++ b/tools/build/feature/Makefile
-> > @@ -67,12 +67,13 @@ FILES=                                          \
-> >           test-libopencsd.bin                   \
-> >           test-clang.bin                                \
-> >           test-llvm.bin                         \
-> > -         test-llvm-perf.bin   \
-> > +         test-llvm-perf.bin                    \
-> >           test-libaio.bin                       \
-> >           test-libzstd.bin                      \
-> >           test-clang-bpf-co-re.bin              \
-> >           test-file-handle.bin                  \
-> > -         test-libpfm4.bin
-> > +         test-libpfm4.bin                      \
-> > +         test-libopenssl.bin
-> >
-> >  FILES := $(addprefix $(OUTPUT),$(FILES))
-> >
-> > @@ -381,6 +382,9 @@ endif
-> >  $(OUTPUT)test-libpfm4.bin:
-> >         $(BUILD) -lpfm
-> >
-> > +$(OUTPUT)test-libopenssl.bin:
-> > +       $(BUILD) -lssl
-> > +
-> >  $(OUTPUT)test-bpftool-skeletons.bin:
-> >         $(SYSTEM_BPFTOOL) version | grep '^features:.*skeletons' \
-> >                 > $(@:.bin=.make.output) 2>&1
-> > diff --git a/tools/build/feature/test-all.c b/tools/build/feature/test-all.c
-> > index eb346160d0ba0e2f..1488bf6e607836e5 100644
-> > --- a/tools/build/feature/test-all.c
-> > +++ b/tools/build/feature/test-all.c
-> > @@ -142,6 +142,10 @@
-> >  # include "test-libtraceevent.c"
-> >  #undef main
-> >
-> > +#define main main_test_libopenssl
-> > +# include "test-libopenssl.c"
-> > +#undef main
-> > +
-> >  int main(int argc, char *argv[])
-> >  {
-> >         main_test_libpython();
-> > @@ -173,6 +177,7 @@ int main(int argc, char *argv[])
-> >         main_test_reallocarray();
-> >         main_test_libzstd();
-> >         main_test_libtraceevent();
-> > +       main_test_libopenssl();
-> >
-> >         return 0;
-> >  }
-> > diff --git a/tools/build/feature/test-libopenssl.c b/tools/build/feature/test-libopenssl.c
-> > new file mode 100644
-> > index 0000000000000000..168c45894e8be687
-> > --- /dev/null
-> > +++ b/tools/build/feature/test-libopenssl.c
-> > @@ -0,0 +1,7 @@
-> > +#include <openssl/ssl.h>
-> > +#include <openssl/opensslv.h>
-> > +
-> > +int main(void)
-> > +{
-> > +       return SSL_library_init();
-> > +}
-> > --
-> > 2.52.0.177.g9f829587af-goog
-> >
+ tools/testing/selftests/clone3/clone3_cap_checkpoint_restore.c      | 4 ----
+ tools/testing/selftests/drivers/ntsync/ntsync.c                     | 4 ++--
+ tools/testing/selftests/filesystems/anon_inode_test.c               | 1 +
+ tools/testing/selftests/filesystems/fclog.c                         | 1 +
+ tools/testing/selftests/filesystems/file_stressor.c                 | 2 --
+ .../testing/selftests/filesystems/mount-notify/mount-notify_test.c  | 3 ++-
+ .../selftests/filesystems/mount-notify/mount-notify_test_ns.c       | 3 ++-
+ tools/testing/selftests/futex/functional/futex_numa_mpol.c          | 2 ++
+ tools/testing/selftests/net/af_unix/Makefile                        | 2 +-
+ tools/testing/selftests/net/lib/ksft.h                              | 6 ++++--
+ tools/testing/selftests/net/netlink-dumps.c                         | 2 +-
+ tools/testing/selftests/net/tfo.c                                   | 3 ++-
+ tools/testing/selftests/seccomp/seccomp_bpf.c                       | 3 ++-
+ 13 files changed, 20 insertions(+), 16 deletions(-)
 
