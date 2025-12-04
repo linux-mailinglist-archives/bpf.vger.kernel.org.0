@@ -1,138 +1,142 @@
-Return-Path: <bpf+bounces-76080-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76081-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EA7BCA4DF3
-	for <lists+bpf@lfdr.de>; Thu, 04 Dec 2025 19:12:05 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0933CA4D8A
+	for <lists+bpf@lfdr.de>; Thu, 04 Dec 2025 19:06:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C0BEA30EB5F4
-	for <lists+bpf@lfdr.de>; Thu,  4 Dec 2025 18:09:59 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 075393061687
+	for <lists+bpf@lfdr.de>; Thu,  4 Dec 2025 18:06:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8827736213B;
-	Thu,  4 Dec 2025 17:58:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F65036C590;
+	Thu,  4 Dec 2025 18:06:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HY4ORmZL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yuva/7M2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 179A83612D5
-	for <bpf@vger.kernel.org>; Thu,  4 Dec 2025 17:58:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97FB431329D
+	for <bpf@vger.kernel.org>; Thu,  4 Dec 2025 18:06:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764871122; cv=none; b=EIKEREBW57ce8DdEudgZy8gR0ZH7DhdpdD99qBHdXclfaLcSxhUd+9BS+VXjUJGwKWH1zw3axheeS4EzSAh5crTeZVxhuynqwqhu7oWOzJkuVtuFGHeQw83HNWIyY7xEplePuTIEwHju50zepFuBf1nvTmbX17PpOhKGIfd+HPU=
+	t=1764871586; cv=none; b=YOpgbaqTFI4ZhVYpyi+vczcvvUB564wbBBCLUt5bOY03kxS11v8RRFBoJ9NymcWUWs6OO0j9zRxWBHMO9ig6Quzg3JhoxOdWszU16Mcvn9Mqk47iogsKt5PbCmMFtyRYjUECmMvp/4galLSbQZ/g4ZmJCzf3VVsYx0UKd5Z+lOQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764871122; c=relaxed/simple;
-	bh=M61YqHUOtUork5VnW7pM/Mojz5Hm0vLf3JZ2HTVr3lo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sJMtHxAvjTBYzyElK5xNTVJcuP0dyrElW7p42b50dt903ul2F8PVVxauariHClg2ny4FVVwM2fcWy/Y4UmA0AeWGlsEWmv3xm/PFnBZBYepBEU1ne0PYpNo8B4F6egv5aln5CR4gP1e2uvw7yyHUhVw6mG2H3H2NEpyOUI6rAUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HY4ORmZL; arc=none smtp.client-ip=209.85.216.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+	s=arc-20240116; t=1764871586; c=relaxed/simple;
+	bh=IYlPdcQB+qlawwvAMYnbc3ygWE7N3I35+bMQZp+FjW8=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=oRoaX8n16AEJugaZbZUMcHYej1c8xmFBbIV13xj8O9u7az8rtpLXZ9vCAZx0QWbaHI2Q29gkm5tY8bt+QIzE9mv3hCPUSJqCeyHKrhCep5uFjfIr2YuBUDrMyuGPDo97UdxvMp1SXC7h8BVpdxpuKCa74KZq2MDuimqR7FbM6JA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Yuva/7M2; arc=none smtp.client-ip=209.85.216.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-3410c86070dso926886a91.1
-        for <bpf@vger.kernel.org>; Thu, 04 Dec 2025 09:58:39 -0800 (PST)
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-343ee44d89aso1721213a91.2
+        for <bpf@vger.kernel.org>; Thu, 04 Dec 2025 10:06:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764871119; x=1765475919; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=n1pRj1+5/jO3PLLne9MyCDaDvNW1mVSp/lUv//X24Es=;
-        b=HY4ORmZLBYzOdCUWObP7rSVJNZCX+aHieIFOY+XQnM/6dOsnZ02o7P4txafcZlkgGz
-         0MbNeFn0fDCTerN5bAfHfJ4Qcqd5VXxaQ8iVWSz8IIYU2P4S/uBspS2fCfqWlAxGrojq
-         5RRunddNABa8WgZHRxXDnN1vOnpJcHS5k7PDjFVXd4dpU86HBoNr2K/PCWTVxlKn/2oL
-         jIBQvBRatRIVfVU/UogKDCeFlFofcWSQazAzuvl3BnDKt/+XgkxtBsy/0KOKncPDlPYV
-         jDbCI1+Qhymnqh5+K4rap1GSp0WckFrLYv/0d/CznRy+CLPwhe8K/iPso6Vy2uA+lJJw
-         0p8g==
+        d=gmail.com; s=20230601; t=1764871584; x=1765476384; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=IYlPdcQB+qlawwvAMYnbc3ygWE7N3I35+bMQZp+FjW8=;
+        b=Yuva/7M2CTYCcwYKWn2bSOPOfeswxxCU4WJ0ZLugUyWdAiAigIkDLE041v/dzWuurt
+         jtH4JvHq2DiaZ/4j1bV/Ga17rwHNjOjGyj/ebxuwdZolMBNRpbd8XLnAMwrwXimXEBru
+         onDY647DmEO0q31pQYiYidVZ4m72B08YR+1dhGJV6VEfJlXvz+bxPRUhjbMACIu/Dg8m
+         gIFXeV59a6IE0JKR85uajI8DKS5OT7p/tYFrc8854hCGNZ+xzMroWLTAqgPfz6tlQknu
+         FR8+qVKzrkYIUHvs7OcwV4nIdfLA8s/IggdzDAqxUopcEicl8kEG/imGhN4gVnp46Ijp
+         cVUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764871119; x=1765475919;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-gg:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=n1pRj1+5/jO3PLLne9MyCDaDvNW1mVSp/lUv//X24Es=;
-        b=cHJ2AH501tIS9PlgIvHcnATHDcAais2i4pGjxd/NBd1QwPuj/qGrp9bX89sQ/1mQIk
-         m2ZrKi4Np/JCm4fRIO7z489LM/yt7MTkrjp1vFG6fYrrsO1+gf/MtWO3E9PgSDyZRNJ2
-         9zMBbQgJqEwcIthVJIU+lGVPvc+Yut3O9DJYmM/zqFC2k8fuzPVqlLo4JoyXJnl3+BYM
-         D4rJaQqrgHu+uwPmiSaylErYlgOoZQGpjvPTt9Cap+4b3gEl7h4kIQfPbdyQ6YSC6K9C
-         PfHwB27MvJMVLfEwq9D2mZuuBbfNsYbpEbxWHUTFv70AejuUOZlswO1ztQBJeS6q5GgB
-         rHTg==
-X-Forwarded-Encrypted: i=1; AJvYcCVvaiEMpgm6Jwj9tIWgXAImoSAmtCDYHC3IROaT130emhWx2Iu8w2iPCcbg5Ar890ETJXs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyBxizfjMint1ey7Kt8K0xYXfpmnoaNIu9JxeTX8lVRecH2RxpP
-	AXiJjqn90EGMLdSp5JV09Pgr2h7YgjFzpYTZ+20ezIEzJqD/29f+icQ0
-X-Gm-Gg: ASbGncvi9I/MVJ4+dEWr0kQkD4eCAnQOtvLynyklnnN0bwwsKa4NJxrCnP4hIEE0AKV
-	lpP1fx9xfSAYabW/aMgdYDmNbAlfEVOm6V57YBYYWNfZPrgqUCNJB52yiBWCTkN3L/DgcpINeqr
-	gdPcK+Mo6wS2RRD7oWNfNaO+9E7kUwugGqrSClIGX3oRWMu5F9+/TlCk26y41OkFATeXpcqaAHl
-	hgPCrlYGF9QACEwtRZApAiXkVo4rd1z0232RRRCtiUlFkssapxRJbNpZmFbp2O5wW5Ij0nLEA3T
-	NkbofNH4m+hJJmxQTkYrGYMlt3rdcYGX+DELASr/t+zjYEumSJreE4MsIxdUlfGY7S3MLq2JPwD
-	tzGHX5d+oMlVIC49cOB4VHYu6FaN9oVv0ktW9gsWJibfTDpUMoSHMY5DusFvpKvP5phBa8zJuTr
-	LRO0szV4fqi5gz9tlQMf3JNX4=
-X-Google-Smtp-Source: AGHT+IHd2CViZquu8rDIVJve8lgSXsL5f4xbCLXW1g3SwVu/83f5GjAIV9Uz6obIchoDu07uphYeuw==
-X-Received: by 2002:a17:90b:3852:b0:335:2747:a9b3 with SMTP id 98e67ed59e1d1-349126bd337mr6610930a91.32.1764871119341;
-        Thu, 04 Dec 2025 09:58:39 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:da43:aeff:fecc:bfd5])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-bf6817397d0sm2431869a12.6.2025.12.04.09.58.38
+        d=1e100.net; s=20230601; t=1764871584; x=1765476384;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IYlPdcQB+qlawwvAMYnbc3ygWE7N3I35+bMQZp+FjW8=;
+        b=YEIAyvYLYPRRHn3sekcg7qL7w7TrJ3tk+4BBMEIRFp6S9+BjtPFYN8X5rvXa3rjzSn
+         8rVeW0dDYO+VE9j3zjQLEeCLrqEcqAt67QHQfqsABZuWyjIsUwNRQ8mHgXnGetvYLAhp
+         XWeOIjlLcQnRyBG4wvKzqxNGbFAuIvqmHCm0XWlY3SfBgST/TX4X+BGY00p3xK53GA/E
+         tLn0p/nRuO8MXdvgBAOec1BoBrGm3TuhO5METoFOUmwhFhpNb4NUI51I7jz7VatZsYba
+         FA/nsLYod3Un2A6rRIIANoZOOOzcz8yniL7EfQ22KSq90Skbu+f+HPd9OXGV13P4xMF0
+         4g+w==
+X-Gm-Message-State: AOJu0YwG98iPM+2HV85HbaLRttPAmt7l6E0h48OubEXr/b342SovGiWK
+	iTz1QSLdyE+kdbkHzgwOv+JZguwQtRw6mWG7rjB5/pIXEsfrqnz9lcp+
+X-Gm-Gg: ASbGncs2yEecv6yX2sWudoJaPRm3k+Rg0wZ1ju3Sxw1lXx9ALQTcjDdhTM2pWZevy17
+	2IRukFmKQw3nCX6PEQ6cvQdBbmKJayhXaezju7JS1kxcBAZqfseO8GGxhPduyqRHD+qUJRLKSXx
+	lx8BCOycY/AucdjApTsN7wJ9ASh8hQpX/LTdp/0G0hp79/rOjAqPQCKxi6s5hm7wYBNJniktIGI
+	TsYbRfMTUaFZS/OHiVqer3O9j96hElac2l1bVGnTmtiQfeoU6a5ldXfAk/0LBt7DktRuu3jR6O8
+	ZaU5TbesPYkkFmhVPnAP1VQdo5jvo6NHOo2bDx3qGQ+qfK2LNd2HQJrrrUFAthmr8cp/So3hRVZ
+	aS0prkVXRhzzaWwPyXlGShgV/ylFHiW+p0eZhXomNgxdY+mlJvcUe+8H9TxcDxuKECC2pwfCr7t
+	tLl6VkX9vd
+X-Google-Smtp-Source: AGHT+IHLCo+72DPRWKONv/JPgaSabOzTBsVk4U00GSBcgCo1zw2Ja1fCMHkVELYZuK7F1CmTW4l48g==
+X-Received: by 2002:a17:90a:ec87:b0:339:d03e:2a11 with SMTP id 98e67ed59e1d1-349125d0973mr7484739a91.14.1764871583726;
+        Thu, 04 Dec 2025 10:06:23 -0800 (PST)
+Received: from [192.168.0.226] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3494f596810sm2395842a91.10.2025.12.04.10.06.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Dec 2025 09:58:38 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Thu, 4 Dec 2025 09:58:37 -0800
-From: Guenter Roeck <linux@roeck-us.net>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Shuah Khan <shuah@kernel.org>, Christian Brauner <brauner@kernel.org>,
-	Elizabeth Figura <zfigura@codeweavers.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Eric Dumazet <edumazet@google.com>, Kees Cook <kees@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	wine-devel@winehq.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-	Kuniyuki Iwashima <kuniyu@google.com>
-Subject: Re: [PATCH 06/13] selftest: af_unix: Support compilers without
- flex-array-member-not-at-end support
-Message-ID: <f58ae2ae-49f8-46cd-bd24-2d358cb36f15@roeck-us.net>
-References: <20251204161729.2448052-1-linux@roeck-us.net>
- <20251204161729.2448052-7-linux@roeck-us.net>
- <20251204094054.01c15d1e@kernel.org>
+        Thu, 04 Dec 2025 10:06:23 -0800 (PST)
+Message-ID: <707080716569c7de7c3cb5869b67d62b55a96b68.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v2 4/4] resolve_btfids: change in-place update
+ with raw binary output
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Ihor Solodrai <ihor.solodrai@linux.dev>, Alexei Starovoitov
+ <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
+ <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,  Song Liu
+ <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend	
+ <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev	 <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>,  Nathan Chancellor	 <nathan@kernel.org>, Nicolas Schier
+ <nicolas.schier@linux.dev>, Nick Desaulniers
+ <nick.desaulniers+lkml@gmail.com>, Bill Wendling <morbo@google.com>, Justin
+ Stitt	 <justinstitt@google.com>, Alan Maguire <alan.maguire@oracle.com>,
+ Donglin Peng	 <dolinux.peng@gmail.com>
+Cc: bpf@vger.kernel.org, dwarves@vger.kernel.org,
+ linux-kernel@vger.kernel.org, 	linux-kbuild@vger.kernel.org
+Date: Thu, 04 Dec 2025 10:06:20 -0800
+In-Reply-To: <79031f38-d131-4b78-982c-7ca6ab9de71e@linux.dev>
+References: <20251127185242.3954132-1-ihor.solodrai@linux.dev>
+	 <20251127185242.3954132-5-ihor.solodrai@linux.dev>
+	 <de6d1c8f581fb746ad97b93dbfb054ae7db6b5d8.camel@gmail.com>
+	 <e8aacbc8-3702-42e9-b5f0-cfcd71df072e@linux.dev>
+	 <763200e4f55197da44789b97fd5379ae8bf32c08.camel@gmail.com>
+	 <79031f38-d131-4b78-982c-7ca6ab9de71e@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251204094054.01c15d1e@kernel.org>
 
-On Thu, Dec 04, 2025 at 09:40:54AM -0800, Jakub Kicinski wrote:
-> On Thu,  4 Dec 2025 08:17:20 -0800 Guenter Roeck wrote:
-> > -CFLAGS += $(KHDR_INCLUDES) -Wall -Wflex-array-member-not-at-end
-> > +CFLAGS += $(KHDR_INCLUDES) -Wall $(call cc-option,-Wflex-array-member-not-at-end)
-> 
-> Hm, the Claude code review we have hooked up to patchwork says:
-> 
->   Is cc-option available in the selftest build environment? Looking at
->   tools/testing/selftests/lib.mk (included at line 14), it doesn't include
->   scripts/Makefile.compiler where cc-option is defined. When cc-option is
->   undefined, $(call cc-option,...) expands to an empty string, which means
->   the -Wflex-array-member-not-at-end flag won't be added even on compilers
->   that support it.
-> 
->   This defeats the purpose of commit 1838731f1072c which added the warning
->   flag to catch flexible array issues.
-> 
->   For comparison, tools/testing/selftests/nolibc/Makefile explicitly
->   includes scripts/Makefile.compiler before using cc-option.
-> 
-> Testing it:
-> 
-> $ make -C tools/testing/selftests/ TARGETS=net/af_unix Q= V=1
-> make: Entering directory '/home/kicinski/devel/linux/tools/testing/selftests'
-> make[1]: Entering directory '/home/kicinski/devel/linux/tools/testing/selftests/net/af_unix'
-> gcc -isystem /home/kicinski/devel/linux/usr/include -Wall  -D_GNU_SOURCE=     diag_uid.c  -o /home/kicinski/devel/linux/tools/testing/selftests/net/af_unix/diag_uid
-> 
-> looks like the flag just disappears. Even tho:
-> 
-> gcc version 15.2.1 
+On Thu, 2025-12-04 at 09:29 -0800, Ihor Solodrai wrote:
 
-Oops :). I didn't expect that, sorry. Thanks for finding!
+[...]
 
-... and I guess it's time to set up AI in my environment.
+> Ok, it seems you're conflating two separate issues.
+>=20
+> There is a requirement to *link* .BTF section into vmlinux, because it
+> must have a SHF_ALLOC flag, which makes objcopying the section data
+> insufficient: linker has to do some magic under the hood.
+>=20
+> The patch doesn't change this behavior, and this was (and is) covered
+> in the script comments.
+>=20
+> A separate issue is what resolve_btfids does: updates ELF in-place
+> (before the patch) or outputs detached section data (after patch).
+>=20
+> The paragraph in the commit message attempted to explain the decision
+> to output raw section data. And apparently I did a bad job of
+> that. I'll rewrite this part it in the next revision.
+>=20
+> And I feel I should clarify that I didn't claim that libelf is buggy.
+> I meant that using it is complicated, which makes resolve_btfids buggy.
 
-Guenter
+So, pahole does the following:
+- elf_begin(fildes: fd, cmd: ELF_C_RDWR, ref: NULL);
+- selects a section to modify and modifies it
+- elf_flagdata(data: btf_data, cmd: ELF_C_SET, flags: ELF_F_DIRTY);
+- elf_update(elf, cmd: ELF_C_WRITE)
+- elf_end(elf)
+
+What exactly is complicated about that?
+
+[...]
 
