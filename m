@@ -1,114 +1,158 @@
-Return-Path: <bpf+bounces-76074-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76075-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B6FACA4C39
-	for <lists+bpf@lfdr.de>; Thu, 04 Dec 2025 18:27:45 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E7A3CA4C8A
+	for <lists+bpf@lfdr.de>; Thu, 04 Dec 2025 18:34:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E54F230FF014
-	for <lists+bpf@lfdr.de>; Thu,  4 Dec 2025 17:22:23 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id CE02C303848E
+	for <lists+bpf@lfdr.de>; Thu,  4 Dec 2025 17:31:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE2322F83BE;
-	Thu,  4 Dec 2025 17:22:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AD5B2F692D;
+	Thu,  4 Dec 2025 17:25:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IdlcMULK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XRcrsxzJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEEEC2DC32A
-	for <bpf@vger.kernel.org>; Thu,  4 Dec 2025 17:21:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 178082F39BC
+	for <bpf@vger.kernel.org>; Thu,  4 Dec 2025 17:25:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764868922; cv=none; b=o1NgYd0MFo8J5LJFNcd5/RUTCxyPQWstq3fZ3AKcmst+leJ8wd661ku7v+5AHekuSGESUxeLyLDxXaMZEGZy6wk11C5g8TskRuD82ScGUIKPS3+/zc7DYI1uLOxwFrY8/wf43ph+cbtPMlkKpP8EkV442EWCy3kNw9ZIQBpm0jE=
+	t=1764869110; cv=none; b=rzn2rP4v4cp45nfpzAxfVZu2s6mo/+K9udOKA4JqrqNXYt7/lDjOjqD2Z5/qVrvW+yuf3yw33vYQkzffzXuw2xXBE25htnneSSfiPZLViOGa2v+2qfY1qSoBXnARtQAROJLMSoI+M7SXXLBH9LdR8BTd9xY1OBVsPEt0gSQi4bM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764868922; c=relaxed/simple;
-	bh=D1LJURvCqBD19tHDb/ZAcUeEQGw9iRvK41XJcVnkOf0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cmfGCEyMEe6JGwJyJYB/cCnjG8DC7y5FacWrXEGO+A9pX5HHNPSneyvZ98+LosV/eIM3VgJv4IoWBZHLy5Qhrk+yJGxQiN0BuCMkVfaVCTt8d3yr6z45Hq3yg1awDnNVIQ+SwEEHsnKjaSVQc/prfiTL9pWzHPsx4PAbTwFc3+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IdlcMULK; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-7ade456b6abso1015386b3a.3
-        for <bpf@vger.kernel.org>; Thu, 04 Dec 2025 09:21:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764868919; x=1765473719; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SJXfDszGjsCT48bZrhFtIknmAdGQdI9xd+KhNwA4Sp8=;
-        b=IdlcMULKLoa/0qhG1kUDaIn9fc8R4Y9F1qVIKIy76hYA3gNl+1B70CS0Wttq6e+nK5
-         iKpRoAL0RnYrJ0TezAmPE7Ar2qA2SQ/coXRLAr1LWGcpL+M82DedqP81LuL/WTz6Zw3j
-         o/wleYEChKYWDDlIMYXFHO+LNak3s4fISubo22wDY72CTTBp1f2NOY4Vwgl8ZFsL0T1d
-         re9B4p245pwaL2kBd78c5T3rwzvP5KYGHZ3LNL0AUYShqormGAApDLm4Y+ttNQ+8DPQi
-         X8ama5stnsD1/NOgUuJNWgMSf7VTqpm16BcqwQMh42OocGNtL/F8DPJN0LtX7vKvC1Qu
-         JW8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764868919; x=1765473719;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-gg:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=SJXfDszGjsCT48bZrhFtIknmAdGQdI9xd+KhNwA4Sp8=;
-        b=CcXqdSEPTJpf9PXNVkoAsMTa5hYP7Sm9cZmWI7apBNGEo/ug4Ecxl396AaThOSt8Ph
-         iTkuyNwxiuS2t07lKOWfYI6b3zCj0yGrKXnypEllezN70+zMu9w86MCJGKowSfUV0UM3
-         JAlnhOy3w/dfJnMpR09ShLTrdEsTX7myHwvLSnw46ySE1R6xXGqKBc1pWuDlfY8Gq3/8
-         nS6zxyE2QoYrs2z/8YLL7If8leRze9fMMS/bhMkw+uAe2rtNh0jmzUBwQxyTV4PM5iNT
-         Kw0flb7Po6XjX9yKNuTYodCDmC0KzvuhA95aR1tbdFQaRyWPjnyJNKlTfk2b/PSDcSwq
-         i4XQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUhi7pqmioo8ec2KLybha421JjfJE0KruxQB3QU2Tid9PmANCYu1XEtRor4NvWeBPggNns=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywnj3mlNJM0mFJx0WQ7M7WCRn0ruwKsPhTifZH510PD6Cy+nwnZ
-	wzFL9qj9MvgumG1yCBZxFKDx2yHqk9hyJAm962G3TmxTp/DQBiMM7LEI
-X-Gm-Gg: ASbGncuNBqNkh1TJ/Lo+1K8sSsJUrWjOvNhyVjOykk/5I9lcDCJ9Z6MBhopCIgkU9YV
-	MxnSnu6vcIY5vW8OVxIZMM5ZJ0HJsZj909yKLUw2OYM0Ou9W/TC4wzOH4Sq6jXWMpa8j+Ykn8AJ
-	xPVNLUqPhCo32jHdUBPYiVFGwEjYW+o2WsLy1ssyBfSVf/DWjItAIyakNMs7CimCSym9wDv36H1
-	9mOmhcbQwj2g1q4w69RWTyQcW8zR1WC0qZJckk/knEart+KApCI2T1wY+Lus4ufYufXBXwDVhGy
-	u9eXqZjesWjCWJdh6HKaAeX6paXdW/l/qCblwbH+8QH/GkLWfTTFM8GeTbOtleY014xADRLfl5g
-	tXv4AOVt+lZUcm6/MNpBHtuqX8pRbD3MWf+7b3MAnEN6YVhpWsxy4PBnzerowlXuy2bRPDFg8xS
-	pIotVUII8ZJdTL+MkrhXQMWQc=
-X-Google-Smtp-Source: AGHT+IEZEurfwDNB61dWVp10IYOlyd6SF/U/w/lTzFcqv3k5XiH2udV6gEaIKRdEMzDFljcRgNTaNQ==
-X-Received: by 2002:a05:6a20:3d08:b0:34f:7454:b98e with SMTP id adf61e73a8af0-363f5cf427bmr8613133637.4.1764868919140;
-        Thu, 04 Dec 2025 09:21:59 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:da43:aeff:fecc:bfd5])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-bf681738a29sm2388211a12.3.2025.12.04.09.21.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Dec 2025 09:21:58 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Thu, 4 Dec 2025 09:21:57 -0800
-From: Guenter Roeck <linux@roeck-us.net>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Shuah Khan <shuah@kernel.org>, Christian Brauner <brauner@kernel.org>,
-	Elizabeth Figura <zfigura@codeweavers.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Eric Dumazet <edumazet@google.com>, Kees Cook <kees@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	wine-devel@winehq.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-	Joe Damato <jdamato@fastly.com>
-Subject: Re: [PATCH 10/13] selftests: net: Work around build error seen with
- -Werror
-Message-ID: <7df3f306-1bf3-477e-990b-a76e2c2396ed@roeck-us.net>
-References: <20251204161729.2448052-1-linux@roeck-us.net>
- <20251204161729.2448052-11-linux@roeck-us.net>
- <20251204083029.188cd7a0@kernel.org>
+	s=arc-20240116; t=1764869110; c=relaxed/simple;
+	bh=w4DudhomAtyMI1TwgWxj2bPlJOA+LZwDMSH+WEth98E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ut5bgTsz6f7OdecHAAirljWfEVnnKYal1/xLXMSl1lbeNOl9Cu2GUyrp1uZKyPpt9LPq/42m4UzE+ELYNRpEV20FjMwphsh7L23g5xBuIlVAV7EEEGayRZ/DDHbhrHJZ5eBek3OiUXSeAzYb07EC4P8OWyiGmVGGZjWiseqhIZs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XRcrsxzJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7DBAC2BC86
+	for <bpf@vger.kernel.org>; Thu,  4 Dec 2025 17:25:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1764869109;
+	bh=w4DudhomAtyMI1TwgWxj2bPlJOA+LZwDMSH+WEth98E=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=XRcrsxzJVKTpceabtl5pcstGUoqpNlTZAMm3EaW9HxGW3FGnaB9cfRtL7hH2y9mz0
+	 cUl6F/DP3vmzVZGX6t2ePNsiD5o/+0Z5pvudbQT017kN+oamwD3ZuzN9IZmzOWuCRR
+	 DB/8u7FK9ZkmYDUSL5tR4LOkA+2bro+kOxsYjGkdPC7ucKA4E5lmZCsiuGn7V59xtc
+	 D5euXb4Rhp6SaVQQ9xGXKeZjptIFhc5f/kdmp7p1lTJ/rkD+BI0scZxd2BXw0grxD7
+	 LNpJj8NKljMOjpxy19K2azKLPVTB0eMeT2jV/bJQNU58dpGJ78WMUlXtEcT/2qW3nL
+	 MN5zGDf4D2yqg==
+Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-45066bee74aso377981b6e.2
+        for <bpf@vger.kernel.org>; Thu, 04 Dec 2025 09:25:09 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXQzdOq+57O8cqwIA2naUZhK2hBuX3kccanz027DyCBSq3rc2iamYT8BrcRB0M6xNAe6jU=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx8EYnLs9G5rquu9gJxKmE5P0m1v55LPSguFidrTzQI8mo+bzax
+	DIptILlaRn3ELjVuC8u5iiOQIBzsuYYOxaAFZ9G6YVi8vxme/DIIU7DMTu4B6QiIka+BOHaWisP
+	u8aLuB+0xjzwqCN0C8CUU1cojlWSQHPQ=
+X-Google-Smtp-Source: AGHT+IFdqRMTGYpfrIBkL/94H/4UVZLUsxsDPuVlgRIpWLfDNTMjGKr6U2rZEn17oThUm6ZKuIH5u+kR3ynMKeZ2BJA=
+X-Received: by 2002:a05:6808:1308:b0:44d:badf:f41a with SMTP id
+ 5614622812f47-4536e52b830mr3093125b6e.32.1764869108561; Thu, 04 Dec 2025
+ 09:25:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251204083029.188cd7a0@kernel.org>
+References: <20251201202437.3750901-1-wusamuel@google.com> <20251201202437.3750901-2-wusamuel@google.com>
+ <f28577c1-ca95-43ca-b179-32e2cd46d054@arm.com> <CAJZ5v0hAmgjozeX0egBs_ii_zzKXGPsPBUWwmGD+23KD++Rzqw@mail.gmail.com>
+ <20251204114844.54953b01@gandalf.local.home>
+In-Reply-To: <20251204114844.54953b01@gandalf.local.home>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Thu, 4 Dec 2025 18:24:57 +0100
+X-Gmail-Original-Message-ID: <CAJZ5v0irO1zmh=un+8vDQ8h2k-sHFTpCPCwr=iVRPcozHMRKHA@mail.gmail.com>
+X-Gm-Features: AWmQ_bmbIJSS9C0PX7f-im5Va5YR_TWQXMQtQLR9w9H1jR--rFQSko9z5SAsOhM
+Message-ID: <CAJZ5v0irO1zmh=un+8vDQ8h2k-sHFTpCPCwr=iVRPcozHMRKHA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] cpufreq: Replace trace_cpu_frequency with trace_policy_frequency
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Christian Loehle <christian.loehle@arm.com>, 
+	Samuel Wu <wusamuel@google.com>, Huang Rui <ray.huang@amd.com>, 
+	"Gautham R. Shenoy" <gautham.shenoy@amd.com>, Mario Limonciello <mario.limonciello@amd.com>, 
+	Perry Yuan <perry.yuan@amd.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Viresh Kumar <viresh.kumar@linaro.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, Len Brown <lenb@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Ian Rogers <irogers@google.com>, 
+	Adrian Hunter <adrian.hunter@intel.com>, James Clark <james.clark@linaro.org>, 
+	kernel-team@android.com, linux-pm@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 04, 2025 at 08:30:29AM -0800, Jakub Kicinski wrote:
-> On Thu,  4 Dec 2025 08:17:24 -0800 Guenter Roeck wrote:
-> > -	write(fd, msg, sizeof(msg));
-> > +	if (write(fd, msg, sizeof(msg)))
-> > +		;
-> 
-> At least add an perror here ?
+On Thu, Dec 4, 2025 at 5:48=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org>=
+ wrote:
+>
+> On Thu, 4 Dec 2025 15:57:41 +0100
+> "Rafael J. Wysocki" <rafael@kernel.org> wrote:
+>
+> > > perf timechart seem to do per-CPU reporting though?
+> > > So this is broken by not emitting an event per-CPU? At least with a s=
+imple s/cpu_frequency/policy_frequency/
+> > > like here.
+> > > Similar for the bpf samples technically...
+> >
+> > This kind of boils down to whether or not tracepoints can be regarded
+> > as ABI and to what extent.
+>
+> They are an ABI and they are not an ABI. It really boils down to "if you
+> break the ABI but no user space notices, did you really break the ABI?" t=
+he
+> answer is "no". But if user space notices, then yes you did. But it is
+> possible to still fix user space (I did this with powertop).
 
-Makes sense. I'll do that in all patches unless someone has a better idea.
+My concern is that the patch effectively removes one trace point
+(cpu_frequency) and adds another one with a different format
+(policy_frequency), updates one utility in the kernel tree and expects
+everyone else to somehow know that they should switch over.
 
-Thanks,
-Guenter
+I know about at least several people who have their own scripts using
+this tracepoint though.
+
+> >
+> > In this particular case, I'm not sure I agree with the stated motivatio=
+n.
+> >
+> > First of all, on systems with one CPU per cpufreq policy (the vast
+> > majority of x86, including AMD, and the ARM systems using the CPPC
+> > driver AFAICS), the "issue" at hand is actually a non-issue and
+> > changing the name of the tracepoint alone would confuse things in user
+> > space IIUC.  Those need to work the way they do today.
+>
+> If the way the tracepoint changes, it's best to change the name too.
+> Tooling can check to see which name is available to determine how to
+> process the traces.
+
+If it is updated to do so, yes, but in the meantime?
+
+> >
+> > On systems with multiple CPUs per cpufreq policy there is some extra
+> > overhead related to the cpu_frequency tracepoint, but the if someone
+> > is only interested in the "policy" frequency, they can filter out all
+> > CPUs belonging to the same policy except for one from the traces,
+> > don't they?
+>
+> I'm not exactly sure what you mean here. There is an "onchange" trigger y=
+ou
+> can use to trigger a synthetic event whenever a change happens. But I thi=
+nk
+> the data here wants to know which CPU had its policy change. Hence the CP=
+U
+> mask.
+
+IIUC he wants to trace frequency changes per policy, not per CPU
+(because there are cases in which multiple CPUs belong to one policy
+and arguably the frequency doesn't need to be traced for all of them),
+but tooling should know which CPUs belong to the same policy, so it
+should be straightforward to use that knowledge when processing the
+traces.
 
