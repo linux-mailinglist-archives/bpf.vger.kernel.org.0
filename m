@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-76059-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76060-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B189CA487C
-	for <lists+bpf@lfdr.de>; Thu, 04 Dec 2025 17:35:31 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CB62CA4891
+	for <lists+bpf@lfdr.de>; Thu, 04 Dec 2025 17:37:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0E683315D1DF
-	for <lists+bpf@lfdr.de>; Thu,  4 Dec 2025 16:27:52 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 601463180F2D
+	for <lists+bpf@lfdr.de>; Thu,  4 Dec 2025 16:29:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2064033B6F7;
-	Thu,  4 Dec 2025 16:17:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E8F234104B;
+	Thu,  4 Dec 2025 16:17:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C7XFvaj9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YDeuL0LN"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A42AC33AD91
-	for <bpf@vger.kernel.org>; Thu,  4 Dec 2025 16:17:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38A76341049
+	for <bpf@vger.kernel.org>; Thu,  4 Dec 2025 16:17:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764865066; cv=none; b=S3l11hUvdI02nzOrI+xNMp79f5fltN71zecYaNVVZaZl97Gstu1lZA56MJpk7I1s8YZpqPzPL7M+D+w/5u9EyM5hXhBBwnTNBEyAwdKP75zAVJk+I9fzkbV8SYEFVdroj4CBjO3YJsZub3MR2RXQVOyIuYNvTcSAlygDKNi0xZc=
+	t=1764865068; cv=none; b=tXaSW6BzRC7M0Xvfa3USjISYyOJyDg6KE+lC7pTp1lAz7WTxGIGMYl7byFraU+VV8Nf5BeLyfSz17RLGJIMmi1vc7PGFrsOIQ2kEsP6G7tQduKHkA/AgXQbTUy8EdKTEtiNycDFAqw9uwKIIu3RW661ouoEKAYzXZAEObPGIXCQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764865066; c=relaxed/simple;
-	bh=5B0PgOWPShXER40nv9onVYknLk01f2ENlcdo44PN6+E=;
+	s=arc-20240116; t=1764865068; c=relaxed/simple;
+	bh=3ygh4I0glRNwV35GaBKvlTRslUW//cHz3CUI6TSCtZM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=eBUwduAv1YZrgBnXptCy9Ep6NZGX07C46Yox7DC/B0dpIB1mywyvH4BRy7uEhajFdKj/heIWn/75ZAnZM6udHroT4eR/BKa5zu0pU53XD+eJchRoYN0A+CuiL1i1tkAoEzYEdiaTAMovUHwVfQR8OoHjdYBGJ37zFt5Qj6jKhBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C7XFvaj9; arc=none smtp.client-ip=209.85.214.172
+	 MIME-Version:Content-Type; b=jhCYA/DKIEOBK+/mcpJki8+YIm/8i1dMBlYmv/qx3ZBBFEfAmRjZfsC54+kmpROqdiIg+Ggb+ADQRItVVUP7iQmrg6v1veZGbq5LcIxFMNbeMVjG73rBLlwQKHVZaUpbtMdpj5BL+FmoT1034is4qfopxuh96BN6E9iUPHmV5E4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YDeuL0LN; arc=none smtp.client-ip=209.85.214.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-29d7b019e0eso13441435ad.2
-        for <bpf@vger.kernel.org>; Thu, 04 Dec 2025 08:17:43 -0800 (PST)
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-2981f9ce15cso14945575ad.1
+        for <bpf@vger.kernel.org>; Thu, 04 Dec 2025 08:17:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764865063; x=1765469863; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1764865064; x=1765469864; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vJUImmdQDjeHGtaLXSfCuWLTyPTXVTEGrMh8pUqqH00=;
-        b=C7XFvaj9zQybUoQIo86zSH5P3sN8Cs5+ebYnZ25odOOe4mfe2vAGU/16+r+vPtpLUw
-         wCGGRbkdghTn2eFat7lCQXxWXkg3FYn+Dlkn+rzrWpDV3gPkAAZTJDlIbCqYNyas1say
-         OXAof19DqGtf+qtjWbjmhmlU65I1Oa6wASqXq7huWjMm4pt0JbCLTNCsiUZwRHzvj3v1
-         NrwaHb6Wuy8CNo7fQ2l1HxK50F1BktRNB49WEJAa+j1j6RmOFUwFfyW2HCYZS2kkcP49
-         Udi+MhOmQpglctWszcLZrrM364rCwji1GRrhYezxDIFJPlb+C+TgxdVbF5plpRDx1yL3
-         Toeg==
+        bh=dkZnCgx9bxJPZq7l/gRW6dYxX2rEKzxVPCSQ60u6+7c=;
+        b=YDeuL0LNnKv6Skf8JFXDETnbrmN4u8CazX+kdfLXew/nNZ7V6ZNP/PIB7UjlMR0EPL
+         Uido8y8q61vndAul9btZRNmAk7zZtIiiWZ5KMkzZuFnRq49e2ftmfzPEBFFqHOcFt3CD
+         DVmRgZCngvCNXzcxB4cSWYQiFf71iBV0WJKQbZ4VxFVbJyWIbFLWELN1mG3lcRVwJld4
+         JPbPsApQDRM/EjWohExjcFaZLJvUJBdOoqrm1ehm94FbdJiiyoz/JuiWMJSFrdlOOKvB
+         6wkij27fCrWtbq+gAGi9pJwjtjsKE9ZDF8ecm+EckA2kzeAhZws1hC1d0voeZ+4/+jS8
+         A9TQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764865063; x=1765469863;
+        d=1e100.net; s=20230601; t=1764865064; x=1765469864;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vJUImmdQDjeHGtaLXSfCuWLTyPTXVTEGrMh8pUqqH00=;
-        b=nqMDit5saogM41Sb+5bEuTRkpEXUtk3WYzkjY2ME4eG8USf4VTbAZsRQHdNoq7SqDy
-         PPY6MOZVE8z6MFOgxECOPRs2juQg5Pj2PneuFEJq/0xyjCbVn9kLpBcuAG5J4c+qp+Wx
-         opNCk90Uw9NfAyt8FhfZbf2N+5DI/8Jwnqx5dYHWFnuv41Rx4zcSWO6oOu/xjppSJ/np
-         nr0/I6kMhH+aBomr+GpeFAijkR+SVXIJsBbVDIPPkcNhjkzkaYuZdAikRT4O4oym0fTz
-         PmO5oD6XiT6tF2MdFYUXTFEYph1AJrtWhwwVd5ySuUmWucNWZsSkDLiFicG4nNgPc0Ni
-         4kOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVgFr/XMZaOoY/Jftvpdl1CRsVe/7DOEaa/H5osquaJb9xXGxA5p3hMgUaSjAZfSdqGeZA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyxjlIyJTmedqrk3B/Lfu1x9LL8660ZAvSo0vmcRhYW0Nt0asRW
-	5nVZHGZIwgCaG6FX/rLFkts8Blc+q20QAzTF9AlRoFXTWlP8uGacVQGR
-X-Gm-Gg: ASbGncvZIN4FaY10LavpVh9EMl1DWUwdinu+FLZRP5Qb4JuA2SVFmnxqeU4nGNsyiF6
-	yP2TBKyvFsK+kY9Q84RBcqcFaaaEoiHb1De0uTap7En6Dxfo80acpT3aPvnb7aHnC+H6nPMkJQW
-	mEGPxJ1+8Y3gnMVZY+J3/CWwoGh8ppjKcpKDVLg8usxwFNkm7Pixy64DoU97LFuvgPC05S6RxFC
-	iRHycsE1Zgjv4ZIMjcuwCpjtuhFh3+2+bbtcp6BGBsve5q4N5xhc/hFm5jrqKMdqnSpt0AVVcmb
-	t5h6kv4sFw0zsn98Sd6J4TNZKhKcqk1Gq4XTucz438Bdf+BkCxWgt6z2GarOxYucEQvMPhoimVB
-	L88KR2rXgCUzYgF+g+IwPn54w7BWvae0SOCr+UFXVGSDTig/pokdEUEqRDHHUB+oQbJHmTe/B3M
-	pJbqHdGtu6jkG/JlVqjyJp/ds=
-X-Google-Smtp-Source: AGHT+IEp65adRZJkHxaNOxWvtN+myggtoxv0yjR0IEwKZeW5OawGZmYTcub9/vSJLWwxb9bL+b8PmQ==
-X-Received: by 2002:a17:902:ccce:b0:29d:9b3c:4fc8 with SMTP id d9443c01a7336-29d9b3c5ac9mr52907945ad.61.1764865062930;
-        Thu, 04 Dec 2025 08:17:42 -0800 (PST)
+        bh=dkZnCgx9bxJPZq7l/gRW6dYxX2rEKzxVPCSQ60u6+7c=;
+        b=e6Pfju3uSNQyLfTcBMiuV0KxkHVcXeDcC41toEkFwfnxVwt/UOIKqk4Mj+HLkGg3eG
+         uLXqgPhGX8JM70v5SGhg5f6Oi8nh/JDrBSXze8TtlTrk5xFNDQlLajNroVtyGObwsrPD
+         j9Fg2nqVxd8IfNyWx7oEzrZsmNhCqgjo8a8rIqhPyGIf1nja0J0AI2mJizsQdP/xtQag
+         vPBdbLrY45cFh88zT0IA2QCVfgfbD701R1asrjloimrHdEvakXjBVsTYeVrlh+v+exnw
+         hcM3mGGpGWZB6dRGCt9Mx9zmB4b6KgfQZ8YO8kVy5Ep7kl7+kiwbyzUdTjKSXAuz7y+j
+         lrDw==
+X-Forwarded-Encrypted: i=1; AJvYcCU8RaOAUka+QPmZ2ZQHPDoAyOlo9iwOHUyvzl7wZ1BlxjR4h3TAQxWI6nXvPKMRhq8yXV0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxPGsS7QI5Flt5ONQtJaVMjKB0jLDK63nbDrzkX33H3vLQT4yUa
+	2VsSvvtl8l4opvPCCW7X7ojIiZIi795gN0ZFkjlBK5sBe2JHZBRvgF5F
+X-Gm-Gg: ASbGncsWl+6xS2nxFAxcQQnpun44ejR1qxT4QHDkkBWHAEZcLYwx7so/E4sutD6Wcs9
+	p7m83Vigoh5Rfbq7vrSSVkwoeWb3qIAglA0o4iu/yD/GUIy8j3+egotaoSuSWeK4cYBNRKmxLar
+	8a8zr/Ummo96lzMkxHRdwdqg6Y8duNEEUy7U+YHh9nx5Fcm0QA+NEERUxTijW/rdWJ/IZGWmjPk
+	/bAP2/Utw5QqCVHjq66n4lX848QfUla+ooOristJXUtd7fezD9+p53wbUcz9YegAptYioIA1Gyn
+	GDiDoha0cmlA7NmShatfbky6ffQtfDm/tdYDOn/9LWrkww/lMgkHi9Y8c1pGOU/sgBiR6i0iYja
+	47FkrOxL1OeLpAhqfNRzFTBxQU9zAk+hdx9RwxebA37VNfS9LVf0yQrz+xa/IRcc0WOTU0YUMM7
+	Jg77KIaiGK5BusvQ/z/wrg2BM=
+X-Google-Smtp-Source: AGHT+IGvOyPD8rdOIos5LYcmChpa04+Wfxdyx/PwskRd3KR37HKV0AFf3UHo1YnF29GTR+qBDwW4gA==
+X-Received: by 2002:a05:7022:996:b0:11b:89f3:aaf8 with SMTP id a92af1059eb24-11df0bd181emr6324640c88.4.1764865064446;
+        Thu, 04 Dec 2025 08:17:44 -0800 (PST)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:da43:aeff:fecc:bfd5])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29dae4cf9c3sm23939485ad.26.2025.12.04.08.17.42
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-11df76e2eefsm8931800c88.6.2025.12.04.08.17.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Dec 2025 08:17:42 -0800 (PST)
+        Thu, 04 Dec 2025 08:17:43 -0800 (PST)
 Sender: Guenter Roeck <groeck7@gmail.com>
 From: Guenter Roeck <linux@roeck-us.net>
 To: Shuah Khan <shuah@kernel.org>
@@ -86,11 +86,10 @@ Cc: Christian Brauner <brauner@kernel.org>,
 	wine-devel@winehq.org,
 	netdev@vger.kernel.org,
 	bpf@vger.kernel.org,
-	Guenter Roeck <linux@roeck-us.net>,
-	=?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>
-Subject: [PATCH 07/13] selftest/futex: Comment out test_futex_mpol
-Date: Thu,  4 Dec 2025 08:17:21 -0800
-Message-ID: <20251204161729.2448052-8-linux@roeck-us.net>
+	Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 08/13] selftests: net: netlink-dumps: Avoid uninitialized variable error
+Date: Thu,  4 Dec 2025 08:17:22 -0800
+Message-ID: <20251204161729.2448052-9-linux@roeck-us.net>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20251204161729.2448052-1-linux@roeck-us.net>
 References: <20251204161729.2448052-1-linux@roeck-us.net>
@@ -103,37 +102,33 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-test_futex_mpol() is not called, resulting in
+Building netlink-dumps with -Werror results in
 
-futex_numa_mpol.c:134:13: error: ‘test_futex_mpol’ defined but not used
+netlink-dumps.c: In function ‘dump_extack’:
+../kselftest_harness.h:788:35: error: ‘ret’ may be used uninitialized
 
-if built with -Werror. Disable the function but keep it in case it was
-supposed to be used.
+Problem is that the loop which initializes 'ret' may exit early without
+initializing the variable if recv() returns an error. Always initialize
+'ret' to solve the problem.
 
-Fixes: d35ca2f64272 ("selftests/futex: Refactor futex_numa_mpol with kselftest_harness.h")
-Cc: André Almeida <andrealmeid@igalia.com>
 Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
- tools/testing/selftests/futex/functional/futex_numa_mpol.c | 2 ++
- 1 file changed, 2 insertions(+)
+ tools/testing/selftests/net/netlink-dumps.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/futex/functional/futex_numa_mpol.c b/tools/testing/selftests/futex/functional/futex_numa_mpol.c
-index d037a3f10ee8..8e3d17d66684 100644
---- a/tools/testing/selftests/futex/functional/futex_numa_mpol.c
-+++ b/tools/testing/selftests/futex/functional/futex_numa_mpol.c
-@@ -131,10 +131,12 @@ static void test_futex(void *futex_ptr, int err_value)
- 	__test_futex(futex_ptr, err_value, FUTEX2_SIZE_U32 | FUTEX_PRIVATE_FLAG | FUTEX2_NUMA);
- }
- 
-+#ifdef NOTUSED
- static void test_futex_mpol(void *futex_ptr, int err_value)
+diff --git a/tools/testing/selftests/net/netlink-dumps.c b/tools/testing/selftests/net/netlink-dumps.c
+index 7618ebe528a4..f4fc0c9910f2 100644
+--- a/tools/testing/selftests/net/netlink-dumps.c
++++ b/tools/testing/selftests/net/netlink-dumps.c
+@@ -112,7 +112,7 @@ static const struct {
+ TEST(dump_extack)
  {
- 	__test_futex(futex_ptr, err_value, FUTEX2_SIZE_U32 | FUTEX_PRIVATE_FLAG | FUTEX2_NUMA | FUTEX2_MPOL);
- }
-+#endif
- 
- TEST(futex_numa_mpol)
- {
+ 	int netlink_sock;
+-	int i, cnt, ret;
++	int i, cnt, ret = FOUND_ERR;
+ 	char buf[8192];
+ 	int one = 1;
+ 	ssize_t n;
 -- 
 2.43.0
 
