@@ -1,381 +1,198 @@
-Return-Path: <bpf+bounces-76047-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76048-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36F63CA4250
-	for <lists+bpf@lfdr.de>; Thu, 04 Dec 2025 16:04:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E7F3CA4319
+	for <lists+bpf@lfdr.de>; Thu, 04 Dec 2025 16:16:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id AB131314D7EA
-	for <lists+bpf@lfdr.de>; Thu,  4 Dec 2025 14:57:57 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 74D7A31C8C2C
+	for <lists+bpf@lfdr.de>; Thu,  4 Dec 2025 15:09:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 207E5283FF5;
-	Thu,  4 Dec 2025 14:57:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E62F82D73B5;
+	Thu,  4 Dec 2025 15:08:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qAPxZZiW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EpJY+GbT"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90EA927FD6D
-	for <bpf@vger.kernel.org>; Thu,  4 Dec 2025 14:57:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 231872D73A5
+	for <bpf@vger.kernel.org>; Thu,  4 Dec 2025 15:08:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764860275; cv=none; b=VWq89evV1oVteCw5yR5voT1IARrKGdrhAYkTDwJXNB8VfOZxmwXNjlhsEXG45QSlepEh0kHUTO961TCE/N7oiAYYZbm7cuORW/aHmRoXzfddzlE4ZohePlNTG+8J91SG3BhosBOd9kYWIn9qXR9J/CZthY8nzwNgEseq8m1VFe8=
+	t=1764860916; cv=none; b=UQexs/YwWENgUTjkpemWijKjH8GJW2STr2pFVR8lDieuEvna4L0o3cuRvnQd7VyJLGYaUm7FfQLFcmuqCJKyefIjz5vFhIpBlAne3ILQdbusPqePvWtQ6Tc0WLKr2U0Ssv+KvRCbvEQ/j4oDuxSsb4OCACaNQIEg1xrMPzT6EQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764860275; c=relaxed/simple;
-	bh=z7l7FCdyewXjjMIsBNJqm/jv+qEPad7BrW7U07PFXaU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WD9keLp8D9X1i0wiQPLMLXHJ+QUUrODrHp0wfcId7z0yc+JsGnDkg17Z/XW/wgkVInnkznJDMnbmTgSl2aWiJqGEDQAxQ4XpVXUnwpiQtpOyzy5uzSlAxs2MwRB32GtJhCCiEiITDrmtISrAV4J0+//NEYoZq24+Yj9MxYUAv/Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qAPxZZiW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 148B7C2BCAF
-	for <bpf@vger.kernel.org>; Thu,  4 Dec 2025 14:57:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764860275;
-	bh=z7l7FCdyewXjjMIsBNJqm/jv+qEPad7BrW7U07PFXaU=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=qAPxZZiW7Aw9bKUNm2eMlHhQAks20cI35BA60Vl/6nuhuriOlp2FaQqptqz8brASq
-	 xDnjGAZbRnyTdvKtZLwoRhQRh5ZhlFfzftU+yT3pAanU8W4d/E3qmQJtUB6xYgTFGM
-	 EOorCBWtvISB5zcvw/dAdNLyAY6iwl/reQEQKN/PM96ri+zjaOO0Ff6GEkCCs5RKaF
-	 cOZfazhegYFzLboLrpBFuXcnroQ81R3HOlsYVczrH02qG3+GK2DqaYgv3jDHE+d8tz
-	 egmKCjbW7qYSCZH10TTFFldvJYc3hQsraM+luYHptZ3D8Sxu1jjH44nyJbZ26AxxmV
-	 ulaSKLeOwEZGA==
-Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-7c6ce4f65f7so907962a34.0
-        for <bpf@vger.kernel.org>; Thu, 04 Dec 2025 06:57:55 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWWLb8jzJUceXff6b0Spup7jbt55GWVL4OARk1J2vyFHJFnrF6KSpvXZUG/sP2O4HDJUvI=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy0kxRqJfINx1+PhK5zEbm/7zeOPqo81pfgVX2DwKNgnXrc3WIC
-	bqpqBRmBXn9rWolwkObQL5eMdbM1t3CvRrAPguYHNMGrWX+2c+QtCLcMYr1aMOBL9YcAi6Jv1Rl
-	5jwfZ6/CIKNV5rYe+uTifDQafwdReklI=
-X-Google-Smtp-Source: AGHT+IFBzTKVYbAlmW6GnoRBVsv+8odsnPtzEWXKRlbjJ7jim0bjG+/IxeJqJdJm+CURjeKU9DoRlo+CFoscK62r2cA=
-X-Received: by 2002:a05:6830:441f:b0:7c5:2dbf:4a83 with SMTP id
- 46e09a7af769-7c958a9a145mr1670516a34.2.1764860274038; Thu, 04 Dec 2025
- 06:57:54 -0800 (PST)
+	s=arc-20240116; t=1764860916; c=relaxed/simple;
+	bh=mow+fg3+RlIbDNumBSEnGyZekiI5a4ukShUjLnnu0Js=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IrnMfK9yvrZUovi3Oj9l7uADJPrG1hN4LwxIi1sSirNSKK0dd+E3ZxwzjNp4aqpKdeHD7sbv8J88Ge9NiufyH0MXxIPuZhoGdm6Cu8euDgpzCEeVxsvr7Xuwqjvd8pw3JoqOs/kUx/DpvuoRVZ3ZaT6KoZ4EaQ72gqb0pdRs29c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EpJY+GbT; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-7b6dd81e2d4so1077792b3a.0
+        for <bpf@vger.kernel.org>; Thu, 04 Dec 2025 07:08:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1764860913; x=1765465713; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=t1iqQ0ov45xjnCibqFJmGxUgMKunIGbHn1CsgPvUOa0=;
+        b=EpJY+GbT2GuIEWdtU0ZHL742loWruVKtuTyFoCR8XRNym3OZBw4Yk5zRe6sd7P8XME
+         1NLacDQsksq4E1UckNBW7dbFes5qLwbXNZsmrhPIDkAs3uUhapi9Syd30ucWM5N80u0S
+         yab9GrQboMOSjBO4dSaLOpKaS9St1IZcKFadd9azjKPFWQE98mFYJ5u2aIm715Hm+yHJ
+         NuAICmdYffQudeH8KmIOFwXXGS8/UbcrNlncWZe1nLHdJ84Fy+7a7TP7zjjoM2k3z971
+         j/lq5R9MBymtH2gcTwy6ZOdY4dyVMBGGMCEwA15RBG65EZ0veXzKfx5lqTg+clEpFicT
+         xQJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1764860913; x=1765465713;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=t1iqQ0ov45xjnCibqFJmGxUgMKunIGbHn1CsgPvUOa0=;
+        b=ZCJlXJBoSihUJ5R9aduNZKK70fLJniV5LsIsW00xz5cP3saN1OfTesogy32DVRmCAS
+         0d+QQU6uKXgqzek/rQkeyqM8Dege2RilpnsNRUEuTramvVb/r/izHxhuXwVXmg6cu/4u
+         g/YY8WYHTThFoggLNwNakXPQbq6H5/yqZgN5BIMacENhtOeQXYXedBaKrJNdO0uPfJPv
+         sVNn/UrguGJxCOnrvnJv2/5yxSd+Cltz9go3zTqVy7O8YjAiKvfJLIf0eoR7OIFy1lVz
+         v7i7Xxm3slSkk3TbEB2o/hl1gzzHfZm8qoa8exk0Klzxd3Ixay/XGMGnUwjpQ+DMQNvD
+         dzCg==
+X-Forwarded-Encrypted: i=1; AJvYcCVryslmw/FcGZZTwn51ImoGywrjmG1LpaiFp2G78k53onSvCDnT2T8JjwjCsFVmUpY/cIc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxDhPSrnqa7A02DO4Ex2zwlEnDxYFOEDakolUM82UE/jiGdllHE
+	nGbIvqzV7c0Iy1gLXotTcuK1kc2gwGkPagzJwYuj7fc2oCgN3lEyW9UA
+X-Gm-Gg: ASbGnctpjBzAsACLil/tbhhvdWR/d1bI563smwwISWxyp08GbNzqsmdYUlqTom7txqw
+	enzFHfN59A/rBrwOmLKyoX3fHZXQqY28IL2pS83lCsyMFiC97Qb9T/xAFXqA0WMgCgychMZmmdh
+	nOnVHEhIXs04rJf1p04R51lhJ6S1TGfJzP+JnU5PamklDjQ30Vcux28fHVLGcSVDERTIT/Ep4fq
+	o4xdowBZbm3W7xXAnjNxPUgmMfnYWeeJxANMcAD+knW/4drBsqF1XzKXGBo03JNTrYe1GBLUhNy
+	157PUx+ZWaPjjVonjkVKmWUKP++OJKC+F9IRAyHvTRVaAIoRvo+QmcJf6qsufL6pXg+lGAlhtnP
+	+35LQhn2534NZHToiodwHLdTAMaLo36ZRUhzkFM5k8RYdyC44HyGV3pKj8N8SZtanL/wK9drYKA
+	EuTxSk3dY1jWTCZBmVUPzwJJm0mck4cnELYB9XedQWgBL5yZxqNvmNckAhh0zp1g==
+X-Google-Smtp-Source: AGHT+IGT33HgCqLOZfJ01RgUk00qwFrULoYZQaMW53xI5BI0UsjXz8kyxp1vtyO+ouK42MOcyxdiSA==
+X-Received: by 2002:a05:6a20:3ca6:b0:34e:1009:4222 with SMTP id adf61e73a8af0-363f5e95146mr8047704637.51.1764860912867;
+        Thu, 04 Dec 2025 07:08:32 -0800 (PST)
+Received: from ?IPV6:2001:ee0:4f4c:210:c2bc:6984:75c5:9339? ([2001:ee0:4f4c:210:c2bc:6984:75c5:9339])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-bf686b3b5a9sm2145622a12.9.2025.12.04.07.08.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Dec 2025 07:08:32 -0800 (PST)
+Message-ID: <eabd665c-b14d-4281-9307-2348791d3a77@gmail.com>
+Date: Thu, 4 Dec 2025 22:08:25 +0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251201202437.3750901-1-wusamuel@google.com> <20251201202437.3750901-2-wusamuel@google.com>
- <f28577c1-ca95-43ca-b179-32e2cd46d054@arm.com>
-In-Reply-To: <f28577c1-ca95-43ca-b179-32e2cd46d054@arm.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Thu, 4 Dec 2025 15:57:41 +0100
-X-Gmail-Original-Message-ID: <CAJZ5v0hAmgjozeX0egBs_ii_zzKXGPsPBUWwmGD+23KD++Rzqw@mail.gmail.com>
-X-Gm-Features: AWmQ_bnFqLUrnVTnppguy3nv7MG8K0n3xeKNtFyQKZ7NAu0BKOA8qrL8EFDr6Ew
-Message-ID: <CAJZ5v0hAmgjozeX0egBs_ii_zzKXGPsPBUWwmGD+23KD++Rzqw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] cpufreq: Replace trace_cpu_frequency with trace_policy_frequency
-To: Christian Loehle <christian.loehle@arm.com>
-Cc: Samuel Wu <wusamuel@google.com>, Huang Rui <ray.huang@amd.com>, 
-	"Gautham R. Shenoy" <gautham.shenoy@amd.com>, Mario Limonciello <mario.limonciello@amd.com>, 
-	Perry Yuan <perry.yuan@amd.com>, Jonathan Corbet <corbet@lwn.net>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Viresh Kumar <viresh.kumar@linaro.org>, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, Len Brown <lenb@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Ian Rogers <irogers@google.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, James Clark <james.clark@linaro.org>, 
-	kernel-team@android.com, linux-pm@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC] virtio_net: gate delayed refill scheduling
+To: Jason Wang <jasowang@redhat.com>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org,
+ Paolo Abeni <pabeni@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+ =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Stanislav Fomichev <sdf@fomichev.me>, virtualization@lists.linux.dev,
+ netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <40af2b73239850e7bf1a81abb71ee99f1b563b9c.1764226734.git.mst@redhat.com>
+ <a61dc7ee-d00b-41b4-b6fd-8a5152c3eae3@gmail.com>
+ <CACGkMEuJFVUDQ7SKt93mCVkbDHxK+A74Bs9URpdGR+0mtjxmAg@mail.gmail.com>
+ <a9718b11-76d5-4228-9256-6a4dee90c302@gmail.com>
+ <CACGkMEvFzYiRNxMdJ9xNPcZmotY-9pD+bfF4BD5z+HnaAt1zug@mail.gmail.com>
+ <faad67c7-8b25-4516-ab37-3b154ee4d0cf@gmail.com>
+ <CACGkMEtpARauj6GSZu+iY3Lx=c+rq_C019r4E-eisx2mujB6=A@mail.gmail.com>
+Content-Language: en-US
+From: Bui Quang Minh <minhquangbui99@gmail.com>
+In-Reply-To: <CACGkMEtpARauj6GSZu+iY3Lx=c+rq_C019r4E-eisx2mujB6=A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Dec 4, 2025 at 1:49=E2=80=AFPM Christian Loehle
-<christian.loehle@arm.com> wrote:
+On 12/3/25 13:37, Jason Wang wrote:
+> On Tue, Dec 2, 2025 at 11:29 PM Bui Quang Minh <minhquangbui99@gmail.com> wrote:
+>> On 12/2/25 13:03, Jason Wang wrote:
+>>> On Mon, Dec 1, 2025 at 11:04 PM Bui Quang Minh <minhquangbui99@gmail.com> wrote:
+>>>> On 11/28/25 09:20, Jason Wang wrote:
+>>>>> On Fri, Nov 28, 2025 at 1:47 AM Bui Quang Minh <minhquangbui99@gmail.com> wrote:
+>>>>>> I think the the requeue in refill_work is not the problem here. In
+>>>>>> virtnet_rx_pause[_all](), we use cancel_work_sync() which is safe to
+>>>>>> use "even if the work re-queues itself". AFAICS, cancel_work_sync()
+>>>>>> will disable work -> flush work -> enable again. So if the work requeue
+>>>>>> itself in flush work, the requeue will fail because the work is already
+>>>>>> disabled.
+>>>>> Right.
+>>>>>
+>>>>>> I think what triggers the deadlock here is a bug in
+>>>>>> virtnet_rx_resume_all(). virtnet_rx_resume_all() calls to
+>>>>>> __virtnet_rx_resume() which calls napi_enable() and may schedule
+>>>>>> refill. It schedules the refill work right after napi_enable the first
+>>>>>> receive queue. The correct way must be napi_enable all receive queues
+>>>>>> before scheduling refill work.
+>>>>> So what you meant is that the napi_disable() is called for a queue
+>>>>> whose NAPI has been disabled?
+>>>>>
+>>>>> cpu0] enable_delayed_refill()
+>>>>> cpu0] napi_enable(queue0)
+>>>>> cpu0] schedule_delayed_work(&vi->refill)
+>>>>> cpu1] napi_disable(queue0)
+>>>>> cpu1] napi_enable(queue0)
+>>>>> cpu1] napi_disable(queue1)
+>>>>>
+>>>>> In this case cpu1 waits forever while holding the netdev lock. This
+>>>>> looks like a bug since the netdev_lock 413f0271f3966 ("net: protect
+>>>>> NAPI enablement with netdev_lock()")?
+>>>> Yes, I've tried to fix it in 4bc12818b363 ("virtio-net: disable delayed
+>>>> refill when pausing rx"), but it has flaws.
+>>> I wonder if a simplified version is just restoring the behaviour
+>>> before 413f0271f3966 by using napi_enable_locked() but maybe I miss
+>>> something.
+>> As far as I understand, before 413f0271f3966 ("net: protect NAPI
+>> enablement with netdev_lock()"), the napi is protected by the
+> I guess you meant napi enable/disable actually.
 >
-> On 12/1/25 20:24, Samuel Wu wrote:
-> > The existing cpu_frequency trace_event can be verbose, emitting a nearl=
-y
-> > identical trace event for every CPU in the policy even when their
-> > frequencies are identical.
-> >
-> > This patch replaces the cpu_frequency trace event with policy_frequency
-> > trace event, a more efficient alternative. From the kernel's
-> > perspective, emitting a trace event once per policy instead of once per
-> > cpu saves some memory and is less overhead. From the post-processing
-> > perspective, analysis of the trace log is simplified without any loss o=
-f
-> > information.
-> >
-> > Signed-off-by: Samuel Wu <wusamuel@google.com>
-> > ---
-> >  drivers/cpufreq/cpufreq.c      | 14 ++------------
-> >  drivers/cpufreq/intel_pstate.c |  6 ++++--
-> >  include/trace/events/power.h   | 24 +++++++++++++++++++++---
-> >  kernel/trace/power-traces.c    |  2 +-
-> >  samples/bpf/cpustat_kern.c     |  8 ++++----
-> >  samples/bpf/cpustat_user.c     |  6 +++---
-> >  tools/perf/builtin-timechart.c | 12 ++++++------
-> >  7 files changed, 41 insertions(+), 31 deletions(-)
-> >
-> > diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-> > index 4472bb1ec83c..dd3f08f3b958 100644
-> > --- a/drivers/cpufreq/cpufreq.c
-> > +++ b/drivers/cpufreq/cpufreq.c
-> > @@ -309,8 +309,6 @@ static void cpufreq_notify_transition(struct cpufre=
-q_policy *policy,
-> >                                     struct cpufreq_freqs *freqs,
-> >                                     unsigned int state)
-> >  {
-> > -     int cpu;
-> > -
-> >       BUG_ON(irqs_disabled());
-> >
-> >       if (cpufreq_disabled())
-> > @@ -344,10 +342,7 @@ static void cpufreq_notify_transition(struct cpufr=
-eq_policy *policy,
-> >               adjust_jiffies(CPUFREQ_POSTCHANGE, freqs);
-> >               pr_debug("FREQ: %u - CPUs: %*pbl\n", freqs->new,
-> >                        cpumask_pr_args(policy->cpus));
-> > -
-> > -             for_each_cpu(cpu, policy->cpus)
-> > -                     trace_cpu_frequency(freqs->new, cpu);
-> > -
-> > +             trace_policy_frequency(freqs->new, policy->cpu, policy->c=
-pus);
-> >               srcu_notifier_call_chain(&cpufreq_transition_notifier_lis=
-t,
-> >                                        CPUFREQ_POSTCHANGE, freqs);
-> >
-> > @@ -2201,7 +2196,6 @@ unsigned int cpufreq_driver_fast_switch(struct cp=
-ufreq_policy *policy,
-> >                                       unsigned int target_freq)
-> >  {
-> >       unsigned int freq;
-> > -     int cpu;
-> >
-> >       target_freq =3D clamp_val(target_freq, policy->min, policy->max);
-> >       freq =3D cpufreq_driver->fast_switch(policy, target_freq);
-> > @@ -2213,11 +2207,7 @@ unsigned int cpufreq_driver_fast_switch(struct c=
-pufreq_policy *policy,
-> >       arch_set_freq_scale(policy->related_cpus, freq,
-> >                           arch_scale_freq_ref(policy->cpu));
-> >       cpufreq_stats_record_transition(policy, freq);
-> > -
-> > -     if (trace_cpu_frequency_enabled()) {
-> > -             for_each_cpu(cpu, policy->cpus)
-> > -                     trace_cpu_frequency(freq, cpu);
-> > -     }
-> > +     trace_policy_frequency(freq, policy->cpu, policy->cpus);
-> >
-> >       return freq;
-> >  }
-> > diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pst=
-ate.c
-> > index ec4abe374573..9724b5d19d83 100644
-> > --- a/drivers/cpufreq/intel_pstate.c
-> > +++ b/drivers/cpufreq/intel_pstate.c
-> > @@ -2297,7 +2297,8 @@ static int hwp_get_cpu_scaling(int cpu)
-> >
-> >  static void intel_pstate_set_pstate(struct cpudata *cpu, int pstate)
-> >  {
-> > -     trace_cpu_frequency(pstate * cpu->pstate.scaling, cpu->cpu);
-> > +     trace_policy_frequency(pstate * cpu->pstate.scaling, cpu->cpu,
-> > +                            cpumask_of(cpu->cpu));
-> >       cpu->pstate.current_pstate =3D pstate;
-> >       /*
-> >        * Generally, there is no guarantee that this code will always ru=
-n on
-> > @@ -2587,7 +2588,8 @@ static void intel_pstate_adjust_pstate(struct cpu=
-data *cpu)
-> >
-> >       target_pstate =3D get_target_pstate(cpu);
-> >       target_pstate =3D intel_pstate_prepare_request(cpu, target_pstate=
-);
-> > -     trace_cpu_frequency(target_pstate * cpu->pstate.scaling, cpu->cpu=
-);
-> > +     trace_policy_frequency(target_pstate * cpu->pstate.scaling, cpu->=
-cpu,
-> > +                            cpumask_of(cpu->cpu));
-> >       intel_pstate_update_pstate(cpu, target_pstate);
-> >
-> >       sample =3D &cpu->sample;
-> > diff --git a/include/trace/events/power.h b/include/trace/events/power.=
-h
-> > index 370f8df2fdb4..317098ffdd5f 100644
-> > --- a/include/trace/events/power.h
-> > +++ b/include/trace/events/power.h
-> > @@ -182,11 +182,29 @@ TRACE_EVENT(pstate_sample,
-> >               { PM_EVENT_RECOVER, "recover" }, \
-> >               { PM_EVENT_POWEROFF, "poweroff" })
-> >
-> > -DEFINE_EVENT(cpu, cpu_frequency,
-> > +TRACE_EVENT(policy_frequency,
-> >
-> > -     TP_PROTO(unsigned int frequency, unsigned int cpu_id),
-> > +     TP_PROTO(unsigned int frequency, unsigned int cpu_id,
-> > +              const struct cpumask *policy_cpus),
-> >
-> > -     TP_ARGS(frequency, cpu_id)
-> > +     TP_ARGS(frequency, cpu_id, policy_cpus),
-> > +
-> > +     TP_STRUCT__entry(
-> > +             __field(u32, state)
-> > +             __field(u32, cpu_id)
-> > +             __cpumask(cpumask)
-> > +     ),
-> > +
-> > +     TP_fast_assign(
-> > +             __entry->state =3D frequency;
-> > +             __entry->cpu_id =3D cpu_id;
-> > +             __assign_cpumask(cpumask, policy_cpus);
-> > +     ),
-> > +
-> > +     TP_printk("state=3D%lu cpu_id=3D%lu policy_cpus=3D%*pb",
-> > +               (unsigned long)__entry->state,
-> > +               (unsigned long)__entry->cpu_id,
-> > +               cpumask_pr_args((struct cpumask *)__get_dynamic_array(c=
-pumask)))
-> >  );
-> >
-> >  TRACE_EVENT(cpu_frequency_limits,
-> > diff --git a/kernel/trace/power-traces.c b/kernel/trace/power-traces.c
-> > index f2fe33573e54..a537e68a6878 100644
-> > --- a/kernel/trace/power-traces.c
-> > +++ b/kernel/trace/power-traces.c
-> > @@ -16,5 +16,5 @@
-> >
-> >  EXPORT_TRACEPOINT_SYMBOL_GPL(suspend_resume);
-> >  EXPORT_TRACEPOINT_SYMBOL_GPL(cpu_idle);
-> > -EXPORT_TRACEPOINT_SYMBOL_GPL(cpu_frequency);
-> > +EXPORT_TRACEPOINT_SYMBOL_GPL(policy_frequency);
-> >
-> > diff --git a/samples/bpf/cpustat_kern.c b/samples/bpf/cpustat_kern.c
-> > index 7ec7143e2757..f485de0f89b2 100644
-> > --- a/samples/bpf/cpustat_kern.c
-> > +++ b/samples/bpf/cpustat_kern.c
-> > @@ -75,9 +75,9 @@ struct {
-> >  } pstate_duration SEC(".maps");
-> >
-> >  /*
-> > - * The trace events for cpu_idle and cpu_frequency are taken from:
-> > + * The trace events for cpu_idle and policy_frequency are taken from:
-> >   * /sys/kernel/tracing/events/power/cpu_idle/format
-> > - * /sys/kernel/tracing/events/power/cpu_frequency/format
-> > + * /sys/kernel/tracing/events/power/policy_frequency/format
-> >   *
-> >   * These two events have same format, so define one common structure.
-> >   */
-> > @@ -162,7 +162,7 @@ int bpf_prog1(struct cpu_args *ctx)
-> >        */
-> >       if (ctx->state !=3D (u32)-1) {
-> >
-> > -             /* record pstate after have first cpu_frequency event */
-> > +             /* record pstate after have first policy_frequency event =
-*/
-> >               if (!*pts)
-> >                       return 0;
-> >
-> > @@ -208,7 +208,7 @@ int bpf_prog1(struct cpu_args *ctx)
-> >       return 0;
-> >  }
-> >
-> > -SEC("tracepoint/power/cpu_frequency")
-> > +SEC("tracepoint/power/policy_frequency")
-> >  int bpf_prog2(struct cpu_args *ctx)
-> >  {
-> >       u64 *pts, *cstate, *pstate, cur_ts, delta;
-> > diff --git a/samples/bpf/cpustat_user.c b/samples/bpf/cpustat_user.c
-> > index 356f756cba0d..f7e81f702358 100644
-> > --- a/samples/bpf/cpustat_user.c
-> > +++ b/samples/bpf/cpustat_user.c
-> > @@ -143,12 +143,12 @@ static int cpu_stat_inject_cpu_idle_event(void)
-> >
-> >  /*
-> >   * It's possible to have no any frequency change for long time and can=
-not
-> > - * get ftrace event 'trace_cpu_frequency' for long period, this introd=
-uces
-> > + * get ftrace event 'trace_policy_frequency' for long period, this int=
-roduces
-> >   * big deviation for pstate statistics.
-> >   *
-> >   * To solve this issue, below code forces to set 'scaling_max_freq' to=
- 208MHz
-> > - * for triggering ftrace event 'trace_cpu_frequency' and then recovery=
- back to
-> > - * the maximum frequency value 1.2GHz.
-> > + * for triggering ftrace event 'trace_policy_frequency' and then recov=
-ery back
-> > + * to the maximum frequency value 1.2GHz.
-> >   */
-> >  static int cpu_stat_inject_cpu_frequency_event(void)
-> >  {
-> > diff --git a/tools/perf/builtin-timechart.c b/tools/perf/builtin-timech=
-art.c
-> > index 22050c640dfa..3ef1a2fd0493 100644
-> > --- a/tools/perf/builtin-timechart.c
-> > +++ b/tools/perf/builtin-timechart.c
-> > @@ -612,10 +612,10 @@ process_sample_cpu_idle(struct timechart *tchart =
-__maybe_unused,
-> >  }
-> >
-> >  static int
-> > -process_sample_cpu_frequency(struct timechart *tchart,
-> > -                          struct evsel *evsel,
-> > -                          struct perf_sample *sample,
-> > -                          const char *backtrace __maybe_unused)
-> > +process_sample_policy_frequency(struct timechart *tchart,
-> > +                             struct evsel *evsel,
-> > +                             struct perf_sample *sample,
-> > +                             const char *backtrace __maybe_unused)
-> >  {
-> >       u32 state  =3D evsel__intval(evsel, sample, "state");
-> >       u32 cpu_id =3D evsel__intval(evsel, sample, "cpu_id");
-> > @@ -1541,7 +1541,7 @@ static int __cmd_timechart(struct timechart *tcha=
-rt, const char *output_name)
-> >  {
-> >       const struct evsel_str_handler power_tracepoints[] =3D {
-> >               { "power:cpu_idle",             process_sample_cpu_idle }=
-,
-> > -             { "power:cpu_frequency",        process_sample_cpu_freque=
-ncy },
-> > +             { "power:policy_frequency",     process_sample_policy_fre=
-quency },
-> >               { "sched:sched_wakeup",         process_sample_sched_wake=
-up },
-> >               { "sched:sched_switch",         process_sample_sched_swit=
-ch },
-> >  #ifdef SUPPORT_OLD_POWER_EVENTS
-> > @@ -1804,7 +1804,7 @@ static int timechart__record(struct timechart *tc=
-hart, int argc, const char **ar
-> >       unsigned int backtrace_args_no =3D ARRAY_SIZE(backtrace_args);
-> >
-> >       const char * const power_args[] =3D {
-> > -             "-e", "power:cpu_frequency",
-> > +             "-e", "power:policy_frequency",
-> >               "-e", "power:cpu_idle",
-> >       };
-> >       unsigned int power_args_nr =3D ARRAY_SIZE(power_args);
+>> rtnl_lock(). But in the refill_work, we don't acquire the rtnl_lock(),
+> Any reason we need to hold rtnl_lock() there?
+
+Correct me if I'm wrong here. Before 413f0271f3966 ("net: protect NAPI 
+enablement with netdev_lock()"), napi_disable and napi_enable are not 
+safe to be called concurrently.
+
+The example race is
+
+napi_disable -> napi_save_config -> write to n->config->defer_hard_irqs
+napi_enable -> napi_restore_config -> read n->config->defer_hard_irqs
+
+In refill_work, we don't hold any locks so the race scenario can happen.
+
+Maybe I misunderstand what you mean by restoring the behavior before 
+413f0271f3966. Do you mean that we use this pattern
+
+     In virtnet_xdp_se;
+
+     netdev_lock(dev);
+     virtnet_rx_pause_all()
+         -> napi_disable_locked
+
+     virtnet_rx_resume_all()
+         -> napi_disable_locked
+     netdev_unlock(dev);
+
+And in other places where we pause the rx too. It will hold the 
+netdev_lock during the time napi is disabled so that even when 
+refill_work happens concurrently, napi_disable cannot acquire the 
+netdev_lock and gets stuck inside.
+
+
 >
-> perf timechart seem to do per-CPU reporting though?
-> So this is broken by not emitting an event per-CPU? At least with a simpl=
-e s/cpu_frequency/policy_frequency/
-> like here.
-> Similar for the bpf samples technically...
+>> so it seems like we will have race condition before 413f0271f3966 ("net:
+>> protect NAPI enablement with netdev_lock()").
+>>
+>> Thanks,
+>> Quang Minh.
+>>
+> Thanks
+>
 
-This kind of boils down to whether or not tracepoints can be regarded
-as ABI and to what extent.
-
-In this particular case, I'm not sure I agree with the stated motivation.
-
-First of all, on systems with one CPU per cpufreq policy (the vast
-majority of x86, including AMD, and the ARM systems using the CPPC
-driver AFAICS), the "issue" at hand is actually a non-issue and
-changing the name of the tracepoint alone would confuse things in user
-space IIUC.  Those need to work the way they do today.
-
-On systems with multiple CPUs per cpufreq policy there is some extra
-overhead related to the cpu_frequency tracepoint, but the if someone
-is only interested in the "policy" frequency, they can filter out all
-CPUs belonging to the same policy except for one from the traces,
-don't they?
+Thanks,
+Quang Minh.
 
