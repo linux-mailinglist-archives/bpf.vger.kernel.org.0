@@ -1,79 +1,79 @@
-Return-Path: <bpf+bounces-76079-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76080-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B582CA4E35
-	for <lists+bpf@lfdr.de>; Thu, 04 Dec 2025 19:14:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EA7BCA4DF3
+	for <lists+bpf@lfdr.de>; Thu, 04 Dec 2025 19:12:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 75BC7313B5F9
-	for <lists+bpf@lfdr.de>; Thu,  4 Dec 2025 18:10:17 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C0BEA30EB5F4
+	for <lists+bpf@lfdr.de>; Thu,  4 Dec 2025 18:09:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3008359717;
-	Thu,  4 Dec 2025 17:56:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8827736213B;
+	Thu,  4 Dec 2025 17:58:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HEFIw/ay"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HY4ORmZL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74A003587B2
-	for <bpf@vger.kernel.org>; Thu,  4 Dec 2025 17:56:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 179A83612D5
+	for <bpf@vger.kernel.org>; Thu,  4 Dec 2025 17:58:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764871000; cv=none; b=qXYLBywlCQ/zC06ZPT5JBEdRBNYLZ6sf+0gmoHfMRaLF0QccEo4/ki/x+WYkxptlDhzSrLhhhRxZUuQCGv102p4yu/3Fuu9SVbFKphsorr/BCt0VIKcYOJp2KsSmmt+QZ8ICW1gyK39Zkw8yRH/z3t5G9lmqToRON5aue3sGYPY=
+	t=1764871122; cv=none; b=EIKEREBW57ce8DdEudgZy8gR0ZH7DhdpdD99qBHdXclfaLcSxhUd+9BS+VXjUJGwKWH1zw3axheeS4EzSAh5crTeZVxhuynqwqhu7oWOzJkuVtuFGHeQw83HNWIyY7xEplePuTIEwHju50zepFuBf1nvTmbX17PpOhKGIfd+HPU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764871000; c=relaxed/simple;
-	bh=LssZyxnB/Qt9JOrc1wZ9fPSlCWdCRitPmmyrurmq8kE=;
+	s=arc-20240116; t=1764871122; c=relaxed/simple;
+	bh=M61YqHUOtUork5VnW7pM/Mojz5Hm0vLf3JZ2HTVr3lo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=c36O3HQB/rQbwtoO82hTt0s1CXwW2DgPb9nQ5nebc8SQaY3um1pHSBEtkCBQiQByZIiDEpda+Wq/VmJBB4dm9Pn0iZSbMWGPFtco1tMY7JToGJqNuK0i9GWSMOqL9H8IZrogb3DKsvbGy8kcFYqEgCwZqdACuvAHRkq/KjWKtpo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HEFIw/ay; arc=none smtp.client-ip=209.85.210.171
+	 Content-Type:Content-Disposition:In-Reply-To; b=sJMtHxAvjTBYzyElK5xNTVJcuP0dyrElW7p42b50dt903ul2F8PVVxauariHClg2ny4FVVwM2fcWy/Y4UmA0AeWGlsEWmv3xm/PFnBZBYepBEU1ne0PYpNo8B4F6egv5aln5CR4gP1e2uvw7yyHUhVw6mG2H3H2NEpyOUI6rAUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HY4ORmZL; arc=none smtp.client-ip=209.85.216.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-7baf61be569so1483967b3a.3
-        for <bpf@vger.kernel.org>; Thu, 04 Dec 2025 09:56:37 -0800 (PST)
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-3410c86070dso926886a91.1
+        for <bpf@vger.kernel.org>; Thu, 04 Dec 2025 09:58:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764870996; x=1765475796; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1764871119; x=1765475919; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=lRdN5rrU2peC6f2Ho/CsA9zM52zEMWOlMu7pxRw/JVQ=;
-        b=HEFIw/ayyhHN8KhM6O47o3ytvOcTKfR4wcPQ+DbAc8FZpt84Ejwyp/pXj/rraBRcVk
-         G795k7cu6Gs1uOnmQWc+HXG3C8UxJ4+z64LAtszbwRzgGnrCPJomRVcXGJpoOSSYT1UE
-         fAyefQCFn/3nnbF66t8aecoDTjOcaLar8CnZspzpc+d70UEcAYW9G8D/I/ZKHQIbM/vg
-         bs9VuL+Z3VBUACQHzIfQ01WSA0c0Q1G0dt4QEK+ukUl2jFxVTNOsF6qkBQU6axesywRW
-         pqlMpS1Tl9qZ/FJaB/6YfS26hptQACIQH+RT6iVTLDU2EuMqRVp1xRnymTmjBG4tKeG3
-         vfkw==
+        bh=n1pRj1+5/jO3PLLne9MyCDaDvNW1mVSp/lUv//X24Es=;
+        b=HY4ORmZLBYzOdCUWObP7rSVJNZCX+aHieIFOY+XQnM/6dOsnZ02o7P4txafcZlkgGz
+         0MbNeFn0fDCTerN5bAfHfJ4Qcqd5VXxaQ8iVWSz8IIYU2P4S/uBspS2fCfqWlAxGrojq
+         5RRunddNABa8WgZHRxXDnN1vOnpJcHS5k7PDjFVXd4dpU86HBoNr2K/PCWTVxlKn/2oL
+         jIBQvBRatRIVfVU/UogKDCeFlFofcWSQazAzuvl3BnDKt/+XgkxtBsy/0KOKncPDlPYV
+         jDbCI1+Qhymnqh5+K4rap1GSp0WckFrLYv/0d/CznRy+CLPwhe8K/iPso6Vy2uA+lJJw
+         0p8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764870996; x=1765475796;
+        d=1e100.net; s=20230601; t=1764871119; x=1765475919;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=lRdN5rrU2peC6f2Ho/CsA9zM52zEMWOlMu7pxRw/JVQ=;
-        b=A46vAD9sHf3CVOGPE68ip/Dze3I+9LjKNarJ8mnMlvLGoiWfPrfJaYHltDQgjluqoQ
-         1YSE9+4tliV0VVkU3zGan443D71NqW5yk3iD3VASIoqE2mLSatGThW2zb7LAiehpqnbf
-         u7a192PwgbPiaGPlaXboecV0oJiOSNZaFyA7mogSE0vVhv099aGkf+1xPTTxLb7XDcdq
-         cEECANMJisn1UsZK32zTL6GGjieuoEiQo7ceBEY7tB6JnNp255dVoGPKepwNJ9XhGfAa
-         XkAiy3P0TMdXUvINYeXneBO4oAGSGCc9GNgDNWzPgUBonvJ/PbbcIzMn4xSiuBD+ep/P
-         pGCw==
-X-Forwarded-Encrypted: i=1; AJvYcCXtePxeFjVtvUuCeyGT5GzNVekfGAYgr48N69Fyji8Au4Kaz/d9EOcZhmL4OFgt63hzX+A=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyOjgQBVIN3BQniQeh3suLpsv5AURqjgWkXwU9okv1A/WEPIrv+
-	HidhpqHOSffBp1oQ+BwCgDCCMxG/uV4JNHhSWDXCfypfc5FE9pIIz7bg
-X-Gm-Gg: ASbGncsL8grGWDAQr1i6TSNBSc+wld1REmC3pWVCP3mkBnyzdMZCsco8uRpcoBTF3E5
-	LSSqjsIEDLnoziLPNW1keCurTmP1UiMfReMYbLXy/kOf/GfEmTAP7t8G+L+9wNccmz4bacWds5L
-	oHXIYXxiHD7Gs+BGebuiV6gxJ5gH8P66r3EkP27tzUTNs+meNroit0NhwBOK+M0npUnNQa7B2JD
-	NiB3p1caI5yLBIsJfC4T1f9v+P5c4WJxtzXiBFpVMAW+06yV5pubCSFl47yB84btq+pd5lc6lxN
-	G1ao0p5pvy/iAAzCucXdLEI0k8l9hsqMMwM/WJYY9U+wpgs6uT7luwcMD2MkaaO3KnTKg6nP12S
-	pONBfEW7ThyAgk5dY/JIsLKOHDnYDdvyTPouwWTLfXxRKCQyWKb9x6SlL6wLy+Qj9hqMS2A0jC3
-	7DPKqZMilvkS3zWpjSC+4eFZA=
-X-Google-Smtp-Source: AGHT+IErVS2JOE3R5hBQa8n4PbPRX0Rck8OX69DTgD6n4Zc+qBzm/AdH+8FlYt/3YOXPNZAECFyIAw==
-X-Received: by 2002:a05:7022:6094:b0:11b:ceee:b760 with SMTP id a92af1059eb24-11df0c3b2ebmr5592261c88.23.1764870996269;
-        Thu, 04 Dec 2025 09:56:36 -0800 (PST)
+        bh=n1pRj1+5/jO3PLLne9MyCDaDvNW1mVSp/lUv//X24Es=;
+        b=cHJ2AH501tIS9PlgIvHcnATHDcAais2i4pGjxd/NBd1QwPuj/qGrp9bX89sQ/1mQIk
+         m2ZrKi4Np/JCm4fRIO7z489LM/yt7MTkrjp1vFG6fYrrsO1+gf/MtWO3E9PgSDyZRNJ2
+         9zMBbQgJqEwcIthVJIU+lGVPvc+Yut3O9DJYmM/zqFC2k8fuzPVqlLo4JoyXJnl3+BYM
+         D4rJaQqrgHu+uwPmiSaylErYlgOoZQGpjvPTt9Cap+4b3gEl7h4kIQfPbdyQ6YSC6K9C
+         PfHwB27MvJMVLfEwq9D2mZuuBbfNsYbpEbxWHUTFv70AejuUOZlswO1ztQBJeS6q5GgB
+         rHTg==
+X-Forwarded-Encrypted: i=1; AJvYcCVvaiEMpgm6Jwj9tIWgXAImoSAmtCDYHC3IROaT130emhWx2Iu8w2iPCcbg5Ar890ETJXs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyBxizfjMint1ey7Kt8K0xYXfpmnoaNIu9JxeTX8lVRecH2RxpP
+	AXiJjqn90EGMLdSp5JV09Pgr2h7YgjFzpYTZ+20ezIEzJqD/29f+icQ0
+X-Gm-Gg: ASbGncvi9I/MVJ4+dEWr0kQkD4eCAnQOtvLynyklnnN0bwwsKa4NJxrCnP4hIEE0AKV
+	lpP1fx9xfSAYabW/aMgdYDmNbAlfEVOm6V57YBYYWNfZPrgqUCNJB52yiBWCTkN3L/DgcpINeqr
+	gdPcK+Mo6wS2RRD7oWNfNaO+9E7kUwugGqrSClIGX3oRWMu5F9+/TlCk26y41OkFATeXpcqaAHl
+	hgPCrlYGF9QACEwtRZApAiXkVo4rd1z0232RRRCtiUlFkssapxRJbNpZmFbp2O5wW5Ij0nLEA3T
+	NkbofNH4m+hJJmxQTkYrGYMlt3rdcYGX+DELASr/t+zjYEumSJreE4MsIxdUlfGY7S3MLq2JPwD
+	tzGHX5d+oMlVIC49cOB4VHYu6FaN9oVv0ktW9gsWJibfTDpUMoSHMY5DusFvpKvP5phBa8zJuTr
+	LRO0szV4fqi5gz9tlQMf3JNX4=
+X-Google-Smtp-Source: AGHT+IHd2CViZquu8rDIVJve8lgSXsL5f4xbCLXW1g3SwVu/83f5GjAIV9Uz6obIchoDu07uphYeuw==
+X-Received: by 2002:a17:90b:3852:b0:335:2747:a9b3 with SMTP id 98e67ed59e1d1-349126bd337mr6610930a91.32.1764871119341;
+        Thu, 04 Dec 2025 09:58:39 -0800 (PST)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:da43:aeff:fecc:bfd5])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-11df76ff44asm9415387c88.9.2025.12.04.09.56.35
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-bf6817397d0sm2431869a12.6.2025.12.04.09.58.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Dec 2025 09:56:35 -0800 (PST)
+        Thu, 04 Dec 2025 09:58:38 -0800 (PST)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Thu, 4 Dec 2025 09:56:34 -0800
+Date: Thu, 4 Dec 2025 09:58:37 -0800
 From: Guenter Roeck <linux@roeck-us.net>
 To: Jakub Kicinski <kuba@kernel.org>
 Cc: Shuah Khan <shuah@kernel.org>, Christian Brauner <brauner@kernel.org>,
@@ -81,14 +81,14 @@ Cc: Shuah Khan <shuah@kernel.org>, Christian Brauner <brauner@kernel.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Eric Dumazet <edumazet@google.com>, Kees Cook <kees@kernel.org>,
 	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	wine-devel@winehq.org, netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH 00/13] selftests: Fix problems seen when building with
- -Werror
-Message-ID: <2e069056-645e-46a5-b1a1-44583885e63a@roeck-us.net>
+	wine-devel@winehq.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+	Kuniyuki Iwashima <kuniyu@google.com>
+Subject: Re: [PATCH 06/13] selftest: af_unix: Support compilers without
+ flex-array-member-not-at-end support
+Message-ID: <f58ae2ae-49f8-46cd-bd24-2d358cb36f15@roeck-us.net>
 References: <20251204161729.2448052-1-linux@roeck-us.net>
- <20251204082754.66daa1c3@kernel.org>
- <536d47f4-25b1-430a-820d-c22eb8a92c80@roeck-us.net>
- <20251204094320.7d4429d1@kernel.org>
+ <20251204161729.2448052-7-linux@roeck-us.net>
+ <20251204094054.01c15d1e@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -97,40 +97,42 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251204094320.7d4429d1@kernel.org>
+In-Reply-To: <20251204094054.01c15d1e@kernel.org>
 
-On Thu, Dec 04, 2025 at 09:43:20AM -0800, Jakub Kicinski wrote:
-> On Thu, 4 Dec 2025 09:16:16 -0800 Guenter Roeck wrote:
-> > On Thu, Dec 04, 2025 at 08:27:54AM -0800, Jakub Kicinski wrote:
-> > > On Thu,  4 Dec 2025 08:17:14 -0800 Guenter Roeck wrote:  
-> > > > This series fixes build errors observed when trying to build selftests
-> > > > with -Werror.  
-> > > 
-> > > If your intention is to make -Werror the default please stop.
-> > > Defaulting WERROR to enabled is one of the silliest things we have done
-> > > in recent past.
-> > 
-> > No, that is not the idea, and not the intention.
-> > 
-> > The Google infrastructure builds the kernel, including selftests, with
-> > -Werror enabled. This triggers a number of build errors when trying to
-> > build selftests with the 6.18 kernel. That means I have three options:
-> > 1) Disable -Werror in selftest builds and accept that some real problems
-> >    will slip through. Not really a good option, and not acceptable.
-> > 2) Fix the problems in the upstream kernel and backport.
-> > 3) Fix the problems downstream only. Not really a good option but I guess
-> >    we'll have to do it if this series (and/or follow-up patches needed to
-> >    support glibc older than 2.36) is rejected.
-> > 
-> > We'll have to carry the patches downstream if 2) is rejected, but at
-> > the very least I wanted to give it a try.
+On Thu, Dec 04, 2025 at 09:40:54AM -0800, Jakub Kicinski wrote:
+> On Thu,  4 Dec 2025 08:17:20 -0800 Guenter Roeck wrote:
+> > -CFLAGS += $(KHDR_INCLUDES) -Wall -Wflex-array-member-not-at-end
+> > +CFLAGS += $(KHDR_INCLUDES) -Wall $(call cc-option,-Wflex-array-member-not-at-end)
 > 
-> Understood, of course we should fix the warnings!
-> If we're fixing warnings, tho, I wouldn't have mentioned -Werror in 
-> the _subject_. It doesn't affect which warnings are enabled, AFAIK?
+> Hm, the Claude code review we have hooked up to patchwork says:
+> 
+>   Is cc-option available in the selftest build environment? Looking at
+>   tools/testing/selftests/lib.mk (included at line 14), it doesn't include
+>   scripts/Makefile.compiler where cc-option is defined. When cc-option is
+>   undefined, $(call cc-option,...) expands to an empty string, which means
+>   the -Wflex-array-member-not-at-end flag won't be added even on compilers
+>   that support it.
+> 
+>   This defeats the purpose of commit 1838731f1072c which added the warning
+>   flag to catch flexible array issues.
+> 
+>   For comparison, tools/testing/selftests/nolibc/Makefile explicitly
+>   includes scripts/Makefile.compiler before using cc-option.
+> 
+> Testing it:
+> 
+> $ make -C tools/testing/selftests/ TARGETS=net/af_unix Q= V=1
+> make: Entering directory '/home/kicinski/devel/linux/tools/testing/selftests'
+> make[1]: Entering directory '/home/kicinski/devel/linux/tools/testing/selftests/net/af_unix'
+> gcc -isystem /home/kicinski/devel/linux/usr/include -Wall  -D_GNU_SOURCE=     diag_uid.c  -o /home/kicinski/devel/linux/tools/testing/selftests/net/af_unix/diag_uid
+> 
+> looks like the flag just disappears. Even tho:
+> 
+> gcc version 15.2.1 
 
-I'll update the subjects and descriptions accordingly.
+Oops :). I didn't expect that, sorry. Thanks for finding!
 
-Thanks,
+... and I guess it's time to set up AI in my environment.
+
 Guenter
 
