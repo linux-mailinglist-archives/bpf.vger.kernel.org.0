@@ -1,31 +1,32 @@
-Return-Path: <bpf+bounces-76039-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76040-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id F22C9CA338C
-	for <lists+bpf@lfdr.de>; Thu, 04 Dec 2025 11:29:35 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FDBFCA33BC
+	for <lists+bpf@lfdr.de>; Thu, 04 Dec 2025 11:31:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 8D72B302DBCA
-	for <lists+bpf@lfdr.de>; Thu,  4 Dec 2025 10:29:30 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 94D6930C7BC7
+	for <lists+bpf@lfdr.de>; Thu,  4 Dec 2025 10:29:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62AD8333752;
-	Thu,  4 Dec 2025 10:29:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2624333452;
+	Thu,  4 Dec 2025 10:29:34 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1493310785;
-	Thu,  4 Dec 2025 10:29:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 808A632FA3C;
+	Thu,  4 Dec 2025 10:29:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764844168; cv=none; b=fUUopq02HU3taef1Em1Rs7O1ivAB4wVv0aQUY/9Do1E2uDyQBHi9M4AfD2Os8nD31H2GNmCvr07bYRnSEsL2VY+t96CrYAiFiznDQ8JIoebSzVBdPxp7dLTyJC4c/6MF5SVt9Z57TA4rkPwcBDovQXc1qMRqCncOD5pKgZNK56Q=
+	t=1764844174; cv=none; b=BgYNgtQfmNs4D2ksHhEoYOYKrLHTsIXy2mX5324/2uJMBDTvCFCVMiYHrzYKJrVAOG/eziZLwbeKk0nHFafGxdvWV43Jet492cGMlxoRe/sMiIGe5xbxeXJpdMFaVnXPtXa+p0SQfvW47RxcJA97rb/ZcrDJJIi7J7+Pdec+rKM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764844168; c=relaxed/simple;
-	bh=kLKHKJTW5exLdI8W1ZtjxZ864Kgwu9Jh34DqM4y0svU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=NQYcSRV64LzbGp0zWkpVgEL1SvTgHgN5UlyGkvXHNKRTHsxht5vJuGVECN98Ic0PhC1hvMr58Zy5QGavQaGaGmweV7ZUQQTel+iP10Fudip7fyJ8RENd9QyUBxcHy6h0q4R0Hg+6PMva2qGtHPZ9b9KFuoswp2m2HN6PqrgM5Sg=
+	s=arc-20240116; t=1764844174; c=relaxed/simple;
+	bh=l2h8g4WGbCWh28gjOZs6mQzOxwYEBxj0oFGDolxTEPI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=SaqCbLIZp1SeyzdBkpsRvvHCgXVHemIvnxDVc8tsoHpBWfJVq+lljyewYzUNGKIGZiCivKr7FiBbUAnZhxUfdn03Q8idxplsaVnz9/zJgADEUCJOGpLvpp5lKNjDpLya0+nVvoFTDU56bVX2XaHifI1ZUMfi/ZKjJMAFd+lDXl8=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B5FEC4CEFB;
-	Thu,  4 Dec 2025 10:29:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9F7AC113D0;
+	Thu,  4 Dec 2025 10:29:27 +0000 (UTC)
 From: Geert Uytterhoeven <geert@linux-m68k.org>
 To: Kui-Feng Lee <thinker.li@gmail.com>,
 	Martin KaFai Lau <martin.lau@linux.dev>,
@@ -50,10 +51,12 @@ Cc: bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 0/2] bpf, net: Fix smc for CONFIG_BPF_JIT=n
-Date: Thu,  4 Dec 2025 11:29:14 +0100
-Message-ID: <cover.1764843476.git.geert@linux-m68k.org>
+Subject: [PATCH 1/2] bpf: Fix register_bpf_struct_ops() dummy
+Date: Thu,  4 Dec 2025 11:29:15 +0100
+Message-ID: <ead27aa92275c71c1fcd148f88ca6926a524f322.1764843951.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <cover.1764843951.git.geert@linux-m68k.org>
+References: <cover.1764843951.git.geert@linux-m68k.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,40 +66,44 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-	Hi all,
+If CONFIG_BPF_SYSCALL=y, but CONFIG_BPF_JIT=n:
 
-If CONFIG_BPF_SYSCALL=y, but CONFIG_BPF_JIT=n (e.g. m68k/allmodconfig),
-net/smc/smc_hs_bpf.c fails to build.
+    net/smc/smc_hs_bpf.c: In function ‘bpf_smc_hs_ctrl_init’:
+    include/linux/bpf.h:2068:50: error: statement with no effect [-Werror=unused-value]
+     2068 | #define register_bpf_struct_ops(st_ops, type) ({ (void *)(st_ops); 0; })
+	  |                                                  ^~~~~~~~~~~~~~~~
+    net/smc/smc_hs_bpf.c:139:16: note: in expansion of macro ‘register_bpf_struct_ops’
+      139 |         return register_bpf_struct_ops(&bpf_smc_hs_ctrl_ops, smc_hs_ctrl);
+	  |                ^~~~~~~~~~~~~~~~~~~~~~~
 
-This patch series fix the issue in two ways, by:
-  1. fixing the dummy variant of register_bpf_struct_ops(),
-  2. making SMC_HS_CTRL_BPF depend on BPF_JIT.
+As type is not a variable, but a variable type, this cannot be fixed by
+just converting register_bpf_struct_ops() into a static inline function.
+Hence fix this by introducing a static inline intermediate dummy.
 
-So far the broken dummy was never detected: until the introduction of
-SMC_HS_CTRL_BPF, all users of register_bpf_struct_ops() depended on both
-BPF_SYSCALL and BPF_JIT.
-
-Thanks!
-
-Geert Uytterhoeven (2):
-  bpf: Fix register_bpf_struct_ops() dummy
-  net: smc: SMC_HS_CTRL_BPF should depend on BPF_JIT
-
+Fixes: f6be98d19985411c ("bpf, net: switch to dynamic registration")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
  include/linux/bpf.h | 6 +++++-
- net/smc/Kconfig     | 4 ++--
- 2 files changed, 7 insertions(+), 3 deletions(-)
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 6498be4c44f8c275..bb69905c28a761e7 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -2065,7 +2065,11 @@ int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
+ void bpf_map_struct_ops_info_fill(struct bpf_map_info *info, struct bpf_map *map);
+ void bpf_struct_ops_desc_release(struct bpf_struct_ops_desc *st_ops_desc);
+ #else
+-#define register_bpf_struct_ops(st_ops, type) ({ (void *)(st_ops); 0; })
++static inline int __register_bpf_struct_ops(struct bpf_struct_ops *st_ops)
++{
++	return 0;
++}
++#define register_bpf_struct_ops(st_ops, type) __register_bpf_struct_ops(st_ops)
+ static inline bool bpf_try_module_get(const void *data, struct module *owner)
+ {
+ 	return try_module_get(owner);
 -- 
 2.43.0
 
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
 
