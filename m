@@ -1,174 +1,107 @@
-Return-Path: <bpf+bounces-76021-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76022-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A74E5CA2439
-	for <lists+bpf@lfdr.de>; Thu, 04 Dec 2025 04:33:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4103FCA250E
+	for <lists+bpf@lfdr.de>; Thu, 04 Dec 2025 05:30:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 58FBE3061EAA
-	for <lists+bpf@lfdr.de>; Thu,  4 Dec 2025 03:32:36 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 94FC0303EB85
+	for <lists+bpf@lfdr.de>; Thu,  4 Dec 2025 04:30:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69BE6398FA8;
-	Thu,  4 Dec 2025 03:32:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1963C2FD692;
+	Thu,  4 Dec 2025 04:30:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RI+eAnMb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EIunqe3V"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6F583128C2;
-	Thu,  4 Dec 2025 03:32:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ADCC2F9DB0
+	for <bpf@vger.kernel.org>; Thu,  4 Dec 2025 04:30:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764819152; cv=none; b=E9lcY8MCr0k8HmSkwk2VfXzKalttfVj4JS/rTKC0K/AmymoVpOV9wF7OEiIo9IxKU3jAAX4b5UqRNCpULrmmbkAQb1rKcLMD2ZFt0GRYkojGTvCq7iqboNy/OUM7ebQt5ZCOr6GR5uize0nhoD/kW8+MiKOjdx0EFRodPxtzQsg=
+	t=1764822612; cv=none; b=IYGkaLQwZQqsrJ7IzEAROogdJ52w2MfmB21OvmEMM2eUDJXAPTvzuzcI17oukZ3jPlRhqcrbj4xxe+62kx6rmmxxGvAHWh4GwBAdQiLr5UOHexpSeXgK/Hw0DlSr7hQYkWC+T5a+GHJR8d5mUHwcNorh3+TJbAlm7Mt2J+dLhKc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764819152; c=relaxed/simple;
-	bh=SLkkaavShBRgwwTQr3WXw+gnG4olkqmXKxVcZJeylvE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZanNDaCYAOTm5hhdrfhq4zWeT6TcZQLddRIjPeS0cKEUsyHadekCGSiVcsBavHAzjzkFRF2T3AQn7j4hRcMR/tQu99hhGYSiGz0NKjp1IGxglBGxEEAFgkoI9ptF1yRDG2vN/97PMtGzuorYbTVQV6TA2IXnLkGb2wJwDiTonJk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RI+eAnMb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3C71C113D0;
-	Thu,  4 Dec 2025 03:32:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764819151;
-	bh=SLkkaavShBRgwwTQr3WXw+gnG4olkqmXKxVcZJeylvE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RI+eAnMbOeXV9VrXuF3NkNTkzWCN/0C4+soag4VjRI5Te1tyvZAecMTY+8bm7hOkO
-	 xVrIVqOsuX/BrOO459dWLkPLHPOtgAutn2wdTfpFmZsGCsWyoY7O3Rs19pcjw3tsgJ
-	 7Q3uXIXGlYoFV+BvYF0Zl96gsh2LY+DJFImm0q36R4P1ENcLsLRs4dW3j8w0ptWPZd
-	 T3X7f64JXXWJ9DSpSxgtrEPKZtiEFczmQzC011SR56S7lajemmJgZJFL+len/swjKA
-	 wPwUMDgdSautHGcVTSaMoWnSV2JIvDLwJgSAZfeRyZ7BF964gTtTintsTw09sfbjty
-	 wSryD3QjQ+NZw==
-From: Josh Poimboeuf <jpoimboe@kernel.org>
-To: x86@kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	live-patching@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Andrey Grodzovsky <andrey.grodzovsky@crowdstrike.com>,
-	Petr Mladek <pmladek@suse.com>,
-	Song Liu <song@kernel.org>,
-	Raja Khan <raja.khan@crowdstrike.com>,
-	Miroslav Benes <mbenes@suse.cz>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH v2 2/2] x86/unwind/orc: Support reliable unwinding through BPF stack frames
-Date: Wed,  3 Dec 2025 19:32:16 -0800
-Message-ID: <a18505975662328c8ffb1090dded890c6f8c1004.1764818927.git.jpoimboe@kernel.org>
-X-Mailer: git-send-email 2.51.1
-In-Reply-To: <cover.1764818927.git.jpoimboe@kernel.org>
-References: <cover.1764818927.git.jpoimboe@kernel.org>
+	s=arc-20240116; t=1764822612; c=relaxed/simple;
+	bh=cz49EcNrMIRW5eq17ygS/tf6cneY8Hf0FVtcrPwiw1g=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=GYps41PBrnkRJG1Q97vUpcONnqaduhG9viORmbJGWjJWoIxpWW5OwBOsEgWpv8Gbgwlp5tvs0pwNE28mcRTj5DuxH4kQItXUT/YcXlUBuWOUVi+Fl/7yD3MsQn1xTFMHKOuyxrYxGpIsj4DG2b+fLLWzy4IoRFO9m5R1iXH4xfw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EIunqe3V; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-47774d3536dso4524475e9.0
+        for <bpf@vger.kernel.org>; Wed, 03 Dec 2025 20:30:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1764822609; x=1765427409; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=CKuYoY84Ub8SjfG2c3zCVp091XJBBf/vFogpY1PQ1MI=;
+        b=EIunqe3VPEvAN8MUrgIN7SqOnxKoEY0r+X1VlbOf0JPb+JMaro7DSN9bDv0AM8q++M
+         YtRzSgSP/4Fcw2+386xK15lYWRRCkyI/cd/8TgKz3z8FeIR+YzTczp0hTNQ52GeWu+Tt
+         hJkn5jSJt7ZcuCRlQzokioRQzzVJaa9sqOu/Iq/ZjJGjc4RqQVJBxWjX2RTyMgEkG5hn
+         BDTjRFDdjV2HIftxqjkgaJceb7s13qq9bUhD3L+IEEJv8TUy1GIjzVTwKYuXQnsxUitO
+         NVzP2WXcLChSFyfmFs1yzcOeDE8JASZZWG/uvucnUDUoneGbSj113yd74yd/U2ihZDbw
+         xPyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1764822609; x=1765427409;
+        h=to:subject:message-id:date:from:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CKuYoY84Ub8SjfG2c3zCVp091XJBBf/vFogpY1PQ1MI=;
+        b=mYnTwEIOs48J1FdFl7ohdMD7L0nV54YzQALmkOml303sBqZTqg7r1+pae6DQrJ33dS
+         N1IrDgidPUWPs1zLFOmwJvopdLmIPFQQSXCQNlIrvEZXKRmU9p5ep9+4CEuFbH9w+yd6
+         QVmR82I5vUFhs35yyrP8YhcKWDw0CoyHGIB3j2Wy+XGu5MdKK0KzvjkDsRNi36Qfnh8M
+         nQA5vzsZ0F68fn1ZO/2RTp/tnt8qdPXRXRctYxPkF2d2E7thOHZidfepiLNkHhFJx65J
+         Ldk8b2+0HH99k5K2+pm1wxvEvO7Xf6oYjqQ6mwFU1VWzkX/m8P7gVSYg+89wornC0aoS
+         yoyA==
+X-Forwarded-Encrypted: i=1; AJvYcCWvB2dsj5hyHuQwHkKyRIBhvn3TolhwL8ZMdR5b1oEiUgXjdW/IfVvlLaLfEBubhYpicYI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwA6bGT/A8tS7rqfdcF7O6E7TJ6BnbFOHICCxmj4/KVixMpHdc3
+	oXHQ/UkDAgOebZUSk+v17jr5on27Xxx9wPLpI/yaqJBbffQ7gdZ432S13+YTRtFB7BqWCsG9Nzh
+	Wojn9Vd3UQniqLxkRB9Bwmdl4mSicHbc=
+X-Gm-Gg: ASbGncsiNi3i66rVNLGoNy7c3XxnnqNe4jsGNmLAwiMj981FLg4VaEl1QpvI10SEvEA
+	Hd0+NYZEI0t3asEnsB2viCbb1AL6bHGDgmLK7fv3BkN5acgR2crwez+CFal9arCAPaSfBhh6boP
+	tpMxxv+ZZHtyfTNf3tV6Z0cRNm9Q0R26ECz3d0bGOBHC4uuHoBrhI26qX5w4AJrkTqjZkNBQwdy
+	O1rVkyFopOYMCBlskjxmE+tF/RZccmiPsIXoEb+SoxC3H9gNusIZmIw79aDp4+kb8K9JrN5ksKd
+	P3y1tkUM9UHFMSbi81X8t7i/QpSm
+X-Google-Smtp-Source: AGHT+IHWjzaOWG01LPDx4MI+tD9aKTvS7QR56qmiiRXKIxM2ykamryNxgZMYT+70qb8o2ZjnLz9GX0lD4dWAcMH3wFQ=
+X-Received: by 2002:a05:600c:1e8f:b0:477:9fa0:7495 with SMTP id
+ 5b1f17b1804b1-4792eb47356mr14784675e9.14.1764822608961; Wed, 03 Dec 2025
+ 20:30:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 3 Dec 2025 20:29:57 -0800
+X-Gm-Features: AWmQ_bmt7_2mn-o4gjsYVxo5Wr_9yJ9a-ekO1X2mOItBNQVmNOahyK6Cy60vuSY
+Message-ID: <CAADnVQK9ZkPC7+R5VXKHVdtj8tumpMXm7BTp0u9CoiFLz_aPTg@mail.gmail.com>
+Subject: fms-extensions and bpf
+To: Quentin Monnet <qmo@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Eduard <eddyz87@gmail.com>, 
+	Ihor Solodrai <ihor.solodrai@linux.dev>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-BPF JIT programs and trampolines use a frame pointer, so the current ORC
-unwinder strategy of falling back to frame pointers (when an ORC entry
-is missing) usually works in practice when unwinding through BPF JIT
-stack frames.
+Hi All,
 
-However, that frame pointer fallback is just a guess, so the unwind gets
-marked unreliable for live patching, which can cause livepatch
-transition stalls.
+The kernel is now built with -fms-extensions and it is
+using them in various places.
+To stop-the-bleed and let selftests/bpf pass
+I applied the short term fix:
 
-Make the common case reliable by calling the bpf_has_frame_pointer()
-helper to detect the valid frame pointer region of BPF JIT programs and
-trampolines.
+https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/commit/?id=835a50753579aa8368a08fca307e638723207768
 
-Fixes: ee9f8fce9964 ("x86/unwind: Add the ORC unwinder")
-Reported-by: Andrey Grodzovsky <andrey.grodzovsky@crowdstrike.com>
-Closes: https://lore.kernel.org/0e555733-c670-4e84-b2e6-abb8b84ade38@crowdstrike.com
-Acked-by: Song Liu <song@kernel.org>
-Acked-and-tested-by: Andrey Grodzovsky<andrey.grodzovsky@crowdstrike.com>
-Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
----
- arch/x86/kernel/unwind_orc.c | 39 +++++++++++++++++++++++++-----------
- 1 file changed, 27 insertions(+), 12 deletions(-)
+Long term I think we can try to teach bpftool
+to emit __diag_push("-fms-extensions"..)
+at the top of vmlinux.h.
+Not sure whether it's working though.
 
-diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
-index 977ee75e047c..f610fde2d5c4 100644
---- a/arch/x86/kernel/unwind_orc.c
-+++ b/arch/x86/kernel/unwind_orc.c
-@@ -2,6 +2,7 @@
- #include <linux/objtool.h>
- #include <linux/module.h>
- #include <linux/sort.h>
-+#include <linux/bpf.h>
- #include <asm/ptrace.h>
- #include <asm/stacktrace.h>
- #include <asm/unwind.h>
-@@ -172,6 +173,25 @@ static struct orc_entry *orc_ftrace_find(unsigned long ip)
- }
- #endif
- 
-+/* Fake frame pointer entry -- used as a fallback for generated code */
-+static struct orc_entry orc_fp_entry = {
-+	.type		= ORC_TYPE_CALL,
-+	.sp_reg		= ORC_REG_BP,
-+	.sp_offset	= 16,
-+	.bp_reg		= ORC_REG_PREV_SP,
-+	.bp_offset	= -16,
-+};
-+
-+static struct orc_entry *orc_bpf_find(unsigned long ip)
-+{
-+#ifdef CONFIG_BPF_JIT
-+	if (bpf_has_frame_pointer(ip))
-+		return &orc_fp_entry;
-+#endif
-+
-+	return NULL;
-+}
-+
- /*
-  * If we crash with IP==0, the last successfully executed instruction
-  * was probably an indirect function call with a NULL function pointer,
-@@ -186,15 +206,6 @@ static struct orc_entry null_orc_entry = {
- 	.type = ORC_TYPE_CALL
- };
- 
--/* Fake frame pointer entry -- used as a fallback for generated code */
--static struct orc_entry orc_fp_entry = {
--	.type		= ORC_TYPE_CALL,
--	.sp_reg		= ORC_REG_BP,
--	.sp_offset	= 16,
--	.bp_reg		= ORC_REG_PREV_SP,
--	.bp_offset	= -16,
--};
--
- static struct orc_entry *orc_find(unsigned long ip)
- {
- 	static struct orc_entry *orc;
-@@ -238,6 +249,11 @@ static struct orc_entry *orc_find(unsigned long ip)
- 	if (orc)
- 		return orc;
- 
-+	/* BPF lookup: */
-+	orc = orc_bpf_find(ip);
-+	if (orc)
-+		return orc;
-+
- 	return orc_ftrace_find(ip);
- }
- 
-@@ -495,9 +511,8 @@ bool unwind_next_frame(struct unwind_state *state)
- 	if (!orc) {
- 		/*
- 		 * As a fallback, try to assume this code uses a frame pointer.
--		 * This is useful for generated code, like BPF, which ORC
--		 * doesn't know about.  This is just a guess, so the rest of
--		 * the unwind is no longer considered reliable.
-+		 * This is just a guess, so the rest of the unwind is no longer
-+		 * considered reliable.
- 		 */
- 		orc = &orc_fp_entry;
- 		state->error = true;
--- 
-2.51.1
-
+Also,
+Quentin,
+pls think of a way to silence warns during bpftool build,
+which is now noisy due to:
+In file included from skeleton/pid_iter.bpf.c:3:
+.../tools/testing/selftests/bpf/tools/build/bpftool/vmlinux.h:64057:3:
+warning: declaration does not declare anything
+[-Wmissing-declarations]
+ 64057 |                 struct ns_tree;
+       |                 ^~~~~~~~~~~~~~
 
