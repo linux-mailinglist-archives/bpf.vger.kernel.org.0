@@ -1,222 +1,212 @@
-Return-Path: <bpf+bounces-76008-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76009-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E0AECA20BD
-	for <lists+bpf@lfdr.de>; Thu, 04 Dec 2025 01:35:15 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF658CA20CF
+	for <lists+bpf@lfdr.de>; Thu, 04 Dec 2025 01:43:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id C7DD030133E6
-	for <lists+bpf@lfdr.de>; Thu,  4 Dec 2025 00:35:13 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 17274301AF5E
+	for <lists+bpf@lfdr.de>; Thu,  4 Dec 2025 00:43:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B548BEEC3;
-	Thu,  4 Dec 2025 00:35:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A48E31D9A5F;
+	Thu,  4 Dec 2025 00:43:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="h977q/0H"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ELPsqEJi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF4B427707
-	for <bpf@vger.kernel.org>; Thu,  4 Dec 2025 00:35:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4FD91D416E
+	for <bpf@vger.kernel.org>; Thu,  4 Dec 2025 00:43:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764808511; cv=none; b=X26vCXrdVz99bVu93jJdk+gCWh5T5TG/sw3qMQW0TIDlP8HQ2iahj4L8NnQTWDexXJXonABicc+H0CY0p9NyRLEOrLr8oTXxhbddAlGJtmD5i/2C3/KPPWXtZOX+NfG4VT/ZU/xIlvPj0hJQ+E7mODFqTGjNW5qFeaLaxy92q1w=
+	t=1764808994; cv=none; b=KVLIPsRAoJvsYxoA4qIJYB/5+93hZ2qZ3pd4ZBb3VzEy5QMyysg+zwqsJW/JexRj5Qt21yxJHfxdprEackdTEvVWDxfuWPpkkbGhp+NXPT+HvCPxALQLCfVdvMi0nP0RPZCujQCQxgdsl8Jy2rrFK80WOgpnhi83WLLYTLqcXy4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764808511; c=relaxed/simple;
-	bh=qgzowlqvozrCdDlDBPM5DsRKNURP5c6NQbJd24LpgBM=;
+	s=arc-20240116; t=1764808994; c=relaxed/simple;
+	bh=dk0gAInxcDeh7vYKROKULoCwr7HKkVI8HQWqKC2Yd7E=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=h4K7zzSQVQNHCS9nGZVQsRpaA9i6t7+XCXRoZ7L3yAqKzgrRliiWwTNRJElbxRGTK+qQL/iCd2bNe75j5rS+FGc6iT2zNJWWXsopP9UF33KzswzhgdmPD3dqxYa8OVuyJy0lyKI8gXMA6QQBO2c1zkrqNKv2b+mrlfZBZhjO1xc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=h977q/0H; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-2980343d9d1so42525ad.1
-        for <bpf@vger.kernel.org>; Wed, 03 Dec 2025 16:35:09 -0800 (PST)
+	 To:Cc:Content-Type; b=V5LQy+x1GW11n7wMaoN/Yr8m8rFU97QpLVmIku0tVpmDKxllAw3Jftxu8NRhhPfi7FVxMvhK/zPldxgsfa85M88O9umLSmL6NRR49uB4990bqzABZam4s3RGPGz7+MT3ctueQuBNZRfyWU/Y7SGAsMKsmizIhspFGOkTFqdld10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ELPsqEJi; arc=none smtp.client-ip=209.85.216.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-3438231df5fso365963a91.2
+        for <bpf@vger.kernel.org>; Wed, 03 Dec 2025 16:43:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1764808509; x=1765413309; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1764808992; x=1765413792; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Z8NxXfPbmZpTpe7Ihl25p9otWD958rJ0JpuGnfn0nEk=;
-        b=h977q/0Hj8CwutoQ/JMmOldqtg3TzK5WKTvxid5W8wfAjwMZ05GRg80Px/zWdy8Bk4
-         NWHqGL0yFh/ofJBsOHBxiCjQElCD3iCSxkRxQ7Ibn0Y/qW/AjQ9NK+EOB6a7WwonlyJg
-         lO9LMHGVC6a9QZjP/aj5lrLf0AvDnAaQw+j+i3f6CFQVNjpNAQ5YJ0jtpohAYUrf8ndK
-         0qvi5gjSIQmDqRp/r+obs13RpeJCEDx7agumCw7GcX8YtdflQMuFshAK4D9p+1o69z6c
-         NsN6xCbhK3mam/ooFk7odwRXrtCwEBp8+5FXYoPwJyfzWqZiaSeeazJBz9Q8snSmGjYC
-         TXtA==
+        bh=rwV3FEkCUgw7epnBprNLYbvVpeP+wKLS305nCw34paQ=;
+        b=ELPsqEJiP7ge15HsAtGddsN0U0OI783458N62vm7uoyJNxzCNJMcGUJVbN9KdzwD1j
+         aZc0+b0r7Uttnl/v59UqJMc6FqojBKonMqm5fj3TQRhRMfrtmyJoqKeDKsMuckMxvvny
+         +20yGTmonnLl+oLI4QdGsUFd8Te88Cr1YGHAVv8IZcEMcOHmbkOFfskNwmxUaXJTSUZV
+         PNwawBLjUmbjrlY2OY8yxuAPFgztnU1wYsTeCDUPmcTKjU3irOtUtFS5bcmqKXtONfap
+         5qi3E0LLqZ6vkjKS28iIX9nHq8oxVrKUlwENKfcCRx6uQa+4GvcCKSAghpfEMEzGPfMm
+         2hrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764808509; x=1765413309;
+        d=1e100.net; s=20230601; t=1764808992; x=1765413792;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=Z8NxXfPbmZpTpe7Ihl25p9otWD958rJ0JpuGnfn0nEk=;
-        b=DCLZdYGTPXULOAZGWPebaFYx35Jb/uZW1nInySV/UfSbFNKzGB0rOEQvIJ3PEB3eBA
-         2fMvUE2+mLLDvh/Qah1q1Dt7YjSEAPxrQbRyxpKhbUAu8J3VMJ97EEeKk/BqhMyAllcg
-         ULNB1ID9000TXoV6th5aKV5WXrlGms3s4MTYNNOc/GD5ms2VdvyU8SsoakeG7Ts/d0l2
-         lkvtGb5aWuV3RppCvSHJAHVOQIBDmyjuTqNbBuERN5D+YPDSYqyqn4/9PLiFNAz0ZX1I
-         +LDSSe0kybLwRhdhc2iqT3NXEcIG7nV4NlposUJU7dVmY/v3B7h/rMbxEmNaKFFRkFZm
-         4chQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXZdm42Y7YaLHHRi1NosTtdgzlrCZySdpdpXojaS1g4fq+d/EQW7f5RXFW7qfIhmb2APNc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzwiIBrPwxmEUPyWvPNQe3Palg8K2UB9VQvnruDNhOGNnLKfbMv
-	y5uphDZztyrSZpzfCDK9Pblkd/eL+nmnMUuir6Qup1kaKln1OnmjSbChVoWLrFqdjL49F+pCZ8p
-	e0ZYLEkS4sZIHShnFIMXI4YGALJkknc+8nRhvgFnG
-X-Gm-Gg: ASbGnctombfow7/H+tWgftsuAyIV9lt+GrZARvDxs98xak16jZr0tWb+EotvT4oxObL
-	ml5CJCWfSpCe5xF+3CMwrNk7bpyLnZKYrrRf2XQlpBGotxnEKTUv+GRm25vWHYQCjYAfRMxJzrp
-	zD9EU41iW2k+xLAT0rlEFU12eMdx65AuNosfWDHc7YzR6HUj19uqCX9WOTWGI11vpRu68hYvLAa
-	RW8Job4DU9hukff+Gc2eaG1n7bdy5ZGUIZ5m5kqZ/lRMgV4bKEnV1oJZ2vLuA0ldeN4gMDE
-X-Google-Smtp-Source: AGHT+IGtuTwFiqEVUPuFXsWaToyH66kacw06+zovttbjLZvSFsLj2aUpbFICoYLoW+5DcEZ1+naYSFaxz6aLt8bJaPw=
-X-Received: by 2002:a17:902:e551:b0:290:cd63:e922 with SMTP id
- d9443c01a7336-29dacc202f9mr615265ad.15.1764808508741; Wed, 03 Dec 2025
- 16:35:08 -0800 (PST)
+        bh=rwV3FEkCUgw7epnBprNLYbvVpeP+wKLS305nCw34paQ=;
+        b=V+5EC+I7HiPi/X8ISsi0Enq9oDrnrzeWeGf+SdnpRs9dupU6V2JWCsgMCzPutMimNI
+         a4DTT+IdD5AVVjQTWmT0teMO4BFjph0HPyNK2Q+xJfuM+ukp5WM8w2DvfHzwwOR6IViP
+         9NrLjpCoM8e6Cc50JHWekbXcLZnOQzB89F4JKfQTg6OtQj8Ii2xfmPnwlcRnCkFgpJzO
+         dho3F2KOOlqyXrpXu2A5d99AlQxfvCIjD4wmcdmCP3+27VZsltKUz0yvDRCN0RhrfLvN
+         oaY+PSdiOJrvzt7EtiXCVQhsW+CUXNbVhH1oMEXMPQwj/wFbozkr5w+P45G8yhcw563T
+         9Hug==
+X-Forwarded-Encrypted: i=1; AJvYcCUYolgbDORKofLZMq3bJqZwaM//cDbA5tojIB4b3y1aJmZmc1QvaDJXT9lfHIsrMS42yp8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwKn+TIjWuBq4TwDjOVMc2Swm3+dHT5YYC8LVP8fWX9puoPbnwm
+	GMCHuWoTgky7MGyI3vLpBJHNnmAllK/Z9WnDL9MnOdiPoes2qSEgVMSOK0YiqSgXx4i4QAbGoTw
+	loa1mvJIjNbWe3r0V1d8XxWapEulH4DI=
+X-Gm-Gg: ASbGncv/WBR7M8PtbXecwekYZkHyQ3YWLK1klzfLgb0rocPLhJtUAX0cOEn31+jvGc7
+	4Ei7v7C69APmvvckZs13ADD9iLdFjYDhayPFI6p1xNGLu6mrcxjXMIaDikaEsH92VMmT98os3oX
+	1KZ0ANM1xLIt+eoUIdoU8P4OGhvTJdNQODQwBPBLjTR/xfK2BNuSHWgfO56LQpUQMsuLL6WUyZM
+	6ZTlVwKRSRQFMwyQJ6jauLE2dytqw3gH6NaXCYpYPQz54caS4/AuvNZKyviVlfbfkZ0QbUv3yR8
+	tOZZi+inacY=
+X-Google-Smtp-Source: AGHT+IESBd9sZrkuN7wKmg04Mhk+5v/JOXgUbnXmrI0HFWzsRJ1r1OCm20+QVxq0Y00Nq0qk5pZ2gs2OXf0dTm7Epv4=
+X-Received: by 2002:a17:90b:3d07:b0:340:f422:fc76 with SMTP id
+ 98e67ed59e1d1-34947893302mr851283a91.0.1764808991905; Wed, 03 Dec 2025
+ 16:43:11 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251203232924.1119206-1-namhyung@kernel.org>
-In-Reply-To: <20251203232924.1119206-1-namhyung@kernel.org>
-From: Ian Rogers <irogers@google.com>
-Date: Wed, 3 Dec 2025 16:34:56 -0800
-X-Gm-Features: AWmQ_blAzZW_jsMqIr61VwXVVoWBHwRZTdy5zFilIW7cQO8zIwuVd0klRVGDF00
-Message-ID: <CAP-5=fU=G75jpsG-X6pa8_rdKapxVc615CqvcdSPBFesj02D6A@mail.gmail.com>
-Subject: Re: [PATCH 1/2] tools/build: Add a feature test for libopenssl
-To: Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, James Clark <james.clark@linaro.org>, 
-	Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, linux-perf-users@vger.kernel.org
+References: <20251127185242.3954132-1-ihor.solodrai@linux.dev>
+ <20251127185242.3954132-4-ihor.solodrai@linux.dev> <CAEf4Bza+L_RL_d7JFFLmzkYj2dbnT8rDgqwCat2zLOekToRm-g@mail.gmail.com>
+ <3f60cb6e-a36c-44b3-b80a-3a99d013e0a3@linux.dev>
+In-Reply-To: <3f60cb6e-a36c-44b3-b80a-3a99d013e0a3@linux.dev>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 3 Dec 2025 16:42:59 -0800
+X-Gm-Features: AWmQ_blqQoRo8-wsXVXbfJMeMtJR30YBXufvPwPMau-kD9GXiPgJA6IgQqGAst8
+Message-ID: <CAEf4BzbNApf0n=Bwdar7UXBmHNJWaAmzuF68yfU4W5OYbYk2Bg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 3/4] resolve_btfids: introduce enum btf_id_kind
+To: Ihor Solodrai <ihor.solodrai@linux.dev>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Nicolas Schier <nicolas.schier@linux.dev>, 
+	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, Bill Wendling <morbo@google.com>, 
+	Justin Stitt <justinstitt@google.com>, Alan Maguire <alan.maguire@oracle.com>, 
+	Donglin Peng <dolinux.peng@gmail.com>, bpf@vger.kernel.org, dwarves@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 3, 2025 at 3:29=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
-rote:
+On Tue, Dec 2, 2025 at 11:08=E2=80=AFAM Ihor Solodrai <ihor.solodrai@linux.=
+dev> wrote:
 >
-> It's used by bpftool and the kernel build.  Let's add a feature test so
-> that perf can decide what to do based on the availability.
+> On 12/1/25 9:27 AM, Andrii Nakryiko wrote:
+> > On Thu, Nov 27, 2025 at 10:53=E2=80=AFAM Ihor Solodrai <ihor.solodrai@l=
+inux.dev> wrote:
+> >>
+> >> Instead of using multiple flags, make struct btf_id tagged with an
+> >> enum value indicating its kind in the context of resolve_btfids.
+> >>
+> >> Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
+> >> ---
+> >>  tools/bpf/resolve_btfids/main.c | 62 ++++++++++++++++++++++----------=
+-
+> >>  1 file changed, 42 insertions(+), 20 deletions(-)
+> >
+> > [...]
+> >
+> >>
+> >> -static struct btf_id *add_set(struct object *obj, char *name, bool is=
+_set8)
+> >> +static struct btf_id *add_set(struct object *obj, char *name, enum bt=
+f_id_kind kind)
+> >>  {
+> >>         /*
+> >>          * __BTF_ID__set__name
+> >>          * name =3D    ^
+> >>          * id   =3D         ^
+> >>          */
+> >> -       char *id =3D name + (is_set8 ? sizeof(BTF_SET8 "__") : sizeof(=
+BTF_SET "__")) - 1;
+> >> +       int prefixlen =3D kind =3D=3D BTF_ID_KIND_SET8 ? sizeof(BTF_SE=
+T8 "__") : sizeof(BTF_SET "__");
+> >> +       char *id =3D name + prefixlen - 1;
+> >>         int len =3D strlen(name);
+> >> +       struct btf_id *btf_id;
+> >>
+> >>         if (id >=3D name + len) {
+> >>                 pr_err("FAILED to parse set name: %s\n", name);
+> >>                 return NULL;
+> >>         }
+> >>
+> >> -       return btf_id__add(&obj->sets, id, true);
+> >> +       btf_id =3D btf_id__add(&obj->sets, id, true);
+> >> +       if (btf_id)
+> >> +               btf_id->kind =3D kind;
+> >> +
+> >> +       return btf_id;
+> >>  }
+> >>
+> >>  static struct btf_id *add_symbol(struct rb_root *root, char *name, si=
+ze_t size)
+> >>  {
+> >> +       struct btf_id *btf_id;
+> >>         char *id;
+> >>
+> >>         id =3D get_id(name + size);
+> >> @@ -288,7 +301,11 @@ static struct btf_id *add_symbol(struct rb_root *=
+root, char *name, size_t size)
+> >>                 return NULL;
+> >>         }
+> >>
+> >> -       return btf_id__add(root, id, false);
+> >> +       btf_id =3D btf_id__add(root, id, false);
+> >> +       if (btf_id)
+> >> +               btf_id->kind =3D BTF_ID_KIND_SYM;
+> >
+> > seeing this pattern repeated, wouldn't it make sense to just pass this
+> > kind to btf_id__add() and set it there?
+>
+> I like the idea, because we could get rid the "unique" flag then.
+>
+> But the btf_id__add() does not necessarily create a new struct, and so
+> if we pass the kind in, what do we do with existing objects?
+> Overwrite the kind? If not, do we check for a mismatch?
+>
 
-It seems strange to add a feature test that bpftool is missing and
-then use it only in the perf build. The signing of bpf programs isn't
-something I think we need for skeleton support in perf. I like the
-feature test, could we add it and use it in bpftool? The only two
-functions using openssl appear to be:
+no idea, don't know code well enough, but your newly added code seems
+to overwrite the kind always, no?
 
-  __u32 register_session_key(const char *key_der_path)
-  int bpftool_prog_sign(struct bpf_load_and_run_opts *opts)
-
-so we can do the whole feature test then #ifdef HAVE_FEATURE... stub
-static inline versions of the functions game?
-
-Perhaps we only need the bootstrap version of bpftool in perf and we
-can just avoid dependencies that way. Looking at bpftool's build I see
-that sign.o/c with those functions in is part of the bootstrap version
-of bpftool :-(
-
-Thanks,
-Ian
-
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/build/Makefile.feature          | 6 ++++--
->  tools/build/feature/Makefile          | 8 ++++++--
->  tools/build/feature/test-all.c        | 5 +++++
->  tools/build/feature/test-libopenssl.c | 7 +++++++
->  4 files changed, 22 insertions(+), 4 deletions(-)
->  create mode 100644 tools/build/feature/test-libopenssl.c
+> >
+> >> +
+> >> +       return btf_id;
+> >>  }
+> >>
+> >
+> > [...]
+> >
+> >> @@ -643,7 +656,7 @@ static int id_patch(struct object *obj, struct btf=
+_id *id)
+> >>         int i;
+> >>
+> >>         /* For set, set8, id->id may be 0 */
+> >> -       if (!id->id && !id->is_set && !id->is_set8) {
+> >> +       if (!id->id && id->kind =3D=3D BTF_ID_KIND_SYM) {
+> >
+> > nit: comment says the exception is specifically for SET and SET8, so I
+> > think checking for those two instead of for SYM (implying that only
+> > other possible options are set and set8) would be a bit more
+> > future-proof?
 >
-> diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
-> index fc6abe369f7373c5..bc6d85bad379321b 100644
-> --- a/tools/build/Makefile.feature
-> +++ b/tools/build/Makefile.feature
-> @@ -99,7 +99,8 @@ FEATURE_TESTS_BASIC :=3D                  \
->          libzstd                                \
->          disassembler-four-args         \
->          disassembler-init-styled       \
-> -        file-handle
-> +        file-handle                    \
-> +        libopenssl
+> ok
 >
->  # FEATURE_TESTS_BASIC + FEATURE_TESTS_EXTRA is the complete list
->  # of all feature tests
-> @@ -147,7 +148,8 @@ FEATURE_DISPLAY ?=3D              \
->           lzma                   \
->           bpf                   \
->           libaio                        \
-> -         libzstd
-> +         libzstd               \
-> +         libopenssl
->
->  #
->  # Declare group members of a feature to display the logical OR of the de=
-tection
-> diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
-> index 7c90e0d0157ac9b1..3fd5ad0db2109778 100644
-> --- a/tools/build/feature/Makefile
-> +++ b/tools/build/feature/Makefile
-> @@ -67,12 +67,13 @@ FILES=3D                                          \
->           test-libopencsd.bin                   \
->           test-clang.bin                                \
->           test-llvm.bin                         \
-> -         test-llvm-perf.bin   \
-> +         test-llvm-perf.bin                    \
->           test-libaio.bin                       \
->           test-libzstd.bin                      \
->           test-clang-bpf-co-re.bin              \
->           test-file-handle.bin                  \
-> -         test-libpfm4.bin
-> +         test-libpfm4.bin                      \
-> +         test-libopenssl.bin
->
->  FILES :=3D $(addprefix $(OUTPUT),$(FILES))
->
-> @@ -381,6 +382,9 @@ endif
->  $(OUTPUT)test-libpfm4.bin:
->         $(BUILD) -lpfm
->
-> +$(OUTPUT)test-libopenssl.bin:
-> +       $(BUILD) -lssl
-> +
->  $(OUTPUT)test-bpftool-skeletons.bin:
->         $(SYSTEM_BPFTOOL) version | grep '^features:.*skeletons' \
->                 > $(@:.bin=3D.make.output) 2>&1
-> diff --git a/tools/build/feature/test-all.c b/tools/build/feature/test-al=
-l.c
-> index eb346160d0ba0e2f..1488bf6e607836e5 100644
-> --- a/tools/build/feature/test-all.c
-> +++ b/tools/build/feature/test-all.c
-> @@ -142,6 +142,10 @@
->  # include "test-libtraceevent.c"
->  #undef main
->
-> +#define main main_test_libopenssl
-> +# include "test-libopenssl.c"
-> +#undef main
-> +
->  int main(int argc, char *argv[])
->  {
->         main_test_libpython();
-> @@ -173,6 +177,7 @@ int main(int argc, char *argv[])
->         main_test_reallocarray();
->         main_test_libzstd();
->         main_test_libtraceevent();
-> +       main_test_libopenssl();
->
->         return 0;
->  }
-> diff --git a/tools/build/feature/test-libopenssl.c b/tools/build/feature/=
-test-libopenssl.c
-> new file mode 100644
-> index 0000000000000000..168c45894e8be687
-> --- /dev/null
-> +++ b/tools/build/feature/test-libopenssl.c
-> @@ -0,0 +1,7 @@
-> +#include <openssl/ssl.h>
-> +#include <openssl/opensslv.h>
-> +
-> +int main(void)
-> +{
-> +       return SSL_library_init();
-> +}
-> --
-> 2.52.0.177.g9f829587af-goog
+> >
+> >>                 pr_err("WARN: resolve_btfids: unresolved symbol %s\n",=
+ id->name);
+> >>                 warnings++;
+> >>         }
+> >
+> > [...]
 >
 
