@@ -1,178 +1,221 @@
-Return-Path: <bpf+bounces-76029-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76030-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21EC9CA28FD
-	for <lists+bpf@lfdr.de>; Thu, 04 Dec 2025 07:47:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 09C73CA2918
+	for <lists+bpf@lfdr.de>; Thu, 04 Dec 2025 07:50:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id EBF973020371
-	for <lists+bpf@lfdr.de>; Thu,  4 Dec 2025 06:47:24 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E68773020699
+	for <lists+bpf@lfdr.de>; Thu,  4 Dec 2025 06:50:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A4571EB5DB;
-	Thu,  4 Dec 2025 06:47:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09DEC30146A;
+	Thu,  4 Dec 2025 06:50:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="fyncPvgY"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10DFE2459C6
-	for <bpf@vger.kernel.org>; Thu,  4 Dec 2025 06:47:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A38FA306B0C
+	for <bpf@vger.kernel.org>; Thu,  4 Dec 2025 06:50:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764830843; cv=none; b=t6slXEmAbQTSP0VHo981haIg3yUCuJd5hY+HCsofsylqJPoDXe6vwOulm72bUC0fP5ZvBYzkTlatte6Ih+Ptnnt/dnJ+FH9b4blgOs3biHzI7DRf3zNh2VYONdlfru8F4WC8aB/bwT+t7OB53lewLU9VYDR6u6WR/t9Vm5FahU4=
+	t=1764831020; cv=none; b=ZNglZx6jWiCKGZ5kj8YTK49aVA6HlzCKNzCXtcZESEy0kxgkTO8GNJkSJd7L/VWUoeaOBI9ZiCpVt8CzBQpZpwIXWjY5OxsIb50kNB1sTSgPjKg3n2ATCA/E9ee6khmnPJk4c02afKvLvXdDIGAkjlX+zpsRQzGcP4mpR6HLe0Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764830843; c=relaxed/simple;
-	bh=+MrY9PfBo/48ZQmxXga5s5rQEwV4NlWGH/QKgO2NbOU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=isvHxwoOkVllKdVAA+1EraRpBJJxw01Lsxnw603/ljac+nyi7/CDzUqx21ZVTioV5lm6w8zFbwKadk2k7/S6EIRFwy3C1TP2hfpD3hHNGtGsEnD1mTr6FHewXzPwLJ6rMg1wKJI9Z1xlg5rVqNXth2vtm878PbKKM5XEkyW0pEU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dMQ5b4132zKHMSG
-	for <bpf@vger.kernel.org>; Thu,  4 Dec 2025 14:46:27 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 1EB6B1A0E99
-	for <bpf@vger.kernel.org>; Thu,  4 Dec 2025 14:47:18 +0800 (CST)
-Received: from [10.67.111.192] (unknown [10.67.111.192])
-	by APP2 (Coremail) with SMTP id Syh0CgCHZ1F0LjFpigEuAg--.42794S2;
-	Thu, 04 Dec 2025 14:47:17 +0800 (CST)
-Message-ID: <3fd352f0-2445-4fee-8c0a-8fb24efc2dc8@huaweicloud.com>
-Date: Thu, 4 Dec 2025 14:47:16 +0800
+	s=arc-20240116; t=1764831020; c=relaxed/simple;
+	bh=wyywuHGzWc4TxHOd+wN/I3C0iAmPRD4NZ2L4AEl/x0Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Vc/PowDAMHpPKyE4TXHP/o1ZCGeaajQSXVTuT4eIv3egzrqKePRVFWjqEDS64iqra3C7UliLgeOD3MQQNU6MSzizE964REHBvd0khXSn7Ixi2++qsqFB3VPr5COwcDYCbbyzY+pUZl8Q6/2tTllYDNLY/K9Ssb3Gp0nNG2VCIcc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=fyncPvgY; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-477a219dbcaso5511575e9.3
+        for <bpf@vger.kernel.org>; Wed, 03 Dec 2025 22:50:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1764831016; x=1765435816; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=oUU+JkiFIfgD+NCcLOexVb9Vwfjqim8x520BznV/LgU=;
+        b=fyncPvgYOMt6/+/tAjlsAjrTYh1JvG6oXRoDgHLK8fCMIGf0wYx/bKly6ZUmzEfMLP
+         UMEM54IyRdFA7ASQnoMce1Hcr7Rb+8x6Fxz+vs3dX+a6A5XhkWOpc5hTDn9yJmbMhWVd
+         6WG1jcAJbpmD2KZdlw78eNcgxnw/XF783wMJfAWierHssGmmurx4JBTmzjUpWVkvyDK1
+         GyPkKN0hlnC9SRhfiJZ0vspw+5bWbbDUGEFxTkZF3In8MB4A9kq379qaUrO0jdijde3U
+         PT7BtDZqUNI69RBa/j+Tz5Us8wAgpuSh2sttcZUuj3AUVEXFqbRIasLxAlsIqvczHsBH
+         AB4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1764831016; x=1765435816;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oUU+JkiFIfgD+NCcLOexVb9Vwfjqim8x520BznV/LgU=;
+        b=xLLTJ/zQp1Gak2pZKp0TwgIkwQxkXZNzPWUMa76gQWeygmpvUbNeWnf5dNYTxhShEs
+         3etODIW0QUYXHGX22wzqsrf9bfcfD074BRwbHecUBD8o9B2pu3Bvyb7R85YCQVQLN3Tv
+         74iWHd2PY4PawmJhBA9Fheq4oOIUE5T7l5icSQH7uvQfxoJIgB0iYfQ9xezrKl1VIJoZ
+         jsiMILHrIfgpDzih4I92h9t+HyX+aWDo5P+ocTGKkuOeGrHIhWV+FOsFoYkZ/N7Q0FGV
+         albX1O0oUmIjhWZZyW1OTcEp73NQbA+gghtOsdHui1sSQjsDC0gAvxtIev90rDqoJtQG
+         dgXQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWgpT6ASBb8r1uddftf1E+19eoXnqUBXnEWFQnCwF5tga8mn+TW9Q1iEz2+SIESg/JLhxk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwcGVyiU0uxdfLjLmHe3dAuM+v7+GCoHaXAzvEsozqzsCZO1f4+
+	tR4LbOwguoElWBXcvfWGcXzmZ/CR6RT5dWxGMpRvNqucqwjEEEhS0/wY6hlvuLLzTBY=
+X-Gm-Gg: ASbGncvrGw7nf2/bEjVk4ByrWMupfwaPo+GoYmDMfAbSuoo0qHA8cAZaIbdCsRDdRQW
+	4cUexrURem56eGJkdyDSTTTto0zYOhZz5ejR1TIZ+0gzwLx9IBqjor4UDu+YN5HQxBbMtekSs+w
+	jgK62oQapaLS0F58G8IAtIE5VFs3Em6XvqB5yIz5RvkjhsTvyqyYXaZtL1Buvkxvz9xVwgEYXSx
+	c/Zo6fAewh8FNxUaowriCoSPhfcUc6FX14pVjlideXlrcWNV2mTL1A9kh6xBrQ3e0WywUw9e+m2
+	VUJqDny/S39/frzimBEfw5Wx6673MctRv4yPp2AwBNCRUV2oSTeyMoBlFiOPqWTkhvQI62eIIfL
+	M/u5RjSzKd30+blplENwDK8na8/NUWSplyoqwdwZp/BCYZU5ZXXFKXeOOa6ZrIa3542/JushSaA
+	0JTHiOvw==
+X-Google-Smtp-Source: AGHT+IEKI9cFeXL1koHldxyesVLpOuBPPh+Xavx+fFFxEQIxOE30PHrCd+RhU7/1vGrUKjbMkDCRWA==
+X-Received: by 2002:a05:600c:548e:b0:477:7cac:508d with SMTP id 5b1f17b1804b1-4792af2fe86mr52227555e9.16.1764831015745;
+        Wed, 03 Dec 2025 22:50:15 -0800 (PST)
+Received: from u94a ([2401:e180:8d04:3649:27f5:41c3:7aa3:452])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29dae99f179sm8818335ad.64.2025.12.03.22.50.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Dec 2025 22:50:15 -0800 (PST)
+Date: Thu, 4 Dec 2025 14:50:02 +0800
+From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+To: Dimitar Kanaliev <dimitar.kanaliev@siteground.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>
+Subject: Re: [PATCH v1 2/3] bpf: verifier: Simplify register sign extension
+ with tnum_scast
+Message-ID: <ishiaqquy6mcuq3ykea2kt36enf6g35u5yrb4hr4zavskcvmd3@ljj3hnubd5bx>
+References: <20251125125634.2671-1-dimitar.kanaliev@siteground.com>
+ <20251125125634.2671-3-dimitar.kanaliev@siteground.com>
+ <cad6577291b778e6caad2f06fae304b2ec07f752.camel@gmail.com>
+ <CAHx3w9JOXv-p_LeTiS9Z=C+wvPn-PAbm6u-i8a3jnSTTqJo3eg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next] bpf: arm64: Fix panic due to missing BTI at
- indirect jump targets
-Content-Language: en-US
-To: Anton Protopopov <a.s.protopopov@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Yonghong Song <yhs@fb.com>,
- Puranjay Mohan <puranjay@kernel.org>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-References: <20251127140318.3944249-1-xukuohai@huaweicloud.com>
- <aSh4QCd27MUHMVdp@mail.gmail.com> <aSiAeTnrh9JQ0EGh@mail.gmail.com>
-From: Xu Kuohai <xukuohai@huaweicloud.com>
-In-Reply-To: <aSiAeTnrh9JQ0EGh@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:Syh0CgCHZ1F0LjFpigEuAg--.42794S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxXF4xGFW7AF47Gry7JF4fZrb_yoW5KFW3pa
-	ykJa4IkF48tF4Ik347Aa18Cryaqr4rG39xCas8J3y0yFyjgrnYgFWUKFnIkFnxtr4Fvw1I
-	vF4293yF93yUZFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
-	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
-	7KsUUUUUU==
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHx3w9JOXv-p_LeTiS9Z=C+wvPn-PAbm6u-i8a3jnSTTqJo3eg@mail.gmail.com>
 
-On 11/28/2025 12:46 AM, Anton Protopopov wrote:
-
+On Tue, Dec 02, 2025 at 12:53:45PM +0200, Dimitar Kanaliev wrote:
+> On Tue, Dec 2, 2025 at 1:50 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
+> > On Tue, 2025-11-25 at 14:56 +0200, Dimitar Kanaliev wrote:
 [...]
+> > Assume that size == 1, s64_min = 0b000, s64_max == 0b100.
+> > This corresponds to tnum with value == 0b000 and mask == 0b111.
+> > Old algorithm computes more precise range in this situation.
+> > Old:
+> >
+> >   0: (85) call bpf_get_prandom_u32#7    ; R0=scalar()
+> >   1: (25) if r0 > 0x4 goto pc+2         ; R0=scalar(smin=smin32=0,smax=umax=smax32=umax32=4,var_off=(0x0; 0x7))
+> >   2: (7b) *(u64 *)(r10 -8) = r0         ; R0=scalar(id=1,smin=smin32=0,smax=umax=smax32=umax32=4,var_off=(0x0; 0x7)) ...
+> >   3: (91) r0 = *(s8 *)(r10 -8)          ; R0=scalar(id=1,smin=smin32=0,smax=umax=smax32=umax32=4,var_off=(0x0; 0x7)) ...
+> >   4: (b7) r0 = 0                        ; R0=0
+> >   5: (95) exit
+> >
+> > New:
+> >
+> >   0: (85) call bpf_get_prandom_u32#7    ; R0=scalar()
+> >   1: (25) if r0 > 0x4 goto pc+2         ; R0=scalar(smin=smin32=0,smax=umax=smax32=umax32=4,var_off=(0x0; 0x7))
+> >   2: (7b) *(u64 *)(r10 -8) = r0         ; R0=scalar(id=1,smin=smin32=0,smax=umax=smax32=umax32=4,var_off=(0x0; 0x7)) ...
+> >   3: (91) r0 = *(s8 *)(r10 -8)          ; R0=scalar(id=1,smin=smin32=0,smax=umax=smax32=umax32=7,var_off=(0x0; 0x7)) ...
+> >   4: (b7) r0 = 0                        ; R0=0
+> >   5: (95) exit
+> >
+> > Note that range for R0 at (3) is 0..4 for old algorithm and 0..7 for
+> > new algorithm.
+> >
+> > Can we keep both algorithms by e.g. replacing set_sext64_default_val()
+> > implementation with tnum_scast() adding tnum_scast() in
+> > coerce_reg_to_size_sx()?
+> >
+[...]
+> 
+> So I endeed up drafting this:
+> 
+>   static void coerce_reg_to_size_sx(struct bpf_reg_state *reg, int size)
+>   {
+>     s64 smin_value, smax_value;
+>     u64 num_bits = size * 8;
+>     u64 top_smax_value, top_smin_value;
+> 
+>     reg->var_off = tnum_scast(reg->var_off, size);
+> 
+>     top_smax_value = ((u64)reg->smax_value >> num_bits) << num_bits;
+>     top_smin_value = ((u64)reg->smin_value >> num_bits) << num_bits;
+> 
+>     if (top_smax_value == top_smin_value) {
+>             if (size == 1) {
+>                 smin_value = (s8)reg->smin_value;
+>                 smax_value = (s8)reg->smax_value;
+>             } else if (size == 2) {
+>                 smin_value = (s16)reg->smin_value;
+>                 smax_value = (s16)reg->smax_value;
+>             } else {
+>                 smin_value = (s32)reg->smin_value;
+>                 smax_value = (s32)reg->smax_value;
+>             }
+>     } else {
+>         smin_value = -(1LL << (num_bits - 1));
+>         smax_value = (1LL << (num_bits - 1)) - 1;
+>     }
+> 
+>     reg->smin_value = smin_value;
+>     reg->smax_value = smax_value;
+> 
+>     reg->umin_value = 0;
+>     reg->umax_value = U64_MAX;
+> 
+>     reg->s32_min_value = (s32)smin_value;
+>     reg->s32_max_value = (s32)smax_value;
+>     reg->u32_min_value = 0;
+>     reg->u32_max_value = U32_MAX;
+> 
+>     __update_reg_bounds(reg);
 
->>> diff --git a/kernel/bpf/bpf_insn_array.c b/kernel/bpf/bpf_insn_array.c
->>> index 61ce52882632..ed20b186a1f5 100644
->>> --- a/kernel/bpf/bpf_insn_array.c
->>> +++ b/kernel/bpf/bpf_insn_array.c
->>> @@ -299,3 +299,46 @@ void bpf_prog_update_insn_ptrs(struct bpf_prog *prog, u32 *offsets, void *image)
->>>   		}
->>>   	}
->>>   }
->>> +
->>> +bool bpf_prog_has_insn_array(const struct bpf_prog *prog)
->>> +{
->>> +	int i;
->>> +
->>> +	for (i = 0; i < prog->aux->used_map_cnt; i++) {
->>> +		if (is_insn_array(prog->aux->used_maps[i]))
->>> +			return true;
->>> +	}
->>> +	return false;
->>> +}
->>
->> I think a different check is needed here (and a different function
->> name, smth like "bpf_prog_has_indirect_jumps"), and a different
->> algorithm to collect jump targets in the chunk below. A program can
->> have instruction arrays not related to indirect jumps (see, e.g.,
->> bpf_insn_array selftests + in future insns arrays will be used to
->> also support other functionality). As an extreme case, an insn array
->> can point to every instruction in a prog, thus a BTI will be
->> generated for every instruction.
->>
->> In verifier it is used a bit differently, namely, all insn arrays for
->> a given subprog are collected when an indirect jump is encountered
->> (and non-deterministic only in check_cfg). Later in verification, an
->> exact map is used, so this is not a problem.
->>
->> Initially I wanted to have a map flag (in map_extra) to distingiush between
->> different types of instruction arrays ("plane ones", "jump targets",
->> "call targets", "static keys"), but Andrii wasn't happy with it,
->> so eventually I've dropped it. Maybe it is worth adding it until
->> the code is merged to upstream? Eduard, Alexei, wdyt?
-> 
-> Actually, this is even better to mark a map as containing indirect
-> jump targets in check_indirect_jump(). This will be the most precise
-> set of targets, and won't require any userspace-visible changes/flags.
-> 
-> Something like this:
-> 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 6498be4c44f8..c2d708213330 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -292,6 +292,10 @@ struct bpf_map_owner {
->   	enum bpf_attach_type expected_attach_type;
->   };
->   
-> +/* map_subtype values for map_type BPF_MAP_TYPE_INSN_ARRAY */
-> +#define BPF_INSN_ARRAY_VOID		0
-> +#define BPF_INSN_ARRAY_JUMP_TABLE	1
-> +
->   struct bpf_map {
->   	u8 sha[SHA256_DIGEST_SIZE];
->   	const struct bpf_map_ops *ops;
-> @@ -331,6 +335,7 @@ struct bpf_map {
->   	bool frozen; /* write-once; write-protected by freeze_mutex */
->   	bool free_after_mult_rcu_gp;
->   	bool free_after_rcu_gp;
-> +	u32 map_subtype; /* defined per map type */
->   	atomic64_t sleepable_refcnt;
->   	s64 __percpu *elem_count;
->   	u64 cookie; /* write-once */
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 766695491bc5..60bbd32e793a 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -20293,6 +20293,12 @@ static int check_indirect_jump(struct bpf_verifier_env *env, struct bpf_insn *in
->   		return -EINVAL;
->   	}
->   
-> +	/*
-> +	 * Explicitly mark this map as a jump table such that it can be
-> +	 * distinguished later from other instruction arrays
-> +	 */
-> +	map->map_subtype = BPF_INSN_ARRAY_JUMP_TABLE;
-> +
->   	for (i = 0; i < n - 1; i++) {
->   		other_branch = push_stack(env, env->gotox_tmp_buf->items[i],
->   					  env->insn_idx, env->cur_state->speculative);
-> 
+I'm rather unsure about keeping the __update_reg_bounds() call here, not
+that it is incorrect, just that it is too convinent to throw in and
+would take a lot of head scratching on why its there in the future.
 
-Looks good to me. Would you like to submit it as a separate patch, or
-shall I include it in my patch with your SOB?
+Digging in a bit it seems like it might be because in ALU64 case (e.g.
+"R1 = (s8, s16 s32)R2"), because the bounds were not synced after
+calling coerce_reg_to_size_sx(); unlike coerce_subreg_to_size_sx(),
+which is followed by zext_32_to_64() and reg_bounds_sync().
 
+Given we have var_off at hand maybe we can just get the unsigned ranges
+from there?
+
+    reg->umin_value = reg->var_off.value;
+    reg->umax_value = reg->var_off.value | reg->var_off.mask;
+
+    /* Should be the same as using tnum_subreg(reg->var_off) to get u32
+     * ranges.
+     */
+    reg->u32_min_value = (u32)reg->umin_value;
+    reg->u32_max_value = (u32)reg->umax_value;
+
+> }
+> 
+> I'm trying to always perform tnum_scast in order to preserve bitwise
+> info, but attempt to use the old numeric logic first. If the range fits
+> into the target size, we preserve the existing numeric bounds. If not, we
+> fall back to the type limits and let __update_reg_bounds reconstruct the
+> range from var_off. The imeplementation is similar for the subreg variant.
+> 
+> Rerunning the comparison for the same range looks much better, we should be
+> consistently seeing precision gains in the cases where the original
+> implementation bails out via goto:
+> 
+>   [-1024, 1024]:
+>   Old Better: 0
+>   New Better: 131072
+>   Equal: 1969153
+> 
+> I also went through the CI, the existing selftest in the series still
+> covers the change.
+> 
+> wdyt?
 
