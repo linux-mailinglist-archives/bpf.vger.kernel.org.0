@@ -1,876 +1,267 @@
-Return-Path: <bpf+bounces-76027-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76028-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC4C1CA265B
-	for <lists+bpf@lfdr.de>; Thu, 04 Dec 2025 06:14:14 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8E0ACA28FA
+	for <lists+bpf@lfdr.de>; Thu, 04 Dec 2025 07:47:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 43170300E00C
-	for <lists+bpf@lfdr.de>; Thu,  4 Dec 2025 05:14:07 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6098E302B11A
+	for <lists+bpf@lfdr.de>; Thu,  4 Dec 2025 06:47:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D11D30274F;
-	Thu,  4 Dec 2025 05:14:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24BAA2C11F6;
+	Thu,  4 Dec 2025 06:47:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="AdsasZ0q"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="DMfKoLH0"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74AAA2DEA9E
-	for <bpf@vger.kernel.org>; Thu,  4 Dec 2025 05:14:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25D7638D;
+	Thu,  4 Dec 2025 06:46:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764825246; cv=none; b=tny64qQiPNHm1E8VjoW34vxCSRVSZ8eekxf2zuTw9xvWBFDohVINhFjkO+YGgpoRfWIUR1iJEPhTplW6Ns6WFneR8p0TVyROyoD4w3oJBbWuFdcbedLXdVx0V+3yliVo0vt2o6zymhREy6RTHjXAkIjsUxHs1TXRNos1XY5yGnQ=
+	t=1764830820; cv=none; b=QLiw6+gFKabfFe0DKolZyfYma6+HmTrB8U1a7hKUHBW5bUgkbhcuUXKs0apdZu/yZMgeetkzavEFmJzS2c9K7GqHCp/2eGPlFzgEgRAJ9jg26yX+1ZF1uVkDYVOTEYmN6pj/fcr5gIaxN9eirBZMNzaJnGm9353RVwDISyq8W10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764825246; c=relaxed/simple;
-	bh=llzjqmwmFPeJTFEfAQ9P+jCDVH0otUNaCcGNfWoqH3s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RLjwLvXpTTKeyJw6zouyYlyhjfZdNPFUaXuhyjjUji0P0JKRpHENkJndYrTm8ECuzedMNDh0oA7PCSCHIz1Kb/1rVeuzqA9A31Y5I2rv6iz7nP88ccepmq5UM8cVreYlPSv7goiU7T7EJnmK/ttQPkJzH1fIUGXbW6kkvTIsC+g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=AdsasZ0q; arc=none smtp.client-ip=91.218.175.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <e8aacbc8-3702-42e9-b5f0-cfcd71df072e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1764825229;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zapoDiEIZFQ+IH6mPFjgCNhTiBlbJR4wyrSRiTFNgA4=;
-	b=AdsasZ0qH8Depln1NYhlJMIV1HRkDrYDxSaCoMGdyByzyGYQPf0x9m7TO8aC7KuBUzOmYD
-	WnMlwilqDh6G/5FvnIHEypQ0EOH4D0dh9RAKp8iiWaeStz2A4GApdHmUlPtHXMnahb5+FR
-	x6xvUo4dDbozVbv5j4S+e8axQsxahqs=
-Date: Wed, 3 Dec 2025 21:13:39 -0800
+	s=arc-20240116; t=1764830820; c=relaxed/simple;
+	bh=JvsNdwxxyzpivZxILB10Eu494+vyyKv0nrXCXxkjz3g=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=okI0utWkgYOMhNnVmGGJ2uiJzavmF9P+8ai3bSGk5vzBtF/cs5SeoQrfn81KhliTWLoDwbuA8gZR6W1cMKdRaaDi75SeAa7yofnqK+zUqymhiYB57HUtKgKEwjqBfUvbK/65bynMKAAnIQlGDXwzSwyXsiixuDjxQ4kvRhu2OTI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=DMfKoLH0; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:Content-Type:MIME-Version:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=6V+oBcK/j52G6lsVveD6nE1Y0DSxEoZWG7pTjATtvx0=; b=DMfKoLH0UioN2bZkTLYha18j63
+	teVEXM2GOEXu0WVLPSffJuq1oNWr3Y8E4BvLx/NQpTGLhn/A7nraB5izgk5B/up/rep0ox91kQqvc
+	iFuyRCUTDTMjVojmT48vkXvYqwxDtvyQ3mzCTBAQwg1vOYto/f6IOmX8yscxV8lJEkrK+XvEf8qK9
+	hzvOhwPJZe8gEGdrzwrq4S+j9OQRnxivkeQXc6xVa8UID5cW6BeKT63HYouXuMiSyHuSo5/fWbbtR
+	nXID9o4oSOQd75OJkYQreZuMnJhLfbAPgK+N7TIK/toyLJjf29/y6kqHAuKzcdo8lUfesJy3aC6T9
+	hLfqJadg==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.99 #2 (Red Hat Linux))
+	id 1vR37K-0000000A4eR-3hi7;
+	Thu, 04 Dec 2025 06:47:07 +0000
+Date: Thu, 4 Dec 2025 06:47:06 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	Ian Kent <raven@themaw.net>, Miklos Szeredi <miklos@szeredi.hu>,
+	NeilBrown <neil@brown.name>,
+	Andreas Hindborg <a.hindborg@kernel.org>, linux-mm@kvack.org,
+	linux-efi@vger.kernel.org, ocfs2-devel@lists.linux.dev,
+	Kees Cook <kees@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-usb@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
+	Casey Schaufler <casey@schaufler-ca.com>,
+	linuxppc-dev@lists.ozlabs.org,
+	John Johansen <john.johansen@canonical.com>,
+	selinux@vger.kernel.org,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	bpf@vger.kernel.org, Chris Mason <clm@meta.com>
+Subject: [git pull][vfs] tree-in-dcache stuff
+Message-ID: <20251204064706.GJ1712166@ZenIV>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 4/4] resolve_btfids: change in-place update
- with raw binary output
-To: Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Nathan Chancellor <nathan@kernel.org>,
- Nicolas Schier <nicolas.schier@linux.dev>,
- Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
- Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
- Alan Maguire <alan.maguire@oracle.com>, Donglin Peng <dolinux.peng@gmail.com>
-Cc: bpf@vger.kernel.org, dwarves@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
-References: <20251127185242.3954132-1-ihor.solodrai@linux.dev>
- <20251127185242.3954132-5-ihor.solodrai@linux.dev>
- <de6d1c8f581fb746ad97b93dbfb054ae7db6b5d8.camel@gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Ihor Solodrai <ihor.solodrai@linux.dev>
-In-Reply-To: <de6d1c8f581fb746ad97b93dbfb054ae7db6b5d8.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-On 12/1/25 11:55 AM, Eduard Zingerman wrote:
-> On Thu, 2025-11-27 at 10:52 -0800, Ihor Solodrai wrote:
->> Currently resolve_btfids updates .BTF_ids section of an ELF file
->> in-place, based on the contents of provided BTF, usually within the
->> same input file, and optionally a BTF base.
->>
+The following changes since commit e9a6fb0bcdd7609be6969112f3fbfcce3b1d4a7c:
 
-Hi Eduard, thank you for the review.
+  Linux 6.18-rc5 (2025-11-09 15:10:19 -0800)
 
->> This patch changes resolve_btfids behavior to enable BTF
->> transformations as part of its main operation. To achieve this
->> in-place ELF write in resolve_btfids is replaced with generation of
->> the following binaries:
->>   * ${1}.btf with .BTF section data
->>   * ${1}.distilled_base.btf with .BTF.base section data (for
->>     out-of-tree modules)
->>   * ${1}.btf_ids with .BTF_ids section data, if it exists in ${1}
-> 
-> Nit: use ${1}.BTF / ${1}.BTF.base / ${1}.BTF_ids, so that each file is
->      named by it's corresponding section?
+are available in the Git repository at:
 
-Sure, makes sense.
+  git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git tags/pull-persistency
 
-> 
->>
->> The execution of resolve_btfids and consumption of its output is
->> orchestrated by scripts/gen-btf.sh introduced in this patch.
->>
->> The rationale for this approach is that updating ELF in-place with
->> libelf API is complicated and bug-prone, especially in the context of
->> the kernel build. On the other hand applying objcopy to manipulate ELF
->> sections is simpler and more reliable.
-> 
-> Nit: more context needed, as is the statement raises questions but not
->      answers them.
+for you to fetch changes up to eb028c33451af08bb34f45c6be6967ef1c98cbd1:
 
-Would you like to see more details about why using libelf is complicated?
-I don't follow what's unclear here, sorry...
+  d_make_discardable(): warn if given a non-persistent dentry (2025-11-17 23:59:27 -0500)
 
-> 
->>
->> There are two distinct paths for BTF generation and resolve_btfids
->> application in the kernel build: for vmlinux and for kernel modules.
->>
->> For the vmlinux binary a .BTF section is added in a roundabout way to
->> ensure correct linking (details below). The patch doesn't change this
->> approach, only the implementation is a little different.
->>
->> Before this patch it worked like follows:
->>
->>   * pahole consumed .tmp_vmlinux1 [1] and added .BTF section with
->>     llvm-objcopy [2] to it
->>   * then everything except the .BTF section was stripped from .tmp_vmlinux1
->>     into a .tmp_vmlinux1.bpf.o object [1], later linked into vmlinux
->>   * resolve_btfids was executed later on vmlinux.unstripped [3],
->>     updating it in-place
->>
->> After this patch gen-btf.sh implements the following:
->>
->>   * pahole consumes .tmp_vmlinux1 and produces a *detached* file with
->>     raw BTF data
->>   * resolve_btfids consumes .tmp_vmlinux1 and detached BTF to produce
->>     (potentially modified) .BTF, and .BTF_ids sections data
->>   * a .tmp_vmlinux1.bpf.o object is then produced with objcopy copying
->>     BTF output of resolve_btfids
->>   * .BTF_ids data gets embedded into vmlinux.unstripped in
->>     link-vmlinux.sh by objcopy --update-section
->>
->> For the kernel modules creating special .bpf.o file is not necessary,
->> and so embedding of sections data produced by resolve_btfids is
->> straightforward with the objcopy.
->>
->> With this patch an ELF file becomes effectively read-only within
->> resolve_btfids, which allows to delete elf_update() call and satelite
->> code (like compressed_section_fix [4]).
->>
->> Endianness handling of .BTF_ids data is also changed. Previously the
->> "flags" part of the section was bswapped in sets_patch() [5], and then
->> Elf_Type was modified before elf_update() to signal to libelf that
->> bswap may be necessary. With this patch we explicitly bswap entire
->> data buffer on load and on dump.
->>
->> [1] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/tree/scripts/link-vmlinux.sh#n115
->> [2] https://git.kernel.org/pub/scm/devel/pahole/pahole.git/tree/btf_encoder.c#n1835
->> [3] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/tree/scripts/link-vmlinux.sh#n285
-> 
-> Nit: these links are moving target, should refer to a commit or a tag.
+	Conflicts in Documentation/filesystems/porting.rst, fs/dcache.c,
+fs/debugfs/inode.c and security/apparmor/apparmorfs.c; proposed resolution
+in #proposed-merge (same as in -next).  Details of conflicts:
+Documentation/filesystems/porting.rst:
+	usual trivial append/append conflict
+fs/dcache.c in d_instantiate_new():
+	pulling spin_unlock(&entry->d_lock) from __d_instantiate() into
+	callers in this branch vs. changes of the lines immediately
+	following the call of __d_instantiate() in mainline.  Obvious
+	resolution.
+fs/debugfs/inode.c in __debugfs_create_file(), debugfs_create_dir()
+	and debugfs_create_automount():
+	removal of pointless check in this branch vs. changes of
+	(unreachable) failure handling in mainline.
+	Resolution: remove it, it's still a dead code.
+fs/debugfs/inode.c in debugfs_create_symlink():
+	d_instantiate() -> d_make_persistent() in this branch,
+	end_creating() -> debugfs_end_creating() in mainline.
+	Obvious resolution...
+security/apparmor/apparmorfs.c in aafs_remove():
+	switch of simple_rmdir() and simple_unlink() to
+	__simple_{rmdir,unlink}() in this branch vs. switch to
+	start_removing_dentry()/end_removing() around those calls
+	in mainline.  Resolution: switch simple_{rmdir,unlink}() as in
+	this branch.  TBH, I rather doubt that mainline change there was
+	worthwhile - aafs interaction with VFS locking is...  special,
+	and _ANY_ changes of locking protocol on our end will have to
+	consider that location very carefully anyway; making it look
+	like a regular removal is at that stage is asking for trouble.
 
-Acked
+----------------------------------------------------------------
+Some filesystems use a kinda-sorta controlled dentry refcount leak to pin
+dentries of created objects in dcache (and undo it when removing those).
+Reference is grabbed and not released, but it's not actually _stored_
+anywhere.  That works, but it's hard to follow and verify; among other
+things, we have no way to tell _which_ of the increments is intended
+to be an unpaired one.  Worse, on removal we need to decide whether
+the reference had already been dropped, which can be non-trivial if
+that removal is on umount and we need to figure out if this dentry is
+pinned due to e.g. unlink() not done.  Usually that is handled by using
+kill_litter_super() as ->kill_sb(), but there are open-coded special
+cases of the same (consider e.g. /proc/self).
 
-> 
->> [4] https://lore.kernel.org/bpf/20200819092342.259004-1-jolsa@kernel.org/
->> [5] https://lore.kernel.org/bpf/cover.1707223196.git.vmalik@redhat.com/
->>
->> Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
->> ---
->>  MAINTAINERS                          |   1 +
->>  scripts/Makefile.modfinal            |   5 +-
->>  scripts/gen-btf.sh                   | 167 ++++++++++++++++++++
->>  scripts/link-vmlinux.sh              |  42 +-----
->>  tools/bpf/resolve_btfids/main.c      | 218 +++++++++++++++++----------
->>  tools/testing/selftests/bpf/Makefile |   5 +
->>  6 files changed, 317 insertions(+), 121 deletions(-)
->>  create mode 100755 scripts/gen-btf.sh
-> 
-> Since resolve_btfids is now responsible for distilled base generation,
-> does Makefile.btf need modification to remove "--btf_features=distilled_base"?
+Things get simpler if we introduce a new dentry flag (DCACHE_PERSISTENT)
+marking those "leaked" dentries.  Having it set claims responsibility
+for +1 in refcount.
 
-Yes, good catch.
+The end result this series is aiming for:
 
-> 
->>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index 48aabeeed029..5cd34419d952 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -4672,6 +4672,7 @@ F:	net/sched/act_bpf.c
->>  F:	net/sched/cls_bpf.c
->>  F:	samples/bpf/
->>  F:	scripts/bpf_doc.py
->> +F:	scripts/gen-btf.sh
->>  F:	scripts/Makefile.btf
->>  F:	scripts/pahole-version.sh
->>  F:	tools/bpf/
->> diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
->> index 542ba462ed3e..3862fdfa1267 100644
->> --- a/scripts/Makefile.modfinal
->> +++ b/scripts/Makefile.modfinal
->> @@ -38,9 +38,8 @@ quiet_cmd_btf_ko = BTF [M] $@
->>        cmd_btf_ko = 							\
->>  	if [ ! -f $(objtree)/vmlinux ]; then				\
->>  		printf "Skipping BTF generation for %s due to unavailability of vmlinux\n" $@ 1>&2; \
->> -	else								\
->> -		LLVM_OBJCOPY="$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLAGS) $(MODULE_PAHOLE_FLAGS) --btf_base $(objtree)/vmlinux $@; \
->> -		$(RESOLVE_BTFIDS) -b $(objtree)/vmlinux $@;		\
->> +	else	\
->> +		$(srctree)/scripts/gen-btf.sh --btf_base $(objtree)/vmlinux $@; \
->>  	fi;
->>  
->>  # Same as newer-prereqs, but allows to exclude specified extra dependencies
->> diff --git a/scripts/gen-btf.sh b/scripts/gen-btf.sh
->> new file mode 100755
->> index 000000000000..2dfb7ab289ca
->> --- /dev/null
->> +++ b/scripts/gen-btf.sh
->> @@ -0,0 +1,167 @@
->> +#!/bin/bash
->> +# SPDX-License-Identifier: GPL-2.0
->> +# Copyright (c) 2025 Meta Platforms, Inc. and affiliates.
->> +#
->> +# This script generates BTF data for the provided ELF file.
->> +#
->> +# Kernel BTF generation involves these conceptual steps:
->> +#   1. pahole generates BTF from DWARF data
->> +#   2. resolve_btfids applies kernel-specific btf2btf
->> +#      transformations and computes data for .BTF_ids section
->> +#   3. the result gets linked/objcopied into the target binary
->> +#
->> +# How step (3) should be done differs between vmlinux, and
->> +# kernel modules, which is the primary reason for the existence
->> +# of this script.
->> +#
->> +# For modules the script expects vmlinux passed in as --btf_base.
->> +# Generated .BTF, .BTF.base and .BTF_ids sections become embedded
->> +# into the input ELF file with objcopy.
->> +#
->> +# For vmlinux the input file remains unchanged and two files are produced:
->> +#   - ${1}.btf.o ready for linking into vmlinux
->> +#   - ${1}.btf_ids with .BTF_ids data blob
->> +# This output is consumed by scripts/link-vmlinux.sh
->> +
->> +set -e
->> +
->> +usage()
->> +{
->> +	echo "Usage: $0 [--btf_base <file>] <target ELF file>"
->> +	exit 1
->> +}
->> +
->> +BTF_BASE=""
->> +
->> +while [ $# -gt 0 ]; do
->> +	case "$1" in
->> +	--btf_base)
->> +		BTF_BASE="$2"
->> +		shift 2
->> +		;;
->> +	-*)
->> +		echo "Unknown option: $1" >&2
->> +		usage
->> +		;;
->> +	*)
->> +		break
->> +		;;
->> +	esac
->> +done
->> +
->> +if [ $# -ne 1 ]; then
->> +	usage
->> +fi
->> +
->> +ELF_FILE="$1"
->> +shift
->> +
->> +is_enabled() {
->> +	grep -q "^$1=y" ${objtree}/include/config/auto.conf
->> +}
->> +
->> +info()
->> +{
->> +	printf "  %-7s %s\n" "${1}" "${2}"
->> +}
->> +
->> +case "${KBUILD_VERBOSE}" in
->> +*1*)
->> +	set -x
->> +	;;
->> +esac
->> +
->> +if ! is_enabled CONFIG_DEBUG_INFO_BTF; then
->> +	exit 0
->> +fi
->> +
->> +gen_btf_data()
->> +{
->> +	info BTF "${ELF_FILE}"
->> +	btf1="${ELF_FILE}.btf.1"
->> +	${PAHOLE} -J ${PAHOLE_FLAGS}			\
->> +		${BTF_BASE:+--btf_base ${BTF_BASE}}	\
->> +		--btf_encode_detached=${btf1}		\
->> +		"${ELF_FILE}"
->> +
->> +	info BTFIDS "${ELF_FILE}"
->> +	RESOLVE_BTFIDS_OPTS=""
->> +	if is_enabled CONFIG_WERROR; then
->> +		RESOLVE_BTFIDS_OPTS+=" --fatal_warnings "
->> +	fi
->> +	if [ -n "${KBUILD_VERBOSE}" ]; then
->> +		RESOLVE_BTFIDS_OPTS+=" -v "
->> +	fi
->> +	${RESOLVE_BTFIDS} ${RESOLVE_BTFIDS_OPTS}	\
->> +		${BTF_BASE:+--btf_base ${BTF_BASE}}	\
->> +		--btf ${btf1} "${ELF_FILE}"
->> +}
->> +
->> +gen_btf_o()
->> +{
->> +	local btf_data=${ELF_FILE}.btf.o
->> +
->> +	# Create ${btf_data} which contains just .BTF section but no symbols. Add
->> +	# SHF_ALLOC because .BTF will be part of the vmlinux image. --strip-all
->> +	# deletes all symbols including __start_BTF and __stop_BTF, which will
->> +	# be redefined in the linker script.
->> +	info OBJCOPY "${btf_data}"
->> +	echo "" | ${CC} -c -x c -o ${btf_data} -
->> +	${OBJCOPY} --add-section .BTF=${ELF_FILE}.btf \
->> +		--set-section-flags .BTF=alloc,readonly ${btf_data}
->> +	${OBJCOPY} --only-section=.BTF --strip-all ${btf_data}
->> +
->> +	# Change e_type to ET_REL so that it can be used to link final vmlinux.
->> +	# GNU ld 2.35+ and lld do not allow an ET_EXEC input.
->> +	if is_enabled CONFIG_CPU_BIG_ENDIAN; then
->> +		et_rel='\0\1'
->> +	else
->> +		et_rel='\1\0'
->> +	fi
->> +	printf "${et_rel}" | dd of="${btf_data}" conv=notrunc bs=1 seek=16 status=none
->> +}
->> +
->> +embed_btf_data()
->> +{
->> +	info OBJCOPY "${ELF_FILE}"
->> +	${OBJCOPY} --add-section .BTF=${ELF_FILE}.btf ${ELF_FILE}
->> +
->> +	# a module might not have a .BTF_ids or .BTF.base section
->> +	local btf_base="${ELF_FILE}.distilled_base.btf"
->> +	if [ -f "${btf_base}" ]; then
->> +		${OBJCOPY} --add-section .BTF.base=${btf_base} ${ELF_FILE}
->> +	fi
->> +	local btf_ids="${ELF_FILE}.btf_ids"
->> +	if [ -f "${btf_ids}" ]; then
->> +		${OBJCOPY} --update-section .BTF_ids=${btf_ids} ${ELF_FILE}
->> +	fi
->> +}
->> +
->> +cleanup()
->> +{
->> +	rm -f "${ELF_FILE}.btf.1"
->> +	rm -f "${ELF_FILE}.btf"
->> +	if [ "${BTFGEN_MODE}" = "module" ]; then
->> +		rm -f "${ELF_FILE}.distilled_base.btf"
->> +		rm -f "${ELF_FILE}.btf_ids"
->> +	fi
->> +}
->> +trap cleanup EXIT
->> +
->> +BTFGEN_MODE="vmlinux"
->> +if [ -n "${BTF_BASE}" ]; then
->> +	BTFGEN_MODE="module"
->> +fi
->> +
->> +gen_btf_data
->> +
->> +case "${BTFGEN_MODE}" in
->> +vmlinux)
->> +	gen_btf_o
->> +	;;
->> +module)
->> +	embed_btf_data
->> +	;;
->> +esac
->> +
->> +exit 0
->> diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
->> index 433849ff7529..5bea8795f96d 100755
->> --- a/scripts/link-vmlinux.sh
->> +++ b/scripts/link-vmlinux.sh
->> @@ -105,34 +105,6 @@ vmlinux_link()
->>  		${kallsymso} ${btf_vmlinux_bin_o} ${arch_vmlinux_o} ${ldlibs}
->>  }
->>  
->> -# generate .BTF typeinfo from DWARF debuginfo
->> -# ${1} - vmlinux image
->> -gen_btf()
->> -{
->> -	local btf_data=${1}.btf.o
->> -
->> -	info BTF "${btf_data}"
->> -	LLVM_OBJCOPY="${OBJCOPY}" ${PAHOLE} -J ${PAHOLE_FLAGS} ${1}
->> -
->> -	# Create ${btf_data} which contains just .BTF section but no symbols. Add
->> -	# SHF_ALLOC because .BTF will be part of the vmlinux image. --strip-all
->> -	# deletes all symbols including __start_BTF and __stop_BTF, which will
->> -	# be redefined in the linker script. Add 2>/dev/null to suppress GNU
->> -	# objcopy warnings: "empty loadable segment detected at ..."
->> -	${OBJCOPY} --only-section=.BTF --set-section-flags .BTF=alloc,readonly \
->> -		--strip-all ${1} "${btf_data}" 2>/dev/null
->> -	# Change e_type to ET_REL so that it can be used to link final vmlinux.
->> -	# GNU ld 2.35+ and lld do not allow an ET_EXEC input.
->> -	if is_enabled CONFIG_CPU_BIG_ENDIAN; then
->> -		et_rel='\0\1'
->> -	else
->> -		et_rel='\1\0'
->> -	fi
->> -	printf "${et_rel}" | dd of="${btf_data}" conv=notrunc bs=1 seek=16 status=none
->> -
->> -	btf_vmlinux_bin_o=${btf_data}
->> -}
->> -
->>  # Create ${2}.o file with all symbols from the ${1} object file
->>  kallsyms()
->>  {
->> @@ -204,6 +176,7 @@ if is_enabled CONFIG_ARCH_WANTS_PRE_LINK_VMLINUX; then
->>  fi
->>  
->>  btf_vmlinux_bin_o=
->> +btfids_vmlinux=
->>  kallsymso=
->>  strip_debug=
->>  generate_map=
->> @@ -224,11 +197,13 @@ if is_enabled CONFIG_KALLSYMS || is_enabled CONFIG_DEBUG_INFO_BTF; then
->>  fi
->>  
->>  if is_enabled CONFIG_DEBUG_INFO_BTF; then
->> -	if ! gen_btf .tmp_vmlinux1; then
->> +	if ! ${srctree}/scripts/gen-btf.sh .tmp_vmlinux1; then
-> 
-> Nit: maybe pass output file names as parameters for get-btf.sh?
+* get these unbalanced dget() and dput() replaced with new primitives that
+  would, in addition to adjusting refcount, set and clear persistency flag.
+* instead of having kill_litter_super() mess with removing the remaining
+  "leaked" references (e.g. for all tmpfs files that hadn't been removed
+  prior to umount), have the regular shrink_dcache_for_umount() strip
+  DCACHE_PERSISTENT of all dentries, dropping the corresponding
+  reference if it had been set.  After that kill_litter_super() becomes
+  an equivalent of kill_anon_super().
 
-I don't see a point in that. The script and callsite will become
-more complicated, but what is the benefit?
+Doing that in a single step is not feasible - it would affect too many places
+in too many filesystems.  It has to be split into a series.
 
-> 
->>  		echo >&2 "Failed to generate BTF for vmlinux"
->>  		echo >&2 "Try to disable CONFIG_DEBUG_INFO_BTF"
->>  		exit 1
->>  	fi
->> +	btf_vmlinux_bin_o=.tmp_vmlinux1.btf.o
->> +	btfids_vmlinux=.tmp_vmlinux1.btf_ids
->>  fi
->>  
->>  if is_enabled CONFIG_KALLSYMS; then
->> @@ -281,14 +256,9 @@ fi
->>  
->>  vmlinux_link "${VMLINUX}"
->>  
->> -# fill in BTF IDs
->>  if is_enabled CONFIG_DEBUG_INFO_BTF; then
->> -	info BTFIDS "${VMLINUX}"
->> -	RESOLVE_BTFIDS_ARGS=""
->> -	if is_enabled CONFIG_WERROR; then
->> -		RESOLVE_BTFIDS_ARGS=" --fatal_warnings "
->> -	fi
->> -	${RESOLVE_BTFIDS} ${RESOLVE_BTFIDS_ARGS} "${VMLINUX}"
->> +	info OBJCOPY ${btfids_vmlinux}
->> +	${OBJCOPY} --update-section .BTF_ids=${btfids_vmlinux} ${VMLINUX}
->>  fi
-> 
-> Nit: Maybe do this in get-btf.sh as for modules?
->      To avoid checking for CONFIG_DEBUG_INFO_BTF in two places.
+This work has really started early in 2024; quite a few preliminary pieces
+have already gone into mainline.  This chunk is finally getting to the
+meat of that stuff - infrastructure and most of the conversions to it.
 
-IIRC we can't do that, because we have to update .BTF_ids after all
-the linking steps. I'll double check.
+Some pieces are still sitting in the local branches, but the bulk of
+that stuff is here.
 
-> 
->>  
->>  mksysmap "${VMLINUX}" System.map
->> diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
->> index c60d303ca6ed..b8df6256e29e 100644
->> --- a/tools/bpf/resolve_btfids/main.c
->> +++ b/tools/bpf/resolve_btfids/main.c
->> @@ -71,9 +71,11 @@
->>  #include <fcntl.h>
->>  #include <errno.h>
->>  #include <linux/btf_ids.h>
->> +#include <linux/kallsyms.h>
->>  #include <linux/rbtree.h>
->>  #include <linux/zalloc.h>
->>  #include <linux/err.h>
->> +#include <linux/limits.h>
->>  #include <bpf/btf.h>
->>  #include <bpf/libbpf.h>
->>  #include <subcmd/parse-options.h>
->> @@ -124,6 +126,7 @@ struct object {
->>  
->>  	struct btf *btf;
->>  	struct btf *base_btf;
->> +	bool distilled_base;
->>  
->>  	struct {
->>  		int		 fd;
->> @@ -308,42 +311,16 @@ static struct btf_id *add_symbol(struct rb_root *root, char *name, size_t size)
->>  	return btf_id;
->>  }
->>  
->> -/* Older libelf.h and glibc elf.h might not yet define the ELF compression types. */
->> -#ifndef SHF_COMPRESSED
->> -#define SHF_COMPRESSED (1 << 11) /* Section with compressed data. */
->> -#endif
->> -
->> -/*
->> - * The data of compressed section should be aligned to 4
->> - * (for 32bit) or 8 (for 64 bit) bytes. The binutils ld
->> - * sets sh_addralign to 1, which makes libelf fail with
->> - * misaligned section error during the update:
->> - *    FAILED elf_update(WRITE): invalid section alignment
->> - *
->> - * While waiting for ld fix, we fix the compressed sections
->> - * sh_addralign value manualy.
->> - */
->> -static int compressed_section_fix(Elf *elf, Elf_Scn *scn, GElf_Shdr *sh)
->> +static void bswap_32_data(void *data, u32 nr_bytes)
->>  {
->> -	int expected = gelf_getclass(elf) == ELFCLASS32 ? 4 : 8;
->> +	u32 cnt, i;
->> +	u32 *ptr;
->>  
->> -	if (!(sh->sh_flags & SHF_COMPRESSED))
->> -		return 0;
->> +	cnt = nr_bytes / sizeof(u32);
->> +	ptr = data;
->>  
->> -	if (sh->sh_addralign == expected)
->> -		return 0;
->> -
->> -	pr_debug2(" - fixing wrong alignment sh_addralign %u, expected %u\n",
->> -		  sh->sh_addralign, expected);
->> -
->> -	sh->sh_addralign = expected;
->> -
->> -	if (gelf_update_shdr(scn, sh) == 0) {
->> -		pr_err("FAILED cannot update section header: %s\n",
->> -			elf_errmsg(-1));
->> -		return -1;
->> -	}
->> -	return 0;
->> +	for (i = 0; i < cnt; i++)
->> +		ptr[i] = bswap_32(ptr[i]);
->>  }
->>  
->>  static int elf_collect(struct object *obj)
->> @@ -364,7 +341,7 @@ static int elf_collect(struct object *obj)
->>  
->>  	elf_version(EV_CURRENT);
->>  
->> -	elf = elf_begin(fd, ELF_C_RDWR_MMAP, NULL);
->> +	elf = elf_begin(fd, ELF_C_READ_MMAP_PRIVATE, NULL);
->>  	if (!elf) {
->>  		close(fd);
->>  		pr_err("FAILED cannot create ELF descriptor: %s\n",
->> @@ -427,21 +404,20 @@ static int elf_collect(struct object *obj)
->>  			obj->efile.symbols_shndx = idx;
->>  			obj->efile.strtabidx     = sh.sh_link;
->>  		} else if (!strcmp(name, BTF_IDS_SECTION)) {
->> +			/*
->> +			 * If target endianness differs from host, we need to bswap32
->> +			 * the .BTF_ids section data on load, because .BTF_ids has
->> +			 * Elf_Type = ELF_T_BYTE, and so libelf returns data buffer in
->> +			 * the target endiannes. We repeat this on dump.
->> +			 */
->> +			if (obj->efile.encoding != ELFDATANATIVE) {
->> +				pr_debug("bswap_32 .BTF_ids data from target to host endianness\n");
->> +				bswap_32_data(data->d_buf, data->d_size);
->> +			}
->>  			obj->efile.idlist       = data;
->>  			obj->efile.idlist_shndx = idx;
->>  			obj->efile.idlist_addr  = sh.sh_addr;
->> -		} else if (!strcmp(name, BTF_BASE_ELF_SEC)) {
->> -			/* If a .BTF.base section is found, do not resolve
->> -			 * BTF ids relative to vmlinux; resolve relative
->> -			 * to the .BTF.base section instead.  btf__parse_split()
->> -			 * will take care of this once the base BTF it is
->> -			 * passed is NULL.
->> -			 */
->> -			obj->base_btf_path = NULL;
->>  		}
->> -
->> -		if (compressed_section_fix(elf, scn, &sh))
->> -			return -1;
->>  	}
->>  
->>  	return 0;
->> @@ -545,6 +521,13 @@ static int symbols_collect(struct object *obj)
->>  	return 0;
->>  }
->>  
->> +static inline bool is_envvar_set(const char *var_name)
->> +{
->> +	const char *value = getenv(var_name);
->> +
->> +	return value && value[0] != '\0';
->> +}
->> +
->>  static int load_btf(struct object *obj)
->>  {
->>  	struct btf *base_btf = NULL, *btf = NULL;
->> @@ -571,6 +554,20 @@ static int load_btf(struct object *obj)
->>  	obj->base_btf = base_btf;
->>  	obj->btf = btf;
->>  
->> +	if (obj->base_btf && is_envvar_set("KBUILD_EXTMOD")) {
-> 
-> This is a bit ugly, maybe use a dedicated parameter instead of
-> checking environment variable?
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 
-Disagree. I intentionally tried to avoid adding options to
-resolve_btfids, because it's not intendend for general CLI usage (as
-opposed to pahole, for example). IMO the interface should be as simple
-as possible.
+----------------------------------------------------------------
+Al Viro (54):
+      fuse_ctl_add_conn(): fix nlink breakage in case of early failure
+      tracefs: fix a leak in eventfs_create_events_dir()
+      new helper: simple_remove_by_name()
+      new helper: simple_done_creating()
+      introduce a flag for explicitly marking persistently pinned dentries
+      primitives for maintaining persisitency
+      convert simple_{link,unlink,rmdir,rename,fill_super}() to new primitives
+      convert ramfs and tmpfs
+      procfs: make /self and /thread_self dentries persistent
+      configfs, securityfs: kill_litter_super() not needed
+      convert xenfs
+      convert smackfs
+      convert hugetlbfs
+      convert mqueue
+      convert bpf
+      convert dlmfs
+      convert fuse_ctl
+      convert pstore
+      convert tracefs
+      convert debugfs
+      debugfs: remove duplicate checks in callers of start_creating()
+      convert efivarfs
+      convert spufs
+      convert ibmasmfs
+      ibmasmfs: get rid of ibmasmfs_dir_ops
+      convert devpts
+      binderfs: use simple_start_creating()
+      binderfs_binder_ctl_create(): kill a bogus check
+      convert binderfs
+      autofs_{rmdir,unlink}: dentry->d_fsdata->dentry == dentry there
+      convert autofs
+      convert binfmt_misc
+      selinuxfs: don't stash the dentry of /policy_capabilities
+      selinuxfs: new helper for attaching files to tree
+      convert selinuxfs
+      functionfs: don't abuse ffs_data_closed() on fs shutdown
+      functionfs: don't bother with ffs->ref in ffs_data_{opened,closed}()
+      functionfs: need to cancel ->reset_work in ->kill_sb()
+      functionfs: fix the open/removal races
+      functionfs: switch to simple_remove_by_name()
+      convert functionfs
+      gadgetfs: switch to simple_remove_by_name()
+      convert gadgetfs
+      hypfs: don't pin dentries twice
+      hypfs: switch hypfs_create_str() to returning int
+      hypfs: swich hypfs_create_u64() to returning int
+      convert hypfs
+      convert rpc_pipefs
+      convert nfsctl
+      convert rust_binderfs
+      get rid of kill_litter_super()
+      convert securityfs
+      kill securityfs_recursive_remove()
+      d_make_discardable(): warn if given a non-persistent dentry
 
-If we add an option, we still have to check for the env variable
-somewhere, and then pass the argument through. Why? Just checking an
-env var when it matters is simpler.
-
-I don't think we want or expect resolve_btfids to run outside of the
-kernel or selftests build.
-
-> 
->> +		err = btf__distill_base(obj->btf, &base_btf, &btf);
->> +		if (err) {
->> +			pr_err("FAILED to distill base BTF: %s\n", strerror(errno));
->> +			goto out_err;
->> +		}
->> +
->> +		btf__free(obj->btf);
->> +		btf__free(obj->base_btf);
->> +		obj->btf = btf;
->> +		obj->base_btf = base_btf;
->> +		obj->distilled_base = true;
->> +	}
->> +
->>  	return 0;
->>  
->>  out_err:
->> @@ -744,24 +741,6 @@ static int sets_patch(struct object *obj)
->>  			 */
->>  			BUILD_BUG_ON((u32 *)set8->pairs != &set8->pairs[0].id);
->>  			qsort(set8->pairs, set8->cnt, sizeof(set8->pairs[0]), cmp_id);
->> -
->> -			/*
->> -			 * When ELF endianness does not match endianness of the
->> -			 * host, libelf will do the translation when updating
->> -			 * the ELF. This, however, corrupts SET8 flags which are
->> -			 * already in the target endianness. So, let's bswap
->> -			 * them to the host endianness and libelf will then
->> -			 * correctly translate everything.
->> -			 */
->> -			if (obj->efile.encoding != ELFDATANATIVE) {
->> -				int i;
->> -
->> -				set8->flags = bswap_32(set8->flags);
->> -				for (i = 0; i < set8->cnt; i++) {
->> -					set8->pairs[i].flags =
->> -						bswap_32(set8->pairs[i].flags);
->> -				}
->> -			}
->>  			break;
->>  		case BTF_ID_KIND_SYM:
->>  		default:
->> @@ -778,8 +757,6 @@ static int sets_patch(struct object *obj)
->>  
->>  static int symbols_patch(struct object *obj)
->>  {
->> -	off_t err;
->> -
->>  	if (__symbols_patch(obj, &obj->structs)  ||
->>  	    __symbols_patch(obj, &obj->unions)   ||
->>  	    __symbols_patch(obj, &obj->typedefs) ||
->> @@ -790,20 +767,77 @@ static int symbols_patch(struct object *obj)
->>  	if (sets_patch(obj))
->>  		return -1;
->>  
->> -	/* Set type to ensure endian translation occurs. */
->> -	obj->efile.idlist->d_type = ELF_T_WORD;
->> +	return 0;
->> +}
->>  
->> -	elf_flagdata(obj->efile.idlist, ELF_C_SET, ELF_F_DIRTY);
->> +static int dump_raw_data(const char *out_path, const void *data, u32 size)
->> +{
->> +	int fd, ret;
->>  
->> -	err = elf_update(obj->efile.elf, ELF_C_WRITE);
->> -	if (err < 0) {
->> -		pr_err("FAILED elf_update(WRITE): %s\n",
->> -			elf_errmsg(-1));
->> +	fd = open(out_path, O_WRONLY | O_CREAT | O_TRUNC, 0640);
->> +	if (fd < 0) {
->> +		pr_err("Couldn't open %s for writing\n", out_path);
->> +		return fd;
->> +	}
->> +
->> +	ret = write(fd, data, size);
->> +	if (ret < 0 || ret != size) {
->> +		pr_err("Failed to write data to %s\n", out_path);
->> +		close(fd);
->> +		unlink(out_path);
->> +		return -1;
->> +	}
->> +
->> +	close(fd);
->> +	pr_debug("Dumped %lu bytes of data to %s\n", size, out_path);
->> +
->> +	return 0;
->> +}
->> +
->> +static int dump_raw_btf_ids(struct object *obj, const char *out_path)
->> +{
->> +	Elf_Data *data = obj->efile.idlist;
->> +	int fd, err;
->> +
->> +	if (!data || !data->d_buf) {
->> +		pr_debug("%s has no BTF_ids data to dump\n", obj->path);
->> +		return 0;
->> +	}
->> +
->> +	/*
->> +	 * If target endianness differs from host, we need to bswap32 the
->> +	 * .BTF_ids section data before dumping so that the output is in
->> +	 * target endianness.
->> +	 */
->> +	if (obj->efile.encoding != ELFDATANATIVE) {
->> +		pr_debug("bswap_32 .BTF_ids data from host to target endianness\n");
->> +		bswap_32_data(data->d_buf, data->d_size);
->> +	}
->> +
->> +	err = dump_raw_data(out_path, data->d_buf, data->d_size);
->> +	if (err)
->> +		return -1;
->> +
->> +	return 0;
->> +}
->> +
->> +static int dump_raw_btf(struct btf *btf, const char *out_path)
->> +{
->> +	const void *raw_btf_data;
->> +	u32 raw_btf_size;
->> +	int fd, err;
->> +
->> +	raw_btf_data = btf__raw_data(btf, &raw_btf_size);
->> +	if (raw_btf_data == NULL) {
->> +		pr_err("btf__raw_data() failed\n");
->> +		return -1;
->>  	}
->>  
->> -	pr_debug("update %s for %s\n",
->> -		 err >= 0 ? "ok" : "failed", obj->path);
->> -	return err < 0 ? -1 : 0;
->> +	err = dump_raw_data(out_path, raw_btf_data, raw_btf_size);
->> +	if (err)
->> +		return -1;
->> +
->> +	return 0;
->>  }
->>  
->>  static const char * const resolve_btfids_usage[] = {
->> @@ -824,6 +858,7 @@ int main(int argc, const char **argv)
->>  		.funcs    = RB_ROOT,
->>  		.sets     = RB_ROOT,
->>  	};
->> +	char out_path[PATH_MAX];
->>  	bool fatal_warnings = false;
->>  	struct option btfid_options[] = {
->>  		OPT_INCR('v', "verbose", &verbose,
->> @@ -836,7 +871,7 @@ int main(int argc, const char **argv)
->>  			    "turn warnings into errors"),
->>  		OPT_END()
->>  	};
->> -	int err = -1;
->> +	int err = -1, path_len;
->>  
->>  	argc = parse_options(argc, argv, btfid_options, resolve_btfids_usage,
->>  			     PARSE_OPT_STOP_AT_NON_OPTION);
->> @@ -844,6 +879,11 @@ int main(int argc, const char **argv)
->>  		usage_with_options(resolve_btfids_usage, btfid_options);
->>  
->>  	obj.path = argv[0];
->> +	strcpy(out_path, obj.path);
->> +	path_len = strlen(out_path);
->> +
->> +	if (load_btf(&obj))
->> +		goto out;
->>  
->>  	if (elf_collect(&obj))
->>  		goto out;
->> @@ -854,23 +894,37 @@ int main(int argc, const char **argv)
->>  	 */
->>  	if (obj.efile.idlist_shndx == -1 ||
->>  	    obj.efile.symbols_shndx == -1) {
->> -		pr_debug("Cannot find .BTF_ids or symbols sections, nothing to do\n");
->> -		err = 0;
->> -		goto out;
->> +		pr_debug("Cannot find .BTF_ids or symbols sections, skip symbols resolution\n");
->> +		goto dump_btf;
->>  	}
->>  
->>  	if (symbols_collect(&obj))
->>  		goto out;
->>  
->> -	if (load_btf(&obj))
->> -		goto out;
->> -
->>  	if (symbols_resolve(&obj))
->>  		goto out;
->>  
->>  	if (symbols_patch(&obj))
->>  		goto out;
->>  
->> +	out_path[path_len] = '\0';
->> +	strcat(out_path, ".btf_ids");
-> 
-> Nit: here and below use snprintf() to check for 'out_path' overflow.
-
-Thanks for the tip. Will do.
-
-> 
->> +	if (dump_raw_btf_ids(&obj, out_path))
->> +		goto out;
->> +
->> +dump_btf:
->> +	out_path[path_len] = '\0';
->> +	strcat(out_path, ".btf");
->> +	if (dump_raw_btf(obj.btf, out_path))
->> +		goto out;
->> +
->> +	if (obj.base_btf && obj.distilled_base) {
->> +		out_path[path_len] = '\0';
->> +		strcat(out_path, ".distilled_base.btf");
->> +		if (dump_raw_btf(obj.base_btf, out_path))
->> +			goto out;
->> +	}
->> +
->>  	if (!(fatal_warnings && warnings))
->>  		err = 0;
->>  out:
->> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
->> index bac22265e7ff..ec7e2a7721c7 100644
->> --- a/tools/testing/selftests/bpf/Makefile
->> +++ b/tools/testing/selftests/bpf/Makefile
->> @@ -4,6 +4,7 @@ include ../../../scripts/Makefile.arch
->>  include ../../../scripts/Makefile.include
->>  
->>  CXX ?= $(CROSS_COMPILE)g++
->> +OBJCOPY ?= $(CROSS_COMPILE)objcopy
->>  
->>  CURDIR := $(abspath .)
->>  TOOLSDIR := $(abspath ../../..)
->> @@ -716,6 +717,10 @@ $(OUTPUT)/$(TRUNNER_BINARY): $(TRUNNER_TEST_OBJS)			\
->>  	$$(call msg,BINARY,,$$@)
->>  	$(Q)$$(CC) $$(CFLAGS) $$(filter %.a %.o,$$^) $$(LDLIBS) $$(LLVM_LDLIBS) $$(LDFLAGS) $$(LLVM_LDFLAGS) -o $$@
->>  	$(Q)$(RESOLVE_BTFIDS) --btf $(TRUNNER_OUTPUT)/btf_data.bpf.o $$@
->> +	$(Q)if [ -f $$@.btf_ids ]; then \
->> +		$(OBJCOPY) --update-section .BTF_ids=$$@.btf_ids $$@; \
->> +	fi
->> +	$(Q)rm -f $$@.btf_ids $$@.btf
->>  	$(Q)ln -sf $(if $2,..,.)/tools/build/bpftool/$(USE_BOOTSTRAP)bpftool \
->>  		   $(OUTPUT)/$(if $2,$2/)bpftool
->>  
-
+ Documentation/filesystems/porting.rst     |   7 ++
+ arch/powerpc/platforms/cell/spufs/inode.c |  17 ++-
+ arch/s390/hypfs/hypfs.h                   |   6 +-
+ arch/s390/hypfs/hypfs_diag_fs.c           |  60 ++++------
+ arch/s390/hypfs/hypfs_vm_fs.c             |  21 ++--
+ arch/s390/hypfs/inode.c                   |  82 +++++--------
+ drivers/android/binder/rust_binderfs.c    | 121 ++++++-------------
+ drivers/android/binderfs.c                |  82 +++----------
+ drivers/base/devtmpfs.c                   |   2 +-
+ drivers/misc/ibmasm/ibmasmfs.c            |  24 ++--
+ drivers/usb/gadget/function/f_fs.c        | 144 +++++++++++++----------
+ drivers/usb/gadget/legacy/inode.c         |  49 ++++----
+ drivers/xen/xenfs/super.c                 |   2 +-
+ fs/autofs/inode.c                         |   2 +-
+ fs/autofs/root.c                          |  11 +-
+ fs/binfmt_misc.c                          |  69 ++++++-----
+ fs/configfs/dir.c                         |  10 +-
+ fs/configfs/inode.c                       |   3 +-
+ fs/configfs/mount.c                       |   2 +-
+ fs/dcache.c                               | 111 +++++++++++-------
+ fs/debugfs/inode.c                        |  32 ++----
+ fs/devpts/inode.c                         |  57 ++++-----
+ fs/efivarfs/inode.c                       |   7 +-
+ fs/efivarfs/super.c                       |   5 +-
+ fs/fuse/control.c                         |  38 +++---
+ fs/hugetlbfs/inode.c                      |  12 +-
+ fs/internal.h                             |   1 -
+ fs/libfs.c                                |  52 +++++++--
+ fs/nfsd/nfsctl.c                          |  18 +--
+ fs/ocfs2/dlmfs/dlmfs.c                    |   8 +-
+ fs/proc/base.c                            |   6 +-
+ fs/proc/internal.h                        |   1 +
+ fs/proc/root.c                            |  14 +--
+ fs/proc/self.c                            |  10 +-
+ fs/proc/thread_self.c                     |  11 +-
+ fs/pstore/inode.c                         |   7 +-
+ fs/ramfs/inode.c                          |   8 +-
+ fs/super.c                                |   8 --
+ fs/tracefs/event_inode.c                  |   7 +-
+ fs/tracefs/inode.c                        |  13 +--
+ include/linux/dcache.h                    |   4 +-
+ include/linux/fs.h                        |   6 +-
+ include/linux/proc_fs.h                   |   2 -
+ include/linux/security.h                  |   2 -
+ init/do_mounts.c                          |   2 +-
+ ipc/mqueue.c                              |  12 +-
+ kernel/bpf/inode.c                        |  15 +--
+ mm/shmem.c                                |  38 ++----
+ net/sunrpc/rpc_pipe.c                     |  27 ++---
+ security/apparmor/apparmorfs.c            |  13 ++-
+ security/inode.c                          |  35 +++---
+ security/selinux/selinuxfs.c              | 185 +++++++++++++-----------------
+ security/smack/smackfs.c                  |   2 +-
+ 53 files changed, 649 insertions(+), 834 deletions(-)
 
