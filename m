@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-76053-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76054-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 736B2CA47C2
-	for <lists+bpf@lfdr.de>; Thu, 04 Dec 2025 17:27:43 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1BADCA4825
+	for <lists+bpf@lfdr.de>; Thu, 04 Dec 2025 17:32:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 97C113035D59
-	for <lists+bpf@lfdr.de>; Thu,  4 Dec 2025 16:27:07 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B23A3312405A
+	for <lists+bpf@lfdr.de>; Thu,  4 Dec 2025 16:26:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5D853101BC;
-	Thu,  4 Dec 2025 16:17:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FE25313279;
+	Thu,  4 Dec 2025 16:17:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SspbDLhI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m76CdsSk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD2B4309DC0
-	for <bpf@vger.kernel.org>; Thu,  4 Dec 2025 16:17:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E1C130BF52
+	for <bpf@vger.kernel.org>; Thu,  4 Dec 2025 16:17:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764865058; cv=none; b=qZNYPLWfOe7pAKedDcYNEJGUqnNHI/VqdudeEDHfYM66KeDNtq/Tqeigr3ABoRHdDuZHQAvqBS0SqnmpbknVKX9v4cmu8oVlA0AP17eFip9Xt7JG9d/He7gg+d2GAJg+Xc+1jhSxDzy7MPBcRt+BR4WyugMMpJH8tKNpEkYrOjg=
+	t=1764865058; cv=none; b=NbKr4iFU5XX/epAckkmXHzOrxYyxZAZgkub4BCwO/hcj/EFf6zt/c9iL87Ha0m2gX/bx5X2QdIA8+las0Q5B8QUd/DMvUVMlJqy9whFG63W6t/OOkO4F2JNhLPs40IugoLwlTXGReFKULIxFSAmzqfpG49JGKla7IMrSi4iU50I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1764865058; c=relaxed/simple;
-	bh=4YXW8OG0rCOOXlu8/hY+ND05Jy2SB13kOh4JqU1k2XU=;
+	bh=AAfc1FTHUg7pFDTfmSnmLRJtRMoPx8CAYPklnRgrY6c=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hWj2+qfxn5NinGSSBOokhgyC0QXA5YEKooHyamn+jalNDXf0GWyG8CAiiuMLZ3cVGfeM5PPYt4wSw1LyIUEt1zpvTq8piscqRStUb6jVCV6VYnJu5IiC1HQRFhNdpEDY0QZtFDgyKKjNiQuqM8W5bUcIhijpQzQ/tHUSXOogsLw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SspbDLhI; arc=none smtp.client-ip=209.85.214.181
+	 MIME-Version; b=EQWYF6UJ8OKPfMgUDSusTxqPKAhf9I37mfEuC/iki9RiKgAt7tgtLOhMKVsMhCW6VG962El2mUHsHQ6p2xVeI8i6ETxGIuoNvka2xW5Ok2JhBbv5siBRzKk+Bt2mhwCMEtI8jXVGK1bgoNKpyO3U573qY5b6knJ9FBu894MV8RQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m76CdsSk; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-298250d7769so8674365ad.0
-        for <bpf@vger.kernel.org>; Thu, 04 Dec 2025 08:17:35 -0800 (PST)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-298287a26c3so14393875ad.0
+        for <bpf@vger.kernel.org>; Thu, 04 Dec 2025 08:17:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764865055; x=1765469855; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1764865056; x=1765469856; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XgJlpBD9Oy6edvzJI48obEDsgxUSySjXL9hrT+JA5cI=;
-        b=SspbDLhI5HsDxGVZqEkyNWiMNsuX753+cCaiAZIgB8ja/LnTkCv0hG5ErwLr4gqqUU
-         jeqHih/fgsW20UzUUkYfIkGQ4Yjopy7S0lqZx89sP+7ZLi0lwRW4RPMDCOekq0I7Ki1c
-         v4zgFqfY+PN04JgIDwguvTOZXpzlpmdzwhpMND9g06ks1FiSE7NWW8YdjP6+CM24uqM2
-         LFd1XjqoW7nkUWBBOU0C9FQfRVkdJ9UjOjJyJ72pZA180qbx5FilzdzQfnWuY0bSEa83
-         euu8FvwJoSP7r4fSj1Ru0KU+LW+IY9o4S7WGgKjWOU5rkSz4lJXZGSN3P8m42eqYHz6f
-         CUsA==
+        bh=EPSXK4QWZvrY6PEEMm54/MaPBa83AbH2NH2bvzL1wMY=;
+        b=m76CdsSkhyAcC5hScfGv7GkTJ34TrqHYjYTq/A/9eCu1OraPqLKtEaMhS/nK/d1VeI
+         AqBbDytbj4WsWWsXyqxfz9I4Jv8fssaBi2GzdjLCQMQEcdjvDy9i13HJ9rG10FpT3WeW
+         Awvs5A2PAThTQk5LuePgitWjOw7lDeCpO7k0WfdF6o0w6WIz1ktyUgRJs+hoiOdC0FSE
+         b/qRoQ35w1mGQfRwPd1T02TQk3hsI/tr92LDxoeK+zfUu54ylbi5NRUES2GmaUmkmC54
+         Zaf+N3KOnG5Vyu3Lh7zP3F7xxF87V1pfkfXfly42rKGlLXQpmxtzfIQ4pj06r2nLZa95
+         XFhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764865055; x=1765469855;
+        d=1e100.net; s=20230601; t=1764865056; x=1765469856;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XgJlpBD9Oy6edvzJI48obEDsgxUSySjXL9hrT+JA5cI=;
-        b=il0V9XGqBDDu937YI+d/V1dEkSbaNPm4l44npOY5pAaIVlJhh646PC2zHfxGEosF6v
-         Y7gH5/c13BJwSQsB3gxycDQjL6sZntLO5Bw61Bn5HsqnYRiWXf3ycqbW8Pt24u8l964a
-         Tp+Xxdz+y4KdXqkDWJnYcZo0u5g3mqNxp1UKS2N6LMaI0Ymhv5LXlG2kTvddNyaxc7fA
-         44NjLWDb5xLxSczSqfz8tZJDtvTtonAQxpjoRaq4KdhHKlATuHZ/I4JAfR4FmZBIanp4
-         R3kPpxBu0eIi5EHivn+BSVMM2H4vBy9pfU7uA8QwLWoKOyPHSms3E3J+W0tp+AUpAqXq
-         sl/w==
-X-Forwarded-Encrypted: i=1; AJvYcCXzq8VgAbHUECkGMse8PO7rq2On8eR3MFKLLW0vEZBFYX1HThbquKmt6p1M6IcDfa3JrKw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzzhJhRZz2WVrsoNV7K6ZHtQaeu16Fswmnmnwx9TdnsgOzPBAk8
-	EEsZ5F1Vr5yjH4SfNpq18yBlPFalyCH9PSG2X6xg9aMWCfdDngivTSJe
-X-Gm-Gg: ASbGnctwmhgknRF2fiMaNsaKeiUZ5F8nmT03GVuFqjw1SZOqVS8nHJIpQQI+gP0JiF9
-	hbpnLTNpM/jajKL663b4LFVEngZUnMQyi+mac/up1Ed5e4tIzj2udlb54UBZsXPti15b5r9GyrT
-	30+2KTVFSLquC1HYolGZxU/NCv4Z4ZzK3wd5JJKv7hbjpVT2Lpcc450qGcKp/zTwwdvblGRAYSC
-	NaX0oGpSMSUhwPvyQHPytnBrRqJENMnezMSxXDMp/uQSf96Fmj6ZOrdoac5Y3Ydi7IhedEBK/0E
-	8TBlE0+Au+0gKZJ3dl8/CZUf6WpPqqG99B39jkaM+GH9X1+6eTZEXYX9Jp6rYfYOTade8aowzkR
-	Sn4PA0K2aYmxCvPtJlvcGGCODZAK785iQwiNd23WCS2Y8qGsWX57VjjRxq+25HZfx+hLGCLLVj0
-	fVctHq70C7g4okH7iRhkkrI5IuPu9qi9hnSg==
-X-Google-Smtp-Source: AGHT+IGaXC6rcyg8E4GPS8vJXLuydedpCNwD1tzv65eDrwpYnZVI13Qf3ZD8xny7+gJkE7253VSp2Q==
-X-Received: by 2002:a17:902:cf4a:b0:297:e1f5:191b with SMTP id d9443c01a7336-29d683254cfmr83648775ad.11.1764865055241;
-        Thu, 04 Dec 2025 08:17:35 -0800 (PST)
+        bh=EPSXK4QWZvrY6PEEMm54/MaPBa83AbH2NH2bvzL1wMY=;
+        b=tTIsW/Zgr+VgWyvg5lxPvSSN3A8tPUCoaNLxyC/qI2SH/9a7mbEv3DYhdvxh6yLric
+         2r9UpNs9CPh6fZfwBXntXeMgyCtsHH5f/TV0T6Mgvg6aba6v6QzpKldtU3HeQq5aBo9U
+         UCFuxO8kcG4ueDGDJQ6v4q25vSEK90FnHNsk9mMKtxSDe3MSG9wUDChS2yCBIzqIP4OQ
+         moo4hSeDYaqR5FwpvZxdxPVazoqjianhwg3u7YxLI2RTIOhC7Uo8j9kKCj9TR0IpPMNA
+         wdKVtKE+BQORnHgtfBeiHRXAchgXAMh1wXTtQU8yqrCH20TjFtKRt609M553ZyyorJKF
+         qG7Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVhr+xCdKXFrtqPTmLhlc4dPr/3AhGhV7tiS7yW48MOtU+bRl1U5QtupQD01E6ZpaC8L9E=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw/l5nGcA3ihV2cAY5Yn4AqjTqgy6I+I3jHyEURfFdmlqkk1Ivb
+	N6nYBNVv2jqIaE7dhHsKrmoMvbA/LrGw8/EUpOtAvxAALqlyWEF45s4L
+X-Gm-Gg: ASbGncszxpnxlus60DHqFxIFZtcku6b7/SJOdAziHiFcldqcZj9FaUxwa9tgb3rCwOm
+	nFl4LmJ0PLLHeo3fx5A2urjFXyTehdtJL214P3epMEKCPcS75AUkMCK2fQp95PcWMmkeK7GqpP8
+	S3uA7/9ls5Q2MlDnsqreZmwWUM+vP9AIsDATHCSI0NuIRJiOCp7FO2LkcB8/O+zDeBS/rPUPKse
+	cOXeux7vsPUPTVvCBQQOeZQaWXrOghYoK7JgnYNAHC/OnV/Jj1fxFuSowlGinu/+1Ufo4sRkSa4
+	KEFL5IIKetHhG5g06Qa46JXzl6qXqH36bgYewrpZit5F+xBjaK9N6sd+LYNWWUOi09MEHpxvioY
+	tp6iYD77SRvDUOQGfwK1n+sZ3D/28oIP8leglWw56BbflAMbi3/WlgECSGipPx3zYjzg55byRw+
+	kaQI7k/7LN/TawVFI+aWY+NJw=
+X-Google-Smtp-Source: AGHT+IF+E9CdNRVWiFV1Q082ZOrNiQdxmoZOMYs4fBD6jDUJHOWOaJ88Yx5928q27lnrpgUR2cVtHw==
+X-Received: by 2002:a17:902:f712:b0:295:4d62:61a9 with SMTP id d9443c01a7336-29d68413f5amr90437015ad.38.1764865056469;
+        Thu, 04 Dec 2025 08:17:36 -0800 (PST)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:da43:aeff:fecc:bfd5])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29dae49b196sm24694395ad.17.2025.12.04.08.17.34
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29dae99f223sm24183665ad.62.2025.12.04.08.17.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Dec 2025 08:17:34 -0800 (PST)
+        Thu, 04 Dec 2025 08:17:36 -0800 (PST)
 Sender: Guenter Roeck <groeck7@gmail.com>
 From: Guenter Roeck <linux@roeck-us.net>
 To: Shuah Khan <shuah@kernel.org>
@@ -86,11 +86,10 @@ Cc: Christian Brauner <brauner@kernel.org>,
 	wine-devel@winehq.org,
 	netdev@vger.kernel.org,
 	bpf@vger.kernel.org,
-	Guenter Roeck <linux@roeck-us.net>,
-	Adrian Reber <areber@redhat.com>
-Subject: [PATCH 01/13] clone3: clone3_cap_checkpoint_restore: Fix build errors seen with -Werror
-Date: Thu,  4 Dec 2025 08:17:15 -0800
-Message-ID: <20251204161729.2448052-2-linux@roeck-us.net>
+	Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 02/13] selftests: ntsync: Fix build errors -seen with -Werror
+Date: Thu,  4 Dec 2025 08:17:16 -0800
+Message-ID: <20251204161729.2448052-3-linux@roeck-us.net>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20251204161729.2448052-1-linux@roeck-us.net>
 References: <20251204161729.2448052-1-linux@roeck-us.net>
@@ -102,48 +101,49 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Fix:
+Fix
 
-clone3_cap_checkpoint_restore.c:56:7: error: unused variable 'ret'
-   56 |                 int ret;
-      |                     ^~~
-clone3_cap_checkpoint_restore.c:57:8: error: unused variable 'tmp'
-   57 |                 char tmp = 0;
-      |                      ^~~
-clone3_cap_checkpoint_restore.c:138:6: error: unused variable 'ret'
-  138 |         int ret = 0;
+ntsync.c:1286:20: error: call to undeclared function 'gettid';
+	ISO C99 and later do not support implicit function declarations
+ 1286 |         wait_args.owner = gettid();
+      |                           ^
+ntsync.c:1280:8: error: unused variable 'index'
+ 1280 |         __u32 index, count, i;
+      |               ^~~~~
+ntsync.c:1281:6: error: unused variable 'ret'
+ 1281 |         int ret;
 
-by removing the unused variables.
+by adding the missing include file and removing the unused variables.
 
-Fixes: 1d27a0be16d6 ("selftests: add clone3() CAP_CHECKPOINT_RESTORE test")
-Cc: Adrian Reber <areber@redhat.com>
+Fixes: a22860e57b54 ("selftests: ntsync: Add a stress test for contended waits.")
+Cc: Elizabeth Figura <zfigura@codeweavers.com>
 Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
- .../testing/selftests/clone3/clone3_cap_checkpoint_restore.c  | 4 ----
- 1 file changed, 4 deletions(-)
+ tools/testing/selftests/drivers/ntsync/ntsync.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/clone3/clone3_cap_checkpoint_restore.c b/tools/testing/selftests/clone3/clone3_cap_checkpoint_restore.c
-index 3c196fa86c99..976e92c259fc 100644
---- a/tools/testing/selftests/clone3/clone3_cap_checkpoint_restore.c
-+++ b/tools/testing/selftests/clone3/clone3_cap_checkpoint_restore.c
-@@ -53,9 +53,6 @@ static int call_clone3_set_tid(struct __test_metadata *_metadata,
- 	}
+diff --git a/tools/testing/selftests/drivers/ntsync/ntsync.c b/tools/testing/selftests/drivers/ntsync/ntsync.c
+index 3aad311574c4..d3df94047e4d 100644
+--- a/tools/testing/selftests/drivers/ntsync/ntsync.c
++++ b/tools/testing/selftests/drivers/ntsync/ntsync.c
+@@ -11,6 +11,7 @@
+ #include <fcntl.h>
+ #include <time.h>
+ #include <pthread.h>
++#include <unistd.h>
+ #include <linux/ntsync.h>
+ #include "../../kselftest_harness.h"
  
- 	if (pid == 0) {
--		int ret;
--		char tmp = 0;
--
- 		TH_LOG("I am the child, my PID is %d (expected %d)", getpid(), set_tid[0]);
- 
- 		if (set_tid[0] != getpid())
-@@ -135,7 +132,6 @@ TEST(clone3_cap_checkpoint_restore)
+@@ -1277,8 +1278,7 @@ static int stress_device, stress_start_event, stress_mutex;
+ static void *stress_thread(void *arg)
  {
- 	pid_t pid;
- 	int status;
--	int ret = 0;
- 	pid_t set_tid[1];
+ 	struct ntsync_wait_args wait_args = {0};
+-	__u32 index, count, i;
+-	int ret;
++	__u32 count, i;
  
- 	test_clone3_supported();
+ 	wait_args.timeout = UINT64_MAX;
+ 	wait_args.count = 1;
 -- 
 2.43.0
 
