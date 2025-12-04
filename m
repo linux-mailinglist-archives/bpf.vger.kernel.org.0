@@ -1,113 +1,139 @@
-Return-Path: <bpf+bounces-76082-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76083-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5343CA4E72
-	for <lists+bpf@lfdr.de>; Thu, 04 Dec 2025 19:19:22 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id F027ACA4FEF
+	for <lists+bpf@lfdr.de>; Thu, 04 Dec 2025 19:49:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4C6C33077E64
-	for <lists+bpf@lfdr.de>; Thu,  4 Dec 2025 18:19:03 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 3ECB830F74D4
+	for <lists+bpf@lfdr.de>; Thu,  4 Dec 2025 18:46:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 704E5364EAF;
-	Thu,  4 Dec 2025 18:19:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kxolkMqO"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11B2F2FB998;
+	Thu,  4 Dec 2025 18:46:10 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+Received: from relay.hostedemail.com (smtprelay0016.hostedemail.com [216.40.44.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17F8E364E9B
-	for <bpf@vger.kernel.org>; Thu,  4 Dec 2025 18:18:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5439153598;
+	Thu,  4 Dec 2025 18:46:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764872342; cv=none; b=L7l2OOWRKokpMujpPbkzgHmpMzcJ61RtfbmCPbVqSyjqgsOfhzup/Ua0M8mxvRuHmwZFEEZowPzYw5EoQfDHmS3zcNLm+GYJCEjHOaD5gpFNQgh47OWJVSUjqMUBzhHuQ6K576MmmZJB9MfAUvxuD3+mACuIWR8GFeG2Be6BTWs=
+	t=1764873969; cv=none; b=kPMKGlVuGRFs58wyRXS0iJLpcsC70w6tOl5vV0MTOXm8o5tAUZvDn9k1eo8ZjC7tVlsdtPLRLZ1VXpUGXa/4gxmJY2N88uHSCTYs2vXJxWnG/A7mFaedYrXxz/BaUc3JTOXOleI97nMVd4senZO0xkbV14qMWh6rFwDib96eBMA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764872342; c=relaxed/simple;
-	bh=7Vg+sUqDEGkddo9gM3K8cgAS0h36LZhkXtC/3PB2nRY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nZByY/6TJtDcEkadknBsxjE0C8j9EZ721TKxByI0QXSEc32OEp4g4kqGkjfXjTlZzNTZaxVeMgSq44HEunDbMWtZevOdicNbR7fQWdA302OxUWXjmHCUbuSY6AQlbxEHr5hBEQOBbHeqlthv9gnToe+STykd1XlPH9tBDS8UmUQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kxolkMqO; arc=none smtp.client-ip=91.218.175.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <ae991e0c-66e9-4e27-ab8a-ab166c12dd60@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1764872327;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=J4T+2P2ViQeWy94dgDnC4eMz2hzs9znnO0lAojnK0RQ=;
-	b=kxolkMqO0qBAZTVy/D44C+Y9O7D6GRxj35sMQpi/cVwkOYD2qc5IgYQ87oFivCfGIx8GTx
-	i1f+fks1/WC2KEk6Q5IwS/Ff3IjXDDDdFeNS8bNe0xwbWOQn2I5BeCkRoi8tlEFtztZ+8+
-	OiqFQ2r5Kbu2+iV9ndtSMacSOpP35qc=
-Date: Thu, 4 Dec 2025 10:18:40 -0800
+	s=arc-20240116; t=1764873969; c=relaxed/simple;
+	bh=yIqydaEIMrZjWRo8LWEf8jUMkuV3Kir3YBByEcdUGuo=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=rRUCc6GH7GnNE8mnU7llJlHW9lWB1EneRE+nQMJh4BOdrO9pIld6XSKpAcA9v6o/aFJS0BPNj8YoUUgho+13kLA8KZ9osVuiDCtg6jD60Mr10Bgtu500R54buMqciRgYomMsa7nBeTWY//pbZvOXA+Emahh7QZgrMMJAKAJf9FQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf11.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay03.hostedemail.com (Postfix) with ESMTP id 170F5B73CC;
+	Thu,  4 Dec 2025 18:45:56 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf11.hostedemail.com (Postfix) with ESMTPA id BED922002D;
+	Thu,  4 Dec 2025 18:45:45 +0000 (UTC)
+Date: Thu, 4 Dec 2025 13:46:50 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Christian Loehle <christian.loehle@arm.com>, Samuel Wu
+ <wusamuel@google.com>, Huang Rui <ray.huang@amd.com>, "Gautham R. Shenoy"
+ <gautham.shenoy@amd.com>, Mario Limonciello <mario.limonciello@amd.com>,
+ Perry Yuan <perry.yuan@amd.com>, Jonathan Corbet <corbet@lwn.net>, Viresh
+ Kumar <viresh.kumar@linaro.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Srinivas Pandruvada
+ <srinivas.pandruvada@linux.intel.com>, Len Brown <lenb@kernel.org>, Alexei
+ Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
+ <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
+ <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar
+ <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung
+ Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Alexander
+ Shishkin <alexander.shishkin@linux.intel.com>, Ian Rogers
+ <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, James Clark
+ <james.clark@linaro.org>, kernel-team@android.com,
+ linux-pm@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] cpufreq: Replace trace_cpu_frequency with
+ trace_policy_frequency
+Message-ID: <20251204134650.2d9fd3ff@gandalf.local.home>
+In-Reply-To: <CAJZ5v0irO1zmh=un+8vDQ8h2k-sHFTpCPCwr=iVRPcozHMRKHA@mail.gmail.com>
+References: <20251201202437.3750901-1-wusamuel@google.com>
+	<20251201202437.3750901-2-wusamuel@google.com>
+	<f28577c1-ca95-43ca-b179-32e2cd46d054@arm.com>
+	<CAJZ5v0hAmgjozeX0egBs_ii_zzKXGPsPBUWwmGD+23KD++Rzqw@mail.gmail.com>
+	<20251204114844.54953b01@gandalf.local.home>
+	<CAJZ5v0irO1zmh=un+8vDQ8h2k-sHFTpCPCwr=iVRPcozHMRKHA@mail.gmail.com>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/2] bpf: Fix register_bpf_struct_ops() dummy
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Kui-Feng Lee <thinker.li@gmail.com>, "D . Wythe"
- <alibuda@linux.alibaba.com>, Dust Li <dust.li@linux.alibaba.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Sidraya Jayagond <sidraya@linux.ibm.com>, Wenjia Zhang
- <wenjia@linux.ibm.com>, Mahanta Jambigi <mjambigi@linux.ibm.com>,
- Tony Lu <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>,
- "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
- bpf@vger.kernel.org, linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1764843951.git.geert@linux-m68k.org>
- <ead27aa92275c71c1fcd148f88ca6926a524f322.1764843951.git.geert@linux-m68k.org>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <ead27aa92275c71c1fcd148f88ca6926a524f322.1764843951.git.geert@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: BED922002D
+X-Stat-Signature: 1mm99c6m3astshbq7ckoy9t7qefuxpqj
+X-Rspamd-Server: rspamout08
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX1/CN4d8P+cv3dNHDlW96Ps5lg789OU92zA=
+X-HE-Tag: 1764873945-545180
+X-HE-Meta: U2FsdGVkX18tqzw2//qpi2ZH6MYa9i57BKgUq3iyQj1qyboQdAeoZjH8fFCCTCLm8t81HhPaHi3TJMeLTMpoL9gKrDiJsFfFUA1lPP3UQoDaar2RgJty3CJrUhFOIQsjtlj3ZfqVM0mI4nwiPOsOA//f06BEghLtT3rLcBJwrCe+vRbQs1ArCz5pVZyI54E4Pyaj+B4QDz5kGYLtQCiZ7Zq7cPXsIgnPEJwQX11m++Ou+Zi1iDx8N75lzk5Dg8ZYo3eCWvnRCCb2ylMEObCk8nfe/indBvgHmAgJMGdgxPF7/ce5QsIBqHICv2eURygXcu3i9Zs4a+JhXIxm9T0J8XTcQchu07V0vBTcdU9QhY5vNMEJeGDoEY2ysZVNl508aqWKc0R5gGaJ/3TMM6IWg7hCpmgx4jQHcU3lQzZ5vH6KsE9P/6M8TSyQdn/+bKg8aY6IoPA7TYvv3MYl/Za58t9XwljexnPMcH2tbpR8LQA=
 
-On 12/4/25 2:29 AM, Geert Uytterhoeven wrote:
-> If CONFIG_BPF_SYSCALL=y, but CONFIG_BPF_JIT=n:
-> 
->      net/smc/smc_hs_bpf.c: In function ‘bpf_smc_hs_ctrl_init’:
->      include/linux/bpf.h:2068:50: error: statement with no effect [-Werror=unused-value]
->       2068 | #define register_bpf_struct_ops(st_ops, type) ({ (void *)(st_ops); 0; })
-> 	  |                                                  ^~~~~~~~~~~~~~~~
->      net/smc/smc_hs_bpf.c:139:16: note: in expansion of macro ‘register_bpf_struct_ops’
->        139 |         return register_bpf_struct_ops(&bpf_smc_hs_ctrl_ops, smc_hs_ctrl);
-> 	  |                ^~~~~~~~~~~~~~~~~~~~~~~
-> 
-> As type is not a variable, but a variable type, this cannot be fixed by
-> just converting register_bpf_struct_ops() into a static inline function.
-> Hence fix this by introducing a static inline intermediate dummy.
-> 
-> Fixes: f6be98d19985411c ("bpf, net: switch to dynamic registration")
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> ---
->   include/linux/bpf.h | 6 +++++-
->   1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 6498be4c44f8c275..bb69905c28a761e7 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -2065,7 +2065,11 @@ int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
->   void bpf_map_struct_ops_info_fill(struct bpf_map_info *info, struct bpf_map *map);
->   void bpf_struct_ops_desc_release(struct bpf_struct_ops_desc *st_ops_desc);
->   #else
-> -#define register_bpf_struct_ops(st_ops, type) ({ (void *)(st_ops); 0; })
-> +static inline int __register_bpf_struct_ops(struct bpf_struct_ops *st_ops)
-> +{
-> +	return 0;
-> +}
-> +#define register_bpf_struct_ops(st_ops, type) __register_bpf_struct_ops(st_ops)
+On Thu, 4 Dec 2025 18:24:57 +0100
+"Rafael J. Wysocki" <rafael@kernel.org> wrote:
 
-Only patch 2 is needed. This empty register_bpf_struct_ops should be 
-removed in the bpf-next tree as a cleanup.
+> > I'm not exactly sure what you mean here. There is an "onchange" trigger you
+> > can use to trigger a synthetic event whenever a change happens. But I think
+> > the data here wants to know which CPU had its policy change. Hence the CPU
+> > mask.  
+> 
+> IIUC he wants to trace frequency changes per policy, not per CPU
+> (because there are cases in which multiple CPUs belong to one policy
+> and arguably the frequency doesn't need to be traced for all of them),
+> but tooling should know which CPUs belong to the same policy, so it
+> should be straightforward to use that knowledge when processing the
+> traces.
 
+In case you only care about frequency changes, you could do this:
+
+ # echo 'freq_change u32 state;' > /sys/kernel/tracing/synthetic_events 
+ # echo 'hist:keys=common_type:s=state:onchange($s).trace(freq_change,$s)' > /sys/kernel/tracing/events/power/cpu_frequency/trigger 
+ # echo 1 > /sys/kernel/tracing/events/synthetic/freq_change/enable 
+ # cat /sys/kernel/tracing/trace
+# tracer: nop
+#
+# entries-in-buffer/entries-written: 2833/2833   #P:56
+#
+#                                _-----=> irqs-off/BH-disabled
+#                               / _----=> need-resched
+#                              | / _---=> hardirq/softirq
+#                              || / _--=> preempt-depth
+#                              ||| / _-=> migrate-disable
+#                              |||| /     delay
+#           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
+#              | |         |   |||||     |         |
+             sed-596089  [034] d..5. 2687140.288806: freq_change: state=2000000
+            bash-596090  [020] d.s4. 2687140.290407: freq_change: state=1900000
+          <idle>-0       [028] d.s7. 2687140.290425: freq_change: state=3000000
+            bash-596090  [020] d..5. 2687140.291152: freq_change: state=1900000
+          <idle>-0       [000] dNs5. 2687140.326526: freq_change: state=1200000
+       CPU 3/KVM-10724   [019] d.s5. 2687140.358418: freq_change: state=2100000
+       CPU 6/KVM-10727   [021] d.h5. 2687140.394403: freq_change: state=1300000
+       CPU 6/KVM-10727   [021] d.h5. 2687140.398403: freq_change: state=1400000
+       CPU 6/KVM-10727   [021] d.h5. 2687140.402402: freq_change: state=1500000
+       CPU 6/KVM-10727   [021] d.h5. 2687140.406400: freq_change: state=1600000
+       CPU 6/KVM-10727   [021] d.h5. 2687140.410404: freq_change: state=1700000
+[..]
+
+Which BTW, I'll be giving a talk about synthetic events at OSS in Tokyo ;-)
+   (cheap plug!)
+
+https://ossjapan2025.sched.com/event/29FoB/synthetic-events-and-tracing-latency-within-the-kernel-steven-rostedt-google?iframe=yes&w=100%&sidebar=yes&bg=no
+
+-- Steve
 
