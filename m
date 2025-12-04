@@ -1,153 +1,224 @@
-Return-Path: <bpf+bounces-76044-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76045-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D31ACA3B24
-	for <lists+bpf@lfdr.de>; Thu, 04 Dec 2025 14:01:11 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEC28CA3F1E
+	for <lists+bpf@lfdr.de>; Thu, 04 Dec 2025 15:09:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 869BA308D01D
-	for <lists+bpf@lfdr.de>; Thu,  4 Dec 2025 12:59:30 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B995B303FE7D
+	for <lists+bpf@lfdr.de>; Thu,  4 Dec 2025 14:04:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D33E33F8CC;
-	Thu,  4 Dec 2025 12:59:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE1A5327C18;
+	Thu,  4 Dec 2025 14:04:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UhAKJztP";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="D8iPtYBp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ML1KVpCz"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D345033ADBF
-	for <bpf@vger.kernel.org>; Thu,  4 Dec 2025 12:59:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E42620C490
+	for <bpf@vger.kernel.org>; Thu,  4 Dec 2025 14:04:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764853169; cv=none; b=vFY4EOvcY7dc5jh5w9QWDFvzVN8E1kUMa5+bx1+szF0PTTksTaVJxjC3yyYbWB3Bk4lIlYzDZx+eyMa/TEkaTRjtTSm7h9qHlebxRYv1zie0dNllz1VIQokre6RqFvCKheHvowSGnO5KrhJGCruZs/AlROcTCA109D/8x4AljV4=
+	t=1764857070; cv=none; b=cDYCo6CJVfpu/wp/m4Akk0R4UqMQqj/ICLa4kkHQZsXrmppw2vunc/8gEMq9TIJor3qcckDiUbaVcbTmm2sO3R9aLL95GJPQNCedTy7HPd5QXKFPQ3Hmm6q++yNEbF7OY/TEQLcJDlyWbVdUlEfksrHZe5TsRYBgiXeuZZi8V4E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764853169; c=relaxed/simple;
-	bh=hDClTYUke+S3lw1Dam2zNOlSPw5NHSqYQafCDHsN8xo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DhJA4zRBhFLKgyIfakGAN24ALkY/4wQSVtDcJp5eRlkiwjroHQYtHNWgIU4Ttbi1/UhTEf3EYzxJi04LEnZoVHQVuppOHwZVwgFdY+Rm4gs9EXmp7Td7XEKUkAuht3UTHPGCn0FBQbOHeiU48Q5hDl1AhYWdTS38fa9GdVBeeIg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UhAKJztP; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=D8iPtYBp; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1764853166;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=GheDSDHtTYd5XNDiQRKusO77ePE5TJS8yhyiwwPNBd8=;
-	b=UhAKJztPIQeGR0lnvjdIokMe1UYBcTGfWNt6qlqqxB+ENDyNWBM+T9hHsEaqQLD4fcQlNm
-	DGnCcro7OQh4abribzqfHjJ1y+YKO1m1bdHXuGgpxoy9Ij5LgVFNqzEUFuDdnEw0JCbxOb
-	6XV4rFyLHGwDhco5PgbgBt/MPFa4UMg=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-252-X0pdCFaGO561XeqL3UGMhw-1; Thu, 04 Dec 2025 07:59:20 -0500
-X-MC-Unique: X0pdCFaGO561XeqL3UGMhw-1
-X-Mimecast-MFC-AGG-ID: X0pdCFaGO561XeqL3UGMhw_1764853159
-Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-64160e4d78eso995084a12.0
-        for <bpf@vger.kernel.org>; Thu, 04 Dec 2025 04:59:20 -0800 (PST)
+	s=arc-20240116; t=1764857070; c=relaxed/simple;
+	bh=aRzuM73KIbESyhohodxcT54k6Qy1Jg+q5i0vbxCsmNc=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hLxJmfvW+zxzxyigOAlvPhG4XlRV10UZvMg/Wwu1NUgLVk/hbLiCTUnxUT5JqKRMv2XpXgeHijrga1EsU7XWXXii/gKiuGm8ACdKY/lPQlCa2aZFbttVNmSCuE6+ZsLbjInXpSrJ9UFzAS+2OpTKWapTMJI8bZZK1U22mMwHGiM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ML1KVpCz; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-477aa218f20so7276915e9.0
+        for <bpf@vger.kernel.org>; Thu, 04 Dec 2025 06:04:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1764853159; x=1765457959; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=GheDSDHtTYd5XNDiQRKusO77ePE5TJS8yhyiwwPNBd8=;
-        b=D8iPtYBpjNJULRB4s77sruEUD6TjR2CmpPwbfoKrXcUEI+GTSftnR8vCQSdQgYFlSi
-         0oA+g4H/LNGHj+lmrEAt2VRPVJ5iNiKCyIwXrU4cquidBU9aPxasM1iMNlx5g8Kz9919
-         oXiaQaUA5Z6gFubXx/1Kjom/j3MPAi9cCj4YDzqurNEMrV160fIesESfKvsIZlhTyM1c
-         K7JXh//jBD+xXZD8AzlijbZ0xeqagbXzZYLw9Sq1tIm6Yga0Tde5bmts6H12WV9b7zyk
-         7JHyqkmrT49SPZc7MRTaIuonFJbxVv3BEhFbwja4rsKwt66sleKpydWsDFfXQWTZTGpV
-         Wraw==
+        d=gmail.com; s=20230601; t=1764857066; x=1765461866; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ulveplzjG/cdWPrBGoBC49yQV2WnDro7d1WFbRqxSbE=;
+        b=ML1KVpCz5g49x/su4FObrGbMPrGPFc3juLG93l/iB1GQxfeHn22EteBTS/G8itL6Ns
+         hfYS2r6GWMFzOblIlM1D3RWYgTZ+uwVapAQWlkc07yErDeLUNFGDvdyH+0KwN02/nhr/
+         sf0T1jUJzvJ4eG48fG//3cI/1eJOCqQlXnE7QVedi9SW5OY1A3viCUGxC8mRHIKx9zut
+         3STOogJv+RWlJ1EQ/Q6wEVFYAKuyNovMW3KSGYGL6mu4IvNs+bGMefnEniUVqYGQllI7
+         SPAdf3Slt/8c0jLDZSwHxIr7KPPPIOQ3QYz3S5xOgT+gbgLGgRBRx6PCvBvrQfWUnOxZ
+         lEjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764853159; x=1765457959;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GheDSDHtTYd5XNDiQRKusO77ePE5TJS8yhyiwwPNBd8=;
-        b=fH0JDsnSFvrgvk6SB7kOTIGkC5a9ma1iTwRzlZdujBY8UOBP9+GsonGcC7Eu0WwjFL
-         cFATxu4kIPf+6lBTSliU8otJhmx5ml0tJUAZsEwXlgA3PezOwk21wCwr8VWO6pHZvZkd
-         EuVyhErrTyJ3GjBEZdjeb4nXQO6ZY81wVhla+IeCVDEPA+5EEkjSu770C4BFtovBSbkd
-         hBPhr48qPTtrZRLLSQY+S6GHdSSd0NvhZCLtcFu7/XOEo1sgOzO5lCVdaxt0hiurVsnc
-         JmDEkS/8dNA+gpUFdxjy1Iqv2V9Qk93quM2odWtaKXZIcmqVUUSiQPbtPUO2MH9ReDyw
-         hxYw==
-X-Gm-Message-State: AOJu0YwMokXoP9if2AACI7px/C4f5/PVH81LOoEgTAe0DEwH1k2pEj6/
-	Al0G3ciruzxOOzSHgSiOku3bi9rkgrFlM/2vL76eYbL8lBKZRYKAawOfE+U3GUsOyO7qq/clI6e
-	ktJtMmavD44MgUpT8BHkRVXMNJ9/Ls5fdc/4uZ/hkJ7qyN5hazBvERg==
-X-Gm-Gg: ASbGncu7A7N46ZOR6sXDuj0p8ttXZxkbEdqVzyu//di6OHB2ljBFtlZfFN1O+n4v5Mp
-	wiSI/oyiWU5JHUP0dCS23gfHCt8cV3Sr1S4GU5uuZvuNniwMN+2ZSz2R2NGSdL5N5LFvUeieNVj
-	rfP+0YOoLZ6d2yrK8onhwzjJPAtmeQu0sih3f0vXeacWjBdsdRCMBDnXwP2nBEZYJLzW8RAyJmU
-	/9JToLXJoyXS0dkV9pTadYirH0WT/z3QX5QHnTumDN3G5JfpzMsKtsmZvd+20zK9cuwpm/PwQTU
-	tekNCV05kH6sYcLiSbitrvhiuNFRKQFU8PxC7mFjHF+u9KO7Os10XVldc4JIywB30yyfRwWXe1n
-	BuRCjUQ==
-X-Received: by 2002:a05:6402:274b:b0:640:b3c4:c22 with SMTP id 4fb4d7f45d1cf-647abdd3177mr2458536a12.18.1764853159328;
-        Thu, 04 Dec 2025 04:59:19 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEpIWeVg+u1yy1Z+F+69TkiJ/5ziYNykTKxahwDIMAG7zZcbakM3dgVe2ZnEUxhIOcGKQFi7Q==
-X-Received: by 2002:a05:6402:274b:b0:640:b3c4:c22 with SMTP id 4fb4d7f45d1cf-647abdd3177mr2458514a12.18.1764853158907;
-        Thu, 04 Dec 2025 04:59:18 -0800 (PST)
-Received: from fedora ([2a02:8308:b104:2c00:7718:da55:8b6:8dcc])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-647b2ec319csm1251929a12.3.2025.12.04.04.59.17
+        d=1e100.net; s=20230601; t=1764857066; x=1765461866;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ulveplzjG/cdWPrBGoBC49yQV2WnDro7d1WFbRqxSbE=;
+        b=ZClwGLoWlLYyMjY9HU+Uw7GwpGRJydWsYNcEIkM+7GagqH2YxMOTZqD/x/cbOi/MhQ
+         Hc5ZQWpgk+sTfL0H9HBxI4jJvS8W1MhxFXNyQh3bvhlIjPyz6Tt9y3Vd8/otG9OTOOcr
+         oDDOndadj+YsV0fGTAunqaUC9/OaANOz8mk/HMuKPfAMofVqMmXEOeZ+ljjRpyuEGmpC
+         38EifN5CDo4E9g9soiQg3OIAIa1Y7SHOMHK7s9+BjqG+nbxQ1Q/qRd1KUHgcapW6WA1O
+         62xviJpElPd34Uqwa+8WDJ5i+gV9wuJwW4AU/5ruXJ/c7BODBykUqYCjIPgmbEJbL/8/
+         tQYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUHebZvnzy6rF/SYZjcxaTpDuJXcRLoPFwbsGS0cDU7hnqX7p2u8WWGwrVI5dAC57mxudA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyRiPLEA9L/zkmEvh+EDjHMe6hQpACEN5KQrLWunZS3EuHJo2Vm
+	iICQr854lpW7r5uvoy+eTHlg/Eke1Tg8lK5NiyNHo50eFP0qiVUvmSv3
+X-Gm-Gg: ASbGncu6a+5vupWEc/6EIam4Bgabvf82X0S4R7KDw1mgHOEPkXIQ9VmiVLrNXPXKXt/
+	7A/tZlMk4e3Hw82/Avq0XinHjErrHDngquiZK9RI8Hfb0HoprTIYXwWm1OiaQAoDhZEiMogbesG
+	0XOEbnfIibvrTtFICzhJrPyTbbuw/Hx65iPEToubrexiQAipKEHzwYqW5Bqe9zPcPbbCR9G2pwB
+	nw1xTSVtzrEc7b+sgFUy+ZIPb7TZ0mIN7TR+R2lvZvnO/muWME6Eld3ogjB+kCmqkmRfpiwzmwy
+	xdZHUAgm+O8nfiPi4JtvIZRQl/xMxUq/ZJfPLRYJCZhvf8du4pXQ+n0rHGvi3WzxmrpDjNTynWi
+	UdWIdPGDqN9XMN+FPDDYQJf14XJZ6rQjKm0NMrbTqD+QLlkHMYE17H2bxN3SA
+X-Google-Smtp-Source: AGHT+IEUXKkr+j8AS7GtCx+h4kXKs7W2C+wgWRquG6wCDe6i84w2IfLLYiJHEkhLXTOaZv+w+fBsjw==
+X-Received: by 2002:a05:600c:3152:b0:477:6d96:b3c8 with SMTP id 5b1f17b1804b1-4792af3d888mr59493485e9.23.1764857065548;
+        Thu, 04 Dec 2025 06:04:25 -0800 (PST)
+Received: from krava ([2a02:8308:a00c:e200::b44f])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42f7d331e62sm3508498f8f.35.2025.12.04.06.04.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Dec 2025 04:59:18 -0800 (PST)
-From: Ondrej Mosnacek <omosnace@redhat.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>
-Cc: bpf@vger.kernel.org,
-	selinux@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	"Serge E . Hallyn" <serge@hallyn.com>
-Subject: [PATCH] bpf, arm64: Do not audit capability check in do_jit()
-Date: Thu,  4 Dec 2025 13:59:16 +0100
-Message-ID: <20251204125916.441021-1-omosnace@redhat.com>
-X-Mailer: git-send-email 2.52.0
+        Thu, 04 Dec 2025 06:04:25 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Thu, 4 Dec 2025 15:04:23 +0100
+To: Josh Poimboeuf <jpoimboe@kernel.org>
+Cc: x86@kernel.org, linux-kernel@vger.kernel.org,
+	live-patching@vger.kernel.org, bpf@vger.kernel.org,
+	Andrey Grodzovsky <andrey.grodzovsky@crowdstrike.com>,
+	Petr Mladek <pmladek@suse.com>, Song Liu <song@kernel.org>,
+	Raja Khan <raja.khan@crowdstrike.com>,
+	Miroslav Benes <mbenes@suse.cz>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH v2 1/2] bpf: Add bpf_has_frame_pointer()
+Message-ID: <aTGU5zRKWWU78mCS@krava>
+References: <cover.1764818927.git.jpoimboe@kernel.org>
+ <fd2bc5b4e261a680774b28f6100509fd5ebad2f0.1764818927.git.jpoimboe@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fd2bc5b4e261a680774b28f6100509fd5ebad2f0.1764818927.git.jpoimboe@kernel.org>
 
-Analogically to the x86 commit 881a9c9cb785 ("bpf: Do not audit
-capability check in do_jit()"), change the capable() call to
-ns_capable_noaudit() in order to avoid spurious SELinux denials in audit
-log.
+On Wed, Dec 03, 2025 at 07:32:15PM -0800, Josh Poimboeuf wrote:
+> Introduce a bpf_has_frame_pointer() helper that unwinders can call to
+> determine whether a given instruction pointer is within the valid frame
+> pointer region of a BPF JIT program or trampoline (i.e., after the
+> prologue, before the epilogue).
+> 
+> This will enable livepatch (with the ORC unwinder) to reliably unwind
+> through BPF JIT frames.
+> 
+> Acked-by: Song Liu <song@kernel.org>
+> Acked-and-tested-by: Andrey Grodzovsky<andrey.grodzovsky@crowdstrike.com>
+> Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
+> ---
+>  arch/x86/net/bpf_jit_comp.c | 12 ++++++++++++
+>  include/linux/bpf.h         |  3 +++
+>  kernel/bpf/core.c           | 16 ++++++++++++++++
+>  3 files changed, 31 insertions(+)
+> 
+> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> index de5083cb1d37..3ec4fa94086a 100644
+> --- a/arch/x86/net/bpf_jit_comp.c
+> +++ b/arch/x86/net/bpf_jit_comp.c
+> @@ -1661,6 +1661,9 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image
+>  	emit_prologue(&prog, image, stack_depth,
+>  		      bpf_prog_was_classic(bpf_prog), tail_call_reachable,
+>  		      bpf_is_subprog(bpf_prog), bpf_prog->aux->exception_cb);
+> +
+> +	bpf_prog->aux->ksym.fp_start = prog - temp;
+> +
+>  	/* Exception callback will clobber callee regs for its own use, and
+>  	 * restore the original callee regs from main prog's stack frame.
+>  	 */
+> @@ -2716,6 +2719,8 @@ st:			if (is_imm8(insn->off))
+>  					pop_r12(&prog);
+>  			}
+>  			EMIT1(0xC9);         /* leave */
+> +			bpf_prog->aux->ksym.fp_end = prog - temp;
+> +
+>  			emit_return(&prog, image + addrs[i - 1] + (prog - temp));
+>  			break;
+>  
+> @@ -3299,6 +3304,9 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *rw_im
+>  	}
+>  	EMIT1(0x55);		 /* push rbp */
+>  	EMIT3(0x48, 0x89, 0xE5); /* mov rbp, rsp */
+> +	if (im)
+> +		im->ksym.fp_start = prog - (u8 *)rw_image;
+> +
+>  	if (!is_imm8(stack_size)) {
+>  		/* sub rsp, stack_size */
+>  		EMIT3_off32(0x48, 0x81, 0xEC, stack_size);
+> @@ -3436,7 +3444,11 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *rw_im
+>  		emit_ldx(&prog, BPF_DW, BPF_REG_0, BPF_REG_FP, -8);
+>  
+>  	emit_ldx(&prog, BPF_DW, BPF_REG_6, BPF_REG_FP, -rbx_off);
+> +
+>  	EMIT1(0xC9); /* leave */
+> +	if (im)
+> +		im->ksym.fp_end = prog - (u8 *)rw_image;
 
-The commit log from that commit applies here as well:
-"""
-The failure of this check only results in a security mitigation being
-applied, slightly affecting performance of the compiled BPF program. It
-doesn't result in a failed syscall, an thus auditing a failed LSM
-permission check for it is unwanted. For example with SELinux, it causes
-a denial to be reported for confined processes running as root, which
-tends to be flagged as a problem to be fixed in the policy. Yet
-dontauditing or allowing CAP_SYS_ADMIN to the domain may not be
-desirable, as it would allow/silence also other checks - either going
-against the principle of least privilege or making debugging potentially
-harder.
+is the null check needed? there are other places in the function that
+use 'im' without that
 
-Fix it by changing it from capable() to ns_capable_noaudit(), which
-instructs the LSMs to not audit the resulting denials.
-"""
+thanks,
+jirka
 
-Fixes: f300769ead03 ("arm64: bpf: Only mitigate cBPF programs loaded by unprivileged users")
-Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
----
- arch/arm64/net/bpf_jit_comp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index afd05b41ea9e6..5823f2df204d9 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -1004,7 +1004,7 @@ static void __maybe_unused build_bhb_mitigation(struct jit_ctx *ctx)
- 	    arm64_get_spectre_v2_state() == SPECTRE_VULNERABLE)
- 		return;
- 
--	if (capable(CAP_SYS_ADMIN))
-+	if (ns_capable_noaudit(&init_user_ns, CAP_SYS_ADMIN))
- 		return;
- 
- 	if (supports_clearbhb(SCOPE_SYSTEM)) {
--- 
-2.52.0
-
+> +
+>  	if (flags & BPF_TRAMP_F_SKIP_FRAME) {
+>  		/* skip our return address and return to parent */
+>  		EMIT4(0x48, 0x83, 0xC4, 8); /* add rsp, 8 */
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index d808253f2e94..e3f56e8443da 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1257,6 +1257,8 @@ struct bpf_ksym {
+>  	struct list_head	 lnode;
+>  	struct latch_tree_node	 tnode;
+>  	bool			 prog;
+> +	u32			 fp_start;
+> +	u32			 fp_end;
+>  };
+>  
+>  enum bpf_tramp_prog_type {
+> @@ -1483,6 +1485,7 @@ void bpf_image_ksym_add(struct bpf_ksym *ksym);
+>  void bpf_image_ksym_del(struct bpf_ksym *ksym);
+>  void bpf_ksym_add(struct bpf_ksym *ksym);
+>  void bpf_ksym_del(struct bpf_ksym *ksym);
+> +bool bpf_has_frame_pointer(unsigned long ip);
+>  int bpf_jit_charge_modmem(u32 size);
+>  void bpf_jit_uncharge_modmem(u32 size);
+>  bool bpf_prog_has_trampoline(const struct bpf_prog *prog);
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index d595fe512498..7cd8382d1152 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -760,6 +760,22 @@ struct bpf_prog *bpf_prog_ksym_find(unsigned long addr)
+>  	       NULL;
+>  }
+>  
+> +bool bpf_has_frame_pointer(unsigned long ip)
+> +{
+> +	struct bpf_ksym *ksym;
+> +	unsigned long offset;
+> +
+> +	guard(rcu)();
+> +
+> +	ksym = bpf_ksym_find(ip);
+> +	if (!ksym || !ksym->fp_start || !ksym->fp_end)
+> +		return false;
+> +
+> +	offset = ip - ksym->start;
+> +
+> +	return offset >= ksym->fp_start && offset < ksym->fp_end;
+> +}
+> +
+>  const struct exception_table_entry *search_bpf_extables(unsigned long addr)
+>  {
+>  	const struct exception_table_entry *e = NULL;
+> -- 
+> 2.51.1
+> 
+> 
 
