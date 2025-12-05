@@ -1,98 +1,46 @@
-Return-Path: <bpf+bounces-76105-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76106-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4E19CA7A65
-	for <lists+bpf@lfdr.de>; Fri, 05 Dec 2025 13:53:22 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5F0DCA7BD2
+	for <lists+bpf@lfdr.de>; Fri, 05 Dec 2025 14:22:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 8BF1933DF44B
-	for <lists+bpf@lfdr.de>; Fri,  5 Dec 2025 10:56:08 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id DC25D3034100
+	for <lists+bpf@lfdr.de>; Fri,  5 Dec 2025 13:22:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8F6732AAB8;
-	Fri,  5 Dec 2025 10:56:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5E36332EC3;
+	Fri,  5 Dec 2025 13:21:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NQHC3P/2";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="BxP2iNwu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y34QAvM/"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 727FA329E66
-	for <bpf@vger.kernel.org>; Fri,  5 Dec 2025 10:55:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF56D3148C8;
+	Fri,  5 Dec 2025 13:21:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764932163; cv=none; b=BjSV27v/a6VhG2kq4M0IQFfDwBi5J7SmJ2VrE6tFIktENLLofcgP8lsXV/XxA//pe+C2EpdhcVPIHYktmkHPGeqVkqQP98CB+9P/OeuOC251TgKjWOUXzQIH/NW2HXZ8cln2X+f11m6b+F2memLME5sY/X+yaVuF7v1IxJPjMK0=
+	t=1764940917; cv=none; b=bQVUYxL/PwxWwAO15pdexr+AI10d3bR5ycJ4JLNLh8v60jcru8pAzBCy+f2S+yAkFK6oFcZxj09q5wN1gITvoKGLrRQNk4FAHXX9wuFt2QvfVz2ijlowhq/jv5FgJvoTzcaBLTP59iCZyWHc5Z9BilmNGd9HAO4bRZQAheW47KA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764932163; c=relaxed/simple;
-	bh=li1n7AiJvWRG4/ZcB/yX/5YGbsKuOzGw1EsKlGT3BtQ=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=ooIoRGQkqFjLIl1TiBSmIvK3RBJxBSW0HZifLzx1vphyhaGw/49auB4gK3T+cIn53sXGyLqf5oWPKoCq+/WG5VfUkVjQHl4RFdN0c3z92TE6hpaz3XRVfNuyqhEFtpWL2gibGxpbGogFT4f0r8yRm6Haj4fovmm1DGaXlioGIFM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NQHC3P/2; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=BxP2iNwu; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1764932153;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=h7gSf2n5M3odk+ChxoT6AFUK+lODC5oQOZkjvhzNfhw=;
-	b=NQHC3P/2OB18nWjkxyx7xwZc5zuWwqP15gzLzBp1WWSlo+KwFIA5cR/NEP06YUinF7GKtf
-	JXHGNfgqsAIScBQeLG2agZVCkOoGtexzqgHqlW60J66Eic9UlWS8B0gcUeQLyhv4jYoiJe
-	GglW/wZeXdBHRsNty78XAz+kHqwV/z0=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-347-PHlio3MGOAmN_-KpQZuJKQ-1; Fri, 05 Dec 2025 05:55:52 -0500
-X-MC-Unique: PHlio3MGOAmN_-KpQZuJKQ-1
-X-Mimecast-MFC-AGG-ID: PHlio3MGOAmN_-KpQZuJKQ_1764932151
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-b79f6dcde96so288413666b.2
-        for <bpf@vger.kernel.org>; Fri, 05 Dec 2025 02:55:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1764932151; x=1765536951; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=h7gSf2n5M3odk+ChxoT6AFUK+lODC5oQOZkjvhzNfhw=;
-        b=BxP2iNwu0/ew0K2BhcX70SFxDDH5wPX7TPNg5v0C2W6ZTMQ4ClIlhCTT/773B8EXcR
-         AR56glnVDZS4UO061amT+cLJFC4h76evOMhzbohKnEC53J7lIY+pq/F7YwZVZ6E/r5ex
-         86uk5eaUAqZpCy7OaGuassAr9ZJPaBYEtrEhnl35t/7FzOyq8em33FlLLDe1cpNiNrkG
-         ez+/Wo9qJF/zTUuFaHNnUhGRjqMFm67QjgU25kf7p2LyjTUgGaty8+GxhNxyuIpdlr1d
-         l7RkqK6aHisb55O0PlcO7bctldlE1qvG41+8oq3uxBGCQZX7/PyX5UMf7MvpY1AOHMz/
-         5nZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764932151; x=1765536951;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=h7gSf2n5M3odk+ChxoT6AFUK+lODC5oQOZkjvhzNfhw=;
-        b=C+isjYrvDYvLBP1EjmGAr9PwpNcRbBSK08YaUWCowJWHdAv4/cOydc7fbIlv6U2Hki
-         do3BpKnAG+jWncn6CWetTnwybdVdSYiC102+j24vGsEiYHAthcZkV/oz6/EhDT5vlsvA
-         YWTT1QJwsKeY758nxDMblZ3SkpDqtD+isX01LbjwVQ1djvKF01pjgcw0ffnuG1cDKo6H
-         iOm0xISZQRP+NPSQSR3FTvYBUnwScZOoMaOdcIGV7hTY6k1PyEAePqhIbxhv3KitZ4D7
-         dKOo1yuY6/OeYMKStwm5iLFpIwzeGS5Wq7iXjFGK0SbuYpp8iYaxrSj1YCI+qOi3MM5X
-         7zGw==
-X-Forwarded-Encrypted: i=1; AJvYcCVMewJdBOgYDYDdFkcFUIfCR7RtwOFbcE7nZo9QkSFRg9gKTIe/a4F4755CQtBLJenpu7w=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyxrHEnHFIfnXfRCTYh35wJ8QB62B6uQ269L3ViTDhKVO32q7uJ
-	6oStyBfFsD53ZjRtpgkhi2rJzCKjsgP3zd2uoAELIUa7LE9hw+muozz5dCBgv+aLBNrW7FhI6yT
-	pCTqKmuwIBfIFWbHcyi3lwKntVTrPPv0M5BgaC3qRBDDwcdGVwhtTvg==
-X-Gm-Gg: ASbGncvFC3w6q1IA9fMAxH2QdHU9A1r5010CMuv/P4NnlL9t4rsczWgsM3Vsmb48NLr
-	jhhYeNCa3IUItIug4KrjirNs6Xp6FUMpIct2ZLKuEKKr3Ld2bZ5eREFYk7ukC0sTndmCYZ9FecW
-	Tcgi4Rz9mubBixqd93dgOe4r4RTOrjr42jKHkuHP6YilYNlW5l68rIInoMKyx2PKjcMzlU26LOW
-	o9t3kxaFzxbjeojthAMDZJheapDo10PYxzcFlFoF3eft/OPI8hE1FMt+V0LPXqXBanJaSM2SmGf
-	tzHJWUd8qG/PqA46VojOcsvJaKAPMZasgIlR2X4WqHCg09tCZFoIcsWXkVe5g7CjWXZqLAFw0DZ
-	QM6viUMb0bJNylQ==
-X-Received: by 2002:a17:906:7953:b0:b73:4fbb:37a2 with SMTP id a640c23a62f3a-b79dbe8c6bcmr946950266b.5.1764932150934;
-        Fri, 05 Dec 2025 02:55:50 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IG0fCpVjMBXkMIqMsOLr+JuNuOZ4LtvJSBlHhcUoih/A51LWRZLURxoWIUd3WMgn58OFYGAPA==
-X-Received: by 2002:a17:906:7953:b0:b73:4fbb:37a2 with SMTP id a640c23a62f3a-b79dbe8c6bcmr946946066b.5.1764932150435;
-        Fri, 05 Dec 2025 02:55:50 -0800 (PST)
-Received: from [192.168.88.32] ([212.105.155.199])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b79f49a897fsm344670966b.51.2025.12.05.02.55.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Dec 2025 02:55:49 -0800 (PST)
-Message-ID: <15b104e5-7e8d-4a7c-a500-5632a4f3f9a8@redhat.com>
-Date: Fri, 5 Dec 2025 11:55:46 +0100
+	s=arc-20240116; t=1764940917; c=relaxed/simple;
+	bh=F4G2ALAFTX74mjT8Mnsa8PAikqRo6bnZ3MjRvVzVAl0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IMl6MUsNm1mxVCrsSMsdePGSl4ydL4CdxbdPnxVuZIiOjT4RNodhx1m44fPxePDeUiINyK7U8VbbBjyVNjEQ8eG3tS/mJtHPg1PsPuQiqA46bT8Nmh8WlCT+nSA7LGCh/3Z1hqF2XRUL/bzmN8UDt27NBG5gyj6iYkYzICnr9dU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y34QAvM/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A750AC4CEF1;
+	Fri,  5 Dec 2025 13:21:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1764940917;
+	bh=F4G2ALAFTX74mjT8Mnsa8PAikqRo6bnZ3MjRvVzVAl0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Y34QAvM/tsXlzuWqm3qmgnj1otltWMGL79GebBkGGC09sd4uI7u3e/Gn80pIovhn7
+	 KEMRLwPbsCpG9zotiBi2hf/jTPOsLIkaBWjtrq6lsTXzy8lprHvbedfz9aIp7SXubP
+	 FHAEtQA0BWxNO+1dgS9DkyNd/A9cTLYaka1eHi1HiY9ZMja68/s77lEARhTPQHtHhK
+	 xujE+fT2VV2apQk++1cFY/YRdh+uTlyCTmIuX1W5dnf9b+cmsw3H0elBgH0Q4bgKlP
+	 0tBewWgx9/X1L0cHVGu7no9quXDSxhDPfjqlYaMawbgp/XnMWlAGC39y8D8Vg7kGBJ
+	 NT9zVxMzEwpXg==
+Message-ID: <3c1dac33-424f-4eda-83a9-60fb7f4b6c52@kernel.org>
+Date: Fri, 5 Dec 2025 14:21:51 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -100,65 +48,103 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: [ANN] End of year break up to January 2
-From: Paolo Abeni <pabeni@redhat.com>
-To: "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Cc: Johannes Berg <johannes@sipsolutions.net>,
- Pablo Neira Ayuso <pablo@netfilter.org>,
- Jozsef Kadlecsik <kadlec@netfilter.org>, Florian Westphal <fw@strlen.de>,
- Marcel Holtmann <marcel@holtmann.org>,
- Johan Hedberg <johan.hedberg@gmail.com>,
- Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
- linux-bluetooth@vger.kernel.org,
- "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>,
- Oliver Hartkopp <socketcan@hartkopp.net>,
- Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org,
- Dust Li <dust.li@linux.alibaba.com>, Sidraya Jayagond
- <sidraya@linux.ibm.com>, Wenjia Zhang <wenjia@linux.ibm.com>,
- "D. Wythe" <alibuda@linux.alibaba.com>, Matthieu Baerts
- <matttbe@kernel.org>, Mat Martineau <martineau@kernel.org>,
- MPTCP Linux <mptcp@lists.linux.dev>,
- "open list:BPF [NETWORKING] (tcx & tc BPF, sock_addr)"
- <bpf@vger.kernel.org>, Magnus Karlsson <magnus.karlsson@intel.com>,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- "Jason A. Donenfeld" <Jason@zx2c4.com>, wireguard@lists.zx2c4.com,
- Tony Nguyen <anthony.l.nguyen@intel.com>, Tariq Toukan <tariqt@nvidia.com>,
- Andrew Lunn <andrew@lunn.ch>, Vladimir Oltean <olteanv@gmail.com>,
- Heiner Kallweit <hkallweit1@gmail.com>, Russell King
- <linux@armlinux.org.uk>, Aaron Conole <aconole@redhat.com>,
- Eelco Chaudron <echaudro@redhat.com>, Ilya Maximets <i.maximets@ovn.org>,
- dev@openvswitch.org, Steffen Klassert <steffen.klassert@secunet.com>,
- Herbert Xu <herbert@gondor.apana.org.au>, devel@lists.linux-ipsec.org,
+Subject: Re: [PATCH net-next v2 5/9] tun: use bulk NAPI cache allocation in
+ tun_xdp_one
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Jon Kohler <jon@nutanix.com>
+Cc: Jason Wang <jasowang@redhat.com>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
  Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Eric Dumazet <edumazet@google.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>
-References: <3a2cf402-cba2-49d1-a87e-a4d3f35107d0@redhat.com>
+ John Fastabend <john.fastabend@gmail.com>,
+ Stanislav Fomichev <sdf@fomichev.me>,
+ open list <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
+ Alexander Lobakin <aleksander.lobakin@intel.com>
+References: <20251125200041.1565663-1-jon@nutanix.com>
+ <20251125200041.1565663-6-jon@nutanix.com>
+ <CACGkMEsDCVKSzHSKACAPp3Wsd8LscUE0GO4Ko9GPGfTR0vapyg@mail.gmail.com>
+ <CF8FF91A-2197-47F7-882B-33967C9C6089@nutanix.com>
+ <c04b51c6-bc03-410e-af41-64f318b8960f@kernel.org>
+ <20251203084708.FKvfWWxW@linutronix.de>
+ <CA37D267-2A2F-47FD-8BAF-184891FE1B7E@nutanix.com>
+ <20251205075805.vW4ShQvN@linutronix.de>
 Content-Language: en-US
-In-Reply-To: <3a2cf402-cba2-49d1-a87e-a4d3f35107d0@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <20251205075805.vW4ShQvN@linutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hi,
 
-The EOY break poll concluded with a substantial agreement WRT the break;
-the final figures are:
 
-			Voters	Percentage
-it's great		28	41%
-it's fine		23	33%
-I don't care		11	16%
-mildly inconvenient	5	7%
-unacceptable		2	3%
+On 05/12/2025 08.58, Sebastian Andrzej Siewior wrote:
+> On 2025-12-03 15:35:24 [+0000], Jon Kohler wrote:
+>> Thanks, Sebastian - so if I’m reading this correct, it *is* fine to do
+>> the two following patterns, outside of NAPI:
+>>
+>>     local_bh_disable();
+>>     skb = napi_build_skb(buf, len);
+>>     local_bh_enable();
+>>
+>>     local_bh_disable();
+>>     napi_consume_skb(skb, 1);
+>>     local_bh_enable();
+>>
+>> If so, I wonder if it would be cleaner to have something like
+>>     build_skb_bh(buf, len);
+>>
+>>     consume_skb_bh(skb, 1);
+>>
+>> Then have those methods handle the local_bh enable/disable, so that
+>> the toggle was a property of a call, not a requirement of the call?
+> 
+> Having budget = 0 would be for non-NAPI users. So passing the 1 is
+> superfluous. You goal seems to be to re-use napi_alloc_cache. Right? And
+> this is better than skb_pool?
+> 
+> There is already napi_alloc_skb() which expects BH to be disabled and
+> netdev_alloc_skb() (and friends) which do disable BH if needed. I don't
+> see an equivalent for non-NAPI users. Haven't checked if any of these
+> could replace your napi_build_skb().
+> 
+> Historically non-NAPI users would be IRQ users and those can't do
+> local_bh_disable(). Therefore there is dev_kfree_skb_irq_reason() for
+> them. You need to delay the free for two reasons.
+> It seems pure software implementations didn't bother so far.
+> 
+> It might make sense to do napi_consume_skb() similar to
+> __netdev_alloc_skb() so that also budget=0 users fill the pool if this
+> is really a benefit.
 
-Given the above, and that the capacity in this period will be severely
-negatively impacted - most of the maintainers will be traveling to LPC
-the next week(s) - net-next will stay closed for new features until
-January 2.
+I'm not convinced that this "optimization" will be an actual benefit on
+a busy system.  Let me explain the side-effect of local_bh_enable().
 
-Fixes (for both trees) and RFCs will be processed as usual.
+Calling local_bh_enable() is adding a re-scheduling opportunity, e.g.
+for processing softirq.  For a benchmark this might not be noticeable as
+this is the main workload.  If there isn't any pending softirq this is
+also not noticeable.  In a more mixed workload (or packet storm) this
+re-scheduling will allow others to "steal" CPU cycles from you.
 
-Thanks,
+Thus, you might not actually save any cycles via this short BH-disable
+section.  I remember that I was saving around 19ns / 68cycles on a
+3.6GHz E5-1650 CPU, by using this SKB recycle cache.  The cost of a re-
+scheduling event is like more.
 
-Paolo
+My advice is to use the napi_* function when already running within a
+  BH-disabled section, as it makes sense to save those cycles
+(essentially reducing the time spend with BH-disabled).  Wrapping these
+napi_* function with BH-disabled just to use them outside NAPI feels
+wrong in so many ways.
 
+The another reason why these napi_* functions belongs with NAPI is that
+netstack NIC drivers will (almost) always do TX completion first, that
+will free/consume some SKBs, and afterwards do RX processing that need
+to allocate SKBs for the incoming data frames.  Thus, keeping a cache of
+SKBs just released/consumed makes sense.  (p.s. in the past we always
+bulk free'ed all SKBs in the napi cache when exiting NAPI, as they would
+not be cache hot for next round).
+
+--Jesper
 
