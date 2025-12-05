@@ -1,73 +1,73 @@
-Return-Path: <bpf+bounces-76156-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76159-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD3C8CA8898
-	for <lists+bpf@lfdr.de>; Fri, 05 Dec 2025 18:17:33 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id E00F1CA8A38
+	for <lists+bpf@lfdr.de>; Fri, 05 Dec 2025 18:36:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id A532830164D9
-	for <lists+bpf@lfdr.de>; Fri,  5 Dec 2025 17:17:18 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2FAAA3046FAC
+	for <lists+bpf@lfdr.de>; Fri,  5 Dec 2025 17:28:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B30634F466;
-	Fri,  5 Dec 2025 17:15:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AB1135293A;
+	Fri,  5 Dec 2025 17:15:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="G3hxER3X"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="UVy29g8P"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 370A3346E75;
-	Fri,  5 Dec 2025 17:15:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4954734F476;
+	Fri,  5 Dec 2025 17:15:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764954936; cv=none; b=u17tew6zg7Mn0i6hQZIkqZ+0Cg77Dm5MkW0xCh7QvDTHOOSx5B9tM6PpywHQW2qi37k8gGFDczj2tiw5VST8KsjjRuCXDgBcXMo7BYoRbpc2ltLG3r5RMagpd/obyoGEsixDsP9TVSfNTlRFh0XdCVRnDtoFV0aYj0DZrdSKk6o=
+	t=1764954944; cv=none; b=qwJs9k7JEXqr3s2O3fl0+q57C6TOAjq6i4EZmgMh8CZTz+qlrKfe547FdgHZS7xXDIIq/fnuxSK7CZThdbm6U7RCw+7pK8oIPBj2T/9aiR0FuJ2tmieDPzOexyzfsmjdpmFbVKhOr87vmwV3BrzNRoXd3ycSW7qGpm4xBURPeoQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764954936; c=relaxed/simple;
-	bh=06Jr8CXrnJ/jznLO5pfyGkCwQ+wJ2K+YghNV5NW6oLM=;
+	s=arc-20240116; t=1764954944; c=relaxed/simple;
+	bh=kaPUe9HEKn8n1z5tXB04hI3rzMgQLA6Ru2FLKn1YNjE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=G/OJMRNhuVd81tqLsk51U+BV8J6Jjr7AaaM02xApk13F3gtD0r1CEmbZnlTjdxsOUoevoHKKzyY9IF9xKdQghGePVBdIg3mgtpAgNBfm5sdS2x7NvVnhinL2AxYuf0zWTSHOYrXHuyZlMcvu5ukM4SLOquQ9Vc55+eJtBg0p+yk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=G3hxER3X; arc=none smtp.client-ip=148.163.158.5
+	 MIME-Version; b=eeyR8vn46+UkSM+npnLw/wIGIH6eA2XdIRn0+5DcM7ZO4ON/UeXKeJXNPIP6NusmIkeMnNqZfALz08OJKDvitI3kt1GK2xE7TTVGBscan1Y9DhYHXOwIe7+YfhcpYqLyhZdYKJojfvy0n5QjEFMTQ53i4uQDNh3HjXBlpLWl2RY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=UVy29g8P; arc=none smtp.client-ip=148.163.156.1
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5B5BTO8v031345;
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5B562uWx013225;
 	Fri, 5 Dec 2025 17:14:55 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
 	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=pp1; bh=l33Ta/FL4DYsJtSLL
-	UG7m8ggvE9nAmSPbGGN3CmJWKg=; b=G3hxER3XPR+gFgpxkGHaLqVYU2n4kFP/E
-	fQVUXwz+d364om4zkPv2W8MrIkVKWywAqZ+2u3TbRdiUQg109jGFoYJyL+XapsVH
-	h7YeA8ma2Gi9Gp4uznPtzGfhjE92KVRWa/+xUrUCYWAJdATJsE3y2rDjKIh1VUXZ
-	zQ/u+h9B+jbEZXareIgnLb68+lgxCeK1rHVbhvbU7LzUNMWJRaSGCR21n1MbHT7R
-	o0Vbks4PDtF/semn+YMfUbuwq5Zea5mjJf2THHsl3AIV71TgiUEJn+zuhbwwSL8H
-	H5CazufHoEwe+o/1dHR4f+y3ncEU9bAACl6YXchImERyv4VFUsBqA==
+	:mime-version:references:subject:to; s=pp1; bh=0U9VOyhHCvaJ8UWLX
+	8BbR5hsyCDcsncf5gTti8J2pdY=; b=UVy29g8PcS7OpfgGLVEpTLWTS3Kodu8xJ
+	1hepYsUMezSP+heBzlNlkgzjBCFlrJsaT+1T0t2MuLHYN3YnfwsdlMrasjorjuxZ
+	WitZ7J6bJrGCcPJ9kh3dX6N98glgZdKzrFRE1rdJ31Qyrbv4cd+RWr7/WvgqECcB
+	6S2/fpdcC+Nq/AXo9MJxmZslD/ndsbVoM+v98lENVUAbO/gWrEQaWnqMlv7kfxhn
+	iLQLa3a3xSx7h0hNrMB5DBLlMMmVkH7r2hN0ZNYF3CofUkyGsynlIg79F4HwASVo
+	EIeYeTBFlNo0qUmUYpDbrjg9fHZhLIOWc2LeP3x4ut/SlblNGwq/g==
 Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4aqp8qeb4f-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4aqrja6v9d-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 05 Dec 2025 17:14:55 +0000 (GMT)
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 5B5H2tBS009862;
+	Fri, 5 Dec 2025 17:14:55 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4aqrja6v9a-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Fri, 05 Dec 2025 17:14:54 +0000 (GMT)
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 5B5HBdjp010497;
-	Fri, 5 Dec 2025 17:14:54 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4aqp8qeb48-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 05 Dec 2025 17:14:54 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5B5H4dmt024120;
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5B5FBcKa003864;
 	Fri, 5 Dec 2025 17:14:53 GMT
 Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4arb5sxh4f-1
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4ardck65pp-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Fri, 05 Dec 2025 17:14:53 +0000
 Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5B5HEnUh35586342
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5B5HEnTk61866418
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 5 Dec 2025 17:14:49 GMT
+	Fri, 5 Dec 2025 17:14:50 GMT
 Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 83DC220040;
+	by IMSVA (Postfix) with ESMTP id C9EB12004F;
 	Fri,  5 Dec 2025 17:14:49 +0000 (GMT)
 Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 42C5F2004E;
+	by IMSVA (Postfix) with ESMTP id 888FA2004B;
 	Fri,  5 Dec 2025 17:14:49 +0000 (GMT)
 Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.87.85.9])
 	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
@@ -96,9 +96,9 @@ Cc: Jens Remus <jremus@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>,
         Florian Weimer <fweimer@redhat.com>, Kees Cook <kees@kernel.org>,
         "Carlos O'Donell" <codonell@redhat.com>, Sam James <sam@gentoo.org>,
         Dylan Hatch <dylanbhatch@google.com>
-Subject: [RFC PATCH v2 03/15] x86/unwind_user: Guard unwind_user_word_size() by UNWIND_USER
-Date: Fri,  5 Dec 2025 18:14:34 +0100
-Message-ID: <20251205171446.2814872-4-jremus@linux.ibm.com>
+Subject: [RFC PATCH v2 04/15] s390: asm/dwarf.h should only be included in assembly files
+Date: Fri,  5 Dec 2025 18:14:35 +0100
+Message-ID: <20251205171446.2814872-5-jremus@linux.ibm.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251205171446.2814872-1-jremus@linux.ibm.com>
 References: <20251205171446.2814872-1-jremus@linux.ibm.com>
@@ -110,104 +110,64 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTI5MDAwMCBTYWx0ZWRfX+CoUFGjSlwXk
- joFnVdTeWshW9rXTEihZccWMSOKu6s2xdgqILlHjs2xHoWfcthKv20EWzi2Zs0p4xikoJrP/FOl
- rF5QeZvmJLVIns/se7KOu3OwyV4S2jstDj8NwhZurQo72Vq/QQdmLsCwZlFhEZjvSwksNCOItH6
- uXTg3oWFHns7HpF4iSyv5J6onmhtxVLmbMMFIhp9bdjwPzfizrXV0mZpQ8/fBwPpP4dNvNEjkh2
- ojRB7TzjgiA5MaL9WperSFtK4jHqNBEajWMIN8bxvyrm3UKi+wGV+bXdd4SSUSQMsy/jABe+4Dg
- VzqWQ7CyAdZKS4J4wrmYJTl6WvKLW0ARz9Mvc2Z3dGwrsEO1fdsW58ICUd47aFD9RgztnDgoMHs
- 8EGHKUusFtJCbq03r5ey1nX5D/Nppw==
-X-Authority-Analysis: v=2.4 cv=dIerWeZb c=1 sm=1 tr=0 ts=6933130e cx=c_pps
- a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
- a=wP3pNCr1ah4A:10 a=VkNPw1HP01LnGYTKEx00:22 a=VnNF1IyMAAAA:8
- a=eSOB7Jb69V3AKTYxoYUA:9
-X-Proofpoint-ORIG-GUID: MdVGY6p8Cx-v6qCVRq06Rfklfz750NMV
-X-Proofpoint-GUID: flsZe3_SW_hY4i2rhaHsPf0MRkxS-ute
+X-Proofpoint-GUID: zFe8HpvCA9VbDdwEXg3Af02nT6U1ypeY
+X-Proofpoint-ORIG-GUID: WQQqPZ2nyQxhim56UGojHHGGvWDhM7Ys
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTI5MDAyMCBTYWx0ZWRfX6U+c3bxo51oh
+ wd4gX+tK7MZlKkaW05TX/u5nn1PXxGtdEPOaStAkXNUGmxlNUGk1R0jgvdoSAPeSZUnf7r7xOh9
+ aWJM/H5ih0sVawYNolAsZT4NOwY3/AlQOOrymUKi1QvKjFewysL2o1ZDH/pn1nstJlnBfw9Xc0A
+ F8soKFH7FbHPRaqK/5f6wjXP9FkTrOLcBE+r/WUpxm+XKaMwVtNve4SXPGD4GZ4c2wTUnpCCejH
+ eNpL48NMt+R5dxYeaU+kXcYt06e0Hp9COv2Pdloys3tJ4EhhrnSTpsk7y9Wbrct9oLrk+czY7dq
+ 4/pnir5b9F9LNZ8BpN6pvhD/70EvJE/J/YDZ7a/tZzQhh4Gs9j6CZNidnERUAJzFmMLdZz8waA7
+ 0WPuvMYt5S5ZyJTspOMxs862Nv0sIQ==
+X-Authority-Analysis: v=2.4 cv=dYGNHHXe c=1 sm=1 tr=0 ts=6933130f cx=c_pps
+ a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
+ a=62EC5onNXgn9lpaB:21 a=wP3pNCr1ah4A:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=VnNF1IyMAAAA:8 a=AB0lExOjSfRHyy3z6bMA:9
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
  definitions=2025-12-05_06,2025-12-04_04,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501 lowpriorityscore=0 clxscore=1015 spamscore=0
- malwarescore=0 suspectscore=0 adultscore=0 bulkscore=0 impostorscore=0
- phishscore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ malwarescore=0 spamscore=0 suspectscore=0 clxscore=1015 adultscore=0
+ lowpriorityscore=0 bulkscore=0 phishscore=0 priorityscore=1501
+ impostorscore=0 classifier=typeunknown authscore=0 authtc= authcc=
  route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2510240000
- definitions=main-2511290000
+ definitions=main-2511290020
 
-The unwind user framework in general requires an architecture-specific
-implementation of unwind_user_word_size() to be present for any unwind
-method, whether that is fp or a future other method, such as potentially
-sframe.
-
-Guard unwind_user_word_size() by the availability of the UNWIND_USER
-framework instead of the specific HAVE_UNWIND_USER_FP method.
-
-This facilitates to selectively disable HAVE_UNWIND_USER_FP on x86
-(e.g. for test purposes) once a new unwind method is added to unwind
-user.
+Align to x86 and add a compile-time check that asm/dwarf.h is only
+included in pure assembly files.
 
 Signed-off-by: Jens Remus <jremus@linux.ibm.com>
 ---
 
 Notes (jremus):
-    Changes in v3:
-    - Move includes into more common UNWIND_USER guard at the top of the
-      source.  asm/ptrace.h is required for struct pt_regs.
+    Changes in RFC v2:
+    - Adjust to upstream change of __ASSEMBLY__ to __ASSEMBLER__.
 
- arch/x86/include/asm/unwind_user.h | 30 +++++++++++++++++-------------
- 1 file changed, 17 insertions(+), 13 deletions(-)
+ arch/s390/include/asm/dwarf.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/include/asm/unwind_user.h b/arch/x86/include/asm/unwind_user.h
-index a528eee80dd6..4d699e4954ed 100644
---- a/arch/x86/include/asm/unwind_user.h
-+++ b/arch/x86/include/asm/unwind_user.h
-@@ -2,11 +2,27 @@
- #ifndef _ASM_X86_UNWIND_USER_H
- #define _ASM_X86_UNWIND_USER_H
+diff --git a/arch/s390/include/asm/dwarf.h b/arch/s390/include/asm/dwarf.h
+index e3ad6798d0cd..df9f467910f7 100644
+--- a/arch/s390/include/asm/dwarf.h
++++ b/arch/s390/include/asm/dwarf.h
+@@ -2,7 +2,9 @@
+ #ifndef _ASM_S390_DWARF_H
+ #define _ASM_S390_DWARF_H
  
--#ifdef CONFIG_HAVE_UNWIND_USER_FP
-+#ifdef CONFIG_UNWIND_USER
- 
- #include <asm/ptrace.h>
- #include <asm/uprobes.h>
- 
-+static inline int unwind_user_word_size(struct pt_regs *regs)
-+{
-+	/* We can't unwind VM86 stacks */
-+	if (regs->flags & X86_VM_MASK)
-+		return 0;
-+#ifdef CONFIG_X86_64
-+	if (!user_64bit_mode(regs))
-+		return sizeof(int);
+-#ifdef __ASSEMBLER__
++#ifndef __ASSEMBLER__
++#warning "asm/dwarf.h should be only included in pure assembly files"
 +#endif
-+	return sizeof(long);
-+}
-+
-+#endif /* CONFIG_UNWIND_USER */
-+
-+#ifdef CONFIG_HAVE_UNWIND_USER_FP
-+
- #define ARCH_INIT_USER_FP_FRAME(ws)			\
- 	.cfa_off	=  2*(ws),			\
- 	.ra_off		= -1*(ws),			\
-@@ -21,18 +37,6 @@
- 	.use_fp		= false,			\
- 	.outermost	= false,
  
--static inline int unwind_user_word_size(struct pt_regs *regs)
--{
--	/* We can't unwind VM86 stacks */
--	if (regs->flags & X86_VM_MASK)
--		return 0;
--#ifdef CONFIG_X86_64
--	if (!user_64bit_mode(regs))
--		return sizeof(int);
--#endif
--	return sizeof(long);
--}
+ #define CFI_STARTPROC		.cfi_startproc
+ #define CFI_ENDPROC		.cfi_endproc
+@@ -33,6 +35,4 @@
+ 	.cfi_sections .eh_frame, .debug_frame
+ #endif
+ 
+-#endif	/* __ASSEMBLER__ */
 -
- static inline bool unwind_user_at_function_start(struct pt_regs *regs)
- {
- 	return is_uprobe_at_func_entry(regs);
+ #endif	/* _ASM_S390_DWARF_H */
 -- 
 2.51.0
 
