@@ -1,140 +1,236 @@
-Return-Path: <bpf+bounces-76166-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76165-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B1A3CA896D
-	for <lists+bpf@lfdr.de>; Fri, 05 Dec 2025 18:27:26 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C475CA8A11
+	for <lists+bpf@lfdr.de>; Fri, 05 Dec 2025 18:34:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id ED76B303DDED
-	for <lists+bpf@lfdr.de>; Fri,  5 Dec 2025 17:25:03 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 3F2A230DE077
+	for <lists+bpf@lfdr.de>; Fri,  5 Dec 2025 17:24:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75EC435B137;
-	Fri,  5 Dec 2025 17:24:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41CC335A95E;
+	Fri,  5 Dec 2025 17:24:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="YxkUMM1i"
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="o6+Ljyfr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fra-out-010.esa.eu-central-1.outbound.mail-perimeter.amazon.com (fra-out-010.esa.eu-central-1.outbound.mail-perimeter.amazon.com [63.178.143.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A248735A938
-	for <bpf@vger.kernel.org>; Fri,  5 Dec 2025 17:24:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04D4D359FB7;
+	Fri,  5 Dec 2025 17:24:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=63.178.143.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764955457; cv=none; b=V2TeCrkuiOwtkCGt/BpZOBwtdOJZeInlEZdeU7OfmS3+ybxLkgZvextT57Z8EYG9p7+kyRqqgVp0RfiQT/oubKR8/ZKNEMJGOMulWMa9ifIYny+4IrYgWL1Wru4xrjFT/nVLxIAgTqWZFumpVzuS/NDd+rldhN7hkt3v3Lntbyw=
+	t=1764955453; cv=none; b=oq9/50OPm9NrJ2+y/CoFotby/ofatnBEp+pRkZEjFt88MRCutY2kEjdO+VSJ2mAxFug+FFt9PJ0L+LIf6XmOeEFPWiZJ+dlJHCHW/m9HnyfWCEX4/qLLGP1uMeX5dXqPEu+iSSDjaRoD1cx7qXtRCRVePXaf++us6SfitTH8kZw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764955457; c=relaxed/simple;
-	bh=s0iVd2RsjlWS/9TR2zy9YAOZbmjboSgGnXQyMW8/G3w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rh/b5oHoksxzJmJz4bvxW4nJGjIKr2o1qIbCfk2XdgH/dsWEprEb66UhJYLG8M+9PMszC1diOWvvlelSThhszB+tNGPZ51GD+Uf3M3XgbBxuMy11zn72saiOMyuu9vlngRCImvHOoct4eKJT+7ze1P5PetOHg2Nx3ovSUoiR1sU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=YxkUMM1i; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-b7636c96b9aso312299466b.2
-        for <bpf@vger.kernel.org>; Fri, 05 Dec 2025 09:24:13 -0800 (PST)
+	s=arc-20240116; t=1764955453; c=relaxed/simple;
+	bh=VP09C2UJW+dtoiSy9nxfA21fJ8XvlYAq9HNrnEuDVWI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=h/vwksfmhUYIn6/4AU9uGrMyECoV7GuMG2A2acIk5eNuvMhy7Ddm4vNGYvWytxwdRS+GXbz52x8zo3ZHlhVK4TAK8U7fsPff9fs6aPknhmjaZP9NDy8IprsMToKiiS/P0sgtdFO2mdd1iFN1vbciPi5Cvh0Ab8HpboJPvq9tqQ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.uk; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=o6+Ljyfr; arc=none smtp.client-ip=63.178.143.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.uk
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1764955452; x=1765560252; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=8lYM8vTuWuligOXJDgRA/sVu98AQZ0ojWGiXce05Ou0=;
-        b=YxkUMM1iAnIqvBCYCXW2GR8I0tkgi0oeIswtbpN5YciOo697DW+coFTWobGpRviWci
-         URbqSEhddBEz/e5fI3R8DIsdISpmrbSC0PoawLROoSIfP1n+A+xGJk9v57xOGsMS91w5
-         IwlrrBSFkQuCe2aew3KohiUmbC1wcpx0aSEpo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764955452; x=1765560252;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8lYM8vTuWuligOXJDgRA/sVu98AQZ0ojWGiXce05Ou0=;
-        b=A1PwIXbQyo3f2/2qqt2vjWZWF4nutKkI1jpZnhuKGJgwrWMCUZaUnGumfVui7IhqMc
-         KaVYM5+pPAjc3e2N9gJKGAmfYhlTuD4PcudnKsBZ1zlXP55V7852mRKitGk/1TCuF2rD
-         1k+smPnLY6E8aokN7g8Fjg+4QP7xkdtttG93K4ukVcnwu4eqLRLCA4P71rI9rc5cHMY3
-         qo8WVE9sP6Jpsz+ig+VbIm2JvMOtsQFC85Y1koBIvR7INtBv6f0oClOkoihfl3fIhzrq
-         e9K1SeDC3cZn/5w1Yp8Q00/dZVqgWvatnL3uGMsm7pVbkSyGoOy06FQLseoQCGsOaSrX
-         ZqkQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUHMw2jeA8a1u3/9pd/Y1Rl8E2UWhtLUWATcnfGiZ/CB1X6vKA2cjwl42HC8z6KdFNJWoQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxNjhkyP8PCNKv3NZiknJf0NexGJcbraYFTcax84IRw+qCOr6lB
-	nEVDChfLKltyG4WUpa/f42BAzu7vjhx6nNnt/vxFXfMNqrAh8Y7hoRFYyMtvkqQNwh0uIGGDq/6
-	VKc801bI=
-X-Gm-Gg: ASbGncuqd42IPhQe/yIrFClUybpm6hCRKbyFv4tm9Q18+gKeM8BgUiLSimd7PIlVfc+
-	a1isHcAQ+aAq3Tz54BwXcOU6qIna0LdJDVmIE6fo+ZryUPy8WDyPzFVELyd/wdEhl7a/r0zM7i2
-	3yUv1Qz147MtpycfuNcW34nq0bwgGJG3pO6jlIUeZv+ggpXjaoOp6p4cGVjOv9n/v5rY7FIHa5t
-	AZ/hDf3o7dCvbdlUpV9mxnAzjVcCdb63OlOio5KMUxjRpqbJk9EeB78WMDWVMiAt1oXfWd/cNdd
-	QngqIvutu18dqAJimkP90Mm0TohkgvqS45qXAzY3d/W1UjBcyccXeehSBkjN8wtGPnyaNFw4QJz
-	U6RHPyMYKus3EPMa+l0ruZN7tA3eM3nTZvyGUEwZLPiV0CemKpS9GI5ENb1og4huh/xDDM/qUsI
-	HTscbtlbYO5O7SQwQss9RVrRDK7cLJZdo4WBfbce2Py+62oHWWh6Jlqb6/+5OY
-X-Google-Smtp-Source: AGHT+IF/N5MXHj7U5/gFXUrQ4IyVeHDPBTe6vJcvgkoboY9D+swtZ8i7n6Jm3JNTlyKYnS6lWXSD6Q==
-X-Received: by 2002:a17:907:96a9:b0:b73:a1e3:8de1 with SMTP id a640c23a62f3a-b79dbe8e28bmr1044499866b.15.1764955451540;
-        Fri, 05 Dec 2025 09:24:11 -0800 (PST)
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com. [209.85.208.41])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b79f4975c88sm403360666b.35.2025.12.05.09.24.10
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Dec 2025 09:24:10 -0800 (PST)
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-6418b55f86dso4162363a12.1
-        for <bpf@vger.kernel.org>; Fri, 05 Dec 2025 09:24:10 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCX98KN8sBEbLVtHsjdYo7MC+gG6rMtitvz/PNO1UrkG1Uvk9rEgQrnOvoka+72UmhCb290=@vger.kernel.org
-X-Received: by 2002:a05:6402:5244:b0:640:e943:fbbf with SMTP id
- 4fb4d7f45d1cf-6479c496412mr9886451a12.11.1764955450397; Fri, 05 Dec 2025
- 09:24:10 -0800 (PST)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1764955450; x=1796491450;
+  h=message-id:date:mime-version:reply-to:subject:to:cc:
+   references:from:in-reply-to:content-transfer-encoding;
+  bh=DnhB+PvK+wkKdNvTrP/dFYEJueius5f77QIgV9qQQYw=;
+  b=o6+Ljyfrd+cYtaN0p9IIZZDVyYu4U6bGn4202v3GWoVq9DTRhqKx1o2i
+   lVOr02lT9ZM2oQeuRnkm5n65t8MHslZaqn3PCn9ZUuW8Ce4pwMVcaYl/T
+   Ilhw8Abs7YFMunumELcxh+XUk0TtGGLloZAVRQgPAb49gebqSJTf502ho
+   IqKhm+2nmx2Xx80VqnLTxrOiU3oIEo0OIRSNqk2Hn2h8N7306NmKkCR8p
+   +sxXvn64qwu7pTcJt4JC0f3IzDKYRMlwqe/urkJbIHR5/trgKvERaWD2z
+   M2m4Nm19PRvO5iiYec66dHiKnyRFii6vqrgyeTiVaBfP9212tOl4mTGLY
+   w==;
+X-CSE-ConnectionGUID: ui1OxgzNTLeAgy/kgfWZcQ==
+X-CSE-MsgGUID: 0QAryot6QayZ+88faD+iVA==
+X-IronPort-AV: E=Sophos;i="6.20,252,1758585600"; 
+   d="scan'208";a="6200858"
+Received: from ip-10-6-6-97.eu-central-1.compute.internal (HELO smtpout.naws.eu-central-1.prod.farcaster.email.amazon.dev) ([10.6.6.97])
+  by internal-fra-out-010.esa.eu-central-1.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2025 17:24:07 +0000
+Received: from EX19MTAEUC001.ant.amazon.com [54.240.197.225:5625]
+ by smtpin.naws.eu-central-1.prod.farcaster.email.amazon.dev [10.0.44.106:2525] with esmtp (Farcaster)
+ id 59f2028b-9252-4cab-b235-d8859489381a; Fri, 5 Dec 2025 17:24:06 +0000 (UTC)
+X-Farcaster-Flow-ID: 59f2028b-9252-4cab-b235-d8859489381a
+Received: from EX19D005EUB003.ant.amazon.com (10.252.51.31) by
+ EX19MTAEUC001.ant.amazon.com (10.252.51.193) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.29;
+ Fri, 5 Dec 2025 17:24:06 +0000
+Received: from [192.168.14.68] (10.106.83.5) by EX19D005EUB003.ant.amazon.com
+ (10.252.51.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.29; Fri, 5 Dec 2025
+ 17:24:03 +0000
+Message-ID: <359e292c-4173-49c8-8088-257b4c301300@amazon.com>
+Date: Fri, 5 Dec 2025 17:24:02 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251205171446.2814872-1-jremus@linux.ibm.com> <20251205171446.2814872-4-jremus@linux.ibm.com>
-In-Reply-To: <20251205171446.2814872-4-jremus@linux.ibm.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Fri, 5 Dec 2025 09:23:54 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wh4_BPvniQZqvEQ4cCC3WfvQqruWk0b1Yek+0d5S1LuxQ@mail.gmail.com>
-X-Gm-Features: AQt7F2qyEU-sRiqYQ9Tvu5NNk8tmioQu9za2N5evR27IqNXhvz_m-7r0eTXQy38
-Message-ID: <CAHk-=wh4_BPvniQZqvEQ4cCC3WfvQqruWk0b1Yek+0d5S1LuxQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 03/15] x86/unwind_user: Guard unwind_user_word_size()
- by UNWIND_USER
-To: Jens Remus <jremus@linux.ibm.com>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linux-s390@vger.kernel.org, bpf@vger.kernel.org, x86@kernel.org, 
-	Steven Rostedt <rostedt@kernel.org>, Heiko Carstens <hca@linux.ibm.com>, 
-	Vasily Gorbik <gor@linux.ibm.com>, Ilya Leoshkevich <iii@linux.ibm.com>, 
-	Josh Poimboeuf <jpoimboe@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Andrii Nakryiko <andrii@kernel.org>, 
-	Indu Bhagat <indu.bhagat@oracle.com>, "Jose E. Marchesi" <jemarch@gnu.org>, 
-	Beau Belgrave <beaub@linux.microsoft.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Florian Weimer <fweimer@redhat.com>, Kees Cook <kees@kernel.org>, 
-	"Carlos O'Donell" <codonell@redhat.com>, Sam James <sam@gentoo.org>, 
-	Dylan Hatch <dylanbhatch@google.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Reply-To: <kalyazin@amazon.com>
+Subject: Re: [PATCH v7 12/12] KVM: selftests: Test guest execution from direct
+ map removed gmem
+To: Brendan Jackman <jackmanb@google.com>
+CC: "pbonzini@redhat.com" <pbonzini@redhat.com>, "corbet@lwn.net"
+	<corbet@lwn.net>, "maz@kernel.org" <maz@kernel.org>, "oliver.upton@linux.dev"
+	<oliver.upton@linux.dev>, "joey.gouly@arm.com" <joey.gouly@arm.com>,
+	"suzuki.poulose@arm.com" <suzuki.poulose@arm.com>, "yuzenghui@huawei.com"
+	<yuzenghui@huawei.com>, "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+	"will@kernel.org" <will@kernel.org>, "tglx@linutronix.de"
+	<tglx@linutronix.de>, "mingo@redhat.com" <mingo@redhat.com>, "bp@alien8.de"
+	<bp@alien8.de>, "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+	"x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+	"luto@kernel.org" <luto@kernel.org>, "peterz@infradead.org"
+	<peterz@infradead.org>, "willy@infradead.org" <willy@infradead.org>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"lorenzo.stoakes@oracle.com" <lorenzo.stoakes@oracle.com>,
+	"Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>, "vbabka@suse.cz"
+	<vbabka@suse.cz>, "rppt@kernel.org" <rppt@kernel.org>, "surenb@google.com"
+	<surenb@google.com>, "mhocko@suse.com" <mhocko@suse.com>, "song@kernel.org"
+	<song@kernel.org>, "jolsa@kernel.org" <jolsa@kernel.org>, "ast@kernel.org"
+	<ast@kernel.org>, "daniel@iogearbox.net" <daniel@iogearbox.net>,
+	"andrii@kernel.org" <andrii@kernel.org>, "martin.lau@linux.dev"
+	<martin.lau@linux.dev>, "eddyz87@gmail.com" <eddyz87@gmail.com>,
+	"yonghong.song@linux.dev" <yonghong.song@linux.dev>,
+	"john.fastabend@gmail.com" <john.fastabend@gmail.com>, "kpsingh@kernel.org"
+	<kpsingh@kernel.org>, "sdf@fomichev.me" <sdf@fomichev.me>,
+	"haoluo@google.com" <haoluo@google.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
+	"jhubbard@nvidia.com" <jhubbard@nvidia.com>, "peterx@redhat.com"
+	<peterx@redhat.com>, "jannh@google.com" <jannh@google.com>,
+	"pfalcato@suse.de" <pfalcato@suse.de>, "shuah@kernel.org" <shuah@kernel.org>,
+	"seanjc@google.com" <seanjc@google.com>, "kvm@vger.kernel.org"
+	<kvm@vger.kernel.org>, "linux-doc@vger.kernel.org"
+	<linux-doc@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "kvmarm@lists.linux.dev"
+	<kvmarm@lists.linux.dev>, "linux-fsdevel@vger.kernel.org"
+	<linux-fsdevel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>, "Cali,
+ Marco" <xmarcalx@amazon.co.uk>, "Kalyazin, Nikita" <kalyazin@amazon.co.uk>,
+	"Thomson, Jack" <jackabt@amazon.co.uk>, "derekmn@amazon.co.uk"
+	<derekmn@amazon.co.uk>, "tabba@google.com" <tabba@google.com>,
+	"ackerleytng@google.com" <ackerleytng@google.com>, "david@kernel.org"
+	<david@kernel.org>, "patrick.roy@linux.dev" <patrick.roy@linux.dev>
+References: <20250924151101.2225820-4-patrick.roy@campus.lmu.de>
+ <20250924152214.7292-1-roypat@amazon.co.uk>
+ <20250924152214.7292-9-roypat@amazon.co.uk>
+ <DDVTTQZBJXAK.1OC7BTWCVCP9U@google.com>
+Content-Language: en-US
+From: Nikita Kalyazin <kalyazin@amazon.com>
+Autocrypt: addr=kalyazin@amazon.com; keydata=
+ xjMEY+ZIvRYJKwYBBAHaRw8BAQdA9FwYskD/5BFmiiTgktstviS9svHeszG2JfIkUqjxf+/N
+ JU5pa2l0YSBLYWx5YXppbiA8a2FseWF6aW5AYW1hem9uLmNvbT7CjwQTFggANxYhBGhhGDEy
+ BjLQwD9FsK+SyiCpmmTzBQJnrNfABQkFps9DAhsDBAsJCAcFFQgJCgsFFgIDAQAACgkQr5LK
+ IKmaZPOpfgD/exazh4C2Z8fNEz54YLJ6tuFEgQrVQPX6nQ/PfQi2+dwBAMGTpZcj9Z9NvSe1
+ CmmKYnYjhzGxzjBs8itSUvWIcMsFzjgEY+ZIvRIKKwYBBAGXVQEFAQEHQCqd7/nb2tb36vZt
+ ubg1iBLCSDctMlKHsQTp7wCnEc4RAwEIB8J+BBgWCAAmFiEEaGEYMTIGMtDAP0Wwr5LKIKma
+ ZPMFAmes18AFCQWmz0MCGwwACgkQr5LKIKmaZPNTlQEA+q+rGFn7273rOAg+rxPty0M8lJbT
+ i2kGo8RmPPLu650A/1kWgz1AnenQUYzTAFnZrKSsXAw5WoHaDLBz9kiO5pAK
+In-Reply-To: <DDVTTQZBJXAK.1OC7BTWCVCP9U@google.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: EX19D004EUA004.ant.amazon.com (10.252.50.183) To
+ EX19D005EUB003.ant.amazon.com (10.252.51.31)
 
- Random nit...
 
-On Fri, 5 Dec 2025 at 09:15, Jens Remus <jremus@linux.ibm.com> wrote:
->
-> +static inline int unwind_user_word_size(struct pt_regs *regs)
-> +{
-> +       /* We can't unwind VM86 stacks */
-> +       if (regs->flags & X86_VM_MASK)
-> +               return 0;
-> +#ifdef CONFIG_X86_64
-> +       if (!user_64bit_mode(regs))
-> +               return sizeof(int);
-> +#endif
-> +       return sizeof(long);
-> +}
 
-I realize you just moved this around, but since I see it in the patch,
-the #ifdef annoys me.
+On 30/10/2025 17:18, Brendan Jackman wrote:
+> On Wed Sep 24, 2025 at 3:22 PM UTC, Patrick Roy wrote:
+>> Add a selftest that loads itself into guest_memfd (via
+>> GUEST_MEMFD_FLAG_MMAP) and triggers an MMIO exit when executed. This
+>> exercises x86 MMIO emulation code inside KVM for guest_memfd-backed
+>> memslots where the guest_memfd folios are direct map removed.
+>> Particularly, it validates that x86 MMIO emulation code (guest page
+>> table walks + instruction fetch) correctly accesses gmem through the VMA
+>> that's been reflected into the memslot's userspace_addr field (instead
+>> of trying to do direct map accesses).
+>>
+>> Signed-off-by: Patrick Roy <roypat@amazon.co.uk>
+>> ---
+>>   .../selftests/kvm/set_memory_region_test.c    | 50 +++++++++++++++++--
+>>   1 file changed, 46 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/tools/testing/selftests/kvm/set_memory_region_test.c b/tools/testing/selftests/kvm/set_memory_region_test.c
+>> index ce3ac0fd6dfb..cb3bc642d376 100644
+>> --- a/tools/testing/selftests/kvm/set_memory_region_test.c
+>> +++ b/tools/testing/selftests/kvm/set_memory_region_test.c
+>> @@ -603,6 +603,41 @@ static void test_mmio_during_vectoring(void)
+>>
+>>        kvm_vm_free(vm);
+>>   }
+>> +
+>> +static void guest_code_trigger_mmio(void)
+>> +{
+>> +     /*
+>> +      * Read some GPA that is not backed by a memslot. KVM consider this
+>> +      * as MMIO and tell userspace to emulate the read.
+>> +      */
+>> +     READ_ONCE(*((uint64_t *)MEM_REGION_GPA));
+>> +
+>> +     GUEST_DONE();
+>> +}
+>> +
+>> +static void test_guest_memfd_mmio(void)
+>> +{
+>> +     struct kvm_vm *vm;
+>> +     struct kvm_vcpu *vcpu;
+>> +     struct vm_shape shape = {
+>> +             .mode = VM_MODE_DEFAULT,
+>> +             .src_type = VM_MEM_SRC_GUEST_MEMFD_NO_DIRECT_MAP,
+>> +     };
+>> +     pthread_t vcpu_thread;
+>> +
+>> +     pr_info("Testing MMIO emulation for instructions in gmem\n");
+>> +
+>> +     vm = __vm_create_shape_with_one_vcpu(shape, &vcpu, 0, guest_code_trigger_mmio);
+> 
+> When I run this test on my minimal config in a nested VM I get:
+> 
+> [root@testvm:~]# /nix/store/xlxd60n7v1qfr6s5zxda410zrzdd0xc2-kselftests/bin/run_kselftest.sh -t kvm:set_memory_region_test
+> TAP version 13
+> 1..1
+> # timeout set to 120
+> # selftests: kvm: set_memory_region_test
+> # Random seed: 0x6b8b4567
+> # Testing KVM_RUN with zero added memory regions
+> # Testing MMIO during vectoring error handling
+> # Allowed number of memory slots: 32764
+> # Adding slots 0..32763, each memory region with 2048K size
+> # Testing MMIO emulation for instructions in gmem
+> # ==== Test Assertion Failure ====
+> #   lib/kvm_util.c:1118: region->mmap_start != MAP_FAILED
+> #   pid=614 tid=614 errno=19 - No such device
+> #      1        0x0000000000407b02: vm_mem_add at ??:?
+> #      2        0x000000000040a924: __vm_create at ??:?
+> #      3        0x000000000040ab16: __vm_create_shape_with_one_vcpu at ??:?
+> #      4        0x00000000004042cf: main at ??:?
+> #      5        0x00007faa6b08a47d: ?? ??:0
+> #      6        0x00007faa6b08a538: ?? ??:0
+> #      7        0x0000000000404384: _start at ??:?
+> #   mmap() failed, rc: -1 errno: 19 (No such device)
+> 
+> Here's the kconfig I'm using (basically defconfig+KVM):
+> 
+> https://gist.githubusercontent.com/bjackman/4ea941ef5072606769211f3b000c8ed7/raw/73808882ddae6ff2ae8a0be85ac977b2980f7292/kconfig.txt
+> 
+> Sorry I'm too ignorant about KVM to know what I'm missing here but I
+> guess it's a missing TEST_REQUIRE()?
 
-That user_64bit_mode() should work equally well on 32-bit, and this
-can be written as
+Hi Brendan,
 
-        return user_64bit_mode(regs) ? 8 : 4;
+I ran the set_memory_region_test on the v8 [1] with your config with 
+minor modifications (I had to enable XFS to be able to mount my rootfs 
+and THP as the test appeared to depend on it), and was not able to 
+reproduce the failure.  Please let me know whether the v8 still fails 
+for you if you have time to try it.
 
-which avoids the #ifdef, and makes a lot more sense ("sizeof(long)"
-together with "user_64bit_mode()"? It's literally testing 32 vs 64
-bitness, not "int vs long").
+[1] https://lore.kernel.org/kvm/20251205165743.9341-1-kalyazin@amazon.com
 
-              Linus
+Nikita
+
+> 
+
 
