@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-76147-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76145-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60504CA893D
-	for <lists+bpf@lfdr.de>; Fri, 05 Dec 2025 18:26:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CD037CA89A5
+	for <lists+bpf@lfdr.de>; Fri, 05 Dec 2025 18:29:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D96B1323FED6
-	for <lists+bpf@lfdr.de>; Fri,  5 Dec 2025 17:15:31 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 016013209E31
+	for <lists+bpf@lfdr.de>; Fri,  5 Dec 2025 17:14:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2D1834CFA0;
-	Fri,  5 Dec 2025 17:12:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A49E634C130;
+	Fri,  5 Dec 2025 17:12:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eP3cAG4e"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YfQwJsZZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9193B33B6DC
-	for <bpf@vger.kernel.org>; Fri,  5 Dec 2025 17:12:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F96733E368
+	for <bpf@vger.kernel.org>; Fri,  5 Dec 2025 17:12:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764954761; cv=none; b=cQ7k26Yggw4OZ6vHrI/4wZ9MDUefcShWBZN4mUo/BP+e4RwZCrdcRaWiGhjxURXJnOLmxd2ErKtD/geXqIFkNCCn85wlX8b4Sau7sSxRMOQQVdCJ1e4eFJw1CQu+BRoe3CE3h1Hspxe91pQVxtYfFpJ4dJtzEYq0a8bt2n9aDdM=
+	t=1764954760; cv=none; b=Ztfv62GlR2/qnlpW6ViL2VIjwXM+nC7hiG8vZiGievff+qVDWSjCpcdnyJIGq+hOfryFvvahKV2GJUAkGG5etT6I0+TV3OUmdUHZ97lUHjlESYVjZ4aW9vPPff5oBqZ+4M4iO0UubVr0dR96E0DrwukEsliclKvJZHfFZMujIk8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764954761; c=relaxed/simple;
-	bh=ThCJjVG5RVMfr+zdrGxXazrxZX2CekhpjLmMxCxTOIY=;
+	s=arc-20240116; t=1764954760; c=relaxed/simple;
+	bh=cB31pmWNA2px7ozTCQpqrnxwkRY3wOGmMDqxO5JNm/A=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Qu76o4Fkc6FZsN2jKA9xEOTUZt+lU7nI6bki7QLc5gtxtGgtN8FOP6MlDU5MCFkEhhY8vWBTflaNa8A/gW50/qvD1G6g9h4+KPEOEmTAtjERktHBZY3aBOjxJvJoie30PpCfbrt9tx4PHOptXZO0XQZrbn9gj1eaDLNC8xs8bBY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eP3cAG4e; arc=none smtp.client-ip=209.85.214.175
+	 MIME-Version:Content-Type; b=M3KjrhFoO+ENbOkXErKWEn8ibldro3RLULjTEeD0I7d5FViy8hcFT1F/P0AziqQbYO34tC/W3O0KHRxnP0LSI6QDISdrWgsNVQr/W/ndONEbYICupwxrcWupeAGhyWS6s08WvuGIpvmt4SDR/dY3yMJDA/U06ImHbt0KBtMYk8Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YfQwJsZZ; arc=none smtp.client-ip=209.85.210.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-297f35be2ffso35960075ad.2
-        for <bpf@vger.kernel.org>; Fri, 05 Dec 2025 09:12:31 -0800 (PST)
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-7ba92341f83so3086765b3a.0
+        for <bpf@vger.kernel.org>; Fri, 05 Dec 2025 09:12:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764954746; x=1765559546; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1764954748; x=1765559548; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8KthOHDXIygNvoKbYqyGnez1cqEGX3CMF/hwkpTkQzU=;
-        b=eP3cAG4ezK1TsESvpI45ZoOcnw7xSCR3V/ZH08uto4kj8uVfS6myIq6k4a+yWYITwV
-         MpKBhj2XDnKKPUUo0397EHk2lN/jaKzwXyo5QNb3A25HSpyS2vbHSA0Y7aJfDq0AEsEX
-         YkRGBmih/vz/fghrwW+OJ3JFRCyv8A7WKlArZg3G9hSxMeQaZwzXxssG0b5xf3swXBKg
-         wSpJ8m6KDusuVt3CN2T5MWwm8BJt95BPq1ra25XqrTHm7/2WfEubQaIBsz5V7hnKpOEz
-         b9vsgmI7uBjDM6e84Bd7JgZHixFTHceBd3F9sI+c4zq9yZnQxNe7pEwL//jt7sPzQIFN
-         ttdQ==
+        bh=svZn1kMXxy5/37Gn195RmY55SpZYbLuXKcgjq6f2gyc=;
+        b=YfQwJsZZt8EeG5RqAGBuA5u5gBhg1ugiIn9F3uGvTiQMKOFqclk1jo2vOeJAOZKkXI
+         /Zqq60gioILstAST97YWja/cjbCeuy1f59u+bGfbeek56t42pwW8rSMa4XaLJFiYI7qi
+         toLn2qqti9jPuSz/5asy0JN3IVomPfBRFgkDEshrrgurJ+cgIoQFZtW/bn3rGd8eCI/y
+         2i14X6a+bKdra7M5ZQJOaGO4YTawkah4oLdtf8gcR2fTrMjsg+VAz/P8A0u4NxYCWBeQ
+         UVvpsIjtJSGDE4a7FGsg3aXls3BNqZS015JmwB+k+WXmFDZcqHKNGDYad8BY3r6idv+z
+         Ud3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764954746; x=1765559546;
+        d=1e100.net; s=20230601; t=1764954748; x=1765559548;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8KthOHDXIygNvoKbYqyGnez1cqEGX3CMF/hwkpTkQzU=;
-        b=TpGiENOOApJDwjsZjk1N3vJvFPDry/z0jwc7kKRQTuA/HFTxAJm31alLzm25Oon8BC
-         IBsL07l06ZCFqGkemXX2C9dtaWZyL4Zdi8L6UIsev/TSaD5dzqo36iVJcIWj5+PJ3CIV
-         9Pvi/in2jIAXSiC/W+XYKc00jrksZquPibxPLfdkR0xY2DN+JBCRpCO3U4B52bxbn4Q4
-         bKrZZoITNvU9AI1N95E2YBCH0IGiv0O+peDkGm8Upw6HzE5t4Sx8h6zJxB8w+SrzoPXO
-         HUOg4MGtCaDyWwoB9FSrrWvWArkqBeCdYkAxsTJaygtAZ1esUUBXPIbvF8vw1Fh6+qg+
-         248Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXO2LOKIl89gPNMrnL7Iz86kwTJVd1ro94xtDJS98ENzmtitpw1CQsXCeokv+ADlXMfpl8=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw0kZJBvpzzj9Q+XOTBfUjEZEIwE1h9vbcwhmo5WPcY7ex6E8Px
-	j2j6z7PgJkuLLvtbqE08XnhvBZmqG4bUQNueEOtVS6P7ylU87mqGVSzc
-X-Gm-Gg: ASbGncskMPk754v9mcM0RuRwZ2HVLfmmktuDy8dZLspo2J/ZQNVDckbyrFqm7Ze6RCc
-	4aanA50oxpLF679ceK8vGamShfjPGjN+yQl84aRkjCE3MCbj0mhTGJcZcaF52CYcYAiE8HYDjsl
-	IIhl02QBggTArWcP5R/4oPUpmTupvx9JqTT04u+EYgwvjGVaO8vGPGn4RSlFU1noIc8bM19cIDg
-	ZNAbVvL/PA7aNcEioXMseZQaTeHp5iYyLYtoAlEQLsaSNVc7VufYxGyWaYM5iRTszDrK7NLnuHT
-	TMpnqoXPAPPdAgU4ysJkXY2truHmIsBMuJE1S7gr0GQlhdT8D0z9WzdHKZCL5rK+gBVLs8F9r+t
-	SUvCiEygb5i4JQEs+pt5B2hBG6xRN982aJZxi2fXoCzZ7rkX+fdHqCbhVjtf/tRi6V1FV0H+Axe
-	ygUjtuSKhJLOFlKTL0CCfUa78=
-X-Google-Smtp-Source: AGHT+IFGP5H8TS9l/ZWNTkIDFkoqd//BYSN576PH3VvQ3NUTIBZhXN9o4FjDBwMKRZAasheLBNdWLg==
-X-Received: by 2002:a05:7022:ebc9:b0:11a:2f10:fa46 with SMTP id a92af1059eb24-11df0b44724mr9060052c88.0.1764954746240;
-        Fri, 05 Dec 2025 09:12:26 -0800 (PST)
+        bh=svZn1kMXxy5/37Gn195RmY55SpZYbLuXKcgjq6f2gyc=;
+        b=wMQjDZhzWKoRhHRFJdhD5hw5VfQi4lnvTsi6XOSN74N0BxHlTVEnsbGuiFpXjSJyHi
+         8pJkzGfy/8O7sKVplzr9j6QgBqKRClNrbWeDbm6m0f0cvHq9+qnxrhNL0e4evzYB/W9s
+         no5I+kbpj/5wsjnkH9d+jktrE4ZRz2Lr269L0JkJy0gv0H97iXng5NkidsnG2E+kQIuC
+         pj2YVbMTs8XBYjrXVNOsEW5T5yxayPmWCcTZH1YWCjNA0pIDfeft7yyJsnzQijbzvM9R
+         KEBgBRFAKTxsVnhl2gDVfwn5doiFMKwZqsfDFsaj3JW4PK9k0sXlurL2bsoEJRVTTPp2
+         rTiw==
+X-Forwarded-Encrypted: i=1; AJvYcCWI3aOpoGUjgLq3Ak06oVia1jIesf1dWcpcz6Kc6zZyVpbb03a852LRgDUpK70iLRLoWEs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwG+Tt32QsbAkFhr/k2W1fsZ+EiFgdM5Q7IRs0Ue/wZvlJLxl7Z
+	heWVvIYJn78P1/XwtkcVETFPWKyt4SUVwp7+joofTcnbW44lGqlDaHZX
+X-Gm-Gg: ASbGncs1ar98ynN8IOQzy7ryKFZi2+IicEQHoMSSeGLGb1JsiHuz08k4naD/UKg7E/Y
+	1vTvDBjpBzPld0CWjC5lQPIZQfjUIyTRUFziREfeV6ClYOpzoiyzePxwxKiDpnqs2bu4uWbfLFJ
+	ekstCNqHsZETeUt8qIDmvByil+j6zwTo0iiV5FXjPJ1D639cONYqNIc4YyT/wR/xLbM0ZO1m6ol
+	ioBJ6CnrIf9TZMuN1tM8ABBcKPFHv6M76LsbJC83GAzVyzskDa43guy0azk/LC97pJLRgPztrh3
+	qt31uP51DjaeJytFH0Oxg7sbT/l/I3PlFvvQfSKrFOlp0Kk2mJVj4S03rNpdkoXplHoJ2wybf/2
+	IhMH6orHM3epHfAP29ux9GjFyrDA55bKdEXfsEvIXsg7qyeTMq/+WGaFmfRsWYKMMu9xFjolDmq
+	GO2Gy+niUZXiAJ9jmXihTl67s=
+X-Google-Smtp-Source: AGHT+IGHDjpBTcigzNC5fmT2HMSl2OIXJF4Ntvq8YICmSN0m9lTSarMT6qdvBRwyf5R5o7dnkTdLEQ==
+X-Received: by 2002:a05:7022:6988:b0:119:e56b:c758 with SMTP id a92af1059eb24-11df649fd93mr5077082c88.29.1764954747801;
+        Fri, 05 Dec 2025 09:12:27 -0800 (PST)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:da43:aeff:fecc:bfd5])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-11df7552defsm20339483c88.2.2025.12.05.09.12.25
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-11df7703bd7sm22124088c88.10.2025.12.05.09.12.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Dec 2025 09:12:25 -0800 (PST)
+        Fri, 05 Dec 2025 09:12:27 -0800 (PST)
 Sender: Guenter Roeck <groeck7@gmail.com>
 From: Guenter Roeck <linux@roeck-us.net>
 To: Shuah Khan <shuah@kernel.org>
@@ -87,10 +87,10 @@ Cc: Jakub Kicinski <kuba@kernel.org>,
 	netdev@vger.kernel.org,
 	bpf@vger.kernel.org,
 	Guenter Roeck <linux@roeck-us.net>,
-	Amir Goldstein <amir73il@gmail.com>
-Subject: [PATCH v2 12/13] selftests/fs/mount-notify-ns: Fix build warning
-Date: Fri,  5 Dec 2025 09:10:06 -0800
-Message-ID: <20251205171010.515236-13-linux@roeck-us.net>
+	David Wei <dw@davidwei.uk>
+Subject: [PATCH v2 13/13] selftests: net: tfo: Fix build warning
+Date: Fri,  5 Dec 2025 09:10:07 -0800
+Message-ID: <20251205171010.515236-14-linux@roeck-us.net>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20251205171010.515236-1-linux@roeck-us.net>
 References: <20251205171010.515236-1-linux@roeck-us.net>
@@ -105,38 +105,37 @@ Content-Transfer-Encoding: 8bit
 
 Fix
 
-mount-notify_test_ns.c: In function ‘fanotify_rmdir’:
-mount-notify_test_ns.c:494:17: warning:
-	ignoring return value of ‘chdir’ declared with attribute ‘warn_unused_result’
+tfo.c: In function ‘run_server’:
+tfo.c:84:9: warning: ignoring return value of ‘read’ declared with attribute ‘warn_unused_result’
 
-by checking the return value of chdir() and displaying an error message
-if it returns an error.
+by evaluating the return value from read() and displaying an error message
+if it reports an error.
 
-Fixes: 781091f3f5945 ("selftests/fs/mount-notify: add a test variant running inside userns")
-Cc: Amir Goldstein <amir73il@gmail.com>
+Fixes: c65b5bb2329e3 ("selftests: net: add passive TFO test binary")
+Cc: David Wei <dw@davidwei.uk>
 Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
 v2: Update subject and description to reflect that the patch fixes a build
     warning.
-    Use perror() to display an error message if chdir() returns an error.
+    Use perror() to display an error message if read() returns an error.
 
- .../selftests/filesystems/mount-notify/mount-notify_test_ns.c  | 3 ++-
+ tools/testing/selftests/net/tfo.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/filesystems/mount-notify/mount-notify_test_ns.c b/tools/testing/selftests/filesystems/mount-notify/mount-notify_test_ns.c
-index 9f57ca46e3af..90bec6faf64e 100644
---- a/tools/testing/selftests/filesystems/mount-notify/mount-notify_test_ns.c
-+++ b/tools/testing/selftests/filesystems/mount-notify/mount-notify_test_ns.c
-@@ -491,7 +491,8 @@ TEST_F(fanotify, rmdir)
- 	ASSERT_GE(ret, 0);
+diff --git a/tools/testing/selftests/net/tfo.c b/tools/testing/selftests/net/tfo.c
+index eb3cac5e583c..8d82140f0f76 100644
+--- a/tools/testing/selftests/net/tfo.c
++++ b/tools/testing/selftests/net/tfo.c
+@@ -81,7 +81,8 @@ static void run_server(void)
+ 	if (getsockopt(connfd, SOL_SOCKET, SO_INCOMING_NAPI_ID, &opt, &len) < 0)
+ 		error(1, errno, "getsockopt(SO_INCOMING_NAPI_ID)");
  
- 	if (ret == 0) {
--		chdir("/");
-+		if (chdir("/"))
-+			perror("chdir()");
- 		unshare(CLONE_NEWNS);
- 		mount("", "/", NULL, MS_REC|MS_PRIVATE, NULL);
- 		umount2("/a", MNT_DETACH);
+-	read(connfd, buf, 64);
++	if (read(connfd, buf, 64) < 0)
++		perror("read()");
+ 	fprintf(outfile, "%d\n", opt);
+ 
+ 	fclose(outfile);
 -- 
 2.45.2
 
