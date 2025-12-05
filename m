@@ -1,141 +1,180 @@
-Return-Path: <bpf+bounces-76169-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76171-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84206CA8A6B
-	for <lists+bpf@lfdr.de>; Fri, 05 Dec 2025 18:41:55 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBCEBCA8AB0
+	for <lists+bpf@lfdr.de>; Fri, 05 Dec 2025 18:48:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B703E305CAB5
-	for <lists+bpf@lfdr.de>; Fri,  5 Dec 2025 17:38:49 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id A9DCE301870E
+	for <lists+bpf@lfdr.de>; Fri,  5 Dec 2025 17:48:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCF3C348867;
-	Fri,  5 Dec 2025 17:31:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2B0734846D;
+	Fri,  5 Dec 2025 17:40:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ngrO7crZ"
+	dkim=pass (2048-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b="TWpwCyzg";
+	dkim=permerror (0-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b="xZsXrtD5"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from devnull.danielhodges.dev (vps-2f6e086e.vps.ovh.us [135.148.138.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ED5134FF61
-	for <bpf@vger.kernel.org>; Fri,  5 Dec 2025 17:31:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EE9433F368;
+	Fri,  5 Dec 2025 17:40:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=135.148.138.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764955909; cv=none; b=VWyiMm5OcAv/ihV3PpgZhUxbJSQUDb8ywflRAUcYwDBj+TARxkxcd73L/+oeg57+QMIJucAIp9ZKl+ARH3yj0sj2zql6CC55O817+3yaFW+8pbANZ3MLyW4CbyMCZrhUg5MKtsod6qlGOKOV68nEa1mIGfDuJvHeamC9l4b/ias=
+	t=1764956411; cv=none; b=kFaaVbwh4RXMI5B32bc6buz0KF0gposs1yf/3J2iNpuWQhARS1IVz4ylAuF2ZpG2ofA0WGl1eBSmop7CHQgzrJPF00TRYVyJ2+GIS+hQ5LdvLPhUqcGB5Jypn0VDmrT6ejFLsJYFY+506ImbN890Ih/o4TvvewOcIRrLPFVkoMA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764955909; c=relaxed/simple;
-	bh=e9CoZSp8ppByynofzj4R8fDqOU91q19IDQEVdfN/Rho=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pHnp/LYYS+qRuYLZ/AWDeTRHtfm5kBz2Fzs6AteJN3ZcpudC+BDNkCVbY3B3l/GzRVGp8R0qhpefUVc0CA/vK1b9ZJJQL7bCvED2ieLXJcGfus84FE6I/TJ0KgRzsMqP8L5+XskZ32bgz8gEFyTsd6bfvkekOAuepE8CnfMVmEg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ngrO7crZ; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-b713c7096f9so362053566b.3
-        for <bpf@vger.kernel.org>; Fri, 05 Dec 2025 09:31:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764955906; x=1765560706; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0JRTQ5qP3nDJv7XXYMbTJlNjt9BNu8NHYBKExw2nneY=;
-        b=ngrO7crZoD//Q5eTsIcdJCLVOLciaLwGj+bzv5klL4CI8XH0sej9ITJuvPcZUZhv+j
-         NBIy8dvcqR2prZPLFc8PJcijbHRf0bfxf8h0KWA8t1H54X7GaS6nmQ7QV8u5WhR2hEJD
-         2hhRNd9MhO3VzqdQ45FSr3WzQUytEkpyd4KkjtCrykl3p6j9v43xxxv8Mq3m85ACadwM
-         v9+xBkOeAPF/6rANBJuhlh3NeyxBO+bmXytpvSoJ7xeqCx5vTU6lKjTu5mHrxqKjOwXz
-         3sjAdZ2AvPwam/Lqu01cMsMQsXe3C8rDOKShN0mnbbeUqd7BJRlwXEtSmw/+HirAApVx
-         wDbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764955906; x=1765560706;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=0JRTQ5qP3nDJv7XXYMbTJlNjt9BNu8NHYBKExw2nneY=;
-        b=vTU2tngGO2vZfIOsR51JONJvN9pplnHQXUoPYw8tG/7mtwlWZrXR/2HVodG3rL53hS
-         KeglFjRJStbHW4/vxYAz2sGalt3D7F4MSSV50ibU/8UKdOqcJ//aUGCAtmcom513XO+q
-         tgGxw+cK0T3wjKCLR6wYfKTEEqLMVo3auoZE9f141+UWqWa4wv8UrTUNcSFAD9ZYkThQ
-         /M+Pni+Y3b1onRfk9/NaUEpn4IxH1A+QnZV4rCoVusDKprF33LSf6rO2iOZCzncywk+/
-         tLLYl3vuMmQzhUinE5a1f5EwQai3aFxo1MG31AF95Ir9kqCJaJkbmBL1AKrXrVIKJioB
-         f+8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCV6NdEXNNz5eWJ7Z6RkjeZL3i4xkdvhc2wjatn/LO/5HAk8SfqgPClUSYHHoo0w8SrGa7I=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxijI6xPkrzhr6b7Fa84pKsN7ZdNZX8iTs35sjZjVcKKcV/Zcry
-	RtBuLjWiUugMRz0ylRTVioduRO9dU3AzktJxW9bcwoCoGL6Unjme+VBl2deVWvncvYkWKifugVB
-	a+9Vuw1kjH/uGq+6b41mNnDcYJS7UFiw=
-X-Gm-Gg: ASbGncsAVIUjGZVUb2ZIdnhS2LN2cK9zRV5qerRutFrH6uXPo7n587gry9NXElKg2ZR
-	URE2l6e+Ui0opoE5nBh7wbhBV7LkM7xPy5EHb0Wwv8Fm8WVuSCHsCOGXB5UZuccDYH0P1d1eufH
-	VuTzJ9ZmCHJ8+bBTgnpuwsNR70MBH9FxI856YMFZ+8RU5Lhmq9eYtaM6umEY9BBaNCiirLJPREt
-	RRpUBhF5UI9ptyULPDGKz4wYryJFuWbMlADr8BxKE7b5XDBCHYf4UeX9xzqjhsgRCtT5Lo6Cs7p
-	OqKPcGUIb0ULwlIwPnIdGuYkKOCNxg==
-X-Google-Smtp-Source: AGHT+IFRCgHfKGsAkZVPOlUmrl9vw+MR8hBEZgtV7PRhOjUmwdoMWwyUcdUQ+ugYeG8JzPcdndAeoqqxibr+uphApf4=
-X-Received: by 2002:a17:906:dc95:b0:b6d:73f8:3168 with SMTP id
- a640c23a62f3a-b79dbe71c0amr1072539666b.3.1764955905366; Fri, 05 Dec 2025
- 09:31:45 -0800 (PST)
+	s=arc-20240116; t=1764956411; c=relaxed/simple;
+	bh=8uchhBNj6BK/KhFDe8mYfRWRhb+wBNysW5VCuQdG9fU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JBV4GlA1FURRkFX1ae+IGdwKzXREZ872MTJhsxJ947yEBTCELio7ZltEew7hl9W3eRpG5KXFPGQD0ZEroUfl9DL2GN8moVI4Cif0p/XCD+K80lOVxB62sfFkb82DQPiZ4VchuGm3hmGrWfMBqIrp332mIBRu0yDqAPMYlkierfQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=danielhodges.dev; spf=pass smtp.mailfrom=danielhodges.dev; dkim=pass (2048-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b=TWpwCyzg; dkim=permerror (0-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b=xZsXrtD5; arc=none smtp.client-ip=135.148.138.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=danielhodges.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=danielhodges.dev
+DKIM-Signature: v=1; a=rsa-sha256; s=202510r; d=danielhodges.dev; c=relaxed/relaxed;
+	h=Message-ID:Date:Subject:To:From; t=1764956364; bh=weK/aS7u/TYhdycr7iNp9dK
+	H2X/8olqegVmxJ3UYEh0=; b=TWpwCyzgmjzOhKNoTqftKQSRtAWxOw2iAR7GO71aL42dHSqyR0
+	Huxwib6OcovyRPSYHYR9WP6pcqWhb8AWcjL+Iiq/ev6BOfNEUfsxckNtKXGeIOUDVmv33c4S0Fn
+	VTVH7FFi2H6VA1Wa/tykMp4RpOeqUzJLzFXZ+UBjUTp8jRcllkgrKR+Tfv6uvl7xfTjyXS6oLvq
+	TL5JcIKed5YgQ3CRd1G7oTuhbAsI0EZTILCF8RfQcca6B+HnI9stTDTldxYWqxvpR7S8zb0qWvZ
+	ZC64K2tebcKA9EqVy7FlFyOoksdgYQpimrM4F/ybF0CACQaGwheXDPh8fjEw9MyKNYA==;
+DKIM-Signature: v=1; a=ed25519-sha256; s=202510e; d=danielhodges.dev; c=relaxed/relaxed;
+	h=Message-ID:Date:Subject:To:From; t=1764956364; bh=weK/aS7u/TYhdycr7iNp9dK
+	H2X/8olqegVmxJ3UYEh0=; b=xZsXrtD5JaadNjtoFKD56YlPIzrXmOpT/KAwG1yJQJzQtg3ozW
+	TktA6hmcde2fI9Sb9MB8D+ZVRxpuZz9OqVBQ==;
+From: Daniel Hodges <git@danielhodges.dev>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	vadim.fedorenko@linux.dev
+Cc: martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	herbert@gondor.apana.org.au,
+	davem@davemloft.net,
+	shuah@kernel.org,
+	bpf@vger.kernel.org,
+	linux-crypto@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Daniel Hodges <git@danielhodges.dev>
+Subject: [PATCH bpf-next v2 0/5] Add cryptographic hash and signature verification kfuncs to BPF
+Date: Fri,  5 Dec 2025 12:39:18 -0500
+Message-ID: <20251205173923.31740-1-git@danielhodges.dev>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251205171010.515236-1-linux@roeck-us.net> <20251205171010.515236-13-linux@roeck-us.net>
-In-Reply-To: <20251205171010.515236-13-linux@roeck-us.net>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Fri, 5 Dec 2025 18:31:33 +0100
-X-Gm-Features: AWmQ_blDI-utBDx2W6qm1w5i1hudk3paNzpT1OYcZ7gDhfKrn0IT4xpTqmkqetY
-Message-ID: <CAOQ4uxiqK6Hj2ggtcD-c7BAtuBcm+LrKVkQOxi93OXhwSE98Dw@mail.gmail.com>
-Subject: Re: [PATCH v2 12/13] selftests/fs/mount-notify-ns: Fix build warning
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Shuah Khan <shuah@kernel.org>, Jakub Kicinski <kuba@kernel.org>, 
-	Christian Brauner <brauner@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Eric Dumazet <edumazet@google.com>, Kees Cook <kees@kernel.org>, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, wine-devel@winehq.org, 
-	netdev@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Dec 5, 2025 at 6:12=E2=80=AFPM Guenter Roeck <linux@roeck-us.net> w=
-rote:
->
-> Fix
->
-> mount-notify_test_ns.c: In function =E2=80=98fanotify_rmdir=E2=80=99:
-> mount-notify_test_ns.c:494:17: warning:
->         ignoring return value of =E2=80=98chdir=E2=80=99 declared with at=
-tribute =E2=80=98warn_unused_result=E2=80=99
->
-> by checking the return value of chdir() and displaying an error message
-> if it returns an error.
->
-> Fixes: 781091f3f5945 ("selftests/fs/mount-notify: add a test variant runn=
-ing inside userns")
-> Cc: Amir Goldstein <amir73il@gmail.com>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> ---
-> v2: Update subject and description to reflect that the patch fixes a buil=
-d
->     warning.
->     Use perror() to display an error message if chdir() returns an error.
->
->  .../selftests/filesystems/mount-notify/mount-notify_test_ns.c  | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/filesystems/mount-notify/mount-notif=
-y_test_ns.c b/tools/testing/selftests/filesystems/mount-notify/mount-notify=
-_test_ns.c
-> index 9f57ca46e3af..90bec6faf64e 100644
-> --- a/tools/testing/selftests/filesystems/mount-notify/mount-notify_test_=
-ns.c
-> +++ b/tools/testing/selftests/filesystems/mount-notify/mount-notify_test_=
-ns.c
-> @@ -491,7 +491,8 @@ TEST_F(fanotify, rmdir)
->         ASSERT_GE(ret, 0);
->
->         if (ret =3D=3D 0) {
-> -               chdir("/");
-> +               if (chdir("/"))
-> +                       perror("chdir()");
+This series extends BPF's cryptographic capabilities by adding kfuncs for
+SHA hashing and ECDSA signature verification. These functions enable BPF
+programs to perform cryptographic operations for use cases such as content
+verification, integrity checking, and data authentication.
 
-ASSERT_EQ(0, chdir("/"));
+BPF programs increasingly need to verify data integrity and authenticity in
+networking, security, and observability contexts. While BPF already supports
+symmetric encryption/decryption, it lacks support for:
 
-and there is another one like this in mount-notify_test.c
+1. Cryptographic hashing - needed for content verification, fingerprinting,
+   and preparing message digests for signature operations
+2. Asymmetric signature verification - needed to verify signed data without
+   requiring the signing key in the datapath
 
-Thanks,
-Amir.
+These capabilities enable use cases such as:
+- Verifying signed network packets or application data in XDP/TC programs
+- Implementing integrity checks in tracing and security monitoring
+- Building zero-trust security models where BPF programs verify credentials
+- Content-addressed storage and deduplication in BPF-based filesystems
+
+Implementation:
+
+The implementation follows BPF's existing crypto patterns:
+1. Uses bpf_dynptr for safe memory access without page fault risks
+2. Leverages the kernel's existing crypto library (lib/crypto/sha256.c and
+   crypto/ecdsa.c) rather than reimplementing algorithms
+3. Provides context-based API for ECDSA to enable key reuse and support
+   multiple program types (syscall, XDP, TC)
+4. Includes comprehensive selftests with NIST test vectors
+
+Patch 1: crypto: Add BPF hash algorithm type registration module
+  - Adds bpf_crypto_shash module in crypto/ subsystem
+  - Registers hash type with BPF crypto infrastructure
+  - Enables hash algorithm access through unified bpf_crypto_type interface
+  - Implements callbacks: alloc_tfm, free_tfm, hash, digestsize, get_flags
+  - Manages shash_desc lifecycle internally
+
+Patch 2: bpf: Add SHA hash kfunc for cryptographic hashing
+  - Adds bpf_crypto_hash() kfunc for SHA-256/384/512
+  - Extends bpf_crypto_type structure with hash operations
+  - Updates bpf_crypto_ctx_create() to support keyless operations
+  - Protected by CONFIG_CRYPTO_HASH2 guards
+  - Uses kernel's crypto library implementations
+
+Patch 3: selftests/bpf: Add tests for bpf_crypto_hash kfunc
+  - Tests basic functionality with NIST "abc" test vectors
+  - Validates error handling for invalid parameters (zero-length input)
+  - Ensures correct hash output for SHA-256, SHA-384, and SHA-512
+  - Adds CONFIG_CRYPTO_HASH2 and CONFIG_CRYPTO_SHA512 to selftest config
+
+Patch 4: bpf: Add ECDSA signature verification kfuncs
+  - Context-based API: bpf_ecdsa_ctx_create/acquire/release pattern
+  - Supports NIST curves (P-256, P-384, P-521)
+  - Adds bpf_ecdsa_verify() for signature verification
+  - Includes size query functions: keysize, digestsize, maxsize
+  - Enables use in non-sleepable contexts via pre-allocated contexts
+  - Uses crypto_sig API with p1363 format (r || s signatures)
+
+Patch 5: selftests/bpf: Add tests for ECDSA signature verification
+  - Tests valid signature acceptance with RFC 6979 test vectors for P-256
+  - Tests invalid signature rejection
+  - Tests size query functions (keysize, digestsize, maxsize)
+  - Uses well-known NIST test vectors with "sample" message
+
+v2:
+
+- Fixed redundant __bpf_dynptr_is_rdonly() checks (Vadim)
+- Added BPF hash algorithm type registration module in crypto/ subsystem
+- Added CONFIG_CRYPTO_HASH2 guards around bpf_crypto_hash() kfunc and its
+  BTF registration, matching the pattern used for CONFIG_CRYPTO_ECDSA
+- Added mandatory digestsize validation for hash operations
+
+Test Results
+============
+
+All tests pass on x86_64 for both crypto_hash and ecdsa_verify test suites.
+
+Daniel Hodges (5):
+  crypto: Add BPF hash algorithm type registration module
+  bpf: Add SHA hash kfunc for cryptographic hashing
+  selftests/bpf: Add tests for bpf_crypto_hash kfunc
+  bpf: Add ECDSA signature verification kfuncs
+  selftests/bpf: Add tests for ECDSA signature verification kfuncs
+
+ crypto/Makefile                               |   3 +
+ crypto/bpf_crypto_shash.c                     |  94 ++++++
+ include/linux/bpf_crypto.h                    |   2 +
+ kernel/bpf/crypto.c                                | 306 ++++++++++++++++++++-
+ tools/testing/selftests/bpf/config                 |   2 +
+ .../testing/selftests/bpf/prog_tests/crypto_hash.c | 158 +++++++++++
+ .../selftests/bpf/prog_tests/ecdsa_verify.c        |  74 +++++
+ tools/testing/selftests/bpf/progs/crypto_hash.c    | 141 ++++++++++
+ tools/testing/selftests/bpf/progs/ecdsa_verify.c   | 159 +++++++++++
+ 9 files changed, 931 insertions(+), 8 deletions(-)
+ create mode 100644 crypto/bpf_crypto_shash.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/crypto_hash.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/ecdsa_verify.c
+ create mode 100644 tools/testing/selftests/bpf/progs/crypto_hash.c
+ create mode 100644 tools/testing/selftests/bpf/progs/ecdsa_verify.c
+
+-- 
+2.51.0
+
 
