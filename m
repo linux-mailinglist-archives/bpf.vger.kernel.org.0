@@ -1,213 +1,122 @@
-Return-Path: <bpf+bounces-76095-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76096-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BC94CA5B74
-	for <lists+bpf@lfdr.de>; Fri, 05 Dec 2025 00:52:39 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7745ACA5D09
+	for <lists+bpf@lfdr.de>; Fri, 05 Dec 2025 02:18:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 199AC31209AD
-	for <lists+bpf@lfdr.de>; Thu,  4 Dec 2025 23:52:31 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id E57AC303079C
+	for <lists+bpf@lfdr.de>; Fri,  5 Dec 2025 01:18:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC9DE2DC77D;
-	Thu,  4 Dec 2025 23:52:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75437126C02;
+	Fri,  5 Dec 2025 01:18:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bJosdkqV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R8B4iJch"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49C3B158535;
-	Thu,  4 Dec 2025 23:52:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB3DB398FBA
+	for <bpf@vger.kernel.org>; Fri,  5 Dec 2025 01:18:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764892348; cv=none; b=UsRkrurSJ6RFZv7nHPpb4Z1+6XZ3RQuBWkQWZA0JbiR26dt+FlMiDsk9oRi8DStN03nA5eklGMgE1B7ul5Q2El/IMjqEi0w2QA6LS4NTPpoxI274GBH5K11n7202Kse2h07d7svdv/dj4GWoOgFpqZJUEKPmvvciGi6cwc1e+T8=
+	t=1764897512; cv=none; b=XkY54XhrD3zPe4nYQxtx1aqDT+nSCCNrT5nQMhJCtcOsa8/z7uqL0f/lPmLD3xpgNYm/Rvpd3Df8wXdK+7iGMhz7nru1b9pDzX+RBn/JNg1cDRy1daV2zUmzujpVi/cbuZPtagVn/AZWNhhU6mH4yHDVFLYUh45LsUR4u9sfTLg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764892348; c=relaxed/simple;
-	bh=1D+F7dPoHEcSFSabTbVyWSbchGothNwsY8rGrFi0P3Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LxI9K7LtH+0bchKf6pyWud0FuoOj7KRamLR62dMQngXxNH8NPsgAOmT9U6figTVaPVRyL+83Zm+BLBcsY2kxKbLyQ3VXNEKoQ5xTi7/schMufnxL3I28MN3kwhmZAZSlc5e6dUW0s1tleIMjXuQo+Ljltb+J/Dsg9xW+0sHv/iE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bJosdkqV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B1E5C4CEFB;
-	Thu,  4 Dec 2025 23:52:26 +0000 (UTC)
+	s=arc-20240116; t=1764897512; c=relaxed/simple;
+	bh=gvSG0jtaY7/heFm/Gslk7vydXL6gPfvO6FWJa0v/rGs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BN7cSCK02Q/2fFf6PEZRmuuc8rHS1+hT8mr9W5Xe2QAg1hzN7pSAQMT+80iT3EWE1HSFLpdcqchqjqHTwPIEoLuPFARnBtJWXtsjyKtf7XaFFY5Lmhlmp97fXyUEA+JjyVaRoexnk5/Kj1EHmyXHeGncLdMXdf71bTvgomKEweo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R8B4iJch; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B91FEC4CEFB;
+	Fri,  5 Dec 2025 01:18:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764892347;
-	bh=1D+F7dPoHEcSFSabTbVyWSbchGothNwsY8rGrFi0P3Y=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bJosdkqVjnHffBHKojHQx2pF3WGdPAvFV3sjzjIdhAjx09CO745DvXhGsz+tMqdf8
-	 d6kwcxPmFcpMOxRH8K66YSH8KTtDApj3yRSX056iniIobRrl0gWzuIP2gZ993VR3b9
-	 ikFO2KcyAEuHRSK9whrA1b1XRZ1e2YSYe2tpypak//YDOs7HOLvrW5udT/4O1pG6Q+
-	 kzKxe33lfXaP8nCTqNM+ZH2Tb/JqfW8N4EOewZ3Q34Qk6O+VmVzFPaseBkUyPNw33B
-	 EhJD+3OMnMgdWG20vyJPkabOrDenOYbcDFWAe9unsr+YnQ1IRVh+IvBcWMOC3EJaD3
-	 tquWotKUFb/5A==
-Date: Thu, 4 Dec 2025 15:52:24 -0800
-From: Namhyung Kim <namhyung@kernel.org>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Ian Rogers <irogers@google.com>, Quentin Monnet <qmo@kernel.org>,
-	bpf@vger.kernel.org, James Clark <james.clark@linaro.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH 1/2] tools/build: Add a feature test for libopenssl
-Message-ID: <aTIeuLOcc6c7RWUz@google.com>
-References: <20251203232924.1119206-1-namhyung@kernel.org>
- <CAP-5=fU=G75jpsG-X6pa8_rdKapxVc615CqvcdSPBFesj02D6A@mail.gmail.com>
- <aTGz9kFQk2xNvsbC@x1>
+	s=k20201202; t=1764897511;
+	bh=gvSG0jtaY7/heFm/Gslk7vydXL6gPfvO6FWJa0v/rGs=;
+	h=From:To:Cc:Subject:Date:From;
+	b=R8B4iJchtdM9LB9bMtZ0wI0yjT3z8kLfdE/xEXXtJgqNKF8t9GiOfKWQpYLjN3TTy
+	 RTfmKdYaUTWB5Gi6okRasqiRrMo4r1LN5O+lmaqR00y5gvHK/6KTMlbnaAsrgYIcRH
+	 7/gLLN6kaH+Je0FdfCJ6tuyIusAdUo1a0C/FMP7ftome/06bzEyvTt/xZPbEhmKnFH
+	 wSu7FlpjWt8TXakDfI1UZ2ILaVLozhahWzyUCTq2j3JUpZT6LGj5Gu9i5B/GKhrOnO
+	 vS8Eq823AtpUxbQzPCwwmtbrTApcT3/b3jr+rVhhgRkmY+JbtAjsW5eRP6to1J8uZ6
+	 jFJouSTSJMSQg==
+From: Jakub Kicinski <kuba@kernel.org>
+To: bpf@vger.kernel.org
+Cc: Jakub Kicinski <kuba@kernel.org>,
+	qmo@kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org
+Subject: [PATCH bpf] tools: bpftool: fix truncated netlink dumps
+Date: Thu,  4 Dec 2025 17:18:23 -0800
+Message-ID: <20251205011823.751868-1-kuba@kernel.org>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <aTGz9kFQk2xNvsbC@x1>
 
-On Thu, Dec 04, 2025 at 01:16:54PM -0300, Arnaldo Carvalho de Melo wrote:
-> On Wed, Dec 03, 2025 at 04:34:56PM -0800, Ian Rogers wrote:
-> > On Wed, Dec 3, 2025 at 3:29 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> > >
-> > > It's used by bpftool and the kernel build.  Let's add a feature test so
-> > > that perf can decide what to do based on the availability.
-> > 
-> > It seems strange to add a feature test that bpftool is missing and
-> > then use it only in the perf build. The signing of bpf programs isn't
-> 
-> It is strange indeed, I agree that since we don't use BPF signing at
-> this point in the perf BPf skels, then we could just bootstrap a bpftool
-> without such feature and continue building the existing features.
-> 
-> Adding the bpftool maintainer to the CC list, Quentin?
+Netlink requires that the recv buffer used during dumps is at least
+min(PAGE_SIZE, 8k) (see the man page). Otherwise the messages will
+get truncated. Make sure bpftool follows this requirement, avoid
+missing information on systems with large pages.
 
-I've already talked to Quentin and they want libopenssl as a
-requirement.
+Fixes: 7084566a236f ("tools/bpftool: Remove libbpf_internal.h usage in bpftool")
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+---
+CC: qmo@kernel.org
+CC: ast@kernel.org
+CC: daniel@iogearbox.net
+CC: andrii@kernel.org
+CC: martin.lau@linux.dev
+CC: eddyz87@gmail.com
+CC: song@kernel.org
+CC: yonghong.song@linux.dev
+CC: john.fastabend@gmail.com
+CC: kpsingh@kernel.org
+CC: sdf@fomichev.me
+CC: haoluo@google.com
+CC: jolsa@kernel.org
+CC: bpf@vger.kernel.org
+---
+ tools/bpf/bpftool/net.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-https://lore.kernel.org/linux-perf-users/e44f70bf-8f50-4a4b-97b8-eaf988aabced@kernel.org/
+diff --git a/tools/bpf/bpftool/net.c b/tools/bpf/bpftool/net.c
+index cfc6f944f7c3..7f248fc01332 100644
+--- a/tools/bpf/bpftool/net.c
++++ b/tools/bpf/bpftool/net.c
+@@ -156,7 +156,7 @@ static int netlink_recv(int sock, __u32 nl_pid, __u32 seq,
+ 	bool multipart = true;
+ 	struct nlmsgerr *err;
+ 	struct nlmsghdr *nh;
+-	char buf[4096];
++	char buf[8192];
+ 	int len, ret;
+ 
+ 	while (multipart) {
+@@ -201,6 +201,10 @@ static int netlink_recv(int sock, __u32 nl_pid, __u32 seq,
+ 					return ret;
+ 			}
+ 		}
++
++		if (len)
++	                fprintf(stderr, "Invalid message or trailing data in Netlink response: %d\n",
++				len);
+ 	}
+ 	ret = 0;
+ done:
+-- 
+2.52.0
 
-Thanks,
-Namhyung
-
-
-> > something I think we need for skeleton support in perf. I like the
-> > feature test, could we add it and use it in bpftool? The only two
-> > functions using openssl appear to be:
-> > 
-> >   __u32 register_session_key(const char *key_der_path)
-> >   int bpftool_prog_sign(struct bpf_load_and_run_opts *opts)
-> > 
-> > so we can do the whole feature test then #ifdef HAVE_FEATURE... stub
-> > static inline versions of the functions game?
-> > 
-> > Perhaps we only need the bootstrap version of bpftool in perf and we
-> > can just avoid dependencies that way. Looking at bpftool's build I see
-> > that sign.o/c with those functions in is part of the bootstrap version
-> > of bpftool :-(
-> > 
-> > Thanks,
-> > Ian
-> > 
-> > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > > ---
-> > >  tools/build/Makefile.feature          | 6 ++++--
-> > >  tools/build/feature/Makefile          | 8 ++++++--
-> > >  tools/build/feature/test-all.c        | 5 +++++
-> > >  tools/build/feature/test-libopenssl.c | 7 +++++++
-> > >  4 files changed, 22 insertions(+), 4 deletions(-)
-> > >  create mode 100644 tools/build/feature/test-libopenssl.c
-> > >
-> > > diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
-> > > index fc6abe369f7373c5..bc6d85bad379321b 100644
-> > > --- a/tools/build/Makefile.feature
-> > > +++ b/tools/build/Makefile.feature
-> > > @@ -99,7 +99,8 @@ FEATURE_TESTS_BASIC :=                  \
-> > >          libzstd                                \
-> > >          disassembler-four-args         \
-> > >          disassembler-init-styled       \
-> > > -        file-handle
-> > > +        file-handle                    \
-> > > +        libopenssl
-> > >
-> > >  # FEATURE_TESTS_BASIC + FEATURE_TESTS_EXTRA is the complete list
-> > >  # of all feature tests
-> > > @@ -147,7 +148,8 @@ FEATURE_DISPLAY ?=              \
-> > >           lzma                   \
-> > >           bpf                   \
-> > >           libaio                        \
-> > > -         libzstd
-> > > +         libzstd               \
-> > > +         libopenssl
-> > >
-> > >  #
-> > >  # Declare group members of a feature to display the logical OR of the detection
-> > > diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
-> > > index 7c90e0d0157ac9b1..3fd5ad0db2109778 100644
-> > > --- a/tools/build/feature/Makefile
-> > > +++ b/tools/build/feature/Makefile
-> > > @@ -67,12 +67,13 @@ FILES=                                          \
-> > >           test-libopencsd.bin                   \
-> > >           test-clang.bin                                \
-> > >           test-llvm.bin                         \
-> > > -         test-llvm-perf.bin   \
-> > > +         test-llvm-perf.bin                    \
-> > >           test-libaio.bin                       \
-> > >           test-libzstd.bin                      \
-> > >           test-clang-bpf-co-re.bin              \
-> > >           test-file-handle.bin                  \
-> > > -         test-libpfm4.bin
-> > > +         test-libpfm4.bin                      \
-> > > +         test-libopenssl.bin
-> > >
-> > >  FILES := $(addprefix $(OUTPUT),$(FILES))
-> > >
-> > > @@ -381,6 +382,9 @@ endif
-> > >  $(OUTPUT)test-libpfm4.bin:
-> > >         $(BUILD) -lpfm
-> > >
-> > > +$(OUTPUT)test-libopenssl.bin:
-> > > +       $(BUILD) -lssl
-> > > +
-> > >  $(OUTPUT)test-bpftool-skeletons.bin:
-> > >         $(SYSTEM_BPFTOOL) version | grep '^features:.*skeletons' \
-> > >                 > $(@:.bin=.make.output) 2>&1
-> > > diff --git a/tools/build/feature/test-all.c b/tools/build/feature/test-all.c
-> > > index eb346160d0ba0e2f..1488bf6e607836e5 100644
-> > > --- a/tools/build/feature/test-all.c
-> > > +++ b/tools/build/feature/test-all.c
-> > > @@ -142,6 +142,10 @@
-> > >  # include "test-libtraceevent.c"
-> > >  #undef main
-> > >
-> > > +#define main main_test_libopenssl
-> > > +# include "test-libopenssl.c"
-> > > +#undef main
-> > > +
-> > >  int main(int argc, char *argv[])
-> > >  {
-> > >         main_test_libpython();
-> > > @@ -173,6 +177,7 @@ int main(int argc, char *argv[])
-> > >         main_test_reallocarray();
-> > >         main_test_libzstd();
-> > >         main_test_libtraceevent();
-> > > +       main_test_libopenssl();
-> > >
-> > >         return 0;
-> > >  }
-> > > diff --git a/tools/build/feature/test-libopenssl.c b/tools/build/feature/test-libopenssl.c
-> > > new file mode 100644
-> > > index 0000000000000000..168c45894e8be687
-> > > --- /dev/null
-> > > +++ b/tools/build/feature/test-libopenssl.c
-> > > @@ -0,0 +1,7 @@
-> > > +#include <openssl/ssl.h>
-> > > +#include <openssl/opensslv.h>
-> > > +
-> > > +int main(void)
-> > > +{
-> > > +       return SSL_library_init();
-> > > +}
-> > > --
-> > > 2.52.0.177.g9f829587af-goog
-> > >
 
