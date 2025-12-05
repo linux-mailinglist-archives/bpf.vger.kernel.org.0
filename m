@@ -1,265 +1,133 @@
-Return-Path: <bpf+bounces-76100-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76101-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7E27CA638F
-	for <lists+bpf@lfdr.de>; Fri, 05 Dec 2025 07:28:13 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DA77CA6F39
+	for <lists+bpf@lfdr.de>; Fri, 05 Dec 2025 10:38:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 224003095240
-	for <lists+bpf@lfdr.de>; Fri,  5 Dec 2025 06:28:08 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id CE03338A41EA
+	for <lists+bpf@lfdr.de>; Fri,  5 Dec 2025 08:28:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BF752F49EC;
-	Fri,  5 Dec 2025 06:28:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2FA6343D78;
+	Fri,  5 Dec 2025 07:58:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pHuXd/dZ"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="VqR7xi3b";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="UQTDx2A2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28B592E0B5C
-	for <bpf@vger.kernel.org>; Fri,  5 Dec 2025 06:28:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0371345CB7;
+	Fri,  5 Dec 2025 07:58:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764916086; cv=none; b=V1pH/mQ6bxtA/FiafGbet0WVE+K6D6hCo5wCEF3WkcBxlxusOz/zTxjTA+yqs3+xS8A96YdGG0b7MytdYwpyofz82Dst28UzUnmWNGw7q6eXkUqgfBiLThP8aCmIkmfDyQ3w4Llm7uH+qsId5h+vTBTpNsJpJQBHOc/STVvOA+w=
+	t=1764921505; cv=none; b=X5oFb5xvdnj1TqRIfmq+PtTbJYxNFEL7Yk65r7jXVPJ0tQowviKFUAhkUj2VzEXDn7/y4abXLXIRZZLuWXseQ/HQJ8cgqMN6m4694iNQ1WpC0Y7DZYVhYq6p0ZF79s5U4mDWjXus+ysKhQoV475f1l2ubz/CkGyg9+TfC7PJsAg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764916086; c=relaxed/simple;
-	bh=adULTFJs+PSUaHBqyiXdOexnDuO5WUvtlbwYjEKqEDI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jg3eDHC5rT+XLJgQqGbmCLxuIjN1TLhfNxjBm9fIiniorQi2JMAgraQI0jjGZSm91EMS/em83fvgCT0NGdg2dQw5cTNx0DpFObFytFhxifMSimvj5XkkBgWXt5gj9YsiSfvspXugDFwJ+1osfu12UY9p8d+KTX51aL08d18Et1I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pHuXd/dZ; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-297e13bf404so123625ad.0
-        for <bpf@vger.kernel.org>; Thu, 04 Dec 2025 22:28:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1764916084; x=1765520884; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Tg4C96At+RWmrCRevn4eUW4tb84Uz0A/jaW+5+zsACc=;
-        b=pHuXd/dZqu1f80I1BA200mhLYYpjSV27zX9CcYZsTS3Bsuh+aZojihUIZFxiTgdtzz
-         Hza0rm0MgsDtOQvTvLiPwyYkG9hF/PDQzHZ9XRsST3Jr5ZmG9sE3fIosPpwetBu3u9FZ
-         ysVfQVLHkdwcGTINyQuRqVWCqPVd9VJHEfuanXtnBnF2NvOf2+Vhu7R77J6LTzkp2Rr4
-         Xj91OhUw+3VO4RLx4LWnnjt28eDgKadTf3Ed/oSiXf7fQioi6xH0bMLcyojVo/YeS76X
-         ca55hlD1qTqO/6x8AhsmpraSp9RHT9q1M+Sg8D0IPP8AkFX4ujgPCH5x1t+IIc26MOhP
-         IWWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764916084; x=1765520884;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=Tg4C96At+RWmrCRevn4eUW4tb84Uz0A/jaW+5+zsACc=;
-        b=aSvInYYt5o3JGQt/xzw9i9rLRz1XUruuGMgk5oRklfz5imRpg5VmENax/r0uUCs4nG
-         DNr26STO7u54MnBvyKp2AoRZ9bxrGSU5q/oYhNOkU4MjKFgBmUnerq3iXJ9ITowClTbc
-         ybrR/ktj35ofmbK9AyPb3sW1hOljLiVHMJbQk9zzthTwJVSJjYLEzJRnHwujZ93DMn2A
-         ioAl6VyYU0+n3juOD7ZQCrsa8vaCEadpu0goKyf7E+rCSP9X8WC4AfIS8DPhSAYqvNwt
-         GExkx0VJeG0ugn3QW2HvlPbIzcojQ4kHgJXFKMz2jkQIMNfBIy/3r4koTq2nHn3WSKMl
-         01Aw==
-X-Gm-Message-State: AOJu0Yx5njkSb+Z3J2WRCCGISfeuPx0ZSgypGbaBRu2BA70gMMl3aM4Z
-	86VZTGBjTKPKafvG/psyjj11wG9j00X1HcRakLovNHhuVh0Dh92KEqSDYp8Xxcl+aLRuzgK62B0
-	wn5kTd8HqWFSfjLSsImg2rtDtYQgY3+lkyjA1UlzC
-X-Gm-Gg: ASbGncuN+PRWgb5iTEI4Vg6lqUbPkRNZQkN10KGAPtXGR75iG1jRDxIupfGeuPzGdPA
-	wn2rqpwGIvSLBOcrXSv1P9WiDY9v3T0AT/yugLpbf7Lr4cXkMGBKp2iiCZMSLizjKDBBAV/0IKn
-	pCdL9oQjon8EsEJNgA5DSuJhHqnEvY08rpdUELcdtbYADgPGf/sqk+1Zor9vc7MjPB2kVBcnHLD
-	uwv5M5BBsQBBEqkYQ5QOWdhB+z81wEDaKEYRABw862PAXQjGWV1bKqZnPVlsax96EC5wjpU
-X-Google-Smtp-Source: AGHT+IEzdQMSmTTlL1R/SayPSxZPIRgwYRpGdZVhoUnbs+wQhJOMBVcFd9A2+p3++qaM3Vy1UWUZaycfA0EQ/3e8I3o=
-X-Received: by 2002:a17:902:f34a:b0:297:eadc:3cd5 with SMTP id
- d9443c01a7336-29dd18b9b55mr296915ad.15.1764916084042; Thu, 04 Dec 2025
- 22:28:04 -0800 (PST)
+	s=arc-20240116; t=1764921505; c=relaxed/simple;
+	bh=GdSs4IOZtRfzPzISB8KAXBPj9abiDx7Q+sT4nyxgnlU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=t0Bm7/WlmiR1qN52hbmNUGh92cMg8WqJvpXXvcup39NRQLh9DTNIT3dm/iPSKOdpQ+cilah7wgHtTQoPH22dvP9w2p742X5kQVNyO8ghawByAkEupOi2RSnFyEIsG4DJTuXLoHZm+uaP/1dm3a5wHId1CLqr/KZJ2+qvHCSkC8g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=VqR7xi3b; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=UQTDx2A2; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Fri, 5 Dec 2025 08:58:05 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1764921487;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/iVl92zKa3BsxR82OA+CaLiMB0c3yaThaQXm87jGM70=;
+	b=VqR7xi3bnEZyhYAlLO7xyuUU+/jVU3SxgWxz5Hk81iier/vba0fuJdIdyFvt7oSQC0BSlz
+	4sDSI2H7vMYDZYOym8t3czEDzPE/wLxGffm1jVax6GUwXmGEoLGLClvp0iKOpGDN556Spg
+	0NnnwBfOcL5eE2ToKmdSKK7dNFIsbJ9bG+xx6WT97NxjGJEJLe6fILuYMi6eiwp5kUfKHZ
+	nTS2wyo5TUbD7aQGWFVfkEF2XxSsne/Fwf1KCD1N697YTFX/WeYiBDteb657BZmXWn50i/
+	+i/QFJpAbSezKvQsSY6HnnZ9ul4B3nmdZ/LlQZhILNj+S3V2AjK0XSpX+ch86g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1764921487;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/iVl92zKa3BsxR82OA+CaLiMB0c3yaThaQXm87jGM70=;
+	b=UQTDx2A2zNWnEUQpO1czFg5NKl3RS5ecDJUYU3XMiMzHI9Jxv8Inqh8y17FZFZgZtnpofI
+	a2HmilpdNKLgV5Bw==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Jon Kohler <jon@nutanix.com>
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>,
+	Jason Wang <jasowang@redhat.com>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:XDP (eXpress Data Path):Keyword:(?:b|_)xdp(?:b|_)" <bpf@vger.kernel.org>,
+	Alexander Lobakin <aleksander.lobakin@intel.com>
+Subject: Re: [PATCH net-next v2 5/9] tun: use bulk NAPI cache allocation in
+ tun_xdp_one
+Message-ID: <20251205075805.vW4ShQvN@linutronix.de>
+References: <20251125200041.1565663-1-jon@nutanix.com>
+ <20251125200041.1565663-6-jon@nutanix.com>
+ <CACGkMEsDCVKSzHSKACAPp3Wsd8LscUE0GO4Ko9GPGfTR0vapyg@mail.gmail.com>
+ <CF8FF91A-2197-47F7-882B-33967C9C6089@nutanix.com>
+ <c04b51c6-bc03-410e-af41-64f318b8960f@kernel.org>
+ <20251203084708.FKvfWWxW@linutronix.de>
+ <CA37D267-2A2F-47FD-8BAF-184891FE1B7E@nutanix.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251203232924.1119206-1-namhyung@kernel.org> <CAP-5=fU=G75jpsG-X6pa8_rdKapxVc615CqvcdSPBFesj02D6A@mail.gmail.com>
- <aTGz9kFQk2xNvsbC@x1> <aTIeuLOcc6c7RWUz@google.com>
-In-Reply-To: <aTIeuLOcc6c7RWUz@google.com>
-From: Ian Rogers <irogers@google.com>
-Date: Thu, 4 Dec 2025 22:27:51 -0800
-X-Gm-Features: AWmQ_bnFUoVvB3U83QQ-ImocuUOoXkpDxeZ4JyV4aOj0QLfTLFkmzXOBJbqxZNM
-Message-ID: <CAP-5=fVRjs9Dw=_8B9NRkWxgZKn_yg5XEYXhc_UNi9HGz-R23Q@mail.gmail.com>
-Subject: Re: [PATCH 1/2] tools/build: Add a feature test for libopenssl
-To: Namhyung Kim <namhyung@kernel.org>, Quentin Monnet <qmo@kernel.org>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: bpf@vger.kernel.org, James Clark <james.clark@linaro.org>, 
-	Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CA37D267-2A2F-47FD-8BAF-184891FE1B7E@nutanix.com>
 
-On Thu, Dec 4, 2025 at 3:52=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
-rote:
->
-> On Thu, Dec 04, 2025 at 01:16:54PM -0300, Arnaldo Carvalho de Melo wrote:
-> > On Wed, Dec 03, 2025 at 04:34:56PM -0800, Ian Rogers wrote:
-> > > On Wed, Dec 3, 2025 at 3:29=E2=80=AFPM Namhyung Kim <namhyung@kernel.=
-org> wrote:
-> > > >
-> > > > It's used by bpftool and the kernel build.  Let's add a feature tes=
-t so
-> > > > that perf can decide what to do based on the availability.
-> > >
-> > > It seems strange to add a feature test that bpftool is missing and
-> > > then use it only in the perf build. The signing of bpf programs isn't
-> >
-> > It is strange indeed, I agree that since we don't use BPF signing at
-> > this point in the perf BPf skels, then we could just bootstrap a bpftoo=
-l
-> > without such feature and continue building the existing features.
-> >
-> > Adding the bpftool maintainer to the CC list, Quentin?
->
-> I've already talked to Quentin and they want libopenssl as a
-> requirement.
->
-> https://lore.kernel.org/linux-perf-users/e44f70bf-8f50-4a4b-97b8-eaf988aa=
-bced@kernel.org/
+On 2025-12-03 15:35:24 [+0000], Jon Kohler wrote:
+> Thanks, Sebastian - so if I=E2=80=99m reading this correct, it *is* fine =
+to do
+> the two following patterns, outside of NAPI:
+>=20
+>    local_bh_disable();
+>    skb =3D napi_build_skb(buf, len);
+>    local_bh_enable();
+>=20
+>    local_bh_disable();
+>    napi_consume_skb(skb, 1);
+>    local_bh_enable();
+>=20
+> If so, I wonder if it would be cleaner to have something like
+>    build_skb_bh(buf, len);
+>=20
+>    consume_skb_bh(skb, 1);
+>=20
+> Then have those methods handle the local_bh enable/disable, so that
+> the toggle was a property of a call, not a requirement of the call?=20
 
-You can have libopenssl as a requirement and have a bootstrap bpftool
-that doesn't require it, as the bootstrap version only provides
-minimal features typically to just build bpftool. You can also have
-libopenssl as a requirement and have a feature test that fails in the
-bpftool build saying you are missing a requirement. Having the perf
-build detect that a feature for the bpftool dependency is missing is
-fine as we can then recommend installing bpftool or the missing
-dependency, but doing this without bpftool also doing something just
-seems inconsistent.
+Having budget =3D 0 would be for non-NAPI users. So passing the 1 is
+superfluous. You goal seems to be to re-use napi_alloc_cache. Right? And
+this is better than skb_pool?
 
-Thanks,
-Ian
+There is already napi_alloc_skb() which expects BH to be disabled and
+netdev_alloc_skb() (and friends) which do disable BH if needed. I don't
+see an equivalent for non-NAPI users. Haven't checked if any of these
+could replace your napi_build_skb().
 
-> Thanks,
-> Namhyung
->
->
-> > > something I think we need for skeleton support in perf. I like the
-> > > feature test, could we add it and use it in bpftool? The only two
-> > > functions using openssl appear to be:
-> > >
-> > >   __u32 register_session_key(const char *key_der_path)
-> > >   int bpftool_prog_sign(struct bpf_load_and_run_opts *opts)
-> > >
-> > > so we can do the whole feature test then #ifdef HAVE_FEATURE... stub
-> > > static inline versions of the functions game?
-> > >
-> > > Perhaps we only need the bootstrap version of bpftool in perf and we
-> > > can just avoid dependencies that way. Looking at bpftool's build I se=
-e
-> > > that sign.o/c with those functions in is part of the bootstrap versio=
-n
-> > > of bpftool :-(
-> > >
-> > > Thanks,
-> > > Ian
-> > >
-> > > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > > > ---
-> > > >  tools/build/Makefile.feature          | 6 ++++--
-> > > >  tools/build/feature/Makefile          | 8 ++++++--
-> > > >  tools/build/feature/test-all.c        | 5 +++++
-> > > >  tools/build/feature/test-libopenssl.c | 7 +++++++
-> > > >  4 files changed, 22 insertions(+), 4 deletions(-)
-> > > >  create mode 100644 tools/build/feature/test-libopenssl.c
-> > > >
-> > > > diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.fe=
-ature
-> > > > index fc6abe369f7373c5..bc6d85bad379321b 100644
-> > > > --- a/tools/build/Makefile.feature
-> > > > +++ b/tools/build/Makefile.feature
-> > > > @@ -99,7 +99,8 @@ FEATURE_TESTS_BASIC :=3D                  \
-> > > >          libzstd                                \
-> > > >          disassembler-four-args         \
-> > > >          disassembler-init-styled       \
-> > > > -        file-handle
-> > > > +        file-handle                    \
-> > > > +        libopenssl
-> > > >
-> > > >  # FEATURE_TESTS_BASIC + FEATURE_TESTS_EXTRA is the complete list
-> > > >  # of all feature tests
-> > > > @@ -147,7 +148,8 @@ FEATURE_DISPLAY ?=3D              \
-> > > >           lzma                   \
-> > > >           bpf                   \
-> > > >           libaio                        \
-> > > > -         libzstd
-> > > > +         libzstd               \
-> > > > +         libopenssl
-> > > >
-> > > >  #
-> > > >  # Declare group members of a feature to display the logical OR of =
-the detection
-> > > > diff --git a/tools/build/feature/Makefile b/tools/build/feature/Mak=
-efile
-> > > > index 7c90e0d0157ac9b1..3fd5ad0db2109778 100644
-> > > > --- a/tools/build/feature/Makefile
-> > > > +++ b/tools/build/feature/Makefile
-> > > > @@ -67,12 +67,13 @@ FILES=3D                                       =
-   \
-> > > >           test-libopencsd.bin                   \
-> > > >           test-clang.bin                                \
-> > > >           test-llvm.bin                         \
-> > > > -         test-llvm-perf.bin   \
-> > > > +         test-llvm-perf.bin                    \
-> > > >           test-libaio.bin                       \
-> > > >           test-libzstd.bin                      \
-> > > >           test-clang-bpf-co-re.bin              \
-> > > >           test-file-handle.bin                  \
-> > > > -         test-libpfm4.bin
-> > > > +         test-libpfm4.bin                      \
-> > > > +         test-libopenssl.bin
-> > > >
-> > > >  FILES :=3D $(addprefix $(OUTPUT),$(FILES))
-> > > >
-> > > > @@ -381,6 +382,9 @@ endif
-> > > >  $(OUTPUT)test-libpfm4.bin:
-> > > >         $(BUILD) -lpfm
-> > > >
-> > > > +$(OUTPUT)test-libopenssl.bin:
-> > > > +       $(BUILD) -lssl
-> > > > +
-> > > >  $(OUTPUT)test-bpftool-skeletons.bin:
-> > > >         $(SYSTEM_BPFTOOL) version | grep '^features:.*skeletons' \
-> > > >                 > $(@:.bin=3D.make.output) 2>&1
-> > > > diff --git a/tools/build/feature/test-all.c b/tools/build/feature/t=
-est-all.c
-> > > > index eb346160d0ba0e2f..1488bf6e607836e5 100644
-> > > > --- a/tools/build/feature/test-all.c
-> > > > +++ b/tools/build/feature/test-all.c
-> > > > @@ -142,6 +142,10 @@
-> > > >  # include "test-libtraceevent.c"
-> > > >  #undef main
-> > > >
-> > > > +#define main main_test_libopenssl
-> > > > +# include "test-libopenssl.c"
-> > > > +#undef main
-> > > > +
-> > > >  int main(int argc, char *argv[])
-> > > >  {
-> > > >         main_test_libpython();
-> > > > @@ -173,6 +177,7 @@ int main(int argc, char *argv[])
-> > > >         main_test_reallocarray();
-> > > >         main_test_libzstd();
-> > > >         main_test_libtraceevent();
-> > > > +       main_test_libopenssl();
-> > > >
-> > > >         return 0;
-> > > >  }
-> > > > diff --git a/tools/build/feature/test-libopenssl.c b/tools/build/fe=
-ature/test-libopenssl.c
-> > > > new file mode 100644
-> > > > index 0000000000000000..168c45894e8be687
-> > > > --- /dev/null
-> > > > +++ b/tools/build/feature/test-libopenssl.c
-> > > > @@ -0,0 +1,7 @@
-> > > > +#include <openssl/ssl.h>
-> > > > +#include <openssl/opensslv.h>
-> > > > +
-> > > > +int main(void)
-> > > > +{
-> > > > +       return SSL_library_init();
-> > > > +}
-> > > > --
-> > > > 2.52.0.177.g9f829587af-goog
-> > > >
+Historically non-NAPI users would be IRQ users and those can't do
+local_bh_disable(). Therefore there is dev_kfree_skb_irq_reason() for
+them. You need to delay the free for two reasons.
+It seems pure software implementations didn't bother so far.
+
+It might make sense to do napi_consume_skb() similar to
+__netdev_alloc_skb() so that also budget=3D0 users fill the pool if this
+is really a benefit.
+
+Sebastian
 
