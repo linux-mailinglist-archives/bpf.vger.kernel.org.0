@@ -1,310 +1,166 @@
-Return-Path: <bpf+bounces-76221-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76222-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id E91D8CAA84C
-	for <lists+bpf@lfdr.de>; Sat, 06 Dec 2025 15:12:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1943ACAA87F
+	for <lists+bpf@lfdr.de>; Sat, 06 Dec 2025 15:30:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id F22513015E3E
-	for <lists+bpf@lfdr.de>; Sat,  6 Dec 2025 14:12:51 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 30136301D309
+	for <lists+bpf@lfdr.de>; Sat,  6 Dec 2025 14:30:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10DC72FE581;
-	Sat,  6 Dec 2025 14:12:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SROky8ix"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFDB82FA0C4;
+	Sat,  6 Dec 2025 14:30:36 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yx1-f47.google.com (mail-yx1-f47.google.com [74.125.224.47])
+Received: from mail-oo1-f77.google.com (mail-oo1-f77.google.com [209.85.161.77])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 147E82FE04E
-	for <bpf@vger.kernel.org>; Sat,  6 Dec 2025 14:12:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4D0F2F12DE
+	for <bpf@vger.kernel.org>; Sat,  6 Dec 2025 14:30:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765030368; cv=none; b=j5/Csj03v3v0ZGBkglzw8MtWuFE0t7/tAKxjm1MVS6MG18Gzl2rw9RklsO62VAJM/wxfBgbA0woPgnNILwYv6r3kaoWgC6eyFtzep4eUsOrMfdrCOsWhlg8dnWVf/lApSeMpqE6UGU/ZadqR15aKTDJjF/qqovhE3PrmlTuZXqE=
+	t=1765031436; cv=none; b=Hd6apdtof/nA8xVahXzWqE9kDCJKdv+sGR4JcGNBCSYzTG3BrdteJ2k5UnCH3MM//C1WBQoi8koFnLXcbb27cDyvsF87p6/zX0OhDYRTmh1O1T0xtuwoB+GwBewiflLK1EEBvlgnjkR8u5G/g8OkWu+spLR9fmSJEfdfPFYdbIw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765030368; c=relaxed/simple;
-	bh=RyLNc6tGR9TNg64jOPUj6Yspxw5JjeAQPkK81wia8Pk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=e41bc9SU+fgyWkbusUioXveEUzN88L3v3Aqqr3Tbn0Qtx3AfUx1dKbYQKtWn22Tu/pd7oVIrEh9VYzb3UhQEAFqWonqNmyLeaXJh7Sm1NR3uM5DVZ9BD9dVwfuUM6xMn9n6KVR8HXYp3XtUur1gWGZx3qz2ZvJjbMYrI7cNTY0I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SROky8ix; arc=none smtp.client-ip=74.125.224.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yx1-f47.google.com with SMTP id 956f58d0204a3-6432842cafdso2768573d50.2
-        for <bpf@vger.kernel.org>; Sat, 06 Dec 2025 06:12:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1765030365; x=1765635165; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jQZxjdZr1JFznsMXvmLRudCv2FwHA4P8i6Bo9rkQABI=;
-        b=SROky8ixQmsBP6UyEbIMRkrKLJAZnHUgL+m8L6zePEYFs80Nuu8zweBXh8wKmOHXDf
-         Nnt9nl06b6PCQxyrMQeMN7W+9g0nCw/vc9w32H4DgC8A0f7pD2HsnQb2SKbgY0qya/57
-         LlMH+FMNRmll/XzfECV+uwtKHm9+yKSB11+70K0EKX7VdxhZRz87C2aR1l2cdvT88I4g
-         g6VyRwowMoIScb7z0INkpongiXXGn7NowLna4cWHWpaFOZnngbsccJQRXnnJggRDf2GX
-         OrJ+veVJcfBWG9slXmftQesbYTZLSTKt3O045my3O4JoRNH6mO83vm+DP7lGMmoX28s+
-         A8cg==
+	s=arc-20240116; t=1765031436; c=relaxed/simple;
+	bh=3TFhak2YSahSxHE1YUSKNyfo7KjekW4gq4U4X+O9aAM=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=rkM4kmxepGmuqHCAC9pr7EDUt545iOuILWokq5xUsK3dOpbbzRxI487HiLflOB+S2b+PS33afw89FrogBQ3wgPbyAG6mC1DsR39J9Ar3xxoLa2L+/dniLNgcaJqgztFLmhLadEgCDML4uxvPmUOsLYRMR1WGkBpqlFCMIoMo3Bs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.161.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-oo1-f77.google.com with SMTP id 006d021491bc7-6579875eaa2so4291488eaf.3
+        for <bpf@vger.kernel.org>; Sat, 06 Dec 2025 06:30:33 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765030365; x=1765635165;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=jQZxjdZr1JFznsMXvmLRudCv2FwHA4P8i6Bo9rkQABI=;
-        b=ilgKU9FhKlW0vTtTRv3uE01n1EuSJ/lafMHG34TmWgj+K6f9G/s4+A8kiHX1G9wBKw
-         d34EEtAtkcHFRLFqKo+qjpBuorO+xlTKQYKlq3BQOnu2A3P+dkuvtM6U8RauZbU7hkjZ
-         RFdVCxTxoohMmZss0pg+Ar3gsaEcK+1yCx5U9D37ilnV+RRVCPVJ6X6F9G5nfJtbo7np
-         T1qcaeGgTwLUVPCxBCHjc5X/5sIuY1Rw4LUiIFNxQPoObpVYaPQEKaxTWd4k2IDscQfj
-         A7aW+R44DPZgwUdJekmDUh/1SpVgedi9ggX9jdDp/GnjQuTeEyEIxG+u18bKkURoovjI
-         UhBQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVQpScGeSNARbTUyTGj94XApsEgeOb7Wqdt1sUz8rtKsIfgRkFCkmV9DguB1pRd5DDA9V8=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy7UZUnE+euQw6YIlOtZAbCUeBgz7hwNGCMas/mRVfP0F+t/3lV
-	cOmVXAdu16nOI4+aNUKgLjrWmlI75sUOdELOCr5UvO7fIIgpdeBtnEw4
-X-Gm-Gg: ASbGncuTbPYYebpTdpolE4sMtDl4TaDtXPGD5YoaynWStymPfcD8KghXlZbBypPS0B8
-	eFkfN465xH5HcSC4BXz5XfsJ6BbiVayTmU4Nbww8NG6rAqVvL+gmhRMhdhTI3SVOtou23MhsPq4
-	Fr3369f4K8jRlhMSOJP1FngnBdPjvdfU2z7JZdrxlCk6p20x7X//Ori/Eom1MIMikEP55ywBDQ5
-	cOPMO9drC2IhAn9d2gSdN1jy6hRkQkzqWynF1jpzwK9CCly4PxIaao76NCn9h62xY57G8AO2dxk
-	PGlleuVHjwIXUhdUAo99uGQaCYSAmoNOXUkn0NrDxVYBZ3E+CAWE7/HAg7ruGs1AVJ2ngMexNaX
-	iP6ARmFeEHGFyPoTM83CBiUUvI/nza6Ynk9mRH87UGoBiLne36haFnKipJNGS16GK68P2On8sqG
-	uxxXPI2c2EC84HW/8a9JlIkgtMDtvYHos7NmlD3aZ+79/3LvMMg1U=
-X-Google-Smtp-Source: AGHT+IHR9Zx/p3K68sJ975Kv+S2nxQ3ATWRfBJAUvnr4+LZUE0dZ7nv8fk2XnB0qEp03jLan5S47PA==
-X-Received: by 2002:a05:690c:4512:b0:78c:2edf:5860 with SMTP id 00721157ae682-78c33afd090mr19846137b3.13.1765030364909;
-        Sat, 06 Dec 2025 06:12:44 -0800 (PST)
-Received: from localhost.localdomain (45.62.117.175.16clouds.com. [45.62.117.175])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-78c1b4ae534sm28038027b3.3.2025.12.06.06.12.39
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sat, 06 Dec 2025 06:12:44 -0800 (PST)
-From: Shuran Liu <electronlsr@gmail.com>
-To: song@kernel.org,
-	mattbobrowski@google.com,
-	bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	rostedt@goodmis.org,
-	mhiramat@kernel.org,
-	mathieu.desnoyers@efficios.com,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	dxu@dxuuu.xyz,
-	linux-kselftest@vger.kernel.org,
-	shuah@kernel.org,
-	electronlsr@gmail.com,
-	Zesen Liu <ftyg@live.com>,
-	Peili Gao <gplhust955@gmail.com>,
-	Haoran Ni <haoran.ni.cs@gmail.com>
-Subject: [PATCH bpf v5 2/2] selftests/bpf: add regression test for bpf_d_path()
-Date: Sat,  6 Dec 2025 22:12:10 +0800
-Message-ID: <20251206141210.3148-3-electronlsr@gmail.com>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <20251206141210.3148-1-electronlsr@gmail.com>
-References: <20251206141210.3148-1-electronlsr@gmail.com>
+        d=1e100.net; s=20230601; t=1765031433; x=1765636233;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=22XLJG4IoHX/vssE3jx4zVEhx1Ft3Or66I+HMCqbSKs=;
+        b=nfatK3PAzGLD6VfY9lGShfWDLWt7oEKpaRHYLBUlcM33poeX0wyKoLDV6qX3dtFj6R
+         o3EU0lvfj1tL52/BE4eD4XzCe9p4vdvQZcbMYudFxAxBGs77TLcuGoqD73M7ps9sqG/O
+         YAmB9dlaR6bMdo6Wok8IT6upSQvgf+vcD/5AyDFDMlpB5H8ApeLWy4uPpKV3OW1Z0s4X
+         silkGM4XVTtMhFAfcvv0XBZRJ1cDNZP2AcS6KBgplhEjeIoZ0k8EcDkpIYqSeRip3LFF
+         aQrxqu3CgquXsOisCd1Lyp9G2+xZ7679GA8FdLRzDAndDIQbSxw1qgsLi5u/rDzx0YCk
+         lM4g==
+X-Forwarded-Encrypted: i=1; AJvYcCWrtaI9LoJE+pXx9vQEWqdZ36fD5YXYTP9w0qK2AgCkEca1BtI7Zk05YP53WZi204YkF8A=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwCg08TgkU0Sgc7v/4Vu9Ptw41byjiPUEP/aqKpwIkoPSRj1ASL
+	165O7pCcOWxqsdgH+OPNaevhq+UTeuZEPn6qXbNnJaNTZeBglKjNKKaLDXCubbZ6tWVWc17L7UK
+	YxoQ7PWO0/XPdy3QTBdvrqz0toiv4NOq5oU/Iqfi/+b7tjsKnR0r5g/BEHtY=
+X-Google-Smtp-Source: AGHT+IEEj7MYdKDsPLMjpUH5K24m9WFXs3U4v7IiFPMBic29e52jpBICNzlK0PRVYoNg/wIVEnk1YgNZCozrqPcGwUi8sQAOACEW
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6820:200f:b0:659:9a49:8fc6 with SMTP id
+ 006d021491bc7-6599a973d3fmr966986eaf.63.1765031432847; Sat, 06 Dec 2025
+ 06:30:32 -0800 (PST)
+Date: Sat, 06 Dec 2025 06:30:32 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <69343e08.a70a0220.38f243.002c.GAE@google.com>
+Subject: [syzbot] [bpf?] KMSAN: uninit-value in handle_bug
+From: syzbot <syzbot+ba80855313e6fa65717a@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@fomichev.me, 
+	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-Add a regression test for bpf_d_path() to cover incorrect verifier
-assumptions caused by an incorrect function prototype. The test
-attaches to the fallocate hook, calls bpf_d_path() and verifies that
-a simple prefix comparison on the returned pathname behaves correctly
-after the fix in patch 1. It ensures the verifier does not assume
-the buffer remains unwritten.
+Hello,
 
-Co-developed-by: Zesen Liu <ftyg@live.com>
-Signed-off-by: Zesen Liu <ftyg@live.com>
-Co-developed-by: Peili Gao <gplhust955@gmail.com>
-Signed-off-by: Peili Gao <gplhust955@gmail.com>
-Co-developed-by: Haoran Ni <haoran.ni.cs@gmail.com>
-Signed-off-by: Haoran Ni <haoran.ni.cs@gmail.com>
-Signed-off-by: Shuran Liu <electronlsr@gmail.com>
+syzbot found the following issue on:
+
+HEAD commit:    cc25df3e2e22 Merge tag 'for-6.19/block-20251201' of git://..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16c2eab4580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6c445efc9db431cb
+dashboard link: https://syzkaller.appspot.com/bug?extid=ba80855313e6fa65717a
+compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/a1afac06cfc1/disk-cc25df3e.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/7bd5369ac00a/vmlinux-cc25df3e.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/e183dedd04c6/bzImage-cc25df3e.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ba80855313e6fa65717a@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+=====================================================
+BUG: KMSAN: uninit-value in vsnprintf+0x15d9/0x1b30 lib/vsprintf.c:2911
+ vsnprintf+0x15d9/0x1b30 lib/vsprintf.c:2911
+ vprintk_store+0x3ae/0x1530 kernel/printk/printk.c:2255
+ vprintk_emit+0x27b/0xc50 kernel/printk/printk.c:2402
+ vprintk_default+0x3f/0x50 kernel/printk/printk.c:2441
+ vprintk+0x36/0x50 kernel/printk/printk_safe.c:82
+ __warn_printf lib/bug.c:187 [inline]
+ __report_bug+0xa53/0xe80 lib/bug.c:240
+ report_bug_entry+0x148/0x1d0 lib/bug.c:265
+ handle_bug+0xe1/0x230 arch/x86/kernel/traps.c:430
+ exc_invalid_op+0x1f/0x50 arch/x86/kernel/traps.c:489
+ asm_exc_invalid_op+0x1f/0x30 arch/x86/include/asm/idtentry.h:616
+ reg_bounds_sanity_check+0x577/0x1450 kernel/bpf/verifier.c:2742
+ reg_set_min_max+0x3be/0x450 kernel/bpf/verifier.c:16572
+ check_cond_jmp_op+0x3a87/0x5380 kernel/bpf/verifier.c:17016
+ do_check_insn kernel/bpf/verifier.c:20441 [inline]
+ do_check+0x23ef/0x16a50 kernel/bpf/verifier.c:20581
+ do_check_common+0x2217/0x3370 kernel/bpf/verifier.c:23865
+ do_check_main kernel/bpf/verifier.c:23948 [inline]
+ bpf_check+0x1e78c/0x27610 kernel/bpf/verifier.c:25255
+ bpf_prog_load+0x2af6/0x3100 kernel/bpf/syscall.c:3088
+ __sys_bpf+0x7df/0xeb0 kernel/bpf/syscall.c:6164
+ __do_sys_bpf kernel/bpf/syscall.c:6274 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:6272 [inline]
+ __x64_sys_bpf+0xa4/0xf0 kernel/bpf/syscall.c:6272
+ x64_sys_call+0x31c3/0x3e70 arch/x86/include/generated/asm/syscalls_64.h:322
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xd9/0xf80 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+Uninit was stored to memory at:
+ vsnprintf+0x15d2/0x1b30 lib/vsprintf.c:-1
+ vprintk_store+0x3ae/0x1530 kernel/printk/printk.c:2255
+ vprintk_emit+0x27b/0xc50 kernel/printk/printk.c:2402
+ vprintk_default+0x3f/0x50 kernel/printk/printk.c:2441
+ vprintk+0x36/0x50 kernel/printk/printk_safe.c:82
+ __warn_printf lib/bug.c:187 [inline]
+ __report_bug+0xa53/0xe80 lib/bug.c:240
+ report_bug_entry+0x148/0x1d0 lib/bug.c:265
+ handle_bug+0xe1/0x230 arch/x86/kernel/traps.c:430
+ exc_invalid_op+0x1f/0x50 arch/x86/kernel/traps.c:489
+ asm_exc_invalid_op+0x1f/0x30 arch/x86/include/asm/idtentry.h:616
+
+Local variable run_ctx.i created at:
+ __bpf_trace_run kernel/trace/bpf_trace.c:2063 [inline]
+ bpf_trace_run4+0xdf/0x590 kernel/trace/bpf_trace.c:2118
+ __bpf_trace_sched_switch+0x221/0x290 include/trace/events/sched.h:220
+
+CPU: 1 UID: 0 PID: 23594 Comm: syz.7.5009 Tainted: G        W           syzkaller #0 PREEMPT(none) 
+Tainted: [W]=WARN
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/25/2025
+=====================================================
+
+
 ---
- .../testing/selftests/bpf/prog_tests/d_path.c | 91 +++++++++++++++----
- .../testing/selftests/bpf/progs/test_d_path.c | 23 +++++
- 2 files changed, 96 insertions(+), 18 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/d_path.c b/tools/testing/selftests/bpf/prog_tests/d_path.c
-index ccc768592e66..1a2a2f1abf03 100644
---- a/tools/testing/selftests/bpf/prog_tests/d_path.c
-+++ b/tools/testing/selftests/bpf/prog_tests/d_path.c
-@@ -38,6 +38,14 @@ static int set_pathname(int fd, pid_t pid)
- 	return readlink(buf, src.paths[src.cnt++], MAX_PATH_LEN);
- }
- 
-+static inline long syscall_close(int fd)
-+{
-+	return syscall(__NR_close_range,
-+			(unsigned int)fd,
-+			(unsigned int)fd,
-+			0u);
-+}
-+
- static int trigger_fstat_events(pid_t pid)
- {
- 	int sockfd = -1, procfd = -1, devfd = -1;
-@@ -104,36 +112,47 @@ static int trigger_fstat_events(pid_t pid)
- 	/* sys_close no longer triggers filp_close, but we can
- 	 * call sys_close_range instead which still does
- 	 */
--#define close(fd) syscall(__NR_close_range, fd, fd, 0)
--
--	close(pipefd[0]);
--	close(pipefd[1]);
--	close(sockfd);
--	close(procfd);
--	close(devfd);
--	close(localfd);
--	close(indicatorfd);
--
--#undef close
-+	syscall_close(pipefd[0]);
-+	syscall_close(pipefd[1]);
-+	syscall_close(sockfd);
-+	syscall_close(procfd);
-+	syscall_close(devfd);
-+	syscall_close(localfd);
-+	syscall_close(indicatorfd);
- 	return ret;
- }
- 
-+static void attach_and_load(struct test_d_path **skel)
-+{
-+	int err;
-+
-+	*skel = test_d_path__open_and_load();
-+	if (CHECK(!*skel, "setup", "d_path skeleton failed\n"))
-+		goto cleanup;
-+
-+	err = test_d_path__attach(*skel);
-+	if (CHECK(err, "setup", "attach failed: %d\n", err))
-+		goto cleanup;
-+
-+	(*skel)->bss->my_pid = getpid();
-+	return;
-+
-+cleanup:
-+	test_d_path__destroy(*skel);
-+	*skel = NULL;
-+}
-+
- static void test_d_path_basic(void)
- {
- 	struct test_d_path__bss *bss;
- 	struct test_d_path *skel;
- 	int err;
- 
--	skel = test_d_path__open_and_load();
--	if (CHECK(!skel, "setup", "d_path skeleton failed\n"))
--		goto cleanup;
--
--	err = test_d_path__attach(skel);
--	if (CHECK(err, "setup", "attach failed: %d\n", err))
-+	attach_and_load(&skel);
-+	if (!skel)
- 		goto cleanup;
- 
- 	bss = skel->bss;
--	bss->my_pid = getpid();
- 
- 	err = trigger_fstat_events(bss->my_pid);
- 	if (err < 0)
-@@ -195,6 +214,39 @@ static void test_d_path_check_types(void)
- 	test_d_path_check_types__destroy(skel);
- }
- 
-+/* Check if the verifier correctly generates code for
-+ * accessing the memory modified by d_path helper.
-+ */
-+static void test_d_path_mem_access(void)
-+{
-+	int localfd = -1;
-+	char path_template[] = "/dev/shm/d_path_loadgen.XXXXXX";
-+	struct test_d_path__bss *bss;
-+	struct test_d_path *skel;
-+
-+	attach_and_load(&skel);
-+	if (!skel)
-+		goto cleanup;
-+
-+	bss = skel->bss;
-+
-+	localfd = mkstemp(path_template);
-+	if (CHECK(localfd < 0, "trigger", "mkstemp failed\n"))
-+		goto cleanup;
-+
-+	if (CHECK(fallocate(localfd, 0, 0, 1024) < 0, "trigger", "fallocate failed\n"))
-+		goto cleanup;
-+	remove(path_template);
-+
-+	if (CHECK(!bss->path_match_fallocate, "check",
-+		  "failed to read fallocate path"))
-+		goto cleanup;
-+
-+cleanup:
-+	syscall_close(localfd);
-+	test_d_path__destroy(skel);
-+}
-+
- void test_d_path(void)
- {
- 	if (test__start_subtest("basic"))
-@@ -205,4 +257,7 @@ void test_d_path(void)
- 
- 	if (test__start_subtest("check_alloc_mem"))
- 		test_d_path_check_types();
-+
-+	if (test__start_subtest("check_mem_access"))
-+		test_d_path_mem_access();
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_d_path.c b/tools/testing/selftests/bpf/progs/test_d_path.c
-index 84e1f883f97b..561b2f861808 100644
---- a/tools/testing/selftests/bpf/progs/test_d_path.c
-+++ b/tools/testing/selftests/bpf/progs/test_d_path.c
-@@ -17,6 +17,7 @@ int rets_close[MAX_FILES] = {};
- 
- int called_stat = 0;
- int called_close = 0;
-+int path_match_fallocate = 0;
- 
- SEC("fentry/security_inode_getattr")
- int BPF_PROG(prog_stat, struct path *path, struct kstat *stat,
-@@ -62,4 +63,26 @@ int BPF_PROG(prog_close, struct file *file, void *id)
- 	return 0;
- }
- 
-+SEC("fentry/vfs_fallocate")
-+int BPF_PROG(prog_fallocate, struct file *file, int mode, loff_t offset, loff_t len)
-+{
-+	pid_t pid = bpf_get_current_pid_tgid() >> 32;
-+	int ret = 0;
-+	char path_fallocate[MAX_PATH_LEN] = {};
-+
-+	if (pid != my_pid)
-+		return 0;
-+
-+	ret = bpf_d_path(&file->f_path,
-+			 path_fallocate, MAX_PATH_LEN);
-+	if (ret < 0)
-+		return 0;
-+
-+	if (!path_fallocate[0])
-+		return 0;
-+
-+	path_match_fallocate = 1;
-+	return 0;
-+}
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.52.0
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
