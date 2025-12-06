@@ -1,151 +1,105 @@
-Return-Path: <bpf+bounces-76213-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76214-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DF11CAA5E5
-	for <lists+bpf@lfdr.de>; Sat, 06 Dec 2025 13:02:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 70BC4CAA5FD
+	for <lists+bpf@lfdr.de>; Sat, 06 Dec 2025 13:07:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 00EFD30671F0
-	for <lists+bpf@lfdr.de>; Sat,  6 Dec 2025 12:01:36 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4D2413058863
+	for <lists+bpf@lfdr.de>; Sat,  6 Dec 2025 12:06:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B45592E0901;
-	Sat,  6 Dec 2025 12:01:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92DB92F39AF;
+	Sat,  6 Dec 2025 12:06:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="GzSZi/4a"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C1XvKT2Z"
 X-Original-To: bpf@vger.kernel.org
-Received: from pdx-out-002.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-002.esa.us-west-2.outbound.mail-perimeter.amazon.com [44.246.1.125])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BD7D26F2B6;
-	Sat,  6 Dec 2025 12:01:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.246.1.125
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8974A1DD0EF
+	for <bpf@vger.kernel.org>; Sat,  6 Dec 2025 12:06:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765022495; cv=none; b=LzCrTSc1e52Y5P0b1cD1QbnfJ5u+bLzblk4J9rFSqSIHdSRHEI2XmZfOgi7FZJ5q5pPTf/2C8Emo7y3z7fd02kseMQDnoLQrIX0C7g+lEDiVL1ygV4x6sDX2B0KXJjQdB9qNCeuJKKs/47tr8GZ61iHiePzVvEDrZbUb27ZVa9Q=
+	t=1765022813; cv=none; b=ogzTIiP3DPOMclSumSPvCEKR8KUfNJMTtqiZld/Xz83UP4CewpyXlRe4xHW/T2YJbXSWeGBdjGB0YwJPLpCddk8wTlxCZGMRSF/fDtTNCoEBUCiebyEXwTpi2rIZdOL93XRV4hqmJDD+BkV0S0vc3+BPDX1VP9BB0BOJM2up68M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765022495; c=relaxed/simple;
-	bh=I2eBsN+jY746tca5bty0KE2p+uTbS9w/whWDxwZ+KuM=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=E+IkZi3aZaojF9xAeULIIJDu0NRCnVXhpUDCROm1ipaR85AJqtapIMUyhF+LeyENt/9eQzHgGkIa1CzF7ZAF/OiJ1G4evry9m3q/9+ROKuo8CfGfpbEzFc9nd0BOiJeu0ehzu+ZuszXtMrz3ykh77tVnDai3AVDF0L8KpbVoO2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=GzSZi/4a; arc=none smtp.client-ip=44.246.1.125
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
+	s=arc-20240116; t=1765022813; c=relaxed/simple;
+	bh=k+MKk5xQNUmJCzI6fCNgx01mXAm95ACa4t1QRs3+G2k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LndEOosBy4wHdIeum4JFAMYOKwYZzQa8FnKHJxhfdulnFqY/JunJHHFeCyblK1iQPse1///nwxUo5843mx1qWlh59KR5M7AtKGz/LLagiZuXVqPjL516W9wkWHRTKKH1sEAjr8ijRfJvJ7LM3JsHc3+wmi2WHvD1A2zL7O4TZaM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C1XvKT2Z; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4779adb38d3so27702355e9.2
+        for <bpf@vger.kernel.org>; Sat, 06 Dec 2025 04:06:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1765022493; x=1796558493;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=7wdyfOlhxHVAJQOuQaS8BZyR/RiEcQMVl+kCXLzPmXs=;
-  b=GzSZi/4aBxUImjjoHUJ7/a8Td5ZTdahUErfJQMeEAtKijApW2xplLxPK
-   Ix2iLJrNDSMsVw/uXHcIDlA7/fMZvqdR8Uz+RHMtviCwMnkEPxp2BfwgJ
-   yzw81LKvHTZU2Rz9YuYjzaMEXE2dRbJuDukpUJCd+9nwArI/c7HDDsuA6
-   tut2MJ/M9QLWRuWGywDcEqePfbrVJxW5WVEzOPFNfj1o+Y/muwlFWvCMK
-   w7G8K75GaxqMG1VBxqGqOev5za3+8KFY3G9chWBu3Z7DxBnKvtZtAbH/v
-   ws3dLFXDTV2Tz+9Ur+VQZGnWR1w152HZ9autZV3QLFbVmRIuoVnly1h8h
-   w==;
-X-CSE-ConnectionGUID: a4+b6cLhSRKizsE43CDfzA==
-X-CSE-MsgGUID: YpgVSN0LTf2GZfZwRPlKDg==
-X-IronPort-AV: E=Sophos;i="6.20,254,1758585600"; 
-   d="scan'208";a="8564701"
-Received: from ip-10-5-9-48.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.9.48])
-  by internal-pdx-out-002.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2025 12:01:29 +0000
-Received: from EX19MTAUWC002.ant.amazon.com [205.251.233.51:17686]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.51.201:2525] with esmtp (Farcaster)
- id 3ff8c8a7-9d4b-41dd-8366-5ae970463765; Sat, 6 Dec 2025 12:01:29 +0000 (UTC)
-X-Farcaster-Flow-ID: 3ff8c8a7-9d4b-41dd-8366-5ae970463765
-Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
- EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.29;
- Sat, 6 Dec 2025 12:01:29 +0000
-Received: from b0be8375a521.amazon.com (10.37.244.7) by
- EX19D001UWA001.ant.amazon.com (10.13.138.214) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.29;
- Sat, 6 Dec 2025 12:01:25 +0000
-From: Kohei Enju <enjuk@amazon.com>
-To: <enjuk@amazon.com>
-CC: <alexei.starovoitov@gmail.com>, <andrii@kernel.org>, <ast@kernel.org>,
-	<bpf@vger.kernel.org>, <daniel@iogearbox.net>, <davem@davemloft.net>,
-	<eddyz87@gmail.com>, <haoluo@google.com>, <hawk@kernel.org>,
-	<john.fastabend@gmail.com>, <jolsa@kernel.org>, <kernel-team@cloudflare.com>,
-	<kohei.enju@gmail.com>, <kpsingh@kernel.org>, <kuba@kernel.org>,
-	<lorenzo@kernel.org>, <martin.lau@linux.dev>, <netdev@vger.kernel.org>,
-	<sdf@fomichev.me>, <shuah@kernel.org>, <song@kernel.org>, <toke@kernel.org>,
-	<yonghong.song@linux.dev>
-Subject: Re: [PATCH bpf v1 1/2] bpf: cpumap: propagate underlying error in cpu_map_update_elem()
-Date: Sat, 6 Dec 2025 21:00:46 +0900
-Message-ID: <20251206120115.50257-1-enjuk@amazon.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20251206072946.22695-1-enjuk@amazon.com>
-References: <20251206072946.22695-1-enjuk@amazon.com>
+        d=gmail.com; s=20230601; t=1765022810; x=1765627610; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=k+MKk5xQNUmJCzI6fCNgx01mXAm95ACa4t1QRs3+G2k=;
+        b=C1XvKT2Z8Vfk8WdphbupPVhRgWlJFT3HuaiZIVIYLkr/mBgCDCxoNQZTHL3Z62Rd5r
+         8gAnF/mYNb/dqa34jOwRVoR91VmKNAxgbPjk0nTDKF2OXDaL8M7UzNY7aC9gy9jZE2uw
+         pD0qAUf1zwTYCjK8tNtFvE6yO/k8OVi/ikJeBJHn5QWQLLcTzpSd6/BX104WRN6rcXvd
+         m62Kinj2OAOhQ5w9bwxUGvQsszzdctWju6Jl1m2F9c8Hup+b8TFJ7ThGokYGrDQOVBEr
+         Hmb3aDHNeG9Yhp7o7CTPvXu0sW68TUlDWEEUgAP79WASNWfnP8/og2AIynUJBdpH0d54
+         lCBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765022810; x=1765627610;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=k+MKk5xQNUmJCzI6fCNgx01mXAm95ACa4t1QRs3+G2k=;
+        b=jz9E/Vw+W3S94sgqM5x8FlTNHWGoobd6DrLKGJWmnD5DPEN+VTsNmLjTuZ0OINBLuA
+         mUzAwd4qyzcI93lbHFtvOjnFbuY7VU/TieaGQizmFTABjRJ3iMZl4QFXxqyvZEdDZiN2
+         mMVSBIAB+YWiwgZYCBEentFbxOQvnhmq/GyNX76L7FSMKiyxgdRvjejBV8fTT7W7PGXr
+         cbXjaUd1IMMIp1fhGrgZgDfXTcw3hHoJR+1KY+6xgtaQEELrYl1F9P1VRZHblP8zUhdp
+         eVJqIZ23SCf1qfwKx4RFEMVggTSkJTUVbASbUcVSL0VCCVdtlID075CumoLUMvSa2TOs
+         0diA==
+X-Forwarded-Encrypted: i=1; AJvYcCWgfzAqvMNPgdrySZs2WAUiUy7aDG7/AU3zMOch0h2bHDGuJFZQpV5XaeFkmFp44Vs6Z/w=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyGTkKkldg6keMqt2dZKLvEQibcG6MDzjYC3xacKr1RKhU2MIdA
+	JNkyWmIIs4PY08TfIlt0VKNalrlPRWGrmhlgvDNH8q/IozBMiqCbyGBZYKbSVAbg8qtpvFW3Xiy
+	lNA5Fc3QOIvt+ojY/UOs6l1tGRKXi7zs=
+X-Gm-Gg: ASbGnctzmlsCsts9bi3nQCXH9q8qqraZqIhET5HmxTqz/sKKwPmni+E2284LxSdZgdE
+	9zkR1pw5B67cZkruHoPLJ86N/85jjpp+Pr2djgTNDMupSAsQFjcrxgsBwGL1bw0d/4PY1LQxN+k
+	D5pyX3UGpqBDVNebNDs8iEZO4g7FcO0VCaE2cWL8j8+q3ulVrRTGyp4xlRno+9H8IKFjpAnfxxF
+	kQvNi84pmV1qJjEaZHR7Ss9c/C3Luu31SINcSPd+smksVRVVxRuevog7GRyBGG9ELMRXpcUNVN3
+	FTsHm0s=
+X-Google-Smtp-Source: AGHT+IG2RnqxuduKXe+OlLJ8x+brYc3GiUevAWJ/44bnL3SfDCZXKE2Opp2R1TLCbFBRho5VpV+kIqZWig/jUKXGfQI=
+X-Received: by 2002:a05:600c:458e:b0:477:73e9:dc17 with SMTP id
+ 5b1f17b1804b1-47939e5dad4mr24968295e9.35.1765022809644; Sat, 06 Dec 2025
+ 04:06:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20251206072946.22695-1-enjuk@amazon.com> <20251206120115.50257-1-enjuk@amazon.com>
+In-Reply-To: <20251206120115.50257-1-enjuk@amazon.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Sat, 6 Dec 2025 04:06:38 -0800
+X-Gm-Features: AQt7F2pjn1ZerwjndpAkbiaaApAcf9K66sZJ8_FtOxx8Gr41-tneZBXme2enlEg
+Message-ID: <CAADnVQKxZv9hCLeFz60Sra5t4J4h=EncoKW3K1OyEBePAfqmuQ@mail.gmail.com>
+Subject: Re: [PATCH bpf v1 1/2] bpf: cpumap: propagate underlying error in cpu_map_update_elem()
+To: Kohei Enju <enjuk@amazon.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, Eduard <eddyz87@gmail.com>, 
+	Hao Luo <haoluo@google.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
+	kernel-team <kernel-team@cloudflare.com>, kohei.enju@gmail.com, 
+	KP Singh <kpsingh@kernel.org>, Jakub Kicinski <kuba@kernel.org>, 
+	Lorenzo Bianconi <lorenzo@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Network Development <netdev@vger.kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Shuah Khan <shuah@kernel.org>, 
+	Song Liu <song@kernel.org>, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: EX19D033UWA003.ant.amazon.com (10.13.139.42) To
- EX19D001UWA001.ant.amazon.com (10.13.138.214)
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, 6 Dec 2025 16:29:44 +0900, Kohei Enju wrote:
-
->On Wed, 03 Dec 2025 13:31:29 +0100, Toke H�iland-J�rgensen wrote:
+On Sat, Dec 6, 2025 at 9:01=E2=80=AFPM Kohei Enju <enjuk@amazon.com> wrote:
 >
->>Jesper Dangaard Brouer <hawk@kernel.org> writes:
->>
->>> On 03/12/2025 11.40, Kohei Enju wrote:
->>>> On Tue, 2 Dec 2025 17:08:32 -0800, Alexei Starovoitov wrote:
->>>> 
->>>>> On Fri, Nov 28, 2025 at 8:05\u202fAM Kohei Enju <enjuk@amazon.com> wrote:
->>>>>>
->>>>>> After commit 9216477449f3 ("bpf: cpumap: Add the possibility to attach
->>>>>> an eBPF program to cpumap"), __cpu_map_entry_alloc() may fail with
->>>>>> errors other than -ENOMEM, such as -EBADF or -EINVAL.
->>>>>>
->>>>>> However, __cpu_map_entry_alloc() returns NULL on all failures, and
->>>>>> cpu_map_update_elem() unconditionally converts this NULL into -ENOMEM.
->>>>>> As a result, user space always receives -ENOMEM regardless of the actual
->>>>>> underlying error.
->>>>>>
->>>>>> Examples of unexpected behavior:
->>>>>>    - Nonexistent fd  : -ENOMEM (should be -EBADF)
->>>>>>    - Non-BPF fd      : -ENOMEM (should be -EINVAL)
->>>>>>    - Bad attach type : -ENOMEM (should be -EINVAL)
->>>>>>
->>>>>> Change __cpu_map_entry_alloc() to return ERR_PTR(err) instead of NULL
->>>>>> and have cpu_map_update_elem() propagate this error.
->>>>>>
->>>>>> Fixes: 9216477449f3 ("bpf: cpumap: Add the possibility to attach an eBPF program to cpumap")
->>>>>
->>>>> The current behavior is what it is. It's not a bug and
->>>>> this patch is not a fix. It's probably an ok improvement,
->>>>> but since it changes user visible behavior we have to be careful.
->>>> 
->>>> Oops, got it.
->>>> When I resend, I'll remove the tag and send to bpf-next, not to bpf.
->>>> 
->>>> Thank you for taking a look.
->>>> 
->>>>>
->>>>> I'd like Jesper and/or other cpumap experts to confirm that it's ok.
->>>>>
->>>> 
->>>> Sure, I'd like to wait for reactions from cpumap experts.
->>>
->>> Skimmed the code changes[1] and they look good to me :-)
->>
->>We have one example of a use of the cpumap programs in xdp-tools, and
->>there we just report the error message to the user. I would guess other
->>apps would follow the same pattern rather than react to a specific error
->>code; especially since there's only one error code being used here.
->>
->>So I agree, this should be OK to change.
->>
->>-Toke
->
->Thank you for the clarification, Toke and Jesper.
->Since I see no objections so far, I'll work on v2 and resend next week.
+> Ah, I forgot that bpf-next is closed until Jan 2nd due to the merge windo=
+w.
+> I'll resend v2 after Jan 2nd :)
 
-Ah, I forgot that bpf-next is closed until Jan 2nd due to the merge window.
-I'll resend v2 after Jan 2nd :)
+?! It's not closed. net-next is.
 
