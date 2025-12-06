@@ -1,179 +1,250 @@
-Return-Path: <bpf+bounces-76194-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76195-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73B3DCA9AD6
-	for <lists+bpf@lfdr.de>; Sat, 06 Dec 2025 01:11:45 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E51D0CA9ADF
+	for <lists+bpf@lfdr.de>; Sat, 06 Dec 2025 01:12:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id F325F3017327
-	for <lists+bpf@lfdr.de>; Sat,  6 Dec 2025 00:11:36 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A15483105020
+	for <lists+bpf@lfdr.de>; Sat,  6 Dec 2025 00:11:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F4314C81;
-	Sat,  6 Dec 2025 00:11:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B8488462;
+	Sat,  6 Dec 2025 00:11:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m/KPt9DJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZANy3ye+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B49D184
-	for <bpf@vger.kernel.org>; Sat,  6 Dec 2025 00:11:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C46B4C81
+	for <bpf@vger.kernel.org>; Sat,  6 Dec 2025 00:11:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764979894; cv=none; b=UXY6wFIE2mJNQ0yKvrUiKVkEwdNxTx+oR7HJeHdY0PrcVT/noMHC3rfrweMVWOCTx6kNMpaQ8UbyZohIh8/K2+DWtEWpLBdeoPELWA1HAcdgPO7SBTykeO+sJL1bTZCZqd7nLArrIAgV71t4Y76S8kcZdvAbiiFdfTDMnUnhrEw=
+	t=1764979899; cv=none; b=OQSDWgbYVOorVC+1B9xozYj0BLxbL8bczYr0IiviBIk/pFFu11UcWvFdQLdXIKEl4WO7XXsgHT8K9U5y7cgNZVH6MdagdtWOb6YzOzDOEGKA3LplMhbJ1HULUkcH4eNZ+qgmQppwWatl43Z24GYc05sGIdb3CIMiHEapPmS1tW8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764979894; c=relaxed/simple;
-	bh=hAwk6SPNZjh7cM8p8luUzYYSKajhfccr6Qncykep1nM=;
+	s=arc-20240116; t=1764979899; c=relaxed/simple;
+	bh=5AhlX7C56vXKqCo/63Ya6FA/4n1jK8CXri1MweHqlQY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WYq2AuElXWKiL9pH1YCsFOIMONAVac50+SfoRoiNOKNWhKoI+ciwmZTsi9W65hoAe3TD8O0JlI5kSoXc+Gf9cOAFccXKMJa4NFgHjhrEMtsyiAEX5no5fX/6VwvTWhEWwbb86XpiSnvDEzEP9ygYGQyf89c2OOpfYrFgl9BF97g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m/KPt9DJ; arc=none smtp.client-ip=209.85.216.45
+	 To:Cc:Content-Type; b=ENljnSqs56+JDpeXNB1Tomya4+tw2UZ3UUKi+J1qKYZlz6SiLGn7rmUcDdsy9wntiJu4Be8B2/iOTBZEe1tqA/82bRvmxuwWFj/TbqJ3zzUbhz/kyluGuSDrUrxjvn6JS7DXxr1lHuIxVQ0wBxXlXWToQFgc70m4auqzVexgLM8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZANy3ye+; arc=none smtp.client-ip=209.85.216.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-343d73d08faso1405350a91.0
-        for <bpf@vger.kernel.org>; Fri, 05 Dec 2025 16:11:32 -0800 (PST)
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-34374febdefso2818083a91.0
+        for <bpf@vger.kernel.org>; Fri, 05 Dec 2025 16:11:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764979892; x=1765584692; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1764979897; x=1765584697; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1xUhJwjdDqNbq1a4oYSu07fCbOOzN5QUVn2MmlMv/q8=;
-        b=m/KPt9DJjzAg0zkg1k7zZPxeuBgagxwxHC4BWNe6s43M1KbdSpnEMMLZ8JO/VSc9fm
-         b2GIJv1GWvhIpzyhAWEtXS4uE+ghja0Lz/B4dBaFhRkxbhrWzD43uCEJDwDCGzNMBLep
-         JL5dhGZBX6IGXbuFWBce2y/cgif3D3wWDCQQNqUYQcyP9ScaZlZ05N6RPMCp4xZBFwij
-         vLSCMk7Pk1k3K8HtBJHE2UlmWlKFmdvB1hf9Gsn1a8BLOkvne+yR15H70Tdx7f+8Tlg+
-         lA+iWyGo6qGFqoT26avMqH8We9yW+QAKQm8uvzpcJnWNJkrdf9HuW1bbXSoMFlh6ERfy
-         36bQ==
+        bh=PVIgNg3yvRMLnyZGVHjgJ+fOuL5UdYSbueuVdo1cAKU=;
+        b=ZANy3ye+P8Z97N6CGg0vjPTfBhG2AZ3OXBwgLi3D07f0xHeMkEGj0MQxyML+IIQS+n
+         S9KlRPrCx4U+XURBwCmVuMvZS2WgRyNIQvyezrRkrlJPbGKP7TNUxKUHYQD2MvLSL4B1
+         RgjQBh+5t/ICrq0AVlLBDpKp34NebkUkyETvozGE+tOXFCKieP9JBlBgdjzxgQN9VQhf
+         RwbrAAXkOpWGZtJMYX5BL47qlY2AlOllAPDpX/EqPYbe5IKP6MCruZeYDfIB47eOej6y
+         TNYcMQcokIOszXsjlOODZwycuB66XVTeNDoqNmQ+CGJM3MnpaIJ1HCQir6v1mk3RWrgH
+         FXjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764979892; x=1765584692;
+        d=1e100.net; s=20230601; t=1764979897; x=1765584697;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=1xUhJwjdDqNbq1a4oYSu07fCbOOzN5QUVn2MmlMv/q8=;
-        b=mpN+VQbwcY3a3irONLBCeBAZ+7/rERTh0SCRz1q6DplFH8dB/8GSJeHjKygwyTN8S/
-         krcrff2hxzFBp59bKyXW4/nIs0bevwYGMJPnz6xEEJ94wMgrzNaoX9Ammg8tivxO4cS5
-         AB4Lryk5jIq1E+qo+pn+CGfi3G14fhEEYNuWpOEWp4IPRMqw+XN//Mb2bX0/eqmInQ80
-         obcJdy2UK+9sODCBv5vpYCq4odAAxoBXTnQk+yRTpz4+x22qLrFO6tt0cBk1dIbQzI49
-         fLe1Zh5qcxy9rbOkO7ztHeJ765UoTjkMLg7u11zY900/yZ9uO1aY20sGCGaoiN2bdV3D
-         U3og==
-X-Forwarded-Encrypted: i=1; AJvYcCUMwp6N9TlFTJn62fF697X5wFXUW9g7miH02oSCs8t8mGCHGzoN1FgDkAT9j7RzbJpVbDo=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx6Q3fBGXjGNqQDZuTB/SLEh+ThkS1CKOc9W+/xoGRe+GsZzDpk
-	Ex3De+Sd3rTlJoRt4AM8wO6IsZBNTb1LT7R3GqI2eM95ZRmt1FGGOIjv+KJr4vjhf5BcQDprJdQ
-	xdVI0qf2hzPSD7EIV/6BWRhrWfCi2Jic=
-X-Gm-Gg: ASbGncvYnsEwV5fG7oel3GAK0ma8hgmWTHs8eVTI/kaYDI97uhcj/G/bQ9y4sGQ4TT9
-	MjWs6b/ZBiH38RfJNvStIZ0E4ndORC7PLNIXGFgMpCwk+lF2zzWH3/DCiN4sz+VuuHzXxwpbfpU
-	ooMdwpxjAwfwYaJgikOymQwRTfRM9hKEU3DHGcYY2lt8eAetwnHzypC1RDuVINoYeqKTI4ZcGnB
-	cuvGmSGp9rE7gI4NvPBBi/8n4OVE9ldKwMgquhyVAkVkt9C9qx75Tj35cm1CQAwNZ7ciprSG8Tx
-	2T8JwCQCcD0=
-X-Google-Smtp-Source: AGHT+IGbtebGvfdhqqlQhl7Yd0aBFq/2EwVMusft9KNPwfoGjbQpNl2c/1hti9lEH4Dzc95aDzX/nuDPhGd5IBWw8Kw=
-X-Received: by 2002:a17:90a:d603:b0:343:a298:90ac with SMTP id
- 98e67ed59e1d1-34943730cfdmr7962032a91.0.1764979891348; Fri, 05 Dec 2025
- 16:11:31 -0800 (PST)
+        bh=PVIgNg3yvRMLnyZGVHjgJ+fOuL5UdYSbueuVdo1cAKU=;
+        b=lF3TJcpfNZ/flieD0UB2uJ5m+0OZqFI7P9YR0+2dbV0wz8CICrjX7AgKif47NXaeWA
+         rT8L6ZKnh/Q8IOgWSvTfMud61YAJ4I9K4lNH2UcxxUUyjPKVn72k/FmPbSC1CXKcZTgZ
+         XPpqeL9iR+LPlZ9dr5yvSE+9T9SrZ7JwmEJR+2rJ0SbTJUAUt6S6scwbxp0L/rA+TkOA
+         m5wYq7Gjp/WzToVPN6Dx7xkX5v+BcblNOciRnBrUG+9gOsJmt7s18bU7gd5lN3nCDddQ
+         I11kGQJitGlbtnUVCGn/50RUi/o+qDeu/Ko5DydCRygn6TC5lslQ9CrfkLTOggHOJBVR
+         TiiQ==
+X-Gm-Message-State: AOJu0YzAeQX3DU3tTTSF/TjgSdqWrT8usdJ0RdWsuvsdij3IwIZnNklo
+	BcuN9D70esO8ldJkDHSZnpyvkjmCSpm1tIT9rwefvblCsG/HAAMoalewnYpkhEFztsSKTTfYcUT
+	ec3nNGiUB9drdpCsDKm5wNFQvrwF4lzg=
+X-Gm-Gg: ASbGnctX/WiTv5JxH9jMb0+NvsouBBUQCFbFHLu5MuIk+sHfF8zhK/md6J5wtUOd1Y/
+	Lvq9X2h0akSU3DJQzFaOD5jDi16nznUFo+wOK0wla5QWXE4vFfaP736Fv5rHEykv/Jpo3Auz/S+
+	1Z7gXUWRpbc9l3dK0QtyjrwDkMcHaGzO6cr0KoqkwchCiIYFB0/pSPcABqRkyXNAlwXVtTiec9y
+	S7sozTXfCqNqFO18DKQ3Jx/c8bLyx4XVtdMMNQmFtSmMhoRyjCwE7o+q9kE19DSEHAUGe028gBz
+	W+5axBzIwKM=
+X-Google-Smtp-Source: AGHT+IEEzpp5QjELyj50JgNX035m1/4E77acKlPsjqofgxb5x9U58qz0ZX/mSrvBIqL+76XxgCMrpOf7vs4CMtK2clk=
+X-Received: by 2002:a17:90b:1e53:b0:341:8ac7:39b7 with SMTP id
+ 98e67ed59e1d1-349a25bd90dmr624398a91.25.1764979896666; Fri, 05 Dec 2025
+ 16:11:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251203162625.13152-4-emil@etsalapatis.com> <45513ae5c2cfe74c5d29d23e6c2eaec62b07e709138bc9167c5fea5ea6dde762@mail.kernel.org>
-In-Reply-To: <45513ae5c2cfe74c5d29d23e6c2eaec62b07e709138bc9167c5fea5ea6dde762@mail.kernel.org>
+References: <20251203162625.13152-1-emil@etsalapatis.com> <20251203162625.13152-4-emil@etsalapatis.com>
+In-Reply-To: <20251203162625.13152-4-emil@etsalapatis.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 5 Dec 2025 16:11:19 -0800
-X-Gm-Features: AWmQ_bmbm35FZSLZu_7F93z9HEg0vE-shOZMoE3pOuBUoM0K7BTdqoZ6ABuPFrw
-Message-ID: <CAEf4BzYoD85yjR7-9RTwSMU6zJ3pMJAnUC1CeNy4Hy7c2es21w@mail.gmail.com>
+Date: Fri, 5 Dec 2025 16:11:22 -0800
+X-Gm-Features: AWmQ_bmdmAmi-AUhViz8w9BYlqjcDhYuxwAuq4lVQ307Ob6V8wTqp0SBifdYvrw
+Message-ID: <CAEf4Bza2BJYyMcDG7aRV0KStfJ49A+X91Lbi9SaaGs1FO88=Dg@mail.gmail.com>
 Subject: Re: [PATCH v2 3/4] libbpf: move arena globals to the end of the arena
-To: bot+bpf-ci@kernel.org
-Cc: emil@etsalapatis.com, bpf@vger.kernel.org, andrii@kernel.org, 
-	eddyz87@gmail.com, ast@kernel.org, daniel@iogearbox.net, 
-	john.fastabend@gmail.com, memxor@gmail.com, yonghong.song@linux.dev, 
-	martin.lau@kernel.org, clm@meta.com, ihor.solodrai@linux.dev
+To: Emil Tsalapatis <emil@etsalapatis.com>
+Cc: bpf@vger.kernel.org, andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org, 
+	daniel@iogearbox.net, john.fastabend@gmail.com, memxor@gmail.com, 
+	yonghong.song@linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 3, 2025 at 8:52=E2=80=AFAM <bot+bpf-ci@kernel.org> wrote:
+On Wed, Dec 3, 2025 at 8:26=E2=80=AFAM Emil Tsalapatis <emil@etsalapatis.co=
+m> wrote:
 >
-> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > index 706e7481b..9642d697b 100644
-> > --- a/tools/lib/bpf/libbpf.c
-> > +++ b/tools/lib/bpf/libbpf.c
+> Arena globals are currently placed at the beginning of the arena
+> by libbpf. This is convenient, but prevents users from reserving
+> guard pages in the beginning of the arena to identify NULL pointer
+> dereferences. Adjust the load logic to place the globals at the
+> end of the arena instead.
 >
-> [ ... ]
+> Also modify bpftool to set the arena pointer in the program's BPF
+> skeleton to point to the globals. Users now call bpf_map__initial_value()
+> to find the beginning of the arena mapping and use the arena pointer
+> in the skeleton to determine which part of the mapping holds the
+> arena globals and which part is free.
 >
-> > @@ -2991,10 +2992,11 @@ static int init_arena_map_data(struct bpf_objec=
-t *obj, struct bpf_map *map,
-> >                              void *data, size_t data_sz)
-> >  {
-> >       const long page_sz =3D sysconf(_SC_PAGE_SIZE);
-> > +     const size_t data_alloc_sz =3D roundup(data_sz, page_sz);
-> >       size_t mmap_sz;
-> >
-> >       mmap_sz =3D bpf_map_mmap_sz(map);
-> > -     if (roundup(data_sz, page_sz) > mmap_sz) {
-> > +     if (data_alloc_sz > mmap_sz) {
-> >               pr_warn("elf: sec '%s': declared ARENA map size (%zu) is =
-too small to hold global __arena variables of size %zu\n",
-> >                       sec_name, mmap_sz, data_sz);
-> >               return -E2BIG;
-> > @@ -3006,6 +3008,9 @@ static int init_arena_map_data(struct bpf_object =
-*obj, struct bpf_map *map,
-> >       memcpy(obj->arena_data, data, data_sz);
-> >       obj->arena_data_sz =3D data_sz;
-> >
-> > +     /* place globals at the end of the arena */
-> > +     obj->arena_data_off =3D mmap_sz - data_alloc_sz;
-> > +
->
-> Here obj->arena_data_off is a __u32, but the calculation is done in
-> size_t (64-bit). For a 4GB arena (which the test verifier_arena_large.c
-> uses), mmap_sz is 4GB and the result can approach 4GB - PAGE_SIZE. This
-> fits in u32 correctly.
->
-> > @@ -4663,7 +4668,7 @@ static int bpf_program__record_reloc(struct bpf_p=
-rogram *prog,
-> >               reloc_desc->type =3D RELO_DATA;
-> >               reloc_desc->insn_idx =3D insn_idx;
-> >               reloc_desc->map_idx =3D obj->arena_map_idx;
-> > -             reloc_desc->sym_off =3D sym->st_value;
-> > +             reloc_desc->sym_off =3D sym->st_value + obj->arena_data_o=
-ff;
->                                                  ^^^^^^^^^^^^^^^^^^^^^^
->
-> Can this overflow when storing to reloc_desc->sym_off? The sym_off field
-> is 'int' (signed 32-bit), but arena_data_off can be larger than INT_MAX
-> for arenas approaching 4GB in size.
->
-> For example, with a 4GB arena and one page of globals:
-> - mmap_sz =3D 4GB =3D 0x100000000
-> - data_alloc_sz =3D 4096
-> - arena_data_off =3D 0xFFFFF000 =3D 4294963200
->
-> This value (4294963200) exceeds INT_MAX (2147483647), so when stored in
-> the signed int sym_off field, it becomes negative.
->
-> Later in bpf_object__relocate_data(), this is used as:
->     insn[1].imm =3D insn[0].imm + relo->sym_off;
->
-> With sym_off being negative due to overflow, this produces an incorrect
-> offset for accessing arena globals.
->
-> Should sym_off be changed to an unsigned type to handle large arena
-> offsets correctly?
-
-AI has good a point, valid offset with 4GB arena will overflow int...
-But then ldimm64 instructions that allow direct access to arena have
-insn[1].imm as s32, so they cannot even address more than 2GB? Can you
-please double check this, maybe we actually treat insn[1].imm as u32
-on the verifier side for this use case?
-
->
-> [ ... ]
->
->
+> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Emil Tsalapatis <emil@etsalapatis.com>
 > ---
-> AI reviewed your patch. Please fix the bug or email reply why it's not a =
-bug.
-> See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/READM=
-E.md
+>  tools/lib/bpf/libbpf.c                        | 19 +++++++++++++++----
+>  .../bpf/progs/verifier_arena_large.c          | 12 +++++++++---
+>  2 files changed, 24 insertions(+), 7 deletions(-)
 >
-> CI run summary: https://github.com/kernel-patches/bpf/actions/runs/199013=
-83089
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 706e7481bdf6..9642d697b690 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -757,6 +757,7 @@ struct bpf_object {
+>         int arena_map_idx;
+>         void *arena_data;
+>         size_t arena_data_sz;
+> +       __u32 arena_data_off;
+
+nit: use size_t, please
+
+>
+>         void *jumptables_data;
+>         size_t jumptables_data_sz;
+> @@ -2991,10 +2992,11 @@ static int init_arena_map_data(struct bpf_object =
+*obj, struct bpf_map *map,
+>                                void *data, size_t data_sz)
+>  {
+>         const long page_sz =3D sysconf(_SC_PAGE_SIZE);
+> +       const size_t data_alloc_sz =3D roundup(data_sz, page_sz);
+>         size_t mmap_sz;
+>
+>         mmap_sz =3D bpf_map_mmap_sz(map);
+> -       if (roundup(data_sz, page_sz) > mmap_sz) {
+> +       if (data_alloc_sz > mmap_sz) {
+>                 pr_warn("elf: sec '%s': declared ARENA map size (%zu) is =
+too small to hold global __arena variables of size %zu\n",
+>                         sec_name, mmap_sz, data_sz);
+>                 return -E2BIG;
+> @@ -3006,6 +3008,9 @@ static int init_arena_map_data(struct bpf_object *o=
+bj, struct bpf_map *map,
+>         memcpy(obj->arena_data, data, data_sz);
+>         obj->arena_data_sz =3D data_sz;
+>
+> +       /* place globals at the end of the arena */
+> +       obj->arena_data_off =3D mmap_sz - data_alloc_sz;
+> +
+>         /* make bpf_map__init_value() work for ARENA maps */
+>         map->mmaped =3D obj->arena_data;
+>
+> @@ -4663,7 +4668,7 @@ static int bpf_program__record_reloc(struct bpf_pro=
+gram *prog,
+>                 reloc_desc->type =3D RELO_DATA;
+>                 reloc_desc->insn_idx =3D insn_idx;
+>                 reloc_desc->map_idx =3D obj->arena_map_idx;
+> -               reloc_desc->sym_off =3D sym->st_value;
+> +               reloc_desc->sym_off =3D sym->st_value + obj->arena_data_o=
+ff;
+>
+>                 map =3D &obj->maps[obj->arena_map_idx];
+>                 pr_debug("prog '%s': found arena map %d (%s, sec %d, off =
+%zu) for insn %u\n",
+> @@ -5624,7 +5629,8 @@ bpf_object__create_maps(struct bpf_object *obj)
+>                                         return err;
+>                                 }
+>                                 if (obj->arena_data) {
+> -                                       memcpy(map->mmaped, obj->arena_da=
+ta, obj->arena_data_sz);
+> +                                       memcpy(map->mmaped + obj->arena_d=
+ata_off, obj->arena_data,
+> +                                               obj->arena_data_sz);
+>                                         zfree(&obj->arena_data);
+>                                 }
+>                         }
+> @@ -14387,6 +14393,7 @@ void bpf_object__destroy_subskeleton(struct bpf_o=
+bject_subskeleton *s)
+>
+>  int bpf_object__load_skeleton(struct bpf_object_skeleton *s)
+>  {
+> +       void *mmaped;
+>         int i, err;
+>
+>         err =3D bpf_object__load(*s->obj);
+> @@ -14402,7 +14409,11 @@ int bpf_object__load_skeleton(struct bpf_object_=
+skeleton *s)
+>                 if (!map_skel->mmaped)
+>                         continue;
+>
+> -               *map_skel->mmaped =3D map->mmaped;
+> +               mmaped =3D map->mmaped;
+> +               if (map->def.type =3D=3D BPF_MAP_TYPE_ARENA)
+> +                       mmaped +=3D map->obj->arena_data_off;
+> +
+> +               *map_skel->mmaped =3D mmaped;
+
+this is minor, but I think doing
+
+if (map->def.type =3D=3D BPF_MAP_TYPE_ARENA)
+    /* arena data is placed at the end of arena memory region */
+    *map_skel->mmaped =3D map->mmaped + map->obj->arena_data_off;
+else
+    *map_skel->mmaped =3D map->mmaped;
+
+would be a bit cleaner and easier to follow and no need for extra
+mutable variable
+
+>         }
+>
+>         return 0;
+> diff --git a/tools/testing/selftests/bpf/progs/verifier_arena_large.c b/t=
+ools/testing/selftests/bpf/progs/verifier_arena_large.c
+> index bd430a34c3ab..2b8cf2a4d880 100644
+> --- a/tools/testing/selftests/bpf/progs/verifier_arena_large.c
+> +++ b/tools/testing/selftests/bpf/progs/verifier_arena_large.c
+> @@ -31,16 +31,22 @@ int big_alloc1(void *ctx)
+>         if (!page1)
+>                 return 1;
+>
+> -       /* Account for global arena data. */
+> -       if ((u64)page1 !=3D base + PAGE_SIZE)
+> +       if ((u64)page1 !=3D base)
+>                 return 15;
+>
+>         *page1 =3D 1;
+> -       page2 =3D bpf_arena_alloc_pages(&arena, (void __arena *)(ARENA_SI=
+ZE - PAGE_SIZE),
+> +       page2 =3D bpf_arena_alloc_pages(&arena, (void __arena *)(ARENA_SI=
+ZE - 2 * PAGE_SIZE),
+>                                       1, NUMA_NO_NODE, 0);
+>         if (!page2)
+>                 return 2;
+>         *page2 =3D 2;
+> +
+> +       /* Test for the guard region at the end of the arena. */
+> +       no_page =3D bpf_arena_alloc_pages(&arena, (void __arena *)ARENA_S=
+IZE - PAGE_SIZE,
+> +                                       1, NUMA_NO_NODE, 0);
+> +       if (no_page)
+> +               return 16;
+> +
+>         no_page =3D bpf_arena_alloc_pages(&arena, (void __arena *)ARENA_S=
+IZE,
+>                                         1, NUMA_NO_NODE, 0);
+>         if (no_page)
+> --
+> 2.49.0
+>
 
