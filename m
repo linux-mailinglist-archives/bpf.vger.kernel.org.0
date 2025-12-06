@@ -1,119 +1,113 @@
-Return-Path: <bpf+bounces-76216-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76217-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37ADCCAA61B
-	for <lists+bpf@lfdr.de>; Sat, 06 Dec 2025 13:22:39 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E52CCAA621
+	for <lists+bpf@lfdr.de>; Sat, 06 Dec 2025 13:27:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A78D5308B35E
-	for <lists+bpf@lfdr.de>; Sat,  6 Dec 2025 12:22:19 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 6AB70300EA07
+	for <lists+bpf@lfdr.de>; Sat,  6 Dec 2025 12:27:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5CB22F4A15;
-	Sat,  6 Dec 2025 12:22:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F4882F12A8;
+	Sat,  6 Dec 2025 12:27:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H2oQ5onQ"
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="IZMXcbwM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from pdx-out-005.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-005.esa.us-west-2.outbound.mail-perimeter.amazon.com [52.13.214.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2E432D9792
-	for <bpf@vger.kernel.org>; Sat,  6 Dec 2025 12:22:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F85E19CCF5;
+	Sat,  6 Dec 2025 12:27:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.13.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765023737; cv=none; b=ZKcCYjegpqMt+MS7NHGrYowByfJzzLb8WOGVDrmcNLkr2v3mgcOOcJt6Khz+48HG3M51Z+YAow73FqveXwYSi+KJEhQcodR55xFgl0QNDkYHqGW73YL/ke6xitFmN7AcX7uTNYdamDLSWI/DAlnRjoWxojMYgm+qLYTwSEksOsU=
+	t=1765024047; cv=none; b=cooLXF6pZHZjO4cazhhVuZGoCl6SgBuy2V9FCKIT//Pavq5kuuJNXtRhw1HO2FvDDMZGirmBQivd9NongVZTIeQcW7QQNNHPaO0WsO5blRe2AI7P6a2sAPyLhAyqgunyh2a/t26rrm8kS+gV6rqmWCaPVJcUgQ9NA1yv81gj8LU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765023737; c=relaxed/simple;
-	bh=avqE80FuNxtKhYsrQn86s5EDGliZlYwIo6L89ALC9u0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fUEeJD+90w+jrZwxHHp9+dqavBrTzmh3A/K/1F1a2NjHz3K14Xsv8/xJ5Fu/rkLY8LqWsNHGgcc6isCNB2CJBH5zH/86rUyHX/sEqoXaxJB17Fx+r0dGaO3RWnQKSsLn7EoKjJeMDzHhQhXQIvKo4Y51H0OPqeMCbYAAG3237SY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H2oQ5onQ; arc=none smtp.client-ip=209.85.221.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-42e2d44c727so1429122f8f.0
-        for <bpf@vger.kernel.org>; Sat, 06 Dec 2025 04:22:14 -0800 (PST)
+	s=arc-20240116; t=1765024047; c=relaxed/simple;
+	bh=zWYJ1ppVcu9XVgKz0rjB80aNd1/2ERboAsoGdwHU1BY=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Q63c4/TlDZMv8TSBclALYkWxwG5akO79Tn6qHKSRXpOuX2knswiTImC8c55xMJ6nCaCHyI/Mw6mK3pZrBMM5ENe5EIDmqGyPOaZdjZqyLLGwq63hn+25SR85J8n2GPOGDv3R8N7l1KN9/wILBT0JQWu+/cajcbc0dlQyxBMRyU8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=IZMXcbwM; arc=none smtp.client-ip=52.13.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1765023733; x=1765628533; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=avqE80FuNxtKhYsrQn86s5EDGliZlYwIo6L89ALC9u0=;
-        b=H2oQ5onQ0pFPhEa0hqbyseC8fjech6UnCLlnhYLjodg7Zx/vPRKm+McNKFK440OPWM
-         UWpJJOAiDD39gSq/Ry6xLP5rwUj0dy8oBRgVoT/maGQMF2uqotYfR3v2cHPScIgU057r
-         1SCbxK7kiHxihJ1fCGqYV/RH51K9QSZoTVXq0Y1AyZ9nzUlBCpISo2w6LzlS9aKkeguO
-         3scPe+pTcLevUkLBnALK7CDsOCn/ilthriuzhurw4LlEUY7EFDnZQ2pLmLfjM0bczUee
-         BECVBQYW187EjwSHteGWpep81lfwgfdVMIvughbEU7O2/ZkYQ1aK16nFee03/u3Qig1f
-         AWOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765023733; x=1765628533;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=avqE80FuNxtKhYsrQn86s5EDGliZlYwIo6L89ALC9u0=;
-        b=ZivJRsdfn4RhTqabf5nrQ20yR+ML1MYlgoWOHdEiVWoblQOTAEZ4My5lPHohZnsMGC
-         8ASYWJp9BlReYSNe3nI12PuXVHPniRUbgLuFPxO9X9y5kKY3PPrrOu6l16lyYhcQ9ynj
-         Yaa4PhWPpqRp00Mf67wJLkcdEQzqowpeR1e7L9wFpXWFIrITyKqXLr3PgD7EUH93rNNr
-         8lcIDuHYMdSmhdtCTWxcvnP3wiWRZrZiQySvAVOFCIDIXwvSKw8jsMVULONwGTSVI32v
-         SHo/eKs6QcZiKbXLbWnFfMZz2h8XJUHCpwkUTWoW2UgDQYnRCevobhKVyD4fs1DGk015
-         qTLQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV0MR4RVYn2mU/wXa9PFhImFwODxGMwrDKBuVqd5ph45lT8xYPm0NZZ3MrdQl4peFVkq7U=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy+cvrjiakiuPT1g+sBLVIbyyXxWbmhI3lFIFkI/TgUu+znFVp6
-	ODrXK7UwWu6YZ1fT9+O8kKGL/07zcyIJdvXVRRBnzpoTpdqvvZNYTTPjVpkPS3VTRrt0QwuuAvs
-	mKWD+MI4k3Q0aK0+v6NzI1GX2NtDNimM=
-X-Gm-Gg: ASbGnctKHRbpdKYn83TPR+ChCdanpjtYCHSoShFFlOvUSOsSPAgSTBnTBBM5ACPQMiy
-	Z5Gj2etwoJevjaOtDgHgxQeuPrmkSJbKYv4hMZ1TvMnnCRNHY5C3L1jfceiVJ24SMsUXfdwvFSV
-	sdNEO/qI2yXxN7XcLA3d8GEB/OGQJ+IwGjFMgxp1nv6rUvINo0GDQDl7i/37T1eKSoBLWqzf6r1
-	vg7UxkXOx3R9L9MgDYHXFASfqUcrg51o4LkZSdX1ih8mESqYyYMS6J4N/qPjJCvqGOTQ5Rn
-X-Google-Smtp-Source: AGHT+IFKw1cI9zye4JnFcVRfCJWeiris14USYPq+Fx80W4JZDV4qC19cHYIhu0zTEYoB+fP0fkJHMvEAuQZHqn37SP4=
-X-Received: by 2002:a5d:5d86:0:b0:42b:397f:8dd4 with SMTP id
- ffacd0b85a97d-42f89f56433mr2390728f8f.49.1765023733038; Sat, 06 Dec 2025
- 04:22:13 -0800 (PST)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1765024045; x=1796560045;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=zWYJ1ppVcu9XVgKz0rjB80aNd1/2ERboAsoGdwHU1BY=;
+  b=IZMXcbwMkhcMs1J4kyJnS4hRCYTt7Q97A6dPToHasAMKK4YZtizJ1uDv
+   q5DseIxU+TkN25AeDw6R+vjWxotjvUQLgYHsbIyv5gYoGT0rc6WgLyndC
+   nCbOR+NazAEMpzMUVwtDYkRhWs54UZq0Fkp17DgdMad0a115jkcV4oumo
+   7uXxG+Gld+Pswg3qlK3GXPHRUeofxKb15xvhjry4EALEE2/MuYEYOmnoT
+   qR7yM1h2rnl5exs2ZZQADhSf/lIs2TslRYMDzXGkNARx5alg+Ie2JXzOr
+   oXq/nd+APuvuWT4oSrDH/HXduUtUEqcc8w5ReVLdz1c9twKP7H8ThTkP/
+   w==;
+X-CSE-ConnectionGUID: 5oPqqEGSRD2S6uSXvZpz0g==
+X-CSE-MsgGUID: DKHiQnGZRaWzEXYVDCqWAw==
+X-IronPort-AV: E=Sophos;i="6.20,254,1758585600"; 
+   d="scan'208";a="8565127"
+Received: from ip-10-5-0-115.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.0.115])
+  by internal-pdx-out-005.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2025 12:27:23 +0000
+Received: from EX19MTAUWA001.ant.amazon.com [205.251.233.236:31777]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.10.104:2525] with esmtp (Farcaster)
+ id 0eacfba0-d52c-4779-9f77-366bd165cc13; Sat, 6 Dec 2025 12:27:22 +0000 (UTC)
+X-Farcaster-Flow-ID: 0eacfba0-d52c-4779-9f77-366bd165cc13
+Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
+ EX19MTAUWA001.ant.amazon.com (10.250.64.217) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.29;
+ Sat, 6 Dec 2025 12:27:22 +0000
+Received: from b0be8375a521.amazon.com (10.37.245.10) by
+ EX19D001UWA001.ant.amazon.com (10.13.138.214) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.29;
+ Sat, 6 Dec 2025 12:27:19 +0000
+From: Kohei Enju <enjuk@amazon.com>
+To: <alexei.starovoitov@gmail.com>
+CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
+	<daniel@iogearbox.net>, <davem@davemloft.net>, <eddyz87@gmail.com>,
+	<enjuk@amazon.com>, <haoluo@google.com>, <hawk@kernel.org>,
+	<john.fastabend@gmail.com>, <jolsa@kernel.org>, <kernel-team@cloudflare.com>,
+	<kohei.enju@gmail.com>, <kpsingh@kernel.org>, <kuba@kernel.org>,
+	<lorenzo@kernel.org>, <martin.lau@linux.dev>, <netdev@vger.kernel.org>,
+	<sdf@fomichev.me>, <shuah@kernel.org>, <song@kernel.org>, <toke@kernel.org>,
+	<yonghong.song@linux.dev>
+Subject: Re: [PATCH bpf v1 1/2] bpf: cpumap: propagate underlying error in cpu_map_update_elem()
+Date: Sat, 6 Dec 2025 21:26:51 +0900
+Message-ID: <20251206122711.62868-1-enjuk@amazon.com>
+X-Mailer: git-send-email 2.48.1
+In-Reply-To: <CAADnVQKJ2wzZSCmYPR_wTfp3pLDpHjTVQ0RLviHWGMtWzVy8-Q@mail.gmail.com>
+References: <CAADnVQKJ2wzZSCmYPR_wTfp3pLDpHjTVQ0RLviHWGMtWzVy8-Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAADnVQKxZv9hCLeFz60Sra5t4J4h=EncoKW3K1OyEBePAfqmuQ@mail.gmail.com>
- <20251206121418.59654-1-enjuk@amazon.com>
-In-Reply-To: <20251206121418.59654-1-enjuk@amazon.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Sat, 6 Dec 2025 04:22:02 -0800
-X-Gm-Features: AQt7F2pje1q34bfp3bykmYzXEPk-ALtUw0mFaR5D3NfbkPUolo5MgMXaH7eX0os
-Message-ID: <CAADnVQKJ2wzZSCmYPR_wTfp3pLDpHjTVQ0RLviHWGMtWzVy8-Q@mail.gmail.com>
-Subject: Re: [PATCH bpf v1 1/2] bpf: cpumap: propagate underlying error in cpu_map_update_elem()
-To: Kohei Enju <enjuk@amazon.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, Eduard <eddyz87@gmail.com>, 
-	Hao Luo <haoluo@google.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
-	kernel-team <kernel-team@cloudflare.com>, kohei.enju@gmail.com, 
-	KP Singh <kpsingh@kernel.org>, Jakub Kicinski <kuba@kernel.org>, 
-	Lorenzo Bianconi <lorenzo@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Network Development <netdev@vger.kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Shuah Khan <shuah@kernel.org>, 
-	Song Liu <song@kernel.org>, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: EX19D046UWA001.ant.amazon.com (10.13.139.112) To
+ EX19D001UWA001.ant.amazon.com (10.13.138.214)
 
-On Sat, Dec 6, 2025 at 9:14=E2=80=AFPM Kohei Enju <enjuk@amazon.com> wrote:
->
-> On Sat, 6 Dec 2025 04:06:38 -0800, Alexei Starovoitov wrote:
->
-> >On Sat, Dec 6, 2025 at 9:01=E2=80=AFPM Kohei Enju <enjuk@amazon.com> wro=
-te:
-> >>
-> >> Ah, I forgot that bpf-next is closed until Jan 2nd due to the merge wi=
-ndow.
-> >> I'll resend v2 after Jan 2nd :)
-> >
-> >?! It's not closed. net-next is.
->
-> Oh, really?
-> Hmm, I've read the documentation[1], but I may misunderstand something. P=
-erhaps that documentation is outdated?
->
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tr=
-ee/Documentation/bpf/bpf_devel_QA.rst#n232
+On Sat, 6 Dec 2025 04:22:02 -0800, Alexei Starovoitov wrote:
 
-yes. It's seriously outdated. bpf-next was never closed.
+>On Sat, Dec 6, 2025 at 9:14 PM Kohei Enju <enjuk@amazon.com> wrote:
+>>
+>> On Sat, 6 Dec 2025 04:06:38 -0800, Alexei Starovoitov wrote:
+>>
+>> >On Sat, Dec 6, 2025 at 9:01 PM Kohei Enju <enjuk@amazon.com> wrote:
+>> >>
+>> >> Ah, I forgot that bpf-next is closed until Jan 2nd due to the merge window.
+>> >> I'll resend v2 after Jan 2nd :)
+>> >
+>> >?! It's not closed. net-next is.
+>>
+>> Oh, really?
+>> Hmm, I've read the documentation[1], but I may misunderstand something. Perhaps that documentation is outdated?
+>>
+>> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/bpf/bpf_devel_QA.rst#n232
+>
+>yes. It's seriously outdated. bpf-next was never closed.
+
+Today I learned! Thank you for the clarification.
+
+As originally planned, I will work on v2 next week :)
 
