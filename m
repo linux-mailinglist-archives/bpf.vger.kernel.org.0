@@ -1,189 +1,223 @@
-Return-Path: <bpf+bounces-76288-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76289-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD48CCAD9E1
-	for <lists+bpf@lfdr.de>; Mon, 08 Dec 2025 16:39:04 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75285CADA38
+	for <lists+bpf@lfdr.de>; Mon, 08 Dec 2025 16:47:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5C8FF30450B3
-	for <lists+bpf@lfdr.de>; Mon,  8 Dec 2025 15:38:58 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 07E28301D626
+	for <lists+bpf@lfdr.de>; Mon,  8 Dec 2025 15:47:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E747A2C237F;
-	Mon,  8 Dec 2025 15:38:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A963224B1B;
+	Mon,  8 Dec 2025 15:47:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Ab6JqRi4"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LEb+kpnn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E985C26FA57;
-	Mon,  8 Dec 2025 15:38:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C879E1D86FF;
+	Mon,  8 Dec 2025 15:47:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765208335; cv=none; b=Lr2U2Vf5astyWV9ioNlzHqud2gEIfcWQh4AUAdwiAr/qshZSX1yOSDYQiSTCFG+4qeG7JHjlMcBU2S/iMXksimlb3SmHayn7IWZPbTrOVuFoM4bAdINXVTlAazDdnjnydri+r1VVRwRLAgcxHiCUVVhZ3D4BtDl4Zu0N6SzXNmI=
+	t=1765208872; cv=none; b=q7ehg/o3S3ObqGuDvv8e7V4PIewXDesQA42v8DI3ElGxZW1UuE1qUgLx8V+sxu0tQX5ufVRLeRgFnxsgcCwNIOeKJewOe+6jNn0j9JdRQvXLb1ip3007W5nsW7K387VBO3wr/kHAG6+HPUPI1yow80/mZmXemDpVI7UVy5fxN08=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765208335; c=relaxed/simple;
-	bh=pkL1PGlWK6kWiB9mGkCiNgzfBCMk+SB9F42d4ZU4ctU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZTENy8uKOMvu6gp7IqzaoMAAcuZ5w/mz9j1yGR8dEPFDJaTXa6Ghc6UAzdb0WWI/0TRBgfJpsw2A2zErpAbIxGUA3b7TYq2T339NU8gt6cN3AQW8/i7B29/jM3UokiGsvGW2AMPryGP/lE1LR4O3hPsuJvuUpVRo+My8fTTJLeE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Ab6JqRi4; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5B85Dlre024537;
-	Mon, 8 Dec 2025 15:38:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=8du7Uo
-	GnN7LbZDj2cDJ1DGYJrS5D2TMQb4FpDdleGeY=; b=Ab6JqRi4t6h+RrKMjCEfRd
-	jUx/dkMOZ5N90KIc1A5GMbOCAwAm8FHGzmMwnjE/5Lzk5iCmxyC5P0Gp6c1cWCwH
-	U7vOYjP13p3wA/1s9d/+afUQc27dMvWjtVtbkOawAo5mE+NYTgvwztEmBDaoMADQ
-	1Z43BJ4Dl0xalJ1E603ybSjodoVWifF7pZFRVcJ0uIbByUUqr/iEK9Cv2OvC9mM5
-	cA5lbyIeAIvB6xYWIP0SZ1KaYYSRvuQ1YIGRzwRgwjIetLSpUwy7WA5jSQf7RO3Y
-	x/VX7qBOJ6o5Xx9fpWowGRFMsyycij4UYkZKR0FPGwvD7GIQ4+lOdINnGsfgutcw
-	==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4avc618f62-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Dec 2025 15:38:24 +0000 (GMT)
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 5B8FCpTD011780;
-	Mon, 8 Dec 2025 15:38:23 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4avc618f5x-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Dec 2025 15:38:23 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5B8EWkBD028147;
-	Mon, 8 Dec 2025 15:38:21 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4avy6xpf3p-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Dec 2025 15:38:21 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5B8FcIP534603340
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 8 Dec 2025 15:38:18 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E75D520040;
-	Mon,  8 Dec 2025 15:38:17 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 7CC0C2004E;
-	Mon,  8 Dec 2025 15:38:16 +0000 (GMT)
-Received: from [9.111.221.3] (unknown [9.111.221.3])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Mon,  8 Dec 2025 15:38:16 +0000 (GMT)
-Message-ID: <11b2438c-ef1f-423f-96c9-3005a75ec008@linux.ibm.com>
-Date: Mon, 8 Dec 2025 16:38:16 +0100
+	s=arc-20240116; t=1765208872; c=relaxed/simple;
+	bh=xF1zaGreaMniCM5CNPSiAEiGyhOLswX+I31/sLqARBw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=QspgXTMtH37+A9thdx74VNFPGLIX2pFfWIMPMrgAU5FOSHRnpn2eRgYXev4W0w6hj04L3yqgmg+lWp+M0GFzR+X0vJYK15ohz6Mhs5alBmAlqH/RaE0wCFsZuLFyY8IPlCXRZsIwOzqp9qJVVNfaycAZjCUrXkpi+3HmZnjM590=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LEb+kpnn; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1765208871; x=1796744871;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=xF1zaGreaMniCM5CNPSiAEiGyhOLswX+I31/sLqARBw=;
+  b=LEb+kpnnUA/vbfjsZpwOAD3PgyEgwlZLiDOPRDtl3ixruaPsdvrLHKYS
+   7Z4pFTyFE5CYknwgBzaVshMvTyECU+70tF0NkH9EvMwY1rN2Ii1br21+L
+   IsI+sxgtaD48SrDHJbYvrikEcY+2AOHjPQcmpsIZUhAwYCIrQk0Yr7wJA
+   Non5+DYwyG6HTHond54VE3kdDuA9NaaQM/K/hemFD5l0LN2faC5iPug2L
+   mHaPOJ6QGI2KLFLZvby/QmiTJGGvu+baMHBISjWPLATMLpC0FKHRFwFZR
+   YdEAl7F4RHYOuMpDEUofad1OOisnt+YSdycG1hCSL1SbC1hAZFHYCUr7e
+   w==;
+X-CSE-ConnectionGUID: DXvURgTgQVOU+1/Fqo+G/Q==
+X-CSE-MsgGUID: btmumwHvRGmm8v8p2hoX2w==
+X-IronPort-AV: E=McAfee;i="6800,10657,11636"; a="78510617"
+X-IronPort-AV: E=Sophos;i="6.20,259,1758610800"; 
+   d="scan'208";a="78510617"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2025 07:47:50 -0800
+X-CSE-ConnectionGUID: RPr1hMxCTG6erqF5TKd4aw==
+X-CSE-MsgGUID: tbK4SwKkQjalcfP0P8R/iA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.20,259,1758610800"; 
+   d="scan'208";a="196732625"
+Received: from black.igk.intel.com ([10.91.253.5])
+  by fmviesa010.fm.intel.com with ESMTP; 08 Dec 2025 07:47:46 -0800
+Received: by black.igk.intel.com (Postfix, from userid 1003)
+	id E65A498; Mon, 08 Dec 2025 16:47:44 +0100 (CET)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Alexei Starovoitov <ast@kernel.org>,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org
+Cc: Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Matt Bobrowski <mattbobrowski@google.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	Mirsad Todorovac <mtodorovac69@yahoo.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] : Mark BPF printing functions with __printf() attribute
+Date: Mon,  8 Dec 2025 16:47:33 +0100
+Message-ID: <20251208154733.2901633-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2 14/15] unwind_user/backchain: Introduce back chain
- user space unwinding
-To: Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, bpf@vger.kernel.org, x86@kernel.org,
-        Steven Rostedt <rostedt@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Indu Bhagat <indu.bhagat@oracle.com>,
-        "Jose E. Marchesi" <jemarch@gnu.org>,
-        Beau Belgrave <beaub@linux.microsoft.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Florian Weimer <fweimer@redhat.com>, Kees Cook <kees@kernel.org>,
-        "Carlos O'Donell" <codonell@redhat.com>, Sam James <sam@gentoo.org>,
-        Dylan Hatch <dylanbhatch@google.com>
-References: <20251205171446.2814872-1-jremus@linux.ibm.com>
- <20251205171446.2814872-15-jremus@linux.ibm.com>
- <iidpbjmxnjf3zu4fa3atiubgb365yonv4gymaj76l6jvuxy67s@2y5o4txs4vhr>
-Content-Language: en-US
-From: Jens Remus <jremus@linux.ibm.com>
-Organization: IBM Deutschland Research & Development GmbH
-In-Reply-To: <iidpbjmxnjf3zu4fa3atiubgb365yonv4gymaj76l6jvuxy67s@2y5o4txs4vhr>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMjA2MDAyMCBTYWx0ZWRfX1grYLRgFzTZ3
- 6Bw2Y4KLfWHcTiIY8Y+q/40vMo5DISBPf6WqrACaJC3lTWr3YuNditWdGBvOE50K7FO18iHLYkL
- N+q1ZC8XPnvBwcoqJfdSAfOGem02OMhjdPnKO9MI5Q4zgIbhTpkemspxKuBdCj4Rn+eiIOB8Yug
- jzP2KFajjhB9mPqExO/heQEaiD1fkTNaF8pi8h7StawqzRXDb1VLiLurUW5jffw4zQ7RphSGH1I
- RKL6ciLTTZexBxhJFh2Vzgqal3IQxN6ZvqlZg9zUV7SQs/00pUWBtai9/7H44N4lhMqA9k3B8S8
- bJmFNkhIDZLiqxjQtuzK0ZoGuhwf72Ycxn8DUippxtkLbYsSlQaT2WQfb6j1OwwfDq9Fqo4uFQ9
- H0mnb1/3gsQqmX0zZDtlGk2SX3uRDA==
-X-Proofpoint-GUID: DXuAST9Co_tE0Nz77KIRNVh0G2HS3M53
-X-Proofpoint-ORIG-GUID: J4Duk8KbAVtSEM7aBteiKz0qR3AIXoxE
-X-Authority-Analysis: v=2.4 cv=O/U0fR9W c=1 sm=1 tr=0 ts=6936f0f0 cx=c_pps
- a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
- a=IkcTkHD0fZMA:10 a=wP3pNCr1ah4A:10 a=VkNPw1HP01LnGYTKEx00:22
- a=VnNF1IyMAAAA:8 a=0MvmVg10__VCTnNSAJcA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2025-12-06_02,2025-12-04_04,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- impostorscore=0 lowpriorityscore=0 bulkscore=0 clxscore=1015 phishscore=0
- suspectscore=0 adultscore=0 spamscore=0 malwarescore=0 priorityscore=1501
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2510240000 definitions=main-2512060020
 
-Hello Josh,
+The printing functions in BPF code are using printf() type of format,
+and compiler is not happy about them as is:
 
-thank you for your feedback!
+kernel/bpf/helpers.c:1069:9: error: function ‘____bpf_snprintf’ might be a candidate for ‘gnu_printf’ format attribute [-Werror=suggest-attribute=format]
+ 1069 |         err = bstr_printf(str, str_size, fmt, data.bin_args);
+      |         ^~~
 
-On 12/7/2025 4:10 PM, Josh Poimboeuf wrote:
-> On Fri, Dec 05, 2025 at 06:14:45PM +0100, Jens Remus wrote:
->> @@ -159,6 +165,10 @@ static int unwind_user_next(struct unwind_user_state *state)
->>  			if (!unwind_user_next_fp(state))
->>  				return 0;
->>  			continue;
->> +		case UNWIND_USER_TYPE_BACKCHAIN:
->> +			if (!unwind_user_next_backchain(state))
->> +				return 0;
->> +			continue;		/* Try next method. */
->>  		default:
->>  			WARN_ONCE(1, "Undefined unwind bit %d", bit);
->>  			break;
->> @@ -187,6 +197,8 @@ static int unwind_user_start(struct unwind_user_state *state)
->>  		state->available_types |= UNWIND_USER_TYPE_SFRAME;
->>  	if (IS_ENABLED(CONFIG_HAVE_UNWIND_USER_FP))
->>  		state->available_types |= UNWIND_USER_TYPE_FP;
->> +	if (IS_ENABLED(CONFIG_HAVE_UNWIND_USER_BACKCHAIN))
->> +		state->available_types |= UNWIND_USER_TYPE_BACKCHAIN;
-> 
-> Any reason not to just use the existing CONFIG_HAVE_UNWIND_USER_FP hook
-> here rather than create the new BACKCHAIN one?
+kernel/trace/bpf_trace.c:377:9: error: function ‘____bpf_trace_printk’ might be a candidate for ‘gnu_printf’ format attribute [-Werror=suggest-attribute=format]
+  377 |         ret = bstr_printf(data.buf, MAX_BPRINTF_BUF, fmt, data.bin_args);
+      |         ^~~
 
-At first I thought this would not be a good idea, as my unwind user
-backchain implementation relies on being standalone without using
-unwind_user_next_common().  Mainly because s390 back chain unwinding
-does not have fixed CFA, FP, and RA offsets/locations.  But then I gave
-it a try and it does not look that bad actually.
+kernel/trace/bpf_trace.c:433:9: error: function ‘____bpf_trace_vprintk’ might be a candidate for ‘gnu_printf’ format attribute [-Werror=suggest-attribute=format]
+  433 |         ret = bstr_printf(data.buf, MAX_BPRINTF_BUF, fmt, data.bin_args);
+      |         ^~~
 
-I'll send a RFC v3 soon.
+kernel/trace/bpf_trace.c:475:9: error: function ‘____bpf_seq_printf’ might be a candidate for ‘gnu_printf’ format attribute [-Werror=suggest-attribute=format]
+  475 |         seq_bprintf(m, fmt, data.bin_args);
+      |         ^~~~~~~~~~~
 
-Regards,
-Jens
+Fix the compilation errors by adding __printf() attribute. For that
+we need to pass it down to the BPF_CALL_x() and wrap into PRINTF_BPF_CALL_*()
+to make code neater.
+
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202512061425.x0qTt9ww-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202512061640.9hKTnB8p-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202512081321.2h9ThWTg-lkp@intel.com/
+
+Fixes:
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ include/linux/filter.h   | 24 +++++++++++++++---------
+ kernel/bpf/helpers.c     |  2 +-
+ kernel/trace/bpf_trace.c |  6 +++---
+ 3 files changed, 19 insertions(+), 13 deletions(-)
+
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index fd54fed8f95f..31034a74af22 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -607,9 +607,9 @@ static inline bool insn_is_cast_user(const struct bpf_insn *insn)
+ 	__BPF_MAP(n, __BPF_DECL_ARGS, __BPF_N, u64, __ur_1, u64, __ur_2,       \
+ 		  u64, __ur_3, u64, __ur_4, u64, __ur_5)
+ 
+-#define BPF_CALL_x(x, attr, name, ...)					       \
++#define BPF_CALL_x(x, __attr, attr, name, ...)				       \
+ 	static __always_inline						       \
+-	u64 ____##name(__BPF_MAP(x, __BPF_DECL_ARGS, __BPF_V, __VA_ARGS__));   \
++	__attr u64 ____##name(__BPF_MAP(x, __BPF_DECL_ARGS, __BPF_V, __VA_ARGS__));     \
+ 	typedef u64 (*btf_##name)(__BPF_MAP(x, __BPF_DECL_ARGS, __BPF_V, __VA_ARGS__)); \
+ 	attr u64 name(__BPF_REG(x, __BPF_DECL_REGS, __BPF_N, __VA_ARGS__));    \
+ 	attr u64 name(__BPF_REG(x, __BPF_DECL_REGS, __BPF_N, __VA_ARGS__))     \
+@@ -620,14 +620,20 @@ static inline bool insn_is_cast_user(const struct bpf_insn *insn)
+ 	u64 ____##name(__BPF_MAP(x, __BPF_DECL_ARGS, __BPF_V, __VA_ARGS__))
+ 
+ #define __NOATTR
+-#define BPF_CALL_0(name, ...)	BPF_CALL_x(0, __NOATTR, name, __VA_ARGS__)
+-#define BPF_CALL_1(name, ...)	BPF_CALL_x(1, __NOATTR, name, __VA_ARGS__)
+-#define BPF_CALL_2(name, ...)	BPF_CALL_x(2, __NOATTR, name, __VA_ARGS__)
+-#define BPF_CALL_3(name, ...)	BPF_CALL_x(3, __NOATTR, name, __VA_ARGS__)
+-#define BPF_CALL_4(name, ...)	BPF_CALL_x(4, __NOATTR, name, __VA_ARGS__)
+-#define BPF_CALL_5(name, ...)	BPF_CALL_x(5, __NOATTR, name, __VA_ARGS__)
++#define BPF_CALL_0(name, ...)	BPF_CALL_x(0, __NOATTR, __NOATTR, name, __VA_ARGS__)
++#define BPF_CALL_1(name, ...)	BPF_CALL_x(1, __NOATTR, __NOATTR, name, __VA_ARGS__)
++#define BPF_CALL_2(name, ...)	BPF_CALL_x(2, __NOATTR, __NOATTR, name, __VA_ARGS__)
++#define BPF_CALL_3(name, ...)	BPF_CALL_x(3, __NOATTR, __NOATTR, name, __VA_ARGS__)
++#define BPF_CALL_4(name, ...)	BPF_CALL_x(4, __NOATTR, __NOATTR, name, __VA_ARGS__)
++#define BPF_CALL_5(name, ...)	BPF_CALL_x(5, __NOATTR, __NOATTR, name, __VA_ARGS__)
+ 
+-#define NOTRACE_BPF_CALL_1(name, ...)	BPF_CALL_x(1, notrace, name, __VA_ARGS__)
++#define PRINTF_BPF_CALL_x(p, name, x, ...)				       \
++	BPF_CALL_x(x, __printf(p, 0), __NOATTR, name, __VA_ARGS__)
++
++#define PRINTF_BPF_CALL_4(p, name, ...)		PRINTF_BPF_CALL_x(p, name, 4, __VA_ARGS__)
++#define PRINTF_BPF_CALL_5(p, name, ...)		PRINTF_BPF_CALL_x(p, name, 5, __VA_ARGS__)
++
++#define NOTRACE_BPF_CALL_1(name, ...)	BPF_CALL_x(1, __NOATTR, notrace, name, __VA_ARGS__)
+ 
+ #define bpf_ctx_range(TYPE, MEMBER)						\
+ 	offsetof(TYPE, MEMBER) ... offsetofend(TYPE, MEMBER) - 1
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index db72b96f9c8c..cbc66865e3dc 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -1046,7 +1046,7 @@ int bpf_bprintf_prepare(const char *fmt, u32 fmt_size, const u64 *raw_args,
+ 	return err;
+ }
+ 
+-BPF_CALL_5(bpf_snprintf, char *, str, u32, str_size, char *, fmt,
++PRINTF_BPF_CALL_5(3, bpf_snprintf, char *, str, u32, str_size, char *, fmt,
+ 	   const void *, args, u32, data_len)
+ {
+ 	struct bpf_bprintf_data data = {
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index d57727abaade..5fd46b4bcf48 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -359,7 +359,7 @@ static const struct bpf_func_proto bpf_probe_write_user_proto = {
+ #define MAX_TRACE_PRINTK_VARARGS	3
+ #define BPF_TRACE_PRINTK_SIZE		1024
+ 
+-BPF_CALL_5(bpf_trace_printk, char *, fmt, u32, fmt_size, u64, arg1,
++PRINTF_BPF_CALL_5(1, bpf_trace_printk, char *, fmt, u32, fmt_size, u64, arg1,
+ 	   u64, arg2, u64, arg3)
+ {
+ 	u64 args[MAX_TRACE_PRINTK_VARARGS] = { arg1, arg2, arg3 };
+@@ -412,7 +412,7 @@ const struct bpf_func_proto *bpf_get_trace_printk_proto(void)
+ 	return &bpf_trace_printk_proto;
+ }
+ 
+-BPF_CALL_4(bpf_trace_vprintk, char *, fmt, u32, fmt_size, const void *, args,
++PRINTF_BPF_CALL_4(1, bpf_trace_vprintk, char *, fmt, u32, fmt_size, const void *, args,
+ 	   u32, data_len)
+ {
+ 	struct bpf_bprintf_data data = {
+@@ -455,7 +455,7 @@ const struct bpf_func_proto *bpf_get_trace_vprintk_proto(void)
+ 	return &bpf_trace_vprintk_proto;
+ }
+ 
+-BPF_CALL_5(bpf_seq_printf, struct seq_file *, m, char *, fmt, u32, fmt_size,
++PRINTF_BPF_CALL_5(2, bpf_seq_printf, struct seq_file *, m, char *, fmt, u32, fmt_size,
+ 	   const void *, args, u32, data_len)
+ {
+ 	struct bpf_bprintf_data data = {
 -- 
-Jens Remus
-Linux on Z Development (D3303)
-+49-7031-16-1128 Office
-jremus@de.ibm.com
-
-IBM
-
-IBM Deutschland Research & Development GmbH; Vorsitzender des Aufsichtsrats: Wolfgang Wendt; Geschäftsführung: David Faller; Sitz der Gesellschaft: Böblingen; Registergericht: Amtsgericht Stuttgart, HRB 243294
-IBM Data Privacy Statement: https://www.ibm.com/privacy/
+2.50.1
 
 
