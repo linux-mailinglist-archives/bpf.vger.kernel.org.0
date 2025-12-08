@@ -1,283 +1,218 @@
-Return-Path: <bpf+bounces-76271-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76273-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35275CAC8B6
-	for <lists+bpf@lfdr.de>; Mon, 08 Dec 2025 09:49:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 29DF7CAC943
+	for <lists+bpf@lfdr.de>; Mon, 08 Dec 2025 09:59:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A9172303E3D5
-	for <lists+bpf@lfdr.de>; Mon,  8 Dec 2025 08:49:45 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2C163304E161
+	for <lists+bpf@lfdr.de>; Mon,  8 Dec 2025 08:58:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0800B27AC31;
-	Mon,  8 Dec 2025 08:49:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cFepiQxN"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 876BD2EC569;
+	Mon,  8 Dec 2025 08:58:28 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f80.google.com (mail-oo1-f80.google.com [209.85.161.80])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 834D22192F4
-	for <bpf@vger.kernel.org>; Mon,  8 Dec 2025 08:49:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 691CD2DA769
+	for <bpf@vger.kernel.org>; Mon,  8 Dec 2025 08:58:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765183784; cv=none; b=MoKfsKEkDE0r0gFG/fGutQL9UmNn52butJfxgtEd+xPuZjwoEBN3aYwmYqTn5Xo2axxy2amRnqjVF/WzNg+2pGi8M/b14J0iDbf3nJqo75DK9x0jFihZOsxx0iBXl7iJDItzO4v4m5PSRF7noaBp/n9kogamnkMGFmrfqSYJjs8=
+	t=1765184308; cv=none; b=Lyf506xj00Ks2qSGcdbuarT/cXcE9EH2ZF3Y2if2n3EfIP4A2q9DOaPR/UCZQJaYdcpWCBh25Y82kspI2AaKugCooW8i5XDbAYSGJn2naWtfvPpJf0Hh1+HpjWTQaTZivxt7kk8rnZTWY8aiEMOKt48qi3Zujh9W2Op9LFpUKLA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765183784; c=relaxed/simple;
-	bh=h7nWsRYeCi3W72b4YW32UykCWbgbF+6AvYubkfr/7nc=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=C7lXGH29XyRa/I1SurlyQmFVmFm9uEd0zq5vtav0Oec00XD1NS+JpQOfYeZ4c/6a0nykMMyW3imo7pJrJ9pe/I6LtkcQ8iOgfUhfY6oPZyGoaATcL7w01K2lpgMGLXlUp5hTSndqTX1dVdpPLNfeIg27w91nKqyD5/Sh9fFxLwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=cFepiQxN; arc=none smtp.client-ip=95.215.58.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1765184308; c=relaxed/simple;
+	bh=wp8MwnSLOMiDJKd1sOq8ThIthz8O7uCx2RCJUSbYhtU=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=omMnrVcieasSJhNFR2d5wFH1ujLEkzBW9npoNye63YWfM7+tddDB/OwLacKkvJmeL+PHEOBTBFqEtBWpPkeJyStPN9+2YyERAG1wFE/0bo7+1ZjfpPrgh2ghXodKnSlcFWTdvwKihwnEFUFD9D6/Xi0oRZiJID9dRfIRzPGcNMU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.161.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-oo1-f80.google.com with SMTP id 006d021491bc7-657a6c9d45eso2956350eaf.2
+        for <bpf@vger.kernel.org>; Mon, 08 Dec 2025 00:58:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765184305; x=1765789105;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OWxEuG2Te9THcEN6TKv3cNenNvqC8+NtJLsMxa9AyPc=;
+        b=m4Ajx7LQJgVm1Em7Dc35hVZ2WvoAK+yqeZz/HqhCkEMVm81G2PyfyQQoZ5DowBI7w2
+         865zuwYGAg4KmkTU5FLwZDpxS92JRMv2gMiaxPAIdy1lDQZMl9Ycgm2x/O6brenSPG9Y
+         pyP77lG8UoCINwEzs7a/Q4hv+vVrH25PsuRrm60+ZM8rMkyoqT87N+GpoNknmuciYXXl
+         qJGyQbK/d5U3yWJryccBBa0cSzI3fWs72o/mGudU4KcExxn577X8nJnm6SBeBZbapDEt
+         uA5jsVhKXXMRv/HHlOz3E/bEa01KhxqSB4uxPWe9Pk5Uj/4D5vzl5DqHPHpDofCApVs/
+         2fUA==
+X-Forwarded-Encrypted: i=1; AJvYcCWFxTICahEqQhBKD97z2xiSjVoYyxgB+rWhJwgftLl248TNsvsKKtV/xx6UIFG0rbkakLo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzvF1n3vdqNef81TX9HoFErrvpr4XDsn1uITQ5wI4vhBJ4oNQRQ
+	uG5u8OndmBRRQL6e+M7gRaKdEKB/BfuavTMSE9qWT5R8Pmi8q8uuE0dyaoN20R6mpvJVq79MMFG
+	Fa0KCkvL6S5y5o4MBPbHxDIJAdGEvxR3HmAVzMtd5rS2eyCov0Gb5wcBgy9w=
+X-Google-Smtp-Source: AGHT+IE93KA4DO9il2f1SrXdptHACJTwjhwUi0Lo99HY/svuNve52z2gw6vQLVT6uVtAa36q0KrpyIqCA4CkKRoByycbHkehXU93
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1765183779;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=md5rTE5KknOBT4xPJmYQUJv6l5PQ4j1T9Q1h2YConaM=;
-	b=cFepiQxN0YI5olqORmnriQuU0nV4lPqC+Ss7VnbeXlyT0KrwxdFMofkiXOOFWKIE8LvaWO
-	7aWbu9fRckTTsC3E/cIM6HkHBApdiAnnFjcFyIpxPdIyxaK/ilrQEd8tGMH4WDVH8Yc5eV
-	P2Y16lI2B+JdCdUxC2e/7cbhN6nVHjg=
-Date: Mon, 08 Dec 2025 08:49:34 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: hui.zhu@linux.dev
-Message-ID: <1d9a162605a3f32ac215430131f7745488deaa34@linux.dev>
-TLS-Required: No
-Subject: Re: [PATCH v2 21/23] sched: psi: implement bpf_psi_create_trigger() 
- kfunc
-To: "Roman Gushchin" <roman.gushchin@linux.dev>, "Andrew Morton"
- <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, "Alexei Starovoitov" <ast@kernel.org>,
- "Suren Baghdasaryan" <surenb@google.com>, "Michal Hocko"
- <mhocko@kernel.org>, "Shakeel Butt" <shakeel.butt@linux.dev>, "Johannes 
- Weiner" <hannes@cmpxchg.org>, "Andrii Nakryiko" <andrii@kernel.org>, "JP 
- Kobryn" <inwardvessel@gmail.com>, linux-mm@kvack.org,
- cgroups@vger.kernel.org, bpf@vger.kernel.org, "Martin KaFai Lau"
- <martin.lau@kernel.org>, "Song Liu" <song@kernel.org>, "Kumar Kartikeya 
- Dwivedi" <memxor@gmail.com>, "Tejun Heo" <tj@kernel.org>, "Roman 
- Gushchin" <roman.gushchin@linux.dev>
-In-Reply-To: <20251027232206.473085-11-roman.gushchin@linux.dev>
-References: <20251027232206.473085-1-roman.gushchin@linux.dev>
- <20251027232206.473085-11-roman.gushchin@linux.dev>
-X-Migadu-Flow: FLOW_OUT
+X-Received: by 2002:a05:6820:811:b0:659:9a49:90c5 with SMTP id
+ 006d021491bc7-6599a977508mr3014043eaf.68.1765184305444; Mon, 08 Dec 2025
+ 00:58:25 -0800 (PST)
+Date: Mon, 08 Dec 2025 00:58:25 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <69369331.a70a0220.38f243.009c.GAE@google.com>
+Subject: [syzbot] [bpf?] KASAN: slab-use-after-free Write in defer_free
+From: syzbot <syzbot+7a25305a76d872abcfa1@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@fomichev.me, 
+	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-2025=E5=B9=B410=E6=9C=8828=E6=97=A5 07:22, "Roman Gushchin" <roman.gushch=
-in@linux.dev mailto:roman.gushchin@linux.dev?to=3D%22Roman%20Gushchin%22%=
-20%3Croman.gushchin%40linux.dev%3E > =E5=86=99=E5=88=B0:
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    559e608c4655 Merge tag 'ntfs3_for_6.19' of https://github...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1080b192580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=35a67601c980c167
+dashboard link: https://syzkaller.appspot.com/bug?extid=7a25305a76d872abcfa1
+compiler:       aarch64-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1574b01a580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16a33cc2580000
+
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/fa3fbcfdac58/non_bootable_disk-559e608c.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/5ff565203729/vmlinux-559e608c.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/28d6e57737b9/Image-559e608c.gz.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7a25305a76d872abcfa1@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: slab-use-after-free in defer_free+0x3c/0xbc mm/slub.c:6537
+Write at addr f3f000000854f020 by task kworker/u8:6/983
+Pointer tag: [f3], memory tag: [fe]
+
+CPU: 0 UID: 0 PID: 983 Comm: kworker/u8:6 Not tainted syzkaller #0 PREEMPT 
+Hardware name: linux,dummy-virt (DT)
+Workqueue: events_unbound bpf_map_free_deferred
+Call trace:
+ show_stack+0x18/0x24 arch/arm64/kernel/stacktrace.c:499 (C)
+ __dump_stack lib/dump_stack.c:94 [inline]
+ dump_stack_lvl+0x78/0x90 lib/dump_stack.c:120
+ print_address_description mm/kasan/report.c:378 [inline]
+ print_report+0x108/0x61c mm/kasan/report.c:482
+ kasan_report+0x88/0xac mm/kasan/report.c:595
+ report_tag_fault arch/arm64/mm/fault.c:330 [inline]
+ do_tag_recovery arch/arm64/mm/fault.c:342 [inline]
+ __do_kernel_fault+0x170/0x1c8 arch/arm64/mm/fault.c:384
+ do_bad_area+0x68/0x78 arch/arm64/mm/fault.c:484
+ do_tag_check_fault+0x34/0x44 arch/arm64/mm/fault.c:857
+ do_mem_abort+0x44/0x94 arch/arm64/mm/fault.c:933
+ el1_abort+0x44/0x68 arch/arm64/kernel/entry-common.c:303
+ el1h_64_sync_handler+0x50/0xac arch/arm64/kernel/entry-common.c:437
+ el1h_64_sync+0x6c/0x70 arch/arm64/kernel/entry.S:591
+ defer_free+0x3c/0xbc mm/slub.c:6537 (P)
+ do_slab_free mm/slub.c:6619 [inline]
+ kfree_nolock+0x1a0/0x1d4 mm/slub.c:6930
+ range_tree_destroy+0x74/0x90 kernel/bpf/range_tree.c:253
+ arena_map_free+0x64/0x90 kernel/bpf/arena.c:196
+ bpf_map_free kernel/bpf/syscall.c:894 [inline]
+ bpf_map_free_deferred+0x70/0x180 kernel/bpf/syscall.c:921
+ process_one_work+0x178/0x2cc kernel/workqueue.c:3257
+ process_scheduled_works kernel/workqueue.c:3340 [inline]
+ worker_thread+0x24c/0x354 kernel/workqueue.c:3421
+ kthread+0x130/0x1fc kernel/kthread.c:463
+ ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:860
+
+Allocated by task 3570:
+ kasan_save_stack+0x3c/0x64 mm/kasan/common.c:56
+ save_stack_info+0x40/0x158 mm/kasan/tags.c:106
+ kasan_save_alloc_info+0x14/0x20 mm/kasan/tags.c:142
+ poison_kmalloc_redzone mm/kasan/common.c:400 [inline]
+ poison_kmalloc_redzone mm/kasan/common.c:373 [inline]
+ __kasan_kmalloc+0xb4/0xb8 mm/kasan/common.c:417
+ kasan_kmalloc include/linux/kasan.h:262 [inline]
+ kmalloc_nolock_noprof+0x1dc/0x4fc mm/slub.c:5751
+ range_tree_set+0x644/0x778 kernel/bpf/range_tree.c:237
+ arena_map_alloc+0x11c/0x17c kernel/bpf/arena.c:141
+ map_create+0x19c/0xa98 kernel/bpf/syscall.c:1514
+ __sys_bpf+0x348/0x1a88 kernel/bpf/syscall.c:6146
+ __do_sys_bpf kernel/bpf/syscall.c:6274 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:6272 [inline]
+ __arm64_sys_bpf+0x24/0x34 kernel/bpf/syscall.c:6272
+ __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
+ invoke_syscall+0x48/0x110 arch/arm64/kernel/syscall.c:49
+ el0_svc_common.constprop.0+0x40/0xe0 arch/arm64/kernel/syscall.c:132
+ do_el0_svc+0x1c/0x28 arch/arm64/kernel/syscall.c:151
+ el0_svc+0x34/0x128 arch/arm64/kernel/entry-common.c:724
+ el0t_64_sync_handler+0xa0/0xe4 arch/arm64/kernel/entry-common.c:743
+ el0t_64_sync+0x1a4/0x1a8 arch/arm64/kernel/entry.S:596
+
+Freed by task 983:
+ kasan_save_stack+0x3c/0x64 mm/kasan/common.c:56
+ save_stack_info+0x40/0x158 mm/kasan/tags.c:106
+ __kasan_save_free_info+0x18/0x24 mm/kasan/tags.c:147
+ kasan_save_free_info mm/kasan/kasan.h:406 [inline]
+ poison_slab_object mm/kasan/common.c:252 [inline]
+ __kasan_slab_free+0x80/0x84 mm/kasan/common.c:284
+ kasan_slab_free include/linux/kasan.h:234 [inline]
+ kfree_nolock+0xcc/0x1d4 mm/slub.c:6929
+ range_tree_destroy+0x74/0x90 kernel/bpf/range_tree.c:253
+ arena_map_free+0x64/0x90 kernel/bpf/arena.c:196
+ bpf_map_free kernel/bpf/syscall.c:894 [inline]
+ bpf_map_free_deferred+0x70/0x180 kernel/bpf/syscall.c:921
+ process_one_work+0x178/0x2cc kernel/workqueue.c:3257
+ process_scheduled_works kernel/workqueue.c:3340 [inline]
+ worker_thread+0x24c/0x354 kernel/workqueue.c:3421
+ kthread+0x130/0x1fc kernel/kthread.c:463
+ ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:860
+
+The buggy address belongs to the object at fff000000854f000
+ which belongs to the cache kmalloc-64 of size 64
+The buggy address is located 32 bytes inside of
+ 64-byte region [fff000000854f000, fff000000854f040)
+
+The buggy address belongs to the physical page:
+page: refcount:0 mapcount:0 mapping:0000000000000000 index:0xfbf000000854f200 pfn:0x4854f
+flags: 0x1ffc00000000000(node=0|zone=0|lastcpupid=0x7ff|kasantag=0x0)
+page_type: f5(slab)
+raw: 01ffc00000000000 f9f0000003001600 dead000000000100 dead000000000122
+raw: fbf000000854f200 000000008040003f 00000000f5000000 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ fff000000854ee00: f6 f6 f7 f7 fa fa f9 f9 f5 f5 fb fb f6 f6 fc fc
+ fff000000854ef00: f8 f8 f6 f6 f0 f0 f2 f2 f9 f9 f2 f2 f0 f0 fb fb
+>fff000000854f000: fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
+                         ^
+ fff000000854f100: fa fa fa fe fe fe fe fe fe fe fe fe fe fe fe fe
+ fff000000854f200: fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
+==================================================================
 
 
->=20
->=20Implement a new bpf_psi_create_trigger() BPF kfunc, which allows
-> to create new PSI triggers and attach them to cgroups or be
-> system-wide.
->=20
->=20Created triggers will exist until the struct ops is loaded and
-> if they are attached to a cgroup until the cgroup exists.
->=20
->=20Due to a limitation of 5 arguments, the resource type and the "full"
-> bit are squeezed into a single u32.
->=20
->=20Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Hi Roman,
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-I wrote an eBPF program attempting to use bpf_psi struct ops and
-bpf_psi_create_trigger to continuously receive memory-related PSI
-events, but I only received one event.
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-Looking at the code implementation, when an event occurs:
-if (cmpxchg(&t->event, 0, 1) =3D=3D 0) {
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
-However, in eBPF there appears to be no way to call the equivalent
-of this code from psi_trigger_poll:
-if (cmpxchg(&t->event, 1, 0) =3D=3D 1)
-to reset the event back to 0.
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-Would it be possible to add an additional BPF helper function to
-handle this? Without a way to acknowledge/reset the event flag,
-the trigger only fires once and cannot be reused for continuous
-monitoring.
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-Best,
-Hui
-
-
-
-> ---
->  include/linux/cgroup.h | 4 ++
->  include/linux/psi.h | 6 +++
->  kernel/sched/bpf_psi.c | 94 ++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 104 insertions(+)
->=20
->=20diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-> index 6ed477338b16..1a99da44999e 100644
-> --- a/include/linux/cgroup.h
-> +++ b/include/linux/cgroup.h
-> @@ -707,6 +707,10 @@ static inline bool task_under_cgroup_hierarchy(str=
-uct task_struct *task,
->=20=20
->=20 static inline void cgroup_path_from_kernfs_id(u64 id, char *buf, siz=
-e_t buflen)
->  {}
-> +static inline struct cgroup *cgroup_get_from_id(u64 id)
-> +{
-> + return NULL;
-> +}
->  #endif /* !CONFIG_CGROUPS */
->=20=20
->=20 #ifdef CONFIG_CGROUPS
-> diff --git a/include/linux/psi.h b/include/linux/psi.h
-> index 8178e998d94b..8ffe84cd8571 100644
-> --- a/include/linux/psi.h
-> +++ b/include/linux/psi.h
-> @@ -50,6 +50,12 @@ int psi_cgroup_alloc(struct cgroup *cgrp);
->  void psi_cgroup_free(struct cgroup *cgrp);
->  void cgroup_move_task(struct task_struct *p, struct css_set *to);
->  void psi_cgroup_restart(struct psi_group *group);
-> +
-> +#else
-> +static inline struct psi_group *cgroup_psi(struct cgroup *cgrp)
-> +{
-> + return &psi_system;
-> +}
->  #endif
->=20=20
->=20 #else /* CONFIG_PSI */
-> diff --git a/kernel/sched/bpf_psi.c b/kernel/sched/bpf_psi.c
-> index c383a20119a6..7974de56594f 100644
-> --- a/kernel/sched/bpf_psi.c
-> +++ b/kernel/sched/bpf_psi.c
-> @@ -8,6 +8,7 @@
->  #include <linux/bpf_psi.h>
->  #include <linux/cgroup-defs.h>
->=20=20
->=20+struct bpf_struct_ops bpf_psi_bpf_ops;
->  static struct workqueue_struct *bpf_psi_wq;
->=20=20
->=20 static DEFINE_MUTEX(bpf_psi_lock);
-> @@ -186,6 +187,92 @@ static const struct bpf_verifier_ops bpf_psi_verif=
-ier_ops =3D {
->  .is_valid_access =3D bpf_psi_ops_is_valid_access,
->  };
->=20=20
->=20+__bpf_kfunc_start_defs();
-> +
-> +/**
-> + * bpf_psi_create_trigger - Create a PSI trigger
-> + * @bpf_psi: bpf_psi struct to attach the trigger to
-> + * @cgroup_id: cgroup Id to attach the trigger; 0 for system-wide scop=
-e
-> + * @resource: resource to monitor (PSI_MEM, PSI_IO, etc) and the full =
-bit.
-> + * @threshold_us: threshold in us
-> + * @window_us: window in us
-> + *
-> + * Creates a PSI trigger and attached is to bpf_psi. The trigger will =
-be
-> + * active unless bpf struct ops is unloaded or the corresponding cgrou=
-p
-> + * is deleted.
-> + *
-> + * Resource's most significant bit encodes whether "some" or "full"
-> + * PSI state should be tracked.
-> + *
-> + * Returns 0 on success and the error code on failure.
-> + */
-> +__bpf_kfunc int bpf_psi_create_trigger(struct bpf_psi *bpf_psi,
-> + u64 cgroup_id, u32 resource,
-> + u32 threshold_us, u32 window_us)
-> +{
-> + enum psi_res res =3D resource & ~BPF_PSI_FULL;
-> + bool full =3D resource & BPF_PSI_FULL;
-> + struct psi_trigger_params params;
-> + struct cgroup *cgroup __maybe_unused =3D NULL;
-> + struct psi_group *group;
-> + struct psi_trigger *t;
-> + int ret =3D 0;
-> +
-> + if (res >=3D NR_PSI_RESOURCES)
-> + return -EINVAL;
-> +
-> + if (IS_ENABLED(CONFIG_CGROUPS) && cgroup_id) {
-> + cgroup =3D cgroup_get_from_id(cgroup_id);
-> + if (IS_ERR_OR_NULL(cgroup))
-> + return PTR_ERR(cgroup);
-> +
-> + group =3D cgroup_psi(cgroup);
-> + } else {
-> + group =3D &psi_system;
-> + }
-> +
-> + params.type =3D PSI_BPF;
-> + params.bpf_psi =3D bpf_psi;
-> + params.privileged =3D capable(CAP_SYS_RESOURCE);
-> + params.res =3D res;
-> + params.full =3D full;
-> + params.threshold_us =3D threshold_us;
-> + params.window_us =3D window_us;
-> +
-> + t =3D psi_trigger_create(group, &params);
-> + if (IS_ERR(t))
-> + ret =3D PTR_ERR(t);
-> + else
-> + t->cgroup_id =3D cgroup_id;
-> +
-> +#ifdef CONFIG_CGROUPS
-> + if (cgroup)
-> + cgroup_put(cgroup);
-> +#endif
-> +
-> + return ret;
-> +}
-> +__bpf_kfunc_end_defs();
-> +
-> +BTF_KFUNCS_START(bpf_psi_kfuncs)
-> +BTF_ID_FLAGS(func, bpf_psi_create_trigger, KF_TRUSTED_ARGS)
-> +BTF_KFUNCS_END(bpf_psi_kfuncs)
-> +
-> +static int bpf_psi_kfunc_filter(const struct bpf_prog *prog, u32 kfunc=
-_id)
-> +{
-> + if (btf_id_set8_contains(&bpf_psi_kfuncs, kfunc_id) &&
-> + prog->aux->st_ops !=3D &bpf_psi_bpf_ops)
-> + return -EACCES;
-> +
-> + return 0;
-> +}
-> +
-> +static const struct btf_kfunc_id_set bpf_psi_kfunc_set =3D {
-> + .owner =3D THIS_MODULE,
-> + .set =3D &bpf_psi_kfuncs,
-> + .filter =3D bpf_psi_kfunc_filter,
-> +};
-> +
->  static int bpf_psi_ops_reg(void *kdata, struct bpf_link *link)
->  {
->  struct bpf_psi_ops *ops =3D kdata;
-> @@ -287,6 +374,13 @@ static int __init bpf_psi_struct_ops_init(void)
->  if (!bpf_psi_wq)
->  return -ENOMEM;
->=20=20
->=20+ err =3D register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS,
-> + &bpf_psi_kfunc_set);
-> + if (err) {
-> + pr_warn("error while registering bpf psi kfuncs: %d", err);
-> + goto err;
-> + }
-> +
->  err =3D register_bpf_struct_ops(&bpf_psi_bpf_ops, bpf_psi_ops);
->  if (err) {
->  pr_warn("error while registering bpf psi struct ops: %d", err);
-> --=20
->=202.51.0
->
+If you want to undo deduplication, reply with:
+#syz undup
 
