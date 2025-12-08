@@ -1,98 +1,98 @@
-Return-Path: <bpf+bounces-76285-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76286-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 042F1CAD83B
-	for <lists+bpf@lfdr.de>; Mon, 08 Dec 2025 16:00:53 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39D87CAD6BC
+	for <lists+bpf@lfdr.de>; Mon, 08 Dec 2025 15:20:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C27003092428
-	for <lists+bpf@lfdr.de>; Mon,  8 Dec 2025 14:57:28 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 27EA5303FE4B
+	for <lists+bpf@lfdr.de>; Mon,  8 Dec 2025 14:20:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DF9A329396;
-	Mon,  8 Dec 2025 14:20:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1415C329C4B;
+	Mon,  8 Dec 2025 14:20:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PSqDxbNa";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ka5YX4f5"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bUhmOcJe";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="cBF0zTRd"
 X-Original-To: bpf@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F80532938F
-	for <bpf@vger.kernel.org>; Mon,  8 Dec 2025 14:20:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 141CE329C40
+	for <bpf@vger.kernel.org>; Mon,  8 Dec 2025 14:20:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765203607; cv=none; b=nW7WG5DPOtG520Bxb73sR6rgYgssdp/aWZW3A0EXtfLLawWUUWHi7le9l2rfM3qxtTdpEaSiPrnjrmTHmm/1Z82XO0HkeeHmMO6LnoAmQmbl2ZMocOgnRw71mZPWxyivrwLfnWsudBJtCbbeRUa+4pfD9Uz1kyel2B3S5RBsdHw=
+	t=1765203650; cv=none; b=q7yBd3Yf5v+UzpDitPN401jzhl8xzmX0qxCWh/RbrdTrY42IWm4qZIhmh+fCh2x0CRBGOw7a4OG9NOjx9eCHZ2DgtNMJUnEi4QXmeFP6KGdJc/z5ZU9+NsGa/3zVHvKfVC89IW9jO4vg7zun2V0z71kJsFyo4U0uUWg0E2ZovK4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765203607; c=relaxed/simple;
-	bh=PljNOTo0RHMKF0uIJ0F72Ecs4jdxizKa+DxYB7R6n6g=;
+	s=arc-20240116; t=1765203650; c=relaxed/simple;
+	bh=i10k1/SiZqD0E8g4mpTmNwORyJAGM+3hkDTkKL/pmi8=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=mV9A8DWFcJR1g6md3HXiZdgC7vr+su3WJP10c5Mp/DB2lnHr1dvMDIpN1dlKtIPvhDItIk9lyOZH8+uVO/OiwDPdXVSqzyi0YFeABcqQKi0itYdS8I50m0h6jUbikcn9XE9qmzb3fRBwpECtd6jYgBTlVFaLcEmACuwegZ+SzQE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PSqDxbNa; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ka5YX4f5; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version:Content-Type; b=nL5wfVfd4ok/TiCt3GkYfJA8Qbfw1nwZdevQuIKAIqVXZWpCO5l4AW8Md/acgX6rsuXvAxEBxT1qxcZpIkUN8ad5mQf9voNvlyyXMF8EyWJQv80td1k6tUETHHkLbpNBwTa4CJfx9MHJl7lVRHeFDHRDvkLpOkriS5Z9gJJnvH8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bUhmOcJe; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=cBF0zTRd; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1765203604;
+	s=mimecast20190719; t=1765203648;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=OqFvwLojx2/mzRD8U0g4XVY3xgE3qb7B+paToqsc4uA=;
-	b=PSqDxbNapcYEyQwY6EA9+khBDzFRQ8Xh3CbQ9NmSP4EYocBCewxgCLmvbKdlxJPqRY0bSQ
-	/pmdvbENPJ4Z4QTitpmI9UQOHz54M2aIjdY59d0PKphJvyPQOvxjKo9DoBRHl8J6R2QShT
-	/c0NqzwFWUzy6OZ7wMs0sOOGLUwRYGY=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=i10k1/SiZqD0E8g4mpTmNwORyJAGM+3hkDTkKL/pmi8=;
+	b=bUhmOcJebvjjFwHTXlojCQEzzSykZucJxsNCAl/rk0l6WTzPlUSmHB+BGNs5apGdoWUK7m
+	Ir812Gr1rRV/Jq+InPnw+d+oyGiPptwUwqaLnZTTP9hflHSa8R+FmhmOvur1ADo8Cm4Uui
+	GrudpC0QCE0ZTXRrGCpOv/YPHdDgsyg=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-385-FpstCicKNHyLvZJn0ckiLg-1; Mon, 08 Dec 2025 09:19:58 -0500
-X-MC-Unique: FpstCicKNHyLvZJn0ckiLg-1
-X-Mimecast-MFC-AGG-ID: FpstCicKNHyLvZJn0ckiLg_1765203598
-Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-640b8d02165so4167008a12.2
-        for <bpf@vger.kernel.org>; Mon, 08 Dec 2025 06:19:58 -0800 (PST)
+ us-mta-621-yySPyWYaPIudalkGTyw41g-1; Mon, 08 Dec 2025 09:20:47 -0500
+X-MC-Unique: yySPyWYaPIudalkGTyw41g-1
+X-Mimecast-MFC-AGG-ID: yySPyWYaPIudalkGTyw41g_1765203646
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-b79f78b1dc7so94959766b.1
+        for <bpf@vger.kernel.org>; Mon, 08 Dec 2025 06:20:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1765203597; x=1765808397; darn=vger.kernel.org;
+        d=redhat.com; s=google; t=1765203646; x=1765808446; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:references
          :in-reply-to:subject:cc:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=OqFvwLojx2/mzRD8U0g4XVY3xgE3qb7B+paToqsc4uA=;
-        b=Ka5YX4f5jfrNDRzG2rT3gy2GzK7QDEveOuGHagrZ6jMxKwTBQC8+esc6+hk18f9E12
-         fs/etNazPU2/ptkw2NyGTbH5mYH64CiVYbUMkbEH7qJTdjGSECv+hNHLqlTfGFKzxuiP
-         wZ5gvzNtYPZ5F+Gtc2hce0LVpWg4jQZ1PM2erjx5UQkqN38ZJm5z20cUkUbbZY/SyCFQ
-         KZS4jTZgK0dwymK47zTrTH8DcxLhKcJulOaofR+bNaC2b7HxioUXHDGpq7oJRVQPFS4m
-         Kveb5ri7HTiJ7zZueRQwM7skdCLxW9p4jpcImfClRMWUhjFngiH44gdy399eRE1Ph61w
-         5Bvg==
+        bh=i10k1/SiZqD0E8g4mpTmNwORyJAGM+3hkDTkKL/pmi8=;
+        b=cBF0zTRd892NkDsjeVWIrrUVFn4iDvAPTOO6YKNRxcX6C8UgBzbbM2pW8V6fi5Uilx
+         IJH9H1TqGdMMSrkfr4hIqfNKEhsYtHxSSMQqTN5nBLsISDnZ02r/2tBX+j3qZpfntbky
+         OyL9JJxDXwjYkpdMQ/9VHWGebMPaHdwweebf3gGUBvWba4yMD2rjnYa720cRzpd4THHQ
+         xCeq6UaHJgepVvVqojiuceWH1y6kEd7eGtdQ6aR/v8H+1/fKrmg2NU0kZ3Nzf8yE0hnB
+         gi0NlBRbEfNW0nRfgNnftiDUOcCoHPOlq91mFgiyw7fmv2u1g2f3cstqcHGEXboKFd3z
+         AfSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765203597; x=1765808397;
+        d=1e100.net; s=20230601; t=1765203646; x=1765808446;
         h=content-transfer-encoding:mime-version:message-id:date:references
          :in-reply-to:subject:cc:to:from:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=OqFvwLojx2/mzRD8U0g4XVY3xgE3qb7B+paToqsc4uA=;
-        b=dlRGCTLkfPlsKaQ6J14DV2Cu+CXjpUykPLwWuGZ+nAMrJzyrm2rK5CVEe9iA1P2ML8
-         JABc3PcWib3r0xcXAG/ably4Y3xxIEURm2kzia7EJR+n0v/ph6/baEVw8NS5UsEoG+uV
-         0qqc15LVhyuOtRA9XrXV7W9pLknyI4saMqGt+0Hn+O7aIr4+6QPrWXF7mnysF+scKMqY
-         8xeD/+FOM3oHmlyS0JKRkaxi2bjj0kaBH4BDVE/5rS1WyHp2qOiAwZzAD7t/CAKkQmd6
-         e1vyKgMIZ4Ao22uWQM2XAxA/mTLCuCwvLPsIm23U2GeAS/l055NYa8surhmHHTQ3EfY2
-         WR4g==
-X-Forwarded-Encrypted: i=1; AJvYcCXWH0Bcp4yB1jyK7TxJKy5fEan5ZCA2+6oHH1RfZlS1tOLphNeNF1Qb1A7N/Wms2cvN2TQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzDJaqOYCFNb3xspoe7WdVJROvDge9jTTdmJ8aaRsppd4r6f0ID
-	M3H0SeCMJV02zP8EmEQq5vEo0wgc16NHvi36I129rI5UerDCHxdFS9uzCBFgY3tQ+edh7LtPrY9
-	pjZ9vavEHy7zcbgp8JTLTlAQmTqWt62rdwbmQlcmD/3fQSYtPoJ+SsQ==
-X-Gm-Gg: ASbGncta4NzNio9HasjNUfYWWv6mvzy/W4t7k9t+qY4o4PRH+UM0g6d7VQOmjxWIkaA
-	NpChLNYzx7/LMVmcSwi4ha0oQFms1ROkwCRLxvtotbK3oyxN4v6OwMzWvLgGMKfYGjWdFHTdW3O
-	Srdl0z6G520KZDQC6L5OHdVRa8UqwsJyZIQF3uHZnazm/Y8JNNVw7RynKKsTbb75cvAeTDfEc6I
-	rMsrT2AsXPf1rP1kR3LUn9a4qOd4feHQaKcUq2hp1iewY4TNnSxduEhbVMrO8wNVvXgS9TMjRCb
-	z5algCuo1ku4yqNutqmlzwwYW6W4SgqBRo90sDjrLKJGk9sTqc+iNz+JthYjh8U8y+ys3+r+u7Z
-	rtJZ/wbe5NZAX7RmZR52XUxP/dsH4btzFPbXc
-X-Received: by 2002:a05:6402:2552:b0:640:aae4:b84e with SMTP id 4fb4d7f45d1cf-64919c200afmr7274289a12.13.1765203597600;
-        Mon, 08 Dec 2025 06:19:57 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHlwGmklZz9ErsAvsYahFym+NTtrfrXS3XeSEv/0e+lK+B3wopu8o0DAiRcNsRnntzTB46a4Q==
-X-Received: by 2002:a05:6402:2552:b0:640:aae4:b84e with SMTP id 4fb4d7f45d1cf-64919c200afmr7274253a12.13.1765203597191;
-        Mon, 08 Dec 2025 06:19:57 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk (alrua-x1.borgediget.toke.dk. [2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-647b368de06sm11276090a12.22.2025.12.08.06.19.56
+        bh=i10k1/SiZqD0E8g4mpTmNwORyJAGM+3hkDTkKL/pmi8=;
+        b=NKBWqliaHriSkdDEQ1uOPcfbj6Q3juoRaHJHv+cfpvWZqcFxNoG2NeKLY2telU/Szc
+         X8k2V2aHpaYhu2eUgUKn5QaxjDyMOxpGJ5NR6fTdoudCsO2LZhrSHfdQ4LUysgI8ST7g
+         Q7axRyh8us5JxPtXA+HVg0GdBEjG1IUr+2VWho5yO9AcasKB26FROagy958KpdhD6j8T
+         QyOvN3kOFli7xPvuLyMsVpO9m8dMuaZXAz7p+8WOsgnc3IJYMiR5bwMDJJrdbGd/Nq4H
+         GO/phaiz56PBb6QubQzcMTAS6E82F13ox9RCxU6kZRGcgBFpAIpZjLKTsloBGTS0UXZc
+         Ja4w==
+X-Forwarded-Encrypted: i=1; AJvYcCVMrTAQXSQ/cWB//7q+mf31ZdUq3zK8TcMakLdeBAzT2M+kmHFOj8nEm1497PEQSkgKhWw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzawyGan9cD8m48nsu+DDb3Qj/IQxuo4vdwEguIQW+7qG8dIKF8
+	YPN3zvJpM80z7KiW0fX6vcVcPnSSiDyuX/hFSvjoqedsNLoVedas7xCEgl4/gbMQuVypCKjoTgH
+	kf8ABSXfoKiUW6+CIu9fwxQhCRl2rRJj5sAj+lvnrlj5Slq8qQSqtKQ==
+X-Gm-Gg: ASbGncv9ckZGPKg4ThLH8POxwsncpcZdpYy5C3OvSXvtfKlRz95+DI9gb2ssUPeqKT1
+	tRkXK2dfYlGP6pZZWv6rBorNtAu6KVuRDl9wRRXUpxVU1k2Z61wjo7vWif5EBd2/afh12Y848Iz
+	5Z5eQelmsF8Z0ob0gHxUbwpqv5Tif9n32wE8QQkyfTOsxBlnk0H56EliFFWiMA5Oxbh2GRZpkzc
+	0wCgde7fM4vlxiGyX16BFZzBJmuoTd0m6HmOo5ixhCahJjtO3sOjCrNpXu1JgvIaErg2yED6p2d
+	UmPpz4AJyhmypYKqkLIKapoS/bQSore91j9oTzNHhHS9l0s41Nw2X2JhQHUl9hr4s4dYaXxTqrF
+	21fOxBYn6e0Um9iyckEqQqjWkogfm9ykntg==
+X-Received: by 2002:a17:907:7ea9:b0:b76:4a7c:27a5 with SMTP id a640c23a62f3a-b7a23b38b5dmr792477066b.23.1765203645789;
+        Mon, 08 Dec 2025 06:20:45 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHeICR9a9Zyl705kBwz+fQ+K9zHYu4wc7uwPWOV2osX2dj4Awtr08onWyj57fv57pFb+ioxow==
+X-Received: by 2002:a17:907:7ea9:b0:b76:4a7c:27a5 with SMTP id a640c23a62f3a-b7a23b38b5dmr792473166b.23.1765203645298;
+        Mon, 08 Dec 2025 06:20:45 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b79f426413esm1142503666b.0.2025.12.08.06.20.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Dec 2025 06:19:56 -0800 (PST)
+        Mon, 08 Dec 2025 06:20:44 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id C3E5A3B25D7; Mon, 08 Dec 2025 15:19:55 +0100 (CET)
+	id 0BE593B25D9; Mon, 08 Dec 2025 15:20:44 +0100 (CET)
 From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To: Kohei Enju <enjuk@amazon.com>, netdev@vger.kernel.org,
  bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
@@ -106,14 +106,14 @@ Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
  <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>, Jiri Olsa
  <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, kohei.enju@gmail.com,
  Kohei Enju <enjuk@amazon.com>
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: cpumap: propagate underlying error
- in cpu_map_update_elem()
-In-Reply-To: <20251208131449.73036-2-enjuk@amazon.com>
+Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: add tests for attaching
+ invalid fd
+In-Reply-To: <20251208131449.73036-3-enjuk@amazon.com>
 References: <20251208131449.73036-1-enjuk@amazon.com>
- <20251208131449.73036-2-enjuk@amazon.com>
+ <20251208131449.73036-3-enjuk@amazon.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date: Mon, 08 Dec 2025 15:19:55 +0100
-Message-ID: <87o6o96ook.fsf@toke.dk>
+Date: Mon, 08 Dec 2025 15:20:44 +0100
+Message-ID: <87ldjd6on7.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -125,22 +125,13 @@ Content-Transfer-Encoding: quoted-printable
 
 Kohei Enju <enjuk@amazon.com> writes:
 
-> After commit 9216477449f3 ("bpf: cpumap: Add the possibility to attach
-> an eBPF program to cpumap"), __cpu_map_entry_alloc() may fail with
-> errors other than -ENOMEM, such as -EBADF or -EINVAL.
+> Add test cases for situations where adding the following types of file
+> descriptors to a cpumap entry should fail:
+> - Non-BPF file descriptor (expect -EINVAL)
+> - Nonexistent file descriptor (expect -EBADF)
 >
-> However, __cpu_map_entry_alloc() returns NULL on all failures, and
-> cpu_map_update_elem() unconditionally converts this NULL into -ENOMEM.
-> As a result, user space always receives -ENOMEM regardless of the actual
-> underlying error.
->
-> Examples of unexpected behavior:
->   - Nonexistent fd  : -ENOMEM (should be -EBADF)
->   - Non-BPF fd      : -ENOMEM (should be -EINVAL)
->   - Bad attach type : -ENOMEM (should be -EINVAL)
->
-> Change __cpu_map_entry_alloc() to return ERR_PTR(err) instead of NULL
-> and have cpu_map_update_elem() propagate this error.
+> Also tighten the assertion for the expected error when adding a
+> non-BPF_XDP_CPUMAP program to a cpumap entry.
 >
 > Signed-off-by: Kohei Enju <enjuk@amazon.com>
 
