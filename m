@@ -1,85 +1,84 @@
-Return-Path: <bpf+bounces-76236-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76237-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E182CABCA2
-	for <lists+bpf@lfdr.de>; Mon, 08 Dec 2025 03:03:58 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03BF2CABCC6
+	for <lists+bpf@lfdr.de>; Mon, 08 Dec 2025 03:07:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2F2153012778
-	for <lists+bpf@lfdr.de>; Mon,  8 Dec 2025 02:03:06 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 875A73003527
+	for <lists+bpf@lfdr.de>; Mon,  8 Dec 2025 02:07:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14D272475CF;
-	Mon,  8 Dec 2025 02:03:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9238256C8D;
+	Mon,  8 Dec 2025 02:07:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HcSql/PB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LQj3boEf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CD4423D7FF
-	for <bpf@vger.kernel.org>; Mon,  8 Dec 2025 02:03:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A62D4253B59
+	for <bpf@vger.kernel.org>; Mon,  8 Dec 2025 02:07:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765159384; cv=none; b=uk0tBefyi+EGJB/o/qsiM0V4I8vR2CS9m2/ipnKeg/wlymEk6woqaeDRo1Rw3VJF8A/zM49UY0aCMatwgqXPX9gG+Y4VI6EwcK3qDe1U/NqK447V/pZZnMizDrHczlYuZtO9h1HN9W7fAGCzo+9qHQv4Y7yJrEMtZtwhRPQlMXU=
+	t=1765159638; cv=none; b=qhxjXM7w3RB0Ifv0KbPv/t7BfkO+kwr+MmTmtQPzNu/OOacK3ogQyAsWjZCzn1sSbSdLtlyPDgpMMH9s0h1omlD3A/N6++o3KFzvPNCBjCHTCNCIbfCprfcK3uDBBVRcp4DM5PoYyERSUWgssrWkE509bk/u021hGNgFCQl6V3A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765159384; c=relaxed/simple;
-	bh=RhzExZHoa1slnBSNLTKq2KQGD4lw5jmZ+A1YLavI+kc=;
+	s=arc-20240116; t=1765159638; c=relaxed/simple;
+	bh=1TcVRhtuW44UlRc6yVvrKz/lXSs2PwM+4yUHUPEscoY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZhRbGULOxydNYIALSXpeP3xzQ0QK/06/RPkq19eLjZLemPhLWAJZQODrYeChQhvbKqHAUu+P2pyh6ZJYN8Rm+6FJv+3Hi9PzIk8iKo+GnUIJY21v40Jtc5b+FchHAQ6d6mJrdB5qZZJaogILjMVQ6Qa1vrT+6KauKLUKk/AKt8k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HcSql/PB; arc=none smtp.client-ip=209.85.210.176
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q41iwOPIG8NrhfVy50+/SUweZf08lzjOaWnGN1euU6Bx4x1Fz8EgINF4TeQxr1HhaQF6rSb8ANchmD+ICYZuSHA4cNrE6IbSxkTkg0DHnCk/N+x2LB16/Cotko2P1mQbrGJKqwn2KHUztnGZjVlS/i/V7H1KrtCAGdLh0lCvzdw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LQj3boEf; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-7ba92341f83so5358740b3a.0
-        for <bpf@vger.kernel.org>; Sun, 07 Dec 2025 18:03:02 -0800 (PST)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-297dd95ffe4so35314615ad.3
+        for <bpf@vger.kernel.org>; Sun, 07 Dec 2025 18:07:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1765159382; x=1765764182; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1765159631; x=1765764431; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ql1whL2yobc/+v3ZlTbDwW6sbE/ICy7V1SASo7QVIcA=;
-        b=HcSql/PBKPzvgexPprVN5dzNZvYoala2xecx2UqDS0NXduUO+0ldHIjCWEVJFPy85x
-         ZpiaeRTIjz4Ux6EiC+8Wq9d8p8KGdvI3LiZ/U7M0tydCqBMHTaH7ntJE458279INm3KA
-         FVufjXNrbzwEenXQaszPS2Ud3qA2Z1KV5VtOIA+Gg7J+1h9v8OEU1KWXULDVhSfSvlH8
-         x2deMmuYNEw7PnlLeZZnmb3bIzndYREpA+TA39nPqaD3H5gSwd01dDK8FX9ORIjYpCwW
-         1DxQKA4jIaiHsZB5fvVOpl5Mbwbx5S1XAvMd62fGXRPYStzm3xAHoJV6ph8ysyL/DCOB
-         l7dQ==
+        bh=etCCOiXR8x0v5LmWoSQ60BkC9aw+g+h9LZCI19rrL8Y=;
+        b=LQj3boEfqoyGWEGtnrg1Ve3nvu8tvehNT/VR1Fvf/fQY/s9lOkx7heR+iBykrH/ne2
+         a4sm8sWDo6KYT6K7AO5tm5hvUdIUgR7HxPnKdTCgOpGVJUVyXZTdz/9cX6mFH8v8NjR4
+         xvgCPFng2d2qcCMRvcdXdIYhWUBlejpsSRlxlxp+UupLxLLsKdKtfcLA1la+xl79ofaG
+         BFJtHffWdOVOyf2a0xE5xz4S49gnRocBh0hH4q0Wplj0z01gSJ7utpiWxZhGh0ltSWgP
+         yXidTay0Zj6GpbzklQIYEOPmZCvxsDDnl/+7ngz4VW0l3uHIvGAJUA51YJfx8gQNRy/k
+         KQ/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765159382; x=1765764182;
+        d=1e100.net; s=20230601; t=1765159631; x=1765764431;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ql1whL2yobc/+v3ZlTbDwW6sbE/ICy7V1SASo7QVIcA=;
-        b=PHQ+HfsUAWgMyGhiYLeYOI/iGjVImQus/LWd6+944/9+fHc1b/kixIjjrXNXAcioYP
-         9PgVc3hZfGICHHJWrHSO33uhAXQ5kv7M2Z6s83w4bA3au8qREqkNdcmDVTgokbrfXYTR
-         FXooUJc9zhpKXW+rtrhHd2BRvsrVHfCqQEUDrqWfU16J1tw7UovcdtoLAqw+9XnWbxCX
-         8gBux6VK2gsUn0GpZjIGaf8hLLPnj0aCbpXzBGTt1MqrBouoz4JqDyPmhclkLF0d37Zs
-         E9E6S0WzIl6U0PDiemTVmXOkdPQOoM6GGGrm9E2V8vjsl+ZOaC3CrUMb97T4F1jO0t25
-         /p4w==
-X-Gm-Message-State: AOJu0Yx+ARE3RpTDioFnwKBTnysugMIqUsvzKFWazF+nPayjdDDPOsdJ
-	xtnQWhZUHGiMUCNVHRhphGf0MpQ8REsMxDe4hn8WufGSaRohBxfi1jTI6WsyWdr2
-X-Gm-Gg: ASbGncs6meSUHr1bvxDRl/klrtwQ0sUmW4blNyvtIljORg2wrtr6GWsZ7qYOvIAbHO1
-	5sBYq2zNOERMseus+eykB0GIC0CwaYOBRQ30rAvtLQze6CFV3Er1bp8DzVKfKlcXIHjcvLPM17+
-	HzL4vaymbou/lviA8pWV5DRrOfQrUD1GwLamP20nhcajdBwixi2uFgrsun10QTc3hWmUbqrYgBA
-	PCeozQrfYdTDSUWXUyubwYcYcj8PPZSVyp+4ojkQg9qiNdfZylc8EeoyEslbB5nduZdOMDe9v/z
-	yWLqscwx3VvkpNB/7q/1WbI7jMTHnZS3abAPK5AAj3Wqcs3SZGguNCRG8ZqOMye+dIXfFcbMETZ
-	OeCdAndGpZh+CK/PFIYUyWwB2bD+NMjx7K4obHJrGvtroP7v1Juy//dE1/ADXfHa88nn1IRJQW3
-	XH48RtyQ==
-X-Google-Smtp-Source: AGHT+IGXAEC7h2zBrGHSOG9F2s7QH9CR9i8yE9tW8Hcgj8CD2wYCrn4HyKeKmApPxRxJdIiACdpO9A==
-X-Received: by 2002:a05:6a20:7d8b:b0:35d:cad7:cd63 with SMTP id adf61e73a8af0-36617e83b4amr5766745637.30.1765159381675;
-        Sun, 07 Dec 2025 18:03:01 -0800 (PST)
+        bh=etCCOiXR8x0v5LmWoSQ60BkC9aw+g+h9LZCI19rrL8Y=;
+        b=re/Krrgq6rAkXtJeGAalnF+FS1IonlGursVCCCZQatH1vZoaf+nip9Qe8m4atThxA7
+         sC9Qhkg9gZTpighKNrC+2UViTgy4sQYLJUCIJDRn+nsYjPZynMihWfNrgLPEIdosUlPW
+         hlYAQYXmoxjWNki+UFjGHtM95ii2G9vOqZvaT0RWXy49bxLuS6IhwfcHmTeduQbtcJYp
+         RoYIPKCe1VPJ9YqQ+0Y4EiOC3Q9oK9eELC/gNnWQ8gd+SoLaU4HHnsC/BL0oDVV/qoF3
+         A132nrDnWAJZ9sKaXd14vggr3yskZpbUobzT4SyXhVj10f/jmayIwjGgVnYI2PnpJtVA
+         cE3Q==
+X-Gm-Message-State: AOJu0YxHZ5eCbWDCeZr5PU5uwfbKiDQ5IArNPbDo7xPIIF5dQAb087sW
+	IWisoP2LhI5GeuucuMPfNbkWS6Tm5P+cHIcDT2JJ7HpwrPZanV7qzJA/HsjBI4GG
+X-Gm-Gg: ASbGncsQAqzUDtjZSA+A+ypOx9dJg/Ha4tBKYKosZsy18LZxJyS2EgdhmvRTtdLG+mI
+	HuQU8ITijFBNTzGRwb2FIM9BRKTw8fphw0r7uaHO3DrG/hhP9L5VVliurTJ1gSPPdc0UCLb5T5Y
+	Hese3WMXDmwP1kbT0R5GHT4KbVTZE2EKayfIYeodwJ/V9QlOVKVx3RhYc6nYSztCiTHjqraZJ4Z
+	e56Yc3SE3i9jsHiXirSqDs49n3xxDEJb0eTV4hJuFSuSZJFXtw8HXe8khGd8TgaOFB5g3+rqzq7
+	5Kt0pS0Ayy9rv5z3LnTuH5NpJESgYfMJdBq135CZru3ZLa1QGgtAB4NjbTWc3jsgb1FyHgwv7ce
+	m03qq2YYUzBLbMWkboYy1GHrCiEGOzEZQ/9pH8zMJmGKVImRU0zSKddSZLUvjnpbfBoGvRhT5q7
+	Th1x0eHg==
+X-Google-Smtp-Source: AGHT+IHGLMgBFX8Nsvn0ky8pL7CT2dy72Vo5PL4/mSRQsvgR5OqFvrW3bGVjidkzpNxO9/Sxw2NmVw==
+X-Received: by 2002:a17:903:4b0c:b0:274:3db8:e755 with SMTP id d9443c01a7336-29df5e1b7f0mr47409115ad.30.1765159631326;
+        Sun, 07 Dec 2025 18:07:11 -0800 (PST)
 Received: from Tunnel ([64.104.44.99])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-bf6875cd55dsm10420786a12.15.2025.12.07.18.02.59
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29daeaac16fsm105689175ad.87.2025.12.07.18.07.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Dec 2025 18:03:00 -0800 (PST)
-Date: Mon, 8 Dec 2025 11:02:56 +0900
+        Sun, 07 Dec 2025 18:07:10 -0800 (PST)
+Date: Mon, 8 Dec 2025 11:07:06 +0900
 From: Paul Chaignon <paul.chaignon@gmail.com>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Quentin Monnet <qmo@kernel.org>
-Subject: [PATCH bpf-next 2/8] bpf: Patch bytecode with oracle check
- instructions
-Message-ID: <7881b155817403469c59f65df5c20dd3982c70ba.1765158925.git.paul.chaignon@gmail.com>
+Subject: [PATCH bpf-next 3/8] bpf: Create inner oracle maps
+Message-ID: <7229111ef814fd10cac9c3a14d38ddb0f39dc376.1765158925.git.paul.chaignon@gmail.com>
 References: <cover.1765158924.git.paul.chaignon@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -91,208 +90,231 @@ Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <cover.1765158924.git.paul.chaignon@gmail.com>
 
-This commit patches the BPF bytecode with special instructions to tell
-the interpreter to check the oracle. These instructions need to be added
-whenever we saved information on verifier states, so at each pruning
-point.
+This patch creates the inner oracle maps that will store the information
+on verifier states. Each pruning point needs an inner oracle map. They
+are called inner because they will all be referred by a hashmap in a
+later commit, indexed by instruction indexes. They are also referred
+in the oracle instructions, for easier lookup from the interpreter.
 
-At the moment, it relies on a special LD_IMM64 instruction with the
-address to the array map holding the information from the verifier
-states. This needs to be changed to not expose a new BPF_PSEUDO_MAP_*
-constant. One option would be to choose something closer to the existing
-BPF_ST_NOSPEC instruction, which serves a similar internal-only purpose.
+For the inner maps, we can rely on array maps because at the time we
+create them we know how many states will need to be saved. They won't
+grow after program loading so they can have a static size.
 
-This patch defines a zero immediate for our LD_IMM64 instruction. The
-next patch sets the immediate to our map address.
+These maps are not only useful for the oracle to iterate through states,
+but also for debugging from userspace after we hit an oracle test
+warning. Userspace should however never need to update them, so let's
+limit permissions accordingly.
+
+The bytecode ends up looking like:
+
+    0: (bf) r2 = r10
+    1: (7a) *(u64 *)(r2 -40) = -44
+    2: (79) r6 = *(u64 *)(r2 -40)
+    3: (85) call bpf_user_rnd_u32#28800
+    4: (18) r0 = oracle_map[id:21]
+    6: (b7) r0 = 0
+    7: (95) exit
+
+with our special instruction at index 4. A subsequent patch teaches the
+interpreter to skip this special instruction at runtime, to avoid
+overwriting R0.
 
 Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
 ---
- include/linux/bpf_verifier.h      |  4 ++++
- include/uapi/linux/bpf.h          | 10 +++++++++
- kernel/bpf/disasm.c               |  3 ++-
- kernel/bpf/oracle.c               | 36 +++++++++++++++++++++++++++++++
- kernel/bpf/syscall.c              |  4 +++-
- kernel/bpf/verifier.c             | 16 +++++++++++---
- tools/bpf/bpftool/xlated_dumper.c |  3 +++
- 7 files changed, 71 insertions(+), 5 deletions(-)
+ include/linux/bpf.h          |  3 ++
+ include/linux/bpf_verifier.h |  6 +++-
+ kernel/bpf/oracle.c          | 64 +++++++++++++++++++++++++++++++++++-
+ kernel/bpf/syscall.c         |  8 ++---
+ kernel/bpf/verifier.c        |  2 +-
+ 5 files changed, 76 insertions(+), 7 deletions(-)
 
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 28d8d6b7bb1e..6bec31816485 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -617,6 +617,9 @@ void bpf_rb_root_free(const struct btf_field *field, void *rb_root,
+ u64 bpf_arena_get_kern_vm_start(struct bpf_arena *arena);
+ u64 bpf_arena_get_user_vm_start(struct bpf_arena *arena);
+ int bpf_obj_name_cpy(char *dst, const char *src, unsigned int size);
++int bpf_map_alloc_id(struct bpf_map *map);
++void bpf_map_save_memcg(struct bpf_map *map);
++void bpf_map_free(struct bpf_map *map);
+ 
+ struct bpf_offload_dev;
+ struct bpf_offloaded_map;
 diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index adaeff35aaa6..e4c8457e02c1 100644
+index e4c8457e02c1..a93b5e2f4d7f 100644
 --- a/include/linux/bpf_verifier.h
 +++ b/include/linux/bpf_verifier.h
-@@ -1107,6 +1107,8 @@ int bpf_jmp_offset(struct bpf_insn *insn);
- struct bpf_iarray *bpf_insn_successors(struct bpf_verifier_env *env, u32 idx);
- void bpf_fmt_stack_mask(char *buf, ssize_t buf_sz, u64 stack_mask);
+@@ -575,7 +575,10 @@ struct bpf_insn_aux_data {
+ 	};
+ 	struct bpf_iarray *jt;	/* jump table for gotox or bpf_tailcall call instruction */
+ 	struct btf_struct_meta *kptr_struct_meta;
+-	struct list_head *oracle_states;
++	union {
++		struct list_head *oracle_states;
++		struct bpf_map *oracle_inner_map;
++	};
+ 	u64 map_key_state; /* constant (32 bit) key tracking for maps */
+ 	int ctx_field_size; /* the ctx field size for load insn, maybe 0 */
+ 	u32 seen; /* this insn was processed by the verifier at env->pass_cnt */
+@@ -1109,6 +1112,7 @@ void bpf_fmt_stack_mask(char *buf, ssize_t buf_sz, u64 stack_mask);
  bool bpf_calls_callback(struct bpf_verifier_env *env, int insn_idx);
-+struct bpf_prog *bpf_patch_insn_data(struct bpf_verifier_env *env, u32 off,
-+				     const struct bpf_insn *patch, u32 len);
+ struct bpf_prog *bpf_patch_insn_data(struct bpf_verifier_env *env, u32 off,
+ 				     const struct bpf_insn *patch, u32 len);
++int __add_used_map(struct bpf_verifier_env *env, struct bpf_map *map);
  
  int bpf_stack_liveness_init(struct bpf_verifier_env *env);
  void bpf_stack_liveness_free(struct bpf_verifier_env *env);
-@@ -1120,5 +1122,7 @@ bool bpf_stack_slot_alive(struct bpf_verifier_env *env, u32 frameno, u32 spi);
- void bpf_reset_live_stack_callchain(struct bpf_verifier_env *env);
- 
- int save_state_in_oracle(struct bpf_verifier_env *env, int insn_idx);
-+struct bpf_prog *patch_oracle_check_insn(struct bpf_verifier_env *env, struct bpf_insn *insn,
-+					 int i, int *cnt);
- 
- #endif /* _LINUX_BPF_VERIFIER_H */
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 84ced3ed2d21..ca4827933d26 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -1345,6 +1345,16 @@ enum {
- #define BPF_PSEUDO_MAP_VALUE		2
- #define BPF_PSEUDO_MAP_IDX_VALUE	6
- 
-+/* Internal only.
-+ * insn[0].dst_reg:  0
-+ * insn[0].src_reg:  BPF_PSEUDO_MAP_ORACLE
-+ * insn[0].imm:      address of oracle state list
-+ * insn[1].imm:      address of oracle state list
-+ * insn[0].off:      0
-+ * insn[1].off:      0
-+ */
-+#define BPF_PSEUDO_MAP_ORACLE	7
-+
- /* insn[0].src_reg:  BPF_PSEUDO_BTF_ID
-  * insn[0].imm:      kernel btd id of VAR
-  * insn[1].imm:      0
-diff --git a/kernel/bpf/disasm.c b/kernel/bpf/disasm.c
-index f8a3c7eb451e..a591a0bd0284 100644
---- a/kernel/bpf/disasm.c
-+++ b/kernel/bpf/disasm.c
-@@ -323,7 +323,8 @@ void print_bpf_insn(const struct bpf_insn_cbs *cbs,
- 			 */
- 			u64 imm = ((u64)(insn + 1)->imm << 32) | (u32)insn->imm;
- 			bool is_ptr = insn->src_reg == BPF_PSEUDO_MAP_FD ||
--				      insn->src_reg == BPF_PSEUDO_MAP_VALUE;
-+				      insn->src_reg == BPF_PSEUDO_MAP_VALUE ||
-+				      insn->src_reg == BPF_PSEUDO_MAP_ORACLE;
- 			char tmp[64];
- 
- 			if (is_ptr && !allow_ptr_leaks)
 diff --git a/kernel/bpf/oracle.c b/kernel/bpf/oracle.c
-index adbb153aadee..924a86c90b4e 100644
+index 924a86c90b4e..66ee840a35eb 100644
 --- a/kernel/bpf/oracle.c
 +++ b/kernel/bpf/oracle.c
-@@ -61,3 +61,39 @@ int save_state_in_oracle(struct bpf_verifier_env *env, int insn_idx)
- 
+@@ -62,6 +62,53 @@ int save_state_in_oracle(struct bpf_verifier_env *env, int insn_idx)
  	return 0;
  }
-+
-+struct bpf_prog *patch_oracle_check_insn(struct bpf_verifier_env *env, struct bpf_insn *insn,
-+					 int i, int *cnt)
+ 
++static struct bpf_map *create_inner_oracle_map(size_t size)
 +{
-+	struct bpf_insn ld_addrs[2] = {
-+		BPF_LD_IMM64_RAW(0, BPF_PSEUDO_MAP_ORACLE, 0),
++	struct bpf_map *map;
++	int err;
++
++	union bpf_attr map_attr = {
++		.map_type = BPF_MAP_TYPE_ARRAY,
++		.key_size = sizeof(__u32),
++		.value_size = sizeof(struct bpf_oracle_state),
++		.max_entries = size,
++		.map_flags = BPF_F_INNER_MAP | BPF_F_RDONLY,
++		.map_name = "oracle_inner",
 +	};
-+	struct bpf_insn_aux_data *aux = &env->insn_aux_data[i];
-+	struct list_head *head = aux->oracle_states;
-+	struct bpf_insn *insn_buf = env->insn_buf;
-+	struct bpf_prog *new_prog = env->prog;
-+	int num_oracle_states;
++	map = array_map_ops.map_alloc(&map_attr);
++	if (IS_ERR(map))
++		return map;
 +
-+	if (env->subprog_cnt > 1)
-+		/* Skip the oracle if subprogs are used. */
-+		goto noop;
++	map->ops = &array_map_ops;
++	map->map_type = BPF_MAP_TYPE_ARRAY;
 +
-+	num_oracle_states = list_count_nodes(head);
-+	if (!num_oracle_states)
-+		goto noop;
++	err = bpf_obj_name_cpy(map->name, map_attr.map_name,
++			       sizeof(map_attr.map_name));
++	if (err < 0)
++		goto free_map;
 +
-+	insn_buf[0] = ld_addrs[0];
-+	insn_buf[1] = ld_addrs[1];
-+	insn_buf[2] = *insn;
-+	*cnt = 3;
++	mutex_init(&map->freeze_mutex);
++	spin_lock_init(&map->owner_lock);
 +
-+	new_prog = bpf_patch_insn_data(env, i, insn_buf, *cnt);
-+	if (!new_prog)
-+		return ERR_PTR(-ENOMEM);
++	err = security_bpf_map_create(map, &map_attr, NULL, false);
++	if (err)
++		goto free_map_sec;
 +
-+	return new_prog;
++	err = bpf_map_alloc_id(map);
++	if (err)
++		goto free_map_sec;
 +
-+noop:
-+	*cnt = 1;
-+	return new_prog;
++	bpf_map_save_memcg(map);
++
++	return map;
++
++free_map_sec:
++	security_bpf_map_free(map);
++free_map:
++	bpf_map_free(map);
++	return ERR_PTR(err);
 +}
++
+ struct bpf_prog *patch_oracle_check_insn(struct bpf_verifier_env *env, struct bpf_insn *insn,
+ 					 int i, int *cnt)
+ {
+@@ -72,7 +119,8 @@ struct bpf_prog *patch_oracle_check_insn(struct bpf_verifier_env *env, struct bp
+ 	struct list_head *head = aux->oracle_states;
+ 	struct bpf_insn *insn_buf = env->insn_buf;
+ 	struct bpf_prog *new_prog = env->prog;
+-	int num_oracle_states;
++	int num_oracle_states, err;
++	struct bpf_map *inner_map;
+ 
+ 	if (env->subprog_cnt > 1)
+ 		/* Skip the oracle if subprogs are used. */
+@@ -82,6 +130,12 @@ struct bpf_prog *patch_oracle_check_insn(struct bpf_verifier_env *env, struct bp
+ 	if (!num_oracle_states)
+ 		goto noop;
+ 
++	inner_map = create_inner_oracle_map(num_oracle_states);
++	if (IS_ERR(inner_map))
++		return (void *)inner_map;
++
++	ld_addrs[0].imm = (u32)(u64)inner_map;
++	ld_addrs[1].imm = ((u64)inner_map) >> 32;
+ 	insn_buf[0] = ld_addrs[0];
+ 	insn_buf[1] = ld_addrs[1];
+ 	insn_buf[2] = *insn;
+@@ -91,6 +145,14 @@ struct bpf_prog *patch_oracle_check_insn(struct bpf_verifier_env *env, struct bp
+ 	if (!new_prog)
+ 		return ERR_PTR(-ENOMEM);
+ 
++	/* Attach oracle inner map to new LDIMM64 instruction. */
++	aux = &env->insn_aux_data[i];
++	aux->oracle_inner_map = inner_map;
++
++	err = __add_used_map(env, inner_map);
++	if (err < 0)
++		return ERR_PTR(err);
++
+ 	return new_prog;
+ 
+ noop:
 diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 3080cc48bfc3..211912c91652 100644
+index 211912c91652..5d8db1fed082 100644
 --- a/kernel/bpf/syscall.c
 +++ b/kernel/bpf/syscall.c
-@@ -4863,7 +4863,8 @@ static const struct bpf_map *bpf_map_from_imm(const struct bpf_prog *prog,
- 	for (i = 0, *off = 0; i < prog->aux->used_map_cnt; i++) {
- 		map = prog->aux->used_maps[i];
- 		if (map == (void *)addr) {
--			*type = BPF_PSEUDO_MAP_FD;
-+			if (*type != BPF_PSEUDO_MAP_ORACLE)
-+				*type = BPF_PSEUDO_MAP_FD;
- 			goto out;
- 		}
- 		if (!map->ops->map_direct_value_meta)
-@@ -4925,6 +4926,7 @@ static struct bpf_insn *bpf_insn_prepare_dump(const struct bpf_prog *prog,
- 		if (code != (BPF_LD | BPF_IMM | BPF_DW))
- 			continue;
+@@ -441,7 +441,7 @@ void bpf_map_init_from_attr(struct bpf_map *map, union bpf_attr *attr)
+ 	map->map_extra = attr->map_extra;
+ }
  
-+		type = insns[i].src_reg;
- 		imm = ((u64)insns[i + 1].imm << 32) | (u32)insns[i].imm;
- 		map = bpf_map_from_imm(prog, imm, &off, &type);
- 		if (map) {
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 2e48e5c9abae..4ca52c6aaa3b 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -21202,7 +21202,7 @@ static void convert_pseudo_ld_imm64(struct bpf_verifier_env *env)
- 	for (i = 0; i < insn_cnt; i++, insn++) {
- 		if (insn->code != (BPF_LD | BPF_IMM | BPF_DW))
- 			continue;
--		if (insn->src_reg == BPF_PSEUDO_FUNC)
-+		if (insn->src_reg == BPF_PSEUDO_FUNC || insn->src_reg == BPF_PSEUDO_MAP_ORACLE)
- 			continue;
- 		insn->src_reg = 0;
- 	}
-@@ -21296,8 +21296,8 @@ static void adjust_poke_descs(struct bpf_prog *prog, u32 off, u32 len)
+-static int bpf_map_alloc_id(struct bpf_map *map)
++int bpf_map_alloc_id(struct bpf_map *map)
+ {
+ 	int id;
+ 
+@@ -480,7 +480,7 @@ void bpf_map_free_id(struct bpf_map *map)
+ }
+ 
+ #ifdef CONFIG_MEMCG
+-static void bpf_map_save_memcg(struct bpf_map *map)
++void bpf_map_save_memcg(struct bpf_map *map)
+ {
+ 	/* Currently if a map is created by a process belonging to the root
+ 	 * memory cgroup, get_obj_cgroup_from_current() will return NULL.
+@@ -580,7 +580,7 @@ void __percpu *bpf_map_alloc_percpu(const struct bpf_map *map, size_t size,
+ }
+ 
+ #else
+-static void bpf_map_save_memcg(struct bpf_map *map)
++void bpf_map_save_memcg(struct bpf_map *map)
+ {
+ }
+ 
+@@ -880,7 +880,7 @@ void bpf_obj_free_fields(const struct btf_record *rec, void *obj)
  	}
  }
  
--static struct bpf_prog *bpf_patch_insn_data(struct bpf_verifier_env *env, u32 off,
--					    const struct bpf_insn *patch, u32 len)
-+struct bpf_prog *bpf_patch_insn_data(struct bpf_verifier_env *env, u32 off,
-+				     const struct bpf_insn *patch, u32 len)
+-static void bpf_map_free(struct bpf_map *map)
++void bpf_map_free(struct bpf_map *map)
  {
- 	struct bpf_prog *new_prog;
- 	struct bpf_insn_aux_data *new_data = NULL;
-@@ -22639,6 +22639,16 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
- 	}
+ 	struct btf_record *rec = map->record;
+ 	struct btf *btf = map->btf;
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 4ca52c6aaa3b..74fc568c1bc8 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -20969,7 +20969,7 @@ static int check_map_prog_compatibility(struct bpf_verifier_env *env,
+ 	return 0;
+ }
  
- 	for (i = 0; i < insn_cnt;) {
-+		if (is_prune_point(env, i + delta)) {
-+			new_prog = patch_oracle_check_insn(env, insn, i + delta, &cnt);
-+			if (IS_ERR(new_prog))
-+				return PTR_ERR(new_prog);
-+
-+			delta    += cnt - 1;
-+			env->prog = prog = new_prog;
-+			insn      = new_prog->insnsi + i + delta;
-+		}
-+
- 		if (insn->code == (BPF_ALU64 | BPF_MOV | BPF_X) && insn->imm) {
- 			if ((insn->off == BPF_ADDR_SPACE_CAST && insn->imm == 1) ||
- 			    (((struct bpf_map *)env->prog->aux->arena)->map_flags & BPF_F_NO_USER_CONV)) {
-diff --git a/tools/bpf/bpftool/xlated_dumper.c b/tools/bpf/bpftool/xlated_dumper.c
-index 5e7cb8b36fef..08bcd0c7d72d 100644
---- a/tools/bpf/bpftool/xlated_dumper.c
-+++ b/tools/bpf/bpftool/xlated_dumper.c
-@@ -206,6 +206,9 @@ static const char *print_imm(void *private_data,
- 	else if (insn->src_reg == BPF_PSEUDO_MAP_IDX_VALUE)
- 		snprintf(dd->scratch_buff, sizeof(dd->scratch_buff),
- 			 "map[idx:%d]+%d", insn->imm, (insn + 1)->imm);
-+	else if (insn->src_reg == BPF_PSEUDO_MAP_ORACLE)
-+		snprintf(dd->scratch_buff, sizeof(dd->scratch_buff),
-+			 "oracle_map[id:%d]", insn->imm);
- 	else if (insn->src_reg == BPF_PSEUDO_FUNC)
- 		snprintf(dd->scratch_buff, sizeof(dd->scratch_buff),
- 			 "subprog[%+d]", insn->imm);
+-static int __add_used_map(struct bpf_verifier_env *env, struct bpf_map *map)
++int __add_used_map(struct bpf_verifier_env *env, struct bpf_map *map)
+ {
+ 	int i, err;
+ 
 -- 
 2.43.0
 
