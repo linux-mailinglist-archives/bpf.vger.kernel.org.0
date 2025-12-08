@@ -1,383 +1,230 @@
-Return-Path: <bpf+bounces-76256-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76257-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AFB5CAC050
-	for <lists+bpf@lfdr.de>; Mon, 08 Dec 2025 05:20:35 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5983CAC482
+	for <lists+bpf@lfdr.de>; Mon, 08 Dec 2025 08:12:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E08CF3014AC6
-	for <lists+bpf@lfdr.de>; Mon,  8 Dec 2025 04:20:29 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 2E2503004519
+	for <lists+bpf@lfdr.de>; Mon,  8 Dec 2025 07:12:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 862382FA0C4;
-	Mon,  8 Dec 2025 04:20:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5795A3112AD;
+	Mon,  8 Dec 2025 06:24:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iLYjVqa2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dGpfGpd2"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF8532D4803;
-	Mon,  8 Dec 2025 04:20:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3245531062D
+	for <bpf@vger.kernel.org>; Mon,  8 Dec 2025 06:23:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765167628; cv=none; b=XAmoqIJfm5K3njJdjA9Kz4bAh2IaSMhE9XlOy1ZwGAeekNPLH881KnmBT7qPhKdV+d8c/aRoskWF5fbF7q2sEnnfIcCoSu4smnyfpX/6qV6dcmtem6GmPi6Cw4gKBWZg3xBq1f2OtsNwk/aNn0Jiiio2tRNdD5/K0MQxJI8Bp90=
+	t=1765175041; cv=none; b=qLpyjdiVbNL6sa2zcqGVMr7F9MQM51PjLVYR3wlGjVRkvqx/e9rWp7umNWnKg148tgDvKk1AKgpzCrRzWExTGQBWYxeXDnhJARfV5KKEbEIILupHWFzCeHwViT8abHFjq3qb6McHricvy3+ElxcLoyrWySWKk60LOn/D0ZdEK0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765167628; c=relaxed/simple;
-	bh=NcjLsMwyonHuFhemFyoNtmx9brC4NZS0suVevmRVjjY=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=mdbpxv4rpyLObVe8b5yxrYCpGOngkQoRl0SnYEdEyDMmNM9kyh6sEdDMwl9Ymf+TOGBKv3uab2fjh2cz+GI0/2Xl+JRx/jI3TnzODLG2vx/o+W9q+QJZWHxlguuCLGfKDopO6PqhlIFijMgLQp5ofd5BTOgSgAOlomhIyGHEdXQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iLYjVqa2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 189C0C113D0;
-	Mon,  8 Dec 2025 04:20:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765167627;
-	bh=NcjLsMwyonHuFhemFyoNtmx9brC4NZS0suVevmRVjjY=;
-	h=Date:From:To:Cc:Subject:Reply-To:From;
-	b=iLYjVqa2p7C/2jBTG7YAzTclYyRKR4XwStKHnXRm/vz6hKg1aG7rFHTMvjLtEmruV
-	 uxpX4u6EDOzxl5x1D8YcQsm+KuAIiZEMC5DQ9NoeR63Yna8BSpLdBqAttk9EZ12iQB
-	 FkOHHjTMLss1rpqwB8K6kQhzDbf1fLlW3uqFbDtBe1pRseaN8oUYj/dYCVOcpgpERe
-	 PPSgZgNBqMTgOTUgUBfuhFPUo4DtC33zhvwsQmxjVKIP7hJ7MkvRE3rj7UXcWKVmXE
-	 dIPsWx7U4QuvUAmCRnPGYwBth0aaPTy0kD70lVvagTYsPhmFu9+lwlYSanAnIfkSz3
-	 FhYCItCzvIizQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id E784ECE0E29; Sun,  7 Dec 2025 20:20:23 -0800 (PST)
-Date: Sun, 7 Dec 2025 20:20:23 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: linux-kernel@vger.kernel.org
-Cc: Steve Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	bpf@vger.kernel.org
-Subject: [PATCH v3] tracing: Guard __DECLARE_TRACE() use of __DO_TRACE_CALL()
- with SRCU-fast
-Message-ID: <e2fe3162-4b7b-44d6-91ff-f439b3dce706@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+	s=arc-20240116; t=1765175041; c=relaxed/simple;
+	bh=no6pHFz6QV+m78OzRgE53QNCmkZ+S6j4qpLVgMCXMR8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=DQZnLFgDLkZqtGU9+e+jDvWx/qtFXLVFVTU72/XlTrldqDb8Ems8rN26X41VdPuEo8+meF3O+4hcsTwvx8OVt+kUGSiediDlbWHCZP8F7d9oMiKy+Zl+bvIcYoqLVyjFcf2Qjhb4q8BXe7T0oYOTDcf4iKsqEIlXbmbRQyZ9bmM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dGpfGpd2; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-29808a9a96aso43334005ad.1
+        for <bpf@vger.kernel.org>; Sun, 07 Dec 2025 22:23:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1765175039; x=1765779839; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=lsZYUYLhb/9jE26mC2NIN9XpXV+PxRfvNx9GWDHK/bw=;
+        b=dGpfGpd2LsevmTtcuXZylEq/ThoV8X/GNU4ORG4SmBBR3sSCPBOZhdHLBfz5O+e1c8
+         qfU6w0Q6F5TDH4XmU3vkdNCEAvlqrq9ZV+tVz7IhSSrdwctwrBEOZAiI7QOoGv3Snnz3
+         Wqe39lmu6vyPwVkzBmZnWuRNDpeoXZ323wwyoK8vq22MGrtbHRjJZIzsMvpKqMHVsDgZ
+         f2hAKsODyVBArFjr2Zoi2KFq+/GAxJW93uG3uus41VZgUdMb2WZxxceKVA7y/fsEZKkc
+         ukbQJAfgX7aO+XtCVwR+TWJGoBj5bX8vRRhXVBe/uKNJ5diAvNlYDMbsdYbb9BY6vpje
+         oavg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765175039; x=1765779839;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lsZYUYLhb/9jE26mC2NIN9XpXV+PxRfvNx9GWDHK/bw=;
+        b=w8TYV6RePZXXbh5uJ994qvuRB1ybR3ElOIoUDjcSDYvuMePRlErzMaYbGyNXwHuueR
+         jvrwQOTl957fzGwOjg2JtYy7v+9ZiRdgLSH30ggviE59phiP7N4uUDBVwSuIpUWbzdHf
+         mo4xfVDmRjNcIdPr/7MnrqTtYEtDuIELMg22UuFhYM1ZwtHYd02YbwpWUod8xCc86s1q
+         AL4hRSMyFAZn02xhtCIlA03QjwOPkP1z5qxchRmiQgHwHuXzr+eLbt6ceNG+JeyMSvxD
+         kIj1wiwBfnnhbd1neO7tDL2vUWhpBow+T82h08GEw11i/VjIAPEOCIScGS0M2tyTJd1H
+         TPSw==
+X-Forwarded-Encrypted: i=1; AJvYcCVqgpegqiugncOgTOHPueqENR8lnkStIJlHYpIaxfCGd8xIBkTvmFFvWIqiORMKCJXI484=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz/0asej2YypN6dWE5x0OD33DW9ao3T7D2ceeSu5PCxDL3wVeSc
+	qDRd227By3cxkwOMwJQAFPBTkILLECGWS3stdxNKRr0aNzISpnLgDBkX
+X-Gm-Gg: ASbGncvudnJY7K3cr6r/EAyKnTDx/h6LfuQdiP0HgeAsiiPe0MQq8T/400nhVAIRLDy
+	gT+xavseFZLufY/jtCft2vZSKSLNQxk5jsn7LdDIAntAW+2m0ELAlDpFR6AqKuoB/ymCsMsXkj1
+	ZnRQA3p+myf2hhXRaCfeVF1CQEMsHJl6iZ7Ju0KwanYfKr+9sO+aA5eJ7R4Has0YgYXz3M2oAsh
+	W8xoyjHGbF9nAb03scMZ4qt+B9nfnS6SUWS8XaU5MKiuK4vvaqbqw25WoBek8KhURfq4m8CsryC
+	2TmsOaE/xuAA0YjxBDcOnoLmqDNL2saVbHF+rF0CjmeWb4yhASiDrE68e/ZcArZ0e1WJ8vhc+MM
+	n088SYS9nQMghu1jPdjhpHT7A9vTBXa9Zcp8iGO/n5LD/X39BSvS0La4OQHZc8I2s+lh3/Bz+cC
+	hsRmA8yCHlNEflIQkzpNpFE6BecR4=
+X-Google-Smtp-Source: AGHT+IHcU2NM/BZxkY0PLpjOya9dzoZ+GIOFa8kPlIVbMm+YYxQbG3Cdae5F6/OFcQvATZNgd1cBVg==
+X-Received: by 2002:a17:902:cf08:b0:271:479d:3de2 with SMTP id d9443c01a7336-29df59a86fdmr53716655ad.13.1765175039214;
+        Sun, 07 Dec 2025 22:23:59 -0800 (PST)
+Received: from pengdl-pc.mioffice.cn ([43.224.245.249])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29dae49ca1esm112555855ad.2.2025.12.07.22.23.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Dec 2025 22:23:58 -0800 (PST)
+From: Donglin Peng <dolinux.peng@gmail.com>
+To: ast@kernel.org,
+	andrii.nakryiko@gmail.com
+Cc: eddyz87@gmail.com,
+	zhangxiaoqin@xiaomi.com,
+	ihor.solodrai@linux.dev,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	pengdonglin <pengdonglin@xiaomi.com>
+Subject: [PATCH bpf-next v9 00/10] Improve the performance of BTF type lookups with binary search
+Date: Mon,  8 Dec 2025 14:23:43 +0800
+Message-Id: <20251208062353.1702672-1-dolinux.peng@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-The current use of guard(preempt_notrace)() within __DECLARE_TRACE()
-to protect invocation of __DO_TRACE_CALL() means that BPF programs
-attached to tracepoints are non-preemptible.  This is unhelpful in
-real-time systems, whose users apparently wish to use BPF while also
-achieving low latencies.  (Who knew?)
+From: pengdonglin <pengdonglin@xiaomi.com>
 
-One option would be to use preemptible RCU, but this introduces
-many opportunities for infinite recursion, which many consider to
-be counterproductive, especially given the relatively small stacks
-provided by the Linux kernel.  These opportunities could be shut down
-by sufficiently energetic duplication of code, but this sort of thing
-is considered impolite in some circles.
+The series addresses the performance limitations of linear search in large
+BTFs by:
+1. Adding BTF permutation support
+2. Using resolve_btfids to sort BTF during the build phase
+3. Checking BTF sorting
+4. Using binary search when looking up types
 
-Therefore, use the shiny new SRCU-fast API, which provides somewhat faster
-readers than those of preemptible RCU, at least on Paul E. McKenney's
-laptop, where task_struct access is more expensive than access to per-CPU
-variables.  And SRCU-fast provides way faster readers than does SRCU,
-courtesy of being able to avoid the read-side use of smp_mb().  Also,
-it is quite straightforward to create srcu_read_{,un}lock_fast_notrace()
-functions.
+Patch #1 introduces an interface for btf__permute in libbpf to relay out BTF.
+Patch #2 adds test cases to validate the functionality of btf__permute in base
+and split BTF scenarios.
+Patch #3 introduces a new phase in the resolve_btfids tool to sort BTF by name
+in ascending order.
+Patches #4-#7 implement the sorting check and binary search.
+Patches #8-#10 optimize type lookup performance of some functions by skipping
+anonymous types or invoking btf_find_by_name_kind.
 
-While in the area, SRCU now supports early boot call_srcu().  Therefore,
-remove the checks that used to avoid such use from rcu_free_old_probes()
-before this commit was applied:
+Here is a simple performance result [1] to find 60,995 named types in vmlinux
+BTF:
+./vmtest.sh -- ./test_progs -t btf_permute/perf -v
 
-e53244e2c893 ("tracepoint: Remove SRCU protection")
+Results:
+| Condition          | Lookup Time | Improvement  |
+|--------------------|-------------|--------------|
+| Unsorted (Linear)  | 27,697.4 ms | Baseline     |
+| Sorted (Binary)    |      9.7 ms | 2855x faster |
 
-The current commit can be thought of as an approximate revert of that
-commit, with some compensating additions of preemption disabling.
-This preemption disabling uses guard(preempt_notrace)().
+The binary search implementation reduces lookup time from 27.7 seconds to 9.7
+milliseconds, achieving a **2855x** speedup for large-scale type queries.
 
-However, Yonghong Song points out that BPF assumes that non-sleepable
-BPF programs will remain on the same CPU, which means that migration
-must be disabled whenever preemption remains enabled.  In addition,
-non-RT kernels have performance expectations that would be violated by
-allowing the BPF programs to be preempted.
+Changelog:
+v9:
+- Optimize the performance of the function determine_ptr_size by invoking
+  btf__find_by_name_kind
+- Optimize the performance of btf_find_decl_tag_value/btf_prepare_func_args/
+  bpf_core_add_cands by skipping anonymous types
+- Rebase the patch series onto Ihor's v3 patch series [3]
 
-Therefore, continue to disable preemption in non-RT kernels, and protect
-the BPF program with both SRCU and migration disabling for RT kernels,
-and even then only if preemption is not already disabled.
+v8
+- Link: https://lore.kernel.org/bpf/20251126085025.784288-1-dolinux.peng@gmail.com/
+- Remove the type dropping feature of btf__permute (Andrii)
+- Refactor the code of btf__permute (Andrii, Eduard)
+- Make the self-test code cleaner (Eduard)
+- Reconstruct the BTF sorting patch based on Ihor's patch series [2]
+- Simplify the sorting logic and place anonymous types before named types
+  (Andrii, Eduard)
+- Optimize type lookup performance of two kernel functions
+- Refactoring the binary search and type lookup logic achieves a 4.2%
+  performance gain, reducing the average lookup time (via the perf test
+  code in [1] for 60,995 named types in vmlinux BTF) from 10,217 us (v7) to
+  9,783 us (v8).
 
-[ paulmck: Apply kernel test robot and Yonghong Song feedback. ]
-[ paulmck: Remove trace_syscalls.h changes per Steven Rostedt. ]
+v7:
+- Link: https://lore.kernel.org/all/20251119031531.1817099-1-dolinux.peng@gmail.com/
+- btf__permute API refinement: Adjusted id_map and id_map_cnt parameter
+  usage so that for base BTF, id_map[0] now contains the new id of original
+  type id 1 (instead of VOID type id 0), improving logical consistency
+- Selftest updates: Modified test cases to align with the API usage changes
+- Refactor the code of resolve_btfids
 
-Link: https://lore.kernel.org/all/20250613152218.1924093-1-bigeasy@linutronix.de/
-Signed-off-by: Steve Rostedt (Google) <rostedt@goodmis.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: <bpf@vger.kernel.org>
+v6:
+- Link: https://lore.kernel.org/all/20251117132623.3807094-1-dolinux.peng@gmail.com/
+- ID Map-based reimplementation of btf__permute (Andrii)
+- Build-time BTF sorting using resolve_btfids (Alexei, Eduard)
+- Binary search method refactoring (Andrii)
+- Enhanced selftest coverage
 
----
+v5:
+- Link: https://lore.kernel.org/all/20251106131956.1222864-1-dolinux.peng@gmail.com/
+- Refactor binary search implementation for improved efficiency
+  (Thanks to Andrii and Eduard)
+- Extend btf__permute interface with 'ids_sz' parameter to support
+  type dropping feature (suggested by Andrii). Plan subsequent reimplementation of
+  id_map version for comparative analysis with current sequence interface
+- Add comprehensive test coverage for type dropping functionality
+- Enhance function comment clarity and accuracy
 
- include/linux/trace_events.h |   20 ++++++++++++++++++++
- include/linux/tracepoint.h   |   25 ++++++++++++++++++++++---
- include/trace/perf.h         |    4 ++--
- include/trace/trace_events.h |   21 +++++++++++++++++++--
- kernel/trace/trace_events.c  |    8 +-------
- kernel/tracepoint.c          |   33 +++++++++++++++++++++++++++++++++
- 6 files changed, 97 insertions(+), 14 deletions(-)
+v4:
+- Link: https://lore.kernel.org/all/20251104134033.344807-1-dolinux.peng@gmail.com/
+- Abstracted btf_dedup_remap_types logic into a helper function (suggested by Eduard).
+- Removed btf_sort.c and implemented sorting separately for libbpf and kernel (suggested by Andrii).
+- Added test cases for both base BTF and split BTF scenarios (suggested by Eduard).
+- Added validation for name-only sorting of types (suggested by Andrii)
+- Refactored btf__permute implementation to reduce complexity (suggested by Andrii)
+- Add doc comments for btf__permute (suggested by Andrii)
 
-diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
-index 3690221ba3d80..c38988778f525 100644
---- a/include/linux/trace_events.h
-+++ b/include/linux/trace_events.h
-@@ -222,6 +222,26 @@ static inline unsigned int tracing_gen_ctx_dec(void)
- 	return trace_ctx;
- }
- 
-+/*
-+ * When PREEMPT_RT is enabled, trace events are called with disabled
-+ * migration. The trace events need to know if the tracepoint disabled
-+ * migration or not so that what is recorded to the ring buffer shows
-+ * the state of when the trace event triggered, and not the state caused
-+ * by the trace event.
-+ */
-+#ifdef CONFIG_PREEMPT_RT
-+static inline unsigned int tracing_gen_ctx_dec_cond(void)
-+{
-+	unsigned int trace_ctx;
-+
-+	trace_ctx = tracing_gen_ctx_dec();
-+	/* The migration counter starts at bit 4 */
-+	return trace_ctx - (1 << 4);
-+}
-+#else
-+# define tracing_gen_ctx_dec_cond() tracing_gen_ctx_dec()
-+#endif
-+
- struct trace_event_file;
- 
- struct ring_buffer_event *
-diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
-index 8a56f3278b1b9..0563c7d9fcb22 100644
---- a/include/linux/tracepoint.h
-+++ b/include/linux/tracepoint.h
-@@ -100,6 +100,25 @@ void for_each_tracepoint_in_module(struct module *mod,
- }
- #endif /* CONFIG_MODULES */
- 
-+/*
-+ * BPF programs can attach to the tracepoint callbacks. But if the
-+ * callbacks are called with preemption disabled, the BPF programs
-+ * can cause quite a bit of latency. When PREEMPT_RT is enabled,
-+ * instead of disabling preemption, use srcu_fast_notrace() for
-+ * synchronization. As BPF programs that are attached to tracepoints
-+ * expect to stay on the same CPU, also disable migration.
-+ */
-+#ifdef CONFIG_PREEMPT_RT
-+extern struct srcu_struct tracepoint_srcu;
-+# define tracepoint_sync() synchronize_srcu(&tracepoint_srcu);
-+# define tracepoint_guard()				\
-+	guard(srcu_fast_notrace)(&tracepoint_srcu);	\
-+	guard(migrate)()
-+#else
-+# define tracepoint_sync() synchronize_rcu();
-+# define tracepoint_guard() guard(preempt_notrace)()
-+#endif
-+
- /*
-  * tracepoint_synchronize_unregister must be called between the last tracepoint
-  * probe unregistration and the end of module exit to make sure there is no
-@@ -115,7 +134,7 @@ void for_each_tracepoint_in_module(struct module *mod,
- static inline void tracepoint_synchronize_unregister(void)
- {
- 	synchronize_rcu_tasks_trace();
--	synchronize_rcu();
-+	tracepoint_sync();
- }
- static inline bool tracepoint_is_faultable(struct tracepoint *tp)
- {
-@@ -275,13 +294,13 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
- 		return static_branch_unlikely(&__tracepoint_##name.key);\
- 	}
- 
--#define __DECLARE_TRACE(name, proto, args, cond, data_proto)		\
-+#define __DECLARE_TRACE(name, proto, args, cond, data_proto)			\
- 	__DECLARE_TRACE_COMMON(name, PARAMS(proto), PARAMS(args), PARAMS(data_proto)) \
- 	static inline void __do_trace_##name(proto)			\
- 	{								\
- 		TRACEPOINT_CHECK(name)					\
- 		if (cond) {						\
--			guard(preempt_notrace)();			\
-+			tracepoint_guard();				\
- 			__DO_TRACE_CALL(name, TP_ARGS(args));		\
- 		}							\
- 	}								\
-diff --git a/include/trace/perf.h b/include/trace/perf.h
-index a1754b73a8f55..348ad1d9b5566 100644
---- a/include/trace/perf.h
-+++ b/include/trace/perf.h
-@@ -71,6 +71,7 @@ perf_trace_##call(void *__data, proto)					\
- 	u64 __count __attribute__((unused));				\
- 	struct task_struct *__task __attribute__((unused));		\
- 									\
-+	guard(preempt_notrace)();					\
- 	do_perf_trace_##call(__data, args);				\
- }
- 
-@@ -85,9 +86,8 @@ perf_trace_##call(void *__data, proto)					\
- 	struct task_struct *__task __attribute__((unused));		\
- 									\
- 	might_fault();							\
--	preempt_disable_notrace();					\
-+	guard(preempt_notrace)();					\
- 	do_perf_trace_##call(__data, args);				\
--	preempt_enable_notrace();					\
- }
- 
- /*
-diff --git a/include/trace/trace_events.h b/include/trace/trace_events.h
-index 4f22136fd4656..6fb58387e9f15 100644
---- a/include/trace/trace_events.h
-+++ b/include/trace/trace_events.h
-@@ -429,6 +429,22 @@ do_trace_event_raw_event_##call(void *__data, proto)			\
- 	trace_event_buffer_commit(&fbuffer);				\
- }
- 
-+/*
-+ * When PREEMPT_RT is enabled, the tracepoint does not disable preemption
-+ * but instead disables migration. The callbacks for the trace events
-+ * need to have a consistent state so that it can reflect the proper
-+ * preempt_disabled counter.
-+ */
-+#ifdef CONFIG_PREEMPT_RT
-+/* disable preemption for RT so that the counters still match */
-+# define trace_event_guard() guard(preempt_notrace)()
-+/* Have syscalls up the migrate disable counter to emulate non-syscalls */
-+# define trace_syscall_event_guard() guard(migrate)()
-+#else
-+# define trace_event_guard()
-+# define trace_syscall_event_guard()
-+#endif
-+
- #undef DECLARE_EVENT_CLASS
- #define DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print)	\
- __DECLARE_EVENT_CLASS(call, PARAMS(proto), PARAMS(args), PARAMS(tstruct), \
-@@ -436,6 +452,7 @@ __DECLARE_EVENT_CLASS(call, PARAMS(proto), PARAMS(args), PARAMS(tstruct), \
- static notrace void							\
- trace_event_raw_event_##call(void *__data, proto)			\
- {									\
-+	trace_event_guard();						\
- 	do_trace_event_raw_event_##call(__data, args);			\
- }
- 
-@@ -447,9 +464,9 @@ static notrace void							\
- trace_event_raw_event_##call(void *__data, proto)			\
- {									\
- 	might_fault();							\
--	preempt_disable_notrace();					\
-+	trace_syscall_event_guard();					\
-+	guard(preempt_notrace)();					\
- 	do_trace_event_raw_event_##call(__data, args);			\
--	preempt_enable_notrace();					\
- }
- 
- /*
-diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
-index b16a5a1580401..2d8fd140eaf9e 100644
---- a/kernel/trace/trace_events.c
-+++ b/kernel/trace/trace_events.c
-@@ -659,13 +659,7 @@ void *trace_event_buffer_reserve(struct trace_event_buffer *fbuffer,
- 	    trace_event_ignore_this_pid(trace_file))
- 		return NULL;
- 
--	/*
--	 * If CONFIG_PREEMPTION is enabled, then the tracepoint itself disables
--	 * preemption (adding one to the preempt_count). Since we are
--	 * interested in the preempt_count at the time the tracepoint was
--	 * hit, we need to subtract one to offset the increment.
--	 */
--	fbuffer->trace_ctx = tracing_gen_ctx_dec();
-+	fbuffer->trace_ctx = tracing_gen_ctx_dec_cond();
- 	fbuffer->trace_file = trace_file;
- 
- 	fbuffer->event =
-diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
-index 62719d2941c90..6a6bcf86bfbed 100644
---- a/kernel/tracepoint.c
-+++ b/kernel/tracepoint.c
-@@ -25,6 +25,12 @@ enum tp_func_state {
- extern tracepoint_ptr_t __start___tracepoints_ptrs[];
- extern tracepoint_ptr_t __stop___tracepoints_ptrs[];
- 
-+/* In PREEMPT_RT, SRCU is used to protect the tracepoint callbacks */
-+#ifdef CONFIG_PREEMPT_RT
-+DEFINE_SRCU_FAST(tracepoint_srcu);
-+EXPORT_SYMBOL_GPL(tracepoint_srcu);
-+#endif
-+
- enum tp_transition_sync {
- 	TP_TRANSITION_SYNC_1_0_1,
- 	TP_TRANSITION_SYNC_N_2_1,
-@@ -34,6 +40,7 @@ enum tp_transition_sync {
- 
- struct tp_transition_snapshot {
- 	unsigned long rcu;
-+	unsigned long srcu_gp;
- 	bool ongoing;
- };
- 
-@@ -46,6 +53,9 @@ static void tp_rcu_get_state(enum tp_transition_sync sync)
- 
- 	/* Keep the latest get_state snapshot. */
- 	snapshot->rcu = get_state_synchronize_rcu();
-+#ifdef CONFIG_PREEMPT_RT
-+	snapshot->srcu_gp = start_poll_synchronize_srcu(&tracepoint_srcu);
-+#endif
- 	snapshot->ongoing = true;
- }
- 
-@@ -56,6 +66,10 @@ static void tp_rcu_cond_sync(enum tp_transition_sync sync)
- 	if (!snapshot->ongoing)
- 		return;
- 	cond_synchronize_rcu(snapshot->rcu);
-+#ifdef CONFIG_PREEMPT_RT
-+	if (!poll_state_synchronize_srcu(&tracepoint_srcu, snapshot->srcu_gp))
-+		synchronize_srcu(&tracepoint_srcu);
-+#endif
- 	snapshot->ongoing = false;
- }
- 
-@@ -101,10 +115,22 @@ static inline void *allocate_probes(int count)
- 	return p == NULL ? NULL : p->probes;
- }
- 
-+#ifdef CONFIG_PREEMPT_RT
-+static void srcu_free_old_probes(struct rcu_head *head)
-+{
-+	kfree(container_of(head, struct tp_probes, rcu));
-+}
-+
-+static void rcu_free_old_probes(struct rcu_head *head)
-+{
-+	call_srcu(&tracepoint_srcu, head, srcu_free_old_probes);
-+}
-+#else
- static void rcu_free_old_probes(struct rcu_head *head)
- {
- 	kfree(container_of(head, struct tp_probes, rcu));
- }
-+#endif
- 
- static inline void release_probes(struct tracepoint *tp, struct tracepoint_func *old)
- {
-@@ -112,6 +138,13 @@ static inline void release_probes(struct tracepoint *tp, struct tracepoint_func
- 		struct tp_probes *tp_probes = container_of(old,
- 			struct tp_probes, probes[0]);
- 
-+		/*
-+		 * Tracepoint probes are protected by either RCU or
-+		 * Tasks Trace RCU and also by SRCU.  By calling the SRCU
-+		 * callback in the [Tasks Trace] RCU callback we cover
-+		 * both cases. So let us chain the SRCU and [Tasks Trace]
-+		 * RCU callbacks to wait for both grace periods.
-+		 */
- 		if (tracepoint_is_faultable(tp))
- 			call_rcu_tasks_trace(&tp_probes->rcu, rcu_free_old_probes);
- 		else
+v3:
+- Link: https://lore.kernel.org/all/20251027135423.3098490-1-dolinux.peng@gmail.com/
+- Remove sorting logic from libbpf and provide a generic btf__permute() interface (suggested
+  by Andrii)
+- Omitted the search direction patch to avoid conflicts with base BTF (suggested by Eduard).
+- Include btf_sort.c directly in btf.c to reduce function call overhead
+
+v2:
+- Link: https://lore.kernel.org/all/20251020093941.548058-1-dolinux.peng@gmail.com/
+- Moved sorting to the build phase to reduce overhead (suggested by Alexei).
+- Integrated sorting into btf_dedup_compact_and_sort_types (suggested by Eduard).
+- Added sorting checks during BTF parsing.
+- Consolidated common logic into btf_sort.c for sharing (suggested by Alan).
+
+v1:
+- Link: https://lore.kernel.org/all/20251013131537.1927035-1-dolinux.peng@gmail.com/
+
+[1] https://github.com/pengdonglin137/btf_sort_test
+[2] https://lore.kernel.org/bpf/20251126012656.3546071-1-ihor.solodrai@linux.dev/
+[3] https://lore.kernel.org/bpf/20251205223046.4155870-1-ihor.solodrai@linux.dev/
+
+
+pengdonglin (10):
+  libbpf: Add BTF permutation support for type reordering
+  selftests/bpf: Add test cases for btf__permute functionality
+  tools/resolve_btfids: Support BTF sorting feature
+  libbpf: Optimize type lookup with binary search for sorted BTF
+  libbpf: Verify BTF Sorting
+  btf: Optimize type lookup with binary search
+  btf: Verify BTF Sorting
+  bpf: Skip anonymous types in type lookup for performance
+  bpf: Optimize the performance of find_bpffs_btf_enums
+  libbpf: Optimize the performance of determine_ptr_size
+
+ include/linux/btf.h                           |   1 +
+ kernel/bpf/btf.c                              | 158 ++++++++-
+ kernel/bpf/inode.c                            |  42 ++-
+ kernel/bpf/verifier.c                         |   7 +-
+ tools/bpf/resolve_btfids/main.c               |  68 ++++
+ tools/lib/bpf/btf.c                           | 302 ++++++++++++++++--
+ tools/lib/bpf/btf.h                           |  36 +++
+ tools/lib/bpf/libbpf.map                      |   1 +
+ .../selftests/bpf/prog_tests/btf_permute.c    | 228 +++++++++++++
+ 9 files changed, 766 insertions(+), 77 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/btf_permute.c
+
+-- 
+2.34.1
+
 
