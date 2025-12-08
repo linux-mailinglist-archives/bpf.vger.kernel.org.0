@@ -1,160 +1,191 @@
-Return-Path: <bpf+bounces-76243-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76245-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5DF9CABD5B
-	for <lists+bpf@lfdr.de>; Mon, 08 Dec 2025 03:22:04 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A7E1CABE6F
+	for <lists+bpf@lfdr.de>; Mon, 08 Dec 2025 04:02:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 03D783020CD3
-	for <lists+bpf@lfdr.de>; Mon,  8 Dec 2025 02:17:31 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 852403012750
+	for <lists+bpf@lfdr.de>; Mon,  8 Dec 2025 03:01:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2B4D1DD889;
-	Mon,  8 Dec 2025 02:17:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A05402DA756;
+	Mon,  8 Dec 2025 03:01:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FdG30Q84"
+	dkim=pass (2048-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b="Ul+sjP0K";
+	dkim=permerror (0-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b="igfOJXoE"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from devnull.danielhodges.dev (vps-2f6e086e.vps.ovh.us [135.148.138.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 466AD20ED
-	for <bpf@vger.kernel.org>; Mon,  8 Dec 2025 02:17:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B49A32E5B2D;
+	Mon,  8 Dec 2025 03:01:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=135.148.138.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765160223; cv=none; b=ZVwIez2kX5iQTTXUN+FJXAHEnY50m2ybQtR9DFTwiR8GUcviVIu982O7oQdaj4wmfzo4T1XlyJVRUA/NGezQwq53kEE7jWGJBSwVPlLR6wh1GDOGvQhQt2NLR82Id92shTliv6jjYpqOb4epeQIzQjhBmFTd6yNgchh+T9ws42Q=
+	t=1765162893; cv=none; b=P1rBDe8kNqhLbYgwfp3oSn3ewalHJj5tlmTuodpQiTMhMzwdxt4bX3w0d18C+50/bFkwGeWyFKJTSMVJRE8Z/2nQqGiGpjDwjLNzuRPR8xw0BmWbGojPwO3CmyqXkv2YDFqSdqNbait7DlT0DcOfwOzLkL76CSKl1CEQvJN+qOc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765160223; c=relaxed/simple;
-	bh=r1DUiPp0TsVrpaIPykKWOCrTNyL8ieNSupiq4rkiWhQ=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=CRabXlsDl80m0ZtCGrPvcBAvEmHo3GZ+rthmK6nZaKvVNsq5Zt2Jynw0qqUH1fP0kY7Y6tAkiCyrXbVMgn2/XdKT1WMkUx/u3vM/YGyZZbqE5jMyKjAHcq2DOcV51bI0lJ3N9gyoQ0cy1yWhh0uyuz9+coNpPZc2Ggi0Inrs34s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FdG30Q84; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5754C4CEFB;
-	Mon,  8 Dec 2025 02:17:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765160222;
-	bh=r1DUiPp0TsVrpaIPykKWOCrTNyL8ieNSupiq4rkiWhQ=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=FdG30Q84gyFwfvcCArxjKo3ixP2GOjwANMfaQYWK/+7si/hI1JRz8qrvYUV1YgHwp
-	 3EM3bPNW7bMQ0sv7gs+2IflrnwiFcA5X2/IXNNhncVuo8WlLdc2KkLGYwIJqKeLWkS
-	 tM+S1eWq7kxRslIni4nJL8ygGCizdhZvJchDXw983cYhGk97sQ3i3cGq9bLprEi2A4
-	 PvFbEDUVix+qCF1DU3mv1+25+yKSr3JDXTEMyxhltofickx3u2bQAf+qL5GMhmGbJj
-	 vw9ZBHRGu1CkMwAEdq8hYKmEP3HmLDW41L3jvj8DNQfivUiykyZAqxegQE0lPdeHVL
-	 jGLmmTK2p73dw==
-Content-Type: multipart/mixed; boundary="===============4624510377783832461=="
+	s=arc-20240116; t=1765162893; c=relaxed/simple;
+	bh=hu6jl0a0wm7wKVWRdG1m6js9GdxZ0mHusHLso1jO/e4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dDbFFVm3Zod0ja4IAblj69lRMroraKNT27B50vVOthNPvIBZyi4NS6zQbK99Pgm2ETyi/fV1Bl5GCjMxOzP8jjDkblEytnPpOqYckI+RM4CF3Ze3JOT9Cj8ArpGwxZrlI/N/IrT2LN0yfTcc875O5l3tj35kFWqv26ev/5o47po=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=danielhodges.dev; spf=pass smtp.mailfrom=danielhodges.dev; dkim=pass (2048-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b=Ul+sjP0K; dkim=permerror (0-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b=igfOJXoE; arc=none smtp.client-ip=135.148.138.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=danielhodges.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=danielhodges.dev
+DKIM-Signature: v=1; a=rsa-sha256; s=202510r; d=danielhodges.dev; c=relaxed/relaxed;
+	h=Message-ID:Date:Subject:To:From; t=1765162877; bh=xYdpvWfCIMhh9LM+lJV+F39
+	nsDyNJgaKBAWFxKYe3lY=; b=Ul+sjP0KE919sBR75McIDn1FwAq8Um9zJ0w4PId6M9tz7xvalm
+	hHYcJRsXLzFm18pxKMmxQ1FCor0uVR00OmiBn07v7TO5JZkNl4SXqIs6Ocb7eCB57QYsQa6c4c8
+	uFjVS+Vt1+Bdve/pP/JejFACgm282RrBzc28IPKfkOUD7AxlMdn1l2iCPRXMkPscflfkvK8iiKm
+	3uol3O9e4s77ETPWtXZp8j+H8FW9MpF6Xq5YaJmFVTzKFvv17GF+TTG7FB8UpE4Q0R6fSEv4XI+
+	o2htUabsoF+9ygg/0xljBw9btUIVpvSVuQu7mflKfy5ZbQiMEFQRMxK1i5rULoXm5jA==;
+DKIM-Signature: v=1; a=ed25519-sha256; s=202510e; d=danielhodges.dev; c=relaxed/relaxed;
+	h=Message-ID:Date:Subject:To:From; t=1765162877; bh=xYdpvWfCIMhh9LM+lJV+F39
+	nsDyNJgaKBAWFxKYe3lY=; b=igfOJXoEtji4lIZtJPSBorNLObeFu2eVP8E9Ig7XencCFp48ia
+	7mLDzcnF7Yaif+vnX70kKGLd2Cy7C4lhktAg==;
+From: Daniel Hodges <git@danielhodges.dev>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	vadim.fedorenko@linux.dev,
+	song@kernel.org,
+	yatsenko@meta.com,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	yonghong.song@linux.dev,
+	herbert@gondor.apana.org.au,
+	davem@davemloft.net,
+	linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Daniel Hodges <git@danielhodges.dev>
+Subject: [PATCH bpf-next v3 0/6] Add cryptographic hash and signature verification kfuncs to BPF
+Date: Sun,  7 Dec 2025 22:01:11 -0500
+Message-ID: <20251208030117.18892-1-git@danielhodges.dev>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <082995bcd79b647fdd0bdedd2a1677f7e182cd5654baeddd3923cf886b728ce0@mail.kernel.org>
-In-Reply-To: <8739a850ecbb0454e4cbb2dc1103ba9429ea0aef.1765158924.git.paul.chaignon@gmail.com>
-References: <8739a850ecbb0454e4cbb2dc1103ba9429ea0aef.1765158924.git.paul.chaignon@gmail.com>
-Subject: Re: [PATCH bpf-next 1/8] bpf: Save pruning point states in oracle
-From: bot+bpf-ci@kernel.org
-To: paul.chaignon@gmail.com,bpf@vger.kernel.org
-Cc: ast@kernel.org,daniel@iogearbox.net,andrii@kernel.org,qmo@kernel.org,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Mon,  8 Dec 2025 02:17:01 +0000 (UTC)
+Content-Transfer-Encoding: 8bit
 
---===============4624510377783832461==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+This series extends BPF's cryptographic capabilities by adding kfuncs for
+SHA hashing and ECDSA signature verification. These functions enable BPF
+programs to perform cryptographic operations for use cases such as content
+verification, integrity checking, and data authentication.
 
-> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-> index 130bcbd66f60..adaeff35aaa6 100644
-> --- a/include/linux/bpf_verifier.h
-> +++ b/include/linux/bpf_verifier.h
+BPF programs increasingly need to verify data integrity and authenticity in
+networking, security, and observability contexts. While BPF already supports
+symmetric encryption/decryption, it lacks support for:
 
-[ ... ]
+1. Cryptographic hashing - needed for content verification, fingerprinting,
+   and preparing message digests for signature operations
+2. Asymmetric signature verification - needed to verify signed data without
+   requiring the signing key in the datapath
 
-> @@ -551,6 +575,7 @@ struct bpf_insn_aux_data {
->  	};
->  	struct bpf_iarray *jt;	/* jump table for gotox or bpf_tailcall call instruction */
->  	struct btf_struct_meta *kptr_struct_meta;
-> +	struct list_head *oracle_states;
->  	u64 map_key_state; /* constant (32 bit) key tracking for maps */
->  	int ctx_field_size; /* the ctx field size for load insn, maybe 0 */
->  	u32 seen; /* this insn was processed by the verifier at env->pass_cnt */
+These capabilities enable use cases such as:
+- Verifying signed network packets or application data in XDP/TC programs
+- Implementing integrity checks in tracing and security monitoring
+- Building zero-trust security models where BPF programs verify credentials
+- Content-addressed storage and deduplication in BPF-based filesystems
 
-[ ... ]
+Implementation:
 
-> diff --git a/kernel/bpf/oracle.c b/kernel/bpf/oracle.c
-> new file mode 100644
-> index 000000000000..adbb153aadee
-> --- /dev/null
-> +++ b/kernel/bpf/oracle.c
-> @@ -0,0 +1,63 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * This file implements a test oracle for the verifier. When the oracle is enabled, the verifier
-> + * saves information on variables at regular points throughout the program. This information is
-> + * then compared at runtime with the concrete values to ensure that the verifier's information is
-> + * correct.
-> + */
-> +
-> +#include <linux/bpf_verifier.h>
-> +
-> +static void convert_oracle_state(struct bpf_verifier_state *istate, struct bpf_oracle_state *ostate)
-> +{
+The implementation follows BPF's existing crypto patterns:
+1. Uses bpf_dynptr for safe memory access without page fault risks
+2. Leverages the kernel's existing crypto library (lib/crypto/sha256.c and
+   crypto/ecdsa.c) rather than reimplementing algorithms
+3. Provides context-based API for ECDSA to enable key reuse and support
+   multiple program types (syscall, XDP, TC)
+4. Includes comprehensive selftests with NIST test vectors
 
-[ ... ]
+Patch 1: bpf: Extend bpf_crypto_type with hash operations
+  - Adds hash operation callbacks to bpf_crypto_type structure
+  - Adds hash() and digestsize() function pointers
+  - Must come before crypto module to maintain bisectability
 
-> +int save_state_in_oracle(struct bpf_verifier_env *env, int insn_idx)
-> +{
-> +	struct bpf_verifier_state *cur = env->cur_state;
-> +	struct bpf_insn_aux_data *aux = cur_aux(env);
-> +	struct bpf_oracle_state_list *new_sl;
-> +
-> +	if (env->subprog_cnt > 1)
-> +		/* Skip the oracle if subprogs are used. */
-> +		return 0;
-> +
-> +	if (!aux->oracle_states) {
-> +		aux->oracle_states = kmalloc(sizeof(*aux->oracle_states), GFP_KERNEL_ACCOUNT);
-> +		if (!aux->oracle_states)
-> +			return -ENOMEM;
-> +
-> +		INIT_LIST_HEAD(aux->oracle_states);
-> +	}
-> +
-> +	new_sl = kzalloc(sizeof(*new_sl), GFP_KERNEL_ACCOUNT);
-> +	if (!new_sl)
-> +		return -ENOMEM;
+Patch 2: crypto: Add BPF hash algorithm type registration module
+  - Adds bpf_crypto_shash module in crypto/ subsystem
+  - Registers hash type with BPF crypto infrastructure
+  - Enables hash algorithm access through unified bpf_crypto_type interface
+  - Implements callbacks: alloc_tfm, free_tfm, hash, digestsize, get_flags
+  - Manages shash_desc lifecycle internally
 
-Can this leak the oracle_states list_head allocated above? If the
-kmalloc() succeeds but this kzalloc() fails, save_state_in_oracle()
-returns -ENOMEM without freeing aux->oracle_states. Looking at
-do_check()->save_state_in_oracle() error handling, the error propagates
-up and the verifier fails, but aux->oracle_states remains allocated.
+Patch 3: bpf: Add SHA hash kfunc for cryptographic hashing
+  - Adds bpf_crypto_hash() kfunc for SHA-256/384/512
+  - Updates bpf_crypto_ctx_create() to support keyless operations
+  - Protected by CONFIG_CRYPTO_HASH2 guards
+  - Uses kernel's crypto library implementations
+  - Fixed u64 types for dynptr sizes to prevent truncation
 
-> +	convert_oracle_state(cur, &new_sl->state);
-> +	list_add(&new_sl->node, aux->oracle_states);
-> +
-> +	return 0;
-> +}
+Patch 4: selftests/bpf: Add tests for bpf_crypto_hash kfunc
+  - Tests basic functionality with NIST "abc" test vectors
+  - Validates error handling for invalid parameters (zero-length input)
+  - Ensures correct hash output for SHA-256, SHA-384, and SHA-512
+  - Adds CONFIG_CRYPTO_HASH2 and CONFIG_CRYPTO_SHA512 to selftest config
+  - Refactored test setup code to reduce duplication
 
-Also, where is the cleanup code for oracle_states? Looking at
-clear_insn_aux_data() in verifier.c, it only frees the jt field:
+Patch 5: bpf: Add ECDSA signature verification kfuncs
+  - Context-based API: bpf_ecdsa_ctx_create/acquire/release pattern
+  - Supports NIST curves (P-256, P-384, P-521)
+  - Adds bpf_ecdsa_verify() for signature verification
+  - Includes size query functions: keysize, digestsize, maxsize
+  - Enables use in non-sleepable contexts via pre-allocated contexts
+  - Uses crypto_sig API with p1363 format (r || s signatures)
 
-    for (i = start; i < end; i++) {
-        if (aux_data[i].jt) {
-            kvfree(aux_data[i].jt);
-            aux_data[i].jt = NULL;
-        }
-        ...
-    }
+Patch 6: selftests/bpf: Add tests for ECDSA signature verification
+  - Tests valid signature acceptance with RFC 6979 test vectors for P-256
+  - Tests invalid signature rejection
+  - Tests size query functions (keysize, digestsize, maxsize)
+  - Uses well-known NIST test vectors with "sample" message
+  - Adds CONFIG_CRYPTO_ECDSA to selftest config
 
-Should clear_insn_aux_data() also walk through aux->oracle_states,
-freeing each bpf_oracle_state_list node, then free the list_head itself?
-Without this, both the list_head and all oracle_state_list nodes will
-leak on every BPF program verification.
+v2:
+- Fixed redundant __bpf_dynptr_is_rdonly() checks (Vadim)
+- Added BPF hash algorithm type registration module in crypto/ subsystem
+- Added CONFIG_CRYPTO_HASH2 guards around bpf_crypto_hash() kfunc and its
+  BTF registration, matching the pattern used for CONFIG_CRYPTO_ECDSA
+- Added mandatory digestsize validation for hash operations
 
+v3:
+- Fixed patch ordering - header changes now in separate first commit before
+  crypto module to ensure bisectability (bot+bpf-ci)
+- Fixed type mismatch - changed u32 to u64 for dynptr sizes in
+  bpf_crypto_hash() to match __bpf_dynptr_size() return type (Mykyta)
+- Added CONFIG_CRYPTO_ECDSA to selftest config (Song)
+- Refactored test code duplication with setup_skel() helper (Song)
+- Added copyright notices to all new files
 
----
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
+Daniel Hodges (6):
+  bpf: Extend bpf_crypto_type with hash operations
+  crypto: Add BPF hash algorithm type registration module
+  bpf: Add SHA hash kfunc for cryptographic hashing
+  selftests/bpf: Add tests for bpf_crypto_hash kfunc
+  bpf: Add ECDSA signature verification kfuncs
+  selftests/bpf: Add tests for ECDSA signature verification kfuncs
 
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/20014308092
+ crypto/Makefile                               |   3 +
+ crypto/bpf_crypto_shash.c                     |  95 ++++++
+ include/linux/bpf_crypto.h                    |   2 +
+ kernel/bpf/crypto.c                           | 306 +++++++++++++++++-
+ tools/testing/selftests/bpf/config            |   3 +
+ .../selftests/bpf/prog_tests/crypto_hash.c    | 147 +++++++++
+ .../selftests/bpf/prog_tests/ecdsa_verify.c   |  75 +++++
+ .../testing/selftests/bpf/progs/crypto_hash.c | 142 ++++++++
+ .../selftests/bpf/progs/ecdsa_verify.c        | 160 +++++++++
+ 9 files changed, 925 insertions(+), 8 deletions(-)
+ create mode 100644 crypto/bpf_crypto_shash.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/crypto_hash.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/ecdsa_verify.c
+ create mode 100644 tools/testing/selftests/bpf/progs/crypto_hash.c
+ create mode 100644 tools/testing/selftests/bpf/progs/ecdsa_verify.c
 
---===============4624510377783832461==--
+-- 
+2.51.0
+
 
