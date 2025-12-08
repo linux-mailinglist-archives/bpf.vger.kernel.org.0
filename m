@@ -1,128 +1,98 @@
-Return-Path: <bpf+bounces-76315-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76316-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9D58CAE1C7
-	for <lists+bpf@lfdr.de>; Mon, 08 Dec 2025 20:44:18 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F5B0CAE2C1
+	for <lists+bpf@lfdr.de>; Mon, 08 Dec 2025 21:46:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 5A3703003DD1
-	for <lists+bpf@lfdr.de>; Mon,  8 Dec 2025 19:44:18 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id C051630202DE
+	for <lists+bpf@lfdr.de>; Mon,  8 Dec 2025 20:46:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05E372EC0B3;
-	Mon,  8 Dec 2025 19:44:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4506C2DCC01;
+	Mon,  8 Dec 2025 20:46:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b="qZ7BVsrX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pIg9LFl5"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.codeweavers.com (mail.codeweavers.com [4.36.192.163])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAD782594BD;
-	Mon,  8 Dec 2025 19:44:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=4.36.192.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9201259CB6;
+	Mon,  8 Dec 2025 20:46:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765223056; cv=none; b=S42I353iPewvPLqDal3pUZQl1sDeJKz3rNnwli96q2XgGOU46zjBAaKVMXvPmcrhJKLuxg1bw3FrrzKrXOZ6c3l4PbgLgvxqSuOkKIWCw4cmLEMpglLBxmMUraR+DOq7VjZqVXkDCog8EhdD54iCRbEHjcix6gOqKsHnGuVEZ4Q=
+	t=1765226795; cv=none; b=bgdvkyUx0TNPIvAvTy4pw72e0PBKBIu6MIp6ySuGPg6dyOkKR+jkgYjp1vRnuAAww6RGCf2ne9+qvsmmE+Wh9BcQn3M2iziGNFCaGeLSQ7n2Le7xbWRRqQ5cBvL3LykN1qRBKIIPc6eur9Qo9wHOZ4e/45AWnNAqM82WgprnU8o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765223056; c=relaxed/simple;
-	bh=gqK4p0EdZrQm1+mU1yrNkzScCZ7jQMmY+y+sszpKS3s=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=B40qXks7qyjUSrJx4mpuT5W38r/ry2XozWdLGYh/Al75Bt2b4h6Baxvn9KKZjAGjLahBvGenAj2d4jsOulFRl7202dJ1bsRztE1CbpBSidvu9YMFHKC190t2WSuoh+c5xJ4K8JF7TZCE+Ur6ygOJTAz3SJGIqA/HSRwJ7WqlhVQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=codeweavers.com; spf=pass smtp.mailfrom=codeweavers.com; dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b=qZ7BVsrX; arc=none smtp.client-ip=4.36.192.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=codeweavers.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeweavers.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=codeweavers.com; s=s1; h=Content-Type:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=SS2/Skvn3Cx0YBaWBhrfX12Ucuywuf1bTb3hcPXKazI=; b=qZ7BVsrXPm9KQBXVbcoMmn3R98
-	ELiEXtFZ7fSy5Gf7vZ48upURofOJDFg9ujw0wfHhqO4NhgIHpHCDtbSLmJ35iSljfr3UELLy+dWl1
-	94xyjAxXhLSY4tW6dcogWMtyNYX9DFbvsvEqfatmhqZCWomb1ZbnHdGCI66C21BnEc4ED3fSXWvfS
-	7VNj1t5J+qa4kFwDO/xeRAzPZ0FcZNPmcj5aX6i9eqQU6+A7AflKhSfHGXWJqMrK9VKtH2EnZ/KSY
-	HoPLy0R04KiA/fswkixHmdbsbaAQOXqnhsY3sniT8irqWmYMoh6Gj2k+Nn90rKfN3GX9bJMtmxz6O
-	1ot8drkg==;
-Received: from cw137ip160.mn.codeweavers.com ([10.69.137.160] helo=camazotz.localnet)
-	by mail.codeweavers.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <zfigura@codeweavers.com>)
-	id 1vSgtE-006Vqa-2R;
-	Mon, 08 Dec 2025 13:27:20 -0600
-From: Elizabeth Figura <zfigura@codeweavers.com>
-To: Shuah Khan <shuah@kernel.org>, Guenter Roeck <linux@roeck-us.net>
-Cc: Jakub Kicinski <kuba@kernel.org>, Christian Brauner <brauner@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Eric Dumazet <edumazet@google.com>, Kees Cook <kees@kernel.org>,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- wine-devel@winehq.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
- Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH v2 02/13] selftests: ntsync: Fix build warnings
-Date: Mon, 08 Dec 2025 13:27:20 -0600
-Message-ID: <8962735.jnjZ57t7OP@camazotz>
-In-Reply-To: <20251205171010.515236-3-linux@roeck-us.net>
-References:
- <20251205171010.515236-1-linux@roeck-us.net>
- <20251205171010.515236-3-linux@roeck-us.net>
+	s=arc-20240116; t=1765226795; c=relaxed/simple;
+	bh=x2UjReiwtmk0C2BH6V97iqqnFcSMI5RmReTQSBck62I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FJog8PS0EjmJLSeaUZvlDcqwRLpuu38U4IPETC4KnNofrQX4o5ZoyK8FaDHoShMaVBa3qeGogqawi0gzNo5r6liAZ08mWjpIIb+X7Vo69AK+iDD+13MCxvOUgbs8vYES9KAq6twWnU5KPPXPC5WUJth5usdygFmjlfMVWhBHFyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pIg9LFl5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14006C4CEF1;
+	Mon,  8 Dec 2025 20:46:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1765226795;
+	bh=x2UjReiwtmk0C2BH6V97iqqnFcSMI5RmReTQSBck62I=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=pIg9LFl5rDMHuLyh2sTdtBK74Xvcp8hqeNMjrWpISJ6TLXPUdBTVvoZIj5F8LEY/V
+	 Q8SK8OFnI2WORa1yeGP+phTA4ujmTJpBRGm1aJ9orW+QQW2SOwaqts2Gd2FbtQuEZY
+	 Z0QUZinOroGm2S59gglZuLH1K0Go3j7ItIGDJWtVr/rTJg/DZNbTbxJZSb1funjMRS
+	 qu5Vynl1dBzwPV0NVEPrKRIN6enYly5MynZXCaK9HceQH6QMosVahEuEbXEoizHeSl
+	 wUIuW8fasjZjECRx/x3iRRO1pj1iSObR4Aoq2WnZI3KK7P6vXezoZA9aPxp1NXszf1
+	 UNWaYSJlXCL8A==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id D98FDCE0D19; Mon,  8 Dec 2025 12:46:32 -0800 (PST)
+Date: Mon, 8 Dec 2025 12:46:32 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-kernel@vger.kernel.org,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH v3] tracing: Guard __DECLARE_TRACE() use of
+ __DO_TRACE_CALL() with SRCU-fast
+Message-ID: <075fd9e5-2db8-4030-9364-0be5e22e9902@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <e2fe3162-4b7b-44d6-91ff-f439b3dce706@paulmck-laptop>
+ <20251208044352.38360456@debian>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251208044352.38360456@debian>
 
-On Friday, 5 December 2025 11:09:56 CST Guenter Roeck wrote:
-> Fix
+On Mon, Dec 08, 2025 at 04:43:52AM -0500, Steven Rostedt wrote:
+> On Sun, 7 Dec 2025 20:20:23 -0800
+> "Paul E. McKenney" <paulmck@kernel.org> wrote:
 > 
-> ntsync.c:1286:20: warning: call to undeclared function 'gettid';
-> 	ISO C99 and later do not support implicit function declarations
->  1286 |         wait_args.owner = gettid();
->       |                           ^
-> ntsync.c:1280:8: warning: unused variable 'index'
->  1280 |         __u32 index, count, i;
->       |               ^~~~~
-> ntsync.c:1281:6: warning: unused variable 'ret'
->  1281 |         int ret;
+> > [ paulmck: Remove trace_syscalls.h changes per Steven Rostedt. ]
 > 
-> by adding the missing include file and removing the unused variables.
+> But they still need to be fixed.
 > 
-> Fixes: a22860e57b54 ("selftests: ntsync: Add a stress test for contended waits.")
-> Cc: Elizabeth Figura <zfigura@codeweavers.com>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> ---
-> v2: Update subject and description to reflect that the patch fixes build
->     warnings 
+> With PREEMPT_RT enabled:
 > 
->  tools/testing/selftests/drivers/ntsync/ntsync.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/drivers/ntsync/ntsync.c b/tools/testing/selftests/drivers/ntsync/ntsync.c
-> index 3aad311574c4..d3df94047e4d 100644
-> --- a/tools/testing/selftests/drivers/ntsync/ntsync.c
-> +++ b/tools/testing/selftests/drivers/ntsync/ntsync.c
-> @@ -11,6 +11,7 @@
->  #include <fcntl.h>
->  #include <time.h>
->  #include <pthread.h>
-> +#include <unistd.h>
->  #include <linux/ntsync.h>
->  #include "../../kselftest_harness.h"
->  
-> @@ -1277,8 +1278,7 @@ static int stress_device, stress_start_event, stress_mutex;
->  static void *stress_thread(void *arg)
->  {
->  	struct ntsync_wait_args wait_args = {0};
-> -	__u32 index, count, i;
-> -	int ret;
-> +	__u32 count, i;
->  
->  	wait_args.timeout = UINT64_MAX;
->  	wait_args.count = 1;
-> 
+>  # trace-cmd start -e syscalls
+>  # trace-cmd show
+>             bash-1165    [001] DBZ.f   269.955644: sys_ioctl(fd: 0xff, cmd: 0x5413, arg: 0x7fffd3d6a2d0)
+>             bash-1165    [001] DBZ.f   269.955649: sys_ioctl -> 0x0
+>             bash-1165    [001] DBZ.f   269.955694: sys_rt_sigprocmask(how: 2, nset: 0x7fffd3d6a3a0, oset: 0, sigsetsize: 8)
+>             bash-1165    [001] DBZ.f   269.955698: sys_rt_sigprocmask -> 0x0
+>             bash-1165    [001] DBZ.f   269.955715: sys_wait4(upid: 0xffffffffffffffff, stat_addr: 0x7fffd3d69c50, options: 0xb, ru: 0)
+>             bash-1165    [001] DBZ.f   269.955722: sys_wait4 -> 0xfffffffffffffff6
+>             bash-1165    [001] DBZ.f   269.955725: sys_rt_sigreturn()
+>             bash-1165    [001] DBZ.f   269.955758: sys_rt_sigaction(sig: 2, act: 0x7fffd3d6a2e0, oact: 0x7fffd3d6a380, sigsetsize: 8)
+>             bash-1165    [001] DBZ.f   269.955762: sys_rt_sigaction -> 0x0
+>                                ^^^^^
+>                             This is just garbage.
 
-LGTM.
+Yes, but is is the original garbage, and garbage obtained by acceding
+to your request.  ;-)
 
-Reviewed-by: Elizabeth Figura <zfigura@codeweavers.com>
+Perhaps a little bit more constructively, have your conflicting changes
+hit mainline yet?
 
-
+							Thanx, Paul
 
