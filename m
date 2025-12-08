@@ -1,342 +1,283 @@
-Return-Path: <bpf+bounces-76270-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76271-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81A0ECAC88C
-	for <lists+bpf@lfdr.de>; Mon, 08 Dec 2025 09:44:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 35275CAC8B6
+	for <lists+bpf@lfdr.de>; Mon, 08 Dec 2025 09:49:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 19161304792F
-	for <lists+bpf@lfdr.de>; Mon,  8 Dec 2025 08:43:45 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A9172303E3D5
+	for <lists+bpf@lfdr.de>; Mon,  8 Dec 2025 08:49:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B9C52DF13F;
-	Mon,  8 Dec 2025 08:43:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0800B27AC31;
+	Mon,  8 Dec 2025 08:49:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xPqIkeq4";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="pDZVdYJW";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xPqIkeq4";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="pDZVdYJW"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cFepiQxN"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39527285074
-	for <bpf@vger.kernel.org>; Mon,  8 Dec 2025 08:43:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 834D22192F4
+	for <bpf@vger.kernel.org>; Mon,  8 Dec 2025 08:49:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765183421; cv=none; b=IY/VIZlyD3th7eCTE53CIwiEwzV0mLt5DYam2z0wHfNomfodLk0scl4Ag9gTC3+Scm4vvl70IlhQE1BZEfy7vNFoUdLZBpeC9ZpLbetzDdS55V0UPjooZiw93Ge3QEUxFTWZYG0ZnnIP6q/ppG3T21ZFRyNziWPfPuKvKWs2nUc=
+	t=1765183784; cv=none; b=MoKfsKEkDE0r0gFG/fGutQL9UmNn52butJfxgtEd+xPuZjwoEBN3aYwmYqTn5Xo2axxy2amRnqjVF/WzNg+2pGi8M/b14J0iDbf3nJqo75DK9x0jFihZOsxx0iBXl7iJDItzO4v4m5PSRF7noaBp/n9kogamnkMGFmrfqSYJjs8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765183421; c=relaxed/simple;
-	bh=076RMy8CdAJS0PoTtdDoiDHyMv0EW+niqNeftGLuu1g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=A0jFoIBaYWHc8Qk1ZZQGcZkri14Xazhk8hHR3SMbF7YrpQ6lJPpQ0qP6qsIiRa4nVb7JaEL6gyBRbS+loeK/n+rHe9wRk/T5aHnRhvDTK6pa95EAvQQiiGmhntmivgjN7MZIZgqNPWJdUD8bEYhrf5BnWNnSL6H/EjiN8kG/wFA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xPqIkeq4; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=pDZVdYJW; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xPqIkeq4; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=pDZVdYJW; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 86BBD33849;
-	Mon,  8 Dec 2025 08:43:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1765183416; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=yK0/tInIe5Sj2qH3JVl2XBHL+xgUUc9R4ncCoNXnSU0=;
-	b=xPqIkeq4/TtH5fjRyHywquhhlnSg8/Fxy8bZr03pv8viiAevOyMnIom8WgbWbH++TEt9AZ
-	kYvI5EyjSuKAijyjXk/MgCiEEyl8pOfjiVaNv1g/vsk335KF8sHFbpuOzJ+wl3K8sX4TLk
-	AV28/reQBE63us3h8C0JRTEGOD9OzQ0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1765183416;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=yK0/tInIe5Sj2qH3JVl2XBHL+xgUUc9R4ncCoNXnSU0=;
-	b=pDZVdYJWDRQRqzbSZUgWu3LKhzmU9zU1tMR0Qwxcv2fVahBPz8vqRlnpcJfxtFHbRANHwg
-	xQFrBUj3ApRtNuDQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1765183416; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=yK0/tInIe5Sj2qH3JVl2XBHL+xgUUc9R4ncCoNXnSU0=;
-	b=xPqIkeq4/TtH5fjRyHywquhhlnSg8/Fxy8bZr03pv8viiAevOyMnIom8WgbWbH++TEt9AZ
-	kYvI5EyjSuKAijyjXk/MgCiEEyl8pOfjiVaNv1g/vsk335KF8sHFbpuOzJ+wl3K8sX4TLk
-	AV28/reQBE63us3h8C0JRTEGOD9OzQ0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1765183416;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=yK0/tInIe5Sj2qH3JVl2XBHL+xgUUc9R4ncCoNXnSU0=;
-	b=pDZVdYJWDRQRqzbSZUgWu3LKhzmU9zU1tMR0Qwxcv2fVahBPz8vqRlnpcJfxtFHbRANHwg
-	xQFrBUj3ApRtNuDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EE7B53EA63;
-	Mon,  8 Dec 2025 08:43:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Kf67ObePNmkjcAAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Mon, 08 Dec 2025 08:43:35 +0000
-Message-ID: <c68efe59-5405-4be5-a768-f27ce27d59d7@suse.cz>
-Date: Mon, 8 Dec 2025 09:43:35 +0100
+	s=arc-20240116; t=1765183784; c=relaxed/simple;
+	bh=h7nWsRYeCi3W72b4YW32UykCWbgbF+6AvYubkfr/7nc=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=C7lXGH29XyRa/I1SurlyQmFVmFm9uEd0zq5vtav0Oec00XD1NS+JpQOfYeZ4c/6a0nykMMyW3imo7pJrJ9pe/I6LtkcQ8iOgfUhfY6oPZyGoaATcL7w01K2lpgMGLXlUp5hTSndqTX1dVdpPLNfeIg27w91nKqyD5/Sh9fFxLwU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=cFepiQxN; arc=none smtp.client-ip=95.215.58.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 05/13] KVM: guest_memfd: Add flag to remove from direct
- map
-To: "Kalyazin, Nikita" <kalyazin@amazon.co.uk>,
- "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
- "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
- "linux-mm@kvack.org" <linux-mm@kvack.org>,
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
- "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
-Cc: "pbonzini@redhat.com" <pbonzini@redhat.com>,
- "corbet@lwn.net" <corbet@lwn.net>, "maz@kernel.org" <maz@kernel.org>,
- "oupton@kernel.org" <oupton@kernel.org>,
- "joey.gouly@arm.com" <joey.gouly@arm.com>,
- "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
- "yuzenghui@huawei.com" <yuzenghui@huawei.com>,
- "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
- "will@kernel.org" <will@kernel.org>, "seanjc@google.com"
- <seanjc@google.com>, "tglx@linutronix.de" <tglx@linutronix.de>,
- "mingo@redhat.com" <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>,
- "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
- "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
- "luto@kernel.org" <luto@kernel.org>,
- "peterz@infradead.org" <peterz@infradead.org>,
- "willy@infradead.org" <willy@infradead.org>,
- "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
- "david@kernel.org" <david@kernel.org>,
- "lorenzo.stoakes@oracle.com" <lorenzo.stoakes@oracle.com>,
- "Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>,
- "rppt@kernel.org" <rppt@kernel.org>, "surenb@google.com"
- <surenb@google.com>, "mhocko@suse.com" <mhocko@suse.com>,
- "ast@kernel.org" <ast@kernel.org>,
- "daniel@iogearbox.net" <daniel@iogearbox.net>,
- "andrii@kernel.org" <andrii@kernel.org>,
- "martin.lau@linux.dev" <martin.lau@linux.dev>,
- "eddyz87@gmail.com" <eddyz87@gmail.com>, "song@kernel.org"
- <song@kernel.org>, "yonghong.song@linux.dev" <yonghong.song@linux.dev>,
- "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
- "kpsingh@kernel.org" <kpsingh@kernel.org>, "sdf@fomichev.me"
- <sdf@fomichev.me>, "haoluo@google.com" <haoluo@google.com>,
- "jolsa@kernel.org" <jolsa@kernel.org>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
- "jhubbard@nvidia.com" <jhubbard@nvidia.com>,
- "peterx@redhat.com" <peterx@redhat.com>, "jannh@google.com"
- <jannh@google.com>, "pfalcato@suse.de" <pfalcato@suse.de>,
- "shuah@kernel.org" <shuah@kernel.org>, "riel@surriel.com"
- <riel@surriel.com>, "baohua@kernel.org" <baohua@kernel.org>,
- "ryan.roberts@arm.com" <ryan.roberts@arm.com>,
- "jgross@suse.com" <jgross@suse.com>,
- "yu-cheng.yu@intel.com" <yu-cheng.yu@intel.com>,
- "kas@kernel.org" <kas@kernel.org>, "coxu@redhat.com" <coxu@redhat.com>,
- "kevin.brodsky@arm.com" <kevin.brodsky@arm.com>,
- "ackerleytng@google.com" <ackerleytng@google.com>,
- "maobibo@loongson.cn" <maobibo@loongson.cn>,
- "prsampat@amd.com" <prsampat@amd.com>,
- "mlevitsk@redhat.com" <mlevitsk@redhat.com>,
- "isaku.yamahata@intel.com" <isaku.yamahata@intel.com>,
- "jmattson@google.com" <jmattson@google.com>,
- "jthoughton@google.com" <jthoughton@google.com>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- "vannapurve@google.com" <vannapurve@google.com>,
- "jackmanb@google.com" <jackmanb@google.com>,
- "aneesh.kumar@kernel.org" <aneesh.kumar@kernel.org>,
- "patrick.roy@linux.dev" <patrick.roy@linux.dev>,
- "Thomson, Jack" <jackabt@amazon.co.uk>,
- "Itazuri, Takahiro" <itazur@amazon.co.uk>,
- "Manwaring, Derek" <derekmn@amazon.com>, "Cali, Marco"
- <xmarcalx@amazon.co.uk>
-References: <20251205165743.9341-1-kalyazin@amazon.com>
- <20251205165743.9341-6-kalyazin@amazon.com>
-Content-Language: en-US
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- m6M14QORSWTLRg==
-In-Reply-To: <20251205165743.9341-6-kalyazin@amazon.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-0.996];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:mid];
-	TO_DN_SOME(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[redhat.com,lwn.net,kernel.org,arm.com,huawei.com,google.com,linutronix.de,alien8.de,linux.intel.com,zytor.com,infradead.org,linux-foundation.org,oracle.com,suse.com,iogearbox.net,linux.dev,gmail.com,fomichev.me,ziepe.ca,nvidia.com,suse.de,surriel.com,intel.com,loongson.cn,amd.com,lists.infradead.org,amazon.co.uk,amazon.com];
-	R_RATELIMIT(0.00)[to_ip_from(RLwob6p4ge6yi5tbqokujz9zu4)];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_SOME(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[77];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:mid]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1765183779;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=md5rTE5KknOBT4xPJmYQUJv6l5PQ4j1T9Q1h2YConaM=;
+	b=cFepiQxN0YI5olqORmnriQuU0nV4lPqC+Ss7VnbeXlyT0KrwxdFMofkiXOOFWKIE8LvaWO
+	7aWbu9fRckTTsC3E/cIM6HkHBApdiAnnFjcFyIpxPdIyxaK/ilrQEd8tGMH4WDVH8Yc5eV
+	P2Y16lI2B+JdCdUxC2e/7cbhN6nVHjg=
+Date: Mon, 08 Dec 2025 08:49:34 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: hui.zhu@linux.dev
+Message-ID: <1d9a162605a3f32ac215430131f7745488deaa34@linux.dev>
+TLS-Required: No
+Subject: Re: [PATCH v2 21/23] sched: psi: implement bpf_psi_create_trigger() 
+ kfunc
+To: "Roman Gushchin" <roman.gushchin@linux.dev>, "Andrew Morton"
+ <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, "Alexei Starovoitov" <ast@kernel.org>,
+ "Suren Baghdasaryan" <surenb@google.com>, "Michal Hocko"
+ <mhocko@kernel.org>, "Shakeel Butt" <shakeel.butt@linux.dev>, "Johannes 
+ Weiner" <hannes@cmpxchg.org>, "Andrii Nakryiko" <andrii@kernel.org>, "JP 
+ Kobryn" <inwardvessel@gmail.com>, linux-mm@kvack.org,
+ cgroups@vger.kernel.org, bpf@vger.kernel.org, "Martin KaFai Lau"
+ <martin.lau@kernel.org>, "Song Liu" <song@kernel.org>, "Kumar Kartikeya 
+ Dwivedi" <memxor@gmail.com>, "Tejun Heo" <tj@kernel.org>, "Roman 
+ Gushchin" <roman.gushchin@linux.dev>
+In-Reply-To: <20251027232206.473085-11-roman.gushchin@linux.dev>
+References: <20251027232206.473085-1-roman.gushchin@linux.dev>
+ <20251027232206.473085-11-roman.gushchin@linux.dev>
+X-Migadu-Flow: FLOW_OUT
 
-On 12/5/25 17:58, Kalyazin, Nikita wrote:
-> +static int kvm_gmem_folio_zap_direct_map(struct folio *folio)
+2025=E5=B9=B410=E6=9C=8828=E6=97=A5 07:22, "Roman Gushchin" <roman.gushch=
+in@linux.dev mailto:roman.gushchin@linux.dev?to=3D%22Roman%20Gushchin%22%=
+20%3Croman.gushchin%40linux.dev%3E > =E5=86=99=E5=88=B0:
+
+
+>=20
+>=20Implement a new bpf_psi_create_trigger() BPF kfunc, which allows
+> to create new PSI triggers and attach them to cgroups or be
+> system-wide.
+>=20
+>=20Created triggers will exist until the struct ops is loaded and
+> if they are attached to a cgroup until the cgroup exists.
+>=20
+>=20Due to a limitation of 5 arguments, the resource type and the "full"
+> bit are squeezed into a single u32.
+>=20
+>=20Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
+
+Hi Roman,
+
+I wrote an eBPF program attempting to use bpf_psi struct ops and
+bpf_psi_create_trigger to continuously receive memory-related PSI
+events, but I only received one event.
+
+Looking at the code implementation, when an event occurs:
+if (cmpxchg(&t->event, 0, 1) =3D=3D 0) {
+
+However, in eBPF there appears to be no way to call the equivalent
+of this code from psi_trigger_poll:
+if (cmpxchg(&t->event, 1, 0) =3D=3D 1)
+to reset the event back to 0.
+
+Would it be possible to add an additional BPF helper function to
+handle this? Without a way to acknowledge/reset the event flag,
+the trigger only fires once and cannot be reused for continuous
+monitoring.
+
+Best,
+Hui
+
+
+
+> ---
+>  include/linux/cgroup.h | 4 ++
+>  include/linux/psi.h | 6 +++
+>  kernel/sched/bpf_psi.c | 94 ++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 104 insertions(+)
+>=20
+>=20diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+> index 6ed477338b16..1a99da44999e 100644
+> --- a/include/linux/cgroup.h
+> +++ b/include/linux/cgroup.h
+> @@ -707,6 +707,10 @@ static inline bool task_under_cgroup_hierarchy(str=
+uct task_struct *task,
+>=20=20
+>=20 static inline void cgroup_path_from_kernfs_id(u64 id, char *buf, siz=
+e_t buflen)
+>  {}
+> +static inline struct cgroup *cgroup_get_from_id(u64 id)
 > +{
-> +	int r = 0;
-> +	unsigned long addr = (unsigned long) folio_address(folio);
-> +	u64 gmem_flags = GMEM_I(folio_inode(folio))->flags;
+> + return NULL;
+> +}
+>  #endif /* !CONFIG_CGROUPS */
+>=20=20
+>=20 #ifdef CONFIG_CGROUPS
+> diff --git a/include/linux/psi.h b/include/linux/psi.h
+> index 8178e998d94b..8ffe84cd8571 100644
+> --- a/include/linux/psi.h
+> +++ b/include/linux/psi.h
+> @@ -50,6 +50,12 @@ int psi_cgroup_alloc(struct cgroup *cgrp);
+>  void psi_cgroup_free(struct cgroup *cgrp);
+>  void cgroup_move_task(struct task_struct *p, struct css_set *to);
+>  void psi_cgroup_restart(struct psi_group *group);
 > +
-> +	if (kvm_gmem_folio_no_direct_map(folio) || !(gmem_flags & GUEST_MEMFD_FLAG_NO_DIRECT_MAP))
-> +		goto out;
+> +#else
+> +static inline struct psi_group *cgroup_psi(struct cgroup *cgrp)
+> +{
+> + return &psi_system;
+> +}
+>  #endif
+>=20=20
+>=20 #else /* CONFIG_PSI */
+> diff --git a/kernel/sched/bpf_psi.c b/kernel/sched/bpf_psi.c
+> index c383a20119a6..7974de56594f 100644
+> --- a/kernel/sched/bpf_psi.c
+> +++ b/kernel/sched/bpf_psi.c
+> @@ -8,6 +8,7 @@
+>  #include <linux/bpf_psi.h>
+>  #include <linux/cgroup-defs.h>
+>=20=20
+>=20+struct bpf_struct_ops bpf_psi_bpf_ops;
+>  static struct workqueue_struct *bpf_psi_wq;
+>=20=20
+>=20 static DEFINE_MUTEX(bpf_psi_lock);
+> @@ -186,6 +187,92 @@ static const struct bpf_verifier_ops bpf_psi_verif=
+ier_ops =3D {
+>  .is_valid_access =3D bpf_psi_ops_is_valid_access,
+>  };
+>=20=20
+>=20+__bpf_kfunc_start_defs();
 > +
-> +	r = set_direct_map_valid_noflush(folio_page(folio, 0), folio_nr_pages(folio),
-> +					 false);
+> +/**
+> + * bpf_psi_create_trigger - Create a PSI trigger
+> + * @bpf_psi: bpf_psi struct to attach the trigger to
+> + * @cgroup_id: cgroup Id to attach the trigger; 0 for system-wide scop=
+e
+> + * @resource: resource to monitor (PSI_MEM, PSI_IO, etc) and the full =
+bit.
+> + * @threshold_us: threshold in us
+> + * @window_us: window in us
+> + *
+> + * Creates a PSI trigger and attached is to bpf_psi. The trigger will =
+be
+> + * active unless bpf struct ops is unloaded or the corresponding cgrou=
+p
+> + * is deleted.
+> + *
+> + * Resource's most significant bit encodes whether "some" or "full"
+> + * PSI state should be tracked.
+> + *
+> + * Returns 0 on success and the error code on failure.
+> + */
+> +__bpf_kfunc int bpf_psi_create_trigger(struct bpf_psi *bpf_psi,
+> + u64 cgroup_id, u32 resource,
+> + u32 threshold_us, u32 window_us)
+> +{
+> + enum psi_res res =3D resource & ~BPF_PSI_FULL;
+> + bool full =3D resource & BPF_PSI_FULL;
+> + struct psi_trigger_params params;
+> + struct cgroup *cgroup __maybe_unused =3D NULL;
+> + struct psi_group *group;
+> + struct psi_trigger *t;
+> + int ret =3D 0;
 > +
-> +	if (r)
-> +		goto out;
+> + if (res >=3D NR_PSI_RESOURCES)
+> + return -EINVAL;
 > +
-> +	folio->private = (void *) KVM_GMEM_FOLIO_NO_DIRECT_MAP;
-
-With Dave's suggestion on patch 1/13 to have folio_zap_direct_map(), setting
-this folio->private flag wouldn't be possible between the zap and tlb flush,
-but it's not an issue to set it before the zap, right?
-
-> +	flush_tlb_kernel_range(addr, addr + folio_size(folio));
+> + if (IS_ENABLED(CONFIG_CGROUPS) && cgroup_id) {
+> + cgroup =3D cgroup_get_from_id(cgroup_id);
+> + if (IS_ERR_OR_NULL(cgroup))
+> + return PTR_ERR(cgroup);
 > +
-> +out:
-> +	return r;
+> + group =3D cgroup_psi(cgroup);
+> + } else {
+> + group =3D &psi_system;
+> + }
+> +
+> + params.type =3D PSI_BPF;
+> + params.bpf_psi =3D bpf_psi;
+> + params.privileged =3D capable(CAP_SYS_RESOURCE);
+> + params.res =3D res;
+> + params.full =3D full;
+> + params.threshold_us =3D threshold_us;
+> + params.window_us =3D window_us;
+> +
+> + t =3D psi_trigger_create(group, &params);
+> + if (IS_ERR(t))
+> + ret =3D PTR_ERR(t);
+> + else
+> + t->cgroup_id =3D cgroup_id;
+> +
+> +#ifdef CONFIG_CGROUPS
+> + if (cgroup)
+> + cgroup_put(cgroup);
+> +#endif
+> +
+> + return ret;
+> +}
+> +__bpf_kfunc_end_defs();
+> +
+> +BTF_KFUNCS_START(bpf_psi_kfuncs)
+> +BTF_ID_FLAGS(func, bpf_psi_create_trigger, KF_TRUSTED_ARGS)
+> +BTF_KFUNCS_END(bpf_psi_kfuncs)
+> +
+> +static int bpf_psi_kfunc_filter(const struct bpf_prog *prog, u32 kfunc=
+_id)
+> +{
+> + if (btf_id_set8_contains(&bpf_psi_kfuncs, kfunc_id) &&
+> + prog->aux->st_ops !=3D &bpf_psi_bpf_ops)
+> + return -EACCES;
+> +
+> + return 0;
 > +}
 > +
-> +static void kvm_gmem_folio_restore_direct_map(struct folio *folio)
-> +{
-> +	/*
-> +	 * Direct map restoration cannot fail, as the only error condition
-> +	 * for direct map manipulation is failure to allocate page tables
-> +	 * when splitting huge pages, but this split would have already
-> +	 * happened in set_direct_map_invalid_noflush() in kvm_gmem_folio_zap_direct_map().
-> +	 * Thus set_direct_map_valid_noflush() here only updates prot bits.
-> +	 */
-> +	if (kvm_gmem_folio_no_direct_map(folio))
-> +		set_direct_map_valid_noflush(folio_page(folio, 0), folio_nr_pages(folio),
-> +					 true);
-
-I think you're missing here clearing KVM_GMEM_FOLIO_NO_DIRECT_MAP from
-folio->private, which means if there's another
-kvm_gmem_folio_zap_direct_map() call on it in the future, it will do nothing?
-
-> +}
+> +static const struct btf_kfunc_id_set bpf_psi_kfunc_set =3D {
+> + .owner =3D THIS_MODULE,
+> + .set =3D &bpf_psi_kfuncs,
+> + .filter =3D bpf_psi_kfunc_filter,
+> +};
 > +
->  static inline void kvm_gmem_mark_prepared(struct folio *folio)
+>  static int bpf_psi_ops_reg(void *kdata, struct bpf_link *link)
 >  {
->  	folio_mark_uptodate(folio);
-> @@ -398,6 +444,7 @@ static vm_fault_t kvm_gmem_fault_user_mapping(struct vm_fault *vmf)
->  	struct inode *inode = file_inode(vmf->vma->vm_file);
->  	struct folio *folio;
->  	vm_fault_t ret = VM_FAULT_LOCKED;
-> +	int err;
->  
->  	if (((loff_t)vmf->pgoff << PAGE_SHIFT) >= i_size_read(inode))
->  		return VM_FAULT_SIGBUS;
-> @@ -423,6 +470,12 @@ static vm_fault_t kvm_gmem_fault_user_mapping(struct vm_fault *vmf)
->  		kvm_gmem_mark_prepared(folio);
->  	}
->  
-> +	err = kvm_gmem_folio_zap_direct_map(folio);
-> +	if (err) {
-> +		ret = vmf_error(err);
-> +		goto out_folio;
-> +	}
+>  struct bpf_psi_ops *ops =3D kdata;
+> @@ -287,6 +374,13 @@ static int __init bpf_psi_struct_ops_init(void)
+>  if (!bpf_psi_wq)
+>  return -ENOMEM;
+>=20=20
+>=20+ err =3D register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS,
+> + &bpf_psi_kfunc_set);
+> + if (err) {
+> + pr_warn("error while registering bpf psi kfuncs: %d", err);
+> + goto err;
+> + }
 > +
->  	vmf->page = folio_file_page(folio, vmf->pgoff);
->  
->  out_folio:
-> @@ -533,6 +586,8 @@ static void kvm_gmem_free_folio(struct folio *folio)
->  	kvm_pfn_t pfn = page_to_pfn(page);
->  	int order = folio_order(folio);
->  
-> +	kvm_gmem_folio_restore_direct_map(folio);
-> +
->  	kvm_arch_gmem_invalidate(pfn, pfn + (1ul << order));
->  }
->  
-> @@ -596,6 +651,9 @@ static int __kvm_gmem_create(struct kvm *kvm, loff_t size, u64 flags)
->  	/* Unmovable mappings are supposed to be marked unevictable as well. */
->  	WARN_ON_ONCE(!mapping_unevictable(inode->i_mapping));
->  
-> +	if (flags & GUEST_MEMFD_FLAG_NO_DIRECT_MAP)
-> +		mapping_set_no_direct_map(inode->i_mapping);
-> +
->  	GMEM_I(inode)->flags = flags;
->  
->  	file = alloc_file_pseudo(inode, kvm_gmem_mnt, name, O_RDWR, &kvm_gmem_fops);
-> @@ -807,6 +865,8 @@ int kvm_gmem_get_pfn(struct kvm *kvm, struct kvm_memory_slot *slot,
->  	if (!is_prepared)
->  		r = kvm_gmem_prepare_folio(kvm, slot, gfn, folio);
->  
-> +	kvm_gmem_folio_zap_direct_map(folio);
-> +
->  	folio_unlock(folio);
->  
->  	if (!r)
-
+>  err =3D register_bpf_struct_ops(&bpf_psi_bpf_ops, bpf_psi_ops);
+>  if (err) {
+>  pr_warn("error while registering bpf psi struct ops: %d", err);
+> --=20
+>=202.51.0
+>
 
