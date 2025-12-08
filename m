@@ -1,148 +1,242 @@
-Return-Path: <bpf+bounces-76295-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76296-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10287CADC34
-	for <lists+bpf@lfdr.de>; Mon, 08 Dec 2025 17:34:32 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F41ACADC55
+	for <lists+bpf@lfdr.de>; Mon, 08 Dec 2025 17:36:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 1EE97301D611
-	for <lists+bpf@lfdr.de>; Mon,  8 Dec 2025 16:34:30 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 44CA3301CD39
+	for <lists+bpf@lfdr.de>; Mon,  8 Dec 2025 16:36:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A672B257829;
-	Mon,  8 Dec 2025 16:34:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EBE5261B91;
+	Mon,  8 Dec 2025 16:36:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MNkfconk"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="JfCXLG9l"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D6741F419A
-	for <bpf@vger.kernel.org>; Mon,  8 Dec 2025 16:34:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9672B1DFE22;
+	Mon,  8 Dec 2025 16:36:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765211668; cv=none; b=ptvyFLn5v8WdGyN8+f/4y8QR4S31DWBD0xDF7vMT2EdG0qbt0oUYQe6qrPA3LK67wfuHswD53b9DqVKoY7b3yLkIbsFwKSLoL6bDF4Ce9nKOIcT8aJ+yG3iB0tRdb1N7sZVRdtuz1Vz8qabvndS5DdXTNElsJi9IUumUHbaIQ8E=
+	t=1765211795; cv=none; b=rVYX1qDbJKA03Qth+C8VpdZ8AVuYXmtzp0hFlkNOp0H5P7CWuzPIjvbHneEFWYxuczDoKMbOZCKAkYGnhHQriKWjRUxrHonnD6WTZyNt9JC2bunyk0DtcyeAtdiwVuH/S/bBePl983MBgRFBdTb+w8paUUAJcSutgKc0JzeIudE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765211668; c=relaxed/simple;
-	bh=2qErDBVauh8Ob3S6JfCcRQ2e/q+m1zJ6QApTq4vjqtM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UUPedr+YDeCNPtf66p7ovV86Ei81KR8EltjWiAb2oLoBHKW8hq66eyTZR1vV++HO0GA9z+psJzt+Q4fs8LDdQu2JF8tjYdfvd+PtvjPrkleK9MEpjq/n1wcLvaQkxf10nTyAwOw8j+L/AH+0pptPdOhoN14vusqLOudFBiOJmZw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MNkfconk; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-647a3bca834so6061077a12.2
-        for <bpf@vger.kernel.org>; Mon, 08 Dec 2025 08:34:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1765211664; x=1765816464; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=WqfAF1JHevk6vjXCbG1Hbz4OFMMsEVR96Z5MujIZe5I=;
-        b=MNkfconkxmhuoqOiupqgo87xSqqalFylj37Bl6/PQPLiWLbMvXZr2eMqUb+yuPs7DK
-         iTNOiXUGfNDIgzjULkuqPmJFjukBbWKanwClBPM6D0CoeCVWay2LCSoMD63OQGr6lJPK
-         9As+OOXqaBPZjdZVBLIsYlOJl7bsSSg037TyWANynJZS7tirlnMa2y5f8ny4/MErdM7I
-         /X2XMQf1T6iLCsClC5OGWgiTPbdn/q7JcLfZMFhP/yqRnTapmL1GjEwg4TXJMQdbbWEW
-         eDseVpSvq5NGREKzoelTEyiDPxAi+GPiPJyaoFJZQYS9ou+qbxUTC8gGTTsIdskfGYMv
-         YH6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765211664; x=1765816464;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WqfAF1JHevk6vjXCbG1Hbz4OFMMsEVR96Z5MujIZe5I=;
-        b=AqdsFU6dgoNWvIsc1uQvrFv6R7ayPrh2YC78/kRyDFIEqsIvddHrVzt7av6RBvonXN
-         mMdw+G/uAieL3kSVXyk0dLQSNJn0Dl4BO2v37gXNcUJ37jR37geM4OKbUkl0Gqjf3Otg
-         sEECTmdkH+eYm4b0/EU8ZXtLh9hYW6HVP8GRUMKNvavHKextghgeCTV+3T7/BVE0yBhM
-         0SRuOheboRTS4R8jp1LW+8DempmpeJakZKhVX6f+H9FBpLu8d5wUglSAlezUZ6MBGJ30
-         Q0qzJKJ1vVvUhY8R253x8gemLi/+xSZDsJhcke2S2BrfEknY23ah3KuELkSLfS0RDIEh
-         BCxw==
-X-Gm-Message-State: AOJu0YwP2OYT8gqdnbXgE1e8Y14B4IbTvyJXfj+sCBuPThIxAukbOPpC
-	i2Uj3+sPcX/04sULrNnzNgIbrZp1hR53+/8xWXlc4YvH7giWsoMkKORckBjmxtoA
-X-Gm-Gg: ASbGncslo5WAJ13+xMo5+thJsJJOsCHs3gOdXkV2hvdtaycuNBsuJa64V7u4vt1Jqyc
-	7GhVmSxqwVmwKZSE2LjyhfO1dHpf5i1zkmv+GWpD8LWpi9EnZD85ySLoNhfldclOX3elAQPiLn4
-	pYultbXNzAY/4NI4jn9jmkHVgDTgsNFyzJ8owyzvELDLBtE7r+DF8BrPYxY/oQmMHNQi7Z2aq3o
-	4HJD4HOxHDK+sCLTM/EM1j0RjKQLVDPZkyheoFX6NMihpNQ2dazbbn60vZMAHiyDayE5KWNi1mS
-	yYXml4Hu8NllcpCzw9i430+o35UHSSe0Q+RjnaTHQPzCHIMuGXGA3mBWB+eLAB1a0dT1dXdiRvu
-	/tIZohE/L+imnAFuX+OEu4NGiTiZfpd9Yg9C7FW3UQybw8wVZnmrL1xL7ijNHpxLWMPwROnafIa
-	EKQ3n6ebAEU80=
-X-Google-Smtp-Source: AGHT+IEiw2TGf1PWZBQxUY2nu3fERd+iQzg52B2saUAUqD1f6GMoI4Q/11oFj0qOZJQJ0vDzQ7LW+Q==
-X-Received: by 2002:a05:6402:35c7:b0:643:1659:7593 with SMTP id 4fb4d7f45d1cf-6491ae11406mr6874241a12.30.1765211663856;
-        Mon, 08 Dec 2025 08:34:23 -0800 (PST)
-Received: from fedora ([46.248.82.114])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-64956402185sm766459a12.25.2025.12.08.08.34.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Dec 2025 08:34:23 -0800 (PST)
-From: Uros Bizjak <ubizjak@gmail.com>
-To: bpf@vger.kernel.org,
-	x86@kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Uros Bizjak <ubizjak@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@kernel.org>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH] x86/bpf: Avoid emitting LOCK prefix for XCHG atomic ops
-Date: Mon,  8 Dec 2025 17:33:34 +0100
-Message-ID: <20251208163420.7643-1-ubizjak@gmail.com>
-X-Mailer: git-send-email 2.52.0
+	s=arc-20240116; t=1765211795; c=relaxed/simple;
+	bh=YnBsFXsGHGSOPxfdQ5wJ0fsKU1bDt2UA+EMrBFaeetI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=W/9HSN/xM4QgE+NvAjHvUt/pM+mJxmYhcjG0ZNoJ3AYu5q5xVG14B9wWekshwOaWeoDpIEIaSZFAW9Gb/m+50aMnXkNoL7MwglRKn1K+5lHnsy5MWgUVU+ZBx7vxpd4ztjC/cRQaBzZuHRyzyWYu8j7ocjWwPeDV8iIDRw4mW2A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=JfCXLG9l; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5B883t4J031236;
+	Mon, 8 Dec 2025 16:35:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=e3eICh
+	wSuwWgy6GE4OQOcLb+VywABhBwwWbuVsEmPOw=; b=JfCXLG9luLEQyuk2flqLwU
+	VPLSkQ8UYmif9gEy3uytbinIq9hsN/jMwwp/B5Fcyo1Ot2ywWrvFhYvIkgsRXui8
+	LMXAm5PYW/gUJhtaylBYrQIw5E/8v8AMwVXhg2feYufWzt53/FELV7F2ttmC4PWu
+	o6tXkWtfzL9z2m9hK3qKjCqhj//bTitvcOyUQ4NglbI7AI67faH4Pmj1ulIXmwVC
+	lfHcscd6pdA2cS3kOfLGRQm59vAsfjiQIlJCc8VZpRLi9LMSKpAxFyCmiHVTxG7q
+	GHnwIrzHchOI7yUK/Bd1rCbE7maZgkWeQ8jpO8uCeTmjC5a9tI5rR5cBxSiZse3A
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4avc618r8h-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 08 Dec 2025 16:35:53 +0000 (GMT)
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 5B8GQm8q002455;
+	Mon, 8 Dec 2025 16:35:53 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4avc618r8f-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 08 Dec 2025 16:35:52 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5B8Eh8TW028123;
+	Mon, 8 Dec 2025 16:35:51 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4avy6xpqyu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 08 Dec 2025 16:35:51 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5B8GZnnD60031444
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 8 Dec 2025 16:35:49 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 968B72004B;
+	Mon,  8 Dec 2025 16:35:49 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id CA12020040;
+	Mon,  8 Dec 2025 16:35:45 +0000 (GMT)
+Received: from [9.43.1.23] (unknown [9.43.1.23])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Mon,  8 Dec 2025 16:35:45 +0000 (GMT)
+Message-ID: <e34ddd05-d926-4eb4-b861-4bf8fd5635bb@linux.ibm.com>
+Date: Mon, 8 Dec 2025 22:05:44 +0530
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] powerpc64/bpf: support direct_call on livepatch function
+To: Naveen N Rao <naveen@kernel.org>
+Cc: Madhavan Srinivasan <maddy@linux.ibm.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Song Liu <songliubraving@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>, Viktor Malik <vmalik@redhat.com>,
+        live-patching@vger.kernel.org, Josh Poimboeuf <jpoimboe@kernel.org>,
+        Joe Lawrence
+ <joe.lawrence@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>, linux-trace-kernel@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Shung-Hsi Yu <shung-hsi.yu@suse.com>
+References: <20251002192755.86441-1-hbathini@linux.ibm.com>
+ <amwerofvasp7ssmq3zlrjakqj5aygyrgplcqzweno4ef42tiav@uex2ildqjvx2>
+ <17f49a63-eccb-4075-91dd-b1f37aa762c7@linux.ibm.com>
+ <unegysw3bihg32od7aham3npsdpm5govboo3uglorwsrjqfqfk@pbyzwwztmqtc>
+ <42d72061-3d23-43db-bb02-d5f75333c924@linux.ibm.com>
+ <dvvv5cytyak2iquer7d6g57ttum3qcckupyahsqsmvpzfjbyni@wbsr77swnrcl>
+ <79946463-4742-4919-9d56-927a0a6f1c7c@linux.ibm.com>
+ <nuinyo7o7uniemqqmoboctwrkkwkuv77nt7yk6td6eb3x43hv2@2lukfuvcmcko>
+Content-Language: en-US
+From: Hari Bathini <hbathini@linux.ibm.com>
+In-Reply-To: <nuinyo7o7uniemqqmoboctwrkkwkuv77nt7yk6td6eb3x43hv2@2lukfuvcmcko>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMjA2MDAyMCBTYWx0ZWRfX9U2KbdGZ/LCC
+ JOjlrLWWTsixmht3mI0hbyMr73SiF8T4VBqS934bvJozgzXIG9hLpfbmgI5EZ4XNn75Pv6x3P+V
+ uipZqh3xvmpRN7lw9OIhWDgWhlnpvomPUNrMXaZwWoOyyTxr55wntz33MjCtOkZ/axksMtj7IUp
+ tPULqxBEF0eMCUJlnm9mql8gV6g68sTs9P02OVNf1Niwha+yJYgit+DlomxvLnef6Q2pRJvloIt
+ mxSzwt9KczRq47Wh1glc9LxKMyJ5l739xzBOKHIXYMj+FDUj3Mfac0TttMRQGHePqwohwOiUSXo
+ c7a6H5T7CjH3GUIINmXxnNrdLD10MlKFl5xPGC/KNoBHDO11P6GtMzUmv3YpJsU7Tcy1j6jP2C9
+ IvL6enxk8iooG/hhtTomhNsGwFAhNg==
+X-Proofpoint-GUID: eceSSM85vtVc9Swark3NlheFqQRPVYLn
+X-Proofpoint-ORIG-GUID: Xz4BH_e4YtKkpsZ2KZVlvpNoDMQcbkWY
+X-Authority-Analysis: v=2.4 cv=O/U0fR9W c=1 sm=1 tr=0 ts=6936fe69 cx=c_pps
+ a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
+ a=IkcTkHD0fZMA:10 a=wP3pNCr1ah4A:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=ytJgG1wrisC3aVGMN-IA:9 a=QEXdDO2ut3YA:10
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2025-12-06_02,2025-12-04_04,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ impostorscore=0 lowpriorityscore=0 bulkscore=0 clxscore=1011 phishscore=0
+ suspectscore=0 adultscore=0 spamscore=0 malwarescore=0 priorityscore=1501
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2510240000 definitions=main-2512060020
 
-The x86 XCHG instruction is implicitly locked when one of the
-operands is a memory location, making an explicit LOCK prefix
-unnecessary.
+Thanks for the review, Naveen.
+I was on leave for sometime and could not look into it in a while
+after that.
 
-Stop emitting the LOCK prefix for BPF_XCHG in the JIT atomic
-read-modify-write helpers. This avoids redundant instruction
-prefixes while preserving correct atomic semantics.
+On 15/10/25 11:48 am, Naveen N Rao wrote:
+> On Fri, Oct 10, 2025 at 12:47:21PM +0530, Hari Bathini wrote:
+>>
+>>
+>> On 09/10/25 4:57 pm, Naveen N Rao wrote:
+>>> On Thu, Oct 09, 2025 at 11:19:45AM +0530, Hari Bathini wrote:
+>>>>
+>>>>
+>>>> On 08/10/25 1:43 pm, Naveen N Rao wrote:
+>>>>> On Mon, Oct 06, 2025 at 06:50:20PM +0530, Hari Bathini wrote:
+>>>>>>
+>>>>>>
+>>>>>> On 06/10/25 1:22 pm, Naveen N Rao wrote:
+>>>>>>> On Fri, Oct 03, 2025 at 12:57:54AM +0530, Hari Bathini wrote:
+>>>>>>>> Today, livepatch takes precedence over direct_call. Instead, save the
+>>>>>>>> state and make direct_call before handling livepatch.
+>>>>>>>
+>>>>>>> If we call into the BPF trampoline first and if we have
+>>>>>>> BPF_TRAMP_F_CALL_ORIG set, does this result in the BPF trampoline
+>>>>>>> calling the new copy of the live-patched function or the old one?
+>>>>>>
+>>>>>> Naveen, calls the new copy of the live-patched function..
+>>>>>
+>>>>> Hmm... I'm probably missing something.
+>>>>>
+>>>>> With ftrace OOL stubs, what I recall is that BPF trampoline derives the
+>>>>> original function address from the OOL stub (which would be associated
+>>>>> with the original function, not the livepatch one).
+>>>>
+>>>> Trampoline derives the address from LR.
+>>>
+>>> Does it? I'm referring to BPF_TRAMP_F_CALL_ORIG handling in
+>>> __arch_prepare_bpf_trampoline().
+>>
+>>
+>>> LR at BPF trampoline entry points at
+>>> the ftrace OOL stub. We recover the "real LR" pointing to the function
+>>> being traced from there so that we can call into it from within the BPF
+>>> trampoline.
+>>
+>> Naveen, from the snippet in livepatch_handler code shared below,
+>> the LR at BPF trmapoline entry points at the 'nop' after the call
+>> to trampoline with 'bnectrl cr1' in the updated livepatch_handler.
+>>
+>> Mimic'ing ftrace OOL branch instruction in livepatch_handler
+>> with 'b	1f' (the instruction after nop) to ensure the trmapoline
+>> derives the real LR to '1f' and jumps back into the livepatch_handler..
+>>
+>> +       /* Jump to the direct_call */
+>> +       bnectrl cr1
+>> +
+>> +       /*
+>> +        * The address to jump after direct call is deduced based on ftrace
+>> OOL stub sequence.
+>> +        * The seemingly insignificant couple of instructions below is to
+>> mimic that here to
+>> +        * jump back to the livepatch handler code below.
+>> +        */
+>> +       nop
+>> +       b       1f
+>> +
+>> +       /*
+>> +        * Restore the state for livepatching from the livepatch stack.
+>> +        * Before that, check if livepatch stack is intact. Use r0 for it.
+>> +        */
+>> +1:     mtctr   r0
+> 
+> Ah, so you are faking a ftrace OOL stub here. But, won't this mean that
 
-No functional change for other atomic operations.
+Yeah.
 
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
----
- arch/x86/net/bpf_jit_comp.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+> bpf_get_func_ip() won't return the function address anymore?
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index b69dc7194e2c..77d724525808 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -1305,7 +1305,8 @@ static int emit_atomic_rmw(u8 **pprog, u32 atomic_op,
- {
- 	u8 *prog = *pprog;
- 
--	EMIT1(0xF0); /* lock prefix */
-+	if (atomic_op != BPF_XCHG)
-+		EMIT1(0xF0); /* lock prefix */
- 
- 	maybe_emit_mod(&prog, dst_reg, src_reg, bpf_size == BPF_DW);
- 
-@@ -1347,7 +1348,9 @@ static int emit_atomic_rmw_index(u8 **pprog, u32 atomic_op, u32 size,
- {
- 	u8 *prog = *pprog;
- 
--	EMIT1(0xF0); /* lock prefix */
-+	if (atomic_op != BPF_XCHG)
-+		EMIT1(0xF0); /* lock prefix */
-+
- 	switch (size) {
- 	case BPF_W:
- 		EMIT1(add_3mod(0x40, dst_reg, src_reg, index_reg));
--- 
-2.52.0
+Right. I do agree it can have issues in some scenarios.
 
+> 
+> One of the other thoughts I had was if we could stuff the function
+> address into the ftrace OOL stub. I had considered this back when I
+> implemented the OOL stubs, but didn't do it due to the extra memory
+> requirement. However, given the dance we're having to do, I'm now
+> thinking that may make sense and can simplify the code. If we can also
+> hook into livepatch, then we should be able to update the function
+> address in the stub to point to the new address and the trampoline
+> should then "just work" since it already saves/restores the TOC [We may
+> additionally have to update the function IP in _R12, but that would be a
+> minor change overall]
+> 
+> We will still need a way to restore livepatch TOC if the BPF trampoline
+> doesn't itself call into the function, but we may be able to handle that
+> if we change the return address to jump to a stub that restores the TOC
+> from the livepatch stack.
+
+Sounds doable. Looking into a couple of other things at the moment
+though. Will try out this suggestion and get back post that.
+Having said that, your thoughts on whether the current approach
+is a viable option if bpf_get_func_ip() can be fixed somehow?
+
+- Hari
 
