@@ -1,98 +1,213 @@
-Return-Path: <bpf+bounces-76316-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76317-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F5B0CAE2C1
-	for <lists+bpf@lfdr.de>; Mon, 08 Dec 2025 21:46:41 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 489A4CAE531
+	for <lists+bpf@lfdr.de>; Mon, 08 Dec 2025 23:30:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id C051630202DE
-	for <lists+bpf@lfdr.de>; Mon,  8 Dec 2025 20:46:39 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0B261303D6B3
+	for <lists+bpf@lfdr.de>; Mon,  8 Dec 2025 22:30:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4506C2DCC01;
-	Mon,  8 Dec 2025 20:46:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E1C12E22A6;
+	Mon,  8 Dec 2025 22:30:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pIg9LFl5"
+	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="svSZ2Znp"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yx1-f51.google.com (mail-yx1-f51.google.com [74.125.224.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9201259CB6;
-	Mon,  8 Dec 2025 20:46:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 539732DF15B
+	for <bpf@vger.kernel.org>; Mon,  8 Dec 2025 22:30:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765226795; cv=none; b=bgdvkyUx0TNPIvAvTy4pw72e0PBKBIu6MIp6ySuGPg6dyOkKR+jkgYjp1vRnuAAww6RGCf2ne9+qvsmmE+Wh9BcQn3M2iziGNFCaGeLSQ7n2Le7xbWRRqQ5cBvL3LykN1qRBKIIPc6eur9Qo9wHOZ4e/45AWnNAqM82WgprnU8o=
+	t=1765233023; cv=none; b=sHzK+zFJu0OBbR0e9yAmBWmcXE5/tPplfKXjdM+Kkl/tO77qXRgT4HOWE9wgkgfNm7G1ynFi/PMMfVkT40jT3qcWhvbJJ0NJCqv1GO/dx7jIaKzoa+BvWZf5K/O5Um9ng6ZZdpjGPO7XTLUmr7EJCw//VP/Ji/3AbTF0++1D8Ps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765226795; c=relaxed/simple;
-	bh=x2UjReiwtmk0C2BH6V97iqqnFcSMI5RmReTQSBck62I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FJog8PS0EjmJLSeaUZvlDcqwRLpuu38U4IPETC4KnNofrQX4o5ZoyK8FaDHoShMaVBa3qeGogqawi0gzNo5r6liAZ08mWjpIIb+X7Vo69AK+iDD+13MCxvOUgbs8vYES9KAq6twWnU5KPPXPC5WUJth5usdygFmjlfMVWhBHFyA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pIg9LFl5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14006C4CEF1;
-	Mon,  8 Dec 2025 20:46:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765226795;
-	bh=x2UjReiwtmk0C2BH6V97iqqnFcSMI5RmReTQSBck62I=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=pIg9LFl5rDMHuLyh2sTdtBK74Xvcp8hqeNMjrWpISJ6TLXPUdBTVvoZIj5F8LEY/V
-	 Q8SK8OFnI2WORa1yeGP+phTA4ujmTJpBRGm1aJ9orW+QQW2SOwaqts2Gd2FbtQuEZY
-	 Z0QUZinOroGm2S59gglZuLH1K0Go3j7ItIGDJWtVr/rTJg/DZNbTbxJZSb1funjMRS
-	 qu5Vynl1dBzwPV0NVEPrKRIN6enYly5MynZXCaK9HceQH6QMosVahEuEbXEoizHeSl
-	 wUIuW8fasjZjECRx/x3iRRO1pj1iSObR4Aoq2WnZI3KK7P6vXezoZA9aPxp1NXszf1
-	 UNWaYSJlXCL8A==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id D98FDCE0D19; Mon,  8 Dec 2025 12:46:32 -0800 (PST)
-Date: Mon, 8 Dec 2025 12:46:32 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-kernel@vger.kernel.org,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH v3] tracing: Guard __DECLARE_TRACE() use of
- __DO_TRACE_CALL() with SRCU-fast
-Message-ID: <075fd9e5-2db8-4030-9364-0be5e22e9902@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <e2fe3162-4b7b-44d6-91ff-f439b3dce706@paulmck-laptop>
- <20251208044352.38360456@debian>
+	s=arc-20240116; t=1765233023; c=relaxed/simple;
+	bh=ocjYjWmWaxCJzmhmO4vt0e6YP0rdbfNJzCbnZyXkwLY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bJggLRK7KwupjBeMOYulNgiFwfMPdLqUhwCGIJXPvKJgLoneEzwb8+NCbVDWRBtzWbciYI7CJH+tmWMuHhBPbvS/8qFwnHYJzYt7x/5iEswSJh5lS3w9f0EaYhXzXUyNUfFo8X5B0vyxxe4PMfzyybjKlovXaiOdcICHdGwAcQQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=svSZ2Znp; arc=none smtp.client-ip=74.125.224.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etsalapatis.com
+Received: by mail-yx1-f51.google.com with SMTP id 956f58d0204a3-63fc6d9fde5so4797737d50.3
+        for <bpf@vger.kernel.org>; Mon, 08 Dec 2025 14:30:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1765233020; x=1765837820; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+K6AcyeU5pV3EWlmWTWkhsjb9k8uT1vtZHrd2dO18is=;
+        b=svSZ2ZnpiqWmHWodOrWXq0JYhVEi5IG/nfdrTTgAWV6JpmNS4elT866zDwEKrALNms
+         PzRmDiOn1OA7vyXEPV01vU7bjRH2Uzjm1ZfxZQEfAuCFEU7CRYZCgWFtMSC0910F19h9
+         mmK1kicPG9z4Ir3T3rFJxaY8AvupuhTfEKoTzE8tBLy0mrKDav+N7ypwmNsbjJWarsMs
+         DT3eWPB8t+N1RiXg+9Q4l3VdZ71+abItQ/m6ms65G1C3b6Z04ULxKptQKIsa4yOipPGC
+         1vHhZD2fN+56Pk1nf3zMSGRZQkGQVmRKU7aqfMyY+nOZmW4zM0xME9xYqUIwEjYNR+Rn
+         2AZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765233020; x=1765837820;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=+K6AcyeU5pV3EWlmWTWkhsjb9k8uT1vtZHrd2dO18is=;
+        b=aD6jfafSggC56zMqgsyxCeGZCPD1S3XJp4IlTa8TwOAxmgGFF/IMnhko4lnDLb9+q0
+         5lfbxJ8UNOiGPCRVIOzJ5b/X47tK2rqF8njN5X5xsIAyGTaeTFmqyCnw8cgHsJ5VLPW1
+         1flzsNLN8uGNQQh8c3Ov++RYoLZo8X5wmJoPv3fzhodx20/bNlaUT5VlGvNgSByV6Cfw
+         6UeYeGkSOsg/veLEO4aPVUDIXqjG9nrW9NRPEA8Sy3WpgwaEqMAt9XArzh8w634jW0mz
+         /rRgFsj2kIUnfrxkqZAH9XJRUJSwuQGt1Yh/mGL7xOi8FKXvfC1gIu1T392GRDPZe+I0
+         EzwQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXWLhyizdS1eoGfD5gkCGgwxIBGD+EyWou3Vv0h7bu4kwxYVgD5SYETkeLvdotBRWgyQcM=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy7Od7WTJpXWi8/MLjgr3OznNtgWtwtfuTDO0IsZkFZRK2XTX9P
+	6Tu2ZUuoTA4sdxoyVhF3gnvlbADibH5zi1vCs4xLN7DrM93Pp9hQCAsFnTGO1RQQ2BckgzfB47n
+	ZHxjT3+D1s9qn0w9zlUOeiWSqNKeQmeqPoQYtV0nlxA==
+X-Gm-Gg: ASbGncssnumDCBI0I06jizzfUNJPsEmIxXCDitQ7BbBOoZOdoH5p6fvLgpSg1fvLDdx
+	b3AY+6voPpQe1+z6PtGmfpT++L6iCSSatEJ1oyMeG9+rynrsV3IiJEy8/a/4W6koYNm+k08ynuI
+	keSwA1K7UaRm0tVm9sXOcquUsJrdMFd/EOik5iBkKwIOCYUhxa6LHpEuqNubKHAOzG9EpMgiB4A
+	js3Z4ao8+ETVmC6+Mx/Ip8eGvmIul54g94G74bDMo672aHIPgTdetQ8oaSSNAqjqpkQNyUECg==
+X-Google-Smtp-Source: AGHT+IHVuMNWgDuiqgomV5ZtfwFKIsM8rRD5EOUD50cGvF6O3xnwOYf/ZA6SkvnpNqllyZdP5kbLg64xXRNKS+UbvPk=
+X-Received: by 2002:a05:690e:1448:b0:644:6575:b4de with SMTP id
+ 956f58d0204a3-6446575c3f5mr637189d50.3.1765233020143; Mon, 08 Dec 2025
+ 14:30:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251208044352.38360456@debian>
+References: <20251203162625.13152-4-emil@etsalapatis.com> <45513ae5c2cfe74c5d29d23e6c2eaec62b07e709138bc9167c5fea5ea6dde762@mail.kernel.org>
+ <CAEf4BzYoD85yjR7-9RTwSMU6zJ3pMJAnUC1CeNy4Hy7c2es21w@mail.gmail.com>
+In-Reply-To: <CAEf4BzYoD85yjR7-9RTwSMU6zJ3pMJAnUC1CeNy4Hy7c2es21w@mail.gmail.com>
+From: Emil Tsalapatis <emil@etsalapatis.com>
+Date: Mon, 8 Dec 2025 17:30:04 -0500
+X-Gm-Features: AQt7F2qrGmWoe4qSab9MD6XGZDC7eEILFq_dtrPgonRWPea8ewt_53uenK9jQIw
+Message-ID: <CABFh=a7khDBCvGK5h5oWt18bX=i4X4yX+PVg3ijiPYx9GSkvYA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] libbpf: move arena globals to the end of the arena
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bot+bpf-ci@kernel.org, bpf@vger.kernel.org, andrii@kernel.org, 
+	eddyz87@gmail.com, ast@kernel.org, daniel@iogearbox.net, 
+	john.fastabend@gmail.com, memxor@gmail.com, yonghong.song@linux.dev, 
+	martin.lau@kernel.org, clm@meta.com, ihor.solodrai@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 08, 2025 at 04:43:52AM -0500, Steven Rostedt wrote:
-> On Sun, 7 Dec 2025 20:20:23 -0800
-> "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> 
-> > [ paulmck: Remove trace_syscalls.h changes per Steven Rostedt. ]
-> 
-> But they still need to be fixed.
-> 
-> With PREEMPT_RT enabled:
-> 
->  # trace-cmd start -e syscalls
->  # trace-cmd show
->             bash-1165    [001] DBZ.f   269.955644: sys_ioctl(fd: 0xff, cmd: 0x5413, arg: 0x7fffd3d6a2d0)
->             bash-1165    [001] DBZ.f   269.955649: sys_ioctl -> 0x0
->             bash-1165    [001] DBZ.f   269.955694: sys_rt_sigprocmask(how: 2, nset: 0x7fffd3d6a3a0, oset: 0, sigsetsize: 8)
->             bash-1165    [001] DBZ.f   269.955698: sys_rt_sigprocmask -> 0x0
->             bash-1165    [001] DBZ.f   269.955715: sys_wait4(upid: 0xffffffffffffffff, stat_addr: 0x7fffd3d69c50, options: 0xb, ru: 0)
->             bash-1165    [001] DBZ.f   269.955722: sys_wait4 -> 0xfffffffffffffff6
->             bash-1165    [001] DBZ.f   269.955725: sys_rt_sigreturn()
->             bash-1165    [001] DBZ.f   269.955758: sys_rt_sigaction(sig: 2, act: 0x7fffd3d6a2e0, oact: 0x7fffd3d6a380, sigsetsize: 8)
->             bash-1165    [001] DBZ.f   269.955762: sys_rt_sigaction -> 0x0
->                                ^^^^^
->                             This is just garbage.
+On Fri, Dec 5, 2025 at 7:11=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Wed, Dec 3, 2025 at 8:52=E2=80=AFAM <bot+bpf-ci@kernel.org> wrote:
+> >
+> > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > > index 706e7481b..9642d697b 100644
+> > > --- a/tools/lib/bpf/libbpf.c
+> > > +++ b/tools/lib/bpf/libbpf.c
+> >
+> > [ ... ]
+> >
+> > > @@ -2991,10 +2992,11 @@ static int init_arena_map_data(struct bpf_obj=
+ect *obj, struct bpf_map *map,
+> > >                              void *data, size_t data_sz)
+> > >  {
+> > >       const long page_sz =3D sysconf(_SC_PAGE_SIZE);
+> > > +     const size_t data_alloc_sz =3D roundup(data_sz, page_sz);
+> > >       size_t mmap_sz;
+> > >
+> > >       mmap_sz =3D bpf_map_mmap_sz(map);
+> > > -     if (roundup(data_sz, page_sz) > mmap_sz) {
+> > > +     if (data_alloc_sz > mmap_sz) {
+> > >               pr_warn("elf: sec '%s': declared ARENA map size (%zu) i=
+s too small to hold global __arena variables of size %zu\n",
+> > >                       sec_name, mmap_sz, data_sz);
+> > >               return -E2BIG;
+> > > @@ -3006,6 +3008,9 @@ static int init_arena_map_data(struct bpf_objec=
+t *obj, struct bpf_map *map,
+> > >       memcpy(obj->arena_data, data, data_sz);
+> > >       obj->arena_data_sz =3D data_sz;
+> > >
+> > > +     /* place globals at the end of the arena */
+> > > +     obj->arena_data_off =3D mmap_sz - data_alloc_sz;
+> > > +
+> >
+> > Here obj->arena_data_off is a __u32, but the calculation is done in
+> > size_t (64-bit). For a 4GB arena (which the test verifier_arena_large.c
+> > uses), mmap_sz is 4GB and the result can approach 4GB - PAGE_SIZE. This
+> > fits in u32 correctly.
+> >
+> > > @@ -4663,7 +4668,7 @@ static int bpf_program__record_reloc(struct bpf=
+_program *prog,
+> > >               reloc_desc->type =3D RELO_DATA;
+> > >               reloc_desc->insn_idx =3D insn_idx;
+> > >               reloc_desc->map_idx =3D obj->arena_map_idx;
+> > > -             reloc_desc->sym_off =3D sym->st_value;
+> > > +             reloc_desc->sym_off =3D sym->st_value + obj->arena_data=
+_off;
+> >                                                  ^^^^^^^^^^^^^^^^^^^^^^
+> >
+> > Can this overflow when storing to reloc_desc->sym_off? The sym_off fiel=
+d
+> > is 'int' (signed 32-bit), but arena_data_off can be larger than INT_MAX
+> > for arenas approaching 4GB in size.
+> >
+> > For example, with a 4GB arena and one page of globals:
+> > - mmap_sz =3D 4GB =3D 0x100000000
+> > - data_alloc_sz =3D 4096
+> > - arena_data_off =3D 0xFFFFF000 =3D 4294963200
+> >
+> > This value (4294963200) exceeds INT_MAX (2147483647), so when stored in
+> > the signed int sym_off field, it becomes negative.
+> >
+> > Later in bpf_object__relocate_data(), this is used as:
+> >     insn[1].imm =3D insn[0].imm + relo->sym_off;
+> >
+> > With sym_off being negative due to overflow, this produces an incorrect
+> > offset for accessing arena globals.
+> >
+> > Should sym_off be changed to an unsigned type to handle large arena
+> > offsets correctly?
+>
+> AI has good a point, valid offset with 4GB arena will overflow int...
+> But then ldimm64 instructions that allow direct access to arena have
+> insn[1].imm as s32, so they cannot even address more than 2GB? Can you
+> please double check this, maybe we actually treat insn[1].imm as u32
+> on the verifier side for this use case?
+>
 
-Yes, but is is the original garbage, and garbage obtained by acceding
-to your request.  ;-)
+I can confirm we treat insn[1].imm as a u32, but the following
+relocation logic in
+ bpf_object__relocate_data looks suspect:
 
-Perhaps a little bit more constructively, have your conflicting changes
-hit mainline yet?
+                case RELO_DATA:
+                        map =3D &obj->maps[relo->map_idx];
+                        insn[1].imm =3D insn[0].imm + relo->sym_off;
+                        if (obj->gen_loader) {
 
-							Thanx, Paul
+If sym_off is interpreted as a negative, then insn[1].imm should be
+completely wrong and typecasting
+back to u32 should do nothing. I added tests with both nonzero
+insn[0].imm and st_value, and none
+of them are failing which unless I"m missing something is honestly
+kind of surprising.
+
+I don't think sym_off should actually ever be negative. The st_value
+from the ELF headers
+should be always positive, and elf_find_func_offset_* also returns
+only positive numbers.
+
+Should we change sym_off in reloc_desc to be a u32? If anything that
+is more accurate than having it
+as an int.
+
+For the rest of the feedback: Ack, will incorporate it into the next patch.
+
+
+
+> >
+> > [ ... ]
+> >
+> >
+> > ---
+> > AI reviewed your patch. Please fix the bug or email reply why it's not =
+a bug.
+> > See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/REA=
+DME.md
+> >
+> > CI run summary: https://github.com/kernel-patches/bpf/actions/runs/1990=
+1383089
 
