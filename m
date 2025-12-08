@@ -1,62 +1,81 @@
-Return-Path: <bpf+bounces-76281-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76282-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55A6ACAD362
-	for <lists+bpf@lfdr.de>; Mon, 08 Dec 2025 14:08:06 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB15ACAD386
+	for <lists+bpf@lfdr.de>; Mon, 08 Dec 2025 14:15:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 8699C30125F7
-	for <lists+bpf@lfdr.de>; Mon,  8 Dec 2025 13:08:05 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6E77530341C9
+	for <lists+bpf@lfdr.de>; Mon,  8 Dec 2025 13:15:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F43D2D7398;
-	Mon,  8 Dec 2025 13:08:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B4E6314A6D;
+	Mon,  8 Dec 2025 13:15:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h0iRdPBy"
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="UDmeoemP"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from pdx-out-012.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-012.esa.us-west-2.outbound.mail-perimeter.amazon.com [35.162.73.231])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96B52266B67
-	for <bpf@vger.kernel.org>; Mon,  8 Dec 2025 13:08:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5872618DB37;
+	Mon,  8 Dec 2025 13:15:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.162.73.231
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765199281; cv=none; b=gIt/IWBY+0OWfNpewmgz/6xVRMbz1CFZTZIjNDtnhs6E7ZtrCu4Iry811u4uPRq4mJhOrvbByVQqyPeDg5vSjLeT03CzjPZcQbtiAmgQH+1AWp2T5Vf5Zsx6bZr+pwdSYgWL6jYuIkM4HuP/8fxGxSBlbx60R4VzZWH2InwQZBc=
+	t=1765199719; cv=none; b=MbT01NZJ6f2y3+DeAiWiXYx9ePZP7r7GXYV4bEhl/JfhEzwOWO3CtG5QBUoE/hNzESylVVZEvO4jKwtZKfUiQXnn4FwTtfBlDXTbSZbAXCoKuyi1lCUvNYFupYLsFNkEqCC++IO/njt6i7y8v6Ia1NiouFXqX1gHzxShecdd5hk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765199281; c=relaxed/simple;
-	bh=P68vuVXGbiudnUH46WND/LnxuXicep6JwoD1Sh0rqFk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FtuwI7MfpcuLlR4w5nwlT5sv/PtBiHZzI1tbFrQHMFay8sCa8FkQjNW9ObLJHjSuVYubV0ZhU3eKsMqbWJIgq3eDil3S6PxuUuy+qTQwQTezyeyoILrVIasgss7Hh7I+ULP0avoCDwm/RggOowHyCZKYK0UoNIh8ENhobOKXb6U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h0iRdPBy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F362EC4CEF1;
-	Mon,  8 Dec 2025 13:07:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765199281;
-	bh=P68vuVXGbiudnUH46WND/LnxuXicep6JwoD1Sh0rqFk=;
-	h=From:To:Cc:Subject:Date:From;
-	b=h0iRdPByVdZsrC+ePsqB4VTXQiid9hCIYjrfyYpunO3PPmMr1fUUoSV8XR/Nxb9gA
-	 PEihSM84IE6oSGwgVCdKnMXGOamawYddEnMeK8vjnxwxJIF65vPUr/XTPDc0zs5A1C
-	 I5cNTdtJ5RkidvJ+WQqg6MX8vrtJc6ZnYxD8yQMLTtTeDPS3/p51x9u71/TIu1/KTN
-	 GuLQD/a+u6oNyVvNE4pIhRp/+3SuRnxEU10Y3U8SLfVRGVGjYbdaLqn0grhFM4kBda
-	 oTjIUhv+7s9mt/js4jQoMbJp3zIcGyuhYlSqMnTK6gFzwAM3SMoiWq7OHYIyD2NVjs
-	 4ogex2/kQCcrw==
-From: Quentin Monnet <qmo@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	bpf@vger.kernel.org,
-	Quentin Monnet <qmo@kernel.org>
-Subject: [PATCH bpf-next] bpftool: Fix build warnings from vmlinux.h due to MS extensions
-Date: Mon,  8 Dec 2025 13:07:48 +0000
-Message-ID: <20251208130748.68371-1-qmo@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1765199719; c=relaxed/simple;
+	bh=cE3RFdQDlR8xQX7mvAp4ctPTCLn01POosDTBFFGQ4lk=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=JP1RaCn3iNm4FyrylqZptLvbFPJcSdOe0DV6srAXRDkxjaVNgqqwE+jlxsd51MfXe/AvUhqZNGGIW3Leek8bb8rhPZ51YBUBz8atKRu2YJXmW5eT8DP4rIYOLfO03mz7ARdKmtxyVOVHFwmNOXdsKuorpbjXsrCdO/kypLtbdwY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=UDmeoemP; arc=none smtp.client-ip=35.162.73.231
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1765199717; x=1796735717;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=NH+P540j674jKep8OGKNKOl9cpTm86nan/sWIUcpW6I=;
+  b=UDmeoemP4s2//bbPXXuhcDq2S4Kq2z3d2CeMyJIn6FAF1UyatCSToAKU
+   FrIDJdgaWUZoxkYe279OdtjUylu8ihavb8KIyY4ZUMK63/tJU3Lfb2UOL
+   8Y49amSVk8KGfwIX3AnZdMUmYfo0LjBV+1pY2coWUnifR0x4akN78NyC/
+   xJWoUpKQ3YrzdfOLyoJ/OVfGjzMMdoEv1PC2AWt/AIcbP5QpcyTGnjUYv
+   A6xSPkU/OLlORfkRJeAJsdljLC+zs2YOapb5QjoUtXpE+MlGwJcUTiAvG
+   HhzLE601CKALq3Ucj1RgQ98HIdv0I3CaReCmBAlqg+duDVd2OQ/wQD/Lm
+   g==;
+X-CSE-ConnectionGUID: zPFZ2qicR3+K+Vw/d6vwaA==
+X-CSE-MsgGUID: RLvkZHz4S6OV8vEyXDF7DA==
+X-IronPort-AV: E=Sophos;i="6.20,258,1758585600"; 
+   d="scan'208";a="8460938"
+Received: from ip-10-5-0-115.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.0.115])
+  by internal-pdx-out-012.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2025 13:15:14 +0000
+Received: from EX19MTAUWC001.ant.amazon.com [205.251.233.105:11740]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.42.136:2525] with esmtp (Farcaster)
+ id 2789a50d-4ee9-4aa3-9f83-432ffd98fa8a; Mon, 8 Dec 2025 13:15:14 +0000 (UTC)
+X-Farcaster-Flow-ID: 2789a50d-4ee9-4aa3-9f83-432ffd98fa8a
+Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
+ EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.29;
+ Mon, 8 Dec 2025 13:15:14 +0000
+Received: from b0be8375a521.amazon.com (10.37.245.7) by
+ EX19D001UWA001.ant.amazon.com (10.13.138.214) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.29;
+ Mon, 8 Dec 2025 13:15:10 +0000
+From: Kohei Enju <enjuk@amazon.com>
+To: <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+	<linux-kselftest@vger.kernel.org>
+CC: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+	<daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, "Jakub
+ Kicinski" <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, "John
+ Fastabend" <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>,
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, "Yonghong
+ Song" <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Hao Luo
+	<haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Shuah Khan
+	<shuah@kernel.org>, =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?=
+	<toke@kernel.org>, <kohei.enju@gmail.com>, Kohei Enju <enjuk@amazon.com>
+Subject: [PATCH bpf-next v2 0/2] bpf: cpumap: improve error propagation in cpu_map_update_elem()
+Date: Mon, 8 Dec 2025 22:14:30 +0900
+Message-ID: <20251208131449.73036-1-enjuk@amazon.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -64,60 +83,32 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D042UWA004.ant.amazon.com (10.13.139.16) To
+ EX19D001UWA001.ant.amazon.com (10.13.138.214)
 
-The kernel is now built with -fms-extensions. Anonymous structs or
-unions permitted by these extensions have been used in several places,
-and can end up in the generated vmlinux.h file, for example:
+This series improves error propagation in cpumap and adds selftests that
+cover the failure cases.
 
-    struct ns_tree {
-        [...]
-    };
+Currently, failures returned from __cpu_map_entry_alloc() are ignored
+and always converted to -ENOMEM by cpu_map_update_elem(). This series
+ensures the correct error propagation and adds selftests.
 
-    [...]
+Changes:
+  v2:
+    - send to bpf-next, not to bpf
+    - drop Fixes: tag
+  v1: https://lore.kernel.org/bpf/20251128160504.57844-1-enjuk@amazon.com/
 
-    struct ns_common {
-            [...]
-            union {
-                    struct ns_tree;
-                    struct callback_head ns_rcu;
-            };
-    };
+Kohei Enju (2):
+  bpf: cpumap: propagate underlying error in cpu_map_update_elem()
+  selftests/bpf: add tests for attaching invalid fd
 
-Trying to include this header for compiling a tool may result in build
-warnings, if the compiler does not expect these extensions. This is the
-case, for example, with bpftool:
+ kernel/bpf/cpumap.c                           | 21 ++++++++++++-------
+ .../bpf/prog_tests/xdp_cpumap_attach.c        | 19 +++++++++++++++--
+ 2 files changed, 30 insertions(+), 10 deletions(-)
 
-    In file included from skeleton/pid_iter.bpf.c:3:
-    .../tools/testing/selftests/bpf/tools/build/bpftool/vmlinux.h:64057:3:
-    warning: declaration does not declare anything
-    [-Wmissing-declarations]
-     64057 |                 struct ns_tree;
-           |                 ^~~~~~~~~~~~~~
-
-Fix these build warnings in bpftool by turning on Microsoft extensions
-when compiling the two BPF programs that rely on vmlinux.h.
-
-Reported-by: Alexei Starovoitov <ast@kernel.org>
-Closes: https://lore.kernel.org/bpf/CAADnVQK9ZkPC7+R5VXKHVdtj8tumpMXm7BTp0u9CoiFLz_aPTg@mail.gmail.com/
-Signed-off-by: Quentin Monnet <qmo@kernel.org>
----
- tools/bpf/bpftool/Makefile | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-index 586d1b2595d1..5442073a2e42 100644
---- a/tools/bpf/bpftool/Makefile
-+++ b/tools/bpf/bpftool/Makefile
-@@ -224,6 +224,8 @@ endif
- 
- $(OUTPUT)%.bpf.o: skeleton/%.bpf.c $(OUTPUT)vmlinux.h $(LIBBPF_BOOTSTRAP)
- 	$(QUIET_CLANG)$(CLANG) \
-+		-Wno-microsoft-anon-tag \
-+		-fms-extensions \
- 		-I$(or $(OUTPUT),.) \
- 		-I$(srctree)/tools/include/uapi/ \
- 		-I$(LIBBPF_BOOTSTRAP_INCLUDE) \
 -- 
-2.43.0
+2.51.0
 
 
