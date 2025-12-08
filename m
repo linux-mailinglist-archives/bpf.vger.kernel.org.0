@@ -1,213 +1,294 @@
-Return-Path: <bpf+bounces-76317-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76318-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 489A4CAE531
-	for <lists+bpf@lfdr.de>; Mon, 08 Dec 2025 23:30:32 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C60BCAE5B2
+	for <lists+bpf@lfdr.de>; Mon, 08 Dec 2025 23:46:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0B261303D6B3
-	for <lists+bpf@lfdr.de>; Mon,  8 Dec 2025 22:30:25 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 177DF302AAE7
+	for <lists+bpf@lfdr.de>; Mon,  8 Dec 2025 22:45:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E1C12E22A6;
-	Mon,  8 Dec 2025 22:30:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8299D2FDC21;
+	Mon,  8 Dec 2025 22:45:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="svSZ2Znp"
+	dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b="KIPlUo3z"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yx1-f51.google.com (mail-yx1-f51.google.com [74.125.224.51])
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 539732DF15B
-	for <bpf@vger.kernel.org>; Mon,  8 Dec 2025 22:30:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33662246BCD
+	for <bpf@vger.kernel.org>; Mon,  8 Dec 2025 22:45:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765233023; cv=none; b=sHzK+zFJu0OBbR0e9yAmBWmcXE5/tPplfKXjdM+Kkl/tO77qXRgT4HOWE9wgkgfNm7G1ynFi/PMMfVkT40jT3qcWhvbJJ0NJCqv1GO/dx7jIaKzoa+BvWZf5K/O5Um9ng6ZZdpjGPO7XTLUmr7EJCw//VP/Ji/3AbTF0++1D8Ps=
+	t=1765233950; cv=none; b=N+UPTbLAfUToCiFX8Yi5CFUJabn0oViYdIAZouSqtTd37hzJTyhWxOi/4SH4q9y2BUXr5bCxOF4YLPXQ7hslGW8Jm2bi7G4hyAQ3XKHJst/yIfjx9x/K2ij8vBM8TZNTiyQKCdjDgJMgJ7Jz7u9CQd0NVlab30DwbrdmIft+T9o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765233023; c=relaxed/simple;
-	bh=ocjYjWmWaxCJzmhmO4vt0e6YP0rdbfNJzCbnZyXkwLY=;
+	s=arc-20240116; t=1765233950; c=relaxed/simple;
+	bh=VFeZzew3wgU3lnQXtHo0aCDQL4wEBDLOCuXv4A6jDIs=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bJggLRK7KwupjBeMOYulNgiFwfMPdLqUhwCGIJXPvKJgLoneEzwb8+NCbVDWRBtzWbciYI7CJH+tmWMuHhBPbvS/8qFwnHYJzYt7x/5iEswSJh5lS3w9f0EaYhXzXUyNUfFo8X5B0vyxxe4PMfzyybjKlovXaiOdcICHdGwAcQQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=svSZ2Znp; arc=none smtp.client-ip=74.125.224.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etsalapatis.com
-Received: by mail-yx1-f51.google.com with SMTP id 956f58d0204a3-63fc6d9fde5so4797737d50.3
-        for <bpf@vger.kernel.org>; Mon, 08 Dec 2025 14:30:21 -0800 (PST)
+	 To:Cc:Content-Type; b=L3ReSARBMLh5qcvtI5cc7k3QEqVtyxVKTBhv4/g9I8lgnFinGGKZv+OpeZXecxUk08s4nr9fvmOAtIA3Nt2TqT4LTKwI38mU9DJqLXWE72d8uQT+PFnOPqBd0OtkBzZcg0xqpSW7dqEIpf8s40cFAczfPPITVTqSb9fMUSpsOvI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com; spf=fail smtp.mailfrom=purestorage.com; dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b=KIPlUo3z; arc=none smtp.client-ip=209.85.215.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=purestorage.com
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-b9da0ae5763so529975a12.0
+        for <bpf@vger.kernel.org>; Mon, 08 Dec 2025 14:45:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1765233020; x=1765837820; darn=vger.kernel.org;
+        d=purestorage.com; s=google2022; t=1765233947; x=1765838747; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+K6AcyeU5pV3EWlmWTWkhsjb9k8uT1vtZHrd2dO18is=;
-        b=svSZ2ZnpiqWmHWodOrWXq0JYhVEi5IG/nfdrTTgAWV6JpmNS4elT866zDwEKrALNms
-         PzRmDiOn1OA7vyXEPV01vU7bjRH2Uzjm1ZfxZQEfAuCFEU7CRYZCgWFtMSC0910F19h9
-         mmK1kicPG9z4Ir3T3rFJxaY8AvupuhTfEKoTzE8tBLy0mrKDav+N7ypwmNsbjJWarsMs
-         DT3eWPB8t+N1RiXg+9Q4l3VdZ71+abItQ/m6ms65G1C3b6Z04ULxKptQKIsa4yOipPGC
-         1vHhZD2fN+56Pk1nf3zMSGRZQkGQVmRKU7aqfMyY+nOZmW4zM0xME9xYqUIwEjYNR+Rn
-         2AZQ==
+        bh=saoX2yZ96AIA3oGqO7CACdTr6VxjaneFvI1/wcG9YMg=;
+        b=KIPlUo3znV8lVLASmnKPusdQaLUIx+ANetX94CJghL/77jG2oLko1YgOeE+5wPPEOv
+         zdv2RyJy5eCXPgrnU2ux1mRQKEmQmDjFWjeothyJKmxurJaGWpOHmW6O2Cw4HeP9Y7ll
+         FaLxQMm5z6ENbl3EsNBtIOaYv1yb2K491fC0DvFZ12H/l53Uijxd2PPs9e6o7AAQPRJK
+         JmTxjGUyEcr90+YXrbctc799J79lniHdLpXkvbeC+lVVQtnqd8FHjWyWWLKGlL2H407R
+         PQ4dY/7/ri3sdMjUtPA2eBUFZPvRBBjH+h0YCZYW0MZKGBHr8wd350z0p1P3Izakjac4
+         MwYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765233020; x=1765837820;
+        d=1e100.net; s=20230601; t=1765233947; x=1765838747;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=+K6AcyeU5pV3EWlmWTWkhsjb9k8uT1vtZHrd2dO18is=;
-        b=aD6jfafSggC56zMqgsyxCeGZCPD1S3XJp4IlTa8TwOAxmgGFF/IMnhko4lnDLb9+q0
-         5lfbxJ8UNOiGPCRVIOzJ5b/X47tK2rqF8njN5X5xsIAyGTaeTFmqyCnw8cgHsJ5VLPW1
-         1flzsNLN8uGNQQh8c3Ov++RYoLZo8X5wmJoPv3fzhodx20/bNlaUT5VlGvNgSByV6Cfw
-         6UeYeGkSOsg/veLEO4aPVUDIXqjG9nrW9NRPEA8Sy3WpgwaEqMAt9XArzh8w634jW0mz
-         /rRgFsj2kIUnfrxkqZAH9XJRUJSwuQGt1Yh/mGL7xOi8FKXvfC1gIu1T392GRDPZe+I0
-         EzwQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXWLhyizdS1eoGfD5gkCGgwxIBGD+EyWou3Vv0h7bu4kwxYVgD5SYETkeLvdotBRWgyQcM=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy7Od7WTJpXWi8/MLjgr3OznNtgWtwtfuTDO0IsZkFZRK2XTX9P
-	6Tu2ZUuoTA4sdxoyVhF3gnvlbADibH5zi1vCs4xLN7DrM93Pp9hQCAsFnTGO1RQQ2BckgzfB47n
-	ZHxjT3+D1s9qn0w9zlUOeiWSqNKeQmeqPoQYtV0nlxA==
-X-Gm-Gg: ASbGncssnumDCBI0I06jizzfUNJPsEmIxXCDitQ7BbBOoZOdoH5p6fvLgpSg1fvLDdx
-	b3AY+6voPpQe1+z6PtGmfpT++L6iCSSatEJ1oyMeG9+rynrsV3IiJEy8/a/4W6koYNm+k08ynuI
-	keSwA1K7UaRm0tVm9sXOcquUsJrdMFd/EOik5iBkKwIOCYUhxa6LHpEuqNubKHAOzG9EpMgiB4A
-	js3Z4ao8+ETVmC6+Mx/Ip8eGvmIul54g94G74bDMo672aHIPgTdetQ8oaSSNAqjqpkQNyUECg==
-X-Google-Smtp-Source: AGHT+IHVuMNWgDuiqgomV5ZtfwFKIsM8rRD5EOUD50cGvF6O3xnwOYf/ZA6SkvnpNqllyZdP5kbLg64xXRNKS+UbvPk=
-X-Received: by 2002:a05:690e:1448:b0:644:6575:b4de with SMTP id
- 956f58d0204a3-6446575c3f5mr637189d50.3.1765233020143; Mon, 08 Dec 2025
- 14:30:20 -0800 (PST)
+        bh=saoX2yZ96AIA3oGqO7CACdTr6VxjaneFvI1/wcG9YMg=;
+        b=sRlCLZBdKsRiecvhSxQuQJTuT2q1kAEAw90CYIFftJPheTZutPhXGcOddzFtO7GVKI
+         XD0voANexx+JK8u6/nDZFoHF350KtCvvthsKgc2cJeV/57lOkEukqI0kpxebKsdZGayQ
+         0+Srl+5DtRnUwbXy247eI11Nk97sRXE7KovOZGNMUSV24+iCMy18EkOO/gtFPyTIQfqa
+         +AOLFFBCkuHmhe5wzI3T3rA/VOaSFV6YZmzGUTffiTEnSKvT9oX/G+Y/77EOppVzpc0q
+         MaPMFxe5pVceSNn3VDvgmnjRb1tjAhZ33RY7eIQVRgQeDmr/JG/de/Bit8c+ZPH7znSo
+         5uMA==
+X-Forwarded-Encrypted: i=1; AJvYcCUhnFd+Spwtg+msCKCQjp5sdinnd9/XCZh2vkej7CoksiCeo8o4Pkfo5VeT5vtu2aYqv68=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yykl7mYssRQPOJBTTIn66G36bbASJEuUNigxTms1A+jt7Ho0UfH
+	3PsV7SxyR1GGCQmAbpQc9mgVNuHC5DgJfJe3/OeGXTSV8eXCsvZALjbmCqpOAlzkMrkrQB2GNkt
+	P3zYZycy8ngBuE0eoh2lkzABHCCRC6hFkq7EeCMyuMw==
+X-Gm-Gg: ASbGnculRI8HuYSbxDDi5uFfUzjeQkOOZfHKCrBixZBR49+/l7GHEXOWl/6GrvQtuen
+	APFYGw+Piw+y/pt0Fj/DqAiHwWli/P7ZQ0T+jt7YR7ET/8Mb71Slg9/Krs/QWEmlIFpNflJyVdF
+	sQUQgJ71oxsBZowqDI1bhP7ZP5bYHK3GYBSC68Q9hLh4YjMQac0m9csv5ut30x92CyuH8Q8iC+t
+	sXOOhUewAeQv+YlDbvxnBeRGvjzFiNwQgXZ2ndUfq6wWWa1jQM+k4rU2kFC1TYHg/o9zDHy
+X-Google-Smtp-Source: AGHT+IEH8vn0YkufwzP5KoioqcF+B+bfSkDJPKAiwQyXImDOUGGYU9z5zZ1EKUPSoOSNHlemuG0HXEO0nxWEW/DuCOY=
+X-Received: by 2002:a05:7022:4295:b0:11a:5cb2:24a0 with SMTP id
+ a92af1059eb24-11f22ac22dcmr314098c88.1.1765233947177; Mon, 08 Dec 2025
+ 14:45:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251203162625.13152-4-emil@etsalapatis.com> <45513ae5c2cfe74c5d29d23e6c2eaec62b07e709138bc9167c5fea5ea6dde762@mail.kernel.org>
- <CAEf4BzYoD85yjR7-9RTwSMU6zJ3pMJAnUC1CeNy4Hy7c2es21w@mail.gmail.com>
-In-Reply-To: <CAEf4BzYoD85yjR7-9RTwSMU6zJ3pMJAnUC1CeNy4Hy7c2es21w@mail.gmail.com>
-From: Emil Tsalapatis <emil@etsalapatis.com>
-Date: Mon, 8 Dec 2025 17:30:04 -0500
-X-Gm-Features: AQt7F2qrGmWoe4qSab9MD6XGZDC7eEILFq_dtrPgonRWPea8ewt_53uenK9jQIw
-Message-ID: <CABFh=a7khDBCvGK5h5oWt18bX=i4X4yX+PVg3ijiPYx9GSkvYA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] libbpf: move arena globals to the end of the arena
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bot+bpf-ci@kernel.org, bpf@vger.kernel.org, andrii@kernel.org, 
-	eddyz87@gmail.com, ast@kernel.org, daniel@iogearbox.net, 
-	john.fastabend@gmail.com, memxor@gmail.com, yonghong.song@linux.dev, 
-	martin.lau@kernel.org, clm@meta.com, ihor.solodrai@linux.dev
+References: <20251104162123.1086035-1-ming.lei@redhat.com> <20251104162123.1086035-4-ming.lei@redhat.com>
+ <94f94f0e-7086-4f44-a658-9cb3b5496faf@samba.org> <aRW6LfJi63X7wbPm@fedora>
+ <05a37623-c78c-4a86-a9f3-c78ce133fa66@samba.org> <aRabTk29_v6p92mY@fedora>
+In-Reply-To: <aRabTk29_v6p92mY@fedora>
+From: Caleb Sander Mateos <csander@purestorage.com>
+Date: Mon, 8 Dec 2025 14:45:35 -0800
+X-Gm-Features: AQt7F2pSGWKWoB5ss4CT1dXU8m8wS_nB9lSMim5BYVLvyxvdvk7Knc4ySzLZnQg
+Message-ID: <CADUfDZqpTSihuYnTqUbtctrX4OGT7Szr-_wWb4xLgg11RcwYkA@mail.gmail.com>
+Subject: Re: [PATCH 3/5] io_uring: bpf: extend io_uring with bpf struct_ops
+To: Ming Lei <ming.lei@redhat.com>
+Cc: Stefan Metzmacher <metze@samba.org>, Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org, 
+	Akilesh Kailash <akailash@google.com>, bpf@vger.kernel.org, 
+	Alexei Starovoitov <ast@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 5, 2025 at 7:11=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Thu, Nov 13, 2025 at 7:00=E2=80=AFPM Ming Lei <ming.lei@redhat.com> wrot=
+e:
 >
-> On Wed, Dec 3, 2025 at 8:52=E2=80=AFAM <bot+bpf-ci@kernel.org> wrote:
-> >
-> > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > > index 706e7481b..9642d697b 100644
-> > > --- a/tools/lib/bpf/libbpf.c
-> > > +++ b/tools/lib/bpf/libbpf.c
-> >
-> > [ ... ]
-> >
-> > > @@ -2991,10 +2992,11 @@ static int init_arena_map_data(struct bpf_obj=
-ect *obj, struct bpf_map *map,
-> > >                              void *data, size_t data_sz)
-> > >  {
-> > >       const long page_sz =3D sysconf(_SC_PAGE_SIZE);
-> > > +     const size_t data_alloc_sz =3D roundup(data_sz, page_sz);
-> > >       size_t mmap_sz;
+> On Thu, Nov 13, 2025 at 12:19:33PM +0100, Stefan Metzmacher wrote:
+> > Am 13.11.25 um 11:59 schrieb Ming Lei:
+> > > On Thu, Nov 13, 2025 at 11:32:56AM +0100, Stefan Metzmacher wrote:
+> > > > Hi Ming,
+> > > >
+> > > > > io_uring can be extended with bpf struct_ops in the following way=
+s:
+> > > > >
+> > > > > 1) add new io_uring operation from application
+> > > > > - one typical use case is for operating device zero-copy buffer, =
+which
+> > > > > belongs to kernel, and not visible or too expensive to export to
+> > > > > userspace, such as supporting copy data from this buffer to users=
+pace,
+> > > > > decompressing data to zero-copy buffer in Android case[1][2], or
+> > > > > checksum/decrypting.
+> > > > >
+> > > > > [1] https://lpc.events/event/18/contributions/1710/attachments/14=
+40/3070/LPC2024_ublk_zero_copy.pdf
+> > > > >
+> > > > > 2) extend 64 byte SQE, since bpf map can be used to store IO data
+> > > > >      conveniently
+> > > > >
+> > > > > 3) communicate in IO chain, since bpf map can be shared among IOs=
+,
+> > > > > when one bpf IO is completed, data can be written to IO chain wid=
+e
+> > > > > bpf map, then the following bpf IO can retrieve the data from thi=
+s bpf
+> > > > > map, this way is more flexible than io_uring built-in buffer
+> > > > >
+> > > > > 4) pretty handy to inject error for test purpose
+> > > > >
+> > > > > bpf struct_ops is one very handy way to attach bpf prog with kern=
+el, and
+> > > > > this patch simply wires existed io_uring operation callbacks with=
+ added
+> > > > > uring bpf struct_ops, so application can define its own uring bpf
+> > > > > operations.
+> > > >
+> > > > This sounds useful to me.
+> > > >
+> > > > > Signed-off-by: Ming Lei <ming.lei@redhat.com>
+> > > > > ---
+> > > > >    include/uapi/linux/io_uring.h |   9 ++
+> > > > >    io_uring/bpf.c                | 271 ++++++++++++++++++++++++++=
++++++++-
+> > > > >    io_uring/io_uring.c           |   1 +
+> > > > >    io_uring/io_uring.h           |   3 +-
+> > > > >    io_uring/uring_bpf.h          |  30 ++++
+> > > > >    5 files changed, 311 insertions(+), 3 deletions(-)
+> > > > >
+> > > > > diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/i=
+o_uring.h
+> > > > > index b8c49813b4e5..94d2050131ac 100644
+> > > > > --- a/include/uapi/linux/io_uring.h
+> > > > > +++ b/include/uapi/linux/io_uring.h
+> > > > > @@ -74,6 +74,7 @@ struct io_uring_sqe {
+> > > > >                 __u32           install_fd_flags;
+> > > > >                 __u32           nop_flags;
+> > > > >                 __u32           pipe_flags;
+> > > > > +               __u32           bpf_op_flags;
+> > > > >         };
+> > > > >         __u64   user_data;      /* data to be passed back at comp=
+letion time */
+> > > > >         /* pack this to avoid bogus arm OABI complaints */
+> > > > > @@ -427,6 +428,13 @@ enum io_uring_op {
+> > > > >    #define IORING_RECVSEND_BUNDLE               (1U << 4)
+> > > > >    #define IORING_SEND_VECTORIZED               (1U << 5)
+> > > > > +/*
+> > > > > + * sqe->bpf_op_flags           top 8bits is for storing bpf op
+> > > > > + *                             The other 24bits are used for bpf=
+ prog
+> > > > > + */
+> > > > > +#define IORING_BPF_OP_BITS     (8)
+> > > > > +#define IORING_BPF_OP_SHIFT    (24)
+> > > > > +
+> > > > >    /*
+> > > > >     * cqe.res for IORING_CQE_F_NOTIF if
+> > > > >     * IORING_SEND_ZC_REPORT_USAGE was requested
+> > > > > @@ -631,6 +639,7 @@ struct io_uring_params {
+> > > > >    #define IORING_FEAT_MIN_TIMEOUT              (1U << 15)
+> > > > >    #define IORING_FEAT_RW_ATTR          (1U << 16)
+> > > > >    #define IORING_FEAT_NO_IOWAIT                (1U << 17)
+> > > > > +#define IORING_FEAT_BPF                        (1U << 18)
+> > > > >    /*
+> > > > >     * io_uring_register(2) opcodes and arguments
+> > > > > diff --git a/io_uring/bpf.c b/io_uring/bpf.c
+> > > > > index bb1e37d1e804..8227be6d5a10 100644
+> > > > > --- a/io_uring/bpf.c
+> > > > > +++ b/io_uring/bpf.c
+> > > > > @@ -4,28 +4,95 @@
+> > > > >    #include <linux/kernel.h>
+> > > > >    #include <linux/errno.h>
+> > > > >    #include <uapi/linux/io_uring.h>
+> > > > > +#include <linux/init.h>
+> > > > > +#include <linux/types.h>
+> > > > > +#include <linux/bpf_verifier.h>
+> > > > > +#include <linux/bpf.h>
+> > > > > +#include <linux/btf.h>
+> > > > > +#include <linux/btf_ids.h>
+> > > > > +#include <linux/filter.h>
+> > > > >    #include "io_uring.h"
+> > > > >    #include "uring_bpf.h"
+> > > > > +#define MAX_BPF_OPS_COUNT      (1 << IORING_BPF_OP_BITS)
+> > > > > +
+> > > > >    static DEFINE_MUTEX(uring_bpf_ctx_lock);
+> > > > >    static LIST_HEAD(uring_bpf_ctx_list);
+> > > > > +DEFINE_STATIC_SRCU(uring_bpf_srcu);
+> > > > > +static struct uring_bpf_ops bpf_ops[MAX_BPF_OPS_COUNT];
+> > > >
+> > > > This indicates to me that the whole system with all applications in=
+ all namespaces
+> > > > need to coordinate in order to use these 256 ops?
 > > >
-> > >       mmap_sz =3D bpf_map_mmap_sz(map);
-> > > -     if (roundup(data_sz, page_sz) > mmap_sz) {
-> > > +     if (data_alloc_sz > mmap_sz) {
-> > >               pr_warn("elf: sec '%s': declared ARENA map size (%zu) i=
-s too small to hold global __arena variables of size %zu\n",
-> > >                       sec_name, mmap_sz, data_sz);
-> > >               return -E2BIG;
-> > > @@ -3006,6 +3008,9 @@ static int init_arena_map_data(struct bpf_objec=
-t *obj, struct bpf_map *map,
-> > >       memcpy(obj->arena_data, data, data_sz);
-> > >       obj->arena_data_sz =3D data_sz;
+> > > So far there is only 62 in-tree io_uring operation defined, I feel 25=
+6
+> > > should be enough.
 > > >
-> > > +     /* place globals at the end of the arena */
-> > > +     obj->arena_data_off =3D mmap_sz - data_alloc_sz;
-> > > +
+> > > > I think in order to have something useful, this should be per
+> > > > struct io_ring_ctx and each application should be able to load
+> > > > its own bpf programs.
+> > >
+> > > per-ctx requirement looks reasonable, and it shouldn't be hard to
+> > > support.
+> > >
+> > > >
+> > > > Something that uses bpf_prog_get_type() based on a bpf_fd
+> > > > like SIOCKCMATTACH in net/kcm/kcmsock.c.
+> > >
+> > > I considered per-ctx prog before, one drawback is the prog can't be s=
+hared
+> > > among io_ring_ctx, which could waste memory. In my ublk case, there c=
+an be
+> > > lots of devices sharing same bpf prog.
 > >
-> > Here obj->arena_data_off is a __u32, but the calculation is done in
-> > size_t (64-bit). For a 4GB arena (which the test verifier_arena_large.c
-> > uses), mmap_sz is 4GB and the result can approach 4GB - PAGE_SIZE. This
-> > fits in u32 correctly.
-> >
-> > > @@ -4663,7 +4668,7 @@ static int bpf_program__record_reloc(struct bpf=
-_program *prog,
-> > >               reloc_desc->type =3D RELO_DATA;
-> > >               reloc_desc->insn_idx =3D insn_idx;
-> > >               reloc_desc->map_idx =3D obj->arena_map_idx;
-> > > -             reloc_desc->sym_off =3D sym->st_value;
-> > > +             reloc_desc->sym_off =3D sym->st_value + obj->arena_data=
-_off;
-> >                                                  ^^^^^^^^^^^^^^^^^^^^^^
-> >
-> > Can this overflow when storing to reloc_desc->sym_off? The sym_off fiel=
-d
-> > is 'int' (signed 32-bit), but arena_data_off can be larger than INT_MAX
-> > for arenas approaching 4GB in size.
-> >
-> > For example, with a 4GB arena and one page of globals:
-> > - mmap_sz =3D 4GB =3D 0x100000000
-> > - data_alloc_sz =3D 4096
-> > - arena_data_off =3D 0xFFFFF000 =3D 4294963200
-> >
-> > This value (4294963200) exceeds INT_MAX (2147483647), so when stored in
-> > the signed int sym_off field, it becomes negative.
-> >
-> > Later in bpf_object__relocate_data(), this is used as:
-> >     insn[1].imm =3D insn[0].imm + relo->sym_off;
-> >
-> > With sym_off being negative due to overflow, this produces an incorrect
-> > offset for accessing arena globals.
-> >
-> > Should sym_off be changed to an unsigned type to handle large arena
-> > offsets correctly?
+> > Can't the ublk instances coordinate and use the same bpf_fd?
+> > new instances could request it via a unix socket and SCM_RIGHTS
+> > from a long running loading process. On the other hand do they
+> > really want to share?
 >
-> AI has good a point, valid offset with 4GB arena will overflow int...
-> But then ldimm64 instructions that allow direct access to arena have
-> insn[1].imm as s32, so they cannot even address more than 2GB? Can you
-> please double check this, maybe we actually treat insn[1].imm as u32
-> on the verifier side for this use case?
+> struct_ops is typically registered once, used everywhere, such as
+> sched_ext and socket example.
 >
+> This patch follows this usage, so every io_uring application can access i=
+t like the
+> in-kernel operations.
+>
+> I can understand the requirement for per-io-ring-ctx struct_ops, which
+> won't cause conflict among different applications.
+>
+> For example, ublk/raid5, there are 100 such devices, each device is creat=
+ed in dedicated
+> process and uses its own io-uring, so 100 same struct_ops prog are regist=
+ered in memory.
+> Given struct_ops prog is registered as per-io-ring-ctx, it may not be sha=
+red by `bpf_fd`, IMO.
 
-I can confirm we treat insn[1].imm as a u32, but the following
-relocation logic in
- bpf_object__relocate_data looks suspect:
+I agree with Stefan that a global IORING_OP_BPF op to BPF program
+mapping will be difficult to coordinate between processes. For
+example, consider two different ublk server programs that each want to
+use a different BPF program. Ideally, each should be an independent
+program and not need to know the op ids used by the other.
+On the other hand, a multithreaded process may have multiple
+io_ring_ctxs and want to use the same IORING_OP_BPF ops with all of
+them. So a process-level mapping seems to make the most sense. And
+that's exactly the mapping level that we would get from using the BPF
+program file descriptor to specify the IORING_OP_BPF op. Additionally,
+as Stefan points out, the IORING_OP_BPF program could be shared with
+another process by sending the file descriptor using SCM_RIGHTS. And
+the file descriptor lookup overhead could be avoided in the I/O path
+using io_uring's existing support for registered files.
 
-                case RELO_DATA:
-                        map =3D &obj->maps[relo->map_idx];
-                        insn[1].imm =3D insn[0].imm + relo->sym_off;
-                        if (obj->gen_loader) {
+Best,
+Caleb
 
-If sym_off is interpreted as a negative, then insn[1].imm should be
-completely wrong and typecasting
-back to u32 should do nothing. I added tests with both nonzero
-insn[0].imm and st_value, and none
-of them are failing which unless I"m missing something is honestly
-kind of surprising.
-
-I don't think sym_off should actually ever be negative. The st_value
-from the ELF headers
-should be always positive, and elf_find_func_offset_* also returns
-only positive numbers.
-
-Should we change sym_off in reloc_desc to be a u32? If anything that
-is more accurate than having it
-as an int.
-
-For the rest of the feedback: Ack, will incorporate it into the next patch.
-
-
-
+>
 > >
-> > [ ... ]
+> > I don't know much about bpf in details, so I'm wondering in your
+> > example from
+> > https://github.com/ming1/liburing/commit/625b69ddde15ad80e078c684ba166f=
+49c1174fa4
 > >
-> >
-> > ---
-> > AI reviewed your patch. Please fix the bug or email reply why it's not =
-a bug.
-> > See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/REA=
-DME.md
-> >
-> > CI run summary: https://github.com/kernel-patches/bpf/actions/runs/1990=
-1383089
+> > Would memory_map be global in the whole system or would
+> > each loaded instance of the program have it's own instance of memory_ma=
+p?
+>
+> bpf map is global.
+>
+> At default, each loaded prog owns the map, but it may be exported for
+> others by pinning the map.
+>
+> It is easy to verify by writing test code in tools/testing/selftests/
+>
+> But I am not an bpf expert...
+>
+> Thanks,
+> Ming
+>
 
