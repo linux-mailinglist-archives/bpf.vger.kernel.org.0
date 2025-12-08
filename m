@@ -1,84 +1,84 @@
-Return-Path: <bpf+bounces-76239-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76240-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06F32CABD28
-	for <lists+bpf@lfdr.de>; Mon, 08 Dec 2025 03:17:39 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F1E2CABCF6
+	for <lists+bpf@lfdr.de>; Mon, 08 Dec 2025 03:09:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8B4C2302354A
-	for <lists+bpf@lfdr.de>; Mon,  8 Dec 2025 02:17:02 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id C1E573012744
+	for <lists+bpf@lfdr.de>; Mon,  8 Dec 2025 02:09:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AC6C2D7813;
-	Mon,  8 Dec 2025 02:08:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9449B2E8B66;
+	Mon,  8 Dec 2025 02:09:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j2N876fe"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M7TZf8Yk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A09B42D47F1
-	for <bpf@vger.kernel.org>; Mon,  8 Dec 2025 02:08:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F3D02E765E
+	for <bpf@vger.kernel.org>; Mon,  8 Dec 2025 02:09:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765159726; cv=none; b=FCAESLOCnZzXkzJzq8O9REOJW/wXaeHJZluutmwbkTA9RTdTo79iKLTwIWsPQnpqqt/IbBtcGWf/ErS+yAz3pHRHfu94zR5rczIsyy7FAkdbd17SOz3i+r86OXpVJaPW08pUZ70dnthA8NcTEMGZtir1wpfchCZ8dY9LtND/LnY=
+	t=1765159752; cv=none; b=Xiig6BlLr9hnlXnVRQJ3Pw1hE8CkDjnWch93JZ34USFmbV044iOQF0keIt1wP+ocdhXEETypwYUq9ToYrKyuj3Tsfojt5kpxSghpYEju6nm4nqHHcIH5Xm8RD8tLrl3PHNGzf9IPs9OOpQOfwNd7ZH+YccVNsUVe3L57p83Fd34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765159726; c=relaxed/simple;
-	bh=ZaF79zPrmCwLI0B9RAvTq4G7dN3/Wm8w+tcTPkWv50k=;
+	s=arc-20240116; t=1765159752; c=relaxed/simple;
+	bh=vHFtWh7QKVO6cMPngtvM+H5QbyunJxMqywxc+99L1aQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZJHTyb+zj9QnoYso779PvoKR8CxsXgl+ls04sn0eoHAVjZHCSougLG/yZaNwXt6nWfv7KCJeMPz2cFR4iovWka7oRIc78EfQoC5dRnnD6sHmHVjBmMH1Q70aT6Yof3ZQsA1r2cHIvSQp3qPpFlutwQ3mGQ7SoDKAKd91ULjwW0c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j2N876fe; arc=none smtp.client-ip=209.85.214.170
+	 Content-Type:Content-Disposition:In-Reply-To; b=mjquCr6usf0M7Myte/FJ1F+u0eZ29vC2s/eJzxongWcwbRMdXttnGbcC8gExkR8kqAFYYeuevVoeXb7L1I6D07u8T8v8EkXyZnS3bae+Ic2n4VkmzBk2ro8mmLG5Z+w/kSXTDxkkvhw6D9HTDbKe91RUA4xsCqm+aBvvksmRpLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M7TZf8Yk; arc=none smtp.client-ip=209.85.214.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-29555415c5fso45907665ad.1
-        for <bpf@vger.kernel.org>; Sun, 07 Dec 2025 18:08:44 -0800 (PST)
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-297dd95ffe4so35323855ad.3
+        for <bpf@vger.kernel.org>; Sun, 07 Dec 2025 18:09:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1765159724; x=1765764524; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1765159749; x=1765764549; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+GVoTyCGpiPRgMVwchBG4irNVjtoPfX3zT9RBinRARc=;
-        b=j2N876ferfSj0TvvewtA0+v6rIY/IIYnnbVLsetEz7qoJm24aIvTBjrirdjat4D0PT
-         ut2Yt80edK/SzEeuPucIC7EF8vW/bgx3+gbssNKeUufrRolHWNM4LD5MIUlwvxjWo4Oc
-         qxEPL2aJbKFtkpSd5D0BJ9fa8vHT+rHGuwHIbLLQZ5nDXsrbXA5071TtYG5+8ITSmNT+
-         Mmdcmcaf4/BCICV5ttuHsHbPkrpfAebUBsYRySVyfAUhOKMawdUUcwznzPG7C4wcGzdE
-         mb4dq7oJGDOAodH2JDG03vpnbhcJvp0aANnTVRtqgXyIC8yhoRvB+OhRk6XZeB77fzkl
-         /PZQ==
+        bh=+5D9HsKpXhHwGNX76p53vmtD9NyvNMqohbBibv1jkcw=;
+        b=M7TZf8YkDgV39mUVOG5GbYx+npU04fxJgsZTnxC7CCSugQK/bYvT2p4b5LTdguq6Bt
+         xuJnJKXQOPjK/M6Dx5ZxgVFaJsO4WM0PO0IqELjjE4h0WAP8kKW9DA/NdPZKHb5I49Ok
+         YHrtCI06MLH9KHoXDuCDadJcPtcdg5DeF8m6nkCHSkjR85fp1qNDUIdKHaPObfPSyPpb
+         WFxwLV43oN/MIfRm7QaEKrHNITZYEx7CFespOHMrJWLg60u96E2mIUZAH6+4vJGcw8eu
+         UYGYO8tFdkJTrKuuEKwYbSn9Ez2jEHaXeWI2NosP+8SCYYqaiSgoFsCPeBTji9kp7O1Y
+         8Pkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765159724; x=1765764524;
+        d=1e100.net; s=20230601; t=1765159750; x=1765764550;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+GVoTyCGpiPRgMVwchBG4irNVjtoPfX3zT9RBinRARc=;
-        b=RmzRFoGzOwdWiA4KvApLEJ1Ob7O2An2m74xLBM3rrzNb/Mt86RCLKyA22p3VOLj7L2
-         27HyGi18epLrga5pEosnt+b6fzZWzJQacHwAfdXJa2jdrW3k/pj/WGvl2YPt24u3jNiq
-         dojXFiOUSQ7r3wCj/LB7zGjd2doY/jhZ7vKNpEdgUSUzE11WR1F++VLzn/K/pOcjmwxL
-         9mpvhMcFaN12kDUiS9K5Iga7oIJsZX3W8xiHlQ6VTEzcRSXC6SG562yhmb+l49EfCHNi
-         mj1524AWSKmaypkEKJ5DBMyBYZP7/Vjy6r7CQefpEMAZJqe4RRum1EzCelc7pLGBjjo/
-         wvrw==
-X-Gm-Message-State: AOJu0YwEZGT+af2HyzPMMqNbXT++0SAAJiy59+lNHy6WjqxlbH6mWagC
-	MvPIO7LyTxfFgwPdfju7bE1awPYGXd7+pzbU/jpxTDpVQz1kRjUPUJXa9FNsU3bO
-X-Gm-Gg: ASbGncs6qxYZ00W1OgmEZm68Y2BDw98PNHsB5wq+45F9VWdeQLRHF9A/qRnlbIfuE0j
-	WBJAAGXK0/RVmLBxP4TjA7eR1EsRDblSE2NxGbusGyEfkwhKtu3TmyToo35cYCHyYZxmerP14Oz
-	LfTZIBxip3SFbYKBsb4Kefh3vSTblply9SLW22QDqkeAo7AIk/vedneF33+AvalDman/Ir8Vmym
-	dIFBxNsghNVShOFV4YbkVy+qDCMq85IYTD0U94sYt1GeO9VCjpOpJ1PE1fMTkyr9JpWNc2lFTRB
-	vj0EFhImLy7mL9ZPSTprHRY2Bq9BIDdUzS4E54BBsO8aj2YVXIZe5/MvwxmHEq27XgOeNXllrEe
-	SbJPGaA0pa0zcEiezcUkDL8G+ir4xyv4NQ+B/rAJ9kpyzx6EcOXUA+rxdyKiRUSSr4nxASJpeqP
-	v98GzTgQ==
-X-Google-Smtp-Source: AGHT+IGTYZfmmexPM79w4CYgQz4xlmR0ERuk8q1jGMa05jPebD0Xntvg17mrI7pDbTXN4bxgFU3n3w==
-X-Received: by 2002:a17:903:1786:b0:295:f1f:65f with SMTP id d9443c01a7336-29df5da6ce5mr53775625ad.31.1765159723882;
-        Sun, 07 Dec 2025 18:08:43 -0800 (PST)
+        bh=+5D9HsKpXhHwGNX76p53vmtD9NyvNMqohbBibv1jkcw=;
+        b=sEKoE46dk0SmWoXr8KNWWfgIB2iAaIsPBZMbOqoqR9x/0iIKdIWvf43gBfYUMqcB+u
+         gwmLMJwcNSsZX63v0pmSN8O+3niv8h9w+35X6A3UlrDkUVKs7XUTWMnL/oih3qaCT1Wl
+         kmYOkSkww5UzPrxWaWkS/qnYO5uKwFuA6QBtUJE9r51cua+H9PrrJOBG0q/v8OXGX3fd
+         bRTK0YKddoFhaCGBOQUsxiyYXsJYuOnHt6USdWh4c5e5kZjbsR5/NHbFWj+zGNDD8Ob8
+         Dh5Y9gIlOSgGYiFpVsEU1+JAw+sLxnOW3kAeMGLj9fnKG3hBfwQYAdmEWAXlJnQB6fme
+         +bMw==
+X-Gm-Message-State: AOJu0YyumDtU+t+tghnppPxhMvkJomEpi7cyATQkgDr0BWrODoO7ycug
+	d8LGuGgGHOQxA4flzyJwM2PLgHqrX1Q7xb57DhKe7r78cSA7HJAzfDf/OCMjYPO3
+X-Gm-Gg: ASbGnctzqsDjU9fFpdnfOypCzEk7OCR/nAkc/2vzbd1H+ROIS2RY0BHNeZVaFdvQc8h
+	KACZ2XoAEgWmV7VvEZxo5vO+qNISr5apntq5tF9qXaFaIO5tY5/6HCinRT5LXdCcZ8JZELmvv/U
+	zsUiDFD+Uecaf5BmLeOPhZUeqZE2LkA1b3Q/cXe1ChfYGccKAwUxnNtTcES+VU5qULucIDaLf+S
+	jIj7m8nnH5gT/17FKYcGIiKyp5hkhmqwRrQZQEPhhkZL4bDlwa8dk/iO0KXrFgawRdRU0eUKGJc
+	KA/iVC510UL9yKeSnfc9TWbtNdyjgm9bJcrC+XaUfbRhH651ic2ZBuPV/rIiUT90R0dzVzcGdUn
+	MSCwNlUHe4JyAP0HmvHIjulOhGZctKwPIknngNK3HsKSz4LTwzubRjtF09e7QjbvGRnat+4GgwQ
+	ollzaIFQ==
+X-Google-Smtp-Source: AGHT+IFkayPA5D6N36GND9casKi2MqvafXpsRAwpUS1jAPv0PktPeDJ8byLSJGjuwi3aKOZaQYW85Q==
+X-Received: by 2002:a17:902:e752:b0:297:f09a:51db with SMTP id d9443c01a7336-29df5a9ec81mr56918775ad.15.1765159749573;
+        Sun, 07 Dec 2025 18:09:09 -0800 (PST)
 Received: from Tunnel ([64.104.44.99])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29dae99f69esm108629205ad.56.2025.12.07.18.08.41
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29daeae6ffesm109161515ad.97.2025.12.07.18.09.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Dec 2025 18:08:43 -0800 (PST)
-Date: Mon, 8 Dec 2025 11:08:38 +0900
+        Sun, 07 Dec 2025 18:09:08 -0800 (PST)
+Date: Mon, 8 Dec 2025 11:09:04 +0900
 From: Paul Chaignon <paul.chaignon@gmail.com>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Quentin Monnet <qmo@kernel.org>
-Subject: [PATCH bpf-next 5/8] bpf: Create and populate oracle map
-Message-ID: <51e3c47529366e072f15d9122d6d6fe7f31e2774.1765158925.git.paul.chaignon@gmail.com>
+Subject: [PATCH bpf-next 6/8] bpf: Check oracle in interpreter
+Message-ID: <b2e0be3b88386a1101656b4d8faa38b02e317ea5.1765158925.git.paul.chaignon@gmail.com>
 References: <cover.1765158924.git.paul.chaignon@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -90,234 +90,171 @@ Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <cover.1765158924.git.paul.chaignon@gmail.com>
 
-This creates and populates the main oracle map for our BPF program. The
-map is populated with the inner oracle map created and populated in
-previous patches. This main oracle map is a hashmap of maps with pruning
-point indexes as keys and inner oracle maps as values.
+If we run into our special BPF_PSEUDO_MAP_ORACLE instruction in the
+interpreter, we need to run the oracle test to check for inconsistencies
+between concrete values and verifier states. This patch implements that
+check and throws a kernel warning if any inconsistency is found.
 
-Map flag BPF_F_INNER_MAP is required because our inner oracle maps won't
-all hold the same number of states.
+The kernel warning message looks as follows, if only R6 was found not to
+match some states:
+
+    oracle caught invalid states in oracle_map[id:21]: r6=0xffffffffffffffd4
 
 Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
 ---
- include/linux/bpf.h          |   3 +
- include/linux/bpf_verifier.h |   2 +
- kernel/bpf/hashtab.c         |   6 +-
- kernel/bpf/oracle.c          | 130 +++++++++++++++++++++++++++++++++++
- kernel/bpf/verifier.c        |   5 ++
- 5 files changed, 143 insertions(+), 3 deletions(-)
+ include/linux/bpf_verifier.h |  1 +
+ include/linux/tnum.h         |  3 ++
+ kernel/bpf/core.c            | 12 +++++--
+ kernel/bpf/oracle.c          | 65 ++++++++++++++++++++++++++++++++++++
+ kernel/bpf/tnum.c            |  5 +++
+ 5 files changed, 84 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 6bec31816485..58cba1b48f80 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -2794,6 +2794,9 @@ int bpf_fd_array_map_update_elem(struct bpf_map *map, struct file *map_file,
- int bpf_fd_array_map_lookup_elem(struct bpf_map *map, void *key, u32 *value);
- int bpf_fd_htab_map_update_elem(struct bpf_map *map, struct file *map_file,
- 				void *key, void *value, u64 map_flags);
-+long htab_map_update_elem_in_place(struct bpf_map *map, void *key,
-+				   void *value, u64 map_flags,
-+				   bool percpu, bool onallcpus);
- int bpf_fd_htab_map_lookup_elem(struct bpf_map *map, void *key, u32 *value);
- 
- int bpf_get_file_flag(int flags);
 diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index a93b5e2f4d7f..cffbd0552b43 100644
+index cffbd0552b43..6a53087cdd1d 100644
 --- a/include/linux/bpf_verifier.h
 +++ b/include/linux/bpf_verifier.h
-@@ -846,6 +846,7 @@ struct bpf_verifier_env {
- 	u32 longest_mark_read_walk;
- 	u32 free_list_size;
- 	u32 explored_states_size;
-+	u32 num_prune_points;
- 	u32 num_backedges;
- 	bpfptr_t fd_array;
- 
-@@ -1128,5 +1129,6 @@ void bpf_reset_live_stack_callchain(struct bpf_verifier_env *env);
- int save_state_in_oracle(struct bpf_verifier_env *env, int insn_idx);
+@@ -1130,5 +1130,6 @@ int save_state_in_oracle(struct bpf_verifier_env *env, int insn_idx);
  struct bpf_prog *patch_oracle_check_insn(struct bpf_verifier_env *env, struct bpf_insn *insn,
  					 int i, int *cnt);
-+int create_and_populate_oracle_map(struct bpf_verifier_env *env);
+ int create_and_populate_oracle_map(struct bpf_verifier_env *env);
++void oracle_test(struct bpf_map *oracle_states, u64 *regs);
  
  #endif /* _LINUX_BPF_VERIFIER_H */
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index c8a9b27f8663..0cf286ff0084 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -1249,9 +1249,9 @@ static long htab_lru_map_update_elem(struct bpf_map *map, void *key, void *value
- 	return ret;
- }
+diff --git a/include/linux/tnum.h b/include/linux/tnum.h
+index c52b862dad45..e028869371ca 100644
+--- a/include/linux/tnum.h
++++ b/include/linux/tnum.h
+@@ -54,6 +54,9 @@ struct tnum tnum_mul(struct tnum a, struct tnum b);
+ /* Return true if the known bits of both tnums have the same value */
+ bool tnum_overlap(struct tnum a, struct tnum b);
  
--static long htab_map_update_elem_in_place(struct bpf_map *map, void *key,
--					  void *value, u64 map_flags,
--					  bool percpu, bool onallcpus)
-+long htab_map_update_elem_in_place(struct bpf_map *map, void *key,
-+				   void *value, u64 map_flags,
-+				   bool percpu, bool onallcpus)
- {
- 	struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
- 	struct htab_elem *l_new, *l_old;
++/* Return true if tnum a matches value b. */
++bool tnum_match(struct tnum a, u64 b);
++
+ /* Return a tnum representing numbers satisfying both @a and @b */
+ struct tnum tnum_intersect(struct tnum a, struct tnum b);
+ 
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 67226145a4db..fe251f1ff703 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -1848,10 +1848,18 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
+ 	ALU64_MOV_K:
+ 		DST = IMM;
+ 		CONT;
+-	LD_IMM_DW:
+-		DST = (u64) (u32) insn[0].imm | ((u64) (u32) insn[1].imm) << 32;
++	LD_IMM_DW: {
++		u64 address = (u64)(u32)insn[0].imm | ((u64)(u32)insn[1].imm) << 32;
++
++		if (insn[0].src_reg == BPF_PSEUDO_MAP_ORACLE) {
++			oracle_test((struct bpf_map *)address, regs);
++			insn++;
++			CONT;
++		}
++		DST = address;
+ 		insn++;
+ 		CONT;
++	}
+ 	ALU_ARSH_X:
+ 		DST = (u64) (u32) (((s32) DST) >> (SRC & 31));
+ 		CONT;
 diff --git a/kernel/bpf/oracle.c b/kernel/bpf/oracle.c
-index 404c641cb3f6..44b86e6ef3b2 100644
+index 44b86e6ef3b2..ce330853b53f 100644
 --- a/kernel/bpf/oracle.c
 +++ b/kernel/bpf/oracle.c
-@@ -190,3 +190,133 @@ struct bpf_prog *patch_oracle_check_insn(struct bpf_verifier_env *env, struct bp
- 	*cnt = 1;
- 	return new_prog;
+@@ -8,6 +8,8 @@
+ 
+ #include <linux/bpf_verifier.h>
+ 
++#define REGS_FMT_BUF_LEN 221
++
+ static void convert_oracle_state(struct bpf_verifier_state *istate, struct bpf_oracle_state *ostate)
+ {
+ 	struct bpf_func_state *frame = istate->frame[istate->curframe];
+@@ -320,3 +322,66 @@ int create_and_populate_oracle_map(struct bpf_verifier_env *env)
+ 
+ 	return populate_oracle_map(env, oracle_map);
  }
 +
-+static int populate_oracle_map(struct bpf_verifier_env *env, struct bpf_map *oracle_map)
++static bool oracle_test_reg(struct bpf_reg_oracle_state *exp, u64 reg)
 +{
-+	struct bpf_insn_aux_data *aux;
-+	int i, err;
++	if (exp->scalar) {
++		if (reg < exp->umin_value || reg > exp->umax_value ||
++		    (s64)reg < exp->smin_value || (s64)reg > exp->smax_value ||
++		    (u32)reg < exp->u32_min_value || (u32)reg > exp->u32_max_value ||
++		    (s32)reg < exp->s32_min_value || (s32)reg > exp->s32_max_value ||
++		    !tnum_match(exp->var_off, reg))
++			return true;
++	} else if (exp->ptr_not_null && !reg) {
++		return true;
++	}
++	return false;
++}
 +
-+	/* Oracle checks are always before pruning points, so they cannot be the last
-+	 * instruction.
-+	 */
-+	for (i = 0; i < env->prog->len - 1; i++) {
-+		aux = &env->insn_aux_data[i];
-+		if (!aux->oracle_inner_map || !aux->oracle_inner_map->max_entries)
-+			continue;
++static bool oracle_test_state(struct bpf_oracle_state *state, u64 *regs, u32 *non_match_regs)
++{
++	int i;
 +
-+		bpf_map_inc(aux->oracle_inner_map);
-+
-+		rcu_read_lock();
-+		err = htab_map_update_elem_in_place(oracle_map, &i, &aux->oracle_inner_map,
-+						    BPF_NOEXIST, false, false);
-+		rcu_read_unlock();
-+		if (err) {
-+			bpf_map_put(aux->oracle_inner_map);
-+			return err;
++	for (i = 0; i < MAX_BPF_REG - 1; i++) {
++		if (oracle_test_reg(&state->regs[i], regs[i])) {
++			*non_match_regs |= 1 << i;
++			return true;
 +		}
 +	}
 +
-+	return 0;
++	return false;
 +}
 +
-+static struct bpf_map *alloc_oracle_inner_map_meta(void)
++static void format_non_match_regs(u32 non_match_regs, u64 *regs, char *buf)
 +{
-+	struct bpf_array *inner_array_meta;
-+	struct bpf_map *inner_map_meta;
++	int i, delta = 0;
 +
-+	inner_map_meta = kzalloc(sizeof(*inner_map_meta), GFP_USER);
-+	if (!inner_map_meta)
-+		return ERR_PTR(-ENOMEM);
-+
-+	inner_map_meta->map_type = BPF_MAP_TYPE_ARRAY;
-+	inner_map_meta->key_size = sizeof(__u32);
-+	inner_map_meta->value_size = sizeof(struct bpf_oracle_state);
-+	inner_map_meta->map_flags = BPF_F_INNER_MAP;
-+	inner_map_meta->max_entries = 1;
-+
-+	inner_map_meta->ops = &array_map_ops;
-+
-+	inner_array_meta = container_of(inner_map_meta, struct bpf_array, map);
-+	inner_array_meta->index_mask = 0;
-+	inner_array_meta->elem_size = round_up(inner_map_meta->value_size, 8);
-+	inner_map_meta->bypass_spec_v1 = true;
-+
-+	return inner_map_meta;
-+}
-+
-+static struct bpf_map *create_oracle_map(struct bpf_verifier_env *env)
-+{
-+	struct bpf_map *map = NULL, *inner_map;
-+	int err;
-+
-+	union bpf_attr map_attr = {
-+		.map_type = BPF_MAP_TYPE_HASH_OF_MAPS,
-+		.key_size = sizeof(__u32),
-+		.value_size = sizeof(__u32),
-+		.max_entries = env->num_prune_points,
-+		.map_flags = BPF_F_RDONLY,
-+		.map_name = "oracle_map",
-+	};
-+	/* We don't want to use htab_of_maps_map_ops here because it expects map_attr.inner_map_fd
-+	 * to be set to the fd of inner_map_meta, which we don't have. Instead we can allocate and
-+	 * set inner_map_meta ourselves.
-+	 */
-+	map = htab_map_ops.map_alloc(&map_attr);
-+	if (IS_ERR(map))
-+		return map;
-+
-+	map->ops = &htab_of_maps_map_ops;
-+	map->map_type = BPF_MAP_TYPE_HASH_OF_MAPS;
-+
-+	inner_map = alloc_oracle_inner_map_meta();
-+	if (IS_ERR(inner_map)) {
-+		err = PTR_ERR(inner_map);
-+		goto free_map;
++	for (i = 0; i < MAX_BPF_REG - 1; i++) {
++		if (non_match_regs & (1 << i)) {
++			delta += snprintf(buf + delta, REGS_FMT_BUF_LEN - delta, "r%d=%#llx ",
++					  i, regs[i]);
++		}
 +	}
-+	map->inner_map_meta = inner_map;
-+
-+	err = bpf_obj_name_cpy(map->name, map_attr.map_name,
-+			       sizeof(map_attr.map_name));
-+	if (err < 0)
-+		goto free_map;
-+
-+	mutex_init(&map->freeze_mutex);
-+	spin_lock_init(&map->owner_lock);
-+
-+	err = security_bpf_map_create(map, &map_attr, NULL, false);
-+	if (err)
-+		goto free_map_sec;
-+
-+	err = bpf_map_alloc_id(map);
-+	if (err)
-+		goto free_map_sec;
-+
-+	bpf_map_save_memcg(map);
-+
-+	return map;
-+
-+free_map_sec:
-+	security_bpf_map_free(map);
-+free_map:
-+	bpf_map_free(map);
-+	return ERR_PTR(err);
 +}
 +
-+int create_and_populate_oracle_map(struct bpf_verifier_env *env)
++void oracle_test(struct bpf_map *oracle_states, u64 *regs)
 +{
-+	struct bpf_map *oracle_map;
-+	int err;
++	struct bpf_oracle_state *state;
++	u32 non_match_regs = 0;
++	char regs_fmt[REGS_FMT_BUF_LEN];
++	bool expected = false;
++	int i;
 +
-+	if (env->num_prune_points == 0 || env->subprog_cnt > 1)
-+		return 0;
-+
-+	oracle_map = create_oracle_map(env);
-+	if (IS_ERR(oracle_map))
-+		return PTR_ERR(oracle_map);
-+
-+	err = __add_used_map(env, oracle_map);
-+	if (err < 0)
-+		return err;
-+
-+	return populate_oracle_map(env, oracle_map);
++	for (i = 0; i < oracle_states->max_entries; i++) {
++		state = oracle_states->ops->map_lookup_elem(oracle_states, &i);
++		if (!oracle_test_state(state, regs, &non_match_regs)) {
++			expected = true;
++			break;
++		}
++	}
++	if (!expected) {
++		format_non_match_regs(non_match_regs, regs, regs_fmt);
++		BPF_WARN_ONCE(1, "oracle caught invalid states in oracle_map[id:%d]: %s\n",
++			      oracle_states->id, regs_fmt);
++	}
 +}
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 74fc568c1bc8..9b39bc2ca7f1 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -17560,6 +17560,8 @@ enum {
- 
- static void mark_prune_point(struct bpf_verifier_env *env, int idx)
- {
-+	if (!env->insn_aux_data[idx].prune_point)
-+		env->num_prune_points++;
- 	env->insn_aux_data[idx].prune_point = true;
+diff --git a/kernel/bpf/tnum.c b/kernel/bpf/tnum.c
+index f8e70e9c3998..afe7adf6a6f5 100644
+--- a/kernel/bpf/tnum.c
++++ b/kernel/bpf/tnum.c
+@@ -167,6 +167,11 @@ bool tnum_overlap(struct tnum a, struct tnum b)
+ 	return (a.value & mu) == (b.value & mu);
  }
  
-@@ -25301,6 +25303,9 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
- 	if (ret == 0)
- 		ret = do_misc_fixups(env);
- 
-+	if (ret == 0)
-+		ret = create_and_populate_oracle_map(env);
++bool tnum_match(struct tnum a, u64 b)
++{
++	return (a.value & ~a.mask) == (b & ~a.mask);
++}
 +
- 	/* do 32-bit optimization after insn patching has done so those patched
- 	 * insns could be handled correctly.
- 	 */
+ /* Note that if a and b disagree - i.e. one has a 'known 1' where the other has
+  * a 'known 0' - this will return a 'known 1' for that bit.
+  */
 -- 
 2.43.0
 
