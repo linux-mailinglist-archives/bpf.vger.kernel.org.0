@@ -1,110 +1,426 @@
-Return-Path: <bpf+bounces-76319-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76320-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE508CAE6BC
-	for <lists+bpf@lfdr.de>; Tue, 09 Dec 2025 00:42:17 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64849CAE6EF
+	for <lists+bpf@lfdr.de>; Tue, 09 Dec 2025 00:57:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 652E7304D0D1
-	for <lists+bpf@lfdr.de>; Mon,  8 Dec 2025 23:42:11 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0EFEB305BFF0
+	for <lists+bpf@lfdr.de>; Mon,  8 Dec 2025 23:57:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 862F82E03F2;
-	Mon,  8 Dec 2025 23:42:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D5D12F657C;
+	Mon,  8 Dec 2025 23:57:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="cER7GGus"
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="eVoFGxxt"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76A7213AD26
-	for <bpf@vger.kernel.org>; Mon,  8 Dec 2025 23:42:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 779762BE630;
+	Mon,  8 Dec 2025 23:57:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765237329; cv=none; b=Rb+90AWxSukackSH8PmbTzZJSvVckN1OUkN/LKx/XnL5nkjXHL4uhnLAYJMql5sPFEAgYbbSZRfrZ6mBSCzMw8VAIfVnYkHeF4a//kwmJfzUQn9Rq+25kuyKyR2NUa3pTlGpZzm3UFGFvV5mpaSfur/gAGjMQGrE+dVhDFNpUy0=
+	t=1765238266; cv=none; b=JFLwiHOfXhpuZflsWxcVJ4/JmIY6H5wxriXTeQGcDP4hNlbvawlpECqUg8uLkZ0VHXTVxeFms8r2ya4mBKgJJ3JPo+Pr+opJ+983FhwhURV0qFLJEhtFTSLrqinSeqtkTGidzsWAA96DlE1tLflMdEnzzuglbquBuoTnNfKy0Ps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765237329; c=relaxed/simple;
-	bh=dablNZTSzUwDTRPC+XimuDEWEl1QWweiHAiRR9iFfDE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QBm185iqTUinMg43ltgiAHWWi4QIhCZvLcW9GIFrnFvJ/y5ccjRzoexOXdFUbtd3WKRCm2B4wfB9ddCRI1+YyLkyjqn1/zuvas7Yhl1n0ccO3t9DwnDzSTRWqL08GDDbeziCMBijuizRCt9Ow4QZJZgARVQtgr/fCer+AEa5ZyE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=cER7GGus; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4779e2ac121so13545e9.1
-        for <bpf@vger.kernel.org>; Mon, 08 Dec 2025 15:42:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1765237326; x=1765842126; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dablNZTSzUwDTRPC+XimuDEWEl1QWweiHAiRR9iFfDE=;
-        b=cER7GGuspxF5xDxdsxAqFEHBNy6C0QT13Ucnv0XV9IqNid3G9e4+5HMiPygnbtKh1U
-         fBIKylsfczGw9LcX43nKgzRHIHeFlA8rqesZ/kgdpXGimx4aYf7tCgisKGznzemUcCRW
-         fekDX3mIwtH9Qxoc7ESwjmTM1jbFX1PNorewKq4pCI8T7DD4Z0+UZNgUPoA48OjHWaVG
-         Ym99qK2rxQCLGYc7GuCyPqRMwF/6z+M1yfafv3ODinBQMcQubze3HgwXgLNe5G7GvcnY
-         5gI6NF9/KlOYD+VjM6z/Zkcu+RJff4XXEf8hBzOUH1g8NDeAtUKJXE5TqDD9BmYZSYz1
-         J1Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765237326; x=1765842126;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=dablNZTSzUwDTRPC+XimuDEWEl1QWweiHAiRR9iFfDE=;
-        b=QwCE0eRQM2kQ3iaFqy36pNjzUAZ4lgMheforXQNYISXMc2hCZ5phIUPmrd5ZTgk9Og
-         Ev6jxlqhF4F6IQqUdGNZG//Qbt+IbhmqNRl2r65b2LP53yHXaScTZlrYJfxqZRprOLS0
-         r+2YwcCYYKe04oU1Ij1OMpRFb2Ts+ozybbCDkWPf/sX8vMajCQndj8mEVtLMJF92G8uH
-         DVeEEbug2neB0kmlbmGq5VhjptyFWX5fzlJjUDRNm8kUHPfkMybtXyVrQ1LIOl5sw3T9
-         VUAjMXlMHADrU1DX4GLl89SvIhZZOOkPz0sWPv41z8f1mXYog/hYzri6Jt5jBv4XIpMJ
-         gIsQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXXKOzUFU3WFooQHlZuOAr66L1KgsYs61yCnbKZpmm4sDwqrxPHe4pSDogmHDIVQxecT3g=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw2/5itPx7KG9Ik4Vjw7aflOMexwTKcM2hq/lcFc7a0C1bPEfZh
-	UrS0vMEjBkwNm9eTThzrIKB6tOu3TL2tlPBrCcK/08uaEvlp2/aFG6xRCCcFExLPwFpvyOcc5i2
-	BYq7180JWdnx2FdJbBaPiW+JI7bIrNv1x74K0nlBj
-X-Gm-Gg: ASbGnct01csm/6jf6jXn/0Efd2V4K5onVz1HecGtOI0gIDhzWSSjpTJSIV04PF16Cn+
-	mTSD0ic9wjw2K0YH4+OmmxXhfGVcgop4NLkqY3M/5yxNXSpM+Z5YyqUBCUpc/xhJygGS44f1AI+
-	COfOU/hI2UyYk0fgo7DGTfSzfiaTk8PmvMlAtuSb80pD+ruX/KEzrhv9l1xOCdR91WmRJ7q7mAy
-	Py2o7VLOzZukjOzN9/sYKyB+QROcAIC/vSvALA378MOMdvopyxF4C61ZICvDKaNAlY4u21oNYFv
-	fVy86HcCbqOj+gSq9Q3V0KWfnZw=
-X-Google-Smtp-Source: AGHT+IEszUoohjcHClgmqNP4VXXPoX2rvtBRVEMX+0tgAXPPQeNPGAjIK9R1UtQF/0Hqv4mWEIZkxZhV0HwkXeynQ4U=
-X-Received: by 2002:a05:600c:4394:b0:477:76ea:ba7a with SMTP id
- 5b1f17b1804b1-47a7dafc85dmr86835e9.3.1765237325609; Mon, 08 Dec 2025 15:42:05
- -0800 (PST)
+	s=arc-20240116; t=1765238266; c=relaxed/simple;
+	bh=OFQ+9EV2ql4+pkj57eoeYj9wkaqN/DTHclo1t1ZGbnE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gzMQkKMhks3rdvzZbO6zXqmH6S+0kxq1U3Hh14Iwu6lGOsUDx2PHgSj78J41n9VswTWFeCj/Q4MiNiY7Z+80tYdrAmVb8U7FDQJxfFPMfXTVGFtl0EB6MeJHvsIbc+0RIp1PLzfKpFBnXa4cu8AO7h3Dr80ttemebdXjHBxOvnE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=eVoFGxxt; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from mail.zytor.com ([IPv6:2601:646:8081:9483:a28:93fb:4548:76d8])
+	(authenticated bits=0)
+	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 5B8NtZrE2659554
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+	Mon, 8 Dec 2025 15:55:37 -0800
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 5B8NtZrE2659554
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2025112201; t=1765238145;
+	bh=soXAh6Cdh1wIq0+vJmWz4UEmWfkfaPYCK7y4yalc2G8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=eVoFGxxtRvPjz95ahbrb9nKbVpTti/Ji83vr1n9R2TuHzqa3HQgAmkWHQCKLXiNA8
+	 eI+cCokme1uBN+uq06I8lOhx59vvSr1pC2WDL21T2DkuAC4tU+2uasOxEtP9ysD14x
+	 XdtDQdV/UigHxRtOgF0m5MA+4YLmUuN6YGTI5AOvmVPQOuTE8JaR2QzZqrbEP9cpca
+	 TeInFjghMA02bRmiwjqm805q4bpJ5GDJgk/A90IXb9Yg75OwkJ1UbLeh0Bo0JfCS7X
+	 3DTbnfXhQ1d2Fd82ixUNNodBylR+5s4x2aq42ESqzrWbD5IGV5Z3kxhya8PF+Cai41
+	 s51WMfur8upXA==
+From: "H. Peter Anvin" <hpa@zytor.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: "H . Peter Anvin" <hpa@zytor.com>,
+        =?UTF-8?q?Eugenio=20P=C3=A9rez?= <eperezma@redhat.com>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, Alexei Starovoitov <ast@kernel.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrii Nakryiko <andrii@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Laight <David.Laight@ACULAB.COM>,
+        David Lechner <dlechner@baylibre.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        Gatlin Newhouse <gatlin.newhouse@gmail.com>,
+        Hao Luo <haoluo@google.com>, Ingo Molnar <mingo@redhat.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Jan Hendrik Farr <kernel@jfarr.cc>, Jason Wang <jasowang@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>, KP Singh <kpsingh@kernel.org>,
+        Kees Cook <kees@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Marc Herbert <Marc.Herbert@linux.intel.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Mateusz Guzik <mjguzik@gmail.com>, Michal Luczaj <mhal@rbox.co>,
+        Miguel Ojeda <ojeda@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+        NeilBrown <neil@brown.name>, Peter Zijlstra <peterz@infradead.org>,
+        Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+        Sami Tolvanen <samitolvanen@google.com>, Shuah Khan <shuah@kernel.org>,
+        Song Liu <song@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Thorsten Blum <thorsten.blum@linux.dev>,
+        Uros Bizjak <ubizjak@gmail.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Yafang Shao <laoar.shao@gmail.com>, Ye Bin <yebin10@huawei.com>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        Yufeng Wang <wangyufeng@kylinos.cn>, bpf@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-sparse@vger.kernel.org,
+        virtualization@lists.linux.dev, x86@kernel.org
+Subject: [GIT PULL] __auto_type conversion for v6.19-rc1
+Date: Mon,  8 Dec 2025 15:55:26 -0800
+Message-ID: <20251208235528.3670800-1-hpa@zytor.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251207091005.2829703-1-tjmercier@google.com> <327d78d8-8562-4865-a4de-9eeb4dd0ba03@linux.dev>
-In-Reply-To: <327d78d8-8562-4865-a4de-9eeb4dd0ba03@linux.dev>
-From: "T.J. Mercier" <tjmercier@google.com>
-Date: Tue, 9 Dec 2025 08:41:53 +0900
-X-Gm-Features: AQt7F2p-Q5yDyFIWW5h3wZ6Pl7Ub7ls2ZdwRybN497AR_f9tZfeM-h-JWK_U38Q
-Message-ID: <CABdmKX13YPStt88MotSUzcdRSu-aVQfuvnpXX9R_QrBQCfCzCw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Fix bpf_seq_read docs for increased buffer size
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: menglong.dong@linux.dev, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, Dec 8, 2025 at 2:42=E2=80=AFAM Yonghong Song <yonghong.song@linux.d=
-ev> wrote:
->
->
->
-> On 12/7/25 1:10 AM, T.J. Mercier wrote:
-> > Commit af65320948b8 ("bpf: Bump iter seq size to support BTF
-> > representation of large data structures") increased the fixed buffer
-> > size from PAGE_SIZE to PAGE_SIZE << 3, but the docs for the function
-> > didn't get updated at the same time. Update them.
-> >
-> > Signed-off-by: T.J. Mercier <tjmercier@google.com>
->
-> Acked-by: Yonghong Song <yonghong.song@linux.dev>
+Hi Linus,
 
-Thanks!
+The following changes since commit c2f2b01b74be8b40a2173372bcd770723f87e7b2:
+
+  Merge tag 'i3c/for-6.19' of git://git.kernel.org/pub/scm/linux/kernel/git/i3c/linux (2025-12-08 11:25:14 +0900)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/hpa/linux-auto.git
+
+for you to fetch changes up to branch auto-type-for-6.19
+(4ecc26fa585216f98d71411ce182f9e823d94c8c):
+
+  tools/virtio: replace "__auto_type" with "auto" (2025-12-08 15:32:15 -0800)
+
+----------------------------------------------------------------
+H. Peter Anvin (7):
+      compiler_types.h: add "auto" as a macro for "__auto_type"
+      include/linux: change "__auto_type" to "auto"
+      fs/proc: replace "__auto_type" with "const auto"
+      arch/nios2: replace "__auto_type" and adjacent equivalent with "auto"
+      arch/x86: replace "__auto_type" with "auto"
+      selftests/bpf: replace "__auto_type" with "auto"
+      tools/virtio: replace "__auto_type" with "auto"
+
+ arch/nios2/include/asm/uaccess.h                      |  8 ++++----
+ arch/x86/include/asm/bug.h                            |  2 +-
+ arch/x86/include/asm/string_64.h                      |  6 +++---
+ arch/x86/include/asm/uaccess_64.h                     |  2 +-
+ fs/proc/inode.c                                       | 19 +++++++++----------
+ include/linux/cleanup.h                               |  6 +++---
+ include/linux/compiler.h                              |  2 +-
+ include/linux/compiler_types.h                        | 13 +++++++++++++
+ include/linux/minmax.h                                |  6 +++---
+ .../testing/selftests/bpf/prog_tests/socket_helpers.h |  9 +++++++--
+ tools/virtio/linux/compiler.h                         |  2 +-
+ 11 files changed, 46 insertions(+), 29 deletions(-)
+
+diff --git a/arch/nios2/include/asm/uaccess.h b/arch/nios2/include/asm/uaccess.h
+index b8299082adbe..6ccc9a232c23 100644
+--- a/arch/nios2/include/asm/uaccess.h
++++ b/arch/nios2/include/asm/uaccess.h
+@@ -172,15 +172,15 @@ do {									\
+ 
+ #define __put_user(x, ptr)						\
+ ({									\
+-	__auto_type __pu_ptr = (ptr);					\
+-	typeof(*__pu_ptr) __pu_val = (typeof(*__pu_ptr))(x);		\
++	auto __pu_ptr = (ptr);						\
++	auto __pu_val = (typeof(*__pu_ptr))(x);				\
+ 	__put_user_common(__pu_val, __pu_ptr);				\
+ })
+ 
+ #define put_user(x, ptr)						\
+ ({									\
+-	__auto_type __pu_ptr = (ptr);					\
+-	typeof(*__pu_ptr) __pu_val = (typeof(*__pu_ptr))(x);		\
++	auto __pu_ptr = (ptr);						\
++	auto __pu_val = (typeof(*__pu_ptr))(x);				\
+ 	access_ok(__pu_ptr, sizeof(*__pu_ptr)) ?			\
+ 		__put_user_common(__pu_val, __pu_ptr) :			\
+ 		-EFAULT;						\
+diff --git a/arch/x86/include/asm/bug.h b/arch/x86/include/asm/bug.h
+index ee23b98353d7..d561a8443c13 100644
+--- a/arch/x86/include/asm/bug.h
++++ b/arch/x86/include/asm/bug.h
+@@ -129,7 +129,7 @@ do {								\
+ 
+ #define __WARN_FLAGS(cond_str, flags)					\
+ do {									\
+-	__auto_type __flags = BUGFLAG_WARNING|(flags);			\
++	auto __flags = BUGFLAG_WARNING|(flags);				\
+ 	instrumentation_begin();					\
+ 	_BUG_FLAGS(cond_str, ASM_UD2, __flags, ARCH_WARN_REACHABLE);	\
+ 	instrumentation_end();						\
+diff --git a/arch/x86/include/asm/string_64.h b/arch/x86/include/asm/string_64.h
+index 79e9695dc13e..4635616863f5 100644
+--- a/arch/x86/include/asm/string_64.h
++++ b/arch/x86/include/asm/string_64.h
+@@ -31,7 +31,7 @@ KCFI_REFERENCE(__memset);
+ #define __HAVE_ARCH_MEMSET16
+ static inline void *memset16(uint16_t *s, uint16_t v, size_t n)
+ {
+-	const __auto_type s0 = s;
++	const auto s0 = s;
+ 	asm volatile (
+ 		"rep stosw"
+ 		: "+D" (s), "+c" (n)
+@@ -44,7 +44,7 @@ static inline void *memset16(uint16_t *s, uint16_t v, size_t n)
+ #define __HAVE_ARCH_MEMSET32
+ static inline void *memset32(uint32_t *s, uint32_t v, size_t n)
+ {
+-	const __auto_type s0 = s;
++	const auto s0 = s;
+ 	asm volatile (
+ 		"rep stosl"
+ 		: "+D" (s), "+c" (n)
+@@ -57,7 +57,7 @@ static inline void *memset32(uint32_t *s, uint32_t v, size_t n)
+ #define __HAVE_ARCH_MEMSET64
+ static inline void *memset64(uint64_t *s, uint64_t v, size_t n)
+ {
+-	const __auto_type s0 = s;
++	const auto s0 = s;
+ 	asm volatile (
+ 		"rep stosq"
+ 		: "+D" (s), "+c" (n)
+diff --git a/arch/x86/include/asm/uaccess_64.h b/arch/x86/include/asm/uaccess_64.h
+index 641f45c22f9d..915124011c27 100644
+--- a/arch/x86/include/asm/uaccess_64.h
++++ b/arch/x86/include/asm/uaccess_64.h
+@@ -72,7 +72,7 @@ static inline void __user *mask_user_address(const void __user *ptr)
+ 	return ret;
+ }
+ #define masked_user_access_begin(x) ({				\
+-	__auto_type __masked_ptr = (x);				\
++	auto __masked_ptr = (x);				\
+ 	__masked_ptr = mask_user_address(__masked_ptr);		\
+ 	__uaccess_begin(); __masked_ptr; })
+ 
+diff --git a/fs/proc/inode.c b/fs/proc/inode.c
+index 2d3425cfa94b..b7634f975d98 100644
+--- a/fs/proc/inode.c
++++ b/fs/proc/inode.c
+@@ -303,7 +303,7 @@ static ssize_t proc_reg_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+ 
+ static ssize_t pde_read(struct proc_dir_entry *pde, struct file *file, char __user *buf, size_t count, loff_t *ppos)
+ {
+-	__auto_type read = pde->proc_ops->proc_read;
++	const auto read = pde->proc_ops->proc_read;
+ 	if (read)
+ 		return read(file, buf, count, ppos);
+ 	return -EIO;
+@@ -325,7 +325,7 @@ static ssize_t proc_reg_read(struct file *file, char __user *buf, size_t count,
+ 
+ static ssize_t pde_write(struct proc_dir_entry *pde, struct file *file, const char __user *buf, size_t count, loff_t *ppos)
+ {
+-	__auto_type write = pde->proc_ops->proc_write;
++	const auto write = pde->proc_ops->proc_write;
+ 	if (write)
+ 		return write(file, buf, count, ppos);
+ 	return -EIO;
+@@ -347,7 +347,7 @@ static ssize_t proc_reg_write(struct file *file, const char __user *buf, size_t
+ 
+ static __poll_t pde_poll(struct proc_dir_entry *pde, struct file *file, struct poll_table_struct *pts)
+ {
+-	__auto_type poll = pde->proc_ops->proc_poll;
++	const auto poll = pde->proc_ops->proc_poll;
+ 	if (poll)
+ 		return poll(file, pts);
+ 	return DEFAULT_POLLMASK;
+@@ -369,7 +369,7 @@ static __poll_t proc_reg_poll(struct file *file, struct poll_table_struct *pts)
+ 
+ static long pde_ioctl(struct proc_dir_entry *pde, struct file *file, unsigned int cmd, unsigned long arg)
+ {
+-	__auto_type ioctl = pde->proc_ops->proc_ioctl;
++	const auto ioctl = pde->proc_ops->proc_ioctl;
+ 	if (ioctl)
+ 		return ioctl(file, cmd, arg);
+ 	return -ENOTTY;
+@@ -392,7 +392,7 @@ static long proc_reg_unlocked_ioctl(struct file *file, unsigned int cmd, unsigne
+ #ifdef CONFIG_COMPAT
+ static long pde_compat_ioctl(struct proc_dir_entry *pde, struct file *file, unsigned int cmd, unsigned long arg)
+ {
+-	__auto_type compat_ioctl = pde->proc_ops->proc_compat_ioctl;
++	const auto compat_ioctl = pde->proc_ops->proc_compat_ioctl;
+ 	if (compat_ioctl)
+ 		return compat_ioctl(file, cmd, arg);
+ 	return -ENOTTY;
+@@ -414,7 +414,7 @@ static long proc_reg_compat_ioctl(struct file *file, unsigned int cmd, unsigned
+ 
+ static int pde_mmap(struct proc_dir_entry *pde, struct file *file, struct vm_area_struct *vma)
+ {
+-	__auto_type mmap = pde->proc_ops->proc_mmap;
++	const auto mmap = pde->proc_ops->proc_mmap;
+ 	if (mmap)
+ 		return mmap(file, vma);
+ 	return -EIO;
+@@ -497,7 +497,7 @@ static int proc_reg_open(struct inode *inode, struct file *file)
+ 	if (!use_pde(pde))
+ 		return -ENOENT;
+ 
+-	__auto_type release = pde->proc_ops->proc_release;
++	const auto release = pde->proc_ops->proc_release;
+ 	if (release) {
+ 		pdeo = kmem_cache_alloc(pde_opener_cache, GFP_KERNEL);
+ 		if (!pdeo) {
+@@ -534,10 +534,9 @@ static int proc_reg_release(struct inode *inode, struct file *file)
+ 	struct pde_opener *pdeo;
+ 
+ 	if (pde_is_permanent(pde)) {
+-		__auto_type release = pde->proc_ops->proc_release;
+-		if (release) {
++		const auto release = pde->proc_ops->proc_release;
++		if (release)
+ 			return release(inode, file);
+-		}
+ 		return 0;
+ 	}
+ 
+diff --git a/include/linux/cleanup.h b/include/linux/cleanup.h
+index 0b55a8f6c59e..8d41b917c77d 100644
+--- a/include/linux/cleanup.h
++++ b/include/linux/cleanup.h
+@@ -212,10 +212,10 @@
+ 
+ #define __free(_name)	__cleanup(__free_##_name)
+ 
+-#define __get_and_null(p, nullvalue)   \
++#define __get_and_null(p, nullvalue)	    \
+ 	({                                  \
+-		__auto_type __ptr = &(p);   \
+-		__auto_type __val = *__ptr; \
++		auto __ptr = &(p);	    \
++		auto __val = *__ptr;	    \
+ 		*__ptr = nullvalue;         \
+ 		__val;                      \
+ 	})
+diff --git a/include/linux/compiler.h b/include/linux/compiler.h
+index ff71bebe56f5..04487c9bd751 100644
+--- a/include/linux/compiler.h
++++ b/include/linux/compiler.h
+@@ -190,7 +190,7 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
+ #define data_race(expr)							\
+ ({									\
+ 	__kcsan_disable_current();					\
+-	__auto_type __v = (expr);					\
++	auto __v = (expr);						\
+ 	__kcsan_enable_current();					\
+ 	__v;								\
+ })
+diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+index 3eac51d68426..41172a28ce76 100644
+--- a/include/linux/compiler_types.h
++++ b/include/linux/compiler_types.h
+@@ -13,6 +13,19 @@
+ 
+ #ifndef __ASSEMBLY__
+ 
++/*
++ * C23 introduces "auto" as a standard way to define type-inferred
++ * variables, but "auto" has been a (useless) keyword even since K&R C,
++ * so it has always been "namespace reserved."
++ *
++ * Until at some future time we require C23 support, we need the gcc
++ * extension __auto_type, but there is no reason to put that elsewhere
++ * in the source code.
++ */
++#if __STDC_VERSION__ < 202311L
++# define auto __auto_type
++#endif
++
+ /*
+  * Skipped when running bindgen due to a libclang issue;
+  * see https://github.com/rust-lang/rust-bindgen/issues/2244.
+diff --git a/include/linux/minmax.h b/include/linux/minmax.h
+index eaaf5c008e4d..a0158db54a04 100644
+--- a/include/linux/minmax.h
++++ b/include/linux/minmax.h
+@@ -89,7 +89,7 @@
+ 	__cmp_once_unique(op, type, x, y, __UNIQUE_ID(x_), __UNIQUE_ID(y_))
+ 
+ #define __careful_cmp_once(op, x, y, ux, uy) ({		\
+-	__auto_type ux = (x); __auto_type uy = (y);	\
++	auto ux = (x); auto uy = (y);			\
+ 	BUILD_BUG_ON_MSG(!__types_ok(ux, uy),		\
+ 		#op"("#x", "#y") signedness error");	\
+ 	__cmp(op, ux, uy); })
+@@ -129,7 +129,7 @@
+ 	__careful_cmp(max, (x) + 0u + 0ul + 0ull, (y) + 0u + 0ul + 0ull)
+ 
+ #define __careful_op3(op, x, y, z, ux, uy, uz) ({			\
+-	__auto_type ux = (x); __auto_type uy = (y);__auto_type uz = (z);\
++	auto ux = (x); auto uy = (y); auto uz = (z);			\
+ 	BUILD_BUG_ON_MSG(!__types_ok3(ux, uy, uz),			\
+ 		#op"3("#x", "#y", "#z") signedness error");		\
+ 	__cmp(op, ux, __cmp(op, uy, uz)); })
+@@ -203,7 +203,7 @@
+  * This macro checks @val/@lo/@hi to make sure they have compatible
+  * signedness.
+  */
+-#define clamp(val, lo, hi) __careful_clamp(__auto_type, val, lo, hi)
++#define clamp(val, lo, hi) __careful_clamp(auto, val, lo, hi)
+ 
+ /**
+  * clamp_t - return a value clamped to a given range using a given type
+diff --git a/tools/testing/selftests/bpf/prog_tests/socket_helpers.h b/tools/testing/selftests/bpf/prog_tests/socket_helpers.h
+index e02cabcc814e..0d59503a0c73 100644
+--- a/tools/testing/selftests/bpf/prog_tests/socket_helpers.h
++++ b/tools/testing/selftests/bpf/prog_tests/socket_helpers.h
+@@ -17,11 +17,16 @@
+ #define VMADDR_CID_LOCAL 1
+ #endif
+ 
++/* include/linux/compiler_types.h */
++#if __STDC_VERSION__ < 202311L && !defined(auto)
++# define auto __auto_type
++#endif
++
+ /* include/linux/cleanup.h */
+ #define __get_and_null(p, nullvalue)                                           \
+ 	({                                                                     \
+-		__auto_type __ptr = &(p);                                      \
+-		__auto_type __val = *__ptr;                                    \
++		auto __ptr = &(p);					       \
++		auto __val = *__ptr;                                           \
+ 		*__ptr = nullvalue;                                            \
+ 		__val;                                                         \
+ 	})
+diff --git a/tools/virtio/linux/compiler.h b/tools/virtio/linux/compiler.h
+index 204ef0e9f542..725b93bfeee1 100644
+--- a/tools/virtio/linux/compiler.h
++++ b/tools/virtio/linux/compiler.h
+@@ -31,7 +31,7 @@
+  */
+ #define data_race(expr)							\
+ ({									\
+-	__auto_type __v = (expr);					\
++	auto __v = (expr);						\
+ 	__v;								\
+ })
+ 
 
