@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-76322-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76323-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DFE2CAE7C8
-	for <lists+bpf@lfdr.de>; Tue, 09 Dec 2025 01:19:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 94884CAE828
+	for <lists+bpf@lfdr.de>; Tue, 09 Dec 2025 01:27:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8B66330C5B99
-	for <lists+bpf@lfdr.de>; Tue,  9 Dec 2025 00:17:04 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 559EC3091CEE
+	for <lists+bpf@lfdr.de>; Tue,  9 Dec 2025 00:27:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87EC7222582;
-	Tue,  9 Dec 2025 00:17:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55DA627E045;
+	Tue,  9 Dec 2025 00:17:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RGC7K4TE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D/gNLRbl"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB4E9221554;
-	Tue,  9 Dec 2025 00:17:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3E0427A442;
+	Tue,  9 Dec 2025 00:17:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765239423; cv=none; b=Dh2OzDU+QkOYv99KXCE+PIocOxG+2AhBQSzvnboB9Kf9OzMXKouXwueq/dXY2DZ7MZn8nh9P6cOjd2l5inkIQlNMLsjUiUM14PsN2yE8H132uIGaou197wL1JCFK0ic+eEeBj6kPF9pcn9Pt2rpbP18RmPGEVt4sG9sfVLde5go=
+	t=1765239459; cv=none; b=K9IOQZjo1Tg1NsEBv4XoAnPCz77WF8aaNYvmCS6J0pL2V6wZzJTHUR1NTi91eJPCDBfGeUudpvIF5cdVAAgJ+nD86aV0k9r+CF8h9l1QSoUoXrboYZ+qBCD2qxAm6dr8GvXHI2S5zBn5WxnJdGb42fl8HmEeLZHBeMFOvSNS7YA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765239423; c=relaxed/simple;
-	bh=HQ0yU4ubZDH6sXSyIkS8w1UFtEGkWWNP/Gh2hOCim50=;
+	s=arc-20240116; t=1765239459; c=relaxed/simple;
+	bh=v3OkS3q1l6uqmIpy47zLwVGi9HE8EN+dH7fJhgzl8H0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PX0eA7sE0KfhE9hkXevnb0nxS9aJDhVxcH7LDcrrA8O72Jf6lGTrnX7jaPgEAQEz6Rgxf+p4VtmLAxv5thHBdsVIQd2kglUJMsl783qyWxkBaoBjt6uns6Gagfg1f7NA5A4JDcDbQpN4DsPQMLkB44a69vCqoqci1/t5L06o0Ss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RGC7K4TE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A9DDC19421;
-	Tue,  9 Dec 2025 00:17:00 +0000 (UTC)
+	 MIME-Version:Content-Type; b=AHplONAjOz7zvySeZwUPoLBy0lXLBFQlcq0aujUKc66S9yrFpOZMnLVwBGCgFtLE23NISqwV++WC5zMnDOd1kR57I9vgQQwAGTcPGDW0tX1GgMDlmziBMJegAqWpQW6elwMnY5eN1GdFj3Gb0BYUCsa5LhAOb1aqPczIjmhivkY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D/gNLRbl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A31DC113D0;
+	Tue,  9 Dec 2025 00:17:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765239422;
-	bh=HQ0yU4ubZDH6sXSyIkS8w1UFtEGkWWNP/Gh2hOCim50=;
+	s=k20201202; t=1765239459;
+	bh=v3OkS3q1l6uqmIpy47zLwVGi9HE8EN+dH7fJhgzl8H0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RGC7K4TEL1Dp/vfnUmRwCjTaetBbIcjqtaNQp/p2p4wEsRYr5OErneOINfp++gUkr
-	 ZcEJhJOF7eOlev8dkyuNOfgvjHRtjq4AAR9RZJuX8dDmC1NJtmfY7Ub6kMw9SziIy+
-	 DpsShmtartMLziaajHas3BaZppGa/h/S7r/RpRJUi9u/EDvZLw4bgdHEofVo5TMPo0
-	 J0ra94stXqjvT51D0uHScrjqd6Q2RBohEBFcPNNbJHTOKJQXxv1BpUAtVwW2frpxTG
-	 xU4b7X6PR4M3bsuZiTelnPYJDmORFk64QXjSTySxO06k3Q2ampsPoWXRlms18yrxs5
-	 r7CEQJqHL4LwA==
+	b=D/gNLRblWBMSgdVzG4tuP+tUsp0otuqSRssbXmQ+NMcxJqUHrqYF73BrEfdcC3KKf
+	 w9CYDARtGzN0wNdWGhRJ9DbRFwZoZXAgG7qsYNs540aum978AbMUIQSMoB+DgxJJ8u
+	 Iotz6XDqf6t5bzHM0JpmRGMV7LJo9isz+j27+MpMxcpJ3rvoV7vfI6NUmTBMi1xsMZ
+	 jyjLX/nEMT2A/50CIoY7AjDrVAvbj4Q8BqUyA3byiAIVIkb0Mt+zhcA9ScMQUpwSIm
+	 l0KCYDPQRxZm7IEMZKo+IkXsKHMSz1KaeIKmz97nMT+kv040cJR72mum2NufbG15qi
+	 U+BwXsU453Ktw==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
-Cc: KaFai Wan <kafai.wan@linux.dev>,
-	Kaiyan Mei <M202472210@hust.edu.cn>,
-	Yinhao Hu <dddddd@hust.edu.cn>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
+Cc: Alan Maguire <alan.maguire@oracle.com>,
+	Bart Van Assche <bvanassche@acm.org>,
+	Potnuri Bharat Teja <bharat@chelsio.com>,
+	Jakub Kicinski <kuba@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
+	kees@kernel.org,
+	netdev@vger.kernel.org,
+	linux-hardening@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.18-6.12] bpf: Skip bounds adjustment for conditional jumps on same scalar register
-Date: Mon,  8 Dec 2025 19:15:06 -0500
-Message-ID: <20251209001610.611575-14-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.18-6.12] cxgb4: Rename sched_class to avoid type clash
+Date: Mon,  8 Dec 2025 19:15:20 -0500
+Message-ID: <20251209001610.611575-28-sashal@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251209001610.611575-1-sashal@kernel.org>
 References: <20251209001610.611575-1-sashal@kernel.org>
@@ -69,330 +69,400 @@ X-stable-base: Linux 6.18
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: KaFai Wan <kafai.wan@linux.dev>
+From: Alan Maguire <alan.maguire@oracle.com>
 
-[ Upstream commit d43ad9da8052eda714caa38f243adbf32a8614cb ]
+[ Upstream commit 380d19db6e6c089c7d2902e02a85fd2bde3e519b ]
 
-When conditional jumps are performed on the same scalar register
-(e.g., r0 <= r0, r0 > r0, r0 < r0), the BPF verifier incorrectly
-attempts to adjust the register's min/max bounds. This leads to
-invalid range bounds and triggers a BUG warning.
+drivers/net/ethernet/chelsio/cxgb4/sched.h declares a sched_class
+struct which has a type name clash with struct sched_class
+in kernel/sched/sched.h (a type used in a field in task_struct).
 
-The problematic BPF program:
-   0: call bpf_get_prandom_u32
-   1: w8 = 0x80000000
-   2: r0 &= r8
-   3: if r0 > r0 goto <exit>
+When cxgb4 is a builtin we end up with both sched_class types,
+and as a result of this we wind up with DWARF (and derived from
+that BTF) with a duplicate incorrect task_struct representation.
+When cxgb4 is built-in this type clash can cause kernel builds to
+fail as resolve_btfids will fail when confused which task_struct
+to use. See [1] for more details.
 
-The instruction 3 triggers kernel warning:
-   3: if r0 > r0 goto <exit>
-   true_reg1: range bounds violation u64=[0x1, 0x0] s64=[0x1, 0x0] u32=[0x1, 0x0] s32=[0x1, 0x0] var_off=(0x0, 0x0)
-   true_reg2: const tnum out of sync with range bounds u64=[0x0, 0xffffffffffffffff] s64=[0x8000000000000000, 0x7fffffffffffffff] var_off=(0x0, 0x0)
+As such, renaming sched_class to ch_sched_class (in line with
+other structs like ch_sched_flowc) makes sense.
 
-Comparing a register with itself should not change its bounds and
-for most comparison operations, comparing a register with itself has
-a known result (e.g., r0 == r0 is always true, r0 < r0 is always false).
+[1] https://lore.kernel.org/bpf/2412725b-916c-47bd-91c3-c2d57e3e6c7b@acm.org/
 
-Fix this by:
-1. Enhance is_scalar_branch_taken() to properly handle branch direction
-   computation for same register comparisons across all BPF jump operations
-2. Adds early return in reg_set_min_max() to avoid bounds adjustment
-   for unknown branch directions (e.g., BPF_JSET) on the same register
-
-The fix ensures that unnecessary bounds adjustments are skipped, preventing
-the verifier bug while maintaining correct branch direction analysis.
-
-Reported-by: Kaiyan Mei <M202472210@hust.edu.cn>
-Reported-by: Yinhao Hu <dddddd@hust.edu.cn>
-Closes: https://lore.kernel.org/all/1881f0f5.300df.199f2576a01.Coremail.kaiyanm@hust.edu.cn/
-Signed-off-by: KaFai Wan <kafai.wan@linux.dev>
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-Link: https://lore.kernel.org/r/20251103063108.1111764-2-kafai.wan@linux.dev
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Reported-by: Bart Van Assche <bvanassche@acm.org>
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+Acked-by: Potnuri Bharat Teja <bharat@chelsio.com>
+Link: https://patch.msgid.link/20251121181231.64337-1-alan.maguire@oracle.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
 
 LLM Generated explanations, may be completely bogus:
 
-Now I have a complete picture. Let me do a comprehensive summary and
-analysis:
-
-## Complete Analysis
+## Commit Analysis: cxgb4 sched_class rename
 
 ### 1. COMMIT MESSAGE ANALYSIS
 
-**Subject:** "bpf: Skip bounds adjustment for conditional jumps on same
-scalar register"
+The commit addresses a **type name clash** between:
+- `struct sched_class` in `drivers/net/ethernet/chelsio/cxgb4/sched.h`
+  (cxgb4 driver's scheduling class)
+- `struct sched_class` in `kernel/sched/sched.h` (core scheduler's
+  scheduling class used in task_struct)
 
-**Key indicators:**
-- **Fix keyword:** The commit message clearly describes a bug fix
-  ("incorrectly attempts", "invalid range bounds", "triggers a BUG
-  warning")
-- **No stable tag:** The commit does not have explicit "Cc:
-  stable@vger.kernel.org"
-- **No Fixes: tag:** No explicit Fixes: tag pointing to a prior commit
-- **Reported-by tags:** The commit has two "Reported-by:" tags and a
-  "Closes:" link to a lore.kernel.org bug report
-- **Acked-by:** Eduard Zingerman (BPF maintainer) acknowledged this fix
-- **Merged by:** Alexei Starovoitov (BPF maintainer) signed off
+**Problem:** When cxgb4 is built-in (CONFIG_CHELSIO_T4=y), both types
+exist in the same compilation unit. This causes:
+1. Duplicate DWARF/BTF type representations
+2. **Build failures** because `resolve_btfids` tool cannot determine
+   which `task_struct` to use
 
-The commit message describes:
-1. When comparing a register with itself (e.g., `r0 > r0`), the verifier
-   incorrectly adjusts bounds
-2. This leads to invalid range bounds (umin > umax, etc.)
-3. Triggers the `reg_bounds_sanity_check()` BUG warning
+**Signals:**
+- **Reported-by:** Bart Van Assche (real user hit this issue)
+- **Reviewed-by/Acked-by:** Present from both reporter and driver
+  maintainer
+- **Link:** References actual bug report on lore.kernel.org
+- **No Cc: stable** tag
+- **No Fixes:** tag
 
 ### 2. CODE CHANGE ANALYSIS
 
-**Files changed:** 1 file (`kernel/bpf/verifier.c`)
+The fix is purely mechanical - a simple rename:
+- `struct sched_class` → `struct ch_sched_class` (following existing
+  naming convention like `ch_sched_flowc`)
 
-**Two modifications:**
+Changes across 5 files are all straightforward variable type name
+replacements. The diff shows ~20 locations where the type name is
+changed, with absolutely no logic modifications.
 
-**Modification 1 - `is_scalar_branch_taken()` (lines 15996-16020 in
-diff):**
-Adds a new code block at the beginning of the function to handle same-
-register comparisons:
+### 3. CLASSIFICATION
 
-```c
-if (reg1 == reg2) {
-    switch (opcode) {
-    case BPF_JGE:
-    case BPF_JLE:
-    case BPF_JSGE:
-    case BPF_JSLE:
-    case BPF_JEQ:
-        return 1;  /* Always true: r0 >= r0, r0 <= r0, r0 == r0 */
-    case BPF_JGT:
-    case BPF_JLT:
-    case BPF_JSGT:
-    case BPF_JSLT:
-    case BPF_JNE:
-        return 0;  /* Always false: r0 > r0, r0 < r0, r0 != r0 */
-    case BPF_JSET:
-        if (tnum_is_const(t1))
-            return t1.value != 0;
-        else
-            return (smin1 <= 0 && smax1 >= 0) ? -1 : 1;
-    default:
-        return -1;
-    }
-}
-```
+This is a **BUILD FIX** - one of the explicitly allowed categories for
+stable backporting. The build fails when:
+- cxgb4 driver is built-in
+- BTF debugging is enabled (CONFIG_DEBUG_INFO_BTF=y)
 
-This correctly determines branch direction for same-register
-comparisons:
-- `r0 == r0`, `r0 >= r0`, `r0 <= r0` are always true (return 1)
-- `r0 > r0`, `r0 < r0`, `r0 != r0` are always false (return 0)
-- `r0 JSET r0` depends on whether any bits are set
+The `resolve_btfids` tool fails, preventing successful kernel
+compilation.
 
-**Modification 2 - `reg_set_min_max()` (lines 16446-16452 in diff):**
-Adds early return when both register arguments point to the same memory:
+### 4. SCOPE AND RISK ASSESSMENT
 
-```c
-/* We compute branch direction for same SCALAR_VALUE registers in
- - is_scalar_branch_taken(). For unknown branch directions (e.g.,
-   BPF_JSET)
- - on the same registers, we don't need to adjust the min/max values.
- */
-if (false_reg1 == false_reg2)
-    return 0;
-```
+| Metric | Assessment |
+|--------|------------|
+| Lines changed | ~40 (all renames) |
+| Files touched | 5 (all within cxgb4 driver) |
+| Logic changes | **ZERO** |
+| External API changes | **NONE** |
+| Runtime risk | **NONE** - purely compile-time symbol naming |
 
-This prevents `regs_refine_cond_op()` from corrupting bounds when called
-with the same pointer for both registers.
+**Risk Level: EXTREMELY LOW** - This cannot cause any runtime regression
+as it's purely a symbol rename with no behavioral changes whatsoever.
 
-### 3. ROOT CAUSE OF THE BUG
+### 5. USER IMPACT
 
-When a BPF program compares a register with itself (e.g., `if r0 > r0`):
+**Affected users:**
+- Those building kernels with cxgb4 built-in AND BTF enabled
+- This is a realistic configuration for users doing BPF/tracing work
+  with Chelsio network hardware
 
-1. In `check_cond_jmp_op()`, both `dst_reg` and `src_reg` point to the
-   same `bpf_reg_state` in memory because `&regs[insn->dst_reg] ==
-   &regs[insn->src_reg]`
+**Severity:** BUILD FAILURE - Complete inability to compile the kernel
+for affected configurations.
 
-2. If `is_branch_taken()` returns -1 (unknown), `reg_set_min_max()` is
-   called
+### 6. STABILITY INDICATORS
 
-3. `regs_refine_cond_op()` is then called with `reg1 == reg2` (same
-   pointer)
+- Has Reviewed-by and Acked-by tags
+- Change is mechanical and obviously correct
+- Merged through proper netdev maintainer path
+- The naming follows existing driver conventions (`ch_sched_*`)
 
-4. For `BPF_JGT` (which becomes `BPF_JLT` after `flip_opcode`), the code
-   does:
-  ```c
-  reg1->umax_value = min(reg1->umax_value, reg2->umax_value - 1);
-  reg2->umin_value = max(reg1->umin_value + 1, reg2->umin_value);
-  ```
+### 7. DEPENDENCY CHECK
 
-  Since `reg1 == reg2`, this becomes:
-   - First line: `reg->umax_value = reg->umax_value - 1` (decreases max)
-   - Second line reads the already-decreased `umax_value`, then:
-     `reg->umin_value = max(reg->umin_value + 1, reg->umin_value)`
-     (increases min)
+The change is self-contained within the cxgb4 driver. No external
+dependencies. The cxgb4 scheduler code has existed in stable trees for
+years, so this fix should apply cleanly.
 
-5. This results in `umin_value > umax_value`, which is an invalid range!
+### Decision Analysis
 
-6. `reg_bounds_sanity_check()` detects this and triggers a BUG warning
+**FOR backporting:**
+1. **Build fix** - explicitly allowed in stable rules
+2. **Zero runtime risk** - purely a type rename, no logic changes
+3. **Fixes real bug** - reported by actual user, blocks compilation
+4. **Small and contained** - all changes within one driver
+5. **Obviously correct** - mechanical rename following existing
+   conventions
 
-### 4. CLASSIFICATION
+**AGAINST backporting:**
+1. No `Cc: stable` tag from maintainer
+2. Affected configuration (built-in cxgb4 + BTF) is somewhat niche
+3. Issue may only manifest with newer toolchains
 
-- **Type:** Bug fix
-- **Security impact:** Not a CVE, but triggers BUG (kernel
-  warning/crash) - denial of service by unprivileged users (if
-  unprivileged BPF is enabled)
-- **Exception categories:** None (this is a straightforward bug fix, not
-  a device ID, quirk, DT update, or build fix)
+### Conclusion
 
-### 5. SCOPE AND RISK ASSESSMENT
+While the maintainer didn't add `Cc: stable`, this is a **legitimate
+build fix** that prevents kernel compilation for users with specific
+(but valid) configurations. Build fixes are explicitly listed as
+acceptable stable material in the kernel's stable rules. The change is
+mechanical, trivial, and carries effectively zero risk of any
+regression. Users who update their build toolchain on stable kernels
+could encounter this failure.
 
-- **Lines changed:** ~30 new lines of code
-- **Files touched:** 1 file (`kernel/bpf/verifier.c`)
-- **Complexity:** Low - adds early return checks for pointer equality
-- **Subsystem:** BPF verifier (core BPF infrastructure)
-- **Risk of regression:** Low - the changes are defensive checks that
-  prevent invalid states
-
-**Why low risk:**
-1. The `reg1 == reg2` check is a simple pointer comparison
-2. The logic for determining branch direction when comparing a register
-   with itself is mathematically correct
-3. The early return in `reg_set_min_max()` prevents unnecessary
-   processing, not actual verification
-
-### 6. USER IMPACT
-
-**Who is affected:**
-- Any system running BPF programs that compare a register with itself
-- The triggering program is simple and can be crafted by any user with
-  BPF access
-- Systems with unprivileged BPF enabled are at higher risk (denial of
-  service)
-
-**Severity:**
-- Triggers kernel BUG warning (can cause system instability)
-- `reg_bounds_sanity_check()` calls `verifier_bug()` which prints
-  warnings and may affect system stability
-- The verifier marks the register as unbounded after the bug, which
-  could potentially lead to incorrect verification
-
-**Bug trigger:**
-The commit message shows a simple 4-instruction BPF program that
-triggers the bug:
-```
-0: call bpf_get_prandom_u32
-1: w8 = 0x80000000
-2: r0 &= r8
-3: if r0 > r0 goto <exit>
-```
-
-### 7. STABILITY INDICATORS
-
-- **Tested-by:** No explicit tested-by, but tested as part of the bug
-  report
-- **Reviewed/Acked-by:** Eduard Zingerman (BPF maintainer)
-- **Signed-off-by:** Alexei Starovoitov (BPF co-maintainer)
-- **Time in mainline:** This is a relatively new commit
-
-### 8. DEPENDENCY CHECK
-
-**Dependencies:**
-- The fix depends on `reg_bounds_sanity_check()` which was added in v6.8
-  (commit 5f99f312bd3be)
-- Without the sanity check, the bug would silently corrupt bounds
-  (worse!)
-- The underlying bug in `is_scalar_branch_taken()` and
-  `reg_set_min_max()` has existed since v5.0
-
-**Affected versions:**
-- The visible bug (BUG warning) affects kernels ≥ v6.8 (when sanity
-  check was added)
-- The silent bounds corruption affects all kernels since v5.0
-
-### 9. BACKPORT CONSIDERATIONS
-
-**Should be backported to:** v6.8, v6.6 (LTS), and later stable trees
-
-**Reasons:**
-1. Fixes a real, reproducible bug that triggers kernel warnings
-2. Small, surgical fix with clear scope
-3. Low regression risk
-4. Affects core BPF infrastructure used widely
-5. Easy to trigger with a simple BPF program
-6. Has maintainer acknowledgment
-
-**Backport notes:**
-- The patch should apply cleanly to v6.8+ where
-  `reg_bounds_sanity_check()` exists
-- For v6.6 LTS, need to verify if the sanity check was backported
-- For older stable trees (v5.15, v5.10, etc.), the sanity check doesn't
-  exist, so the bug manifests as silent bounds corruption which is
-  arguably worse but harder to detect
-
-### CONCLUSION
-
-This commit fixes a real BPF verifier bug that:
-1. Is easily reproducible with a simple BPF program
-2. Triggers kernel BUG warnings (denial of service potential)
-3. Has a small, well-contained fix
-4. Has been acknowledged by BPF maintainers
-5. Affects commonly-used infrastructure (BPF verifier)
-
-The fix is obviously correct - comparing a register with itself should
-have deterministic results (e.g., r0 == r0 is always true), and
-adjusting bounds based on such comparisons is logically wrong.
+The risk/benefit ratio strongly favors backporting: **zero risk** vs
+**fixing build failures**.
 
 **YES**
 
- kernel/bpf/verifier.c | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+ .../net/ethernet/chelsio/cxgb4/cxgb4_main.c   |  2 +-
+ .../chelsio/cxgb4/cxgb4_tc_matchall.c         |  4 +-
+ .../ethernet/chelsio/cxgb4/cxgb4_tc_mqprio.c  |  2 +-
+ drivers/net/ethernet/chelsio/cxgb4/sched.c    | 44 +++++++++----------
+ drivers/net/ethernet/chelsio/cxgb4/sched.h    | 12 ++---
+ 5 files changed, 32 insertions(+), 32 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index fbe4bb91c564a..515e4d1807c92 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -15950,6 +15950,30 @@ static int is_scalar_branch_taken(struct bpf_reg_state *reg1, struct bpf_reg_sta
- 	s64 smin2 = is_jmp32 ? (s64)reg2->s32_min_value : reg2->smin_value;
- 	s64 smax2 = is_jmp32 ? (s64)reg2->s32_max_value : reg2->smax_value;
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
+index 392723ef14e51..ac0c7fe5743bd 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
+@@ -3485,7 +3485,7 @@ static int cxgb_set_tx_maxrate(struct net_device *dev, int index, u32 rate)
+ 	struct adapter *adap = pi->adapter;
+ 	struct ch_sched_queue qe = { 0 };
+ 	struct ch_sched_params p = { 0 };
+-	struct sched_class *e;
++	struct ch_sched_class *e;
+ 	u32 req_rate;
+ 	int err = 0;
  
-+	if (reg1 == reg2) {
-+		switch (opcode) {
-+		case BPF_JGE:
-+		case BPF_JLE:
-+		case BPF_JSGE:
-+		case BPF_JSLE:
-+		case BPF_JEQ:
-+			return 1;
-+		case BPF_JGT:
-+		case BPF_JLT:
-+		case BPF_JSGT:
-+		case BPF_JSLT:
-+		case BPF_JNE:
-+			return 0;
-+		case BPF_JSET:
-+			if (tnum_is_const(t1))
-+				return t1.value != 0;
-+			else
-+				return (smin1 <= 0 && smax1 >= 0) ? -1 : 1;
-+		default:
-+			return -1;
-+		}
-+	}
-+
- 	switch (opcode) {
- 	case BPF_JEQ:
- 		/* constants, umin/umax and smin/smax checks would be
-@@ -16396,6 +16420,13 @@ static int reg_set_min_max(struct bpf_verifier_env *env,
- 	if (false_reg1->type != SCALAR_VALUE || false_reg2->type != SCALAR_VALUE)
- 		return 0;
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_matchall.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_matchall.c
+index 1672d3afe5bef..f8dcf0b4abcdc 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_matchall.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_matchall.c
+@@ -56,7 +56,7 @@ static int cxgb4_matchall_egress_validate(struct net_device *dev,
+ 	struct port_info *pi = netdev2pinfo(dev);
+ 	struct flow_action_entry *entry;
+ 	struct ch_sched_queue qe;
+-	struct sched_class *e;
++	struct ch_sched_class *e;
+ 	u64 max_link_rate;
+ 	u32 i, speed;
+ 	int ret;
+@@ -180,7 +180,7 @@ static int cxgb4_matchall_alloc_tc(struct net_device *dev,
+ 	struct port_info *pi = netdev2pinfo(dev);
+ 	struct adapter *adap = netdev2adap(dev);
+ 	struct flow_action_entry *entry;
+-	struct sched_class *e;
++	struct ch_sched_class *e;
+ 	int ret;
+ 	u32 i;
  
-+	/* We compute branch direction for same SCALAR_VALUE registers in
-+	 * is_scalar_branch_taken(). For unknown branch directions (e.g., BPF_JSET)
-+	 * on the same registers, we don't need to adjust the min/max values.
-+	 */
-+	if (false_reg1 == false_reg2)
-+		return 0;
-+
- 	/* fallthrough (FALSE) branch */
- 	regs_refine_cond_op(false_reg1, false_reg2, rev_opcode(opcode), is_jmp32);
- 	reg_bounds_sync(false_reg1);
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_mqprio.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_mqprio.c
+index 338b04f339b3d..a2dcd2e242631 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_mqprio.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_mqprio.c
+@@ -330,7 +330,7 @@ static int cxgb4_mqprio_alloc_tc(struct net_device *dev,
+ 	struct cxgb4_tc_port_mqprio *tc_port_mqprio;
+ 	struct port_info *pi = netdev2pinfo(dev);
+ 	struct adapter *adap = netdev2adap(dev);
+-	struct sched_class *e;
++	struct ch_sched_class *e;
+ 	int ret;
+ 	u8 i;
+ 
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/sched.c b/drivers/net/ethernet/chelsio/cxgb4/sched.c
+index a1b14468d1fff..38a30aeee1220 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/sched.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/sched.c
+@@ -44,7 +44,7 @@ static int t4_sched_class_fw_cmd(struct port_info *pi,
+ {
+ 	struct adapter *adap = pi->adapter;
+ 	struct sched_table *s = pi->sched_tbl;
+-	struct sched_class *e;
++	struct ch_sched_class *e;
+ 	int err = 0;
+ 
+ 	e = &s->tab[p->u.params.class];
+@@ -122,7 +122,7 @@ static void *t4_sched_entry_lookup(struct port_info *pi,
+ 				   const u32 val)
+ {
+ 	struct sched_table *s = pi->sched_tbl;
+-	struct sched_class *e, *end;
++	struct ch_sched_class *e, *end;
+ 	void *found = NULL;
+ 
+ 	/* Look for an entry with matching @val */
+@@ -166,8 +166,8 @@ static void *t4_sched_entry_lookup(struct port_info *pi,
+ 	return found;
+ }
+ 
+-struct sched_class *cxgb4_sched_queue_lookup(struct net_device *dev,
+-					     struct ch_sched_queue *p)
++struct ch_sched_class *cxgb4_sched_queue_lookup(struct net_device *dev,
++						struct ch_sched_queue *p)
+ {
+ 	struct port_info *pi = netdev2pinfo(dev);
+ 	struct sched_queue_entry *qe = NULL;
+@@ -187,7 +187,7 @@ static int t4_sched_queue_unbind(struct port_info *pi, struct ch_sched_queue *p)
+ 	struct sched_queue_entry *qe = NULL;
+ 	struct adapter *adap = pi->adapter;
+ 	struct sge_eth_txq *txq;
+-	struct sched_class *e;
++	struct ch_sched_class *e;
+ 	int err = 0;
+ 
+ 	if (p->queue < 0 || p->queue >= pi->nqsets)
+@@ -218,7 +218,7 @@ static int t4_sched_queue_bind(struct port_info *pi, struct ch_sched_queue *p)
+ 	struct sched_queue_entry *qe = NULL;
+ 	struct adapter *adap = pi->adapter;
+ 	struct sge_eth_txq *txq;
+-	struct sched_class *e;
++	struct ch_sched_class *e;
+ 	unsigned int qid;
+ 	int err = 0;
+ 
+@@ -260,7 +260,7 @@ static int t4_sched_flowc_unbind(struct port_info *pi, struct ch_sched_flowc *p)
+ {
+ 	struct sched_flowc_entry *fe = NULL;
+ 	struct adapter *adap = pi->adapter;
+-	struct sched_class *e;
++	struct ch_sched_class *e;
+ 	int err = 0;
+ 
+ 	if (p->tid < 0 || p->tid >= adap->tids.neotids)
+@@ -288,7 +288,7 @@ static int t4_sched_flowc_bind(struct port_info *pi, struct ch_sched_flowc *p)
+ 	struct sched_table *s = pi->sched_tbl;
+ 	struct sched_flowc_entry *fe = NULL;
+ 	struct adapter *adap = pi->adapter;
+-	struct sched_class *e;
++	struct ch_sched_class *e;
+ 	int err = 0;
+ 
+ 	if (p->tid < 0 || p->tid >= adap->tids.neotids)
+@@ -322,7 +322,7 @@ static int t4_sched_flowc_bind(struct port_info *pi, struct ch_sched_flowc *p)
+ }
+ 
+ static void t4_sched_class_unbind_all(struct port_info *pi,
+-				      struct sched_class *e,
++				      struct ch_sched_class *e,
+ 				      enum sched_bind_type type)
+ {
+ 	if (!e)
+@@ -476,12 +476,12 @@ int cxgb4_sched_class_unbind(struct net_device *dev, void *arg,
+ }
+ 
+ /* If @p is NULL, fetch any available unused class */
+-static struct sched_class *t4_sched_class_lookup(struct port_info *pi,
+-						const struct ch_sched_params *p)
++static struct ch_sched_class *t4_sched_class_lookup(struct port_info *pi,
++						    const struct ch_sched_params *p)
+ {
+ 	struct sched_table *s = pi->sched_tbl;
+-	struct sched_class *found = NULL;
+-	struct sched_class *e, *end;
++	struct ch_sched_class *found = NULL;
++	struct ch_sched_class *e, *end;
+ 
+ 	if (!p) {
+ 		/* Get any available unused class */
+@@ -522,10 +522,10 @@ static struct sched_class *t4_sched_class_lookup(struct port_info *pi,
+ 	return found;
+ }
+ 
+-static struct sched_class *t4_sched_class_alloc(struct port_info *pi,
+-						struct ch_sched_params *p)
++static struct ch_sched_class *t4_sched_class_alloc(struct port_info *pi,
++						   struct ch_sched_params *p)
+ {
+-	struct sched_class *e = NULL;
++	struct ch_sched_class *e = NULL;
+ 	u8 class_id;
+ 	int err;
+ 
+@@ -579,8 +579,8 @@ static struct sched_class *t4_sched_class_alloc(struct port_info *pi,
+  * scheduling class with matching @p is found, then the matching class is
+  * returned.
+  */
+-struct sched_class *cxgb4_sched_class_alloc(struct net_device *dev,
+-					    struct ch_sched_params *p)
++struct ch_sched_class *cxgb4_sched_class_alloc(struct net_device *dev,
++					       struct ch_sched_params *p)
+ {
+ 	struct port_info *pi = netdev2pinfo(dev);
+ 	u8 class_id;
+@@ -607,7 +607,7 @@ void cxgb4_sched_class_free(struct net_device *dev, u8 classid)
+ 	struct port_info *pi = netdev2pinfo(dev);
+ 	struct sched_table *s = pi->sched_tbl;
+ 	struct ch_sched_params p;
+-	struct sched_class *e;
++	struct ch_sched_class *e;
+ 	u32 speed;
+ 	int ret;
+ 
+@@ -640,7 +640,7 @@ void cxgb4_sched_class_free(struct net_device *dev, u8 classid)
+ 	}
+ }
+ 
+-static void t4_sched_class_free(struct net_device *dev, struct sched_class *e)
++static void t4_sched_class_free(struct net_device *dev, struct ch_sched_class *e)
+ {
+ 	struct port_info *pi = netdev2pinfo(dev);
+ 
+@@ -660,7 +660,7 @@ struct sched_table *t4_init_sched(unsigned int sched_size)
+ 	s->sched_size = sched_size;
+ 
+ 	for (i = 0; i < s->sched_size; i++) {
+-		memset(&s->tab[i], 0, sizeof(struct sched_class));
++		memset(&s->tab[i], 0, sizeof(struct ch_sched_class));
+ 		s->tab[i].idx = i;
+ 		s->tab[i].state = SCHED_STATE_UNUSED;
+ 		INIT_LIST_HEAD(&s->tab[i].entry_list);
+@@ -682,7 +682,7 @@ void t4_cleanup_sched(struct adapter *adap)
+ 			continue;
+ 
+ 		for (i = 0; i < s->sched_size; i++) {
+-			struct sched_class *e;
++			struct ch_sched_class *e;
+ 
+ 			e = &s->tab[i];
+ 			if (e->state == SCHED_STATE_ACTIVE)
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/sched.h b/drivers/net/ethernet/chelsio/cxgb4/sched.h
+index 6b3c778815f09..4d3b5a7575366 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/sched.h
++++ b/drivers/net/ethernet/chelsio/cxgb4/sched.h
+@@ -71,7 +71,7 @@ struct sched_flowc_entry {
+ 	struct ch_sched_flowc param;
+ };
+ 
+-struct sched_class {
++struct ch_sched_class {
+ 	u8 state;
+ 	u8 idx;
+ 	struct ch_sched_params info;
+@@ -82,7 +82,7 @@ struct sched_class {
+ 
+ struct sched_table {      /* per port scheduling table */
+ 	u8 sched_size;
+-	struct sched_class tab[] __counted_by(sched_size);
++	struct ch_sched_class tab[] __counted_by(sched_size);
+ };
+ 
+ static inline bool can_sched(struct net_device *dev)
+@@ -103,15 +103,15 @@ static inline bool valid_class_id(struct net_device *dev, u8 class_id)
+ 	return true;
+ }
+ 
+-struct sched_class *cxgb4_sched_queue_lookup(struct net_device *dev,
+-					     struct ch_sched_queue *p);
++struct ch_sched_class *cxgb4_sched_queue_lookup(struct net_device *dev,
++						struct ch_sched_queue *p);
+ int cxgb4_sched_class_bind(struct net_device *dev, void *arg,
+ 			   enum sched_bind_type type);
+ int cxgb4_sched_class_unbind(struct net_device *dev, void *arg,
+ 			     enum sched_bind_type type);
+ 
+-struct sched_class *cxgb4_sched_class_alloc(struct net_device *dev,
+-					    struct ch_sched_params *p);
++struct ch_sched_class *cxgb4_sched_class_alloc(struct net_device *dev,
++					       struct ch_sched_params *p);
+ void cxgb4_sched_class_free(struct net_device *dev, u8 classid);
+ 
+ struct sched_table *t4_init_sched(unsigned int size);
 -- 
 2.51.0
 
