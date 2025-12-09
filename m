@@ -1,122 +1,158 @@
-Return-Path: <bpf+bounces-76330-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76331-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B5ADCAEA85
-	for <lists+bpf@lfdr.de>; Tue, 09 Dec 2025 02:50:24 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FCECCAEB25
+	for <lists+bpf@lfdr.de>; Tue, 09 Dec 2025 03:13:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 4B0623011323
-	for <lists+bpf@lfdr.de>; Tue,  9 Dec 2025 01:50:23 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 0888F300985C
+	for <lists+bpf@lfdr.de>; Tue,  9 Dec 2025 02:13:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2357B3009F0;
-	Tue,  9 Dec 2025 01:50:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4D8C301005;
+	Tue,  9 Dec 2025 02:13:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xi2n69Nh"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BDNa51IP"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95B2B3009EC
-	for <bpf@vger.kernel.org>; Tue,  9 Dec 2025 01:50:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CBD217D2;
+	Tue,  9 Dec 2025 02:13:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765245021; cv=none; b=Shkl5KsGn0CfBBiRVMUIEoqXC8DTlcQvRFkgt6UPuIO2jmDOQuzHiLKkohXWMphjhj7q/CLkuQX9KNSghFNmCf011Flsng75s9zKzH8sRG5BAWZoinfF+1YYczZyHEwHzVjWIOK0n5YS7YvWatYqrpHCyl+sqSW92awCQRQyeBM=
+	t=1765246389; cv=none; b=o98jl65U2JDo0/1DZRcJ3d6OKac6ez9xlhDMbSJNm3r+BdLHVTK8GeI4sy4bbxg+L/139UOMjTpzNMPCi9JWGwY//Zd6gCvdflaYBv+ywhASRx4RliWohUm5c0IdVgBmAEi0BzDaEtAww5Iq1O/fyVMvq+j1+uGeGGzGDSoEQqU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765245021; c=relaxed/simple;
-	bh=kxfMIuOKyfe8bmObUhS5t43dMnDHqQLX9eXqaAzAfm4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=gT5XPzv1jIiHRbYq+S4PiS2S481bgfpyPG6T3HLPuHjkPMOzM3QCEl4vSfUjInRircVuDMEexENAlYJpIhvWGW8SO8QlMF1R7Ttsl7DeGGMDHsQwqb/gLSj+dOdWghlVpF+p3yMEJrKudfbYrYNdhizIQ/VmlLt+KRtGSFmG6II=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=xi2n69Nh; arc=none smtp.client-ip=95.215.58.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1765245016;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kxfMIuOKyfe8bmObUhS5t43dMnDHqQLX9eXqaAzAfm4=;
-	b=xi2n69NhA9UUpc69ygoXYVKF83VuBUmVTPKU3Yp4M00JtdFEZBtQP2alKZOjckFkjX106J
-	2g2gQp7o7exkpimIsJzGs61RKtYjg+HdvdP6wxRjlhVI9m8fCBo+26EY6PnU6INl3ocnm9
-	YXxlgfy6p/LkmEa9rJ8VqKmWUNuyvvA=
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: hui.zhu@linux.dev
-Cc: "Andrew Morton" <akpm@linux-foundation.org>,
-  linux-kernel@vger.kernel.org,  "Alexei Starovoitov" <ast@kernel.org>,
-  "Suren Baghdasaryan" <surenb@google.com>,  "Michal Hocko"
- <mhocko@kernel.org>,  "Shakeel Butt" <shakeel.butt@linux.dev>,  "Johannes
- Weiner" <hannes@cmpxchg.org>,  "Andrii Nakryiko" <andrii@kernel.org>,  "JP
- Kobryn" <inwardvessel@gmail.com>,  linux-mm@kvack.org,
-  cgroups@vger.kernel.org,  bpf@vger.kernel.org,  "Martin KaFai Lau"
- <martin.lau@kernel.org>,  "Song Liu" <song@kernel.org>,  "Kumar Kartikeya
- Dwivedi" <memxor@gmail.com>,  "Tejun Heo" <tj@kernel.org>
-Subject: Re: [PATCH v2 21/23] sched: psi: implement bpf_psi_create_trigger()
-  kfunc
-In-Reply-To: <1d9a162605a3f32ac215430131f7745488deaa34@linux.dev> (hui zhu's
-	message of "Mon, 08 Dec 2025 08:49:34 +0000")
-References: <20251027232206.473085-1-roman.gushchin@linux.dev>
-	<20251027232206.473085-11-roman.gushchin@linux.dev>
-	<1d9a162605a3f32ac215430131f7745488deaa34@linux.dev>
-Date: Mon, 08 Dec 2025 17:49:22 -0800
-Message-ID: <87cy4otof1.fsf@linux.dev>
+	s=arc-20240116; t=1765246389; c=relaxed/simple;
+	bh=t/n0Kb2PQ4ho9yOiWbXGt8ntdqBp4Egqu5F/G8IrLH4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VNvIKLKoueeff14Ci4hzXDYRykSN1hhc+VQVRtJs2IjN6gqmdADPouK+MC3nu2IFyU4M/4+zxq+emb8B1qZmv7cACYoiKlQ9HEJh/J6BwwH+fDHER7ZV/i4bmeooXnKgNWKkWEGUYRkOol5IsDt2W+9QXmPlwZkjzxvul0HGmto=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BDNa51IP; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1765246386; x=1796782386;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=t/n0Kb2PQ4ho9yOiWbXGt8ntdqBp4Egqu5F/G8IrLH4=;
+  b=BDNa51IPSdCYzCC7yJaSHB4MIwyXpumKfWmctY8rCZ4l/88fKq87fxpQ
+   XjKWNTKL2NVYdSHcaojZe1PB3iRLqw0kZy6CMS3eWZDCvnnbxpx5jXJj7
+   xwv2Kjvji7y56iqSEtSlKSCRkCvcJi2yyA499N1Ijn1COY1YO7kVHgzhH
+   kpIilO9nmbQm6pAgKXhCa/0bZh16kHb3noM2fvjflxtx3I5XkdQUTCzIk
+   2VZZ/Ft8nfSPNeQhirN8VT0jHy0dIGkKOKYI8KrmPSd6iDv3dCw3CErwp
+   xdlAOasoZOEteKbhWBRVMX8AClnsdX/a6t4jUTyMqqrB3RjmyWyvvEtJ2
+   A==;
+X-CSE-ConnectionGUID: ZBmP8M0mRtys3TWk51W4dA==
+X-CSE-MsgGUID: HD0lPCJ6SE+ix62OgFJz/A==
+X-IronPort-AV: E=McAfee;i="6800,10657,11636"; a="92673868"
+X-IronPort-AV: E=Sophos;i="6.20,260,1758610800"; 
+   d="scan'208";a="92673868"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2025 18:13:04 -0800
+X-CSE-ConnectionGUID: kMd9kbGSTMiVFdT/ioshHQ==
+X-CSE-MsgGUID: 7VGMrLKDT/GWc4gYkwlMOw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.20,260,1758610800"; 
+   d="scan'208";a="219442996"
+Received: from lkp-server01.sh.intel.com (HELO d335e3c6db51) ([10.239.97.150])
+  by fmviesa002.fm.intel.com with ESMTP; 08 Dec 2025 18:12:58 -0800
+Received: from kbuild by d335e3c6db51 with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1vSnDj-000000001Be-2v6q;
+	Tue, 09 Dec 2025 02:12:55 +0000
+Date: Tue, 9 Dec 2025 10:12:47 +0800
+From: kernel test robot <lkp@intel.com>
+To: Yunhui Cui <cuiyunhui@bytedance.com>, aou@eecs.berkeley.edu,
+	alex@ghiti.fr, andii@kernel.org, andybnac@gmail.com,
+	apatel@ventanamicro.com, ast@kernel.org, ben.dooks@codethink.co.uk,
+	bjorn@kernel.org, bpf@vger.kernel.org, charlie@rivosinc.com,
+	cl@gentwo.org, conor.dooley@microchip.com, cyrilbur@tenstorrent.com,
+	daniel@iogearbox.net, debug@rivosinc.com, dennis@kernel.org,
+	eddyz87@gmail.com, haoluo@google.com, john.fastabend@gmail.com,
+	jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, linux-riscv@lists.infradead.org,
+	linux@rasmusvillemoes.dk, martin.lau@linux.dev, palmer@dabbelt.com,
+	pjw@kernel.org, puranjay@kernel.org
+Cc: oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH v2 2/3] riscv: introduce percpu.h into include/asm
+Message-ID: <202512090907.agDhp0Nd-lkp@intel.com>
+References: <20251208034944.73113-3-cuiyunhui@bytedance.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251208034944.73113-3-cuiyunhui@bytedance.com>
 
-hui.zhu@linux.dev writes:
+Hi Yunhui,
 
-> 2025=E5=B9=B410=E6=9C=8828=E6=97=A5 07:22, "Roman Gushchin" <roman.gushch=
-in@linux.dev
-> mailto:roman.gushchin@linux.dev?to=3D%22Roman%20Gushchin%22%20%3Croman.gu=
-shchin%40linux.dev%3E
->> =E5=86=99=E5=88=B0:
->
->
->>=20
->> Implement a new bpf_psi_create_trigger() BPF kfunc, which allows
->> to create new PSI triggers and attach them to cgroups or be
->> system-wide.
->>=20
->> Created triggers will exist until the struct ops is loaded and
->> if they are attached to a cgroup until the cgroup exists.
->>=20
->> Due to a limitation of 5 arguments, the resource type and the "full"
->> bit are squeezed into a single u32.
->>=20
->> Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
->
-> Hi Roman,
->
-> I wrote an eBPF program attempting to use bpf_psi struct ops and
-> bpf_psi_create_trigger to continuously receive memory-related PSI
-> events, but I only received one event.
->
-> Looking at the code implementation, when an event occurs:
-> if (cmpxchg(&t->event, 0, 1) =3D=3D 0) {
->
-> However, in eBPF there appears to be no way to call the equivalent
-> of this code from psi_trigger_poll:
-> if (cmpxchg(&t->event, 1, 0) =3D=3D 1)
-> to reset the event back to 0.
->
-> Would it be possible to add an additional BPF helper function to
-> handle this? Without a way to acknowledge/reset the event flag,
-> the trigger only fires once and cannot be reused for continuous
-> monitoring.
+kernel test robot noticed the following build errors:
 
-Hi Hui,
+[auto build test ERROR on linus/master]
+[also build test ERROR on v6.18 next-20251208]
+[cannot apply to bpf-next/net bpf-next/master bpf/master]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Good point. I'll add something in v3, which I'm working on, if I'm going
-to preserve the bpf psi infrastructure in the current form. An
-alternative approach suggested by Tejun was to use a simple tracepoint
-and implement the rest in BPF - something I'm exploring right now.
+url:    https://github.com/intel-lab-lkp/linux/commits/Yunhui-Cui/riscv-remove-irqflags-h-inclusion-in-asm-bitops-h/20251208-115407
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20251208034944.73113-3-cuiyunhui%40bytedance.com
+patch subject: [PATCH v2 2/3] riscv: introduce percpu.h into include/asm
+config: riscv-allnoconfig (https://download.01.org/0day-ci/archive/20251209/202512090907.agDhp0Nd-lkp@intel.com/config)
+compiler: riscv64-linux-gcc (GCC) 15.1.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251209/202512090907.agDhp0Nd-lkp@intel.com/reproduce)
 
-Thanks!
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202512090907.agDhp0Nd-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   In file included from include/linux/atomic.h:80,
+                    from include/linux/cpumask.h:10,
+                    from include/linux/smp.h:13,
+                    from include/linux/lockdep.h:14,
+                    from include/linux/spinlock.h:63,
+                    from include/linux/mmzone.h:8,
+                    from include/linux/gfp.h:7,
+                    from include/linux/mm.h:7,
+                    from mm/slub.c:13:
+   mm/slub.c: In function '__update_cpu_freelist_fast':
+>> include/linux/atomic/atomic-arch-fallback.h:414:30: error: implicit declaration of function 'arch_cmpxchg128_local'; did you mean 'arch_cmpxchg64_local'? [-Wimplicit-function-declaration]
+     414 | #define raw_cmpxchg128_local arch_cmpxchg128_local
+         |                              ^~~~~~~~~~~~~~~~~~~~~
+   include/linux/atomic/atomic-instrumented.h:5005:9: note: in expansion of macro 'raw_cmpxchg128_local'
+    5005 |         raw_cmpxchg128_local(__ai_ptr, __VA_ARGS__); \
+         |         ^~~~~~~~~~~~~~~~~~~~
+   arch/riscv/include/asm/percpu.h:231:17: note: in expansion of macro 'cmpxchg128_local'
+     231 |         ret__ = cmpxchg128_local(ptr__, old__, new__);                  \
+         |                 ^~~~~~~~~~~~~~~~
+   include/asm-generic/percpu.h:110:17: note: in expansion of macro 'this_cpu_cmpxchg128'
+     110 |         __val = _cmpxchg(pcp, __old, nval);                             \
+         |                 ^~~~~~~~
+   include/asm-generic/percpu.h:529:9: note: in expansion of macro '__cpu_fallback_try_cmpxchg'
+     529 |         __cpu_fallback_try_cmpxchg(pcp, ovalp, nval, this_cpu_cmpxchg128)
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~
+   mm/slab.h:24:41: note: in expansion of macro 'this_cpu_try_cmpxchg128'
+      24 | #define this_cpu_try_cmpxchg_freelist   this_cpu_try_cmpxchg128
+         |                                         ^~~~~~~~~~~~~~~~~~~~~~~
+   mm/slub.c:4380:16: note: in expansion of macro 'this_cpu_try_cmpxchg_freelist'
+    4380 |         return this_cpu_try_cmpxchg_freelist(s->cpu_slab->freelist_tid,
+         |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+vim +414 include/linux/atomic/atomic-arch-fallback.h
+
+9257959a6e5b4f Mark Rutland 2023-06-05  413  
+9257959a6e5b4f Mark Rutland 2023-06-05 @414  #define raw_cmpxchg128_local arch_cmpxchg128_local
+e6ce9d741163af Uros Bizjak  2023-04-05  415  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
