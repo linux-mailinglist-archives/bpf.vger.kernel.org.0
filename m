@@ -1,136 +1,196 @@
-Return-Path: <bpf+bounces-76343-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76344-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BCE8CAF20B
-	for <lists+bpf@lfdr.de>; Tue, 09 Dec 2025 08:27:33 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C37CECAF371
+	for <lists+bpf@lfdr.de>; Tue, 09 Dec 2025 08:54:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0489530274F1
-	for <lists+bpf@lfdr.de>; Tue,  9 Dec 2025 07:26:29 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id DF12230A303B
+	for <lists+bpf@lfdr.de>; Tue,  9 Dec 2025 07:51:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18601221554;
-	Tue,  9 Dec 2025 07:26:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="hkhkF6Kk"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 224FF28134F;
+	Tue,  9 Dec 2025 07:51:40 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F7A628640C
-	for <bpf@vger.kernel.org>; Tue,  9 Dec 2025 07:26:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE80E27B335
+	for <bpf@vger.kernel.org>; Tue,  9 Dec 2025 07:51:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765265184; cv=none; b=ofKQ6V6sDJ+GbsRmksAt+GGhcNM9VnKz7EeLcym/dUN8EXQfxqVI8DmlJC77o5Ldb35yAx8GWm3UMHZZHXP2JNFenvxpdxC7UPc0mWMrJG7ToCbg7ujpYuJNffD7aa9b2sYLyAxjjtFSTHOnHpPolJPjQf89r+NlEivMKsoedB4=
+	t=1765266699; cv=none; b=axE/VXUa2T9okoU+XQXMddoBqY+N7QcIP0dPj8PD/ropGDS7Nq7Ki0I/IgKTZhmjd3EMdC7X2bplPUmEEzNvLr9erDXRRlDEDahpF/Y8+WeDskTFkfgykbqVqFHYnrnlazQSpW69UN74nqcRx+JpD38FgjT3YwrYV2BLqkg8cdg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765265184; c=relaxed/simple;
-	bh=8nT8939qWUoJYlT2R7sKtRouAfpezWZVT5T0CEHq2FI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=C8VMuAHSbyuEo0TWu1Q/V98nwIvzDL6803LEX0/JGXpwiuxqaIoHcwKfWQmZHizhxVXmFdZirBcpkrnv4ZwyPkDA82V8NglPb+TqUDZ8USl+8ye6Knb5C0euWmuyIjoa9pvXz2hi46m0JFydQheMeMLtNd2Yjjff/ZwwwQyGvgA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=hkhkF6Kk; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-6431b0a1948so9020160a12.3
-        for <bpf@vger.kernel.org>; Mon, 08 Dec 2025 23:26:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1765265179; x=1765869979; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=7QhMUSo0zLDlINi8GAqDQeQHdxTHsyz1r33NHLku5hM=;
-        b=hkhkF6KkVkRqoHxiBarbSKqdTbdWT47N4A3eeNVapHSRO29gSPUQFLR6UQ8GS6Zo40
-         3MnpuwhRdMXV7IFegg6UO5J0vch6ZYNqy+1rMhGV4DKkfBCaN0iIwdTDlMAHcIWDjPIX
-         DmsYfMzvNfcfCqNOd6kVGRFR9covA8hNZxt+g=
+	s=arc-20240116; t=1765266699; c=relaxed/simple;
+	bh=kYPch7DLKymTVOpM9JYlal177TTHjk9q7UZl1/ms5+c=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:Cc:
+	 Content-Type; b=LthMD2plVZ6jhWgYt6xkTv4p+LrkdwitlPyetJb+E2Kf1BmeTULB6k+WVaqxkcKibu6MDEYZcX08XWMbQt0sDqaOHRKjYfhRDR5atECcqpicMfUYd6Z3S5ogyI1GmVM+5GsZgb6LwdXlbmXr49WplGO/TxQg2e4RyVo9MZDuaVo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.167.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-450c16f2bc1so6607803b6e.3
+        for <bpf@vger.kernel.org>; Mon, 08 Dec 2025 23:51:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765265179; x=1765869979;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7QhMUSo0zLDlINi8GAqDQeQHdxTHsyz1r33NHLku5hM=;
-        b=SxNmsVhfllXeaFUz5WqBpt/mu6/bdBdqPE2jQBVneySaFxiQB+VviaJxEpMIvckN7e
-         VcZ4l5w0Ze5LV03y/li/Ik6hYe2FrTzN3MKT5ip7MyHQOKRK57OdtLq47xrp/G7Z3X4c
-         BpUksHq4uv4LjmlRgq0rQb/xK6j123tktH1bhR4BdEtbLSEbdkwgzAk9mZv9iVTrTPPO
-         PMGzR/+52D3w73VN8lqapnlR1RT5CXTcUmh6kTrKoaQfICDDXNnkf2C/sBxZg+ByJoKE
-         vDt6AAxz00+C22KXj0MJhV6pZmYd6FJQp8vXkMGRgPJOqeUmAMWqz8ULfXdK95yiAhhn
-         Ncdw==
-X-Forwarded-Encrypted: i=1; AJvYcCWcXO1UF8BttHOuEozQzt6YOgD9eLeV2hRT6y5OHbRSieo9Syp/Zs5q5gW/BJ0BZv1hXoE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwnD2p/eNkbTCMqgz9jMSrFnl+6Mdam8vv7ZUe3wE7bpQWq5AbE
-	+iWnWqaXaWY9iR9wGieWorqXnPf/0Cf8SezdMf4ITsUknl6eYE12w2u2f7EPWDtceizyVexNv/9
-	7eXBs5hwkiA==
-X-Gm-Gg: ASbGncvstwg/WozM/kCPjL+k+BovyRvYPcy8TR5DPLWx5pvkYo1tU+nwsE4dW6qFFYb
-	0RVEgKROtlR/Q2uKIquw3WmwRkdO/hvKTT/Nyb53sak/d/dFSE9zebHnitJ2uGhlFutOv+sX+Fl
-	39xpnZBxgvzC7gImZ220/5wvtm4L4KLELV8vT0aLciz4yXPPh+wEO79eSKA8wh7txCEpwKExEYW
-	SEMBG352HaN46K58tJPvEJa+9EFKykICECAK8CcM80NcDCc7+JLvg6Ozg7vzeVKnpx7iRB51+uZ
-	z/AWRxPXyilMhW7bgJcEf0IcTQIXicb06GJOMCZI7rya54I9ENJFYgF9BBAKLoAPn/ZxUBC968S
-	BEpE4/Jn/i/ph2ChFcQyLFnnZn2vi5YYZ+Y/AiJt+hMgdkVLW614ekaWC57WABvar2WPPfHrEkp
-	x6zYMGnQHZNdL0s4uXa5WHs43zv96/50V3ZeJnS7BO+vM0Ds/GajCaJJznGMUO
-X-Google-Smtp-Source: AGHT+IF3Tkv2ma0Z8wsjaPxcxSj9CMjVVqMeUVweWHV7sEAtwYB9DsS6UOFEqlzkuXnNbL8pLif9Wg==
-X-Received: by 2002:a05:6402:27cd:b0:643:e03:db14 with SMTP id 4fb4d7f45d1cf-6491a4300b1mr8734591a12.19.1765265179586;
-        Mon, 08 Dec 2025 23:26:19 -0800 (PST)
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com. [209.85.208.44])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-647b413b590sm12977207a12.35.2025.12.08.23.26.17
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Dec 2025 23:26:18 -0800 (PST)
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-6431b0a1948so9020113a12.3
-        for <bpf@vger.kernel.org>; Mon, 08 Dec 2025 23:26:17 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCW25bL0f3gd6GZajAgmoT+obI5a5l44M4kp6UJOotyLcWrB8nB6MMaEjsj2z6viw1i3GVU=@vger.kernel.org
-X-Received: by 2002:a05:6402:350b:b0:643:883a:2668 with SMTP id
- 4fb4d7f45d1cf-6491a430019mr7384754a12.21.1765265177527; Mon, 08 Dec 2025
- 23:26:17 -0800 (PST)
+        d=1e100.net; s=20230601; t=1765266697; x=1765871497;
+        h=cc:to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FNybGs1OzbcSq373a8yBGpKsoVBZmjSLPm60GHMTVE8=;
+        b=ZlQC0HgDlchjqo5mAjBoioXSdqikaqCxYk69UpxyPtija31MA16Xu4KLQne6cevYTA
+         UNEKuniMZJ8JR5Wvfi0eIl1/HZVcvEv/mbwZrvl+NSgaK7OLhnYozRb0LIjT7AviaMMe
+         Z2Lt4bFP1AYCXGOqESrRZGU8kW+RPu7rmztLirXU4mlITwpjCUDn6QtR1KQhGdBXAXjS
+         VTpiA9q38ULzGfBhjungqVNsThtV6xn/ZK6DtO5G9AyLfPW4QVrGzdodsglzbd+tQ6gy
+         zTgYA5VH26wSJzAEZjo4ZFRNRqBx4e/AT6bDETLDaW2Up7WmIkkte6sf3aXGDbTEwCcd
+         NvCw==
+X-Forwarded-Encrypted: i=1; AJvYcCWTM+s9HaxgyL0ZytDSdcwsbqlC6eVJkekSwnkudFTRKPLnO0Zhj8XqlGSZplAJqhYNFgU=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz5auDOirre5hvOPiTpzmALqoHaKl2r7lakNty3hv4obrHrA7e7
+	BeyvZjw3HhfXS3ga2epv23bkif+bU5xdG+EWbuuh4mU/E4k0n14ohtd6QJbOPNf2GQD0+X8G+lG
+	T8jCsmbMclsQ11/7o9LqJsFtILuPfxL7NRjlGVDfEGHyF5cmwBoMrQNg8c48=
+X-Google-Smtp-Source: AGHT+IHj9iqMCFRGP4wOM6ri1D0rsgLCKKMTOqY5F/1uA+gb3tA0MrEPJbfVCaWq7zwEz9VQHxyFEsZmyTc2r+nGEdmIN5saQ8yi
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251208235528.3670800-1-hpa@zytor.com>
-In-Reply-To: <20251208235528.3670800-1-hpa@zytor.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 9 Dec 2025 16:26:00 +0900
-X-Gmail-Original-Message-ID: <CAHk-=wiNMD7tCkYvVQMs1=omU9=J=zw_ryvtZ+A-sNR7MN2iuw@mail.gmail.com>
-X-Gm-Features: AQt7F2pU3mtSVlk8xXoOHi4ywQ2NpA8rkmyzrskk-X7c-Gbp__mUx8NnR72v7NM
-Message-ID: <CAHk-=wiNMD7tCkYvVQMs1=omU9=J=zw_ryvtZ+A-sNR7MN2iuw@mail.gmail.com>
-Subject: Re: [GIT PULL] __auto_type conversion for v6.19-rc1
-To: "H. Peter Anvin" <hpa@zytor.com>
-Cc: =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, 
-	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-	"Michael S. Tsirkin" <mst@redhat.com>, Al Viro <viro@zeniv.linux.org.uk>, 
-	Alexei Starovoitov <ast@kernel.org>, Alexey Dobriyan <adobriyan@gmail.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Arnd Bergmann <arnd@kernel.org>, Borislav Petkov <bp@alien8.de>, Dan Williams <dan.j.williams@intel.com>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	David Laight <David.Laight@aculab.com>, David Lechner <dlechner@baylibre.com>, 
-	Dinh Nguyen <dinguyen@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
-	Gatlin Newhouse <gatlin.newhouse@gmail.com>, Hao Luo <haoluo@google.com>, 
-	Ingo Molnar <mingo@redhat.com>, Jakub Sitnicki <jakub@cloudflare.com>, 
-	Jan Hendrik Farr <kernel@jfarr.cc>, Jason Wang <jasowang@redhat.com>, Jiri Olsa <jolsa@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Jonathan Cameron <Jonathan.Cameron@huawei.com>, 
-	Josh Poimboeuf <jpoimboe@kernel.org>, KP Singh <kpsingh@kernel.org>, Kees Cook <kees@kernel.org>, 
-	Luc Van Oostenryck <luc.vanoostenryck@gmail.com>, Marc Herbert <Marc.Herbert@linux.intel.com>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Mateusz Guzik <mjguzik@gmail.com>, Michal Luczaj <mhal@rbox.co>, 
-	Miguel Ojeda <ojeda@kernel.org>, Mykola Lysenko <mykolal@fb.com>, NeilBrown <neil@brown.name>, 
-	Peter Zijlstra <peterz@infradead.org>, Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
-	Sami Tolvanen <samitolvanen@google.com>, Shuah Khan <shuah@kernel.org>, Song Liu <song@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Thomas Gleixner <tglx@linutronix.de>, 
-	Thorsten Blum <thorsten.blum@linux.dev>, Uros Bizjak <ubizjak@gmail.com>, 
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Yafang Shao <laoar.shao@gmail.com>, 
-	Ye Bin <yebin10@huawei.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	Yufeng Wang <wangyufeng@kylinos.cn>, bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-sparse@vger.kernel.org, virtualization@lists.linux.dev, x86@kernel.org
+X-Received: by 2002:a05:6820:622:b0:659:9a49:9010 with SMTP id
+ 006d021491bc7-6599a98377emr3986841eaf.61.1765266696959; Mon, 08 Dec 2025
+ 23:51:36 -0800 (PST)
+Date: Mon, 08 Dec 2025 23:51:36 -0800
+In-Reply-To: <20251209031628.28429-1-kerneljasonxing@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6937d508.a70a0220.38f243.00c9.GAE@google.com>
+Subject: [syzbot ci] Re: xsk: move cq_cached_prod_lock to avoid touching a
+ cacheline in sending path
+From: syzbot ci <syzbot+ci28a5ab4f329a6a88@syzkaller.appspotmail.com>
+To: ast@kernel.org, bjorn@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com, 
+	hawk@kernel.org, john.fastabend@gmail.com, jonathan.lemon@gmail.com, 
+	kerneljasonxing@gmail.com, kernelxing@tencent.com, kuba@kernel.org, 
+	maciej.fijalkowski@intel.com, magnus.karlsson@intel.com, 
+	netdev@vger.kernel.org, pabeni@redhat.com, sdf@fomichev.me
+Cc: syzbot@lists.linux.dev, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
-On Tue, 9 Dec 2025 at 08:57, H. Peter Anvin <hpa@zytor.com> wrote:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/hpa/linux-auto.git
->
-> for you to fetch changes up to branch auto-type-for-6.19
+syzbot ci has tested the following series
 
-Oh, and as I was going to merge this, I noticed it's not signed.
+[v4] xsk: move cq_cached_prod_lock to avoid touching a cacheline in sending path
+https://lore.kernel.org/all/20251209031628.28429-1-kerneljasonxing@gmail.com
+* [PATCH RFC net-next v4] xsk: move cq_cached_prod_lock to avoid touching a cacheline in sending path
 
-Let's not break our perfect recent record of using proper signed tags.
-when I know you have a pgp key and I even have it on my keyring.
+and found the following issue:
+BUG: unable to handle kernel NULL pointer dereference in xp_create_and_assign_umem
 
-Please?
+Full report is available here:
+https://ci.syzbot.org/series/d7e166a7-a880-4ea1-9707-8889afd4ebe8
 
-              Linus
+***
+
+BUG: unable to handle kernel NULL pointer dereference in xp_create_and_assign_umem
+
+tree:      net-next
+URL:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/netdev/net-next.git
+base:      0177f0f07886e54e12c6f18fa58f63e63ddd3c58
+arch:      amd64
+compiler:  Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+config:    https://ci.syzbot.org/builds/d327cc4b-7471-413b-b244-519c6d16d43b/config
+C repro:   https://ci.syzbot.org/findings/c8f7aeaf-0e2e-43dd-ae9c-ea2dd8db8d34/c_repro
+syz repro: https://ci.syzbot.org/findings/c8f7aeaf-0e2e-43dd-ae9c-ea2dd8db8d34/syz_repro
+
+UDPLite6: UDP-Lite is deprecated and scheduled to be removed in 2025, please contact the netdev mailing list
+BUG: kernel NULL pointer dereference, address: 0000000000000058
+#PF: supervisor write access in kernel mode
+#PF: error_code(0x0002) - not-present page
+PGD 80000001b2496067 P4D 80000001b2496067 PUD 0 
+Oops: Oops: 0002 [#1] SMP KASAN PTI
+CPU: 1 UID: 0 PID: 5973 Comm: syz.0.17 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:lockdep_init_map_type+0x1e/0x380 kernel/locking/lockdep.c:4944
+Code: 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 55 41 56 53 48 83 ec 10 89 cd 48 89 fb 65 48 8b 05 67 af d1 10 48 89 44 24 08 <48> c7 47 10 00 00 00 00 48 c7 47 08 00 00 00 00 8b 05 8c f2 dc 17
+RSP: 0018:ffffc90003c07bb8 EFLAGS: 00010286
+RAX: ec490cf5c114aa00 RBX: 0000000000000048 RCX: 0000000000000000
+RDX: ffffffff99d16120 RSI: ffffffff8c92a180 RDI: 0000000000000048
+RBP: 0000000000000000 R08: 0000000000000003 R09: 0000000000000000
+R10: ffffed102e5d7800 R11: fffffbfff1efa3cf R12: dffffc0000000000
+R13: ffff8881bdeb3000 R14: ffffffff99d16120 R15: ffffffff8c92a180
+FS:  00005555729bd500(0000) GS:ffff8882a9f31000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000058 CR3: 0000000172faa000 CR4: 00000000000006f0
+Call Trace:
+ <TASK>
+ lockdep_init_map_waits include/linux/lockdep.h:135 [inline]
+ lockdep_init_map_wait include/linux/lockdep.h:142 [inline]
+ __raw_spin_lock_init+0x45/0x100 kernel/locking/spinlock_debug.c:25
+ xp_create_and_assign_umem+0x648/0xd40 net/xdp/xsk_buff_pool.c:94
+ xsk_bind+0x95a/0xf90 net/xdp/xsk.c:1355
+ __sys_bind_socket net/socket.c:1874 [inline]
+ __sys_bind+0x2c6/0x3e0 net/socket.c:1905
+ __do_sys_bind net/socket.c:1910 [inline]
+ __se_sys_bind net/socket.c:1908 [inline]
+ __x64_sys_bind+0x7a/0x90 net/socket.c:1908
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0xfa0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f591eb8f7c9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffce6fcef48 EFLAGS: 00000246 ORIG_RAX: 0000000000000031
+RAX: ffffffffffffffda RBX: 00007f591ede5fa0 RCX: 00007f591eb8f7c9
+RDX: 0000000000000010 RSI: 0000200000000240 RDI: 0000000000000003
+RBP: 00007f591ebf297f R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007f591ede5fa0 R14: 00007f591ede5fa0 R15: 0000000000000003
+ </TASK>
+Modules linked in:
+CR2: 0000000000000058
+---[ end trace 0000000000000000 ]---
+RIP: 0010:lockdep_init_map_type+0x1e/0x380 kernel/locking/lockdep.c:4944
+Code: 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 55 41 56 53 48 83 ec 10 89 cd 48 89 fb 65 48 8b 05 67 af d1 10 48 89 44 24 08 <48> c7 47 10 00 00 00 00 48 c7 47 08 00 00 00 00 8b 05 8c f2 dc 17
+RSP: 0018:ffffc90003c07bb8 EFLAGS: 00010286
+RAX: ec490cf5c114aa00 RBX: 0000000000000048 RCX: 0000000000000000
+RDX: ffffffff99d16120 RSI: ffffffff8c92a180 RDI: 0000000000000048
+RBP: 0000000000000000 R08: 0000000000000003 R09: 0000000000000000
+R10: ffffed102e5d7800 R11: fffffbfff1efa3cf R12: dffffc0000000000
+R13: ffff8881bdeb3000 R14: ffffffff99d16120 R15: ffffffff8c92a180
+FS:  00005555729bd500(0000) GS:ffff8882a9f31000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000058 CR3: 0000000172faa000 CR4: 00000000000006f0
+----------------
+Code disassembly (best guess):
+   0:	90                   	nop
+   1:	90                   	nop
+   2:	90                   	nop
+   3:	90                   	nop
+   4:	90                   	nop
+   5:	90                   	nop
+   6:	90                   	nop
+   7:	90                   	nop
+   8:	90                   	nop
+   9:	90                   	nop
+   a:	90                   	nop
+   b:	90                   	nop
+   c:	f3 0f 1e fa          	endbr64
+  10:	55                   	push   %rbp
+  11:	41 56                	push   %r14
+  13:	53                   	push   %rbx
+  14:	48 83 ec 10          	sub    $0x10,%rsp
+  18:	89 cd                	mov    %ecx,%ebp
+  1a:	48 89 fb             	mov    %rdi,%rbx
+  1d:	65 48 8b 05 67 af d1 	mov    %gs:0x10d1af67(%rip),%rax        # 0x10d1af8c
+  24:	10
+  25:	48 89 44 24 08       	mov    %rax,0x8(%rsp)
+* 2a:	48 c7 47 10 00 00 00 	movq   $0x0,0x10(%rdi) <-- trapping instruction
+  31:	00
+  32:	48 c7 47 08 00 00 00 	movq   $0x0,0x8(%rdi)
+  39:	00
+  3a:	8b 05 8c f2 dc 17    	mov    0x17dcf28c(%rip),%eax        # 0x17dcf2cc
+
+
+***
+
+If these findings have caused you to resend the series or submit a
+separate fix, please add the following tag to your commit message:
+  Tested-by: syzbot@syzkaller.appspotmail.com
+
+---
+This report is generated by a bot. It may contain errors.
+syzbot ci engineers can be reached at syzkaller@googlegroups.com.
 
