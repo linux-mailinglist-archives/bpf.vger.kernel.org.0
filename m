@@ -1,146 +1,125 @@
-Return-Path: <bpf+bounces-76378-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76379-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38626CB10CF
-	for <lists+bpf@lfdr.de>; Tue, 09 Dec 2025 21:49:14 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42286CB14A4
+	for <lists+bpf@lfdr.de>; Tue, 09 Dec 2025 23:29:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id CCADC30B2E8A
-	for <lists+bpf@lfdr.de>; Tue,  9 Dec 2025 20:49:11 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 8F86F302762F
+	for <lists+bpf@lfdr.de>; Tue,  9 Dec 2025 22:29:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99CED2C237C;
-	Tue,  9 Dec 2025 20:49:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE85A2EA168;
+	Tue,  9 Dec 2025 22:29:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="YzL9z0Dq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y65xC4Yb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DD8A2BD587
-	for <bpf@vger.kernel.org>; Tue,  9 Dec 2025 20:49:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B97326E706;
+	Tue,  9 Dec 2025 22:29:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765313350; cv=none; b=GymDdyyipppaGDRZqpwhPNrBbyAUe2kGKNIqmuaTZFAmZjjKMx6OkV9milROJGoBi+45pCx7IAUcvpp7lra9mN5KQECCjLwbI+6KCFLWt+/3Hno07VMKCg94bbobujiyqRHtlZ97p6gwOyMDeIlNJkbrFtfonlP8rOcTiImB7yI=
+	t=1765319343; cv=none; b=kjN/0oi4cDBCgmBWuPs8viaNzmdM5H5yWwEqk3zYFi7rXRk53l5p+cnw2N5ZJGXzlofGdJVSChW7xHFzwY/jqhD2pD4Gap09DDcdURRGq/UHIEHvHTBT5s/SwA/5Xy3lkHV9jQhsV2jxx76g4xOmjvgzWp+yW/mm56ColDBnZcY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765313350; c=relaxed/simple;
-	bh=rd2xZtg1TUqhPE9MjX+asDiZUF22CLDQ+9AXCBYKRVA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=D1uI0ScJI8YdzcAXjiXC6rcvZKNStHTUidBiepf6T3xYie/4XkszO2r/eSdB/cPqBAymcTAIC0np4HQZoccxXpbcN9ekqeK1VJO6cOplSlTaJ9TTdWPsP8XoQZ7WYsmrOg00NJjKIJSAjmeoT8SLtcjPix0KERCdJDZLb3Grv+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=YzL9z0Dq; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-b735487129fso921579266b.0
-        for <bpf@vger.kernel.org>; Tue, 09 Dec 2025 12:49:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1765313346; x=1765918146; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=8qFu6Gyyu/IjR2ufdMGg+lZtY71e20af3aIOCWzwQgQ=;
-        b=YzL9z0DqiBd0/afi//+WvqV5puaLJYxPoqJMc1sQKzh3XeoSzDBgQBHhBjDZWiaJo3
-         tXuDnNzvaVxsDN5zbp6uTplPdhk4hZClnmxIoWQF+2ddeo5PkDtJVmVjijiP/z6mCfuu
-         TLonhU8ZZMGKE8olQPQ9dQfgBZC7LcC+/HAAQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765313346; x=1765918146;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8qFu6Gyyu/IjR2ufdMGg+lZtY71e20af3aIOCWzwQgQ=;
-        b=T7QDrqN5slkbaogX8b5pQPiAOt/X6hCwpuIIKh5HTRa8pMYBwD/QhsHU/Ee46Ta5Ox
-         T8f/dlXSHiHfTVspBtUW8eVDptgR5hXpqMDOEdGCISREvFn61/r/3Y8ruzWq+lrQ6+gl
-         m0bQseYN90tQENKZn88mphPBFcJ/FNez7lb+reyGHtdKLfBBP1CPJ0OF0GIZXlvpW4wy
-         /G67b+79Zom/neBSrAOIChJewxzUlNquGk7Q4rdGFqyOrAQRq+ZmkJPEztPuC4VeSDpS
-         f8Tt2tn8+oRmAMRATHSULSCMiT6z/UpI2YVK1C078075mwL/l1rKzEvEFxOHd1RSZbBT
-         1emw==
-X-Forwarded-Encrypted: i=1; AJvYcCWcVOIxBm6qmY9V875tnPnlpjlKpzFi+7WHV2XCYsRbKxb2kYrc85NhH2n9k5jW+WcA6Mg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxOM2nhLmXxiCPfRQiy1NBFgxZK9NOGdARak2tJAhxknOUNNMbu
-	Th5zwjfdLW5YIq996BhrK3bu9VvGtnpQix1pm1MFnOGIySf1a96tcOFTLPYOXOeG1LutkbuhvGa
-	nnKgMntB1xw==
-X-Gm-Gg: ASbGncvn2ouSBoBqJB59mHuqGbwTUTcCIMvmwADZG15ldNE98aQpLVbPAOAksgMMIO+
-	wzRo5g/7KUmOcCTMbYBn7pWuika0/zaUIt+fDmAONyWNlas6Sa4IzTgmWKpzjt084EtVb7e/8g4
-	slxpvd1s/sxe6iUT7Frzum/G+GUSLL+V6v9pcIeL4FQNy31eCOfRH8p009TaifuESiqLLozRr2s
-	ZPVA0s2aUhcDtzPehU0TjFbCyRong7ZhF9i4wdqgvoHaK01TA+dFPbcPZP/R/NEXnAX4eFW99jL
-	DKYd7t3WvIN1jTe3xTmHCXT20DSMA2iR/N82NfrSSS+rt2CyBMI6iw1BJBMuVJYh5GcFWmOw9WJ
-	aBNFcv2C6wBiATV6LPxuglErf1wNjhR+Z42gFDyMWc4+hjSmRuKnwB6w6O38eQiR8L6Gpznov9r
-	8BMEpPmhNUQXSyn8uJIaeSwqP3G8X3pw/vd6Z2Mp7j8j7DfEdss8uwETZJEZ72
-X-Google-Smtp-Source: AGHT+IESLwTRePMdSuza/WUA/uu8WYeTV92IrFpEsnPAtdk4B7N+89+fhtT+D9w1/V3IxZ2Mld3J1g==
-X-Received: by 2002:a17:907:96a7:b0:b7a:18ba:a63 with SMTP id a640c23a62f3a-b7a2432ff70mr1266822566b.19.1765313346382;
-        Tue, 09 Dec 2025 12:49:06 -0800 (PST)
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com. [209.85.208.44])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b79f4457f9dsm1519558766b.8.2025.12.09.12.49.06
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Dec 2025 12:49:06 -0800 (PST)
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-64180bd67b7so7893184a12.0
-        for <bpf@vger.kernel.org>; Tue, 09 Dec 2025 12:49:06 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWEai1nDHRZtXr4G4ZmVJz7/mU2OMkKGa1Iby0aMNVj9DPnEEj9ayiw73Nim/ayl/AWF0Y=@vger.kernel.org
-X-Received: by 2002:a05:6402:27d2:b0:640:74f5:d9f6 with SMTP id
- 4fb4d7f45d1cf-6496db38dccmr139683a12.25.1765312868177; Tue, 09 Dec 2025
- 12:41:08 -0800 (PST)
+	s=arc-20240116; t=1765319343; c=relaxed/simple;
+	bh=PuSbWbgUByM578ik0jdxWy1kNOmNeFEhoG4GggzJS1c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mDxIauCoNcgXjuJ20pexfQHk5fiKKcInKhJzL82A5TaEaiKH1AjqR6QLP8YXHuL1cTYcAWFnCjcxloY1wXMVJY+qxihaO3/0ZLrCKVsTX3H3j7aD4FkWgREMPZWO32xZ5tSK4Jg1OA8i6sv/5JIJESJ6Mu8SjgoH9Oqe5rkLw84=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y65xC4Yb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B444CC4CEF5;
+	Tue,  9 Dec 2025 22:29:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1765319342;
+	bh=PuSbWbgUByM578ik0jdxWy1kNOmNeFEhoG4GggzJS1c=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=Y65xC4YbmUsdmytnCYReOSDlGSPwfQbUYO/9Xky31H61OlV/zxf95m/rJsGxq39Cm
+	 jjsDOHfy1m2muVNIP5z6UwVRO4M4khIt2dFoa2Ze1fE5pnqtmV2vRrozk/sKrgOS3N
+	 R23M3FUpHX5GX3CeFshd3VT6KovQjgk3GL8q4rOm/hwHBhviSg9KydgN9ICooArsIf
+	 /Qp/ClztQ7RktshHB/5KwANxLq2YAU/KHClC8uppq8isa3n+TD5eODhE3fSqBHLpMu
+	 KqtACcaOhlBfCvrMSfAmAuQmnUaRk/5KUbB2ARUYtmsyDUgLRZ3LXyoxlBO4XBUPQW
+	 1MQ7HSIOPgwBA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 8CA16CE0D19; Tue,  9 Dec 2025 14:29:00 -0800 (PST)
+Date: Tue, 9 Dec 2025 14:29:00 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-kernel@vger.kernel.org,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH v3] tracing: Guard __DECLARE_TRACE() use of
+ __DO_TRACE_CALL() with SRCU-fast
+Message-ID: <7052507f-a435-4fbb-bdf4-4949224e29dc@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <e2fe3162-4b7b-44d6-91ff-f439b3dce706@paulmck-laptop>
+ <20251208044352.38360456@debian>
+ <075fd9e5-2db8-4030-9364-0be5e22e9902@paulmck-laptop>
+ <20251208193849.3a51648a@debian>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251208235528.3670800-1-hpa@zytor.com> <20251209002519.GT1712166@ZenIV>
- <43CDF85F-800F-449C-8CA6-F35BEC88E18E@zytor.com> <20251209032206.GU1712166@ZenIV>
- <87F4003B-5011-49EF-A807-CEA094EA0DAC@zytor.com> <20251209090707.GV1712166@ZenIV>
-In-Reply-To: <20251209090707.GV1712166@ZenIV>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Wed, 10 Dec 2025 05:40:51 +0900
-X-Gmail-Original-Message-ID: <CAHk-=wi=2errb29CgwA4eSaLCEojo2Jq1d3ptDhxANfcKPH9xw@mail.gmail.com>
-X-Gm-Features: AQt7F2qPCXJihSB0EifxcMqIJwZJZTW_3j7hMQ2OwASD92TgZWMxviusY-ovH6E
-Message-ID: <CAHk-=wi=2errb29CgwA4eSaLCEojo2Jq1d3ptDhxANfcKPH9xw@mail.gmail.com>
-Subject: Re: [GIT PULL] __auto_type conversion for v6.19-rc1
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: "H. Peter Anvin" <hpa@zytor.com>, =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, 
-	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-	"Michael S. Tsirkin" <mst@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Alexey Dobriyan <adobriyan@gmail.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Arnd Bergmann <arnd@kernel.org>, Borislav Petkov <bp@alien8.de>, Dan Williams <dan.j.williams@intel.com>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	David Laight <David.Laight@aculab.com>, David Lechner <dlechner@baylibre.com>, 
-	Dinh Nguyen <dinguyen@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
-	Gatlin Newhouse <gatlin.newhouse@gmail.com>, Hao Luo <haoluo@google.com>, 
-	Ingo Molnar <mingo@redhat.com>, Jakub Sitnicki <jakub@cloudflare.com>, 
-	Jan Hendrik Farr <kernel@jfarr.cc>, Jason Wang <jasowang@redhat.com>, Jiri Olsa <jolsa@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Jonathan Cameron <Jonathan.Cameron@huawei.com>, 
-	Josh Poimboeuf <jpoimboe@kernel.org>, KP Singh <kpsingh@kernel.org>, Kees Cook <kees@kernel.org>, 
-	Luc Van Oostenryck <luc.vanoostenryck@gmail.com>, Marc Herbert <Marc.Herbert@linux.intel.com>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Mateusz Guzik <mjguzik@gmail.com>, Michal Luczaj <mhal@rbox.co>, 
-	Miguel Ojeda <ojeda@kernel.org>, Mykola Lysenko <mykolal@fb.com>, NeilBrown <neil@brown.name>, 
-	Peter Zijlstra <peterz@infradead.org>, Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
-	Sami Tolvanen <samitolvanen@google.com>, Shuah Khan <shuah@kernel.org>, Song Liu <song@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Thomas Gleixner <tglx@linutronix.de>, 
-	Thorsten Blum <thorsten.blum@linux.dev>, Uros Bizjak <ubizjak@gmail.com>, 
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Yafang Shao <laoar.shao@gmail.com>, 
-	Ye Bin <yebin10@huawei.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	Yufeng Wang <wangyufeng@kylinos.cn>, bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-sparse@vger.kernel.org, virtualization@lists.linux.dev, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251208193849.3a51648a@debian>
 
-On Tue, 9 Dec 2025 at 18:06, Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> BTW, speaking of C23 fun that is supported by gcc 8, but not by sparse:
-> __has_include().
->
-> Linus?  Seeing that I'm touching pre-process.c anyway for the sake of
-> __VA_OPT__, adding that thing ought to be reasonably easy
+On Mon, Dec 08, 2025 at 07:38:49PM -0500, Steven Rostedt wrote:
+> On Mon, 8 Dec 2025 12:46:32 -0800
+> "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> 
+> > >             bash-1165    [001] DBZ.f   269.955762: sys_rt_sigaction -> 0x0
+> > >                                ^^^^^
+> > >                             This is just garbage.  
+> > 
+> > Yes, but is is the original garbage, and garbage obtained by acceding
+> > to your request.  ;-)
+> 
+> Yes, here's what it looks like before patch:
+> 
+>             bash-1168    [001] .....    77.498737: sys_wait4 -> 0xfffffffffffffff6
+>             bash-1168    [001] .....    77.498740: sys_rt_sigreturn()
+>             bash-1168    [001] .....    77.498765: sys_rt_sigaction(sig: 2, act: 0x7ffef2f08c50, oact: 0x7ffef2f08cf0, sigsetsize: 8)
+>             bash-1168    [001] .....    77.498770: sys_rt_sigaction -> 0x0
+>             bash-1168    [001] .....    77.498794: sys_rt_sigprocmask(how: 0, nset: 0, oset: 0x7ffef2f08c70, sigsetsize: 8)
+>             bash-1168    [001] .....    77.498795: sys_rt_sigprocmask -> 0x0
+>             bash-1168    [001] .....    77.499055: sys_write(fd: 1, buf: 0x562f0f3aba90 (1b:5d:38:30:30:33:3b:65:6e:64:3d:36:62:62:34:38:38:39:38:2d:32:33:31:33:2d:34:64:38:30:2d:39:30:62:39
+> :2d:66:33:63:31:36:36:37:62:63:37:37:34:3b:65:78:69:74:3d:73:75:63:63:65:73:73:1b:5c) ".]8003;end=6bb48898-2313-4d80-90b9-f3c1667bc774;exit=success.\", count: 0x3e)
+>             bash-1168    [001] .l...    77.499099: sys_write -> 0x3e
+>             bash-1168    [001] .....    77.499196: sys_rt_sigprocmask(how: 0, nset: 0, oset: 0x7ffef2f080c0, sigsetsize: 8)
+>             bash-1168    [001] .....    77.499198: sys_rt_sigprocmask -> 0x0
+> 
+> [ that lone "l" (el not one) is LAZY_NEED_RESCHED ]
+> 
+> After adding the patch:
+> 
+>             bash-1212    [005] DBZ.f    72.179808: sys_rt_sigprocmask -> 0x0
+>             bash-1212    [005] DBZ.f    72.179811: sys_ioctl(fd: 0xff, cmd: 0x5401, arg: 0x7ffcaef0e1b0)
+>             bash-1212    [005] DBZ.f    72.179815: sys_ioctl -> 0x0
+>             bash-1212    [005] DBZ.f    72.179818: sys_ioctl(fd: 0xff, cmd: 0x5413, arg: 0x7ffcaef0e1c0)
+>             bash-1212    [005] DBZ.f    72.179823: sys_ioctl -> 0x0
+>             bash-1212    [005] DBZ.f    72.179862: sys_rt_sigprocmask(how: 2, nset: 0x7ffcaef0e290, oset: 0, sigsetsize: 8)
+>             bash-1212    [005] DBZ.f    72.179866: sys_rt_sigprocmask -> 0x0
+>             bash-1212    [005] DBZ.f    72.179884: sys_wait4(upid: 0xffffffffffffffff, stat_addr: 0x7ffcaef0db50, options: 0xb, ru: 0)
+>             bash-1212    [005] DBZ.f    72.179891: sys_wait4 -> 0xfffffffffffffff6
+>             bash-1212    [005] DBZ.f    72.179894: sys_rt_sigreturn()
 
-It sounds straightforward, and I'm certainly not going to object. I'm
-not sure how much we'd want to use it in the kernel: it might make it
-slightly easier to deal with various architectures and the "if the
-architecture has this header, use it, otherwise use the generic
-implementation" kinds of issues, but we do have fairly straightforward
-solutions for that already in our build system ('generic-y' and
-friends).
+Understood.
 
-So I'm not convinced it really buys us anything - I suspect it's a lot
-more useful in "normal" projects that have to deal with non-standard
-system headers and possible lack of libraries etc etc. Our build
-environment is so self-sufficient that it's not nearly the same issue
-for the kernel.
+> > Perhaps a little bit more constructively, have your conflicting changes
+> > hit mainline yet?
+> 
+> All my changes have hit mainline.
+> 
+> I believe I did have a solution for fixing the above issue but I was
+> planning to implement it after the merge window. I can probably do that
+> today during the keynotes ;-)
 
-              Linus
+Would it be easiest for me to just hand the patch back to you?  I am of
+course happy to push it myself, but I am also happy to avoid being in
+the way.
+
+							Thanx, Paul
 
