@@ -1,873 +1,257 @@
-Return-Path: <bpf+bounces-76361-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76362-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65B07CAFDD7
-	for <lists+bpf@lfdr.de>; Tue, 09 Dec 2025 13:06:14 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26519CAFDFE
+	for <lists+bpf@lfdr.de>; Tue, 09 Dec 2025 13:12:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 8CADA30203B8
-	for <lists+bpf@lfdr.de>; Tue,  9 Dec 2025 12:06:01 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 85DF330119EE
+	for <lists+bpf@lfdr.de>; Tue,  9 Dec 2025 12:12:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58ECF19006B;
-	Tue,  9 Dec 2025 12:05:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF75832142E;
+	Tue,  9 Dec 2025 12:12:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DdxEUXEb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NNZZQMVm"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FC0123185D
-	for <bpf@vger.kernel.org>; Tue,  9 Dec 2025 12:05:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDF512D77FA
+	for <bpf@vger.kernel.org>; Tue,  9 Dec 2025 12:12:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765281958; cv=none; b=sNlrGFc56sPoQU5kGArn8FU25dDMtc3/wDEy0AX8njH+dGUxeV5+FZz+n5N/9Pdss4R22fnup6Z7pv5AYrgBRKr7IIish76F/bcV22YIPo4smZnu760dHvMPcV/xFtfwcwgWBOKGnNm5gRmbT302Px5Zuj+XVQ7ORL+Dsd3M78I=
+	t=1765282361; cv=none; b=pMnknE9oQsw6QiQxvr5tXGLrDfyzo3YV5aQkDjFTTqugoQpP4Luao6ySvcC0R09zrWomOFEkFcRf052jrmuLg1Rrd6eqQukIRA+uhB2fWa+5mpsb0plBryEbJOYQEEjrrNnScuetgjwt8Zipubno/SRzzi/fW7hVRV476woAlBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765281958; c=relaxed/simple;
-	bh=CNkMIlkgW1zwg4sLnxPiV52ryw5pnL17rOEJtrQUa4Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=J9Zd7d1lSWHqyG1ZcPx9qSdPNfznvaTyiPJb18Fg62unnkO0fE3VE6QO9qhQzFN13enMt9KswF+xxrQdKpcrleLlZXCCZD0+wtrnPcTHQq+S9RvQD97h6Z6n03pdh96Mv9JJ1Emb0YQS+ZDKPesdbA8a0xjpQP0kA8teq+7SMaM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=DdxEUXEb; arc=none smtp.client-ip=91.218.175.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <d6bad574-80bb-462a-bad1-e6cfaa392d33@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1765281952;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7gaORYrshgrKfZyTEaCpvxow/pC6/zCBHwVT+EWaZ9Y=;
-	b=DdxEUXEblpdPfCdpkrobf02PCS+j/hZglv2jHpXyFEAoABQITvywT8KJFwkYuiULzsekFb
-	BmlO6ZMqEMcuY0QdouA30xbMc+3u5Sxdq5FnIUz/Guu7eNwhI++2jhkhwdHkbmh+dNNE/B
-	2XCKAntotU7e9+eaVQLxynab24FTYa8=
-Date: Tue, 9 Dec 2025 21:05:44 +0900
+	s=arc-20240116; t=1765282361; c=relaxed/simple;
+	bh=VuxjPLI/UAw5tJKbiinNZ84Om6ZqnyBXEnyuPGh7his=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lzR5nU8NeW14zNyEdYVWsgDvbrs95qhvPLpLD0DX1icJpP7i8qwC50VvkjR+vo1F4/iJuaTan8dAFH5EREUiUkS4Owdff9gNYSCYPJ2T6YSIyst6AS+Mq3+pRVpGYyhVEwOOV9zigeH/SG0/IcqmrtqbBDYGsJYs4Hd2zycPUaI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NNZZQMVm; arc=none smtp.client-ip=209.85.210.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-7c7533dbd87so4843067a34.2
+        for <bpf@vger.kernel.org>; Tue, 09 Dec 2025 04:12:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1765282359; x=1765887159; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xPO/BvKGg7sBkLwEUPIfmAVXeNPbTgtzjvUBKwIinZM=;
+        b=NNZZQMVm+rZehOtMevfQl0tQDZadGvjRC6fl63QweERnrxwxpw+gqjeVMzPSqDGw7F
+         VKZtLUn0tkJSCCFyflNLn/da+XVLIFX3kR+QwhPtXMW9noLrS3WMB0o4PaPdBmH/2K92
+         eJBR4BMKr2q0rEl43SXaR7M++Y/5hTawZlWsihPVXkmDNNI217ppFtN88JqbBlFf3YE3
+         vV24Ug4SrtKSlQMdNqQOgsJNKIMgpFe5C9FGp/NDD4/RrOkW5LTr+EvknkiiNKcKI79C
+         /SyPwKMYGTq3FfTUObNrH26M0s53l9AAYJz5PZ/zoUleirOFJM7yJknF5SbijjL0U3m2
+         NJHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765282359; x=1765887159;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=xPO/BvKGg7sBkLwEUPIfmAVXeNPbTgtzjvUBKwIinZM=;
+        b=viG5SDR7WWB9IZFv4Xu92Mu0YjXONKTd+SSkcqUTAwSlYmvGeh8BvDNqU67NTBTebI
+         4kL8UQguWSRw7Mq3jOEUfVTYLpYKqe3YJVfAXFRFCEQozqiAqxL9FBGolduQ5rH1xYJo
+         T7eLBBDekPwwj/TpCuc7dSG6nEW0b3e8DeJTiJgm9AbxpcIjT6HofsgIjUuGPWvNfICx
+         Y5zZ07WpMpQppruQyCFtRYU7TWdEqXWWN7NMI9sDZQsufoEalkFzDYdnRLIm+tR+MhxE
+         VkDqUNJ7g8wm5WnfxlsYeh9xxyWUzjODrf2WgnXOSErcCNJXQHrShU/sY5YeVnbd9Xu3
+         PuSw==
+X-Forwarded-Encrypted: i=1; AJvYcCVlCIbdFzu8l9rS5eCNCXu++u87tqwZ8CaXmJColYHdlXqFhYH8j3zyqC6jOBYb01dg07Y=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzzmqB/aghUEziF9Mu68UySgxMGYebNiZErxkLK/ccvC1SGVNxX
+	vF/621fW5LOdjo7/BytfsF7VRdFkspNmKLoowR86ht/iyTVq3QJCZJUzuKJensmK6AOlDd2bOL4
+	80k66ntFI9etnw6LjpvkS3x1m3I9RTdc=
+X-Gm-Gg: ASbGncuPtF3qUAQw0JyzXDZ+OWhkfeerP0AS8uJNgQBeLngR85t7B9b10+of0tUxUpz
+	kWzklROBnhKRndJ2V6auta1GcyfXnUfxrhRtNYAWI68uhilzk1WLh4Fjhmz5oSKp4QV+5jusdfx
+	eslkMKNkYQ+1AaL9c8OhMLf0daqJPAMj4RZjbsdT9GyXMfmHbS1LDfULRbqfpmsr6TX+SJQET9J
+	cE+jofD6aBtSzGSOrlGaQCaIrE3Xm6z0IbVdH1RmzsGdAbij5MMYgVmV/n9VC8IaQxEChU=
+X-Google-Smtp-Source: AGHT+IEjEeVeN7jrrz6hBysMK/wp7Dao0ahhwFRlvs+E2NHCTRzvpL64IBfuIJom0oyae7nuV2pfZHPgKzBo5ZkBYdU=
+X-Received: by 2002:a05:6820:1b19:b0:656:b1fb:a8fd with SMTP id
+ 006d021491bc7-6599a8a097fmr4639005eaf.1.1765282358807; Tue, 09 Dec 2025
+ 04:12:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH dwarves v2 2/2] pahole: Replace or add functions with true
- signatures in btf
-Content-Language: en-GB
-To: Alan Maguire <alan.maguire@oracle.com>,
- Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>, dwarves@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- bpf@vger.kernel.org, David Faust <david.faust@oracle.com>,
- "Jose E . Marchesi" <jose.marchesi@oracle.com>, kernel-team@fb.com
-References: <20251130040340.2636458-1-yonghong.song@linux.dev>
- <20251130040350.2636774-1-yonghong.song@linux.dev>
- <ba74c79f-6f65-47d5-972a-af35b3aec4bc@oracle.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <ba74c79f-6f65-47d5-972a-af35b3aec4bc@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20251209031628.28429-1-kerneljasonxing@gmail.com> <6937d508.a70a0220.38f243.00c9.GAE@google.com>
+In-Reply-To: <6937d508.a70a0220.38f243.00c9.GAE@google.com>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Tue, 9 Dec 2025 20:12:02 +0800
+X-Gm-Features: AQt7F2oj04V18heapGTuW-sH7huLMZrlgW5Il7HJbcoA1PpdckVwNgFNVsARJoM
+Message-ID: <CAL+tcoDfvz9fR4XK6FPH8Ng+OfF67UX86=fZL2xxZGnuA2Rs5g@mail.gmail.com>
+Subject: Re: [syzbot ci] Re: xsk: move cq_cached_prod_lock to avoid touching a
+ cacheline in sending path
+To: syzbot ci <syzbot+ci28a5ab4f329a6a88@syzkaller.appspotmail.com>
+Cc: ast@kernel.org, bjorn@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com, 
+	hawk@kernel.org, john.fastabend@gmail.com, jonathan.lemon@gmail.com, 
+	kernelxing@tencent.com, kuba@kernel.org, maciej.fijalkowski@intel.com, 
+	magnus.karlsson@intel.com, netdev@vger.kernel.org, pabeni@redhat.com, 
+	sdf@fomichev.me, syzbot@lists.linux.dev, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Dec 9, 2025 at 3:52=E2=80=AFPM syzbot ci
+<syzbot+ci28a5ab4f329a6a88@syzkaller.appspotmail.com> wrote:
+>
+> syzbot ci has tested the following series
+>
+> [v4] xsk: move cq_cached_prod_lock to avoid touching a cacheline in sendi=
+ng path
+> https://lore.kernel.org/all/20251209031628.28429-1-kerneljasonxing@gmail.=
+com
+> * [PATCH RFC net-next v4] xsk: move cq_cached_prod_lock to avoid touching=
+ a cacheline in sending path
+>
+> and found the following issue:
+> BUG: unable to handle kernel NULL pointer dereference in xp_create_and_as=
+sign_umem
+>
+> Full report is available here:
+> https://ci.syzbot.org/series/d7e166a7-a880-4ea1-9707-8889afd4ebe8
+>
+> ***
+>
+> BUG: unable to handle kernel NULL pointer dereference in xp_create_and_as=
+sign_umem
+>
+> tree:      net-next
+> URL:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/netde=
+v/net-next.git
+> base:      0177f0f07886e54e12c6f18fa58f63e63ddd3c58
+> arch:      amd64
+> compiler:  Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~e=
+xp1~20250708183702.136), Debian LLD 20.1.8
+> config:    https://ci.syzbot.org/builds/d327cc4b-7471-413b-b244-519c6d16d=
+43b/config
+> C repro:   https://ci.syzbot.org/findings/c8f7aeaf-0e2e-43dd-ae9c-ea2dd8d=
+b8d34/c_repro
+> syz repro: https://ci.syzbot.org/findings/c8f7aeaf-0e2e-43dd-ae9c-ea2dd8d=
+b8d34/syz_repro
 
-
-On 12/8/25 8:22 AM, Alan Maguire wrote:
-> On 30/11/2025 04:03, Yonghong Song wrote:
->> Overview
->> ========
->>
->> The llvm pull request ([1]) is able to emit dwarf data for
->> changed-signature and new functions. The new dwarf format has
->> tag DW_TAG_inlined_subroutine and directly under CU. There
->> is no other change for existing dwarf. See further down examples.
->>
->> When building linux kernel with [1], additional functions will
->> be added to dwarf:
->>    - A function with signature changed compared to source.
->>      For example, original function foo(int a, int b) is optimized
->>      too foo(int b). The foo(int b) will be added to dwarf
->>      and the original foo(int a, int b) is not touched.
->>    - A function generated by the compiler which typically will have
->>      '.' in the function name, for example, in thin-lto mode,
->>      a function could be foo.llvm.<hash>.
->>
->> A new feature 'true_signature' is introduced in pahole. Only if
->> 'true_signature' is enabled by pahole in linux kernel, pahole will
->> either replace the old function with new function for correct
->> signature in vmlinux/module btf, or add new functions to the btf
->> like foo.llvm.<hash>.
->>
-> hi Yonghong,
->
-> The true signature approach makes sense, but I wonder if we could align
-> the LLVM DWARF representation a bit better with what gcc does today. Jose
-> or David can chime in if I've got this wrong but my understanding is that
-> we have
->
-> 1. An abstract representation of the function, corresponding to the source
-> representation. It uses a DW_TAG_subprogram and declares the name,
-> parameters etc but doesn't have any attributes like low_pc/high_pc associated
-> with it.
->
-> As an example consider
->
-> static void __blkcg_rstat_flush(struct blkcg *blkcg, int cpu);
->
-> It has - as expected - an abstract representation as follows:
->
->   <1><6392a2d>: Abbrev Number: 47 (DW_TAG_subprogram)
->      <6392a2e>   DW_AT_name        : (indirect string, offset: 0x261e25): __blkcg_rstat_flush
->      <6392a32>   DW_AT_decl_file   : 1
->      <6392a33>   DW_AT_decl_line   : 1043
->      <6392a35>   DW_AT_decl_column : 13
->      <6392a36>   DW_AT_prototyped  : 1
->      <6392a36>   DW_AT_inline      : 1   (inlined)
->      <6392a37>   DW_AT_sibling     : <0x6392bac>
->   <2><6392a3b>: Abbrev Number: 38 (DW_TAG_formal_parameter)
->      <6392a3c>   DW_AT_name        : (indirect string, offset: 0xa7a9f): blkcg
->      <6392a40>   DW_AT_decl_file   : 1
->      <6392a41>   DW_AT_decl_line   : 1043
->      <6392a43>   DW_AT_decl_column : 47
->      <6392a44>   DW_AT_type        : <0x638b611>
->   <2><6392a48>: Abbrev Number: 20 (DW_TAG_formal_parameter)
->      <6392a49>   DW_AT_name        : cpu
->      <6392a4d>   DW_AT_decl_file   : 1
->      <6392a4e>   DW_AT_decl_line   : 1043
->      <6392a50>   DW_AT_decl_column : 58
->      <6392a51>   DW_AT_type        : <0x6377f8f>
->
->
-> 2. Possibly multiple concrete representations. For the above function,
-> the concrete representation after optimization is
->
-> ffffffff8186d180 t __blkcg_rstat_flush.isra.0
->
-> and has a concrete representation with parameter order switched:
->
-> <1><6399661>: Abbrev Number: 110 (DW_TAG_subprogram)
->      <6399662>   DW_AT_abstract_origin: <0x6392a2d>
->      <6399666>   DW_AT_low_pc      : 0xffffffff8186d180
->      <639966e>   DW_AT_high_pc     : 0x169
->      <6399676>   DW_AT_frame_base  : 1 byte block: 9c    (DW_OP_call_frame_cfa)
->      <6399678>   DW_AT_GNU_all_call_sites: 1
->      <6399678>   DW_AT_sibling     : <0x6399a8a>
->   <2><639967c>: Abbrev Number: 4 (DW_TAG_formal_parameter)
->      <639967d>   DW_AT_abstract_origin: <0x6392a48>
->      <6399681>   DW_AT_location    : 0x1fe21fb (location list)
->      <6399685>   DW_AT_GNU_locviews: 0x1fe21f5
->   <2><63996e4>: Abbrev Number: 4 (DW_TAG_formal_parameter)
->      <63996e5>   DW_AT_abstract_origin: <0x6392a3b>
->      <63996e9>   DW_AT_location    : 0x1fe2387 (location list)
->      <63996ed>   DW_AT_GNU_locviews: 0x1fe2385
->
-> In other words - presuming locations tell us that these parameters are
-> in the expected registers based on calling conventions - we end up with
->
-> static void __blkcg_rstat_flush.isra.0(int cpu, struct blkcg *blkcg);
->
-> We can tie it to the .isra.0 instance via function address from DW_AT_low_pc,
-> and the order change of DW_TAG_formal_parameters tells us the rest.
-
-Is it possible that the function __blkcg_rstat_flush() may have two
-derived functions like
-   __blkcg_rstat_flush.isra.0(...)
-and
-   __blkcg_rstat_flush.constprop.0(...)
-
-Is it possible?
+Interesting. Only rx logic is initialized while tx not. That causes
+the cq_tmp to be uninitialized.
 
 >
-> So it seems like the concrete/abstract representations _could_ handle
-> parameter order changes, missing parameters. The only case missing is
-> where we end up with a parameter _type_ transformation, like where
->
-> static int map_create(union bpf_attr *attr, bpfptr_t uattr);
->
-> becomes
->
-> static int map_create(union bpf_attr *attr, bool is_kernel)
->
-> I presume supplementing the concrete instance with a fresh (not abstract
-> origin-referencing) DW_TAG_formal_parameter for is_kernel would work here
-> though? Is there anything else you need for the true signature representation
-> that such an approach is missing?
+> UDPLite6: UDP-Lite is deprecated and scheduled to be removed in 2025, ple=
+ase contact the netdev mailing list
+> BUG: kernel NULL pointer dereference, address: 0000000000000058
+> #PF: supervisor write access in kernel mode
+> #PF: error_code(0x0002) - not-present page
+> PGD 80000001b2496067 P4D 80000001b2496067 PUD 0
+> Oops: Oops: 0002 [#1] SMP KASAN PTI
+> CPU: 1 UID: 0 PID: 5973 Comm: syz.0.17 Not tainted syzkaller #0 PREEMPT(f=
+ull)
+> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.=
+16.2-1 04/01/2014
+> RIP: 0010:lockdep_init_map_type+0x1e/0x380 kernel/locking/lockdep.c:4944
+> Code: 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 55 41 56 53 48 83 e=
+c 10 89 cd 48 89 fb 65 48 8b 05 67 af d1 10 48 89 44 24 08 <48> c7 47 10 00=
+ 00 00 00 48 c7 47 08 00 00 00 00 8b 05 8c f2 dc 17
+> RSP: 0018:ffffc90003c07bb8 EFLAGS: 00010286
+> RAX: ec490cf5c114aa00 RBX: 0000000000000048 RCX: 0000000000000000
+> RDX: ffffffff99d16120 RSI: ffffffff8c92a180 RDI: 0000000000000048
+> RBP: 0000000000000000 R08: 0000000000000003 R09: 0000000000000000
+> R10: ffffed102e5d7800 R11: fffffbfff1efa3cf R12: dffffc0000000000
+> R13: ffff8881bdeb3000 R14: ffffffff99d16120 R15: ffffffff8c92a180
+> FS:  00005555729bd500(0000) GS:ffff8882a9f31000(0000) knlGS:0000000000000=
+000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000000000058 CR3: 0000000172faa000 CR4: 00000000000006f0
+> Call Trace:
+>  <TASK>
+>  lockdep_init_map_waits include/linux/lockdep.h:135 [inline]
+>  lockdep_init_map_wait include/linux/lockdep.h:142 [inline]
+>  __raw_spin_lock_init+0x45/0x100 kernel/locking/spinlock_debug.c:25
 
-I admit that locations might be able to derive the true parameter.
-For every parameter, we need to go to location list to find the
-actual signature (only if the function is known different from the source
-level signature).
+Using if-condition to check if cq_tmp is NULL would avoid the corruption.
 
-See
-   https://lists.dwarfstd.org/pipermail/dwarf-discuss/2025-December/002779.html
+Will add it in the next version.
 
-So we do have a trade-off here.
+Thanks,
+Jason
 
+
+>  xp_create_and_assign_umem+0x648/0xd40 net/xdp/xsk_buff_pool.c:94
+>  xsk_bind+0x95a/0xf90 net/xdp/xsk.c:1355
+>  __sys_bind_socket net/socket.c:1874 [inline]
+>  __sys_bind+0x2c6/0x3e0 net/socket.c:1905
+>  __do_sys_bind net/socket.c:1910 [inline]
+>  __se_sys_bind net/socket.c:1908 [inline]
+>  __x64_sys_bind+0x7a/0x90 net/socket.c:1908
+>  do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+>  do_syscall_64+0xfa/0xfa0 arch/x86/entry/syscall_64.c:94
+>  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+> RIP: 0033:0x7f591eb8f7c9
+> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f=
+7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff=
+ ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007ffce6fcef48 EFLAGS: 00000246 ORIG_RAX: 0000000000000031
+> RAX: ffffffffffffffda RBX: 00007f591ede5fa0 RCX: 00007f591eb8f7c9
+> RDX: 0000000000000010 RSI: 0000200000000240 RDI: 0000000000000003
+> RBP: 00007f591ebf297f R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+> R13: 00007f591ede5fa0 R14: 00007f591ede5fa0 R15: 0000000000000003
+>  </TASK>
+> Modules linked in:
+> CR2: 0000000000000058
+> ---[ end trace 0000000000000000 ]---
+> RIP: 0010:lockdep_init_map_type+0x1e/0x380 kernel/locking/lockdep.c:4944
+> Code: 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 55 41 56 53 48 83 e=
+c 10 89 cd 48 89 fb 65 48 8b 05 67 af d1 10 48 89 44 24 08 <48> c7 47 10 00=
+ 00 00 00 48 c7 47 08 00 00 00 00 8b 05 8c f2 dc 17
+> RSP: 0018:ffffc90003c07bb8 EFLAGS: 00010286
+> RAX: ec490cf5c114aa00 RBX: 0000000000000048 RCX: 0000000000000000
+> RDX: ffffffff99d16120 RSI: ffffffff8c92a180 RDI: 0000000000000048
+> RBP: 0000000000000000 R08: 0000000000000003 R09: 0000000000000000
+> R10: ffffed102e5d7800 R11: fffffbfff1efa3cf R12: dffffc0000000000
+> R13: ffff8881bdeb3000 R14: ffffffff99d16120 R15: ffffffff8c92a180
+> FS:  00005555729bd500(0000) GS:ffff8882a9f31000(0000) knlGS:0000000000000=
+000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000000000058 CR3: 0000000172faa000 CR4: 00000000000006f0
+> ----------------
+> Code disassembly (best guess):
+>    0:   90                      nop
+>    1:   90                      nop
+>    2:   90                      nop
+>    3:   90                      nop
+>    4:   90                      nop
+>    5:   90                      nop
+>    6:   90                      nop
+>    7:   90                      nop
+>    8:   90                      nop
+>    9:   90                      nop
+>    a:   90                      nop
+>    b:   90                      nop
+>    c:   f3 0f 1e fa             endbr64
+>   10:   55                      push   %rbp
+>   11:   41 56                   push   %r14
+>   13:   53                      push   %rbx
+>   14:   48 83 ec 10             sub    $0x10,%rsp
+>   18:   89 cd                   mov    %ecx,%ebp
+>   1a:   48 89 fb                mov    %rdi,%rbx
+>   1d:   65 48 8b 05 67 af d1    mov    %gs:0x10d1af67(%rip),%rax        #=
+ 0x10d1af8c
+>   24:   10
+>   25:   48 89 44 24 08          mov    %rax,0x8(%rsp)
+> * 2a:   48 c7 47 10 00 00 00    movq   $0x0,0x10(%rdi) <-- trapping instr=
+uction
+>   31:   00
+>   32:   48 c7 47 08 00 00 00    movq   $0x0,0x8(%rdi)
+>   39:   00
+>   3a:   8b 05 8c f2 dc 17       mov    0x17dcf28c(%rip),%eax        # 0x1=
+7dcf2cc
 >
-> If we could bring these approaches a bit closer I think we could get pahole to
-> emit true signatures for LLVM/gcc using the same/similar code which would
-> make things more maintainable, and wouldn't require any deviations from existing
-> DWARF.
 >
-> Thanks!
+> ***
 >
-> Alan
->   
->> Below are some more detailed illustration of new dwarf format,
->> how compiler controls what to generate, and how newly added
->> functions (e.g., foo.llvm.<hash>) could be used, etc.
->>
->> Added Dwarf Contents
->> ====================
->>
->> The following are some examples from linux kernel.
->>
->> Example 1
->> ---------
->>
->>    0x000411f0:   DW_TAG_inlined_subroutine
->>                    DW_AT_name      ("split_fs_names")
->>                    DW_AT_type      (0x00023368 "int")
->>                    DW_AT_artificial        (true)
->>                    DW_AT_specification     (0x00040d1f "split_fs_names")
->>
->>    0x000411fc:     DW_TAG_formal_parameter
->>                      DW_AT_name    ("page")
->>                      DW_AT_type    (0x000233bb "char *")
->>
->>    0x00041204:     NULL
->>
->> vmlinux BTF:
->>    [131534] FUNC_PROTO '(anon)' ret_type_id=14 vlen=1
->>            'page' type_id=100
->>    [131535] FUNC 'split_fs_names' type_id=131534 linkage=static
->>
->> Signature changed due to optimization. The source signature is
->>    static int __init split_fs_names(char *page, size_t size) { ... }
->>
->> The vmlinux BTF will encode 'int split_fs_names(char *page)'.
->>
->> Example 2
->> ---------
->>
->>    0x01886077:   DW_TAG_inlined_subroutine
->>                    DW_AT_name      ("map_create")
->>                    DW_AT_type      (0x01854182 "int")
->>                    DW_AT_artificial        (true)
->>                    DW_AT_specification     (0x01870e96 "map_create")
->>
->>    0x01886083:     DW_TAG_formal_parameter
->>                      DW_AT_name    ("attr")
->>                      DW_AT_type    (0x01854370 "bpf_attr *")
->>
->>    0x0188608b:     DW_TAG_formal_parameter
->>                      DW_AT_name    ("is_kernel")
->>                      DW_AT_type    (0x01855b14 "bool")
->>
->>    0x01886093:     NULL
->>
->> vmlinux BTF:
->>    [119] TYPEDEF 'bool' type_id=120
->>    [120] INT '_Bool' size=1 bits_offset=0 nr_bits=8 encoding=BOOL
->>    ...
->>    [106699] FUNC_PROTO '(anon)' ret_type_id=14 vlen=2
->>            'attr' type_id=707
->>            'is_kernel' type_id=119
->>    [106700] FUNC 'map_create' type_id=106699 linkage=static
->>
->> Signature changed due to optimization. The source signature is
->>    typedef struct {
->>          union {
->>                  void            *kernel;
->>                  void __user     *user;
->>          };
->>          bool            is_kernel : 1;
->>    } sockptr_t;
->>    typedef sockptr_t bpfptr_t;
->>    static int map_create(union bpf_attr *attr, bpfptr_t uattr) { ... }
->>
->> In the above, the second parameter 'is_kernel' corresponds to the
->> second member in sockptr_t.
->>
->> Example 3
->> ---------
->>
->>    0x0060dd56:   DW_TAG_inlined_subroutine
->>                    DW_AT_name      ("enable_step.llvm.569499763459584554")
->>                    DW_AT_artificial        (true)
->>                    DW_AT_specification     (0x0060d396 "enable_step")
->>
->>    0x0060dd5d:     DW_TAG_formal_parameter
->>                      DW_AT_name    ("child")
->>                      DW_AT_type    (0x006046b9 "task_struct *")
->>
->>    0x0060dd64:     DW_TAG_formal_parameter
->>                      DW_AT_name    ("block")
->>                      DW_AT_type    (0x00605b99 "bool")
->>
->>    0x0060dd6b:     NULL
->>
->>    [90683] FUNC_PROTO '(anon)' ret_type_id=0 vlen=2
->>            'child' type_id=321
->>            'block' type_id=45
->>    [90684] FUNC 'enable_step.llvm.569499763459584554' type_id=90683 linkage=static
->>
->> No signature change. But the thin-lto promoted the function enable_step() to global,
->> hence enable_step.llvm.<hash>.
->>
->> Example 4
->> ---------
->>
->>    0x00b920fb:   DW_TAG_inlined_subroutine
->>                    DW_AT_name      ("__ioremap_caller.llvm.766076626088609549")
->>                    DW_AT_type      (0x00b83dd6 "void *")
->>                    DW_AT_artificial        (true)
->>                    DW_AT_specification     (0x00b8420d "__ioremap_caller")
->>
->>    0x00b92109:     DW_TAG_formal_parameter
->>                      DW_AT_name    ("phys_addr")
->>                      DW_AT_type    (0x00b850b2 "resource_size_t")
->>
->>    0x00b92111:     DW_TAG_formal_parameter
->>                      DW_AT_name    ("size")
->>                      DW_AT_type    (0x00b841dd "unsigned long")
->>
->>    0x00b92119:     DW_TAG_formal_parameter
->>                      DW_AT_name    ("pcm")
->>                      DW_AT_type    (0x00b84562 "page_cache_mode")
->>
->>    0x00b92121:     DW_TAG_formal_parameter
->>                      DW_AT_name    ("caller")
->>                      DW_AT_type    (0x00b83dd6 "void *")
->>
->>    0x00b92129:     NULL
->>
->> The corresponding vmlinux BTF:
->>    [60222] FUNC_PROTO '(anon)' ret_type_id=17 vlen=4
->>            'phys_addr' type_id=56
->>            'size' type_id=15
->>            'pcm' type_id=5633
->>            'caller' type_id=17
->>    [60223] FUNC '__ioremap_caller.llvm.766076626088609549' type_id=60222 linkage=static
->>
->> For this one, the signature and func name changed for __ioremap_caller().
->> The original signature is
->>    static void __iomem *
->>    __ioremap_caller(resource_size_t phys_addr, unsigned long size,
->>                     enum page_cache_mode pcm, void *caller, bool encrypted) { ... }
->>
->> Note that since '__ioremap_caller' is promoted to '__ioremap_caller.llvm.766076626088609549'
->> and '__ioremap_caller' is not in kallsyms, vmlinux BTF will not have
->> a function entry for '__ioremap_caller'. See below.
->>
->>    [root@arch-fb-vm1 bpf]# grep __ioremap_caller /proc/kallsyms
->>    ffffffff812c7b80 T __pfx___ioremap_caller.llvm.16406939874149108668
->>    ffffffff812c7b90 t __ioremap_caller.llvm.16406939874149108668
->>    ffffffff82c267f2 d __ioremap_caller._entry
->>    ...
->>    [root@arch-fb-vm1 bpf]# grep __ioremap_caller /sys/kernel/debug/tracing/available_filter_functions
->>    __ioremap_caller.llvm.16406939874149108668
->>    [root@arch-fb-vm1 bpf]#
->>
->> Build Linux Kernel
->> ==================
->>
->> The following kernel patch is needed to support true signatures:
->>    diff --git a/Makefile b/Makefile
->>    index 088565edc911..a35dd86c7639 100644
->>    --- a/Makefile
->>    +++ b/Makefile
->>    @@ -1002,6 +1002,11 @@ endif
->>     ifdef CONFIG_LTO_CLANG
->>     ifdef CONFIG_LTO_CLANG_THIN
->>     CC_FLAGS_LTO   := -flto=thin -fsplit-lto-unit
->>    +ifeq ($(call test-ge, $(CONFIG_PAHOLE_VERSION), 131),y)
->>    +ifeq ($(call clang-min-version, 220000),y)
->>    +KBUILD_LDFLAGS  += $(call ld-option, -mllvm -enable-changed-func-dbinfo)
->>    +endif
->>    +endif
->>     else
->>     CC_FLAGS_LTO   := -flto
->>     endif
->>    @@ -1009,6 +1014,12 @@ CC_FLAGS_LTO     += -fvisibility=hidden
->>
->>     # Limit inlining across translation units to reduce binary size
->>     KBUILD_LDFLAGS += -mllvm -import-instr-limit=5
->>    +else
->>    +ifeq ($(call test-ge, $(CONFIG_PAHOLE_VERSION), 131),y)
->>    +ifeq ($(call clang-min-version, 220000),y)
->>    +KBUILD_CFLAGS  += -mllvm -enable-changed-func-dbinfo
->>    +endif
->>    +endif
->>     endif
->>
->>     ifdef CONFIG_LTO
->>    diff --git a/scripts/Makefile.btf b/scripts/Makefile.btf
->>    index db76335dd917..2f66cc0bc2b5 100644
->>    --- a/scripts/Makefile.btf
->>    +++ b/scripts/Makefile.btf
->>    @@ -23,7 +23,7 @@ else
->>     # Switch to using --btf_features for v1.26 and later.
->>     pahole-flags-$(call test-ge, $(pahole-ver), 126)  = -j$(JOBS) --btf_features=encode_force,var,float,enum64,decl_tag,type_tag,optimized_func,consistent_func,decl_tag_kfuncs
->>
->>     pahole-flags-$(call test-ge, $(pahole-ver), 130) += --btf_features=attributes
->>    +pahole-flags-$(call test-ge, $(pahole-ver), 131) += --btf_features=true_signature
->>
->> Remarks
->> =======
->>
->> The llvm patch [1] supports remarks which help dump out some debug info,
->> e.g., why a particular function is skipped or generated in special way. The
->> below kernel build option can enable remarks:
->>
->>    KBUILD_LDFLAGS  += $(call ld-option, -mllvm -enable-changed-func-dbinfo \
->>        --opt-remarks-filename <prefix> --opt-remarks-passes emit-changed-func-debuginfo)
->>    KBUILD_CFLAGS  += -mllvm -enable-changed-func-dbinfo -fsave-optimization-record \
->>        -foptimization-record-passes=emit-changed-func-debuginfo
->>
->> In the above, the <prefix> can be e.g. /home/<login_name>/tmp/lto.opt.yaml or
->> lto.opt.yaml. If the <prefix> is /home/<login_name>/tmp/lto.opt.yaml, the extra
->> yaml files will be list of /home/<login_name>/tmp/lto.opt.yaml.thin.<number>'s
->> which represents each original source file. If the <prefix> is lto.opt.yaml,
->> the extra yaml files will be in the build directory with lto.opt.yaml.thin.<number>'s.
->>
->> For no-lto mode, the remark files will be in the same directory as
->> the corresponding object file. For example, for kernel/bpf/core.o, the corresponding
->> yaml file will be kernel/bpf/core.opt.yaml.
->>
->> The following command can help find any non-empty remark file which can
->> help debugging.
->>    find . -type f -name '*.opt.yaml.*' -size +0c
->> For anything with non-zero size, inspection should be able to find
->> which function has some issues for generating true signature.
->>
->> Currently, there are no remarks generated with latest bpf-next.
->> The following is a remark example in the commit message in [1].
->>
->>    $ cat test.opt.yaml
->>    --- !Passed
->>    Pass:            emit-changed-func-debuginfo
->>    Name:            FindNoDIVariable
->>    DebugLoc:        { File: test.c, Line: 1, Column: 0 }
->>    Function:        callee
->>    Args:
->>      - String:          'create a new int type '
->>      - ArgName:         ''
->>      - String:          '('
->>      - ArgIndex:        '0'
->>      - String:          ')'
->>    ...
->>
->> Some Statictics
->> ===============
->>
->> Compare no-lto and lto functions:
->> -------------------------------------------
->>
->>    without -mllvm -enable-changed-func-dbinfo:
->>      no-lto: 66051 functions
->>      lto:     66227 functions
->>    additional functions with -mllvm -enable-changed-func-dbinfo:
->>      no-lto: 894  new DW_TAG_inlined_subroutine entries
->>      lto:    2991 ...
->>
->> vmlinux BTF size:
->> ----------------
->>                                         size
->>    no-lto without new signatures:       0x623746
->>    no-lto with new signatures:          0x62712e
->>
->>    lto without new signatures:          0x6335b9
->>    lto with new signatures:             0x642ea3
->>
->> For no-lto build, the vmlinux BTF increases 14824 bytes compared to
->> the build without new signatures.
->>
->> For lto build, the vmlinux BTF increases 63722 bytes compared to
->> the build without new signatures.
->>
->> So looks like the BTF increase should not be a concern here.
->>
->> Should Import Functions with Dot?
->> ====================================
->>
->> Current pahole removed ".<...>" suffix in kallsyms so the function
->> name can match the source-level dwarf. This way, the vmlinux BTF has
->> source-level function name.
->>
->> There is a debate whether dwarf function like <foo>.llvm.<hash> should
->> be introduced into vmlinux BTF. Current pahole searches kallsyms and
->> for symbol like <foo>.llvm.<hash>, only <foo> is represented as an elf
->> symbol. But for kallsyms and
->> /sys/kernel/debug/tracing/available_filter_functions etc., actual functions,
->> e.g., <foo>.llvm.<hash>, are encoded there. So it should be a good idea to
->> be consistent using the same function name (e.g., <foo>.llvm.<hash>) for
->> to-be-traced func name and the actual name in kernel.
->>
->> In [1], function with dot (e.g., foo.llvm.<hash>) is allowed to be
->> in dwarf. This paves the way to have such functions in kernel BTF as well.
->>
->> Previously, fentry/fexit for function enable_step.llvm.569499763459584554() won't work
->> since in vmlinux BTF, the name is 'enable_step'. But 'enable_step' is not in kallsyms,
->> so bpf program load will fail. Now we have a function entry with name
->> enable_step.llvm.569499763459584554 in BTF and the name matches with kernel, so
->> fentry/fexit can be successful although this needs a little bit user work:
->>
->>          skel = fentry_lto__open();
->>          if (!ASSERT_OK_PTR(skel, "fentry_lto__open"))
->>                  return;
->>
->>          /* The fentry target is 'enable_step' or 'enable_step.llvm.<hash>' */
->>          /* User need to find out whether either or them exist in ksyms.
->>           * Let us assume enable_step.llvm.<hash>() exists and enable_step()
->>           * does not exist in kallsyms.
->>           */
->>
->>          prog = skel->progs.test1;
->>          bpf_program__set_attach_target(prog, 0, "enable_step.llvm.<hash>");
->>
->>          err = fentry_lto__load(skel);
->>          if (!ASSERT_OK(err, "fentry_lto__load"))
->>                  goto out;
->>
->> There is an alternative solution to handle the above in [2] which utilizes
->> the kprobe_multi with option 'unique_match'. It should work in most cases
->> except something like functions foobar() and foo.llvm.<hash>(). In such cases,
->> unique_match 'foo*' will not work since it will match both functions.
->> Maybe regex could be 'foo.llvm.*'. The above bpf_program__set_attach_target()
->> approach seems more robust.
->>
->> Linux Kernel BPF Selftest Resutls
->> =================================
->>
->> Tried with both no-lto and lto mode, there are no additional selftest
->> failures compared to without this patch set.
->>
->> Future Work
->> ===========
->>
->> We need gcc side to generate true signatures as well with ideally
->> the same dwarf format.
->>
->>    [1] https://github.com/llvm/llvm-project/pull/165310
->>    [2] https://lore.kernel.org/bpf/20250109174023.3368432-1-yonghong.song@linux.dev/
->>
->> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
->> ---
->>   btf_encoder.c  | 46 +++++++++++++++++++++++-----
->>   dwarf_loader.c | 81 ++++++++++++++++++++++++++++++++++++++++++++++++++
->>   dwarves.h      |  4 +++
->>   pahole.c       |  9 ++++++
->>   4 files changed, 132 insertions(+), 8 deletions(-)
->>
->> diff --git a/btf_encoder.c b/btf_encoder.c
->> index 3486fa3..229b34f 100644
->> --- a/btf_encoder.c
->> +++ b/btf_encoder.c
->> @@ -88,6 +88,7 @@ struct btf_encoder_func_state {
->>   	uint8_t inconsistent_proto:1;
->>   	uint8_t uncertain_parm_loc:1;
->>   	uint8_t ambiguous_addr:1;
->> +	uint8_t true_signature:1;
->>   	int ret_type_id;
->>   	struct btf_encoder_func_parm *parms;
->>   	struct btf_encoder_func_annot *annots;
->> @@ -144,11 +145,13 @@ struct btf_encoder {
->>   			  skip_encoding_decl_tag,
->>   			  tag_kfuncs,
->>   			  gen_distilled_base,
->> -			  encode_attributes;
->> +			  encode_attributes,
->> +			  dotted_true_signature;
->>   	uint32_t	  array_index_id;
->>   	struct elf_secinfo *secinfo;
->>   	size_t             seccnt;
->>   	int                encode_vars;
->> +	int		   nr_true_signature_funcs;
->>   	struct {
->>   		struct btf_encoder_func_state *array;
->>   		int cnt;
->> @@ -184,7 +187,7 @@ static inline void elf_functions__delete(struct elf_functions *funcs)
->>   	free(funcs);
->>   }
->>   
->> -static int elf_functions__collect(struct elf_functions *functions);
->> +static int elf_functions__collect(struct btf_encoder *encoder, struct elf_functions *functions);
->>   
->>   struct elf_functions *elf_functions__new(struct btf_encoder *encoder)
->>   {
->> @@ -206,7 +209,7 @@ struct elf_functions *elf_functions__new(struct btf_encoder *encoder)
->>   	}
->>   
->>   	funcs->elf = elf;
->> -	err = elf_functions__collect(funcs);
->> +	err = elf_functions__collect(encoder, funcs);
->>   	if (err < 0)
->>   		goto out_delete;
->>   
->> @@ -1263,6 +1266,7 @@ static int32_t btf_encoder__save_func(struct btf_encoder *encoder, struct functi
->>   	state->elf = func;
->>   	state->nr_parms = ftype->nr_parms + (ftype->unspec_parms ? 1 : 0);
->>   	state->ret_type_id = ftype->tag.type == 0 ? 0 : encoder->type_id_off + ftype->tag.type;
->> +	state->true_signature = ftype->true_signature;
->>   	if (state->nr_parms > 0) {
->>   		state->parms = zalloc(state->nr_parms * sizeof(*state->parms));
->>   		if (!state->parms) {
->> @@ -1436,7 +1440,20 @@ static int saved_functions_cmp(const void *_a, const void *_b)
->>   	const struct btf_encoder_func_state *a = _a;
->>   	const struct btf_encoder_func_state *b = _b;
->>   
->> -	return elf_function__name_cmp(a->elf, b->elf);
->> +	int ret = strcmp(a->elf->name, b->elf->name);
->> +	if (ret)
->> +		return ret;
->> +
->> +	/* Two identical names, if one has true_signture attribute, make sure the
->> +	 * one has true_attirube in earlier place. This way, the other function
->> +	 * will be filtered out during later btf generation.
->> +	 */
->> +	if (a->true_signature)
->> +		return -1;
->> +	else if (b->true_signature)
->> +		return 1;
->> +
->> +	return 0;
->>   }
->>   
->>   static int saved_functions_combine(struct btf_encoder *encoder,
->> @@ -1448,6 +1465,10 @@ static int saved_functions_combine(struct btf_encoder *encoder,
->>   	if (a->elf != b->elf)
->>   		return 1;
->>   
->> +	/* Skip if any of the func states represents a true_signature function. */
->> +	if (a->true_signature || b->true_signature)
->> +		return 0;
->> +
->>   	optimized = a->optimized_parms | b->optimized_parms;
->>   	unexpected = a->unexpected_reg | b->unexpected_reg;
->>   	inconsistent = a->inconsistent_proto | b->inconsistent_proto;
->> @@ -2213,9 +2234,10 @@ static inline int elf_function__push_sym(struct elf_function *func, struct elf_f
->>   	return 0;
->>   }
->>   
->> -static int elf_functions__collect(struct elf_functions *functions)
->> +static int elf_functions__collect(struct btf_encoder *encoder, struct elf_functions *functions)
->>   {
->>   	uint32_t nr_symbols = elf_symtab__nr_symbols(functions->symtab);
->> +	bool dotted_true_signature = encoder->dotted_true_signature;
->>   	struct elf_function_sym func_sym;
->>   	struct elf_function *func, *tmp;
->>   	const char *sym_name, *suffix;
->> @@ -2224,10 +2246,10 @@ static int elf_functions__collect(struct elf_functions *functions)
->>   	uint32_t core_id;
->>   	GElf_Sym sym;
->>   
->> -	/* We know that number of functions is less than number of symbols,
->> +	/* We know that number of functions is less than number of symbols plus number of true signature funcs,
->>   	 * so we can overallocate temporarily.
->>   	 */
->> -	functions->entries = calloc(nr_symbols, sizeof(*functions->entries));
->> +	functions->entries = calloc(nr_symbols + encoder->nr_true_signature_funcs, sizeof(*functions->entries));
->>   	if (!functions->entries) {
->>   		err = -ENOMEM;
->>   		goto out_free;
->> @@ -2251,7 +2273,13 @@ static int elf_functions__collect(struct elf_functions *functions)
->>   			continue;
->>   
->>   		func = &functions->entries[functions->cnt];
->> -		if (suffix)
->> +		/* Currently, dotted_true_signature = true only available for LLVM.
->> +		 * If dotted_true_signature is true, the ksym function name will be
->> +		 * encoded as btf function name. If dotted_true_signature is false,
->> +		 * for llvm the suffix should be NULL and for gcc the existing logic
->> +		 * should be the same as before.
->> +		 */
->> +		if (!dotted_true_signature && suffix)
->>   			func->name = strndup(sym_name, suffix - sym_name);
->>   		else
->>   			func->name = strdup(sym_name);
->> @@ -2574,6 +2602,8 @@ struct btf_encoder *btf_encoder__new(struct cu *cu, const char *detached_filenam
->>   		encoder->tag_kfuncs	 = conf_load->btf_decl_tag_kfuncs;
->>   		encoder->gen_distilled_base = conf_load->btf_gen_distilled_base;
->>   		encoder->encode_attributes = conf_load->btf_attributes;
->> +		encoder->dotted_true_signature = conf_load->dotted_true_signature;
->> +		encoder->nr_true_signature_funcs = conf_load->nr_true_signature_funcs;
->>   		encoder->verbose	 = verbose;
->>   		encoder->has_index_type  = false;
->>   		encoder->need_index_type = false;
->> diff --git a/dwarf_loader.c b/dwarf_loader.c
->> index 79be3f5..96fc609 100644
->> --- a/dwarf_loader.c
->> +++ b/dwarf_loader.c
->> @@ -537,6 +537,19 @@ static void tag__init(struct tag *tag, struct cu *cu, Dwarf_Die *die)
->>   	INIT_LIST_HEAD(&tag->node);
->>   }
->>   
->> +static void tag__init_true_signature(struct tag *tag, struct cu *cu, Dwarf_Die *die)
->> +{
->> +	struct dwarf_tag *dtag = tag__dwarf(tag);
->> +
->> +	tag->tag = DW_TAG_subprogram;
->> +	dtag->id  = dwarf_dieoffset(die);
->> +	dwarf_tag__set_attr_type(dtag, type, die, DW_AT_type);
->> +	tag->recursivity_level = 0;
->> +	tag->attributes = NULL;
->> +
->> +	INIT_LIST_HEAD(&tag->node);
->> +}
->> +
->>   static struct tag *tag__new(Dwarf_Die *die, struct cu *cu)
->>   {
->>   	struct tag *tag = tag__alloc(cu, sizeof(*tag));
->> @@ -1487,6 +1500,22 @@ static void ftype__init(struct ftype *ftype, Dwarf_Die *die, struct cu *cu)
->>   	ftype->template_parameter_pack = NULL;
->>   }
->>   
->> +static void ftype__init_true_signature(struct ftype *ftype, Dwarf_Die *die, struct cu *cu)
->> +{
->> +#ifndef NDEBUG
->> +	const uint16_t tag = dwarf_tag(die);
->> +	assert(tag == DW_TAG_inlined_subroutine);
->> +#endif
->> +	tag__init_true_signature(&ftype->tag, cu, die);
->> +	INIT_LIST_HEAD(&ftype->parms);
->> +	INIT_LIST_HEAD(&ftype->template_type_params);
->> +	INIT_LIST_HEAD(&ftype->template_value_params);
->> +	ftype->nr_parms	    = 0;
->> +	ftype->unspec_parms = 0;
->> +	ftype->template_parameter_pack = NULL;
->> +	ftype->true_signature = 1;
->> +}
->> +
->>   static struct ftype *ftype__new(Dwarf_Die *die, struct cu *cu)
->>   {
->>   	struct ftype *ftype = tag__alloc(cu, sizeof(*ftype));
->> @@ -2468,9 +2497,61 @@ static struct tag *__die__process_tag(Dwarf_Die *die, struct cu *cu,
->>   	return tag;
->>   }
->>   
->> +static int die__process_inline_subroutine(Dwarf_Die *die, struct cu *cu, struct conf_load *conf, const char *name)
->> +{
->> +	struct function *function = tag__alloc(cu, sizeof(*function));
->> +
->> +	if (function != NULL) {
->> +		ftype__init_true_signature(&function->proto, die, cu);
->> +		lexblock__init(&function->lexblock, cu, die);
->> +		function->name = name;
->> +		tag__set_spec(&function->proto.tag, die);
->> +		INIT_LIST_HEAD(&function->annots);
->> +		function->cu_total_size_inline_expansions = 0;
->> +		function->cu_total_nr_inline_expansions = 0;
->> +		function->priv = NULL;
->> +	}
->> +
->> +	if (function != NULL &&
->> +	    die__process_function(die, &function->proto, &function->lexblock, cu, conf) != 0) {
->> +		function__delete(function, cu);
->> +		function = NULL;
->> +	}
->> +
->> +	struct tag *tag = function ? &function->proto.tag : NULL;
->> +	if (tag == NULL)
->> +		return -ENOMEM;
->> +
->> +	uint32_t id = 0;
->> +	tag->top_level = 1;
->> +	cu__add_tag(cu, tag, &id);
->> +	cu__hash(cu, tag);
->> +	struct dwarf_tag *dtag = tag__dwarf(tag);
->> +	dtag->small_id = id;
->> +
->> +	conf->nr_true_signature_funcs++;
->> +	if (!conf->dotted_true_signature && !!strchr(name, '.'))
->> +		conf->dotted_true_signature = true;
->> +
->> +	return 0;
->> +}
->> +
->>   static int die__process_unit(Dwarf_Die *die, struct cu *cu, struct conf_load *conf)
->>   {
->>   	do {
->> +		// special process DW_TAG_inlined_subroutine
->> +		if (conf->true_signature && dwarf_tag(die) == DW_TAG_inlined_subroutine) {
->> +			const char *name;
->> +			int ret;
->> +
->> +			name = attr_string(die, DW_AT_name, conf);
->> +			ret = die__process_inline_subroutine(die, cu, conf, name);
->> +			if (ret)
->> +				return ret;
->> +
->> +			continue;
->> +		}
->> +
->>   		struct tag *tag = die__process_tag(die, cu, 1, conf);
->>   		if (tag == NULL)
->>   			return -ENOMEM;
->> diff --git a/dwarves.h b/dwarves.h
->> index 21d4166..dfd43e1 100644
->> --- a/dwarves.h
->> +++ b/dwarves.h
->> @@ -79,6 +79,7 @@ struct conf_load {
->>   	void			*cookie;
->>   	char			*format_path;
->>   	int			nr_jobs;
->> +	int			nr_true_signature_funcs;
->>   	bool			extra_dbg_info;
->>   	bool			use_obstack;
->>   	bool			fixup_silly_bitfields;
->> @@ -101,6 +102,8 @@ struct conf_load {
->>   	bool			btf_decl_tag_kfuncs;
->>   	bool			btf_gen_distilled_base;
->>   	bool			btf_attributes;
->> +	bool			true_signature;
->> +	bool			dotted_true_signature;
->>   	uint8_t			hashtable_bits;
->>   	uint8_t			max_hashtable_bits;
->>   	uint16_t		kabi_prefix_len;
->> @@ -1023,6 +1026,7 @@ struct ftype {
->>   	uint8_t		 processed:1;
->>   	uint8_t		 inconsistent_proto:1;
->>   	uint8_t		 uncertain_parm_loc:1;
->> +	uint8_t		 true_signature:1;
->>   	struct list_head template_type_params;
->>   	struct list_head template_value_params;
->>   	struct template_parameter_pack *template_parameter_pack;
->> diff --git a/pahole.c b/pahole.c
->> index ef01e58..b81d03a 100644
->> --- a/pahole.c
->> +++ b/pahole.c
->> @@ -1153,6 +1153,7 @@ ARGP_PROGRAM_VERSION_HOOK_DEF = dwarves_print_version;
->>   #define ARG_padding		   348
->>   #define ARGP_with_embedded_flexible_array 349
->>   #define ARGP_btf_attributes	   350
->> +#define ARGP_true_signature	   351
->>   
->>   /* --btf_features=feature1[,feature2,..] allows us to specify
->>    * a list of requested BTF features or "default" to enable all default
->> @@ -1234,6 +1235,7 @@ struct btf_feature {
->>   	BTF_NON_DEFAULT_FEATURE(global_var, encode_btf_global_vars, false),
->>   	BTF_NON_DEFAULT_FEATURE_CHECK(attributes, btf_attributes, false,
->>   				      attributes_check),
->> +	BTF_NON_DEFAULT_FEATURE(true_signature, true_signature, false),
->>   };
->>   
->>   #define BTF_MAX_FEATURE_STR	1024
->> @@ -1817,6 +1819,11 @@ static const struct argp_option pahole__options[] = {
->>   		.key  = ARGP_btf_attributes,
->>   		.doc  = "Allow generation of attributes in BTF. Attributes are the type tags and decl tags with the kind_flag set to 1.",
->>   	},
->> +	{
->> +		.name = "true_signature",
->> +		.key  = ARGP_true_signature,
->> +		.doc  = "Replace existing functions and add new functions with true signatures.",
->> +	},
->>   	{
->>   		.name = NULL,
->>   	}
->> @@ -2013,6 +2020,8 @@ static error_t pahole__options_parser(int key, char *arg,
->>   		parse_btf_features(arg, true);		break;
->>   	case ARGP_btf_attributes:
->>   		conf_load.btf_attributes = true;	break;
->> +	case ARGP_true_signature:
->> +		conf_load.true_signature = true;	break;
->>   	default:
->>   		return ARGP_ERR_UNKNOWN;
->>   	}
-
+> If these findings have caused you to resend the series or submit a
+> separate fix, please add the following tag to your commit message:
+>   Tested-by: syzbot@syzkaller.appspotmail.com
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> syzbot ci engineers can be reached at syzkaller@googlegroups.com.
+>
 
