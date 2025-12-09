@@ -1,137 +1,145 @@
-Return-Path: <bpf+bounces-76339-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76340-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21A16CAED13
-	for <lists+bpf@lfdr.de>; Tue, 09 Dec 2025 04:33:57 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B091CAED52
+	for <lists+bpf@lfdr.de>; Tue, 09 Dec 2025 04:56:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 61338302177A
-	for <lists+bpf@lfdr.de>; Tue,  9 Dec 2025 03:33:53 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 47170301C3CA
+	for <lists+bpf@lfdr.de>; Tue,  9 Dec 2025 03:56:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E1EF3009D2;
-	Tue,  9 Dec 2025 03:33:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B22E9273D7B;
+	Tue,  9 Dec 2025 03:56:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="LyfNVDpw"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DWi2rZx4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD327239E9D
-	for <bpf@vger.kernel.org>; Tue,  9 Dec 2025 03:33:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE3321F5E6;
+	Tue,  9 Dec 2025 03:56:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765251232; cv=none; b=O7yaa/x1GT0I/w+KCuxMeEqnv/u59y1wLNmM1AUMDEXQDvvh0OLstpafrckHDXu9dK3qiK+RULHJXSdecMc9nDiAK8Nk/rbBemYsW8ZsjgiUPmUN5TSYZNfMA+kKYQM3Mh5LNs7+k/ku7+8xYOds1WmBKzkUmiAAlpkEK/7YRHo=
+	t=1765252577; cv=none; b=P0UA2GBgTlAYnzwMbP3trHxsgzCCwMnUOE43ASXwxethaUjFPEcwY/7mjdkLlxe+JTfu6pjul8mwoTOwa8KPcfcZtDqF9bkY0wfAwtGmXuuzcJUj6AJU9r0vFghcqsaV5XF6c+h3BEfME/qrUPG3cH5gZtyvwWeEI7KaUH+CsnQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765251232; c=relaxed/simple;
-	bh=mArw2vAL0D2NHk8zLQ2Ijxxx1bFuIg9r7rH/hnyrq/A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BUFbGtMLryIyLWBmKCd3h2uv8vYxbRWlg+ASLMmhYid2O9Fk1blhFB2A8UpKCWIkyKKeHSN2u/3tzdjjTJ04613uNtf3vGeBXhAtFdztWZ8wMwUbnyxwS0elIQQB4NkHU7r4WaRow5Ia+O8cWSilCfKckCaHfGpvGTWGNNDwEYE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=LyfNVDpw; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-6492e7891d2so2339026a12.2
-        for <bpf@vger.kernel.org>; Mon, 08 Dec 2025 19:33:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1765251229; x=1765856029; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ve41G5hMhFJfqXtFvhXu3GnjjOI5g5mevMdggrYlYVI=;
-        b=LyfNVDpw8Suzm2RQ6eMIQNP9LJUiem6QKlvIaa5p7naZ9C7nmjnymAhdf9s2uZoRDO
-         tlHCV4jbY+giT0xzGNWRhkV0pYKZGNauVzN+JY4NCJXQU2C1XGEbkYnaNeWZJxPz6hy7
-         0SX+n/sC7nHlMhbMG4xFcpNghxGzowZ6G/KVY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765251229; x=1765856029;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ve41G5hMhFJfqXtFvhXu3GnjjOI5g5mevMdggrYlYVI=;
-        b=j8fStu03H/WB36m7HV+jG0ki6gPEymnX7HWMMTYdvfTY9oSebbcUVUtjzTRGyUVsvH
-         FezuEpGBk27TeNA8mMtXj3sauNiB7vJKepbamrKivarBBPC3dqLLzoZeant0O4glnCpi
-         aM2Hw1DZeXKP8RAN8rxkAHjSP99hiRr6jWMRn5fNc0/6G31YnZbGapSmN/E3oq0H7q0U
-         zhZEL19Yr9O8r+fPE1Fwf6hYnbYsfSM+qTvV8N+O/ZBJhkoJXq3Lu9P9FyWtXbV7EL1m
-         a0eSDL1nBTHYbPcCxHoNqKVMt0kgohzcoy4pFNknc7VqfdSjP0fZDvNh+n3cmD6MauSF
-         SBrA==
-X-Forwarded-Encrypted: i=1; AJvYcCXHu0/8QY8mV2esYy9yKTedYaEpVYhGVf6JD7Z4NzlnSHW+hvEWfxh2DbRSpHBCh5VBvp8=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz0+xg3pj96aklqxZl+WnF+PqLyVYUoYUX+NPP0l1DPr0GM9oYW
-	s8LpBjmiGISv02wDbbmLN0X1qmuXV3qUcKzXufld5Ud7qxm4OgbAk9GM7a3swu9s+nkgsvqPlqZ
-	wjLukvwyByw==
-X-Gm-Gg: ASbGncv3eprRgiCpEeHAzODSgYZ4ADkdbryxOcQhZMOFKfwGejl0u5AjahorcI9p8ry
-	Y2Nxkw5j6DBG5vm9eD36Elqq8cCKM1I6pec6+xewTrgrX0lyxhgemVMKTzVXe0KQajANTehJCql
-	EO0CSR8iRpqZpkQ5EmomL2FNASLwCn/CswyJUg8/C0z772V6+u/SvOjLgfpuqwLfeyhqZwufAG9
-	ra1dIoJlRLzZV+/pq6TR2LdXnA2RjSc5MNNhxdwaT3Yo3Nz2DMDWcHYhBffO5JBIn33olA1bPhL
-	vTHklqAXxmP1slle+/j32ooIJZMM4ahvJfLmw3xdC2CL2+dDFjswf97dh9rvQfd1C9VCKgoRRjf
-	7JSrsAT77/6UAgaiiXuQ5bzN5tEongtngU6D/8NHj/Cm8YKjMEzCdc8hNz0uhtnLnWDGt6lfLfv
-	wNS9VgGccVlQqyUu/x6NdX1DSwZGdDyVYRVsyfGJ/C3oTVxiRVcIcdmHCCVzrO
-X-Google-Smtp-Source: AGHT+IG91Jw2abti1FSaV1dDd91Oq/U87kkjdQmtRl4FadjAO8MwAiJ+95JNjMvW/c5C98FsUZhqQQ==
-X-Received: by 2002:a05:6402:34c8:b0:640:c3c4:45f3 with SMTP id 4fb4d7f45d1cf-6491a3dec62mr8680870a12.6.1765251229051;
-        Mon, 08 Dec 2025 19:33:49 -0800 (PST)
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com. [209.85.208.54])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-647b2ec3003sm12476204a12.6.2025.12.08.19.33.42
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Dec 2025 19:33:45 -0800 (PST)
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-64149f78c0dso7556775a12.3
-        for <bpf@vger.kernel.org>; Mon, 08 Dec 2025 19:33:42 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXyfEfLOQdjjBg4MnxvsiwSZO0daC/oXFSxF7mmGC+uyWaFH9GuhRVOC7bDK4shSFSp5z4=@vger.kernel.org
-X-Received: by 2002:a05:6402:d0d:b0:647:5e6c:3220 with SMTP id
- 4fb4d7f45d1cf-6491aded554mr6980906a12.21.1765251222388; Mon, 08 Dec 2025
- 19:33:42 -0800 (PST)
+	s=arc-20240116; t=1765252577; c=relaxed/simple;
+	bh=7BP/S/pgzhOWIgTxUdCLG8fbFzYoQrglr8XUeSf1EHs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tQA9ZVTCC9ekt+utBiNR6fya6KS1hK83trh7nGGP/cTSqCi5y68JjjiCLAqbygTav4j0T428jqpCy1UMF1S+79OX1CBys3pYZqao+dnMJAx87fms2JtewTuwmorBds7R4SKCwCj2S72BE9cmP/iYouNZABFrkWSo1dqda1LzKPI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DWi2rZx4; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1765252576; x=1796788576;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=7BP/S/pgzhOWIgTxUdCLG8fbFzYoQrglr8XUeSf1EHs=;
+  b=DWi2rZx4l4GTtvoUQabzVNqO08ftdLyjaSxa9w9J7P+8kAPVRNqMD8SO
+   KJ1g7RhN6L2Wq19jO/3BLGFGNM20kUarDFLlFuuTeCMlx6fVmQ850ji1N
+   r7EdDjM0lRY0R8Ph2OaTg9dQ7+vz6PJM2ufC6z7lRWVfBfsx0Oeif0W2b
+   XqhrpAhJH24IBmLZyAa02epOKXd/1i2Ofg4UxL+XRo97x+wEi2jdY9tCl
+   IBewzbXaHCY80xMtieFVykStHLnqWMroLeHjds5YXurS4iywZcFWKhxCh
+   LrtG/tm9o68BWbYmwyNUImpjZuwJA18pnBEJ01efSu8/H7xO7RbCXiuFu
+   w==;
+X-CSE-ConnectionGUID: N5/QSTDIR9y5XacEmhDu+A==
+X-CSE-MsgGUID: qBUjuJGmSmiYVsXHQEJeeQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11636"; a="67284330"
+X-IronPort-AV: E=Sophos;i="6.20,260,1758610800"; 
+   d="scan'208";a="67284330"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2025 19:56:15 -0800
+X-CSE-ConnectionGUID: GP2DZnxMQm+Hrj5HWbbDlA==
+X-CSE-MsgGUID: 1Rq14/z4TO2zsMNQ7ndFqQ==
+X-ExtLoop1: 1
+Received: from lkp-server01.sh.intel.com (HELO d335e3c6db51) ([10.239.97.150])
+  by fmviesa003.fm.intel.com with ESMTP; 08 Dec 2025 19:56:08 -0800
+Received: from kbuild by d335e3c6db51 with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1vSopa-000000001ID-0gUl;
+	Tue, 09 Dec 2025 03:56:06 +0000
+Date: Tue, 9 Dec 2025 11:55:54 +0800
+From: kernel test robot <lkp@intel.com>
+To: Yunhui Cui <cuiyunhui@bytedance.com>, aou@eecs.berkeley.edu,
+	alex@ghiti.fr, andii@kernel.org, andybnac@gmail.com,
+	apatel@ventanamicro.com, ast@kernel.org, ben.dooks@codethink.co.uk,
+	bjorn@kernel.org, bpf@vger.kernel.org, charlie@rivosinc.com,
+	cl@gentwo.org, conor.dooley@microchip.com, cyrilbur@tenstorrent.com,
+	daniel@iogearbox.net, debug@rivosinc.com, dennis@kernel.org,
+	eddyz87@gmail.com, haoluo@google.com, john.fastabend@gmail.com,
+	jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, linux-riscv@lists.infradead.org,
+	linux@rasmusvillemoes.dk, martin.lau@linux.dev, palmer@dabbelt.com,
+	pjw@kernel.org, puranjay@kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH v2 2/3] riscv: introduce percpu.h into include/asm
+Message-ID: <202512091137.3Qw1dX94-lkp@intel.com>
+References: <20251208034944.73113-3-cuiyunhui@bytedance.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251208235528.3670800-1-hpa@zytor.com> <176523908321.3343091.17738363732550848005.pr-tracker-bot@kernel.org>
- <CAHk-=wi0RqQPHME0xgrAZBQijKuos97cQO05N4f176DkH7msbg@mail.gmail.com> <ee693efe-5b7b-4d38-a12c-3cea6681f610@zytor.com>
-In-Reply-To: <ee693efe-5b7b-4d38-a12c-3cea6681f610@zytor.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 9 Dec 2025 12:33:26 +0900
-X-Gmail-Original-Message-ID: <CAHk-=wghm5NFZQcfObuNQHMMsNQ_Of+H7jpoMTZJDrFscxrSCw@mail.gmail.com>
-X-Gm-Features: AQt7F2ofRIAXVmCzZb3EAMnphwigz_H3r18InwGDDrhalL1GL85PEFWZ4uBTknk
-Message-ID: <CAHk-=wghm5NFZQcfObuNQHMMsNQ_Of+H7jpoMTZJDrFscxrSCw@mail.gmail.com>
-Subject: Re: [GIT PULL] __auto_type conversion for v6.19-rc1
-To: "H. Peter Anvin" <hpa@zytor.com>
-Cc: pr-tracker-bot@kernel.org, 
-	Konstantin Ryabitsev <konstantin@linuxfoundation.org>, =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, 
-	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-	"Michael S. Tsirkin" <mst@redhat.com>, Al Viro <viro@zeniv.linux.org.uk>, 
-	Alexei Starovoitov <ast@kernel.org>, Alexey Dobriyan <adobriyan@gmail.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Arnd Bergmann <arnd@kernel.org>, Borislav Petkov <bp@alien8.de>, Dan Williams <dan.j.williams@intel.com>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	David Laight <David.Laight@aculab.com>, David Lechner <dlechner@baylibre.com>, 
-	Dinh Nguyen <dinguyen@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
-	Gatlin Newhouse <gatlin.newhouse@gmail.com>, Hao Luo <haoluo@google.com>, 
-	Ingo Molnar <mingo@redhat.com>, Jakub Sitnicki <jakub@cloudflare.com>, 
-	Jan Hendrik Farr <kernel@jfarr.cc>, Jason Wang <jasowang@redhat.com>, Jir i Olsa <jolsa@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Jonathan Cameron <Jonathan.Cameron@huawei.com>, 
-	Josh Poimboeuf <jpoimboe@kernel.org>, KP Singh <kpsingh@kernel.org>, Kees Cook <kees@kernel.org>, 
-	Luc Van Oostenryck <luc.vanoostenryck@gmail.com>, Marc Herbert <Marc.Herbert@linux.intel.com>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Mateusz Guzik <mjguzik@gmail.com>, Michal Luczaj <mhal@rbox.co>, 
-	Miguel Ojeda <ojeda@kernel.org>, Mykola Lysenko <mykolal@fb.com>, NeilBrown <neil@brown.name>, 
-	Peter Zijlstra <peterz@infradead.org>, Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
-	Sami Tolvanen <samitolvanen@google.com>, Shuah Khan <shuah@kernel.org>, Song Liu <song@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Thomas Gleixner <tglx@linutronix.de>, 
-	Thorsten Blum <thorsten.blum@linux.dev>, Uros Bizjak <ubizjak@gmail.com>, 
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Yafang Shao <laoar.shao@gmail.com>, 
-	Ye Bin <yebin10@huawei.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	Yu feng Wang <wangyufeng@kylinos.cn>, bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-sparse@vger.kernel.org, virtualization@lists.linux.dev, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251208034944.73113-3-cuiyunhui@bytedance.com>
 
-On Tue, 9 Dec 2025 at 09:24, H. Peter Anvin <hpa@zytor.com> wrote:
->
-> Yeah, it commented on the master branch, which is of course ... yours.
+Hi Yunhui,
 
-Ahh. It's because you didn't use the standard pull request format, and
-instead did the branch name elsewhere.
+kernel test robot noticed the following build errors:
 
-Which btw also messes with my "just cut and paste the address" thing,
-because now I'll cut-and-paste two different things.
+[auto build test ERROR on linus/master]
+[also build test ERROR on v6.18 next-20251209]
+[cannot apply to bpf-next/net bpf-next/master bpf/master]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-"Poor Linus - all the pain he has to go through".
+url:    https://github.com/intel-lab-lkp/linux/commits/Yunhui-Cui/riscv-remove-irqflags-h-inclusion-in-asm-bitops-h/20251208-115407
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20251208034944.73113-3-cuiyunhui%40bytedance.com
+patch subject: [PATCH v2 2/3] riscv: introduce percpu.h into include/asm
+config: riscv-randconfig-002-20251209 (https://download.01.org/0day-ci/archive/20251209/202512091137.3Qw1dX94-lkp@intel.com/config)
+compiler: clang version 18.1.8 (https://github.com/llvm/llvm-project 3b5b5c1ec4a3095ab096dd780e84d7ab81f3d7ff)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251209/202512091137.3Qw1dX94-lkp@intel.com/reproduce)
 
-          Linus "think of all those extra clicks" Torvalds
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202512091137.3Qw1dX94-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> mm/slub.c:4380:9: error: call to undeclared function 'arch_cmpxchg128_local'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+    4380 |         return this_cpu_try_cmpxchg_freelist(s->cpu_slab->freelist_tid,
+         |                ^
+   mm/slab.h:24:39: note: expanded from macro 'this_cpu_try_cmpxchg_freelist'
+      24 | #define this_cpu_try_cmpxchg_freelist   this_cpu_try_cmpxchg128
+         |                                         ^
+   include/asm-generic/percpu.h:529:47: note: expanded from macro 'this_cpu_try_cmpxchg128'
+     529 |         __cpu_fallback_try_cmpxchg(pcp, ovalp, nval, this_cpu_cmpxchg128)
+         |                                                      ^
+   1 error generated.
+
+
+vim +/arch_cmpxchg128_local +4380 mm/slub.c
+
+0b303fb402862d Vlastimil Babka 2021-05-08  4371  
+6801be4f2653e5 Peter Zijlstra  2023-05-31  4372  static inline bool
+6801be4f2653e5 Peter Zijlstra  2023-05-31  4373  __update_cpu_freelist_fast(struct kmem_cache *s,
+6801be4f2653e5 Peter Zijlstra  2023-05-31  4374  			   void *freelist_old, void *freelist_new,
+6801be4f2653e5 Peter Zijlstra  2023-05-31  4375  			   unsigned long tid)
+6801be4f2653e5 Peter Zijlstra  2023-05-31  4376  {
+b244358e9a1cd6 Vlastimil Babka 2025-11-07  4377  	struct freelist_tid old = { .freelist = freelist_old, .tid = tid };
+b244358e9a1cd6 Vlastimil Babka 2025-11-07  4378  	struct freelist_tid new = { .freelist = freelist_new, .tid = next_tid(tid) };
+6801be4f2653e5 Peter Zijlstra  2023-05-31  4379  
+b244358e9a1cd6 Vlastimil Babka 2025-11-07 @4380  	return this_cpu_try_cmpxchg_freelist(s->cpu_slab->freelist_tid,
+b244358e9a1cd6 Vlastimil Babka 2025-11-07  4381  					     &old.freelist_tid, new.freelist_tid);
+6801be4f2653e5 Peter Zijlstra  2023-05-31  4382  }
+6801be4f2653e5 Peter Zijlstra  2023-05-31  4383  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
