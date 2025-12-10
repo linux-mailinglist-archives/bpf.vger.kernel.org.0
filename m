@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-76399-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76400-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3EA8CB2511
-	for <lists+bpf@lfdr.de>; Wed, 10 Dec 2025 08:45:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B1DACB253B
+	for <lists+bpf@lfdr.de>; Wed, 10 Dec 2025 08:53:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B653F30E04E0
-	for <lists+bpf@lfdr.de>; Wed, 10 Dec 2025 07:43:15 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9159030A9C94
+	for <lists+bpf@lfdr.de>; Wed, 10 Dec 2025 07:53:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D35EE271462;
-	Wed, 10 Dec 2025 07:43:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C77C02D8DB0;
+	Wed, 10 Dec 2025 07:53:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T/BNXHwO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PzZm/fX6"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D70779DA;
-	Wed, 10 Dec 2025 07:43:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B13422578D;
+	Wed, 10 Dec 2025 07:53:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765352594; cv=none; b=X4gWbonmzXe0vOVjw0I+cS+rmpkc3D9hbZnsENEkcxwWc70D1jdyMSEApq8PjZIKz2jMeE63nq8kdtuGom8YXEz+TgzYX8vNt1PcLb17yS4tm1aKAoQAtCY/LD5730UKuhHSik3lWajgyPraDse4Xb/nZHkRK8JypGh8PttujX0=
+	t=1765353192; cv=none; b=WoVTjAN/lzrWIsO+FLQGSM2azxWLI7rR8vPTQqQLSxcn3kZri5CrZwwORrR5dmPGi4nUchBMczqVWwKpZZaXCHFR0GCoPC5a+mXUOdbrpBITMv5qtrZ1XLfyPmsfzUHyEqdEAb8Vs4jXrqPTOwHBr41acFrx+lJ9kU6uyuWV40Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765352594; c=relaxed/simple;
-	bh=Qa0U3wUR5XTUVJO+JqYELhVIxRSs8ALZiy9GSpDUcTQ=;
+	s=arc-20240116; t=1765353192; c=relaxed/simple;
+	bh=0nzn63khGmeyO92wIH5lyhEhO2plqAVmt3Ik844pU2w=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=lDjHG3ncmWeU4DLTwdXPD7npbDoZOOv+71oP2jX3VWeIxwcyz0nAfxMNu6wagbcjsq4VXj7qERX+mfUDrLJRo+SbRMo7dLVcA+H9aXih+CpN7tqFa3F48U+f/PPOk0t92lKoMKMF/HlQ1EHL+oZDkWGSQKxFxnJw1DdYAyR6ems=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T/BNXHwO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5217C116B1;
-	Wed, 10 Dec 2025 07:43:13 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=Ew/xlRMDIMR5u9gGbEErWXwWrWOSbEL4rrTP2bXGit1hYCmbFRN16o9wnkBvhX8xT8Fm34Y75Lu3cveU44l70T9Z1Aypl17nhZ9e12u87v6pHB6UX8BJRn5YtQj1OGOLhdvI1VufJYfXRDnmUCdq80b0XygfGy7dieCXADBJIfU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PzZm/fX6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1A54C116B1;
+	Wed, 10 Dec 2025 07:53:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765352593;
-	bh=Qa0U3wUR5XTUVJO+JqYELhVIxRSs8ALZiy9GSpDUcTQ=;
+	s=k20201202; t=1765353191;
+	bh=0nzn63khGmeyO92wIH5lyhEhO2plqAVmt3Ik844pU2w=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=T/BNXHwOW0a/FhtuHJnd96HnA3i0GHmWTVoQfYKSCxArF6HtdvXdM2zGwOvOcjjGh
-	 G+8MG2xCweUpeyXVcD6OTR9s9CzHjf/cbC9UM8kZgg+bIPI0hfPqcDpClg38symLgp
-	 1brZhHvmDFp3FjmOLsoglFkttHZl7Z1pBoPdPJsfU1r/U1omFeO78aRLZlDv5nKq4U
-	 SGjZcZ8dGlED8T3iDKkIqapirgwv2uktmoYnOgFpKgt/BWqmJWDi1NGrufiURbb7Pj
-	 p5vOorhLF8JqsuZ1lXxrSyj82S3+POnVU+39VQV+ZdraCItUL/HFFYsaR5QKNbW0mr
-	 Nwt3wYgxYBn8Q==
+	b=PzZm/fX66rdrOYgS2xnN7KP4WdzWwEpgdYR9q9Cc347CYFmd7XCuq7FORIq1aSMe/
+	 HLkSegfpAPZ+h0JN2guy/Sm8B4Sdx7C3q1arPajaTAJIQZNAQydrVSj8aCI5e/Z9M+
+	 cByhFHtTaC8HeCh7ZjticooTC2HoOv4lEhTpTzI/hWRrc+gqFdxJzrHb4bQsn+cId7
+	 z/mamv1wJEn6/SGY7gJ8dlvRCOmdjPsW4VEpeOykrgOlPFmxyhdt125EEcrvS6mZBY
+	 c3oUzQ7IRzi4zJk8gpexisjbumdE0EURrlQCmvrIQnHzWzJYGWouBCnOmHWHZDKdLe
+	 0Sbi366kasy9w==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id B5A9A3809A18;
-	Wed, 10 Dec 2025 07:40:09 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id B591D3809A18;
+	Wed, 10 Dec 2025 07:50:07 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -50,44 +50,43 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 0/2] bpf,
- x86/unwind/orc: Support reliable unwinding through BPF stack frames
+Subject: Re: [PATCH bpf 1/2] bpf: Fix truncated dmabuf iterator reads
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <176535240855.490601.4190926018220042956.git-patchwork-notify@kernel.org>
-Date: Wed, 10 Dec 2025 07:40:08 +0000
-References: <cover.1764818927.git.jpoimboe@kernel.org>
-In-Reply-To: <cover.1764818927.git.jpoimboe@kernel.org>
-To: Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: x86@kernel.org, linux-kernel@vger.kernel.org,
- live-patching@vger.kernel.org, bpf@vger.kernel.org,
- andrey.grodzovsky@crowdstrike.com, pmladek@suse.com, song@kernel.org,
- raja.khan@crowdstrike.com, mbenes@suse.cz, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, peterz@infradead.org
+ <176535300655.493455.11967888577336619443.git-patchwork-notify@kernel.org>
+Date: Wed, 10 Dec 2025 07:50:06 +0000
+References: <20251204000348.1413593-1-tjmercier@google.com>
+In-Reply-To: <20251204000348.1413593-1-tjmercier@google.com>
+To: T.J. Mercier <tjmercier@google.com>
+Cc: yonghong.song@linux.dev, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, shuah@kernel.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ android-mm@google.com, christian.koenig@amd.com, sumit.semwal@linaro.org,
+ linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linaro-mm-sig@lists.linaro.org
 
 Hello:
 
 This series was applied to bpf/bpf.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Wed,  3 Dec 2025 19:32:14 -0800 you wrote:
-> Fix livepatch stalls which may be seen when a task is blocked with BPF
-> JIT on its kernel stack.
-> 
-> Changes since v1 (https://lore.kernel.org/cover.1764699074.git.jpoimboe@kernel.org):
-> - fix NULL ptr deref in __arch_prepare_bpf_trampoline()
-> 
-> Josh Poimboeuf (2):
->   bpf: Add bpf_has_frame_pointer()
->   x86/unwind/orc: Support reliable unwinding through BPF stack frames
+On Wed,  3 Dec 2025 16:03:47 -0800 you wrote:
+> If there is a large number (hundreds) of dmabufs allocated, the text
+> output generated from dmabuf_iter_seq_show can exceed common user buffer
+> sizes (e.g. PAGE_SIZE) necessitating multiple start/stop cycles to
+> iterate through all dmabufs. However the dmabuf iterator currently
+> returns NULL in dmabuf_iter_seq_start for all non-zero pos values, which
+> results in the truncation of the output before all dmabufs are handled.
 > 
 > [...]
 
 Here is the summary with links:
-  - [v2,1/2] bpf: Add bpf_has_frame_pointer()
-    https://git.kernel.org/bpf/bpf/c/ca45c84afb8c
-  - [v2,2/2] x86/unwind/orc: Support reliable unwinding through BPF stack frames
-    (no matching commit)
+  - [bpf,1/2] bpf: Fix truncated dmabuf iterator reads
+    https://git.kernel.org/bpf/bpf/c/234483565dbb
+  - [bpf,2/2] selftests/bpf: Add test for truncated dmabuf_iter reads
+    https://git.kernel.org/bpf/bpf/c/9489d457d48b
 
 You are awesome, thank you!
 -- 
