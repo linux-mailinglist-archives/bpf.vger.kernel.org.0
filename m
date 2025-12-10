@@ -1,187 +1,158 @@
-Return-Path: <bpf+bounces-76411-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76412-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2955CCB2FA7
-	for <lists+bpf@lfdr.de>; Wed, 10 Dec 2025 14:13:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 582BDCB2FAD
+	for <lists+bpf@lfdr.de>; Wed, 10 Dec 2025 14:14:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9F9EF3055B8C
-	for <lists+bpf@lfdr.de>; Wed, 10 Dec 2025 13:12:52 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 55DB2305A60C
+	for <lists+bpf@lfdr.de>; Wed, 10 Dec 2025 13:13:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59E6A3254A9;
-	Wed, 10 Dec 2025 13:12:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 650D13254B8;
+	Wed, 10 Dec 2025 13:13:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nqieqOVP"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TF7iQKB9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 224BE3246F1;
-	Wed, 10 Dec 2025 13:12:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E519F2ED148;
+	Wed, 10 Dec 2025 13:13:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765372370; cv=none; b=brN7L7qFb2L8FKT23fV60Lk80vOduUd+EkCb1woMdRjHiZF/ohyO2aPkfSnrtgFKPr0BfWF8VDYV/2ahRX+U7YVrFU81Fy1ful0SOgK9ry/7pSi4sBETy9z8il+MUpoxT0t1YNKtGfv4n5GM32SXksT4FO/FU3xZ20nXMBTQMKg=
+	t=1765372435; cv=none; b=f735iE5aossSx5mEKDCsPdAkC8iTAl3xTZGYsLU3j8jti5Encm5O8ZIY/2di9hzKVmAgVhyCRXJjF8ylY1heooGegNE5LiRjyt8wkXJano5bExKwhnFZKsQKZbTosMMnYbUxZUHDec9itzpAruR8AIYmrn+NqDt8SITHCle6cuI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765372370; c=relaxed/simple;
-	bh=A2OpIuFGFpKWyDe1O3Got3OnGW4sMeJIXHZ8phfTvZA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Ad5WdM0rVJmagoxxqiv2WjMM05X1n6YkXYdZ2FsbBlT3nhQ4Ck95j3ZXvwQa/clP45NH/B4goMkoBSarlDVomN8SW+7v+i7omw1L7SesgrTTcVGpWfaXPUNfTsRpEd5HcE8JEVyCvUvE0RS0gzQk1YRHX1f4RW2syWWiIYhvXfc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nqieqOVP; arc=none smtp.client-ip=198.175.65.16
+	s=arc-20240116; t=1765372435; c=relaxed/simple;
+	bh=m2Nn+1oU0J3uuTi9iR3r2j/uvfvWBDhGvnGbUmCnCmQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZLPknqdVDdo3DssmrRuGlU2iTVyhQ/7f6j9EfHsxIZzPjgR2ycxLxnMnWJNsRME44hpI35J0ZFjLxb/HUOWqzR+/Ks4vBQ5KePv5hoBTGsbCIHiXG3aT81pGSK7y7esuPqHwruSTK4nrn9wzczS08FZIZPMy6VcIh4M2/t2o2c0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TF7iQKB9; arc=none smtp.client-ip=192.198.163.16
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1765372369; x=1796908369;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=A2OpIuFGFpKWyDe1O3Got3OnGW4sMeJIXHZ8phfTvZA=;
-  b=nqieqOVPa6ZTjzbcqXRjZvWLEPWcwMRp9j5zig74Zy6OUn7bSRbgBX5G
-   lZBY6y7HeVmwRymM50G7939CArvc8ECnC9bq4bB80x+rDDpFYqD45aVat
-   Xk6vGN3tkP9eZyPeeEl9pAMQKUDzPKGYWRCavgMBaRupfsuWH1Wq60hES
-   gx9ceWt/1mp/rxiCeadVBn0P54OZycS7d7jByuAxUhsZz/RcViePcj+3c
-   wb+t4CzOx8TBwGT6GPM7PkqLqUgDNUHWdi9CZux3/fkHPvQjRgIJzbPVD
-   jE8kU49CSfPoxLJ7lMOgJrFZ8P4LG8LE2BnGhBr6/fpKsh20yBm1ws2H6
-   w==;
-X-CSE-ConnectionGUID: 2uRdi6P8TzaTlcZ+ReuyYQ==
-X-CSE-MsgGUID: p5klfkq7S8WEN8IzK7EENQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11638"; a="67514954"
+  t=1765372434; x=1796908434;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=m2Nn+1oU0J3uuTi9iR3r2j/uvfvWBDhGvnGbUmCnCmQ=;
+  b=TF7iQKB9AloUxrctG79kmgsKcc+FYHqJ9WF3Y3IzDG8747IvkhBYu2rs
+   d7dwZ2PQBsoETuTdwRc6HGYLILJ9p79JKAOzDC+vFX0uEqcBkvvZWRms+
+   Rf3+j2XvePyqUv2kYNjoJjQ0KAqDlFdGQ1uiPtBJUy3jJgeWky9cZoAAB
+   BXFZDd4LHFo3SWPdJMtTpEQWYP8+JoV4aMqxbVqXyWRCpmTi7wS2c9iJI
+   0/lnQBKFPLLuRsd5PuyZlkhMkrJxiS6Pke3rToNwN9DxNgTALRWcFAQDm
+   7vBncQ01SyzLDC+xw36YibaGOy+pYcMN+kdQZUfWXWawhKJKzjTFJt+tO
+   A==;
+X-CSE-ConnectionGUID: CX+QdgVOROy2rBJPfzd/jg==
+X-CSE-MsgGUID: lyOo4Vl5TvCKE5UuejRO9Q==
+X-IronPort-AV: E=McAfee;i="6800,10657,11638"; a="54886599"
 X-IronPort-AV: E=Sophos;i="6.20,264,1758610800"; 
-   d="scan'208";a="67514954"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2025 05:12:47 -0800
-X-CSE-ConnectionGUID: Ae+lifnVRMmXIsU2AERptw==
-X-CSE-MsgGUID: LxOK7cDgTtCsuSqa5mNX6w==
+   d="scan'208";a="54886599"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2025 05:13:53 -0800
+X-CSE-ConnectionGUID: LRtlJRVfTXmfd0pv7YW4rg==
+X-CSE-MsgGUID: KiIc2YH2QJeq08XMiV1iPg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.20,264,1758610800"; 
-   d="scan'208";a="196419613"
-Received: from black.igk.intel.com ([10.91.253.5])
-  by fmviesa006.fm.intel.com with ESMTP; 10 Dec 2025 05:12:43 -0800
-Received: by black.igk.intel.com (Postfix, from userid 1003)
-	id 80CFA93; Wed, 10 Dec 2025 14:12:42 +0100 (CET)
+   d="scan'208";a="196109786"
+Received: from egrumbac-mobl6.ger.corp.intel.com (HELO localhost) ([10.245.244.100])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2025 05:13:48 -0800
+Date: Wed, 10 Dec 2025 15:13:46 +0200
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org
-Cc: Daniel Borkmann <daniel@iogearbox.net>,
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Matt Bobrowski <mattbobrowski@google.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Alan Maguire <alan.maguire@oracle.com>,
 	kernel test robot <lkp@intel.com>
-Subject: [PATCH v1 1/1] bpf: Disable -Wsuggest-attribute=format
-Date: Wed, 10 Dec 2025 14:12:34 +0100
-Message-ID: <20251210131234.3185985-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.50.1
+Subject: Re: [PATCH v1 1/1] bpf: Mark BPF printing functions with __printf()
+ attribute
+Message-ID: <aTlyCimsBUsU5QgZ@smile.fi.intel.com>
+References: <20251208161800.2902699-2-andriy.shevchenko@linux.intel.com>
+ <CAADnVQ+SXe-CsPHnYkB4SOKct6iMN=PkexaKRd-MJFhC3i8M0A@mail.gmail.com>
+ <aTgl_bjO1O9Ddpmv@smile.fi.intel.com>
+ <CAADnVQLkSoOL8+kELdmX5nzNcXm-s4VbA5+Q-MPcNySsSiu+RQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQLkSoOL8+kELdmX5nzNcXm-s4VbA5+Q-MPcNySsSiu+RQ@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
+ krs, Bertel Jungin Aukio 5, 02600 Espoo
 
-The printing functions in BPF code are using printf() type of format,
-and compiler is not happy about them as is:
+On Wed, Dec 10, 2025 at 04:09:19PM +0900, Alexei Starovoitov wrote:
+> On Tue, Dec 9, 2025 at 10:37 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> >
+> > On Tue, Dec 09, 2025 at 06:12:46PM +0900, Alexei Starovoitov wrote:
+> > > On Tue, Dec 9, 2025 at 1:21 AM Andy Shevchenko
+> > > <andriy.shevchenko@linux.intel.com> wrote:
+> > > >
+> > > > The printing functions in BPF code are using printf() type of format,
+> > > > and compiler is not happy about them as is:
+> > > >
+> > > > kernel/bpf/helpers.c:1069:9: error: function ‘____bpf_snprintf’ might be a candidate for ‘gnu_printf’ format attribute [-Werror=suggest-attribute=format]
+> > > >  1069 |         err = bstr_printf(str, str_size, fmt, data.bin_args);
+> > > >       |         ^~~
+> > > >
+> > > > kernel/trace/bpf_trace.c:377:9: error: function ‘____bpf_trace_printk’ might be a candidate for ‘gnu_printf’ format attribute [-Werror=suggest-attribute=format]
+> > > >   377 |         ret = bstr_printf(data.buf, MAX_BPRINTF_BUF, fmt, data.bin_args);
+> > > >       |         ^~~
+> > > >
+> > > > kernel/trace/bpf_trace.c:433:9: error: function ‘____bpf_trace_vprintk’ might be a candidate for ‘gnu_printf’ format attribute [-Werror=suggest-attribute=format]
+> > > >   433 |         ret = bstr_printf(data.buf, MAX_BPRINTF_BUF, fmt, data.bin_args);
+> > > >       |         ^~~
+> > > >
+> > > > kernel/trace/bpf_trace.c:475:9: error: function ‘____bpf_seq_printf’ might be a candidate for ‘gnu_printf’ format attribute [-Werror=suggest-attribute=format]
+> > > >   475 |         seq_bprintf(m, fmt, data.bin_args);
+> > > >       |         ^~~~~~~~~~~
+> > > >
+> > > > Fix the compilation errors by adding __printf() attribute. For that
+> > > > we need to pass it down to the BPF_CALL_x() and wrap into PRINTF_BPF_CALL_*()
+> > > > to make code neater.
+> >
+> > > This is pointless churn to shut up a warning.
+> >
+> > In some cases, like mine, it's an error.
+> >
+> > > Teach syzbot to stop this spam instead.
+> >
+> > It prevents to perform `make W=1` builds with the default CONFIG_WERROR,
+> > which is 'y'.
+> >
+> > > At the end this patch doesn't make any visible difference,
+> > > since user declarations of these helpers are auto generated
+> > > from uapi/bpf.h file and __printf attribute is not there.
+> >
+> > I see, thanks for the review.
+> > Any recommendations on how to fix this properly?
+> 
+> Add -Wno-suggest-attribute=format
+> to corresponding files in Makefile.
 
-kernel/bpf/helpers.c:1069:9: error: function ‘____bpf_snprintf’ might be a candidate for ‘gnu_printf’ format attribute [-Werror=suggest-attribute=format]
- 1069 |         err = bstr_printf(str, str_size, fmt, data.bin_args);
-      |         ^~~
+Thanks, I just sent a new patch.
 
-kernel/bpf/stream.c:241:9: error: function ‘bpf_stream_vprintk_impl’ might be a candidate for ‘gnu_printf’ format attribute [-Werror=suggest-attribute=format]
-  241 |         ret = bstr_printf(data.buf, MAX_BPRINTF_BUF, fmt__str, data.bin_args);
-      |         ^~~
+> I think it's cleaner than __diag_ignore() in the .c
 
-kernel/trace/bpf_trace.c:377:9: error: function ‘____bpf_trace_printk’ might be a candidate for ‘gnu_printf’ format attribute [-Werror=suggest-attribute=format]
-  377 |         ret = bstr_printf(data.buf, MAX_BPRINTF_BUF, fmt, data.bin_args);
-      |         ^~~
-
-kernel/trace/bpf_trace.c:433:9: error: function ‘____bpf_trace_vprintk’ might be a candidate for ‘gnu_printf’ format attribute [-Werror=suggest-attribute=format]
-  433 |         ret = bstr_printf(data.buf, MAX_BPRINTF_BUF, fmt, data.bin_args);
-      |         ^~~
-
-kernel/trace/bpf_trace.c:475:9: error: function ‘____bpf_seq_printf’ might be a candidate for ‘gnu_printf’ format attribute [-Werror=suggest-attribute=format]
-  475 |         seq_bprintf(m, fmt, data.bin_args);
-      |         ^~~~~~~~~~~
-
-Fix the compilation errors by disabling that warning since the code is
-generated and warning is not so useful in this case — it can't check
-the parameters for now.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202512061425.x0qTt9ww-lkp@intel.com/
-Closes: https://lore.kernel.org/oe-kbuild-all/202512061640.9hKTnB8p-lkp@intel.com/
-Closes: https://lore.kernel.org/oe-kbuild-all/202512081321.2h9ThWTg-lkp@intel.com/
-Fixes: 5ab154f1463a ("bpf: Introduce BPF standard streams")
-Fixes: 10aceb629e19 ("bpf: Add bpf_trace_vprintk helper")
-Fixes: 7b15523a989b ("bpf: Add a bpf_snprintf helper")
-Fixes: 492e639f0c22 ("bpf: Add bpf_seq_printf and bpf_seq_write helpers")
-Fixes: f3694e001238 ("bpf: add BPF_CALL_x macros for declaring helpers")
-Suggested-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- kernel/bpf/Makefile   | 11 +++++++++--
- kernel/trace/Makefile |  6 ++++++
- 2 files changed, 15 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-index 232cbc97434d..cf7e8a972f98 100644
---- a/kernel/bpf/Makefile
-+++ b/kernel/bpf/Makefile
-@@ -6,7 +6,14 @@ cflags-nogcse-$(CONFIG_X86)$(CONFIG_CC_IS_GCC) := -fno-gcse
- endif
- CFLAGS_core.o += -Wno-override-init $(cflags-nogcse-yy)
- 
--obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o log.o token.o liveness.o
-+obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o tnum.o log.o token.o liveness.o
-+
-+obj-$(CONFIG_BPF_SYSCALL) += helpers.o stream.o
-+# The ____bpf_snprintf() uses the format string that triggers a compiler warning.
-+CFLAGS_helpers.o += -Wno-suggest-attribute=format
-+# The bpf_stream_vprintk_impl() uses the format string that triggers a compiler warning.
-+CFLAGS_stream.o += -Wno-suggest-attribute=format
-+
- obj-$(CONFIG_BPF_SYSCALL) += bpf_iter.o map_iter.o task_iter.o prog_iter.o link_iter.o
- obj-$(CONFIG_BPF_SYSCALL) += hashtab.o arraymap.o percpu_freelist.o bpf_lru_list.o lpm_trie.o map_in_map.o bloom_filter.o
- obj-$(CONFIG_BPF_SYSCALL) += local_storage.o queue_stack_maps.o ringbuf.o bpf_insn_array.o
-@@ -14,7 +21,7 @@ obj-$(CONFIG_BPF_SYSCALL) += bpf_local_storage.o bpf_task_storage.o
- obj-${CONFIG_BPF_LSM}	  += bpf_inode_storage.o
- obj-$(CONFIG_BPF_SYSCALL) += disasm.o mprog.o
- obj-$(CONFIG_BPF_JIT) += trampoline.o
--obj-$(CONFIG_BPF_SYSCALL) += btf.o memalloc.o rqspinlock.o stream.o
-+obj-$(CONFIG_BPF_SYSCALL) += btf.o memalloc.o rqspinlock.o
- ifeq ($(CONFIG_MMU)$(CONFIG_64BIT),yy)
- obj-$(CONFIG_BPF_SYSCALL) += arena.o range_tree.o
- endif
-diff --git a/kernel/trace/Makefile b/kernel/trace/Makefile
-index fc5dcc888e13..1673b395c14c 100644
---- a/kernel/trace/Makefile
-+++ b/kernel/trace/Makefile
-@@ -104,7 +104,13 @@ obj-$(CONFIG_TRACE_EVENT_INJECT) += trace_events_inject.o
- obj-$(CONFIG_SYNTH_EVENTS) += trace_events_synth.o
- obj-$(CONFIG_HIST_TRIGGERS) += trace_events_hist.o
- obj-$(CONFIG_USER_EVENTS) += trace_events_user.o
-+
- obj-$(CONFIG_BPF_EVENTS) += bpf_trace.o
-+# The BPF printing functions use the format string that triggers a compiler warning.
-+# Since the code is generated and warning is not so useful in this case (it can't
-+# check the parameters for now) disable the warning.
-+CFLAGS_bpf_trace.o += -Wno-suggest-attribute=format
-+
- obj-$(CONFIG_KPROBE_EVENTS) += trace_kprobe.o
- obj-$(CONFIG_TRACEPOINTS) += error_report-traces.o
- obj-$(CONFIG_TRACEPOINTS) += power-traces.o
 -- 
-2.50.1
+With Best Regards,
+Andy Shevchenko
+
 
 
