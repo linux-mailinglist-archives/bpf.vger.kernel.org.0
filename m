@@ -1,216 +1,161 @@
-Return-Path: <bpf+bounces-76393-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76395-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20575CB21E6
-	for <lists+bpf@lfdr.de>; Wed, 10 Dec 2025 07:52:55 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 699E4CB2261
+	for <lists+bpf@lfdr.de>; Wed, 10 Dec 2025 08:09:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8A20C30E67E2
-	for <lists+bpf@lfdr.de>; Wed, 10 Dec 2025 06:51:51 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 9DE52302ABB5
+	for <lists+bpf@lfdr.de>; Wed, 10 Dec 2025 07:09:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0A1C2820A0;
-	Wed, 10 Dec 2025 06:51:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D78E02E1F11;
+	Wed, 10 Dec 2025 07:09:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="rEgHVN8s"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S/HfJ3cQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D920A1F3BA4;
-	Wed, 10 Dec 2025 06:51:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1F28299AAB
+	for <bpf@vger.kernel.org>; Wed, 10 Dec 2025 07:09:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765349510; cv=none; b=lPJ0xhzJMqdqeMmdrvZeNDl/69pTSousE8ppjRp9dWSnx0BPZ/1FNkcZWPIfSoWvKzLFhdIJVsgX7z51HBmwvg/J1m2FJyLfFY9swEUh7HSXGtkgkbjN6rsrl5OxIxKT+//3DzJSVuBJUcLEsC3/ArfkZ6GO2ChVhPeljzRWclQ=
+	t=1765350574; cv=none; b=XGOA27O/LfBivAktxXOyHteR5IN8cyJaYzezv8+u2TCLco8Srg5xKJBPkIrjm747dr9tKJGE0xNju1VxZLoN/pQ2MR45MP3h5yY2Pya9E04dKYNcqzt5ghKeG+H2OkH506cKPtmCKFBajULTlSg+8c3KHDKpWYvnMh6EZFIDwEQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765349510; c=relaxed/simple;
-	bh=g3YArYhvbl0gEzinJ/bUXt8a8I9Rcwsw0E3OY8h7rPg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KloaE0t5sAesnjzJGCekoPYxCtbX1uLDzXJUkPMbPVNGUhWU95S92vUEyV57npr1sdBkRjxu25EcgOMMm6mfdnQL8neP60ZaEsOdROdiIoSQzhy5kRc5IxKEDc7HqzofVNUFHD9O+9EPZX1RXujL7xJaL6ZCO4b+O34NGoY8XX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=rEgHVN8s; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5BA2rXAK017674;
-	Wed, 10 Dec 2025 06:50:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=QbLF06
-	aoc9AEQM4U6440jWePKSqPQqSALf4CCdrTQVI=; b=rEgHVN8sa0JsuibDc9LrcU
-	dHQ7pTURWF8ztY/crvVC3KIYUd75GhamohwkYQ6J4+T4H6MTN6yjYqwLP+iwflav
-	0mVRLIVVo3yYjS20jvQ00yJ+CbjBu6+dL2gixXJ69IbD7qKFY+Z/GElpgYligR4g
-	0vqdcAPzI2QA9+jWtiMTVt4y+ISefNStyEaptpGvJQtFlBLet7K+f2VLVzb36Wpy
-	Tjnzc2GYU6eZjy7UnL4ggIpugf38sIV/0kP4c28o42b+HlqKhKvSYFwswMOMof7T
-	IhC6nbrzM3+7kvMahuKrdrOzQWaePFZsPVHZzO2QSpciz006/f1EiQeJLfLttogw
-	==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4avawv8fvs-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Dec 2025 06:50:53 +0000 (GMT)
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 5BA6mOxP005045;
-	Wed, 10 Dec 2025 06:50:53 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4avawv8fvp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Dec 2025 06:50:53 +0000 (GMT)
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5BA5Orrw009044;
-	Wed, 10 Dec 2025 06:50:52 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4avytmy8dt-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Dec 2025 06:50:52 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5BA6om0R52691440
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 10 Dec 2025 06:50:48 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5AB972004B;
-	Wed, 10 Dec 2025 06:50:48 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2D22D20040;
-	Wed, 10 Dec 2025 06:50:44 +0000 (GMT)
-Received: from li-621bac4c-27c7-11b2-a85c-c2bf7c4b3c07.ibm.com.com (unknown [9.43.106.237])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Wed, 10 Dec 2025 06:50:43 +0000 (GMT)
-From: Saket Kumar Bhaskar <skb99@linux.ibm.com>
-To: bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Cc: hbathini@linux.ibm.com, sachinpb@linux.ibm.com, venkat88@linux.ibm.com,
-        andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org,
-        daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
-        yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
-        christophe.leroy@csgroup.eu, naveen@kernel.org, maddy@linux.ibm.com,
-        mpe@ellerman.id.au, npiggin@gmail.com
-Subject: [PATCH bpf-next v4 2/2] powerpc64/bpf: Inline bpf_get_smp_processor_id() and bpf_get_current_task/_btf()
-Date: Wed, 10 Dec 2025 12:20:33 +0530
-Message-ID: <89abfdd6f6721fbe7897865e74f2f691e5f7824a.1765343385.git.skb99@linux.ibm.com>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <cover.1765343385.git.skb99@linux.ibm.com>
-References: <cover.1765343385.git.skb99@linux.ibm.com>
+	s=arc-20240116; t=1765350574; c=relaxed/simple;
+	bh=26nolpmNblwBmBuzKzPK0yRZPS0nM9skp+7aC9R4q08=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YHay5I+9Y6iD1fUj7B+nPxe5cNDwWmHfJQYT7OBV61uZG1d6iaa8UR8mn3ICxElqbRMuE2wF32HiMsPOlYJh2fEmcVYS43VyLpKY26WQ2gzNyhpPD7fD8JWyBp4an9FiIsRhhTJkuYH9fpZQ4TAwV4KjnzxVsJ48TcOfakIDkyk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S/HfJ3cQ; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-42b3b0d76fcso3861854f8f.3
+        for <bpf@vger.kernel.org>; Tue, 09 Dec 2025 23:09:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1765350571; x=1765955371; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+EU0VUVqRUtS7aPeBl9evWsKNjXkOCCMm8DbmHiqXpg=;
+        b=S/HfJ3cQFto1RAgo+rrACcfN9dwfuFwnAAu+mZhRx8FwpLZRQ/+3c56zpp1fjV+L2+
+         CJ2xqr7XMSPB2tFCQ8/sWENL4ildDVkfL1oovPP42uiSOgcH1FbWqbzXzSFjTzZZ2NDa
+         SJfoVHTjywYIiqFgfN8m2AwKVDi7cgBYtCjQxp3zHxeu0ECkbUY9bD+r6i/DZTdh63Q0
+         2Tf61ibMbg0bKGclUQqdHMO+xO5bLgIypvh90u1Rwd8NTxhVRzapKCFg2aJLNcCrTkLQ
+         21uHT/kSG5pNDKvqg4VbVYCOgPWlCYdketP2OntYLTtDuHTDtRBspwc3PMlKP2oCyV2T
+         s7eQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765350571; x=1765955371;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=+EU0VUVqRUtS7aPeBl9evWsKNjXkOCCMm8DbmHiqXpg=;
+        b=R7JgRX28ZLQqLvpw0xLI7DJAazPFp+4TZtNHSaFgg7s2PH71DLiIqFjOTWfk90tRG4
+         qQIlxHV4YaE5bZf41rduwyjNMUkKEbP4w4qMKg3hoiocT5dZ30UeMeHmXq2frILWVaGs
+         qcTLtrTRmt94veHJ0swLuRjYOKG2o3xskUXDaR+0TC5+YNgG8jl/fPLoyLgfvuPKP/sP
+         8X6U6mCkeV4czQc8MhplFjsaYoe7tjdLHm7n4hMpqdVW/fn6J30XD8w3DgfS7V9bh5Be
+         v2xobhTbDsit72F3jlMKX0Bf+ppMF5gWMtAbQQeMmKMnS3Ft9BwG6et/2Qaduc02ZP18
+         mPqg==
+X-Forwarded-Encrypted: i=1; AJvYcCXh4NcqE/tdKhn3T4fE69i6LZWSqL1DNTTwdT2K0V8Syx4DhBivIJKvYuqkiTpbSAyjiqw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyxFhvcWM9gxDyHRwO2Ra+NoCCL1BOiU16h5i5zCLqoZY4TlZbE
+	pmhRV9Mt7hfQHrCILtJyZCjS1B36E1HpjHwOqSmjL+Vjg05ztEsUB3g1r9zi3cO1FynuyrkOQV4
+	acqj7VxJPNtnJ5AwX+m5ApLZzIPbxG30=
+X-Gm-Gg: AY/fxX7/8X/FkD3CsmRi71NDSjhwYExJYYqWlsp2vQNwrofcx4RM8SBefUlZklytU09
+	CmcJhH/IZxsfJ+2+mYBYYy80TDV5NSPyjEGvo5aJDJzqtEkLg/bMUdIEYW0nBXw1egNnW/XNWj3
+	6nG9Af74jDbKZK89Q8+BDyL8saaMmgCbrsPNmVzGU2to09heOptV06iz2lnK+h2DPit/hhyo56Q
+	+DIr9RboJKudh9pIVVN2cASgORhjzAMP8Bjuzkw+JGElMIjWfNKy/4Y3tX8Fcoe8BVL74FB
+X-Google-Smtp-Source: AGHT+IEUWuCBd+VxvtSqBsdHlpGUtEOyUH5Vet9IDXTK4PfHO9H/osN5TOD7YP2bhiK0aFE0r7edKlgEeScX0rmLktg=
+X-Received: by 2002:a05:6000:3108:b0:42b:43b4:2870 with SMTP id
+ ffacd0b85a97d-42fa39d4d3bmr1377860f8f.26.1765350571083; Tue, 09 Dec 2025
+ 23:09:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: y7vsctMC0RIf_zRLlguJP1a5Z7zJjdzg
-X-Proofpoint-ORIG-GUID: 93ch5fYpdkuJsbwMfJ0peuFYBRqELjkP
-X-Authority-Analysis: v=2.4 cv=aY9sXBot c=1 sm=1 tr=0 ts=6939184e cx=c_pps
- a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
- a=IkcTkHD0fZMA:10 a=wP3pNCr1ah4A:10 a=VkNPw1HP01LnGYTKEx00:22
- a=NEAV23lmAAAA:8 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=mFN1cuOBngCmvTvEACsA:9
- a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMjA2MDAwNyBTYWx0ZWRfX8F/dSIpgjExQ
- 1j/gEPEbu6eRgjuaT/e3IVj5ZQ/lNiHnpETSvjv0OoJqc4shiT+VkOOsqmxohsZjre7vR1W/dUl
- P3BOelPJHicqr0FKxxqJsajmud1T2lbShcl0BvdI35mVrBra4m3hQqLzr1e8xPRjgIYZPNRrexB
- bE8E/B8oPnC7Rwh87fpfglIlyonqAbayDnWgB61Jz4s7ybjWx8goy0Wje6Eef3/qeWyDjehlPqv
- 2tl2VRkc9O8fFSAIw8hE2yad+5aQxucLIBa0tB6gn0wj3duU8BIcJqV6FUOhypD4nPiDa9phHIn
- mEwYtHLIpN+CTjIpcwo+MLaVZtq0M4uqvM3dy03JcCjvgzp4X2KLWYO537sGS29tzxXKhPPvYFI
- hxtxDu2sdmuUjjV4qi7xHCbsQ9KDQA==
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2025-12-09_05,2025-12-09_03,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- suspectscore=0 clxscore=1015 phishscore=0 lowpriorityscore=0 bulkscore=0
- adultscore=0 impostorscore=0 malwarescore=0 priorityscore=1501 spamscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2510240000 definitions=main-2512060007
+References: <20251208161800.2902699-2-andriy.shevchenko@linux.intel.com>
+ <CAADnVQ+SXe-CsPHnYkB4SOKct6iMN=PkexaKRd-MJFhC3i8M0A@mail.gmail.com> <aTgl_bjO1O9Ddpmv@smile.fi.intel.com>
+In-Reply-To: <aTgl_bjO1O9Ddpmv@smile.fi.intel.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 10 Dec 2025 16:09:19 +0900
+X-Gm-Features: AQt7F2ogOQ169Rf8brIHTTEO9I_yuqVyNgBKCB2apVGPY610GEpbdkn_RiqZMwM
+Message-ID: <CAADnVQLkSoOL8+kELdmX5nzNcXm-s4VbA5+Q-MPcNySsSiu+RQ@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] bpf: Mark BPF printing functions with __printf() attribute
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Matt Bobrowski <mattbobrowski@google.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Alan Maguire <alan.maguire@oracle.com>, kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Inline the calls to bpf_get_smp_processor_id() and bpf_get_current_task/_btf()
-in the powerpc bpf jit.
+On Tue, Dec 9, 2025 at 10:37=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Tue, Dec 09, 2025 at 06:12:46PM +0900, Alexei Starovoitov wrote:
+> > On Tue, Dec 9, 2025 at 1:21=E2=80=AFAM Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
+> > >
+> > > The printing functions in BPF code are using printf() type of format,
+> > > and compiler is not happy about them as is:
+> > >
+> > > kernel/bpf/helpers.c:1069:9: error: function =E2=80=98____bpf_snprint=
+f=E2=80=99 might be a candidate for =E2=80=98gnu_printf=E2=80=99 format att=
+ribute [-Werror=3Dsuggest-attribute=3Dformat]
+> > >  1069 |         err =3D bstr_printf(str, str_size, fmt, data.bin_args=
+);
+> > >       |         ^~~
+> > >
+> > > kernel/trace/bpf_trace.c:377:9: error: function =E2=80=98____bpf_trac=
+e_printk=E2=80=99 might be a candidate for =E2=80=98gnu_printf=E2=80=99 for=
+mat attribute [-Werror=3Dsuggest-attribute=3Dformat]
+> > >   377 |         ret =3D bstr_printf(data.buf, MAX_BPRINTF_BUF, fmt, d=
+ata.bin_args);
+> > >       |         ^~~
+> > >
+> > > kernel/trace/bpf_trace.c:433:9: error: function =E2=80=98____bpf_trac=
+e_vprintk=E2=80=99 might be a candidate for =E2=80=98gnu_printf=E2=80=99 fo=
+rmat attribute [-Werror=3Dsuggest-attribute=3Dformat]
+> > >   433 |         ret =3D bstr_printf(data.buf, MAX_BPRINTF_BUF, fmt, d=
+ata.bin_args);
+> > >       |         ^~~
+> > >
+> > > kernel/trace/bpf_trace.c:475:9: error: function =E2=80=98____bpf_seq_=
+printf=E2=80=99 might be a candidate for =E2=80=98gnu_printf=E2=80=99 forma=
+t attribute [-Werror=3Dsuggest-attribute=3Dformat]
+> > >   475 |         seq_bprintf(m, fmt, data.bin_args);
+> > >       |         ^~~~~~~~~~~
+> > >
+> > > Fix the compilation errors by adding __printf() attribute. For that
+> > > we need to pass it down to the BPF_CALL_x() and wrap into PRINTF_BPF_=
+CALL_*()
+> > > to make code neater.
+>
+> > This is pointless churn to shut up a warning.
+>
+> In some cases, like mine, it's an error.
+>
+> > Teach syzbot to stop this spam instead.
+>
+> It prevents to perform `make W=3D1` builds with the default CONFIG_WERROR=
+,
+> which is 'y'.
+>
+> > At the end this patch doesn't make any visible difference,
+> > since user declarations of these helpers are auto generated
+> > from uapi/bpf.h file and __printf attribute is not there.
+>
+> I see, thanks for the review.
+> Any recommendations on how to fix this properly?
 
-powerpc saves the Logical processor number (paca_index) and pointer
-to current task (__current) in paca.
+Add -Wno-suggest-attribute=3Dformat
+to corresponding files in Makefile.
 
-Here is how the powerpc JITed assembly changes after this commit:
-
-Before:
-
-cpu = bpf_get_smp_processor_id();
-
-addis 12, 2, -517
-addi 12, 12, -29456
-mtctr 12
-bctrl
-mr	8, 3
-
-After:
-
-cpu = bpf_get_smp_processor_id();
-
-lhz 8, 8(13)
-
-To evaluate the performance improvements introduced by this change,
-the benchmark described in [1] was employed.
-
-+---------------+-------------------+-------------------+--------------+
-|      Name     |      Before       |        After      |   % change   |
-|---------------+-------------------+-------------------+--------------|
-| glob-arr-inc  | 40.701 ± 0.008M/s | 55.207 ± 0.021M/s |   + 35.64%   |
-| arr-inc       | 39.401 ± 0.007M/s | 56.275 ± 0.023M/s |   + 42.42%   |
-| hash-inc      | 24.944 ± 0.004M/s | 26.212 ± 0.003M/s |   +  5.08%   |
-+---------------+-------------------+-------------------+--------------+
-
-[1] https://github.com/anakryiko/linux/commit/8dec900975ef
-
-Reviewed-by: Puranjay Mohan <puranjay@kernel.org>
-Signed-off-by: Saket Kumar Bhaskar <skb99@linux.ibm.com>
----
- arch/powerpc/net/bpf_jit_comp.c   | 12 ++++++++++++
- arch/powerpc/net/bpf_jit_comp64.c | 11 +++++++++++
- 2 files changed, 23 insertions(+)
-
-diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_comp.c
-index d53e9cd7563f..b243ee205885 100644
---- a/arch/powerpc/net/bpf_jit_comp.c
-+++ b/arch/powerpc/net/bpf_jit_comp.c
-@@ -471,6 +471,18 @@ bool bpf_jit_supports_percpu_insn(void)
- 	return IS_ENABLED(CONFIG_PPC64);
- }
- 
-+bool bpf_jit_inlines_helper_call(s32 imm)
-+{
-+	switch (imm) {
-+	case BPF_FUNC_get_smp_processor_id:
-+	case BPF_FUNC_get_current_task:
-+	case BPF_FUNC_get_current_task_btf:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
- void *arch_alloc_bpf_trampoline(unsigned int size)
- {
- 	return bpf_prog_pack_alloc(size, bpf_jit_fill_ill_insns);
-diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
-index 37723ee9344e..6c827e7aa691 100644
---- a/arch/powerpc/net/bpf_jit_comp64.c
-+++ b/arch/powerpc/net/bpf_jit_comp64.c
-@@ -1400,6 +1400,17 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, u32 *fimage, struct code
- 		case BPF_JMP | BPF_CALL:
- 			ctx->seen |= SEEN_FUNC;
- 
-+			if (src_reg == bpf_to_ppc(BPF_REG_0)) {
-+				if (imm == BPF_FUNC_get_smp_processor_id) {
-+					EMIT(PPC_RAW_LHZ(src_reg, _R13, offsetof(struct paca_struct, paca_index)));
-+					break;
-+				} else if (imm == BPF_FUNC_get_current_task ||
-+					   imm == BPF_FUNC_get_current_task_btf) {
-+					EMIT(PPC_RAW_LD(src_reg, _R13, offsetof(struct paca_struct, __current)));
-+					break;
-+				}
-+			}
-+
- 			ret = bpf_jit_get_func_addr(fp, &insn[i], extra_pass,
- 						    &func_addr, &func_addr_fixed);
- 			if (ret < 0)
--- 
-2.51.0
-
+I think it's cleaner than __diag_ignore() in the .c
 
