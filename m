@@ -1,205 +1,127 @@
-Return-Path: <bpf+bounces-76389-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76390-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31B4DCB2022
-	for <lists+bpf@lfdr.de>; Wed, 10 Dec 2025 06:45:53 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 718B5CB20CD
+	for <lists+bpf@lfdr.de>; Wed, 10 Dec 2025 07:09:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 1F31330424B9
-	for <lists+bpf@lfdr.de>; Wed, 10 Dec 2025 05:45:40 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2E0DD30CCA57
+	for <lists+bpf@lfdr.de>; Wed, 10 Dec 2025 06:09:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7103311955;
-	Wed, 10 Dec 2025 05:45:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aMpzgr5J";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="rTzpxKBA"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB9C22FC874;
+	Wed, 10 Dec 2025 06:09:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57B18225415
-	for <bpf@vger.kernel.org>; Wed, 10 Dec 2025 05:45:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5D4821CC44;
+	Wed, 10 Dec 2025 06:09:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765345538; cv=none; b=nT5zHHztEICykM/RjKvCSk664IvIHsEHd3xBO6ARui6A6LqlRiqpPxJ8ww20GSArxqlWFDa2qRNysgm5vQAv+5qENPT6SCqbbZr1WnorwjYtSpEiE9DT216shTtfOCm8AtSt/vJf8tkznyQVo9KkBlNXuoE7OSMyaN6mSsdrpoQ=
+	t=1765346947; cv=none; b=MVqPjhNZCOiCyb5WFjcOWRcpXfU8uZBGrVdiaOXSMguDIp76LKi93Gftr7IeaPy2OYl5L0t2xP0nRUiC8izI7zcLOQfu41oQzZI9IwF1xjb+x83XKHl+0Tlc4Fy+0X/0FupojCLe89jzJGPV/S1MAYQR71dVXWyg3Wrf4sCLnow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765345538; c=relaxed/simple;
-	bh=w6iiCVQLpFikPUe4uciKj0mkXr2KE4ORLhI9r5rmOzE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ImUmbc9FtEiwaAu0P+lCkFZ/QbWT2l+wEL7r/KcZl+2czbo9rDk1HWpQvVLapfVlMO8PlRFVFzpyOV2jV6A8Iv6R7r2wPNDpmvS274BF363BB513CUj4Z75dTBfWCdcbwhSInVbRFJ2GzaOKyKF90HOrewRuMPa/tlMwki/uLtc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aMpzgr5J; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=rTzpxKBA; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1765345535;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=U5u9zjHxp5nOkcmQAgH5/2pjjFKz+7xciix+1rrgeQw=;
-	b=aMpzgr5JEKi+SSFpRO+X3Nb39rOBFKDCPtX8Tvez79DzxXSE7FIsam/z9B5/p8aKUNnNVJ
-	LLG/Jj3l60DCKnyRhW2V77IXD/WdpmEc9G7LYjI6lTEZFEQ4LNG3iZmbs0kS8hAhTrO4B7
-	iPe4v75wBvNoyFpUDNBAxhRzTFpNnls=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-625-ZcPAU7_SOx2MjGSr6OW8Gw-1; Wed, 10 Dec 2025 00:45:34 -0500
-X-MC-Unique: ZcPAU7_SOx2MjGSr6OW8Gw-1
-X-Mimecast-MFC-AGG-ID: ZcPAU7_SOx2MjGSr6OW8Gw_1765345533
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-342701608e2so7348254a91.1
-        for <bpf@vger.kernel.org>; Tue, 09 Dec 2025 21:45:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1765345532; x=1765950332; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=U5u9zjHxp5nOkcmQAgH5/2pjjFKz+7xciix+1rrgeQw=;
-        b=rTzpxKBAniyLXsosgIop7oewH4TA9w5+T0RyAfr61LR0qR+RPzKQ8JxYb7HcUKf1IJ
-         9N+RGQWD8BXTJ4Z2vrZ/Eu29BBy2BrkzGPUyEVmuTAGzKWo2ZfKWqM4kT/VMrRbMSQ2B
-         rFkHJqXqSmNQj3M2pj8Y1La+0Uw2eUtNUXsdqvhMVx+SLjsP+/sUAO0mMmJDea3DVDIq
-         LWPQQM63rhZlB6mrFSO/gmj0rwE+USDfU2qHZHI/62vKGFX4/qvSzDpvByKx3LPOIlMB
-         NpE+NWV7U/U6Bbsi0MW+rBEe+Szk9XQ5QAHcnCND6JzWiW+UP/phQsAHQKqwdt7IwFk2
-         9lsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765345532; x=1765950332;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=U5u9zjHxp5nOkcmQAgH5/2pjjFKz+7xciix+1rrgeQw=;
-        b=MRkn7wsOdMwniPYnmgJVmPYGDHH0BWgBlKaT6ydraV2i0mp+XjHflI7SSYEOz4+LMg
-         jwsSauyNST5RiYOaI3WcpvDPh+gHYOJ4VfS9ZlpTwdW0O58fVsviDIBehAouCB19dkfi
-         aag+IV26p/ePF5/LNNxhPLs3evevLpIvFI4ur+YoON7H/M/yo33jVFtbEP0bQfBxPhjd
-         pydlA93Q/TVW2u22uKCQvlKqjCOL46hEGxhko0ICqaPbCBDtzx/5acYThogRraXFgvHm
-         b1U5ombhCZVnX2tVY5yuclSKmTQ1kmzxfkedZFNtAz/6oG2NvhYziezlt9FWvL8ES6gq
-         Y0lQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWUB5FzAEoM4f9j2rCEQxBJoWdCMhwxwxJvjAI7yH15+InY9TWYNfHQceMc5JSV0WP+jMo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxoNIaihq6mXFqHExIYJ5SP4t945o9MAMcoR8KNcZxpteNeN0rT
-	oeg52j9AV+AzwTYyN1La/X6RYCjL8qiQ9WW/PAw9GHV2V0inbFPpAWdy/xv2sQEWxjh02BR7yBW
-	26XmD2kncV7iVx0w91qNJ8gyZ8+AMOMtA92qtquYY3a0MvSijoyYSVWVkbRDnDzDdd6EwzG8kpR
-	ZYFZxR2lD+uhv6ciNbkc9QZzv5ns6Uq/9l1Z4JXic=
-X-Gm-Gg: AY/fxX43zfcpwKrdbxOmsy1DBuv4eQfjXH7HIEK4DceDy2oyg7oAOkbjCBDCbFdXWc2
-	sbnkWFFwQEg1v7AtJ2v/fwch3nhIHvc6t5c/2xXeWTqKBOf6g3vvgrysZfi/cy1YcnHa6Ia+X1D
-	Ca4rk/w1349hLyAhPYKCzd1Gl4CFen3S5jqOZTZpPyDIrXlkYoXJfUTLb9GYmwuxmH2sk=
-X-Received: by 2002:a17:90b:3847:b0:340:a5b2:c305 with SMTP id 98e67ed59e1d1-34a72808f67mr1088293a91.2.1765345532541;
-        Tue, 09 Dec 2025 21:45:32 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGh6+dEVRAMV2C5vYHDGZU4Qf85RNHec+uPwoESl74tc15tqIpJSGl+Ri/dVxp9XR0wrBpc75hUH8L0OPBAOfQ=
-X-Received: by 2002:a17:90b:3847:b0:340:a5b2:c305 with SMTP id
- 98e67ed59e1d1-34a72808f67mr1088273a91.2.1765345532051; Tue, 09 Dec 2025
- 21:45:32 -0800 (PST)
+	s=arc-20240116; t=1765346947; c=relaxed/simple;
+	bh=vseF7ujM/iBxpCgZ/r+q5YLkXVzyTb8ndIAJNd5QafA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pYq22BPrKO4bVgCYml2se40VPrVL0RqrzW2RxTneWGejMZwpCW1pn4x3UJaYaWHgfBLjA+6AEFSxpO7wF7HO53kNbpl2UXD/ZhUQ+WulLZ2PnM3LBQePktjsFU1cm5LJ83soCbX4GO5Z5Q1f/FXaqBXiBzLfjexGpxVOWKdw3Fs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: b321d1bcd58e11f0a38c85956e01ac42-20251210
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.3.6,REQID:4f777785-ed55-4ba9-8de3-a8f7a3a7aee6,IP:0,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
+	elease,TS:0
+X-CID-META: VersionHash:a9d874c,CLOUDID:6009662373f6ac72260c8b7c16b4250b,BulkI
+	D:nil,BulkQuantity:0,Recheck:0,SF:80|81|82|83|102|850|898,TC:nil,Content:0
+	|15|50,EDM:-3,IP:nil,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,O
+	SI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:0
+X-CID-BVR: 2,SSN|SDN
+X-CID-BAS: 2,SSN|SDN,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
+X-UUID: b321d1bcd58e11f0a38c85956e01ac42-20251210
+X-User: duanchenghao@kylinos.cn
+Received: from localhost [(10.44.16.150)] by mailgw.kylinos.cn
+	(envelope-from <duanchenghao@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 1660171310; Wed, 10 Dec 2025 14:08:51 +0800
+Date: Wed, 10 Dec 2025 14:08:49 +0800
+From: Chenghao Duan <duanchenghao@kylinos.cn>
+To: Hengqi Chen <hengqi.chen@gmail.com>
+Cc: yangtiezhu@loongson.cn, chenhuacai@kernel.org, kernel@xen0n.name,
+	zhangtianyang@loongson.cn, masahiroy@kernel.org,
+	linux-kernel@vger.kernel.org, loongarch@lists.linux.dev,
+	bpf@vger.kernel.org, guodongtai@kylinos.cn, youling.tang@linux.dev,
+	jianghaoran@kylinos.cn, vincent.mc.li@gmail.com
+Subject: Re: [PATCH v1 0/2] Fix the failure issue of the module_attach test
+ case
+Message-ID: <20251210060849.GB691118@chenghao-pc>
+References: <20251209093405.1309253-1-duanchenghao@kylinos.cn>
+ <CAEyhmHSPQLd2ivmzcNxDcKJW8143HLi_=syo_8iBPSxWE35pog@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251208153419.18196-1-minhquangbui99@gmail.com>
- <CACGkMEvtKVeoTMrGG0gZOrNKY=m-DGChVcM0TYcqx6-Ap+FY8w@mail.gmail.com> <66d9f44c-295e-4b62-86ae-a0aff5f062bb@gmail.com>
-In-Reply-To: <66d9f44c-295e-4b62-86ae-a0aff5f062bb@gmail.com>
-From: Jason Wang <jasowang@redhat.com>
-Date: Wed, 10 Dec 2025 13:45:19 +0800
-X-Gm-Features: AQt7F2rVVyUHdSbcdKdzi21zc9e3z98C7ZeLVe5qQ4lJ-Awfq6TRhCbVeKZ8w04
-Message-ID: <CACGkMEuF0rNYcSSUCdAgsW2Xfen9NGZHNxXpkO2Mt0a4zQJDqQ@mail.gmail.com>
-Subject: Re: [PATCH net] virtio-net: enable all napis before scheduling refill work
-To: Bui Quang Minh <minhquangbui99@gmail.com>
-Cc: netdev@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>, 
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	Stanislav Fomichev <sdf@fomichev.me>, virtualization@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEyhmHSPQLd2ivmzcNxDcKJW8143HLi_=syo_8iBPSxWE35pog@mail.gmail.com>
 
-On Tue, Dec 9, 2025 at 11:23=E2=80=AFPM Bui Quang Minh <minhquangbui99@gmai=
-l.com> wrote:
->
-> On 12/9/25 11:30, Jason Wang wrote:
-> > On Mon, Dec 8, 2025 at 11:35=E2=80=AFPM Bui Quang Minh <minhquangbui99@=
-gmail.com> wrote:
-> >> Calling napi_disable() on an already disabled napi can cause the
-> >> deadlock. In commit 4bc12818b363 ("virtio-net: disable delayed refill
-> >> when pausing rx"), to avoid the deadlock, when pausing the RX in
-> >> virtnet_rx_pause[_all](), we disable and cancel the delayed refill wor=
-k.
-> >> However, in the virtnet_rx_resume_all(), we enable the delayed refill
-> >> work too early before enabling all the receive queue napis.
-> >>
-> >> The deadlock can be reproduced by running
-> >> selftests/drivers/net/hw/xsk_reconfig.py with multiqueue virtio-net
-> >> device and inserting a cond_resched() inside the for loop in
-> >> virtnet_rx_resume_all() to increase the success rate. Because the work=
-er
-> >> processing the delayed refilled work runs on the same CPU as
-> >> virtnet_rx_resume_all(), a reschedule is needed to cause the deadlock.
-> >> In real scenario, the contention on netdev_lock can cause the
-> >> reschedule.
-> >>
-> >> This fixes the deadlock by ensuring all receive queue's napis are
-> >> enabled before we enable the delayed refill work in
-> >> virtnet_rx_resume_all() and virtnet_open().
-> >>
-> >> Fixes: 4bc12818b363 ("virtio-net: disable delayed refill when pausing =
-rx")
-> >> Reported-by: Paolo Abeni <pabeni@redhat.com>
-> >> Closes: https://netdev-ctrl.bots.linux.dev/logs/vmksft/drv-hw-dbg/resu=
-lts/400961/3-xdp-py/stderr
-> >> Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
-> >> ---
-> >>   drivers/net/virtio_net.c | 59 +++++++++++++++++++-------------------=
---
-> >>   1 file changed, 28 insertions(+), 31 deletions(-)
-> >>
-> >> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> >> index 8e04adb57f52..f2b1ea65767d 100644
-> >> --- a/drivers/net/virtio_net.c
-> >> +++ b/drivers/net/virtio_net.c
-> >> @@ -2858,6 +2858,20 @@ static bool try_fill_recv(struct virtnet_info *=
-vi, struct receive_queue *rq,
-> >>          return err !=3D -ENOMEM;
-> >>   }
-> >>
-> >> +static void virtnet_rx_refill_all(struct virtnet_info *vi)
-> >> +{
-> >> +       bool schedule_refill =3D false;
-> >> +       int i;
-> >> +
-> >> +       enable_delayed_refill(vi);
-> > This seems to be still racy?
-> >
-> > For example, in virtnet_open() we had:
-> >
-> > static int virtnet_open(struct net_device *dev)
-> > {
-> >          struct virtnet_info *vi =3D netdev_priv(dev);
-> >          int i, err;
-> >
-> >          for (i =3D 0; i < vi->max_queue_pairs; i++) {
-> >                  err =3D virtnet_enable_queue_pair(vi, i);
-> >                  if (err < 0)
-> >                          goto err_enable_qp;
-> >          }
-> >
-> >          virtnet_rx_refill_all(vi);
-> >
-> > So NAPI and refill work is enabled in this case, so the refill work
-> > could be scheduled and run at the same time?
->
-> Yes, that's what we expect. We must ensure that refill work is scheduled
-> only when all NAPIs are enabled. The deadlock happens when refill work
-> is scheduled but there are still disabled RX NAPIs.
+On Wed, Dec 10, 2025 at 12:10:46PM +0800, Hengqi Chen wrote:
+> One minor question, I wonder how you debug these issues ?
+> 
 
-Just to make sure we are on the same page, I meant, after refill work
-is enabled, rq0 is NAPI is enabled, in this case the refill work could
-be triggered by the rq0's NAPI so we may end up in the refill work
-that it tries to disable rq1's NAPI while holding the netdev lock.
+There were initially two issues:
+1. When monitoring the function addresses of kernel modules in the
+module_attach test case, kernel panic would occur.
+2. Illegal address access in the module_attach and subprogs_extable
+test cases would lead to kernel panic.
 
-Thanks
+These two issues were debugged by combining different methods for
+different scenarios, including gdb, kgdb, embedding break instructions
+in assembly code, and printing stack and register data.
 
->
-> Thanks,
-> Quang Minh.
->
-
+Chenghao
+> On Tue, Dec 9, 2025 at 5:34 PM Chenghao Duan <duanchenghao@kylinos.cn> wrote:
+> >
+> > The following test cases under the tools/testing/selftests/bpf/
+> > directory have passed the test：
+> >
+> > ./test_progs -t module_attach
+> > ./test_progs -t module_fentry_shadow
+> > ./test_progs -t subprogs
+> > ./test_progs -t subprogs_extable
+> > ./test_progs -t tailcalls
+> > ./test_progs -t struct_ops -d struct_ops_multi_pages
+> > ./test_progs -t fexit_bpf2bpf
+> > ./test_progs -t fexit_stress
+> > ./test_progs -t module_fentry_shadow
+> > ./test_progs -t fentry_test/fentry
+> > ./test_progs -t fexit_test/fexit
+> > ./test_progs -t fentry_fexit
+> > ./test_progs -t modify_return
+> > ./test_progs -t fexit_sleep
+> > ./test_progs -t test_overhead
+> > ./test_progs -t trampoline_count
+> >
+> > Chenghao Duan (2):
+> >   LoongArch: Modify the jump logic of the trampoline
+> >   LoongArch: BPF: Enable BPF exception fixup for specific ADE subcode
+> >
+> >  arch/loongarch/kernel/mcount_dyn.S          | 14 +++++---
+> >  arch/loongarch/kernel/traps.c               |  7 +++-
+> >  arch/loongarch/net/bpf_jit.c                | 37 +++++++++++++++------
+> >  samples/ftrace/ftrace-direct-modify.c       |  8 ++---
+> >  samples/ftrace/ftrace-direct-multi-modify.c |  8 ++---
+> >  samples/ftrace/ftrace-direct-multi.c        |  4 +--
+> >  samples/ftrace/ftrace-direct-too.c          |  4 +--
+> >  samples/ftrace/ftrace-direct.c              |  4 +--
+> >  8 files changed, 56 insertions(+), 30 deletions(-)
+> >
+> > --
+> > 2.25.1
+> >
 
