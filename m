@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-76398-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76399-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E29BCB23DF
-	for <lists+bpf@lfdr.de>; Wed, 10 Dec 2025 08:35:24 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3EA8CB2511
+	for <lists+bpf@lfdr.de>; Wed, 10 Dec 2025 08:45:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id DA77D301B102
-	for <lists+bpf@lfdr.de>; Wed, 10 Dec 2025 07:33:30 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B653F30E04E0
+	for <lists+bpf@lfdr.de>; Wed, 10 Dec 2025 07:43:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E0E33016EB;
-	Wed, 10 Dec 2025 07:33:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D35EE271462;
+	Wed, 10 Dec 2025 07:43:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FEAxtl4n"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T/BNXHwO"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D509301470;
-	Wed, 10 Dec 2025 07:33:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D70779DA;
+	Wed, 10 Dec 2025 07:43:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765351996; cv=none; b=dZW5qbJEDqnrDcQJO4dgV3yyn6yZDI30GNMeKBCZR6JXjf5VDnGyIEOHXCd7fsa8zXOgU2LVbWvEvrrqhuqjYauMYtHT3BRUGa7fu4bnktQGgdx+coxTZfMuPGVxSy/Nw5ExNIIbEJJZAKXrDZg/K5b+9lu7V5G1DrENgLZ6fSQ=
+	t=1765352594; cv=none; b=X4gWbonmzXe0vOVjw0I+cS+rmpkc3D9hbZnsENEkcxwWc70D1jdyMSEApq8PjZIKz2jMeE63nq8kdtuGom8YXEz+TgzYX8vNt1PcLb17yS4tm1aKAoQAtCY/LD5730UKuhHSik3lWajgyPraDse4Xb/nZHkRK8JypGh8PttujX0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765351996; c=relaxed/simple;
-	bh=z32QeBspTHvfGL7jT4zgsGt50dcCo9fMPnf9xtq3X9A=;
+	s=arc-20240116; t=1765352594; c=relaxed/simple;
+	bh=Qa0U3wUR5XTUVJO+JqYELhVIxRSs8ALZiy9GSpDUcTQ=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=peLDOgq2XvwXr9JnGhNp9FRAFdPKi1BXqIL/F2C2Uc979KNs+wLXUwi5SxJGx954Q8zOKINjmuRPvhjpr0aBVwrTlZG4OqSctInwMl7Wu8o6QtoEyHCQCTAgwU7fyt2xdIYOhsw4HwpBiRQejGfxRtR91Q83F6F6zLCGU5JsTgg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FEAxtl4n; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DAC4C116B1;
-	Wed, 10 Dec 2025 07:33:16 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=lDjHG3ncmWeU4DLTwdXPD7npbDoZOOv+71oP2jX3VWeIxwcyz0nAfxMNu6wagbcjsq4VXj7qERX+mfUDrLJRo+SbRMo7dLVcA+H9aXih+CpN7tqFa3F48U+f/PPOk0t92lKoMKMF/HlQ1EHL+oZDkWGSQKxFxnJw1DdYAyR6ems=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T/BNXHwO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5217C116B1;
+	Wed, 10 Dec 2025 07:43:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765351996;
-	bh=z32QeBspTHvfGL7jT4zgsGt50dcCo9fMPnf9xtq3X9A=;
+	s=k20201202; t=1765352593;
+	bh=Qa0U3wUR5XTUVJO+JqYELhVIxRSs8ALZiy9GSpDUcTQ=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=FEAxtl4n/dE8j2tgbOfAC0aRj0oMADjly1Y7eYym4r1/h0AHWHd+msfqZscjgA2ys
-	 J5TKwMM+gwM36agvp6KNeLKumtc53QXwEMq3lvmsv6YY9Mm08kPTivEvQ58mXGNHWx
-	 8kKMPr2F/amgC3HLyHga3JUrOgY76SUYh33Ks+1tDCkh5mwbHsds7rPxQKRevlrfm5
-	 9pMq2/w38fiHmWWl99urOhDiNqpJvLLyLz1FwtOHGZrVJYxiFHjoHyZXyWu4DzuHp9
-	 BobSUGpGPA5rYtWmXQnEhaiDuD67FW0cdeX875SmZJjv2UIztQsEgYjOHpSYrSfQ3L
-	 JJRruqcT5u1Iw==
+	b=T/BNXHwOW0a/FhtuHJnd96HnA3i0GHmWTVoQfYKSCxArF6HtdvXdM2zGwOvOcjjGh
+	 G+8MG2xCweUpeyXVcD6OTR9s9CzHjf/cbC9UM8kZgg+bIPI0hfPqcDpClg38symLgp
+	 1brZhHvmDFp3FjmOLsoglFkttHZl7Z1pBoPdPJsfU1r/U1omFeO78aRLZlDv5nKq4U
+	 SGjZcZ8dGlED8T3iDKkIqapirgwv2uktmoYnOgFpKgt/BWqmJWDi1NGrufiURbb7Pj
+	 p5vOorhLF8JqsuZ1lXxrSyj82S3+POnVU+39VQV+ZdraCItUL/HFFYsaR5QKNbW0mr
+	 Nwt3wYgxYBn8Q==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 788BE3809A18;
-	Wed, 10 Dec 2025 07:30:12 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id B5A9A3809A18;
+	Wed, 10 Dec 2025 07:40:09 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -50,47 +50,44 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] bpf, arm64: Do not audit capability check in do_jit()
+Subject: Re: [PATCH v2 0/2] bpf,
+ x86/unwind/orc: Support reliable unwinding through BPF stack frames
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <176535181104.487333.8109866817495387423.git-patchwork-notify@kernel.org>
-Date: Wed, 10 Dec 2025 07:30:11 +0000
-References: <20251204125916.441021-1-omosnace@redhat.com>
-In-Reply-To: <20251204125916.441021-1-omosnace@redhat.com>
-To: Ondrej Mosnacek <omosnace@redhat.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, bpf@vger.kernel.org,
- selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
- serge@hallyn.com
+ <176535240855.490601.4190926018220042956.git-patchwork-notify@kernel.org>
+Date: Wed, 10 Dec 2025 07:40:08 +0000
+References: <cover.1764818927.git.jpoimboe@kernel.org>
+In-Reply-To: <cover.1764818927.git.jpoimboe@kernel.org>
+To: Josh Poimboeuf <jpoimboe@kernel.org>
+Cc: x86@kernel.org, linux-kernel@vger.kernel.org,
+ live-patching@vger.kernel.org, bpf@vger.kernel.org,
+ andrey.grodzovsky@crowdstrike.com, pmladek@suse.com, song@kernel.org,
+ raja.khan@crowdstrike.com, mbenes@suse.cz, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, peterz@infradead.org
 
 Hello:
 
-This patch was applied to bpf/bpf.git (master)
+This series was applied to bpf/bpf.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Thu,  4 Dec 2025 13:59:16 +0100 you wrote:
-> Analogically to the x86 commit 881a9c9cb785 ("bpf: Do not audit
-> capability check in do_jit()"), change the capable() call to
-> ns_capable_noaudit() in order to avoid spurious SELinux denials in audit
-> log.
+On Wed,  3 Dec 2025 19:32:14 -0800 you wrote:
+> Fix livepatch stalls which may be seen when a task is blocked with BPF
+> JIT on its kernel stack.
 > 
-> The commit log from that commit applies here as well:
-> """
-> The failure of this check only results in a security mitigation being
-> applied, slightly affecting performance of the compiled BPF program. It
-> doesn't result in a failed syscall, an thus auditing a failed LSM
-> permission check for it is unwanted. For example with SELinux, it causes
-> a denial to be reported for confined processes running as root, which
-> tends to be flagged as a problem to be fixed in the policy. Yet
-> dontauditing or allowing CAP_SYS_ADMIN to the domain may not be
-> desirable, as it would allow/silence also other checks - either going
-> against the principle of least privilege or making debugging potentially
-> harder.
+> Changes since v1 (https://lore.kernel.org/cover.1764699074.git.jpoimboe@kernel.org):
+> - fix NULL ptr deref in __arch_prepare_bpf_trampoline()
+> 
+> Josh Poimboeuf (2):
+>   bpf: Add bpf_has_frame_pointer()
+>   x86/unwind/orc: Support reliable unwinding through BPF stack frames
 > 
 > [...]
 
 Here is the summary with links:
-  - bpf, arm64: Do not audit capability check in do_jit()
-    https://git.kernel.org/bpf/bpf/c/189e5deb944a
+  - [v2,1/2] bpf: Add bpf_has_frame_pointer()
+    https://git.kernel.org/bpf/bpf/c/ca45c84afb8c
+  - [v2,2/2] x86/unwind/orc: Support reliable unwinding through BPF stack frames
+    (no matching commit)
 
 You are awesome, thank you!
 -- 
