@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-76401-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76402-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF0CDCB2592
-	for <lists+bpf@lfdr.de>; Wed, 10 Dec 2025 09:03:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 288E6CB2636
+	for <lists+bpf@lfdr.de>; Wed, 10 Dec 2025 09:23:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DA55D303A195
-	for <lists+bpf@lfdr.de>; Wed, 10 Dec 2025 08:03:18 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id EB85330271BC
+	for <lists+bpf@lfdr.de>; Wed, 10 Dec 2025 08:23:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 653792FE079;
-	Wed, 10 Dec 2025 08:03:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CFF02E613A;
+	Wed, 10 Dec 2025 08:23:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qlqPFuBV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F0TMvcAj"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7EC7225415;
-	Wed, 10 Dec 2025 08:03:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E683E23505E
+	for <bpf@vger.kernel.org>; Wed, 10 Dec 2025 08:23:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765353794; cv=none; b=LukU2AtgORC02nq6Y3VB/UaQUfSKaQHoFXhez0btaRqC2/D5onZ7cl6xeDDY7IThVMHnDIZOwc0cQxZXGWlQTn2qcOpLWDFfv/apygsQ3OZxvHek/THt7DZmoZiZ6RHcPImltWbYe48cAKCx6m3IAKTlLCj2gZGp+CJhd0Rf6fA=
+	t=1765354995; cv=none; b=kYNuerQKGZgKJzUQfeib1Ie4gUbVKH9PeZivX2F4z33NN1Mch1jG3owCXqUbQiZXibR66FHzpn9ezVS0ffuDNP5DrumgEl1bckSZjfhrXz57yUR4hp3VZK8cLXsb0p1LIxcov+JFsUvGT9D4E9Jc93YOe+3A8HqqcK2d/QdVqYg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765353794; c=relaxed/simple;
-	bh=eg6sqIrjSFRwMqCDvFPFBp9XRD0Q6ZvFkT/9lBl/LWU=;
+	s=arc-20240116; t=1765354995; c=relaxed/simple;
+	bh=SYEbIA+zEE7zuU9nPLRQuKU9tolKaSWVyzcnI0cm26U=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=WR0zZM5tQNvDyQvFLNUpUpN448s3KxXsZWNdCVr+9t8sjQXrcgGGuHQUVFTEcIo0xWlHlmdGDZWsiKau/7OMS2k3eqEKr/kSQg/pYEmvuP845XzeTZKjrdavuEWvyG0tChFFXGCctU5nYxnvW3vUBw4b/w6ZI/U9PUTgHbxqWgo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qlqPFuBV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55F95C4CEF1;
-	Wed, 10 Dec 2025 08:03:14 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=tJbZtLe3D2C3Iij6iSsS0R/WKX0UyQy8EUAbGuixOvMW0VysrT2dijHQvJVKuRH3KfK9+eIirhtqNrHlyfzvyqyphJsQgvstDWnjwmI6cSV/arF5gvmPrImnidQTXq97RP5DvrPXaVipn7rx93qjF1Jc93uwP3Kt79KM/X+mL4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F0TMvcAj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BC38C4CEF1;
+	Wed, 10 Dec 2025 08:23:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765353794;
-	bh=eg6sqIrjSFRwMqCDvFPFBp9XRD0Q6ZvFkT/9lBl/LWU=;
+	s=k20201202; t=1765354994;
+	bh=SYEbIA+zEE7zuU9nPLRQuKU9tolKaSWVyzcnI0cm26U=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=qlqPFuBVKxzX/8TshxI44AbH7EEOyBEGQ95nU8/aj3Zc+UfXfDbsEwaQW5amF/Dms
-	 okS0ljkM8eVlTrk6MY1U4DWcKcmug8RGfSgqxGi2/5y/sl1RU2FssP4jNAOvoM6T8l
-	 xKxq+FWLqLmc57gZKTwnwYn6MDt7PBjJz00oYTFZJYWj4jfPQmmUsstg3souF2q8k5
-	 tp6t766SvInbxo+/UA7ls6sF5t+6+pw+T9/oxp+kQPUB2u8Fh89cfZiE8GZZvSdejd
-	 M0asV6o4d0mUQ0CctQtOuV3yNAF2dbG5m/XZ1ItD6Rxk/AuONsjWFSgwzICfQjD6wV
-	 FxIMnkmYhSRYw==
+	b=F0TMvcAjzWI+fQ7pRFKHccLtacY9yY3azzFYSbrvq9LYUMGZ3qjKp232RrKqfT5I7
+	 Eh0+2KchKPpgwJMdWfVLEA0bkX+sAeFpxFC+2JUqA/pNQEVWwF4v91s6xnDwXOzlNM
+	 0mFOMJaKMyWO//Szi+8ekmVi282pQixsDLRBGnXznOF6L9uZvwtsNPgebmJj0skCcQ
+	 bSggPs1jl4ti16SxQL9rCIZr3KgBJPIGl5ePVrGOYP5MtmNgwFdxUjP6JR7YMLg5EU
+	 yBXTVDlS900mbYlZsw9gzY8VhEZeEG6gj6xlwJdfYjL+0oR3ZE9JpnlKOQeu365B0u
+	 oMjj0Pp2mp9ng==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 3BB693809A18;
-	Wed, 10 Dec 2025 08:00:10 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 3B84E3809A18;
+	Wed, 10 Dec 2025 08:20:10 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -50,43 +50,39 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2 0/2] bpf: cpumap: improve error propagation in
- cpu_map_update_elem()
+Subject: Re: [PATCH v3 0/2] bpf: verifier improvement in 32bit shift sign
+ extension pattern
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <176535360904.496554.15981377214035277789.git-patchwork-notify@kernel.org>
-Date: Wed, 10 Dec 2025 08:00:09 +0000
-References: <20251208131449.73036-1-enjuk@amazon.com>
-In-Reply-To: <20251208131449.73036-1-enjuk@amazon.com>
-To: Kohei Enju <enjuk@amazon.com>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
- john.fastabend@gmail.com, sdf@fomichev.me, andrii@kernel.org,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, kpsingh@kernel.org, haoluo@google.com,
- jolsa@kernel.org, shuah@kernel.org, toke@kernel.org, kohei.enju@gmail.com
+ <176535480904.504732.11414561723390357570.git-patchwork-notify@kernel.org>
+Date: Wed, 10 Dec 2025 08:20:09 +0000
+References: <20251202180220.11128-1-cupertino.miranda@oracle.com>
+In-Reply-To: <20251202180220.11128-1-cupertino.miranda@oracle.com>
+To: Cupertino Miranda <cupertino.miranda@oracle.com>
+Cc: bpf@vger.kernel.org, andrew.pinski@oss.qualcomm.com, eddyz87@gmail.com,
+ alexei.starovoitov@gmail.com, david.faust@oracle.com,
+ jose.marchesi@oracle.com, elena.zannoni@oracle.com
 
 Hello:
 
 This series was applied to bpf/bpf-next.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Mon, 8 Dec 2025 22:14:30 +0900 you wrote:
-> This series improves error propagation in cpumap and adds selftests that
-> cover the failure cases.
+On Tue,  2 Dec 2025 18:02:18 +0000 you wrote:
+> Hi everyone
 > 
-> Currently, failures returned from __cpu_map_entry_alloc() are ignored
-> and always converted to -ENOMEM by cpu_map_update_elem(). This series
-> ensures the correct error propagation and adds selftests.
+> Looking forward to your review.
+> 
+> Cheers,
+> Cupertino
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf-next,v2,1/2] bpf: cpumap: propagate underlying error in cpu_map_update_elem()
-    https://git.kernel.org/bpf/bpf-next/c/48e11bad9a1f
-  - [bpf-next,v2,2/2] selftests/bpf: add tests for attaching invalid fd
-    https://git.kernel.org/bpf/bpf-next/c/18352f8fae91
+  - [v3,1/2] bpf: verifier improvement in 32bit shift sign extension pattern
+    https://git.kernel.org/bpf/bpf-next/c/d18dec4b8990
+  - [v3,2/2] selftests/bpf: add verifier sign extension bound computation tests.
+    https://git.kernel.org/bpf/bpf-next/c/a5b4867fad18
 
 You are awesome, thank you!
 -- 
