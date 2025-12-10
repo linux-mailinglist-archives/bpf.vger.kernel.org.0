@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-76384-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76385-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8CAECB1C96
-	for <lists+bpf@lfdr.de>; Wed, 10 Dec 2025 04:20:00 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7A71CB1E0F
+	for <lists+bpf@lfdr.de>; Wed, 10 Dec 2025 05:11:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 1EE55300A6C2
-	for <lists+bpf@lfdr.de>; Wed, 10 Dec 2025 03:19:25 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 7C94A3005F0D
+	for <lists+bpf@lfdr.de>; Wed, 10 Dec 2025 04:11:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0FED2DE701;
-	Wed, 10 Dec 2025 03:19:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63E1B30FF28;
+	Wed, 10 Dec 2025 04:11:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SxWHWXav"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TVVtBe/+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AC992DEA9E
-	for <bpf@vger.kernel.org>; Wed, 10 Dec 2025 03:19:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF080275844
+	for <bpf@vger.kernel.org>; Wed, 10 Dec 2025 04:10:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765336754; cv=none; b=aa3KVQIhexxAspSYJv1n4iT7wJIRhmTh1qrbS67fW+gPk74Blo4B9Hj6C9qDOh2pPhGvDzvZ27BkRSF0CuUEEBCV8rruBES+9r4oN5UE45dgEqPwjCD8ZlVulNzNiFP1PWsD41P3LzB1PEGujRQfnZ9t1eH2j451Y2bzjxOxm2o=
+	t=1765339859; cv=none; b=IHj0Iiw6HibihTsCkHiT6Tc+jXZPB8XwWRgz+VpD7JvkCPtya5t6/n9YBtaSJgoUKBrp/8LVQGBjZ98mKgP0FEILDT1W5KqazjbVDsON598JE9oOygHxVLVFtwCHYodqIgkkzTdrCAf6OlWeLLrE4KuncOcfw3cdK7+ATYyqtZw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765336754; c=relaxed/simple;
-	bh=evoUvJX3mCaBFKhhUFDNjpUyx+VmfYnpIDuiz83BXvo=;
+	s=arc-20240116; t=1765339859; c=relaxed/simple;
+	bh=6izA038pvJwAGbYN7aai9+uLFOQlBe5zqjx8SpzOhos=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=puM5Ls7q+yhMfZ55H5H32Z8/prw2QfDbUBlmJa+eGuxX5XUHxc7l537V2j94fKrf3/jnVeo3kXkHY3nlTL2Q/xsl10Isc9V5GHCKSKhP8kBLb5EY5HrBCZiBpXpiHjLik08QCV+wWtqFB7b8aQw2K5KEplhhb4o3SyacCdGasUs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SxWHWXav; arc=none smtp.client-ip=209.85.160.170
+	 To:Cc:Content-Type; b=MvveJ4eYOIpZVoakKj1L8cNuo07Edx3By5YMBgh+T2AxfjWmC4uUMohALB03jWeMP72aMF2akyr3xObHRV/Spd2FVyybKoLeSD6QAFh7xQ2lyHDXrKtO/xSrFmLcLnDSmVWIFGYVkoHlAZpxQHYHNLBtSx1CRGPPlKQqSp2siPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TVVtBe/+; arc=none smtp.client-ip=209.85.160.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-4ee05b2b1beso56974961cf.2
-        for <bpf@vger.kernel.org>; Tue, 09 Dec 2025 19:19:08 -0800 (PST)
+Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-3f5ba2fc0d1so236315fac.3
+        for <bpf@vger.kernel.org>; Tue, 09 Dec 2025 20:10:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1765336747; x=1765941547; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1765339857; x=1765944657; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DvcgHHodDEFd6JoOhmN+IKolu8SaPqo8wA5oF6Yaspk=;
-        b=SxWHWXavbfedug/m2MK7VfTnmQZrfWggyLQkfU5XT+soO/V3IqLpsCOsucI3YKiy9k
-         Sd+6d1Rf6i80dPwaI3/rVJMBAy/q0bKHN25JeiRfJwbG0dbEJA6GWfkDk6btAKYYeCWx
-         yv4kVxWeSC01Lf6v9JpSs9BzBMyp9vJ4x064My66w4hSvcUULf6lEqCBtXgjADy8zOQt
-         7juH1SIsG6+7JxUsIPINS0YUfuXCK8QOxEm9kVivPYD3PXFZxGynUciMXuUTCdJ7pmo3
-         XokWUsMiQr862KywU6vrLfyndZkiIJ6TAdcZJIWtAvqFuRKcyPjkFWW/ccpe+/rsLkVF
-         s9Ew==
+        bh=05Ohqymv64sYflY2wosqKmDxhcq182Tz+w0uCWFRgjg=;
+        b=TVVtBe/+JDF/Yc5a+sOWHpjfs0euJnl24/ygeNgcLJjp/iERBCNEINGu7h7MzwjrER
+         NokVKscZ8I6Re0uXDv2gJuq3m2OC3C9hyBnTJclpKfxg2M4HJXgAEXwD3ZstuZbWIas6
+         YWGko3ruBFa0L98iqdTqTDyZQDRQ1a6/+5vxfgIeLmIrpmTFhzjQO2ndaz9cbRF6D+UZ
+         iQwX+BqljBgFqP7/e65TxXeYxmsKXB+dANaJYXuseczVDYGysbcKAziuQufe4bEbTV/V
+         IrOpjbgtOgoNxqAAvYD38NqYXQBiZWSGgMVX4rB/2g6ETTM7NWhKZObbABhHVszQ/rZm
+         jLcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765336747; x=1765941547;
+        d=1e100.net; s=20230601; t=1765339857; x=1765944657;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=DvcgHHodDEFd6JoOhmN+IKolu8SaPqo8wA5oF6Yaspk=;
-        b=FvDPuCu2Q39XxpJax/upXpYlcDy+P8XA3FhsZCgxp0ocUUZF1gErn1psYKuvimsY5X
-         TUk+xMq2Jhgm5+mAFUW8sK+BaxXN/OTLFdTSNm6nvRjKiIsl6wdASIljZ4PM4tYM2kVx
-         7o8hz+1P9VJIR35Ce3/wGIWG4EIFJVlsgp02RCFd/xcqlX4qvde6ZdF4CUwAQazdc5WJ
-         mAGp8QD0DJtND/CFD8vF29n6+ST/Efmz7QzQ0Zy5opk8rKgDKRiyEqXfoECCZLuiVtrH
-         IHszS1nFjPGwbF9aT6BsPDnB5zdGaa51AEq1OClhsH/WTyPETi8eNkNFb6Q1t4Mv69xK
-         L5oA==
-X-Forwarded-Encrypted: i=1; AJvYcCWEBDD6x05Q+IrgqYRjFW/FCLF9Y7J1g0buGLMqkzfo66jTYK71q8/ZjuoXg+DESanksKY=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxqs9olIKrPoIaXani3ld6ctxdXVK2WEFp+lyq7Xnrf09Z9oqGi
-	ovbsE6CSKRevgve3WtjcbCRbzompeqdfnxbgHiKEnN+PPRHlw6fvyqOFt7PI3sNkzReRSt/r41b
-	DZSGYG3CnPa4HIUGAQq40HzPcT8DBnEk=
-X-Gm-Gg: ASbGncsmpd8jeEUTRaAYQNnI6fdVQLoa1VN0rdzKYGhtMpg7WNdtXmJK2Tsk+0xlK7z
-	GvFg8/docDUBQezn71y/ZnYHUQU+H2CSbQYtkn9FKJtZYmO4PVsJyG2zUQcCfHcWM90tQNMB8lP
-	p6wRJm8NtwjMREMhz6za+xRswuxhzt3MLVRdGZBcnCAW7jwcbrdZ4RuGToF1RQrEDgap9scDLqE
-	ecrFj0eyTgLs4LYKAgluCgTihJnorGHo3jviY450cJ5YcZSoNDMoKZlUHn55zU1FUdkmYY=
-X-Google-Smtp-Source: AGHT+IGBnSmzUgYawZmR+V//pPBfELnwqY9lW1v+I/si5q6dRzYyvn2rhIv+AT6zhwiOlcl9i+TimiXcnFd7GV3qYiU=
-X-Received: by 2002:ac8:7d4f:0:b0:4ee:278c:bde7 with SMTP id
- d75a77b69052e-4f1b1a69a8cmr15106221cf.23.1765336746807; Tue, 09 Dec 2025
- 19:19:06 -0800 (PST)
+        bh=05Ohqymv64sYflY2wosqKmDxhcq182Tz+w0uCWFRgjg=;
+        b=sqjxQXxSGpZ0r83uRTUWrnVBshPafQ1gSXO2EjGgfsi/py4oB/AW+ATRIjowZkvJOn
+         e9DMdFJN9VlCoiOReLUWcxm2K5yOYFu16HmxOtzwgPaq3aKAaiCIKqSkRdUNDxvX0TpE
+         p/dIhlO23bh9EtaSAFZRDLbsPnFPaNRzsNhOYBcpRUjTBGvzndNsXUx2m8WojCxj7th9
+         Q7rbe4FJkl4h9yab2QfgMPzhpUqB4KY37mmZzJKr+iVnhVppPFvvTQ93XHMp03U+v5Td
+         vhxPLPR9/NKReu9wb3nZhZLe7GVXQ0hmw9QJbl3GwTCkj4XfTC57EQOHlwAa7S+FJid3
+         Kc9w==
+X-Forwarded-Encrypted: i=1; AJvYcCWv44L5HD+8o3EH9zLU2ujQSzAZ1zeVUNrkMhp/8ef9cVcwWGSlfyIZgUSaDPd1c2Aqhfs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxJ0lPNgMu4WSv7QZN/9CoAJkQGol4Qx+LHZ+4nQCxVu/+5j3UA
+	1D6haysYxjR2/jwkejIoT0w7HoTfe3VTc/Iw9fFdpxztNmVTQKRTt9AJ7LmBhzvAa67/WVssOOf
+	Q50Mc2yEnT+Nt5oQfP6swDBaRI1TqvEU=
+X-Gm-Gg: AY/fxX4v8T62GwC1/a32cYqPMjB1PWrAQzhYNqgy2UTG61WIDnOnHSwF/O/VwoMjxYX
+	imIfUIHr1T5tvDqPJ93XtS+HN3nXB6zfwxWuRwQEFMhH5krJFKq09kDZxmnlRIGVZm3lHz1dona
+	hBtAdDB/vKnrN9ZJhmN1PSro1RFLjJthVomoNlAMxM8D+cU0RgtpNlzJigrNK+6oVmAV3m0v5qH
+	L8sMHdU12baujUDt0uC4PFj8C/XIVROWhsEi04f7tzaJmSjpEL43sW3EBkHs+YSXlQcZEQ=
+X-Google-Smtp-Source: AGHT+IGvOLDqAi48Ic3hLyhgd6qi1EOL/WncW14U+ZY1gmlw5gMPVtA35JKcJhsvPKHOF5Aj4Aldqg/Qvbp9osvrMbI=
+X-Received: by 2002:a05:6870:4119:b0:3f5:c07b:d966 with SMTP id
+ 586e51a60fabf-3f5c07be927mr399166fac.53.1765339856939; Tue, 09 Dec 2025
+ 20:10:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -75,20 +75,22 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20251209093405.1309253-1-duanchenghao@kylinos.cn>
 In-Reply-To: <20251209093405.1309253-1-duanchenghao@kylinos.cn>
-From: Vincent Li <vincent.mc.li@gmail.com>
-Date: Tue, 9 Dec 2025 19:18:55 -0800
-X-Gm-Features: AQt7F2oQPRpKIN1N4cR6kx_h0cVRsq7QdpgOk5f88rMTJyv9px4Be-ii8HcE99w
-Message-ID: <CAK3+h2xZEvYdgG=PsmPa+tu-f9zhac+E0s5Um+rPF0cX7uSnuQ@mail.gmail.com>
+From: Hengqi Chen <hengqi.chen@gmail.com>
+Date: Wed, 10 Dec 2025 12:10:46 +0800
+X-Gm-Features: AQt7F2qjEPNMQoDRmcyfVJ5v3fPjMhCIxLEuMdBBnWdI885YUD2fmrUaJr90nW8
+Message-ID: <CAEyhmHSPQLd2ivmzcNxDcKJW8143HLi_=syo_8iBPSxWE35pog@mail.gmail.com>
 Subject: Re: [PATCH v1 0/2] Fix the failure issue of the module_attach test case
 To: Chenghao Duan <duanchenghao@kylinos.cn>
-Cc: yangtiezhu@loongson.cn, hengqi.chen@gmail.com, chenhuacai@kernel.org, 
-	kernel@xen0n.name, zhangtianyang@loongson.cn, masahiroy@kernel.org, 
-	linux-kernel@vger.kernel.org, loongarch@lists.linux.dev, bpf@vger.kernel.org, 
-	guodongtai@kylinos.cn, youling.tang@linux.dev, jianghaoran@kylinos.cn
+Cc: yangtiezhu@loongson.cn, chenhuacai@kernel.org, kernel@xen0n.name, 
+	zhangtianyang@loongson.cn, masahiroy@kernel.org, linux-kernel@vger.kernel.org, 
+	loongarch@lists.linux.dev, bpf@vger.kernel.org, guodongtai@kylinos.cn, 
+	youling.tang@linux.dev, jianghaoran@kylinos.cn, vincent.mc.li@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 9, 2025 at 1:34=E2=80=AFAM Chenghao Duan <duanchenghao@kylinos.=
+One minor question, I wonder how you debug these issues ?
+
+On Tue, Dec 9, 2025 at 5:34=E2=80=AFPM Chenghao Duan <duanchenghao@kylinos.=
 cn> wrote:
 >
 > The following test cases under the tools/testing/selftests/bpf/
@@ -111,48 +113,6 @@ cn> wrote:
 > ./test_progs -t test_overhead
 > ./test_progs -t trampoline_count
 >
-
-Tested-by: Vincent Li <vincent.mc.li@gmail.com>
-
-I tested above  and all passed OK, but I could not complete the full
-bpf selftests because test_progs core dumped, don't think it is
-related to your patch series.
-
-./test_progs --deny=3Dtimer_lockup
-...SNIP...
-test_task_local_data_basic_thread:FAIL:tld_get_data unexpected error: -12
-test_task_local_data_basic:PASS:pthread_create 0 nsec
-test_task_local_data_basic_thread:FAIL:tld_get_data unexpected error: -12
-test_task_local_data_basic:PASS:pthread_create 0 nsec
-test_task_local_data_basic_thread:FAIL:tld_get_data unexpected error: -12
-test_task_local_data_basic:PASS:pthread_create 0 nsec
-test_task_local_data_basic_thread:FAIL:tld_get_data unexpected error: -12
-test_task_local_data_basic:PASS:pthread_create 0 nsec
-test_task_local_data_basic_thread:FAIL:tld_get_data unexpected error: -12
-test_task_local_data_basic:PASS:pthread_create 0 nsec
-test_task_local_data_basic_thread:FAIL:tld_get_data unexpected error: -12
-test_task_local_data_basic:PASS:pthread_create 0 nsec
-test_task_local_data_basic_thread:FAIL:tld_get_data unexpected error: -12
-#444/1   task_local_data/task_local_data_basic:FAIL
-test_task_local_data_race:PASS:skel_open_and_load 0 nsec
-test_task_local_data_race:PASS:calloc tld_keys 0 nsec
-test_task_local_data_race:PASS:TLD_DEFINE_KEY 0 nsec
-test_task_local_data_race:FAIL:265
-#444/2   task_local_data/task_local_data_race:FAIL
-#444     task_local_data:FAIL
-Caught signal #11!
-Stack trace:
-./test_progs(crash_handler+0x28)[0x1205b74ac]
-linux-vdso.so.1(__vdso_rt_sigreturn+0x0)[0x7ffffffc1084]
-./test_progs[0x1204eb064]
-./test_progs(test_task_local_data+0x40)[0x1204eb3f8]
-./test_progs[0x1205b7bec]
-./test_progs(main+0x6c0)[0x1205b9c70]
-/lib64/libc.so.6(+0x2882c)[0x7ffff2f6082c]
-/lib64/libc.so.6(__libc_start_main+0xa8)[0x7ffff2f60918]
-./test_progs(_start+0x48)[0x12013a0c0]
-Segmentation fault (core dumped)
-
 > Chenghao Duan (2):
 >   LoongArch: Modify the jump logic of the trampoline
 >   LoongArch: BPF: Enable BPF exception fixup for specific ADE subcode
