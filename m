@@ -1,143 +1,124 @@
-Return-Path: <bpf+bounces-76387-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76388-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80B13CB1F46
-	for <lists+bpf@lfdr.de>; Wed, 10 Dec 2025 06:21:27 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F022CB200D
+	for <lists+bpf@lfdr.de>; Wed, 10 Dec 2025 06:43:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id EBBB030F19FC
-	for <lists+bpf@lfdr.de>; Wed, 10 Dec 2025 05:20:28 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C2C2D303BE0E
+	for <lists+bpf@lfdr.de>; Wed, 10 Dec 2025 05:43:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A178B2FF166;
-	Wed, 10 Dec 2025 05:20:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R6BfMXLH"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3093F2F999A;
+	Wed, 10 Dec 2025 05:43:43 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31644277011
-	for <bpf@vger.kernel.org>; Wed, 10 Dec 2025 05:20:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FE1A1E5B95;
+	Wed, 10 Dec 2025 05:43:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765344027; cv=none; b=LkdaVEy4pv7851SJvJx0Q7KnE3iB28XOklG/B0jBnPwa8PcJu1TMD4E4w/KzsW8jyCtj/L/SsCzClRXZBPu0NcZXXgRWOurL+3XOvGbmybYI5lPfrxHVgzYc0KyUJXsi4z8HZoqifhiI5LxT+n4omltbLA0DxUYarFEQuuZv6G0=
+	t=1765345422; cv=none; b=Ax9+n7xtyeWmPIY2lEMuzi8I41wyrGk5MmGWXp7BHo0oh2lQ+TbNxfI+GGkU4xZrKIbwzzV/2IGbjfLcZH1ACvHYlSi26Ul+fhUgNgmV9VtkOpS8frzgK1E7X+FqLZEsnelvalL2JM0zyL7hQPYfHtzAVdnRnh+lNKRe6hLZ0g8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765344027; c=relaxed/simple;
-	bh=36JAm4JT2uwBM+bb3O6Q9SIhA21ce2+gIQYNjKTV3ns=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=U9nCskCKU7rtJHy1trEFvE46FaOiUbIqYSKfHoYxvtkC8pfER7PhjJEpjx+T66CcMF6rtA6txUe3eOQrhaASx7CBg24tAP35MogQKPp/8RJr2t+y4kX1QXJs/LC/ZvPbFB1WBrGBwgZ57VNHExUKr82vVuy6ZmOY7HjBRKGFhco=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R6BfMXLH; arc=none smtp.client-ip=209.85.160.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-3ed151e8fc3so3854416fac.2
-        for <bpf@vger.kernel.org>; Tue, 09 Dec 2025 21:20:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1765344024; x=1765948824; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+MI57r/4C01JUyGYeR4BSsNymItfnMrs+OYwPSvLtYs=;
-        b=R6BfMXLH4yIfjrrYAGVvEffvHJrqEFqHRP9VqrCZXsphIhCO+bRWsJljoRgPopeGBe
-         iUB7hKToHlv8gepilIgWkqepKVrt2a66YAIiHYB0bm+SXkJ/IUi++R509z5TYWu0LB/L
-         u7l2yrxyfN5KKmvtJbYA7pU0zTytchhgLait2kc0nZKUOKyHA3T6j8u5sBfNDMJ+y6u0
-         ksNOzVhDLR+KJzRFqsLrKlHWEwv7bLcdsnSsRjg0Zh2ZBW9phLvifbTg0E/9TmaHmhYv
-         8I3EN/9tUi0he2OWevVnLjJeVLwD2nJS6z9ehnfpSEhHhLzB28AgUBPs03jWIYkOr0Te
-         4WBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765344024; x=1765948824;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=+MI57r/4C01JUyGYeR4BSsNymItfnMrs+OYwPSvLtYs=;
-        b=cbQ1nzmU3kcnAijiHRkpLS5yKtyV6doqu/HEG5DSYGCtbk1sFEA8VeY2EbPBFDrcyg
-         G/uBV0OCJ+ziE1AU862H72ZtCHs+1k9mEfGuDsKXmsbik4/Zr0ZTGhQ31IR9QYqf7NVa
-         MZg8N8nqmwuLzdcRYY7KFx/tnv2uqQXiw3BjDzjac/+zOVcHPZE1QAZZjAsxYOZHXmLB
-         CJsEUCrS+1GLj8tCtwca2jUf8kaKz5VEWQyM0TocUY1PZIqQcALLCEjmJmp+33iTc5jq
-         sEXdvwdGdX6DxpgBQvlFYRqXcyc2ew3r0knpeLFvbyWFHnN5NaGM+L+NpQ4GtELIzmkV
-         ptoQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVO46lWnVgzuJtOWGwbwJFbaIVUDbNCKgp7TuXYfd0U3aEawPgH8j8N83urF7ovIw+Vhaw=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyl6Ddb6ipP4BLqqqMdwitNZ3FhOBYJG+bs5Itzz5wSFhR//V3O
-	4EjW0kiiiuaDi9eOLKozvfWU8H8lwbaLRGv80Mg9Ejg74IZ+ikzr5a1gutR/5Fe6EMJ4WeWJuHT
-	9D2YGnFpJqrE7A2LIic8dAr8gM4CcrEBmmbfv
-X-Gm-Gg: AY/fxX7Jq/HHtZqSCu/yCrT77KhuMqAagySDCLP2zuP6XBbCB29TeBucm93RY/zjABR
-	+jPE1yLTzRM8uTo6ZzPwNMG2teJTw2gNCnuQxNQ9MvBURbq0BMFHGow7lPBf+eE8xygNh/G5E1u
-	YDgt9AcFkpLv9Qyf3fqFGMWJeSEJQUoL2kFniTsoe/RIPdaKWMPsVh0wyXF4Rl9tgLXFe6r10ta
-	DVSZ4N24tC7hD2oG5Ey8Kfzst6eIhFmvO7qrD+LNe6kY9ozqHoqwanpNe+R/aXFuYuoSLY=
-X-Google-Smtp-Source: AGHT+IHhKhJmFdS8xyCy6z3Pkylyl7fWGqizcviH0fzd0aI4tvxpR8T/c7m8hrtKlyhMuKPzpw1y2E2oRE3Z7worROM=
-X-Received: by 2002:a05:6870:1b13:b0:3ec:3c21:9301 with SMTP id
- 586e51a60fabf-3f5bd978f9bmr1020661fac.9.1765344024262; Tue, 09 Dec 2025
- 21:20:24 -0800 (PST)
+	s=arc-20240116; t=1765345422; c=relaxed/simple;
+	bh=qNZoakO16U34wR01PB4Qg01/NlG/0VnmWLcWkwOYTBs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=u3SKBId7BrwJYo+DSp0mhQqjyNcOFnGJ4mZkJQ1rJguI41kLVNDLNDPo+qtdKGq6NVCXxa5SuX+0E4xxU9OhOvq7lhP6ycfKV/aD6MCQDHHj+sL9L8/bUdAiVHQMJ9e4pfoT4PSNBZ43+cycvwAAHpmFiT+i1mEEUktFakdOtsU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 2967c218d58b11f0a38c85956e01ac42-20251210
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.3.6,REQID:eca14760-0523-4915-b2d0-318f6e88b630,IP:0,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
+	elease,TS:0
+X-CID-META: VersionHash:a9d874c,CLOUDID:ea89d2c3f60e015b46fb4611da50d23c,BulkI
+	D:nil,BulkQuantity:0,Recheck:0,SF:80|81|82|83|102|850|898,TC:nil,Content:0
+	|15|50,EDM:-3,IP:nil,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,O
+	SI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:0
+X-CID-BVR: 2,SSN|SDN
+X-CID-BAS: 2,SSN|SDN,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
+X-UUID: 2967c218d58b11f0a38c85956e01ac42-20251210
+X-User: duanchenghao@kylinos.cn
+Received: from localhost [(10.44.16.150)] by mailgw.kylinos.cn
+	(envelope-from <duanchenghao@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 1727498568; Wed, 10 Dec 2025 13:43:32 +0800
+Date: Wed, 10 Dec 2025 13:43:29 +0800
+From: Chenghao Duan <duanchenghao@kylinos.cn>
+To: Hengqi Chen <hengqi.chen@gmail.com>
+Cc: yangtiezhu@loongson.cn, chenhuacai@kernel.org, kernel@xen0n.name,
+	zhangtianyang@loongson.cn, masahiroy@kernel.org,
+	linux-kernel@vger.kernel.org, loongarch@lists.linux.dev,
+	bpf@vger.kernel.org, guodongtai@kylinos.cn, youling.tang@linux.dev,
+	jianghaoran@kylinos.cn, vincent.mc.li@gmail.com
+Subject: Re: [PATCH v1 2/2] LoongArch: Enable BPF exception fixup for
+ specific ADE subcode
+Message-ID: <20251210054329.GA691118@chenghao-pc>
+References: <20251209093405.1309253-1-duanchenghao@kylinos.cn>
+ <20251209093405.1309253-3-duanchenghao@kylinos.cn>
+ <CAEyhmHTtEE6cnm18_WC+d+o4RnLUw+BUUNL54R6d9W2b868+LA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251209093405.1309253-1-duanchenghao@kylinos.cn> <20251209093405.1309253-3-duanchenghao@kylinos.cn>
-In-Reply-To: <20251209093405.1309253-3-duanchenghao@kylinos.cn>
-From: Hengqi Chen <hengqi.chen@gmail.com>
-Date: Wed, 10 Dec 2025 13:20:12 +0800
-X-Gm-Features: AQt7F2qWYB7VvJgjzUwsobmq_rC5o9JSMEkf2SA8b1drgVcmKcM81PVXKQ8gQ_k
-Message-ID: <CAEyhmHTtEE6cnm18_WC+d+o4RnLUw+BUUNL54R6d9W2b868+LA@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] LoongArch: Enable BPF exception fixup for specific
- ADE subcode
-To: Chenghao Duan <duanchenghao@kylinos.cn>
-Cc: yangtiezhu@loongson.cn, chenhuacai@kernel.org, kernel@xen0n.name, 
-	zhangtianyang@loongson.cn, masahiroy@kernel.org, linux-kernel@vger.kernel.org, 
-	loongarch@lists.linux.dev, bpf@vger.kernel.org, guodongtai@kylinos.cn, 
-	youling.tang@linux.dev, jianghaoran@kylinos.cn, vincent.mc.li@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEyhmHTtEE6cnm18_WC+d+o4RnLUw+BUUNL54R6d9W2b868+LA@mail.gmail.com>
 
-On Tue, Dec 9, 2025 at 5:34=E2=80=AFPM Chenghao Duan <duanchenghao@kylinos.=
-cn> wrote:
->
-> This patch allows the LoongArch BPF JIT to handle recoverable memory
-> access errors generated by BPF_PROBE_MEM* instructions.
->
-> When a BPF program performs memory access operations, the instructions
-> it executes may trigger ADEM exceptions. The kernel=E2=80=99s built-in BP=
-F
-> exception table mechanism (EX_TYPE_BPF) will generate corresponding
-> exception fixup entries in the JIT compilation phase; however, the
-> architecture-specific trap handling function needs to proactively call
-> the common fixup routine to achieve exception recovery.
->
-> do_ade(): fix EX_TYPE_BPF memory access exceptions for BPF programs,
-> ensure safe execution.
->
+On Wed, Dec 10, 2025 at 01:20:12PM +0800, Hengqi Chen wrote:
+> On Tue, Dec 9, 2025 at 5:34 PM Chenghao Duan <duanchenghao@kylinos.cn> wrote:
+> >
+> > This patch allows the LoongArch BPF JIT to handle recoverable memory
+> > access errors generated by BPF_PROBE_MEM* instructions.
+> >
+> > When a BPF program performs memory access operations, the instructions
+> > it executes may trigger ADEM exceptions. The kernel’s built-in BPF
+> > exception table mechanism (EX_TYPE_BPF) will generate corresponding
+> > exception fixup entries in the JIT compilation phase; however, the
+> > architecture-specific trap handling function needs to proactively call
+> > the common fixup routine to achieve exception recovery.
+> >
+> > do_ade(): fix EX_TYPE_BPF memory access exceptions for BPF programs,
+> > ensure safe execution.
+> >
+> 
+> Which bpf prog triggers this code path ? Why didn't we trigger it before ?
 
-Which bpf prog triggers this code path ? Why didn't we trigger it before ?
+module_attach and subprogs_extable trigger ADE exception via illegal address
+access in BPF programs, leading to kernel panic without this patch.
 
-> Signed-off-by: Chenghao Duan <duanchenghao@kylinos.cn>
-> ---
->  arch/loongarch/kernel/traps.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/loongarch/kernel/traps.c b/arch/loongarch/kernel/traps.=
-c
-> index da5926fead4a..9ca8aacc82b8 100644
-> --- a/arch/loongarch/kernel/traps.c
-> +++ b/arch/loongarch/kernel/traps.c
-> @@ -534,8 +534,13 @@ asmlinkage void noinstr do_fpe(struct pt_regs *regs,=
- unsigned long fcsr)
->
->  asmlinkage void noinstr do_ade(struct pt_regs *regs)
->  {
-> -       irqentry_state_t state =3D irqentry_enter(regs);
-> +       irqentry_state_t state;
-> +       unsigned int esubcode =3D FIELD_GET(CSR_ESTAT_ESUBCODE, regs->csr=
-_estat);
-> +
-> +       if ((esubcode =3D=3D 1) && fixup_exception(regs))
-> +               return;
->
-> +       state =3D irqentry_enter(regs);
->         die_if_kernel("Kernel ade access", regs);
->         force_sig_fault(SIGBUS, BUS_ADRERR, (void __user *)regs->csr_badv=
-addr);
->
-> --
-> 2.25.1
->
+> 
+> > Signed-off-by: Chenghao Duan <duanchenghao@kylinos.cn>
+> > ---
+> >  arch/loongarch/kernel/traps.c | 7 ++++++-
+> >  1 file changed, 6 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/arch/loongarch/kernel/traps.c b/arch/loongarch/kernel/traps.c
+> > index da5926fead4a..9ca8aacc82b8 100644
+> > --- a/arch/loongarch/kernel/traps.c
+> > +++ b/arch/loongarch/kernel/traps.c
+> > @@ -534,8 +534,13 @@ asmlinkage void noinstr do_fpe(struct pt_regs *regs, unsigned long fcsr)
+> >
+> >  asmlinkage void noinstr do_ade(struct pt_regs *regs)
+> >  {
+> > -       irqentry_state_t state = irqentry_enter(regs);
+> > +       irqentry_state_t state;
+> > +       unsigned int esubcode = FIELD_GET(CSR_ESTAT_ESUBCODE, regs->csr_estat);
+> > +
+> > +       if ((esubcode == 1) && fixup_exception(regs))
+> > +               return;
+> >
+> > +       state = irqentry_enter(regs);
+> >         die_if_kernel("Kernel ade access", regs);
+> >         force_sig_fault(SIGBUS, BUS_ADRERR, (void __user *)regs->csr_badvaddr);
+> >
+> > --
+> > 2.25.1
+> >
 
