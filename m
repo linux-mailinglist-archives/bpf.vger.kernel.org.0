@@ -1,247 +1,270 @@
-Return-Path: <bpf+bounces-76489-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76490-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C21CCB73A2
-	for <lists+bpf@lfdr.de>; Thu, 11 Dec 2025 22:40:02 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB4CFCB76A0
+	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 00:45:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2F49D301B2CA
-	for <lists+bpf@lfdr.de>; Thu, 11 Dec 2025 21:39:59 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 4502D30024AF
+	for <lists+bpf@lfdr.de>; Thu, 11 Dec 2025 23:45:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB5002D2387;
-	Thu, 11 Dec 2025 21:39:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 932522D5948;
+	Thu, 11 Dec 2025 23:45:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="eAxoqJhc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lzwogxBq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E7D923D2B4
-	for <bpf@vger.kernel.org>; Thu, 11 Dec 2025 21:39:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7CC3284694
+	for <bpf@vger.kernel.org>; Thu, 11 Dec 2025 23:45:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765489197; cv=none; b=J4TF9lK9ZBKp+i1VTvKZ9v7pc3JgJAKuDx1JnMRoy5fQwpeb72dR2Dingvplu5XgChKzk3WRzShUS44cjCCUnaBLiXJd2VpMNewwlhCL1SoRwYRC3DNfbrvhjSbUsqv35P6CONhcfzc0D93so1agWGIQGdqaZMRKUOkugNm1VhI=
+	t=1765496755; cv=none; b=pFGGPDu7TZTwTMTeQyQqG/N+XGYDQq5Pie+Fu1EFYKJ7TU+/q1Fe8GTA3sMKXDPX1nPYdSVtrD7wDBE7KNs/d78hisN357GMUjjd8iA8c6EYNyI8GaBOpX12urtSKB9tusoW5Dl85JzohMEKvq7gBV7/7IOOMKZIt9o1dGVGUfg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765489197; c=relaxed/simple;
-	bh=/RVJJDzJOp4GNotnViq/6E/cxvEjaLO4p1shqTwXrd0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ufQGVXzT1Jww2MjO3CIGOyW2ou1MQG3NwK6uRUJRW+YLYtx1KiUq3yQdMYOOd7kyuW2Nbe/GxeNO3tE5QIxQ/+zBi0F/6abGYqBuY4SyHTBUU9B2ZH9TGeZlPAiaZpDXFNG9Ow91L+0IFqTKQtNJbYW64G0hcB1A+zaEos8PzIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=eAxoqJhc; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-64175dfc338so1067435a12.0
-        for <bpf@vger.kernel.org>; Thu, 11 Dec 2025 13:39:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1765489194; x=1766093994; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=nulxyKhLi0q3F2cAdvKBi0oIQ0ZoqY4+94a3nz78jpM=;
-        b=eAxoqJhc92VRZs5e6q3IN8Cweiax+loO1mweJOW17MBPX5A8Q10ZuoR+6bfrIkRZI/
-         E83ASeBan/eptUZ/4jLmYukPr6NhvVLOX8yCbOJqriufy1UYPeKyhmpn1KdMbEDt/WV6
-         rqLk+rYOWRfZQjahAw1VZI3i2R/QQWINNisja8LZr+RfqghxDCZW/SDzsY9RXEXy+MM2
-         dRVwEFuLeYovkvkpMUu5YEPakGHvBm9Ec/+dMNra/w0D57gtvBF6s1f/VpdXefGiJEsl
-         sTODbe1QYT9I/W5KFAsIhYapff5igNeHkmXFLau/ltZlRWigI0WAClmc6SEd+EmH4dnM
-         yy8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765489194; x=1766093994;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nulxyKhLi0q3F2cAdvKBi0oIQ0ZoqY4+94a3nz78jpM=;
-        b=meoCVdgMAsm7jozlaqR6ZkX7UzxJwxFCx3FOYWKuizHAF7wNkByBWSwakL2j+n2s4G
-         GqZjjWa4hGbIlErWA1hmMk+R60jq9d2st9PPgPT+dF3QyWg3i8LdcrIT/SQkV11y0Edn
-         6Vl49DYX0LZFbBXkX86z2XNTMJD4Q96wh1orHdsZ6Ka6rFEcxsbm647oVsfK8qE96IMS
-         qu01jRBo7E9xWscLPujRoFBSrxTbnDuqZeyL1gP/rKVXXwq4CmwT/FIRMyKH1wuiKNw6
-         SDGy8ErkOVJSn7NaWG7T/BJEeXQ3UXCVRqVcq9EDDNlsE1CLoWgY6OXgXJCk5E5+FGID
-         O15Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXr/cyEgz6PxwYUwzYOXeoj01/4PNdPy9JEYj3AF/xhZTGgrSnJ779Pp4YCvzzGJh++vVw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyO37MrqO5vb1SPcFjq08fUMEnVCLu/Sl9OIXNfujzBSXrfccWA
-	hMvPMdY/An5aGiE3wow7up4KyLYL+vw4G5O8rqY3wqSbj4gh5ETxCeVFrbJLZxefMA==
-X-Gm-Gg: AY/fxX6R5/Ny9Dnefpsr7iVrxqBFCjpWC+LL8MEO4V8Wmo7FzmTjdQ8B/+XjuAT3g8X
-	gfz5wMom2uie9TJIA/yjFpUxNhKFBrRkDC82MdZpMZq8rrZzwX6IusdVISw1xjaU3JBWSNajwWG
-	d9LkH1rEM8Pecyk9E742G0Sne28eEy6/MtkmvP4gKU5ckLz1xfONbb3eSmtW/Gp16xN38hocxOj
-	uQNy+M6HhGDOeqnV6P6VTdb83jwbiQeUpN7E9N+hNogUZOXc0wUpzJ6pEtEGz3ntWOvRagUL1qf
-	BfI8SHc1e68a2uGHl1ezTu34aVL/9xffXTiYWzuXWPqec192wRDAJb5ehguzOylwh0s5fobQTlo
-	67vRBV6IX7v+v1ORO/OfYSB04zGlpyMfTM4MR5zUJGvRmmMnfcgfVUbyOIToJksstTRfW5Wotkq
-	z3+1sQBoOmAn/c5Pqq9eBbtH4XV3J4ct7Et2b2wgRs2ViAP4kId/WvQZue
-X-Google-Smtp-Source: AGHT+IFoprgc2wHgkxctt+o4eus03Z/uiMJ0uYkTEl2MoSVgay3z923THPBUPnaOp10mOb/gHi9+Hg==
-X-Received: by 2002:a17:907:724e:b0:b7c:e320:5232 with SMTP id a640c23a62f3a-b7ce823236bmr839322666b.5.1765489193663;
-        Thu, 11 Dec 2025 13:39:53 -0800 (PST)
-Received: from google.com (49.185.141.34.bc.googleusercontent.com. [34.141.185.49])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b7cfa570174sm371812666b.55.2025.12.11.13.39.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Dec 2025 13:39:52 -0800 (PST)
-Date: Thu, 11 Dec 2025 21:39:49 +0000
-From: Matt Bobrowski <mattbobrowski@google.com>
-To: Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>
-Cc: =?utf-8?B?5qKF5byA5b2m?= <kaiyanm@hust.edu.cn>,
-	Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	hust-os-kernel-patches@googlegroups.com,
-	Yinhao Hu <dddddd@hust.edu.cn>, dzm91@hust.edu.cn,
-	KP Singh <kpsingh@kernel.org>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Subject: Re: bpf: mmap_file LSM hook allows NULL pointer dereference
-Message-ID: <aTs6JTBrzEa0WJwd@google.com>
-References: <5e460d3c.4c3e9.19adde547d8.Coremail.kaiyanm@hust.edu.cn>
- <aS7BvzTJ-2Xo7ncq@google.com>
- <aS79vYLul06oLPT2@google.com>
- <CAADnVQ+NASuOdgu-bD=xXtd8UM_N-83gKci3XQG1RHLbSFfwgQ@mail.gmail.com>
- <aS87V-zpo-ZHZzu0@google.com>
- <CAADnVQ+UDCh5JKjUpX63xcaV3CEcj18W2C+8TZ4QFYKGV6GZKw@mail.gmail.com>
- <aS_5K_CJcB1rIEVj@google.com>
- <CAADnVQLf10J688CXFWg+=UaOv_zPTr3ViqNFcjbe5u4no2o_GA@mail.gmail.com>
- <aTlFKI2IeHQ2-TSE@google.com>
+	s=arc-20240116; t=1765496755; c=relaxed/simple;
+	bh=mYJsswVPUvIBoBmXkW5RinxjnS6v1j+zr2myifQOK14=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LzHWHEItZF6Oz8oPiCA7BqemjhKGRCJ0a1MW/R7/rvZVL94fKw4iyJs+nwtMcjm4c4y2BPSA/U9hkKsaMZ3eAh6S1K5rq9N2qSoHktvTZ5ofDIfZG8UsWo4p80XjFW1CsYfxabjYSPayFx6yR+rmMshrj6LnZ16NW95Ye6smujc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lzwogxBq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86189C4AF09
+	for <bpf@vger.kernel.org>; Thu, 11 Dec 2025 23:45:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1765496754;
+	bh=mYJsswVPUvIBoBmXkW5RinxjnS6v1j+zr2myifQOK14=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=lzwogxBqYWIDMRgzeiVuSoLWnaWb0EtzP9UDm0e3gMWOCZc7Cfsxt+7C8JKcUhPv8
+	 pru+8gYjivbhz6Mds15RlqzYDtjwZQnQGf066u2dkjvTb6RgXesA6+MIBYBBGTRK2i
+	 OorSh2SvUb68qzjEUsjJinBDdSqrt43XEl8POJARNEruuvhQrYsu1704Tm/Xd7YoH1
+	 Tw++GAwuC6ao3kqm5Pi+/kidBg4arLab0cEU8TJcpUN813yb7cYqLnGTecpotcJzMC
+	 gf16FqKtJ3YxDdMq0eUnwIo09em5S1UrqLJFvddQLKlY/LpJwwd0zIiv4QX2u0CD5h
+	 vXxi0yP/lPk1g==
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-649728a2228so966667a12.3
+        for <bpf@vger.kernel.org>; Thu, 11 Dec 2025 15:45:54 -0800 (PST)
+X-Gm-Message-State: AOJu0YxqfX4YkoOMV8zB6Vq/F3nErEPXP9Wz5H9nZmJEqb9v0fBiDGaU
+	K9HV6+woNmJ+bWbHJH7uKXTGynSpdR8/1bwoi8zsx3I5dalEYYz5GIATMj7+cdo9bBLPdx2RvgR
+	Sjese2jpHvAFsIJ6TCY0cvDpiMUSRl00=
+X-Google-Smtp-Source: AGHT+IEajqa47XgKun3HTpIG9fCHvPC2wljNflx6kBg8kDGodzWt/wCW90HeQAeqUKac403GVmcRGQCn6Q1sx0EZKa4=
+X-Received: by 2002:a17:906:c113:b0:b54:7778:c62d with SMTP id
+ a640c23a62f3a-b7d2362aca3mr3969566b.15.1765496753110; Thu, 11 Dec 2025
+ 15:45:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <aTlFKI2IeHQ2-TSE@google.com>
+References: <20251117160150.62183-1-puranjay@kernel.org> <20251117160617.4604-1-puranjay@kernel.org>
+ <CAADnVQK47-08p8XATMmGdScs19y4Ju+yG0VH2hb-G+QvGi3pPA@mail.gmail.com>
+In-Reply-To: <CAADnVQK47-08p8XATMmGdScs19y4Ju+yG0VH2hb-G+QvGi3pPA@mail.gmail.com>
+From: Puranjay Mohan <puranjay@kernel.org>
+Date: Fri, 12 Dec 2025 08:45:41 +0900
+X-Gmail-Original-Message-ID: <CANk7y0h3_kyQVmDaSG19ZZ=hEscqACYd4Qi0+g_io0KuwCbN0Q@mail.gmail.com>
+X-Gm-Features: AQt7F2qD2QG-qgpVm7LBG1sM6v4-3RVALhFLxxN27ZPBL8e-1h-iy5Ey8FsQBi4
+Message-ID: <CANk7y0h3_kyQVmDaSG19ZZ=hEscqACYd4Qi0+g_io0KuwCbN0Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 2/4] bpf: arena: use kmalloc_nolock() in place
+ of kvcalloc()
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Kernel Team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 10, 2025 at 10:02:16AM +0000, Matt Bobrowski wrote:
-> On Wed, Dec 03, 2025 at 10:23:43AM -0800, Alexei Starovoitov wrote:
-> > On Wed, Dec 3, 2025 at 12:47 AM Matt Bobrowski <mattbobrowski@google.com> wrote:
-> > >
-> > > > We can play tricks with __weak. Like:
-> > > >
-> > > > diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
-> > > > index 7cb6e8d4282c..60d269a85bf1 100644
-> > > > --- a/kernel/bpf/bpf_lsm.c
-> > > > +++ b/kernel/bpf/bpf_lsm.c
-> > > > @@ -21,7 +21,7 @@
-> > > >   * function where a BPF program can be attached.
-> > > >   */
-> > > >  #define LSM_HOOK(RET, DEFAULT, NAME, ...)      \
-> > > > -noinline RET bpf_lsm_##NAME(__VA_ARGS__)       \
-> > > > +__weak noinline RET bpf_lsm_##NAME(__VA_ARGS__)        \
-> > > >
-> > > > diff kernel/bpf/bpf_lsm_proto.c
-> > > >
-> > > > +int bpf_lsm_mmap_file(struct file *file__nullable, unsigned long reqprot,
-> > > > +                     unsigned long prot, unsigned long flags)
-> > > > +{
-> > > > +       return 0;
-> > > > +}
-> > > >
-> > > > and above one with __nullable will be in vmlinux BTF.
-> > > >
-> > > > afaik __weak functions are not removed by linker when in non-LTO,
-> > > > but it's still better than
-> > > > +#define bpf_lsm_mmap_file bpf_lsm_mmap_file__original
-> > > > No need to change bpf_lsm.h either.
-> > >
-> > > Annotating with a weak attribute would be quite nice, but the compiler
-> > > will complain about the redefinition of the symbol
-> > > bpf_lsm_mmap_file. To avoid this, we'd still need to rely on the
-> > > rename and ignore dance by using the aforementioned define, which at
-> > > that point would still result in both symbols being exposed in both
-> > > BTF and the .text section.
-> > 
-> > Not quite. You missed this part in the above:
-> > 
-> > > > diff kernel/bpf/bpf_lsm_proto.c
-> > 
-> > it's a different file.
-> 
-> Yes, yes, this will work. However, as discussed, it's fundamentally
-> reliant on a small "hack" which I've implemented within
-> kernel/bpf/Makefile here [0] to workaround current pahole
-> deduplication logic.
-> 
-> Andrii and Eduard,
-> 
-> I’d like your input on a pahole BTF generation issue which I've
-> recently come across. In the series I just sent [0], I had to
-> implement a workaround to force pahole to process bpf_lsm_proto.o
-> before bpf_lsm.o.
-> 
-> This was necessary to ensure pahole generates BTF for the strong
-> definition of bpf_lsm_mmap_file() (in bpf_lsm_proto.c) rather than the
-> weak definition (in bpf_lsm.c). Without this forced ordering, pahole
-> processed the weak definition first, resulting in a state array like
-> this:
-> 
-> ```
-> btf_encoder.func_states.array[N] = bpf_lsm_mmap_file (weak
-> definition from bpf_lsm.o)
-> 
-> btf_encoder.func_states.array[N+1] = bpf_lsm_mmap_file (strong
-> definition from bpf_lsm_proto.o)
-> ```
-> 
-> Because the deduplication logic in btf_encoder__add_saved_funcs()
-> folds duplicates (those determined by saved_functions_combine()) into
-> the first occurrence, the resulting BTF was derived from the weak
-> definition. This is incorrect, as the strong definition is the one
-> actually linked into the final vmlinux image.
-> 
-> An obvious fix that immediately came to mind here was to essentially
-> teach pahole about strong function prototype definitions, and prefer
-> to emit BTF for those instead of any weak defined counterparts?
+On Sat, Nov 22, 2025 at 6:15=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Mon, Nov 17, 2025 at 8:06=E2=80=AFAM Puranjay Mohan <puranjay@kernel.o=
+rg> wrote:
+> >
+> > To make arena_alloc_pages() safe to be called from any context, replace
+> > kvcalloc() with kmalloc_nolock() so as it doesn't sleep or take any
+> > locks. kmalloc_nolock() returns NULL for allocations larger than
+> > KMALLOC_MAX_CACHE_SIZE, which is (PAGE_SIZE * 2) =3D 8KB on systems wit=
+h
+> > 4KB pages. So, round down the allocation done by kmalloc_nolock to 1024
+> > * 8 and reuse the array in a loop.
+> >
+> > Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+> > ---
+> >  kernel/bpf/arena.c | 83 +++++++++++++++++++++++++++++++---------------
+> >  1 file changed, 57 insertions(+), 26 deletions(-)
+> >
+> > diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
+> > index 214a4da54162..1d0b49a39ad0 100644
+> > --- a/kernel/bpf/arena.c
+> > +++ b/kernel/bpf/arena.c
+> > @@ -43,6 +43,8 @@
+> >  #define GUARD_SZ round_up(1ull << sizeof_field(struct bpf_insn, off) *=
+ 8, PAGE_SIZE << 1)
+> >  #define KERN_VM_SZ (SZ_4G + GUARD_SZ)
+> >
+> > +static void arena_free_pages(struct bpf_arena *arena, long uaddr, long=
+ page_cnt);
+> > +
+> >  struct bpf_arena {
+> >         struct bpf_map map;
+> >         u64 user_vm_start;
+> > @@ -492,7 +494,10 @@ static long arena_alloc_pages(struct bpf_arena *ar=
+ena, long uaddr, long page_cnt
+> >         /* user_vm_end/start are fixed before bpf prog runs */
+> >         long page_cnt_max =3D (arena->user_vm_end - arena->user_vm_star=
+t) >> PAGE_SHIFT;
+> >         u64 kern_vm_start =3D bpf_arena_get_kern_vm_start(arena);
+> > +       struct apply_range_data data;
+> >         struct page **pages =3D NULL;
+> > +       long remaining, mapped =3D 0;
+> > +       long alloc_pages;
+> >         long pgoff =3D 0;
+> >         u32 uaddr32;
+> >         int ret, i;
+> > @@ -509,17 +514,21 @@ static long arena_alloc_pages(struct bpf_arena *a=
+rena, long uaddr, long page_cnt
+> >                         return 0;
+> >         }
+> >
+> > -       /* zeroing is needed, since alloc_pages_bulk() only fills in no=
+n-zero entries */
+> > -       pages =3D kvcalloc(page_cnt, sizeof(struct page *), GFP_KERNEL)=
+;
+> > +       /*
+> > +        * Cap allocation size to KMALLOC_MAX_CACHE_SIZE so kmalloc_nol=
+ock() can succeed.
+> > +        */
+> > +       alloc_pages =3D min(page_cnt, KMALLOC_MAX_CACHE_SIZE / sizeof(s=
+truct page *));
+> > +       pages =3D kmalloc_nolock(alloc_pages * sizeof(struct page *), 0=
+, NUMA_NO_NODE);
+> >         if (!pages)
+> >                 return 0;
+> > +       data.pages =3D pages;
+> >
+> > -       guard(mutex)(&arena->lock);
+> > +       mutex_lock(&arena->lock);
+> >
+> >         if (uaddr) {
+> >                 ret =3D is_range_tree_set(&arena->rt, pgoff, page_cnt);
+> >                 if (ret)
+> > -                       goto out_free_pages;
+> > +                       goto out_unlock_free_pages;
+> >                 ret =3D range_tree_clear(&arena->rt, pgoff, page_cnt);
+> >         } else {
+> >                 ret =3D pgoff =3D range_tree_find(&arena->rt, page_cnt)=
+;
+> > @@ -527,34 +536,56 @@ static long arena_alloc_pages(struct bpf_arena *a=
+rena, long uaddr, long page_cnt
+> >                         ret =3D range_tree_clear(&arena->rt, pgoff, pag=
+e_cnt);
+> >         }
+> >         if (ret)
+> > -               goto out_free_pages;
+> > -
+> > -       struct apply_range_data data =3D { .pages =3D pages, .i =3D 0 }=
+;
+> > -       ret =3D bpf_map_alloc_pages(&arena->map, node_id, page_cnt, pag=
+es);
+> > -       if (ret)
+> > -               goto out;
+> > +               goto out_unlock_free_pages;
+> >
+> > +       remaining =3D page_cnt;
+> >         uaddr32 =3D (u32)(arena->user_vm_start + pgoff * PAGE_SIZE);
+> > -       /* Earlier checks made sure that uaddr32 + page_cnt * PAGE_SIZE=
+ - 1
+> > -        * will not overflow 32-bit. Lower 32-bit need to represent
+> > -        * contiguous user address range.
+> > -        * Map these pages at kern_vm_start base.
+> > -        * kern_vm_start + uaddr32 + page_cnt * PAGE_SIZE - 1 can overf=
+low
+> > -        * lower 32-bit and it's ok.
+> > -        */
+> > -       ret =3D apply_to_page_range(&init_mm, kern_vm_start + uaddr32,
+> > -                                 page_cnt << PAGE_SHIFT, apply_range_s=
+et_cb, &data);
+> > -       if (ret) {
+> > -               for (i =3D 0; i < page_cnt; i++)
+> > -                       __free_page(pages[i]);
+> > -               goto out;
+> > +
+> > +       while (remaining) {
+> > +               long this_batch =3D min(remaining, alloc_pages);
+> > +
+> > +               /* zeroing is needed, since alloc_pages_bulk() only fil=
+ls in non-zero entries */
+> > +               memset(pages, 0, this_batch * sizeof(struct page *));
+> > +               data.i =3D 0;
+>
+> Pls move data.i =3D 0 further down to be done right before
+> apply_to_page_range() since it's one logical operation.
+> Here it's done too early.
+>
+> > +
+> > +               ret =3D bpf_map_alloc_pages(&arena->map, node_id, this_=
+batch, pages);
+> > +               if (ret)
+> > +                       goto out;
+> > +
+> > +               /* Earlier checks made sure that uaddr32 + page_cnt * P=
+AGE_SIZE - 1
+>
+> Pls reformat the comment as you move them as
+> /*
+>  * ...
+>  */
+>
+> > +                * will not overflow 32-bit. Lower 32-bit need to repre=
+sent
+> > +                * contiguous user address range.
+> > +                * Map these pages at kern_vm_start base.
+> > +                * kern_vm_start + uaddr32 + page_cnt * PAGE_SIZE - 1 c=
+an overflow
+> > +                * lower 32-bit and it's ok.
+> > +                */
+> > +               ret =3D apply_to_page_range(&init_mm,
+> > +                                         kern_vm_start + uaddr32 + (ma=
+pped << PAGE_SHIFT),
+> > +                                         this_batch << PAGE_SHIFT, app=
+ly_range_set_cb, &data);
+> > +               if (ret) {
+> > +                       /* data.i pages were mapped, account them and f=
+ree the remaining */
+> > +                       mapped +=3D data.i;
+> > +                       for (i =3D data.i; i < this_batch; i++)
+> > +                               __free_page(pages[i]);
+> > +                       goto out;
+> > +               }
+> > +
+> > +               mapped +=3D this_batch;
+> > +               remaining -=3D this_batch;
+> >         }
+> > -       kvfree(pages);
+> > +       mutex_unlock(&arena->lock);
+> > +       kfree_nolock(pages);
+> >         return clear_lo32(arena->user_vm_start) + uaddr32;
+> >  out:
+> > -       range_tree_set(&arena->rt, pgoff, page_cnt);
+> > +       range_tree_set(&arena->rt, pgoff + mapped, page_cnt - mapped);
+> > +       mutex_unlock(&arena->lock);
+> > +       if (mapped)
+> > +               arena_free_pages(arena, clear_lo32(arena->user_vm_start=
+) + uaddr32, mapped);
+>
+> This doesn't look right.
+> The first thing arena_free_pages() does is:
+>         uaddr =3D (u32)uaddr;
+>         uaddr &=3D PAGE_MASK;
+>         full_uaddr =3D clear_lo32(arena->user_vm_start) + uaddr;
 
-Thinking about this a little more. Perhaps whilst in
-btf_encoder__add_saved_funcs() we should only emit BTF for any
-duplicated function within a CU which happen to match the
-corresponding entry within the backing ELF symtab? We can do this by
-checking whether the virtual address stored within DW_AT_low_pc
-matches that of what's stored in the st_value field for the
-corresponding ELF symtab entry? For example, for bpf_lsm_mmap_file we
-have:
+So, arena_free_pages() should be called with what arena_alloc_pages()
+returns, we return:
 
-Output from reading the vmlinux symbol table:
-```
-$ readelf -s <input> | grep bpf_lsm_mmap_file
-165360: ffffffff8152f9b0    16 FUNC    GLOBAL DEFAULT    1 bpf_lsm_mmap_file
-```
-Output from reading the vmlinux DWARF debugging information:
-```
-<2a40982>   DW_AT_name        : (indirect string, offset: 0x1352ea): bpf_lsm_mmap_file
-<2a40986>   DW_AT_decl_file   : 4
-<2a40987>   DW_AT_decl_line   : 199
-<2a40988>   DW_AT_decl_column : 1
-<2a40989>   DW_AT_prototyped  : 1
-<2a40989>   DW_AT_type        : <0x2a1b010>
-<2a4098d>   DW_AT_low_pc      : 0xffffffff8152e260
-<2a40995>   DW_AT_high_pc     : 0x10
-<2a4099d>   DW_AT_frame_base  : 1 byte block: 9c    (DW_OP_call_frame_cfa)
-<2a4099f>   DW_AT_call_all_calls: 1
-<2a4099f>   DW_AT_sibling     : <0x2a409d8>
-<2><2a409a3>: Abbrev Number: 10 (DW_TAG_formal_parameter)
-<2a409a4>   DW_AT_name        : (indirect string, offset: 0x3623df): file
-<2a409a8>   DW_AT_decl_file   : 4
-<2a409a9>   DW_AT_decl_line   : 199
-<2a409aa>   DW_AT_decl_column : 1
-<2a409aa>   DW_AT_type        : <0x2a234ef>
-<2a409ae>   DW_AT_location    : 1 byte block: 55    (DW_OP_reg5 (rdi))
-<2><2a409b0>: Abbrev Number: 10 (DW_TAG_formal_parameter)
-<2a409b1>   DW_AT_name        : (indirect string, offset: 0x23a09d): reqprot
-<2a409b5>   DW_AT_decl_file   : 4
---
-<2a60e0a>   DW_AT_name        : (indirect string, offset: 0x1352ea): bpf_lsm_mmap_file
-<2a60e0e>   DW_AT_decl_file   : 1
-<2a60e0f>   DW_AT_decl_line   : 15
-<2a60e10>   DW_AT_decl_column : 5
-<2a60e11>   DW_AT_prototyped  : 1
-<2a60e11>   DW_AT_type        : <0x2a42713>
-<2a60e15>   DW_AT_low_pc      : 0xffffffff8152f9b0
-<2a60e1d>   DW_AT_high_pc     : 0x10
-<2a60e25>   DW_AT_frame_base  : 1 byte block: 9c    (DW_OP_call_frame_cfa)
-<2a60e27>   DW_AT_call_all_calls: 1
-<2><2a60e27>: Abbrev Number: 82 (DW_TAG_formal_parameter)
-<2a60e28>   DW_AT_name        : (indirect string, offset: 0x135ede): file__nullable
-<2a60e2c>   DW_AT_decl_file   : 1
-<2a60e2c>   DW_AT_decl_line   : 15
-<2a60e2d>   DW_AT_decl_column : 36
-<2a60e2e>   DW_AT_type        : <0x2a49f59>
-<2a60e32>   DW_AT_location    : 1 byte block: 55    (DW_OP_reg5 (rdi))
-```
+    return clear_lo32(arena->user_vm_start) + uaddr32;
 
-> [0] https://lore.kernel.org/bpf/20251210090701.2753545-1-mattbobrowski@google.com/T/#me14d534fb559a349c46e094f18c63d477644d511
+from arena_alloc_pages(); few lines above.
+
+This usage looks correct to me.
+
+Thanks,
+Puranjay
 
