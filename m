@@ -1,43 +1,43 @@
-Return-Path: <bpf+bounces-76452-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76453-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1876CB48AF
-	for <lists+bpf@lfdr.de>; Thu, 11 Dec 2025 03:17:12 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01170CB486F
+	for <lists+bpf@lfdr.de>; Thu, 11 Dec 2025 03:14:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E260F30633B4
-	for <lists+bpf@lfdr.de>; Thu, 11 Dec 2025 02:13:34 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 489963027FC5
+	for <lists+bpf@lfdr.de>; Thu, 11 Dec 2025 02:13:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8D742E175F;
-	Thu, 11 Dec 2025 02:13:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F5452BE034;
+	Thu, 11 Dec 2025 02:13:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="DlNL54mJ"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="mE5MEPr8"
 X-Original-To: bpf@vger.kernel.org
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8233F20A5C4;
-	Thu, 11 Dec 2025 02:13:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6403E29BDBF;
+	Thu, 11 Dec 2025 02:13:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765419201; cv=none; b=M/i+ZHEFJUPGyTBrDRyDkHwdF7Y0oR90/UTczTlSuomWsBhEtgtRDaOxVGNedIZDyw6iiUzbAw8WSqYgHEzlLZJSt7D6vnNJlTo8zE5l5V/cPAkw/v+FdPZQScqvGBFeBtXrHAtCRVKN9CW36fbP9mn04/we3R3HfVB/I9SRuJo=
+	t=1765419204; cv=none; b=U13xkSwUyukYszMO5QTIhBvwejgzQP4c+hpXiw4Kpgj5x71fg+Q0YhbER/+IeQ9jXBpQVf+Of94BFwK1BTQCXxakHMJvQfrFPbOQ0x/a94NemSzssqlg6HR9wDoDP7tFhdxJBxMs2Yb1JqPKsZroJrQgMDCu9NHjSI+OvKZnvxo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765419201; c=relaxed/simple;
-	bh=n5wJ2CXG+nzcMIT49abvHtPdpHcRMOCEe5Imn/9joc0=;
+	s=arc-20240116; t=1765419204; c=relaxed/simple;
+	bh=uegI1mzPRZliA/TQcX5ABSs2HWFj+P0VOewP5BORp+o=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iHB8NgKyuxlekCCM7ZLLvISeOw10whVc473/2jsgmD2OdgC8foC5qmoePyMI4CryEwnNy9X3NiMOmAvfRPtxKJ2NCLb2lmTM6NK10plgXI46J5laY6ZfMnNEk6CjXY1p5dE7+xkInlii2SMoaTQGsVNPS8GbE/4CHc/wSs61JL0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=DlNL54mJ; arc=none smtp.client-ip=13.77.154.182
+	 MIME-Version; b=NA1aEEsXOT6rQwXSD6UoN9XGKIXWuysUyfZCtL476Gc8C5NIpGg/7ydlxHs32tk/2igbo7MBQVO8JT3K16ShvpRMTvUQBMKsOmV+bwO5G+G/PeNP6uY+g04nEK/DhXDNDkgQPEVa6Iugszb+6ol3h+xNIx2WI+ASWHxOb1ZLjjw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=mE5MEPr8; arc=none smtp.client-ip=13.77.154.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
 Received: from narnia.corp.microsoft.com (unknown [40.78.12.133])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 725E22116043;
-	Wed, 10 Dec 2025 18:13:17 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 725E22116043
+	by linux.microsoft.com (Postfix) with ESMTPSA id 7DF7A2116049;
+	Wed, 10 Dec 2025 18:13:19 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7DF7A2116049
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1765419198;
-	bh=xtXBZp01Gf8QxqlxSJyJMsLhZkeyPe2aXuwT3ptpSmQ=;
+	s=default; t=1765419200;
+	bh=++dNq3pik3ds/FgQ3gbpQEqGwqt1ddB5Lw7Ccqc/7dA=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=DlNL54mJ5XJrKBGKOITEjuSJgEj+brxfKrtxQaDOm0Tby2HkFg4occlDpsAEw78+c
-	 TsB1QjfOJJRIHBcdqxkAuOLOdg/GCaruWPyYqA6ERZFum8MiIaL+UHD72NXZzRr03g
-	 xTfc1pcalKyXrmZd1YdkzfpWADowEc18rczYzcbA=
+	b=mE5MEPr8pkJe6GrDwQy6WSXJvbzb6Vhk6o2M/64U4BF24h8HPIvf1lBIfXpU56h94
+	 EIyO9BQSD3TUFMwMl4mZv8+KAngAaw+iZR1htM/7VtvWHVCl0S3z/23nFH6J3w9HOu
+	 vYy6rpXeaYqj/b1nng71vYIKPSKK30Rb9XX/JY0E=
 From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
 To: Blaise Boscaccy <bboscaccy@linux.microsoft.com>,
 	Jonathan Corbet <corbet@lwn.net>,
@@ -54,9 +54,9 @@ To: Blaise Boscaccy <bboscaccy@linux.microsoft.com>,
 	linux-doc@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [RFC 06/11] crypto: pkcs7: add ability to extract signed attributes by OID
-Date: Wed, 10 Dec 2025 18:12:01 -0800
-Message-ID: <20251211021257.1208712-7-bboscaccy@linux.microsoft.com>
+Subject: [RFC 07/11] crypto: pkcs7: add tests for pkcs7_get_authattr
+Date: Wed, 10 Dec 2025 18:12:02 -0800
+Message-ID: <20251211021257.1208712-8-bboscaccy@linux.microsoft.com>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20251211021257.1208712-1-bboscaccy@linux.microsoft.com>
 References: <20251211021257.1208712-1-bboscaccy@linux.microsoft.com>
@@ -70,186 +70,84 @@ Content-Transfer-Encoding: 8bit
 
 From: James Bottomley <James.Bottomley@HansenPartnership.com>
 
-Signers may add any information they like in signed attributes and
-sometimes this information turns out to be relevant to specific
-signing cases, so add an api pkcs7_get_authattr() to extract the value
-of an authenticated attribute by specific OID.  The current
-implementation is designed for the single signer use case and simply
-terminates the search when it finds the relevant OID.
+Add example code to the test module pkcs7_key_type.c that verifies a
+message and then pulls out a known authenticated attribute.
 
 Signed-off-by: James Bottomley <James.Bottomley@HansenPartnership.com>
+Acked-by: David Howells <dhowells@redhat.com>
 ---
- crypto/asymmetric_keys/Makefile       |  4 +-
- crypto/asymmetric_keys/pkcs7_aa.asn1  | 18 ++++++
- crypto/asymmetric_keys/pkcs7_parser.c | 87 +++++++++++++++++++++++++++
- include/crypto/pkcs7.h                |  4 ++
- 4 files changed, 112 insertions(+), 1 deletion(-)
- create mode 100644 crypto/asymmetric_keys/pkcs7_aa.asn1
+ crypto/asymmetric_keys/pkcs7_key_type.c | 42 ++++++++++++++++++++++++-
+ 1 file changed, 41 insertions(+), 1 deletion(-)
 
-diff --git a/crypto/asymmetric_keys/Makefile b/crypto/asymmetric_keys/Makefile
-index bc65d3b98dcbf..f99b7169ae7cd 100644
---- a/crypto/asymmetric_keys/Makefile
-+++ b/crypto/asymmetric_keys/Makefile
-@@ -53,12 +53,14 @@ clean-files	+= pkcs8.asn1.c pkcs8.asn1.h
- obj-$(CONFIG_PKCS7_MESSAGE_PARSER) += pkcs7_message.o
- pkcs7_message-y := \
- 	pkcs7.asn1.o \
-+	pkcs7_aa.asn1.o \
- 	pkcs7_parser.o \
- 	pkcs7_trust.o \
- 	pkcs7_verify.o
+diff --git a/crypto/asymmetric_keys/pkcs7_key_type.c b/crypto/asymmetric_keys/pkcs7_key_type.c
+index b930d3bbf1af5..5a1ecb5501b2b 100644
+--- a/crypto/asymmetric_keys/pkcs7_key_type.c
++++ b/crypto/asymmetric_keys/pkcs7_key_type.c
+@@ -12,6 +12,7 @@
+ #include <linux/verification.h>
+ #include <linux/key-type.h>
+ #include <keys/user-type.h>
++#include <crypto/pkcs7.h>
  
--$(obj)/pkcs7_parser.o: $(obj)/pkcs7.asn1.h
-+$(obj)/pkcs7_parser.o: $(obj)/pkcs7.asn1.h $(obj)/pkcs7_aa.asn1.h
- $(obj)/pkcs7.asn1.o: $(obj)/pkcs7.asn1.c $(obj)/pkcs7.asn1.h
-+$(obj)/pkcs7_aa.asn1.o: $(obj)/pkcs7_aa.asn1.c $(obj)/pkcs7_aa.asn1.h
- 
- #
- # PKCS#7 parser testing key
-diff --git a/crypto/asymmetric_keys/pkcs7_aa.asn1 b/crypto/asymmetric_keys/pkcs7_aa.asn1
-new file mode 100644
-index 0000000000000..7a8857bdf56e1
---- /dev/null
-+++ b/crypto/asymmetric_keys/pkcs7_aa.asn1
-@@ -0,0 +1,18 @@
-+-- SPDX-License-Identifier: BSD-3-Clause
-+--
-+-- Copyright (C) 2009 IETF Trust and the persons identified as authors
-+-- of the code
-+--
-+-- https://www.rfc-editor.org/rfc/rfc5652#section-3
-+
-+AA ::= 	CHOICE {
-+	aaSet		[0] IMPLICIT AASet,
-+	aaSequence	[2] EXPLICIT SEQUENCE OF AuthenticatedAttribute
-+}
-+
-+AASet ::= SET OF AuthenticatedAttribute
-+
-+AuthenticatedAttribute ::= SEQUENCE {
-+	type	OBJECT IDENTIFIER ({ pkcs7_aa_note_OID }),
-+	values	SET OF ANY ({ pkcs7_aa_note_attr })
-+}
-diff --git a/crypto/asymmetric_keys/pkcs7_parser.c b/crypto/asymmetric_keys/pkcs7_parser.c
-index 423d13c475452..55bdcbad70952 100644
---- a/crypto/asymmetric_keys/pkcs7_parser.c
-+++ b/crypto/asymmetric_keys/pkcs7_parser.c
-@@ -15,6 +15,7 @@
- #include <crypto/public_key.h>
- #include "pkcs7_parser.h"
- #include "pkcs7.asn1.h"
-+#include "pkcs7_aa.asn1.h"
- 
- MODULE_DESCRIPTION("PKCS#7 parser");
- MODULE_AUTHOR("Red Hat, Inc.");
-@@ -197,6 +198,92 @@ int pkcs7_get_content_data(const struct pkcs7_message *pkcs7,
- }
- EXPORT_SYMBOL_GPL(pkcs7_get_content_data);
- 
-+struct pkcs7_aa_context {
-+	bool found;
-+	enum OID oid_to_find;
+ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("PKCS#7 testing key type");
+@@ -51,16 +52,55 @@ static int pkcs7_view_content(void *ctx, const void *data, size_t len,
+ static int pkcs7_preparse(struct key_preparsed_payload *prep)
+ {
+ 	enum key_being_used_for usage = pkcs7_usage;
++	int ret;
++	struct pkcs7_message *pkcs7;
 +	const void *data;
 +	size_t len;
-+};
+ 
+ 	if (usage >= NR__KEY_BEING_USED_FOR) {
+ 		pr_err("Invalid usage type %d\n", usage);
+ 		return -EINVAL;
+ 	}
+ 
+-	return verify_pkcs7_signature(NULL, 0,
++	ret = verify_pkcs7_signature(NULL, 0,
+ 				      prep->data, prep->datalen,
+ 				      VERIFY_USE_SECONDARY_KEYRING, usage,
+ 				      pkcs7_view_content, prep);
++	if (ret)
++		return ret;
 +
-+int pkcs7_aa_note_OID(void *context, size_t hdrlen,
-+		      unsigned char tag,
-+		      const void *value, size_t vlen)
-+{
-+	struct pkcs7_aa_context *ctx = context;
-+	enum OID oid = look_up_OID(value, vlen);
-+
-+	ctx->found = (oid == ctx->oid_to_find);
-+
-+	return 0;
-+}
-+
-+int pkcs7_aa_note_attr(void *context, size_t hdrlen,
-+		       unsigned char tag,
-+		       const void *value, size_t vlen)
-+{
-+	struct pkcs7_aa_context *ctx = context;
-+
-+	if (ctx->found) {
-+		ctx->data = value;
-+		ctx->len = vlen;
++	pkcs7 = pkcs7_parse_message(prep->data, prep->datalen);
++	if (IS_ERR(pkcs7)) {
++		pr_err("pkcs7 parse error\n");
++		return PTR_ERR(pkcs7);
 +	}
 +
-+	return 0;
-+}
-+
-+/**
-+ * pkcs7_get_authattr - get authenticated attribute by OID
-+ * @pkcs7: The preparsed PKCS#7 message
-+ * @oid: the enum value of the OID to find
-+ * @_data: Place to return a pointer to the attribute value
-+ * @_len: length of the attribute value
-+ *
-+ * Searches the authenticated attributes until one is found with a
-+ * matching OID.  Note that because the attributes are per signer
-+ * there could be multiple signers with different values, but this
-+ * routine will simply return the first one in parse order.
-+ *
-+ * Returns -ENODATA if the attribute can't be found
-+ */
-+int pkcs7_get_authattr(const struct pkcs7_message *pkcs7,
-+		       enum OID oid,
-+		       const void **_data, size_t *_len)
-+{
-+	struct pkcs7_signed_info *sinfo = pkcs7->signed_infos;
-+	struct pkcs7_aa_context ctx;
-+
-+	ctx.data = NULL;
-+	ctx.oid_to_find = oid;
-+
-+	for (; sinfo; sinfo = sinfo->next) {
-+		int ret;
-+
-+		/* only extract OIDs from validated signers */
-+		if (!sinfo->verified)
-+			continue;
-+
-+		/*
-+		 * Note: authattrs is missing the initial tag for
-+		 * digesting reasons.  Step one back in the stream to
-+		 * point to the initial tag for fully formed ASN.1
-+		 */
-+		ret = asn1_ber_decoder(&pkcs7_aa_decoder, &ctx,
-+				       sinfo->authattrs - 1,
-+				       sinfo->authattrs_len + 1);
-+		if (ret < 0 || ctx.data != NULL)
-+			break;
++	/*
++	 * the parsed message has no trusted signer, so nothing should
++	 * be returned here
++	 */
++	ret = pkcs7_get_authattr(pkcs7, OID_messageDigest, &data, &len);
++	if (ret == 0) {
++		pr_err("OID returned when no trust in signer\n");
++		goto out;
 +	}
++	/* add trust and check again */
++	ret = validate_pkcs7_trust(pkcs7, VERIFY_USE_SECONDARY_KEYRING);
++	if (ret) {
++		pr_err("validate_pkcs7_trust failed!!\n");
++		goto out;
++	}
++	/* now we should find the OID */
++	ret = pkcs7_get_authattr(pkcs7, OID_messageDigest, &data, &len);
++	if (ret) {
++		pr_err("Failed to get message digest\n");
++		goto out;
++	}
++	pr_info("Correctly Got message hash, size=%ld\n", len);
 +
-+	if (!ctx.data)
-+		return -ENODATA;
-+
-+	*_data = ctx.data;
-+	*_len = ctx.len;
-+
++ out:
++	pkcs7_free_message(pkcs7);
 +	return 0;
-+}
-+EXPORT_SYMBOL_GPL(pkcs7_get_authattr);
-+
- /*
-  * Note an OID when we find one for later processing when we know how
-  * to interpret it.
-diff --git a/include/crypto/pkcs7.h b/include/crypto/pkcs7.h
-index 38ec7f5f90411..bd83202cd805c 100644
---- a/include/crypto/pkcs7.h
-+++ b/include/crypto/pkcs7.h
-@@ -25,6 +25,10 @@ extern void pkcs7_free_message(struct pkcs7_message *pkcs7);
- extern int pkcs7_get_content_data(const struct pkcs7_message *pkcs7,
- 				  const void **_data, size_t *_datalen,
- 				  size_t *_headerlen);
-+extern int pkcs7_get_authattr(const struct pkcs7_message *pkcs7,
-+			      enum OID oid,
-+			      const void **_data, size_t *_len);
-+
+ }
  
  /*
-  * pkcs7_trust.c
 -- 
 2.52.0
 
