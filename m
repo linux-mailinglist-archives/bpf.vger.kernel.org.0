@@ -1,93 +1,94 @@
-Return-Path: <bpf+bounces-76467-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76469-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 079E7CB5ECE
-	for <lists+bpf@lfdr.de>; Thu, 11 Dec 2025 13:47:16 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 027CECB5ECF
+	for <lists+bpf@lfdr.de>; Thu, 11 Dec 2025 13:47:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B79A2301D32A
-	for <lists+bpf@lfdr.de>; Thu, 11 Dec 2025 12:46:57 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 5EECA3001806
+	for <lists+bpf@lfdr.de>; Thu, 11 Dec 2025 12:47:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10E3D311973;
-	Thu, 11 Dec 2025 12:46:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6547A3126A2;
+	Thu, 11 Dec 2025 12:47:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.b="ZVOFAA6s"
+	dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.b="lkLVo8aB"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 306CA311C07
-	for <bpf@vger.kernel.org>; Thu, 11 Dec 2025 12:46:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4818310630
+	for <bpf@vger.kernel.org>; Thu, 11 Dec 2025 12:47:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765457216; cv=none; b=UtvLlpor/UXhWBVXl3t2ZMfRxfjW5lnj7hvMFu1V/F6oVAyykNICo8cWiAo5zXY7/IHtJ8DTD6oxmrh/OcRwByv9Zfv7xmlw18vahLEBsLndf8FssEXWS1KqIPWmJCtwweMg6TYnIK4Jc5h4k3OBILZtwxHpAp5OBvb/2dtlYlc=
+	t=1765457240; cv=none; b=TP7VSXG6fQ0S3yND8fmVVbj/rgVvFOVhJbjBG1AnX6dHaPX/KiTKHw84Sef3VFj++Odc4DB6QCMvXzQcuSamAhaSiaVqE6kIcUZfogUlPpkzIcFjey8ZxwsxPJ9eyHf2rOKm91+x9Od0OxWiQeW7XQ3QvacNu7yYZjhnpDHh0Pg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765457216; c=relaxed/simple;
-	bh=M8eRqkgPgBxM8ofhzKDpQ/IEnkN/a4YJtGuQ31KbvR8=;
+	s=arc-20240116; t=1765457240; c=relaxed/simple;
+	bh=3qmycWVGwa0fleVcc4GLQW2Fzgtj2dBXk0K8XPFPQCQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=V2Z9IAvR/+uHOoBWOGqby8RwzrRecwXrUixkaE6qUt/QSEIlMR/bBQi/hKOJuqqKitP79BagA3mFKxhbWYmt2vPNCEI/S+s3Ss6LwXFIIrpnLX/lKOvlfGxRm6TECb5Eg1TRy11g7wA1wnn/NefNQ071bUJ34/MIQZO9KbknKwk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.b=ZVOFAA6s; arc=none smtp.client-ip=185.125.188.123
+	 MIME-Version:Content-Type; b=drEWO72VJJkSCCPkJ1t/HAUlXcA0XV4WpPQS6yywZveQuJ2hopzYCINIjyspv/V9bsL5OStJr1Z6LD60XgGm26t/HAXQqjcXZMYdFnt0uXK/OKFQ+FDE+tg3NO6d4viQFvwCjjUmZfJZw/3B2VMfP8Ef9Nifn5IxNj4qp4Sj6kU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.b=lkLVo8aB; arc=none smtp.client-ip=185.125.188.122
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=canonical.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com [209.85.128.72])
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com [209.85.128.70])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 76C783F7C1
-	for <bpf@vger.kernel.org>; Thu, 11 Dec 2025 12:46:44 +0000 (UTC)
+	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 0B39A3F86D
+	for <bpf@vger.kernel.org>; Thu, 11 Dec 2025 12:47:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20251003; t=1765457204;
-	bh=+VWHdEQoNsPgcwFXeNNGXSus+9dIrvpb6PWtF/9Odxg=;
+	s=20251003; t=1765457221;
+	bh=suV39gaCYkEDANhyygJAMBI3GGjztJlbBT8FfCj6jaQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
 	 MIME-Version:Content-Type;
-	b=ZVOFAA6sexLl6RyMIKZfxr0b+E28N4MJkwidDRgOqP4SgpAxfWytwniJBeKYcyYUo
-	 uZEhHsEC3KF3bssbMc7FpSBSgIDoGb+khR8bmV2wAbCNowLg5RYlF63ZsfycOLXR7F
-	 x9BLpzjD8VfY5XJHLUIlMlb8B4KiSOxh8jHqCvjuMxGw5juaMe7FytsuWcP1G+/myi
-	 SKuB8v4LBk/QV0hppH/2fsnhe2282JzJfRuO+yUBihimxb/Pt1cTU/WlWIaABcYd/N
-	 V8f3tfgw0gljAeskXjuTOAo+7bpXuhZaHrYek2+/18o0t8IkAKIoJXpO1VwSEGP7RB
-	 TDCKhL/GlfG0hk+nnRiDvMMgTwzpmrzb8pE2p5GbztWdxceKckRLC7VnCde3LoPusR
-	 vcqyMI8FKYy6i3u65E5a0llvGrkZr0/6NeCR/05Rm9K5OSyV54IDLV5kqMUtY+8PNM
-	 ZZsgzTWmprGSzb+onQnL5LcUURxE4eE4ecbF+aiPzecUIcw/L3IkhJzKUgXOkdfwHm
-	 c/cRDaV26hjRcVeuP8Hey5rLUAX9hfapZSARPE1ZjZQvnPETvG95PAmu3m8rO96PMO
-	 uBJqkz0YUSpbib5m7fTgjXFHhx9ADU/jshh984zqIhRfHGvVMT0iH3Oo3LlMNCNhpX
-	 hAEjuPepkGhYyuE8YumjqeIQ=
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4779981523fso445395e9.2
-        for <bpf@vger.kernel.org>; Thu, 11 Dec 2025 04:46:44 -0800 (PST)
+	b=lkLVo8aB/t8fCNGuhkC73TT6SnnVMZn2HIqU5VxR6RN97mukJwSUROiCp67kemnOY
+	 dtQ+j+WGo+4wh8YHtcVDxwmI6Nce/GspcQfGJbEDWADJ+mghIjTvsNo2b7RV+GGKrU
+	 BlhWTn3kyUPcLujwTJHsertOzeHMYNB8oHp7i4S9NM7GP4Loepd2xOceMZbEUdv8v0
+	 Tv5CZuCJ9PNnZf+V5zPk7Ys2ksnC+VxmQDpSlO0prBEOoQG9sstMaRNi2ugFs68Mh4
+	 vzGBQOhnFrvBrOV+/qwvGQe9yU+YwQBzsLhkv52wl+vj5uoLRAa1GDlb4KtA5qXbrW
+	 ES64yoCZ13KCVdiad1l9XMNgU5undGcqiMkNdROtsC0tFEugqVxVyFyv8HPPUZNKHO
+	 Bpb7mCrH2uEBGz7kdSK+KAYpqKOCdvC2yFFWxnFJ9odeYcNrG3+xW/nSFYod0vaFw3
+	 ZfMJDYs2TvJMWtbR2u8iTBqhQTDHPg8tEYp+ybTIT1KkNQ3aO+ue+nQgmSbpKcg19Z
+	 2MAXybug7uVziq2afUVJhF/+H/Pmy2akTRvJMLh7DWr1CI9gOW6Ov6lcEjLRTKjgt5
+	 rEhzutxvz4igOv+055kjS/18BR/Y8jxwP3UCWzaSwrSH7i4ANZRTNnCjk6HAfkS9uG
+	 lQSdj1XQ9m0FuVt5f/Cf1KQA=
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-477a11d9e67so233755e9.2
+        for <bpf@vger.kernel.org>; Thu, 11 Dec 2025 04:47:01 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765457198; x=1766061998;
+        d=1e100.net; s=20230601; t=1765457201; x=1766062001;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=+VWHdEQoNsPgcwFXeNNGXSus+9dIrvpb6PWtF/9Odxg=;
-        b=C8U9vKSBIiFgkBVfWyWURg1ZDjJ21wJgW5tbzCH/PEnylwIwtVJnmgeQCOoAVyzIeq
-         u07Oarfm8TjWIsv0rABcDIDvOJgUxgyfMgBRQDXNoJqhw3ubXdfi6DqXFnXvxlWj9rHQ
-         K0TneefcvobMb/++uHfYWhOqEZ5nScMxa7kL7MIiqac93wntSTiKx9/pfiPcoVTUktkc
-         6/eXV2vqJVcya5lRoq4kXqsz3Z0P401nj/sjZZYNP5KN5/cng2SGLwpriIR4PRm8mq1d
-         OkjMgVUirN97mFaOb3/4Pbl6WMV7cvVYS84AzQtKg8OFZLxelV+hjtwAs/EPj0i+ob1K
-         pneA==
-X-Forwarded-Encrypted: i=1; AJvYcCV/YqWadEGRof5wRmVuN9f8LhBi4Bu5h2PeJwGa3P7XWG02kME9VYO+ephll5SOsey1hgI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxSDocuuQKb5jLJI+V7Wn467BrYV7Y81qJKr+dmH804Lb5DGEYR
-	u/32Ai0Wxno0EN3WVHPuISZ8PeCfONDWckBHvgaS0NEwdz1dJozp3ffo7a4U1CjawBNlj8LWtF6
-	T6QZVsR5M+bIxiRzOXNrXl9IsDeBygvm/Zh5gf7lCEPKDz1DeqlftpjfSSt3EVyadLQnmzg==
-X-Gm-Gg: AY/fxX512hYDt/gpvs67bWfxFx40U0lZ1L8OdMTie+K+WutuDr5c+rIvqrOk7+N1R79
-	yIRRYE5vxhFGjIEiaRJv6dyVp1SbkFBdHq3nWJtNElKHwFBu3cpqktMr4th3FsNEk8FIky+w/3y
-	z20lw5hYeeRuQrUYPNWZbaAtqWJFQX4mW33VJszGCLBephbTgeeur9u0nlfZTObFXIzKlwx53eO
-	EyjZq28PYvc6JO9BbmaqNrFBX3FDVw0c7acH5l3VlDbJ826EHeOqrdUV94UvaLxFwFvSxrgkYe8
-	kXmd6ZHhYDDXw4fwmBtC0useH9RsMA4+8Ro9KMW1DnH64ZRad05vu4fbkqAYrIEC+PIq1RRRfkK
-	EP/dVon+1FfXifsXAhov/Hg8ZH2jmJDhoR5ahB4AC34/MOc6zzrw8g2kqsK7ailobvnzmJF+oU9
-	SQNPVjxf3oWjYaFdNbRlUUhRY=
-X-Received: by 2002:a05:600c:8b73:b0:477:b642:9dbf with SMTP id 5b1f17b1804b1-47a8379c99bmr57493625e9.32.1765457197842;
-        Thu, 11 Dec 2025 04:46:37 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGW5OJd4vXzfsiWREO4WnOPxV8GVFlOiBDlk4Bt0lWdwH50jp6/D3VvS3x72AqyIflrh1rrcA==
-X-Received: by 2002:a05:600c:8b73:b0:477:b642:9dbf with SMTP id 5b1f17b1804b1-47a8379c99bmr57493275e9.32.1765457197424;
-        Thu, 11 Dec 2025 04:46:37 -0800 (PST)
+        bh=suV39gaCYkEDANhyygJAMBI3GGjztJlbBT8FfCj6jaQ=;
+        b=e9/UznXbJvjH4gYUq1GYhyFcD6fQQiLpcVBf7dbUO9xp/abCUhER4QlC9d6sE8rnIX
+         hGWj1/oBHGQhMB+r1435cGY5MgeN86lfz7nHwkOyxFBSFCfaD9VItiCjb5+lzoC1dFa2
+         Tgzd5/QAqpsDv43y4lTLpwOsSF77BFhfAF6br+JbF0q8ICOUPNfccY8S6ql9l7R0YVpl
+         PPXnWxBEnuYeM7xL9I727RKPM5LTyHP64iKefSdmmROvHFXBSFSGTMtzZvgH5Rha816s
+         tHFZCuPVBvnMDpzy0bmwhpyU+ZjwTJTm6+93DTSbru2tZoldZpNpR70nssFw2kw4zGjQ
+         eTVA==
+X-Forwarded-Encrypted: i=1; AJvYcCUUqS4moNBR1cP70kiHU34TeqdY12chGuR0gJ0CcdVT412JR/Z0S7vieO5o4BTrdGGJSBg=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx1hOsuJx2xrgvSI0DNt7esi4LSG6GW1lxEpXsnc4T3FnH6XZSu
+	1FhGQzWYPdY87uVttb5hpa7fjGmUtdiY2THYmwsxFjILzFRiW9EI+/1IzSHglvraxrTUzenjLwy
+	RBmdMCjqj1cJpDFXQ91NEWKVo2A42dkRMLTgiHon4F5VzRTRxuZtfs7fkcDGSAhtCIkgXog==
+X-Gm-Gg: AY/fxX4YPnDLSBJtHsmGrLEAP0ug/+Sl8Kg1UyI8GExN4Sc3ho0KdBiXYw3WDa8SXrg
+	JCY9jPQtiFXpRR0zLjfbrWlKAIbIACsx3+eqqH+a3B+Sz8JfkCtEHtJIebs4R/zjFWjhmA8Ops6
+	Hs6MY2TNmc1GuUVdUcxDWJeN5URVEKls1RrZUwi83cef4x2JuBVcM1wssuijRyv75dsbXUQRPVr
+	7Aj9MILNR3r18me2v7hlKpGI0l9N7TeiMYcfOKWi3dcD7Zg8H5KVNV9tswjDHGyDQmeyk0xVC8Z
+	t81Bbjh2Qm8KQ/rOwT9+ShbatI/kW/+K9so9SuFis4nueUdnijeTV1ikfntpOVOX2FhAVSsynS+
+	oKDrKotlm9At5b2hCT17myakaBnKmmG0KQnbCaab0LZjdvH6I4VXyLT8jCm1cvPjQt5sfgDrUcT
+	PwGNiPLk4IyogKjDm3LISGT4E=
+X-Received: by 2002:a05:600c:46cf:b0:47a:829a:ebb with SMTP id 5b1f17b1804b1-47a8383c856mr56890535e9.19.1765457200901;
+        Thu, 11 Dec 2025 04:46:40 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEdBy+0ixhzmCiyvohlwRh+X5WzSwkP+d/0rQhp386/uoSX/xcLaiXgvZ/61M7qhAv/XiR5Hg==
+X-Received: by 2002:a05:600c:46cf:b0:47a:829a:ebb with SMTP id 5b1f17b1804b1-47a8383c856mr56890055e9.19.1765457200466;
+        Thu, 11 Dec 2025 04:46:40 -0800 (PST)
 Received: from amikhalitsyn.lan (p200300cf57022000e6219d5798620e30.dip0.t-ipconnect.de. [2003:cf:5702:2000:e621:9d57:9862:e30])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47a89f0d6f2sm32075905e9.13.2025.12.11.04.46.35
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47a89f0d6f2sm32075905e9.13.2025.12.11.04.46.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Dec 2025 04:46:37 -0800 (PST)
+        Thu, 11 Dec 2025 04:46:39 -0800 (PST)
 From: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
 To: kees@kernel.org
-Cc: linux-kernel@vger.kernel.org,
+Cc: linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org,
 	Andy Lutomirski <luto@amacapital.net>,
 	Will Drewry <wad@chromium.org>,
@@ -98,10 +99,11 @@ Cc: linux-kernel@vger.kernel.org,
 	Andrei Vagin <avagin@gmail.com>,
 	Christian Brauner <brauner@kernel.org>,
 	=?UTF-8?q?St=C3=A9phane=20Graber?= <stgraber@stgraber.org>,
-	Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-Subject: [PATCH v3 5/7] seccomp: handle multiple listeners case
-Date: Thu, 11 Dec 2025 13:46:09 +0100
-Message-ID: <20251211124614.161900-6-aleksandr.mikhalitsyn@canonical.com>
+	Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>,
+	Alexander Mikhalitsyn <alexander@mihalicyn.com>
+Subject: [PATCH v3 6/7] seccomp: allow nested listeners
+Date: Thu, 11 Dec 2025 13:46:10 +0100
+Message-ID: <20251211124614.161900-7-aleksandr.mikhalitsyn@canonical.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20251211124614.161900-1-aleksandr.mikhalitsyn@canonical.com>
 References: <20251211124614.161900-1-aleksandr.mikhalitsyn@canonical.com>
@@ -114,11 +116,17 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-If we have more than one listener in the tree and lower listener
-wants us to continue syscall (SECCOMP_USER_NOTIF_FLAG_CONTINUE)
-we must consult with upper listeners first, otherwise it is a
-clear seccomp restrictions bypass scenario.
+Now everything is ready to get rid of "only one listener per tree"
+limitation.
 
+Let's introduce a new uAPI flag
+SECCOMP_FILTER_FLAG_ALLOW_NESTED_LISTENERS, so userspace may explicitly
+allow nested listeners when installing a listener.
+
+Note, that to install n-th listener, this flag must be set on all
+the listeners up the tree.
+
+Cc: linux-doc@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 Cc: bpf@vger.kernel.org
 Cc: Kees Cook <kees@kernel.org>
@@ -133,92 +141,164 @@ Cc: Christian Brauner <brauner@kernel.org>
 Cc: Stéphane Graber <stgraber@stgraber.org>
 Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
 ---
- kernel/seccomp.c | 65 +++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 64 insertions(+), 1 deletion(-)
+ .../userspace-api/seccomp_filter.rst          |  6 +++++
+ include/linux/seccomp.h                       |  3 ++-
+ include/uapi/linux/seccomp.h                  | 13 ++++++-----
+ kernel/seccomp.c                              | 22 +++++++++++++++----
+ tools/include/uapi/linux/seccomp.h            | 13 ++++++-----
+ 5 files changed, 40 insertions(+), 17 deletions(-)
 
+diff --git a/Documentation/userspace-api/seccomp_filter.rst b/Documentation/userspace-api/seccomp_filter.rst
+index cff0fa7f3175..b9633ab1ed47 100644
+--- a/Documentation/userspace-api/seccomp_filter.rst
++++ b/Documentation/userspace-api/seccomp_filter.rst
+@@ -210,6 +210,12 @@ notifications from both tasks will appear on the same filter fd. Reads and
+ writes to/from a filter fd are also synchronized, so a filter fd can safely
+ have many readers.
+ 
++By default, only one listener within seccomp filters tree is allowed. On attempt
++to add a new listener when one already exists in the filter tree, the
++``seccomp()`` call will fail with ``-EBUSY``. To allow multiple listeners, the
++``SECCOMP_FILTER_FLAG_ALLOW_NESTED_LISTENERS`` flag can be passed in addition to
++the ``SECCOMP_FILTER_FLAG_NEW_LISTENER`` flag.
++
+ The interface for a seccomp notification fd consists of two structures:
+ 
+ .. code-block:: c
+diff --git a/include/linux/seccomp.h b/include/linux/seccomp.h
+index 9b959972bf4a..9b060946019d 100644
+--- a/include/linux/seccomp.h
++++ b/include/linux/seccomp.h
+@@ -10,7 +10,8 @@
+ 					 SECCOMP_FILTER_FLAG_SPEC_ALLOW | \
+ 					 SECCOMP_FILTER_FLAG_NEW_LISTENER | \
+ 					 SECCOMP_FILTER_FLAG_TSYNC_ESRCH | \
+-					 SECCOMP_FILTER_FLAG_WAIT_KILLABLE_RECV)
++					 SECCOMP_FILTER_FLAG_WAIT_KILLABLE_RECV | \
++					 SECCOMP_FILTER_FLAG_ALLOW_NESTED_LISTENERS)
+ 
+ /* sizeof() the first published struct seccomp_notif_addfd */
+ #define SECCOMP_NOTIFY_ADDFD_SIZE_VER0 24
+diff --git a/include/uapi/linux/seccomp.h b/include/uapi/linux/seccomp.h
+index dbfc9b37fcae..de78d8e7a70b 100644
+--- a/include/uapi/linux/seccomp.h
++++ b/include/uapi/linux/seccomp.h
+@@ -18,13 +18,14 @@
+ #define SECCOMP_GET_NOTIF_SIZES		3
+ 
+ /* Valid flags for SECCOMP_SET_MODE_FILTER */
+-#define SECCOMP_FILTER_FLAG_TSYNC		(1UL << 0)
+-#define SECCOMP_FILTER_FLAG_LOG			(1UL << 1)
+-#define SECCOMP_FILTER_FLAG_SPEC_ALLOW		(1UL << 2)
+-#define SECCOMP_FILTER_FLAG_NEW_LISTENER	(1UL << 3)
+-#define SECCOMP_FILTER_FLAG_TSYNC_ESRCH		(1UL << 4)
++#define SECCOMP_FILTER_FLAG_TSYNC			(1UL << 0)
++#define SECCOMP_FILTER_FLAG_LOG				(1UL << 1)
++#define SECCOMP_FILTER_FLAG_SPEC_ALLOW			(1UL << 2)
++#define SECCOMP_FILTER_FLAG_NEW_LISTENER		(1UL << 3)
++#define SECCOMP_FILTER_FLAG_TSYNC_ESRCH			(1UL << 4)
+ /* Received notifications wait in killable state (only respond to fatal signals) */
+-#define SECCOMP_FILTER_FLAG_WAIT_KILLABLE_RECV	(1UL << 5)
++#define SECCOMP_FILTER_FLAG_WAIT_KILLABLE_RECV		(1UL << 5)
++#define SECCOMP_FILTER_FLAG_ALLOW_NESTED_LISTENERS	(1UL << 6)
+ 
+ /*
+  * All BPF programs must return a 32-bit value.
 diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-index 1a139f9ef39b..51d0d8adaffb 100644
+index 51d0d8adaffb..7667f443ff6c 100644
 --- a/kernel/seccomp.c
 +++ b/kernel/seccomp.c
-@@ -1268,6 +1268,69 @@ static int seccomp_do_user_notification(struct seccomp_filter *match,
- 	return -1;
+@@ -206,6 +206,7 @@ static inline void seccomp_cache_prepare(struct seccomp_filter *sfilter)
+  * @wait_killable_recv: Put notifying process in killable state once the
+  *			notification is received by the userspace listener.
+  * @first_listener: true if this is the first seccomp listener installed in the tree.
++ * @allow_nested_listeners: Allow nested seccomp listeners.
+  * @prev: points to a previously installed, or inherited, filter
+  * @prog: the BPF program to evaluate
+  * @notif: the struct that holds all notification related information
+@@ -228,6 +229,7 @@ struct seccomp_filter {
+ 	bool log : 1;
+ 	bool wait_killable_recv : 1;
+ 	bool first_listener : 1;
++	bool allow_nested_listeners : 1;
+ 	struct action_cache cache;
+ 	struct seccomp_filter *prev;
+ 	struct bpf_prog *prog;
+@@ -956,6 +958,10 @@ static long seccomp_attach_filter(unsigned int flags,
+ 	if (flags & SECCOMP_FILTER_FLAG_WAIT_KILLABLE_RECV)
+ 		filter->wait_killable_recv = true;
+ 
++	/* Set nested listeners allow flag, if present. */
++	if (flags & SECCOMP_FILTER_FLAG_ALLOW_NESTED_LISTENERS)
++		filter->allow_nested_listeners = true;
++
+ 	/*
+ 	 * If there is an existing filter, make it the prev and don't drop its
+ 	 * task reference.
+@@ -1997,7 +2003,8 @@ static struct file *init_listener(struct seccomp_filter *filter)
  }
  
-+/**
-+ * seccomp_do_user_notifications - sends seccomp notifications to the userspace
-+ * taking into account multiple filters with listeners.
-+ * @match: seccomp filter we are notifying first
-+ * @sd: seccomp data (syscall_nr, args, etc) to be passed to the userspace listener
-+ *
-+ * Returns
-+ *   - -1 on success if userspace provided a reply for the syscall,
-+ *   - -1 on interrupted wait,
-+ *   - 0  on success if userspace requested to continue the syscall
-+ */
-+static int seccomp_do_user_notifications(struct seccomp_filter *f,
-+					 const struct seccomp_data *sd)
-+{
-+	if (seccomp_do_user_notification(f, sd))
-+		goto syscall_skip;
-+
-+	/*
-+	 * This check is needed to keep an old behavior where the first
-+	 * (and only) listener decides what to do with the syscall.
-+	 * Note, that even if some of the upper-level filters have
-+	 * returned SECCOMP_RET_USER_NOTIF (but have no listener fd!),
-+	 * we must ignore them in this case.
-+	 * This is how it worked before nested listeners were introduced.
-+	 */
-+	if (f->first_listener)
-+		goto syscall_continue;
-+
-+	/*
-+	 * If userspace wants us to skip this syscall, do so.
-+	 * But if userspace wants to continue syscall, we
-+	 * must consult with the upper-level filters listeners
-+	 * and act accordingly.
-+	 */
-+	for (f = f->prev; f; f = f->prev) {
-+		u32 cur_ret;
-+
-+		/*
-+		 * We only interested in listeners, no matter if notify fd
-+		 * is closed or not.
-+		 */
-+		if (!f->notif)
-+			continue;
-+
-+		cur_ret = bpf_prog_run_pin_on_cpu(f->prog, sd);
-+		if (ACTION_ONLY(cur_ret) != SECCOMP_RET_USER_NOTIF)
-+			continue;
-+
-+		if (seccomp_do_user_notification(f, sd))
-+			goto syscall_skip;
-+
-+		if (f->first_listener)
-+			break;
-+	}
-+
-+syscall_continue:
-+	/* continue syscall */
-+	return 0;
-+
-+syscall_skip:
-+	return -1;
-+}
-+
- static int __seccomp_filter(int this_syscall, const bool recheck_after_trace)
- {
- 	u32 filter_ret, action;
-@@ -1347,7 +1410,7 @@ static int __seccomp_filter(int this_syscall, const bool recheck_after_trace)
- 		return 0;
+ /*
+- * Does @new_child have a listener while an ancestor also has a listener?
++ * Does @new_child have a listener while an ancestor also has a listener
++ * and hasn't allowed nesting?
+  * If so, we'll want to reject this filter.
+  * This only has to be tested for the current process, even in the TSYNC case,
+  * because TSYNC installs @child with the same parent on all threads.
+@@ -2015,7 +2022,12 @@ static bool check_duplicate_listener(struct seccomp_filter *new_child)
+ 		return false;
+ 	for (cur = current->seccomp.filter; cur; cur = cur->prev) {
+ 		if (!IS_ERR_OR_NULL(cur->notif))
+-			return true;
++			/*
++			 * We don't need to go up further, because if there is a
++			 * listener with nesting allowed, then all the listeners
++			 * up the tree have allowed nesting as well.
++			 */
++			return !cur->allow_nested_listeners;
+ 	}
  
- 	case SECCOMP_RET_USER_NOTIF:
--		if (seccomp_do_user_notification(match, &sd))
-+		if (seccomp_do_user_notifications(match, &sd))
- 			goto skip;
+ 	/* Mark first listener in the tree. */
+@@ -2062,10 +2074,12 @@ static long seccomp_set_mode_filter(unsigned int flags,
+ 		return -EINVAL;
  
- 		return 0;
+ 	/*
+-	 * The SECCOMP_FILTER_FLAG_WAIT_KILLABLE_SENT flag doesn't make sense
++	 * The SECCOMP_FILTER_FLAG_WAIT_KILLABLE_SENT and
++	 * SECCOMP_FILTER_FLAG_ALLOW_NESTED_LISTENERS flags don't make sense
+ 	 * without the SECCOMP_FILTER_FLAG_NEW_LISTENER flag.
+ 	 */
+-	if ((flags & SECCOMP_FILTER_FLAG_WAIT_KILLABLE_RECV) &&
++	if (((flags & SECCOMP_FILTER_FLAG_WAIT_KILLABLE_RECV) ||
++	     (flags & SECCOMP_FILTER_FLAG_ALLOW_NESTED_LISTENERS)) &&
+ 	    ((flags & SECCOMP_FILTER_FLAG_NEW_LISTENER) == 0))
+ 		return -EINVAL;
+ 
+diff --git a/tools/include/uapi/linux/seccomp.h b/tools/include/uapi/linux/seccomp.h
+index dbfc9b37fcae..de78d8e7a70b 100644
+--- a/tools/include/uapi/linux/seccomp.h
++++ b/tools/include/uapi/linux/seccomp.h
+@@ -18,13 +18,14 @@
+ #define SECCOMP_GET_NOTIF_SIZES		3
+ 
+ /* Valid flags for SECCOMP_SET_MODE_FILTER */
+-#define SECCOMP_FILTER_FLAG_TSYNC		(1UL << 0)
+-#define SECCOMP_FILTER_FLAG_LOG			(1UL << 1)
+-#define SECCOMP_FILTER_FLAG_SPEC_ALLOW		(1UL << 2)
+-#define SECCOMP_FILTER_FLAG_NEW_LISTENER	(1UL << 3)
+-#define SECCOMP_FILTER_FLAG_TSYNC_ESRCH		(1UL << 4)
++#define SECCOMP_FILTER_FLAG_TSYNC			(1UL << 0)
++#define SECCOMP_FILTER_FLAG_LOG				(1UL << 1)
++#define SECCOMP_FILTER_FLAG_SPEC_ALLOW			(1UL << 2)
++#define SECCOMP_FILTER_FLAG_NEW_LISTENER		(1UL << 3)
++#define SECCOMP_FILTER_FLAG_TSYNC_ESRCH			(1UL << 4)
+ /* Received notifications wait in killable state (only respond to fatal signals) */
+-#define SECCOMP_FILTER_FLAG_WAIT_KILLABLE_RECV	(1UL << 5)
++#define SECCOMP_FILTER_FLAG_WAIT_KILLABLE_RECV		(1UL << 5)
++#define SECCOMP_FILTER_FLAG_ALLOW_NESTED_LISTENERS	(1UL << 6)
+ 
+ /*
+  * All BPF programs must return a 32-bit value.
 -- 
 2.43.0
 
