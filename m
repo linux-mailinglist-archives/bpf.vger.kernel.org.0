@@ -1,43 +1,43 @@
-Return-Path: <bpf+bounces-76448-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76449-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BDA7CB487B
-	for <lists+bpf@lfdr.de>; Thu, 11 Dec 2025 03:14:50 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F486CB4851
+	for <lists+bpf@lfdr.de>; Thu, 11 Dec 2025 03:13:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 93D443036C8C
-	for <lists+bpf@lfdr.de>; Thu, 11 Dec 2025 02:13:20 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id E6C72301F014
+	for <lists+bpf@lfdr.de>; Thu, 11 Dec 2025 02:13:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99B412D1905;
-	Thu, 11 Dec 2025 02:13:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 067982BE625;
+	Thu, 11 Dec 2025 02:13:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="mGmASbiz"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="lInPFTOn"
 X-Original-To: bpf@vger.kernel.org
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C9112BF3CA;
-	Thu, 11 Dec 2025 02:13:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C35D62D8364;
+	Thu, 11 Dec 2025 02:13:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765419192; cv=none; b=JbjWzVTtwO/swDRo6MChFDSnLwr/tSSwDmsjqKAeixBzOOL9cPOUOcb1Fcv+2u5/r6btaHaM98kHRjPFw3G6oLKtIUsysLxvvNKwVqrEUp5IvHd89Qg8Ah8PUBJumCN4qJCF/fzcni2rnrV7523Uo9jXLn6rjxtxCGWVmZNGHic=
+	t=1765419194; cv=none; b=qXXVqKjmMo9QDkcxQErCpQOPs9+HJkMsEgnDl4MKQyzkBi9DPY/klrNoQKQwqt6I64kVUbVsoZF2OddzAs6hD7c8CaHc0Jc+Vuhc3FGTFUYOSFSR4Y3DTxHcoDpaBIsO9szNr1V6/7QQzgOWo4nKTOdAkjntgBx/Avm/2sDoTJU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765419192; c=relaxed/simple;
-	bh=Dqc8agm8gURJma6ClOZJYRfjbrKP4jFtpJg3r3rg1jc=;
+	s=arc-20240116; t=1765419194; c=relaxed/simple;
+	bh=JdRHlwoj2ekW+YizjrNg1K6XKl5v6vm6K00XxhLHug0=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HfLy9aMLrUtVT1XSx83uPbG5InxjI3TOjd2+EScrtnfXy6WiGWZnDATyo7vOcSytCA3M9waxUOXWFACw1Y95x2fL+l077yDLjNtkM7hA8bYNABp0BkOmJb+kOB9X7F4/h48C/GVykNzBMb0Uafj/KNixGTQl/P1Qov9Zkt4yWR8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=mGmASbiz; arc=none smtp.client-ip=13.77.154.182
+	 MIME-Version; b=NDGVnzucxBJbttCdf9AyRM41Df+O3xjQqptlTJoa5ATz2DU3ZzUjohOhIvXjWxzE+9Er84t75ubQ+ly4YpYi7TIb9t0FFY0NRm/yYfGJR0O8/q5+VOwIqdhFsrT6mzCYMTm4GmLUrRn5XrUxlP0lEa8m4jtuH4Fg0X74AHuLlYw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=lInPFTOn; arc=none smtp.client-ip=13.77.154.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
 Received: from narnia.corp.microsoft.com (unknown [40.78.12.133])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 9C9752116049;
-	Wed, 10 Dec 2025 18:13:08 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9C9752116049
+	by linux.microsoft.com (Postfix) with ESMTPSA id 7E9742116043;
+	Wed, 10 Dec 2025 18:13:10 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7E9742116043
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1765419189;
-	bh=sGawIizX9EcFfZvX74eliwpwV9cGLLP4TSAKVsWNDnQ=;
+	s=default; t=1765419191;
+	bh=+cUv2YDEFdHJCABGsGpyw43sJvYTINrg6wV3aMZO9tA=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=mGmASbizNb3JewyGTx+YCgfhaCkgTnrt7aqqU5tlQUMMEUT0zXd0+OzGiI/ds0meX
-	 eGnGnUdk2zN2eDfHdfiExvIzOqMKFQ/IB68StwTqTyXxNCyu20YAvTsGePrWYVZlty
-	 BQGD30ZLGc2HDSblOjqpZzN2EeYjnhFGULUfpMjc=
+	b=lInPFTOn4wx3xXJvPmVHSA+UW+dfQ8jMkTogn8fpkrSKOKbgyaEiWFeYjLofv1lIW
+	 uoR1wD28HDfE90fhOQSVcOmDkj8o55b37kTLPoaJwjy65DwQ5aBLtfdtZGCkGpRs1k
+	 61IajokQEKz1bL9VS82K3CJrOWKzIXzd87QtY+y8=
 From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
 To: Blaise Boscaccy <bboscaccy@linux.microsoft.com>,
 	Jonathan Corbet <corbet@lwn.net>,
@@ -54,9 +54,9 @@ To: Blaise Boscaccy <bboscaccy@linux.microsoft.com>,
 	linux-doc@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [RFC 02/11] oid_registry: allow arbitrary size OIDs
-Date: Wed, 10 Dec 2025 18:11:57 -0800
-Message-ID: <20251211021257.1208712-3-bboscaccy@linux.microsoft.com>
+Subject: [RFC 03/11] certs: break out pkcs7 check into its own function
+Date: Wed, 10 Dec 2025 18:11:58 -0800
+Message-ID: <20251211021257.1208712-4-bboscaccy@linux.microsoft.com>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20251211021257.1208712-1-bboscaccy@linux.microsoft.com>
 References: <20251211021257.1208712-1-bboscaccy@linux.microsoft.com>
@@ -70,70 +70,140 @@ Content-Transfer-Encoding: 8bit
 
 From: James Bottomley <James.Bottomley@HansenPartnership.com>
 
-The current OID registry parser uses 64 bit arithmetic which limits us
-to supporting 64 bit or smaller OIDs.  This isn't usually a problem
-except that it prevents us from representing the 2.25. prefix OIDs
-which are the OID representation of UUIDs and have a 128 bit number
-following the prefix.  Rather than import not often used perl
-arithmetic modules, replace the current perl 64 bit arithmetic with a
-callout to bc, which is arbitrary precision, for decimal to base 2
-conversion, then do pure string operations on the base 2 number.
+Add new validate_pkcs7_trust() function which can operate on the
+system keyrings and is simply some of the innards of
+verify_pkcs7_message_sig().
 
 Signed-off-by: James Bottomley <James.Bottomley@HansenPartnership.com>
 ---
- lib/build_OID_registry | 26 ++++++++++++++++++--------
- 1 file changed, 18 insertions(+), 8 deletions(-)
+ certs/system_keyring.c       | 76 +++++++++++++++++++++---------------
+ include/linux/verification.h |  2 +
+ 2 files changed, 47 insertions(+), 31 deletions(-)
 
-diff --git a/lib/build_OID_registry b/lib/build_OID_registry
-index 8267e8d71338b..30493ac190c0c 100755
---- a/lib/build_OID_registry
-+++ b/lib/build_OID_registry
-@@ -60,10 +60,12 @@ for (my $i = 0; $i <= $#names; $i++) {
-     # Determine the encoded length of this OID
-     my $size = $#components;
-     for (my $loop = 2; $loop <= $#components; $loop++) {
--	my $c = $components[$loop];
-+	$ENV{'BC_LINE_LENGTH'} = "0";
-+	my $c = `echo "ibase=10; obase=2; $components[$loop]" | bc`;
-+	chomp($c);
+diff --git a/certs/system_keyring.c b/certs/system_keyring.c
+index 9de610bf1f4b2..807ab4a6fc7ea 100644
+--- a/certs/system_keyring.c
++++ b/certs/system_keyring.c
+@@ -298,42 +298,19 @@ late_initcall(load_system_certificate_list);
+ #ifdef CONFIG_SYSTEM_DATA_VERIFICATION
  
- 	# We will base128 encode the number
--	my $tmp = ($c == 0) ? 0 : int(log($c)/log(2));
-+	my $tmp = length($c) - 1;
- 	$tmp = int($tmp / 7);
- 	$size += $tmp;
-     }
-@@ -100,16 +102,24 @@ for (my $i = 0; $i <= $#names; $i++) {
-     push @octets, $components[0] * 40 + $components[1];
+ /**
+- * verify_pkcs7_message_sig - Verify a PKCS#7-based signature on system data.
+- * @data: The data to be verified (NULL if expecting internal data).
+- * @len: Size of @data.
++ * validate_pkcs7_trust - add trust markers based on keyring
+  * @pkcs7: The PKCS#7 message that is the signature.
+  * @trusted_keys: Trusted keys to use (NULL for builtin trusted keys only,
+  *					(void *)1UL for all trusted keys).
+- * @usage: The use to which the key is being put.
+- * @view_content: Callback to gain access to content.
+- * @ctx: Context for callback.
+  */
+-int verify_pkcs7_message_sig(const void *data, size_t len,
+-			     struct pkcs7_message *pkcs7,
+-			     struct key *trusted_keys,
+-			     enum key_being_used_for usage,
+-			     int (*view_content)(void *ctx,
+-						 const void *data, size_t len,
+-						 size_t asn1hdrlen),
+-			     void *ctx)
++int validate_pkcs7_trust(struct pkcs7_message *pkcs7, struct key *trusted_keys)
+ {
+ 	int ret;
  
-     for (my $loop = 2; $loop <= $#components; $loop++) {
--	my $c = $components[$loop];
-+	# get the base 2 representation of the component
-+	$ENV{'BC_LINE_LENGTH'} = "0";
-+	my $c = `echo "ibase=10; obase=2; $components[$loop]" | bc`;
-+	chomp($c);
- 
--	# Base128 encode the number
--	my $tmp = ($c == 0) ? 0 : int(log($c)/log(2));
-+	my $tmp = length($c) - 1;
- 	$tmp = int($tmp / 7);
- 
--	for (; $tmp > 0; $tmp--) {
--	    push @octets, (($c >> $tmp * 7) & 0x7f) | 0x80;
-+	# zero pad upto length multiple of 7
-+	$c = substr("0000000", 0, ($tmp + 1) * 7 - length($c)).$c;
-+
-+	# Base128 encode the number
-+	for (my $j = 0; $j < $tmp; $j++) {
-+	    my $b = oct("0b".substr($c, $j * 7, 7));
-+
-+	    push @octets, $b | 0x80;
+-	/* The data should be detached - so we need to supply it. */
+-	if (data && pkcs7_supply_detached_data(pkcs7, data, len) < 0) {
+-		pr_err("PKCS#7 signature with non-detached data\n");
+-		ret = -EBADMSG;
+-		goto error;
+-	}
+-
+-	ret = pkcs7_verify(pkcs7, usage);
+-	if (ret < 0)
+-		goto error;
+-
+ 	ret = is_key_on_revocation_list(pkcs7);
+ 	if (ret != -ENOKEY) {
+ 		pr_devel("PKCS#7 key is on revocation list\n");
+-		goto error;
++		return ret;
  	}
--	push @octets, $c & 0x7f;
-+	push @octets, oct("0b".substr($c, $tmp * 7, 7));
-     }
  
-     push @encoded_oids, \@octets;
+ 	if (!trusted_keys) {
+@@ -351,18 +328,55 @@ int verify_pkcs7_message_sig(const void *data, size_t len,
+ 		trusted_keys = NULL;
+ #endif
+ 		if (!trusted_keys) {
+-			ret = -ENOKEY;
+ 			pr_devel("PKCS#7 platform keyring is not available\n");
+-			goto error;
++			return -ENOKEY;
+ 		}
+ 	}
+ 	ret = pkcs7_validate_trust(pkcs7, trusted_keys);
+-	if (ret < 0) {
+-		if (ret == -ENOKEY)
+-			pr_devel("PKCS#7 signature not signed with a trusted key\n");
++	if (ret == -ENOKEY)
++		pr_devel("PKCS#7 signature not signed with a trusted key\n");
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(validate_pkcs7_trust);
++
++/**
++ * verify_pkcs7_message_sig - Verify a PKCS#7-based signature on system data.
++ * @data: The data to be verified (NULL if expecting internal data).
++ * @len: Size of @data.
++ * @pkcs7: The PKCS#7 message that is the signature.
++ * @trusted_keys: Trusted keys to use (NULL for builtin trusted keys only,
++ *					(void *)1UL for all trusted keys).
++ * @usage: The use to which the key is being put.
++ * @view_content: Callback to gain access to content.
++ * @ctx: Context for callback.
++ */
++int verify_pkcs7_message_sig(const void *data, size_t len,
++			     struct pkcs7_message *pkcs7,
++			     struct key *trusted_keys,
++			     enum key_being_used_for usage,
++			     int (*view_content)(void *ctx,
++						 const void *data, size_t len,
++						 size_t asn1hdrlen),
++			     void *ctx)
++{
++	int ret;
++
++	/* The data should be detached - so we need to supply it. */
++	if (data && pkcs7_supply_detached_data(pkcs7, data, len) < 0) {
++		pr_err("PKCS#7 signature with non-detached data\n");
++		ret = -EBADMSG;
+ 		goto error;
+ 	}
+ 
++	ret = pkcs7_verify(pkcs7, usage);
++	if (ret < 0)
++		goto error;
++
++	ret = validate_pkcs7_trust(pkcs7, trusted_keys);
++	if (ret < 0)
++		goto error;
++
+ 	if (view_content) {
+ 		size_t asn1hdrlen;
+ 
+diff --git a/include/linux/verification.h b/include/linux/verification.h
+index dec7f2beabfd4..57f1460d36f13 100644
+--- a/include/linux/verification.h
++++ b/include/linux/verification.h
+@@ -44,6 +44,8 @@ enum key_being_used_for {
+ struct key;
+ struct pkcs7_message;
+ 
++extern int validate_pkcs7_trust(struct pkcs7_message *pkcs7,
++				struct key *trusted_keys);
+ extern int verify_pkcs7_signature(const void *data, size_t len,
+ 				  const void *raw_pkcs7, size_t pkcs7_len,
+ 				  struct key *trusted_keys,
 -- 
 2.52.0
 
