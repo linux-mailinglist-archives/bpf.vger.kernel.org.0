@@ -1,79 +1,78 @@
-Return-Path: <bpf+bounces-76516-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76517-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AF2ECB8134
-	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 08:11:02 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32434CB812F
+	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 08:10:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3FF3C3045A7D
-	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 07:10:13 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id B7404301D9D5
+	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 07:10:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D5B23090D7;
-	Fri, 12 Dec 2025 07:10:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B01FB2D663F;
+	Fri, 12 Dec 2025 07:10:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V3bJVq+D"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kdYVYhXq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84F14287263
-	for <bpf@vger.kernel.org>; Fri, 12 Dec 2025 07:10:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E13930F7F1
+	for <bpf@vger.kernel.org>; Fri, 12 Dec 2025 07:10:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765523410; cv=none; b=fC45M4zriY2+IKrzzPfd1JRoGRpeA2Gep3QDjdQ0jDKBIXgzMof6t3c/oes5H9eBQz1lb9ViM3QbVdujqb3Fwr+ZasWbKgGoKPrrK3FcsPDL4Oz4DWTEA6FDDvz1gA07WHVRU6or1dMTrJ6Rl4rkKHvS7wwnovwyXVNvlG98bAA=
+	t=1765523429; cv=none; b=GoRtyuAPzuIlEE/MoZZyKkw011AqVa4A5Kum8yx2ceRRjELxU0Ura1YWCSM82zVGy/rU1lRyoP1U7KNNHzF6RfaNnyN9lK3/GsTGHPIu1vNRhYbGZnSR2ng9BEY30psW119CZ5BHhVRHDSQeX/rhkGZgKGaSI1N7VEfYUOIuLwg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765523410; c=relaxed/simple;
-	bh=ski7sMyp+O2WAeYvfHItoMLgXRCcG6iQZx02RmEom4o=;
+	s=arc-20240116; t=1765523429; c=relaxed/simple;
+	bh=W7uppCv7V1iw0fcoFOO1Ov19o0BqWyomQuPZ+QZwW24=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=fxWZxDFC9pH0eD2IaxmoBffjpRctshAPAMeDA1Ca+h+4CpA+k+ahns+6sq3YbaIoSP1E9zCs4ARlCooD9ufpdIyAQvWPy0C/Ghk1iaS1oyJilkIqnk+loRvNoXpa4dStEQFymYd+mPcAmnxUjFQtvsSMtpxmZ7NfM0iN4ZeWoVg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V3bJVq+D; arc=none smtp.client-ip=209.85.210.175
+	 Content-Type:MIME-Version; b=ajjex9vgX1cSXU4rbe2+i+CKwpocJoLQm/Ar+UvJmUQs5+NOJ0tB9/IWIaZAm58yM2bJjCONTT+zkmRupwZ5IVdgJsXJ0g2Qi6r4zPXS/Lz81szyxXrS3YygTwSBCCx2ZsvKwH1tNGFdwkTneEZ8jUHN/xTsALLcTf15L7/oRpw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kdYVYhXq; arc=none smtp.client-ip=209.85.216.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-7aab7623f42so1136483b3a.2
-        for <bpf@vger.kernel.org>; Thu, 11 Dec 2025 23:10:09 -0800 (PST)
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-34374febdefso954093a91.0
+        for <bpf@vger.kernel.org>; Thu, 11 Dec 2025 23:10:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1765523409; x=1766128209; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1765523426; x=1766128226; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=ski7sMyp+O2WAeYvfHItoMLgXRCcG6iQZx02RmEom4o=;
-        b=V3bJVq+DEwo/GVW+NAWm4LQypQVAK0ZbbJSFzxkR+/cOMYahE0pid8b4tyGzx4zVh1
-         jSF10nahz1dUd7EVqYwMV5WRqIT0x0vOX9ztutwGdxlrplNkP/jXeGhtOLjJkt6OZUEP
-         wljBMY9dE0OFroYxk5/qU7I4urZf7gSgkPltQuasoo9cu6djCkT+GLHBOBa1WZr+q83x
-         MKiLXiqoqOQDdmZTmTstydtqccGTqZWKC6xy69Q56NCUhgytAiVbPuzspHAcrXcZfRbr
-         XiDxcw+C6Hl+ziX3FNI5r7UzOHyQV1x5iK0o5x0fbztoX3LaTuhqSIHJH8L12GdMdvH9
-         P/FA==
+        bh=W7uppCv7V1iw0fcoFOO1Ov19o0BqWyomQuPZ+QZwW24=;
+        b=kdYVYhXqwt4Vp7WzR2Q3Ynwt+4xcxM1ONflrrKsrY9nMGzVZdCkhv2dfB2w8mRsLID
+         9DuTzfN8qEdSvSjMfhTr0SBGj797Lw6iCvZL3HCY9Wi+0eYyP4m8tahPt2etrSpnY+Ff
+         gpz5kuONXKwpSsW13HeIkzbqyUNkpHZqBnBkvhtdwgSFmMX6ClB7RLMMs5eTQjpi3qBa
+         zBRFKybMsPpTRMKSZ/TCHmEnAM9Ft+EggdE04lSqtrOk2LNufzQkhpwuhYj4b/n53GZp
+         iYplcDZWs1xOcuzBlq9UtMcx25iGatvbMu1ubh+4gTDKxXFLNKj4mJ4a/AzFkheZCnxq
+         oRpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765523409; x=1766128209;
+        d=1e100.net; s=20230601; t=1765523426; x=1766128226;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ski7sMyp+O2WAeYvfHItoMLgXRCcG6iQZx02RmEom4o=;
-        b=g8bWhQd+bgShvZg2FEzv1NUyq7YJqgWgwFcyiyNKmvwmXNL+7UILC47oLScwNeqVb4
-         eXTYHPDaXYG86pSGPSurYoGM3abT+boH/zpKHX7bjrbNw3193HeIygn5/tQUTYgA1DlH
-         LO7GYqYMTyghCLQuQOpcho4aOzUMVnNXDEqJZQuWiYPrmzZWDshioKKIV6dmLOuRFt7Z
-         Z58N193SHG1G/1GIGPmGKwz/ygUoxDyu3+UJw/qO2jT4nMrYMYCC5eUygcv5y1P2G/TN
-         61X3+C0eqp+FuP7hLeTGy4HNw1H02zy5OaLoC8Z3y9FVDkINp58s7uAqSe2DYskMMba6
-         kqgw==
-X-Gm-Message-State: AOJu0YzgdKrbpL5h8oqP+axFCiahUWSN64zVqV3j22S/GCvExjxHZQ5l
-	bQJVxPCtK81aPkVdJhhHh0jRmN8YCxSBNvKEGKnbn3fDKGqA1xnEYbIP
-X-Gm-Gg: AY/fxX6vc3z7BSciZhG9+ZFMo7d7z6TUHmffnZfVg9nIADRFTmWyIQmd+dN2bePimLI
-	eQIrGT0Wu8Al3OlXKBg2qAiicBSF/Ue/4SwGceFGPu9md1EMPUKgK+sSiqcHvXaJXR9RKYItMFc
-	yp7PW3dxSE2Q07sVmAJNDJiTcgWLsm/NZwX9HJrgrU7cNv+wwHIa6a/9JSWYRk/Lqr4yPcHb1qp
-	85Cgjef1A8eFUWD4QSI8Jr8aoDm3i3Z0mogh8fWrYo3APyEMlNAY8mEEeENPWUtDFd9VD92Id9Z
-	z2TToJcXRix8QoGGGMPAO/+6Pg+e6OrLLQ9NJvSP87Fe0afc3SvxdxnMZfhc9kE/LRm3RbkU2+s
-	dFuxjlG/NkhAjcN5HTlp3HaqNtcQsYTla/7m6J7IUXxpj8OBGxl4sAxjX8kvGdyi1i1d1IM4RSh
-	wH603qisFJ69jR+kZBuIajz1wEBNcJtgPEwm/Z7YqgpwE=
-X-Google-Smtp-Source: AGHT+IEZgH8C3X2hKHFaGk8m/sj+wXbz4vPJ51iPhQv7rcnwmjwBtTIy55XTg/nxIWcxrRVf5+4t4Q==
-X-Received: by 2002:a05:6a00:a381:b0:7e8:4433:8f99 with SMTP id d2e1a72fcca58-7f6694aa45bmr1178150b3a.33.1765523408660;
-        Thu, 11 Dec 2025 23:10:08 -0800 (PST)
+        bh=W7uppCv7V1iw0fcoFOO1Ov19o0BqWyomQuPZ+QZwW24=;
+        b=ajAsSIyzDJGUjlsd1HwHKAZOPk/F5evMudFiKlCj+bHS6o5+E+sApj2yCUxSyx5saw
+         FblSwSQJD9V1w8oclouC2LMt53XzQ5ZJloWFXwyPbWx/13xEWSjKLtT57iSst5jzIM/0
+         Y+HCldqNPlMAn4mGB0PA89HkBezNnkCsXEii0tHhp2Xnuy8h6VgZ7+uEMNDHPtfMAN/7
+         Sr6OjMmiZkQgYdWzOOVBaPt1IHtlutkg1OlzoglemuUMcIMugeygzHj68PXmGxj2DdZR
+         uClvQq4e7lzwxzogebhtemE7uNwryxrVATmnntR8LNma3kz+mHzFDBcEIQz3wBNOURgJ
+         ZF5w==
+X-Gm-Message-State: AOJu0Yzb+5PKQwkrCC2Q4noc5aPhEW6msWsFvxrVFXr2P37jnsEw3CZq
+	cDoHbAoy7eaa44cjAPbnpKhEKwoJq/VtE0pdiCy4J4puQ9Q4XTMyuYou
+X-Gm-Gg: AY/fxX7FGRmA0JQxu0Krjx0ZpA9xyF45BQeQ2uMv0wrWNdNGCEGmgUfkY++ciGjqy+b
+	8Ul6XcTTnKNKCeBQD6aqcIuEpOhVg8KzRcn2g/z+JZ5f4NxfuMBa5r3mHdMeMZh2Ch6EMi0s8UM
+	i8cPkO1r6CUDRGMitnOJXYS6REzApDbIUSIIqywW7Q0wc4+oQGP3iRaMTxZ5AzIQUG/jRKT/5Af
+	uiNonbERDrrn2qA/5mrWGm5YFO7UJimj5Y/qQzbw9ElLJyAElv+Rpr8otOfpn69BFvM/ouP7tjH
+	f5+2J6F6geXiEa3lCnw9w3KsaFH7Et11hN49M++rrbKGfbi/rLtrssLBRMoNL8JaVILxsoe5Tig
+	kH1d1zfeANKPOChOv7FLn9BQv0hCyIlgcxCJFAUAlKYRt/kxrbSCBFNKU74RcSazux/WSJZVl/6
+	hf9D504oAkJQYoHyFQmvg9297VICSWgs91ZqrfAp6b6Uc=
+X-Google-Smtp-Source: AGHT+IFABMRkw8oyKCgA0tVnnLIaZDoEoQW4VZmuiRYNtTWUY/AN8gGPDAFTfjKFmICcMWMfhDD3Cw==
+X-Received: by 2002:a17:90b:3b50:b0:341:88c9:6eb2 with SMTP id 98e67ed59e1d1-34abd6b5d46mr1284217a91.1.1765523426298;
+        Thu, 11 Dec 2025 23:10:26 -0800 (PST)
 Received: from [10.200.2.32] (fs98a57d9c.tkyc007.ap.nuro.jp. [152.165.125.156])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7f4c4aa9b56sm4327224b3a.39.2025.12.11.23.10.02
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34abe2aa5c8sm976435a91.15.2025.12.11.23.10.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Dec 2025 23:10:08 -0800 (PST)
-Message-ID: <f8c5f2a6c05c5a24076aa39fba7a45d30eb5334c.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/6] resolve_btfids: Rename object btf field
- to btf_path
+        Thu, 11 Dec 2025 23:10:25 -0800 (PST)
+Message-ID: <bf7ed4cf0254fb3fa707ad49f3b2ed0be6b500c2.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v3 2/6] resolve_btfids: Factor out load_btf()
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: Ihor Solodrai <ihor.solodrai@linux.dev>, Alexei Starovoitov
  <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
@@ -91,10 +90,10 @@ To: Ihor Solodrai <ihor.solodrai@linux.dev>, Alexei Starovoitov
  <dolinux.peng@gmail.com>
 Cc: bpf@vger.kernel.org, dwarves@vger.kernel.org,
  linux-kernel@vger.kernel.org, 	linux-kbuild@vger.kernel.org
-Date: Fri, 12 Dec 2025 16:10:00 +0900
-In-Reply-To: <20251205223046.4155870-2-ihor.solodrai@linux.dev>
+Date: Fri, 12 Dec 2025 16:10:19 +0900
+In-Reply-To: <20251205223046.4155870-3-ihor.solodrai@linux.dev>
 References: <20251205223046.4155870-1-ihor.solodrai@linux.dev>
-		 <20251205223046.4155870-2-ihor.solodrai@linux.dev>
+		 <20251205223046.4155870-3-ihor.solodrai@linux.dev>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
@@ -106,8 +105,9 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
 On Fri, 2025-12-05 at 14:30 -0800, Ihor Solodrai wrote:
-> Rename the member of `struct object` holding the path to BTF data if
-> provided via --btf arg. `btf_path` is less ambiguous.
+> Increase the lifetime of parsed BTF in resolve_btfids by factoring
+> load_btf() routine out of symbols_resolve() and storing the base_btf
+> and btf pointers in the struct object.
 >=20
 > Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
 > ---
