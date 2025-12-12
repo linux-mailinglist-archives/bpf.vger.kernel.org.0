@@ -1,112 +1,82 @@
-Return-Path: <bpf+bounces-76500-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76501-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21410CB7806
-	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 02:05:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AC81CB786C
+	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 02:14:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C2A02301D668
-	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 01:05:15 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 948233028FF7
+	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 01:13:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FB8C26FA6E;
-	Fri, 12 Dec 2025 01:05:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AcUicZ9s"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE8B3274FCB;
+	Fri, 12 Dec 2025 01:13:58 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from relay.hostedemail.com (smtprelay0012.hostedemail.com [216.40.44.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D668C221FD0
-	for <bpf@vger.kernel.org>; Fri, 12 Dec 2025 01:05:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 394AA20A5C4;
+	Fri, 12 Dec 2025 01:13:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765501512; cv=none; b=nkNifxy+5gCXbSMIcKJBHX9E0Vx0LmvPtSVseWLJlQvUzgD1/DEksR7pq+BeBKAJyL5E/nX6d2d1p+sAu23985VllxNpy3D642tnQaptZD87AvqzhUad0RuH+N0Nn0UficsNxtZhnlC1dntIR6XksVaqVw9kQ5LmlpaUKo1Eb+0=
+	t=1765502038; cv=none; b=KM8rrVxCuS9jOFanRSp5blEq/8GMhfgsseBGA6aOEAohTov+K2QnOHAtsH/mV+FSfl9BVGQJA2uIU0GKe2GMOiXzl+ij9Zia1Hi9RYaXMQ7xGB669RNKWYSvvH1WyzvSiuTi8AfIdSEOBtkR7Muq1QAL48+o5/QsiXhLQ6P+V/g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765501512; c=relaxed/simple;
-	bh=YDLbFBYEwlX73pXFaA0x83W9e3+BYORFhexxI8iILrM=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=ds7VF52/lDxcSz5z3iqQ2tRoyW1ma7SbTCmtbFC/h2JwGxtg5WKXkT2kynnVcY4XE5YNX+uizinFqn+88N20jLtzVLBq2MrzOLvVCGTvIar42IOJtnaDGTM5+BmNmgMCpmm7TlMwSKZzoRHq7m6cM0YYW6/w2aQmP+eC2+Qni4M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AcUicZ9s; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C0D2C4CEF7;
-	Fri, 12 Dec 2025 01:05:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765501512;
-	bh=YDLbFBYEwlX73pXFaA0x83W9e3+BYORFhexxI8iILrM=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=AcUicZ9sITCgGG1+0jBtxMxU7Ll2e+h+a5XaMs5Q7a/MBIK502WFxcn4ip8P51Dy7
-	 I9VgXvJVW2kL0vYquhMwFtCSyEMfbn2vStelczlsm0sTJkeV1urQcdcxiDRmsVWf1/
-	 nThDPlqj6kPaio4khFNQ3WXeUs7ircc6QnwJ4fW9BDyjbFnd5l5b5bK39313JDKF1X
-	 cwsxmY/t4KUuvJ09x6uCfvRM2Vg1DxPT49DlIXldEUWfAGr+PdY0ct/namMIyuPhiX
-	 OnIN2ORbdBHGxjhb94+lvidgNIr7IXK31b56lwwOaugPQwTtmn4uqYPDU7h1mKxAUO
-	 XFmNILfY1QiEg==
-Content-Type: multipart/mixed; boundary="===============8033971715467952224=="
+	s=arc-20240116; t=1765502038; c=relaxed/simple;
+	bh=wjMxNYK3+DfJ6xAeWz0SVNgXUX13l/Ho/l5kO35JvWc=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=p8BPPkLSKU66J1g6C24b6otPXTGKfDmJpRi+Ze5BB5+ULfWqUYEhpj3dQX3ZdiH+z95qdLLp0WbwxvXjo2PxqXxlf4NPIMZwLvQtkawu2xZ2B9DgFDneAvtcPdFrZSl9u0/nBc4fhruToXziwxpvJlA4m9hEktGJroXALTILAek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf11.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay10.hostedemail.com (Postfix) with ESMTP id 96CFFC024A;
+	Fri, 12 Dec 2025 01:13:48 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf11.hostedemail.com (Postfix) with ESMTPA id 0A5CD2002C;
+	Fri, 12 Dec 2025 01:13:44 +0000 (UTC)
+Date: Thu, 11 Dec 2025 20:13:40 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Joel Fernandes <joelagnelf@nvidia.com>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Sebastian Andrzej Siewior
+ <bigeasy@linutronix.de>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: [PATCH v3] tracing: Guard __DECLARE_TRACE() use of
+ __DO_TRACE_CALL() with SRCU-fast
+Message-ID: <20251211201340.618195b2@fedora>
+In-Reply-To: <febd477b-c111-4d5e-be89-cae3685853f5@paulmck-laptop>
+References: <e2fe3162-4b7b-44d6-91ff-f439b3dce706@paulmck-laptop>
+	<B5D08899-9C23-4FA3-B988-3BB3E8E6D908@nvidia.com>
+	<febd477b-c111-4d5e-be89-cae3685853f5@paulmck-laptop>
+X-Mailer: Claws Mail 4.3.1 (GTK 3.24.51; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <5a493961a3e344496c8a1333525c15d995a3f0742ac8a2cc21ddf58cc0f5d647@mail.kernel.org>
-In-Reply-To: <20251212004350.6520-2-puranjay@kernel.org>
-References: <20251212004350.6520-2-puranjay@kernel.org>
-Subject: Re: [PATCH bpf-next v4 1/4] bpf: arena: populate vm_area without allocating memory
-From: bot+bpf-ci@kernel.org
-To: puranjay@kernel.org,bpf@vger.kernel.org
-Cc: puranjay@kernel.org,puranjay12@gmail.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,memxor@gmail.com,kernel-team@meta.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Fri, 12 Dec 2025 01:05:11 +0000 (UTC)
-
---===============8033971715467952224==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 0A5CD2002C
+X-Stat-Signature: eid3cyp49wyrcyr4y3cfjzew16tjfdwu
+X-Rspamd-Server: rspamout08
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX19jjFVCDig2uscPTXP3BtbFVlSic7mS3Vk=
+X-HE-Tag: 1765502024-551383
+X-HE-Meta: U2FsdGVkX19/Er++Ul3pM2LrRGJOLDWVQPdekHbC1Vd8duTAWqdshjo/SMRnpk2Ig5nY5SoAlKHWfulcb0rkiYPnBHuCMCQ6mvZ8QqdAKhopKr94to394Fsar/k5jnWbGr7dWW/Y82eClRzAqXUE8Lp30LK7mAc98QfoArUEOHqq3p/rUcfBtIm9FKF2lb72a/QrpuBZ0FSHYo710nIBsHEuBW9/0t/7BWP+7x/CTW71HiWbyT9jVUD0o9iCO+XWGG8kNE9euqMe7uSRSZ8d3f4K7P+wYFInyvX5zfkITzoqbLLpnHCoPT0YppYTNjf2Tgf2d/3/tw6qflmZnAby/1e8XZjScmUqsVCGn90poIxwNYCYbEN5Qw==
 
-> diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
-> index 1074ac4459f2..214a4da54162 100644
-> --- a/kernel/bpf/arena.c
-> +++ b/kernel/bpf/arena.c
+On Thu, 11 Dec 2025 12:23:29 -0800
+"Paul E. McKenney" <paulmck@kernel.org> wrote:
 
-[ ... ]
+> > Is there a reason to not make non-RT also benefit from SRCU fast and trace points for BPF? Can be a follow up patch though if needed.  
+> 
+> Because in some cases the non-RT benefit is suspected to be negative
+> due to increasing the probability of preemption in awkward places.
+> 
+> > Reviewed-by: Joel Fernandes <joelagnelf@nvidia.com>  
+> 
+> Thank you, and I will let Steven collect this one.
+> 
 
-> @@ -465,6 +529,7 @@ static long arena_alloc_pages(struct bpf_arena *arena, long uaddr, long page_cnt
->  	if (ret)
->  		goto out_free_pages;
->
-> +	struct apply_range_data data = { .pages = pages, .i = 0 };
->  	ret = bpf_map_alloc_pages(&arena->map, node_id, page_cnt, pages);
->  	if (ret)
->  		goto out;
-> @@ -477,8 +542,8 @@ static long arena_alloc_pages(struct bpf_arena *arena, long uaddr, long page_cnt
->  	 * kern_vm_start + uaddr32 + page_cnt * PAGE_SIZE - 1 can overflow
->  	 * lower 32-bit and it's ok.
->  	 */
-> -	ret = vm_area_map_pages(arena->kern_vm, kern_vm_start + uaddr32,
-> -				kern_vm_start + uaddr32 + page_cnt * PAGE_SIZE, pages);
-> +	ret = apply_to_page_range(&init_mm, kern_vm_start + uaddr32,
-> +				  page_cnt << PAGE_SHIFT, apply_range_set_cb, &data);
->  	if (ret) {
->  		for (i = 0; i < page_cnt; i++)
->  			__free_page(pages[i]);
-                        ^^^^
+Sure. Note, I'll be working on this next week.
 
-Can this create PTEs pointing to freed memory? If apply_to_page_range()
-fails after partially setting PTEs, the callback will have been invoked
-multiple times, and data.i will reflect how many PTEs were successfully
-set. The error path frees all pages in the array, including those that
-were already mapped into PTEs.
-
-Later access to those addresses via arena_vm_fault()->vmalloc_to_page()
-or arena_free_pages()->vmalloc_to_page() would return pointers to the
-freed pages, leading to use-after-free.
-
-The next commit (3b7e9448213a) fixes this by tracking data.i and only
-freeing pages that weren't successfully mapped.
-
-
----
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
-
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/20152458491
-
---===============8033971715467952224==--
+-- Steve
 
