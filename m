@@ -1,296 +1,255 @@
-Return-Path: <bpf+bounces-76514-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76520-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 265E8CB80DD
-	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 07:49:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F21B5CB8588
+	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 09:59:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 188A730505B1
-	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 06:49:05 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B5DA23028F7A
+	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 08:58:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BE0A2882B7;
-	Fri, 12 Dec 2025 06:49:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B05C30B511;
+	Fri, 12 Dec 2025 08:58:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hj0CtG2n";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="BmrgoqSX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W87UPNQP"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 053C6223708
-	for <bpf@vger.kernel.org>; Fri, 12 Dec 2025 06:49:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 133BE2741A0
+	for <bpf@vger.kernel.org>; Fri, 12 Dec 2025 08:58:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765522143; cv=none; b=tBlkbMMM3nRkz09gIMtMC79R6OeAeoTc9aqIbz/cwFPpITW3eWx0K40UJrXTmaJpcG9XLpRyIxvJI2wIFGDZ630dlOPSF4bqk+ghMkNnI9oF9iF+6KRMwtloOBajkJv8164HfKuI7fj0WcGlV6UcDPQXNJ3B99GucedlpsI1EFk=
+	t=1765529884; cv=none; b=fhogo0s1XuZj40tbDfQjuEp+78A5etFb/Rx5lWJqDWSrngJp4WlgkPY8wIX0az6UNVfcplMtl/bYEz9fLSBGSkh3c35YHakRjMX0j26vl/7bXMhqEW/GgeEtA9W3lxNA5YpM0R+mVozs8vKS5DEOGOPRscooqzM5dCPJsbqxfd4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765522143; c=relaxed/simple;
-	bh=yMMJzrx/CLeDl8CnB68WU8xwAqbKwNNDoi3GRfb5jRY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PF1ddHt+Hfw9Z6E5mExAcme20bqoaGnLmFVQjT2alVrvk7xmHTbcYlGrbgrDvB9eXh6q2cvu6RleHw5MyQF+oHeNG9LdtbL2m3F8R8Szu4XTLv/iIijE+A2OOX+oPfxMe6RJMOxCZCvso8SmzPJ5pp6O4ySY12tPeVjAhGcezDM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hj0CtG2n; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=BmrgoqSX; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1765522141;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0sUk3BDjilnvGHq4HGNbSRfLzgBvHyDLLs4qoxsjBjI=;
-	b=hj0CtG2nNV3HTNM5CjbsUE26NyqTyYs9iG7Nn4JvbFoLm3hm1hyCraYOYcM8sv6uBLc/WM
-	tY4sUt/KRYzqTuKtowUGC6OY3sPhJhaAdc6UBFPv2p7qWoXtTOwr3CeOyRROQrkR+AjWyD
-	RaoTyaXB2v3ZYWimusS9JiKYqXykiLs=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-37-U93y_KRYN92g7aD2DZd6mg-1; Fri, 12 Dec 2025 01:48:57 -0500
-X-MC-Unique: U93y_KRYN92g7aD2DZd6mg-1
-X-Mimecast-MFC-AGG-ID: U93y_KRYN92g7aD2DZd6mg_1765522136
-Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-343e262230eso1114747a91.2
-        for <bpf@vger.kernel.org>; Thu, 11 Dec 2025 22:48:57 -0800 (PST)
+	s=arc-20240116; t=1765529884; c=relaxed/simple;
+	bh=PcDog/To0UjbKuyFLuDAwEJCCxk0v1Bgpl+ObyVOA/w=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=ggdV/Yr195u+u6mAu5zvCkBG/ctZBE/77xnWFy0GNAfvCYQlTSidywRfWIgTqoG97XNWEcDfcc8+LR7X4plIrJ/jjk7akFCJxS5W7gY+JLDG8m3xOMxKKk4zPEYlvyO/ciZgdRfOh1esESreWhnoyL+QMW+OfeGDrFIerkQyAPw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W87UPNQP; arc=none smtp.client-ip=209.85.219.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-888310b91c5so9267476d6.1
+        for <bpf@vger.kernel.org>; Fri, 12 Dec 2025 00:58:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1765522136; x=1766126936; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0sUk3BDjilnvGHq4HGNbSRfLzgBvHyDLLs4qoxsjBjI=;
-        b=BmrgoqSXJry9TYCDKH5HLhM6ZT8RC5Ui6HKe04OMo/3cfGr+4m/GbvS+qSV3iRa5Fn
-         JktQPZnUuiQOYn/4OdXI1DJh2KAZecu47JFp3AznPluHafVXEQ3C5fJNmqpcAISBykVf
-         IYN3jOoRdejhkfCual7RGQD2VqDgMu4WZ2NHyz9dyuf09SvQgLf2anONtJTrRrbG82U9
-         UHZplv3xjb06xAlIpLT60RTXu6wMc6WYdKFLjz63rquQTAeWFbshZh4+ps2/AcAL00XO
-         5Q6+6uUQEzg8ByUFupCJbXU30Q68XBbgmJ82werU1xRy3yebnueXNoTpuEW69+swPlEE
-         1Plw==
+        d=gmail.com; s=20230601; t=1765529882; x=1766134682; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=HA/4sr3TqfG74qmcWJYKn1Au1cNj4XE5l8roaw6U9kQ=;
+        b=W87UPNQPqCTBDdLCQj+TZQyV6qMZobyMn+sy0hFJ/vYdPYGa7V8/eHE1Bq4EdpKFQl
+         13uOopJYmsyRip51YfFVR/Mt1hk7rcZRF/3WqZfwbGexL9G6itkoPrfF/UzbpjDlQLZG
+         bCPSLzmQ89WJiBUZNaDLCemaqQqLCEnkspkJI1UiepjkNvydmzr0VPJZrcN1O/7veIIE
+         oGWZ94RGts1kgDxTAoxg500lhqlCmsWsyXiOUm/ePK83WzSrABNcUMxMxC6Fd4yD0Zw6
+         RSy2tZb0Pga8e5kdukTZAk/UoWlmflTf6mrXBHr9hhYIxXDPPBse3IFFul6yAfMCmA/6
+         u4NQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765522136; x=1766126936;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=0sUk3BDjilnvGHq4HGNbSRfLzgBvHyDLLs4qoxsjBjI=;
-        b=R2AFIbTM/aFtVQzYz3k4yjSKMZIT12gWQz0ZBXWXHD4Gl9NJXq/Aa0GnKf5dKCILnH
-         lcmRjkjRVtwtZa0JMTxqx4TYNtlnvw3p2yFxadihPTJlT1P9jJZy5yi7L59boXNz9h4c
-         u0l0Rhgfo17lHVWhDkaPMnDTbvLVUKemMvDBkyzuif+FA3ftwR1Grfe43kkVTwoeuUfz
-         cbKFkuZmosfMibeAqOhltRXbZvmPdG4ip9l5p4LNvuP9xZLYti/8/ioh1i/IvDt2Sarl
-         hllNxwNUG9AgcmaQBz+8tpBCcn4/PYdyZ5hX7id1LMDMvWsPp6rkpM9aLvtwuAISgd+g
-         YAUA==
-X-Forwarded-Encrypted: i=1; AJvYcCW4XqrvLMLoNaw2QaShqHimap8S3c/TPQMT6fQBlOvtby9CO7doQQnF0KhjGrd8qJB7F1g=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwZ13oDTFlrYloYn135S0e5ty1je0oNZqOClHJDp9WiX+wS3L9d
-	Zz6U1EaZ/1c2Gst+Jm4eztPcRCtg2SmrTJLK/5NtLq9fw2Mf+ApUZfwH4yW06+dR0juf3JiMfjl
-	bs33QlLv+sEz2t87XGMGhdHCdO5WBBUG8DRjJg6UkJSYPLHboWEu8ut4yd/N5JvpH2zYyLBcDb4
-	nXMReEepz+FKZc2Oi2P8qxl+K2ziVV
-X-Gm-Gg: AY/fxX5i2M7pFKUgz4EwB/vhEy9ehq7kvXRCG1iHovFLYZItXLU5U9hAMwC6728p2ol
-	jMYc7gU5k+ULuj6vRJxDvpAWW8KISZOHEFCWA/GN6+lOX6yOz3x4E5dw9ZtO6xEKqM814Bun4DU
-	XwUe7fLe5zdZcPVSyVD5YEU/lznK4TpPX0eGlLFImNjNAdTxhieti4e3WrgvfNkFZc7cWu
-X-Received: by 2002:a17:90b:2fc7:b0:34a:b8fc:f1d1 with SMTP id 98e67ed59e1d1-34abd7615d9mr1147397a91.24.1765522136358;
-        Thu, 11 Dec 2025 22:48:56 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHjwBUsLPmppv2lCFh0MESIdRRbAVpkrizJWE6D5VbwH4ifoB+I83RqpCwIDr/JtzIx2D1rRAnnvzCL2YESxBk=
-X-Received: by 2002:a17:90b:2fc7:b0:34a:b8fc:f1d1 with SMTP id
- 98e67ed59e1d1-34abd7615d9mr1147382a91.24.1765522135861; Thu, 11 Dec 2025
- 22:48:55 -0800 (PST)
+        d=1e100.net; s=20230601; t=1765529882; x=1766134682;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HA/4sr3TqfG74qmcWJYKn1Au1cNj4XE5l8roaw6U9kQ=;
+        b=udTrLFmoZ5krVT/mEjS2L/eg0vVhKuNWEoZEdoiM+s1f0IW5OPa+vB+GrSLJy1Deaq
+         lRYyEBVfyyaLvv504TU2WgYfa73sQlAL9ckzeRUU34qpAmOq7k5PQVEl3qchpl7gzsjq
+         5sU3tQrdb5AUJZpw9bzETH6uZI7OfsBGQDuXr4EBQBm/1uQNqwRv8cJGZE7MKVjZidpU
+         jUJm5dQVvSzNx82UVU9DG/vzmG3P1k7CPbuGuBueh6lvdc+CynpbMcIyIg41u4D1AyOc
+         6V6P1yuhmfmLdg9PGRdYIDzMGra2ou+HRAGL699yv5QnhgejZIim5HOahIc3FgjL8Nlh
+         9G1Q==
+X-Gm-Message-State: AOJu0YwXj0ruMT0YwK7PBvP0wn+HEHvYIK5okncUFsjeehUrrHVm24rP
+	1u0aMpRuKxQOxPsbHYRF9hKylAl8pQoSXK5XfzcYZrtzPKoO3YwM8AZgV5K5mSPF
+X-Gm-Gg: AY/fxX6xIbChSUiWeaV9X/iSmTUFasdjiBqkkQ2s1FTuSei7vdKhcuMh3c7qKhmN7LA
+	66kJhxnLi6VtTKCSw6IlHquxONV8do9UJwPYdSU+DtUmERoTGSycJy9OWX2Ok1vzXQFq9ZHR243
+	snXZduCm8Wv4G9JkeSqRw3atN/JDNyMd/O89+CoSl8phUhh9nXb7ZlNWaPhI2xlzZa6z17d+1bl
+	BTnsYGrDBPolqwTSW3ukAO9CzTiPdV60eXgHFpsWK2XCYcpbdFzjRic5ch3EO0A95PbXkiquhH4
+	8DxI60jHXw+Kh2SX0FewrIUeCvhzj0PL7N40NMBjUyRH9BOn1D7xBGLd4+iGVpe6lqmsUwzatUG
+	9HjU7S6DDc4j95K+RZfVBXoJ7qclCzBpwyUc6lkPWu3GT0K0h530UrNTKZ8rafsGmc62c4j1JFC
+	hxUAm8kvQp0EJHlEQr+UDiacRDcA5qrPk/TgdxLUq42r4=
+X-Google-Smtp-Source: AGHT+IFWTMFJQMKXlJUDxuMrVm62gSFXENwTcyB18RGeM1BcBDoReByl3fxu8tZ+slqa0tRQxxkuxQ==
+X-Received: by 2002:a17:902:d3ca:b0:298:68e:4042 with SMTP id d9443c01a7336-29eeec1d557mr31575955ad.26.1765523343711;
+        Thu, 11 Dec 2025 23:09:03 -0800 (PST)
+Received: from [10.200.2.32] (fs98a57d9c.tkyc007.ap.nuro.jp. [152.165.125.156])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29ee9d38b98sm44760935ad.34.2025.12.11.23.08.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Dec 2025 23:09:03 -0800 (PST)
+Message-ID: <b11c1ae3816842f7b1768072982680c0bc80d8f4.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v3 6/6] resolve_btfids: change in-place update
+ with raw binary output
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Ihor Solodrai <ihor.solodrai@linux.dev>, Alexei Starovoitov
+ <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
+ <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,  Song Liu
+ <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend	
+ <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev	 <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>,  Andrew Morton <akpm@linux-foundation.org>, Nathan
+ Chancellor <nathan@kernel.org>, Nicolas Schier	 <nsc@kernel.org>, Tejun Heo
+ <tj@kernel.org>, David Vernet <void@manifault.com>,  Andrea Righi
+ <arighi@nvidia.com>, Changwoo Min <changwoo@igalia.com>, Shuah Khan
+ <shuah@kernel.org>, Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
+ Bill Wendling <morbo@google.com>, Justin Stitt	 <justinstitt@google.com>,
+ Alan Maguire <alan.maguire@oracle.com>, Donglin Peng	
+ <dolinux.peng@gmail.com>
+Cc: bpf@vger.kernel.org, dwarves@vger.kernel.org,
+ linux-kernel@vger.kernel.org, 	linux-kbuild@vger.kernel.org
+Date: Fri, 12 Dec 2025 16:08:54 +0900
+In-Reply-To: <20251205223554.4159772-1-ihor.solodrai@linux.dev>
+References: <20251205223046.4155870-6-ihor.solodrai@linux.dev>
+	 <20251205223554.4159772-1-ihor.solodrai@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251208153419.18196-1-minhquangbui99@gmail.com>
- <CACGkMEvtKVeoTMrGG0gZOrNKY=m-DGChVcM0TYcqx6-Ap+FY8w@mail.gmail.com>
- <66d9f44c-295e-4b62-86ae-a0aff5f062bb@gmail.com> <CACGkMEuF0rNYcSSUCdAgsW2Xfen9NGZHNxXpkO2Mt0a4zQJDqQ@mail.gmail.com>
- <c83c386e-96a6-4f9f-8047-23ce866ed320@gmail.com> <CACGkMEv7XpKsfN3soR9GijY-DLqwuOdYp+48ye5jweNpho8vow@mail.gmail.com>
- <6281cd92-10aa-4182-a456-81538cff822a@gmail.com>
-In-Reply-To: <6281cd92-10aa-4182-a456-81538cff822a@gmail.com>
-From: Jason Wang <jasowang@redhat.com>
-Date: Fri, 12 Dec 2025 14:48:44 +0800
-X-Gm-Features: AQt7F2pyGCXCSW9_t28SDJCHinthQ4jR902GaH6zJFj_MCKjJBJ5Wq9Ts5kAumo
-Message-ID: <CACGkMEvt2Fc274kysuPx4865RzBgu=TMNr1TwMQjRNeDp7D8VA@mail.gmail.com>
-Subject: Re: [PATCH net] virtio-net: enable all napis before scheduling refill work
-To: Bui Quang Minh <minhquangbui99@gmail.com>
-Cc: netdev@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>, 
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	Stanislav Fomichev <sdf@fomichev.me>, virtualization@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 11, 2025 at 11:04=E2=80=AFPM Bui Quang Minh
-<minhquangbui99@gmail.com> wrote:
->
-> On 12/11/25 14:27, Jason Wang wrote:
-> > On Wed, Dec 10, 2025 at 11:33=E2=80=AFPM Bui Quang Minh
-> > <minhquangbui99@gmail.com> wrote:
-> >> On 12/10/25 12:45, Jason Wang wrote:
-> >>> On Tue, Dec 9, 2025 at 11:23=E2=80=AFPM Bui Quang Minh <minhquangbui9=
-9@gmail.com> wrote:
-> >>>> On 12/9/25 11:30, Jason Wang wrote:
-> >>>>> On Mon, Dec 8, 2025 at 11:35=E2=80=AFPM Bui Quang Minh <minhquangbu=
-i99@gmail.com> wrote:
-> >>>>>> Calling napi_disable() on an already disabled napi can cause the
-> >>>>>> deadlock. In commit 4bc12818b363 ("virtio-net: disable delayed ref=
-ill
-> >>>>>> when pausing rx"), to avoid the deadlock, when pausing the RX in
-> >>>>>> virtnet_rx_pause[_all](), we disable and cancel the delayed refill=
- work.
-> >>>>>> However, in the virtnet_rx_resume_all(), we enable the delayed ref=
-ill
-> >>>>>> work too early before enabling all the receive queue napis.
-> >>>>>>
-> >>>>>> The deadlock can be reproduced by running
-> >>>>>> selftests/drivers/net/hw/xsk_reconfig.py with multiqueue virtio-ne=
-t
-> >>>>>> device and inserting a cond_resched() inside the for loop in
-> >>>>>> virtnet_rx_resume_all() to increase the success rate. Because the =
-worker
-> >>>>>> processing the delayed refilled work runs on the same CPU as
-> >>>>>> virtnet_rx_resume_all(), a reschedule is needed to cause the deadl=
-ock.
-> >>>>>> In real scenario, the contention on netdev_lock can cause the
-> >>>>>> reschedule.
-> >>>>>>
-> >>>>>> This fixes the deadlock by ensuring all receive queue's napis are
-> >>>>>> enabled before we enable the delayed refill work in
-> >>>>>> virtnet_rx_resume_all() and virtnet_open().
-> >>>>>>
-> >>>>>> Fixes: 4bc12818b363 ("virtio-net: disable delayed refill when paus=
-ing rx")
-> >>>>>> Reported-by: Paolo Abeni <pabeni@redhat.com>
-> >>>>>> Closes: https://netdev-ctrl.bots.linux.dev/logs/vmksft/drv-hw-dbg/=
-results/400961/3-xdp-py/stderr
-> >>>>>> Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
-> >>>>>> ---
-> >>>>>>     drivers/net/virtio_net.c | 59 +++++++++++++++++++-------------=
---------
-> >>>>>>     1 file changed, 28 insertions(+), 31 deletions(-)
-> >>>>>>
-> >>>>>> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> >>>>>> index 8e04adb57f52..f2b1ea65767d 100644
-> >>>>>> --- a/drivers/net/virtio_net.c
-> >>>>>> +++ b/drivers/net/virtio_net.c
-> >>>>>> @@ -2858,6 +2858,20 @@ static bool try_fill_recv(struct virtnet_in=
-fo *vi, struct receive_queue *rq,
-> >>>>>>            return err !=3D -ENOMEM;
-> >>>>>>     }
-> >>>>>>
-> >>>>>> +static void virtnet_rx_refill_all(struct virtnet_info *vi)
-> >>>>>> +{
-> >>>>>> +       bool schedule_refill =3D false;
-> >>>>>> +       int i;
-> >>>>>> +
-> >>>>>> +       enable_delayed_refill(vi);
-> >>>>> This seems to be still racy?
-> >>>>>
-> >>>>> For example, in virtnet_open() we had:
-> >>>>>
-> >>>>> static int virtnet_open(struct net_device *dev)
-> >>>>> {
-> >>>>>            struct virtnet_info *vi =3D netdev_priv(dev);
-> >>>>>            int i, err;
-> >>>>>
-> >>>>>            for (i =3D 0; i < vi->max_queue_pairs; i++) {
-> >>>>>                    err =3D virtnet_enable_queue_pair(vi, i);
-> >>>>>                    if (err < 0)
-> >>>>>                            goto err_enable_qp;
-> >>>>>            }
-> >>>>>
-> >>>>>            virtnet_rx_refill_all(vi);
-> >>>>>
-> >>>>> So NAPI and refill work is enabled in this case, so the refill work
-> >>>>> could be scheduled and run at the same time?
-> >>>> Yes, that's what we expect. We must ensure that refill work is sched=
-uled
-> >>>> only when all NAPIs are enabled. The deadlock happens when refill wo=
-rk
-> >>>> is scheduled but there are still disabled RX NAPIs.
-> >>> Just to make sure we are on the same page, I meant, after refill work
-> >>> is enabled, rq0 is NAPI is enabled, in this case the refill work coul=
-d
-> >>> be triggered by the rq0's NAPI so we may end up in the refill work
-> >>> that it tries to disable rq1's NAPI while holding the netdev lock.
-> >> I don't quite get your point. The current deadlock scenario is this
-> >>
-> >> virtnet_rx_resume_all
-> >> napi_enable(rq0) (the rq1 napi is still disabled)
-> >> enable_refill_work
-> >>
-> >> refill_work
-> >> napi_disable(rq0) -> still okay
-> >> napi_enable(rq0) -> still okay
-> >> napi_disable(rq1)
-> >> -> hold netdev_lock
-> >>       -> stuck inside the while loop in napi_disable_locked
-> >>               while (val & (NAPIF_STATE_SCHED | NAPIF_STATE_NPSVC)) {
-> >>                   usleep_range(20, 200);
-> >>                   val =3D READ_ONCE(n->state);
-> >>               }
-> >>
-> >>
-> >> napi_enable(rq1)
-> >> -> stuck while trying to acquire the netdev_lock
-> >>
-> >> The problem is that we must not call napi_disable() on an already
-> >> disabled NAPI (rq1's NAPI in the example).
-> >>
-> >> In the new virtnet_open
-> >>
-> >> static int virtnet_open(struct net_device *dev)
-> >> {
-> >>            struct virtnet_info *vi =3D netdev_priv(dev);
-> >>            int i, err;
-> >>
-> >>            // Note that at this point, refill work is still disabled, =
-vi->refill_enabled =3D=3D false,
-> >>            // so even if virtnet_receive is called, the refill_work wi=
-ll not be scheduled.
-> >>            for (i =3D 0; i < vi->max_queue_pairs; i++) {
-> >>                    err =3D virtnet_enable_queue_pair(vi, i);
-> >>                    if (err < 0)
-> >>                            goto err_enable_qp;
-> >>            }
-> >>
-> >>            // Here all RX NAPIs are enabled so it's safe to enable ref=
-ill work again
-> >>            virtnet_rx_refill_all(vi);
-> >>
-> > I meant this part:
-> >
-> > +static void virtnet_rx_refill_all(struct virtnet_info *vi)
-> > +{
-> > +       bool schedule_refill =3D false;
-> > +       int i;
-> > +
-> > +       enable_delayed_refill(vi);
-> >
-> > refill_work could run here.
->
-> I don't see how this can trigger the current deadlock race. However, I
-> see that this code is racy, the try_fill_recv function is not safe to
-> concurrently executed on the same receive queue. So there is a
-> requirement that we need to call try_fill_recv before enabling napi. Is
-> it what you mean?
+On Fri, 2025-12-05 at 14:35 -0800, Ihor Solodrai wrote:
+> Currently resolve_btfids updates .BTF_ids section of an ELF file
+> in-place, based on the contents of provided BTF, usually within the
+> same input file, and optionally a BTF base.
+>=20
+> Change resolve_btfids behavior to enable BTF transformations as part
+> of its main operation. To achieve this, in-place ELF write in
+> resolve_btfids is replaced with generation of the following binaries:
+>   * ${1}.BTF with .BTF section data
+>   * ${1}.BTF_ids with .BTF_ids section data if it existed in ${1}
+>   * ${1}.BTF.base with .BTF.base section data for out-of-tree modules
+>=20
+> The execution of resolve_btfids and consumption of its output is
+> orchestrated by scripts/gen-btf.sh introduced in this patch.
+>=20
+> The motivation for emitting binary data is that it allows simplifying
+> resolve_btfids implementation by delegating ELF update to the $OBJCOPY
+> tool [1], which is already widely used across the codebase.
+>=20
+> There are two distinct paths for BTF generation and resolve_btfids
+> application in the kernel build: for vmlinux and for kernel modules.
+>=20
+> For the vmlinux binary a .BTF section is added in a roundabout way to
+> ensure correct linking. The patch doesn't change this approach, only
+> the implementation is a little different.
+>=20
+> Before this patch it worked as follows:
+>=20
+>   * pahole consumed .tmp_vmlinux1 [2] and added .BTF section with
+>     llvm-objcopy [3] to it
+>   * then everything except the .BTF section was stripped from .tmp_vmlinu=
+x1
+>     into a .tmp_vmlinux1.bpf.o object [2], later linked into vmlinux
+>   * resolve_btfids was executed later on vmlinux.unstripped [4],
+>     updating it in-place
+>=20
+> After this patch gen-btf.sh implements the following:
+>=20
+>   * pahole consumes .tmp_vmlinux1 and produces a *detached* file with
+>     raw BTF data
+>   * resolve_btfids consumes .tmp_vmlinux1 and detached BTF to produce
+>     (potentially modified) .BTF, and .BTF_ids sections data
+>   * a .tmp_vmlinux1.bpf.o object is then produced with objcopy copying
+>     BTF output of resolve_btfids
+>   * .BTF_ids data gets embedded into vmlinux.unstripped in
+>     link-vmlinux.sh by objcopy --update-section
+>=20
+> For kernel modules, creating a special .bpf.o file is not necessary,
+> and so embedding of sections data produced by resolve_btfids is
+> straightforward with objcopy.
+>=20
+> With this patch an ELF file becomes effectively read-only within
+> resolve_btfids, which allows deleting elf_update() call and satellite
+> code (like compressed_section_fix [5]).
+>=20
+> Endianness handling of .BTF_ids data is also changed. Previously the
+> "flags" part of the section was bswapped in sets_patch() [6], and then
+> Elf_Type was modified before elf_update() to signal to libelf that
+> bswap may be necessary. With this patch we explicitly bswap entire
+> data buffer on load and on dump.
+>=20
+> [1] https://lore.kernel.org/bpf/131b4190-9c49-4f79-a99d-c00fac97fa44@linu=
+x.dev/
+> [2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tr=
+ee/scripts/link-vmlinux.sh?h=3Dv6.18#n110
+> [3] https://git.kernel.org/pub/scm/devel/pahole/pahole.git/tree/btf_encod=
+er.c?h=3Dv1.31#n1803
+> [4] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tr=
+ee/scripts/link-vmlinux.sh?h=3Dv6.18#n284
+> [5] https://lore.kernel.org/bpf/20200819092342.259004-1-jolsa@kernel.org/
+> [6] https://lore.kernel.org/bpf/cover.1707223196.git.vmalik@redhat.com/
+>=20
+> Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
+> ---
 
-Exactly, I meant it's racy.
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
->
-> >
-> > +       for (i =3D 0; i < vi->curr_queue_pairs; i++)
-> > +               if (!try_fill_recv(vi, &vi->rq[i], GFP_KERNEL))
-> > +                       schedule_refill =3D true;
-> > +
-> >
-> > I think it can be fixed by moving enable_delayed_refill() here.
-> >
-> > +       if (schedule_refill)
-> > +               schedule_delayed_work(&vi->refill, 0);
-> > +}
->
-> Thanks,
-> Quang Minh.
->
+> @@ -552,6 +528,13 @@ static int symbols_collect(struct object *obj)
+>  	return 0;
+>  }
+> =20
+> +static inline bool is_envvar_set(const char *var_name)
+> +{
+> +	const char *value =3D getenv(var_name);
+> +
+> +	return value && value[0] !=3D '\0';
+> +}
+> +
 
-Thanks
+This is a leftover, not used anywhere.
 
->
+[...]
 
+> @@ -860,23 +913,34 @@ int main(int argc, const char **argv)
+>  	 */
+>  	if (obj.efile.idlist_shndx =3D=3D -1 ||
+>  	    obj.efile.symbols_shndx =3D=3D -1) {
+> -		pr_debug("Cannot find .BTF_ids or symbols sections, nothing to do\n");
+> -		err =3D 0;
+> -		goto out;
+> +		pr_debug("Cannot find .BTF_ids or symbols sections, skip symbols resol=
+ution\n");
+> +		goto dump_btf;
+>  	}
+> =20
+>  	if (symbols_collect(&obj))
+>  		goto out;
+> =20
+> -	if (load_btf(&obj))
+> -		goto out;
+> -
+>  	if (symbols_resolve(&obj))
+>  		goto out;
+> =20
+>  	if (symbols_patch(&obj))
+>  		goto out;
+> =20
+> +	err =3D make_out_path(out_path, obj.path, BTF_IDS_SECTION);
+> +	if (err || dump_raw_btf_ids(&obj, out_path))
+> +		goto out;
+> +
+> +dump_btf:
+> +	err =3D make_out_path(out_path, obj.path, BTF_ELF_SEC);
+> +	if (err || dump_raw_btf(obj.btf, out_path))
+
+Nit: 'err' is not set if dump_raw_btf() errors out.
+     Maybe use:
+
+     	   err =3D make_out_path(out_path, obj.path, BTF_ELF_SEC);
+     	   err =3D err ?: dump_raw_btf(obj.btf, out_path);
+	   if (err)
+	      goto out;
+     ?
+
+> +		goto out;
+> +
+> +	if (obj.base_btf && obj.distill_base) {
+> +		err =3D make_out_path(out_path, obj.path, BTF_BASE_ELF_SEC);
+> +		if (err || dump_raw_btf(obj.base_btf, out_path))
+> +			goto out;
+> +	}
+> +
+>  	if (!(fatal_warnings && warnings))
+>  		err =3D 0;
+>  out:
+
+[...]
 
