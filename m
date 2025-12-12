@@ -1,296 +1,204 @@
-Return-Path: <bpf+bounces-76498-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76499-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 034D7CB77B4
-	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 01:50:27 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8176CB7803
+	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 02:05:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C21E53019BD2
-	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 00:50:18 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5F85F300F58F
+	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 01:05:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEC9924337B;
-	Fri, 12 Dec 2025 00:50:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEA822222D1;
+	Fri, 12 Dec 2025 01:05:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cuEpo4Ru"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kivcxjkq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B67542459E1
-	for <bpf@vger.kernel.org>; Fri, 12 Dec 2025 00:50:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B6591DF271
+	for <bpf@vger.kernel.org>; Fri, 12 Dec 2025 01:05:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765500617; cv=none; b=QW+/cfrQZusbLSvT/XCMsLAZUKXIOF+Sp7VwGqa8QKkSPO9+GdAWtBCcUt7GM5KN0T/D+G6Qb/9CW0WXUYacaYmU/Q9RKfxA3VxsUw+GnMjdTP1puH7fFuXIQqlRXZX07lJUqeqFGN2xFB5eQFeLHWxV0T1sm5s3cSjFYPGcvhI=
+	t=1765501510; cv=none; b=eNtfth1y8KzDQTsMXBxirACP90gmjPBKE1KnBFGNLfpU+s+6lAVFFsG+VORaHFpHwNfdsfvL4h1ma05vUWOI5vljKVaGlf8xJO2H2ZI+m0BIrqbzhM+Ibzbt4oYhlUUY6+0w7cvtv13pbJmzQq2x5jrFSTEUxAWlQWB0SBwz2HQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765500617; c=relaxed/simple;
-	bh=abZ0SKNWuDYb7GN3LaApZER6dAkM+5IZOqIQjURhzhE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ITXXqmBP56902oZC8SBBXKSkx75l4mOk47UBNYHfWuhMcbJCeWHl3y95i+r8DMti2FSZNRXjGlZ0Y5uNYLMrwK4pSOiE+9cLm6/tQ6rWLuB2y3LWwdGW4FPvLfXUCBLNSKe73WODmSC2AXBa3//xp1JbnoroG8SDTE66LYWK8a8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cuEpo4Ru; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-477bf34f5f5so5980435e9.0
-        for <bpf@vger.kernel.org>; Thu, 11 Dec 2025 16:50:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1765500610; x=1766105410; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=m49T9lNDlOe5CR87qV9psszxD67hgaV2MfyJSKsAoO4=;
-        b=cuEpo4RuHOi0LSBJOOQ15ebtwvvwL8QVTE9vxgXlMBjwO1G0E5OA0Sse5Vxkw5aC1n
-         wmFOi+0fNyc5196bR+dzh0BBszkIab9t9Z0X7A070KWFyzbccemYHE3XGziRwGETrcS3
-         2h4setUdKKO5p8ouSI1V6yTnBCIy4WjxfGloiOB4mrHxcmLjcmuYt+ycUc7K5OSxPRbl
-         RFm+Z4/cXYblDCdsHo0Vzd+RnVQuShTrNdweT/5YEPU13L8h8VnJOCOT/X//zMHCG7GI
-         XUr2e3AuLR2FlPoBE0TYO9AFKQY6YoQRHVur8yQlf1c29wyImwyiuYyxFCLCcO0yHfq6
-         HGZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765500610; x=1766105410;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=m49T9lNDlOe5CR87qV9psszxD67hgaV2MfyJSKsAoO4=;
-        b=dz88hR6ABgQgNxKoQuaNoFn1r0h31dwlgR9QjZvhdLETUHkuIe1J7aHWtE7z7+rgcl
-         nt5TZJOgTkWfaUrIduQqHgASRDFgaMK5tQ/udhP1IdcF79WcYX+kb5n9emYiMXuSRb02
-         3eX/yXwP5CZb+x57n18Yf2hMQ4ICet7OQc7e4NtuwUvvmE5UG0JvP3+3s7QmUY5r2qmO
-         0KGFtm8OPOgtrjrDCF3wS7DAU5JK0DaxY7PmIip2wR+Zfd3CCn4AcgvvL4cdNO9Ybync
-         slvDeR7hFl8nGEqrbC0dRdtRvxmLYXaRq+IwUpJ7vJ5LEFhsfWYkJcPaZPMGBpDH5eo2
-         EI4A==
-X-Gm-Message-State: AOJu0Yxpsa0zD7deowbpsgmonn5/06ekYmmizDcWEfaoiWz5wpOAYrdS
-	x1P0mzTCp45ZSQq6CzVS2i2XcS8xZ9Av1lXJGHvlcAZE0J1naubJxFzZmiImWcIWWECg0QO1NJu
-	xhKOrzulq9Bcw1xYZGttAi5CVsGrEHnY=
-X-Gm-Gg: AY/fxX5R6Lhy+cQGKmvEXr+eKmErGMjOuPpKgonub/8PXWiYxzrpRzgfgQNNY71k6/P
-	aByPIBGg77mWRQdMhN4EjX3OoWTdfuaxYTzFrlMsGMVk9L5NCppPA0pv4izmv7LI776W7VMKFFx
-	/AuxOv8DpavlF85k9p/e3L9LTS0ngExS8t9RhjmcE8LuqJPeh9S8AgFxmMuHU9R7HhNBbLpNXLg
-	qFPE2FgVPocSm2UlD2XBiKtIESr+SLKsX9rcOS9VvC/3tRO4wjmIDbLGdnnN9BFLLzmk+x9CQ==
-X-Google-Smtp-Source: AGHT+IHA3YqHTFAYxpmEq9qlvzOvuMh4AocqYjKMYN6r6oZxT8luPjjo3rtFTruVLE6+/5CMN8vxYi8wph3UHRPmW4w=
-X-Received: by 2002:a05:600c:470a:b0:477:7b9a:bb07 with SMTP id
- 5b1f17b1804b1-47a8f9166aamr1543275e9.35.1765500610369; Thu, 11 Dec 2025
- 16:50:10 -0800 (PST)
+	s=arc-20240116; t=1765501510; c=relaxed/simple;
+	bh=MhtvALmQVDWJithUp+yNSa9ZZEQzRYFkfQQpUMnJI54=;
+	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
+	 Subject:From:To:Cc:Date; b=jMAgvlrns8Tn1Vq3c850GnQH7Ks+0NPqPqqv86B2nMFkclgKmNCcYfvQG3MyNZxmmKEhY80G3kd3r3yN4wNoD7UvOLih6lkS/mxD8vEnZO7v/Lq0LWkcqu+6isxzvqS86syZ9cqoLMse3nWqIJXbTrv8nwRHQ/6j/YxRTdIpX14=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kivcxjkq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89C16C4CEF7;
+	Fri, 12 Dec 2025 01:05:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1765501509;
+	bh=MhtvALmQVDWJithUp+yNSa9ZZEQzRYFkfQQpUMnJI54=;
+	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
+	b=KivcxjkqjzAV1z8X83q6y2PJoNnOfOrRZtM4VQIcR2sM6PHSlQ1nVpqsJl1AUqq77
+	 ntyounaoCObD9C4f5QUBENfP75nAE7niJL002NnPYlkkKUd0zX7nXDdC8ik84xcY/l
+	 3ucQ1y7I4+Mws/YJoZunNCSjlXH8oZIzues9Ilhv+CqAIDKALHkjDZXhgChfukWe/D
+	 ZoElvvD3cNy3mwLvT7uw5l7qE1PwPMEm7oViA7oeGrPCxvYZEJmKS5F/8vvOieCfCz
+	 bmPYJRsFna7UANHC0B7iYz7Ootj6tqShh24ijmPV4P1jIAfhGxu57njzoUlG6Is6gV
+	 LG80wATJNRA5w==
+Content-Type: multipart/mixed; boundary="===============6367550237844646632=="
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251117160150.62183-1-puranjay@kernel.org> <20251117160617.4604-1-puranjay@kernel.org>
- <CAADnVQK47-08p8XATMmGdScs19y4Ju+yG0VH2hb-G+QvGi3pPA@mail.gmail.com> <CANk7y0h3_kyQVmDaSG19ZZ=hEscqACYd4Qi0+g_io0KuwCbN0Q@mail.gmail.com>
-In-Reply-To: <CANk7y0h3_kyQVmDaSG19ZZ=hEscqACYd4Qi0+g_io0KuwCbN0Q@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 12 Dec 2025 09:49:58 +0900
-X-Gm-Features: AQt7F2q2nI-tX3yx4YZXYclSiwjJl5UtVtvEg0loLnVHfgV73Qdcw1k1OZt_1U8
-Message-ID: <CAADnVQK6pA3ySm2_U0-7KDB1ZguuJQW91sSyfGM4_OjgXxZJsw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/4] bpf: arena: use kmalloc_nolock() in place
- of kvcalloc()
-To: Puranjay Mohan <puranjay@kernel.org>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Kernel Team <kernel-team@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-Id: <c5daf712b2a51bf284ff8b01a0a0cf3a74b9bf30873dcdf83a8b4a5875c4427a@mail.kernel.org>
+In-Reply-To: <20251212004350.6520-4-puranjay@kernel.org>
+References: <20251212004350.6520-4-puranjay@kernel.org>
+Subject: Re: [PATCH bpf-next v4 3/4] bpf: arena: make arena kfuncs any context safe
+From: bot+bpf-ci@kernel.org
+To: puranjay@kernel.org,bpf@vger.kernel.org
+Cc: puranjay@kernel.org,puranjay12@gmail.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,memxor@gmail.com,kernel-team@meta.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
+Date: Fri, 12 Dec 2025 01:05:08 +0000 (UTC)
 
-On Fri, Dec 12, 2025 at 8:45=E2=80=AFAM Puranjay Mohan <puranjay@kernel.org=
-> wrote:
->
-> On Sat, Nov 22, 2025 at 6:15=E2=80=AFAM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Mon, Nov 17, 2025 at 8:06=E2=80=AFAM Puranjay Mohan <puranjay@kernel=
-.org> wrote:
-> > >
-> > > To make arena_alloc_pages() safe to be called from any context, repla=
-ce
-> > > kvcalloc() with kmalloc_nolock() so as it doesn't sleep or take any
-> > > locks. kmalloc_nolock() returns NULL for allocations larger than
-> > > KMALLOC_MAX_CACHE_SIZE, which is (PAGE_SIZE * 2) =3D 8KB on systems w=
-ith
-> > > 4KB pages. So, round down the allocation done by kmalloc_nolock to 10=
-24
-> > > * 8 and reuse the array in a loop.
-> > >
-> > > Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-> > > ---
-> > >  kernel/bpf/arena.c | 83 +++++++++++++++++++++++++++++++-------------=
---
-> > >  1 file changed, 57 insertions(+), 26 deletions(-)
-> > >
-> > > diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
-> > > index 214a4da54162..1d0b49a39ad0 100644
-> > > --- a/kernel/bpf/arena.c
-> > > +++ b/kernel/bpf/arena.c
-> > > @@ -43,6 +43,8 @@
-> > >  #define GUARD_SZ round_up(1ull << sizeof_field(struct bpf_insn, off)=
- * 8, PAGE_SIZE << 1)
-> > >  #define KERN_VM_SZ (SZ_4G + GUARD_SZ)
-> > >
-> > > +static void arena_free_pages(struct bpf_arena *arena, long uaddr, lo=
-ng page_cnt);
-> > > +
-> > >  struct bpf_arena {
-> > >         struct bpf_map map;
-> > >         u64 user_vm_start;
-> > > @@ -492,7 +494,10 @@ static long arena_alloc_pages(struct bpf_arena *=
-arena, long uaddr, long page_cnt
-> > >         /* user_vm_end/start are fixed before bpf prog runs */
-> > >         long page_cnt_max =3D (arena->user_vm_end - arena->user_vm_st=
-art) >> PAGE_SHIFT;
-> > >         u64 kern_vm_start =3D bpf_arena_get_kern_vm_start(arena);
-> > > +       struct apply_range_data data;
-> > >         struct page **pages =3D NULL;
-> > > +       long remaining, mapped =3D 0;
-> > > +       long alloc_pages;
-> > >         long pgoff =3D 0;
-> > >         u32 uaddr32;
-> > >         int ret, i;
-> > > @@ -509,17 +514,21 @@ static long arena_alloc_pages(struct bpf_arena =
-*arena, long uaddr, long page_cnt
-> > >                         return 0;
-> > >         }
-> > >
-> > > -       /* zeroing is needed, since alloc_pages_bulk() only fills in =
-non-zero entries */
-> > > -       pages =3D kvcalloc(page_cnt, sizeof(struct page *), GFP_KERNE=
-L);
-> > > +       /*
-> > > +        * Cap allocation size to KMALLOC_MAX_CACHE_SIZE so kmalloc_n=
-olock() can succeed.
-> > > +        */
-> > > +       alloc_pages =3D min(page_cnt, KMALLOC_MAX_CACHE_SIZE / sizeof=
-(struct page *));
-> > > +       pages =3D kmalloc_nolock(alloc_pages * sizeof(struct page *),=
- 0, NUMA_NO_NODE);
-> > >         if (!pages)
-> > >                 return 0;
-> > > +       data.pages =3D pages;
-> > >
-> > > -       guard(mutex)(&arena->lock);
-> > > +       mutex_lock(&arena->lock);
-> > >
-> > >         if (uaddr) {
-> > >                 ret =3D is_range_tree_set(&arena->rt, pgoff, page_cnt=
-);
-> > >                 if (ret)
-> > > -                       goto out_free_pages;
-> > > +                       goto out_unlock_free_pages;
-> > >                 ret =3D range_tree_clear(&arena->rt, pgoff, page_cnt)=
-;
-> > >         } else {
-> > >                 ret =3D pgoff =3D range_tree_find(&arena->rt, page_cn=
-t);
-> > > @@ -527,34 +536,56 @@ static long arena_alloc_pages(struct bpf_arena =
-*arena, long uaddr, long page_cnt
-> > >                         ret =3D range_tree_clear(&arena->rt, pgoff, p=
-age_cnt);
-> > >         }
-> > >         if (ret)
-> > > -               goto out_free_pages;
-> > > -
-> > > -       struct apply_range_data data =3D { .pages =3D pages, .i =3D 0=
- };
-> > > -       ret =3D bpf_map_alloc_pages(&arena->map, node_id, page_cnt, p=
-ages);
-> > > -       if (ret)
-> > > -               goto out;
-> > > +               goto out_unlock_free_pages;
-> > >
-> > > +       remaining =3D page_cnt;
-> > >         uaddr32 =3D (u32)(arena->user_vm_start + pgoff * PAGE_SIZE);
-> > > -       /* Earlier checks made sure that uaddr32 + page_cnt * PAGE_SI=
-ZE - 1
-> > > -        * will not overflow 32-bit. Lower 32-bit need to represent
-> > > -        * contiguous user address range.
-> > > -        * Map these pages at kern_vm_start base.
-> > > -        * kern_vm_start + uaddr32 + page_cnt * PAGE_SIZE - 1 can ove=
-rflow
-> > > -        * lower 32-bit and it's ok.
-> > > -        */
-> > > -       ret =3D apply_to_page_range(&init_mm, kern_vm_start + uaddr32=
-,
-> > > -                                 page_cnt << PAGE_SHIFT, apply_range=
-_set_cb, &data);
-> > > -       if (ret) {
-> > > -               for (i =3D 0; i < page_cnt; i++)
-> > > -                       __free_page(pages[i]);
-> > > -               goto out;
-> > > +
-> > > +       while (remaining) {
-> > > +               long this_batch =3D min(remaining, alloc_pages);
-> > > +
-> > > +               /* zeroing is needed, since alloc_pages_bulk() only f=
-ills in non-zero entries */
-> > > +               memset(pages, 0, this_batch * sizeof(struct page *));
-> > > +               data.i =3D 0;
-> >
-> > Pls move data.i =3D 0 further down to be done right before
-> > apply_to_page_range() since it's one logical operation.
-> > Here it's done too early.
-> >
-> > > +
-> > > +               ret =3D bpf_map_alloc_pages(&arena->map, node_id, thi=
-s_batch, pages);
-> > > +               if (ret)
-> > > +                       goto out;
-> > > +
-> > > +               /* Earlier checks made sure that uaddr32 + page_cnt *=
- PAGE_SIZE - 1
-> >
-> > Pls reformat the comment as you move them as
-> > /*
-> >  * ...
-> >  */
-> >
-> > > +                * will not overflow 32-bit. Lower 32-bit need to rep=
-resent
-> > > +                * contiguous user address range.
-> > > +                * Map these pages at kern_vm_start base.
-> > > +                * kern_vm_start + uaddr32 + page_cnt * PAGE_SIZE - 1=
- can overflow
-> > > +                * lower 32-bit and it's ok.
-> > > +                */
-> > > +               ret =3D apply_to_page_range(&init_mm,
-> > > +                                         kern_vm_start + uaddr32 + (=
-mapped << PAGE_SHIFT),
-> > > +                                         this_batch << PAGE_SHIFT, a=
-pply_range_set_cb, &data);
-> > > +               if (ret) {
-> > > +                       /* data.i pages were mapped, account them and=
- free the remaining */
-> > > +                       mapped +=3D data.i;
-> > > +                       for (i =3D data.i; i < this_batch; i++)
-> > > +                               __free_page(pages[i]);
-> > > +                       goto out;
-> > > +               }
-> > > +
-> > > +               mapped +=3D this_batch;
-> > > +               remaining -=3D this_batch;
-> > >         }
-> > > -       kvfree(pages);
-> > > +       mutex_unlock(&arena->lock);
-> > > +       kfree_nolock(pages);
-> > >         return clear_lo32(arena->user_vm_start) + uaddr32;
-> > >  out:
-> > > -       range_tree_set(&arena->rt, pgoff, page_cnt);
-> > > +       range_tree_set(&arena->rt, pgoff + mapped, page_cnt - mapped)=
-;
-> > > +       mutex_unlock(&arena->lock);
-> > > +       if (mapped)
-> > > +               arena_free_pages(arena, clear_lo32(arena->user_vm_sta=
-rt) + uaddr32, mapped);
-> >
-> > This doesn't look right.
-> > The first thing arena_free_pages() does is:
-> >         uaddr =3D (u32)uaddr;
-> >         uaddr &=3D PAGE_MASK;
-> >         full_uaddr =3D clear_lo32(arena->user_vm_start) + uaddr;
->
-> So, arena_free_pages() should be called with what arena_alloc_pages()
-> returns, we return:
->
->     return clear_lo32(arena->user_vm_start) + uaddr32;
->
-> from arena_alloc_pages(); few lines above.
+--===============6367550237844646632==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 
-yes, that's what this kfunc returns to bpf prog,
-but we shouldn't do pointless math to call arena_free_pages().
-Just arena_free_pages(..., uaddr32, ...) will do.
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 28d8d6b7bb1e..e873dc34fc2f 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -673,6 +673,21 @@ void bpf_map_free_internal_structs(struct bpf_map *map, void *obj);
+>  int bpf_dynptr_from_file_sleepable(struct file *file, u32 flags,
+>  				   struct bpf_dynptr *ptr__uninit);
+>
+> +#if defined(CONFIG_MMU) && defined(CONFIG_64BIT)
+> +void *bpf_arena_alloc_pages_non_sleepable(void *p__map, void *addr__ign, u32 page_cnt, int node_id,
+> +					  u64 flags);
+> +void bpf_arena_free_pages_non_sleepable(void *p__map, void *ptr__ign, u32 page_cnt);
+> +#else
+> +static inline void *bpf_arena_alloc_pages_non_sleepable(void *p__map, void *addr__ign, u32 page_cnt,
+> +							int node_id, u64 flags)
+> +{
+> +}
+
+Should bpf_arena_alloc_pages_non_sleepable() return NULL here? The
+function is declared to return void * but has no return statement.
+
+> +
+> +static inline void bpf_arena_free_pages_non_sleepable(void *p__map, void *ptr__ign, u32 page_cnt)
+> +{
+> +}
+> +#endif
+
+[ ... ]
+
+> diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
+
+[ ... ]
+
+> -static void arena_free_pages(struct bpf_arena *arena, long uaddr, long page_cnt)
+> +static void arena_free_pages(struct bpf_arena *arena, long uaddr, long page_cnt, bool sleepable)
+>  {
+>  	u64 full_uaddr, uaddr_end;
+> -	long kaddr, pgoff, i;
+> +	long kaddr, pgoff;
+>  	struct page *page;
+> +	struct llist_head free_pages;
+> +	struct llist_node *pos, *t;
+> +	struct arena_free_span *s;
+> +	unsigned long flags;
+> +	int ret = 0;
+>
+>  	/* only aligned lower 32-bit are relevant */
+>  	uaddr = (u32)uaddr;
+>  	uaddr &= PAGE_MASK;
+> +	kaddr = bpf_arena_get_kern_vm_start(arena) + uaddr;
+>  	full_uaddr = clear_lo32(arena->user_vm_start) + uaddr;
+>  	uaddr_end = min(arena->user_vm_end, full_uaddr + (page_cnt << PAGE_SHIFT));
+>  	if (full_uaddr >= uaddr_end)
+>  		return;
+>
+>  	page_cnt = (uaddr_end - full_uaddr) >> PAGE_SHIFT;
+> +	pgoff = compute_pgoff(arena, uaddr);
+>
+> -	guard(mutex)(&arena->lock);
+> +	if (!sleepable)
+> +		goto defer;
+> +
+> +	ret = raw_res_spin_lock_irqsave(&arena->spinlock, flags);
+> +
+> +	/* Can't proceed without holding the spinlock so defer the free */
+> +	if (ret)
+> +		goto defer;
+>
+> -	pgoff = compute_pgoff(arena, uaddr);
+> -	/* clear range */
+>  	range_tree_set(&arena->rt, pgoff, page_cnt);
+>
+> +	init_llist_head(&free_pages);
+> +	/* clear ptes and collect struct pages */
+> +	apply_to_existing_page_range(&init_mm, kaddr, page_cnt << PAGE_SHIFT,
+> +				     apply_range_clear_cb, &free_pages);
+> +
+> +	/* drop the lock to do the tlb flush and zap pages */
+> +	raw_res_spin_unlock_irqrestore(&arena->spinlock, flags);
+> +
+> +	/* ensure no stale TLB entries */
+> +	flush_tlb_kernel_range(kaddr, kaddr + (page_cnt * PAGE_SIZE));
+> +
+>  	if (page_cnt > 1)
+>  		/* bulk zap if multiple pages being freed */
+>  		zap_pages(arena, full_uaddr, page_cnt);
+>
+> -	kaddr = bpf_arena_get_kern_vm_start(arena) + uaddr;
+> -	for (i = 0; i < page_cnt; i++, kaddr += PAGE_SIZE, full_uaddr += PAGE_SIZE) {
+> -		page = vmalloc_to_page((void *)kaddr);
+> -		if (!page)
+> -			continue;
+> +	llist_for_each_safe(pos, t, __llist_del_all(&free_pages)) {
+> +		page = llist_entry(pos, struct page, pcp_llist);
+>  		if (page_cnt == 1 && page_mapped(page)) /* mapped by some user process */
+>  			/* Optimization for the common case of page_cnt==1:
+>  			 * If page wasn't mapped into some user vma there
+> @@ -640,9 +697,20 @@ static void arena_free_pages(struct bpf_arena *arena, long uaddr, long page_cnt
+>  			 * page_cnt is big it's faster to do the batched zap.
+>  			 */
+>  			zap_pages(arena, full_uaddr, 1);
+> -		apply_to_existing_page_range(&init_mm, kaddr, PAGE_SIZE, apply_range_clear_cb,
+> -					     NULL);
+> +		__free_page(page);
+>  	}
+> +
+> +	return;
+> +
+> +defer:
+> +	s = kmalloc_nolock(sizeof(struct arena_free_span), 0, -1);
+> +	if (!s)
+> +		return;
+
+Does this leak pages when kmalloc_nolock() fails? The function returns
+without clearing the PTEs, flushing TLB, or freeing the pages. The
+range_tree bits are also not set back to free, so these pages become
+permanently inaccessible until the arena is destroyed.
+
+In the non-sleepable path when kmalloc_nolock() returns NULL:
+- Pages remain allocated in the arena
+- PTEs are not cleared
+- range_tree bits remain cleared (pages marked as allocated)
+- No retry mechanism exists to free these pages later
+
+> +
+> +	s->page_cnt = page_cnt;
+> +	s->uaddr = uaddr;
+> +	llist_add(&s->node, &arena->free_spans);
+> +	irq_work_queue(&arena->free_irq);
+>  }
+
+[ ... ]
+
+
+---
+AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
+
+CI run summary: https://github.com/kernel-patches/bpf/actions/runs/20152458491
+
+--===============6367550237844646632==--
 
