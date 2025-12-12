@@ -1,129 +1,248 @@
-Return-Path: <bpf+bounces-76525-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76527-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A282CB8646
-	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 10:12:12 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69D0BCB873A
+	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 10:27:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 8778F300E3C1
-	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 09:12:11 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id EE17D305DCFB
+	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 09:22:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB9C031195D;
-	Fri, 12 Dec 2025 09:11:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54DD53126BE;
+	Fri, 12 Dec 2025 09:22:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="GLV1uZB0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 313342472BB;
-	Fri, 12 Dec 2025 09:11:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30ECE311973;
+	Fri, 12 Dec 2025 09:22:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765530703; cv=none; b=qqKtulCU+Hvo+fknLhceSTITxetQ1Q1DSTo53qlinm7qfMybmwDfIL5WvHN0PHIZExi7xI0eKdrMVIrqiot2nVwQzXMvkFmHtVfLKOeVJlg/WmWcFFlFi6IujrnPA0xeOl2qHREVE0ggdHac1pOXf4HVGz2/IyMWZTTU6TmPeeE=
+	t=1765531331; cv=none; b=fqE5wOxLb7r05zVooTVTaJg0b1wYmVh0KzMVbl8I/ybzkkZ2DyfA4OyxLGcGAUJu/LRuzF5CbsgBZudFXqRwS3BWa5a6W8vvTEJ/+g4ZNuoD7ESFOgV8JQUQ9w0AfgumGqnDQr9S8yv9NZNLB0+NzFCpLgZVxf/IC/has38DJ7I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765530703; c=relaxed/simple;
-	bh=YZxv64z8zfjwzPiaNGn9d7vJpexUUc1szKq1qYZqUm4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qKZ9IqV8ts3Bj5SX1kROes0AZwhOMY9Xuyqxl4IM9eegC1hS2+Z1E7tLAV/OZbCmHnT2S8gzpnTL5XXCByRslt8dbdFvd4QvDYJm5gLHfKboLLw3UQe4mGi5hyRUyzMvhb83tEPbBxgwqFgXwJenwlrkmHvVHSHyshmrdSXuDOM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 8e8df06cd73a11f0a38c85956e01ac42-20251212
-X-CTIC-Tags:
-	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NO_NAME, HR_CTE_8B, HR_CTT_TXT
-	HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME, HR_SJ_DIGIT_LEN
-	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
-	HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT, HR_TO_NO_NAME
-	IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_EXISTED, SN_EXISTED
-	SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.6,REQID:b5724c42-6bbf-46da-af32-6faa38d1c5d1,IP:10,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:5
-X-CID-INFO: VERSION:1.3.6,REQID:b5724c42-6bbf-46da-af32-6faa38d1c5d1,IP:10,URL
-	:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
-	elease,TS:5
-X-CID-META: VersionHash:a9d874c,CLOUDID:cf15b60178dee43c82a92e6904d1af61,BulkI
-	D:2512121711352WU4DBTV,BulkQuantity:0,Recheck:0,SF:17|19|38|66|78|81|82|10
-	2|127|850|898,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bu
-	lk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:
-	0,BRE:0,ARC:0
-X-CID-BVR: 2,SSN|SDN
-X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_SNR
-X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: 8e8df06cd73a11f0a38c85956e01ac42-20251212
-X-User: duanchenghao@kylinos.cn
-Received: from localhost.localdomain [(223.70.159.239)] by mailgw.kylinos.cn
-	(envelope-from <duanchenghao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 1394514414; Fri, 12 Dec 2025 17:11:34 +0800
-From: Chenghao Duan <duanchenghao@kylinos.cn>
-To: yangtiezhu@loongson.cn,
-	hengqi.chen@gmail.com,
-	chenhuacai@kernel.org
-Cc: kernel@xen0n.name,
-	zhangtianyang@loongson.cn,
-	masahiroy@kernel.org,
-	linux-kernel@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	bpf@vger.kernel.org,
-	duanchenghao@kylinos.cn,
-	youling.tang@linux.dev,
-	jianghaoran@kylinos.cn,
-	vincent.mc.li@gmail.com
-Subject: [PATCH v2 4/4] LoongArch: BPF: Enable BPF exception fixup for specific ADE subcode
-Date: Fri, 12 Dec 2025 17:11:03 +0800
-Message-Id: <20251212091103.1247753-5-duanchenghao@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20251212091103.1247753-1-duanchenghao@kylinos.cn>
-References: <20251212091103.1247753-1-duanchenghao@kylinos.cn>
+	s=arc-20240116; t=1765531331; c=relaxed/simple;
+	bh=G4/Ro5h/dXWSgGT4bi8LaimRNYvzCb1QNsi4W/ft1OM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=u0VD1miETHZV6YhLtBroEd6tSNzn3EV5Gwj0DJphHpFM9moGYzKceb+MARgF9+BskAmN3n7qfheUpv5arbt0uwlLB5QsRLebxrQjICfuEKd2EN4DNBbqEfiCWXRr7pHuqhYjYDFI1oKP0QXgk+7KKeDHiUjtHXw+aiEgJMf6ZKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=GLV1uZB0; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5BC92JKO022802;
+	Fri, 12 Dec 2025 09:21:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=1SVc7R
+	vjSkKvbeeSy9JkHiRgrtVWX/MI2JfZ5mhQsHM=; b=GLV1uZB063h2nQkRdH909x
+	cTkKipDeehdUcjcKGosyWCnUtzFaLW1brhgVI/mMGZ2HBuLbry/Kka3d0B4CciGQ
+	66sDRrdItBK9Ek/+d0LIQyj9xi40iCji2aBulSfU+okbX3Z5bFn3LFv9QZbBcuNq
+	c4GPp/8F9RNG+9mhNplXfnhe6nRfSHmhLfL4xdm1PO9pNQspRmEBdDp/EMivnnyd
+	H9KF+k1YftPqWbvvQnwTHfJNpErZ1AloKL5cBbmq5s/qwNJGhl7r/j9GqZdcU6Nt
+	7J6kt9/FtLi+MrdK4+OzanOih/X4A8MdLjOrxBE9eGsToIwz5EG67dN2mezD55zw
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4av9ww3v0k-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 12 Dec 2025 09:21:45 +0000 (GMT)
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 5BC9FG02018648;
+	Fri, 12 Dec 2025 09:21:45 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4av9ww3v0f-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 12 Dec 2025 09:21:45 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5BC6bscd008391;
+	Fri, 12 Dec 2025 09:21:44 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4avytnb461-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 12 Dec 2025 09:21:44 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5BC9LecK42598670
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 12 Dec 2025 09:21:40 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id EEA702004D;
+	Fri, 12 Dec 2025 09:21:39 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 81E4020040;
+	Fri, 12 Dec 2025 09:21:38 +0000 (GMT)
+Received: from [9.111.169.84] (unknown [9.111.169.84])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 12 Dec 2025 09:21:38 +0000 (GMT)
+Message-ID: <e38c0be1-52af-49a0-8bbc-1148ad3cc32e@linux.ibm.com>
+Date: Fri, 12 Dec 2025 10:21:38 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v3 17/17] s390/unwind_user/fp: Enable back chain
+ unwinding of user space
+To: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, bpf@vger.kernel.org, x86@kernel.org,
+        Steven Rostedt <rostedt@kernel.org>
+Cc: Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Indu Bhagat <indu.bhagat@oracle.com>,
+        "Jose E. Marchesi" <jemarch@gnu.org>,
+        Beau Belgrave <beaub@linux.microsoft.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Florian Weimer <fweimer@redhat.com>, Kees Cook <kees@kernel.org>,
+        "Carlos O'Donell" <codonell@redhat.com>, Sam James <sam@gentoo.org>,
+        Dylan Hatch <dylanbhatch@google.com>
+References: <20251208171559.2029709-1-jremus@linux.ibm.com>
+ <20251208171559.2029709-18-jremus@linux.ibm.com>
+Content-Language: en-US
+From: Jens Remus <jremus@linux.ibm.com>
+Organization: IBM Deutschland Research & Development GmbH
+In-Reply-To: <20251208171559.2029709-18-jremus@linux.ibm.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: rDt31-Fuxu1pHN2xDfNuEfS8dlGf87xF
+X-Proofpoint-ORIG-GUID: k-yP8sNeYnLD5LApFVd7kYBCz2H_w0ye
+X-Authority-Analysis: v=2.4 cv=AdS83nXG c=1 sm=1 tr=0 ts=693bdea9 cx=c_pps
+ a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
+ a=IkcTkHD0fZMA:10 a=wP3pNCr1ah4A:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=VnNF1IyMAAAA:8 a=fMs-5SPQQjTgPQFwRbIA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMjA2MDAwMCBTYWx0ZWRfX4c9yzRJsDN42
+ DlLvmi1NfoNTQqS3/EBrFWyYMHUOtEeZefS7FiMSrxjNBXUAiLC1i8wjUeV1Afeknakgy15aik6
+ 5Ad6iK0+6hT92W7DdYOCWOPS/lhu+gPyKMsC0gdVjdS8N1lTPTvZB0QhWGXf7SKnEBGWseZAn5N
+ xDTY2yvqL909dItjqM/Y2UyLuTl3ExBperl6clM9VcH6k5sdQOHe79bha8u4iatWulKPXdg6hg9
+ +SRd/RZNXdfk3p/AeiagwCHisSiENN5XAlu/8W0mVMEUAj/gsUWwT2ho1yfNPJeja152dt0cst6
+ uox36ag20AXgddYPV8aakcmuMJC3SzRRgMKPrRVW3moFXm5cioXa3gpCsyKJlE2uOGwtR7WvauD
+ QepDFf9f26HRZhxQJ27LuNAV+kDnOA==
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2025-12-12_02,2025-12-11_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ suspectscore=0 adultscore=0 priorityscore=1501 spamscore=0 phishscore=0
+ lowpriorityscore=0 bulkscore=0 clxscore=1015 malwarescore=0 impostorscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2510240000 definitions=main-2512060000
 
-This patch allows the LoongArch BPF JIT to handle recoverable memory
-access errors generated by BPF_PROBE_MEM* instructions.
+On 12/8/2025 6:15 PM, Jens Remus wrote:
 
-When a BPF program performs memory access operations, the instructions
-it executes may trigger ADEM exceptions. The kernel’s built-in BPF
-exception table mechanism (EX_TYPE_BPF) will generate corresponding
-exception fixup entries in the JIT compilation phase; however, the
-architecture-specific trap handling function needs to proactively call
-the common fixup routine to achieve exception recovery.
+...
 
-do_ade(): fix EX_TYPE_BPF memory access exceptions for BPF programs,
-ensure safe execution.
+> Leverage the unwind user fp infrastructure to enable unwinding of user
+> space using back chain.  Enable HAVE_UNWIND_USER_FP and provide a s390-
+> specific implementation of unwind_user_fp_get_frame(), which uses the
+> back chain.
 
-Signed-off-by: Chenghao Duan <duanchenghao@kylinos.cn>
----
- arch/loongarch/kernel/traps.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+> diff --git a/arch/s390/include/asm/unwind_user.h b/arch/s390/include/asm/unwind_user.h
 
-diff --git a/arch/loongarch/kernel/traps.c b/arch/loongarch/kernel/traps.c
-index da5926fead4a..4cf72e0af6a3 100644
---- a/arch/loongarch/kernel/traps.c
-+++ b/arch/loongarch/kernel/traps.c
-@@ -534,7 +534,13 @@ asmlinkage void noinstr do_fpe(struct pt_regs *regs, unsigned long fcsr)
- 
- asmlinkage void noinstr do_ade(struct pt_regs *regs)
- {
--	irqentry_state_t state = irqentry_enter(regs);
-+	irqentry_state_t state;
-+	unsigned int esubcode = FIELD_GET(CSR_ESTAT_ESUBCODE, regs->csr_estat);
-+
-+	if ((esubcode == EXSUBCODE_ADEM) && fixup_exception(regs))
-+		return;
-+
-+	state = irqentry_enter(regs);
- 
- 	die_if_kernel("Kernel ade access", regs);
- 	force_sig_fault(SIGBUS, BUS_ADRERR, (void __user *)regs->csr_badvaddr);
+> +static inline int unwind_user_fp_get_frame(struct unwind_user_state *state,
+> +					   struct unwind_user_frame *frame)
+> +{
+> +	struct stack_frame_user __user *sf;
+> +	unsigned long __user *ra_addr;
+> +	unsigned long sp;
+> +
+> +	sf = (void __user *)state->sp;
+> +
+> +	/*
+> +	 * In topmost frame check whether IP in early prologue, RA and SP
+> +	 * registers saved, and no new stack frame allocated.
+> +	 */
+> +	if (state->topmost) {
+> +		unsigned long ra, ra_reg;
+> +
+> +		ra_addr = (unsigned long __user *)&sf->gprs[8];
+> +		if (__get_user(ra, ra_addr))
+> +			return -EINVAL;
+> +		if (__get_user(sp, (unsigned long __user *)&sf->gprs[9]))
+> +			return -EINVAL;
+> +		if (unwind_user_get_ra_reg(&ra_reg))
+> +			return -EINVAL;
+> +		if (ra == ra_reg && sp == state->sp)
+> +			goto done;
+> +	}
+
+I realized that this additional heuristic is flawed:
+
+The topmost function may be past prologue, have allocated a new stack
+frame, and called a function.  The callee may have saved its RA and SP
+registers in the current stack frame, so that after the return from
+function call, the heuristic would erroneously assume that the topmost
+function is in early prologue and use the callee's RA and SP.
+
+Instead of erroneously skipping the caller it might erroneously insert
+a callee as caller.  I'll remove it again in the next version.
+
+> +
+> +	if (__get_user(sp, (unsigned long __user *)&sf->back_chain))
+> +		return -EINVAL;
+> +	if (!sp && ip_within_vdso(state->ip)) {
+> +		/*
+> +		 * Assume non-standard vDSO user wrapper stack frame.
+> +		 * See vDSO user wrapper code for details.
+> +		 */
+> +		struct stack_frame_vdso_wrapper *sf_vdso = (void __user *)sf;
+> +
+> +		ra_addr = (unsigned long __user *)&sf_vdso->return_address;
+> +		sf = (void __user *)((unsigned long)sf + STACK_FRAME_VDSO_OVERHEAD);
+> +		if (__get_user(sp, (unsigned long __user *)&sf->back_chain))
+> +			return -EINVAL;
+> +	} else if (!sp) {
+> +		/*
+> +		 * Assume outermost frame reached. unwind_user_next_common()
+> +		 * disregards all other fields in outermost frame.
+> +		 */
+> +		frame->outermost = false;
+
+		frame->outermost = true;
+
+> +		return 0;
+> +	} else {
+> +		/*
+> +		 * Assume IP past prologue and new stack frame allocated.
+> +		 * Follow back chain, which then equals the SP at entry.
+> +		 * Skips caller if wrong in topmost frame.
+> +		 */
+> +		sf = (void __user *)sp;
+> +		ra_addr = (unsigned long __user *)&sf->gprs[8];
+> +	}
+> +
+> +done:
+> +	frame->cfa_off = sp - state->sp + 160;
+> +	frame->sp_off = -160;
+> +	frame->fp.loc = UNWIND_USER_LOC_UNKNOWN;	/* Cannot unwind FP. */
+> +	frame->use_fp = false;
+> +	frame->ra.loc = UNWIND_USER_LOC_STACK;
+> +	frame->ra.offset = (unsigned long)ra_addr - (state->sp + frame->cfa_off);
+> +	frame->outermost = false;
+> +
+> +	return 0;
+> +}
+> +#define unwind_user_fp_get_frame unwind_user_fp_get_frame
+Regards,
+Jens
 -- 
-2.25.1
+Jens Remus
+Linux on Z Development (D3303)
++49-7031-16-1128 Office
+jremus@de.ibm.com
+
+IBM
+
+IBM Deutschland Research & Development GmbH; Vorsitzender des Aufsichtsrats: Wolfgang Wendt; Geschäftsführung: David Faller; Sitz der Gesellschaft: Böblingen; Registergericht: Amtsgericht Stuttgart, HRB 243294
+IBM Data Privacy Statement: https://www.ibm.com/privacy/
 
 
