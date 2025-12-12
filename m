@@ -1,117 +1,163 @@
-Return-Path: <bpf+bounces-76517-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76518-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32434CB812F
-	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 08:10:43 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92171CB8290
+	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 08:50:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B7404301D9D5
-	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 07:10:32 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 50712303FA56
+	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 07:50:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B01FB2D663F;
-	Fri, 12 Dec 2025 07:10:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAAC4283FFB;
+	Fri, 12 Dec 2025 07:50:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kdYVYhXq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LalMHzu8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E13930F7F1
-	for <bpf@vger.kernel.org>; Fri, 12 Dec 2025 07:10:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 586861F4169;
+	Fri, 12 Dec 2025 07:50:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765523429; cv=none; b=GoRtyuAPzuIlEE/MoZZyKkw011AqVa4A5Kum8yx2ceRRjELxU0Ura1YWCSM82zVGy/rU1lRyoP1U7KNNHzF6RfaNnyN9lK3/GsTGHPIu1vNRhYbGZnSR2ng9BEY30psW119CZ5BHhVRHDSQeX/rhkGZgKGaSI1N7VEfYUOIuLwg=
+	t=1765525837; cv=none; b=T4DWoS39Kw7hB3LQfhqo3HWtZWkuKLMnt04egaTxKTIkZlIxc+srYUykFxUQGlBgJggHOrFGE+lO3aUMW+u3d2ebzkLGvTMrqm2n94KCGefjwOVKUZUJ+EbOZnGeX5cwojbEiSpdJNBbrl3RozcrVA9D3bEBMneKoh7IARvx1Gg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765523429; c=relaxed/simple;
-	bh=W7uppCv7V1iw0fcoFOO1Ov19o0BqWyomQuPZ+QZwW24=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ajjex9vgX1cSXU4rbe2+i+CKwpocJoLQm/Ar+UvJmUQs5+NOJ0tB9/IWIaZAm58yM2bJjCONTT+zkmRupwZ5IVdgJsXJ0g2Qi6r4zPXS/Lz81szyxXrS3YygTwSBCCx2ZsvKwH1tNGFdwkTneEZ8jUHN/xTsALLcTf15L7/oRpw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kdYVYhXq; arc=none smtp.client-ip=209.85.216.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-34374febdefso954093a91.0
-        for <bpf@vger.kernel.org>; Thu, 11 Dec 2025 23:10:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1765523426; x=1766128226; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=W7uppCv7V1iw0fcoFOO1Ov19o0BqWyomQuPZ+QZwW24=;
-        b=kdYVYhXqwt4Vp7WzR2Q3Ynwt+4xcxM1ONflrrKsrY9nMGzVZdCkhv2dfB2w8mRsLID
-         9DuTzfN8qEdSvSjMfhTr0SBGj797Lw6iCvZL3HCY9Wi+0eYyP4m8tahPt2etrSpnY+Ff
-         gpz5kuONXKwpSsW13HeIkzbqyUNkpHZqBnBkvhtdwgSFmMX6ClB7RLMMs5eTQjpi3qBa
-         zBRFKybMsPpTRMKSZ/TCHmEnAM9Ft+EggdE04lSqtrOk2LNufzQkhpwuhYj4b/n53GZp
-         iYplcDZWs1xOcuzBlq9UtMcx25iGatvbMu1ubh+4gTDKxXFLNKj4mJ4a/AzFkheZCnxq
-         oRpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765523426; x=1766128226;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=W7uppCv7V1iw0fcoFOO1Ov19o0BqWyomQuPZ+QZwW24=;
-        b=ajAsSIyzDJGUjlsd1HwHKAZOPk/F5evMudFiKlCj+bHS6o5+E+sApj2yCUxSyx5saw
-         FblSwSQJD9V1w8oclouC2LMt53XzQ5ZJloWFXwyPbWx/13xEWSjKLtT57iSst5jzIM/0
-         Y+HCldqNPlMAn4mGB0PA89HkBezNnkCsXEii0tHhp2Xnuy8h6VgZ7+uEMNDHPtfMAN/7
-         Sr6OjMmiZkQgYdWzOOVBaPt1IHtlutkg1OlzoglemuUMcIMugeygzHj68PXmGxj2DdZR
-         uClvQq4e7lzwxzogebhtemE7uNwryxrVATmnntR8LNma3kz+mHzFDBcEIQz3wBNOURgJ
-         ZF5w==
-X-Gm-Message-State: AOJu0Yzb+5PKQwkrCC2Q4noc5aPhEW6msWsFvxrVFXr2P37jnsEw3CZq
-	cDoHbAoy7eaa44cjAPbnpKhEKwoJq/VtE0pdiCy4J4puQ9Q4XTMyuYou
-X-Gm-Gg: AY/fxX7FGRmA0JQxu0Krjx0ZpA9xyF45BQeQ2uMv0wrWNdNGCEGmgUfkY++ciGjqy+b
-	8Ul6XcTTnKNKCeBQD6aqcIuEpOhVg8KzRcn2g/z+JZ5f4NxfuMBa5r3mHdMeMZh2Ch6EMi0s8UM
-	i8cPkO1r6CUDRGMitnOJXYS6REzApDbIUSIIqywW7Q0wc4+oQGP3iRaMTxZ5AzIQUG/jRKT/5Af
-	uiNonbERDrrn2qA/5mrWGm5YFO7UJimj5Y/qQzbw9ElLJyAElv+Rpr8otOfpn69BFvM/ouP7tjH
-	f5+2J6F6geXiEa3lCnw9w3KsaFH7Et11hN49M++rrbKGfbi/rLtrssLBRMoNL8JaVILxsoe5Tig
-	kH1d1zfeANKPOChOv7FLn9BQv0hCyIlgcxCJFAUAlKYRt/kxrbSCBFNKU74RcSazux/WSJZVl/6
-	hf9D504oAkJQYoHyFQmvg9297VICSWgs91ZqrfAp6b6Uc=
-X-Google-Smtp-Source: AGHT+IFABMRkw8oyKCgA0tVnnLIaZDoEoQW4VZmuiRYNtTWUY/AN8gGPDAFTfjKFmICcMWMfhDD3Cw==
-X-Received: by 2002:a17:90b:3b50:b0:341:88c9:6eb2 with SMTP id 98e67ed59e1d1-34abd6b5d46mr1284217a91.1.1765523426298;
-        Thu, 11 Dec 2025 23:10:26 -0800 (PST)
-Received: from [10.200.2.32] (fs98a57d9c.tkyc007.ap.nuro.jp. [152.165.125.156])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34abe2aa5c8sm976435a91.15.2025.12.11.23.10.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Dec 2025 23:10:25 -0800 (PST)
-Message-ID: <bf7ed4cf0254fb3fa707ad49f3b2ed0be6b500c2.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/6] resolve_btfids: Factor out load_btf()
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Ihor Solodrai <ihor.solodrai@linux.dev>, Alexei Starovoitov
- <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
- <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,  Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend	
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev	 <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>,  Andrew Morton <akpm@linux-foundation.org>, Nathan
- Chancellor <nathan@kernel.org>, Nicolas Schier	 <nsc@kernel.org>, Tejun Heo
- <tj@kernel.org>, David Vernet <void@manifault.com>,  Andrea Righi
- <arighi@nvidia.com>, Changwoo Min <changwoo@igalia.com>, Shuah Khan
- <shuah@kernel.org>, Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
- Bill Wendling <morbo@google.com>, Justin Stitt	 <justinstitt@google.com>,
- Alan Maguire <alan.maguire@oracle.com>, Donglin Peng	
- <dolinux.peng@gmail.com>
-Cc: bpf@vger.kernel.org, dwarves@vger.kernel.org,
- linux-kernel@vger.kernel.org, 	linux-kbuild@vger.kernel.org
-Date: Fri, 12 Dec 2025 16:10:19 +0900
-In-Reply-To: <20251205223046.4155870-3-ihor.solodrai@linux.dev>
-References: <20251205223046.4155870-1-ihor.solodrai@linux.dev>
-		 <20251205223046.4155870-3-ihor.solodrai@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
+	s=arc-20240116; t=1765525837; c=relaxed/simple;
+	bh=9gZAJzd9N3n33XUpl9ZJURK4VvrgM+mYH5zWMq95b0s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gNS9rXf8CXGZAOrm+FPDNHqLV2QlUoOjCj8y+zzcYEX5J6Z7ufKUkRa/tqsU/F3emYn3O/TAdxo+pvSeAsgErQPZv8T6dxSY88S6h94rE+w+oatyUWCZrSr7sp6peJrCkjHiXqmCMAJSh3H9jLQgKfF6A/EuXrtfq0HLLNR5kZ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LalMHzu8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C18F1C4CEF1;
+	Fri, 12 Dec 2025 07:50:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1765525836;
+	bh=9gZAJzd9N3n33XUpl9ZJURK4VvrgM+mYH5zWMq95b0s=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=LalMHzu8ZQRX0TOeoVdRbAOVWcUoLpC/WMpVdkHMuhGbe1bpEjhqGj2MxXbyxmnpa
+	 m4jb5Gr/Nsa72Nj1cIxBwnyRC95DbZqvl0R7sbUW/fciQC0OKKP0bRfSNYIJLdc6IL
+	 bVq4GI+McHjpNxf/ySsbgm9ovf612FfX2M8NAs9wHMWgkIT6/1ROaPSYJUbTCHQsRc
+	 N1KIxjFCe1mFTpAjWYSC5/mxMBhxNol4io8xo9MBTfV+sNciaoPEp06tugFhsWJvIf
+	 DTWj08o3b8B3sCoe21giH2IkMEDSa382o5N+qPqUEFXrJFz/o3GHgF31fsONK3vEc5
+	 OlrV23CqWVfLQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 326DACE0C97; Thu, 11 Dec 2025 23:50:34 -0800 (PST)
+Date: Thu, 11 Dec 2025 23:50:34 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Joel Fernandes <joelagnelf@nvidia.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Steve Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: [PATCH v3] tracing: Guard __DECLARE_TRACE() use of
+ __DO_TRACE_CALL() with SRCU-fast
+Message-ID: <83cd4b4d-1eec-47d0-be91-57c915775612@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <e2fe3162-4b7b-44d6-91ff-f439b3dce706@paulmck-laptop>
+ <B5D08899-9C23-4FA3-B988-3BB3E8E6D908@nvidia.com>
+ <febd477b-c111-4d5e-be89-cae3685853f5@paulmck-laptop>
+ <bce9a781-3cc3-45d7-8c95-9f747e08a3cd@nvidia.com>
+ <0ec97a2d-5aee-4214-b387-229e9822b468@paulmck-laptop>
+ <C0D26D77-316D-467F-81C9-030D4E0EBCD8@nvidia.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <C0D26D77-316D-467F-81C9-030D4E0EBCD8@nvidia.com>
 
-On Fri, 2025-12-05 at 14:30 -0800, Ihor Solodrai wrote:
-> Increase the lifetime of parsed BTF in resolve_btfids by factoring
-> load_btf() routine out of symbols_resolve() and storing the base_btf
-> and btf pointers in the struct object.
->=20
-> Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
-> ---
+On Fri, Dec 12, 2025 at 03:43:07AM +0000, Joel Fernandes wrote:
+> 
+> 
+> > On Dec 12, 2025, at 9:47 AM, Paul E. McKenney <paulmck@kernel.org> wrote:
+> > 
+> > ﻿On Fri, Dec 12, 2025 at 09:12:07AM +0900, Joel Fernandes wrote:
+> >> 
+> >> 
+> >>> On 12/11/2025 3:23 PM, Paul E. McKenney wrote:
+> >>> On Thu, Dec 11, 2025 at 08:02:15PM +0000, Joel Fernandes wrote:
+> >>>> 
+> >>>> 
+> >>>>> On Dec 8, 2025, at 1:20 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
+> >>>>> 
+> >>>>> ﻿The current use of guard(preempt_notrace)() within __DECLARE_TRACE()
+> >>>>> to protect invocation of __DO_TRACE_CALL() means that BPF programs
+> >>>>> attached to tracepoints are non-preemptible.  This is unhelpful in
+> >>>>> real-time systems, whose users apparently wish to use BPF while also
+> >>>>> achieving low latencies.  (Who knew?)
+> >>>>> 
+> >>>>> One option would be to use preemptible RCU, but this introduces
+> >>>>> many opportunities for infinite recursion, which many consider to
+> >>>>> be counterproductive, especially given the relatively small stacks
+> >>>>> provided by the Linux kernel.  These opportunities could be shut down
+> >>>>> by sufficiently energetic duplication of code, but this sort of thing
+> >>>>> is considered impolite in some circles.
+> >>>>> 
+> >>>>> Therefore, use the shiny new SRCU-fast API, which provides somewhat faster
+> >>>>> readers than those of preemptible RCU, at least on Paul E. McKenney's
+> >>>>> laptop, where task_struct access is more expensive than access to per-CPU
+> >>>>> variables.  And SRCU-fast provides way faster readers than does SRCU,
+> >>>>> courtesy of being able to avoid the read-side use of smp_mb().  Also,
+> >>>>> it is quite straightforward to create srcu_read_{,un}lock_fast_notrace()
+> >>>>> functions.
+> >>>>> 
+> >>>>> While in the area, SRCU now supports early boot call_srcu().  Therefore,
+> >>>>> remove the checks that used to avoid such use from rcu_free_old_probes()
+> >>>>> before this commit was applied:
+> >>>>> 
+> >>>>> e53244e2c893 ("tracepoint: Remove SRCU protection")
+> >>>>> 
+> >>>>> The current commit can be thought of as an approximate revert of that
+> >>>>> commit, with some compensating additions of preemption disabling.
+> >>>>> This preemption disabling uses guard(preempt_notrace)().
+> >>>>> 
+> >>>>> However, Yonghong Song points out that BPF assumes that non-sleepable
+> >>>>> BPF programs will remain on the same CPU, which means that migration
+> >>>>> must be disabled whenever preemption remains enabled.  In addition,
+> >>>>> non-RT kernels have performance expectations that would be violated by
+> >>>>> allowing the BPF programs to be preempted.
+> >>>>> 
+> >>>>> Therefore, continue to disable preemption in non-RT kernels, and protect
+> >>>>> the BPF program with both SRCU and migration disabling for RT kernels,
+> >>>>> and even then only if preemption is not already disabled.
+> >>>> 
+> >>>> Hi Paul,
+> >>>> 
+> >>>> Is there a reason to not make non-RT also benefit from SRCU fast and trace points for BPF? Can be a follow up patch though if needed.
+> >>> 
+> >>> Because in some cases the non-RT benefit is suspected to be negative
+> >>> due to increasing the probability of preemption in awkward places.
+> >> 
+> >> Since you mentioned suspected, I am guessing there is no concrete data collected
+> >> to substantiate that specifically for BPF programs, but correct me if I missed
+> >> something. Assuming you're referring to latency versus tradeoffs issues, due to
+> >> preemption, Android is not PREEMPT_RT but is expected to be low latency in
+> >> general as well. So is this decision the right one for Android as well,
+> >> considering that (I heard) it uses BPF? Just an open-ended question.
+> >> 
+> >> There is also issue of 2 different paths for PREEMPT_RT versus otherwise,
+> >> complicating the tracing side so there better be a reason for that I guess.
+> > 
+> > You are advocating a change in behavior for non-RT workloads.  Why do
+> > you believe that this change would be OK for those workloads?
+> 
+> Same reasons I provided in my last email. If we are saying SRCU-fast is required for lower latency, I find it strange that we are leaving out Android which has low latency audio usecases, for instance.
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+If Android provides numbers showing that it helps them, then it is easy
+to provide a Kconfig option that defaults to PREEMPT_RT, but that Android
+can override.  Right?
 
+							Thanx, Paul
+
+> Thanks,
+> 
+>  - Joel
+> 
+> 
+> > 
+> >                            Thanx, Paul
 
