@@ -1,36 +1,36 @@
-Return-Path: <bpf+bounces-76538-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76539-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F848CB93FF
-	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 17:18:55 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1CD1CB9408
+	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 17:19:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 9221930146CF
-	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 16:18:51 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 46BF2309960D
+	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 16:18:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8617D26F2AC;
-	Fri, 12 Dec 2025 16:18:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 441E3276020;
+	Fri, 12 Dec 2025 16:18:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E576721B918;
-	Fri, 12 Dec 2025 16:18:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C7C6285CA4;
+	Fri, 12 Dec 2025 16:18:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765556329; cv=none; b=bNJp2ZrS3De+91LSTtVgGZiHqgeLhNnmcKkmI8cU+zkm/KkpucpkPchMiGrzODSfHgEPGcilE6v6cZkyNHfMUh2J1KVfuH5b3dY+NY49GFYslGq1AcgbvUB9o9OkV1QADScPYnCCcsvAS6MuJx2+BgH7yfoQTN0MuHm4JimX98g=
+	t=1765556332; cv=none; b=LRYnvL1D22U6YlZ4sX83gxaxVGhI93E/SmBP4PsN/qqASa3uDrybiJJU/XytOgYkyNBHwY44kYwx0fr3PoC5OtVlvGPnR2oMbq3vpsmT71oyogWl3bufflXkcPyBgL6YoOgGaspLFHj7z9cE2HWYviuJ/+x+zReKNmSzGhO2adg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765556329; c=relaxed/simple;
-	bh=Rw/yopypP+v6FMmNiobvuZXEFBWPM7fiVCd72fNmoVs=;
+	s=arc-20240116; t=1765556332; c=relaxed/simple;
+	bh=gmiQZLMT0fRlOSVxSZUWZCPHVxcx6pgW8SlQPB5xtKw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rWvReTmRsnLMj8AvDW8F2eDVC7Iw/i2S/Jj/bfXbeuG2+TsWaZIqI5DFiLb84zCrrp2hVlsKzZIWs2G33Y+KfI5xJxTU3FTxn1ZmntiuKGIpz613EabLoRXJfJN36P4RdY2/QzAAV8H0UiUahdc/SAjbQoJgvLeFzrPTmpFCAns=
+	 MIME-Version; b=L7B7POyr+MywZkzVMjh/Vy+Zc8zp0py5A9za5QsXhi8fgCjIbImjsSsQbF9wZXOWTNWnSCZVMGsu0B9SFXobgT7fERKK9aQ64zWEBUBXm/EcQJEqf9VroRGE16Hdl0NzuNQOBmyMsrJbf+WWHWyLCoj2jjrYfwsC+uya6Qpavgc=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2EFB11575;
-	Fri, 12 Dec 2025 08:18:38 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 81B46165C;
+	Fri, 12 Dec 2025 08:18:43 -0800 (PST)
 Received: from e129823.cambridge.arm.com (e129823.arm.com [10.1.197.6])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 585873F762;
-	Fri, 12 Dec 2025 08:18:40 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id AC4203F762;
+	Fri, 12 Dec 2025 08:18:45 -0800 (PST)
 From: Yeoreum Yun <yeoreum.yun@arm.com>
 To: akpm@linux-foundation.org,
 	david@kernel.org,
@@ -70,9 +70,9 @@ Cc: linux-mm@kvack.org,
 	linux-rt-devel@lists.linux.dev,
 	linux-arm-kernel@lists.infradead.org,
 	Yeoreum Yun <yeoreum.yun@arm.com>
-Subject: [PATCH 1/2] mm: introduce pagetable_alloc_nolock()
-Date: Fri, 12 Dec 2025 16:18:31 +0000
-Message-Id: <20251212161832.2067134-2-yeoreum.yun@arm.com>
+Subject: [PATCH 2/2] arm64: mmu: use pagetable_alloc_nolock() while stop_machine()
+Date: Fri, 12 Dec 2025 16:18:32 +0000
+Message-Id: <20251212161832.2067134-3-yeoreum.yun@arm.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20251212161832.2067134-1-yeoreum.yun@arm.com>
 References: <20251212161832.2067134-1-yeoreum.yun@arm.com>
@@ -82,120 +82,82 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Some architectures invoke pagetable_alloc() with preemption disabled
-(e.g., arm64’s linear_map_split_to_ptes()).
+linear_map_split_to_ptes() and __kpti_install_ng_mappings()
+are called as callback of stop_machine().
+That means these functions context are preemption disabled.
 
-Under PREEMPT_RT, calling pagetable_alloc() with
-preemption disabled is not allowed, because it may acquire
-a spin lock that becomes sleepable on RT, potentially
-causing a sleep during page allocation.
+Unfortunately, under PREEMPT_RT, the pagetable_alloc() or
+__get_free_pages() couldn't be called in this context
+since spin lock that becomes sleepable on RT,
+potentially causing a sleep during page allocation.
 
-To address this, introduce a pagetable_alloc_nolock() API and
-permit two additional GFP flags for alloc_pages_nolock() — __GFP_HIGH and __GFP_ZERO.
+To address this, pagetable_alloc_nolock().
 
 Signed-off-by: Yeoreum Yun <yeoreum.yun@arm.com>
 ---
- include/linux/mm.h   | 18 ++++++++++++++++++
- kernel/bpf/stream.c  |  2 +-
- kernel/bpf/syscall.c |  2 +-
- mm/page_alloc.c      | 10 +++-------
- 4 files changed, 23 insertions(+), 9 deletions(-)
+ arch/arm64/mm/mmu.c | 23 ++++++++++++++++++-----
+ 1 file changed, 18 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 7c79b3369b82..11a27f60838b 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2990,6 +2990,24 @@ static inline struct ptdesc *pagetable_alloc_noprof(gfp_t gfp, unsigned int orde
- }
- #define pagetable_alloc(...)	alloc_hooks(pagetable_alloc_noprof(__VA_ARGS__))
- 
-+/**
-+ * pagetable_alloc_nolock - opportunistic reetentrant pagetables allocation
-+ *                          from any context
-+ * @gfp:    GFP flags. Only __GFP_ZERO, __GFP_HIGH, __GFP_ACCOUNT allowed.
-+ * @order:  desired pagetable order
-+ *
-+ * opportunistic reetentrant version of pagetable_alloc().
-+ *
-+ * Return: The ptdesc describing the allocated page tables.
-+ */
-+static inline struct ptdesc *pagetable_alloc_nolock_noprof(gfp_t gfp, unsigned int order)
-+{
-+	struct page *page = alloc_pages_nolock_noprof(gfp, NUMA_NO_NODE, order);
-+
-+	return page_ptdesc(page);
-+}
-+#define pagetable_alloc_nolock(...)	alloc_hooks(pagetable_alloc_nolock_noprof(__VA_ARGS__))
-+
- /**
-  * pagetable_free - Free pagetables
-  * @pt:	The page table descriptor
-diff --git a/kernel/bpf/stream.c b/kernel/bpf/stream.c
-index ff16c631951b..3c80c8007d91 100644
---- a/kernel/bpf/stream.c
-+++ b/kernel/bpf/stream.c
-@@ -83,7 +83,7 @@ static struct bpf_stream_page *bpf_stream_page_replace(void)
- 	struct bpf_stream_page *stream_page, *old_stream_page;
- 	struct page *page;
- 
--	page = alloc_pages_nolock(/* Don't account */ 0, NUMA_NO_NODE, 0);
-+	page = alloc_pages_nolock(/* Don't account */ __GFP_ZERO, NUMA_NO_NODE, 0);
- 	if (!page)
- 		return NULL;
- 	stream_page = page_address(page);
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 8a129746bd6c..cbc0f8d0c18b 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -598,7 +598,7 @@ static bool can_alloc_pages(void)
- static struct page *__bpf_alloc_page(int nid)
+diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+index 2ba01dc8ef82..0e98606d8c4c 100644
+--- a/arch/arm64/mm/mmu.c
++++ b/arch/arm64/mm/mmu.c
+@@ -475,10 +475,15 @@ static void __create_pgd_mapping(pgd_t *pgdir, phys_addr_t phys,
+ static phys_addr_t __pgd_pgtable_alloc(struct mm_struct *mm, gfp_t gfp,
+ 				       enum pgtable_type pgtable_type)
  {
- 	if (!can_alloc_pages())
--		return alloc_pages_nolock(__GFP_ACCOUNT, nid, 0);
-+		return alloc_pages_nolock(__GFP_ZERO | __GFP_ACCOUNT, nid, 0);
+-	/* Page is zeroed by init_clear_pgtable() so don't duplicate effort. */
+-	struct ptdesc *ptdesc = pagetable_alloc(gfp & ~__GFP_ZERO, 0);
++	struct ptdesc *ptdesc;
+ 	phys_addr_t pa;
  
- 	return alloc_pages_node(nid,
- 				GFP_KERNEL | __GFP_ZERO | __GFP_ACCOUNT
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index ed82ee55e66a..88a920dc1e9a 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -7542,21 +7542,17 @@ struct page *alloc_frozen_pages_nolock_noprof(gfp_t gfp_flags, int nid, unsigned
- 	 * various contexts. We cannot use printk_deferred_enter() to mitigate,
- 	 * since the running context is unknown.
- 	 *
--	 * Specify __GFP_ZERO to make sure that call to kmsan_alloc_page() below
--	 * is safe in any context. Also zeroing the page is mandatory for
--	 * BPF use cases.
--	 *
- 	 * Though __GFP_NOMEMALLOC is not checked in the code path below,
- 	 * specify it here to highlight that alloc_pages_nolock()
- 	 * doesn't want to deplete reserves.
- 	 */
--	gfp_t alloc_gfp = __GFP_NOWARN | __GFP_ZERO | __GFP_NOMEMALLOC | __GFP_COMP
-+	gfp_t alloc_gfp = __GFP_NOWARN | __GFP_NOMEMALLOC | __GFP_COMP
- 			| gfp_flags;
- 	unsigned int alloc_flags = ALLOC_TRYLOCK;
- 	struct alloc_context ac = { };
- 	struct page *page;
++	/* Page is zeroed by init_clear_pgtable() so don't duplicate effort. */
++	if (gfpflags_allow_spinning(gfp))
++		ptdesc  = pagetable_alloc(gfp & ~__GFP_ZERO, 0);
++	else
++		ptdesc  = pagetable_alloc_nolock(gfp & ~__GFP_ZERO, 0);
++
+ 	if (!ptdesc)
+ 		return INVALID_PHYS_ADDR;
  
--	VM_WARN_ON_ONCE(gfp_flags & ~__GFP_ACCOUNT);
-+	VM_WARN_ON_ONCE(gfp_flags & ~(__GFP_HIGH | __GFP_ZERO | __GFP_ACCOUNT));
- 	/*
- 	 * In PREEMPT_RT spin_trylock() will call raw_spin_lock() which is
- 	 * unsafe in NMI. If spin_trylock() is called from hard IRQ the current
-@@ -7602,7 +7598,7 @@ struct page *alloc_frozen_pages_nolock_noprof(gfp_t gfp_flags, int nid, unsigned
- }
- /**
-  * alloc_pages_nolock - opportunistic reentrant allocation from any context
-- * @gfp_flags: GFP flags. Only __GFP_ACCOUNT allowed.
-+ * @gfp_flags: GFP flags. Only __GFP_ZERO, __GFP_HIGH, __GFP_ACCOUNT allowed.
-  * @nid: node to allocate from
-  * @order: allocation order size
-  *
+@@ -869,6 +874,7 @@ static int __init linear_map_split_to_ptes(void *__unused)
+ 		unsigned long kstart = (unsigned long)lm_alias(_stext);
+ 		unsigned long kend = (unsigned long)lm_alias(__init_begin);
+ 		int ret;
++		gfp_t gfp = IS_ENABLED(CONFIG_PREEMPT_RT) ? __GFP_HIGH : GFP_ATOMIC;
+ 
+ 		/*
+ 		 * Wait for all secondary CPUs to be put into the waiting area.
+@@ -881,9 +887,9 @@ static int __init linear_map_split_to_ptes(void *__unused)
+ 		 * PTE. The kernel alias remains static throughout runtime so
+ 		 * can continue to be safely mapped with large mappings.
+ 		 */
+-		ret = range_split_to_ptes(lstart, kstart, GFP_ATOMIC);
++		ret = range_split_to_ptes(lstart, kstart, gfp);
+ 		if (!ret)
+-			ret = range_split_to_ptes(kend, lend, GFP_ATOMIC);
++			ret = range_split_to_ptes(kend, lend, gfp);
+ 		if (ret)
+ 			panic("Failed to split linear map\n");
+ 		flush_tlb_kernel_range(lstart, lend);
+@@ -1207,7 +1213,14 @@ static int __init __kpti_install_ng_mappings(void *__unused)
+ 	remap_fn = (void *)__pa_symbol(idmap_kpti_install_ng_mappings);
+ 
+ 	if (!cpu) {
+-		alloc = __get_free_pages(GFP_ATOMIC | __GFP_ZERO, order);
++		if (IS_ENABLED(CONFIG_PREEMPT_RT))
++			alloc = (u64) pagetable_alloc_nolock(__GFP_HIGH | __GFP_ZERO, order);
++		else
++			alloc = __get_free_pages(GFP_ATOMIC | __GFP_ZERO, order);
++
++		if (!alloc)
++			panic("Failed to alloc kpti_ng_pgd\n");
++
+ 		kpti_ng_temp_pgd = (pgd_t *)(alloc + (levels - 1) * PAGE_SIZE);
+ 		kpti_ng_temp_alloc = kpti_ng_temp_pgd_pa = __pa(kpti_ng_temp_pgd);
+ 
 -- 
 LEVI:{C3F47F37-75D8-414A-A8BA-3980EC8A46D7}
 
