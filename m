@@ -1,336 +1,503 @@
-Return-Path: <bpf+bounces-76540-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76541-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8917CB9737
-	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 18:27:17 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 088E5CB9CC0
+	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 21:38:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 65ABA30056ED
-	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 17:27:16 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 499393074CC3
+	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 20:38:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 651812DC790;
-	Fri, 12 Dec 2025 17:27:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4D0A30EF74;
+	Fri, 12 Dec 2025 20:37:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="S5/iGAgL";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="zI5u/Qkh"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="cNFco3qX"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+Received: from SJ2PR03CU001.outbound.protection.outlook.com (mail-westusazon11012065.outbound.protection.outlook.com [52.101.43.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2FB22DCC17;
-	Fri, 12 Dec 2025 17:27:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27D3F293B5F;
+	Fri, 12 Dec 2025 20:37:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.43.65
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765560434; cv=fail; b=AxsTNPdyB16TvMCXrlaFaslNb5kFPGxGJRu3Vy2K1/i7Ea2C1R1u87hi0C1x5K/GS349QT+JrEbQ5gslfteEBbc1i08Knpogn0NMIC5LGTa9k+oswZ/dju16pjj7TbH+CmFvzk3WtmCWX9mEMi9Ytt+W0ujh4Z+Ffp431refPqg=
+	t=1765571878; cv=fail; b=dJdU2Q8W2fwcCuiP6uWfTN1RzsV66Xnh5OAF7uuyD9A4b3zkUqZTzqDrwYJYTL7z3PbRAg+9BmDdzY62xtL1B88I8q4ujt2QzFoF/xW/e350mVkFmvsXJuPyZayE+urH6lTal5++YuBm5/w2356yn1QreCCMN/ouSdSBkDQs6ZE=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765560434; c=relaxed/simple;
-	bh=GT0bMseIb/0SovHgmMrvpJnGQpBb55EIT7kWgYZg9MQ=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=dEAjHtYn29n8zh4aFwIeETRUrSLwFrEatdjL13EuLR29FA0ezyUcY/Y25YmNG8oIqDdbdcEpsv/0g1OD6C3kZ5wEovguyexQUeWCKS+jtzBIpVCB3jXgxhVoNhzX0iks4fjariylfaQI+n5WdDj5b0+K+4vsHcCsxr9ECgAv8T4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=S5/iGAgL; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=zI5u/Qkh; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 5BCHOqHH4152611;
-	Fri, 12 Dec 2025 17:26:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	corp-2025-04-25; bh=fAm0BHo5ZmUzXZnMkcFodZ+iziFzrOkSwQ1UMXH+xE8=; b=
-	S5/iGAgLHaopNXGKnDUPvLFYYDXSi01LEuzAGdXp9UCvu5YzxvvSH2SqjrB0mJwJ
-	9ryfuYkQ4deRlp+/N7V42yF3kl46r+0co6KMBvhVOIchBbKsREtrpaPpmRaD0m5L
-	PG+uteTToLHpR2ihtVczTv+AHw6vABjphhz5r+Tfn5qJQIMLj4R3Nih6ARC2uUrT
-	0Qdf51wWs4GIIzDz7+SsDXGOGZoQfhywSaUCY5fPklW4G2NBS8ppulpUOa2q6deN
-	3oMoWOOfiwBrljYvVcYneVVfzhIjuyljS5t2KzLTzBzSOXnctT94umPt6MkCNIAT
-	R+zKithL3JKBBQVVV1bh2w==
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4ayc9q3ne0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 12 Dec 2025 17:26:33 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 5BCH0l9I017466;
-	Fri, 12 Dec 2025 17:26:32 GMT
-Received: from ph7pr06cu001.outbound.protection.outlook.com (mail-westus3azon11010040.outbound.protection.outlook.com [52.101.201.40])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 4avaxd1p0b-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 12 Dec 2025 17:26:32 +0000
+	s=arc-20240116; t=1765571878; c=relaxed/simple;
+	bh=5H0w+4BezDoEFUBUL09WNP76gf9RWqLMssHwzBO58i4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=CPq0viB1lwCXKY+ac7eaH3mlRbPOEFBKhZPq4Xo9c1aIHEQgMz9lgHqvA7Gc7U2vBd4r0bV0wdsms5yq19uN+0tXm07itCE8Cpy4A2FynJtNnIczn8w1V+1t0BK0rh8ILbOGwHGScQLkrRLdfdD6FFIJUJWWB6NE/jcQe4AlEJQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=cNFco3qX; arc=fail smtp.client-ip=52.101.43.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=IQ/SxVapPIgVcdodDE4RBZSia3DdZ/sx7CWpt2JUQ1hshQmfnfmC49XS8ZPBGZn4FLtPoTA/i61U3scknWEboaACoejJ7eLTTmVKLkFF1d/yK/N0XenzXRRwqrPH+Eiy/EKlZ9ysEMJUzz2Z2+MXFh61A7KDZTOf0BtLIGpaI9Om5peO6Ej7zUD/XC9wI3WUFduhQkGMB5+BgUq/rQjESkpVQc4gtoOGsguCmnGYvJn6eQZYFWq7dC7fCXHY9uMmUS1SHiyahTK7xsFhEryG6QxfLBZUONRQcg4tU97q8/rX1UsovPmek1PovJ8LIjU/zvjdQhMiMNwAa0Kp6PLKHA==
+ b=o5ns6XR9cgJ8A9GsPaFHguSgiIHFT4yBpUCetIBjToDwwY/Wxg8eHR6uHZYFzJTzLd5LeFCqmogHDdQyGeIs2oFjcFXpEpfuA3O+NiI0CWHaRiq+msSekrro3qE7AccE64TOBDikKTNnHNjEjhZGb8iJ2g/Vj6o6jN7sPs/6jJkhmJ80jD7lb80K/SPfBTzrAvibH4jVECsJACffg941yr4JRCtQnkqUeU62nsYb/Ia5sGG2wDoArInUQjX5scxwS+2sb+DXzG1t0ped2lTTzO4Ievg2qTM1hpHUXfRDtH0F1DM+P/FWeBge6E1wOEx8IZfozdzPgLnr+zMi8e2gDw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fAm0BHo5ZmUzXZnMkcFodZ+iziFzrOkSwQ1UMXH+xE8=;
- b=HdFd+1M/zvSoyOvmfkjQ/pYywmiV5sbTACcvPnviBNu2rxQyNri2DJhVVpxJlPEyeLHouDqgDevMg66SQ27Bc/JlHJ+mAGJ2uchkJP3Qkil1s8zSQsLu5EpT8t1rjQui9T85SY0vKb1yVhq3gbp1lcmQ5+GEqXgWL+p+IaxW88/emSqPBOcdG/7E5MV0vHqOrXOFGPNavFHMgY4Dojxn7fmf1fWj9nvqyrxAtYNOe5HAk4j63xusIRBu5TMie/Kq2CV75jmGKQv8/AZ0S1f+HXgzFDElJ4Kah47vIhRZaqWvfJ59C6ix06uTum/5b5U7pcpDvUZec4+C7Sn4MDIcUQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ bh=2hpL+zaQVVgrHgQgJCJIsP9uWX9/wlBAdLhoHe+VD5E=;
+ b=LXjJLOzeOI/h5eLJ7QqEY8ablxz4PEIU7kqq8TyqpJTfF6VrveQjNFnB0YDihqcT/abHqNRRnWBRJFy1re6wbP82T+9Bdeg6GSnh3Y3f5twsJFxiItp4JGCIPDQNNIh35cicb4+iJrN5PoDe3KY/XN1MNTmGmQkmHROPMy9iyXzvd02UhWC3PK+D1pS+Qr6bjo53Wls5Ept6CHRgRmWQ6FrQpzqf8GULncQEuq/a89b+efgYWrzt/TMw6nzLprHkjZ5c45s6IGN1T83OKvRHQlu/r4kaLuOoE/15tXrwzCfNnFhgoUVvOVgD/4exhLDUOC2OstxWtZcsJVvWlFa3tw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 198.47.23.194) smtp.rcpttodomain=lists.linaro.org smtp.mailfrom=ti.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=ti.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fAm0BHo5ZmUzXZnMkcFodZ+iziFzrOkSwQ1UMXH+xE8=;
- b=zI5u/QkhwFDhkwnz+ukDLWMo0H5A8Xtou/gvHDTbW7AwQl1jk7dYQIWuN2hve9v2zksp2R+IvaruY/52x6B6Wz1fplmZE8KcdNGVMDouZzVwoYe/PxcMbwfv+6K5N6wgfDNZHypVWUlVPT1+uTZZKdtPZ6NRIjOpM2dUZLY93cQ=
-Received: from DS0PR10MB6271.namprd10.prod.outlook.com (2603:10b6:8:d1::15) by
- SN7PR10MB6473.namprd10.prod.outlook.com (2603:10b6:806:2a0::18) with
+ bh=2hpL+zaQVVgrHgQgJCJIsP9uWX9/wlBAdLhoHe+VD5E=;
+ b=cNFco3qXNBAeAPjLfpDKcj4Jc3LuTxLjhxfVUu57bGfTokOmPF1TEucAPsmjPAXRGpetw1OyDYbqerPebm6yqHcON32a35WsBbFtQCLBRoJRvu0uG781u5thm/WWIuL6h2OC31AvpsDX6X1Jv47yG7QVbuRTm2d7/+aX1VhajTU=
+Received: from CH0P220CA0020.NAMP220.PROD.OUTLOOK.COM (2603:10b6:610:ef::33)
+ by MW4PR10MB6559.namprd10.prod.outlook.com (2603:10b6:303:228::17) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9412.11; Fri, 12 Dec
- 2025 17:26:29 +0000
-Received: from DS0PR10MB6271.namprd10.prod.outlook.com
- ([fe80::940b:88ca:dd2d:6b0c]) by DS0PR10MB6271.namprd10.prod.outlook.com
- ([fe80::940b:88ca:dd2d:6b0c%7]) with mapi id 15.20.9412.005; Fri, 12 Dec 2025
- 17:26:28 +0000
-Message-ID: <8f946abf-dd88-4fac-8bb4-84fcd8d81cf0@oracle.com>
-Date: Fri, 12 Dec 2025 17:26:21 +0000
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v3 4/6] lib/Kconfig.debug: Set the minimum
- required pahole version to v1.22
-To: Ihor Solodrai <ihor.solodrai@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau
- <martin.lau@linux.dev>,
-        Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nsc@kernel.org>,
-        Tejun Heo <tj@kernel.org>, David Vernet <void@manifault.com>,
-        Andrea Righi <arighi@nvidia.com>, Changwoo Min <changwoo@igalia.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
-        Bill Wendling <morbo@google.com>,
-        Justin Stitt <justinstitt@google.com>,
-        Donglin Peng <dolinux.peng@gmail.com>
-Cc: bpf@vger.kernel.org, dwarves@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org
-References: <20251205223046.4155870-1-ihor.solodrai@linux.dev>
- <20251205223046.4155870-5-ihor.solodrai@linux.dev>
-Content-Language: en-GB
-From: Alan Maguire <alan.maguire@oracle.com>
-In-Reply-To: <20251205223046.4155870-5-ihor.solodrai@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO4P123CA0152.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:188::13) To DS0PR10MB6271.namprd10.prod.outlook.com
- (2603:10b6:8:d1::15)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9412.8; Fri, 12 Dec
+ 2025 20:37:53 +0000
+Received: from DS3PEPF000099DA.namprd04.prod.outlook.com
+ (2603:10b6:610:ef:cafe::85) by CH0P220CA0020.outlook.office365.com
+ (2603:10b6:610:ef::33) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9412.10 via Frontend Transport; Fri,
+ 12 Dec 2025 20:37:31 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 198.47.23.194)
+ smtp.mailfrom=ti.com; dkim=none (message not signed) header.d=none;dmarc=pass
+ action=none header.from=ti.com;
+Received-SPF: Pass (protection.outlook.com: domain of ti.com designates
+ 198.47.23.194 as permitted sender) receiver=protection.outlook.com;
+ client-ip=198.47.23.194; helo=lewvzet200.ext.ti.com; pr=C
+Received: from lewvzet200.ext.ti.com (198.47.23.194) by
+ DS3PEPF000099DA.mail.protection.outlook.com (10.167.17.11) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9412.4 via Frontend Transport; Fri, 12 Dec 2025 20:37:52 +0000
+Received: from DLEE200.ent.ti.com (157.170.170.75) by lewvzet200.ext.ti.com
+ (10.4.14.103) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Fri, 12 Dec
+ 2025 14:37:50 -0600
+Received: from DLEE204.ent.ti.com (157.170.170.84) by DLEE200.ent.ti.com
+ (157.170.170.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Fri, 12 Dec
+ 2025 14:37:49 -0600
+Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DLEE204.ent.ti.com
+ (157.170.170.84) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20 via Frontend
+ Transport; Fri, 12 Dec 2025 14:37:49 -0600
+Received: from [10.247.31.238] (lt5cd3044tj5.dhcp.ti.com [10.247.31.238])
+	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 5BCKbn0l2724558;
+	Fri, 12 Dec 2025 14:37:49 -0600
+Message-ID: <124a24dd-14ce-4401-ba13-b6c2acbaf829@ti.com>
+Date: Fri, 12 Dec 2025 14:37:48 -0600
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v2 3/7] net: ethernet: ti: am65-cpsw: add XSK
+ pool helpers
+To: Roger Quadros <rogerq@kernel.org>, Siddharth Vadapalli
+	<s-vadapalli@ti.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+	<davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+	<kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov
+	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, "Jesper Dangaard
+ Brouer" <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, "Sumit
+ Semwal" <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?=
+	<christian.koenig@amd.com>, Stanislav Fomichev <sdf@fomichev.me>, "Simon
+ Horman" <horms@kernel.org>
+CC: <srk@ti.com>, Meghana Malladi <m-malladi@ti.com>,
+	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<bpf@vger.kernel.org>, <linux-media@vger.kernel.org>,
+	<dri-devel@lists.freedesktop.org>, <linaro-mm-sig@lists.linaro.org>,
+	"Muralidharan, Neelima" <neelima@ti.com>
+References: <20251109-am65-cpsw-xdp-zc-v2-0-858f60a09d12@kernel.org>
+ <20251109-am65-cpsw-xdp-zc-v2-3-858f60a09d12@kernel.org>
+Content-Language: en-US
+From: "Qiu, Daolin" <d-qiu@ti.com>
+In-Reply-To: <20251109-am65-cpsw-xdp-zc-v2-3-858f60a09d12@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR10MB6271:EE_|SN7PR10MB6473:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7bc88acf-b756-4bfe-e6c3-08de39a3954e
+X-MS-TrafficTypeDiagnostic: DS3PEPF000099DA:EE_|MW4PR10MB6559:EE_
+X-MS-Office365-Filtering-Correlation-Id: 95e2c799-5feb-4e93-1de4-08de39be52bc
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|7416014|376014|366016|7053199007|921020;
+	BCL:0;ARA:13230040|7416014|376014|1800799024|36860700013|82310400026|921020;
 X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?dXpweWxvTW9JbG93aXNtU1l3c1lZRloyR3pGVERjZ3d1bkE1dzhjbXRrUGc4?=
- =?utf-8?B?dHcrTk1iUklkUS9nYlVDbjN1YWpLQnBMeXJ5UmV2WGR0L3ByZW91Nnd5Y2ZB?=
- =?utf-8?B?VVJqU3dlZ1FxNEhqY1JWcHdoY0NmdmMwTW0vQ2ZkVW1XUUFsTkZMN21YWFA3?=
- =?utf-8?B?UTlGT3dKaGhSanBVU1RjWlpZUVdpRmxKbUFmMkpjNVU5V1g0RFNHNlJsOGVT?=
- =?utf-8?B?dVo5RGdjWEpKeWR0bFlZTERTcDdjZjlsV0cxU09zZEY0S0tzK0h3ejM3cEVu?=
- =?utf-8?B?TnhlVDZFTHZCTHVITUNvdUFvbFU2c2lCRHgyWElFZ3RIVFNkVUlZWHAvVEhG?=
- =?utf-8?B?bmtnNXJCcy85MW1hd25palVFRHZLWFlmR0N5ekN4TEcwUExpc0pVTHpnUlFw?=
- =?utf-8?B?alIxU2x4SzlnOU1JZ2Z6cmxYT1h4WmVFOW5leVJDWkR4ZUpXZmxTSStvUytE?=
- =?utf-8?B?a3NyNHZEc3YxZ1FFNGxib2lidHRLdVh1dUFXN01XOGloU09nZUFRU3dhelZj?=
- =?utf-8?B?Q0svSzVmTjdnVXFNWDhYYUcyTWozaXhvMTRlamRQV1IvWWY3TnV0cURGU1N3?=
- =?utf-8?B?Q0d1SlZvdTZzbkRlODBWdjB2NXZOQ2VjTzgrU0hFaVNVRE9yS0dyY3FBcWhl?=
- =?utf-8?B?TzRmclFzVDZubVAzQTJxeGR0M2czQ1hIUmtncTE4RTlhYU4wTFZRQlpzaExh?=
- =?utf-8?B?azdzWE9sZVFQdzIzeGliNVJ4dVpnVU5KdjBsWlpBNWEyNmgrU09nRFlvanlV?=
- =?utf-8?B?K3hlcUNRbG92VFhTWWp6bHI2ZytBYlp3eWRJUFZrZGp0d3d5bkRCUC8rVThL?=
- =?utf-8?B?WDhOMWVwUnQwZHZ3RTBySXY2L01lcGN2NmJJWURWNEVZdGNnek1ObFJNSU1y?=
- =?utf-8?B?YktpdmJvelNUVkJSQWwrV1BpUnhKclA4SjhBR2VxRDl6OVlLQ3d6dWhRVjMw?=
- =?utf-8?B?WWQ4NTVvNlRRU240M3ZCQ3RsN0ZOUWdhUGhJdFJGeDdMQVJkRFQreGlUZDB4?=
- =?utf-8?B?YUhUTUM0ZGMvVU1SRDdXNThiOGVZNUVxVG9lTy9ianQ5bkpIcncxY0NSUnpj?=
- =?utf-8?B?eGR3YkJuOEpjclNja1pHeHVEMW9JQ3NzSnR3cGF5RVdZMWIyczhZUlNod0h4?=
- =?utf-8?B?L2RqVFZoL0JSeUQwQWtDZ1hodDNBSWo1QWwyejB2MGtpNi9uWnFOY3lSYVhG?=
- =?utf-8?B?NXFSTGRNcmlGMFV4TTZtQkpPSWpGdkRlZGlwY0VCaEFOemcxc09xckpEczRp?=
- =?utf-8?B?dDM5a0JMRDBvVUlWeXQwc3JCMjZTMTVnaUlHcEFMZ0VyL2JTQzYvbTJmRGVk?=
- =?utf-8?B?d0xERTdnVGNWKzllN20raUJFcU1Oc1JhaThxemtaYUxzTGt2YnpCVkdxR01i?=
- =?utf-8?B?MWxZdGpzekdsRmdlWnNTRm9oMDFtQm80eldleTZxMCt0NkdqMVFHOUwvaUxo?=
- =?utf-8?B?cWkxeUJDaVdSVG9Pb3IxWDE4ZEYrN3FoMXRkMjZVL0dudDdJOXdEMjY0cCtV?=
- =?utf-8?B?ZnhYUkI0Q003ZDdMT2RyNmdqVThSUzhoN3NlRDB1UEhxdzFJNTUrZkkvMlY0?=
- =?utf-8?B?YlVDS0R2dVhkSndhM0VCMXh0dFZGbXhMK3FCbGJIdmtTbnhwbWcrRllubEJ6?=
- =?utf-8?B?YWJQUCt3czJFVVlVN1NUVXJ1V2ZLU0J2WDUrandURkFUQ2hkdWhpZEpjWmRZ?=
- =?utf-8?B?ejllMERrREJ6SWtieWwzV1R4U3I2MmFyczZ0UVlSbWxoYS9Qb2ZqSGdSTU96?=
- =?utf-8?B?Vkd0VVV1UFc4TXR5RnhjUWxjM3ZheUhGVmZlVmlwME5KeCtHeXNwM2cxbkho?=
- =?utf-8?B?OU5HT0FSVCtsTXQ4RSt3L3VRbzZTTC9GMU1jL3J2cGdMc3RUY3VGc1dMVy9t?=
- =?utf-8?B?TXJUanduKytOU0FNSmFIcTlqYlU4UGY1bzlVV2FjZzRiczJ3QytLclBTeExV?=
- =?utf-8?B?Y3JnSmd3eGMzMkJQeVlqY1FvZ1hIUEdKenpvc1liaXlqbkx5TWVXVTVoNUVt?=
- =?utf-8?B?akRrNXFyT1dIVkN5Q0dla1hCTnVWaDZYY1IzZG03dG1vUytScGxRYmhaSE9X?=
- =?utf-8?Q?s33W1P?=
+	=?utf-8?B?OERpVk5nSzFLazZrelZzc3hLMVE2WTh5MlVzS3h4dENrcC9JRjVycWRuZGRx?=
+ =?utf-8?B?ZGF2eHBZY2c1UktjWHp3RERLUkxGNjNHcW5LZnlob0ZET05aN2tIcjR0Vjk4?=
+ =?utf-8?B?bjE4MWJteXE3RFJUcVdueVN5NWE0YXlKbm9kWWVuZFZsMUR0OEIvbmtjWW1y?=
+ =?utf-8?B?OGZiNk9QOG5lVzlnQVJuMzJrK012Q3dkQmRXbXFwQ0ZvVEZXcjBjMlRRTFdO?=
+ =?utf-8?B?M0hnL25RUnNSNnlhbThPQ21mTFdoRnRoakNyU3RYdHJTQnVnYkN4aGtBZ29i?=
+ =?utf-8?B?eEgxTWpZeVRtR3ZURDhUWEVXTDRqN3R0c0t6MjhBZjlmeGJzS0t2aEluTGk3?=
+ =?utf-8?B?OURkMkg4aW1BMXlLRDd1UkRHeTZlcVc3VGM0ZHdKcXFhRnB4NWZMbEIxOUFY?=
+ =?utf-8?B?bElrT0ZjRVliSzJ6MTBwSmo3K0h4b1BCVXpyNzFyU2ZTK3lrNjNCb0d2ODBT?=
+ =?utf-8?B?ZGErdmo2Qy9Ea3BGR3pMZG82TjdjZGErMUxWZTJaUG9xL29RTHEvd2VDTXRh?=
+ =?utf-8?B?cTBjcVphcmIzejZnaWJQRG9KTXFWczIxbzRQVkpZaksxd1VuaGJYaVkvQzRR?=
+ =?utf-8?B?b3dZb1JoVkNjbFo0b1NRdmIrTzl3MWdEejVHS0JuVUVRNHQrVkMyZFpvN0tC?=
+ =?utf-8?B?OUtJTzNrU3ZpOS82WUNCNXNWL25xbzZjdlZhS2Z1YTVZeWdsTEVkYVBIVlRV?=
+ =?utf-8?B?eWZuZDRwSk9xZ3FvNFdqZktHQ0NPTDAwRTBvd25zdGRneDg0TkhRck44QXdZ?=
+ =?utf-8?B?OTJkU2RhVW1kcFZIZDhtVENrWVI3THREWHN3bDlqazdUNkJCb2JuUEhRZWdh?=
+ =?utf-8?B?V05OeUFUME9JZ0l1bFUvaDV5aTFuamVKYkpibFlwV2FkSFVjZXBwdkY4bVZ3?=
+ =?utf-8?B?SzlOT2EwNnJHN1NhanNHVnBORC9rclJJS3JlbytMKzZtakJhQ0Z3aklHZVpR?=
+ =?utf-8?B?UC8wU1pBcE9qaXdMWFFPbkVKMkQxQmRWZUloNUZqTFVuWWJIYmtCdW5aNmJR?=
+ =?utf-8?B?YmtBRFY4RE5ZOVNjdDJhOGdySFplSmRXQlRPWmJQcDRIcWlUUmZ3SG5kcWsr?=
+ =?utf-8?B?U2pkZ0R4VzQ0Q1Rtbi9NazYzRjhQb1FDbksramtpT2xjR1VRRmIrM2k5aTAy?=
+ =?utf-8?B?eE5NdE0veUJIQkxIYm15cHV1S294UWptaFkxUHdjRC83YVJzamR3azk5L0FJ?=
+ =?utf-8?B?QnU2Zks5ejhHckU0UFRKVnpaZno4ZE1udHJIb2hTRWo5cjZxSW5EMTJkNzAr?=
+ =?utf-8?B?Z1NsUGw3Vyt4UGJPQkN6K3M3REwwaVpRMVZ1KzExSHpWSmhFaTR2eitxaFN4?=
+ =?utf-8?B?RFg1ZytzT25FMk9sMWdPS01SZUFwOVl2RDBDbXE0RFNScFIvL3RDSTdzaUtp?=
+ =?utf-8?B?dFk1OHc1YXRTd3Jub0gyRFVPeXl2ZjdnLyswcHhyd0NBNkd2Y0t1UjYxSm5w?=
+ =?utf-8?B?d3F5T2R5N3NmYXNGait6RkVzbWhnWlk3WDBhSkZ0SlhiQnYvM1V4ZVhRbEV5?=
+ =?utf-8?B?a2Izb1hPYUQ3QUl6YXE1aHJtZmlucWlreDRqbE5FTjZiSnBRbnY2cUppdTlK?=
+ =?utf-8?B?M3J5SGpPYmtyd0hDREFCNFZMQkRHMXh0Rkh6Y1JOT3VXVDBuYVlGS28rYkZN?=
+ =?utf-8?B?R3ZUWkNjRk8xOVB6dVR6Ukx0RDVqUytuaVd3L2ozV2FiQXh4MmxWVnR6b2I0?=
+ =?utf-8?B?VkQ4ZDZnNERLVlZNT0h0ZFhacnl6WGlNdk1IckdjZUc2QmY2UjJxd1NSZjBE?=
+ =?utf-8?B?WitLWjdmaWhlb1NEc3ZKd2lic1Fmcm9VTVZBaTE0ZXdybmNyckZ1ZUNLMXpL?=
+ =?utf-8?B?ZFFaUDhsTTFQQXRsTHM0cjc4TUxxb3RkZTJHN0lXUURteEpuYlRMYUxCNHNx?=
+ =?utf-8?B?SkJYdFdVWkNNSWlsUmR5MmF4VTFjdDdWZ1QvMXdkZm0wRWNNU2dndm9KaUJh?=
+ =?utf-8?B?d2VIczlWM21TREVrMnUxcXJmQ01oT1F2K2UrWmpuWGlUQWMwUzVnWUtlaWY5?=
+ =?utf-8?B?empCUUIxMVpoM3JjbGkxZWc0QmNjQzBNdGhOQVJjd2ZtZmpZU0R0SG93R3Zh?=
+ =?utf-8?B?YmVDZnlqekRhRU1OcGpUbXdtN2NoTkoyd0RyRHpPOGhSNWpFQVp5bzhvL0xt?=
+ =?utf-8?Q?SKFlEjnOPRdZ9zhQDUhp3nKG/?=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR10MB6271.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(376014)(366016)(7053199007)(921020);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?WmRENDlJclZGdVhnYmtEaXptd3hzbmV4cEM3Um5QRi9sQysxeDNCR1JzVlBM?=
- =?utf-8?B?R1piNzZrRFUzRnpTdGtVL2RTL3lJSlBWY2ZxMEE2Um1nTzZ4MXJERmRRWVNQ?=
- =?utf-8?B?VzQwUUlkeGg2ZlY4TnpTbWhtZTdPS3o0RjhKcXVXc2w1MnV6MThSa2xDQmVz?=
- =?utf-8?B?K1NqWkdsSWZtTGkwZVlHMjR1RTNCaWNoTHdYUUF6ZGxPVFZhbXluV0JNYm1n?=
- =?utf-8?B?SUxQYlFlU0Q2d1dTMS9BUnFIYVQrR043WTBlMmQ4SVFnMStmR3BMZmVhN21s?=
- =?utf-8?B?c3V0eFdmZmlyRjNHVE01ZHNqS3licmlSamo2alVDVDdJSlBwS1h4NlNRalJn?=
- =?utf-8?B?M1lic2MrbWFjUnEvMURSSm0yYVNxRlhxUTkrZlFWMHVRMzRBa0ZYU01Na1lD?=
- =?utf-8?B?NnFtcVhZemRrMU00ZTVzTmNDL1l3NnF4dCs2MVg1bG1KQVRuZXJYY2MxenlL?=
- =?utf-8?B?cjhpMjRtUmI2WnJmUndqMlV0azl2QitFTnQyL1A3dGVsS2V6Z244WUJUSDRM?=
- =?utf-8?B?bG55TDRQL3VHdFBHNG5sdjEyRVJuOW5XeVZGRGNtSkdlTlFtWWpDakJ0enBO?=
- =?utf-8?B?YnY3UTRUZ0RzSTlxS3RzT2NQby9BbkxmbkRHVCtPWXBzZE8zeUN2YjFQVHE4?=
- =?utf-8?B?NE9qdlFpWmlocmRtUVNZNlcveVFsZVBKSFdaaklNMUVqWnFhR3hYSWJwUmJm?=
- =?utf-8?B?RGt1elJPLzN4N1F6L05QOC9wa0c1TVVGQXg3dEMyN0VtaXA3YjdVL2M4Qzhl?=
- =?utf-8?B?N2xEcFZjcmtRNkN4NGowMVFkdXFUNDVSQXlnUjl2czVSSTArYko1aHBHRzBJ?=
- =?utf-8?B?MTlTdWZGcUJaa3Zqb3RBdFRKQ0tRK0lmb3dQODFPZTFKeWIvSFBvSCtxbElH?=
- =?utf-8?B?TXoyRnpaY1RFSHBLRkI2Y3Y5QnRMQittQVpCNXNkVHFqUyt2YVNIQkZPOUJP?=
- =?utf-8?B?S1ZHTDhLVDBndVZNMUZaZzJwZnFkNlhLSytSSncweFdkSnRVT2taWm1pRjc4?=
- =?utf-8?B?QmhEV3dNaXYyNUM1eGNFZXFqVEN4SGNoT0NMM3FJdlFjVlBabWp1SmNhNE5i?=
- =?utf-8?B?aFl5WXFxN3llcCs5VVFsWjZoSjREY0JWRjkwY1ZieFBOVGpIYnBaMTlaakdG?=
- =?utf-8?B?NmpvVnhjWjltTmVGNnE0OG4xUkhySEg0SGwxODdOYTV1Q0RaV1h5ZW4ycXB2?=
- =?utf-8?B?dmtsZ2h4VWNSUklSU2ltV3RUMmExRnRQZnNMMldKWGVrbnRTV2FWYU1hUzhq?=
- =?utf-8?B?SithNHc4MjkzODJBN205Mi9kUWhiYmdlTzA5MEMvNEl3UmxmemU0ZjRNVllK?=
- =?utf-8?B?QzVidEtNNWh3aGZ1R3h4RVpHT2QybDhjV0FUbDBLWHZkZ1pLVVRhR1RGZGlD?=
- =?utf-8?B?eGdjM3ZXWmYwano4Y2Q2dU1Oc0hvSEZ6UndzN2hDNStsQ09FVWFhaWFGNldC?=
- =?utf-8?B?Y3hKc2x4V2F5cjZSaUpxQm15akZaWURUVUVWaWZJczdyZTNKWjR0Z2VMNlVZ?=
- =?utf-8?B?SitSSE9keWJyNjBEeVQ1QWRBUmUyRGhjQllCcFZXYk5uVVFFZmI4OWx0MUJM?=
- =?utf-8?B?dHJYM2tSZHNrZjZxdnRHUjVGZVJsZktZd2hXNzQ5MlNUZmNLN3dodjM5ZGFq?=
- =?utf-8?B?QkJZQXg4NERWaG5wTnhtVUs2STR6eEZ3aXRxaGlsdkxvTzQzcGNHcnRhUDFt?=
- =?utf-8?B?RlNiL0tnS1pWRFlCV3VsdkQ1dDdmY0hLUFVEK2xBdkUzN3BRR2puekNMWnlT?=
- =?utf-8?B?cGxPZ0lSNTZ3RU8xQnBJQlV1b21hdGpVU2lzbkZqTTg4T0VMQVJWeS9Ecm1l?=
- =?utf-8?B?WTM4WmZxd1dWZXFkeWZuWTloZ2IxaUpOVmNzTFcwSFRqdlJjbzh2TEt1YTdK?=
- =?utf-8?B?V0N1azFzZTBodmdHWE1FVmVoMGxqNFRHQ3RTaENPd0NuM2FTS1c0a2xHUWIx?=
- =?utf-8?B?WXEwb0gyV3FKUkpEV1dlMVBla3lxR3IvWmw2NGJPbUlmYVFlMUdzbW5vRjRC?=
- =?utf-8?B?YmZVTnBweE9VUFV4cWU2OXRHWmZFT05kL2t3WmFDUGl0eDNUTEJnd0Ntd0M4?=
- =?utf-8?B?OWhBUDlIVncvV2FnZlJCOTMrZERwbnJTRG5FWmZWNEtnKzRXZ1FUaVl0NVgw?=
- =?utf-8?B?SUhsWTl5VCtmdmFmc2JKcld4R3FoSDgwb253V2lQOGRtMVNBdnUyam1SUVVY?=
- =?utf-8?B?bkE9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	v0P7nqY4t9M4X1MGIio6tQesRV45EFGhjE8SlO++o0sVjT3hiNM4f0Qsox9eJg8st1r1YhQAm+pWZJgR0iRiOiBvsf0932bRcBGug51Ky5wGNOz9cmvysNYrrKfN6nSd6gNWgaPVs0CzsLNY1oAo0aLw8DT/PQbMNDMNE8YdlFVG/VL58cjHiErKARKLJ3TnepAn9DLNC0mrxqPHD1ZYVMeYXIfPSXmCaubAMsrBhiCUZ1HcErOgzQGLgS0ZnaWCb4AYqzFp30d1AUb7o4OtEmErmt2hiSoTIcDUAidwowaonat4ZOw4gKdRhPT5SQDwko5I24re8EySjN/xT7uPLxNyOtbLn4OzV+NVn2rIjzb8m2/GoB3UqBDgkTWBKjUV3PfIcjBsBT9C0mniefOozwCX7sSp0W6jo+OMVXJ3rCx37Nk3PtoarBKVGhW8O0kxo36bxM8thyo39hFKn+R+nxMieRJ0hmTOCrEK+kmmVLhfqThYKFdSPMOigcJ/grJSOqfuAg2EweauZtcmb3ucCEn7RjN+LAbUr5moZ75eYFrOwtRSE/Ha2l/lk4j5CpRe09ylkEdEKa8pQSn+g37jKDp5f8I/GZUcKCehPlSO2H4=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7bc88acf-b756-4bfe-e6c3-08de39a3954e
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR10MB6271.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2025 17:26:28.2820
+	CIP:198.47.23.194;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:lewvzet200.ext.ti.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(7416014)(376014)(1800799024)(36860700013)(82310400026)(921020);DIR:OUT;SFP:1101;
+X-OriginatorOrg: ti.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2025 20:37:52.7046
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YkamVPTs1zkIR4JDVlfPE8WfQzR1SFTAVamnnEiqFQKJsqkXZS1yxjVE99IcO422uXjOut5LrX4EICFH7jdmIw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR10MB6473
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2025-12-12_04,2025-12-11_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 adultscore=0
- bulkscore=0 phishscore=0 malwarescore=0 spamscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2510240000
- definitions=main-2512120139
-X-Proofpoint-GUID: 36PMtSIMxDtiTv3ChMCtHt_0cSBTfNvR
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMjEyMDEzOCBTYWx0ZWRfXwoP3Ub4KgRwF
- whMVdxIbvCvvph9kUeMmNcgI5F8y9P6fVku82Jh8Jhz2DqlUPI35w1lEAuE4GQxwSfzwTwY1W9X
- cTTqbdkF3pKhriYzn7wuF0O/2RvAxjApnVc/CrYCSrvIWqAf25SjGh2PfZafgxqvbp687MvdY28
- wUsq5tL+cJjePKnYqZ0mofq3iOkWVgUcvFXH/7+64sCaezPfTGKP+jTGXL2thSLhFxwporQTDMu
- 3qoIhxlMvBgJaiEJxbhSHlUAAcRSawhO5DjmvUHAw14GfMjzdLgPWDOzPdiASpZC3Y9N1YnTvW+
- QUYyIXLpp3RGVVtmL5eTdjj6Zr2Qc/cKR6mJLf8lN33NnqSlux9gth004D8B66SHoXkvGYFotA8
- il5Rl248X1cIpOkHrKcwH6p2LP16Mg==
-X-Proofpoint-ORIG-GUID: 36PMtSIMxDtiTv3ChMCtHt_0cSBTfNvR
-X-Authority-Analysis: v=2.4 cv=SYn6t/Ru c=1 sm=1 tr=0 ts=693c5049 cx=c_pps
- a=XiAAW1AwiKB2Y8Wsi+sD2Q==:117 a=XiAAW1AwiKB2Y8Wsi+sD2Q==:17
- a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
- a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10
- a=wP3pNCr1ah4A:10 a=GoEa3M9JfhUA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=NEAV23lmAAAA:8 a=VwQbUJbxAAAA:8 a=yPCof4ZbAAAA:8 a=pGLkceISAAAA:8
- a=UWoE4YdSp6q-zFXLahQA:9 a=QEXdDO2ut3YA:10
+X-MS-Exchange-CrossTenant-Network-Message-Id: 95e2c799-5feb-4e93-1de4-08de39be52bc
+X-MS-Exchange-CrossTenant-Id: e5b49634-450b-4709-8abb-1e2b19b982b7
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.23.194];Helo=[lewvzet200.ext.ti.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	DS3PEPF000099DA.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR10MB6559
 
-On 05/12/2025 22:30, Ihor Solodrai wrote:
-> Subsequent patches in the series change vmlinux linking scripts to
-> unconditionally pass --btf_encode_detached to pahole, which was
-> introduced in v1.22 [1][2].
-> 
-> This change allows to remove PAHOLE_HAS_SPLIT_BTF Kconfig option and
-> other checks of older pahole versions.
-> 
-> [1] https://github.com/acmel/dwarves/releases/tag/v1.22
-> [2] https://lore.kernel.org/bpf/cbafbf4e-9073-4383-8ee6-1353f9e5869c@oracle.com/
-> 
-> Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
-> ---
->  lib/Kconfig.debug         | 13 ++++---------
->  scripts/Makefile.btf      |  9 +--------
->  tools/sched_ext/README.md |  1 -
->  3 files changed, 5 insertions(+), 18 deletions(-)
-> 
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 742b23ef0d8b..3abf3ae554b6 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -389,18 +389,13 @@ config DEBUG_INFO_BTF
->  	depends on !DEBUG_INFO_SPLIT && !DEBUG_INFO_REDUCED
->  	depends on !GCC_PLUGIN_RANDSTRUCT || COMPILE_TEST
->  	depends on BPF_SYSCALL
-> -	depends on PAHOLE_VERSION >= 116
-> -	depends on DEBUG_INFO_DWARF4 || PAHOLE_VERSION >= 121
-> +	depends on PAHOLE_VERSION >= 122
->  	# pahole uses elfutils, which does not have support for Hexagon relocations
->  	depends on !HEXAGON
->  	help
->  	  Generate deduplicated BTF type information from DWARF debug info.
-> -	  Turning this on requires pahole v1.16 or later (v1.21 or later to
-> -	  support DWARF 5), which will convert DWARF type info into equivalent
-> -	  deduplicated BTF type info.
-> -
-> -config PAHOLE_HAS_SPLIT_BTF
-> -	def_bool PAHOLE_VERSION >= 119
-> +	  Turning this on requires pahole v1.22 or later, which will convert
-> +	  DWARF type info into equivalent deduplicated BTF type info.
->  
->  config PAHOLE_HAS_BTF_TAG
->  	def_bool PAHOLE_VERSION >= 123
-> @@ -422,7 +417,7 @@ config PAHOLE_HAS_LANG_EXCLUDE
->  config DEBUG_INFO_BTF_MODULES
->  	bool "Generate BTF type information for kernel modules"
->  	default y
-> -	depends on DEBUG_INFO_BTF && MODULES && PAHOLE_HAS_SPLIT_BTF
-> +	depends on DEBUG_INFO_BTF && MODULES
->  	help
->  	  Generate compact split BTF type information for kernel modules.
->  
-> diff --git a/scripts/Makefile.btf b/scripts/Makefile.btf
-> index db76335dd917..7c1cd6c2ff75 100644
-> --- a/scripts/Makefile.btf
-> +++ b/scripts/Makefile.btf
-> @@ -7,14 +7,7 @@ JOBS := $(patsubst -j%,%,$(filter -j%,$(MAKEFLAGS)))
+
+Hi Roger,
+
+On 11/9/2025 3:37 PM, Roger Quadros wrote:
+> To prepare for XSK zero copy support, add XSK pool
+> helpers in a new file am65-cpsw-xdp.c
 >
+> As queues are shared between ports we can no longer
+> support the case where zero copy (XSK Pool) is enabled
+> for the queue on one port but not for other ports.
+>
+> Current solution is to drop the packet if Zero copy
+> is not enabled for that port + queue but enabled for
+> some other port + same queue.
 
-hi Ihor, a small suggestion here, and it is orthogonal to what you're 
-doing here, so just for consideration if you're planning a v4 since you're 
-touching this file.
+I've been evaluating a use-case where one CPSW port is using XDP zero 
+copy to pass EtherCAT frames to and from the userspace. The other CPSW 
+port is a non-XDP zero copy port is used for connection to another PC 
+running an IDE to monitor and configure the EtherCAT userspace 
+application on the AM62x EVM.
 
-We've had problems in the past because we get pahole version from .config
-in Makefile.btf
+According to the design described in this patch, I'm no longer able to 
+connect to the IDE when the EtherCAT port is set up for XDP zero copy. 
+Beyond just this use-case, there might be plenty of other use-cases 
+where both non-XDP zero copy ports and XDP zero copy enabled ports need 
+to be simultaneously used.
 
-pahole-ver := $(CONFIG_PAHOLE_VERSION)
+For this reason, I think there should be some change implemented so that 
+the traffic on the non-XDP zero copy port does not get dropped. Is there 
+a way to workaround the CPSW hardware limitation (shared queues between 
+ports)?
 
-and it can be outdated.
+One idea I was thinking is to configure multiple rx flows (enabled by 
+the patch series in 
+https://lore.kernel.org/all/20250514-am65-cpsw-rx-class-v4-0-5202d8119241@kernel.org/) 
+and perhaps map each flow to a particular port? Since these rx flows 
+aren't true hardware queues, I don't know if that would not be possible 
+with the way XDP zero copy uses queues.
 
-Specifically the problem is that if "make oldconfig" is not run after
-updating pahole we don't get the actual pahole version during builds
-and options can be missing. See [1] for an example, but perhaps we
-should do
+Please let me know what you think.
 
-pahole-ver := $(shell $(srctree)/scripts/pahole-version.sh)
+>
+> xdp_zc_queues bitmap tracks if queue is setup as XSK
+> pool and xsk_port_id array tracks which port the XSK
+> queue is assigned to for zero copy.
+>
+> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+> ---
+>   drivers/net/ethernet/ti/Makefile         |   2 +-
+>   drivers/net/ethernet/ti/am65-cpsw-nuss.c |  21 ++++--
+>   drivers/net/ethernet/ti/am65-cpsw-nuss.h |  20 +++++
+>   drivers/net/ethernet/ti/am65-cpsw-xdp.c  | 122 +++++++++++++++++++++++++++++++
+>   4 files changed, 156 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/ti/Makefile b/drivers/net/ethernet/ti/Makefile
+> index 93c0a4d0e33a6fb725ad61c3ec0eab87d2d3f61a..96585a28fc7d73f61b888e5d1587d5123875db31 100644
+> --- a/drivers/net/ethernet/ti/Makefile
+> +++ b/drivers/net/ethernet/ti/Makefile
+> @@ -29,7 +29,7 @@ keystone_netcp_ethss-y := netcp_ethss.o netcp_sgmii.o netcp_xgbepcsr.o cpsw_ale.
+>   obj-$(CONFIG_TI_K3_CPPI_DESC_POOL) += k3-cppi-desc-pool.o
+>   
+>   obj-$(CONFIG_TI_K3_AM65_CPSW_NUSS) += ti-am65-cpsw-nuss.o
+> -ti-am65-cpsw-nuss-y := am65-cpsw-nuss.o cpsw_sl.o am65-cpsw-ethtool.o cpsw_ale.o
+> +ti-am65-cpsw-nuss-y := am65-cpsw-nuss.o cpsw_sl.o am65-cpsw-ethtool.o cpsw_ale.o am65-cpsw-xdp.o
+>   ti-am65-cpsw-nuss-$(CONFIG_TI_AM65_CPSW_QOS) += am65-cpsw-qos.o
+>   ti-am65-cpsw-nuss-$(CONFIG_TI_K3_AM65_CPSW_SWITCHDEV) += am65-cpsw-switchdev.o
+>   obj-$(CONFIG_TI_K3_AM65_CPTS) += am65-cpts.o
+> diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+> index f9e2286efa29bbb7056fda1fc82c38b479aae8bd..46523be93df27710be77b288c36c1a0f66d8ca8d 100644
+> --- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+> +++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+> @@ -58,9 +58,6 @@
+>   
+>   #define AM65_CPSW_MAX_PORTS	8
+>   
+> -#define AM65_CPSW_MIN_PACKET_SIZE	VLAN_ETH_ZLEN
+> -#define AM65_CPSW_MAX_PACKET_SIZE	2024
+> -
+>   #define AM65_CPSW_REG_CTL		0x004
+>   #define AM65_CPSW_REG_STAT_PORT_EN	0x014
+>   #define AM65_CPSW_REG_PTYPE		0x018
+> @@ -505,7 +502,7 @@ static inline void am65_cpsw_put_page(struct am65_cpsw_rx_flow *flow,
+>   static void am65_cpsw_nuss_rx_cleanup(void *data, dma_addr_t desc_dma);
+>   static void am65_cpsw_nuss_tx_cleanup(void *data, dma_addr_t desc_dma);
+>   
+> -static void am65_cpsw_destroy_rxq(struct am65_cpsw_common *common, int id, bool retain_page_pool)
+> +void am65_cpsw_destroy_rxq(struct am65_cpsw_common *common, int id, bool retain_page_pool)
+>   {
+>   	struct am65_cpsw_rx_chn *rx_chn = &common->rx_chns;
+>   	struct am65_cpsw_rx_flow *flow;
+> @@ -554,7 +551,7 @@ static void am65_cpsw_destroy_rxqs(struct am65_cpsw_common *common, bool retain_
+>   	k3_udma_glue_disable_rx_chn(common->rx_chns.rx_chn);
+>   }
+>   
+> -static int am65_cpsw_create_rxq(struct am65_cpsw_common *common, int id)
+> +int am65_cpsw_create_rxq(struct am65_cpsw_common *common, int id)
+>   {
+>   	struct am65_cpsw_rx_chn *rx_chn = &common->rx_chns;
+>   	struct page_pool_params pp_params = {
+> @@ -663,7 +660,7 @@ static int am65_cpsw_create_rxqs(struct am65_cpsw_common *common)
+>   	return ret;
+>   }
+>   
+> -static void am65_cpsw_destroy_txq(struct am65_cpsw_common *common, int id)
+> +void am65_cpsw_destroy_txq(struct am65_cpsw_common *common, int id)
+>   {
+>   	struct am65_cpsw_tx_chn *tx_chn = &common->tx_chns[id];
+>   
+> @@ -697,7 +694,7 @@ static void am65_cpsw_destroy_txqs(struct am65_cpsw_common *common)
+>   		am65_cpsw_destroy_txq(common, id);
+>   }
+>   
+> -static int am65_cpsw_create_txq(struct am65_cpsw_common *common, int id)
+> +int am65_cpsw_create_txq(struct am65_cpsw_common *common, int id)
+>   {
+>   	struct am65_cpsw_tx_chn *tx_chn = &common->tx_chns[id];
+>   	int ret;
+> @@ -1327,7 +1324,7 @@ static int am65_cpsw_nuss_rx_packets(struct am65_cpsw_rx_flow *flow,
+>   	dma_unmap_single(rx_chn->dma_dev, buf_dma, buf_dma_len, DMA_FROM_DEVICE);
+>   	k3_cppi_desc_pool_free(rx_chn->desc_pool, desc_rx);
+>   
+> -	if (port->xdp_prog) {
+> +	if (am65_cpsw_xdp_is_enabled(port)) {
+>   		xdp_init_buff(&xdp, PAGE_SIZE, &port->xdp_rxq[flow->id]);
+>   		xdp_prepare_buff(&xdp, page_addr, AM65_CPSW_HEADROOM,
+>   				 pkt_len, false);
+> @@ -1961,6 +1958,9 @@ static int am65_cpsw_ndo_bpf(struct net_device *ndev, struct netdev_bpf *bpf)
+>   	switch (bpf->command) {
+>   	case XDP_SETUP_PROG:
+>   		return am65_cpsw_xdp_prog_setup(ndev, bpf->prog);
+> +	case XDP_SETUP_XSK_POOL:
+> +		return am65_cpsw_xsk_setup_pool(ndev, bpf->xsk.pool,
+> +						bpf->xsk.queue_id);
+>   	default:
+>   		return -EINVAL;
+>   	}
+> @@ -3553,7 +3553,12 @@ static int am65_cpsw_nuss_probe(struct platform_device *pdev)
+>   	common = devm_kzalloc(dev, sizeof(struct am65_cpsw_common), GFP_KERNEL);
+>   	if (!common)
+>   		return -ENOMEM;
+> +
+>   	common->dev = dev;
+> +	common->xdp_zc_queues = devm_bitmap_zalloc(dev, AM65_CPSW_MAX_QUEUES,
+> +						   GFP_KERNEL);
+> +	if (!common->xdp_zc_queues)
+> +		return -ENOMEM;
+>   
+>   	of_id = of_match_device(am65_cpsw_nuss_of_mtable, dev);
+>   	if (!of_id)
+> diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.h b/drivers/net/ethernet/ti/am65-cpsw-nuss.h
+> index 917c37e4e89bd933d3001f6c35a62db01cd8da4c..31789b5e5e1fc96be20cce17234d0e16cdcea796 100644
+> --- a/drivers/net/ethernet/ti/am65-cpsw-nuss.h
+> +++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.h
+> @@ -23,8 +23,14 @@ struct am65_cpts;
+>   
+>   #define AM65_CPSW_MAX_QUEUES	8	/* both TX & RX */
+>   
+> +#define AM65_CPSW_MIN_PACKET_SIZE	VLAN_ETH_ZLEN
+> +#define AM65_CPSW_MAX_PACKET_SIZE	2024
+> +
+>   #define AM65_CPSW_PORT_VLAN_REG_OFFSET	0x014
+>   
+> +#define AM65_CPSW_RX_DMA_ATTR	(DMA_ATTR_SKIP_CPU_SYNC |\
+> +				 DMA_ATTR_WEAK_ORDERING)
+> +
+>   struct am65_cpsw_slave_data {
+>   	bool				mac_only;
+>   	struct cpsw_sl			*mac_sl;
+> @@ -190,6 +196,9 @@ struct am65_cpsw_common {
+>   	unsigned char switch_id[MAX_PHYS_ITEM_ID_LEN];
+>   	/* only for suspend/resume context restore */
+>   	u32			*ale_context;
+> +	/* XDP Zero Copy */
+> +	unsigned long		*xdp_zc_queues;
+> +	int			xsk_port_id[AM65_CPSW_MAX_QUEUES];
+>   };
+>   
+>   struct am65_cpsw_ndev_priv {
+> @@ -228,4 +237,15 @@ int am65_cpsw_nuss_update_tx_rx_chns(struct am65_cpsw_common *common,
+>   
+>   bool am65_cpsw_port_dev_check(const struct net_device *dev);
+>   
+> +int am65_cpsw_create_rxq(struct am65_cpsw_common *common, int id);
+> +void am65_cpsw_destroy_rxq(struct am65_cpsw_common *common, int id, bool retain_page_pool);
+> +int am65_cpsw_create_txq(struct am65_cpsw_common *common, int id);
+> +void am65_cpsw_destroy_txq(struct am65_cpsw_common *common, int id);
+> +int am65_cpsw_xsk_setup_pool(struct net_device *ndev,
+> +			     struct xsk_buff_pool *pool, u16 qid);
+> +int am65_cpsw_xsk_wakeup(struct net_device *ndev, u32 qid, u32 flags);
+> +static inline bool am65_cpsw_xdp_is_enabled(struct am65_cpsw_port *port)
+> +{
+> +	return !!READ_ONCE(port->xdp_prog);
+> +}
+>   #endif /* AM65_CPSW_NUSS_H_ */
+> diff --git a/drivers/net/ethernet/ti/am65-cpsw-xdp.c b/drivers/net/ethernet/ti/am65-cpsw-xdp.c
+> new file mode 100644
+> index 0000000000000000000000000000000000000000..89f43f7c83db35dba96621bae930172e0fc85b6a
+> --- /dev/null
+> +++ b/drivers/net/ethernet/ti/am65-cpsw-xdp.c
+> @@ -0,0 +1,122 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Texas Instruments K3 AM65 Ethernet Switch SubSystem Driver
+> + *
+> + * Copyright (C) 2025 Texas Instruments Incorporated - http://www.ti.com/
+> + *
+> + */
+> +
+> +#include <net/xsk_buff_pool.h>
+> +#include <net/xdp_sock_drv.h>
+> +#include "am65-cpsw-nuss.h"
+> +
+> +static int am65_cpsw_xsk_pool_enable(struct am65_cpsw_port *port,
+> +				     struct xsk_buff_pool *pool, u16 qid)
+> +{
+> +	struct am65_cpsw_common *common = port->common;
+> +	struct am65_cpsw_rx_chn *rx_chn;
+> +	bool need_update;
+> +	u32 frame_size;
+> +	int ret;
+> +
+> +	/*
+> +	 * As queues are shared between ports we can no longer
+> +	 * support the case where zero copy (XSK Pool) is enabled
+> +	 * for the queue on one port but not for other ports.
+> +	 *
+> +	 * Current solution is to drop the packet if Zero copy
+> +	 * is not enabled for that port + queue but enabled for
+> +	 * some other port + same queue.
+> +	 */
+> +	if (test_bit(qid, common->xdp_zc_queues))
+> +		return -EINVAL;
+> +
+> +	rx_chn = &common->rx_chns;
+> +	if (qid >= common->rx_ch_num_flows || qid >= common->tx_ch_num)
+> +		return -EINVAL;
+> +
+> +	frame_size = xsk_pool_get_rx_frame_size(pool);
+> +	if (frame_size < AM65_CPSW_MAX_PACKET_SIZE)
+> +		return -EOPNOTSUPP;
+> +
+> +	ret = xsk_pool_dma_map(pool, rx_chn->dma_dev, AM65_CPSW_RX_DMA_ATTR);
+> +	if (ret) {
+> +		netdev_err(port->ndev, "Failed to map xsk pool\n");
+> +		return ret;
+> +	}
+> +
+> +	need_update = common->usage_count &&
+> +		      am65_cpsw_xdp_is_enabled(port);
+> +	if (need_update) {
+> +		am65_cpsw_destroy_rxq(common, qid, true);
+> +		am65_cpsw_destroy_txq(common, qid);
+> +	}
+> +
+> +	set_bit(qid, common->xdp_zc_queues);
+> +	common->xsk_port_id[qid] = port->port_id;
+> +	if (need_update) {
+> +		am65_cpsw_create_rxq(common, qid);
+> +		am65_cpsw_create_txq(common, qid);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int am65_cpsw_xsk_pool_disable(struct am65_cpsw_port *port,
+> +				      struct xsk_buff_pool *pool, u16 qid)
+> +{
+> +	struct am65_cpsw_common *common = port->common;
+> +	bool need_update;
+> +
+> +	if (qid >= common->rx_ch_num_flows || qid >= common->tx_ch_num)
+> +		return -EINVAL;
+> +
+> +	if (!test_bit(qid, common->xdp_zc_queues))
+> +		return -EINVAL;
+> +
+> +	pool = xsk_get_pool_from_qid(port->ndev, qid);
+> +	if (!pool)
+> +		return -EINVAL;
+> +
+> +	need_update = common->usage_count && am65_cpsw_xdp_is_enabled(port);
+> +	if (need_update) {
+> +		am65_cpsw_destroy_rxq(common, qid, true);
+> +		am65_cpsw_destroy_txq(common, qid);
+> +		synchronize_rcu();
+> +	}
+> +
+> +	xsk_pool_dma_unmap(pool, AM65_CPSW_RX_DMA_ATTR);
+> +	clear_bit(qid, common->xdp_zc_queues);
+> +	common->xsk_port_id[qid] = -EINVAL;
+> +	if (need_update) {
+> +		am65_cpsw_create_rxq(common, qid);
+> +		am65_cpsw_create_txq(common, qid);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +int am65_cpsw_xsk_setup_pool(struct net_device *ndev,
+> +			     struct xsk_buff_pool *pool, u16 qid)
+> +{
+> +	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
+> +
+> +	return pool ? am65_cpsw_xsk_pool_enable(port, pool, qid) :
+> +		      am65_cpsw_xsk_pool_disable(port, pool, qid);
+> +}
+> +
+> +int am65_cpsw_xsk_wakeup(struct net_device *ndev, u32 qid, u32 flags)
+> +{
+> +	struct am65_cpsw_common *common = am65_ndev_to_common(ndev);
+> +	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
+> +
+> +	if (!netif_running(ndev) || !netif_carrier_ok(ndev))
+> +		return -ENETDOWN;
+> +
+> +	if (!am65_cpsw_xdp_is_enabled(port))
+> +		return -EINVAL;
+> +
+> +	if (qid >= common->rx_ch_num_flows || qid >= common->tx_ch_num)
+> +		return -EINVAL;
+> +
+> +	return 0;
+> +}
 
-in Makefile.btf to ensure the value reflects latest pahole and that
-then determines which options we use? Andrii suggested an approach like
-CC_VERSION_TEXT might be worth pursuing; AFAICT that recomputes the
-CC_VERSION and warns the user if there is a version difference. Given that
-the CONFIG pahole version requirements are all pretty modest - it might
-simply be enough to recompute it in Makefile.btf and perhaps ensure it's 
-not less than CONFIG_PAHOLE_VERSION. Just a thought anyway. Thanks!
+Best regards,
 
-Alan
- 
-[1] https://lore.kernel.org/bpf/CAEf4BzYi1xX3p_bY3j9dEuPvtCW3H7z=p2vdn-2GY0OOenxQAg@mail.gmail.com/
+Daolin
+
+Texas Instruments Sitara MPU Systems Applications
 
 
