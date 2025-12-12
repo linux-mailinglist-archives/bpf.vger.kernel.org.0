@@ -1,166 +1,294 @@
-Return-Path: <bpf+bounces-76502-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76503-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B672DCB79D9
-	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 03:07:20 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 856AACB7A6A
+	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 03:15:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 8066E300502B
-	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 02:07:16 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2B5A130303B5
+	for <lists+bpf@lfdr.de>; Fri, 12 Dec 2025 02:15:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1677205E25;
-	Fri, 12 Dec 2025 02:07:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAED7299AA9;
+	Fri, 12 Dec 2025 02:15:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="G1Dtsx8K"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dxQRWSMi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6F4427702E
-	for <bpf@vger.kernel.org>; Fri, 12 Dec 2025 02:07:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.145.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48487285CB2
+	for <bpf@vger.kernel.org>; Fri, 12 Dec 2025 02:15:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765505234; cv=none; b=BB8nwx0foyvv+oboR40CrpcJS/A+nMbpOEyrw9GYKnbyNnaVp0UiOrYwebok7Vn9OBKbZVgAxO7GfQimbPlN97ldwcA+XIjxpWgO64gWiynflopw4DXPXSryAo0UMuON6gf7TeI8AzPQ5YNHRhA0fpBGBqgLU1+g35Z/TpFoXQ4=
+	t=1765505705; cv=none; b=X3dSiklIl1/wvFScPKL08+EmaQwCs78vDgYv5XLkY7QOD+jZtedefCP64FrKMrxNB/lZinWS861lUo5+UPmjQPZLR4MlDL9mHi+ua2/O5hqy0mPp6BIac/OLENDrBT7daVXyAIaCY6ZbCini7imfJGkjO6eIJ/s3pTyGvukiEwA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765505234; c=relaxed/simple;
-	bh=z4QuyAw4KXi4GuUG24isFkWNtArJkw4WOvX+DQVc9EA=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tdNvthFWrhwZDIzErLtpeaSlPV7YC3b/zv6UJCzPqyTMIVvzGxAUwKsjG+OCItZrnqAllUBVa/I/58YCWEiFPunxZGMBdVrOs/DMH1pP3roh+eGyM4Cty38EkX9PaWw8CDMlUBtmT3wkq3ep3wh5YOIEONnY9zdZcNvLbRwrxFY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=G1Dtsx8K; arc=none smtp.client-ip=67.231.145.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 5BBNCuAt2330787;
-	Thu, 11 Dec 2025 18:07:09 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=s2048-2025-q2;
-	 bh=cA0kyemEoUF09yOaNUIb9aGvyujiR5+Vk6JvBwlWm1M=; b=G1Dtsx8KldZ5
-	Mk5sm5PYj0ugURI1fFgnGndoRif6ZZFStW1sBurAsjgLgSMN40WD1FxpvsvU8ZCn
-	sPpX+8gzTwrIihIVvAmixDLppODwHxqw0MHHstumoBRovCZKQ7vkhrF+2L4ZuH2V
-	vHyLahLMxqrEnRvotxH3uLjcfXKCNWrqPsQqzWuHpUz0zcl5SVDmiwl38d8+xSq/
-	9/KHd9p5E6Wmx6YNt8NK76POaOwjYIxiBG+UlK0LfuT6396bQaCGcQ3JdYDOhynD
-	Nh4tV+OGN2Ao87RCE9m3LQRsLd7JwPBhCOMsj0K+9ZJtq1NHy1AUg9jLSNfUecKB
-	aowUKS7EQw==
-Received: from maileast.thefacebook.com ([163.114.135.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 4b07eds418-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Thu, 11 Dec 2025 18:07:09 -0800 (PST)
-Received: from devbig003.atn7.facebook.com (2620:10d:c0a8:fe::f072) by
- mail.thefacebook.com (2620:10d:c0a9:6f::8fd4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.2562.29; Fri, 12 Dec 2025 02:06:55 +0000
-From: Chris Mason <clm@meta.com>
-To: Martin Teichmann <martin.teichmann@xfel.eu>
-CC: Chris Mason <clm@meta.com>, <bpf@vger.kernel.org>, <eddyz87@gmail.com>,
-        <ast@kernel.org>, <andrii@kernel.org>
-Subject: Re: [PATCH v6 bpf-next 3/4] bpf: correct stack liveness for tail calls
-Date: Thu, 11 Dec 2025 18:06:36 -0800
-Message-ID: <20251212020639.3689343-1-clm@meta.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20251119160355.1160932-4-martin.teichmann@xfel.eu>
-References:
+	s=arc-20240116; t=1765505705; c=relaxed/simple;
+	bh=NgUM7aUL53vWNz7WHajf0MM0Z41X1RaW7qHFuEbiPvg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ChBD/aYrNabhonSWckVFGDFvymvbw/VqeFSioTsSrax4w/bJyv7h7wfW3Pr9eg09IP2RHfgokRFYvtXtb8a8RErVOOjBdxmqn2ryBJOAl7rfq3qMGK1HED1tnz9CXt3AuzNilW+qR2u7AlV7i/owTYS84k681qd6myQ7gABmSJE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dxQRWSMi; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-b7355f6ef12so134318366b.3
+        for <bpf@vger.kernel.org>; Thu, 11 Dec 2025 18:15:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1765505701; x=1766110501; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jILMO67J70f6QfvYn7/aUo6kYXXEvH0iYZzNH3i3Ki8=;
+        b=dxQRWSMiuEO7gQWM9uKjoDEDwaDq9tmScqZtS/xmB8YtN1Z4wGQiKHwsb3wJSN6nFG
+         vbAyRQyMFVq8fzCkb3w+3FiZhxKEDv6N0+lf/pK2V4esxME5ajFZUOTYgSZOn1XnV40U
+         rHWZyb8Hu5+2rJ+AUhQYzfFd8AOclCfSN3VWSr6QlrMi249Okqavoz2umJ6ESvOfXyXz
+         p5dap0yylcnvrgrysrGHn1tHIFVG0vhqcV2xtvxfDv2UD8SMTU0imyeSzyaOgrzLdRIi
+         9+oShR8QkRi2Ues9U4I6MJbbX2IztIQz067q4/nlmN8T8o5NKSfUxReuqbINBDmXWXiY
+         YjXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765505701; x=1766110501;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=jILMO67J70f6QfvYn7/aUo6kYXXEvH0iYZzNH3i3Ki8=;
+        b=OByf0IR/UsCnJ9g6xmgPlWwGpr3LEUpeuX6bBMyBszkJqyV9MyKXABUWE5OtZ2FhQC
+         2aSUrjvLQZFuBPzAAfTfLOtbIJ8XOfmImPAapdBvGjOiWDYsfowJZ67K3ev5e1h8z9nf
+         tpakmtGkEDvP2xAlFeRD3fLTSXw28miL/+PiDtnrzJKmf9ZNCgoXK9NdigaycsS5y8JQ
+         VgdSMiGIkhErh9Dy21JD1HCPEmJekc4zuhlay13fZcKuAHJ0MfirdkA9W8EH4nr1x8DA
+         VACRKos+lSW0MqgKhJQxgQ1CcDGF4KSIYgmtWb0CAXY7Yo9CbLF3b0Vk8XjWaI7bhoti
+         SIKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXA4YvaO2Q8E8iLQsFppmd1Gs8lNlnlWFhqOIgZJTA+HoPhZgNjlYu2lZU8Roa6UlFEO7Q=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzfLZ4eSK1dnZCP+9VWkcIbYdA2L1PQBq3V+gBvQ39Nmb8l7Jgh
+	WeMqF49eOaBc1wyTPqXX48pWJiXnHVO204u62luPfevzuAps+2h9/A87EeWO+n3h2oXVWcIicm8
+	mU8IRW8P1yf+l+m+EV9pCMpOQKnFRP5j31sVmZrn84g==
+X-Gm-Gg: AY/fxX5UHL+pf1SSxGxxyYdmnlqtiuPTVNMmfX2fvhNFR/2YrQUSdIq2Ec8oQovG9sE
+	8jYCOABts/z0XDW6pxMFjyYOFMY3rDiY12T5Iq83iReUAgKSCozEJ1hSbMganD0LsB0579aHoZ3
+	XZrDl/VUyEjTXLnhaCAxhmIcs+Y3MIqTJnvoAmuwxIY6aA0XAvqAPE5ueCCas+Dj8w63AGLC4XL
+	73AYTxRDg2E+jqWTfUTLADid3u9JDkeJD2r1qiE+/2TTZwOHL/JV60ZHGLm3KeX3T1zILJr
+X-Google-Smtp-Source: AGHT+IF3KrwmJyi+HSGGfvgFeecEYMXvJ0CLnWlzZJQVAK20zGOIt0iGIK528x74ScjATJY85UNp7s0TG6wMvgPIERk=
+X-Received: by 2002:a17:906:4fc8:b0:b79:f8f7:38ea with SMTP id
+ a640c23a62f3a-b7d23c5bccfmr22798866b.45.1765505700461; Thu, 11 Dec 2025
+ 18:15:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: MjmXwcCcYKM42pt-ZBAqDxjAFcREhA2J
-X-Authority-Analysis: v=2.4 cv=bvxBxUai c=1 sm=1 tr=0 ts=693b78cd cx=c_pps
- a=MfjaFnPeirRr97d5FC5oHw==:117 a=MfjaFnPeirRr97d5FC5oHw==:17
- a=wP3pNCr1ah4A:10 a=VkNPw1HP01LnGYTKEx00:22 a=YaqzWN9NAAAA:8 a=pGLkceISAAAA:8
- a=db01mMCuQFIZNvgDrvoA:9 a=PLZuYiSIBiB8OtF4If2o:22
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMjEyMDAxNSBTYWx0ZWRfX9BjdsP0I6Yui
- 48bGJqruvDKu9P77phs59qxXtzPt10cGv5kFtPwLtX0l+3uLyVbeWASwJZ3CYqhe/Wt0TGRUE82
- v0rFSevvpJtzkxhqztc10kbNSNtKY4hDCa7fJ32ITNukxGCRTEtbOsfEeBlunH8F4fDHoUMOHhf
- CdbFOVCPwJpWkXXWwG5lC+X/opd6qE2QsYXTxjjtZOgP4XcSZ1U5de6iJYJdpQb4WNVUwKo4sC0
- a3CRRY1kX3r7UEvjhjj8DpoBqOoOzCr6/2R6MxVbQqGsAehvV4UgJLYfLFBZeGHc32ZQ+uB9TEV
- dKcwsV5k9j/mQF4dLDGOhTqm+Twra74SJ+O+K2rgz96ylo34/nxZr+G/hb8Mezem9h7lCNSpZT+
- +pIkbdNzfmaesxvuDhEppr15YFP8uw==
-X-Proofpoint-ORIG-GUID: MjmXwcCcYKM42pt-ZBAqDxjAFcREhA2J
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2025-12-12_01,2025-12-11_01,2025-10-01_01
+References: <20251209121349.525641-1-dolinux.peng@gmail.com> <20251209121349.525641-3-dolinux.peng@gmail.com>
+In-Reply-To: <20251209121349.525641-3-dolinux.peng@gmail.com>
+From: Donglin Peng <dolinux.peng@gmail.com>
+Date: Fri, 12 Dec 2025 10:14:48 +0800
+X-Gm-Features: AQt7F2oN7ai-ywwCTeofI2LxJYFaNlo_0sZ-Pwu5pKaO68ietmaecOnWf3-fGCY
+Message-ID: <CAErzpmv4U5_VMq3nBeLduKaVMdDRL0d8MQoH9Rafpy4hmbmnsg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] tracing: Update funcgraph-retval documentation
+To: rostedt@goodmis.org
+Cc: mhiramat@kernel.org, linux-trace-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	pengdonglin <pengdonglin@xiaomi.com>, Xiaoqin Zhang <zhangxiaoqin@xiaomi.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 19 Nov 2025 17:03:54 +0100 Martin Teichmann <martin.teichmann@xfel.eu> wrote:
-
-> From: Eduard Zingerman <eddyz87@gmail.com>
-> 
-> This updates bpf_insn_successors() reflecting that control flow might
-> jump over the instructions between tail call and function exit, verifier
-> might assume that some writes to parent stack always happen, which is
-> not the case.
-> 
-
-Hi everyone,
-
-I ran recent upstream commits through claude and it flagged this one.  Looks
-like a different comment than it had made earlier:
-
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 9426367fc9113..0828718a8ba71 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-
-[ ... ]
-
-> @@ -18156,6 +18160,25 @@ static int visit_gotox_insn(int t, struct bpf_verifier_env *env)
->  	return keep_exploring ? KEEP_EXPLORING : DONE_EXPLORING;
->  }
+On Tue, Dec 9, 2025 at 8:14=E2=80=AFPM Donglin Peng <dolinux.peng@gmail.com=
+> wrote:
 >
-> +static int visit_tailcall_insn(struct bpf_verifier_env *env, int t)
-> +{
-> +	static struct bpf_subprog_info *subprog;
-> +	struct bpf_iarray *jt;
+> From: pengdonglin <pengdonglin@xiaomi.com>
+>
+> The existing documentation for funcgraph-retval is outdated and partially
+> incorrect, as it describes limitations that have now been resolved.
+>
+> Recent changes (e.g., using BTF to obtain function return types) have
+> addressed key issues:
+> 1. Return values are now printed only for non-void functions.
+> 2. Values are trimmed to the correct width of the return type, avoiding
+>    garbage data from high bits.
+>
+> Cc: Steven Rostedt (Google) <rostedt@goodmis.org>
+> Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> Cc: Xiaoqin Zhang <zhangxiaoqin@xiaomi.com>
+> Signed-off-by: pengdonglin <pengdonglin@xiaomi.com>
+> ---
+>  Documentation/trace/ftrace.rst | 78 ++++++++++++++++++++--------------
+>  1 file changed, 45 insertions(+), 33 deletions(-)
+>
+> diff --git a/Documentation/trace/ftrace.rst b/Documentation/trace/ftrace.=
+rst
+> index d1f313a5f4ad..03c8c433c803 100644
+> --- a/Documentation/trace/ftrace.rst
+> +++ b/Documentation/trace/ftrace.rst
+> @@ -1454,6 +1454,10 @@ Options for function_graph tracer:
+>         printed in hexadecimal format. By default, this option
+>         is off.
+>
+> +  funcgraph-retaddr
+> +       When set, the return address will always be printed.
+> +       By default, this option is off.
 > +
-> +	if (env->insn_aux_data[t].jt)
-> +		return 0;
+>    sleep-time
+>         When running function graph tracer, to include
+>         the time a task schedules out in its function.
+> @@ -2800,7 +2804,7 @@ It is default disabled.
+>      0)   2.861 us    |      } /* putname() */
+>
+>  The return value of each traced function can be displayed after
+> -an equal sign "=3D". When encountering system call failures, it
+> +an equal sign "ret =3D". When encountering system call failures, it
+>  can be very helpful to quickly locate the function that first
+>  returns an error code.
+>
+> @@ -2810,16 +2814,16 @@ returns an error code.
+>    Example with funcgraph-retval::
+>
+>      1)               |    cgroup_migrate() {
+> -    1)   0.651 us    |      cgroup_migrate_add_task(); /* =3D 0xffff93fc=
+fd346c00 */
+> +    1)   0.651 us    |      cgroup_migrate_add_task(); /* ret=3D0xffff93=
+fcfd346c00 */
+>      1)               |      cgroup_migrate_execute() {
+>      1)               |        cpu_cgroup_can_attach() {
+>      1)               |          cgroup_taskset_first() {
+> -    1)   0.732 us    |            cgroup_taskset_next(); /* =3D 0xffff93=
+fc8fb20000 */
+> -    1)   1.232 us    |          } /* cgroup_taskset_first =3D 0xffff93fc=
+8fb20000 */
+> -    1)   0.380 us    |          sched_rt_can_attach(); /* =3D 0x0 */
+> -    1)   2.335 us    |        } /* cpu_cgroup_can_attach =3D -22 */
+> -    1)   4.369 us    |      } /* cgroup_migrate_execute =3D -22 */
+> -    1)   7.143 us    |    } /* cgroup_migrate =3D -22 */
+> +    1)   0.732 us    |            cgroup_taskset_next(); /* ret=3D0xffff=
+93fc8fb20000 */
+> +    1)   1.232 us    |          } /* cgroup_taskset_first ret=3D0xffff93=
+fc8fb20000 */
+> +    1)   0.380 us    |          sched_rt_can_attach(); /* ret=3D0x0 */
+> +    1)   2.335 us    |        } /* cpu_cgroup_can_attach ret=3D-22 */
+> +    1)   4.369 us    |      } /* cgroup_migrate_execute ret=3D-22 */
+> +    1)   7.143 us    |    } /* cgroup_migrate ret=3D-22 */
+>
+>  The above example shows that the function cpu_cgroup_can_attach
+>  returned the error code -22 firstly, then we can read the code
+> @@ -2836,37 +2840,41 @@ printed in hexadecimal format.
+>    Example with funcgraph-retval-hex::
+>
+>      1)               |      cgroup_migrate() {
+> -    1)   0.651 us    |        cgroup_migrate_add_task(); /* =3D 0xffff93=
+fcfd346c00 */
+> +    1)   0.651 us    |        cgroup_migrate_add_task(); /* ret=3D0xffff=
+93fcfd346c00 */
+>      1)               |        cgroup_migrate_execute() {
+>      1)               |          cpu_cgroup_can_attach() {
+>      1)               |            cgroup_taskset_first() {
+> -    1)   0.732 us    |              cgroup_taskset_next(); /* =3D 0xffff=
+93fc8fb20000 */
+> -    1)   1.232 us    |            } /* cgroup_taskset_first =3D 0xffff93=
+fc8fb20000 */
+> -    1)   0.380 us    |            sched_rt_can_attach(); /* =3D 0x0 */
+> -    1)   2.335 us    |          } /* cpu_cgroup_can_attach =3D 0xffffffe=
+a */
+> -    1)   4.369 us    |        } /* cgroup_migrate_execute =3D 0xffffffea=
+ */
+> +    1)   0.732 us    |              cgroup_taskset_next(); /* ret=3D0xff=
+ff93fc8fb20000 */
+> +    1)   1.232 us    |            } /* cgroup_taskset_first ret=3D0xffff=
+93fc8fb20000 */
+> +    1)   0.380 us    |            sched_rt_can_attach(); /* ret=3D0x0 */
+> +    1)   2.335 us    |          } /* cpu_cgroup_can_attach ret=3D0xfffff=
+fea */
+> +    1)   4.369 us    |        } /* cgroup_migrate_execute ret=3D0xffffff=
+ea */
+>      1)   7.143 us    |      } /* cgroup_migrate =3D 0xffffffea */
+
+My bad for forgetting to update the above line and will fix it in the
+next version.
+
+>
+> -At present, there are some limitations when using the funcgraph-retval
+> -option, and these limitations will be eliminated in the future:
+> +Note that there are some limitations when using the funcgraph-retval
+> +option:
 > +
-> +	jt = iarray_realloc(NULL, 2);
-> +	if (!jt)
-> +		return -ENOMEM;
-> +
-> +	subprog = bpf_find_containing_subprog(env, t);
-> +	jt->items[0] = t + 1;
-> +	jt->items[1] = subprog->exit_idx;
-> +	env->insn_aux_data[t].jt = jt;
-> +	return 0;
-> +}
-> +
-
-[ ... ]
-
-> @@ -18216,6 +18239,8 @@ static int visit_insn(int t, struct bpf_verifier_env *env)
->  				mark_subprog_might_sleep(env, t);
->  			if (bpf_helper_changes_pkt_data(insn->imm))
->  				mark_subprog_changes_pkt_data(env, t);
-> +			if (insn->imm == BPF_FUNC_tail_call)
-> +				visit_tailcall_insn(env, t);
-                                ^^^^^^^^^^^^^^^^^^^^^^^
-
-The return value of visit_tailcall_insn() is not checked here. If
-iarray_realloc() fails and returns -ENOMEM, the error is silently
-discarded. This is inconsistent with visit_gotox_insn() which properly
-returns its value.
-
-Under memory pressure, the jt allocation fails silently, leaving
-env->insn_aux_data[t].jt as NULL. Later, bpf_insn_successors() will
-not return the expected successors for the tail call, and the stack
-liveness fix this patch implements would not take effect.
-
-Should this be something like:
-
-    if (insn->imm == BPF_FUNC_tail_call) {
-        ret = visit_tailcall_insn(env, t);
-        if (ret < 0)
-            return ret;
-    }
-
-> +		} else if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL) {
-
-[ ... ]
-
+> +- If CONFIG_DEBUG_INFO_BTF is disabled (n), a return value is printed ev=
+en for
+> +  functions with a void return type. When CONFIG_DEBUG_INFO_BTF is enabl=
+ed (y),
+> +  the return value is printed only for non-void functions.
+>
+> -- Even if the function return type is void, a return value will still
+> -  be printed, and you can just ignore it.
+> +- If a return value occupies multiple registers, only the value in the f=
+irst
+> +  register is recorded and printed. For example, on the x86 architecture=
+, a
+> +  64-bit return value is stored across eax (lower 32 bits) and edx (uppe=
+r 32 bits),
+> +  but only the contents of eax are captured. If CONFIG_DEBUG_INFO_BTF is=
+ enabled,
+> +  the suffix "(trunc)" is appended to the printed value to indicate that=
+ the
+> +  output may be truncated because high-order register contents are omitt=
+ed.
+>
+> -- Even if return values are stored in multiple registers, only the
+> -  value contained in the first register will be recorded and printed.
+> -  To illustrate, in the x86 architecture, eax and edx are used to store
+> -  a 64-bit return value, with the lower 32 bits saved in eax and the
+> -  upper 32 bits saved in edx. However, only the value stored in eax
+> -  will be recorded and printed.
+> +- Under certain procedure-call standards (e.g., arm64's AAPCS64), when t=
+he return
+> +  type is smaller than a general-purpose register (GPR), the caller is r=
+esponsible
+> +  for narrowing the value; the upper bits of the register may contain un=
+defined data.
+> +  For instance, when a u8 is returned in 64-bit GPR, bits [63:8] can hol=
+d arbitrary
+> +  values, especially when larger types are truncated (explicitly or impl=
+icitly). It
+> +  is therefore advisable to inspect the code in such cases. If CONFIG_DE=
+BUG_INFO_BTF
+> +  is enabled (y), the return value is automatically trimmed to the width=
+ of the return
+> +  type.
+>
+> -- In certain procedure call standards, such as arm64's AAPCS64, when a
+> -  type is smaller than a GPR, it is the responsibility of the consumer
+> -  to perform the narrowing, and the upper bits may contain UNKNOWN value=
+s.
+> -  Therefore, it is advisable to check the code for such cases. For insta=
+nce,
+> -  when using a u8 in a 64-bit GPR, bits [63:8] may contain arbitrary val=
+ues,
+> -  especially when larger types are truncated, whether explicitly or impl=
+icitly.
+> -  Here are some specific cases to illustrate this point:
+> +  The following examples illustrate the behavior:
+>
+>    **Case One**:
+>
+> @@ -2885,7 +2893,9 @@ option, and these limitations will be eliminated in=
+ the future:
+>                 RET
+>
+>    If you pass 0x123456789abcdef to this function and want to narrow it,
+> -  it may be recorded as 0x123456789abcdef instead of 0xef.
+> +  it may be recorded as 0x123456789abcdef instead of 0xef. When
+> +  CONFIG_DEBUG_INFO_BTF is enabled, the value will be correctly truncate=
+d
+> +  to 0xef based on the size constraints of the u8 type.
+>
+>    **Case Two**:
+>
+> @@ -2910,7 +2920,9 @@ option, and these limitations will be eliminated in=
+ the future:
+>                 RET
+>
+>    When passing 0x2_0000_0000 to it, the return value may be recorded as
+> -  0x2_0000_0000 instead of 0.
+> +  0x2_0000_0000 instead of 0. When CONFIG_DEBUG_INFO_BTF is enabled, the
+> +  value will be correctly truncated to 0 based on the size constraints o=
+f
+> +  the int type.
+>
+>  You can put some comments on specific functions by using
+>  trace_printk() For example, if you want to put a comment inside
+> --
+> 2.34.1
+>
 
