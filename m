@@ -1,174 +1,134 @@
-Return-Path: <bpf+bounces-76558-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76559-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11ECBCBA72C
-	for <lists+bpf@lfdr.de>; Sat, 13 Dec 2025 09:28:44 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA0B5CBAFEE
+	for <lists+bpf@lfdr.de>; Sat, 13 Dec 2025 14:15:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 7475630012DB
-	for <lists+bpf@lfdr.de>; Sat, 13 Dec 2025 08:28:43 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 60F993011EF5
+	for <lists+bpf@lfdr.de>; Sat, 13 Dec 2025 13:15:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 028042BFC8F;
-	Sat, 13 Dec 2025 08:28:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 320CD2D7DCF;
+	Sat, 13 Dec 2025 13:15:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ziyao.cc header.i=@ziyao.cc header.b="ivBWWDud"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VGe/n8U6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail40.out.titan.email (mail40.out.titan.email [209.209.25.23])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB5242BDC00
-	for <bpf@vger.kernel.org>; Sat, 13 Dec 2025 08:28:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.209.25.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8A95288D6
+	for <bpf@vger.kernel.org>; Sat, 13 Dec 2025 13:15:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765614521; cv=none; b=Qk7xf4BiGGbnj+9D08+k4GJ3oa/pr76ZJVh2ou7q7y7utrNwF9dQIqbKZbE2W2KX2NJ/WVI196KkM8WbRZUZtlHmGjfVX/UFhQCs9e3bpfKXKNYXMcUe1Zek9Vl9tHkx1ip5rwOS7oNeZxDBL5ASSFDW/QTQx0t+H2U+Pwu9lzw=
+	t=1765631750; cv=none; b=omAsGalEuxbb8mrz1ihh8Yjv1Mf1RPYuR9LPXIbYlMJOW8DMwXQe0ACnl0QYeIJIOBfvCNiHwp3p9xgSsk5eOFuh/t6ZD+voxyOm/T/20CHXiVfrxqxrfq+lq949O/TzNQQi9iP2UQVCGVGIHnOaCQSXEPLO0h4HliG5dbEYWWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765614521; c=relaxed/simple;
-	bh=k6Qmogr9eLDA2Al/XUsWPyZwZwYDDwb+4AUYEPxoA6o=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cZBkQKQRF7hti9Xy9WXGNx17YnfFek7wFwmlrUovPVdJTNSXF3m+OYzr1zAlF07LNCKB+rCTvAcHYoPMVsilsjr4oBQWpIul8TRghBRsigiL5KKPz0kVbZqqYTHYEIWt+RQzmiKC2ePwq9DHsO7fvCjhvzuVSCWTfEfXyLocFz8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ziyao.cc; spf=pass smtp.mailfrom=ziyao.cc; dkim=pass (1024-bit key) header.d=ziyao.cc header.i=@ziyao.cc header.b=ivBWWDud; arc=none smtp.client-ip=209.209.25.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ziyao.cc
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziyao.cc
-Received: from localhost (localhost [127.0.0.1])
-	by smtp-out.flockmail.com (Postfix) with ESMTP id 4dSzxF0gMbz9rw7;
-	Sat, 13 Dec 2025 08:28:33 +0000 (UTC)
-DKIM-Signature: a=rsa-sha256; bh=tc1tIhIQc7O4v6s79H8PuGEoalgFoaAAlQMd9v2xupw=;
-	c=relaxed/relaxed; d=ziyao.cc;
-	h=date:message-id:from:to:cc:mime-version:subject:from:to:cc:subject:date:message-id:in-reply-to:reply-to:references;
-	q=dns/txt; s=titan1; t=1765614512; v=1;
-	b=ivBWWDudLREa//AbpZzsInO04aAZbu40lFhuVmGrSVZINt4VDyzQjMG2LsoqchfAugVv3fGt
-	9TufpUcdT7on73BJkSkH2H9OTnhAigWER6d3k74J0J2q3DrExwiZJarsjQubfu9OBbkRK6KsZv6
-	0llJsXqltOCJjG3j1RU9P1/E=
-Received: from ketchup (unknown [117.171.66.90])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp-out.flockmail.com (Postfix) with ESMTPSA id 4dSzxB5gQjz9rvR;
-	Sat, 13 Dec 2025 08:28:30 +0000 (UTC)
-Feedback-ID: :me@ziyao.cc:ziyao.cc:flockmailId
-From: Yao Zi <me@ziyao.cc>
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: dwarves@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Yao Zi <me@ziyao.cc>,
-	q66 <me@q66.moe>
-Subject: [PATCH dwarves v2] dwarf_loader: Handle DW_AT_location attrs containing DW_OP_plus_uconst
-Date: Sat, 13 Dec 2025 08:27:22 +0000
-Message-ID: <20251213082721.51017-2-me@ziyao.cc>
-X-Mailer: git-send-email 2.51.2
+	s=arc-20240116; t=1765631750; c=relaxed/simple;
+	bh=m4ovU1acjiG8ID7BZpH7BYzu5TtfWTbMqmKk7Dy+fhw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VFXGSEWirzUajbCsjX4rnY7064oXi0TTz9c9z4ju9kTgfSkTb2k+yN5b4WVy43yXwuTkhX1WSJ64XEo53ulp8ls60dP3L6R6G6KIf0c+wIRKomOhbGcMvK4g/1Vea+F9utiIbnxOcHfnh6a4Uya9fIF8JwBk7UZDUdYqlD2JB50=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VGe/n8U6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41B0FC19421
+	for <bpf@vger.kernel.org>; Sat, 13 Dec 2025 13:15:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1765631750;
+	bh=m4ovU1acjiG8ID7BZpH7BYzu5TtfWTbMqmKk7Dy+fhw=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=VGe/n8U67LRM2qBiU5iOB3ZInro96peZ/mX7KezRuJFWrjAJ3TISYkTkacut0gi2f
+	 C2clWaBtdrPhFQWkDy10PpOFYDgEKDsBXXWKb4qfzbddyyDS2UZJN+vto4KrujyLh1
+	 WSkNW20aGjCqlqgCR/2MbWra6i5AQwkJ53NjRRSyz0ggTWjdhmg+qF+RrS2GBSn+f9
+	 fVlDU9f36feq/l/tfpPtWD50oTJlpDBl9UZclls5fBDMHXrA6obpclz5WLs7bDrkCF
+	 2UhkwEj/r7MsI0b5yQvkn6oy1/MljLZ8w5FWf2HUnG7lMq+FDLSpjEfFHV20u9MqNQ
+	 WBuWefRbEb74A==
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-6419aaced59so3246351a12.0
+        for <bpf@vger.kernel.org>; Sat, 13 Dec 2025 05:15:50 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU/FScfoJpif3PbgoyuEp3MjfL7j4DDwO+VJDvQhPrTyqag1ztL7H46tI6jXpYUwmQwSRI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwuOMtRd2vzc9p//XcdCr7sjinMhEpth9uRzOGOgc86EuBLz/cV
+	YjonHnqZtPkfOUa9qqqMNHl2C15YVQTQjt7a740+f9N5sPRTt6PuwWEDymFQroOD7HNjlW93pmg
+	y+IwQgW+YLWu3zLzOuYqZJq9lpcc4/58=
+X-Google-Smtp-Source: AGHT+IH6c2aGs3pGV2qbzSdgH67yeANRBt4zKi9fHupRbRB3sspdfzK1/4vZz9l03lJOOO5Iclqd0HQjP9hVV01NzE0=
+X-Received: by 2002:a17:907:d90:b0:b7a:1be1:985 with SMTP id
+ a640c23a62f3a-b7d23a9c7f4mr452642966b.65.1765631748772; Sat, 13 Dec 2025
+ 05:15:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-F-Verdict: SPFVALID
-X-Titan-Src-Out: 1765614512931531904.21635.655533790920244735@prod-use1-smtp-out1003.
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.4 cv=WtDRMcfv c=1 sm=1 tr=0 ts=693d23b0
-	a=rBp+3XZz9uO5KTvnfbZ58A==:117 a=rBp+3XZz9uO5KTvnfbZ58A==:17
-	a=MKtGQD3n3ToA:10 a=1oJP67jkp3AA:10 a=CEWIc4RMnpUA:10 a=NEAV23lmAAAA:8
-	a=VwQbUJbxAAAA:8 a=LpNgXrTXAAAA:8 a=oMbLxBo4_5qdfzbMrdIA:9
-	a=LqOpv0_-CX5VL_7kjZO3:22 a=3z85VNIBY5UIEeAh_hcH:22
-	a=NWVoK91CQySWRX1oVYDe:22
+References: <20251212091103.1247753-1-duanchenghao@kylinos.cn> <20251212091103.1247753-5-duanchenghao@kylinos.cn>
+In-Reply-To: <20251212091103.1247753-5-duanchenghao@kylinos.cn>
+From: Huacai Chen <chenhuacai@kernel.org>
+Date: Sat, 13 Dec 2025 21:16:00 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H5-AaD9SuRWt5gK4ODVA356EO7byqf-AnXvr_0C+FuUPg@mail.gmail.com>
+X-Gm-Features: AQt7F2qKTklsRl-sx-vCdUFzzD1Fmp1fcr3FKsh_aSrBNnvldyT7mT7iFuedr0g
+Message-ID: <CAAhV-H5-AaD9SuRWt5gK4ODVA356EO7byqf-AnXvr_0C+FuUPg@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] LoongArch: BPF: Enable BPF exception fixup for
+ specific ADE subcode
+To: Chenghao Duan <duanchenghao@kylinos.cn>
+Cc: yangtiezhu@loongson.cn, hengqi.chen@gmail.com, kernel@xen0n.name, 
+	zhangtianyang@loongson.cn, masahiroy@kernel.org, linux-kernel@vger.kernel.org, 
+	loongarch@lists.linux.dev, bpf@vger.kernel.org, youling.tang@linux.dev, 
+	jianghaoran@kylinos.cn, vincent.mc.li@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-LLVM has a GlobalMerge pass, which tries to group multiple global
-variables together and address them with through a single register with
-offsets coded in instructions, to reduce register pressure. Address of
-symbols transformed by the pass may be represented by an DWARF
-expression consisting of DW_OP_addrx and DW_OP_plus_uconst, which
-naturally matches the way a merged variable is addressed.
+Hi, Chenghao,
 
-However, our dwarf_loader currently ignores anything but the first in
-the location expression, including the DW_OP_plus_uconst atom, which
-appears the second operation in this case. This could result in broken
-BTF information produced by pahole, where several merged symbols are
-given the same offset, even though in fact they don't overlap.
+On Fri, Dec 12, 2025 at 5:11=E2=80=AFPM Chenghao Duan <duanchenghao@kylinos=
+.cn> wrote:
+>
+> This patch allows the LoongArch BPF JIT to handle recoverable memory
+> access errors generated by BPF_PROBE_MEM* instructions.
+>
+> When a BPF program performs memory access operations, the instructions
+> it executes may trigger ADEM exceptions. The kernel=E2=80=99s built-in BP=
+F
+> exception table mechanism (EX_TYPE_BPF) will generate corresponding
+> exception fixup entries in the JIT compilation phase; however, the
+> architecture-specific trap handling function needs to proactively call
+> the common fixup routine to achieve exception recovery.
+>
+> do_ade(): fix EX_TYPE_BPF memory access exceptions for BPF programs,
+> ensure safe execution.
+>
+> Signed-off-by: Chenghao Duan <duanchenghao@kylinos.cn>
+> ---
+>  arch/loongarch/kernel/traps.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/loongarch/kernel/traps.c b/arch/loongarch/kernel/traps.=
+c
+> index da5926fead4a..4cf72e0af6a3 100644
+> --- a/arch/loongarch/kernel/traps.c
+> +++ b/arch/loongarch/kernel/traps.c
+> @@ -534,7 +534,13 @@ asmlinkage void noinstr do_fpe(struct pt_regs *regs,=
+ unsigned long fcsr)
+>
+>  asmlinkage void noinstr do_ade(struct pt_regs *regs)
+>  {
+> -       irqentry_state_t state =3D irqentry_enter(regs);
+> +       irqentry_state_t state;
+> +       unsigned int esubcode =3D FIELD_GET(CSR_ESTAT_ESUBCODE, regs->csr=
+_estat);
+> +
+> +       if ((esubcode =3D=3D EXSUBCODE_ADEM) && fixup_exception(regs))
+> +               return;
+No chance for ADEF? And I don't think ixup_exception() can be done out
+of irqentry_enter().
 
-LLVM has enabled MergeGlobal pass for PowerPC[1] and RISC-V[2] by
-default since version 20, let's handle DW_OP_plus_uconst operations in
-DW_AT_location attributes correctly to ensure correct BTF could be
-produced for LLVM-built kernels.
+This patch is needed by BPF but not part of BPF, so I think the
+subject should be:
+LoongArch: Enable exception fixup for specific ADE subcode
 
-Fixes: a6ea527aab91 ("variable: Add ->addr member")
-Reported-by: q66 <me@q66.moe>
-Closes: https://github.com/ClangBuiltLinux/linux/issues/2089
-Link: https://github.com/llvm/llvm-project/commit/aaa37d6755e6 # [1]
-Link: https://github.com/llvm/llvm-project/commit/9d02264b03ea # [2]
-Signed-off-by: Yao Zi <me@ziyao.cc>
----
+Huacai
 
-The problem is found by several distros building Linux kernel with LLVM
-and BTF enabled, after upgrading to LLVM 20 or later, kernels built for
-RISC-V and PowerPC issue errors like
-
-[    1.296358] BPF:      type_id=4457 offset=4224 size=8
-[    1.296767] BPF:
-[    1.296919] BPF: Invalid offset
-
-on startup, and loading any modules fails with -EINVAL unless
-CONFIG_MODULE_ALLOW_BTF_MISMATCH is turned on,
-
-# insmod tun.ko
-[   12.892421] failed to validate module [tun] BTF: -22
-[   12.936971] failed to validate module [tun] BTF: -22
-insmod: can't insert 'tun.ko': Invalid argument
-
-By comparing DWARF dump and BTF dump, it's found BTF contains symbols
-with the same offset,
-
-type_id=4148 offset=4208 size=8 (VAR 'vector_misaligned_access')
-type_id=4147 offset=4208 size=8 (VAR 'misaligned_access_speed')
-
-while the same symbols are described with different DW_AT_location
-attributes,
-
-0x0011ade7:   DW_TAG_variable
-                DW_AT_name      ("misaligned_access_speed")
-                DW_AT_type      (0x0011adf2 "long")
-		DW_AT_decl_file	("...")
-                DW_AT_external  (true)
-                DW_AT_decl_line (24)
-                DW_AT_location  (DW_OP_addrx 0x0)
-
-...
-
-0x0011adf6:   DW_TAG_variable
-                DW_AT_name      ("vector_misaligned_access")
-                DW_AT_type      (0x0011adf2 "long")
-                DW_AT_external  (true)
-                DW_AT_decl_file ("...")
-                DW_AT_decl_line (25)
-                DW_AT_location  (DW_OP_addrx 0x0, DW_OP_plus_uconst 0x8)
-
-For more detailed analysis and kernel config for reproducing the issue,
-please refer to the Closes link. Thanks for your time and review.
-
-Changed from v1
-- Add missing dereference to *addr
-- Change my mail address to me@ziyao.cc
-- Link to v1: https://lore.kernel.org/dwarves/20251130032113.4938-2-ziyao@disroot.org/
-
- dwarf_loader.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/dwarf_loader.c b/dwarf_loader.c
-index 79be3f516a26..77aab8a0960b 100644
---- a/dwarf_loader.c
-+++ b/dwarf_loader.c
-@@ -708,6 +708,11 @@ static enum vscope dwarf__location(Dwarf_Die *die, uint64_t *addr, struct locati
- 		case DW_OP_addrx:
- 			scope = VSCOPE_GLOBAL;
- 			*addr = expr[0].number;
-+
-+			if (location->exprlen == 2 &&
-+			    expr[1].atom == DW_OP_plus_uconst)
-+				*addr += expr[1].number;
-+
- 			break;
- 		case DW_OP_reg1 ... DW_OP_reg31:
- 		case DW_OP_breg0 ... DW_OP_breg31:
--- 
-2.51.2
-
+> +
+> +       state =3D irqentry_enter(regs);
+>
+>         die_if_kernel("Kernel ade access", regs);
+>         force_sig_fault(SIGBUS, BUS_ADRERR, (void __user *)regs->csr_badv=
+addr);
+> --
+> 2.25.1
+>
 
