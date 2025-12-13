@@ -1,93 +1,197 @@
-Return-Path: <bpf+bounces-76555-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76556-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88CCDCBA61E
-	for <lists+bpf@lfdr.de>; Sat, 13 Dec 2025 07:40:08 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77D3ECBA65E
+	for <lists+bpf@lfdr.de>; Sat, 13 Dec 2025 08:05:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id ADA23300214A
-	for <lists+bpf@lfdr.de>; Sat, 13 Dec 2025 06:40:07 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id BC25230022C8
+	for <lists+bpf@lfdr.de>; Sat, 13 Dec 2025 07:05:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01DE926A1B9;
-	Sat, 13 Dec 2025 06:40:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C05F921C9F9;
+	Sat, 13 Dec 2025 07:05:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Vdv2tyi9"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0012.hostedemail.com [216.40.44.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A3BC228C9D;
-	Sat, 13 Dec 2025 06:40:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.12
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765608005; cv=none; b=duLBf7G9Iz63DPeYxNWQntNpLoh7kYlefGQqHMKqhluTi1BJiZg+pYiIfD/qQDzG481UYPnUAqsnEwJY42A7jZPiRK6MlvwzXJZ7f7FIY9+z93/Rn5ZcG/MJl+lNl5DYf/FJChLd9B/ugeiXHkmi6f4GpA6fcH8+PbbCVkjrG9c=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765608005; c=relaxed/simple;
-	bh=gb1M4S239Rk2pV8pAOHzG+Ffyav9kJa6yrKX+RMxYWE=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=HAufdEq84VG7scEiwNL1EgUQ+yV75bdiWYyFWmyJZyM+bbXEGqF1zwB7dnBbOg593vsH59L7wu31IHl6MAPRIsKDQkwSjgaN1G28GuYXWq5oUw4G7bHfZVh1I+FOZzyX5TqG2q4Cxu1EuQfU1JuWs3WHlPbveuM8x1rEv8ghSk8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf03.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay08.hostedemail.com (Postfix) with ESMTP id 961711404D6;
-	Sat, 13 Dec 2025 06:20:58 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf03.hostedemail.com (Postfix) with ESMTPA id 39AA06000B;
-	Sat, 13 Dec 2025 06:20:54 +0000 (UTC)
-Date: Sat, 13 Dec 2025 01:20:50 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>, Joel Fernandes
- <joelagnelf@nvidia.com>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, Sebastian Andrzej Siewior
- <bigeasy@linutronix.de>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v3] tracing: Guard __DECLARE_TRACE() use of
- __DO_TRACE_CALL() with SRCU-fast
-Message-ID: <20251213012050.576eead3@fedora>
-In-Reply-To: <09c76498-6a0b-4880-8a86-2a295c47c703@efficios.com>
-References: <e2fe3162-4b7b-44d6-91ff-f439b3dce706@paulmck-laptop>
-	<B5D08899-9C23-4FA3-B988-3BB3E8E6D908@nvidia.com>
-	<febd477b-c111-4d5e-be89-cae3685853f5@paulmck-laptop>
-	<bce9a781-3cc3-45d7-8c95-9f747e08a3cd@nvidia.com>
-	<0ec97a2d-5aee-4214-b387-229e9822b468@paulmck-laptop>
-	<C0D26D77-316D-467F-81C9-030D4E0EBCD8@nvidia.com>
-	<83cd4b4d-1eec-47d0-be91-57c915775612@paulmck-laptop>
-	<7683319A-AB3D-4DF4-8720-9C39E3C683BA@nvidia.com>
-	<d863f1ad-477d-4e3f-a0b5-fa9f282a164a@paulmck-laptop>
-	<C9254103-18E1-480F-8009-003EB44F6F2F@nvidia.com>
-	<39252902-567b-4e74-b6c4-91eae1df7c0d@paulmck-laptop>
-	<20251212211839.6c3e2399@fedora>
-	<09c76498-6a0b-4880-8a86-2a295c47c703@efficios.com>
-X-Mailer: Claws Mail 4.3.1 (GTK 3.24.51; x86_64-redhat-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 789E23B8D4B
+	for <bpf@vger.kernel.org>; Sat, 13 Dec 2025 07:05:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.167.49
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1765609543; cv=pass; b=ah2And6RrZySlWDl6WwC03NHxDCRNPju/g9VpApBThfDzpWCeMdnfzDuk/qzWXKkAkJlOrbfrUkRCnVJ9a42gVjPy8B5KVL5Z3Ad1vAeNXE80JozvlNDW15+k5Tm3WE8Tj1u09X/FwxXuJlq8yfFMxSG9K72zPybkw7+Zf2ccyA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1765609543; c=relaxed/simple;
+	bh=oveY6ghAYYW1/assJTaVUMOm3ALmNhblLmKgXg0pPvc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NP04iTBHiwl5leHsVRKKeAaBadSkHbUE9/pobfS8csAMhZNBp9WENlJI8rIOPnuMLARHAOQkOTAzvWVKVuaMfnSSmS1l6wUwtrGObOEfPIyHfPrUeapI6M0AhDhOEvTxC7M656nE8p2Lfe8KKwW0IXr8k8NHEzaxm0MsV0gCchc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Vdv2tyi9; arc=pass smtp.client-ip=209.85.167.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-597ceef6eebso23725e87.0
+        for <bpf@vger.kernel.org>; Fri, 12 Dec 2025 23:05:41 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1765609539; cv=none;
+        d=google.com; s=arc-20240605;
+        b=iFa1BPjyhDOjVokdNwPghcMiE/8nkQZMyb8FOt8fbSParoOAi2a+9NVO1nruvctzz2
+         W7WljRbF3Y0yzXsCDyUbRdA+nNfu1NsEemlrkNOc8YnFvHiwtCtNeiSsC2rG+wo/9Ic6
+         ceEATAne5jfKU7X66Vm4Y5HhUUsBrqLqelO9wQpVXgQorDiBYAaiCzwY+rYpiXhc9mZ6
+         YzE48vhQd1EkcPQDPPdbGs+XGJcM6Un0XLmEQl3WwHrI4Kat5KjNQ9uLJkY35vkmZqAl
+         KQtZFCBt+C9ZtTOgxtdoaodfVMpxaN20i1pe+eUC4ZtTapgUoofScZTRmdVpsyvyTJr+
+         J02g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=Ot7CTaOEn9MEJkbjFKG93I03AklZCblxqt7tGVu1gvM=;
+        fh=qbJFKFqzdfJaFKB/RYnglY6WNlWDTwE5bgkfHZSCfOw=;
+        b=eULocHWzT4HGwXOjR60jZ+u1j/0nA6v+icYNnw/+czXKyQjaSv67iHPVYlZK4VL4qa
+         p/WExc4Bps68YSkuwdwDg+RgKOIEPAIcmnKQfPRgHLMITZnxxJNVh5IylSDAkd2vCWsc
+         Qt/SYMtj1UlwlW5BsyN1oE1lDJqZCQzi6LsbntTrPnYGrOEvVtjdyEqe18mPZQ+elACU
+         Q7VgVnJueZB0yOVL2mmgBlUOm3Cw+6ZEW5SD94/2rI6rcYXfwcJzNFjq6U2qCqT/iojO
+         59jTocB129XwlYVrBjXsqrKC4+roE/pNLML2vMYq6BITeKqcLn1IT8o3/OK0t4rhpTqv
+         C9tw==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1765609539; x=1766214339; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ot7CTaOEn9MEJkbjFKG93I03AklZCblxqt7tGVu1gvM=;
+        b=Vdv2tyi9knIUdlja7hzSYMktwhyhJuhZ8lIgx5gHRiSkRkoxTUosUXuYRs7RsM76yK
+         u7lXmEiAoR9gDvc5YhEpjPtpQ03Jf3/WmDLkyEGtNdYa1mo70jX3emQ7DXqrreVobIli
+         xhmJcU8t8LwBy4C+pqDee/3cF4Mle3y+FUGVJm1KWfuG84/LPwT0FvnleKY2NTNvT1Mx
+         0thMASTd8FHDO5f7WnxgBz7eLn3gzvtiJEML69hXLgdSUs3RYaesKvvnVvPJE5npGw+1
+         5D9a7ncnK4u8c3JrihC0ko9A3uNOUyw/x5eY7uVgMFLKGb3PzLjywG73mavmpslqB5/p
+         XArw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765609539; x=1766214339;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ot7CTaOEn9MEJkbjFKG93I03AklZCblxqt7tGVu1gvM=;
+        b=rv1Tf1HSWhzItw/WjOV4itEy4ku3HpMdkEMrhPSLjt061aw43rLT+lSqsCWa/ojewG
+         DkndBnW95vIAsWtpliFlRRDJcW1Oziu9xtoyaAPLsZYKvUDqHlNPeuS30vL8qgEZH/qJ
+         /ToX38QliRyN2MowCvlmFhvWkr+EV2sUq8tQMUPefXo2UwUlrKgXjWYXtG0b7kah3MTn
+         L/bpAMm0YaXBFPkaTVS/RFa3T9GEE3/5PZQZuasxhwIF//P5Xt6x/DhwtBd6hXChCvF1
+         DCnjrU97mjxKcPO2NJXIAmtKuBd/7gdnDP5jgfd9CiLMD3RWwgid4zPlORKbHMzn8yEY
+         2LsA==
+X-Forwarded-Encrypted: i=1; AJvYcCUkwjC6G6LVNMMB6quAq1DsdxFwQUUUvTYRoS4fdub/L60YKEb6XU1F6R+mud7V34E0ox4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxnVdKfff6NXqUFXDeSmgxH3aX4slgFlHFIULa/761lTGAWNqV+
+	SfIdowXy45mDNpwJmEVdAqL3dNdpL84UdkXHbbDXuluJFBIb6pFmo40QyLmQdXRnRD8RNtPtR5J
+	apI6s7ERdMzuKgyA65DLeVLhgesLGckefOwtOmFxm
+X-Gm-Gg: AY/fxX4lsS22jP+CBe1TZr/Ti6p28ogucNGU4reFKeT5KUKNP1GFv0CmHZ0h8mOdlen
+	rWp47FqikVfqad7bZ1ddtXgn6RUxvICsY2wJ9e9LgbFs2M11kF3nZOkLvERf/hPbQsvnEDlhZBW
+	VV0TBCpGW+UEyUpTpFDDzqKluuVNQhQ1zilSwQJ2za2IP/HmjtqJh/C6UO0OIlhV34s8KrVlUl4
+	+DiQFv0+/ZWqenj99oWhag6Ud425pK1K/SPT/6/hEdheh8DoLN74mwGJPwR9/r6VdyUFsMm
+X-Google-Smtp-Source: AGHT+IFxhjah2N2uFy306dItOjP0R93hkCDyo1Kn++vNhOwiYTt8khSjxmS7193oFeZUUiU7KewI20Oqx5FGrhIwBmA=
+X-Received: by 2002:ac2:5de3:0:b0:594:43e1:ed43 with SMTP id
+ 2adb3069b0e04-598fe1eb38cmr60101e87.2.1765609539221; Fri, 12 Dec 2025
+ 23:05:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Stat-Signature: n7qz5qdzzmnhwwfc8ir9r88gcrdijmgo
-X-Rspamd-Server: rspamout04
-X-Rspamd-Queue-Id: 39AA06000B
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX19V07REGIYtSgIpxWl75AGch8puwtuOgxE=
-X-HE-Tag: 1765606854-447506
-X-HE-Meta: U2FsdGVkX1+j32QEBIj90Zv4U/lD2XQyfLqcxFmK2ho22V44y2HEPw8I2nmkSve80cRQNfo/PWxisWwlQAd8WGpMylgYcLo1y8BmPDjbMDEr55WGX3Vik/3wq9uXjts4AtPZCrYLEzZaz8h2PAUE3HgMDDx86oVAAMbjWGjoYN3Bm3knIYXDj8xkT7/MRmNZRQl5puqqZjs+r8vXsGcNYBzoR8mfPpliFcVaSM2S/t43vA6btvQ03MY1S0MFwXfeJ38gnMdAxHvPcWNL70LgOb4u0lJHzJNl3bDuaVyzaKEi3p5i2ZOrRuMYBEbBOhQDcVgPz3WRjYk/5Hx/xtvzlqR9Yz74Wm2YhcrwcJBUk24pKpC6k58tDRjjVIv3iqSD
+References: <20251212161832.2067134-1-yeoreum.yun@arm.com> <20251212161832.2067134-3-yeoreum.yun@arm.com>
+In-Reply-To: <20251212161832.2067134-3-yeoreum.yun@arm.com>
+From: Brendan Jackman <jackmanb@google.com>
+Date: Sat, 13 Dec 2025 16:05:20 +0900
+X-Gm-Features: AQt7F2rPm7R-wCwVHPTjXe_bQj-qNecTeNkHkP5H4J7QvG1ylb2YhWsPANW--u8
+Message-ID: <CA+i-1C2e7QNTy5u=HF7tLsLXLq4xYbMTCbNjWGAxHz4uwgR05g@mail.gmail.com>
+Subject: Re: [PATCH 2/2] arm64: mmu: use pagetable_alloc_nolock() while stop_machine()
+To: Yeoreum Yun <yeoreum.yun@arm.com>
+Cc: akpm@linux-foundation.org, david@kernel.org, lorenzo.stoakes@oracle.com, 
+	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org, surenb@google.com, 
+	mhocko@suse.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
+	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, hannes@cmpxchg.org, 
+	ziy@nvidia.com, bigeasy@linutronix.de, clrkwllms@kernel.org, 
+	rostedt@goodmis.org, catalin.marinas@arm.com, will@kernel.org, 
+	ryan.roberts@arm.com, kevin.brodsky@arm.com, dev.jain@arm.com, 
+	yang@os.amperecomputing.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, linux-rt-devel@lists.linux.dev, 
+	linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 12 Dec 2025 23:19:41 -0500
-Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+On Sat, 13 Dec 2025 at 01:18, Yeoreum Yun <yeoreum.yun@arm.com> wrote:
+>
+> linear_map_split_to_ptes() and __kpti_install_ng_mappings()
+> are called as callback of stop_machine().
+> That means these functions context are preemption disabled.
+>
+> Unfortunately, under PREEMPT_RT, the pagetable_alloc() or
+> __get_free_pages() couldn't be called in this context
+> since spin lock that becomes sleepable on RT,
+> potentially causing a sleep during page allocation.
+>
+> To address this, pagetable_alloc_nolock().
+>
+> Signed-off-by: Yeoreum Yun <yeoreum.yun@arm.com>
+> ---
+>  arch/arm64/mm/mmu.c | 23 ++++++++++++++++++-----
+>  1 file changed, 18 insertions(+), 5 deletions(-)
+>
+> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+> index 2ba01dc8ef82..0e98606d8c4c 100644
+> --- a/arch/arm64/mm/mmu.c
+> +++ b/arch/arm64/mm/mmu.c
+> @@ -475,10 +475,15 @@ static void __create_pgd_mapping(pgd_t *pgdir, phys_addr_t phys,
+>  static phys_addr_t __pgd_pgtable_alloc(struct mm_struct *mm, gfp_t gfp,
+>                                        enum pgtable_type pgtable_type)
+>  {
+> -       /* Page is zeroed by init_clear_pgtable() so don't duplicate effort. */
+> -       struct ptdesc *ptdesc = pagetable_alloc(gfp & ~__GFP_ZERO, 0);
+> +       struct ptdesc *ptdesc;
+>         phys_addr_t pa;
+>
+> +       /* Page is zeroed by init_clear_pgtable() so don't duplicate effort. */
+> +       if (gfpflags_allow_spinning(gfp))
+> +               ptdesc  = pagetable_alloc(gfp & ~__GFP_ZERO, 0);
+> +       else
+> +               ptdesc  = pagetable_alloc_nolock(gfp & ~__GFP_ZERO, 0);
+> +
+>         if (!ptdesc)
+>                 return INVALID_PHYS_ADDR;
+>
+> @@ -869,6 +874,7 @@ static int __init linear_map_split_to_ptes(void *__unused)
+>                 unsigned long kstart = (unsigned long)lm_alias(_stext);
+>                 unsigned long kend = (unsigned long)lm_alias(__init_begin);
+>                 int ret;
+> +               gfp_t gfp = IS_ENABLED(CONFIG_PREEMPT_RT) ? __GFP_HIGH : GFP_ATOMIC;
+>
+>                 /*
+>                  * Wait for all secondary CPUs to be put into the waiting area.
+> @@ -881,9 +887,9 @@ static int __init linear_map_split_to_ptes(void *__unused)
+>                  * PTE. The kernel alias remains static throughout runtime so
+>                  * can continue to be safely mapped with large mappings.
+>                  */
+> -               ret = range_split_to_ptes(lstart, kstart, GFP_ATOMIC);
+> +               ret = range_split_to_ptes(lstart, kstart, gfp);
+>                 if (!ret)
+> -                       ret = range_split_to_ptes(kend, lend, GFP_ATOMIC);
+> +                       ret = range_split_to_ptes(kend, lend, gfp);
+>                 if (ret)
+>                         panic("Failed to split linear map\n");
+>                 flush_tlb_kernel_range(lstart, lend);
+> @@ -1207,7 +1213,14 @@ static int __init __kpti_install_ng_mappings(void *__unused)
+>         remap_fn = (void *)__pa_symbol(idmap_kpti_install_ng_mappings);
+>
+>         if (!cpu) {
+> -               alloc = __get_free_pages(GFP_ATOMIC | __GFP_ZERO, order);
+> +               if (IS_ENABLED(CONFIG_PREEMPT_RT))
+> +                       alloc = (u64) pagetable_alloc_nolock(__GFP_HIGH | __GFP_ZERO, order);
+> +               else
+> +                       alloc = __get_free_pages(GFP_ATOMIC | __GFP_ZERO, order);
+> +
+> +               if (!alloc)
+> +                       panic("Failed to alloc kpti_ng_pgd\n");
+> +
 
-> Here is one additional thing to keep in mind: although
-> SRCU-fast is probably quite fast (as the name implies),
-> last time I tried using migrate disable in a fast path
-> I was surprised to see verbosity of the generated assembly,
-> and how slow it was compared to preempt disable.
-> 
-> So before using migrate disable on a fast path, at least on
-> non-preempt-RT configs, we should carefully consider the
-> performance impact of migrate disable.
+I don't have the context on what this code is doing so take this with
+a grain of salt, but...
 
-Right, which is another reason I'm keeping that part of the patch as-is.
-
--- Steve
+The point of the _nolock alloc is to give the allocator an excuse to
+fail. Panicking on that failure doesn't seem like a great idea to me?
 
