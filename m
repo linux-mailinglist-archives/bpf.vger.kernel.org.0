@@ -1,134 +1,187 @@
-Return-Path: <bpf+bounces-76559-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76560-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA0B5CBAFEE
-	for <lists+bpf@lfdr.de>; Sat, 13 Dec 2025 14:15:54 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0EE6CBB5AF
+	for <lists+bpf@lfdr.de>; Sun, 14 Dec 2025 02:15:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 60F993011EF5
-	for <lists+bpf@lfdr.de>; Sat, 13 Dec 2025 13:15:53 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D407F300CBA4
+	for <lists+bpf@lfdr.de>; Sun, 14 Dec 2025 01:15:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 320CD2D7DCF;
-	Sat, 13 Dec 2025 13:15:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34AEA2D6E6A;
+	Sun, 14 Dec 2025 01:15:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VGe/n8U6"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Jedr6R2R"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8A95288D6
-	for <bpf@vger.kernel.org>; Sat, 13 Dec 2025 13:15:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 293CDA95E;
+	Sun, 14 Dec 2025 01:15:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765631750; cv=none; b=omAsGalEuxbb8mrz1ihh8Yjv1Mf1RPYuR9LPXIbYlMJOW8DMwXQe0ACnl0QYeIJIOBfvCNiHwp3p9xgSsk5eOFuh/t6ZD+voxyOm/T/20CHXiVfrxqxrfq+lq949O/TzNQQi9iP2UQVCGVGIHnOaCQSXEPLO0h4HliG5dbEYWWU=
+	t=1765674939; cv=none; b=M1Q5dIlXvxqsIemOqopGC88QOvvGt6tKqBQgHbP7X1xE0SabQqHLKdSn4VsgYFigJzij23C1yKYJehc7ySNs3uKX3ezVxWmK8/MQGnf5uARmOimE1J8BhlB8VNEQ7hc6eMDAXWsV71B9DwkLJrSRJD5dMW8TuKJWu8C9+l/kzmM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765631750; c=relaxed/simple;
-	bh=m4ovU1acjiG8ID7BZpH7BYzu5TtfWTbMqmKk7Dy+fhw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VFXGSEWirzUajbCsjX4rnY7064oXi0TTz9c9z4ju9kTgfSkTb2k+yN5b4WVy43yXwuTkhX1WSJ64XEo53ulp8ls60dP3L6R6G6KIf0c+wIRKomOhbGcMvK4g/1Vea+F9utiIbnxOcHfnh6a4Uya9fIF8JwBk7UZDUdYqlD2JB50=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VGe/n8U6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41B0FC19421
-	for <bpf@vger.kernel.org>; Sat, 13 Dec 2025 13:15:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765631750;
-	bh=m4ovU1acjiG8ID7BZpH7BYzu5TtfWTbMqmKk7Dy+fhw=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=VGe/n8U67LRM2qBiU5iOB3ZInro96peZ/mX7KezRuJFWrjAJ3TISYkTkacut0gi2f
-	 C2clWaBtdrPhFQWkDy10PpOFYDgEKDsBXXWKb4qfzbddyyDS2UZJN+vto4KrujyLh1
-	 WSkNW20aGjCqlqgCR/2MbWra6i5AQwkJ53NjRRSyz0ggTWjdhmg+qF+RrS2GBSn+f9
-	 fVlDU9f36feq/l/tfpPtWD50oTJlpDBl9UZclls5fBDMHXrA6obpclz5WLs7bDrkCF
-	 2UhkwEj/r7MsI0b5yQvkn6oy1/MljLZ8w5FWf2HUnG7lMq+FDLSpjEfFHV20u9MqNQ
-	 WBuWefRbEb74A==
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-6419aaced59so3246351a12.0
-        for <bpf@vger.kernel.org>; Sat, 13 Dec 2025 05:15:50 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU/FScfoJpif3PbgoyuEp3MjfL7j4DDwO+VJDvQhPrTyqag1ztL7H46tI6jXpYUwmQwSRI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwuOMtRd2vzc9p//XcdCr7sjinMhEpth9uRzOGOgc86EuBLz/cV
-	YjonHnqZtPkfOUa9qqqMNHl2C15YVQTQjt7a740+f9N5sPRTt6PuwWEDymFQroOD7HNjlW93pmg
-	y+IwQgW+YLWu3zLzOuYqZJq9lpcc4/58=
-X-Google-Smtp-Source: AGHT+IH6c2aGs3pGV2qbzSdgH67yeANRBt4zKi9fHupRbRB3sspdfzK1/4vZz9l03lJOOO5Iclqd0HQjP9hVV01NzE0=
-X-Received: by 2002:a17:907:d90:b0:b7a:1be1:985 with SMTP id
- a640c23a62f3a-b7d23a9c7f4mr452642966b.65.1765631748772; Sat, 13 Dec 2025
- 05:15:48 -0800 (PST)
+	s=arc-20240116; t=1765674939; c=relaxed/simple;
+	bh=yaSLe5QESpiy6HbErVQIl+luTlywDCH2A/xhylUbG0U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pv1BMzdQci3emBP+4TuRPd57gNFRW36eCxSJutVnJH9JqGtetu+/3/n91yve69BTHO36CyleVJN7TY4rqLSVle5SEUA3tUi4JUbmF4eXvBgLvg5jkhs4+DgOieDHXdzg+teGg7BN8gXRYe4iQM4ZiAL92HHFDiX7JWof+Mid+IY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Jedr6R2R; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1765674939; x=1797210939;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=yaSLe5QESpiy6HbErVQIl+luTlywDCH2A/xhylUbG0U=;
+  b=Jedr6R2Ro0BGwEZrARkDfIILa0NXrIa97z4r/bl6BkdCJJ+F3bJjDSBD
+   sUOzW+LKy8HMY1XnhdVID5b+yZ3dYP2lHBFGwf6/i8ehOk+ez7zhCMjSa
+   cI3fTsCtJvsJzHWw5eDxG0YuXG4jzCZavqU+OjTAJN9WLgMlhF+lG8l1A
+   KQs/Gkz7RIsFqrXCXHoVh5aIG+T3BPqUWyEYjJArGLbrb43J6DEvlAD45
+   ZtR/jSsa4BIdHDP8cAvYy57gnLo2KgLZuxfPhYNh2FgddAHSFWsPvDysR
+   VS32KNYA59uyguTaplqaK0BQxf5xp/379uDe1YOXa7fnOJ0ypKbc+dhPS
+   Q==;
+X-CSE-ConnectionGUID: YLB1c2oqSqazd5gNY9TJyg==
+X-CSE-MsgGUID: 2Tdstgu7Tx+Zok85fK45oQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11641"; a="67665817"
+X-IronPort-AV: E=Sophos;i="6.21,147,1763452800"; 
+   d="scan'208";a="67665817"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2025 17:15:38 -0800
+X-CSE-ConnectionGUID: kp07iKH7T26LEFSVgrygrA==
+X-CSE-MsgGUID: f5n45W/uQeq/W0Xgs7vS8w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.21,147,1763452800"; 
+   d="scan'208";a="197311867"
+Received: from lkp-server01.sh.intel.com (HELO d335e3c6db51) ([10.239.97.150])
+  by fmviesa006.fm.intel.com with ESMTP; 13 Dec 2025 17:15:35 -0800
+Received: from kbuild by d335e3c6db51 with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1vUahx-000000008PV-0iSe;
+	Sun, 14 Dec 2025 01:15:33 +0000
+Date: Sun, 14 Dec 2025 09:14:33 +0800
+From: kernel test robot <lkp@intel.com>
+To: Donglin Peng <dolinux.peng@gmail.com>, rostedt@goodmis.org
+Cc: oe-kbuild-all@lists.linux.dev, mhiramat@kernel.org,
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, pengdonglin <pengdonglin@xiaomi.com>,
+	Xiaoqin Zhang <zhangxiaoqin@xiaomi.com>
+Subject: Re: [PATCH v3 1/2] fgraph: Enhance funcgraph-retval with BTF-based
+ type-aware output
+Message-ID: <202512140850.JdD1lPmn-lkp@intel.com>
+References: <20251209121349.525641-2-dolinux.peng@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251212091103.1247753-1-duanchenghao@kylinos.cn> <20251212091103.1247753-5-duanchenghao@kylinos.cn>
-In-Reply-To: <20251212091103.1247753-5-duanchenghao@kylinos.cn>
-From: Huacai Chen <chenhuacai@kernel.org>
-Date: Sat, 13 Dec 2025 21:16:00 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H5-AaD9SuRWt5gK4ODVA356EO7byqf-AnXvr_0C+FuUPg@mail.gmail.com>
-X-Gm-Features: AQt7F2qKTklsRl-sx-vCdUFzzD1Fmp1fcr3FKsh_aSrBNnvldyT7mT7iFuedr0g
-Message-ID: <CAAhV-H5-AaD9SuRWt5gK4ODVA356EO7byqf-AnXvr_0C+FuUPg@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] LoongArch: BPF: Enable BPF exception fixup for
- specific ADE subcode
-To: Chenghao Duan <duanchenghao@kylinos.cn>
-Cc: yangtiezhu@loongson.cn, hengqi.chen@gmail.com, kernel@xen0n.name, 
-	zhangtianyang@loongson.cn, masahiroy@kernel.org, linux-kernel@vger.kernel.org, 
-	loongarch@lists.linux.dev, bpf@vger.kernel.org, youling.tang@linux.dev, 
-	jianghaoran@kylinos.cn, vincent.mc.li@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251209121349.525641-2-dolinux.peng@gmail.com>
 
-Hi, Chenghao,
+Hi Donglin,
 
-On Fri, Dec 12, 2025 at 5:11=E2=80=AFPM Chenghao Duan <duanchenghao@kylinos=
-.cn> wrote:
->
-> This patch allows the LoongArch BPF JIT to handle recoverable memory
-> access errors generated by BPF_PROBE_MEM* instructions.
->
-> When a BPF program performs memory access operations, the instructions
-> it executes may trigger ADEM exceptions. The kernel=E2=80=99s built-in BP=
-F
-> exception table mechanism (EX_TYPE_BPF) will generate corresponding
-> exception fixup entries in the JIT compilation phase; however, the
-> architecture-specific trap handling function needs to proactively call
-> the common fixup routine to achieve exception recovery.
->
-> do_ade(): fix EX_TYPE_BPF memory access exceptions for BPF programs,
-> ensure safe execution.
->
-> Signed-off-by: Chenghao Duan <duanchenghao@kylinos.cn>
-> ---
->  arch/loongarch/kernel/traps.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/loongarch/kernel/traps.c b/arch/loongarch/kernel/traps.=
-c
-> index da5926fead4a..4cf72e0af6a3 100644
-> --- a/arch/loongarch/kernel/traps.c
-> +++ b/arch/loongarch/kernel/traps.c
-> @@ -534,7 +534,13 @@ asmlinkage void noinstr do_fpe(struct pt_regs *regs,=
- unsigned long fcsr)
->
->  asmlinkage void noinstr do_ade(struct pt_regs *regs)
->  {
-> -       irqentry_state_t state =3D irqentry_enter(regs);
-> +       irqentry_state_t state;
-> +       unsigned int esubcode =3D FIELD_GET(CSR_ESTAT_ESUBCODE, regs->csr=
-_estat);
-> +
-> +       if ((esubcode =3D=3D EXSUBCODE_ADEM) && fixup_exception(regs))
-> +               return;
-No chance for ADEF? And I don't think ixup_exception() can be done out
-of irqentry_enter().
+kernel test robot noticed the following build errors:
 
-This patch is needed by BPF but not part of BPF, so I think the
-subject should be:
-LoongArch: Enable exception fixup for specific ADE subcode
+[auto build test ERROR on trace/for-next]
+[also build test ERROR on linus/master v6.18 next-20251212]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Huacai
+url:    https://github.com/intel-lab-lkp/linux/commits/Donglin-Peng/fgraph-Enhance-funcgraph-retval-with-BTF-based-type-aware-output/20251209-201633
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace for-next
+patch link:    https://lore.kernel.org/r/20251209121349.525641-2-dolinux.peng%40gmail.com
+patch subject: [PATCH v3 1/2] fgraph: Enhance funcgraph-retval with BTF-based type-aware output
+config: arm-randconfig-002-20251214 (https://download.01.org/0day-ci/archive/20251214/202512140850.JdD1lPmn-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 10.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251214/202512140850.JdD1lPmn-lkp@intel.com/reproduce)
 
-> +
-> +       state =3D irqentry_enter(regs);
->
->         die_if_kernel("Kernel ade access", regs);
->         force_sig_fault(SIGBUS, BUS_ADRERR, (void __user *)regs->csr_badv=
-addr);
-> --
-> 2.25.1
->
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202512140850.JdD1lPmn-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   arm-linux-gnueabi-ld: kernel/trace/trace_functions_graph.o: in function `trim_retval':
+>> kernel/trace/trace_functions_graph.c:888: undefined reference to `btf_find_func_proto'
+
+
+vim +888 kernel/trace/trace_functions_graph.c
+
+   872	
+   873	static void trim_retval(unsigned long func, unsigned long *retval, bool *print_retval,
+   874				int *fmt)
+   875	{
+   876		const struct btf_type *t;
+   877		char name[KSYM_NAME_LEN];
+   878		struct btf *btf;
+   879		u32 v, msb;
+   880		int kind;
+   881	
+   882		if (!IS_ENABLED(CONFIG_DEBUG_INFO_BTF))
+   883			return;
+   884	
+   885		if (lookup_symbol_name(func, name))
+   886			return;
+   887	
+ > 888		t = btf_find_func_proto(name, &btf);
+   889		if (IS_ERR_OR_NULL(t))
+   890			return;
+   891	
+   892		t = btf_type_skip_modifiers(btf, t->type, NULL);
+   893		kind = t ? BTF_INFO_KIND(t->info) : BTF_KIND_UNKN;
+   894		switch (kind) {
+   895		case BTF_KIND_UNKN:
+   896			*print_retval = false;
+   897			break;
+   898		case BTF_KIND_STRUCT:
+   899		case BTF_KIND_UNION:
+   900		case BTF_KIND_ENUM:
+   901		case BTF_KIND_ENUM64:
+   902			if (kind == BTF_KIND_STRUCT || kind == BTF_KIND_UNION)
+   903				*fmt = RETVAL_FMT_HEX;
+   904			else
+   905				*fmt = RETVAL_FMT_DEC;
+   906	
+   907			if (t->size > sizeof(unsigned long)) {
+   908				*fmt |= RETVAL_FMT_TRUNC;
+   909			} else {
+   910				msb = BITS_PER_BYTE * t->size - 1;
+   911				*retval &= GENMASK(msb, 0);
+   912			}
+   913			break;
+   914		case BTF_KIND_INT:
+   915			v = *(u32 *)(t + 1);
+   916			if (BTF_INT_ENCODING(v) == BTF_INT_BOOL) {
+   917				*fmt = RETVAL_FMT_BOOL;
+   918				msb = 0;
+   919			} else {
+   920				if (BTF_INT_ENCODING(v) == BTF_INT_SIGNED)
+   921					*fmt = RETVAL_FMT_DEC;
+   922				else
+   923					*fmt = RETVAL_FMT_HEX;
+   924	
+   925				if (t->size > sizeof(unsigned long)) {
+   926					*fmt |= RETVAL_FMT_TRUNC;
+   927					msb = BITS_PER_LONG - 1;
+   928				} else {
+   929					msb = BTF_INT_BITS(v) - 1;
+   930				}
+   931			}
+   932			*retval &= GENMASK(msb, 0);
+   933			break;
+   934		default:
+   935			*fmt = RETVAL_FMT_HEX;
+   936			break;
+   937		}
+   938	}
+   939	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
