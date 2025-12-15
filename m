@@ -1,107 +1,120 @@
-Return-Path: <bpf+bounces-76645-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76646-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92BF2CC01CB
-	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 23:17:27 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23782CC0494
+	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 00:59:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3DAC4301D670
-	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 22:17:19 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1AA4230505AC
+	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 23:55:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B26F3093C8;
-	Mon, 15 Dec 2025 22:17:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4A2433EB07;
+	Mon, 15 Dec 2025 23:46:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GPZfpKcN"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0013.hostedemail.com [216.40.44.13])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0605A41A8F;
-	Mon, 15 Dec 2025 22:17:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4802C146A66
+	for <bpf@vger.kernel.org>; Mon, 15 Dec 2025 23:46:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765837037; cv=none; b=QCiBzDZU466YLfhe/PP7lh3nuv+tRQPuoAsKtLh1VOH3Ujbf3uOKiVFvqRe02CWOHYOBKheLbR47rVVurrlvX9WnSxLEyHcpKSvrrh8OWczer4uNSTAt3t/CUf/iFhxquyluiFPNnceP+7rmjXgpSIF5dI7RkFJVVmxa4sOci1w=
+	t=1765842381; cv=none; b=JMiNqMfJWt0DUR67iRGRKF4emuUyjfQgZ5S/33hNU5e8zPQ5aPpwc4kWY2buoM1C6Gct709WQcCnFeEwIMbrGYBK3pPs+p6qrmW9d+useOT4ThTRuK5b3teui2tXZtAoZxTBX0yErVJ1DsfE7ZnYlFdthRuC+R/5JgGrSQ6dokk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765837037; c=relaxed/simple;
-	bh=ZsgtmUVSaPSY1fm6aJUzc0sKLMlEF7FL1Gvx7heN1Hs=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Nez7zbi476j05As6oZNmCV8ctsJEKRpA79ZtSXQnuu4yi7K3vuE+nlmf6AZH5vFGlvnAqxc0MNdFM0HV+2Xx8z286WXVaITrILfc8RkkAuHLKpTdZdELUaBTbM5KUVNIwrKmYbTr1f4/5B13KOIh9J/lhMdi3+yHgAsxE8YXzXk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf16.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay05.hostedemail.com (Postfix) with ESMTP id 35538588F5;
-	Mon, 15 Dec 2025 22:17:05 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf16.hostedemail.com (Postfix) with ESMTPA id B2A762001C;
-	Mon, 15 Dec 2025 22:17:00 +0000 (UTC)
-Date: Mon, 15 Dec 2025 17:18:32 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Andy Shevchenko
- <andriy.shevchenko@linux.intel.com>, Alexei Starovoitov <ast@kernel.org>,
- bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
- linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
- Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, Mathieu
- Desnoyers <mathieu.desnoyers@efficios.com>, kernel test robot
- <lkp@intel.com>
-Subject: Re: [PATCH v1 1/1] bpf: Disable -Wsuggest-attribute=format
-Message-ID: <20251215171832.2b0b24d5@gandalf.local.home>
-In-Reply-To: <CAADnVQLZPYc0HWqQw7ma=G-t9UMXXo+aXomVkYAzoQt=0ZrQ=Q@mail.gmail.com>
-References: <20251210131234.3185985-1-andriy.shevchenko@linux.intel.com>
-	<CAEf4BzZQ_OJehh=5jJgVBUjJBNAkWh2o8Yd9UTa9nFrRO4oAFg@mail.gmail.com>
-	<CAADnVQKtvRhbAVunHrwj_pCsmazddADRvRo5zp5O+k5kc-Eoog@mail.gmail.com>
-	<CAEf4BzbZwmOCgqhKeyAhEUT0MXyz09cy2dcpB9WCKWP1ikBWdA@mail.gmail.com>
-	<CAADnVQLZPYc0HWqQw7ma=G-t9UMXXo+aXomVkYAzoQt=0ZrQ=Q@mail.gmail.com>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1765842381; c=relaxed/simple;
+	bh=T/dWoOmA8seiD9LVaPuA3F+DGtRpLxYv6LwKd6PeCv8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ovqIpSj5ImMQCn2XZEnV5CR1SxOdioaleY7OXqv2BOwx+yZseqZspU1XzMspguHo0jKxVv8L4cfUmz46w5HqAonrJ+kEmcuQFylw00x4lrx7GvSENV0PeYXKiz4ue+rIHX9ODpOUDLD3WVOlq0x41NwmZVzOfclv3/mEbKi+kn8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GPZfpKcN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D035EC4CEF5
+	for <bpf@vger.kernel.org>; Mon, 15 Dec 2025 23:46:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1765842380;
+	bh=T/dWoOmA8seiD9LVaPuA3F+DGtRpLxYv6LwKd6PeCv8=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=GPZfpKcNMuKw7pWZrag/b06V6VSB+WYamBcg9wduO/L1mYnkOtIt8P9bmMpPM+BIy
+	 25yYKf5kiMiMKpnz39ZKr3fBfbXibM6Mikd2HD0bUCi7ygF3uD3+JSo4tG4YADgTun
+	 P2roxpJrDBCt/KfQW5TCTj6uQxBQbLCnmBWfr3rTfJQaQsEec99FbWT+ODLx7CFAY8
+	 hSHI1GebQyexoI3EvuqLnQCshbyTOLxEQkUjcDRESlXQUw7tVPh0ItIqr9V2nbCNQp
+	 XW/hr0edSwkJjIIHHsj2T+rpTlkHR5ABZ6Au2NQXQ7lKA5RThL7HmtJ2EzBD2EyhgV
+	 +mnd++RR+MiBQ==
+Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-4eda6a8cc12so41007211cf.0
+        for <bpf@vger.kernel.org>; Mon, 15 Dec 2025 15:46:20 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXl7pfIR/jIA/uRG2uVmRRfsyu1ejMr6jarQGt5YZMdTR4sqZlpsSVO/A0Sw1yM5e/puyk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzWnjQd9QV6rBqQCZ3owjkXjKtkSNUNq3bSXLxziwNJMiaaQHMO
+	KL8Nvv8gN6Spn+musj5IVfmoYKPKKuVRS0nc4a+c+94mkNwiqkC8oK2ParKRq0XCi5FgbfD0v+g
+	aDshf8EP1YNMJRmsDxu2yZGQeJ6sHK3c=
+X-Google-Smtp-Source: AGHT+IH1fCxstY21x+VOAM8OtWbWU3spYIXTZ3ehZ328TQz5b2gYKiDDBRrEYE0RnOwY8EAMI4RzGD77hL/eiysfK6c=
+X-Received: by 2002:ac8:5790:0:b0:4ee:209a:a012 with SMTP id
+ d75a77b69052e-4f1d0501a48mr185611811cf.30.1765842380011; Mon, 15 Dec 2025
+ 15:46:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <CAADnVQK9ZkPC7+R5VXKHVdtj8tumpMXm7BTp0u9CoiFLz_aPTg@mail.gmail.com>
+In-Reply-To: <CAADnVQK9ZkPC7+R5VXKHVdtj8tumpMXm7BTp0u9CoiFLz_aPTg@mail.gmail.com>
+From: Song Liu <song@kernel.org>
+Date: Tue, 16 Dec 2025 08:46:08 +0900
+X-Gmail-Original-Message-ID: <CAPhsuW4MDzY6jjw+gaqtnoQ_p+ZqE5cLMZAAs=HbrfprswQk-Q@mail.gmail.com>
+X-Gm-Features: AQt7F2o31sk9J0LH_kcs6xpKleg3x2YqrNvYoQ60sZoUtzxFq9VPQ5Pro6qaiTA
+Message-ID: <CAPhsuW4MDzY6jjw+gaqtnoQ_p+ZqE5cLMZAAs=HbrfprswQk-Q@mail.gmail.com>
+Subject: Re: fms-extensions and bpf
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Quentin Monnet <qmo@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Eduard <eddyz87@gmail.com>, 
+	Ihor Solodrai <ihor.solodrai@linux.dev>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Rspamd-Server: rspamout06
-X-Rspamd-Queue-Id: B2A762001C
-X-Stat-Signature: szfszikdjojfaco4rjbnseont6zpuqdj
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX18S3CH/ypAfrWjjZJ8OfjeHLL3OuJMV68w=
-X-HE-Tag: 1765837020-609219
-X-HE-Meta: U2FsdGVkX19zDrs9bRxTdoiy4Vu+dcLHlAf4M/Cp9tLbyJ6cGDLUujRddV0RFwOk8DXAA2vVvqQUaSLkJ9fqIlyyNs5pwBoKB2b1Fxr7mEnFpxrHsDE8R9DXp0KdniM5Wf923+2/QMLYcD/y+8iMc3EsCnyTN02ap6nR9tySNdRJNFqq6tUKqUA3yOeH0dTw3trwW2yXlspqSd99z+1X6O7/x2hcxG39JbVylYI9HAaRTPTMhC7KSTj7kkNdG2CyEvprS/l1ABdPuhVxS5Ti+eu4aI7jo5p5C07ODocwewUCEIhnW1g/16gq26an1PY24rDZFo/5JkJeMT911khZaN0KJN2Y9sO7
 
-On Mon, 15 Dec 2025 10:40:16 -0800
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+On Wed, Dec 3, 2025 at 8:30=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> Hi All,
+>
+> The kernel is now built with -fms-extensions and it is
+> using them in various places.
+> To stop-the-bleed and let selftests/bpf pass
+> I applied the short term fix:
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/commit/?id=3D=
+835a50753579aa8368a08fca307e638723207768
+>
+> Long term I think we can try to teach bpftool
+> to emit __diag_push("-fms-extensions"..)
+> at the top of vmlinux.h.
+> Not sure whether it's working though.
 
-> > But I think instead of Makefile changes we should fix the root cause
-> > here. And that seems to be just wrong __printf annotations for
-> > seq_bprintf and bstr_printf. They are not printf-like, they should not
-> > be marked as such, and then the compiler won't be wrongly suggesting
-> > bpf_stream_vprintk_impl (and others that make use of either
-> > bstr_printf or seq_bprintf) to be marked with __printf. =20
->=20
-> yeah. commit 7bf819aa992f ("vsnprintf: Mark binary printing functions
-> with __printf() attribute")
-> should be reverted,
-> but that somebody else problem and the revert would need to silence
-> that incorrect warning in lib/vsprintf.c too.
+Something like the following works for me. But I am not sure
+whether it is the best solution.
 
-=46rom what I understand, the __printf(X, 0) simply quiets the warning, which
-is why those two are:
+Thanks,
+Song
 
-__printf(3, 0) int vbin_printf(u32 *bin_buf, size_t size, const char *fmt, =
-va_list args);
-__printf(3, 0) int bstr_printf(char *buf, size_t size, const char *fmt, con=
-st u32 *bin_buf);
+diff --git i/tools/bpf/bpftool/btf.c w/tools/bpf/bpftool/btf.c
+index 946612029dee..606886b79805 100644
+--- i/tools/bpf/bpftool/btf.c
++++ w/tools/bpf/bpftool/btf.c
+@@ -798,6 +798,9 @@ static int dump_btf_c(const struct btf *btf,
+        printf("#define __bpf_fastcall\n");
+        printf("#endif\n");
+        printf("#endif\n\n");
++       printf("#pragma clang diagnostic push\n");
++       printf("#pragma clang diagnostic ignored \"-Wmissing-declarations\"=
+\n");
++       printf("\n");
 
-Hence, it's not a big deal to have that. Actually, it does document that
-the printf format is different than a normal printf, and that the arguments
-are not the same as a normal printf.
+        if (root_type_cnt) {
+                for (i =3D 0; i < root_type_cnt; i++) {
+@@ -823,6 +826,8 @@ static int dump_btf_c(const struct btf *btf,
+                        goto done;
+        }
 
-I complained about this at first too (and never gave an acked-by), but
-because it does quiet a warning, I also didn't nack it.
-
--- Steve
++       printf("\n");
++       printf("#pragma clang diagnostic pop\n");
+        printf("#ifndef BPF_NO_PRESERVE_ACCESS_INDEX\n");
+        printf("#pragma clang attribute pop\n");
+        printf("#endif\n");
 
