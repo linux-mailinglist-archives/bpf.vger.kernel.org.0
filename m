@@ -1,64 +1,64 @@
-Return-Path: <bpf+bounces-76596-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76597-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76820CBD283
-	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 10:24:42 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64BFECBD239
+	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 10:19:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4EA5A303EF77
-	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 09:19:18 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 66996300A8EF
+	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 09:19:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D77DE329C54;
-	Mon, 15 Dec 2025 09:19:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1562327BF9;
+	Mon, 15 Dec 2025 09:19:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="dtobGaV0"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="dkQ/w0dc"
 X-Original-To: bpf@vger.kernel.org
 Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56DC921B9D2;
-	Mon, 15 Dec 2025 09:19:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAB9B21ADB7;
+	Mon, 15 Dec 2025 09:19:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765790356; cv=none; b=VDCGTFUW1p/8QoY4Pr4A77JPsGImiqpmxrYM7IP/HoGnxpc9DcrJjrIxIMM9JwFQ/ekLOaveB93BpzQkM5TfUMK0TVxpmwrj2CmUvDzIFUU40t58yc0+HvbKPeIZpE0QEJksOmbUHUiW+Tg1JDzf74l/GjdMCcsmkR2kKCn47e0=
+	t=1765790369; cv=none; b=uffxjza3S3HQ29jkCGCJ7XgRFCckU7nADLttr7taJl5GW+8H3xdeefvkBY+xTEcd8w/YrrY5zO20cgaJcbXEmirCuzL5KgNvxyRTczvM0yXqcQKNaFPsuG6bhthsUag9iDEn4j26R/gE7Pfl0kJc4tTTh3uDXhC/fPq+PYL98ww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765790356; c=relaxed/simple;
-	bh=BB9thrIzSx9qXvMJNw9d+GyMUcU9y4VelEvBjwG5yqE=;
+	s=arc-20240116; t=1765790369; c=relaxed/simple;
+	bh=R46RowHVNcRX/fyaYFi3afp9MZxZtIKXHgOmyKUx4fo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OHbdzdi9rmqkLW0/4C5f4HWWczJFuniA7RhFJoXolORJ9KJn48Bq35Txne220lmJUxg3Ci0b+/QyO8hbyAY5bMlqwsQG/QmKoBr6lAmKmMuTzFIK1kEiszjRqcoGw73TSCoNRvFxzV8sz+Z7DlNqH8HKGzvwAfUI6+/la/HgGhA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=dtobGaV0; arc=none smtp.client-ip=205.220.177.32
+	 MIME-Version; b=m64FfmPUHdNpabeW80ZQ0QIg6J5GBINYK1AlFmPmvnhua2eUvyTHYCilpIzWccsYfi7yCXTYNan/vMbVs772k8eznUnUJYVbcB5zG3/ygB81VfXO0P6UP0BvI6YWd7phBpbi4tMmdr+T0rkmZIOu9bOvH7xxIJSXAF9ziMjZ0dw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=dkQ/w0dc; arc=none smtp.client-ip=205.220.177.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
 Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 5BF7uNwL1723431;
-	Mon, 15 Dec 2025 09:18:43 GMT
+	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 5BF7uV8R1723582;
+	Mon, 15 Dec 2025 09:18:47 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
 	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=corp-2025-04-25; bh=k+ttb
-	r85Yn/N6G4UBwm3wz8S/II8Ybtuq9g3Ti6YkRw=; b=dtobGaV0AVn4pDRSyXenb
-	4AFx9qA66GpQ34a5wj2hnMQr9re2m+CrY1Qs9tj8BGnjv2SfTPsEhUDnY0svAAwg
-	v4P1n1gywyOe4QnBlKchtg6EzfkzhOTKy8UFmdYDauMiLDQhF+KmSwAXng9pTJsh
-	uk6ZgMylq0jgbcPzU+XU+zA1RIBM+AEWf+QFbFXdZPx9tQ/OXPcr1NixjoqZZrsn
-	enTn7xM8HdH7iNWM8WvUmVZh9E/cLEppZozGafzSFKvgJ98b42LyQzQichrDdhPD
-	mwIOi+bHqvx2Cpvk56zxHheqfORc9h4vTZWEo8SPF1yZuw1CNI9q2GfO1P8nI52U
+	:mime-version:references:subject:to; s=corp-2025-04-25; bh=opLkx
+	oScR957WnYuTM9BmX0z2BvtKaU1ziDHQ/2ONS4=; b=dkQ/w0dcYxcElqK7EyeAp
+	rR3gkKCgTDC9lpAvlnqZNKLDCcTH2fZ9FqwS5MI0G5G73++6Sm5zAupr9w75+FtW
+	nwchXbTMzoQTViEgYbP6wQuMRhdTq70TbZNW695gNY6jSdIEEkmZSEu937mGFuXM
+	cVfUWOy1ez+IfUAT2cvkNopVQUajWPMHOufMKjKcKX+r+OL/Uf3rAwIcGqwQTGsU
+	60GQkKRZeqa1wJlrCqIxNTNRWsOqYk5isz328QEp+7i/6vdtZ/xqrdBu/kq+M19u
+	yn45H60Z0EbjwFgXfPEDz+DuU3+NigZTYHjGy1/mJC89qXb1b4wXN9eUrlP2EaOv
 	Q==
 Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4b0yruhnch-1
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4b0yruhncn-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 15 Dec 2025 09:18:43 +0000 (GMT)
+	Mon, 15 Dec 2025 09:18:47 +0000 (GMT)
 Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 5BF8e70g025805;
-	Mon, 15 Dec 2025 09:18:42 GMT
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 5BF82jkc025193;
+	Mon, 15 Dec 2025 09:18:46 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 4b0xk8yh1b-1
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 4b0xk8yh23-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 15 Dec 2025 09:18:42 +0000
+	Mon, 15 Dec 2025 09:18:46 +0000
 Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 5BF9Hdwi027566;
-	Mon, 15 Dec 2025 09:18:41 GMT
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 5BF9Hdwk027566;
+	Mon, 15 Dec 2025 09:18:45 GMT
 Received: from bpf.uk.oracle.com (dhcp-10-154-53-2.vpn.oracle.com [10.154.53.2])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 4b0xk8yg99-10;
-	Mon, 15 Dec 2025 09:18:41 +0000
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 4b0xk8yg99-11;
+	Mon, 15 Dec 2025 09:18:45 +0000
 From: Alan Maguire <alan.maguire@oracle.com>
 To: andrii@kernel.org, ast@kernel.org
 Cc: daniel@iogearbox.net, martin.lau@linux.dev, eddyz87@gmail.com,
@@ -67,9 +67,9 @@ Cc: daniel@iogearbox.net, martin.lau@linux.dev, eddyz87@gmail.com,
         jolsa@kernel.org, qmo@kernel.org, ihor.solodrai@linux.dev,
         dwarves@vger.kernel.org, bpf@vger.kernel.org, ttreyer@meta.com,
         mykyta.yatsenko5@gmail.com, Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH v8 bpf-next 09/10] bpftool: Update doc to describe bpftool btf dump .. format metadata
-Date: Mon, 15 Dec 2025 09:17:29 +0000
-Message-ID: <20251215091730.1188790-10-alan.maguire@oracle.com>
+Subject: [PATCH v8 bpf-next 10/10] kbuild, bpf: Specify "kind_layout" optional feature
+Date: Mon, 15 Dec 2025 09:17:30 +0000
+Message-ID: <20251215091730.1188790-11-alan.maguire@oracle.com>
 X-Mailer: git-send-email 2.43.5
 In-Reply-To: <20251215091730.1188790-1-alan.maguire@oracle.com>
 References: <20251215091730.1188790-1-alan.maguire@oracle.com>
@@ -87,77 +87,43 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 s
  suspectscore=0 malwarescore=0 mlxscore=0 adultscore=0 phishscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2510240000
  definitions=main-2512150078
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMjE1MDA3OCBTYWx0ZWRfX8ICuI8iUgcYj
- Z18AyMDFrLnDxaohW9Xiga+lBw0K3gUAprAMoCaWYwYqGcJ+zUyAJ5EMuG1A0fVor+LOWLzSmRt
- CmX7hri9ja//5ZikfnbGoM/Ei6/XJd6eT6jnGxq/vTnxjldHkhw0qFYBpaZBgREU8BYNfHSo4sR
- o1uVKbWyk0/tEITYrQCSbEYVzeN5taH6NwDjiCge3j0uC5vv2rggbIAQSYXNR54UuGub2BBnvHu
- dCalVXTBI21zqcH+RHwdJYNkk4l3uShA8aNMzGukNZU1onYUz/slACg7e8mFKqFHu9bykoP+dKj
- PHn8uBd9w9cc5Bfco95ZWEG9aEtlQAHBjR4yFytA5YJ/Q0GaWbzK+Hb3mkAhKxNAFAIADZ8UtTj
- lAZvpLvDz9QeuSEh+IZTZwrDG8VgfQ==
-X-Authority-Analysis: v=2.4 cv=TL9Iilla c=1 sm=1 tr=0 ts=693fd273 cx=c_pps
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMjE1MDA3OCBTYWx0ZWRfX4d4XNGTlez70
+ Y1IZrJCvXA+GjsAFnBf9XzLL8PZNRup9gvhr/tqnr/vlsEGk3FRO0eRdoq0UHbL7MzmfW+4KMfL
+ ecIaEqChmFNYtqfBozAan+8Wemaim5lr4chh4RMse21HiWA9pZBrumstuxH7sJPYSTxZTI/qypC
+ nJ5OeMvtxDu9RJvvd36/6X405W20VvRzKn44KXfblW3qn8p24MMZC5EmQWdE+DIGUXn4/4BpIUX
+ nIVMswz04K7wMNp9OAKZu+pa47mNwq9B90lpffSpK4/5jMEe1CernWbXt7lV8nKBPdKzENyqAFU
+ hIxCJp8+soYUyEo4uT13my48avjtRtGhnC2ezu5NxolPzm3KB3/OzK7TvaBeU/OTGbcA4OcbFPW
+ YhFl4szF5/6heyAuArCzP7GJVga0Cg==
+X-Authority-Analysis: v=2.4 cv=TL9Iilla c=1 sm=1 tr=0 ts=693fd277 cx=c_pps
  a=OOZaFjgC48PWsiFpTAqLcw==:117 a=OOZaFjgC48PWsiFpTAqLcw==:17
  a=wP3pNCr1ah4A:10 a=VkNPw1HP01LnGYTKEx00:22 a=yPCof4ZbAAAA:8
- a=oGlH3XLwWBQq_BvjqjQA:9
-X-Proofpoint-GUID: ib1AjSFiYKIv7SJMgSdBz9c7QP0VvagM
-X-Proofpoint-ORIG-GUID: ib1AjSFiYKIv7SJMgSdBz9c7QP0VvagM
+ a=J4qZCyyk7QvxA2XVlwcA:9
+X-Proofpoint-GUID: cgL2iCY8-KF84APPj1opM8dLzFkb2grD
+X-Proofpoint-ORIG-GUID: cgL2iCY8-KF84APPj1opM8dLzFkb2grD
 
-...and provide an example of output.
+The "kind_layout" feature will add metadata about BTF kinds to the
+generated BTF; its absence in pahole will not trigger an error so it
+is safe to add unconditionally as it will simply be ignored if pahole
+does not support it.
 
 Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
 ---
- .../bpf/bpftool/Documentation/bpftool-btf.rst | 28 +++++++++++++++++--
- 1 file changed, 26 insertions(+), 2 deletions(-)
+ scripts/Makefile.btf | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-btf.rst b/tools/bpf/bpftool/Documentation/bpftool-btf.rst
-index d47dddc2b4ee..1c11b5647ab7 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-btf.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-btf.rst
-@@ -28,7 +28,7 @@ BTF COMMANDS
- | **bpftool** **btf help**
- |
- | *BTF_SRC* := { **id** *BTF_ID* | **prog** *PROG* | **map** *MAP* [{**key** | **value** | **kv** | **all**}] | **file** *FILE* }
--| *FORMAT* := { **raw** | **c** [**unsorted**] }
-+| *FORMAT* := { **raw** | **c** [**unsorted**] | **meta** }
- | *MAP* := { **id** *MAP_ID* | **pinned** *FILE* }
- | *PROG* := { **id** *PROG_ID* | **pinned** *FILE* | **tag** *PROG_TAG* | **name** *PROG_NAME* }
+diff --git a/scripts/Makefile.btf b/scripts/Makefile.btf
+index db76335dd917..c20f9bbcabeb 100644
+--- a/scripts/Makefile.btf
++++ b/scripts/Makefile.btf
+@@ -25,6 +25,8 @@ pahole-flags-$(call test-ge, $(pahole-ver), 126)  = -j$(JOBS) --btf_features=enc
  
-@@ -65,7 +65,8 @@ bpftool btf dump *BTF_SRC* [format *FORMAT*] [root_id *ROOT_ID*]
-     **format** option can be used to override default (raw) output format. Raw
-     (**raw**) or C-syntax (**c**) output formats are supported. With C-style
-     formatting, the output is sorted by default. Use the **unsorted** option
--    to avoid sorting the output.
-+    to avoid sorting the output.  BTF metadata can be displayed with the
-+    **meta** option.
+ pahole-flags-$(call test-ge, $(pahole-ver), 130) += --btf_features=attributes
  
-     **root_id** option can be used to filter a dump to a single type and all
-     its dependent types. It cannot be used with any other types of filtering
-@@ -267,3 +268,26 @@ All the standard ways to specify map or program are supported:
-   [104859] FUNC 'smbalert_work' type_id=9695 linkage=static
-   [104860] FUNC 'smbus_alert' type_id=71367 linkage=static
-   [104861] FUNC 'smbus_do_alert' type_id=84827 linkage=static
++pahole-flags-$(call test-ge, $(pahole-ver), 131) += --btf_features=kind_layout
 +
-+Display BTF metadata from file vmlinux
-+
-+**# bpftool btf dump file vmlinux format meta**
-+
-+::
-+
-+  size 5161076
-+  magic 0xeb9f
-+  version 1
-+  flags 0x1
-+  hdr_len 40
-+  type_len 3036368
-+  type_off 0
-+  str_len 2124588
-+  str_off 3036368
-+  kind_layout_len 80
-+  kind_layout_off 5160956
-+  kind 0    UNKNOWN    info_sz 0    elem_sz 0
-+  kind 1    INT        info_sz 0    elem_sz 0
-+  kind 2    PTR        info_sz 0    elem_sz 0
-+  kind 3    ARRAY      info_sz 0    elem_sz 0
-+  kind 4    STRUCT     info_sz 0    elem_sz 0
+ ifneq ($(KBUILD_EXTMOD),)
+ module-pahole-flags-$(call test-ge, $(pahole-ver), 128) += --btf_features=distilled_base
+ endif
 -- 
 2.39.3
 
