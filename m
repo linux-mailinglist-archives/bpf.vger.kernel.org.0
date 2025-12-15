@@ -1,130 +1,109 @@
-Return-Path: <bpf+bounces-76597-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76600-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64BFECBD239
-	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 10:19:34 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4BF6CBD25E
+	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 10:22:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 66996300A8EF
-	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 09:19:31 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id F3EB23017065
+	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 09:22:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1562327BF9;
-	Mon, 15 Dec 2025 09:19:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2613C320CB6;
+	Mon, 15 Dec 2025 09:22:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="dkQ/w0dc"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="J1hhOrw/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f73.google.com (mail-ed1-f73.google.com [209.85.208.73])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAB9B21ADB7;
-	Mon, 15 Dec 2025 09:19:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5BFF320A38
+	for <bpf@vger.kernel.org>; Mon, 15 Dec 2025 09:22:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765790369; cv=none; b=uffxjza3S3HQ29jkCGCJ7XgRFCckU7nADLttr7taJl5GW+8H3xdeefvkBY+xTEcd8w/YrrY5zO20cgaJcbXEmirCuzL5KgNvxyRTczvM0yXqcQKNaFPsuG6bhthsUag9iDEn4j26R/gE7Pfl0kJc4tTTh3uDXhC/fPq+PYL98ww=
+	t=1765790546; cv=none; b=Aehv+IM6QLXIbQHzyml939F8SP6e9nCaWD9SfebzuyWeWJNelLJAbSdi4rwcTPzcBAt+hoZ2r+3vq+AkHGG15lKVfr+TXMTHMThDyZgLIG3FoEyodATlq4cY3ykBR1tzUuSgkJEW7zqEZVRrLSFObSaAh7aUm3qLCLfJt/xW+5U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765790369; c=relaxed/simple;
-	bh=R46RowHVNcRX/fyaYFi3afp9MZxZtIKXHgOmyKUx4fo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=m64FfmPUHdNpabeW80ZQ0QIg6J5GBINYK1AlFmPmvnhua2eUvyTHYCilpIzWccsYfi7yCXTYNan/vMbVs772k8eznUnUJYVbcB5zG3/ygB81VfXO0P6UP0BvI6YWd7phBpbi4tMmdr+T0rkmZIOu9bOvH7xxIJSXAF9ziMjZ0dw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=dkQ/w0dc; arc=none smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 5BF7uV8R1723582;
-	Mon, 15 Dec 2025 09:18:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=corp-2025-04-25; bh=opLkx
-	oScR957WnYuTM9BmX0z2BvtKaU1ziDHQ/2ONS4=; b=dkQ/w0dcYxcElqK7EyeAp
-	rR3gkKCgTDC9lpAvlnqZNKLDCcTH2fZ9FqwS5MI0G5G73++6Sm5zAupr9w75+FtW
-	nwchXbTMzoQTViEgYbP6wQuMRhdTq70TbZNW695gNY6jSdIEEkmZSEu937mGFuXM
-	cVfUWOy1ez+IfUAT2cvkNopVQUajWPMHOufMKjKcKX+r+OL/Uf3rAwIcGqwQTGsU
-	60GQkKRZeqa1wJlrCqIxNTNRWsOqYk5isz328QEp+7i/6vdtZ/xqrdBu/kq+M19u
-	yn45H60Z0EbjwFgXfPEDz+DuU3+NigZTYHjGy1/mJC89qXb1b4wXN9eUrlP2EaOv
-	Q==
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4b0yruhncn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 15 Dec 2025 09:18:47 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 5BF82jkc025193;
-	Mon, 15 Dec 2025 09:18:46 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 4b0xk8yh23-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 15 Dec 2025 09:18:46 +0000
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 5BF9Hdwk027566;
-	Mon, 15 Dec 2025 09:18:45 GMT
-Received: from bpf.uk.oracle.com (dhcp-10-154-53-2.vpn.oracle.com [10.154.53.2])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 4b0xk8yg99-11;
-	Mon, 15 Dec 2025 09:18:45 +0000
-From: Alan Maguire <alan.maguire@oracle.com>
-To: andrii@kernel.org, ast@kernel.org
-Cc: daniel@iogearbox.net, martin.lau@linux.dev, eddyz87@gmail.com,
-        song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
-        jolsa@kernel.org, qmo@kernel.org, ihor.solodrai@linux.dev,
-        dwarves@vger.kernel.org, bpf@vger.kernel.org, ttreyer@meta.com,
-        mykyta.yatsenko5@gmail.com, Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH v8 bpf-next 10/10] kbuild, bpf: Specify "kind_layout" optional feature
-Date: Mon, 15 Dec 2025 09:17:30 +0000
-Message-ID: <20251215091730.1188790-11-alan.maguire@oracle.com>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20251215091730.1188790-1-alan.maguire@oracle.com>
-References: <20251215091730.1188790-1-alan.maguire@oracle.com>
+	s=arc-20240116; t=1765790546; c=relaxed/simple;
+	bh=rRgk/jKyq3Xc+z294BSrYdB5EGZbteu2gYXGFcGqquw=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=HbHgS3Kcj2sOa7lmRxV2zcVIQ+iaMDymuhJwOWNmfiwSPOkHShLqv5NC1nYX4g931fVWRu2CFnWOg6/DOKyf3Zx6DKA5OFnojXSgXEBLj4nxJiADl512xjbUt8EteLAxF7LfRUyRtlAqD1eULZxLMZGWZLXjfIVt9ruhmYkSMbc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=J1hhOrw/; arc=none smtp.client-ip=209.85.208.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com
+Received: by mail-ed1-f73.google.com with SMTP id 4fb4d7f45d1cf-649839c5653so4946823a12.1
+        for <bpf@vger.kernel.org>; Mon, 15 Dec 2025 01:22:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1765790543; x=1766395343; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rRgk/jKyq3Xc+z294BSrYdB5EGZbteu2gYXGFcGqquw=;
+        b=J1hhOrw/8M2Se6/m0bGqpXY8UkWEM1ckvf/oW11Mzwma0wxV06Wbq90JpPDD8l/0ci
+         BeJsEtvt4BfL+rWxs6795aOQbmE9KAGKxmJehKKVMJt46VMoZyt8BHEmz6MeA4dTqi55
+         TJE8L5TmRbZx+f8chM0QN1UHUFcOjfzibWeJm00RCn/qa5/D1QrUfdDYS+y12Ub0PDaW
+         n4KHc29SffuwHK219o4Udp8i7KTYY+vYu5f7D4cK8bj92j1nKTlH1qAUph1qZDK13ftr
+         Ez4wMB/GzpvIb+vttHZdsmb5mj2jpo9DKVgXluqqPAsm1Hpdnbexs36yFT9Ff0tCQAk4
+         rEYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765790543; x=1766395343;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rRgk/jKyq3Xc+z294BSrYdB5EGZbteu2gYXGFcGqquw=;
+        b=rZI2AUw/37ys13KtPgzZzor5anMewIbbx49FC0BdZisgEd7PwizqTUDxlDW8SeWP3H
+         j24sJE/KVpICY38MP3mv5QXfnsdAfBZMRgMnHxgIfvqZs3/wxf/O1RYIbUqD19fhG5kF
+         zdqN+Qq0q+XJR0+o5gTzSEee3wlbBtY8Qgan7Lc969LEeAuHyneCUdHbFx91nP6MP1D2
+         ozZ4z5kiw6W99wAa+OKMeXu6ecF01rDxUGQgz1PpG9pfankOLeiq97z4rfDcc56QfWw1
+         f3Ik5B5mMHmlxvEj1MsEBBDEr0nQQ4hwr7WeT3rEfZf5/6OS7BgaHnXk7ngbfKgniWzs
+         s1jQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXKYIFhst+3eNFk9kS/jnt89P+vxgMDZq+CdFuGgfoMfIoz2LvbpBdhD1gsPNoCUXufvyI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxF6rsPMWZsLQVx0MiIJlr6QEHohvzFXnvGw+6prxxOckEbeViZ
+	Ijx1xwWPtxsTup6ZFHokREiaw5LyhLNUqs2hPUlik3k3CGkxRkfnCEvqkMB8vkYypiC14MfH90g
+	pf1AP1SAQ62I/Cg==
+X-Google-Smtp-Source: AGHT+IGqA6/7NhdOmRJlayZuRkq/89Snr/0cKuIgnNpYQ1catSJLJfZQNQG1cjXYcwltRqxHcaD6SGiYTjuK7g==
+X-Received: from edbdy7.prod.google.com ([2002:a05:6402:31e7:b0:649:8456:d4bf])
+ (user=jackmanb job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a05:6402:4312:b0:649:62e1:10ca with SMTP id 4fb4d7f45d1cf-6499b1d86bfmr9525174a12.27.1765790543128;
+ Mon, 15 Dec 2025 01:22:23 -0800 (PST)
+Date: Mon, 15 Dec 2025 09:22:22 +0000
+In-Reply-To: <aT5/y3cSGIzi2K+m@e129823.arm.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2025-12-15_01,2025-12-15_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0 bulkscore=0
- suspectscore=0 malwarescore=0 mlxscore=0 adultscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2510240000
- definitions=main-2512150078
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMjE1MDA3OCBTYWx0ZWRfX4d4XNGTlez70
- Y1IZrJCvXA+GjsAFnBf9XzLL8PZNRup9gvhr/tqnr/vlsEGk3FRO0eRdoq0UHbL7MzmfW+4KMfL
- ecIaEqChmFNYtqfBozAan+8Wemaim5lr4chh4RMse21HiWA9pZBrumstuxH7sJPYSTxZTI/qypC
- nJ5OeMvtxDu9RJvvd36/6X405W20VvRzKn44KXfblW3qn8p24MMZC5EmQWdE+DIGUXn4/4BpIUX
- nIVMswz04K7wMNp9OAKZu+pa47mNwq9B90lpffSpK4/5jMEe1CernWbXt7lV8nKBPdKzENyqAFU
- hIxCJp8+soYUyEo4uT13my48avjtRtGhnC2ezu5NxolPzm3KB3/OzK7TvaBeU/OTGbcA4OcbFPW
- YhFl4szF5/6heyAuArCzP7GJVga0Cg==
-X-Authority-Analysis: v=2.4 cv=TL9Iilla c=1 sm=1 tr=0 ts=693fd277 cx=c_pps
- a=OOZaFjgC48PWsiFpTAqLcw==:117 a=OOZaFjgC48PWsiFpTAqLcw==:17
- a=wP3pNCr1ah4A:10 a=VkNPw1HP01LnGYTKEx00:22 a=yPCof4ZbAAAA:8
- a=J4qZCyyk7QvxA2XVlwcA:9
-X-Proofpoint-GUID: cgL2iCY8-KF84APPj1opM8dLzFkb2grD
-X-Proofpoint-ORIG-GUID: cgL2iCY8-KF84APPj1opM8dLzFkb2grD
+Mime-Version: 1.0
+References: <20251212161832.2067134-1-yeoreum.yun@arm.com> <20251212161832.2067134-3-yeoreum.yun@arm.com>
+ <CA+i-1C2e7QNTy5u=HF7tLsLXLq4xYbMTCbNjWGAxHz4uwgR05g@mail.gmail.com> <aT5/y3cSGIzi2K+m@e129823.arm.com>
+X-Mailer: aerc 0.21.0
+Message-ID: <DEYOI8H2OESD.1H56D3H8HKILB@google.com>
+Subject: Re: [PATCH 2/2] arm64: mmu: use pagetable_alloc_nolock() while stop_machine()
+From: Brendan Jackman <jackmanb@google.com>
+To: Yeoreum Yun <yeoreum.yun@arm.com>, Brendan Jackman <jackmanb@google.com>
+Cc: <akpm@linux-foundation.org>, <david@kernel.org>, 
+	<lorenzo.stoakes@oracle.com>, <Liam.Howlett@oracle.com>, <vbabka@suse.cz>, 
+	<rppt@kernel.org>, <surenb@google.com>, <mhocko@suse.com>, <ast@kernel.org>, 
+	<daniel@iogearbox.net>, <andrii@kernel.org>, <martin.lau@linux.dev>, 
+	<eddyz87@gmail.com>, <song@kernel.org>, <yonghong.song@linux.dev>, 
+	<john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@fomichev.me>, 
+	<haoluo@google.com>, <jolsa@kernel.org>, <hannes@cmpxchg.org>, 
+	<ziy@nvidia.com>, <bigeasy@linutronix.de>, <clrkwllms@kernel.org>, 
+	<rostedt@goodmis.org>, <catalin.marinas@arm.com>, <will@kernel.org>, 
+	<ryan.roberts@arm.com>, <kevin.brodsky@arm.com>, <dev.jain@arm.com>, 
+	<yang@os.amperecomputing.com>, <linux-mm@kvack.org>, 
+	<linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>, 
+	<linux-rt-devel@lists.linux.dev>, <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 
-The "kind_layout" feature will add metadata about BTF kinds to the
-generated BTF; its absence in pahole will not trigger an error so it
-is safe to add unconditionally as it will simply be ignored if pahole
-does not support it.
+On Sun Dec 14, 2025 at 9:13 AM UTC, Yeoreum Yun wrote:
+>> I don't have the context on what this code is doing so take this with
+>> a grain of salt, but...
+>>
+>> The point of the _nolock alloc is to give the allocator an excuse to
+>> fail. Panicking on that failure doesn't seem like a great idea to me?
+>
+> I thought first whether it changes to "static" memory area to handle
+> this in PREEMPT_RT.
+> But since this function is called while smp_cpus_done().
+> So, I think it's fine since there wouldn't be a contention for
+> memory allocation in this phase.
 
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
----
- scripts/Makefile.btf | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/scripts/Makefile.btf b/scripts/Makefile.btf
-index db76335dd917..c20f9bbcabeb 100644
---- a/scripts/Makefile.btf
-+++ b/scripts/Makefile.btf
-@@ -25,6 +25,8 @@ pahole-flags-$(call test-ge, $(pahole-ver), 126)  = -j$(JOBS) --btf_features=enc
- 
- pahole-flags-$(call test-ge, $(pahole-ver), 130) += --btf_features=attributes
- 
-+pahole-flags-$(call test-ge, $(pahole-ver), 131) += --btf_features=kind_layout
-+
- ifneq ($(KBUILD_EXTMOD),)
- module-pahole-flags-$(call test-ge, $(pahole-ver), 128) += --btf_features=distilled_base
- endif
--- 
-2.39.3
-
+Then shouldn't it use _nolock unconditionally?
 
