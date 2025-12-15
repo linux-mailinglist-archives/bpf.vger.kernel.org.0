@@ -1,116 +1,171 @@
-Return-Path: <bpf+bounces-76630-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76631-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42FB8CBFDFD
-	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 22:12:39 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BEF7CBFE0F
+	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 22:14:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id BCF9E3016CDD
-	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 21:12:19 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 71436302B775
+	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 21:14:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEB6431076D;
-	Mon, 15 Dec 2025 21:12:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FB21329367;
+	Mon, 15 Dec 2025 21:14:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GL//qSk4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VigJ21rh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE637328B6E
-	for <bpf@vger.kernel.org>; Mon, 15 Dec 2025 21:12:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2EF4312828;
+	Mon, 15 Dec 2025 21:14:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765833138; cv=none; b=SV0JYQf/j8gWK/yLmcw2uj9wmCEqZK/mJwvn/o1VObCFTSfkiV/kHdc2lqin0y/dekuZmcn03R+vDexCdP1HxZ+TXqpxqRDDcr1sRuSM+OgpmTUpYfJPSD0HNIUgVmKTtQotf35sETy42xJ6F6Bl+7CYO6Bs1rwwIk8mzGOnXeo=
+	t=1765833255; cv=none; b=Aw0N3e+sLVbY8B4urfnZwe3HGjMjTohyTpZkSJ40CRiZNlNPFDdW1wjqVzzaJbXJiG4iKPZuoBLb73Lrjhnjnvyl7tTW0CYIRLiDO00VGlzkT12G4kkRPOZw26WM4foSPcoxrWomKV1AcyC5kjpBk+IuVLLPbgQXIiDGIu9sIDA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765833138; c=relaxed/simple;
-	bh=WnSSJruIHQYbFaCzG3AM6lw/2t1SyBRruHLEqw1qp+8=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=YSMp+uW0rlgz726bhEtAFu7kumpYKJBdxFQhHU/agt0aJU+M7INJx0UYPSSAWOQPhiaJvFvYWe+gowFm5mOcJP6JkonwyjCbM+MHdqMVgrGYKLR5oDLWlnNV3Ebk2hD3/gyQMo+6uh0D18UbpuuIws/+vx7xWN3xvNhmr4bVw8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GL//qSk4; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-7f651586be1so1728109b3a.1
-        for <bpf@vger.kernel.org>; Mon, 15 Dec 2025 13:12:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1765833136; x=1766437936; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=WnSSJruIHQYbFaCzG3AM6lw/2t1SyBRruHLEqw1qp+8=;
-        b=GL//qSk4Hm67wvozu4uAORn5t3/+vBzn1tjGbTS9fW7m8uayjaSyXr4gAFk7yMpnnQ
-         0n3gLytf5Sgvq65I7by1vp0pZOfhc8HWn8Qye04OUzHBINrnkwSaeGdprfRMkbdXuWb6
-         U4CakuGvMOrNFNLxiyxk+S1C3AYP5jC5mprA094G/potpyHzqshJ2gNxvPnpdlMAOKhQ
-         XuLcTLzujbwlRtIu/sHFYh4GCzcan/KPy3uY+hor4vqEE1BbZTPWjLWHJXVMymRfaFUX
-         /kTKHjX+jpst4wrillaLVAsrML5A5KQNB4lhR5umGw3A91gY122Ekn943ZdBNv/KDRum
-         TX4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765833136; x=1766437936;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WnSSJruIHQYbFaCzG3AM6lw/2t1SyBRruHLEqw1qp+8=;
-        b=xT7jGN8o4dRVmoeK3mlwTUPKIGF41cDGvuYzW13O9kbOpTcHrMmPNizcDdYy6d8K5c
-         6Q3dYrCjG8e1bu4Z3/ZDv9+Anlixsn8VflAifOvf7ZHRq43RqupyOxWiiJgIIuydwZgs
-         7wpL2ZFSSxqiMCcBb9SBOfH2HeDQnMMGO9wr4D1UKqfYUMemiO7H0hlUhzhtKHLOyOVT
-         K3Zzcrx/1dJmOgo4zWwaYm/sib8kBI7Znhg+DZzPRNGwhhARGrnTY7KWHMT98BRYA939
-         5SkUgNshDWGPbcBRxCO507IjNZHI6y9w8pPMCDlLaEwLSh3c/hcFctS7zX/fqclNM8IO
-         oimg==
-X-Forwarded-Encrypted: i=1; AJvYcCW2YF7QZ6KAR7rKbGMgohHnxR9pIAt5ZUzJD0Dy/hlGOZIFqyq9No0LhZ1AjK/TDhbDF+E=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxW7AWSIYzbfips/KT3+c7pyIYs9g6zqcIxG7WeElB9hE8R9JSM
-	cTmZFlKZnCZ7Jl1niVvf42Y5e3Fi0WDf0Dk1GFbCjhubW6UW0Zox5JO8KrMi3RCv
-X-Gm-Gg: AY/fxX7YcVhLcr5ORgkCY+a4ZXXlsRhLA6HsrZaWTf15xnECQubIJMA84x3j+NZFJfL
-	MYqWjplb3KIhXr6X/hHZpg5U7RV80btiy0ZUqdaSuZCKXCP7xM3C/muRQsc+fvZOFT+M+4FNghH
-	+N1g30dd37Jn+83/iIK1BgbbFmahxFR3zVqQHQZxVHoJhhci1c4q8reEZoE672keq8KrRJZxjuy
-	s+2gUwPpPjdWrz/1o1/6rGRWDTpnUDxWACMmC673ie5EOdEOPijrqVwNuFuADCajPmuZo+lyHV8
-	tJTyiwmCo18CKtRtDwKL6LSwG43D7jpmR7z6No7pm4Uk2NA4rz1YfM1yujAUrDMbgCVvUfm0smF
-	oYTtbPOghR8FnLf36IZN+U2ChinNJN0rNg1jpnu4gfiGuXOXhyofJgaAKUYGIRiAxJqfcBtH3Kf
-	srk/GZnMNs
-X-Google-Smtp-Source: AGHT+IFLVTgQCWTpCeUCvEW7NBqed9WvXR8o6kfPAiu2xLFTp54+7t3IaMOeWd1/pZLmbK30uuR6bw==
-X-Received: by 2002:a05:6a00:739b:b0:7e8:3fcb:9afb with SMTP id d2e1a72fcca58-7f51db09721mr11435492b3a.17.1765833135841;
-        Mon, 15 Dec 2025 13:12:15 -0800 (PST)
-Received: from [192.168.0.226] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7f634c229b9sm10397760b3a.43.2025.12.15.13.12.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Dec 2025 13:12:15 -0800 (PST)
-Message-ID: <bce8c7063b11fa8136a796fedc24b7fc7866f832.camel@gmail.com>
-Subject: Re: [PATCH v3 4/5] libbpf: move arena globals to the end of the
- arena
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Emil Tsalapatis <emil@etsalapatis.com>, bpf@vger.kernel.org
-Cc: andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	john.fastabend@gmail.com, memxor@gmail.com, yonghong.song@linux.dev
-Date: Mon, 15 Dec 2025 13:12:12 -0800
-In-Reply-To: <20251215161313.10120-5-emil@etsalapatis.com>
-References: <20251215161313.10120-1-emil@etsalapatis.com>
-	 <20251215161313.10120-5-emil@etsalapatis.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
+	s=arc-20240116; t=1765833255; c=relaxed/simple;
+	bh=fgCax+1QA4JX7mjeSem02vMC6sFoOmpIV5v+inJBvVw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=iMT+nG+YP5gdYUWxKBaqfszFs/v/867tTI/7uKZBzNfVJblyPOGsMNUsEaqvgGxYOP7b3tECdE5z1kEdCbnelQ7jLJD9Ok4px+cnx92p2/RGoVKOYfryR2aOd2knkpgEGo9SebqXBRzuolVpc9sd89/1AlHEeFy5hn8Rs6Wlcqk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VigJ21rh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EE87C4CEF5;
+	Mon, 15 Dec 2025 21:14:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1765833255;
+	bh=fgCax+1QA4JX7mjeSem02vMC6sFoOmpIV5v+inJBvVw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=VigJ21rhzP/FEbMdr93dxQRxWkMroGdNKUClwePiv0lrZodOORaIuyezOniZ1cLqr
+	 KfEllhAE6+k7E1F7DyK6ZUhm+ifuDl650Zju501qFqmqsKon8UgwPGyHVfv0dyt0Ym
+	 dvihCSMt+yQJl0YOQAAVrmxG69T1YV1yMLjl+OdXZUf54Yg+21psAgYrigmbf9uVj7
+	 unhngcKQzUJRxEzYJG4ggphqalKNXqhMdveMMCpBCO7c3cqt9eYCbY87cnvH8fA85G
+	 ZhQ0X5fi9SUmCQcRnSoF/FCVlXxRG3mpimfnpcp0gX9J8Bu91wYEFqL+R4YGch5U3/
+	 oSgc6cue7KhOw==
+From: Jiri Olsa <jolsa@kernel.org>
+To: Steven Rostedt <rostedt@kernel.org>,
+	Florent Revest <revest@google.com>,
+	Mark Rutland <mark.rutland@arm.com>
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Menglong Dong <menglong8.dong@gmail.com>,
+	Song Liu <song@kernel.org>
+Subject: [PATCHv5 bpf-next 0/9] ftrace,bpf: Use single direct ops for bpf trampolines
+Date: Mon, 15 Dec 2025 22:13:53 +0100
+Message-ID: <20251215211402.353056-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Mon, 2025-12-15 at 11:13 -0500, Emil Tsalapatis wrote:
-> Arena globals are currently placed at the beginning of the arena
-> by libbpf. This is convenient, but prevents users from reserving
-> guard pages in the beginning of the arena to identify NULL pointer
-> dereferences. Adjust the load logic to place the globals at the
-> end of the arena instead.
->=20
-> Also modify bpftool to set the arena pointer in the program's BPF
-> skeleton to point to the globals. Users now call bpf_map__initial_value()
-> to find the beginning of the arena mapping and use the arena pointer
-> in the skeleton to determine which part of the mapping holds the
-> arena globals and which part is free.
->=20
-> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Emil Tsalapatis <emil@etsalapatis.com>
-> ---
+hi,
+while poking the multi-tracing interface I ended up with just one ftrace_ops
+object to attach all trampolines.
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+This change allows to use less direct API calls during the attachment changes
+in the future code, so in effect speeding up the attachment.
 
-[...]
+In current code we get a speed up from using just a single ftrace_ops object.
+
+- with current code:
+
+  Performance counter stats for 'bpftrace -e fentry:vmlinux:ksys_* {} -c true':
+
+     6,364,157,902      cycles:k
+       828,728,902      cycles:u
+     1,064,803,824      instructions:u                   #    1.28  insn per cycle
+    23,797,500,067      instructions:k                   #    3.74  insn per cycle
+
+       4.416004987 seconds time elapsed
+
+       0.164121000 seconds user
+       1.289550000 seconds sys
+
+
+- with the fix:
+
+   Performance counter stats for 'bpftrace -e fentry:vmlinux:ksys_* {} -c true':
+
+     6,535,857,905      cycles:k
+       810,809,429      cycles:u
+     1,064,594,027      instructions:u                   #    1.31  insn per cycle
+    23,962,552,894      instructions:k                   #    3.67  insn per cycle
+
+       1.666961239 seconds time elapsed
+
+       0.157412000 seconds user
+       1.283396000 seconds sys
+
+
+
+The speedup seems to be related to the fact that with single ftrace_ops object
+we don't call ftrace_shutdown anymore (we use ftrace_update_ops instead) and
+we skip the synchronize rcu calls (each ~100ms) at the end of that function.
+
+rfc: https://lore.kernel.org/bpf/20250729102813.1531457-1-jolsa@kernel.org/
+v1:  https://lore.kernel.org/bpf/20250923215147.1571952-1-jolsa@kernel.org/
+v2:  https://lore.kernel.org/bpf/20251113123750.2507435-1-jolsa@kernel.org/
+v3:  https://lore.kernel.org/bpf/20251120212402.466524-1-jolsa@kernel.org/
+v4:  https://lore.kernel.org/bpf/20251203082402.78816-1-jolsa@kernel.org/
+
+v5 changes:
+- do not export ftrace_hash object [Steven]
+- fix update_ftrace_direct_add new_filter_hash leak [ci]
+
+v4 changes:
+- rebased on top of bpf-next/master (with jmp attach changes)
+  added patch 1 to deal with that
+- added extra checks for update_ftrace_direct_del/mod to address
+  the ci bot review
+
+v3 changes:
+- rebased on top of bpf-next/master
+- fixed update_ftrace_direct_del cleanup path
+- added missing inline to update_ftrace_direct_* stubs
+
+v2 changes:
+- rebased on top fo bpf-next/master plus Song's livepatch fixes [1] 
+- renamed the API functions [2] [Steven]
+- do not export the new api [Steven]
+- kept the original direct interface:
+
+  I'm not sure if we want to melt both *_ftrace_direct and the new interface
+  into single one. It's bit different in semantic (hence the name change as
+  Steven suggested [2]) and I don't think the changes are not that big so
+  we could easily keep both APIs.
+
+v1 changes:
+- make the change x86 specific, after discussing with Mark options for
+  arm64 [Mark]
+
+thanks,
+jirka
+
+
+[1] https://lore.kernel.org/bpf/20251027175023.1521602-1-song@kernel.org/
+[2] https://lore.kernel.org/bpf/20250924050415.4aefcb91@batman.local.home/
+---
+Jiri Olsa (9):
+      ftrace,bpf: Remove FTRACE_OPS_FL_JMP ftrace_ops flag
+      ftrace: Make alloc_and_copy_ftrace_hash direct friendly
+      ftrace: Export some of hash related functions
+      ftrace: Add update_ftrace_direct_add function
+      ftrace: Add update_ftrace_direct_del function
+      ftrace: Add update_ftrace_direct_mod function
+      bpf: Add trampoline ip hash table
+      ftrace: Factor ftrace_ops ops_func interface
+      bpf,x86: Use single ftrace_ops for direct calls
+
+ arch/x86/Kconfig        |   1 +
+ include/linux/bpf.h     |   7 ++-
+ include/linux/ftrace.h  |  31 ++++++++++-
+ kernel/bpf/trampoline.c | 234 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++----------------
+ kernel/trace/Kconfig    |   3 ++
+ kernel/trace/ftrace.c   | 357 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---------
+ 6 files changed, 560 insertions(+), 73 deletions(-)
 
