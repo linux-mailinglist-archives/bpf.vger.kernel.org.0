@@ -1,113 +1,158 @@
-Return-Path: <bpf+bounces-76602-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76603-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B6C0CBD30F
-	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 10:38:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 99B34CBD316
+	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 10:38:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 0947E3016C6C
-	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 09:38:24 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 48A373017071
+	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 09:38:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FB6B289824;
-	Mon, 15 Dec 2025 09:38:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0752632AAB0;
+	Mon, 15 Dec 2025 09:38:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sbKrqdN0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qBN/sYn/"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EDB9315D50;
-	Mon, 15 Dec 2025 09:38:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BAFF329E6F;
+	Mon, 15 Dec 2025 09:38:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765791502; cv=none; b=K1EdLKxT8/Houl2VOsjh4SyOyCprMat5LQx6xj1Oh/9kstYUA36R+VjGM0z5IWEjwIA98DIDjIC4CT8IjILLQpbyAd46ZwhctROS9ATB9gGbLktNaYUmz9A00Y4BYOrxNmZNoGqdRaIuqzhpducMoNKchXbkuTHUolawkG1BAtA=
+	t=1765791503; cv=none; b=l4FE9YeJYc67rgjHf0qvu3mWnDN6xgj4f4HHfxm5N0obEy3Zv2uNSexZ9Q8f/W6eJ/igeRM+qAmQWrvmfTH9xRLHeOND+w7aSFj9N+OKXK3UWuc4DiRF3LDVOTZUgyunDcX/GJcklIoBczowq/l8koHC8X/Ca+T7vut7IxN7zpg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765791502; c=relaxed/simple;
-	bh=yt+469yfmAuLABFynjtgGbbfLtjpClR6qKWwdhqni84=;
+	s=arc-20240116; t=1765791503; c=relaxed/simple;
+	bh=eEugN3BdMP8sna/dDhqwJq//y9SVssdoij/5Lf/OS/g=;
 	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=f9cEzoH9yAImEZawW7vJdQ9YARfmGCEgFxrXKWKKlO9DfI3j213cRVRFy3Yk4tuc8rhswwr3HAj2uXlf/DvllkysZ0Y8ECc23Ohmbt2952gWBTaPiJd2JMc25Y70Tvien78tHGoRzutxlOYrSSbgk9DHGe1dkiAalrkIK/n17sc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sbKrqdN0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07AB0C19425;
-	Mon, 15 Dec 2025 09:38:21 +0000 (UTC)
+	 Subject:From:To:Cc:Date; b=EG+Ud1J3SLhbIO/7UmXpE4CEgJN8JbH/3P8DszqYThbQh1eM2c57Nr+yJ0ArWfmTB2GgXDF07NqNY0weBOR9F3y5u5ESPWRYgtGbpTlLKgnNhR8A2+SKCi6p5UP/lxNI5oFpHaugrUiOFobIzj6dS8FSY9gbJFVZYhJziiteJX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qBN/sYn/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8D47C4CEFB;
+	Mon, 15 Dec 2025 09:38:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765791501;
-	bh=yt+469yfmAuLABFynjtgGbbfLtjpClR6qKWwdhqni84=;
+	s=k20201202; t=1765791503;
+	bh=eEugN3BdMP8sna/dDhqwJq//y9SVssdoij/5Lf/OS/g=;
 	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=sbKrqdN0Ei+1nv4OM2x70oQh4tYxtvBCvvjhkSGDv/eOJhYgt0+v2LcZ+hjM11chR
-	 EUm0cyZQQ3f1/tbKUyh7j08n+Tan9feEZG/EvdNR6p/xjIAHvQY0BFJ94ni4PJYHof
-	 Cll9t4nwrtpYRhhyOEfexAz1UfWLWxY/o/LzovWwMZlqYEP5k6gpKcU2l+/dNZ9kzW
-	 xH15Dbk7YbL2ACH2qOyBgJXJxVncCJKqScOcECu9RXMpdwkZizvxQNyF1Biw7TILwU
-	 lsk6l5jrTurg4CySXzm6Bp9A8FnAGBjsXaZWsPH1MgB4SPB9knltcjA+4bwVCGP+uy
-	 IpwYBsz1E1img==
-Content-Type: multipart/mixed; boundary="===============3842367936751581720=="
+	b=qBN/sYn/LWcXoMIE0C3T86S4KVUO27aza+gf/kyDXlwA2xbmkGUqK+swj2XVN1uCW
+	 blWfBNeMquVxVH6sCTGWWcqSNQNf0o0Dh3ba4fysARxeJt++7ubTmlSQjucK6gFpJ+
+	 qS44E+l7kFBTHWP4kSDV1s/3WDjg4PHMtGnJFZge1Oxpz4O1iGyYxQdsHLoy6Ewrxd
+	 tBOeB/I0iiUqgn1BDPgvwTuiTrGCkT+m+CGJCdHVB6mPNBF2IAMAiPI2AoXooRRRwD
+	 ngflj1xwtINvGnlRK10I/9X+qY74jZS6uxQDlltRYZfUKd8ut3ufi/GmsoyGvEz96Z
+	 RSdqYUnNpy6Pg==
+Content-Type: multipart/mixed; boundary="===============4491836444337585209=="
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <96af5bdd4d68c9e912257697f82b815c4926930874fc707b559aa0dfbcd35a64@mail.kernel.org>
-In-Reply-To: <20251215091730.1188790-2-alan.maguire@oracle.com>
-References: <20251215091730.1188790-2-alan.maguire@oracle.com>
-Subject: Re: [PATCH v8 bpf-next 01/10] btf: add kind layout encoding to UAPI
+Message-Id: <d965ba27da4b59ef69f94b335575827debba459e27c86a10e63d5edeeb155e97@mail.kernel.org>
+In-Reply-To: <20251215091730.1188790-3-alan.maguire@oracle.com>
+References: <20251215091730.1188790-3-alan.maguire@oracle.com>
+Subject: Re: [PATCH v8 bpf-next 02/10] libbpf: Support kind layout section handling in BTF
 From: bot+bpf-ci@kernel.org
 To: alan.maguire@oracle.com,andrii@kernel.org,ast@kernel.org
 Cc: daniel@iogearbox.net,martin.lau@linux.dev,eddyz87@gmail.com,song@kernel.org,yonghong.song@linux.dev,john.fastabend@gmail.com,kpsingh@kernel.org,sdf@fomichev.me,haoluo@google.com,jolsa@kernel.org,qmo@kernel.org,ihor.solodrai@linux.dev,dwarves@vger.kernel.org,bpf@vger.kernel.org,ttreyer@meta.com,mykyta.yatsenko5@gmail.com,alan.maguire@oracle.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Mon, 15 Dec 2025 09:38:21 +0000 (UTC)
+Date: Mon, 15 Dec 2025 09:38:22 +0000 (UTC)
 
---===============3842367936751581720==
+--===============4491836444337585209==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
-> diff --git a/include/uapi/linux/btf.h b/include/uapi/linux/btf.h
-> index 266d4ffa6c07..c1854a1c7b38 100644
-> --- a/include/uapi/linux/btf.h
-> +++ b/include/uapi/linux/btf.h
-> @@ -8,6 +8,15 @@
->  #define BTF_MAGIC	0xeB9F
->  #define BTF_VERSION	1
+> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> index b136572e889a..8835aee6ee84 100644
+> --- a/tools/lib/bpf/btf.c
+> +++ b/tools/lib/bpf/btf.c
+
+[ ... ]
+
+> @@ -214,7 +232,7 @@ static int btf_add_type_idx_entry(struct btf *btf, __u32 type_off)
+>  	return 0;
+>  }
 >
-> +/*
-> + * kind layout section consists of a struct btf_kind_layout for each known
-> + * kind at BTF encoding time.
-> + */
-> +struct btf_kind_layout {
-> +	__u8 info_sz;		/* size of singular element after btf_type */
-> +	__u8 elem_sz;		/* size of each of btf_vlen(t) elements */
-> +};
-> +
->  struct btf_header {
->  	__u16	magic;
->  	__u8	version;
-> @@ -19,6 +28,8 @@ struct btf_header {
->  	__u32	type_len;	/* length of type section	*/
->  	__u32	str_off;	/* offset of string section	*/
->  	__u32	str_len;	/* length of string section	*/
-> +	__u32	kind_layout_off;/* offset of kind layout section */
-> +	__u32	kind_layout_len;/* length of kind layout section */
->  };
+> -static void btf_bswap_hdr(struct btf_header *h)
+> +static void btf_bswap_hdr(struct btf_header *h, __u32 hdr_len)
+>  {
+>  	h->magic = bswap_16(h->magic);
+>  	h->hdr_len = bswap_32(h->hdr_len);
+> @@ -222,54 +240,87 @@ static void btf_bswap_hdr(struct btf_header *h)
+>  	h->type_len = bswap_32(h->type_len);
+>  	h->str_off = bswap_32(h->str_off);
+>  	h->str_len = bswap_32(h->str_len);
+> +	/* May be operating on raw data with hdr_len that does not include below fields */
+> +	if (hdr_len >= sizeof(struct btf_header)) {
+> +		h->kind_layout_off = bswap_32(h->kind_layout_off);
+> +		h->kind_layout_len = bswap_32(h->kind_layout_len);
+> +	}
+>  }
+>
+>  static int btf_parse_hdr(struct btf *btf)
+>  {
+> -	struct btf_header *hdr = btf->hdr;
+> +	struct btf_header *hdr = btf->raw_data;
+> +	__u32 hdr_len = hdr->hdr_len;
+>  	__u32 meta_left;
+>
+> -	if (btf->raw_size < sizeof(struct btf_header)) {
+> +	if (btf->raw_size < offsetofend(struct btf_header, str_len)) {
+>  		pr_debug("BTF header not found\n");
+>  		return -EINVAL;
+>  	}
+>
+>  	if (hdr->magic == bswap_16(BTF_MAGIC)) {
+>  		btf->swapped_endian = true;
+> -		if (bswap_32(hdr->hdr_len) != sizeof(struct btf_header)) {
+> +		hdr_len = bswap_32(hdr->hdr_len);
+> +		if (hdr_len < offsetofend(struct btf_header, str_len)) {
+>  			pr_warn("Can't load BTF with non-native endianness due to unsupported header length %u\n",
+> -				bswap_32(hdr->hdr_len));
+> +				hdr_len);
+>  			return -ENOTSUP;
+>  		}
+> -		btf_bswap_hdr(hdr);
+> +		btf_bswap_hdr(hdr, hdr_len);
+                       ^^^
 
-This adds two new __u32 fields to struct btf_header, growing it from 24
-to 32 bytes. When BTF data needs to be byte-swapped for cross-endian
-parsing, these new fields also need byte-swapping.
+Does this result in hdr->hdr_len being double-swapped? In the swapped
+endianness path, hdr_len is set to bswap_32(hdr->hdr_len) and then
+btf_bswap_hdr() is called, which does h->hdr_len = bswap_32(h->hdr_len)
+again. This means hdr->hdr_len in the structure ends up with its original
+(incorrect) endianness while the local hdr_len variable has the correct
+swapped value.
 
-Looking at tools/lib/bpf/btf.c::btf_bswap_hdr() (not shown in this
-UAPI-only patch), the function swaps magic, hdr_len, type_off, type_len,
-str_off, and str_len, but the new kind_layout_off and kind_layout_len
-fields are not present in the swapping logic. Will cross-endian BTF files
-with kind layout sections fail to parse correctly in libbpf?
+Later code then copies the incorrectly-swapped header into btf->hdr:
 
-Note: This issue was fixed in the follow-up commit 16346d216f9b
-("libbpf: Support kind layout section handling in BTF") which added
-conditional byte-swapping for the new fields.
+>  	}
+>
+> -	if (btf->raw_size < hdr->hdr_len) {
+> +	if (btf->raw_size < hdr_len) {
+>  		pr_debug("BTF header len %u larger than data size %u\n",
+> -			 hdr->hdr_len, btf->raw_size);
+> +			 hdr_len, btf->raw_size);
+>  		return -EINVAL;
+>  	}
 
-> diff --git a/tools/include/uapi/linux/btf.h b/tools/include/uapi/linux/btf.h
-> index 266d4ffa6c07..c1854a1c7b38 100644
-> --- a/tools/include/uapi/linux/btf.h
-> +++ b/tools/include/uapi/linux/btf.h
+[ ... ]
 
-[ ... identical change to tools copy ... ]
+> +	/* At this point, we have basic header information, so allocate btf->hdr */
+> +	btf->hdr = calloc(1, sizeof(struct btf_header));
+> +	if (!btf->hdr) {
+> +		pr_debug("BTF header allocation failed\n");
+> +		return -ENOMEM;
+> +	}
+> +	memcpy(btf->hdr, hdr, min((size_t)hdr_len, sizeof(struct btf_header)));
+                           ^^^
+
+The memcpy copies from hdr, which contains the double-swapped (therefore
+incorrect) hdr_len field. So btf->hdr->hdr_len will have the wrong
+endianness when btf_parse_hdr() returns. This affects subsequent pointer
+arithmetic like:
+
+    btf->types_data = btf->raw_data + btf->hdr->hdr_len + btf->hdr->type_off
+
+causing types_data to point to the wrong location when loading BTF with
+non-native endianness.
 
 
 ---
@@ -116,5 +161,5 @@ See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
 
 CI run summary: https://github.com/kernel-patches/bpf/actions/runs/20226997366
 
---===============3842367936751581720==--
+--===============4491836444337585209==--
 
