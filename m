@@ -1,128 +1,107 @@
-Return-Path: <bpf+bounces-76644-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76645-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30F08CBFF9B
-	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 22:40:26 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92BF2CC01CB
+	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 23:17:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id E150B301EF1C
-	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 21:40:23 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 3DAC4301D670
+	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 22:17:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 642A15475B;
-	Mon, 15 Dec 2025 21:40:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QQLrXJ5J"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B26F3093C8;
+	Mon, 15 Dec 2025 22:17:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay.hostedemail.com (smtprelay0013.hostedemail.com [216.40.44.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24BDA2494F0
-	for <bpf@vger.kernel.org>; Mon, 15 Dec 2025 21:40:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0605A41A8F;
+	Mon, 15 Dec 2025 22:17:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765834820; cv=none; b=bTg3fCy7Vz2e4z/+hy2stXn05YcbV0ytU7WoRHx9OAUHGmQA9iWpZfjZnOznk+6euYKYpUHuOq7hdeUJT3vE3o3CXXPzJT0p4V2WJ0HUYuzvvHVgELpt9y25MUlj/LV6nBz4ivmSGWZZ8lmqwoNT1fRlYqWkI4nclRNe151NMNE=
+	t=1765837037; cv=none; b=QCiBzDZU466YLfhe/PP7lh3nuv+tRQPuoAsKtLh1VOH3Ujbf3uOKiVFvqRe02CWOHYOBKheLbR47rVVurrlvX9WnSxLEyHcpKSvrrh8OWczer4uNSTAt3t/CUf/iFhxquyluiFPNnceP+7rmjXgpSIF5dI7RkFJVVmxa4sOci1w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765834820; c=relaxed/simple;
-	bh=Y9B0PrO7eep9Md2S3cwjSR2T7fsBiwkpWkQ81Zxh7oM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eeNXNV/dP1V19XuUOwApc8GaBMRi0UXZVh4Y0i+N72pPBjCk0mikWN9H5cDAwTR0b6MFpteXlNcTV4alR45tQZY5vJ7Yp7uzb1JXz6s4b43z6o4XS5XIc9g9Pkfg+lBYBwqQnxIphz+/wjR8bA6QdYFwt3NhcLDh+mUiEcnZ5AU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QQLrXJ5J; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-430fbb6012bso1251039f8f.1
-        for <bpf@vger.kernel.org>; Mon, 15 Dec 2025 13:40:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1765834817; x=1766439617; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PtrYjcDo8W8ENLiooSwtuxxlBPD0y00FacSVPre/Faw=;
-        b=QQLrXJ5JAUOzJ8Yt1jyd5kWZKLwJD6LCSRU0Tj/6IcYefX0Ty+qXaOOCXoVzD161Hm
-         oz1eXEiyEZs1Db+2tRL0QVbtnLpASsry3v+lyOkqjtXFqQabduvZnaDnAunDTa7qJ4uP
-         isD3IBOOlgDrc4PazKAYDV0GyoixAfeSmaHIZHKU3IJMZfasrCR9xa4SepsW9x1uuZZD
-         GEHl9BIInSVE/5ZEdpq/SmJoxLGSqd2AAQgzRqUxhsbx3x9kt9KPJR977m/JDxTY8LTx
-         Btuo/BDu9wLR4eu9NOnrxRc6XFAqYzAHNUMPU/Ql/xAVuXNFaz+oquG5jC0STwf0D3Nu
-         p1TQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765834817; x=1766439617;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=PtrYjcDo8W8ENLiooSwtuxxlBPD0y00FacSVPre/Faw=;
-        b=pHNPuMryz/G1QymAu5Z/iB1/49KwBo1PerwpcLRPVxhVw2+IoBLGP5r2gpyNs9I+rl
-         lBGek/IdIS/XLf9kzTq6oAV1kmII63nZJnieE5tWVUYLZJIQetPRKhWK9FmjzjEZNEQH
-         s+s6jRx5WHWI7LJ4D3jkERqGVKjIvOdoHhV4CxjSv8hV0Y3sbfXZ33KM2bvk0HmKxa3a
-         KXkBAPNCUjdPiL0HJXR1xNS7EZMfrT2OdyUOc5LP4L7rXEc+iPZq4r2DM/vAyBOv/TR4
-         vt7w/7K6DnuxlZq3t8EYeQgnyBStNEl4SAvTsqhjGHRZzuCp+Ma1GlBRckFbT9OjA2g4
-         HdsA==
-X-Forwarded-Encrypted: i=1; AJvYcCUB5Ehtt6FOVL/TQojW1VYE22FYd36KMCYxCxESGbTL24gpbxUgbTE8TbuNNFs8gZNKEBM=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy39565G1/H3lUCBka00DSJr9aNy1tZykBj3dK/hmLcdeWoJwJT
-	FXCJp/XEJJ5qGC2Dn00hmkNhj6tOitYF2diPXGx9TfIZYsV79oz+l2pmFdgfRPHctPB8nwfvcfI
-	dUY5PJvoLlJzDMviw3Kg1GLoFVqa3kgE=
-X-Gm-Gg: AY/fxX696oYqcx/7hAAlBXMbhwDE7JrFi1FJ00D51ixhAcMyAq/3QsJZeTDF9a+A+1b
-	+djthYKvCKfkJ+CI45o5fP7tVjJoap2f6P+Q19oCtr4RZZfhm8abBTawI1aEqH1T3kPPUvjpxzB
-	8eVnEO+uIaGBAeHaCjxLiMKEbaJRDMq+8q2kgGRtCaseb8gXynJXASyeyiI/vsDRD8AwUU3rOL5
-	3A7Y3XeK8OScVbiNONCvo3jalWqLHxiM80ZygwP6KxzejqJg5VRYRDZ9BaKbzqMuCBmB+p4JNpU
-	W/bAqwOCt6bR44LWmCMkIREs0SxS
-X-Google-Smtp-Source: AGHT+IFLwg9qrtGIR+KKSJwR/7/cX3U7rq6rlbIqE5QA9N+Q5KZyJ8O41sxw+c2I52/X9p3wPLvNSGsFlF/3a+MqKoo=
-X-Received: by 2002:a5d:5f82:0:b0:430:fd0f:28fe with SMTP id
- ffacd0b85a97d-430fd0f2a7bmr4935997f8f.31.1765834817292; Mon, 15 Dec 2025
- 13:40:17 -0800 (PST)
+	s=arc-20240116; t=1765837037; c=relaxed/simple;
+	bh=ZsgtmUVSaPSY1fm6aJUzc0sKLMlEF7FL1Gvx7heN1Hs=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Nez7zbi476j05As6oZNmCV8ctsJEKRpA79ZtSXQnuu4yi7K3vuE+nlmf6AZH5vFGlvnAqxc0MNdFM0HV+2Xx8z286WXVaITrILfc8RkkAuHLKpTdZdELUaBTbM5KUVNIwrKmYbTr1f4/5B13KOIh9J/lhMdi3+yHgAsxE8YXzXk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf16.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay05.hostedemail.com (Postfix) with ESMTP id 35538588F5;
+	Mon, 15 Dec 2025 22:17:05 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf16.hostedemail.com (Postfix) with ESMTPA id B2A762001C;
+	Mon, 15 Dec 2025 22:17:00 +0000 (UTC)
+Date: Mon, 15 Dec 2025 17:18:32 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Andy Shevchenko
+ <andriy.shevchenko@linux.intel.com>, Alexei Starovoitov <ast@kernel.org>,
+ bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+ linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
+ Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
+ <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
+ <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, Mathieu
+ Desnoyers <mathieu.desnoyers@efficios.com>, kernel test robot
+ <lkp@intel.com>
+Subject: Re: [PATCH v1 1/1] bpf: Disable -Wsuggest-attribute=format
+Message-ID: <20251215171832.2b0b24d5@gandalf.local.home>
+In-Reply-To: <CAADnVQLZPYc0HWqQw7ma=G-t9UMXXo+aXomVkYAzoQt=0ZrQ=Q@mail.gmail.com>
+References: <20251210131234.3185985-1-andriy.shevchenko@linux.intel.com>
+	<CAEf4BzZQ_OJehh=5jJgVBUjJBNAkWh2o8Yd9UTa9nFrRO4oAFg@mail.gmail.com>
+	<CAADnVQKtvRhbAVunHrwj_pCsmazddADRvRo5zp5O+k5kc-Eoog@mail.gmail.com>
+	<CAEf4BzbZwmOCgqhKeyAhEUT0MXyz09cy2dcpB9WCKWP1ikBWdA@mail.gmail.com>
+	<CAADnVQLZPYc0HWqQw7ma=G-t9UMXXo+aXomVkYAzoQt=0ZrQ=Q@mail.gmail.com>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251215044919.460086-1-ankur.a.arora@oracle.com> <20251215044919.460086-11-ankur.a.arora@oracle.com>
-In-Reply-To: <20251215044919.460086-11-ankur.a.arora@oracle.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 15 Dec 2025 13:40:06 -0800
-X-Gm-Features: AQt7F2rQ1ApFWmx4BVk_0MGk_PcVWn8dueHeO96jKZChfmmCmjnf-YqQHmYoFps
-Message-ID: <CAADnVQKYoE85HFAOE5OBFpKbXej=h12m4DVvHuPViJSjAncK4A@mail.gmail.com>
-Subject: Re: [PATCH v8 10/12] bpf/rqspinlock: Use smp_cond_load_acquire_timeout()
-To: Ankur Arora <ankur.a.arora@oracle.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>, 
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, 
-	Linux Power Management <linux-pm@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Arnd Bergmann <arnd@arndb.de>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	Mark Rutland <mark.rutland@arm.com>, harisokn@amazon.com, 
-	Christoph Lameter <cl@gentwo.org>, Alexei Starovoitov <ast@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Daniel Lezcano <daniel.lezcano@linaro.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, zhenglifeng1@huawei.com, 
-	xueshuai@linux.alibaba.com, joao.m.martins@oracle.com, 
-	Boris Ostrovsky <boris.ostrovsky@oracle.com>, konrad.wilk@oracle.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
+X-Rspamd-Server: rspamout06
+X-Rspamd-Queue-Id: B2A762001C
+X-Stat-Signature: szfszikdjojfaco4rjbnseont6zpuqdj
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX18S3CH/ypAfrWjjZJ8OfjeHLL3OuJMV68w=
+X-HE-Tag: 1765837020-609219
+X-HE-Meta: U2FsdGVkX19zDrs9bRxTdoiy4Vu+dcLHlAf4M/Cp9tLbyJ6cGDLUujRddV0RFwOk8DXAA2vVvqQUaSLkJ9fqIlyyNs5pwBoKB2b1Fxr7mEnFpxrHsDE8R9DXp0KdniM5Wf923+2/QMLYcD/y+8iMc3EsCnyTN02ap6nR9tySNdRJNFqq6tUKqUA3yOeH0dTw3trwW2yXlspqSd99z+1X6O7/x2hcxG39JbVylYI9HAaRTPTMhC7KSTj7kkNdG2CyEvprS/l1ABdPuhVxS5Ti+eu4aI7jo5p5C07ODocwewUCEIhnW1g/16gq26an1PY24rDZFo/5JkJeMT911khZaN0KJN2Y9sO7
 
-On Sun, Dec 14, 2025 at 8:51=E2=80=AFPM Ankur Arora <ankur.a.arora@oracle.c=
-om> wrote:
->
->  /**
->   * resilient_queued_spin_lock_slowpath - acquire the queued spinlock
->   * @lock: Pointer to queued spinlock structure
-> @@ -415,7 +415,9 @@ int __lockfunc resilient_queued_spin_lock_slowpath(rq=
-spinlock_t *lock, u32 val)
->          */
->         if (val & _Q_LOCKED_MASK) {
->                 RES_RESET_TIMEOUT(ts, RES_DEF_TIMEOUT);
-> -               res_smp_cond_load_acquire(&lock->locked, !VAL || RES_CHEC=
-K_TIMEOUT(ts, timeout_err, _Q_LOCKED_MASK) < 0);
-> +               smp_cond_load_acquire_timeout(&lock->locked, !VAL,
-> +                                             (timeout_err =3D clock_dead=
-lock(lock, _Q_LOCKED_MASK, &ts)),
-> +                                             ts.duration);
+On Mon, 15 Dec 2025 10:40:16 -0800
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-I'm pretty sure we already discussed this and pointed out that
-this approach is not acceptable.
-We cannot call ktime_get_mono_fast_ns() first.
-That's why RES_CHECK_TIMEOUT() exists and it does
-if (!(ts).spin++)
-before doing the first check_timeout() that will do ktime_get_mono_fast_ns(=
-).
-Above is a performance critical lock acquisition path where
-pending is spinning on the lock word waiting for the owner to
-release the lock.
-Adding unconditional ktime_get_mono_fast_ns() will destroy
-performance for quick critical section.
+> > But I think instead of Makefile changes we should fix the root cause
+> > here. And that seems to be just wrong __printf annotations for
+> > seq_bprintf and bstr_printf. They are not printf-like, they should not
+> > be marked as such, and then the compiler won't be wrongly suggesting
+> > bpf_stream_vprintk_impl (and others that make use of either
+> > bstr_printf or seq_bprintf) to be marked with __printf. =20
+>=20
+> yeah. commit 7bf819aa992f ("vsnprintf: Mark binary printing functions
+> with __printf() attribute")
+> should be reverted,
+> but that somebody else problem and the revert would need to silence
+> that incorrect warning in lib/vsprintf.c too.
+
+=46rom what I understand, the __printf(X, 0) simply quiets the warning, which
+is why those two are:
+
+__printf(3, 0) int vbin_printf(u32 *bin_buf, size_t size, const char *fmt, =
+va_list args);
+__printf(3, 0) int bstr_printf(char *buf, size_t size, const char *fmt, con=
+st u32 *bin_buf);
+
+Hence, it's not a big deal to have that. Actually, it does document that
+the printf format is different than a normal printf, and that the arguments
+are not the same as a normal printf.
+
+I complained about this at first too (and never gave an acked-by), but
+because it does quiet a warning, I also didn't nack it.
+
+-- Steve
 
