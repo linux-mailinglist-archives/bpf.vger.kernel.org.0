@@ -1,128 +1,149 @@
-Return-Path: <bpf+bounces-76563-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76564-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2960CBBA9E
-	for <lists+bpf@lfdr.de>; Sun, 14 Dec 2025 13:36:26 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB9B7CBC3E1
+	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 03:18:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 7DC0330052A5
-	for <lists+bpf@lfdr.de>; Sun, 14 Dec 2025 12:36:25 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 60D113007698
+	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 02:18:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6DEA2FE042;
-	Sun, 14 Dec 2025 12:36:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6275F26F44D;
+	Mon, 15 Dec 2025 02:18:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62B028834;
-	Sun, 14 Dec 2025 12:36:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB9F92A1BF;
+	Mon, 15 Dec 2025 02:18:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765715783; cv=none; b=XLJERlzkpwQkqBquGJIst+wCoTFokJ4jsLMxDGrR/yoE+uNwArk3M2+PB2kJ3RXCdWGAi6UVKbZlpLw4BOdh8kWsc2CZbW6hvFAnpzt7kKS2mpfKoPfVX9Dh90Z9nojITYsPZDm9TDxzCXSOsHqzPXhO+vcC6kZ0mZpgCHdacdg=
+	t=1765765121; cv=none; b=uAhsmDLNCeCcdUe5PdTAfduWcfE8qODcvuA5pKVlfFshI+9HECjsUk5fi86KICCS4Kx7QLP0v9vT1TZZYRanJAd5KK9v74ikTxOcyY/vMMcWM9xSIqel3im+g1owdkhEpJOHByEPlMxEM7+dhqk9XyN+x0eZ1PkCx3hq1EbIb9c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765715783; c=relaxed/simple;
-	bh=KtSX7xSMDpi8HxduNHgb8hMxv4BwkprSIHnf4t0iwhQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Y7m4+TYg54AlcICg9Q0SVVqBIedg2cPPkrpc3fDais9MJ8w5bMBQFei6VoQbHi6bjyw3lobEvXjv6A51uW9+dJBxnY1xKgSNWH5Lh2pyo/MufG0V/ijLhTXFOhnP7/2sba/c7zXuDes+2iyFQXxjq5n4sVTnInANiYAMuaNJQQw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [117.22.160.58])
-	by gateway (Coremail) with SMTP id _____8Dx+tE5rz5plQkuAA--.34840S3;
-	Sun, 14 Dec 2025 20:36:09 +0800 (CST)
-Received: from [192.168.0.111] (unknown [117.22.160.58])
-	by front1 (Coremail) with SMTP id qMiowJDx_8Mzrz5pdD5JAQ--.64818S3;
-	Sun, 14 Dec 2025 20:36:07 +0800 (CST)
-Message-ID: <c6c385b0-60cf-b0c4-1962-974e783b131a@loongson.cn>
-Date: Sun, 14 Dec 2025 20:36:16 +0800
+	s=arc-20240116; t=1765765121; c=relaxed/simple;
+	bh=MjNWDa1Utb2FSU2vHMGxAZAMxCY2K1N3AimOMWo1kBg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sSyPaE195VpwuqvpRSyoqlUGxiwKy4RUHIjrVLgRkdkQvUA2p6IW7jvmeOclvl5KNIcUemCJGhdw41xGeBWFAav1PJxzM9n7kY2iC/dqhqWduBzdGo4eRa4ilm8LiqL60qPOPBrTorGmTCS31MX8hM9IWe5tZBQB3pk+OShAhUQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 55ef38bed95c11f0a38c85956e01ac42-20251215
+X-CTIC-Tags:
+	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NO_NAME, HR_CTE_8B, HR_CTT_TXT
+	HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME, HR_SJ_DIGIT_LEN
+	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
+	HR_SJ_PHRASE_LEN, HR_SJ_PRE_RE, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
+	HR_TO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_EXISTED
+	SN_EXISTED, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.3.6,REQID:4d2852ea-23b5-4c94-b72f-79f995771ed7,IP:10,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:5
+X-CID-INFO: VERSION:1.3.6,REQID:4d2852ea-23b5-4c94-b72f-79f995771ed7,IP:10,URL
+	:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
+	elease,TS:5
+X-CID-META: VersionHash:a9d874c,CLOUDID:308dbeb326b784dc295e1266a7f8be21,BulkI
+	D:251213211600WWYCZSF1,BulkQuantity:2,Recheck:0,SF:17|19|64|66|78|80|81|82
+	|83|102|127|841|850|898,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:nil
+	,RT:nil,Bulk:40,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,D
+	KP:0,BRR:0,BRE:0,ARC:0
+X-CID-BVR: 2,SSN|SDN
+X-CID-BAS: 2,SSN|SDN,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
+X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
+X-UUID: 55ef38bed95c11f0a38c85956e01ac42-20251215
+X-User: duanchenghao@kylinos.cn
+Received: from localhost [(223.70.159.239)] by mailgw.kylinos.cn
+	(envelope-from <duanchenghao@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 853044840; Mon, 15 Dec 2025 10:18:25 +0800
+Date: Mon, 15 Dec 2025 10:18:22 +0800
+From: Chenghao Duan <duanchenghao@kylinos.cn>
+To: Huacai Chen <chenhuacai@kernel.org>
+Cc: yangtiezhu@loongson.cn, hengqi.chen@gmail.com, kernel@xen0n.name,
+	zhangtianyang@loongson.cn, masahiroy@kernel.org,
+	linux-kernel@vger.kernel.org, loongarch@lists.linux.dev,
+	bpf@vger.kernel.org, youling.tang@linux.dev, jianghaoran@kylinos.cn,
+	vincent.mc.li@gmail.com
+Subject: Re: [PATCH v2 4/4] LoongArch: BPF: Enable BPF exception fixup for
+ specific ADE subcode
+Message-ID: <20251215021822.GA141785@chenghao-pc>
+References: <20251212091103.1247753-1-duanchenghao@kylinos.cn>
+ <20251212091103.1247753-5-duanchenghao@kylinos.cn>
+ <CAAhV-H5-AaD9SuRWt5gK4ODVA356EO7byqf-AnXvr_0C+FuUPg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.0
-Subject: Re: [PATCH v2 3/4] LoongArch: BPF: Enhance trampoline support for
- kernel and module tracing
-Content-Language: en-US
-To: Chenghao Duan <duanchenghao@kylinos.cn>, hengqi.chen@gmail.com,
- chenhuacai@kernel.org
-Cc: kernel@xen0n.name, zhangtianyang@loongson.cn, masahiroy@kernel.org,
- linux-kernel@vger.kernel.org, loongarch@lists.linux.dev,
- bpf@vger.kernel.org, youling.tang@linux.dev, jianghaoran@kylinos.cn,
- vincent.mc.li@gmail.com
-References: <20251212091103.1247753-1-duanchenghao@kylinos.cn>
- <20251212091103.1247753-4-duanchenghao@kylinos.cn>
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
-In-Reply-To: <20251212091103.1247753-4-duanchenghao@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:qMiowJDx_8Mzrz5pdD5JAQ--.64818S3
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoW7tr1fGw1kAFW3AF4UCw18CrX_yoW8Cw1kpa
-	yrKF98KFsIgr1jkFs7Gw4xXFyfua9xWrZ8Gr4jqw1rC3Z8Jr1SkF4fKw4Yva48Cr4fC34I
-	vr1jyr43K3Z0vFgCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUBjb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-	Gr0_Gr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYI
-	kI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWU
-	AwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMx
-	k0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_
-	Gr1l4IxYO2xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67
-	AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8I
-	cVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI
-	8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v2
-	6r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07jepB-UUUUU=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAhV-H5-AaD9SuRWt5gK4ODVA356EO7byqf-AnXvr_0C+FuUPg@mail.gmail.com>
 
-On 12/12/25 17:11, Chenghao Duan wrote:
-> This patch addresses two main issues in the LoongArch BPF trampoline
-> implementation:
+On Sat, Dec 13, 2025 at 09:16:00PM +0800, Huacai Chen wrote:
+> Hi, Chenghao,
 > 
-> 1. BPF-to-BPF call handling:
->   - Modify the build_prologue function to ensure that the value of the
->   return address register ra is saved to t0 before entering the
->   trampoline operation.
->   - This ensures that the return address handling logic is accurate and
->   error-free when a BPF program calls another BPF program.
+> On Fri, Dec 12, 2025 at 5:11 PM Chenghao Duan <duanchenghao@kylinos.cn> wrote:
+> >
+> > This patch allows the LoongArch BPF JIT to handle recoverable memory
+> > access errors generated by BPF_PROBE_MEM* instructions.
+> >
+> > When a BPF program performs memory access operations, the instructions
+> > it executes may trigger ADEM exceptions. The kernel’s built-in BPF
+> > exception table mechanism (EX_TYPE_BPF) will generate corresponding
+> > exception fixup entries in the JIT compilation phase; however, the
+> > architecture-specific trap handling function needs to proactively call
+> > the common fixup routine to achieve exception recovery.
+> >
+> > do_ade(): fix EX_TYPE_BPF memory access exceptions for BPF programs,
+> > ensure safe execution.
+> >
+> > Signed-off-by: Chenghao Duan <duanchenghao@kylinos.cn>
+> > ---
+> >  arch/loongarch/kernel/traps.c | 8 +++++++-
+> >  1 file changed, 7 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/arch/loongarch/kernel/traps.c b/arch/loongarch/kernel/traps.c
+> > index da5926fead4a..4cf72e0af6a3 100644
+> > --- a/arch/loongarch/kernel/traps.c
+> > +++ b/arch/loongarch/kernel/traps.c
+> > @@ -534,7 +534,13 @@ asmlinkage void noinstr do_fpe(struct pt_regs *regs, unsigned long fcsr)
+> >
+> >  asmlinkage void noinstr do_ade(struct pt_regs *regs)
+> >  {
+> > -       irqentry_state_t state = irqentry_enter(regs);
+> > +       irqentry_state_t state;
+> > +       unsigned int esubcode = FIELD_GET(CSR_ESTAT_ESUBCODE, regs->csr_estat);
+> > +
+> > +       if ((esubcode == EXSUBCODE_ADEM) && fixup_exception(regs))
+> > +               return;
+> No chance for ADEF? And I don't think ixup_exception() can be done out
+> of irqentry_enter().
+
+At present, exception fixes are only applied to memory-type BPF programs,
+with no handling implemented for ADEF.
+
+In the next version, fixup_exception will be processed internally within
+irqentry_enter()/irqentry_exit, and the title will be revised with
+reference to your suggestions.
+
+Chenghao
+
 > 
-> 2. Enable Module Function Tracing Support:
->   - Remove the previous restrictions that blocked the tracing of kernel
->   module functions.
->   - Fix the issue that previously caused kernel lockups when attempting
->   to trace module functions
+> This patch is needed by BPF but not part of BPF, so I think the
+> subject should be:
+> LoongArch: Enable exception fixup for specific ADE subcode
 > 
-> 3. Related Function Optimizations:
->   - Adjust the jump offset of tail calls to ensure correct instruction
->     alignment.
->   - Enhance the bpf_arch_text_poke() function to enable accurate location
->   of BPF program entry points.
->   - Refine the trampoline return logic to ensure that the register data
->   is correct when returning to both the traced function and the parent
->   function.
+> Huacai
 > 
-> Signed-off-by: Chenghao Duan <duanchenghao@kylinos.cn>
-
-As described in the commit message, your changes include many kinds
-of contents, thanks for the fixes and optimizations.
-
-In order to avoid introducing bugs in the middle, please separate each
-logical change into a separate patch, each patch should make an easily
-understood change that can be verified by reviewers, each patch should
-be justifiable on its own merits.
-
-The current patch #4 can be put after the current patch #2 as a
-preparation for the bpf patches.
-
-Furthermore, it would be better to put the related test cases in the
-commit message of each patch rather than in the cover letter, so that
-it can be verified easily to know what this patch affected and can be
-recorded in the git log.
-
-And also please add Fixes tag for each patch if possible.
-
-Thanks,
-Tiezhu
-
+> > +
+> > +       state = irqentry_enter(regs);
+> >
+> >         die_if_kernel("Kernel ade access", regs);
+> >         force_sig_fault(SIGBUS, BUS_ADRERR, (void __user *)regs->csr_badvaddr);
+> > --
+> > 2.25.1
+> >
 
