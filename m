@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-76614-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76615-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 346A1CBED8B
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4ACE5CBED8D
 	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 17:13:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id AA717300C361
-	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 16:13:45 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id AEBD23002165
+	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 16:13:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C78B631B818;
-	Mon, 15 Dec 2025 16:13:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57CDA32C303;
+	Mon, 15 Dec 2025 16:13:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="ycfhWZ8i"
+	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="nEqhskbJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
+Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 884EC3090EB
-	for <bpf@vger.kernel.org>; Mon, 15 Dec 2025 16:13:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 810AE32BF51
+	for <bpf@vger.kernel.org>; Mon, 15 Dec 2025 16:13:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765815223; cv=none; b=E2fkAq7s2SylULy/li9dTEXZlKLOHxi30twkNgSdPn8BYcNOPH46HRBJTgl59xgIO6j2D7LfW9wAOwjPznSo+RqZs/VZp3jvnHCSUJUCfFnkjbWsqplOyQkN+kgoWTZSCW1PYBqD7ZcL5T/XTMzy6XUBYVYZYvDagRcCHxlZWlg=
+	t=1765815224; cv=none; b=WUrIP6JeqgrPoSGa1o0RyIOD2mfcnsJx0uHvrGV8bTFUrvrg4ZsKwGdPu2Nt7yrALB7/n8kGdlSkZZ3zeJsW46A2jZekDEQuqU2oeoRduuBlXCFEexjNNHV0l2rn/xqrchtITW3Hq7glXN6N9Si8Y6xMMwE1FvXER9JPv5Cx+ak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765815223; c=relaxed/simple;
-	bh=hsAWPLjQC8qPB/nc51SY5+n8YCL6J/P9WQt9gWjZut4=;
+	s=arc-20240116; t=1765815224; c=relaxed/simple;
+	bh=NhJMVrjiRFOE0mw8L1o7xuP4X7ieDkv/V2l1KeVVITc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jW/o7ijmmtRYuK0dQJFvy1irwYO+J4pYbU+RYSlvDUSyVOjqLk3fGw8W0IiIVdZxHrT3lcpfvXFIEi8pEg2o8XyaVYgRsM1fXgytNoi9ugrUf9rO07uK9LwoR1SziL1E0gGcNCfoGdhaMrL16KfCrpljewZRwQifARQOvPtGOsk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=ycfhWZ8i; arc=none smtp.client-ip=209.85.222.178
+	 MIME-Version; b=eqOCF07JOJxRpXgfl1bHAbCTrXPFoB5/0A73po+DXqdbG7Kx4SYoblcpknvQoyFVWwf6rMIthlOVzJ1/YHItfMfA9iLOvDBaBsYYGmox88mlojWnmaR+sGXWTiZzsQGg+9fckTJzsBJG/cNbvSm3GK4LNUpbb+eiFY78/PfGUYw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=nEqhskbJ; arc=none smtp.client-ip=209.85.222.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etsalapatis.com
-Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-8b31a665ba5so448073685a.2
-        for <bpf@vger.kernel.org>; Mon, 15 Dec 2025 08:13:40 -0800 (PST)
+Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-8b2da83f721so394331785a.1
+        for <bpf@vger.kernel.org>; Mon, 15 Dec 2025 08:13:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1765815219; x=1766420019; darn=vger.kernel.org;
+        d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1765815220; x=1766420020; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3/mvpywVKx4oPRsDhTlYFwq1gn5Pf51ZxlF4MLTS7YY=;
-        b=ycfhWZ8iNhfRS6xob2egcWHWDDl4NvGmwOROSO6xe26v8htk8CgzZarR0HCI7Mj9ek
-         +M+N6WeR6FWr+gNyThHUFjdtlvkJp7YonMMbIV0xjfvm46PXRBF+onKfx1z94HXFxmVj
-         fyeFtrgMnrhsSItTAW3c5OQIqrmD7lRuPA7m4VCao4HjN9ZZanLM7yAx/lybK3fgY4cV
-         6/Gk/Xsng+MYKrBxoiXxgr5IwQzoX1Voe2VLPtMhIjGvn1UECRFHw1XJGAjWui4Cseyp
-         hpA0XzU9eMorMIJcluImcD9X6yyAFqg6rrGA5OME5RjSVMQvzEbBbaycEiIlrcKMOXXI
-         EJPQ==
+        bh=wHScx3SL8giVDS3u2HIqyy1YgrkKM2cfykQCv8AkPWc=;
+        b=nEqhskbJTFvp3+3XBolpI71htyrVxpHfgLkqE1AiMvbEoXIUZb5aJpVTT2d8zIcB7L
+         iDeutZVjWk0f74D0+p9wU2oO0WweTUmlZRBC8bCSObwAN0WmQORBpeS9cxYv6jrBDjHP
+         l1B2GRSuk2hw6I9qKe49YGhGZ5+gJB10GCFVQrnH4aEezEct85/nU14wlI3Tkp+OmCJa
+         K80CtLeQ88wW0eyFvmwTg6n0DKDizS/rZp4N6uMlJ7k8R2QNG0kEaGlb1k7y2/oAmTb3
+         ZFwOkwfQ3Zgl6Lvqtdvfk9FzwwvIRGgydQbrFIYSk/XZisYySFCYJpcxKb4fGuYw2n/V
+         D/Ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765815219; x=1766420019;
+        d=1e100.net; s=20230601; t=1765815220; x=1766420020;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=3/mvpywVKx4oPRsDhTlYFwq1gn5Pf51ZxlF4MLTS7YY=;
-        b=uHEBuPtl9+hOmls9nQTuUts2kLWZcEueRMFbjJnYegFkc4kWelreAgMu5bdlWofCX1
-         Jyc2zU48PHXBlTvzPZKcaVbLDoALX50WA8AZgoQCknMxltriRpK9EwG22wHSVaAvu8rP
-         mGKU+T69e2YkIhIQctxxlcPIcCl28TVxvetHYSLrCCv4SHZHrL7IAccvXp9j1AAKrLJJ
-         k1Yizmwlm/CrcgJfEYGVfnBotEigVi9W8viOi2brMCTSt8MbjedWgtWI5EUYryo9ow4y
-         4+boTZLN5473n4NAWoCLVqgWppbrHVutZeJdon5AWRXZ+00M8D5nnpQSoZ4u5mU2NRLZ
-         RNZg==
-X-Gm-Message-State: AOJu0YyB07dkxjib0kT5rpNXdCGt1NffuU1ievNxr602T5GGrEg5V4CM
-	V0HrARzxNXOztzX9UqfbmWZWwZ4tvderUlButVMv8U86vkBiqW6JD0glESB10RnDvpn1Sjj6AeU
-	213x+
-X-Gm-Gg: AY/fxX6SHWkjqYZgjRiz+xlp5CvfFXaFQy/PIsn13jLo8Dxe0wDlHR3HRxOFCePNYqV
-	xwW8or+Ma9+h7LyS3Sge6OKkbU7h/eEb4lTGFh067D0nsRfnQaRtbUy8hNE/h7M4v1Nx9LoEhJB
-	jBuwZLzPUlw4Ff8w/hcMxsRsVER8kgjvLb4vGPOAh+Z50fZ3jdT91m86hSVsF+VFYneyhm2wdhg
-	eG3ywA4I2xCAv1+2TLv/gN5eyXV+uw/NoYJfIfcqcETLOqZSe9WHI/5jZdCB9alX0nkBoVWfuh3
-	fQp/YIWk+1Zm3ZqG0sCWUpW2a99303roIaqqDwn89sWdbIQBxzJAC9S5p71noTxrB5pIrd0aqJS
-	plubiF2nx91XJwG5ieJeEWFXdeY6uUCUx/mQi1cazindTWOEaB+E3FlikejELjKjKQTG1rsQCj+
-	jvcPn6m86IXg==
-X-Google-Smtp-Source: AGHT+IHG5J9v3/id6Xc/yqTrTJ+LsNU/AZeKfiSuvqMAW1vlGn4ZKk42GVagstaHPoNWBZDKplQFlw==
-X-Received: by 2002:a05:620a:170b:b0:892:43af:ba4b with SMTP id af79cd13be357-8bb398e2708mr1723814485a.29.1765815216982;
-        Mon, 15 Dec 2025 08:13:36 -0800 (PST)
+        bh=wHScx3SL8giVDS3u2HIqyy1YgrkKM2cfykQCv8AkPWc=;
+        b=TTQJdEjMMtUR42MfIcCUJMnMyGsxsx3bWEOLWn9mb2jX/xy6CApPN8BUVWIddQbqGr
+         9SryUqbFm90wluHQmI73GQ5FHEUJet4bhotzwH3MYTFqeaHNF1HKwk1Id6GJC6K1S6lL
+         s5/66YHBBMHI4sg9v7wRmwxSBt38lIPm+60Rr3zPQUMbSFZ7jfgtBz54CUr6Ho/9KeSg
+         kBmkH1JGSmFujgkTRUKpXpZs8hC9Go1SYpZ3uq2VGknQ8TtVOU2xP8WU7/8YtsXz1+Cl
+         Kk+7SXm2eECk3xqYR+A95SqmXd1VMMfpc4uVTZxzR/Eon00yh2t/R/3cYQMTgE8IiUwV
+         J49Q==
+X-Gm-Message-State: AOJu0YzLKZ1Xz8lgZsBvWo8ageZ9YYvdKS+NsT9Dh4tzcu/+unTQUZYl
+	kdRshfyhw5ui5Wm84AxNudTRJChJ1ruGyqPRd0x5y9s3LflIj7fh5EavYOyV0C/pCn5R9fKAbfN
+	JldM9
+X-Gm-Gg: AY/fxX6vhS8P7U8qi3tJwIz07/4ZXSKGf9E5qJxxIjViF5v63i3tzr6xvdrHQbjsaxH
+	Rbc9qOp3w+CgX0oj9sQkkFoU3UsJ5Mm/0sDauUEzAy+jyk6f/U8thjCsFSrn1esEeMWlw/fThqb
+	XeIXZR1CL4IWJIZrH59I3OMBU8QNFn8mEPgb3ml/UznGWoJgosjaepAVdadJzbSVG3VFQHIC7wd
+	xIa5FcJ9gTElbLq1b+LmqYOpSEsC3Vtson7yTRumPR4hsAvCTxa3F7hXQ70KM/Dy6W4risxW+F+
+	Ua4wyodjTYm8HQiSc5C3ls/mIRAttQSmzH6CJN9aTrFDKaDbAWxVdIPJ1JFOKuD87u+a66IvQCF
+	fJMI9jPuQU6wUvQpPDvBmg1Q0sivpKIDaWA6q31CHZQ0EyFnvSMKONC8fXUj6GgPQwHzTpa8QI1
+	KmQHqHJENxaA==
+X-Google-Smtp-Source: AGHT+IHeAlPb//tBOT4Q+8A8DZRGF1d878smSDaPfn1ryAo7K5ckGJtNq5Bdk44C6vl8b9huUopI2g==
+X-Received: by 2002:a05:620a:4005:b0:8a6:92d1:2dae with SMTP id af79cd13be357-8bb397cc2f5mr1495413985a.5.1765815218345;
+        Mon, 15 Dec 2025 08:13:38 -0800 (PST)
 Received: from boreas.. ([140.174.219.137])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8bab5c3c85bsm1142195585a.26.2025.12.15.08.13.35
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8bab5c3c85bsm1142195585a.26.2025.12.15.08.13.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Dec 2025 08:13:36 -0800 (PST)
+        Mon, 15 Dec 2025 08:13:38 -0800 (PST)
 From: Emil Tsalapatis <emil@etsalapatis.com>
 To: bpf@vger.kernel.org
 Cc: andrii@kernel.org,
@@ -82,9 +82,9 @@ Cc: andrii@kernel.org,
 	memxor@gmail.com,
 	yonghong.song@linux.dev,
 	Emil Tsalapatis <emil@etsalapatis.com>
-Subject: [PATCH v3 2/5] bpf/verifier: do not limit maximum direct offset into arena map
-Date: Mon, 15 Dec 2025 11:13:10 -0500
-Message-ID: <20251215161313.10120-3-emil@etsalapatis.com>
+Subject: [PATCH v3 3/5] libbpf: turn relo_core->sym_off unsigned
+Date: Mon, 15 Dec 2025 11:13:11 -0500
+Message-ID: <20251215161313.10120-4-emil@etsalapatis.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20251215161313.10120-1-emil@etsalapatis.com>
 References: <20251215161313.10120-1-emil@etsalapatis.com>
@@ -96,39 +96,40 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The verifier currently limits direct offsets into a map to 512MiB
-to avoid overflow during pointer arithmetic. However, this prevents
-arena maps from using direct addressing instructions to access data
-at the end of > 512MiB arena maps. This is necessary when moving
-arena globals to the end of the arena instead of the front.
-
-Refactor the verifier code to remove the offset calculation during
-direct value access calculations. This is possible because the only
-two map types that implement .map_direct_value_addr() are arrays and
-arenas, and they both do their own internal checks to ensure the
-offset is within bounds.
+The symbols' relocation offsets in BPF are stored in an int field,
+but cannot actually be negative. When in the next patch libbpf relocates
+globals to the end of the arena, it is also possible to have valid
+offsets > 2GiB that are used to calculate the final relo offsets.
+Avoid accidentally interpreting large offsets as negative by turning
+the sym_off field unsigned.
 
 Signed-off-by: Emil Tsalapatis <emil@etsalapatis.com>
 ---
- kernel/bpf/verifier.c | 5 -----
- 1 file changed, 5 deletions(-)
+ tools/lib/bpf/libbpf.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index bb7eca1025c3..dbb60d6bb73c 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -21136,11 +21136,6 @@ static int resolve_pseudo_ldimm64(struct bpf_verifier_env *env)
- 			} else {
- 				u32 off = insn[1].imm;
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index c7c79014d46c..5e66bbc2ab85 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -380,7 +380,7 @@ struct reloc_desc {
+ 		const struct bpf_core_relo *core_relo; /* used when type == RELO_CORE */
+ 		struct {
+ 			int map_idx;
+-			int sym_off;
++			unsigned int sym_off;
+ 			/*
+ 			 * The following two fields can be unionized, as the
+ 			 * ext_idx field is used for extern symbols, and the
+@@ -763,7 +763,7 @@ struct bpf_object {
  
--				if (off >= BPF_MAX_VAR_OFF) {
--					verbose(env, "direct value offset of %u is not allowed\n", off);
--					return -EINVAL;
--				}
--
- 				if (!map->ops->map_direct_value_addr) {
- 					verbose(env, "no direct value access support for this map type\n");
- 					return -EINVAL;
+ 	struct {
+ 		struct bpf_program *prog;
+-		int sym_off;
++		unsigned int sym_off;
+ 		int fd;
+ 	} *jumptable_maps;
+ 	size_t jumptable_map_cnt;
 -- 
 2.49.0
 
