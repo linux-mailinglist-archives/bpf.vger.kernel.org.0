@@ -1,179 +1,128 @@
-Return-Path: <bpf+bounces-76643-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76644-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A994CBFF34
-	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 22:35:39 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30F08CBFF9B
+	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 22:40:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B2CC1302629E
-	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 21:31:53 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id E150B301EF1C
+	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 21:40:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAEC43376AA;
-	Mon, 15 Dec 2025 21:31:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 642A15475B;
+	Mon, 15 Dec 2025 21:40:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tOwpuTQj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QQLrXJ5J"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37E54242D8E;
-	Mon, 15 Dec 2025 21:31:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24BDA2494F0
+	for <bpf@vger.kernel.org>; Mon, 15 Dec 2025 21:40:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765834312; cv=none; b=Y71IbH5CKiceaZYhgiMbJLIPM//TrEtTj0zDoFmIgY6z8aYn4/gFyn5DGqf7NJFLaHknXxmyAg5D2hNtf2oNL4KzZ3cHDUx+93gwHvlv4crMc/gHwiZsLiDfuu4dhvmk+dlgDyp3/o7XVBGQJPJyN9gw+YnhfTd9+WOb4JikGl0=
+	t=1765834820; cv=none; b=bTg3fCy7Vz2e4z/+hy2stXn05YcbV0ytU7WoRHx9OAUHGmQA9iWpZfjZnOznk+6euYKYpUHuOq7hdeUJT3vE3o3CXXPzJT0p4V2WJ0HUYuzvvHVgELpt9y25MUlj/LV6nBz4ivmSGWZZ8lmqwoNT1fRlYqWkI4nclRNe151NMNE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765834312; c=relaxed/simple;
-	bh=94yh35skFQRhjv5U7XWUf6dBriC1tan73BbLvp3rfis=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=IhRzAhtTqk4qpc1h/zyVYyse/eQ6JsFOd1QAFl+l7FWd2mLDclLmZcbc4ZhG0ViHHvJnho0mTIuyyr4pmxodpnGW670r19AC3co5VIXJ/m5g+ZVVNO7oN1JKsW2icKxwrAESsQDwEC1zDOxnhE+U5FiC3QrgBchmB2vmF74hW4U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tOwpuTQj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6ECE9C4CEF5;
-	Mon, 15 Dec 2025 21:31:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765834311;
-	bh=94yh35skFQRhjv5U7XWUf6dBriC1tan73BbLvp3rfis=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=tOwpuTQj02P4K7WTE9UmP4XWblTmcWF+wyJkkjCwTLgOkXCE9CzLXcpJ8bUWeth/n
-	 nCEp5vlIR8qsS0w/vBhKII6NkYhjlTZnVNcdAfNFZDO6UkQ87cl+X9z0FFDcBj1rLR
-	 ofZxrIWJQjk34mx8Ozh2mBD54m9iB7jBuCgxAOSQphMWbsWJ2Y5wPe/Td5K0ZuSp2A
-	 SMg1w3zuV6bRMe0++QbtMIQfFgE1OZ37xjIzUcC3W8HGNQxgU6kCDPRbMeI5C3ldar
-	 uDxC9Fxl96fg+DhWpElevoFPAnujIZIw+x+/j7CVZ2EZrbf9Ib9UhRQ/3jyON2/mpp
-	 oQMY3lqAQG+aQ==
-Content-Type: multipart/mixed; boundary="===============1830485644968437842=="
+	s=arc-20240116; t=1765834820; c=relaxed/simple;
+	bh=Y9B0PrO7eep9Md2S3cwjSR2T7fsBiwkpWkQ81Zxh7oM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=eeNXNV/dP1V19XuUOwApc8GaBMRi0UXZVh4Y0i+N72pPBjCk0mikWN9H5cDAwTR0b6MFpteXlNcTV4alR45tQZY5vJ7Yp7uzb1JXz6s4b43z6o4XS5XIc9g9Pkfg+lBYBwqQnxIphz+/wjR8bA6QdYFwt3NhcLDh+mUiEcnZ5AU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QQLrXJ5J; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-430fbb6012bso1251039f8f.1
+        for <bpf@vger.kernel.org>; Mon, 15 Dec 2025 13:40:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1765834817; x=1766439617; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PtrYjcDo8W8ENLiooSwtuxxlBPD0y00FacSVPre/Faw=;
+        b=QQLrXJ5JAUOzJ8Yt1jyd5kWZKLwJD6LCSRU0Tj/6IcYefX0Ty+qXaOOCXoVzD161Hm
+         oz1eXEiyEZs1Db+2tRL0QVbtnLpASsry3v+lyOkqjtXFqQabduvZnaDnAunDTa7qJ4uP
+         isD3IBOOlgDrc4PazKAYDV0GyoixAfeSmaHIZHKU3IJMZfasrCR9xa4SepsW9x1uuZZD
+         GEHl9BIInSVE/5ZEdpq/SmJoxLGSqd2AAQgzRqUxhsbx3x9kt9KPJR977m/JDxTY8LTx
+         Btuo/BDu9wLR4eu9NOnrxRc6XFAqYzAHNUMPU/Ql/xAVuXNFaz+oquG5jC0STwf0D3Nu
+         p1TQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765834817; x=1766439617;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=PtrYjcDo8W8ENLiooSwtuxxlBPD0y00FacSVPre/Faw=;
+        b=pHNPuMryz/G1QymAu5Z/iB1/49KwBo1PerwpcLRPVxhVw2+IoBLGP5r2gpyNs9I+rl
+         lBGek/IdIS/XLf9kzTq6oAV1kmII63nZJnieE5tWVUYLZJIQetPRKhWK9FmjzjEZNEQH
+         s+s6jRx5WHWI7LJ4D3jkERqGVKjIvOdoHhV4CxjSv8hV0Y3sbfXZ33KM2bvk0HmKxa3a
+         KXkBAPNCUjdPiL0HJXR1xNS7EZMfrT2OdyUOc5LP4L7rXEc+iPZq4r2DM/vAyBOv/TR4
+         vt7w/7K6DnuxlZq3t8EYeQgnyBStNEl4SAvTsqhjGHRZzuCp+Ma1GlBRckFbT9OjA2g4
+         HdsA==
+X-Forwarded-Encrypted: i=1; AJvYcCUB5Ehtt6FOVL/TQojW1VYE22FYd36KMCYxCxESGbTL24gpbxUgbTE8TbuNNFs8gZNKEBM=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy39565G1/H3lUCBka00DSJr9aNy1tZykBj3dK/hmLcdeWoJwJT
+	FXCJp/XEJJ5qGC2Dn00hmkNhj6tOitYF2diPXGx9TfIZYsV79oz+l2pmFdgfRPHctPB8nwfvcfI
+	dUY5PJvoLlJzDMviw3Kg1GLoFVqa3kgE=
+X-Gm-Gg: AY/fxX696oYqcx/7hAAlBXMbhwDE7JrFi1FJ00D51ixhAcMyAq/3QsJZeTDF9a+A+1b
+	+djthYKvCKfkJ+CI45o5fP7tVjJoap2f6P+Q19oCtr4RZZfhm8abBTawI1aEqH1T3kPPUvjpxzB
+	8eVnEO+uIaGBAeHaCjxLiMKEbaJRDMq+8q2kgGRtCaseb8gXynJXASyeyiI/vsDRD8AwUU3rOL5
+	3A7Y3XeK8OScVbiNONCvo3jalWqLHxiM80ZygwP6KxzejqJg5VRYRDZ9BaKbzqMuCBmB+p4JNpU
+	W/bAqwOCt6bR44LWmCMkIREs0SxS
+X-Google-Smtp-Source: AGHT+IFLwg9qrtGIR+KKSJwR/7/cX3U7rq6rlbIqE5QA9N+Q5KZyJ8O41sxw+c2I52/X9p3wPLvNSGsFlF/3a+MqKoo=
+X-Received: by 2002:a5d:5f82:0:b0:430:fd0f:28fe with SMTP id
+ ffacd0b85a97d-430fd0f2a7bmr4935997f8f.31.1765834817292; Mon, 15 Dec 2025
+ 13:40:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <95c13c0b793604796037ca67c191e1bfce22770dd020107c7179a698c5d49b91@mail.kernel.org>
-In-Reply-To: <20251215211402.353056-2-jolsa@kernel.org>
-References: <20251215211402.353056-2-jolsa@kernel.org>
-Subject: Re: [PATCHv5 bpf-next 1/9] ftrace,bpf: Remove FTRACE_OPS_FL_JMP ftrace_ops flag
-From: bot+bpf-ci@kernel.org
-To: jolsa@kernel.org,rostedt@kernel.org,revest@google.com,mark.rutland@arm.com
-Cc: bpf@vger.kernel.org,linux-kernel@vger.kernel.org,linux-trace-kernel@vger.kernel.org,linux-arm-kernel@lists.infradead.org,ast@kernel.org,daniel@iogearbox.net,andrii@kernel.org,menglong8.dong@gmail.com,song@kernel.org,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Mon, 15 Dec 2025 21:31:51 +0000 (UTC)
+References: <20251215044919.460086-1-ankur.a.arora@oracle.com> <20251215044919.460086-11-ankur.a.arora@oracle.com>
+In-Reply-To: <20251215044919.460086-11-ankur.a.arora@oracle.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 15 Dec 2025 13:40:06 -0800
+X-Gm-Features: AQt7F2rQ1ApFWmx4BVk_0MGk_PcVWn8dueHeO96jKZChfmmCmjnf-YqQHmYoFps
+Message-ID: <CAADnVQKYoE85HFAOE5OBFpKbXej=h12m4DVvHuPViJSjAncK4A@mail.gmail.com>
+Subject: Re: [PATCH v8 10/12] bpf/rqspinlock: Use smp_cond_load_acquire_timeout()
+To: Ankur Arora <ankur.a.arora@oracle.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, 
+	Linux Power Management <linux-pm@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Arnd Bergmann <arnd@arndb.de>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Mark Rutland <mark.rutland@arm.com>, harisokn@amazon.com, 
+	Christoph Lameter <cl@gentwo.org>, Alexei Starovoitov <ast@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Daniel Lezcano <daniel.lezcano@linaro.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, zhenglifeng1@huawei.com, 
+	xueshuai@linux.alibaba.com, joao.m.martins@oracle.com, 
+	Boris Ostrovsky <boris.ostrovsky@oracle.com>, konrad.wilk@oracle.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
---===============1830485644968437842==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-
-> diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-> index 015dd1049bea..505b7d3f5641 100644
-> --- a/include/linux/ftrace.h
-> +++ b/include/linux/ftrace.h
-
-[ ... ]
-
-> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-> index 976d89011b15..b9a358d7a78f 100644
-> --- a/kernel/bpf/trampoline.c
-> +++ b/kernel/bpf/trampoline.c
-> @@ -214,10 +214,15 @@ static int modify_fentry(struct bpf_trampoline *tr, u32 orig_flags,
->  	int ret;
+On Sun, Dec 14, 2025 at 8:51=E2=80=AFPM Ankur Arora <ankur.a.arora@oracle.c=
+om> wrote:
 >
->  	if (tr->func.ftrace_managed) {
-> +		unsigned long addr = (unsigned long) new_addr;
-> +
-> +		if (bpf_trampoline_use_jmp(tr->flags))
-> +			addr = ftrace_jmp_set(addr);
-> +
->  		if (lock_direct_mutex)
-> -			ret = modify_ftrace_direct(tr->fops, (long)new_addr);
-> +			ret = modify_ftrace_direct(tr->fops, addr);
->  		else
-> -			ret = modify_ftrace_direct_nolock(tr->fops, (long)new_addr);
-> +			ret = modify_ftrace_direct_nolock(tr->fops, addr);
->  	} else {
->  		ret = bpf_trampoline_update_fentry(tr, orig_flags, old_addr,
->  						   new_addr);
-> @@ -240,10 +245,15 @@ static int register_fentry(struct bpf_trampoline *tr, void *new_addr)
->  	}
->
->  	if (tr->func.ftrace_managed) {
-> +		unsigned long addr = (unsigned long) new_addr;
-> +
-> +		if (bpf_trampoline_use_jmp(tr->flags))
-> +			addr = ftrace_jmp_set(addr);
-> +
->  		ret = ftrace_set_filter_ip(tr->fops, (unsigned long)ip, 0, 1);
->  		if (ret)
->  			return ret;
-> -		ret = register_ftrace_direct(tr->fops, (long)new_addr);
-> +		ret = register_ftrace_direct(tr->fops, addr);
->  	} else {
->  		ret = bpf_trampoline_update_fentry(tr, 0, NULL, new_addr);
->  	}
+>  /**
+>   * resilient_queued_spin_lock_slowpath - acquire the queued spinlock
+>   * @lock: Pointer to queued spinlock structure
+> @@ -415,7 +415,9 @@ int __lockfunc resilient_queued_spin_lock_slowpath(rq=
+spinlock_t *lock, u32 val)
+>          */
+>         if (val & _Q_LOCKED_MASK) {
+>                 RES_RESET_TIMEOUT(ts, RES_DEF_TIMEOUT);
+> -               res_smp_cond_load_acquire(&lock->locked, !VAL || RES_CHEC=
+K_TIMEOUT(ts, timeout_err, _Q_LOCKED_MASK) < 0);
+> +               smp_cond_load_acquire_timeout(&lock->locked, !VAL,
+> +                                             (timeout_err =3D clock_dead=
+lock(lock, _Q_LOCKED_MASK, &ts)),
+> +                                             ts.duration);
 
-After this change, register_ftrace_direct() receives an address with
-the LSB bit already set (via ftrace_jmp_set) and stores it as-is in
-entry->direct. This address then flows through to ftrace_find_rec_direct()
-which returns entry->direct unchanged.
-
-In available_filter_functions_show():
-
-    direct = ftrace_find_rec_direct(rec->ip);
-    if (direct)
-        seq_printf(m, "\n\tdirect-->%pS", (void *)direct);
-
-Can the debug output show misleading symbol offsets? When the LSB is
-set, %pS will resolve addresses like "function+0x1" instead of just
-"function". This makes ftrace debug output harder to read for users
-trying to understand direct call attachments.
-
-The fix would be to strip the LSB bit before printing:
-    seq_printf(m, "\n\tdirect-->%pS", (void *)ftrace_jmp_get(direct));
-
-[ ... ]
-
-> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> index bbb37c0f8c6c..b0dc911411f1 100644
-> --- a/kernel/trace/ftrace.c
-> +++ b/kernel/trace/ftrace.c
-> @@ -6017,15 +6017,8 @@ int register_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
->  	if (ftrace_hash_empty(hash))
->  		return -EINVAL;
->
-> -	/* This is a "raw" address, and this should never happen. */
-> -	if (WARN_ON_ONCE(ftrace_is_jmp(addr)))
-> -		return -EINVAL;
-> -
->  	mutex_lock(&direct_mutex);
->
-> -	if (ops->flags & FTRACE_OPS_FL_JMP)
-> -		addr = ftrace_jmp_set(addr);
-> -
->  	/* Make sure requested entries are not already registered.. */
->  	size = 1 << hash->size_bits;
->  	for (i = 0; i < size; i++) {
-
-[ ... ]
-
-> @@ -6146,13 +6139,6 @@ __modify_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
->
->  	lockdep_assert_held_once(&direct_mutex);
->
-> -	/* This is a "raw" address, and this should never happen. */
-> -	if (WARN_ON_ONCE(ftrace_is_jmp(addr)))
-> -		return -EINVAL;
-> -
-> -	if (ops->flags & FTRACE_OPS_FL_JMP)
-> -		addr = ftrace_jmp_set(addr);
-> -
->  	/* Enable the tmp_ops to have the same functions as the direct ops */
->  	ftrace_ops_init(&tmp_ops);
->  	tmp_ops.func_hash = ops->func_hash;
-
-[ ... ]
-
-
----
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
-
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/20247816064
-
---===============1830485644968437842==--
+I'm pretty sure we already discussed this and pointed out that
+this approach is not acceptable.
+We cannot call ktime_get_mono_fast_ns() first.
+That's why RES_CHECK_TIMEOUT() exists and it does
+if (!(ts).spin++)
+before doing the first check_timeout() that will do ktime_get_mono_fast_ns(=
+).
+Above is a performance critical lock acquisition path where
+pending is spinning on the lock word waiting for the owner to
+release the lock.
+Adding unconditional ktime_get_mono_fast_ns() will destroy
+performance for quick critical section.
 
