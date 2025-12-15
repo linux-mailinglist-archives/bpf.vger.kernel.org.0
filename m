@@ -1,165 +1,210 @@
-Return-Path: <bpf+bounces-76566-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76567-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id D942FCBC436
-	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 03:41:07 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA6C2CBC585
+	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 04:43:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 770EF3007B5E
-	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 02:41:05 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9AB6330198BD
+	for <lists+bpf@lfdr.de>; Mon, 15 Dec 2025 03:42:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E908A2E9748;
-	Mon, 15 Dec 2025 02:41:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2A322BDC03;
+	Mon, 15 Dec 2025 03:42:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="YdPGQE6O"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VWHuTGnh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CA0DFBF6
-	for <bpf@vger.kernel.org>; Mon, 15 Dec 2025 02:41:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D69C6299A84
+	for <bpf@vger.kernel.org>; Mon, 15 Dec 2025 03:42:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765766462; cv=none; b=BlNYwFC/hDK98yTqhvRkmTue9Yfkuw69KI7AovDLDif8cjn+moAozZ7gq60sy69Z4QgY1fiwKzODuLzQFfyrXkebOvgUOggD6g3mjMyzVh8HpLe/5YueEWr4Zujda3buzFw51KwIX1Ee/ugAq88WrrH5QADmtBT7G87gnmWHwKc=
+	t=1765770163; cv=none; b=qDvXglvqgJSCohltgRLl208YWMA0gA6dwLk3nb4WSX70omV8vR3odv+/2a65/W4lyHergvPW4W+Lmj/wNBtUBw9kVnmZSiQTL/+KR5q92Hv7oe/dra6gYIx7fTo0uSwSiJHIowUaSFIMkMeY0ihRGQt2IYKgPdZR5k2Vv2PPzmU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765766462; c=relaxed/simple;
-	bh=viMt1mh6dI9z8Ho4su0HD87jx95MSKvWDzIBlGmxgHM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ETBEL6fFqnKHHnJ26EfCMrZMFeatR6YLmk/REIxQMCZtc3yGGPd/u7nZCrLq22YKfM775qByQ6K6EtiqjOdmADIvtYAsrYGCgrXujB+so1GKGaBFbXEd05wXtvZbjETctHBjxEzyWtkiurYTNdUZMBd7yg4lDKjtzNigHY4/zLw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=YdPGQE6O; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-47a80d4a065so18332695e9.2
-        for <bpf@vger.kernel.org>; Sun, 14 Dec 2025 18:41:00 -0800 (PST)
+	s=arc-20240116; t=1765770163; c=relaxed/simple;
+	bh=ibIM4TX7cp7j5rzkpQcOwF+7GvfSSEk1s4Wm2vweWHo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ktUZd4s++jZftKW67XM7sGta1PESrMn2EsbwMW+9ocUElNOXc6eut6RWzqEs6VUW/BW3hCB1oauaepjQeszbq8+76ObLZvQRTBLo6azcH0PL3cG+WlkucZeSfSS/WHfilNqF0SUrj5rGtusQSI/hXiuAqjF5Gg7YK7aqlo3kENc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VWHuTGnh; arc=none smtp.client-ip=209.85.216.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-34c61194e88so513855a91.2
+        for <bpf@vger.kernel.org>; Sun, 14 Dec 2025 19:42:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1765766458; x=1766371258; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=5Nt40lnZCNh5EpT6VP81s0mK0sVXkDLaiUq8eViqp/I=;
-        b=YdPGQE6OlWaW2m5lQDxfPp2tja3nWKMkXH7Mm0YlEX6wOfgNM7pbITVpbOQW0yzrO5
-         taUP0g+YVesjk2mw2sLaLcqWCG/wCWaan9YQ1OAvxoiM/VS/Vof9bef+kcJt8O3E2n2u
-         L8sAQesWRn2tIQ60BYziomaHTflfgt6n5cJqecvJ/lI6hu6I08GnKx+b1fjhydzYabFr
-         Jk8z8eBbA/PdmMmkh2VIk1NqSHadX5f4A66LdtlbS+udpO/p7lJV+YD0FeS3tR6AtJBG
-         mQAeHykVBxVqhml9lenQ1DExn0ei6m9Cnxvv0v+UlTQKQnnhvvAMPX4N4FPXFrtzkxBh
-         6+kw==
+        d=gmail.com; s=20230601; t=1765770161; x=1766374961; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=mtRB0zkJ3HG5Hdm3UQaSp1wc+rUL/O1jX3OIcn3vp+Q=;
+        b=VWHuTGnhFa53AvFdwRgUXq0x+yCxRJdoj4y76EJMYnRCNt6DC5VmVsPZz2knZHNFcn
+         57Ej8CUHZ6e7S/+rRZGgPcjd4wvy++WqaMvgNIrPlTc2YWjdtHKBlOnDp26OtPLJGaxb
+         YVL29oD9FHw4Q+a7gD7NsPnmu7d/OSCgmRJk6ngRiqLO+f8O12ar8GfThXIWQY26AUri
+         lXdh0KGM2fTRP1Wmeh7f8r6P0T85r6jGr1dhsdfxIEyLQ/8gYq2k1Z25pDkibwIuGvYg
+         dcyFYE0ahXHUL+/kFo+qjkm0S7M8Jjt+doInTjqxO4lCCiV98Ovr8zO6snYSapaviJQ4
+         zeDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765766458; x=1766371258;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5Nt40lnZCNh5EpT6VP81s0mK0sVXkDLaiUq8eViqp/I=;
-        b=LpSuPJR7Zy/ai0zqIkaDuj7vPkMcedyvYq2VE23yQY8F/yjsTnLcuOQH/Ogs5JxVlR
-         iimrYUq0qOpL4fOQgGJULuAMpnGKVSXOE0ng75QJ3mwCEc5H/njbSO+rryep6lEpYH1v
-         W3hV/LoD1PI4t6hSE1LN1nH9dhgPXpPHSEcQTtDYagEb6xc0wCHyv+1iD57IYEKB9MET
-         R2weh5YQO2RJMBSP/1MaQnyWeSRtB7IRx4HwJpNXtwdKXJeAqYC0M5iHWkykgbyMFl4f
-         eiQ3B0WBRPTlQsA6pjhYmtOiHvSVRCsBHWuQm9d4cIGWYzHsbof3Tos7/242FWH4BxkS
-         lKyg==
-X-Forwarded-Encrypted: i=1; AJvYcCUbLTqhvGaGkR+3DqWFheKU3Rqe6E5zhcYxKgYy3HobRujkb0ndK4VQC115/h/nFRozv3s=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxJBT8NKHwUHXOR0t6e1ZHQsGY7noE/drOauxTf/c9QVjyyL2zV
-	q5iw/+eAq3bKsBrsvb4gMopF8oT6Unxyv9JaMmBVQYsVP6X5kyV5495BjzeGMEIPm2g=
-X-Gm-Gg: AY/fxX70XSAh8d6Xw0rG31enRHtMOhuGrfPmgt6mmMB7+wmrnBYrBW9T0iRHgNY+Vpp
-	vrpGsp9cpAYZ59qGJIc1j6Fze9wAsy80V4gg0aGZZ3kqqRNOXN5DaqtnWoWT/KaOKGFBJ540Ypd
-	NF1dpYdsPpUv880zAX63EjEHb2e7WcJydHw/RMEIUzWc3Ae74DM2iejypKEa5O3pICbTRI/AFFI
-	L1YPJLpLWd/QqLKJE4V3bQzv/F3IbxlnwjyDL/DoyjSitSiv9D8QhS9MuqQCl6YyUPDLYn53KWo
-	UVW97+VNNUCCcW1yAdjlwHaIcHy/WgsO1zORr1ThZTCCMjJdg4vCFxIw8+JTOhUIsrO8RRtyawq
-	jxGScYtG9Jdn5tvux079NT+UedgLaWgKGQWwxmhsgRKsF3pGi8i/I74VIpQ3zdG6f5Hlj8TDl2N
-	I6BIzfKGZfVO5gkSTSgyEZGdwh4Nx1IXNnR1Rxml3DPlg+J6hCiF/xk9bLXMGACYdUqsotkNenP
-	9F5zI3g
-X-Google-Smtp-Source: AGHT+IE8zEZK8YZx46VxHccQb4Iy3sJBVYYEepfTM9OGnNkJ8qxx5SmLIuYbjd6YPBlvINyXZhXm/A==
-X-Received: by 2002:a05:600c:4f90:b0:477:b0b8:4dd0 with SMTP id 5b1f17b1804b1-47a8f905680mr98566245e9.17.1765766458551;
-        Sun, 14 Dec 2025 18:40:58 -0800 (PST)
-Received: from u94a (2001-b011-fa04-1431-b2dc-efff-fee8-7e7a.dynamic-ip6.hinet.net. [2001:b011:fa04:1431:b2dc:efff:fee8:7e7a])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c11d3e8af1asm5169995a12.2.2025.12.14.18.40.53
+        d=1e100.net; s=20230601; t=1765770161; x=1766374961;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mtRB0zkJ3HG5Hdm3UQaSp1wc+rUL/O1jX3OIcn3vp+Q=;
+        b=UEa/UFFDNduBc0Zb7pA6wi7+kbDfulnxcbRIoxR0DbosZo/I4vcLA9zD03+uOFPgTi
+         8xLkJ4sLf/iEgROPLq+Uqr8cgo4Vt49MjumlTlM779K5yrDgsn6rLIgiSiqYtFr226yu
+         5euM0TogS7n5Y6HoMjD5AAuwvUHPtxVMWaqa4CB/FanLiytnIwXcNgGGVZx07StyfOsE
+         TvhmG6Y1WZfS5dHjDcwomlMc6CiMOOy8k09g9xiJi3qN5b6JWW8xEQ0y3DH/KZdUzXBO
+         yki8kbjXRL3G9LsNO22csk/iBa8GrLFhIxS/H1WaGh8bajQhIdzIuhv+krpLiYC7YMhA
+         CBeA==
+X-Forwarded-Encrypted: i=1; AJvYcCUDn0IcmrEaD/uC8nV0WnkAlHR3XlyTvuBQ6GyJDoRmYxhjkP5RtnR0bdazEKibowXHGwM=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz74bg5NhDF1Ns4p20JOy39GRgb6Zghqu88GvhB2SDaJBAWfdZw
+	8SYpctXQq9QNz+ih8SFF/s7DlFthURzf8lcYOnevACwVVJkTWY/Q4O/G
+X-Gm-Gg: AY/fxX5INDHxIymVsBkpgRsOVfKn8EJgZKWdsq4xxzTOdQgF+4PPCQNSqh3sbNUpXt8
+	SCik2v948xPkE9kb4wtD/S2jG/JBu+wREtU2EflA4wzskR+Q12lAw09CXgJK5epQT7YXxEDSJ87
+	bxLubKcLk7/qzBPrl1kcQ6f63FgbqoS0LoDG5EnnCyhaQTpCSOmmxkDzHj6xJRqpBtWkXs7Wkgq
+	ai1jK0OVQau2MrHLVOW12kdHISRa5WAXxsHqGTncRtdkmRguK/MMuuVHedxbqbhVlMv1msFAeeE
+	QkDMfMyVEpibKDZyYLR3B1SrxGRCz9P2tn+ZmZdh6ZuSz5rKqzbbCc4V91emRJvp8btPH3NBkUv
+	Q4BzTBjr9ZmAGAy7lGKi2PTf0+Ts+zPD6O7BmXf2OzNMzB8nzCULOPGiLxQbnvaQxBI7XJViAud
+	EzJDyaki2fRcLLMxXXmLflCuihauM=
+X-Google-Smtp-Source: AGHT+IGeau3ao+6xHm9AkOhfO7rXtTXbYEf+yKU6grsiOmblRejz+ckM0tTLxMTWZMcDFLNC0BM6yg==
+X-Received: by 2002:a17:90b:1d04:b0:336:b60f:3936 with SMTP id 98e67ed59e1d1-34abd7be51cmr9537815a91.12.1765770160988;
+        Sun, 14 Dec 2025 19:42:40 -0800 (PST)
+Received: from pengdl-pc.mioffice.cn ([43.224.245.249])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34abe23a207sm3420562a91.1.2025.12.14.19.42.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Dec 2025 18:40:57 -0800 (PST)
-Date: Mon, 15 Dec 2025 11:40:47 +0900
-From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-To: Dimitar Kanaliev <dimitar.kanaliev@siteground.com>
-Cc: bot+bpf-ci@kernel.org, bpf@vger.kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, john.fastabend@gmail.com, andrii@kernel.org, 
-	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, 
-	mykolal@fb.com, martin.lau@kernel.org, clm@meta.com, ihor.solodrai@linux.dev
-Subject: Re: [PATCH v1 1/3] bpf: Introduce tnum_scast as a tnum native sign
- extension helper
-Message-ID: <vguvxgnuifn6pgmvtvbqexvibysndwaj7ne3pfwej4a7wjnpta@pv4764o2oikv>
-References: <20251125125634.2671-2-dimitar.kanaliev@siteground.com>
- <b37af1dcde7b7efb4dfc0329ca3ea1c3f4ede7e9b8eb02a1eabd042d561f00fd@mail.kernel.org>
- <2fb2cuygiz5ljalrbpizk4njnj4dojx53c5fxy36ock5g5w3r7@7pigobi3ymw4>
- <CAHx3w9J35G0bn-TyKEJ_u0A3NxupzvQZKmq_3JirwFdGk-P_tQ@mail.gmail.com>
+        Sun, 14 Dec 2025 19:42:39 -0800 (PST)
+From: Donglin Peng <dolinux.peng@gmail.com>
+To: rostedt@goodmis.org
+Cc: mhiramat@kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	pengdonglin <pengdonglin@xiaomi.com>
+Subject: [PATCH v4 0/3] Use BTF to trim return values
+Date: Mon, 15 Dec 2025 11:41:50 +0800
+Message-Id: <20251215034153.2367756-1-dolinux.peng@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHx3w9J35G0bn-TyKEJ_u0A3NxupzvQZKmq_3JirwFdGk-P_tQ@mail.gmail.com>
 
-On Mon, Dec 01, 2025 at 09:43:32AM +0200, Dimitar Kanaliev wrote:
-> On Wed, Nov 26, 2025 at 10:56 AM Shung-Hsi Yu <shung-hsi.yu@suse.com> wrote:
-> > On Tue, Nov 25, 2025 at 01:22:13PM +0000, bot+bpf-ci@kernel.org wrote:
-> > > > diff --git a/include/linux/tnum.h b/include/linux/tnum.h
-> > > > index c52b862da..ed18ee114 100644
-> > > > --- a/include/linux/tnum.h
-> > > > +++ b/include/linux/tnum.h
-> > > > @@ -63,6 +63,9 @@ struct tnum tnum_union(struct tnum t1, struct tnum t2);
-> > > >  /* Return @a with all but the lowest @size bytes cleared */
-> > > >  struct tnum tnum_cast(struct tnum a, u8 size);
-> > > >
-> > > > +/* Return @a sign-extended from @size bytes */
-> > > > +struct tnum tnum_scast(struct tnum a, u8 size);
-> > > > +
-> > > >  /* Returns true if @a is a known constant */
-> > > >  static inline bool tnum_is_const(struct tnum a)
-> > > >  {
-> > > > diff --git a/kernel/bpf/tnum.c b/kernel/bpf/tnum.c
-> > > > index f8e70e9c3..eabcec2eb 100644
-> > > > --- a/kernel/bpf/tnum.c
-> > > > +++ b/kernel/bpf/tnum.c
-> > > > @@ -199,6 +199,19 @@ struct tnum tnum_cast(struct tnum a, u8 size)
-> > > >     return a;
-> > > >  }
-> > > >
-> > > > +struct tnum tnum_scast(struct tnum a, u8 size)
-> > > > +{
-> > > > +   u8 s = 64 - size * 8;
-> > > > +   u64 value, mask;
-[...]
-> > > > +   value = ((s64)a.value << s) >> s;
-> > > > +   mask = ((s64)a.mask << s) >> s;
-> > >                                     ^^
-> > >
-> > > Can this invoke undefined behavior when size is 0? When size==0,
-> > > s becomes 64, and shifting a 64-bit value by 64 bits is undefined
-> > > behavior according to the C standard. The guard only checks size >= 8,
-> > > allowing size==0 to reach the shift operations.
-[...]
+From: pengdonglin <pengdonglin@xiaomi.com>
 
-Looking into this again I realized that while size can't be 0, we could
-still have undefined behavior here. The first is that there could be
-left shift on negative value, for example when:
+This patch series addresses two limitations of the funcgraph-retval feature:
 
-     size =  4
-        s = 32
-  a.value = -1 (0xffffffffffffffff)
-  a.mask  =  0 (0x0000000000000000)
+1. Void-returning functions still print a return value, creating misleading
+   noise in the trace output.
 
-In calculating of `a.value << s`, there is overflow of s64 because we're
-doing -1 << 32. Similarly for `a.mask << s`.
+2. For functions returning narrower types (e.g., char, short), the displayed
+   value can be incorrect because high bits of the register may contain
+   undefined data.
 
-IIUC another one is that is that when left shift causes a positive
-integer to become a negative one, e.g. ((s64)255 << 56 ==
--72057594037927936). Less sure about this one.
+By leveraging BTF to obtain precise return type information, we now:
 
-In short, seems best to avoid left shift on signed value by moving the
-cast outside of the left shift, and there shouldn't be any difference
-when it comes to the intention. We're only interested in arithmatic
-right shift since that is where we get signed extension anyway.
+1. Void function filtering: Functions with void return type no longer
+   display any return value in the trace output, eliminating unnecessary
+   clutter.
 
-  value = (s64)(a.value << s) >> s;
-  mask = (s64)(a.mask << s) >> s;
+2. Type-aware value formatting: The return value is now properly truncated to
+   match the actual width of the return type before being displayed.
+   Additionally, the value is formatted according to its type for better human
+   readability.
+
+Here is an output comparison:
+
+Before:
+ # perf ftrace -G vfs_read --graph-opts retval
+ ...
+ 1)               |   touch_atime() {
+ 1)               |     atime_needs_update() {
+ 1)   0.069 us    |       make_vfsuid(); /* ret=0x0 */
+ 1)   0.067 us    |       make_vfsgid(); /* ret=0x0 */
+ 1)               |       current_time() {
+ 1)   0.197 us    |         ktime_get_coarse_real_ts64_mg(); /* ret=0x187f886aec3ed6f5 */
+ 1)   0.352 us    |       } /* current_time ret=0x69380753 */
+ 1)   0.792 us    |     } /* atime_needs_update ret=0x0 */
+ 1)   0.937 us    |   } /* touch_atime ret=0x0 */
+
+After:
+ # perf ftrace -G vfs_read --graph-opts retval
+ ...
+ 2)               |   touch_atime() {
+ 2)               |     atime_needs_update() {
+ 2)   0.070 us    |       make_vfsuid(); /* ret=0x0 */
+ 2)   0.070 us    |       make_vfsgid(); /* ret=0x0 */
+ 2)               |       current_time() {
+ 2)   0.162 us    |         ktime_get_coarse_real_ts64_mg();
+ 2)   0.312 us    |       } /* current_time ret=0x69380649(trunc) */
+ 2)   0.753 us    |     } /* atime_needs_update ret=false */
+ 2)   0.899 us    |   } /* touch_atime */
+
+Note: enabling funcgraph-retval now adds overhead due to repeated btf_find_by_name_kind()
+calls during trace output. A separate series [1] optimizes this function with
+binary search (O(log n) vs current O(n)), which will greatly reduce the impact.
+
+Here is a performance comparison:
+
+1. Original funcgraph-retval:
+# time cat trace | wc -l
+101024
+
+real    0m0.682s
+user    0m0.000s
+sys     0m0.695s
+
+2. Enhanced funcgraph-retval:
+# time cat trace | wc -l
+99326
+
+real    0m12.886s
+user    0m0.010s
+sys     0m12.680s
+
+3. Enhanced funcgraph-retval + optimizined btf_find_by_name_kind:
+# time cat trace | wc -l
+102922
+
+real    0m0.794s
+user    0m0.000s
+sys     0m0.810s
+
+We can see that after optimizing btf_find_by_name_kind, the overhead
+becomes negligible.
+
+Changelog:
+v4:
+- Build trace_btf.c only when CONFIG_DEBUG_INFO_BTF is enabled
+- Remove the redundant dependency of CONFIG_PROBE_EVENTS_BTF_ARGS
+- Update related documentation and the cover letter
+
+v3:
+- Link: https://lore.kernel.org/all/20251209121349.525641-1-dolinux.peng@gmail.com/
+- Print the return value based on its type for human readability, thanks Masami
+- Update documentation and cover letter
+
+v2:
+- Link: https://lore.kernel.org/all/20251208131917.2444620-1-dolinux.peng@gmail.com/
+- Update the funcgraph-retval documentation
+- Revise the cover letter
+
+v1:
+- Link: https://lore.kernel.org/all/20251207142742.229924-1-dolinux.peng@gmail.com/
+
+[1] https://lore.kernel.org/all/20251208062353.1702672-1-dolinux.peng@gmail.com/
+
+pengdonglin (3):
+  ftrace: Build trace_btf.c when CONFIG_DEBUG_INFO_BTF is enabled
+  fgraph: Enhance funcgraph-retval with BTF-based type-aware output
+  tracing: Update funcgraph-retval documentation
+
+ Documentation/trace/ftrace.rst       |  88 +++++++++++--------
+ kernel/trace/Kconfig                 |   2 +-
+ kernel/trace/Makefile                |   2 +-
+ kernel/trace/trace_functions_graph.c | 124 ++++++++++++++++++++++++---
+ 4 files changed, 163 insertions(+), 53 deletions(-)
+
+-- 
+2.34.1
+
 
