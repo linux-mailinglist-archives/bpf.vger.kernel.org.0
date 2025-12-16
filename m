@@ -1,214 +1,163 @@
-Return-Path: <bpf+bounces-76771-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76772-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CC91CC533A
-	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 22:25:11 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA76ECC53F7
+	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 22:45:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6AD9B3016CFD
-	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 21:25:08 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 85A813063842
+	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 21:45:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8614C313541;
-	Tue, 16 Dec 2025 21:25:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 243DE336EDE;
+	Tue, 16 Dec 2025 21:45:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZTcO7/30"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nfHyxwgi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DFBB23A562
-	for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 21:25:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CF6D337B8E
+	for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 21:45:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765920307; cv=none; b=GFlC/UKD+32nPCke/WzDZzCzar5DdXa6/pAwxzzBt+j56mDE08nNvp7/JSgAuPEylO00vYaqNEHwBTgH2/19igeihL46oqq4zxcp2p86S7OKOvRctlTVkU3YNQpUAW6Z3BWuA8nJDCMKxOneAKkBNpjd8LY6IyQNxIzV3aI+hCk=
+	t=1765921527; cv=none; b=hQmksT78gsb4MgrqAylXiI+UBwRue4kMfx7IuIyqmQjWuuIWw8HrODecOiGSf4BmPflrnU8+GPY4VeFGvH/KaKGDO1P7xWWWjqVX4ahzqpkfvrp1YVtxLd3oamBlgu7ajB5xduE82+j4eUN4X2KekVc2iQRuQ569ZJEOzw4rVHo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765920307; c=relaxed/simple;
-	bh=KJkB6gBSdbXyjv9CnMBG0ujfKQGyrkxxiVE0wJCrlaI=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=N0XuSXc9poY5aBp/lXl3JlFVIByAb2XGOTrN/1+NFtSsIcAT4YXQ1l0Y7jT5irCmatFpevF1UU3sOsDPUpTzg7jhUAq4ZFeSo4/IxjdIMNdfeDXrQTyh+/mh7taLmhi1OTeF0SjluNBgpIAeHi/YlxmNv+owcwzhR2h3zI2/a3Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZTcO7/30; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-7e1651ae0d5so4203894b3a.1
-        for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 13:25:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1765920305; x=1766525105; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=P+fgU8yAOKDodlvbOzyL0bNanv5w+dN6b9YogBsB4DM=;
-        b=ZTcO7/30RnP2aON+s9ex20ed4BTbd7AbE4sWyVfh3xOrStdtdayiYGxiHVwATAiSP8
-         BU5JEmlX64r/zCjoapARDJkZHoSUehmpwGb8B+ia5lw7a82WVmbwbtaVJRu8Zka81DCM
-         OV/Xfyy3cKJvQsVCL612GiAxsN8o4LwOI7398kbgt4iJdBuV8FHYNHRouj3qv8bPx+In
-         Dt11PjIM28JY0Y0XPz4FEpzh0h6Nn03ljNV+2eRUFkJ4GDMzPi5//tKQdnI5zTnv0xl5
-         pFgFQxgoucfqFL6ERk1BQ8nZf2SaaM4hDAwLUuIQl4UiNdOC23VGB+lxYO9qyHp93OLx
-         3fyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765920305; x=1766525105;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=P+fgU8yAOKDodlvbOzyL0bNanv5w+dN6b9YogBsB4DM=;
-        b=iugnxaEYZIZdzH/SqE5GEJdBKjapWT4c/l6q7QCJix4DYOEjJGagXyNyDaNCphV38i
-         tfYwoa8/O4RhuKSGbE/oKKFklRq8TdXcUQkS4cGhDGkOypLuH+Z7og0N3zQFiN7+IbOq
-         UHOCI86UTktxoNUw1ooz32HsX8UhHbXTomwlWJ4L7+Wi4Jc/QkywFK8ni1mpsQylxa6O
-         8whGNs97jyk4Bt491iSh1cejWd+Cyc4d4NWN88lDFsRSflNz8k21svr6h5Sj28MMuRk2
-         SHLTkUIf1aZwxZrgygjCjSRYSpv6j0GwOMS5lwrJg6P72Dh2MepdI5k2CQm9UdHpqMfz
-         4VkA==
-X-Forwarded-Encrypted: i=1; AJvYcCVJBhZgKqLhc9v3A40yywONg70uYrqCcSUiBuXMZLzS9rKapdWLddqHJ4vfpFcwn1EYM84=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwgkrUIikppZSuZI5HzUsXQpEgF2LF95rpdLIbEXqTZnEnxUDCo
-	fBDhA2M3Chg+3whWtg6TE0T+i1ZdI35E4yisT0qGDJSMsyfndFBp+iVz
-X-Gm-Gg: AY/fxX6eoZP5kPMOyYR8PUZrvVw739ATk3Qz0X6tE7VO220sOGb3xEeh+WqUFVU2EU1
-	wqNwAdh2hP3bBhILdv3o3R3SdAytihJzEbUHKt5Mw7Ikdnx+iTS+J/mqQ5q15Vt8SLTHTRon6m1
-	aGZecIRiEMK3iWvXzQqrztq6E9EFyZf7EWKoCOHDTUpi0qflux5FH7wjJnppQxC7t362h1aULQM
-	HRDacFNfUCHnSsnavCCQyGbSN0qIkhYE01gRTIS5Pz3HH4Byoq4uCUTHHuCnYw7qRS8BTFqLjb2
-	xHzgcaDX3HkEaXz9uvJICJT5NmfjA+xx+eLKeU69CNzim25EZ/DD22igPIanGkXQSir/mHRk+2r
-	o3OvIAOarM1x+xJBC4xlaqXMCktghZKNsdEzNO2BDWMdrv8RJgvQkWNT/jVH8vkQ3J4JMUuOvJT
-	PMVVl4Mpge
-X-Google-Smtp-Source: AGHT+IEpWg7yNPvyj30E/Kr/ueDF1YrXlqf+wsqamSsT7jCEGBokncPH/BdDic5/vNTEITz0OLA/VA==
-X-Received: by 2002:a05:6a21:99a7:b0:35f:4e9d:d28b with SMTP id adf61e73a8af0-369adebe02fmr17497087637.18.1765920304866;
-        Tue, 16 Dec 2025 13:25:04 -0800 (PST)
-Received: from [192.168.0.226] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7fcbc0c0acbsm475048b3a.60.2025.12.16.13.25.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Dec 2025 13:25:04 -0800 (PST)
-Message-ID: <87d08c49a65a951944e5b2254e605e3c4a064e50.camel@gmail.com>
-Subject: Re: [PATCH v8 bpf-next 06/10] btf: support kernel parsing of BTF
- with kind layout
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alan Maguire <alan.maguire@oracle.com>, andrii@kernel.org,
- ast@kernel.org, 	daniel@iogearbox.net, martin.lau@linux.dev,
- song@kernel.org, 	yonghong.song@linux.dev, john.fastabend@gmail.com,
- kpsingh@kernel.org, 	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
- qmo@kernel.org, 	ihor.solodrai@linux.dev, dwarves@vger.kernel.org,
- bpf@vger.kernel.org, 	ttreyer@meta.com, mykyta.yatsenko5@gmail.com
-Date: Tue, 16 Dec 2025 13:25:01 -0800
-In-Reply-To: <CAEf4BzbgjZfxUeB78D4u4LRzESsTSdzOgFJAkOqEoQcRWuS=2g@mail.gmail.com>
-References: <20251215091730.1188790-1-alan.maguire@oracle.com>
-	 <20251215091730.1188790-7-alan.maguire@oracle.com>
-	 <1351a3a944fab86e7fe1babf8b31cde4e722077e.camel@gmail.com>
-	 <CAEf4BzbgjZfxUeB78D4u4LRzESsTSdzOgFJAkOqEoQcRWuS=2g@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
+	s=arc-20240116; t=1765921527; c=relaxed/simple;
+	bh=VSn5YG7d9ytZps+YVHnKVfK0Ui+200nONyoEN3WADwU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jSHPC6to7aP6dlOq8rkhvIdYw0lRBw+dUvVmpG6UdDKsQqFDR9l0i3XkjP6VXWgqHt/zz78lrTM14mK4Q7C2nrO1IQMY4WmzyWREJQr7xeJ8Cyhk4Yb26hB+HxEBmwJgP4OuCAFK/Y9bU85nvCSdjksycc/EzY9eLEkmMTDYjYE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nfHyxwgi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9A8BC2BCAF
+	for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 21:45:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1765921526;
+	bh=VSn5YG7d9ytZps+YVHnKVfK0Ui+200nONyoEN3WADwU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=nfHyxwgiKknhn0v9sPPA8ywWiAL7smWCZT1Roa1BXiS+XiqJBZWhauo1XE+UmcKdf
+	 xBJGT56ZDVxlchI4cw7rVPbttbEBXN7Ohb1QLRpj/jiyE+Jv4kd02XRVimTewRYaO5
+	 IUID0nZ9n2yNEP8Vog0WNd3YmSpjfUIkZHSXUct/MIBmhUoT0PN7jrcypLJu9j78sI
+	 4gn80F2+Tox5a9PF+7SLoZQ4Bl29ZsFRCokbOP0rTWNi9VtWv0HcJWDD8+bwcA90h2
+	 awKva0vetZizrGVivKxzUYE0u48UDswIhRymuxjJZJy0aFdLZQtNtMavbT5HBzslD6
+	 UtpfouIbeXFTA==
+Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-88a367a1db0so40698866d6.3
+        for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 13:45:26 -0800 (PST)
+X-Gm-Message-State: AOJu0YyVltBjz5yRQFCiSjOSdcDf4fLSZFIovPWDiZBBmXqteuJaR/L7
+	Kz29af4zKanzKFxkfI2IlDWMAwf+WqIdoxzkzZXNhAqgwxV4M2EDL7tNmq43/+CdFkFxgXnglxC
+	5zXz3wGWhpQA1fG1tieQr3Mxbnsyavis=
+X-Google-Smtp-Source: AGHT+IGpiLALaVjL7tyGWaMRlls90DvvPiovsVSUg+k0/mjln3cJpBCT97sQ7Mze/906fNU3JYXecT8Kzf0E8JMjlG4=
+X-Received: by 2002:a05:6214:5788:b0:880:4ec0:4183 with SMTP id
+ 6a1803df08f44-8887e13f010mr224073886d6.46.1765921525920; Tue, 16 Dec 2025
+ 13:45:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20251208030117.18892-1-git@danielhodges.dev> <20251208030117.18892-3-git@danielhodges.dev>
+In-Reply-To: <20251208030117.18892-3-git@danielhodges.dev>
+From: Song Liu <song@kernel.org>
+Date: Wed, 17 Dec 2025 06:45:14 +0900
+X-Gmail-Original-Message-ID: <CAPhsuW7c7cPatiRzwvZ=d_43m5XwPqfmphvNyyUu52G6rgbsQA@mail.gmail.com>
+X-Gm-Features: AQt7F2q1-y313JcILakG9UK_RrCFUQ6dp-8PBV5qPpicFyajKWsZYKW-0lgEBCU
+Message-ID: <CAPhsuW7c7cPatiRzwvZ=d_43m5XwPqfmphvNyyUu52G6rgbsQA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 2/6] crypto: Add BPF hash algorithm type
+ registration module
+To: Daniel Hodges <git@danielhodges.dev>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, vadim.fedorenko@linux.dev, yatsenko@meta.com, 
+	martin.lau@linux.dev, eddyz87@gmail.com, haoluo@google.com, jolsa@kernel.org, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	yonghong.song@linux.dev, herbert@gondor.apana.org.au, davem@davemloft.net, 
+	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2025-12-16 at 13:21 -0800, Andrii Nakryiko wrote:
-> On Mon, Dec 15, 2025 at 10:51=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.=
-com> wrote:
-> >=20
-> > On Mon, 2025-12-15 at 09:17 +0000, Alan Maguire wrote:
-> >=20
-> > If strict kind layout checks are the goal, would it make sense to
-> > check sizes declared in kind_layout for known types?
-> >=20
-> > [...]
-> >=20
-> > > @@ -5215,23 +5216,36 @@ static s32 btf_check_meta(struct btf_verifier=
-_env *env,
-> > >               return -EINVAL;
-> > >       }
-> > >=20
-> > > -     if (BTF_INFO_KIND(t->info) > BTF_KIND_MAX ||
-> > > -         BTF_INFO_KIND(t->info) =3D=3D BTF_KIND_UNKN) {
-> > > +     if (!btf_name_offset_valid(env->btf, t->name_off)) {
-> > > +             btf_verifier_log(env, "[%u] Invalid name_offset:%u",
-> > > +                              env->log_type_id, t->name_off);
-> > > +             return -EINVAL;
-> > > +     }
-> > > +
-> > > +     if (BTF_INFO_KIND(t->info) =3D=3D BTF_KIND_UNKN) {
-> > >               btf_verifier_log(env, "[%u] Invalid kind:%u",
-> > >                                env->log_type_id, BTF_INFO_KIND(t->inf=
-o));
-> > >               return -EINVAL;
-> > >       }
-> > >=20
-> > > -     if (!btf_name_offset_valid(env->btf, t->name_off)) {
-> > > -             btf_verifier_log(env, "[%u] Invalid name_offset:%u",
-> > > -                              env->log_type_id, t->name_off);
-> > > +     if (BTF_INFO_KIND(t->info) > BTF_KIND_MAX && env->btf->kind_lay=
-out &&
-> > > +         ((BTF_INFO_KIND(t->info) + 1) * sizeof(struct btf_kind_layo=
-ut)) <
-> > > +          env->btf->hdr.kind_layout_len) {
-> > > +             btf_verifier_log(env, "[%u] unknown but required kind %=
-u",
-> > > +                              env->log_type_id,
-> > > +                              BTF_INFO_KIND(t->info));
-> > >               return -EINVAL;
-> > > +     } else {
-> > > +             if (BTF_INFO_KIND(t->info) > BTF_KIND_MAX) {
-> > > +                     btf_verifier_log(env, "[%u] Invalid kind:%u",
-> > > +                                      env->log_type_id, BTF_INFO_KIN=
-D(t->info));
-> > > +                     return -EINVAL;
-> > > +             }
-> > > +             var_meta_size =3D btf_type_ops(t)->check_meta(env, t, m=
-eta_left);
-> > > +             if (var_meta_size < 0)
-> > > +                     return var_meta_size;
-> > >       }
-> > >=20
-> > > -     var_meta_size =3D btf_type_ops(t)->check_meta(env, t, meta_left=
-);
-> > > -     if (var_meta_size < 0)
-> > > -             return var_meta_size;
-> > > -
-> > >       meta_left -=3D var_meta_size;
-> >=20
-> > It appears that a smaller change here would achieve same results:
-> >=20
-> >     -        if (BTF_INFO_KIND(t->info) > BTF_KIND_MAX ||
-> >     +        u32 layout_kind_max =3D env->btf->hdr.kind_layout_len / si=
-zeof(struct btf_kind_layout);
-> >     +        if (BTF_INFO_KIND(t->info) > layout_kind_max ||
-> >                  BTF_INFO_KIND(t->info) =3D=3D BTF_KIND_UNKN) {
-> >                      btf_verifier_log(env, "[%u] Invalid kind:%u",
-> >                                       env->log_type_id, BTF_INFO_KIND(t=
-->info));
-> >                      return -EINVAL;
-> >              }
-> >=20
-> >     +        if (BTF_INFO_KIND(t->info) > BTF_KIND_MAX) {
-> >     +                btf_verifier_log(env, "[%u] unknown but required k=
-ind %u",
-> >     +                                 env->log_type_id,
-> >     +                                 BTF_INFO_KIND(t->info));
-> >     +        }
-> >     +
-> >              if (!btf_name_offset_valid(env->btf, t->name_off)) {
-> >                      btf_verifier_log(env, "[%u] Invalid name_offset:%u=
-",
-> >                                       env->log_type_id, t->name_off);
-> >=20
-> > wdyt?
-> >=20
-> > But tbh, the "unknown but required kind" message seems unnecessary,
-> >=20
->=20
-> Hm.. Do I understand that this patch will actually allow uploading BTF
-> with some kinds that are unknown to the kernel? I don't think we
-> should allow this. If the kernel sees a kind that it knows nothing
-> about, it should reject the BTF. libbpf will sanitize such BTF so that
-> the host kernel never sees unknown/unsupported BTF kind.
->=20
-> I think doing layout info validation is a good thing, I'd keep it, but
-> having layout information is not a substitute for kernel knowing full
-> semantics of the kind. Let's not relax kernel-side validation for BTF.
+On Sun, Dec 7, 2025 at 7:01=E2=80=AFPM Daniel Hodges <git@danielhodges.dev>=
+ wrote:
+>
+> Add bpf_crypto_shash module that registers a hash type with the BPF
+> crypto infrastructure, enabling BPF programs to access kernel hash
+> algorithms through a unified interface.
+>
+> Update the bpf_crypto_type interface with hash-specific callbacks:
+>    - alloc_tfm: Allocates crypto_shash context with proper descriptor siz=
+e
+>    - free_tfm: Releases hash transform and context memory
+>    - has_algo: Checks algorithm availability via crypto_has_shash()
+>    - hash: Performs single-shot hashing via crypto_shash_digest()
+>    - digestsize: Returns the output size for the hash algorithm
+>    - get_flags: Exposes transform flags to BPF programs
+>
+> Update bpf_shash_ctx to contain crypto_shash transform and shash_desc
+> descriptor to accommodate algorithm-specific descriptor requirements.
+>
+> Signed-off-by: Daniel Hodges <git@danielhodges.dev>
+> ---
+>  crypto/Makefile           |  3 ++
+>  crypto/bpf_crypto_shash.c | 95 +++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 98 insertions(+)
+>  create mode 100644 crypto/bpf_crypto_shash.c
+>
+> diff --git a/crypto/Makefile b/crypto/Makefile
+> index 16a35649dd91..853dff375906 100644
+> --- a/crypto/Makefile
+> +++ b/crypto/Makefile
+> @@ -30,6 +30,9 @@ obj-$(CONFIG_CRYPTO_ECHAINIV) +=3D echainiv.o
+>  crypto_hash-y +=3D ahash.o
+>  crypto_hash-y +=3D shash.o
+>  obj-$(CONFIG_CRYPTO_HASH2) +=3D crypto_hash.o
+> +ifeq ($(CONFIG_BPF_SYSCALL),y)
+> +obj-$(CONFIG_CRYPTO_HASH2) +=3D bpf_crypto_shash.o
+> +endif
+>
+>  obj-$(CONFIG_CRYPTO_AKCIPHER2) +=3D akcipher.o
+>  obj-$(CONFIG_CRYPTO_SIG2) +=3D sig.o
+> diff --git a/crypto/bpf_crypto_shash.c b/crypto/bpf_crypto_shash.c
+> new file mode 100644
+> index 000000000000..95c178ec0ce8
+> --- /dev/null
+> +++ b/crypto/bpf_crypto_shash.c
+> @@ -0,0 +1,95 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
+> +#include <linux/types.h>
+> +#include <linux/module.h>
+> +#include <linux/bpf_crypto.h>
+> +#include <crypto/hash.h>
+> +
+> +struct bpf_shash_ctx {
+> +       struct crypto_shash *tfm;
+> +       struct shash_desc desc;
+> +};
+> +
+> +static void *bpf_crypto_shash_alloc_tfm(const char *algo)
+> +{
+> +       struct bpf_shash_ctx *ctx;
+> +       struct crypto_shash *tfm;
+> +
+> +       tfm =3D crypto_alloc_shash(algo, 0, 0);
+> +       if (IS_ERR(tfm))
+> +               return tfm;
+> +
+> +       ctx =3D kzalloc(sizeof(*ctx) + crypto_shash_descsize(tfm), GFP_KE=
+RNEL);
+> +       if (!ctx) {
+> +               crypto_free_shash(tfm);
+> +               return ERR_PTR(-ENOMEM);
+> +       }
+> +
+> +       ctx->tfm =3D tfm;
+> +       ctx->desc.tfm =3D tfm;
+> +
+> +       return ctx;
+> +}
 
-I don't think this patch relaxes anything.
-It just generates a different error message for kinds that are unknown
-to kernel and:
-- described in the layout info
-- not described in the layout info.
-(Personally, I don't think that this differentiation is necessary).
+What if we let bpf_crypto_shash_alloc_tfm() return a "struct shash_desc"?
+shash_desc->tfm is already struct crypto_shash. This way, we don't need
+bpf_shash_ctx any more. Would this work?
 
-Otherwise the patch does basic sanity checks for layout section itself.
+Thanks,
+Song
 
