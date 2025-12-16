@@ -1,305 +1,458 @@
-Return-Path: <bpf+bounces-76722-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76723-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B8A4CC47DD
-	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 17:59:05 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37725CC48AD
+	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 18:07:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D0743307DF15
-	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 16:53:31 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id A39AD3007779
+	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 17:06:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D8CF2727E3;
-	Tue, 16 Dec 2025 16:53:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="KsTZiLdg";
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="KsTZiLdg"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75D70329E67;
+	Tue, 16 Dec 2025 17:06:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from AS8PR04CU009.outbound.protection.outlook.com (mail-westeuropeazon11011062.outbound.protection.outlook.com [52.101.70.62])
+Received: from relay.hostedemail.com (smtprelay0017.hostedemail.com [216.40.44.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 654871A254E;
-	Tue, 16 Dec 2025 16:53:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.70.62
-ARC-Seal:i=3; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765904009; cv=fail; b=ZDnpT0GHJYmJJRPWPq15Z/DdpCEgcPeA2C/auONvp0/dQrANEy0Ox1qzsaZsXCzl1sp0cTBGMWA7HMtFdigtqpQN2wevHqEpvLtRTVs7D7jBYaarp2C9a6J/d2IZ+PBHPJmR4EEhnpvpAFGyu1C//clGKjkwQ6oD2vVX4JNAi2g=
-ARC-Message-Signature:i=3; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765904009; c=relaxed/simple;
-	bh=UPZT++tFxjKoTMPpu4wfoZy8Q725TzXf18Fj5EgO7Uc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=sjZNAe51CdKdLDT1fe53eq4GoS0gc9+0G+Cvtb8fD3xTTsHkN6d9oF4oGwlWiTMD2YIupCr2/t8+87VPIgJzCpXtLs1AfQc6ZNTq6dSzEc9Km+ljagqNzD/pE4Zn+89EFRjfNjtDYoO18F0ABp32TKsO5crKRy7koVaf9M6XlBE=
-ARC-Authentication-Results:i=3; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=KsTZiLdg; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=KsTZiLdg; arc=fail smtp.client-ip=52.101.70.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-ARC-Seal: i=2; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=pass;
- b=CXhMu2LKCif54qEdz51OK5bZDu24REY0CJK5VEGdAgyWMcPNUJ2muBRIf3yGeIRvmneFWfx6uyT3GFAVmdNjNB741QZQ6gX0078Y8kNHV9CCw9uG6SKGrZMtsTqwIEHeSQI4d6xt/zE96GjUz8IPdqGcrwSC/7vjcnyjJnWdlWlA2Eh4luUP+j336+N3suUA3xWkBfOT5XktQSiLFgD0JPQmW9WL+P5nyfQY5gHSPlmmt7DniKLZBSNUm2Ub5r6LqovvhNHJSJR/I6CDNeTrsF5Odvh5sH8RrnPXBoyAf71NGciaDguHMP92es4xjrUQ5bZtCnT6oUYrmUe46pEvFQ==
-ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=l+4kd+iCcgRloDAQ146EP39t5yWYMIvrTdSJ/X+gTTI=;
- b=OkR76lIkR+N+Qy4+3qdZx8fpU3xNJGK1bS6yum+yA+sokdjJUyelvWa2RAhqRLMZc5oCR5QtTHMDDak306qX7fCH9yVg8WDFlS1xRNH4eV8hauNd+FlDELyW8VPSLincx5cb3J2zKYpBIfPXUozoWoLcab49PdtTdHFphbNWUR2n1dpR0by81kuESmjip7SCjOj7vyqBxzCqzjUMYXA3nkbRrpUTFpPMa/RaVHPdhfjxyTM6ngXUpzVSldYaDeLv72UXBRFsszAm2AlF/MXW5TsKLk2AAl+uzSGfUDj4Jgb0Ts+eK4matkSjfQ3Vlu10nmogqP26VQ59rCueQTGN/g==
-ARC-Authentication-Results: i=2; mx.microsoft.com 1; spf=pass (sender ip is
- 4.158.2.129) smtp.rcpttodomain=linux-foundation.org smtp.mailfrom=arm.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=arm.com;
- dkim=pass (signature was verified) header.d=arm.com; arc=pass (0 oda=1 ltdi=1
- spf=[1,1,smtp.mailfrom=arm.com] dkim=[1,1,header.d=arm.com]
- dmarc=[1,1,header.from=arm.com])
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arm.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=l+4kd+iCcgRloDAQ146EP39t5yWYMIvrTdSJ/X+gTTI=;
- b=KsTZiLdgZW8COsLWPicFU4FyiIazCZM6lFpLzbQ0Raxlddnx/8RSWMQzB3hEr7Y7KVoEDZ6BFCTKmFALW7dYyJrYB3d1mWAVnUK+iwAoXuNdTZIMlRae4/e5lmRKUtU6cH+mnyQriJnM+QWT1Wpjon09V4Ys3GPnQj5hWXCDRPE=
-Received: from AM8P191CA0001.EURP191.PROD.OUTLOOK.COM (2603:10a6:20b:21a::6)
- by AM8PR08MB6545.eurprd08.prod.outlook.com (2603:10a6:20b:368::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9412.13; Tue, 16 Dec
- 2025 16:53:21 +0000
-Received: from AMS0EPF000001B3.eurprd05.prod.outlook.com
- (2603:10a6:20b:21a:cafe::12) by AM8P191CA0001.outlook.office365.com
- (2603:10a6:20b:21a::6) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9434.6 via Frontend Transport; Tue,
- 16 Dec 2025 16:53:19 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 4.158.2.129)
- smtp.mailfrom=arm.com; dkim=pass (signature was verified)
- header.d=arm.com;dmarc=pass action=none header.from=arm.com;
-Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
- 4.158.2.129 as permitted sender) receiver=protection.outlook.com;
- client-ip=4.158.2.129; helo=outbound-uk1.az.dlp.m.darktrace.com; pr=C
-Received: from outbound-uk1.az.dlp.m.darktrace.com (4.158.2.129) by
- AMS0EPF000001B3.mail.protection.outlook.com (10.167.16.167) with Microsoft
- SMTP Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.20.9434.6
- via Frontend Transport; Tue, 16 Dec 2025 16:53:21 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=sRDE24X5oDu8EKU/lgaGi2bslP0twI4eBRy4FVUF0Kb3GJIgeMt3sbDrq03D1uBpLyVn+t0CDwtWrBSxyAQb9VWHXtkD3xOooDPBeXANiZMMKyfuuYSW4NF0CoSQCz6hedV7DrLrKB98KieOXILxSHQWt3lN5932miadJVZQgTuRPLBVw6l6xKYDRlK6xZF84LKz0ZvuoWBHrsEtDAsUxYz8GEgJ/GxbVgAYyq81NhTCc48QnnnT3En69s1LCyHLl79XQZE7UyKj4cpxgxU7n7e0Mn7ukYA/PaHQTPKTfUgFxBa8tLW7q52vnVbF8SsnvKdSPJp2OwmnAbiNpFe48g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=l+4kd+iCcgRloDAQ146EP39t5yWYMIvrTdSJ/X+gTTI=;
- b=Di4JtOquK5RV7B/0+N1ULIcsPY4Z4l1DDSOQpFMfFQtNFzi5Oc53U3dY7cXkR1Z2d1OCp2a0wHYaP+zY8dOZSwNdh5DZ9Qj1lgo2W7Npuz5WZ8nWoE3mL5c/QbDve+ix+Y0CE3ZKG5dZuGnxbSKFxQbmFBB7Xct9lPiIqEsAQvfD9YjW2lXuQNV3nzbptqs7wLNr62JihX0fHbWOJBLxc1oiJvCHB+HKbkZhL+1VIUrqHF/UF0u8O2/iFpPrkbAUhp77uyURficlK0Cl0CWYVPZs6QRdm5hV1u2pB2+wzrqH3Q0UCka9jgt8Ixs9IDlYWkOr2/C67vXrDiNS0ZjpAA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
- header.d=arm.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arm.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=l+4kd+iCcgRloDAQ146EP39t5yWYMIvrTdSJ/X+gTTI=;
- b=KsTZiLdgZW8COsLWPicFU4FyiIazCZM6lFpLzbQ0Raxlddnx/8RSWMQzB3hEr7Y7KVoEDZ6BFCTKmFALW7dYyJrYB3d1mWAVnUK+iwAoXuNdTZIMlRae4/e5lmRKUtU6cH+mnyQriJnM+QWT1Wpjon09V4Ys3GPnQj5hWXCDRPE=
-Authentication-Results-Original: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=arm.com;
-Received: from PA6PR08MB10526.eurprd08.prod.outlook.com
- (2603:10a6:102:3d5::16) by AS8PR08MB10003.eurprd08.prod.outlook.com
- (2603:10a6:20b:63a::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9412.13; Tue, 16 Dec
- 2025 16:52:16 +0000
-Received: from PA6PR08MB10526.eurprd08.prod.outlook.com
- ([fe80::b3fc:bdd1:c52c:6d95]) by PA6PR08MB10526.eurprd08.prod.outlook.com
- ([fe80::b3fc:bdd1:c52c:6d95%5]) with mapi id 15.20.9412.011; Tue, 16 Dec 2025
- 16:52:16 +0000
-Date: Tue, 16 Dec 2025 16:52:13 +0000
-From: Yeoreum Yun <yeoreum.yun@arm.com>
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: akpm@linux-foundation.org, david@kernel.org, lorenzo.stoakes@oracle.com,
-	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
-	surenb@google.com, mhocko@suse.com, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
-	haoluo@google.com, jolsa@kernel.org, jackmanb@google.com,
-	hannes@cmpxchg.org, ziy@nvidia.com, bigeasy@linutronix.de,
-	clrkwllms@kernel.org, rostedt@goodmis.org, catalin.marinas@arm.com,
-	will@kernel.org, kevin.brodsky@arm.com, dev.jain@arm.com,
-	yang@os.amperecomputing.com, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	linux-rt-devel@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 0/2] introduce pagetable_alloc_nolock()
-Message-ID: <aUGOPd7gNRf1xHEc@e129823.arm.com>
-References: <20251212161832.2067134-1-yeoreum.yun@arm.com>
- <916c17ba-22b1-456e-a184-cb3f60249af7@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <916c17ba-22b1-456e-a184-cb3f60249af7@arm.com>
-X-ClientProxiedBy: LO2P265CA0300.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:a5::24) To PA6PR08MB10526.eurprd08.prod.outlook.com
- (2603:10a6:102:3d5::16)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62ECF296BBF;
+	Tue, 16 Dec 2025 17:06:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.17
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1765904814; cv=none; b=Q88egUQt4WBh2948NK44bBxC5s2e3wXBLi55FkwWGeXyCRVOzFJj2RYXg8cqBcR8lnXoMpu7/z5lQjvVJgXzrju0Xj4IO3JlfEzWaxt7svKVZdnCYSV9doe7R0DpWCL0+68t9NfunCZ3yCiTy/3cTj594znfyOjkBZNe0cTcyuc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1765904814; c=relaxed/simple;
+	bh=gjAtwKp36ISk64gtR66wXK4Mq1NUxmFev0jszkqE6ZY=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=HZ9PCXXUJwk/UPLxKCkYrmIk+wod+DRe+ZpoSlVniPAEDL5Ol6m2QzGvew8dTf0W6qdV4n9GZnFHq7gWbEoI5WDQeMyibK4z4URAY9AYN07v3TSTvM/O8HkfnB6MAF8Vxw+E7dg7exhPH8dGq2Ab7ekNbkS02xZWQSKi5oyh6Sc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf13.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay07.hostedemail.com (Postfix) with ESMTP id 604E3160614;
+	Tue, 16 Dec 2025 17:06:47 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf13.hostedemail.com (Postfix) with ESMTPA id 7DBFE20012;
+	Tue, 16 Dec 2025 17:06:45 +0000 (UTC)
+Date: Tue, 16 Dec 2025 12:08:19 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, "Paul E. McKenney" <paulmck@kernel.org>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>, bpf@vger.kernel.org
+Subject: [PATCH] tracing: Guard __DECLARE_TRACE() use of __DO_TRACE_CALL()
+ with SRCU-fast
+Message-ID: <20251216120819.3499e00e@gandalf.local.home>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-TrafficTypeDiagnostic:
-	PA6PR08MB10526:EE_|AS8PR08MB10003:EE_|AMS0EPF000001B3:EE_|AM8PR08MB6545:EE_
-X-MS-Office365-Filtering-Correlation-Id: e68d0115-8d81-4cc2-c154-08de3cc39ef4
-x-checkrecipientrouted: true
-NoDisclaimer: true
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam-Untrusted:
- BCL:0;ARA:13230040|376014|366016|1800799024|7416014;
-X-Microsoft-Antispam-Message-Info-Original:
- =?utf-8?B?S1FtZjZYVExsQ1FlTkQ1bTV4QkZ3RkFYMk1Yb3poMy9xU0ZzaU1YdEZPTjFv?=
- =?utf-8?B?RnFub0VGbUFoSEpGUGpScHF0L1pRdVJNdkR4OEFyYWhUY29aTjgrUW5uTDZE?=
- =?utf-8?B?N2tIMHhzNzluSWNqQ29PclZPTnVreURvVTh4MFRXQU1UOUlJeE5ORmxTNWtS?=
- =?utf-8?B?RGoyc0lmbGVJeXVrUUZMQUpVVTRxdUxTYXRVMm5ORjYxL1hDOVRlaG90K0Mv?=
- =?utf-8?B?VUlFZ2hJblp0eXpteWtucHJIVjh5MHJXOGFGbHhjdk9tYys2NXREU01BdjdK?=
- =?utf-8?B?WENUVTZNTklzTGVLUisrRkU1Zys0SkxUZU91RlovNjhsQ3FWV2JuZi9Db2Fm?=
- =?utf-8?B?cGs2bURiRzlpLzNHR1RvSWpOYnNwcDhnTHFRc3NUZ3Yzcy9sZ0FDY1E1eEov?=
- =?utf-8?B?V1BzUEZSRFFrWlZmNW9pV3ZDVTNCZjBsaDFLZ0tsbjZQM1lZZi9GZnd4VmZx?=
- =?utf-8?B?cGgwNmhQZG5VNXJpTW9PU1V1Z01xOXgxUVZNZ3c5clkvTEt0MHNaUDlBWXl6?=
- =?utf-8?B?bDZoeXlUL2ZKVmF3eFBXc2VIZUcxTFcwZXZCcnpKenBnZTg4Wk94MTVzcEFP?=
- =?utf-8?B?VUhWV2RBbEd4Vy9qc2hvSjlPOWYyS2FzY2hLTGg3RmpEMUFtV1lCTDFKdE5Y?=
- =?utf-8?B?azJMT0MzSGhBMlNJZWtCK1h2VkJJRWRMbzIyODRlMXVRVURRQS9MTTZYRnZS?=
- =?utf-8?B?MG1vNTJFV3hiZ2dMYkpETFhmL3IrcE0rZ1ZmRHVCcnp3d2R4eUxlQS82N3l1?=
- =?utf-8?B?RHhqcHNzS3hyTmF2NUY2UVFia0g4OC9YUGUxT0h5cGVQcjRNckhqbXhxd3lm?=
- =?utf-8?B?Wng4Q1RkbnZHSHBBUWFLRjJkdTcrR0NXQk9lOU9rNGE0RVo2Nmp6dnNHdVNZ?=
- =?utf-8?B?M1daME1hTWVLVnNDSkVvNktFN0ZZYWZuMWJ6em41ak1ycXBDTlc1c2NUUWVX?=
- =?utf-8?B?RFFGcWtGUFBtTGNoUFFFQXhiOTk5dlpzZHNDeXJ1QWlLZGJDSWRHK0hPK0lO?=
- =?utf-8?B?aS8zODFURHA4Vm5qbnlmbkw3UUdVRUFTN3pyZ056T2xFRTVKZDlUVFR5NGpN?=
- =?utf-8?B?d3NSbkpsTDB4Y29KU1Z0MzkyaVU5NnZzNm4reVNFaGphVkNrQW1sNitjUCtZ?=
- =?utf-8?B?eDE4RjRVZlA5MG9uc3dPb1BIUnRraHZyQ3JrNUwyZjBwVEwxN0ZxZHlzSzhk?=
- =?utf-8?B?U3kxb2g5MjdyVm5PM3FiZEdleXlYdTg2V0E5VkxIZEs3cmM0MlI5enp0N25I?=
- =?utf-8?B?TVlUTWNtQnhHRDBFdFdJWFV3WGpTUnRRNTYvZmQ1a2ZrTlhHQ1N1eUgybzVP?=
- =?utf-8?B?c04zNEZQTWJsS1dsVWJzSmt5WFlGSW5Ldm9GZnkvdkVEWkZtSTMzM05OS2k2?=
- =?utf-8?B?cUtxLy94dWFXeUpReGlxeXJWZ0lmVHpGZ0ltZjJ1OHZtS09SdUFGazl5VkpN?=
- =?utf-8?B?RkFzb29MMEJ2YU1YbmhFWTUzcGZ4eHBpdWIyWFhiZDZleklWMDVlT09uVXVw?=
- =?utf-8?B?MGwxNVA2N0ZjZ2ZHcEZZdTVMOVJRVnhNU0ErWkVINThYaWRCeFF2WjllZTR0?=
- =?utf-8?B?c1RheUhsbWVlMmxYbGRjTWZMK1hJVlZiTk9tZzkvcWdEbG9hSGNBcDNGckF0?=
- =?utf-8?B?cndyMjJsSGFVNkRSN2JzOFVTSlBQYWxhamhmYUpGbDFNNDMwZzRTdEJBclhE?=
- =?utf-8?B?bDhWSFhWSFh3bEI3anpZN2w5QWJKaWtRbEpvbjRadnU3anRNSEs3ZVNZT0dM?=
- =?utf-8?B?NmRMTGRCaS8yb21kODkyWGhSRy8vcGJTZGxmNjdVODA1UlJoWitIanRDOTZV?=
- =?utf-8?B?NC9uLzNHTUN3aVd1Y2VKbGs5Wi82SkVNUHExNG96RktjSm9xdDh4MnpLclVC?=
- =?utf-8?B?b0hxU1YrbmpOczU0ZWY0NUw5Z0xzOG9SWU1RQ1BXb3FwdzhQMy95RlJRcVdx?=
- =?utf-8?B?cmUyclh1ODdaNHpaT3FuakZXY0ZqeHR3QU9yY04wc083NGc0blM4L3NyVmRI?=
- =?utf-8?B?cDlWZm9ZL3JBPT0=?=
-X-Forefront-Antispam-Report-Untrusted:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA6PR08MB10526.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024)(7416014);DIR:OUT;SFP:1101;
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR08MB10003
-X-EOPAttributedMessage: 0
-X-MS-Exchange-Transport-CrossTenantHeadersStripped:
- AMS0EPF000001B3.eurprd05.prod.outlook.com
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id-Prvs:
-	50b7ca0c-1373-4e6b-d38e-08de3cc37823
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|36860700013|1800799024|7416014|82310400026|35042699022|14060799003|13003099007;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?QnM2dzNrbkV4OUNOaW5UN0lWMkU3ZVBvUUh1T05YNjlzREtUZ0tyV2Y4djFS?=
- =?utf-8?B?R2N0T0hyZmM1ZU9MaVhsUGdobnBRMkg3eEtwL2F5OExXQm5sZjlXUFBkWDMr?=
- =?utf-8?B?V084K3dtMjZFMHU3OXIwRHhyQU9CbHBkbHd1YUlvNCs3TDNMSzdCU21raTh4?=
- =?utf-8?B?VktzU0dsTHBJek9GRDVNbnhCaFdDTUdrTFhESm85VklhVFN3ditCZm42NUZt?=
- =?utf-8?B?bUNFb3hHNFREOVFVMTN2TVRKK0IxMmpsMHFmMUZ0M3FJSWcxMFlvYk8vTXgz?=
- =?utf-8?B?aVlIVmQ1T3RqVVE2REFHaFFSdmFSV1pvQ2ZlekRZdmZLK0ZvWGorUVdDUERQ?=
- =?utf-8?B?bGJvNUQ4a1dPVVA3bkNTeDRiVnF2UWtCczhncXpZd1dRWjc1UWt3Ui9VY3FL?=
- =?utf-8?B?T01mSTRoNHVaeE1sbm1qbExpV0c4Q0xMSE1vMWR0R3pBdGgzZHVUSG9LQ1dp?=
- =?utf-8?B?RkU1amtENlBqQko0RmFOVUNyaDk4SzhQWVh6eFpDQTBxNHo2ZkVMK0VqeWNs?=
- =?utf-8?B?NmhVRmZNRHNRRS8xMSszU0RGeDRYVVQyNFExV200UFJ6SHF4Q0lQaW1PL2c3?=
- =?utf-8?B?eUllVDhVL2FXZFZuaWdleXFSZXFrcmVNTzNUMVkvckF6VjdGT1BZTDF6SWlT?=
- =?utf-8?B?SmRCQ0w1SmROajA1R2UrNUw1RXBnYWNSQ1dsRkdmR2ZSbGx4b3pqNFg2eHFP?=
- =?utf-8?B?dEROeE0xTE1kRGt6WU9NU1U0SmxrL3JENEtDcDZDOFpObEQ3RkhpTVBNWnZl?=
- =?utf-8?B?ekhZS2dKZFhHVzV2VE05SlNBbjlpV0NzaFRpdUtHVFR0RnY1akdwM2FBRkNr?=
- =?utf-8?B?eEN3empCMlZQbjVaVkpLaWJSRHBHOWZ6VGJPYzcvVkNGNmpmS1ZIeUNYblR6?=
- =?utf-8?B?TGtiSko5Q2gvQmN5YWpUampqbVg3WDc1Q0tKcG1SSy9tdkRQRTAxUkZ5MWpl?=
- =?utf-8?B?QkxRczExOUpCRVU0WFdHM2k2NnVHbzVtTVExUjVjK3JPc3FYWkFORGQ0WDE5?=
- =?utf-8?B?aVRGRmNOamZ1cUhsYm1JWEkzbUo3UHFDRjJFY1NkSVB1cVdnVkNPM3JhbHJj?=
- =?utf-8?B?Mk1FZGt1U1hPOFp2eEpraThwVjkwdFkzWmdPaTBxcXV5ZVJ0OU9FbGpGYUVC?=
- =?utf-8?B?WTdVcm5GUThONm1UOHR6TjJFZTRQdUd1QmxtOXA5a0dodFcveUdYTlNoTmxJ?=
- =?utf-8?B?dlVieU95NTB3WE00N0hHZGZjMHR1YjBVZUM4am1zZmhjUWZBSFY0OUVrQUls?=
- =?utf-8?B?U2dqc1NDZ0ZIckVnd3RsdTh4UjNsMHBabm5UNEI3bG5wL3Y2ZmtmamJsdm9T?=
- =?utf-8?B?WkhBdWFTYmNzYVBXQzJ6azZIak5Ja1haMEkvcWtQdmRPVFlaSlRsMW91VjJn?=
- =?utf-8?B?bHk0Uk43QWRNaWtFL3lFR1JoK2tmUG8xQ2d0ZjduRlFYWlhzS2V3MkFSTWhS?=
- =?utf-8?B?ODIxWDRhTlg5STdaWlFjdXBnTEt6NGFaQ084cHkweUEwY0hEbXFHa09OcjRJ?=
- =?utf-8?B?QUxCS1ZqMzlIZWhVYXg4VGdkbExYdUt1TmxPZW5KOHludjFZcExrcHlZVHVj?=
- =?utf-8?B?M2F6ci9IeVM0YTNmMVpGS1RyODE0RzVna1Z4L0ZLaFRaR1VZeGE0MUxGV3g2?=
- =?utf-8?B?VnhwWW8zYWEzUzErTzJ2NVpYc3ViKzRCSWk0NHJJc2xqUkQ4eDBPUGlrbzc2?=
- =?utf-8?B?UjBNK1NmWVZJRUhoMGZMTjU4RjAzRU9TVXhvVkV3Qkg2QmV1d293OVBNbkFS?=
- =?utf-8?B?T0tGZmxNL0FMYkJ6WkNNT3EvTUNZaFBRM1RKT2hpcnUzVXpDRVFIbzFSWGJy?=
- =?utf-8?B?bVZRWXUvZVYyR0xOR2kwMnByZ0JMelpUZ0hYTXpOV2ppa3JVTGpyQnd1UUQ3?=
- =?utf-8?B?NHB3S0hrVGZwRCt0cm9Ia3lFV0swNXh4YVlUcG54VXdtWDh2UytqSGh3M0Qz?=
- =?utf-8?B?WEg3OENmQ1NaeGE4WkRidHRYbzlGeWlWdER0OEFFK2Qvd3Z4cFFZcjdVZXRJ?=
- =?utf-8?B?NXAvMmZVRlBFbHBvQzZKeVlLTUluQkpzVXkycUlhSVBnNkZhd3laZUsvSjJr?=
- =?utf-8?B?aFNkcE9FVjFBV0Z1RDN6YThKaHEvbmxOdlZCSU9JZEdlNnNMeG9SdkVURkJL?=
- =?utf-8?Q?ffBg=3D?=
-X-Forefront-Antispam-Report:
-	CIP:4.158.2.129;CTRY:GB;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:outbound-uk1.az.dlp.m.darktrace.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(376014)(36860700013)(1800799024)(7416014)(82310400026)(35042699022)(14060799003)(13003099007);DIR:OUT;SFP:1101;
-X-OriginatorOrg: arm.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Dec 2025 16:53:21.5792
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e68d0115-8d81-4cc2-c154-08de3cc39ef4
-X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[4.158.2.129];Helo=[outbound-uk1.az.dlp.m.darktrace.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	AMS0EPF000001B3.eurprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR08MB6545
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Stat-Signature: 8ordyjnys3ojxnt51tm4f1sn1bsctyo1
+X-Rspamd-Server: rspamout01
+X-Rspamd-Queue-Id: 7DBFE20012
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX1+K4NZ7BmoOkS/JGaqUERe9tjD8Rr6RhPI=
+X-HE-Tag: 1765904805-759456
+X-HE-Meta: U2FsdGVkX1+mn4DCG6ykba6IWAFYfH87yAHP0xtq1zjWbDhyV7qrUPUHwZ15NL/JIiBkYkFjVHM7sb2GVyMcGYF8rrIUWiBfSoGgnKkQV7cRMeaIwfWS2Da2ihhED25EPW1qERqYOSBpRwUEGoDKLV6nvn2KOXP70l4MqyIajap+5XD80fczND8xQCbZG+BSuuWaRRGPV4v/IkoTyGzhZYaUpaBr0YnRiK3s1pWjjQIpiOTviW+1ov74pJ8gBPxI8W1PL6o3Chwwd8uiuVTkk5KiDYLsM/U5C0qQQc8KDQ8XNVr7qLTEio0w+H7dRIFsRvkqg1R4AU7OW69UTdWPnCdWN9CQy+eV8mRdTKmyWd9D3bM9Q3Y+lnsyq5JfIMy4zGBLGRKYGa022CV9Q6f458HYhlZ7SFOJTvu59Vo3YzaH3ztqOJefk+FgKNtyJVz/3x2zZe9aBnX1WZNp8uGsR3NAJuyp8DtXsOwz8aa9MuVV6jXfskb1xuItXKXXahyqDCcVeKhzqxE8OoQInqVZbqAb7ZF0+W6R1f0wL4cGGOU=
 
-Hi Ryan,
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-> On 12/12/2025 16:18, Yeoreum Yun wrote:
-> > Some architectures invoke pagetable_alloc() or __get_free_pages()
-> > with preemption disabled.
-> > For example, in arm64, linear_map_split_to_ptes() calls pagetable_alloc()
-> > while spliting block entry to ptes and __kpti_install_ng_mappings()
-> > calls __get_free_pages() to create kpti pagetable.
-> >
-> > Under PREEMPT_RT, calling pagetable_alloc() with
-> > preemption disabled is not allowed, because it may acquire
-> > a spin lock that becomes sleepable on RT, potentially
-> > causing a sleep during page allocation.
-> >
-> > Since above two functions is called as callback of stop_machine()
-> > where its callback is called in preemption disabled,
-> > They could make a potential problem. (sleeping in preemption disabled).
-> >
-> > To address this, introduce pagetable_alloc_nolock() API.
->
-> I don't really understand what the problem is that you're trying to fix. As I
-> see it, there are 2 call sites in arm64 arch code that are calling into the page
-> allocator from stop_machine() - one via via pagetable_alloc() and another via
-> __get_free_pages(). But both of those calls are passing in GFP_ATOMIC. It was my
-> understanding that the page allocator would ensure it never sleeps when
-> GFP_ATOMIC is passed in, (even for PREEMPT_RT)?
+The current use of guard(preempt_notrace)() within __DECLARE_TRACE()
+to protect invocation of __DO_TRACE_CALL() means that BPF programs
+attached to tracepoints are non-preemptible.  This is unhelpful in
+real-time systems, whose users apparently wish to use BPF while also
+achieving low latencies.  (Who knew?)
 
-Although GFP_ATOMIC is specify, it only affects of "water mark" of the
-page with __GFP_HIGH. and to get a page, it must grab the lock --
-zone->lock or pcp_lock in the rmqueue().
+One option would be to use preemptible RCU, but this introduces
+many opportunities for infinite recursion, which many consider to
+be counterproductive, especially given the relatively small stacks
+provided by the Linux kernel.  These opportunities could be shut down
+by sufficiently energetic duplication of code, but this sort of thing
+is considered impolite in some circles.
 
-This zone->lock and pcp_lock is spin_lock and it's a sleepable in
-PREEMPT_RT that's why the memory allocation/free using general API
-except nolock() version couldn't be called since
-if "contention" happens they'll sleep while waiting to get the lock.
+Therefore, use the shiny new SRCU-fast API, which provides somewhat faster
+readers than those of preemptible RCU, at least on Paul E. McKenney's
+laptop, where task_struct access is more expensive than access to per-CPU
+variables.  And SRCU-fast provides way faster readers than does SRCU,
+courtesy of being able to avoid the read-side use of smp_mb().  Also,
+it is quite straightforward to create srcu_read_{,un}lock_fast_notrace()
+functions.
 
-The reason why "nolock()" can use, it always uses "trylock" with
-ALLOC_TRYLOCK flags. otherwise GFP_ATOMIC also can be sleepable in
-PREEMPT_RT.
+While in the area, SRCU now supports early boot call_srcu().  Therefore,
+remove the checks that used to avoid such use from rcu_free_old_probes()
+before this commit was applied:
 
->
-> What is the actual symptom you are seeing?
+e53244e2c893 ("tracepoint: Remove SRCU protection")
 
-Since the place where called while smp_cpus_done() and there seems no
-contention, there seems no problem. However as I mention in another
-thread
-(https://lore.kernel.org/all/aT%2FdrjN1BkvyAGoi@e129823.arm.com/),
-This gives a the false impression --
-GFP_ATOMIC are “safe to use in preemption disabled”
-even though they are not in PREEMPT_RT case, I've changed it.
+The current commit can be thought of as an approximate revert of that
+commit, with some compensating additions of preemption disabling.
+This preemption disabling uses guard(preempt_notrace)().
 
->
-> If the page allocator is somehow ignoring the GFP_ATOMIC request for PREEMPT_RT,
-> then isn't that a bug in the page allocator? I'm not sure why you would change
-> the callsites? Can't you just change the page allocator based on GFP_ATOMIC?
+However, Yonghong Song points out that BPF assumes that non-sleepable
+BPF programs will remain on the same CPU, which means that migration
+must be disabled whenever preemption remains enabled.  In addition,
+non-RT kernels have performance expectations that would be violated by
+allowing the BPF programs to be preempted.
 
-It doesn't ignore the GFP_ATOMIC feature:
-  - __GFP_HIGH: use water mark till min reserved
-  - __GFP_KSWAPD_RECLAIM: wake up kswapd if reclaim required.
+Therefore, continue to disable preemption in non-RT kernels, and protect
+the BPF program with both SRCU and migration disabling for RT kernels,
+and even then only if preemption is not already disabled.
 
-But, it's a restriction -- "page allocation / free" API cannot be called
-in preempt-disabled context at PREEMPT_RT.
+Link: https://lore.kernel.org/all/20250613152218.1924093-1-bigeasy@linutronix.de/
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: <bpf@vger.kernel.org>
+Signed-off-by: Steve Rostedt (Google) <rostedt@goodmis.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+Changes since v3: https://patch.msgid.link/e2fe3162-4b7b-44d6-91ff-f439b3dce706@paulmck-laptop
 
-That's why I think it's wrong usage not a page allocator bug.
+- Added a trace_event_buffer_reserve_syscall() interface for system call
+  events to use. This will not need to mess with the migrate disable
+  counter. It just expects preemption to be disabled.
 
-[...]
+ include/linux/trace_events.h  | 24 ++++++++++++++++++++++++
+ include/linux/tracepoint.h    | 25 ++++++++++++++++++++++---
+ include/trace/perf.h          |  4 ++--
+ include/trace/trace_events.h  | 21 +++++++++++++++++++--
+ kernel/trace/trace_events.c   | 30 ++++++++++++++++++++----------
+ kernel/trace/trace_syscalls.c |  4 ++--
+ kernel/tracepoint.c           | 33 +++++++++++++++++++++++++++++++++
+ 7 files changed, 122 insertions(+), 19 deletions(-)
 
---
-Sincerely,
-Yeoreum Yun
+diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+index 3690221ba3d8..a2704c35eda8 100644
+--- a/include/linux/trace_events.h
++++ b/include/linux/trace_events.h
+@@ -222,6 +222,26 @@ static inline unsigned int tracing_gen_ctx_dec(void)
+ 	return trace_ctx;
+ }
+ 
++/*
++ * When PREEMPT_RT is enabled, trace events are called with disabled
++ * migration. The trace events need to know if the tracepoint disabled
++ * migration or not so that what is recorded to the ring buffer shows
++ * the state of when the trace event triggered, and not the state caused
++ * by the trace event.
++ */
++#ifdef CONFIG_PREEMPT_RT
++static inline unsigned int tracing_gen_ctx_dec_cond(void)
++{
++	unsigned int trace_ctx;
++
++	trace_ctx = tracing_gen_ctx_dec();
++	/* The migration counter starts at bit 4 */
++	return trace_ctx - (1 << 4);
++}
++#else
++# define tracing_gen_ctx_dec_cond() tracing_gen_ctx_dec()
++#endif
++
+ struct trace_event_file;
+ 
+ struct ring_buffer_event *
+@@ -313,6 +333,10 @@ void *trace_event_buffer_reserve(struct trace_event_buffer *fbuffer,
+ 				  struct trace_event_file *trace_file,
+ 				  unsigned long len);
+ 
++void *trace_event_buffer_reserve_syscall(struct trace_event_buffer *fbuffer,
++					 struct trace_event_file *trace_file,
++					 unsigned long len);
++
+ void trace_event_buffer_commit(struct trace_event_buffer *fbuffer);
+ 
+ enum {
+diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
+index 8a56f3278b1b..0563c7d9fcb2 100644
+--- a/include/linux/tracepoint.h
++++ b/include/linux/tracepoint.h
+@@ -100,6 +100,25 @@ void for_each_tracepoint_in_module(struct module *mod,
+ }
+ #endif /* CONFIG_MODULES */
+ 
++/*
++ * BPF programs can attach to the tracepoint callbacks. But if the
++ * callbacks are called with preemption disabled, the BPF programs
++ * can cause quite a bit of latency. When PREEMPT_RT is enabled,
++ * instead of disabling preemption, use srcu_fast_notrace() for
++ * synchronization. As BPF programs that are attached to tracepoints
++ * expect to stay on the same CPU, also disable migration.
++ */
++#ifdef CONFIG_PREEMPT_RT
++extern struct srcu_struct tracepoint_srcu;
++# define tracepoint_sync() synchronize_srcu(&tracepoint_srcu);
++# define tracepoint_guard()				\
++	guard(srcu_fast_notrace)(&tracepoint_srcu);	\
++	guard(migrate)()
++#else
++# define tracepoint_sync() synchronize_rcu();
++# define tracepoint_guard() guard(preempt_notrace)()
++#endif
++
+ /*
+  * tracepoint_synchronize_unregister must be called between the last tracepoint
+  * probe unregistration and the end of module exit to make sure there is no
+@@ -115,7 +134,7 @@ void for_each_tracepoint_in_module(struct module *mod,
+ static inline void tracepoint_synchronize_unregister(void)
+ {
+ 	synchronize_rcu_tasks_trace();
+-	synchronize_rcu();
++	tracepoint_sync();
+ }
+ static inline bool tracepoint_is_faultable(struct tracepoint *tp)
+ {
+@@ -275,13 +294,13 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+ 		return static_branch_unlikely(&__tracepoint_##name.key);\
+ 	}
+ 
+-#define __DECLARE_TRACE(name, proto, args, cond, data_proto)		\
++#define __DECLARE_TRACE(name, proto, args, cond, data_proto)			\
+ 	__DECLARE_TRACE_COMMON(name, PARAMS(proto), PARAMS(args), PARAMS(data_proto)) \
+ 	static inline void __do_trace_##name(proto)			\
+ 	{								\
+ 		TRACEPOINT_CHECK(name)					\
+ 		if (cond) {						\
+-			guard(preempt_notrace)();			\
++			tracepoint_guard();				\
+ 			__DO_TRACE_CALL(name, TP_ARGS(args));		\
+ 		}							\
+ 	}								\
+diff --git a/include/trace/perf.h b/include/trace/perf.h
+index a1754b73a8f5..348ad1d9b556 100644
+--- a/include/trace/perf.h
++++ b/include/trace/perf.h
+@@ -71,6 +71,7 @@ perf_trace_##call(void *__data, proto)					\
+ 	u64 __count __attribute__((unused));				\
+ 	struct task_struct *__task __attribute__((unused));		\
+ 									\
++	guard(preempt_notrace)();					\
+ 	do_perf_trace_##call(__data, args);				\
+ }
+ 
+@@ -85,9 +86,8 @@ perf_trace_##call(void *__data, proto)					\
+ 	struct task_struct *__task __attribute__((unused));		\
+ 									\
+ 	might_fault();							\
+-	preempt_disable_notrace();					\
++	guard(preempt_notrace)();					\
+ 	do_perf_trace_##call(__data, args);				\
+-	preempt_enable_notrace();					\
+ }
+ 
+ /*
+diff --git a/include/trace/trace_events.h b/include/trace/trace_events.h
+index 4f22136fd465..6fb58387e9f1 100644
+--- a/include/trace/trace_events.h
++++ b/include/trace/trace_events.h
+@@ -429,6 +429,22 @@ do_trace_event_raw_event_##call(void *__data, proto)			\
+ 	trace_event_buffer_commit(&fbuffer);				\
+ }
+ 
++/*
++ * When PREEMPT_RT is enabled, the tracepoint does not disable preemption
++ * but instead disables migration. The callbacks for the trace events
++ * need to have a consistent state so that it can reflect the proper
++ * preempt_disabled counter.
++ */
++#ifdef CONFIG_PREEMPT_RT
++/* disable preemption for RT so that the counters still match */
++# define trace_event_guard() guard(preempt_notrace)()
++/* Have syscalls up the migrate disable counter to emulate non-syscalls */
++# define trace_syscall_event_guard() guard(migrate)()
++#else
++# define trace_event_guard()
++# define trace_syscall_event_guard()
++#endif
++
+ #undef DECLARE_EVENT_CLASS
+ #define DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print)	\
+ __DECLARE_EVENT_CLASS(call, PARAMS(proto), PARAMS(args), PARAMS(tstruct), \
+@@ -436,6 +452,7 @@ __DECLARE_EVENT_CLASS(call, PARAMS(proto), PARAMS(args), PARAMS(tstruct), \
+ static notrace void							\
+ trace_event_raw_event_##call(void *__data, proto)			\
+ {									\
++	trace_event_guard();						\
+ 	do_trace_event_raw_event_##call(__data, args);			\
+ }
+ 
+@@ -447,9 +464,9 @@ static notrace void							\
+ trace_event_raw_event_##call(void *__data, proto)			\
+ {									\
+ 	might_fault();							\
+-	preempt_disable_notrace();					\
++	trace_syscall_event_guard();					\
++	guard(preempt_notrace)();					\
+ 	do_trace_event_raw_event_##call(__data, args);			\
+-	preempt_enable_notrace();					\
+ }
+ 
+ /*
+diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
+index b16a5a158040..a5a93d243047 100644
+--- a/kernel/trace/trace_events.c
++++ b/kernel/trace/trace_events.c
+@@ -649,9 +649,9 @@ bool trace_event_ignore_this_pid(struct trace_event_file *trace_file)
+ }
+ EXPORT_SYMBOL_GPL(trace_event_ignore_this_pid);
+ 
+-void *trace_event_buffer_reserve(struct trace_event_buffer *fbuffer,
+-				 struct trace_event_file *trace_file,
+-				 unsigned long len)
++static __always_inline void *buffer_reserve(struct trace_event_buffer *fbuffer,
++					    struct trace_event_file *trace_file,
++					    unsigned long len)
+ {
+ 	struct trace_event_call *event_call = trace_file->event_call;
+ 
+@@ -659,13 +659,6 @@ void *trace_event_buffer_reserve(struct trace_event_buffer *fbuffer,
+ 	    trace_event_ignore_this_pid(trace_file))
+ 		return NULL;
+ 
+-	/*
+-	 * If CONFIG_PREEMPTION is enabled, then the tracepoint itself disables
+-	 * preemption (adding one to the preempt_count). Since we are
+-	 * interested in the preempt_count at the time the tracepoint was
+-	 * hit, we need to subtract one to offset the increment.
+-	 */
+-	fbuffer->trace_ctx = tracing_gen_ctx_dec();
+ 	fbuffer->trace_file = trace_file;
+ 
+ 	fbuffer->event =
+@@ -679,8 +672,25 @@ void *trace_event_buffer_reserve(struct trace_event_buffer *fbuffer,
+ 	fbuffer->entry = ring_buffer_event_data(fbuffer->event);
+ 	return fbuffer->entry;
+ }
++
++void *trace_event_buffer_reserve(struct trace_event_buffer *fbuffer,
++				 struct trace_event_file *trace_file,
++				 unsigned long len)
++{
++	fbuffer->trace_ctx = tracing_gen_ctx_dec_cond();
++	return buffer_reserve(fbuffer, trace_file, len);
++}
+ EXPORT_SYMBOL_GPL(trace_event_buffer_reserve);
+ 
++void *trace_event_buffer_reserve_syscall(struct trace_event_buffer *fbuffer,
++					 struct trace_event_file *trace_file,
++					 unsigned long len)
++{
++	fbuffer->trace_ctx = tracing_gen_ctx_dec();
++	return buffer_reserve(fbuffer, trace_file, len);
++}
++
++
+ int trace_event_reg(struct trace_event_call *call,
+ 		    enum trace_reg type, void *data)
+ {
+diff --git a/kernel/trace/trace_syscalls.c b/kernel/trace/trace_syscalls.c
+index e96d0063cbcf..f330fd22ea78 100644
+--- a/kernel/trace/trace_syscalls.c
++++ b/kernel/trace/trace_syscalls.c
+@@ -909,7 +909,7 @@ static void ftrace_syscall_enter(void *data, struct pt_regs *regs, long id)
+ 
+ 	size += sizeof(*entry) + sizeof(unsigned long) * sys_data->nb_args;
+ 
+-	entry = trace_event_buffer_reserve(&fbuffer, trace_file, size);
++	entry = trace_event_buffer_reserve_syscall(&fbuffer, trace_file, size);
+ 	if (!entry)
+ 		return;
+ 
+@@ -955,7 +955,7 @@ static void ftrace_syscall_exit(void *data, struct pt_regs *regs, long ret)
+ 	if (!sys_data)
+ 		return;
+ 
+-	entry = trace_event_buffer_reserve(&fbuffer, trace_file, sizeof(*entry));
++	entry = trace_event_buffer_reserve_syscall(&fbuffer, trace_file, sizeof(*entry));
+ 	if (!entry)
+ 		return;
+ 
+diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
+index 62719d2941c9..6a6bcf86bfbe 100644
+--- a/kernel/tracepoint.c
++++ b/kernel/tracepoint.c
+@@ -25,6 +25,12 @@ enum tp_func_state {
+ extern tracepoint_ptr_t __start___tracepoints_ptrs[];
+ extern tracepoint_ptr_t __stop___tracepoints_ptrs[];
+ 
++/* In PREEMPT_RT, SRCU is used to protect the tracepoint callbacks */
++#ifdef CONFIG_PREEMPT_RT
++DEFINE_SRCU_FAST(tracepoint_srcu);
++EXPORT_SYMBOL_GPL(tracepoint_srcu);
++#endif
++
+ enum tp_transition_sync {
+ 	TP_TRANSITION_SYNC_1_0_1,
+ 	TP_TRANSITION_SYNC_N_2_1,
+@@ -34,6 +40,7 @@ enum tp_transition_sync {
+ 
+ struct tp_transition_snapshot {
+ 	unsigned long rcu;
++	unsigned long srcu_gp;
+ 	bool ongoing;
+ };
+ 
+@@ -46,6 +53,9 @@ static void tp_rcu_get_state(enum tp_transition_sync sync)
+ 
+ 	/* Keep the latest get_state snapshot. */
+ 	snapshot->rcu = get_state_synchronize_rcu();
++#ifdef CONFIG_PREEMPT_RT
++	snapshot->srcu_gp = start_poll_synchronize_srcu(&tracepoint_srcu);
++#endif
+ 	snapshot->ongoing = true;
+ }
+ 
+@@ -56,6 +66,10 @@ static void tp_rcu_cond_sync(enum tp_transition_sync sync)
+ 	if (!snapshot->ongoing)
+ 		return;
+ 	cond_synchronize_rcu(snapshot->rcu);
++#ifdef CONFIG_PREEMPT_RT
++	if (!poll_state_synchronize_srcu(&tracepoint_srcu, snapshot->srcu_gp))
++		synchronize_srcu(&tracepoint_srcu);
++#endif
+ 	snapshot->ongoing = false;
+ }
+ 
+@@ -101,10 +115,22 @@ static inline void *allocate_probes(int count)
+ 	return p == NULL ? NULL : p->probes;
+ }
+ 
++#ifdef CONFIG_PREEMPT_RT
++static void srcu_free_old_probes(struct rcu_head *head)
++{
++	kfree(container_of(head, struct tp_probes, rcu));
++}
++
++static void rcu_free_old_probes(struct rcu_head *head)
++{
++	call_srcu(&tracepoint_srcu, head, srcu_free_old_probes);
++}
++#else
+ static void rcu_free_old_probes(struct rcu_head *head)
+ {
+ 	kfree(container_of(head, struct tp_probes, rcu));
+ }
++#endif
+ 
+ static inline void release_probes(struct tracepoint *tp, struct tracepoint_func *old)
+ {
+@@ -112,6 +138,13 @@ static inline void release_probes(struct tracepoint *tp, struct tracepoint_func
+ 		struct tp_probes *tp_probes = container_of(old,
+ 			struct tp_probes, probes[0]);
+ 
++		/*
++		 * Tracepoint probes are protected by either RCU or
++		 * Tasks Trace RCU and also by SRCU.  By calling the SRCU
++		 * callback in the [Tasks Trace] RCU callback we cover
++		 * both cases. So let us chain the SRCU and [Tasks Trace]
++		 * RCU callbacks to wait for both grace periods.
++		 */
+ 		if (tracepoint_is_faultable(tp))
+ 			call_rcu_tasks_trace(&tp_probes->rcu, rcu_free_old_probes);
+ 		else
+-- 
+2.51.0
+
 
