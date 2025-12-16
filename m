@@ -1,160 +1,127 @@
-Return-Path: <bpf+bounces-76773-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76774-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FAB6CC5412
-	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 22:48:30 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D888CC548A
+	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 22:59:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 5F197300C367
-	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 21:48:29 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6D007301F273
+	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 21:59:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB3D633E363;
-	Tue, 16 Dec 2025 21:48:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66670339B53;
+	Tue, 16 Dec 2025 21:58:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="f7x86Wfo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RUBaYuTQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 817E6328257
-	for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 21:48:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C7EA33E36A
+	for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 21:58:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765921702; cv=none; b=nc2+D1PLNAyjJ6fVHtjr3WDBLzssfyoTtIHKYBXrogxDmQbuRXIRemWiM57lWW0KGNG2XBcHankviV2hmKRykrSlWj0aU6LqCgap2tABhHiGsXIDzr5NBqrPXQblVrYWYfe+ac+a4VT/0kUmjRUs6/1cjhb4iahA2oQV3D9SSoM=
+	t=1765922336; cv=none; b=ta3mj3K3wdOVjmpAcY+gxNMsmAfC8ASfEB19o8yezlN5/ZXdU6XAV5nVseuaosmkNcA9b7S48YqJH9f0KoX1C0YjU39J1VDxzVq5FltRTqQAJL+Rjxw0oDmA5Hq9v/qhUxiC433sfW+BypL7DHttkaT0fId8Xa0dv2hN0muDGOQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765921702; c=relaxed/simple;
-	bh=Y5zkVJ30iALAIRyPkyT80qkBWpiSOuTPZzaKz+ADav4=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:From:To:Cc:
-	 References:In-Reply-To; b=Mq9JPCjO9FMt4bMEXk0xm61eeBhrF41Gauf3VuXgCI6RQ1v2DmxdMcofeakGXjj86jvM86Jx2RCorXF4rI1Mq1rWx+9Hiix322J+8H/QFevJma9gjojvERa7KW50OuE4QQIwYMtL7bXwh9Ute1L/ZxSulRKrvNCaZMm92VkqewU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=f7x86Wfo; arc=none smtp.client-ip=209.85.219.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etsalapatis.com
-Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-88a35a00502so29173086d6.0
-        for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 13:48:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1765921694; x=1766526494; darn=vger.kernel.org;
-        h=in-reply-to:references:cc:to:from:subject:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oUp4or4VaB102ZVYzKahGb7OVzrjdiLwBoMq6+d/I84=;
-        b=f7x86WfoqtsfCJ/jYxOycINf93x50HgYg8jGctKDI0A1t4+FTxIuk8np7Km3iM+Ztv
-         XR2jW6KL5eDH3lAzQBYDKDwt6FqQydmYwZoG80qKdb+07WqyI4X/PjRWoVi2b8H+nMPG
-         ufJ4fPOWa07wc8fEJAyjUM2RNelBTzHfoMVTYBcZ2/6IKuRdWTaSFo1gjL/FseiMHR+Q
-         2CThqd1JujwWk+5zk81P3ZOpHSTkyn/dCrPfPWGS0yYBTQhE+fotopQGaFs+S7LSYmL/
-         v/1twJxJZ3kAcdaXiipJWSLEkVa5X3AEjFEf6WvVpfkLTPyUdY3/aBG5bC0GzbYoZ06f
-         ICiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765921694; x=1766526494;
-        h=in-reply-to:references:cc:to:from:subject:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-gg:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=oUp4or4VaB102ZVYzKahGb7OVzrjdiLwBoMq6+d/I84=;
-        b=vLGWLm3HpoxMb9wEuaqtgqh7KHpLMQLKolIaQKn81IXKEZyrI+iA6trqdPaeGSB1RB
-         YIb3zwmQ1f1mhpjwoLWkw6/gcDOvqfjxfUFRpgCH78+t2i6R29MJjBV6CbaoxXzRJYpl
-         bmHugcZYP6QGkh/iyZbt52g501vlyx2ixjjxbuRh4UloMIyU8nKXyEFxXA23UgLTxoUE
-         ZlbUeIL3nrh8UfTXSoYnxWR/JDZT0MPY8rPWGI7/JX1yK1Km+tXlWdG7SbOeC3Y/jLgB
-         BCCaykE9maQI1fbTS4y198UjpZFWAzMKC8+X46MIAMLs5BHDlFJkMwoqDTLHtqv2XFAp
-         JLvA==
-X-Forwarded-Encrypted: i=1; AJvYcCUrtpnakT8xp3nASOUOotpMYxC938x4eoAeRhs1pIjAVyqt7b5PrerE5RgXQ5tE4s2Z5Is=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzYgjxGBtkw2eZmuf15VkTnhip3GU4VSkEAWj4xkFP1tDrijdaF
-	EzP3xa7xUFriPjmTL7MTyMtP3ASszmi5vShpJI7UHCAIZnbuwSPEsxwtWvq5KxbT7pU=
-X-Gm-Gg: AY/fxX6cdgVo/dHBlsvppZPQHN4397gDd5V1VWD/UguKN4IgKbClZbxS+GkGW4z8p3C
-	Ny3wenrywWOc9vWWpWX8QnvI+kQ7QL3ly2KoFmi3u7XP7LjiV3Hc2yl+OK6U0F4DS/3ZcSGCzlY
-	ZIY1ZUqN3/m/sUhme/jcy7UGBgbJRo7wydNABPs2Ba3NJgKYvLB7ivTCQcmF1B1tV2wsfwITRC8
-	aNMCDnwF7YBHE76EhLuFdchEq1PXE3Hu2Ms3OMlcajbbuqZTF9poQjUeTIPmzTgsO0zeYyzZdUO
-	1Pmk6xVrAYPhfqnangYb166/12PYCohYEDMucxhXJPEC6En+D6/jSOal7cjBWu1lEwucKYgQbWF
-	Re4740Rti8FuEcvWuR9+scW48zyCWNTsLBr+KdHI77FeXJ9v3kSqZe6RpL6pOgZk9Lb6UUbhbd7
-	4l78qnsf6RnvU=
-X-Google-Smtp-Source: AGHT+IHb6vE+ArQQRTtNqwUg5inIwqkbGh+qfMMrp04KiMX5PvlrDAyt2n3Z4/CvkebK9uzb37iz7A==
-X-Received: by 2002:a05:6214:2f93:b0:882:3156:6180 with SMTP id 6a1803df08f44-8887e19d691mr221604836d6.22.1765921693872;
-        Tue, 16 Dec 2025 13:48:13 -0800 (PST)
-Received: from localhost ([140.174.219.137])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-88987f398d1sm84265926d6.0.2025.12.16.13.48.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Dec 2025 13:48:13 -0800 (PST)
+	s=arc-20240116; t=1765922336; c=relaxed/simple;
+	bh=6CP3hRX5BQaPm/qBlm8Qc5XbaG+YCClo9EDxVahnc8w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fMv5OcrVIy2z19UPPDYoPuJKix8J7xMKErs9IDSqtx0h2UcAzdqR9D7F1ywke910IhvFA3PSYYkSLa6ehYsZmISs3ABHlVVnqNBPUccom0/6ZIwZPivnKMemXgFNuCYj5WNZr/EZQHYbDqXSt/nzStjp0GRBXetgWAInCVhEV6Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RUBaYuTQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B32AC2BCAF
+	for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 21:58:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1765922335;
+	bh=6CP3hRX5BQaPm/qBlm8Qc5XbaG+YCClo9EDxVahnc8w=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=RUBaYuTQtYEBHCJxUpIH99WeXgQ2VAs/zOXnNrBNvvwjKuJkBRYXTyg5MkxC45VlS
+	 ee62YHQz/l5TzI0I1GplXcyeEl93qBFH7gYDmwC7BguRMQY6BUM7+Nhww+IhkSPKeZ
+	 vhMXYSSBjpPDpE0/8iws6ojZSyj+dcE+vlfVERn5CHOVk3CLhZnNvu7cooPwV8Btce
+	 W6OxcrMnjOdhmnejttNEaLbeETWnLpT1S0GXHlsiqkIulhT2KNTfPdWVmRWMvBV7+z
+	 GjV5cwcqyn67Jjwu7XQO2QjXLz4pYgFmwwCtaU6q3IEgWMTGJWwp9d592Xfl+zlEGd
+	 Y2U/vDSzWcqCg==
+Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-88a35a00502so29254426d6.0
+        for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 13:58:55 -0800 (PST)
+X-Gm-Message-State: AOJu0YyEUVMfr+F3PnbP+66vtHct0eMvWWmUEzVv3FG5N1wXCgibtU5f
+	u6wXO/h4y/V0gPA1mxgkXs51Y8LO017Y6I9IYutvw8H3IvDKdbHoW31fq/yXzwTC3cvQaRJFxaA
+	uPyzsECGvP3zyzHlD5/gKiaTht9vXEFA=
+X-Google-Smtp-Source: AGHT+IF9QLmgs4U9LIq2aUJffN35K1zm7I1JmhCrt83Bk+WeZR0UQZFFngnES14acgdWyIrqFLuVAI1J9HKCZrKwqjI=
+X-Received: by 2002:a05:6214:5f0a:b0:882:6d42:53a7 with SMTP id
+ 6a1803df08f44-8887e42cd5fmr212286226d6.40.1765922334668; Tue, 16 Dec 2025
+ 13:58:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0
+References: <20251208030117.18892-1-git@danielhodges.dev> <20251208030117.18892-4-git@danielhodges.dev>
+In-Reply-To: <20251208030117.18892-4-git@danielhodges.dev>
+From: Song Liu <song@kernel.org>
+Date: Wed, 17 Dec 2025 06:58:43 +0900
+X-Gmail-Original-Message-ID: <CAPhsuW7n2aZQ6ORA60xQd91rieXtbLbheBzKAhfLiwkRCHBzqA@mail.gmail.com>
+X-Gm-Features: AQt7F2o5Ad7oXU21koarRoJP-8nzG89C8aGP9TrpNcoTMVvWA7AXG_BGfM67iQM
+Message-ID: <CAPhsuW7n2aZQ6ORA60xQd91rieXtbLbheBzKAhfLiwkRCHBzqA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/6] bpf: Add SHA hash kfunc for cryptographic hashing
+To: Daniel Hodges <git@danielhodges.dev>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, vadim.fedorenko@linux.dev, yatsenko@meta.com, 
+	martin.lau@linux.dev, eddyz87@gmail.com, haoluo@google.com, jolsa@kernel.org, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	yonghong.song@linux.dev, herbert@gondor.apana.org.au, davem@davemloft.net, 
+	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 16 Dec 2025 16:48:12 -0500
-Message-Id: <DEZYZTVXVGIO.10E92BXV43Q2T@etsalapatis.com>
-Subject: Re: [PATCH v3 2/5] bpf/verifier: do not limit maximum direct offset
- into arena map
-From: "Emil Tsalapatis" <emil@etsalapatis.com>
-To: "Eduard Zingerman" <eddyz87@gmail.com>, <bpf@vger.kernel.org>
-Cc: <andrii@kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
- <john.fastabend@gmail.com>, <memxor@gmail.com>, <yonghong.song@linux.dev>
-X-Mailer: aerc 0.20.1
-References: <20251215161313.10120-1-emil@etsalapatis.com>
- <20251215161313.10120-3-emil@etsalapatis.com>
- <0720a98e6a73ee6298d73b2c64a08f47a4337007.camel@gmail.com>
- <DEZTEJOJ7WF2.1VFDHK28XKO4A@etsalapatis.com>
- <4edb0de3c4eb13d276df8741c663e398ddde5708.camel@gmail.com>
-In-Reply-To: <4edb0de3c4eb13d276df8741c663e398ddde5708.camel@gmail.com>
 
-On Tue Dec 16, 2025 at 3:13 PM EST, Eduard Zingerman wrote:
-> On Tue, 2025-12-16 at 12:25 -0500, Emil Tsalapatis wrote:
->> On Mon Dec 15, 2025 at 3:19 PM EST, Eduard Zingerman wrote:
->> > On Mon, 2025-12-15 at 11:13 -0500, Emil Tsalapatis wrote:
->> > > The verifier currently limits direct offsets into a map to 512MiB
->> > > to avoid overflow during pointer arithmetic. However, this prevents
->> > > arena maps from using direct addressing instructions to access data
->> > > at the end of > 512MiB arena maps. This is necessary when moving
->> > > arena globals to the end of the arena instead of the front.
->> > >
->> > > Refactor the verifier code to remove the offset calculation during
->> > > direct value access calculations. This is possible because the only
->> > > two map types that implement .map_direct_value_addr() are arrays and
->> > > arenas, and they both do their own internal checks to ensure the
->> > > offset is within bounds.
->> >
->> > Nit: instruction array map also implements it (bpf_insn_array.c).
->> >
->> > >
->> > > Signed-off-by: Emil Tsalapatis <emil@etsalapatis.com>
->> > > ---
->> >
->> > I double checked implementations for all 3 map types and confirm that
->> > the above is correct. Also, I commented out the range checks in kernel
->> > implementations (as in the attached patch), and no tests seem to fail.
->> > Do we need to extend selftests?
->>
->> I forgot to address a couple selftest errors from this patch in this ver=
-sion,
->> but after fixing them for v4 and applying the attached patch I am gettin=
-g a
->> couple failures - direct map access tests #332, #334, #336, #337, #338, =
-#345.
->
-> Uh-oh, sorry, I forgot about test_verifier binary.
->
->> #332 (write test 7) is an unexpected load success, while the rest are ab=
-out a
->> mismatch in the error message. Maybe the test wasn't being marked as an
->> unexpected success because I hadn't fixed it up?
->
-> For me it shows:
->
->   #332/p direct map access, write test 7 FAIL
->   Unexpected verifier log!
->   EXP: direct value offset of 4294967295 is not allowed
->   RES:
->   FAIL
->   Unexpected error message!
->           EXP: direct value offset of 4294967295 is not allowed
->           RES: invalid access to map value pointer, value_size=3D48 off=
-=3D4294967295
->
-> So, seem to be an expected behavior given your changes?
+On Sun, Dec 7, 2025 at 7:01=E2=80=AFPM Daniel Hodges <git@danielhodges.dev>=
+ wrote:
+[...]
+> +
+> +       if (!ctx->type->hash)
+> +               return -EOPNOTSUPP;
+> +
+> +       data_len =3D __bpf_dynptr_size(data_kern);
+> +       out_len =3D __bpf_dynptr_size(out_kern);
+> +
+> +       if (data_len =3D=3D 0)
+> +               return -EINVAL;
+> +
+> +       if (!ctx->type->digestsize)
+> +               return -EOPNOTSUPP;
+> +
+> +       unsigned int digestsize =3D ctx->type->digestsize(ctx->tfm);
 
-Yes, for v3 this was the expected behavior: The tests used to trigger
-the old error msg (in EXP), but even after removing it they fail
-because the map isn't actually large enough to support the value
-offset offset of the tests ((-1) and (1UL << 29) for tests 7 and
-12). The RES output is from the .map_direct_value_addr() method
-doing bounds checking and rejecting the out-of-bounds offset.
+./scripts/checkpatch.pl will complain about this:
+
+WARNING: Missing a blank line after declarations
+#109: FILE: kernel/bpf/crypto.c:387:
++       unsigned int digestsize =3D ctx->type->digestsize(ctx->tfm);
++       if (out_len < digestsize)
+
+Please run ./scripts/checkpatch.pl on all the patches. It also highlights
+some other issues, such as we need to update the MAINTAINERS file.
+
+Also, we don't want variable declaration in the middle of a code
+block.
+
+> +       if (out_len < digestsize)
+> +               return -EINVAL;
+> +
+[...]
+>  static const struct btf_kfunc_id_set crypt_kfunc_set =3D {
+> @@ -383,6 +442,7 @@ static int __init crypto_kfunc_init(void)
+>         ret =3D register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS, &crypt=
+_kfunc_set);
+>         ret =3D ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_ACT,=
+ &crypt_kfunc_set);
+>         ret =3D ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_XDP, &cryp=
+t_kfunc_set);
+> +       ret =3D ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SYSCALL, &=
+crypt_kfunc_set);
+
+This enables all kfuncs in crypt_kfunc_set for BPF_PROG_TYPE_SYSCALL.
+We need a clear explanation why this is needed.
+
+Thanks,
+Song
 
