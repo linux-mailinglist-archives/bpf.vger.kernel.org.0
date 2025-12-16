@@ -1,160 +1,199 @@
-Return-Path: <bpf+bounces-76652-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76653-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53C8BCC0733
-	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 02:25:34 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53C77CC0750
+	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 02:28:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 1D2CE301CD3E
-	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 01:25:27 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id CD8FB301C095
+	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 01:27:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25597274B37;
-	Tue, 16 Dec 2025 01:25:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5936626CE0A;
+	Tue, 16 Dec 2025 01:27:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="jMPVFjfr"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZaMr54xm"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F76326CE0A;
-	Tue, 16 Dec 2025 01:25:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81CC917A31C
+	for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 01:27:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765848322; cv=none; b=fFcMPoeO1Rrw7ZX0YgKam2X9RLrv166+oyG8RHg1usIDsWEiyiXGr3bNNgl9HVKl33xgyWQYmNdPHGNg30RpAy4iT/pAVQJUadEUi4fO41Jn4od2CzbXpOfIZtazJUjgCIQDIB8lQItDGHZz1O1Buiy9DjP5/58LqsRyzKIIHjY=
+	t=1765848473; cv=none; b=LKTjqi/K/6ouyT4oN/0v/24DD1OKp0NiXQBs4GA7DXPsLm+XalrBg2TkNisjKnozvjqSyd4UntUeDl6t4fldn1+SkuQ3VvEL0PsHwWmq8i8ZvAk9gD4wgZQ9kRJ5sOMliLS4w4i5fpEF8Vt6mOfGI9MDrSIilYcygh6BHwlgRpE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765848322; c=relaxed/simple;
-	bh=3zSPmz/NCkE7wWGBlwPS2JqQRbZqsgUd+xF3nDaHKA0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JqzDIQGL64E59irC6MGubLMKDGt/GH8RUPYv0ArKZA6Jf7je2jIVXFZAc8YDDIh42AFcH9ZHDUqrMVI3BEDuv+g3AYpR8c5X76mEOrOrsQYOImiznRvp3N3ObA/BiR6Fx2ouOkb6qHTl3SJjznANOms8mtag5/0Q3nqrBp7CgO4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=jMPVFjfr; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=202503; t=1765848317;
-	bh=0plY8aRXrmAzEnRYdeWviS9sqQo6p5zP5wPOiczpzbE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=jMPVFjfrFR+MtukDfHy7Qw4juRI0EqSXNyoaQ/soObaLLCnEbK679LqGLWFCUB8Ub
-	 587xYIhje4IAUflSFydVt6rDw13De8l4Mo4L+vtfHSVFSdhQFFaLkR4/QAoTMIbkFm
-	 2OzHdJ7cBz2xLJDN1jJJZ480L+CjmKLvZgkCB3v3OSNRuuU+5LOAtScOc+x70z1GQO
-	 enF4kIHe8IFkzbBs7K7IoPdY1cuj4Gv6XsK50j9BSNIbwCXXTOGEVfoqyNQVW0s9Gd
-	 FSXz7Vbl1/Cj7i+Hdja9PyhNDgLXnssFrUapfOswQ3mnZ1K1ebhdytgWlzIdoW2SxN
-	 pfpKyDVcDaQzQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange secp256r1 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4dVfPR2z5Kz4wCm;
-	Tue, 16 Dec 2025 12:25:15 +1100 (AEDT)
-Date: Tue, 16 Dec 2025 12:25:14 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov
- <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>
-Cc: KernelCI bot <bot@kernelci.org>, kernelci@lists.linux.dev,
- kernelci-results@groups.io, regressions@lists.linux.dev, gus@collabora.com,
- linux-next@vger.kernel.org, bpf <bpf@vger.kernel.org>, Networking
- <netdev@vger.kernel.org>, Andy Shevchenko
- <andriy.shevchenko@linux.intel.com>
-Subject: Re: [REGRESSION] next/pending-fixes: (build) error: unknown warning
- option '-Wno-suggest-attribute=format'; did...
-Message-ID: <20251216122514.7ee70d5f@canb.auug.org.au>
-In-Reply-To: <176584314280.2550.10885082269394184097@77bfb67944a2>
-References: <176584314280.2550.10885082269394184097@77bfb67944a2>
+	s=arc-20240116; t=1765848473; c=relaxed/simple;
+	bh=zQ4WvcVUI1CqBQ2niHl2SMISwbxlWiyGpJqXTIzhWQ0=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Z3xp3cQqJeU2xDkytuInFe0DTuzvEFxXMhgXkcwBjYd4ElKn4c0CGFzdzzMyFCN0pjMvLzH4hkebIPVZOKNCtkZyR/2vNdQ6476D9oa2fEprcxEX/6It8IgGRajI3MAhmTPYfEUaRUxzS6RFVJ7AQL3oaxuZASqV/ho+6hv6so0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZaMr54xm; arc=none smtp.client-ip=91.218.175.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1765848453;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0RrFiAMOgIT9n77Eb4RRA4QZX8jYfBN/zYM5/IzU8kc=;
+	b=ZaMr54xmA1hQUFcq9/kR48cS+8Z7kQ42inStwg/uAGbJf6bldMjmk/WYHvIL5mDepuR6Kr
+	D6fFeVpbpAt6lEiGS4rIuBXo1f1Oj9tpR54Gga4VjYQk/yhxFTaVKz3mn9IzFRbCIWynKI
+	5fjx51i3LdPiMuBdEbYcZAlorxvpXa4=
+From: Menglong Dong <menglong.dong@linux.dev>
+To: jolsa@kernel.org, rostedt@kernel.org, revest@google.com,
+ mark.rutland@arm.com, bot+bpf-ci@kernel.org
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ menglong8.dong@gmail.com, song@kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, martin.lau@kernel.org, eddyz87@gmail.com,
+ yonghong.song@linux.dev, clm@meta.com, ihor.solodrai@linux.dev
+Subject:
+ Re: [PATCHv5 bpf-next 1/9] ftrace,bpf: Remove FTRACE_OPS_FL_JMP ftrace_ops
+ flag
+Date: Tue, 16 Dec 2025 09:27:21 +0800
+Message-ID: <12802095.O9o76ZdvQC@7940hx>
+In-Reply-To:
+ <95c13c0b793604796037ca67c191e1bfce22770dd020107c7179a698c5d49b91@mail.kernel.org>
+References:
+ <20251215211402.353056-2-jolsa@kernel.org>
+ <95c13c0b793604796037ca67c191e1bfce22770dd020107c7179a698c5d49b91@mail.kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/69et5i_lNvN.91T_ot13ewr";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"
+X-Migadu-Flow: FLOW_OUT
 
---Sig_/69et5i_lNvN.91T_ot13ewr
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 2025/12/16 05:31 bot+bpf-ci@kernel.org write:
+> > diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+> > index 015dd1049bea..505b7d3f5641 100644
+> > --- a/include/linux/ftrace.h
+> > +++ b/include/linux/ftrace.h
+> 
+> [ ... ]
+> 
+> > diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+> > index 976d89011b15..b9a358d7a78f 100644
+> > --- a/kernel/bpf/trampoline.c
+> > +++ b/kernel/bpf/trampoline.c
+> > @@ -214,10 +214,15 @@ static int modify_fentry(struct bpf_trampoline *tr, u32 orig_flags,
+> >  	int ret;
+> >
+> >  	if (tr->func.ftrace_managed) {
+> > +		unsigned long addr = (unsigned long) new_addr;
+> > +
+> > +		if (bpf_trampoline_use_jmp(tr->flags))
+> > +			addr = ftrace_jmp_set(addr);
+> > +
+> >  		if (lock_direct_mutex)
+> > -			ret = modify_ftrace_direct(tr->fops, (long)new_addr);
+> > +			ret = modify_ftrace_direct(tr->fops, addr);
+> >  		else
+> > -			ret = modify_ftrace_direct_nolock(tr->fops, (long)new_addr);
+> > +			ret = modify_ftrace_direct_nolock(tr->fops, addr);
+> >  	} else {
+> >  		ret = bpf_trampoline_update_fentry(tr, orig_flags, old_addr,
+> >  						   new_addr);
+> > @@ -240,10 +245,15 @@ static int register_fentry(struct bpf_trampoline *tr, void *new_addr)
+> >  	}
+> >
+> >  	if (tr->func.ftrace_managed) {
+> > +		unsigned long addr = (unsigned long) new_addr;
+> > +
+> > +		if (bpf_trampoline_use_jmp(tr->flags))
+> > +			addr = ftrace_jmp_set(addr);
+> > +
+> >  		ret = ftrace_set_filter_ip(tr->fops, (unsigned long)ip, 0, 1);
+> >  		if (ret)
+> >  			return ret;
+> > -		ret = register_ftrace_direct(tr->fops, (long)new_addr);
+> > +		ret = register_ftrace_direct(tr->fops, addr);
+> >  	} else {
+> >  		ret = bpf_trampoline_update_fentry(tr, 0, NULL, new_addr);
+> >  	}
+> 
+> After this change, register_ftrace_direct() receives an address with
+> the LSB bit already set (via ftrace_jmp_set) and stores it as-is in
+> entry->direct. This address then flows through to ftrace_find_rec_direct()
+> which returns entry->direct unchanged.
+> 
+> In available_filter_functions_show():
+> 
+>     direct = ftrace_find_rec_direct(rec->ip);
+>     if (direct)
+>         seq_printf(m, "\n\tdirect-->%pS", (void *)direct);
+> 
+> Can the debug output show misleading symbol offsets? When the LSB is
+> set, %pS will resolve addresses like "function+0x1" instead of just
+> "function". This makes ftrace debug output harder to read for users
+> trying to understand direct call attachments.
+> 
+> The fix would be to strip the LSB bit before printing:
+>     seq_printf(m, "\n\tdirect-->%pS", (void *)ftrace_jmp_get(direct));
 
-Hi all,
+Ah, this is a good point. However, it's totally another problem, and
+I'll follow up it.
 
-On Mon, 15 Dec 2025 23:59:03 -0000 KernelCI bot <bot@kernelci.org> wrote:
->
-> Hello,
->=20
-> New build issue found on next/pending-fixes:
->=20
+Thanks!
+Menglong Dong
+
+> 
+> [ ... ]
+> 
+> > diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+> > index bbb37c0f8c6c..b0dc911411f1 100644
+> > --- a/kernel/trace/ftrace.c
+> > +++ b/kernel/trace/ftrace.c
+> > @@ -6017,15 +6017,8 @@ int register_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
+> >  	if (ftrace_hash_empty(hash))
+> >  		return -EINVAL;
+> >
+> > -	/* This is a "raw" address, and this should never happen. */
+> > -	if (WARN_ON_ONCE(ftrace_is_jmp(addr)))
+> > -		return -EINVAL;
+> > -
+> >  	mutex_lock(&direct_mutex);
+> >
+> > -	if (ops->flags & FTRACE_OPS_FL_JMP)
+> > -		addr = ftrace_jmp_set(addr);
+> > -
+> >  	/* Make sure requested entries are not already registered.. */
+> >  	size = 1 << hash->size_bits;
+> >  	for (i = 0; i < size; i++) {
+> 
+> [ ... ]
+> 
+> > @@ -6146,13 +6139,6 @@ __modify_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
+> >
+> >  	lockdep_assert_held_once(&direct_mutex);
+> >
+> > -	/* This is a "raw" address, and this should never happen. */
+> > -	if (WARN_ON_ONCE(ftrace_is_jmp(addr)))
+> > -		return -EINVAL;
+> > -
+> > -	if (ops->flags & FTRACE_OPS_FL_JMP)
+> > -		addr = ftrace_jmp_set(addr);
+> > -
+> >  	/* Enable the tmp_ops to have the same functions as the direct ops */
+> >  	ftrace_ops_init(&tmp_ops);
+> >  	tmp_ops.func_hash = ops->func_hash;
+> 
+> [ ... ]
+> 
+> 
 > ---
->  error: unknown warning option '-Wno-suggest-attribute=3Dformat'; did you=
- mean '-Wno-property-attribute-mismatch'? [-Werror,-Wunknown-warning-option=
-] in kernel/bpf/helpers.o (scripts/Makefile.build:287) [logspec:kbuild,kbui=
-ld.compiler.error]
-> ---
->=20
-> - dashboard: https://d.kernelci.org/i/maestro:32e32983183c2c586f588a4a3a7=
-cda83311d5be9
-> - giturl: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next=
-.git
-> - commit HEAD:  326785a1dd4cea4065390fb99b0249781c9912bf
->=20
->=20
-> Please include the KernelCI tag when submitting a fix:
->=20
-> Reported-by: kernelci.org bot <bot@kernelci.org>
->=20
->=20
-> Log excerpt:
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
->   CC      kernel/bpf/helpers.o
-> error: unknown warning option '-Wno-suggest-attribute=3Dformat'; did you =
-mean '-Wno-property-attribute-mismatch'? [-Werror,-Wunknown-warning-option]
->=20
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
->=20
->=20
-> # Builds where the incident occurred:
->=20
-> ## defconfig on (arm64):
-> - compiler: clang-21
-> - config: https://files.kernelci.org/kbuild-clang-21-arm64-mainline-69409=
-7d2cbfd84c3cdba292d/.config
-> - dashboard: https://d.kernelci.org/build/maestro:694097d2cbfd84c3cdba292d
->=20
->=20
-> #kernelci issue maestro:32e32983183c2c586f588a4a3a7cda83311d5be9
->=20
-> --
-> This is an experimental report format. Please send feedback in!
-> Talk to us at kernelci@lists.linux.dev
->=20
-> Made with love by the KernelCI team - https://kernelci.org
->=20
+> AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+> See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
+> 
+> CI run summary: https://github.com/kernel-patches/bpf/actions/runs/20247816064
+> 
 
-Presumably caused by commit
 
- ba34388912b5 ("bpf: Disable false positive -Wsuggest-attribute=3Dformat wa=
-rning")
 
-in the bpf tree.
---=20
-Cheers,
-Stephen Rothwell
 
---Sig_/69et5i_lNvN.91T_ot13ewr
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmlAtPoACgkQAVBC80lX
-0Gwnlwf/c8kn9K6aG0sl1X13gll7DqASHge6iKGaTEZHx/RSIDn/b4V+PGysnXHe
-MAymJ9jhvWXmxAsbQ7Jz9wS1D17NALYYSWinxetr8gxKKqd4q4+pL4R56r0yqqQz
-u7PGLi0RUPSvX7rlHtT0Fs2PECd0i18O3z7omnRfITxLTKhJXF7th1GE5XBEHdSI
-JQPfqDKe7zwencS4pZSksdkCAmOE68IQDvODSiXwe1C5v3+owbGde2XF0u39Q0q3
-yuBB6D1/s7T9uy1n1N547bPs+QK3HWGrTigsrYUTuuoYs0ZF9xJKahyWG76+MDfo
-rrwxXS9dFO/HcmRmV7LpwhzWzwZcWg==
-=OyqN
------END PGP SIGNATURE-----
-
---Sig_/69et5i_lNvN.91T_ot13ewr--
 
