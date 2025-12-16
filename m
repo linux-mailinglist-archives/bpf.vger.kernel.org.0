@@ -1,45 +1,45 @@
-Return-Path: <bpf+bounces-76723-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76725-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37725CC48AD
-	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 18:07:00 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6C58CC499A
+	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 18:14:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id A39AD3007779
-	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 17:06:59 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 776353030CAF
+	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 17:12:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75D70329E67;
-	Tue, 16 Dec 2025 17:06:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D5F132B997;
+	Tue, 16 Dec 2025 17:12:32 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0017.hostedemail.com [216.40.44.17])
+Received: from relay.hostedemail.com (smtprelay0012.hostedemail.com [216.40.44.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62ECF296BBF;
-	Tue, 16 Dec 2025 17:06:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DE97327C19;
+	Tue, 16 Dec 2025 17:12:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765904814; cv=none; b=Q88egUQt4WBh2948NK44bBxC5s2e3wXBLi55FkwWGeXyCRVOzFJj2RYXg8cqBcR8lnXoMpu7/z5lQjvVJgXzrju0Xj4IO3JlfEzWaxt7svKVZdnCYSV9doe7R0DpWCL0+68t9NfunCZ3yCiTy/3cTj594znfyOjkBZNe0cTcyuc=
+	t=1765905152; cv=none; b=sfOhiNLH1Um4lLgWLgbGu7Q+6HPgc6/xWxVXnLyuz1D6JrtoXqHmFG0ObjpY67aHP0zt2xLk4Eg0n54TpJUlmaKS+agcUXV03kmbshxBjYHljoxfM7DlCrcSpJZBzWD9F3DGClnz49Up3VdoTJi6kVbqo/f+frOIeKX3tOcZ8Hc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765904814; c=relaxed/simple;
+	s=arc-20240116; t=1765905152; c=relaxed/simple;
 	bh=gjAtwKp36ISk64gtR66wXK4Mq1NUxmFev0jszkqE6ZY=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=HZ9PCXXUJwk/UPLxKCkYrmIk+wod+DRe+ZpoSlVniPAEDL5Ol6m2QzGvew8dTf0W6qdV4n9GZnFHq7gWbEoI5WDQeMyibK4z4URAY9AYN07v3TSTvM/O8HkfnB6MAF8Vxw+E7dg7exhPH8dGq2Ab7ekNbkS02xZWQSKi5oyh6Sc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.17
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=G5+14DRW2kbi2FReqpHTfU6DXs9eb8qcxbLem1bnOVfWTrd4FuI2TAuyhuXgebs/1KJXEDqHGbzgrmNWBUJzhQbXnt0FRBea9qOtMm+kufDbGAfP/SdvYJIqE2bsJAHIeqaITrViwGAK0dTiSr+ksqYQLmdGg7L8JD2kBSWAT64=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf13.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay07.hostedemail.com (Postfix) with ESMTP id 604E3160614;
-	Tue, 16 Dec 2025 17:06:47 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf13.hostedemail.com (Postfix) with ESMTPA id 7DBFE20012;
-	Tue, 16 Dec 2025 17:06:45 +0000 (UTC)
-Date: Tue, 16 Dec 2025 12:08:19 -0500
+Received: from omf19.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay10.hostedemail.com (Postfix) with ESMTP id 85305C0785;
+	Tue, 16 Dec 2025 17:06:59 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf19.hostedemail.com (Postfix) with ESMTPA id A07A020027;
+	Tue, 16 Dec 2025 17:06:57 +0000 (UTC)
+Date: Tue, 16 Dec 2025 12:08:31 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
  <linux-trace-kernel@vger.kernel.org>
 Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
  <mathieu.desnoyers@efficios.com>, "Paul E. McKenney" <paulmck@kernel.org>,
  Sebastian Andrzej Siewior <bigeasy@linutronix.de>, bpf@vger.kernel.org
-Subject: [PATCH] tracing: Guard __DECLARE_TRACE() use of __DO_TRACE_CALL()
- with SRCU-fast
+Subject: [PATCH v4] tracing: Guard __DECLARE_TRACE() use of
+ __DO_TRACE_CALL() with SRCU-fast
 Message-ID: <20251216120819.3499e00e@gandalf.local.home>
 X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
@@ -50,13 +50,13 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Stat-Signature: 8ordyjnys3ojxnt51tm4f1sn1bsctyo1
-X-Rspamd-Server: rspamout01
-X-Rspamd-Queue-Id: 7DBFE20012
+X-Rspamd-Queue-Id: A07A020027
+X-Stat-Signature: 1nsqq43ssywfmx8qaqdnnxg1461u7uow
+X-Rspamd-Server: rspamout08
 X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1+K4NZ7BmoOkS/JGaqUERe9tjD8Rr6RhPI=
-X-HE-Tag: 1765904805-759456
-X-HE-Meta: U2FsdGVkX1+mn4DCG6ykba6IWAFYfH87yAHP0xtq1zjWbDhyV7qrUPUHwZ15NL/JIiBkYkFjVHM7sb2GVyMcGYF8rrIUWiBfSoGgnKkQV7cRMeaIwfWS2Da2ihhED25EPW1qERqYOSBpRwUEGoDKLV6nvn2KOXP70l4MqyIajap+5XD80fczND8xQCbZG+BSuuWaRRGPV4v/IkoTyGzhZYaUpaBr0YnRiK3s1pWjjQIpiOTviW+1ov74pJ8gBPxI8W1PL6o3Chwwd8uiuVTkk5KiDYLsM/U5C0qQQc8KDQ8XNVr7qLTEio0w+H7dRIFsRvkqg1R4AU7OW69UTdWPnCdWN9CQy+eV8mRdTKmyWd9D3bM9Q3Y+lnsyq5JfIMy4zGBLGRKYGa022CV9Q6f458HYhlZ7SFOJTvu59Vo3YzaH3ztqOJefk+FgKNtyJVz/3x2zZe9aBnX1WZNp8uGsR3NAJuyp8DtXsOwz8aa9MuVV6jXfskb1xuItXKXXahyqDCcVeKhzqxE8OoQInqVZbqAb7ZF0+W6R1f0wL4cGGOU=
+X-Session-ID: U2FsdGVkX1/Eh9c1Mlq8sbPLS9T9EBJy++xsQ533H94=
+X-HE-Tag: 1765904817-970802
+X-HE-Meta: U2FsdGVkX19Op/oRXL9ZIs2dUdf1JVkMp96GaIS0YkIv6WuIcB686aRVA40cEtWFM1ZKTca5l8il47PEbpZNMUeNAyTXi5VGzU5SLvqLCIhm2BWv1DsTONR8ockGwGN2/RAlckxFlM1LLrhDFH27KbD1rjHFMi77QGbF7ZefRbmtu7aLkdmzSoCVslLROs5sOFtWkACM2kkFQNL7fiFhIXvdZP19wkr7jkGZjal4miQvVnT+co8klLSoFD1PBrkRJMnzPQzeo0u4loOQmkGg7UYwOKHeraXjMpFpkno6BNSACjqGRgMr4hTNzj8tcE4t1p4jSkPFzHTBdkwsoIUlPT4Gd1xAfn+sERs5Y2DXDqA2hMOmjgBq62QDGVPDcLZ5A/WJdTK6RtyHEnzcu3HNUjFz0MShwxss10hAZeUa4Vyvz2H2D88c9YFWioNWySeaX2KtyJaKmiwRhEwY7xDkaofmIr5MYPZ/5M5KnCEFJVmAxjE9fEkxCU51+cxWYD+wCmmaeXQjfdx+3Ho2k6UuuY/RlYD8mk5rLoQNltvphL0=
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
