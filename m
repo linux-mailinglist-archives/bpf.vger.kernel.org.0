@@ -1,211 +1,138 @@
-Return-Path: <bpf+bounces-76705-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76706-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBD5FCC1DCB
-	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 10:51:34 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADF8FCC1EA3
+	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 11:11:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 939313026BCF
-	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 09:51:30 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7F6C33025A64
+	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 10:10:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06FDD33A710;
-	Tue, 16 Dec 2025 09:51:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B068A32BF21;
+	Tue, 16 Dec 2025 10:10:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fTn3imK4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f73.google.com (mail-wm1-f73.google.com [209.85.128.73])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D77B133A6FE;
-	Tue, 16 Dec 2025 09:51:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF7A5325701
+	for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 10:10:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765878681; cv=none; b=hlGN3I/ofOydqtaqURlkKhcnX3xBrCmIUL9wS5tj1F55nhtG/D2AuXQV8A891WnlgpZP4pghM4q9EMDXkTBp43IlWK+G9pHiuYCcjK5q6sShFmtrV1/l4FcURx8wvSY4LvhPAbSr1n+JdprP8DJ/xV+ecLVIEPavXLlZYm6la1o=
+	t=1765879850; cv=none; b=GaMQPVCu9dq/21TBN0pI/ClAGbCorxRihrmYlqiMgAde3dr81kUOuh54et1oB1m/1LgeCfIkL0RXUxVVNyH28Jf4nKJpfZ1WUNlA3igeA/MP8XaeBJnAfc7Da+fkanaUbb8Dqz1xWeZNdgTs2h16yPiY9lFAoSThLC9RghAMFbQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765878681; c=relaxed/simple;
-	bh=vcsI2v6tuVS1NUqaNOyqrqhvoG2fZA6wSDcFkwLFsWs=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=n5HtFcv5YlvYeCk5VidUsFWy5YmrYvGaNUCFS43Gedoh6kQaGl9llaM0ofdQTrjL6Tsl+cgAGhoZovY/fo6X0RRekUn/sY2bcG/9TTuP9Gi6lF5vgKpXG1owDNF+guleol6VwoKBHNJ58fqlV7Jd2J1UAbxCgIE52BsmOGLNII4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: c0901a5eda6411f0a38c85956e01ac42-20251216
-X-CTIC-Tags:
-	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME, HR_CTE_8B
-	HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
-	HR_SJ_DIGIT_LEN, HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM
-	HR_SJ_PHRASE, HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
-	HR_TO_NO_NAME, IP_UNTRUSTED, SRC_UNTRUSTED, IP_UNFAMILIAR, SRC_UNFAMILIAR
-	DN_TRUSTED, SRC_TRUSTED, SA_EXISTED, SN_EXISTED, SPF_NOPASS
-	DKIM_NOPASS, DMARC_NOPASS, CIE_BAD, CIE_GOOD_SPF, CIE_UNKNOWN
-	GTI_FG_BS, GTI_RG_INFO, GTI_C_BU, AMN_GOOD, ABX_MISS_RDNS
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.6,REQID:79810aac-3fe4-4b6e-82b6-3519e4f6305c,IP:10,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:5
-X-CID-INFO: VERSION:1.3.6,REQID:79810aac-3fe4-4b6e-82b6-3519e4f6305c,IP:10,URL
-	:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
-	elease,TS:5
-X-CID-META: VersionHash:a9d874c,CLOUDID:8ca50ba58714037dc20ba792347d2749,BulkI
-	D:251212171126DK7G45J0,BulkQuantity:2,Recheck:0,SF:17|19|38|66|78|81|82|10
-	2|127|850|898,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bu
-	lk:41,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0
-	,BRE:0,ARC:0
-X-CID-BVR: 2,SSN|SDN
-X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
-X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: c0901a5eda6411f0a38c85956e01ac42-20251216
-X-User: duanchenghao@kylinos.cn
-Received: from localhost.localdomain [(183.242.174.21)] by mailgw.kylinos.cn
-	(envelope-from <duanchenghao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 1587119060; Tue, 16 Dec 2025 17:51:11 +0800
-From: Chenghao Duan <duanchenghao@kylinos.cn>
-To: yangtiezhu@loongson.cn,
-	rostedt@goodmis.org,
-	mhiramat@kernel.org,
-	mark.rutland@arm.com,
-	hengqi.chen@gmail.com,
-	chenhuacai@kernel.org
-Cc: kernel@xen0n.name,
-	zhangtianyang@loongson.cn,
-	masahiroy@kernel.org,
-	linux-kernel@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	bpf@vger.kernel.org,
-	duanchenghao@kylinos.cn,
-	youling.tang@linux.dev,
-	jianghaoran@kylinos.cn,
-	vincent.mc.li@gmail.com,
-	linux-trace-kernel@vger.kernel.org,
-	Youling Tang <tangyouling@kylinos.cn>
-Subject: [PATCH v3 4/4] LoongArch: ftrace: Adjust register stack restore order in direct call trampolines
-Date: Tue, 16 Dec 2025 17:47:53 +0800
-Message-Id: <20251216094753.1317231-5-duanchenghao@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20251216094753.1317231-1-duanchenghao@kylinos.cn>
-References: <20251216094753.1317231-1-duanchenghao@kylinos.cn>
+	s=arc-20240116; t=1765879850; c=relaxed/simple;
+	bh=t5rEzB0XfV2HhggtoY+1nXODslnee9LcIT7edg43TyE=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=I9leAeLT/oSMad/wvgLTXk6t6t1V4AMlMJBnSyv4kw6pic6OXgMo4ZrXHc+bWiSBS43U4tOw7CaEyDAK7ceb/arzswmpT1B/1W8AXikZeliJ5j/KOmRWcYMFQGN6xBx7bqW7HARx1d/3Kl9/8osuqJT5b6Q/P36BNfSN/8HB+BY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fTn3imK4; arc=none smtp.client-ip=209.85.128.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com
+Received: by mail-wm1-f73.google.com with SMTP id 5b1f17b1804b1-4775f51ce36so36146565e9.1
+        for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 02:10:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1765879847; x=1766484647; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=t5rEzB0XfV2HhggtoY+1nXODslnee9LcIT7edg43TyE=;
+        b=fTn3imK4WN596VrpvXlde7uqQuEB5lbWeGDN50/aOdyI+oOvQvN+J1BYFdk+or8Jd7
+         O9VlJxWalbWrYGMpZ5bkArfPZ6R+fDQpQCjaj9hnsfguiiOTxA2Z086+qMCfgOLcabd9
+         FgKkDmewYtMl12uEoUdt4Igs6hqHqzWVYToJ4AYZNVfNXww5cr4Hllfc+lcHOps8SnTA
+         4c3EyCDTqofvVQIt3gN7KZHzCxbDmNH6Ga+qa2cO2C1qc84mOMY2Gm9QwgDegQMnelJF
+         U7qc0SwmL5/fiFnGCfPzYNbEebpUfWPC4/zN3O+ko+vgLsJQ6QgIuftc+kyuExjWHJzL
+         vlEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765879847; x=1766484647;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=t5rEzB0XfV2HhggtoY+1nXODslnee9LcIT7edg43TyE=;
+        b=JBQNXOxtmuNduLPhb2HWjRI5VcLFfMO0hx7hw1wCcl8Ywoq5xbHnoYxVukn9AFL86B
+         NgpdnZdwzhgRIwuiOMeQE3VVJkAdF7zshzboo8vWjSJBWaPxm4l9hExBgsI+ZS7LbhVb
+         CVAt6l1O3CYftDixH6SBkTkozAQVSkWa8XerLcAJOiLMDx40+uaAwDHCH2vFOgb/Cnz7
+         MmtZdhILgCXooDGPPNVUdxQlpB2US1qVUI8kJuRPP5Om2cl1Zfv94v4HmXcx/E3qriOl
+         g0SsSiHe1VQBhseUX1j6NPQIrzDvJ2jbu5JmlOvenKlY/AW5FCoQOnFf+kXZZMILSGUl
+         gjxw==
+X-Forwarded-Encrypted: i=1; AJvYcCU+eZr4fVuXHIKpKN2Uwj0RRGiQiTGyGHNmpk/tuLRzRggfhNLL2hBK2iCjB9L2as2O63A=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy3EhUrn2TdV0kax/Z8DxBTlKEeB8+bIDH7iQvv6HBhB/UtMNHS
+	0PdgDekllnKoRuEmYTqsOhKgLb7nfu4wYmk7ohGIKGMYIyrcgosjrizjdFMxYQ+YJbybHB5VkEF
+	93OR1dewARIP85w==
+X-Google-Smtp-Source: AGHT+IEd1DtqS9iGujKBf5Wl3HxnREueKAOxGRaJlybjiAz1XyBUCEjyQ5pN21ilTcLVd3HJFgAC3/iwKoa2lQ==
+X-Received: from wmbd22.prod.google.com ([2002:a05:600c:58d6:b0:477:632b:1238])
+ (user=jackmanb job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a05:600c:3104:b0:479:3a86:dc1a with SMTP id 5b1f17b1804b1-47a8f9155fcmr137796355e9.36.1765879846765;
+ Tue, 16 Dec 2025 02:10:46 -0800 (PST)
+Date: Tue, 16 Dec 2025 10:10:46 +0000
+In-Reply-To: <aT/drjN1BkvyAGoi@e129823.arm.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <20251212161832.2067134-1-yeoreum.yun@arm.com> <20251212161832.2067134-3-yeoreum.yun@arm.com>
+ <CA+i-1C2e7QNTy5u=HF7tLsLXLq4xYbMTCbNjWGAxHz4uwgR05g@mail.gmail.com>
+ <aT5/y3cSGIzi2K+m@e129823.arm.com> <DEYOI8H2OESD.1H56D3H8HKILB@google.com>
+ <aT/WOAr4osoJWaMS@e129823.arm.com> <DEYP7JSVTB9D.3EFN2KEHH3O79@google.com> <aT/drjN1BkvyAGoi@e129823.arm.com>
+X-Mailer: aerc 0.21.0
+Message-ID: <DEZK5U2YP6I0.27VJHSVK14646@google.com>
+Subject: Re: [PATCH 2/2] arm64: mmu: use pagetable_alloc_nolock() while stop_machine()
+From: Brendan Jackman <jackmanb@google.com>
+To: Yeoreum Yun <yeoreum.yun@arm.com>, Brendan Jackman <jackmanb@google.com>
+Cc: <akpm@linux-foundation.org>, <david@kernel.org>, 
+	<lorenzo.stoakes@oracle.com>, <Liam.Howlett@oracle.com>, <vbabka@suse.cz>, 
+	<rppt@kernel.org>, <surenb@google.com>, <mhocko@suse.com>, <ast@kernel.org>, 
+	<daniel@iogearbox.net>, <andrii@kernel.org>, <martin.lau@linux.dev>, 
+	<eddyz87@gmail.com>, <song@kernel.org>, <yonghong.song@linux.dev>, 
+	<john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@fomichev.me>, 
+	<haoluo@google.com>, <jolsa@kernel.org>, <hannes@cmpxchg.org>, 
+	<ziy@nvidia.com>, <bigeasy@linutronix.de>, <clrkwllms@kernel.org>, 
+	<rostedt@goodmis.org>, <catalin.marinas@arm.com>, <will@kernel.org>, 
+	<ryan.roberts@arm.com>, <kevin.brodsky@arm.com>, <dev.jain@arm.com>, 
+	<yang@os.amperecomputing.com>, <linux-mm@kvack.org>, 
+	<linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>, 
+	<linux-rt-devel@lists.linux.dev>, <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Ensure that in the ftrace direct call logic, the CPU register state
-(with ra = parent return address) is restored to the correct state
-after the execution of the custom trampoline function and before
-returning to the traced function. Additionally, guarantee the
-correctness of the jump logic for jr t0 (traced function address).
+On Mon Dec 15, 2025 at 10:06 AM UTC, Yeoreum Yun wrote:
+[snip]
+>> Overall I am feeling a bit uncomfortable about this use of _nolock, but
+>> I am also feeling pretty ignorant about PREEMPT_RT and also about this
+>> arm64 code, so I am hesitant to suggest alternatives, I hope someone
+>> else can offer some input here...
+>
+> I understand. However, as I mentioned earlier,
+> my main intention was to hear opinions specifically about memory contenti=
+on.
+>
+> That said, if there is no memory contention,
+> I don=E2=80=99t think using the _nolock API is necessarily a bad approach=
+.
 
-Reported-by: Youling Tang <tangyouling@kylinos.cn>
-Signed-off-by: Chenghao Duan <duanchenghao@kylinos.cn>
----
- samples/ftrace/ftrace-direct-modify.c       | 8 ++++----
- samples/ftrace/ftrace-direct-multi-modify.c | 8 ++++----
- samples/ftrace/ftrace-direct-multi.c        | 4 ++--
- samples/ftrace/ftrace-direct-too.c          | 4 ++--
- samples/ftrace/ftrace-direct.c              | 4 ++--
- 5 files changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/samples/ftrace/ftrace-direct-modify.c b/samples/ftrace/ftrace-direct-modify.c
-index da3a9f2091f5..1ba1927b548e 100644
---- a/samples/ftrace/ftrace-direct-modify.c
-+++ b/samples/ftrace/ftrace-direct-modify.c
-@@ -176,8 +176,8 @@ asm (
- "	st.d	$t0, $sp, 0\n"
- "	st.d	$ra, $sp, 8\n"
- "	bl	my_direct_func1\n"
--"	ld.d	$t0, $sp, 0\n"
--"	ld.d	$ra, $sp, 8\n"
-+"	ld.d	$ra, $sp, 0\n"
-+"	ld.d	$t0, $sp, 8\n"
- "	addi.d	$sp, $sp, 16\n"
- "	jr	$t0\n"
- "	.size		my_tramp1, .-my_tramp1\n"
-@@ -189,8 +189,8 @@ asm (
- "	st.d	$t0, $sp, 0\n"
- "	st.d	$ra, $sp, 8\n"
- "	bl	my_direct_func2\n"
--"	ld.d	$t0, $sp, 0\n"
--"	ld.d	$ra, $sp, 8\n"
-+"	ld.d	$ra, $sp, 0\n"
-+"	ld.d	$t0, $sp, 8\n"
- "	addi.d	$sp, $sp, 16\n"
- "	jr	$t0\n"
- "	.size		my_tramp2, .-my_tramp2\n"
-diff --git a/samples/ftrace/ftrace-direct-multi-modify.c b/samples/ftrace/ftrace-direct-multi-modify.c
-index 8f7986d698d8..7a7822dfeb50 100644
---- a/samples/ftrace/ftrace-direct-multi-modify.c
-+++ b/samples/ftrace/ftrace-direct-multi-modify.c
-@@ -199,8 +199,8 @@ asm (
- "	move	$a0, $t0\n"
- "	bl	my_direct_func1\n"
- "	ld.d	$a0, $sp, 0\n"
--"	ld.d	$t0, $sp, 8\n"
--"	ld.d	$ra, $sp, 16\n"
-+"	ld.d	$ra, $sp, 8\n"
-+"	ld.d	$t0, $sp, 16\n"
- "	addi.d	$sp, $sp, 32\n"
- "	jr	$t0\n"
- "	.size		my_tramp1, .-my_tramp1\n"
-@@ -215,8 +215,8 @@ asm (
- "	move	$a0, $t0\n"
- "	bl	my_direct_func2\n"
- "	ld.d	$a0, $sp, 0\n"
--"	ld.d	$t0, $sp, 8\n"
--"	ld.d	$ra, $sp, 16\n"
-+"	ld.d	$ra, $sp, 8\n"
-+"	ld.d	$t0, $sp, 16\n"
- "	addi.d	$sp, $sp, 32\n"
- "	jr	$t0\n"
- "	.size		my_tramp2, .-my_tramp2\n"
-diff --git a/samples/ftrace/ftrace-direct-multi.c b/samples/ftrace/ftrace-direct-multi.c
-index db326c81a27d..3fe6ddaf0b69 100644
---- a/samples/ftrace/ftrace-direct-multi.c
-+++ b/samples/ftrace/ftrace-direct-multi.c
-@@ -131,8 +131,8 @@ asm (
- "	move	$a0, $t0\n"
- "	bl	my_direct_func\n"
- "	ld.d	$a0, $sp, 0\n"
--"	ld.d	$t0, $sp, 8\n"
--"	ld.d	$ra, $sp, 16\n"
-+"	ld.d	$ra, $sp, 8\n"
-+"	ld.d	$t0, $sp, 16\n"
- "	addi.d	$sp, $sp, 32\n"
- "	jr	$t0\n"
- "	.size		my_tramp, .-my_tramp\n"
-diff --git a/samples/ftrace/ftrace-direct-too.c b/samples/ftrace/ftrace-direct-too.c
-index 3d0fa260332d..bf2411aa6fd7 100644
---- a/samples/ftrace/ftrace-direct-too.c
-+++ b/samples/ftrace/ftrace-direct-too.c
-@@ -143,8 +143,8 @@ asm (
- "	ld.d	$a0, $sp, 0\n"
- "	ld.d	$a1, $sp, 8\n"
- "	ld.d	$a2, $sp, 16\n"
--"	ld.d	$t0, $sp, 24\n"
--"	ld.d	$ra, $sp, 32\n"
-+"	ld.d	$ra, $sp, 24\n"
-+"	ld.d	$t0, $sp, 32\n"
- "	addi.d	$sp, $sp, 48\n"
- "	jr	$t0\n"
- "	.size		my_tramp, .-my_tramp\n"
-diff --git a/samples/ftrace/ftrace-direct.c b/samples/ftrace/ftrace-direct.c
-index 956834b0d19a..5368c8c39cbb 100644
---- a/samples/ftrace/ftrace-direct.c
-+++ b/samples/ftrace/ftrace-direct.c
-@@ -124,8 +124,8 @@ asm (
- "	st.d	$ra, $sp, 16\n"
- "	bl	my_direct_func\n"
- "	ld.d	$a0, $sp, 0\n"
--"	ld.d	$t0, $sp, 8\n"
--"	ld.d	$ra, $sp, 16\n"
-+"	ld.d	$ra, $sp, 8\n"
-+"	ld.d	$t0, $sp, 16\n"
- "	addi.d	$sp, $sp, 32\n"
- "	jr	$t0\n"
- "	.size		my_tramp, .-my_tramp\n"
--- 
-2.25.1
+> In fact, I believe a bigger issue is that, under PREEMPT_RT,
+> code that uses the regular memory allocation APIs may give users the fals=
+e impression
+> that those APIs are =E2=80=9Csafe to use,=E2=80=9D even though they are n=
+ot.
 
+Yeah, I share this concern. I would bet I have written code that's
+broken under PREEMPT_RT (luckily only in Google's kernel fork). The
+comment for GFP_ATOMIC says:
+
+ * %GFP_ATOMIC users can not sleep and need the allocation to succeed. A lo=
+wer
+ * watermark is applied to allow access to "atomic reserves".
+ * The current implementation doesn't support NMI and few other strict
+ * non-preemptive contexts (e.g. raw_spin_lock). The same applies to %GFP_N=
+OWAIT.
+
+It kinda sounds like it's supposed to be OK to use GFP_ATOMIC in a
+normal preempt_disable() context. So do you know exactly why it's
+invalid to use it in this stop_machine() context here? Maybe we need to
+update this comment. Or, maybe actually we need to fix the allocator so
+that GFP_ATOMIC allocs are safe in this context?
 
