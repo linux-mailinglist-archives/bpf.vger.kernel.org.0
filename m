@@ -1,166 +1,148 @@
-Return-Path: <bpf+bounces-76668-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76669-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC41ECC0A18
-	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 03:44:56 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 029B8CC0A39
+	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 03:51:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id DEDAD301AD11
-	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 02:44:55 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AE4CF3030395
+	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 02:50:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30A372EB5DC;
-	Tue, 16 Dec 2025 02:44:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 438A22EA173;
+	Tue, 16 Dec 2025 02:50:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ihep.ac.cn header.i=@ihep.ac.cn header.b="fxri1K+0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YBJPe1VH"
 X-Original-To: bpf@vger.kernel.org
-Received: from ihep.ac.cn (ihep.ac.cn [202.38.128.6])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A60992E8B9F
-	for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 02:44:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.38.128.6
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FA1122156B
+	for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 02:50:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765853093; cv=none; b=nSfrHWTqfGcIIWFiOuQ54TJbS1ZrbyDgSwH7penkcBautwqT+Ujy4brRrl3DeIOGkyj6ycto1fDoEj4HRtsy/x8HHJrHsJj/FgpkwpNjVJ5DOx/VxEdzsj8c02luksbov1NfcD+SAUKyev1Gas/3Wp/wx/g8Yd8fZ7d/BSwMCAY=
+	t=1765853456; cv=none; b=EyhprCf59JDuW2Hw2Zzgeeqn/Y7wDF3ISC7YFUjlcrJvX+vmlTxLJHEHvkx9k28P/p+/39UA37SFhMsL0gispwZVuyVhBgfuP2NzEkS5Uss1ETx6AjN9XQhhrjS9mEwm6UsFFndv8fF4ULIfu+mlISsi2JkG34NPHUxRNMdY59Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765853093; c=relaxed/simple;
-	bh=nADIClvb2vb1B2VL/Wk0ckFLAPfxUJ/u4yJEvTiI0PQ=;
-	h=Date:From:To:Subject:Content-Type:MIME-Version:Message-ID; b=aXqKxGix86EROw046v0OL90bCAknRpd68W4xfCaI6JxwvHyNhan/xGXDgsyo37s99HStlG7CKpoAg0KhWeMeXvOSpnuWToI7Fbo7vmw9HfnqMFJEJ64wcVuFR4Z7rA7fSGeaC9Il0u75NCwb987iGxWDf74Y0lfvtUeHJ1ZnqLo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ihep.ac.cn; spf=pass smtp.mailfrom=ihep.ac.cn; dkim=pass (1024-bit key) header.d=ihep.ac.cn header.i=@ihep.ac.cn header.b=fxri1K+0; arc=none smtp.client-ip=202.38.128.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ihep.ac.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ihep.ac.cn
+	s=arc-20240116; t=1765853456; c=relaxed/simple;
+	bh=dalPQlnuHSGBmNY79FwxXca8hEj5CG46UpgEtlKl6lc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UnPGPVsUvgyNtGGp9xQLmisQuMrMohhArLZCr1MpFz35zxziTev3DmfhjhWkDSy+g69S22ics/7mRjz/824etGSzDK4BXJWePDDWJBXkdZjX25zWgolh2UNlnMGMl2BYJ5VovBonUhhIY8ZMGvo+FNZV87bJ58JAJ3Mt3TRhfIw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YBJPe1VH; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-2a0d5c365ceso25706215ad.3
+        for <bpf@vger.kernel.org>; Mon, 15 Dec 2025 18:50:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=ihep.ac.cn; s=dkim; h=Received:Date:From:To:Subject:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID;
-	bh=nADIClvb2vb1B2VL/Wk0ckFLAPfxUJ/u4yJEvTiI0PQ=; b=fxri1K+0ESOzq
-	BYsaASSvpiUYTkyI3/ATqdrMtyOJkYYw1Mu3nCkvZsQug5GBALVvWjW8k14lHo8Y
-	P4N9cJITrOABFq7p7TyX+S33zsPN3n+cZiecy/bH5mz4IBL8HfKnyckHkneu6mQ5
-	6AwdZYo+XOXHRX2YDgebDuxjz7Tda4=
-Received: from wangzhenyuan$ihep.ac.cn ( [10.10.2.255] ) by
- ajax-webmail-newmail.ihep.ac.cn (Coremail) ; Tue, 16 Dec 2025 10:44:47
- +0800 (GMT+08:00)
-Date: Tue, 16 Dec 2025 10:44:47 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From: =?UTF-8?B?546L5oyv5rqQ?= <wangzhenyuan@ihep.ac.cn>
-To: bpf@vger.kernel.org
-Subject: BPF tracepoint attachment fails with "Permission denied" (errno 13)
- on kernel 5.14 but succeeds on 6.6
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2024.3-cmXT5 build
- 20250609(354f7833) Copyright (c) 2002-2025 www.mailtech.cn ihep.ac.cn
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        d=gmail.com; s=20230601; t=1765853455; x=1766458255; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1cFcDQBskX+EieZGTeMb7UvLaBhVBbrfDThfVI9zuA8=;
+        b=YBJPe1VHDoTvoawjPgUOYNZzg7tY79EhoECnBBSwKa7Y1umbOShS/JS+QoP+YKhKSp
+         CBxUnry/uvpI4fAqQ0YbQXtFfaeiFcqIbVdibswdT3ix3SpORLsqye5rL6swGyS8eu9h
+         /b15Pj6Byx9Y/hFjnAhpCe2F5d9/p+BT6cZYdMLyOWy1dlssFZaf8Z/VHCD9k7h9O0te
+         KsF9XqPzzPod9W7mleJzVdWdSpeQUxm+vgQl2qJ019QBFJQo6poB2QAohVu27Y2m+t3G
+         fRneQa7bqrFzGX8pKEu/PIU5SEs4FBPBKmO+LKp5492PpXU1xoskjFsnhMOLnTujMcZP
+         q61Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765853455; x=1766458255;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1cFcDQBskX+EieZGTeMb7UvLaBhVBbrfDThfVI9zuA8=;
+        b=B2oX6XLsBqCjNEkjx1HQy76e14D8Jqi13+8x6vD9a1h17bfE91xkDpZXIRpxCUcyGc
+         n7aRi9mWNP2++Cimgw8aJD0ekX1rZnyIz6UVLAYBl89Wv+5LY/Dt/wXbo1bctE24o2WL
+         LQYtZNolaf3g8kGepoeahpDQLRxZMILEimTl2xUzeliD0/gue8mskg/wo/aQVIb9Abfb
+         GmT25CUeRtIFXWtyfQCjWc/1q/plpo/Ji5WETkByIQMbbHfEGX1MbqtZCKjiQ1VGp+8Y
+         7hA56y4xY9O1lmECvjEcO00qdsREfxzThimJPMNVCAisCimpQtXq3i6ffJk0tSmFurca
+         RXGQ==
+X-Gm-Message-State: AOJu0YzFSNW3pVDCfQogS+I+35yFGLIQ6rBebl2Pj1nZT1XPmz0sZHQ3
+	seryUajgKGxNPqk0WUAVQtaSYnFzkApHbA3NinFHK+mEdh5Iv7gRLVex
+X-Gm-Gg: AY/fxX6DCwtM/XojnG6kclcZaRKUWUisLnR+otc2KD/TT5UUS+mAsoRNvNC9E+stXov
+	Y+FdHfpJErQavMivD5RiLOaU8/X+LCaEU6eI43Ki0Ds/8shmTMGgaF0OzOShd1bJQ/0ONOaTP0D
+	HMndm8ZBrAxhubpaAk1pKvPqpT+eStLTRHsb6VMRjsph4h0UlaUkIOSOz3E02HQ4ZE3mmxN0yJt
+	bIpkXPuGxfUrdC521Fr/ZlxEr0dXHGnPpTB82T9jfTizXUWE5axP0j9sdMzvVFb2FU4d7iMmP2l
+	4xBMIpn19HIGdVWlpY0sLzuTuAoAYKzIcCYYhkTu09BKYeS/TXhfsrq1OmudmRoHZX+BMSc7vDY
+	WNORZ8bW/jK80iVJTIb022K6sOaAB6SvkoWBN4iJFNK7XLq6ijqacpfPBOwdnLvmpt3sfQA+pS0
+	B9t60sA0UABnUPKPyqqgSIZBz/Y5UhIulPhjdFg4eUpeahI3A5UZEPwHz4tw==
+X-Google-Smtp-Source: AGHT+IEOLKeERSn3llecFxiRgEcnZONahbOSstlIrJcsk+a+bEC3cScVzokuEQWQlseaT0hhUIJxdA==
+X-Received: by 2002:a17:903:3510:b0:2a0:909a:1535 with SMTP id d9443c01a7336-2a0909a184emr81374965ad.11.1765853454588;
+        Mon, 15 Dec 2025 18:50:54 -0800 (PST)
+Received: from KERNELXING-MB0.tencent.com ([43.132.141.21])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a13cd7f1ecsm2618865ad.74.2025.12.15.18.50.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Dec 2025 18:50:54 -0800 (PST)
+From: Jason Xing <kerneljasonxing@gmail.com>
+To: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	bjorn@kernel.org,
+	magnus.karlsson@intel.com,
+	maciej.fijalkowski@intel.com,
+	jonathan.lemon@gmail.com,
+	sdf@fomichev.me,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	hawk@kernel.org,
+	john.fastabend@gmail.com
+Cc: bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	Jason Xing <kernelxing@tencent.com>
+Subject: [PATCH RFC net-next v5 0/2] xsk: move cq_cached_prod_lock
+Date: Tue, 16 Dec 2025 10:50:45 +0800
+Message-Id: <20251216025047.67553-1-kerneljasonxing@gmail.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <687d1d79.10487.19b250bc725.Coremail.wangzhenyuan@ihep.ac.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID:AQAAfwBXXnqfx0BpP0z4AA--.29626W
-X-CM-SenderInfo: pzdqw65khq53ldq6xx1hsotugofq/1tbiAQYPBmk85osiqAAcsg
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWkKw
-	CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-	daVFxhVjvjDU=
+Content-Transfer-Encoding: 8bit
 
-SSBoYXZlIGRldmVsb3BlZCBhIEJQRiBwcm9ncmFtIHRoYXQgY29tcGlsZXMgYW5kIGF0dGFjaGVz
-IHN1Y2Nlc3NmdWxseSBvbiB0aGUgY29tcGlsYXRpb24gaG9zdCwgYnV0IGZhaWxzIHRvIGF0dGFj
-aCBvbiBhIHRhcmdldCBtYWNoaW5lLCBwcm9kdWNpbmcgIlBlcm1pc3Npb24gZGVuaWVkIiBlcnJv
-cnMuIEJlbG93IGFyZSB0aGUgY29tcGxldGUgZW52aXJvbm1lbnRhbCBkZXRhaWxzIGFuZCBlcnJv
-ciBsb2dzOgoKKipDb21waWxhdGlvbiBIb3N0IEVudmlyb25tZW50OioqCkxpbnV4IDYuNi44Ny4y
-LW1pY3Jvc29mdC1zdGFuZGFyZC1XU0wyICMxIFNNUCBQUkVFTVBUX0RZTkFNSUMgVGh1IEp1biA1
-IDE4OjMwOjQ2IFVUQyAyMDI1IHg4Nl82NCB4ODZfNjQgeDg2XzY0IEdOVS9MaW51eAoKKipDb21w
-aWxhdGlvbiBFbnZpcm9ubWVudDoqKgpgYGBiYXNoCmNsYW5nIC0tdmVyc2lvbgpjbGFuZyB2ZXJz
-aW9uIDIwLjEuOCAoQWxtYUxpbnV4IE9TIEZvdW5kYXRpb24gMjAuMS44LTMuZWw5KQpUYXJnZXQ6
-IHg4Nl82NC1yZWRoYXQtbGludXgtZ251ClRocmVhZCBtb2RlbDogcG9zaXgKSW5zdGFsbGVkRGly
-OiAvdXNyL2JpbgpDb25maWd1cmF0aW9uIGZpbGU6IC9ldGMvY2xhbmcveDg2XzY0LXJlZGhhdC1s
-aW51eC1nbnUtY2xhbmcuY2ZnCgpycG0gLXFhIHwgZ3JlcCBsaWJicGYKbGliYnBmLTEuNS4wLTEu
-ZWw5Lng4Nl82NApsaWJicGYtZGV2ZWwtMS41LjAtMS5lbDkueDg2XzY0CmBgYAoKKipDb21waWxh
-dGlvbiBDb21tYW5kOioqCmBgYGJhc2gKJHtDTEFOR30gLWcgLU8yIC10YXJnZXQgYnBmIC1JJHtD
-TUFLRV9TT1VSQ0VfRElSfS9pbmNsdWRlIC1jICR7YnBmX2N9IC1vICR7YnBmX299CmBgYAoKKipS
-dW50aW1lIEVycm9yIG9uIFRhcmdldCBNYWNoaW5lOioqCldoZW4gYXR0ZW1wdGluZyB0byBsb2Fk
-IGFuZCBhdHRhY2ggdGhlIEJQRiBwcm9ncmFtIHVzaW5nIHRoZSBmb2xsb3dpbmcgY29tbWFuZDoK
-YGBgYmFzaApicGZ0b29sIHByb2cgbG9hZGFsbCAuL2pvYl9mZF9yd19zdGF0LmJwZi5vIC9zeXMv
-ZnMvYnBmL2pvYl9mZF9yd19zdGF0dCBhdXRvYXR0YWNoCmBgYAoKVGhlIGZvbGxvd2luZyBlcnJv
-cnMgYXJlIHJlcG9ydGVkOgpgYGBiYXNoCmxpYmJwZjogcHJvZyAndHJhY2VfcmVhZF9leGl0Jzog
-ZmFpbGVkIHRvIGNyZWF0ZSBCUEYgbGluayBmb3IgcGVyZl9ldmVudCBGRCAxNzogLTEzIChQZXJt
-aXNzaW9uIGRlbmllZCkKbGliYnBmOiBwcm9nICd0cmFjZV9yZWFkX2V4aXQnOiBmYWlsZWQgdG8g
-YXR0YWNoIHRvIHRyYWNlcG9pbnQgJ3N5c2NhbGxzL3N5c19leGl0X3JlYWQnOiBQZXJtaXNzaW9u
-IGRlbmllZApQcm9ncmFtIHRyYWNlX3JlYWRfZXhpdCBkb2VzIG5vdCBzdXBwb3J0IGF1dG9hdHRh
-Y2gsIGZhbGxpbmcgYmFjayB0byBwaW5uaW5nCmxpYmJwZjogcHJvZyAndHJhY2Vfd3JpdGVfZXhp
-dCc6IGZhaWxlZCB0byBjcmVhdGUgQlBGIGxpbmsgZm9yIHBlcmZfZXZlbnQgRkQgMTc6IC0xMyAo
-UGVybWlzc2lvbiBkZW5pZWQpCmxpYmJwZjogcHJvZyAndHJhY2Vfd3JpdGVfZXhpdCc6IGZhaWxl
-ZCB0byBhdHRhY2ggdG8gdHJhY2Vwb2ludCAnc3lzY2FsbHMvc3lzX2V4aXRfd3JpdGUnOiBQZXJt
-aXNzaW9uIGRlbmllZApQcm9ncmFtIHRyYWNlX3dyaXRlX2V4aXQgZG9lcyBub3Qgc3VwcG9ydCBh
-dXRvYXR0YWNoLCBmYWxsaW5nIGJhY2sgdG8gcGlubmluZwpsaWJicGY6IHByb2cgJ3RyYWNlX3By
-ZWFkNjRfZXhpdCc6IGZhaWxlZCB0byBjcmVhdGUgQlBGIGxpbmsgZm9yIHBlcmZfZXZlbnQgRkQg
-MTc6IC0xMyAoUGVybWlzc2lvbiBkZW5pZWQpCmxpYmJwZjogcHJvZyAndHJhY2VfcHJlYWQ2NF9l
-eGl0JzogZmFpbGVkIHRvIGF0dGFjaCB0byB0cmFjZXBvaW50ICdzeXNjYWxscy9zeXNfZXhpdF9w
-cmVhZDY0JzogUGVybWlzc2lvbiBkZW5pZWQKUHJvZ3JhbSB0cmFjZV9wcmVhZDY0X2V4aXQgZG9l
-cyBub3Qgc3VwcG9ydCBhdXRvYXR0YWNoLCBmYWxsaW5nIGJhY2sgdG8gcGlubmluZwpsaWJicGY6
-IHByb2cgJ3RyYWNlX3B3cml0ZTY0X2V4aXQnOiBmYWlsZWQgdG8gY3JlYXRlIEJQRiBsaW5rIGZv
-ciBwZXJmX2V2ZW50IEZEIDE3OiAtMTMgKFBlcm1pc3Npb24gZGVuaWVkKQpsaWJicGY6IHByb2cg
-J3RyYWNlX3B3cml0ZTY0X2V4aXQnOiBmYWlsZWQgdG8gYXR0YWNoIHRvIHRyYWNlcG9pbnQgJ3N5
-c2NhbGxzL3N5c19leGl0X3B3cml0ZTY0JzogUGVybWlzc2lvbiBkZW5pZWQKUHJvZ3JhbSB0cmFj
-ZV9wd3JpdGU2NF9leGl0IGRvZXMgbm90IHN1cHBvcnQgYXV0b2F0dGFjaCwgZmFsbGluZyBiYWNr
-IHRvIHBpbm5pbmcKYGBgCgoqKlRhcmdldCBNYWNoaW5lIEVudmlyb25tZW50OioqCioqTGludXgg
-NS4xNC4wLTU3MC4zOS4xLmVsOV82Lng4Nl82NCAjMSBTTVAgUFJFRU1QVF9EWU5BTUlDIFRodSBT
-ZXAgNCAwNTowODo1MiBFRFQgMjAyNSB4ODZfNjQgeDg2XzY0IHg4Nl82NCBHTlUvTGludXgqKgoK
-CmBgYGJhc2gKcnBtIC1xYSB8IGdyZXAgbGliYnBmCmxpYmJwZi0xLjUuMC0xLmVsOS54ODZfNjQK
-bGliYnBmLWRldmVsLTEuNS4wLTEuZWw5Lng4Nl82NApgYGAKClRyb3VibGVzaG9vdGluZyBGaW5k
-aW5nOgpUaGUgYXR0YWNobWVudCBlcnJvcnMgbm8gbG9uZ2VyIG9jY3VyIGFmdGVyIHJlbW92aW5n
-IHRoZSBmb2xsb3dpbmcgZnVuY3Rpb24gZnJvbSB0aGUgcHJvYmxlbWF0aWMgcHJvZ3JhbXMuIFRo
-ZSBmdW5jdGlvbiBpbXBsZW1lbnRhdGlvbiBpczoKYGBgYwpzdGF0aWMgX19hbHdheXNfaW5saW5l
-IHZvaWQgYWNjb3VudF9ydyh1MzIgcGlkLCB1MzIgZmQsIHNzaXplX3QgcmV0LCBib29sIGlzX3dy
-aXRlKQp7CiAgICBpZiAocmV0IDw9IDApIHJldHVybjsKCiAgICBzdHJ1Y3QgcGlkX2ZkX2tleSBr
-ZXkgPSB7LnBpZD1waWQsIC5mZCA9IGZkfTsKICAgIHN0cnVjdCByd19zdGF0ICpzdGF0OwogICAg
-c3RydWN0IHJ3X3N0YXQgaW5pdDsKICAgIGludDY0X3QgZGlmZiA9IHJldDsKICAgIGludDY0X3Qg
-ZGlmZjIgPSAwOwogICAgaW50OF90ICBzaWduX2RpZmYgPSAxOwogICAgdWludDY0X3QgdGhyZXNo
-OwogICAgdWludDY0X3QgcjsKICAgIHN0cnVjdCBldmVudCAqZTsKCiAgICBzdGF0ID0gYnBmX21h
-cF9sb29rdXBfZWxlbSgmam9iX2ZkX3N0YXQsICZrZXkpOwogICAgaWYgKCFzdGF0KSB7CiAgICAg
-ICAgYnBmX21hcF91cGRhdGVfZWxlbSgmam9iX2ZkX3N0YXQsICZrZXksICZpbml0LCBCUEZfQU5Z
-KTsKICAgICAgICBzdGF0ID0gYnBmX21hcF9sb29rdXBfZWxlbSgmam9iX2ZkX3N0YXQsICZrZXkp
-OwogICAgICAgIGlmICghc3RhdCkgcmV0dXJuOwogICAgfQogICAgCiAgICAKICAgIGlmIChpc193
-cml0ZSl7CiAgICAgICAgX19zeW5jX2ZldGNoX2FuZF9hZGQoJnN0YXQtPndyaXRlX2J5dGVzLCBy
-ZXQpOwogICAgICAgIC8vVXBkYXRlIEF2ZXJhZ2UKICAgICAgICBfX3N5bmNfZmV0Y2hfYW5kX2Fk
-ZCgmc3RhdC0+d3JpdGVfY291bnQsIDEpOwogICAgICAgIF9fc3luY19mZXRjaF9hbmRfc3ViKCZk
-aWZmLCBzdGF0LT53cml0ZV9tZWFuKTsKICAgICAgICBzaWduX2RpZmYgPSBzaWduX2FuZF9hYnNf
-aW50NjRfdCgmZGlmZik7CiAgICAgICAgciA9IGRpdl91aW50NjRfdChkaWZmLCBzdGF0LT53cml0
-ZV9jb3VudCk7CiAgICAgICAgX19zeW5jX2ZldGNoX2FuZF9hZGQoJnN0YXQtPndyaXRlX21lYW4s
-IHNpZ25fZGlmZiAqIHIpOwogICAgICAgIC8vVXBkYXRlIFZhcmlhbmNlCiAgICAgICAgX19zeW5j
-X2ZldGNoX2FuZF9zdWIoJmRpZmYyLCBzdGF0LT53cml0ZV9tZWFuKTsKICAgICAgICBfX3N5bmNf
-ZmV0Y2hfYW5kX2FkZCgmc3RhdC0+d3JpdGVfdmFyaWFuY2UsIGRpZmYyICogZGlmZiAqIHIpOwog
-ICAgICAgIC8vVXBkYXRlIHRpbWUKICAgICAgICBzdGF0LT53cml0ZV9rdGltZXN0YW1wID0gYnBm
-X2t0aW1lX2dldF9ucygpOwogICAgfWVsc2V7CiAgICAgICAgX19zeW5jX2ZldGNoX2FuZF9hZGQo
-JnN0YXQtPnJlYWRfYnl0ZXMsIHJldCk7CiAgICAgICAgLy9VcGRhdGUgQXZlcmFnZQogICAgICAg
-IF9fc3luY19mZXRjaF9hbmRfYWRkKCZzdGF0LT5yZWFkX2NvdW50LCAxKTsKICAgICAgICBfX3N5
-bmNfZmV0Y2hfYW5kX3N1YigmZGlmZiwgc3RhdC0+cmVhZF9tZWFuKTsKICAgICAgICBzaWduX2Rp
-ZmYgPSBzaWduX2FuZF9hYnNfaW50NjRfdCgmZGlmZik7CiAgICAgICAgciA9IGRpdl91aW50NjRf
-dChkaWZmLCBzdGF0LT5yZWFkX2NvdW50KTsKICAgICAgICBfX3N5bmNfZmV0Y2hfYW5kX2FkZCgm
-c3RhdC0+cmVhZF9tZWFuLCBzaWduX2RpZmYgKiByKTsKICAgICAgICAvL1VwZGF0ZSBWYXJpYW5j
-ZQogICAgICAgIF9fc3luY19mZXRjaF9hbmRfc3ViKCZkaWZmMiwgc3RhdC0+cmVhZF9tZWFuKTsK
-ICAgICAgICBfX3N5bmNfZmV0Y2hfYW5kX2FkZCgmc3RhdC0+cmVhZF92YXJpYW5jZSwgZGlmZjIg
-KiBkaWZmICogcik7CiAgICAgICAgLy9VcGRhdGUgdGltZQogICAgICAgIHN0YXQtPnJlYWRfa3Rp
-bWVzdGFtcCA9IGJwZl9rdGltZV9nZXRfbnMoKTsKICAgIH0KICAgIAogICAgCiAgICAvKlNhbXBs
-aW5nIG5vdGlmaWNhdGlvbiovCiAgICB0aHJlc2ggPSBpc193cml0ZSA/ICBzdGF0LT53cml0ZV9i
-eXRlcyA6IHN0YXQtPnJlYWRfYnl0ZXM7CiAgICBpZiAoKHRocmVzaCAmIFNBTVBMRV9USFJFU0gp
-ID09IDApIHsKICAgICAgICBlID0gYnBmX3JpbmdidWZfcmVzZXJ2ZSgmcmIsIHNpemVvZigqZSks
-IDApOwogICAgICAgIGlmIChlKSB7CiAgICAgICAgICAgIGUtPmpvYl9pZCA9IDA7CiAgICAgICAg
-ICAgIGUtPnBpZCAgICA9IHBpZDsKICAgICAgICAgICAgZS0+ZmQgICAgID0gZmQ7CiAgICAgICAg
-ICAgIGUtPnJlYWRfYnl0ZXMgID0gc3RhdC0+cmVhZF9ieXRlczsKICAgICAgICAgICAgZS0+d3Jp
-dGVfYnl0ZXMgPSBzdGF0LT53cml0ZV9ieXRlczsKICAgICAgICAgICAgLy8gZS0+bW1hcF9ieXRl
-cyA9IHN0YXQtPm1tYXBfYnl0ZXM7CiAgICAgICAgICAgIGUtPnJlYWRfdmFyaWFuY2UgPSBzdGF0
-LT5yZWFkX3ZhcmlhbmNlOwogICAgICAgICAgICBlLT53cml0ZV92YXJpYW5jZSA9IHN0YXQtPndy
-aXRlX3ZhcmlhbmNlOwogICAgICAgICAgICBlLT5rdGltZXN0YW1wID0gYnBmX2t0aW1lX2dldF9u
-cygpOwogICAgICAgICAgICBicGZfcmluZ2J1Zl9zdWJtaXQoZSwgMCk7CiAgICAgICAgfQogICAg
-fQoKICAgIHJldHVybjsKfQpgYGAKCioqQ291bGQgeW91IHBsZWFzZSBoZWxwIG1lIHVuZGVyc3Rh
-bmQ6KioKCioqV2hhdCBpcyB0aGUgcm9vdCBjYXVzZSBvZiB0aGlzIGlzc3VlPyoqIFNwZWNpZmlj
-YWxseSwgd2hpY2ggcGFydCBvZiB0aGUgYWNjb3VudF9ydyBmdW5jdGlvbiBpcyB0cmlnZ2VyaW5n
-IHRoZSAiUGVybWlzc2lvbiBkZW5pZWQiIGVycm9yIGR1cmluZyBhdHRhY2htZW50IChhcyBvcHBv
-c2VkIHRvIGxvYWRpbmcpLCBhbmQgd2h5IGRvZXMgdGhpcyBvbmx5IG1hbmlmZXN0IG9uIHRoZSB0
-YXJnZXQgbWFjaGluZSBidXQgbm90IHRoZSBjb21waWxhdGlvbiBob3N0PwoKKipIb3cgY2FuIEkg
-cmVzb2x2ZSB0aGlzIHByb2JsZW0/KiogQXJlIHRoZXJlIGFueSBjb2RlIG1vZGlmaWNhdGlvbnMs
-IGNvbXBpbGF0aW9uIGZsYWcgYWRqdXN0bWVudHMsIG9yIHJ1bnRpbWUgY29uZmlndXJhdGlvbnMg
-KGUuZy4sIGtlcm5lbCBwYXJhbWV0ZXJzLCBwZXJtaXNzaW9ucywgY2FwYWJpbGl0aWVzKSB0aGF0
-IHdvdWxkIGFsbG93IHRoZSBwcm9ncmFtIHRvIGF0dGFjaCBzdWNjZXNzZnVsbHkgd2hpbGUgcHJl
-c2VydmluZyB0aGUgZnVuY3Rpb25hbGl0eSBvZiB0aGUgYWNjb3VudF9ydyBmdW5jdGlvbj8KCgo=
+From: Jason Xing <kernelxing@tencent.com>
+
+Move cq_cached_prod_lock to avoid touching new cacheline.
+
+---
+Q: since net-next will be open next year, I wonder if I should post this
+patch targetting bpf-next?
+
+RFC V5
+Link: https://lore.kernel.org/all/20251209031628.28429-1-kerneljasonxing@gmail.com/
+1. From what I lately know from the repro at the above link, application
+can use the shared umem mode directly but the kernel will eventually
+return error that is reflected in the xp_assign_dev_shared(). Advancing
+the check can avoid the crash in patch [1/2] and be good to avoid
+unnecessary memory allocation.
+
+RFC V4
+Link: https://lore.kernel.org/all/20251128134601.54678-1-kerneljasonxing@gmail.com/
+1. use moving lock method instead (Paolo, Magnus)
+2. Add credit to Paolo, thanks!
+
+v3
+Link: https://lore.kernel.org/all/20251125085431.4039-1-kerneljasonxing@gmail.com/
+1. fix one race issue that cannot be resolved by simple seperated atomic
+operations. So this revision only updates patch [2/3] and tries to use
+try_cmpxchg method to avoid that problem. (paolo)
+2. update commit log accordingly.
+
+V2
+Link: https://lore.kernel.org/all/20251124080858.89593-1-kerneljasonxing@gmail.com/
+1. use separate functions rather than branches within shared routines. (Maciej)
+2. make each patch as simple as possible for easier review
+
+Jason Xing (2):
+  xsk: advance cq/fq check when shared umem is used
+  xsk: move cq_cached_prod_lock to avoid touching a cacheline in sending
+    path
+
+ include/net/xsk_buff_pool.h |  5 -----
+ net/xdp/xsk.c               | 15 +++++++++++----
+ net/xdp/xsk_buff_pool.c     |  6 +-----
+ net/xdp/xsk_queue.h         |  5 +++++
+ 4 files changed, 17 insertions(+), 14 deletions(-)
+
+-- 
+2.41.3
 
 
