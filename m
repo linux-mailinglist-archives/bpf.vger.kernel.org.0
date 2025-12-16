@@ -1,165 +1,149 @@
-Return-Path: <bpf+bounces-76673-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76674-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id C12E2CC0A57
-	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 03:54:58 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65832CC0AD0
+	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 04:05:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9D9873025FB0
-	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 02:54:50 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A1B5D30413F6
+	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 03:03:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02CAE2F12C1;
-	Tue, 16 Dec 2025 02:54:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mkIJojbm"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33FED2F6590;
+	Tue, 16 Dec 2025 03:03:36 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FF022DA758
-	for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 02:54:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DA95259C84;
+	Tue, 16 Dec 2025 03:03:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765853688; cv=none; b=PhDXBiXb5LYafugu5PVKM6Sh9F5Dl3fFnDPAOddQ+TsYaigK22ehxIgh4ty6AsNfbc8QYT9JYJTpKARdrYvcz+1tWxjCPlEufUv+k36Ag057Lb6MV1bD35Kdp5M4D5FSuHKfIohQY2dxdd/TYqCqyPcKrCR+t0rsl/gyYCvDhbk=
+	t=1765854215; cv=none; b=QuOP1qzuenURu2ZpLSotIcZQWWqBW3TSvgon9hhqjd2aFWq/sfM/6/uEfDBD9mAEWB/pkM5f31OGBbZS6+/vgUIw0QAnK/Kqwvwi25eurSi2UUCSK/PMh44kwX6h7LTSoHIOUoEA8lknF+gEq/w1Eu0sA6hRydrL3j6vby2P7AE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765853688; c=relaxed/simple;
-	bh=numGoBvFqUmKgYq+gTvwU6RDyzW/FMMZFczl/Mu6Beo=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=TmV7f8vD1Y4X0BVI5iKP7Ubnp4ZZjXT+5FHTdaIOGHTVURiI1D4KpwQHG2IDomvGxtIOXPrC1etVFUmX7fWY6ePMgdGxpPr+cKuf0blrcL6YY7zOI2dNLIBQ9VPuRnfiYs3xSZazHCkFFBSYHZ1lT3O0J1OVCmr0qKvVXuf+CDI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mkIJojbm; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-2a0c09bb78cso13870315ad.0
-        for <bpf@vger.kernel.org>; Mon, 15 Dec 2025 18:54:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1765853686; x=1766458486; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=7WAisvZ8c0VsEQQ/ay4lGlVwantG9QHW/ILMt+qNiOc=;
-        b=mkIJojbm5zOc5rIC91ptnT8r2j92xoAXz1j/E/L3aLFg8ub1IMoPhqnKI++9D53Za+
-         3jqwNxHKrCSooTvu3e6y54PgZNOk9HDhpq25+OQNshLFKgI/TqO1KgJUvTtEzOtcy46r
-         RQ5WFPcwf45PCSj9p/USVGJtPioSPXBvPJrvoRRhyOdRe6V/mxdvCQG2AyEyj82qfeKR
-         fAQvoxU2Cs2365knGLsui0aJZ8CIKt2bu5ssUd0DJqMSlKBQWbQ7Jg22KbrNRu625R61
-         /yEcjHo7mMFXPglshLsX+IaY8sVG2+B+8QN6Z21JY1RiFuOfaRFgJ1adniTuCyF9SqfT
-         Fg2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765853686; x=1766458486;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7WAisvZ8c0VsEQQ/ay4lGlVwantG9QHW/ILMt+qNiOc=;
-        b=FRfkFxWdCJaM+sAJS34sglNrY7w6hBOOPZTC6vWarYcbRAyQZRoWGudvwd4Z5mOd+n
-         SrafSfhEcQZMxOVCgR0r5hAwUkTxW5s1JfhhY1XjbxVKCuxevo78Augt7KSML48x0tIC
-         q81G8adIENKxOidOins6kh00SU9PhcmBSqlJftisR4j/IGix7S1xSnu781aqLBtnjpuF
-         Ocwh2FrawGIHBf9lmc3nY8m3FSpb6otWOMzQfAcFYKRd3c6R1oo8vUv+AQvTYdbAuy93
-         0tWuFavur52PJjCygpNFlzYJMnX04+vHz2d3oGfLHRWP/YpZN05DP85C4on6jGvYmdio
-         6G9Q==
-X-Gm-Message-State: AOJu0YxuUji5FDw749soPUrrtG/7mYXdOH8N6GBJ57n/KhDt3nvi/dGM
-	nrQ0tyxrcpAAL6e+sOzkBrZ/+B2F76pjyuuG0pYk7W/Dr7ukq1yXr02A
-X-Gm-Gg: AY/fxX4WkMMEjMCFIL71BwPZ9kBptDx0TYed0khZGsdg32Xx+YC/u+EpydA7ZZ5P91y
-	gk49KbXQ9UCh3C98CM5usLPnnsxz3F0Giy16xkRiH7ts56PvfMlsdoiesK9ZG9wLgGJRufnw7JQ
-	EYnnAdpWOfLwSMsCfgt/FyiLGP5J7sShroI8VJdUvD7aKbeeQ6GRqeIMljGfSsIi07eUnmdbEg3
-	Fmd0oTn/T/kVdQoK3VX3n3HZfTw5VRBDwUP1UbFilBfJ4uzxhmB320TsynnGZK5diaat/G8k05B
-	/m2wO4COp8yzytba3BR8jBMy+P+jb/czN3kQbFZDObmewWtE8mNl6IqwMCkvlIlNrtkiieT8Fbi
-	gYMJH2Ls4lkQe7MQGSpZO7+pZCpbyjk58kRgKqBZ5oUX7muyyDoAUHCdWbCHfeN40VeFMoyPVpi
-	xP6jT+KMaq
-X-Google-Smtp-Source: AGHT+IHCrdtZDAP84b4wHx8q9geC3s/5+S5GqytXyOs32NpX6TX024B5zSY7ifUNYMrtppDYkMvk6Q==
-X-Received: by 2002:a17:903:fad:b0:298:639b:a64f with SMTP id d9443c01a7336-29f24d47166mr136419605ad.6.1765853686097;
-        Mon, 15 Dec 2025 18:54:46 -0800 (PST)
-Received: from [192.168.0.226] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a094398ed0sm84118975ad.27.2025.12.15.18.54.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Dec 2025 18:54:45 -0800 (PST)
-Message-ID: <9c9ac17e916162d8921e4829153b350080923339.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v3 3/6] resolve_btfids: Introduce enum
- btf_id_kind
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Ihor Solodrai <ihor.solodrai@linux.dev>, Alexei Starovoitov
- <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
- <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,  Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend	
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev	 <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>,  Andrew Morton <akpm@linux-foundation.org>, Nathan
- Chancellor <nathan@kernel.org>, Nicolas Schier	 <nsc@kernel.org>, Tejun Heo
- <tj@kernel.org>, David Vernet <void@manifault.com>,  Andrea Righi
- <arighi@nvidia.com>, Changwoo Min <changwoo@igalia.com>, Shuah Khan
- <shuah@kernel.org>, Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
- Bill Wendling <morbo@google.com>, Justin Stitt	 <justinstitt@google.com>,
- Alan Maguire <alan.maguire@oracle.com>, Donglin Peng	
- <dolinux.peng@gmail.com>
-Cc: bpf@vger.kernel.org, dwarves@vger.kernel.org,
- linux-kernel@vger.kernel.org, 	linux-kbuild@vger.kernel.org
-Date: Mon, 15 Dec 2025 18:54:42 -0800
-In-Reply-To: <4daf5253-685b-4047-8e2a-06ed2c72c830@linux.dev>
-References: <20251205223046.4155870-1-ihor.solodrai@linux.dev>
-	 <20251205223046.4155870-4-ihor.solodrai@linux.dev>
-	 <386068b11e146a9dbb502f770d7e012e3dea950f.camel@gmail.com>
-	 <c857acb9-977a-49ca-a03f-ef3fd68fabae@linux.dev>
-	 <b37bbff7486f47404872017faecba43833116d61.camel@gmail.com>
-	 <4daf5253-685b-4047-8e2a-06ed2c72c830@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
+	s=arc-20240116; t=1765854215; c=relaxed/simple;
+	bh=ErpQkvysehdoKvtB95pcMs7X1/KMSCP1USDNrJsYuWs=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=fTZCjjxvs/AlX1qii5hVX78YQUdd/eCCu8HFHTLDT8vKAQh6/v41v2A0Jimf9PYGthdcv7dH80udei+A4gFRkN3MkVq9Od7Gp2l0dlyb5Z2EdyvVH5JesYPvLxiMhEfCVSrp71Mum3Q0aCdnVyt09cmByOKcSYeKD2HvrxdoTjY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-c45ff70000001609-3d-6940cbfe996a
+From: Byungchul Park <byungchul@sk.com>
+To: linux-mm@kvack.org,
+	akpm@linux-foundation.org,
+	netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	kernel_team@skhynix.com,
+	harry.yoo@oracle.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	davem@davemloft.net,
+	kuba@kernel.org,
+	hawk@kernel.org,
+	john.fastabend@gmail.com,
+	sdf@fomichev.me,
+	saeedm@nvidia.com,
+	leon@kernel.org,
+	tariqt@nvidia.com,
+	mbloch@nvidia.com,
+	andrew+netdev@lunn.ch,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	david@redhat.com,
+	lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com,
+	vbabka@suse.cz,
+	rppt@kernel.org,
+	surenb@google.com,
+	mhocko@suse.com,
+	horms@kernel.org,
+	jackmanb@google.com,
+	hannes@cmpxchg.org,
+	ziy@nvidia.com,
+	ilias.apalodimas@linaro.org,
+	willy@infradead.org,
+	brauner@kernel.org,
+	kas@kernel.org,
+	yuzhao@google.com,
+	usamaarif642@gmail.com,
+	baolin.wang@linux.alibaba.com,
+	almasrymina@google.com,
+	toke@redhat.com,
+	asml.silence@gmail.com,
+	bpf@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	sfr@canb.auug.org.au,
+	dw@davidwei.uk,
+	ap420073@gmail.com,
+	dtatulea@nvidia.com
+Subject: [PATCH v2 0/1] finalize removing the page pool members in struct page
+Date: Tue, 16 Dec 2025 12:03:13 +0900
+Message-Id: <20251216030314.29728-1-byungchul@sk.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAAzWSa0hTYRyHe885O+e4HB7WxZNFwUSCIrtg8BfCRIJeIksoogtdRp7ayhub
+	mobFzNnM0tQSTVcppnlLY9rcxlbmvaQ0LZmUt3UxKjW1LHNkLvHbAw+/59OPJaUjlBerjIgW
+	VBHyMBktpsQj7oUb/rYHKjfZuj1BX11JQ8XvOLg/aBLBdOUwAfpyI4If028ZmLW1IJhsaqXh
+	a+MEgqLCKRL0HVoKflb/IcFsGUbwJfcBDR9bHAxUGIJhoOQTBVZdHQmO6200pGlnSLBNjzJw
+	yVQ6F67RMNBpTBfBzT/FJNRpBhnotuhp6K+cFcGnhjQKnuWVUfA9u4mEgfRAaClYDlPt3xA0
+	VdcRMHXtNg1vblkIeGR7w8CNrgIa3msHEHQ1OijIdqbQkJ+YjmDm91xyNOOHCPKb+5lAX5xo
+	t9O48dsYiWvLegnck5tJYfvj5wQ25/UxuMAQg2tK1+FUexeJDeVXaGyYyGLwux4rjdtyZyhs
+	HvLHZtMkgdOSRumQZYfF20KFMGWsoNoYcEKsuHe5mYzKEMcVtb5AGpTLpCI3luf8eEerRrTA
+	SUYn5WKaW8vb7dOki5dywXyV8TVKRWKW5EYZ3vrkF+0SS7g9fEp5DuFiivPhM7VF/8cSbivf
+	raum56Nr+IqH9aRrzHOFLD+WnIPmxQr+aamdykCLC9CiciRVRsSGy5Vhfr6K+AhlnO/JyHAD
+	mjtByQXnEROa6NzXgDgWydwleHa7UiqSx6rjwxsQz5KypZIUe4BSKgmVx58XVJHHVTFhgroB
+	rWQpmadky9S5UCl3Wh4tnBWEKEG1YAnWzUuDspynNJ+PJ1z08aq9mjTuPYReVc32JfToD8mW
+	Z+3q/bDJuqzt1vpowwEPfYj/7qo72/fJi0I6ysx+v86s0mVH6oymRLegZNvDYwaPXRmraz7u
+	7/Bor7Bo9+4oDre2HdYpmk9oulnsfdS7/uXdL3/HSoZFyf79aOd4sfqF09tBHAySUWqFfPM6
+	UqWW/wN8heHSAAMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAAzWRW0iTYRyHe7+zo8WXSX3ZRTCQTpQJFf9ISrqot+h0E4E3OfRDl5vKlrZ1
+	oJWiNnK5DmQ5wZppHlLZapviVDYzTcSYh9ZhakYlZTN0eVyZFt098PB7bn4cGd5DRXKKtLOi
+	Ok2ulDESSnJsT/bW311xiu19NhrMdTUMVM9ooWLYScNszRcCzFV2BMHZdywsuNoRTLa9YOCb
+	ZwKB5cEUCeaeHAp+1s2R0ND4BcHXoicMfGofYaHaehSGyj9T0JTnIGHkRgcDBTnzJLhmAyxc
+	dT5eDNv0LHhKOml4ZTfScHvuEQkO/TALvY1mBgZrFmj47C6goPN+JQU/7rSRMGSMg/bS1TDV
+	NYagrc5BwNT1Egb67zUS8MzVz8ItbykDH3OGEHg9IxTcCeUzUHzFiGB+ZjEZKAzSUPx8kI2L
+	xld8PgZ7xsZJ/LTyDYEHikwU9jW/JHDDfT+LS62Z2PZ4Mzb4vCS2Vl1jsHXiJovfDzQxuKNo
+	nsINH3bjBuckgQuyA8yJ1fGS2CRRqcgS1dF7EyQpZbnPyYxCidbyohvpURFrQGGcwO8Qsu0h
+	aokZfoPg882SSxzBHxVq7X3IgCQcyQdYoallmlkSq/hjQn7VXWKJKT5KMOVY/o6l/E6hN6+O
+	+RddL1TXt5KFiCtFy6pQhCItSyVXKHdu06Sm6NIU2m2J6SorWry5/FLI5ETB3oNuxHNItlyK
+	F/Ypwml5lkanciOBI2UR0nzfXkW4NEmuOy+q00+rM5Wixo3WcZRsjfTwKTEhnE+WnxVTRTFD
+	VP+3BBcWqUcQe9nyMFYf6dDHGafPnQRDrT/prX3U63LZOiuPl2U8SVYl+VX7Y9SOmC5t7MmQ
+	bmP3mUn/gVtbci2H5oLNgW7dwyNlTafiv3MX3/v9z1Yi24VNbr2pIi8st7znw4rlM2OOXd7E
+	X856nkDKtfQ4/Xo0qrWF121svTQ9mluSIqM0KfKYzaRaI/8DjxHjcOICAAA=
+X-CFilter-Loop: Reflected
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
 
-On Mon, 2025-12-15 at 18:52 -0800, Ihor Solodrai wrote:
-> On 12/15/25 6:38 PM, Eduard Zingerman wrote:
-> > On Mon, 2025-12-15 at 18:31 -0800, Ihor Solodrai wrote:
-> > > On 12/11/25 11:09 PM, Eduard Zingerman wrote:
-> > > > On Fri, 2025-12-05 at 14:30 -0800, Ihor Solodrai wrote:
-> > > > > Instead of using multiple flags, make struct btf_id tagged with a=
-n
-> > > > > enum value indicating its kind in the context of resolve_btfids.
-> > > > >=20
-> > > > > Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
-> > > > > ---
-> > > >=20
-> > > > Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-> > > >=20
-> > > > (But see a question below).
-> > > >=20
-> > > > > @@ -213,14 +218,19 @@ btf_id__add(struct rb_root *root, char *nam=
-e, bool unique)
-> > > > >  			p =3D &(*p)->rb_left;
-> > > > >  		else if (cmp > 0)
-> > > > >  			p =3D &(*p)->rb_right;
-> > > > > -		else
-> > > > > -			return unique ? NULL : id;
-> > > > > +		else if (kind =3D=3D BTF_ID_KIND_SYM && id->kind =3D=3D BTF_ID=
-_KIND_SYM)
-> > > >=20
-> > > > Nit: I'd keep the 'unique' parameter alongside 'kind' and resolve t=
-his
-> > > >      condition on the function callsite.
-> > >=20
-> > > I don't like the boolean args, they're always opaque on the callsite.
-> > >=20
-> > > We want to allow duplicates for _KIND_SYM and forbid for other kinds.
-> > > Since we are passing the kind from outside, I think it makes sense to
-> > > check for this inside the function. It makes the usage simpler.
-> >=20
-> > On the contrary, the callsite knows exactly what it wants:
-> > unique or non-unique entries. Here you need additional logic
-> > to figure out the intent.
-> >=20
-> > Arguably the uniqueness is associated not with entry type,
-> > but with a particular tree the entry is added to.
-> > And that is a property of the callsite.
->=20
-> You're right that the uniqueness is associated with a tree.
-> This means we could even check the kind of the root...
->=20
-> I'm thinking maybe it's cleaner to have btf_id__add() and
-> btf_id__add_unique(). It can even be a wrapper around btf_id__add()
-> with a boolean.  wdyt?
+Since this patch requires to use newly introduced APIs in net tree, I've
+been waiting for those to be ready in mm tree.  Now that mm tree has
+been rebased so as to include the APIs, this patch can be merged to mm
+tree.
 
-Well, sure, that would be a bit cleaner on the callsite.
-Up to you, given the number of the callsites I wouldn't bother.
+This patch has been carried out in a separate thread so far for the
+reviews [1]:
+
+ [1] https://lore.kernel.org/all/20251119012709.35895-1-byungchul@sk.com/
+---
+Changes from v1:
+	1. Drop the finalizing patch removing the pp fields of struct
+	   page since I found that there is still code accessing a pp
+	   field via struct page.  I will retry the finalizing patch
+	   after resolving the issue.
+---
+Byungchul Park (1):
+  mm: introduce a new page type for page pool in page type
+
+ .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |  2 +-
+ include/linux/mm.h                            | 27 +++----------------
+ include/linux/page-flags.h                    |  6 +++++
+ include/net/netmem.h                          | 15 +++++++++--
+ mm/page_alloc.c                               | 11 +++++---
+ net/core/netmem_priv.h                        | 20 +++++---------
+ net/core/page_pool.c                          | 18 +++++++++++--
+ 7 files changed, 53 insertions(+), 46 deletions(-)
+
+
+base-commit: d0a24447990a9d8212bfb3a692d59efa74ce9f86
+-- 
+2.17.1
+
 
