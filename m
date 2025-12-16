@@ -1,76 +1,79 @@
-Return-Path: <bpf+bounces-76713-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76714-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08064CC3463
-	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 14:39:54 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 931E5CC350D
+	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 14:46:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id F08D2305B914
-	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 13:38:27 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0853D305C802
+	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 13:39:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58D0F3845AC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 615323845D8;
 	Tue, 16 Dec 2025 13:30:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="37CCYGG/"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SqRAkau4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f73.google.com (mail-ed1-f73.google.com [209.85.208.73])
+Received: from mail-wm1-f74.google.com (mail-wm1-f74.google.com [209.85.128.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1861B382BED
-	for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 13:30:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CE35382BF1
+	for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 13:30:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765891808; cv=none; b=Q0ckK7gMgqW4K/hc0bU2+IuYbGMZisb9Yjeye6q+G5t81YiHypOwxkSqZb9v+NouRl42oc7ZRwKVBps8JFPjdJK/ovwABbBOZv32K/p4gfKLCpWD9BV8CTJSLVoMXU3SuMMDTFNfR3wWG3rXtqsfaKPmZAdB4Kf7tFMRyaQhWUk=
+	t=1765891808; cv=none; b=ss0MmDuzRF2rBksBE3zzzPz+Cl6HSBAh1BuHVn9j2rS7dLqnzZgMFZL4xSVIlrpAySEt4VX51MT8tu5xMMsx1VLkgCjIMboQzRyBiqn3WnljDTHB8FN1tjjVQOlVxWO2Ul07PNKe3GUq3ZePJ+86laVcChUpXkX3sPVWwuozJUw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1765891808; c=relaxed/simple;
-	bh=RVVMHKsGN401IuhZlvbDGgkt4PjsAaO2dy3LOb7NH+s=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=tEFjaiHhGGi5d2bkBKG1ipDK8BwpCxZIfFMVJw+15/7ivr0/9SQGb/dkgkSVSOYsh16oBBF3YFQkapOYdPe0ZOtSsWGSgilCcy4erHEdDRSnyI9vJn7Z5EACLuMhDDW4ukpWwA32zoPCoRKEUXzbtgB9na7hYfJ9SyCLQaUMiKM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--mattbobrowski.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=37CCYGG/; arc=none smtp.client-ip=209.85.208.73
+	bh=IrIABrj+7xfUgYfX8kOHvGNBr7U8dCf/n9p4jnGSqwc=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=Mma/WEkJldEK9+xRJnaJ3EQzgIAeKKiJJPk8AWsc44NNWZmzBhN1yaCDJhZRypnpGOhTSSHAoil5TPBKgDfwQJOQ+fY0RZV8Eg8rFIwxrnIPr0YgfV4ozV98jVRbbYJSL9zBbjNp5ByX6kONMMdViE6SZqKD+fJe7Gd1iYL93NM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--mattbobrowski.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SqRAkau4; arc=none smtp.client-ip=209.85.128.74
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--mattbobrowski.bounces.google.com
-Received: by mail-ed1-f73.google.com with SMTP id 4fb4d7f45d1cf-649850def48so7962334a12.1
-        for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 05:30:04 -0800 (PST)
+Received: by mail-wm1-f74.google.com with SMTP id 5b1f17b1804b1-47a97b7187dso14147265e9.0
+        for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 05:30:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1765891803; x=1766496603; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=xR2sbNKCDnhjhOTBGWwqajeMq67L1FwTO9V4BG0MSp4=;
-        b=37CCYGG/1d5554xwWI76Ktb4KP3F3uhcaw91cJtIpXe2aRtV1UTZAW0jyKSG5x5ycd
-         tG9/OnAZVkLknuxzpG7+7efHPeEgblJDTrKkRdEF6yb9XJjidDkzs45ysbPIo9YkbzrD
-         S352+94S8pbqJDpxLkkQ3bxGbrovfF73+JvPaPMr00Z2GwUx5H6DX10n0g5HA58zRThB
-         qvxa3biZDhg42nrJtk84hX+Ez6XvuW0wUBb5Rst6/6Xc9iKFATe4BLSoM2OBTceZD4IL
-         X9E/8jHi0dnt498Q7a5PsuV+zrGp6MFGVxW353p5rCpiN6LpZ16uqIuKm76KruFIFYnA
-         0FPA==
+        d=google.com; s=20230601; t=1765891805; x=1766496605; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2kjZacfeSscdoRxj5z6iTGxu+PZ43tsLcMUojAWcvTc=;
+        b=SqRAkau4zBcEgqrIHvpzVAo29Kumsg0O/2Mnl4DyOXlSG0eLRJ1pDVc+bhRTgjMV/Z
+         Eyy9UZ4EJZOyMsgbSCdPeZ6h603ZtkBbKgfFcFSv6ucpqmIsLkZAFNK5AFbvy6biB4PV
+         HlUNBqK2Q2B2bZcdJF5h05XrktbchZ6td3Xd8IHYsx0UbxcGNYxjk9h608mKnelyEItt
+         UA2zZWpsNISlwBnL8ZgAb1VToAjiz2p0DKHy3z2ruZixj8fyko4Ol2mrOppJxD3whIfW
+         RwEdtavGGCTekzAoWeAR9G/6RrcJ2usNFfuIp4a3EoYNf9VhhGPhaF1JQ6skSthZjlfe
+         +lMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765891803; x=1766496603;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xR2sbNKCDnhjhOTBGWwqajeMq67L1FwTO9V4BG0MSp4=;
-        b=pX+FbBnkpfa4Kq2GYEJNT/qQrgu0urX59G7nYA5og/gOfOOt1VNOpnkA0YVc9fBkvu
-         qY34fPreuEjJwfvJ4ao1Vttiq69FGP8W1eOb8UKMFeGRUatcMx9XN36iUcAh9kbN6XqJ
-         OfgMMCQafEAHiVmfNa6QSWwNkzRHW5MTfSGpUtKLx1Ah4Omc2K7K4/fVcrlfSNsPl2GP
-         b8cqzLn4uRpNGCmcRyPFLR60b3oMDgf5n4tcvUy8k94TqUmScaczvbhb1HtLhRMqSTZr
-         UGM7LUrZ0unQ998NYD3WTACk7irb6kuo8olLC6veCBSpk303U0Rtbs6HAP5bhArXhxam
-         6ayw==
-X-Gm-Message-State: AOJu0YxvEDpAQONf1UqZ9h05Itv9aQ4IBRfsEbT0JyogHGQpac+9mMFz
-	UxFZZuItdxsHFl+NqYJxc7MyRcl1nTyZoGGuoNXmJOtfQlukGE4Xm7q54oDsz0ajI3E+7U7iEyR
-	83VNihDmV6YlzIOMtwNNVrf7HXYwjYGYHhuG+hWVMcPtBNHr2SvHRhSv7+flFEefT8IH9CHMJes
-	V0i0PYrkwfgy6AG8MZRpeRi6n9LURmq4NUEM54/dSLu7ec+qPgUOn6Mvzy/i2Q3M0c8lxkjQ==
-X-Google-Smtp-Source: AGHT+IG+8KN1AEfOlvQMMymJs6nHU9PHiBiJnDNOHEGd5N9JLFRUonbtvg6qYQ7jHf8lsPvzjwLHb3Jetu+TJAV9Nkpw
-X-Received: from edtw3.prod.google.com ([2002:aa7:cb43:0:b0:64b:34e0:401])
+        d=1e100.net; s=20230601; t=1765891805; x=1766496605;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2kjZacfeSscdoRxj5z6iTGxu+PZ43tsLcMUojAWcvTc=;
+        b=LuIN8rsA48lrOP+7MZdejeC4vSFdC9TJO/wgkQKW6XDPAEqwGxexG6aSG1zsGOq5t0
+         VV2qlT9N+KN7iZj4VeFxMw9jrDWBlptDbW7hVYZFow36adIdYRvPZzVhL5E8/6xI2FdZ
+         Cb7Mky+KpoIyrChC2lN8rnoMywmvMhvBBFZ+Dcs+4Clo6/b2YTVx00bI0VmL2t/xiOKo
+         Qrh9n4Lf6EwBwta3EgfJ/CTQIiuL3qSYi/kM1/D0qzKX+uzkqW/i9kmwyvy6Jfvaehxd
+         vy/X3+hvys+qNmDw9/fF7R5XAIR+tLGidhWbpgDaZ92oM0Gh7iYOU4N0R+Gr8XtTgP2N
+         7f2w==
+X-Gm-Message-State: AOJu0YxAZId3ik1SnkT4GnhdTI5YFDtqbOIEityCY3Dmhl69vs8fVFiP
+	zFHaNncRS+0qswHm3+CfbY2LBwwuVNiz8aMfmVM7BS7jgjBWJBniByfQXxprF+KVybTWfJd+BYz
+	Xsd+tmbEdw0sSsR177ipFgTybYVzSA0DqesLETP4pcwHrLzKd5i/uRg1qkOEj+K7w+nIsCdZIPx
+	uXI12g2o1U4ojiZ5vwfIKHMdxrl4pLItbfgpdeI35OKyPykXSSFnDQOXv8G3f2iG9VPjalLw==
+X-Google-Smtp-Source: AGHT+IHPy0+LIRm1XRhmHjC1B8qBDOCmA2g/1UiOQeVzUjFsNVLMftlImorApgW5iT9CI46917VjJfRPe7LLjq6eDA/c
+X-Received: from wmsl5.prod.google.com ([2002:a05:600c:1d05:b0:476:ddb0:2391])
  (user=mattbobrowski job=prod-delivery.src-stubby-dispatcher) by
- 2002:aa7:c4c6:0:b0:645:d07:8924 with SMTP id 4fb4d7f45d1cf-6499afbbc62mr10345130a12.16.1765891803228;
- Tue, 16 Dec 2025 05:30:03 -0800 (PST)
-Date: Tue, 16 Dec 2025 13:29:59 +0000
+ 2002:a05:600d:644e:20b0:47a:9574:b75f with SMTP id 5b1f17b1804b1-47a9574ba21mr101317865e9.33.1765891805595;
+ Tue, 16 Dec 2025 05:30:05 -0800 (PST)
+Date: Tue, 16 Dec 2025 13:30:00 +0000
+In-Reply-To: <20251216133000.3690723-1-mattbobrowski@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20251216133000.3690723-1-mattbobrowski@google.com>
 X-Mailer: git-send-email 2.52.0.313.g674ac2bdf7-goog
-Message-ID: <20251216133000.3690723-1-mattbobrowski@google.com>
-Subject: [PATCH v2 bpf-next 1/2] bpf: annotate file argument as __nullable in bpf_lsm_mmap_file
+Message-ID: <20251216133000.3690723-2-mattbobrowski@google.com>
+Subject: [PATCH v2 bpf-next 2/2] selftests/bpf: add test case for BPF LSM hook bpf_lsm_mmap_file
 From: Matt Bobrowski <mattbobrowski@google.com>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
@@ -83,119 +86,67 @@ Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
 	Matt Bobrowski <mattbobrowski@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-As reported in [0], anonymous memory mappings are not backed by a
-struct file instance. Consequently, the struct file pointer passed to
-the security_mmap_file() LSM hook is NULL in such cases.
+Add a trivial test case asserting that the BPF verifier enforces
+PTR_MAYBE_NULL semantics on the struct file pointer argument of BPF
+LSM hook bpf_lsm_mmap_file().
 
-The BPF verifier is currently unaware of this, allowing BPF LSM
-programs to dereference this struct file pointer without needing to
-perform an explicit NULL check. This leads to potential NULL pointer
-dereference and a kernel crash.
+Dereferencing the struct file pointer passed into bpf_lsm_mmap_file()
+without explicitly performing a NULL check first should not be
+permitted by the BPF verifier as it can lead to NULL pointer
+dereferences and a kernel crash.
 
-Add a strong override for bpf_lsm_mmap_file() which annotates the
-struct file pointer parameter with the __nullable suffix. This
-explicitly informs the BPF verifier that this pointer (PTR_MAYBE_NULL)
-can be NULL, forcing BPF LSM programs to perform a check on it before
-dereferencing it.
-
-[0] https://lore.kernel.org/bpf/5e460d3c.4c3e9.19adde547d8.Coremail.kaiyanm@hust.edu.cn/
-
-Reported-by: Kaiyan Mei <M202472210@hust.edu.cn>
-Reported-by: Yinhao Hu <dddddd@hust.edu.cn>
-Reviewed-by: Dongliang Mu <dzm91@hust.edu.cn>
-Closes: https://lore.kernel.org/bpf/5e460d3c.4c3e9.19adde547d8.Coremail.kaiyanm@hust.edu.cn/
 Signed-off-by: Matt Bobrowski <mattbobrowski@google.com>
 ---
-v2:
- - Updated the comment against the new strong definition for
-   bpf_lsm_mmap_file(), clarifying the need for using the __nullable
-   suffix annotation against the struct file pointer parameter name.
+ .../selftests/bpf/progs/verifier_lsm.c        | 31 ++++++++++++++++++-
+ 1 file changed, 30 insertions(+), 1 deletion(-)
 
- MAINTAINERS                |  1 +
- kernel/bpf/Makefile        | 12 +++++++++++-
- kernel/bpf/bpf_lsm.c       |  5 +++--
- kernel/bpf/bpf_lsm_proto.c | 19 +++++++++++++++++++
- 4 files changed, 34 insertions(+), 3 deletions(-)
- create mode 100644 kernel/bpf/bpf_lsm_proto.c
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e36689cd7cc7..c531fae0dc06 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4754,6 +4754,7 @@ S:	Maintained
- F:	Documentation/bpf/prog_lsm.rst
- F:	include/linux/bpf_lsm.h
- F:	kernel/bpf/bpf_lsm.c
-+F:	kernel/bpf/bpf_lsm_proto.c
- F:	kernel/trace/bpf_trace.c
- F:	security/bpf/
+diff --git a/tools/testing/selftests/bpf/progs/verifier_lsm.c b/tools/testing/selftests/bpf/progs/verifier_lsm.c
+index 6af9100a37ff..38e8e9176862 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_lsm.c
++++ b/tools/testing/selftests/bpf/progs/verifier_lsm.c
+@@ -1,7 +1,8 @@
+ // SPDX-License-Identifier: GPL-2.0
  
-diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-index 232cbc97434d..79cf22860a99 100644
---- a/kernel/bpf/Makefile
-+++ b/kernel/bpf/Makefile
-@@ -42,7 +42,17 @@ endif
- ifeq ($(CONFIG_BPF_JIT),y)
- obj-$(CONFIG_BPF_SYSCALL) += bpf_struct_ops.o
- obj-$(CONFIG_BPF_SYSCALL) += cpumask.o
--obj-${CONFIG_BPF_LSM} += bpf_lsm.o
-+# bpf_lsm_proto.o must precede bpf_lsm.o. The current pahole logic
-+# deduplicates function prototypes within
-+# btf_encoder__add_saved_func() by keeping the first instance seen. We
-+# need the function prototype(s) in bpf_lsm_proto.o to take precedence
-+# over those within bpf_lsm.o. Having bpf_lsm_proto.o precede
-+# bpf_lsm.o ensures its DWARF CU is processed early, forcing the
-+# generated BTF to contain the overrides.
-+#
-+# Notably, this is a temporary workaround whilst the deduplication
-+# semantics within pahole are revisited accordingly.
-+obj-${CONFIG_BPF_LSM} += bpf_lsm_proto.o bpf_lsm.o
- endif
- ifneq ($(CONFIG_CRYPTO),)
- obj-$(CONFIG_BPF_SYSCALL) += crypto.o
-diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
-index 7cb6e8d4282c..0c4a0c8e6f70 100644
---- a/kernel/bpf/bpf_lsm.c
-+++ b/kernel/bpf/bpf_lsm.c
-@@ -18,10 +18,11 @@
- #include <linux/bpf-cgroup.h>
+-#include <linux/bpf.h>
++#include <vmlinux.h>
+ #include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
+ #include "bpf_misc.h"
  
- /* For every LSM hook that allows attachment of BPF programs, declare a nop
-- * function where a BPF program can be attached.
-+ * function where a BPF program can be attached. Notably, we qualify each with
-+ * weak linkage such that strong overrides can be implemented if need be.
-  */
- #define LSM_HOOK(RET, DEFAULT, NAME, ...)	\
--noinline RET bpf_lsm_##NAME(__VA_ARGS__)	\
-+__weak noinline RET bpf_lsm_##NAME(__VA_ARGS__)	\
- {						\
- 	return DEFAULT;				\
+ SEC("lsm/file_permission")
+@@ -159,4 +160,32 @@ __naked int disabled_hook_test3(void *ctx)
+ 	::: __clobber_all);
  }
-diff --git a/kernel/bpf/bpf_lsm_proto.c b/kernel/bpf/bpf_lsm_proto.c
-new file mode 100644
-index 000000000000..44a54fd8045e
---- /dev/null
-+++ b/kernel/bpf/bpf_lsm_proto.c
-@@ -0,0 +1,19 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright 2025 Google LLC.
-+ */
-+
-+#include <linux/fs.h>
-+#include <linux/bpf_lsm.h>
-+
-+/*
-+ * Strong definition of the mmap_file() BPF LSM hook. The __nullable suffix on
-+ * the struct file pointer parameter name marks it as PTR_MAYBE_NULL. This
-+ * explicitly enforces that BPF LSM programs check for NULL before attempting to
-+ * dereference it.
-+ */
-+int bpf_lsm_mmap_file(struct file *file__nullable, unsigned long reqprot,
-+		      unsigned long prot, unsigned long flags)
+ 
++SEC("lsm/mmap_file")
++__description("not null checking nullable pointer in bpf_lsm_mmap_file")
++__failure __msg("R1 invalid mem access 'trusted_ptr_or_null_'")
++int BPF_PROG(no_null_check, struct file *file)
 +{
++	struct inode *inode;
++
++	inode = file->f_inode;
++	__sink(inode);
++
 +	return 0;
 +}
++
++SEC("lsm/mmap_file")
++__description("null checking nullable pointer in bpf_lsm_mmap_file")
++__success
++int BPF_PROG(null_check, struct file *file)
++{
++	struct inode *inode;
++
++	if (file) {
++		inode = file->f_inode;
++		__sink(inode);
++	}
++
++	return 0;
++}
++
+ char _license[] SEC("license") = "GPL";
 -- 
 2.52.0.313.g674ac2bdf7-goog
 
