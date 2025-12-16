@@ -1,127 +1,192 @@
-Return-Path: <bpf+bounces-76774-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76775-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D888CC548A
-	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 22:59:36 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CA81CC548D
+	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 23:00:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6D007301F273
-	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 21:59:02 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 2EAB730019F7
+	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 22:00:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66670339B53;
-	Tue, 16 Dec 2025 21:58:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A62133271F2;
+	Tue, 16 Dec 2025 22:00:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RUBaYuTQ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FmlJIihd"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C7EA33E36A
-	for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 21:58:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E8D233A6FE
+	for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 22:00:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765922336; cv=none; b=ta3mj3K3wdOVjmpAcY+gxNMsmAfC8ASfEB19o8yezlN5/ZXdU6XAV5nVseuaosmkNcA9b7S48YqJH9f0KoX1C0YjU39J1VDxzVq5FltRTqQAJL+Rjxw0oDmA5Hq9v/qhUxiC433sfW+BypL7DHttkaT0fId8Xa0dv2hN0muDGOQ=
+	t=1765922429; cv=none; b=NMit5IMVHAMvVf9JBzXS/egoSrGkACUsnEELxQmtKEIvhnq8d5Use43fuqW8U4oQMzW75BotqsqAW3D6ARNcZMi+GLDWCM84nxBuV15MOR4EH7hBw3Wp5QXZkz6Fk6sNis/9KtxF+OPpOV6XCG8fr9YZ6LRggDvhGCS4hd8rwEQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765922336; c=relaxed/simple;
-	bh=6CP3hRX5BQaPm/qBlm8Qc5XbaG+YCClo9EDxVahnc8w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fMv5OcrVIy2z19UPPDYoPuJKix8J7xMKErs9IDSqtx0h2UcAzdqR9D7F1ywke910IhvFA3PSYYkSLa6ehYsZmISs3ABHlVVnqNBPUccom0/6ZIwZPivnKMemXgFNuCYj5WNZr/EZQHYbDqXSt/nzStjp0GRBXetgWAInCVhEV6Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RUBaYuTQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B32AC2BCAF
-	for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 21:58:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765922335;
-	bh=6CP3hRX5BQaPm/qBlm8Qc5XbaG+YCClo9EDxVahnc8w=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=RUBaYuTQtYEBHCJxUpIH99WeXgQ2VAs/zOXnNrBNvvwjKuJkBRYXTyg5MkxC45VlS
-	 ee62YHQz/l5TzI0I1GplXcyeEl93qBFH7gYDmwC7BguRMQY6BUM7+Nhww+IhkSPKeZ
-	 vhMXYSSBjpPDpE0/8iws6ojZSyj+dcE+vlfVERn5CHOVk3CLhZnNvu7cooPwV8Btce
-	 W6OxcrMnjOdhmnejttNEaLbeETWnLpT1S0GXHlsiqkIulhT2KNTfPdWVmRWMvBV7+z
-	 GjV5cwcqyn67Jjwu7XQO2QjXLz4pYgFmwwCtaU6q3IEgWMTGJWwp9d592Xfl+zlEGd
-	 Y2U/vDSzWcqCg==
-Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-88a35a00502so29254426d6.0
-        for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 13:58:55 -0800 (PST)
-X-Gm-Message-State: AOJu0YyEUVMfr+F3PnbP+66vtHct0eMvWWmUEzVv3FG5N1wXCgibtU5f
-	u6wXO/h4y/V0gPA1mxgkXs51Y8LO017Y6I9IYutvw8H3IvDKdbHoW31fq/yXzwTC3cvQaRJFxaA
-	uPyzsECGvP3zyzHlD5/gKiaTht9vXEFA=
-X-Google-Smtp-Source: AGHT+IF9QLmgs4U9LIq2aUJffN35K1zm7I1JmhCrt83Bk+WeZR0UQZFFngnES14acgdWyIrqFLuVAI1J9HKCZrKwqjI=
-X-Received: by 2002:a05:6214:5f0a:b0:882:6d42:53a7 with SMTP id
- 6a1803df08f44-8887e42cd5fmr212286226d6.40.1765922334668; Tue, 16 Dec 2025
- 13:58:54 -0800 (PST)
+	s=arc-20240116; t=1765922429; c=relaxed/simple;
+	bh=LpXKGuOmQTlkXn4y6+rjvDSHyvJ7l1XuRSzmw2yQ0Yg=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=TXD1Ov25ZJlllOo0+jmBAHyBrFIhWqoScLiEt86YOO48KnfpfnGL94/mCaoiOAoaG/lMl9HcaIXhEZlAU1BBRkyinfNOulw3zI2zoNQyBo1Ht0msMmdbxaDdZX8Oddn1Ccb7JysRR4EemQb82mjN/dhI+xRqPvmfQDbY0HSWaao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FmlJIihd; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-29f102b013fso62310585ad.2
+        for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 14:00:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1765922425; x=1766527225; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=mFG3q3UcDNpgnUkWkSVTKwxTGVaZ3/mHhibJlT58Gnw=;
+        b=FmlJIihdzPTuTIB8sON6E7Ml6gh21kpmwfRqPDEb031/qRYOHI24ocWxZcv+cdPcEN
+         2HodGJ991txllPthVjdncahKZVSYOT7GvBy/g+n2Vh5nPbwnncJMAavyGynK3+n80K/D
+         eEyVHsxGI8fsRmaGCq0XW1HcF5cKoMjDTGeKO39AKUAsR2wQod5j8/dt22qHDGAl8l34
+         /xJjBCfDR9ESMpNKi6dz14d8noobWJvW88QxszRJFNBOgDYtAJFR2WhVqCpkbHAE8QED
+         k+V5eG42bgwB36It3rGc2Sa3faotWXZNswxP9gyBjfEYVr+M1KH3oW2x1Tg6q7YwSH1E
+         Z6oQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765922425; x=1766527225;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mFG3q3UcDNpgnUkWkSVTKwxTGVaZ3/mHhibJlT58Gnw=;
+        b=Uk675tS/lRjC1xJlgNshC3SVJ2ss+W0nPA8VZDfHkPiISnGjX64aR9BjgZ8d+ut0v/
+         vUc3hMkkAmFBpvC+GodnQZ91j7rmAQvdPFIfb5jWcBvlRSMMMzA4e9ZsqNcerG7hxKz4
+         qLvZc8JWk88x+0Mpojv0HbWz14lsLu8pp9+0RcimbkDVMmLfdU0F/Er26ZO0lEjjN7is
+         Qznljd/KC2Yx7HDE9LNnQusF/J9cBcx2iRPqu+MG+COH89/O5TsQtvMOHayksL9vHOYm
+         3k/IOjjBU4fBNey5gJ+4f5MCpXuJ6Yqtdd+dAUVGefS4zEZAOztPwbMM9vGOXaLHoazO
+         fzTQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXpE+/v3kWTd4Bj2+uyAeYaHK9eQq4r4AZV4lA9rrFPK7p3GruIgJCeXD6ZvDEwhG8lru4=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy/5dGLHDhySUBLMBL2y5aPnfsoVJDBdfY/Ln4HY74nqQK/WfFd
+	lDwAoGhTnS10SipU8slpI1/Fn6TEMSUVf/2A0Yf/xsJ3vA9+8iHjfEroTUASblDR
+X-Gm-Gg: AY/fxX4qKO0ARVge64iBBAcEgTUOaSeHhQSW8OwdyWIXV1ogKtJqHnAkxMDvwOEEOaZ
+	+AQJubZYudpwIcr4uv6yK8PLe+ec+u+/WnbluoO3fYIpg0xz3NfviWd1kB5knTUZCKNnlPb0H3x
+	fmG1sLzd+UF0X8itmWbpB+A855DXy4AJHAXTtq3bwqAcuVekT/Wg458xHOP/2MIa0fuuSnavJR5
+	F9HU5ZKF0jw2ZnkEi3uxtFFD1N/esveM4bIX1eYGu3KE6KqejCoZcDx/gybJRIQPOexPo9jAzIS
+	yijkFksdtwRQFDFcQ9lsmPxg0Yb0qEkXan6X8QegZK7XfDO38Q8BySbyIRN/ZoMTurcceO4Gxrc
+	VO4rHhoVYyEUnHGhR0WqOkHk1p/CygmJE5uo+WqJndp2MBF0vz3JM16I/R8wDRbyC4f1x/jUB41
+	QUpw4xBmhW
+X-Google-Smtp-Source: AGHT+IGsZhlVDzZigDdVekdNu1ba8f6ux1+/XWSPzpuHy3xGUg5eQV2LJdxR4PDWUoeJck9yGLtIWg==
+X-Received: by 2002:a17:902:dac2:b0:2a0:98a2:3ccf with SMTP id d9443c01a7336-2a098a23ebdmr120494715ad.40.1765922424708;
+        Tue, 16 Dec 2025 14:00:24 -0800 (PST)
+Received: from [192.168.0.226] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a10e079277sm63267795ad.30.2025.12.16.14.00.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Dec 2025 14:00:24 -0800 (PST)
+Message-ID: <3777b2f096877a9965a0fa6905fbabb06826d13f.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v9 01/10] libbpf: Add BTF permutation support
+ for type reordering
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Donglin Peng <dolinux.peng@gmail.com>, ast@kernel.org, 
+	andrii.nakryiko@gmail.com
+Cc: zhangxiaoqin@xiaomi.com, ihor.solodrai@linux.dev, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, pengdonglin
+	 <pengdonglin@xiaomi.com>, Alan Maguire <alan.maguire@oracle.com>
+Date: Tue, 16 Dec 2025 14:00:21 -0800
+In-Reply-To: <20251208062353.1702672-2-dolinux.peng@gmail.com>
+References: <20251208062353.1702672-1-dolinux.peng@gmail.com>
+	 <20251208062353.1702672-2-dolinux.peng@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251208030117.18892-1-git@danielhodges.dev> <20251208030117.18892-4-git@danielhodges.dev>
-In-Reply-To: <20251208030117.18892-4-git@danielhodges.dev>
-From: Song Liu <song@kernel.org>
-Date: Wed, 17 Dec 2025 06:58:43 +0900
-X-Gmail-Original-Message-ID: <CAPhsuW7n2aZQ6ORA60xQd91rieXtbLbheBzKAhfLiwkRCHBzqA@mail.gmail.com>
-X-Gm-Features: AQt7F2o5Ad7oXU21koarRoJP-8nzG89C8aGP9TrpNcoTMVvWA7AXG_BGfM67iQM
-Message-ID: <CAPhsuW7n2aZQ6ORA60xQd91rieXtbLbheBzKAhfLiwkRCHBzqA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 3/6] bpf: Add SHA hash kfunc for cryptographic hashing
-To: Daniel Hodges <git@danielhodges.dev>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, vadim.fedorenko@linux.dev, yatsenko@meta.com, 
-	martin.lau@linux.dev, eddyz87@gmail.com, haoluo@google.com, jolsa@kernel.org, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
-	yonghong.song@linux.dev, herbert@gondor.apana.org.au, davem@davemloft.net, 
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Sun, Dec 7, 2025 at 7:01=E2=80=AFPM Daniel Hodges <git@danielhodges.dev>=
- wrote:
+On Mon, 2025-12-08 at 14:23 +0800, Donglin Peng wrote:
+> From: pengdonglin <pengdonglin@xiaomi.com>
+>=20
+> Introduce btf__permute() API to allow in-place rearrangement of BTF types=
+.
+> This function reorganizes BTF type order according to a provided array of
+> type IDs, updating all type references to maintain consistency.
+>=20
+> Cc: Eduard Zingerman <eddyz87@gmail.com>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Cc: Alan Maguire <alan.maguire@oracle.com>
+> Cc: Ihor Solodrai <ihor.solodrai@linux.dev>
+> Cc: Xiaoqin Zhang <zhangxiaoqin@xiaomi.com>
+> Signed-off-by: pengdonglin <pengdonglin@xiaomi.com>
+> ---
+
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+
 [...]
+
+> diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
+> index cc01494d6210..ba67e5457e3a 100644
+> --- a/tools/lib/bpf/btf.h
+> +++ b/tools/lib/bpf/btf.h
+> @@ -281,6 +281,42 @@ LIBBPF_API int btf__dedup(struct btf *btf, const str=
+uct btf_dedup_opts *opts);
+>   */
+>  LIBBPF_API int btf__relocate(struct btf *btf, const struct btf *base_btf=
+);
+> =20
+> +struct btf_permute_opts {
+> +	size_t sz;
+> +	/* optional .BTF.ext info along the main BTF info */
+> +	struct btf_ext *btf_ext;
+> +	size_t :0;
+> +};
+> +#define btf_permute_opts__last_field btf_ext
 > +
-> +       if (!ctx->type->hash)
-> +               return -EOPNOTSUPP;
+> +/**
+> + * @brief **btf__permute()** performs in-place BTF type rearrangement
+> + * @param btf BTF object to permute
+> + * @param id_map Array mapping original type IDs to new IDs
+> + * @param id_map_cnt Number of elements in @id_map
+> + * @param opts Optional parameters for BTF extension updates
+> + * @return 0 on success, negative error code on failure
+> + *
+> + * **btf__permute()** rearranges BTF types according to the specified ID=
+ mapping.
+> + * The @id_map array defines the new type ID for each original type ID.
+> + *
+> + * For **base BTF**:
+> + * - @id_map must include all types from ID 1 to `btf__type_cnt(btf)-1`
+> + * - @id_map_cnt should be `btf__type_cnt(btf) - 1`
+> + * - Mapping uses `id_map[original_id - 1] =3D new_id`
+> + *
+> + * For **split BTF**:
+> + * - @id_map should cover only split types
+> + * - @id_map_cnt should be `btf__type_cnt(btf) - btf__type_cnt(btf__base=
+_btf(btf))`
+> + * - Mapping uses `id_map[original_id - btf__type_cnt(btf__base_btf(btf)=
+)] =3D new_id`
+
+Nit: internally the rule does not have special cases:
+
+       id_map[original_id - start_id] =3D new_id
+
+     So, maybe there is no need split these cases in the docstring?
+     Otherwise it is not immediately clear that both cases are handled
+     uniformly.
+
+> + *
+> + * On error, returns negative error code and sets errno:
+> + *   - `-EINVAL`: Invalid parameters or ID mapping (duplicates, out-of-r=
+ange)
+> + *   - `-ENOMEM`: Memory allocation failure
+> + */
+> +LIBBPF_API int btf__permute(struct btf *btf, __u32 *id_map, __u32 id_map=
+_cnt,
+> +			    const struct btf_permute_opts *opts);
 > +
-> +       data_len =3D __bpf_dynptr_size(data_kern);
-> +       out_len =3D __bpf_dynptr_size(out_kern);
-> +
-> +       if (data_len =3D=3D 0)
-> +               return -EINVAL;
-> +
-> +       if (!ctx->type->digestsize)
-> +               return -EOPNOTSUPP;
-> +
-> +       unsigned int digestsize =3D ctx->type->digestsize(ctx->tfm);
-
-./scripts/checkpatch.pl will complain about this:
-
-WARNING: Missing a blank line after declarations
-#109: FILE: kernel/bpf/crypto.c:387:
-+       unsigned int digestsize =3D ctx->type->digestsize(ctx->tfm);
-+       if (out_len < digestsize)
-
-Please run ./scripts/checkpatch.pl on all the patches. It also highlights
-some other issues, such as we need to update the MAINTAINERS file.
-
-Also, we don't want variable declaration in the middle of a code
-block.
-
-> +       if (out_len < digestsize)
-> +               return -EINVAL;
-> +
-[...]
->  static const struct btf_kfunc_id_set crypt_kfunc_set =3D {
-> @@ -383,6 +442,7 @@ static int __init crypto_kfunc_init(void)
->         ret =3D register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS, &crypt=
-_kfunc_set);
->         ret =3D ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_ACT,=
- &crypt_kfunc_set);
->         ret =3D ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_XDP, &cryp=
-t_kfunc_set);
-> +       ret =3D ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SYSCALL, &=
-crypt_kfunc_set);
-
-This enables all kfuncs in crypt_kfunc_set for BPF_PROG_TYPE_SYSCALL.
-We need a clear explanation why this is needed.
-
-Thanks,
-Song
+>  struct btf_dump;
+> =20
+>  struct btf_dump_opts {
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index 8ed8749907d4..b778e5a5d0a8 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -451,4 +451,5 @@ LIBBPF_1.7.0 {
+>  	global:
+>  		bpf_map__set_exclusive_program;
+>  		bpf_map__exclusive_program;
+> +		btf__permute;
+>  } LIBBPF_1.6.0;
 
