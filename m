@@ -1,166 +1,128 @@
-Return-Path: <bpf+bounces-76676-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76677-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F54DCC0B21
-	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 04:14:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DE4BECC0BA3
+	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 04:34:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B64D5301D5A8
-	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 03:14:24 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4718D30336BA
+	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 03:34:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E73B2ED161;
-	Tue, 16 Dec 2025 03:14:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B879B2E06EF;
+	Tue, 16 Dec 2025 03:34:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="QzTdP/dI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mhjUqGaX"
 X-Original-To: bpf@vger.kernel.org
-Received: from m16.mail.126.com (m16.mail.126.com [220.197.31.6])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53A2A1F92E;
-	Tue, 16 Dec 2025 03:14:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 330FA26059B;
+	Tue, 16 Dec 2025 03:34:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765854861; cv=none; b=OJ6dCK1CJZ6RaRUo7SfxkTuRDCniJ6LxuQzgLuez6ko5vwF9qYNM9DdERv75iDKQZ72IfmfoFonoeH1tAQccFEf2+QKem6qWSbVow+CDIWcGSniDU3P0dDURx42OXBDgO3JUP85c581KymFnlruDQYW6HH6pE2+vfTdwpKCmhjc=
+	t=1765856053; cv=none; b=fa2aqZGMwI8S5J9qBi8De3MKjWGTrpdQ77/c64x3dUTgbiZx881xdxMy8eCHEypJ2RNaO4s8AzkOUHu9fdfLYJiy/PmYEicggvXiTTRyuEpzD4bQBZkACkICDJyli4l4tOZMNHKoHAuRXmhXqFog1NSHl62LfwIKCoQVFBNhF8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765854861; c=relaxed/simple;
-	bh=puOVVC4YLN0nBKtz3o3a/cuXlWyJvQes7C0VLh1ReME=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qhOLFzXYrXEXw63/1PJzooygAV+7JkbhWNK0F2QxU6sBPb3ma6dhDlwv4bd6KwO4hXDGkLsd4/xdb+JOi8Z5rtRRLFzTzwoNVDLJjH3zs1GoyJxA3Ve7PSIe4oWKkBHydo6NF1daHG+b7cM90pZVflooETxyXLRnKY2B69mT59w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com; spf=pass smtp.mailfrom=126.com; dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b=QzTdP/dI; arc=none smtp.client-ip=220.197.31.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=126.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=xy
-	2ZWl7O84CNJ1+Mxls8EdlSwbzidzX95E9A+UqPdBg=; b=QzTdP/dIi1/KuUTQCg
-	bwvOeQjq0aucVS55GGB+uLOjw2jK8cA/7b0ghD0Rg3OBqnRIGlJSpQly5OnEe1BG
-	WA0FCw4thU+kcFxnWAJP4CPb6L/iPxUjkWZZ59xmqBMMwF+byE0aDJSTcLzjcL1v
-	Zh1RgYtb9uzxOFNupMaw5HykU=
-Received: from MacPro.localdomain (unknown [])
-	by gzga-smtp-mtada-g1-1 (Coremail) with SMTP id _____wDX7_GczUBpgKueAQ--.44865S2;
-	Tue, 16 Dec 2025 11:10:21 +0800 (CST)
-From: donglaipang@126.com
-To: syzbot+2b3391f44313b3983e91@syzkaller.appspotmail.com
-Cc: andrii@kernel.org,
-	ast@kernel.org,
-	bpf@vger.kernel.org,
-	daniel@iogearbox.net,
-	davem@davemloft.net,
-	eddyz87@gmail.com,
-	haoluo@google.com,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	jolsa@kernel.org,
-	kpsingh@kernel.org,
-	kuba@kernel.org,
-	linux-kernel@vger.kernel.org,
-	martin.lau@linux.dev,
-	netdev@vger.kernel.org,
-	sdf@fomichev.me,
-	song@kernel.org,
-	syzkaller-bugs@googlegroups.com,
-	yonghong.song@linux.dev,
-	DLpang <donglaipang@126.com>
-Subject: [PATCH] bpf: Fix NULL deref in __list_del_clearprev for flush_node
-Date: Tue, 16 Dec 2025 11:10:18 +0800
-Message-ID: <20251216031018.1615363-1-donglaipang@126.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <69369331.a70a0220.38f243.009d.GAE@google.com>
-References: <69369331.a70a0220.38f243.009d.GAE@google.com>
+	s=arc-20240116; t=1765856053; c=relaxed/simple;
+	bh=KeCxncnuSFJjzzaRe8K2a8BqmNbS4k4iVP3dvPsYyns=;
+	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
+	 Subject:From:To:Cc:Date; b=H6bK3rpagmu0umVqJ6jDPoi3F5DXJkopId3DMf+ZLiGK5QZHLgyIHn/i1Hh/Ox3QRKYR7/X8aYtGRWP9hu9WXs1MomCNtMWL3xChDc+vf0xLlp/co3v5nv7Y6P4XMUr6qyI+f3i3mYxMyaUPBEKBsRCmW38xEqBxkfWTL9yxSss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mhjUqGaX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41C13C4CEF5;
+	Tue, 16 Dec 2025 03:34:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1765856052;
+	bh=KeCxncnuSFJjzzaRe8K2a8BqmNbS4k4iVP3dvPsYyns=;
+	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
+	b=mhjUqGaXnUXFG/D7Hdv3D+2Y8oGBbTElQdwfKCo54UDO5vfD3rmbK8Hy95aaxa8mt
+	 cb8rAYx78CZ40kdR/Tu23CxAavfHK/wBjmbPz/VcSaNGAWPf7A4DUJrQhvfKV38Pkx
+	 XJI3b46GNX2uCu9qhDL0JiV75NXnV87X32UMl2r8PNsDYCYR7UXlIGUWg4BhoMg/zK
+	 bWejhJqTLuq9vUBx3X+kCZ9+IRRFyigQVyoWZPFSaw2sxyqkk1WhlkHeVnZ1UlC7HY
+	 wio2Thtdce8g5g2tl9QX0QVGjQ2fcL0xS9HcLhgDRj1ArVMtPmP72QvksRMUm4Agdy
+	 unWS7gsyJbtEw==
+Content-Type: multipart/mixed; boundary="===============2241353678792354598=="
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wDX7_GczUBpgKueAQ--.44865S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxuFy8ArykCF17ZF4kurWfZrb_yoW5Wryxp3
-	45K345JrWktr1vk3y8tr1xC34Sq3W8Way2kay5Ca4ay3WDXr9FgrZagr18XF15tr4rGrWF
-	yr1jgFsYq3y8ZrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jcXocUUUUU=
-X-CM-SenderInfo: pgrqwzpdlst0bj6rjloofrz/xtbBnx4FXWlAzZ5fQQAA39
+Message-Id: <3c943df286f9886735ac6212e4096731b80f6db4f245303cd2864157fac2072d@mail.kernel.org>
+In-Reply-To: <20251216031018.1615363-1-donglaipang@126.com>
+References: <20251216031018.1615363-1-donglaipang@126.com>
+Subject: Re: [PATCH] bpf: Fix NULL deref in __list_del_clearprev for flush_node
+From: bot+bpf-ci@kernel.org
+To: donglaipang@126.com,syzbot+2b3391f44313b3983e91@syzkaller.appspotmail.com
+Cc: andrii@kernel.org,ast@kernel.org,bpf@vger.kernel.org,daniel@iogearbox.net,davem@davemloft.net,eddyz87@gmail.com,haoluo@google.com,hawk@kernel.org,john.fastabend@gmail.com,jolsa@kernel.org,kpsingh@kernel.org,kuba@kernel.org,linux-kernel@vger.kernel.org,martin.lau@linux.dev,netdev@vger.kernel.org,sdf@fomichev.me,song@kernel.org,syzkaller-bugs@googlegroups.com,yonghong.song@linux.dev,donglaipang@126.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
+Date: Tue, 16 Dec 2025 03:34:12 +0000 (UTC)
 
-From: DLpang <donglaipang@126.com>
+--===============2241353678792354598==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 
-#syz test
+> diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
+> index 04171fbc39cb..6ab6eae31989 100644
+> --- a/kernel/bpf/cpumap.c
+> +++ b/kernel/bpf/cpumap.c
+> @@ -450,6 +450,7 @@ __cpu_map_entry_alloc(struct bpf_map *map, struct bpf_cpumap_val *value,
+>
+>  	for_each_possible_cpu(i) {
+>  		bq = per_cpu_ptr(rcpu->bulkq, i);
+> +		INIT_LIST_HEAD(&bq->flush_node);
+>  		bq->obj = rcpu;
+>  	}
+>
 
-Hi,
+[ ... ]
 
-This patch fixes a NULL pointer dereference in the BPF subsystem that occurs
-when __list_del_clearprev() is called on an already-cleared flush_node list_head.
+> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+> index 2625601de76e..7a7347e709cc 100644
+> --- a/kernel/bpf/devmap.c
+> +++ b/kernel/bpf/devmap.c
+> @@ -428,7 +428,8 @@ void __dev_flush(struct list_head *flush_list)
+>  		bq_xmit_all(bq, XDP_XMIT_FLUSH);
+>  		bq->dev_rx = NULL;
+>  		bq->xdp_prog = NULL;
+> -		__list_del_clearprev(&bq->flush_node);
+> +		if (bq->flush_node.prev)
+> +			__list_del_clearprev(&bq->flush_node);
+                ^^^^
 
-The fix includes two parts:
-1. Properly initialize the flush_node list_head during per-CPU bulk queue allocation
-   using INIT_LIST_HEAD(&bq->flush_node)
-2. Add defensive checks before calling __list_del_clearprev() to ensure the node
-   is actually in the list by checking if (bq->flush_node.prev)
+The devmap code adds the same defensive check but doesn't initialize
+flush_node the way cpumap does. Looking at dev_map_notification(), when
+NETDEV_REGISTER occurs, it calls:
 
-According to the __list_del_clearprev documentation in include/linux/list.h,
-'The code that uses this needs to check the node 'prev' pointer instead of calling list_empty()'.
+    alloc_percpu(struct xdp_dev_bulk_queue)
 
-This patch fixes the following syzbot-reported issue:
-https://syzkaller.appspot.com/bug?extid=2b3391f44313b3983e91
+And then only initializes the dev field:
 
-Reported-by: syzbot+2b3391f44313b3983e91@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=2b3391f44313b3983e91
-Signed-off-by: DLpang <donglaipang@126.com>
+    per_cpu_ptr(netdev->xdp_bulkq, cpu)->dev = netdev;
+
+Without INIT_LIST_HEAD(&bq->flush_node), if alloc_percpu() returns
+memory with non-zero bytes, bq->flush_node.prev could contain garbage.
+
+The enqueue path in bq_enqueue() uses:
+
+    if (!bq->dev_rx)
+        list_add(&bq->flush_node, flush_list);
+
+So if dev_rx contains non-zero garbage, the node never gets added to the
+list. But this flush code checks bq->flush_node.prev which could also be
+garbage, causing __list_del_clearprev() to be called with invalid
+pointers.
+
+Does devmap need INIT_LIST_HEAD(&bq->flush_node) similar to cpumap? The
+commit message states that initialization is part of the fix, but only
+cpumap gets it.
+
+[ ... ]
+
+
 ---
- kernel/bpf/cpumap.c | 4 +++-
- kernel/bpf/devmap.c | 3 ++-
- net/xdp/xsk.c       | 3 ++-
- 3 files changed, 7 insertions(+), 3 deletions(-)
+AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
 
-diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
-index 703e5df1f4ef..248336df591a 100644
---- a/kernel/bpf/cpumap.c
-+++ b/kernel/bpf/cpumap.c
-@@ -450,6 +450,7 @@ __cpu_map_entry_alloc(struct bpf_map *map, struct bpf_cpumap_val *value,
- 
- 	for_each_possible_cpu(i) {
- 		bq = per_cpu_ptr(rcpu->bulkq, i);
-+		INIT_LIST_HEAD(&bq->flush_node);
- 		bq->obj = rcpu;
- 	}
- 
-@@ -737,7 +738,8 @@ static void bq_flush_to_queue(struct xdp_bulk_queue *bq)
- 	bq->count = 0;
- 	spin_unlock(&q->producer_lock);
- 
--	__list_del_clearprev(&bq->flush_node);
-+	if (bq->flush_node.prev)
-+		__list_del_clearprev(&bq->flush_node);
- 
- 	/* Feedback loop via tracepoints */
- 	trace_xdp_cpumap_enqueue(rcpu->map_id, processed, drops, to_cpu);
-diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index 2625601de76e..7a7347e709cc 100644
---- a/kernel/bpf/devmap.c
-+++ b/kernel/bpf/devmap.c
-@@ -428,7 +428,8 @@ void __dev_flush(struct list_head *flush_list)
- 		bq_xmit_all(bq, XDP_XMIT_FLUSH);
- 		bq->dev_rx = NULL;
- 		bq->xdp_prog = NULL;
--		__list_del_clearprev(&bq->flush_node);
-+		if (bq->flush_node.prev)
-+			__list_del_clearprev(&bq->flush_node);
- 	}
- }
- 
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index f093c3453f64..052b8583542d 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -406,7 +406,8 @@ void __xsk_map_flush(struct list_head *flush_list)
- 
- 	list_for_each_entry_safe(xs, tmp, flush_list, flush_node) {
- 		xsk_flush(xs);
--		__list_del_clearprev(&xs->flush_node);
-+		if (xs->flush_node.prev)
-+			__list_del_clearprev(&xs->flush_node);
- 	}
- }
- 
--- 
-2.43.0
+CI run summary: https://github.com/kernel-patches/bpf/actions/runs/20255377282
 
+--===============2241353678792354598==--
 
