@@ -1,93 +1,131 @@
-Return-Path: <bpf+bounces-76724-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76728-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 973BACC4925
-	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 18:10:26 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7FBACC4A43
+	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 18:24:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 1251E300887A
-	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 17:10:26 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 86A023061D63
+	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 17:20:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 332793164A5;
-	Tue, 16 Dec 2025 17:10:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A91B430F538;
+	Tue, 16 Dec 2025 17:20:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="QcsksXkW"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0010.hostedemail.com [216.40.44.10])
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEB4A2D3737;
-	Tue, 16 Dec 2025 17:10:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4B8A26B95B
+	for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 17:20:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765905022; cv=none; b=bIFwYAjrRYbKuvLsOTqrfzio6+81QuSOGtuUG3Giqp0VCv+aLPLHzxwQOREAVcKbF/T23DbQ3kJh0/w0naVi1qnzSl7fNjB/PJ5ZysYcDPuPIN2QMwon0PByjdyKNxc2FbiKlvJfftcEJKvBx3g9iw3fc+WbKDrvsA9HPbyqSdw=
+	t=1765905644; cv=none; b=DUsqnMicOJz2dGFWuwZZASFhqNvV32+ZwwiF3RB1j6Zc4JZdOwKQpHNydNtuvZmhw0wA8X718nVVE+M/s7jtPJn+tiFM5YECO40Nkf6mnCTV4RQxvBIIwz2qVLPkwlP7l7BuQxXkJRHSRbl96ZAzJ3OefsRlAVmYl8vQrm5GeIM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765905022; c=relaxed/simple;
-	bh=uRUPbCiHXnTghQkPKYQww7L3fIbeCceGFHxUQ+0rygM=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=NMJwj8msUb43R+OhVdaduAtONMWJMoOL0Az3AbWsm/tu6OLSJzEZj3SE/ARUG535SH/9P2tnmarh6rvWX68N2ILlFDE0Fnk1jjic/Tp1TsQ70AMrMPFS1Xsp5ofGku8+dPH75cC+bB+2KMJSKCGLyZtXw1qxsqJ+3mWg8DB2mRs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf18.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay06.hostedemail.com (Postfix) with ESMTP id DF54D13668A;
-	Tue, 16 Dec 2025 17:10:18 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf18.hostedemail.com (Postfix) with ESMTPA id 8AD712F;
-	Tue, 16 Dec 2025 17:10:15 +0000 (UTC)
-Date: Tue, 16 Dec 2025 12:11:49 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Chenghao Duan <duanchenghao@kylinos.cn>
-Cc: yangtiezhu@loongson.cn, mhiramat@kernel.org, mark.rutland@arm.com,
- hengqi.chen@gmail.com, chenhuacai@kernel.org, kernel@xen0n.name,
- zhangtianyang@loongson.cn, masahiroy@kernel.org,
- linux-kernel@vger.kernel.org, loongarch@lists.linux.dev,
- bpf@vger.kernel.org, youling.tang@linux.dev, jianghaoran@kylinos.cn,
- vincent.mc.li@gmail.com, linux-trace-kernel@vger.kernel.org, Youling Tang
- <tangyouling@kylinos.cn>
-Subject: Re: [PATCH v3 4/4] LoongArch: ftrace: Adjust register stack restore
- order in direct call trampolines
-Message-ID: <20251216121149.11ea9031@gandalf.local.home>
-In-Reply-To: <20251216094753.1317231-5-duanchenghao@kylinos.cn>
-References: <20251216094753.1317231-1-duanchenghao@kylinos.cn>
-	<20251216094753.1317231-5-duanchenghao@kylinos.cn>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1765905644; c=relaxed/simple;
+	bh=uKyPtuDYRRHp6Nq/MlUVAjy+hEoX/Pr7VOAV2p9gT1E=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rsR8A2YtUUWvn0d007YbaipgHrxLajQkax0mqK1Dv+Vbqdpo2RvndfeLUsmfKP0aycL8gEAdAiB3kkpDeIvDBlz/SjGq6yHBuCw6/pEAPyF+rEfpsQNlJE5jgQU0/ycZRnO7Z25jK6VTUeF7QtETCfGjLVziF+6NsmyV1OdWHLU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=QcsksXkW; arc=none smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 5BGDuLC1374205;
+	Tue, 16 Dec 2025 17:18:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=corp-2025-04-25; bh=0qZDZ79fqhXgmN5YkWJvqDIGvePl6
+	4ExuYpzeJ79j84=; b=QcsksXkWwwY0GJZB+EwDr1HkP2hjhTHPHzG6V9AHjOPzc
+	/spCOfHv3+agj043di+KXxC3iCKazzXgrpqFgVD6n6xxJrcef8AE1vMqwE+caWh3
+	DNXQvD4pgX0NZ/e7ckb+ZhqIsyPK3DgNqjMIOq98DExbywCxRPzPhFkk9MOvZsXp
+	aAOc8PAGsUi08MQuZzUb+3spnncBczcqSLB2oAtGamsuSOL3x3Lg1ZaRj4L1kdhw
+	cXroM6WCPOK1ptsKOZB30P10OAcHw8GZQ5bqCt0xPBdicLhVgrdgLdwbFqPFjD88
+	BYisogRhrW6hF77CD8ZZClqjaNzjptzbiP3YAU8FQ==
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4b0xqxvey4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 16 Dec 2025 17:18:59 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 5BGFmSsC005928;
+	Tue, 16 Dec 2025 17:18:58 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 4b0xkdgptj-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 16 Dec 2025 17:18:57 +0000
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 5BGHIvZP039632;
+	Tue, 16 Dec 2025 17:18:57 GMT
+Received: from bpf.uk.oracle.com (dhcp-10-154-50-156.vpn.oracle.com [10.154.50.156])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 4b0xkdgprs-1;
+	Tue, 16 Dec 2025 17:18:57 +0000
+From: Alan Maguire <alan.maguire@oracle.com>
+To: qmo@kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+        yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
+        bpf@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>
+Subject: [PATCH bpf-next 0/2] Handle -fms-extension in kernel structs
+Date: Tue, 16 Dec 2025 17:18:52 +0000
+Message-ID: <20251216171854.2291424-1-alan.maguire@oracle.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 8AD712F
-X-Stat-Signature: 4xrgt7ecrnjgzky33k9harsocw9xq4wz
-X-Rspamd-Server: rspamout08
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1+SyrTxLqUhiKJ9s0JcpuzcjMM6kRirO2A=
-X-HE-Tag: 1765905015-430425
-X-HE-Meta: U2FsdGVkX1+OjztRmIC2PSbvrT1d/RFzeGvdHtT6JAM6B0NObkQEAPEzsxu1SHM6MHBk5s4ZWMOCiqh+8kDQC2AaoYxckOJUxQNfPO27ol5fs4VHCbfHDUuOM0XQ3oqeDDevDvSeSZllMeIlO+X+2kC9je5jccIxZDqJ6AmpCMJ8La+tTksKvMdVZ6n0ylfZBjiAUwA0OBX6g+z0GlXqzgv/ht2Jt9lHuOZSWn3a10gBsVr/Do+4IwXfX4HyxYBo6hcZpDoZPSQoeYOfMfMWnrOz/t7cjq00MpMzJdAPAVDtXkMvr7zUigBmZyfdaCzyekbsF7n4Sk2K+kYljcUtrhcdkyAFOv5Unoc8laUml66qQ1eITGvnFttKD9FPXQc0YUv+GMdY61OPKnGRGCzPfYDXszdRSc2M
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2025-12-16_02,2025-12-16_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 malwarescore=0
+ adultscore=0 mlxlogscore=917 mlxscore=0 spamscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2510240000
+ definitions=main-2512160149
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMjE2MDE0OCBTYWx0ZWRfX3dln/QIgCSWY
+ 5wLMSlIWGVZhT8dDddi5SBRDar3Bi/oJRufG7xD892G+MNZ/t9JHt25eH/umJTaiz+E/qO8lVum
+ ziwWTD8XDFFroOYgfXXR0elJrA6snweJ5GzVkST4dK/VlDcBjwb4mqXCM/1SRoIj4jfH/Z0k8+W
+ /mMWOGwH/5dEqSYB4cJ/T6ZaFl04m9tTlcRolrmF6+lj+s+I2UKaRVlCWs3o4LtQcEGH5Avh94Z
+ HcIEHTdw26+MrS8U1/+OMJ0g6Vct4v8OFtu4fEryQZLZls/9awEhd0b+uSzLNhWifnOnFJ6+3AM
+ woTIFI8bS6ItAuTQNB6MVK/6yZUq8kCd67ZcMzfPN3GpS6DgGXqW3cNhpZtIlQZFGUV7IeDc0K5
+ ui9PcyZ6coKkyb/bg3l2oCiPb76TeJzQhGIRUHHI1L82Oytpmuo=
+X-Proofpoint-GUID: rBYhLbXYyt0tqslDFgNo5P4av0lCDKBW
+X-Proofpoint-ORIG-GUID: rBYhLbXYyt0tqslDFgNo5P4av0lCDKBW
+X-Authority-Analysis: v=2.4 cv=BYDVE7t2 c=1 sm=1 tr=0 ts=69419483 b=1 cx=c_pps
+ a=zPCbziy225d3KhSqZt3L1A==:117 a=zPCbziy225d3KhSqZt3L1A==:17
+ a=wP3pNCr1ah4A:10 a=VkNPw1HP01LnGYTKEx00:22 a=VwQbUJbxAAAA:8 a=pGLkceISAAAA:8
+ a=4U32NmAA7IdqOqh1_S4A:9 cc=ntf awl=host:12109
 
-On Tue, 16 Dec 2025 17:47:53 +0800
-Chenghao Duan <duanchenghao@kylinos.cn> wrote:
+The kernel is using named structs embedded in other structs
+with no member name (similar to anonymous struct usage).
+Such an arrangement causes problems for compilers unless -fms-extension
+is specified.  With vmlinux.h generation we do not want to impose
+that on the vmlinux.h consumer, so generate a compatible representation
+using anonymous types.
 
-> Ensure that in the ftrace direct call logic, the CPU register state
-> (with ra = parent return address) is restored to the correct state
-> after the execution of the custom trampoline function and before
-> returning to the traced function. Additionally, guarantee the
-> correctness of the jump logic for jr t0 (traced function address).
-> 
-> Reported-by: Youling Tang <tangyouling@kylinos.cn>
-> Signed-off-by: Chenghao Duan <duanchenghao@kylinos.cn>
-> ---
->  samples/ftrace/ftrace-direct-modify.c       | 8 ++++----
->  samples/ftrace/ftrace-direct-multi-modify.c | 8 ++++----
->  samples/ftrace/ftrace-direct-multi.c        | 4 ++--
->  samples/ftrace/ftrace-direct-too.c          | 4 ++--
->  samples/ftrace/ftrace-direct.c              | 4 ++--
->  5 files changed, 14 insertions(+), 14 deletions(-)
+Patch 1 adds libbpf support for this in BTF dump code; patch 2
+adds bpftool support to use the new option.
 
-This is all LoongArch specific, but in case you need this to go through
-your tree:
+Note that this was essentially
 
-Acked-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Suggested-by: Song Liu <song@kernel.org>
 
--- Steve
+so feel free to add that to the series.
+
+See [1] for more.
+
+[1] https://lore.kernel.org/bpf/CAADnVQK9ZkPC7+R5VXKHVdtj8tumpMXm7BTp0u9CoiFLz_aPTg@mail.gmail.com/
+
+Alan Maguire (2):
+  libbpf: add option to force-anonymize nested structs for BTF dump
+  bpftool: force-anonymize structs to avoid need for -fms-extension
+
+ tools/bpf/bpftool/btf.c  |  4 +++-
+ tools/lib/bpf/btf.h      | 25 ++++++++++++++++++++++++-
+ tools/lib/bpf/btf_dump.c | 25 ++++++++++++++++++++++---
+ 3 files changed, 49 insertions(+), 5 deletions(-)
+
+-- 
+2.39.3
+
 
