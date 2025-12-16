@@ -1,127 +1,136 @@
-Return-Path: <bpf+bounces-76788-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76790-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 152A1CC57C6
-	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 00:34:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F381CC57EA
+	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 00:37:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7526B30532A1
-	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 23:33:27 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D47BC306EF5F
+	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 23:35:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F523340260;
-	Tue, 16 Dec 2025 23:33:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30EFE340A46;
+	Tue, 16 Dec 2025 23:35:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b="C+O60v99";
-	dkim=permerror (0-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b="qDXXFE+i"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z7sTtqyd"
 X-Original-To: bpf@vger.kernel.org
-Received: from devnull.danielhodges.dev (vps-2f6e086e.vps.ovh.us [135.148.138.8])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F9F92494FE;
-	Tue, 16 Dec 2025 23:33:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=135.148.138.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C600A340264
+	for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 23:35:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765928005; cv=none; b=slDkcHCeRwS+hR5oabncu0NrckkzKiEIyjBErDGKb3JCbsV+Fv75+as8fzWvx82uxTX+SN6rLL1wmWgwNb3dGLqegucY5Pp/JC0iVO5079dia+9iIMv6bKe0qOK0N4sAoAE+IRdKvlQ2JYRbd1WoSb8swHZd5q5vMkdqZ09VKeQ=
+	t=1765928124; cv=none; b=BtG6SgUvGw9DCNjeK0z6RksI/KwslsyR0EdlVvD5ZJIUYpKVvJleqEDc3X+C4F08K9BNleUjbru4RR9YgOR5wXxwa5+ycOcSA2Ku0im89xQqsgYDBJyZyBJ/RiHMquaSEnhfXc1sebo2XXeQxrGN0L3rzq3pvb4/SHNPI6yzYXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765928005; c=relaxed/simple;
-	bh=QN9cKz43l56M77DQoU/gvQLJM/pRxx1iKuv1GfCqPMM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M4x/BL2k/otUZdP9bjGDS63PKAHW5ep+T1zPwM8TnMMngf2rOUnU5gC4RNNwt+RJ9NUzfk+EOyMdgbdSmFGAWVyaOoCPSEMzWbRYDoW5fBbiDfeYsXQEZgafD2dKKD450+/EhpQr253EAng/s41jfxpnPo0fbcD1h7dKdMnph1w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=danielhodges.dev; spf=pass smtp.mailfrom=danielhodges.dev; dkim=pass (2048-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b=C+O60v99; dkim=permerror (0-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b=qDXXFE+i; arc=none smtp.client-ip=135.148.138.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=danielhodges.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=danielhodges.dev
-DKIM-Signature: v=1; a=rsa-sha256; s=202510r; d=danielhodges.dev; c=relaxed/relaxed;
-	h=Message-ID:Subject:To:From:Date; t=1765927975; bh=g/xEp/DuAaJ9H5+LX06IBik
-	XdRAbaKmHryWr83qTlWM=; b=C+O60v99N9mNfhGgOx+EKDged79OLsPxeWQuPkT9IaA5uiDFzD
-	ztfNBsANb18aCKeJ0asTo1yLZn/HNXPsGUpB+K/n1PNcA1a2rjYLLwifvpcVDzBneH0i+dYktxY
-	QdofXfjzCqqFqWvPcZGRnUKtlebFfy+bVx/1w8WWKPoqGe4J5H0HCe6GTKCddd+fNLn0vuUpd4N
-	BZqOkGqtK/rUxc0nJnAEPNZt/nVqLSIikaKtR7BfaxjepooJO1w9pxjHWHybcKttSpoeb1WfFDT
-	9rbCuNpoNmkMZpjzgFfDk/XhZoy73AEfa7iFCmaQzF6dHhder8PxMxFP3d76jM/TcOg==;
-DKIM-Signature: v=1; a=ed25519-sha256; s=202510e; d=danielhodges.dev; c=relaxed/relaxed;
-	h=Message-ID:Subject:To:From:Date; t=1765927975; bh=g/xEp/DuAaJ9H5+LX06IBik
-	XdRAbaKmHryWr83qTlWM=; b=qDXXFE+iWjdNT+H/r8F8atD7onD70kz4IjW8aDB7CVZi8WXlwz
-	t9cN50TSru36CqLhzkTc3r4s3r+JnMccxPCQ==;
-Date: Tue, 16 Dec 2025 18:32:55 -0500
-From: Daniel Hodges <daniel@danielhodges.dev>
-To: Song Liu <song@kernel.org>
-Cc: Daniel Hodges <git@danielhodges.dev>, bpf@vger.kernel.org, 
-	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, 
-	vadim.fedorenko@linux.dev, yatsenko@meta.com, martin.lau@linux.dev, eddyz87@gmail.com, 
-	haoluo@google.com, jolsa@kernel.org, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@fomichev.me, yonghong.song@linux.dev, herbert@gondor.apana.org.au, 
-	davem@davemloft.net, linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 5/6] bpf: Add ECDSA signature verification
- kfuncs
-Message-ID: <fysaambybt637trarwnupfearv4bv763tb5a2ohi7v2n4bkrzy@fca5hwea5g4w>
-References: <20251208030117.18892-1-git@danielhodges.dev>
- <20251208030117.18892-6-git@danielhodges.dev>
- <CAPhsuW5OKja2U5x-X_N_F7DN7D_RAZYf9ryoMb4RBHtKKSidhw@mail.gmail.com>
+	s=arc-20240116; t=1765928124; c=relaxed/simple;
+	bh=W6vpDia4FoH9eh75+8sB+9wBjdzpiIlbSOmLaD0uumQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Kcdz47pgdR2mu0tZqwV/WQRghAf8SfkK6oNDKMPUiIE0giFbMOzI0jLcMk3gOoX0YB0fgc0kUqmA4190ljTVTS/AVBXkN69XOPuAJtxHxPmSSUKQFzy+cVZp1Sz89NACmxYuyJGiGtEmRkqc4JEYBPauSZfY8BPaMSMRlpNdxq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z7sTtqyd; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-47a80d4a065so32169975e9.2
+        for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 15:35:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1765928120; x=1766532920; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=W6vpDia4FoH9eh75+8sB+9wBjdzpiIlbSOmLaD0uumQ=;
+        b=Z7sTtqydHZ0/s7Bob/8BFiNWtG0ibt/lgzTF8dyGU8EuqwT8pMASjcG7cD68lKN/M0
+         XmZf9sKANvGvizBe56k+GxhdFamzo1tADj0aBvVPPP9ov26+8LlBGfnDNSmf1Mk1wkMT
+         kQbgkcdGYy5yb19BpiVJW1MAjj364LvrzeZsN53Az+engGqlGevBWobvLCyk8OMsv+/g
+         mIBdEfYka2xhInP+O41jxavxMTfMFrRFl9Y5kM2yBzsZQ0dJLlZfzYdvTvcFmj8vR5ZM
+         qdSHFpcRWxOIL6NbyfiOB0jTdE5n/UVT4Xu6Jphy/ScoT5z3JIwqYORIyOMrmO84UE19
+         s/ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765928120; x=1766532920;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=W6vpDia4FoH9eh75+8sB+9wBjdzpiIlbSOmLaD0uumQ=;
+        b=mRcz9j3sNx7UrWpYRMj4r7xaaeREyN2fbNEzWQLudBfUpKZyoUs5Sx1MbQ4YRQGoNt
+         wHKRPevBGwZt37Un5Eq8UYMWuT0Zj60lYKr3LYV5777YfjANrkFNnhAfzZC2qVfiSSsj
+         NG/UNXgpKVoFIUqi5Dcq0z/F9bxv5EMgoJYPY8l5+b18BH8wVnzmPGnwaiErfTFP/ckm
+         MTQxhYHdCP+YS/S2eNAOTRx2cRKeR/S2oFFfmrszYs/Ut+YOWtUZAygZn7Ra+ntfGBhE
+         t+RDlkC8U5u3CE+2ssiPvaL0a0KTro8i3WpsTQ/J6026FYIJqYcikm7VvSHtrGYxsjeY
+         F2Eg==
+X-Forwarded-Encrypted: i=1; AJvYcCVTJ1oJgXhK/y5sWrP816hGVucOdzdektk01T09BW0zTJGEIv11RR8yKTmjBo/rWeof8Z0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwclTtkPC2omrvFPniKwJ2b9PxIuBEjY8SfX19DpPzEVktItAmt
+	i+elMjc7Zn65ZQBbSRrDwxcwZlSWTRKSz5AKMbnDoyibsfmqo+3damn70mQyBCHtJrwe/KFBDuP
+	YlJuSyD4dn4lNszhB3w7uYkIejzMz/bg=
+X-Gm-Gg: AY/fxX7BD8ZPXAZnjJ23Zbnl+OqkKKmJoN8yvzdObCLDxXftNDRTSfSmL04Hb71rAi8
+	cD3B0RuPapzH504mzJ7FUyFkqAeXBBLtiINiii7DmPYAwVfGypiTDRfrQQTMWFyrn1jN/CYQhJJ
+	SoEykUzNKxdPEP5I1vRX/jwmd6D1hKONJ0NcYOb6ufoE8eN0tBTPx/caA28AffANFJ7wPuXnE11
+	Zbm/3Sv5qTH9SCKBZcVrLFEbetIvq0HeYF4HEKNJONxavuSMzweQ+UGbPmbkzNSZPOlLuVkIVel
+	RwKTO6Pa02AEV4PtW7pRhzULsnFRX9lVlVRcfTk=
+X-Google-Smtp-Source: AGHT+IHjp/16v6iZgDNYj+IuMGgLFwmSZaVPm7qlrRq0sjVfy55a2ykH7/91v8vRe2lt6+UywAYHRqqvLP4Zs6KBqYo=
+X-Received: by 2002:a05:6000:40cf:b0:42b:3246:1681 with SMTP id
+ ffacd0b85a97d-42fb44a3ee7mr18325137f8f.18.1765928119945; Tue, 16 Dec 2025
+ 15:35:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPhsuW5OKja2U5x-X_N_F7DN7D_RAZYf9ryoMb4RBHtKKSidhw@mail.gmail.com>
+References: <20251112163148.100949-1-chen.dylane@linux.dev>
+ <20251112163148.100949-3-chen.dylane@linux.dev> <c41372ad-1591-4f2b-a786-bc0e19f8425c@linux.dev>
+ <7b82e322-eab7-4fc2-9de1-d10ad8251378@linux.dev> <42627219-fa33-441d-b8cb-eb48ab3230d6@linux.dev>
+In-Reply-To: <42627219-fa33-441d-b8cb-eb48ab3230d6@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 16 Dec 2025 15:35:08 -0800
+X-Gm-Features: AQt7F2rJDT2luiBfMEOsoczK4qPy8i7YrtRrkYDQTvIlKjsIFHyghSnoN9z97qc
+Message-ID: <CAADnVQ+pP2oJhMOWe1dLg4W_+bMU=amfzYGWKJ4yVNcq4KOvNA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 2/2] bpf: Hold the perf callchain entry until
+ used completely
+To: Tao Chen <chen.dylane@linux.dev>
+Cc: Yonghong Song <yonghong.song@linux.dev>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, "linux-perf-use." <linux-perf-users@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 17, 2025 at 07:35:22AM +0900, Song Liu wrote:
-> On Mon, Dec 8, 2025 at 5:43 PM Daniel Hodges <git@danielhodges.dev> wrote:
+On Wed, Dec 3, 2025 at 1:34=E2=80=AFAM Tao Chen <chen.dylane@linux.dev> wro=
+te:
+>
+> =E5=9C=A8 2025/11/26 17:29, Tao Chen =E5=86=99=E9=81=93:
+> > =E5=9C=A8 2025/11/14 00:01, Yonghong Song =E5=86=99=E9=81=93:
+> >>
+> >>
+> >> On 11/12/25 8:31 AM, Tao Chen wrote:
+> >>> As Alexei noted, get_perf_callchain() return values may be reused
+> >>> if a task is preempted after the BPF program enters migrate disable
+> >>> mode. The perf_callchain_entres has a small stack of entries, and
+> >>> we can reuse it as follows:
+> >>>
+> >>> 1. get the perf callchain entry
+> >>> 2. BPF use...
+> >>> 3. put the perf callchain entry
+> >>>
+> >>> And Peter suggested that get_recursion_context used with preemption
+> >>> disabled, so we should disable preemption at BPF side.
+> >>>
+> >>> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+> >>
+> >> Acked-by: Yonghong Song <yonghong.song@linux.dev>
+> >>
 > >
-> > Add context-based ECDSA signature verification kfuncs:
-> > - bpf_ecdsa_ctx_create(): Creates reusable ECDSA context with public key
-> > - bpf_ecdsa_verify(): Verifies signatures using the context
-> > - bpf_ecdsa_ctx_acquire(): Increments context reference count
-> > - bpf_ecdsa_ctx_release(): Releases context with RCU safety
+> > Hi eBPF maintainers,
 > >
-> > The ECDSA implementation supports NIST curves (P-256, P-384, P-521) and
-> > uses the kernel's crypto_sig API. Public keys must be in uncompressed
-> > format (0x04 || x || y), and signatures are in r || s format.
+> > This patch appears to have missed the eBPF maintainers on the list,
+> > please review it again, thanks.
 > >
-> > Signed-off-by: Daniel Hodges <git@danielhodges.dev>
-> > ---
-> >  kernel/bpf/crypto.c | 230 ++++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 230 insertions(+)
-> >
-> > diff --git a/kernel/bpf/crypto.c b/kernel/bpf/crypto.c
-> > index 47e6a43a46d4..138abe58e87e 100644
-> > --- a/kernel/bpf/crypto.c
-> > +++ b/kernel/bpf/crypto.c
-> > @@ -9,6 +9,7 @@
-> >  #include <linux/scatterlist.h>
-> >  #include <linux/skbuff.h>
-> >  #include <crypto/skcipher.h>
-> > +#include <crypto/sig.h>
-> >
-> >  struct bpf_crypto_type_list {
-> >         const struct bpf_crypto_type *type;
-> > @@ -57,6 +58,21 @@ struct bpf_crypto_ctx {
-> >         refcount_t usage;
-> >  };
-> >
-> > +#if IS_ENABLED(CONFIG_CRYPTO_ECDSA)
-> > +/**
-> > + * struct bpf_ecdsa_ctx - refcounted BPF ECDSA context structure
-> > + * @tfm:       The crypto_sig transform for ECDSA operations
-> > + * @rcu:       The RCU head used to free the context with RCU safety
-> > + * @usage:     Object reference counter. When the refcount goes to 0, the
-> > + *             memory is released with RCU safety.
-> > + */
-> > +struct bpf_ecdsa_ctx {
-> > +       struct crypto_sig *tfm;
-> > +       struct rcu_head rcu;
-> > +       refcount_t usage;
-> > +};
-> > +#endif
-> 
-> Can we use bpf_crypto_ctx for ECDSA?
-> 
-> Thanks,
-> Song
-Sure thing!
+>
+> ping...
 
--Daniel
+pls resubmit and ask Peter to ack that your patches match what he suggested=
+.
 
