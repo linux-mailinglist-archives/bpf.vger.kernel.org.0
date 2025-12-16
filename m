@@ -1,154 +1,160 @@
-Return-Path: <bpf+bounces-76651-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76652-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B63DCC072C
-	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 02:25:24 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53C8BCC0733
+	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 02:25:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 35248301F5DF
-	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 01:24:40 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 1D2CE301CD3E
+	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 01:25:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B11C258CE9;
-	Tue, 16 Dec 2025 01:24:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25597274B37;
+	Tue, 16 Dec 2025 01:25:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WBS0371E"
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="jMPVFjfr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 643A922B8C5
-	for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 01:24:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F76326CE0A;
+	Tue, 16 Dec 2025 01:25:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765848279; cv=none; b=B2oHM7hxWKM7wdRA7BMKzmh8gKiPFnLwV5kv+2pCBkBZpTccyObfi423/QyDOIKTyJd/Ia6hY9vN5f1nwxc87VwseGzB3PFYV+oeqHzlwSfovaP+I48zGgIPRFyblTPk7PwsFgZHN9x0qz7AXz26uRcqtG9TJGOtj2YKGTqG3QY=
+	t=1765848322; cv=none; b=fFcMPoeO1Rrw7ZX0YgKam2X9RLrv166+oyG8RHg1usIDsWEiyiXGr3bNNgl9HVKl33xgyWQYmNdPHGNg30RpAy4iT/pAVQJUadEUi4fO41Jn4od2CzbXpOfIZtazJUjgCIQDIB8lQItDGHZz1O1Buiy9DjP5/58LqsRyzKIIHjY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765848279; c=relaxed/simple;
-	bh=q8hPouLZ1tqBmJGx2h/O1//9XD7eBcnlMWD3BJ09qFk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ulBwCb8oHp+dhQhzyihT6t+QaDeB/jjtRruUWUgiU0KHaZFmoY26sm1jY+8rEH+gkhL/THTzY1gXmR4vqjbY/epSaLRxlzqJNOwz3EBj/A/JyCHMo8ykZ3qw0BLsm+0UVgW6NbWb6iZUpjcuY+jUltYTD/vklLXKtiBEaJ/9RQY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WBS0371E; arc=none smtp.client-ip=209.85.221.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-42fbbc3df8fso1479007f8f.2
-        for <bpf@vger.kernel.org>; Mon, 15 Dec 2025 17:24:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1765848276; x=1766453076; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6O/ayhPvJzUYiXnkNU0wdnwc154Pl8W2YXq/7sVXUbM=;
-        b=WBS0371EixhaekEBFguZqLavd/N1IxcJvw/oH7voyqSZJ3rrHkg0bZUa2FclZEwlRH
-         hpKomT7yvqMMrqtDh2c0wCmayG6esnDy4EN94lShPndqgLQ35PIJV4iJKkobbF2SJkj9
-         J8ZN3KfiUZTqTmIw9Q1O9xgPrq/jggEPYjaQiryID7NhyaHaII+KHkxHM6MV6TQMGGT2
-         k6g7U9aui5Y7N2h98/PLLEvdHkI5FM4a51hDp9tD9V5jzl5P+/mF4EhLA7+RpnQjdK3+
-         OkGRrQ6jjxwbd9sNltS0wi0kfwkQzDJdJAOxKsCZBwmMJ7qNBQHZyTuLezomX1o7l5+U
-         pmUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765848276; x=1766453076;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=6O/ayhPvJzUYiXnkNU0wdnwc154Pl8W2YXq/7sVXUbM=;
-        b=uXcG9Q3WUaKaGbioW/LAZsFsLPRTSlWtFfFo2PBulK0MuZJ69oRxGXv0pbaYoR51gJ
-         UDtKKt+aJ1+PS7svLQ3Sy3jRlJRAVA/NRp5MWaJosZdhotI5qUfzqK/BJWrj/5/bYSPk
-         2fFVhoP1JgmZ6Uuh1gJ9uqx+EOoIhy8YDX2jU6IDE09LvETaVcrTLgM5cWIvqDHyj7fG
-         t6CQIekmy9spVNUSh7ubbAZt4H2G2tpupdF8zHpPHE+R3TDyUtdYl0numPMK4OYUaMsd
-         R4VgSpsFhJVLsb4FU+F67Rev06K3gzejmHrda8YFnAMLMh/sV0HMyF8FZ8pn/5Z2sRxN
-         CoTA==
-X-Forwarded-Encrypted: i=1; AJvYcCWnBMta54cnqIfQ5DYQ9eLuWRRkOePA45BOnTOkEl4khg9y7hUrPVzr5SHTwp9zC0W6xjE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyZAjhc+1rudx0g2whuUPza2qnu1KXf34CB65P9IUpPRboWUP3C
-	ZAgdrqPc2kERJkCLI7CmzCPBF9RYgmMqgv0UGvuyjDKO3drFSqYKVgTtze1S+1Qk+FapS7hNqRS
-	u+Nc/FlfcOeGi/WGSLyWHIqMmf3Y50mF0eA==
-X-Gm-Gg: AY/fxX4O9HgaUiq1K5yrDUMW8qhD8XtYbAK/+GfcbevcI8UDyDFdAASCVm4fBpO1pyZ
-	ciOYX9ii81glzWdkTniDVTac6uLPhnu5ijQtv8Fhd2DBQBxReG8hIp4jiSUFEOTQPanCCTSa38E
-	N30eUeVsi9Kl8I2Ssx6TtVLFTeJ6qOVXGS2C6JTMokIBea8ojRZm8Uu1YO6WQhaPQHSK1PZjDy3
-	IqXwWUormIoeMYBBtrsVY3Z2FkfUh2T+u9HJUX7tIFKNqbgrkIB9aGZvFXXzfqPCYPdmUelwo6T
-	BmvktVuBa4tPyFxWvd9s4zgttQ6LBZ5t/gqfDts=
-X-Google-Smtp-Source: AGHT+IGMRDt5gPftYQJNw3ZXkdp/9E4YRr0auH1CkY9jKe0cy/McjdvCfIpzaDDVEf27AVQhsEFcECTOPJBCSpGHIXk=
-X-Received: by 2002:a05:6000:22c8:b0:431:16d:63d1 with SMTP id
- ffacd0b85a97d-431016d6854mr4185472f8f.44.1765848275505; Mon, 15 Dec 2025
- 17:24:35 -0800 (PST)
+	s=arc-20240116; t=1765848322; c=relaxed/simple;
+	bh=3zSPmz/NCkE7wWGBlwPS2JqQRbZqsgUd+xF3nDaHKA0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=JqzDIQGL64E59irC6MGubLMKDGt/GH8RUPYv0ArKZA6Jf7je2jIVXFZAc8YDDIh42AFcH9ZHDUqrMVI3BEDuv+g3AYpR8c5X76mEOrOrsQYOImiznRvp3N3ObA/BiR6Fx2ouOkb6qHTl3SJjznANOms8mtag5/0Q3nqrBp7CgO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=jMPVFjfr; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=202503; t=1765848317;
+	bh=0plY8aRXrmAzEnRYdeWviS9sqQo6p5zP5wPOiczpzbE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=jMPVFjfrFR+MtukDfHy7Qw4juRI0EqSXNyoaQ/soObaLLCnEbK679LqGLWFCUB8Ub
+	 587xYIhje4IAUflSFydVt6rDw13De8l4Mo4L+vtfHSVFSdhQFFaLkR4/QAoTMIbkFm
+	 2OzHdJ7cBz2xLJDN1jJJZ480L+CjmKLvZgkCB3v3OSNRuuU+5LOAtScOc+x70z1GQO
+	 enF4kIHe8IFkzbBs7K7IoPdY1cuj4Gv6XsK50j9BSNIbwCXXTOGEVfoqyNQVW0s9Gd
+	 FSXz7Vbl1/Cj7i+Hdja9PyhNDgLXnssFrUapfOswQ3mnZ1K1ebhdytgWlzIdoW2SxN
+	 pfpKyDVcDaQzQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange secp256r1 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4dVfPR2z5Kz4wCm;
+	Tue, 16 Dec 2025 12:25:15 +1100 (AEDT)
+Date: Tue, 16 Dec 2025 12:25:14 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov
+ <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>
+Cc: KernelCI bot <bot@kernelci.org>, kernelci@lists.linux.dev,
+ kernelci-results@groups.io, regressions@lists.linux.dev, gus@collabora.com,
+ linux-next@vger.kernel.org, bpf <bpf@vger.kernel.org>, Networking
+ <netdev@vger.kernel.org>, Andy Shevchenko
+ <andriy.shevchenko@linux.intel.com>
+Subject: Re: [REGRESSION] next/pending-fixes: (build) error: unknown warning
+ option '-Wno-suggest-attribute=format'; did...
+Message-ID: <20251216122514.7ee70d5f@canb.auug.org.au>
+In-Reply-To: <176584314280.2550.10885082269394184097@77bfb67944a2>
+References: <176584314280.2550.10885082269394184097@77bfb67944a2>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAADnVQK9ZkPC7+R5VXKHVdtj8tumpMXm7BTp0u9CoiFLz_aPTg@mail.gmail.com>
- <CAPhsuW4MDzY6jjw+gaqtnoQ_p+ZqE5cLMZAAs=HbrfprswQk-Q@mail.gmail.com>
-In-Reply-To: <CAPhsuW4MDzY6jjw+gaqtnoQ_p+ZqE5cLMZAAs=HbrfprswQk-Q@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 15 Dec 2025 17:24:24 -0800
-X-Gm-Features: AQt7F2rljHGwKnYTlrJF8witR3Lr3cIkj99az-pI5YQndy27VQxfGEDL49iyTi8
-Message-ID: <CAADnVQKHEOusNnirYLuMjeKnJyJmCawEeOXsTf2JYi4RUTo5Tw@mail.gmail.com>
-Subject: Re: fms-extensions and bpf
-To: Song Liu <song@kernel.org>
-Cc: Quentin Monnet <qmo@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Eduard <eddyz87@gmail.com>, 
-	Ihor Solodrai <ihor.solodrai@linux.dev>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/69et5i_lNvN.91T_ot13ewr";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+
+--Sig_/69et5i_lNvN.91T_ot13ewr
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 15, 2025 at 3:46=E2=80=AFPM Song Liu <song@kernel.org> wrote:
+Hi all,
+
+On Mon, 15 Dec 2025 23:59:03 -0000 KernelCI bot <bot@kernelci.org> wrote:
 >
-> On Wed, Dec 3, 2025 at 8:30=E2=80=AFPM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > Hi All,
-> >
-> > The kernel is now built with -fms-extensions and it is
-> > using them in various places.
-> > To stop-the-bleed and let selftests/bpf pass
-> > I applied the short term fix:
-> >
-> > https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/commit/?id=
-=3D835a50753579aa8368a08fca307e638723207768
-> >
-> > Long term I think we can try to teach bpftool
-> > to emit __diag_push("-fms-extensions"..)
-> > at the top of vmlinux.h.
-> > Not sure whether it's working though.
->
-> Something like the following works for me. But I am not sure
-> whether it is the best solution.
+> Hello,
+>=20
+> New build issue found on next/pending-fixes:
+>=20
+> ---
+>  error: unknown warning option '-Wno-suggest-attribute=3Dformat'; did you=
+ mean '-Wno-property-attribute-mismatch'? [-Werror,-Wunknown-warning-option=
+] in kernel/bpf/helpers.o (scripts/Makefile.build:287) [logspec:kbuild,kbui=
+ld.compiler.error]
+> ---
+>=20
+> - dashboard: https://d.kernelci.org/i/maestro:32e32983183c2c586f588a4a3a7=
+cda83311d5be9
+> - giturl: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next=
+.git
+> - commit HEAD:  326785a1dd4cea4065390fb99b0249781c9912bf
+>=20
+>=20
+> Please include the KernelCI tag when submitting a fix:
+>=20
+> Reported-by: kernelci.org bot <bot@kernelci.org>
+>=20
+>=20
+> Log excerpt:
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+>   CC      kernel/bpf/helpers.o
+> error: unknown warning option '-Wno-suggest-attribute=3Dformat'; did you =
+mean '-Wno-property-attribute-mismatch'? [-Werror,-Wunknown-warning-option]
+>=20
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+>=20
+>=20
+> # Builds where the incident occurred:
+>=20
+> ## defconfig on (arm64):
+> - compiler: clang-21
+> - config: https://files.kernelci.org/kbuild-clang-21-arm64-mainline-69409=
+7d2cbfd84c3cdba292d/.config
+> - dashboard: https://d.kernelci.org/build/maestro:694097d2cbfd84c3cdba292d
+>=20
+>=20
+> #kernelci issue maestro:32e32983183c2c586f588a4a3a7cda83311d5be9
+>=20
+> --
+> This is an experimental report format. Please send feedback in!
+> Talk to us at kernelci@lists.linux.dev
+>=20
+> Made with love by the KernelCI team - https://kernelci.org
+>=20
 
-Great. Pls submit an official patch targeting bpf tree,
-since without the fix the vmlinux_6_19.h won't be usable in older setups.
+Presumably caused by commit
 
-> Thanks,
-> Song
->
-> diff --git i/tools/bpf/bpftool/btf.c w/tools/bpf/bpftool/btf.c
-> index 946612029dee..606886b79805 100644
-> --- i/tools/bpf/bpftool/btf.c
-> +++ w/tools/bpf/bpftool/btf.c
-> @@ -798,6 +798,9 @@ static int dump_btf_c(const struct btf *btf,
->         printf("#define __bpf_fastcall\n");
->         printf("#endif\n");
->         printf("#endif\n\n");
-> +       printf("#pragma clang diagnostic push\n");
-> +       printf("#pragma clang diagnostic ignored \"-Wmissing-declarations=
-\"\n");
+ ba34388912b5 ("bpf: Disable false positive -Wsuggest-attribute=3Dformat wa=
+rning")
 
-what about pragma GCC ? gcc-bpf is gaining traction...
-will pragma clang or pragma GCC work for both?
+in the bpf tree.
+--=20
+Cheers,
+Stephen Rothwell
 
-> +       printf("\n");
+--Sig_/69et5i_lNvN.91T_ot13ewr
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-here...
+-----BEGIN PGP SIGNATURE-----
 
->
->         if (root_type_cnt) {
->                 for (i =3D 0; i < root_type_cnt; i++) {
-> @@ -823,6 +826,8 @@ static int dump_btf_c(const struct btf *btf,
->                         goto done;
->         }
->
-> +       printf("\n");
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmlAtPoACgkQAVBC80lX
+0Gwnlwf/c8kn9K6aG0sl1X13gll7DqASHge6iKGaTEZHx/RSIDn/b4V+PGysnXHe
+MAymJ9jhvWXmxAsbQ7Jz9wS1D17NALYYSWinxetr8gxKKqd4q4+pL4R56r0yqqQz
+u7PGLi0RUPSvX7rlHtT0Fs2PECd0i18O3z7omnRfITxLTKhJXF7th1GE5XBEHdSI
+JQPfqDKe7zwencS4pZSksdkCAmOE68IQDvODSiXwe1C5v3+owbGde2XF0u39Q0q3
+yuBB6D1/s7T9uy1n1N547bPs+QK3HWGrTigsrYUTuuoYs0ZF9xJKahyWG76+MDfo
+rrwxXS9dFO/HcmRmV7LpwhzWzwZcWg==
+=OyqN
+-----END PGP SIGNATURE-----
 
-and here... I would skip printing these two empty lines.
-
-> +       printf("#pragma clang diagnostic pop\n");
->         printf("#ifndef BPF_NO_PRESERVE_ACCESS_INDEX\n");
->         printf("#pragma clang attribute pop\n");
->         printf("#endif\n");
+--Sig_/69et5i_lNvN.91T_ot13ewr--
 
