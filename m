@@ -1,133 +1,154 @@
-Return-Path: <bpf+bounces-76690-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76692-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7352DCC1145
-	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 07:20:31 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24377CC1233
+	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 07:39:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4764730213F9
-	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 06:20:04 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id A38303020DD8
+	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 06:39:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 949CD33D6D2;
-	Tue, 16 Dec 2025 06:20:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 523AA325730;
+	Tue, 16 Dec 2025 06:38:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Adcbu32Z"
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="l+rvyd1T"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from fout-b1-smtp.messagingengine.com (fout-b1-smtp.messagingengine.com [202.12.124.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E73D532D7E6;
-	Tue, 16 Dec 2025 06:19:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C0CB1DF261;
+	Tue, 16 Dec 2025 06:38:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765866000; cv=none; b=E43nFLBbOxNqh0TiXviLRgCeOlMiZih3dJTl1boPYH5j47F7oPAHOszBxG/FxB01eYaNlHlP+WMLNCmEyAsyJlTevYDeDpIQG3BP3VFL+oT1P8hbbxBpfk85bAnEcZauXjlq2gVUNz9n3vZX7Yr/bE7NNjcJ0ilAjyCyekgvwlI=
+	t=1765867127; cv=none; b=YZJnX0zFyBM5SPuit2qJR4xzJOlOUWflBHq5c4XHpDRDmjIz5Uw4bXsi8JxU9GvO9S+oNEfoYQiaixlXla9r46gqhuXps4RdB8/lRcHcG/lGZ2M94ZKF5pBcXvVb5sIc/RVP+qNg9fxEiy3VPA5aRc/H1Sf6ViZGQXspYdv5wJI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765866000; c=relaxed/simple;
-	bh=jcEEYLZM+Ahx6ncXaYATQIK3U9/f/6urv5INm84E1XE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tSfYjLOT2qOb+fUyUwHgOgno4IB55C+SYBslIHVJMuLaINEN/8t5auWtFLPlihpumuwMuP9RLLHg7kygdu3obqbxOK6knKyvCGGz21W0kvKsHtYCPsFr9ObMg6v9TXC7GLz5k5aomm3diOO6NUcrq2sRXvr7uMRgic1T8bT9qDI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Adcbu32Z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76CEFC4CEF1;
-	Tue, 16 Dec 2025 06:19:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765865997;
-	bh=jcEEYLZM+Ahx6ncXaYATQIK3U9/f/6urv5INm84E1XE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Adcbu32ZsNBcAwhR6eMNWNwTQvZYGyLvz1jjJqksdcWe8kF7/2cutbfQ/+qT4fbFZ
-	 t+7hxWzMBuK7bd/vLGpUHLIcum4ak5X/UVb/MML8V47Hj3Io0Pi6a/AGYPdhAxSe7Q
-	 4o8zhuGdgBr3tupLNxQsThVcmD9l3sQM052Sk7VpvrSJjZPd4K0LsoKg1A0woIJdcj
-	 qYmBeEnEKOu/qQDm6SpNbNlIpXk9W3XTj/3WKKKNRdAoyYVRxqH8f7d18Wh9DdUlzW
-	 NUJxZ9EBozoBgFGkQ6LU/JyLZ4IO46oePDJso5fxB/AgHw4IWRU5YS5tnQgY68OG2h
-	 qBJmEtBqOAptw==
-Date: Mon, 15 Dec 2025 22:19:56 -0800
-From: Namhyung Kim <namhyung@kernel.org>
-To: Quentin Monnet <qmo@kernel.org>
-Cc: Ian Rogers <irogers@google.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>, bpf@vger.kernel.org,
-	James Clark <james.clark@linaro.org>, Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org, KP Singh <kpsingh@kernel.org>
-Subject: Re: [PATCH 1/2] tools/build: Add a feature test for libopenssl
-Message-ID: <aUD6DH_zAI6trA6M@google.com>
-References: <20251203232924.1119206-1-namhyung@kernel.org>
- <CAP-5=fU=G75jpsG-X6pa8_rdKapxVc615CqvcdSPBFesj02D6A@mail.gmail.com>
- <aTGz9kFQk2xNvsbC@x1>
- <aTIeuLOcc6c7RWUz@google.com>
- <CAP-5=fVRjs9Dw=_8B9NRkWxgZKn_yg5XEYXhc_UNi9HGz-R23Q@mail.gmail.com>
- <4e7f40fc-114c-4786-86f7-532dce6cb04c@kernel.org>
+	s=arc-20240116; t=1765867127; c=relaxed/simple;
+	bh=SuCvINbuPVMXqb9QjLD98WOoklSkHkfDpJ3rDwet8XQ=;
+	h=To:Cc:Message-ID:In-Reply-To:References:From:Subject:Date; b=JoUP5jo+ghLjN3Q4cML/DAT9wR3HRY9pTA6vptU0v/eYpuI6oL3H31Pyu0qw6uzT/txvC8PHhEH6lT6C94XIlABIhkhzKImRKlxJX/qa/U674FqzHbzRB8wW/LlO2OV7icwJYEH/OSzys3TM3piDu3BdgOjMClFjQiAyCWZgImQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=l+rvyd1T; arc=none smtp.client-ip=202.12.124.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Received: from phl-compute-07.internal (phl-compute-07.internal [10.202.2.47])
+	by mailfout.stl.internal (Postfix) with ESMTP id E8A131D00105;
+	Tue, 16 Dec 2025 01:38:36 -0500 (EST)
+Received: from phl-frontend-02 ([10.202.2.161])
+  by phl-compute-07.internal (MEProxy); Tue, 16 Dec 2025 01:38:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+	:feedback-id:from:from:in-reply-to:in-reply-to:message-id
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1765867116; x=
+	1765953516; bh=mcxXvS3cm1F0WmCqE3WMidSQEcc6TanLc8CP39ib5i4=; b=l
+	+rvyd1TIBWr7y3uNUW1dqjrjaj577UiCABj6C2hjE+oTIAo35dOQmqUbf+Aj3kcJ
+	Iivr/OUuAM83fOTbJYjoJjwaBczygWQ2edkvmLeTN5O0hM3naRT+FhrgaG7j/5DP
+	vpEBEWJZA5xkSJ0hPgC3mWbkV2hCp4pn/X356MVI8tyXNbTfYi/Le5iPNwlk8XFx
+	+Ru01U22KhLjde9Xbb0RNTyBFTTBvv6u8HGPVn1mwoiRdiQFrRguHN8Q//ppySxp
+	V4C5IV5YxZt9ttLK2C3QD5sSBnlIeonaMpDtOxcj0g8LnEA5b6JsM5AqP4cedk27
+	Plix2vTxZRzJAeK45rh/g==
+X-ME-Sender: <xms:bP5AaSGSd6JlwDUZcqEIjyNiXRBxUD34rV0P73hSD7GlK0LNxblIGA>
+    <xme:bP5AaXQlybwhXXI5bgd2sDD532I28mgE639V34CYUpCFIN4jvxM2GxwxRHvhSfMfJ
+    h4bFvZ9uGgAx2nntY2FC0c18M--pVUiESzNgOSymSxKEk-t9Ab_4Uc>
+X-ME-Received: <xmr:bP5AaUpq-IC4Vv6X1hHTulu3n_uACAqh7cUfj_WbFn3u_z77ZSzQFfd4CaXnhrRywMwyLsMdk3xvEgU7lmYNQBN4QcDZw1dnNZ4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdefkeellecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpefvvefkjghfhffuffestddtredttddttdenucfhrhhomhephfhinhhnucfvhhgrihhn
+    uceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrthhtvghrnh
+    epvefggfdthffhfeevuedugfdtuefgfeettdevkeeigefgudelteeggeeuheegffffnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfhhthhgrih
+    hnsehlihhnuhigqdhmieekkhdrohhrghdpnhgspghrtghpthhtohepvdegpdhmohguvgep
+    shhmthhpohhuthdprhgtphhtthhopehpvghtvghriiesihhnfhhrrgguvggrugdrohhrgh
+    dprhgtphhtthhopeifihhllheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghkphhm
+    sehlihhnuhigqdhfohhunhgurghtihhonhdrohhrghdprhgtphhtthhopegrrhhnugesrg
+    hrnhgusgdruggvpdhrtghpthhtohepsghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhm
+    pdhrtghpthhtohepghgrrhihsehgrghrhihguhhordhnvghtpdhrtghpthhtohepmhgrrh
+    hkrdhruhhtlhgrnhgusegrrhhmrdgtohhmpdhrtghpthhtoheplhhinhhugidqrghrtghh
+    sehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvg
+    hlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:bP5AaVrOV7N2BAIlg0s4O8tKXmiTgKpauuol07v8NqESXsk5O9632Q>
+    <xmx:bP5Aaf0KiFUDH9E6Z6DSBGnYb-phvoUwfa_T4Zydh4Uk-m0LhczAEA>
+    <xmx:bP5AaZgNUSv-f4NPasT7Sapm4Zy2iqFN1rZ_AG9h3BlgUC46MKp3jA>
+    <xmx:bP5Aael_yusUIwPsbrTJHhklWSKurKBTLV3D4jb0LPaEhVelqZQN8w>
+    <xmx:bP5AaSJjiheOZd2B4-Gzek8fxPTofqQizSNnYm-FdzraX_ZkPCz5a7XE>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 16 Dec 2025 01:38:34 -0500 (EST)
+To: Peter Zijlstra <peterz@infradead.org>,
+    Will Deacon <will@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+    Arnd Bergmann <arnd@arndb.de>,
+    Boqun Feng <boqun.feng@gmail.com>,
+    Gary Guo <gary@garyguo.net>,
+    Mark Rutland <mark.rutland@arm.com>,
+    linux-arch@vger.kernel.org,
+    linux-kernel@vger.kernel.org,
+    linux-m68k@lists.linux-m68k.org,
+    Alexei Starovoitov <ast@kernel.org>,
+    Daniel Borkmann <daniel@iogearbox.net>,
+    Andrii Nakryiko <andrii@kernel.org>,
+    Martin KaFai Lau <martin.lau@linux.dev>,
+    Eduard Zingerman <eddyz87@gmail.com>,
+    Song Liu <song@kernel.org>,
+    Yonghong Song <yonghong.song@linux.dev>,
+    John Fastabend <john.fastabend@gmail.com>,
+    KP Singh <kpsingh@kernel.org>,
+    Stanislav Fomichev <sdf@fomichev.me>,
+    Hao Luo <haoluo@google.com>,
+    Jiri Olsa <jolsa@kernel.org>,
+    Geert Uytterhoeven <geert@linux-m68k.org>,
+    bpf@vger.kernel.org
+Message-ID: <4ff540deaf87eb24ba11bbac95bdbea68d22a129.1765866665.git.fthain@linux-m68k.org>
+In-Reply-To: <cover.1765866665.git.fthain@linux-m68k.org>
+References: <cover.1765866665.git.fthain@linux-m68k.org>
+From: Finn Thain <fthain@linux-m68k.org>
+Subject: [PATCH v5 1/4] bpf: Explicitly align bpf_res_spin_lock
+Date: Tue, 16 Dec 2025 17:31:05 +1100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4e7f40fc-114c-4786-86f7-532dce6cb04c@kernel.org>
 
-Hello,
+Align bpf_res_spin_lock to avoid a BUILD_BUG_ON() when the alignment
+changes, as it will do on m68k when, in a subsequent patch, the minimum
+alignment of the atomic_t member of struct rqspinlock gets increased
+from 2 to 4. Drop the BUILD_BUG_ON() as it becomes redundant.
 
-On Fri, Dec 05, 2025 at 10:28:03AM +0000, Quentin Monnet wrote:
-> 2025-12-04 22:27 UTC-0800 ~ Ian Rogers <irogers@google.com>
-> > On Thu, Dec 4, 2025 at 3:52 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> >>
-> >> On Thu, Dec 04, 2025 at 01:16:54PM -0300, Arnaldo Carvalho de Melo wrote:
-> >>> On Wed, Dec 03, 2025 at 04:34:56PM -0800, Ian Rogers wrote:
-> >>>> On Wed, Dec 3, 2025 at 3:29 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> >>>>>
-> >>>>> It's used by bpftool and the kernel build.  Let's add a feature test so
-> >>>>> that perf can decide what to do based on the availability.
-> >>>>
-> >>>> It seems strange to add a feature test that bpftool is missing and
-> >>>> then use it only in the perf build. The signing of bpf programs isn't
-> >>>
-> >>> It is strange indeed, I agree that since we don't use BPF signing at
-> >>> this point in the perf BPf skels, then we could just bootstrap a bpftool
-> >>> without such feature and continue building the existing features.
-> >>>
-> >>> Adding the bpftool maintainer to the CC list, Quentin?
-> >>
-> >> I've already talked to Quentin and they want libopenssl as a
-> >> requirement.
-> >>
-> >> https://lore.kernel.org/linux-perf-users/e44f70bf-8f50-4a4b-97b8-eaf988aabced@kernel.org/
-> > 
-> > You can have libopenssl as a requirement and have a bootstrap bpftool
-> > that doesn't require it, as the bootstrap version only provides
-> > minimal features typically to just build bpftool. You can also have
-> > libopenssl as a requirement and have a feature test that fails in the
-> > bpftool build saying you are missing a requirement. Having the perf
-> > build detect that a feature for the bpftool dependency is missing is
-> > fine as we can then recommend installing bpftool or the missing
-> > dependency, but doing this without bpftool also doing something just
-> > seems inconsistent.
-> > 
-> > Thanks,
-> > Ian
-> 
-> 
-> From bpftool's perspective, it doesn't really make sense to skip the
-> OpenSSL dependency for the bootstrap version, given that we want to ship
-> the main binary with the signing feature: so you could build a bootstrap
-> version without signing, but you won't be able to use it to build the
-> final binary because, well, you miss a required dependency.
-> 
-> This being said, if it really makes it easier for you to build perf, I'd
-> be open to adjusting the bootstrap version, as long as it doesn't affect
-> the final bpftool build. It might lead to further headaches if someone
-> needs to sign the BPF programs when building perf in the future though.
-> 
-> I'm also OK with adding a dependency check with a simple build error for
-> bpftool, although we don't currently do it for other required
-> dependencies in bpftool.
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Acked-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+---
+ include/asm-generic/rqspinlock.h | 2 +-
+ kernel/bpf/rqspinlock.c          | 1 -
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
-Ok, to make a progress, I'll add this series to perf-tools tree for
-v6.19 first.
-
-Thanks,
-Namhyung
+diff --git a/include/asm-generic/rqspinlock.h b/include/asm-generic/rqspinlock.h
+index 6d4244d643df..eac2dcd31b83 100644
+--- a/include/asm-generic/rqspinlock.h
++++ b/include/asm-generic/rqspinlock.h
+@@ -28,7 +28,7 @@ struct rqspinlock {
+  */
+ struct bpf_res_spin_lock {
+ 	u32 val;
+-};
++} __aligned(__alignof__(struct rqspinlock));
+ 
+ struct qspinlock;
+ #ifdef CONFIG_QUEUED_SPINLOCKS
+diff --git a/kernel/bpf/rqspinlock.c b/kernel/bpf/rqspinlock.c
+index a00561b1d3e5..02f1f671e624 100644
+--- a/kernel/bpf/rqspinlock.c
++++ b/kernel/bpf/rqspinlock.c
+@@ -692,7 +692,6 @@ __bpf_kfunc int bpf_res_spin_lock(struct bpf_res_spin_lock *lock)
+ 	int ret;
+ 
+ 	BUILD_BUG_ON(sizeof(rqspinlock_t) != sizeof(struct bpf_res_spin_lock));
+-	BUILD_BUG_ON(__alignof__(rqspinlock_t) != __alignof__(struct bpf_res_spin_lock));
+ 
+ 	preempt_disable();
+ 	ret = res_spin_lock((rqspinlock_t *)lock);
+-- 
+2.49.1
 
 
