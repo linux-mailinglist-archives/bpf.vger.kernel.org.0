@@ -1,128 +1,92 @@
-Return-Path: <bpf+bounces-76677-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76678-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE4BECC0BA3
-	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 04:34:34 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71B25CC0BFD
+	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 04:49:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4718D30336BA
-	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 03:34:15 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 4C6F73006E08
+	for <lists+bpf@lfdr.de>; Tue, 16 Dec 2025 03:49:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B879B2E06EF;
-	Tue, 16 Dec 2025 03:34:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mhjUqGaX"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 773A32C11C5;
+	Tue, 16 Dec 2025 03:49:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com [209.85.210.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 330FA26059B;
-	Tue, 16 Dec 2025 03:34:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B675921E0BB
+	for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 03:49:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765856053; cv=none; b=fa2aqZGMwI8S5J9qBi8De3MKjWGTrpdQ77/c64x3dUTgbiZx881xdxMy8eCHEypJ2RNaO4s8AzkOUHu9fdfLYJiy/PmYEicggvXiTTRyuEpzD4bQBZkACkICDJyli4l4tOZMNHKoHAuRXmhXqFog1NSHl62LfwIKCoQVFBNhF8U=
+	t=1765856947; cv=none; b=QRxuLFMDgiGJBRW4I/iJocpSOq5fCrfXU9fKhrcnxA6ZNU+LEb52p3OE09y6dM8Q1Iluqy3DbS+PqrMuvlRmdexU2kurckC4/p98SqUzaKwOABK4dhhGU41F08gIEb/RA7SJwany0r1+RiMT5nl/bkoDL9ePrx4jEX3GRrPHXlQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765856053; c=relaxed/simple;
-	bh=KeCxncnuSFJjzzaRe8K2a8BqmNbS4k4iVP3dvPsYyns=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=H6bK3rpagmu0umVqJ6jDPoi3F5DXJkopId3DMf+ZLiGK5QZHLgyIHn/i1Hh/Ox3QRKYR7/X8aYtGRWP9hu9WXs1MomCNtMWL3xChDc+vf0xLlp/co3v5nv7Y6P4XMUr6qyI+f3i3mYxMyaUPBEKBsRCmW38xEqBxkfWTL9yxSss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mhjUqGaX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41C13C4CEF5;
-	Tue, 16 Dec 2025 03:34:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765856052;
-	bh=KeCxncnuSFJjzzaRe8K2a8BqmNbS4k4iVP3dvPsYyns=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=mhjUqGaXnUXFG/D7Hdv3D+2Y8oGBbTElQdwfKCo54UDO5vfD3rmbK8Hy95aaxa8mt
-	 cb8rAYx78CZ40kdR/Tu23CxAavfHK/wBjmbPz/VcSaNGAWPf7A4DUJrQhvfKV38Pkx
-	 XJI3b46GNX2uCu9qhDL0JiV75NXnV87X32UMl2r8PNsDYCYR7UXlIGUWg4BhoMg/zK
-	 bWejhJqTLuq9vUBx3X+kCZ9+IRRFyigQVyoWZPFSaw2sxyqkk1WhlkHeVnZ1UlC7HY
-	 wio2Thtdce8g5g2tl9QX0QVGjQ2fcL0xS9HcLhgDRj1ArVMtPmP72QvksRMUm4Agdy
-	 unWS7gsyJbtEw==
-Content-Type: multipart/mixed; boundary="===============2241353678792354598=="
+	s=arc-20240116; t=1765856947; c=relaxed/simple;
+	bh=Unutd6wCkiNh4RacUyjP326EvR/Ys1jEQu6+sKGiWAg=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=ZP6xNVpG77/68xIKX5ZEOXIPg1Z+g5sXFFJlpaGodr/4eAgCIKtv22zcahxgWEJGpK6m52qXfOI4FjakF66DDc7CA+XcTGFJFcO4HeAtfHE1tbVNq2uvWKTPjlDnOxbFfXr74aF6zIxGOH8mWaXR54OlQ0SKUUzAEuRbZjw6AuI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.210.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-7c79200d1a4so7499226a34.0
+        for <bpf@vger.kernel.org>; Mon, 15 Dec 2025 19:49:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765856943; x=1766461743;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UA7NZRyjwv7hEiqYjxI52dnHRVbVd/ftI8bUbW0TUwQ=;
+        b=ozDLZpALB1TLtAQRXmmHzNoISVMwG6U2T4wSM5JPfrH+4BwOJmeHUU82ohXYNEPijr
+         FXmon2JZHN2WxHiIRTh/U893F2cbWfdMOpTrg5N2+XY4UxQDsP4vkArB1E6kuhtn1Byk
+         yS6ZVQY3c9A7DuWlPFtpaq2nQ97F5hFwFbHl1VTft1s4tdeW2WXVxgPgnGih8n7ExdVD
+         p4ZOHJTL6dFa2onvy1ZHgH2fCREYpYMYPe4ICJZLCR6FXoYLcD+Qp1P4Jk6Smj/l7Y3l
+         iYaaALIFrefq09+ifNw6gGg8p6q+clZaHLDHCadjp08f/tefAgUIpUOff0abG/0BNo0i
+         IAmg==
+X-Forwarded-Encrypted: i=1; AJvYcCW7B1XdsGn4l++y0zOrwF8wi81reWZZUWajX6N9+9+YKGwwhzX1NX3ldvFbnt6+4//fg2M=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwC0MWhcsu4IFcqLR7/qBzkjQgdIRymRn/UyezFI20mTftiA+ny
+	eDRzHUOYXtyVSKF9d7U8fznJpvD08yQNCvrKy0qUPuzYXpH9tcGluvnXwa/8UqikLbItOSFp4ge
+	9Hx37l2giwl4ph118wbi9o0zi6KOSer/lntrsQa0EWg18mQs8NnVUM2twyVU=
+X-Google-Smtp-Source: AGHT+IFa3E9j4szhRq4TjaO4AExrxT/b7DDledAz5tQ3PDW6L+l1D/C6ucPqDcs4X3BVKRZBrKXJtp55A0s0736sTiygqQP1UvT6
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <3c943df286f9886735ac6212e4096731b80f6db4f245303cd2864157fac2072d@mail.kernel.org>
+X-Received: by 2002:a05:6820:178e:b0:659:a130:dfdf with SMTP id
+ 006d021491bc7-65b37e856a8mr7438243eaf.8.1765856943606; Mon, 15 Dec 2025
+ 19:49:03 -0800 (PST)
+Date: Mon, 15 Dec 2025 19:49:03 -0800
 In-Reply-To: <20251216031018.1615363-1-donglaipang@126.com>
-References: <20251216031018.1615363-1-donglaipang@126.com>
-Subject: Re: [PATCH] bpf: Fix NULL deref in __list_del_clearprev for flush_node
-From: bot+bpf-ci@kernel.org
-To: donglaipang@126.com,syzbot+2b3391f44313b3983e91@syzkaller.appspotmail.com
-Cc: andrii@kernel.org,ast@kernel.org,bpf@vger.kernel.org,daniel@iogearbox.net,davem@davemloft.net,eddyz87@gmail.com,haoluo@google.com,hawk@kernel.org,john.fastabend@gmail.com,jolsa@kernel.org,kpsingh@kernel.org,kuba@kernel.org,linux-kernel@vger.kernel.org,martin.lau@linux.dev,netdev@vger.kernel.org,sdf@fomichev.me,song@kernel.org,syzkaller-bugs@googlegroups.com,yonghong.song@linux.dev,donglaipang@126.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Tue, 16 Dec 2025 03:34:12 +0000 (UTC)
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6940d6af.a70a0220.33cd7b.0130.GAE@google.com>
+Subject: Re: [syzbot] [net?] [bpf?] general protection fault in
+ bq_flush_to_queue (2)
+From: syzbot <syzbot+2b3391f44313b3983e91@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, davem@davemloft.net, donglaipang@126.com, 
+	eddyz87@gmail.com, haoluo@google.com, hawk@kernel.org, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	kuba@kernel.org, linux-kernel@vger.kernel.org, martin.lau@linux.dev, 
+	netdev@vger.kernel.org, sdf@fomichev.me, song@kernel.org, 
+	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
---===============2241353678792354598==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Hello,
 
-> diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
-> index 04171fbc39cb..6ab6eae31989 100644
-> --- a/kernel/bpf/cpumap.c
-> +++ b/kernel/bpf/cpumap.c
-> @@ -450,6 +450,7 @@ __cpu_map_entry_alloc(struct bpf_map *map, struct bpf_cpumap_val *value,
->
->  	for_each_possible_cpu(i) {
->  		bq = per_cpu_ptr(rcpu->bulkq, i);
-> +		INIT_LIST_HEAD(&bq->flush_node);
->  		bq->obj = rcpu;
->  	}
->
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-[ ... ]
+Reported-by: syzbot+2b3391f44313b3983e91@syzkaller.appspotmail.com
+Tested-by: syzbot+2b3391f44313b3983e91@syzkaller.appspotmail.com
 
-> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-> index 2625601de76e..7a7347e709cc 100644
-> --- a/kernel/bpf/devmap.c
-> +++ b/kernel/bpf/devmap.c
-> @@ -428,7 +428,8 @@ void __dev_flush(struct list_head *flush_list)
->  		bq_xmit_all(bq, XDP_XMIT_FLUSH);
->  		bq->dev_rx = NULL;
->  		bq->xdp_prog = NULL;
-> -		__list_del_clearprev(&bq->flush_node);
-> +		if (bq->flush_node.prev)
-> +			__list_del_clearprev(&bq->flush_node);
-                ^^^^
+Tested on:
 
-The devmap code adds the same defensive check but doesn't initialize
-flush_node the way cpumap does. Looking at dev_map_notification(), when
-NETDEV_REGISTER occurs, it calls:
+commit:         8f0b4cce Linux 6.19-rc1
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=137ab91a580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=412fc3ec22077a03
+dashboard link: https://syzkaller.appspot.com/bug?extid=2b3391f44313b3983e91
+compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=10be172c580000
 
-    alloc_percpu(struct xdp_dev_bulk_queue)
-
-And then only initializes the dev field:
-
-    per_cpu_ptr(netdev->xdp_bulkq, cpu)->dev = netdev;
-
-Without INIT_LIST_HEAD(&bq->flush_node), if alloc_percpu() returns
-memory with non-zero bytes, bq->flush_node.prev could contain garbage.
-
-The enqueue path in bq_enqueue() uses:
-
-    if (!bq->dev_rx)
-        list_add(&bq->flush_node, flush_list);
-
-So if dev_rx contains non-zero garbage, the node never gets added to the
-list. But this flush code checks bq->flush_node.prev which could also be
-garbage, causing __list_del_clearprev() to be called with invalid
-pointers.
-
-Does devmap need INIT_LIST_HEAD(&bq->flush_node) similar to cpumap? The
-commit message states that initialization is part of the fix, but only
-cpumap gets it.
-
-[ ... ]
-
-
----
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
-
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/20255377282
-
---===============2241353678792354598==--
+Note: testing is done by a robot and is best-effort only.
 
