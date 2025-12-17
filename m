@@ -1,89 +1,103 @@
-Return-Path: <bpf+bounces-76796-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76797-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 911C3CC59B5
-	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 01:32:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E062BCC59C7
+	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 01:38:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 1E2F7302BA8A
-	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 00:32:17 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1DD0C301A731
+	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 00:38:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29ACA1EB1AA;
-	Wed, 17 Dec 2025 00:32:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E81AE1EB9F2;
+	Wed, 17 Dec 2025 00:38:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L0+Piya7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WaFjBVWv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 238421DDA18
-	for <bpf@vger.kernel.org>; Wed, 17 Dec 2025 00:32:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F33518CBE1
+	for <bpf@vger.kernel.org>; Wed, 17 Dec 2025 00:38:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765931535; cv=none; b=A6S6wlfMauUJAHkyohnRr0KS68Ut76yqyRz/mqouE6l+n7AIu+/MGNEVrBl0aOUCPB1RfbCWW23WLtRm9rhfdO2S8l0/JkPWYZ0pKXGEfQaFTkUYag5kvxICmTDUyABUYCf/iwjqzJPH1W84kliHNXNrsbM17knMBfhZPotVWPs=
+	t=1765931902; cv=none; b=egx5Pml8CgRrtauqYhJDHUGAYgSxdUPqiR07tHs8Ie3aQll/4aGw0zLn4Ret+XGlsOngD89krshhC3MV10sgfHwJ+T4E90oZiDFkD3dMjISCR6oP1cVwHHenf4Xx7iAZ32Xiq3xkASsMYBBMgEIduclWU9n2iQiiMVQYqAIuq2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765931535; c=relaxed/simple;
-	bh=SDZxhgXeRpb5AZsbUgX+tbIngP6hoMO3hq1PpSdk2Hc=;
+	s=arc-20240116; t=1765931902; c=relaxed/simple;
+	bh=1tRhOh6qqMw/Ci6WUJIXtBYjb4c9GePbl9osWpiJjlE=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=sS/8jwQzMpBxoqXjmELB3rtiTwkB1eDOAnQSPPjUWhbrPOO5+ug38qZKrrAsc9ITiFG1V/c+BbA21bGcAFMtmS6AgcO21SpraWQDIQUmLZNYrkORjS+jpn6cBNIv15K6szWv1TaKFAm0H1VbI9tpmlkcWl2+xiPWuT3GD3yiRvs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L0+Piya7; arc=none smtp.client-ip=209.85.216.51
+	 Content-Type:MIME-Version; b=a12xQNJqGxcwHBBO+g83x+n3hims4+beB9wcOHxmLplf4mCSNt1UFYr3K0dz70vcQsw7ATzHXWcEafQo1zEZn8bILKPbQZYXqgAYC4KCYz5g/ZHaAMXgsgwbVUP3nQInnlMH5veeyEhzwio98cD7TnrxmenEj7f5JqS1WqXicOc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WaFjBVWv; arc=none smtp.client-ip=209.85.210.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-34c277ea011so4132733a91.1
-        for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 16:32:13 -0800 (PST)
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-7b9c17dd591so4443295b3a.3
+        for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 16:38:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1765931533; x=1766536333; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1765931900; x=1766536700; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=/VT22ZtH0G6qWJ/tFlXK0+84Il/3ib56pQsFHo2JQSQ=;
-        b=L0+Piya7aPomuw8R/Dm6xMdAZb1/wc8ErIGI4sJsn45TNOBe/YebG2PK/Ud9PdVpss
-         Xp+G60JkSKSR8OazZ6jRHjX9Ms2VVbF9O6obGfDr7EcknNqrFaKfQGKHChOIFxNi5P2m
-         msGrUGjCWTOKgSqj7hKXTngifr8exYzri6Gj/jfyb7vguzZFNXmE/IiMR7UJtG2Q9auP
-         Cle5jAVyY/SMRvelL3SjabpsbpYDF234Aen8G4syqGb0FeITSxXJLz++n3qcVsB0xyBW
-         J6cFd6OdvphxW3l/1mUXVGubDH6MjX06qh16BqCwX4FmENa47XR21Ce+F4B9q254cp40
-         hqOg==
+        bh=1tRhOh6qqMw/Ci6WUJIXtBYjb4c9GePbl9osWpiJjlE=;
+        b=WaFjBVWvzx8Sv58j7wruF5comF7Q3txRgzFtZu2p8GVgY5Zzgqo7wrry/ErvXIz2zD
+         qq0tvNjTbuRuOS4gCp+bwkbSXH+fVt0OXN7Ce5Pp/BUo8SgQbwNXY7wHKB9wWs/KwrSP
+         YP3LdAviMq19/zrwA45/wU+ijsY3Mrt4tr0tSNaV99PwdSt2ZhyZpBvaRw8bg++PiSUn
+         oRgiD7FD9tzI5WL2TH28JPS/dMXy2iTNOnndzkfX1yPGW3vtpgcoOwfW2bNUbdU1VBlH
+         2aNfvcwDmfDQShPkcuLdMZJ1EwzYYLks9gbGRq/kzZd0U9bJbt2vQlwlGaR3BTKr8U9U
+         4d8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765931533; x=1766536333;
+        d=1e100.net; s=20230601; t=1765931900; x=1766536700;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/VT22ZtH0G6qWJ/tFlXK0+84Il/3ib56pQsFHo2JQSQ=;
-        b=CHZBPfJgqmbZeiF/tMBRi1o2sf+9UmdeCgOjJSoKS19QQslYtkASP9eyb8Yke4Dsvx
-         i/K0/fYbfU8WeLPIKLxjF7MoZTFLVWmQ6sSeOWviFPAzzVyJJQvRlHJhh//rhNQwAjj5
-         0VBtz/EG/0+LjITVpTpmlLLl2R9tus6EjgUbRpBAS6H4/8W6ucaMlcK4ScsNpK7TM6KW
-         sQ89E4PclpTTI+HTd0nN1gYAtpGhX94MXJKPDENmh5NTkxKZO0YVkt5EUFUaE0pU0MAE
-         3/RQz+C2Av/36ynzR3+yM2mOdT2BMsbA5YlFyFl+1KFDto0C1wBGlPYCwYoTYFIrUSG6
-         vm3g==
-X-Forwarded-Encrypted: i=1; AJvYcCUhjR+9z+buwWF7Cy68sA5edIx0MlgFHDWdQc7HMAdudAiOh7S3iRWwXJp6XvinZAACQtc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyJDLMftN8VZg2+BVEpi8aBFbGd/3fkWjWC4aIGD0EYgZfaTxxz
-	ku5kIIXZiRmJH8ErTQTPhLm1jIN1aA9FM3riRvjJul1/aNkqLocUYTww
-X-Gm-Gg: AY/fxX79ZtdCG3bHT8cOeL5Y1/gHQ4oUG4ytyBRlYZdFJtNcNRzn588KyEBxda8JlFo
-	GcvotWO6mXGfBgtKApCKPkBUYylZPQP1sIwNfPXixhCHxLqrfvhR/OHGMS4ICvrzJUTPllltqyI
-	wtJgUfK8NpZQYJ3tbz7fw/tSW3zFbG4vflFf90+6KHRl4i/aHv/8lqFzewo9p61psWxVSiPkFZt
-	hN1U2Qb3xhZxFgP6LHliQ0vLUBwafF4Co/3MZjr6ecOt9AbOdXUU/uqynFDfQyvBXO+lgffG0h8
-	KQsfRhP/zJM+/X10qylG1eHYckikU0Usq69a5s1w/LVlKY676mygdF5wbQIYpVsXcQlBBT2z2l8
-	bg22RbPj5pztHFZNPXlSGBekG45w3aVwLMgDKElLJan+55QzZ9j3n/zxKhusvtHnMy/+uYFHyP8
-	oCPUxlZx9cGK4fGboaQiY=
-X-Google-Smtp-Source: AGHT+IHUxRS7eRtYzrOGXaeS3bIYBTh4/1Bw67dBozbzXa0+D0jOpBIISxlOl1dr0/eVcz5ia1JLXw==
-X-Received: by 2002:a17:90b:4a10:b0:34c:7d65:e4a with SMTP id 98e67ed59e1d1-34c7d651260mr7381468a91.31.1765931533230;
-        Tue, 16 Dec 2025 16:32:13 -0800 (PST)
+        bh=1tRhOh6qqMw/Ci6WUJIXtBYjb4c9GePbl9osWpiJjlE=;
+        b=Ip2aPYBxMzD0XEMLPiZMnWeuz5okeOFHZ47z+q8e9t1QJomP4cwuYgsfWsNygUzCbO
+         ydv8eFV012uxday4TRNsvLQFXJOmAk1VBZGVB2480FuOKm8cifM+auuRFnx2zdyQIRgz
+         M0FRnctMnqUxj0iUuxNLkVogMP+ysKzSkmCJJBI/g7hNxMKCo2wXVKgzkgiC1tsyaZCU
+         CsJBR4ChfijvwsWdMPOfD3ADDQzjyLo7o5+lD8QwIHkz0Dm6BbmYYqoEt9xwhfP89eA1
+         Q5V/aCkQGYjWCxGOvEYI/cQlqi2DaDsX2elIafJivNNqO3EqkkfqPD5lBpxc4A+KeGgG
+         HS0g==
+X-Forwarded-Encrypted: i=1; AJvYcCWbf3wqHHjqZ3vcgVB3XF2F+nDs8igIoGSy+fPh6jgcrBav8snXb/F3G7+/a4KPfq4e/5U=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzE0Vq4KYwcP6z4UNX06i15DlFGaCf1TWn1k/pXCtEjXgu/drTO
+	ZWs088HNzdnnCnITAkkKQblZUCHT45i+bYIzpLd5Hczza4i72UotNox1
+X-Gm-Gg: AY/fxX4WxyIqddZMJNs0robKDP7cqMk33CtzYfDstTvuRj89HXKvsQM/XBaNXuc4J9y
+	qdRLo/Fz5u7S4s+ZRlTGYMSdzuWcqM/Ty9fVCBVcDy+F03WrkvTU39cTHtQfHJi4et67KXWJqSA
+	st41gY6hSyVY2FSmc/Pu84P18+FEgtzesdCNA/n9TC4CLc8qlI1VPxTT51v93m1y/aXMrkSHHxS
+	hD7c/j0KB8cX9FUAr7svlmJ9+qVzAq6kSF+/Izc4n0TGL0WOJe2yvcx3pRFvhhidwhjX/rC1aGa
+	MNjE9gQxzo+yWxHtwpcCMtwF2FZlJHhXpYM1kPqa9T2zhcKLf9zgjEtsD7+EA8Cn31YuEyec9cQ
+	coI9X7pafF/wbA7OcFSRgFbInHipIG3LD+vzbVOum5yZvJqT9uAaBVH/wq2uJqUqnuird6SmyDf
+	SqT1X8JGeS
+X-Google-Smtp-Source: AGHT+IE6EhSKp6I+thulqwzyGYJnQtzVRTJO8gT+bIKaJidx+BjnVhacsRLeeLuAWxB4mTIHGm2aeQ==
+X-Received: by 2002:a05:6a21:328b:b0:341:84ee:7597 with SMTP id adf61e73a8af0-369afa0e194mr16130214637.47.1765931900355;
+        Tue, 16 Dec 2025 16:38:20 -0800 (PST)
 Received: from [192.168.0.226] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34cd40cde56sm948375a91.1.2025.12.16.16.32.11
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c1726e2b02csm5551426a12.27.2025.12.16.16.38.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Dec 2025 16:32:11 -0800 (PST)
-Message-ID: <0b9fd098307b5aa15a7d7a3f7f2b01fe63e66a53.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v9 05/10] libbpf: Verify BTF Sorting
+        Tue, 16 Dec 2025 16:38:19 -0800 (PST)
+Message-ID: <199b61f28146c672875a947ab8b92d60aa8a3484.camel@gmail.com>
+Subject: Re: [PATCH v8 bpf-next 03/10] libbpf: use kind layout to compute an
+ unknown kind size
 From: Eduard Zingerman <eddyz87@gmail.com>
-To: Donglin Peng <dolinux.peng@gmail.com>, ast@kernel.org, 
-	andrii.nakryiko@gmail.com
-Cc: zhangxiaoqin@xiaomi.com, ihor.solodrai@linux.dev, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, pengdonglin
-	 <pengdonglin@xiaomi.com>, Alan Maguire <alan.maguire@oracle.com>
-Date: Tue, 16 Dec 2025 16:32:08 -0800
-In-Reply-To: <20251208062353.1702672-6-dolinux.peng@gmail.com>
-References: <20251208062353.1702672-1-dolinux.peng@gmail.com>
-	 <20251208062353.1702672-6-dolinux.peng@gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Alan Maguire <alan.maguire@oracle.com>, andrii@kernel.org,
+ ast@kernel.org, 	daniel@iogearbox.net, martin.lau@linux.dev,
+ song@kernel.org, 	yonghong.song@linux.dev, john.fastabend@gmail.com,
+ kpsingh@kernel.org, 	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
+ qmo@kernel.org, 	ihor.solodrai@linux.dev, dwarves@vger.kernel.org,
+ bpf@vger.kernel.org, 	ttreyer@meta.com, mykyta.yatsenko5@gmail.com
+Date: Tue, 16 Dec 2025 16:38:16 -0800
+In-Reply-To: <CAEf4BzYbrT03M2w1gWJT4QPrVZtGC5rpCQGmHomDb4i7yEU0JA@mail.gmail.com>
+References: <20251215091730.1188790-1-alan.maguire@oracle.com>
+	 <20251215091730.1188790-4-alan.maguire@oracle.com>
+	 <9e1b071598f9c1c1adcac0d8cb2591c452a675fd.camel@gmail.com>
+	 <6f3027ee-576d-45de-9795-9a8e620292e9@oracle.com>
+	 <CAEf4BzYQeiECx9UpDqv6zRjd1EPjw8B44YX3KPGR1Z4dFKi1UA@mail.gmail.com>
+	 <27e4a60100602f769f3c5410a398a75fe0151967.camel@gmail.com>
+	 <CAEf4BzayA6if0xcTLux=eyASM1kpARmrOdDRmgG9F1SFa-fEcg@mail.gmail.com>
+	 <26e95f737d2de5133702c9b641946e70ec2d1dae.camel@gmail.com>
+	 <CAEf4BzawMy=woHx_yHY0iiD0x12B_+J8mFgV5zT3aCpG2N0s-g@mail.gmail.com>
+	 <4b12236c974db52ea19985cc9c5e08e021db9ec1.camel@gmail.com>
+	 <CAEf4BzbAXGdROrnGZZ_GBZmn9muKz9Cr+yUbovo+pmx-8GLdhg@mail.gmail.com>
+	 <d05e0af873f2f36359b34cc3865c44c98bc291e0.camel@gmail.com>
+	 <CAEf4BzYbrT03M2w1gWJT4QPrVZtGC5rpCQGmHomDb4i7yEU0JA@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
@@ -94,121 +108,44 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Mon, 2025-12-08 at 14:23 +0800, Donglin Peng wrote:
-> From: pengdonglin <pengdonglin@xiaomi.com>
+On Tue, 2025-12-16 at 16:30 -0800, Andrii Nakryiko wrote:
+
+[...]
+
+> > > One interesting question is what to do about libbpf's BTF
+> > > sanitization? Should we still try to replace unknown types with
+> > > something that byte-size-wise is compatible? It might not work in all
+> > > cases, depending on the semantics of unknown KIND, but it should work
+> > > in practice if we are careful about adding new kinds "responsibly".
+> > > WDYT?
+> >=20
+> > The question here is to how to compute the size for the unknown.
+> > It is possible to have a flag specifying if btf_type->size is a true
+> > size. But computation is more sophisticated for e.g. arrays.
+> > On the other hand, if member of some structure has unknown kind,
+> > it can be safely deleted, as struct has size field and offsets for all
+> > members. So, sanitization by deleting types of unknown kind is
+> > possible to some extent.
 >=20
-> This patch checks whether the BTF is sorted by name in ascending
-> order. If sorted, binary search will be used when looking up types.
+> I think it's unlikely we'll add some kind that will be directly
+> embeddable into struct except for some modifiers. For modifiers (which
+> I'm arguing we should add a flag stating that this kind is used as a
+> modifier and its type field is actually a type ID field), we can
+> replace them either with typedef or const and preserve layout and most
+> of semantics. And for optional stuff like decl_tag, they are usually
+> stand-alone pointing to types (rather than having types pointed to
+> them), so just replacing them with something that is compatible in
+> terms of byte size in BTF data should be sufficient.
 >=20
-> Cc: Eduard Zingerman <eddyz87@gmail.com>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Cc: Alan Maguire <alan.maguire@oracle.com>
-> Cc: Ihor Solodrai <ihor.solodrai@linux.dev>
-> Cc: Xiaoqin Zhang <zhangxiaoqin@xiaomi.com>
-> Signed-off-by: pengdonglin <pengdonglin@xiaomi.com>
-> ---
->  tools/lib/bpf/btf.c | 46 ++++++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 45 insertions(+), 1 deletion(-)
+> I think BTF sanitization will have to be best effort, but if we keep
+> sanitization in mind, we can ensure reasonable behavior.
 >=20
-> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> index 7f150c869bf6..a53d24704857 100644
-> --- a/tools/lib/bpf/btf.c
-> +++ b/tools/lib/bpf/btf.c
-> @@ -899,6 +899,49 @@ int btf__resolve_type(const struct btf *btf, __u32 t=
-ype_id)
->  	return type_id;
->  }
-> =20
-> +/*
-> + * Assuming that types are sorted by name in ascending order.
-> + */
-> +static int btf_compare_type_names(const void *a, const void *b, void *pr=
-iv)
+> Ultimately, though, you should always strive to use the very latest
+> libbpf with your BPF object files. So maybe no sanitization of unknown
+> kinds is the right (and simple) answer here: just update libbpf and it
+> will take care of sanitization of *known* kinds.
 
-This can be declared as ...(u32 a, u32 b, struct btf *btf).
-
-> +{
-> +	struct btf *btf =3D (struct btf *)priv;
-> +	struct btf_type *ta =3D btf_type_by_id(btf, *(__u32 *)a);
-> +	struct btf_type *tb =3D btf_type_by_id(btf, *(__u32 *)b);
-> +	const char *na, *nb;
-> +
-> +	na =3D btf__str_by_offset(btf, ta->name_off);
-> +	nb =3D btf__str_by_offset(btf, tb->name_off);
-> +	return strcmp(na, nb);
-> +}
-> +
-> +static void btf_check_sorted(struct btf *btf)
-> +{
-> +	const struct btf_type *t;
-> +	int i, k =3D 0, n;
-> +	__u32 sorted_start_id =3D 0;
-> +
-> +	if (btf->nr_types < 2)
-> +		return;
-> +
-> +	n =3D btf__type_cnt(btf) - 1;
-> +	for (i =3D btf->start_id; i < n; i++) {
-> +		k =3D i + 1;
-> +		if (btf_compare_type_names(&i, &k, btf) > 0)
-> +			return;
-> +		t =3D btf_type_by_id(btf, i);
-> +		if (sorted_start_id =3D=3D 0 &&
-> +			!str_is_empty(btf__str_by_offset(btf, t->name_off)))
-                ^^^^^^^^
-Nit: broken indentation.
-
-> +			sorted_start_id =3D i;
-> +	}
-> +
-> +	t =3D btf_type_by_id(btf, k);
-
-Nit: please use 'n' instead of 'k'.
-     Maybe just change condition in the loop and avoid the second part?
-     E.g.:
-
-       n =3D btf__type_cnt(btf);
-       for (...) {
-         ...
-         if (k < n && btf_compare_type_names(a: &i, b: &k, priv: btf) > 0)
-           return;
-         ...
-       }
-
-     A bit shorter/simpler this way.
-
-> +	if (sorted_start_id =3D=3D 0 &&
-> +		!str_is_empty(btf__str_by_offset(btf, t->name_off)))
-> +		sorted_start_id =3D k;
-> +	if (sorted_start_id)
-> +		btf->sorted_start_id =3D sorted_start_id;
-> +}
-> +
->  static __s32 btf_find_by_name_bsearch(const struct btf *btf, const char =
-*name,
->  						__s32 start_id, __s32 end_id)
->  {
-> @@ -935,7 +978,7 @@ static __s32 btf_find_by_name_kind(const struct btf *=
-btf, int start_id,
-> =20
->  	if (start_id < btf->start_id) {
->  		idx =3D btf_find_by_name_kind(btf->base_btf, start_id,
-> -			type_name, kind);
-> +					    type_name, kind);
-
-Nit: shouldn't be in this patch.
-
->  		if (idx >=3D 0)
->  			return idx;
->  		start_id =3D btf->start_id;
-> @@ -1147,6 +1190,7 @@ static struct btf *btf_new(const void *data, __u32 =
-size, struct btf *base_btf, b
->  	err =3D err ?: btf_sanity_check(btf);
->  	if (err)
->  		goto done;
-> +	btf_check_sorted(btf);
-> =20
->  done:
->  	if (err) {
+Idk, this would matter if we decide to change clang to emit new BTF
+kinds for BPF programs. Maybe postpone sanitization implementation
+until requirements are better understood?
 
