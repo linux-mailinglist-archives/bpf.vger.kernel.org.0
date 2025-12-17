@@ -1,221 +1,214 @@
-Return-Path: <bpf+bounces-76795-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76796-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C2BBCC59AC
-	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 01:31:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 911C3CC59B5
+	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 01:32:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9D0223021762
-	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 00:30:56 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1E2F7302BA8A
+	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 00:32:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D16B518C332;
-	Wed, 17 Dec 2025 00:30:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29ACA1EB1AA;
+	Wed, 17 Dec 2025 00:32:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k6U5Hgl8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L0+Piya7"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D32E38287E
-	for <bpf@vger.kernel.org>; Wed, 17 Dec 2025 00:30:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 238421DDA18
+	for <bpf@vger.kernel.org>; Wed, 17 Dec 2025 00:32:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765931455; cv=none; b=dSSvT6xDNr+oftWbjOxnFxh6Ehu4UjQSBiB/7VYZUJOUYzB9eR8kSqIvUNyfwwJemRSpgMdytToUBC0uJTNPrVN6/jJNeDjOI8TPTRbGSQakcT16N132LWXMZ4eqJW2ygQlzksTDQHAPZ1CI8YejnrXAywpForkHvYhqdjUc3ew=
+	t=1765931535; cv=none; b=A6S6wlfMauUJAHkyohnRr0KS68Ut76yqyRz/mqouE6l+n7AIu+/MGNEVrBl0aOUCPB1RfbCWW23WLtRm9rhfdO2S8l0/JkPWYZ0pKXGEfQaFTkUYag5kvxICmTDUyABUYCf/iwjqzJPH1W84kliHNXNrsbM17knMBfhZPotVWPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765931455; c=relaxed/simple;
-	bh=SotrV8IUZuBScb2UJwbCliIUozqPspnjyHBdT91P79Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eSRwm2zUXi34tm/Xv2CC6XGGsjsNJvUfSbuV1EfXr/Za+NMwQPIE/YqMtdZ/hxfrNNJsjdcysNTRUhLALChu+q5vbkCKy4p0udNx8fNUyORMbcaG6XIqJZm8dhBXjG/UIlbOYjOBNjR/zlxvuRjPQLEEV9BZF4NNLvpGDbiIpGg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k6U5Hgl8; arc=none smtp.client-ip=209.85.216.51
+	s=arc-20240116; t=1765931535; c=relaxed/simple;
+	bh=SDZxhgXeRpb5AZsbUgX+tbIngP6hoMO3hq1PpSdk2Hc=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=sS/8jwQzMpBxoqXjmELB3rtiTwkB1eDOAnQSPPjUWhbrPOO5+ug38qZKrrAsc9ITiFG1V/c+BbA21bGcAFMtmS6AgcO21SpraWQDIQUmLZNYrkORjS+jpn6cBNIv15K6szWv1TaKFAm0H1VbI9tpmlkcWl2+xiPWuT3GD3yiRvs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L0+Piya7; arc=none smtp.client-ip=209.85.216.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-34c565b888dso3731062a91.0
-        for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 16:30:53 -0800 (PST)
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-34c277ea011so4132733a91.1
+        for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 16:32:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1765931453; x=1766536253; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SotrV8IUZuBScb2UJwbCliIUozqPspnjyHBdT91P79Q=;
-        b=k6U5Hgl85BbWehW4b7LDkU417Cb1Przgeu9e8tQ9Ci/jj64IAHgZjbu6th8BerQdnP
-         TcIcG2MvfGeAiBR/eENrbt/IfopGmf8ficP/5VbfehrOOgp6tWZNlMQQYH1nfK6XpLHT
-         ZfUCSr1Tk0imn1g1SfYsKu+E2Dp8avBeKrsrZQCMFphcjQ78qGovhyjer/fSPHXezDjT
-         FjyYPHOktVPWwe3a+oTR7HOcf/IAyQl9efQ6lbC3eTuF2PmbhqJVw1ZRHK+qMJXQ1Jmf
-         AwetToDPvJyGee1PXfD2Di3Gp9ISgp50oZTrkaKPOZGEYYsZnDhD1SdicO6S4mfP73Qd
-         TzKg==
+        d=gmail.com; s=20230601; t=1765931533; x=1766536333; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=/VT22ZtH0G6qWJ/tFlXK0+84Il/3ib56pQsFHo2JQSQ=;
+        b=L0+Piya7aPomuw8R/Dm6xMdAZb1/wc8ErIGI4sJsn45TNOBe/YebG2PK/Ud9PdVpss
+         Xp+G60JkSKSR8OazZ6jRHjX9Ms2VVbF9O6obGfDr7EcknNqrFaKfQGKHChOIFxNi5P2m
+         msGrUGjCWTOKgSqj7hKXTngifr8exYzri6Gj/jfyb7vguzZFNXmE/IiMR7UJtG2Q9auP
+         Cle5jAVyY/SMRvelL3SjabpsbpYDF234Aen8G4syqGb0FeITSxXJLz++n3qcVsB0xyBW
+         J6cFd6OdvphxW3l/1mUXVGubDH6MjX06qh16BqCwX4FmENa47XR21Ce+F4B9q254cp40
+         hqOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765931453; x=1766536253;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=SotrV8IUZuBScb2UJwbCliIUozqPspnjyHBdT91P79Q=;
-        b=ETVgKNQvg/uMwMh4X12guIqCUKLLDytTHFG7NOqa2z7yZV33R8smEMdIb/BYqsZglT
-         0c0TuR7ypUbRZJZH80uDE7j8tNxU3ASk9Y70xQXZFnWy0juncslodM0avDIA2DXFi50O
-         DsW0IiTGdE24vnu/GbFwv7y+P1PFEguIVuxewI1dA2PXv0NkLh5fgoM1qBDFV6cYbWhE
-         7XrFq/nMTgMofsxxV+QbuorJm0+/ck9rq0g7dNO7YBb1bLDmvVdvx0MXgyQwzSkx6CdS
-         kwgEcgSNiuawZD1F2di5MAEL+lJfl6pIO1245Bv5IJ1Vu/ooAX51fHyvrS15UGOeOllb
-         4BLw==
-X-Forwarded-Encrypted: i=1; AJvYcCXwHIHfuXqC0CPAsuTLzU6wSF4gK03y1WSrGJNLh3mkNvsQlF+OWeZa8WRAs+6euFpBJ5Q=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyYy85iBfBIsrq5FzyEbT+q1/XlU1q6iXArfJFdNGGIDnUr8+K6
-	7NLXBa4iaQ66zfPfDz3WRTaopZHHUM5WruJi1MaUhxpjudsfLTDqpc6gyf5xpzl5yEl6/zLZvgH
-	tRXoRVR+sg3FkSTtLVaO8JjIk3WMP48A=
-X-Gm-Gg: AY/fxX5VTBMp+IzmdmfivEaRF1nWHIy/atpfBp5sQ9n5H02sTvjIPg3lZVKXNohaIzG
-	mY7qLwBP0bbU00TqYUNA8jvRPPNc5d5w6UvCn+N/0K00o65Jb7BuzXUbqcKsl4OO4kikrSLrGq8
-	YjhhCW1QDgjt9PBKqjFQbdBcGwHjdwMD6tcIcTP6YymeLj2btu/rkfTj/b6S0w+0vb+q8YXL2+E
-	oBoS1WVZpT3yheHQdD/c0yzFXJ6uv+7oAbCoL+2iA/n7Bb6frhb6/HFSWHiUSTd4wRI3v2Lpg//
-	4Z2b8vMUANHy6DSgS8IJlw==
-X-Google-Smtp-Source: AGHT+IEAXe83mZuuvkfzzKpv8B159m1t148ouzZk6cVtfWnGkmJ5ZbHs5jtGDW8JKI/JAl5SLOUeh6TeXvThSpPI+W8=
-X-Received: by 2002:a17:90b:4c:b0:340:c64d:38d3 with SMTP id
- 98e67ed59e1d1-34abd6e0220mr16571869a91.12.1765931453016; Tue, 16 Dec 2025
- 16:30:53 -0800 (PST)
+        d=1e100.net; s=20230601; t=1765931533; x=1766536333;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/VT22ZtH0G6qWJ/tFlXK0+84Il/3ib56pQsFHo2JQSQ=;
+        b=CHZBPfJgqmbZeiF/tMBRi1o2sf+9UmdeCgOjJSoKS19QQslYtkASP9eyb8Yke4Dsvx
+         i/K0/fYbfU8WeLPIKLxjF7MoZTFLVWmQ6sSeOWviFPAzzVyJJQvRlHJhh//rhNQwAjj5
+         0VBtz/EG/0+LjITVpTpmlLLl2R9tus6EjgUbRpBAS6H4/8W6ucaMlcK4ScsNpK7TM6KW
+         sQ89E4PclpTTI+HTd0nN1gYAtpGhX94MXJKPDENmh5NTkxKZO0YVkt5EUFUaE0pU0MAE
+         3/RQz+C2Av/36ynzR3+yM2mOdT2BMsbA5YlFyFl+1KFDto0C1wBGlPYCwYoTYFIrUSG6
+         vm3g==
+X-Forwarded-Encrypted: i=1; AJvYcCUhjR+9z+buwWF7Cy68sA5edIx0MlgFHDWdQc7HMAdudAiOh7S3iRWwXJp6XvinZAACQtc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyJDLMftN8VZg2+BVEpi8aBFbGd/3fkWjWC4aIGD0EYgZfaTxxz
+	ku5kIIXZiRmJH8ErTQTPhLm1jIN1aA9FM3riRvjJul1/aNkqLocUYTww
+X-Gm-Gg: AY/fxX79ZtdCG3bHT8cOeL5Y1/gHQ4oUG4ytyBRlYZdFJtNcNRzn588KyEBxda8JlFo
+	GcvotWO6mXGfBgtKApCKPkBUYylZPQP1sIwNfPXixhCHxLqrfvhR/OHGMS4ICvrzJUTPllltqyI
+	wtJgUfK8NpZQYJ3tbz7fw/tSW3zFbG4vflFf90+6KHRl4i/aHv/8lqFzewo9p61psWxVSiPkFZt
+	hN1U2Qb3xhZxFgP6LHliQ0vLUBwafF4Co/3MZjr6ecOt9AbOdXUU/uqynFDfQyvBXO+lgffG0h8
+	KQsfRhP/zJM+/X10qylG1eHYckikU0Usq69a5s1w/LVlKY676mygdF5wbQIYpVsXcQlBBT2z2l8
+	bg22RbPj5pztHFZNPXlSGBekG45w3aVwLMgDKElLJan+55QzZ9j3n/zxKhusvtHnMy/+uYFHyP8
+	oCPUxlZx9cGK4fGboaQiY=
+X-Google-Smtp-Source: AGHT+IHUxRS7eRtYzrOGXaeS3bIYBTh4/1Bw67dBozbzXa0+D0jOpBIISxlOl1dr0/eVcz5ia1JLXw==
+X-Received: by 2002:a17:90b:4a10:b0:34c:7d65:e4a with SMTP id 98e67ed59e1d1-34c7d651260mr7381468a91.31.1765931533230;
+        Tue, 16 Dec 2025 16:32:13 -0800 (PST)
+Received: from [192.168.0.226] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34cd40cde56sm948375a91.1.2025.12.16.16.32.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Dec 2025 16:32:11 -0800 (PST)
+Message-ID: <0b9fd098307b5aa15a7d7a3f7f2b01fe63e66a53.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v9 05/10] libbpf: Verify BTF Sorting
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Donglin Peng <dolinux.peng@gmail.com>, ast@kernel.org, 
+	andrii.nakryiko@gmail.com
+Cc: zhangxiaoqin@xiaomi.com, ihor.solodrai@linux.dev, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, pengdonglin
+	 <pengdonglin@xiaomi.com>, Alan Maguire <alan.maguire@oracle.com>
+Date: Tue, 16 Dec 2025 16:32:08 -0800
+In-Reply-To: <20251208062353.1702672-6-dolinux.peng@gmail.com>
+References: <20251208062353.1702672-1-dolinux.peng@gmail.com>
+	 <20251208062353.1702672-6-dolinux.peng@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251215091730.1188790-1-alan.maguire@oracle.com>
- <20251215091730.1188790-4-alan.maguire@oracle.com> <9e1b071598f9c1c1adcac0d8cb2591c452a675fd.camel@gmail.com>
- <6f3027ee-576d-45de-9795-9a8e620292e9@oracle.com> <CAEf4BzYQeiECx9UpDqv6zRjd1EPjw8B44YX3KPGR1Z4dFKi1UA@mail.gmail.com>
- <27e4a60100602f769f3c5410a398a75fe0151967.camel@gmail.com>
- <CAEf4BzayA6if0xcTLux=eyASM1kpARmrOdDRmgG9F1SFa-fEcg@mail.gmail.com>
- <26e95f737d2de5133702c9b641946e70ec2d1dae.camel@gmail.com>
- <CAEf4BzawMy=woHx_yHY0iiD0x12B_+J8mFgV5zT3aCpG2N0s-g@mail.gmail.com>
- <4b12236c974db52ea19985cc9c5e08e021db9ec1.camel@gmail.com>
- <CAEf4BzbAXGdROrnGZZ_GBZmn9muKz9Cr+yUbovo+pmx-8GLdhg@mail.gmail.com> <d05e0af873f2f36359b34cc3865c44c98bc291e0.camel@gmail.com>
-In-Reply-To: <d05e0af873f2f36359b34cc3865c44c98bc291e0.camel@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 16 Dec 2025 16:30:40 -0800
-X-Gm-Features: AQt7F2qmn0IYw7WdOwlW-Ep_LUROpG4Ov1w1PnLnGoxTjHIlQ0uEPx65f29SdlA
-Message-ID: <CAEf4BzYbrT03M2w1gWJT4QPrVZtGC5rpCQGmHomDb4i7yEU0JA@mail.gmail.com>
-Subject: Re: [PATCH v8 bpf-next 03/10] libbpf: use kind layout to compute an
- unknown kind size
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Alan Maguire <alan.maguire@oracle.com>, andrii@kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, qmo@kernel.org, 
-	ihor.solodrai@linux.dev, dwarves@vger.kernel.org, bpf@vger.kernel.org, 
-	ttreyer@meta.com, mykyta.yatsenko5@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 16, 2025 at 3:36=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> On Tue, 2025-12-16 at 15:00 -0800, Andrii Nakryiko wrote:
-> > On Tue, Dec 16, 2025 at 2:35=E2=80=AFPM Eduard Zingerman <eddyz87@gmail=
-.com> wrote:
-> > >
-> > > On Tue, 2025-12-16 at 14:23 -0800, Andrii Nakryiko wrote:
-> > >
-> > > [...]
-> > >
-> > > > Ok, so what you are saying is that if there is layout info we shoul=
-d
-> > > > always use that instead of hard-coded knowledge about kind layout,
-> > > > right? Ok, I can agree to that, but see note about extensibility
-> > > > below.
-> > > >
-> > > > But that's a bit different from validating that the recorded layout
-> > > > of, say, BTF_KIND_STRUCT is what we expect (sizeof(struct btf_type)=
- +
-> > > > vlen * sizeof(struct btf_member)). Because if we enforce that, then=
- we
-> > > > still preclude any extensions to those layouts in the future. And i=
-f
-> > > > we do that, what's the point of looking at layout info for kinds we=
- do
-> > > > know about?
-> > >
-> > > If full flexibility is allowed, then all places where e.g. libbpf
-> > > iterates params or struct members require an update. That's a big
-> > > change.
-> > >
-> > > I suggested checking layout sizes for existing types as a half-measur=
-e
-> > > allowing to avoid such changes.
-> >
-> > Shouldn't we just say that layout info will never change for the kind?
-> > Whatever fixed + vlen size it starts with, that's set in stone.
->
-> If we are not going full flexibility road (a lot of work with unclear pur=
-pose),
-> then fixing the layouts for existing types is what we should do.
+On Mon, 2025-12-08 at 14:23 +0800, Donglin Peng wrote:
+> From: pengdonglin <pengdonglin@xiaomi.com>
+>=20
+> This patch checks whether the BTF is sorted by name in ascending
+> order. If sorted, binary search will be used when looking up types.
+>=20
+> Cc: Eduard Zingerman <eddyz87@gmail.com>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Cc: Alan Maguire <alan.maguire@oracle.com>
+> Cc: Ihor Solodrai <ihor.solodrai@linux.dev>
+> Cc: Xiaoqin Zhang <zhangxiaoqin@xiaomi.com>
+> Signed-off-by: pengdonglin <pengdonglin@xiaomi.com>
+> ---
+>  tools/lib/bpf/btf.c | 46 ++++++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 45 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> index 7f150c869bf6..a53d24704857 100644
+> --- a/tools/lib/bpf/btf.c
+> +++ b/tools/lib/bpf/btf.c
+> @@ -899,6 +899,49 @@ int btf__resolve_type(const struct btf *btf, __u32 t=
+ype_id)
+>  	return type_id;
+>  }
+> =20
+> +/*
+> + * Assuming that types are sorted by name in ascending order.
+> + */
+> +static int btf_compare_type_names(const void *a, const void *b, void *pr=
+iv)
 
-agreed
+This can be declared as ...(u32 a, u32 b, struct btf *btf).
 
-> I suggested adding layout sizes check in BTF validation phase to
-> enforce a consistent view at the BTF layout.
+> +{
+> +	struct btf *btf =3D (struct btf *)priv;
+> +	struct btf_type *ta =3D btf_type_by_id(btf, *(__u32 *)a);
+> +	struct btf_type *tb =3D btf_type_by_id(btf, *(__u32 *)b);
+> +	const char *na, *nb;
+> +
+> +	na =3D btf__str_by_offset(btf, ta->name_off);
+> +	nb =3D btf__str_by_offset(btf, tb->name_off);
+> +	return strcmp(na, nb);
+> +}
+> +
+> +static void btf_check_sorted(struct btf *btf)
+> +{
+> +	const struct btf_type *t;
+> +	int i, k =3D 0, n;
+> +	__u32 sorted_start_id =3D 0;
+> +
+> +	if (btf->nr_types < 2)
+> +		return;
+> +
+> +	n =3D btf__type_cnt(btf) - 1;
+> +	for (i =3D btf->start_id; i < n; i++) {
+> +		k =3D i + 1;
+> +		if (btf_compare_type_names(&i, &k, btf) > 0)
+> +			return;
+> +		t =3D btf_type_by_id(btf, i);
+> +		if (sorted_start_id =3D=3D 0 &&
+> +			!str_is_empty(btf__str_by_offset(btf, t->name_off)))
+                ^^^^^^^^
+Nit: broken indentation.
 
-ok
+> +			sorted_start_id =3D i;
+> +	}
+> +
+> +	t =3D btf_type_by_id(btf, k);
 
->
-> > > > > Given that BTF rewrites would only be unsound in presence of unkn=
-own
-> > > > > types the whole feature looks questionable to me.
-> > > >
-> > > > What are those "BTF rewrites" you are referring to? I'm getting a b=
-it
-> > > > lost in this discussion, tbh.
-> > >
-> > > E.g. btf__permute(), as it will not permute all types if some of the
-> > > are unknown. Or dedup.
-> >
-> > Yes, agreed, I don't think we should allow modifications like that of
-> > course, who said we should?
->
-> No one says, I suggested adding a check in libbpf,
-> so that btf_ensure_modifiable() can report an error in such cases.
+Nit: please use 'n' instead of 'k'.
+     Maybe just change condition in the loop and avoid the second part?
+     E.g.:
 
-yeah, I never disagreed with that. Not sure how this whole thing got
-into this discussion, but yes, we are on the same page w.r.t. this
+       n =3D btf__type_cnt(btf);
+       for (...) {
+         ...
+         if (k < n && btf_compare_type_names(a: &i, b: &k, priv: btf) > 0)
+           return;
+         ...
+       }
 
->
-> > >
-> > > > This feature is designed to allow introducing new (presumably,
-> > > > optional) kinds and not break older versions of libbpf/bpftool to a=
-t
-> > > > least be able to dump known contents. Does the current implementati=
-on
-> > > > achieve that goal? What other goals do you think this feature shoul=
-d
-> > > > support?
-> > >
-> > > I don't think anything other than dump is possible to support.
-> >
-> > Ok, then we are on the same page.
-> >
-> > One interesting question is what to do about libbpf's BTF
-> > sanitization? Should we still try to replace unknown types with
-> > something that byte-size-wise is compatible? It might not work in all
-> > cases, depending on the semantics of unknown KIND, but it should work
-> > in practice if we are careful about adding new kinds "responsibly".
-> > WDYT?
->
-> The question here is to how to compute the size for the unknown.
-> It is possible to have a flag specifying if btf_type->size is a true
-> size. But computation is more sophisticated for e.g. arrays.
-> On the other hand, if member of some structure has unknown kind,
-> it can be safely deleted, as struct has size field and offsets for all
-> members. So, sanitization by deleting types of unknown kind is
-> possible to some extent.
+     A bit shorter/simpler this way.
 
-I think it's unlikely we'll add some kind that will be directly
-embeddable into struct except for some modifiers. For modifiers (which
-I'm arguing we should add a flag stating that this kind is used as a
-modifier and its type field is actually a type ID field), we can
-replace them either with typedef or const and preserve layout and most
-of semantics. And for optional stuff like decl_tag, they are usually
-stand-alone pointing to types (rather than having types pointed to
-them), so just replacing them with something that is compatible in
-terms of byte size in BTF data should be sufficient.
+> +	if (sorted_start_id =3D=3D 0 &&
+> +		!str_is_empty(btf__str_by_offset(btf, t->name_off)))
+> +		sorted_start_id =3D k;
+> +	if (sorted_start_id)
+> +		btf->sorted_start_id =3D sorted_start_id;
+> +}
+> +
+>  static __s32 btf_find_by_name_bsearch(const struct btf *btf, const char =
+*name,
+>  						__s32 start_id, __s32 end_id)
+>  {
+> @@ -935,7 +978,7 @@ static __s32 btf_find_by_name_kind(const struct btf *=
+btf, int start_id,
+> =20
+>  	if (start_id < btf->start_id) {
+>  		idx =3D btf_find_by_name_kind(btf->base_btf, start_id,
+> -			type_name, kind);
+> +					    type_name, kind);
 
-I think BTF sanitization will have to be best effort, but if we keep
-sanitization in mind, we can ensure reasonable behavior.
+Nit: shouldn't be in this patch.
 
-Ultimately, though, you should always strive to use the very latest
-libbpf with your BPF object files. So maybe no sanitization of unknown
-kinds is the right (and simple) answer here: just update libbpf and it
-will take care of sanitization of *known* kinds.
+>  		if (idx >=3D 0)
+>  			return idx;
+>  		start_id =3D btf->start_id;
+> @@ -1147,6 +1190,7 @@ static struct btf *btf_new(const void *data, __u32 =
+size, struct btf *base_btf, b
+>  	err =3D err ?: btf_sanity_check(btf);
+>  	if (err)
+>  		goto done;
+> +	btf_check_sorted(btf);
+> =20
+>  done:
+>  	if (err) {
 
