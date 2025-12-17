@@ -1,143 +1,246 @@
-Return-Path: <bpf+bounces-76838-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76839-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C7BCCC6B36
-	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 10:06:39 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57233CC6BC0
+	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 10:12:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id C70743006E0A
-	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 09:06:29 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 859AC3026BF5
+	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 09:12:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1839341052;
-	Wed, 17 Dec 2025 09:06:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8906E33A9F5;
+	Wed, 17 Dec 2025 09:12:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dSxAZHO/";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="WyTVCoAk"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mTRYMK12"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94751340DA7
-	for <bpf@vger.kernel.org>; Wed, 17 Dec 2025 09:06:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1775533A6F1
+	for <bpf@vger.kernel.org>; Wed, 17 Dec 2025 09:12:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765962385; cv=none; b=aFlSLSmAOYoR3Yt79gnfsBpAk0cXgVtUu/tMyjh6acqLC+x8RoO1DwAWK1K9njwt4EqTeO9pnig+KKFBTk3imuvBxhhTkmoX+WVe8hWA9aEtL7fgdnZahyCo5AViDjkVTZw3TGrW0V98Ny7Y5AiUaYYzXsPDaVx47C4lFAqqdoc=
+	t=1765962759; cv=none; b=d/vivZvqcjyUBgL9PzPNN++nSZNIT8n+5ax3SJY/XZTyxxHQKgs10Pk4BZnEH4x+mh22bDTWxvxxQ+/OCCFR91kiI9IFpOsfJ44VPNXzQDOR0P0DMPCg5ITXATO28JiaHptl5v4xLmXxArx1mZ7bO07yizIU5rj9lAT6cZzER5w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765962385; c=relaxed/simple;
-	bh=zB4Khd2aXHMvEa3b2ZlwEmnhYWZWycMfvFWM2EBC7dM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DnYwQ17IsVQkSJZ1bZ1GaZY4zW13kevdrWHWUKrK8ck6jm0B5GPUw/xZycMBOLhN6R5ruliOxGEWxZBMSd7OWwTs4qsi1cGfRYyNwDUgqAYja8VIxVB5Hem/8hKiguHkU+KV1UXq7sSbD7aBtKjSQTOsaLdN/49lcAac/Ibb3PI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dSxAZHO/; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=WyTVCoAk; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1765962382;
+	s=arc-20240116; t=1765962759; c=relaxed/simple;
+	bh=8V6H3wR1Oedpof2ecPY3iZ/sxGxOk5tQPRJ2+jw6bL4=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=gkl+ohD/gnItMa1oG/Gs4g1JXtl1YjRmly+DVdbA8eQygAuj+MvOpeXmFIWuiJDR35pR1gVF8MXnbfjPRiFn9Sfw6QTk8ph9v84Th8rtsQ5Nct1OTEAc5aMG2EYh6ChL8PdyXnSRrcrv5/RZ5h+meo15d97StSKAAFv5DrGkoZM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mTRYMK12; arc=none smtp.client-ip=95.215.58.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <3aae1f51-b1d5-44c2-89d4-242887df34a7@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1765962744;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=tNo3PeGOIc795Xgqks3aWmTd7gntV8jB3/Ue+Ch92/8=;
-	b=dSxAZHO/eq8jMB1IGfP0OveMHzB50wL4GWZHFdoTAG1bZlXwfvv0s+QKwgk4sAoyRgDe1Z
-	u7DzGr6eu/LhSrxcBuWOaFom6oqJwtOOlU2LjNd0oZtUREAQC3li7CWEPOMf5f+T5d/9S0
-	xMm7r38tU4mxf6CVQ75SANZduRWptJs=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-622-a2584lJxMi-oi0FFs8l_Ww-1; Wed, 17 Dec 2025 04:06:21 -0500
-X-MC-Unique: a2584lJxMi-oi0FFs8l_Ww-1
-X-Mimecast-MFC-AGG-ID: a2584lJxMi-oi0FFs8l_Ww_1765962380
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-b7cea4b3f15so693595266b.3
-        for <bpf@vger.kernel.org>; Wed, 17 Dec 2025 01:06:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1765962380; x=1766567180; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tNo3PeGOIc795Xgqks3aWmTd7gntV8jB3/Ue+Ch92/8=;
-        b=WyTVCoAkOva6XzR3UikVolqnpg+hXipaLEmQ19pn2K9qCfjYBVguERHPF3+tdNPWll
-         wmSpB5AIaMa1Slh6JTmyIctCKiUnvxXT8aN2sEGuTEP/tRHqTxMx6vZN+0+vqHrEMEt5
-         8tctaniDxxj6iu5y/OhDkadK8iitzw7gL2uRju5qj5GW5vMVnpkfDi7m7kiBPSikS0Oa
-         Uh4jwduTcTfQ/V+v7EapE6uiLx27gDxdlRROQkPn8yZvGsFoX30dhIHVjB7Ur+yf9e3h
-         hlZfa0RJI4jDZ5XjZE7pRKXsW2oXtdgMZDfYzsVFbAWVm1XncrXj3AzAm/n3wJIMKy0y
-         avgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765962380; x=1766567180;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=tNo3PeGOIc795Xgqks3aWmTd7gntV8jB3/Ue+Ch92/8=;
-        b=M0wUK0o3mntwu/8fZBmhgKdzYy2ws1YhzREmD97yEEI6DFHjkfbgOJhKO9/fMt40q4
-         dlz6RXzBIFN5U2cHpBTkc/+gNR6XNOYrM+sBtcAQW2g07yr90CHGVVCqXrpjWpNrGhR7
-         TzZRQF08X6015YgmIMmrccwoWqPOtzKrYCIR18UCHrAHHC8VyeB/nTWnfD8agoIAM2v6
-         wHhVNrEaiU87QMyOXvjgkdEcQl2Uu3Lt30fTLbuANz6bTwAfGm19Ps6/pPwa5TJq1mL1
-         KVSQbn59r5pcnKmHPv3IxBpnmG9YdRYipqhDCMSx7eZ93c7EB9YbO5XQpX2waerJrWfg
-         n+iw==
-X-Forwarded-Encrypted: i=1; AJvYcCV2cDbgUEY2GsFBbpH0OkCK/obvT563mHgOp7MaA0DnLQT1DWc7jKO9u+00z7LNbqJx+ZI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwamIjmDgJOjcqMGrkIhgZ5Xp8OwQj12C+KNGdkmdw37E91j1om
-	ONP5QKuAhhe2Tobl0QP9KkXbkMaAioleDUuXSF/97JZVDW7LMARqUgyGO2gwOWWnPu0alTktyX1
-	J2ZsLMDzg8bcvzxWw0s2LX235azEEAkQeJ7itKxblG0w1UMxwh0mAzk+WyfbkB9jUOKhlzSYJw3
-	u0tCdNx4CTJjXTYzuf+z2bzdc4tjo9
-X-Gm-Gg: AY/fxX7OS7o7L1VPXE3C+JiVwqkFyjtS0iMc6KTTrfyJ+4IO0oZEpaOYFuueHeMsavx
-	XmzpFfyw9Wok4ZKPSkXQT/6H4WsD7iudOGJoCI4hsjqHCKbMkMvYYJ7xUcjF7eEAp/Mr6rOYhck
-	xOEeNy3036sCJBJuacnm33ZLKMfTRWeYfs6dGJSgFodne6JGOPJyr4crtyYwPfePqEOYmh0MpTx
-	5cX5L6MKy6eyOXC8ochZt/M
-X-Received: by 2002:a17:907:3da9:b0:b73:70c9:1780 with SMTP id a640c23a62f3a-b7d238fc47emr1818045366b.41.1765962379562;
-        Wed, 17 Dec 2025 01:06:19 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF1LSEEKpBYh6O9P/AUFxyQWlBNTsE8aOBeRhZYA0nGC2VZiZGpm5olomtpzLD48HUlBnMAJ0kqaOvvLxG1KVQ=
-X-Received: by 2002:a17:907:3da9:b0:b73:70c9:1780 with SMTP id
- a640c23a62f3a-b7d238fc47emr1818041566b.41.1765962379001; Wed, 17 Dec 2025
- 01:06:19 -0800 (PST)
+	bh=VJyrvuiuPvnyCqCkrTKy6/iPRCtbCKNBoYflRryl0Cs=;
+	b=mTRYMK12O7NZY04J/adUwa72n4xsRZXAZXwDhrNP3RSjsiOCnXEh5ki85gaLhe39UWwQN7
+	FoxhR3wePwitBn2QTG7PkICPU8V+IIMfbT9+yuSUWO1QZ4eCgPV0ZpcxPnXtETzUnJaEYk
+	0jY2fu3pff/UjSUiKhivexxrpHJYH0k=
+Date: Wed, 17 Dec 2025 17:11:59 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251205151924.2250142-1-costa.shul@redhat.com> <CAP4=nvS9fTtNCtDCt254-ukTePD7hW3HoKExOPNPDOdppUig9g@mail.gmail.com>
-In-Reply-To: <CAP4=nvS9fTtNCtDCt254-ukTePD7hW3HoKExOPNPDOdppUig9g@mail.gmail.com>
-From: Tomas Glozar <tglozar@redhat.com>
-Date: Wed, 17 Dec 2025 10:06:06 +0100
-X-Gm-Features: AQt7F2qu0SC3trufCZAEhvaKAiHGi5JdAQ61YXyTseyd-qR6bcg0ZeyoPNsZKrE
-Message-ID: <CAP4=nvSr=Wz--CJgJ9kmXfB3r3uNYnt9bJt-_bCigH--rbbx2A@mail.gmail.com>
-Subject: Re: [PATCH v1 1/4] tools/rtla: Consolidate nr_cpus usage across all tools
-To: Costa Shulyupin <costa.shul@redhat.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Crystal Wood <crwood@redhat.com>, 
-	Wander Lairson Costa <wander@redhat.com>, Ivan Pravdin <ipravdin.official@gmail.com>, 
-	John Kacur <jkacur@redhat.com>, Tiezhu Yang <yangtiezhu@loongson.cn>, 
-	linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v7 2/2] bpf: Hold the perf callchain entry until
+ used completely
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Tao Chen <chen.dylane@linux.dev>
+To: peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+ namhyung@kernel.org, mark.rutland@arm.com,
+ alexander.shishkin@linux.intel.com, jolsa@kernel.org, irogers@google.com,
+ adrian.hunter@intel.com, kan.liang@linux.intel.com, song@kernel.org,
+ ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, yonghong.song@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com
+Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org
+References: <20251217051203.1738517-1-chen.dylane@linux.dev>
+ <20251217051203.1738517-3-chen.dylane@linux.dev>
+ <1b6f68e1-3239-4b71-9050-877504c7dead@linux.dev>
+In-Reply-To: <1b6f68e1-3239-4b71-9050-877504c7dead@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-=C3=BAt 16. 12. 2025 v 15:41 odes=C3=ADlatel Tomas Glozar <tglozar@redhat.c=
-om> napsal:
-> Since commit 2f3172f9dd58c ("tools/rtla: Consolidate code between
-> osnoise/timerlat and hist/top") that was merged into 6.18, common.h
-> includes timerlat_u.h. Your change thus causes a double include of
-> timerlat_u.h, leading to a build error:
->
-> In file included from src/timerlat_u.c:20:
-> src/timerlat_u.h:6:8: error: redefinition of =E2=80=98struct timerlat_u_p=
-arams=E2=80=99
->    6 | struct timerlat_u_params {
->      |        ^~~~~~~~~~~~~~~~~
-> In file included from src/common.h:5,
->                 from src/timerlat_u.c:19:
-> src/timerlat_u.h:6:8: note: originally defined here
->    6 | struct timerlat_u_params {
->      |        ^~~~~~~~~~~~~~~~~
->
-> Please rebase your patchset and fix this so that timerlat_u.h is only
-> included once.
->
+在 2025/12/17 13:22, Tao Chen 写道:
+> 在 2025/12/17 13:12, Tao Chen 写道:
+>> As Alexei noted, get_perf_callchain() return values may be reused
+>> if a task is preempted after the BPF program enters migrate disable
+>> mode. The perf_callchain_entres has a small stack of entries, and
+>> we can reuse it as follows:
+>>
+>> 1. get the perf callchain entry
+>> 2. BPF use...
+>> 3. put the perf callchain entry
+>>
+>> And Peter suggested that get_recursion_context used with preemption
+>> disabled, so we should disable preemption at BPF side.
+>>
+>> Acked-by: Yonghong Song <yonghong.song@linux.dev>
+>> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+>> ---
+>>   kernel/bpf/stackmap.c | 67 +++++++++++++++++++++++++++++++++++--------
+>>   1 file changed, 55 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+>> index 2365541c81d..64ace4ed50e 100644
+>> --- a/kernel/bpf/stackmap.c
+>> +++ b/kernel/bpf/stackmap.c
+>> @@ -210,13 +210,14 @@ static void stack_map_get_build_id_offset(struct 
+>> bpf_stack_build_id *id_offs,
+>>   }
+>>   static struct perf_callchain_entry *
+>> -get_callchain_entry_for_task(struct task_struct *task, u32 max_depth)
+>> +get_callchain_entry_for_task(int *rctx, struct task_struct *task, u32 
+>> max_depth)
+>>   {
+>>   #ifdef CONFIG_STACKTRACE
+>>       struct perf_callchain_entry *entry;
+>> -    int rctx;
+>> -    entry = get_callchain_entry(&rctx);
+>> +    preempt_disable();
+>> +    entry = get_callchain_entry(rctx);
+>> +    preempt_enable();
+>>       if (!entry)
+>>           return NULL;
+>> @@ -238,8 +239,6 @@ get_callchain_entry_for_task(struct task_struct 
+>> *task, u32 max_depth)
+>>               to[i] = (u64)(from[i]);
+>>       }
+>> -    put_callchain_entry(rctx);
+>> -
+>>       return entry;
+>>   #else /* CONFIG_STACKTRACE */
+>>       return NULL;
+>> @@ -320,6 +319,34 @@ static long __bpf_get_stackid(struct bpf_map *map,
+>>       return id;
+>>   }
+>> +static struct perf_callchain_entry *
+>> +bpf_get_perf_callchain(int *rctx, struct pt_regs *regs, bool kernel, 
+>> bool user,
+>> +               int max_stack, bool crosstask)
+>> +{
+>> +    struct perf_callchain_entry_ctx ctx;
+>> +    struct perf_callchain_entry *entry;
+>> +
+>> +    preempt_disable();
+>> +    entry = get_callchain_entry(rctx);
+>> +    preempt_enable();
+>> +
+>> +    if (unlikely(!entry))
+>> +        return NULL;
+>> +
+>> +    __init_perf_callchain_ctx(&ctx, entry, max_stack, false);
+>> +    if (kernel)
+>> +        __get_perf_callchain_kernel(&ctx, regs);
+>> +    if (user && !crosstask)
+>> +        __get_perf_callchain_user(&ctx, regs);
+>> +
+>> +    return entry;
+>> +}
+>> +
+>> +static void bpf_put_perf_callchain(int rctx)
+>> +{
+>> +    put_callchain_entry(rctx);
+>> +}
+>> +
+>>   BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map 
+>> *, map,
+>>          u64, flags)
+>>   {
+>> @@ -328,20 +355,24 @@ BPF_CALL_3(bpf_get_stackid, struct pt_regs *, 
+>> regs, struct bpf_map *, map,
+>>       struct perf_callchain_entry *trace;
+>>       bool kernel = !user;
+>>       u32 max_depth;
+>> +    int rctx, ret;
+>>       if (unlikely(flags & ~(BPF_F_SKIP_FIELD_MASK | BPF_F_USER_STACK |
+>>                      BPF_F_FAST_STACK_CMP | BPF_F_REUSE_STACKID)))
+>>           return -EINVAL;
+>>       max_depth = stack_map_calculate_max_depth(map->value_size, 
+>> elem_size, flags);
+>> -    trace = get_perf_callchain(regs, kernel, user, max_depth,
+>> -                   false, false);
+>> +    trace = bpf_get_perf_callchain(&rctx, regs, kernel, user, max_depth,
+>> +                       false);
+>>       if (unlikely(!trace))
+>>           /* couldn't fetch the stack trace */
+>>           return -EFAULT;
+>> -    return __bpf_get_stackid(map, trace, flags);
+>> +    ret = __bpf_get_stackid(map, trace, flags);
+>> +    bpf_put_perf_callchain(rctx);
+>> +
+>> +    return ret;
+>>   }
+>>   const struct bpf_func_proto bpf_get_stackid_proto = {
+>> @@ -435,6 +466,7 @@ static long __bpf_get_stack(struct pt_regs *regs, 
+>> struct task_struct *task,
+>>       bool kernel = !user;
+>>       int err = -EINVAL;
+>>       u64 *ips;
+>> +    int rctx;
+>>       if (unlikely(flags & ~(BPF_F_SKIP_FIELD_MASK | BPF_F_USER_STACK |
+>>                      BPF_F_USER_BUILD_ID)))
+>> @@ -467,18 +499,26 @@ static long __bpf_get_stack(struct pt_regs 
+>> *regs, struct task_struct *task,
+>>           trace = trace_in;
+>>           trace->nr = min_t(u32, trace->nr, max_depth);
+>>       } else if (kernel && task) {
+>> -        trace = get_callchain_entry_for_task(task, max_depth);
+>> +        trace = get_callchain_entry_for_task(&rctx, task, max_depth);
+>>       } else {
+>> -        trace = get_perf_callchain(regs, kernel, user, max_depth,
+>> -                       crosstask, false);
+>> +        trace = bpf_get_perf_callchain(&rctx, regs, kernel, user, 
+>> max_depth,
+>> +                           crosstask);
+>>       }
+>> -    if (unlikely(!trace) || trace->nr < skip) {
+>> +    if (unlikely(!trace)) {
+>>           if (may_fault)
+>>               rcu_read_unlock();
+>>           goto err_fault;
+>>       }
+>> +    if (trace->nr < skip) {
+>> +        if (may_fault)
+>> +            rcu_read_unlock();
+>> +        if (!trace_in)
+>> +            bpf_put_perf_callchain(rctx);
+>> +        goto err_fault;
+>> +    }
+>> +
+>>       trace_nr = trace->nr - skip;
+>>       copy_len = trace_nr * elem_size;
+>> @@ -497,6 +537,9 @@ static long __bpf_get_stack(struct pt_regs *regs, 
+>> struct task_struct *task,
+>>       if (may_fault)
+>>           rcu_read_unlock();
+>> +    if (!trace_in)
+>> +        bpf_put_perf_callchain(rctx);
+>> +
+>>       if (user_build_id)
+>>           stack_map_get_build_id_offset(buf, trace_nr, user, may_fault);
+> 
+> Hi Peter,
+> 
+> As requested by Alexei, I have re-sent the v7 version. Compared with the 
+> v6 version, the only change is the addition of the ack tag in patch2. In 
+> accordance with your previous suggestions, patch1 has been modified 
+> based on your earlier patch, and patch2 adds preempt_disable on the eBPF 
+> side—this does not affect the original perf logic. Please review it 
+> again, thank you.
+> 
 
-Correction: the base of the patchset has nothing to do with this. It
-is the C standard, from C23 (default in GCC 15), redefinition of
-structs is allowed [1], so this error doesn't exist. In earlier
-standards, this is not allowed.
+Sorry, there are code conflicts. I will resend it.
 
-[1] https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2863.pdf
-
-Tomas
-
+-- 
+Best Regards
+Tao Chen
 
