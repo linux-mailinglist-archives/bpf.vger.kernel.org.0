@@ -1,189 +1,102 @@
-Return-Path: <bpf+bounces-76932-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76933-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7832ACC9CFB
-	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 00:36:51 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8943CCC9D25
+	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 00:45:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3A9A230303AC
-	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 23:36:36 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B52FB303974D
+	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 23:44:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1486330334;
-	Wed, 17 Dec 2025 23:36:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9341330656;
+	Wed, 17 Dec 2025 23:44:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E9n/SKUV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uNOL7TKS"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 503F7194098
-	for <bpf@vger.kernel.org>; Wed, 17 Dec 2025 23:36:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3360C81732;
+	Wed, 17 Dec 2025 23:44:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766014594; cv=none; b=KordXKrQAihDpud183t6S5D43l5fAHqavqsCsrpa7H3Fr2GFcwxJIdBMiCKX/aGaqulYFM4wXLBNJ7AD/ENYwCtzDcqNen3Ro1slOsINv1BloM70D0cXNJdWCXRnmCe5qyjC6btwrdmmIvOyG1AduyVB39QhVVaQGJVIjDuWqj0=
+	t=1766015090; cv=none; b=qlWxPXv7Rv2Yh7cjftP5V5swHy1PDixcIR6aMo17YGYup8LjPwiVzMg9iH8lqm8qbARKKOYSjzIwX/U1GrnO49MG82NXfaeMBmuvUmm4sXa1urU0LDaRohwJa9KvaHyjl52k4JDLu77t9Az0AA3N+yumFpGR5+tsvwNn2tRsN4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766014594; c=relaxed/simple;
-	bh=5BKlIx1Q1LN/lVqkX6DbDb6UTMWGaR40UBh8Wa4lrKM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pnZfEHhIX55GQueIbUKv4H+yW8EA3H/WQXg9UWoAC2aZHAYnWRdv9SwDh8xI0c38fktEUj7192cAa/ZlAZhnRQv5/tLLBX51TtWmOWTIJXVUoTv34sYnDjSHqxvp7dsHX8CQC1fJ9IaJduqpir07OU1M55ZYerjxnllJWOlY26c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E9n/SKUV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00987C4CEF5;
-	Wed, 17 Dec 2025 23:36:34 +0000 (UTC)
+	s=arc-20240116; t=1766015090; c=relaxed/simple;
+	bh=VUAafnoaqbtHyXLgpU6Otv3PPLrn+szmWYJeszdskFk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=d4Re33Yho9GwG5Mo7q6n7H+pcG3sW9lgUTF4EY1blroMmpkY+SKoBS0KRszeLH8NI2PzuIPiXYXbW2JbBdIfL21NPo9DGSoE/RPHZmNrdSXLdE5mjsZqw3QpJ8+A3HM1u8vMZjiXysRWFJltjWoitHWbXW3BSQeEMCKNWGQYVZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uNOL7TKS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8182DC4CEF5;
+	Wed, 17 Dec 2025 23:44:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766014594;
-	bh=5BKlIx1Q1LN/lVqkX6DbDb6UTMWGaR40UBh8Wa4lrKM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=E9n/SKUVtUECaK3/a87+ubRR6MBNF4eM8oyrkidCsc7saRlR5SpD6jqaydp8cr0H+
-	 Eiy1MZV/RQmNeRyabtU2HJa8crSvuIH/byAutOoTEiuzK0SdW7l9R0iTfGBmFnwD8J
-	 2nJBuHA96s2v8S6TabzDzTOYjLANE6Qye6os3wouzEzSTAnAo36z9TmA2G2hVTIypL
-	 E85eyvhi5DsdNH+w5vQiNr/1Z5aWYV4BrbHjqSooIxfPjNEMqpGob7ZPxpVWkx7mx2
-	 FaXzJikwAkuMWDLayTfHmDYt3IzjcKruInVATW5suaINFlrqm3gAhgt53r5iAw51dF
-	 9W9YKS8LVd1gw==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: bpf@vger.kernel.org
-Cc: Puranjay Mohan <puranjay@kernel.org>,
-	Puranjay Mohan <puranjay12@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	kernel-team@meta.com,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH bpf-next v2 2/2] bpf: arm64: Optimize recursion detection by not using atomics
-Date: Wed, 17 Dec 2025 15:35:57 -0800
-Message-ID: <20251217233608.2374187-3-puranjay@kernel.org>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20251217233608.2374187-1-puranjay@kernel.org>
-References: <20251217233608.2374187-1-puranjay@kernel.org>
+	s=k20201202; t=1766015089;
+	bh=VUAafnoaqbtHyXLgpU6Otv3PPLrn+szmWYJeszdskFk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uNOL7TKSCM8jbS+7WIvchfQnx6yI86ubBK75XFYj5311Cf8ACXti0apcIionfQgb8
+	 Jye1yGUb8cSpW2wpfQTtSl11TefhEyZg2HRqUwQyCS4nX/8k/Kponv7tQMdQM3Kmr3
+	 4Iur+XyjLuztf/5LONuxAe33SygksoXrbrF9x+32KCe8qCkV72FVYpVt7puss2gsGG
+	 U1hKZpfVc+HT8SsurMrr3ghB1MLLbi6HNTALsXFOGHQTguSeHqWUFfZjdQDInUo9/n
+	 f4+1cLIjgF3uavJwFtP59XoPWvKAWgzxKdCPm6j66fISufUk8fuNXGQw21nAf6KJ/P
+	 PJyAsCghJWt3g==
+Date: Wed, 17 Dec 2025 23:44:47 +0000
+From: Eric Biggers <ebiggers@kernel.org>
+To: David Ahern <dsahern@kernel.org>
+Cc: Stephen Hemminger <stephen@networkplumber.org>,
+	linux-crypto@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+	netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH iproute2-next v2] lib/bpf_legacy: Use userspace SHA-1
+ code instead of AF_ALG
+Message-ID: <20251217234447.GA89113@google.com>
+References: <20250929194648.145585-1-ebiggers@kernel.org>
+ <20251112040719.GB2832160@google.com>
+ <59755b49-fb81-41bf-8875-17e0215f1d8e@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <59755b49-fb81-41bf-8875-17e0215f1d8e@kernel.org>
 
-BPF programs detect recursion using a per-CPU 'active' flag in struct
-bpf_prog. The trampoline currently sets/clears this flag with atomic
-operations.
+On Sun, Nov 16, 2025 at 10:45:47AM -0700, David Ahern wrote:
+> On 11/11/25 9:07 PM, Eric Biggers wrote:
+> > [Adding David Ahern.  I overlooked that iproute2 has separate
+> > maintainers for the main tree and the next tree.]
+> > 
+> > On Mon, Sep 29, 2025 at 12:46:48PM -0700, Eric Biggers wrote:
+> >> Add a basic SHA-1 implementation to lib/, and make lib/bpf_legacy.c use
+> >> it to calculate SHA-1 digests instead of the previous AF_ALG-based code.
+> >>
+> >> This eliminates the dependency on AF_ALG, specifically the kernel config
+> >> options CONFIG_CRYPTO_USER_API_HASH and CONFIG_CRYPTO_SHA1.
+> >>
+> >> Over the years AF_ALG has been very problematic, and it is also not
+> >> supported on all kernels.  Escalating to the kernel's privileged
+> >> execution context merely to calculate software algorithms, which can be
+> >> done in userspace instead, is not something that should have ever been
+> >> supported.  Even on kernels that support it, the syscall overhead of
+> >> AF_ALG means that it is often slower than userspace code.
+> >>
+> >> Let's do the right thing here, and allow people to disable AF_ALG
+> >> support (or not enable it) on systems where iproute2 is the only user.
+> >>
+> >> Acked-by: Ard Biesheuvel <ardb@kernel.org>
+> >> Signed-off-by: Eric Biggers <ebiggers@kernel.org>
+> > 
+> > Stephen and David, any interest in applying this patch?
+> > 
+> > - Eric
+> 
+> I do not have a strong opinion in either direction.
+> 
+> If we are going to entertain removing AF_ALG code, we should apply the
+> patch to iproute2-next at the beginning of a dev cycle to give maximum
+> time for testing before it rolls out.
 
-On some arm64 platforms (e.g., Neoverse V2 with LSE), per-CPU atomic
-operations are relatively slow. Unlike x86_64 - where per-CPU updates
-can avoid cross-core atomicity, arm64 LSE atomics are always atomic
-across all cores, which is unnecessary overhead for strictly per-CPU
-state.
+Any insight into when that would be?
 
-This patch removes atomics from the recursion detection path on arm64 by
-changing 'active' to a per-CPU array of four u8 counters, one per
-context: {NMI, hard-irq, soft-irq, normal}. The running context uses a
-non-atomic increment/decrement on its element.  After increment,
-recursion is detected by reading the array as a u32 and verifying that
-only the expected element changed; any change in another element
-indicates inter-context recursion, and a value > 1 in the same element
-indicates same-context recursion.
-
-For example, starting from {0,0,0,0}, a normal-context trigger changes
-the array to {0,0,0,1}.  If an NMI arrives on the same CPU and triggers
-the program, the array becomes {1,0,0,1}. When the NMI context checks
-the u32 against the expected mask for normal (0x00000001), it observes
-0x01000001 and correctly reports recursion. Same-context recursion is
-detected analogously.
-
-Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
----
- include/linux/bpf.h | 33 ++++++++++++++++++++++++++++++---
- kernel/bpf/core.c   |  3 ++-
- 2 files changed, 32 insertions(+), 4 deletions(-)
-
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 2da986136d26..5ca2a761d9a1 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -31,6 +31,7 @@
- #include <linux/static_call.h>
- #include <linux/memcontrol.h>
- #include <linux/cfi.h>
-+#include <linux/unaligned.h>
- #include <asm/rqspinlock.h>
- 
- struct bpf_verifier_env;
-@@ -1746,6 +1747,8 @@ struct bpf_prog_aux {
- 	struct bpf_map __rcu *st_ops_assoc;
- };
- 
-+#define BPF_NR_CONTEXTS        4       /* normal, softirq, hardirq, NMI */
-+
- struct bpf_prog {
- 	u16			pages;		/* Number of allocated pages */
- 	u16			jited:1,	/* Is our filter JIT'ed? */
-@@ -1772,7 +1775,7 @@ struct bpf_prog {
- 		u8 tag[BPF_TAG_SIZE];
- 	};
- 	struct bpf_prog_stats __percpu *stats;
--	int __percpu		*active;
-+	u8 __percpu		*active;	/* u8[BPF_NR_CONTEXTS] for rerecursion protection */
- 	unsigned int		(*bpf_func)(const void *ctx,
- 					    const struct bpf_insn *insn);
- 	struct bpf_prog_aux	*aux;		/* Auxiliary fields */
-@@ -2006,12 +2009,36 @@ struct bpf_struct_ops_common_value {
- 
- static inline bool bpf_prog_get_recursion_context(struct bpf_prog *prog)
- {
--	return this_cpu_inc_return(*(prog->active)) == 1;
-+#ifdef CONFIG_ARM64
-+	u8 rctx = interrupt_context_level();
-+	u8 *active = this_cpu_ptr(prog->active);
-+	u32 val;
-+
-+	preempt_disable();
-+	active[rctx]++;
-+	val = get_unaligned_le32(active);
-+	preempt_enable();
-+	if (val != BIT(rctx * 8))
-+		return false;
-+
-+	return true;
-+#else
-+	return this_cpu_inc_return(*(int __percpu *)(prog->active)) == 1;
-+#endif
- }
- 
- static inline void bpf_prog_put_recursion_context(struct bpf_prog *prog)
- {
--	this_cpu_dec(*(prog->active));
-+#ifdef CONFIG_ARM64
-+	u8 rctx = interrupt_context_level();
-+	u8 *active = this_cpu_ptr(prog->active);
-+
-+	preempt_disable();
-+	active[rctx]--;
-+	preempt_enable();
-+#else
-+	this_cpu_dec(*(int __percpu *)(prog->active));
-+#endif
- }
- 
- #if defined(CONFIG_BPF_JIT) && defined(CONFIG_BPF_SYSCALL)
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index c66316e32563..b5063acfcf92 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -112,7 +112,8 @@ struct bpf_prog *bpf_prog_alloc_no_stats(unsigned int size, gfp_t gfp_extra_flag
- 		vfree(fp);
- 		return NULL;
- 	}
--	fp->active = alloc_percpu_gfp(int, bpf_memcg_flags(GFP_KERNEL | gfp_extra_flags));
-+	fp->active = __alloc_percpu_gfp(sizeof(u8[BPF_NR_CONTEXTS]), 8,
-+					bpf_memcg_flags(GFP_KERNEL | gfp_extra_flags));
- 	if (!fp->active) {
- 		vfree(fp);
- 		kfree(aux);
--- 
-2.47.3
-
+- Eric
 
