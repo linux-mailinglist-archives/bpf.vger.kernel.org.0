@@ -1,456 +1,307 @@
-Return-Path: <bpf+bounces-76902-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76903-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92EAECC952A
-	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 19:45:50 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F4A9CC952D
+	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 19:46:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 20FBC30BC866
-	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 18:45:11 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 4E6B43016930
+	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 18:46:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D91602309AA;
-	Wed, 17 Dec 2025 18:45:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A3BA19CD0A;
+	Wed, 17 Dec 2025 18:46:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jvBFUIk4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mdM3PXV/"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 411DEF50F
-	for <bpf@vger.kernel.org>; Wed, 17 Dec 2025 18:45:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01A1DF50F
+	for <bpf@vger.kernel.org>; Wed, 17 Dec 2025 18:46:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765997110; cv=none; b=LSx2rVpCrT7xwnzeRLNKbWJPnh7NDalLXjIOUhw7yKjBTW1PvIjzwGO6oK4NQbGVc/295sywA2pTOK/QGIEQKXwyB4I1S33w3K4fYuQzsHQfzC5znIq0aLYYMm2XiUTT81IOLqCB2U1AY4UaNjyk/2QHww+ksLJrzyTdkoyhXEE=
+	t=1765997195; cv=none; b=RAGv+GOGhRpufqdZCqgc8a3EMz/4zogoNUtamGRucFi/4S528IWpg191LIFkaQm3RAZ2n6QjmJxpoGV3ig70bxl+G6kjs7mpwza40YgF23xVAHqLf1jiK4lzuy/SSlwMgOtEhO2gUatQevRueqUJgK7ikgcBnzkq81Whyb73Sq8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765997110; c=relaxed/simple;
-	bh=ZAGscP5/9ywaoe7GBnH4Fhd0jHf0wCJR4wJUGORyl5s=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hqbGFdOFvGuvs5qy2LiAxoW363qzpZmBIrshdnnOTxuK7RGOQ+HQ8xhlxN0bQLQ8/BJFOhaztDNo1jlfvWjnYpWu6YzNjGi2Mj/6Znt5LINI9rn2LC+3VtQGpUxnmn8k6p0lMqKoYSYkjwlVv7ApX4J7/ESldm6nfFAbCwj4LI4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jvBFUIk4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BA25C4CEF5;
-	Wed, 17 Dec 2025 18:45:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765997108;
-	bh=ZAGscP5/9ywaoe7GBnH4Fhd0jHf0wCJR4wJUGORyl5s=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=jvBFUIk4A/3Gcl/NEOI8EXwQlorkF/jc3CoVjgq6WrJXncNCfqMffBBmrZO/gek/k
-	 DiK/1vsQAQKHUl45ZyQ/oIQLKh8rmsvpmYy1dcwb1wMScc/VK+syHV6nys2VJ2NcAr
-	 V3RreuLBEqiEWTOzH2dQb5xUyBIhFM21LF6AFsdYTAtjCVmjxJLf4jINlF9ekSopvE
-	 LcZ3WPpfSjZw9DOHyxiUCVjjIZvUJ8jjeYKTOQ4YV019um2/NaJVABH6d3QZISLxd6
-	 rKuHH7PfXuYmBdxTRymHsaGy26NdxLPCk4mmzsUK5/o8yNmj1K765D5YBfho/6fQyB
-	 NWPzkD6yMuiQA==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: bpf@vger.kernel.org
-Cc: Puranjay Mohan <puranjay@kernel.org>,
-	Puranjay Mohan <puranjay12@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	kernel-team@meta.com
-Subject: [PATCH bpf-next v6 4/4] selftests: bpf: test non-sleepable arena allocations
-Date: Wed, 17 Dec 2025 10:44:35 -0800
-Message-ID: <20251217184438.3557859-5-puranjay@kernel.org>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20251217184438.3557859-1-puranjay@kernel.org>
-References: <20251217184438.3557859-1-puranjay@kernel.org>
+	s=arc-20240116; t=1765997195; c=relaxed/simple;
+	bh=CIe+ZU9oxZaSCq2WDiD7PNAozXKlplZSPqtl5CpE4Ek=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pb9YV/7Cu43mw445c8wJzhlE79JsH7Z8UnFbrFqlLWsIk7bSRQZICv4Hte3n7ht9KO1Gmiy/eA52BI9uE6WhQJ/0xzUr8OGP1seQ1E5mYp5VNKvUHdDEOfwl0jmvLKAtIsV+83tROBvuv76bxtqFMk9Ve51mmf+exMaQFj911oE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mdM3PXV/; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-42e2e3c0dccso3348317f8f.2
+        for <bpf@vger.kernel.org>; Wed, 17 Dec 2025 10:46:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1765997192; x=1766601992; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/lG992SzARwSD2CfwNAdMfhT0lO+gSHnEw3eG59WhYA=;
+        b=mdM3PXV/lPUJp34jgHYHXBe0QxZhCf8N3Lgy1ZcJqpueaDy3Fz6SHerJPjt2Nnf80D
+         vR1J2bshvk92TnqReLXEGTkL+vIyWoT1Q1ptzFllX/xXJZvJxZ+Dz/9kytxQUDx99iyH
+         1Zc28l651sqI5J6XXC63W3vnRtDQ+p1UxLTurvOCOtOtrdpYKMq2m/ZOr8s2tatGQKYc
+         OwuQZYeFichluBmguXjyrnZWSu7xYy6hzJnUv9cipY26iAtoUrurehQKWnxoUaCQI5Kc
+         rScpkG+czGk6/XZeeaUtrXZ1Y0VwX1kfFWzhW5Ag4KAXE3le804svguGrS/3x0NC7pN0
+         +krA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765997192; x=1766601992;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=/lG992SzARwSD2CfwNAdMfhT0lO+gSHnEw3eG59WhYA=;
+        b=H86CH4b3nZtNrd+XhyqxMN1033JwQwXh3bHY7Qqe5+XNl0fBl2RoXxefXwHlUpKbvc
+         CaiXMhy4paYxViAM0T1hVl+EwX72Ek8hXPbZFxj3QkE+G26Ixwc1NkCg0yx5rhCGDL11
+         Nd6v5krYXtdb2OkMhJhmA0Hio13qB1ouVAEHGhIxjpnYJ7dwzWRLRqhOvrONRnugN3Ss
+         aKg9viazbFnE3JF7XkIY39f+AYlimj6V22EFoCbIwEYsx++J7PCBiwmRXZ+tOK+CoACK
+         u0ERRyTIVjrJCXbOG9kWFrmW/cw8TRJhSiRmLh8n95whTotrh07XdFmLPJWjblOzYDDo
+         jzJg==
+X-Forwarded-Encrypted: i=1; AJvYcCVWztswU03I97/TEbBm4pE4hpg7Ntc6ukLJ95ysazCf5bk6kemAVqBAQpuZ4saZ/b/MdPA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyZ+V+/YI9UOIAN7oxcxbCvxYHaZClNAgYw7Zm8Ag25z8uMqoaa
+	ap+9Xe53GoqG4ilwAOpE524Y0dFs8OZUpTiXa2SBuQA43752PtNoKaYI7kdZlg5po1dwixMWbEn
+	plnW2Wq2KhOQ2u4j0/ZK3KBxkDuNSS8g=
+X-Gm-Gg: AY/fxX4s3ulnaBzFEJRPGEIS8GSLM57kkTL/FGlAs1lHHCi3k/pjj2qo/6xHUBQTniX
+	IH4ebch1Cmg0S6SWYgbNbD77SeWhLk37S8pUFHj41wOEJSViwAqZIht2YZDyN1ZL0quGmXqh3a9
+	l8Hiy0ItE8hFNq9JZKK8YtBcZU7nAImD+HgA57MSxxhfbRDyGLvCnJ4cyRkzPnmYMVRxT7YBlO1
+	Bp8uT0aSU/DG1IdEn4xfAoGlhgh41O9sa0wNXBF6jd8zflmDsgr7HrAAvVnNGzNvA1/+S0u5GHI
+	o4sRdJXIxo/KGu8LIS54j+jRg53XuMp+IXB8Y3A=
+X-Google-Smtp-Source: AGHT+IE9b/9uPlHb9PZEwXpux39kKBe7I37eUW2J7udF3uAvIEhu7nxR8gBmRi8tLubji4uKhOQgNcXNQgIdS4SDjys=
+X-Received: by 2002:a05:6000:3112:b0:430:8583:d19e with SMTP id
+ ffacd0b85a97d-4308583d30bmr13279792f8f.8.1765997192095; Wed, 17 Dec 2025
+ 10:46:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20251217162830.2597286-3-puranjay@kernel.org> <f144fd46b602b74fc4c1c2664082fbe893e7ec9c274fcc5fdf13d65151749e9c@mail.kernel.org>
+ <CANk7y0h4JO2-tp9HjRHjcQdTOgmRSsw0rxmK-=G89AVY92U8Jw@mail.gmail.com>
+In-Reply-To: <CANk7y0h4JO2-tp9HjRHjcQdTOgmRSsw0rxmK-=G89AVY92U8Jw@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 17 Dec 2025 10:46:21 -0800
+X-Gm-Features: AQt7F2pLMd_hQpf761wgyiSeU22_SrSfSiYZpZD7ova6qKN6XhTev4AL9vLtgqk
+Message-ID: <CAADnVQ+E6Tgcf1E5x-wk_TA+Lz83cA=SL8EZUGL70bQpywwexg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] bpf: arm64: Optimize recursion detection by
+ not using atomics
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: bot+bpf-ci@kernel.org, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, Eduard <eddyz87@gmail.com>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Kernel Team <kernel-team@meta.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, Chris Mason <clm@meta.com>, 
+	Ihor Solodrai <ihor.solodrai@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-As arena kfuncs can now be called from non-sleepable contexts, test this
-by adding non-sleepable copies of tests in verifier_arena, this is done
-by using a socket program instead of syscall.
+On Wed, Dec 17, 2025 at 10:13=E2=80=AFAM Puranjay Mohan <puranjay@kernel.or=
+g> wrote:
+>
+> On Wed, Dec 17, 2025 at 4:56=E2=80=AFPM <bot+bpf-ci@kernel.org> wrote:
+> >
+> > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > > index 2da986136d26..654fb94bf60c 100644
+> > > --- a/include/linux/bpf.h
+> > > +++ b/include/linux/bpf.h
+> >
+> > [ ... ]
+> >
+> > > @@ -2006,12 +2009,32 @@ struct bpf_struct_ops_common_value {
+> > >
+> > >  static inline bool bpf_prog_get_recursion_context(struct bpf_prog *p=
+rog)
+> > >  {
+> > > +#ifdef CONFIG_ARM64
+> > > +     u8 rctx =3D interrupt_context_level();
+> > > +     u8 *active =3D this_cpu_ptr(prog->active);
+> > > +
+> > > +     active[rctx]++;
+> > > +     barrier();
+> > > +     if (get_unaligned_le32(active) !=3D BIT(rctx * 8))
+> > > +             return false;
+> > > +
+> > > +     return true;
+> > > +#else
+> > >       return this_cpu_inc_return(*(prog->active)) =3D=3D 1;
+> > > +#endif
+> > >  }
+> >
+> > Can preemption between the increment and check cause a counter leak on
+> > CONFIG_PREEMPT_RCU systems? The trampoline calls this function under
+> > rcu_read_lock_dont_migrate() which allows preemption on PREEMPT_RCU
+> > (documented at include/linux/rcupdate.h:856).
+> >
+> > Consider this scenario on an ARM64 system with PREEMPT_RCU:
+> >
+> > 1. Thread A increments active[0] to 1
+> > 2. Preemption occurs before Thread A reaches the check
+> > 3. Thread B on same CPU increments active[0] to 2
+> > 4. Thread B checks: sees 2 !=3D BIT(0), returns false
+> > 5. Thread A resumes, checks: sees 2 !=3D BIT(0), returns false
+> > 6. Both threads return false, neither runs BPF
+> > 7. Neither calls bpf_prog_put_recursion_context() (see
+> >    __bpf_prog_enter_recur() at kernel/bpf/trampoline.c:952)
+> > 8. Counter permanently stuck at 2, all future BPF on this CPU fails
+>
+> Step 7 is incorrect. Looking at the JIT-generated code, the exit
+> function is ALWAYS called, regardless of whether the enter function
+> returns 0 or a start time:
+>
+>   // x86 JIT at arch/x86/net/bpf_jit_comp.c:2998-3050
+>   call bpf_trampoline_enter()    // Line 2998
+>   test rax, rax                   // Line 3006
+>   je skip_exec                    // Conditional jump
+>   ... BPF program execution ...   // Lines 3011-3023
+>   skip_exec:                      // Line 3037 (jump lands here)
+>   call bpf_trampoline_exit()      // Line 3049 - ALWAYS executed
+>
+>   The bpf_trampoline_exit() call is after the skip_exec label, so it
+> executes in both cases.
+>
+> What Actually Happens:
+>
+>   Initial state: active[0] =3D 0
+>
+>   Thread A (normal context, rctx=3D0):
+>   1. active[0]++ =E2=86=92 active[0] =3D 1
+>   2. Preempted before barrier()
+>
+>   Thread B (scheduled on same CPU, normal context, rctx=3D0):
+>   3. active[0]++ =E2=86=92 active[0] =3D 2
+>   4. barrier()
+>   5. get_unaligned_le32(active) =E2=86=92 reads 0x00000002
+>   6. Check: 0x00000002 !=3D BIT(0) =3D 0x00000001 =E2=86=92 returns false
+>   7. __bpf_prog_enter_recur returns 0
+>   8. JIT checks return value, skips BPF execution
+>   9. JIT ALWAYS calls __bpf_prog_exit_recur (see
+> arch/arm64/net/bpf_jit_comp.c:2362)
+>   10. bpf_prog_put_recursion_context(prog) executes
+>   11. barrier(), active[0]-- =E2=86=92 active[0] =3D 1
+>
+>   Thread A resumes:
+>   12. barrier()
+>   13. get_unaligned_le32(active) =E2=86=92 reads 0x00000001 (Thread B alr=
+eady
+> decremented!)
+>   14. Check: 0x00000001 =3D=3D BIT(0) =3D 0x00000001 =E2=86=92 returns tr=
+ue =E2=9C=93
+>   15. __bpf_prog_enter_recur returns start_time
+>   16. BPF program executes
+>   17. __bpf_prog_exit_recur called
+>   18. bpf_prog_put_recursion_context(prog) executes
+>   19. barrier(), active[0]-- =E2=86=92 active[0] =3D 0 =E2=9C=93
+>
+>   Final State
+>
+>   - Counter returns to 0 =E2=9C=93
+>   - No leak =E2=9C=93
+>   - Thread B detected interference and aborted =E2=9C=93
+>   - Thread A executed successfully =E2=9C=93
+>   - Only ONE thread executed the BPF program =E2=9C=93
+>
+>
+> Now that I think of it, there is another race condition that leads to
+> NEITHER program running:
+>
+> Consider this scenario on an arm64 system with PREEMPT_RCU:
+>
+> 1. Thread A increments active[0] from 0 to 1
+> 2. Thread A is preempted before reaching barrier()
+> 3. Thread B (same CPU, same context) increments active[0] from 1 to 2
+> 4. Thread B executes barrier() and checks: sees 2 !=3D BIT(0), returns fa=
+lse
+> 5. Thread A resumes, executes barrier() and checks: sees 2 !=3D BIT(0),
+> returns false
+> 6. Both threads return false to __bpf_prog_enter_recur()
+> 7. Both skip BPF program execution
+> 8. Both call bpf_prog_put_recursion_context() and decrement: 2->1->0
+> 9. Neither BPF program executes, but the counter correctly returns to 0
+>
+> This means the patch is changing the behaviour in case of recursion
+> from "One program gets to run" to
+> "At most one program gets to run", but given the performance benefits,
+> I think we can accept this change.
 
-Add a new test case in verifier_arena_large to check that the
-bpf_arena_alloc_pages() works for more than 1024 pages.
-1024 * sizeof(struct page *) is the upper limit of kmalloc_nolock() but
-bpf_arena_alloc_pages() should still succeed because it re-uses this
-array in a loop.
+Agree. It's fine, but we can mitigate it, but doing this rctx trick
+only when RCU is not preemptable. Which pretty much would mean
+that PREEMPT_RT will use atomic and !RT will use rctx
+and this 'no prog executes' will not happen.
 
-Augment the arena_list selftest to also run in non-sleepable context by
-taking rcu_read_lock.
+> I am not sure what would change in reality if we allow both BPF
+> programs to be skipped in case of high interleaving
+> like above.
+>
+> > The old atomic code handled this correctly because this_cpu_inc_return(=
+)
+> > completes atomically, ensuring Thread A reads the value 1 before Thread=
+ B
+> > can interfere. With non-atomic operations, Thread A increments but hasn=
+'t
+> > read the value yet, allowing Thread B to interfere and cause both threa=
+ds
+> > to see the modified value.
+> >
+> > Is there a guarantee that same-context preemption cannot occur in the B=
+PF
+> > execution path on ARM64, or does this need additional synchronization?
+> >
+> > > @@ -2006,12 +2009,32 @@ struct bpf_struct_ops_common_value {
+> > >
+> > >  static inline void bpf_prog_put_recursion_context(struct bpf_prog *p=
+rog)
+> > >  {
+> > > +#ifdef CONFIG_ARM64
+> > > +     u8 rctx =3D interrupt_context_level();
+> > > +     u8 *active =3D this_cpu_ptr(prog->active);
+> > > +
+> > > +     barrier();
+> > > +     active[rctx]--;
+> > > +#else
+> > >       this_cpu_dec(*(prog->active));
+> > > +#endif
+> > >  }
+> >
+> > The barrier() is placed before the decrement. Does this provide the nee=
+ded
+> > ordering guarantee, or should there also be a barrier after the decreme=
+nt
+> > to ensure visibility?
+> >
+> > > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> > > index c66316e32563..b5063acfcf92 100644
+> > > --- a/kernel/bpf/core.c
+> > > +++ b/kernel/bpf/core.c
+> >
+> > [ ... ]
+> >
+> > > @@ -112,7 +112,8 @@ struct bpf_prog *bpf_prog_alloc_no_stats(unsigned=
+ int size, gfp_t gfp_extra_flag
+> > >               vfree(fp);
+> > >               return NULL;
+> > >       }
+> > > -     fp->active =3D alloc_percpu_gfp(int, bpf_memcg_flags(GFP_KERNEL=
+ | gfp_extra_flags));
+> > > +     fp->active =3D __alloc_percpu_gfp(sizeof(u8[BPF_NR_CONTEXTS]), =
+8,
+> > > +                                     bpf_memcg_flags(GFP_KERNEL | gf=
+p_extra_flags));
+> >
+> > The allocation changes to u8[4] for all architectures, but the non-ARM6=
+4
+> > code path still uses *(prog->active) which now dereferences only the fi=
+rst
+> > byte. This changes the counter from int (typically 4 bytes, range ~2^31=
+)
+> > to u8 (1 byte, range 256). While 256 recursion levels is sufficient in
+> > practice, is this intentional for non-ARM64 platforms, or should they
+> > continue using a full int-sized allocation?
+>
+> This was intentional so that we don't add another #ifdef here, 256
+> recursion levels are more than enough.
 
-Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
----
- .../selftests/bpf/prog_tests/arena_list.c     |  20 +-
- .../testing/selftests/bpf/progs/arena_list.c  |  11 ++
- .../selftests/bpf/progs/verifier_arena.c      | 185 ++++++++++++++++++
- .../bpf/progs/verifier_arena_large.c          |  29 +++
- 4 files changed, 240 insertions(+), 5 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/arena_list.c b/tools/testing/selftests/bpf/prog_tests/arena_list.c
-index d15867cddde0..4f2866a615ce 100644
---- a/tools/testing/selftests/bpf/prog_tests/arena_list.c
-+++ b/tools/testing/selftests/bpf/prog_tests/arena_list.c
-@@ -27,17 +27,23 @@ static int list_sum(struct arena_list_head *head)
- 	return sum;
- }
- 
--static void test_arena_list_add_del(int cnt)
-+static void test_arena_list_add_del(int cnt, bool nonsleepable)
- {
- 	LIBBPF_OPTS(bpf_test_run_opts, opts);
- 	struct arena_list *skel;
- 	int expected_sum = (u64)cnt * (cnt - 1) / 2;
- 	int ret, sum;
- 
--	skel = arena_list__open_and_load();
--	if (!ASSERT_OK_PTR(skel, "arena_list__open_and_load"))
-+	skel = arena_list__open();
-+	if (!ASSERT_OK_PTR(skel, "arena_list__open"))
- 		return;
- 
-+	skel->rodata->nonsleepable = nonsleepable;
-+
-+	ret = arena_list__load(skel);
-+	if (!ASSERT_OK(ret, "arena_list__load"))
-+		goto out;
-+
- 	skel->bss->cnt = cnt;
- 	ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.arena_list_add), &opts);
- 	ASSERT_OK(ret, "ret_add");
-@@ -65,7 +71,11 @@ static void test_arena_list_add_del(int cnt)
- void test_arena_list(void)
- {
- 	if (test__start_subtest("arena_list_1"))
--		test_arena_list_add_del(1);
-+		test_arena_list_add_del(1, false);
- 	if (test__start_subtest("arena_list_1000"))
--		test_arena_list_add_del(1000);
-+		test_arena_list_add_del(1000, false);
-+	if (test__start_subtest("arena_list_1_nonsleepable"))
-+		test_arena_list_add_del(1, true);
-+	if (test__start_subtest("arena_list_1000_nonsleepable"))
-+		test_arena_list_add_del(1000, true);
- }
-diff --git a/tools/testing/selftests/bpf/progs/arena_list.c b/tools/testing/selftests/bpf/progs/arena_list.c
-index 3a2ddcacbea6..235d8cc95bdd 100644
---- a/tools/testing/selftests/bpf/progs/arena_list.c
-+++ b/tools/testing/selftests/bpf/progs/arena_list.c
-@@ -30,6 +30,7 @@ struct arena_list_head __arena *list_head;
- int list_sum;
- int cnt;
- bool skip = false;
-+const volatile bool nonsleepable = false;
- 
- #ifdef __BPF_FEATURE_ADDR_SPACE_CAST
- long __arena arena_sum;
-@@ -42,6 +43,9 @@ int test_val SEC(".addr_space.1");
- 
- int zero;
- 
-+void bpf_rcu_read_lock(void) __ksym;
-+void bpf_rcu_read_unlock(void) __ksym;
-+
- SEC("syscall")
- int arena_list_add(void *ctx)
- {
-@@ -71,6 +75,10 @@ int arena_list_del(void *ctx)
- 	struct elem __arena *n;
- 	int sum = 0;
- 
-+	/* Take rcu_read_lock to test non-sleepable context */
-+	if (nonsleepable)
-+		bpf_rcu_read_lock();
-+
- 	arena_sum = 0;
- 	list_for_each_entry(n, list_head, node) {
- 		sum += n->value;
-@@ -79,6 +87,9 @@ int arena_list_del(void *ctx)
- 		bpf_free(n);
- 	}
- 	list_sum = sum;
-+
-+	if (nonsleepable)
-+		bpf_rcu_read_unlock();
- #else
- 	skip = true;
- #endif
-diff --git a/tools/testing/selftests/bpf/progs/verifier_arena.c b/tools/testing/selftests/bpf/progs/verifier_arena.c
-index 7f4827eede3c..4a9d96344813 100644
---- a/tools/testing/selftests/bpf/progs/verifier_arena.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_arena.c
-@@ -21,6 +21,37 @@ struct {
- #endif
- } arena SEC(".maps");
- 
-+SEC("socket")
-+__success __retval(0)
-+int basic_alloc1_nosleep(void *ctx)
-+{
-+#if defined(__BPF_FEATURE_ADDR_SPACE_CAST)
-+	volatile int __arena *page1, *page2, *no_page;
-+
-+	page1 = bpf_arena_alloc_pages(&arena, NULL, 1, NUMA_NO_NODE, 0);
-+	if (!page1)
-+		return 1;
-+	*page1 = 1;
-+	page2 = bpf_arena_alloc_pages(&arena, NULL, 1, NUMA_NO_NODE, 0);
-+	if (!page2)
-+		return 2;
-+	*page2 = 2;
-+	no_page = bpf_arena_alloc_pages(&arena, NULL, 1, NUMA_NO_NODE, 0);
-+	if (no_page)
-+		return 3;
-+	if (*page1 != 1)
-+		return 4;
-+	if (*page2 != 2)
-+		return 5;
-+	bpf_arena_free_pages(&arena, (void __arena *)page2, 1);
-+	if (*page1 != 1)
-+		return 6;
-+	if (*page2 != 0 && *page2 != 2) /* use-after-free should return 0 or the stored value */
-+		return 7;
-+#endif
-+	return 0;
-+}
-+
- SEC("syscall")
- __success __retval(0)
- int basic_alloc1(void *ctx)
-@@ -60,6 +91,44 @@ int basic_alloc1(void *ctx)
- 	return 0;
- }
- 
-+SEC("socket")
-+__success __retval(0)
-+int basic_alloc2_nosleep(void *ctx)
-+{
-+#if defined(__BPF_FEATURE_ADDR_SPACE_CAST)
-+	volatile char __arena *page1, *page2, *page3, *page4;
-+
-+	page1 = bpf_arena_alloc_pages(&arena, NULL, 2, NUMA_NO_NODE, 0);
-+	if (!page1)
-+		return 1;
-+	page2 = page1 + __PAGE_SIZE;
-+	page3 = page1 + __PAGE_SIZE * 2;
-+	page4 = page1 - __PAGE_SIZE;
-+	*page1 = 1;
-+	*page2 = 2;
-+	*page3 = 3;
-+	*page4 = 4;
-+	if (*page1 != 1)
-+		return 1;
-+	if (*page2 != 2)
-+		return 2;
-+	if (*page3 != 0)
-+		return 3;
-+	if (*page4 != 0)
-+		return 4;
-+	bpf_arena_free_pages(&arena, (void __arena *)page1, 2);
-+	if (*page1 != 0 && *page1 != 1)
-+		return 5;
-+	if (*page2 != 0 && *page2 != 2)
-+		return 6;
-+	if (*page3 != 0)
-+		return 7;
-+	if (*page4 != 0)
-+		return 8;
-+#endif
-+	return 0;
-+}
-+
- SEC("syscall")
- __success __retval(0)
- int basic_alloc2(void *ctx)
-@@ -102,6 +171,19 @@ struct bpf_arena___l {
-         struct bpf_map map;
- } __attribute__((preserve_access_index));
- 
-+SEC("socket")
-+__success __retval(0) __log_level(2)
-+int basic_alloc3_nosleep(void *ctx)
-+{
-+	struct bpf_arena___l *ar = (struct bpf_arena___l *)&arena;
-+	volatile char __arena *pages;
-+
-+	pages = bpf_arena_alloc_pages(&ar->map, NULL, ar->map.max_entries, NUMA_NO_NODE, 0);
-+	if (!pages)
-+		return 1;
-+	return 0;
-+}
-+
- SEC("syscall")
- __success __retval(0) __log_level(2)
- int basic_alloc3(void *ctx)
-@@ -115,6 +197,38 @@ int basic_alloc3(void *ctx)
- 	return 0;
- }
- 
-+SEC("socket")
-+__success __retval(0)
-+int basic_reserve1_nosleep(void *ctx)
-+{
-+#if defined(__BPF_FEATURE_ADDR_SPACE_CAST)
-+	char __arena *page;
-+	int ret;
-+
-+	page = bpf_arena_alloc_pages(&arena, NULL, 1, NUMA_NO_NODE, 0);
-+	if (!page)
-+		return 1;
-+
-+	page += __PAGE_SIZE;
-+
-+	/* Reserve the second page */
-+	ret = bpf_arena_reserve_pages(&arena, page, 1);
-+	if (ret)
-+		return 2;
-+
-+	/* Try to explicitly allocate the reserved page. */
-+	page = bpf_arena_alloc_pages(&arena, page, 1, NUMA_NO_NODE, 0);
-+	if (page)
-+		return 3;
-+
-+	/* Try to implicitly allocate the page (since there's only 2 of them). */
-+	page = bpf_arena_alloc_pages(&arena, NULL, 1, NUMA_NO_NODE, 0);
-+	if (page)
-+		return 4;
-+#endif
-+	return 0;
-+}
-+
- SEC("syscall")
- __success __retval(0)
- int basic_reserve1(void *ctx)
-@@ -147,6 +261,26 @@ int basic_reserve1(void *ctx)
- 	return 0;
- }
- 
-+SEC("socket")
-+__success __retval(0)
-+int basic_reserve2_nosleep(void *ctx)
-+{
-+#if defined(__BPF_FEATURE_ADDR_SPACE_CAST)
-+	char __arena *page;
-+	int ret;
-+
-+	page = arena_base(&arena);
-+	ret = bpf_arena_reserve_pages(&arena, page, 1);
-+	if (ret)
-+		return 1;
-+
-+	page = bpf_arena_alloc_pages(&arena, page, 1, NUMA_NO_NODE, 0);
-+	if ((u64)page)
-+		return 2;
-+#endif
-+	return 0;
-+}
-+
- SEC("syscall")
- __success __retval(0)
- int basic_reserve2(void *ctx)
-@@ -168,6 +302,27 @@ int basic_reserve2(void *ctx)
- }
- 
- /* Reserve the same page twice, should return -EBUSY. */
-+SEC("socket")
-+__success __retval(0)
-+int reserve_twice_nosleep(void *ctx)
-+{
-+#if defined(__BPF_FEATURE_ADDR_SPACE_CAST)
-+	char __arena *page;
-+	int ret;
-+
-+	page = arena_base(&arena);
-+
-+	ret = bpf_arena_reserve_pages(&arena, page, 1);
-+	if (ret)
-+		return 1;
-+
-+	ret = bpf_arena_reserve_pages(&arena, page, 1);
-+	if (ret != -EBUSY)
-+		return 2;
-+#endif
-+	return 0;
-+}
-+
- SEC("syscall")
- __success __retval(0)
- int reserve_twice(void *ctx)
-@@ -190,6 +345,36 @@ int reserve_twice(void *ctx)
- }
- 
- /* Try to reserve past the end of the arena. */
-+SEC("socket")
-+__success __retval(0)
-+int reserve_invalid_region_nosleep(void *ctx)
-+{
-+#if defined(__BPF_FEATURE_ADDR_SPACE_CAST)
-+	char __arena *page;
-+	int ret;
-+
-+	/* Try a NULL pointer. */
-+	ret = bpf_arena_reserve_pages(&arena, NULL, 3);
-+	if (ret != -EINVAL)
-+		return 1;
-+
-+	page = arena_base(&arena);
-+
-+	ret = bpf_arena_reserve_pages(&arena, page, 3);
-+	if (ret != -EINVAL)
-+		return 2;
-+
-+	ret = bpf_arena_reserve_pages(&arena, page, 4096);
-+	if (ret != -EINVAL)
-+		return 3;
-+
-+	ret = bpf_arena_reserve_pages(&arena, page, (1ULL << 32) - 1);
-+	if (ret != -EINVAL)
-+		return 4;
-+#endif
-+	return 0;
-+}
-+
- SEC("syscall")
- __success __retval(0)
- int reserve_invalid_region(void *ctx)
-diff --git a/tools/testing/selftests/bpf/progs/verifier_arena_large.c b/tools/testing/selftests/bpf/progs/verifier_arena_large.c
-index 2b8cf2a4d880..4ca491cbe8d1 100644
---- a/tools/testing/selftests/bpf/progs/verifier_arena_large.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_arena_large.c
-@@ -283,5 +283,34 @@ int big_alloc2(void *ctx)
- 		return 9;
- 	return 0;
- }
-+
-+SEC("socket")
-+__success __retval(0)
-+int big_alloc3(void *ctx)
-+{
-+#if defined(__BPF_FEATURE_ADDR_SPACE_CAST)
-+	char __arena *pages;
-+	u64 i;
-+
-+	/*
-+	 * Allocate 2051 pages in one go to check how kmalloc_nolock() handles large requests.
-+	 * Since kmalloc_nolock() can allocate up to 1024 struct page * at a time, this call should
-+	 * result in three batches: two batches of 1024 pages each, followed by a final batch of 3
-+	 * pages.
-+	 */
-+	pages = bpf_arena_alloc_pages(&arena, NULL, 2051, NUMA_NO_NODE, 0);
-+	if (!pages)
-+		return -1;
-+
-+	bpf_for(i, 0, 2051)
-+			pages[i * PAGE_SIZE] = 123;
-+	bpf_for(i, 0, 2051)
-+			if (pages[i * PAGE_SIZE] != 123)
-+				return i;
-+
-+	bpf_arena_free_pages(&arena, pages, 2051);
-+#endif
-+	return 0;
-+}
- #endif
- char _license[] SEC("license") = "GPL";
--- 
-2.47.3
-
+256 will be fine for !RT.
+So suggestion above will address this concern as well when 256+ tasks
+are racing concurrently on this cpu.
 
