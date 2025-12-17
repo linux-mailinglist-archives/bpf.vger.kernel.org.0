@@ -1,248 +1,169 @@
-Return-Path: <bpf+bounces-76843-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76844-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD8A2CC6D86
-	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 10:40:53 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E958CC6DAD
+	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 10:43:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9F99B303A1B1
-	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 09:40:28 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C6F0830ACCBC
+	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 09:40:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ADE133EAE6;
-	Wed, 17 Dec 2025 09:34:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dpvEGav0"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F94533D6D9;
+	Wed, 17 Dec 2025 09:34:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED34133DEE6
-	for <bpf@vger.kernel.org>; Wed, 17 Dec 2025 09:34:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B05E33CEAF;
+	Wed, 17 Dec 2025 09:34:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765964064; cv=none; b=EBQKaviGlYU7+tPhbeq57FDJ7hNkC47UAgltE8rIV3xrx4HKfYNNqVWjXD++WRpR2foAcTqX+O+XreUZ+m8KxCAwp/FKY/cZvlOvYodjiznjLXHrOBpsCnFK+poBnvUJ8JBJLXiWXaXJCcWzKiUXwr/HgT98dR0aaJpkr7Vdvt8=
+	t=1765964066; cv=none; b=eTlDcrr1WYx1HT/6ME8nw8FSiivphVP30bHGb0dSt8k+4u6zDw704IOlsiSzT6/egLBGzAYJFu+UWy3PbCuZohm3JwqrtJ7LSS3VtkR93TmTu68E5stkxzl6Wdnj4dhdHVhZJZQSVSfwwRWdZXmxFK97ELfxBj5Bf0nYPLJrLNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765964064; c=relaxed/simple;
-	bh=8d0Kv05QbIY3V6VZgRLzYlCzx44ZNAZYWZcMIbzy/j4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KEqCudNhdx30w/xhVKgo89OjBz9zTe4/YvjXR5CmTyuCLXBWlSgsIZa60XKKdrJ6RCZfanRg0lcL31EceBsYh01UEcEX6GQ2SSgCRUQ9Ge8ZI1lDRWQzPFmFbBqXIIj2UvkKb4Lu7U7a2X+Osvyrk30UzoQtXb9HDWDs6tTXKas=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dpvEGav0; arc=none smtp.client-ip=95.215.58.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1765964061;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uUM9tN+SRSk9se9w/GBygwPxcQRVLd8zM/nzUyQmYq4=;
-	b=dpvEGav0CQXGktLmWV23c6eYuovr1ahiBRFsrOAyDkihHQdt9qOuyMYmbOtxO5rIXCz+Ub
-	g0inWUkTZLYEji60/+/8nd1vfKZA9tFDD2/D8fzsfv2TPHm3rILOVDM8WPn/nPcaKm8HMc
-	9xnkudCW/TmEeW40I8rMAvYhmgUOSJE=
-From: Tao Chen <chen.dylane@linux.dev>
-To: peterz@infradead.org,
-	mingo@redhat.com,
-	acme@kernel.org,
-	namhyung@kernel.org,
-	mark.rutland@arm.com,
-	alexander.shishkin@linux.intel.com,
-	jolsa@kernel.org,
-	irogers@google.com,
-	adrian.hunter@intel.com,
-	kan.liang@linux.intel.com,
-	song@kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com
-Cc: linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Tao Chen <chen.dylane@linux.dev>
-Subject: [PATCH bpf-next v7 2/2] bpf: Hold the perf callchain entry until used completely
-Date: Wed, 17 Dec 2025 17:33:26 +0800
-Message-ID: <20251217093326.1745307-3-chen.dylane@linux.dev>
-In-Reply-To: <20251217093326.1745307-1-chen.dylane@linux.dev>
-References: <20251217093326.1745307-1-chen.dylane@linux.dev>
+	s=arc-20240116; t=1765964066; c=relaxed/simple;
+	bh=pA6OyNOPqic2PU25XHzrUn7XCNr0QY2cPEtn3K+4NLg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OXd8wYwekDpPzHOHI+Rz3lJYwhe1HPp8aGhmd7J0bcUCBZT9uQyTRducOjdhHkHPWVZfXMA9Hd+X9HIMDITeIKCcNKDjI7iEB8L+MC6mZjwtayCVFr8vE4POfGOlzYl7dT2mjpCBzh5QOWyF5ZTmYAwNUrtTqTb80FpiyLUKDF8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9305914BF;
+	Wed, 17 Dec 2025 01:34:16 -0800 (PST)
+Received: from [10.57.91.77] (unknown [10.57.91.77])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 894773F73B;
+	Wed, 17 Dec 2025 01:34:17 -0800 (PST)
+Message-ID: <100cc8da-b826-4fc2-a624-746bf6fb049d@arm.com>
+Date: Wed, 17 Dec 2025 09:34:15 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] introduce pagetable_alloc_nolock()
+Content-Language: en-GB
+To: Yeoreum Yun <yeoreum.yun@arm.com>
+Cc: akpm@linux-foundation.org, david@kernel.org, lorenzo.stoakes@oracle.com,
+ Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org, surenb@google.com,
+ mhocko@suse.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, jackmanb@google.com,
+ hannes@cmpxchg.org, ziy@nvidia.com, bigeasy@linutronix.de,
+ clrkwllms@kernel.org, rostedt@goodmis.org, catalin.marinas@arm.com,
+ will@kernel.org, kevin.brodsky@arm.com, dev.jain@arm.com,
+ yang@os.amperecomputing.com, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-rt-devel@lists.linux.dev, linux-arm-kernel@lists.infradead.org
+References: <20251212161832.2067134-1-yeoreum.yun@arm.com>
+ <916c17ba-22b1-456e-a184-cb3f60249af7@arm.com>
+ <aUGOPd7gNRf1xHEc@e129823.arm.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <aUGOPd7gNRf1xHEc@e129823.arm.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-As Alexei noted, get_perf_callchain() return values may be reused
-if a task is preempted after the BPF program enters migrate disable
-mode. The perf_callchain_entres has a small stack of entries, and
-we can reuse it as follows:
+On 16/12/2025 16:52, Yeoreum Yun wrote:
+> Hi Ryan,
+> 
+>> On 12/12/2025 16:18, Yeoreum Yun wrote:
+>>> Some architectures invoke pagetable_alloc() or __get_free_pages()
+>>> with preemption disabled.
+>>> For example, in arm64, linear_map_split_to_ptes() calls pagetable_alloc()
+>>> while spliting block entry to ptes and __kpti_install_ng_mappings()
+>>> calls __get_free_pages() to create kpti pagetable.
+>>>
+>>> Under PREEMPT_RT, calling pagetable_alloc() with
+>>> preemption disabled is not allowed, because it may acquire
+>>> a spin lock that becomes sleepable on RT, potentially
+>>> causing a sleep during page allocation.
+>>>
+>>> Since above two functions is called as callback of stop_machine()
+>>> where its callback is called in preemption disabled,
+>>> They could make a potential problem. (sleeping in preemption disabled).
+>>>
+>>> To address this, introduce pagetable_alloc_nolock() API.
+>>
+>> I don't really understand what the problem is that you're trying to fix. As I
+>> see it, there are 2 call sites in arm64 arch code that are calling into the page
+>> allocator from stop_machine() - one via via pagetable_alloc() and another via
+>> __get_free_pages(). But both of those calls are passing in GFP_ATOMIC. It was my
+>> understanding that the page allocator would ensure it never sleeps when
+>> GFP_ATOMIC is passed in, (even for PREEMPT_RT)?
+> 
+> Although GFP_ATOMIC is specify, it only affects of "water mark" of the
+> page with __GFP_HIGH. and to get a page, it must grab the lock --
+> zone->lock or pcp_lock in the rmqueue().
+> 
+> This zone->lock and pcp_lock is spin_lock and it's a sleepable in
+> PREEMPT_RT that's why the memory allocation/free using general API
+> except nolock() version couldn't be called since
+> if "contention" happens they'll sleep while waiting to get the lock.
+> 
+> The reason why "nolock()" can use, it always uses "trylock" with
+> ALLOC_TRYLOCK flags. otherwise GFP_ATOMIC also can be sleepable in
+> PREEMPT_RT.
+> 
+>>
+>> What is the actual symptom you are seeing?
+> 
+> Since the place where called while smp_cpus_done() and there seems no
+> contention, there seems no problem. However as I mention in another
+> thread
+> (https://lore.kernel.org/all/aT%2FdrjN1BkvyAGoi@e129823.arm.com/),
+> This gives a the false impression --
+> GFP_ATOMIC are “safe to use in preemption disabled”
+> even though they are not in PREEMPT_RT case, I've changed it.
+> 
+>>
+>> If the page allocator is somehow ignoring the GFP_ATOMIC request for PREEMPT_RT,
+>> then isn't that a bug in the page allocator? I'm not sure why you would change
+>> the callsites? Can't you just change the page allocator based on GFP_ATOMIC?
+> 
+> It doesn't ignore the GFP_ATOMIC feature:
+>   - __GFP_HIGH: use water mark till min reserved
+>   - __GFP_KSWAPD_RECLAIM: wake up kswapd if reclaim required.
+> 
+> But, it's a restriction -- "page allocation / free" API cannot be called
+> in preempt-disabled context at PREEMPT_RT.
+> 
+> That's why I think it's wrong usage not a page allocator bug.
 
-1. get the perf callchain entry
-2. BPF use...
-3. put the perf callchain entry
+I've taken a look at this and I agree with your analysis. Thanks for explaining.
 
-And Peter suggested that get_recursion_context used with preemption
-disabled, so we should disable preemption at BPF side.
+Looking at other stop_machine() callbacks, there are some that call printk() and
+I would assume that spinlocks could be taken there which may present the same
+kind of issue or PREEMPT_RT? (I'm guessing). I don't see any others that attempt
+to allocate memory though.
 
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
-Signed-off-by: Tao Chen <chen.dylane@linux.dev>
----
- kernel/bpf/stackmap.c | 68 +++++++++++++++++++++++++++++++++++--------
- 1 file changed, 56 insertions(+), 12 deletions(-)
+Anyway, to fix the 2 arm64 callsites, I see 2 possible approaches:
 
-diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index da3d328f5c1..3bdd99a630d 100644
---- a/kernel/bpf/stackmap.c
-+++ b/kernel/bpf/stackmap.c
-@@ -210,13 +210,14 @@ static void stack_map_get_build_id_offset(struct bpf_stack_build_id *id_offs,
- }
- 
- static struct perf_callchain_entry *
--get_callchain_entry_for_task(struct task_struct *task, u32 max_depth)
-+get_callchain_entry_for_task(int *rctx, struct task_struct *task, u32 max_depth)
- {
- #ifdef CONFIG_STACKTRACE
- 	struct perf_callchain_entry *entry;
--	int rctx;
- 
--	entry = get_callchain_entry(&rctx);
-+	preempt_disable();
-+	entry = get_callchain_entry(rctx);
-+	preempt_enable();
- 
- 	if (!entry)
- 		return NULL;
-@@ -238,8 +239,6 @@ get_callchain_entry_for_task(struct task_struct *task, u32 max_depth)
- 			to[i] = (u64)(from[i]);
- 	}
- 
--	put_callchain_entry(rctx);
--
- 	return entry;
- #else /* CONFIG_STACKTRACE */
- 	return NULL;
-@@ -320,6 +319,34 @@ static long __bpf_get_stackid(struct bpf_map *map,
- 	return id;
- }
- 
-+static struct perf_callchain_entry *
-+bpf_get_perf_callchain(int *rctx, struct pt_regs *regs, bool kernel, bool user,
-+		       int max_stack, bool crosstask)
-+{
-+	struct perf_callchain_entry_ctx ctx;
-+	struct perf_callchain_entry *entry;
-+
-+	preempt_disable();
-+	entry = get_callchain_entry(rctx);
-+	preempt_enable();
-+
-+	if (unlikely(!entry))
-+		return NULL;
-+
-+	__init_perf_callchain_ctx(&ctx, entry, max_stack, false);
-+	if (kernel)
-+		__get_perf_callchain_kernel(&ctx, regs);
-+	if (user && !crosstask)
-+		__get_perf_callchain_user(&ctx, regs, 0);
-+
-+	return entry;
-+}
-+
-+static void bpf_put_perf_callchain(int rctx)
-+{
-+	put_callchain_entry(rctx);
-+}
-+
- BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map *, map,
- 	   u64, flags)
- {
-@@ -328,20 +355,25 @@ BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map *, map,
- 	struct perf_callchain_entry *trace;
- 	bool kernel = !user;
- 	u32 max_depth;
-+	int rctx, ret;
- 
- 	if (unlikely(flags & ~(BPF_F_SKIP_FIELD_MASK | BPF_F_USER_STACK |
- 			       BPF_F_FAST_STACK_CMP | BPF_F_REUSE_STACKID)))
- 		return -EINVAL;
- 
- 	max_depth = stack_map_calculate_max_depth(map->value_size, elem_size, flags);
--	trace = get_perf_callchain(regs, kernel, user, max_depth,
--				   false, false, 0);
-+
-+	trace = bpf_get_perf_callchain(&rctx, regs, kernel, user, max_depth,
-+				       false);
- 
- 	if (unlikely(!trace))
- 		/* couldn't fetch the stack trace */
- 		return -EFAULT;
- 
--	return __bpf_get_stackid(map, trace, flags);
-+	ret = __bpf_get_stackid(map, trace, flags);
-+	bpf_put_perf_callchain(rctx);
-+
-+	return ret;
- }
- 
- const struct bpf_func_proto bpf_get_stackid_proto = {
-@@ -435,6 +467,7 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
- 	bool kernel = !user;
- 	int err = -EINVAL;
- 	u64 *ips;
-+	int rctx;
- 
- 	if (unlikely(flags & ~(BPF_F_SKIP_FIELD_MASK | BPF_F_USER_STACK |
- 			       BPF_F_USER_BUILD_ID)))
-@@ -467,18 +500,26 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
- 		trace = trace_in;
- 		trace->nr = min_t(u32, trace->nr, max_depth);
- 	} else if (kernel && task) {
--		trace = get_callchain_entry_for_task(task, max_depth);
-+		trace = get_callchain_entry_for_task(&rctx, task, max_depth);
- 	} else {
--		trace = get_perf_callchain(regs, kernel, user, max_depth,
--					   crosstask, false, 0);
-+		trace = bpf_get_perf_callchain(&rctx, regs, kernel, user, max_depth,
-+					       crosstask);
- 	}
- 
--	if (unlikely(!trace) || trace->nr < skip) {
-+	if (unlikely(!trace)) {
- 		if (may_fault)
- 			rcu_read_unlock();
- 		goto err_fault;
- 	}
- 
-+	if (trace->nr < skip) {
-+		if (may_fault)
-+			rcu_read_unlock();
-+		if (!trace_in)
-+			bpf_put_perf_callchain(rctx);
-+		goto err_fault;
-+	}
-+
- 	trace_nr = trace->nr - skip;
- 	copy_len = trace_nr * elem_size;
- 
-@@ -497,6 +538,9 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
- 	if (may_fault)
- 		rcu_read_unlock();
- 
-+	if (!trace_in)
-+		bpf_put_perf_callchain(rctx);
-+
- 	if (user_build_id)
- 		stack_map_get_build_id_offset(buf, trace_nr, user, may_fault);
- 
--- 
-2.48.1
+- Call the nolock variant (as you are doing). But that would just convert a
+deadlock to a panic; if the lock is held when stop_machine() runs, without your
+change, we now have a deadlock due to waiting on the lock inside stop_machine().
+With your change, we notice the lock is already taken and panic. I guess it is
+marginally better, but not by much. Certainly I would just _always_ call the
+nolock variant regardless of PREEMPT_RT if we take this route; For !PREEMPT_RT,
+the lock is guarranteed to be free so nolock will always succeed.
+
+- Preallocate the memory before entering stop_machine(). I think this would be
+much more robust. For kpti_install_ng_mappings() I think you could hoist the
+allocation/free out of stop_machine() and pass the pointer in pretty easily. For
+linear_map_split_to_ptes() its a bit more complex; Perhaps, we need to walk the
+pgtable to figure out how much to preallocate, allocate it, then set it up as a
+special allocator, wrapped by an allocation function and modify the callchain to
+take a callback function instead of gfp flags.
+
+What do you think?
+
+Thanks,
+Ryan
+
+> 
+> [...]
+> 
+> --
+> Sincerely,
+> Yeoreum Yun
 
 
