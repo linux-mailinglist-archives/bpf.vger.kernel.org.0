@@ -1,166 +1,220 @@
-Return-Path: <bpf+bounces-76911-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76913-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45A0CCC96FA
-	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 20:45:39 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77C75CC9746
+	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 21:03:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E4D3E304A8D2
-	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 19:45:37 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 5019A301A72C
+	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 20:03:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF3EC2ECE86;
-	Wed, 17 Dec 2025 19:45:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CFFF27F016;
+	Wed, 17 Dec 2025 20:03:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qUG314Pw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RKCVjNYt"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2B0022B8B6
-	for <bpf@vger.kernel.org>; Wed, 17 Dec 2025 19:45:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 975DB155CB3
+	for <bpf@vger.kernel.org>; Wed, 17 Dec 2025 20:03:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766000735; cv=none; b=MIZIH7qe1GOuH43CHgpBLDGrBRLd53l5ynyh6XhGBhZwvBJWrRJYXKlqTA8ngYS/mTUEJCWXE/EPbx3ovJu0uCswbCjU+HV9xUHuRLyygKU1AXeBkMZ+4OTtp6faMTPwLUwVc1pVadoGl4L90jTSnFxpUT03TxElBCCcz+nqBns=
+	t=1766001819; cv=none; b=J0IIE04tLnAgf/dMDawemBoNoymm8eZ6b0Xw4MtUsmkedsIBWwFJiqNKxEwcOsR8ON6Ak9fsZeKHr2U6rj6HeBqIBAzlNf3dc0pOWAh+uFAu60dRzQeSWv+gBv+yUgYfziWi4EIK32BOFWLC3GWMGoRoKPNekOMknVKxM5R7ftA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766000735; c=relaxed/simple;
-	bh=I2eef3syObG7yF5V5IDthxx8Dn305KIRQ27o0gWXdpY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=a6G5UEmSu5BGfuuZ/wC587nzVoHvAZw7SY2skhJ+ULMNVclxMq/7pIOtCqAFqhm5qmQ+KqtO1xR8wVp3PFYc6n/7ABbFDGM1JHEqce4vqtSNaOloKHAJlye/c+WlViDwFxjiCsy0NG89R1YNRHvkMmEUmlMg589Cb1lR/nE9cCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qUG314Pw; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <26a8d10a-eede-4ebc-b51a-5c08ea02dda5@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1766000723;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hjGwRrRHeV9FhtskgH+muWu/+jggYeeNnurTJDnS9vg=;
-	b=qUG314PwFgg2RdQNIFrCrdHqgfehWDIyEoqPBZ84evg+L/OJiFbWYwFwhXEOPtv40iv40j
-	rscC47bEdPu78Yi6I8Mvvpx+pxe/Q+Xg4pSaTBWplNAmgnf+ZB/ZgfWjWn2UA63TvQUHXk
-	oYX2AX4Xso4Wx/WXzA77PL1pL+GNrrM=
-Date: Wed, 17 Dec 2025 11:45:14 -0800
+	s=arc-20240116; t=1766001819; c=relaxed/simple;
+	bh=dY8qyjg4TQifIq2ACkxv5aAbxyc9t4IFkzp7WSL1fUg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aBjWBzg4lJ0i0hnjVk2O0a0bAIlUYefUFajPn4QTAYhN/Csbu6xT8x9rBYQKT2y4rEj3o6TgkE24vizf4VjE2keSp0leykVSUDdr/eU8cXbr2rIDvdwpOGXdBqgeYDtF2kz5GOQbTI8ifFf/uCIpQTAJSdZoGt7kHWPSp0n6FdU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RKCVjNYt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BCB3C4CEF5
+	for <bpf@vger.kernel.org>; Wed, 17 Dec 2025 20:03:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1766001819;
+	bh=dY8qyjg4TQifIq2ACkxv5aAbxyc9t4IFkzp7WSL1fUg=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=RKCVjNYtDEwB/L0S9dHfCmWbGwAGHxtfNUCfp5nrYlhX+lP5A6MmaOi9OQ6x/tEcs
+	 VbQMYhYwZItxThos6VLTvtCm3FEL+LSkOfWbR9QGIy/gMjEfrZtR0+KmZHdfIP/zF1
+	 CSioQpLnHWwBoUxz5T0LwUQIfqHtOUUNKqvjk2AU02UOo1ggfQ9a+CH+LsyLWPKLfh
+	 5dbv/KdIe3nayCTUwU2UZQbZzvu12gP3C6s3GIrpxCwDa7H5Aah78E1nY41SHG2aUR
+	 wyV7H6A0T34X9PlyatQ65HdiqbX3sac/Z6kIMUJDTmemeqNhHm4bAHYY8kM32n+w1t
+	 RIqp5hkNKoYaQ==
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-6495e5265c9so9190614a12.0
+        for <bpf@vger.kernel.org>; Wed, 17 Dec 2025 12:03:39 -0800 (PST)
+X-Gm-Message-State: AOJu0YyZZjKPQ8sxyoxyDhjAHMt8EbES8tt2/ato8vu2EPNDnqkMFP/r
+	+VZXWrmipsjMpywJ70fhexUJaq9Tz12CnZ12/iM2GNtieXUPNb0ngbUZB3+CSMK1TEywawqAmcr
+	a0lQUbYgWWusDevJsfBdyA367gGrKT6U=
+X-Google-Smtp-Source: AGHT+IHTDWsATT0Zf3b7P0pI2QHwVru3Fm9E44JD0/AfMLU8bYfyABZzqMcSAAdyK5y7IvEg16NK9kn4nXBR5wpQuAQ=
+X-Received: by 2002:a05:6402:26d1:b0:649:8c4a:25db with SMTP id
+ 4fb4d7f45d1cf-6499b30fe19mr16658492a12.24.1766001817551; Wed, 17 Dec 2025
+ 12:03:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 2/2] bpf: arm64: Optimize recursion detection by
- not using atomics
-Content-Language: en-GB
-To: Puranjay Mohan <puranjay@kernel.org>
-Cc: bot+bpf-ci@kernel.org, bpf@vger.kernel.org, ast@kernel.org,
- andrii@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org,
- eddyz87@gmail.com, memxor@gmail.com, kernel-team@meta.com,
- catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com,
- linux-arm-kernel@lists.infradead.org, clm@meta.com, ihor.solodrai@linux.dev
-References: <20251217162830.2597286-3-puranjay@kernel.org>
- <f144fd46b602b74fc4c1c2664082fbe893e7ec9c274fcc5fdf13d65151749e9c@mail.kernel.org>
- <51466fd3-c837-46a6-af50-28a8336fd8cd@linux.dev>
- <CANk7y0irgYcHLH_e9ozjX3wTeDb3GH-PA+6UiLRSBFzpYs8eVQ@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CANk7y0irgYcHLH_e9ozjX3wTeDb3GH-PA+6UiLRSBFzpYs8eVQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20251217184438.3557859-2-puranjay@kernel.org> <3a85d544551fcd6d0b770c1824dcce7e39caff71380a36fb77e33397fd2457bc@mail.kernel.org>
+In-Reply-To: <3a85d544551fcd6d0b770c1824dcce7e39caff71380a36fb77e33397fd2457bc@mail.kernel.org>
+From: Puranjay Mohan <puranjay@kernel.org>
+Date: Wed, 17 Dec 2025 20:03:23 +0000
+X-Gmail-Original-Message-ID: <CANk7y0jOOrMOKEL9AGebuFrc8AGYWLABoUdfGBtdDCQaE-484A@mail.gmail.com>
+X-Gm-Features: AQt7F2rd69wqu5VZ_sIJvOyr0p0-yjy-6ZkSV4wSUh0xfxRMi1ckb52TiIz4s_Y
+Message-ID: <CANk7y0jOOrMOKEL9AGebuFrc8AGYWLABoUdfGBtdDCQaE-484A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 1/4] bpf: arena: populate vm_area without
+ allocating memory
+To: bot+bpf-ci@kernel.org
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, martin.lau@kernel.org, eddyz87@gmail.com, 
+	memxor@gmail.com, kernel-team@meta.com, yonghong.song@linux.dev, clm@meta.com, 
+	ihor.solodrai@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Dec 17, 2025 at 7:06=E2=80=AFPM <bot+bpf-ci@kernel.org> wrote:
+>
+> > diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
+> > index 872dc0e41c65..039f25fc074b 100644
+> > --- a/kernel/bpf/arena.c
+> > +++ b/kernel/bpf/arena.c
+> > @@ -7,6 +7,7 @@
+> >  #include <linux/btf_ids.h>
+> >  #include <linux/vmalloc.h>
+> >  #include <linux/pagemap.h>
+> > +#include <asm/tlbflush.h>
+> >  #include "range_tree.h"
+> >
+> >  /*
+> > @@ -92,6 +93,63 @@ static long compute_pgoff(struct bpf_arena *arena, l=
+ong uaddr)
+> >       return (u32)(uaddr - (u32)arena->user_vm_start) >> PAGE_SHIFT;
+> >  }
+> >
+> > +struct apply_range_data {
+> > +     struct page **pages;
+> > +     int i;
+> > +};
+> > +
+> > +static int apply_range_set_cb(pte_t *pte, unsigned long addr, void *da=
+ta)
+> > +{
+> > +     struct apply_range_data *d =3D data;
+> > +     struct page *page;
+> > +
+> > +     if (!data)
+> > +             return 0;
+> > +     /* sanity check */
+> > +     if (unlikely(!pte_none(ptep_get(pte))))
+> > +             return -EBUSY;
+> > +
+> > +     page =3D d->pages[d->i];
+> > +     /* paranoia, similar to vmap_pages_pte_range() */
+> > +     if (WARN_ON_ONCE(!pfn_valid(page_to_pfn(page))))
+> > +             return -EINVAL;
+> > +
+> > +     set_pte_at(&init_mm, addr, pte, mk_pte(page, PAGE_KERNEL));
+> > +     d->i++;
+> > +     return 0;
+> > +}
+>
+> The old code path used vm_area_map_pages() which calls vmap_pages_range()=
+,
+> and vmap_pages_range() calls flush_cache_vmap() after setting up the
+> mappings. This new callback sets PTEs but doesn't flush the cache.
+>
+> Several architectures (arc, nios2, sh, xtensa) have non-trivial
+> flush_cache_vmap() implementations that flush the entire cache or
+> specific ranges. Is the cache flush intentionally omitted here, or could
+> this cause stale cache data on those architectures?
 
-
-On 12/17/25 10:44 AM, Puranjay Mohan wrote:
-> On Wed, Dec 17, 2025 at 6:24 PM Yonghong Song <yonghong.song@linux.dev> wrote:
->>
->>
->> On 12/17/25 8:56 AM, bot+bpf-ci@kernel.org wrote:
->>>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
->>>> index 2da986136d26..654fb94bf60c 100644
->>>> --- a/include/linux/bpf.h
->>>> +++ b/include/linux/bpf.h
->>> [ ... ]
->>>
->>>> @@ -2006,12 +2009,32 @@ struct bpf_struct_ops_common_value {
->>>>
->>>>    static inline bool bpf_prog_get_recursion_context(struct bpf_prog *prog)
->>>>    {
->>>> +#ifdef CONFIG_ARM64
->>>> +    u8 rctx = interrupt_context_level();
->>>> +    u8 *active = this_cpu_ptr(prog->active);
->>>> +
->>>> +    active[rctx]++;
->>>> +    barrier();
->>>> +    if (get_unaligned_le32(active) != BIT(rctx * 8))
->>>> +            return false;
->>>> +
->>>> +    return true;
->>>> +#else
->>>>       return this_cpu_inc_return(*(prog->active)) == 1;
->>>> +#endif
->>>>    }
->>> Can preemption between the increment and check cause a counter leak on
->>> CONFIG_PREEMPT_RCU systems? The trampoline calls this function under
->>> rcu_read_lock_dont_migrate() which allows preemption on PREEMPT_RCU
->>> (documented at include/linux/rcupdate.h:856).
->>>
->>> Consider this scenario on an ARM64 system with PREEMPT_RCU:
->>>
->>> 1. Thread A increments active[0] to 1
->>> 2. Preemption occurs before Thread A reaches the check
->>> 3. Thread B on same CPU increments active[0] to 2
->>> 4. Thread B checks: sees 2 != BIT(0), returns false
->>> 5. Thread A resumes, checks: sees 2 != BIT(0), returns false
->>> 6. Both threads return false, neither runs BPF
->>> 7. Neither calls bpf_prog_put_recursion_context() (see
->>>      __bpf_prog_enter_recur() at kernel/bpf/trampoline.c:952)
->>> 8. Counter permanently stuck at 2, all future BPF on this CPU fails
->>>
->>> The old atomic code handled this correctly because this_cpu_inc_return()
->>> completes atomically, ensuring Thread A reads the value 1 before Thread B
->>> can interfere. With non-atomic operations, Thread A increments but hasn't
->>> read the value yet, allowing Thread B to interfere and cause both threads
->>> to see the modified value.
->>>
->>> Is there a guarantee that same-context preemption cannot occur in the BPF
->>> execution path on ARM64, or does this need additional synchronization?
->> AI is correct here. See below for another thread:
->>     https://lore.kernel.org/bpf/20251217093326.1745307-1-chen.dylane@linux.dev/T/#m906fd4502fbbedd4609c586122a393363003312a
->> where preempt_disable is necessary to prevent the above scenario.
-> See my other reply, the above scenario presented by AI is wrong
-> because step 7 is wrong.
-
-Thanks for explanation. I missed the case that bpf_trampoline_exit()
-is always executed. In such cases, the active[rctx] counter will be
-always corrected.
+I did not know about this quirk of these architectures, I will fix it
+in the next version.
 
 >
->> But adding preempt_disable may impact the overall system-level performance.
->>
->> Does this patch can improve performance for *all* ARM64 cpu versions?
->> Do you have numbers to show how much performance improvement?
-> This should improve performance on all arm64 CPUs because atomics are
-> expensive because they are atomic across all cpus.
+> [ ... ]
+>
+> > @@ -428,7 +493,8 @@ static long arena_alloc_pages(struct bpf_arena *are=
+na, long uaddr, long page_cnt)
+> >       /* user_vm_end/start are fixed before bpf prog runs */
+> >       long page_cnt_max =3D (arena->user_vm_end - arena->user_vm_start)=
+ >> PAGE_SHIFT;
+> >       u64 kern_vm_start =3D bpf_arena_get_kern_vm_start(arena);
+> > -     struct page **pages;
+> > +     struct page **pages =3D NULL;
+> > +     long mapped =3D 0;
+> >       long pgoff =3D 0;
+> >       u32 uaddr32;
+> >       int ret, i;
+>
+> [ ... ]
+>
+> >
+> > +     struct apply_range_data data =3D { .pages =3D pages, .i =3D 0 };
+> >       ret =3D bpf_map_alloc_pages(&arena->map, node_id, page_cnt, pages=
+);
+> >       if (ret)
+> >               goto out;
+> > @@ -477,17 +544,20 @@ static long arena_alloc_pages(struct bpf_arena *a=
+rena, long uaddr, long page_cnt)
+> >        * kern_vm_start + uaddr32 + page_cnt * PAGE_SIZE - 1 can overflo=
+w
+> >        * lower 32-bit and it's ok.
+> >        */
+> > -     ret =3D vm_area_map_pages(arena->kern_vm, kern_vm_start + uaddr32=
+,
+> > -                             kern_vm_start + uaddr32 + page_cnt * PAGE=
+_SIZE, pages);
+> > +     ret =3D apply_to_page_range(&init_mm, kern_vm_start + uaddr32,
+> > +                               page_cnt << PAGE_SHIFT, apply_range_set=
+_cb, &data);
+> >       if (ret) {
+> > -             for (i =3D 0; i < page_cnt; i++)
+> > +             mapped =3D data.i;
+> > +             for (i =3D mapped; i < page_cnt; i++)
+> >                       __free_page(pages[i]);
+> >               goto out;
+> >       }
+> >       kvfree(pages);
+> >       return clear_lo32(arena->user_vm_start) + uaddr32;
+> >  out:
+> > -     range_tree_set(&arena->rt, pgoff, page_cnt);
+> > +     range_tree_set(&arena->rt, pgoff + mapped, page_cnt - mapped);
+> > +     if (mapped)
+> > +             arena_free_pages(arena, uaddr32, mapped);
+> >  out_free_pages:
+>
+> The new error handling calls arena_free_pages() when apply_to_page_range(=
+)
+> partially succeeds. However, arena_alloc_pages() takes arena->lock via
+> guard(mutex) at the start of the function, and arena_free_pages() also
+> tries to take arena->lock via guard(mutex).
+>
+> Doesn't this create a deadlock? The call path would be:
+>
+>   arena_alloc_pages() takes lock ->
+>   apply_to_page_range() fails after mapping some pages ->
+>   arena_free_pages() tries to take the same lock ->
+>   deadlock
+>
+> The old code didn't have this issue because vm_area_map_pages() would
+> either succeed completely or fail before any pages were mapped, so the
+> error path only freed page structures, not kernel mappings.
 
-Good to know. Thanks!
+Yes, it is fixed in the 3rd patch but you are right, I will fix this too in=
+ the
+next version by not using guard and dropping the mutex before calling
+arena_free_pages().
 
 >
-> I see a 33% improvement in the fentry trigger benchmark, but I can do
-> more benchmarking.
+> [ ... ]
 >
->>>> @@ -2006,12 +2009,32 @@ struct bpf_struct_ops_common_value {
->>>>
->>>>    static inline void bpf_prog_put_recursion_context(struct bpf_prog *prog)
->>>>    {
->>>> +#ifdef CONFIG_ARM64
->>>> +    u8 rctx = interrupt_context_level();
->>>> +    u8 *active = this_cpu_ptr(prog->active);
->>>> +
->>>> +    barrier();
->>>> +    active[rctx]--;
->>>> +#else
->>>>       this_cpu_dec(*(prog->active));
->>>> +#endif
->>>>    }
->> [...]
-
+>
+> ---
+> AI reviewed your patch. Please fix the bug or email reply why it's not a =
+bug.
+> See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/READM=
+E.md
+>
+> CI run summary: https://github.com/kernel-patches/bpf/actions/runs/203138=
+34837
 
