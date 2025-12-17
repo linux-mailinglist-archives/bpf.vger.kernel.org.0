@@ -1,154 +1,123 @@
-Return-Path: <bpf+bounces-76830-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76831-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFA0BCC64FC
-	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 07:55:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 03375CC650B
+	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 07:56:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 15B55304EF45
-	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 06:55:03 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E035030A2DBD
+	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 06:55:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E496B335090;
-	Wed, 17 Dec 2025 06:55:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0D8633509A;
+	Wed, 17 Dec 2025 06:55:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mP/rph8l"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YVAZ19kF"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E160334C28;
-	Wed, 17 Dec 2025 06:55:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15EB62DBF76
+	for <bpf@vger.kernel.org>; Wed, 17 Dec 2025 06:55:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765954501; cv=none; b=ei8wAQZ2efbjTZUVWd7WxpYFU7NjdjnM7IayLoOdSCg3kRK862Sd3m27ky+n/4szTpVKUMN8XxMNgUfSqIU7CtIYQQC9rwTmXdbi9lg8gxx5dkmY/Q3sk8koGp/gkynd4FMowx+sVbRlZ6dE5j1wG9Md11b8uIY+MIeMiopBV88=
+	t=1765954535; cv=none; b=fNwT7lJQpsP+VLr+ZH392ftNhcKfRdtI0hKusLpZmZ9wO7brTLiDoSaubE+/c0pKxIl+mMhwWGabakBdeFENTkf8xFENd764gEphQ9N8VyPQPkGxZjnAKsG0l/uZ+imUlQbYXzkm7L8DoiFOvCpRg/q0vat++o299vTa/2VXXvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765954501; c=relaxed/simple;
-	bh=6PJWOtpDQ9cOYWOwCsHXA2TRbpy+sm5mjMROo8KKx34=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=P2Y2kOIKeHwTlYwA03RsIsxOCfRKRFmKN2pInF3p5qbRjq+K96PKFXmRy4sTKH0KNhRsGcf9qxMvn5zMip/hkYbrJzFGrNdZ6vMPvVW6Xp+WbDtjP9LwqOAxD1fNLWZJ2pt0ZfM+a4K3JvASM2OyXl2bz1StaOeC1EYtzUak+K0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mP/rph8l; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86F37C4CEF5;
-	Wed, 17 Dec 2025 06:55:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765954500;
-	bh=6PJWOtpDQ9cOYWOwCsHXA2TRbpy+sm5mjMROo8KKx34=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=mP/rph8lOarV44aMA3FHfqZYEW7xW5YBS+TzAi1/qXDU1s8I0VdJfBfhFQ+3BpkBh
-	 5nLpYE/dG8v1sxrIDKNY0qPUY/2NEmfNbO19ACq/ME9D+BC2+VhHhcqV6etD1rDpy9
-	 NPZtw2YPx9SkVUTtj1J4EdI1/cbsEmBHW1xswNbHXJTTTASzDEMA0xceB8c0OGz3aO
-	 8W5WU4vKmZ98rs97qRfc2FcmCo4wAj96U1+Sd5k6vd2CeSwfxHg4E3+AeezwGcNYvl
-	 OHW1MHKGbStKNgNncacAxZLvm7ebWNSi/apCQXWbh9I9p3zwqaDBsUNUuFOiewbMQv
-	 I3JqaRXf6r0vA==
-Content-Type: multipart/mixed; boundary="===============1386342668638731083=="
+	s=arc-20240116; t=1765954535; c=relaxed/simple;
+	bh=WyvyudohbmTmLOLE/N0RAc3uKv396NjhsncEDshJMJI=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=YfN1woi/wdcZsod7zuWtl/Ckq5K6hevSCOpoamCj7XsemDM+TLZzwpuFHl4q3SU8TMa4GRyN/UZRVIhR1SPvsPtW3qE8ZXgEDQiPX/D+VPnOAj4IwlspCyUZ/cSbVPguj7DNNvSLY4FIVzmbN91DSuIOv7tFy/69OOBXbfg+j9k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YVAZ19kF; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-7ba55660769so4353785b3a.1
+        for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 22:55:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1765954533; x=1766559333; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=bBMPtE0IaVeP7pkDtwD4FM1A0HiPwnneHf5c0h3YUqw=;
+        b=YVAZ19kFzI79tNQ0I8DTS1hkhSh4SLD1q29Alm1uo71x9vXZvYDXKdLvfiz1CXduwu
+         PW6xI3fJxLUC9OZgzipwaVgzFDmPcUylRq3a0BB4RpNnekb0o5MCrdc9g/Me/kkcFaVh
+         BOSRjuLmzruhWtmleCki4AwAcd6rSOga9ftHYPK/VSGSfaGeYBm2Qvw6qHuWrt5mXf2i
+         NOqwVkfvr51gvd3ILctCNjNE1/1AScWmOa+AJrSVo1Zxv+3WgPFDb5fB7Pi2qP2LjEOB
+         4kNNUX9eedxn1u7dR6ZNWMi/joBaF0aBIxeQdUxQa6eQbaCRPDClFZ9euiTVtrqlP3pu
+         MUZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765954533; x=1766559333;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bBMPtE0IaVeP7pkDtwD4FM1A0HiPwnneHf5c0h3YUqw=;
+        b=S5oFCDVFyrlXM6YsI+vtZzxNrb1v605pOTBoFRYHBbgREIAbCHYzdS8WX2UPro3/TG
+         6XToK8nhi2ocxPXd/dHrZx19W1nqDjoBaRaCtm95o/+IQn0LnUcxUt6Xh6dp0TUDQNWe
+         MKzLjBZ3AMI9v5ApCGZ0Tst7K63xDlDHsxMHLHE87ATAqr14rJ7JOGfvtImKgWGo5KYK
+         59BsLXFz2aRWea3/QkckYMyPEaiRi7zrBYZhRkPHf11aVREb294OctPOfWXU841IdDeD
+         i4wN6hyLEv4Men8ijzm6f2KqI420O72SpRWX+UoQzg4s7tDKmabNnpv6D/fwpbW4v7uI
+         psVw==
+X-Forwarded-Encrypted: i=1; AJvYcCUP6lFPyzhql/R3wXaIBIJg0AJzPYlYIHg6Y9z8p5IMtM7L+0mGjBXGYg0MNOI9oFH9LRk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxxxQ0oHbMq7JQZ5wrpV5TTvjqZZnHqavt729kJlpvcx1VloBNJ
+	g+0C+c0oiSeFKWM0g8m0XZxAtCffxaPquQTwdXhbj72Z1IJCi0bN5Q1t
+X-Gm-Gg: AY/fxX5S0iUyoBVKFaovWqUax8IV9U/O5EpoIST98BlybdOPy2RR5VBuInSMksI+Try
+	A9GwfJscL4wsIOaX//RBBeZqlIAb6C3uLu2A2xtQIDm570z3OvFvZ/iQzzPEkTuFPUqKUPrFICJ
+	1dOd1ZWw6mTupgsgnKIelrNSSQqUgztcE522Ln61PtZz5j80+S1RN0ryOsWlIZwVmzkOTnrqMA9
+	rbo8WQoPCvsn23mwv3cn9uO2p1VGAMpAHMpcHAGN44OGru4FP8eg+W71MMCfOn21VRv0rw79qdA
+	3VvATgaYVeu7njJIsHwcuZ9gFeynk1q1sgpkTWUzo3qXJJvm8Yh3jcuHGNz/4cSVZGdzorBgf6/
+	4vnh4ZRUfrdLRUdDLI2P4vWmgKFWpd38Ca9LK05Ugb03jKwcBRKVuSCZQD5VkL3aRNjHfXqj0UK
+	Wb5YoQGOcv
+X-Google-Smtp-Source: AGHT+IGaxEl7RuT2Qx5On9VIBO5D2R+xjY6sW2owgECMBk+3kPe45RdGfcEn7baUpqk4AUClN0xQPw==
+X-Received: by 2002:a05:6a20:e210:b0:35f:10a7:df67 with SMTP id adf61e73a8af0-369ad9d21c0mr17015586637.17.1765954533298;
+        Tue, 16 Dec 2025 22:55:33 -0800 (PST)
+Received: from [192.168.0.226] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c0c264211cbsm17091750a12.11.2025.12.16.22.55.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Dec 2025 22:55:32 -0800 (PST)
+Message-ID: <695de859b8af88ddcf53bca22a3ae57d7026b3af.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v9 08/10] bpf: Skip anonymous types in type
+ lookup for performance
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Donglin Peng <dolinux.peng@gmail.com>, ast@kernel.org, 
+	andrii.nakryiko@gmail.com
+Cc: zhangxiaoqin@xiaomi.com, ihor.solodrai@linux.dev, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, pengdonglin
+	 <pengdonglin@xiaomi.com>, Alan Maguire <alan.maguire@oracle.com>
+Date: Tue, 16 Dec 2025 22:55:30 -0800
+In-Reply-To: <20251208062353.1702672-9-dolinux.peng@gmail.com>
+References: <20251208062353.1702672-1-dolinux.peng@gmail.com>
+	 <20251208062353.1702672-9-dolinux.peng@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <5c7c7239a6f89e685f69093ff84fe686c75cf6b9b051dcbf812841f00ab3bc31@mail.kernel.org>
-In-Reply-To: <20251217061435.802204-2-duanchenghao@kylinos.cn>
-References: <20251217061435.802204-2-duanchenghao@kylinos.cn>
-Subject: Re: [PATCH v4 1/7] LoongArch: ftrace: Refactor register restoration in ftrace_common_return
-From: bot+bpf-ci@kernel.org
-To: duanchenghao@kylinos.cn,yangtiezhu@loongson.cn,rostedt@goodmis.org,mhiramat@kernel.org,mark.rutland@arm.com,hengqi.chen@gmail.com,chenhuacai@kernel.org
-Cc: kernel@xen0n.name,zhangtianyang@loongson.cn,masahiroy@kernel.org,linux-kernel@vger.kernel.org,loongarch@lists.linux.dev,bpf@vger.kernel.org,duanchenghao@kylinos.cn,youling.tang@linux.dev,jianghaoran@kylinos.cn,vincent.mc.li@gmail.com,linux-trace-kernel@vger.kernel.org,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Wed, 17 Dec 2025 06:55:00 +0000 (UTC)
 
---===============1386342668638731083==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+On Mon, 2025-12-08 at 14:23 +0800, Donglin Peng wrote:
 
-> diff --git a/arch/loongarch/kernel/mcount_dyn.S b/arch/loongarch/kernel/mcount_dyn.S
-> index d6b474ad1d5e..5729c20e5b8b 100644
-> --- a/arch/loongarch/kernel/mcount_dyn.S
-> +++ b/arch/loongarch/kernel/mcount_dyn.S
-> @@ -94,7 +94,6 @@ SYM_INNER_LABEL(ftrace_graph_call, SYM_L_GLOBAL)
->   * at the callsite, so there is no need to restore the T series regs.
->   */
->  ftrace_common_return:
-> -	PTR_L		ra, sp, PT_R1
->  	PTR_L		a0, sp, PT_R4
->  	PTR_L		a1, sp, PT_R5
->  	PTR_L		a2, sp, PT_R6
-> @@ -104,12 +103,17 @@ ftrace_common_return:
->  	PTR_L		a6, sp, PT_R10
->  	PTR_L		a7, sp, PT_R11
->  	PTR_L		fp, sp, PT_R22
-> -	PTR_L		t0, sp, PT_ERA
->  	PTR_L		t1, sp, PT_R13
-> -	PTR_ADDI	sp, sp, PT_SIZE
->  	bnez		t1, .Ldirect
+[...]
+
+> @@ -550,6 +550,11 @@ u32 btf_nr_types(const struct btf *btf)
+>  	return total;
+>  }
+> =20
+> +u32 btf_sorted_start_id(const struct btf *btf)
+> +{
+> +	return btf->sorted_start_id ?: (btf->start_id ?: 1);
+> +}
 > +
-> +	PTR_L		ra, sp, PT_R1
-> +	PTR_L		t0, sp, PT_ERA
-> +	PTR_ADDI	sp, sp, PT_SIZE
->  	jr		t0
->  .Ldirect:
-> +	PTR_L		t0, sp, PT_R1
-> +	PTR_L		ra, sp, PT_ERA
-                     ^^^^^^^^^^^^^^^^^^^
-Does this break existing ftrace direct trampolines?
 
-Before this change, direct trampolines received:
-  ra = parent return address (from PT_R1)
-  t0 = traced function address (from PT_ERA)
+I think that changes in this patch are correct.  However, it seems
+error prone to remember that sorted_start_id is always set for
+vmlinux/module BTF and might not be set for program BTF.
+Wdyt about using the above function everywhere instead of directly
+reading the field?
 
-After this change, direct trampolines receive:
-  t0 = parent return address (from PT_R1)
-  ra = traced function address (from PT_ERA)
+>  /*
+>   * Assuming that types are sorted by name in ascending order.
+>   */
 
-The sample trampolines in samples/ftrace/ were written for the old
-convention. For example, samples/ftrace/ftrace-direct.c does:
-
-  my_tramp:
-    st.d  $t0, $sp, 8    # Save what it thinks is traced func addr
-    st.d  $ra, $sp, 16   # Save what it thinks is parent addr
-    bl    my_direct_func
-    ld.d  $t0, $sp, 8    # Restore
-    ld.d  $ra, $sp, 16   # Restore
-    jr    $t0            # Jump to what it thinks is traced function
-
-With the new convention, the sample would save parent address in the
-t0 slot, restore it to t0, and then jump to the parent instead of the
-traced function, skipping the traced function entirely.
-
-This was fixed later in commit 055e392f3be7 "LoongArch: ftrace: Adjust
-register stack restore order in direct call trampolines" which updated
-all the samples to match the new convention. However, any out-of-tree
-direct trampolines written before this commit would be broken by this
-change.
-
-Was this ABI break intentional? The commit message mentions matching
-"the state when ftrace was entered" but doesn't explain why breaking
-compatibility was necessary. RISC-V uses the opposite convention
-(t0 = traced func, ra = parent), which the original LoongArch code
-matched.
-
-> +	PTR_ADDI	sp, sp, PT_SIZE
->  	jr		t1
->  SYM_CODE_END(ftrace_common)
-
-[ ... ]
-
-> @@ -161,6 +165,8 @@ SYM_CODE_END(return_to_handler)
->  #ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
->  SYM_CODE_START(ftrace_stub_direct_tramp)
->  	UNWIND_HINT_UNDEFINED
-> -	jr		t0
-> +	move		t1, ra
-> +	move		ra, t0
-> +	jr		t1
->  SYM_CODE_END(ftrace_stub_direct_tramp)
->  #endif /* CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS */
-
-
----
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
-
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/20293821855
-
---===============1386342668638731083==--
+[...]
 
