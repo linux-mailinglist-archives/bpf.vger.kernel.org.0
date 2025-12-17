@@ -1,363 +1,186 @@
-Return-Path: <bpf+bounces-76834-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76835-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 775C5CC6624
-	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 08:41:08 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70CE0CC665D
+	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 08:45:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 65F55300BE70
-	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 07:40:39 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 6B9B7301984C
+	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 07:45:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 444D3341ADD;
-	Wed, 17 Dec 2025 07:33:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kJbEioJK"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2E1033984A;
+	Wed, 17 Dec 2025 07:45:18 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
+Received: from baidu.com (mx24.baidu.com [111.206.215.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B215B341678;
-	Wed, 17 Dec 2025 07:33:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E83B3335070;
+	Wed, 17 Dec 2025 07:45:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=111.206.215.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765956815; cv=none; b=QeOUEfKeciiZJxuyB26XjTbL60Zl0vJ0j3OiybpL1IintfLvsKt74Mnkecf0lyubNEZn5ztqqx9C8EB0kNckk9VrT7QCCXuoPzRLKubjnOGYL2pBKc5pjoA6aaGpSrq/93lmG2O9jik6F2OSjpCWp8c6Vvfko2QAB56DsUoNA5c=
+	t=1765957518; cv=none; b=VetEOZndZJJ4CqieSpR1GQ57fxUnFRi/CqYm5nXsHKibcOmqt1oKKRi2CD7WynCJnyDLNcC18xoQeMsRAc12Fi+j2zqFrZlMwnWIti2QM44qmNIz6YVOamfkElcPw4h/zc4fsI6AMq4o1F+pP361pHCzHQ0c7pfPg2QrmO4A/W0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765956815; c=relaxed/simple;
-	bh=sjcxef3PctlmTwWiNjA8+D16MGGGbE3h4JTF0gOq1AA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C0N5TmRyNh5Bs4xB7D43PneIAg35TGXC4XPgAFR0wpo7UUSLhwWVcv4oMA0VPsMXkM9tPnJaXKIFmRMAPuPAQvIZQjWUtBXjRPU8yA4nPykFPYTf7Tvr6ogFMqPYAJpidMl0A59Oycgo3j/uRU8CtO6lpRsn9eADwDLCp3KKwPk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kJbEioJK; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 16 Dec 2025 23:33:20 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1765956807;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ybjrAMMTox2gm0Mz0WWSv3dKHkz7INlbXp2y/b55EKc=;
-	b=kJbEioJKtAXA6CzgPcHjUNrICvNmMFfoWW6bm+eUPd7eipsqQETPUXNiBWOtJXBYXk89K4
-	xJVLMQqDLSBleuaZ/DvrY3vP2VkoFdLWgpPTWvBV6Y2JPvrQ8zD9d136V4lt3P/HugG3Fn
-	bJBXRfI6+tn9iwsOM0GpjCrI00w7ioM=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Matthew Wilcox <willy@infradead.org>, 
-	Linus Torvalds <torvalds@linux-foundation.org>, Christoph Hellwig <hch@infradead.org>, 
-	"Darrick J. Wong" <djwong@kernel.org>, SHAURYA RANE <ssrane_b23@ee.vjti.ac.in>, 
-	akpm@linux-foundation.org, eddyz87@gmail.com, andrii@kernel.org, ast@kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	linux-kernel-mentees@lists.linux.dev, skhan@linuxfoundation.org, david.hunter.linux@gmail.com, 
-	khalid@kernel.org, syzbot+09b7d050e4806540153d@syzkaller.appspotmail.com, 
-	bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH] mm/filemap: fix NULL pointer dereference in
- do_read_cache_folio()
-Message-ID: <2mfkm3sotjz5tfw6wvtfrwnerae5pqspelyxw6xg6e5glsyaq6@jl73gcvmtve5>
-References: <20251114193729.251892-1-ssranevjti@gmail.com>
- <aReUv1kVACh3UKv-@casper.infradead.org>
- <CANNWa07Y_GPKuYNQ0ncWHGa4KX91QFosz6WGJ9P6-AJQniD3zw@mail.gmail.com>
- <aRpQ7LTZDP-Xz-Sr@casper.infradead.org>
- <20251117164155.GB196362@frogsfrogsfrogs>
- <aRtjfN7sC6_Bv4bx@casper.infradead.org>
- <CAEf4BzZu+u-F9SjhcY5GN5vumOi6X=3AwUom+KJXeCpvC+-ppQ@mail.gmail.com>
- <aRxunCkc4VomEUdo@infradead.org>
- <aRySpQbNuw3Y5DN-@casper.infradead.org>
- <CAEf4BzY1fu+7pqotaW6DxH_vvwCY8rTuX=+0RO96-baKJDeB_Q@mail.gmail.com>
+	s=arc-20240116; t=1765957518; c=relaxed/simple;
+	bh=Z+Jzz041A/hSxFfjiERCGO9Bw7pgIwdNbbfMviJ0dxM=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=NqrLrblRrF9S0UPKGUustJsFgWqFMTe0tKSq0cwYZt5iQv8gSGmS/D2SG5Dw0JNcIRhjMD5jhbxDxZfMlLNXTdWssoB1g0bGinIHjrcH+uHGEysiisI3VJWa1gjNzUq6COiMoFipWjYaVYZTTNSgQlGlNrlLx/M6TIb6ndJmAYc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=baidu.com; spf=pass smtp.mailfrom=baidu.com; arc=none smtp.client-ip=111.206.215.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=baidu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baidu.com
+From: "Li,Rongqing" <lirongqing@baidu.com>
+To: Lance Yang <lance.yang@linux.dev>
+CC: Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy
+	<chleroy@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, "Eduard
+ Zingerman" <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
+	<yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, "KP
+ Singh" <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo
+	<haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "linux-aspeed@lists.ozlabs.org"
+	<linux-aspeed@lists.ozlabs.org>, "linux-openrisc@vger.kernel.org"
+	<linux-openrisc@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org"
+	<linuxppc-dev@lists.ozlabs.org>, "dri-devel@lists.freedesktop.org"
+	<dri-devel@lists.freedesktop.org>, "bpf@vger.kernel.org"
+	<bpf@vger.kernel.org>, "linux-kselftest@vger.kernel.org"
+	<linux-kselftest@vger.kernel.org>, "wireguard@lists.zx2c4.com"
+	<wireguard@lists.zx2c4.com>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>
+Subject: =?utf-8?B?562U5aSNOiBb5aSW6YOo6YKu5Lu2XSBSZTogW1BBVENIXSB3YXRjaGRvZzog?=
+ =?utf-8?B?c29mdGxvY2t1cDogcGFuaWMgd2hlbiBsb2NrdXAgZHVyYXRpb24gZXhjZWVk?=
+ =?utf-8?Q?s_N_thresholds?=
+Thread-Topic: =?utf-8?B?W+WklumDqOmCruS7tl0gUmU6IFtQQVRDSF0gd2F0Y2hkb2c6IHNvZnRsb2Nr?=
+ =?utf-8?B?dXA6IHBhbmljIHdoZW4gbG9ja3VwIGR1cmF0aW9uIGV4Y2VlZHMgTiB0aHJl?=
+ =?utf-8?Q?sholds?=
+Thread-Index: AQHcbl/9zLj0PrwWtkKQBC8uxPlgN7Uk2YoAgACa3iA=
+Date: Wed, 17 Dec 2025 07:43:48 +0000
+Message-ID: <e7296a3d65a6445fa6ad4f81a3f7cd55@baidu.com>
+References: <20251216074521.2796-1-lirongqing@baidu.com>
+ <e216e4ae-b882-454d-be8f-24f21a3549d9@linux.dev>
+In-Reply-To: <e216e4ae-b882-454d-be8f-24f21a3549d9@linux.dev>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzY1fu+7pqotaW6DxH_vvwCY8rTuX=+0RO96-baKJDeB_Q@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+X-FEAS-Client-IP: 172.31.50.47
+X-FE-Policy-ID: 52:10:53:SYSTEM
 
-On Tue, Nov 18, 2025 at 11:27:47AM -0800, Andrii Nakryiko wrote:
-> On Tue, Nov 18, 2025 at 7:37 AM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Tue, Nov 18, 2025 at 05:03:24AM -0800, Christoph Hellwig wrote:
-> > > On Mon, Nov 17, 2025 at 10:45:31AM -0800, Andrii Nakryiko wrote:
-> > > > As I replied on another email, ideally we'd have some low-level file
-> > > > reading interface where we wouldn't have to know about secretmem, or
-> > > > XFS+DAX, or whatever other unusual combination of conditions where
-> > > > exposed internal APIs like filemap_get_folio() + read_cache_folio()
-> > > > can crash.
-> > >
-> > > The problem is that you did something totally insane and it kinda works
-> > > most of the time.
-> >
-> > ... on 64-bit systems.  The HIGHMEM handling is screwed up too.
-> >
-> > > But bpf or any other file system consumer has
-> > > absolutely not business poking into the page cache to start with.
-> >
-> > Agreed.
-> 
-> Then please help make it better, give us interfaces you think are
-> appropriate. People do use this functionality in production, it's
-> important and we are not going to drop it. In non-sleepable mode it's
-> best-effort, if the requested part of the file is paged in, we'll
-> successfully read data (such as ELF's build ID), and if not, we'll
-> report that to the BPF program as -EFAULT. In sleepable mode, we'll
-> wait for that part of the file to be paged in before proceeding.
-> PROCMAP_QUERY ioctl() is always in sleepable mode, so it will wait for
-> file data to be read.
-> 
-> If you don't like the implementation, please help improve it, don't
-> just request dropping it "because BPF folks" or anything like that.
-> 
-
-So, I took a stab at this, particularly based on Willy's suggestions on
-IOCB_NOWAIT. This is untested and I am just sharing to show how it looks
-like and if there are any concerns. In addition I think I will look into
-fstest part as well.
-
-BTW by simple code inspection I already see that IOCB_NOWAIT is not well
-respected. For example filemap_read() is doing cond_resched() without
-any checks. The readahead i.e. page_cache_sync_ra() can potential take
-sleeping locks. Btrfs is taking locks in btrfs_file_read_iter. So, it
-seems like this would need extensive testing hopefully for all major
-FSes.
-
-Here the draft patch:
-
-
-From 9652cc97a817fe35e53a7e98a5fbb49c7788c744 Mon Sep 17 00:00:00 2001
-From: Shakeel Butt <shakeel.butt@linux.dev>
-Date: Tue, 16 Dec 2025 16:53:57 -0800
-Subject: [PATCH] lib/buildid: convert freader to use __kernel_read()
-
-Convert the freader file reading implementation from direct page cache
-access via filemap_get_folio()/read_cache_folio() to using kernel_read
-interfaces.
-
-Add a new __kernel_read_nowait() function that uses IOCB_NOWAIT flag
-for non-blocking I/O. This is used when may_fault is false to avoid
-blocking on I/O - if data is not immediately available, it returns
--EAGAIN.
-
-For the may_fault case, use the standard __kernel_read() which can
-block waiting for I/O.
-
-This simplifies the code by removing the need to manage folios,
-kmap/kunmap operations, and page cache locking. It also makes the
-code work with filesystems that don't use the page cache directly.
-
-Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
----
- fs/read_write.c         | 18 ++++++++-
- include/linux/buildid.h |  3 --
- include/linux/fs.h      |  1 +
- lib/buildid.c           | 85 +++++++++--------------------------------
- 4 files changed, 37 insertions(+), 70 deletions(-)
-
-diff --git a/fs/read_write.c b/fs/read_write.c
-index 833bae068770..7a042cfeefec 100644
---- a/fs/read_write.c
-+++ b/fs/read_write.c
-@@ -503,7 +503,8 @@ static int warn_unsupported(struct file *file, const char *op)
- 	return -EINVAL;
- }
- 
--ssize_t __kernel_read(struct file *file, void *buf, size_t count, loff_t *pos)
-+static ssize_t __kernel_read_internal(struct file *file, void *buf,
-+			size_t count, loff_t *pos, int flags)
- {
- 	struct kvec iov = {
- 		.iov_base	= buf,
-@@ -526,6 +527,7 @@ ssize_t __kernel_read(struct file *file, void *buf, size_t count, loff_t *pos)
- 
- 	init_sync_kiocb(&kiocb, file);
- 	kiocb.ki_pos = pos ? *pos : 0;
-+	kiocb.ki_flags |= flags;
- 	iov_iter_kvec(&iter, ITER_DEST, &iov, 1, iov.iov_len);
- 	ret = file->f_op->read_iter(&kiocb, &iter);
- 	if (ret > 0) {
-@@ -538,6 +540,20 @@ ssize_t __kernel_read(struct file *file, void *buf, size_t count, loff_t *pos)
- 	return ret;
- }
- 
-+ssize_t __kernel_read(struct file *file, void *buf, size_t count, loff_t *pos)
-+{
-+	return __kernel_read_internal(file, buf, count, pos, 0);
-+}
-+
-+/*
-+ * Non-blocking variant of __kernel_read() using IOCB_NOWAIT.
-+ * Returns -EAGAIN if the read would block waiting for I/O.
-+ */
-+ssize_t __kernel_read_nowait(struct file *file, void *buf, size_t count, loff_t *pos)
-+{
-+	return __kernel_read_internal(file, buf, count, pos, IOCB_NOWAIT);
-+}
-+
- ssize_t kernel_read(struct file *file, void *buf, size_t count, loff_t *pos)
- {
- 	ssize_t ret;
-diff --git a/include/linux/buildid.h b/include/linux/buildid.h
-index 831c1b4b626c..f1fa220353a2 100644
---- a/include/linux/buildid.h
-+++ b/include/linux/buildid.h
-@@ -25,9 +25,6 @@ struct freader {
- 	union {
- 		struct {
- 			struct file *file;
--			struct folio *folio;
--			void *addr;
--			loff_t folio_off;
- 			bool may_fault;
- 		};
- 		struct {
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index f5c9cf28c4dc..498c804fc0b9 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -2832,6 +2832,7 @@ extern int do_pipe_flags(int *, int);
- 
- extern ssize_t kernel_read(struct file *, void *, size_t, loff_t *);
- ssize_t __kernel_read(struct file *file, void *buf, size_t count, loff_t *pos);
-+ssize_t __kernel_read_nowait(struct file *file, void *buf, size_t count, loff_t *pos);
- extern ssize_t kernel_write(struct file *, const void *, size_t, loff_t *);
- extern ssize_t __kernel_write(struct file *, const void *, size_t, loff_t *);
- extern struct file * open_exec(const char *);
-diff --git a/lib/buildid.c b/lib/buildid.c
-index aaf61dfc0919..c9d4491557fe 100644
---- a/lib/buildid.c
-+++ b/lib/buildid.c
-@@ -5,6 +5,7 @@
- #include <linux/elf.h>
- #include <linux/kernel.h>
- #include <linux/pagemap.h>
-+#include <linux/fs.h>
- #include <linux/secretmem.h>
- 
- #define BUILD_ID 3
-@@ -28,55 +29,35 @@ void freader_init_from_mem(struct freader *r, const char *data, u64 data_sz)
- 	r->data_sz = data_sz;
- }
- 
--static void freader_put_folio(struct freader *r)
--{
--	if (!r->folio)
--		return;
--	kunmap_local(r->addr);
--	folio_put(r->folio);
--	r->folio = NULL;
--}
--
--static int freader_get_folio(struct freader *r, loff_t file_off)
-+/*
-+ * Read data from file at specified offset into the freader buffer.
-+ * Uses non-blocking I/O when may_fault is false.
-+ * Returns 0 on success, negative error code on failure.
-+ */
-+static int freader_read(struct freader *r, loff_t file_off, size_t sz)
- {
--	/* check if we can just reuse current folio */
--	if (r->folio && file_off >= r->folio_off &&
--	    file_off < r->folio_off + folio_size(r->folio))
--		return 0;
--
--	freader_put_folio(r);
-+	ssize_t ret;
-+	loff_t pos = file_off;
- 
- 	/* reject secretmem folios created with memfd_secret() */
- 	if (secretmem_mapping(r->file->f_mapping))
- 		return -EFAULT;
- 
--	r->folio = filemap_get_folio(r->file->f_mapping, file_off >> PAGE_SHIFT);
--
--	/* if sleeping is allowed, wait for the page, if necessary */
--	if (r->may_fault && (IS_ERR(r->folio) || !folio_test_uptodate(r->folio))) {
--		filemap_invalidate_lock_shared(r->file->f_mapping);
--		r->folio = read_cache_folio(r->file->f_mapping, file_off >> PAGE_SHIFT,
--					    NULL, r->file);
--		filemap_invalidate_unlock_shared(r->file->f_mapping);
--	}
-+	if (r->may_fault)
-+		ret = __kernel_read(r->file, r->buf, sz, &pos);
-+	else
-+		ret = __kernel_read_nowait(r->file, r->buf, sz, &pos);
- 
--	if (IS_ERR(r->folio) || !folio_test_uptodate(r->folio)) {
--		if (!IS_ERR(r->folio))
--			folio_put(r->folio);
--		r->folio = NULL;
-+	if (ret < 0)
-+		return ret;
-+	if (ret != sz)
- 		return -EFAULT;
--	}
--
--	r->folio_off = folio_pos(r->folio);
--	r->addr = kmap_local_folio(r->folio, 0);
- 
- 	return 0;
- }
- 
- const void *freader_fetch(struct freader *r, loff_t file_off, size_t sz)
- {
--	size_t folio_sz;
--
- 	/* provided internal temporary buffer should be sized correctly */
- 	if (WARN_ON(r->buf && sz > r->buf_sz)) {
- 		r->err = -E2BIG;
-@@ -97,46 +78,18 @@ const void *freader_fetch(struct freader *r, loff_t file_off, size_t sz)
- 		return r->data + file_off;
- 	}
- 
--	/* fetch or reuse folio for given file offset */
--	r->err = freader_get_folio(r, file_off);
-+	/* read data from file into buffer */
-+	r->err = freader_read(r, file_off, sz);
- 	if (r->err)
- 		return NULL;
- 
--	/* if requested data is crossing folio boundaries, we have to copy
--	 * everything into our local buffer to keep a simple linear memory
--	 * access interface
--	 */
--	folio_sz = folio_size(r->folio);
--	if (file_off + sz > r->folio_off + folio_sz) {
--		u64 part_sz = r->folio_off + folio_sz - file_off, off;
--
--		memcpy(r->buf, r->addr + file_off - r->folio_off, part_sz);
--		off = part_sz;
--
--		while (off < sz) {
--			/* fetch next folio */
--			r->err = freader_get_folio(r, r->folio_off + folio_sz);
--			if (r->err)
--				return NULL;
--			folio_sz = folio_size(r->folio);
--			part_sz = min_t(u64, sz - off, folio_sz);
--			memcpy(r->buf + off, r->addr, part_sz);
--			off += part_sz;
--		}
--
--		return r->buf;
--	}
--
--	/* if data fits in a single folio, just return direct pointer */
--	return r->addr + (file_off - r->folio_off);
-+	return r->buf;
- }
- 
- void freader_cleanup(struct freader *r)
- {
- 	if (!r->buf)
- 		return; /* non-file-backed mode */
--
--	freader_put_folio(r);
- }
- 
- /*
--- 
-2.47.3
-
+PiA+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2FkbWluLWd1aWRlL2tlcm5lbC1wYXJhbWV0
+ZXJzLnR4dA0KPiA+IGIvRG9jdW1lbnRhdGlvbi9hZG1pbi1ndWlkZS9rZXJuZWwtcGFyYW1ldGVy
+cy50eHQNCj4gPiBpbmRleCBhOGQwYWZkLi4yN2M1Zjk2IDEwMDY0NA0KPiA+IC0tLSBhL0RvY3Vt
+ZW50YXRpb24vYWRtaW4tZ3VpZGUva2VybmVsLXBhcmFtZXRlcnMudHh0DQo+ID4gKysrIGIvRG9j
+dW1lbnRhdGlvbi9hZG1pbi1ndWlkZS9rZXJuZWwtcGFyYW1ldGVycy50eHQNCj4gPiBAQCAtNjkz
+NCwxMiArNjkzNCwxMiBAQCBLZXJuZWwgcGFyYW1ldGVycw0KPiA+DQo+ID4gICAJc29mdGxvY2t1
+cF9wYW5pYz0NCj4gPiAgIAkJCVtLTkxdIFNob3VsZCB0aGUgc29mdC1sb2NrdXAgZGV0ZWN0b3Ig
+Z2VuZXJhdGUgcGFuaWNzLg0KPiA+IC0JCQlGb3JtYXQ6IDAgfCAxDQo+ID4gKwkJCUZvcm1hdDog
+PGludD4NCj4gPg0KPiA+IC0JCQlBIHZhbHVlIG9mIDEgaW5zdHJ1Y3RzIHRoZSBzb2Z0LWxvY2t1
+cCBkZXRlY3Rvcg0KPiA+IC0JCQl0byBwYW5pYyB0aGUgbWFjaGluZSB3aGVuIGEgc29mdC1sb2Nr
+dXAgb2NjdXJzLiBJdCBpcw0KPiA+IC0JCQlhbHNvIGNvbnRyb2xsZWQgYnkgdGhlIGtlcm5lbC5z
+b2Z0bG9ja3VwX3BhbmljIHN5c2N0bA0KPiA+IC0JCQlhbmQgQ09ORklHX0JPT1RQQVJBTV9TT0ZU
+TE9DS1VQX1BBTklDLCB3aGljaCBpcyB0aGUNCj4gPiArCQkJQSB2YWx1ZSBvZiBub24temVybyBp
+bnN0cnVjdHMgdGhlIHNvZnQtbG9ja3VwIGRldGVjdG9yDQo+ID4gKwkJCXRvIHBhbmljIHRoZSBt
+YWNoaW5lIHdoZW4gYSBzb2Z0LWxvY2t1cCBkdXJhdGlvbiBleGNlZWRzDQo+ID4gKwkJCU4gdGhy
+ZXNob2xkcy4gSXQgaXMgYWxzbyBjb250cm9sbGVkIGJ5IHRoZSBrZXJuZWwuc29mdGxvY2t1cF9w
+YW5pYw0KPiA+ICsJCQlzeXNjdGwgYW5kIENPTkZJR19CT09UUEFSQU1fU09GVExPQ0tVUF9QQU5J
+Qywgd2hpY2ggaXMNCj4gdGhlDQo+ID4gICAJCQlyZXNwZWN0aXZlIGJ1aWxkLXRpbWUgc3dpdGNo
+IHRvIHRoYXQgZnVuY3Rpb25hbGl0eS4NCj4gDQo+IFNlZW1zIGxpa2Uga2VybmVsL2NvbmZpZ3Mv
+ZGVidWcuY29uZmlnIHN0aWxsIGhhcyB0aGUgb2xkIGZvcm1hdCAiIw0KPiBDT05GSUdfQk9PVFBB
+UkFNX1NPRlRMT0NLVVBfUEFOSUMgaXMgbm90IHNldCIgLi4uDQo+IA0KPiBTaG91bGQgYmUgdXBk
+YXRlZCB0byAiQ09ORklHX0JPT1RQQVJBTV9TT0ZUTE9DS1VQX1BBTklDPTAiLCByaWdodD8NCj4g
+DQoNCldpbGwgZml4IA0KDQoNCj4gPg0KPiA+ICAgCXNvZnRsb2NrdXBfYWxsX2NwdV9iYWNrdHJh
+Y2U9DQo+ID4gZGlmZiAtLWdpdCBhL2FyY2gvYXJtL2NvbmZpZ3MvYXNwZWVkX2c1X2RlZmNvbmZp
+Zw0KPiA+IGIvYXJjaC9hcm0vY29uZmlncy9hc3BlZWRfZzVfZGVmY29uZmlnDQo+ID4gaW5kZXgg
+MmU2ZWExMy4uZWM1NThlNSAxMDA2NDQNCj4gPiAtLS0gYS9hcmNoL2FybS9jb25maWdzL2FzcGVl
+ZF9nNV9kZWZjb25maWcNCj4gPiArKysgYi9hcmNoL2FybS9jb25maWdzL2FzcGVlZF9nNV9kZWZj
+b25maWcNCj4gPiBAQCAtMzA2LDcgKzMwNiw3IEBAIENPTkZJR19TQ0hFRF9TVEFDS19FTkRfQ0hF
+Q0s9eQ0KPiA+ICAgQ09ORklHX1BBTklDX09OX09PUFM9eQ0KPiA+ICAgQ09ORklHX1BBTklDX1RJ
+TUVPVVQ9LTENCj4gPiAgIENPTkZJR19TT0ZUTE9DS1VQX0RFVEVDVE9SPXkNCj4gPiAtQ09ORklH
+X0JPT1RQQVJBTV9TT0ZUTE9DS1VQX1BBTklDPXkNCj4gPiArQ09ORklHX0JPT1RQQVJBTV9TT0ZU
+TE9DS1VQX1BBTklDPTENCj4gPiAgIENPTkZJR19CT09UUEFSQU1fSFVOR19UQVNLX1BBTklDPTEN
+Cj4gPiAgIENPTkZJR19XUV9XQVRDSERPRz15DQo+ID4gICAjIENPTkZJR19TQ0hFRF9ERUJVRyBp
+cyBub3Qgc2V0DQo+ID4gZGlmZiAtLWdpdCBhL2FyY2gvYXJtL2NvbmZpZ3MvcHhhM3h4X2RlZmNv
+bmZpZw0KPiA+IGIvYXJjaC9hcm0vY29uZmlncy9weGEzeHhfZGVmY29uZmlnDQo+ID4gaW5kZXgg
+MDdkNDIyZi4uZmIyNzJlMyAxMDA2NDQNCj4gPiAtLS0gYS9hcmNoL2FybS9jb25maWdzL3B4YTN4
+eF9kZWZjb25maWcNCj4gPiArKysgYi9hcmNoL2FybS9jb25maWdzL3B4YTN4eF9kZWZjb25maWcN
+Cj4gPiBAQCAtMTAwLDcgKzEwMCw3IEBAIENPTkZJR19QUklOVEtfVElNRT15DQo+ID4gICBDT05G
+SUdfREVCVUdfS0VSTkVMPXkNCj4gPiAgIENPTkZJR19NQUdJQ19TWVNSUT15DQo+ID4gICBDT05G
+SUdfREVCVUdfU0hJUlE9eQ0KPiA+IC1DT05GSUdfQk9PVFBBUkFNX1NPRlRMT0NLVVBfUEFOSUM9
+eQ0KPiA+ICtDT05GSUdfQk9PVFBBUkFNX1NPRlRMT0NLVVBfUEFOSUM9MQ0KPiA+ICAgIyBDT05G
+SUdfU0NIRURfREVCVUcgaXMgbm90IHNldA0KPiA+ICAgQ09ORklHX0RFQlVHX1NQSU5MT0NLPXkN
+Cj4gPiAgIENPTkZJR19ERUJVR19TUElOTE9DS19TTEVFUD15DQo+ID4gZGlmZiAtLWdpdCBhL2Fy
+Y2gvb3BlbnJpc2MvY29uZmlncy9vcjFrbGl0ZXhfZGVmY29uZmlnDQo+ID4gYi9hcmNoL29wZW5y
+aXNjL2NvbmZpZ3Mvb3Ixa2xpdGV4X2RlZmNvbmZpZw0KPiA+IGluZGV4IGZiMWViOWEuLjk4NGIw
+ZTMgMTAwNjQ0DQo+ID4gLS0tIGEvYXJjaC9vcGVucmlzYy9jb25maWdzL29yMWtsaXRleF9kZWZj
+b25maWcNCj4gPiArKysgYi9hcmNoL29wZW5yaXNjL2NvbmZpZ3Mvb3Ixa2xpdGV4X2RlZmNvbmZp
+Zw0KPiA+IEBAIC01Miw1ICs1Miw1IEBADQo+IENPTkZJR19MU009ImxvY2tkb3duLHlhbWEsbG9h
+ZHBpbixzYWZlc2V0aWQsaW50ZWdyaXR5LGJwZiINCj4gPiAgIENPTkZJR19QUklOVEtfVElNRT15
+DQo+ID4gICBDT05GSUdfUEFOSUNfT05fT09QUz15DQo+ID4gICBDT05GSUdfU09GVExPQ0tVUF9E
+RVRFQ1RPUj15DQo+ID4gLUNPTkZJR19CT09UUEFSQU1fU09GVExPQ0tVUF9QQU5JQz15DQo+ID4g
+K0NPTkZJR19CT09UUEFSQU1fU09GVExPQ0tVUF9QQU5JQz0xDQo+ID4gICBDT05GSUdfQlVHX09O
+X0RBVEFfQ09SUlVQVElPTj15DQo+ID4gZGlmZiAtLWdpdCBhL2FyY2gvcG93ZXJwYy9jb25maWdz
+L3NraXJvb3RfZGVmY29uZmlnDQo+ID4gYi9hcmNoL3Bvd2VycGMvY29uZmlncy9za2lyb290X2Rl
+ZmNvbmZpZw0KPiA+IGluZGV4IDJiNzFhNmQuLmE0MTE0ZmMgMTAwNjQ0DQo+ID4gLS0tIGEvYXJj
+aC9wb3dlcnBjL2NvbmZpZ3Mvc2tpcm9vdF9kZWZjb25maWcNCj4gPiArKysgYi9hcmNoL3Bvd2Vy
+cGMvY29uZmlncy9za2lyb290X2RlZmNvbmZpZw0KPiA+IEBAIC0yODksNyArMjg5LDcgQEAgQ09O
+RklHX1NDSEVEX1NUQUNLX0VORF9DSEVDSz15DQo+ID4gICBDT05GSUdfREVCVUdfU1RBQ0tPVkVS
+RkxPVz15DQo+ID4gICBDT05GSUdfUEFOSUNfT05fT09QUz15DQo+ID4gICBDT05GSUdfU09GVExP
+Q0tVUF9ERVRFQ1RPUj15DQo+ID4gLUNPTkZJR19CT09UUEFSQU1fU09GVExPQ0tVUF9QQU5JQz15
+DQo+ID4gK0NPTkZJR19CT09UUEFSQU1fU09GVExPQ0tVUF9QQU5JQz0xDQo+ID4gICBDT05GSUdf
+SEFSRExPQ0tVUF9ERVRFQ1RPUj15DQo+ID4gICBDT05GSUdfQk9PVFBBUkFNX0hBUkRMT0NLVVBf
+UEFOSUM9eQ0KPiA+ICAgQ09ORklHX1dRX1dBVENIRE9HPXkNCj4gPiBkaWZmIC0tZ2l0IGEvZHJp
+dmVycy9ncHUvZHJtL2NpL2FybS5jb25maWcNCj4gPiBiL2RyaXZlcnMvZ3B1L2RybS9jaS9hcm0u
+Y29uZmlnIGluZGV4IDQxMWU4MTQuLmQ3YzUxNjcgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9n
+cHUvZHJtL2NpL2FybS5jb25maWcNCj4gPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vY2kvYXJtLmNv
+bmZpZw0KPiA+IEBAIC01Miw3ICs1Miw3IEBAIENPTkZJR19UTVBGUz15DQo+ID4gICBDT05GSUdf
+UFJPVkVfTE9DS0lORz1uDQo+ID4gICBDT05GSUdfREVCVUdfTE9DS0RFUD1uDQo+ID4gICBDT05G
+SUdfU09GVExPQ0tVUF9ERVRFQ1RPUj1uDQo+ID4gLUNPTkZJR19CT09UUEFSQU1fU09GVExPQ0tV
+UF9QQU5JQz1uDQo+ID4gK0NPTkZJR19CT09UUEFSQU1fU09GVExPQ0tVUF9QQU5JQz0wDQo+ID4N
+Cj4gPiAgIENPTkZJR19GV19MT0FERVJfQ09NUFJFU1M9eQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBh
+L2RyaXZlcnMvZ3B1L2RybS9jaS9hcm02NC5jb25maWcNCj4gPiBiL2RyaXZlcnMvZ3B1L2RybS9j
+aS9hcm02NC5jb25maWcgaW5kZXggZmRkZmJkNC4uZWEwZTMwNyAxMDA2NDQNCj4gPiAtLS0gYS9k
+cml2ZXJzL2dwdS9kcm0vY2kvYXJtNjQuY29uZmlnDQo+ID4gKysrIGIvZHJpdmVycy9ncHUvZHJt
+L2NpL2FybTY0LmNvbmZpZw0KPiA+IEBAIC0xNjEsNyArMTYxLDcgQEAgQ09ORklHX1RNUEZTPXkN
+Cj4gPiAgIENPTkZJR19QUk9WRV9MT0NLSU5HPW4NCj4gPiAgIENPTkZJR19ERUJVR19MT0NLREVQ
+PW4NCj4gPiAgIENPTkZJR19TT0ZUTE9DS1VQX0RFVEVDVE9SPXkNCj4gPiAtQ09ORklHX0JPT1RQ
+QVJBTV9TT0ZUTE9DS1VQX1BBTklDPXkNCj4gPiArQ09ORklHX0JPT1RQQVJBTV9TT0ZUTE9DS1VQ
+X1BBTklDPTENCj4gPg0KPiA+ICAgQ09ORklHX0RFVEVDVF9IVU5HX1RBU0s9eQ0KPiA+DQo+ID4g
+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9jaS94ODZfNjQuY29uZmlnDQo+ID4gYi9kcml2
+ZXJzL2dwdS9kcm0vY2kveDg2XzY0LmNvbmZpZw0KPiA+IGluZGV4IDhlYWJhMzg4Li43YWM5OGE3
+IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9jaS94ODZfNjQuY29uZmlnDQo+ID4g
+KysrIGIvZHJpdmVycy9ncHUvZHJtL2NpL3g4Nl82NC5jb25maWcNCj4gPiBAQCAtNDcsNyArNDcs
+NyBAQCBDT05GSUdfVE1QRlM9eQ0KPiA+ICAgQ09ORklHX1BST1ZFX0xPQ0tJTkc9bg0KPiA+ICAg
+Q09ORklHX0RFQlVHX0xPQ0tERVA9bg0KPiA+ICAgQ09ORklHX1NPRlRMT0NLVVBfREVURUNUT1I9
+eQ0KPiA+IC1DT05GSUdfQk9PVFBBUkFNX1NPRlRMT0NLVVBfUEFOSUM9eQ0KPiA+ICtDT05GSUdf
+Qk9PVFBBUkFNX1NPRlRMT0NLVVBfUEFOSUM9MQ0KPiA+DQo+ID4gICBDT05GSUdfREVURUNUX0hV
+TkdfVEFTSz15DQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEva2VybmVsL3dhdGNoZG9nLmMgYi9rZXJu
+ZWwvd2F0Y2hkb2cuYyBpbmRleA0KPiA+IDA2ODVlM2EuLmE1ZmExMTYgMTAwNjQ0DQo+ID4gLS0t
+IGEva2VybmVsL3dhdGNoZG9nLmMNCj4gPiArKysgYi9rZXJuZWwvd2F0Y2hkb2cuYw0KPiA+IEBA
+IC0zNjMsNyArMzYzLDcgQEAgc3RhdGljIHN0cnVjdCBjcHVtYXNrIHdhdGNoZG9nX2FsbG93ZWRf
+bWFzaw0KPiA+IF9fcmVhZF9tb3N0bHk7DQo+ID4NCj4gPiAgIC8qIEdsb2JhbCB2YXJpYWJsZXMs
+IGV4cG9ydGVkIGZvciBzeXNjdGwgKi8NCj4gPiAgIHVuc2lnbmVkIGludCBfX3JlYWRfbW9zdGx5
+IHNvZnRsb2NrdXBfcGFuaWMgPQ0KPiA+IC0JCQlJU19FTkFCTEVEKENPTkZJR19CT09UUEFSQU1f
+U09GVExPQ0tVUF9QQU5JQyk7DQo+ID4gKwkJCUNPTkZJR19CT09UUEFSQU1fU09GVExPQ0tVUF9Q
+QU5JQzsNCj4gPg0KPiA+ICAgc3RhdGljIGJvb2wgc29mdGxvY2t1cF9pbml0aWFsaXplZCBfX3Jl
+YWRfbW9zdGx5Ow0KPiA+ICAgc3RhdGljIHU2NCBfX3JlYWRfbW9zdGx5IHNhbXBsZV9wZXJpb2Q7
+IEBAIC04NzksNyArODc5LDkgQEAgc3RhdGljDQo+ID4gZW51bSBocnRpbWVyX3Jlc3RhcnQgd2F0
+Y2hkb2dfdGltZXJfZm4oc3RydWN0IGhydGltZXIgKmhydGltZXIpDQo+ID4NCj4gPiAgIAkJYWRk
+X3RhaW50KFRBSU5UX1NPRlRMT0NLVVAsIExPQ0tERVBfU1RJTExfT0spOw0KPiA+ICAgCQlzeXNf
+aW5mbyhzb2Z0bG9ja3VwX3NpX21hc2sgJiB+U1lTX0lORk9fQUxMX0JUKTsNCj4gPiAtCQlpZiAo
+c29mdGxvY2t1cF9wYW5pYykNCj4gPiArCQlkdXJhdGlvbiA9IGR1cmF0aW9uIC8gZ2V0X3NvZnRs
+b2NrdXBfdGhyZXNoKCk7DQo+IA0KPiBOaXQ6IHJldXNpbmcgImR1cmF0aW9uIiBoZXJlIG1ha2Vz
+IHRoaW5ncyBhIGJpdCBjb25mdXNpbmcsIG1heWJlIGp1c3QgdXNlIGEgdGVtcA0KPiB2YXJpYWJs
+ZT8NCj4gDQo+IAl0aHJlc2hfY291bnQgPSBkdXJhdGlvbiAvIGdldF9zb2Z0bG9ja3VwX3RocmVz
+aCgpOw0KPiANCj4gCWlmIChzb2Z0bG9ja3VwX3BhbmljICYmIHRocmVzaF9jb3VudCA+PSBzb2Z0
+bG9ja3VwX3BhbmljKQ0KPiAJCXBhbmljKCJzb2Z0bG9ja3VwOiBodW5nIHRhc2tzIik7DQo+IA0K
+DQpXaWxsIGNoYW5nZSBpbiBuZXh0IHZlcnNpb24sIHRoYW5rcw0KDQpbTGksUm9uZ3FpbmddIA0K
+DQoNCg==
 
