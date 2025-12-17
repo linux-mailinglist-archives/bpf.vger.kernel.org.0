@@ -1,134 +1,241 @@
-Return-Path: <bpf+bounces-76805-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76806-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27FBDCC5D71
-	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 03:57:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 367CFCC5D80
+	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 03:58:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B6D363025148
-	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 02:57:20 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 75A7A30155E6
+	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 02:58:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 165E827B336;
-	Wed, 17 Dec 2025 02:57:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9C7227CB04;
+	Wed, 17 Dec 2025 02:58:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZsJuJ4lu"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SJNltqN4";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="DkzpT9rj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4621E256C61
-	for <bpf@vger.kernel.org>; Wed, 17 Dec 2025 02:57:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61CD2273D73
+	for <bpf@vger.kernel.org>; Wed, 17 Dec 2025 02:58:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765940237; cv=none; b=sEAHXofpod3gKvYwrVvBNqwDXYn2BVxeKItK1aiASDybQW5GQPMjT6nQQLr33102t+w/2yF9VNJZ+jy44jPzut4/H4nTHk8TfWGI/mEvu3JAmdkxMaV/VS2fd6otE8XEniNsSoUqyJ8FVEfMs0pp9fb3ZON4s+G9r1IUHYx46Sw=
+	t=1765940325; cv=none; b=P2B9Fgkg6fLYuEntidb6W29Tkq8n5+k6urNLzE1HlK6/mYr3KcLCIuUVhM04QNM/ttr0qqXFTrNAcN0zRv0WpN3b6oSoUEIHJ+GcK7FUSavkEd4ELV86UMe47VUFMiTg6mYtDUvc3dwfYunowcpBEQYQNURDu6aZN9ERNnly7Os=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765940237; c=relaxed/simple;
-	bh=vy9dhEwoFZypIXnPwGbt9wOWEVcb3pMPs6hN72RrTdY=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=PYF5hl+hK4yTwoaMIUpTKYN4ws1vyFaiwETScCmXgkQ4rhwVNywEYo7aopaeoUCbyYW7QhXgfyVGLO8GldpGM+wTlaxCqmyw89zr9Z26Tl/b7/nxZ+8QfPhl7h7YvTP7v4nF4GNmjpMRIP8l+rnIucnfaNh2cReR1R49fUpWaU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZsJuJ4lu; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-7fbbb84f034so1183245b3a.0
-        for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 18:57:15 -0800 (PST)
+	s=arc-20240116; t=1765940325; c=relaxed/simple;
+	bh=ki4Z6EgMiaLkw7yGdpLQ/t3Ubgyn531LzW9mZUQc2Yc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Opb0suRRREeD0ugYban5qFkmdi9VCS86GbagxQolZq7zanJJN2s2QNitM0gT9tnZU4hlGt/jNucW8KsjdcWeWqZkiHaFIk5pdDUTdHa8YbOH44Y29C86J2BzMmiPNyeNFjsoBZTDcTHjJSwxANQDBA6mc+VFQiXREsYez+hztHs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SJNltqN4; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=DkzpT9rj; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1765940322;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=d+QZEn+Wyweu2+8fmOhOu2NRpSJyl4s22Bb96PRSdiE=;
+	b=SJNltqN4nCMu69kPWg+a3DMbsKKVqlx9qeGoQb/khM5+6R70romFzOYXxH3X3QP53lyEgE
+	vicW9f1JKpmt6xn7/mCpqq4o9kAi+2TS6bkN+qGAHOrNRzNKQOggDzymgwur8hBm8vppMx
+	BbPh8fywCaSqWruHrg1ec6njZWMM0HI=
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
+ [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-606-SeEs7VLNPtmf5alkR7k6EQ-1; Tue, 16 Dec 2025 21:58:40 -0500
+X-MC-Unique: SeEs7VLNPtmf5alkR7k6EQ-1
+X-Mimecast-MFC-AGG-ID: SeEs7VLNPtmf5alkR7k6EQ_1765940320
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-34ab459c051so13054005a91.0
+        for <bpf@vger.kernel.org>; Tue, 16 Dec 2025 18:58:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1765940234; x=1766545034; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Bx11gz0v9FIYU5AR3gFhOHeA+LHnwdt68gyiS/iFJGg=;
-        b=ZsJuJ4lu89gNv+WzfGiVEGxakVs67T0XfDCc5TGD3cS4KZg37WM0+Ku7aOwFyRL1uq
-         QCPE73xGjHyxzsH+bb9u1o+IM1VRfmQ0FH7uMMsUx7URtQN7gCCgjhnEQwtye+dXKotF
-         B1P2r9Lt6yeC3QM/eq+TCGF2FwKvCWtCYST0R4NHUMrM9HpIw62dbn8c1GwKlO9Xjzub
-         sn9bC6mnywiFdbHajtjTxMuzaIMIyYk6VCq7uUIDIXJVJ2o5X5nwOYfV1gE88lu5LQ5F
-         rmo2lrlEndvXorG3KPWqgtuMNoOhM+Ja06dC7Abxc1B5dektPMb5Sad88KqiomyXGW3C
-         eK3A==
+        d=redhat.com; s=google; t=1765940320; x=1766545120; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=d+QZEn+Wyweu2+8fmOhOu2NRpSJyl4s22Bb96PRSdiE=;
+        b=DkzpT9rj/oOi5F+VdTruLqqBPhL6SbrdU/aqDTpxpJVoeMdupL2K2xZqTvSzcAL13i
+         prrsv6nWtNZv/GGDskhNLKEa3eZtNhf8X3tr3xzq/bM2vmR46nluHK1Q8R4bDIXr7wzz
+         y+BbaIh44X14WvBtx8M5uKTcRw83gmmUcjqye/xdpCUmp40VMzeVImpo3Hmj/sdx3Osq
+         tx3r7ECJc+6dgCS1un0D8T7fEkK277F66g0ApRDPpL5evvxEueaKvj6BPQDSkgGpHP1A
+         /rNri2+/AVW6/8CVQwndGl4RYDWGMKP+QYzSCTmYkNMyvL7QQQQh22DE0Ee6IlIn2Q+H
+         ngWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765940234; x=1766545034;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Bx11gz0v9FIYU5AR3gFhOHeA+LHnwdt68gyiS/iFJGg=;
-        b=KGD63Q4P9ldSj7t5SQ5yZciKAhpHpDVvuK7qcuLZmnzhIlgnZE9EJ1XLhj2HQcaxwH
-         Vk1CgXIlcEpsLTNys+6T4eyGQ/GN6zimPYVvHfudHgSxNcSYls/7rFoNLb7Pw3sZekX3
-         lOEnfp1a8jN90N9YcO/fapLn4LI92vycnsqTGDceWW8myNMdivIcaHy8/S/2yPuD3UoG
-         eZOWJDBqtCAu2eDKygMzfg2C+pgNKgqdu3CHHTD8PutNOc5vnqaMyxGKVW3oiyx/U2Fc
-         pWm6o45NDZoKCcTi85pvTtpphz44ma2BOoCQQbm6Ydq59cD96g6f4g3VY85V29eycctN
-         Co2g==
-X-Forwarded-Encrypted: i=1; AJvYcCXhWXPrmAx4Fqjws7LstKxRGc7yBnSdIoND1KYqAE9/END3abo7JGzyw9N2n5Hl/7QJqEY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwEdXZHQIuuLPQEqVtFBozz9CyHEMmqEN72SzUqjo0/vZ1u9UNV
-	9cO11P2jR8mlpqnM9X2nxk5ijviP2NQx3Zd+mxWOqUmbLh7foSVPtv4e
-X-Gm-Gg: AY/fxX6rqESp4DIx296fPDBdPyDJVD6GHKIxgo4Re5izukeaOsSGUjumu+3ygordq1Z
-	2kAnfGCSK6W5EvdxGKtdXwpLaaVgq4nlyWF9LdjpHC2hCFjUueyZSE9YRXwSRb8YD/Pb77uDBlP
-	JuT6dZ+ptZX1XJOTecDMCMZ3mxszKyBQg39vf0PIomLyKrWe5WavyHyUAy/Aj0PcTeXP1uCvUWS
-	XTx0jfkL25acCGB41qRDiopCzgXfE6Hyq+8nMpK4o0SLs5kf1J+S+i7mRtkHOt036iuXbDJzhNR
-	W1GFmjm1eJkuv8UwKzShW818wcvKNKQkednZA5pbUxp2+SJ/a0vavSnUNRKL9ZzNE2HdroMMVAb
-	FQGK6gzMsAOEV2P3MO+9xtWlDanbs1waEgzXou2BLYHDuLRFNnmLPdF1nVTq69dM4J3gg7UW/sP
-	zjgyYdgfH9
-X-Google-Smtp-Source: AGHT+IEqlNltH5T58axg3EwB71MMWHr++W7/RBY1s/JD0BH6S9b4OQnoW9YT3DoNvqVZlzx0MVOT0A==
-X-Received: by 2002:a05:6a00:4c85:b0:7e8:4471:8e0 with SMTP id d2e1a72fcca58-7f66a46ae16mr12376276b3a.65.1765940234467;
-        Tue, 16 Dec 2025 18:57:14 -0800 (PST)
-Received: from [192.168.0.226] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7fcb5c6d9acsm999786b3a.0.2025.12.16.18.57.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Dec 2025 18:57:13 -0800 (PST)
-Message-ID: <aa21b648da9be14019fb78f23325052ec77b2730.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v9 04/10] libbpf: Optimize type lookup with
- binary search for sorted BTF
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Donglin Peng <dolinux.peng@gmail.com>
-Cc: ast@kernel.org, andrii.nakryiko@gmail.com, zhangxiaoqin@xiaomi.com, 
-	ihor.solodrai@linux.dev, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-  pengdonglin <pengdonglin@xiaomi.com>, Alan Maguire
- <alan.maguire@oracle.com>
-Date: Tue, 16 Dec 2025 18:57:10 -0800
-In-Reply-To: <CAErzpmtLMd6pS9OfeS1=_VTyUqPNfNa4J7d1m_ydC=u4_k8Cbw@mail.gmail.com>
-References: <20251208062353.1702672-1-dolinux.peng@gmail.com>
-	 <20251208062353.1702672-5-dolinux.peng@gmail.com>
-	 <cb0afb795b4dc8feae51985af71b7f8b1548826f.camel@gmail.com>
-	 <CAErzpmtLMd6pS9OfeS1=_VTyUqPNfNa4J7d1m_ydC=u4_k8Cbw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
+        d=1e100.net; s=20230601; t=1765940320; x=1766545120;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=d+QZEn+Wyweu2+8fmOhOu2NRpSJyl4s22Bb96PRSdiE=;
+        b=IFFV6nX6QA96eMA8fsO9VU5bhajR8YKqMlJMo2qIDVNIBNcJ0zDwOr46oCJ1Y+I7CB
+         kZIQtY5FdRUbRoeJk+fNzMJ9g1BE+d9curtCWr0o9/bWFrcAuEiBY57ZjLnMqoRYxaHL
+         aluHzUYhU1eIDXISGh997QFxOYx/wZ2B3nGQXMp6TJb97aaqySlJK9ZcEkjLB9kOoVKZ
+         4iE2IgWD1lXTLPaEVFtdXshLSkM16ZFFCfdFrsoMIG7hzAfZMTD/XC2y311xWpLe2IV6
+         +2JpDTvQKT1eSPSfQtaNaPUMrQc6I+QskkTVelPVsTiPbWA2NWufKvrDQOxDgGeAdMul
+         ZsoA==
+X-Forwarded-Encrypted: i=1; AJvYcCUt7Nvu/2ajapvibWTYLcY9oavWV9w6FDGCfDFS3NOwz+aFr55k0nWzi77Oy+s7VMShiCQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxfBF0tyRD1k0UlVFJvay7JQU7QsETZMx+MrITkukxt7y2ogtbK
+	sWjIHqZ8pSehtZW4M1zU04g7qSEYj9eu2U1mwKY0WSeTNAiYnBxRmwV5LbROQdV1SnkZ3CSAlDx
+	gVGUapgTWbl91Wp8L5hNFO5qy3V3LWT+9DO+B/mqbZRztFBa7MhVyW6rKsPEzqarpHEXvwvUWGx
+	XrlBdaATFuR7Ayghzq3TgKN1VLOuYD
+X-Gm-Gg: AY/fxX4pD6NQwKNnseGD7bY4gJ0KGkHs6wsZifKir1a+/IOyNkQAft+v4+XpgdFwytb
+	dBn4CwyLZRHW63TNv1bnlV9/bUSB5Uw7nMrPxH7ce1F3pzJG00YG5zF37VuqYgsbsAr1JJcWph6
+	MvzKyCCsfiaNVo939mR7NAFKxc45xq4FIqn/RA82g5aWZwd+tVbzBwZ8GisP5n2i6JKw==
+X-Received: by 2002:a17:90b:2e0c:b0:341:b5a2:3e7b with SMTP id 98e67ed59e1d1-34abd6cde5bmr14971851a91.4.1765940319805;
+        Tue, 16 Dec 2025 18:58:39 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFHBnohIr+ekVzlEsUxGFlh+h5BLD8vynfeT39kKrUW7iKPHJ01VT2DabkqJezH5tQUbEAZNQaas/XipqjSA5I=
+X-Received: by 2002:a17:90b:2e0c:b0:341:b5a2:3e7b with SMTP id
+ 98e67ed59e1d1-34abd6cde5bmr14971829a91.4.1765940319386; Tue, 16 Dec 2025
+ 18:58:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20251212152741.11656-1-minhquangbui99@gmail.com>
+ <CACGkMEtzXmfDhiQiq=5qPGXG+rJcxGkWk0CZ4X_2cnr2UVH+eQ@mail.gmail.com> <3f5613e9-ccd0-4096-afc3-67ee94f6f660@gmail.com>
+In-Reply-To: <3f5613e9-ccd0-4096-afc3-67ee94f6f660@gmail.com>
+From: Jason Wang <jasowang@redhat.com>
+Date: Wed, 17 Dec 2025 10:58:27 +0800
+X-Gm-Features: AQt7F2pdpQzR2bvq-MC_OypNwCm121ZG5PfGmSN73KFszst18PHbxcVd2x2bNXU
+Message-ID: <CACGkMEs+Mse7nhPPiqbd2doeGtPD2QD3BM_cztr6e=VfuiobHQ@mail.gmail.com>
+Subject: Re: [PATCH net v2] virtio-net: enable all napis before scheduling
+ refill work
+To: Bui Quang Minh <minhquangbui99@gmail.com>
+Cc: netdev@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>, 
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, 
+	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+	Stanislav Fomichev <sdf@fomichev.me>, virtualization@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2025-12-17 at 10:32 +0800, Donglin Peng wrote:
+On Wed, Dec 17, 2025 at 12:23=E2=80=AFAM Bui Quang Minh
+<minhquangbui99@gmail.com> wrote:
+>
+> On 12/16/25 11:16, Jason Wang wrote:
+> > On Fri, Dec 12, 2025 at 11:28=E2=80=AFPM Bui Quang Minh
+> > <minhquangbui99@gmail.com> wrote:
+> >> Calling napi_disable() on an already disabled napi can cause the
+> >> deadlock. In commit 4bc12818b363 ("virtio-net: disable delayed refill
+> >> when pausing rx"), to avoid the deadlock, when pausing the RX in
+> >> virtnet_rx_pause[_all](), we disable and cancel the delayed refill wor=
+k.
+> >> However, in the virtnet_rx_resume_all(), we enable the delayed refill
+> >> work too early before enabling all the receive queue napis.
+> >>
+> >> The deadlock can be reproduced by running
+> >> selftests/drivers/net/hw/xsk_reconfig.py with multiqueue virtio-net
+> >> device and inserting a cond_resched() inside the for loop in
+> >> virtnet_rx_resume_all() to increase the success rate. Because the work=
+er
+> >> processing the delayed refilled work runs on the same CPU as
+> >> virtnet_rx_resume_all(), a reschedule is needed to cause the deadlock.
+> >> In real scenario, the contention on netdev_lock can cause the
+> >> reschedule.
+> >>
+> >> This fixes the deadlock by ensuring all receive queue's napis are
+> >> enabled before we enable the delayed refill work in
+> >> virtnet_rx_resume_all() and virtnet_open().
+> >>
+> >> Fixes: 4bc12818b363 ("virtio-net: disable delayed refill when pausing =
+rx")
+> >> Reported-by: Paolo Abeni <pabeni@redhat.com>
+> >> Closes: https://netdev-ctrl.bots.linux.dev/logs/vmksft/drv-hw-dbg/resu=
+lts/400961/3-xdp-py/stderr
+> >> Cc: stable@vger.kernel.org
+> >> Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
+> >> ---
+> >> Changes in v2:
+> >> - Move try_fill_recv() before rx napi_enable()
+> >> - Link to v1: https://lore.kernel.org/netdev/20251208153419.18196-1-mi=
+nhquangbui99@gmail.com/
+> >> ---
+> >>   drivers/net/virtio_net.c | 71 +++++++++++++++++++++++++-------------=
+--
+> >>   1 file changed, 45 insertions(+), 26 deletions(-)
+> >>
+> >> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> >> index 8e04adb57f52..4e08880a9467 100644
+> >> --- a/drivers/net/virtio_net.c
+> >> +++ b/drivers/net/virtio_net.c
+> >> @@ -3214,21 +3214,31 @@ static void virtnet_update_settings(struct vir=
+tnet_info *vi)
+> >>   static int virtnet_open(struct net_device *dev)
+> >>   {
+> >>          struct virtnet_info *vi =3D netdev_priv(dev);
+> >> +       bool schedule_refill =3D false;
+> >>          int i, err;
+> >>
+> >> -       enable_delayed_refill(vi);
+> >> -
+> >> +       /* - We must call try_fill_recv before enabling napi of the sa=
+me receive
+> >> +        * queue so that it doesn't race with the call in virtnet_rece=
+ive.
+> >> +        * - We must enable and schedule delayed refill work only when=
+ we have
+> >> +        * enabled all the receive queue's napi. Otherwise, in refill_=
+work, we
+> >> +        * have a deadlock when calling napi_disable on an already dis=
+abled
+> >> +        * napi.
+> >> +        */
+> >>          for (i =3D 0; i < vi->max_queue_pairs; i++) {
+> >>                  if (i < vi->curr_queue_pairs)
+> >>                          /* Make sure we have some buffers: if oom use=
+ wq. */
+> >>                          if (!try_fill_recv(vi, &vi->rq[i], GFP_KERNEL=
+))
+> >> -                               schedule_delayed_work(&vi->refill, 0);
+> >> +                               schedule_refill =3D true;
+> >>
+> >>                  err =3D virtnet_enable_queue_pair(vi, i);
+> >>                  if (err < 0)
+> >>                          goto err_enable_qp;
+> >>          }
+> > So NAPI could be scheduled and it may want to refill but since refill
+> > is not enabled, there would be no refill work.
+> >
+> > Is this a problem?
+>
+> You are right. It is indeed a problem.
+>
+> I think we can unconditionally schedule the delayed refill after
+> enabling all the RX NAPIs (don't check the boolean schedule_refill
+> anymore) to ensure that we will have refill work. We can still keep the
+> try_fill_recv here to fill the receive buffer earlier in normal case.
+> What do you think?
 
-[...]
+Or we can have a reill_pending but basically I think we need something
+that is much more simple. That is, using a per rq work instead of a
+global one?
 
-> > > +             if (unlikely(kind =3D=3D -1))
-> > > +                     return idx;
-> > > +
-> > > +             t =3D btf_type_by_id(btf, idx);
-> > > +             if (likely(BTF_INFO_KIND(t->info) =3D=3D kind))
-> > > +                     return idx;
-> > > +
-> > > +             for (idx++; idx <=3D end_id; idx++) {
-> > > +                     t =3D btf__type_by_id(btf, idx);
-> > > +                     tname =3D btf__str_by_offset(btf, t->name_off);
-> > > +                     if (strcmp(tname, type_name) !=3D 0)
-> > > +                             return libbpf_err(-ENOENT);
-> > > +                     if (btf_kind(t) =3D=3D kind)
-> >                             ^^^^^^^^^^^^^^^^^^^
-> >                 Is kind !=3D -1 check missing here?
->=20
-> The check for kind !=3D -1 is unnecessary here because it has already bee=
-n
-> performed earlier in the logic, after btf_find_by_name_bsearch successful=
-ly
-> returned a valid idx. In v8, the implementation of btf_find_by_name_bsear=
-ch
-> was refined for better performance, and when idx > 0, it guarantees that =
-the
-> name has been matched.
->=20
-> Thank you for the review.
-> Donglin
+Thanks
 
-Ack, missed that, thank you for explaining.
+>
+> >
+> >
+> >> +       enable_delayed_refill(vi);
+> >> +       if (schedule_refill)
+> >> +               schedule_delayed_work(&vi->refill, 0);
+> >> +
+> >>          if (virtio_has_feature(vi->vdev, VIRTIO_NET_F_STATUS)) {
+> >>                  if (vi->status & VIRTIO_NET_S_LINK_UP)
+> >>                          netif_carrier_on(vi->dev);
+> >> @@ -3463,39 +3473,48 @@ static void virtnet_rx_pause(struct virtnet_in=
+fo *vi, struct receive_queue *rq)
+> >>          __virtnet_rx_pause(vi, rq);
+> >>   }
+> >>
+> > Thanks
+> >
+>
+> Thanks,
+> Quang Minh.
+>
+
 
