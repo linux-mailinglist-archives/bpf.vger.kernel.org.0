@@ -1,148 +1,134 @@
-Return-Path: <bpf+bounces-76929-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76930-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A81DCC9CEC
-	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 00:34:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C040CC9CF2
+	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 00:36:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 80D023030FE2
-	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 23:34:38 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0E32830341F6
+	for <lists+bpf@lfdr.de>; Wed, 17 Dec 2025 23:36:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83497320A14;
-	Wed, 17 Dec 2025 23:34:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08DC532ED40;
+	Wed, 17 Dec 2025 23:36:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ime/xHVM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sy4N9mLh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A60926ED3D
-	for <bpf@vger.kernel.org>; Wed, 17 Dec 2025 23:34:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F266212552
+	for <bpf@vger.kernel.org>; Wed, 17 Dec 2025 23:36:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766014476; cv=none; b=I22XuTTNKEimWFkVvEHEMplq7R4rq64qyuM7jvTFzD1zE7vWeg0i6eCEdWa7jCOBR0gDJQx+bZF0M1xaWCISd5Kc9lmNX2Y2e1HJYoF7H4ptSj3p96KNKG4y2Y2CRqyyEzzMFLOAgbECBFRZKcwRaRychoKoKN8C/NJ8upQtR9A=
+	t=1766014589; cv=none; b=qSJs4o1/lmnETtIbDQ4CI7bAwL2hUkasAWMS/S1f1qTwzLynj7/JFLwTCqEXyRpB69sncx6T+5P82xFPdbZptq0/zrxsIhrZuot81+1u4D35Pr+AXmwzxL23nakr1E6BLv1nVZPxRN+D5+6sxxwR1/ZjnRuVoxx3h+VOughPFss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766014476; c=relaxed/simple;
-	bh=SN20CF30K26blt2XfwzlhhfBNTVBSH6jFnY/UYsnd84=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bWt037vvTZtAP17ADB8rXx4zlLg0H+XgDfi++mduE4febNk36D75+Adqr/XU2ZM1HiWbEtI57EGA9YT3nqDB4/Xe922Lxm7U7BMc2gyIhoiBRKBHlILBNNuZIM3Zvr5qIKVtH/awpga3uCBM1Gc74tqImzV7ZSqmtervfeZ/uMA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ime/xHVM; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-42b3c5defb2so1653f8f.2
-        for <bpf@vger.kernel.org>; Wed, 17 Dec 2025 15:34:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1766014473; x=1766619273; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2IThrBwz2FSqWuUK/aZhhWl4ygxrcq5vyqc8K9S9WoY=;
-        b=ime/xHVMeTRx+Nk6lQNEbAymQDbwHpUs8sGCqyalPQNiaywCurIMLlcgY0HQgLWhtH
-         iDVdo+WZdExzAhHjY0b8dFBmt1uReLn2L1y1qLOUMh616VKfWUKs6yt6/SRkY5Xf+F5n
-         axBWEvlIke6TEqP5zqQyvbKyHSsdvBaqGS3NslvZRAA0h7izKcAm5dbgglLpHvF7/T5E
-         U7W2MPakOWmgMXAxEoVNOA1ZQfoa/+ajpFHOh1ml/d4UtD/w9QAYJwUJ3Khn0d3vivrR
-         zJ1Ex2AHokb3VsPAhrvLHlxHZwjczi84qk/nKRganR1InZGHp20szYGx67uznz/Rmx7A
-         uIfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766014473; x=1766619273;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=2IThrBwz2FSqWuUK/aZhhWl4ygxrcq5vyqc8K9S9WoY=;
-        b=DQHQTfZhoqSFMT/vUX7hv2k/3/O8fzGxlWBIQ5WHj2VVuLJI8YWVBNEW+LbWE/LrWz
-         5wFeHE0dnm6c00LaS1fbJjbaiSsv3ssYMnRDHS+zQD2/ckwNRGWnPz187gdK/gf80T8K
-         DTkfzyy4ZMgvgE1ilmBdL/bxHMcLKh3xbB8VFYa+/x6qP13Pg7FQBiMyV36nQBQEgTCP
-         vaDK+7IXR3yS9syVV8oDWRltrOWthg1NcL/yka3rY/hFInGezRhYxPV1Km7uRHM8sGWE
-         n21BqA/pz0eS7vfn4J+HuCuWJYy4A7c6CRwvozjkejpxYLHEG3fQJPTyJQBRWN8lSGOv
-         kLMA==
-X-Forwarded-Encrypted: i=1; AJvYcCX/Y4wbo2ANrs1jzNmA4aM2EI7QXwXYupIan15G18dwsathnvGPQp3xN9dkaKamzVj2/eE=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw3dXmv1v0OiQ/FQJeVaND02bGjCe5ZfAwWg35Kx0PKlW7eQY6f
-	paxpbb4IZDfUk5IQAjOPyUbCkCZvf2VmXHzYQPeGDg6Gers2qsNQY4iyxQxKt9655w7nWXkheS1
-	gZX/OJm3+6vHbKvU9L0JPtCglztMBSk4=
-X-Gm-Gg: AY/fxX5zR5Yl6YL8tJyg1WYgqzMIDvAabQAF8igQyrm4O7nCiM6VdGezuk+qJt4wKrD
-	owhjab/0fE0kKimesFqK3ddm/73moPy6jLnfO5Ek0KHIx07FnEgNrNGn1d2GEZQttRceH8QhPWw
-	mtwGnWgzoYmiKBtmwzx/1z6Mmngmbn7dpPXW4hEAtq6Xfyzu4eQwXSd0ZaxogtbMnS0hZ+CJ4h3
-	CbxcLSsdaCOybjxJF6Fs9+/7r7Yar/GSlaYz7EdsdNVu4qATwV76G7u7nzVvpWfarRIB6rZ6Eun
-	pQg28fZaCL9bzelezsp3csObUxWF
-X-Google-Smtp-Source: AGHT+IGDme3m23MwQPmWNrthSwIhT2gMk3PuN23X755tyn597j7shNrqywEzfgW/cIcAAEbWmuc+HJgNJaYrTCTB+1w=
-X-Received: by 2002:a5d:64e8:0:b0:430:f6bc:2f8b with SMTP id
- ffacd0b85a97d-430f6bc3221mr15778635f8f.45.1766014472527; Wed, 17 Dec 2025
- 15:34:32 -0800 (PST)
+	s=arc-20240116; t=1766014589; c=relaxed/simple;
+	bh=SGIgG4Fzu5neo1DU3KtFJ8RmjhgyPOCK3g8RAmcJLdY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=N1vHPeXBbh2m8E7y6loJrYpGpclczORN0+1muKqNTMZystRwL7S8ojzkB332RndNmnKGZ1PGmb70bg1BwbtrEWQgYCWZeesd9y5Zrl6QTW5AYYw0R4+AL7ptf/T4neaAl1l/Fle51a6S28PQ4sD2MMMbs0aQRxtqtIoVGa5Sl4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sy4N9mLh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D125CC4CEF5;
+	Wed, 17 Dec 2025 23:36:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1766014587;
+	bh=SGIgG4Fzu5neo1DU3KtFJ8RmjhgyPOCK3g8RAmcJLdY=;
+	h=From:To:Cc:Subject:Date:From;
+	b=sy4N9mLhnipMZoq+ci8VC14qgdHpfnp6loKUGDMIhL3IEGASC0bl947yZsHabKmra
+	 qf1peZdPw5vMhwfYK/xRmxf1A9At/z8C2wKR2X6hMtT1R+U6HzzhEGKGL8w3htWcBn
+	 CqhksKvOCuYvxNqJdOrjvYx9cGtlPg2NaBVf5wyytdWKkkStvrnwYlqpAOGSp2ZrdX
+	 nXMx9INOyZYHH64cDCSHStUPLQusmoSafyDwkYe313HNqKhdONI/LAsZp6nMo8OOmt
+	 FBHF59fFOr7N8k4UxDG1vfbylSGh2ip1Uyqqh0dULoU82wHYQKlhQmObWK2wZ0ZYfy
+	 iZLGevQ+oKHlA==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: bpf@vger.kernel.org
+Cc: Puranjay Mohan <puranjay@kernel.org>,
+	Puranjay Mohan <puranjay12@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	kernel-team@meta.com,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH bpf-next v2 0/2] bpf: Optimize recursion detection on arm64
+Date: Wed, 17 Dec 2025 15:35:55 -0800
+Message-ID: <20251217233608.2374187-1-puranjay@kernel.org>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251216171854.2291424-1-alan.maguire@oracle.com>
- <20251216171854.2291424-2-alan.maguire@oracle.com> <d5a578c01f8a2d4d95ca16e0a9ee5b9bfce1c30e.camel@gmail.com>
- <9a096b2a16d552031a12f3f4f5a2c725212df5e6.camel@gmail.com>
- <b535b47a-519e-4138-861b-c16ed7fa0bcd@oracle.com> <CAADnVQ+EyYO+aOZewNQwETr5rphOCp6jJQH_fw9GqjVFdQd19A@mail.gmail.com>
- <CAEf4BzbWZtRdKCGwhjRV9MOufTC-coWFSU5sRtk4gdm9S_bg+w@mail.gmail.com>
- <6ae6dfd8-3f73-4318-93c1-97541d267a28@oracle.com> <CAADnVQ+wNPbbA0e4+6kx+LtOH=09jJyiYcEKZfc8kt6UPnq=EQ@mail.gmail.com>
- <535846f7-4cc7-4b12-aab4-52e530d04706@oracle.com> <ae6c6e50b3176d4ee4cce4cda09807a05d103fbf.camel@gmail.com>
- <3071012cc1e8d6bdf16b13d371a12cb201c502a7.camel@gmail.com>
- <b65fd7dc-fbad-4a96-8eb8-f36f8f518d44@oracle.com> <CAEf4Bzb+3cryZAEwC_O7xgm3=cthZU-SNsUWfGH8OpSwc+3vaw@mail.gmail.com>
- <CAADnVQJ1V1vwPVnhyE4OfOSQt_BnB3wRW9g9_bhkdu-QZyuQkQ@mail.gmail.com>
- <5022ccaf5591e5bb88fe3d7a08dbb3c4fb6c3132.camel@gmail.com> <aeeae7e13ce401726ddce756268c0686d30eb3a9.camel@gmail.com>
-In-Reply-To: <aeeae7e13ce401726ddce756268c0686d30eb3a9.camel@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 17 Dec 2025 15:34:19 -0800
-X-Gm-Features: AQt7F2o1ZWGlACYvxUgrk8qtC7j-8K8f8VZdNeJ0b41nXT1WwcOu1NSe_EJlNVs
-Message-ID: <CAADnVQL=2m9NHjr0zbMoDyha=6sBFd69=1QRdxSCKYhEONTmaw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] libbpf: add option to force-anonymize nested
- structs for BTF dump
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Alan Maguire <alan.maguire@oracle.com>, 
-	Quentin Monnet <qmo@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, Dec 17, 2025 at 2:47=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> >   $ cat ms-ext-test2.c
-> >   struct foo {
-> >     int a;
-> >   } __attribute__((preserve_access_index));
-> >
-> >   struct bar {
-> >     struct foo;
-> >   } __attribute__((preserve_access_index));
-> >
-> >   int buz(struct bar *bar) {
-> >     return bar->a;
-> >   }
-> >
-> >   $ clang -O2 -g -fms-extensions --target=3Dbpf -c ms-ext-test2.c
-> >   ms-ext-test2.c:6:3: warning: anonymous structs are a Microsoft extens=
-ion [-Wmicrosoft-anon-tag]
-> >       6 |   struct foo;
-> >         |   ^~~~~~~~~~
-> >   1 warning generated.
-> >
-> >   $ llvm-objdump -Sdr ms-ext-test2.o
-> >
-> >   ms-ext-test2.o: file format elf64-bpf
-> >
-> >   Disassembly of section .text:
-> >
-> >   0000000000000000 <buz>:
-> >   ;   return bar->a;
-> >          0:       61 10 00 00 00 00 00 00 w0 =3D *(u32 *)(r1 + 0x0)
-> >                   0000000000000000:  CO-RE <byte_off> [2] struct bar::<=
-anon 0>.a (0:0:0)
-> >          1:       95 00 00 00 00 00 00 00 exit
-> >
-> > Note the "<anon 0>" in the relocation.
-> > It appears that we loose no information if structures are unrolled.
+V1: https://lore.kernel.org/all/20251217162830.2597286-1-puranjay@kernel.org/
+Changes in V1->V2:
+- Patch 2:
+	- Put preempt_enable()/disable() around RMW accesses to mitigate
+	  race conditions. Because on CONFIG_PREEMPT_RCU and sleepable
+	  bpf programs, preemption can cause no prog to execute.
 
-Forgot to mention the CORE concern earlier...
-Does the above work with current logic in relo_core.c ?
-If not, we should definitely unconditionally unroll
-to avoid fixing CORE.
+BPF programs detect recursion using a per-CPU 'active' flag in struct
+bpf_prog. The trampoline currently sets/clears this flag with atomic
+operations.
+
+On some arm64 platforms (e.g., Neoverse V2 with LSE), per-CPU atomic
+operations are relatively slow. Unlike x86_64 - where per-CPU updates
+can avoid cross-core atomicity, arm64 LSE atomics are always atomic
+across all cores, which is unnecessary overhead for strictly per-CPU
+state.
+
+This patch removes atomics from the recursion detection path on arm64.
+
+It was discovered in [1] that per-CPU atomics that don't return a value
+were extremely slow on some arm64 platforms, Catalin added a fix in
+commit 535fdfc5a228 ("arm64: Use load LSE atomics for the non-return
+per-CPU atomic operations") to solve this issue, but it seems to have
+caused a regression on the fentry benchmark.
+
+Using the fentry benchmark from the bpf selftests shows the following:
+
+  ./tools/testing/selftests/bpf/bench trig-fentry
+
+ +---------------------------------------------+------------------------+
+ |               Configuration                 | Total Operations (M/s) |
+ +---------------------------------------------+------------------------+
+ | bpf-next/master with Catalin’s fix reverted |         51.862         |
+ |---------------------------------------------|------------------------|
+ | bpf-next/master                             |         43.067         |
+ | bpf-next/master with this change            |         53.856         |
+ +---------------------------------------------+------------------------+
+
+All benchmarks were run on a KVM based vm with Neoverse-V2 and 8 cpus.
+
+This patch yields a 25% improvement in this benchmark compared to
+bpf-next. Notably, reverting Catalin's fix also results in a performance
+gain for this benchmark, which is interesting but expected.
+
+For completeness, this benchmark was also run with the change enabled on
+x86-64, which resulted in a 30% regression in the fentry benchmark. So,
+it is only enabled on arm64.
+
+[1] https://lore.kernel.org/all/e7d539ed-ced0-4b96-8ecd-048a5b803b85@paulmck-laptop/
+
+Puranjay Mohan (2):
+  bpf: move recursion detection logic to helpers
+  bpf: arm64: Optimize recursion detection by not using atomics
+
+ include/linux/bpf.h      | 39 ++++++++++++++++++++++++++++++++++++++-
+ kernel/bpf/core.c        |  3 ++-
+ kernel/bpf/trampoline.c  |  8 ++++----
+ kernel/trace/bpf_trace.c |  4 ++--
+ 4 files changed, 46 insertions(+), 8 deletions(-)
+
+
+base-commit: ec439c38013550420aecc15988ae6acb670838c1
+-- 
+2.47.3
+
 
