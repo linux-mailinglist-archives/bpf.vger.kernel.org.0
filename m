@@ -1,184 +1,145 @@
-Return-Path: <bpf+bounces-77038-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77039-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A7B7CCD9A0
-	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 21:56:44 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7FB7CCD9E4
+	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 22:01:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 5838230210CB
-	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 20:56:35 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id B19DF302CD6B
+	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 21:01:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 826D3327214;
-	Thu, 18 Dec 2025 20:56:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28B522EE607;
+	Thu, 18 Dec 2025 21:01:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="J66Awytj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kK62UqJF"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D26D83254A9
-	for <bpf@vger.kernel.org>; Thu, 18 Dec 2025 20:56:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32E901F4CBB
+	for <bpf@vger.kernel.org>; Thu, 18 Dec 2025 21:01:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766091383; cv=none; b=WwC9iAaWjMoWNbHfzgbBle4qaxVguKRiE+VqfNqptJaPmmUNV3wCO7O6PDCS0kkR+lxdVH+m0MNEi7y4L+og5tl4JtEY8gs5o31lCayKT0OusVnB5K2yz+EYz7aWwa4uzrGO9Mxhp1op23zmHN/4yvVUY6RBvQkniZKvSyW1lfY=
+	t=1766091689; cv=none; b=SCS7BBm9FvN4pl4YzXpOv0xLuqYgb2+yDn/8Lg0C5AaD2C0kRMJKMNolz1u7682x5v0hEQn2VQqa0b15Roa+IJeFZrOCbTCam17dwv80XNZy/yeWeZDzEWr/mLG2oF4lbTVkNHJDb0BnnvtGBGL41veAVXkXu+ZMeBjtaOTSJOw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766091383; c=relaxed/simple;
-	bh=c6pCC0uNJAWdd4fao39X0vYPTeUC9jxy7Iq5vliz+E4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WeM2Ulb234neObp66KNKQaLog1dx+HGmAEcdmTEK1Q1I6hJw6/jMfFqqH+S8STcnSsiobI0cJ3EmXA0mpBbWDmoqkYNkbfnIMiQAohiRFopMS5pcRJ4VOCWMeB6zCqCp084ILu4f/6SyDyrqfiI0wOtAYLq5F4a1QQR8978g59s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=J66Awytj; arc=none smtp.client-ip=95.215.58.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1766091365;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=C7WJGFzPgQgbOew4Nik7yqwK94tl6F+VcxmeN5CTI3c=;
-	b=J66Awytj8ygIwxw+zjd2Kmu4idD3ts6dRYW5m49ISTg/x8/eNiIojqqsx++kq2/NFN31aV
-	gNPB7Yore+WyDHhO4VdU/Qf39r3vGjshg2M6t4VmpUw/OorBr9Ts+xAl73gRYKZ9pJMOmY
-	+v2WbzeYvGdxJV/tSfYchwRoKuZniuw=
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: Shaurya Rane <ssrane_b23@ee.vjti.ac.in>,
-	"Darrick J . Wong" <djwong@kernel.org>,
-	Christoph Hellwig <hch@infradead.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Meta kernel team <kernel-team@meta.com>,
-	bpf@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	syzbot+09b7d050e4806540153d@syzkaller.appspotmail.com,
-	Christoph Hellwig <hch@lst.de>
-Subject: [PATCH bpf v2] lib/buildid: use __kernel_read() for sleepable context
-Date: Thu, 18 Dec 2025 12:55:05 -0800
-Message-ID: <20251218205505.2415840-1-shakeel.butt@linux.dev>
+	s=arc-20240116; t=1766091689; c=relaxed/simple;
+	bh=jmXmw5asMTtXGIz/8lcXflbtO8gf8d9v00RouWwfLuQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Sr7gYd4eN/eiGNBrtzhWJ/ULNVFkR82BUTLDmIXHQBp2kqwmXSkSPZ98Ncqj807tSrVlyxyyZPgxjuy+ih+71Yek8D9+kPLSf1jAia87tbh20IgKAnzXzJngcv5qKnILxjXgqrtS8qoLJuU7h5ydNnHb7gFj02B21q5tHTc92ek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kK62UqJF; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2a0c09bb78cso7553985ad.0
+        for <bpf@vger.kernel.org>; Thu, 18 Dec 2025 13:01:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1766091687; x=1766696487; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s+k0sBo8kGqSqYtBtyPmz0oTC29vtNufjE0L64aGxAA=;
+        b=kK62UqJFVaDnqZhVU44u73kwbHQ+pQ0KOvepmM0BO0CPVOKebeLi/vdN0DZImYchOo
+         wouf0Im236lENR5K/P5ksDCv1RYJIa3X6795n9icXXvMz91DDfzwCTsDkJ0iUFJLbYZa
+         SBJlav65SJsm93kITEe5mV9TT9YOAzNKFDzFaKQDqqIvAoYmp91u18WkOlJsjMmR/lu+
+         5dPIFakqvRwz7eVmv8sKdXAvVttXU7rZc6i1hPF44Kqq5QJQD9OZjbP2ZJLbiqkfF2O3
+         v2IDdE1BAmnRM2/2FRA99sIpmkbNwJCECNl11zBBMd8MLmK5n1pAWPajGw+pqHVU34fx
+         KUBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1766091687; x=1766696487;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=s+k0sBo8kGqSqYtBtyPmz0oTC29vtNufjE0L64aGxAA=;
+        b=LAC+gyDR8/xcQaI6zOGcE1OLDZTF5ZPsYkkz3MPGFIiOXzDfOjwQsIJkGfcnFlAjgt
+         +va351RoU70sjnDYmJcDuonEkIO9SCSsECI3E//Us33X6i9OyfhCUmRR2xHtlVBkhppO
+         9SFU8rQ4hX2V2CrMapYlXOejic8sW0NpJoAq22vo3rnvjouIA85ti6fixbuvPB81mXPL
+         isZg8qpr4rrPSJFXNJU8vIfMefuak6/3N+XY8vT2RXD0zIph/LeWSHKnU1AkXn4SFPbO
+         oKCD2Jcw+SvZJiZda3OsqArLiHZvXfJK6iEmy2nl4MCErjO6sET728vRO/94NXASyqGI
+         8vqg==
+X-Forwarded-Encrypted: i=1; AJvYcCXbGSyVjDti0hq+FhV1Ze+zuIkRvd6BTcTFNh6OFRnMwke+1GDTRv6S9kz2D6/axAMwxEM=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywk2IY0EZ7qkv235d4NWaZ2W0VoZ1DEHDcO1JHgQ14kL28CrW1f
+	CpqJMPHqf+NeiR8Fgex6aPcynxPgR8Uc0qjgfPlmsNt/MvjE/7etnf/6HRoMbzXR2BPdMAN7zHv
+	Eoxs73ZMfNxvqog5xueNn66oxJiToScw=
+X-Gm-Gg: AY/fxX6Vsynvfh/Pgai4nPXg9KuAh77JCj4YzBPQtRlhRVyQQMI+XDKOwsO0uqDEqhe
+	sFdI10qPRmAtLxsbudaoSvOVMOHled2l886z3yKXzqD0J7Np13e5L+RJnRM5yutL1s9D6ch5OUC
+	Iq4CC9+MW7/CTErPdMP9x8uuRWYNWF68VoBIFflcY8fbKg8AwBZ4i3bcyMdWKOKaleI3SLKsBrc
+	TNbRQrfOyoz4UXlnqupnWzGJPdz1ATd54NmrR6uFIJTBdkqORarapuNkTAXNFxJDprZFuOLz96J
+	BVwC6HMJlNI=
+X-Google-Smtp-Source: AGHT+IFvxO++u168y/ZQIZTL6aX57IK2pSm13Cv1wVzQ3aSOnLQnrHhkdej5Dd5WyhHBMHif+7aTekMWxA8bTfSxggY=
+X-Received: by 2002:a17:903:1b06:b0:2a1:3ad6:fab3 with SMTP id
+ d9443c01a7336-2a2caa9cd35mr39266795ad.1.1766091687269; Thu, 18 Dec 2025
+ 13:01:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20251218003314.260269-1-ihor.solodrai@linux.dev> <20251218003314.260269-6-ihor.solodrai@linux.dev>
+In-Reply-To: <20251218003314.260269-6-ihor.solodrai@linux.dev>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 18 Dec 2025 13:01:13 -0800
+X-Gm-Features: AQt7F2pO_lFPayHYxhN87IzQtBu5GC3SicKONr1cvSuGE1FgcyvrGgbGAfOSm2Q
+Message-ID: <CAEf4Bzb9BnSLmHOj=kdgC6is6_ZXHuHw_OyaMO_7xp+eWdtbPw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 5/8] kbuild: Sync kconfig when PAHOLE_VERSION changes
+To: Ihor Solodrai <ihor.solodrai@linux.dev>
+Cc: Alan Maguire <alan.maguire@oracle.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrea Righi <arighi@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Bill Wendling <morbo@google.com>, Changwoo Min <changwoo@igalia.com>, 
+	Daniel Borkmann <daniel@iogearbox.net>, David Vernet <void@manifault.com>, 
+	Donglin Peng <dolinux.peng@gmail.com>, Eduard Zingerman <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Justin Stitt <justinstitt@google.com>, KP Singh <kpsingh@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, Nicolas Schier <nsc@kernel.org>, 
+	Shuah Khan <shuah@kernel.org>, Song Liu <song@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, 
+	Tejun Heo <tj@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org, 
+	dwarves@vger.kernel.org, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, sched-ext@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-For the sleepable context, convert freader to use __kernel_read()
-instead of direct page cache access via read_cache_folio(). This
-simplifies the faultable code path by using the standard kernel file
-reading interface which handles all the complexity of reading file data.
+On Wed, Dec 17, 2025 at 4:34=E2=80=AFPM Ihor Solodrai <ihor.solodrai@linux.=
+dev> wrote:
+>
+> This patch implements kconfig re-sync when the pahole version changes
+> between builds, similar to how it happens for compiler version change
+> via CC_VERSION_TEXT.
+>
+> Define PAHOLE_VERSION in the top-level Makefile and export it for
+> config builds. Set CONFIG_PAHOLE_VERSION default to the exported
+> variable.
+>
+> Kconfig records the PAHOLE_VERSION value in
+> include/config/auto.conf.cmd [1].
+>
+> The Makefile includes auto.conf.cmd, so if PAHOLE_VERSION changes
+> between builds, make detects a dependency change and triggers
+> syncconfig to update the kconfig [2].
+>
+> For external module builds, add a warning message in the prepare
+> target, similar to the existing compiler version mismatch warning.
+>
+> Note that if pahole is not installed or available, PAHOLE_VERSION is
+> set to 0 by pahole-version.sh, so the (un)installation of pahole is
+> treated as a version change.
+>
+> See previous discussions for context [3].
+>
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tr=
+ee/scripts/kconfig/preprocess.c?h=3Dv6.18#n91
+> [2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tr=
+ee/Makefile?h=3Dv6.18#n815
+> [3] https://lore.kernel.org/bpf/8f946abf-dd88-4fac-8bb4-84fcd8d81cf0@orac=
+le.com/
+>
+> Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
+> ---
+>  Makefile     | 9 ++++++++-
+>  init/Kconfig | 2 +-
+>  2 files changed, 9 insertions(+), 2 deletions(-)
+>
 
-At the moment we are not changing the code for non-sleepable context
-which uses filemap_get_folio() and only succeeds if the target folios
-are already in memory and up-to-date. The reason is to keep the patch
-simple and easier to backport to stable kernels.
+This is great, we should have done that a long time ago :)
 
-Syzbot repro does not crash the kernel anymore and the selftests run
-successfully.
-
-In the follow up we will make __kernel_read() with IOCB_NOWAIT work for
-non-sleepable contexts. In addition, I would like to replace the
-secretmem check with a more generic approach and will add fstest for the
-buildid code.
-
-Reported-by: syzbot+09b7d050e4806540153d@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=09b7d050e4806540153d
-Fixes: ad41251c290d ("lib/buildid: implement sleepable build_id_parse() API")
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
----
-
-Changes since v1:
-- Fix handling of buf in freader_fetch_sync as pointed out by Andrii.
-
- lib/buildid.c | 47 +++++++++++++++++++++++++++++++++++------------
- 1 file changed, 35 insertions(+), 12 deletions(-)
-
-diff --git a/lib/buildid.c b/lib/buildid.c
-index aaf61dfc0919..93b3a06e7f7a 100644
---- a/lib/buildid.c
-+++ b/lib/buildid.c
-@@ -5,6 +5,7 @@
- #include <linux/elf.h>
- #include <linux/kernel.h>
- #include <linux/pagemap.h>
-+#include <linux/fs.h>
- #include <linux/secretmem.h>
- 
- #define BUILD_ID 3
-@@ -37,6 +38,29 @@ static void freader_put_folio(struct freader *r)
- 	r->folio = NULL;
- }
- 
-+/*
-+ * Data is read directly into r->buf. Returns pointer to the buffer
-+ * on success, NULL on failure with r->err set.
-+ */
-+static const void *freader_fetch_sync(struct freader *r, loff_t file_off, size_t sz)
-+{
-+	ssize_t ret;
-+	loff_t pos = file_off;
-+	char *buf = r->buf;
-+
-+	do {
-+		ret = __kernel_read(r->file, buf, sz, &pos);
-+		if (ret <= 0) {
-+			r->err = ret ?: -EIO;
-+			return NULL;
-+		}
-+		buf += ret;
-+		sz -= ret;
-+	} while (sz > 0);
-+
-+	return r->buf;
-+}
-+
- static int freader_get_folio(struct freader *r, loff_t file_off)
- {
- 	/* check if we can just reuse current folio */
-@@ -46,20 +70,9 @@ static int freader_get_folio(struct freader *r, loff_t file_off)
- 
- 	freader_put_folio(r);
- 
--	/* reject secretmem folios created with memfd_secret() */
--	if (secretmem_mapping(r->file->f_mapping))
--		return -EFAULT;
--
-+	/* only use page cache lookup - fail if not already cached */
- 	r->folio = filemap_get_folio(r->file->f_mapping, file_off >> PAGE_SHIFT);
- 
--	/* if sleeping is allowed, wait for the page, if necessary */
--	if (r->may_fault && (IS_ERR(r->folio) || !folio_test_uptodate(r->folio))) {
--		filemap_invalidate_lock_shared(r->file->f_mapping);
--		r->folio = read_cache_folio(r->file->f_mapping, file_off >> PAGE_SHIFT,
--					    NULL, r->file);
--		filemap_invalidate_unlock_shared(r->file->f_mapping);
--	}
--
- 	if (IS_ERR(r->folio) || !folio_test_uptodate(r->folio)) {
- 		if (!IS_ERR(r->folio))
- 			folio_put(r->folio);
-@@ -97,6 +110,16 @@ const void *freader_fetch(struct freader *r, loff_t file_off, size_t sz)
- 		return r->data + file_off;
- 	}
- 
-+	/* reject secretmem folios created with memfd_secret() */
-+	if (secretmem_mapping(r->file->f_mapping)) {
-+		r->err = -EFAULT;
-+		return NULL;
-+	}
-+
-+	/* use __kernel_read() for sleepable context */
-+	if (r->may_fault)
-+		return freader_fetch_sync(r, file_off, sz);
-+
- 	/* fetch or reuse folio for given file offset */
- 	r->err = freader_get_folio(r, file_off);
- 	if (r->err)
--- 
-2.47.3
-
+[...]
 
