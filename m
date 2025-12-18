@@ -1,195 +1,96 @@
-Return-Path: <bpf+bounces-76998-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76999-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2530CCCC84C
-	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 16:40:25 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE3DCCCCF42
+	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 18:24:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id F2C27302425F
-	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 15:40:08 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7BC773071FA4
+	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 17:22:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01D1F3570CC;
-	Thu, 18 Dec 2025 15:40:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E830535C195;
+	Thu, 18 Dec 2025 15:53:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EYv3biLE"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0017.hostedemail.com [216.40.44.17])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9224F357719;
-	Thu, 18 Dec 2025 15:39:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EC7535BDDB;
+	Thu, 18 Dec 2025 15:53:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766072401; cv=none; b=WOpqFvxjoRhrjqdfNJOlNB9EYygkxJDeHZga3Td3MMZt6wOqFFzEDAiIsl1rb0kZMkiZgoQQdaywqPS/0stAeT5RfanvIhWoVcMDgCiuisr6TFIHfHnPVVjSyi+vWhJffVYDH7FcLt4l7FhfBCKxzzshQRIyt+YqNXTW/ZivLaY=
+	t=1766073200; cv=none; b=RxtB+cWbRJw6O0T4BwHvL5tJBbRUaBU8jpdy4PiBjNhWqH7O1nhzl8r3I6lg2m8DbiF0ENK7bu9QdQkxCQKr195x0mO/Nm8SFnUvl9a/oRgM5Xyer6nUu/Vjk0m+7bS9/qGMsp74Dts7cUO+k2Aifjou/pwIVr3pMHNjGwqTg7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766072401; c=relaxed/simple;
-	bh=4XQw+STsrMN9eUhH3fzOAd2bq6FCEKqXxK0hHCazLDA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=HE4Vz4CqtsMcftgdHyRcxODG4I0+6vOLYTGJmK7tZjPB6SlSd024dVrZGd/mLQV6NdsMiYXQm2Y26qvaGeerVYGQ81h1Tfjb2TCXHtaeNepp9F5zTcq4uLWzMqfFO0PWItMxBK2vEwdYBliRHwHWSW+fUMfioZF+YEQA5+txU54=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf04.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay03.hostedemail.com (Postfix) with ESMTP id 9F49FB7460;
-	Thu, 18 Dec 2025 15:39:43 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf04.hostedemail.com (Postfix) with ESMTPA id CA3EF20030;
-	Thu, 18 Dec 2025 15:39:40 +0000 (UTC)
-Date: Thu, 18 Dec 2025 10:41:19 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Steven Rostedt <rostedt@kernel.org>, Florent Revest <revest@google.com>,
- Mark Rutland <mark.rutland@arm.com>, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
- <andrii@kernel.org>, Menglong Dong <menglong8.dong@gmail.com>, Song Liu
- <song@kernel.org>
-Subject: Re: [PATCHv5 bpf-next 6/9] ftrace: Add update_ftrace_direct_mod
- function
-Message-ID: <20251218104119.311adc09@gandalf.local.home>
-In-Reply-To: <20251218101942.0716efd6@gandalf.local.home>
-References: <20251215211402.353056-1-jolsa@kernel.org>
-	<20251215211402.353056-7-jolsa@kernel.org>
-	<20251218101942.0716efd6@gandalf.local.home>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1766073200; c=relaxed/simple;
+	bh=yIBgvM01ywlBtmD55iH+va2/e0kARfjxgcSNTCgU488=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=gmNO9wxLL6JYDZJcArit2whNfSxWj8hrN8CIUzdPRc/pvOMgciifi8k9mya0AA5uW/nImrzC9hopaEYo1ZQjUmQRySuEWRX0I32NERr1rX6FJTssDSsU/lUdj1nLk7EwsiyZQyMpzutsHrP+5l6lOrN+HBhdpwY0axRcBDsM3E4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EYv3biLE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9FA8C4CEFB;
+	Thu, 18 Dec 2025 15:53:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1766073199;
+	bh=yIBgvM01ywlBtmD55iH+va2/e0kARfjxgcSNTCgU488=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=EYv3biLERvLXjae3T/RGXoKlbdhHyLhFTJOJjY/W4Wg/6g2G/5ghrx/2PlCExqJIz
+	 LRzaDlXNP49ZJzFEJS9QA80hZ3C2sZ3V+I/RGxKEY624xZ7Kg1VFB3ama/wyrQWB5W
+	 H6tnT0LXYGYI3kKc8kQH7cguRWLdutpYAg8yJaJJI7s0cbWT8JE7wV9fcjFfqZ4dTc
+	 N5F5Cf9I1I2XG2yY4Tt6FBCDdloAhrQnYneHKKiCOEeMnNnoSI1xhAQM+P84hkXI0u
+	 XnrTdQqFdDYOvBqO3V7Gqh4WaFo0Mkm4YDVfUY1QTnBVvIbZ5ivw+lrr+KNY4dy+i0
+	 A0hRkVCR1LWUQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 796DD380A96A;
+	Thu, 18 Dec 2025 15:50:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Stat-Signature: hyd7obcpethh7mbhynnfm913gwqf8351
-X-Rspamd-Server: rspamout03
-X-Rspamd-Queue-Id: CA3EF20030
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX19eMCvXLU/iy0pusX2AKTnSYMMq1qf40Gk=
-X-HE-Tag: 1766072380-414909
-X-HE-Meta: U2FsdGVkX1+qdFcnlxLPjXd3JW5Y/+0pKI0xTsAa/MHRhpHeNLBsPBRNCg+H723yVJ7NpyItko3gA2wj68SbZ+IIIPUnbgTsdXjs+Y7PsDCRAayGAvC07jcanonG5k/BqdK2mbkU6RW8quT4XG7lqEfa98717k59hUZx32RtbzwjJLWsT0COfK8CsxpWJ2i7qTsGKFwc27rM+cxfZS2ACZcTOBxcMJUO9UvJAddUjNXIjaePm+BcK9QaQk3KbmwUsEI8fbn3U7zMbyKF9fgl4qlXKekB4zCTfeTaOyO+N0wSbKub9HEdfqIh7n2Rt+eDv1pVRsL3czVsAhAgxXdwoUGgqBNDD21y8PlfQw1KcVe811+P9vQO7XHGsfDoJhMh6/twovBHduGQCg1ab28PDA==
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v3 net] net: enetc: do not transmit redirected XDP frames
+ when
+ the link is down
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <176607300930.3021115.4017370445523597811.git-patchwork-notify@kernel.org>
+Date: Thu, 18 Dec 2025 15:50:09 +0000
+References: <20251211020919.121113-1-wei.fang@nxp.com>
+In-Reply-To: <20251211020919.121113-1-wei.fang@nxp.com>
+To: Wei Fang <wei.fang@nxp.com>
+Cc: claudiu.manoil@nxp.com, vladimir.oltean@nxp.com, xiaoning.wang@nxp.com,
+ andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+ hawk@kernel.org, john.fastabend@gmail.com, sdf@fomichev.me, frank.li@nxp.com,
+ imx@lists.linux.dev, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org
 
-On Thu, 18 Dec 2025 10:19:42 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Hello:
 
-> On Mon, 15 Dec 2025 22:13:59 +0100
-> Jiri Olsa <jolsa@kernel.org> wrote:
+This patch was applied to netdev/net.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
+
+On Thu, 11 Dec 2025 10:09:19 +0800 you wrote:
+> In the current implementation, the enetc_xdp_xmit() always transmits
+> redirected XDP frames even if the link is down, but the frames cannot
+> be transmitted from TX BD rings when the link is down, so the frames
+> are still kept in the TX BD rings. If the XDP program is uninstalled,
+> users will see the following warning logs.
 > 
-> > diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> > index 48dc0de5f2ce..95a38fb18ed7 100644
-> > --- a/kernel/trace/ftrace.c
-> > +++ b/kernel/trace/ftrace.c
-> > @@ -6489,6 +6489,78 @@ int update_ftrace_direct_del(struct ftrace_ops *ops, struct ftrace_hash *hash)
-> >  	return err;
-> >  }
-> >    
+> fsl_enetc 0000:00:00.0 eno0: timeout for tx ring #6 clear
 > 
-> Kerneldoc needed.
-> 
-> > +int update_ftrace_direct_mod(struct ftrace_ops *ops, struct ftrace_hash *hash, bool do_direct_lock)
-> > +{
-> > +	struct ftrace_func_entry *entry, *tmp;
-> > +	static struct ftrace_ops tmp_ops = {
-> > +		.func		= ftrace_stub,
-> > +		.flags		= FTRACE_OPS_FL_STUB,
-> > +	};
-> > +	struct ftrace_hash *orig_hash;
-> > +	unsigned long size, i;
-> > +	int err = -EINVAL;
-> > +
-> > +	if (!hash_count(hash))
-> > +		return -EINVAL;
-> > +	if (check_direct_multi(ops))
-> > +		return -EINVAL;
-> > +	if (!(ops->flags & FTRACE_OPS_FL_ENABLED))
-> > +		return -EINVAL;
-> > +	if (direct_functions == EMPTY_HASH)
-> > +		return -EINVAL;
-> > +
-> > +	if (do_direct_lock)
-> > +		mutex_lock(&direct_mutex);  
-> 
-> This optional taking of the direct_mutex lock needs some serious rationale
-> and documentation.
-> 
-> > +
-> > +	orig_hash = ops->func_hash ? ops->func_hash->filter_hash : NULL;
-> > +	if (!orig_hash)
-> > +		goto unlock;
-> > +
-> > +	/* Enable the tmp_ops to have the same functions as the direct ops */
+> [...]
 
-Add to the comments here:
+Here is the summary with links:
+  - [v3,net] net: enetc: do not transmit redirected XDP frames when the link is down
+    https://git.kernel.org/netdev/net/c/2939203ffee8
 
-	 * In order to modify the direct callers, all the functions need to
-	 * first be calling the ftrace_ops_list_func() and not be connected
-	 * to any direct callers. To do that, create a temporary ops that
-	 * attach to the same functions as the direct ops, and attach that
-	 * first. Then when adding the direct ops, it will use the
-	 * ftrace_ops_list_func(), and this can safely modify what the
-	 * direct ops call.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Or something like that. I want this code to be as clear as day to what it
-is doing. In a year or two, we will forget, and this will be very confusing
-to newcomers.
-
-> > +	ftrace_ops_init(&tmp_ops);
-> > +	tmp_ops.func_hash = ops->func_hash;
-> > +
-> > +	err = register_ftrace_function_nolock(&tmp_ops);
-> > +	if (err)
-> > +		goto unlock;
-> > +
-> > +	/*
-> > +	 * Call __ftrace_hash_update_ipmodify() here, so that we can call
-> > +	 * ops->ops_func for the ops. This is needed because the above
-> > +	 * register_ftrace_function_nolock() worked on tmp_ops.
-> > +	 */
-> > +	err = __ftrace_hash_update_ipmodify(ops, orig_hash, orig_hash, true);
-> > +	if (err)
-> > +		goto out;
-> > +
-> > +	/*
-> > +	 * Now the ftrace_ops_list_func() is called to do the direct callers.
-> > +	 * We can safely change the direct functions attached to each entry.
-> > +	 */
-> > +	mutex_lock(&ftrace_lock);  
-> 
-> I'm going to need some time staring at this code. It looks like it may be
-> relying on some internals here.
-> 
-> -- Steve
-> 
-> 
-> > +
-
-I would add a comment here:
-
-	/* Now update the direct functions to point to the new callbacks */
-
--- Steve
-
-> > +	size = 1 << hash->size_bits;
-> > +	for (i = 0; i < size; i++) {
-> > +		hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
-> > +			tmp = __ftrace_lookup_ip(direct_functions, entry->ip);
-> > +			if (!tmp)
-> > +				continue;
-> > +			tmp->direct = entry->direct;
-> > +		}
-> > +	}
-> > +
-> > +	mutex_unlock(&ftrace_lock);
-> > +
-> > +out:
-> > +	/* Removing the tmp_ops will add the updated direct callers to the functions */
-> > +	unregister_ftrace_function(&tmp_ops);
-> > +
-> > +unlock:
-> > +	if (do_direct_lock)
-> > +		mutex_unlock(&direct_mutex);
-> > +	return err;
-> > +}
-> > +
-> >  #endif /* CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS */
-> >  
-> >  /**  
 
 
