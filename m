@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-77020-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77022-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BAFBCCD12D
-	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 19:02:23 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B53BCCD14E
+	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 19:03:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 442DB3015119
-	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 17:57:50 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 503DF303B7F7
+	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 17:58:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59AB530FC07;
-	Thu, 18 Dec 2025 17:56:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E827E3064B3;
+	Thu, 18 Dec 2025 17:56:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iRGWT/6b"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D63I45tA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97D8C30EF67
-	for <bpf@vger.kernel.org>; Thu, 18 Dec 2025 17:56:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3263030F542
+	for <bpf@vger.kernel.org>; Thu, 18 Dec 2025 17:56:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766080607; cv=none; b=dtfK1Q3kMsb6lBL+Yv2CTuX00s3NX2RHaeMWeWFO1gjbc296Nrfa0rcwIePOMTBChcczctlHkLwc1H+R2zOW4KDsCUu/knq2SAm93rXIKQnuPyuvKSQmk/t0pFj8kfwhZBnlo8iMJBo5s2I5Tzs7G5xJhgw/pllBgmmjupDC2BY=
+	t=1766080610; cv=none; b=rB0/5xWKtS+1W4C3te++ljI8mXzJlXbqAhYsokKdmJOlmoSYubtYF1ZAI4irN/wAPnbQeFYUVvC2e8j63r6IUvBRxDZF+UHqYUivwGVzY4oZUwDfilHtHVwOEzFAMI4SPvbMYvdkjD+yHqodbuk8ls/rJFFm6X9xzCgd2qyx2p0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766080607; c=relaxed/simple;
-	bh=3iS/7iavCieY0vGjt3CSw+m+ZHXLXWxjaSalApUkmvc=;
+	s=arc-20240116; t=1766080610; c=relaxed/simple;
+	bh=UlL8oZQzeYpieEW9kR3O2tWXV0IGuasLKuUjGh/FzsU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KOGu40s7bpvx4uTLRB5jB5xYlE5FGH19W7El6gulam7boFJks7aCgpNIdRZFCkKFB48rP6O9x65RINe2vpuTEcMnWNJ1KsBtMNAvu2SXCQsKvwrMCztmN/ifllWMGjMN/xSbgqjNcrinGa1bmFeBxCzXld5s9CMws/nYe2H4u5Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iRGWT/6b; arc=none smtp.client-ip=209.85.216.43
+	 MIME-Version; b=o2Sxp5AJjsQMuEeAzaHWPhDRCgKpwoDj4Z5j6ABcd/jRg1x7jH9Y+7Ynp4YEPJssFpaVj8HGidhpv5G4OkiNVLoCPU5atoUSCd0xIWgj8HpiUXJ+hZLzaFH37X7BKN/tpMV9hz84YlfwlY+rWTy5n/LK32YtjMj081hIJPqafCs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D63I45tA; arc=none smtp.client-ip=209.85.210.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-34c3259da34so924222a91.2
-        for <bpf@vger.kernel.org>; Thu, 18 Dec 2025 09:56:45 -0800 (PST)
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-7d26a7e5639so1123523b3a.1
+        for <bpf@vger.kernel.org>; Thu, 18 Dec 2025 09:56:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1766080605; x=1766685405; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1766080606; x=1766685406; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QVecu991SVFveWbBZhAv7g6YYbwLWhpF7kmZTPpREKw=;
-        b=iRGWT/6bXVp6BjqwoiKoSdlxjsInf+Si3IVFE6nFLI8JFKMbricklDKdYwHmFhciGa
-         B3lCuP6Es1HXBi91+8uPwnpIJ4Ra0/Pa6BsXIC0PIUOaGk0kOXUNaM67vHXp+tu9OEzR
-         JQxH7/O6UXzp54YbnEQsSIjUk95o4PhhJI4r24Uh3R6Vhr+t3Djqz/CxUieSXWy8gP7h
-         UeZBknLt48vVFu/dSiM4OyqgsZkB/n55kViHQftCA1FDbceeO1VMxzv6D25u3BSd2vfB
-         RSoF4ng1rLWJWZd+5c03x1sKtljxatiIql6tj59DaVhQNJCiTrF2/ew/TNcNg+oVpR0h
-         2anw==
+        bh=+n1cYrkpCAn7OrNMXyl0RSJ5XctP2kSL+z13tA+mKTU=;
+        b=D63I45tA4bT5yYOWk5wSjiYYJ1OGdl8kmxwmtRvLfGxJ2ZhzgzzJWsZfPIQ2JMdrTI
+         A9setnU/iCmr+L+F2bDxEGpvx+hM79YtkE1gi9FrGonhy1eTpi3eUoWv/8XJyQrtDlXy
+         yefnh/8M4fBINVBwygAJqYnVZOT2krkaK5G3p8FfxgBZDwVXl9MdGpBYeH8sFMRqVG8E
+         RfBlRrzG9wpaRKjQ+V6jFq8CDXFP7pfXvyU1mW9XMjiip4tq8Cb97ehDnish6qUdh6qK
+         fvGOKep+A/ziTsSp1+XSYfMJxhKYtjpTwXiSRm1IR6Sqm6gWhCbD2ss66ejbYrfZoaGL
+         RF9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766080605; x=1766685405;
+        d=1e100.net; s=20230601; t=1766080606; x=1766685406;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=QVecu991SVFveWbBZhAv7g6YYbwLWhpF7kmZTPpREKw=;
-        b=wj3OE7U+sKdUsek2Bf5w1LzwvWVlx9x3XTqrKgM1OuqFX9LXFMhuCQOB0jrsUBL5In
-         qadF2WMh+h+pjMKDE9uLAUaf3T1C92VZDQ9o+kW45aIEq+CaiV7xrZc97vZ7l0uqgk8P
-         qTub7EQgv3UaE/7tU+mWEvagV0FR6b+VT+Zp5XGae72w2Qvd5B0i6oi45j/rZ1J2865l
-         7dVlIzyK39vwzhgI0Eqz7R1F2+3ctapnNuMCu1Vm2rRf8MSz94I7BHNTGb1BZXS4v8wc
-         Mdc2Rs7H1m88dZRmQPzfM/GaFg6ilNmJAw9UxN09pBM3KzYXEoO0q54A2UJdQG5w1jJU
-         d7kQ==
-X-Gm-Message-State: AOJu0YxseiaBmlFuUW4WyGoB5/ij8Iu6YiQ2N0xlzn7r9UHkGytAzC7h
-	7LKJhAspA8MiKUtXKZpYOFI4VuZqSBQenbSp4RItsfMscdBsn1MUaZ1rOiaP5w==
-X-Gm-Gg: AY/fxX6R05HoH+JdtA9WXJBP3wS3xFDX3hA5QVa6Tdg+Lm68iPIOZvR2uab1ZTht5Bu
-	xYQ7R4f3KN+QoU29KrNLw+1j3RlyUzqAfyWJnYxPvmVvIpRjCBYkPobER2T8P7XV7IX8KKYih1Q
-	Rol35tF6JZz81nOHUJ08PYysy2GCfZVuS7RxWnrTfkrpDehdrLhry6ACaE0I7r6iuS8yEhvCvwq
-	HPvXGQE2X2s+hZ4gICRAdCnP13yDivWcMmr/efsPlE4i0ia2ApR97htklBnw6l8z5P5D8ARwIyj
-	BocUb0fngio4nsZMpZxQiFP74JxgaFZRl/WVwYQgCJEKXeVtAfcGkFlT9I8PIpvA+Gt6DhCPJxG
-	lVyt+zYM0357R5u8RMun9l0yhm41FteJvuhky1WRjF4QXBd3sCpchqwlF85vtU1BEFrtVQx6zUp
-	SbGPNzy84y4dvxDQ==
-X-Google-Smtp-Source: AGHT+IHWv5b+Xv8jWvC4vBtqhDAaK0vV8FNZVOWNFs3M/xZtMZzQzkaj6mdLHMOymreZBYpyb8C7mg==
-X-Received: by 2002:a17:90b:3852:b0:34c:c866:81ec with SMTP id 98e67ed59e1d1-34e921f0ae7mr142339a91.36.1766080604738;
-        Thu, 18 Dec 2025 09:56:44 -0800 (PST)
-Received: from localhost ([2a03:2880:ff:48::])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34e70d4f887sm3103197a91.3.2025.12.18.09.56.44
+        bh=+n1cYrkpCAn7OrNMXyl0RSJ5XctP2kSL+z13tA+mKTU=;
+        b=dfwerdM/bJ1nyhK1BTJTnVxsvewrEK8W3ScJ4eKjYYOUmd5YbpNPcuyUDQseS9gjmE
+         Zxt50u8c4+w+UBbcHVsVo1QgBmwSW0ajgEVUxwuREH+TgYz+rP8ztTR5WavwTwOx85I6
+         7EqDz+IS7sU5JQjuizqeYm5qgGrfth799pF/gQv+yf8EEObLMw07iaDayg6ID7bcmesi
+         V7SBN6KAkoOomLTXRcONnbu7xDQN9uA9cuJx7dlybTKOyuGLj1p+lsGYrWwyqRZrHrA/
+         wcuUHi5HC9sMPEPyGJRATpOG758EoaxqH6bFQna1vMZyq88cDORG1EMJq3zc/pSlJB/X
+         8boA==
+X-Gm-Message-State: AOJu0YwcoeR9iuAx5lEJnUnIv3lyzh/o9SMkOL0H7r68mD+m3Y5kkF0K
+	xT/o/i5mZ/Hxs8Ar5+U/ZlYgNDBdfM0yg3FUj0I48GWTHLJFg4gGqAls23D1Dw==
+X-Gm-Gg: AY/fxX6NopjpzE4J4Qyeh0ozULN8fZKwhbExpWA+KTurZ7PPgVzUU0GM7H+qoYdw5n+
+	JGCkKkuQqosL7NgWALn7vHlj0eD2Njw8HTs5CPT9OlQWMSkKl0UpipCx5Zm6ROYtQ3EgXdGXlSl
+	5rblnW6cQswoydhhVmpKxBXNrVFeERIoflP9nyXF14WRQbdEriM+Jm8vzNNhvwoyurN/WRL7MQL
+	uJNL5U/B4nu+6WU3B/R1vWmF3pmTIxJHI6gLXRtCCWrClVCg1XdSYpwQQEoUf2dThqXDJMk7yhI
+	8IoyyfaX+v/Qrdeonp7xjG3YaKB/nDnVr0Wh028V+bA6J05GR5gLQKdNDta38dNrCdvCWGdTmFX
+	de3WenjU3zBv3VyRAWEoIy8SKdWgB+jH32L9sYQcb2G+SfikFbQ4nPz/LV8dZUO5b5Kfs1psYBl
+	bvDOrTp++dpMuz/g==
+X-Google-Smtp-Source: AGHT+IFTjgtlkDemqs+dvOOYONaKwxLhvWtwwwt8fpXlE/n84Z/q6ibHl4EdBIp+ZHOUGGm4YV2QIA==
+X-Received: by 2002:a05:6a00:6caa:b0:7e8:450c:61c2 with SMTP id d2e1a72fcca58-7ff66679603mr157608b3a.50.1766080605765;
+        Thu, 18 Dec 2025 09:56:45 -0800 (PST)
+Received: from localhost ([2a03:2880:ff:51::])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7fe14365443sm3227030b3a.50.2025.12.18.09.56.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Dec 2025 09:56:44 -0800 (PST)
+        Thu, 18 Dec 2025 09:56:45 -0800 (PST)
 From: Amery Hung <ameryhung@gmail.com>
 To: bpf@vger.kernel.org
 Cc: netdev@vger.kernel.org,
@@ -85,9 +85,9 @@ Cc: netdev@vger.kernel.org,
 	haoluo@google.com,
 	ameryhung@gmail.com,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next v3 12/16] selftests/bpf: Update sk_storage_omem_uncharge test
-Date: Thu, 18 Dec 2025 09:56:22 -0800
-Message-ID: <20251218175628.1460321-13-ameryhung@gmail.com>
+Subject: [PATCH bpf-next v3 13/16] selftests/bpf: Update task_local_storage/recursion test
+Date: Thu, 18 Dec 2025 09:56:23 -0800
+Message-ID: <20251218175628.1460321-14-ameryhung@gmail.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20251218175628.1460321-1-ameryhung@gmail.com>
 References: <20251218175628.1460321-1-ameryhung@gmail.com>
@@ -99,62 +99,111 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Check sk_omem_alloc when the caller of bpf_local_storage_destroy()
-returns. bpf_local_storage_destroy() now returns the memory to uncharge
-to the caller instead of directly uncharge. Therefore, in the
-sk_storage_omem_uncharge, check sk_omem_alloc when bpf_sk_storage_free()
-returns instead of bpf_local_storage_destroy().
+Update the expected result of the selftest as recursion of task local
+storage syscall and helpers have been relaxed. Now that the percpu
+counter is removed, task local storage helpers, bpf_task_storage_get()
+and bpf_task_storage_delete() can now run on the same CPU at the same
+time unless they cause deadlock.
+
+Note that since there is no percpu counter preventing recursion in
+task local storage helpers, bpf_trampoline now catches the recursion
+of on_update as reported by recursion_misses.
+
+on_enter: tp_btf/sys_enter
+on_update: fentry/bpf_local_storage_update
+
+           Old behavior                         New behavior
+           ____________                         ____________
+on_enter                             on_enter
+  bpf_task_storage_get(&map_a)         bpf_task_storage_get(&map_a)
+    bpf_task_storage_trylock succeed     bpf_local_storage_update(&map_a)
+    bpf_local_storage_update(&map_a)
+
+    on_update                            on_update
+      bpf_task_storage_get(&map_a)         bpf_task_storage_get(&map_a)
+        bpf_task_storage_trylock fail        on_update::misses++ (1)
+        return NULL                        create and return map_a::ptr
+
+                                           map_a::ptr += 1 (1)
+
+                                           bpf_task_storage_delete(&map_a)
+                                             return 0
+
+      bpf_task_storage_get(&map_b)         bpf_task_storage_get(&map_b)
+        bpf_task_storage_trylock fail        on_update::misses++ (2)
+        return NULL                        create and return map_b::ptr
+
+                                           map_b::ptr += 1 (1)
+
+    create and return map_a::ptr         create and return map_a::ptr
+  map_a::ptr = 200                     map_a::ptr = 200
+
+  bpf_task_storage_get(&map_b)         bpf_task_storage_get(&map_b)
+    bpf_task_storage_trylock succeed     lockless lookup succeed
+    bpf_local_storage_update(&map_b)     return map_b::ptr
+
+    on_update
+      bpf_task_storage_get(&map_a)
+        bpf_task_storage_trylock fail
+        lockless lookup succeed
+        return map_a::ptr
+
+      map_a::ptr += 1 (201)
+
+      bpf_task_storage_delete(&map_a)
+        bpf_task_storage_trylock fail
+        return -EBUSY
+      nr_del_errs++ (1)
+
+      bpf_task_storage_get(&map_b)
+        bpf_task_storage_trylock fail
+        return NULL
+
+    create and return ptr
+
+  map_b::ptr = 100
+
+Expected result:
+
+map_a::ptr = 201                          map_a::ptr = 200
+map_b::ptr = 100                          map_b::ptr = 1
+nr_del_err = 1                            nr_del_err = 0
+on_update::recursion_misses = 0           on_update::recursion_misses = 2
+On_enter::recursion_misses = 0            on_enter::recursion_misses = 0
 
 Signed-off-by: Amery Hung <ameryhung@gmail.com>
 ---
- .../selftests/bpf/progs/sk_storage_omem_uncharge.c   | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+ .../testing/selftests/bpf/prog_tests/task_local_storage.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/sk_storage_omem_uncharge.c b/tools/testing/selftests/bpf/progs/sk_storage_omem_uncharge.c
-index 46d6eb2a3b17..c8f4815c8dfb 100644
---- a/tools/testing/selftests/bpf/progs/sk_storage_omem_uncharge.c
-+++ b/tools/testing/selftests/bpf/progs/sk_storage_omem_uncharge.c
-@@ -6,7 +6,6 @@
- #include <bpf/bpf_tracing.h>
- #include <bpf/bpf_core_read.h>
+diff --git a/tools/testing/selftests/bpf/prog_tests/task_local_storage.c b/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
+index 42e822ea352f..559727b05e08 100644
+--- a/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
++++ b/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
+@@ -117,19 +117,19 @@ static void test_recursion(void)
+ 	map_fd = bpf_map__fd(skel->maps.map_a);
+ 	err = bpf_map_lookup_elem(map_fd, &task_fd, &value);
+ 	ASSERT_OK(err, "lookup map_a");
+-	ASSERT_EQ(value, 201, "map_a value");
+-	ASSERT_EQ(skel->bss->nr_del_errs, 1, "bpf_task_storage_delete busy");
++	ASSERT_EQ(value, 200, "map_a value");
++	ASSERT_EQ(skel->bss->nr_del_errs, 0, "bpf_task_storage_delete busy");
  
--void *local_storage_ptr = NULL;
- void *sk_ptr = NULL;
- int cookie_found = 0;
- __u64 cookie = 0;
-@@ -19,21 +18,17 @@ struct {
- 	__type(value, int);
- } sk_storage SEC(".maps");
+ 	map_fd = bpf_map__fd(skel->maps.map_b);
+ 	err = bpf_map_lookup_elem(map_fd, &task_fd, &value);
+ 	ASSERT_OK(err, "lookup map_b");
+-	ASSERT_EQ(value, 100, "map_b value");
++	ASSERT_EQ(value, 1, "map_b value");
  
--SEC("fexit/bpf_local_storage_destroy")
--int BPF_PROG(bpf_local_storage_destroy, struct bpf_local_storage *local_storage)
-+SEC("fexit/bpf_sk_storage_free")
-+int BPF_PROG(bpf_sk_storage_free, struct sock *sk)
- {
--	struct sock *sk;
--
--	if (local_storage_ptr != local_storage)
-+	if (sk_ptr != sk)
- 		return 0;
+ 	prog_fd = bpf_program__fd(skel->progs.on_update);
+ 	memset(&info, 0, sizeof(info));
+ 	err = bpf_prog_get_info_by_fd(prog_fd, &info, &info_len);
+ 	ASSERT_OK(err, "get prog info");
+-	ASSERT_EQ(info.recursion_misses, 0, "on_update prog recursion");
++	ASSERT_EQ(info.recursion_misses, 2, "on_update prog recursion");
  
--	sk = bpf_core_cast(sk_ptr, struct sock);
- 	if (sk->sk_cookie.counter != cookie)
- 		return 0;
- 
- 	cookie_found++;
- 	omem = sk->sk_omem_alloc.counter;
--	local_storage_ptr = NULL;
- 
- 	return 0;
- }
-@@ -50,7 +45,6 @@ int BPF_PROG(inet6_sock_destruct, struct sock *sk)
- 	if (value && *value == 0xdeadbeef) {
- 		cookie_found++;
- 		sk_ptr = sk;
--		local_storage_ptr = sk->sk_bpf_storage;
- 	}
- 
- 	return 0;
+ 	prog_fd = bpf_program__fd(skel->progs.on_enter);
+ 	memset(&info, 0, sizeof(info));
 -- 
 2.47.3
 
