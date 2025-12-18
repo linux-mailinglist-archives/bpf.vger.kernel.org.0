@@ -1,102 +1,90 @@
-Return-Path: <bpf+bounces-77041-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77030-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 235ECCCDA58
-	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 22:11:46 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9C21CCD668
+	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 20:33:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 87AB230181DF
-	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 21:11:45 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 460913028582
+	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 19:32:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1B5E329C4A;
-	Thu, 18 Dec 2025 21:11:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6B01339841;
+	Thu, 18 Dec 2025 19:32:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fT2kXbTk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fUnrAiqz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB0A12EC0B5
-	for <bpf@vger.kernel.org>; Thu, 18 Dec 2025 21:11:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66EF0335567
+	for <bpf@vger.kernel.org>; Thu, 18 Dec 2025 19:32:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766092302; cv=none; b=IRb6xJajlQzxZh812+V3WEsChzHqrTcSFHKD58FIXN0nRm3m21oAXczXL2cy8/Kab7JE0Qd/du4Rx6lWNQlE9kQbxf2I6me2OxuTKCyubZZtWeHtfCJeIq4M4YDonuDS0lz64iLmNwTKeTAHrnc+ak5FxSwgL0ZJ8QC895OfWx4=
+	t=1766086329; cv=none; b=L2fL3x1D/oK1VwYQNk/ZgZhgpt6mGyfFBjmh5NZVWa9wHzrK42NSLd5D6mh/Y6JIzsXoiU8gR3O9d/4ngRiCCL369f1hSmkiqF1gbZ09ilupVOgxYIWfFIuut+r5bqg1Mgq9FpO6roaFMGMeYFnR/NuWSGXvummLHj+1Nhhtz4w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766092302; c=relaxed/simple;
-	bh=Wk9qv34inWutk0debgHw5c52MI0wE6RiXjFrTeu/W50=;
+	s=arc-20240116; t=1766086329; c=relaxed/simple;
+	bh=ssIwjLKhW7TxPZZsMXmemlCPcgF9XDpevuAc5bMB6Ck=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=i59f/TUxU9GuPrQV0AiYBVTy+hA/+89IWN9nnwhl4uQ+TTN/v2GonUjbXM6/mm/T9BLNkCs2B68/HxtTzqm+gbyKhkluIdJnQL4ELV2jzrm+T1YVuF9BSP4sFYAf7LVVzy7khnZ8ZCKAZRBH3Z0kCEaKqJUWn2mLPKpR32u40Hk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fT2kXbTk; arc=none smtp.client-ip=209.85.216.50
+	 Content-Type:MIME-Version; b=KYFl/H90FclP3FSUZAjSWfCReupxJAgcw/yg7Ufig58q5aBVv7CI2yzAUsqdxnOhUgc2PcU1jxCGicIaCaJ7NtyKW7YyTHysZj+b9ziVlYOQm8/N84OAo/GDxT7K847u8Af6oQv1fb6sKVUdPydW3EivfAFOGinMcsrURKYZeio=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fUnrAiqz; arc=none smtp.client-ip=209.85.214.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-34c21417781so1151808a91.3
-        for <bpf@vger.kernel.org>; Thu, 18 Dec 2025 13:11:39 -0800 (PST)
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2a0a95200e8so9391235ad.0
+        for <bpf@vger.kernel.org>; Thu, 18 Dec 2025 11:32:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1766092299; x=1766697099; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1766086326; x=1766691126; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=Wk9qv34inWutk0debgHw5c52MI0wE6RiXjFrTeu/W50=;
-        b=fT2kXbTk2dMWCp5Ef29JRcCqU0ibvRA9d3eZb4NCRiRI7HjvavQwTs0JQymMXEGD5t
-         eHhE7Lmvf8Q/ZAXtRNbLZ+hWYpJsOqbSRrPRFmTnsLkGp+mCOqGqGKrWcYiXi2xUJv+E
-         OYbL2izjwKWGpi+kTifHuWl3kFzxDsLGn6OZ4z/ma45L24G3OWlTEhISrY5+EouGU4ag
-         tL77QD/p7Oh818VrdkDDa5DfI1EKX4JDGcacpklAVjQrpkhAYre39zDyn29DuBEWWxz/
-         IUS9kUf/BybKSk8Mm9RfaeA8qvv1vmGw1SMVNnF6hIMcO7TQAG/1qwWewrTYMIR7y+6y
-         CFWQ==
+        bh=ssIwjLKhW7TxPZZsMXmemlCPcgF9XDpevuAc5bMB6Ck=;
+        b=fUnrAiqzEP/UcjR2HvY8haQeyosVl/6Vb/9ht5bgxpliw4ZT0Bxi1oxtsjK5wNKo8m
+         C5pFl511/x6fixuZKwuLUq/mVx4Uscfdp42kPMu5rKDVaB25ZQ7aE7Yd2nm1clgqk+rQ
+         84oxAOG0Z/sGkXQqwsn6sF7nJYYSuvZnAVhxMIchs/BGiEf9sNt0D4xhQUXvZN1B26/Z
+         FL5asIUXvDWhw8gM339+x3D0Kk6aZvmLsrcWyrXvAe7w3+/cmPwLHsPhKjwcOPYP289L
+         3BmpTQklhCCm+faudTsM49VnDxTi5fv/Prw6dfc7emdPdU9AgpRouk9ZYcHTLNYNboMc
+         SjHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766092299; x=1766697099;
+        d=1e100.net; s=20230601; t=1766086326; x=1766691126;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Wk9qv34inWutk0debgHw5c52MI0wE6RiXjFrTeu/W50=;
-        b=AQbnkjjrrDbUfXctrdM8whTt5RHGLMRW3zamSwiOADSl/q8nvueqqjec+Z8VYz1bLL
-         Cx+bBJb0VREu+RZGSotRNgQsHvveehr7kW6dau20lfxpSD2TxG2JpAJPUUdRJlSeKAIw
-         qf1wzLmwfG+F5Wd2Rlc0+8s6phcbEJ8hiKUwMiCJiqffibJ3RpAHk7mzcf+bezNRlhkb
-         xWHbdiP/wD4Dg1wFqVN18RyodpLod6LCO2jZqSF9KvbNKBDymzzSTEn3R6sKV1aDxKK1
-         CSWnCsPFrI6J70s16ktD/CaDxDBEELG63R0yZ3S8YHalM0igKDCZpSTlPfYSo9sl7JJW
-         Z8jA==
-X-Gm-Message-State: AOJu0YzPEucBgAoKJujnFq/FU4Fo9C7koieRH1kE18BHAwdbu7i3FoNx
-	CzvNGH5pGMtcG1h8HPXuJutXkpC5jhwwGTncVwi9xYolmu/Q3GCBIzWj
-X-Gm-Gg: AY/fxX496wenKygU1giG+G4sWCKuvNa2XOOiaLrgHNIZcqQ0Meydn2QVPEOwF0TT9IF
-	W2HlLctSOvjFEhsLuvFrSJ4E1qOChZV6ccL6pgLptR/L8k1cC+Hv2o0oCDQbTzLVWpGw3tnIHRi
-	2yaPx7Dyy/cbKnyXxjtiamo7pg+f8vLtY8lxZnUdQa8Zd5hbN4uE/6KAaNRTAWVLOx2ZBIhoKKg
-	VkIHQ/4jx6cS7kwYM1PleNeAHm4HpSi1+CE3h6vKiaJXed3QLYIdSWqHlCuZo6ZfH0jnyiBTgbZ
-	lZ4yz2MFxuKiGxF0Io4GhjPz2VBn7h86mCyWfQ3EIXTSEm120bRtupiItzfi5U7NidQokk22bE6
-	gXt/7PgyEtcc7GwtvobKdZRpkiq/swC3ycdGxFHyG6RtmvOtRltD7OOWD+eT4JV+q4577Haa+1T
-	s++n1JFXhrzOlwkE4fuZMGzZq4A8zGhUg2kA86
-X-Google-Smtp-Source: AGHT+IE5wqF1Ur/4n0bAKqhUgwQpIAW7BXffJ7Vx2YXELxiT7ohVhw05y1v6Iu0zG3ReeHlWkO5oUA==
-X-Received: by 2002:a05:6a00:4006:b0:7e8:4398:b362 with SMTP id d2e1a72fcca58-7ff6667949dmr378405b3a.53.1766085763362;
-        Thu, 18 Dec 2025 11:22:43 -0800 (PST)
+        bh=ssIwjLKhW7TxPZZsMXmemlCPcgF9XDpevuAc5bMB6Ck=;
+        b=SfruWRTgyvcUrnZsPfuQMIHMI2ELBKitkcAvhDP7CDRaMs6fvTsOt1isljxG5vLPNc
+         6tmLoeMDV0BQrSRzfsEn6nEJV9UXtwdJ4pTy5GZrui5xTrFkPn+wUg3LBv90w1FvC1xP
+         hHK81cqVzXFDChGqzDzhoCX/70gzzcrRyTNVN5d6pXg2c7G0mz8kWjACvgL8/xmx99Nr
+         f9gNtz1UuV/FD/WQehrVKVZay71bKZL22Fe+OYIBQxHcArmnAIX2JrJwGMgx/YBXjxPB
+         g/cpGwaf0ep9GAM56uRTSsyxjZuLDKYyT5IN+kQ+SYbvKmbNJyi4CX+vB/8heCyn8J6M
+         fmkg==
+X-Forwarded-Encrypted: i=1; AJvYcCXeC5/2BKgqPJntQ7BLX1OmHzOx1yR8NQ2zG/Bl+w7cZCYMVAdmc3df3RIf6snoh5Y1e4E=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxy5I+6MEC1rUcLo1RnqL9HzU+sg+YgWrtnwKA7W1jV77aeRlTc
+	zHx2YB3YSDwmaRc9+x2Gk5fHEIdYPzYUGwGCERh/Lm+8xSfMPPWmFOhx
+X-Gm-Gg: AY/fxX6jCHZzMDEowjgHbYIrWgj6K22A6kjufxFkMOdQK4WFekACaUwovsmO3DYp2sZ
+	mlo/Fy1D/j5e6W9yIGaxyyiTFxKvIPNKSqnna0L0PICeevSvTEQ/BwwH+2BwgvpDob3Y7x2/e+c
+	KCIioK4CddQjrr7m289MuAyunziA5aWDSAkAW3T39Q3S1Yz3dZ604UaKfhMpC1MgBknsyREwbBj
+	eGifkKfFFLz+W8kW8BQo7BdiX/INhAZSNmkETOxWhYJVsG3Nqpsq5pALKnplM6t1o6OQCwgd3Mm
+	Tq7BIv+CMGmen8lGMSjW5snm3967itiHwbJ6nXVbkxwyCw9qUseoLXBnF59kQ4Fr+guml/ixBoH
+	Yd8BzHDICOy+dQJflDKQl45DFeoFK7fNIlbw4AY7XY1W99hoXbqvr1eyVUkufTjRQZZUgwE0o8B
+	AdzeONsA5M3tN7uedajShIUqRrIEl4Lk4e9hCC/WmZI5j333E=
+X-Google-Smtp-Source: AGHT+IHljvg4KI/iWmhtSRdT/OZ69NXZamkuNiRG2Vuw0TgHR1NsiuAkOpR56lvEGU0UpJFMOWBdBg==
+X-Received: by 2002:a17:902:d484:b0:29e:c283:39fb with SMTP id d9443c01a7336-2a2f2a35736mr3418655ad.52.1766086325869;
+        Thu, 18 Dec 2025 11:32:05 -0800 (PST)
 Received: from ?IPv6:2a03:83e0:115c:1:d912:2088:c593:6daa? ([2620:10d:c090:500::7:e642])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7ff7b127b00sm99807b3a.21.2025.12.18.11.22.40
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a2f3d6d557sm542115ad.84.2025.12.18.11.32.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Dec 2025 11:22:43 -0800 (PST)
-Message-ID: <0be0a3b4d39e31653ce38c16b413d717921f2ced.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v4 7/8] selftests/bpf: Run resolve_btfids only
- for relevant .test.o objects
+        Thu, 18 Dec 2025 11:32:05 -0800 (PST)
+Message-ID: <843d859737c1b70fb4c7b543c78afdd884840091.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v10 04/13] libbpf: Optimize type lookup with
+ binary search for sorted BTF
 From: Eduard Zingerman <eddyz87@gmail.com>
-To: Ihor Solodrai <ihor.solodrai@linux.dev>, Alan Maguire	
- <alan.maguire@oracle.com>, Alexei Starovoitov <ast@kernel.org>, Andrea
- Righi	 <arighi@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>,
- Andrii Nakryiko	 <andrii@kernel.org>, Bill Wendling <morbo@google.com>,
- Changwoo Min	 <changwoo@igalia.com>, Daniel Borkmann
- <daniel@iogearbox.net>, David Vernet	 <void@manifault.com>, Donglin Peng
- <dolinux.peng@gmail.com>, Hao Luo	 <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, John Fastabend	 <john.fastabend@gmail.com>, Jonathan
- Corbet <corbet@lwn.net>, Justin Stitt	 <justinstitt@google.com>, KP Singh
- <kpsingh@kernel.org>, Martin KaFai Lau	 <martin.lau@linux.dev>, Nathan
- Chancellor <nathan@kernel.org>, Nick Desaulniers	
- <nick.desaulniers+lkml@gmail.com>, Nicolas Schier <nsc@kernel.org>, Shuah
- Khan	 <shuah@kernel.org>, Song Liu <song@kernel.org>, Stanislav Fomichev	
- <sdf@fomichev.me>, Tejun Heo <tj@kernel.org>, Yonghong Song	
- <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org, dwarves@vger.kernel.org,
- linux-kbuild@vger.kernel.org, 	linux-kernel@vger.kernel.org,
- sched-ext@lists.linux.dev
-Date: Thu, 18 Dec 2025 11:22:40 -0800
-In-Reply-To: <20251218003314.260269-8-ihor.solodrai@linux.dev>
-References: <20251218003314.260269-1-ihor.solodrai@linux.dev>
-	 <20251218003314.260269-8-ihor.solodrai@linux.dev>
+To: Donglin Peng <dolinux.peng@gmail.com>, ast@kernel.org, 
+	andrii.nakryiko@gmail.com
+Cc: zhangxiaoqin@xiaomi.com, ihor.solodrai@linux.dev, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, pengdonglin
+	 <pengdonglin@xiaomi.com>, Alan Maguire <alan.maguire@oracle.com>
+Date: Thu, 18 Dec 2025 11:32:04 -0800
+In-Reply-To: <20251218113051.455293-5-dolinux.peng@gmail.com>
+References: <20251218113051.455293-1-dolinux.peng@gmail.com>
+	 <20251218113051.455293-5-dolinux.peng@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
@@ -107,29 +95,23 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Wed, 2025-12-17 at 16:33 -0800, Ihor Solodrai wrote:
-> A selftest targeting resolve_btfids functionality relies on a resolved
-> .BTF_ids section to be available in the TRUNNER_BINARY. The underlying
-> BTF data is taken from a special BPF program (btf_data.c), and so
-> resolve_btfids is executed as a part of a TRUNNER_BINARY build recipe
-> on the final binary.
+On Thu, 2025-12-18 at 19:30 +0800, Donglin Peng wrote:
+> From: pengdonglin <pengdonglin@xiaomi.com>
 >=20
-> Subsequent patches in this series allow resolve_btfids to modify BTF
-> before resolving the symbols, which means that the test needs access
-> to that modified BTF [1]. Currently the test simply reads in
-> btf_data.bpf.o on the assumption that BTF hasn't changed.
+> This patch introduces binary search optimization for BTF type lookups
+> when the BTF instance contains sorted types.
 >=20
-> Implement resolve_btfids call only for particular test objects (just
-> resolve_btfids.test.o for now). The test objects are linked into the
-> TRUNNER_BINARY, and so .BTF_ids section will be available there.
+> The optimization significantly improves performance when searching for
+> types in large BTF instances with sorted types. For unsorted BTF, the
+> implementation falls back to the original linear search.
 >=20
-> This will make it trivial for the resolve_btfids test to access BTF
-> modified by resolve_btfids.
->=20
-> [1] https://lore.kernel.org/bpf/CAErzpmvsgSDe-QcWH8SFFErL6y3p3zrqNri5-UHJ=
-9iK2ChyiBw@mail.gmail.com/
->=20
-> Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
+> Cc: Eduard Zingerman <eddyz87@gmail.com>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Cc: Alan Maguire <alan.maguire@oracle.com>
+> Cc: Ihor Solodrai <ihor.solodrai@linux.dev>
+> Cc: Xiaoqin Zhang <zhangxiaoqin@xiaomi.com>
+> Signed-off-by: pengdonglin <pengdonglin@xiaomi.com>
 > ---
 
 Acked-by: Eduard Zingerman <eddyz87@gmail.com>
