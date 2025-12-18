@@ -1,97 +1,146 @@
-Return-Path: <bpf+bounces-77044-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77045-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EB5ACCDAB4
-	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 22:21:25 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB6C1CCDAE4
+	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 22:26:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id D7B05302E1C2
-	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 21:21:22 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id BE29930054A8
+	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 21:26:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 580AC2DFA2F;
-	Thu, 18 Dec 2025 21:21:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69CF033A6F5;
+	Thu, 18 Dec 2025 21:26:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="SEBytomn"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="YwgZKJDA"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A930A283FEF;
-	Thu, 18 Dec 2025 21:21:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFACB23D7E3;
+	Thu, 18 Dec 2025 21:26:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766092877; cv=none; b=k7Nr9Mpdl4KuNeWgPOt+LDvoFixf4Z6hk9J9ewR0mD98vOwB0CJkXgx9c7aObNmoh2A/kldK4YZ1zdERMVYmM85uvo/I8Lh0aAAIOaMn0FtjoOGAOMb0CYflX9D5sLecIyLATUOl8fsCWT8gA7HJ+LY4r5B/Ccx/uNx9CQGDZfQ=
+	t=1766093190; cv=none; b=J8jES5E75O/mk7Ml31Nx/7crSGxYHWEJ8rjY8mvcKSDNj8D/LrbP4+8RCNedlxIDSkpWH9a33qwuXoJ96aKEa4W9T1YyiaaVvi8ebaT2gLiZDNOxDJkjh2wqAkB6gOx5Q8lw9ydxxjWCQqxTl+19goWNVaWstUUZBoAEz2bGDDk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766092877; c=relaxed/simple;
-	bh=2QxZ3eI3kgiomXWTwHaqixPIsDeJcNn8cyYTgWzVg/w=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=cuuWU0xDvH5nWRO2kWfNjAxoF0BKVT/ZC1FHGZ/C4lCb6+/qNoOmMLyH7BQshM1yAO/nU5b3w8G3xOd6BAzrYPyJOKQK+wPnlT1VzhGIXSn8NZ1LwSxYDF0TUMNtWUvju8DIqjVnyBbdPdeHrpSgGwSQpbP997ogL/Wwzl88U0w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=SEBytomn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98754C4CEFB;
-	Thu, 18 Dec 2025 21:21:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1766092877;
-	bh=2QxZ3eI3kgiomXWTwHaqixPIsDeJcNn8cyYTgWzVg/w=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=SEBytomnYuljvMejgFs8ipzlTDlgRK+8pBd15nJa0wmfn9W6MwFCxxsSVQHdgXsoO
-	 zHuCld1a8EXWan1iysITOyAe28IwuwYNeTSNEjCc9J0DFsYqN1V596Tn2Fs7xrbjI6
-	 +uE/ePcwfaOfzt0aTPVM1ztOnSKv8ju9xaX5rAGQ=
-Date: Thu, 18 Dec 2025 13:21:16 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Matthew Wilcox <willy@infradead.org>, Andrii Nakryiko
- <andrii@kernel.org>, Shaurya Rane <ssrane_b23@ee.vjti.ac.in>,
- "Darrick J . Wong" <djwong@kernel.org>, Christoph Hellwig
- <hch@infradead.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Meta kernel team <kernel-team@meta.com>,
- bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org,
- syzbot+09b7d050e4806540153d@syzkaller.appspotmail.com, Christoph Hellwig
- <hch@lst.de>
-Subject: Re: [PATCH bpf v2] lib/buildid: use __kernel_read() for sleepable
- context
-Message-Id: <20251218132116.c1edb3ee6688605bd270a666@linux-foundation.org>
-In-Reply-To: <20251218205505.2415840-1-shakeel.butt@linux.dev>
-References: <20251218205505.2415840-1-shakeel.butt@linux.dev>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1766093190; c=relaxed/simple;
+	bh=LAtNYEGxuLllj1y2htSF42nFPqyLzUxXVeuDgAiNbu4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=a6AAJImSI8NAEadf2oMDSvlDQ9RHH8xVy2NDWxDYyvsapv6TB7ZvMORVibOHid+yvfibQa7ZO4cpzBkc3QX3Q/sobxdU+kxSOUWXIq9u0W9WDEAk5EXGNPBCI6La5V9W2I6gTHzNLVlKV1YyIU9YsF7YW7KbrSKDD/nviPb+t2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=YwgZKJDA; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from narnia (unknown [40.86.181.13])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 060B62012446;
+	Thu, 18 Dec 2025 13:26:24 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 060B62012446
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1766093186;
+	bh=gyjPTOJwCEMIQbaQzrFflt+1ISwpXtDpYWfuEbvXRXk=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=YwgZKJDAJYBbyPsenApgLWxwGhZUw03YNYaByi1jH1fiFDeFEoTTUzTNSaIQ6albD
+	 LNZHWDQgPsD8XbFgYHeuZ6ZKnMo8kJPKvcKf/08ijR3oIaWLjJUQ1yOlg4UE/fHYL2
+	 NmzY72xE88B9oMl8+eTZuOugV+7YOsjao3w+DPkE=
+From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Linus Torvalds
+ <torvalds@linux-foundation.org>
+Cc: Jonathan Corbet <corbet@lwn.net>, Paul Moore <paul@paul-moore.com>,
+ James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>,
+ =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>, =?utf-8?Q?G=C3=BC?=
+ =?utf-8?Q?nther?= Noack <gnoack@google.com>, "Dr.
+ David Alan Gilbert" <linux@treblig.org>, Andrew Morton
+ <akpm@linux-foundation.org>, James Bottomley
+ <James.Bottomley@hansenpartnership.com>, David Howells
+ <dhowells@redhat.com>, LSM List <linux-security-module@vger.kernel.org>,
+ "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, LKML
+ <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [RFC 08/11] security: Hornet LSM
+In-Reply-To: <CAADnVQJ1CRvTXBU771KaYzrx-vRaWF+k164DcFOqOsCxmuL+ig@mail.gmail.com>
+References: <20251211021257.1208712-1-bboscaccy@linux.microsoft.com>
+ <20251211021257.1208712-9-bboscaccy@linux.microsoft.com>
+ <CAADnVQJ1CRvTXBU771KaYzrx-vRaWF+k164DcFOqOsCxmuL+ig@mail.gmail.com>
+Date: Thu, 18 Dec 2025 13:26:23 -0800
+Message-ID: <87qzsrh474.fsf@microsoft.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 18 Dec 2025 12:55:05 -0800 Shakeel Butt <shakeel.butt@linux.dev> wrote:
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-> For the sleepable context, convert freader to use __kernel_read()
-> instead of direct page cache access via read_cache_folio(). This
-> simplifies the faultable code path by using the standard kernel file
-> reading interface which handles all the complexity of reading file data.
-> 
-> At the moment we are not changing the code for non-sleepable context
-> which uses filemap_get_folio() and only succeeds if the target folios
-> are already in memory and up-to-date. The reason is to keep the patch
-> simple and easier to backport to stable kernels.
-> 
-> Syzbot repro does not crash the kernel anymore and the selftests run
-> successfully.
-> 
-> In the follow up we will make __kernel_read() with IOCB_NOWAIT work for
-> non-sleepable contexts. In addition, I would like to replace the
-> secretmem check with a more generic approach and will add fstest for the
-> buildid code.
-> 
-> Reported-by: syzbot+09b7d050e4806540153d@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=09b7d050e4806540153d
-> Fixes: ad41251c290d ("lib/buildid: implement sleepable build_id_parse() API")
+> On Wed, Dec 10, 2025 at 6:14=E2=80=AFPM Blaise Boscaccy
+> <bboscaccy@linux.microsoft.com> wrote:
+>> +++ b/security/hornet/Kconfig
+>> @@ -0,0 +1,11 @@
+>> +# SPDX-License-Identifier: GPL-2.0-only
+>> +config SECURITY_HORNET
+>> +       bool "Hornet support"
+>> +       depends on SECURITY
+>> +       default n
+>
+> So you're disallowing this new LSM to be a module?
+> That doesn't smell good.
+>
+>> +static int hornet_verify_hashes(struct hornet_maps *maps,
+>> +                               struct hornet_parse_context *ctx)
+>> +{
+>> +       int map_fd;
+>> +       u32 i;
+>> +       struct bpf_map *map;
+>> +       int err =3D 0;
+>> +       unsigned char hash[SHA256_DIGEST_SIZE];
+>> +
+>> +       for (i =3D 0; i < ctx->hash_count; i++) {
+>> +               if (ctx->skips[i])
+>> +                       continue;
+>> +
+>> +               err =3D copy_from_bpfptr_offset(&map_fd, maps->fd_array,
+>> +                                             ctx->indexes[i] * sizeof(m=
+ap_fd),
+>> +                                             sizeof(map_fd));
+>
+> As was pointed out several times earlier this is an obvious TOCTOU bug.
+> An attacker can change this map_fd between LSM checks and later verifier =
+use.
+> All the "security" checks further are useless.
 
-v6.12.
+Thank you, Alexei, for pointing that out. I=E2=80=99ll ensure it=E2=80=99s =
+addressed in
+the next iteration.
 
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+>
+>> +               if (err < 0)
+>> +                       return LSM_INT_VERDICT_BADSIG;
+>> +
+>> +               CLASS(fd, f)(map_fd);
+>> +               if (fd_empty(f))
+>> +                       return LSM_INT_VERDICT_BADSIG;
+>> +               if (unlikely(fd_file(f)->f_op !=3D &bpf_map_fops))
+>
+> Ohh. So this is why this LSM has to be built-in.
+> bpf_map_fops is bpf internal detail. It's not going to be exported.
+> You cannot open code __bpf_map_get() and get away with it.
+>
+>> +                       return LSM_INT_VERDICT_BADSIG;
+>> +
+>> +               if (!map->frozen)
+>> +                       return LSM_INT_VERDICT_BADSIG;
+>> +
+>> +               map =3D fd_file(f)->private_data;
+>> +               map->ops->map_get_hash(map, SHA256_DIGEST_SIZE, hash);
+>
+> This too. It's absolutely not ok for LSM to mess with bpf internal state.
+>
+> The whole LSM is one awful hack.
+> The diff stat doesn't touch anything in the kernel/bpf/
+> yet you're messing with bpf internals.
+>
+> Clearly, you guys want to merge this garbage through LSM tree.
+> Make sure to keep my Nack when you send it during the merge window.
 
-Thanks, I'll add cc:stable to this due to "crashes the kernel".
+Sure thing. I'll include your Nacked-by: in future versions.
 
+
+-blaise
 
