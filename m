@@ -1,96 +1,84 @@
-Return-Path: <bpf+bounces-76999-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77000-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE3DCCCCF42
-	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 18:24:09 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C1CCCCCA47
+	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 17:07:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7BC773071FA4
-	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 17:22:02 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6729C3020CC3
+	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 16:04:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E830535C195;
-	Thu, 18 Dec 2025 15:53:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EYv3biLE"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97FD338257D;
+	Thu, 18 Dec 2025 16:04:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from relay.hostedemail.com (smtprelay0013.hostedemail.com [216.40.44.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EC7535BDDB;
-	Thu, 18 Dec 2025 15:53:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E21F729AAF7;
+	Thu, 18 Dec 2025 16:04:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766073200; cv=none; b=RxtB+cWbRJw6O0T4BwHvL5tJBbRUaBU8jpdy4PiBjNhWqH7O1nhzl8r3I6lg2m8DbiF0ENK7bu9QdQkxCQKr195x0mO/Nm8SFnUvl9a/oRgM5Xyer6nUu/Vjk0m+7bS9/qGMsp74Dts7cUO+k2Aifjou/pwIVr3pMHNjGwqTg7g=
+	t=1766073871; cv=none; b=Bb65bbkl7sNO1qYKporGf061ssJ9w1Qi+ZAfKHpTATw1mQIgzsSKkFYpSz4hF0v1N/37ModuXYxsmJnJg6pOt8KcRrPkIVlYBTzHraiy+Is9/8hXcIvS4aqNnCLee+i1rFNS8IxjBjZL+FPhvhmokxAWlTk/Im5ZMDQbT87xclg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766073200; c=relaxed/simple;
-	bh=yIBgvM01ywlBtmD55iH+va2/e0kARfjxgcSNTCgU488=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=gmNO9wxLL6JYDZJcArit2whNfSxWj8hrN8CIUzdPRc/pvOMgciifi8k9mya0AA5uW/nImrzC9hopaEYo1ZQjUmQRySuEWRX0I32NERr1rX6FJTssDSsU/lUdj1nLk7EwsiyZQyMpzutsHrP+5l6lOrN+HBhdpwY0axRcBDsM3E4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EYv3biLE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9FA8C4CEFB;
-	Thu, 18 Dec 2025 15:53:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766073199;
-	bh=yIBgvM01ywlBtmD55iH+va2/e0kARfjxgcSNTCgU488=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=EYv3biLERvLXjae3T/RGXoKlbdhHyLhFTJOJjY/W4Wg/6g2G/5ghrx/2PlCExqJIz
-	 LRzaDlXNP49ZJzFEJS9QA80hZ3C2sZ3V+I/RGxKEY624xZ7Kg1VFB3ama/wyrQWB5W
-	 H6tnT0LXYGYI3kKc8kQH7cguRWLdutpYAg8yJaJJI7s0cbWT8JE7wV9fcjFfqZ4dTc
-	 N5F5Cf9I1I2XG2yY4Tt6FBCDdloAhrQnYneHKKiCOEeMnNnoSI1xhAQM+P84hkXI0u
-	 XnrTdQqFdDYOvBqO3V7Gqh4WaFo0Mkm4YDVfUY1QTnBVvIbZ5ivw+lrr+KNY4dy+i0
-	 A0hRkVCR1LWUQ==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 796DD380A96A;
-	Thu, 18 Dec 2025 15:50:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1766073871; c=relaxed/simple;
+	bh=zVgHN21Tp/CFQHVnykpfsgzbFUcCsCGg+ndjObkJ4Pg=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=tAhYTTTjKSj7AOjadXsWcrQFCzOQ/midepohyNEExYB0w+YsZA+dJtJ26YGc4aCIe5mVXCFS7zpEb3p3GcjBawea5wwUtr23ColSDET3g3QuF3WR2bS8t8j7B67IoJfq20FMt3kVgKJe7Akvgnd7Q21VuQ1QBkAe48BsCwTmn70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf06.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay03.hostedemail.com (Postfix) with ESMTP id 70388B7BE6;
+	Thu, 18 Dec 2025 16:04:26 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf06.hostedemail.com (Postfix) with ESMTPA id 94F2B20012;
+	Thu, 18 Dec 2025 16:04:23 +0000 (UTC)
+Date: Thu, 18 Dec 2025 11:06:02 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Steven Rostedt <rostedt@kernel.org>, Florent Revest <revest@google.com>,
+ Mark Rutland <mark.rutland@arm.com>, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
+ <andrii@kernel.org>, Menglong Dong <menglong8.dong@gmail.com>, Song Liu
+ <song@kernel.org>
+Subject: Re: [PATCHv5 bpf-next 8/9] ftrace: Factor ftrace_ops ops_func
+ interface
+Message-ID: <20251218110602.2e8d4663@gandalf.local.home>
+In-Reply-To: <20251215211402.353056-9-jolsa@kernel.org>
+References: <20251215211402.353056-1-jolsa@kernel.org>
+	<20251215211402.353056-9-jolsa@kernel.org>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3 net] net: enetc: do not transmit redirected XDP frames
- when
- the link is down
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <176607300930.3021115.4017370445523597811.git-patchwork-notify@kernel.org>
-Date: Thu, 18 Dec 2025 15:50:09 +0000
-References: <20251211020919.121113-1-wei.fang@nxp.com>
-In-Reply-To: <20251211020919.121113-1-wei.fang@nxp.com>
-To: Wei Fang <wei.fang@nxp.com>
-Cc: claudiu.manoil@nxp.com, vladimir.oltean@nxp.com, xiaoning.wang@nxp.com,
- andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
- hawk@kernel.org, john.fastabend@gmail.com, sdf@fomichev.me, frank.li@nxp.com,
- imx@lists.linux.dev, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 94F2B20012
+X-Stat-Signature: 1phd97uu84bs96m3sy5rbg85rg413raq
+X-Rspamd-Server: rspamout05
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX1+aGNRDENTMUib0iCViJwboi4wcneSr5cU=
+X-HE-Tag: 1766073863-938075
+X-HE-Meta: U2FsdGVkX18wqY2inedRQwkLOcwAi6uSIlagwQEwRSozsWrmWC9XiMsbQkUViMmkKWgshcNt0feN+UGrRbD4sIwt0PpR5W4flywVA8swgabpJQrSQD1q3kZw+F+mzn06gWTFRQPiLRXKcCqjEov7W6o4v2NSdFFltZFHG5l7C534LaeD/OEOS/7T6rp9yitzxPtC9ZGxoZRCXNvBrRLR+nubARaxoAX2FB3mIdKPg8d7BCqwzuybYApSXYFQjwmpN9Qm4kYN/wtp/dc2mM82DVyKbIVNiJ9A6qF1WAzXlvvoAeQ7EmOP+bavKmFqNEGDPt5s+KALJ+N5+zweVE02LFsSbkM1UIcT/hb5kNOOHD/UXNF9af7wC1REpmPclS9xLs30cRSXIxq/Buu70dSHiw==
 
-Hello:
+On Mon, 15 Dec 2025 22:14:01 +0100
+Jiri Olsa <jolsa@kernel.org> wrote:
 
-This patch was applied to netdev/net.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
-
-On Thu, 11 Dec 2025 10:09:19 +0800 you wrote:
-> In the current implementation, the enetc_xdp_xmit() always transmits
-> redirected XDP frames even if the link is down, but the frames cannot
-> be transmitted from TX BD rings when the link is down, so the frames
-> are still kept in the TX BD rings. If the XDP program is uninstalled,
-> users will see the following warning logs.
+> We are going to remove "ftrace_ops->private == bpf_trampoline" setup
+> in following changes.
 > 
-> fsl_enetc 0000:00:00.0 eno0: timeout for tx ring #6 clear
+> Adding ip argument to ftrace_ops_func_t callback function, so we can
+> use it to look up the trampoline.
 > 
-> [...]
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 
-Here is the summary with links:
-  - [v3,net] net: enetc: do not transmit redirected XDP frames when the link is down
-    https://git.kernel.org/netdev/net/c/2939203ffee8
+This mostly touches bpf code so:
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Acked-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-
+-- Steve
 
