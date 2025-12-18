@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-76979-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76980-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7670FCCBA34
-	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 12:36:11 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BAFECCB9FB
+	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 12:32:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id BF91A311324A
-	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 11:31:51 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id B581F3051203
+	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 11:32:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5CCA31AA88;
-	Thu, 18 Dec 2025 11:31:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B78D231CA4A;
+	Thu, 18 Dec 2025 11:31:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G60kUXrX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aqmaXMaH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+Received: from mail-pf1-f194.google.com (mail-pf1-f194.google.com [209.85.210.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA2CC28D8F1
-	for <bpf@vger.kernel.org>; Thu, 18 Dec 2025 11:31:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B31031C567
+	for <bpf@vger.kernel.org>; Thu, 18 Dec 2025 11:31:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766057506; cv=none; b=BelQ1y3Ey9t9nApZW6HQ7BX5qFL62WwDy2ivgyqDmUsXOBIRvBv4vnRyVp6pCQT0pwxnFhcrgnwrWga5DLP0gXtKHR0daaRLp12u9AYJ/HjX+AVvncnnxQnvqfJ4YC0v34p2P2j8YF7QBvsZZPTvzFWMno+9KdbtDMsOr7oCIVg=
+	t=1766057511; cv=none; b=ZVmqh5YxbF6nVPavVMFjbKGGna6qolAMziy1euZZ9YgftchveESVFGDAZWHHnOVIdgIEuAa2b4XNma9uBegJuGYTZcdvjqdBH/9r8ESvocUjylmB4cIk+93miXigV45QbgnvnlGKW9UTSXF52QjZFmxI6MNaTZTBxZwStu9MuS4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766057506; c=relaxed/simple;
-	bh=kR3XC690eMOuMmS4XzQCFJEtC3/vg9Jkc3VHJRTqe6g=;
+	s=arc-20240116; t=1766057511; c=relaxed/simple;
+	bh=DwgNPmg1syV4ccxDgDErKTfXFZCSlTEFvUEnf2vv7ew=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=fKiCXAzGJvERViNfxK7Z0oXMjO9yUEIXq1Sn7fcgNPmKOasrW7QYPcdeKKW/wkps19Vy3/mNlY4b2Y35EXkzq9caZz4Av/gmq6nTEvdedrZpTIArXP2ePKVtrBo61b6WgFHdlCN0i7ht07zsF3eARj50dp5028wSObVdDqtjHyI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G60kUXrX; arc=none smtp.client-ip=209.85.216.45
+	 MIME-Version; b=TFPwALwgcDsCMgXm1vte4+4hIOTMaICIOP0I+Euk0Xtt9+CtjnGIPCAS22AUALp6X3oWQc3lRLjvCpkiEkCKz9zFG2qU3oYZCbd0hWUoGkn+0aQsSxabps9+uHYIOi1S9hWw8mY6x5AXAeRx1/bP5Kl5lsD2r8khiZp7HZqrNwQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aqmaXMaH; arc=none smtp.client-ip=209.85.210.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-34c718c5481so510889a91.3
-        for <bpf@vger.kernel.org>; Thu, 18 Dec 2025 03:31:44 -0800 (PST)
+Received: by mail-pf1-f194.google.com with SMTP id d2e1a72fcca58-7f89d0b37f0so876005b3a.0
+        for <bpf@vger.kernel.org>; Thu, 18 Dec 2025 03:31:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1766057504; x=1766662304; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1766057508; x=1766662308; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4yc18LXj38KHjY/6u3XKUquuVm27qsoM7d9pTeGO7lI=;
-        b=G60kUXrXcmVipswR7w2fdJfda5pJZTc+Clvd/KoaVc+Zj2mVtjpEtKk10T9RHvDg5p
-         JcS0r+OyhcWz567NRcqsbRJRgvJW84ZCLcFG95pMvE6VgxtOp5TwStB10u5w50+gt2j7
-         h5XXmkGAZ7Losd995OQzeTKCWy6b4I70H9aMFt0jF/EQMlCCkhdvBbMojy8SEY2VJb6e
-         YyWpOenq+2w/8KMBvMr5afWVvMefC1TFsF1J21j4LIE72Ic9vET4re35rfVF1aKXDxKH
-         TCLg/pCFZSDDWExNCh/51t2X9mE6zfQrqx8/n+Zl8ic7AkvtvAI7r3HGKJVCVHD/5Bwe
-         jRMw==
+        bh=G5jDu9JTVmvSq4bzhcZPmH/8lJ37vJ5Z3Y7dPoVKyM4=;
+        b=aqmaXMaHSswLZKLRsOVxIsf00iQ2z4CL6vjxYey3DL6BFsmTe+ivhb6+qJTWtzYIPg
+         FttBzmG67QgtRnfD2aqSxWybdy3up1dyoeOmcJnWmPglG8jdMlo98SHbS/QAp3wlX2ZC
+         uxs29Ka+ioZUUk8K6mVoDCSI2r6T9Ltjy5Y/KGaQPpuTKJ+oWcy1I7xCaKKRbsrfIMnY
+         CgNtemW8DtZ+jGv0rLfgS6QfZ/lX/mBARlXfVd7GdQSTUoJa23JZWaBL8qihQmZKa8RD
+         pt7zQ00apuAItOe3xCDCLXEOR2TqVoCmF1IhDcLI5PqP7ppibGQeVX7ZgeWFIYifha1q
+         Bnpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766057504; x=1766662304;
+        d=1e100.net; s=20230601; t=1766057508; x=1766662308;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=4yc18LXj38KHjY/6u3XKUquuVm27qsoM7d9pTeGO7lI=;
-        b=O3DSa+XJHVFR4D1/ySAiyQIKwg8m0SLAYBe6RevrI26QKLGOXoeBWP4yVHxnWSSOBp
-         a47CbhkjaNxZf4wH/gh05c/jHZgoxtGfnwjJZ8NHB+YVnGb07oZn0fF2oInHjYrN+WQS
-         OSondMab1GJq5++vsAzQibC7VhkFHJE1Mm4NUNGRX64vc9IVo3bl5B501xc1+ZaJzHLA
-         7K7HJV9tzNM70eJJjWtFJr1gyXvyP/UPw0OdoHJrgmP3vdHthEXXG3An6w/zbq9MZlzS
-         66+HimzWFqDeq6U3WX4yjF1DxKm4JOFAfe6VK6G2YIu2/w+mR1qWsvkL84h4e2lZ3oc+
-         1yKA==
-X-Forwarded-Encrypted: i=1; AJvYcCVUeEt6UrRt5DpGcx/EpQ7s5dgpiRYZOkgg75rqqaICkh2n6IK99kiVKISk4pMMBSmU9do=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxJ8Az6I8bv2i56SPmiVoyrkF0lhDdlmLcwF1xSBWM6VUILivgp
-	pUbU/BkR1xNrYi/LRlY36k0yzjNo2qKhj3ldt0R42139GxJTd3kSGotW
-X-Gm-Gg: AY/fxX4TjmRCDG8ONyZkrewrM1o5qALNGQiwAeA/bXrf3r4mH7TODh6wQxAUZdVlwVb
-	FlcP6oesnvFBhVx1cTO4ahMUvcyiaBRFSnEebd+7GchpYqFjTj3qY7G62s9mFvKg0jDSys7qXdd
-	YTT6Pz3xII5svoo+2Cq5ta8J3iuthLJ6H+VfMNxbjOXgwoNhc0lETPjtnqWERnKDBkjt16h/VZ9
-	dJtTfmQswx4F3bE2I7yW/9gkhy8js0MVzx0MrZm8cGliw9sU3mCSH8dTSVfIQFZLIPibzafn8FB
-	j3YCUCVni13LkSkpAxL5vaJA4M7hvknBJPCk1MvNFqjT6QgX1fRSX5UPN437AFQeacHgt5Ph7Jk
-	GAPaFTjgq/axqfBeF8I08+L/yfQ3XJSBjilPe9KKsy/js6LisRYVQh//RUZtF+BgP+FbprOuWNt
-	c0OQcmBdYKLOi50h7FmBhIeQ5epjg=
-X-Google-Smtp-Source: AGHT+IE+OfV+nTK8EffSxIOlsTNKb3YIEVrp51owobhDCMyYJ7ysroRbW6Lt6cR2ARHL8vPSGTW1CA==
-X-Received: by 2002:a17:90b:2749:b0:33b:a906:e40 with SMTP id 98e67ed59e1d1-34abd6cc250mr16692648a91.2.1766057504184;
-        Thu, 18 Dec 2025 03:31:44 -0800 (PST)
+        bh=G5jDu9JTVmvSq4bzhcZPmH/8lJ37vJ5Z3Y7dPoVKyM4=;
+        b=RysDGABBbUPgdFX+dvBrh4Fq3RF6R2WNKrmvnDuzLfgWGPueGcn/u/HwXZt9MUNcs1
+         gS+odQtZW3037I49fwNrrumUERQ/zyycJOcBSSgrcTevPojZT4NvdTyrOJxbXLd8JKNg
+         94jEkYLOlOMfemYb+yfCJmOxEp1/4SY4Jq5IQc+Jss2cCrLdJQAf6Sf/ttQ86+MXaJzD
+         XuxcO396WfHMbKnl69xPCrTvNxCFgZiDNHjRUZ0OyTUQK7Ca6ptM6A74W6pgp3R03j8l
+         ZV4SgJrgEPOsn9wA+pPJ2SpfEoQEDM/3zNm+qKLnNpa3qmSzU7XA/5dFxlDm00yvHuAY
+         qo8A==
+X-Forwarded-Encrypted: i=1; AJvYcCWE2eT2VSgig8KruoCUc23qI4dbRsYokXxEDl2pcP3odGDdyJyr8TSywEdc5vWmcZtFKiM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwAKF57oMWUHMAOvlRl5mYH72xdQEYPrZ9irVRQTVs/H7RnKeML
+	LcPtpnOzm5UWGSwkRmRafDHRLQJcBRBZ1zGXmoqUoi8eGXxrjMZjTZyc22jTuwjErKVj6A==
+X-Gm-Gg: AY/fxX5kcBT32UNf7rlz6fIJi8ZdyguXYwT+EH7ab25qt9rTwMze228tS/EAjB0bcM6
+	2VzCOKdc46TWUBEoi5698AjbpEmDgr6FeJw9kQfoJwcaVFJ9Kwr13W5FAq9kN6q0WF/qvamlG4R
+	j8y9ebEO9DI+cL+drIzVPMCuibY3opOh4tt04ocExYxvZDDAvh6oYQpoKAyPbmBOlRxmj/+vZ7N
+	zrRvSLduNI2CX01e6l4Meiunbl2OAzTuh7XMBfGKUgEQedKBzn0xuRAkbdB8iMTZoOtjMjUWW7G
+	V+MfAupOc/M3DxHWvWoqe1IyHSRx7x2hRTzIjWWeaaOfmwU3T8tR1fM57j1TKNWX71RoMVYI2iV
+	cbj4rvL+W2TEGHYn0q+T+4IiBiB0uVIcCH+zUamSM472VT7UHcqeU1UrcKMu6eJsaw6q1RkmAYI
+	VRRwffv2Ga7NEXxxLSKQU9rNYqqzU=
+X-Google-Smtp-Source: AGHT+IGih1pBcpxyYWbt8JB2iczqZCbsKJU3zx0Wg3zNFIeEbu8D+9YIAJPSqoKisqtyqihlEVUPVg==
+X-Received: by 2002:a17:90b:2251:b0:343:6a63:85d5 with SMTP id 98e67ed59e1d1-34e71e0f8dbmr2312918a91.16.1766057508457;
+        Thu, 18 Dec 2025 03:31:48 -0800 (PST)
 Received: from pengdl-pc.mioffice.cn ([43.224.245.249])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34e70d4f887sm2328237a91.3.2025.12.18.03.31.39
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34e70d4f887sm2328237a91.3.2025.12.18.03.31.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Dec 2025 03:31:41 -0800 (PST)
+        Thu, 18 Dec 2025 03:31:46 -0800 (PST)
 From: Donglin Peng <dolinux.peng@gmail.com>
 To: ast@kernel.org,
 	andrii.nakryiko@gmail.com,
@@ -82,9 +82,9 @@ Cc: zhangxiaoqin@xiaomi.com,
 	bpf@vger.kernel.org,
 	pengdonglin <pengdonglin@xiaomi.com>,
 	Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH bpf-next v10 09/13] bpf: Optimize the performance of find_bpffs_btf_enums
-Date: Thu, 18 Dec 2025 19:30:47 +0800
-Message-Id: <20251218113051.455293-10-dolinux.peng@gmail.com>
+Subject: [PATCH bpf-next v10 10/13] libbpf: Optimize the performance of determine_ptr_size
+Date: Thu, 18 Dec 2025 19:30:48 +0800
+Message-Id: <20251218113051.455293-11-dolinux.peng@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20251218113051.455293-1-dolinux.peng@gmail.com>
 References: <20251218113051.455293-1-dolinux.peng@gmail.com>
@@ -98,10 +98,10 @@ Content-Transfer-Encoding: 8bit
 
 From: pengdonglin <pengdonglin@xiaomi.com>
 
-Currently, vmlinux BTF is unconditionally sorted during
-the build phase. The function btf_find_by_name_kind
-executes the binary search branch, so find_bpffs_btf_enums
-can be optimized by using btf_find_by_name_kind.
+Leverage the performance improvement of btf__find_by_name_kind() when
+BTF is sorted. For sorted BTF, the function uses binary search with
+O(log n) complexity instead of linear search, providing significant
+performance benefits, especially for large BTF like vmlinux.
 
 Cc: Eduard Zingerman <eddyz87@gmail.com>
 Cc: Alexei Starovoitov <ast@kernel.org>
@@ -110,76 +110,50 @@ Cc: Alan Maguire <alan.maguire@oracle.com>
 Cc: Ihor Solodrai <ihor.solodrai@linux.dev>
 Cc: Xiaoqin Zhang <zhangxiaoqin@xiaomi.com>
 Signed-off-by: pengdonglin <pengdonglin@xiaomi.com>
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- kernel/bpf/inode.c | 42 +++++++++++++++++++-----------------------
- 1 file changed, 19 insertions(+), 23 deletions(-)
+ tools/lib/bpf/btf.c | 20 ++++++--------------
+ 1 file changed, 6 insertions(+), 14 deletions(-)
 
-diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
-index 9f866a010dad..050fde1cf211 100644
---- a/kernel/bpf/inode.c
-+++ b/kernel/bpf/inode.c
-@@ -600,10 +600,18 @@ struct bpffs_btf_enums {
- 
- static int find_bpffs_btf_enums(struct bpffs_btf_enums *info)
- {
-+	struct {
-+		const struct btf_type **type;
-+		const char *name;
-+	} btf_enums[] = {
-+		{&info->cmd_t,		"bpf_cmd"},
-+		{&info->map_t,		"bpf_map_type"},
-+		{&info->prog_t,		"bpf_prog_type"},
-+		{&info->attach_t,	"bpf_attach_type"},
-+	};
- 	const struct btf *btf;
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index c63d46b7d74b..b5b0898d033d 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -659,29 +659,21 @@ static int determine_ptr_size(const struct btf *btf)
+ 		"int long unsigned",
+ 	};
  	const struct btf_type *t;
 -	const char *name;
--	int i, n;
+-	int i, j, n;
 +	int i, id;
  
- 	memset(info, 0, sizeof(*info));
+ 	if (btf->base_btf && btf->base_btf->ptr_sz > 0)
+ 		return btf->base_btf->ptr_sz;
  
-@@ -615,30 +623,18 @@ static int find_bpffs_btf_enums(struct bpffs_btf_enums *info)
- 
- 	info->btf = btf;
- 
--	for (i = 1, n = btf_nr_types(btf); i < n; i++) {
--		t = btf_type_by_id(btf, i);
--		if (!btf_type_is_enum(t))
--			continue;
-+	for (i = 0; i < ARRAY_SIZE(btf_enums); i++) {
-+		id = btf_find_by_name_kind(btf, btf_enums[i].name,
-+					   BTF_KIND_ENUM);
+-	n = btf__type_cnt(btf);
+-	for (i = 1; i < n; i++) {
+-		t = btf__type_by_id(btf, i);
+-		if (!btf_is_int(t))
++	for (i = 0; i < ARRAY_SIZE(long_aliases); i++) {
++		id = btf__find_by_name_kind(btf, long_aliases[i], BTF_KIND_INT);
 +		if (id < 0)
-+			goto out;
+ 			continue;
  
--		name = btf_name_by_offset(btf, t->name_off);
++		t = btf__type_by_id(btf, id);
+ 		if (t->size != 4 && t->size != 8)
+ 			continue;
+ 
+-		name = btf__name_by_offset(btf, t->name_off);
 -		if (!name)
 -			continue;
 -
--		if (strcmp(name, "bpf_cmd") == 0)
--			info->cmd_t = t;
--		else if (strcmp(name, "bpf_map_type") == 0)
--			info->map_t = t;
--		else if (strcmp(name, "bpf_prog_type") == 0)
--			info->prog_t = t;
--		else if (strcmp(name, "bpf_attach_type") == 0)
--			info->attach_t = t;
--		else
--			continue;
--
--		if (info->cmd_t && info->map_t && info->prog_t && info->attach_t)
--			return 0;
-+		t = btf_type_by_id(btf, id);
-+		*btf_enums[i].type = t;
+-		for (j = 0; j < ARRAY_SIZE(long_aliases); j++) {
+-			if (strcmp(name, long_aliases[j]) == 0)
+-				return t->size;
+-		}
++		return t->size;
  	}
  
-+	return 0;
-+out:
- 	return -ESRCH;
- }
- 
+ 	return -1;
 -- 
 2.34.1
 
