@@ -1,208 +1,216 @@
-Return-Path: <bpf+bounces-76955-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76956-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27B96CCA015
-	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 02:48:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A7BE2CCA155
+	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 03:30:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id F2FC6301D65E
-	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 01:48:20 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 081E23028F40
+	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 02:29:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A54D126CE2F;
-	Thu, 18 Dec 2025 01:48:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AADA22FC86B;
+	Thu, 18 Dec 2025 02:29:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SdxJLF3C"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="auPdLCaL"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 213583C2F;
-	Thu, 18 Dec 2025 01:48:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF1172F83D8
+	for <bpf@vger.kernel.org>; Thu, 18 Dec 2025 02:29:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766022498; cv=none; b=bD76rztQ3ky9NEJzyUMdTVLbLcfsFvGIF2b9wpYn4Os0qjGWbAjljPYVR39kjq6JXfrdCEu1HpwhPixcxuAmEmv04h8qc5aViPHoX199Wqdx+sm5buYHyp0t6FY0i/MxkYirkrQ7TcxwxNUC8jVw24RQo/spcdvTUUSNGrT1zxg=
+	t=1766024995; cv=none; b=nJA+YH60aEal/+END1HnK6yPq0LA65sYkVLOcvb3qip8Y96K79EgKI5Oeb/tSiWjwPt2TC6nk+ISxA2F0hIPcO0IsaODuwpHtAht2h4A3GepxlWWyCj1w4x9cemd1Qp101o+fbF4hvN+wtZ2ygKktpsYwjCGn1qKLXKIOOrQriM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766022498; c=relaxed/simple;
-	bh=dQlBuB3KnyMoKeAYJ0vjAIrQK6ORdk+MFt6eBG/8Btg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=EtKpIJVk4q1abyTySAscRuKqnCnLIsglTQ6O0ViasfBlM+EMJkp5x5THCmv056OsrHUthr18mrngqZ6KslMANYKoZ8+iuSeG7htUsBFAkXEHL1rYwa47O7U1/QheAKC8Z01VDfG1wm6FOfydLO4V2JerE63OdY3te6HYSmURar8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SdxJLF3C; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 324F6C4CEF5;
-	Thu, 18 Dec 2025 01:48:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766022497;
-	bh=dQlBuB3KnyMoKeAYJ0vjAIrQK6ORdk+MFt6eBG/8Btg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=SdxJLF3CukKnvJa2ypw7qV5usHJoBdKs7WGFk2LjAAUOVNYhDyZdXuftwp3XBJKDA
-	 8F8zhdWarRMtr2qax8/EoTFH8U2t/Otkqesr9ld9RChHJZc6CbiJQm2/uOE2DHpDRj
-	 AH8t+IswcNb98bAmui+BVD9WD5LeyeYkI4zpLP5tN/90wTXUvFRVLpn/w8Faffs+bv
-	 toLDtCCwuTb9r9I/Pq9ZIemp5VBWw3N/reR1+rG+2YsoIaXG33sPUf9TpIToS9cgph
-	 J8ALVsLj1LBDtOiDXpcjSxCZ4ibTyylPLmrBzBrFfftd+Pk/2575dO7JTNUMB5Qrp1
-	 MElyM7Jle3vLg==
-Date: Wed, 17 Dec 2025 20:48:14 -0500
-From: Steven Rostedt <rostedt@kernel.org>
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Florent Revest <revest@google.com>, Mark Rutland <mark.rutland@arm.com>,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Menglong Dong
- <menglong8.dong@gmail.com>, Song Liu <song@kernel.org>
-Subject: Re: [PATCHv5 bpf-next 5/9] ftrace: Add update_ftrace_direct_del
- function
-Message-ID: <20251217204814.38756224@robin>
-In-Reply-To: <20251215211402.353056-6-jolsa@kernel.org>
-References: <20251215211402.353056-1-jolsa@kernel.org>
-	<20251215211402.353056-6-jolsa@kernel.org>
-X-Mailer: Claws Mail 4.3.1 (GTK 3.24.51; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1766024995; c=relaxed/simple;
+	bh=zlziAxvPwJj8HgeZzSpcXhPCekluk2rCReJ0Fw/8umI=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=UVjfrtdeIuEsl5MVGiNcyr9Ai3uYe3Em1rNUwo7b7ZLK0o0RIyZ4aUdnWxFfDVy48HrEgk51pa1G+Va7XJvkVq7E9XMvwQqKZMAdkMFQb5jW31KcJM22NmNwSIMbLN7Xi7o3/StFtnNJ6vogdZ8oCtoqhETNK4o++wlhuqko8ac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=auPdLCaL; arc=none smtp.client-ip=209.85.210.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com
+Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-7b80de683efso356243b3a.3
+        for <bpf@vger.kernel.org>; Wed, 17 Dec 2025 18:29:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1766024993; x=1766629793; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Mbkt/LgClY9Ed+U/AqFg7ozVmIhVbSqVhAx0YrbLQGM=;
+        b=auPdLCaLlkQy1M/9nZdm6uFAKeS7L18O3gf6MxeCrUa3GCPDKcnXGec8Dgx0IUN+2h
+         JF7sGTiJqVE9U4QSixNOhow+OX+Q3vrxmJZgsgga1GQRplD7VxCtvFe/sB1uE47fPL83
+         +ra7aEqWsQ1RSVWi4zFov6YuI8wlJwXCtGp0C/Wvp0pEzDyt1e1Im6bM/QwRrBS9qaYB
+         zD540uwf/HPJqlWxgJ39x+cACzJVOvT0f4i4ap0EbJQmRjbD3njiBiphGi73th6rsq0w
+         Xh5+pRXwCNCpT1IPTU8HKQgEXOXlonyPE+dfoX5KTLI2FxNdnC9wfVTuhsBSGDJg7PiJ
+         mE+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1766024993; x=1766629793;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Mbkt/LgClY9Ed+U/AqFg7ozVmIhVbSqVhAx0YrbLQGM=;
+        b=VmYg1QbiyGuuIeFe5tN/aXqwvLfUE3V6FxqI8AujHq8KDTkcRiTpIxz90OX+WU0q+P
+         k4IkYNesBI4sLx4Al2IradXrUrjqEDRtLI51whDfRZBPo5qs30Adud1JD3OGcNiysMx4
+         4TySHAoC8L/Z3zsYcKXin5q7J2XnXPPZlob3YYzcyQ3hvI6/Xs3WNHI4zgai/9blvreQ
+         r6qXVQhTsiKaONw0CPZOCmOJj3kSRtnpyIY7CnnphWFF8Ak7NxaG5HmCTuym0btZXnAS
+         R2FfZ5ozi11TtLCOMCu9CCDyO95wbfVA99Iz3xhJgEpHLMDv/5o88iMKrbP8R+k38HTv
+         xvhg==
+X-Forwarded-Encrypted: i=1; AJvYcCUPpHoCq9/CyCWQzy+r17xjBI7LqbV7K0VngLC0XKLlc82k2WtbSpCj5JGF/XKXoBZBGQo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwjyzkwKhlGMW6yMWrtnBZr6i+rpxS8NjTeS+eN9KbMmmh+DaV5
+	3vIYtG3YSqb7j3btqIFQGYOLgWB845qikQL8qi1Af+k2vF6nTYCA+VSDsG7N5UBj8h3IZJfWyte
+	4FWHH/AurzVvtji//VSMtQpoEQA==
+X-Google-Smtp-Source: AGHT+IFE6xajScfzbLpRFiQQS67W5ZN8gStF0mO1QPIpwdD4OiKSevZ12bwmQxwPQs3VZazL0vtBUS/b7RY63UwVGw==
+X-Received: from dlbrj5.prod.google.com ([2002:a05:7022:f405:b0:11f:2e2e:de3])
+ (user=almasrymina job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a05:701b:2902:b0:11b:8f02:a876 with SMTP id a92af1059eb24-11f354cce50mr11251803c88.23.1766024992932;
+ Wed, 17 Dec 2025 18:29:52 -0800 (PST)
+Date: Thu, 18 Dec 2025 02:29:36 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.52.0.313.g674ac2bdf7-goog
+Message-ID: <20251218022948.3288897-1-almasrymina@google.com>
+Subject: [PATCH net-next v2] idpf: export RX hardware timestamping information
+ to XDP
+From: Mina Almasry <almasrymina@google.com>
+To: netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: YiFei Zhu <zhuyifei@google.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, 
+	Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>, 
+	Tony Nguyen <anthony.l.nguyen@intel.com>, Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
+	Andrew Lunn <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>, 
+	Paolo Abeni <pabeni@redhat.com>, Alexander Lobakin <aleksander.lobakin@intel.com>, 
+	Richard Cochran <richardcochran@gmail.com>, intel-wired-lan@lists.osuosl.org, 
+	Mina Almasry <almasrymina@google.com>, 
+	Aleksandr Loktionov <aleksandr.loktionov@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, 15 Dec 2025 22:13:58 +0100
-Jiri Olsa <jolsa@kernel.org> wrote:
-> +/**
-> + * hash_sub - substracts @b from @a and returns the result
-> + * @a: struct ftrace_hash object
-> + * @b: struct ftrace_hash object
-> + *
-> + * Returns struct ftrace_hash object on success, NULL on error.
-> + */
-> +static struct ftrace_hash *hash_sub(struct ftrace_hash *a, struct ftrace_hash *b)
-> +{
-> +	struct ftrace_func_entry *entry, *del;
-> +	struct ftrace_hash *sub;
-> +	int size, i;
-> +
-> +	sub = alloc_and_copy_ftrace_hash(a->size_bits, a);
-> +	if (!sub)
-> +		goto error;
+From: YiFei Zhu <zhuyifei@google.com>
 
-Again, this can be just return NULL;
+The logic is similar to idpf_rx_hwtstamp, but the data is exported
+as a BPF kfunc instead of appended to an skb.
 
-> +
-> +	size = 1 << b->size_bits;
-> +	for (i = 0; i < size; i++) {
+A idpf_queue_has(PTP, rxq) condition is added to check the queue
+supports PTP similar to idpf_rx_process_skb_fields.
 
-You can make this for (int i = 0; ...) too.
+Cc: intel-wired-lan@lists.osuosl.org
 
-> +		hlist_for_each_entry(entry, &b->buckets[i], hlist) {
-> +			del = __ftrace_lookup_ip(sub, entry->ip);
-> +			if (WARN_ON_ONCE(!del))
-> +				goto error;
+Signed-off-by: YiFei Zhu <zhuyifei@google.com>
+Signed-off-by: Mina Almasry <almasrymina@google.com>
+Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
 
-And you can remove the error label here too:
+---
 
-			if (WARN_ON_ONCE(!del)) {
-				free_ftrace_hash(sub);
-				return NULL;
-			}
+v2: https://lore.kernel.org/netdev/20251122140839.3922015-1-almasrymina@google.com/
+- Fixed alphabetical ordering
+- Use the xdp desc type instead of virtchnl one (required some added
+  helpers)
 
+---
+ drivers/net/ethernet/intel/idpf/xdp.c | 29 +++++++++++++++++++++++++++
+ drivers/net/ethernet/intel/idpf/xdp.h | 17 ++++++++++++++++
+ 2 files changed, 46 insertions(+)
 
-> +			remove_hash_entry(sub, del);
-> +			kfree(del);
-> +		}
-> +	}
-> +	return sub;
-> +
-> + error:
-> +	free_ftrace_hash(sub);
-> +	return NULL;
-> +}
-> +
-> +int update_ftrace_direct_del(struct ftrace_ops *ops, struct ftrace_hash *hash)
-> +{
-> +	struct ftrace_hash *old_direct_functions = NULL, *new_direct_functions;
-> +	struct ftrace_hash *old_filter_hash, *new_filter_hash = NULL;
-> +	struct ftrace_func_entry *del, *entry;
+diff --git a/drivers/net/ethernet/intel/idpf/xdp.c b/drivers/net/ethernet/intel/idpf/xdp.c
+index 958d16f87424..7744d6898f74 100644
+--- a/drivers/net/ethernet/intel/idpf/xdp.c
++++ b/drivers/net/ethernet/intel/idpf/xdp.c
+@@ -2,6 +2,7 @@
+ /* Copyright (C) 2025 Intel Corporation */
+ 
+ #include "idpf.h"
++#include "idpf_ptp.h"
+ #include "idpf_virtchnl.h"
+ #include "xdp.h"
+ #include "xsk.h"
+@@ -391,8 +392,36 @@ static int idpf_xdpmo_rx_hash(const struct xdp_md *ctx, u32 *hash,
+ 				    pt);
+ }
+ 
++static int idpf_xdpmo_rx_timestamp(const struct xdp_md *ctx, u64 *timestamp)
++{
++	const struct libeth_xdp_buff *xdp = (typeof(xdp))ctx;
++	struct idpf_xdp_rx_desc desc __uninitialized;
++	const struct idpf_rx_queue *rxq;
++	u64 cached_time, ts_ns;
++	u32 ts_high;
++
++	idpf_xdp_get_qw1(&desc, xdp->desc);
++	rxq = libeth_xdp_buff_to_rq(xdp, typeof(*rxq), xdp_rxq);
++
++	if (!idpf_queue_has(PTP, rxq))
++		return -ENODATA;
++	if (!(idpf_xdp_rx_ts_low(&desc) & VIRTCHNL2_RX_FLEX_TSTAMP_VALID))
++		return -ENODATA;
++
++	cached_time = READ_ONCE(rxq->cached_phc_time);
++
++	idpf_xdp_get_qw3(&desc, xdp->desc);
++
++	ts_high = idpf_xdp_rx_ts_high(&desc);
++	ts_ns = idpf_ptp_tstamp_extend_32b_to_64b(cached_time, ts_high);
++
++	*timestamp = ts_ns;
++	return 0;
++}
++
+ static const struct xdp_metadata_ops idpf_xdpmo = {
+ 	.xmo_rx_hash		= idpf_xdpmo_rx_hash,
++	.xmo_rx_timestamp	= idpf_xdpmo_rx_timestamp,
+ };
+ 
+ void idpf_xdp_set_features(const struct idpf_vport *vport)
+diff --git a/drivers/net/ethernet/intel/idpf/xdp.h b/drivers/net/ethernet/intel/idpf/xdp.h
+index 479f5ef3c604..86be6cae9689 100644
+--- a/drivers/net/ethernet/intel/idpf/xdp.h
++++ b/drivers/net/ethernet/intel/idpf/xdp.h
+@@ -112,11 +112,13 @@ struct idpf_xdp_rx_desc {
+ 	aligned_u64		qw1;
+ #define IDPF_XDP_RX_BUF		GENMASK_ULL(47, 32)
+ #define IDPF_XDP_RX_EOP		BIT_ULL(1)
++#define IDPF_XDP_RX_TS_LOW	GENMASK_ULL(31, 24)
+ 
+ 	aligned_u64		qw2;
+ #define IDPF_XDP_RX_HASH	GENMASK_ULL(31, 0)
+ 
+ 	aligned_u64		qw3;
++#define IDPF_XDP_RX_TS_HIGH	GENMASK_ULL(63, 32)
+ } __aligned(4 * sizeof(u64));
+ static_assert(sizeof(struct idpf_xdp_rx_desc) ==
+ 	      sizeof(struct virtchnl2_rx_flex_desc_adv_nic_3));
+@@ -128,6 +130,8 @@ static_assert(sizeof(struct idpf_xdp_rx_desc) ==
+ #define idpf_xdp_rx_buf(desc)	FIELD_GET(IDPF_XDP_RX_BUF, (desc)->qw1)
+ #define idpf_xdp_rx_eop(desc)	!!((desc)->qw1 & IDPF_XDP_RX_EOP)
+ #define idpf_xdp_rx_hash(desc)	FIELD_GET(IDPF_XDP_RX_HASH, (desc)->qw2)
++#define idpf_xdp_rx_ts_low(desc)	FIELD_GET(IDPF_XDP_RX_TS_LOW, (desc)->qw1)
++#define idpf_xdp_rx_ts_high(desc)	FIELD_GET(IDPF_XDP_RX_TS_HIGH, (desc)->qw3)
+ 
+ static inline void
+ idpf_xdp_get_qw0(struct idpf_xdp_rx_desc *desc,
+@@ -166,6 +170,19 @@ idpf_xdp_get_qw2(struct idpf_xdp_rx_desc *desc,
+ #endif
+ }
+ 
++static inline void
++idpf_xdp_get_qw3(struct idpf_xdp_rx_desc *desc,
++		 const struct virtchnl2_rx_flex_desc_adv_nic_3 *rxd)
++{
++#ifdef __LIBETH_WORD_ACCESS
++	desc->qw3 = ((const typeof(desc))rxd)->qw3;
++#else
++	desc->qw3 = ((u64)le32_to_cpu(rxd->ts_high) << 32) |
++		    ((u64)le16_to_cpu(rxd->fmd6) << 16) |
++		    le16_to_cpu(rxd->l2tag1);
++#endif
++}
++
+ void idpf_xdp_set_features(const struct idpf_vport *vport);
+ 
+ int idpf_xdp(struct net_device *dev, struct netdev_bpf *xdp);
 
-One variable per line.
-
-> +	unsigned long size, i;
-> +	int err = -EINVAL;
-> +
-> +	if (!hash_count(hash))
-> +		return -EINVAL;
-> +	if (check_direct_multi(ops))
-> +		return -EINVAL;
-> +	if (!(ops->flags & FTRACE_OPS_FL_ENABLED))
-> +		return -EINVAL;
-> +	if (direct_functions == EMPTY_HASH)
-> +		return -EINVAL;
-> +
-> +	mutex_lock(&direct_mutex);
-> +
-> +	old_filter_hash = ops->func_hash ? ops->func_hash->filter_hash : NULL;
-> +
-> +	if (!hash_count(old_filter_hash))
-> +		goto out_unlock;
-> +
-> +	/* Make sure requested entries are already registered. */
-> +	size = 1 << hash->size_bits;
-> +	for (i = 0; i < size; i++) {
-
-	for (int i = 0; ...) 
-
--- Steve
-
-> +		hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
-> +			del = __ftrace_lookup_ip(direct_functions, entry->ip);
-> +			if (!del || del->direct != entry->direct)
-> +				goto out_unlock;
-> +		}
-> +	}
-> +
-> +	err = -ENOMEM;
-> +	new_filter_hash = hash_sub(old_filter_hash, hash);
-> +	if (!new_filter_hash)
-> +		goto out_unlock;
-> +
-> +	new_direct_functions = hash_sub(direct_functions, hash);
-> +	if (!new_direct_functions)
-> +		goto out_unlock;
-> +
-> +	/* If there's nothing left, we need to unregister the ops. */
-> +	if (ftrace_hash_empty(new_filter_hash)) {
-> +		err = unregister_ftrace_function(ops);
-> +		if (!err) {
-> +			/* cleanup for possible another register call */
-> +			ops->func = NULL;
-> +			ops->trampoline = 0;
-> +			ftrace_free_filter(ops);
-> +			ops->func_hash->filter_hash = NULL;
-> +		}
-> +	} else {
-> +		err = ftrace_update_ops(ops, new_filter_hash, EMPTY_HASH);
-> +		/*
-> +		 * new_filter_hash is dup-ed, so we need to release it anyway,
-> +		 * old_filter_hash either stays on error or is already released
-> +		 */
-> +	}
-> +
-> +	if (err) {
-> +		/* free the new_direct_functions */
-> +		old_direct_functions = new_direct_functions;
-> +	} else {
-> +		rcu_assign_pointer(direct_functions, new_direct_functions);
-> +	}
-> +
-> + out_unlock:
-> +	mutex_unlock(&direct_mutex);
-> +
-> +	if (old_direct_functions && old_direct_functions != EMPTY_HASH)
-> +		call_rcu_tasks(&old_direct_functions->rcu, register_ftrace_direct_cb);
-> +	free_ftrace_hash(new_filter_hash);
-> +
-> +	return err;
-> +}
-> +
->  #endif /* CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS */
->  
->  /**
+base-commit: 8f7aa3d3c7323f4ca2768a9e74ebbe359c4f8f88
+-- 
+2.52.0.313.g674ac2bdf7-goog
 
 
