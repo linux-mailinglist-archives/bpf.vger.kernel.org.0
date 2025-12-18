@@ -1,137 +1,216 @@
-Return-Path: <bpf+bounces-77029-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77043-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F837CCD2B6
-	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 19:28:23 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 280B6CCDAA8
+	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 22:21:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 3F541305AE3E
-	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 18:28:12 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 37144302C5CD
+	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 21:21:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF63F325728;
-	Thu, 18 Dec 2025 18:28:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2B6832E697;
+	Thu, 18 Dec 2025 21:21:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xj1cMl8Y"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PIHdo7wx"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D30D13126BE;
-	Thu, 18 Dec 2025 18:28:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B00262E54DE
+	for <bpf@vger.kernel.org>; Thu, 18 Dec 2025 21:21:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766082481; cv=none; b=n5AWmQp12d/c/pYZj6AuOShhiDCKGRn7Z6HkifbytwKF+/qVKk+q39csVJrYlmVCcqj6FFyXuuVqBYBkI0/1JrJGJEMmtod0dHI20QhWdgJDmZRcg/prUr4hDSEmbtG4Gue0MhzPEJXd/wq4bZAiTZEgeBDDJ2IR9+kGQ3yRynA=
+	t=1766092866; cv=none; b=RuBD++Vnl/nkaB2MjwTteOhYpcGVL3TGEkYNsde3x/JcVwLHG/N7tHdXp/Sh7GQ0g/NXAvsftUeoNJ8EFiUCjhBMpURJwPjRj6Sul7i3ntHEc6UCStyyCaISYO2QetVkCamWcL+d9J4+OgbjX5KwhHgTvg+Of0ueYfIwRojgiv0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766082481; c=relaxed/simple;
-	bh=sOmCQApvY7MQRYUL2cFCwah6QCaJh7ECm+G7QeKmctY=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=JrNhHMBnGMttyPq6kW0t7rZU/EYMoSedtKpaC+0Lb3fefa8LPBpBK+VphI9tmFy2sg68mLfT2ZyX6VhLn0/cDWI/e4Eiw9wk8ozzNYYgmRyXCNXX3PVAdjl5sgYwdCc4ZfEuOQcvSltFLCPE/JWKPOyknyb69R/0Tkux6axa6Cc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xj1cMl8Y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D059C16AAE;
-	Thu, 18 Dec 2025 18:27:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766082478;
-	bh=sOmCQApvY7MQRYUL2cFCwah6QCaJh7ECm+G7QeKmctY=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=Xj1cMl8Ys+hcTQuaHtyW5wOtmtfENQ+tqKZMOapXSpCwOtxGOozC0iJeUNeqLloes
-	 XaWNDFVC55YOSnmsYPGsIT/f7SXmTbzktIuUhRNOp0N4I1sKn8E+3gakiYZbcF5gKS
-	 V+BgW7thdQr91U+QbK5vN8uj9JV1LrinrXBtDzGkYmsXTogtteboRvztMQlL+5ZPJY
-	 m+fX9O4G8b5BlmEfS6fbb3/pIZHY1NaiJsnNFGlKIbZxx7GxyDmB+s2f+YvDqL39QG
-	 bECeZKOaiTimQV0unnNo9zzwjqdIjBIfmUl6Ackzbk2jofCGMvnPSI6xXTpISIDIY8
-	 m7KcF/h8efwKw==
-Content-Type: multipart/mixed; boundary="===============3549994344081258731=="
+	s=arc-20240116; t=1766092866; c=relaxed/simple;
+	bh=cqUjv37bQrHWjLeiJzydyeedJGJwjMmSj74naJ3C0pE=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=PTaEMXPZC9rG7itxl+Hn8wRA25Os6YIqDaGyXD+I8siOuW9+Xmjk7vz0hkmpefWyyTE3kuxAhaOP8wQ+/+uKSUFrcVTyq/3Ew4Y0fPp5P4rnQsuwJwDL+dInBX9ab7TNUL+D+chCqGI3W+Qb5JItBwV4wk5APuOczSH2QubZ4fQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PIHdo7wx; arc=none smtp.client-ip=209.85.160.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-3e12fd71984so823512fac.2
+        for <bpf@vger.kernel.org>; Thu, 18 Dec 2025 13:21:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1766092863; x=1766697663; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=c9tipiql2onxACO3kjd/0S/XiUV13p9feMh/zj3zK8U=;
+        b=PIHdo7wxQ5KTyIaNvlTv/MIue42E8kFiX3o7eolqvaKRiMqnQvUJEvISy2jCJzyTFi
+         CDTSvV50IUIECHO0maGBTOYAXbN/d4DaoAGhJ61TDAGYmqSyurSBMAXD/Gx/MJFBAVyp
+         OzXF3Ta1ni6pAUiE9DLDMPKKJZb/Vr0IOZVCV2UvjMDT8vymowc27aNrUqSeAMiWsNbO
+         x5V+ehRU/mfGNgx96RLAiRAgpwZ7rvw0sWk1sQMMEyi9cs6eol+SDxXB/mWmwHmXYIZk
+         N/c6L6WZ8HQTaQQ34bXc4CvLWkJofB0dwQFP+wCDCivFZ7v4lgeJvlKZEA6TcHwxqb4p
+         sr0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1766092863; x=1766697663;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=c9tipiql2onxACO3kjd/0S/XiUV13p9feMh/zj3zK8U=;
+        b=TGSyXqFdzPY2iitZluQJgo5RdURKcMiGR2/VJ+w8S8SuvAGYQ3SF+3/ob43vP5N1CP
+         NyJh+02G7g8XZsJ8uqS1HPzu7qog5iIDft/9Tr4C5mM9B26KHRsjExUbgo4J4i0jRVUa
+         EI7wv7deAYlybyuN5COH0+3ndpRQVqzueJGdECwJ/AAl3HxUhG65OmW4yzNe7RI8z4Gv
+         ikiaf0ku3XFrRIFdyf9eF3IIEw45O8E59FjGJSfVnk12iyzWK58Yr6npyBWaeQ34Dxn3
+         g1LBT0iF0EXhvT6ptjyL/QIx7ARf8NmksKgWW0fY5XqVk/vgVriGX7nKOumMpBfvFHmk
+         d91g==
+X-Gm-Message-State: AOJu0Yzo/WfMRBXB++g3eXdNffawPPFJtWoxYcYLDMxEguxugpJeLxzW
+	xKc23B7b9OR/xoK9uEHsF+utEFAUACGm066Bi/7gtjFVZWRnPc0smvx1
+X-Gm-Gg: AY/fxX7xpFLavZaGxo9S0favyK2xPNrbIymcssAHH48H3iPI+W6LBY5f9geDKdTCzJG
+	EbrUUlV/d5vDnPUUXUrkAeXm8BhaVuRbR5oITq9142dUUy7i868zrVaGb+vdySB5liz4/C13RsA
+	oK0ao5iqckQYccccgR5wGdfbqJEqX66nZfO9k+n7yrfuErF4/VwbuFpZtBKmaciGks5T8nS1uvO
+	d24tAc3x1pB6nqkuLvkgNoUXZ7OPjTqRv8egRcXL2kej1oMXThmE0lEp2ISARsgzuU1PcaM4Yhn
+	gZAgzUFoM3/lJMla7p1x2EtSyBKsWGP4hRvcPu4VynmqkP/CpMJrafNBD5HzY3Z+rcLew/By04t
+	SPamzp9rG9iwb0uTlF8nTjej3AE57W5RiBV4nFG5RYgLsnMtfm0MiWMmgjOq0VBYpmyNcQkIlYT
+	Sk11DHk2FP09CNUWRL2tK/4uJE27N9PJud1MTE
+X-Google-Smtp-Source: AGHT+IFmxk3YATonxLCiLcbn2iIMS7nFOUUgNJH1YIJWm9l0xXgphXvwi2zor2XCGLSbRXvcDbeAAQ==
+X-Received: by 2002:a17:903:1249:b0:2a1:3cd9:a734 with SMTP id d9443c01a7336-2a2f2a4f99emr2804215ad.43.1766085667750;
+        Thu, 18 Dec 2025 11:21:07 -0800 (PST)
+Received: from ?IPv6:2a03:83e0:115c:1:d912:2088:c593:6daa? ([2620:10d:c090:500::7:e642])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a2f3c9b52asm566865ad.45.2025.12.18.11.21.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Dec 2025 11:21:07 -0800 (PST)
+Message-ID: <8be2cafa00b759220e73a6ce837ac9a3ff52da1f.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v4 5/8] kbuild: Sync kconfig when
+ PAHOLE_VERSION changes
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Ihor Solodrai <ihor.solodrai@linux.dev>, Alan Maguire	
+ <alan.maguire@oracle.com>, Alexei Starovoitov <ast@kernel.org>, Andrea
+ Righi	 <arighi@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>,
+ Andrii Nakryiko	 <andrii@kernel.org>, Bill Wendling <morbo@google.com>,
+ Changwoo Min	 <changwoo@igalia.com>, Daniel Borkmann
+ <daniel@iogearbox.net>, David Vernet	 <void@manifault.com>, Donglin Peng
+ <dolinux.peng@gmail.com>, Hao Luo	 <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, John Fastabend	 <john.fastabend@gmail.com>, Jonathan
+ Corbet <corbet@lwn.net>, Justin Stitt	 <justinstitt@google.com>, KP Singh
+ <kpsingh@kernel.org>, Martin KaFai Lau	 <martin.lau@linux.dev>, Nathan
+ Chancellor <nathan@kernel.org>, Nick Desaulniers	
+ <nick.desaulniers+lkml@gmail.com>, Nicolas Schier <nsc@kernel.org>, Shuah
+ Khan	 <shuah@kernel.org>, Song Liu <song@kernel.org>, Stanislav Fomichev	
+ <sdf@fomichev.me>, Tejun Heo <tj@kernel.org>, Yonghong Song	
+ <yonghong.song@linux.dev>
+Cc: bpf@vger.kernel.org, dwarves@vger.kernel.org,
+ linux-kbuild@vger.kernel.org, 	linux-kernel@vger.kernel.org,
+ sched-ext@lists.linux.dev
+Date: Thu, 18 Dec 2025 11:21:04 -0800
+In-Reply-To: <20251218003314.260269-6-ihor.solodrai@linux.dev>
+References: <20251218003314.260269-1-ihor.solodrai@linux.dev>
+	 <20251218003314.260269-6-ihor.solodrai@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <fe0e4007f3dac99d114d50ed365885795aa2c22f648e72b57c5ff7e8762f57ce@mail.kernel.org>
-In-Reply-To: <20251218175628.1460321-6-ameryhung@gmail.com>
-References: <20251218175628.1460321-6-ameryhung@gmail.com>
-Subject: Re: [PATCH bpf-next v3 05/16] bpf: Change local_storage->lock and b->lock to rqspinlock
-From: bot+bpf-ci@kernel.org
-To: ameryhung@gmail.com,bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org,alexei.starovoitov@gmail.com,andrii@kernel.org,daniel@iogearbox.net,memxor@gmail.com,martin.lau@kernel.org,kpsingh@kernel.org,yonghong.song@linux.dev,song@kernel.org,haoluo@google.com,ameryhung@gmail.com,kernel-team@meta.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Thu, 18 Dec 2025 18:27:58 +0000 (UTC)
 
---===============3549994344081258731==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+On Wed, 2025-12-17 at 16:33 -0800, Ihor Solodrai wrote:
+> This patch implements kconfig re-sync when the pahole version changes
+> between builds, similar to how it happens for compiler version change
+> via CC_VERSION_TEXT.
+>=20
+> Define PAHOLE_VERSION in the top-level Makefile and export it for
+> config builds. Set CONFIG_PAHOLE_VERSION default to the exported
+> variable.
+>=20
+> Kconfig records the PAHOLE_VERSION value in
+> include/config/auto.conf.cmd [1].
+>=20
+> The Makefile includes auto.conf.cmd, so if PAHOLE_VERSION changes
+> between builds, make detects a dependency change and triggers
+> syncconfig to update the kconfig [2].
+>=20
+> For external module builds, add a warning message in the prepare
+> target, similar to the existing compiler version mismatch warning.
+>=20
+> Note that if pahole is not installed or available, PAHOLE_VERSION is
+> set to 0 by pahole-version.sh, so the (un)installation of pahole is
+> treated as a version change.
+>=20
+> See previous discussions for context [3].
+>=20
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tr=
+ee/scripts/kconfig/preprocess.c?h=3Dv6.18#n91
+> [2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tr=
+ee/Makefile?h=3Dv6.18#n815
+> [3] https://lore.kernel.org/bpf/8f946abf-dd88-4fac-8bb4-84fcd8d81cf0@orac=
+le.com/
+>=20
+> Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
+> ---
 
-> diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
-> index fa629a180e9e..1d21ec11c80e 100644
-> --- a/kernel/bpf/bpf_local_storage.c
-> +++ b/kernel/bpf/bpf_local_storage.c
+When building BPF selftest modules the pahole version change was
+detected, but it seems that BTF rebuild was not triggered:
 
-[ ... ]
+  $ (cd ./tools/testing/selftests/bpf/test_kmods/; make -j)
+  make[1]: Entering directory '/home/ezingerman/bpf-next'
+  make[2]: Entering directory '/home/ezingerman/bpf-next/tools/testing/self=
+tests/bpf/test_kmods'
+    CC [M]  bpf_testmod.o
+    CC [M]  bpf_test_no_cfi.o
+    CC [M]  bpf_test_modorder_x.o
+    CC [M]  bpf_test_modorder_y.o
+    CC [M]  bpf_test_rqspinlock.o
+    MODPOST Module.symvers
+    CC [M]  bpf_testmod.mod.o
+    CC [M]  .module-common.o
+    CC [M]  bpf_test_no_cfi.mod.o
+    CC [M]  bpf_test_modorder_x.mod.o
+    CC [M]  bpf_test_modorder_y.mod.o
+    CC [M]  bpf_test_rqspinlock.mod.o
+    LD [M]  bpf_test_modorder_x.ko
+    LD [M]  bpf_testmod.ko
+    LD [M]  bpf_test_modorder_y.ko
+    LD [M]  bpf_test_no_cfi.ko
+    BTF [M] bpf_test_modorder_x.ko
+    LD [M]  bpf_test_rqspinlock.ko
+    BTF     bpf_test_modorder_x.ko
+    BTF [M] bpf_test_no_cfi.ko
+    BTF [M] bpf_test_modorder_y.ko
+    BTF [M] bpf_testmod.ko
+    BTF     bpf_test_no_cfi.ko
+    BTF     bpf_test_modorder_y.ko
+    BTF [M] bpf_test_rqspinlock.ko
+    BTF     bpf_testmod.ko
+    BTF     bpf_test_rqspinlock.ko
+    BTFIDS  bpf_test_modorder_x.ko
+    BTFIDS  bpf_test_modorder_y.ko
+    BTFIDS  bpf_test_no_cfi.ko
+    BTFIDS  bpf_testmod.ko
+    OBJCOPY bpf_test_modorder_x.ko.BTF
+    BTFIDS  bpf_test_rqspinlock.ko
+    OBJCOPY bpf_test_no_cfi.ko.BTF
+    OBJCOPY bpf_test_modorder_y.ko.BTF
+    OBJCOPY bpf_testmod.ko.BTF
+    OBJCOPY bpf_test_rqspinlock.ko.BTF
+  make[2]: Leaving directory '/home/ezingerman/bpf-next/tools/testing/selft=
+ests/bpf/test_kmods'
+  make[1]: Leaving directory '/home/ezingerman/bpf-next'
+  [~/bpf-next]
+  $ (cd ./tools/testing/selftests/bpf/test_kmods/; make -j)
+  make[1]: Entering directory '/home/ezingerman/bpf-next'
+  make[2]: Entering directory '/home/ezingerman/bpf-next/tools/testing/self=
+tests/bpf/test_kmods'
+  make[2]: Leaving directory '/home/ezingerman/bpf-next/tools/testing/selft=
+ests/bpf/test_kmods'
+  make[1]: Leaving directory '/home/ezingerman/bpf-next'
 
-> @@ -382,7 +390,10 @@ int bpf_selem_unlink(struct bpf_local_storage_elem *selem, bool reuse_now)
->  	local_storage = rcu_dereference_check(selem->local_storage,
->  					      bpf_rcu_lock_held());
->
-> -	raw_spin_lock_irqsave(&local_storage->lock, flags);
-> +	err = raw_res_spin_lock_irqsave(&local_storage->lock, flags);
-> +	if (err)
-> +		return err;
+... update pahole from version 131 to 132 ...
 
-This change makes bpf_selem_unlink() failable, but bpf_local_storage_map_free()
-calls it in a while loop that continues iterating while hlist_first_rcu()
-returns elements:
+  [~/bpf-next]
+  $ (cd ./tools/testing/selftests/bpf/test_kmods/; make -j)
+  make[1]: Entering directory '/home/ezingerman/bpf-next'
+  make[2]: Entering directory '/home/ezingerman/bpf-next/tools/testing/self=
+tests/bpf/test_kmods'
+  warning: pahole version differs from the one used to build the kernel
+    The kernel was built with: 131
+    You are using:             132
+  make[2]: Leaving directory '/home/ezingerman/bpf-next/tools/testing/selft=
+ests/bpf/test_kmods'
+  make[1]: Leaving directory '/home/ezingerman/bpf-next'
 
-    while ((selem = hlist_entry_safe(
-            rcu_dereference_raw(hlist_first_rcu(&b->list)), ...))) {
-        WARN_ON(bpf_selem_unlink(selem, true));
-    }
-
-If bpf_selem_unlink() fails (returns error), the selem is not removed from
-b->list, so hlist_first_rcu() returns the same selem again. Would this cause
-an infinite loop printing warnings until the system becomes unresponsive?
-
-[ ... ]
-
-> @@ -719,7 +743,7 @@ void bpf_local_storage_destroy(struct bpf_local_storage *local_storage)
->  	 * when unlinking elem from the local_storage->list and
->  	 * the map's bucket->list.
->  	 */
-> -	raw_spin_lock_irqsave(&local_storage->lock, flags);
-> +	WARN_ON(raw_res_spin_lock_irqsave(&local_storage->lock, flags));
->  	hlist_for_each_entry_safe(selem, n, &local_storage->list, snode) {
->  		/* Always unlink from map before unlinking from
->  		 * local_storage.
->  		 */
-> -		bpf_selem_unlink_map(selem);
-> +		WARN_ON(bpf_selem_unlink_map(selem));
-
-If raw_res_spin_lock_irqsave() fails, WARN_ON() prints a warning but does
-not prevent execution from continuing. The code then proceeds to iterate
-local_storage->list without holding local_storage->lock, and eventually
-calls raw_res_spin_unlock_irqrestore() at the end without having acquired
-the lock. Does this cause issues with the rqspinlock held-lock tracking,
-which unconditionally decrements its counter in res_spin_unlock()?
-
-Additionally, if bpf_selem_unlink_map() fails, the selem remains linked to
-the map's bucket list, but execution continues and
-bpf_selem_unlink_storage_nolock() removes it from local_storage->list and
-adds it to the free list. When the selem is later freed, would the map's
-bucket still hold a dangling reference to it?
-
-> @@ -734,7 +758,7 @@ void bpf_local_storage_destroy(struct bpf_local_storage *local_storage)
->  		free_storage = bpf_selem_unlink_storage_nolock(
->  			local_storage, selem, &free_selem_list);
->  	}
-> -	raw_spin_unlock_irqrestore(&local_storage->lock, flags);
-> +	raw_res_spin_unlock_irqrestore(&local_storage->lock, flags);
-
-[ ... ]
-
-
----
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
-
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/20346662777
-
---===============3549994344081258731==--
+Is this an expected behavior?
 
