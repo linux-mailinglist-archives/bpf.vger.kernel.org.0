@@ -1,217 +1,328 @@
-Return-Path: <bpf+bounces-77057-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77058-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF59ACCDE1F
-	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 23:52:44 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id C05A8CCDE57
+	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 00:02:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 53E603012BFC
-	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 22:51:53 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 73DBE302E7DD
+	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 23:02:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4434313523;
-	Thu, 18 Dec 2025 22:51:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8062F2BD022;
+	Thu, 18 Dec 2025 23:02:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PIDqe7hk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SN2NDpu7"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EBFC2594BD
-	for <bpf@vger.kernel.org>; Thu, 18 Dec 2025 22:51:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 689DF155CB3
+	for <bpf@vger.kernel.org>; Thu, 18 Dec 2025 23:02:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766098311; cv=none; b=bUL8K7IzE7gKmjhJQceon0Pu8wBmdWnAbeG9ykeaS4GA503PTCqjH8YhoMv2wXDQKcGPAqC53xvG5XVwVqQgRganOgmRXNL5OB0bdpbQjh3yWexndeMbKpgOug50yXshwUIphXDkNgD0zMz/0ct3FytsqmkssnsWDcEnXj1XD6A=
+	t=1766098964; cv=none; b=I233mg7JpkfV4wpox+zJXxnf+UoXK5UFIn5qvz3erNB79xVjLsQPrljhSrTzdfvhPEzxKkuoGizX54P4wOpfzWMj1jh2sTPQ/2Vjj047d0aDSCCkJCNechecXe2/eXDzlFDUXTuwQ74z1cj4mx19m7LDdiJHs8DkqgExibY37nI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766098311; c=relaxed/simple;
-	bh=lSjRZ2SY0il4ctEkkPLVq88TlaFK2ViOJ7s+feALWaw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IUdbxjAeEbA+jJYL2ztj+3moxyw1zvFEszgH3nfhDzjuxlwg07qlC4tTjir1YCF2xLR8N3anHYu4my8+6I1RRbgMUfp7U2f/X6vQYihA+s7KxrnOiLmVzQ/Fb4v2n4/0q43vEGZgAfBzbGnG3/znWit0StjHkDh3zRMU18s3YTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PIDqe7hk; arc=none smtp.client-ip=95.215.58.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <9e402939-40ea-4da2-aad1-43d2afb74a83@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1766098305;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yWoFoevjl2IZHBiJsZNYT4pM1ZD9eXdAhMjXrq6FV5k=;
-	b=PIDqe7hkpU14K5verXOaIjWtB9nZvMKJ1t5ZAVbcJkyoea3CBtbBSVpEgrxywQ7NZKEqih
-	vC2++It+TXdbYZAzGnTKsf5wiBIO8xk5vUc3P86ifaRSDdowmC0a4emBI/fZzXEk355VXW
-	DArPwdaKm3JDXMg0zhAMVjT9DlqLblE=
-Date: Thu, 18 Dec 2025 14:51:27 -0800
+	s=arc-20240116; t=1766098964; c=relaxed/simple;
+	bh=golrgwC894bDUpEOnzVILcWqgZtIjjOnqsfYV4miW6k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=saugd0bvmMUvbmqoQoI4tv4Kk4b+qF3Fd/5fyAib4+aRfmhSzJj18eAURZFC1T5C2FviBNyE7iVGymsME1qTzFeLuX/5mR8OoMB4SaHvoIwjl2WZc20kUSiOnVTrGHepDGFR5zuM1EOhsVd1ki3D0VYIj+T06hXvYgumuyuAHSQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SN2NDpu7; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-7aae5f2633dso1212535b3a.3
+        for <bpf@vger.kernel.org>; Thu, 18 Dec 2025 15:02:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1766098962; x=1766703762; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yuFIl+Krj0icN4Ltpgq4z2geUho1YZykaCMeuhGGAEU=;
+        b=SN2NDpu7bu3MgPQjUgDx1p2vZVmviZZgBK7djCR33lMdGLlKYgci3aodmLxC+xUg0l
+         atglRv35bo1vubYxOdO1TNmdp8WMKHSFPfmFkVrZrct4oeISB6Jg7kUmRhWgDvXonUP+
+         2jpQ9C5qb9+Tq596i2kvNd27RwzSQNLgAfJV+PTCxy96j7NtX1/SPP/O60T/02RElTbu
+         STHfznWP0wq/Bz8qoJAziVNvyCkzK0ukz+tb84ygBNr1BGbFiW/W/vGULhu1OYCqnKUU
+         hXdg4dBYzmKBmrrl6PemVREpqYnyepiI4LBdF7rbvETmCleIzj5Aqyubzz/g2/omIbhG
+         LUNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1766098962; x=1766703762;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=yuFIl+Krj0icN4Ltpgq4z2geUho1YZykaCMeuhGGAEU=;
+        b=sGSxsLu2T1m+KlkaoXvH52J2z/rJmv+TJV0IahQcN9u8ObC85hBSbuoIU5WVUAkFTR
+         9unlkc7k94iQX+GgnaurNu2Rp81tIJBFOqmQJuPjpzHTzJJyjj373BRUaLK0EnchycGy
+         z/rYok9pSQxrdXn0Y+MtbuXtivluageVhkWvjGN4aQsBqxcfUe40aW0qaba/hy8ERHPj
+         IVdRasxmjCvxw1Hh1Cp/OPMfdsjJW3RqmriFU09gyTKUsNJYUNZH25hu+TlkUkVPtdua
+         QZESUlupjEVRTn5qQtluBXRll+yo1laEE4HmUdG0yBZsVhvQgEvbAym0+yHcHpbfsYEy
+         YP2w==
+X-Forwarded-Encrypted: i=1; AJvYcCXNh5OccTEd0IkJFIgNdWo0ASnXikL4aPiytzBi1apM22F067CDi1maxlLd7yof9pl3h1M=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwY0Bo5w6yO5ySX8H4fYoQPygac2p6bXXy1hgHQiLXsq9uRJ6ht
+	aVNp+la3GHojQl45yUpPhP+v/d+eKZvP1UXWYyhgIv7KEuktFkuYSRwo79cPaDxjvzWwxiqa+0l
+	Jmd/USO4lsOCNOeu+ASXf2Koy/5jnGQrPIXr0
+X-Gm-Gg: AY/fxX7N/tsXOif8RGO91HcqoKMnTeLy+lm+1hQlAq3CD1hjcBUx9lSpiJ8cmbnJcnT
+	zbdGnWqYMKk8gAHaGB3Rj5/hrh+K52Zto/N+hi9uM4+zjfNiUjnR4A6hvNvopncBwN9CchzDp/F
+	tNZURLwPPqYeD1NmXXu7G/PwxPxPdNZoGxD0t8ivSFgEUl8fNCKkOy7BI48rMDqK4WkOPEo86d0
+	WdLimETTb9bmOe/8UhFLKOWjs+f9BSxp6nbY0cz1Sj3GLfWkseiGX48Dk1IlTIwggcAzHtXp57u
+	6uR32cxIyes=
+X-Google-Smtp-Source: AGHT+IF5BqdtT0aqC6CHYpHv3iKtRcvoWhextWf5LJGp03KRgBGqvQkU7UOkfqvrKi71giMhVUCA2Q/xwLgTd6srse8=
+X-Received: by 2002:a05:6a20:244f:b0:36a:d3c9:efa5 with SMTP id
+ adf61e73a8af0-376aa2f47demr931104637.52.1766098961547; Thu, 18 Dec 2025
+ 15:02:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: bpf: mmap_file LSM hook allows NULL pointer dereference
-Content-Language: en-GB
-To: Matt Bobrowski <mattbobrowski@google.com>,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>
-Cc: =?UTF-8?B?5qKF5byA5b2m?= <kaiyanm@hust.edu.cn>,
- Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>,
- hust-os-kernel-patches@googlegroups.com, Yinhao Hu <dddddd@hust.edu.cn>,
- dzm91@hust.edu.cn, KP Singh <kpsingh@kernel.org>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>
-References: <5e460d3c.4c3e9.19adde547d8.Coremail.kaiyanm@hust.edu.cn>
- <aS7BvzTJ-2Xo7ncq@google.com> <aS79vYLul06oLPT2@google.com>
- <CAADnVQ+NASuOdgu-bD=xXtd8UM_N-83gKci3XQG1RHLbSFfwgQ@mail.gmail.com>
- <aS87V-zpo-ZHZzu0@google.com>
- <CAADnVQ+UDCh5JKjUpX63xcaV3CEcj18W2C+8TZ4QFYKGV6GZKw@mail.gmail.com>
- <aS_5K_CJcB1rIEVj@google.com>
- <CAADnVQLf10J688CXFWg+=UaOv_zPTr3ViqNFcjbe5u4no2o_GA@mail.gmail.com>
- <aTlFKI2IeHQ2-TSE@google.com> <aTs6JTBrzEa0WJwd@google.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <aTs6JTBrzEa0WJwd@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20251218113051.455293-1-dolinux.peng@gmail.com> <20251218113051.455293-2-dolinux.peng@gmail.com>
+In-Reply-To: <20251218113051.455293-2-dolinux.peng@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 18 Dec 2025 15:02:29 -0800
+X-Gm-Features: AQt7F2pmAL5PmsD6eW2HWmbPprGlolgPpSc2nQJDVgC8agSd_uA6CzpOVGtov-U
+Message-ID: <CAEf4BzYJpw+yEv=g9P1z0NS8Qw8PdFf7039MT0PSv30DwkjBzw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v10 01/13] libbpf: Add BTF permutation support
+ for type reordering
+To: Donglin Peng <dolinux.peng@gmail.com>
+Cc: ast@kernel.org, eddyz87@gmail.com, zhangxiaoqin@xiaomi.com, 
+	ihor.solodrai@linux.dev, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	pengdonglin <pengdonglin@xiaomi.com>, Alan Maguire <alan.maguire@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-
-On 12/11/25 1:39 PM, Matt Bobrowski wrote:
-> On Wed, Dec 10, 2025 at 10:02:16AM +0000, Matt Bobrowski wrote:
->> On Wed, Dec 03, 2025 at 10:23:43AM -0800, Alexei Starovoitov wrote:
->>> On Wed, Dec 3, 2025 at 12:47 AM Matt Bobrowski <mattbobrowski@google.com> wrote:
->>>>> We can play tricks with __weak. Like:
->>>>>
->>>>> diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
->>>>> index 7cb6e8d4282c..60d269a85bf1 100644
->>>>> --- a/kernel/bpf/bpf_lsm.c
->>>>> +++ b/kernel/bpf/bpf_lsm.c
->>>>> @@ -21,7 +21,7 @@
->>>>>    * function where a BPF program can be attached.
->>>>>    */
->>>>>   #define LSM_HOOK(RET, DEFAULT, NAME, ...)      \
->>>>> -noinline RET bpf_lsm_##NAME(__VA_ARGS__)       \
->>>>> +__weak noinline RET bpf_lsm_##NAME(__VA_ARGS__)        \
->>>>>
->>>>> diff kernel/bpf/bpf_lsm_proto.c
->>>>>
->>>>> +int bpf_lsm_mmap_file(struct file *file__nullable, unsigned long reqprot,
->>>>> +                     unsigned long prot, unsigned long flags)
->>>>> +{
->>>>> +       return 0;
->>>>> +}
->>>>>
->>>>> and above one with __nullable will be in vmlinux BTF.
->>>>>
->>>>> afaik __weak functions are not removed by linker when in non-LTO,
->>>>> but it's still better than
->>>>> +#define bpf_lsm_mmap_file bpf_lsm_mmap_file__original
->>>>> No need to change bpf_lsm.h either.
->>>> Annotating with a weak attribute would be quite nice, but the compiler
->>>> will complain about the redefinition of the symbol
->>>> bpf_lsm_mmap_file. To avoid this, we'd still need to rely on the
->>>> rename and ignore dance by using the aforementioned define, which at
->>>> that point would still result in both symbols being exposed in both
->>>> BTF and the .text section.
->>> Not quite. You missed this part in the above:
->>>
->>>>> diff kernel/bpf/bpf_lsm_proto.c
->>> it's a different file.
->> Yes, yes, this will work. However, as discussed, it's fundamentally
->> reliant on a small "hack" which I've implemented within
->> kernel/bpf/Makefile here [0] to workaround current pahole
->> deduplication logic.
->>
->> Andrii and Eduard,
->>
->> I’d like your input on a pahole BTF generation issue which I've
->> recently come across. In the series I just sent [0], I had to
->> implement a workaround to force pahole to process bpf_lsm_proto.o
->> before bpf_lsm.o.
->>
->> This was necessary to ensure pahole generates BTF for the strong
->> definition of bpf_lsm_mmap_file() (in bpf_lsm_proto.c) rather than the
->> weak definition (in bpf_lsm.c). Without this forced ordering, pahole
->> processed the weak definition first, resulting in a state array like
->> this:
->>
->> ```
->> btf_encoder.func_states.array[N] = bpf_lsm_mmap_file (weak
->> definition from bpf_lsm.o)
->>
->> btf_encoder.func_states.array[N+1] = bpf_lsm_mmap_file (strong
->> definition from bpf_lsm_proto.o)
->> ```
->>
->> Because the deduplication logic in btf_encoder__add_saved_funcs()
->> folds duplicates (those determined by saved_functions_combine()) into
->> the first occurrence, the resulting BTF was derived from the weak
->> definition. This is incorrect, as the strong definition is the one
->> actually linked into the final vmlinux image.
->>
->> An obvious fix that immediately came to mind here was to essentially
->> teach pahole about strong function prototype definitions, and prefer
->> to emit BTF for those instead of any weak defined counterparts?
-> Thinking about this a little more. Perhaps whilst in
-> btf_encoder__add_saved_funcs() we should only emit BTF for any
-> duplicated function within a CU which happen to match the
-> corresponding entry within the backing ELF symtab? We can do this by
-> checking whether the virtual address stored within DW_AT_low_pc
-> matches that of what's stored in the st_value field for the
-> corresponding ELF symtab entry? For example, for bpf_lsm_mmap_file we
-
-I think this is the correct way to do it. Basically we should
-pick the dwarf subprogram entry whose DW_AT_low_pc should match
-same-name same-low_pc ksym entry.
-
-> have:
+On Thu, Dec 18, 2025 at 3:31=E2=80=AFAM Donglin Peng <dolinux.peng@gmail.co=
+m> wrote:
 >
-> Output from reading the vmlinux symbol table:
-> ```
-> $ readelf -s <input> | grep bpf_lsm_mmap_file
-> 165360: ffffffff8152f9b0    16 FUNC    GLOBAL DEFAULT    1 bpf_lsm_mmap_file
-> ```
-> Output from reading the vmlinux DWARF debugging information:
-> ```
-> <2a40982>   DW_AT_name        : (indirect string, offset: 0x1352ea): bpf_lsm_mmap_file
-> <2a40986>   DW_AT_decl_file   : 4
-> <2a40987>   DW_AT_decl_line   : 199
-> <2a40988>   DW_AT_decl_column : 1
-> <2a40989>   DW_AT_prototyped  : 1
-> <2a40989>   DW_AT_type        : <0x2a1b010>
-> <2a4098d>   DW_AT_low_pc      : 0xffffffff8152e260
-> <2a40995>   DW_AT_high_pc     : 0x10
-> <2a4099d>   DW_AT_frame_base  : 1 byte block: 9c    (DW_OP_call_frame_cfa)
-> <2a4099f>   DW_AT_call_all_calls: 1
-> <2a4099f>   DW_AT_sibling     : <0x2a409d8>
-> <2><2a409a3>: Abbrev Number: 10 (DW_TAG_formal_parameter)
-> <2a409a4>   DW_AT_name        : (indirect string, offset: 0x3623df): file
-> <2a409a8>   DW_AT_decl_file   : 4
-> <2a409a9>   DW_AT_decl_line   : 199
-> <2a409aa>   DW_AT_decl_column : 1
-> <2a409aa>   DW_AT_type        : <0x2a234ef>
-> <2a409ae>   DW_AT_location    : 1 byte block: 55    (DW_OP_reg5 (rdi))
-> <2><2a409b0>: Abbrev Number: 10 (DW_TAG_formal_parameter)
-> <2a409b1>   DW_AT_name        : (indirect string, offset: 0x23a09d): reqprot
-> <2a409b5>   DW_AT_decl_file   : 4
+> From: pengdonglin <pengdonglin@xiaomi.com>
+>
+> Introduce btf__permute() API to allow in-place rearrangement of BTF types=
+.
+> This function reorganizes BTF type order according to a provided array of
+> type IDs, updating all type references to maintain consistency.
+>
+> Cc: Eduard Zingerman <eddyz87@gmail.com>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Cc: Alan Maguire <alan.maguire@oracle.com>
+> Cc: Ihor Solodrai <ihor.solodrai@linux.dev>
+> Cc: Xiaoqin Zhang <zhangxiaoqin@xiaomi.com>
+> Signed-off-by: pengdonglin <pengdonglin@xiaomi.com>
+> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+> ---
+>  tools/lib/bpf/btf.c      | 119 +++++++++++++++++++++++++++++++++++++++
+>  tools/lib/bpf/btf.h      |  36 ++++++++++++
+>  tools/lib/bpf/libbpf.map |   1 +
+>  3 files changed, 156 insertions(+)
+>
+> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> index b136572e889a..ab204ca403dc 100644
+> --- a/tools/lib/bpf/btf.c
+> +++ b/tools/lib/bpf/btf.c
+> @@ -5887,3 +5887,122 @@ int btf__relocate(struct btf *btf, const struct b=
+tf *base_btf)
+>                 btf->owns_base =3D false;
+>         return libbpf_err(err);
+>  }
+> +
+> +struct btf_permute {
+> +       struct btf *btf;
+> +       __u32 *id_map;
+> +};
+> +
+> +/* Callback function to remap individual type ID references */
+> +static int btf_permute_remap_type_id(__u32 *type_id, void *ctx)
+> +{
+> +       struct btf_permute *p =3D ctx;
+> +       __u32 new_type_id =3D *type_id;
+> +
+> +       /* refer to the base BTF or VOID type */
+> +       if (new_type_id < p->btf->start_id)
+> +               return 0;
+> +
+> +       if (new_type_id >=3D btf__type_cnt(p->btf))
+> +               return -EINVAL;
+> +
+> +       *type_id =3D p->id_map[new_type_id - p->btf->start_id];
+> +       return 0;
+> +}
+> +
+> +int btf__permute(struct btf *btf, __u32 *id_map, __u32 id_map_cnt,
+> +                const struct btf_permute_opts *opts)
+> +{
+> +       struct btf_permute p;
+> +       struct btf_ext *btf_ext;
+> +       void *nt, *new_types =3D NULL;
+> +       __u32 *order_map =3D NULL;
+> +       int err =3D 0, i;
+> +       __u32 id;
+> +
+> +       if (!OPTS_VALID(opts, btf_permute_opts) || id_map_cnt !=3D btf->n=
+r_types)
+> +               return libbpf_err(-EINVAL);
+> +
+> +       /* record the sequence of types */
+> +       order_map =3D calloc(id_map_cnt, sizeof(*id_map));
+> +       if (!order_map) {
+> +               err =3D -ENOMEM;
+> +               goto done;
+> +       }
+> +
+> +       new_types =3D calloc(btf->hdr->type_len, 1);
+> +       if (!new_types) {
+> +               err =3D -ENOMEM;
+> +               goto done;
+> +       }
+> +
+> +       if (btf_ensure_modifiable(btf)) {
+> +               err =3D -ENOMEM;
+> +               goto done;
+> +       }
+> +
+> +       for (i =3D 0; i < id_map_cnt; i++) {
+> +               id =3D id_map[i];
+> +               if (id < btf->start_id || id >=3D btf__type_cnt(btf)) {
+> +                       err =3D -EINVAL;
+> +                       goto done;
+> +               }
+> +               id -=3D btf->start_id;
+> +               /* cannot be mapped to the same ID */
+> +               if (order_map[id]) {
+> +                       err =3D -EINVAL;
+> +                       goto done;
+> +               }
+> +               order_map[id] =3D i + btf->start_id;
+> +       }
+> +
+> +       p.btf =3D btf;
+> +       p.id_map =3D id_map;
+> +       nt =3D new_types;
+> +       for (i =3D 0; i < id_map_cnt; i++) {
+> +               struct btf_field_iter it;
+> +               const struct btf_type *t;
+> +               __u32 *type_id;
+> +               int type_size;
+> +
+> +               id =3D order_map[i];
+> +               t =3D btf__type_by_id(btf, id);
+> +               type_size =3D btf_type_size(t);
+> +               memcpy(nt, t, type_size);
+> +
+> +               /* fix up referenced IDs for BTF */
+> +               err =3D btf_field_iter_init(&it, nt, BTF_FIELD_ITER_IDS);
+> +               if (err)
+> +                       goto done;
+> +               while ((type_id =3D btf_field_iter_next(&it))) {
+> +                       err =3D btf_permute_remap_type_id(type_id, &p);
+> +                       if (err)
+> +                               goto done;
+> +               }
+> +
+> +               nt +=3D type_size;
+> +       }
+> +
+> +       /* fix up referenced IDs for btf_ext */
+> +       btf_ext =3D OPTS_GET(opts, btf_ext, NULL);
+> +       if (btf_ext) {
+> +               err =3D btf_ext_visit_type_ids(btf_ext, btf_permute_remap=
+_type_id, &p);
+> +               if (err)
+> +                       goto done;
+> +       }
+> +
+> +       for (nt =3D new_types, i =3D 0; i < id_map_cnt; i++) {
+> +               btf->type_offs[i] =3D nt - new_types;
+> +               nt +=3D btf_type_size(nt);
+> +       }
+> +
+> +       free(order_map);
+> +       free(btf->types_data);
+> +       btf->types_data =3D new_types;
+> +       return 0;
+> +
+> +done:
+> +       free(order_map);
+> +       free(new_types);
+> +       return libbpf_err(err);
+> +}
+> diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
+> index cc01494d6210..5d560571b1b5 100644
+> --- a/tools/lib/bpf/btf.h
+> +++ b/tools/lib/bpf/btf.h
+> @@ -281,6 +281,42 @@ LIBBPF_API int btf__dedup(struct btf *btf, const str=
+uct btf_dedup_opts *opts);
+>   */
+>  LIBBPF_API int btf__relocate(struct btf *btf, const struct btf *base_btf=
+);
+>
+> +struct btf_permute_opts {
+> +       size_t sz;
+> +       /* optional .BTF.ext info along the main BTF info */
+> +       struct btf_ext *btf_ext;
+> +       size_t :0;
+> +};
+> +#define btf_permute_opts__last_field btf_ext
+> +
+> +/**
+> + * @brief **btf__permute()** performs in-place BTF type rearrangement
+> + * @param btf BTF object to permute
+> + * @param id_map Array mapping original type IDs to new IDs
+> + * @param id_map_cnt Number of elements in @id_map
+> + * @param opts Optional parameters for BTF extension updates
+> + * @return 0 on success, negative error code on failure
+> + *
+> + * **btf__permute()** rearranges BTF types according to the specified ID=
+ mapping.
+> + * The @id_map array defines the new type ID for each original type ID.
+> + *
+> + * @id_map must include all types from ID `start_id` to `btf__type_cnt(b=
+tf) - 1`.
+> + * @id_map_cnt should be `btf__type_cnt(btf) - start_id`
+> + * The mapping is defined as: `id_map[original_id - start_id] =3D new_id=
+`
+
+Would you mind paying attention to the feedback I left in [0]? Thank you.
+
+The contract should be id_map[original_id] =3D new_id for base BTF and
+id_map[original_id - btf__type_cnt(base_btf)] =3D new_id for split BTF.
+Special BTF type #0 (VOID) is considered to be part of base BTF,
+having id_map[0] =3D 0 is easy to check and enforce. And then it leaves
+us with a simple and logical rule for id_map. For split BTF we make
+necessary type ID shifts to avoid tons of wasted memory. But for base
+BTF there is no need to shift anything. So mapping the original type
+#X to #Y is id_map[X] =3D Y. Literally, "map X to Y", as simple as that.
+
+  [0] https://lore.kernel.org/bpf/CAEf4BzY_k721TBfRSUeq5mB-7fgJhVKCeXVKO-W2=
+EjQ0aS9AgA@mail.gmail.com/
+
+> + *
+> + * For base BTF, its `start_id` is fixed to 1, i.e. the VOID type can
+> + * not be redefined or remapped and its ID is fixed to 0.
+> + *
+> + * For split BTF, its `start_id` can be retrieved by calling
+> + * `btf__type_cnt(btf__base_btf(btf))`.
+> + *
+> + * On error, returns negative error code and sets errno:
+> + *   - `-EINVAL`: Invalid parameters or ID mapping (duplicates, out-of-r=
+ange)
+> + *   - `-ENOMEM`: Memory allocation failure
+> + */
+> +LIBBPF_API int btf__permute(struct btf *btf, __u32 *id_map, __u32 id_map=
+_cnt,
+> +                           const struct btf_permute_opts *opts);
+> +
+>  struct btf_dump;
+>
+>  struct btf_dump_opts {
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index 84fb90a016c9..d18fbcea7578 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -453,4 +453,5 @@ LIBBPF_1.7.0 {
+>                 bpf_map__exclusive_program;
+>                 bpf_prog_assoc_struct_ops;
+>                 bpf_program__assoc_struct_ops;
+> +               btf__permute;
+>  } LIBBPF_1.6.0;
 > --
-> <2a60e0a>   DW_AT_name        : (indirect string, offset: 0x1352ea): bpf_lsm_mmap_file
-> <2a60e0e>   DW_AT_decl_file   : 1
-> <2a60e0f>   DW_AT_decl_line   : 15
-> <2a60e10>   DW_AT_decl_column : 5
-> <2a60e11>   DW_AT_prototyped  : 1
-> <2a60e11>   DW_AT_type        : <0x2a42713>
-> <2a60e15>   DW_AT_low_pc      : 0xffffffff8152f9b0
-> <2a60e1d>   DW_AT_high_pc     : 0x10
-> <2a60e25>   DW_AT_frame_base  : 1 byte block: 9c    (DW_OP_call_frame_cfa)
-> <2a60e27>   DW_AT_call_all_calls: 1
-> <2><2a60e27>: Abbrev Number: 82 (DW_TAG_formal_parameter)
-> <2a60e28>   DW_AT_name        : (indirect string, offset: 0x135ede): file__nullable
-> <2a60e2c>   DW_AT_decl_file   : 1
-> <2a60e2c>   DW_AT_decl_line   : 15
-> <2a60e2d>   DW_AT_decl_column : 36
-> <2a60e2e>   DW_AT_type        : <0x2a49f59>
-> <2a60e32>   DW_AT_location    : 1 byte block: 55    (DW_OP_reg5 (rdi))
-> ```
+> 2.34.1
 >
->> [0] https://lore.kernel.org/bpf/20251210090701.2753545-1-mattbobrowski@google.com/T/#me14d534fb559a349c46e094f18c63d477644d511
-
 
