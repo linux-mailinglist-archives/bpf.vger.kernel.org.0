@@ -1,93 +1,92 @@
-Return-Path: <bpf+bounces-76948-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76949-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E4D3CC9ED1
-	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 01:49:14 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC1A8CC9ED4
+	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 01:50:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 6926F30456B1
-	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 00:49:13 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6DCBD3027DB1
+	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 00:50:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51ACC221578;
-	Thu, 18 Dec 2025 00:49:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9411822156A;
+	Thu, 18 Dec 2025 00:50:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nEKqQ1ZH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nBRbAgva"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CE4917993
-	for <bpf@vger.kernel.org>; Thu, 18 Dec 2025 00:49:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACC301DE3AD
+	for <bpf@vger.kernel.org>; Thu, 18 Dec 2025 00:50:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766018951; cv=none; b=Gk7Vuygig+l4+0aiB3k7BwAzETgg6x5wAPcDZSOHMCjtg78U1dj1+VhAhku3f7zsempQFVeqafrJsKPTjdxqCnIlBiyrFG69zfJYLHLenkSISq3q9K0XvIGnWxeks1kdeLInqzDzy9y+P1Z2nF0cdE6miJTps2fxlQd2A+t2xn4=
+	t=1766019032; cv=none; b=FdgObrp6Ku6L37XvrTto0CpruYcWmECa1wWLhIxbBgD1wfyt03wcg8rwYeh9zQpAGZVsHlQn0+4dmkKPf+Va5Ub8ZGhUH9eN/5H+pigDXek5j1bx3FuvWFgZkrpZbMFRZWM/EP2zG3g+k3MczyJ8a2Qpts24hq9fbaY2zShoYW8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766018951; c=relaxed/simple;
-	bh=le1mPme5fNjxqJJHp8sDz9Vlf574hFhWchTA0WANn3U=;
+	s=arc-20240116; t=1766019032; c=relaxed/simple;
+	bh=sR8Fo0TrtjFimjXE8D9VpLl8lg94CcGaxoNzY1fHccw=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=CAeGOXbASyGBl93388FIwlzgQ+lF4kbkS+UGi36XZu5IHh8yMiuW3AUJl10JhOiFt8w67UeKjYy2/jHEmdxaDzOyodDzKL+7i+oY4s/ZlK89oyUj7GUF8LYuQHgKVlyhNThSQiJXSXbdhfyCNz3GJol9NV1NSF+HkzGQy+fArZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nEKqQ1ZH; arc=none smtp.client-ip=209.85.215.177
+	 Content-Type:MIME-Version; b=RC9eg7UuLLElrvKyDqywBqASd5LLnYV63GJYwGMxgOm2wtk+RVHiecJ/oSvXoWYXKOz+GTsRa4P0Y1Bat34B83YZ2omjKfopAUd0M9myNz856FeHS/OOCWsAfjLjUeMimhQMNf2DJyqkj+PYn6pP/dZORa02uKhMlUKQdqa1huQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nBRbAgva; arc=none smtp.client-ip=209.85.214.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-bf5ac50827dso59715a12.2
-        for <bpf@vger.kernel.org>; Wed, 17 Dec 2025 16:49:10 -0800 (PST)
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-2a0834769f0so696125ad.2
+        for <bpf@vger.kernel.org>; Wed, 17 Dec 2025 16:50:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1766018950; x=1766623750; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1766019030; x=1766623830; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=le1mPme5fNjxqJJHp8sDz9Vlf574hFhWchTA0WANn3U=;
-        b=nEKqQ1ZHJggroXc1faH17kyAg+8PQVUeORB27YZxJKJsdv9WbDRoKHkxEGPjuCy7kj
-         pvzzsMNO57fczxZyc2MM7JqdWhptayXvwQ+IcaHlKrh/7ld9alLcOIGBSCIpcNgWZx/k
-         7rqEkwhlXkGYIdpSm8yGKf9Gm+v/EvES+8L7CcqZTv0ZQW1TMdgD6nDsK7s4WGTxtRa+
-         uz+fPBeLDT63Tom6acz1SrWeVyDq0SFYvBsnuT0TiaW7fwo5KKNp0rdrT5pCdpw+bdL2
-         QcWyg5ouJgQdaygQrQ7mPown4JDXXBDTwVmGKW46xl0o438TmmFdDYvCDjv/8XC++p8o
-         kIwQ==
+        bh=TO4bldqvAZgUyF1R1COWtqCBDgiUqOhIeZ63l7KXOwI=;
+        b=nBRbAgvaSQggeMsBDcSUWAA7Hjpy4SXeWpoGolSAq3PhhSx9K3Qm6xHOjob7Km69M9
+         7NDfSEfWak7EW/xafbe9x3GT+uwLxlAQz7gbUAJOJI9ExUa7m8TvcgHwWyR2PjTKPolJ
+         gMFoiEFMCeEuWFkXdTqy6qGqJRUFGlmW8KwzKE9zEhVxkDP4YuJT9N5Qyyg2E+r/mPI/
+         NoO0Mqah+ygblWksurOkiA7IMoemf1LhPSR2V8lM3mUj0sAgntkGN/Not2Cew7MvosTM
+         ZhM6i7HtCIGjtezy2a8C2E998eTWGjCpPF5cEi5eTSONfvRJy9Ih6YLi/zEbiMhLC34l
+         1A4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766018950; x=1766623750;
+        d=1e100.net; s=20230601; t=1766019030; x=1766623830;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=le1mPme5fNjxqJJHp8sDz9Vlf574hFhWchTA0WANn3U=;
-        b=kGmuJn5SbzTjupcs0raVtQSaWKh9bw+SgggoKJ7dZXdGm6Qtll0YSBUpSjSZjfOXeJ
-         2Jw4jZ4/7eAqQFXmJFxEOUlAID3gfmowM8bwJxn8ZDT+/noVbwHwg7GskBDe9WfHC8i8
-         +OsxLEbAVEMUvLdcdsTXNp5rmVEAnTzQhA5I0StDdd0BAlJtlkR7mf33jpI6ejsdN7Ef
-         2c9SP/z0Vg5FjXQ58p916Nxx7Y/3pDFoWSZEkBfe1JuNDU4qmEv1WTm7YLZQg9TS+LEc
-         MnSLrxY/WVGhbTvlSuyjdv3R6v4zY7kRmUQ2wZ5gwYtZllJzKgIKEndSPY+9q5NZxUho
-         o9/Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXQO39hahh8fvvC0FwBG0nLB1ew/0IURD1FokjQKquUfERLgVw/bSvnIC8inkeii7s5Hls=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwVGwL4EDaOwb1LQ9P9GiXcYUu9vPez41SvTPuDJOh9J+C1qMnN
-	uzjhFklS66PsQQwyMHs05FhRe3+akKN5zQqyYWf3JZ7ImlhAkwxevS5w
-X-Gm-Gg: AY/fxX4TFvHckH3ZEPhJ0g8DB7EKM6I6YHuqm+6feS+/91UL5VbqwIBfrSkB2gIeay4
-	Mg7zEqY19UXTWY9B59+k3sD5kWerdhw95063bSz08uV7TbQ5FA/rq1rzWBV5zc+frmAQjA4WvOz
-	So/QppTOrD0q+cuL7K0Rr6hjleQ85mvmc1iTvVvCg8kPxL5t+NNJ7h9J6/YwSh2pG5nCg8Ses1J
-	PXokfXKn16eXGV+hvHjHTDIz2dJkRKIZPtxKGc5V351gpewwqTsIGg5vBEvOLNuRu3k1XmWL0dH
-	pu9UZI5FJ3luTMYAnaCvmsKDkdztP/VTwK5WcpDE+YTfS07MBqaZzaZWVNeWzwhqq+FSUulvVwq
-	GaKWloDg21iMyr6mnwSIros6LifjDmLSggnqWb10ZYllWG+3n0yjAhLFk9D/aQlmC42pLLFT0VR
-	OPkYaVa6oPwlF1EIOwV4LsoHiIF1srmvplh25l
-X-Google-Smtp-Source: AGHT+IF6XOygEpKO220KMKDeUp4j011LsHvZ7TXDz2wa7fX8XyTpjFk6vdWMB99dTFR5UuA2kvb8hw==
-X-Received: by 2002:a05:7300:b28:b0:2ae:51ae:5cf3 with SMTP id 5a478bee46e88-2ae51ae5fd1mr4536650eec.6.1766018949492;
-        Wed, 17 Dec 2025 16:49:09 -0800 (PST)
+        bh=TO4bldqvAZgUyF1R1COWtqCBDgiUqOhIeZ63l7KXOwI=;
+        b=meR5lsCuoFbAhnB20t5sWvMSDGJMEsGhYy0d+vEiI0N0mB7PBAw9KuqDNjvDUdVMMp
+         F8q3nX9pAJ6fly1W5rouZRyS6zed00jdwtYA9aX8IXtBsaar7nTqSljtaOLGH+nIGYjg
+         zjXXfrIGiqQ5DmOnMz08yovfyXe51/XCKRKfWlG9G2y+dbKPR8hgEUMzeBxw0noFrY6G
+         J/HlTZDcGTDifcsNbDgXRbDTHwJFUqGvzN6yUMsrRAdjRg1rIbmLhwyBWW6z/mE5RLoe
+         ef5krHhn6R3wk3VBGthg4xUgNrleJiKyXKbybgG18YF9jc5U0NzPqkpoROFteIU2ZCQK
+         PJZA==
+X-Forwarded-Encrypted: i=1; AJvYcCVskObTdwj9Q/9xGUWK4uaklLR+KG0JGN1/IyFSKHUxjFPlDcKovDizOKk8OxdH+AoSFAA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzFRXfe1CS51a6BGEHzUSxz/S8ezkdKjYUAlj7fjvBpysQ9nlR2
+	z4OfU+x9DMmJ99uQq2O/rPWL1mL+xHsh07CzywTUUkjCm/vob7mu3Gr5
+X-Gm-Gg: AY/fxX7/ea1fG/MqzMGE3oU1VaNgPdoDyZrPlsaZSKssI+O25L8z2XB8iH4zxkUrCl9
+	nh/6S0Dr1MKwpie+rLVdehBvKmE6rTxBrfp151TO1sdE3g4bzj70IwryFdtZK9L4I9mZT+9a3Wl
+	Z8ZP3xfJOo+mgqs6KlwEHXTDDfQ9GL4101OOk05d8xcxzQhkUhyIfUdcgace3cq0eSfNUSSLgQ5
+	wzPQfvO18Tk1Oop31+j2YqdM1yMtO8rKNXcUp5pRU7S2b1nJnt/NVgMgJumyoIvB252e11kW3RE
+	RzEoLQUkOy0ZnnTwSPuGT0um54I2we/2oKjJf7Z105fazEYvlas/bIhkns+HAg3BepsNvemuRbu
+	VBN9KVAsV3I9KmQKzeWCnK7Mh3DUSii9KAh/oI9+tnOeBJlJUd33eHDNtGCKhQVKh+Lyl605xzd
+	0nnaeAHJhAn96PhBoTX5zi9BC97zqLYuz4v605
+X-Google-Smtp-Source: AGHT+IGCpoGtHY2B5gj6LXqUoga5R2dUsHWWXSCy0lSpoaZ9+S/bEVisGuQPbWF4WHVftlFITIqf6w==
+X-Received: by 2002:a05:7022:3b8a:b0:11b:9b9f:4283 with SMTP id a92af1059eb24-11f34bf8ba3mr16743123c88.24.1766019029819;
+        Wed, 17 Dec 2025 16:50:29 -0800 (PST)
 Received: from ?IPv6:2a03:83e0:115c:1:9f95:2f12:bb69:e3e6? ([2620:10d:c090:500::7:a4ff])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2b04e87b4d4sm941179eec.16.2025.12.17.16.49.08
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-12061fceec2sm2819930c88.13.2025.12.17.16.50.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Dec 2025 16:49:09 -0800 (PST)
-Message-ID: <4249d7ea924491da5d95f6dab60c7cf4da742bae.camel@gmail.com>
+        Wed, 17 Dec 2025 16:50:29 -0800 (PST)
+Message-ID: <de69362d96c6ec09480500607f9dcf4ff1003739.camel@gmail.com>
 Subject: Re: [PATCH bpf-next 1/2] libbpf: add option to force-anonymize
  nested structs for BTF dump
 From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Alexei Starovoitov
-	 <alexei.starovoitov@gmail.com>
-Cc: Alan Maguire <alan.maguire@oracle.com>, Quentin Monnet <qmo@kernel.org>,
-  Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,  Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev	 <sdf@fomichev.me>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, bpf	
- <bpf@vger.kernel.org>
-Date: Wed, 17 Dec 2025 16:49:07 -0800
-In-Reply-To: <CAEf4BzaRxvM9C2+FvUViJqFJPTMTv6uoWc8i1taEzijdJOddwg@mail.gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Alan Maguire	
+ <alan.maguire@oracle.com>, Quentin Monnet <qmo@kernel.org>, Andrii Nakryiko
+	 <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann	
+ <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu	
+ <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend	
+ <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev	 <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, bpf	 <bpf@vger.kernel.org>
+Date: Wed, 17 Dec 2025 16:50:27 -0800
+In-Reply-To: <CAADnVQKN7ijzWA6JdSMi_XecPfvjtCKRo9nNZv5LTKq9FO973Q@mail.gmail.com>
 References: <20251216171854.2291424-1-alan.maguire@oracle.com>
 	 <20251216171854.2291424-2-alan.maguire@oracle.com>
 	 <d5a578c01f8a2d4d95ca16e0a9ee5b9bfce1c30e.camel@gmail.com>
@@ -103,7 +102,11 @@ References: <20251216171854.2291424-1-alan.maguire@oracle.com>
 	 <b65fd7dc-fbad-4a96-8eb8-f36f8f518d44@oracle.com>
 	 <CAEf4Bzb+3cryZAEwC_O7xgm3=cthZU-SNsUWfGH8OpSwc+3vaw@mail.gmail.com>
 	 <CAADnVQJ1V1vwPVnhyE4OfOSQt_BnB3wRW9g9_bhkdu-QZyuQkQ@mail.gmail.com>
-	 <CAEf4BzaRxvM9C2+FvUViJqFJPTMTv6uoWc8i1taEzijdJOddwg@mail.gmail.com>
+	 <5022ccaf5591e5bb88fe3d7a08dbb3c4fb6c3132.camel@gmail.com>
+	 <aeeae7e13ce401726ddce756268c0686d30eb3a9.camel@gmail.com>
+	 <CAADnVQL=2m9NHjr0zbMoDyha=6sBFd69=1QRdxSCKYhEONTmaw@mail.gmail.com>
+	 <4d3972ec6951b3c02f79def0215e5bb4fc70aba4.camel@gmail.com>
+	 <CAADnVQKN7ijzWA6JdSMi_XecPfvjtCKRo9nNZv5LTKq9FO973Q@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
@@ -114,91 +117,134 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Wed, 2025-12-17 at 15:52 -0800, Andrii Nakryiko wrote:
-> On Wed, Dec 17, 2025 at 1:27=E2=80=AFPM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
+On Wed, 2025-12-17 at 16:39 -0800, Alexei Starovoitov wrote:
+> On Wed, Dec 17, 2025 at 4:19=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.c=
+om> wrote:
 > >=20
-> > On Wed, Dec 17, 2025 at 1:02=E2=80=AFPM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >=20
-> > > On Wed, Dec 17, 2025 at 12:50=E2=80=AFPM Alan Maguire <alan.maguire@o=
-racle.com> wrote:
+> > On Wed, 2025-12-17 at 15:34 -0800, Alexei Starovoitov wrote:
+> > > On Wed, Dec 17, 2025 at 2:47=E2=80=AFPM Eduard Zingerman <eddyz87@gma=
+il.com> wrote:
 > > > >=20
-> > > > On 17/12/2025 19:35, Eduard Zingerman wrote:
-> > > > > On Wed, 2025-12-17 at 11:34 -0800, Eduard Zingerman wrote:
-> > > > > > On Wed, 2025-12-17 at 18:41 +0000, Alan Maguire wrote:
-> > > > > >=20
-> > > > > > [...]
-> > > > > >=20
-> > > > > > > So maybe the best we can do here is something like the follow=
-ing at the top
-> > > > > > > of vmlinux.h:
-> > > > > > >=20
-> > > > > > > #ifndef BPF_USE_MS_EXTENSIONS
-> > > > > > > #if __has_builtin(__builtin_FUNCSIG) || defined(_MSC_EXTENSIO=
-NS)
-> > > > > > > #define BPF_USE_MS_EXTENSIONS
-> > > > > > > #endif
-> > > > > > > #endif
-> > > > > > >=20
-> > > > > > > ...and then guard using #ifdef BPF_USE_MS_EXTENSIONS
-> > > > > > >=20
-> > > > > > > That will work on clang and perhaps at some point work on gcc=
-, but also
-> > > > > > > gives the user the option to supply a macro to force use in c=
-ases where
-> > > > > > > there is no detection available.
-> > > > > >=20
-> > > > > > Are we sure we need such flexibility?
-> > > > > > Maybe just stick with current implementation and unroll the str=
-uctures
-> > > > > > unconditionally?
+> > > > >   $ cat ms-ext-test2.c
+> > > > >   struct foo {
+> > > > >     int a;
+> > > > >   } __attribute__((preserve_access_index));
 > > > > >=20
-> > > > > I mean, the point of the extension is to make the code smaller.
-> > > > > But here we are expanding it instead, so why bother?
-> > > >=20
-> > > > Yeah, I'm happy either way; if we have agreement that we just use t=
-he nested anon
-> > > > struct without macro complications I'll send an updated patch.
+> > > > >   struct bar {
+> > > > >     struct foo;
+> > > > >   } __attribute__((preserve_access_index));
+> > > > >=20
+> > > > >   int buz(struct bar *bar) {
+> > > > >     return bar->a;
+> > > > >   }
+> > > > >=20
+> > > > >   $ clang -O2 -g -fms-extensions --target=3Dbpf -c ms-ext-test2.c
+> > > > >   ms-ext-test2.c:6:3: warning: anonymous structs are a Microsoft =
+extension [-Wmicrosoft-anon-tag]
+> > > > >       6 |   struct foo;
+> > > > >         |   ^~~~~~~~~~
+> > > > >   1 warning generated.
+> > > > >=20
+> > > > >   $ llvm-objdump -Sdr ms-ext-test2.o
+> > > > >=20
+> > > > >   ms-ext-test2.o: file format elf64-bpf
+> > > > >=20
+> > > > >   Disassembly of section .text:
+> > > > >=20
+> > > > >   0000000000000000 <buz>:
+> > > > >   ;   return bar->a;
+> > > > >          0:       61 10 00 00 00 00 00 00 w0 =3D *(u32 *)(r1 + 0x=
+0)
+> > > > >                   0000000000000000:  CO-RE <byte_off> [2] struct =
+bar::<anon 0>.a (0:0:0)
+> > > > >          1:       95 00 00 00 00 00 00 00 exit
+> > > > >=20
+> > > > > Note the "<anon 0>" in the relocation.
+> > > > > It appears that we loose no information if structures are unrolle=
+d.
 > > >=20
-> > > There is a little bit of semantic meaning being lost when we inline
-> > > the struct, but I guess that can't be helped. Let's just
-> > > unconditionally inline then. Still better than having extra emit
-> > > option, IMO.
+> > > Forgot to mention the CORE concern earlier...
+> > > Does the above work with current logic in relo_core.c ?
+> > > If not, we should definitely unconditionally unroll
+> > > to avoid fixing CORE.
 > >=20
-> > tbh I'm concerned about information loss.
+> > I think there might be an issue with CO-RE.
+> > Here is an example:
 > >=20
-> > If it's not too hard I would do
-> > #ifndef BPF_USE_MS_EXTENSIONS
-> > #if __has_builtin(__builtin_FUNCSIG)
-> > #define BPF_USE_MS_EXTENSIONS
-> > #endif
+> >   struct foo {
+> >     int a;
+> >   } __attribute__((preserve_access_index));
 > >=20
+> >   struct bar {
+> >   #ifdef USE_MS
+> >     struct foo;
+> >   #else
+> >     struct { int a; };
+> >   #endif
+> >   } __attribute__((preserve_access_index));
+> >=20
+> >   int buz(struct bar *bar) {
+> >     return bar->a;
+> >   }
+> >=20
+> > Here is what I get with USE_MS:
+> >=20
+> >   $ llvm-objdump -Sdr ms-ext-test2.o
+> >=20
+> >   ms-ext-test2.o: file format elf64-bpf
+> >=20
+> >   Disassembly of section .text:
+> >=20
+> >   0000000000000000 <buz>:
+> >   ;   return bar->a;
+> >          0:       61 10 00 00 00 00 00 00 w0 =3D *(u32 *)(r1 + 0x0)
+> >                   0000000000000000:  CO-RE <byte_off> [2] struct bar::<=
+anon 0>.a (0:0:0)
+> >          1:       95 00 00 00 00 00 00 00 exit
+> >=20
+> >   $ bpftool btf dump file ms-ext-test2.o
+> >   [1] PTR '(anon)' type_id=3D2
+> >   [2] STRUCT 'bar' size=3D4 vlen=3D1
+> >           '(anon)' type_id=3D3 bits_offset=3D0
+> >   [3] STRUCT 'foo' size=3D4 vlen=3D1
+> >           'a' type_id=3D4 bits_offset=3D0
+> >   [4] INT 'int' size=3D4 bits_offset=3D0 nr_bits=3D32 encoding=3DSIGNED
+> >   [5] FUNC_PROTO '(anon)' ret_type_id=3D4 vlen=3D1
+> >           'bar' type_id=3D1
+> >   [6] FUNC 'buz' type_id=3D5 linkage=3Dglobal
+> >=20
+> > And here is without USE_MS:
+> >=20
+> >   $ llvm-objdump -Sdr ms-ext-test2.o
+> >=20
+> >   ms-ext-test2.o: file format elf64-bpf
+> >=20
+> >   Disassembly of section .text:
+> >=20
+> >   0000000000000000 <buz>:
+> >   ;   return bar->a;
+> >          0:       61 10 00 00 00 00 00 00 w0 =3D *(u32 *)(r1 + 0x0)
+> >                   0000000000000000:  CO-RE <byte_off> [2] struct bar::<=
+anon 0>.a (0:0:0)
+> >          1:       95 00 00 00 00 00 00 00 exit
+> >=20
+> >   $ bpftool btf dump file ms-ext-test2.o
+> >   [1] PTR '(anon)' type_id=3D2
+> >   [2] STRUCT 'bar' size=3D4 vlen=3D1
+> >           '(anon)' type_id=3D3 bits_offset=3D0
+> >   [3] STRUCT '(anon)' size=3D4 vlen=3D1
+> >           'a' type_id=3D4 bits_offset=3D0
+> >   [4] INT 'int' size=3D4 bits_offset=3D0 nr_bits=3D32 encoding=3DSIGNED
+> >   [5] FUNC_PROTO '(anon)' ret_type_id=3D4 vlen=3D1
+> >           'bar' type_id=3D1
+> >   [6] FUNC 'buz' type_id=3D5 linkage=3Dglobal
+> >=20
+> > So, with USE_MS the relocation captures the offset inside 'struct foo'.
+> > And this is important for CO-RE offsets resolution.
+> > So unrolling structures is actually a problem.
 >=20
-> Concert I have with this is that we'd need to hard-code this
-> bpftool/vmlinux.h-specific #ifdef/#else/#endif logic (with arbitrary
-> and custom BPF_USE_MS_EXTENSIONS define use) for -fms-extension
-> handling inside generic libbpf btf_dump API, which is not supposed to
-> be vmlinux.h specific.
->=20
-> Wasn't there a way to basically declare -fms-extensions using #pragma
-> inside vmlinux.h itself? If yes, what's the problem with using it? Why
-> do we need to work-around anything at all then?
+> Sounds like we should silence the warning the way Song proposed and
+> tell all users to add -fms-extension to their builds.
 
-Can't find anything relevant in [1] or [2].
-[1] https://clang.llvm.org/docs/LanguageExtensions.html
-[2] https://clang.llvm.org/docs/UsersManual.html
-
-Google's LLM doesn't know about such pragmas either.
-
-> > and it will guarantee to work for clang while gcc will have structs inl=
-ined.
-> >=20
-> > In one of the clang selftests they have this comment:
-> > clang/test/Preprocessor/feature_tests.c:
-> > #elif __has_builtin(__builtin_FUNCSIG)
-> > #error Clang should not have this without '-fms-extensions'
-> > #endif
-> >=20
-> > so this detection is a known approach.
+Sounds like it.
 
