@@ -1,130 +1,113 @@
-Return-Path: <bpf+bounces-77024-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77025-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 374ACCCD29B
-	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 19:27:27 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE757CCD258
+	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 19:22:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 5CAB0303BDCC
-	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 18:27:01 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 87F19308AB8A
+	for <lists+bpf@lfdr.de>; Thu, 18 Dec 2025 18:19:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D5C230E0C5;
-	Thu, 18 Dec 2025 17:56:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 518BE253958;
+	Thu, 18 Dec 2025 18:19:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Lmg5qzPW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NJZmdQFy"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C1FE2F5485
-	for <bpf@vger.kernel.org>; Thu, 18 Dec 2025 17:56:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C556E1F4606;
+	Thu, 18 Dec 2025 18:19:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766080612; cv=none; b=utNrKIQlnVmTXKvztOXyJOulNEU1n4Q1C5Y9uyNrEagPOXHmZP8DnM/JPzm6+sA0shfTYTR6Q+eTIe3dSYeRArlIb9RBEg7HKiLjavQna3IaSEKGYVOMHRwIc4Gz6QqvhxmmcHYUeG3GdHqZxGpvh83Su38OMvf/Z7iYyOb7ops=
+	t=1766081942; cv=none; b=Gq6vDL6PeNPnXmkyl9LJ0IZP/wqCyxIGhWjKPqWno3bwOBPhxYwptwQUwDXLIQeRS/41bdzeDEHwfERaZ1QVcBwW0SlSkMxV5h0F3V1PmtXlK3oAWN83zrlHYgKrZQ4huILMBdeiYA0bmImOxhfnE+9/gzMie4CfWG6Q7CAEdiM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766080612; c=relaxed/simple;
-	bh=exa/YP9fyICJ77EYEDHbnzjy54eXhqjQuSP7ACG5gVg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=n7bSx3Uw+MRSWHrRrs85OpUs4DJRk0sE5Lbl3naE8mkvwtLSgxqaN6GXvl+t9RSODR2351qncXDz6mEoBx8neVBLXK1b9M8A0YkZgIuTDeSdwSvpLr6QLan0llamh6xaiJAfA53OfsZzXkbsfqXu9/lHs+2Tvk8WUrO8V17OcLE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Lmg5qzPW; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-2a0834769f0so8611985ad.2
-        for <bpf@vger.kernel.org>; Thu, 18 Dec 2025 09:56:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1766080609; x=1766685409; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uRf+SRIGQU8su06GPIQHkqNg5txYSi+urlSE/fCNWGY=;
-        b=Lmg5qzPWNdy+3X74kgwy6dIAUNjod6ycKO7PHpu31yrEjhKLTy83jOyIWulobNfCc3
-         vxIYU+SwoVtKIMmVDPt9t3DVceOYGOPpuuQ2JPCxr4TdLprbNBNFiiRZIcza+wLjlhN7
-         RVYbAp5YwDxRXNQrgiBFiZQOLH35xvH5ElLw0wWs4W0oU3D6sgJIfLNgKLSctTHNQaNL
-         iIdmfqVwcVUp6QKyXv0pHOBc/5t+bvCFr9HYscZfA+SmzObgzMIeQRKEz9wIm8ZZG4s2
-         tgQHY7fgW5K5vwTzbwcs8CwXENCWeYZg624KobkZa8KWOh5Li7P/YE5rE8xeXorpOY3t
-         esLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766080609; x=1766685409;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=uRf+SRIGQU8su06GPIQHkqNg5txYSi+urlSE/fCNWGY=;
-        b=UvdthvFIOWDfuYE2zMgdYle9NNcQUVAclqX5ce9MYlSdYygo/h2zh9U6bsTP3ScWYV
-         XUsSnhpFGaVH/TkYa/YwdMb9+u7a5L5zd3YB7whMNMwXX2H1zhGPKGp/WHs8BwC1Owzs
-         kp4GxxLIwRFVgl/C5l2GhHie1NYq55nz0fKfoAKlUGFZOJNpXmMow/Hg4v6U4LZg3wcL
-         soQ9CuCSs1rO/GQgKgrY2ejKtuma74VZPivv8g5ITs1iXZMZqnEQzxgmtHxZfPIPTyYe
-         FZDuHjU63xBGNeSl5WeQUJBLUhJrxKqExqW4JPjs1UuqLZo8LXYxevoe+siG1L1pG3Hq
-         mXJA==
-X-Gm-Message-State: AOJu0YyD19UfLKVUL4LLkBXjBSVUyJXGAuGwkQCErMHi/+PFZxrSMetm
-	aL4oZ/cbOaImKT6HwqWeJ0cJEYq6cedMF7Me482yJFTD5Y/DnsAg++oP9rf3EQ==
-X-Gm-Gg: AY/fxX7yeW196F1RPZIRdUgY6a2Ivt88HY1nfUGa4MO22q5OINDhu4AhcLHxIF1eCvF
-	eFNHut54c+xRwNKzLXvsUVoHAZZxg1tHIEBfUIyG/IX3ugceQhy37OVZUZH85+cuRW+CSjOwLbr
-	Y2SxV/rlJ8Bp68wqhW6RzWBdGY32vhS5o+xP5oIF7ANTTCK7fGu0gvg1TuL6F6lxptcZxcaMC3j
-	/lmpu9qe8oe+lkvqq8VpaVnF9hevgNV4GldS6l9KdORvuwohPFsSc6UXo9rY6nWXaNfS5+cpYgH
-	1l/FIlOloi0CO8vvyw9KHfl76pfcZ7MftVhJ2MUlwfSUCHY6v+kFoExxoqAu4MxnSCQhdVEFH+z
-	b1H999M4l8E43c5QzrTLFWNA/bTm8CgxfGAoQMGb2QDASoA+CMtimuP+FGj5w5Jp3SDcxTIBJHw
-	a/Gb1kBqICPH6W
-X-Google-Smtp-Source: AGHT+IEX5gBjqW6w28GPiBH/FtYGs7ySjffOR91L2p+J3IG4qzC5UlZVLnZrrs86GFuZNUn7N4v9Kg==
-X-Received: by 2002:a17:903:320e:b0:2a1:360e:53a7 with SMTP id d9443c01a7336-2a2f22229f9mr1244225ad.13.1766080609299;
-        Thu, 18 Dec 2025 09:56:49 -0800 (PST)
-Received: from localhost ([2a03:2880:ff:2::])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a2d193ce63sm31901615ad.91.2025.12.18.09.56.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Dec 2025 09:56:48 -0800 (PST)
-From: Amery Hung <ameryhung@gmail.com>
-To: bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org,
-	alexei.starovoitov@gmail.com,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	memxor@gmail.com,
-	martin.lau@kernel.org,
-	kpsingh@kernel.org,
-	yonghong.song@linux.dev,
-	song@kernel.org,
-	haoluo@google.com,
-	ameryhung@gmail.com,
-	kernel-team@meta.com
-Subject: [PATCH bpf-next v3 16/16] selftests/bpf: Choose another percpu variable in bpf for btf_dump test
-Date: Thu, 18 Dec 2025 09:56:26 -0800
-Message-ID: <20251218175628.1460321-17-ameryhung@gmail.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20251218175628.1460321-1-ameryhung@gmail.com>
-References: <20251218175628.1460321-1-ameryhung@gmail.com>
+	s=arc-20240116; t=1766081942; c=relaxed/simple;
+	bh=Byq0gQeVr8r94BMBgQHWvwmuI2Z+ZBlYY+sb7UmgvVs=;
+	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
+	 Subject:From:To:Cc:Date; b=r7Tb5Kl6TuIwo4F2cyDY7qx2yN2IIa4Oo41gZNc1DEOiAFcWUeJDoldqJepnuF75yOHBjYWudY4tocxI4fYNrhePGSou+6C8KkhGJvk0t7OoxOm72/WwXxyUc0lyKSyUE1Rhd2LNjBMrtkS0FDr766IvMsJNL5D6nNdM869OmZ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NJZmdQFy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 098D0C4CEFB;
+	Thu, 18 Dec 2025 18:19:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1766081942;
+	bh=Byq0gQeVr8r94BMBgQHWvwmuI2Z+ZBlYY+sb7UmgvVs=;
+	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
+	b=NJZmdQFycXuwwVljU/LDzVxlSbmc+dOcyWBC7V04fcAKp6FxPi89OPL4FGkndV+V9
+	 WSqXu7tKJuWI+sszJz4PORHM3U9z2SJAh4rSC9eqcmYA3uehnrNROv4GqMMHzBORX9
+	 YGkvflAealueQkvyTTF3neRV6zUsrWzcXYv+HNpnXSMzhI2AKSutHypgkH0EPuGClQ
+	 gAax+bekWwbycWIUXthlZ94TyQE61quckvNQ3SIInFGf2KpmBJ6KUvvcxwW6pf/CMV
+	 bBgurp0T57O66dZx6mqfhKzQEfR763yIvKfX+nEMYlcYkZd5DklWiNbojy7RLPeFfs
+	 1+6/f/tYiR1hA==
+Content-Type: multipart/mixed; boundary="===============3648498011065644442=="
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-Id: <1b0222eec86de05407965545ea7e224155a42050c27be3f36cfd067a2dd165e8@mail.kernel.org>
+In-Reply-To: <20251218175628.1460321-3-ameryhung@gmail.com>
+References: <20251218175628.1460321-3-ameryhung@gmail.com>
+Subject: Re: [PATCH bpf-next v3 02/16] bpf: Convert bpf_selem_link_map to failable
+From: bot+bpf-ci@kernel.org
+To: ameryhung@gmail.com,bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org,alexei.starovoitov@gmail.com,andrii@kernel.org,daniel@iogearbox.net,memxor@gmail.com,martin.lau@kernel.org,kpsingh@kernel.org,yonghong.song@linux.dev,song@kernel.org,haoluo@google.com,ameryhung@gmail.com,kernel-team@meta.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
+Date: Thu, 18 Dec 2025 18:19:02 +0000 (UTC)
 
-bpf_cgrp_storage_busy has been removed. Use bpf_bprintf_nest_level
-instead. This percpu variable is also in the bpf subsystem so that
-if it is removed in the future, BPF-CI will catch this type of CI-
-breaking change.
+--===============3648498011065644442==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Amery Hung <ameryhung@gmail.com>
+> diff --git a/net/core/bpf_sk_storage.c b/net/core/bpf_sk_storage.c
+> index 850dd736ccd1..4f8e917f49d9 100644
+> --- a/net/core/bpf_sk_storage.c
+> +++ b/net/core/bpf_sk_storage.c
+> @@ -191,7 +191,9 @@ int bpf_sk_storage_clone(const struct sock *sk, struct sock *newsk)
+>  		}
+>
+>  		if (new_sk_storage) {
+> -			bpf_selem_link_map(smap, copy_selem);
+> +			ret = bpf_selem_link_map(smap, copy_selem);
+> +			if (ret)
+> +				goto out;
+>  			bpf_selem_link_storage_nolock(new_sk_storage, copy_selem);
+>  		} else {
+>  			ret = bpf_local_storage_alloc(newsk, smap, copy_selem, GFP_ATOMIC);
+
+When bpf_selem_link_map() fails, is there missing cleanup here? Looking
+at the else branch below (bpf_local_storage_alloc failure), the error
+handling includes:
+
+  - bpf_selem_free(copy_selem, true)
+  - atomic_sub(smap->elem_size, &newsk->sk_omem_alloc)
+  - bpf_map_put(map)
+
+The new error path for bpf_selem_link_map() failure goes directly to the
+out label without any of this cleanup. At this point in the code:
+
+  - copy_selem was allocated by bpf_sk_storage_clone_elem() and charged
+    via bpf_selem_alloc()->mem_charge()
+  - map reference was taken via bpf_map_inc_not_zero()
+  - copy_selem has not yet been linked to new_sk_storage (that happens
+    in bpf_selem_link_storage_nolock() after the failing call)
+
+The comment at the out label says the caller is responsible for cleanup
+via bpf_sk_storage_free(), but since copy_selem was never linked to the
+storage list, bpf_local_storage_destroy() will not find it.
+
+Currently this is not triggerable since bpf_selem_link_map() always
+returns 0, but commit 615477732ee8 ("bpf: Change local_storage->lock and
+b->lock to rqspinlock") later in this series makes the function actually
+return errors.
+
+
 ---
- tools/testing/selftests/bpf/prog_tests/btf_dump.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/btf_dump.c b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-index 10cba526d3e6..f1642794f70e 100644
---- a/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-+++ b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-@@ -875,8 +875,8 @@ static void test_btf_dump_var_data(struct btf *btf, struct btf_dump *d,
- 	TEST_BTF_DUMP_VAR(btf, d, NULL, str, "cpu_number", int, BTF_F_COMPACT,
- 			  "int cpu_number = (int)100", 100);
- #endif
--	TEST_BTF_DUMP_VAR(btf, d, NULL, str, "bpf_cgrp_storage_busy", int, BTF_F_COMPACT,
--			  "static int bpf_cgrp_storage_busy = (int)2", 2);
-+	TEST_BTF_DUMP_VAR(btf, d, NULL, str, "bpf_bprintf_nest_level", int, BTF_F_COMPACT,
-+			  "static int bpf_bprintf_nest_level = (int)2", 2);
- }
- 
- struct btf_dump_string_ctx {
--- 
-2.47.3
+CI run summary: https://github.com/kernel-patches/bpf/actions/runs/20346662777
 
+--===============3648498011065644442==--
 
