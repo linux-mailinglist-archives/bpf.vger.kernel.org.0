@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-77170-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77171-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74243CD126A
-	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 18:30:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 31DE0CD12B6
+	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 18:36:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 670FE306A05E
-	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 17:28:39 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D7C513064E7E
+	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 17:33:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B257339B3D;
-	Fri, 19 Dec 2025 17:28:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA6BD321457;
+	Fri, 19 Dec 2025 17:33:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XZj+YUUN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MLKU7yLG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 311D815A85A
-	for <bpf@vger.kernel.org>; Fri, 19 Dec 2025 17:28:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C83E828000B
+	for <bpf@vger.kernel.org>; Fri, 19 Dec 2025 17:33:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766165316; cv=none; b=Xd3P6Ca0P41He7d0qc3J1TYiCjO61+y+IA3TzoigJ+98A5KKdVoScNDcDStRqk1Oe4Q/rCpKgPiv5MVR3KRule56Aaza8E9gmJEFJ4kVdHeLvL09JDIf7ZjqPF4S3Tj61Hsrs4UubDsACTs5jMtSKgqi2fq6qY7fTf5Vn4L3LsM=
+	t=1766165627; cv=none; b=dwWL0iv4lb5vyXMmLw40JLfmhIsShInJd7kfvli5fDhZRSCNjiX+J7EBTe+0Dj5uYkrD7nmkiv8NN5dVkbWWr5abgnPPXwWjSHaTE2mF+DJ6O7Ok3zpPWWfWxObC5H2rj19lZTLU5P6gfYAQ/6WKLo+PmbpPj8ceK1SVo+QNDzk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766165316; c=relaxed/simple;
-	bh=SvYfi00QzHeFTZQTa4BodjJySYesFYoOSa8C06F+qJw=;
+	s=arc-20240116; t=1766165627; c=relaxed/simple;
+	bh=Wp9dvyQc5b4fKPj/ppJJGcHwI7aHrNXXtCqRZDMDfLc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EodBZt05IVsiHVaS/nNwfceT2xrEjq7u5XO8Q6rmYRKb7TgMngcUs5iPuWDqC8hYkiXWQNoQnnYVKjNUqZcWnzRb89KtwE6+WuLCgyNw29azgRRTNcgTHW+mmIYSHjj4sfE7GLUQb04m6LAaXKSo2+K3YL8kd/JcuJm87SLUwxI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XZj+YUUN; arc=none smtp.client-ip=209.85.216.52
+	 To:Cc:Content-Type; b=YzL3/IlZUjqs4wr2yh9y+vW+vvaTCTklwzrnpdSvpRp2MORIu/Ri8zfNpJbbLMTY4YKnnOilMFwTIpNWSdX6QSz59cECagwufjdqI+hLxaFF9NIyPXlDlLpl+ROK8MQwodea4PJN8yyJen0M6cfu+PZSZzomjp8QTDlVcB32hwQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MLKU7yLG; arc=none smtp.client-ip=209.85.216.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-34c30f0f12eso1503191a91.1
-        for <bpf@vger.kernel.org>; Fri, 19 Dec 2025 09:28:35 -0800 (PST)
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-34c213f7690so1674015a91.2
+        for <bpf@vger.kernel.org>; Fri, 19 Dec 2025 09:33:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1766165314; x=1766770114; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1766165625; x=1766770425; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FkSsqjFaFgaelY7gOw4zJm9gG2h36fwA0+yClBIEuSY=;
-        b=XZj+YUUNoqrCf12aaITCsbrnWIt/0FLdBS+8l1Ut7eiTivg4MGpnsUwASE7p6CxA/r
-         yBKzaP8cFh5bxa0ZVp6tUcUQU7qTNmhoBItUBtmN/rmnTTiOrq3tfmDsFUlGKvV5YFZc
-         vVhGgXrgkT8NjrtHLDPMx6F8b0zWTZu+ZTqDdB31nGfzMEsUYah0y1qLiVL1iFXt7e1x
-         LI8Leo7Q17g3SL+vQYtNnt9UZZwk0ByL+TIs7ry1MVDHMGOaK7s4Qr4IhVGGG5vbTrje
-         42XmcXjGqpbHjj8pZvlstf9GCcI/+mXNf/d/Y6MAq10bBy+3RSs7iJONO0KxJpcUItib
-         4mvg==
+        bh=3XQo7dGOmkHB3+XIsEQmeuUqmsc0sT5SKqjNnHs3t0o=;
+        b=MLKU7yLGEaOk9o8YZmlTgVI+3ntbwB6ZL/1xGncPsFkSeAbuNNMLUN/O0TVX0LHkDx
+         WK1Og5ojCREnPDp2fyMFzs53lCd+MVo2/c4XjqZG0RT5X+WbrwsgwghKXuBWVCIrwS7y
+         1lIeb+0Qgm4/1AIkywoaxnqcLW+pIhbWFmbKokuBpkr0ppWufxRYLObG5JRTqepzWvNw
+         XEgY7Fysp2V63045MfxKxcZUN2m7a27YyIWoGadVWa8sd4twShQT9KDGcjHlhrBDPcQX
+         KJ87o7uV1OiidmeMrGczc93WqxDeb9hOVpwI1ejT0709lnArHMsQq/btYsY9X/JGOmkv
+         3j2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766165314; x=1766770114;
+        d=1e100.net; s=20230601; t=1766165625; x=1766770425;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=FkSsqjFaFgaelY7gOw4zJm9gG2h36fwA0+yClBIEuSY=;
-        b=sf3BmdqEPBpQT2a6wfTRj0oR3Yb8/tX2oSO3iKPRchhSZWbM60eEtAGc9E+/hb4XDa
-         7pxoOVn/UowWfX9n/mcGH1Bi4arOuvk9zORTBr9ryyg9XsoL4zjjaEnGyjVzXVGmRdDi
-         tIBSns5/hIYz6hQ+WAcfM90kOpurieYqPrUNqAsCi6K3jYoE2upv8O8gScPZquekqNt5
-         e0DbHp7XANduFAfD8/B6BH6NHvGXwHFm3Abx44tWCzy/GxluxNfAZQWRi0PM+WKmqYfr
-         o6qVvkIxlWZRPjQmXr5B6ctffXH7vuAw+f/no777eyf5xoxpZsGBcj7RATkHFNkq9C9o
-         PkKA==
-X-Forwarded-Encrypted: i=1; AJvYcCUDOufUhnmnQcxkJ2yAZsJQGnEXFYRbPBtoGtMxRpPIjByYRWfUC3BFvD81NzAXNHhOiz4=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyuo2P9bqDihH7pd9L0axRFWw9h2EFB1VUgYoH1AGO7+1M0ioBe
-	RgHshY+y1KEooM7F04Zux7xEE+O5d2hIR7XUATVdttcTte36V4VZDz2osZjJVG78Xl6jjVLd8cH
-	j80cXaokxF+varIsYV1cigsLphZAId4A=
-X-Gm-Gg: AY/fxX4etTRVPtQkrL0pe/iYO6pR4gKzmYubwg//8DbMka/7y6nNv8DLn/603Hm2rov
-	N4KlcaP23S6j9ITh103me6xyU4NXAsPIuwcuW9GA4QR8z0G20EO1S0lruAtBt0zinQdfBXzY0y4
-	NRe+CRJL6EOGAPO8ixE2756EMhiwZrapYaGy6MKBJEU2rV577BlOvmHRn9D3kShuyS7V9qFPqQG
-	IzQNBhvbp90oXItA13XhgecfO3r73i/kizQ/R174EPHG77VLZEJKc2xawz7fSlJeb5bya8=
-X-Google-Smtp-Source: AGHT+IGWwiYUB6gmBMSHmRXek5soi4UW6/YkJeIEkOkyDefBSvOBAMFgM9lFJyELM6/QqkSNnVFqYr87GEFc3/dU0JA=
-X-Received: by 2002:a17:90b:5804:b0:340:2f48:b51a with SMTP id
- 98e67ed59e1d1-34e9212a47fmr3419239a91.15.1766165314272; Fri, 19 Dec 2025
- 09:28:34 -0800 (PST)
+        bh=3XQo7dGOmkHB3+XIsEQmeuUqmsc0sT5SKqjNnHs3t0o=;
+        b=tDoqUE0xgKHhJpEV+ZZxQw4cFkPVS7dMHVbe8Zfct8KH1eVickQhr2+MyC4I1LrKct
+         pbIwPD6bjngwPl8KacRQt5gHaXhU3/MFCyPD/D2QE3SlsId07KdSZOjSCO7Mamq3kWMJ
+         odkjKjoCxko4o+qUX8k4+W6R7Zp8c9sD8E7uqorNn5t0xm0E5dDGfQD36z1ss+7cT+ga
+         OpMBLQpPLQniOwh0J6hOgrw0FN9poXltK15ifzhUGvKS7QZgxelbP5Vcn9Voj1C4plwW
+         AQSUWQs+roNOXUDMFMVJJivH5styfwEkyPT5x86nve279zjhukAsSxxdxzjFa9QHhPji
+         v7OQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW+l8peu2neLKH3CElGxEJPEAcdaLVP0HBIPR03ijlA4wtcp5T98yZN6YbuhTpCgbA6fQI=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz6eFXBvP2Q85ff6gu0/R2cDM65mkyxo7XElzFKsgHJhFr78ubm
+	QlxoGbqViQP59+/EjhWpZHus5C6Y/siO0urbO/iqw/h0pdPxCuLZHJSwJF+GX6+UXcB3z91l2tP
+	ZNb49EuWY1pqBne1y0zqPPAIyyzWYAJ9Qnw==
+X-Gm-Gg: AY/fxX7BOyU2Wa+yGEulA7Ueo8BQ+QRPn0KWiD6jDMmNX5CaFCiG5ULrLmKJiwF+S46
+	k1FijiHZXAJTeFuLI0Gr7x2GsHMRG7peFovkDoixifYCPPquWV9otmpW1fXk0GCd3fZQYlv/Z4z
+	0IW2BvyQZKJWF7H9Vd7Z0PlsQ7WEhKeolNX69tSy71shArY7NIju98M4hm/GPne0qM+rSkFCuXW
+	tih8i7coDUOkszylMynir4Y/TIw1lIyb92fG5Ex5kWpBKEFbEqMbQ6DLE779e0bIrXBYZE=
+X-Google-Smtp-Source: AGHT+IEndU4zVWsr5cUx/dXwsS2A7v0OVYEX4c106047SxGvDi1w/rPO0eL182RwhV0RuJ4bzhaXlaaerfYmanc/yaI=
+X-Received: by 2002:a17:90b:1b0b:b0:34a:b8fc:f1d1 with SMTP id
+ 98e67ed59e1d1-34e921ae410mr3479444a91.24.1766165625016; Fri, 19 Dec 2025
+ 09:33:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -74,15 +74,14 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20251218113051.455293-1-dolinux.peng@gmail.com>
- <20251218113051.455293-5-dolinux.peng@gmail.com> <CAEf4BzbSMwW4es5D9i=bpSjALo8u+oW-9vdQ7=DBoTBtMoJ1Tg@mail.gmail.com>
- <CAErzpmv1N1JA+=c6xxdYTqANqSBRaRauD2wzZiwUS+VeWQG14A@mail.gmail.com>
-In-Reply-To: <CAErzpmv1N1JA+=c6xxdYTqANqSBRaRauD2wzZiwUS+VeWQG14A@mail.gmail.com>
+ <20251218113051.455293-6-dolinux.peng@gmail.com> <CAEf4BzY+gnT9aET_NDOkzX2iBwLednyK4xGe4S6JmhzN0C5GoA@mail.gmail.com>
+ <CAErzpmusyOMQTcoWiT7nNa=gOAOHgdRYqVb+Dc24BaqjzzeRYw@mail.gmail.com>
+In-Reply-To: <CAErzpmusyOMQTcoWiT7nNa=gOAOHgdRYqVb+Dc24BaqjzzeRYw@mail.gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 19 Dec 2025 09:28:22 -0800
-X-Gm-Features: AQt7F2pNm6gkm4sRCyUyhOFu0gvGRnXi6csYFBCuog38NlTvv_SKiBp21rfIXmo
-Message-ID: <CAEf4BzZrZZ-YHHAUE-izLaAexm4VZ7aCurKnOofCtKaV=D9qvQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v10 04/13] libbpf: Optimize type lookup with
- binary search for sorted BTF
+Date: Fri, 19 Dec 2025 09:33:33 -0800
+X-Gm-Features: AQt7F2oxZ5SvqVZTV1BH1fkOjIZHKQXdUcrWKclof2tDN2RdJhAH9rP2eD3rvoo
+Message-ID: <CAEf4BzY=3KWxZ1F98sE-zB0g-HKz87HJ5msBYESZ0Ri0jN=WCg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v10 05/13] libbpf: Verify BTF Sorting
 To: Donglin Peng <dolinux.peng@gmail.com>
 Cc: ast@kernel.org, eddyz87@gmail.com, zhangxiaoqin@xiaomi.com, 
 	ihor.solodrai@linux.dev, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
@@ -90,10 +89,10 @@ Cc: ast@kernel.org, eddyz87@gmail.com, zhangxiaoqin@xiaomi.com,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 18, 2025 at 6:53=E2=80=AFPM Donglin Peng <dolinux.peng@gmail.co=
+On Thu, Dec 18, 2025 at 9:06=E2=80=AFPM Donglin Peng <dolinux.peng@gmail.co=
 m> wrote:
 >
-> On Fri, Dec 19, 2025 at 7:29=E2=80=AFAM Andrii Nakryiko
+> On Fri, Dec 19, 2025 at 7:44=E2=80=AFAM Andrii Nakryiko
 > <andrii.nakryiko@gmail.com> wrote:
 > >
 > > On Thu, Dec 18, 2025 at 3:31=E2=80=AFAM Donglin Peng <dolinux.peng@gmai=
@@ -101,13 +100,15 @@ l.com> wrote:
 > > >
 > > > From: pengdonglin <pengdonglin@xiaomi.com>
 > > >
-> > > This patch introduces binary search optimization for BTF type lookups
-> > > when the BTF instance contains sorted types.
-> > >
-> > > The optimization significantly improves performance when searching fo=
-r
-> > > types in large BTF instances with sorted types. For unsorted BTF, the
-> > > implementation falls back to the original linear search.
+> >
+> > typo in subject: "Sorting" -> "sorting", it looks weird capitalized lik=
+e that
+>
+> Thanks, I will do it.
+>
+> >
+> > > This patch checks whether the BTF is sorted by name in ascending
+> > > order. If sorted, binary search will be used when looking up types.
 > > >
 > > > Cc: Eduard Zingerman <eddyz87@gmail.com>
 > > > Cc: Alexei Starovoitov <ast@kernel.org>
@@ -117,215 +118,157 @@ r
 > > > Cc: Xiaoqin Zhang <zhangxiaoqin@xiaomi.com>
 > > > Signed-off-by: pengdonglin <pengdonglin@xiaomi.com>
 > > > ---
-> > >  tools/lib/bpf/btf.c | 103 ++++++++++++++++++++++++++++++++++--------=
---
-> > >  1 file changed, 80 insertions(+), 23 deletions(-)
+> > >  tools/lib/bpf/btf.c | 41 +++++++++++++++++++++++++++++++++++++++++
+> > >  1 file changed, 41 insertions(+)
 > > >
-> >
-> > [...]
-> >
-> > > +       l =3D start_id;
-> > > +       r =3D end_id;
-> > > +       while (l <=3D r) {
-> > > +               m =3D l + (r - l) / 2;
-> > > +               t =3D btf_type_by_id(btf, m);
-> > > +               tname =3D btf__str_by_offset(btf, t->name_off);
-> > > +               ret =3D strcmp(tname, name);
-> > > +               if (ret < 0) {
-> > > +                       l =3D m + 1;
-> > > +               } else {
-> > > +                       if (ret =3D=3D 0)
-> > > +                               lmost =3D m;
-> > > +                       r =3D m - 1;
-> > > +               }
-> > >         }
-> >
-> > this differs from what we discussed in [0], you said you'll use that
-> > approach. Can you please elaborate on why you didn't?
-> >
-> >   [0] https://lore.kernel.org/bpf/CAEf4Bzb3Eu0J83O=3DY4KA-LkzBMjtx7cbon=
-xPzkiduzZ1Pedajg@mail.gmail.com/
->
-> Yes. As mentioned in the v8 changelog [1], the binary search approach
-> you referenced was implemented in versions v6 and v7 [2]. However,
-> testing revealed a slight performance regression. The root cause was
-> an extra strcmp operation introduced in v7, as discussed in [3]. Therefor=
-e,
-> in v8, I reverted to the approach from v5 [4] and refactored it for clari=
-ty.
-
-If you keep oscillating like that this patch set will never land. 4%
-(500us) gain on artificial and unrealistic micro-benchmark is
-meaningless and irrelevant, you are just adding more work for yourself
-and for reviewers by constantly changing your implementation between
-revisions for no good reason.
-
-
->
-> Benchmark results show that v8 achieves a 4.2% performance improvement
-> over v7. If we don't care the performance gain, I will revert to the appr=
-oach
-> in v7 in the next version.
->
-> [1] https://lore.kernel.org/bpf/20251126085025.784288-1-dolinux.peng@gmai=
-l.com/
-> [2] https://lore.kernel.org/all/20251119031531.1817099-1-dolinux.peng@gma=
-il.com/
-> [3] https://lore.kernel.org/all/CAEf4BzaqEPD46LddJHO1-k5KPGyVWf6d=3DduDAx=
-G1q=3DjykJkMBg@mail.gmail.com/
-> [4] https://lore.kernel.org/all/20251106131956.1222864-4-dolinux.peng@gma=
-il.com/
->
-> >
-> > >
-> > > -       return libbpf_err(-ENOENT);
-> > > +       return lmost;
+> > > diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> > > index 2facb57d7e5f..c63d46b7d74b 100644
+> > > --- a/tools/lib/bpf/btf.c
+> > > +++ b/tools/lib/bpf/btf.c
+> > > @@ -899,6 +899,46 @@ int btf__resolve_type(const struct btf *btf, __u=
+32 type_id)
+> > >         return type_id;
 > > >  }
 > > >
-> > >  static __s32 btf_find_by_name_kind(const struct btf *btf, int start_=
-id,
-> > >                                    const char *type_name, __u32 kind)
+> > > +/*
+> > > + * Assuming that types are sorted by name in ascending order.
+> > > + */
 > >
-> > kind is defined as u32 but you expect caller to pass -1 to ignore the
-> > kind. Use int here.
->
-> Thanks, I will fix it.
->
+> > Unnecessary comment, and no, btf_compare_type_names() itself makes no
+> > such assumption, it just compares two provided types by name. Drop the
+> > comment, please.
 > >
-> > >  {
-> > > -       __u32 i, nr_types =3D btf__type_cnt(btf);
+> > > +static int btf_compare_type_names(__u32 *a, __u32 *b, const struct b=
+tf *btf)
+> > > +{
+> > > +       struct btf_type *ta =3D btf_type_by_id(btf, *a);
+> > > +       struct btf_type *tb =3D btf_type_by_id(btf, *b);
+> > > +       const char *na, *nb;
+> > > +
+> > > +       na =3D btf__str_by_offset(btf, ta->name_off);
+> > > +       nb =3D btf__str_by_offset(btf, tb->name_off);
+> > > +       return strcmp(na, nb);
+> > > +}
+> >
+> > you use this function only in one place, there is no real point having
+> > it, especially that it uses **a pointer to type ID** as an
+> > interface... just inline its logic in that one loop below
+> >
+> > > +
+> > > +static void btf_check_sorted(struct btf *btf)
+> > > +{
 > > > +       const struct btf_type *t;
-> > > +       const char *tname;
-> > > +       __s32 idx;
+> > > +       __u32 i, k, n;
+> > > +       __u32 sorted_start_id;
 > > > +
-> > > +       if (start_id < btf->start_id) {
-> > > +               idx =3D btf_find_by_name_kind(btf->base_btf, start_id=
-,
-> > > +                                           type_name, kind);
-> > > +               if (idx >=3D 0)
-> > > +                       return idx;
-> > > +               start_id =3D btf->start_id;
-> > > +       }
-> > >
-> > > -       if (kind =3D=3D BTF_KIND_UNKN || !strcmp(type_name, "void"))
-> > > +       if (kind =3D=3D BTF_KIND_UNKN || strcmp(type_name, "void") =
-=3D=3D 0)
-> > >                 return 0;
-> > >
-> > > -       for (i =3D start_id; i < nr_types; i++) {
-> > > -               const struct btf_type *t =3D btf__type_by_id(btf, i);
-> > > -               const char *name;
-> > > +       if (btf->sorted_start_id > 0 && type_name[0]) {
-> > > +               __s32 end_id =3D btf__type_cnt(btf) - 1;
-> > > +
-> > > +               /* skip anonymous types */
-> > > +               start_id =3D max(start_id, btf->sorted_start_id);
+> > > +       if (btf->nr_types < 2)
+> > > +               return;
 > >
-> > can sorted_start_id ever be smaller than start_id?
-> >
-> > > +               idx =3D btf_find_by_name_bsearch(btf, type_name, star=
-t_id, end_id);
-> >
-> > is there ever a time when btf_find_by_name_bsearch() will work with
-> > different start_id and end_id? why is this not done inside the
-> > btf_find_by_name_bsearch()?
+> > why special casing? does it not work with nr_types =3D 0 or nr_types =
+=3D 1?
 >
-> Because the start_id could be specified by the caller.
-
-Right, start_id has to be passed in. But end_id is always the same, so
-maybe determine it internally instead? And let's not return -ENOENT
-from btf_find_by_name_bsearch(), as I mentioned before, it would be
-more streamlined if you return btf__type_cnt(btf) if search failed.
-
->
-> >
-> > > +               if (unlikely(idx < 0))
-> > > +                       return libbpf_err(-ENOENT);
-> >
-> > pass through error returned from btf_find_by_name_bsearch(), why redefi=
-ning it?
->
-> Thanks, I will fix it.
+> No. I just think it doesn't make any sense to check the sorting
+> of BTF with zero or only one type.
 >
 
-see above, by returning btf__type_cnt() you won't even have this error
-handling, you'll just go through normal loop checking for a match and
-won't find anything, returning -ENOENT then.
+Look, I don't know how to emphasize this enough. Any special case like
+this is nothing good, it adds more cases to consider and raises
+questions why generic case code doesn't handle such special cases. It
+implies that generic case handling might have some unhandled corner
+case that we are trying to short-circuit with early exits like this.
+It just basically means we don't trust our code, in a sense. It's just
+unnecessary and thus sloppy. Don't do this unnecessarily.
 
 > >
 > > > +
-> > > +               if (unlikely(kind =3D=3D -1))
-> > > +                       return idx;
-> > > +
-> > > +               t =3D btf_type_by_id(btf, idx);
-> > > +               if (likely(BTF_INFO_KIND(t->info) =3D=3D kind))
+> > > +       sorted_start_id =3D 0;
 > >
-> > use btf_kind(), but this whole extra check is just unnecessary, this
->
-> Thanks, I will do it.
->
-> > should be done in the loop below. We talked about all this already,
-> > why do I feel like I'm being ignored?..
->
-> Sorry for the confusion, and absolutely not ignoring you.
->
-
-If you decide to change implementation due to some unforeseen factors
-(like concern about 4% microbenchmark improvement), it would be
-helpful for you to call this out in a reply to the original
-discussion. A line somewhere in the cover letter changelog is way too
-easy to miss and that doesn't give me an opportunity to stop you
-before you go and produce another revision that I'll then be
-rejecting.
-
-> >
-> > > +                       return idx;
-> >
-> > drop all these likely and unlikely micro optimizations, please
+> > nit: initialize in declaration
 >
 > Thanks, I will do it.
 >
 > >
 > >
-> > > +
-> > > +               for (idx++; idx <=3D end_id; idx++) {
-> > > +                       t =3D btf__type_by_id(btf, idx);
-> > > +                       tname =3D btf__str_by_offset(btf, t->name_off=
-);
-> > > +                       if (strcmp(tname, type_name) !=3D 0)
-> > > +                               return libbpf_err(-ENOENT);
-> > > +                       if (btf_kind(t) =3D=3D kind)
-> > > +                               return idx;
-> > > +               }
-> > > +       } else {
-> > > +               __u32 i, total;
-> > >
-> > > -               if (btf_kind(t) !=3D kind)
-> > > -                       continue;
-> > > -               name =3D btf__name_by_offset(btf, t->name_off);
-> > > -               if (name && !strcmp(type_name, name))
-> > > -                       return i;
-> > > +               total =3D btf__type_cnt(btf);
-> > > +               for (i =3D start_id; i < total; i++) {
+> > > +       n =3D btf__type_cnt(btf);
+> > > +       for (i =3D btf->start_id; i < n; i++) {
+> > > +               k =3D i + 1;
+> > > +               if (k < n && btf_compare_type_names(&i, &k, btf) > 0)
+> > > +                       return;
+> > > +               if (sorted_start_id =3D=3D 0) {
 > > > +                       t =3D btf_type_by_id(btf, i);
-> > > +                       if (kind !=3D -1 && btf_kind(t) !=3D kind)
+> > > +                       if (t->name_off)
 > >
-> > nit: kind < 0, no need to hard-code -1
+> > I'd check actual string, not name_off. Technically, you can have empty
+> > string with non-zero name_off, so why assume anything here?
 >
-> Good, I will fix it.
+> Thanks, I will do it.
 >
 > >
-> > > +                               continue;
-> > > +                       tname =3D btf__str_by_offset(btf, t->name_off=
-);
-> > > +                       if (strcmp(tname, type_name) =3D=3D 0)
-> > > +                               return i;
+> > > +                               sorted_start_id =3D i;
 > > > +               }
-> > >         }
-> > >
-> > >         return libbpf_err(-ENOENT);
-> > >  }
-> > >
+> > > +       }
+> > > +
+> > > +       if (sorted_start_id)
+> > > +               btf->sorted_start_id =3D sorted_start_id;
 > >
-> > [...]
+> > You actually made code more complicated by extracting that
+> > btf_compare_type_names(). Compare to:
+> >
+> > n =3D btf__type_cnt(btf);
+> > btf->sorted_start_id =3D 0;
+> > for (i =3D btf->start_id + 1; i < n; i++) {
+> >    struct btf_type *t1 =3D btf_type_by_id(btf, i - 1);
+> >    struct btf_type *t2 =3D btf_type_by_id(btf, i);
+> >    const char *n1 =3D btf__str_by_offset(btf, t1->name_off);
+> >    const char *n2 =3D btf__str_by_offset(btf, t2->name_off);
+> >
+> >    if (strcmp(n1, n2) > 0)
+> >         return;
+> >    if (btf->sorted_start_id =3D=3D 0 && n1[0] !=3D '\0')
+> >         btf->sorted_start_id =3D i - 1;
+> > }
+>
+> Thanks. I believe we shouldn't directly assign a value to
+> `btf->sorted_start_id` within the for loop, because
+> `btf->sorted_start_id` might be non-zero even when the
+> BTF isn't sorted.
+
+Ah, right, we'd need to reset btf->sorted_start_id to zero in that
+strcmp(n1, n2) > 0 branch. Using btf->sorted_start_id directly is not
+the main point here, though, feel free to use a local variable, but
+don't add unnecessary helper functions which don't do much, but
+obscure the logic unnecessarily.
+
+>
+> >
+> >
+> > No extra k<n checks, no extra type_by_id lookups. It's minimalistic
+> > and cleaner. And if it so happens that we get single type BTF that is
+> > technically sorted, it doesn't matter, we always fallback to faster
+> > linear search anyways.
+> >
+> > Keep it simple.
+>
+> Thank you. I will adopt this method in the next version.
+>
+> >
+> > > +}
+> > > +
+> > >  static __s32 btf_find_by_name_bsearch(const struct btf *btf, const c=
+har *name,
+> > >                                                 __s32 start_id, __s32=
+ end_id)
+> > >  {
+> > > @@ -1147,6 +1187,7 @@ static struct btf *btf_new(const void *data, __=
+u32 size, struct btf *base_btf, b
+> > >         err =3D err ?: btf_sanity_check(btf);
+> > >         if (err)
+> > >                 goto done;
+> > > +       btf_check_sorted(btf);
+> > >
+> > >  done:
+> > >         if (err) {
+> > > --
+> > > 2.34.1
+> > >
 
