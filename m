@@ -1,894 +1,417 @@
-Return-Path: <bpf+bounces-77186-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77188-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98288CD1548
-	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 19:19:36 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B0B1CD15A8
+	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 19:26:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id EB745301D329
-	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 18:19:28 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id EB31D304EF56
+	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 18:20:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C136387B0E;
-	Fri, 19 Dec 2025 18:19:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BED38389F74;
+	Fri, 19 Dec 2025 18:20:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nIZZAjci"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="GadavdEV";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="MHcWPFXq"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ED8E385CCC;
-	Fri, 19 Dec 2025 18:19:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766168358; cv=none; b=k+4oPGu6J5H5kKETtcQb/2bkRfXrgWt1a9+zqoCHiDn8Uqc3/MgtGvUJ6BjOWtJCcsOapAEH/+1XlU/crytQ3nU7DD2Qq073VnuCkN8Q/Nbf8kh21i/AOVZ9a8OZHR//QWMlvHt3vAB8na5fFSDsqqPaJdC2tr5IRzzF7LrHRZU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766168358; c=relaxed/simple;
-	bh=O42LE+RsjhDPHXVu8bJU1ki5iU9YNEirm+AL1ArkqCw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KW1flEge+315kSLEuHcvtOT8wMR6YpaYAQoN51uV60dg0QxMq9z8KHD2nailkFOvinqkZ8GOayfKDAPEy2ui6omigq0dPBEP0p0jxWFDncjn8NIWHiSH6BtpSTDRWFpj79/IX8hsTXDLc9PszTVoQTC1+1+ghbF6a9M114XgiU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nIZZAjci; arc=none smtp.client-ip=91.218.175.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1766168347;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=krbyy3niKMpT8JxWw+MPXqE7wg6yZGhaRkWZSST50Ag=;
-	b=nIZZAjciuLyraHpy83392kRjwzS3Hgzz7t1mLwaPGvbgdQd+ON72NTQLPDv5Xmp0ZVQuP3
-	5i5a+qX1ipdGye38FV8L+WwPxxrJEcVW6V6RWpetuoTfqXIvBvrkM8vr8gDDM1JfZTApzK
-	MBSVEyGFDjQFrHNjihsKuApaF10f2o8=
-From: Ihor Solodrai <ihor.solodrai@linux.dev>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nsc@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Tejun Heo <tj@kernel.org>,
-	David Vernet <void@manifault.com>,
-	Andrea Righi <arighi@nvidia.com>,
-	Changwoo Min <changwoo@igalia.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Donglin Peng <dolinux.peng@gmail.com>
-Cc: bpf@vger.kernel.org,
-	dwarves@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kbuild@vger.kernel.org,
-	sched-ext@lists.linux.dev
-Subject: [PATCH bpf-next v7 8/8] resolve_btfids: Change in-place update with raw binary output
-Date: Fri, 19 Dec 2025 10:18:25 -0800
-Message-ID: <20251219181825.1289460-3-ihor.solodrai@linux.dev>
-In-Reply-To: <20251219181825.1289460-1-ihor.solodrai@linux.dev>
-References: <20251219181321.1283664-1-ihor.solodrai@linux.dev>
- <20251219181825.1289460-1-ihor.solodrai@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E812389F7B;
+	Fri, 19 Dec 2025 18:20:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1766168424; cv=fail; b=M96j6QsTSyB3sJxdte1/zOBfPqn1kPUmCy6WPyqOTshebSjSRyVTjVRLOO5qwQoLrqul5mFwnDSq52PuB/T/SgmPSfnFnJvJVadTbxDiG0ICitvxBZEAv3yrXIcRZ5GrHcU+ivxB8AML78TfPlNmekzCd6aA6XWJz4L4k7IvWmQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1766168424; c=relaxed/simple;
+	bh=s8mXKbVKqMVIjRbf05qTD68gkJh01lIlPfk3bcORWIo=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=IdNj6oP0+fOJvpB79ePRrDzj4I3+koAg2h4Gd6PjYrnsxTTGDLGhEXmiUI9hYMDlt8kJZJd9V5IojNqJGZlPJ3V/OkAgXhBGcGJjB7GbmN5AEHHaBrhyKliGYaDNBXUYsCzIOU17eBUNQ5LoF1T5bog+HKx2CIQHYPXPulMedng=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=GadavdEV; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=MHcWPFXq; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 5BJHvQLm167109;
+	Fri, 19 Dec 2025 18:19:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	corp-2025-04-25; bh=1FX0Hxj5GjsEdQhC7yVGhz5nQ1xP2A753tzle+NEWjk=; b=
+	GadavdEVcVI1m5PnQ4rEEE+PRoRJ1TH/chS7TklFkqPl+hB4QX3635LuLqoWtGIG
+	p3Q5rBXmP0uYF9/Gi+Wjwdy3LSTlopA9HxfALd5BG4/hRZ9162GDvkZvKEHeWoRY
+	cx8AeHQ0ed/2iG01EaCRqlEYfTBnougGNUsP/RKxsX14othRfvM7zR6QmDVKTY2d
+	4lQNTmUEW5HTMhIHoaaBoghljrwbCL5ivZ+ghPCsPU3SzYidXaWW/D3qI94OaxJg
+	TqJAj+KTm2AglJuURAcoPArQ7B+3JeAf6B0TaABxnImSO7ov8YpmqnM6CiIcU6+5
+	Xd6L5BNagu5jcoJPBzVy8A==
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4b4r2f1hh7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 19 Dec 2025 18:19:00 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 5BJIAhWs037040;
+	Fri, 19 Dec 2025 18:19:00 GMT
+Received: from ch4pr04cu002.outbound.protection.outlook.com (mail-northcentralusazon11013033.outbound.protection.outlook.com [40.107.201.33])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 4b4qtmtap8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 19 Dec 2025 18:19:00 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=JMVEhmbwkcTKpLnR6Eewo50PIvH7dlO62ezvN7Dw7S9V0zzPSqHjs/BZG+MTzEA0GaVU9WRLWAyDgyVaVgEczOxuoGznDbLXUcJ5dA/HFR/B/VBe4fkUgQQa5G9/gCcYg7Z816bJm0qhyJ5DsxsvOdeD7Njd0apcFoK7XE2mCJeqjt1BzpiGafxUb6zDcy8/DJZSDAdutFke2fLeTpYt7zNK6ZV6XCGIWWgvGJd/fDtMdt38u+HXnlTP27JkW1Lr5/dRnzUaIoCQZcREv5QAoNI0BBJtMZhDSkuCPWMojCdhR3Yz3qTpXOPYOcN8xiqt7nd5KXJikT1dRQLpbFWb0w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1FX0Hxj5GjsEdQhC7yVGhz5nQ1xP2A753tzle+NEWjk=;
+ b=CcGLnQii97kX3Gp0yiiOk0UWYqxrC4I75srKI5SyTlUCb9kUujqWVjbR2AeM5gbLmsAxNMdwsv/A1F1j82sAQ4rOICDxxI0CBRQ46RU7ffwSueELu81mNupDv0HAXkNfAaVCTeVP1QPTJjake5CuQih187rDfuXz2myJM4ZMJw0DBDX6R/xYhNwDYX8G/KXnR6Lqo9Q15Eq5GPaeT2PILMhdejqniWDW/zHgJpxtzofsGF7zTY5Fxy4aFbCR2/eHoQVQrjICX7mrevDu8Np5ZGAkEHyKSEWhpb8GUzob4yHnGN4j+OmxdKWt9uKQSEqf6kvOzJqBTTIr+Oe1T0wYVQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1FX0Hxj5GjsEdQhC7yVGhz5nQ1xP2A753tzle+NEWjk=;
+ b=MHcWPFXql19323ZfdvFy3Mzbrxl1uENVQEU+b+0FA/AUUrm9K+7kvJ8yIyWqSMyGawbIgI/NQFlhrZfXKgxyt/ITp7izumBwjCA6zXmiSGRwjmn5/U5yZAit5S4egVacTkcPe0l3Rg2Lax6w9+M0JEnmv58LjeayjE+tTouCBL0=
+Received: from DS0PR10MB6271.namprd10.prod.outlook.com (2603:10b6:8:d1::15) by
+ CO1PR10MB4563.namprd10.prod.outlook.com (2603:10b6:303:92::6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9434.6; Fri, 19 Dec 2025 18:18:56 +0000
+Received: from DS0PR10MB6271.namprd10.prod.outlook.com
+ ([fe80::940b:88ca:dd2d:6b0c]) by DS0PR10MB6271.namprd10.prod.outlook.com
+ ([fe80::940b:88ca:dd2d:6b0c%7]) with mapi id 15.20.9434.009; Fri, 19 Dec 2025
+ 18:18:56 +0000
+Message-ID: <ccafde20-3ea5-458a-b2e7-219aaa9a7ff0@oracle.com>
+Date: Fri, 19 Dec 2025 18:18:49 +0000
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 bpf-next 02/10] libbpf: Support kind layout section
+ handling in BTF
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+        yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, qmo@kernel.org,
+        ihor.solodrai@linux.dev, dwarves@vger.kernel.org, bpf@vger.kernel.org,
+        ttreyer@meta.com, mykyta.yatsenko5@gmail.com
+References: <20251215091730.1188790-1-alan.maguire@oracle.com>
+ <20251215091730.1188790-3-alan.maguire@oracle.com>
+ <CAEf4Bza+C7nRxFDHS0dNDk5XF79nE6y4GqEu0bmtJPTMoFrNvQ@mail.gmail.com>
+ <db38bb39-7d16-41b6-968d-61e3b7681440@oracle.com>
+ <CAEf4Bzbn_eWC8W8+so-BgkzNOxx8jgEysU3kTzBCW1jwXPEfnQ@mail.gmail.com>
+Content-Language: en-GB
+From: Alan Maguire <alan.maguire@oracle.com>
+In-Reply-To: <CAEf4Bzbn_eWC8W8+so-BgkzNOxx8jgEysU3kTzBCW1jwXPEfnQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: LO4P123CA0581.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:276::11) To DS0PR10MB6271.namprd10.prod.outlook.com
+ (2603:10b6:8:d1::15)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR10MB6271:EE_|CO1PR10MB4563:EE_
+X-MS-Office365-Filtering-Correlation-Id: be550253-e3a3-4bc6-47e6-08de3f2b12d9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|7416014|376014;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?eDRwdU5wdGtCOUFqcjFGeldYT3VDU2FEWGNHdmN4VXY4Mm9sR3dGelAzaFlh?=
+ =?utf-8?B?Wlo3VjFwWEpBaXExeEZPOGRrZFNhVnQ2YVNFR3hqeWlyQ215enNDak5CV2Fy?=
+ =?utf-8?B?SUFwdEJtNzNnSFNxd25KL1lTa1hoRzdKZ1cyN201Wk9ZcE0rNEdRZ01lRE5Z?=
+ =?utf-8?B?a1pFeWZhT3hMd25Qb245eUhUOEV3M1RCSGpNQlJxeHBZSG5xdjhVSFhsQjA3?=
+ =?utf-8?B?THd2M3Z5WW40K2MrYXpiRXF4S0ZDMmlVdDViRGUwMmhBZWtKUklBSmdmWUF2?=
+ =?utf-8?B?bW1WdDh3U2dvUlJYL0tFRGZHclo1bVpORjJwWmhIYkthKzBTUnZxcm5XeG9H?=
+ =?utf-8?B?RWZNNk1FNThmblB2TDl3Q1NxcytEUmdCOTNDM2h5NnBGQXRmaUVDVkJ3TThW?=
+ =?utf-8?B?R2lQM0pHV0pXbXJOL0ErL2l6UFBsUWttVEhWQkxwcGhYS0xoT0hTcm9sQm9E?=
+ =?utf-8?B?d3dFVWl3RFlodSs0UDdPZ3hNYm5FYkxLUUhFbHpSeHZyMWJlTDUrWVc0RVRv?=
+ =?utf-8?B?T3BqTExIYm0zTTE0V21WLzFwMG1OZFpKUG4vcUcvVWZvTUt1cHB0b1BiZGxn?=
+ =?utf-8?B?UEcwMzgyelU0WWxqRTA4dm5Bc2ZSa3pFb1YyUHhpY2RTNm8rN3laMWd6U01k?=
+ =?utf-8?B?RUVieTdPSGxPcmN5N1Bmb2xzb1NOZ3pyU0ZmVjUzZUorNmZFYVFjV2daRkEw?=
+ =?utf-8?B?M2d1ck1XejQyMTUwRWpOTW1MMnBUZHJrUS8xenhmakhwaXo5eHNGQURFV3Er?=
+ =?utf-8?B?QWhKZDRuaHdwSWh4eFZGWExWTFhlaVJlUWJIV0V5bVkxdFlGR1J3MnFlNWlX?=
+ =?utf-8?B?TittbHEySnVDYmVRYlFrRjNIVWZkMWJtUlR6M1YyOHNnQTFHOWp2OU5QNGpn?=
+ =?utf-8?B?cFNxUzQwdVpadWlORlZKWkR5b3hZcTlMejlEK3d3R0M5RDE3ZXgvRWh0ZlBM?=
+ =?utf-8?B?a1dVLzJkSERtQ1d3WGRJWG5vaDVkSXhZcENYSC9uVmhsYkFtY3pRMEFGdnFu?=
+ =?utf-8?B?RDBsNm1TaURwQ0NoYm1aRmU4OERHYW9mNUJuTW1WTVZGTjBSdTJOdThIRnhT?=
+ =?utf-8?B?Z3dxd2lCcnlmcmZ3RlFrTGNTdnZ6Um9uR2ZUUmpIOW5xYVlNa1g3M3BPUDRr?=
+ =?utf-8?B?ZVRIeDdWK0o4NldOR0RscCsraEpoTFpVRE5WcUp5VDZBYVRCSVFnMlpQdjJT?=
+ =?utf-8?B?UlkwVExoNXA4S2dtUENJeW1xNHJrcFZKNFBJOHZxcEFTUkJYbUpFMThjVzRh?=
+ =?utf-8?B?VzZCVFhTNkJHaWpEMVNwdGUwS2VNSkRJbndhb1N5S09PRTc3V0hSdzdKV1I1?=
+ =?utf-8?B?eCsvYlhuSWlKZ0phWVpJemJMQnphTEdkT01hbkZLWER5UVVjb0luMVA1L0xD?=
+ =?utf-8?B?ZkFmNDkySnNIeDlJMnNLTjNCc2hDSjNVMjI1MldBT1RPU0hSR3hnOWNxK1JY?=
+ =?utf-8?B?U0E0K21RVlJOYWlFL0R0d2VvZ0Y4c21HNlBla2ZycDE3NVhRdUdZWGlJYmQv?=
+ =?utf-8?B?VENSQWtMU2NqOFh1d1lqK0piaEk3ZU9McC84SEtSK3R5ZU1hTFlhV1Q0Nkpa?=
+ =?utf-8?B?Q3B5Y3hrcHhabkx6RHVRWk9KVzhES0Y3ZDBneE1McVhvcW44eG9xVUNqOXZE?=
+ =?utf-8?B?N3VrNFFuRXVSZGQ3cVArRkhpTlY2c2crdUQ4a25xcUZ1bUUxNGJiZkNWdkV4?=
+ =?utf-8?B?TERCNSswdGI0V1RJNC83ODBPcjBDZC9TdDkyZ1UrOHFwYk8wMndLVG1abktl?=
+ =?utf-8?B?d3Q5a3d6OWJqN1VXc0t6VEtMb3R2c1BtRXN5b21OVk52Q3VkRFIwMzQxblFi?=
+ =?utf-8?B?VFNwOGMycFRjdXY2dFJ0QkxkUERGUEpiVXhQdURtVEU5SlhPLzEyQWFrZUgz?=
+ =?utf-8?B?RGIxQ09laFh6OG5PS1BqdTlCQW85MGVVQUxNZnlPV0xncmNleW9kb2lUVUZD?=
+ =?utf-8?Q?uqmTkFVr8ALy0vs0M2UOFj0lkX+uL+Xe?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR10MB6271.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?NWtoQXFvNzhvTXBDb3c1bDdadU8vSlRTcjdtZ0x6WFRSSEpkVXFHNEFsZXZW?=
+ =?utf-8?B?S1huY0FxWDhDU1R2Ui9rQmVSL0JBRVhoYVhaRlJ1ZGVIbXE5WGh0UGtXejkv?=
+ =?utf-8?B?SGNHMEh3dGIvRjBIYk9JV01heTZ2Y0FGVElTNHkvWWQyS3c4ajlUS3FWbUFZ?=
+ =?utf-8?B?Y2pnRGFoRVdEalkwaGx5VWNkbnBsZUhCR2NXSTdvK2NIblFyWnhySGVoR1dv?=
+ =?utf-8?B?aWJielNtK21kOVhEVDNsSFFCUnhvQ0dCMFMrWVc0NkZjcW5FcXFTUUw2REZF?=
+ =?utf-8?B?S3hHeXpWeUp3Zi80OUY3aTl0RTFPWGlhdzhVOTR5N1R3OXVVUkg2L29rSzA5?=
+ =?utf-8?B?TnlkS1R0RExpWWFpNFVRMHhtWWswRnFVNTRVemVWV3J3dlpnTmY5RHlCZnBp?=
+ =?utf-8?B?ZmxEaTQ0elQvalBHcTNDNGR0T2xCYUV1dEJEdUYzTEZIaFd2REZCUERFT1ht?=
+ =?utf-8?B?UVpscW1vakd4TVBtcTE2bVIybUlxTFZENEJaYU5vSzk3RGkxMVh0UFVMY2NG?=
+ =?utf-8?B?NlQvV2o3akxJRFhWWlhDVXNVRm04N3N3WDlreHJhcVVYdlRZb3NpYWk0MEt5?=
+ =?utf-8?B?RHNnL3I1RG9sM3pmQ3IvNlMyYWxxSW9ZUTlkSXBBbEtoM0ZXa0c3U1dMNElO?=
+ =?utf-8?B?ZS9wTyswczMwYzArVlZCQkR1Y1BEaFNRN2ZVbUt3OXNEb0hZTC9idm9RVURo?=
+ =?utf-8?B?dWVVSDRRYjRUNVA0ZDdiaC9hMU45VnhiSjlJbFlUVUtZWFM0ZXl1TG9zVXNj?=
+ =?utf-8?B?bFZLdjN0NE0zWTZIay9VQUlmajZwVzhhQXZSWlExMHphdlFHWTJJdjZLWnBE?=
+ =?utf-8?B?Ulhub3R3NTlSNC9vY0VoTnhTeHJQVTRnVEtYMG85N3F4SHJhY2xDd25MUURx?=
+ =?utf-8?B?bzZqNGdXNThyRWMyeVlYM3EybFBzMHp5Q3JjaXNsVXl0NFZ3M0dtYThhK2dF?=
+ =?utf-8?B?b2ZKYktxcWlybWdhUDRKbXBVWTd0NTRtMXZFMDk5QS8rbWNWUkdoVUVtdnJV?=
+ =?utf-8?B?eFJaNE5hRDR1ZytiRHpYakVyM0lmT25OdytoWXJOb1RTNHA0MkxBeXgxcVdr?=
+ =?utf-8?B?c3JGYjI0b0J6RElpVmZ0WGhiS3pueW9jZWZYZTRhSmFja3dSSVdoU0c5NnVJ?=
+ =?utf-8?B?ZituQjZVRGtOTzBScWtGK1JWczh3T1pqa0FhWCtXTzI2Z1ZRMWllNDlzU0VL?=
+ =?utf-8?B?MmVPWkFSMTBPVlVaTktTWktoQUY1WWFkSFZ4ZFg0TnFkOUlCd2lxakxqT2Rt?=
+ =?utf-8?B?ZjBCWjVZNDRCTXlPejdDMWpzcGI5UllrZDkxVmRJMlZ1U2FLMHN6Q1RBNWw0?=
+ =?utf-8?B?WnV5SnJmNER6dzVYcnVoRlZrdDlTTS9mWnlHS0tVQVZwb3RHaEcwRnl1Vytr?=
+ =?utf-8?B?U0NZcEo2aUFMQWQ0SFFBeDVTOWdGRFZ3NGNmZzgvcVZnMmZ6OUpHRkoyakJp?=
+ =?utf-8?B?dytsTUlHMnNXNW1tWHNTc29Sanl4QnFybWl1VlFIYVVxb0E0OTV3WnhEVFB5?=
+ =?utf-8?B?amVpVzhxR3VlRVVTUlpxQytZMnZBYWF0R3NEZThOTEc4V3c0T0lQTHNNWDE3?=
+ =?utf-8?B?OGQ4ZmhUS2ZhdWIzdXNNeVFOb3lGMTN3Ums1c1U2NDlEdXkva1AzQXROZzNF?=
+ =?utf-8?B?MlNrOXFrZ1dzQnhneWRWbTJhK3IzNGFGVVdMb1lvVkFpNEw3bjZsczRHU1h3?=
+ =?utf-8?B?c0ZBYVJPNUFoY1hJN0FlczN5dlRlNWg2Y0dKNW5ORm1QaFh4VG1MYm1wbElx?=
+ =?utf-8?B?MmFpc1VOZXRXWmpWeWpUMXA2ZzRNMkVJUXJidWN6ZjF0UjRWbVZ4bXQxSVVH?=
+ =?utf-8?B?Q3RSdm9tZXlQWmVnWnM0ejRvNTJHOGF1c05tMU02bVBjOU8yQm56L2pCY0x0?=
+ =?utf-8?B?aktGcDk3c09sZDVsMHltcFkyMG5GYnBOT0ZydEZRSHp0a1RpMmJVOEIreXV5?=
+ =?utf-8?B?UGxCbkhFdE1DSmd1Z3k3VnVQd3lKeERrRHhoR3VKV3JXQTI5Zm9CT2ZyVmpj?=
+ =?utf-8?B?dG51MjRkMXpDWFg4V2ZSRk9PdE45Y3I5Q3ZHSkNXNm1zZWdyQk1sZkh0TkRa?=
+ =?utf-8?B?RURQeVl6ZU81Y1hlQkFYdGNEUHlQM1BITnl5RDFoVmxkVTRCQ3N5NldrYkl1?=
+ =?utf-8?B?Mkw4QnkxbUg1WGRDYWZvd1kwYU9nZUtvUmpTc3U4WElBOEdUSVVUeUR6czho?=
+ =?utf-8?B?V2ZSbXNBQWliLytPUTkrVnpOSllzbERxcVFHRFRQRnF5Q1pDb2lWYWN0dWpv?=
+ =?utf-8?B?WGdnMzl4NTA0RUZHSTkwWXhQbTZHcmtHcUtzTTkxSm83MWg4UGVDSlRtSXpw?=
+ =?utf-8?B?VHJZRGNrVlo4MXpVTDVmL1FhSTVtUGFOTHZDVjh5cm15M0pXckxwdz09?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	mGNdZ2o2zNaY8aPkbedA8NKxCWR9QhqZU/G2kBmrStp5ocf0gAaTkUJV7WsCYvriwzMObrZdiJM4Y2Zgd+dSiiKf194Zk5/cdewn5kUNDQzbUE9tU4lTbQe9GqfR75uLoFb9l/C6NkFZhqBrT6G/DGQgSkoHyXYf3FKkNL5Xdd05b6sMc6r07TSTsJi8rUs/q8Zby1MV6h4V6KvbY3nqsArYFyVnND6GJv239T6BH5G0f4QDwjEdq/POhYSBSqDS6tE5DqUKRvXdiM9gGqeuTWL6Uyrdw90eqFYoEGUC5UPkr5ygRP9hKnXyS7DG0zctb8RUMi3630zn4I7hM1WEQsAdHjVl9mX+TyklAF/3CZlQDjjrlLWizys6GSVhj6LGGOzU1WmEcUDmsb4uVjxqBYcBzeUCDyl8S0jrgXlU4sexSSm/PW6N9dgRvpudTMwYzRue9zDHuj4It4liFkmt/t9yjkViM2axujdlGi4xjgqGAkmAqTj+3HvNdgBOW3fOIfmSHzX/s4uQBa6SDH/H1CUD8ouZPPF/fTPJAh2swKm58ziL2ASscElUr7Fz2rqmnbUXfjhxm5YKTB1TbgQEWQwsBwT/rztrDkXQcMnESj4=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: be550253-e3a3-4bc6-47e6-08de3f2b12d9
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR10MB6271.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Dec 2025 18:18:56.7787
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cjytfwUYdyVMCNJWchdwImOXbYSpMC+v1KJJ9RwNXpy6VlTRH2UQ0G3R8YQV9ggszQgJgHosjeVQp2u3Agy2CA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4563
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2025-12-19_06,2025-12-17_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
+ spamscore=0 malwarescore=0 mlxscore=0 phishscore=0 bulkscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2512120000 definitions=main-2512190153
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMjE5MDE1MyBTYWx0ZWRfX8D/ejpNJ+Mfq
+ bWdP6vItD9ieymm9CRpvGLQx4Bd0AlEX8rcKZftQ3vVjtFqBLL/rnQtwQtzqB9K5IDadR8I54E8
+ H9+nCgmymMX/+X+CAaec1ryXk5PUiCgecZQdAuPushFzx+WAd/fC5lxggTBhXS3MQMdlwEM5GQp
+ B9wUsaMjE1zi8KfIr4PoA3iZSu3Y+MNM1Npj06bfw56qFtmc0xpt/q5P3BqwPe6o3pW0e/HgqiF
+ TvpKoFkTxoZCyzh+YRqqgskR8w9Qeyrlt4Fiy1XTiw1TPWJIKCqzy8wCsbt43melsvxkBHnwXyk
+ yC3j+OjZHNg9oSVJ0BILqHNq86R/9cVzMg0BGi0+oAYrhQYNCklhogfV11cEp+dgmgDE5qF0mQ6
+ mWNJ8yRHg+2rkk6NA1pWzKIa3+03W4/qhzV4uvMBhw4aObqUs7BqObd8Co0nJa6yG8NXcgae3T6
+ baY6ZPEHDtQmqQvdfqkE3Sm3fgYgjj9C3RDfM0WY=
+X-Proofpoint-ORIG-GUID: c_w76fiquAKLji0h9M1roOjvB5n7Vb1f
+X-Proofpoint-GUID: c_w76fiquAKLji0h9M1roOjvB5n7Vb1f
+X-Authority-Analysis: v=2.4 cv=OZGVzxTY c=1 sm=1 tr=0 ts=69459714 b=1 cx=c_pps
+ a=e1sVV491RgrpLwSTMOnk8w==:117 a=e1sVV491RgrpLwSTMOnk8w==:17
+ a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
+ a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10
+ a=wP3pNCr1ah4A:10 a=GoEa3M9JfhUA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=yPCof4ZbAAAA:8 a=97Noy7ONA5iqNTQ4jMEA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+ cc=ntf awl=host:13654
 
-Currently resolve_btfids updates .BTF_ids section of an ELF file
-in-place, based on the contents of provided BTF, usually within the
-same input file, and optionally a BTF base.
+On 19/12/2025 17:58, Andrii Nakryiko wrote:
+> On Fri, Dec 19, 2025 at 5:34 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+>>
+>> On 16/12/2025 19:34, Andrii Nakryiko wrote:
+>>> On Mon, Dec 15, 2025 at 1:18 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+>>>>
+>>>> Support reading in kind layout fixing endian issues on reading;
+>>>> also support writing kind layout section to raw BTF object.
+>>>> There is not yet an API to populate the kind layout with meaningful
+>>>> information.
+>>>>
+>>>> As part of this, we need to consider multiple valid BTF header
+>>>> sizes; the original or the kind layout-extended headers.
+>>>> So to support this, the "struct btf" representation is modified
+>>>> to always allocate a "struct btf_header" and copy the valid
+>>>> portion from the raw data to it; this means we can always safely
+>>>> check fields like btf->hdr->kind_layout_len.
+>>>>
+>>>> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+>>>> ---
+>>>>  tools/lib/bpf/btf.c | 260 +++++++++++++++++++++++++++++++-------------
+>>>>  1 file changed, 183 insertions(+), 77 deletions(-)
+>>>>
+>>>> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+>>>> index b136572e889a..8835aee6ee84 100644
+>>>> --- a/tools/lib/bpf/btf.c
+>>>> +++ b/tools/lib/bpf/btf.c
+>>>> @@ -40,42 +40,53 @@ struct btf {
+>>>>
+>>>>         /*
+>>>>          * When BTF is loaded from an ELF or raw memory it is stored
+>>>> -        * in a contiguous memory block. The hdr, type_data, and, strs_data
+>>>> +        * in a contiguous memory block. The  type_data, and, strs_data
+>>>
+>>> nit: two spaces, and so many commas around and ;) let's leave Oxford
+>>> comma, but comma after and is weird
+>>>
+>>>>          * point inside that memory region to their respective parts of BTF
+>>>>          * representation:
+>>>>          *
+>>>> -        * +--------------------------------+
+>>>> -        * |  Header  |  Types  |  Strings  |
+>>>> -        * +--------------------------------+
+>>>> -        * ^          ^         ^
+>>>> -        * |          |         |
+>>>> -        * hdr        |         |
+>>>> -        * types_data-+         |
+>>>> -        * strs_data------------+
+>>>> +        * +--------------------------------+---------------------+
+>>>> +        * |  Header  |  Types  |  Strings  |Optional kind layout |
+>>>
+>>> Space missing, boo. Keep diagrams beautiful!..
+>>>
+>>>> +        * +--------------------------------+---------------------+
+>>>> +        * ^          ^         ^           ^
+>>>> +        * |          |         |           |
+>>>> +        * raw_data   |         |           |
+>>>> +        * types_data-+         |           |
+>>>> +        * strs_data------------+           |
+>>>> +        * kind_layout----------------------+
+>>>> +        *
+>>>> +        * A separate struct btf_header is allocated for btf->hdr,
+>>>> +        * and header information is copied into it.  This allows us
+>>>> +        * to handle header data for various header formats; the original,
+>>>> +        * the extended header with kind layout, etc.
+>>>>          *
+>>>>          * If BTF data is later modified, e.g., due to types added or
+>>>>          * removed, BTF deduplication performed, etc, this contiguous
+>>>> -        * representation is broken up into three independently allocated
+>>>> -        * memory regions to be able to modify them independently.
+>>>> +        * representation is broken up into four independent memory
+>>>> +        * regions.
+>>>> +        *
+>>>>          * raw_data is nulled out at that point, but can be later allocated
+>>>>          * and cached again if user calls btf__raw_data(), at which point
+>>>> -        * raw_data will contain a contiguous copy of header, types, and
+>>>> -        * strings:
+>>>> +        * raw_data will contain a contiguous copy of header, types, strings
+>>>> +        * and optionally kind_layout.  kind_layout optionally points to a
+>>>> +        * kind_layout array - this allows us to encode information about
+>>>> +        * the kinds known at encoding time.  If kind_layout is NULL no
+>>>> +        * kind information is encoded.
+>>>>          *
+>>>> -        * +----------+  +---------+  +-----------+
+>>>> -        * |  Header  |  |  Types  |  |  Strings  |
+>>>> -        * +----------+  +---------+  +-----------+
+>>>> -        * ^             ^            ^
+>>>> -        * |             |            |
+>>>> -        * hdr           |            |
+>>>> -        * types_data----+            |
+>>>> -        * strset__data(strs_set)-----+
+>>>> +        * +----------+  +---------+  +-----------+   +-----------+
+>>>> +        * |  Header  |  |  Types  |  |  Strings  |   |kind_layout|
+>>>> +        * +----------+  +---------+  +-----------+   +-----------+
+>>>
+>>> nit: spaces (and if we go with "layout" naming, this will be short and
+>>> beautiful " Layout " ;)
+>>>
+>>>> +        * ^             ^            ^               ^
+>>>> +        * |             |            |               |
+>>>> +        * hdr           |            |               |
+>>>> +        * types_data----+            |               |
+>>>> +        * strset__data(strs_set)-----+               |
+>>>> +        * kind_layout--------------------------------+
+>>>
+>>> [...]
+>>>
+>>>> @@ -3888,7 +3989,7 @@ static int btf_dedup_strings(struct btf_dedup *d)
+>>>>
+>>>>         /* replace BTF string data and hash with deduped ones */
+>>>>         strset__free(d->btf->strs_set);
+>>>> -       d->btf->hdr->str_len = strset__data_size(d->strs_set);
+>>>> +       btf_hdr_update_str_len(d->btf, strset__data_size(d->strs_set));
+>>>>         d->btf->strs_set = d->strs_set;
+>>>>         d->strs_set = NULL;
+>>>>         d->btf->strs_deduped = true;
+>>>> @@ -5343,6 +5444,11 @@ static int btf_dedup_compact_types(struct btf_dedup *d)
+>>>>         d->btf->type_offs = new_offs;
+>>>>         d->btf->hdr->str_off = d->btf->hdr->type_len;
+>>>>         d->btf->raw_size = d->btf->hdr->hdr_len + d->btf->hdr->type_len + d->btf->hdr->str_len;
+>>>> +       if (d->btf->kind_layout) {
+>>>> +               d->btf->hdr->kind_layout_off = d->btf->hdr->str_off + roundup(d->btf->hdr->str_len,
+>>>> +                                                                             4);
+>>>> +               d->btf->raw_size = roundup(d->btf->raw_size, 4) + d->btf->hdr->kind_layout_len;
+>>>
+>>> maybe put layout data after type data, but before strings? rounding up
+>>> string section which is byte-based feels weird. I think old libbpf
+>>> implementations should handle all this well, because btf_header
+>>> explicitly specifies string section offset, no?
+>>>
+>>
+>> That sounds good, but I think there are some strictness issues with how we parse
+>> BTF on the kernel side that we may need to think about, especially if we want to
+>> make kind layout always available. In that case we'd need to think how old kernels
+>> built with newer pahole might handle newer headers with layout info.
+>>
+>> First in btf_parse_hdr() the kernel rejects BTF with non-zero unsupported fields.
+>> So trying to load vmlinux BTF generated by a pahole that adds layout info will
+>> fail for such a kernel.
+>>
+>> Second when validating section info in btf_check_sec_info() we check for overlaps
+>> between known sections, and we also check for gaps between known sections. Finally we
+>> also check for any additional data other than the known section data.
+> 
+> I thought we don't validate gaps, I missed btf_check_sec_info()
+> checks, though. Good for kernel, it should be strict.
+> 
+> But it's easy to drop this layout info in libbpf for BTF sanitization,
+> this shouldn't be a problem. Just shift everything to the left and
+> adjust strs_off.
+> 
+>>
+>> For layout info stored between type+strings we'd wind up rejecting it for a few reasons:
+>>
+>> 1. we'd find non-zero data in the header (layout offset/len)
+>> 2. we'd find a "gap" between types+strings (the layout data)
+>>
+>> Similarly with layout at the end
+>>
+>> 1. we'd find non-zero data in the header (kind layout offset/len)
+>> 2. we'd find unaccounted-for data after the string data (the kind layout data)
+>>
+>> So either way we'd wind up with unsupported headers. One approach would be to
+>> do stable backports relaxing these header tests; I think we could relax them to
+>> simply ensure no overlap between sections and that sections don't overrun data
+>> length without risking having unusable BTF. Then a newer BTF header with additional
+>> layout info wouldn't get rejected. What do you think?
+> 
+> See above, I don't see why we can't just sanitize BTF and drop layout
+> parts altogether. They are optional for kernel either way, no harm in
+> dropping them.
+>
 
-Change resolve_btfids behavior to enable BTF transformations as part
-of its main operation. To achieve this, in-place ELF write in
-resolve_btfids is replaced with generation of the following binaries:
-  * ${1}.BTF with .BTF section data
-  * ${1}.BTF_ids with .BTF_ids section data if it existed in ${1}
-  * ${1}.BTF.base with .BTF.base section data for out-of-tree modules
+The sanitization for user-space consumption is doable alright, I was thinking
+of the case where the kernel itself reads in BTF for vmlinux/modules on boot,
+and that BTF was generated by newer pahole so has unexpected layout info. 
+If we just emitted layout info unconditionally that would mean newer pahole might
+generate BTf for a kernel that it could not read. If however we relaxed the
+constraints a bit I think we could get the validation to succeed for older
+kernels while ignoring the bits of the BTF they don't care about. Fix that would
+also potentially future-proof addition of other sections to the BTF header without
+requiring options.
 
-The execution of resolve_btfids and consumption of its output is
-orchestrated by scripts/gen-btf.sh introduced in this patch.
-
-The motivation for emitting binary data is that it allows simplifying
-resolve_btfids implementation by delegating ELF update to the $OBJCOPY
-tool [1], which is already widely used across the codebase.
-
-There are two distinct paths for BTF generation and resolve_btfids
-application in the kernel build: for vmlinux and for kernel modules.
-
-For the vmlinux binary a .BTF section is added in a roundabout way to
-ensure correct linking. The patch doesn't change this approach, only
-the implementation is a little different.
-
-Before this patch it worked as follows:
-
-  * pahole consumed .tmp_vmlinux1 [2] and added .BTF section with
-    llvm-objcopy [3] to it
-  * then everything except the .BTF section was stripped from .tmp_vmlinux1
-    into a .tmp_vmlinux1.bpf.o object [2], later linked into vmlinux
-  * resolve_btfids was executed later on vmlinux.unstripped [4],
-    updating it in-place
-
-After this patch gen-btf.sh implements the following:
-
-  * pahole consumes .tmp_vmlinux1 and produces a *detached* file with
-    raw BTF data
-  * resolve_btfids consumes .tmp_vmlinux1 and detached BTF to produce
-    (potentially modified) .BTF, and .BTF_ids sections data
-  * a .tmp_vmlinux1.bpf.o object is then produced with objcopy copying
-    BTF output of resolve_btfids
-  * .BTF_ids data gets embedded into vmlinux.unstripped in
-    link-vmlinux.sh by objcopy --update-section
-
-For kernel modules, creating a special .bpf.o file is not necessary,
-and so embedding of sections data produced by resolve_btfids is
-straightforward with objcopy.
-
-With this patch an ELF file becomes effectively read-only within
-resolve_btfids, which allows deleting elf_update() call and satellite
-code (like compressed_section_fix [5]).
-
-Endianness handling of .BTF_ids data is also changed. Previously the
-"flags" part of the section was bswapped in sets_patch() [6], and then
-Elf_Type was modified before elf_update() to signal to libelf that
-bswap may be necessary. With this patch we explicitly bswap entire
-data buffer on load and on dump.
-
-[1] https://lore.kernel.org/bpf/131b4190-9c49-4f79-a99d-c00fac97fa44@linux.dev/
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/scripts/link-vmlinux.sh?h=v6.18#n110
-[3] https://git.kernel.org/pub/scm/devel/pahole/pahole.git/tree/btf_encoder.c?h=v1.31#n1803
-[4] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/scripts/link-vmlinux.sh?h=v6.18#n284
-[5] https://lore.kernel.org/bpf/20200819092342.259004-1-jolsa@kernel.org/
-[6] https://lore.kernel.org/bpf/cover.1707223196.git.vmalik@redhat.com/
-
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-Tested-by: Alan Maguire <alan.maguire@oracle.com>
-Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
----
- MAINTAINERS                                   |   1 +
- scripts/Makefile.btf                          |  12 +-
- scripts/Makefile.modfinal                     |   5 +-
- scripts/Makefile.vmlinux                      |   2 +-
- scripts/gen-btf.sh                            | 157 ++++++++++++
- scripts/link-vmlinux.sh                       |  42 +---
- tools/bpf/resolve_btfids/main.c               | 224 +++++++++++-------
- tools/testing/selftests/bpf/.gitignore        |   3 +
- tools/testing/selftests/bpf/Makefile          |   9 +-
- .../selftests/bpf/prog_tests/resolve_btfids.c |   4 +-
- 10 files changed, 328 insertions(+), 131 deletions(-)
- create mode 100755 scripts/gen-btf.sh
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 5b11839cba9d..cb1898a85b05 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4766,6 +4766,7 @@ F:	net/sched/act_bpf.c
- F:	net/sched/cls_bpf.c
- F:	samples/bpf/
- F:	scripts/bpf_doc.py
-+F:	scripts/gen-btf.sh
- F:	scripts/Makefile.btf
- F:	scripts/pahole-version.sh
- F:	tools/bpf/
-diff --git a/scripts/Makefile.btf b/scripts/Makefile.btf
-index 840a55de42da..562a04b40e06 100644
---- a/scripts/Makefile.btf
-+++ b/scripts/Makefile.btf
-@@ -18,13 +18,15 @@ pahole-flags-$(call test-ge, $(pahole-ver), 126)  = -j$(JOBS) --btf_features=enc
- 
- pahole-flags-$(call test-ge, $(pahole-ver), 130) += --btf_features=attributes
- 
--ifneq ($(KBUILD_EXTMOD),)
--module-pahole-flags-$(call test-ge, $(pahole-ver), 128) += --btf_features=distilled_base
--endif
--
- endif
- 
- pahole-flags-$(CONFIG_PAHOLE_HAS_LANG_EXCLUDE)		+= --lang_exclude=rust
- 
- export PAHOLE_FLAGS := $(pahole-flags-y)
--export MODULE_PAHOLE_FLAGS := $(module-pahole-flags-y)
-+
-+resolve-btfids-flags-y :=
-+resolve-btfids-flags-$(CONFIG_WERROR) += --fatal_warnings
-+resolve-btfids-flags-$(if $(KBUILD_EXTMOD),y) += --distill_base
-+resolve-btfids-flags-$(if $(KBUILD_VERBOSE),y) += --verbose
-+
-+export RESOLVE_BTFIDS_FLAGS := $(resolve-btfids-flags-y)
-diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
-index 149e12ff5700..422c56dc878e 100644
---- a/scripts/Makefile.modfinal
-+++ b/scripts/Makefile.modfinal
-@@ -42,9 +42,8 @@ quiet_cmd_btf_ko = BTF [M] $@
-       cmd_btf_ko = 							\
- 	if [ ! -f $(objtree)/vmlinux ]; then				\
- 		printf "Skipping BTF generation for %s due to unavailability of vmlinux\n" $@ 1>&2; \
--	else								\
--		LLVM_OBJCOPY="$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLAGS) $(MODULE_PAHOLE_FLAGS) --btf_base $(objtree)/vmlinux $@; \
--		$(RESOLVE_BTFIDS) -b $(objtree)/vmlinux $@;		\
-+	else	\
-+		$(srctree)/scripts/gen-btf.sh --btf_base $(objtree)/vmlinux $@; \
- 	fi;
- 
- # Same as newer-prereqs, but allows to exclude specified extra dependencies
-diff --git a/scripts/Makefile.vmlinux b/scripts/Makefile.vmlinux
-index cd788cac9d91..20a988f4fe0c 100644
---- a/scripts/Makefile.vmlinux
-+++ b/scripts/Makefile.vmlinux
-@@ -71,7 +71,7 @@ targets += vmlinux.unstripped .vmlinux.export.o
- vmlinux.unstripped: scripts/link-vmlinux.sh vmlinux.o .vmlinux.export.o $(KBUILD_LDS) FORCE
- 	+$(call if_changed_dep,link_vmlinux)
- ifdef CONFIG_DEBUG_INFO_BTF
--vmlinux.unstripped: $(RESOLVE_BTFIDS)
-+vmlinux.unstripped: $(RESOLVE_BTFIDS) $(srctree)/scripts/gen-btf.sh
- endif
- 
- ifdef CONFIG_BUILDTIME_TABLE_SORT
-diff --git a/scripts/gen-btf.sh b/scripts/gen-btf.sh
-new file mode 100755
-index 000000000000..06c6d8becaa2
---- /dev/null
-+++ b/scripts/gen-btf.sh
-@@ -0,0 +1,157 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2025 Meta Platforms, Inc. and affiliates.
-+#
-+# This script generates BTF data for the provided ELF file.
-+#
-+# Kernel BTF generation involves these conceptual steps:
-+#   1. pahole generates BTF from DWARF data
-+#   2. resolve_btfids applies kernel-specific btf2btf
-+#      transformations and computes data for .BTF_ids section
-+#   3. the result gets linked/objcopied into the target binary
-+#
-+# How step (3) should be done differs between vmlinux, and
-+# kernel modules, which is the primary reason for the existence
-+# of this script.
-+#
-+# For modules the script expects vmlinux passed in as --btf_base.
-+# Generated .BTF, .BTF.base and .BTF_ids sections become embedded
-+# into the input ELF file with objcopy.
-+#
-+# For vmlinux the input file remains unchanged and two files are produced:
-+#   - ${1}.btf.o ready for linking into vmlinux
-+#   - ${1}.BTF_ids with .BTF_ids data blob
-+# This output is consumed by scripts/link-vmlinux.sh
-+
-+set -e
-+
-+usage()
-+{
-+	echo "Usage: $0 [--btf_base <file>] <target ELF file>"
-+	exit 1
-+}
-+
-+BTF_BASE=""
-+
-+while [ $# -gt 0 ]; do
-+	case "$1" in
-+	--btf_base)
-+		BTF_BASE="$2"
-+		shift 2
-+		;;
-+	-*)
-+		echo "Unknown option: $1" >&2
-+		usage
-+		;;
-+	*)
-+		break
-+		;;
-+	esac
-+done
-+
-+if [ $# -ne 1 ]; then
-+	usage
-+fi
-+
-+ELF_FILE="$1"
-+shift
-+
-+is_enabled() {
-+	grep -q "^$1=y" ${objtree}/include/config/auto.conf
-+}
-+
-+info()
-+{
-+	printf "  %-7s %s\n" "${1}" "${2}"
-+}
-+
-+case "${KBUILD_VERBOSE}" in
-+*1*)
-+	set -x
-+	;;
-+esac
-+
-+
-+gen_btf_data()
-+{
-+	info BTF "${ELF_FILE}"
-+	btf1="${ELF_FILE}.BTF.1"
-+	${PAHOLE} -J ${PAHOLE_FLAGS}			\
-+		${BTF_BASE:+--btf_base ${BTF_BASE}}	\
-+		--btf_encode_detached=${btf1}		\
-+		"${ELF_FILE}"
-+
-+	info BTFIDS "${ELF_FILE}"
-+	${RESOLVE_BTFIDS} ${RESOLVE_BTFIDS_FLAGS}	\
-+		${BTF_BASE:+--btf_base ${BTF_BASE}}	\
-+		--btf ${btf1} "${ELF_FILE}"
-+}
-+
-+gen_btf_o()
-+{
-+	local btf_data=${ELF_FILE}.btf.o
-+
-+	# Create ${btf_data} which contains just .BTF section but no symbols. Add
-+	# SHF_ALLOC because .BTF will be part of the vmlinux image. --strip-all
-+	# deletes all symbols including __start_BTF and __stop_BTF, which will
-+	# be redefined in the linker script.
-+	info OBJCOPY "${btf_data}"
-+	echo "" | ${CC} ${CLANG_FLAGS} -c -x c -o ${btf_data} -
-+	${OBJCOPY} --add-section .BTF=${ELF_FILE}.BTF \
-+		--set-section-flags .BTF=alloc,readonly ${btf_data}
-+	${OBJCOPY} --only-section=.BTF --strip-all ${btf_data}
-+
-+	# Change e_type to ET_REL so that it can be used to link final vmlinux.
-+	# GNU ld 2.35+ and lld do not allow an ET_EXEC input.
-+	if is_enabled CONFIG_CPU_BIG_ENDIAN; then
-+		et_rel='\0\1'
-+	else
-+		et_rel='\1\0'
-+	fi
-+	printf "${et_rel}" | dd of="${btf_data}" conv=notrunc bs=1 seek=16 status=none
-+}
-+
-+embed_btf_data()
-+{
-+	info OBJCOPY "${ELF_FILE}.BTF"
-+	${OBJCOPY} --add-section .BTF=${ELF_FILE}.BTF ${ELF_FILE}
-+
-+	# a module might not have a .BTF_ids or .BTF.base section
-+	local btf_base="${ELF_FILE}.BTF.base"
-+	if [ -f "${btf_base}" ]; then
-+		${OBJCOPY} --add-section .BTF.base=${btf_base} ${ELF_FILE}
-+	fi
-+	local btf_ids="${ELF_FILE}.BTF_ids"
-+	if [ -f "${btf_ids}" ]; then
-+		${OBJCOPY} --update-section .BTF_ids=${btf_ids} ${ELF_FILE}
-+	fi
-+}
-+
-+cleanup()
-+{
-+	rm -f "${ELF_FILE}.BTF.1"
-+	rm -f "${ELF_FILE}.BTF"
-+	if [ "${BTFGEN_MODE}" = "module" ]; then
-+		rm -f "${ELF_FILE}.BTF.base"
-+		rm -f "${ELF_FILE}.BTF_ids"
-+	fi
-+}
-+trap cleanup EXIT
-+
-+BTFGEN_MODE="vmlinux"
-+if [ -n "${BTF_BASE}" ]; then
-+	BTFGEN_MODE="module"
-+fi
-+
-+gen_btf_data
-+
-+case "${BTFGEN_MODE}" in
-+vmlinux)
-+	gen_btf_o
-+	;;
-+module)
-+	embed_btf_data
-+	;;
-+esac
-+
-+exit 0
-diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-index 4ab44c73da4d..e2207e612ac3 100755
---- a/scripts/link-vmlinux.sh
-+++ b/scripts/link-vmlinux.sh
-@@ -106,34 +106,6 @@ vmlinux_link()
- 		${kallsymso} ${btf_vmlinux_bin_o} ${arch_vmlinux_o} ${ldlibs}
- }
- 
--# generate .BTF typeinfo from DWARF debuginfo
--# ${1} - vmlinux image
--gen_btf()
--{
--	local btf_data=${1}.btf.o
--
--	info BTF "${btf_data}"
--	LLVM_OBJCOPY="${OBJCOPY}" ${PAHOLE} -J ${PAHOLE_FLAGS} ${1}
--
--	# Create ${btf_data} which contains just .BTF section but no symbols. Add
--	# SHF_ALLOC because .BTF will be part of the vmlinux image. --strip-all
--	# deletes all symbols including __start_BTF and __stop_BTF, which will
--	# be redefined in the linker script. Add 2>/dev/null to suppress GNU
--	# objcopy warnings: "empty loadable segment detected at ..."
--	${OBJCOPY} --only-section=.BTF --set-section-flags .BTF=alloc,readonly \
--		--strip-all ${1} "${btf_data}" 2>/dev/null
--	# Change e_type to ET_REL so that it can be used to link final vmlinux.
--	# GNU ld 2.35+ and lld do not allow an ET_EXEC input.
--	if is_enabled CONFIG_CPU_BIG_ENDIAN; then
--		et_rel='\0\1'
--	else
--		et_rel='\1\0'
--	fi
--	printf "${et_rel}" | dd of="${btf_data}" conv=notrunc bs=1 seek=16 status=none
--
--	btf_vmlinux_bin_o=${btf_data}
--}
--
- # Create ${2}.o file with all symbols from the ${1} object file
- kallsyms()
- {
-@@ -205,6 +177,7 @@ if is_enabled CONFIG_ARCH_WANTS_PRE_LINK_VMLINUX; then
- fi
- 
- btf_vmlinux_bin_o=
-+btfids_vmlinux=
- kallsymso=
- strip_debug=
- generate_map=
-@@ -232,11 +205,13 @@ if is_enabled CONFIG_KALLSYMS || is_enabled CONFIG_DEBUG_INFO_BTF; then
- fi
- 
- if is_enabled CONFIG_DEBUG_INFO_BTF; then
--	if ! gen_btf .tmp_vmlinux1; then
-+	if ! ${srctree}/scripts/gen-btf.sh .tmp_vmlinux1; then
- 		echo >&2 "Failed to generate BTF for vmlinux"
- 		echo >&2 "Try to disable CONFIG_DEBUG_INFO_BTF"
- 		exit 1
- 	fi
-+	btf_vmlinux_bin_o=.tmp_vmlinux1.btf.o
-+	btfids_vmlinux=.tmp_vmlinux1.BTF_ids
- fi
- 
- if is_enabled CONFIG_KALLSYMS; then
-@@ -289,14 +264,9 @@ fi
- 
- vmlinux_link "${VMLINUX}"
- 
--# fill in BTF IDs
- if is_enabled CONFIG_DEBUG_INFO_BTF; then
--	info BTFIDS "${VMLINUX}"
--	RESOLVE_BTFIDS_ARGS=""
--	if is_enabled CONFIG_WERROR; then
--		RESOLVE_BTFIDS_ARGS=" --fatal_warnings "
--	fi
--	${RESOLVE_BTFIDS} ${RESOLVE_BTFIDS_ARGS} "${VMLINUX}"
-+	info OBJCOPY ${btfids_vmlinux}
-+	${OBJCOPY} --update-section .BTF_ids=${btfids_vmlinux} ${VMLINUX}
- fi
- 
- mksysmap "${VMLINUX}" System.map
-diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
-index e721e20a2bbd..2cbc252259be 100644
---- a/tools/bpf/resolve_btfids/main.c
-+++ b/tools/bpf/resolve_btfids/main.c
-@@ -71,9 +71,11 @@
- #include <fcntl.h>
- #include <errno.h>
- #include <linux/btf_ids.h>
-+#include <linux/kallsyms.h>
- #include <linux/rbtree.h>
- #include <linux/zalloc.h>
- #include <linux/err.h>
-+#include <linux/limits.h>
- #include <bpf/btf.h>
- #include <bpf/libbpf.h>
- #include <subcmd/parse-options.h>
-@@ -124,6 +126,7 @@ struct object {
- 
- 	struct btf *btf;
- 	struct btf *base_btf;
-+	bool distill_base;
- 
- 	struct {
- 		int		 fd;
-@@ -324,42 +327,16 @@ static struct btf_id *add_symbol(struct rb_root *root, char *name, size_t size)
- 	return btf_id__add(root, id, BTF_ID_KIND_SYM);
- }
- 
--/* Older libelf.h and glibc elf.h might not yet define the ELF compression types. */
--#ifndef SHF_COMPRESSED
--#define SHF_COMPRESSED (1 << 11) /* Section with compressed data. */
--#endif
--
--/*
-- * The data of compressed section should be aligned to 4
-- * (for 32bit) or 8 (for 64 bit) bytes. The binutils ld
-- * sets sh_addralign to 1, which makes libelf fail with
-- * misaligned section error during the update:
-- *    FAILED elf_update(WRITE): invalid section alignment
-- *
-- * While waiting for ld fix, we fix the compressed sections
-- * sh_addralign value manualy.
-- */
--static int compressed_section_fix(Elf *elf, Elf_Scn *scn, GElf_Shdr *sh)
-+static void bswap_32_data(void *data, u32 nr_bytes)
- {
--	int expected = gelf_getclass(elf) == ELFCLASS32 ? 4 : 8;
--
--	if (!(sh->sh_flags & SHF_COMPRESSED))
--		return 0;
--
--	if (sh->sh_addralign == expected)
--		return 0;
-+	u32 cnt, i;
-+	u32 *ptr;
- 
--	pr_debug2(" - fixing wrong alignment sh_addralign %u, expected %u\n",
--		  sh->sh_addralign, expected);
-+	cnt = nr_bytes / sizeof(u32);
-+	ptr = data;
- 
--	sh->sh_addralign = expected;
--
--	if (gelf_update_shdr(scn, sh) == 0) {
--		pr_err("FAILED cannot update section header: %s\n",
--			elf_errmsg(-1));
--		return -1;
--	}
--	return 0;
-+	for (i = 0; i < cnt; i++)
-+		ptr[i] = bswap_32(ptr[i]);
- }
- 
- static int elf_collect(struct object *obj)
-@@ -380,7 +357,7 @@ static int elf_collect(struct object *obj)
- 
- 	elf_version(EV_CURRENT);
- 
--	elf = elf_begin(fd, ELF_C_RDWR_MMAP, NULL);
-+	elf = elf_begin(fd, ELF_C_READ_MMAP_PRIVATE, NULL);
- 	if (!elf) {
- 		close(fd);
- 		pr_err("FAILED cannot create ELF descriptor: %s\n",
-@@ -443,21 +420,20 @@ static int elf_collect(struct object *obj)
- 			obj->efile.symbols_shndx = idx;
- 			obj->efile.strtabidx     = sh.sh_link;
- 		} else if (!strcmp(name, BTF_IDS_SECTION)) {
-+			/*
-+			 * If target endianness differs from host, we need to bswap32
-+			 * the .BTF_ids section data on load, because .BTF_ids has
-+			 * Elf_Type = ELF_T_BYTE, and so libelf returns data buffer in
-+			 * the target endianness. We repeat this on dump.
-+			 */
-+			if (obj->efile.encoding != ELFDATANATIVE) {
-+				pr_debug("bswap_32 .BTF_ids data from target to host endianness\n");
-+				bswap_32_data(data->d_buf, data->d_size);
-+			}
- 			obj->efile.idlist       = data;
- 			obj->efile.idlist_shndx = idx;
- 			obj->efile.idlist_addr  = sh.sh_addr;
--		} else if (!strcmp(name, BTF_BASE_ELF_SEC)) {
--			/* If a .BTF.base section is found, do not resolve
--			 * BTF ids relative to vmlinux; resolve relative
--			 * to the .BTF.base section instead.  btf__parse_split()
--			 * will take care of this once the base BTF it is
--			 * passed is NULL.
--			 */
--			obj->base_btf_path = NULL;
- 		}
--
--		if (compressed_section_fix(elf, scn, &sh))
--			return -1;
- 	}
- 
- 	return 0;
-@@ -587,11 +563,26 @@ static int load_btf(struct object *obj)
- 	obj->base_btf = base_btf;
- 	obj->btf = btf;
- 
-+	if (obj->base_btf && obj->distill_base) {
-+		err = btf__distill_base(obj->btf, &base_btf, &btf);
-+		if (err) {
-+			pr_err("FAILED to distill base BTF: %s\n", strerror(errno));
-+			goto out_err;
-+		}
-+
-+		btf__free(obj->base_btf);
-+		btf__free(obj->btf);
-+		obj->base_btf = base_btf;
-+		obj->btf = btf;
-+	}
-+
- 	return 0;
- 
- out_err:
- 	btf__free(base_btf);
- 	btf__free(btf);
-+	obj->base_btf = NULL;
-+	obj->btf = NULL;
- 	return err;
- }
- 
-@@ -760,24 +751,6 @@ static int sets_patch(struct object *obj)
- 			 */
- 			BUILD_BUG_ON((u32 *)set8->pairs != &set8->pairs[0].id);
- 			qsort(set8->pairs, set8->cnt, sizeof(set8->pairs[0]), cmp_id);
--
--			/*
--			 * When ELF endianness does not match endianness of the
--			 * host, libelf will do the translation when updating
--			 * the ELF. This, however, corrupts SET8 flags which are
--			 * already in the target endianness. So, let's bswap
--			 * them to the host endianness and libelf will then
--			 * correctly translate everything.
--			 */
--			if (obj->efile.encoding != ELFDATANATIVE) {
--				int i;
--
--				set8->flags = bswap_32(set8->flags);
--				for (i = 0; i < set8->cnt; i++) {
--					set8->pairs[i].flags =
--						bswap_32(set8->pairs[i].flags);
--				}
--			}
- 			break;
- 		default:
- 			pr_err("Unexpected btf_id_kind %d for set '%s'\n", id->kind, id->name);
-@@ -793,8 +766,6 @@ static int sets_patch(struct object *obj)
- 
- static int symbols_patch(struct object *obj)
- {
--	off_t err;
--
- 	if (__symbols_patch(obj, &obj->structs)  ||
- 	    __symbols_patch(obj, &obj->unions)   ||
- 	    __symbols_patch(obj, &obj->typedefs) ||
-@@ -805,20 +776,90 @@ static int symbols_patch(struct object *obj)
- 	if (sets_patch(obj))
- 		return -1;
- 
--	/* Set type to ensure endian translation occurs. */
--	obj->efile.idlist->d_type = ELF_T_WORD;
-+	return 0;
-+}
- 
--	elf_flagdata(obj->efile.idlist, ELF_C_SET, ELF_F_DIRTY);
-+static int dump_raw_data(const char *out_path, const void *data, u32 size)
-+{
-+	size_t written;
-+	FILE *file;
- 
--	err = elf_update(obj->efile.elf, ELF_C_WRITE);
--	if (err < 0) {
--		pr_err("FAILED elf_update(WRITE): %s\n",
--			elf_errmsg(-1));
-+	file = fopen(out_path, "wb");
-+	if (!file) {
-+		pr_err("Couldn't open %s for writing\n", out_path);
-+		return -1;
-+	}
-+
-+	written = fwrite(data, 1, size, file);
-+	if (written != size) {
-+		pr_err("Failed to write data to %s\n", out_path);
-+		fclose(file);
-+		unlink(out_path);
-+		return -1;
-+	}
-+
-+	fclose(file);
-+	pr_debug("Dumped %lu bytes of data to %s\n", size, out_path);
-+
-+	return 0;
-+}
-+
-+static int dump_raw_btf_ids(struct object *obj, const char *out_path)
-+{
-+	Elf_Data *data = obj->efile.idlist;
-+	int err;
-+
-+	if (!data || !data->d_buf) {
-+		pr_debug("%s has no BTF_ids data to dump\n", obj->path);
-+		return 0;
-+	}
-+
-+	/*
-+	 * If target endianness differs from host, we need to bswap32 the
-+	 * .BTF_ids section data before dumping so that the output is in
-+	 * target endianness.
-+	 */
-+	if (obj->efile.encoding != ELFDATANATIVE) {
-+		pr_debug("bswap_32 .BTF_ids data from host to target endianness\n");
-+		bswap_32_data(data->d_buf, data->d_size);
-+	}
-+
-+	err = dump_raw_data(out_path, data->d_buf, data->d_size);
-+	if (err)
-+		return -1;
-+
-+	return 0;
-+}
-+
-+static int dump_raw_btf(struct btf *btf, const char *out_path)
-+{
-+	const void *raw_btf_data;
-+	u32 raw_btf_size;
-+	int err;
-+
-+	raw_btf_data = btf__raw_data(btf, &raw_btf_size);
-+	if (!raw_btf_data) {
-+		pr_err("btf__raw_data() failed\n");
-+		return -1;
- 	}
- 
--	pr_debug("update %s for %s\n",
--		 err >= 0 ? "ok" : "failed", obj->path);
--	return err < 0 ? -1 : 0;
-+	err = dump_raw_data(out_path, raw_btf_data, raw_btf_size);
-+	if (err)
-+		return -1;
-+
-+	return 0;
-+}
-+
-+static inline int make_out_path(char *buf, u32 buf_sz, const char *in_path, const char *suffix)
-+{
-+	int len = snprintf(buf, buf_sz, "%s%s", in_path, suffix);
-+
-+	if (len < 0 || len >= buf_sz) {
-+		pr_err("Output path is too long: %s%s\n", in_path, suffix);
-+		return -E2BIG;
-+	}
-+
-+	return 0;
- }
- 
- static const char * const resolve_btfids_usage[] = {
-@@ -840,6 +881,8 @@ int main(int argc, const char **argv)
- 		.sets     = RB_ROOT,
- 	};
- 	bool fatal_warnings = false;
-+	char out_path[PATH_MAX];
-+
- 	struct option btfid_options[] = {
- 		OPT_INCR('v', "verbose", &verbose,
- 			 "be more verbose (show errors, etc)"),
-@@ -849,6 +892,8 @@ int main(int argc, const char **argv)
- 			   "path of file providing base BTF"),
- 		OPT_BOOLEAN(0, "fatal_warnings", &fatal_warnings,
- 			    "turn warnings into errors"),
-+		OPT_BOOLEAN(0, "distill_base", &obj.distill_base,
-+			    "distill --btf_base and emit .BTF.base section data"),
- 		OPT_END()
- 	};
- 	int err = -1;
-@@ -860,6 +905,9 @@ int main(int argc, const char **argv)
- 
- 	obj.path = argv[0];
- 
-+	if (load_btf(&obj))
-+		goto out;
-+
- 	if (elf_collect(&obj))
- 		goto out;
- 
-@@ -869,23 +917,37 @@ int main(int argc, const char **argv)
- 	 */
- 	if (obj.efile.idlist_shndx == -1 ||
- 	    obj.efile.symbols_shndx == -1) {
--		pr_debug("Cannot find .BTF_ids or symbols sections, nothing to do\n");
--		err = 0;
--		goto out;
-+		pr_debug("Cannot find .BTF_ids or symbols sections, skip symbols resolution\n");
-+		goto dump_btf;
- 	}
- 
- 	if (symbols_collect(&obj))
- 		goto out;
- 
--	if (load_btf(&obj))
--		goto out;
--
- 	if (symbols_resolve(&obj))
- 		goto out;
- 
- 	if (symbols_patch(&obj))
- 		goto out;
- 
-+	err = make_out_path(out_path, sizeof(out_path), obj.path, BTF_IDS_SECTION);
-+	err = err ?: dump_raw_btf_ids(&obj, out_path);
-+	if (err)
-+		goto out;
-+
-+dump_btf:
-+	err = make_out_path(out_path, sizeof(out_path), obj.path, BTF_ELF_SEC);
-+	err = err ?: dump_raw_btf(obj.btf, out_path);
-+	if (err)
-+		goto out;
-+
-+	if (obj.base_btf && obj.distill_base) {
-+		err = make_out_path(out_path, sizeof(out_path), obj.path, BTF_BASE_ELF_SEC);
-+		err = err ?: dump_raw_btf(obj.base_btf, out_path);
-+		if (err)
-+			goto out;
-+	}
-+
- 	if (!(fatal_warnings && warnings))
- 		err = 0;
- out:
-diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
-index 19c1638e312a..b8bf51b7a0b0 100644
---- a/tools/testing/selftests/bpf/.gitignore
-+++ b/tools/testing/selftests/bpf/.gitignore
-@@ -45,3 +45,6 @@ xdp_synproxy
- xdp_hw_metadata
- xdp_features
- verification_cert.h
-+*.BTF
-+*.BTF_ids
-+*.BTF.base
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index ffd0a4c354c7..f28a32b16ff0 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -4,6 +4,7 @@ include ../../../scripts/Makefile.arch
- include ../../../scripts/Makefile.include
- 
- CXX ?= $(CROSS_COMPILE)g++
-+OBJCOPY ?= $(CROSS_COMPILE)objcopy
- 
- CURDIR := $(abspath .)
- TOOLSDIR := $(abspath ../../..)
-@@ -653,9 +654,10 @@ $(TRUNNER_TEST_OBJS): $(TRUNNER_OUTPUT)/%.test.o:			\
- 		      | $(TRUNNER_OUTPUT)/%.test.d
- 	$$(call msg,TEST-OBJ,$(TRUNNER_BINARY),$$@)
- 	$(Q)cd $$(@D) && $$(CC) -I. $$(CFLAGS) -MMD -MT $$@ -c $(CURDIR)/$$< $$(LDLIBS) -o $$(@F)
--	$$(if $$(TEST_NEEDS_BTFIDS),					\
--		$$(call msg,BTFIDS,$(TRUNNER_BINARY),$$@)		\
--		$(RESOLVE_BTFIDS) --btf $(TRUNNER_OUTPUT)/btf_data.bpf.o $$@)
-+	$$(if $$(TEST_NEEDS_BTFIDS),						\
-+		$$(call msg,BTFIDS,$(TRUNNER_BINARY),$$@)			\
-+		$(RESOLVE_BTFIDS) --btf $(TRUNNER_OUTPUT)/btf_data.bpf.o $$@;	\
-+		$(OBJCOPY) --update-section .BTF_ids=$$@.BTF_ids $$@)
- 
- $(TRUNNER_TEST_OBJS:.o=.d): $(TRUNNER_OUTPUT)/%.test.d:			\
- 			    $(TRUNNER_TESTS_DIR)/%.c			\
-@@ -894,6 +896,7 @@ EXTRA_CLEAN := $(SCRATCH_DIR) $(HOST_SCRATCH_DIR)			\
- 	prog_tests/tests.h map_tests/tests.h verifier/tests.h		\
- 	feature bpftool $(TEST_KMOD_TARGETS)				\
- 	$(addprefix $(OUTPUT)/,*.o *.d *.skel.h *.lskel.h *.subskel.h	\
-+			       *.BTF *.BTF_ids *.BTF.base		\
- 			       no_alu32 cpuv4 bpf_gcc			\
- 			       liburandom_read.so)			\
- 	$(OUTPUT)/FEATURE-DUMP.selftests				\
-diff --git a/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c b/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
-index 51544372f52e..41dfaaabb73f 100644
---- a/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
-+++ b/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
-@@ -101,9 +101,9 @@ static int resolve_symbols(void)
- 	int type_id;
- 	__u32 nr;
- 
--	btf = btf__parse_elf("btf_data.bpf.o", NULL);
-+	btf = btf__parse_raw("resolve_btfids.test.o.BTF");
- 	if (CHECK(libbpf_get_error(btf), "resolve",
--		  "Failed to load BTF from btf_data.bpf.o\n"))
-+		  "Failed to load BTF from resolve_btfids.test.o.BTF\n"))
- 		return -1;
- 
- 	nr = btf__type_cnt(btf);
--- 
-2.52.0
-
+Alan
 
