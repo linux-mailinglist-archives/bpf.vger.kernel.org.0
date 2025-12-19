@@ -1,191 +1,145 @@
-Return-Path: <bpf+bounces-77172-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77173-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DCF6CD12C5
-	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 18:36:51 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 883BBCD13CA
+	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 18:54:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B06C43034628
-	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 17:35:33 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AFC3F30AECBC
+	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 17:51:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AB2528000B;
-	Fri, 19 Dec 2025 17:35:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F148342500;
+	Fri, 19 Dec 2025 17:42:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BaTnEYgy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a3HiN4an"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 909694A35
-	for <bpf@vger.kernel.org>; Fri, 19 Dec 2025 17:35:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71A04341051
+	for <bpf@vger.kernel.org>; Fri, 19 Dec 2025 17:42:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766165731; cv=none; b=GCre1lB5Cn6Abj6nlzN7zuPr4Ar6soJ7tg6umlyUfeCmTCjGG+32iNaeMmTiN5Ew/Cda4r9AFl/7h0gaf4w0eTvQ4YN0/xIiFlvqxWiG6dBm4pNn0+nDr5ZN9vTHPhcZsEH4vWp+crShlZUvPX1Dz2Phpynzs7mbIfI3G8OKGzc=
+	t=1766166147; cv=none; b=JbTiZPC1MgqhvbdGgmgkEw6ozhbctg9bB83nk0VaokqAHwtXZoaPEBewbpY6PW+Fcqqa2/o2U+sJL71aGVQ5G+rysXKzIZL53yFrMO9B6KGIXa1ikofBXW+uu0BEQssXKF7Eu5Bq/zBvV0n5hRaH8DCrzB7+NvjKb/jRcmcZeBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766165731; c=relaxed/simple;
-	bh=fXViTuteqKVVekjtxBy4prAcNKmgRl9rBBgBVQTUDGw=;
+	s=arc-20240116; t=1766166147; c=relaxed/simple;
+	bh=ijXQWykGOGL2TDj17B557+scMQWaX05VsSV+vuQBmIs=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rLAK2yzyX8BmFruI60rhtcfkDSgUjTsNVt3Tt0V1jn5r78FszO2vG9YlvOjAq2JbSuiNdBYntM7NvWx3rsMIqoVAAiJkXW2axPy1MDWcHxKUGX/i9V2OtK70mTQw9VS/t8sbvGw4q99jmLsPw5rjrCbjmHzNpkgkxCjvcsmfyDs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BaTnEYgy; arc=none smtp.client-ip=209.85.216.41
+	 To:Cc:Content-Type; b=u2OqZYo3pLo2ncYT1jwlktrEwZOfgXf27wg2K01+z8OfLl9calDw9/SkjMkcmcKZ42FKLT5DrBUz8MNQuV3qWpx0m9aaFASKz83BFogH1O8b6pagV8boDHID+3xFL4TRY5deSM/5MWfygRM/zVJ1wMKvaKkTQGKWVIQA53a4SKU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a3HiN4an; arc=none smtp.client-ip=209.85.216.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-34c1d98ba11so2235837a91.3
-        for <bpf@vger.kernel.org>; Fri, 19 Dec 2025 09:35:29 -0800 (PST)
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-34ccdcbe520so957654a91.1
+        for <bpf@vger.kernel.org>; Fri, 19 Dec 2025 09:42:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1766165728; x=1766770528; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1766166146; x=1766770946; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QohxViHdKZtAy+o3qNWWxVcmYdb+Y36LjgMu2WdXpZ4=;
-        b=BaTnEYgyn813mHbFixXMcJEKibyTzvmtJqdDgFLuCVdtIm7b2oc47ws+VlooNrKg+2
-         OVT3aBxy6yS00mQd9/rQR+vNHRu/EuI1nTfv7PoCfbpliK7qqt6YRyzqrj1cP5tmaec/
-         NYT9ilKZOInL+ld75cWijuwYnE+qkqlbOW/p8bEfOsHd1LoMgaK0rvRAnc22J3E7NnOs
-         HStHwMfcajRVWWQUrHbaDK331rh+zd9CMdRdI1hrBdUxsC14v+2NQw+eRA4ONbA6dBPH
-         teB65aB3agaFDsrFALwxWg7OV7DqcR0fClUq3EqJ0Jp0BrsFBC7gNnhpF5KdAO2Kw1H8
-         BUkA==
+        bh=JW8x981xzKG4MFNW1u7R47ZafSPsRMNXeILtwJPy3Eo=;
+        b=a3HiN4anjqEKYe5mOkDveGPEmeYEkiik25NphNw377w339CsOYEdNkoKEslzQGN6g6
+         XHed/8fc4BWUAo5nw9oliAs7FeHqfwboXV8AhdClHP3qHYZtJqevDOCa5r5IwxxR9yfT
+         J1Owhwd9K3Lajl+SpFKVxjfJXnOsJKf3ENcH/f0vK01a7nUrXPW01a9YvvSFyGZrhv//
+         NWMrqhH3AvXtam/gEERHpv0Y/4H8rVkoKpaRS5RFSCsJVBMHYRgIUbkCiYxwAyO+GcC+
+         SH80++rufbd4oPP569t+6fs4SIAlTIKPjx7l3BcDQ71Qj4CYC8RCeZfWNa9Ttihr2oTX
+         +HNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766165728; x=1766770528;
+        d=1e100.net; s=20230601; t=1766166146; x=1766770946;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=QohxViHdKZtAy+o3qNWWxVcmYdb+Y36LjgMu2WdXpZ4=;
-        b=PECwJTlGFdYZpq+nDRBydOleaTFKphlGwiLF7czIs2bH6x6RV0qc8XFRoj20hgbjDL
-         DDDuDg0WTseT1iYAzTx4kS5U0dBMRkIX96bwYtFD7Yzx395BC0PS7c1rnvl8sJJThYMY
-         0m0Wkfoe2EqJJjK4NJkapdYhE3Da3JDpQQeMfiszoFu9kQntCUPbGJSltJSiYqKP0YbO
-         tETiQAxMRddB1DoU24mcD4npwocFb43V6l1UaMW400jmjrVROxlLJjdsNQvvQbcutSwn
-         6lSAyOmDGmSOTW6LI7GldXE/cep+a4K+9F2Hn+/EGQtYA4nDP67jPLFxO2fGVKOLpZVH
-         qpxQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWeFypIUaiT39VnVcKBmHv5PfbMZ6d3JlDsFHwknoV2teBU+4D/4CPsxZWJh8dZKt7srR4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxEPiZZHYy0Dbg0dvyeQtfelds8ACrLKz2GW7SqX1b5xb5M4gDG
-	aeJnzHQ7ys1wzxKjGvCyvDu/UqSsPX51Vp8BTparxHY1byV1fq8vfYw5zoaf29vWZRbv8onTCCl
-	ANcgO+F0RNQUIl2XQvzlY22EMwRGtCvY=
-X-Gm-Gg: AY/fxX49S1v+D7vXAeZr245USTA6zqf12tY8rxQ4LaiM9NdlUlUnX3qAPoF+/MbCEvC
-	nsrHl1Ypl2h3m+yQ1FREqyiXC0fuy8fbMFqWW/B3oc+Bm4OssVla5b4rJVZm/2jTUwvo5YFaLoX
-	aZ+vqrdWeAd4uXp2v1YfHb8AYMIlTllk7q5luwjZurURASfCAcu6oGt00QyAZFQGY9/Cg6fhnzh
-	btr6F2ZQHHED/tnDrdRhsQrstUjFEo6kvr8ieulYXPH+qJ8WWh/uALiIiYYPFLdG7ftBAQ=
-X-Google-Smtp-Source: AGHT+IEAPA3lWUTt8XaDF6xEjDIyMEdj3ldjKbLyCc5SjcjOoaHHxly6D3hb/3j7pWotpFpHEi7eB0inlSoiAcLdhx0=
-X-Received: by 2002:a17:90b:3d89:b0:340:d569:d295 with SMTP id
- 98e67ed59e1d1-34e921b092emr3370036a91.24.1766165728328; Fri, 19 Dec 2025
- 09:35:28 -0800 (PST)
+        bh=JW8x981xzKG4MFNW1u7R47ZafSPsRMNXeILtwJPy3Eo=;
+        b=mm4c+n7Fw8lYvDkAky0CXEaaxq/c/QWBp6OSfO+MX2efuLZVKjaPh9MpzkrRwzCteu
+         eMEZ+Xe0cIZhI8U/MtJc1ICF9l1C3p+coMRSI6NnDBKsCiDMRWgxaL40skg2eOjRxq63
+         SqLagi8iGq+bzIfUpmn/2M5mXDJHR1q/9ZMIKtuRgWrGluBHWHt32vKa5BmT5Vu9hJYx
+         MoQYpHOK7MFQirvibOAlO8qvppw5JpTMRyYoGiyJKc9bA/SVb3O2I//7gap80RT3KWWE
+         gTF1eB3BqVTmjrWqY/fXgYWDyoyaSTCik+ItJEwNvU8rRedJ60WFtl9G5ZWGi/JVGsRF
+         fIog==
+X-Forwarded-Encrypted: i=1; AJvYcCXs6af6CoTBjrGkJ22tEySE5YS6VxRPaV0DkRX9SKD9ShpyyRn5BpgfysD05/Liw9tb4Wg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzucNactEwzNesrqSVqK5mCwfhvQZNz6d3fChN4Q4rd3cm3KDxK
+	UsKzwhQYJhEP58BkFHHVyOvcQ28yThXHf4DKfOAMNZZxqWDhOe137mlqvUn5hSHEMGyJiTa8zn5
+	gI9C8ygIAHDpB4cs1D6yXt2tblo9DjdM=
+X-Gm-Gg: AY/fxX7TAYFVu5ny+4q3129Q9frayFIOp6vCFmijNaXufL/HZ5C9RRZCwJrTsNTmm3+
+	lXf3eb+AEa6pdTYQ+I/+22WAxsxZol/EAGkksNL2wK479emH3J4Q/VaE3QhNLPumnQo+M4+LtfX
+	e4gfXIPEBLpkC/HV/Omj0hJCeQQOeGYk1GUoG2z7E1eKjKx6FARX+Ywnu8C8PIf6yaWdaTlETQX
+	8cjdcKgWJP7eMXujZBhxaHRcIGkDoOa97QWX7Lp0CREKIgYPLHpdqiJMsgMKomqRl30MP0=
+X-Google-Smtp-Source: AGHT+IHpINJuwfKifBLEq1prr5FrJkIDHltFeoo+6LV09TLdfIop0tuY4u1d1V1PT4Cd13YrZszjS9knwymVFnKkxe8=
+X-Received: by 2002:a17:90b:3c8d:b0:34e:6e7d:7e73 with SMTP id
+ 98e67ed59e1d1-34e71e0910emr5359098a91.11.1766166145554; Fri, 19 Dec 2025
+ 09:42:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251218113051.455293-1-dolinux.peng@gmail.com>
- <20251218113051.455293-12-dolinux.peng@gmail.com> <CAEf4BzZGz1k4ma4hYL-nR_e5QQxuzM3Y+VxZNWe_YupeQMj0-w@mail.gmail.com>
- <CAErzpmuuSfBOomFbre-OBrW5+PHbvxgjrWZApZ=UC2LP0c5kQw@mail.gmail.com>
-In-Reply-To: <CAErzpmuuSfBOomFbre-OBrW5+PHbvxgjrWZApZ=UC2LP0c5kQw@mail.gmail.com>
+References: <20251218205505.2415840-1-shakeel.butt@linux.dev>
+ <aUSUe9jHnYJ577Gh@casper.infradead.org> <3lf3ed3xn2oaenvlqjmypuewtm6gakzbecc7kgqsadggyvdtkr@uyw4boj6igqu>
+ <aUTPl35UPcjc66l3@casper.infradead.org> <64muytpsnwmjcnc5szbz4gfnh2owgorsfdl5zmomtykptfry4s@tuajoyqmulqc>
+In-Reply-To: <64muytpsnwmjcnc5szbz4gfnh2owgorsfdl5zmomtykptfry4s@tuajoyqmulqc>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 19 Dec 2025 09:35:16 -0800
-X-Gm-Features: AQt7F2qrMFBKT3EYTE9UixwIQLbxo7SItsgua1tcYteuoqjww74mHuAqYMHwdSw
-Message-ID: <CAEf4BzYoyTfCX22kFUS2ymZPehQEbGeQztzGkAMuAL7d1bnUkw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v10 11/13] libbpf: Add btf_is_sorted and
- btf_sorted_start_id helpers to refactor the code
-To: Donglin Peng <dolinux.peng@gmail.com>
-Cc: ast@kernel.org, eddyz87@gmail.com, zhangxiaoqin@xiaomi.com, 
-	ihor.solodrai@linux.dev, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	pengdonglin <pengdonglin@xiaomi.com>, Alan Maguire <alan.maguire@oracle.com>
+Date: Fri, 19 Dec 2025 09:42:13 -0800
+X-Gm-Features: AQt7F2rfNtQWCgEkml7MtGjiHiq38CyNWFSgjhPC7t5q8T4gXasMjJ76tzv38qA
+Message-ID: <CAEf4BzY2YYJJsMx8BgkKk7BG67pj52stv_GRGwZkj3jnuipw+Q@mail.gmail.com>
+Subject: Re: [PATCH bpf v2] lib/buildid: use __kernel_read() for sleepable context
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Matthew Wilcox <willy@infradead.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Shaurya Rane <ssrane_b23@ee.vjti.ac.in>, 
+	"Darrick J . Wong" <djwong@kernel.org>, Christoph Hellwig <hch@infradead.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Meta kernel team <kernel-team@meta.com>, bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	syzbot+09b7d050e4806540153d@syzkaller.appspotmail.com, 
+	Christoph Hellwig <hch@lst.de>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 18, 2025 at 9:51=E2=80=AFPM Donglin Peng <dolinux.peng@gmail.co=
-m> wrote:
+On Thu, Dec 18, 2025 at 9:59=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.de=
+v> wrote:
 >
-> On Fri, Dec 19, 2025 at 8:05=E2=80=AFAM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
+> On Fri, Dec 19, 2025 at 04:07:51AM +0000, Matthew Wilcox wrote:
+> > On Thu, Dec 18, 2025 at 04:16:40PM -0800, Shakeel Butt wrote:
+> > > On Thu, Dec 18, 2025 at 11:55:39PM +0000, Matthew Wilcox wrote:
+> > > > On Thu, Dec 18, 2025 at 12:55:05PM -0800, Shakeel Butt wrote:
+> > > > > +       do {
+> > > > > +               ret =3D __kernel_read(r->file, buf, sz, &pos);
+> > > > > +               if (ret <=3D 0) {
+> > > > > +                       r->err =3D ret ?: -EIO;
+> > > > > +                       return NULL;
+> > > > > +               }
+> > > > > +               buf +=3D ret;
+> > > > > +               sz -=3D ret;
+> > > > > +       } while (sz > 0);
+> > > >
+> > > > Why are you doing a loop around __kernel_read()?  eg kernel_read() =
+does
+> > > > not do a read around __kernel_read().  The callers of kernel_read()
+> > > > don't do a loop either.  So what makes you think it needs to have a=
+ loop
+> > > > around it?
+> > >
+> > > I am assuming that __kernel_read() can return less data than the
+> > > requested. Is that assumption incorrect?
 > >
-> > On Thu, Dec 18, 2025 at 3:31=E2=80=AFAM Donglin Peng <dolinux.peng@gmai=
-l.com> wrote:
-> > >
-> > > From: pengdonglin <pengdonglin@xiaomi.com>
-> > >
-> > > Introduce two new helper functions to clarify the code and no
-> > > functional changes are introduced.
-> > >
-> > > Cc: Eduard Zingerman <eddyz87@gmail.com>
-> > > Cc: Alexei Starovoitov <ast@kernel.org>
-> > > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> > > Cc: Alan Maguire <alan.maguire@oracle.com>
-> > > Cc: Ihor Solodrai <ihor.solodrai@linux.dev>
-> > > Cc: Xiaoqin Zhang <zhangxiaoqin@xiaomi.com>
-> > > Signed-off-by: pengdonglin <pengdonglin@xiaomi.com>
-> > > ---
-> > >  tools/lib/bpf/btf.c             | 14 ++++++++++++--
-> > >  tools/lib/bpf/libbpf_internal.h |  2 ++
-> > >  2 files changed, 14 insertions(+), 2 deletions(-)
-> > >
-> >
-> > It just adds more functions to jump to and check what it's doing. I
-> > don't think this adds much value, just drop this patch
+> > I think it can, but I don't think a second call will get any more data.
+> > For example, it could hit EOF.  What led you to think that calling it i=
+n
+> > a loop was the right approach?
 >
-> Could adding the __always_inline be acceptable?
+> I am kind of following the convention of a userspace application doing
+> read() syscall i.e. repeatedly call read() until you hit an error or EOF
+> in which case 0 will be returned or you successfully read the amount of
+> data you want. I am handling negative error and 0 and for 0, I am
+> returning -EIO as that would be unexpected end of an ELF file.
+>
+> Anyways the question is if __kernel_read() returns less amount of data
+> than requested, should we return error instead of retrying? I looked
+> couple of callers of __kernel_read() & kernel_read(). Some are erroring
+> out if received data is less than requested (e.g. big_key_read()) and
+> some are calling in the loop (e.g. kernel_read_file()).
 
-No! This is not a performance concern, just mental overhead when
-reading the code.
-
->
-> >
-> >
-> > > diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> > > index b5b0898d033d..571b72bd90b5 100644
-> > > --- a/tools/lib/bpf/btf.c
-> > > +++ b/tools/lib/bpf/btf.c
-> > > @@ -626,6 +626,16 @@ const struct btf *btf__base_btf(const struct btf=
- *btf)
-> > >         return btf->base_btf;
-> > >  }
-> > >
-> > > +int btf_sorted_start_id(const struct btf *btf)
-> > > +{
-> > > +       return btf->sorted_start_id;
-> > > +}
-> > > +
-> > > +bool btf_is_sorted(const struct btf *btf)
-> > > +{
-> > > +       return btf->sorted_start_id > 0;
-> > > +}
-> > > +
-> > >  /* internal helper returning non-const pointer to a type */
-> > >  struct btf_type *btf_type_by_id(const struct btf *btf, __u32 type_id=
-)
-> > >  {
-> > > @@ -976,11 +986,11 @@ static __s32 btf_find_by_name_kind(const struct=
- btf *btf, int start_id,
-> > >         if (kind =3D=3D BTF_KIND_UNKN || strcmp(type_name, "void") =
-=3D=3D 0)
-> > >                 return 0;
-> > >
-> > > -       if (btf->sorted_start_id > 0 && type_name[0]) {
-> > > +       if (btf_is_sorted(btf) && type_name[0]) {
-> > >                 __s32 end_id =3D btf__type_cnt(btf) - 1;
-> > >
-> > >                 /* skip anonymous types */
-> > > -               start_id =3D max(start_id, btf->sorted_start_id);
-> > > +               start_id =3D max(start_id, btf_sorted_start_id(btf));
-> > >                 idx =3D btf_find_by_name_bsearch(btf, type_name, star=
-t_id, end_id);
-> > >                 if (unlikely(idx < 0))
-> > >                         return libbpf_err(-ENOENT);
-> > > diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_i=
-nternal.h
-> > > index fc59b21b51b5..95e6848396b4 100644
-> > > --- a/tools/lib/bpf/libbpf_internal.h
-> > > +++ b/tools/lib/bpf/libbpf_internal.h
-> > > @@ -250,6 +250,8 @@ const struct btf_type *skip_mods_and_typedefs(con=
-st struct btf *btf, __u32 id, _
-> > >  const struct btf_header *btf_header(const struct btf *btf);
-> > >  void btf_set_base_btf(struct btf *btf, const struct btf *base_btf);
-> > >  int btf_relocate(struct btf *btf, const struct btf *base_btf, __u32 =
-**id_map);
-> > > +int btf_sorted_start_id(const struct btf *btf);
-> > > +bool btf_is_sorted(const struct btf *btf);
-> > >
-> > >  static inline enum btf_func_linkage btf_func_linkage(const struct bt=
-f_type *t)
-> > >  {
-> > > --
-> > > 2.34.1
-> > >
+From a user perspective, I'd very much appreciate it if I get exactly
+the requested amount of bytes from freader_fetch_sync(), so yeah,
+let's please keep the loop. It does seem that ret <=3D 0 handling is
+correct and should not result in an endless loop.
 
