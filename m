@@ -1,139 +1,138 @@
-Return-Path: <bpf+bounces-77193-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77194-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70360CD1650
-	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 19:41:47 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8343BCD1779
+	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 19:53:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E029E3115F0D
-	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 18:37:07 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1CEBD3075C1A
+	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 18:51:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 184FA28030E;
-	Fri, 19 Dec 2025 18:36:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6934F2C0F62;
+	Fri, 19 Dec 2025 18:42:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LnCoHhDs"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MX+dw5JL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30B141391
-	for <bpf@vger.kernel.org>; Fri, 19 Dec 2025 18:36:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 599D58248B
+	for <bpf@vger.kernel.org>; Fri, 19 Dec 2025 18:42:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766169414; cv=none; b=I8pDycElh6hBBEyjL2Yanrgre7DpSwObsp25YJ23tPdMhfgTO2418XgpUjR3DhUy6AdGPxp9Rs109rxjIFOvKj+hKLN9GL/tmnBQaEp2Ob0BmD9J2i3SdD3PX6wXHcFwJ2BXmwWLB46vfRAgRtloj4gRvBhzXECWF2CMVcGWbtg=
+	t=1766169724; cv=none; b=p9V5t4n8rx+jd4qDclTdkAHOZXoKuxhB0odfm9SbU9ilaS1A7CXpYAGN35zfcldPMAG1S6aRdy58SMEmM7YY8PuX45OWsTUBdkV7DrKERk3rAT1hAqcFfnUOiw2JiU8DN7YvVye6gHdW7WuxYglZm653B8YMBijayzG43yLOsXU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766169414; c=relaxed/simple;
-	bh=Ckwlrvf67oHBQrVnk7Gu1o4N/ehl3eLCfjTY9bDnu4k=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=QLu2jnrt2KJNhQYJ1w7XGv4OrWnr26Fowr37fGc8dhalpmKMK9OHmk6o0fI1XahyyaoJJCtbsTSjcKZw758jTEnyPrrIoAAzkRwJS2SV1EkPqDGrJEd8UeS8hFxfAQ2X/2Z7oiPbtijg/qAHwCkcm3EBcYZxll3io4yVAB18vfo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LnCoHhDs; arc=none smtp.client-ip=209.85.216.41
+	s=arc-20240116; t=1766169724; c=relaxed/simple;
+	bh=1t3SvdLKBdnpLyk36pqNQfOQzeNEbS6bTaLlt3bCeC4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JoGhA5xfKt+r9SEAXFNlrEFAylTc0lG3ycTeqmlXf+ev6SZwk/9EvsD/3BJBECPM0gF9UTWL98vMrI6YYh28l7OqTOGSmPCSHedeP3gvo80A7BG0XeU1w1Fm2W3xn1kEiRxtUv7Ayslr6K/w14YQa+E0VZbKD9SNA2mtFoziB3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MX+dw5JL; arc=none smtp.client-ip=209.85.216.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-34ab8e0df53so1887958a91.3
-        for <bpf@vger.kernel.org>; Fri, 19 Dec 2025 10:36:53 -0800 (PST)
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-34c84dc332cso1765287a91.0
+        for <bpf@vger.kernel.org>; Fri, 19 Dec 2025 10:42:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1766169412; x=1766774212; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Ckwlrvf67oHBQrVnk7Gu1o4N/ehl3eLCfjTY9bDnu4k=;
-        b=LnCoHhDsQRbTgHN7Fb3GgYyKEhFhFU4jL+lHIt7sBcnLOxLHLNvuYW1y9BmdGZ9ai7
-         8SUYGnxLtfZrCsvnwIrmFpHar5zgt41SK563HbHo3D7RuAC0Wbe7DmFyE8S+cp6quyDx
-         HACOv4BuWigFXd906odqUkVRN43xgaIIrLlWnqcksPypOvgK5I7sawefh9P+nXE6N+lO
-         Ndme/ccThiVpw9ZQN4IDb8vXST1YO9q7oo74ICydVSfuz+MsN2pxvHFLCeSSeIk3WSbq
-         x31mlf2nbfWxR30UXr6cJwq0q34qwRJ9fMDfiPq5VUBTcFghM5hRvPP53ADGiYta2uRb
-         MLDA==
+        d=gmail.com; s=20230601; t=1766169722; x=1766774522; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1t3SvdLKBdnpLyk36pqNQfOQzeNEbS6bTaLlt3bCeC4=;
+        b=MX+dw5JLsFqOLk1vI0GJ6qy50fvcPNE7tT+eKjAKa6BsumEUjADc7VnaUBcSey/hwa
+         tNIwkXaGTe+23Urek0lHtAGSpH8SU1trC+suOtguWVvh1GFQNN+00tRBmp31UfNaCNxV
+         X7tW3bTpG02/gr2T4SNbYnWw5yaEQU1H24c++Tw66ABbkMTxhoG5l3C9i612ocTULLwO
+         QB1AYy2fDCCE2ois1Oj2PY0pWsEuXk4rqICCbLHvDensFe61/fPoPhFz7bfXp2oNdg64
+         gjlxzloh090xvoJOfXLHtQquvzHLgIw6cG/OGj0uqL91Xzvm/fyL6XF3KEYjpbMysCwg
+         4aSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766169412; x=1766774212;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ckwlrvf67oHBQrVnk7Gu1o4N/ehl3eLCfjTY9bDnu4k=;
-        b=xHpafC4vmHWzJ2CpZhpZVLDTxKVKEnBo+qVjkNsLamAXrSEbG6/cL4TqvvzkvTeftm
-         ALCnJlGhKPCIryp+5QGteP7SmYMj8O4UHTB59eNLJ657W6I4cQN/xgdESgCQYmIP+ggR
-         j5vHc+MyiaAuc56FrEA9ijpDHR4EF40UIjUT4orDDoKM2MlEHizcBsQYqX4++X6TpHWj
-         mxHqFxqFEp6i5hzUCVygCgl64QTzTw9rXKFYbnqVYR0HyIU2em29Jao3TVrx2WrDBtX0
-         +T+KnVKAZnSojoOLsXsAQHkOxJyvj3dD3IB4N9PVtV2s7YdfSlsG+ITWZxPvF4r2txod
-         eMWg==
-X-Forwarded-Encrypted: i=1; AJvYcCU2zt231jL/hDbvxwM/tmDUP1C/ahagaNMT0vzyLTXeYRXLEXbl5ZV3SMN8L7WrJ2r5vEM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwhOQ2LjRP4JkW0GSN3+pbjFUbTvzublStdmTKk8eFrJwqfAbhi
-	NLDSXYUBQ0g6A5cEvMaKBX6KtD6t1Ikvq0P8eAhpxZpNBywSY6+Ho7Zl
-X-Gm-Gg: AY/fxX4ZZoX+HwFabYxzXblWe71rEWXnNvVcO+iZwvUJ2fc5TlOUvSBSY7lJ1A8mPyd
-	IEpFdQnjtUippGauv0wQ7miyq2hUMUSFBquqTSGI+nMYfdxTA5B8HkBPfX0kdE6RCftXpf+jTD9
-	wuj1YfuUJu+cylFym4Fu0o56JgFPDLcq5ApKaCennK+Zo7TbYR8xcvMM1kHKQt65arYw071/ViK
-	+tkuTGeqkz3zik72HhZUmRy+MMglvf2zn3F1pzftXlN9gtioKHv6Dr5ymNN0SggPwdLUg8TM671
-	bsKkcG6zXN/tUqwN1U9gX0vLbpcUOtdPhlr+/AVSgf0HgKrJw/wX9KFvZ7cppNQ32G1BSucQaTV
-	3K9SOCii+vr0bHiK4gqDY+HZ0lIGY3R1staVb9CbMr0LNelRgI3vzEXwfD26X//aXgXLlAA4MhZ
-	nGlIpR+ew=
-X-Google-Smtp-Source: AGHT+IHQJqWLiHmQUhK0KQcUhyRWRHsJFOAx1pVl3iinbcLZe5q6pxefagQozOZvUOpTMNvfMCOUqw==
-X-Received: by 2002:a17:90b:2246:b0:349:9d63:8511 with SMTP id 98e67ed59e1d1-34e921dff9bmr2913899a91.25.1766169412352;
-        Fri, 19 Dec 2025 10:36:52 -0800 (PST)
-Received: from [192.168.0.56] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34e70dcc4dcsm5893497a91.14.2025.12.19.10.36.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Dec 2025 10:36:52 -0800 (PST)
-Message-ID: <a99c8b9148a71c7827b00be5c793bfe8379de1de.camel@gmail.com>
-Subject: Re: [PATCH v8 bpf-next 02/10] libbpf: Support kind layout section
- handling in BTF
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Alan Maguire
-	 <alan.maguire@oracle.com>
-Cc: andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
- martin.lau@linux.dev, 	song@kernel.org, yonghong.song@linux.dev,
- john.fastabend@gmail.com, 	kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, 	qmo@kernel.org,
- ihor.solodrai@linux.dev, dwarves@vger.kernel.org, 	bpf@vger.kernel.org,
- ttreyer@meta.com, mykyta.yatsenko5@gmail.com
-Date: Fri, 19 Dec 2025 10:36:49 -0800
-In-Reply-To: <CAEf4BzZ+iH1XvaYOjE==GPJ6wFo14_QtrFYvyvWa=ebc6UKPbA@mail.gmail.com>
-References: <20251215091730.1188790-1-alan.maguire@oracle.com>
-	 <20251215091730.1188790-3-alan.maguire@oracle.com>
-	 <CAEf4Bza+C7nRxFDHS0dNDk5XF79nE6y4GqEu0bmtJPTMoFrNvQ@mail.gmail.com>
-	 <db38bb39-7d16-41b6-968d-61e3b7681440@oracle.com>
-	 <CAEf4Bzbn_eWC8W8+so-BgkzNOxx8jgEysU3kTzBCW1jwXPEfnQ@mail.gmail.com>
-	 <ccafde20-3ea5-458a-b2e7-219aaa9a7ff0@oracle.com>
-	 <CAEf4BzZ+iH1XvaYOjE==GPJ6wFo14_QtrFYvyvWa=ebc6UKPbA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.58.1 (3.58.1-1.fc43) 
+        d=1e100.net; s=20230601; t=1766169722; x=1766774522;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=1t3SvdLKBdnpLyk36pqNQfOQzeNEbS6bTaLlt3bCeC4=;
+        b=FfgLJTHAHBn6M5tX1fd6FG5EMDkF/rDfICQpDR0sjbg/2HJhYstcBBeOUmqYW9ZFsz
+         EnQz1vXfDmRHLrxHMuPaJyj+74/RJx2BLoVwUnxI3C1OaFjNCEJbgGRcAakw4Rzs5NUX
+         lok5CApqHO2tXCA7D5t7tS1iML8JFWfqxi1LSiizkRF1BvXsbUGAwV4bWhrDF2IRY6Q1
+         uOEWvSqipYSKZsKplCUlZCPpMYwhKg4A53zVcxbHlYpHoG/DTXPcNqaKKngLbAH2VFHO
+         eBtAD/UDfRwW8q6XAj5G4wyTDyx7CcldZYH1uUBlkSkkXok5BK6zTaLy75xSAyuVqSlD
+         g/6A==
+X-Forwarded-Encrypted: i=1; AJvYcCXdwOZz03ZsLV5w4jtFSta87feYilTGcDypTQ+NUelZX6wwGkw3jjZCTeXWD94wOaPM3sw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzsgPqae0Ocbfzru5xOfNM1cr46Rd6Df4eqcYHdbaF0of4B6jNc
+	p4i/GbhE8awMuSZXuC2h4uvbKtG1LGAnkc4o85xxgbsk8lGSKh7dVqEWDi9dl2cFJlkackWaO13
+	f9H3g4C48Hx+RSb26+kETkK6rebwYr5M=
+X-Gm-Gg: AY/fxX6BbS+0HUtxfH0o58AIilsCsoFyJSyy2GqClYYZUomjPxKYNqTIcHUO0l7RRQT
+	KuFQD+tTc+TzcOPrurUd4CFo5qYlqkgT+qFn6Gsm+IAilWvJDxN0oaKWHi8uc+4Bc45/l9PSwxk
+	c1OZ/CXkxCQZLU37va1yPnRXFe8u2TiMTx/oRJz5fRbiOqS4avDj1EcgmXfxCWxb6R9s+265PJA
+	AjMkGs0yaj92/MtzbmfcUbzsM6wkQZxemh5Y/oJAQS+9qEfybL9wM4obo2OnEhK7suB8x8=
+X-Google-Smtp-Source: AGHT+IH2D1pwfLkRfYRld646pBfuD0MjZS76cEgvU9gjFR6Io6clmZDmSSZ8uuJD6DHemsg+Ucthed83iuRFVEni7o8=
+X-Received: by 2002:a17:90b:2585:b0:341:8ac6:2244 with SMTP id
+ 98e67ed59e1d1-34e9212a9fbmr2934322a91.9.1766169722525; Fri, 19 Dec 2025
+ 10:42:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20251215091730.1188790-1-alan.maguire@oracle.com>
+ <20251215091730.1188790-3-alan.maguire@oracle.com> <CAEf4Bza+C7nRxFDHS0dNDk5XF79nE6y4GqEu0bmtJPTMoFrNvQ@mail.gmail.com>
+ <db38bb39-7d16-41b6-968d-61e3b7681440@oracle.com> <CAEf4Bzbn_eWC8W8+so-BgkzNOxx8jgEysU3kTzBCW1jwXPEfnQ@mail.gmail.com>
+ <ccafde20-3ea5-458a-b2e7-219aaa9a7ff0@oracle.com> <CAEf4BzZ+iH1XvaYOjE==GPJ6wFo14_QtrFYvyvWa=ebc6UKPbA@mail.gmail.com>
+ <a99c8b9148a71c7827b00be5c793bfe8379de1de.camel@gmail.com>
+In-Reply-To: <a99c8b9148a71c7827b00be5c793bfe8379de1de.camel@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 19 Dec 2025 10:41:50 -0800
+X-Gm-Features: AQt7F2rWDSJVuCd0kTKtGcjM5u5ZCHuXe2XNLuAk6Z5kkf0iBnl8lf9s5cNg-zY
+Message-ID: <CAEf4BzaS9xoFaTF7LEyjYg9iPZZGn3=UhDVXAv9AuuMz1wFoZg@mail.gmail.com>
+Subject: Re: [PATCH v8 bpf-next 02/10] libbpf: Support kind layout section
+ handling in BTF
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Alan Maguire <alan.maguire@oracle.com>, andrii@kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org, 
+	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, qmo@kernel.org, 
+	ihor.solodrai@linux.dev, dwarves@vger.kernel.org, bpf@vger.kernel.org, 
+	ttreyer@meta.com, mykyta.yatsenko5@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2025-12-19 at 10:21 -0800, Andrii Nakryiko wrote:
+On Fri, Dec 19, 2025 at 10:36=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.co=
+m> wrote:
+>
+> On Fri, 2025-12-19 at 10:21 -0800, Andrii Nakryiko wrote:
+>
+> [...]
+>
+> > > The sanitization for user-space consumption is doable alright, I was =
+thinking
+> > > of the case where the kernel itself reads in BTF for vmlinux/modules =
+on boot,
+> > > and that BTF was generated by newer pahole so has unexpected layout i=
+nfo.
+> > > If we just emitted layout info unconditionally that would mean newer =
+pahole might
+> > > generate BTf for a kernel that it could not read. If however we relax=
+ed the
+> > > constraints a bit I think we could get the validation to succeed for =
+older
+> > > kernels while ignoring the bits of the BTF they don't care about. Fix=
+ that would
+> > > also potentially future-proof addition of other sections to the BTF h=
+eader without
+> > > requiring options.
+> >
+> > No, let's forget about allowing the kernel to let through some
+> > unrecognized parts of BTF. Pahole will keep introducing feature flags
+> > that we need to enable (like layout stuff, for example), so old
+> > kernels built with new pahole will be just fine. And any
+> > kernel-specific modifications will be moved to resolve_btfids and will
+> > be in-sync with kernel logic. I think we are all good and we don't
+> > have to invent new things on this front, potentially opening us up to
+> > some unforeseen attacks through BTF injection.
+>
+> That would mean that the flag to generate or not layout information
+> should remain, right?
 
-[...]
-
-> > The sanitization for user-space consumption is doable alright, I was th=
-inking
-> > of the case where the kernel itself reads in BTF for vmlinux/modules on=
- boot,
-> > and that BTF was generated by newer pahole so has unexpected layout inf=
-o.
-> > If we just emitted layout info unconditionally that would mean newer pa=
-hole might
-> > generate BTf for a kernel that it could not read. If however we relaxed=
- the
-> > constraints a bit I think we could get the validation to succeed for ol=
-der
-> > kernels while ignoring the bits of the BTF they don't care about. Fix t=
-hat would
-> > also potentially future-proof addition of other sections to the BTF hea=
-der without
-> > requiring options.
->=20
-> No, let's forget about allowing the kernel to let through some
-> unrecognized parts of BTF. Pahole will keep introducing feature flags
-> that we need to enable (like layout stuff, for example), so old
-> kernels built with new pahole will be just fine. And any
-> kernel-specific modifications will be moved to resolve_btfids and will
-> be in-sync with kernel logic. I think we are all good and we don't
-> have to invent new things on this front, potentially opening us up to
-> some unforeseen attacks through BTF injection.
-
-That would mean that the flag to generate or not layout information
-should remain, right?
+Yeah, unfortunately, as there will be no libbpf to sanitize that. But
+that brings the layout question for Clang/GCC, are we adding that?
+That should be emitted unconditionally, IMO.
 
