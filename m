@@ -1,183 +1,206 @@
-Return-Path: <bpf+bounces-77089-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77090-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6F7DCCE1C4
-	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 02:01:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EDBBECCE210
+	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 02:20:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8681B301C3FA
-	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 01:01:45 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9800D306A520
+	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 01:18:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F4F52264CA;
-	Fri, 19 Dec 2025 01:01:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB576221542;
+	Fri, 19 Dec 2025 01:18:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Wrd5D7EU"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="AxLCqC6e"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BF001A8F97
-	for <bpf@vger.kernel.org>; Fri, 19 Dec 2025 01:01:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE02322A4E1
+	for <bpf@vger.kernel.org>; Fri, 19 Dec 2025 01:18:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766106104; cv=none; b=nWAJvoWU94awNbEiBEoUODbRMxrYsaqTYZ2X2yk0LMhZtEvTwjLXXqpLOyXKkfI3nAwSgTY6ye04Gbz0EB/cQbvICBDv+vyVVxQKab7tRCltgCL28+3vw4xzvYp4t/f5my23Gb8jiJJpw4Im84AlbhjMn5AeH5IY50hv+yg2YTg=
+	t=1766107113; cv=none; b=ffYDjxGsIYn8MzVkuz0D2KPq72cMB3t+SUXxsl8wjz6uwNKS87bZfv4XH8P4KRJk5nfQS4CCsIpGYTVuyeMplVJm6231/4j5BWZOsq0nH5oBmDhoWoV+02p+gSOTo4a5WOJ+4LRHakf27aN0fptZAk+QrocZYcgL4IpJ7qrZ8H8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766106104; c=relaxed/simple;
-	bh=zd3dJV2RaUpsCT+wpuBM0RsuM7StzvZ1idgglYYGZjE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uZ+zQFqomcJte9hFQVJTe8U7PFRHb+boDWRGyFPv9ypqZ2b6sFcW/h/9xcjxdRTLwz/wyy1xW43rWyjnsPPjM8qk1T8WFhsrlwnK86QXx+Yyt4ZWID+8LcNdjxRTlUh/s3k0iypyjFdNqQV+T69BVt9qeuu6X9hBTrjQkdNZ/Pc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Wrd5D7EU; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-34aa62f9e74so1553217a91.1
-        for <bpf@vger.kernel.org>; Thu, 18 Dec 2025 17:01:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1766106102; x=1766710902; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HiOCn/qWhE9KxakkVdbRY9XP6E8J6PU+UH8uPmU8t8E=;
-        b=Wrd5D7EUb365hy3kYgMyTkR0zqinNjwXjGaDSL495ogQ55B2l7akJxeTieq5tP7mG+
-         dYJEfBedjZOzUnYeK0gArEDlqNXKLWOnUeq1e8qEZ2bjBIVqWrck2I2xjm7zCWzE5pbK
-         zKijvz9ZdFjNr7gg4b3J7oo0E+86eOOq1YwbDApIPhd+5XC6mF7xTOXlsv3hE65oqjOb
-         OyJho8cJ065uFnVIZdj6gNEH7ccqzOGY2IOLqJikNKJTqaz0DbEkaxSMYG9ZE7E9bS39
-         vBkMeaWAoyZZd0EGqGEcSWfv70gdkG8qtORzfipXLTWxgKyouYZYOX7AtxJ93f0D108R
-         eIFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766106102; x=1766710902;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=HiOCn/qWhE9KxakkVdbRY9XP6E8J6PU+UH8uPmU8t8E=;
-        b=AezEvArzx7wfENh40brHDCvE1mGe+C66EL2Eucb/D6pExxweft4SftSfZEr3SrFuhw
-         NYQ9jMGsFz+BewGniBi2NIHGrPm3iN6/2AV5IFE/Z9FY5pqgmQd/21BSMRFY2nRrWLYk
-         0GJk8SmdXc1VvAMMf2TIjbLN5fIH33G6DZgn3lgp5d7DAHaeAkMZAj7J4CPW59OkkbME
-         4uiM7xNsv7Q37NVxgSCQVsef/jfOHySzDSCNl87VrbTKKOah+5h4TIKoqeI0VdHl8QSt
-         uJC8unBxKtNmntJpJjohLIIbyycLvgBHiM/CczxW3W9WVN2uGvoZPXKNrjokhy+7vbqw
-         h99Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXBV5KF1foHUK+eZSIMncfMJ+r8nweHgjF0JlsGcdfj+26jAKF+8IgJIOXo5VKOlOXOFa0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwfhhAh4C+lqPCwQuEvE6omvolgbf4FGb1s+bAw9LmaQgoJLIz3
-	tMvH3ux+6crplTr14dfTNubx46ve43sN4tfUkA1sdZjieGpm9eLsQbO6vx9QVFbypIQlRhi9DcA
-	LfnQLMqNOl1FmaGrQVtgLUZyOEQlEUwCMWQ==
-X-Gm-Gg: AY/fxX7Lt7qs7BaR94FRRFzh9x77ooDIlgIfxBpsbJoDjuM2Hz+RXwXLX75W35jc2D/
-	UXAcQCbcZZL7KfbCChw7k2KnDc324L8bpss+2GlVC10dB1Xh0Cw9xUDc49BOQ0pYKFpa61pgceu
-	z284r4rHtr3s+J/larJoLg4WityhQjAhsaoCK89JEIla369RfcZn7S44gXgqWbBVic4L93tSlNd
-	1w8OhdIcwhXkygNQPMUXKV4yKUR4JT3GFrY4k1ZnGZyTxcIMhPX8NgCacXXFu2bbSB+MNiFjDlt
-	JkKJlx5030o=
-X-Google-Smtp-Source: AGHT+IG8YsP/HhQaiozDV1h6pW19gs2KtqqFEh/5CoFCr34fgj2o9RqK46v/d+ZtS5svzwntlvU5PXJyOftGBt8A7X0=
-X-Received: by 2002:a17:90b:33c9:b0:340:dd2c:a3f5 with SMTP id
- 98e67ed59e1d1-34e921235efmr1115534a91.3.1766106101716; Thu, 18 Dec 2025
- 17:01:41 -0800 (PST)
+	s=arc-20240116; t=1766107113; c=relaxed/simple;
+	bh=bX9xDE2uQAiOZUN07SIW8h6vUR0PV/BSYVpDFr6nVqc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=c6W9EvbXaV0IbXgCqwNNX3XnQcc0u86psei1BA38bRSjbpMUEliay5d+dn6la2SVCSQ0wO4aioGJl2IuSUNHRtGy8FmdAHR/OiqXZd5fZoY3cTB8ZNKN4OamRtf+okx5e12Hajx/w2UUDSq+w8se1TGoDDTDgETMhxkHf4gEWeQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=AxLCqC6e; arc=none smtp.client-ip=95.215.58.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1766107098;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wX6EViJ13mRWXkqyRNy2dkPPLqUQ2YPrvTky8OaAqDI=;
+	b=AxLCqC6epb7d00XQRkd+zR3gV08rLPJRfLUW0wvlMMSsHzTswA/hykO3exSMNYFecqRACO
+	KbV67BwyvCkM8ziIrk/Es6tVYr01/PQJm+0U+y2HHg2CwGjueljowJfFGyzMEJNabcqPgP
+	Se2zleM4S32zHIGmjSTHj0VhPfOCKpE=
+From: Menglong Dong <menglong.dong@linux.dev>
+To: Menglong Dong <menglong8.dong@gmail.com>,
+ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: ast@kernel.org, andrii@kernel.org, davem@davemloft.net,
+ dsahern@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+ eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+ bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+ netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v4 0/9] bpf: tracing session supporting
+Date: Fri, 19 Dec 2025 09:18:04 +0800
+Message-ID: <1943128.tdWV9SEqCh@7940hx>
+In-Reply-To:
+ <CAEf4Bzb8oooWbxctuVhNPsziRBd1Fv9Y11-5TiEML8ckjrCt+g@mail.gmail.com>
+References:
+ <20251217095445.218428-1-dongml2@chinatelecom.cn>
+ <CAEf4Bzb8oooWbxctuVhNPsziRBd1Fv9Y11-5TiEML8ckjrCt+g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251218113051.455293-1-dolinux.peng@gmail.com>
- <20251218113051.455293-5-dolinux.peng@gmail.com> <CAEf4BzbSMwW4es5D9i=bpSjALo8u+oW-9vdQ7=DBoTBtMoJ1Tg@mail.gmail.com>
- <d161fb1f8b7a3b994fe3ed4a00e01fc1f1af3513.camel@gmail.com>
- <CAEf4Bzamgpk7Dj2uMrCmVEijvyHKqUguWJU7h+12pSr3S7F1hQ@mail.gmail.com> <e2690b163b823d82565ce2dc6e58fa23c0bf7935.camel@gmail.com>
-In-Reply-To: <e2690b163b823d82565ce2dc6e58fa23c0bf7935.camel@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 18 Dec 2025 17:01:27 -0800
-X-Gm-Features: AQt7F2rBtQFuqeFqmvGc3klctvni7MxmraVS1KfLiLJvQUl6PyUPwYfG9t3Zxe0
-Message-ID: <CAEf4BzbbRP6ftHE0q5cDLJ9EhaSP+Ssy7rMJjFSn2GDrSL8O-Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v10 04/13] libbpf: Optimize type lookup with
- binary search for sorted BTF
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Donglin Peng <dolinux.peng@gmail.com>, ast@kernel.org, zhangxiaoqin@xiaomi.com, 
-	ihor.solodrai@linux.dev, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	pengdonglin <pengdonglin@xiaomi.com>, Alan Maguire <alan.maguire@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Dec 18, 2025 at 4:25=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> On Thu, 2025-12-18 at 16:19 -0800, Andrii Nakryiko wrote:
-> > On Thu, Dec 18, 2025 at 4:13=E2=80=AFPM Eduard Zingerman <eddyz87@gmail=
-.com> wrote:
-> > >
-> > > On Thu, 2025-12-18 at 15:29 -0800, Andrii Nakryiko wrote:
-> > >
-> > > [...]
-> > >
-> > > > >  static __s32 btf_find_by_name_kind(const struct btf *btf, int st=
-art_id,
-> > > > >                                    const char *type_name, __u32 k=
-ind)
-> > > >
-> > > > kind is defined as u32 but you expect caller to pass -1 to ignore t=
-he
-> > > > kind. Use int here.
-> > > >
-> > > > >  {
-> > > > > -       __u32 i, nr_types =3D btf__type_cnt(btf);
-> > > > > +       const struct btf_type *t;
-> > > > > +       const char *tname;
-> > > > > +       __s32 idx;
-> > > > > +
-> > > > > +       if (start_id < btf->start_id) {
-> > > > > +               idx =3D btf_find_by_name_kind(btf->base_btf, star=
-t_id,
-> > > > > +                                           type_name, kind);
-> > > > > +               if (idx >=3D 0)
-> > > > > +                       return idx;
-> > > > > +               start_id =3D btf->start_id;
-> > > > > +       }
-> > > > >
-> > > > > -       if (kind =3D=3D BTF_KIND_UNKN || !strcmp(type_name, "void=
-"))
-> > > > > +       if (kind =3D=3D BTF_KIND_UNKN || strcmp(type_name, "void"=
-) =3D=3D 0)
-> > > > >                 return 0;
-> > > > >
-> > > > > -       for (i =3D start_id; i < nr_types; i++) {
-> > > > > -               const struct btf_type *t =3D btf__type_by_id(btf,=
- i);
-> > > > > -               const char *name;
-> > > > > +       if (btf->sorted_start_id > 0 && type_name[0]) {
-> > > > > +               __s32 end_id =3D btf__type_cnt(btf) - 1;
-> > > > > +
-> > > > > +               /* skip anonymous types */
-> > > > > +               start_id =3D max(start_id, btf->sorted_start_id);
-> > > >
-> > > > can sorted_start_id ever be smaller than start_id?
-> > >
-> > > sorted_start_id can be zero, at two callsites for this function
-> > > start_id is passed as btf->start_id and 1.
+On 2025/12/19 08:55 Andrii Nakryiko <andrii.nakryiko@gmail.com> write:
+> On Wed, Dec 17, 2025 at 1:54=E2=80=AFAM Menglong Dong <menglong8.dong@gma=
+il.com> wrote:
 > >
-> > Can it with the check above?
+> > Hi, all.
 > >
-> >   if (btf->sorted_start_id > 0 && type_name[0]) {
+> > In this version, I combined Alexei and Andrii's advice, which makes the
+> > architecture specific code much simpler.
 > >
+> > Sometimes, we need to hook both the entry and exit of a function with
+> > TRACING. Therefore, we need define a FENTRY and a FEXIT for the target
+> > function, which is not convenient.
 > >
-> > This branch is a known sorted case. That's why all these start_id
-> > manipulations look weird and sloppy.
->
-> Oops, it cannot.
-> But still it feels strange to pass a 'start_id' parameter to a
-> function and rely at exact values passed at callsites. Replace the
-> parameter with boolean 'own'?
+> > Therefore, we add a tracing session support for TRACING. Generally
+> > speaking, it's similar to kprobe session, which can hook both the entry
+> > and exit of a function with a single BPF program. Session cookie is also
+> > supported with the kfunc bpf_fsession_cookie(). In order to limit the
+> > stack usage, we limit the maximum number of cookies to 4.
+> >
+> > The kfunc bpf_fsession_is_return() and bpf_fsession_cookie() are both
+> > inlined in the verifier.
+>=20
+> We have generic bpf_session_is_return() and bpf_session_cookie() (that
+> currently works for ksession), can't you just implement them for the
+> newly added program type instead of adding type-specific kfuncs?
 
-hm.. looking around a bit more, it seems like passed-in start_id might
-be useful for iterator-like searches. We don't use that right now, but
-maybe we should preserve this behavior? And then max() does make sense
-(though "skip anonymous types" is a bit too brief, I'd mention that
-start_id might be within the named types intentionally and we need to
-jump forward)
+Hi, Andrii. I tried and found that it's a little hard to reuse them. The
+bpf_session_is_return() and bpf_session_cookie() are defined as kfunc, which
+makes we can't implement different functions for different attach type, like
+what bpf helper does.
 
->
-> > >
-> > > >
-> > > > > +               idx =3D btf_find_by_name_bsearch(btf, type_name, =
-start_id, end_id);
-> > > >
-> > > > is there ever a time when btf_find_by_name_bsearch() will work with
-> > > > different start_id and end_id? why is this not done inside the
-> > > > btf_find_by_name_bsearch()?
-> > > >
-> > >
-> > > [...]
+The way we store "is_return" and "cookie" in fsession is different with
+ksession. For ksession, it store the "is_return" in struct bpf_session_run_=
+ctx.
+Even if we move the "nr_regs" from stack to struct bpf_tramp_run_ctx,
+it's still hard to reuse the bpf_session_is_return() or bpf_session_cookie(=
+),
+as the way of storing the "is_return" and "cookie" in fsession and ksession
+is different, and it's a little difficult and complex to unify them.
+
+What's more, we will lose the advantage of inline bpf_fsession_is_return
+and bpf_fsession_cookie in verifier.
+
+I'll check more to see if there is a more simple way to reuse them.
+
+Thanks!
+Menglong Dong
+
+>=20
+> >
+> > We allow the usage of bpf_get_func_ret() to get the return value in the
+> > fentry of the tracing session, as it will always get "0", which is safe
+> > enough and is OK. Maybe we can prohibit the usage of bpf_get_func_ret()
+> > in the fentry in verifier, which can make the architecture specific code
+> > simpler.
+> >
+> > The fsession stuff is arch related, so the -EOPNOTSUPP will be returned=
+ if
+> > it is not supported yet by the arch. In this series, we only support
+> > x86_64. And later, other arch will be implemented.
+> >
+> > Changes since v3:
+> > * instead of adding a new hlist to progs_hlist in trampoline, add the b=
+pf
+> >   program to both the fentry hlist and the fexit hlist.
+> > * introduce the 2nd patch to reuse the nr_args field in the stack to
+> >   store all the information we need(except the session cookies).
+> > * limit the maximum number of cookies to 4.
+> > * remove the logic to skip fexit if the fentry return non-zero.
+> >
+> > Changes since v2:
+> > * squeeze some patches:
+> >   - the 2 patches for the kfunc bpf_tracing_is_exit() and
+> >     bpf_fsession_cookie() are merged into the second patch.
+> >   - the testcases for fsession are also squeezed.
+> >
+> > * fix the CI error by move the testcase for bpf_get_func_ip to
+> >   fsession_test.c
+> >
+> > Changes since v1:
+> > * session cookie support.
+> >   In this version, session cookie is implemented, and the kfunc
+> >   bpf_fsession_cookie() is added.
+> >
+> > * restructure the layout of the stack.
+> >   In this version, the session stuff that stored in the stack is change=
+d,
+> >   and we locate them after the return value to not break
+> >   bpf_get_func_ip().
+> >
+> > * testcase enhancement.
+> >   Some nits in the testcase that suggested by Jiri is fixed. Meanwhile,
+> >   the testcase for get_func_ip and session cookie is added too.
+> >
+> > Menglong Dong (9):
+> >   bpf: add tracing session support
+> >   bpf: use last 8-bits for the nr_args in trampoline
+> >   bpf: add the kfunc bpf_fsession_is_return
+> >   bpf: add the kfunc bpf_fsession_cookie
+> >   bpf,x86: introduce emit_st_r0_imm64() for trampoline
+> >   bpf,x86: add tracing session supporting for x86_64
+> >   libbpf: add support for tracing session
+> >   selftests/bpf: add testcases for tracing session
+> >   selftests/bpf: test fsession mixed with fentry and fexit
+> >
+> >  arch/x86/net/bpf_jit_comp.c                   |  47 +++-
+> >  include/linux/bpf.h                           |  39 +++
+> >  include/uapi/linux/bpf.h                      |   1 +
+> >  kernel/bpf/btf.c                              |   2 +
+> >  kernel/bpf/syscall.c                          |  18 +-
+> >  kernel/bpf/trampoline.c                       |  50 +++-
+> >  kernel/bpf/verifier.c                         |  75 ++++--
+> >  kernel/trace/bpf_trace.c                      |  56 ++++-
+> >  net/bpf/test_run.c                            |   1 +
+> >  net/core/bpf_sk_storage.c                     |   1 +
+> >  tools/bpf/bpftool/common.c                    |   1 +
+> >  tools/include/uapi/linux/bpf.h                |   1 +
+> >  tools/lib/bpf/bpf.c                           |   2 +
+> >  tools/lib/bpf/libbpf.c                        |   3 +
+> >  .../selftests/bpf/prog_tests/fsession_test.c  |  90 +++++++
+> >  .../bpf/prog_tests/tracing_failure.c          |   2 +-
+> >  .../selftests/bpf/progs/fsession_test.c       | 226 ++++++++++++++++++
+> >  17 files changed, 571 insertions(+), 44 deletions(-)
+> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/fsession_tes=
+t.c
+> >  create mode 100644 tools/testing/selftests/bpf/progs/fsession_test.c
+> >
+> > --
+> > 2.52.0
+> >
+>=20
+
+
+
+
 
