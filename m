@@ -1,43 +1,45 @@
-Return-Path: <bpf+bounces-77097-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77098-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EDCECCE330
-	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 02:58:44 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 252A9CCE333
+	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 02:59:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D9BA53058627
-	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 01:58:06 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id F16CD305F676
+	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 01:58:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7EC22737F9;
-	Fri, 19 Dec 2025 01:58:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3BB3273D8D;
+	Fri, 19 Dec 2025 01:58:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KWH08YEc"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Vx+LcsBi"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EBB1272816
-	for <bpf@vger.kernel.org>; Fri, 19 Dec 2025 01:58:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68037221275
+	for <bpf@vger.kernel.org>; Fri, 19 Dec 2025 01:58:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766109486; cv=none; b=XohNchD/5KClx6vJo1p0HL4ZcZzmYn9/wQpLjZjlQofWsAWtCu9U22lPRNOaTUU3Y6u+ooBjD2XfFx3GTe3AaGe0DRdNVQkL+EgiurS20h7w42IgS7SYy7TFLDW/QShEvrHEasuY/OL2jbONYZPdANDI8HOazby4ipW/lbSfm4Q=
+	t=1766109490; cv=none; b=QIiM5vBQQlpIKxauu9Rof24eTd2chvNJXjMQfxYG9XbTCm6xKo3VENHFDefsptgu4M/MGLcC+1F68mdQHiloK3HFjMaMr4fOqE+R0aXn2E1l7zeCUbwBIX5uvhIObS8ljncBNKQigSEigx2ebMKOh8mxlfhISTlaRDZpioXpsyM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766109486; c=relaxed/simple;
-	bh=6X7DwnpBSNdwV9o3sjHEbF3A3DnQ8ehTodGph/Csq6A=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eACYm1h4BE1k49WLdpuHSqlFCMYpdWeCJwlgqApUgtwsahW/qE2nXCWL2SDwX7W+Xvz9s5jYHbM0IRn77wuUK/G6ysuGIr5Hbn+eJ+mrnoI5tHwP1m61iSV2zryfifWotWmBkxOyNCZViI9QdOzpKEtd13Wxc4dmkxNkvFWll74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KWH08YEc; arc=none smtp.client-ip=95.215.58.186
+	s=arc-20240116; t=1766109490; c=relaxed/simple;
+	bh=oP0cUbKRnu4PtBFyuap24uq+3k57ZFMmNOYuKJ9+Cl4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=RN0oGxstTya//4kFZo0jHcDJ4MSxkjRAio80E40DACcf5fcNuuu/sJ3JTmQc41S5+6yJrb0806TtNnupdUydFIj7BrGYtjDcFmZazxDzTwPSqsvXdPqrRY0acvhBZt67oFDDDrfLqL7ukUlSyae4Lk45WGavnc+EfTXy5uDL/VY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Vx+LcsBi; arc=none smtp.client-ip=95.215.58.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1766109482;
+	t=1766109486;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=L2xoCujIaM8urCKbtnvhzmEUA6Re927k76kBPypVsAM=;
-	b=KWH08YEcj7C6mMQvC0lfQRUPN/zJanVLFFqax3ysRJi1W8cnghsrSM5QUDS1uBEUATGQ+R
-	8EK9RZlyY1ZuRe8c+hsSZUFQ0IqM23cQOZEUNbdebKw0yQl+ZGFEjzCVOIvqczdIXjsPix
-	8GsMwEGyXGDA30sjJgBKhJNuprh6g44=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JASHxfPfYQSKse+kuG4VzpZ0I42nYxaqH/nTGcRmQl0=;
+	b=Vx+LcsBiO5zz6pK4lcJRFPF7PiPvaUlUn8+m+9SY1YYu1VlqbSI5ITI5qOkoQN97xvQDms
+	BOy0YtVljrr98vr95IkdI5So3ph/BnO2oSvOI6XvLabGJ1Q5g9J5UkldMw0WM2O9w80kQP
+	upSUAMBTQVj2bNiOdyRla+htU7J+5/g=
 From: Roman Gushchin <roman.gushchin@linux.dev>
 To: bpf@vger.kernel.org,
 	linux-mm@kvack.org,
@@ -48,10 +50,13 @@ Cc: JP Kobryn <inwardvessel@gmail.com>,
 	Shakeel Butt <shakeel.butt@linux.dev>,
 	Michal Hocko <mhocko@kernel.org>,
 	Johannes Weiner <hannes@cmpxchg.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>
-Subject: [PATCH bpf-next v1 0/6] mm: bpf kfuncs to access memcg data
-Date: Thu, 18 Dec 2025 17:57:44 -0800
-Message-ID: <20251219015750.23732-1-roman.gushchin@linux.dev>
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Michal Hocko <mhocko@suse.com>
+Subject: [PATCH bpf-next v1 1/6] mm: declare memcg_page_state_output() in memcontrol.h
+Date: Thu, 18 Dec 2025 17:57:45 -0800
+Message-ID: <20251219015750.23732-2-roman.gushchin@linux.dev>
+In-Reply-To: <20251219015750.23732-1-roman.gushchin@linux.dev>
+References: <20251219015750.23732-1-roman.gushchin@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -61,38 +66,40 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Introduce kfuncs to simplify the access to the memcg data.
-These kfuncs can be used to accelerate monitoring use cases and
-for implementing custom OOM policies once BPF OOM is landed.
+To use memcg_page_state_output() in bpf_memcontrol.c move the
+declaration from v1-specific memcontrol-v1.h to memcontrol.h.
 
-This patchset was separated out from the BPF OOM patchset to simplify
-the logistics and accelerate the landing of the part which is useful
-by itself. No functional changes since BPF OOM v2.
+Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
+Acked-by: Michal Hocko <mhocko@suse.com>
+---
+ include/linux/memcontrol.h | 1 +
+ mm/memcontrol-v1.h         | 1 -
+ 2 files changed, 1 insertion(+), 1 deletion(-)
 
-
-JP Kobryn (2):
-  mm: introduce BPF kfunc to access memory events
-  bpf: selftests: selftests for memcg stat kfuncs
-
-Roman Gushchin (4):
-  mm: declare memcg_page_state_output() in memcontrol.h
-  mm: introduce BPF kfuncs to deal with memcg pointers
-  mm: introduce bpf_get_root_mem_cgroup() BPF kfunc
-  mm: introduce BPF kfuncs to access memcg statistics and events
-
- include/linux/memcontrol.h                    |   3 +
- mm/Makefile                                   |   3 +
- mm/bpf_memcontrol.c                           | 175 ++++++++++++++
- mm/memcontrol-v1.h                            |   1 -
- .../testing/selftests/bpf/cgroup_iter_memcg.h |  18 ++
- .../bpf/prog_tests/cgroup_iter_memcg.c        | 223 ++++++++++++++++++
- .../selftests/bpf/progs/cgroup_iter_memcg.c   |  42 ++++
- 7 files changed, 464 insertions(+), 1 deletion(-)
- create mode 100644 mm/bpf_memcontrol.c
- create mode 100644 tools/testing/selftests/bpf/cgroup_iter_memcg.h
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_iter_memcg.c
- create mode 100644 tools/testing/selftests/bpf/progs/cgroup_iter_memcg.c
-
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 6a48398a1f4e..b309d13110af 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -950,6 +950,7 @@ static inline void mod_memcg_page_state(struct page *page,
+ }
+ 
+ unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx);
++unsigned long memcg_page_state_output(struct mem_cgroup *memcg, int item);
+ unsigned long lruvec_page_state(struct lruvec *lruvec, enum node_stat_item idx);
+ unsigned long lruvec_page_state_local(struct lruvec *lruvec,
+ 				      enum node_stat_item idx);
+diff --git a/mm/memcontrol-v1.h b/mm/memcontrol-v1.h
+index 6358464bb416..a304ad418cdf 100644
+--- a/mm/memcontrol-v1.h
++++ b/mm/memcontrol-v1.h
+@@ -27,7 +27,6 @@ unsigned long mem_cgroup_usage(struct mem_cgroup *memcg, bool swap);
+ void drain_all_stock(struct mem_cgroup *root_memcg);
+ 
+ unsigned long memcg_events(struct mem_cgroup *memcg, int event);
+-unsigned long memcg_page_state_output(struct mem_cgroup *memcg, int item);
+ int memory_stat_show(struct seq_file *m, void *v);
+ 
+ void mem_cgroup_id_get_many(struct mem_cgroup *memcg, unsigned int n);
 -- 
 2.52.0
 
