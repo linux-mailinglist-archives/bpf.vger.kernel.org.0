@@ -1,73 +1,73 @@
-Return-Path: <bpf+bounces-77128-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77129-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1EF8CCE7E1
-	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 06:10:33 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 847A1CCE7E4
+	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 06:11:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3FCEB302037C
-	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 05:10:30 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 99F043034EE8
+	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 05:10:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEE3F2BEFFD;
-	Fri, 19 Dec 2025 05:10:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 758D22C0287;
+	Fri, 19 Dec 2025 05:10:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MNkbaDIL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KaJtZkLR"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D91D23AB9D
-	for <bpf@vger.kernel.org>; Fri, 19 Dec 2025 05:10:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A9A628FFE7
+	for <bpf@vger.kernel.org>; Fri, 19 Dec 2025 05:10:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766121027; cv=none; b=Dlgwup4BS7QZBhvbobIFmAoriB59antOrD8c/sEUPkjsDZBmMtqBbWiLQHJYSsYDfnnHJ9S2G/fAXpMnlZfTlyvnLbv+y/Q23QRQ6xk6oKB+42xqxQhx5MwPyVfhEMMSiT6V/F+Er1/clyRMmopns+5Xb2/R/zNkItJwR4ZsGvM=
+	t=1766121052; cv=none; b=tMD5r4TQYelOzURSkdUA17RL2ELu8aDa5weLCkASL687BeK3XHgM0CrMHQyt5k11N0bSTD1FR7LbqdMq7Jde9TaK6spunEiBSuHBmJpYGjOWc2oMCoonrGUJcPz28fjdoHNm9wuNC4a9fjXLAygiRKJlx1rZy+A6A0SlFTzc5L0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766121027; c=relaxed/simple;
-	bh=ZJ+SKIB2RKxseRRKYp6Lxa9vKFo7Ohi7N8X/+82Ix90=;
+	s=arc-20240116; t=1766121052; c=relaxed/simple;
+	bh=qEUyizdVX1RksmYQISCMzcUNY+XkJ49aqsaIUBWwhok=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tISEto9MvA3OgPR0JG+aWJ0A+NJ4/IOWS9YIqwBDPmUIJW3bAf3zzYPzT7B9wXQwHZIInNTcdPdBT+kfmPW8ptS5Z2CUiJmNs+sVg16EHBsichSZS6ZnlaHNrU7fh4slZfAFS7O4kROypdOdnLNIwe8pKn45evX8U1FbhDhNpEM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MNkbaDIL; arc=none smtp.client-ip=209.85.218.51
+	 To:Cc:Content-Type; b=oqbHvAQZNYF3K4IYRWGSIUcTGmDfsIpbcNHg5xC2DxmFuJjDTk+glOv/HGao1mouvuomKBz/YWO5BhWfBYq6C9vsK17ejVvf9nZs8GWDRmbSGu9omCIWON25GPNMSfgtT2qCQ5emKLM7PflxwyFNTAX6h7YVnC77Alg0m8iSuBU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KaJtZkLR; arc=none smtp.client-ip=209.85.218.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-b7cee045187so228143066b.0
-        for <bpf@vger.kernel.org>; Thu, 18 Dec 2025 21:10:25 -0800 (PST)
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-b736d883ac4so248810266b.2
+        for <bpf@vger.kernel.org>; Thu, 18 Dec 2025 21:10:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1766121024; x=1766725824; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1766121049; x=1766725849; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/TEgh/IGVHzWJD+Grw6Q0MED/Bma31/wysbjmfikqF8=;
-        b=MNkbaDILd5rbkXdw1CERCQUIz593e8VRcw8W+R3wFZpvuTP2265y9YAsKwQBQ0w1oR
-         CKgiRWaWinlnt0NMf0vGy4OJSwQfdtl3lgO9o+fG86WxJKGElxN9sZ1Zn9JXDAhI1eiy
-         QYL2kVkbbTwXHpFzXTuTBoNQPvH+XVYP1QQn6W7vMfN4g04y0hd2L4uEnJOkYLwc47LN
-         hj0Rx9tKYd2CYrMeUm0Ydp/wIevxKMme/TI1ONo7QhgTZQh9efelRmpgdwN5PqjZetts
-         hZlivWNVJcmf+vwwnwO0V8R4ZALwJWWfzIOKvcEa+0ywhC7ciskOWcuSlDtkKm4ZC0Fg
-         hXFw==
+        bh=irhvqlm7Fs7sIy3aRbgFkrNI1veHDT7aD35c7SPPpq4=;
+        b=KaJtZkLRo+UiH5AHjYgz/TTOGtLBZKRiYtec59R7FCTP881cJvuJeNFXh2NDr7D9xZ
+         DI9vvoftIX4MhNDSvUoZsAstI+XMBxoWUSYTX0GYHJK/8XroJXR2iDD9FQKiW2iQxmGc
+         TWQ9JHuPzopwAMM8H+h9t5BFSXRqd6tk3RPxovsHqsNt6k29x3I2hNAnp47Xo+Ciec8Y
+         LqSdZTJi7FegGpnF9FwtE4qyhjbPozmXAHIZPh+6SkxXA+cDrebAYj/8fuolNI0EOWXA
+         3jrZKn09a6C9MRNJoKC/NvLMGYc+l12Thf/dLJ0jWSBQBFBp9UAv0ZyeeuHqLoaNzEiB
+         aUqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766121024; x=1766725824;
+        d=1e100.net; s=20230601; t=1766121049; x=1766725849;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=/TEgh/IGVHzWJD+Grw6Q0MED/Bma31/wysbjmfikqF8=;
-        b=RfubReYTxCodC8FA5z5lXewB+d/mVa7ziuxRSbhxFqQeZSPEC++somhel+BLg2ZIq9
-         7yZLTJZYu0xliZZPQIr/HJ0gGFh32orbfvGzbIVC5O6VEdqQtebpyWAa0o4RyLb8ko7y
-         SLCfDuGTRBAiuDqWJlzKu5ayvLVQ1pbziOJixsS+U2ydw4XgRfjDFicAVbnasEapVvpe
-         9TLmKTlyZSVifwEt3udHhj4AAhk1dcbornTcspMNyLQVxvfqEx4+LHo1ATc6mh/RG4Qs
-         9oWtEwP0uNcoc6nNDl7looJWa+dWAuFwrb64RqfdNLkIeziIg8GBNn5PhqwyQaFu1ZRO
-         ShcA==
-X-Forwarded-Encrypted: i=1; AJvYcCWDVCqSVFgErnbzntbFz33wlsmRJptp8jofl3xybJUxHuYNEbG2iY5mkBYTXSgWC51Xq94=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywca5agEBvagIKXpVCZrdElZ16h+DEGxuRPbsEzjVh+HBuLD/cX
-	3syPl7tQJChflwnvyAE6w/NHvp5kQNkHxWRtZTqDI22zHWjPdJAtGB3awsUMTP3tawtqlt2rRla
-	1ewjNmLnXiTSR7EvCqrxDeFGE2mQafI0=
-X-Gm-Gg: AY/fxX5+ae+rcxB7rCbhyk2x5oiZprNEvPAtQIr6wKFQNIJu/Jc6+70T90qBKvYa9zX
-	jrugxpjinh1W8bK12Mvg6DHKRahxluI4chg2503XcklGJLX46JnLFM2JtsKAC/6htVjxBlP8dFw
-	im1HC8OT2prTrbFbOhMQ8rChOdzBrPCPmMBV0dzZ4sbbmLDUJTgjv28WhhheIYTaIWp/QFa2mP/
-	m0kJzXS7e8TZtZNXwjfWEV6yGclfCfHB3t/F5+Uri1vX3TqJKjvHJasMdwOVHxvUNJl9UdYIRLu
-	aqWHvBM=
-X-Google-Smtp-Source: AGHT+IHuj6eCmSwXJak0ooxJMCKDP3O0wVo2fbs96Q9M35SVg1HRbsaPtHxLly+re6s13k0MyDcTiPPUbpawnorwthA=
-X-Received: by 2002:a17:906:ef09:b0:b6d:5dbb:a1e1 with SMTP id
- a640c23a62f3a-b80355b2500mr206863266b.5.1766121023768; Thu, 18 Dec 2025
- 21:10:23 -0800 (PST)
+        bh=irhvqlm7Fs7sIy3aRbgFkrNI1veHDT7aD35c7SPPpq4=;
+        b=HjuNmoDDBDNz/yGazNGewHfsiG1OAGsO7cR9uEV6GAO0SA31IAM1IQ3T/RuXV7/AJt
+         9/hOozY1+IYVKJ2IKhtz/ZenGEP8lAo3lgHWA1ZGOjpaStE/fSnNrb5h9jf58mMuzpXs
+         9mGBeQP1au3kMqvPwkbxOZ9d6CyOkREXFH0L55PAbRxl8stq68bsPTvfe6epa49oYnwp
+         0/wjOhtajYjD1uxyaoe3C2oZHUOPwZPcMprVH9o7MqUnPdVxUpgCDe4OV46yquQaL8Vu
+         BGzJSfcz4ka/08dKgTn6YrgFHKl6qIHMbJdKZWp2uCragnYQG/JuMaABhAkGUsXm1mjS
+         oOUA==
+X-Forwarded-Encrypted: i=1; AJvYcCWzjzBTgMRc2LHDFf99SDZ1Mfv1t7kM0yXZFNUIDjBRcpM+K5t1eBcuRm0GBd6TWHpzz3A=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxSiEkdvOxthe158mP9Z/OVjGkr3hfNwz9HaKIu6lzd21wuTHrC
+	284AJgfzcVl7VHHIb53b+lS39gZ/arPKvo/aTOoZFvjgadEGUGiDD9jfSHiV+vnaguXWPvLXV8m
+	KLRrZRDHpCRktld45PLnSVVYc1YV0To0=
+X-Gm-Gg: AY/fxX7L0+//obtK9K5JXa7TEegsXE/uBlMCZ6JVpEPKP78ZMyJSudscfIdJdultT3R
+	a35YCb8Z/VR2H4yFmZFqqZNhAIQ5EoFRZLAVYvL+UOTOh0jMNqe3fbdOcbRJQXto56rV8n9Be8c
+	fblo6c2IgYq5rwXV6A/7gHEYzP+EzXzuHwEhaKEXyN35H/oKHnc0pQOI1CY/adhhBfv7ndYWsDw
+	eimvbqgAnk9YnYFNHMUTUghw9c63gYoftC8AOBm8KTNtVOkP4q2SBu9LLfnUa+Ry1WMDBQi9Igu
+	HgbeD8Y=
+X-Google-Smtp-Source: AGHT+IF+JpGBqamKonl5nDeXWu9sBLts2jwC6AoTYqagYqU/FG9fkBGULQfDryJ7Hd/dj4Y5cphYmCpkq0vzYvevoA8=
+X-Received: by 2002:a17:907:9406:b0:b73:9792:919b with SMTP id
+ a640c23a62f3a-b8036f0a57bmr155817966b.13.1766121048665; Thu, 18 Dec 2025
+ 21:10:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -75,24 +75,26 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20251218113051.455293-1-dolinux.peng@gmail.com>
- <20251218113051.455293-8-dolinux.peng@gmail.com> <1a9c0b5c22b2ecd8a8df531b1ed9441ab926415b.camel@gmail.com>
-In-Reply-To: <1a9c0b5c22b2ecd8a8df531b1ed9441ab926415b.camel@gmail.com>
+ <20251218113051.455293-8-dolinux.peng@gmail.com> <CAEf4BzZopn6gi=xf-OakYZtyv5bMy9HojSfvGznv1RiOcF5sew@mail.gmail.com>
+In-Reply-To: <CAEf4BzZopn6gi=xf-OakYZtyv5bMy9HojSfvGznv1RiOcF5sew@mail.gmail.com>
 From: Donglin Peng <dolinux.peng@gmail.com>
-Date: Fri, 19 Dec 2025 13:10:11 +0800
-X-Gm-Features: AQt7F2qgKAQbJ0x0gSRJHQx1CLnKNQm-6kTqoVsbeaK6pVHU8wh23Uqpt-pGkZI
-Message-ID: <CAErzpmtvZPvXcebBk5Q=EUL-_+gLO2iqEyoA2Pth=mQLLHqY-w@mail.gmail.com>
+Date: Fri, 19 Dec 2025 13:10:37 +0800
+X-Gm-Features: AQt7F2ryWZNkbwvM-uKvlfXy1s4b4Gd-0GjixxW5MZ1wHUKs1CjKQoeRbqZ4O3s
+Message-ID: <CAErzpmsfGEDcaiAfYkfKcQStVEajHTP8MdTd4spLpPdBE1+NMg@mail.gmail.com>
 Subject: Re: [PATCH bpf-next v10 07/13] btf: Verify BTF Sorting
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: ast@kernel.org, andrii.nakryiko@gmail.com, zhangxiaoqin@xiaomi.com, 
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: ast@kernel.org, eddyz87@gmail.com, zhangxiaoqin@xiaomi.com, 
 	ihor.solodrai@linux.dev, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
 	pengdonglin <pengdonglin@xiaomi.com>, Alan Maguire <alan.maguire@oracle.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 19, 2025 at 5:43=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
+On Fri, Dec 19, 2025 at 7:46=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> On Thu, 2025-12-18 at 19:30 +0800, Donglin Peng wrote:
+> On Thu, Dec 18, 2025 at 3:31=E2=80=AFAM Donglin Peng <dolinux.peng@gmail.=
+com> wrote:
+> >
 > > From: pengdonglin <pengdonglin@xiaomi.com>
 > >
 > > This patch checks whether the BTF is sorted by name in ascending order.
@@ -110,114 +112,24 @@ On Fri, Dec 19, 2025 at 5:43=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
 > > Cc: Xiaoqin Zhang <zhangxiaoqin@xiaomi.com>
 > > Signed-off-by: pengdonglin <pengdonglin@xiaomi.com>
 > > ---
->
-> Lgtm, but please take a look at a few nits.
->
 > >  kernel/bpf/btf.c | 56 ++++++++++++++++++++++++++++++++++++++++++++++++
 > >  1 file changed, 56 insertions(+)
 > >
+>
+> please make sure to apply feedback received for libbpf-side
+> implementation for kernel-side implementations as well
+
+Thanks, I will do it.
+
+>
 > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
 > > index 0394f0c8ef74..a9e2345558c0 100644
 > > --- a/kernel/bpf/btf.c
 > > +++ b/kernel/bpf/btf.c
 > > @@ -550,6 +550,60 @@ u32 btf_nr_types(const struct btf *btf)
-> >       return total;
+> >         return total;
 > >  }
 > >
-> > +/*
-> > + * Assuming that types are sorted by name in ascending order.
-> > + */
-> > +static int btf_compare_type_names(u32 *a, u32 *b, const struct btf *bt=
-f)
 >
-> Nit: no need for 'a' and 'b' to be pointers.
-
-Thank you. I will remove this function in the next version, as
-suggested by Adrill.
-
->
-> > +{
-> > +     const struct btf_type *ta =3D btf_type_by_id(btf, *a);
-> > +     const struct btf_type *tb =3D btf_type_by_id(btf, *b);
-> > +     const char *na, *nb;
-> > +
-> > +     na =3D btf_name_by_offset(btf, ta->name_off);
-> > +     nb =3D btf_name_by_offset(btf, tb->name_off);
-> > +     return strcmp(na, nb);
-> > +}
-> > +
-> > +/* Note that vmlinux and kernel module BTFs are always sorted
-> > + * during the building phase.
-> > + */
-> > +static void btf_check_sorted(struct btf *btf)
-> > +{
-> > +     const struct btf_type *t;
-> > +     u32 sorted_start_id;
-> > +     u32 i, n, k;
-> > +
-> > +     if (btf_is_kernel(btf) && !btf_is_module(btf)) {
->             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> Nit: there is a btf_is_vmlinux() helper, which does the same thing.
-
-Good catch.
-
->
-> > +             for (i =3D btf_start_id(btf); i < n; i++) {
-> > +                     t =3D btf_type_by_id(btf, i);
-> > +                     if (t->name_off) {
-> > +                             btf->sorted_start_id =3D i;
-> > +                             return;
-> > +                     }
-> > +             }
->
-> Nit: return here?
-
-Agreed.
-
->
-> > +     }
-> > +
-> > +     if (btf->nr_types < 2)
-> > +             return;
-> > +
-> > +     sorted_start_id =3D 0;
-> > +     n =3D btf_nr_types(btf);
-> > +     for (i =3D btf_start_id(btf); i < n; i++) {
-> > +             k =3D i + 1;
-> > +             if (k < n && btf_compare_type_names(&i, &k, btf) > 0)
-> > +                     return;
-> > +
-> > +             if (sorted_start_id =3D=3D 0) {
-> > +                     t =3D btf_type_by_id(btf, i);
-> > +                     if (t->name_off)
-> > +                             sorted_start_id =3D i;
-> > +             }
-> > +     }
-> > +
-> > +     if (sorted_start_id)
-> > +             btf->sorted_start_id =3D sorted_start_id;
-> > +}
-> > +
-> >  static s32 btf_find_by_name_bsearch(const struct btf *btf, const char =
-*name,
-> >                                   s32 start_id, s32 end_id)
-> >  {
-> > @@ -6296,6 +6350,7 @@ static struct btf *btf_parse_base(struct btf_veri=
-fier_env *env, const char *name
-> >       if (err)
-> >               goto errout;
-> >
-> > +     btf_check_sorted(btf);
-> >       refcount_set(&btf->refcnt, 1);
-> >
-> >       return btf;
-> > @@ -6430,6 +6485,7 @@ static struct btf *btf_parse_module(const char *m=
-odule_name, const void *data,
-> >       }
-> >
-> >       btf_verifier_env_free(env);
-> > +     btf_check_sorted(btf);
-> >       refcount_set(&btf->refcnt, 1);
-> >       return btf;
-> >
+> [...]
 
