@@ -1,122 +1,95 @@
-Return-Path: <bpf+bounces-77113-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77114-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 588F7CCE403
-	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 03:15:28 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1489CCE416
+	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 03:21:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9C6413030FDD
-	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 02:15:14 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 24F1D301AB38
+	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 02:21:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F0A528D83F;
-	Fri, 19 Dec 2025 02:15:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22195273D8D;
+	Fri, 19 Dec 2025 02:21:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ohOY26Jz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j4GYPpK7"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8568F2877D6;
-	Fri, 19 Dec 2025 02:15:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9694419995E;
+	Fri, 19 Dec 2025 02:21:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766110512; cv=none; b=FKb99VWBbsbhMk0po+7OLFxhZg1J9AEqBbPtQqlZju0rBFxWW4qBaW8X08eAPDoK51mmRgOqR64LQ5x/QxQlyxs12d8ZjCfyyGlXGAgNB4ph11rKdGiDbz4UUbckQc3H+MXcGpGRHgXI8rdopVMkgGZ7oUpSw9SaBr5jjnbDi7o=
+	t=1766110901; cv=none; b=JlB4A2NPUB/QIEnje0bE4c9/r+kUVCovzbj7dY1DYD2VeVQZXj3CCmozM9wgPkgGSXhzpVBDEUphR2Ag5t+9NRTmb7xrxm+sgA5iqyg14ImIvQLdLy1+J/xtbWnjAe36tybQPCSINUTPPruWmgKc6dnvrw2NZVmlByv3SXChov0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766110512; c=relaxed/simple;
-	bh=jbSSl/iAC0Y6PJMSUrlMAn/BWY9Mt013nMXshs1xgDs=;
+	s=arc-20240116; t=1766110901; c=relaxed/simple;
+	bh=Wn06/ZF3XHZjIpC5IMs0aTkDV4ts+z6RiFMrHphIV+M=;
 	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=Ik9aSRZsjOZN25hfKsmKoF3XHRy5ePD25ancRzymvSLp/UMDAub9H6qd8r+23HbrGDDA4URuqveByar0xP5+bO+4XPE0yDQm2SXmTrESUnR8qsVBkQckmp6TMzrNoDKGiyErDswolwQmENhYq2YN0TlJTH5VVjyYki2zOTzsNdA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ohOY26Jz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7C1DC4CEFB;
-	Fri, 19 Dec 2025 02:15:11 +0000 (UTC)
+	 Subject:From:To:Cc:Date; b=jMa2WzrVF7612aEEHbqY1b9fNQjI3F4ythu9dYcaMr4/8MgGDFhpNkGtC3xdVVSZW8XkUP0K42vtvLWfnuNYIUKiZbxY3+mRGIW0l1dmI5zHa0xQ6aIUwydvPxCIENDyLMz9YyILvGtQq1513ek/TzHKZuE6Rbd4JByI5Uu0e88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j4GYPpK7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD96DC4CEFB;
+	Fri, 19 Dec 2025 02:21:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766110512;
-	bh=jbSSl/iAC0Y6PJMSUrlMAn/BWY9Mt013nMXshs1xgDs=;
+	s=k20201202; t=1766110901;
+	bh=Wn06/ZF3XHZjIpC5IMs0aTkDV4ts+z6RiFMrHphIV+M=;
 	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=ohOY26JzrJ84xK6XyL8AqFmyDkTo9LE/qIAUO8G0H5ib8aLYkqsqgg4iN4HhwC9A8
-	 dSCzzo+xsEtHkc7jQ89GIDOau3gUAOxUVGwQECL+G4gWuQ39gpN4wNlvTaJw6S4eCK
-	 6cauPx1p8PM4trko8Ybe0AOqRbLrch7ro1uFZaESGAkC4yrEtka4JS/mJQb+cz9OBs
-	 VyLO4ZxrNZu41kCGli0yUgqOe5BHni16a6XnX7cGom+wTldN+siH/m/WQ7cBSSnvFu
-	 p+6l9II2GAjI69e6mCttfNJniZ2cFHw8I1y5eFA3aZdR5kW4p5ErP9PalcG5xHtwHP
-	 +JMxQvcfiW7bg==
-Content-Type: multipart/mixed; boundary="===============1148049922040317406=="
+	b=j4GYPpK7VGAKXEExKB9LndVfK5vDEnlPsSU/BRzP1Xsn1r4HoXfGuLnuB2ypyDz6Q
+	 KZ2byv9yD8H9B0QuwaLDJJHQGjweeI0HQxZeBTCVb10j0wZEqs1cRuzgCuGvaF8b9n
+	 /sKSDgzvRXjPleKrN7waHbwN4lThs8w9caxkr+bge95bDQuARiPWEGnRMHrdTn/IQZ
+	 E4+kaiOi76WbamsmoFRspnK2WLZoamNWT1JhRwwxUrTLthvAAZNmimBNW1Cs4LTogI
+	 nqrXWgzQF3yhZL47FL45I3m9c6fjgzTSuPpLwcFp63dcHrBgt+UuDr95k2ivgt4HNh
+	 4V4YvTI5BickQ==
+Content-Type: multipart/mixed; boundary="===============6244217947612912370=="
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <e80e8faecbfd7099950485f4de08a1226ae10282ec44fe9e6b3610fcb00c8400@mail.kernel.org>
-In-Reply-To: <20251219015750.23732-5-roman.gushchin@linux.dev>
-References: <20251219015750.23732-5-roman.gushchin@linux.dev>
-Subject: Re: [PATCH bpf-next v1 4/6] mm: introduce BPF kfuncs to access memcg statistics and events
+Message-Id: <cf8d48e8bcdba2515366bc8b6c85f581ca3d18ead24db9cb3ba9b98db252e0b9@mail.kernel.org>
+In-Reply-To: <20251219015750.23732-6-roman.gushchin@linux.dev>
+References: <20251219015750.23732-6-roman.gushchin@linux.dev>
+Subject: Re: [PATCH bpf-next v1 5/6] mm: introduce BPF kfunc to access memory events
 From: bot+bpf-ci@kernel.org
 To: roman.gushchin@linux.dev,bpf@vger.kernel.org,linux-mm@kvack.org,linux-kernel@vger.kernel.org
-Cc: inwardvessel@gmail.com,ast@kernel.org,daniel@iogearbox.net,shakeel.butt@linux.dev,mhocko@kernel.org,hannes@cmpxchg.org,roman.gushchin@linux.dev,mhocko@suse.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Fri, 19 Dec 2025 02:15:11 +0000 (UTC)
+Cc: inwardvessel@gmail.com,ast@kernel.org,daniel@iogearbox.net,shakeel.butt@linux.dev,mhocko@kernel.org,hannes@cmpxchg.org,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
+Date: Fri, 19 Dec 2025 02:21:40 +0000 (UTC)
 
---===============1148049922040317406==
+--===============6244217947612912370==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
 > diff --git a/mm/bpf_memcontrol.c b/mm/bpf_memcontrol.c
-> index 6d0d73bf0dd1..4d9d7d909f6c 100644
+> index 4d9d7d909f6c..75076d682f75 100644
 > --- a/mm/bpf_memcontrol.c
 > +++ b/mm/bpf_memcontrol.c
 
 [ ... ]
 
-> +/**
-> + * bpf_mem_cgroup_vm_events - Read memory cgroup's vm event counter
-> + * @memcg: memory cgroup
-> + * @event: event id
-> + *
-> + * Allows to read memory cgroup event counters.
-> + */
-> +__bpf_kfunc unsigned long bpf_mem_cgroup_vm_events(struct mem_cgroup *memcg,
-> +						enum vm_event_item event)
+> +__bpf_kfunc unsigned long bpf_mem_cgroup_memory_events(struct mem_cgroup *memcg,
+> +						enum memcg_memory_event event)
 > +{
-> +	return memcg_events(memcg, event);
-> +}
-
-Should bpf_mem_cgroup_vm_events() validate the event parameter before
-passing it to memcg_events()? The call chain is:
-
-  bpf_mem_cgroup_vm_events() -> memcg_events() -> memcg_events_index()
-
-And memcg_events_index() does:
-
-  return mem_cgroup_events_index[idx];
-
-where mem_cgroup_events_index is an array of size NR_VM_EVENT_ITEMS. If a
-BPF program passes event >= NR_VM_EVENT_ITEMS, this would be an
-out-of-bounds array read.
-
-The sister function bpf_mem_cgroup_page_state() below validates its idx
-parameter before calling its callee:
-
-> +/**
-> + * bpf_mem_cgroup_page_state - Read memory cgroup's page state counter
-> + * @memcg: memory cgroup
-> + * @idx: counter idx
-> + *
-> + * Allows to read memory cgroup statistics. The output is in bytes.
-> + */
-> +__bpf_kfunc unsigned long bpf_mem_cgroup_page_state(struct mem_cgroup *memcg, int idx)
-> +{
-> +	if (idx < 0 || idx >= MEMCG_NR_STAT)
+> +	if (event >= MEMCG_NR_MEMORY_EVENTS)
 > +		return (unsigned long)-1;
 > +
-> +	return memcg_page_state_output(memcg, idx);
+> +	return atomic_long_read(&memcg->memory_events[event]);
 > +}
 
-Should bpf_mem_cgroup_vm_events() have a similar bounds check, perhaps:
+Could this cause an out-of-bounds access if a BPF program passes a negative
+value for event? The enum type is signed, so if event is -1, the check
+"event >= MEMCG_NR_MEMORY_EVENTS" would evaluate to false (-1 >= 10 is
+false), allowing access to memcg->memory_events[-1].
 
-  if (event >= NR_VM_EVENT_ITEMS)
-      return (unsigned long)-1;
+The existing bpf_mem_cgroup_page_state() in the same file uses both lower
+and upper bound checks:
 
-before calling memcg_events()?
+    if (idx < 0 || idx >= MEMCG_NR_STAT)
+        return (unsigned long)-1;
+
+Should bpf_mem_cgroup_memory_events() follow the same pattern with:
+
+    if (event < 0 || event >= MEMCG_NR_MEMORY_EVENTS)
 
 [ ... ]
 
@@ -127,5 +100,5 @@ See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
 
 CI run summary: https://github.com/kernel-patches/bpf/actions/runs/20357445962
 
---===============1148049922040317406==--
+--===============6244217947612912370==--
 
