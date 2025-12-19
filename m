@@ -1,161 +1,177 @@
-Return-Path: <bpf+bounces-77072-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77073-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E2EECCE0B0
-	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 01:19:35 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32184CCE0E3
+	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 01:25:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B95BB3038949
-	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 00:19:30 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id E91C13031068
+	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 00:25:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 780D71D5CDE;
-	Fri, 19 Dec 2025 00:19:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99C721F0995;
+	Fri, 19 Dec 2025 00:25:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yr3VtWpd"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XoTiPeDF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8995B176FB1
-	for <bpf@vger.kernel.org>; Fri, 19 Dec 2025 00:19:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8617A1EBFF7
+	for <bpf@vger.kernel.org>; Fri, 19 Dec 2025 00:25:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766103568; cv=none; b=SdLL7e8rMLDG33MlNWSP4DrRJ9L+41M8xO6VNwxT8paEz61Oqqg547hYStxKkwmkf/+6QkuxLgW5PJd0wFT6mGJKTn5v8psKTQXkgGSOlct4cPK2qkFNJDHztGyjeUzBAAT9ihlQ5TpcmvT3ARACHWfiLm96HemF+H9eMSXNkRM=
+	t=1766103903; cv=none; b=h6PbJA76sutHSicG9rFuojNEkx6qeQtmQZLA8xTrb9Aq9EKaLBgVp5eczBvXJMy1C7O3rJMwk+KBzdBm8ccTukttckVYOIAulcVo4zpC/GC/e2NONN7L1Dhx60dtXqy5t4NrGDf1x4EiTpKr1R2HIIW90vWp4bCIVOjQzYb+G8g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766103568; c=relaxed/simple;
-	bh=0x6Kw69dyiZtSl6ZTnPyjGBdpxP8xesMEn89IHq2Xq4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KFKlUGqzS+aNk03wz5DP2QxRptIM+1VYr9a1y9n5J6Z0euzgcjYqp1ERQajw7F9XN2bilKnPZf5Uzh7e7TwqyWaMPE/aOSiTKtEDsgmRTaKm7RO2nLdzQMlLX5hZnP0yhO+8R1V6QLn29TmLtrz+UwqJQk5ypEIIbU57SalKldI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Yr3VtWpd; arc=none smtp.client-ip=209.85.216.49
+	s=arc-20240116; t=1766103903; c=relaxed/simple;
+	bh=HPdAm7fMRrMZKrr4OQD5M+LI78+T7U2fioARtnCSm1w=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=oa0wFe0NtYKRvnOiDBrQ++wSz+u0pK2U9i1wSgh176c1ZUOFf1BVshuBe3v59NMD4qToqKBlLZsmVxDQxpeE94EH1y6em3ucl3Anhyez051fE6s5NwjsBAoxu7/EkdbmpiWtsgcVNvgpiMtw6g2Ug9rqGYmUFXDMokfEoFZCS/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XoTiPeDF; arc=none smtp.client-ip=209.85.215.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-34c277ea011so1253182a91.1
-        for <bpf@vger.kernel.org>; Thu, 18 Dec 2025 16:19:26 -0800 (PST)
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-bc17d39ccd2so738077a12.3
+        for <bpf@vger.kernel.org>; Thu, 18 Dec 2025 16:25:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1766103566; x=1766708366; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MH2zTcsy9cCPii9o1vMTiIoPfymBu3GhOo8iZLao8rE=;
-        b=Yr3VtWpdlUl/ePzqsjRXUMAvMoriFHBReyIOQ2Vzw6jblrYHlhpajMfkw5NLHOk7jX
-         RGU778XiCTtXTYKn85Fwg0IBdvkZXotpHtl+jldmkpL3hI+MZazCj7SN6nqT0s20u36P
-         oeVLiLXbB7RvcunXHWwBsrTyS9ndGUtIm6zd0YOHFm+YkCjlr06G8Nr/jqHMQaL134dt
-         YqCSNoSZ81Ci1obine+7BBnoWDhK//iFQSTl69We8qoxecl7P0UoOz5sQa98eQjgCwJG
-         XOnaooQJwQEu3oo14j5MoWAVi4RqAKkX4Plyr2Qq/RFvx7mqqtMT3+zOU9Fk+8I482Pg
-         LRsQ==
+        d=gmail.com; s=20230601; t=1766103901; x=1766708701; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=H/vajcf/oqHo4VAnhI/xQHTdaHk3f4wxr7/OVCvKJH4=;
+        b=XoTiPeDFZY9FVEg6QBx9ruSywF8p2yMVWazrtXvy9QK3MXNpGWqnNiHz0L+qZb3mbq
+         QZk+dzoO7rHFN3fJqas3Btt8T1OawGDfxgvocFQwV/6XiljbUuPkxaZaTaX5VroI+TBc
+         bLBPwofVjdoSVqxsi0So1Bd+1oWDnxT1PCF8JvfA5sXBKvrmExP6JUwMbQt3ThEcanhr
+         3ApvYmbm/1TscazMlAWqdKuzGbUrF1/iSci1NGjgVlu6cexxGLyOgegjqoY9tHT+UNtO
+         JjiEYgae7Qk89/6fg9ELYjDClh9hYnzQWgY6KBgopxNzNMK4jiEEEcYbbETMkHS9uGdb
+         Xczw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766103566; x=1766708366;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=MH2zTcsy9cCPii9o1vMTiIoPfymBu3GhOo8iZLao8rE=;
-        b=cepzjCo1NcmsPchkjfmICActHe3hgtCgsKO6ExZfYpCiL90WV6cPRfvcMfc+Goae8T
-         VZJlgAFHvScZ2iGtgD54W4VNN7nCWbhpjoi8aS4ROy/p43VuPHvFaV0EO0qDOGPOOjoD
-         9a0aM7JiirSdpODpYFm6ArMr+RbPWzoyySSk9k6CDYh5MSQ8x6ZSnhO1m+maJ+nZxmkc
-         TO/2e3ZCbMIcPGX5BV0LeUbW64mEXPdHcEriESgwQ+XnwCwEfiPXosKAq3J4PpgC/gHA
-         aGXGP/+OVMsIGHnsiCK23KJNjehXmMO4bX9REacfP5CXNYIf3cBraSqXWYi8f77QL/r7
-         Wusw==
-X-Forwarded-Encrypted: i=1; AJvYcCVAzbqZ55/O5U/H9YZRwko4ij4+c1pBid5MxQAEXLPDQz+zKdILVfHwW/h/SBT7yatV7Co=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx6Ni5J08JrMNaHOs0VpLGxycDkakXDZSVbeSpE0zTJGt2PVGxu
-	B7QPsvutItZ2L8FdPDvx44yERZRKqT+pbfQWRB3iPPrQrOS6+UrGWxUhHp/lj1dZm5yvq49diHk
-	tnNAw7xLI5WiogTA5KHW48MiIBBnCJ4c=
-X-Gm-Gg: AY/fxX4HjmidxHY6kp7O85/D6rqzBPbmVcsvSxPG7kyF+NneNetcNrWayuUTi7W7Kb9
-	yB4mg9XNbH0jOubFRxC2aQbpUEHKKR6ppZPP699g0BbQfv09OJyg4jKvkO0NU7pyIFtsh/BCD9n
-	eCzHfH7vDI5loaNJqGPty3SRmLt4Mxz89iO3PFTH58mAAZpBzNgwdxgih85aqhJesrGTkkFwZKP
-	ofJ2Ns10YNd6ubkvFtS57y2gPSA1BHKdC56jBTGFVhCm06wBuYazPufPWQKWXpwWYCeSPaeeXQg
-	AQwqYsvkOnE=
-X-Google-Smtp-Source: AGHT+IE6US4ydfh6U3pSidpRDdEKAAMUeNx1KpRDpX3q2W3WFWjSaG5PuVSBv7woojHNJj8UsslIV6sKuB9VZ+BAVdI=
-X-Received: by 2002:a17:90b:4a44:b0:32d:db5b:7636 with SMTP id
- 98e67ed59e1d1-34e921e0556mr965441a91.27.1766103565873; Thu, 18 Dec 2025
- 16:19:25 -0800 (PST)
+        d=1e100.net; s=20230601; t=1766103901; x=1766708701;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=H/vajcf/oqHo4VAnhI/xQHTdaHk3f4wxr7/OVCvKJH4=;
+        b=WnpEjsZQnjAkfUTqynNVfXdCIIvqSeLbo5Jd4JNFSme+hm4H2WcFGof6NSrPv27bAT
+         GXED8ArqeC13l4i0upPUcaCm+ofXPsOgKzFx82nW5kvPXctozJRmkteKrJje41SVEViY
+         0n1kkveSwInx4GzO0T/lQqsyxXlSHYG38kIWal4hbMuMTMG8VSkDEYE7L1qr0xg3z+zC
+         eebvH5rqVO3vwTC9TaBPk7txwRmQQ53iYEiWZS0MWt68WrhSzhejDAJWYVP7xWOBppJK
+         xQ2n+b/hlUZ+RFINWWwO4W6Z/yZJtPYXW/eWoxurIM/st61a4GyAz9dJlo2wHPpANJKq
+         6Yng==
+X-Forwarded-Encrypted: i=1; AJvYcCU1tT0PDbzd+xNdCJrKozCFHD7E+K/QU5jScE+IZVSIp7aZ+U6u5bYxo4nAd9OrsqO4YME=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzQc6lBCOGMevUCh9wKsDvcRdQcjBCbmBraiCgvnYWrsbJmEH3Q
+	cP53xSJFlx5qb+N+t2z75YlJaRRRIP9MeVP6c4TfkRqLbQW8vaPydYoo
+X-Gm-Gg: AY/fxX6Q6amsAKyFQXwnsm+O85AoB6Mw3dNzr/L0h0cMQHuhMAyK9tgtzWD8Oap4H0h
+	mHmhkteHohZslCmMIDI0r4WfKm5t2JzHnDVsSLAUhuwwn7RKTyejqJhu4cbtBk5XV1xRVvymnUb
+	WPdhXNOVYpBoF5WobhXJ/tJLQi8GQZan8jwep8rsKpdwJXkwvw627KzXIHRZtw7YObqTbJ8i9Zi
+	HKIRyq2f1Q0BxxF0c6iKnGLeP7G7q5cmcYsxIHi+vf13p4lwgBuZ5460aOnvIRpLmnIFih3CIJL
+	74cnMx5ugb7CRXeJnRKkgm40u52F8zXr8h7O3we9pmd4L/tayedYwerkTplOxm4Vh3FCctLCBCb
+	FHwsojgHtCWS6p5efZyTDaiRWL7o8iDNr+RKNyE9WgFfx918eZuC3q31IfDVy6dEurg+2WC8cMK
+	bPbQF4iDC70KpGdUOi5H2SlSFEXbdK097+OQqL
+X-Google-Smtp-Source: AGHT+IH13ngxpc428+JJsDJWJ/wpSJd4O5CSNbA4QSStAz17JAzgU/Y2JWo7Dp+gfLoRFFRvyZDKnw==
+X-Received: by 2002:a05:7022:3806:b0:119:e55a:9be4 with SMTP id a92af1059eb24-12172136750mr1123308c88.0.1766103900587;
+        Thu, 18 Dec 2025 16:25:00 -0800 (PST)
+Received: from ?IPv6:2a03:83e0:115c:1:4779:aa2b:e8ff:52c4? ([2620:10d:c090:500::5:3eff])
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-121724cfa2csm2319981c88.3.2025.12.18.16.24.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Dec 2025 16:25:00 -0800 (PST)
+Message-ID: <e2690b163b823d82565ce2dc6e58fa23c0bf7935.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v10 04/13] libbpf: Optimize type lookup with
+ binary search for sorted BTF
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Donglin Peng <dolinux.peng@gmail.com>, ast@kernel.org, 
+	zhangxiaoqin@xiaomi.com, ihor.solodrai@linux.dev,
+ linux-kernel@vger.kernel.org, 	bpf@vger.kernel.org, pengdonglin
+ <pengdonglin@xiaomi.com>, Alan Maguire	 <alan.maguire@oracle.com>
+Date: Thu, 18 Dec 2025 16:24:58 -0800
+In-Reply-To: <CAEf4Bzamgpk7Dj2uMrCmVEijvyHKqUguWJU7h+12pSr3S7F1hQ@mail.gmail.com>
+References: <20251218113051.455293-1-dolinux.peng@gmail.com>
+	 <20251218113051.455293-5-dolinux.peng@gmail.com>
+	 <CAEf4BzbSMwW4es5D9i=bpSjALo8u+oW-9vdQ7=DBoTBtMoJ1Tg@mail.gmail.com>
+	 <d161fb1f8b7a3b994fe3ed4a00e01fc1f1af3513.camel@gmail.com>
+	 <CAEf4Bzamgpk7Dj2uMrCmVEijvyHKqUguWJU7h+12pSr3S7F1hQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251218113051.455293-1-dolinux.peng@gmail.com>
- <20251218113051.455293-5-dolinux.peng@gmail.com> <CAEf4BzbSMwW4es5D9i=bpSjALo8u+oW-9vdQ7=DBoTBtMoJ1Tg@mail.gmail.com>
- <d161fb1f8b7a3b994fe3ed4a00e01fc1f1af3513.camel@gmail.com>
-In-Reply-To: <d161fb1f8b7a3b994fe3ed4a00e01fc1f1af3513.camel@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 18 Dec 2025 16:19:13 -0800
-X-Gm-Features: AQt7F2oa98PfZs5wmmDebyT4s8sIR8nTkzIjwU6xqZmf0bX8rLkGy7wN2NpcYy4
-Message-ID: <CAEf4Bzamgpk7Dj2uMrCmVEijvyHKqUguWJU7h+12pSr3S7F1hQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v10 04/13] libbpf: Optimize type lookup with
- binary search for sorted BTF
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Donglin Peng <dolinux.peng@gmail.com>, ast@kernel.org, zhangxiaoqin@xiaomi.com, 
-	ihor.solodrai@linux.dev, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	pengdonglin <pengdonglin@xiaomi.com>, Alan Maguire <alan.maguire@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 18, 2025 at 4:13=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> On Thu, 2025-12-18 at 15:29 -0800, Andrii Nakryiko wrote:
->
-> [...]
->
-> > >  static __s32 btf_find_by_name_kind(const struct btf *btf, int start_=
+On Thu, 2025-12-18 at 16:19 -0800, Andrii Nakryiko wrote:
+> On Thu, Dec 18, 2025 at 4:13=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.c=
+om> wrote:
+> >=20
+> > On Thu, 2025-12-18 at 15:29 -0800, Andrii Nakryiko wrote:
+> >=20
+> > [...]
+> >=20
+> > > >  static __s32 btf_find_by_name_kind(const struct btf *btf, int star=
+t_id,
+> > > >                                    const char *type_name, __u32 kin=
+d)
+> > >=20
+> > > kind is defined as u32 but you expect caller to pass -1 to ignore the
+> > > kind. Use int here.
+> > >=20
+> > > >  {
+> > > > -       __u32 i, nr_types =3D btf__type_cnt(btf);
+> > > > +       const struct btf_type *t;
+> > > > +       const char *tname;
+> > > > +       __s32 idx;
+> > > > +
+> > > > +       if (start_id < btf->start_id) {
+> > > > +               idx =3D btf_find_by_name_kind(btf->base_btf, start_=
 id,
-> > >                                    const char *type_name, __u32 kind)
-> >
-> > kind is defined as u32 but you expect caller to pass -1 to ignore the
-> > kind. Use int here.
-> >
-> > >  {
-> > > -       __u32 i, nr_types =3D btf__type_cnt(btf);
-> > > +       const struct btf_type *t;
-> > > +       const char *tname;
-> > > +       __s32 idx;
-> > > +
-> > > +       if (start_id < btf->start_id) {
-> > > +               idx =3D btf_find_by_name_kind(btf->base_btf, start_id=
-,
-> > > +                                           type_name, kind);
-> > > +               if (idx >=3D 0)
-> > > +                       return idx;
-> > > +               start_id =3D btf->start_id;
-> > > +       }
-> > >
-> > > -       if (kind =3D=3D BTF_KIND_UNKN || !strcmp(type_name, "void"))
-> > > +       if (kind =3D=3D BTF_KIND_UNKN || strcmp(type_name, "void") =
+> > > > +                                           type_name, kind);
+> > > > +               if (idx >=3D 0)
+> > > > +                       return idx;
+> > > > +               start_id =3D btf->start_id;
+> > > > +       }
+> > > >=20
+> > > > -       if (kind =3D=3D BTF_KIND_UNKN || !strcmp(type_name, "void")=
+)
+> > > > +       if (kind =3D=3D BTF_KIND_UNKN || strcmp(type_name, "void") =
 =3D=3D 0)
-> > >                 return 0;
-> > >
-> > > -       for (i =3D start_id; i < nr_types; i++) {
-> > > -               const struct btf_type *t =3D btf__type_by_id(btf, i);
-> > > -               const char *name;
-> > > +       if (btf->sorted_start_id > 0 && type_name[0]) {
-> > > +               __s32 end_id =3D btf__type_cnt(btf) - 1;
-> > > +
-> > > +               /* skip anonymous types */
-> > > +               start_id =3D max(start_id, btf->sorted_start_id);
-> >
-> > can sorted_start_id ever be smaller than start_id?
->
-> sorted_start_id can be zero, at two callsites for this function
-> start_id is passed as btf->start_id and 1.
+> > > >                 return 0;
+> > > >=20
+> > > > -       for (i =3D start_id; i < nr_types; i++) {
+> > > > -               const struct btf_type *t =3D btf__type_by_id(btf, i=
+);
+> > > > -               const char *name;
+> > > > +       if (btf->sorted_start_id > 0 && type_name[0]) {
+> > > > +               __s32 end_id =3D btf__type_cnt(btf) - 1;
+> > > > +
+> > > > +               /* skip anonymous types */
+> > > > +               start_id =3D max(start_id, btf->sorted_start_id);
+> > >=20
+> > > can sorted_start_id ever be smaller than start_id?
+> >=20
+> > sorted_start_id can be zero, at two callsites for this function
+> > start_id is passed as btf->start_id and 1.
+>=20
+> Can it with the check above?
+>=20
+>   if (btf->sorted_start_id > 0 && type_name[0]) {
+>=20
+>=20
+> This branch is a known sorted case. That's why all these start_id
+> manipulations look weird and sloppy.
 
-Can it with the check above?
+Oops, it cannot.
+But still it feels strange to pass a 'start_id' parameter to a
+function and rely at exact values passed at callsites. Replace the
+parameter with boolean 'own'?
 
-  if (btf->sorted_start_id > 0 && type_name[0]) {
-
-
-This branch is a known sorted case. That's why all these start_id
-manipulations look weird and sloppy.
-
->
-> >
-> > > +               idx =3D btf_find_by_name_bsearch(btf, type_name, star=
-t_id, end_id);
-> >
-> > is there ever a time when btf_find_by_name_bsearch() will work with
-> > different start_id and end_id? why is this not done inside the
-> > btf_find_by_name_bsearch()?
-> >
->
-> [...]
+> >=20
+> > >=20
+> > > > +               idx =3D btf_find_by_name_bsearch(btf, type_name, st=
+art_id, end_id);
+> > >=20
+> > > is there ever a time when btf_find_by_name_bsearch() will work with
+> > > different start_id and end_id? why is this not done inside the
+> > > btf_find_by_name_bsearch()?
+> > >=20
+> >=20
+> > [...]
 
