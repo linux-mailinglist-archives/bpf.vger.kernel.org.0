@@ -1,223 +1,254 @@
-Return-Path: <bpf+bounces-77125-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77126-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7B7FCCE7C3
-	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 06:03:59 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id A45F6CCE7C9
+	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 06:06:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D5BAD303894D
-	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 05:03:42 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0362D3020CED
+	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 05:06:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB1D4283C83;
-	Fri, 19 Dec 2025 05:03:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89E412BE029;
+	Fri, 19 Dec 2025 05:06:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Iyer4/7Z"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W8BQCwch"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1708267AF6
-	for <bpf@vger.kernel.org>; Fri, 19 Dec 2025 05:03:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 478F0283C83
+	for <bpf@vger.kernel.org>; Fri, 19 Dec 2025 05:06:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766120620; cv=none; b=huCyKzq/eVTmfIU7Qb+viweXnBQhVEeiinpegma8wlxHt1ZT9A08G8esMmYYnOcQAKOD+cX3wDymntmU+8irJQr2E/1CO5oexGyASEFNx9uUdz0eDNqgEcdxC9PaxR54QVyhlOK46CoU76PMAtIonj1Q1k3R5bnNvZpjLVHCPCs=
+	t=1766120786; cv=none; b=a9SmdD6fm/zVLgfhb6/BpI8omzX6ngeENzM98hY1OIPR7FkrirHXdmt3llU4aai0IsSvUi+Qc/tU8pG0tdZkdfp70NCEId/IzxDO8SJ3NsGB/Xp2NmadUhq7Dz3yb79Vb9cY8QV6li5y2ldux4auX3P2lRCJCuOOZFJcqI7pRb0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766120620; c=relaxed/simple;
-	bh=kaURwmhdJjY8j91/nuYsMJxS/M+9Ly7tIAquBQJLkUw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KFJE7Sl/7lYfgE+ZW0AFnFClO3IagGGKoNgQ/4vF1x6S0STUO5dDIwLfILtNEQUvpnYB5L3qohsrlzJZ+TdzIjSUlyLsp/honKHQK4DtTvgtz4PzitTKUfYjAuIwuADgrbsdJpR/g0GPuHaK9mXsM8Q+PyY/U4d+9tW+bM8BL4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Iyer4/7Z; arc=none smtp.client-ip=209.85.214.179
+	s=arc-20240116; t=1766120786; c=relaxed/simple;
+	bh=MFkXl8ml/HvWadiwoUYTVQZDTM6NwKz2odjZxH7OZdE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TqBKi4wAdThnsO9ycU72LqaCaGUztPqqbFlFqwXRSCQ2EGnsnw3u9mp88hzx1vnJelALuoEVq4HF1RFLOe78PEyujc0rEf5ZQmXRXlvBIRMN6Ie5jfJgJIEI4lEK3L7p65SuZP1RWzoUdkb0g7sOspWMG38/7RddqryhPxfMZew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W8BQCwch; arc=none smtp.client-ip=209.85.208.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-2a0d6f647e2so21453285ad.1
-        for <bpf@vger.kernel.org>; Thu, 18 Dec 2025 21:03:37 -0800 (PST)
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-64b7b737eddso1209600a12.1
+        for <bpf@vger.kernel.org>; Thu, 18 Dec 2025 21:06:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1766120617; x=1766725417; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zZTCvbTwNrP8p42X+dpd7k1dFq41aRyw/GMHSDy5acE=;
-        b=Iyer4/7ZW4Hy69dmR5GPqwHheqkmQR8/thVF17jlwpulr6jvINxSl1/A6a25uIhehg
-         /cI68wYritWKGcpHIAg8KIz20aieDnO7mfIxrj1txYe/Yz+aMRCeV9dgK4FVUBDU9b4S
-         xHvwhp7i/Z4M9r3gC0nrNUDjCEeTFGK6hWVNV+K1KkFqNpWV6g6IiPkJHd91AGlMqlXe
-         F9M2CRwSp3gMDbwoYJ2YJomLhLXxNgcTYISg5IWqHrlkbVYZX/ZRVpKSp+xdUcMVQ+9Q
-         ry7PR3yeVOt2GLMN5txlY4SlO90ZF2b6m2QCpaBn8Zl9N57ABQs/tZM+cT9WGDRWZFTq
-         5iRg==
+        d=gmail.com; s=20230601; t=1766120781; x=1766725581; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Zoqe/VDhHd5JoP+N5xrNIqGrwVbOLcq6mGpL625PbRk=;
+        b=W8BQCwchJPJHoyf40RB5n1P25PAjzvuh+w+Mhhvw0Q2dtDF3hm8S9bLWXwvPnpwHQK
+         IIzZRJMcsiHU9XKL09aYw7hWhedXW1pnyX7QI7QXkIhFO4kj7zI1DOJimDVqJSOhPzK0
+         /cpoVIBBcLs4qdgwaRVSE+CXqiWjzCjjcQy8iH8cimWM02oMbCMrlf2FKUqecPrT/Huo
+         LxQt8wT9VWW2KpOic9X74df3aaVVXeuUommbTn28c3wnOR3Rn1FfrxpgYv5v/XP3nn8k
+         3V+uYCYUx/ASzU/yRAy7Vk987/jL5D5eTCU2sz+i1kuRJG2e0NPYuBqWwQ9x717FSOXH
+         lCoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766120617; x=1766725417;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zZTCvbTwNrP8p42X+dpd7k1dFq41aRyw/GMHSDy5acE=;
-        b=HL9mbtKwILsYG2bdts5qV7yvRNlBYovpwXnV5qD55cmqX8v/58m51YEG+CtOOEzpIW
-         Pjj7W6GbWmBVz3a1NZD9Nj9qEuMUiYMgMvv2HM0flFoCI/dT1ru3DD1s9719Btqd7gp2
-         BtTXCHcbGn/WWApaujz8DjGbh62QcKphtHai7TEErywK2sIwSfYzY+B91VYVkiRteGek
-         XUtmg7Uvf/Ancdcw9Z0Jwc/vTJ/3Qiv5oPOVxojOxP7FAhMyU4dBmNZD+ODGHyfuXERp
-         tR7DZc1Xa8cDpz2fXhc7i3VY678As5yc5Amj/IBSYroJUhPPhwEPDXxjNNQx5r+BnVZr
-         rtwQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX1Svk8F5/jyeQNynWGh7F659s9W0UK6I1aGex1qvyJee1UYoMCUjJWYS6A52gX5Oj/H/s=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxkIjz/NcV+oKLV3ZuyeOT88j1cmgoVsOVfGkOP5nqza+NYqtW6
-	R9suxUvw3bfMsiCH8XZUdkI5QdjWCzkb3fFceZDkJ7kzTsKl+wDHeEfy
-X-Gm-Gg: AY/fxX4n2pPJCXm1xh7ZpxfqSnz7vv7DwxoospLuUsDc4bNHyL/FnM1KKn50LEfPwzG
-	bc/AbeUzEZeVlUzLuSkysNy12TCQXwj+wRaV5N4uklBCsJljo05OZ0yM/TMAhFYcIImGJ+i1WsN
-	visVN9AHxWrbM6u58J5HcQOZtLixlLbWmQ5JHSpvAVLEkQh3YcfFt3HHOSFR9WOuPzdbp6ORvC7
-	FQ35BFSaxdbZAN1zx9BXpi6wgTM03LBdyCodyR+pZHm4Dx98iJ9bgeHGZx/gc+Q8NhuDPWcWPjY
-	6arc+BJC57yVYCf909N7CDixxhGXRgh+7xj4D77tBzsvTiMvGU5PbfW/RXdzDbNhQASvIHFIlQg
-	/4NoQk+79GB7VVpbsM1CpZXp+U4najHQ2Imvlv1ZIe2+uDr8YvgLvEalM/mcOgW9AFAD+OqZ8bc
-	swk7I8FgOf3YLLGrtpLWwnkcN/r1PAt33hcfti2HI8LQGPlmBMQGr8nSSJM7c=
-X-Google-Smtp-Source: AGHT+IEMNwtnT5HSACs7KJDQv87Ul7tb9qZwcx6898sXznsIUuzVEP7oMOI9Ae1p0oHl8YKCnExepA==
-X-Received: by 2002:a17:902:e74c:b0:24b:270e:56c7 with SMTP id d9443c01a7336-2a2f22069e3mr16825885ad.7.1766120617119;
-        Thu, 18 Dec 2025 21:03:37 -0800 (PST)
-Received: from ?IPV6:2001:ee0:4f4c:210:2598:f3ef:512:c5a9? ([2001:ee0:4f4c:210:2598:f3ef:512:c5a9])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a2f3d77451sm8994465ad.96.2025.12.18.21.03.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Dec 2025 21:03:36 -0800 (PST)
-Message-ID: <5434a67e-dd6e-4cd1-870b-fdd32ad34a28@gmail.com>
-Date: Fri, 19 Dec 2025 12:03:29 +0700
+        d=1e100.net; s=20230601; t=1766120781; x=1766725581;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=Zoqe/VDhHd5JoP+N5xrNIqGrwVbOLcq6mGpL625PbRk=;
+        b=O8pjM0Z64yvfZlldQyHP+ijGrIkh1RSO+gBBkzFC//PjkqIBuSGJKlU9e28GedfNb2
+         YHN5i6fh40fZAh0JeEc3Jpw9uu/dG9CSkMk5l7saIDQ7RR2r1xqkv7U8bhEiS/rhDivE
+         L+ybNkzYYDSMW8fUmz8sa54xno6JhTy5d31b840alRno8k0pxa9tXMka6hUGi9A3q2EO
+         I5dYUr4fX19Za58NYigc/6ezSLyMVrGYB9aaBk61E2Pu9TPkeK+Y7v5Jp9fumjtbpZWa
+         II5XnbJx2lI4DhGaL9RZrQvIAF/qxirqh+dcpRn3FQXDACys+GRRO4GTEQQBVVxLxi/Z
+         /9WQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXu1tKuvmG7Asm1EJurZzH7pLl4KXrngTUR0Yyhw8xXKD8fQ4lhCvQmqfJZ3u8kcbdLUqg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyFPqRu9jDCVxAtA6Cq/AKA7qZ33Maj1b56AWvCt/7lO3JljmDh
+	oR/6Z6U2Ht54AiTBMs1x8zoeTrYP8fzLDHArj49E6/2WRedjFpF1Z/DpXmG5rVrjaHI7HNPHS2A
+	Yf1SiL0311KkLYgSgmXOobPpW8Pg/sujj9HDqA9fyaQ==
+X-Gm-Gg: AY/fxX5GW1Tv0RZJbf0ThO54YB8iz5rnP6Jpkm9jQ7RUV8iI25/PKEegksrlqbD9weo
+	z2c4wT3GE2ly25wNS9VCnb3jVEZzaH8lXaLPX0NhM8jgZJvM+8Vr1m6SVTBgF+0IFCD3wH+DGEZ
+	mcSmrqFjpl7Gun4Fdx2oDe7crtMW292qQQjGiHpWkRB5xCnk4HXwgj6/L+bE5CZgpvGXmZkqUAn
+	ts0xCrlHXYukaaMoE1Q+rKjChBRBJfTjzWPsDZx6zqEIokmr/xmc13wvBJhGNDJC1LyzGtG
+X-Google-Smtp-Source: AGHT+IHPq+zxWVZcUj8ImbeI/GYWi56t1DAHKy0W/H14wKy1EwsYYYlyIJGFF7zlhWx5LGS+aPGEvopw6fV4q60ar9M=
+X-Received: by 2002:a05:6402:2683:b0:64b:4624:777d with SMTP id
+ 4fb4d7f45d1cf-64b8eefb5a2mr1493128a12.18.1766120781346; Thu, 18 Dec 2025
+ 21:06:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v2] virtio-net: enable all napis before scheduling
- refill work
-To: Jason Wang <jasowang@redhat.com>
-Cc: netdev@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
- Xuan Zhuo <xuanzhuo@linux.alibaba.com>, =?UTF-8?Q?Eugenio_P=C3=A9rez?=
- <eperezma@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Stanislav Fomichev <sdf@fomichev.me>, virtualization@lists.linux.dev,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org, stable@vger.kernel.org
-References: <20251212152741.11656-1-minhquangbui99@gmail.com>
- <CACGkMEtzXmfDhiQiq=5qPGXG+rJcxGkWk0CZ4X_2cnr2UVH+eQ@mail.gmail.com>
- <3f5613e9-ccd0-4096-afc3-67ee94f6f660@gmail.com>
- <CACGkMEs+Mse7nhPPiqbd2doeGtPD2QD3BM_cztr6e=VfuiobHQ@mail.gmail.com>
-Content-Language: en-US
-From: Bui Quang Minh <minhquangbui99@gmail.com>
-In-Reply-To: <CACGkMEs+Mse7nhPPiqbd2doeGtPD2QD3BM_cztr6e=VfuiobHQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20251218113051.455293-1-dolinux.peng@gmail.com>
+ <20251218113051.455293-6-dolinux.peng@gmail.com> <CAEf4BzY+gnT9aET_NDOkzX2iBwLednyK4xGe4S6JmhzN0C5GoA@mail.gmail.com>
+In-Reply-To: <CAEf4BzY+gnT9aET_NDOkzX2iBwLednyK4xGe4S6JmhzN0C5GoA@mail.gmail.com>
+From: Donglin Peng <dolinux.peng@gmail.com>
+Date: Fri, 19 Dec 2025 13:06:09 +0800
+X-Gm-Features: AQt7F2rjpLISYsLU-5djmaW_Ok0Cp0o_Ilm-3DUKKiUFymMGBn-78juZZM-1NRo
+Message-ID: <CAErzpmusyOMQTcoWiT7nNa=gOAOHgdRYqVb+Dc24BaqjzzeRYw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v10 05/13] libbpf: Verify BTF Sorting
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: ast@kernel.org, eddyz87@gmail.com, zhangxiaoqin@xiaomi.com, 
+	ihor.solodrai@linux.dev, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	pengdonglin <pengdonglin@xiaomi.com>, Alan Maguire <alan.maguire@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 12/17/25 09:58, Jason Wang wrote:
-> On Wed, Dec 17, 2025 at 12:23 AM Bui Quang Minh
-> <minhquangbui99@gmail.com> wrote:
->> On 12/16/25 11:16, Jason Wang wrote:
->>> On Fri, Dec 12, 2025 at 11:28 PM Bui Quang Minh
->>> <minhquangbui99@gmail.com> wrote:
->>>> Calling napi_disable() on an already disabled napi can cause the
->>>> deadlock. In commit 4bc12818b363 ("virtio-net: disable delayed refill
->>>> when pausing rx"), to avoid the deadlock, when pausing the RX in
->>>> virtnet_rx_pause[_all](), we disable and cancel the delayed refill work.
->>>> However, in the virtnet_rx_resume_all(), we enable the delayed refill
->>>> work too early before enabling all the receive queue napis.
->>>>
->>>> The deadlock can be reproduced by running
->>>> selftests/drivers/net/hw/xsk_reconfig.py with multiqueue virtio-net
->>>> device and inserting a cond_resched() inside the for loop in
->>>> virtnet_rx_resume_all() to increase the success rate. Because the worker
->>>> processing the delayed refilled work runs on the same CPU as
->>>> virtnet_rx_resume_all(), a reschedule is needed to cause the deadlock.
->>>> In real scenario, the contention on netdev_lock can cause the
->>>> reschedule.
->>>>
->>>> This fixes the deadlock by ensuring all receive queue's napis are
->>>> enabled before we enable the delayed refill work in
->>>> virtnet_rx_resume_all() and virtnet_open().
->>>>
->>>> Fixes: 4bc12818b363 ("virtio-net: disable delayed refill when pausing rx")
->>>> Reported-by: Paolo Abeni <pabeni@redhat.com>
->>>> Closes: https://netdev-ctrl.bots.linux.dev/logs/vmksft/drv-hw-dbg/results/400961/3-xdp-py/stderr
->>>> Cc: stable@vger.kernel.org
->>>> Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
->>>> ---
->>>> Changes in v2:
->>>> - Move try_fill_recv() before rx napi_enable()
->>>> - Link to v1: https://lore.kernel.org/netdev/20251208153419.18196-1-minhquangbui99@gmail.com/
->>>> ---
->>>>    drivers/net/virtio_net.c | 71 +++++++++++++++++++++++++---------------
->>>>    1 file changed, 45 insertions(+), 26 deletions(-)
->>>>
->>>> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
->>>> index 8e04adb57f52..4e08880a9467 100644
->>>> --- a/drivers/net/virtio_net.c
->>>> +++ b/drivers/net/virtio_net.c
->>>> @@ -3214,21 +3214,31 @@ static void virtnet_update_settings(struct virtnet_info *vi)
->>>>    static int virtnet_open(struct net_device *dev)
->>>>    {
->>>>           struct virtnet_info *vi = netdev_priv(dev);
->>>> +       bool schedule_refill = false;
->>>>           int i, err;
->>>>
->>>> -       enable_delayed_refill(vi);
->>>> -
->>>> +       /* - We must call try_fill_recv before enabling napi of the same receive
->>>> +        * queue so that it doesn't race with the call in virtnet_receive.
->>>> +        * - We must enable and schedule delayed refill work only when we have
->>>> +        * enabled all the receive queue's napi. Otherwise, in refill_work, we
->>>> +        * have a deadlock when calling napi_disable on an already disabled
->>>> +        * napi.
->>>> +        */
->>>>           for (i = 0; i < vi->max_queue_pairs; i++) {
->>>>                   if (i < vi->curr_queue_pairs)
->>>>                           /* Make sure we have some buffers: if oom use wq. */
->>>>                           if (!try_fill_recv(vi, &vi->rq[i], GFP_KERNEL))
->>>> -                               schedule_delayed_work(&vi->refill, 0);
->>>> +                               schedule_refill = true;
->>>>
->>>>                   err = virtnet_enable_queue_pair(vi, i);
->>>>                   if (err < 0)
->>>>                           goto err_enable_qp;
->>>>           }
->>> So NAPI could be scheduled and it may want to refill but since refill
->>> is not enabled, there would be no refill work.
->>>
->>> Is this a problem?
->> You are right. It is indeed a problem.
->>
->> I think we can unconditionally schedule the delayed refill after
->> enabling all the RX NAPIs (don't check the boolean schedule_refill
->> anymore) to ensure that we will have refill work. We can still keep the
->> try_fill_recv here to fill the receive buffer earlier in normal case.
->> What do you think?
-> Or we can have a reill_pending
+On Fri, Dec 19, 2025 at 7:44=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Thu, Dec 18, 2025 at 3:31=E2=80=AFAM Donglin Peng <dolinux.peng@gmail.=
+com> wrote:
+> >
+> > From: pengdonglin <pengdonglin@xiaomi.com>
+> >
+>
+> typo in subject: "Sorting" -> "sorting", it looks weird capitalized like =
+that
 
-Okay, let me implement this in the next version.
-
-> but basically I think we need something
-> that is much more simple. That is, using a per rq work instead of a
-> global one?
-
-I think we can leave this in a net-next patch later.
-
-Thanks,
-Quang Minh
+Thanks, I will do it.
 
 >
-> Thanks
+> > This patch checks whether the BTF is sorted by name in ascending
+> > order. If sorted, binary search will be used when looking up types.
+> >
+> > Cc: Eduard Zingerman <eddyz87@gmail.com>
+> > Cc: Alexei Starovoitov <ast@kernel.org>
+> > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> > Cc: Alan Maguire <alan.maguire@oracle.com>
+> > Cc: Ihor Solodrai <ihor.solodrai@linux.dev>
+> > Cc: Xiaoqin Zhang <zhangxiaoqin@xiaomi.com>
+> > Signed-off-by: pengdonglin <pengdonglin@xiaomi.com>
+> > ---
+> >  tools/lib/bpf/btf.c | 41 +++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 41 insertions(+)
+> >
+> > diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> > index 2facb57d7e5f..c63d46b7d74b 100644
+> > --- a/tools/lib/bpf/btf.c
+> > +++ b/tools/lib/bpf/btf.c
+> > @@ -899,6 +899,46 @@ int btf__resolve_type(const struct btf *btf, __u32=
+ type_id)
+> >         return type_id;
+> >  }
+> >
+> > +/*
+> > + * Assuming that types are sorted by name in ascending order.
+> > + */
 >
->>>
->>>> +       enable_delayed_refill(vi);
->>>> +       if (schedule_refill)
->>>> +               schedule_delayed_work(&vi->refill, 0);
->>>> +
->>>>           if (virtio_has_feature(vi->vdev, VIRTIO_NET_F_STATUS)) {
->>>>                   if (vi->status & VIRTIO_NET_S_LINK_UP)
->>>>                           netif_carrier_on(vi->dev);
->>>> @@ -3463,39 +3473,48 @@ static void virtnet_rx_pause(struct virtnet_info *vi, struct receive_queue *rq)
->>>>           __virtnet_rx_pause(vi, rq);
->>>>    }
->>>>
->>> Thanks
->>>
->> Thanks,
->> Quang Minh.
->>
+> Unnecessary comment, and no, btf_compare_type_names() itself makes no
+> such assumption, it just compares two provided types by name. Drop the
+> comment, please.
+>
+> > +static int btf_compare_type_names(__u32 *a, __u32 *b, const struct btf=
+ *btf)
+> > +{
+> > +       struct btf_type *ta =3D btf_type_by_id(btf, *a);
+> > +       struct btf_type *tb =3D btf_type_by_id(btf, *b);
+> > +       const char *na, *nb;
+> > +
+> > +       na =3D btf__str_by_offset(btf, ta->name_off);
+> > +       nb =3D btf__str_by_offset(btf, tb->name_off);
+> > +       return strcmp(na, nb);
+> > +}
+>
+> you use this function only in one place, there is no real point having
+> it, especially that it uses **a pointer to type ID** as an
+> interface... just inline its logic in that one loop below
+>
+> > +
+> > +static void btf_check_sorted(struct btf *btf)
+> > +{
+> > +       const struct btf_type *t;
+> > +       __u32 i, k, n;
+> > +       __u32 sorted_start_id;
+> > +
+> > +       if (btf->nr_types < 2)
+> > +               return;
+>
+> why special casing? does it not work with nr_types =3D 0 or nr_types =3D =
+1?
 
+No. I just think it doesn't make any sense to check the sorting
+of BTF with zero or only one type.
+
+>
+> > +
+> > +       sorted_start_id =3D 0;
+>
+> nit: initialize in declaration
+
+Thanks, I will do it.
+
+>
+>
+> > +       n =3D btf__type_cnt(btf);
+> > +       for (i =3D btf->start_id; i < n; i++) {
+> > +               k =3D i + 1;
+> > +               if (k < n && btf_compare_type_names(&i, &k, btf) > 0)
+> > +                       return;
+> > +               if (sorted_start_id =3D=3D 0) {
+> > +                       t =3D btf_type_by_id(btf, i);
+> > +                       if (t->name_off)
+>
+> I'd check actual string, not name_off. Technically, you can have empty
+> string with non-zero name_off, so why assume anything here?
+
+Thanks, I will do it.
+
+>
+> > +                               sorted_start_id =3D i;
+> > +               }
+> > +       }
+> > +
+> > +       if (sorted_start_id)
+> > +               btf->sorted_start_id =3D sorted_start_id;
+>
+> You actually made code more complicated by extracting that
+> btf_compare_type_names(). Compare to:
+>
+> n =3D btf__type_cnt(btf);
+> btf->sorted_start_id =3D 0;
+> for (i =3D btf->start_id + 1; i < n; i++) {
+>    struct btf_type *t1 =3D btf_type_by_id(btf, i - 1);
+>    struct btf_type *t2 =3D btf_type_by_id(btf, i);
+>    const char *n1 =3D btf__str_by_offset(btf, t1->name_off);
+>    const char *n2 =3D btf__str_by_offset(btf, t2->name_off);
+>
+>    if (strcmp(n1, n2) > 0)
+>         return;
+>    if (btf->sorted_start_id =3D=3D 0 && n1[0] !=3D '\0')
+>         btf->sorted_start_id =3D i - 1;
+> }
+
+Thanks. I believe we shouldn't directly assign a value to
+`btf->sorted_start_id` within the for loop, because
+`btf->sorted_start_id` might be non-zero even when the
+BTF isn't sorted.
+
+>
+>
+> No extra k<n checks, no extra type_by_id lookups. It's minimalistic
+> and cleaner. And if it so happens that we get single type BTF that is
+> technically sorted, it doesn't matter, we always fallback to faster
+> linear search anyways.
+>
+> Keep it simple.
+
+Thank you. I will adopt this method in the next version.
+
+>
+> > +}
+> > +
+> >  static __s32 btf_find_by_name_bsearch(const struct btf *btf, const cha=
+r *name,
+> >                                                 __s32 start_id, __s32 e=
+nd_id)
+> >  {
+> > @@ -1147,6 +1187,7 @@ static struct btf *btf_new(const void *data, __u3=
+2 size, struct btf *base_btf, b
+> >         err =3D err ?: btf_sanity_check(btf);
+> >         if (err)
+> >                 goto done;
+> > +       btf_check_sorted(btf);
+> >
+> >  done:
+> >         if (err) {
+> > --
+> > 2.34.1
+> >
 
