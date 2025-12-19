@@ -1,112 +1,96 @@
-Return-Path: <bpf+bounces-77160-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77151-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E61BECD0730
-	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 16:08:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A68E3CD013B
+	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 14:33:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 411AF30B8B6D
-	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 15:05:19 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6A9BF302651F
+	for <lists+bpf@lfdr.de>; Fri, 19 Dec 2025 13:31:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F55C32AAA9;
-	Fri, 19 Dec 2025 15:05:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 249A231D75C;
+	Fri, 19 Dec 2025 13:31:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mB3chJjg"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Oj+jYrIf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f195.google.com (mail-yw1-f195.google.com [209.85.128.195])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A2262868B5
-	for <bpf@vger.kernel.org>; Fri, 19 Dec 2025 15:05:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 768021F8723
+	for <bpf@vger.kernel.org>; Fri, 19 Dec 2025 13:31:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766156716; cv=none; b=IWJAMe7oYcv2NvbprzbWczThuRSJJvdB6k5/wHNJ5NTuX8sm8oS2Z0BT6T+7EJ84NbS+tAMyQzPBT5n6nk65NXmKAE28zJ7m9DFJd9nmjcJatV1lfElKLg/VJ8nHaIKjNk/hMeN7YXpNRXL0AqskgIctXEQfBnao0G+a2T076B4=
+	t=1766151102; cv=none; b=J+GlQMu6Ji8/NAPMt/94YMq/D2QGiXgmT6URs+QHZe+XiL6LF3ZHWKBSIH+6H4Q2yrmFdGwalal/V0eYb9Ux4VxBi6gPKEqetlwlyfA2daCVRa2hIP/a9n5vTRw3AWsRRiuxkE9Xk9T/JkOVJJvjb1NVpqWODYlX++x/HvfUlZY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766156716; c=relaxed/simple;
-	bh=hGjYfTPZVpLjfYpJDfuQ8wmqEFOpDaT5M488rWNUYoM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=THACi4oqDE5taOS25oFV/9cibZyhaFmlDghxX2YaSAP5FOEApJhWnO0i+iehYRiuRNVu/jFVZRNCGGRjx8z/tSDDSvWD6jJxjto7geMlb3Qy4MPrk1gqmfYJJ0i1qiagdXgi/WgX0R3pChnXl1Nu9CR4EU7Xll+Pg2V+1Pzh+lo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mB3chJjg; arc=none smtp.client-ip=209.85.128.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f195.google.com with SMTP id 00721157ae682-78e7ba9fc29so17100227b3.2
-        for <bpf@vger.kernel.org>; Fri, 19 Dec 2025 07:05:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1766156714; x=1766761514; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=d8S9arpnQbQKRrRPutZ5MVC6WeUVyaLDfqwrd6H6Lag=;
-        b=mB3chJjgFlhBy8ODFO9zMLjj31fdnu82PsYKSMql5+4P1xOrEMaKD3l2knKvFtswhJ
-         nowvKIEhG2Ec3ofo2+Bmr6MZjLvhTgYcm3s2n0Xoq5yi/9i5KIkKDmkg9lXP5jKIeUlK
-         v2UcJNvt8oV/0YXnQf97p8qwlU4smy3Gc545XFlXf0B2briUQLJMzSvfrIZFgpvBhdhr
-         jXzULupGQuXInVVmRn4KHexWHcwilaMQGZkZS0GQLUerH5dJSmWiAx+i5wi93QOFvTsY
-         v4DthoJWyqtqi/omjd2MhaZ0hZM9dsvhjd8mhBp5Xmb3lqEYlrWipdpmxgshYZ0orQtT
-         lINw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766156714; x=1766761514;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=d8S9arpnQbQKRrRPutZ5MVC6WeUVyaLDfqwrd6H6Lag=;
-        b=KDdafhe0wkVau2GhU0AAOVAGwIx7k0nbxLnbU05LqkWQZE3PCsfQVjolhdGl99GRlM
-         v3RUAT6q8ouHU64T0hynyYZCgn6ca6w/4z2YxlazgpyB/0NIxOYL89nDqYjIyEy+rm4O
-         /BW+ODwY1k6Ye9dvSLq/PuvQGpjnLsDvSCGmj+HrucsIXqUrsNycb3bZiEigAXlVeQyh
-         B/YDrTQtOS4/rkUiLBuKcpcDUscZvcAqrIRQzeud38lilGYCyHfGVWCKa1tcvHz/odyr
-         dVDl0afYKlj6zVRKm/M0PtHIqr3K24nkSmUjP+zd6KZCKRvikZka2rR2raVmwB3jRHYs
-         yAKw==
-X-Forwarded-Encrypted: i=1; AJvYcCUEHQp/iawCn50FCzWUTxVzq5y5aHWymohXky1C2fYQVO6rpRwdcKGcxiNfjXeUSD+74bc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwifhRC8ZUqMqDvXO3iQeByATpUTywTRGE5SVWdwv3B6jBS6xgo
-	NuxwpMaFL+BO/QJ6I98KcnN7j9bZmi/KilqCYFJvFIt0VtnhYzGsbIlYwFsR9Z+iAJI=
-X-Gm-Gg: AY/fxX6ppPE1wa/ScTeTdVKX9hjEEYPXwiBCZbCGB2q0DQflzTEJioX4SJjTd0ualTw
-	0+nhUwXBxECirh3+0xhWHC1+tUWTH5MeuFpN6+o0qx+MAIt36ykg/V7ugvPkXQCEhj4Y8r+xxYC
-	xPi2ODkRYtseDJzfOVm889bWg1Wha6Xo4deyQQt0htj928BINkUQJJ8bazSlyviBfQjL2Z62VtO
-	KaKFRewEoj3PxOGWWM0OXIFIbaw8SwVSUr4gFJePLkMmnTJtQaH2Tc8JBnBCNSQAIbMDOEBGxbm
-	Xaz2PbTchRNqFCgiOYB3AMCiGGiMhAfQTnz3uPhIHyB/ZLjcmQ5noUfrmax+1te9N0vqudCZFZR
-	lOd6QSS7LLLIAfkPyu+EtQ9PIL9Rp29ZKxapmZqO6FVPrxmwAyV1cwYesH4au0jkxavfdmsVkfG
-	BKY0IfKzGbrcErM8ghPMtLTA==
-X-Google-Smtp-Source: AGHT+IGA2/j7Dp0GcCqLOtCuhTofXascKJCOpzP4V5d1jVIW4N3VAzOMwjEDO8OdEOpYvh5aBfsBIA==
-X-Received: by 2002:a05:6a20:3d0a:b0:34e:eb6a:c765 with SMTP id adf61e73a8af0-376aa5008bamr2997142637.37.1766150181401;
-        Fri, 19 Dec 2025 05:16:21 -0800 (PST)
-Received: from 7950hx ([43.129.244.20])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34e9224d9e5sm2346819a91.17.2025.12.19.05.16.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Dec 2025 05:16:20 -0800 (PST)
-From: Menglong Dong <menglong8.dong@gmail.com>
-X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
+	s=arc-20240116; t=1766151102; c=relaxed/simple;
+	bh=tVCX/0y7pTBmvJVcF5r4t0TRtimwIkKr9upSKAD6ZSo=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Cv8b4ItwCJZWZbXLtfUDY9o6SjYb6R0G7D5DpG5TUqG87J3zBGtOQG3NYReJjiYO1DTS6hr4AajwsQ/DLZO/2lXbCmbCSsOCjzzIQJ8Cb6sB0JAHcyu3BAd7GTdo9nQvogJqpeIA74wF9l8xTHbL+So1QqgUtEc7IErGRizaP6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Oj+jYrIf; arc=none smtp.client-ip=91.218.175.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1766151091;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Xzagi6miXzd7e3OGU5ATRhbk9IjjwnMd+L1LSEqQQXY=;
+	b=Oj+jYrIfLYRp1HI4kxh6Bw2BVLKLb02cZW5Ufy9/+AIbsgRgQ4adW/UrkTkxG81DFMc7wh
+	3D3uy4Rmy24ThRL8sfgZipaqe0NCA+mHGozG7IvAjyx0PaJRSduBzCJoEz/quzVzyCyD2W
+	LAgsXsscB7zaUq9Z2UOWACzx2UgajH4=
+From: Menglong Dong <menglong.dong@linux.dev>
 To: ast@kernel.org
-Cc: daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	bjorn@kernel.org,
-	pulehui@huawei.com,
-	puranjay@kernel.org,
-	pjw@kernel.org,
-	palmer@dabbelt.com,
-	aou@eecs.berkeley.edu,
-	alex@ghiti.fr,
-	menglong8.dong@gmail.com,
-	jiang.biao@linux.dev,
-	bpf@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND bpf] riscv, bpf: fix incorrect usage of BPF_TRAMP_F_ORIG_STACK
-Date: Fri, 19 Dec 2025 21:16:09 +0800
-Message-ID: <20251219131609.176911-1-dongml2@chinatelecom.cn>
-X-Mailer: git-send-email 2.52.0
+Cc: Andreas Schwab <schwab@linux-m68k.org>,
+ Menglong Dong <menglong8.dong@gmail.com>, rostedt@goodmis.org,
+ daniel@iogearbox.net, john.fastabend@gmail.com, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, mhiramat@kernel.org,
+ mark.rutland@arm.com, mathieu.desnoyers@efficios.com, jiang.biao@linux.dev,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject:
+ Re: [PATCH bpf-next v3 3/6] bpf: fix the usage of BPF_TRAMP_F_SKIP_FRAME
+Date: Fri, 19 Dec 2025 21:31:13 +0800
+Message-ID: <1948844.tdWV9SEqCh@7950hx>
+In-Reply-To: <5070743.31r3eYUQgx@7950hx>
+References:
+ <20251118123639.688444-1-dongml2@chinatelecom.cn> <875xa2g0m0.fsf@igel.home>
+ <5070743.31r3eYUQgx@7950hx>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"
+X-Migadu-Flow: FLOW_OUT
+
+On 2025/12/19 20:27, Menglong Dong wrote:
+> On 2025/12/19 19:41, Andreas Schwab wrote:
+> > On Dez 19 2025, Menglong Dong wrote:
+> > 
+> > > BPF_TRAMP_F_ORIG_STACK
+> > 
+> > How can that ever be set?
+> 
+> Oops, my bad! It should be BPF_TRAMP_F_CALL_ORIG here. I think
+> it is some kind of copy-paste mistake. I'll send a fix for it.
+
+I sent the following patch twice, but I didn't see it in the
+mail list. I suspect there is something wrong with my gmail.
+
+Hi, Alexei. Can you see my patch?
+
+-->patch<--
+
+From 5dbae5dcba3aa7fa10e506e9fd1a28a6802d9b00 Mon Sep 17 00:00:00 2001
+From: Menglong Dong <dongml2@chinatelecom.cn>
+Date: Fri, 19 Dec 2025 20:33:10 +0800
+Subject: [PATCH RESEND bpf] riscv, bpf: fix incorrect usage of BPF_TRAMP_F_ORIG_STACK
 
 The usage of BPF_TRAMP_F_ORIG_STACK in __arch_prepare_bpf_trampoline() is
 wrong, and it should be BPF_TRAMP_F_CALL_ORIG, which caused crash as
@@ -169,5 +153,26 @@ index 5f9457e910e8..09b70bf362d3 100644
  	if (flags & BPF_TRAMP_F_CALL_ORIG) {
 -- 
 2.52.0
+
+--<patch>--
+
+> 
+> Thanks!
+> Menglong Dong
+> 
+> > 
+> > 	if (flags & (BPF_TRAMP_F_ORIG_STACK | BPF_TRAMP_F_SHARE_IPMODIFY))
+> > 		return -ENOTSUPP;
+> > 
+> > 
+> 
+> 
+> 
+> 
+> 
+> 
+
+
+
 
 
