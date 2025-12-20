@@ -1,386 +1,210 @@
-Return-Path: <bpf+bounces-77242-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77243-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4035CD2C63
-	for <lists+bpf@lfdr.de>; Sat, 20 Dec 2025 10:38:50 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0B5BCD2E2A
+	for <lists+bpf@lfdr.de>; Sat, 20 Dec 2025 12:35:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 9E17D300A40A
-	for <lists+bpf@lfdr.de>; Sat, 20 Dec 2025 09:38:47 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 914CA300EDEA
+	for <lists+bpf@lfdr.de>; Sat, 20 Dec 2025 11:35:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED3EE304976;
-	Sat, 20 Dec 2025 09:38:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E905F30AD06;
+	Sat, 20 Dec 2025 11:35:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QaMbpjPE"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QH0aiJ6r"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99E87224B01
-	for <bpf@vger.kernel.org>; Sat, 20 Dec 2025 09:38:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0C55243968
+	for <bpf@vger.kernel.org>; Sat, 20 Dec 2025 11:35:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766223524; cv=none; b=Z0P3Ddh6kP2VFqnBssd39GkFe5p/P3YIR4taxunvr+hnk1OX106Jri5PfcmDOZeHgXq4shjcldZEtehgxu96bSCaZyQfNoe9xWlr/Z7lUBRiWxp5j+uP80aVw/af4jqlEAe0pP/R0unuaEivkBBc6GobiIShfdoyWkLPNE5dp54=
+	t=1766230545; cv=none; b=nllH5SuTNuedBEupeCvT5MVznuQSck5fULKZ1MIA9eeo0JFuVIcLgUhy3bfEPr1sTLgKHug+oZJ0UurVXNAHXRmxB0j34YkLV0H4NhwHM0sabCvHjaCwwkxgx5TU1wCUEcdatm5UBjVs5+S36OTYW6qMA6bIQG8EFa8UpZoo5Xg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766223524; c=relaxed/simple;
-	bh=E9ejub5Gcj6DpddlPY6K3Xi+nK73rTOtKyv2V/zil+s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hfhns1OnFIT5Eco79dXbWgStpkMPEYunow8iNGV92tZb+DE/0KEEbX5qP3NYT5Bd8+na+DWI0cJajc9zuMM2IhQAQ6cMXfrul7nGEudH7vf7fpTPk1EN/6rfrObJF3rUr1mRFokciahvZjv+GHcIpteX4GyjUl5tf/isoTIevHE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QaMbpjPE; arc=none smtp.client-ip=209.85.208.42
+	s=arc-20240116; t=1766230545; c=relaxed/simple;
+	bh=vXafQvDXbxhmRy9/A/k3bNzYbmfkT2tbUIk9/L+02a4=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=anC8VYU8VpuqQIaUpE/R2uNCefXQrYyhPyCgp7JjTaNnDNjes4hoznYWX3qeJBOGbxoRlGGNN3D8ShkmRDkJ7PFU/JxPE8qniMhlsbdSMSVPddUlQkbCKqf9xaGoj+lUYecMhfMomKi+2VFUCCFqvZYZO7CI7zFGlnsIwtv1eU8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QH0aiJ6r; arc=none smtp.client-ip=209.85.216.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-64b7a38f07eso3079317a12.0
-        for <bpf@vger.kernel.org>; Sat, 20 Dec 2025 01:38:42 -0800 (PST)
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-34c213f7690so2142375a91.2
+        for <bpf@vger.kernel.org>; Sat, 20 Dec 2025 03:35:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1766223521; x=1766828321; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cr8tLg8opYjYhel08xQhnyz3YWZw0DZOlGI0dIw1a3w=;
-        b=QaMbpjPEIfIJ1tynI2SIn2opgH5ZF+34E2sl/EW8xXsNf2aJhzacFr87+4xFAfmTre
-         zoFzcAdIOLO0MdxfWPoHBMjevSIMjotiak6VZx9KbQr4KiEGG7drPpiWNHvhkO18LtOD
-         bEnRheLkJVSi2Ioo3XdXY/u6CtZSNhiQvN9+j7XjzKevM4YZWkEt1sA2RINBUJnRK18O
-         Hgn1j83cuhxUyWSn/oJ2xJoknuAmCjDfI5MZ2q6cRTMfxqiUpjs6+sxvMJ9ZPZbMs+Q9
-         Kh7fcApO/ZGnqWe9OFJzmRzZKLiQD8Lesjzprp4FdEueuhTgt0gSJvhrHZkrDLAcoTOE
-         XtCg==
+        d=gmail.com; s=20230601; t=1766230542; x=1766835342; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=93uwlo3kvewJRRDvy0FK7OcjMcJRt550CMeXmSvT00w=;
+        b=QH0aiJ6rsw4tZaqLi611WNvFwdPTnpjNztQcg7rEoSTvu6EsxoLesAfGFrNvil0RMz
+         EmO5ffmErxTnZyQQ6bktByK0m07HhypRYfvDrOR6gVnYg7vHkHKvQyh0eLgxhMgmCUGK
+         I9g1Ut6cIJN++C3YmtL9i2FepjfPCdmie+80lG8hGYMFxbeL9CUxSGiZOfauxPC3DYnJ
+         0rUIAT7FeGuRqcdod6vV3nrZ88PZmbcqIqdMi+/NcJigqEVm+yaez+5UGoOYJy0aRpBf
+         EFb1xhCQZG2H5DU5miBHlWvtl3h8+W5qDDbd+dM53qecTcAu5AkYRDGvoCWB8wvQpRwS
+         OOLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766223521; x=1766828321;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=cr8tLg8opYjYhel08xQhnyz3YWZw0DZOlGI0dIw1a3w=;
-        b=NCa56qTyQUc0QdVm16/7pGySuOZJLicQRSQ9vcZboXuJ+sGpdhZ1Hmt6dmPzA8Rp03
-         snr2JP3m4GLvCwXg8PA/9X9ilJ72qvY21N8TQk6g7QDOZoVbj4qBMvGQOqs2h1h10Aep
-         ip0Sd4rAQiYs8QPXL4SDCNPHuDHHQChilueXx3eu8XnN29wIKce82Pqn003RMfazjHtv
-         sk9/LXJcskuaPvT7oOmPKiIrOBcjDWzl71ssRyknLNoaN5Ed14LL1LtVlAQAKG37C4s/
-         1VlilbxmS0568dCDiYhPUGcje4H0Z7ZiRnL30LTLrMIfarDFegoghIXWulcv81PgY+xD
-         d1Ww==
-X-Forwarded-Encrypted: i=1; AJvYcCW4DKmqasAKPUT4l4zgJppxZBW2Uw8dTNB58IOouKkwxz5zdL4wpzUvRIheXn5lD5iJZtQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzGHY6niRZdBOUD/FEOYixccAIuHlRPQBtIkGTA8xpKwjIVcNlF
-	9HYSEZtcePUnjxRIdgDNX63k4vp5jEU/USg1hY8NoMxtXkoP+otwS8+xl61HxXolgb4Ayo0Rddz
-	6dHHEu8bsVa8rQ1nB2IbTAMEljDI2wZ8=
-X-Gm-Gg: AY/fxX71BOSJYCC51/gQrbD/1fqWRC7OI7rrTX9379gV66asMVcu5QV/iTKk/VcW3Hj
-	NuXiaITmp+S9NSqpJSCMHEjIoG0z3xqXi3D4vYrmAzAVQQpIZISul9Oj9FLE5xjy1h+7ibJf0u3
-	+eSTSN/YXH+/21hwFO786MgWz7Hi+apaOJSXz7X5vbLhry/y5goElMWaTIGIb2ON8QMJ/7x8k1R
-	+S/hQ0Sawu2OBsGBn+w2Wu+6PYEX8E/r/ojcd6QluBblrf0W2kMf65Nk3sFyyHJoGAonxxMqyzO
-	5hu/rwA=
-X-Google-Smtp-Source: AGHT+IF9tdnOMa00I4abq/UILeD7zvauRjNo2FyYnd8GSGh0RaD0o2RaBQgz3oFY/uOPB2LkcyqnZFtpHMj95MM9uu8=
-X-Received: by 2002:a17:907:608d:b0:b76:f57a:b0a7 with SMTP id
- a640c23a62f3a-b803705129emr622346066b.31.1766223520886; Sat, 20 Dec 2025
- 01:38:40 -0800 (PST)
+        d=1e100.net; s=20230601; t=1766230542; x=1766835342;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=93uwlo3kvewJRRDvy0FK7OcjMcJRt550CMeXmSvT00w=;
+        b=KCCuDj7uag610tS2FsxivaKQxUy58idCM5XS+/UoeimZLG1mmh2QJkJY2VwtLziSKa
+         kqIk9lwfT2xZe2I8orRPsz4wQFQnE/HhkYBI1gH5J/CCxZiT4Zy8SNQTPcZA6lcjt1UC
+         PWOgxll1bp8dmEpy6rgvnDbJO79IdhBvFMZs+2pUabhj5zCYGhEuKbAm8tvbymFG1Ifs
+         v26uwXY3Lpjw9EWTOV1iwKa5UwflqtO39JefOW15zH1RV5SQlQ31QIdhFZI8DpaFttCG
+         CXTAfN3Hf93H0iopuhvQQa6tgksohtrY2sO+JbbCTU3QQAa8R0gbiaV0usH3euQ0VJxK
+         GaLg==
+X-Gm-Message-State: AOJu0YwGZfZPAT5yxMUn1XmADX8Mbkgxx8rKdDANbTpRveuoAckqJw+l
+	z8qlQXaK4ITnvgmDsldfPDokr+kZp1u9qNj9FbyelL6PL/iQVWuF10iA
+X-Gm-Gg: AY/fxX60Znv+HrZCqFyHqFWTlyvVYNKNvyzCCiJ4ip6djhQA31BLYUH20vYrDFNs2AQ
+	he76M6f3FGj/jMaqCQ3+fxyi6vjl8g8kNSkTyI7IhTzkd86WWeOjBBJYaOEyQf1mQnxep0TVS4h
+	IaErPXSATNZCVvJXYz7Fo0ynYxYOjg3R65s6Wg9JQ0sFwoPs6/TYsCvEjpvPDsxOf3DR8raTJ8D
+	3JJ2itSxYjubIcmd97bmqkmnl/zbSHKK6t94axRk06zdDOUjrwko9ndoPIuMl/mBtWYCan8uGGN
+	82k89yUZojV54XpsgRZWY+YedstgnGM3eTjMEFfkDFHr9VVNGuNUXF/QDuwaCvLw7ce8krvVkY8
+	1f6USMXg1ucfgRerAb6DLE0y6Eg4MNpf+w1QzMJkQpZV3z4PE0tYD8imreHXZK7MJ5AdtK0EfCG
+	Wq3zEYuGgTNij9svVH0mICaQ==
+X-Google-Smtp-Source: AGHT+IHZeSJ8DIPXHLFiAU6EtpaggaD6/tEfpVwHzU5oxuvR3r0N7paTuMWLmHBPXJh6SE6mjTO3lQ==
+X-Received: by 2002:a17:90b:1e4b:b0:343:684c:f8a0 with SMTP id 98e67ed59e1d1-34e921ad83fmr4533520a91.23.1766230541794;
+        Sat, 20 Dec 2025 03:35:41 -0800 (PST)
+Received: from [127.0.0.1] ([188.253.121.153])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34e70d65653sm7799389a91.5.2025.12.20.03.35.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Dec 2025 03:35:41 -0800 (PST)
+From: Zesen Liu <ftyghome@gmail.com>
+Subject: [RFC bpf PATCH 0/2] bpf: Fix memory access tags in helper
+ prototypes
+Date: Sat, 20 Dec 2025 19:35:03 +0800
+Message-Id: <20251220-helper_proto-v1-0-2206e0d9422d@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251218113051.455293-1-dolinux.peng@gmail.com>
- <20251218113051.455293-5-dolinux.peng@gmail.com> <CAEf4BzbSMwW4es5D9i=bpSjALo8u+oW-9vdQ7=DBoTBtMoJ1Tg@mail.gmail.com>
- <CAErzpmv1N1JA+=c6xxdYTqANqSBRaRauD2wzZiwUS+VeWQG14A@mail.gmail.com> <CAEf4BzZrZZ-YHHAUE-izLaAexm4VZ7aCurKnOofCtKaV=D9qvQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzZrZZ-YHHAUE-izLaAexm4VZ7aCurKnOofCtKaV=D9qvQ@mail.gmail.com>
-From: Donglin Peng <dolinux.peng@gmail.com>
-Date: Sat, 20 Dec 2025 17:38:27 +0800
-X-Gm-Features: AQt7F2rOdVa0tLzJRlVZisBrGAmLwaReHjqlQiGeCmam4NMv_HPQrphQFUBjxXg
-Message-ID: <CAErzpmvpmx=WM7kHLC-WFbCx0=OpK5f8KJJuOA8gyb7LmRjk2g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v10 04/13] libbpf: Optimize type lookup with
- binary search for sorted BTF
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: ast@kernel.org, eddyz87@gmail.com, zhangxiaoqin@xiaomi.com, 
-	ihor.solodrai@linux.dev, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	pengdonglin <pengdonglin@xiaomi.com>, Alan Maguire <alan.maguire@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAOeJRmkC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI1NDIyMD3YzUnILUoviCovySfN20JLNUMxNDCyMTM3MloJaCotS0zAqwcdG
+ xtbUANTIgfV4AAAA=
+X-Change-ID: 20251220-helper_proto-fb6e64182467
+To: Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>, 
+ Steven Rostedt <rostedt@goodmis.org>, 
+ Masami Hiramatsu <mhiramat@kernel.org>, 
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Simon Horman <horms@kernel.org>, Daniel Xu <dxu@dxuuu.xyz>, 
+ Shuah Khan <shuah@kernel.org>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-trace-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org, Zesen Liu <ftyghome@gmail.com>, 
+ Shuran Liu <electronlsr@gmail.com>, Peili Gao <gplhust955@gmail.com>, 
+ Haoran Ni <haoran.ni.cs@gmail.com>
+X-Mailer: b4 0.14.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4329; i=ftyghome@gmail.com;
+ h=from:subject:message-id; bh=vXafQvDXbxhmRy9/A/k3bNzYbmfkT2tbUIk9/L+02a4=;
+ b=owGbwMvMwCXWI1/u+8bXqJ3xtFoSQ6ZbF8vKqrWzJlu5nDi75d8B27tP6917sp8J9E9ntX6/1
+ DdYx35uRykLgxgXg6yYIkvvD8O7KzPNjbfZLDgIM4eVCWQIAxenAEzkkRwjw6O7ro4bL03gj6sw
+ i5i4SutYvzh38qXLsYEX3l7/8nXLBidGhs3zuFdpnAzhuNCcMOfUBsmnv8941xqVL53xl8Xw2eV
+ wQQ4A
+X-Developer-Key: i=ftyghome@gmail.com; a=openpgp;
+ fpr=8DF831DDA9693733B63CA0C18C1F774DEC4D3287
 
-On Sat, Dec 20, 2025 at 1:28=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, Dec 18, 2025 at 6:53=E2=80=AFPM Donglin Peng <dolinux.peng@gmail.=
-com> wrote:
-> >
-> > On Fri, Dec 19, 2025 at 7:29=E2=80=AFAM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Thu, Dec 18, 2025 at 3:31=E2=80=AFAM Donglin Peng <dolinux.peng@gm=
-ail.com> wrote:
-> > > >
-> > > > From: pengdonglin <pengdonglin@xiaomi.com>
-> > > >
-> > > > This patch introduces binary search optimization for BTF type looku=
-ps
-> > > > when the BTF instance contains sorted types.
-> > > >
-> > > > The optimization significantly improves performance when searching =
-for
-> > > > types in large BTF instances with sorted types. For unsorted BTF, t=
-he
-> > > > implementation falls back to the original linear search.
-> > > >
-> > > > Cc: Eduard Zingerman <eddyz87@gmail.com>
-> > > > Cc: Alexei Starovoitov <ast@kernel.org>
-> > > > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> > > > Cc: Alan Maguire <alan.maguire@oracle.com>
-> > > > Cc: Ihor Solodrai <ihor.solodrai@linux.dev>
-> > > > Cc: Xiaoqin Zhang <zhangxiaoqin@xiaomi.com>
-> > > > Signed-off-by: pengdonglin <pengdonglin@xiaomi.com>
-> > > > ---
-> > > >  tools/lib/bpf/btf.c | 103 ++++++++++++++++++++++++++++++++++------=
-----
-> > > >  1 file changed, 80 insertions(+), 23 deletions(-)
-> > > >
-> > >
-> > > [...]
-> > >
-> > > > +       l =3D start_id;
-> > > > +       r =3D end_id;
-> > > > +       while (l <=3D r) {
-> > > > +               m =3D l + (r - l) / 2;
-> > > > +               t =3D btf_type_by_id(btf, m);
-> > > > +               tname =3D btf__str_by_offset(btf, t->name_off);
-> > > > +               ret =3D strcmp(tname, name);
-> > > > +               if (ret < 0) {
-> > > > +                       l =3D m + 1;
-> > > > +               } else {
-> > > > +                       if (ret =3D=3D 0)
-> > > > +                               lmost =3D m;
-> > > > +                       r =3D m - 1;
-> > > > +               }
-> > > >         }
-> > >
-> > > this differs from what we discussed in [0], you said you'll use that
-> > > approach. Can you please elaborate on why you didn't?
-> > >
-> > >   [0] https://lore.kernel.org/bpf/CAEf4Bzb3Eu0J83O=3DY4KA-LkzBMjtx7cb=
-onxPzkiduzZ1Pedajg@mail.gmail.com/
-> >
-> > Yes. As mentioned in the v8 changelog [1], the binary search approach
-> > you referenced was implemented in versions v6 and v7 [2]. However,
-> > testing revealed a slight performance regression. The root cause was
-> > an extra strcmp operation introduced in v7, as discussed in [3]. Theref=
-ore,
-> > in v8, I reverted to the approach from v5 [4] and refactored it for cla=
-rity.
->
-> If you keep oscillating like that this patch set will never land. 4%
-> (500us) gain on artificial and unrealistic micro-benchmark is
-> meaningless and irrelevant, you are just adding more work for yourself
-> and for reviewers by constantly changing your implementation between
-> revisions for no good reason.
+Hi,
 
-Thank you, I understand and will learn from it. I think the performance gai=
-n
-makes sense. I=E2=80=99d like to share a specific real-world case where thi=
-s
-optimization
-could matter:  the `btf_find_by_name_kind()` function is indeed infrequentl=
-y
-used by the BPF subsystem, but it=E2=80=99s heavily relied upon by the ftra=
-ce
-subsystem=E2=80=99s features like `func-args`, `funcgraph-args` [1], and th=
-e upcoming
-`funcgraph-retval` [2]. These features invoke the function nearly once per
-trace line when outputting, with a call frequency that can reach **100=E2=
-=80=AFkHz**
-in intensive tracing workloads.
+This series adds missing memory access tags (MEM_RDONLY or MEM_WRITE) to
+several bpf helper function prototypes that use ARG_PTR_TO_MEM but lack the
+correct type annotation.
 
-In such scenarios, the extra `strcmp` operations translate to ~100,000
-additional
-string comparisons per second. While this might seem negligible in isolatio=
-n,
-the overhead accumulates under high-frequency tracing=E2=80=94potentially i=
-mpacting
-latency for users relying on detailed function argument/return value tracin=
-g.
+Missing memory access tags in helper prototypes can lead to critical
+correctness issues when the verifier tries to perform code optimization.
+After commit 37cce22dbd51 ("bpf: verifier: Refactor helper access type
+tracking"), the verifier relies on the memory access tags, rather than
+treating all arguments in helper functions as potentially modifying the
+pointed-to memory.
 
-Thanks again for pushing for rigor=E2=80=94it helps make the code more clea=
-ner
-and robust.
+We have already seen several reports regarding this:
 
-[1] https://lore.kernel.org/all/20250227185822.639418500@goodmis.org/
-[2] https://lore.kernel.org/all/20251215034153.2367756-1-dolinux.peng@gmail=
-.com/
+- commit ac44dcc788b9 ("bpf: Fix verifier assumptions of bpf_d_path's
+   output buffer") adds MEM_WRITE to bpf_d_path;
+- commit 2eb7648558a7 ("bpf: Specify access type of bpf_sysctl_get_name
+   args") adds MEM_WRITE to bpf_sysctl_get_name.
 
->
->
-> >
-> > Benchmark results show that v8 achieves a 4.2% performance improvement
-> > over v7. If we don't care the performance gain, I will revert to the ap=
-proach
-> > in v7 in the next version.
-> >
-> > [1] https://lore.kernel.org/bpf/20251126085025.784288-1-dolinux.peng@gm=
-ail.com/
-> > [2] https://lore.kernel.org/all/20251119031531.1817099-1-dolinux.peng@g=
-mail.com/
-> > [3] https://lore.kernel.org/all/CAEf4BzaqEPD46LddJHO1-k5KPGyVWf6d=3DduD=
-AxG1q=3DjykJkMBg@mail.gmail.com/
-> > [4] https://lore.kernel.org/all/20251106131956.1222864-4-dolinux.peng@g=
-mail.com/
-> >
-> > >
-> > > >
-> > > > -       return libbpf_err(-ENOENT);
-> > > > +       return lmost;
-> > > >  }
-> > > >
-> > > >  static __s32 btf_find_by_name_kind(const struct btf *btf, int star=
-t_id,
-> > > >                                    const char *type_name, __u32 kin=
-d)
-> > >
-> > > kind is defined as u32 but you expect caller to pass -1 to ignore the
-> > > kind. Use int here.
-> >
-> > Thanks, I will fix it.
-> >
-> > >
-> > > >  {
-> > > > -       __u32 i, nr_types =3D btf__type_cnt(btf);
-> > > > +       const struct btf_type *t;
-> > > > +       const char *tname;
-> > > > +       __s32 idx;
-> > > > +
-> > > > +       if (start_id < btf->start_id) {
-> > > > +               idx =3D btf_find_by_name_kind(btf->base_btf, start_=
-id,
-> > > > +                                           type_name, kind);
-> > > > +               if (idx >=3D 0)
-> > > > +                       return idx;
-> > > > +               start_id =3D btf->start_id;
-> > > > +       }
-> > > >
-> > > > -       if (kind =3D=3D BTF_KIND_UNKN || !strcmp(type_name, "void")=
-)
-> > > > +       if (kind =3D=3D BTF_KIND_UNKN || strcmp(type_name, "void") =
-=3D=3D 0)
-> > > >                 return 0;
-> > > >
-> > > > -       for (i =3D start_id; i < nr_types; i++) {
-> > > > -               const struct btf_type *t =3D btf__type_by_id(btf, i=
-);
-> > > > -               const char *name;
-> > > > +       if (btf->sorted_start_id > 0 && type_name[0]) {
-> > > > +               __s32 end_id =3D btf__type_cnt(btf) - 1;
-> > > > +
-> > > > +               /* skip anonymous types */
-> > > > +               start_id =3D max(start_id, btf->sorted_start_id);
-> > >
-> > > can sorted_start_id ever be smaller than start_id?
-> > >
-> > > > +               idx =3D btf_find_by_name_bsearch(btf, type_name, st=
-art_id, end_id);
-> > >
-> > > is there ever a time when btf_find_by_name_bsearch() will work with
-> > > different start_id and end_id? why is this not done inside the
-> > > btf_find_by_name_bsearch()?
-> >
-> > Because the start_id could be specified by the caller.
->
-> Right, start_id has to be passed in. But end_id is always the same, so
-> maybe determine it internally instead? And let's not return -ENOENT
+This series looks through all prototypes in the kernel and completes the
+tags. In addition, this series also adds selftests for some of these
+functions.
 
-Thanks, I agree and will put the end_id into btf_find_by_name_bsearch.
+I marked the series as RFC since the introduced selftests are fragile and
+ad hoc (similar to the previously added selftests). The original goal of
+these tests is to reproduce the case where the verifier wrongly optimizes
+reads after the helper function is called. However, triggering the error
+often requires carefully designed code patterns. For example, I had to
+explicitly use "if (xx != 0)" in my attached tests, because using memcmp
+will not reproduce the issue. This makes the reproduction heavily dependent
+on the verifier's internal optimization logic and clutters the selftests
+with specific, unnatural patterns.
 
-> from btf_find_by_name_bsearch(), as I mentioned before, it would be
-> more streamlined if you return btf__type_cnt(btf) if search failed.
+Some cases are also hard to trigger by selftests. For example, I couldn't
+find a triggering pattern for bpf_read_branch_records, since the
+execution of program seems to be messed up by wrong tags. For
+bpf_skb_fib_lookup, I also failed to reproduce it because the argument
+needs content on entry, but the verifier seems to only enable this
+optimization for fully empty buffers.
 
-Thanks, I agree.
+Since adding selftests does not help with existing issues or prevent future
+occurrences of similar problems, I believe one way to resolve it is to
+statically restrict ARG_PTR_TO_MEM from appearing without memory access
+tags. Using ARG_PTR_TO_MEM alone without tags is nonsensical because:
 
->
-> >
-> > >
-> > > > +               if (unlikely(idx < 0))
-> > > > +                       return libbpf_err(-ENOENT);
-> > >
-> > > pass through error returned from btf_find_by_name_bsearch(), why rede=
-fining it?
-> >
-> > Thanks, I will fix it.
-> >
->
-> see above, by returning btf__type_cnt() you won't even have this error
-> handling, you'll just go through normal loop checking for a match and
-> won't find anything, returning -ENOENT then.
+- If the helper does not change the argument, missing MEM_RDONLY causes
+   the verifier to incorrectly reject a read-only buffer.
+- If the helper does change the argument, missing MEM_WRITE causes the
+   verifier to incorrectly assume the memory is unchanged, leading to
+   potential errors.
 
-Thanks, I agree.
+I am still wondering, if we agree on the above, how should we enforce this
+restriction? Should we let ARG_PTR_TO_MEM imply MEM_WRITE semantics by
+default, and change ARG_PTR_TO_MEM | MEM_RDONLY to ARG_CONST_PTR_TO_MEM? Or
+should we add a check in the verifier to ensure ARG_PTR_TO_MEM always comes
+with an access tag (though this seems to only catch errors at
+runtime/testing)?
 
->
-> > >
-> > > > +
-> > > > +               if (unlikely(kind =3D=3D -1))
-> > > > +                       return idx;
-> > > > +
-> > > > +               t =3D btf_type_by_id(btf, idx);
-> > > > +               if (likely(BTF_INFO_KIND(t->info) =3D=3D kind))
-> > >
-> > > use btf_kind(), but this whole extra check is just unnecessary, this
-> >
-> > Thanks, I will do it.
-> >
-> > > should be done in the loop below. We talked about all this already,
-> > > why do I feel like I'm being ignored?..
-> >
-> > Sorry for the confusion, and absolutely not ignoring you.
-> >
->
-> If you decide to change implementation due to some unforeseen factors
-> (like concern about 4% microbenchmark improvement), it would be
-> helpful for you to call this out in a reply to the original
-> discussion. A line somewhere in the cover letter changelog is way too
-> easy to miss and that doesn't give me an opportunity to stop you
-> before you go and produce another revision that I'll then be
-> rejecting.
+Any insights and comments are welcome. If the individual fix patches for
+the prototypes look correct, I would also really appreciate it if they
+could be merged ahead of the discussion.
 
-I will learn from it and thank you for the suggestion.
+Thanks,
 
->
-> > >
-> > > > +                       return idx;
-> > >
-> > > drop all these likely and unlikely micro optimizations, please
-> >
-> > Thanks, I will do it.
-> >
-> > >
-> > >
-> > > > +
-> > > > +               for (idx++; idx <=3D end_id; idx++) {
-> > > > +                       t =3D btf__type_by_id(btf, idx);
-> > > > +                       tname =3D btf__str_by_offset(btf, t->name_o=
-ff);
-> > > > +                       if (strcmp(tname, type_name) !=3D 0)
-> > > > +                               return libbpf_err(-ENOENT);
-> > > > +                       if (btf_kind(t) =3D=3D kind)
-> > > > +                               return idx;
-> > > > +               }
-> > > > +       } else {
-> > > > +               __u32 i, total;
-> > > >
-> > > > -               if (btf_kind(t) !=3D kind)
-> > > > -                       continue;
-> > > > -               name =3D btf__name_by_offset(btf, t->name_off);
-> > > > -               if (name && !strcmp(type_name, name))
-> > > > -                       return i;
-> > > > +               total =3D btf__type_cnt(btf);
-> > > > +               for (i =3D start_id; i < total; i++) {
-> > > > +                       t =3D btf_type_by_id(btf, i);
-> > > > +                       if (kind !=3D -1 && btf_kind(t) !=3D kind)
-> > >
-> > > nit: kind < 0, no need to hard-code -1
-> >
-> > Good, I will fix it.
-> >
-> > >
-> > > > +                               continue;
-> > > > +                       tname =3D btf__str_by_offset(btf, t->name_o=
-ff);
-> > > > +                       if (strcmp(tname, type_name) =3D=3D 0)
-> > > > +                               return i;
-> > > > +               }
-> > > >         }
-> > > >
-> > > >         return libbpf_err(-ENOENT);
-> > > >  }
-> > > >
-> > >
-> > > [...]
+Zesen Liu
+
+Signed-off-by: Zesen Liu <ftyghome@gmail.com>
+---
+Zesen Liu (2):
+      bpf: Fix memory access tags in helper prototypes
+      selftests/bpf: add regression tests for snprintf and get_stack helpers
+
+ kernel/bpf/helpers.c                                      |  2 +-
+ kernel/trace/bpf_trace.c                                  |  6 +++---
+ net/core/filter.c                                         |  8 ++++----
+ tools/testing/selftests/bpf/prog_tests/get_stack_raw_tp.c | 15 +++++++++++++--
+ tools/testing/selftests/bpf/prog_tests/snprintf.c         |  6 ++++++
+ tools/testing/selftests/bpf/prog_tests/snprintf_btf.c     |  3 +++
+ tools/testing/selftests/bpf/progs/netif_receive_skb.c     | 13 ++++++++++++-
+ tools/testing/selftests/bpf/progs/test_get_stack_rawtp.c  | 11 ++++++++++-
+ tools/testing/selftests/bpf/progs/test_snprintf.c         | 12 ++++++++++++
+ 9 files changed, 64 insertions(+), 12 deletions(-)
+---
+base-commit: 22cc16c04b7893d8fc22810599f49a305d600b9e
+change-id: 20251220-helper_proto-fb6e64182467
+
+Best regards,
+-- 
+Zesen Liu <ftyghome@gmail.com>
+
 
