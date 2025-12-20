@@ -1,190 +1,261 @@
-Return-Path: <bpf+bounces-77238-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77239-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B251CD2A08
-	for <lists+bpf@lfdr.de>; Sat, 20 Dec 2025 09:12:37 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E81DCD2AA2
+	for <lists+bpf@lfdr.de>; Sat, 20 Dec 2025 09:39:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D5145300C5DF
-	for <lists+bpf@lfdr.de>; Sat, 20 Dec 2025 08:12:30 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 2264C3007CAF
+	for <lists+bpf@lfdr.de>; Sat, 20 Dec 2025 08:39:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA7692F0C62;
-	Sat, 20 Dec 2025 08:12:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E93992F7ACA;
+	Sat, 20 Dec 2025 08:39:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="C+TRpygV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V3YP6JFh"
 X-Original-To: bpf@vger.kernel.org
-Received: from canpmsgout03.his.huawei.com (canpmsgout03.his.huawei.com [113.46.200.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5ACF1A8F84;
-	Sat, 20 Dec 2025 08:12:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 612012F7445
+	for <bpf@vger.kernel.org>; Sat, 20 Dec 2025 08:39:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766218347; cv=none; b=H6w2rOzh6jRo1FyiWpPQOn9k3gcyRQE57bUZoXMgMPtKbgBNZ2cgPf7ciQXAzE76t4qtuB+j+tG0TrKFaP9lhICR+sAVI9x8+30iibK+nhmK6LwPyIMOeEpjkTTSMD/DfgLuhzb0owtHUHqpcDKObRO+F8IR+jEeB5BVhwS8wWY=
+	t=1766219959; cv=none; b=TZ1CP0xf1uHJmQNQoprQCzvKZPwkJg0AmjhxermUCHXvfXT1Y+JYnXI30ZzDx9vyW25S8YwJ4cWUsrcu91HSH5Dx2UA0ihzpj4HUrxFJ5R3a/HYhOq8RdxxJ/E386p7AbWh+mRi4STVVT0Qn/FYlBCmJ2xwX8yhF6ibabcqoC6E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766218347; c=relaxed/simple;
-	bh=ppFb7oEG4zVl4+hndjbYuGWoY/oUjitqEVCUVav68vk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=AM+TPOeb/W06MQ3tkh1WD3/cG2NyOyP/ZMkmWmvufPoNk8wELprqzXbFzVC2k4vqKCgcJgB9CW8EEccDAAULVFykCfPkjzvEpYlUyYvTlrjuItjFDmcw6s+Td5FOhdlbsAOBshrPP/EOZwAMIqovdeT5ZaDtHpZ1hezE9Vq+A6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=C+TRpygV; arc=none smtp.client-ip=113.46.200.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=AT2f/E2tSnUYCtK/n6UAgn4xu0StATP6gfkv+vc/Tpg=;
-	b=C+TRpygV3prYVZOU7NSz+0JpXAbTBtLUxHJEiKtYPIFzkPcw2R5pK+obXLOFBFAvcKYBVopoo
-	Whq4l8tNPjYsyYk2jMB/LtqO+2ENS781xMuKFZKHehGSlXuqTmltzV4gcYKHc4nNYIS8pgzgxgx
-	B9W9bkoNsJC1Yl6jyf54fXU=
-Received: from mail.maildlp.com (unknown [172.19.163.0])
-	by canpmsgout03.his.huawei.com (SkyGuard) with ESMTPS id 4dYHB04WfgzpSvn;
-	Sat, 20 Dec 2025 16:09:28 +0800 (CST)
-Received: from kwepemf100007.china.huawei.com (unknown [7.202.181.221])
-	by mail.maildlp.com (Postfix) with ESMTPS id EDCD24056B;
-	Sat, 20 Dec 2025 16:12:17 +0800 (CST)
-Received: from [10.67.110.198] (10.67.110.198) by
- kwepemf100007.china.huawei.com (7.202.181.221) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.36; Sat, 20 Dec 2025 16:12:16 +0800
-Message-ID: <98266067-2bc2-4312-84d7-76966c3ebc1e@huawei.com>
-Date: Sat, 20 Dec 2025 16:12:09 +0800
+	s=arc-20240116; t=1766219959; c=relaxed/simple;
+	bh=wVwml/7Lck5b1OVCvhAmad9P0uR7lWGIP+xFg4bl0H8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kpFyPIT+Jv+LD/GKfNqbKKcvFLbRJglbHf2gSp+egJF/wVoTuDe9cRttPPKiwnWp3NnV4wkOobQHXFQYor69bW79TDNeQWH6a+/lWLSzNXoeTKtBLAuBB54S+QNTH00GmU8MC/tPSSYcCR/CzUCDqy5GYIsDeVtulFckwfqMZMQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V3YP6JFh; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-b7ffa5d1b80so308745066b.0
+        for <bpf@vger.kernel.org>; Sat, 20 Dec 2025 00:39:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1766219956; x=1766824756; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=D/MOeYBPqZNM02PyUwyI25lYnH+BSCAbVcJt93yssm0=;
+        b=V3YP6JFh11LbaCCdtCbE4CYDvOjPpApuz086GLjbPsPB+zgJCb5DQEunqu45oaUSsH
+         YG1pdW3R1nSKwAk7/WzdFQjHcFag6x6+91iWyBZMfIDOg00oxy5G84w7oaQ8VmbDA9li
+         mQiAxzehlj1ASrykG9MsmK+48+KLSmfEy5vJ2klOehAk7t7/p1oBYKHiTHAlausEC1AV
+         kaBYMu6UR+Vu6fXrlFeWatQPWJd/Gad0EwF6kPtXOeLgWpushZ0yuC2eA5wGuYYM5d1p
+         bbwdvNu/NmH4r4LLHdal9Db2IFKmlfCzhJZRk9IT0NBzUFDRb9y5EJlpkVjFcBbwImcW
+         ScxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1766219956; x=1766824756;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=D/MOeYBPqZNM02PyUwyI25lYnH+BSCAbVcJt93yssm0=;
+        b=q+YRm9PrRcm/RWTmwBEBbCp1NAG00BNdwretYepnzerS5H3tKk3CkF2XvrJQ6SMJiu
+         Hvr8HuOyT93U1Q8FVSNcQ4iEZGkA4mFSk2s+Z08wfXdH8G0ElIVi3RRPd5/SR48J9Ynt
+         Nnvu0vlBf9m1Igktam4pa6QXj1WqibpJRm6wKWSdon/MUwxb7UUXDJCXiPI71Xy1nycC
+         mHaz3uHZKem52ThP68ziO9QmKw6EZmR3PuiZgKb9Ju9PI/v+zYZcp+/foMzAe0LCzbcG
+         XYnt0cPqUO4Rwwg4EC9E5LI9nbm+y3HVWrQRexieyeR8NlOGbTs9i2tFf+YmyRSvi6Sh
+         utpw==
+X-Forwarded-Encrypted: i=1; AJvYcCUjODfVyAeY/g5FTUi+6VRNTl9Chl42bcAfs6krLCKQncntC8kjINNBGnzTjg4yPdfjxSk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyTtFKimaxRkrsoQV5EpyH46Y6lFx6kOIfsURhxGGmSlVc5J4tB
+	nM2C4v0WAhsgB09b3ALN9ZW5l1gQKbd/dGC+cPkk5bq0SxgkGyzE83iLUPizOO+7FhG0C0SJY2t
+	GLcFYlyKJRsLQyd28hjI6gUR+OJqBNHU=
+X-Gm-Gg: AY/fxX60stRf+Vi3fX8tpOdV+9y1N7sqMrnMIKgrCbqMAX/bqPGSlx0oOdhOQ9QmDC6
+	lXGBVvFvxy0lPNSszfhu3eyTzHi77b9cwDN5MwBPLd6C0lRE8ju+IxUqfzKGvkJhey7Tt8X1Q8E
+	8klTkFHuMkQpcWEG5inqKdrvo5gd8xqM6kLG1nwrNEsoqzkP/h+geoTBJgGONqsiYX8I8t+74dC
+	SPcuvnZjIjygQUETcrmnSKmB/UuovQeB+oDVT/hJ4VaTb6rK6SUxF+XlIu6GRb7U3C6tTv5
+X-Google-Smtp-Source: AGHT+IGLmEq2dWHKWzNIz5v+6tWaCAmbpfJ3rWEnH6YmSreQOw47/imxMe7cZW2POIXuPH01gblVyVWlfXetfhkshxk=
+X-Received: by 2002:a17:907:6e9f:b0:b7c:e4e9:b13f with SMTP id
+ a640c23a62f3a-b803717d9b0mr573522966b.39.1766219955422; Sat, 20 Dec 2025
+ 00:39:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf v2] riscv, bpf: fix incorrect usage of
- BPF_TRAMP_F_ORIG_STACK
-To: Menglong Dong <menglong.dong@linux.dev>, Menglong Dong
-	<menglong8.dong@gmail.com>, <schwab@linux-m68k.org>, <andrii@kernel.org>
-CC: <ast@kernel.org>, <daniel@iogearbox.net>, <martin.lau@linux.dev>,
-	<eddyz87@gmail.com>, <song@kernel.org>, <yonghong.song@linux.dev>,
-	<john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@fomichev.me>,
-	<haoluo@google.com>, <jolsa@kernel.org>, <bjorn@kernel.org>,
-	<puranjay@kernel.org>, <pjw@kernel.org>, <palmer@dabbelt.com>,
-	<aou@eecs.berkeley.edu>, <alex@ghiti.fr>, <bpf@vger.kernel.org>,
-	<linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20251219142948.204312-1-dongml2@chinatelecom.cn>
- <33977244-1266-4590-af38-e3be3e46d7f4@huawei.com> <8619181.T7Z3S40VBb@7950hx>
-Content-Language: en-US
-From: Pu Lehui <pulehui@huawei.com>
-In-Reply-To: <8619181.T7Z3S40VBb@7950hx>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: kwepems100001.china.huawei.com (7.221.188.238) To
- kwepemf100007.china.huawei.com (7.202.181.221)
+References: <20251218113051.455293-1-dolinux.peng@gmail.com>
+ <20251218113051.455293-2-dolinux.peng@gmail.com> <CAEf4BzYJpw+yEv=g9P1z0NS8Qw8PdFf7039MT0PSv30DwkjBzw@mail.gmail.com>
+ <CAErzpmu4K3rF3JLycEYNqzNcBkSgBxijj1RAYBPuprvBU6LHmQ@mail.gmail.com> <CAEf4BzYN5NwSJO1QDXu6Mq_pZXQO9-5iyJm0vZeJSmyrQBNJ3A@mail.gmail.com>
+In-Reply-To: <CAEf4BzYN5NwSJO1QDXu6Mq_pZXQO9-5iyJm0vZeJSmyrQBNJ3A@mail.gmail.com>
+From: Donglin Peng <dolinux.peng@gmail.com>
+Date: Sat, 20 Dec 2025 16:39:03 +0800
+X-Gm-Features: AQt7F2pchl35KZQx5fWidARgXxfx-Qjn4Ru0inhzTlwjoO5j5rvmbYjW_jcL67Y
+Message-ID: <CAErzpmuCQUTZTnCkNoL0ZcHsvXmu_m0sp7X+Lt8K4tYwQ7BiMg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v10 01/13] libbpf: Add BTF permutation support
+ for type reordering
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: ast@kernel.org, eddyz87@gmail.com, zhangxiaoqin@xiaomi.com, 
+	ihor.solodrai@linux.dev, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	pengdonglin <pengdonglin@xiaomi.com>, Alan Maguire <alan.maguire@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Sat, Dec 20, 2025 at 1:07=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Thu, Dec 18, 2025 at 7:15=E2=80=AFPM Donglin Peng <dolinux.peng@gmail.=
+com> wrote:
+> >
+> > On Fri, Dec 19, 2025 at 7:02=E2=80=AFAM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Thu, Dec 18, 2025 at 3:31=E2=80=AFAM Donglin Peng <dolinux.peng@gm=
+ail.com> wrote:
+> > > >
+> > > > From: pengdonglin <pengdonglin@xiaomi.com>
+> > > >
+> > > > Introduce btf__permute() API to allow in-place rearrangement of BTF=
+ types.
+> > > > This function reorganizes BTF type order according to a provided ar=
+ray of
+> > > > type IDs, updating all type references to maintain consistency.
+> > > >
+> > > > Cc: Eduard Zingerman <eddyz87@gmail.com>
+> > > > Cc: Alexei Starovoitov <ast@kernel.org>
+> > > > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> > > > Cc: Alan Maguire <alan.maguire@oracle.com>
+> > > > Cc: Ihor Solodrai <ihor.solodrai@linux.dev>
+> > > > Cc: Xiaoqin Zhang <zhangxiaoqin@xiaomi.com>
+> > > > Signed-off-by: pengdonglin <pengdonglin@xiaomi.com>
+> > > > Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+> > > > ---
+> > > >  tools/lib/bpf/btf.c      | 119 +++++++++++++++++++++++++++++++++++=
+++++
+> > > >  tools/lib/bpf/btf.h      |  36 ++++++++++++
+> > > >  tools/lib/bpf/libbpf.map |   1 +
+> > > >  3 files changed, 156 insertions(+)
+> > > >
+>
+> [...]
+>
+> > > > +/**
+> > > > + * @brief **btf__permute()** performs in-place BTF type rearrangem=
+ent
+> > > > + * @param btf BTF object to permute
+> > > > + * @param id_map Array mapping original type IDs to new IDs
+> > > > + * @param id_map_cnt Number of elements in @id_map
+> > > > + * @param opts Optional parameters for BTF extension updates
+> > > > + * @return 0 on success, negative error code on failure
+> > > > + *
+> > > > + * **btf__permute()** rearranges BTF types according to the specif=
+ied ID mapping.
+> > > > + * The @id_map array defines the new type ID for each original typ=
+e ID.
+> > > > + *
+> > > > + * @id_map must include all types from ID `start_id` to `btf__type=
+_cnt(btf) - 1`.
+> > > > + * @id_map_cnt should be `btf__type_cnt(btf) - start_id`
+> > > > + * The mapping is defined as: `id_map[original_id - start_id] =3D =
+new_id`
+> > >
+> > > Would you mind paying attention to the feedback I left in [0]? Thank =
+you.
+> >
+> > Apologies for the delayed response, I would like to hear if someone has=
+ a
+> > different idea.
+>
+> Delayed response?.. You ignored my feedback and never even replied to
+> it. And then posted a new revision two days later, while still not
+> taking the feedback into account. This is not a delayed response, it's
+> ignoring the feedback. You don't have to agree with all the feedback,
+> but you have to respond to the feedback you disagree with and provide
+> your arguments, not just silently disregard it.
 
+Thank you for the reminder, and I sincerely apologize for
+my mistake in handling the feedback. You are absolutely right.
+I should not have posted a new revision without first replying
+to your comments on the previous version. The correct process,
+as outlined in the kernel development documentation and community
+norms, is to address all feedback=E2=80=94either by implementing the
+suggested changes or by providing a clear explanation if I
+disagree.
 
-On 2025/12/20 15:33, Menglong Dong wrote:
-> On 2025/12/20 10:59, Pu Lehui wrote:
->>
->> On 2025/12/19 22:29, Menglong Dong wrote:
->>> The usage of BPF_TRAMP_F_ORIG_STACK in __arch_prepare_bpf_trampoline() is
->>> wrong, and it should be BPF_TRAMP_F_CALL_ORIG, which caused crash as
->>> Andreas reported:
->>>
->>>     Insufficient stack space to handle exception!
->>>     Task stack:     [0xff20000000010000..0xff20000000014000]
->>>     Overflow stack: [0xff600000ffdad070..0xff600000ffdae070]
->>>     CPU: 1 UID: 0 PID: 1 Comm: systemd Not tainted 6.18.0-rc5+ #15 PREEMPT(voluntary)
->>>     Hardware name: riscv-virtio qemu/qemu, BIOS 2025.10 10/01/2025
->>>     epc : copy_from_kernel_nofault+0xa/0x198
->>>      ra : bpf_probe_read_kernel+0x20/0x60
->>>     epc : ffffffff802b732a ra : ffffffff801e6070 sp : ff2000000000ffe0
->>>      gp : ffffffff82262ed0 tp : 0000000000000000 t0 : ffffffff80022320
->>>      t1 : ffffffff801e6056 t2 : 0000000000000000 s0 : ff20000000010040
->>>      s1 : 0000000000000008 a0 : ff20000000010050 a1 : ff60000083b3d320
->>>      a2 : 0000000000000008 a3 : 0000000000000097 a4 : 0000000000000000
->>>      a5 : 0000000000000000 a6 : 0000000000000021 a7 : 0000000000000003
->>>      s2 : ff20000000010050 s3 : ff6000008459fc18 s4 : ff60000083b3d340
->>>      s5 : ff20000000010060 s6 : 0000000000000000 s7 : ff20000000013aa8
->>>      s8 : 0000000000000000 s9 : 0000000000008000 s10: 000000000058dcb0
->>>      s11: 000000000058dca7 t3 : 000000006925116d t4 : ff6000008090f026
->>>      t5 : 00007fff9b0cbaa8 t6 : 0000000000000016
->>>     status: 0000000200000120 badaddr: 0000000000000000 cause: 8000000000000005
->>>     Kernel panic - not syncing: Kernel stack overflow
->>>     CPU: 1 UID: 0 PID: 1 Comm: systemd Not tainted 6.18.0-rc5+ #15 PREEMPT(voluntary)
->>>     Hardware name: riscv-virtio qemu/qemu, BIOS 2025.10 10/01/2025
->>>     Call Trace:
->>>     [<ffffffff8001a1f8>] dump_backtrace+0x28/0x38
->>>     [<ffffffff80002502>] show_stack+0x3a/0x50
->>>     [<ffffffff800122be>] dump_stack_lvl+0x56/0x80
->>>     [<ffffffff80012300>] dump_stack+0x18/0x22
->>>     [<ffffffff80002abe>] vpanic+0xf6/0x328
->>>     [<ffffffff80002d2e>] panic+0x3e/0x40
->>>     [<ffffffff80019ef0>] handle_bad_stack+0x98/0xa0
->>>     [<ffffffff801e6070>] bpf_probe_read_kernel+0x20/0x60
->>>
->>> Just fix it.
->>>
->>> Fixes: 47c9214dcbea ("bpf: fix the usage of BPF_TRAMP_F_SKIP_FRAME")
->>> Reported-by: Andreas Schwab <schwab@linux-m68k.org>
->>> Closes: https://lore.kernel.org/bpf/874ipnkfvt.fsf@igel.home/
->>> Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
->>> ---
->>> v2:
->>> - merge the code
->>> ---
->>>    arch/riscv/net/bpf_jit_comp64.c | 6 ++----
->>>    1 file changed, 2 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
->>> index 5f9457e910e8..37888abee70c 100644
->>> --- a/arch/riscv/net/bpf_jit_comp64.c
->>> +++ b/arch/riscv/net/bpf_jit_comp64.c
->>> @@ -1133,10 +1133,6 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
->>>    
->>>    	store_args(nr_arg_slots, args_off, ctx);
->>>    
->>> -	/* skip to actual body of traced function */
->>> -	if (flags & BPF_TRAMP_F_ORIG_STACK)
->>
->> Oh, how did this weird flags get in here...
-> 
-> It's my fault. I wanted to use BPF_TRAMP_F_CALL_ORIG here, and
-> a copy-paste mistake happen. They look a little similar :(
-> 
->>
->>> -		orig_call += RV_FENTRY_NINSNS * 4;
->>> -
->>>    	if (flags & BPF_TRAMP_F_CALL_ORIG) {
->>>    		emit_imm(RV_REG_A0, ctx->insns ? (const s64)im : RV_MAX_COUNT_IMM, ctx);
->>>    		ret = emit_call((const u64)__bpf_tramp_enter, true, ctx);
->>> @@ -1171,6 +1167,8 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
->>>    	}
->>>    
->>>    	if (flags & BPF_TRAMP_F_CALL_ORIG) {
->>> +		/* skip to actual body of traced function */
->>> +		orig_call += RV_FENTRY_NINSNS * 4;
->>
->>
->> LGTM, let's revert it.
->>
->> Reviewed-by: Pu Lehui <pulehui@huawei.com>
->>
->>>    		restore_args(min_t(int, nr_arg_slots, RV_MAX_REG_ARGS), args_off, ctx);
->>>    		restore_stack_args(nr_arg_slots - RV_MAX_REG_ARGS, args_off, stk_arg_off, ctx);
->>>    		ret = emit_call((const u64)orig_call, true, ctx);
-> 
-> Andreas suggested that we remove the variable "orig_call" and use
-> "func_addr + RV_FENTRY_NINSNS * 4" directly here. But I saw the V2
-> is already applied. Hmm...I think it doesn't matter.
+I appreciate you taking the time to review my work and for
+holding me to the community standard. I will ensure this
+does not happen again.
 
-no warries. looks nice.
+>
+> >
+> > >
+> > > The contract should be id_map[original_id] =3D new_id for base BTF an=
+d
+> > > id_map[original_id - btf__type_cnt(base_btf)] =3D new_id for split BT=
+F.
+> > > Special BTF type #0 (VOID) is considered to be part of base BTF,
+> > > having id_map[0] =3D 0 is easy to check and enforce. And then it leav=
+es
+> > > us with a simple and logical rule for id_map. For split BTF we make
+> > > necessary type ID shifts to avoid tons of wasted memory. But for base
+> > > BTF there is no need to shift anything. So mapping the original type
+> > > #X to #Y is id_map[X] =3D Y. Literally, "map X to Y", as simple as th=
+at.
+> > >
+> > >   [0] https://lore.kernel.org/bpf/CAEf4BzY_k721TBfRSUeq5mB-7fgJhVKCeX=
+VKO-W2EjQ0aS9AgA@mail.gmail.com/
+> >
+> > Thanks. I implemented the approach in v6, but it had inconsistent inter=
+nal
+> > details for base and split BTF. It seems we prioritize external contrac=
+t
+> > consistency over internal inconsistencies, so I=E2=80=99ll revert to th=
+e v6 approach
+> > and refine it for clarity.
+>
+> Yes, we always prioritize external contract consistency, of course!
+> You are overpivoting on *internal implementation detail* of base BTF's
+> start_id being set to 1, which is convenient in some other places due
+> to type_offs shifted by one mapping due to &btf_void special handling.
+> We can always change that, if we wanted, but this shouldn't spill into
+> public API though. But conceptually BTF types start at type #0, which
+> is defined to be VOID and is not user controlled.
 
-> 
-> Thanks!
-> Menglong Dong
-> 
->>
->>
-> 
-> 
-> 
-> 
-> 
-> 
+Thanks,  I understood.
+
+>
+>
+> This is not much of a complication or inconsistency:
+>
+> type_shift =3D base_btf ? btf__type_cnt(base_btf) : 0;
+> id_map[type_id - type_shift] =3D ...
+
+Thank you,  I agree and will do it in the next version.
+
+>
+>
+> >
+> > >
+> > > > + *
+> > > > + * For base BTF, its `start_id` is fixed to 1, i.e. the VOID type =
+can
+> > > > + * not be redefined or remapped and its ID is fixed to 0.
+> > > > + *
+> > > > + * For split BTF, its `start_id` can be retrieved by calling
+> > > > + * `btf__type_cnt(btf__base_btf(btf))`.
+> > > > + *
+> > > > + * On error, returns negative error code and sets errno:
+> > > > + *   - `-EINVAL`: Invalid parameters or ID mapping (duplicates, ou=
+t-of-range)
+> > > > + *   - `-ENOMEM`: Memory allocation failure
+> > > > + */
+> > > > +LIBBPF_API int btf__permute(struct btf *btf, __u32 *id_map, __u32 =
+id_map_cnt,
+> > > > +                           const struct btf_permute_opts *opts);
+> > > > +
+> > > >  struct btf_dump;
+> > > >
+> > > >  struct btf_dump_opts {
+> > > > diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> > > > index 84fb90a016c9..d18fbcea7578 100644
+> > > > --- a/tools/lib/bpf/libbpf.map
+> > > > +++ b/tools/lib/bpf/libbpf.map
+> > > > @@ -453,4 +453,5 @@ LIBBPF_1.7.0 {
+> > > >                 bpf_map__exclusive_program;
+> > > >                 bpf_prog_assoc_struct_ops;
+> > > >                 bpf_program__assoc_struct_ops;
+> > > > +               btf__permute;
+> > > >  } LIBBPF_1.6.0;
+> > > > --
+> > > > 2.34.1
+> > > >
 
