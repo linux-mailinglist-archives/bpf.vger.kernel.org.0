@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-77239-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77240-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E81DCD2AA2
-	for <lists+bpf@lfdr.de>; Sat, 20 Dec 2025 09:39:22 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAF5ECD2ACF
+	for <lists+bpf@lfdr.de>; Sat, 20 Dec 2025 09:44:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 2264C3007CAF
-	for <lists+bpf@lfdr.de>; Sat, 20 Dec 2025 08:39:21 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4AB873016DCB
+	for <lists+bpf@lfdr.de>; Sat, 20 Dec 2025 08:44:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E93992F7ACA;
-	Sat, 20 Dec 2025 08:39:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 007DF2F8BC3;
+	Sat, 20 Dec 2025 08:44:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V3YP6JFh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HOA3/ML2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 612012F7445
-	for <bpf@vger.kernel.org>; Sat, 20 Dec 2025 08:39:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B39CA2475E3
+	for <bpf@vger.kernel.org>; Sat, 20 Dec 2025 08:44:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766219959; cv=none; b=TZ1CP0xf1uHJmQNQoprQCzvKZPwkJg0AmjhxermUCHXvfXT1Y+JYnXI30ZzDx9vyW25S8YwJ4cWUsrcu91HSH5Dx2UA0ihzpj4HUrxFJ5R3a/HYhOq8RdxxJ/E386p7AbWh+mRi4STVVT0Qn/FYlBCmJ2xwX8yhF6ibabcqoC6E=
+	t=1766220255; cv=none; b=csv13FL4UXEJAgwK1sWoSjfjxwYFrcSXZa3HdsmPocbGWSsSaA0buk+MiX5+nRgyLlYq9+oiJV+vaR6MbIkGjuDW1uCWzgN/KRInWTFOj15/CDpkqgKHVE4VhOqVeDcuHCS+6WcGWJuo2S5T9n8+7mv13H1csab7mcAo2iICLuU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766219959; c=relaxed/simple;
-	bh=wVwml/7Lck5b1OVCvhAmad9P0uR7lWGIP+xFg4bl0H8=;
+	s=arc-20240116; t=1766220255; c=relaxed/simple;
+	bh=+KWzCX6XWOAiQyRj81J883FglF1aYJ8IO06/SQuNGVM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kpFyPIT+Jv+LD/GKfNqbKKcvFLbRJglbHf2gSp+egJF/wVoTuDe9cRttPPKiwnWp3NnV4wkOobQHXFQYor69bW79TDNeQWH6a+/lWLSzNXoeTKtBLAuBB54S+QNTH00GmU8MC/tPSSYcCR/CzUCDqy5GYIsDeVtulFckwfqMZMQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V3YP6JFh; arc=none smtp.client-ip=209.85.218.48
+	 To:Cc:Content-Type; b=Dxm6EoqUdJ61EUsJUNqxJgo0qc3LFo47xBqK838ymyWjPTUYKGdOJaZ6Wa38FgIwegUrx+tYGp8HCn+mFTjU799wKfQrGtTN2ugVZfqmeyGMnsVBas/+1v03H1Ocq8reb0gZYhB0eqKVLlDjnlHSp1zS1M5WsZh5nMQhvfoVelg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HOA3/ML2; arc=none smtp.client-ip=209.85.208.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-b7ffa5d1b80so308745066b.0
-        for <bpf@vger.kernel.org>; Sat, 20 Dec 2025 00:39:17 -0800 (PST)
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-64bea6c5819so1401977a12.3
+        for <bpf@vger.kernel.org>; Sat, 20 Dec 2025 00:44:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1766219956; x=1766824756; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1766220252; x=1766825052; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=D/MOeYBPqZNM02PyUwyI25lYnH+BSCAbVcJt93yssm0=;
-        b=V3YP6JFh11LbaCCdtCbE4CYDvOjPpApuz086GLjbPsPB+zgJCb5DQEunqu45oaUSsH
-         YG1pdW3R1nSKwAk7/WzdFQjHcFag6x6+91iWyBZMfIDOg00oxy5G84w7oaQ8VmbDA9li
-         mQiAxzehlj1ASrykG9MsmK+48+KLSmfEy5vJ2klOehAk7t7/p1oBYKHiTHAlausEC1AV
-         kaBYMu6UR+Vu6fXrlFeWatQPWJd/Gad0EwF6kPtXOeLgWpushZ0yuC2eA5wGuYYM5d1p
-         bbwdvNu/NmH4r4LLHdal9Db2IFKmlfCzhJZRk9IT0NBzUFDRb9y5EJlpkVjFcBbwImcW
-         ScxQ==
+        bh=SggO6FcztSmTzx7LTMahzfN4ZV4u16SbUYDPevB0s+w=;
+        b=HOA3/ML2p/QysmgQhx5p7SXuGL2xsED4YR5T/Gru51XT/PzIReUj9nB463qEnSVteP
+         zJemhztfphdsDVJ1ulZfO+LOfiZqyv7JpFKK1cDV8pSuaRotgutiLQkcU8oDsMeWjNDh
+         gNFjJPTlSQRDe4HV1aTQ/vNBwewDJY/VJTZdw3JAKl3H4bwcMCajYL1eAkDqjs6Ixwjl
+         QGCpiu4nG74Q+g32dh6RIt+KGdaerIzvN4QGc1zUIA50fx5Os9lw3q6Q0H2tE4u0SB/V
+         f1zhHZP2NBFmFzM6xJAwbwfj/OwafHn8J9lQ8b9Li3oZDcCIQAAHIgNOwglVB/2FeQ7X
+         7qzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766219956; x=1766824756;
+        d=1e100.net; s=20230601; t=1766220252; x=1766825052;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=D/MOeYBPqZNM02PyUwyI25lYnH+BSCAbVcJt93yssm0=;
-        b=q+YRm9PrRcm/RWTmwBEBbCp1NAG00BNdwretYepnzerS5H3tKk3CkF2XvrJQ6SMJiu
-         Hvr8HuOyT93U1Q8FVSNcQ4iEZGkA4mFSk2s+Z08wfXdH8G0ElIVi3RRPd5/SR48J9Ynt
-         Nnvu0vlBf9m1Igktam4pa6QXj1WqibpJRm6wKWSdon/MUwxb7UUXDJCXiPI71Xy1nycC
-         mHaz3uHZKem52ThP68ziO9QmKw6EZmR3PuiZgKb9Ju9PI/v+zYZcp+/foMzAe0LCzbcG
-         XYnt0cPqUO4Rwwg4EC9E5LI9nbm+y3HVWrQRexieyeR8NlOGbTs9i2tFf+YmyRSvi6Sh
-         utpw==
-X-Forwarded-Encrypted: i=1; AJvYcCUjODfVyAeY/g5FTUi+6VRNTl9Chl42bcAfs6krLCKQncntC8kjINNBGnzTjg4yPdfjxSk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyTtFKimaxRkrsoQV5EpyH46Y6lFx6kOIfsURhxGGmSlVc5J4tB
-	nM2C4v0WAhsgB09b3ALN9ZW5l1gQKbd/dGC+cPkk5bq0SxgkGyzE83iLUPizOO+7FhG0C0SJY2t
-	GLcFYlyKJRsLQyd28hjI6gUR+OJqBNHU=
-X-Gm-Gg: AY/fxX60stRf+Vi3fX8tpOdV+9y1N7sqMrnMIKgrCbqMAX/bqPGSlx0oOdhOQ9QmDC6
-	lXGBVvFvxy0lPNSszfhu3eyTzHi77b9cwDN5MwBPLd6C0lRE8ju+IxUqfzKGvkJhey7Tt8X1Q8E
-	8klTkFHuMkQpcWEG5inqKdrvo5gd8xqM6kLG1nwrNEsoqzkP/h+geoTBJgGONqsiYX8I8t+74dC
-	SPcuvnZjIjygQUETcrmnSKmB/UuovQeB+oDVT/hJ4VaTb6rK6SUxF+XlIu6GRb7U3C6tTv5
-X-Google-Smtp-Source: AGHT+IGLmEq2dWHKWzNIz5v+6tWaCAmbpfJ3rWEnH6YmSreQOw47/imxMe7cZW2POIXuPH01gblVyVWlfXetfhkshxk=
-X-Received: by 2002:a17:907:6e9f:b0:b7c:e4e9:b13f with SMTP id
- a640c23a62f3a-b803717d9b0mr573522966b.39.1766219955422; Sat, 20 Dec 2025
- 00:39:15 -0800 (PST)
+        bh=SggO6FcztSmTzx7LTMahzfN4ZV4u16SbUYDPevB0s+w=;
+        b=mYw3LxqoZH1ypZCU0mEygAqURu+XECmVAooCoeIxWnllLNWIRk8Vjcz/B8GLk0dUdR
+         q4Zk353z+AxDkCJLuiO/9UAzhFj71R7lm0O86itfHpR2yT5/Ifz9jHV9uHStbg7oGy74
+         WDxniPYxrUmoQotm4yYjt0stArE0nX6flXRetdoN0rD034cexCM0O5FS/qCs1vb9xeOH
+         AbKgcX5SkMyJNC0KyoZqCJz7iXnTojCL91vXzSVFq/ttE4oQ7L2mtl5uiMDAGjxz+ctz
+         Vz4UTyi7NoiF+ygKw+KFkqjHdIPn0h82mjYltZAw5rxgdbuNCpmsEnfPIZ2K1cfinUxg
+         gFMw==
+X-Forwarded-Encrypted: i=1; AJvYcCWh1B3yrXz0/PUHBzsQjtYYBfIohFuc4O7FRRu8zA03VL9EqZQqlj1dUo1cKH1hmWw3xCU=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw142oSdZIiQnrTQs1jo3FqXVRwR8vveKrbRtJvuriNd0s0NYf/
+	xfoLm1kUk14GO8Dq15oYmVjdY9rBN7ZDhd1A72AV0RtgT0HucbEmqJMV7ZUBne3Ur04pQUqhgLz
+	+duTnXRlP9kEXA+IrvMNXHmj7y8xWMGs=
+X-Gm-Gg: AY/fxX6nsDuuYglGOAHqHxRPHQSVtpW52DIIqbUCGx4/hHFBB8YztnDOwZQ/Tdwhllf
+	xAeMUUm5LUjAwR3g9vC+BFjPXPbRzDT5GyurCW+PbYSxfocf2D9VszIp3gMkS/INv0npMIytJxg
+	gploHqpRTw/wJz1piYPjdn6MHTsa7tHZizv32W/PL8XHSsz60kxUNmSKMQR2A5zTAIkl0KYwWk/
+	T7YofCPyUGwEEvs6sg/MkIoLEMacG9CaQ7iJ4t3ZXoYbatveuBUNSoCqRBLrqZXx+fu4D67
+X-Google-Smtp-Source: AGHT+IFY2HLKPl+fmQSjUQgfLxjhngbyJCNBl6cU0gse+ukHE3gb6EZBeKd3AMSDE4BEEts8oqdlOa6Mr4POSzhD8c8=
+X-Received: by 2002:a17:906:c109:b0:b80:325d:99e2 with SMTP id
+ a640c23a62f3a-b803705ddb6mr554652266b.33.1766220252014; Sat, 20 Dec 2025
+ 00:44:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -74,15 +74,15 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20251218113051.455293-1-dolinux.peng@gmail.com>
- <20251218113051.455293-2-dolinux.peng@gmail.com> <CAEf4BzYJpw+yEv=g9P1z0NS8Qw8PdFf7039MT0PSv30DwkjBzw@mail.gmail.com>
- <CAErzpmu4K3rF3JLycEYNqzNcBkSgBxijj1RAYBPuprvBU6LHmQ@mail.gmail.com> <CAEf4BzYN5NwSJO1QDXu6Mq_pZXQO9-5iyJm0vZeJSmyrQBNJ3A@mail.gmail.com>
-In-Reply-To: <CAEf4BzYN5NwSJO1QDXu6Mq_pZXQO9-5iyJm0vZeJSmyrQBNJ3A@mail.gmail.com>
+ <20251218113051.455293-4-dolinux.peng@gmail.com> <CAEf4Bzb0HEFsJ7KG6upatR792baKTKFV6n+91dHdXNL174ud5Q@mail.gmail.com>
+ <CAErzpmunAv0MLnYSMxXEtvQ+7nvOwzeBphVMzMCgysZDdnaMFg@mail.gmail.com> <CAEf4BzbRN-L9GVRwx1sMnwn46gR1YoaV2kDt4Y3CTyPH+2HHXw@mail.gmail.com>
+In-Reply-To: <CAEf4BzbRN-L9GVRwx1sMnwn46gR1YoaV2kDt4Y3CTyPH+2HHXw@mail.gmail.com>
 From: Donglin Peng <dolinux.peng@gmail.com>
-Date: Sat, 20 Dec 2025 16:39:03 +0800
-X-Gm-Features: AQt7F2pchl35KZQx5fWidARgXxfx-Qjn4Ru0inhzTlwjoO5j5rvmbYjW_jcL67Y
-Message-ID: <CAErzpmuCQUTZTnCkNoL0ZcHsvXmu_m0sp7X+Lt8K4tYwQ7BiMg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v10 01/13] libbpf: Add BTF permutation support
- for type reordering
+Date: Sat, 20 Dec 2025 16:44:00 +0800
+X-Gm-Features: AQt7F2rpx-f9bJv3N6Q-JGZjRgQxtjy9h2XUQMivsocuGNAiSQIpvEheM2r1d0I
+Message-ID: <CAErzpmuCgR+q8Yndb9bd_W7GO8H4rUv7oEJpeZtwd12tkMU8QA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v10 03/13] tools/resolve_btfids: Support BTF
+ sorting feature
 To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc: ast@kernel.org, eddyz87@gmail.com, zhangxiaoqin@xiaomi.com, 
 	ihor.solodrai@linux.dev, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
@@ -90,13 +90,13 @@ Cc: ast@kernel.org, eddyz87@gmail.com, zhangxiaoqin@xiaomi.com,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Dec 20, 2025 at 1:07=E2=80=AFAM Andrii Nakryiko
+On Sat, Dec 20, 2025 at 1:12=E2=80=AFAM Andrii Nakryiko
 <andrii.nakryiko@gmail.com> wrote:
 >
-> On Thu, Dec 18, 2025 at 7:15=E2=80=AFPM Donglin Peng <dolinux.peng@gmail.=
+> On Thu, Dec 18, 2025 at 7:42=E2=80=AFPM Donglin Peng <dolinux.peng@gmail.=
 com> wrote:
 > >
-> > On Fri, Dec 19, 2025 at 7:02=E2=80=AFAM Andrii Nakryiko
+> > On Fri, Dec 19, 2025 at 7:09=E2=80=AFAM Andrii Nakryiko
 > > <andrii.nakryiko@gmail.com> wrote:
 > > >
 > > > On Thu, Dec 18, 2025 at 3:31=E2=80=AFAM Donglin Peng <dolinux.peng@gm=
@@ -104,11 +104,9 @@ ail.com> wrote:
 > > > >
 > > > > From: pengdonglin <pengdonglin@xiaomi.com>
 > > > >
-> > > > Introduce btf__permute() API to allow in-place rearrangement of BTF=
- types.
-> > > > This function reorganizes BTF type order according to a provided ar=
-ray of
-> > > > type IDs, updating all type references to maintain consistency.
+> > > > This introduces a new BTF sorting phase that specifically sorts
+> > > > BTF types by name in ascending order, so that the binary search
+> > > > can be used to look up types.
 > > > >
 > > > > Cc: Eduard Zingerman <eddyz87@gmail.com>
 > > > > Cc: Alexei Starovoitov <ast@kernel.org>
@@ -117,144 +115,147 @@ ray of
 > > > > Cc: Ihor Solodrai <ihor.solodrai@linux.dev>
 > > > > Cc: Xiaoqin Zhang <zhangxiaoqin@xiaomi.com>
 > > > > Signed-off-by: pengdonglin <pengdonglin@xiaomi.com>
+> > >
+> > > Signed-off-by is supposed to use properly spelled full name, this
+> > > should be "Donglin Peng", right?
+> >
+> > Sorry, I will fix this in the next version. The reason is that our
+> > company's Gerrit only accepts "pengdonglin" and does not
+> > accept "Donglin Peng".
+> >
+> > >
 > > > > Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 > > > > ---
-> > > >  tools/lib/bpf/btf.c      | 119 +++++++++++++++++++++++++++++++++++=
+> > > >  tools/bpf/resolve_btfids/main.c | 68 +++++++++++++++++++++++++++++=
 ++++
-> > > >  tools/lib/bpf/btf.h      |  36 ++++++++++++
-> > > >  tools/lib/bpf/libbpf.map |   1 +
-> > > >  3 files changed, 156 insertions(+)
+> > > >  1 file changed, 68 insertions(+)
 > > > >
->
-> [...]
->
-> > > > +/**
-> > > > + * @brief **btf__permute()** performs in-place BTF type rearrangem=
-ent
-> > > > + * @param btf BTF object to permute
-> > > > + * @param id_map Array mapping original type IDs to new IDs
-> > > > + * @param id_map_cnt Number of elements in @id_map
-> > > > + * @param opts Optional parameters for BTF extension updates
-> > > > + * @return 0 on success, negative error code on failure
-> > > > + *
-> > > > + * **btf__permute()** rearranges BTF types according to the specif=
-ied ID mapping.
-> > > > + * The @id_map array defines the new type ID for each original typ=
-e ID.
-> > > > + *
-> > > > + * @id_map must include all types from ID `start_id` to `btf__type=
-_cnt(btf) - 1`.
-> > > > + * @id_map_cnt should be `btf__type_cnt(btf) - start_id`
-> > > > + * The mapping is defined as: `id_map[original_id - start_id] =3D =
-new_id`
-> > >
-> > > Would you mind paying attention to the feedback I left in [0]? Thank =
-you.
-> >
-> > Apologies for the delayed response, I would like to hear if someone has=
- a
-> > different idea.
->
-> Delayed response?.. You ignored my feedback and never even replied to
-> it. And then posted a new revision two days later, while still not
-> taking the feedback into account. This is not a delayed response, it's
-> ignoring the feedback. You don't have to agree with all the feedback,
-> but you have to respond to the feedback you disagree with and provide
-> your arguments, not just silently disregard it.
-
-Thank you for the reminder, and I sincerely apologize for
-my mistake in handling the feedback. You are absolutely right.
-I should not have posted a new revision without first replying
-to your comments on the previous version. The correct process,
-as outlined in the kernel development documentation and community
-norms, is to address all feedback=E2=80=94either by implementing the
-suggested changes or by providing a clear explanation if I
-disagree.
-
-I appreciate you taking the time to review my work and for
-holding me to the community standard. I will ensure this
-does not happen again.
-
->
-> >
-> > >
-> > > The contract should be id_map[original_id] =3D new_id for base BTF an=
-d
-> > > id_map[original_id - btf__type_cnt(base_btf)] =3D new_id for split BT=
-F.
-> > > Special BTF type #0 (VOID) is considered to be part of base BTF,
-> > > having id_map[0] =3D 0 is easy to check and enforce. And then it leav=
-es
-> > > us with a simple and logical rule for id_map. For split BTF we make
-> > > necessary type ID shifts to avoid tons of wasted memory. But for base
-> > > BTF there is no need to shift anything. So mapping the original type
-> > > #X to #Y is id_map[X] =3D Y. Literally, "map X to Y", as simple as th=
-at.
-> > >
-> > >   [0] https://lore.kernel.org/bpf/CAEf4BzY_k721TBfRSUeq5mB-7fgJhVKCeX=
-VKO-W2EjQ0aS9AgA@mail.gmail.com/
-> >
-> > Thanks. I implemented the approach in v6, but it had inconsistent inter=
-nal
-> > details for base and split BTF. It seems we prioritize external contrac=
-t
-> > consistency over internal inconsistencies, so I=E2=80=99ll revert to th=
-e v6 approach
-> > and refine it for clarity.
->
-> Yes, we always prioritize external contract consistency, of course!
-> You are overpivoting on *internal implementation detail* of base BTF's
-> start_id being set to 1, which is convenient in some other places due
-> to type_offs shifted by one mapping due to &btf_void special handling.
-> We can always change that, if we wanted, but this shouldn't spill into
-> public API though. But conceptually BTF types start at type #0, which
-> is defined to be VOID and is not user controlled.
-
-Thanks,  I understood.
-
->
->
-> This is not much of a complication or inconsistency:
->
-> type_shift =3D base_btf ? btf__type_cnt(base_btf) : 0;
-> id_map[type_id - type_shift] =3D ...
-
-Thank you,  I agree and will do it in the next version.
-
->
->
-> >
-> > >
-> > > > + *
-> > > > + * For base BTF, its `start_id` is fixed to 1, i.e. the VOID type =
-can
-> > > > + * not be redefined or remapped and its ID is fixed to 0.
-> > > > + *
-> > > > + * For split BTF, its `start_id` can be retrieved by calling
-> > > > + * `btf__type_cnt(btf__base_btf(btf))`.
-> > > > + *
-> > > > + * On error, returns negative error code and sets errno:
-> > > > + *   - `-EINVAL`: Invalid parameters or ID mapping (duplicates, ou=
-t-of-range)
-> > > > + *   - `-ENOMEM`: Memory allocation failure
+> > > > diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_bt=
+fids/main.c
+> > > > index 3e88dc862d87..659de35748ec 100644
+> > > > --- a/tools/bpf/resolve_btfids/main.c
+> > > > +++ b/tools/bpf/resolve_btfids/main.c
+> > > > @@ -848,6 +848,71 @@ static int dump_raw_btf(struct btf *btf, const=
+ char *out_path)
+> > > >         return 0;
+> > > >  }
+> > > >
+> > > > +/*
+> > > > + * Sort types by name in ascending order resulting in all
+> > > > + * anonymous types being placed before named types.
 > > > > + */
-> > > > +LIBBPF_API int btf__permute(struct btf *btf, __u32 *id_map, __u32 =
-id_map_cnt,
-> > > > +                           const struct btf_permute_opts *opts);
+> > > > +static int cmp_type_names(const void *a, const void *b, void *priv=
+)
+> > > > +{
+> > > > +       struct btf *btf =3D (struct btf *)priv;
+> > > > +       const struct btf_type *ta =3D btf__type_by_id(btf, *(__u32 =
+*)a);
+> > > > +       const struct btf_type *tb =3D btf__type_by_id(btf, *(__u32 =
+*)b);
+> > > > +       const char *na, *nb;
 > > > > +
-> > > >  struct btf_dump;
+> > > > +       na =3D btf__str_by_offset(btf, ta->name_off);
+> > > > +       nb =3D btf__str_by_offset(btf, tb->name_off);
+> > > > +       return strcmp(na, nb);
+> > > > +}
+> > > > +
+> > > > +static int sort_btf_by_name(struct btf *btf)
+> > > > +{
+> > > > +       __u32 *permute_ids =3D NULL, *id_map =3D NULL;
+> > > > +       int nr_types, i, err =3D 0;
+> > > > +       __u32 start_id =3D 1, id;
+> > > > +
+> > > > +       if (btf__base_btf(btf))
+> > > > +               start_id =3D btf__type_cnt(btf__base_btf(btf));
+> > > > +       nr_types =3D btf__type_cnt(btf) - start_id;
+> > > > +       if (nr_types < 2)
+> > > > +               goto out;
+> > >
+> > > why this check, will anything break if you don't do it?
+> >
+> > Because I think that if there are zero or only one type,
+> > there is no need to sort.
+>
+> There is also no need to special-case and add more checks just for
+> these corner cases. Keep it simple.
+
+Thanks, I agree and and will fix it.
+
+>
+>
+> >
+> > >
+> > > > +
+> > > > +       permute_ids =3D calloc(nr_types, sizeof(*permute_ids));
+> > > > +       if (!permute_ids) {
+> > > > +               err =3D -ENOMEM;
+> > > > +               goto out;
+> > > > +       }
+> > > > +
+> > > > +       id_map =3D calloc(nr_types, sizeof(*id_map));
+> > > > +       if (!id_map) {
+> > > > +               err =3D -ENOMEM;
+> > > > +               goto out;
+> > > > +       }
+> > > > +
+> > > > +       for (i =3D 0, id =3D start_id; i < nr_types; i++, id++)
+> > > > +               permute_ids[i] =3D id;
+> > > > +
+> > > > +       qsort_r(permute_ids, nr_types, sizeof(*permute_ids), cmp_ty=
+pe_names, btf);
+> > > > +
+> > > > +       for (i =3D 0; i < nr_types; i++) {
+> > > > +               id =3D permute_ids[i] - start_id;
+> > > > +               id_map[id] =3D i + start_id;
+> > > > +       }
+> > > > +
+> > > > +       err =3D btf__permute(btf, id_map, nr_types, NULL);
+> > > > +       if (err)
+> > > > +               pr_err("FAILED: btf permute: %s\n", strerror(-err))=
+;
+> > > > +
+> > > > +out:
+> > > > +       free(permute_ids);
+> > > > +       free(id_map);
+> > > > +       return err;
+> > > > +}
+> > > > +
+> > > > +static int btf2btf(struct object *obj)
+> > >
+> > > what's the point of having this function?
+> >
+> > Sorting BTF is a type of `btf2btf` process. There may be other
+> > types of `btf2btf` processes, which could be grouped together
+> > here. If we currently don't care about these other processes,
+> > I will retain only `sort_btf_by_name` in the next version.
+>
+> Let's have sort as is, when necessary we can refactor this into
+> logical steps further (or perhaps sorting will be its own logical
+> step, I don't know, but let's not over design it just yet)
+
+Okay, I will invoke sort_btf_by_name directly in the next version.
+
+>
+> >
+> > >
+> > > > +{
+> > > > +       return sort_btf_by_name(obj->btf);
+> > > > +}
+> > > > +
+> > > >  static inline int make_out_path(char *buf, u32 buf_sz, const char =
+*in_path, const char *suffix)
+> > > >  {
+> > > >         int len =3D snprintf(buf, buf_sz, "%s%s", in_path, suffix);
+> > > > @@ -906,6 +971,9 @@ int main(int argc, const char **argv)
+> > > >         if (load_btf(&obj))
+> > > >                 goto out;
 > > > >
-> > > >  struct btf_dump_opts {
-> > > > diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> > > > index 84fb90a016c9..d18fbcea7578 100644
-> > > > --- a/tools/lib/bpf/libbpf.map
-> > > > +++ b/tools/lib/bpf/libbpf.map
-> > > > @@ -453,4 +453,5 @@ LIBBPF_1.7.0 {
-> > > >                 bpf_map__exclusive_program;
-> > > >                 bpf_prog_assoc_struct_ops;
-> > > >                 bpf_program__assoc_struct_ops;
-> > > > +               btf__permute;
-> > > >  } LIBBPF_1.6.0;
+> > > > +       if (btf2btf(&obj))
+> > > > +               goto out;
+> > > > +
+> > > >         if (elf_collect(&obj))
+> > > >                 goto out;
+> > > >
 > > > > --
 > > > > 2.34.1
 > > > >
