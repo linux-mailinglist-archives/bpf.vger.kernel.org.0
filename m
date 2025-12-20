@@ -1,346 +1,297 @@
-Return-Path: <bpf+bounces-77245-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77246-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D3E3CD2E36
-	for <lists+bpf@lfdr.de>; Sat, 20 Dec 2025 12:36:23 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3AFACD2EAF
+	for <lists+bpf@lfdr.de>; Sat, 20 Dec 2025 13:23:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 0FAD63015009
-	for <lists+bpf@lfdr.de>; Sat, 20 Dec 2025 11:36:06 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 0E088300D905
+	for <lists+bpf@lfdr.de>; Sat, 20 Dec 2025 12:23:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A85E7204F93;
-	Sat, 20 Dec 2025 11:36:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75E2E2D3737;
+	Sat, 20 Dec 2025 12:23:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CQnNlTob"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CdS/u7ZI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B98F630ACE5
-	for <bpf@vger.kernel.org>; Sat, 20 Dec 2025 11:35:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DE1878F2B;
+	Sat, 20 Dec 2025 12:23:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766230562; cv=none; b=hbGHHEuh0bpoZIR+rUZkigynoc1DDqThWpHWxAdB3divo4EWS9Oc2ngh9AdO2Cxbu2Bh059mNjbaUvg6jxHMvVX+3D+OtlCiSm9Wo62NebghDAei6spAsHr0eNtd2qTu6nZWmB2a80GVVIgvQpQn+WDycOqkI9QOuvm1VPzTTBA=
+	t=1766233389; cv=none; b=Sv1IDxpGAUUBPghM5SGmRJEa0XcTyvxjGXHS9BLlgIrUHlZRqoZDyHX8eHHn94V7u1FvAvsnkhzn5rImXiW1iCK2mkucy2P/5FmZz10FxQ9qWkFT2nlJ5wwjNX80VXyIBw+spEwQwEYF1gc2Mt/cNGwDJ72gQ9wflVulNJrwi3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766230562; c=relaxed/simple;
-	bh=jIDhSYVp9j8QWzc+Ung+SecNY2NPdp5wG0Cu5OE+NrM=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=L2FfmPufXk5Y69oJUcFdz8kDTq03eVX/oO3PQ2VtxXQa2CsSxE9RkDpI1WWYiCt0VfT7pBDnF3PYkfduFY4AaiVfIY2+XptxR2Xr75ZSVTdiuYBDU2Q/GQNWvprKROCWPFLCDONfgw9MtBFESwZ4qEO6/cvrgkzoFvuRKjTO/yk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CQnNlTob; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-34c21417781so2550438a91.3
-        for <bpf@vger.kernel.org>; Sat, 20 Dec 2025 03:35:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1766230559; x=1766835359; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FIP/p9vK+z99OUz21qCwPYKTeE+7MGP1Av2Ob1HiCgE=;
-        b=CQnNlToboKp35sjY9vHd+4cIG9QXrSvWvDrr/vYrDmK5xYISc8BeFOXgExrzfiMhLb
-         J7g/bmOmmgKAjItZQZrpuRytJy+aQ7eNzhCJ65b8VuVkuNtCcBlXdcaBAlu1HBRdqWmw
-         F2dBz5ZmLtjfdxSh0fzmtTqe10UhTc/OeWtpH+pIAWMigmGQkAZNbOny5W5ixTTpwf/7
-         Hp3yBRYvWi29Uyrj0E5giKBU9W1+lKbFO/M4I3SEztCPLIh2tl2RzhKP94xhLYlHg9pT
-         BxcimyA8JbJVDBrJ5EZkiLF71T/cq97BCeFFedoKAbngeEmA5xywLhvm1Xl9NKfu8zvK
-         S44w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766230559; x=1766835359;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=FIP/p9vK+z99OUz21qCwPYKTeE+7MGP1Av2Ob1HiCgE=;
-        b=c/9EO4K1okFWGw7JkS41LSObqOOBvbDfvzo6zWTNy9Y0KTbne1qTB3+AzBGqdIvOe0
-         SQk2QdItkmq3XBn6AoeMkfXfax0vDo8+rEB68z2DpCatfnmuFhhWyzcAyLxDxQDG63xF
-         2CRu6ONXQV/LEsrSbBCptknDweMVexwScrf9mCL2+CiHCaPoCBxUjC86v0gxPTLJSD6D
-         q5TVHun0jODYQMsq1ZqQWMvxZQ1vGgfijiSwNnOwU9pgyaH2674dDCgzDqPOA2SQ7fVp
-         QyuuwYiCRLeTwwNHwzNLD8nS6hXoe1IXPi2+xPezj9PTFlKX+OXylfbl2YylwESPJM0w
-         vSqw==
-X-Gm-Message-State: AOJu0YyVGwUfhLTCdh8aOfnOLGtaHb+0D7Z29PI+KFncR4UaP2+mn12m
-	aSQVBidlaLqXfhIr7jGTRlEtgkgw3PUFdes6Al8k6kvFVWMrwJ4i1bbz
-X-Gm-Gg: AY/fxX5f9EvaJ6uO4+/0VtXzOyPAObG2FUgZFwG1ci0YY+1J9in2gAhvuxj33658rFX
-	HkmEdlQtYPr+FTZZfwwrlL4K8FtFmJJt/e2c+YbHvo0Dces42DGyNXsp38sMOGshnH8trqGYUCR
-	WrdOMroo3Y72lmlG/v9iy5oMqIaye19Y784leA6C4zcR4YNua3fB+unPv+L7UGE5PrPpZEyoSSh
-	jvYl0JXWm3LuSAv7BUXmo/zN/k2BVieVQAIecdVoLQkpN41wApqsp5xtdygUVFg7NtctN1Lnn5e
-	VRY5sYnuZXvBqBETZCO3KBpWrFEb1wTnOo9C49Ljxz0pHA6sHiVzjVe4ecPmekJ8TZ+Rs+IZ7Wz
-	OuodAvrKEkMnm1kgjkJE87rjoDyNm4iHgxv53JGLqu0duGd2OJQn594XUFxqqQgPSW/20P43G7R
-	7mzrVsy6Imsqs=
-X-Google-Smtp-Source: AGHT+IFdI/LDc0piR9RWMjmgLQ3q3D7MDPC24mANcTglaDLcS2snWjW0R/06TaK3G00xl98gaRtVzA==
-X-Received: by 2002:a17:90a:dfc6:b0:340:d1a1:af8e with SMTP id 98e67ed59e1d1-34e921e60d9mr4930318a91.37.1766230558471;
-        Sat, 20 Dec 2025 03:35:58 -0800 (PST)
-Received: from [127.0.0.1] ([188.253.121.153])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34e70d65653sm7799389a91.5.2025.12.20.03.35.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Dec 2025 03:35:58 -0800 (PST)
-From: Zesen Liu <ftyghome@gmail.com>
-Date: Sat, 20 Dec 2025 19:35:05 +0800
-Subject: [RFC PATCH bpf 2/2] selftests/bpf: add regression tests for
- snprintf and get_stack helpers
+	s=arc-20240116; t=1766233389; c=relaxed/simple;
+	bh=hJRvZ4Gdkybxy0JF+ENyKK0h6jb7JewEdZUX5tn74Xw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=OCSQaDHNY3SEsLcILgxtF5Hw05zLskpbIedPDJLtgWb6+5TtavaFrwXJ1PpeR4tow9XeV9sZXxkb2u8uCFUDVAYK1uPxa+K3AabxNK7PkWIsr+GvyJ5djrvnvv8/v+qQkJp2xXaq9QiT/rFqYCuq1ZTkWdE7LCQI5wXOiAhYHOs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CdS/u7ZI; arc=none smtp.client-ip=95.215.58.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1766233375;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0RWb6IwcbG0/TBs8nwby4PiJFSmoftzLuD932v6h31A=;
+	b=CdS/u7ZIJzjEudaXW/7qP5w1cW9CB0srT+R1kZ/9vBw3VPcIxpXDRYUDEQZRPunjvGhhjV
+	fYfAOhGETnGocrKCUQO78GRPEeeQF4ZIvr8eIbCgeEtJHUqIQLqSUhhlbzH1nKvOPz9auJ
+	rA387xLjh+Y7mKeZYg7JHsqRBbaBjXk=
+From: Menglong Dong <menglong.dong@linux.dev>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Menglong Dong <menglong8.dong@gmail.com>, ast@kernel.org,
+ andrii@kernel.org, davem@davemloft.net, dsahern@kernel.org,
+ daniel@iogearbox.net, martin.lau@linux.dev, eddyz87@gmail.com,
+ song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
+ kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
+ tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+ dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+ netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v4 0/9] bpf: tracing session supporting
+Date: Sat, 20 Dec 2025 20:22:37 +0800
+Message-ID: <1946544.CQOukoFCf9@7950hx>
+In-Reply-To: <6114986.MhkbZ0Pkbq@7950hx>
+References:
+ <20251217095445.218428-1-dongml2@chinatelecom.cn> <2393471.ElGaqSPkdT@7950hx>
+ <6114986.MhkbZ0Pkbq@7950hx>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20251220-helper_proto-v1-2-2206e0d9422d@gmail.com>
-References: <20251220-helper_proto-v1-0-2206e0d9422d@gmail.com>
-In-Reply-To: <20251220-helper_proto-v1-0-2206e0d9422d@gmail.com>
-To: Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>, 
- Steven Rostedt <rostedt@goodmis.org>, 
- Masami Hiramatsu <mhiramat@kernel.org>, 
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Simon Horman <horms@kernel.org>, Daniel Xu <dxu@dxuuu.xyz>, 
- Shuah Khan <shuah@kernel.org>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-trace-kernel@vger.kernel.org, netdev@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, Zesen Liu <ftyghome@gmail.com>, 
- Shuran Liu <electronlsr@gmail.com>, Peili Gao <gplhust955@gmail.com>, 
- Haoran Ni <haoran.ni.cs@gmail.com>
-X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=8326; i=ftyghome@gmail.com;
- h=from:subject:message-id; bh=jIDhSYVp9j8QWzc+Ung+SecNY2NPdp5wG0Cu5OE+NrM=;
- b=owGbwMvMwCXWI1/u+8bXqJ3xtFoSQ6ZbF2tb9avMwFYrbdsTx/xaRSZ9NZ6QKZRypff5IfeWL
- SzSTkwdpSwMYlwMsmKKLL0/DO+uzDQ33maz4CDMHFYmkCEMXJwCMJGUkwz/lOepX93K7nbaUf3v
- nQ2qTvM2KHNuyzmd1TxZPLltx519eQx/eBeYs5xiusURpPFXICUhf012/du5V3pazPQ7P8xObKr
- mBgA=
-X-Developer-Key: i=ftyghome@gmail.com; a=openpgp;
- fpr=8DF831DDA9693733B63CA0C18C1F774DEC4D3287
+X-Migadu-Flow: FLOW_OUT
 
-Add regression tests for bpf_snprintf(), bpf_snprintf_btf(), and
-bpf_get_stack() to cover incorrect verifier assumptions caused by
-incorrect function prototypes.
+On 2025/12/20 17:01, Menglong Dong wrote:
+> On 2025/12/20 09:12, Menglong Dong wrote:
+> > On 2025/12/20 00:55, Andrii Nakryiko wrote:
+> > > On Thu, Dec 18, 2025 at 5:18=E2=80=AFPM Menglong Dong <menglong.dong@=
+linux.dev> wrote:
+> > > >
+> > > > On 2025/12/19 08:55 Andrii Nakryiko <andrii.nakryiko@gmail.com> wri=
+te:
+> > > > > On Wed, Dec 17, 2025 at 1:54=E2=80=AFAM Menglong Dong <menglong8.=
+dong@gmail.com> wrote:
+> > > > > >
+> > > > > > Hi, all.
+> > > > > >
+> > > > > > In this version, I combined Alexei and Andrii's advice, which m=
+akes the
+> > > > > > architecture specific code much simpler.
+> > > > > >
+> > > > > > Sometimes, we need to hook both the entry and exit of a functio=
+n with
+> > > > > > TRACING. Therefore, we need define a FENTRY and a FEXIT for the=
+ target
+> > > > > > function, which is not convenient.
+> > > > > >
+> > > > > > Therefore, we add a tracing session support for TRACING. Genera=
+lly
+> > > > > > speaking, it's similar to kprobe session, which can hook both t=
+he entry
+> > > > > > and exit of a function with a single BPF program. Session cooki=
+e is also
+> > > > > > supported with the kfunc bpf_fsession_cookie(). In order to lim=
+it the
+> > > > > > stack usage, we limit the maximum number of cookies to 4.
+> > > > > >
+> > > > > > The kfunc bpf_fsession_is_return() and bpf_fsession_cookie() ar=
+e both
+> > > > > > inlined in the verifier.
+> > > > >
+> > > > > We have generic bpf_session_is_return() and bpf_session_cookie() =
+(that
+> > > > > currently works for ksession), can't you just implement them for =
+the
+> > > > > newly added program type instead of adding type-specific kfuncs?
+> > > >
+> > > > Hi, Andrii. I tried and found that it's a little hard to reuse them=
+=2E The
+> > > > bpf_session_is_return() and bpf_session_cookie() are defined as kfu=
+nc, which
+> > > > makes we can't implement different functions for different attach t=
+ype, like
+> > > > what bpf helper does.
+> > >=20
+> > > Are you sure? We certainly support kfunc implementation specialization
+> > > for sleepable vs non-sleepable BPF programs. Check specialize_kfunc()
+> > > in verifier.c
+> >=20
+> > Ah, I remember it now. We do can use different kfunc version
+> > for different case in specialize_kfunc().
+> >=20
+> > >=20
+> > > >
+> > > > The way we store "is_return" and "cookie" in fsession is different =
+with
+> > > > ksession. For ksession, it store the "is_return" in struct bpf_sess=
+ion_run_ctx.
+> > > > Even if we move the "nr_regs" from stack to struct bpf_tramp_run_ct=
+x,
+> > > > it's still hard to reuse the bpf_session_is_return() or bpf_session=
+_cookie(),
+> > > > as the way of storing the "is_return" and "cookie" in fsession and =
+ksession
+> > > > is different, and it's a little difficult and complex to unify them.
+> > >=20
+> > > I'm not saying we should unify the implementation, you have to
+> > > implement different version of logically the same kfunc, of course.
+> >=20
+> > I see. The problem now is that the prototype of bpf_session_cookie()
+> > or bpf_session_is_return() don't satisfy our need. For bpf_session_cook=
+ie(),
+> > we at least need the context to be the argument. However, both
+> > of them don't have any function argument. After all, the prototype of
+> > different version of logically the same kfunc should be the same.
+>=20
+> Hi, Andrii. I see that you want to make the API consistent between
+> ksession and fsession, which is more friendly for the user.
+>=20
+> After my analysis, I think we have following approach:
+> 1. change the function prototype of bpf_session_cookie and bpf_session_is=
+_return
+> to:
+>     bool bpf_session_is_return(void *ctx);
+>     bool bpf_session_cookie(void *ctx);
+> And we do the fix up in specialize_kfunc(), which I think is the easiest
+> way. The defect is that it will break existing users.
+>=20
+> 2. We define a fixup_kfunc_call_early() and call it in add_subprog_and_kf=
+unc.
+> In the fixup_kfunc_call_early(), we will change the target kfunc(which is=
+ insn->imm)
+> from bpf_session_cookie() to bpf_fsession_cookie(). For the bpf_session_c=
+ookie(),
+> we make its prototype to:
+>     __bpf_kfunc __u64 *bpf_session_cookie(void *ctx__ign)
 
-These tests reproduce the scenario where the verifier previously
-incorrectly assumed that the destination buffer remained unwritten
-across the helper call. The tests call these helpers and verify that
-subsequent reads see the updated data, ensuring that the verifier
-correctly marks the memory as clobbered and does not optimize away
-the reads based on stale assumptions.
+Ah, it's not a good idea. The libbpf will check if the
+prototype of bpf_session_cookie is compatible between local
+and vmlinux. We can skip the fields whose name has "__ign"
+in current libbpf in __bpf_core_types_are_compat(). But for
+the old libbpf, the compatible checking will fail, which means
+that it will still break the existing users :(
 
-Co-developed-by: Shuran Liu <electronlsr@gmail.com>
-Signed-off-by: Shuran Liu <electronlsr@gmail.com>
-Co-developed-by: Peili Gao <gplhust955@gmail.com>
-Signed-off-by: Peili Gao <gplhust955@gmail.com>
-Co-developed-by: Haoran Ni <haoran.ni.cs@gmail.com>
-Signed-off-by: Haoran Ni <haoran.ni.cs@gmail.com>
-Signed-off-by: Zesen Liu <ftyghome@gmail.com>
----
- tools/testing/selftests/bpf/prog_tests/get_stack_raw_tp.c | 15 +++++++++++++--
- tools/testing/selftests/bpf/prog_tests/snprintf.c         |  6 ++++++
- tools/testing/selftests/bpf/prog_tests/snprintf_btf.c     |  3 +++
- tools/testing/selftests/bpf/progs/netif_receive_skb.c     | 13 ++++++++++++-
- tools/testing/selftests/bpf/progs/test_get_stack_rawtp.c  | 11 ++++++++++-
- tools/testing/selftests/bpf/progs/test_snprintf.c         | 12 ++++++++++++
- 6 files changed, 56 insertions(+), 4 deletions(-)
+> Therefore, it won't break the existing users. For the ksession that uses =
+the
+> old prototype, it can pass the verifier too. Following is a demo patch of=
+ this
+> approach. In this way, we can allow a extension in the prototype for a kf=
+unc
+> in the feature too.
+>=20
+> What do you think?
+>=20
+> Thanks!
+> Menglong Dong
+>=20
+> >patch<
+>=20
+> +static int fixup_kfunc_call_early(struct bpf_verifier_env *env, struct b=
+pf_insn *insn)
+> +{
+> +       struct bpf_prog *prog =3D env->prog;
+> +
+> +       if (prog->expected_attach_type =3D=3D BPF_TRACE_FSESSION) {
+> +               if (insn->imm =3D=3D special_kfunc_list[KF_bpf_session_co=
+okie])
+> +                       insn->imm =3D special_kfunc_list[KF_bpf_fsession_=
+cookie];
+> +               else if (insn->imm =3D=3D special_kfunc_list[KF_bpf_sessi=
+on_is_return])
+> +                       insn->imm =3D special_kfunc_list[KF_bpf_fsession_=
+is_return];
+> +       }
+> +
+> +       return 0;
+> +}
+>=20
+> @@ -3489,10 +3490,12 @@ static int add_subprog_and_kfunc(struct bpf_verif=
+ier_env *env)
+>                         return -EPERM;
+>                 }
+> =20
+> -               if (bpf_pseudo_func(insn) || bpf_pseudo_call(insn))
+> +               if (bpf_pseudo_func(insn) || bpf_pseudo_call(insn)) {
+>                         ret =3D add_subprog(env, i + insn->imm + 1);
+> -               else
+> -                       ret =3D add_kfunc_call(env, insn->imm, insn->off);
+> +               } else {
+> +                       ret =3D fixup_kfunc_call_early(env, insn);
+> +                       ret =3D ret ?: add_kfunc_call(env, insn->imm, ins=
+n->off);
+> +               }
+>=20
+> @@ -3316,7 +3321,7 @@ static u64 bpf_uprobe_multi_entry_ip(struct bpf_run=
+_ctx *ctx)
+> =20
+>  __bpf_kfunc_start_defs();
+> =20
+> -__bpf_kfunc bool bpf_session_is_return(void)
+> +__bpf_kfunc bool bpf_session_is_return(void *ctx__ign)
+>  {
+>         struct bpf_session_run_ctx *session_ctx;
+> =20
+> @@ -3324,7 +3329,7 @@ __bpf_kfunc bool bpf_session_is_return(void)
+>         return session_ctx->is_return;
+>  }
+> =20
+> -__bpf_kfunc __u64 *bpf_session_cookie(void)
+> +__bpf_kfunc __u64 *bpf_session_cookie(void *ctx__ign)
+>  {
+>         struct bpf_session_run_ctx *session_ctx;
+>=20
+> >=20
+> > I think it's not a good idea to modify the prototype of existing kfunc,
+> > can we?
+> >=20
+> > >=20
+> > > >
+> > > > What's more, we will lose the advantage of inline bpf_fsession_is_r=
+eturn
+> > > > and bpf_fsession_cookie in verifier.
+> > > >
+> > >=20
+> > > I'd double check that either. BPF verifier and JIT do know program
+> > > type, so you can pick how to inline
+> > > bpf_session_is_return()/bpf_session_cookie() based on that.
+> >=20
+> > Yeah, we can inline it depend on the program type if we can solve
+> > the prototype problem.
+> >=20
+> > Thanks!
+> > Menglong Dong
+> >=20
+> >=20
+> > >=20
+> > > > I'll check more to see if there is a more simple way to reuse them.
+> > > >
+> > > > Thanks!
+> > > > Menglong Dong
+> > > >
+> > > > >
+> > [...]
+> > > >
+> > > >
+> > > >
+> > > >
+> >=20
+> >=20
+> >=20
+> >=20
+> >=20
+>=20
+>=20
+>=20
+>=20
+>=20
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/get_stack_raw_tp.c b/tools/testing/selftests/bpf/prog_tests/get_stack_raw_tp.c
-index 858e0575f502..7c2774b49138 100644
---- a/tools/testing/selftests/bpf/prog_tests/get_stack_raw_tp.c
-+++ b/tools/testing/selftests/bpf/prog_tests/get_stack_raw_tp.c
-@@ -87,13 +87,13 @@ void test_get_stack_raw_tp(void)
- 	const char *file = "./test_get_stack_rawtp.bpf.o";
- 	const char *file_err = "./test_get_stack_rawtp_err.bpf.o";
- 	const char *prog_name = "bpf_prog1";
--	int i, err, prog_fd, exp_cnt = MAX_CNT_RAWTP;
-+	int i, err, prog_fd, exp_cnt = MAX_CNT_RAWTP, key = 0, valid_top_stack = 0;
- 	struct perf_buffer *pb = NULL;
- 	struct bpf_link *link = NULL;
- 	struct timespec tv = {0, 10};
- 	struct bpf_program *prog;
- 	struct bpf_object *obj;
--	struct bpf_map *map;
-+	struct bpf_map *map, *bss_map;
- 	cpu_set_t cpu_set;
- 
- 	err = bpf_prog_test_load(file_err, BPF_PROG_TYPE_RAW_TRACEPOINT, &obj, &prog_fd);
-@@ -135,6 +135,17 @@ void test_get_stack_raw_tp(void)
- 	for (i = 0; i < MAX_CNT_RAWTP; i++)
- 		nanosleep(&tv, NULL);
- 
-+	bss_map = bpf_object__find_map_by_name(obj, ".bss");
-+	if (CHECK(!bss_map, "find .bss map", "not found\n"))
-+		goto close_prog;
-+
-+	err = bpf_map_lookup_elem(bpf_map__fd(bss_map), &key, &valid_top_stack);
-+	if (CHECK(err, "lookup .bss", "err %d errno %d\n", err, errno))
-+		goto close_prog;
-+
-+	if (!ASSERT_EQ(valid_top_stack, 1, "valid_top_stack"))
-+		goto close_prog;
-+
- 	while (exp_cnt > 0) {
- 		err = perf_buffer__poll(pb, 100);
- 		if (err < 0 && CHECK(err < 0, "pb__poll", "err %d\n", err))
-diff --git a/tools/testing/selftests/bpf/prog_tests/snprintf.c b/tools/testing/selftests/bpf/prog_tests/snprintf.c
-index 594441acb707..80d6f2655b5f 100644
---- a/tools/testing/selftests/bpf/prog_tests/snprintf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/snprintf.c
-@@ -33,6 +33,9 @@
- 
- #define EXP_NO_BUF_RET 29
- 
-+#define EXP_STACK_OUT  "stack_out"
-+#define EXP_STACK_RET  sizeof(EXP_STACK_OUT)
-+
- static void test_snprintf_positive(void)
- {
- 	char exp_addr_out[] = EXP_ADDR_OUT;
-@@ -79,6 +82,9 @@ static void test_snprintf_positive(void)
- 
- 	ASSERT_EQ(skel->bss->nobuf_ret, EXP_NO_BUF_RET, "no_buf_ret");
- 
-+	ASSERT_EQ(skel->bss->stack_ret, EXP_STACK_RET, "stack_ret");
-+	ASSERT_STREQ(skel->bss->stack_out, EXP_STACK_OUT, "stack_out");
-+
- cleanup:
- 	test_snprintf__destroy(skel);
- }
-diff --git a/tools/testing/selftests/bpf/prog_tests/snprintf_btf.c b/tools/testing/selftests/bpf/prog_tests/snprintf_btf.c
-index dd41b826be30..a2e400a4880d 100644
---- a/tools/testing/selftests/bpf/prog_tests/snprintf_btf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/snprintf_btf.c
-@@ -55,6 +55,9 @@ void serial_test_snprintf_btf(void)
- 		  bss->ran_subtests))
- 		goto cleanup;
- 
-+	if (!ASSERT_EQ(bss->stack_out_test_passed, 1, "stack output test failed"))
-+		goto cleanup;
-+
- cleanup:
- 	netif_receive_skb__destroy(skel);
- }
-diff --git a/tools/testing/selftests/bpf/progs/netif_receive_skb.c b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
-index 9e067dcbf607..f78d5f56f6c9 100644
---- a/tools/testing/selftests/bpf/progs/netif_receive_skb.c
-+++ b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
-@@ -12,9 +12,11 @@
- long ret = 0;
- int num_subtests = 0;
- int ran_subtests = 0;
-+int stack_out_test_passed = 0;
- bool skip = false;
- 
--#define STRSIZE			2048
-+#define STRSIZE 2048
-+#define STACK_STRSIZE 64
- #define EXPECTED_STRSIZE	256
- 
- #if defined(bpf_target_s390)
-@@ -98,6 +100,7 @@ int BPF_PROG(trace_netif_receive_skb, struct sk_buff *skb)
- 	__u32 key = 0;
- 	int i, __ret;
- 	char *str;
-+	char stack_out[STACK_STRSIZE] = { };
- 
- #if __has_builtin(__builtin_btf_type_id)
- 	str = bpf_map_lookup_elem(&strdata, &key);
-@@ -124,6 +127,13 @@ int BPF_PROG(trace_netif_receive_skb, struct sk_buff *skb)
- 		ret = -ERANGE;
- 	}
- 
-+	/* Check when writing to a buffer on the stack */
-+	p.type_id = bpf_core_type_id_kernel(struct sk_buff);
-+	p.ptr = skb;
-+	ret = bpf_snprintf_btf(stack_out, STACK_STRSIZE, &p, sizeof(p), 0);
-+	if (ret >= 0 && stack_out[0] != '\0')
-+		stack_out_test_passed = 1;
-+
- 	/* Verify type display for various types. */
- 
- 	/* simple int */
-@@ -242,6 +252,7 @@ int BPF_PROG(trace_netif_receive_skb, struct sk_buff *skb)
- 	TEST_BTF(str, struct bpf_insn, BTF_F_NONAME, "{1,0x2,0x3,4,5,}",
- 		 {.code = 1, .dst_reg = 0x2, .src_reg = 0x3, .off = 4,
- 		  .imm = 5,});
-+
- #else
- 	skip = true;
- #endif
-diff --git a/tools/testing/selftests/bpf/progs/test_get_stack_rawtp.c b/tools/testing/selftests/bpf/progs/test_get_stack_rawtp.c
-index b6a6eb279e54..57723dc823a0 100644
---- a/tools/testing/selftests/bpf/progs/test_get_stack_rawtp.c
-+++ b/tools/testing/selftests/bpf/progs/test_get_stack_rawtp.c
-@@ -54,14 +54,17 @@ struct {
- 	__type(value, __u64[2 * MAX_STACK_RAWTP]);
- } rawdata_map SEC(".maps");
- 
-+int valid_top_stack = 0;
-+
- SEC("raw_tracepoint/sys_enter")
- int bpf_prog1(void *ctx)
- {
- 	int max_len, max_buildid_len, total_size;
- 	struct stack_trace_t *data;
--	long usize, ksize;
-+	long usize, ksize, top_usize;
- 	void *raw_data;
- 	__u32 key = 0;
-+	__u64 top_user_stack = 0;
- 
- 	data = bpf_map_lookup_elem(&stackdata_map, &key);
- 	if (!data)
-@@ -88,6 +91,12 @@ int bpf_prog1(void *ctx)
- 	if (usize < 0)
- 		return 0;
- 
-+	/* checks if the verifier correctly marks the stack variable as written. */
-+	top_usize = bpf_get_stack(ctx, &top_user_stack, sizeof(__u64),
-+				   BPF_F_USER_STACK);
-+	if (top_usize > 0 && top_user_stack != 0)
-+		valid_top_stack = 1;
-+
- 	ksize = bpf_get_stack(ctx, raw_data + usize, max_len - usize, 0);
- 	if (ksize < 0)
- 		return 0;
-diff --git a/tools/testing/selftests/bpf/progs/test_snprintf.c b/tools/testing/selftests/bpf/progs/test_snprintf.c
-index 8fda07544023..ce78fd7add03 100644
---- a/tools/testing/selftests/bpf/progs/test_snprintf.c
-+++ b/tools/testing/selftests/bpf/progs/test_snprintf.c
-@@ -32,6 +32,9 @@ long noarg_ret = 0;
- 
- long nobuf_ret = 0;
- 
-+char stack_out[64] = {};
-+long stack_ret = 0;
-+
- extern const void schedule __ksym;
- 
- SEC("raw_tp/sys_enter")
-@@ -42,6 +45,7 @@ int handler(const void *ctx)
- 	const __u8 ex_ipv6[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
- 	static const char str1[] = "str1";
- 	static const char longstr[] = "longstr";
-+	char buf[64] = {};
- 
- 	if ((int)bpf_get_current_pid_tgid() != pid)
- 		return 0;
-@@ -71,6 +75,14 @@ int handler(const void *ctx)
- 	/* No buffer */
- 	nobuf_ret = BPF_SNPRINTF(NULL, 0, "only interested in length %d", 60);
- 
-+	/* Write to a buffer on the stack */
-+	stack_ret = BPF_SNPRINTF(buf, sizeof(buf), "stack_out");
-+    /* The condition is necessary to check if the verifier
-+     * correctly marks the stack memory as written.
-+     */
-+	if (buf[0] != '\0')
-+		__builtin_memcpy(stack_out, buf, 64);
-+
- 	return 0;
- }
- 
 
--- 
-2.43.0
+
 
 
