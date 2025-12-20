@@ -1,116 +1,114 @@
-Return-Path: <bpf+bounces-77258-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77259-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00EB4CD3521
-	for <lists+bpf@lfdr.de>; Sat, 20 Dec 2025 19:43:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E0D8ECD35B8
+	for <lists+bpf@lfdr.de>; Sat, 20 Dec 2025 19:56:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9B233300FFA3
-	for <lists+bpf@lfdr.de>; Sat, 20 Dec 2025 18:43:27 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2809030102BA
+	for <lists+bpf@lfdr.de>; Sat, 20 Dec 2025 18:55:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 289C425A659;
-	Sat, 20 Dec 2025 18:43:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8658B311C27;
+	Sat, 20 Dec 2025 18:55:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cvY49sZh"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UC4f3Ss4"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF1DD79CD
-	for <bpf@vger.kernel.org>; Sat, 20 Dec 2025 18:43:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51A253101C7
+	for <bpf@vger.kernel.org>; Sat, 20 Dec 2025 18:55:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766256205; cv=none; b=K4rA3PgzoPBl8gsib3x/BNWn5M+GhtzjGdXMW08lmvweJ0FZWokZvc986nv4m3djjcgKm1f+f6Jo410Tln4y/Bz0/V17eaD3I9VSyGGk4NNUAf6F6xRPkKlw4PRKnz/zTVQSg0Lfo4PnJ5eCw0vCRIxZ+gZh4mVF0D1/N9leVIA=
+	t=1766256942; cv=none; b=aF4EY2V0P6TM0oMk7CYtH4tylxBl+p5FU6B5Ypxn7Vf0yjQQ2EXNl7H/0UZU6tr/Ng7VW2rEfWPb649LPTJbnj+Iikomn8E/IjWV9qwH9iM1970CERP7SeEpYX1VdxbYZQCEceFmhJKC8aEgOmeiNxrzb9VD+Xl8TZMZgJVwWio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766256205; c=relaxed/simple;
-	bh=qLMoCZzDHq+lpkensD//BBQka4QYKimeESFIDvZTPLw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=I939Bwk6sz15nHnshz9gJJbxHzPbLqNhLOTIJ63ccbAA46hftKUqDcVVQPz90eSNuLADFc08D01w/4HZbi+IzfyVihXMhv2SlU4S1HcKRTlSCGE5lSuiULgYgw+ve6zg0TdQ17ZXXBYEsEEuNuhbanFNWPuQS8GZUCqA7ZmlM8M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=cvY49sZh; arc=none smtp.client-ip=95.215.58.183
+	s=arc-20240116; t=1766256942; c=relaxed/simple;
+	bh=PL4wqyWGvUC3rLlHWxZTYECbhtGlmM5d2Mpowq3sOYc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NDgYUT8SiVTOD5nW1m8MynO+zz09AUdDEkWbwBxMxnxkgcgQZs+xvnnz2Ljx1hnYWBcQc6xjHZHXlPRtgCMCguv6HgsYfts+gzaj+E1ZHHWD+7wlMe07lk9XN45BzhfpTma0yvW7Wyv0xfDMWS13PJD3PqkMMllI1ZOEoN4RsyE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UC4f3Ss4; arc=none smtp.client-ip=95.215.58.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+Message-ID: <47165c76-d856-4c5d-bf2d-6d5a7fe08d43@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1766256196;
+	t=1766256937;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=oYcEDFt+reXAq8S6HjO2WYSFnT1e9O506FR9izTfXYg=;
-	b=cvY49sZhS6fWeTI911eazXNzrmFdqSxRKUzbVC0iI+/hbUFYPVRLxBYhV+omoSJ4qYGCGd
-	T+J+0lOp1MAZbo63six8tvYdFFeqPoxqKxXKCktKgUNxOmiWZSya9Uh9GF3Tdw2JMpv5Ie
-	jjF8ZEi7Y1sfl8nGmdDUXOqELd/STkA=
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Chris Mason <clm@meta.com>
-Cc: bot+bpf-ci@kernel.org,  bpf@vger.kernel.org,  linux-mm@kvack.org,
-  linux-kernel@vger.kernel.org,  inwardvessel@gmail.com,  ast@kernel.org,
-  daniel@iogearbox.net,  shakeel.butt@linux.dev,  mhocko@kernel.org,
-  hannes@cmpxchg.org,  andrii@kernel.org,  martin.lau@kernel.org,
-  eddyz87@gmail.com,  yonghong.song@linux.dev,  ihor.solodrai@linux.dev
-Subject: Re: [PATCH bpf-next v2 5/7] mm: introduce BPF kfunc to access
- memory events
-In-Reply-To: <dfc73fd6-9e5f-4b62-ac3f-7c9a327dd7fc@meta.com> (Chris Mason's
-	message of "Sat, 20 Dec 2025 08:19:48 -0500")
-References: <20251220041250.372179-6-roman.gushchin@linux.dev>
-	<8f23848b8ac657b4b4a2da04da242039c59e9ad9826a8d5fa0f5aee55acfecc9@mail.kernel.org>
-	<87a4zdepdh.fsf@linux.dev>
-	<dfc73fd6-9e5f-4b62-ac3f-7c9a327dd7fc@meta.com>
-Date: Sat, 20 Dec 2025 10:43:06 -0800
-Message-ID: <87zf7d6ll1.fsf@linux.dev>
+	bh=ZE0O0LWGwCoQunsy4CgAz5O5+3MKWy0nxMHrqSp7VR4=;
+	b=UC4f3Ss4UMw1MG2eD2iCJA7iqiIxlga2tVxSO0CJ5lhARi9+SC2wJQ7LMRFBoHmxgfSMMc
+	l1Ffa2hOWU3aNzAvjjSQ9LWhIBnS23q3ZhQ3f+b2Voc/Af8LFch1NAw58H8tRTM5V1n029
+	uPHkAAMuHzXD5HCiEvUiZpASzEP7gEk=
+Date: Sat, 20 Dec 2025 18:55:32 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Subject: Re: [PATCH] bpf: crypto: replace -EEXIST with -EBUSY
+To: Daniel Gomez <da.gomez@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>
+Cc: Luis Chamberlain <mcgrof@kernel.org>, Petr Pavlu <petr.pavlu@suse.com>,
+ Sami Tolvanen <samitolvanen@google.com>, Aaron Tomlin <atomlin@atomlin.com>,
+ Lucas De Marchi <demarchi@kernel.org>, bpf@vger.kernel.org,
+ linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Daniel Gomez <da.gomez@samsung.com>
+References: <20251220-dev-module-init-eexists-bpf-v1-1-7f186663dbe7@samsung.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+In-Reply-To: <20251220-dev-module-init-eexists-bpf-v1-1-7f186663dbe7@samsung.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 
-Chris Mason <clm@meta.com> writes:
+On 20/12/2025 03:48, Daniel Gomez wrote:
+> From: Daniel Gomez <da.gomez@samsung.com>
+> 
+> The -EEXIST error code is reserved by the module loading infrastructure
+> to indicate that a module is already loaded. When a module's init
+> function returns -EEXIST, userspace tools like kmod interpret this as
+> "module already loaded" and treat the operation as successful, returning
+> 0 to the user even though the module initialization actually failed.
+> 
+> This follows the precedent set by commit 54416fd76770 ("netfilter:
+> conntrack: helper: Replace -EEXIST by -EBUSY") which fixed the same
+> issue in nf_conntrack_helper_register().
+> 
+> This affects bpf_crypto_skcipher module. While the configuration
+> required to build it as a module is unlikely in practice, it is
+> technically possible, so fix it for correctness.
+> 
+> Signed-off-by: Daniel Gomez <da.gomez@samsung.com>
+> ---
+> The error code -EEXIST is reserved by the kernel module loader to
+> indicate that a module with the same name is already loaded. When a
+> module's init function returns -EEXIST, kmod interprets this as "module
+> already loaded" and reports success instead of failure [1].
+> 
+> The kernel module loader will include a safety net that provides -EEXIST
+> to -EBUSY with a warning [2], and a documentation patch has been sent to
+> prevent future occurrences [3].
+> 
+> These affected code paths were identified using a static analysis tool
+> [4] that traces -EEXIST returns to module_init(). The tool was developed
+> with AI assistance and all findings were manually validated.
+> 
+> Link: https://lore.kernel.org/all/aKEVQhJpRdiZSliu@orbyte.nwl.cc/ [1]
+> Link: https://lore.kernel.org/all/20251013-module-warn-ret-v1-0-ab65b41af01f@intel.com/ [2]
+> Link: https://lore.kernel.org/all/20251218-dev-module-init-eexists-modules-docs-v1-0-361569aa782a@samsung.com/ [3]
+> Link: https://gitlab.com/-/snippets/4913469 [4]
 
-> On 12/19/25 11:41 PM, Roman Gushchin wrote:
->> bot+bpf-ci@kernel.org writes:
->> 
->>>> diff --git a/mm/bpf_memcontrol.c b/mm/bpf_memcontrol.c
->>>> index d84fe6f3ed43..858eb43766ce 100644
->>>> --- a/mm/bpf_memcontrol.c
->>>> +++ b/mm/bpf_memcontrol.c
->>>> @@ -103,6 +103,22 @@ __bpf_kfunc unsigned long bpf_mem_cgroup_usage(struct mem_cgroup *memcg)
->>>>  	return mem_cgroup_usage(memcg, false) * PAGE_SIZE;
->>>>  }
->>>>
->>>> +/**
->>>> + * bpf_mem_cgroup_memory_events - Read memory cgroup's memory event value
->>>> + * @memcg: memory cgroup
->>>> + * @event: memory event id
->>>> + *
->>>> + * Returns current memory event count.
->>>> + */
->>>> +__bpf_kfunc unsigned long bpf_mem_cgroup_memory_events(struct mem_cgroup *memcg,
->>>> +						enum memcg_memory_event event)
->>>> +{
->>>> +	if (event >= MEMCG_NR_MEMORY_EVENTS)
->>>> +		return (unsigned long)-1;
->>>
->>> Should this also check for negative values?  The enum type is typically
->>> signed, so a BPF program passing a negative event value would pass this
->>> check but cause an out-of-bounds read from memcg->memory_events[].
->>>
->>> The similar bpf_mem_cgroup_page_state() in this same file uses:
->>>
->>>     if (idx < 0 || idx >= MEMCG_NR_STAT)
->>>
->>> which checks both bounds.  Could the check here be changed to:
->>>
->>>     if (event < 0 || event >= MEMCG_NR_MEMORY_EVENTS)
->>>
->>> to match that pattern?
->> 
->> No, the bpf verifier enforces event > 0.
->> It's a false positive.
->
-> I'll add some words here to the bpf prompts, thanks Roman.
+Even though I'm not quite sure that we should care once the core
+module loader can adjust the error, the change looks ok to me:
 
-I'll try to play with it too, hopefully we can fix it.
-
-Thanks!
+Acked-by: Vadim Fedorenko <vadim.fedorenko@linux.dev>
 
