@@ -1,278 +1,386 @@
-Return-Path: <bpf+bounces-77241-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77242-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DC02CD2B63
-	for <lists+bpf@lfdr.de>; Sat, 20 Dec 2025 10:01:41 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4035CD2C63
+	for <lists+bpf@lfdr.de>; Sat, 20 Dec 2025 10:38:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 28BEC3013EAB
-	for <lists+bpf@lfdr.de>; Sat, 20 Dec 2025 09:01:34 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 9E17D300A40A
+	for <lists+bpf@lfdr.de>; Sat, 20 Dec 2025 09:38:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62B2429E113;
-	Sat, 20 Dec 2025 09:01:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED3EE304976;
+	Sat, 20 Dec 2025 09:38:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aUfj1HTV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QaMbpjPE"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0669F2A1BB
-	for <bpf@vger.kernel.org>; Sat, 20 Dec 2025 09:01:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99E87224B01
+	for <bpf@vger.kernel.org>; Sat, 20 Dec 2025 09:38:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766221292; cv=none; b=QdLs02HljWrzZGDgKoSqORVXa9W5bg5nuUtTqtfKd7+TpF+B/G39nNUAX47XFJ7lOQQqA2k/7sh95CeVuWCau4jWUv8ODrsii6IA2JRdHJG6tTC9IyEsk7r67KbnFzRXpQB9nAO8Tt8qrZKefCiUQiN1HS90YQGIcr16htTE/1U=
+	t=1766223524; cv=none; b=Z0P3Ddh6kP2VFqnBssd39GkFe5p/P3YIR4taxunvr+hnk1OX106Jri5PfcmDOZeHgXq4shjcldZEtehgxu96bSCaZyQfNoe9xWlr/Z7lUBRiWxp5j+uP80aVw/af4jqlEAe0pP/R0unuaEivkBBc6GobiIShfdoyWkLPNE5dp54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766221292; c=relaxed/simple;
-	bh=4d+O9OuZ4RRNCWdOVZ0WRa+EtjazEcsVoEBPPFfY6zk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DtTLPUI/amYhvFlHamXZqqfjmYevnKuxfEB4l/XmiQfZ7ZBJQdw+WLrMkkK9ulQVi9ls4dItRwwkeJlnM106Q5sFdei7W0A0C5Jf++TukzdxOTU2eUKHD/xjDOhMW9YgglC4LPBVvJqMTw9h6TrDL1sXGqjRZYdOVPuj6hzPgoU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aUfj1HTV; arc=none smtp.client-ip=95.215.58.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1766221287;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WR8YAfzmmuv6Sn9sLH28S4YXG3HmYocRCaop46ntYtM=;
-	b=aUfj1HTVKbxAWoFKoFpJ3kIxoY+ntKqEQ2fy/+eA1MtuV/ycA0jvGrhKAbiuDLwz5mrBHB
-	LUzbgAptu8kvzMQVzjuSexV7Zt988XqydaxraPo8T9Xbu4JczIHxA0fzxPLPRFbb/N3kET
-	MMdf9vP+JUFvdBx3WOAEY3/EWqCCeCk=
-From: Menglong Dong <menglong.dong@linux.dev>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Menglong Dong <menglong8.dong@gmail.com>, ast@kernel.org,
- andrii@kernel.org, davem@davemloft.net, dsahern@kernel.org,
- daniel@iogearbox.net, martin.lau@linux.dev, eddyz87@gmail.com,
- song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
- kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
- tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
- dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
- netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v4 0/9] bpf: tracing session supporting
-Date: Sat, 20 Dec 2025 17:01:06 +0800
-Message-ID: <6114986.MhkbZ0Pkbq@7950hx>
-In-Reply-To: <2393471.ElGaqSPkdT@7950hx>
-References:
- <20251217095445.218428-1-dongml2@chinatelecom.cn>
- <CAEf4BzYm3=zzmCRg3zr1F99sBkxEZ_pDgjtKMBurb9LGu6JJKQ@mail.gmail.com>
- <2393471.ElGaqSPkdT@7950hx>
+	s=arc-20240116; t=1766223524; c=relaxed/simple;
+	bh=E9ejub5Gcj6DpddlPY6K3Xi+nK73rTOtKyv2V/zil+s=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hfhns1OnFIT5Eco79dXbWgStpkMPEYunow8iNGV92tZb+DE/0KEEbX5qP3NYT5Bd8+na+DWI0cJajc9zuMM2IhQAQ6cMXfrul7nGEudH7vf7fpTPk1EN/6rfrObJF3rUr1mRFokciahvZjv+GHcIpteX4GyjUl5tf/isoTIevHE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QaMbpjPE; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-64b7a38f07eso3079317a12.0
+        for <bpf@vger.kernel.org>; Sat, 20 Dec 2025 01:38:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1766223521; x=1766828321; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cr8tLg8opYjYhel08xQhnyz3YWZw0DZOlGI0dIw1a3w=;
+        b=QaMbpjPEIfIJ1tynI2SIn2opgH5ZF+34E2sl/EW8xXsNf2aJhzacFr87+4xFAfmTre
+         zoFzcAdIOLO0MdxfWPoHBMjevSIMjotiak6VZx9KbQr4KiEGG7drPpiWNHvhkO18LtOD
+         bEnRheLkJVSi2Ioo3XdXY/u6CtZSNhiQvN9+j7XjzKevM4YZWkEt1sA2RINBUJnRK18O
+         Hgn1j83cuhxUyWSn/oJ2xJoknuAmCjDfI5MZ2q6cRTMfxqiUpjs6+sxvMJ9ZPZbMs+Q9
+         Kh7fcApO/ZGnqWe9OFJzmRzZKLiQD8Lesjzprp4FdEueuhTgt0gSJvhrHZkrDLAcoTOE
+         XtCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1766223521; x=1766828321;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=cr8tLg8opYjYhel08xQhnyz3YWZw0DZOlGI0dIw1a3w=;
+        b=NCa56qTyQUc0QdVm16/7pGySuOZJLicQRSQ9vcZboXuJ+sGpdhZ1Hmt6dmPzA8Rp03
+         snr2JP3m4GLvCwXg8PA/9X9ilJ72qvY21N8TQk6g7QDOZoVbj4qBMvGQOqs2h1h10Aep
+         ip0Sd4rAQiYs8QPXL4SDCNPHuDHHQChilueXx3eu8XnN29wIKce82Pqn003RMfazjHtv
+         sk9/LXJcskuaPvT7oOmPKiIrOBcjDWzl71ssRyknLNoaN5Ed14LL1LtVlAQAKG37C4s/
+         1VlilbxmS0568dCDiYhPUGcje4H0Z7ZiRnL30LTLrMIfarDFegoghIXWulcv81PgY+xD
+         d1Ww==
+X-Forwarded-Encrypted: i=1; AJvYcCW4DKmqasAKPUT4l4zgJppxZBW2Uw8dTNB58IOouKkwxz5zdL4wpzUvRIheXn5lD5iJZtQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzGHY6niRZdBOUD/FEOYixccAIuHlRPQBtIkGTA8xpKwjIVcNlF
+	9HYSEZtcePUnjxRIdgDNX63k4vp5jEU/USg1hY8NoMxtXkoP+otwS8+xl61HxXolgb4Ayo0Rddz
+	6dHHEu8bsVa8rQ1nB2IbTAMEljDI2wZ8=
+X-Gm-Gg: AY/fxX71BOSJYCC51/gQrbD/1fqWRC7OI7rrTX9379gV66asMVcu5QV/iTKk/VcW3Hj
+	NuXiaITmp+S9NSqpJSCMHEjIoG0z3xqXi3D4vYrmAzAVQQpIZISul9Oj9FLE5xjy1h+7ibJf0u3
+	+eSTSN/YXH+/21hwFO786MgWz7Hi+apaOJSXz7X5vbLhry/y5goElMWaTIGIb2ON8QMJ/7x8k1R
+	+S/hQ0Sawu2OBsGBn+w2Wu+6PYEX8E/r/ojcd6QluBblrf0W2kMf65Nk3sFyyHJoGAonxxMqyzO
+	5hu/rwA=
+X-Google-Smtp-Source: AGHT+IF9tdnOMa00I4abq/UILeD7zvauRjNo2FyYnd8GSGh0RaD0o2RaBQgz3oFY/uOPB2LkcyqnZFtpHMj95MM9uu8=
+X-Received: by 2002:a17:907:608d:b0:b76:f57a:b0a7 with SMTP id
+ a640c23a62f3a-b803705129emr622346066b.31.1766223520886; Sat, 20 Dec 2025
+ 01:38:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20251218113051.455293-1-dolinux.peng@gmail.com>
+ <20251218113051.455293-5-dolinux.peng@gmail.com> <CAEf4BzbSMwW4es5D9i=bpSjALo8u+oW-9vdQ7=DBoTBtMoJ1Tg@mail.gmail.com>
+ <CAErzpmv1N1JA+=c6xxdYTqANqSBRaRauD2wzZiwUS+VeWQG14A@mail.gmail.com> <CAEf4BzZrZZ-YHHAUE-izLaAexm4VZ7aCurKnOofCtKaV=D9qvQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzZrZZ-YHHAUE-izLaAexm4VZ7aCurKnOofCtKaV=D9qvQ@mail.gmail.com>
+From: Donglin Peng <dolinux.peng@gmail.com>
+Date: Sat, 20 Dec 2025 17:38:27 +0800
+X-Gm-Features: AQt7F2rOdVa0tLzJRlVZisBrGAmLwaReHjqlQiGeCmam4NMv_HPQrphQFUBjxXg
+Message-ID: <CAErzpmvpmx=WM7kHLC-WFbCx0=OpK5f8KJJuOA8gyb7LmRjk2g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v10 04/13] libbpf: Optimize type lookup with
+ binary search for sorted BTF
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: ast@kernel.org, eddyz87@gmail.com, zhangxiaoqin@xiaomi.com, 
+	ihor.solodrai@linux.dev, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	pengdonglin <pengdonglin@xiaomi.com>, Alan Maguire <alan.maguire@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
-X-Migadu-Flow: FLOW_OUT
 
-On 2025/12/20 09:12, Menglong Dong wrote:
-> On 2025/12/20 00:55, Andrii Nakryiko wrote:
-> > On Thu, Dec 18, 2025 at 5:18=E2=80=AFPM Menglong Dong <menglong.dong@li=
-nux.dev> wrote:
+On Sat, Dec 20, 2025 at 1:28=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Thu, Dec 18, 2025 at 6:53=E2=80=AFPM Donglin Peng <dolinux.peng@gmail.=
+com> wrote:
+> >
+> > On Fri, Dec 19, 2025 at 7:29=E2=80=AFAM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
 > > >
-> > > On 2025/12/19 08:55 Andrii Nakryiko <andrii.nakryiko@gmail.com> write:
-> > > > On Wed, Dec 17, 2025 at 1:54=E2=80=AFAM Menglong Dong <menglong8.do=
-ng@gmail.com> wrote:
-> > > > >
-> > > > > Hi, all.
-> > > > >
-> > > > > In this version, I combined Alexei and Andrii's advice, which mak=
-es the
-> > > > > architecture specific code much simpler.
-> > > > >
-> > > > > Sometimes, we need to hook both the entry and exit of a function =
-with
-> > > > > TRACING. Therefore, we need define a FENTRY and a FEXIT for the t=
-arget
-> > > > > function, which is not convenient.
-> > > > >
-> > > > > Therefore, we add a tracing session support for TRACING. Generally
-> > > > > speaking, it's similar to kprobe session, which can hook both the=
- entry
-> > > > > and exit of a function with a single BPF program. Session cookie =
-is also
-> > > > > supported with the kfunc bpf_fsession_cookie(). In order to limit=
- the
-> > > > > stack usage, we limit the maximum number of cookies to 4.
-> > > > >
-> > > > > The kfunc bpf_fsession_is_return() and bpf_fsession_cookie() are =
-both
-> > > > > inlined in the verifier.
+> > > On Thu, Dec 18, 2025 at 3:31=E2=80=AFAM Donglin Peng <dolinux.peng@gm=
+ail.com> wrote:
 > > > >
-> > > > We have generic bpf_session_is_return() and bpf_session_cookie() (t=
-hat
-> > > > currently works for ksession), can't you just implement them for the
-> > > > newly added program type instead of adding type-specific kfuncs?
+> > > > From: pengdonglin <pengdonglin@xiaomi.com>
+> > > >
+> > > > This patch introduces binary search optimization for BTF type looku=
+ps
+> > > > when the BTF instance contains sorted types.
+> > > >
+> > > > The optimization significantly improves performance when searching =
+for
+> > > > types in large BTF instances with sorted types. For unsorted BTF, t=
+he
+> > > > implementation falls back to the original linear search.
+> > > >
+> > > > Cc: Eduard Zingerman <eddyz87@gmail.com>
+> > > > Cc: Alexei Starovoitov <ast@kernel.org>
+> > > > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> > > > Cc: Alan Maguire <alan.maguire@oracle.com>
+> > > > Cc: Ihor Solodrai <ihor.solodrai@linux.dev>
+> > > > Cc: Xiaoqin Zhang <zhangxiaoqin@xiaomi.com>
+> > > > Signed-off-by: pengdonglin <pengdonglin@xiaomi.com>
+> > > > ---
+> > > >  tools/lib/bpf/btf.c | 103 ++++++++++++++++++++++++++++++++++------=
+----
+> > > >  1 file changed, 80 insertions(+), 23 deletions(-)
+> > > >
 > > >
-> > > Hi, Andrii. I tried and found that it's a little hard to reuse them. =
-The
-> > > bpf_session_is_return() and bpf_session_cookie() are defined as kfunc=
-, which
-> > > makes we can't implement different functions for different attach typ=
-e, like
-> > > what bpf helper does.
-> >=20
-> > Are you sure? We certainly support kfunc implementation specialization
-> > for sleepable vs non-sleepable BPF programs. Check specialize_kfunc()
-> > in verifier.c
->=20
-> Ah, I remember it now. We do can use different kfunc version
-> for different case in specialize_kfunc().
->=20
-> >=20
+> > > [...]
 > > >
-> > > The way we store "is_return" and "cookie" in fsession is different wi=
-th
-> > > ksession. For ksession, it store the "is_return" in struct bpf_sessio=
-n_run_ctx.
-> > > Even if we move the "nr_regs" from stack to struct bpf_tramp_run_ctx,
-> > > it's still hard to reuse the bpf_session_is_return() or bpf_session_c=
-ookie(),
-> > > as the way of storing the "is_return" and "cookie" in fsession and ks=
-ession
-> > > is different, and it's a little difficult and complex to unify them.
-> >=20
-> > I'm not saying we should unify the implementation, you have to
-> > implement different version of logically the same kfunc, of course.
->=20
-> I see. The problem now is that the prototype of bpf_session_cookie()
-> or bpf_session_is_return() don't satisfy our need. For bpf_session_cookie=
-(),
-> we at least need the context to be the argument. However, both
-> of them don't have any function argument. After all, the prototype of
-> different version of logically the same kfunc should be the same.
-
-Hi, Andrii. I see that you want to make the API consistent between
-ksession and fsession, which is more friendly for the user.
-
-After my analysis, I think we have following approach:
-1. change the function prototype of bpf_session_cookie and bpf_session_is_r=
-eturn
-to:
-    bool bpf_session_is_return(void *ctx);
-    bool bpf_session_cookie(void *ctx);
-And we do the fix up in specialize_kfunc(), which I think is the easiest
-way. The defect is that it will break existing users.
-
-2. We define a fixup_kfunc_call_early() and call it in add_subprog_and_kfun=
-c.
-In the fixup_kfunc_call_early(), we will change the target kfunc(which is i=
-nsn->imm)
-from bpf_session_cookie() to bpf_fsession_cookie(). For the bpf_session_coo=
-kie(),
-we make its prototype to:
-    __bpf_kfunc __u64 *bpf_session_cookie(void *ctx__ign)
-Therefore, it won't break the existing users. For the ksession that uses the
-old prototype, it can pass the verifier too. Following is a demo patch of t=
-his
-approach. In this way, we can allow a extension in the prototype for a kfunc
-in the feature too.
-
-What do you think?
-
-Thanks!
-Menglong Dong
-
->patch<
-
-+static int fixup_kfunc_call_early(struct bpf_verifier_env *env, struct bpf=
-_insn *insn)
-+{
-+       struct bpf_prog *prog =3D env->prog;
-+
-+       if (prog->expected_attach_type =3D=3D BPF_TRACE_FSESSION) {
-+               if (insn->imm =3D=3D special_kfunc_list[KF_bpf_session_cook=
-ie])
-+                       insn->imm =3D special_kfunc_list[KF_bpf_fsession_co=
-okie];
-+               else if (insn->imm =3D=3D special_kfunc_list[KF_bpf_session=
-_is_return])
-+                       insn->imm =3D special_kfunc_list[KF_bpf_fsession_is=
-_return];
-+       }
-+
-+       return 0;
-+}
-
-@@ -3489,10 +3490,12 @@ static int add_subprog_and_kfunc(struct bpf_verifie=
-r_env *env)
-                        return -EPERM;
-                }
-=20
-=2D               if (bpf_pseudo_func(insn) || bpf_pseudo_call(insn))
-+               if (bpf_pseudo_func(insn) || bpf_pseudo_call(insn)) {
-                        ret =3D add_subprog(env, i + insn->imm + 1);
-=2D               else
-=2D                       ret =3D add_kfunc_call(env, insn->imm, insn->off);
-+               } else {
-+                       ret =3D fixup_kfunc_call_early(env, insn);
-+                       ret =3D ret ?: add_kfunc_call(env, insn->imm, insn-=
->off);
-+               }
-
-@@ -3316,7 +3321,7 @@ static u64 bpf_uprobe_multi_entry_ip(struct bpf_run_c=
-tx *ctx)
-=20
- __bpf_kfunc_start_defs();
-=20
-=2D__bpf_kfunc bool bpf_session_is_return(void)
-+__bpf_kfunc bool bpf_session_is_return(void *ctx__ign)
- {
-        struct bpf_session_run_ctx *session_ctx;
-=20
-@@ -3324,7 +3329,7 @@ __bpf_kfunc bool bpf_session_is_return(void)
-        return session_ctx->is_return;
- }
-=20
-=2D__bpf_kfunc __u64 *bpf_session_cookie(void)
-+__bpf_kfunc __u64 *bpf_session_cookie(void *ctx__ign)
- {
-        struct bpf_session_run_ctx *session_ctx;
-
->=20
-> I think it's not a good idea to modify the prototype of existing kfunc,
-> can we?
->=20
-> >=20
+> > > > +       l =3D start_id;
+> > > > +       r =3D end_id;
+> > > > +       while (l <=3D r) {
+> > > > +               m =3D l + (r - l) / 2;
+> > > > +               t =3D btf_type_by_id(btf, m);
+> > > > +               tname =3D btf__str_by_offset(btf, t->name_off);
+> > > > +               ret =3D strcmp(tname, name);
+> > > > +               if (ret < 0) {
+> > > > +                       l =3D m + 1;
+> > > > +               } else {
+> > > > +                       if (ret =3D=3D 0)
+> > > > +                               lmost =3D m;
+> > > > +                       r =3D m - 1;
+> > > > +               }
+> > > >         }
 > > >
-> > > What's more, we will lose the advantage of inline bpf_fsession_is_ret=
-urn
-> > > and bpf_fsession_cookie in verifier.
+> > > this differs from what we discussed in [0], you said you'll use that
+> > > approach. Can you please elaborate on why you didn't?
 > > >
-> >=20
-> > I'd double check that either. BPF verifier and JIT do know program
-> > type, so you can pick how to inline
-> > bpf_session_is_return()/bpf_session_cookie() based on that.
->=20
-> Yeah, we can inline it depend on the program type if we can solve
-> the prototype problem.
->=20
-> Thanks!
-> Menglong Dong
->=20
->=20
-> >=20
-> > > I'll check more to see if there is a more simple way to reuse them.
-> > >
-> > > Thanks!
-> > > Menglong Dong
+> > >   [0] https://lore.kernel.org/bpf/CAEf4Bzb3Eu0J83O=3DY4KA-LkzBMjtx7cb=
+onxPzkiduzZ1Pedajg@mail.gmail.com/
+> >
+> > Yes. As mentioned in the v8 changelog [1], the binary search approach
+> > you referenced was implemented in versions v6 and v7 [2]. However,
+> > testing revealed a slight performance regression. The root cause was
+> > an extra strcmp operation introduced in v7, as discussed in [3]. Theref=
+ore,
+> > in v8, I reverted to the approach from v5 [4] and refactored it for cla=
+rity.
+>
+> If you keep oscillating like that this patch set will never land. 4%
+> (500us) gain on artificial and unrealistic micro-benchmark is
+> meaningless and irrelevant, you are just adding more work for yourself
+> and for reviewers by constantly changing your implementation between
+> revisions for no good reason.
+
+Thank you, I understand and will learn from it. I think the performance gai=
+n
+makes sense. I=E2=80=99d like to share a specific real-world case where thi=
+s
+optimization
+could matter:  the `btf_find_by_name_kind()` function is indeed infrequentl=
+y
+used by the BPF subsystem, but it=E2=80=99s heavily relied upon by the ftra=
+ce
+subsystem=E2=80=99s features like `func-args`, `funcgraph-args` [1], and th=
+e upcoming
+`funcgraph-retval` [2]. These features invoke the function nearly once per
+trace line when outputting, with a call frequency that can reach **100=E2=
+=80=AFkHz**
+in intensive tracing workloads.
+
+In such scenarios, the extra `strcmp` operations translate to ~100,000
+additional
+string comparisons per second. While this might seem negligible in isolatio=
+n,
+the overhead accumulates under high-frequency tracing=E2=80=94potentially i=
+mpacting
+latency for users relying on detailed function argument/return value tracin=
+g.
+
+Thanks again for pushing for rigor=E2=80=94it helps make the code more clea=
+ner
+and robust.
+
+[1] https://lore.kernel.org/all/20250227185822.639418500@goodmis.org/
+[2] https://lore.kernel.org/all/20251215034153.2367756-1-dolinux.peng@gmail=
+.com/
+
+>
+>
+> >
+> > Benchmark results show that v8 achieves a 4.2% performance improvement
+> > over v7. If we don't care the performance gain, I will revert to the ap=
+proach
+> > in v7 in the next version.
+> >
+> > [1] https://lore.kernel.org/bpf/20251126085025.784288-1-dolinux.peng@gm=
+ail.com/
+> > [2] https://lore.kernel.org/all/20251119031531.1817099-1-dolinux.peng@g=
+mail.com/
+> > [3] https://lore.kernel.org/all/CAEf4BzaqEPD46LddJHO1-k5KPGyVWf6d=3DduD=
+AxG1q=3DjykJkMBg@mail.gmail.com/
+> > [4] https://lore.kernel.org/all/20251106131956.1222864-4-dolinux.peng@g=
+mail.com/
+> >
 > > >
 > > > >
-> [...]
+> > > > -       return libbpf_err(-ENOENT);
+> > > > +       return lmost;
+> > > >  }
+> > > >
+> > > >  static __s32 btf_find_by_name_kind(const struct btf *btf, int star=
+t_id,
+> > > >                                    const char *type_name, __u32 kin=
+d)
+> > >
+> > > kind is defined as u32 but you expect caller to pass -1 to ignore the
+> > > kind. Use int here.
+> >
+> > Thanks, I will fix it.
+> >
+> > >
+> > > >  {
+> > > > -       __u32 i, nr_types =3D btf__type_cnt(btf);
+> > > > +       const struct btf_type *t;
+> > > > +       const char *tname;
+> > > > +       __s32 idx;
+> > > > +
+> > > > +       if (start_id < btf->start_id) {
+> > > > +               idx =3D btf_find_by_name_kind(btf->base_btf, start_=
+id,
+> > > > +                                           type_name, kind);
+> > > > +               if (idx >=3D 0)
+> > > > +                       return idx;
+> > > > +               start_id =3D btf->start_id;
+> > > > +       }
+> > > >
+> > > > -       if (kind =3D=3D BTF_KIND_UNKN || !strcmp(type_name, "void")=
+)
+> > > > +       if (kind =3D=3D BTF_KIND_UNKN || strcmp(type_name, "void") =
+=3D=3D 0)
+> > > >                 return 0;
+> > > >
+> > > > -       for (i =3D start_id; i < nr_types; i++) {
+> > > > -               const struct btf_type *t =3D btf__type_by_id(btf, i=
+);
+> > > > -               const char *name;
+> > > > +       if (btf->sorted_start_id > 0 && type_name[0]) {
+> > > > +               __s32 end_id =3D btf__type_cnt(btf) - 1;
+> > > > +
+> > > > +               /* skip anonymous types */
+> > > > +               start_id =3D max(start_id, btf->sorted_start_id);
+> > >
+> > > can sorted_start_id ever be smaller than start_id?
+> > >
+> > > > +               idx =3D btf_find_by_name_bsearch(btf, type_name, st=
+art_id, end_id);
+> > >
+> > > is there ever a time when btf_find_by_name_bsearch() will work with
+> > > different start_id and end_id? why is this not done inside the
+> > > btf_find_by_name_bsearch()?
+> >
+> > Because the start_id could be specified by the caller.
+>
+> Right, start_id has to be passed in. But end_id is always the same, so
+> maybe determine it internally instead? And let's not return -ENOENT
+
+Thanks, I agree and will put the end_id into btf_find_by_name_bsearch.
+
+> from btf_find_by_name_bsearch(), as I mentioned before, it would be
+> more streamlined if you return btf__type_cnt(btf) if search failed.
+
+Thanks, I agree.
+
+>
+> >
+> > >
+> > > > +               if (unlikely(idx < 0))
+> > > > +                       return libbpf_err(-ENOENT);
+> > >
+> > > pass through error returned from btf_find_by_name_bsearch(), why rede=
+fining it?
+> >
+> > Thanks, I will fix it.
+> >
+>
+> see above, by returning btf__type_cnt() you won't even have this error
+> handling, you'll just go through normal loop checking for a match and
+> won't find anything, returning -ENOENT then.
+
+Thanks, I agree.
+
+>
+> > >
+> > > > +
+> > > > +               if (unlikely(kind =3D=3D -1))
+> > > > +                       return idx;
+> > > > +
+> > > > +               t =3D btf_type_by_id(btf, idx);
+> > > > +               if (likely(BTF_INFO_KIND(t->info) =3D=3D kind))
+> > >
+> > > use btf_kind(), but this whole extra check is just unnecessary, this
+> >
+> > Thanks, I will do it.
+> >
+> > > should be done in the loop below. We talked about all this already,
+> > > why do I feel like I'm being ignored?..
+> >
+> > Sorry for the confusion, and absolutely not ignoring you.
+> >
+>
+> If you decide to change implementation due to some unforeseen factors
+> (like concern about 4% microbenchmark improvement), it would be
+> helpful for you to call this out in a reply to the original
+> discussion. A line somewhere in the cover letter changelog is way too
+> easy to miss and that doesn't give me an opportunity to stop you
+> before you go and produce another revision that I'll then be
+> rejecting.
+
+I will learn from it and thank you for the suggestion.
+
+>
+> > >
+> > > > +                       return idx;
+> > >
+> > > drop all these likely and unlikely micro optimizations, please
+> >
+> > Thanks, I will do it.
+> >
 > > >
 > > >
+> > > > +
+> > > > +               for (idx++; idx <=3D end_id; idx++) {
+> > > > +                       t =3D btf__type_by_id(btf, idx);
+> > > > +                       tname =3D btf__str_by_offset(btf, t->name_o=
+ff);
+> > > > +                       if (strcmp(tname, type_name) !=3D 0)
+> > > > +                               return libbpf_err(-ENOENT);
+> > > > +                       if (btf_kind(t) =3D=3D kind)
+> > > > +                               return idx;
+> > > > +               }
+> > > > +       } else {
+> > > > +               __u32 i, total;
+> > > >
+> > > > -               if (btf_kind(t) !=3D kind)
+> > > > -                       continue;
+> > > > -               name =3D btf__name_by_offset(btf, t->name_off);
+> > > > -               if (name && !strcmp(type_name, name))
+> > > > -                       return i;
+> > > > +               total =3D btf__type_cnt(btf);
+> > > > +               for (i =3D start_id; i < total; i++) {
+> > > > +                       t =3D btf_type_by_id(btf, i);
+> > > > +                       if (kind !=3D -1 && btf_kind(t) !=3D kind)
 > > >
+> > > nit: kind < 0, no need to hard-code -1
+> >
+> > Good, I will fix it.
+> >
 > > >
->=20
->=20
->=20
->=20
->=20
-
-
-
-
+> > > > +                               continue;
+> > > > +                       tname =3D btf__str_by_offset(btf, t->name_o=
+ff);
+> > > > +                       if (strcmp(tname, type_name) =3D=3D 0)
+> > > > +                               return i;
+> > > > +               }
+> > > >         }
+> > > >
+> > > >         return libbpf_err(-ENOENT);
+> > > >  }
+> > > >
+> > >
+> > > [...]
 
