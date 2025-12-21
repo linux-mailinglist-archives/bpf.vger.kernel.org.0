@@ -1,85 +1,83 @@
-Return-Path: <bpf+bounces-77264-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77265-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04AE7CD3C5A
-	for <lists+bpf@lfdr.de>; Sun, 21 Dec 2025 08:00:59 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF046CD3DF6
+	for <lists+bpf@lfdr.de>; Sun, 21 Dec 2025 10:40:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id CC90F300986A
-	for <lists+bpf@lfdr.de>; Sun, 21 Dec 2025 07:00:55 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 74EBF3007C89
+	for <lists+bpf@lfdr.de>; Sun, 21 Dec 2025 09:40:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E7D9233D85;
-	Sun, 21 Dec 2025 07:00:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B836B27FD52;
+	Sun, 21 Dec 2025 09:40:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Id6jsMCQ"
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="BLnYnPyn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f65.google.com (mail-pj1-f65.google.com [209.85.216.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out162-62-57-64.mail.qq.com (out162-62-57-64.mail.qq.com [162.62.57.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD92020C00C
-	for <bpf@vger.kernel.org>; Sun, 21 Dec 2025 07:00:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47436223702
+	for <bpf@vger.kernel.org>; Sun, 21 Dec 2025 09:40:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766300453; cv=none; b=OFoivHGKMG1Bsq9aiVaosbCgcgJ1r7+AAvUkj8K/DRF4JXOw4dEmtcMIrMMyzk+EByeRJs4D+OThXohTAKQAusIro91RQVZradlh4swhLly78X34m+oDaCD9qFVWmaN57FkUsnyCLt++JfsrIk4T5qvAZgn2jGIzv4Qj9edCo5A=
+	t=1766310020; cv=none; b=a2f8XS2I5437C84mtmPzA07Gy6qbHGBFXP7P2VJ5Mo3seRD1t3GeMcS38YZ4PitzTaYqrUv9LjisQwsBecDu3M1COkbnF1DnM/kQfwKafbBxkYhjo74OAPWG80gnDUkAZA1q7D1XvFt7Dusbbwv6u1469K48gAQnCelCS13f7Hg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766300453; c=relaxed/simple;
-	bh=yGU327kh4Bf6zZy2Yagp8yzrreRNuA+F+B6N0rpT9oY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NEUwlycLQdRL829Z4jMhW5NEsSnytk+UMFHeEC0s9+DsxZldsPxfY+7yYWeSKdPo81KxXQrizp7gJ+JiGpW39LDzrVDJIN6bKda7WEiEl11/IA/ldpArWoRGHCzyev+DSwsFwfYXhAabnnAg5ltDmVUWAtadeFv+DBBwMmqLamI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Id6jsMCQ; arc=none smtp.client-ip=209.85.216.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f65.google.com with SMTP id 98e67ed59e1d1-34c7d0c5ddaso1688857a91.0
-        for <bpf@vger.kernel.org>; Sat, 20 Dec 2025 23:00:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1766300451; x=1766905251; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=wm4lYrd1UEAfe1OMJYAL+6fR/c/Hp392vfi3YhuFblk=;
-        b=Id6jsMCQCHx2Et3K0SiD6f92fLTrqr1aePvpJy/Z3hIVDdvfc7nmDjg7tJhSRbLgy9
-         fWSqTfPsQWvRd4jyaHGlrwFTRDKg6uFXwhuAteyiqTWKjlTiN4WMcBSVAzXSpbVnzSoC
-         FJQeAzldJKr8hoAA5sYn4uqUU771ISD39mpcbBLiLguVrkVaANEdV+M5PePfSsCQpWg4
-         vvLafpGoy5fUavjr7QVv/ofX4yfMiMwgPZmdhazvIo8Oo4NBOqrY2KxsddlReEWZJ9Mg
-         7eFZ8l515ooTfOV+MplZnWmjqp8JYR+uyl2eT6SrY0NZzhzsPf+9D/VtDJkr5bcmHy8T
-         JHHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766300451; x=1766905251;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wm4lYrd1UEAfe1OMJYAL+6fR/c/Hp392vfi3YhuFblk=;
-        b=VC7jLbRYkXxGEaHh1hYL+vGJ8sdVWnfCvTwiogtQ8WesxHsa6BgCn8VfBsLO3+Y8tu
-         +ClON6JyTXW8R0WT5pvoGR1qD/KFrKirxvcN3+PLUfwLBU8DSC4ROUv83prgsz28FGp+
-         6FzXuA0+FRw0/Ow5O6rUEgQ7mk6b41FMzsWnTqlT0NWwMm8GINXaUP3WvGmpAeqZuXX8
-         BfdlO5g2Qb6d+9qrU4dXn0iItUUCcymREYlSAvhKNeARv+dmnjUvtFdxMs2dC49btIKb
-         puy2BmyRtDrZpCN/cBGiZxunhh9/Ua341AGLtF4n6x0Q5Da96VG1r73pGfu7VmEE15y1
-         XCXw==
-X-Gm-Message-State: AOJu0YymrgBTf0wh6FlAV/qSpWq5Km+0bPiwULX7meEiGsRooe7rhjkv
-	RN4LO98DgztVHkYHIEeDfbKlEJk+2deA/bog9byHyIFbo0jEbi+kNZi7
-X-Gm-Gg: AY/fxX4U9MCGZ1fNZwL2OumfDByRtiQD2uQ3AMoJUJOrUUFWeJsHojWP2T9SYgyarJG
-	2r1L4/LtLMZPTNhKo4bnRXWhPdFAFlYVWPbpPiAKMGmVAXShdUxXSCRd2ldOptnDqBVoJnTFaBF
-	fwlxsF0wYY2eiKQRGQ9dQ3dZxPb/TORMIky6UI2P00ZEHW7F3M9Dz0VYdUxtRjr4dylElBAoN6g
-	cbfy5WHV3//ppfyoROt1vlrWjQ7Q24BcdFD4WjdpOq3eU/jJTvAMfgiRyf79U7ak4WQxvn9L09G
-	iz4zYnqqvEeZ+z5fl7FRBROmxcSc16ICMhbsnpa2KRUURI6ogMFL5P7SlUe2zTeOtSFLrVscyJw
-	lvL8NeUkdgp0/FC9sgL18Ztn3w4WFHCYVo7AUQG79c5glIApB68tr/LdtuWIHZGjiWDk6WPPsyd
-	IHHhkCEHo32/r3s8xaDKFHAJzcoMFZXSHG77Mag5pYjQj/4PDjv9kXSUPiQ6e6LijGDQ==
-X-Google-Smtp-Source: AGHT+IEVTyoizp72hHa2oRLjdKpOv2xTmjBKmKZHtuDvcFdYNCRlNJ1HgycXM39JHS+fOnG6zZbWAg==
-X-Received: by 2002:a17:90b:4b0b:b0:340:c094:fbff with SMTP id 98e67ed59e1d1-34e71e09fecmr9309489a91.10.1766300450888;
-        Sat, 20 Dec 2025 23:00:50 -0800 (PST)
-Received: from cncf-development.local (90.106.216.35.bc.googleusercontent.com. [35.216.106.90])
-        by smtp.googlemail.com with ESMTPSA id 98e67ed59e1d1-34ebeac8623sm652843a91.1.2025.12.20.23.00.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Dec 2025 23:00:49 -0800 (PST)
-From: SungRock Jung <tjdfkr2421@gmail.com>
-To: Jonathan Corbet <corbet@lwn.net>,
-	Alexei Starovoitov <ast@kernel.org>
-Cc: bpf@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	SungRock Jung <tjdfkr2421@gmail.com>
-Subject: [PATCH] Documentation/bpf: Update PROG_TYPE for BPF_PROG_RUN
-Date: Sun, 21 Dec 2025 07:00:41 +0000
-Message-ID: <20251221070041.26592-1-tjdfkr2421@gmail.com>
-X-Mailer: git-send-email 2.48.1
+	s=arc-20240116; t=1766310020; c=relaxed/simple;
+	bh=Vfu5URPxYK9JhFpmlBG9GmhQ7cInZVahecKvHGjWgB4=;
+	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=fbHLrWPXkNSiKjcrKhZJOxxedK3llHi0w+JAXekLWiOsH7gBBMyAGdYFoSs5QfflGvROZGszHKS4Lych3N6E1NqoyO2bnByXs9vBlUmXkWUajC2e8NVYYo704t8bsgUuX1Z+IFVReODTTmku4gE6Vb5BzckHumxnKD1uzq7bZ6A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=BLnYnPyn; arc=none smtp.client-ip=162.62.57.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1766310007;
+	bh=y0hpb6WksFSVo8IZ4nMENdrJ4St5Y8/QVpK0JZ+6zho=;
+	h=From:To:Cc:Subject:Date;
+	b=BLnYnPyniA1A85olp1697jjAYiyC5rXyWDE404tQlNsXToYG4ugIwbV6f57F2nHrL
+	 4wS/cHmGM5c4my3deNLmOphLl9I+NRyCDuFKTey+DjzY10MgbYdyT44XtWpYI9JsEI
+	 plvnu+aKVDbywFjuXxSrYDk0vdqNBWeDnGy7zVtU=
+Received: from wolframium.tail477849.ts.net ([122.224.66.116])
+	by newxmesmtplogicsvrszb43-0.qq.com (NewEsmtp) with SMTP
+	id A04BA01B; Sun, 21 Dec 2025 17:40:04 +0800
+X-QQ-mid: xmsmtpt1766310004t6cgze4sc
+Message-ID: <tencent_717092CD734D050CCD93401CA624BB3C8307@qq.com>
+X-QQ-XMAILINFO: NMSHCeFjyxDuljEPYznn3p2rprH8VI0A3XYxG3Eycyp/ItCFLs14bsJXuliNuf
+	 XzQHWYRBg+FpUrJLozTDh3mlzIRFShKLtM/xAl//B5dDLUxq95fqK0gUTPrAWvMtv79VBdEdRzBD
+	 Ga4H5tsC2sAbNuncCBkMKCDHfyyhUQ3Q1l/0kimayutZW76gQah0HmcBiONYHKCTok6948b2oiCN
+	 +Q1F7nIGqIgamdjP4cp1x4tnIijL8YS6GAqsKOd/I37DHbQPtaHkOFcqPn6KzOWHLPSWmwf/ieC+
+	 KggR8AW0A7A4eyV1yVYGvCxZKken8Rc3CkXVsaWGrG+eFYuBZqfH1EJ3Zo3qSRIeBWWc3JimtFCo
+	 k8ewoXLHHpFdtbZ0NCKcp+BkxU6PnbZG0dNNBLb5HaIKuSSuSih1dnjgEtSClurfs1G8W/OvuTMQ
+	 LxQfra8NmoF9gh+qnZvkoGwQ+7uZP+nt8n4v9AgDB8Urom91RvtSb5Qg3LE/I6vBbjI3DCPiaLnU
+	 EITiLAZpJS3DsJEWlMTmnsxNMG51hi6TpeEzI1oO1CpX8BBfazz06izW5hN9Y4oTY3AcnXCA7dFj
+	 btm6PpA2Ov7tjoMmi+HnS7AcPCf+B9LWuhOlLh9F/Oq17QRw7amMpkW9eITOqyP+a78lq7ftwEyb
+	 zXV4/ihTRdw7M235EPgLMP6KcvqK/RaKhXzKEyTHSZ78mJHJ4w0z8DZspzyuAup9tmmeExbnJdfW
+	 YTGz9h452eyrB1sQwqJ9I7w3YxXpKb/tSomAkTTmRYVc55r5GYFguQZwad1kDd4FzDCfkw3VTfOs
+	 Pnl7MO4CtnrKvIPqPBl5q2j8eV9QTBvB1CsLlJ8J6JB6wCjrfmMmwiakNg3MyFFHT6+8KU/m9ULi
+	 kueSF0sCt5QhfjyYU2aEEH01IDWeOqDP9VVmVfL+zWwdbGl96CZlkBRSSv+NDd+x9CZ8MFA6cZbw
+	 Iv2TuJC96XvKHK21MSQIIHPaKPecR/Eivl9h20G7u95x6FMUDBG1VWCKfy26FtpLd1Rbw3e6Vket
+	 ZWq1qAcskfNLrfygbKqmqKreWfFdaKjCyJ34VpzK396Q4MR/UuF7GNUF0tiGOUgUaiKmaUqlt/xU
+	 4h4fbFhx3MCxDDgYGsJWGcjJ8fxcGbQByTvpeRpdqekrlJMU5+CprFbW6a8w==
+X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
+From: Yazhou Tang <yazhoutang@foxmail.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	tangyazhou518@outlook.com,
+	shenghaoyuan0928@163.com,
+	ziye@zju.edu.cn
+Subject: [PATCH bpf-next 0/2] bpf: Add value tracking for BPF_DIV
+Date: Sun, 21 Dec 2025 17:39:52 +0800
+X-OQ-MSGID: <20251221093955.109312-1-yazhoutang@foxmail.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -88,36 +86,25 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-LWT_SEG6LOCAL no longer supports test_run starting from v6.11
-so remove it from the list of program types supported by BPF_PROG_RUN.
+From: Yazhou Tang <tangyazhou518@outlook.com>
 
-Add TRACING and NETFILTER to reflect the
-current set of program types that implement test_run support.
+Add value tracking (range and bitwise tracking) for BPF_DIV. Please
+see commit log of 1/2 for more details.
 
-Signed-off-by: SungRock Jung <tjdfkr2421@gmail.com>
----
- Documentation/bpf/bpf_prog_run.rst | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Yazhou Tang (2):
+  bpf: Add interval and tnum analysis for signed and unsigned BPF_DIV
+  selftests/bpf: Add tests for BPF_DIV analysis
 
-diff --git a/Documentation/bpf/bpf_prog_run.rst b/Documentation/bpf/bpf_prog_run.rst
-index 4868c909d..81ef768c7 100644
---- a/Documentation/bpf/bpf_prog_run.rst
-+++ b/Documentation/bpf/bpf_prog_run.rst
-@@ -34,11 +34,12 @@ following types:
- - ``BPF_PROG_TYPE_LWT_IN``
- - ``BPF_PROG_TYPE_LWT_OUT``
- - ``BPF_PROG_TYPE_LWT_XMIT``
--- ``BPF_PROG_TYPE_LWT_SEG6LOCAL``
- - ``BPF_PROG_TYPE_FLOW_DISSECTOR``
- - ``BPF_PROG_TYPE_STRUCT_OPS``
- - ``BPF_PROG_TYPE_RAW_TRACEPOINT``
- - ``BPF_PROG_TYPE_SYSCALL``
-+- ``BPF_PROG_TYPE_TRACING``
-+- ``BPF_PROG_TYPE_NETFILTER``
- 
- When using the ``BPF_PROG_RUN`` command, userspace supplies an input context
- object and (for program types operating on network packets) a buffer containing
+ include/linux/tnum.h                          |   4 +
+ kernel/bpf/tnum.c                             | 159 ++++++-
+ kernel/bpf/verifier.c                         | 225 ++++++++++
+ .../selftests/bpf/prog_tests/verifier.c       |   2 +
+ .../selftests/bpf/progs/verifier_div_bounds.c | 404 ++++++++++++++++++
+ .../bpf/progs/verifier_value_illegal_alu.c    |   7 +-
+ 6 files changed, 797 insertions(+), 4 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_div_bounds.c
+
 -- 
-2.48.1
+2.52.0
 
 
