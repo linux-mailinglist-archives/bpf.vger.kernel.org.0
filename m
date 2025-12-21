@@ -1,92 +1,123 @@
-Return-Path: <bpf+bounces-77263-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77264-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D08F6CD38D8
-	for <lists+bpf@lfdr.de>; Sun, 21 Dec 2025 00:37:03 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04AE7CD3C5A
+	for <lists+bpf@lfdr.de>; Sun, 21 Dec 2025 08:00:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C7B7F301174C
-	for <lists+bpf@lfdr.de>; Sat, 20 Dec 2025 23:36:41 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id CC90F300986A
+	for <lists+bpf@lfdr.de>; Sun, 21 Dec 2025 07:00:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B5EA2FC037;
-	Sat, 20 Dec 2025 23:36:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E7D9233D85;
+	Sun, 21 Dec 2025 07:00:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cNXrcC1k"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Id6jsMCQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f65.google.com (mail-pj1-f65.google.com [209.85.216.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA7FF26A1CF;
-	Sat, 20 Dec 2025 23:36:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD92020C00C
+	for <bpf@vger.kernel.org>; Sun, 21 Dec 2025 07:00:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766273799; cv=none; b=B0GMftQoDA3InSznA9IqKrbKjzlN9UpBzBB/sW+NQPL92jjsR9oHIM0p9KeK0J2LAbY6OfOlCPADSKPkCRdrpHyZf7rB5SPdcWWWtEaJJUwnKyywWpoKIsucWtES4AaPM0NX07WnZ+IY5ku4VoCCf0vcpE7ddipY2DnZZui9G+I=
+	t=1766300453; cv=none; b=OFoivHGKMG1Bsq9aiVaosbCgcgJ1r7+AAvUkj8K/DRF4JXOw4dEmtcMIrMMyzk+EByeRJs4D+OThXohTAKQAusIro91RQVZradlh4swhLly78X34m+oDaCD9qFVWmaN57FkUsnyCLt++JfsrIk4T5qvAZgn2jGIzv4Qj9edCo5A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766273799; c=relaxed/simple;
-	bh=vC5fU+fTzGjQTiDjhCHNJ4VGuHwaJ8Hy/6qGl11E1eo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JIVwQCLPEUsDMEJcli5u+KRKx40k3ErCY6Y9GYvrt6Ud5lcPuEQ9tZDBChePpWkETqonfPps7GoZ9SDcwAiAA+huZwd4aBL1A8UDdvH827bUqp8jVu79ypQxgSib8v0WktFo0npBndSJByTqJhAUWL4pP7hUSCkiu7PL8HzG5iA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cNXrcC1k; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB364C4CEF5;
-	Sat, 20 Dec 2025 23:36:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766273799;
-	bh=vC5fU+fTzGjQTiDjhCHNJ4VGuHwaJ8Hy/6qGl11E1eo=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=cNXrcC1kss3cX6lVK2eK8znmHtmpJxAXTFZ8ikOyMW9Mlkadac2rbYd4WhD07yj0u
-	 WE79d5mI+We6k/IhuUDkawjtJ1c+VUaABviEFTDUNiM3feXZEfqXjCd0apyEd/vYvh
-	 VN0gPgtq+KCNlx+kRPeymqM3CeLS7uwvCe2918FoHfOywqeIFNnPqbCBv3wYHMyQHV
-	 WhFnN/XslI5KLXjohwTluhke8vanTYOvvOdUuiAZqulm3FaJHyNySJcWVpK5vkMF4A
-	 XijQxAJvN6LpLe8/LJzqWvokPli7zRN72ciD7R57hFdXkNLJdodhcViB9j64MM5nXx
-	 9PHmwgxFW4u6Q==
-Message-ID: <e1fb9a40-9580-4c6b-8272-2d306a581cd1@kernel.org>
-Date: Sat, 20 Dec 2025 16:36:38 -0700
+	s=arc-20240116; t=1766300453; c=relaxed/simple;
+	bh=yGU327kh4Bf6zZy2Yagp8yzrreRNuA+F+B6N0rpT9oY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NEUwlycLQdRL829Z4jMhW5NEsSnytk+UMFHeEC0s9+DsxZldsPxfY+7yYWeSKdPo81KxXQrizp7gJ+JiGpW39LDzrVDJIN6bKda7WEiEl11/IA/ldpArWoRGHCzyev+DSwsFwfYXhAabnnAg5ltDmVUWAtadeFv+DBBwMmqLamI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Id6jsMCQ; arc=none smtp.client-ip=209.85.216.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f65.google.com with SMTP id 98e67ed59e1d1-34c7d0c5ddaso1688857a91.0
+        for <bpf@vger.kernel.org>; Sat, 20 Dec 2025 23:00:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1766300451; x=1766905251; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wm4lYrd1UEAfe1OMJYAL+6fR/c/Hp392vfi3YhuFblk=;
+        b=Id6jsMCQCHx2Et3K0SiD6f92fLTrqr1aePvpJy/Z3hIVDdvfc7nmDjg7tJhSRbLgy9
+         fWSqTfPsQWvRd4jyaHGlrwFTRDKg6uFXwhuAteyiqTWKjlTiN4WMcBSVAzXSpbVnzSoC
+         FJQeAzldJKr8hoAA5sYn4uqUU771ISD39mpcbBLiLguVrkVaANEdV+M5PePfSsCQpWg4
+         vvLafpGoy5fUavjr7QVv/ofX4yfMiMwgPZmdhazvIo8Oo4NBOqrY2KxsddlReEWZJ9Mg
+         7eFZ8l515ooTfOV+MplZnWmjqp8JYR+uyl2eT6SrY0NZzhzsPf+9D/VtDJkr5bcmHy8T
+         JHHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1766300451; x=1766905251;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wm4lYrd1UEAfe1OMJYAL+6fR/c/Hp392vfi3YhuFblk=;
+        b=VC7jLbRYkXxGEaHh1hYL+vGJ8sdVWnfCvTwiogtQ8WesxHsa6BgCn8VfBsLO3+Y8tu
+         +ClON6JyTXW8R0WT5pvoGR1qD/KFrKirxvcN3+PLUfwLBU8DSC4ROUv83prgsz28FGp+
+         6FzXuA0+FRw0/Ow5O6rUEgQ7mk6b41FMzsWnTqlT0NWwMm8GINXaUP3WvGmpAeqZuXX8
+         BfdlO5g2Qb6d+9qrU4dXn0iItUUCcymREYlSAvhKNeARv+dmnjUvtFdxMs2dC49btIKb
+         puy2BmyRtDrZpCN/cBGiZxunhh9/Ua341AGLtF4n6x0Q5Da96VG1r73pGfu7VmEE15y1
+         XCXw==
+X-Gm-Message-State: AOJu0YymrgBTf0wh6FlAV/qSpWq5Km+0bPiwULX7meEiGsRooe7rhjkv
+	RN4LO98DgztVHkYHIEeDfbKlEJk+2deA/bog9byHyIFbo0jEbi+kNZi7
+X-Gm-Gg: AY/fxX4U9MCGZ1fNZwL2OumfDByRtiQD2uQ3AMoJUJOrUUFWeJsHojWP2T9SYgyarJG
+	2r1L4/LtLMZPTNhKo4bnRXWhPdFAFlYVWPbpPiAKMGmVAXShdUxXSCRd2ldOptnDqBVoJnTFaBF
+	fwlxsF0wYY2eiKQRGQ9dQ3dZxPb/TORMIky6UI2P00ZEHW7F3M9Dz0VYdUxtRjr4dylElBAoN6g
+	cbfy5WHV3//ppfyoROt1vlrWjQ7Q24BcdFD4WjdpOq3eU/jJTvAMfgiRyf79U7ak4WQxvn9L09G
+	iz4zYnqqvEeZ+z5fl7FRBROmxcSc16ICMhbsnpa2KRUURI6ogMFL5P7SlUe2zTeOtSFLrVscyJw
+	lvL8NeUkdgp0/FC9sgL18Ztn3w4WFHCYVo7AUQG79c5glIApB68tr/LdtuWIHZGjiWDk6WPPsyd
+	IHHhkCEHo32/r3s8xaDKFHAJzcoMFZXSHG77Mag5pYjQj/4PDjv9kXSUPiQ6e6LijGDQ==
+X-Google-Smtp-Source: AGHT+IEVTyoizp72hHa2oRLjdKpOv2xTmjBKmKZHtuDvcFdYNCRlNJ1HgycXM39JHS+fOnG6zZbWAg==
+X-Received: by 2002:a17:90b:4b0b:b0:340:c094:fbff with SMTP id 98e67ed59e1d1-34e71e09fecmr9309489a91.10.1766300450888;
+        Sat, 20 Dec 2025 23:00:50 -0800 (PST)
+Received: from cncf-development.local (90.106.216.35.bc.googleusercontent.com. [35.216.106.90])
+        by smtp.googlemail.com with ESMTPSA id 98e67ed59e1d1-34ebeac8623sm652843a91.1.2025.12.20.23.00.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Dec 2025 23:00:49 -0800 (PST)
+From: SungRock Jung <tjdfkr2421@gmail.com>
+To: Jonathan Corbet <corbet@lwn.net>,
+	Alexei Starovoitov <ast@kernel.org>
+Cc: bpf@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	SungRock Jung <tjdfkr2421@gmail.com>
+Subject: [PATCH] Documentation/bpf: Update PROG_TYPE for BPF_PROG_RUN
+Date: Sun, 21 Dec 2025 07:00:41 +0000
+Message-ID: <20251221070041.26592-1-tjdfkr2421@gmail.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH iproute2-next v3] lib/bpf_legacy: Use userspace SHA-1 code
- instead of AF_ALG
-To: Eric Biggers <ebiggers@kernel.org>,
- Stephen Hemminger <stephen@networkplumber.org>, netdev@vger.kernel.org,
- =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc: bpf@vger.kernel.org, linux-crypto@vger.kernel.org,
- Ard Biesheuvel <ardb@kernel.org>, Alexei Starovoitov <ast@kernel.org>
-References: <20251218200910.159349-1-ebiggers@kernel.org>
-Content-Language: en-US
-From: David Ahern <dsahern@kernel.org>
-In-Reply-To: <20251218200910.159349-1-ebiggers@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 12/18/25 1:09 PM, Eric Biggers wrote:
-> diff --git a/include/sha1.h b/include/sha1.h
-> new file mode 100644
-> index 00000000..4a2ed513
-> --- /dev/null
-> +++ b/include/sha1.h
-> @@ -0,0 +1,18 @@
-> +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> +/*
-> + * SHA-1 message digest algorithm
-> + *
-> + * Copyright 2025 Google LLC
-> + */
-> +#ifndef __SHA1_H__
-> +#define __SHA1_H__
-> +
-> +#include <linux/types.h>
-> +#include <stddef.h>
-> +
-> +#define SHA1_DIGEST_SIZE 20
-> +#define SHA1_BLOCK_SIZE 64
+LWT_SEG6LOCAL no longer supports test_run starting from v6.11
+so remove it from the list of program types supported by BPF_PROG_RUN.
 
-How come these are not part of the uapi?
+Add TRACING and NETFILTER to reflect the
+current set of program types that implement test_run support.
 
-I applied this to iproute2-next to get as much soak time as possible.
-Anyone using legacy bpf (added Toke in case he knows) in particular
-should test with top of tree.
+Signed-off-by: SungRock Jung <tjdfkr2421@gmail.com>
+---
+ Documentation/bpf/bpf_prog_run.rst | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/bpf/bpf_prog_run.rst b/Documentation/bpf/bpf_prog_run.rst
+index 4868c909d..81ef768c7 100644
+--- a/Documentation/bpf/bpf_prog_run.rst
++++ b/Documentation/bpf/bpf_prog_run.rst
+@@ -34,11 +34,12 @@ following types:
+ - ``BPF_PROG_TYPE_LWT_IN``
+ - ``BPF_PROG_TYPE_LWT_OUT``
+ - ``BPF_PROG_TYPE_LWT_XMIT``
+-- ``BPF_PROG_TYPE_LWT_SEG6LOCAL``
+ - ``BPF_PROG_TYPE_FLOW_DISSECTOR``
+ - ``BPF_PROG_TYPE_STRUCT_OPS``
+ - ``BPF_PROG_TYPE_RAW_TRACEPOINT``
+ - ``BPF_PROG_TYPE_SYSCALL``
++- ``BPF_PROG_TYPE_TRACING``
++- ``BPF_PROG_TYPE_NETFILTER``
+ 
+ When using the ``BPF_PROG_RUN`` command, userspace supplies an input context
+ object and (for program types operating on network packets) a buffer containing
+-- 
+2.48.1
+
 
