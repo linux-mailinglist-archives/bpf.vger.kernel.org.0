@@ -1,241 +1,174 @@
-Return-Path: <bpf+bounces-77308-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77309-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25BFDCD6F8F
-	for <lists+bpf@lfdr.de>; Mon, 22 Dec 2025 20:31:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D94BCD6FE9
+	for <lists+bpf@lfdr.de>; Mon, 22 Dec 2025 20:38:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0646B3042197
-	for <lists+bpf@lfdr.de>; Mon, 22 Dec 2025 19:29:40 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5B04230198A5
+	for <lists+bpf@lfdr.de>; Mon, 22 Dec 2025 19:38:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2652322C97;
-	Mon, 22 Dec 2025 19:29:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E75B327C0B;
+	Mon, 22 Dec 2025 19:38:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iAvcvXGg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DmEwmokt"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38A8C33B6EE
-	for <bpf@vger.kernel.org>; Mon, 22 Dec 2025 19:29:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2464C131E49
+	for <bpf@vger.kernel.org>; Mon, 22 Dec 2025 19:38:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766431777; cv=none; b=bYF0rAvU0OmvjPkUTxgzwwE4oy/HhPRHeen41ojFYevHaH6JRUYqyfGTSLnCzORBO1I37M2I1VH/erLT2AwYkFflRWrbs3FzSOHcToLuyHeYaHH29DDPPZgU/DEuZnsdG8JJL2CAGiWb8oQ5y++Eqsq8h4A8uw9OrF1jAgSKze8=
+	t=1766432315; cv=none; b=cfSH2ycN6rmn9srlpaxU7gwwWuE1mFmFs9bWmdTsRPySCyO0cbNDKYGW6cWS9gw9Ioz/H3iOR1PHzjryQJvxv0ezUAHQptqOSlwEMIhAHp5iMItVTfa2rQNKruRD40qgOo3ITnFkpU/doxfrYTGtEDj507YurCH62NJwid3P1K4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766431777; c=relaxed/simple;
-	bh=Is9aSf/556bxuYegPxbnD7uS9JeESwjbDVKpFVqADsE=;
+	s=arc-20240116; t=1766432315; c=relaxed/simple;
+	bh=FnOBjZteG6PrhJCGR+DNNfq0AS5q4KTRVMliGnEQ2Bk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=h5hWo0Ve7YgWNimHJdmCgBxcz0CfD7y5b5akXfJ+aqVIiJJutriilSXKKBQ2ne1P2JDDtMszuW3IPVx/Th/isb8vPvhTwT1cEwj0J3MUVIHkJhlokm1UvNZnviq5n57k8PBWFY+VHBZ3Fsiz7ahfIGTtObqxAMzQSA9Fcjqy2kE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iAvcvXGg; arc=none smtp.client-ip=209.85.128.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-78fba1a1b1eso39666517b3.1
-        for <bpf@vger.kernel.org>; Mon, 22 Dec 2025 11:29:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1766431774; x=1767036574; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BqJ3vVbWHzFYZqmxVIV93Fa7xe1lg+sgSuO3WlwgABY=;
-        b=iAvcvXGg2H9rivpKHem3r0p1kXijGk3A9PDSo+o9fe5SjWLHUiquZCbbGAIB2HZ5I8
-         JFSrKb0SEGgH7xpZoCHxEI7XbQSYkHGxJagSVeYkJ7THgQBPQllnXQtu/SOK5q2SMubp
-         8q6K1QQ/LWYFkNtqb8ni2Ib6wjTjJOxSVngeg3GYacC0XaJumrJUwdJEZbF0hfSHuDpp
-         GfFXiS04j6WI7jmVUAw7hqnISc+FbOsJolCTgIVkE1rhivdA170H9gAHyWTbLBX+S7NP
-         K4dbn1w9wQVuF8aL4AaVjnmuCJDhxIOsLIPR2gWiAv83dbTtdjE5OZhgUPBk0rnGROC/
-         tiew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766431774; x=1767036574;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=BqJ3vVbWHzFYZqmxVIV93Fa7xe1lg+sgSuO3WlwgABY=;
-        b=Mbi6oGZG2w+qSf2vT5jJ+aJP81pBJiMPlTdF1N/ibXgr7pyIQEfK8GnwwLzDnZH7ta
-         nRcfZtRFG3GvCWAb4zMH8BRiHyfHfq70yITIMKtSZ1xy4sr6OOjKZ7jeMROXJYEyqPqT
-         McY5jcT4H/uL78TBlfmOH3//S6GfNA/RJ91CQMchBtYwV+/5syl7BSqoWKecWqngAm3n
-         NXNvaehmS/6Ggh/AVDQMoxSh/8w1vvvv5mf4xUmg1SOkqs0ts3YMzfgH5Zt8gv8F/5gi
-         JBanAhaP7RQy3HIIYN1tBlgpa4qw77bP5mBrZTzSPblQem7ZRAuiqPBiTTdIRo4naJjA
-         hQUA==
-X-Forwarded-Encrypted: i=1; AJvYcCXMO2bfUTTLYawMN+ssBu1oXbRACWzoYzMK0aqhto6fv3cRXFpLV9oQe6FfJafpV7I9UYk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzsW0qB081lRaK5GhbUq9e1oqNQjukuxeXA4Ax3I5TgN4Jx3PWF
-	cm7MUfa7dvHqnszs6/Xnv9q5ccjtcdtnsdHkqaNQF01IBMMR+EAAlpGVrZux07YMkBmCnPwM/zZ
-	Uf8NpfJKqbm+ujVsN2P84o8oCDQtkUz0=
-X-Gm-Gg: AY/fxX4XHq/Pz2jJrdeZhWSpEzi+Ssm4WtgPq5wcr4eXA3jpFU9hgHhnpwIHarERvGy
-	AFOTL3ZfsHcVVV3jHf1GObyG2bTw9naR9JzrqAuJSHE1/yUR7pC/XkB7itFH0IQd0EiRaH9SXZY
-	CQDAvTBmxtc28OboTUFw1mRfW99badm+/1s15zMSuMrrWSHKqpSiPgDbR38SF7Dp4fZb4QFRuZu
-	wU+aqxMUrPzEFbPogVqGhbaFsxUeci8AEpCYZFSZD5myzbFQgkgHMCO9n301YQ1Hra57nE=
-X-Google-Smtp-Source: AGHT+IGfJ1R+UhaNH+BChkiIplciIHenxvpUV2olWqYwJU4lw3QKMILZdvQq85AWhawDfzzu+vZNVwSHrL8y7hLR1Pg=
-X-Received: by 2002:a05:690c:a0a2:10b0:786:8abd:bbcf with SMTP id
- 00721157ae682-78fa5b58cbamr104575537b3.31.1766431774246; Mon, 22 Dec 2025
- 11:29:34 -0800 (PST)
+	 To:Cc:Content-Type; b=rVDRUtgT/PvqhBungT9PiodSoofr7z2Ocm10pFZbcYuBP83e/E5jyUd5oHZMHYqwB5nFEr0O+u2946RBUhlihq9PIcIZynE65BrOZAaiEL/kmgNQJWXDEku0STdndmpvyBo0GJADFZiwW39LXbHaYr3oqVBiHXz3wuXPJrzTwjQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DmEwmokt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A613EC19421
+	for <bpf@vger.kernel.org>; Mon, 22 Dec 2025 19:38:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1766432314;
+	bh=FnOBjZteG6PrhJCGR+DNNfq0AS5q4KTRVMliGnEQ2Bk=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=DmEwmoktRwjYnC/5bMSEgec/kh+P5WSvCbGI2C6U88E3xnJrvDWlpQT3+PhgZBgKo
+	 ua2PGUa6IV09yUaz9JhfMEOUuvtMIWm50fpaaZ8+zJCJmM1oDNRHXktxJ6U4oP6EPC
+	 O6F3G7weL/Amg+Aavddq/Pn2Cmh6AdPP27VsmbWpOwniZKX3+vfD4oleI5auR1pWeb
+	 LraD0RUuTO1hd/XyWLPH0FQo+Op0VuFxtAJ412c7ukJYkyd4GTuP/ZxyA1xNuROPR/
+	 tVyTFG+qseu1JoYReh4ExwUSfrG7GpJ1TuzY3aIN1ow40dB6x+nH0ULppCktP/K+km
+	 lwl+0IrJl+/uA==
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-64b9230f564so4556794a12.1
+        for <bpf@vger.kernel.org>; Mon, 22 Dec 2025 11:38:34 -0800 (PST)
+X-Gm-Message-State: AOJu0Yxshx8s6pIkuSAMXFtIarZrk6h92aO/dLLVnduvnf8H+yE3bKzs
+	lAOzDHoczYjeWYg47GFw5L7fARP7QfaUln3k0W20xpGU3g9/QGFLwwtDszjFxAetv2QB2M+J/6r
+	K3ICaWz4kUh4LdzlG6CmOOGVnTgKQIVE=
+X-Google-Smtp-Source: AGHT+IF9xERG+rj5BlLYRbMhNthyVUYr7MQppu/Mnuj1+nxjS+zM5YlG25FpPGe1zs+39ZytX2eRC49spRtT1aJ7D7E=
+X-Received: by 2002:a17:907:7f15:b0:b6d:4df9:68bc with SMTP id
+ a640c23a62f3a-b8036ebbbe8mr1128757666b.1.1766432313195; Mon, 22 Dec 2025
+ 11:38:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251220-helper_proto-v1-0-2206e0d9422d@gmail.com> <20251220-helper_proto-v1-1-2206e0d9422d@gmail.com>
-In-Reply-To: <20251220-helper_proto-v1-1-2206e0d9422d@gmail.com>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Mon, 22 Dec 2025 11:29:23 -0800
-X-Gm-Features: AQt7F2pDTOhbo20J9mti2Iv2uBWiCpet64TbGM459wgMokEFKr31y9F3TMfRC0w
-Message-ID: <CAMB2axPcJ=U69xyyyY_7og8OALRCbOgeppQv416k9yvMiD9CvQ@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf 1/2] bpf: Fix memory access tags in helper prototypes
-To: Zesen Liu <ftyghome@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Simon Horman <horms@kernel.org>, Daniel Xu <dxu@dxuuu.xyz>, Shuah Khan <shuah@kernel.org>, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, Shuran Liu <electronlsr@gmail.com>, 
-	Peili Gao <gplhust955@gmail.com>, Haoran Ni <haoran.ni.cs@gmail.com>
+References: <20251222190815.4112944-4-puranjay@kernel.org> <dc0a81fe1debcd43ec9bdb440695bdf6d443a02080229dc1a2b60fa0eed00d18@mail.kernel.org>
+In-Reply-To: <dc0a81fe1debcd43ec9bdb440695bdf6d443a02080229dc1a2b60fa0eed00d18@mail.kernel.org>
+From: Puranjay Mohan <puranjay@kernel.org>
+Date: Mon, 22 Dec 2025 19:38:19 +0000
+X-Gmail-Original-Message-ID: <CANk7y0jWWOZt4uRoLbRc+BJBOhxu+p-vJispG6R6fHu09ibgLg@mail.gmail.com>
+X-Gm-Features: AQt7F2oqyCU2iAnYM_JrvHvQRzA0sVwwXT2cIJBjZwS6mY2kAH3FTJyV-_F_iic
+Message-ID: <CANk7y0jWWOZt4uRoLbRc+BJBOhxu+p-vJispG6R6fHu09ibgLg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v7 3/4] bpf: arena: make arena kfuncs any context safe
+To: bot+bpf-ci@kernel.org
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, martin.lau@kernel.org, eddyz87@gmail.com, 
+	memxor@gmail.com, kernel-team@meta.com, yonghong.song@linux.dev, clm@meta.com, 
+	ihor.solodrai@linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Dec 20, 2025 at 3:35=E2=80=AFAM Zesen Liu <ftyghome@gmail.com> wrot=
-e:
+On Mon, Dec 22, 2025 at 7:27=E2=80=AFPM <bot+bpf-ci@kernel.org> wrote:
 >
-> After commit 37cce22dbd51 ("bpf: verifier: Refactor helper access type tr=
-acking"),
-> the verifier started relying on the access type tags in helper
-> function prototypes to perform memory access optimizations.
+> > diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
+> > index 128efb68d47b..55d1e15725c7 100644
 >
-> Currently, several helper functions utilizing ARG_PTR_TO_MEM lack the
-> corresponding MEM_RDONLY or MEM_WRITE tags. This omission causes the
-> verifier to incorrectly assume that the buffer contents are unchanged
-> across the helper call. Consequently, the verifier may optimize away
-> subsequent reads based on this wrong assumption, leading to correctness
-> issues.
+> [ ... ]
 >
-> Similar issues were recently addressed for specific helpers in commit
-> ac44dcc788b9 ("bpf: Fix verifier assumptions of bpf_d_path's output buffe=
-r")
-> and commit 2eb7648558a7 ("bpf: Specify access type of bpf_sysctl_get_name=
- args").
+> > +static void arena_free_worker(struct work_struct *work)
+> > +{
+> > +     struct bpf_arena *arena =3D container_of(work, struct bpf_arena, =
+free_work);
+> > +     struct llist_node *list, *pos, *t;
+> > +     struct arena_free_span *s;
+> > +     u64 arena_vm_start, user_vm_start;
+> > +     struct llist_head free_pages;
+> > +     struct page *page;
+> > +     unsigned long full_uaddr;
+> > +     long kaddr, page_cnt, pgoff;
+> > +     unsigned long flags;
+> > +
+> > +     if (raw_res_spin_lock_irqsave(&arena->spinlock, flags)) {
+> > +             schedule_work(work);
+> > +             return;
+> > +     }
+> > +
+> > +     init_llist_head(&free_pages);
+> > +     arena_vm_start =3D bpf_arena_get_kern_vm_start(arena);
+> > +     user_vm_start =3D bpf_arena_get_user_vm_start(arena);
+> > +
+> > +     list =3D llist_del_all(&arena->free_spans);
+> > +     llist_for_each(pos, list) {
+> > +             s =3D llist_entry(pos, struct arena_free_span, node);
+> > +             page_cnt =3D s->page_cnt;
+> > +             kaddr =3D arena_vm_start + s->uaddr;
+> > +             pgoff =3D compute_pgoff(arena, s->uaddr);
+> > +
+> > +             /* clear ptes and collect pages in free_pages llist */
+> > +             apply_to_existing_page_range(&init_mm, kaddr, page_cnt <<=
+ PAGE_SHIFT,
+> > +                                          apply_range_clear_cb, &free_=
+pages);
+> > +
+> > +             range_tree_set(&arena->rt, pgoff, page_cnt);
+> > +     }
+> > +     raw_res_spin_unlock_irqrestore(&arena->spinlock, flags);
+> > +
+> > +     /* Iterate the list again without holding spinlock to do the tlb =
+flush and zap_pages */
+> > +     llist_for_each_safe(pos, t, list) {
+> > +             s =3D llist_entry(pos, struct arena_free_span, node);
+> > +             page_cnt =3D s->page_cnt;
+> > +             full_uaddr =3D user_vm_start + s->uaddr;
+>                           ^^^^^^^^^^^^^^^^^^^^^^^
 >
-> Fix these prototypes by adding the correct memory access tags.
+> Is there a missing clear_lo32() call here? In arena_free_pages() the
+> sleepable path computes full_uaddr as:
 >
-> Fixes: 37cce22dbd51 ("bpf: verifier: Refactor helper access type tracking=
-")
-> Co-developed-by: Shuran Liu <electronlsr@gmail.com>
-> Signed-off-by: Shuran Liu <electronlsr@gmail.com>
-> Co-developed-by: Peili Gao <gplhust955@gmail.com>
-> Signed-off-by: Peili Gao <gplhust955@gmail.com>
-> Co-developed-by: Haoran Ni <haoran.ni.cs@gmail.com>
-> Signed-off-by: Haoran Ni <haoran.ni.cs@gmail.com>
-> Signed-off-by: Zesen Liu <ftyghome@gmail.com>
+>     full_uaddr =3D clear_lo32(arena->user_vm_start) + uaddr;
+>
+> But arena_free_worker() computes it as:
+>
+>     full_uaddr =3D user_vm_start + s->uaddr;
+>
+> Since s->uaddr is already the lower 32 bits (set from masked uaddr in
+> arena_free_pages()), and user_vm_start includes its own lower 32 bits,
+> this appears to produce the wrong address. For example, if user_vm_start
+> is 0x7f7d26200000 and s->uaddr is 0x26200000, this would give
+> 0x7f7d4c400000 instead of the correct 0x7f7d26200000.
+>
+> Should this be:
+>
+>     full_uaddr =3D clear_lo32(user_vm_start) + s->uaddr;
+>
+> to match the sleepable path?
+
+I will send v8 with this change now.
+
+>
+> > +             kaddr =3D arena_vm_start + s->uaddr;
+> > +
+> > +             /* ensure no stale TLB entries */
+> > +             flush_tlb_kernel_range(kaddr, kaddr + (page_cnt * PAGE_SI=
+ZE));
+> > +
+> > +             /* remove pages from user vmas */
+> > +             zap_pages(arena, full_uaddr, page_cnt);
+> > +
+> > +             kfree_nolock(s);
+> > +     }
+>
+> [ ... ]
+>
+>
 > ---
->  kernel/bpf/helpers.c     | 2 +-
->  kernel/trace/bpf_trace.c | 6 +++---
->  net/core/filter.c        | 8 ++++----
->  3 files changed, 8 insertions(+), 8 deletions(-)
+> AI reviewed your patch. Please fix the bug or email reply why it's not a =
+bug.
+> See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/READM=
+E.md
 >
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index db72b96f9c8c..f66284f8ec2c 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -1077,7 +1077,7 @@ const struct bpf_func_proto bpf_snprintf_proto =3D =
-{
->         .func           =3D bpf_snprintf,
->         .gpl_only       =3D true,
->         .ret_type       =3D RET_INTEGER,
-> -       .arg1_type      =3D ARG_PTR_TO_MEM_OR_NULL,
-> +       .arg1_type      =3D ARG_PTR_TO_MEM_OR_NULL | MEM_WRITE,
->         .arg2_type      =3D ARG_CONST_SIZE_OR_ZERO,
->         .arg3_type      =3D ARG_PTR_TO_CONST_STR,
->         .arg4_type      =3D ARG_PTR_TO_MEM | PTR_MAYBE_NULL | MEM_RDONLY,
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index fe28d86f7c35..59c2394981c7 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -1022,7 +1022,7 @@ const struct bpf_func_proto bpf_snprintf_btf_proto =
-=3D {
->         .func           =3D bpf_snprintf_btf,
->         .gpl_only       =3D false,
->         .ret_type       =3D RET_INTEGER,
-> -       .arg1_type      =3D ARG_PTR_TO_MEM,
-> +       .arg1_type      =3D ARG_PTR_TO_MEM | MEM_WRITE,
->         .arg2_type      =3D ARG_CONST_SIZE,
->         .arg3_type      =3D ARG_PTR_TO_MEM | MEM_RDONLY,
->         .arg4_type      =3D ARG_CONST_SIZE,
-> @@ -1526,7 +1526,7 @@ static const struct bpf_func_proto bpf_read_branch_=
-records_proto =3D {
->         .gpl_only       =3D true,
->         .ret_type       =3D RET_INTEGER,
->         .arg1_type      =3D ARG_PTR_TO_CTX,
-> -       .arg2_type      =3D ARG_PTR_TO_MEM_OR_NULL,
-> +       .arg2_type      =3D ARG_PTR_TO_MEM_OR_NULL | MEM_WRITE,
->         .arg3_type      =3D ARG_CONST_SIZE_OR_ZERO,
->         .arg4_type      =3D ARG_ANYTHING,
->  };
-> @@ -1661,7 +1661,7 @@ static const struct bpf_func_proto bpf_get_stack_pr=
-oto_raw_tp =3D {
->         .gpl_only       =3D true,
->         .ret_type       =3D RET_INTEGER,
->         .arg1_type      =3D ARG_PTR_TO_CTX,
-> -       .arg2_type      =3D ARG_PTR_TO_MEM | MEM_RDONLY,
-> +       .arg2_type      =3D ARG_PTR_TO_UNINIT_MEM,
->         .arg3_type      =3D ARG_CONST_SIZE_OR_ZERO,
->         .arg4_type      =3D ARG_ANYTHING,
->  };
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 616e0520a0bb..6e07bb994aa7 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -6399,7 +6399,7 @@ static const struct bpf_func_proto bpf_xdp_fib_look=
-up_proto =3D {
->         .gpl_only       =3D true,
->         .ret_type       =3D RET_INTEGER,
->         .arg1_type      =3D ARG_PTR_TO_CTX,
-> -       .arg2_type      =3D ARG_PTR_TO_MEM,
-> +       .arg2_type      =3D ARG_PTR_TO_MEM | MEM_WRITE,
->         .arg3_type      =3D ARG_CONST_SIZE,
->         .arg4_type      =3D ARG_ANYTHING,
->  };
-> @@ -6454,7 +6454,7 @@ static const struct bpf_func_proto bpf_skb_fib_look=
-up_proto =3D {
->         .gpl_only       =3D true,
->         .ret_type       =3D RET_INTEGER,
->         .arg1_type      =3D ARG_PTR_TO_CTX,
-> -       .arg2_type      =3D ARG_PTR_TO_MEM,
-> +       .arg2_type      =3D ARG_PTR_TO_MEM | MEM_WRITE,
->         .arg3_type      =3D ARG_CONST_SIZE,
->         .arg4_type      =3D ARG_ANYTHING,
->  };
-> @@ -8010,7 +8010,7 @@ static const struct bpf_func_proto bpf_tcp_raw_gen_=
-syncookie_ipv4_proto =3D {
->         .ret_type       =3D RET_INTEGER,
->         .arg1_type      =3D ARG_PTR_TO_FIXED_SIZE_MEM,
->         .arg1_size      =3D sizeof(struct iphdr),
-> -       .arg2_type      =3D ARG_PTR_TO_MEM,
-> +       .arg2_type      =3D ARG_PTR_TO_MEM | MEM_RDONLY,
->         .arg3_type      =3D ARG_CONST_SIZE_OR_ZERO,
->  };
->
-> @@ -8042,7 +8042,7 @@ static const struct bpf_func_proto bpf_tcp_raw_gen_=
-syncookie_ipv6_proto =3D {
->         .ret_type       =3D RET_INTEGER,
->         .arg1_type      =3D ARG_PTR_TO_FIXED_SIZE_MEM,
->         .arg1_size      =3D sizeof(struct ipv6hdr),
-> -       .arg2_type      =3D ARG_PTR_TO_MEM,
-> +       .arg2_type      =3D ARG_PTR_TO_MEM | MEM_RDONLY,
->         .arg3_type      =3D ARG_CONST_SIZE_OR_ZERO,
->  };
->
-
-I did a quick search and there is one helper slipping. We should also
-annotate arg1_type of bpf_kallsyms_lookup_name with MEM_RDONLY.
-
-
->
-> --
-> 2.43.0
->
->
+> CI run summary: https://github.com/kernel-patches/bpf/actions/runs/204415=
+98118
 
