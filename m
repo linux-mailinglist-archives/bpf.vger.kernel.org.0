@@ -1,516 +1,247 @@
-Return-Path: <bpf+bounces-77297-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77298-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 917F3CD6E8B
-	for <lists+bpf@lfdr.de>; Mon, 22 Dec 2025 19:58:41 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64C4FCD6E95
+	for <lists+bpf@lfdr.de>; Mon, 22 Dec 2025 20:02:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 94E38301355F
-	for <lists+bpf@lfdr.de>; Mon, 22 Dec 2025 18:58:39 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id D106D300119F
+	for <lists+bpf@lfdr.de>; Mon, 22 Dec 2025 19:02:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EACF5306B3D;
-	Mon, 22 Dec 2025 18:58:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cNc1aCLw"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EDFD327204;
+	Mon, 22 Dec 2025 19:02:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+Received: from mail-ot1-f79.google.com (mail-ot1-f79.google.com [209.85.210.79])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45718248176
-	for <bpf@vger.kernel.org>; Mon, 22 Dec 2025 18:58:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1B8517B418
+	for <bpf@vger.kernel.org>; Mon, 22 Dec 2025 19:02:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.79
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766429916; cv=none; b=Iotm16X6wh2YPo4DhgRD2622tfar7ohekWjN8vLKAKHKY/dmAzwMAXtJIGalRyEqVuXgmBLieLcD8WNGZAQ/sKKP051GMXL/CtEqvHs0Ta6pzeAPZ0Ipj9z8PPA+B24aK+l0ArtfzA1UXb2X9kcLjmkFzLuWrYWcOzfXPbWo7/w=
+	t=1766430146; cv=none; b=l+EuBidYPYVj0PVJmhUNyLcB7SdjDJzeST5BON6hecuC1rrXLtG4uh9hC1we8kp0qYdexrjg9h3dumQ8nLUlSdew3eZns/ZHaT+BIAhxrKgXCw7o99nY8HxRZBFk3Dp8DRPVBbdAZrlZBTIQJ/QJE1bnUPpXTAVRi2R+S1bKiAI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766429916; c=relaxed/simple;
-	bh=wBXin+HmlPLDftoIA3Gx+6mA5tdxYXTVE3xcvodQnZU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=AyJ+3qujFDijypUyiskqzkWtGAv/1/KBRPvdsbhuGIneh6TKe2sc3SIO4l3qrCvK9AGb3A2hJPtCoFSg/iKZEcGTCcq5P7VjjbsWX/7PXtGxa6/QAXOFWJWFR52cz7DJxsthQV2Jtr1yBq+bZK3SRdlPba4l5crTT0ZX4UHgLfo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cNc1aCLw; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-42fbc305914so3249938f8f.0
-        for <bpf@vger.kernel.org>; Mon, 22 Dec 2025 10:58:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1766429912; x=1767034712; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=LAqvyC3oBc+HjvBJ1Wxnq0zsruOgZpBNwjaomyZ4sqA=;
-        b=cNc1aCLwKwBB2fc0NeJBHEue5uduzCxsCf9Ns7fATEJTmf/BiWSRiaYdW8UAxLbXmQ
-         qWvczDkvHwJ4NIwRGzXfy/aQhikSPGPWQFXAY2v+Q178ysakRQ6VjpkKv6Aqp7241B+4
-         sUumWvk0lpHSZAaPNPma7NH3GtVnoQB95pCCRiQR9BR/UB+SmJ95h6S2WselN0ELNrie
-         PN30nm9yeBGZdHMQiHIiSdZl3w6MecG+npM37MudQAv+9MVQbeA1ihV2yly+KwgsZ9Px
-         bNHecCgPX59nlM37UbgrkZcdbNP+te9vheyTR29TF5GZhbayiW6jViWqF4QI4S/0PZBv
-         KM+w==
+	s=arc-20240116; t=1766430146; c=relaxed/simple;
+	bh=lvG7/KC5SdV3rZD1gR4ypoAC7Du/+a94VdGRIiKI2Iw=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ML3cx+vm2xt9MeC9c2xhlrOfVZSodahx/dI5ORvGS82gH+V6vn1Hn2m86d+LPsAnivI6Qqch+wFZE66eDryzDDQ6Y70cI/z7c9ChNKH6HYcvr0/PpVlpjFmtBmuJC3uEddY5jrXykQym80xN6MhmPxWY9y+i1fQT8xMli+lD4II=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.210.79
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-ot1-f79.google.com with SMTP id 46e09a7af769-7c673f5f4b6so10539065a34.1
+        for <bpf@vger.kernel.org>; Mon, 22 Dec 2025 11:02:24 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766429912; x=1767034712;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LAqvyC3oBc+HjvBJ1Wxnq0zsruOgZpBNwjaomyZ4sqA=;
-        b=KIpLJcb6MqRMISBxgmFApAlaf2/Waa5S/qg+K4Q4E16e7INzbG1CdmPYZYZHuSw8Mm
-         kzL8TQp2DuofFvD8TeU3xBmYnEnF0qEGF694BlvO3tSMRJtbvJPMXTmlFkDjPfgHlJQT
-         mQPo3w5ud7hApIhD/yfKSLUP/l16xNJRsGu6zFvf8hmolL7WNFjmYZqoE4FBTQ+kEvZt
-         tytU8GI1ngQhCa7AAn8fM4PT2GWSZHQF1hOFxzmQ53Ferw68Nlb9iU7h25sbUDZOGcR4
-         Cd86fEdfapY96as9Gdd0b5xQfqhoX90R69FrGv/z7NXrBkN+zolD1wDJQe1wOH/zhB8s
-         vi2Q==
-X-Gm-Message-State: AOJu0Ywg+Cu7YEQvtwtr9zdxgrjakXwJP6wcWUcEKkKpv/6oNS0nbEZO
-	V8jPmWYq2qScbgegRFKCv4KcY0ZDYU+oWCpmsIhkegzjOsb/aFTcUWszlVBoaA==
-X-Gm-Gg: AY/fxX49qwWg/AeB6JAlX17/KceVqj+QLqGYQPHX9nQhNyIraujO972LPNSya7Z46Qe
-	O7sip297VxGXPLbCN6mfQoqVGuXuvLKS4R/M+/YCRziO7iW7nzxfoiUPwHaLZTcDouXLabqL/fk
-	VqCVZ7NMkjN7oLcUWu2JWNw7HtDoSmHBhPbsvcSTOjXaTT0ArFoGLQD93ubfbeJg31rPw1dyJBF
-	wX+q89mzJ4mzMWfzzpmjogPfmC4xnBZSZs+3nELo6+WYyCNVXk7VU0GwWhsPXOLNOHOi/2VHGWu
-	RQIzrOjcQUPBsKmCZPBNK/a5zu/kLkm1q8aQAqcuqkGKB+W9uUQNctu/a/FUnIsm0g4a+R6kCYq
-	re4t3qNxAH3FCyLvqtuO0w9c1xw1oz5qcd4DjAjj9qjnELNb97GXU0qEnBPTuAQpUqSC2DSSb88
-	Twf4oEhUUgl++hzrI=
-X-Google-Smtp-Source: AGHT+IGtmySuEdCUCmNU2tr1/8roibcVLb5swr/c82cbH6w79ghlv+yWBZBxTjQveFOWLRTxPizbYA==
-X-Received: by 2002:a05:6000:26d1:b0:430:f463:b6a7 with SMTP id ffacd0b85a97d-4324e50ec19mr14478225f8f.45.1766429912219;
-        Mon, 22 Dec 2025 10:58:32 -0800 (PST)
-Received: from mtardy-friendly-lvh-runner.local ([2600:1900:4010:1a8::])
-        by smtp.googlemail.com with ESMTPSA id ffacd0b85a97d-43264613923sm6794708f8f.26.2025.12.22.10.58.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Dec 2025 10:58:31 -0800 (PST)
-From: Mahe Tardy <mahe.tardy@gmail.com>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	eddyz87@gmail.com,
-	andrii@kernel.org,
-	paul.chaignon@gmail.com,
-	Mahe Tardy <mahe.tardy@gmail.com>
-Subject: [PATCH bpf-next] verifier: add prune points to live registers print
-Date: Mon, 22 Dec 2025 18:58:13 +0000
-Message-Id: <20251222185813.150505-1-mahe.tardy@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1766430144; x=1767034944;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4cMOxTqUUgv+8e1Z9FqvuS1Js6UAgEL5Z9Ux+JNrZ+k=;
+        b=OVQE0dtQEJEhdxqoImskXs/30u01dCBWFVGwe7lwkQsvndftKDlHDk+SG/Baozx16+
+         iVnMozyeIfUxFHuqMgcx+wwTFpD+aTfwLLoO04USyxEeuUKxEMZpn+5yxNDVAl90FbDQ
+         EDdeGHJA6V66qDOgBbgA9V+xYhQLLVqGKtth1zuo4+34G20KXhR5O6mvxGNObvk6vrxR
+         dlkGqOqlYSJCy0UjY5UaXrqdvt9C3kNHY9P2pKipPqwWXP/K0kb7ZDhicAmXlSKotuqR
+         bTW2X+AOWRCb/h6KGvA+VesPXV+UTo4ojzWQLtc4knD9AIKwei5P49DTvRQkYfIX/IEo
+         AGuQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWFHHQNby9b8fC8+WcZysOCmgxmkb30b4ZRsl1sLbV0VoVHMTtW/aRXxhPcF3Wv4WbwHQw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz4l36PK2a0s6yrpr5EVakNFxjIImVv/HxMZjM97uB24IjyjyV5
+	s9wZV03AXLDMsalMv/zpgkwJyGG2maXRm53Xsx+aeSNbx7NitSogcnfJcJpRZdCi7t7uhoWVErv
+	CLiD28oWmII7NXAlTzgTJMk9wTkKvU011cO0wZAzlitg7994ISqcG1d1JSvQ=
+X-Google-Smtp-Source: AGHT+IG8xsBpwxKwnuEzoTqUck+mAcaQLOvcJWRggN9Vr/d4tU//JYtoopA2qNRb6K5HMb5FG28mRzDwALIfonSK+6At43SyGXUd
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6820:827:b0:65b:32b4:83e7 with SMTP id
+ 006d021491bc7-65d0ea341dcmr5150529eaf.19.1766430143807; Mon, 22 Dec 2025
+ 11:02:23 -0800 (PST)
+Date: Mon, 22 Dec 2025 11:02:23 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <694995bf.050a0220.2fb209.01a1.GAE@google.com>
+Subject: [syzbot] [bpf?] inconsistent lock state in bpf_lru_push_free
+From: syzbot <syzbot+c69a0a2c816716f1e0d5@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org, 
+	sdf@fomichev.me, song@kernel.org, syzkaller-bugs@googlegroups.com, 
+	yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-Explicitly printing where prune points are placed within the
-instructions allows for better debugging of state pruning issues.
+Hello,
 
-	Live regs before insn, prune points (p), and force checkpoints (P):
-	      0: ..........   (b7) r1 = 0
-	      1: .1........   (63) *(u32 *)(r10 -4) = r1
-	      2: ..........   (bf) r2 = r10
-	      3: ..2.......   (07) r2 += -4
-	      4: ..2.......   (18) r1 = 0xffff8cb747b16000
-	      6: .12.......   (85) call bpf_map_lookup_elem#1
-	      7: 0..345.... p (bf) r6 = r0
-	      8: ...3456... p (15) if r6 == 0x0 goto pc+6
-	      9: ...3456...   (b7) r1 = 5
-	     10: .1.3456...   (b7) r2 = 3
-	     11: .123456... p (85) call pc+5
-	     12: 0.....6... p (67) r0 <<= 32
-	     13: 0.....6...   (c7) r0 s>>= 32
-	     14: 0.....6...   (7b) *(u64 *)(r6 +0) = r0
-	     15: .......... p (b7) r0 = 0
-	     16: 0.........   (95) exit
-	     17: .12....... p (bf) r0 = r2
-	     18: 01........   (0f) r0 += r1
-	     19: 0.........   (95) exit
+syzbot found the following issue on:
 
-Also uses uppercase P for force checkpoints, which are a subset of prune
-points (a force checkpoint should already be a prune point).
+HEAD commit:    f785a31395d9 bpf: arm64: Fix sparse warnings
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1122d392580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a4aa52bacc0658d1
+dashboard link: https://syzkaller.appspot.com/bug?extid=c69a0a2c816716f1e0d5
+compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1780f584580000
 
-	Live regs before insn, prune points (p), and force checkpoints (P):
-	      0: .......... p (b7) r1 = 1
-	      1: .1........ P (e5) may_goto pc+1
-	      2: ..........   (05) goto pc-3
-	      3: .1........ p (bf) r0 = r1
-	      4: 0.........   (95) exit
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/7e044cc52f4d/disk-f785a313.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/5af05af9fe6f/vmlinux-f785a313.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/e8bd1bb41f24/bzImage-f785a313.xz
 
-Existing tests on liveness tracking had to be updated with the new
-output format including the prune points.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c69a0a2c816716f1e0d5@syzkaller.appspotmail.com
 
-This proposal patch was presented at Linux Plumbers 2025 in Tokyo along
-the "Making Sense of State Pruning" presentation[^1] with the intent of
-making state pruning more transparent to the user.
+================================
+WARNING: inconsistent lock state
+syzkaller #0 Not tainted
+--------------------------------
+inconsistent {INITIAL USE} -> {IN-NMI} usage.
+syz.0.17/5989 [HC1[1]:SC0[0]:HE0:SE1] takes:
+ffffe8ffffc2f8d8 (&l->lock#2){....}-{2:2}, at: bpf_lru_push_free+0x13e/0x520 kernel/bpf/bpf_lru_list.c:-1
+{INITIAL USE} state was registered at:
+  lock_acquire+0x117/0x340 kernel/locking/lockdep.c:5868
+  __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+  _raw_spin_lock_irqsave+0xa7/0xf0 kernel/locking/spinlock.c:162
+  bpf_percpu_lru_pop_free kernel/bpf/bpf_lru_list.c:407 [inline]
+  bpf_lru_pop_free+0xcb/0x19b0 kernel/bpf/bpf_lru_list.c:494
+  prealloc_lru_pop kernel/bpf/hashtab.c:299 [inline]
+  htab_lru_map_update_elem+0x168/0x8a0 kernel/bpf/hashtab.c:1215
+  bpf_map_update_value+0x751/0x920 kernel/bpf/syscall.c:294
+  generic_map_update_batch+0x5a9/0x810 kernel/bpf/syscall.c:2038
+  bpf_map_do_batch+0x39b/0x630 kernel/bpf/syscall.c:5647
+  __sys_bpf+0x750/0x8a0 kernel/bpf/syscall.c:-1
+  __do_sys_bpf kernel/bpf/syscall.c:6320 [inline]
+  __se_sys_bpf kernel/bpf/syscall.c:6318 [inline]
+  __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:6318
+  do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+  do_syscall_64+0xfa/0xf80 arch/x86/entry/syscall_64.c:94
+  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+irq event stamp: 19654
+hardirqs last  enabled at (19653): [<ffffffff8b5b413e>] syscall_enter_from_user_mode include/linux/entry-common.h:108 [inline]
+hardirqs last  enabled at (19653): [<ffffffff8b5b413e>] do_syscall_64+0xbe/0xf80 arch/x86/entry/syscall_64.c:90
+hardirqs last disabled at (19654): [<ffffffff8b5b8058>] exc_debug_kernel+0x68/0x150 arch/x86/kernel/traps.c:1233
+softirqs last  enabled at (19590): [<ffffffff81d3246b>] bpf_prog_load+0x14fb/0x1a10 kernel/bpf/syscall.c:3118
+softirqs last disabled at (19588): [<ffffffff81d0e0bd>] spin_lock_bh include/linux/spinlock.h:356 [inline]
+softirqs last disabled at (19588): [<ffffffff81d0e0bd>] bpf_ksym_add+0x2d/0x340 kernel/bpf/core.c:640
 
-[^1]: https://lpc.events/event/19/contributions/2162/
+other info that might help us debug this:
+ Possible unsafe locking scenario:
 
-Co-developed-by: Paul Chaignon <paul.chaignon@gmail.com>
-Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
-Signed-off-by: Mahe Tardy <mahe.tardy@gmail.com>
+       CPU0
+       ----
+  lock(&l->lock#2);
+  <Interrupt>
+    lock(&l->lock#2);
+
+ *** DEADLOCK ***
+
+no locks held by syz.0.17/5989.
+
+stack backtrace:
+CPU: 0 UID: 0 PID: 5989 Comm: syz.0.17 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/25/2025
+Call Trace:
+ <#DB>
+ dump_stack_lvl+0x189/0x250 lib/dump_stack.c:120
+ print_usage_bug+0x28b/0x2e0 kernel/locking/lockdep.c:4042
+ lock_acquire+0x1f8/0x340 kernel/locking/lockdep.c:5859
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0xa7/0xf0 kernel/locking/spinlock.c:162
+ bpf_lru_push_free+0x13e/0x520 kernel/bpf/bpf_lru_list.c:-1
+ htab_lru_push_free kernel/bpf/hashtab.c:1183 [inline]
+ htab_lru_map_delete_elem+0x3a3/0x410 kernel/bpf/hashtab.c:1464
+ bpf_prog_464bc2be3fc7c272+0x43/0x4b
+ bpf_dispatcher_nop_func include/linux/bpf.h:1378 [inline]
+ __bpf_prog_run include/linux/filter.h:723 [inline]
+ bpf_prog_run include/linux/filter.h:730 [inline]
+ bpf_overflow_handler kernel/events/core.c:10303 [inline]
+ __perf_event_overflow+0x39c/0xe70 kernel/events/core.c:10402
+ perf_swevent_overflow kernel/events/core.c:10536 [inline]
+ perf_swevent_event+0x4f8/0x5e0 kernel/events/core.c:10574
+ perf_bp_event+0x251/0x300 kernel/events/core.c:11395
+ hw_breakpoint_handler arch/x86/kernel/hw_breakpoint.c:556 [inline]
+ hw_breakpoint_exceptions_notify+0x244/0x680 arch/x86/kernel/hw_breakpoint.c:587
+ notifier_call_chain+0x19d/0x3a0 kernel/notifier.c:85
+ atomic_notifier_call_chain+0xda/0x180 kernel/notifier.c:223
+ notify_die+0x130/0x180 kernel/notifier.c:588
+ notify_debug+0x2e/0x50 arch/x86/kernel/traps.c:1208
+ exc_debug_kernel+0xbe/0x150 arch/x86/kernel/traps.c:1270
+ asm_exc_debug+0x1e/0x40 arch/x86/include/asm/idtentry.h:654
+RIP: 0010:rep_movs_alternative+0x4a/0x90 arch/x86/lib/copy_user_64.S:74
+Code: 48 04 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 8b 06 48 89 07 48 83 c6 08 48 83 c7 08 83 e9 08 74 db 83 f9 08 73 e8 eb c5 <f3> a4 e9 8f 48 04 00 48 8b 06 48 89 07 48 8d 47 08 48 83 e0 f8 48
+RSP: 0018:ffffc90003697cf8 EFLAGS: 00050202
+RAX: 00007ffffffff001 RBX: 0000000000000050 RCX: 000000000000000f
+RDX: 0000000000000001 RSI: 0000200000000301 RDI: ffffc90003697da1
+RBP: ffffc90003697ea8 R08: ffffc90003697daf R09: 1ffff920006d2fb5
+R10: dffffc0000000000 R11: fffff520006d2fb6 R12: ffffc90003697d60
+R13: 0000000000000050 R14: ffffc90003697d60 R15: 00002000000002c0
+ </#DB>
+ <TASK>
+ copy_user_generic arch/x86/include/asm/uaccess_64.h:126 [inline]
+ raw_copy_from_user arch/x86/include/asm/uaccess_64.h:141 [inline]
+ _inline_copy_from_user include/linux/uaccess.h:185 [inline]
+ _copy_from_user+0x7a/0xb0 lib/usercopy.c:18
+ copy_from_user include/linux/uaccess.h:223 [inline]
+ copy_from_bpfptr_offset include/linux/bpfptr.h:53 [inline]
+ copy_from_bpfptr include/linux/bpfptr.h:59 [inline]
+ __sys_bpf+0x1f2/0x8a0 kernel/bpf/syscall.c:6180
+ __do_sys_bpf kernel/bpf/syscall.c:6320 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:6318 [inline]
+ __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:6318
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0xf80 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7efcc198f749
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007efcc2754038 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00007efcc1be5fa0 RCX: 00007efcc198f749
+RDX: 0000000000000050 RSI: 00002000000002c0 RDI: 000000000000000a
+RBP: 00007efcc1a13f91 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007efcc1be6038 R14: 00007efcc1be5fa0 R15: 00007ffd9db831a8
+ </TASK>
+----------------
+Code disassembly (best guess):
+   0:	48 04 00             	rex.W add $0x0,%al
+   3:	66 2e 0f 1f 84 00 00 	cs nopw 0x0(%rax,%rax,1)
+   a:	00 00 00
+   d:	0f 1f 00             	nopl   (%rax)
+  10:	48 8b 06             	mov    (%rsi),%rax
+  13:	48 89 07             	mov    %rax,(%rdi)
+  16:	48 83 c6 08          	add    $0x8,%rsi
+  1a:	48 83 c7 08          	add    $0x8,%rdi
+  1e:	83 e9 08             	sub    $0x8,%ecx
+  21:	74 db                	je     0xfffffffe
+  23:	83 f9 08             	cmp    $0x8,%ecx
+  26:	73 e8                	jae    0x10
+  28:	eb c5                	jmp    0xffffffef
+* 2a:	f3 a4                	rep movsb %ds:(%rsi),%es:(%rdi) <-- trapping instruction
+  2c:	e9 8f 48 04 00       	jmp    0x448c0
+  31:	48 8b 06             	mov    (%rsi),%rax
+  34:	48 89 07             	mov    %rax,(%rdi)
+  37:	48 8d 47 08          	lea    0x8(%rdi),%rax
+  3b:	48 83 e0 f8          	and    $0xfffffffffffffff8,%rax
+  3f:	48                   	rex.W
+
+
 ---
- kernel/bpf/verifier.c                         |   9 +-
- .../bpf/progs/compute_live_registers.c        | 172 +++++++++---------
- .../selftests/bpf/progs/verifier_live_stack.c |  18 +-
- 3 files changed, 102 insertions(+), 97 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index d6b8a77fbe3b..a82702405c12 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -24892,7 +24892,7 @@ static int compute_live_registers(struct bpf_verifier_env *env)
- 		insn_aux[i].live_regs_before = state[i].in;
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
- 	if (env->log.level & BPF_LOG_LEVEL2) {
--		verbose(env, "Live regs before insn:\n");
-+		verbose(env, "Live regs before insn, pruning points (p), and force checkpoints (P):\n");
- 		for (i = 0; i < insn_cnt; ++i) {
- 			if (env->insn_aux_data[i].scc)
- 				verbose(env, "%3d ", env->insn_aux_data[i].scc);
-@@ -24904,7 +24904,12 @@ static int compute_live_registers(struct bpf_verifier_env *env)
- 					verbose(env, "%d", j);
- 				else
- 					verbose(env, ".");
--			verbose(env, " ");
-+			if (is_force_checkpoint(env, i))
-+				verbose(env, " P ");
-+			else if (is_prune_point(env, i))
-+				verbose(env, " p ");
-+			else
-+				verbose(env, "   ");
- 			verbose_insn(env, &insns[i]);
- 			if (bpf_is_ldimm64(&insns[i]))
- 				i++;
-diff --git a/tools/testing/selftests/bpf/progs/compute_live_registers.c b/tools/testing/selftests/bpf/progs/compute_live_registers.c
-index 6884ab99a421..10da72518423 100644
---- a/tools/testing/selftests/bpf/progs/compute_live_registers.c
-+++ b/tools/testing/selftests/bpf/progs/compute_live_registers.c
-@@ -21,18 +21,18 @@ struct {
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
- SEC("socket")
- __log_level(2)
--__msg(" 0: .......... (b7) r0 = 42")
--__msg(" 1: 0......... (bf) r1 = r0")
--__msg(" 2: .1........ (bf) r2 = r1")
--__msg(" 3: ..2....... (bf) r3 = r2")
--__msg(" 4: ...3...... (bf) r4 = r3")
--__msg(" 5: ....4..... (bf) r5 = r4")
--__msg(" 6: .....5.... (bf) r6 = r5")
--__msg(" 7: ......6... (bf) r7 = r6")
--__msg(" 8: .......7.. (bf) r8 = r7")
--__msg(" 9: ........8. (bf) r9 = r8")
--__msg("10: .........9 (bf) r0 = r9")
--__msg("11: 0......... (95) exit")
-+__msg(" 0: ..........   (b7) r0 = 42")
-+__msg(" 1: 0.........   (bf) r1 = r0")
-+__msg(" 2: .1........   (bf) r2 = r1")
-+__msg(" 3: ..2.......   (bf) r3 = r2")
-+__msg(" 4: ...3......   (bf) r4 = r3")
-+__msg(" 5: ....4.....   (bf) r5 = r4")
-+__msg(" 6: .....5....   (bf) r6 = r5")
-+__msg(" 7: ......6...   (bf) r7 = r6")
-+__msg(" 8: .......7..   (bf) r8 = r7")
-+__msg(" 9: ........8.   (bf) r9 = r8")
-+__msg("10: .........9   (bf) r0 = r9")
-+__msg("11: 0.........   (95) exit")
- __naked void assign_chain(void)
- {
- 	asm volatile (
-@@ -53,13 +53,13 @@ __naked void assign_chain(void)
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
- SEC("socket")
- __log_level(2)
--__msg("0: .......... (b7) r1 = 7")
--__msg("1: .1........ (07) r1 += 7")
--__msg("2: .......... (b7) r2 = 7")
--__msg("3: ..2....... (b7) r3 = 42")
--__msg("4: ..23...... (0f) r2 += r3")
--__msg("5: .......... (b7) r0 = 0")
--__msg("6: 0......... (95) exit")
-+__msg("0: ..........   (b7) r1 = 7")
-+__msg("1: .1........   (07) r1 += 7")
-+__msg("2: ..........   (b7) r2 = 7")
-+__msg("3: ..2.......   (b7) r3 = 42")
-+__msg("4: ..23......   (0f) r2 += r3")
-+__msg("5: ..........   (b7) r0 = 0")
-+__msg("6: 0.........   (95) exit")
- __naked void arithmetics(void)
- {
- 	asm volatile (
-@@ -76,12 +76,12 @@ __naked void arithmetics(void)
- #ifdef CAN_USE_BPF_ST
- SEC("socket")
- __log_level(2)
--__msg("  1: .1........ (07) r1 += -8")
--__msg("  2: .1........ (7a) *(u64 *)(r1 +0) = 7")
--__msg("  3: .1........ (b7) r2 = 42")
--__msg("  4: .12....... (7b) *(u64 *)(r1 +0) = r2")
--__msg("  5: .12....... (7b) *(u64 *)(r1 +0) = r2")
--__msg("  6: .......... (b7) r0 = 0")
-+__msg("  1: .1........   (07) r1 += -8")
-+__msg("  2: .1........   (7a) *(u64 *)(r1 +0) = 7")
-+__msg("  3: .1........   (b7) r2 = 42")
-+__msg("  4: .12.......   (7b) *(u64 *)(r1 +0) = r2")
-+__msg("  5: .12.......   (7b) *(u64 *)(r1 +0) = r2")
-+__msg("  6: ..........   (b7) r0 = 0")
- __naked void store(void)
- {
- 	asm volatile (
-@@ -99,9 +99,9 @@ __naked void store(void)
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
- SEC("socket")
- __log_level(2)
--__msg("1: ....4..... (07) r4 += -8")
--__msg("2: ....4..... (79) r5 = *(u64 *)(r4 +0)")
--__msg("3: ....45.... (07) r4 += -8")
-+__msg("1: ....4.....   (07) r4 += -8")
-+__msg("2: ....4.....   (79) r5 = *(u64 *)(r4 +0)")
-+__msg("3: ....45....   (07) r4 += -8")
- __naked void load(void)
- {
- 	asm volatile (
-@@ -116,9 +116,9 @@ __naked void load(void)
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
- SEC("socket")
- __log_level(2)
--__msg("0: .1........ (61) r2 = *(u32 *)(r1 +0)")
--__msg("1: ..2....... (d4) r2 = le64 r2")
--__msg("2: ..2....... (bf) r0 = r2")
-+__msg("0: .1........   (61) r2 = *(u32 *)(r1 +0)")
-+__msg("1: ..2.......   (d4) r2 = le64 r2")
-+__msg("2: ..2.......   (bf) r0 = r2")
- __naked void endian(void)
- {
- 	asm volatile (
-@@ -131,13 +131,13 @@ __naked void endian(void)
-
- SEC("socket")
- __log_level(2)
--__msg(" 8: 0......... (b7) r1 = 1")
--__msg(" 9: 01........ (db) r1 = atomic64_fetch_add((u64 *)(r0 +0), r1)")
--__msg("10: 01........ (c3) lock *(u32 *)(r0 +0) += r1")
--__msg("11: 01........ (db) r1 = atomic64_xchg((u64 *)(r0 +0), r1)")
--__msg("12: 01........ (bf) r2 = r0")
--__msg("13: .12....... (bf) r0 = r1")
--__msg("14: 012....... (db) r0 = atomic64_cmpxchg((u64 *)(r2 +0), r0, r1)")
-+__msg(" 8: 0.........   (b7) r1 = 1")
-+__msg(" 9: 01........   (db) r1 = atomic64_fetch_add((u64 *)(r0 +0), r1)")
-+__msg("10: 01........   (c3) lock *(u32 *)(r0 +0) += r1")
-+__msg("11: 01........   (db) r1 = atomic64_xchg((u64 *)(r0 +0), r1)")
-+__msg("12: 01........   (bf) r2 = r0")
-+__msg("13: .12.......   (bf) r0 = r1")
-+__msg("14: 012.......   (db) r0 = atomic64_cmpxchg((u64 *)(r2 +0), r0, r1)")
- __naked void atomic(void)
- {
- 	asm volatile (
-@@ -167,9 +167,9 @@ __naked void atomic(void)
-
- SEC("socket")
- __log_level(2)
--__msg("2: .12....... (db) store_release((u64 *)(r2 -8), r1)")
--__msg("3: .......... (bf) r3 = r10")
--__msg("4: ...3...... (db) r4 = load_acquire((u64 *)(r3 -8))")
-+__msg("2: .12.......   (db) store_release((u64 *)(r2 -8), r1)")
-+__msg("3: ..........   (bf) r3 = r10")
-+__msg("4: ...3......   (db) r4 = load_acquire((u64 *)(r3 -8))")
- __naked void atomic_load_acq_store_rel(void)
- {
- 	asm volatile (
-@@ -192,8 +192,8 @@ __naked void atomic_load_acq_store_rel(void)
-
- SEC("socket")
- __log_level(2)
--__msg("4: .12....7.. (85) call bpf_trace_printk#6")
--__msg("5: 0......7.. (0f) r0 += r7")
-+__msg("4: .12....7..   (85) call bpf_trace_printk#6")
-+__msg("5: 0......7.. p (0f) r0 += r7")
- __naked void regular_call(void)
- {
- 	asm volatile (
-@@ -211,8 +211,8 @@ __naked void regular_call(void)
-
- SEC("socket")
- __log_level(2)
--__msg("2: 012....... (25) if r1 > 0x7 goto pc+1")
--__msg("3: ..2....... (bf) r0 = r2")
-+__msg("2: 012....... p (25) if r1 > 0x7 goto pc+1")
-+__msg("3: ..2.......   (bf) r0 = r2")
- __naked void if1(void)
- {
- 	asm volatile (
-@@ -226,8 +226,8 @@ __naked void if1(void)
-
- SEC("socket")
- __log_level(2)
--__msg("3: 0123...... (2d) if r1 > r3 goto pc+1")
--__msg("4: ..2....... (bf) r0 = r2")
-+__msg("3: 0123...... p (2d) if r1 > r3 goto pc+1")
-+__msg("4: ..2.......   (bf) r0 = r2")
- __naked void if2(void)
- {
- 	asm volatile (
-@@ -243,7 +243,7 @@ __naked void if2(void)
- /* Verifier misses that r2 is alive if jset is not handled properly */
- SEC("socket")
- __log_level(2)
--__msg("2: 012....... (45) if r1 & 0x7 goto pc+1")
-+__msg("2: 012....... p (45) if r1 & 0x7 goto pc+1")
- __naked void if3_jset_bug(void)
- {
- 	asm volatile (
-@@ -258,15 +258,15 @@ __naked void if3_jset_bug(void)
-
- SEC("socket")
- __log_level(2)
--__msg("0: .......... (b7) r1 = 0")
--__msg("1: .1........ (b7) r2 = 7")
--__msg("2: .12....... (25) if r1 > 0x7 goto pc+4")
--__msg("3: .12....... (07) r1 += 1")
--__msg("4: .12....... (27) r2 *= 2")
--__msg("5: .12....... (05) goto pc+0")
--__msg("6: .12....... (05) goto pc-5")
--__msg("7: .......... (b7) r0 = 0")
--__msg("8: 0......... (95) exit")
-+__msg("0: ..........   (b7) r1 = 0")
-+__msg("1: .1........   (b7) r2 = 7")
-+__msg("2: .12....... p (25) if r1 > 0x7 goto pc+4")
-+__msg("3: .12.......   (07) r1 += 1")
-+__msg("4: .12.......   (27) r2 *= 2")
-+__msg("5: .12.......   (05) goto pc+0")
-+__msg("6: .12....... p (05) goto pc-5")
-+__msg("7: .......... p (b7) r0 = 0")
-+__msg("8: 0.........   (95) exit")
- __naked void loop(void)
- {
- 	asm volatile (
-@@ -287,11 +287,11 @@ __naked void loop(void)
- #ifdef CAN_USE_GOTOL
- SEC("socket")
- __log_level(2)
--__msg("2: .123...... (25) if r1 > 0x7 goto pc+2")
--__msg("3: ..2....... (bf) r0 = r2")
--__msg("4: 0......... (06) gotol pc+1")
--__msg("5: ...3...... (bf) r0 = r3")
--__msg("6: 0......... (95) exit")
-+__msg("2: .123...... p (25) if r1 > 0x7 goto pc+2")
-+__msg("3: ..2.......   (bf) r0 = r2")
-+__msg("4: 0.........   (06) gotol pc+1")
-+__msg("5: ...3...... p (bf) r0 = r3")
-+__msg("6: 0......... p (95) exit")
- __naked void gotol(void)
- {
- 	asm volatile (
-@@ -310,11 +310,11 @@ __naked void gotol(void)
-
- SEC("socket")
- __log_level(2)
--__msg("0: .......... (b7) r1 = 1")
--__msg("1: .1........ (e5) may_goto pc+1")
--__msg("2: .......... (05) goto pc-3")
--__msg("3: .1........ (bf) r0 = r1")
--__msg("4: 0......... (95) exit")
-+__msg("0: .......... p (b7) r1 = 1")
-+__msg("1: .1........ P (e5) may_goto pc+1")
-+__msg("2: ..........   (05) goto pc-3")
-+__msg("3: .1........ p (bf) r0 = r1")
-+__msg("4: 0.........   (95) exit")
- __naked void may_goto(void)
- {
- 	asm volatile (
-@@ -331,8 +331,8 @@ __naked void may_goto(void)
-
- SEC("socket")
- __log_level(2)
--__msg("1: 0......... (18) r2 = 0x7")
--__msg("3: 0.2....... (0f) r0 += r2")
-+__msg("1: 0.........   (18) r2 = 0x7")
-+__msg("3: 0.2.......   (0f) r0 += r2")
- __naked void ldimm64(void)
- {
- 	asm volatile (
-@@ -347,11 +347,11 @@ __naked void ldimm64(void)
- /* No rules specific for LD_ABS/LD_IND, default behaviour kicks in */
- SEC("socket")
- __log_level(2)
--__msg("2: 0123456789 (30) r0 = *(u8 *)skb[42]")
--__msg("3: 012.456789 (0f) r7 += r0")
--__msg("4: 012.456789 (b7) r3 = 42")
--__msg("5: 0123456789 (50) r0 = *(u8 *)skb[r3 + 0]")
--__msg("6: 0......7.. (0f) r7 += r0")
-+__msg("2: 0123456789   (30) r0 = *(u8 *)skb[42]")
-+__msg("3: 012.456789   (0f) r7 += r0")
-+__msg("4: 012.456789   (b7) r3 = 42")
-+__msg("5: 0123456789   (50) r0 = *(u8 *)skb[r3 + 0]")
-+__msg("6: 0......7..   (0f) r7 += r0")
- __naked void ldabs(void)
- {
- 	asm volatile (
-@@ -373,9 +373,9 @@ __naked void ldabs(void)
- #ifdef __BPF_FEATURE_ADDR_SPACE_CAST
- SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
- __log_level(2)
--__msg(" 6: .12345.... (85) call bpf_arena_alloc_pages")
--__msg(" 7: 0......... (bf) r1 = addr_space_cast(r0, 0, 1)")
--__msg(" 8: .1........ (b7) r2 = 42")
-+__msg(" 6: .12345....   (85) call bpf_arena_alloc_pages")
-+__msg(" 7: 0......... p (bf) r1 = addr_space_cast(r0, 0, 1)")
-+__msg(" 8: .1........   (b7) r2 = 42")
- __naked void addr_space_cast(void)
- {
- 	asm volatile (
-@@ -408,17 +408,17 @@ static __used __naked int aux1(void)
-
- SEC("socket")
- __log_level(2)
--__msg("0: ....45.... (b7) r1 = 1")
--__msg("1: .1..45.... (b7) r2 = 2")
--__msg("2: .12.45.... (b7) r3 = 3")
-+__msg("0: ....45....   (b7) r1 = 1")
-+__msg("1: .1..45....   (b7) r2 = 2")
-+__msg("2: .12.45....   (b7) r3 = 3")
- /* Conservative liveness for subprog parameters. */
--__msg("3: .12345.... (85) call pc+2")
--__msg("4: .......... (b7) r0 = 0")
--__msg("5: 0......... (95) exit")
--__msg("6: .12....... (bf) r0 = r1")
--__msg("7: 0.2....... (0f) r0 += r2")
-+__msg("3: .12345.... p (85) call pc+2")
-+__msg("4: .......... p (b7) r0 = 0")
-+__msg("5: 0.........   (95) exit")
-+__msg("6: .12....... p (bf) r0 = r1")
-+__msg("7: 0.2.......   (0f) r0 += r2")
- /* Conservative liveness for subprog return value. */
--__msg("8: 0......... (95) exit")
-+__msg("8: 0.........   (95) exit")
- __naked void subprog1(void)
- {
- 	asm volatile (
-diff --git a/tools/testing/selftests/bpf/progs/verifier_live_stack.c b/tools/testing/selftests/bpf/progs/verifier_live_stack.c
-index 2de105057bbc..105b453be6d3 100644
---- a/tools/testing/selftests/bpf/progs/verifier_live_stack.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_live_stack.c
-@@ -136,12 +136,12 @@ static __used __naked void write_first_param(void)
- SEC("socket")
- __log_level(2)
- /* caller_stack_read() function */
--__msg("2: .12345.... (85) call pc+4")
--__msg("5: .12345.... (85) call pc+1")
--__msg("6: 0......... (95) exit")
-+__msg("2: .12345.... p (85) call pc+4")
-+__msg("5: .12345.... p (85) call pc+1")
-+__msg("6: 0......... p (95) exit")
- /* read_first_param() function */
--__msg("7: .1........ (79) r0 = *(u64 *)(r1 +0)")
--__msg("8: 0......... (95) exit")
-+__msg("7: .1........ p (79) r0 = *(u64 *)(r1 +0)")
-+__msg("8: 0.........   (95) exit")
- /* update for callsite at (2) */
- __msg("(2,7) frame 0 insn 7 +live -8")
- __msg("(2,7) live stack update done in 2 iterations")
-@@ -177,10 +177,10 @@ SEC("socket")
- __flag(BPF_F_TEST_STATE_FREQ)
- __log_level(2)
- /* read_first_param2() function */
--__msg(" 9: .1........ (79) r0 = *(u64 *)(r1 +0)")
--__msg("10: .......... (b7) r0 = 0")
--__msg("11: 0......... (05) goto pc+0")
--__msg("12: 0......... (95) exit")
-+__msg(" 9: .1........ p (79) r0 = *(u64 *)(r1 +0)")
-+__msg("10: ..........   (b7) r0 = 0")
-+__msg("11: 0.........   (05) goto pc+0")
-+__msg("12: 0......... p (95) exit")
- /*
-  * The purpose of the test is to check that checkpoint in
-  * read_first_param2() stops path traversal. This will only happen if
---
-2.34.1
-
+If you want to undo deduplication, reply with:
+#syz undup
 
