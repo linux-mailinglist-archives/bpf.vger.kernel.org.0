@@ -1,126 +1,213 @@
-Return-Path: <bpf+bounces-77299-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77300-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6288CD6EAA
-	for <lists+bpf@lfdr.de>; Mon, 22 Dec 2025 20:03:31 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0014ACD6EEC
+	for <lists+bpf@lfdr.de>; Mon, 22 Dec 2025 20:08:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 4F9353001198
-	for <lists+bpf@lfdr.de>; Mon, 22 Dec 2025 19:03:31 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 259893003FFB
+	for <lists+bpf@lfdr.de>; Mon, 22 Dec 2025 19:08:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA77B3346B2;
-	Mon, 22 Dec 2025 19:03:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD48C33A00F;
+	Mon, 22 Dec 2025 19:08:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BTy9cDCd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IKBZco4U"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE8F2337BB2
-	for <bpf@vger.kernel.org>; Mon, 22 Dec 2025 19:03:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 342D6299A81
+	for <bpf@vger.kernel.org>; Mon, 22 Dec 2025 19:08:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766430208; cv=none; b=ryWzBPseU6LIWYEBn8z53EI4VlnjaMTMpFcVCuAX0MFuPh7e4Trun52IRfp7qxe9WhzocNZyyqRnrG1c3Q4N6IwZG8pIcFhmb7VFUk8CKQVwjV902STVq9vD1FyDJn80KhAlzV24Lz8shDuBJD7AUDpRO2VASESXXr3p08DdN4g=
+	t=1766430522; cv=none; b=Z1NTC2MT26FH/JdfKnOtJOdkzUZLYg3KyQaozQ/yhZw4Za7+kEHl50iE8Pz5MR0xPVtPnQMPKAvtEYmLBPL9VN+q14XOZsWxBSxEIZ+xKoFJifY2OlKIP0qBLlqw/h63+zvHOaMcA8ccLwJE0tDoBPLYkjIPjPqBwYMYkqPiuSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766430208; c=relaxed/simple;
-	bh=5iAYN54MFAPkrX8EkYZmeAcc5q9qX8LUMd9BPp1et24=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Rz4/ZkbDdsVfECVi8N3MNNajlYL9+9kTh3LmI7kHzNPqdlRuc2dWiyPbYyGY/FhuZkrTtzDftRjORF/uevD6qC4PFvDPQ1+Mtl12Kqek0NHPiQgQ7GV07zVYKopOSIfQ0ZjNJ6dN7irm7Y9jS4gsQQ1se+PrKZ42sDZjQLcAneY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BTy9cDCd; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-477770019e4so37362575e9.3
-        for <bpf@vger.kernel.org>; Mon, 22 Dec 2025 11:03:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1766430203; x=1767035003; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5iAYN54MFAPkrX8EkYZmeAcc5q9qX8LUMd9BPp1et24=;
-        b=BTy9cDCdvf51kpeSqoGJwYEC8CWFYvzSPBJudifiBvVKyQSSmluEAufJ8KhtgjiAdj
-         BFymS8vUybLogUG+9uH+p217nog7uY/cNMMdJEEEM8TwXtuSWBK6mUxKg58+3EUJnSUX
-         XGWTsDru0K0AFZMtphVk4kmiHACAGYqSrOTeR6Rpoa/MCKZD7ch921RuocB+R/mnXhS+
-         NTQJfiXcucAFvofJPFb2Gx997hONLJpDeRkJ4rVaolgXWA/ir2jjv7Sne0LvIlIBIDJl
-         JzQDmffQJWvfm329wt3TZ74sY8nD6KLqVYhELrfjW7YawmWMPnJygNOvTYZp5hVLNkOu
-         jQSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766430203; x=1767035003;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=5iAYN54MFAPkrX8EkYZmeAcc5q9qX8LUMd9BPp1et24=;
-        b=vKxmF7Sc9nljxGUdhQWHrSobRPuqvk2uRh3UU0ajItUMvht37C9HqbHUIGGiASjk9T
-         5QeJlUMn1aaGq+zC79kUEETnyDpdPbHosNcHvAEEfIi/QH6gO6Esb0DRn6nxl7sq59Ll
-         cYP2sw05ftr+904N+eBLLx5q3dVH9m404jzyeIk63XHWmUUUVdIXumjlLu8fJFPB2dnP
-         GNlyQUwM5vfKiOnP7XdDA0Qewk9J+K5WPVAVz0MAfzrRwkvyY5vvprC7sWZkF6dFy6dm
-         2HUxp3eZxkMmZ05DBv4itnKGfiOK6ptgGyPFkMTjk+9mOWkEHKjGd6oPw1paDa7MOr3+
-         pYOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXuJyt0Vj9mN8kYRQMdx9dJQsoO0afGGAzuq5NiJ/o8VbUdshDRp7oq4JAbwMCbk2DWZPM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwxYMS1Vx0I8EgP+3+xVVXOo3avpyEmL2To5ccmE7P+/+mbeH7r
-	lY1y4gSBDvk0S/wt0HsuUbRVZVvGESMG4i/SPywx0ToxPTokUg6fz3EiOXD0Un/d1SrNdUNOOyg
-	VEWxSJ1h4j3e3AF/tM5NcgfcDqzSwbiw=
-X-Gm-Gg: AY/fxX5URM6NXe+MU/9OPCqauRxOmBELuSgt90WhZwqm4ixlvasxuVnSxAtikp9+teQ
-	2oNMiJPs+rP7o0pgX5kcim2ivCg86/mGVBC5S0FEeoNF6W1bJPoSAXThd6Q5zkcOgb+0/XA5Rpl
-	j1Tu2FQX+dv7zS3G6Apz3GZdbzHFbAi5WArR/T2CiTgOs02WjaiYTZX+8OZdP5Sp8QVeS0ZA/xz
-	Te7qfmSwg5GcAFthzN+eBVrfZ3TvNzRYKQP5JqFMHya0qC3avAd0oZ9eLM2NINq1H0J8daD
-X-Google-Smtp-Source: AGHT+IGWlY6loBjKIYUvY3sJxh9hmOkZNaQ/5Aegdl04SOShtYfzVNtf9kjzV+lII5u7h4TAq4J4/Sz11mXDupmoLmY=
-X-Received: by 2002:a05:6000:2302:b0:42f:bbc6:eda2 with SMTP id
- ffacd0b85a97d-4324e5060b7mr12235818f8f.40.1766430202652; Mon, 22 Dec 2025
- 11:03:22 -0800 (PST)
+	s=arc-20240116; t=1766430522; c=relaxed/simple;
+	bh=N+O+j000itl9QhhqSJTYr6E8gbjWsFSNki0nQ0axMdc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RAkSL4yi84t6z6On1a5Q8R9KybSVrmf6YptFmBKxGRWpuC5yxz/eMWG9aP21kAiq8lAjjx19MGaq7U4HSpT/mMlak7tvJFSNCVvUfA8WBl+6Q0caFhZq0XLrwepOWjKYbH1U9BjBMpjSZ1QCVGXjwGN7QrM/Fxcl66qk9EpduaE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IKBZco4U; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77451C4CEF1;
+	Mon, 22 Dec 2025 19:08:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1766430521;
+	bh=N+O+j000itl9QhhqSJTYr6E8gbjWsFSNki0nQ0axMdc=;
+	h=From:To:Cc:Subject:Date:From;
+	b=IKBZco4U6PyVyfl8DEqPhjUrXUGixb8FoAR0JJbYdIgALkds3dRJhE5fH6hkA+as6
+	 V66ZdK8V4+bZdHTJxGeGix66domQK+lTNEgeD66CqEEUcYq/g9xwPiVsSw/TDuVJRF
+	 e/81cbWg5/o6IjCWDaijMLX5vo/gc4BEW3avdbqawFwaEnBSkauZQWMBCe6MBJD/+q
+	 yQ0tohx+gXl1Idkbc1cQfGHBAcxBTWY92zWGMx8hNeSqPt0p80CusYGVtAZ0SCgN2u
+	 BJdQigTRy0URGNzgZy1vd3gfEhA0DQy3N6C93yet4VwXnxAUlwxn309+uWompgbmqr
+	 CTJlL++siBEPg==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: bpf@vger.kernel.org
+Cc: Puranjay Mohan <puranjay@kernel.org>,
+	Puranjay Mohan <puranjay12@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	kernel-team@meta.com
+Subject: [PATCH bpf-next v7 0/4] Remove KF_SLEEPABLE from arena kfuncs
+Date: Mon, 22 Dec 2025 11:08:07 -0800
+Message-ID: <20251222190815.4112944-1-puranjay@kernel.org>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251215091730.1188790-1-alan.maguire@oracle.com>
- <20251215091730.1188790-2-alan.maguire@oracle.com> <CAEf4Bzaw6KRU2yDbawOe+eusCjCwvg0FwhkpvGA3HE=gC=ZLbQ@mail.gmail.com>
- <42914a9b-0f34-4cee-bc36-4847373fa0b5@oracle.com> <CAEf4BzZuikZK5cZQyV=ge6UBKHxc+dwTLjcHZB_1Smw1AwntNA@mail.gmail.com>
- <e2df60e1-db17-4b75-8e0e-56fcfdb53686@oracle.com> <CAEf4BzarPLAcwKApft_nBVM_d3WW58zytZfLQVz387TF2c2FVg@mail.gmail.com>
- <CAADnVQ+achE6ebfCxyfHyxMMFJ-Oq=hUK=JkWUAGwz+7HeV4Qw@mail.gmail.com> <22c54404-512c-4229-8c93-8ec1321619e0@oracle.com>
-In-Reply-To: <22c54404-512c-4229-8c93-8ec1321619e0@oracle.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 22 Dec 2025 09:03:11 -1000
-X-Gm-Features: AQt7F2owleetMFpC7ourxjF6EltaOtWsOJeESKt-MP00dpYF_8Rf9fLNrsVdOBo
-Message-ID: <CAADnVQ+VU_nRgPS0H6j6=macgT49+eW7KCf7zPEn9V5K0HN5-A@mail.gmail.com>
-Subject: Re: [PATCH v8 bpf-next 01/10] btf: add kind layout encoding to UAPI
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Quentin Monnet <qmo@kernel.org>, 
-	Ihor Solodrai <ihor.solodrai@linux.dev>, dwarves <dwarves@vger.kernel.org>, 
-	bpf <bpf@vger.kernel.org>, Thierry Treyer <ttreyer@meta.com>, 
-	Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Sun, Dec 21, 2025 at 10:58=E2=80=AFPM Alan Maguire <alan.maguire@oracle.=
-com> wrote:
->
-> >
-> > Hold on. I'm missing how libbpf will sanitize things for older kernels?
->
-> The sanitization we can get from layout info is for handling a kernel bui=
-lt with
-> newer kernel/module BTF. The userspace tooling (libbpf and others) does n=
-ot fully
-> understand it due to the presence of new kinds. In such a case layout dat=
-a gives us
-> info to parse it by providing info on kind layout, and libbpf can sanitiz=
-e it
-> to be usable for some cases (where the type graph is not fatally compromi=
-sed
-> by the lack of a kind). This will always be somewhat limited, but it
-> does provide more usability than we have today.
+V6: https://lore.kernel.org/all/20251217184438.3557859-1-puranjay@kernel.org/
+Changes in v6->v7:
+- Fix a deadlock in patch 1, that was being fixed in patch 2. Move the fix to patch 1.
+- Call flush_cache_vmap() after setting up the mappings as it is
+  required by some architectures.
 
-I'm even more confused now. libbpf will sanitize BTF for the sake of
-user space? That's not something it ever did. libbpf sanitizes BTF
-only to
-be loaded in the older kernel where the original BTF was
-generated for a newer one. There is no reason to mangle BTF right until
-the point of loading. Presence of a kind layout helps user space tooling
-to print it, but that's not sanitization. The tools will just skip over.
+V5: https://lore.kernel.org/all/20251212044516.37513-1-puranjay@kernel.org/
+Changes in v5->v6:
+Patch 1:
+	- Add a missing ; to make sure this patch builds individually. (AI)
+
+V4: https://lore.kernel.org/all/20251212004350.6520-1-puranjay@kernel.org/
+Changes in v4->v5:
+Patch 1:
+	- Fix a memory leak in arena_alloc_pages(), it was being fixed in
+	  Patch 3 but, every patch should be complete in itself. (AI)
+Patch 3:
+	- Don't do useless addition in arena_alloc_pages() (Alexei)
+	- Add a comment about kmalloc_nolock() failure and expectations.
+
+v3: https://lore.kernel.org/all/20251117160150.62183-1-puranjay@kernel.org/
+Changes in v3->v4:
+	- Coding style changes related to comments in Patch 2/3 (Alexei)
+
+v2: https://lore.kernel.org/all/20251114111700.43292-1-puranjay@kernel.org/
+Changes in v2->v3:
+Patch 1:
+        - Call range_tree_destroy() in error path of
+          populate_pgtable_except_pte() in arena_map_alloc() (AI)
+Patch 2:
+        - Fix double mutex_unlock() in the error path of
+          arena_alloc_pages() (AI)
+        - Fix coding style issues (Alexei)
+Patch 3:
+        - Unlock spinlock before returning from arena_vm_fault() in case
+          BPF_F_SEGV_ON_FAULT is set by user. (AI)
+        - Use __llist_del_all() in place of llist_del_all for on-stack
+          llist (free_pages) (Alexei)
+        - Fix build issues on 32-bit systems where arena.c is not compiled.
+          (kernel test robot)
+        - Make bpf_arena_alloc_pages() polymorphic so it knows if it has
+          been called in sleepable or non-sleepable context. This
+          information is passed to arena_free_pages() in the error path.
+Patch 4:
+        - Add a better comment for the big_alloc3() test that triggers
+          kmalloc_nolock()'s limit and if bpf_arena_alloc_pages() works
+          correctly above this limit.
+
+v1: https://lore.kernel.org/all/20251111163424.16471-1-puranjay@kernel.org/
+Changes in v1->v2:
+Patch 1:
+        - Import tlbflush.h to fix build issue in loongarch. (kernel
+          test robot)
+        - Fix unused variable error in apply_range_clear_cb() (kernel
+          test robot)
+        - Call bpf_map_area_free() on error path of
+          populate_pgtable_except_pte() (AI)
+        - Use PAGE_SIZE in apply_to_existing_page_range() (AI)
+Patch 2:
+        - Cap allocation made by kmalloc_nolock() for pages array to
+          KMALLOC_MAX_CACHE_SIZE and reuse the array in an explicit loop
+          to overcome this limit. (AI)
+Patch 3:
+        - Do page_ref_add(page, 1); under the spinlock to mitigate a
+          race (AI)
+Patch 4:
+        - Add a new testcase big_alloc3() verifier_arena_large.c that
+          tries to allocate a large number of pages at once, this is to
+          trigger the kmalloc_nolock() limit in Patch 2 and see if the
+          loop logic works correctly.
+
+This set allows arena kfuncs to be called from non-sleepable contexts.
+It is acheived by the following changes:
+
+The range_tree is now protected with a rqspinlock and not a mutex,
+this change is enough to make bpf_arena_reserve_pages() any context
+safe.
+
+bpf_arena_alloc_pages() had four points where it could sleep:
+
+1. Mutex to protect range_tree: now replaced with rqspinlock
+
+2. kvcalloc() for allocations: now replaced with kmalloc_nolock()
+
+3. Allocating pages with bpf_map_alloc_pages(): this already calls
+   alloc_pages_nolock() in non-sleepable contexts and therefore is safe.
+
+4. Setting up kernel page tables with vm_area_map_pages():
+   vm_area_map_pages() may allocate memory while inserting pages into
+   bpf arena's vm_area. Now, at arena creation time populate all page
+   table levels except the last level and when new pages need to be
+   inserted call apply_to_page_range() again which will only do
+   set_pte_at() for those pages and will not allocate memory.
+
+The above four changes make bpf_arena_alloc_pages() any context safe.
+
+bpf_arena_free_pages() has to do the following steps:
+
+1. Update the range_tree
+2. vm_area_unmap_pages(): to unmap pages from kernel vm_area
+3. flush the tlb: done in step 2, already.
+4. zap_pages(): to unmap pages from user page tables
+5. free pages.
+
+The third patch in this set makes bpf_arena_free_pages() polymorphic using
+the specialize_kfunc() mechanism. When called from a sleepable context,
+arena_free_pages() remains mostly unchanged except the following:
+1. rqspinlock is taken now instead of the mutex for the range tree
+2. Instead of using vm_area_unmap_pages() that can free intermediate page
+   table levels, apply_to_existing_page_range() with a callback is used
+   that only does pte_clear() on the last level and leaves the intermediate
+   page table levels intact. This is needed to make sure that
+   bpf_arena_alloc_pages() can safely do set_pte_at() without allocating
+   intermediate page tables.
+
+When arena_free_pages() is called from a non-sleepable context or it fails to
+acquire the rqspinlock in the sleepable case, a lock-less list of struct
+arena_free_span is used to queue the uaddr and page cnt. kmalloc_nolock()
+is used to allocate this arena_free_span, this can fail but we need to make
+this trade-off for frees done from non-sleepable contexts.
+
+arena_free_pages() then raises an irq_work whose handler in turn schedules
+work that iterate this list and clears ptes, flushes tlbs, zap pages, and
+frees pages for the queued uaddr and page cnts.
+
+apply_range_clear_cb() with apply_to_existing_page_range() is used to
+clear PTEs and collect pages to be freed, struct llist_node pcp_llist;
+in the struct page is used to do this.
+
+Puranjay Mohan (4):
+  bpf: arena: populate vm_area without allocating memory
+  bpf: arena: use kmalloc_nolock() in place of kvcalloc()
+  bpf: arena: make arena kfuncs any context safe
+  selftests: bpf: test non-sleepable arena allocations
+
+ include/linux/bpf.h                           |  16 +
+ kernel/bpf/arena.c                            | 380 +++++++++++++++---
+ kernel/bpf/verifier.c                         |  10 +
+ .../selftests/bpf/prog_tests/arena_list.c     |  20 +-
+ .../testing/selftests/bpf/progs/arena_list.c  |  11 +
+ .../selftests/bpf/progs/verifier_arena.c      | 185 +++++++++
+ .../bpf/progs/verifier_arena_large.c          |  29 ++
+ 7 files changed, 592 insertions(+), 59 deletions(-)
+
+
+base-commit: f785a31395d9cafb8b2c42c7358fad72a6463142
+-- 
+2.47.3
+
 
