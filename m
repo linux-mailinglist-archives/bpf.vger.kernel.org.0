@@ -1,54 +1,55 @@
-Return-Path: <bpf+bounces-77295-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77296-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6423CCD6E46
-	for <lists+bpf@lfdr.de>; Mon, 22 Dec 2025 19:28:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 493C2CD6E61
+	for <lists+bpf@lfdr.de>; Mon, 22 Dec 2025 19:35:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0274F30321D7
-	for <lists+bpf@lfdr.de>; Mon, 22 Dec 2025 18:28:52 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E0A1830361F7
+	for <lists+bpf@lfdr.de>; Mon, 22 Dec 2025 18:35:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76D96326948;
-	Mon, 22 Dec 2025 18:28:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C08D430275E;
+	Mon, 22 Dec 2025 18:35:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LJAp/BO7"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gxMJ6TsD"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF1BB31ED8F
-	for <bpf@vger.kernel.org>; Mon, 22 Dec 2025 18:28:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AE502BCF5
+	for <bpf@vger.kernel.org>; Mon, 22 Dec 2025 18:35:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766428131; cv=none; b=kTLpmaje0DblVXdus7+F7jlo2cMqurJU0E9xzojI0ftuVF+iRAhFyF1TMSJivGHGynen9U+n9wYWMMXdlA7QvFrGt2KGLGQ205W5lD+ME2fIeXe+w/4vt9tUZY88yt15EfEIqztJJiT/s9LOXznqZ45TNA/uTu9MaWw7qJFO4Og=
+	t=1766428526; cv=none; b=lgL3aekjWxuYJ3J3gqIr08Ojv/NvoSBLIJJ5RFVNzyWjkR85JMy/Cq/QRnU/vyoHzdYWlioULopCV1vZxmoU524l0Yb35qbStexHXIsVeS1PhCLtP2PF3NynR9XM6qFLH0fbk5sKdU2ZsYGGNWzMVG6uDgd0RyrrSR1cIxgkHw0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766428131; c=relaxed/simple;
-	bh=asmLFeZXzVOBTgZXT1lN6vKdiWrrVIS9v0v5m+NjrQg=;
+	s=arc-20240116; t=1766428526; c=relaxed/simple;
+	bh=vRp40hZl9u3yqPN2eYJU6sVgp9Dd+vm6m3bVcK4OBxw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MFIDykGe4hgfjbUEFfHXTg7u6xQ/hA8Sden9iJSNIsDlbIdkHjCrt7cLNB2bIPuyXW2kdT2QPvYtZ5aIl8cduki3XrfIYFlDY1mxKT3s7aRYnwMzC9UHslbYrGp8e/5em5Q7kRFh9ErR8rXxNDCqgfk3OW+f1F3xnCJ6LhAHkoE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LJAp/BO7; arc=none smtp.client-ip=95.215.58.178
+	 In-Reply-To:Content-Type; b=MNPkuF7r8tfVCa0rbuwvXgBvdsFjto42o7OppEzHkKLwnRNQOf+VO2WE8qZpIAGkFXyp8vF23rsDyEnTP6/jhktW0/ISmaidRS2H4APhhhp/urMcijoPHpcQV0X4yVTL1TTXLCkYF6nITSuCFQMCiV7DTUJd52YiweySzAPrzVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gxMJ6TsD; arc=none smtp.client-ip=91.218.175.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <cdde31c9-04c1-4d46-bb09-c36c23ec40c2@linux.dev>
+Message-ID: <e806ab68-1820-418b-99c0-0829d1533efa@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1766428127;
+	t=1766428514;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=asmLFeZXzVOBTgZXT1lN6vKdiWrrVIS9v0v5m+NjrQg=;
-	b=LJAp/BO7Ei1QVhaizthVy/Bq0C8EI26jQw+0C45ZLmKmbQFdscOZnssNdeviiDu0LPQFmb
-	slLoctruA7lGUHJC7O8bufMU3kGD+FOU0JkFHk9MdLv6RH5pQth8mDRf+rwS0XRg8si9wH
-	AxoBYoQWFs32dWLtcpyTg7GQIiXWSwI=
-Date: Mon, 22 Dec 2025 10:28:28 -0800
+	bh=vRp40hZl9u3yqPN2eYJU6sVgp9Dd+vm6m3bVcK4OBxw=;
+	b=gxMJ6TsDZE0avfNL0oAz18ekr1uX/wPJnMUxuTw90QMur1i9rZOXKBftOhuDsKquvB1BqQ
+	kkJn3vo9FWo7l14UiMKarR+2qPRPvbqJynD/PX+GhVysOmGK/GjWej8fHaF4x7O7wubBDB
+	AbNSHbetAwMWYDCGpdp7a97rZCb+u08=
+Date: Mon, 22 Dec 2025 10:35:09 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: allow calling kfuncs from raw_tp
- programs
+Subject: Re: [PATCH bpf-next v2 2/2] selftests: bpf: fix tests with raw_tp
+ calling kfuncs
+Content-Language: en-GB
 To: Puranjay Mohan <puranjay@kernel.org>, bpf@vger.kernel.org
 Cc: Puranjay Mohan <puranjay12@gmail.com>, Alexei Starovoitov
  <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
@@ -57,11 +58,10 @@ Cc: Puranjay Mohan <puranjay12@gmail.com>, Alexei Starovoitov
  Eduard Zingerman <eddyz87@gmail.com>,
  Kumar Kartikeya Dwivedi <memxor@gmail.com>, kernel-team@meta.com
 References: <20251222133250.1890587-1-puranjay@kernel.org>
- <20251222133250.1890587-2-puranjay@kernel.org>
-Content-Language: en-GB
+ <20251222133250.1890587-3-puranjay@kernel.org>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20251222133250.1890587-2-puranjay@kernel.org>
+In-Reply-To: <20251222133250.1890587-3-puranjay@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
@@ -69,8 +69,8 @@ X-Migadu-Flow: FLOW_OUT
 
 
 On 12/22/25 5:32 AM, Puranjay Mohan wrote:
-> Associate raw tracepoint program type with the kfunc tracing hook. This
-> allows calling kfuncs from raw_tp programs.
+> As the previous commit allowed raw_tp programs to call kfuncs, so of the
+> selftests that were expected to fail will now succeed.
 >
 > Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 
