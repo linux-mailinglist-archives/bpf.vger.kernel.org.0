@@ -1,43 +1,44 @@
-Return-Path: <bpf+bounces-77311-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77312-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id A790ACD7016
-	for <lists+bpf@lfdr.de>; Mon, 22 Dec 2025 20:50:33 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EA8FCD701C
+	for <lists+bpf@lfdr.de>; Mon, 22 Dec 2025 20:50:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A92D53019BE8
-	for <lists+bpf@lfdr.de>; Mon, 22 Dec 2025 19:50:31 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id A2A963003FF9
+	for <lists+bpf@lfdr.de>; Mon, 22 Dec 2025 19:50:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 421602673AA;
-	Mon, 22 Dec 2025 19:50:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A05C2E54A3;
+	Mon, 22 Dec 2025 19:50:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P+3jTEPA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n3uOmEoo"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCB182B2DA
-	for <bpf@vger.kernel.org>; Mon, 22 Dec 2025 19:50:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7291207A09
+	for <bpf@vger.kernel.org>; Mon, 22 Dec 2025 19:50:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766433029; cv=none; b=SKZ66sOMIQEq+uqdDWfMGCwYVGyeKadtW66OBpQos1iHBJibnD9M/uyx+xktnw1yPRdp/O+ACMycOCltjIZK2JpYrLx9QP7dR2pmVQDAxDRz89k2/xQ5G3Mk21aXhNWoWk/jyNVJ6R+gKBlY+YfHL2oNx00Pznb1rLSluJnfCLM=
+	t=1766433032; cv=none; b=XO4SPnWMN36E9tJRSV0wUdoDK611iBEiAInysuv0+zkAWJDQuexvQ/qtn4k0VYnoHK7zHp550BVzMNOqsBf1wxxWbrTRIF3r39rKat7Rr/Hy9ApRRnBkzyNw/ts3ufB70YrksjIevkk5MNI3jpwHbgZdp2sEn37kduhXg++pNRY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766433029; c=relaxed/simple;
-	bh=M3O0/ShdQ8Yv2nWwxV0+bz/lkdJQgaaVleqM21CJgQY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZvvXzo7GIPUsR7NOQxW7Poc3jVpCoBa2xedEWkg8CbxsbB6TrH96SV+J0Ssk+joMs1QhH1OL/toMbJdATW86nT+pOTsjbYSPNbJNi7YI/NZDEgqkrFvAjG3In1gCAnzV1091kM1n2yjc2h7Kg+WG9LqAxihoaEOOzyszqztrU7c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P+3jTEPA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22CA4C4CEF1;
-	Mon, 22 Dec 2025 19:50:29 +0000 (UTC)
+	s=arc-20240116; t=1766433032; c=relaxed/simple;
+	bh=NPT+B7Ea7q1CyCD/e0uvBE0ylzS/0c50zT79Kd2n+gI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=EBJ5x3nLHhMqmrC+X4FB6OxBuYqtb2TGAIXDyTPs2BCzNNFRpVx7DwbqcS2Sfgu5wtJpE91tUWPZuoVUGKyKQRcH0QH88XaTiRkoiUkJRy+cUAJtwniB9ThQzHnK/oKTByrDqUotVvIwqKWQJ4g+UummciY59w7TilxvpXFHf4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n3uOmEoo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74926C4CEF1;
+	Mon, 22 Dec 2025 19:50:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766433029;
-	bh=M3O0/ShdQ8Yv2nWwxV0+bz/lkdJQgaaVleqM21CJgQY=;
-	h=From:To:Cc:Subject:Date:From;
-	b=P+3jTEPA3xILn7tKHiuJ+E3sENT5rUCRcDxWaKmtZPXgfhtcdfIEx4GjRrHiDdoXq
-	 wQ5mVzk/IlH1WOGnDuVoZr+T+2fb4uJRU3N4PwaK+P5iIpuq4IS5gMM3w3hJnLVYvy
-	 Dmt2994jIMWODKhDtwB7agR8qy2+aZ0xfxKFn3DwhcQj3s90MhDOv60faKWMbyjQNO
-	 cdall5rue9vXJjWQEnIKRkEkrMe/ra6nbAi6cRrN5QX+Cf2gmazcaYAvYxqG/G7i7X
-	 phqSez9aNJrpDhEeGQTp0Om1mRL1RVwStOaVjBdEwZLsJi7nbyexDyWYJwTPMHhcrc
-	 nn87KTMb9S7+w==
+	s=k20201202; t=1766433032;
+	bh=NPT+B7Ea7q1CyCD/e0uvBE0ylzS/0c50zT79Kd2n+gI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=n3uOmEooHeO8wBHJztCSr9kxe0+2ba5ylzLIuXJJweXJ32hlDx/sL+7odkqmF4NDg
+	 /hmtfJ+R5IR49XtJ28OlIGPzLBiHii37YTgQpeajJNlejZHSpV3iPJmTonKb0sA4vu
+	 /MTyAUQJS8AXpECtizjz+5swHmc1Ai+d9Qrz76ZB16aSN77kbSxMb8hSe+c2oQ+HgN
+	 UkGFLU+CvRTGuhw4lRV6YthtqjvY43p5EEqAI7yRbfL3i3IDPqu/7LjUeMJfBhvw6V
+	 Kq2PlV2ecVUbehYzBKeMFsqH7gPIB8q0b3Z+dWNkoySP/BSdW8S86r/AySVQM0k+VR
+	 Gt4WO2iqDKrPg==
 From: Puranjay Mohan <puranjay@kernel.org>
 To: bpf@vger.kernel.org
 Cc: Puranjay Mohan <puranjay@kernel.org>,
@@ -49,10 +50,12 @@ Cc: Puranjay Mohan <puranjay@kernel.org>,
 	Eduard Zingerman <eddyz87@gmail.com>,
 	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next v8 0/4] Remove KF_SLEEPABLE from arena kfuncs
-Date: Mon, 22 Dec 2025 11:50:15 -0800
-Message-ID: <20251222195022.431211-1-puranjay@kernel.org>
+Subject: [PATCH bpf-next v8 1/4] bpf: arena: populate vm_area without allocating memory
+Date: Mon, 22 Dec 2025 11:50:16 -0800
+Message-ID: <20251222195022.431211-2-puranjay@kernel.org>
 X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20251222195022.431211-1-puranjay@kernel.org>
+References: <20251222195022.431211-1-puranjay@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -61,156 +64,215 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-V7: https://lore.kernel.org/all/20251222190815.4112944-1-puranjay@kernel.org/
-Changes in V7->v8:
-- Use clear_lo32(arena->user_vm_start) in place of user_vm_start in patch 3
+vm_area_map_pages() may allocate memory while inserting pages into bpf
+arena's vm_area. In order to make bpf_arena_alloc_pages() kfunc
+non-sleepable change bpf arena to populate pages without
+allocating memory:
+- at arena creation time populate all page table levels except
+  the last level
+- when new pages need to be inserted call apply_to_page_range() again
+  with apply_range_set_cb() which will only set_pte_at() those pages and
+  will not allocate memory.
+- when freeing pages call apply_to_existing_page_range with
+  apply_range_clear_cb() to clear the pte for the page to be removed. This
+  doesn't free intermediate page table levels.
 
-V6: https://lore.kernel.org/all/20251217184438.3557859-1-puranjay@kernel.org/
-Changes in v6->v7:
-- Fix a deadlock in patch 1, that was being fixed in patch 2. Move the fix to patch 1.
-- Call flush_cache_vmap() after setting up the mappings as it is
-  required by some architectures.
+Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+---
+ kernel/bpf/arena.c | 100 ++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 90 insertions(+), 10 deletions(-)
 
-V5: https://lore.kernel.org/all/20251212044516.37513-1-puranjay@kernel.org/
-Changes in v5->v6:
-Patch 1:
-	- Add a missing ; to make sure this patch builds individually. (AI)
-
-V4: https://lore.kernel.org/all/20251212004350.6520-1-puranjay@kernel.org/
-Changes in v4->v5:
-Patch 1:
-	- Fix a memory leak in arena_alloc_pages(), it was being fixed in
-	  Patch 3 but, every patch should be complete in itself. (AI)
-Patch 3:
-	- Don't do useless addition in arena_alloc_pages() (Alexei)
-	- Add a comment about kmalloc_nolock() failure and expectations.
-
-v3: https://lore.kernel.org/all/20251117160150.62183-1-puranjay@kernel.org/
-Changes in v3->v4:
-	- Coding style changes related to comments in Patch 2/3 (Alexei)
-
-v2: https://lore.kernel.org/all/20251114111700.43292-1-puranjay@kernel.org/
-Changes in v2->v3:
-Patch 1:
-        - Call range_tree_destroy() in error path of
-          populate_pgtable_except_pte() in arena_map_alloc() (AI)
-Patch 2:
-        - Fix double mutex_unlock() in the error path of
-          arena_alloc_pages() (AI)
-        - Fix coding style issues (Alexei)
-Patch 3:
-        - Unlock spinlock before returning from arena_vm_fault() in case
-          BPF_F_SEGV_ON_FAULT is set by user. (AI)
-        - Use __llist_del_all() in place of llist_del_all for on-stack
-          llist (free_pages) (Alexei)
-        - Fix build issues on 32-bit systems where arena.c is not compiled.
-          (kernel test robot)
-        - Make bpf_arena_alloc_pages() polymorphic so it knows if it has
-          been called in sleepable or non-sleepable context. This
-          information is passed to arena_free_pages() in the error path.
-Patch 4:
-        - Add a better comment for the big_alloc3() test that triggers
-          kmalloc_nolock()'s limit and if bpf_arena_alloc_pages() works
-          correctly above this limit.
-
-v1: https://lore.kernel.org/all/20251111163424.16471-1-puranjay@kernel.org/
-Changes in v1->v2:
-Patch 1:
-        - Import tlbflush.h to fix build issue in loongarch. (kernel
-          test robot)
-        - Fix unused variable error in apply_range_clear_cb() (kernel
-          test robot)
-        - Call bpf_map_area_free() on error path of
-          populate_pgtable_except_pte() (AI)
-        - Use PAGE_SIZE in apply_to_existing_page_range() (AI)
-Patch 2:
-        - Cap allocation made by kmalloc_nolock() for pages array to
-          KMALLOC_MAX_CACHE_SIZE and reuse the array in an explicit loop
-          to overcome this limit. (AI)
-Patch 3:
-        - Do page_ref_add(page, 1); under the spinlock to mitigate a
-          race (AI)
-Patch 4:
-        - Add a new testcase big_alloc3() verifier_arena_large.c that
-          tries to allocate a large number of pages at once, this is to
-          trigger the kmalloc_nolock() limit in Patch 2 and see if the
-          loop logic works correctly.
-
-This set allows arena kfuncs to be called from non-sleepable contexts.
-It is acheived by the following changes:
-
-The range_tree is now protected with a rqspinlock and not a mutex,
-this change is enough to make bpf_arena_reserve_pages() any context
-safe.
-
-bpf_arena_alloc_pages() had four points where it could sleep:
-
-1. Mutex to protect range_tree: now replaced with rqspinlock
-
-2. kvcalloc() for allocations: now replaced with kmalloc_nolock()
-
-3. Allocating pages with bpf_map_alloc_pages(): this already calls
-   alloc_pages_nolock() in non-sleepable contexts and therefore is safe.
-
-4. Setting up kernel page tables with vm_area_map_pages():
-   vm_area_map_pages() may allocate memory while inserting pages into
-   bpf arena's vm_area. Now, at arena creation time populate all page
-   table levels except the last level and when new pages need to be
-   inserted call apply_to_page_range() again which will only do
-   set_pte_at() for those pages and will not allocate memory.
-
-The above four changes make bpf_arena_alloc_pages() any context safe.
-
-bpf_arena_free_pages() has to do the following steps:
-
-1. Update the range_tree
-2. vm_area_unmap_pages(): to unmap pages from kernel vm_area
-3. flush the tlb: done in step 2, already.
-4. zap_pages(): to unmap pages from user page tables
-5. free pages.
-
-The third patch in this set makes bpf_arena_free_pages() polymorphic using
-the specialize_kfunc() mechanism. When called from a sleepable context,
-arena_free_pages() remains mostly unchanged except the following:
-1. rqspinlock is taken now instead of the mutex for the range tree
-2. Instead of using vm_area_unmap_pages() that can free intermediate page
-   table levels, apply_to_existing_page_range() with a callback is used
-   that only does pte_clear() on the last level and leaves the intermediate
-   page table levels intact. This is needed to make sure that
-   bpf_arena_alloc_pages() can safely do set_pte_at() without allocating
-   intermediate page tables.
-
-When arena_free_pages() is called from a non-sleepable context or it fails to
-acquire the rqspinlock in the sleepable case, a lock-less list of struct
-arena_free_span is used to queue the uaddr and page cnt. kmalloc_nolock()
-is used to allocate this arena_free_span, this can fail but we need to make
-this trade-off for frees done from non-sleepable contexts.
-
-arena_free_pages() then raises an irq_work whose handler in turn schedules
-work that iterate this list and clears ptes, flushes tlbs, zap pages, and
-frees pages for the queued uaddr and page cnts.
-
-apply_range_clear_cb() with apply_to_existing_page_range() is used to
-clear PTEs and collect pages to be freed, struct llist_node pcp_llist;
-in the struct page is used to do this.
-
-Puranjay Mohan (4):
-  bpf: arena: populate vm_area without allocating memory
-  bpf: arena: use kmalloc_nolock() in place of kvcalloc()
-  bpf: arena: make arena kfuncs any context safe
-  selftests: bpf: test non-sleepable arena allocations
-
- include/linux/bpf.h                           |  16 +
- kernel/bpf/arena.c                            | 380 +++++++++++++++---
- kernel/bpf/verifier.c                         |  10 +
- .../selftests/bpf/prog_tests/arena_list.c     |  20 +-
- .../testing/selftests/bpf/progs/arena_list.c  |  11 +
- .../selftests/bpf/progs/verifier_arena.c      | 185 +++++++++
- .../bpf/progs/verifier_arena_large.c          |  29 ++
- 7 files changed, 592 insertions(+), 59 deletions(-)
-
-
-base-commit: f785a31395d9cafb8b2c42c7358fad72a6463142
+diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
+index 872dc0e41c65..55b198b9f1a3 100644
+--- a/kernel/bpf/arena.c
++++ b/kernel/bpf/arena.c
+@@ -2,11 +2,13 @@
+ /* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
+ #include <linux/bpf.h>
+ #include <linux/btf.h>
++#include <linux/cacheflush.h>
+ #include <linux/err.h>
+ #include "linux/filter.h"
+ #include <linux/btf_ids.h>
+ #include <linux/vmalloc.h>
+ #include <linux/pagemap.h>
++#include <asm/tlbflush.h>
+ #include "range_tree.h"
+ 
+ /*
+@@ -92,6 +94,68 @@ static long compute_pgoff(struct bpf_arena *arena, long uaddr)
+ 	return (u32)(uaddr - (u32)arena->user_vm_start) >> PAGE_SHIFT;
+ }
+ 
++struct apply_range_data {
++	struct page **pages;
++	int i;
++};
++
++static int apply_range_set_cb(pte_t *pte, unsigned long addr, void *data)
++{
++	struct apply_range_data *d = data;
++	struct page *page;
++
++	if (!data)
++		return 0;
++	/* sanity check */
++	if (unlikely(!pte_none(ptep_get(pte))))
++		return -EBUSY;
++
++	page = d->pages[d->i];
++	/* paranoia, similar to vmap_pages_pte_range() */
++	if (WARN_ON_ONCE(!pfn_valid(page_to_pfn(page))))
++		return -EINVAL;
++
++	set_pte_at(&init_mm, addr, pte, mk_pte(page, PAGE_KERNEL));
++	d->i++;
++	return 0;
++}
++
++static void flush_vmap_cache(unsigned long start, unsigned long size)
++{
++	flush_cache_vmap(start, start + size);
++}
++
++static int apply_range_clear_cb(pte_t *pte, unsigned long addr, void *data)
++{
++	pte_t old_pte;
++	struct page *page;
++
++	/* sanity check */
++	old_pte = ptep_get(pte);
++	if (pte_none(old_pte) || !pte_present(old_pte))
++		return 0; /* nothing to do */
++
++	/* get page and free it */
++	page = pte_page(old_pte);
++	if (WARN_ON_ONCE(!page))
++		return -EINVAL;
++
++	pte_clear(&init_mm, addr, pte);
++
++	/* ensure no stale TLB entries */
++	flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
++
++	__free_page(page);
++
++	return 0;
++}
++
++static int populate_pgtable_except_pte(struct bpf_arena *arena)
++{
++	return apply_to_page_range(&init_mm, bpf_arena_get_kern_vm_start(arena),
++				   KERN_VM_SZ - GUARD_SZ, apply_range_set_cb, NULL);
++}
++
+ static struct bpf_map *arena_map_alloc(union bpf_attr *attr)
+ {
+ 	struct vm_struct *kern_vm;
+@@ -144,6 +208,12 @@ static struct bpf_map *arena_map_alloc(union bpf_attr *attr)
+ 		goto err;
+ 	}
+ 	mutex_init(&arena->lock);
++	err = populate_pgtable_except_pte(arena);
++	if (err) {
++		range_tree_destroy(&arena->rt);
++		bpf_map_area_free(arena);
++		goto err;
++	}
+ 
+ 	return &arena->map;
+ err:
+@@ -286,6 +356,7 @@ static vm_fault_t arena_vm_fault(struct vm_fault *vmf)
+ 	if (ret)
+ 		return VM_FAULT_SIGSEGV;
+ 
++	struct apply_range_data data = { .pages = &page, .i = 0 };
+ 	/* Account into memcg of the process that created bpf_arena */
+ 	ret = bpf_map_alloc_pages(map, NUMA_NO_NODE, 1, &page);
+ 	if (ret) {
+@@ -293,12 +364,13 @@ static vm_fault_t arena_vm_fault(struct vm_fault *vmf)
+ 		return VM_FAULT_SIGSEGV;
+ 	}
+ 
+-	ret = vm_area_map_pages(arena->kern_vm, kaddr, kaddr + PAGE_SIZE, &page);
++	ret = apply_to_page_range(&init_mm, kaddr, PAGE_SIZE, apply_range_set_cb, &data);
+ 	if (ret) {
+ 		range_tree_set(&arena->rt, vmf->pgoff, 1);
+ 		__free_page(page);
+ 		return VM_FAULT_SIGSEGV;
+ 	}
++	flush_vmap_cache(kaddr, PAGE_SIZE);
+ out:
+ 	page_ref_add(page, 1);
+ 	vmf->page = page;
+@@ -428,7 +500,8 @@ static long arena_alloc_pages(struct bpf_arena *arena, long uaddr, long page_cnt
+ 	/* user_vm_end/start are fixed before bpf prog runs */
+ 	long page_cnt_max = (arena->user_vm_end - arena->user_vm_start) >> PAGE_SHIFT;
+ 	u64 kern_vm_start = bpf_arena_get_kern_vm_start(arena);
+-	struct page **pages;
++	struct page **pages = NULL;
++	long mapped = 0;
+ 	long pgoff = 0;
+ 	u32 uaddr32;
+ 	int ret, i;
+@@ -450,7 +523,7 @@ static long arena_alloc_pages(struct bpf_arena *arena, long uaddr, long page_cnt
+ 	if (!pages)
+ 		return 0;
+ 
+-	guard(mutex)(&arena->lock);
++	mutex_lock(&arena->lock);
+ 
+ 	if (uaddr) {
+ 		ret = is_range_tree_set(&arena->rt, pgoff, page_cnt);
+@@ -465,6 +538,7 @@ static long arena_alloc_pages(struct bpf_arena *arena, long uaddr, long page_cnt
+ 	if (ret)
+ 		goto out_free_pages;
+ 
++	struct apply_range_data data = { .pages = pages, .i = 0 };
+ 	ret = bpf_map_alloc_pages(&arena->map, node_id, page_cnt, pages);
+ 	if (ret)
+ 		goto out;
+@@ -477,18 +551,24 @@ static long arena_alloc_pages(struct bpf_arena *arena, long uaddr, long page_cnt
+ 	 * kern_vm_start + uaddr32 + page_cnt * PAGE_SIZE - 1 can overflow
+ 	 * lower 32-bit and it's ok.
+ 	 */
+-	ret = vm_area_map_pages(arena->kern_vm, kern_vm_start + uaddr32,
+-				kern_vm_start + uaddr32 + page_cnt * PAGE_SIZE, pages);
+-	if (ret) {
+-		for (i = 0; i < page_cnt; i++)
++	apply_to_page_range(&init_mm, kern_vm_start + uaddr32,
++			    page_cnt << PAGE_SHIFT, apply_range_set_cb, &data);
++	mapped = data.i;
++	flush_vmap_cache(kern_vm_start + uaddr32, mapped << PAGE_SHIFT);
++	if (mapped < page_cnt) {
++		for (i = mapped; i < page_cnt; i++)
+ 			__free_page(pages[i]);
+ 		goto out;
+ 	}
++	mutex_unlock(&arena->lock);
+ 	kvfree(pages);
+ 	return clear_lo32(arena->user_vm_start) + uaddr32;
+ out:
+-	range_tree_set(&arena->rt, pgoff, page_cnt);
++	range_tree_set(&arena->rt, pgoff + mapped, page_cnt - mapped);
+ out_free_pages:
++	mutex_unlock(&arena->lock);
++	if (mapped)
++		arena_free_pages(arena, uaddr32, mapped);
+ 	kvfree(pages);
+ 	return 0;
+ }
+@@ -545,8 +625,8 @@ static void arena_free_pages(struct bpf_arena *arena, long uaddr, long page_cnt)
+ 			 * page_cnt is big it's faster to do the batched zap.
+ 			 */
+ 			zap_pages(arena, full_uaddr, 1);
+-		vm_area_unmap_pages(arena->kern_vm, kaddr, kaddr + PAGE_SIZE);
+-		__free_page(page);
++		apply_to_existing_page_range(&init_mm, kaddr, PAGE_SIZE, apply_range_clear_cb,
++					     NULL);
+ 	}
+ }
+ 
 -- 
 2.47.3
 
