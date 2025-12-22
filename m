@@ -1,62 +1,57 @@
-Return-Path: <bpf+bounces-77318-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77319-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED1A9CD72B5
-	for <lists+bpf@lfdr.de>; Mon, 22 Dec 2025 21:59:49 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8475ACD7426
+	for <lists+bpf@lfdr.de>; Mon, 22 Dec 2025 23:18:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 6BD7030011B6
-	for <lists+bpf@lfdr.de>; Mon, 22 Dec 2025 20:59:49 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id CC019301E931
+	for <lists+bpf@lfdr.de>; Mon, 22 Dec 2025 22:18:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6301A335565;
-	Mon, 22 Dec 2025 20:59:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4A2530B53C;
+	Mon, 22 Dec 2025 22:18:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nZJflpUs"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Y2Gmn3ya"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54C55324B1F
-	for <bpf@vger.kernel.org>; Mon, 22 Dec 2025 20:59:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A520C1F91E3
+	for <bpf@vger.kernel.org>; Mon, 22 Dec 2025 22:18:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766437186; cv=none; b=TZlwfUXaGzzalKfwlBgp3TTWM3Hbxjzlqs3+7l7T+X7alJEgQwI+t3KKWFyMjgBs+YqphGI5TopE43slly4OeQoyAd0RQiqdzFrRa8fMw7g5itBuV7Nhn8Y2es+icFsd9AVx020fKw3ZAEBEOT4U4kGs7wSa2G7tOTOQ0x5c3yk=
+	t=1766441886; cv=none; b=V7KpnARrsN/njjWJjfrgatUYRlIKMGVj0oRLn0NTlaUxXjvz6R9dFoVqPriPzzWXB9+IJ9NKSm37P2bMLx8eelwZzrE4sY4g/jQg/KxYCX+fA9yZxBvZW6sAjixvmiy44MiN3pPCj5JEY6dMxAS0IMh0d7P7lmnoPkroPObD6Y0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766437186; c=relaxed/simple;
-	bh=kMdCxkht18x9bBbqK0FNo64KlMe+2ekZS483yWEVYHs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fCZGAY00dZWVRpKVniLinsdaLBN/OhxfiGUVXaScagy649chhT49pr+x5M6WJHe/XoA1gYpD1ZhphN1rOp1HVUfq1e6B5zN6RoQvZsxoDcTllMx//S+mnw3oTes3gSP7/PIvzhwrqM1uFAJWFvXRdPkP/eOGPJTYU+2pbynln/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nZJflpUs; arc=none smtp.client-ip=91.218.175.181
+	s=arc-20240116; t=1766441886; c=relaxed/simple;
+	bh=MKaruFJAvzdF39BSq94DdIWjqCtHP58kdaPWUeGyaBY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MZs8VpDv3NjiYbBOCiyMJQXcgQm0euGkFPbGNeRj7lXh6b2SR0USsvzkBrBJdEQ7tWLRh6cku8edGOQwvfCV5xzmyoi9XxE9C9dV0vz5CnSTuN7YuoGYletlYbitSD7eM/HhWkjc34R+UhGKZBLfi0eIytxaIkgwGZPSTf9RGnI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Y2Gmn3ya; arc=none smtp.client-ip=95.215.58.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1766437166;
+	t=1766441881;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding;
-	bh=mZ/UtThSWtPu4Oy8X58uMB22wy61L0gvY9PyQceVLTU=;
-	b=nZJflpUsEdvMGyI7nb87aSCrQNiiKJayQuZfosbzlkuNU26egktK+1mOkpm5W8jBaedN5p
-	SgVxLaZHZTNPGYMxoXL5rfR/0lFkBVZYkoct5EWYXyt0vb6a4NwF8xZnD7ZSgyt7SvkBOq
-	KFA2NzPlh3c/fN8xZlPev1flXkvW/pk=
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: Shaurya Rane <ssrane_b23@ee.vjti.ac.in>,
-	"Darrick J . Wong" <djwong@kernel.org>,
-	Christoph Hellwig <hch@infradead.org>,
+	bh=vsKpZybnVUvHz7hRUHCLmAtPAg5RYYwFpvXRG+uP0Po=;
+	b=Y2Gmn3yaC40doAZ2YzgTJWK4Mk9JL7G8CzvInTpsFB2aqOmm1KsS/tqmTVGecBk8Bff1P/
+	5n8hPp7s42NdiGMj8CjJwdsgmwJfA4m70E5g7xBd5DqoclmMy3aPxSMO6DL7UBg/Opkfp4
+	QxnhCaTKiuiOojudbnzJTYAH/u+nrSw=
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: bpf@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Cc: JP Kobryn <inwardvessel@gmail.com>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	bpf@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Meta kernel team <kernel-team@meta.com>,
-	syzbot+09b7d050e4806540153d@syzkaller.appspotmail.com,
-	Christoph Hellwig <hch@lst.de>
-Subject: [PATCH bpf v3] lib/buildid: use __kernel_read() for sleepable context
-Date: Mon, 22 Dec 2025 12:58:59 -0800
-Message-ID: <20251222205859.3968077-1-shakeel.butt@linux.dev>
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Michal Hocko <mhocko@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>
+Subject: [PATCH bpf-next v3 0/6] mm: bpf kfuncs to access memcg data
+Date: Mon, 22 Dec 2025 14:17:48 -0800
+Message-ID: <20251222221754.186191-1-roman.gushchin@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -66,99 +61,59 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-For the sleepable context, convert freader to use __kernel_read()
-instead of direct page cache access via read_cache_folio(). This
-simplifies the faultable code path by using the standard kernel file
-reading interface which handles all the complexity of reading file data.
+Introduce kfuncs to simplify the access to the memcg data.
+These kfuncs can be used to accelerate monitoring use cases and
+for implementing custom OOM policies once BPF OOM is landed.
 
-At the moment we are not changing the code for non-sleepable context
-which uses filemap_get_folio() and only succeeds if the target folios
-are already in memory and up-to-date. The reason is to keep the patch
-simple and easier to backport to stable kernels.
+This patchset was separated out from the BPF OOM patchset to simplify
+the logistics and accelerate the landing of the part which is useful
+by itself. No functional changes since BPF OOM v2.
 
-Syzbot repro does not crash the kernel anymore and the selftests run
-successfully.
+v3:
+  - dropped redundant kfuncs flags (by Alexei)
+  - fixed kdocs warnings (by Alexei)
+  - merged memcg stats access patches into one (by Alexei)
+  - restored root memcg usage reporting, added a comment
+  - added checks for enum boundaries
+  - added Shakeel and JP as co-maintainers (by Shakeel)
 
-In the follow up we will make __kernel_read() with IOCB_NOWAIT work for
-non-sleepable contexts. In addition, I would like to replace the
-secretmem check with a more generic approach and will add fstest for the
-buildid code.
+v2:
+  - added mem_cgroup_disabled() checks (by Shakeel B.)
+  - added special handling of the root memcg in bpf_mem_cgroup_usage()
+  (by Shakeel B.)
+  - minor fixes in the kselftest (by Shakeel B.)
+  - added a MAINTAINERS entry (by Shakeel B.)
 
-Reported-by: syzbot+09b7d050e4806540153d@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=09b7d050e4806540153d
-Fixes: ad41251c290d ("lib/buildid: implement sleepable build_id_parse() API")
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
----
-Changes since v2:
-- Single call to __kernel_read instead of looping (Matthew Wilcox).
+v1:
+  https://lore.kernel.org/bpf/87ike29s5r.fsf@linux.dev/T/#t
 
-Changes since v1:
-- Fix handling of buf in freader_fetch_sync as pointed out by Andrii.
 
- lib/buildid.c | 32 ++++++++++++++++++++------------
- 1 file changed, 20 insertions(+), 12 deletions(-)
+JP Kobryn (1):
+  bpf: selftests: selftests for memcg stat kfuncs
 
-diff --git a/lib/buildid.c b/lib/buildid.c
-index aaf61dfc0919..818331051afe 100644
---- a/lib/buildid.c
-+++ b/lib/buildid.c
-@@ -5,6 +5,7 @@
- #include <linux/elf.h>
- #include <linux/kernel.h>
- #include <linux/pagemap.h>
-+#include <linux/fs.h>
- #include <linux/secretmem.h>
- 
- #define BUILD_ID 3
-@@ -46,20 +47,9 @@ static int freader_get_folio(struct freader *r, loff_t file_off)
- 
- 	freader_put_folio(r);
- 
--	/* reject secretmem folios created with memfd_secret() */
--	if (secretmem_mapping(r->file->f_mapping))
--		return -EFAULT;
--
-+	/* only use page cache lookup - fail if not already cached */
- 	r->folio = filemap_get_folio(r->file->f_mapping, file_off >> PAGE_SHIFT);
- 
--	/* if sleeping is allowed, wait for the page, if necessary */
--	if (r->may_fault && (IS_ERR(r->folio) || !folio_test_uptodate(r->folio))) {
--		filemap_invalidate_lock_shared(r->file->f_mapping);
--		r->folio = read_cache_folio(r->file->f_mapping, file_off >> PAGE_SHIFT,
--					    NULL, r->file);
--		filemap_invalidate_unlock_shared(r->file->f_mapping);
--	}
--
- 	if (IS_ERR(r->folio) || !folio_test_uptodate(r->folio)) {
- 		if (!IS_ERR(r->folio))
- 			folio_put(r->folio);
-@@ -97,6 +87,24 @@ const void *freader_fetch(struct freader *r, loff_t file_off, size_t sz)
- 		return r->data + file_off;
- 	}
- 
-+	/* reject secretmem folios created with memfd_secret() */
-+	if (secretmem_mapping(r->file->f_mapping)) {
-+		r->err = -EFAULT;
-+		return NULL;
-+	}
-+
-+	/* use __kernel_read() for sleepable context */
-+	if (r->may_fault) {
-+		ssize_t ret;
-+
-+		ret = __kernel_read(r->file, r->buf, sz, &file_off);
-+		if (ret != sz) {
-+			r->err = (ret < 0) ? ret : -EIO;
-+			return NULL;
-+		}
-+		return r->buf;
-+	}
-+
- 	/* fetch or reuse folio for given file offset */
- 	r->err = freader_get_folio(r, file_off);
- 	if (r->err)
+Roman Gushchin (5):
+  mm: declare memcg_page_state_output() in memcontrol.h
+  mm: introduce BPF kfuncs to deal with memcg pointers
+  mm: introduce bpf_get_root_mem_cgroup() BPF kfunc
+  mm: introduce BPF kfuncs to access memcg statistics and events
+  MAINTAINERS: add an entry for MM BPF extensions
+
+ MAINTAINERS                                   |   9 +
+ include/linux/memcontrol.h                    |  20 ++
+ mm/Makefile                                   |   3 +
+ mm/bpf_memcontrol.c                           | 193 +++++++++++++++
+ mm/memcontrol-v1.h                            |   1 -
+ mm/memcontrol.c                               |  10 +
+ .../testing/selftests/bpf/cgroup_iter_memcg.h |  18 ++
+ .../bpf/prog_tests/cgroup_iter_memcg.c        | 223 ++++++++++++++++++
+ .../selftests/bpf/progs/cgroup_iter_memcg.c   |  39 +++
+ 9 files changed, 515 insertions(+), 1 deletion(-)
+ create mode 100644 mm/bpf_memcontrol.c
+ create mode 100644 tools/testing/selftests/bpf/cgroup_iter_memcg.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_iter_memcg.c
+ create mode 100644 tools/testing/selftests/bpf/progs/cgroup_iter_memcg.c
+
 -- 
-2.47.3
+2.52.0
 
 
