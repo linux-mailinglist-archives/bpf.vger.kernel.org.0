@@ -1,43 +1,45 @@
-Return-Path: <bpf+bounces-77319-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77320-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8475ACD7426
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EC0DCD7425
 	for <lists+bpf@lfdr.de>; Mon, 22 Dec 2025 23:18:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id CC019301E931
-	for <lists+bpf@lfdr.de>; Mon, 22 Dec 2025 22:18:07 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 02515300A9EA
+	for <lists+bpf@lfdr.de>; Mon, 22 Dec 2025 22:18:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4A2530B53C;
-	Mon, 22 Dec 2025 22:18:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FA8432A3FD;
+	Mon, 22 Dec 2025 22:18:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Y2Gmn3ya"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iFwmkNU1"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A520C1F91E3
-	for <bpf@vger.kernel.org>; Mon, 22 Dec 2025 22:18:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEF311F91E3
+	for <bpf@vger.kernel.org>; Mon, 22 Dec 2025 22:18:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766441886; cv=none; b=V7KpnARrsN/njjWJjfrgatUYRlIKMGVj0oRLn0NTlaUxXjvz6R9dFoVqPriPzzWXB9+IJ9NKSm37P2bMLx8eelwZzrE4sY4g/jQg/KxYCX+fA9yZxBvZW6sAjixvmiy44MiN3pPCj5JEY6dMxAS0IMh0d7P7lmnoPkroPObD6Y0=
+	t=1766441889; cv=none; b=jutmqZAYDQXpAKuIC5D55ZJ8KsoP+wSVeanqn80UZn7DQ4tELy53HfZ+hPTnzh8x1T2xgFe+14EaNM4gR0i8LYpuU8lMpP4s/rBIHzUXj2BNpKWM4V0PybRrRVFTo0/9OmdCkqy94ZzYJ3OZZF5x7pkWhc0n6v2LcsVnAUOlX/A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766441886; c=relaxed/simple;
-	bh=MKaruFJAvzdF39BSq94DdIWjqCtHP58kdaPWUeGyaBY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MZs8VpDv3NjiYbBOCiyMJQXcgQm0euGkFPbGNeRj7lXh6b2SR0USsvzkBrBJdEQ7tWLRh6cku8edGOQwvfCV5xzmyoi9XxE9C9dV0vz5CnSTuN7YuoGYletlYbitSD7eM/HhWkjc34R+UhGKZBLfi0eIytxaIkgwGZPSTf9RGnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Y2Gmn3ya; arc=none smtp.client-ip=95.215.58.171
+	s=arc-20240116; t=1766441889; c=relaxed/simple;
+	bh=RKY+vl8rPsR4NnfoPUanyGtR538rJwTqB0ETYpg0s3o=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=YWz6SQeDx+PJmUB5Zk5tH913FVSx9k7gTIOBwWgu0Ot06YEiXh5S34RPPXH/QMwwHxc+DUTVFxrHtLNpZ5LNwRLa4N3B+8gmpQFbWYTnZ1IPYGc5m+Ym7A8lNkSBZcMem7q/5tVzRwRdoH76pxXQNyie++ABwPc21MsJFya5uxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iFwmkNU1; arc=none smtp.client-ip=95.215.58.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1766441881;
+	t=1766441886;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=vsKpZybnVUvHz7hRUHCLmAtPAg5RYYwFpvXRG+uP0Po=;
-	b=Y2Gmn3yaC40doAZ2YzgTJWK4Mk9JL7G8CzvInTpsFB2aqOmm1KsS/tqmTVGecBk8Bff1P/
-	5n8hPp7s42NdiGMj8CjJwdsgmwJfA4m70E5g7xBd5DqoclmMy3aPxSMO6DL7UBg/Opkfp4
-	QxnhCaTKiuiOojudbnzJTYAH/u+nrSw=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fzwkrJr5Ee6gFgNZqS18mPMFs5oUWCrwkGlHPOMuytI=;
+	b=iFwmkNU1mQ9+2qaaKmyijftgXuTYJNtT9k8UJ7D6u1u4IZeeIV3BSGvRkKBo2Tdj8c+EbW
+	UaQ5auwvPAQhduae2jal/mntKxvMrSrSsQoH5wEVK3Roz9HU6E1qoRp+uMJAyJa3iB/zop
+	Ev3utpKG0I7Qv6tSaThu9Tvyz1/wZBY=
 From: Roman Gushchin <roman.gushchin@linux.dev>
 To: bpf@vger.kernel.org,
 	linux-mm@kvack.org,
@@ -48,10 +50,13 @@ Cc: JP Kobryn <inwardvessel@gmail.com>,
 	Shakeel Butt <shakeel.butt@linux.dev>,
 	Michal Hocko <mhocko@kernel.org>,
 	Johannes Weiner <hannes@cmpxchg.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>
-Subject: [PATCH bpf-next v3 0/6] mm: bpf kfuncs to access memcg data
-Date: Mon, 22 Dec 2025 14:17:48 -0800
-Message-ID: <20251222221754.186191-1-roman.gushchin@linux.dev>
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Michal Hocko <mhocko@suse.com>
+Subject: [PATCH bpf-next v3 1/6] mm: declare memcg_page_state_output() in memcontrol.h
+Date: Mon, 22 Dec 2025 14:17:49 -0800
+Message-ID: <20251222221754.186191-2-roman.gushchin@linux.dev>
+In-Reply-To: <20251222221754.186191-1-roman.gushchin@linux.dev>
+References: <20251222221754.186191-1-roman.gushchin@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -61,58 +66,53 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Introduce kfuncs to simplify the access to the memcg data.
-These kfuncs can be used to accelerate monitoring use cases and
-for implementing custom OOM policies once BPF OOM is landed.
+To use memcg_page_state_output() in bpf_memcontrol.c move the
+declaration from v1-specific memcontrol-v1.h to memcontrol.h.
 
-This patchset was separated out from the BPF OOM patchset to simplify
-the logistics and accelerate the landing of the part which is useful
-by itself. No functional changes since BPF OOM v2.
+Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
+---
+ include/linux/memcontrol.h | 6 ++++++
+ mm/memcontrol-v1.h         | 1 -
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
-v3:
-  - dropped redundant kfuncs flags (by Alexei)
-  - fixed kdocs warnings (by Alexei)
-  - merged memcg stats access patches into one (by Alexei)
-  - restored root memcg usage reporting, added a comment
-  - added checks for enum boundaries
-  - added Shakeel and JP as co-maintainers (by Shakeel)
-
-v2:
-  - added mem_cgroup_disabled() checks (by Shakeel B.)
-  - added special handling of the root memcg in bpf_mem_cgroup_usage()
-  (by Shakeel B.)
-  - minor fixes in the kselftest (by Shakeel B.)
-  - added a MAINTAINERS entry (by Shakeel B.)
-
-v1:
-  https://lore.kernel.org/bpf/87ike29s5r.fsf@linux.dev/T/#t
-
-
-JP Kobryn (1):
-  bpf: selftests: selftests for memcg stat kfuncs
-
-Roman Gushchin (5):
-  mm: declare memcg_page_state_output() in memcontrol.h
-  mm: introduce BPF kfuncs to deal with memcg pointers
-  mm: introduce bpf_get_root_mem_cgroup() BPF kfunc
-  mm: introduce BPF kfuncs to access memcg statistics and events
-  MAINTAINERS: add an entry for MM BPF extensions
-
- MAINTAINERS                                   |   9 +
- include/linux/memcontrol.h                    |  20 ++
- mm/Makefile                                   |   3 +
- mm/bpf_memcontrol.c                           | 193 +++++++++++++++
- mm/memcontrol-v1.h                            |   1 -
- mm/memcontrol.c                               |  10 +
- .../testing/selftests/bpf/cgroup_iter_memcg.h |  18 ++
- .../bpf/prog_tests/cgroup_iter_memcg.c        | 223 ++++++++++++++++++
- .../selftests/bpf/progs/cgroup_iter_memcg.c   |  39 +++
- 9 files changed, 515 insertions(+), 1 deletion(-)
- create mode 100644 mm/bpf_memcontrol.c
- create mode 100644 tools/testing/selftests/bpf/cgroup_iter_memcg.h
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_iter_memcg.c
- create mode 100644 tools/testing/selftests/bpf/progs/cgroup_iter_memcg.c
-
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 0651865a4564..7bef427d5a82 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -950,6 +950,7 @@ static inline void mod_memcg_page_state(struct page *page,
+ }
+ 
+ unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx);
++unsigned long memcg_page_state_output(struct mem_cgroup *memcg, int item);
+ unsigned long lruvec_page_state(struct lruvec *lruvec, enum node_stat_item idx);
+ unsigned long lruvec_page_state_local(struct lruvec *lruvec,
+ 				      enum node_stat_item idx);
+@@ -1373,6 +1374,11 @@ static inline unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx)
+ 	return 0;
+ }
+ 
++static inline unsigned long memcg_page_state_output(struct mem_cgroup *memcg, int item)
++{
++	return 0;
++}
++
+ static inline unsigned long lruvec_page_state(struct lruvec *lruvec,
+ 					      enum node_stat_item idx)
+ {
+diff --git a/mm/memcontrol-v1.h b/mm/memcontrol-v1.h
+index 6358464bb416..a304ad418cdf 100644
+--- a/mm/memcontrol-v1.h
++++ b/mm/memcontrol-v1.h
+@@ -27,7 +27,6 @@ unsigned long mem_cgroup_usage(struct mem_cgroup *memcg, bool swap);
+ void drain_all_stock(struct mem_cgroup *root_memcg);
+ 
+ unsigned long memcg_events(struct mem_cgroup *memcg, int event);
+-unsigned long memcg_page_state_output(struct mem_cgroup *memcg, int item);
+ int memory_stat_show(struct seq_file *m, void *v);
+ 
+ void mem_cgroup_id_get_many(struct mem_cgroup *memcg, unsigned int n);
 -- 
 2.52.0
 
