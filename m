@@ -1,130 +1,217 @@
-Return-Path: <bpf+bounces-77310-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77311-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B45DACD6FEF
-	for <lists+bpf@lfdr.de>; Mon, 22 Dec 2025 20:41:23 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id A790ACD7016
+	for <lists+bpf@lfdr.de>; Mon, 22 Dec 2025 20:50:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B51DC301A1D9
-	for <lists+bpf@lfdr.de>; Mon, 22 Dec 2025 19:41:19 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A92D53019BE8
+	for <lists+bpf@lfdr.de>; Mon, 22 Dec 2025 19:50:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D78D33375A;
-	Mon, 22 Dec 2025 19:41:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 421602673AA;
+	Mon, 22 Dec 2025 19:50:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Wk98+9ck"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P+3jTEPA"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D227986348
-	for <bpf@vger.kernel.org>; Mon, 22 Dec 2025 19:41:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCB182B2DA
+	for <bpf@vger.kernel.org>; Mon, 22 Dec 2025 19:50:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766432478; cv=none; b=N7YmokloiLPRaaXwae8T2yMUXo0L8xshA3URV/CRa8g1QgLUBkCoK6/MMEVLYQgCosv2jhehsow0h0aGx+UpWfAfDEqddtDALizscBbDG8FVAqbs7IeK+nJold2gm9IWTTWia13HGp1ccPoRBW5V1/NyCHPa4x8ZX3dWbXafZZE=
+	t=1766433029; cv=none; b=SKZ66sOMIQEq+uqdDWfMGCwYVGyeKadtW66OBpQos1iHBJibnD9M/uyx+xktnw1yPRdp/O+ACMycOCltjIZK2JpYrLx9QP7dR2pmVQDAxDRz89k2/xQ5G3Mk21aXhNWoWk/jyNVJ6R+gKBlY+YfHL2oNx00Pznb1rLSluJnfCLM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766432478; c=relaxed/simple;
-	bh=lxB95KkAqNYSOdDKJbZuu4ofz3iyWK92aFO1vbQmLrw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A8jkoUo/MWy8VP69yzHjoj0UTlrdM86wub6sD0A5wpYrao7wqG61GMcbrTpUFvxR4LuobjZ/AzZP+nXTeJQi0yvWRCmz/crkG50JdOQJApGlUBi33jkiCSCAVhCtYSGmcGgGx3uxNmi5vVJqFYUpfxTRJJgLy2FGjbPy1zDSMKA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Wk98+9ck; arc=none smtp.client-ip=95.215.58.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Mon, 22 Dec 2025 11:41:07 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1766432473;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HBdPhxcvOkIIGXIYWQYM6O/Y0FlYFzryvwDPx4PZFuM=;
-	b=Wk98+9ckbp5jyANGKAKbT97FXJKGd1XTR154MtCpLTT5tdBRnTwFEHi72KBwuBF/gg/K6o
-	8oPGDBxmzSvgpcYhPo/byoaIT1aGfHmwGCJKn7z+quPKKTRLAGyJGagm64wAgjZpLYHJPq
-	FPN0Ye9v5CYBeXvgSB9WQTadw8/ZOzM=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Shaurya Rane <ssrane_b23@ee.vjti.ac.in>, 
-	"Darrick J . Wong" <djwong@kernel.org>, Christoph Hellwig <hch@infradead.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Meta kernel team <kernel-team@meta.com>, bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	syzbot+09b7d050e4806540153d@syzkaller.appspotmail.com, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH bpf v2] lib/buildid: use __kernel_read() for sleepable
- context
-Message-ID: <7gyxkpozyno7hl2jz5k2v2k5yo6gpvr3i5whqrgqlc5eahxvjz@p7p2a2aezsbt>
-References: <20251218205505.2415840-1-shakeel.butt@linux.dev>
- <aUSUe9jHnYJ577Gh@casper.infradead.org>
- <3lf3ed3xn2oaenvlqjmypuewtm6gakzbecc7kgqsadggyvdtkr@uyw4boj6igqu>
- <aUTPl35UPcjc66l3@casper.infradead.org>
- <64muytpsnwmjcnc5szbz4gfnh2owgorsfdl5zmomtykptfry4s@tuajoyqmulqc>
- <aUjXxSAD2-c4Ivy1@casper.infradead.org>
+	s=arc-20240116; t=1766433029; c=relaxed/simple;
+	bh=M3O0/ShdQ8Yv2nWwxV0+bz/lkdJQgaaVleqM21CJgQY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZvvXzo7GIPUsR7NOQxW7Poc3jVpCoBa2xedEWkg8CbxsbB6TrH96SV+J0Ssk+joMs1QhH1OL/toMbJdATW86nT+pOTsjbYSPNbJNi7YI/NZDEgqkrFvAjG3In1gCAnzV1091kM1n2yjc2h7Kg+WG9LqAxihoaEOOzyszqztrU7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P+3jTEPA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22CA4C4CEF1;
+	Mon, 22 Dec 2025 19:50:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1766433029;
+	bh=M3O0/ShdQ8Yv2nWwxV0+bz/lkdJQgaaVleqM21CJgQY=;
+	h=From:To:Cc:Subject:Date:From;
+	b=P+3jTEPA3xILn7tKHiuJ+E3sENT5rUCRcDxWaKmtZPXgfhtcdfIEx4GjRrHiDdoXq
+	 wQ5mVzk/IlH1WOGnDuVoZr+T+2fb4uJRU3N4PwaK+P5iIpuq4IS5gMM3w3hJnLVYvy
+	 Dmt2994jIMWODKhDtwB7agR8qy2+aZ0xfxKFn3DwhcQj3s90MhDOv60faKWMbyjQNO
+	 cdall5rue9vXJjWQEnIKRkEkrMe/ra6nbAi6cRrN5QX+Cf2gmazcaYAvYxqG/G7i7X
+	 phqSez9aNJrpDhEeGQTp0Om1mRL1RVwStOaVjBdEwZLsJi7nbyexDyWYJwTPMHhcrc
+	 nn87KTMb9S7+w==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: bpf@vger.kernel.org
+Cc: Puranjay Mohan <puranjay@kernel.org>,
+	Puranjay Mohan <puranjay12@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	kernel-team@meta.com
+Subject: [PATCH bpf-next v8 0/4] Remove KF_SLEEPABLE from arena kfuncs
+Date: Mon, 22 Dec 2025 11:50:15 -0800
+Message-ID: <20251222195022.431211-1-puranjay@kernel.org>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aUjXxSAD2-c4Ivy1@casper.infradead.org>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On Mon, Dec 22, 2025 at 05:31:50AM +0000, Matthew Wilcox wrote:
-> On Thu, Dec 18, 2025 at 09:58:43PM -0800, Shakeel Butt wrote:
-> > On Fri, Dec 19, 2025 at 04:07:51AM +0000, Matthew Wilcox wrote:
-> > > > I am assuming that __kernel_read() can return less data than the
-> > > > requested. Is that assumption incorrect?
-> > > 
-> > > I think it can, but I don't think a second call will get any more data.
-> > > For example, it could hit EOF.  What led you to think that calling it in
-> > > a loop was the right approach?
-> > 
-> > I am kind of following the convention of a userspace application doing
-> > read() syscall i.e. repeatedly call read() until you hit an error or EOF
-> > in which case 0 will be returned or you successfully read the amount of
-> > data you want. I am handling negative error and 0 and for 0, I am
-> > returning -EIO as that would be unexpected end of an ELF file.
-> 
-> Oh, you sweet summer child.  I hope Father Christmas leaves you an
-> extra special present in your stocking this week!
-> 
-> While it would be lovely to believe that userspace does that kind of loop,
-> it just doesn't.  That's why mounting NFS filesystems with the "intr"
-> option (before I made it a no-op) was dangerous -- userspace just isn't
-> prepared for short reads.  I mean, we're lucky if userspace even checks
-> for errors, let alone does this kind of advanced "oh, we got fewer bytes
-> than we wanted, keep trying" scheme.
-> 
-> A filesystem's ->read_iter() implementation can stop short of reading
-> all bytes requested if:
-> 
->  - We hit EIO.  No amount of asking will return more bytes, the data's
->    just not there any more.
->  - We hit EOF.  There's no more data to read.
->  - We're unable to access the buffer.  That's only possible for user
->    buffers, not kernel buffers.
->  - We receive a fatal signal.  I suppose there is the tiniest chance
->    that the I/O completes while we're processing the "we returned early"
->    loop, but in practice, the user has asked that we die now, and even
->    trying again is rude.  Just die as quickly as we can.
-> 
-> I can't think of any other cases.  It's just not allowed to return
-> short reads to userspace (other than EIO/EOF), and that drives all
-> the behaviour.
+V7: https://lore.kernel.org/all/20251222190815.4112944-1-puranjay@kernel.org/
+Changes in V7->v8:
+- Use clear_lo32(arena->user_vm_start) in place of user_vm_start in patch 3
 
-Thanks for the explanation. Is calling kernel_read() again after it
-returned less amount of data unsafe or unnecessary?
+V6: https://lore.kernel.org/all/20251217184438.3557859-1-puranjay@kernel.org/
+Changes in v6->v7:
+- Fix a deadlock in patch 1, that was being fixed in patch 2. Move the fix to patch 1.
+- Call flush_cache_vmap() after setting up the mappings as it is
+  required by some architectures.
 
-> 
-> > Anyways the question is if __kernel_read() returns less amount of data
-> > than requested, should we return error instead of retrying? I looked
-> > couple of callers of __kernel_read() & kernel_read(). Some are erroring
-> > out if received data is less than requested (e.g. big_key_read()) and
-> > some are calling in the loop (e.g. kernel_read_file()).
-> 
-> kernel_read_file() is wrong.  Thanks for reporting it; I'll send a patch.
+V5: https://lore.kernel.org/all/20251212044516.37513-1-puranjay@kernel.org/
+Changes in v5->v6:
+Patch 1:
+	- Add a missing ; to make sure this patch builds individually. (AI)
 
-There are couple more like do_read() and do_verify() in
-drivers/usb/gadget/function/f_mass_storage.c. There might be more but I
-have not looked into every caller.
+V4: https://lore.kernel.org/all/20251212004350.6520-1-puranjay@kernel.org/
+Changes in v4->v5:
+Patch 1:
+	- Fix a memory leak in arena_alloc_pages(), it was being fixed in
+	  Patch 3 but, every patch should be complete in itself. (AI)
+Patch 3:
+	- Don't do useless addition in arena_alloc_pages() (Alexei)
+	- Add a comment about kmalloc_nolock() failure and expectations.
+
+v3: https://lore.kernel.org/all/20251117160150.62183-1-puranjay@kernel.org/
+Changes in v3->v4:
+	- Coding style changes related to comments in Patch 2/3 (Alexei)
+
+v2: https://lore.kernel.org/all/20251114111700.43292-1-puranjay@kernel.org/
+Changes in v2->v3:
+Patch 1:
+        - Call range_tree_destroy() in error path of
+          populate_pgtable_except_pte() in arena_map_alloc() (AI)
+Patch 2:
+        - Fix double mutex_unlock() in the error path of
+          arena_alloc_pages() (AI)
+        - Fix coding style issues (Alexei)
+Patch 3:
+        - Unlock spinlock before returning from arena_vm_fault() in case
+          BPF_F_SEGV_ON_FAULT is set by user. (AI)
+        - Use __llist_del_all() in place of llist_del_all for on-stack
+          llist (free_pages) (Alexei)
+        - Fix build issues on 32-bit systems where arena.c is not compiled.
+          (kernel test robot)
+        - Make bpf_arena_alloc_pages() polymorphic so it knows if it has
+          been called in sleepable or non-sleepable context. This
+          information is passed to arena_free_pages() in the error path.
+Patch 4:
+        - Add a better comment for the big_alloc3() test that triggers
+          kmalloc_nolock()'s limit and if bpf_arena_alloc_pages() works
+          correctly above this limit.
+
+v1: https://lore.kernel.org/all/20251111163424.16471-1-puranjay@kernel.org/
+Changes in v1->v2:
+Patch 1:
+        - Import tlbflush.h to fix build issue in loongarch. (kernel
+          test robot)
+        - Fix unused variable error in apply_range_clear_cb() (kernel
+          test robot)
+        - Call bpf_map_area_free() on error path of
+          populate_pgtable_except_pte() (AI)
+        - Use PAGE_SIZE in apply_to_existing_page_range() (AI)
+Patch 2:
+        - Cap allocation made by kmalloc_nolock() for pages array to
+          KMALLOC_MAX_CACHE_SIZE and reuse the array in an explicit loop
+          to overcome this limit. (AI)
+Patch 3:
+        - Do page_ref_add(page, 1); under the spinlock to mitigate a
+          race (AI)
+Patch 4:
+        - Add a new testcase big_alloc3() verifier_arena_large.c that
+          tries to allocate a large number of pages at once, this is to
+          trigger the kmalloc_nolock() limit in Patch 2 and see if the
+          loop logic works correctly.
+
+This set allows arena kfuncs to be called from non-sleepable contexts.
+It is acheived by the following changes:
+
+The range_tree is now protected with a rqspinlock and not a mutex,
+this change is enough to make bpf_arena_reserve_pages() any context
+safe.
+
+bpf_arena_alloc_pages() had four points where it could sleep:
+
+1. Mutex to protect range_tree: now replaced with rqspinlock
+
+2. kvcalloc() for allocations: now replaced with kmalloc_nolock()
+
+3. Allocating pages with bpf_map_alloc_pages(): this already calls
+   alloc_pages_nolock() in non-sleepable contexts and therefore is safe.
+
+4. Setting up kernel page tables with vm_area_map_pages():
+   vm_area_map_pages() may allocate memory while inserting pages into
+   bpf arena's vm_area. Now, at arena creation time populate all page
+   table levels except the last level and when new pages need to be
+   inserted call apply_to_page_range() again which will only do
+   set_pte_at() for those pages and will not allocate memory.
+
+The above four changes make bpf_arena_alloc_pages() any context safe.
+
+bpf_arena_free_pages() has to do the following steps:
+
+1. Update the range_tree
+2. vm_area_unmap_pages(): to unmap pages from kernel vm_area
+3. flush the tlb: done in step 2, already.
+4. zap_pages(): to unmap pages from user page tables
+5. free pages.
+
+The third patch in this set makes bpf_arena_free_pages() polymorphic using
+the specialize_kfunc() mechanism. When called from a sleepable context,
+arena_free_pages() remains mostly unchanged except the following:
+1. rqspinlock is taken now instead of the mutex for the range tree
+2. Instead of using vm_area_unmap_pages() that can free intermediate page
+   table levels, apply_to_existing_page_range() with a callback is used
+   that only does pte_clear() on the last level and leaves the intermediate
+   page table levels intact. This is needed to make sure that
+   bpf_arena_alloc_pages() can safely do set_pte_at() without allocating
+   intermediate page tables.
+
+When arena_free_pages() is called from a non-sleepable context or it fails to
+acquire the rqspinlock in the sleepable case, a lock-less list of struct
+arena_free_span is used to queue the uaddr and page cnt. kmalloc_nolock()
+is used to allocate this arena_free_span, this can fail but we need to make
+this trade-off for frees done from non-sleepable contexts.
+
+arena_free_pages() then raises an irq_work whose handler in turn schedules
+work that iterate this list and clears ptes, flushes tlbs, zap pages, and
+frees pages for the queued uaddr and page cnts.
+
+apply_range_clear_cb() with apply_to_existing_page_range() is used to
+clear PTEs and collect pages to be freed, struct llist_node pcp_llist;
+in the struct page is used to do this.
+
+Puranjay Mohan (4):
+  bpf: arena: populate vm_area without allocating memory
+  bpf: arena: use kmalloc_nolock() in place of kvcalloc()
+  bpf: arena: make arena kfuncs any context safe
+  selftests: bpf: test non-sleepable arena allocations
+
+ include/linux/bpf.h                           |  16 +
+ kernel/bpf/arena.c                            | 380 +++++++++++++++---
+ kernel/bpf/verifier.c                         |  10 +
+ .../selftests/bpf/prog_tests/arena_list.c     |  20 +-
+ .../testing/selftests/bpf/progs/arena_list.c  |  11 +
+ .../selftests/bpf/progs/verifier_arena.c      | 185 +++++++++
+ .../bpf/progs/verifier_arena_large.c          |  29 ++
+ 7 files changed, 592 insertions(+), 59 deletions(-)
+
+
+base-commit: f785a31395d9cafb8b2c42c7358fad72a6463142
+-- 
+2.47.3
+
 
