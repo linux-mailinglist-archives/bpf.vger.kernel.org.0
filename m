@@ -1,106 +1,217 @@
-Return-Path: <bpf+bounces-77272-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77273-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0504ACD4428
-	for <lists+bpf@lfdr.de>; Sun, 21 Dec 2025 19:45:23 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4494CD47D7
+	for <lists+bpf@lfdr.de>; Mon, 22 Dec 2025 01:40:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D320F300796F
-	for <lists+bpf@lfdr.de>; Sun, 21 Dec 2025 18:45:16 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id CE34C3003BD7
+	for <lists+bpf@lfdr.de>; Mon, 22 Dec 2025 00:39:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5E84307AF4;
-	Sun, 21 Dec 2025 18:45:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70D3D1DF72C;
+	Mon, 22 Dec 2025 00:39:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b="K1lOQKsm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YHr8z96w"
 X-Original-To: bpf@vger.kernel.org
-Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB3E429BD89;
-	Sun, 21 Dec 2025 18:45:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 598B1A945
+	for <bpf@vger.kernel.org>; Mon, 22 Dec 2025 00:39:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766342714; cv=none; b=tQOvYsjItslQAeSVp+Qq5bH5/SorpsILQi/A2WKWvENOlqKjDSVAwf4oXLRJ9JKMFd1AyKJgnCRQ5JYRagfjJx8erqCTa2s2R5nX0QW/WH7z+nXwQFTt0dl4fBR1tz1Sgr/VDNhFekS1BLtHxcgfmNrBGwARsT+EKC1vj+9i9lc=
+	t=1766363997; cv=none; b=j9AlCyaVZQfMOec2n/oPpgGjwF+1zSo3jRqvFqoUjxglnm+VXufjv1wwOVFui0cS7oPA/bT2oGnqeKtYz2c9NWY6IiSwCVvIlCyPBOa4eP0R/rQlf53sxDK2IiwihERVmRrWcpJnMxrW5Wa+r3/tQzhM2km4d55u8+eJRZTnjbU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766342714; c=relaxed/simple;
-	bh=uqzf0F9FOuyRCoi0rmOpP9qD37K2Wd+JeGbGEFQldoU=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=tyogzwLFDz6IqF2vtR2VgzNZ/E7n6ERhldl5Pi7vgNfYOFYt0baSwfqX44xJlw7ra9Ir3+1xVh+1cjsVkxyBBa3YGrYyZHOJHTmD3w83A5NjTcvMMB5gR9PetuGDy9W0avu1T2P8t3FeJ1S/59Ok8Ps4HtbAwS1t2jsxj5iP5/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org; spf=pass smtp.mailfrom=mailbox.org; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=K1lOQKsm; arc=none smtp.client-ip=80.241.56.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mailbox.org
-Received: from smtp202.mailbox.org (smtp202.mailbox.org [10.196.197.202])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4dZ9Dt6h8Mz9v3b;
-	Sun, 21 Dec 2025 19:45:02 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-	t=1766342703;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uqzf0F9FOuyRCoi0rmOpP9qD37K2Wd+JeGbGEFQldoU=;
-	b=K1lOQKsmpc99LY1z4ASEtcypSgfFu6viCOzZ7w12P81Sp8FbTkf3jPa91QDIKONhRTR/Bs
-	01DgKIPvJ8t0ZkmqhdzYu4H5egtf9rJWLx1CdGJ6F80NuAh3M4jOkL2L6tuB0A8uwVmZ8M
-	q3XcTubvZVJoiopdVEdmDidhWEgFeKv2Ndjnl5m1GoEQmR1PbRDdcvK6noPw3rmsUBpioN
-	45HAcinGFtinQNp/f1KyNyNU9Xt1Hfj4pJiQlS/2mbGkQX3f0+GUG5K9fm8QLxeU6n6yIi
-	uo7TggrX6H1foj/3bxR2wKUjJBJ47JdzJChSTvsLrC64WHlPrdENz3FWXrNCMw==
-Message-ID: <e9ab026c91a2e7da84702d9fd2455ae64f25b32a.camel@mailbox.org>
-Subject: Re: [PATCH v4 0/2] kallsyms: Always initialize modbuildid
-From: Maurice Hieronymus <mhi@mailbox.org>
-To: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
- andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com,
- song@kernel.org,  yonghong.song@linux.dev, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com,  jolsa@kernel.org, rostedt@goodmis.org,
- mhiramat@kernel.org, mark.rutland@arm.com,  mathieu.desnoyers@efficios.com
-Cc: georges.aureau@hpe.com, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org,  linux-trace-kernel@vger.kernel.org
-Date: Sun, 21 Dec 2025 19:44:55 +0100
-In-Reply-To: <20251220181838.63242-1-mhi@mailbox.org>
-References: <20251220181838.63242-1-mhi@mailbox.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1766363997; c=relaxed/simple;
+	bh=1Lv3UL68EFBOvGc00WG8yUODzmYD8Hmdvh7uIa0pco0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=L8zrND5IkjPIkrOkWqkArZ05G4itXtQpQ4zewflbnH7YkiFb0En+5r0todEQ8y79B55vQ89LFI74GgOZSZGenKngs/4cpT0jMg9NJOXvsuu4sCxj2W9yTzvmJM4hbDMILEx2NLPKHNAbRlWRozEFEsvZYFB3PeP+iaWEbcRnLOk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YHr8z96w; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-42e2d5e119fso1494441f8f.2
+        for <bpf@vger.kernel.org>; Sun, 21 Dec 2025 16:39:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1766363994; x=1766968794; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=c/H19Q6tBd0UoTOXIGQ7f4tfksWDWCO13hxwp5+fi/A=;
+        b=YHr8z96w2MuYCjTXuKNRQBzORnAue2D9yrrvrYdSuDYttOfalf9v3ZclsDR3wfJD8l
+         yyBKl0xYYYTy/1XduXwR2hSIq/o44PJbu5gqyk05zeSclRvt9nXGCzwm10wJPel3IA4I
+         AziWLd3jmat3wc78tceswksOxeiMHXFto7mkxL6dOBQNuv+p4vCuFjFnnzFm1L/N5pCW
+         0Gys+NKP8AtB1N6wWYjeXE4Sm15xC+egtGZct01+5HoSQy1IjdGn/LgjyJAa+lmXQ8sR
+         ePA73sRpVTinMzvLAbk+uV/OYuYZ/5Dd/KeK9NyN2EhK3UPVIpr725DvhRm0pXaDZX9K
+         pqIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1766363994; x=1766968794;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=c/H19Q6tBd0UoTOXIGQ7f4tfksWDWCO13hxwp5+fi/A=;
+        b=f1CcgLZCow+N5Q72JqISxxiEEdKwJzx8PYURPgtjQnDSrG798sprl+4QjYw+LoSl1b
+         ZsPKDQDlM85dUo6r5Dg8F1R7McC07RICTgszS4UJ5W/arjdZH33wY/PDBcNeTMR5e6t/
+         zLZnnaSbfoItbRp2CtHAP/FiUMMDn77yQn4CdB9Y63THbarhk7dK+VwKRohD271vTMI7
+         xFAzckdh962QHMOIHyN8mIhp2q2K2fKew9HQs6by2T6mgEytj7BBMayIig6bIBxf8QiC
+         So4HQTCUSc5s4hIkxee5LNsNZDBQSwmwpmtfifbLuIqT+UIsH9w9xYe1P5UHSyx1rdsQ
+         kyXQ==
+X-Gm-Message-State: AOJu0Yzkk7RfdCEd7bD0I9AGuyITEoF7/Uw8q9JDyazHxoaZqepn6b/F
+	FutJl7IrHCyXgVJ9P+DdVFrUDP5KcePv4jptL+2V1Qw62uAjgpcRxMLr5VvBHofIJAWoUnrMQEm
+	tmAZbAimF+XFb9aTpMfhgjvRUpjQoQIY=
+X-Gm-Gg: AY/fxX5s5B3Oj/fJkOkLIcgKRwUgGTnozy2+g4pNWT9zagxQ1Ga1bLBTTAwlHVp74y4
+	lF81D4xp4tmCNeM4//9EhSbqTBqRGAeoAOuemDztIkD4kMpifU9HuUGGmqJroLcaWUtQ21FEG6k
+	P/uG1hXB5/nnFCzccMzN/AiUjfWviOQ29VhOg/aqzsAoRlt31qvrMOn5R6QVA2bqJi9UuhHWr9q
+	Ugi1KAJD+3It6l70qtMqxQWJIG677bhATAC8kfdytxemWa/TmOHW1MQZCv7hJ/16M9/3+wC
+X-Google-Smtp-Source: AGHT+IGkS9dOdEhg5+dCkmUmeaWzy4PZ0nHJDOAvsq+qfntVAU3c0jXqwzhWWTxM0175xdfDO/eCyt7iUEHIffnxA0A=
+X-Received: by 2002:a05:6000:2089:b0:431:9b2:61c0 with SMTP id
+ ffacd0b85a97d-4324e4c92b0mr10844629f8f.24.1766363993525; Sun, 21 Dec 2025
+ 16:39:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MBO-RS-ID: 45a22b6f940ff08cc72
-X-MBO-RS-META: hnshh8eifp969k9zopsmzix9ssowzytt
+References: <20251220041250.372179-1-roman.gushchin@linux.dev> <20251220041250.372179-3-roman.gushchin@linux.dev>
+In-Reply-To: <20251220041250.372179-3-roman.gushchin@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Sun, 21 Dec 2025 16:39:42 -0800
+X-Gm-Features: AQt7F2oyBrROwRVLxqymS_B6UpKn5g9mpaj4yyV5pWKX0A3abRXIXQm-DHsTaoE
+Message-ID: <CAADnVQ+T2_=F-885FtYZ1K8+UBfxmanExrfA+-0v4UdFVhmeDw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/7] mm: introduce BPF kfuncs to deal with
+ memcg pointers
+To: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: bpf <bpf@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, 
+	LKML <linux-kernel@vger.kernel.org>, JP Kobryn <inwardvessel@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Michal Hocko <mhocko@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, 2025-12-20 at 19:18 +0100, Maurice Hieronymus wrote:
-> modbuildid is never set when kallsyms_lookup_buildid is returning via
-> successful bpf_address_lookup or ftrace_mod_address_lookup.
->=20
-> This leads to an uninitialized pointer dereference on x86 when
-> CONFIG_STACKTRACE_BUILD_ID=3Dy inside __sprint_symbol.
->=20
-> Prevent this by always initializing modbuildid.
->=20
-> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=3D220717
->=20
-> Changes to v3:
-> - Split the changes into separate ftrace and bpf patches
-> - Replace IS_ENABLED() with plain #ifdef
->=20
-> Maurice Hieronymus (2):
-> =C2=A0 kallsyms: Always initialize modbuildid on ftrace address
-> =C2=A0 kallsyms: Always initialize modbuildid on bpf address
->=20
-> =C2=A0include/linux/filter.h | 6 ++++--
-> =C2=A0include/linux/ftrace.h | 4 ++--
-> =C2=A0kernel/kallsyms.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 4 ++--
-> =C2=A0kernel/trace/ftrace.c=C2=A0 | 8 +++++++-
-> =C2=A04 files changed, 15 insertions(+), 7 deletions(-)
->=20
->=20
-> base-commit: dd9b004b7ff3289fb7bae35130c0a5c0537266af
+On Fri, Dec 19, 2025 at 6:13=E2=80=AFPM Roman Gushchin <roman.gushchin@linu=
+x.dev> wrote:
+>
+> To effectively operate with memory cgroups in BPF there is a need
+> to convert css pointers to memcg pointers. A simple container_of
+> cast which is used in the kernel code can't be used in BPF because
+> from the verifier's point of view that's a out-of-bounds memory access.
+>
+> Introduce helper get/put kfuncs which can be used to get
+> a refcounted memcg pointer from the css pointer:
+>   - bpf_get_mem_cgroup,
+>   - bpf_put_mem_cgroup.
+>
+> bpf_get_mem_cgroup() can take both memcg's css and the corresponding
+> cgroup's "self" css. It allows it to be used with the existing cgroup
+> iterator which iterates over cgroup tree, not memcg tree.
+>
+> Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
+> ---
+>  mm/Makefile         |  3 ++
+>  mm/bpf_memcontrol.c | 88 +++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 91 insertions(+)
+>  create mode 100644 mm/bpf_memcontrol.c
+>
+> diff --git a/mm/Makefile b/mm/Makefile
+> index 9175f8cc6565..79c39a98ff83 100644
+> --- a/mm/Makefile
+> +++ b/mm/Makefile
+> @@ -106,6 +106,9 @@ obj-$(CONFIG_MEMCG) +=3D memcontrol.o vmpressure.o
+>  ifdef CONFIG_SWAP
+>  obj-$(CONFIG_MEMCG) +=3D swap_cgroup.o
+>  endif
+> +ifdef CONFIG_BPF_SYSCALL
+> +obj-$(CONFIG_MEMCG) +=3D bpf_memcontrol.o
+> +endif
+>  obj-$(CONFIG_CGROUP_HUGETLB) +=3D hugetlb_cgroup.o
+>  obj-$(CONFIG_GUP_TEST) +=3D gup_test.o
+>  obj-$(CONFIG_DMAPOOL_TEST) +=3D dmapool_test.o
+> diff --git a/mm/bpf_memcontrol.c b/mm/bpf_memcontrol.c
+> new file mode 100644
+> index 000000000000..03d435fc4f10
+> --- /dev/null
+> +++ b/mm/bpf_memcontrol.c
+> @@ -0,0 +1,88 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Memory Controller-related BPF kfuncs and auxiliary code
+> + *
+> + * Author: Roman Gushchin <roman.gushchin@linux.dev>
+> + */
+> +
+> +#include <linux/memcontrol.h>
+> +#include <linux/bpf.h>
+> +
+> +__bpf_kfunc_start_defs();
+> +
+> +/**
+> + * bpf_get_mem_cgroup - Get a reference to a memory cgroup
+> + * @css: pointer to the css structure
+> + *
+> + * Returns a pointer to a mem_cgroup structure after bumping
+> + * the corresponding css's reference counter.
+> + *
+> + * It's fine to pass a css which belongs to any cgroup controller,
+> + * e.g. unified hierarchy's main css.
+> + *
+> + * Implements KF_ACQUIRE semantics.
+> + */
+> +__bpf_kfunc struct mem_cgroup *
+> +bpf_get_mem_cgroup(struct cgroup_subsys_state *css)
+> +{
+> +       struct mem_cgroup *memcg =3D NULL;
+> +       bool rcu_unlock =3D false;
+> +
+> +       if (mem_cgroup_disabled() || !root_mem_cgroup)
+> +               return NULL;
+> +
+> +       if (root_mem_cgroup->css.ss !=3D css->ss) {
+> +               struct cgroup *cgroup =3D css->cgroup;
+> +               int ssid =3D root_mem_cgroup->css.ss->id;
+> +
+> +               rcu_read_lock();
+> +               rcu_unlock =3D true;
+> +               css =3D rcu_dereference_raw(cgroup->subsys[ssid]);
+> +       }
+> +
+> +       if (css && css_tryget(css))
+> +               memcg =3D container_of(css, struct mem_cgroup, css);
+> +
+> +       if (rcu_unlock)
+> +               rcu_read_unlock();
+> +
+> +       return memcg;
+> +}
+> +
+> +/**
+> + * bpf_put_mem_cgroup - Put a reference to a memory cgroup
+> + * @memcg: memory cgroup to release
+> + *
+> + * Releases a previously acquired memcg reference.
+> + * Implements KF_RELEASE semantics.
+> + */
+> +__bpf_kfunc void bpf_put_mem_cgroup(struct mem_cgroup *memcg)
+> +{
+> +       css_put(&memcg->css);
+> +}
+> +
+> +__bpf_kfunc_end_defs();
+> +
+> +BTF_KFUNCS_START(bpf_memcontrol_kfuncs)
+> +BTF_ID_FLAGS(func, bpf_get_mem_cgroup, KF_TRUSTED_ARGS | KF_ACQUIRE | KF=
+_RET_NULL | KF_RCU)
+> +BTF_ID_FLAGS(func, bpf_put_mem_cgroup, KF_TRUSTED_ARGS | KF_RELEASE)
 
-This patch is obsolete and already fixed by [1]
+This is an unusual combination of flags.
+KF_RCU is a weaker KF_TRUSTED_ARGS, so just use KF_RCU.
+We have an odd selftest kmod that specifies both,
+but it's unnecessary there as well.
+Just KF_ACQUIRE | KF_RET_NULL | KF_RCU will do.
 
-[1]
-https://lore.kernel.org/bpf/20251128135920.217303-1-pmladek@suse.com/#t
+Similarly KF_RELEASE implies KF_TRUSTED_ARGS.
+That's even documented Documentation/bpf/kfuncs.rst,
+so just use KF_RELEASE for bpf_put_mem_cgroup.
+
+pw-bot: cr
 
