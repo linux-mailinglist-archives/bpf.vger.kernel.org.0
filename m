@@ -1,76 +1,325 @@
-Return-Path: <bpf+bounces-77374-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77375-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96CEBCDA414
-	for <lists+bpf@lfdr.de>; Tue, 23 Dec 2025 19:18:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EF40CDA47E
+	for <lists+bpf@lfdr.de>; Tue, 23 Dec 2025 19:33:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 588E43044BA1
-	for <lists+bpf@lfdr.de>; Tue, 23 Dec 2025 18:17:52 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C6C28302FA27
+	for <lists+bpf@lfdr.de>; Tue, 23 Dec 2025 18:32:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 982B22D0C8F;
-	Tue, 23 Dec 2025 18:17:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52D04301489;
+	Tue, 23 Dec 2025 18:32:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tNVcuAQD"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="O3dePdS6"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2F9B145348;
-	Tue, 23 Dec 2025 18:17:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA73B207A32
+	for <bpf@vger.kernel.org>; Tue, 23 Dec 2025 18:32:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766513870; cv=none; b=s/ylMa2H8CBKq58jepXHURqorUzKwvPLMu5ojTYNUIlUI6BDYNzIVcRyksXrxDE/+OBM7XR2M19/MAEeGc2WsQ8rd6RFpn/MSTUNyI0DfwGqohLoKfjP+/vF9y4FODT0FJ9KYnE3xasNNYHPL5ICOdEnLSYh15uZlZpR5y3FX74=
+	t=1766514752; cv=none; b=CMGJSQZqoVlWUmP1GYIoS36sVmSfFdFHDdUYChEa6JBOs93i1ZUgA8UyN0mxnZfnWM0PU5KgBYLAh0SLhbcDYbACKXEvX+Ebvr6Yy3zd2ZOZ8MPRfoyG06dThvDoCPVgkca9lqL9b6LzmoX+iwvFj7pWlquy4V7xwVQMhcn68yY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766513870; c=relaxed/simple;
-	bh=qxa2Z6aaX/4/qbcI7Ja2shuIsOq4JDxDWNKGlrZqeoI=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=C7khrJh6qEQS7mdEYr/3GBuj3724LgTA1h7/NLnyC9Bfo6FVqtc99mdFCKmW3tpVyozBI1ObtwHwD9P3bFjdE5bCZCRiPcC1G748LS334r0C+lGlDXbHtpNnzAhdzKMJwMu+YUU8hb4y8R0CG14pfjHw3Y4clLQyHpOfZKfXOYE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tNVcuAQD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DE43C113D0;
-	Tue, 23 Dec 2025 18:17:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766513869;
-	bh=qxa2Z6aaX/4/qbcI7Ja2shuIsOq4JDxDWNKGlrZqeoI=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=tNVcuAQD7NPk26LD4Fr7eqUMjcIV+VcLS1pB2VGV0i5/DISRlRredG/xLZrlV7LQL
-	 OP8Eu2IK/+JMuXjsI7POAN5SDE482H48fq9xYhaTObyrnyovWZnseHQR2V9tjNybkx
-	 1KAPri+DsAiIos3bRhtHwf+IZmn4vlCGj0011QXl6MnwCfBT1CUxRpkYsNUjJqZVwC
-	 Ca+OpjQLNhTo9/Q5ta0SxZUji8fOCx+dQwjXkMzISV+8TP4elCXr4eBSf/Sw973PFi
-	 eF5GYwS2IAjsCjIPMikCtU6NN/ODdDkCsTIDGoDNwUYZcCFTuOu2zY2LQ+V8i0w8xA
-	 SDIYbwIqvVjMw==
-From: Namhyung Kim <namhyung@kernel.org>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>, 
- Ian Rogers <irogers@google.com>, James Clark <james.clark@linaro.org>, 
- Namhyung Kim <namhyung@kernel.org>
-Cc: Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, 
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, 
- LKML <linux-kernel@vger.kernel.org>, linux-perf-users@vger.kernel.org, 
- bpf@vger.kernel.org
-In-Reply-To: <20251203232924.1119206-1-namhyung@kernel.org>
-References: <20251203232924.1119206-1-namhyung@kernel.org>
-Subject: Re: [PATCH 1/2] tools/build: Add a feature test for libopenssl
-Message-Id: <176651386851.34483.15637713722145735287.b4-ty@kernel.org>
-Date: Tue, 23 Dec 2025 10:17:48 -0800
+	s=arc-20240116; t=1766514752; c=relaxed/simple;
+	bh=001CthSPIxz9+6nntWW9gFl71sNzOHEz5fb4KlRr5o0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FTHHIUaOGUl65yAPQchz8AxUfgpyLALJmzYSoIPSX+oJCH024f8gTLOk/prM531OWd2h87/DEeGEBsUXXBwz6cTFs/VAu/ZqjNLTqWQNDiIWy4OZlsx5N9n7dk+8DT+EmpEZvyBiEi1LMLYR+pfGQkrkDibvEQAeLRBS3F3W3+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=O3dePdS6; arc=none smtp.client-ip=91.218.175.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <15c26b1f-b78d-45d0-b5d2-e8359ddf5bbc@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1766514737;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V6UbUVJDiPkR0h3wOGRehrEe6cJFnlCk5i2ARSLmt5w=;
+	b=O3dePdS6wnJ9jkL6ITA3jyu6PmZ6i3pUy7690T3qmf0i+MG+Y9S94tCB+3jlRCbWgaQXmP
+	1MZ4crMHo8mvngyjLgs7Ha/q287AoQA6SGsdzKhzCx7IuqkopWqfANk9sT8CF7imcJHKEh
+	mwy0rOfVg73MOtvicGkuCYSx0WFFu9U=
+Date: Tue, 23 Dec 2025 10:32:09 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-c04d2
+Subject: Re: [PATCH bpf-next v2] bpf: arm64: Fix panic due to missing BTI at
+ indirect jump targets
+Content-Language: en-GB
+To: Xu Kuohai <xukuohai@huaweicloud.com>, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Puranjay Mohan <puranjay@kernel.org>,
+ Anton Protopopov <a.s.protopopov@gmail.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+References: <20251223085447.139301-1-xukuohai@huaweicloud.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20251223085447.139301-1-xukuohai@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, 03 Dec 2025 15:29:23 -0800, Namhyung Kim wrote:
-> It's used by bpftool and the kernel build.  Let's add a feature test so
-> that perf can decide what to do based on the availability.
-> 
-> 
-Applied to perf-tools, thanks!
 
-Best regards,
-Namhyung
 
+On 12/23/25 12:54 AM, Xu Kuohai wrote:
+> From: Xu Kuohai <xukuohai@huawei.com>
+>
+> When BTI is enabled, the indirect jump selftest triggers BTI exception:
+>
+> Internal error: Oops - BTI: 0000000036000003 [#1]  SMP
+> ...
+> Call trace:
+>   bpf_prog_2e5f1c71c13ac3e0_big_jump_table+0x54/0xf8 (P)
+>   bpf_prog_run_pin_on_cpu+0x140/0x464
+>   bpf_prog_test_run_syscall+0x274/0x3ac
+>   bpf_prog_test_run+0x224/0x2b0
+>   __sys_bpf+0x4cc/0x5c8
+>   __arm64_sys_bpf+0x7c/0x94
+>   invoke_syscall+0x78/0x20c
+>   el0_svc_common+0x11c/0x1c0
+>   do_el0_svc+0x48/0x58
+>   el0_svc+0x54/0x19c
+>   el0t_64_sync_handler+0x84/0x12c
+>   el0t_64_sync+0x198/0x19c
+>
+> This happens because no BTI instruction is generated by the JIT for
+> indirect jump targets.
+>
+> Fix it by emitting BTI instruction for every possible indirect jump
+> targets when BTI is enabled. The targets are identified by traversing
+> all instruction arrays of jump table type used by the BPF program,
+> since indirect jump targets can only be read from instruction arrays
+> of jump table type.
+>
+> Fixes: f4a66cf1cb14 ("bpf: arm64: Add support for indirect jumps")
+> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+> ---
+> v2:
+> - Exclude instruction arrays not used for indirect jumps (Anton Protopopov)
+>
+> v1: https://lore.kernel.org/bpf/20251127140318.3944249-1-xukuohai@huaweicloud.com/
+> ---
+>   arch/arm64/net/bpf_jit_comp.c | 20 +++++++++++
+>   include/linux/bpf.h           | 19 +++++++++++
+>   kernel/bpf/bpf_insn_array.c   | 63 +++++++++++++++++++++++++++++++++++
+>   kernel/bpf/verifier.c         |  6 ++++
+>   4 files changed, 108 insertions(+)
+>
+> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+> index 0c4d44bcfbf4..f08f0f9fa04e 100644
+> --- a/arch/arm64/net/bpf_jit_comp.c
+> +++ b/arch/arm64/net/bpf_jit_comp.c
+> @@ -78,6 +78,7 @@ static const int bpf2a64[] = {
+>   
+>   struct jit_ctx {
+>   	const struct bpf_prog *prog;
+> +	unsigned long *indirect_targets;
+>   	int idx;
+>   	int epilogue_offset;
+>   	int *offset;
+> @@ -1199,6 +1200,11 @@ static int add_exception_handler(const struct bpf_insn *insn,
+>   	return 0;
+>   }
+>   
+> +static bool is_indirect_target(int insn_off, unsigned long *targets_bitmap)
+> +{
+> +	return targets_bitmap && test_bit(insn_off, targets_bitmap);
+> +}
+> +
+>   /* JITs an eBPF instruction.
+>    * Returns:
+>    * 0  - successfully JITed an 8-byte eBPF instruction.
+> @@ -1231,6 +1237,9 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
+>   	int ret;
+>   	bool sign_extend;
+>   
+> +	if (is_indirect_target(i, ctx->indirect_targets))
+> +		emit_bti(A64_BTI_J, ctx);
+> +
+>   	switch (code) {
+>   	/* dst = src */
+>   	case BPF_ALU | BPF_MOV | BPF_X:
+> @@ -2085,6 +2094,16 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+>   	memset(&ctx, 0, sizeof(ctx));
+>   	ctx.prog = prog;
+>   
+> +	if (IS_ENABLED(CONFIG_ARM64_BTI_KERNEL) && bpf_prog_has_jump_table(prog)) {
+> +		ctx.indirect_targets = kvcalloc(BITS_TO_LONGS(prog->len), sizeof(unsigned long),
+> +						GFP_KERNEL);
+> +		if (ctx.indirect_targets == NULL) {
+> +			prog = orig_prog;
+> +			goto out_off;
+> +		}
+> +		bpf_prog_collect_indirect_targets(prog, ctx.indirect_targets);
+> +	}
+> +
+>   	ctx.offset = kvcalloc(prog->len + 1, sizeof(int), GFP_KERNEL);
+>   	if (ctx.offset == NULL) {
+>   		prog = orig_prog;
+> @@ -2248,6 +2267,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+>   			prog->aux->priv_stack_ptr = NULL;
+>   		}
+>   		kvfree(ctx.offset);
+> +		kvfree(ctx.indirect_targets);
+>   out_priv_stack:
+>   		kfree(jit_data);
+>   		prog->aux->jit_data = NULL;
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index da6a00dd313f..a3a89d4b4dae 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -3875,13 +3875,32 @@ void bpf_insn_array_release(struct bpf_map *map);
+>   void bpf_insn_array_adjust(struct bpf_map *map, u32 off, u32 len);
+>   void bpf_insn_array_adjust_after_remove(struct bpf_map *map, u32 off, u32 len);
+>   
+> +enum bpf_insn_array_type {
+> +	BPF_INSN_ARRAY_VOID,
+
+What is the purpose for BPF_INSN_ARRAY_VOID? Do we really need it?
+
+> +	BPF_INSN_ARRAY_JUMP_TABLE,
+> +};
+> +
+>   #ifdef CONFIG_BPF_SYSCALL
+>   void bpf_prog_update_insn_ptrs(struct bpf_prog *prog, u32 *offsets, void *image);
+> +void bpf_prog_collect_indirect_targets(const struct bpf_prog *prog, unsigned long *bitmap);
+> +void bpf_prog_set_insn_array_type(struct bpf_map *map, int type);
+> +bool bpf_prog_has_jump_table(const struct bpf_prog *prog);
+>   #else
+>   static inline void
+>   bpf_prog_update_insn_ptrs(struct bpf_prog *prog, u32 *offsets, void *image)
+>   {
+>   }
+> +static inline void
+> +bpf_prog_collect_indirect_targets(const struct bpf_prog *prog, unsigned long *bitmap)
+> +{
+> +}
+> +static inline void bpf_prog_set_insn_array_type(struct bpf_map *map, int type)
+> +{
+> +}
+> +static inline bool bpf_prog_has_jump_table(const struct bpf_prog *prog)
+> +{
+> +	return false;
+> +}
+>   #endif
+>   
+>   static inline int bpf_map_check_op_flags(struct bpf_map *map, u64 flags, u64 allowed_flags)
+> diff --git a/kernel/bpf/bpf_insn_array.c b/kernel/bpf/bpf_insn_array.c
+> index c96630cb75bf..fbffc865feab 100644
+> --- a/kernel/bpf/bpf_insn_array.c
+> +++ b/kernel/bpf/bpf_insn_array.c
+> @@ -5,6 +5,7 @@
+>   
+>   struct bpf_insn_array {
+>   	struct bpf_map map;
+> +	int type;
+>   	atomic_t used;
+>   	long *ips;
+>   	DECLARE_FLEX_ARRAY(struct bpf_insn_array_value, values);
+> @@ -159,6 +160,17 @@ static bool is_insn_array(const struct bpf_map *map)
+>   	return map->map_type == BPF_MAP_TYPE_INSN_ARRAY;
+>   }
+>   
+> +static bool is_jump_table(const struct bpf_map *map)
+> +{
+> +	struct bpf_insn_array *insn_array;
+> +
+> +	if (!is_insn_array(map))
+> +		return false;
+> +
+> +	insn_array = cast_insn_array(map);
+> +	return insn_array->type == BPF_INSN_ARRAY_JUMP_TABLE;
+> +}
+> +
+>   static inline bool valid_offsets(const struct bpf_insn_array *insn_array,
+>   				 const struct bpf_prog *prog)
+>   {
+> @@ -302,3 +314,54 @@ void bpf_prog_update_insn_ptrs(struct bpf_prog *prog, u32 *offsets, void *image)
+>   		}
+>   	}
+>   }
+> +
+> +bool bpf_prog_has_jump_table(const struct bpf_prog *prog)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < prog->aux->used_map_cnt; i++) {
+> +		if (is_jump_table(prog->aux->used_maps[i]))
+> +			return true;
+> +	}
+> +	return false;
+> +}
+> +
+> +/*
+> + * This function collects possible indirect jump targets in a BPF program. Since indirect jump
+> + * targets can only be read from indirect arrays used as jump table, it traverses all jump
+> + * tables used by @prog. For each instruction found in the jump tables, it sets the corresponding
+> + * bit in @bitmap.
+> + */
+> +void bpf_prog_collect_indirect_targets(const struct bpf_prog *prog, unsigned long *bitmap)
+> +{
+> +	struct bpf_insn_array *insn_array;
+> +	struct bpf_map *map;
+> +	u32 xlated_off;
+> +	int i, j;
+> +
+> +	for (i = 0; i < prog->aux->used_map_cnt; i++) {
+> +		map = prog->aux->used_maps[i];
+> +		if (!is_jump_table(map))
+> +			continue;
+> +
+> +		insn_array = cast_insn_array(map);
+> +		for (j = 0; j < map->max_entries; j++) {
+> +			xlated_off = insn_array->values[j].xlated_off;
+> +			if (xlated_off == INSN_DELETED)
+> +				continue;
+> +			if (xlated_off < prog->aux->subprog_start)
+> +				continue;
+> +			xlated_off -= prog->aux->subprog_start;
+> +			if (xlated_off >= prog->len)
+> +				continue;
+
+The above codes are duplicated with bpf_prog_update_insn_ptrs().
+Maybe we can have a helper for the above?
+
+> +			__set_bit(xlated_off, bitmap);
+> +		}
+> +	}
+> +}
+> +
+> +void bpf_prog_set_insn_array_type(struct bpf_map *map, int type)
+> +{
+> +	struct bpf_insn_array *insn_array = cast_insn_array(map);
+> +
+> +	insn_array->type = type;
+> +}
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index d6b8a77fbe3b..ee6f4ddfbb79 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -20288,6 +20288,12 @@ static int check_indirect_jump(struct bpf_verifier_env *env, struct bpf_insn *in
+>   		return -EINVAL;
+>   	}
+>   
+> +	/*
+> +	 * Explicitly mark this map as a jump table such that it can be
+> +	 * distinguished later from other instruction arrays
+> +	 */
+> +	bpf_prog_set_insn_array_type(map, BPF_INSN_ARRAY_JUMP_TABLE);
+
+I think we do not need this for now. If a new indirect_jump type is introduced,
+verifier/jit can be adjusted that time if necessary.
+
+> +
+>   	for (i = 0; i < n - 1; i++) {
+>   		other_branch = push_stack(env, env->gotox_tmp_buf->items[i],
+>   					  env->insn_idx, env->cur_state->speculative);
 
 
