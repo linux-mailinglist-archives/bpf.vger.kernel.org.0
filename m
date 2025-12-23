@@ -1,564 +1,151 @@
-Return-Path: <bpf+bounces-77358-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77359-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC81CCD8889
-	for <lists+bpf@lfdr.de>; Tue, 23 Dec 2025 10:14:42 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 298BCCD8DE4
+	for <lists+bpf@lfdr.de>; Tue, 23 Dec 2025 11:40:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id EF6253046FAE
-	for <lists+bpf@lfdr.de>; Tue, 23 Dec 2025 09:12:39 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D91F83084C0B
+	for <lists+bpf@lfdr.de>; Tue, 23 Dec 2025 10:36:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C8273254BC;
-	Tue, 23 Dec 2025 09:12:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27CF236C0BA;
+	Tue, 23 Dec 2025 10:12:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aSMs9SSV"
 X-Original-To: bpf@vger.kernel.org
-Received: from zg8tmja2lje4os4yms4ymjma.icoremail.net (zg8tmja2lje4os4yms4ymjma.icoremail.net [206.189.21.223])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4315C30C614
-	for <bpf@vger.kernel.org>; Tue, 23 Dec 2025 09:12:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=206.189.21.223
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03DE836C0B5
+	for <bpf@vger.kernel.org>; Tue, 23 Dec 2025 10:12:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766481155; cv=none; b=H9J35ZPZUvKKsYrEEkpB2cfwrYfMr8dsb1M04+31Nln/XvI0sOOgCZP7V+z/hxvSU2vGBRHInEDBjXSKSOKINipH6DiiD6K431rbUw2BTBPIx7Kl2219/ZnoZZMP9C/n/rVhjeAYrFk1446QOxvj3s3JHnfH3dTXkflA852f9x8=
+	t=1766484742; cv=none; b=IEuHao//NuryXychqSUUq9cYRxIRSOhPoZIHu2irBpbsuV9spVUFl3eJeXpsRbYUAVcx/mZmKDS6pQSR6HFJMpSgINoWodPZg8jUrlFO6MyxYV5pRTG9YKDhiwBxS2cv7YBkjJzI2Bx3F5f6CJpUdVvHbEPqjQ4aYcGpwzPhDgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766481155; c=relaxed/simple;
-	bh=ezgnj8xUWsAj5N8gZGleyFTE7MCpHg4GM26vbU/B/Pg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=t2ya4ZOmZ/5BAYAQdPs69D0LKRFlzBf3ujHq1bR2IRT3ZZj2Yhx9m/CtIJ2W4efYGxERcSx44OpFQ7dYCG7pKkq5QZaDtAsqxELQEnKlFSU/+PHtttFyid/4y7eHNZDuH4zMhVkGUYFHCsgT6dNlwoClFFucJbFkPjdeRk2DdHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=206.189.21.223
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from zju.edu.cn (unknown [10.162.146.110])
-	by mtasvr (Coremail) with SMTP id _____wAnRVTVXEppejo7AQ--.6375S3;
-	Tue, 23 Dec 2025 17:11:49 +0800 (CST)
-Received: from lutetium.localdomain (unknown [10.162.146.110])
-	by mail-app4 (Coremail) with SMTP id zi_KCgAHwIbUXEppG9UDBA--.64806S2;
-	Tue, 23 Dec 2025 17:11:48 +0800 (CST)
-From: Yazhou Tang <tangyazhou@zju.edu.cn>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	tangyazhou518@outlook.com,
-	shenghaoyuan0928@163.com,
-	ziye@zju.edu.cn
-Subject: [PATCH bpf-next v2 2/2] selftests/bpf: Add tests for BPF_DIV analysis
-Date: Tue, 23 Dec 2025 17:10:50 +0800
-Message-ID: <20251223091120.2413435-3-tangyazhou@zju.edu.cn>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20251223091120.2413435-1-tangyazhou@zju.edu.cn>
-References: <20251223091120.2413435-1-tangyazhou@zju.edu.cn>
+	s=arc-20240116; t=1766484742; c=relaxed/simple;
+	bh=g3RdVNlGYQsE9o3BJOWFY+ldO2vNI7M9wdBKHzxIiWo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DQmVbR1yP/EtJ+VQee0Bqh6pdMCOYFC7TFglrHMLdg5FMQoIV2rHJw3cBuTh2KzBpmb0MsZbI+hn6ByErvj7MwxwDz4TciyMVtNNcMRfx7Bg7haLmN5AvuNUCo9Hv8ZL/2lJIIdz3KeFs0rlDAK3JI9twH1Fy85UoZRkA+nuEE4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aSMs9SSV; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-42fb6ce71c7so3773084f8f.1
+        for <bpf@vger.kernel.org>; Tue, 23 Dec 2025 02:12:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1766484739; x=1767089539; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=anQax0wUu95+mMrZNKTBO4oREmZDSkR5WTX6a+bS3Kc=;
+        b=aSMs9SSVZ/8+kW3cH6yg4Qwf5oUu9hnkkAguWizlbMQFLKfhK6+RUM1Y7EAkdjRAEn
+         5uxiQHPw9B+wqcBHsY8ZnY0aAdHlayZtDPK9vHa3sggZuSRV8JnuYFo1A78sJ31UCPvq
+         p33fEcQMJWUSCPcxsmbbksGn+fFhZKfOJsmlUWTzVn7kk1W3CGcxoM+gv12PYTUrhMLN
+         N7y3BURAxVXkzU0vTb3yvFc8LlRT+8rpY/dYc56Did3qC6aKmghd2EFcFV3qtBTQM2Vu
+         ZGA9kKaY6Cx1U1hwwiYH9Q5BXe8+RpeQ4m95yvjWxt1k9+k+EkoiS8xjWAITbaG8qZKE
+         M8Qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1766484739; x=1767089539;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=anQax0wUu95+mMrZNKTBO4oREmZDSkR5WTX6a+bS3Kc=;
+        b=cL6xlCNDOK5QHdXJ+gpMxy2cgfprHSxOWwzGLyGGKNKus95vhbvtHgafqzMoeYZSIN
+         vsFbSYJ30lRK7RrWNF0rOER1iTkrrdZ8t2930Ph0q9H35sRLaF18DuElDGdkEuRa92wU
+         IIpfbIe+x2xqqcX+dJXgaaDuPkXRYpy3yDQiWXJzV1HaGqrMHCl7Z1+O8z5CQ8tBuFR7
+         ugYyqSDQSex0FAAnodqdIOJS2BHZJ31FHPlbWHJD7UYpu68SOPl0XbPrVIdoA5VXCpBm
+         DtsXbnX6yoBWlllncF+4kEa7Y/zOobUG9H1UEc/sc70qhEjIRd1hKkrBF49V+tCK1aFj
+         VRlw==
+X-Gm-Message-State: AOJu0Ywl2QUrdoJYfpx0PbqQE2W00DwKSXXp8QfCSPhK9/xk5lZ7Zon1
+	yvnDjQfx5Rq1339NhH5ph5jMljWBaFUKMAhkIX8g+61+2KSDabfITRRg
+X-Gm-Gg: AY/fxX6b8iPw7mf6jSj0k3qqx3irLMrOrPFdQ3j6Ussw3MyckYyE126R/aRJt6x1I/0
+	mY7dGghuCQlrU5rN8RNDE288Oibaw9JNvdDhrZeukaq4TyhR3QANfTSy1a3Astmd1VfpT0A1mBy
+	ybZTkEkL5J00K4/w3jkui9pTyXxxfpsamyeqRHkaKgVgRHcn0S3Z7Sny6OvhbTEBuMm0rPc98yb
+	j6PZlQEY34mDZ8N/8oIfWa1QK79fU9J6xldYrGiUHjZ1X8gbPqCgELdhj1eBt6Dq0BaT53OH3po
+	Q+7Ykvt/RFMkwjPI7pFrB1Z3obOhr1Yejwov8dAbgr9KnywpbISdbddDnLpae7E23VThj0DJfuP
+	bZEMQBjcycBNSxjw/AzO/uKcY8kJbfpnnzBOiMUDgshqFUFdHbtVLxkcdvz039cB/Rqidl7/Iyf
+	ClI7zPRzgxzp/Ci2RwvOZ5dmnRFwhpUfUgOsj1oeK0Yjw=
+X-Google-Smtp-Source: AGHT+IEcarNvsOO3aXxUSqcWM/Ankr3/lxaVHC3jGDOyGIOFdVNywl/2WKM+EGpMDSYbUvktxTEjgw==
+X-Received: by 2002:a05:6000:2c01:b0:430:f62e:d95b with SMTP id ffacd0b85a97d-4324e4c9cd6mr16518191f8f.15.1766484739029;
+        Tue, 23 Dec 2025 02:12:19 -0800 (PST)
+Received: from gmail.com (deskosmtp.auranext.com. [195.134.167.217])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4324ea2253csm27396989f8f.14.2025.12.23.02.12.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Dec 2025 02:12:18 -0800 (PST)
+Date: Tue, 23 Dec 2025 11:12:16 +0100
+From: Mahe Tardy <mahe.tardy@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Eduard <eddyz87@gmail.com>, Andrii Nakryiko <andrii@kernel.org>,
+	Paul Chaignon <paul.chaignon@gmail.com>
+Subject: Re: [PATCH bpf-next] verifier: add prune points to live registers
+ print
+Message-ID: <aUprAOkSFgHyUMfB@gmail.com>
+References: <20251222185813.150505-1-mahe.tardy@gmail.com>
+ <CAADnVQLF+ihK16J3x5pQcJY0t2_gUHiur7ENZNqJdazzr+f8Pg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:zi_KCgAHwIbUXEppG9UDBA--.64806S2
-X-CM-SenderInfo: qssvjiasrsq6lmxovvfxof0/1tbiBhIJCmlJnwMlDAAAsC
-X-CM-DELIVERINFO: =?B?pjyQ9QXKKxbFmtjJiESix3B1w3vD7IpoGYuur0o+r46DyAi5OfOO+T4vrW4FyUBIyu
-	9q9BF8DE4vll40/IW/Z/fxYo9MA67HtrGqYRT0tRX5KuyA1rC+Z1Ohprqb6wZt+v5O4NGF
-	lTWPltwpevijvLaapUH90Dma9oGEmkOOqEEvwpKCyk4I8baYTMCiFI6Ay0Uo7w==
-X-Coremail-Antispam: 1Uk129KBj93XoW3tr4UKF1fCw17Xr1xtr17CFX_yoWktF43pr
-	9aga45urWkAr95uwn7XFZ3JFyayFZYqw4UXr1rAr1UAF4UXrsFqrs2kryfJws3Casru3yY
-	vFy7KFWakF1jk3XCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUU9Kb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Cr1j6rxdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I
-	8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AK
-	xVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7xvr2IYc2Ij64
-	vIr40E4x8a64kEw24lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I
-	3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxV
-	WUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAF
-	wI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcI
-	k0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j
-	6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU2Ta0DUUUU
+In-Reply-To: <CAADnVQLF+ihK16J3x5pQcJY0t2_gUHiur7ENZNqJdazzr+f8Pg@mail.gmail.com>
 
-From: Yazhou Tang <tangyazhou518@outlook.com>
+On Mon, Dec 22, 2025 at 08:32:57PM -1000, Alexei Starovoitov wrote:
+> On Mon, Dec 22, 2025 at 8:58 AM Mahe Tardy <mahe.tardy@gmail.com> wrote:
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index d6b8a77fbe3b..a82702405c12 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -24892,7 +24892,7 @@ static int compute_live_registers(struct bpf_verifier_env *env)
+> >                 insn_aux[i].live_regs_before = state[i].in;
+> >
+> >         if (env->log.level & BPF_LOG_LEVEL2) {
+> > -               verbose(env, "Live regs before insn:\n");
+> > +               verbose(env, "Live regs before insn, pruning points (p), and force checkpoints (P):\n");
+> >                 for (i = 0; i < insn_cnt; ++i) {
+> >                         if (env->insn_aux_data[i].scc)
+> >                                 verbose(env, "%3d ", env->insn_aux_data[i].scc);
+> > @@ -24904,7 +24904,12 @@ static int compute_live_registers(struct bpf_verifier_env *env)
+> >                                         verbose(env, "%d", j);
+> >                                 else
+> >                                         verbose(env, ".");
+> > -                       verbose(env, " ");
+> > +                       if (is_force_checkpoint(env, i))
+> > +                               verbose(env, " P ");
+> > +                       else if (is_prune_point(env, i))
+> > +                               verbose(env, " p ");
+> > +                       else
+> > +                               verbose(env, "   ");
+> 
+> tbh I don't quite see the value. I never needed to know
+> the exact pruning points while working on the verifier.
+> It has to work with existing pruning heuristics and with
+> BPF_F_TEST_STATE_FREQ. So pruning points shouldn't matter
+> to the verifier algorithms. If they are we have a bigger problem
+> to solve than show them in the verifier log to users
+> who won't be able to make much sense of them.
 
-Now BPF_DIV has value tracking support via interval and tnum analysis.
-This patch adds selftests to cover various cases of signed and
-unsigned division operations, including edge cases like division by
-zero and signed division overflow.
+Yeah I think we would agree with Paul on that. And as you mention, with
+the addition of the heuristics on top of prune points, it would maybe be
+more useful to know when the verifier actually saves a new state (but
+that would increase log verbosity).
 
-Specifically, these selftests are based on dead code elimination: If
-the BPF verifier can precisely analyze the result of a division
-operation, it can prune the path that leads to an error (here we use
-invalid memory access as the error case), allowing the program to pass
-verification.
+> It's my .02. If other folks feel that it's definitely
+> useful we can introduce this extra verbosity,
+> but all the churn in the selftests is another indication
+> of a feature that "nice, but..."
 
-Co-developed-by: Shenghao Yuan <shenghaoyuan0928@163.com>
-Signed-off-by: Shenghao Yuan <shenghaoyuan0928@163.com>
-Co-developed-by: Tianci Cao <ziye@zju.edu.cn>
-Signed-off-by: Tianci Cao <ziye@zju.edu.cn>
-Signed-off-by: Yazhou Tang <tangyazhou518@outlook.com>
----
-Hello everyone,
+Tbh that's also when I realized that indeed it was "nice, but..." since
+because of those changes, all those liveness tests would depend on the
+position of prune points. 
 
-Thanks for reviewing our patch! This patch adds the necessary selftests
-for the BPF_DIV range tracking enhancements.
-
-Regarding the test implementation: I noticed multiple patterns for BPF
-selftests (e.g., out-of-bounds read in `verifier_bounds.c`, illegal
-return value in `verifier_mul.c` and `verifier_precision.v`). I have
-opted for the invalid memory access approach with `__msg` label as it
-is concise and straightforward.
-
-If the community prefers these tests to be integrated into existing
-files or follow a different pattern, please let me know and I will
-gladly refactor them.
-
-Best,
-
-Yazhou Tang
-
- .../selftests/bpf/prog_tests/verifier.c       |   2 +
- .../selftests/bpf/progs/verifier_div_bounds.c | 404 ++++++++++++++++++
- 2 files changed, 406 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_div_bounds.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
-index 5829ffd70f8f..d892ad7b688e 100644
---- a/tools/testing/selftests/bpf/prog_tests/verifier.c
-+++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-@@ -33,6 +33,7 @@
- #include "verifier_direct_packet_access.skel.h"
- #include "verifier_direct_stack_access_wraparound.skel.h"
- #include "verifier_div0.skel.h"
-+#include "verifier_div_bounds.skel.h"
- #include "verifier_div_overflow.skel.h"
- #include "verifier_global_subprogs.skel.h"
- #include "verifier_global_ptr_args.skel.h"
-@@ -174,6 +175,7 @@ void test_verifier_d_path(void)               { RUN(verifier_d_path); }
- void test_verifier_direct_packet_access(void) { RUN(verifier_direct_packet_access); }
- void test_verifier_direct_stack_access_wraparound(void) { RUN(verifier_direct_stack_access_wraparound); }
- void test_verifier_div0(void)                 { RUN(verifier_div0); }
-+void test_verifier_div_bounds(void)           { RUN(verifier_div_bounds); }
- void test_verifier_div_overflow(void)         { RUN(verifier_div_overflow); }
- void test_verifier_global_subprogs(void)      { RUN(verifier_global_subprogs); }
- void test_verifier_global_ptr_args(void)      { RUN(verifier_global_ptr_args); }
-diff --git a/tools/testing/selftests/bpf/progs/verifier_div_bounds.c b/tools/testing/selftests/bpf/progs/verifier_div_bounds.c
-new file mode 100644
-index 000000000000..7a8b6905de56
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/verifier_div_bounds.c
-@@ -0,0 +1,404 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <limits.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+
-+/* This file contains unit tests for signed/unsigned division
-+ * operations, focusing on verifying whether BPF verifier's
-+ * tnum and interval analysis modules soundly and precisely
-+ * compute the results.
-+ */
-+
-+SEC("socket")
-+__description("UDIV32, non-zero divisor")
-+__success __retval(0) __log_level(2)
-+__msg("w1 /= w2 {{.*}}; R1=scalar(smin=smin32=0,smax=umax=smax32=umax32=4,var_off=(0x0; 0x7))")
-+__naked void udiv32_non_zero(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	w1 = w0;					\
-+	w2 = w0;					\
-+	w1 &= 8;					\
-+	w1 |= 1;					\
-+	w2 &= 1;					\
-+	w2 |= 2;					\
-+	w1 /= w2;					\
-+	if w1 <= 4 goto l0_%=;				\
-+	/* Precise analysis will prune the path with error code */\
-+	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("UDIV32, zero divisor")
-+__success __retval(0) __log_level(2)
-+__msg("w1 /= w2 {{.*}}; R1=0 R2=0")
-+__naked void udiv32_zero_divisor(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	w1 = w0;					\
-+	w1 &= 8;					\
-+	w1 |= 1;					\
-+	w2 = 0;						\
-+	w1 /= w2;					\
-+	if w1 == 0 goto l0_%=;				\
-+	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("UDIV64, non-zero divisor")
-+__success __retval(0) __log_level(2)
-+__msg("r1 /= r2 {{.*}}; R1=scalar(smin=smin32=0,smax=umax=smax32=umax32=4,var_off=(0x0; 0x7))")
-+__naked void udiv64_non_zero(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r1 = r0;					\
-+	r2 = r0;					\
-+	r1 &= 8;					\
-+	r1 |= 1;					\
-+	r2 &= 1;					\
-+	r2 |= 2;					\
-+	r1 /= r2;					\
-+	if r1 <= 4 goto l0_%=;				\
-+	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("UDIV64, zero divisor")
-+__success __retval(0) __log_level(2)
-+__msg("r1 /= r2 {{.*}}; R1=0 R2=0")
-+__naked void udiv64_zero_divisor(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r1 = r0;					\
-+	r1 &= 8;					\
-+	r1 |= 1;					\
-+	r2 = 0;						\
-+	r1 /= r2;					\
-+	if r1 == 0 goto l0_%=;				\
-+	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV32, non-zero divisor")
-+__success __retval(0) __log_level(2)
-+__msg("w1 s/= w2 {{.*}}; R1=scalar(smin=smin32=0,smax=umax=smax32=umax32=4,var_off=(0x0; 0x7))")
-+__naked void sdiv32_non_zero(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	w1 = w0;					\
-+	w2 = w0;					\
-+	w1 &= 8;					\
-+	w1 |= 1;					\
-+	w2 &= 1;					\
-+	w2 |= 2;					\
-+	w1 s/= w2;					\
-+	if w1 s<= 4 goto l0_%=;				\
-+	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV32, non-zero divisor, negative dividend")
-+__success __retval(0) __log_level(2)
-+__msg("w1 s/= w2 {{.*}}; R1=scalar(smin=0,smax=umax=0xffffffff,smin32=-4,smax32=0,var_off=(0x0; 0xffffffff))")
-+__naked void sdiv32_negative_dividend(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	w1 = w0;					\
-+	w2 = w0;					\
-+	w1 &= 8;					\
-+	w1 |= 1;					\
-+	w1 = -w1;					\
-+	w2 &= 1;					\
-+	w2 |= 2;					\
-+	w1 s/= w2;					\
-+	if w1 s>= -4 goto l0_%=;			\
-+	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV32, non-zero divisor, negative divisor")
-+__success __retval(0) __log_level(2)
-+__msg("w1 s/= w2 {{.*}}; R1=scalar(smin=0,smax=umax=0xffffffff,smin32=-4,smax32=0,var_off=(0x0; 0xffffffff))")
-+__naked void sdiv32_negative_divisor(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	w1 = w0;					\
-+	w2 = w0;					\
-+	w1 &= 8;					\
-+	w1 |= 1;					\
-+	w2 &= 1;					\
-+	w2 |= 2;					\
-+	w2 = -w2;					\
-+	w1 s/= w2;					\
-+	if w1 s>= -4 goto l0_%=;			\
-+	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV32, non-zero divisor, both negative")
-+__success __retval(0) __log_level(2)
-+__msg("w1 s/= w2 {{.*}}; R1=scalar(smin=smin32=0,smax=umax=smax32=umax32=4,var_off=(0x0; 0x7))")
-+__naked void sdiv32_both_negative(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	w1 = w0;					\
-+	w2 = w0;					\
-+	w1 &= 8;					\
-+	w1 |= 1;					\
-+	w2 &= 1;					\
-+	w2 |= 2;					\
-+	w1 = -w1;					\
-+	w2 = -w2;					\
-+	w1 s/= w2;					\
-+	if w1 s<= 4 goto l0_%=;				\
-+	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV32, zero divisor")
-+__success __retval(0) __log_level(2)
-+__msg("w1 s/= w2 {{.*}}; R1=0 R2=0")
-+__naked void sdiv32_zero_divisor(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	w1 = w0;					\
-+	w1 &= 8;					\
-+	w1 |= 1;					\
-+	w2 = 0;						\
-+	w1 s/= w2;					\
-+	if w1 == 0 goto l0_%=;				\
-+	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV32, S32_MIN/-1")
-+__success __retval(0) __log_level(2)
-+__msg("w2 s/= -1 {{.*}}; R2=0x80000000")
-+__naked void sdiv32_overflow(void)
-+{
-+	asm volatile ("					\
-+	w1 = %[int_min];				\
-+	w2 = w1;					\
-+	w2 s/= -1;					\
-+	if w1 == w2 goto l0_%=;				\
-+	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm_const(int_min, INT_MIN)
-+	: __clobber_all);
-+}
-+
-+
-+SEC("socket")
-+__description("SDIV64, non-zero divisor")
-+__success __retval(0) __log_level(2)
-+__msg("r1 s/= r2 {{.*}}; R1=scalar(smin=smin32=0,smax=umax=smax32=umax32=4,var_off=(0x0; 0x7))")
-+__naked void sdiv64_non_zero(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r1 = r0;					\
-+	r2 = r0;					\
-+	r1 &= 8;					\
-+	r1 |= 1;					\
-+	r2 &= 1;					\
-+	r2 |= 2;					\
-+	r1 s/= r2;					\
-+	if r1 s<= 4 goto l0_%=;				\
-+	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV64, non-zero divisor, negative dividend")
-+__success __retval(0) __log_level(2)
-+__msg("r1 s/= r2 {{.*}}; R1=scalar(smin=smin32=-4,smax=smax32=0)")
-+__naked void sdiv64_negative_dividend(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r1 = r0;					\
-+	r2 = r0;					\
-+	r1 &= 8;					\
-+	r1 |= 1;					\
-+	r1 = -r1;					\
-+	r2 &= 1;					\
-+	r2 |= 2;					\
-+	r1 s/= r2;					\
-+	if r1 s>= -4 goto l0_%=;			\
-+	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV64, non-zero divisor, negative divisor")
-+__success __retval(0) __log_level(2)
-+__msg("r1 s/= r2 {{.*}}; R1=scalar(smin=smin32=-4,smax=smax32=0)")
-+__naked void sdiv64_negative_divisor(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r1 = r0;					\
-+	r2 = r0;					\
-+	r1 &= 8;					\
-+	r1 |= 1;					\
-+	r2 &= 1;					\
-+	r2 |= 2;					\
-+	r2 = -r2;					\
-+	r1 s/= r2;					\
-+	if r1 s>= -4 goto l0_%=;			\
-+	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV64, non-zero divisor, both negative")
-+__success __retval(0) __log_level(2)
-+__msg("r1 s/= r2 {{.*}}; R1=scalar(smin=smin32=0,smax=umax=smax32=umax32=4,var_off=(0x0; 0x7))")
-+__naked void sdiv64_both_negative(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r1 = r0;					\
-+	r2 = r0;					\
-+	r1 &= 8;					\
-+	r1 |= 1;					\
-+	r2 &= 1;					\
-+	r2 |= 2;					\
-+	r1 = -r1;					\
-+	r2 = -r2;					\
-+	r1 s/= r2;					\
-+	if r1 s<= 4 goto l0_%=;				\
-+	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV64, zero divisor")
-+__success __retval(0) __log_level(2)
-+__msg("r1 s/= r2 {{.*}}; R1=0 R2=0")
-+__naked void sdiv64_zero_divisor(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r1 = r0;					\
-+	r1 &= 8;					\
-+	r1 |= 1;					\
-+	r2 = 0;						\
-+	r1 s/= r2;					\
-+	if r1 == 0 goto l0_%=;				\
-+	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV64, S64_MIN/-1")
-+__success __retval(0) __log_level(2)
-+__msg("r2 s/= -1 {{.*}}; R2=0x8000000000000000")
-+__naked void sdiv64_overflow(void)
-+{
-+	asm volatile ("					\
-+	r1 = %[llong_min] ll;				\
-+	r2 = r1;					\
-+	r2 s/= -1;					\
-+	if r1 == r2 goto l0_%=;				\
-+	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm_const(llong_min, LLONG_MIN)
-+	: __clobber_all);
-+}
-\ No newline at end of file
--- 
-2.52.0
+At the same time, the new print would allow us to write a series of
+tests to check for all the possible cases of prune points as presented
+in the talk, not sure it's actually useful as well...
 
 
