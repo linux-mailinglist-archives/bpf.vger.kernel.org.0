@@ -1,242 +1,191 @@
-Return-Path: <bpf+bounces-77345-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77346-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81569CD83FF
-	for <lists+bpf@lfdr.de>; Tue, 23 Dec 2025 07:29:25 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69334CD8429
+	for <lists+bpf@lfdr.de>; Tue, 23 Dec 2025 07:33:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E82003016724
-	for <lists+bpf@lfdr.de>; Tue, 23 Dec 2025 06:29:22 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id C3B4E300CD73
+	for <lists+bpf@lfdr.de>; Tue, 23 Dec 2025 06:33:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63ED33009C7;
-	Tue, 23 Dec 2025 06:29:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B3852FFDCB;
+	Tue, 23 Dec 2025 06:33:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wLzRWiM/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iNa7pIs0"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FB3F1DA60D
-	for <bpf@vger.kernel.org>; Tue, 23 Dec 2025 06:29:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FCC428682
+	for <bpf@vger.kernel.org>; Tue, 23 Dec 2025 06:33:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766471360; cv=none; b=pyMhTFgU9hmsXe9pSUEYLlihDOniLpnXqKNUkH+w/O830WhvZQDzxYTLJFf4xxxC9W9TU2Qqw+ek/J8SMdEMEfka2oBKWwkrH/VSS+ujqv6lAIDJ30Ndv+an+xAkUUP3B/+zk4ufhsmHmtdMJl+403B9jb2j+Qg2vqcLOfJkR6k=
+	t=1766471592; cv=none; b=A868pGNh9MTDwwES/jKyrxQOAz8h/DPSegTlQKi+921FIq77H87utqXrqsg9TDrlmQ9f7n19KV9KHmJjjHAWJ3piWQQTEdugmqM/LI2vSEK+vr774lIHDolK27Bb7qguilpHPoFDYTf4Ofa4Y7eGeV/s3l4zGQffu86MuQnCGbU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766471360; c=relaxed/simple;
-	bh=qORk4yp2evfGOATcTKdgCQ313S7aRANC62giFfsLgNE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ACsOnGMN7EWAytAgBassXjfsHutHFYKHOmZmgizK60+E9YdvuhuR/JjfY0WsgFJ5e88d9VRaW067oMMAzfXQ96dXqSF5bULfNo4qdaqDEiygMXDGW3xKqDEDQbaIPKPBrZmfWG17hLVkBw3VxJLnoDAiMMhn6Hw8VMpxKzTDr9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=wLzRWiM/; arc=none smtp.client-ip=91.218.175.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <db97ccea-8cb4-40ea-b040-79f0f63a398e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1766471356;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YJTQ2ReNoo6Q4R+IKYXTKJ87V/9b3dLaaA5dLOP+k0Q=;
-	b=wLzRWiM/N4A1E1UXIolnMYZ/kUILb4ovDfFGGVZ4to98nPZIOs2Y2sPxuoD01nwLXqREGc
-	GvvlvjPk73zQDhHEKkzo2+bvuQzIPZfHkXiu5TQk5OwI5jBJu3o54wrQqAMMGXnemMd0Ih
-	0EZ7m2pJH9WuDzuf/sbsjUjvutPJgfA=
-Date: Tue, 23 Dec 2025 14:29:01 +0800
+	s=arc-20240116; t=1766471592; c=relaxed/simple;
+	bh=/opdXYTcKn4d+jSs9pzOsAzTTz0Z/OBsFis2udrY0AI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NEp/kHm+pSzdzb5UG98CRkuZ+vjw+36sLE3LkmQk2Dg8045TQRKhMlrWr90s3T9KisFpbOZVRrgyauOMZ2nwbuEMd+90JpxS4cwU/338/aMEHlxCOvSaOahYKtwvktmB2zHBy+8lqJpXxT82wtHTLDII45PAEp0doYPsoTjA1M8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iNa7pIs0; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-47bdbc90dcaso30699405e9.1
+        for <bpf@vger.kernel.org>; Mon, 22 Dec 2025 22:33:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1766471588; x=1767076388; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nVud5hKf1SdEHoVrpZgJkLYYvoiChlkSO0Xv+KqqVxo=;
+        b=iNa7pIs0KmMnlrzcGuch6Q773Ovc7hMAHKAI0FR46qOfoTbG0DIcNVlTthz99U0IRR
+         8P4/10k6ZVugzQWtecQbGehC+OsEj2mlH18QPIOKinWiaksXwB0A11tqtlH7Jc9EJENU
+         9euErH6iyVtZ57la8KrOERa6XTEfYibrPMV/sxiXTX1JXMiqIz3ebvlfdMbMiA/pPbA5
+         azcOVbqGs6RiF7zgGZLZZWv9lb5og7q4Bdqvn/itqcY2pO7QineWTNBZkh0TTwMSHsVF
+         WACw6Evx+K7XFPEG7u9N288WZDxznHdCu1WGP/yEbuqGXb6w2BZsS7+T/hVL9VhI3K5Z
+         1TkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1766471588; x=1767076388;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=nVud5hKf1SdEHoVrpZgJkLYYvoiChlkSO0Xv+KqqVxo=;
+        b=NXpHYO83i9YP4whI3a5p59JxtRaxoVtVU/p7IaspXP2XXd+0VVPplznaX4zBuxZFqP
+         7d/6lNIgF1YJQVD1w5YXLk7NoAqTNcF/7sZm1Qjyaa4Nx7dskH6i4cbk9JOzfx09EDJB
+         +bvk1BuJpvxZ4otMGzcJJ8mKDOX8HQl6AGWvjEOP1bvd1L662rcP+yw10E3IR8uyT/WC
+         mJnHTjzBlfYtsxqLgh4Ii0MzFCmr8ZtmsABoBSYZWKL6nUgXOe0ZTP29xv8m03E7uuza
+         szGAikNJ+LzQa6wXDc4hf6EvABq9fNWM+xZriUBkrQ4ojq5t8qDNQvmyKf8fsHYVWVz0
+         215A==
+X-Gm-Message-State: AOJu0Yz0kGTgxqYuK5G8iLrjdGWcOYcmjGVZddqVjgd5ttOWq0KAW8Q6
+	bp8DHg5TZHQA1HcRTAz3kKGrFsKtQQlx8MilM84gxDTyc46TL+Xz5K3ilEfJDsVnSYoEOERE0b9
+	e3KSksdmobLkdYn689KmjTS2LrMP696Y=
+X-Gm-Gg: AY/fxX4Ws32f8BTRFpKSultTZrpVaToTqpp8yZuyR4onvHYIDaz5UsPjD0YHZ3h99I8
+	emGZjdEhGMoWkOWT67BW9oADhw9icHCjWFBw6XKPyu6JL6Jb/Tv3TZGHLu/Er3MqUZb1moSFowR
+	bTM1XuTVqvaFUDA2HE7FR05oy+nj1+mD1wWX77A2Bj3AqhCnz7xtaclgTmErRyUY5+Bmm8pPIbm
+	jkCfnSSohfVyKQl/UrAHSJ4/j3Z8OyHwB4Oc34qS+V76yhZGIcdUebH5WWq4HKMuDsoNLHHDVu3
+	0lHuwrw=
+X-Google-Smtp-Source: AGHT+IEK8Tj3+gk5u38AaUT3lhBrXN2mKo45RRTLgPq8UbJ7RBENtmzj0UxYKFHC1ehARXayXMdrErvqN+UqFVVyzk4=
+X-Received: by 2002:a05:600c:5288:b0:47a:75b6:32c with SMTP id
+ 5b1f17b1804b1-47d19532f91mr111861935e9.2.1766471588264; Mon, 22 Dec 2025
+ 22:33:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v7 2/2] bpf: Hold the perf callchain entry until
- used completely
-To: peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
- namhyung@kernel.org, mark.rutland@arm.com,
- alexander.shishkin@linux.intel.com, jolsa@kernel.org, irogers@google.com,
- adrian.hunter@intel.com, kan.liang@linux.intel.com, song@kernel.org,
- ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, eddyz87@gmail.com, yonghong.song@linux.dev,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com
-Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org
-References: <20251217093326.1745307-1-chen.dylane@linux.dev>
- <20251217093326.1745307-3-chen.dylane@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Tao Chen <chen.dylane@linux.dev>
-In-Reply-To: <20251217093326.1745307-3-chen.dylane@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20251222185813.150505-1-mahe.tardy@gmail.com>
+In-Reply-To: <20251222185813.150505-1-mahe.tardy@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 22 Dec 2025 20:32:57 -1000
+X-Gm-Features: AQt7F2rfK3ADakYh_YLhk_rTnDxSgd2uqldJSIy5-UBpR3DozNmZ-u7AmUCWmrM
+Message-ID: <CAADnVQLF+ihK16J3x5pQcJY0t2_gUHiur7ENZNqJdazzr+f8Pg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] verifier: add prune points to live registers print
+To: Mahe Tardy <mahe.tardy@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Eduard <eddyz87@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Paul Chaignon <paul.chaignon@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-在 2025/12/17 17:33, Tao Chen 写道:
-> As Alexei noted, get_perf_callchain() return values may be reused
-> if a task is preempted after the BPF program enters migrate disable
-> mode. The perf_callchain_entres has a small stack of entries, and
-> we can reuse it as follows:
-> 
-> 1. get the perf callchain entry
-> 2. BPF use...
-> 3. put the perf callchain entry
-> 
-> And Peter suggested that get_recursion_context used with preemption
-> disabled, so we should disable preemption at BPF side.
-> 
-> Acked-by: Yonghong Song <yonghong.song@linux.dev>
-> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+On Mon, Dec 22, 2025 at 8:58=E2=80=AFAM Mahe Tardy <mahe.tardy@gmail.com> w=
+rote:
+>
+> Explicitly printing where prune points are placed within the
+> instructions allows for better debugging of state pruning issues.
+>
+>         Live regs before insn, prune points (p), and force checkpoints (P=
+):
+>               0: ..........   (b7) r1 =3D 0
+>               1: .1........   (63) *(u32 *)(r10 -4) =3D r1
+>               2: ..........   (bf) r2 =3D r10
+>               3: ..2.......   (07) r2 +=3D -4
+>               4: ..2.......   (18) r1 =3D 0xffff8cb747b16000
+>               6: .12.......   (85) call bpf_map_lookup_elem#1
+>               7: 0..345.... p (bf) r6 =3D r0
+>               8: ...3456... p (15) if r6 =3D=3D 0x0 goto pc+6
+>               9: ...3456...   (b7) r1 =3D 5
+>              10: .1.3456...   (b7) r2 =3D 3
+>              11: .123456... p (85) call pc+5
+>              12: 0.....6... p (67) r0 <<=3D 32
+>              13: 0.....6...   (c7) r0 s>>=3D 32
+>              14: 0.....6...   (7b) *(u64 *)(r6 +0) =3D r0
+>              15: .......... p (b7) r0 =3D 0
+>              16: 0.........   (95) exit
+>              17: .12....... p (bf) r0 =3D r2
+>              18: 01........   (0f) r0 +=3D r1
+>              19: 0.........   (95) exit
+>
+> Also uses uppercase P for force checkpoints, which are a subset of prune
+> points (a force checkpoint should already be a prune point).
+>
+>         Live regs before insn, prune points (p), and force checkpoints (P=
+):
+>               0: .......... p (b7) r1 =3D 1
+>               1: .1........ P (e5) may_goto pc+1
+>               2: ..........   (05) goto pc-3
+>               3: .1........ p (bf) r0 =3D r1
+>               4: 0.........   (95) exit
+>
+> Existing tests on liveness tracking had to be updated with the new
+> output format including the prune points.
+>
+> This proposal patch was presented at Linux Plumbers 2025 in Tokyo along
+> the "Making Sense of State Pruning" presentation[^1] with the intent of
+> making state pruning more transparent to the user.
+>
+> [^1]: https://lpc.events/event/19/contributions/2162/
+>
+> Co-developed-by: Paul Chaignon <paul.chaignon@gmail.com>
+> Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
+> Signed-off-by: Mahe Tardy <mahe.tardy@gmail.com>
 > ---
->   kernel/bpf/stackmap.c | 68 +++++++++++++++++++++++++++++++++++--------
->   1 file changed, 56 insertions(+), 12 deletions(-)
-> 
-> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-> index da3d328f5c1..3bdd99a630d 100644
-> --- a/kernel/bpf/stackmap.c
-> +++ b/kernel/bpf/stackmap.c
-> @@ -210,13 +210,14 @@ static void stack_map_get_build_id_offset(struct bpf_stack_build_id *id_offs,
->   }
->   
->   static struct perf_callchain_entry *
-> -get_callchain_entry_for_task(struct task_struct *task, u32 max_depth)
-> +get_callchain_entry_for_task(int *rctx, struct task_struct *task, u32 max_depth)
->   {
->   #ifdef CONFIG_STACKTRACE
->   	struct perf_callchain_entry *entry;
-> -	int rctx;
->   
-> -	entry = get_callchain_entry(&rctx);
-> +	preempt_disable();
-> +	entry = get_callchain_entry(rctx);
-> +	preempt_enable();
->   
->   	if (!entry)
->   		return NULL;
-> @@ -238,8 +239,6 @@ get_callchain_entry_for_task(struct task_struct *task, u32 max_depth)
->   			to[i] = (u64)(from[i]);
->   	}
->   
-> -	put_callchain_entry(rctx);
-> -
->   	return entry;
->   #else /* CONFIG_STACKTRACE */
->   	return NULL;
-> @@ -320,6 +319,34 @@ static long __bpf_get_stackid(struct bpf_map *map,
->   	return id;
->   }
->   
-> +static struct perf_callchain_entry *
-> +bpf_get_perf_callchain(int *rctx, struct pt_regs *regs, bool kernel, bool user,
-> +		       int max_stack, bool crosstask)
-> +{
-> +	struct perf_callchain_entry_ctx ctx;
-> +	struct perf_callchain_entry *entry;
-> +
-> +	preempt_disable();
-> +	entry = get_callchain_entry(rctx);
-> +	preempt_enable();
-> +
-> +	if (unlikely(!entry))
-> +		return NULL;
-> +
-> +	__init_perf_callchain_ctx(&ctx, entry, max_stack, false);
-> +	if (kernel)
-> +		__get_perf_callchain_kernel(&ctx, regs);
-> +	if (user && !crosstask)
-> +		__get_perf_callchain_user(&ctx, regs, 0);
-> +
-> +	return entry;
-> +}
-> +
-> +static void bpf_put_perf_callchain(int rctx)
-> +{
-> +	put_callchain_entry(rctx);
-> +}
-> +
->   BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map *, map,
->   	   u64, flags)
->   {
-> @@ -328,20 +355,25 @@ BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map *, map,
->   	struct perf_callchain_entry *trace;
->   	bool kernel = !user;
->   	u32 max_depth;
-> +	int rctx, ret;
->   
->   	if (unlikely(flags & ~(BPF_F_SKIP_FIELD_MASK | BPF_F_USER_STACK |
->   			       BPF_F_FAST_STACK_CMP | BPF_F_REUSE_STACKID)))
->   		return -EINVAL;
->   
->   	max_depth = stack_map_calculate_max_depth(map->value_size, elem_size, flags);
-> -	trace = get_perf_callchain(regs, kernel, user, max_depth,
-> -				   false, false, 0);
-> +
-> +	trace = bpf_get_perf_callchain(&rctx, regs, kernel, user, max_depth,
-> +				       false);
->   
->   	if (unlikely(!trace))
->   		/* couldn't fetch the stack trace */
->   		return -EFAULT;
->   
-> -	return __bpf_get_stackid(map, trace, flags);
-> +	ret = __bpf_get_stackid(map, trace, flags);
-> +	bpf_put_perf_callchain(rctx);
-> +
-> +	return ret;
->   }
->   
->   const struct bpf_func_proto bpf_get_stackid_proto = {
-> @@ -435,6 +467,7 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
->   	bool kernel = !user;
->   	int err = -EINVAL;
->   	u64 *ips;
-> +	int rctx;
->   
->   	if (unlikely(flags & ~(BPF_F_SKIP_FIELD_MASK | BPF_F_USER_STACK |
->   			       BPF_F_USER_BUILD_ID)))
-> @@ -467,18 +500,26 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
->   		trace = trace_in;
->   		trace->nr = min_t(u32, trace->nr, max_depth);
->   	} else if (kernel && task) {
-> -		trace = get_callchain_entry_for_task(task, max_depth);
-> +		trace = get_callchain_entry_for_task(&rctx, task, max_depth);
->   	} else {
-> -		trace = get_perf_callchain(regs, kernel, user, max_depth,
-> -					   crosstask, false, 0);
-> +		trace = bpf_get_perf_callchain(&rctx, regs, kernel, user, max_depth,
-> +					       crosstask);
->   	}
->   
-> -	if (unlikely(!trace) || trace->nr < skip) {
-> +	if (unlikely(!trace)) {
->   		if (may_fault)
->   			rcu_read_unlock();
->   		goto err_fault;
->   	}
->   
-> +	if (trace->nr < skip) {
-> +		if (may_fault)
-> +			rcu_read_unlock();
-> +		if (!trace_in)
-> +			bpf_put_perf_callchain(rctx);
-> +		goto err_fault;
-> +	}
-> +
->   	trace_nr = trace->nr - skip;
->   	copy_len = trace_nr * elem_size;
->   
-> @@ -497,6 +538,9 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
->   	if (may_fault)
->   		rcu_read_unlock();
->   
-> +	if (!trace_in)
-> +		bpf_put_perf_callchain(rctx);
-> +
->   	if (user_build_id)
->   		stack_map_get_build_id_offset(buf, trace_nr, user, may_fault);
->   
+>  kernel/bpf/verifier.c                         |   9 +-
+>  .../bpf/progs/compute_live_registers.c        | 172 +++++++++---------
+>  .../selftests/bpf/progs/verifier_live_stack.c |  18 +-
+>  3 files changed, 102 insertions(+), 97 deletions(-)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index d6b8a77fbe3b..a82702405c12 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -24892,7 +24892,7 @@ static int compute_live_registers(struct bpf_veri=
+fier_env *env)
+>                 insn_aux[i].live_regs_before =3D state[i].in;
+>
+>         if (env->log.level & BPF_LOG_LEVEL2) {
+> -               verbose(env, "Live regs before insn:\n");
+> +               verbose(env, "Live regs before insn, pruning points (p), =
+and force checkpoints (P):\n");
+>                 for (i =3D 0; i < insn_cnt; ++i) {
+>                         if (env->insn_aux_data[i].scc)
+>                                 verbose(env, "%3d ", env->insn_aux_data[i=
+].scc);
+> @@ -24904,7 +24904,12 @@ static int compute_live_registers(struct bpf_ver=
+ifier_env *env)
+>                                         verbose(env, "%d", j);
+>                                 else
+>                                         verbose(env, ".");
+> -                       verbose(env, " ");
+> +                       if (is_force_checkpoint(env, i))
+> +                               verbose(env, " P ");
+> +                       else if (is_prune_point(env, i))
+> +                               verbose(env, " p ");
+> +                       else
+> +                               verbose(env, "   ");
 
-Hi Peter,
+tbh I don't quite see the value. I never needed to know
+the exact pruning points while working on the verifier.
+It has to work with existing pruning heuristics and with
+BPF_F_TEST_STATE_FREQ. So pruning points shouldn't matter
+to the verifier algorithms. If they are we have a bigger problem
+to solve than show them in the verifier log to users
+who won't be able to make much sense of them.
 
-As Alexei said, the patch needs your ack, please review again, thanks.
+It's my .02. If other folks feel that it's definitely
+useful we can introduce this extra verbosity,
+but all the churn in the selftests is another indication
+of a feature that "nice, but..."
 
--- 
-Best Regards
-Tao Chen
+pw-bot: cr
 
