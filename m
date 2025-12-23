@@ -1,109 +1,184 @@
-Return-Path: <bpf+bounces-77331-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77332-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0FF0CD7D52
-	for <lists+bpf@lfdr.de>; Tue, 23 Dec 2025 03:11:45 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46BE2CD7DB0
+	for <lists+bpf@lfdr.de>; Tue, 23 Dec 2025 03:23:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 503D63001C3D
-	for <lists+bpf@lfdr.de>; Tue, 23 Dec 2025 02:11:36 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id F0BBA300647B
+	for <lists+bpf@lfdr.de>; Tue, 23 Dec 2025 02:23:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F5352405ED;
-	Tue, 23 Dec 2025 02:11:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ED09231A23;
+	Tue, 23 Dec 2025 02:23:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dUMjm2Wm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Wr0HsvVg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B3821F1537
-	for <bpf@vger.kernel.org>; Tue, 23 Dec 2025 02:11:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B63AD218AB9
+	for <bpf@vger.kernel.org>; Tue, 23 Dec 2025 02:23:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766455894; cv=none; b=MlBUDa4fYtMRZDrF20c8lo485zaFfC2GgovwQwOnmTiOVqLMsIy/cTWBajj3pdK9+e1quSf3c2TRP8mM0D4yr1ycut4ke/rv3xcRQLNtlw9Yz9Bo/XqXu8o66jkTKuEEYx5bqIbHkBDF2mCF0SITlO2bNpjvDJP9imOjaKDrAm0=
+	t=1766456607; cv=none; b=GjSrbr0+2422s82qPslRd5w5EWqSpT20BU8BupBsTfg/ZCAmW6Y3C8GYMk2n5cHCBEaB7uBjLucQxY+p25CToBDBN74W6tkxUOkW5Y0YGh7KXvuvBuzD9zc2KJ3fsc3ivR3W1W8i2vTlruhMq3+mx5CaqygKhRElMp8GFNSt8hw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766455894; c=relaxed/simple;
-	bh=PKujwizGQfA2IeN+LQnjXoHRRy0tc8BQfCoYCWFqSdg=;
+	s=arc-20240116; t=1766456607; c=relaxed/simple;
+	bh=pBzySd4Ox634GIKJpFixdpWuyO/RI9myMWRFhRp2X/A=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Jvvppe3ni8UOnBbKwFz9nq8hD8nkaxxp5iwqt1OKHeBT9Q5mE1T8c5iH9nG0n9b7bzvdgExt1QQElPY4bcvomN5vJ5KPUrKXEYqYgsGyEpythGAbFqVbczrHoE53BHcJpjFY/ZvrLC4mWkWmFs87sj5bZMDbauOcxARW84Jz9PI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dUMjm2Wm; arc=none smtp.client-ip=209.85.128.42
+	 To:Cc:Content-Type; b=NQ6oT8QLPyX7QVA4hGMtGxia2B/i9Tpta/k4/Hmqe2KaDqayMHj/TSI4TF4Di8eHmvjbEvbtv0YO0CwdVQ09Nv/iFsOzm1Cv44i+MNVSqEVcEvwW95u65WWK9ipAmsq1fc8q4va1sjq2y3TlnqKrCbg7omG3US8LS3Jja/nPqvE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Wr0HsvVg; arc=none smtp.client-ip=209.85.210.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-477619f8ae5so25527835e9.3
-        for <bpf@vger.kernel.org>; Mon, 22 Dec 2025 18:11:32 -0800 (PST)
+Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-7c6e9538945so3784975a34.1
+        for <bpf@vger.kernel.org>; Mon, 22 Dec 2025 18:23:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1766455891; x=1767060691; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1766456603; x=1767061403; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=h6XfH/unjs2YY5vH7P9rUbisIadizeaMLvKYvXY7Qxc=;
-        b=dUMjm2WmMz+OEdygwDt+LaajJcpWyJ7xGhmRAsU7RL96R+7hCDTlLVtaB27siri3QN
-         BwLWj4y4cQc1sg7qUq+WgEOkpiwrXS27jMcFaRcY/bmTsMsJYluKIwwI7g0sHcOWqAVB
-         E+rbzYmazGkzm9QB/spWmniB+4pLnvRTF9ZE+Y6E+3GcwZa+Q65sZo9SGFl6gFPwt4Mh
-         U/QG9YKMGAF3wITywqR/FxB+KX0DgwBdnhxro71QRrJdyMkZwZc8Z0seBVpZy3OzbIxM
-         JYNjrNubMQw+W7mk+Kj+SfGOkiSrsDhIf2cN64Ddb8FGtfd/AMpNrlADW3A/uXpKK79r
-         KR5Q==
+        bh=iLeu/y61Z0yAvO3yDOpGOWyvHRNl3Gfwdr22wfFgq/s=;
+        b=Wr0HsvVgRMmaq7cDrPiqjgbCBzRC0lzgZ0YObaMiGk2VD+wkiziRr3RVbzY/qEfTok
+         j+Jyo6FodMd5t+0Er2LBl3HNLwK4/wJg26J955pv2cq97oWA/BB6233F23lAYu9CXtEp
+         sS3CJPaVKODq3qYxREWxA7hH+qjHhTiJBoqkbzidELEtlF/tpk93xuLU1W7QhY7/G7i2
+         SE4Sg+oZ+iGLhxOBKqZGFUfTNDiuQjK4LyjHD/+n3A0Ohu5eSTNLcUMuS4ER/WQtUqij
+         RYUhtwWuG124jRvNR1r9OxyozEbc8FAIUQMiAsp2M+v7winKkbNH3OO3T5+YWJZoI5n9
+         hD/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766455891; x=1767060691;
+        d=1e100.net; s=20230601; t=1766456603; x=1767061403;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=h6XfH/unjs2YY5vH7P9rUbisIadizeaMLvKYvXY7Qxc=;
-        b=kM7CU+Y8WTByk5hRhp6Ybj/zMW5JgeMuTr0qEaqjc1j5XFhtdfhmm18QdCfcwxWaL6
-         7GqSLbI7OMrMlnFJ7vtJ/qBeeoTop8kmtko82byceE7GwArP3UfxXal1ACtEruan5B9+
-         F9T2c3H8Tw7pbRd5fqPcJQUPTfqTEWEdqa1QliFTrMrhC9XTYzRMMNVdxT2JN0ZtsSmm
-         mp7x7rJe/R7ih/5TxWnM2S+ZKEgmIHZ6HAQjpjw8OVy9ECwX3NHaRiSSqeNPq8h12sms
-         hyh6HOGXpXHJOhbKIuqjc+L2eQzKRg/byGmnR6GYe+ZcM2DSjEDoHBBp2KnKns22iu7b
-         /8dA==
-X-Gm-Message-State: AOJu0YycVcMo20wZ1HrEvMtbbdaaBzT4jXz+3cVo87zCc6tGr34fS9le
-	XtALGVIB2DCZQFOcc6u4lspdEvanrAzz03YW2aYpoem0uNyzR91EOOMSMe44e+pm6UEfSLau45T
-	RITZuxAzyELAnHbmBUIr6ljG/IifgH4U=
-X-Gm-Gg: AY/fxX7QpsYTJvXCvhMxSrYtUD8M1xGKBo+9FjEhsPIlXDDqPv+Lz2FjvtKrFh4Iyey
-	46IBMwggSgCn/TJKIEtJ4TXs8KYSWOd4kplmhjMJFXNs37TtgAcdgdEZ5dBC6W7E5vVaDtMq+4f
-	xVKNafUJYXSYSuTIPnvLXArudYcgx0k/fkNAcJzX4w4a+dKcEj2sXcGoeWVx5siXreZltqWIWvO
-	BNQLWhbzGI53UzgLmX8g5MTkncrMID4yLF0BYHn7xo2xolzUCsCz2xyBL2pjo3//nDGSeTM
-X-Google-Smtp-Source: AGHT+IF8BfcA5cvU+pxFPwDxmKTdBV/w13ESm1DnzKFgnWkd7KrlYrVdHx+Jn0QifxMjszHNpoYKpr1/f0zvUzcoB7w=
-X-Received: by 2002:a5d:588c:0:b0:430:ff81:295d with SMTP id
- ffacd0b85a97d-4324e4f9350mr14068995f8f.41.1766455890563; Mon, 22 Dec 2025
- 18:11:30 -0800 (PST)
+        bh=iLeu/y61Z0yAvO3yDOpGOWyvHRNl3Gfwdr22wfFgq/s=;
+        b=C4ErJiRFPkKF0hWCCpF9Gy+s9pJ/DG7A7M3OhNADFJnQ7/wCCz8ehQVviu/SehLorZ
+         cXkEOuCX6lotprSclPJ7eBCp/NyNNkKZAlH0JnPQG58S3zU4FxlnzISXajTp7UMg2uA1
+         n4ZfYO8ZIdDFFPO0LA490fN5zB0TnVIkgdqWxLuOUI4JGfeMtzrLes2+/thHjluXmjHC
+         WaRjpbv+TZaIHkc3aPlmSv6F71D0DY0hoyguomDryM6Qhm/8MAPXGcsctFvqXmEelqPS
+         BWKqAmp0to+zoZyzdIJ2S5t1jLXNaub2oYtaHAIr0AFCUvh+1Gu5V23MlAKzDaakYmdh
+         b3Qw==
+X-Forwarded-Encrypted: i=1; AJvYcCXVkCs+Xd4rRlCEDCLgCQ+WN4yTl3wtjaCFXMBrpg3gqh0QJbXNI9mrtMcBStYe6umUcQk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyNpYBYimT7YrcTSt4Qopcodag0d0KrjiRD7rvmlYMrnBJT1UYi
+	+60tkqWQWbdWro2A69NDBrA1UJp83YmeMH43Q8BQNPiHMKWcpAoTIg8q31Cr1ljSyptYXbob6Pl
+	qoXUAYCNYdDgVxKXLBW0WYFhenSF2lqs=
+X-Gm-Gg: AY/fxX5CO77Onz+mou6BbZ00Gh8wHYmaKuDFmpwfzzUdNpHpxNi4EqkH+NK7SKmkO72
+	1wD/mY4JyPnN4c1kvlUvPaonqeXKMRrS4SLyCmNmGOtRyk3ZlFOmtkTze8gnTO2c7wMxZRw27k7
+	k772RitrjVUTOZ1mg9r6+1azSwyvyARY58fSgL0wAmc4GMY39ocG6eKeQlVisyzzGye6WmkULhQ
+	R0r3w0icGiXzDBWNrq584huGpSaiHKO0V1oDty6PTsespXwTXQ1pnNaQkLmC5cDahNtd28=
+X-Google-Smtp-Source: AGHT+IFYQ6TY1JvCD6/8ugUJPzSmdfqJx5SrIx00DO6YDE/XWcIW+afoGh0b2CfnLL+rZrcCv5sxoixO7SufMxtT7Zg=
+X-Received: by 2002:a4a:a60a:0:b0:659:9a49:8ef3 with SMTP id
+ 006d021491bc7-65d0e3dbf8fmr4021479eaf.39.1766456603527; Mon, 22 Dec 2025
+ 18:23:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251222221754.186191-1-roman.gushchin@linux.dev> <20251222221754.186191-5-roman.gushchin@linux.dev>
-In-Reply-To: <20251222221754.186191-5-roman.gushchin@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 22 Dec 2025 16:11:19 -1000
-X-Gm-Features: AQt7F2oG8qKh_LrIImutrfPDVfsQ-CzA11AhccPedSQPp8mFoIFiyOb3CeObrO4
-Message-ID: <CAADnVQJ_WLMRXYV5p4Lk2+nxdC01iAaKQhYecMjx4rXdBeXjNw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 4/6] mm: introduce BPF kfuncs to access memcg
- statistics and events
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: bpf <bpf@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, 
-	LKML <linux-kernel@vger.kernel.org>, JP Kobryn <inwardvessel@gmail.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Michal Hocko <mhocko@kernel.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>
+References: <20251217061435.802204-1-duanchenghao@kylinos.cn>
+ <20251217061435.802204-7-duanchenghao@kylinos.cn> <CAEyhmHRbacxpfTkPJq4MerBupH0bJkFfx8xGUvHMvGOzDDJUow@mail.gmail.com>
+ <20251222015010.GA119291@chenghao-pc>
+In-Reply-To: <20251222015010.GA119291@chenghao-pc>
+From: Hengqi Chen <hengqi.chen@gmail.com>
+Date: Tue, 23 Dec 2025 10:23:12 +0800
+X-Gm-Features: AQt7F2r1vCQijeU9b5DREgugKrd94kf6gaE7wPwDz-Jur_-FY6Ndtz9WhSQy1Mc
+Message-ID: <CAEyhmHRkW67wiz_JX0i+sf2Y5LoYnpmTSt_Dh+asU8EEVTdk=w@mail.gmail.com>
+Subject: Re: [PATCH v4 6/7] LoongArch: BPF: Enhance the bpf_arch_text_poke() function
+To: Chenghao Duan <duanchenghao@kylinos.cn>
+Cc: yangtiezhu@loongson.cn, rostedt@goodmis.org, mhiramat@kernel.org, 
+	mark.rutland@arm.com, chenhuacai@kernel.org, kernel@xen0n.name, 
+	zhangtianyang@loongson.cn, masahiroy@kernel.org, linux-kernel@vger.kernel.org, 
+	loongarch@lists.linux.dev, bpf@vger.kernel.org, youling.tang@linux.dev, 
+	jianghaoran@kylinos.cn, vincent.mc.li@gmail.com, 
+	linux-trace-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 22, 2025 at 12:18=E2=80=AFPM Roman Gushchin
-<roman.gushchin@linux.dev> wrote:
+On Mon, Dec 22, 2025 at 9:50=E2=80=AFAM Chenghao Duan <duanchenghao@kylinos=
+.cn> wrote:
 >
-> +       if (idx < 0 || idx >=3D MEMCG_NR_STAT || !memcg_stat_item_valid(i=
-dx))
-> +               return (unsigned long)-1;
+> On Sat, Dec 20, 2025 at 10:07:25PM +0800, Hengqi Chen wrote:
+> > On Wed, Dec 17, 2025 at 2:15=E2=80=AFPM Chenghao Duan <duanchenghao@kyl=
+inos.cn> wrote:
+> > >
+> > > Enhance the bpf_arch_text_poke() function to enable accurate location
+> > > of BPF program entry points.
+> > >
+> > > When modifying the entry point of a BPF program, skip the move t0, ra
+> > > instruction to ensure the correct logic and copy of the jump address.
+> > >
+> > > Signed-off-by: Chenghao Duan <duanchenghao@kylinos.cn>
+> > > ---
+> > >  arch/loongarch/net/bpf_jit.c | 15 ++++++++++++++-
+> > >  1 file changed, 14 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_ji=
+t.c
+> > > index 3dbabacc8856..0c16a1b18e8f 100644
+> > > --- a/arch/loongarch/net/bpf_jit.c
+> > > +++ b/arch/loongarch/net/bpf_jit.c
+> > > @@ -1290,6 +1290,10 @@ int bpf_arch_text_poke(void *ip, enum bpf_text=
+_poke_type old_t,
+> > >                        void *new_addr)
+> >
+> > The signature of bpf_arch_text_poke() was changed in v6.19 ([1]), pleas=
+e rebase.
+> >
+> >   [1]: https://github.com/torvalds/linux/commit/ae4a3160d19cd16b874737e=
+bc1798c7bc2fe3c9e
+>
+> Thank you for your review and for pointing out the API change in v6.19.
+>
+> I believe my patch series already accounts for this. It was developed on
+> top of commit ae4a3160d19c ("bpf: specify the old and new poke_type for b=
+pf_arch_text_poke"),
+> so all modifications to bpf_arch_text_poke() call sites within my
+> patches should already be using the updated signature.
 
-memcg_stat_item_valid() and memcg_stat_item_valid()
-helpers introduced specifically to be used in these kfuncs,
-so I feel it's cleaner to do all idx checking within them
-instead of splitting the checks like this.
-Then it will be easier to see that
-memcg_stat_item_valid(idx) access is in bounds when idx < MEMCG_NR_STAT
+Fine, it seems like the LoongArch tree is not up-to-date.
 
-Also I'd do one check like (u32)idx >=3D MEMCG_NR_STAT
-and drop idx < 0 part. Compiler is probably smart enough to
-optimize this way itself, but I'd still do one check.
+>
+> Please let me know if you find any inconsistencies or if further
+> adjustments are needed.
+>
+> Best regards,
+> Chenghao
+>
+> >
+> > >  {
+> > >         int ret;
+> > > +       unsigned long size =3D 0;
+> > > +       unsigned long offset =3D 0;
+> > > +       char namebuf[KSYM_NAME_LEN];
+> > > +       void *image =3D NULL;
+> > >         bool is_call;
+> > >         u32 old_insns[LOONGARCH_LONG_JUMP_NINSNS] =3D {[0 ... 4] =3D =
+INSN_NOP};
+> > >         u32 new_insns[LOONGARCH_LONG_JUMP_NINSNS] =3D {[0 ... 4] =3D =
+INSN_NOP};
+> > > @@ -1297,9 +1301,18 @@ int bpf_arch_text_poke(void *ip, enum bpf_text=
+_poke_type old_t,
+> > >         /* Only poking bpf text is supported. Since kernel function e=
+ntry
+> > >          * is set up by ftrace, we rely on ftrace to poke kernel func=
+tions.
+> > >          */
+> > > -       if (!is_bpf_text_address((unsigned long)ip))
+> > > +       if (!__bpf_address_lookup((unsigned long)ip, &size, &offset, =
+namebuf))
+> > >                 return -ENOTSUPP;
+> > >
+> > > +       image =3D ip - offset;
+> > > +       /* zero offset means we're poking bpf prog entry */
+> > > +       if (offset =3D=3D 0)
+> > > +               /* skip to the nop instruction in bpf prog entry:
+> > > +                * move t0, ra
+> > > +                * nop
+> > > +                */
+> > > +               ip =3D image + LOONGARCH_INSN_SIZE;
+> > > +
+> > >         is_call =3D old_t =3D=3D BPF_MOD_CALL;
+> > >         ret =3D emit_jump_or_nops(old_addr, ip, old_insns, is_call);
+> > >         if (ret)
+> > > --
+> > > 2.25.1
+> > >
 
