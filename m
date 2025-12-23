@@ -1,99 +1,142 @@
-Return-Path: <bpf+bounces-77343-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77344-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 693EFCD811A
-	for <lists+bpf@lfdr.de>; Tue, 23 Dec 2025 05:45:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 649DBCD8169
+	for <lists+bpf@lfdr.de>; Tue, 23 Dec 2025 06:04:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 62911309050A
-	for <lists+bpf@lfdr.de>; Tue, 23 Dec 2025 04:42:29 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AB8F230173B1
+	for <lists+bpf@lfdr.de>; Tue, 23 Dec 2025 05:04:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C320C2E6CA8;
-	Tue, 23 Dec 2025 04:42:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91EEA1AAE13;
+	Tue, 23 Dec 2025 05:04:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="AGeI+Jsg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="guDCPsef"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66BFD2E54BB
-	for <bpf@vger.kernel.org>; Tue, 23 Dec 2025 04:42:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F24C2206AC
+	for <bpf@vger.kernel.org>; Tue, 23 Dec 2025 05:04:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766464945; cv=none; b=NyQ4QDDavrvBnGIs4kHoUUXIBDe78TgBM+hxzHwc5IpROTGdKneEBAPJBYcwz0tfvycQxJdz/uBkU0Lp3TFNaxt5KEBR3i0X65mJM2WD5TErXv3lk7YEUN/U4eYLsC2l3I+SfHP/0EZgwj3tGnev5hKD51z4XuxY+Ej0kQOUy1k=
+	t=1766466249; cv=none; b=mSVca6aV6yxIDhL8AD1cjs4Sagl7VvQy9zk6OTz11gf50SQy7sNryt5enHQlKXlVBSJudJG9vLg30ShaJKQgN/5x6IiM7iKeOeJRzGfk2tHOywNjl0khEIV1z7NVBkkfSEUkVPnijldyAOrGWlZ//wu1qfB2DAc8Z67bwotx/cQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766464945; c=relaxed/simple;
-	bh=6/GoK0N3AZjSbAIi6svNG7gSA7BMHYFQu4YWO8oCEiQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qAMQgl41kXTeO/2YPP9k8PsGZ4yjfBHWIO+++RYdXwowa5XxU+vEEQPn+TyqwccgGG5Yjhv+L2H2gfx+gEfutroanWdhAbJrvhU6XRo50MZuuWpRotuoWQwecr63QRFuS3UtVah/UkbQDPzNFlrfCp4hoyfX+M48pueWg32fH/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=AGeI+Jsg; arc=none smtp.client-ip=91.218.175.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1766464941;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qdqb/JrWPy4gNeCuNrTpT2xWXxvnkmMMxVP8Vk0ZQYs=;
-	b=AGeI+JsgNMI5ozsGPbHsoSoJHX2jIdnieBl0qxej2677xZBJX/skO2HnWMpbECOefcgf26
-	L9PgVQYaPSt9MWdzb7T2a2q4eoYezn6jRU7PxO65zSmNNEizYQj8+N4PdHMn3DvjNu50KA
-	Tnyw0NH4hZrfpIQejw5A+VNEk8vH/rE=
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: bpf@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Cc: JP Kobryn <inwardvessel@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Michal Hocko <mhocko@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>
-Subject: [PATCH bpf-next v4 6/6] MAINTAINERS: add an entry for MM BPF extensions
-Date: Mon, 22 Dec 2025 20:41:56 -0800
-Message-ID: <20251223044156.208250-7-roman.gushchin@linux.dev>
-In-Reply-To: <20251223044156.208250-1-roman.gushchin@linux.dev>
-References: <20251223044156.208250-1-roman.gushchin@linux.dev>
+	s=arc-20240116; t=1766466249; c=relaxed/simple;
+	bh=lACsEKq2UgK1ddvOmeEGgcR4QHGV5oYvGms3wGLcsnE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aH2A7+C7cuNwO0Jm6XT+YABR7DJiyvcbsyb+rNTjY347IoT3p+8Nn+yTG+SIbL4wWfayijeclzaR7MBNp2t6uMUTZ1liSG29QEljXc2NDE62PHrlnODPQee4l5qbi8ttjizG1SZKo+Us8xLwp69A0WqEYt/jg7WzDNLRrXVJEsU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=guDCPsef; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-42fbc305882so2346804f8f.0
+        for <bpf@vger.kernel.org>; Mon, 22 Dec 2025 21:04:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1766466246; x=1767071046; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AS3f4sfLxkqHKXtlQOxHvxq12vU7P9GHh6T7/dmVA+U=;
+        b=guDCPsef17M1NFfYYXUrinyA25x6QJB9sMHtKFTbQIEFr4FzW4RELICYO0gKLkYmdQ
+         a4VysVl8grOAiwlN8girbQjMLAXscgNdU249fINfCgcK9QWhO5g9LJeBC7IqCdErk1vy
+         H3QSYsP75DbMaYOyE6XWzLIAfelxsfUgP4bI05/PTXYcrnTXOTnByUDEVDJl0lLaazCF
+         P+LjQ6wXxbE4hB8vevln5SpThdCTTm1w4GRKPelzcpHBHonROJr5XFjhjnThlmMdGsrl
+         JJ0GMgDVxY0zPZBrwK4FL7Sr/4NDee5h9JJJfE5ToNUyc4JxdJXz4aNNt3yha9xQoUJY
+         168w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1766466246; x=1767071046;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=AS3f4sfLxkqHKXtlQOxHvxq12vU7P9GHh6T7/dmVA+U=;
+        b=CXa4Wql8nslP9hn7SZ4VQjYxvZLab4S4GcV4h+LoX+tF0tsMwhuUASk+xa7ysd85i5
+         RIm9eemyyjoOysG1+ln49rK0UHlDy6qAhtwNoPjozfDBVq6o+JqbrBOO3deifghGUFJ4
+         oSDe4S8AX/iGVT9y0Q1GsfHJQba1IyqitcQfnUzYMVLPGXHmh12QrgNxkRHc7Y9dT1f2
+         71goOmNQEQyr5id4PZO4OJdcbxGJNj1kNe/N19YPqC5cYrxtyXymO0KO2bT214U2NMvj
+         a7eu+ILiFA2Pvmlj1dbuxLJ6o1VbF48LXr18ZPONYQa0N/8AZBkpKZez/3dFqNcRIReS
+         o0NA==
+X-Gm-Message-State: AOJu0YxIkG7BWFVMsl3WgeAOUaANRjD0+qEfpfTR2+P418kTus5xE+mB
+	xfiB3vScxjdWSonGwRM2CgxeuwZmOuIYTApIzFqxjK/N6zD8sSiW9V7Ik7clpwlkt65IU1H7N3Y
+	I7RvMQEXgDBXuZozvNuPCbAYj1Ui8N9g=
+X-Gm-Gg: AY/fxX7XGYTZaroZLDHSU5QPF0lMw2ouNLVbmfkT4AGxchjV7VAJTYwidX4AN0IYa60
+	7OrnZtofTk2HIT0GLMV5rjIqC1z1P0rGfKj8v2kyE1IOGLky9M9wO5FJHIyZ+gxudd+KYk1t9ct
+	dpFyxwOwSByPRjJXkb7NK4d0ik8ejz6b8SadaNJZzKosdchcbSJXIUTgXcqPTilnWsVQ4egA4bK
+	+tf8kHlBDHs17Dcy+ZFyL4IRGotjSVBP2ZwOjJsN68rw6p5hvFghx4+ocg2EnRX2kAr4Hqf
+X-Google-Smtp-Source: AGHT+IHaI95YeAOlC8Z9+xlJc/SYB0zTKhw8OBQBdSTOFMoPmPdf2Rcis/aYpv/nHBr1K3nlS/0/vLtStL9ahGKVLxQ=
+X-Received: by 2002:a05:6000:1ac7:b0:430:fa9a:75a with SMTP id
+ ffacd0b85a97d-4324e605ce6mr15041731f8f.62.1766466245652; Mon, 22 Dec 2025
+ 21:04:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20251222195022.431211-1-puranjay@kernel.org> <20251222195022.431211-5-puranjay@kernel.org>
+In-Reply-To: <20251222195022.431211-5-puranjay@kernel.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 22 Dec 2025 19:03:54 -1000
+X-Gm-Features: AQt7F2qFEtQMMaRMbK-8UWdJW5Bd5-8X9zEnF8qqIWk2kSxXc8G_ByAfvfSrFtE
+Message-ID: <CAADnVQ+6K1-bfW07P+dNaQCt4vjedoZVBwao65_7rk1sPyZogA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v8 4/4] selftests: bpf: test non-sleepable arena allocations
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: bpf <bpf@vger.kernel.org>, Puranjay Mohan <puranjay12@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, Kernel Team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Let's create a separate entry for MM BPF extensions: these patches
-often require an attention from both bpf and mm communities.
+On Mon, Dec 22, 2025 at 9:50=E2=80=AFAM Puranjay Mohan <puranjay@kernel.org=
+> wrote:
+>
+>  int reserve_invalid_region(void *ctx)
+> diff --git a/tools/testing/selftests/bpf/progs/verifier_arena_large.c b/t=
+ools/testing/selftests/bpf/progs/verifier_arena_large.c
+> index 2b8cf2a4d880..4ca491cbe8d1 100644
+> --- a/tools/testing/selftests/bpf/progs/verifier_arena_large.c
+> +++ b/tools/testing/selftests/bpf/progs/verifier_arena_large.c
+> @@ -283,5 +283,34 @@ int big_alloc2(void *ctx)
+>                 return 9;
+>         return 0;
+>  }
+> +
+> +SEC("socket")
+> +__success __retval(0)
+> +int big_alloc3(void *ctx)
+> +{
+> +#if defined(__BPF_FEATURE_ADDR_SPACE_CAST)
+> +       char __arena *pages;
+> +       u64 i;
+> +
+> +       /*
+> +        * Allocate 2051 pages in one go to check how kmalloc_nolock() ha=
+ndles large requests.
+> +        * Since kmalloc_nolock() can allocate up to 1024 struct page * a=
+t a time, this call should
+> +        * result in three batches: two batches of 1024 pages each, follo=
+wed by a final batch of 3
+> +        * pages.
+> +        */
+> +       pages =3D bpf_arena_alloc_pages(&arena, NULL, 2051, NUMA_NO_NODE,=
+ 0);
+> +       if (!pages)
+> +               return -1;
+> +
+> +       bpf_for(i, 0, 2051)
+> +                       pages[i * PAGE_SIZE] =3D 123;
+> +       bpf_for(i, 0, 2051)
+> +                       if (pages[i * PAGE_SIZE] !=3D 123)
+> +                               return i;
+> +
+> +       bpf_arena_free_pages(&arena, pages, 2051);
+> +#endif
+> +       return 0;
+> +}
 
-Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
----
- MAINTAINERS | 9 +++++++++
- 1 file changed, 9 insertions(+)
+CI says that it's failing on arm64.
+Error: #511/6 verifier_arena_large/big_alloc3
+run_subtest:FAIL:1299 Unexpected retval: -1 !=3D 0
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e7027fba97db..70c2b73b3941 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4799,6 +4799,15 @@ L:	bpf@vger.kernel.org
- S:	Maintained
- F:	tools/lib/bpf/
- 
-+BPF [MEMORY MANAGEMENT EXTENSIONS]
-+M:	Roman Gushchin <roman.gushchin@linux.dev>
-+M:	JP Kobryn <inwardvessel@gmail.com>
-+M:	Shakeel Butt <shakeel.butt@linux.dev>
-+L:	bpf@vger.kernel.org
-+L:	linux-mm@kvack.org
-+S:	Maintained
-+F:	mm/bpf_memcontrol.c
-+
- BPF [MISC]
- L:	bpf@vger.kernel.org
- S:	Odd Fixes
--- 
-2.52.0
-
+cannot quite tell whether it's sporadic or caused by this patch set.
 
