@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-77369-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77370-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C98F6CD9D5A
-	for <lists+bpf@lfdr.de>; Tue, 23 Dec 2025 16:46:38 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B00B4CD9CAF
+	for <lists+bpf@lfdr.de>; Tue, 23 Dec 2025 16:37:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 741B930AA6DF
-	for <lists+bpf@lfdr.de>; Tue, 23 Dec 2025 15:39:57 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id BBDC33029F52
+	for <lists+bpf@lfdr.de>; Tue, 23 Dec 2025 15:36:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E24D34D3A7;
-	Tue, 23 Dec 2025 15:27:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAC5134D4EA;
+	Tue, 23 Dec 2025 15:27:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Mns/JyQL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dEEOpmP1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8C6234CFB0
-	for <bpf@vger.kernel.org>; Tue, 23 Dec 2025 15:27:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 206B934D3BE
+	for <bpf@vger.kernel.org>; Tue, 23 Dec 2025 15:27:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766503637; cv=none; b=UYwjsF8W2Jo9WuIWA/mPSg4cBoUDbjdf5SUg7jw/vXsah6DDHUBHh5n4rs8RJ2DrLCL05B6sJJuFMHHNYkZhGKLwAz/AzsWR2ziF5LA13RQ7LhI5NFh9MLaXjYXke5MQUOwqTsAJjoaCGFA6eaMgA5zkR0AaaCDW2JGVlD47pKA=
+	t=1766503640; cv=none; b=sHJRurTlLsE+JHMrIP/eECEp2VBZ1C4FPEtpVnGiLl0PS3asYc9QtgVmE8q2Vxzq+PMfRoYKOcMHkE0pciA88K/fMGokIwD2U2TCJPRefTiy6EXGIgxT230IpVH1tA22J1GLFGuZnYKx2o0BBF22DdfcmD4wPuUa6Gxodaoowqw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766503637; c=relaxed/simple;
-	bh=L0CtNZGdC7XEOtswvmiReCjZIo8GsOvQxUlegVLHBuQ=;
+	s=arc-20240116; t=1766503640; c=relaxed/simple;
+	bh=dqAVCd406spP927ct6RgvB4a8I1dOdU+v808mOA7XuI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=icTWKJYY1JzwQmhWPjugkQVNOWMUGl6ybsKul65R4u1VKvPG3MpCGSH5paqUTy+9UG1eDpr1GTm9iDD5oCHGhgKmm7QI0xDGy6DQSCMo91FdITNyTXsWmywtXfZr36a0PtUbT1azHM8Ohle6/dYJ+hqKPnjH7KyBcTLbeOXc5Sg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Mns/JyQL; arc=none smtp.client-ip=209.85.216.48
+	 MIME-Version; b=gLO4dd/MTPMoLiI6HqJw3D82tyBWUICIRRqv0eb7EccfivGdhVSN2clG4sfURpFk8tdrRU9BRV3c5qrstX49ECNzv+p9ABH/87aCr4nPhFIUFSw8/6zipdUNHMu2NBvnL7B6lkVB5ayv8/bNYsTGcZTKRK651RZe4/ri74PJfDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dEEOpmP1; arc=none smtp.client-ip=209.85.216.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-34c9edf63a7so5411295a91.1
-        for <bpf@vger.kernel.org>; Tue, 23 Dec 2025 07:27:13 -0800 (PST)
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-34c718c5481so4920145a91.3
+        for <bpf@vger.kernel.org>; Tue, 23 Dec 2025 07:27:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1766503633; x=1767108433; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1766503638; x=1767108438; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=C+6D6PVRsFTnS4j3cktmLgH5az1adeAVQEKO6DToWSU=;
-        b=Mns/JyQL3ZbTTxK31p0r18sp6DJ+Q+s97WF+rN1ST5Srksx87q+D55AAgtZy/O95iD
-         nrLQPNeQ2HmIOwhbDJwcOx4d6jLHq2P42xCyqUwhZNTq9JiSV0Eu5Z8+hlkofdaAnPRD
-         OzUyzgfIGEesEvqxIx3DYugm0STsrVfhPlS6Bg6BRK/rG6wF1jNKm7dnHz8AHZT/yiUD
-         k1O6Bmdoh0uzin2fTFz+Y4h54Po88jj+PtrAneQO1opqjeMeBOyfo8gAhKTsFobreYHE
-         XveNQv7bNKYtVd30uMyvWseOJq8wntTMIDVeGWoFcttADWyARXqaLe5Cj5UWCZGZl//L
-         9oAQ==
+        bh=Ze9XAlqzMbfmN07PhRbHKjr9BLXv6+joNuOst0RuStI=;
+        b=dEEOpmP1FdgkOa3ktWP8RLJupssR+p8a0ID+w0AEfkGuW8t9R5zULSqd5pllEznehv
+         eGj7xgm98JtQGTmKza/LZkAFZPDb+24cAJy1ubomu5FCY4xz113NQe/PVfsQBWWUJEFJ
+         Rlr/PuHgHsP2/aAdgYQsr1/9OxCdN2OCEgp8hehA28jtPza3s5gDuJ8dnPJFjbqXsB9D
+         PVyC2ufQqtWqe86Om883mdJIaHvf0dgwTTOg1dJssCdLoUiu5r2meFWox6zaG1PvIkLD
+         iuEJms2dHp9YZPCO1ib/Ujhcgt9MXadBCN8TWkbdupyJ2BlEBQe/L0Urx31DCC7TUxPa
+         DupQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766503633; x=1767108433;
+        d=1e100.net; s=20230601; t=1766503638; x=1767108438;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=C+6D6PVRsFTnS4j3cktmLgH5az1adeAVQEKO6DToWSU=;
-        b=vZhvdcpuPpK9TM+NP7UkEp9Mj1q7ZvO00EnDs8hOoLSdwLwWfKPvLwb0230qbHiqMx
-         NpQdpG53XEGoSdn6PGtjthVLbhj6gZgXoPzfC41XSFqF0sV2FXBLNkEvU6S8cmCVhAab
-         IuXLVi9AsHrJEAwZpDgjkFEBoVBi0fNOb2rpJSrSnsmhKJ9kg8Bf62NYNSTWkhLTFxlx
-         gi1AXUuOM27T84kjET0UrkdpTVoZMiWaSAK3L2LrTwIqtaXCkSk2H0XuJnu4O9l4QpmI
-         hnqnvpX/97wsTmZ/URtdHXxxKX+95+VjJsenyEdfj4j/oEiOVfIjH3XqGe6Ty1IbjObr
-         gp2g==
-X-Forwarded-Encrypted: i=1; AJvYcCXCdMY8O+jR0o3TlYzZkpRCdUBwUFRxmhyernhtVnREnuWsYwtHsoH15ottc6evjbpW30c=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzshH3i/BHdYQTgsoCeHto1K6/+9f3IxZlAnmmgNvmbz+Li5k9S
-	uxw6CGdXWgIXs/VwAix7ygEkgunu8CZ7nFaWgYmF8Mh8qHbuwgnyB0tF
-X-Gm-Gg: AY/fxX7vEkESl3StL5MWzrNR77iCexnaE+q/S0sFdG9Jz4yRC6SWnrfayqZXtY4A14a
-	NKc2AIgVYTV6Zd9ZteyliR+eZaqEqxltNv8tpbezF0M5c4a90BWERwO2uodKNfVkg6jGIPOOzrZ
-	Sx14DNLBa/+0zQ37374EWPEOxsXSkcF03NMVA7qWgVgVkZ4oHwF4A17JjPhumqOnUSXFSqlKh1F
-	yfYHgCIMYsrojUxj7Sj9P0Kr4dlFae/bqh0N9rQISgqrkgaEi9ty0+eDqXtxAN04K+FyxRQw4qs
-	OE1r2+XiTKA0G388a7VT/0dcQhtBYAGsZmyn5PpOTMSHbLtGNfS4TOEHuosRUWvoVXGp/lHXOwk
-	bmMDjVksOcIyb+OThj6kqJckHFN+ZDyryQARF+bVTXi0WkZlAyORCrJXyYGoLcOdy+E8cIHzsrk
-	Izsv2bmO0LzEAC7rPpurRmjlnnD18IunXQqBk=
-X-Google-Smtp-Source: AGHT+IHPZySRpyLioNlkGmfBeBlfCuPepN+ltwQg7UoU9dgxoY0VAt295aBDiCrvyeMv0Apodcz+Pg==
-X-Received: by 2002:a17:90b:3c4d:b0:32e:7270:9499 with SMTP id 98e67ed59e1d1-34e91f6f93amr11885237a91.0.1766503632955;
-        Tue, 23 Dec 2025 07:27:12 -0800 (PST)
+        bh=Ze9XAlqzMbfmN07PhRbHKjr9BLXv6+joNuOst0RuStI=;
+        b=B9Oy8H8GtrnU361as6OeC+u87jxPGxMuziP0/oXBQ+m9EFqkJL9FOI1IN2XrQGL1dk
+         AV18KT5d2mPdn9uBFoc9TvJSV4BE19u0S3+6tMtmiAlDaOVPkWgM7wYfDDYV1RXsnBFS
+         73DMcQdEdOn0irhGEBMXdAqpRH7DT4Wzu056QGRfQJJQvxTuRVBZGONd98sWKJV60BMj
+         RLdXKaub0dfTuAGmsrjjSVchdEksDb9AH5fbUfT1oTIGH5mdvixltTnmwsfiRZc8Tg2p
+         BsL1N5bNnczl8X49Hw9GWSMyaRje3ph53cp9ZkMB7gb3tZgavQFlXW6ovHIigJ8CMhCJ
+         3a1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCU7qlhx2hZTG6uJLGD+EVSHtIpAXBay8W1NXPyMHdPIiHZ8WwYRQow1g+y3F18bhYezRi8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyP2fJPX0Yc6x0REXF02KYSS18ogrg30Dq6SSy8kPf3PUL7OI1s
+	LKB27Z5IDz87QQoWyJ/TmFTjUpvprVPSC51twcJe4/nMbKd5qXrlGWU1
+X-Gm-Gg: AY/fxX4qwqoq9neTSycNJAVX7iOlK+ZFe+lXCA2RVPw6mi06QsuruqkNvndRX8Q9YfS
+	DLVXVCKwKT7h/hN+ijknEaFledhaxhtuS1w7yaqFyphxQffA/cAQC/iqD5tGvKsxD//K+vUYG8O
+	yaIFtVDB7Fm+lAuJCs+JEMNAj8pUOPj4ZNoBIGV+y+soqrd7yD2Yf3VypYtsaaA6V1cyMVmEFY6
+	JLcWUu1H6y6McZbislDDEhE3D0hhACsb4DuNMXR36xWiAl4pVp46isPqmpDWicoa3LA+l4+2BEZ
+	zWUjrbt2ZvD70VBuci6XJjL7Y2D87JwYqlapAToYRpu4UVlor3xJBwtoBZPNlL7rdzPInOKQSRD
+	QPhVd8VHEmHEJQvyUi9PW/oEGn4oMHIQJadi40z5Jjs/FIqmrd54eyhFGECmA0HISNNZmL7ybFh
+	yIbSO3oS3CCdw8oQkBEbf4Jdrl
+X-Google-Smtp-Source: AGHT+IEk5kNaKT2vsTzXqOJuqMCa8BgC7mYYuynqk5le798li0SZVD/6VGOpORiTUPiHf0D9J/Vgsw==
+X-Received: by 2002:a17:90b:3ccf:b0:349:162d:ae1e with SMTP id 98e67ed59e1d1-34e921f7eb0mr11071309a91.33.1766503638325;
+        Tue, 23 Dec 2025 07:27:18 -0800 (PST)
 Received: from minh.192.168.1.1 ([2001:ee0:4f4c:210:3523:f373:4d1d:e7f0])
-        by smtp.googlemail.com with ESMTPSA id 98e67ed59e1d1-34e76ae7618sm8006138a91.1.2025.12.23.07.27.07
+        by smtp.googlemail.com with ESMTPSA id 98e67ed59e1d1-34e76ae7618sm8006138a91.1.2025.12.23.07.27.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Dec 2025 07:27:12 -0800 (PST)
+        Tue, 23 Dec 2025 07:27:17 -0800 (PST)
 From: Bui Quang Minh <minhquangbui99@gmail.com>
 To: netdev@vger.kernel.org
 Cc: "Michael S. Tsirkin" <mst@redhat.com>,
@@ -92,9 +92,9 @@ Cc: "Michael S. Tsirkin" <mst@redhat.com>,
 	linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org,
 	Bui Quang Minh <minhquangbui99@gmail.com>
-Subject: [PATCH net 2/3] virtio-net: ensure rx NAPI is enabled before enabling refill work
-Date: Tue, 23 Dec 2025 22:25:32 +0700
-Message-ID: <20251223152533.24364-3-minhquangbui99@gmail.com>
+Subject: [PATCH net 3/3] virtio-net: schedule the pending refill work after being enabled
+Date: Tue, 23 Dec 2025 22:25:33 +0700
+Message-ID: <20251223152533.24364-4-minhquangbui99@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20251223152533.24364-1-minhquangbui99@gmail.com>
 References: <20251223152533.24364-1-minhquangbui99@gmail.com>
@@ -106,92 +106,82 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Calling napi_disable() on an already disabled napi can cause the
-deadlock. Because the delayed refill work will call napi_disable(), we
-must ensure that refill work is only enabled and scheduled after we have
-enabled the rx queue's NAPI.
+As we need to move the enable_delayed_refill after napi_enable, it's
+possible that a refill work needs to be scheduled in virtnet_receive but
+it cannot. This can make the receive side stuck because if we don't have
+any receive buffers, there will be nothing trigger the refill logic. So
+in case it happens, in virtnet_receive, set the rx queue's
+refill_pending, then when the refill work is enabled again, a refill
+work will be scheduled.
 
 Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
 ---
- drivers/net/virtio_net.c | 31 ++++++++++++++++++++++++-------
- 1 file changed, 24 insertions(+), 7 deletions(-)
+ drivers/net/virtio_net.c | 21 ++++++++++++---------
+ 1 file changed, 12 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 63126e490bda..8016d2b378cf 100644
+index 8016d2b378cf..ddc62dab2f9a 100644
 --- a/drivers/net/virtio_net.c
 +++ b/drivers/net/virtio_net.c
-@@ -3208,16 +3208,31 @@ static int virtnet_open(struct net_device *dev)
- 	int i, err;
+@@ -383,6 +383,9 @@ struct receive_queue {
+ 	/* Is delayed refill enabled? */
+ 	bool refill_enabled;
  
- 	for (i = 0; i < vi->max_queue_pairs; i++) {
-+		bool schedule_refill = false;
++	/* A refill work needs to be scheduled when delayed refill is enabled */
++	bool refill_pending;
 +
-+		/* - We must call try_fill_recv before enabling napi of the same
-+		 * receive queue so that it doesn't race with the call in
-+		 * virtnet_receive.
-+		 * - We must enable and schedule delayed refill work only when
-+		 * we have enabled all the receive queue's napi. Otherwise, in
-+		 * refill_work, we have a deadlock when calling napi_disable on
-+		 * an already disabled napi.
-+		 */
- 		if (i < vi->curr_queue_pairs) {
--			enable_delayed_refill(&vi->rq[i]);
- 			/* Make sure we have some buffers: if oom use wq. */
- 			if (!try_fill_recv(vi, &vi->rq[i], GFP_KERNEL))
--				schedule_delayed_work(&vi->rq[i].refill, 0);
-+				schedule_refill = true;
- 		}
+ 	/* The lock to synchronize the access to refill_enabled */
+ 	spinlock_t refill_lock;
  
- 		err = virtnet_enable_queue_pair(vi, i);
+@@ -720,10 +723,13 @@ static void virtnet_rq_free_buf(struct virtnet_info *vi,
+ 		put_page(virt_to_head_page(buf));
+ }
+ 
+-static void enable_delayed_refill(struct receive_queue *rq)
++static void enable_delayed_refill(struct receive_queue *rq,
++				  bool schedule_refill)
+ {
+ 	spin_lock_bh(&rq->refill_lock);
+ 	rq->refill_enabled = true;
++	if (rq->refill_pending || schedule_refill)
++		schedule_delayed_work(&rq->refill, 0);
+ 	spin_unlock_bh(&rq->refill_lock);
+ }
+ 
+@@ -3032,6 +3038,8 @@ static int virtnet_receive(struct receive_queue *rq, int budget,
+ 			spin_lock(&rq->refill_lock);
+ 			if (rq->refill_enabled)
+ 				schedule_delayed_work(&rq->refill, 0);
++			else
++				rq->refill_pending = true;
+ 			spin_unlock(&rq->refill_lock);
+ 		}
+ 	}
+@@ -3228,11 +3236,8 @@ static int virtnet_open(struct net_device *dev)
  		if (err < 0)
  			goto err_enable_qp;
-+
-+		if (i < vi->curr_queue_pairs) {
-+			enable_delayed_refill(&vi->rq[i]);
-+			if (schedule_refill)
-+				schedule_delayed_work(&vi->rq[i].refill, 0);
-+		}
+ 
+-		if (i < vi->curr_queue_pairs) {
+-			enable_delayed_refill(&vi->rq[i]);
+-			if (schedule_refill)
+-				schedule_delayed_work(&vi->rq[i].refill, 0);
+-		}
++		if (i < vi->curr_queue_pairs)
++			enable_delayed_refill(&vi->rq[i], schedule_refill);
  	}
  
  	if (virtio_has_feature(vi->vdev, VIRTIO_NET_F_STATUS)) {
-@@ -3456,11 +3471,16 @@ static void __virtnet_rx_resume(struct virtnet_info *vi,
- 	bool running = netif_running(vi->dev);
- 	bool schedule_refill = false;
- 
-+	/* See the comment in virtnet_open for the ordering rule
-+	 * of try_fill_recv, receive queue napi_enable and delayed
-+	 * refill enable/schedule.
-+	 */
- 	if (refill && !try_fill_recv(vi, rq, GFP_KERNEL))
- 		schedule_refill = true;
+@@ -3480,9 +3485,7 @@ static void __virtnet_rx_resume(struct virtnet_info *vi,
  	if (running)
  		virtnet_napi_enable(rq);
  
-+	enable_delayed_refill(rq);
- 	if (schedule_refill)
- 		schedule_delayed_work(&rq->refill, 0);
- }
-@@ -3470,18 +3490,15 @@ static void virtnet_rx_resume_all(struct virtnet_info *vi)
- 	int i;
- 
- 	for (i = 0; i < vi->max_queue_pairs; i++) {
--		if (i < vi->curr_queue_pairs) {
--			enable_delayed_refill(&vi->rq[i]);
-+		if (i < vi->curr_queue_pairs)
- 			__virtnet_rx_resume(vi, &vi->rq[i], true);
--		} else {
-+		else
- 			__virtnet_rx_resume(vi, &vi->rq[i], false);
--		}
- 	}
- }
- 
- static void virtnet_rx_resume(struct virtnet_info *vi, struct receive_queue *rq)
- {
 -	enable_delayed_refill(rq);
- 	__virtnet_rx_resume(vi, rq, true);
+-	if (schedule_refill)
+-		schedule_delayed_work(&rq->refill, 0);
++	enable_delayed_refill(rq, schedule_refill);
  }
  
+ static void virtnet_rx_resume_all(struct virtnet_info *vi)
 -- 
 2.43.0
 
