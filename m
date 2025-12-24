@@ -1,80 +1,80 @@
-Return-Path: <bpf+bounces-77419-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77420-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64F9FCDCE11
-	for <lists+bpf@lfdr.de>; Wed, 24 Dec 2025 17:45:10 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81027CDCE1A
+	for <lists+bpf@lfdr.de>; Wed, 24 Dec 2025 17:50:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0FF6330446AE
-	for <lists+bpf@lfdr.de>; Wed, 24 Dec 2025 16:44:16 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id B76273010E57
+	for <lists+bpf@lfdr.de>; Wed, 24 Dec 2025 16:50:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C53D1330D28;
-	Wed, 24 Dec 2025 16:43:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F35063271E5;
+	Wed, 24 Dec 2025 16:50:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F6Uiov8K"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Cz/La5V0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A34C9334C26
-	for <bpf@vger.kernel.org>; Wed, 24 Dec 2025 16:43:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39B2A1FC7FB
+	for <bpf@vger.kernel.org>; Wed, 24 Dec 2025 16:50:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766594612; cv=none; b=U72Ax1CM4uk/Ee7rm7alQlorE5zc1DrjGBQBAEIHNVvVMcky2+R51CC+9bmCPqoVKPfflG6wHfA83NdX172q3DqWAe4ZvebALp2SPiQ0CdCI7LickBcNvH2QXysfP9oRMJgns+9+OTzj1ZGarWSuLoo8wadWYczcbHtxUltLopg=
+	t=1766595009; cv=none; b=Yz4smiFRlSMQW8fKbH/EORWoYx3RrxTj+y3glXmFrB9xRUZvS087ikFW1Tkk0FJJ62Zen82dnRd8N1M2nWnVus6JtlV8N0ba81iv5+lFd0QHgE/RHuMdMkMXVSFcwAQZGfJXta00/XNT6pbTy1lIo/RLjGz9XA1TOONhdaxcuaA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766594612; c=relaxed/simple;
-	bh=2khFtyxoG8D3pvttVzE9sVaw7e+CdusfWtieJ8Un1NM=;
+	s=arc-20240116; t=1766595009; c=relaxed/simple;
+	bh=pD8YfDZ8KDvIJ2txTMDBnlCOh6vlZTyz6vhh+e8d2W8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pwnPyWEUS+L8AmDNa3DPoPOkVdvQ9XK3gsfHfnZ/c7HpOQ24AyxiwdTqLTWOEPXjevyglZZxx6mXnz9/kv8VJlMuv0ey29gOZwzL2B4BC6NHQ5sJQHCizjjgv1yMOK4OAGyZNlvQM1Y8VNeUkiG5WlzPLN3UzXnGQScm2zevy1Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F6Uiov8K; arc=none smtp.client-ip=209.85.210.172
+	 In-Reply-To:Content-Type; b=uePpeaSjSneWguKg5MuSwXaLNptdRQZaAbaBvKuozfeubt0Rajg8bMdzXIKItbflj6wmN2W0oVlVrxStB4xT8FaRFYEaw7YwR+PNjE3gsblY2mBhcHmH3qNO7Tv6UbX2hhGxwUrAB1cJYNHmZvd3TuORMwgNm9RttWsl74F5WUs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Cz/La5V0; arc=none smtp.client-ip=209.85.216.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-7bc248dc16aso4967790b3a.0
-        for <bpf@vger.kernel.org>; Wed, 24 Dec 2025 08:43:30 -0800 (PST)
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-34abc7da414so5138818a91.0
+        for <bpf@vger.kernel.org>; Wed, 24 Dec 2025 08:50:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1766594610; x=1767199410; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1766595007; x=1767199807; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=iwIk1nvhH1d/vdoQL7AOIOe4muNkhVEYe/P22V7V6vE=;
-        b=F6Uiov8KrV1uXVywgYxGVViWHDKYBlDNCPFGcAghUuc/px803Mg7wNhjFsKRmB8/20
-         EiNKkGTMOQ1mVtnXRQREredIrr0309uYby6mwzTkpwzXydrh2+xo0XhwbgbWg5W2c+qQ
-         bCJcwsVPh3uLFdHdvb92z6NvT3Hmb8v5htS8yIp6zw9+9GkpEQRBseNGX6tOunQhN54j
-         QdXssaPvr21K8fp/YnqpRUxr98qGo8pgqM/QLIEWQ4bDtK9cJx2o1IwHPHhprC/G48in
-         cr0MUtFRlFwucKPHW95VEEjVzsDhwfh82i+QCR2fWxK04NalXABOl0KnhpJ2EpbUQpwa
-         TTfg==
+        bh=cnHqqpgJDbRv/a/D7gH1Mi4jXPMVJ5IBYITwv6FaifY=;
+        b=Cz/La5V0IS2jWtSCTwPYxgGBPlIImyTU9hHDxzRUyWE1/AJ/Pk6VX4L4ax9ougmTOR
+         +p8VEFCGM7DOpz87af4RVWlfK1yGgk5gYvV8PwH6QiIsNkHMrzz9DKWrBhrN+CAUCOpA
+         GlZo4OWn/VooTBqxdjgnvdDngpOtQz5B0cFu5roID5Bv6kryrpdz8+lFHoMm0WNtwv7m
+         4BGRgmneL04o967UkndgtTxfR42ft38hqPptGy1iK5D1CrxOzjbnxsoyumGG7wfuqgRA
+         3JGMADqeb5k0pvl5PYG/FZDoPTI4fhbB9xyjvi15kkli/21w9Bph6F3LZmm44KDgqlV1
+         QbLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766594610; x=1767199410;
+        d=1e100.net; s=20230601; t=1766595007; x=1767199807;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=iwIk1nvhH1d/vdoQL7AOIOe4muNkhVEYe/P22V7V6vE=;
-        b=fiuWmAq+I9abjaGaS9V0I/agfCSco/2FkgtNIiDNedRyWBYQ43cTBzlZ2iZCDCxGx1
-         JzafBj/KUqSNDSXOMnAr88T8RTae0CjiAkf5XTy78XR5iHlMqwCv60cJjCdMew8c+0Nt
-         30wG4aNBD0BNNSCatk2d+9+wRw0uJw6G0XjwOAmzekSGH7b3/3MxMcuUDdHmVpBTaCfx
-         +fKRf9BkToMUx0Ph9Ki3sUTmtuw2ldsmBH+ngUVgOnHNbaUo4BdwwWPUo3mPZXzypXdD
-         moV5L4CIdGGlRbxX3OUXLwDAi3HSnsM14Ses/O2eCpYnniy2rypImFemxGh8wY1WPSE3
-         OkSg==
-X-Forwarded-Encrypted: i=1; AJvYcCW7A+7LB6UwOt9SAM73VaddYpPK7Bkx2r+08lZs45vVeiztIDj9hNi5kyTAERmksCI3GBE=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzs4zmply2w3nGAlscFEihjgBiAdLZcTtbxM9FOD3gz6LIReXOY
-	brbeEz8ah0YWF//fiSBJQP9VahqynD4RSxCTTdrfJbkVYwSXFy3nPAsV
-X-Gm-Gg: AY/fxX5t17VqJUKQF3n9tn4g3V7DJy4d3Wcm0ryyOY2oSMK0rWIbQu70jfS9FAu2pis
-	UH8Dq/H/gsD5jV/TfCG7hm4JOWg+IelxHvW8PUQhKCUzrGsHRQlvTWV/2xzlfJnCOXWw2j+EMY6
-	ir4CrUb/hlsvMFwXrhdPVgD6iLkHsSONNGIkOKEfox3dHD6KatcuQS98KA1C+zRcAriRpxqdfYO
-	c57d2tnFSa3TDKBdiOwbV+qs+Asloyt+rDxMs6FpHd0BkCZ2dC34/3eugT3Z6WJrftlc6FiHTwJ
-	07HnYA3CFBrBMA4rToQ4w1LuQRhnrHGNOz9ZsuEufiGQpmaJ3tLKAlLiPx9QSu3YCvUEw39j5nT
-	5hw1wN+imD6401I8Y/HNe7qup0F0n6Fy3tee35Gf+c4JH/lNXzrVpHJUDCdXmTJKjFtlC5O0QMV
-	6P3XxRBZZ5oJTPn/uNIXT8lnHOReGNuQ3k8gh59GnFMbRHvZnJDe9lMQTXEA==
-X-Google-Smtp-Source: AGHT+IESvaaiYDz0FQXnk+cOSP0Y3BphqGxvFTMbynES490LRlFZ6uF+ljLMEtDR9jmc0Xu4izDLEA==
-X-Received: by 2002:a05:6a20:a107:b0:364:31e:2cb1 with SMTP id adf61e73a8af0-376a7af61c3mr17802942637.17.1766594609908;
-        Wed, 24 Dec 2025 08:43:29 -0800 (PST)
+        bh=cnHqqpgJDbRv/a/D7gH1Mi4jXPMVJ5IBYITwv6FaifY=;
+        b=mI6DP8DrD7mi9jQSjcrwu5SnorlRwK+IytsOry/Q/pYP4TAgbfbGX8Ys7UZWO+KEyH
+         1DToscWcDvq1ycVl7Mx1YmplDAYI6u+2k+or9Yb4ue5az+2yyKJaZRI1ft7DdJyV5XvJ
+         IbLl+oTObNcwfZCR4TMKgRrOaxVJQPxIXUTyHAQiFhgm0cYC/TdvsOryyO/zhmlG9YX+
+         2fpCLlpTY5354qurKzsdi/YUvAzRHs2RzbdH8RBmmT4S4POb6/Ak01zVilMU2q23kTaJ
+         A+qUqe5v/1jnI62EfEWpOAiOTxiO6T9na3QXll964qWsizZC6JVqhtH+q/jhcYMAvVGP
+         SiCw==
+X-Forwarded-Encrypted: i=1; AJvYcCWZV+8n6Gg36FCnpgHBVcYHouyINeiwYebIcuJDH0K2cphUkoXWFTBo2gl5/g6rl8IrZl4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwXVXv2u5lClhGumx5A/w+vXEbllpnnFpY4tZIZBhAlqIKHzA3f
+	91BW8NZPPK2w1G/XQLHFqMRFfQ/bFK33NUW8OKGvTN30djkoZ1CwD3U0
+X-Gm-Gg: AY/fxX7VHeOqyB8lzArdbPAzkSyprpyQnkGUNw+DyjU6gwfrZYRRYEy0IYaVLY6KiM/
+	ZibWAre9PwnOdmcZ0vQLmGj01tPrvPyuYp6VZh3h/INRXifjetvy1jwVcSN0XV4AoJNKCy1Sbjx
+	nkFWQqQDmBnWFY6E0V66OxmSFpbKCJJdvgSZKL+1kyPvbtmOy3QWZm7VgtZerF3oHdyAQjJ7tmA
+	T8P8Uf5DAyz0cgmDSx6LNYuisMZcdv+pWnXDCBq7suLTUWGzPknjiFGInwv+H83vb5mn2UTBTZe
+	XCxqqPe7YcRAm9Qrtxt7Q9Z5hfIhP7bohK3rVkwg7XPGD8HZEdTGvE5LU24n6PmBN9Pm9kW9qjY
+	7Rxsd979+RNuNnxF8EZW0X30v28D5WF9FJ/bCEn1TMIuW9YzCVVg7DoWBX7T6WmZTgZGME81hPg
+	eLQAg3T9B9wBOgB0P1SIJTwB7kLwkvPExruU1h+nt0n8Br6JgRyBTdo2twB5td20zudC7LOQ==
+X-Google-Smtp-Source: AGHT+IFbzQ7yMQch0JLVgEhdJ9FTN364+UnyPdio+VpjXb21RfQOByyL0xWkrHKOy6iC60/tY4/H+A==
+X-Received: by 2002:a17:90b:580e:b0:340:d511:e164 with SMTP id 98e67ed59e1d1-34e921ae4camr14319741a91.19.1766595007324;
+        Wed, 24 Dec 2025 08:50:07 -0800 (PST)
 Received: from ?IPV6:2001:ee0:4f4c:210:c711:242:cd10:6c98? ([2001:ee0:4f4c:210:c711:242:cd10:6c98])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34e70d4f7d3sm19211220a91.4.2025.12.24.08.43.23
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7ff7e48f26asm17027776b3a.52.2025.12.24.08.50.00
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Dec 2025 08:43:29 -0800 (PST)
-Message-ID: <0c94aed3-bef9-4ae8-b9fa-bf2db113eee8@gmail.com>
-Date: Wed, 24 Dec 2025 23:43:21 +0700
+        Wed, 24 Dec 2025 08:50:05 -0800 (PST)
+Message-ID: <75e32d60-51b1-4c46-bd43-d17af7440e74@gmail.com>
+Date: Wed, 24 Dec 2025 23:49:59 +0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -84,11 +84,12 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH net 1/3] virtio-net: make refill work a per receive queue
  work
-To: Jason Wang <jasowang@redhat.com>
-Cc: netdev@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
- Xuan Zhuo <xuanzhuo@linux.alibaba.com>, =?UTF-8?Q?Eugenio_P=C3=A9rez?=
- <eperezma@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+To: "Michael S. Tsirkin" <mst@redhat.com>,
+ Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: Jason Wang <jasowang@redhat.com>, netdev@vger.kernel.org,
+ =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
  Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
  Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
  Jesper Dangaard Brouer <hawk@kernel.org>,
@@ -98,38 +99,37 @@ Cc: netdev@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
 References: <20251223152533.24364-1-minhquangbui99@gmail.com>
  <20251223152533.24364-2-minhquangbui99@gmail.com>
  <CACGkMEvXkPiTGxZ6nuC72-VGdLHVXzrGa9bAF=TcP8nqPjeZ_w@mail.gmail.com>
+ <1766540234.3618076-1-xuanzhuo@linux.alibaba.com>
+ <20251223204555-mutt-send-email-mst@kernel.org>
 Content-Language: en-US
 From: Bui Quang Minh <minhquangbui99@gmail.com>
-In-Reply-To: <CACGkMEvXkPiTGxZ6nuC72-VGdLHVXzrGa9bAF=TcP8nqPjeZ_w@mail.gmail.com>
+In-Reply-To: <20251223204555-mutt-send-email-mst@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-On 12/24/25 07:52, Jason Wang wrote:
-> On Tue, Dec 23, 2025 at 11:27 PM Bui Quang Minh
-> <minhquangbui99@gmail.com> wrote:
->> Currently, the refill work is a global delayed work for all the receive
->> queues. This commit makes the refill work a per receive queue so that we
->> can manage them separately and avoid further mistakes. It also helps the
->> successfully refilled queue avoid the napi_disable in the global delayed
->> refill work like before.
+On 12/24/25 08:47, Michael S. Tsirkin wrote:
+> On Wed, Dec 24, 2025 at 09:37:14AM +0800, Xuan Zhuo wrote:
+>> Hi Jason,
 >>
->> Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
->> ---
-> I may miss something but I think this patch is sufficient to fix the problem?
+>> I'm wondering why we even need this refill work. Why not simply let NAPI retry
+>> the refill on its next run if the refill fails? That would seem much simpler.
+>> This refill work complicates maintenance and often introduces a lot of
+>> concurrency issues and races.
+>>
+>> Thanks.
+> refill work can refill from GFP_KERNEL, napi only from ATOMIC.
 >
-> Thanks
+> And if GFP_ATOMIC failed, aggressively retrying might not be a great idea.
 >
+> Not saying refill work is a great hack, but that is the reason for it.
 
-Yes, this fixes the reproducer in virtnet_rx_resume[_all] but the second 
-patch also fixes a bug variant in virtnet_open. After the first patch, 
-the enable_delayed_refill is still called before napi_enable. However, 
-the only possible delayed refill schedule is in virtnet_set_queues and 
-it can't happen between that window because during 
-virtnet_rx_resume[_all], we still holds the rtnl_lock. So leaving the 
-enable_delayed_refill before napi_enable does not cause an issue but it 
-feels not correct to me. But moving enable_delayed_refill after 
-napi_enable requires the new pending bool in the third patch.
+In case no allocated received buffer and NAPI refill fails, the host 
+will not send any packets. If there is no busy polling loop either, the 
+RX will be stuck. That's also the reason why we need refill work. Is it 
+correct?
 
 Thanks,
 Quang Minh.
+
+
 
