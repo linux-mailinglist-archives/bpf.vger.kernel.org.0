@@ -1,166 +1,139 @@
-Return-Path: <bpf+bounces-77439-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77440-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45C67CDDB99
-	for <lists+bpf@lfdr.de>; Thu, 25 Dec 2025 12:59:29 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id F34F5CDDD43
+	for <lists+bpf@lfdr.de>; Thu, 25 Dec 2025 14:38:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 67D54301CE91
-	for <lists+bpf@lfdr.de>; Thu, 25 Dec 2025 11:59:23 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AB99A300E3FF
+	for <lists+bpf@lfdr.de>; Thu, 25 Dec 2025 13:38:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 265B830BF79;
-	Thu, 25 Dec 2025 11:59:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3927B3081D6;
+	Thu, 25 Dec 2025 13:38:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jeEClWCY"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24559223708;
-	Thu, 25 Dec 2025 11:59:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DC25220F2D
+	for <bpf@vger.kernel.org>; Thu, 25 Dec 2025 13:38:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766663960; cv=none; b=DIbX5w2qMq9UWs1WOAdERJjvrmXfTpnuG8C3a6OSffKGYo8LoXenx6r7SnuYvFToIB2kUVbIv5XT2DssTW6D6an/mJp0rxqBwn7/zoECLbGX3h1zmXcrrNbZhCHZAkjNB91xKlYSEew3gnn7K9qkhuCCtJp5zrz4v0ilbFx/sxs=
+	t=1766669895; cv=none; b=gzD5uVkGU98PLWq2HJQvk8nBaXjQadwUpCHotqlYGcV/kMqzLqe5Hbwrv3PD7XlTQ7MMP74v+X229nxuKQwbJ0/7FF2Gmj97HTug1QCf41ZXzjK/VUANUJacXFkC9wI6rQw/z44cSrLKHitlPO8Ww3xv3FWY5kv2FcQF0eNDWek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766663960; c=relaxed/simple;
-	bh=JWcpqYZQ1oBLVm9foQ6v2v+7QcB7V021wkwTPC8mNTg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ghNcIL0DIg3DQl7fO9bRc8p+5635G1umDe/Qz+YDSmw2pcrPgBJ2FnqoUNgEqy/zQKA7+Zlcwwe9sNYtt7+2+12clJmF058vhg7BP7uJV7nV2UWki0sIqizyURZHJIG/n9rr599LHPcZyjnyp40uJ7UE+DRO1wTLX6heUKovi70=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.170])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dcS2P26tXzKHMVT;
-	Thu, 25 Dec 2025 19:58:53 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id 931F94056D;
-	Thu, 25 Dec 2025 19:59:14 +0800 (CST)
-Received: from [10.67.111.192] (unknown [10.67.111.192])
-	by APP3 (Coremail) with SMTP id _Ch0CgB3xhQRJ01pceGcBQ--.48044S2;
-	Thu, 25 Dec 2025 19:59:14 +0800 (CST)
-Message-ID: <c099f784-f1bc-4a77-b93e-adf79faca065@huaweicloud.com>
-Date: Thu, 25 Dec 2025 19:59:13 +0800
+	s=arc-20240116; t=1766669895; c=relaxed/simple;
+	bh=pmnz0oGl2vjflMVXwJDwVUMJcljdGcnjC9a50JchBI8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VvqFt8PyeTlyakyKgOrji9RbvHKRSdf1pw0fp/ql2rT7B1Ln8eMw8hHTOdbBcgyINUrxEAVId+NU5p1flW+FHuyAYYr4HCcDh69QVJ9mNTn0AV0Zj+taiSLVu9gbsnkrqh9zXKz3dFtQfQ3u3Nx06vExlD3mFtM3HTjMiMXN+64=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jeEClWCY; arc=none smtp.client-ip=209.85.208.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-64b9b0b4d5dso10320627a12.1
+        for <bpf@vger.kernel.org>; Thu, 25 Dec 2025 05:38:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1766669892; x=1767274692; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=awCVuvgAZaXJOt5osuiXjNYZyCIOZG2/wfsfiJqr6tY=;
+        b=jeEClWCYiOd/l5tak/gH7EbJE8IEqVUumjxISpRE7ZAAM6+Zj6W7Vd1sNN3D6Km9aP
+         jKkpF+UxuQ1FsaBpi/U8nN92FYmw490G+ySeWKMQ00uIglDQwL02qaUe1eXuPkCSzxN8
+         FXVLW+dfpplfsj4qMnorOw5AOZ4ImVu6c8XMBA2fmB7vG0KMpWjaEYCk7tUMjMuYQFio
+         nIFHTZUeqEXFC6zWzTgfZ1UT7hIV0bMNjp8kDK4Qvg1QJDGx0rdbaQh+vB7cIRHbEFLW
+         fELL7isDNmd2vU8AhsuRGFmg2UFBLMhY+mxv/kAva0LAE7aQsMYBMLURMrij9RHf31hO
+         lrxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1766669892; x=1767274692;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=awCVuvgAZaXJOt5osuiXjNYZyCIOZG2/wfsfiJqr6tY=;
+        b=XD7G68NrOhWhftuwsqVz9nQeGcCweu3Foyuew8wY9FQxmDiniUYPv5krGqIuKgXc1a
+         +nM5ZKTwtgQs2MqMhgJDHz7hdX2UaUGrTZFBK89YToUTkH7NpvXRcsqix05bMECw/F+H
+         PM+9w7X4Rx4PG9nDJVk6CWWIX4gPywrSPXna7erg51BOcGqaCQmyjhvwXw8x5Z5KM3jb
+         zz5NW34xB0soNw/4iI0f9xGK+cScPC8jhaZ2v92ZcMMRIZKt2UDfwEdpyLiRvYzfIC9B
+         +CrcV1nuwdMdek7HwM1LcMoV9VozMpNtPxkrWDPHi2lN46SqUxeoi/RZ+mSriSh4Ibxd
+         BqUg==
+X-Forwarded-Encrypted: i=1; AJvYcCWwPZbNkiMyxQrXlraxPFVeuQXX7VN/ZkllQH8ViGI4bf84FlDH5eQJdcMmobAitJo82Os=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzvLYoDf4iGmmrwuu1PbLD7aEuhDhqjPURqFpdf/LP1m6gYNspG
+	ajMKRELzrgVe9Zk0XorDs5nZRaMwbntxr6gbITsjhFQo6qc59Vl1IXPeXDlwPw==
+X-Gm-Gg: AY/fxX6OVX0DXTWycK0p8YgaFFGmPTefYm2CV2maiqWu+n5Z3xuL9Qzy5InMrMFzO5W
+	WZFaY2Hy6rcqn4JTWabhwC4OTknmj4i9o38eV103y9qkbSj6D9Eh8jcV9afmclXQfEee2gnI40b
+	yanLqYMZZtNIqhPcahOiErpzlJEFgRPvtRPtnojhb7VrhQAOw/vvY1WJ2o3VI2F+sdmW0p3UpKI
+	TT9O1u/PF84AEn6ZIQf+JNNiRgqpTXGyKDVlYsttM9a1yCQ/TQmHtSRc/rRhFk6P2HTU2W5/43f
+	ZUTgB3/XTxRNUeY+cEJLvCjPCbFEP+R7cNKA24464ysaGt4c7fUzqs+x8/ceRcD58ATjTZx+eWk
+	6YyXGzQJEF1kvRPmaZxt32g4Hfh6VRRP3tfDw77MVEHYshRjEOCuRc+hgfhgDaN0FEUkJ8ZSNCm
+	bubVdidOfHSGxXt6AYhz4P
+X-Google-Smtp-Source: AGHT+IEILxAdqeW8O+YyFkQZdShOQv9nnTYoXvE6RJmcyl/wZHptGG6yij3umskXKM+Yy2R31pQoAg==
+X-Received: by 2002:a17:907:6d06:b0:b71:854:4e49 with SMTP id a640c23a62f3a-b80371d4462mr2161942966b.56.1766669892248;
+        Thu, 25 Dec 2025 05:38:12 -0800 (PST)
+Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b8037f519c0sm2052208766b.71.2025.12.25.05.38.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Dec 2025 05:38:11 -0800 (PST)
+Date: Thu, 25 Dec 2025 13:45:41 +0000
+From: Anton Protopopov <a.s.protopopov@gmail.com>
+To: Xu Kuohai <xukuohai@huaweicloud.com>
+Cc: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Puranjay Mohan <puranjay@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>
+Subject: Re: [PATCH bpf-next v2] bpf: arm64: Fix panic due to missing BTI at
+ indirect jump targets
+Message-ID: <aU1ABRjEg7RQWub6@mail.gmail.com>
+References: <20251223085447.139301-1-xukuohai@huaweicloud.com>
+ <15c26b1f-b78d-45d0-b5d2-e8359ddf5bbc@linux.dev>
+ <aU0aW3VE1a8FI0Xm@mail.gmail.com>
+ <4287f839-d713-44d5-afa0-918f2a44c5c3@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v2] bpf: arm64: Fix panic due to missing BTI at
- indirect jump targets
-Content-Language: en-US
-To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Puranjay Mohan <puranjay@kernel.org>,
- Anton Protopopov <a.s.protopopov@gmail.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-References: <20251223085447.139301-1-xukuohai@huaweicloud.com>
- <15c26b1f-b78d-45d0-b5d2-e8359ddf5bbc@linux.dev>
-From: Xu Kuohai <xukuohai@huaweicloud.com>
-In-Reply-To: <15c26b1f-b78d-45d0-b5d2-e8359ddf5bbc@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_Ch0CgB3xhQRJ01pceGcBQ--.48044S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxCw4kXw17uFyUKFWkGr4xCrg_yoW5ur18pF
-	1kJryUArWUJrs3Jr1UJw1UCFy3Zr4DJ3WDGF1rXa4UJr4UArn0gFWUWrsIgr15tF48Jr18
-	Zr1UXr9rZ34UJrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
-	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUb
-	mii3UUUUU==
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4287f839-d713-44d5-afa0-918f2a44c5c3@huaweicloud.com>
 
-On 12/24/2025 2:32 AM, Yonghong Song wrote:
-
-[...]
-
->> +
->> +/*
->> + * This function collects possible indirect jump targets in a BPF program. Since indirect jump
->> + * targets can only be read from indirect arrays used as jump table, it traverses all jump
->> + * tables used by @prog. For each instruction found in the jump tables, it sets the corresponding
->> + * bit in @bitmap.
->> + */
->> +void bpf_prog_collect_indirect_targets(const struct bpf_prog *prog, unsigned long *bitmap)
->> +{
->> +    struct bpf_insn_array *insn_array;
->> +    struct bpf_map *map;
->> +    u32 xlated_off;
->> +    int i, j;
->> +
->> +    for (i = 0; i < prog->aux->used_map_cnt; i++) {
->> +        map = prog->aux->used_maps[i];
->> +        if (!is_jump_table(map))
->> +            continue;
->> +
->> +        insn_array = cast_insn_array(map);
->> +        for (j = 0; j < map->max_entries; j++) {
->> +            xlated_off = insn_array->values[j].xlated_off;
->> +            if (xlated_off == INSN_DELETED)
->> +                continue;
->> +            if (xlated_off < prog->aux->subprog_start)
->> +                continue;
->> +            xlated_off -= prog->aux->subprog_start;
->> +            if (xlated_off >= prog->len)
->> +                continue;
+On 25/12/25 07:46PM, Xu Kuohai wrote:
+> On 12/25/2025 7:04 PM, Anton Protopopov wrote:
 > 
-> The above codes are duplicated with bpf_prog_update_insn_ptrs().
-> Maybe we can have a helper for the above?
->
-
-I tried using function callbacks to factor out the duplicated code,
-but the result felt a bit over-engineered. For these two functions,
-simple duplication seems clearer and simpler.
-
->> +            __set_bit(xlated_off, bitmap);
->> +        }
->> +    }
->> +}
->> +
->> +void bpf_prog_set_insn_array_type(struct bpf_map *map, int type)
->> +{
->> +    struct bpf_insn_array *insn_array = cast_insn_array(map);
->> +
->> +    insn_array->type = type;
->> +}
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index d6b8a77fbe3b..ee6f4ddfbb79 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -20288,6 +20288,12 @@ static int check_indirect_jump(struct bpf_verifier_env *env, struct bpf_insn *in
->>           return -EINVAL;
->>       }
->> +    /*
->> +     * Explicitly mark this map as a jump table such that it can be
->> +     * distinguished later from other instruction arrays
->> +     */
->> +    bpf_prog_set_insn_array_type(map, BPF_INSN_ARRAY_JUMP_TABLE);
+> [...]
 > 
-> I think we do not need this for now. If a new indirect_jump type is introduced,
-> verifier/jit can be adjusted that time if necessary.
->
-
-As Anton noted, even though jump tables are currently the only type
-of instruction array, users may still create insn_arrays that are not
-used as jump tables. In such cases, there is no need to emit BTIs.
-
->> +
->>       for (i = 0; i < n - 1; i++) {
->>           other_branch = push_stack(env, env->gotox_tmp_buf->items[i],
->>                         env->insn_idx, env->cur_state->speculative);
+> > > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > > > index da6a00dd313f..a3a89d4b4dae 100644
+> > > > --- a/include/linux/bpf.h
+> > > > +++ b/include/linux/bpf.h
+> > > > @@ -3875,13 +3875,32 @@ void bpf_insn_array_release(struct bpf_map *map);
+> > > >    void bpf_insn_array_adjust(struct bpf_map *map, u32 off, u32 len);
+> > > >    void bpf_insn_array_adjust_after_remove(struct bpf_map *map, u32 off, u32 len);
+> > > > +enum bpf_insn_array_type {
+> > > > +	BPF_INSN_ARRAY_VOID,
+> > > 
+> > > What is the purpose for BPF_INSN_ARRAY_VOID? Do we really need it?
+> > 
+> > There seems to be no need for a name for the default case,
+> > but BPF_INSN_ARRAY_JUMP_TABLE should be != 0, so can be just
+> > 
+> > enum bpf_insn_array_type {
+> > 	BPF_INSN_ARRAY_JUMP_TABLE = 1,
+> > };
+> > 
 > 
-> 
-> 
+> Having only BPF_INSN_ARRAY_JUMP_TABLE feels incomplete, since there
+> would be no enum value to indicate an instruction array without a
+> specific purpose, like the insn_arrays created in selftests [1].
 
+Yes, but it is also never used explicitly, right?
+The only usage is in "x != BPF_INSN_ARRAY_JUMP_TABLE".
+
+> [1] https://lore.kernel.org/bpf/20251105090410.1250500-5-a.s.protopopov@gmail.com/
+> 
+> [...]
+> 
 
