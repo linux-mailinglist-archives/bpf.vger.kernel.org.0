@@ -1,202 +1,314 @@
-Return-Path: <bpf+bounces-77451-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77452-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CA92CDF3DB
-	for <lists+bpf@lfdr.de>; Sat, 27 Dec 2025 04:57:23 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB6C6CDF523
+	for <lists+bpf@lfdr.de>; Sat, 27 Dec 2025 08:50:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C1AA73008F9C
-	for <lists+bpf@lfdr.de>; Sat, 27 Dec 2025 03:57:18 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9F000300C6EF
+	for <lists+bpf@lfdr.de>; Sat, 27 Dec 2025 07:49:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25AFD224AF2;
-	Sat, 27 Dec 2025 03:57:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 790E324CEEA;
+	Sat, 27 Dec 2025 07:49:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp233.sjtu.edu.cn (smtp233.sjtu.edu.cn [202.120.2.233])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACB3A1E9B1A
-	for <bpf@vger.kernel.org>; Sat, 27 Dec 2025 03:57:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.120.2.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49AC01C5D44;
+	Sat, 27 Dec 2025 07:49:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766807836; cv=none; b=XHgKYs+Rly/l5F3udRemOWtuhT+1JWTJp7BoF2gUoNBZfwQq+ZcQCkCZmAGWZ6xtdCSClv6HvRGa/nxdXokY+fxNXjz+44Gq+6yFM28muu7SWk/ImqCMAU10KJfLqmYWV8uDHBh4FAyfzGAzHe+6EVHZYizDjICsezQs1kR9PRs=
+	t=1766821793; cv=none; b=L/K0G6qg7Rka0IdLhfah10jp3rglR80sy53X+gIWZcC3kL4CHitYhsPmPeg3hZhTKsWpY9CIFb7RPme3UDkvjXSMVT97ZibakAyz7ak2uoR+zr22d7kntNwgpZbbtRuOm6uSE1vJx0lFepL60dSgrA1fijF3Er9neuEU9++fRuI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766807836; c=relaxed/simple;
-	bh=N0j9x3kCQX+XRpaFcmuDaEL4LoY6FVqOY/cTmGoZXSQ=;
-	h=Date:From:To:Cc:Message-ID:Subject:MIME-Version:Content-Type; b=Vcf7FxKcvtYHQgaem6jtQ2ikCGfJi6mDemYehQwJcTcc/8jeXBiftunG2WeaEQGQvxuECBqOP9A2MmAXLfh/NExg/n1fxjaS1i8zKE9LhhLD5lqSllsKMxQzDq++V9ggjVEN5HXkZDsf/HA7eXTC3TL7a5YLz7rywmWS0JCYFfo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sjtu.edu.cn; spf=pass smtp.mailfrom=sjtu.edu.cn; arc=none smtp.client-ip=202.120.2.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sjtu.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sjtu.edu.cn
-Received: from mta91.sjtu.edu.cn (unknown [10.118.0.91])
-	by smtp233.sjtu.edu.cn (Postfix) with ESMTPS id 8325211B87D9E;
-	Sat, 27 Dec 2025 11:51:07 +0800 (CST)
-Received: from mstore132.sjtu.edu.cn (unknown [10.118.0.132])
-	by mta91.sjtu.edu.cn (Postfix) with ESMTP id 5562E37C9CF;
-	Sat, 27 Dec 2025 11:51:07 +0800 (CST)
-Date: Sat, 27 Dec 2025 11:51:07 +0800 (CST)
-From: =?gb2312?B?s8LA1g==?= <tom2cat@sjtu.edu.cn>
-To: bpf <bpf@vger.kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, andrii@kernel.org, daniel@iogearbox.net
-Message-ID: <1174895617.11202082.1766807467283.JavaMail.zimbra@sjtu.edu.cn>
-Subject: [WARNING]BPF verifier: REG INVARIANTS VIOLATION(false_reg2) : range
- bounds violation at reg_bounds_sanity_check on 6.19-rc2
+	s=arc-20240116; t=1766821793; c=relaxed/simple;
+	bh=c9jKoOVlt2xG4PZiemq2D8a1/FGoWtb/udCUb3gcK1M=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FyJ++2ZClJ0GlP6DrA/sboOjRSHsCmEF4bns3IbxLZ2w2YnxXkXi5YeyuXypj5dSLaQmyYvIVeTm3zL6qtC9KrqWOLZI/tywaP2lLOeQi2M3+aNaIQqjeh2AV6+MI/shpe6SLTuRXZZxEi5S8x7t868kfdUN4n7AITesDZWQGkI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.177])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4ddZP65btZzYQv0q;
+	Sat, 27 Dec 2025 15:48:58 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 27A0A4058C;
+	Sat, 27 Dec 2025 15:49:42 +0800 (CST)
+Received: from k01.k01 (unknown [10.67.174.197])
+	by APP1 (Coremail) with SMTP id cCh0CgDXROqSj09pm1B_Bg--.42328S2;
+	Sat, 27 Dec 2025 15:49:40 +0800 (CST)
+From: Xu Kuohai <xukuohai@huaweicloud.com>
+To: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Puranjay Mohan <puranjay@kernel.org>,
+	Anton Protopopov <a.s.protopopov@gmail.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>
+Subject: [PATCH bpf-next v3] bpf: arm64: Fix panic due to missing BTI at indirect jump targets
+Date: Sat, 27 Dec 2025 16:10:33 +0800
+Message-ID: <20251227081033.240336-1-xukuohai@huaweicloud.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=GB2312
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Zimbra 10.0.14_GA_4767 (ZimbraWebClient - GC143 (Win)/10.0.15_GA_4781)
-Thread-Index: oRWNSq+zjLuKMY2Pmqhg27UX//M6CA==
-Thread-Topic: BPF verifier: REG INVARIANTS VIOLATION(false_reg2) : range bounds violation at reg_bounds_sanity_check on 6.19-rc2
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgDXROqSj09pm1B_Bg--.42328S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxuFyxtw4xJrWkKry5WFyDJrb_yoW3GFykpF
+	4DG34jyr4Fgr4xWrsrJa10kry3tr4kKwnxGFWft3yF9a4Yqr95WayrKFnIyFn8Kry5Cr1f
+	XF4j9ryUW3yUZrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9ab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAa
+	w2AFwI0_Jw0_GFylc7CjxVAKzI0EY4vE52x082I5MxAIw28IcxkI7VAKI48JMxC20s026x
+	CaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_
+	JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r
+	1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_
+	Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8Jr
+	UvcSsGvfC2KfnxnUUI43ZEXa7IU8hNVDUUUUU==
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 
-Dear BPF maintainers,
+From: Xu Kuohai <xukuohai@huawei.com>
 
-Hello, I am reporting a bug in the BPF verifier where a register invariants=
- violation occurs during bounds checking, leading to an invalid range state=
- (u64 min > max). This was triggered by a selftest-like BPF program testing=
- 32-bit signed boundary crossing with JMP32_JSLT. The issue appears to be a=
- logic error in range bounds deduction, possibly related to signed/unsigned=
- mixing or false branch register handling. I noticed that syzbot has a disc=
-ussion about a similar bug=A3=BA
-https://ci.syzbot.org/series/9bfb8ed3-0d6e-4ae4-93a1-e5d466326f9e
-https://lore.kernel.org/all/694a9e1d.050a0220.19928e.0028.GAE@google.com/
+When BTI is enabled, the indirect jump selftest triggers BTI exception:
 
-## Environment
+Internal error: Oops - BTI: 0000000036000003 [#1]  SMP
+...
+Call trace:
+ bpf_prog_2e5f1c71c13ac3e0_big_jump_table+0x54/0xf8 (P)
+ bpf_prog_run_pin_on_cpu+0x140/0x464
+ bpf_prog_test_run_syscall+0x274/0x3ac
+ bpf_prog_test_run+0x224/0x2b0
+ __sys_bpf+0x4cc/0x5c8
+ __arm64_sys_bpf+0x7c/0x94
+ invoke_syscall+0x78/0x20c
+ el0_svc_common+0x11c/0x1c0
+ do_el0_svc+0x48/0x58
+ el0_svc+0x54/0x19c
+ el0t_64_sync_handler+0x84/0x12c
+ el0t_64_sync+0x198/0x19c
 
-- Kernel version: Linux 6.19.0-rc2-gccd1cdca5cd4
-- Architecture: x86_64
-- Compiler: Debian clang version 16.0.6 (15~deb12u1)
-- bpftool version: v7.6.0
-- libbpf version: v1.6
+This happens because no BTI instruction is generated by the JIT for
+indirect jump targets.
 
+Fix it by emitting BTI instruction for every possible indirect jump
+targets when BTI is enabled. The targets are identified by traversing
+all instruction arrays of jump table type used by the BPF program,
+since indirect jump targets can only be read from instruction arrays
+of jump table type.
 
-## Reproducer
+Fixes: f4a66cf1cb14 ("bpf: arm64: Add support for indirect jumps")
+Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+---
+v3:
+- Get rid of unnecessary enum definition (Yonghong Song, Anton Protopopov)
 
-Poc.c
-#include <linux/bpf.h>
-#include <bpf/bpf_helpers.h>
+v2: https://lore.kernel.org/bpf/20251223085447.139301-1-xukuohai@huaweicloud.com/
+- Exclude instruction arrays not used for indirect jumps (Anton Protopopov)
 
-SEC("xdp")
-__attribute__((btf_decl_tag("comment:test_description=3D" "bound check with=
- JMP32_JSLT for crossing 32-bit signed boundary")))
-__attribute__((btf_decl_tag("comment:test_expect_success"))) __attribute__(=
-(btf_decl_tag("comment:test_retval=3D""0")))
-__attribute__((btf_decl_tag("comment:test_prog_flags=3D""!BPF_F_TEST_REG_IN=
-VARIANTS")))
-__attribute__((naked)) void crossing_32_bit_signed_boundary_2(void)
-{
-    asm volatile (
-        "r2 =3D *(u32*)(r1 + %[xdp_md_data]);"
-        "r3 =3D *(u32*)(r1 + %[xdp_md_data_end]);"
-        "r1 =3D r2;"
-        "r1 +=3D 1;"
-        "if r1 > r3 goto l0_%=3D;"
-        "r1 =3D *(u8*)(r2 + 0);"
-        "w0 =3D 0x7fffff10;"
-        "w1 +=3D w0;"
-        "w2 =3D 0x80000fff;"
-        "w0 =3D 0x80000000;"
-        "l1_%=3D:"
-        "w0 +=3D 1;"
-        "if w0 s> w2 goto l0_%=3D;"
-        "if w0 s< w1 goto l1_%=3D;"
-        "r0 =3D 1;"
-        "exit;"
-        "l0_%=3D:"
-        "r0 =3D 0;"
-        "exit;"
-        :
-        : [xdp_md_data] "i" (offsetof(struct xdp_md, data)),
-          [xdp_md_data_end] "i" (offsetof(struct xdp_md, data_end))
-        : "r0", "r1", "r2", "r3", "r4", "r5", "r6", "r7", "r8", "r9", "memo=
-ry"
-    );
-}
+v1: https://lore.kernel.org/bpf/20251127140318.3944249-1-xukuohai@huaweicloud.com/
+---
+ arch/arm64/net/bpf_jit_comp.c | 20 +++++++++++
+ include/linux/bpf.h           | 14 ++++++++
+ kernel/bpf/bpf_insn_array.c   | 63 +++++++++++++++++++++++++++++++++++
+ kernel/bpf/verifier.c         |  6 ++++
+ 4 files changed, 103 insertions(+)
 
-char LICENSE[] SEC("license") =3D "GPL";
+diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+index 0c4d44bcfbf4..f08f0f9fa04e 100644
+--- a/arch/arm64/net/bpf_jit_comp.c
++++ b/arch/arm64/net/bpf_jit_comp.c
+@@ -78,6 +78,7 @@ static const int bpf2a64[] = {
+ 
+ struct jit_ctx {
+ 	const struct bpf_prog *prog;
++	unsigned long *indirect_targets;
+ 	int idx;
+ 	int epilogue_offset;
+ 	int *offset;
+@@ -1199,6 +1200,11 @@ static int add_exception_handler(const struct bpf_insn *insn,
+ 	return 0;
+ }
+ 
++static bool is_indirect_target(int insn_off, unsigned long *targets_bitmap)
++{
++	return targets_bitmap && test_bit(insn_off, targets_bitmap);
++}
++
+ /* JITs an eBPF instruction.
+  * Returns:
+  * 0  - successfully JITed an 8-byte eBPF instruction.
+@@ -1231,6 +1237,9 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
+ 	int ret;
+ 	bool sign_extend;
+ 
++	if (is_indirect_target(i, ctx->indirect_targets))
++		emit_bti(A64_BTI_J, ctx);
++
+ 	switch (code) {
+ 	/* dst = src */
+ 	case BPF_ALU | BPF_MOV | BPF_X:
+@@ -2085,6 +2094,16 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+ 	memset(&ctx, 0, sizeof(ctx));
+ 	ctx.prog = prog;
+ 
++	if (IS_ENABLED(CONFIG_ARM64_BTI_KERNEL) && bpf_prog_has_jump_table(prog)) {
++		ctx.indirect_targets = kvcalloc(BITS_TO_LONGS(prog->len), sizeof(unsigned long),
++						GFP_KERNEL);
++		if (ctx.indirect_targets == NULL) {
++			prog = orig_prog;
++			goto out_off;
++		}
++		bpf_prog_collect_indirect_targets(prog, ctx.indirect_targets);
++	}
++
+ 	ctx.offset = kvcalloc(prog->len + 1, sizeof(int), GFP_KERNEL);
+ 	if (ctx.offset == NULL) {
+ 		prog = orig_prog;
+@@ -2248,6 +2267,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+ 			prog->aux->priv_stack_ptr = NULL;
+ 		}
+ 		kvfree(ctx.offset);
++		kvfree(ctx.indirect_targets);
+ out_priv_stack:
+ 		kfree(jit_data);
+ 		prog->aux->jit_data = NULL;
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 4e7d72dfbcd4..4a26346263bf 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -3893,11 +3893,25 @@ void bpf_insn_array_adjust_after_remove(struct bpf_map *map, u32 off, u32 len);
+ 
+ #ifdef CONFIG_BPF_SYSCALL
+ void bpf_prog_update_insn_ptrs(struct bpf_prog *prog, u32 *offsets, void *image);
++void bpf_prog_collect_indirect_targets(const struct bpf_prog *prog, unsigned long *bitmap);
++void bpf_prog_mark_jump_table(struct bpf_map *map);
++bool bpf_prog_has_jump_table(const struct bpf_prog *prog);
+ #else
+ static inline void
+ bpf_prog_update_insn_ptrs(struct bpf_prog *prog, u32 *offsets, void *image)
+ {
+ }
++static inline void
++bpf_prog_collect_indirect_targets(const struct bpf_prog *prog, unsigned long *bitmap)
++{
++}
++static inline void bpf_prog_mark_jump_table(struct bpf_map *map)
++{
++}
++static inline bool bpf_prog_has_jump_table(const struct bpf_prog *prog)
++{
++	return false;
++}
+ #endif
+ 
+ static inline int bpf_map_check_op_flags(struct bpf_map *map, u64 flags, u64 allowed_flags)
+diff --git a/kernel/bpf/bpf_insn_array.c b/kernel/bpf/bpf_insn_array.c
+index c96630cb75bf..b9b43fdbe8e3 100644
+--- a/kernel/bpf/bpf_insn_array.c
++++ b/kernel/bpf/bpf_insn_array.c
+@@ -6,6 +6,7 @@
+ struct bpf_insn_array {
+ 	struct bpf_map map;
+ 	atomic_t used;
++	bool is_jump_table;
+ 	long *ips;
+ 	DECLARE_FLEX_ARRAY(struct bpf_insn_array_value, values);
+ };
+@@ -302,3 +303,65 @@ void bpf_prog_update_insn_ptrs(struct bpf_prog *prog, u32 *offsets, void *image)
+ 		}
+ 	}
+ }
++
++void bpf_prog_mark_jump_table(struct bpf_map *map)
++{
++	struct bpf_insn_array *insn_array = cast_insn_array(map);
++
++	insn_array->is_jump_table = true;
++}
++
++static bool is_jump_table(const struct bpf_map *map)
++{
++	struct bpf_insn_array *insn_array;
++
++	if (!is_insn_array(map))
++		return false;
++
++	insn_array = cast_insn_array(map);
++	return insn_array->is_jump_table;
++}
++
++bool bpf_prog_has_jump_table(const struct bpf_prog *prog)
++{
++	int i;
++
++	for (i = 0; i < prog->aux->used_map_cnt; i++) {
++		if (is_jump_table(prog->aux->used_maps[i]))
++			return true;
++	}
++	return false;
++}
++
++/*
++ * This function collects possible indirect jump targets in a BPF program. Since indirect jump
++ * targets can only be read from indirect arrays used as jump table, it traverses all jump
++ * tables used by @prog. For each instruction found in the jump tables, it sets the corresponding
++ * bit in @bitmap.
++ */
++void bpf_prog_collect_indirect_targets(const struct bpf_prog *prog, unsigned long *bitmap)
++{
++	struct bpf_insn_array *insn_array;
++	struct bpf_map *map;
++	u32 xlated_off;
++	int i, j;
++
++	for (i = 0; i < prog->aux->used_map_cnt; i++) {
++		map = prog->aux->used_maps[i];
++		if (!is_jump_table(map))
++			continue;
++
++		insn_array = cast_insn_array(map);
++		for (j = 0; j < map->max_entries; j++) {
++			xlated_off = insn_array->values[j].xlated_off;
++			if (xlated_off == INSN_DELETED)
++				continue;
++			if (xlated_off < prog->aux->subprog_start)
++				continue;
++			xlated_off -= prog->aux->subprog_start;
++			if (xlated_off >= prog->len)
++				continue;
++			__set_bit(xlated_off, bitmap);
++		}
++	}
++}
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 2de1a736ef69..bc4a269ed06e 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -20292,6 +20292,12 @@ static int check_indirect_jump(struct bpf_verifier_env *env, struct bpf_insn *in
+ 		return -EINVAL;
+ 	}
+ 
++	/*
++	 * Explicitly mark this map as a jump table such that it can be
++	 * distinguished later from other instruction arrays
++	 */
++	bpf_prog_mark_jump_table(map);
++
+ 	for (i = 0; i < n - 1; i++) {
+ 		other_branch = push_stack(env, env->gotox_tmp_buf->items[i],
+ 					  env->insn_idx, env->cur_state->speculative);
+-- 
+2.47.3
 
-
-## Log
-
- ------------[ cut here ]------------
-verifier bug: REG INVARIANTS VIOLATION (false_reg2): range bounds violation=
- u64=3D[0x80000010, 0x8000000f] s64=3D[0x80000010, 0x8000000f] u32=3D[0x800=
-00010, 0x8000000f] s32=3D[0x80000010, 0x80000010] var_off=3D(0x80000000, 0x=
-1f)
-WARNING: kernel/bpf/verifier.c:2748 at reg_bounds_sanity_check+0x206/0xc30,=
- CPU#0: bpftool/7638
-Modules linked in:
-CPU: 0 UID: 0 PID: 7638 Comm: bpftool Not tainted 6.19.0-rc2-gccd1cdca5cd4 =
-#1 PREEMPT(full)
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/=
-2014
-RIP: 0010:reg_bounds_sanity_check+0x3eb/0xc30
-Code: 98 00 00 00 4c 8b 8c 24 88 00 00 00 41 ff 34 24 41 57 55 41 55 ff b4 =
-24 f0 00 00 00 ff b4 24 a8 00 00 00 ff b4 24 c0 00 00 00 <67> 48 0f b9 3a 4=
-8 83 c4 38 49 bf 00 00 00 00 00 fc ff df 48 8b 84
-RSP: 0018:ffffc9000b67ef30 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: 1ffff11024059612 RCX: 0000000080000010
-RDX: ffffffff8b52f560 RSI: ffffffff8b538240 RDI: ffffffff905fff20
-RBP: 0000000080000010 R08: 000000008000000f R09: 0000000080000010
-R10: 00000000000000d0 R11: 0000000000000000 R12: ffff8881202cb090
-R13: 0000000080000010 R14: 1ffff11024059611 R15: 0000000080000000
-FS:  00007f34f3a41780(0000) GS:ffff888261e92000(0000) knlGS:000000000000000=
-0
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055b031c72000 CR3: 000000010babe000 CR4: 00000000000006f0
-Call Trace:
- <TASK>
- check_cond_jmp_op+0x1908/0x2cc0
- ? __pfx_verbose+0x10/0x10
- ? __pfx_check_cond_jmp_op+0x10/0x10
- ? bpf_reset_stack_write_marks+0x1f0/0x260
- do_check+0x5cc9/0xeb80
- ? __might_fault+0xb4/0x130
- ? __pfx_do_check+0x10/0x10
- ? __pfx_verbose+0x10/0x10
- ? __pfx_disasm_kfunc_name+0x10/0x10
- do_check_common+0x1a1e/0x2600
- bpf_check+0x16a62/0x1bf90
- ? is_bpf_text_address+0x2b/0x2b0
- ? is_bpf_text_address+0x2b/0x2b0
- ? is_bpf_text_address+0x297/0x2b0
- ? is_bpf_text_address+0x2b/0x2b0
- ? __kernel_text_address+0x12/0x40
- ? unwind_get_return_address+0x52/0x90
- ? __lock_acquire+0x6b5/0x2c60
- ? __lock_acquire+0x6b5/0x2c60
- ? pcpu_memcg_post_alloc_hook+0x7c/0x590
- ? __pfx_bpf_check+0x10/0x10
- ? ktime_get_with_offset+0x91/0x2a0
- ? ktime_get_with_offset+0x91/0x2a0
- ? bpf_lsm_bpf_prog_load+0xe/0x20
- ? security_bpf_prog_load+0x12a/0x3f0
- bpf_prog_load+0x1557/0x1be0
- ? __pfx_bpf_prog_load+0x10/0x10
- ? __might_fault+0xb4/0x130
- ? __might_fault+0xb4/0x130
- ? bpf_lsm_bpf+0xe/0x20
- ? security_bpf+0x83/0x300
- __sys_bpf+0x573/0x910
- ? __pfx___sys_bpf+0x10/0x10
- ? exc_page_fault+0x71/0xd0
- __x64_sys_bpf+0x81/0x90
- do_syscall_64+0xea/0xf80
- ? entry_SYSCALL_64_after_hwframe+0x77/0x7f
- ? trace_irq_disable+0x37/0x100
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f34f3d207d9
-Code: 08 89 e8 5b 5d c3 66 2e 0f 1f 84 00 00 00 00 00 90 48 89 f8 48 89 f7 =
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff f=
-f 73 01 c3 48 8b 0d f7 05 0d 00 f7 d8 64 89 01 48
-RSP: 002b:00007fff8186b908 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 0000000000000005 RCX: 00007f34f3d207d9
-RDX: 0000000000000098 RSI: 00007fff8186b990 RDI: 0000000000000005
-RBP: 000055b031c64c50 R08: 00007fff8186bac0 R09: 0000000000000000
-R10: 0000000000000011 R11: 0000000000000246 R12: 0000000000000098
-R13: 00007fff8186b990 R14: 00007fff8186b990 R15: 000055b031c66e80
-</TASK>
-----------------
 
