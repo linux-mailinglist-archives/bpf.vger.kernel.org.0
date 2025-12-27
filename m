@@ -1,314 +1,297 @@
-Return-Path: <bpf+bounces-77452-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77453-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB6C6CDF523
-	for <lists+bpf@lfdr.de>; Sat, 27 Dec 2025 08:50:00 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2EADCDFE31
+	for <lists+bpf@lfdr.de>; Sat, 27 Dec 2025 16:10:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9F000300C6EF
-	for <lists+bpf@lfdr.de>; Sat, 27 Dec 2025 07:49:54 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 6E6423009750
+	for <lists+bpf@lfdr.de>; Sat, 27 Dec 2025 15:10:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 790E324CEEA;
-	Sat, 27 Dec 2025 07:49:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5932C246BCD;
+	Sat, 27 Dec 2025 15:10:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b="E1svQRST"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from mx-rz-1.rrze.uni-erlangen.de (mx-rz-1.rrze.uni-erlangen.de [131.188.11.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49AC01C5D44;
-	Sat, 27 Dec 2025 07:49:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA7AD17A300
+	for <bpf@vger.kernel.org>; Sat, 27 Dec 2025 15:10:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.188.11.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766821793; cv=none; b=L/K0G6qg7Rka0IdLhfah10jp3rglR80sy53X+gIWZcC3kL4CHitYhsPmPeg3hZhTKsWpY9CIFb7RPme3UDkvjXSMVT97ZibakAyz7ak2uoR+zr22d7kntNwgpZbbtRuOm6uSE1vJx0lFepL60dSgrA1fijF3Er9neuEU9++fRuI=
+	t=1766848224; cv=none; b=nkFGPBiIKVfuu6beqM4OL/KD84bTFOFA+OfJusTD7lFKql1SzDAYX4G/AN7oqezPnxl3NnWTjxWDl3bZuPRRkBkBe6MxmKU6HS0P5iiQ4UxCCeCKvrHrNl9eLKnuHyOjkrAXysOaS7zc+bhn1n3gk/K0I+y689B8DU0zPJ7tvEM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766821793; c=relaxed/simple;
-	bh=c9jKoOVlt2xG4PZiemq2D8a1/FGoWtb/udCUb3gcK1M=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FyJ++2ZClJ0GlP6DrA/sboOjRSHsCmEF4bns3IbxLZ2w2YnxXkXi5YeyuXypj5dSLaQmyYvIVeTm3zL6qtC9KrqWOLZI/tywaP2lLOeQi2M3+aNaIQqjeh2AV6+MI/shpe6SLTuRXZZxEi5S8x7t868kfdUN4n7AITesDZWQGkI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.177])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4ddZP65btZzYQv0q;
-	Sat, 27 Dec 2025 15:48:58 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 27A0A4058C;
-	Sat, 27 Dec 2025 15:49:42 +0800 (CST)
-Received: from k01.k01 (unknown [10.67.174.197])
-	by APP1 (Coremail) with SMTP id cCh0CgDXROqSj09pm1B_Bg--.42328S2;
-	Sat, 27 Dec 2025 15:49:40 +0800 (CST)
-From: Xu Kuohai <xukuohai@huaweicloud.com>
-To: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Puranjay Mohan <puranjay@kernel.org>,
-	Anton Protopopov <a.s.protopopov@gmail.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>
-Subject: [PATCH bpf-next v3] bpf: arm64: Fix panic due to missing BTI at indirect jump targets
-Date: Sat, 27 Dec 2025 16:10:33 +0800
-Message-ID: <20251227081033.240336-1-xukuohai@huaweicloud.com>
-X-Mailer: git-send-email 2.47.3
+	s=arc-20240116; t=1766848224; c=relaxed/simple;
+	bh=L17oew4F2GzE+DDrHbXSpCSi/UvQ+kp9qXKwi7zqQKo=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ju8sUnm9ZOFK33H4Kz6+FG5XjYJZo0Vcis+kb3RCLsZt5aM3gV+b8lJhPFP+19FMeq80muUcYetzAQi2/v0Za7IX0J/0xqJRaeJp9srkGchrD/nLHBZ+QLiHVrCD3GlTsmibHf08evyJd90J0bkAwSo783UteRcN+cUjguYyed4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fau.de; spf=pass smtp.mailfrom=fau.de; dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b=E1svQRST; arc=none smtp.client-ip=131.188.11.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fau.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fau.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2021;
+	t=1766847677; bh=WZ/Ch+BnvS3ybArPnYe8us+TGnqltOahd2uOGg1cVag=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From:To:CC:
+	 Subject;
+	b=E1svQRSTXMQkwz1r0a2d904C5wqo+te/K/NL8Lo2kWrCimCuiOCyY2hzcF7InRDli
+	 QsaQzmoz3EzX2qxyRMIDxV5T9LhgRlmS046Qe69v1DuayGxF/5gwy1izNSeEw5G29v
+	 9C81Ah1ae39+n4ZT8Z8Q2hoatkUL68rhqgCXtKra2dOqM4nZ/pjiAjwm/i70mVFXj0
+	 LPZ10SHgit0bn/Q2ORv7iA69Gilyz4/8gU5SGTY89v0ip91pdK36dWL61Zc32gmX3D
+	 CjrvnShF3wa7aOA9qkOJ45mLR4gzb6gDtMKqUGZGZuBr71FrQLponKHx0olxWml3EO
+	 nN01fcibAhSkA==
+Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-rz-1.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4ddlzx04rRz8sZW;
+	Sat, 27 Dec 2025 16:01:17 +0100 (CET)
+X-Virus-Scanned: amavisd-new at boeck1.rrze.uni-erlangen.de (RRZE)
+X-RRZE-Flag: Not-Spam
+X-RRZE-Submit-IP: 2a01:e0a:21e:9f90:a64d:7c4b:a6cb:4137
+Received: from localhost (unknown [IPv6:2a01:e0a:21e:9f90:a64d:7c4b:a6cb:4137])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: U2FsdGVkX1+sJfSV0cd89ZIME3lSI+maycyXs0E7bRk=)
+	by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4ddlzs4rRtz8sbj;
+	Sat, 27 Dec 2025 16:01:13 +0100 (CET)
+From: Luis Gerhorst <luis.gerhorst@fau.de>
+To: Yinhao Hu <dddddd@hust.edu.cn>
+Cc: bpf <bpf@vger.kernel.org>,  dzm91@hust.edu.cn,  M202472210@hust.edu.cn,
+  ast@kernel.org,  daniel@iogearbox.net,  john.fastabend@gmail.com,
+  andrii@kernel.org,  martin.lau@linux.dev,  eddyz87@gmail.com,
+  song@kernel.org,  yonghong.song@linux.dev,  kpsingh@kernel.org,
+  sdf@fomichev.me,  haoluo@google.com,  jolsa@kernel.org,
+  hust-os-kernel-patches@googlegroups.com
+Subject: Re: [BUG] bpf: verifier: False warning for helpers in speculative
+ branches
+In-Reply-To: <7678017d-b760-4053-a2d8-a6879b0dbeeb@hust.edu.cn> (Yinhao Hu's
+	message of "Tue, 23 Dec 2025 19:03:52 +0800")
+References: <7678017d-b760-4053-a2d8-a6879b0dbeeb@hust.edu.cn>
+User-Agent: mu4e 1.12.12; emacs 30.2
+Date: Sat, 27 Dec 2025 16:01:12 +0100
+Message-ID: <874ipcdl53.fsf@fau.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgDXROqSj09pm1B_Bg--.42328S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxuFyxtw4xJrWkKry5WFyDJrb_yoW3GFykpF
-	4DG34jyr4Fgr4xWrsrJa10kry3tr4kKwnxGFWft3yF9a4Yqr95WayrKFnIyFn8Kry5Cr1f
-	XF4j9ryUW3yUZrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9ab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAa
-	w2AFwI0_Jw0_GFylc7CjxVAKzI0EY4vE52x082I5MxAIw28IcxkI7VAKI48JMxC20s026x
-	CaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_
-	JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r
-	1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_
-	Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8Jr
-	UvcSsGvfC2KfnxnUUI43ZEXa7IU8hNVDUUUUU==
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-From: Xu Kuohai <xukuohai@huawei.com>
+Yinhao Hu <dddddd@hust.edu.cn> writes:
 
-When BTI is enabled, the indirect jump selftest triggers BTI exception:
+> Our fuzzer discovered a verifier bug in the BPF subsystem. The warning
+> triggers when Spectre mitigation is enabled and a write-performing
+> helper call is placed in a speculatively-executed branch.
+>
+> The BPF verifier assumes `insn_aux->nospec_result` is only set for
+> direct memory writes (e.g., `*(u32*)(r1+off) =3D r2`). However, it fails
+> to account for helper calls (e.g., `bpf_skb_load_bytes_relative`) that
+> perform writes to stack memory.
+>
+> The problem: `BPF_CALL` instructions have `BPF_CLASS(insn->code) =3D=3D
+> BPF_JMP`, which triggers the warning check. The code comment states:
+>
+> ```c
+> /* "This can currently never happen because nospec_result is only
+>  *  used for the write-ops `*(size*)(dst_reg+off)=3Dsrc_reg|imm32`
+>  *  which must never skip the following insn."
+>  */
+> ```
+>
+> However, helper calls break this assumption:
+> - Helpers like `bpf_skb_load_bytes_relative` write to stack memory
+> - `check_helper_call()` loops through `meta.access_size`, calling
+> `check_mem_access(..., BPF_WRITE)`
+> - `check_stack_write()` sets `insn_aux->nospec_result =3D 1`
+> - Since `BPF_CALL` is encoded as `BPF_JMP | BPF_CALL`, the warning fires
 
-Internal error: Oops - BTI: 0000000036000003 [#1]  SMP
-...
-Call trace:
- bpf_prog_2e5f1c71c13ac3e0_big_jump_table+0x54/0xf8 (P)
- bpf_prog_run_pin_on_cpu+0x140/0x464
- bpf_prog_test_run_syscall+0x274/0x3ac
- bpf_prog_test_run+0x224/0x2b0
- __sys_bpf+0x4cc/0x5c8
- __arm64_sys_bpf+0x7c/0x94
- invoke_syscall+0x78/0x20c
- el0_svc_common+0x11c/0x1c0
- do_el0_svc+0x48/0x58
- el0_svc+0x54/0x19c
- el0t_64_sync_handler+0x84/0x12c
- el0t_64_sync+0x198/0x19c
+Thank you very much for the report. I think we just have to make the
+check more precise as this is a false-positive warning. The nospec after
+the helper call should still have the desired effect.
 
-This happens because no BTI instruction is generated by the JIT for
-indirect jump targets.
+I can check the call graph to make sure there are no other ways
+check_stack_write() can be called and send a patch in the new year.
 
-Fix it by emitting BTI instruction for every possible indirect jump
-targets when BTI is enabled. The targets are identified by traversing
-all instruction arrays of jump table type used by the BPF program,
-since indirect jump targets can only be read from instruction arrays
-of jump table type.
-
-Fixes: f4a66cf1cb14 ("bpf: arm64: Add support for indirect jumps")
-Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
----
-v3:
-- Get rid of unnecessary enum definition (Yonghong Song, Anton Protopopov)
-
-v2: https://lore.kernel.org/bpf/20251223085447.139301-1-xukuohai@huaweicloud.com/
-- Exclude instruction arrays not used for indirect jumps (Anton Protopopov)
-
-v1: https://lore.kernel.org/bpf/20251127140318.3944249-1-xukuohai@huaweicloud.com/
----
- arch/arm64/net/bpf_jit_comp.c | 20 +++++++++++
- include/linux/bpf.h           | 14 ++++++++
- kernel/bpf/bpf_insn_array.c   | 63 +++++++++++++++++++++++++++++++++++
- kernel/bpf/verifier.c         |  6 ++++
- 4 files changed, 103 insertions(+)
-
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index 0c4d44bcfbf4..f08f0f9fa04e 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -78,6 +78,7 @@ static const int bpf2a64[] = {
- 
- struct jit_ctx {
- 	const struct bpf_prog *prog;
-+	unsigned long *indirect_targets;
- 	int idx;
- 	int epilogue_offset;
- 	int *offset;
-@@ -1199,6 +1200,11 @@ static int add_exception_handler(const struct bpf_insn *insn,
- 	return 0;
- }
- 
-+static bool is_indirect_target(int insn_off, unsigned long *targets_bitmap)
-+{
-+	return targets_bitmap && test_bit(insn_off, targets_bitmap);
-+}
-+
- /* JITs an eBPF instruction.
-  * Returns:
-  * 0  - successfully JITed an 8-byte eBPF instruction.
-@@ -1231,6 +1237,9 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
- 	int ret;
- 	bool sign_extend;
- 
-+	if (is_indirect_target(i, ctx->indirect_targets))
-+		emit_bti(A64_BTI_J, ctx);
-+
- 	switch (code) {
- 	/* dst = src */
- 	case BPF_ALU | BPF_MOV | BPF_X:
-@@ -2085,6 +2094,16 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	memset(&ctx, 0, sizeof(ctx));
- 	ctx.prog = prog;
- 
-+	if (IS_ENABLED(CONFIG_ARM64_BTI_KERNEL) && bpf_prog_has_jump_table(prog)) {
-+		ctx.indirect_targets = kvcalloc(BITS_TO_LONGS(prog->len), sizeof(unsigned long),
-+						GFP_KERNEL);
-+		if (ctx.indirect_targets == NULL) {
-+			prog = orig_prog;
-+			goto out_off;
-+		}
-+		bpf_prog_collect_indirect_targets(prog, ctx.indirect_targets);
-+	}
-+
- 	ctx.offset = kvcalloc(prog->len + 1, sizeof(int), GFP_KERNEL);
- 	if (ctx.offset == NULL) {
- 		prog = orig_prog;
-@@ -2248,6 +2267,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 			prog->aux->priv_stack_ptr = NULL;
- 		}
- 		kvfree(ctx.offset);
-+		kvfree(ctx.indirect_targets);
- out_priv_stack:
- 		kfree(jit_data);
- 		prog->aux->jit_data = NULL;
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 4e7d72dfbcd4..4a26346263bf 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -3893,11 +3893,25 @@ void bpf_insn_array_adjust_after_remove(struct bpf_map *map, u32 off, u32 len);
- 
- #ifdef CONFIG_BPF_SYSCALL
- void bpf_prog_update_insn_ptrs(struct bpf_prog *prog, u32 *offsets, void *image);
-+void bpf_prog_collect_indirect_targets(const struct bpf_prog *prog, unsigned long *bitmap);
-+void bpf_prog_mark_jump_table(struct bpf_map *map);
-+bool bpf_prog_has_jump_table(const struct bpf_prog *prog);
- #else
- static inline void
- bpf_prog_update_insn_ptrs(struct bpf_prog *prog, u32 *offsets, void *image)
- {
- }
-+static inline void
-+bpf_prog_collect_indirect_targets(const struct bpf_prog *prog, unsigned long *bitmap)
-+{
-+}
-+static inline void bpf_prog_mark_jump_table(struct bpf_map *map)
-+{
-+}
-+static inline bool bpf_prog_has_jump_table(const struct bpf_prog *prog)
-+{
-+	return false;
-+}
- #endif
- 
- static inline int bpf_map_check_op_flags(struct bpf_map *map, u64 flags, u64 allowed_flags)
-diff --git a/kernel/bpf/bpf_insn_array.c b/kernel/bpf/bpf_insn_array.c
-index c96630cb75bf..b9b43fdbe8e3 100644
---- a/kernel/bpf/bpf_insn_array.c
-+++ b/kernel/bpf/bpf_insn_array.c
-@@ -6,6 +6,7 @@
- struct bpf_insn_array {
- 	struct bpf_map map;
- 	atomic_t used;
-+	bool is_jump_table;
- 	long *ips;
- 	DECLARE_FLEX_ARRAY(struct bpf_insn_array_value, values);
- };
-@@ -302,3 +303,65 @@ void bpf_prog_update_insn_ptrs(struct bpf_prog *prog, u32 *offsets, void *image)
- 		}
- 	}
- }
-+
-+void bpf_prog_mark_jump_table(struct bpf_map *map)
-+{
-+	struct bpf_insn_array *insn_array = cast_insn_array(map);
-+
-+	insn_array->is_jump_table = true;
-+}
-+
-+static bool is_jump_table(const struct bpf_map *map)
-+{
-+	struct bpf_insn_array *insn_array;
-+
-+	if (!is_insn_array(map))
-+		return false;
-+
-+	insn_array = cast_insn_array(map);
-+	return insn_array->is_jump_table;
-+}
-+
-+bool bpf_prog_has_jump_table(const struct bpf_prog *prog)
-+{
-+	int i;
-+
-+	for (i = 0; i < prog->aux->used_map_cnt; i++) {
-+		if (is_jump_table(prog->aux->used_maps[i]))
-+			return true;
-+	}
-+	return false;
-+}
-+
-+/*
-+ * This function collects possible indirect jump targets in a BPF program. Since indirect jump
-+ * targets can only be read from indirect arrays used as jump table, it traverses all jump
-+ * tables used by @prog. For each instruction found in the jump tables, it sets the corresponding
-+ * bit in @bitmap.
-+ */
-+void bpf_prog_collect_indirect_targets(const struct bpf_prog *prog, unsigned long *bitmap)
-+{
-+	struct bpf_insn_array *insn_array;
-+	struct bpf_map *map;
-+	u32 xlated_off;
-+	int i, j;
-+
-+	for (i = 0; i < prog->aux->used_map_cnt; i++) {
-+		map = prog->aux->used_maps[i];
-+		if (!is_jump_table(map))
-+			continue;
-+
-+		insn_array = cast_insn_array(map);
-+		for (j = 0; j < map->max_entries; j++) {
-+			xlated_off = insn_array->values[j].xlated_off;
-+			if (xlated_off == INSN_DELETED)
-+				continue;
-+			if (xlated_off < prog->aux->subprog_start)
-+				continue;
-+			xlated_off -= prog->aux->subprog_start;
-+			if (xlated_off >= prog->len)
-+				continue;
-+			__set_bit(xlated_off, bitmap);
-+		}
-+	}
-+}
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 2de1a736ef69..bc4a269ed06e 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -20292,6 +20292,12 @@ static int check_indirect_jump(struct bpf_verifier_env *env, struct bpf_insn *in
- 		return -EINVAL;
- 	}
- 
-+	/*
-+	 * Explicitly mark this map as a jump table such that it can be
-+	 * distinguished later from other instruction arrays
-+	 */
-+	bpf_prog_mark_jump_table(map);
-+
- 	for (i = 0; i < n - 1; i++) {
- 		other_branch = push_stack(env, env->gotox_tmp_buf->items[i],
- 					  env->insn_idx, env->cur_state->speculative);
--- 
-2.47.3
-
+> Reported-by: Yinhao Hu <dddddd@hust.edu.cn>
+> Reported-by: Kaiyan Mei <M202472210@hust.edu.cn>
+> Reviewed-by: Dongliang Mu <dzm91@hust.edu.cn>
+>
+> ### Trigger Condition
+>
+> The warning occurs when both flags are set:
+> 1. `state->speculative =3D 1` =E2=80=94 Verifier processes a branch that =
+won't
+> execute (marked during `check_cond_jmp_op`)
+> 2. `insn_aux->nospec_result =3D 1` =E2=80=94 A helper performs stack writ=
+es (set
+> during `check_helper_call`)
+>
+> ### Execution Flow
+>
+> ```
+> 1. Drop capabilities =E2=86=92 Enable Spectre mitigation
+> 2. Load BPF program
+>    =E2=94=94=E2=94=80> do_check()
+>        =E2=94=9C=E2=94=80> check_cond_jmp_op() =E2=86=92 Marks dead branc=
+h as speculative
+>        =E2=94=82   =E2=94=94=E2=94=80> push_stack(..., speculative=3Dtrue)
+>        =E2=94=9C=E2=94=80> pop_stack() =E2=86=92 state->speculative =3D 1
+>        =E2=94=9C=E2=94=80> check_helper_call() =E2=86=92 Processes helper=
+ in dead branch
+>        =E2=94=82   =E2=94=94=E2=94=80> check_mem_access(..., BPF_WRITE)
+>        =E2=94=82       =E2=94=94=E2=94=80> insn_aux->nospec_result =3D 1
+>        =E2=94=94=E2=94=80> Checks: state->speculative && insn_aux->nospec=
+_result
+>            =E2=94=94=E2=94=80> BPF_CLASS(insn->code) =3D=3D BPF_JMP =E2=
+=86=92 WARNING
+> ```
+>
+> ### Warning
+>
+> ```yaml
+> ------------[ cut here ]------------
+> verifier bug: speculation barrier after jump instruction may not have
+> the desired effect (BPF_CLASS(insn->code) =3D=3D BPF_JMP ||
+> BPF_CLASS(insn->code) =3D=3D BPF_JMP32)
+> WARNING: CPU: 0 PID: 9956 at kernel/bpf/verifier.c:20536 do_check
+> kernel/bpf/verifier.c:20536 [inline]
+> WARNING: CPU: 0 PID: 9956 at kernel/bpf/verifier.c:20536
+> do_check_common+0xac7b/0xb200 kernel/bpf/verifier.c:23784
+> Modules linked in:
+> CPU: 0 UID: 0 PID: 9956 Comm: syz-executor206 Not tainted
+> 6.18.0-rc4-g93ce3bee311d #3 PREEMPT(full)
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1
+> 04/01/2014
+> RIP: 0010:do_check kernel/bpf/verifier.c:20536 [inline]
+> RIP: 0010:do_check_common+0xac7b/0xb200 kernel/bpf/verifier.c:23784
+> Code: 00 e9 2b 84 ff ff e8 f4 ea 4c 00 e9 31 83 ff ff e8 6a 47 e0 ff c6
+> 05 b3 8d 6c 0f 01 90 48 c7 c7 c0 ab 76 8b e8 a6 64 9f ff 90 <0f> 0b 90
+> 90 e9 96 83 ff ff e8 c7 ea 4c 00 e9 29 89 ff ff e8 1d eb
+> RSP: 0018:ffa00000080df5e0 EFLAGS: 00010282
+> RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff817acafe
+> RDX: ff11000108f0ca00 RSI: ffffffff817acb0b RDI: 0000000000000001
+> RBP: 0000000000000017 R08: 0000000000000001 R09: ffe21c00142c4841
+> R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+> R13: 0000000000000000 R14: ff11000024320000 R15: dffffc0000000000
+> FS:  000055558abb53c0(0000) GS:ff1100010ccd0000(0000) knlGS:0000000000000=
+000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000200000000040 CR3: 0000000028fc5000 CR4: 0000000000753ef0
+> PKRU: 55555554
+> Call Trace:
+>  <TASK>
+>  do_check_main kernel/bpf/verifier.c:23867 [inline]
+>  bpf_check+0x9382/0xb930 kernel/bpf/verifier.c:25174
+>  bpf_prog_load+0x17a6/0x2960 kernel/bpf/syscall.c:3095
+>  __sys_bpf+0x1971/0x5390 kernel/bpf/syscall.c:6171
+>  __do_sys_bpf kernel/bpf/syscall.c:6281 [inline]
+>  __se_sys_bpf kernel/bpf/syscall.c:6279 [inline]
+>  __x64_sys_bpf+0x7d/0xc0 kernel/bpf/syscall.c:6279
+>  do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+>  do_syscall_64+0xcb/0xfa0 arch/x86/entry/syscall_64.c:94
+>  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+> RIP: 0033:0x7f13824ac64d
+> Code: 28 c3 e8 46 1e 00 00 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48 89
+> f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01
+> f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007ffc6d73d488 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+> RAX: ffffffffffffffda RBX: 00007ffc6d73d698 RCX: 00007f13824ac64d
+> RDX: 0000000000000094 RSI: 0000200000000a00 RDI: 0000000000000005
+> RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000002 R11: 0000000000000246 R12: 0000000000000001
+> R13: 00007ffc6d73d688 R14: 00007f1382529530 R15: 0000000000000001
+>  </TASK>
+> ```
+>
+> ### Proof of Concept
+>
+> Tested on:
+> - Linux next 6.19.0-rc1-next-20251219 (commit
+> cc3aa43b44bdb43dfbac0fcb51c56594a11338a8)
+> - bpf next (commit ac1c5bc7c4c7e20e2070e6eaa673fc3e11619dbb)
+>
+> ```c
+> #define _GNU_SOURCE
+> #include <linux/bpf.h>
+> #include <linux/filter.h>
+> #include <stdio.h>
+> #include <string.h>
+> #include <sys/syscall.h>
+> #include <unistd.h>
+> #include <stdint.h>
+>
+> int main(void)
+> {
+>     /* Setup memory for capset (optional for most systems) */
+>     syscall(__NR_mmap, 0x200000000000ul, 0x1000000ul, 7, 0x32, -1, 0);
+>
+>     /* Drop capabilities to enable Spectre mitigation */
+>     *(uint32_t*)0x200000000040 =3D 0x20080522;  /*
+> _LINUX_CAPABILITY_VERSION_3 */
+>     *(uint32_t*)0x200000000044 =3D 0;
+>     memset((void*)0x200000000080, 0, 24);
+>     syscall(__NR_capset, 0x200000000040ul, 0x200000000080ul);
+>
+>     /* BPF program: write-performing helper in dead branch */
+>     struct bpf_insn prog[] =3D {
+>         /* r0 =3D 0 */
+>         { .code =3D BPF_ALU64 | BPF_MOV | BPF_K, .dst_reg =3D BPF_REG_0,
+> .imm =3D 0,},
+>         /* if r0 !=3D 1 goto +6 */
+>         {.code =3D BPF_JMP | BPF_JNE | BPF_K, .dst_reg =3D BPF_REG_0, .im=
+m =3D
+> 1, .off =3D 6,},
+>         /* R2 =3D offset */
+>         {.code =3D BPF_ALU64 | BPF_MOV | BPF_K, .dst_reg =3D BPF_REG_2, .=
+imm
+> =3D 0,},
+>         /* R3 =3D R10 - 16 */
+>         {.code =3D BPF_ALU64 | BPF_MOV | BPF_X, .dst_reg =3D BPF_REG_3,
+> .src_reg =3D BPF_REG_10,},
+>         {.code =3D BPF_ALU64 | BPF_ADD | BPF_K, .dst_reg =3D BPF_REG_3, .=
+imm
+> =3D -16,},
+>         /* R4 =3D 4 */
+>         {.code =3D BPF_ALU64 | BPF_MOV | BPF_K, .dst_reg =3D BPF_REG_4, .=
+imm
+> =3D 4,},
+>         /* R5 =3D flags */
+>         {.code =3D BPF_ALU64 | BPF_MOV | BPF_K, .dst_reg =3D BPF_REG_5, .=
+imm
+> =3D 0,},
+>         /* call helper 68 */
+>         {.code =3D BPF_JMP | BPF_CALL, .imm =3D
+> BPF_FUNC_skb_load_bytes_relative,},
+>         /* exit */
+>         {.code =3D BPF_JMP | BPF_EXIT,},
+>     };
+>
+>     char log_buf[65536] =3D {0};
+>     union bpf_attr attr =3D {
+>         .prog_type =3D BPF_PROG_TYPE_SOCKET_FILTER,
+>         .insns =3D (uint64_t)prog,
+>         .insn_cnt =3D sizeof(prog) / sizeof(prog[0]),
+>         .license =3D (uint64_t)"GPL",
+>         .log_buf =3D (uint64_t)log_buf,
+>         .log_size =3D sizeof(log_buf),
+>         .log_level =3D 2,
+>     };
+>
+>     int fd =3D syscall(__NR_bpf, BPF_PROG_LOAD, &attr, sizeof(attr));
+>     if (fd < 0) {
+>         perror("bpf");
+>         fprintf(stderr, "\nVerifier log:\n%s\n", log_buf);
+>         return 1;
+>     }
+>
+>     printf("Loaded (fd=3D%d) =E2=80=94 Check dmesg for WARNING\n", fd);
+>     close(fd);
+>     return 0;
+> }
+> ```
+>
+> [2. text/plain; config-linux-next]...
 
