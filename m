@@ -1,182 +1,97 @@
-Return-Path: <bpf+bounces-77487-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77488-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD9DDCE817B
-	for <lists+bpf@lfdr.de>; Mon, 29 Dec 2025 20:58:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 47A19CE821F
+	for <lists+bpf@lfdr.de>; Mon, 29 Dec 2025 21:29:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D39A9301397A
-	for <lists+bpf@lfdr.de>; Mon, 29 Dec 2025 19:58:09 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6DCD33017F32
+	for <lists+bpf@lfdr.de>; Mon, 29 Dec 2025 20:29:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2101925A2DD;
-	Mon, 29 Dec 2025 19:58:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 618D9261B6D;
+	Mon, 29 Dec 2025 20:29:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZYThaZjB"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aaM+eKAG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FBB21F9F70
-	for <bpf@vger.kernel.org>; Mon, 29 Dec 2025 19:58:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5B0F245014
+	for <bpf@vger.kernel.org>; Mon, 29 Dec 2025 20:28:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767038288; cv=none; b=spoC4Ce8urZH2W9V66ASexFx19nWKq2+wAUC7eFt/qkGhw+KnTZrzci4vxFaIhOYHGl0ABny80IfytHAJc6YsGhvsQZjeoq1+kRt+NeMRKAvGN7nDVBmk10f+UB++ZKhHQLaNisPCJjM/gbIoFdVaNN1AArlekUWkegE1Zycxdc=
+	t=1767040142; cv=none; b=E3nlWIOTqElT/7uYNh1dODwFbOJtdG3MbdtY3xJGlCL+YOCa3XyZSruCXd9lRXQE9ZocMQpsmWZohDqOjXdpUP8ouoS53HYP6fr3VIFDuwWy6N++472REj9HGQiCVro2Racxg7B3iPBSNyc5wSrlHDnku0l21viuzHF9Ig3fIFs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767038288; c=relaxed/simple;
-	bh=ILOnzjB6omPzsTjFaR5p7kIAmLgY60kDToG8kB6uAvw=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=dyu8BT3GmwtFBnXyinUCgWcf82rKZ+34SiS+1ye6e1ZpeD93LKeAD/42/kwg5ZZAeItoVkvo5cGCSYC/KZvC7vqrXRTL/Qt9jrDzwlS2EXis7QnnUiM4y1uTZYzUszhXvbiFdrm06mrJhn/qcqDO1NH6cYh7UKR7Nb0GzSj8PWs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZYThaZjB; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-7f651586be1so4471193b3a.1
-        for <bpf@vger.kernel.org>; Mon, 29 Dec 2025 11:58:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767038286; x=1767643086; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Xko4XQ8K4/4/p+5qf10V0z8LE3R9sFv1la/WwKpKg8w=;
-        b=ZYThaZjBxgHPLg/ru2oZZkkkGV9I+IQ40v7BeSRjUsjFg8NWfReiJwLQlrKmnUqHLA
-         rvkVXYMB6uxFjEseJU4LblqV3xz3tL12y51GumsjIc6cyS6zleoKH96pr/Tu3MCKuh6z
-         1dkPwxdpY+D6+VQ7nF03YfwSISSL9p0H/3y7TtvjKIMmnjgr5ZS7B38Ulg/fPpmOCF/C
-         mzs007TEjxUXjZWR40SZsreLbn7Jhf2pb0ZW/kFXs1QmTYbCo3paFgYLhanP+ceAWCdo
-         Ud7A7P4dtNPgw8WyCtxZZmpBMyv54oRfhGuAZ+FKsKVJkhdrbHIGLMTgVMUxRxwk+/qG
-         7PcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767038286; x=1767643086;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Xko4XQ8K4/4/p+5qf10V0z8LE3R9sFv1la/WwKpKg8w=;
-        b=I0dU+FcqpURLIyFeBiWLxCyph8GGuoaUhD7lvZp9Y/0kBWno+EkSYwJRjbFx+/mDfK
-         EobXsIfSdln+GJKPnXT9d+vXlFbpR7QcRMTzbZLz1i25hJUXXKKH4g4vXMbhloR/D610
-         jr63QZvJ3zTV5++cJwFCLz85IVmTBuvN1mjK318bQqjR3bVzufOiGGgQrqI4qwKNycog
-         FYLJYegbaKlfJhV3+3yN1zNrBccMcuHP2H8wOxDb2dRIBXd/mNyeD4uazjuxabLCWxL5
-         prlmYNC4vukAM8djq02FlNAJDRL8pjPO+9xIKsLbs33y2BijwLITzFgJsJxM+P9C/zLt
-         Uasw==
-X-Forwarded-Encrypted: i=1; AJvYcCVO1m+st64UGflkhRqp2FX3o6pHEsgkbRfUl8Z2CZvBmoVV5CMOqc6Ac48C9S6j/R3QHqI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwmWyNWJm9slfy1MJJVeKox0SSqU93Y0cWSuMzPIPiI3pCxJsYD
-	cx/HKubN1vc6pUHqUZZA+MM8QemTa0bdfk08tMd6lzeTyhZWUaaMfkst
-X-Gm-Gg: AY/fxX6mMZ2ugpUeSArgyRl8nJROPDzV68XiqaOjYioipWbpfQ2+iIjPITTDtpW4WJ9
-	rMLNR+b2WGys1ghGExrIb8tJt9STQydpcSfiSrcLo+aRk38xXxNqoZPsP0QWBG7qXnZ18gJHkmX
-	P9qPJ6eAhTpXhFAqcOdmnPsoimVL56AiYhxSU0n70Yzn08zF0MX7AuEFZgAZ9GZr5qYiV7ATMcC
-	ufu5NZGQQ02vNVtAv0cxmyh1bhcBBkffHmVennmWEBboUCDeEseGjaUGJO1lbhz6RC3AFvlnp7u
-	nDnpcmMaUkKSHQYUL2V+pLFlAwDPdqKapimpExOCPrCCV9i8Cl81GSaWHEhA2wto4Pn7Of3vqtn
-	z7+UDUc8tweqoTd1zRBQgfZoNC1CTIrlz8aM9iU/8RwZCl24TpoNPWtnKfgR1jcZFVwwMXV+5DU
-	4RednIsvS/vafdn7BETas7k2b/jg1Y31FEjtV5Ev4VTR3Cfhs=
-X-Google-Smtp-Source: AGHT+IFClYfhXcvzYGUEAeGNRFFMkUwqOYUjfX2LyOlUE6PEoi9FZ13hia7PJghTWywP+YG21UqZAQ==
-X-Received: by 2002:a05:6a20:7f81:b0:366:14b0:4b1c with SMTP id adf61e73a8af0-3769ff1c33fmr28383151637.39.1767038286311;
-        Mon, 29 Dec 2025 11:58:06 -0800 (PST)
-Received: from ?IPv6:2a03:83e0:115c:1:ac6b:d5ad:83fe:6cca? ([2620:10d:c090:500::2:1bc9])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7ff7dfac28fsm30215140b3a.32.2025.12.29.11.58.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Dec 2025 11:58:06 -0800 (PST)
-Message-ID: <0f0bd124a42723acf87b427cc69356a0e4b1e339.camel@gmail.com>
-Subject: Re: [PATCH bpf-next] bpf, x86: inline bpf_get_current_task() for
- x86_64
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Menglong Dong <menglong8.dong@gmail.com>, ast@kernel.org
-Cc: davem@davemloft.net, dsahern@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
- yonghong.song@linux.dev, 	john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, 	jolsa@kernel.org, tglx@linutronix.de,
- mingo@redhat.com, bp@alien8.de, 	dave.hansen@linux.intel.com,
- jiang.biao@linux.dev, x86@kernel.org, hpa@zytor.com, 
-	netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Date: Mon, 29 Dec 2025 11:58:03 -0800
-In-Reply-To: <20251225104459.204104-1-dongml2@chinatelecom.cn>
-References: <20251225104459.204104-1-dongml2@chinatelecom.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
+	s=arc-20240116; t=1767040142; c=relaxed/simple;
+	bh=8l70OTim6XjUp23ekQsAZ33A3YoAPuKldtj6TuiRU28=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=e1djihGPdaiEVOgAvqobYVxXTME2lK93EP/Zmv1myLJihlllSwQXV3tF0knF4+9u9LoTkC6UWTUNZE39IwgH2UOethkEc3oVrCOsz9Z5x0r642l1SfDMXYPyT+msK6nU5xlwkEwFvhH+rlGVmJFI1KFPNZzEnn6ldIs6G9bomn4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aaM+eKAG; arc=none smtp.client-ip=95.215.58.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1767040128;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=66RyJtvFY4/td0oW3dHBamAjsmRJXPQckDimQmVLu+A=;
+	b=aaM+eKAGmaBXwvnMTxR319XP55l+85bqCxm0N9ztJ2Kvyjph/zlmMCdNJ7m8rxJhdGMfXw
+	fjgXyo/Ny+ZWjVnlmCUnSWpy66D+8iuL/bkNk1syePirgnPbL8ScDrwab19VLl0reYIhvF
+	A5La9N10X/2tapVPpLqNx1rUSvKMTAI=
+From: Ihor Solodrai <ihor.solodrai@linux.dev>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Nathan Chancellor <nathan@kernel.org>
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kbuild@vger.kernel.org,
+	llvm@lists.linux.dev
+Subject: [PATCH bpf-next] scripts/gen-btf.sh: Fix .btf.o generation when compiling for RISCV
+Date: Mon, 29 Dec 2025 12:28:23 -0800
+Message-ID: <20251229202823.569619-1-ihor.solodrai@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, 2025-12-25 at 18:44 +0800, Menglong Dong wrote:
-> Inline bpf_get_current_task() and bpf_get_current_task_btf() for x86_64
-> to obtain better performance. The instruction we use here is:
->=20
->   65 48 8B 04 25 [offset] // mov rax, gs:[offset]
->=20
-> Not sure if there is any side effect here.
->=20
-> Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
-> ---
+gen-btf.sh emits a .btf.o file with BTF sections to be linked into
+vmlinux in link-vmlinux.sh
 
-The change makes sense to me.
-Could you please address the compilation error reported by kernel test robo=
-t?
-Could you please also add a tests case using __jited annotation like
-in verifier_ldsx.c?
+This .btf.o file is created by compiling an emptystring with ${CC},
+and then adding BTF sections into it with ${OBJCOPY}.
 
->  arch/x86/net/bpf_jit_comp.c | 33 +++++++++++++++++++++++++++++++++
->  1 file changed, 33 insertions(+)
->=20
-> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index b69dc7194e2c..7f38481816f0 100644
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -1300,6 +1300,19 @@ static void emit_st_r12(u8 **pprog, u32 size, u32 =
-dst_reg, int off, int imm)
->  	emit_st_index(pprog, size, dst_reg, X86_REG_R12, off, imm);
->  }
-> =20
-> +static void emit_ldx_percpu_r0(u8 **pprog, const void __percpu *ptr)
-> +{
-> +	u8 *prog =3D *pprog;
-> +
-> +	/* mov rax, gs:[offset] */
-> +	EMIT2(0x65, 0x48);
-> +	EMIT2(0x8B, 0x04);
-> +	EMIT1(0x25);
-> +	EMIT((u32)(unsigned long)ptr, 4);
-> +
-> +	*pprog =3D prog;
-> +}
-> +
->  static int emit_atomic_rmw(u8 **pprog, u32 atomic_op,
->  			   u32 dst_reg, u32 src_reg, s16 off, u8 bpf_size)
->  {
-> @@ -2435,6 +2448,15 @@ st:			if (is_imm8(insn->off))
->  		case BPF_JMP | BPF_CALL: {
->  			u8 *ip =3D image + addrs[i - 1];
-> =20
-> +			if (insn->src_reg =3D=3D 0 && (insn->imm =3D=3D BPF_FUNC_get_current_=
-task ||
-> +						   insn->imm =3D=3D BPF_FUNC_get_current_task_btf)) {
-> +				if (IS_ENABLED(CONFIG_USE_X86_SEG_SUPPORT))
-> +					emit_ldx_percpu_r0(&prog, &const_current_task);
-> +				else
-> +					emit_ldx_percpu_r0(&prog, &current_task);
+To ensure the .btf.o is linkable when cross-compiling with LLVM, we
+have to also pass ${KBUILD_FLAGS}, which in particular control the
+target word size.
 
-Nit: arch/x86/include/asm/current.h says that current_task and const_curren=
-t_task are aliases.
-     In that case, why would we need two branches here?
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202512240559.2M06DSX7-lkp@intel.com/
+Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
+---
+ scripts/gen-btf.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +				break;
-> +			}
-> +
->  			func =3D (u8 *) __bpf_call_base + imm32;
->  			if (src_reg =3D=3D BPF_PSEUDO_CALL && tail_call_reachable) {
->  				LOAD_TAIL_CALL_CNT_PTR(stack_depth);
-> @@ -4067,3 +4089,14 @@ bool bpf_jit_supports_timed_may_goto(void)
->  {
->  	return true;
->  }
-> +
-> +bool bpf_jit_inlines_helper_call(s32 imm)
-> +{
-> +	switch (imm) {
-> +	case BPF_FUNC_get_current_task:
-> +	case BPF_FUNC_get_current_task_btf:
-> +		return true;
-> +	default:
-> +		return false;
-> +	}
-> +}
+diff --git a/scripts/gen-btf.sh b/scripts/gen-btf.sh
+index 06c6d8becaa2..12244dbe097c 100755
+--- a/scripts/gen-btf.sh
++++ b/scripts/gen-btf.sh
+@@ -96,7 +96,7 @@ gen_btf_o()
+ 	# deletes all symbols including __start_BTF and __stop_BTF, which will
+ 	# be redefined in the linker script.
+ 	info OBJCOPY "${btf_data}"
+-	echo "" | ${CC} ${CLANG_FLAGS} -c -x c -o ${btf_data} -
++	echo "" | ${CC} ${CLANG_FLAGS} ${KBUILD_CFLAGS} -c -x c -o ${btf_data} -
+ 	${OBJCOPY} --add-section .BTF=${ELF_FILE}.BTF \
+ 		--set-section-flags .BTF=alloc,readonly ${btf_data}
+ 	${OBJCOPY} --only-section=.BTF --strip-all ${btf_data}
+-- 
+2.52.0
+
 
