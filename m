@@ -1,164 +1,157 @@
-Return-Path: <bpf+bounces-77469-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77470-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DAADCE66A9
-	for <lists+bpf@lfdr.de>; Mon, 29 Dec 2025 11:59:17 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC48ACE6FF4
+	for <lists+bpf@lfdr.de>; Mon, 29 Dec 2025 15:20:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E75E4300760C
-	for <lists+bpf@lfdr.de>; Mon, 29 Dec 2025 10:59:12 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 75502300CB86
+	for <lists+bpf@lfdr.de>; Mon, 29 Dec 2025 14:20:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA10C28314C;
-	Mon, 29 Dec 2025 10:59:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5D0831B111;
+	Mon, 29 Dec 2025 14:20:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="SdE274Y5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IyvdzOfp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77E0D1EFF93
-	for <bpf@vger.kernel.org>; Mon, 29 Dec 2025 10:59:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23D2431AF06
+	for <bpf@vger.kernel.org>; Mon, 29 Dec 2025 14:20:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767005951; cv=none; b=BjvAJHhSjAAhNiQTQrrhbEIL8sAzD/yVIakIdjDrK9KydmZEXL5ECRS53lzSEGWe6jtXcMHpjZGb1i8ZHC8LmeYkp6qE4BJtH9r0r604zApiu6WVUwTowayM4saWDDxgxoNKW71pJCTPUs7Jvbz4DvzuiQWSINl+SmorT+8bRas=
+	t=1767018036; cv=none; b=NXnfKh6NyyocOth5Xlvg5vJdW5a07f+mxvbk6L+GgANwzZqE1PtFaqGnNCD59MOo+TXo61C3vivbk8iCxG3rySFFc9pJ4dexHO3UAiCJLyDTxZfjkRlLhjNiJEN9o1tU0cmeCH1/k3jMMtiB1K3dEyrqxX6EWp3SJVsRRp/ddqI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767005951; c=relaxed/simple;
-	bh=t06lyiSmcHJLKw7mZh5b4OzPk7QHgGznHAR+6qCyihA=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 References; b=plP7s820qEo7ymmSoc4yi2+y8cC8Gd+3K8nD8YbXzLNwU3RMb2Wcp2TWG19cfemH+RaME8rCmbq/tvgu+zhxdQfUriGvnGmqxLEX8Y0ePCWzlWj8sI2F/CzhuNiunrR7hM45CfaRihpgLqyCr8lHtvG0y4kjxD2fG3eevYI9O+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=SdE274Y5; arc=none smtp.client-ip=203.254.224.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
-	by mailout4.samsung.com (KnoxPortal) with ESMTP id 20251229105900epoutp0442096e1fc2823d64618502e7c90ed005~Fqop1MNxI2766827668epoutp04f
-	for <bpf@vger.kernel.org>; Mon, 29 Dec 2025 10:59:00 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20251229105900epoutp0442096e1fc2823d64618502e7c90ed005~Fqop1MNxI2766827668epoutp04f
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1767005940;
-	bh=359yQ6XbAw6WRUjKppsMEJqR1osu72NIkC7C9Pwse1A=;
-	h=Date:From:To:Cc:Subject:References:From;
-	b=SdE274Y5Bd+0rXsfcEkSGFnu8o0Ul3NcbnN95uxhOBHH3jmHZg+165HtjVhIS/V56
-	 d0rFo+4Q+Pcrz8RxKjaCQkYKRmy7iM/SY6wMbN5vpfimPgGyZuOq76XbWFs3VZDHtK
-	 Vy56zNjM1hgztHdD9b+PvYFPmTF/OEizYEX+PFgc=
-Received: from epsnrtp04.localdomain (unknown [182.195.42.156]) by
-	epcas2p4.samsung.com (KnoxPortal) with ESMTPS id
-	20251229105900epcas2p4c2ff5e3733867193a7bfca2b2e8876ee~Fqoplg3l50418004180epcas2p46;
-	Mon, 29 Dec 2025 10:59:00 +0000 (GMT)
-Received: from epcas2p1.samsung.com (unknown [182.195.38.212]) by
-	epsnrtp04.localdomain (Postfix) with ESMTP id 4dftWR6C4vz6B9m5; Mon, 29 Dec
-	2025 10:58:59 +0000 (GMT)
-Received: from epsmtip2.samsung.com (unknown [182.195.34.31]) by
-	epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
-	20251229105858epcas2p26c433715e7955d20072e72964e83c3e7~FqooRMj7h2169121691epcas2p23;
-	Mon, 29 Dec 2025 10:58:58 +0000 (GMT)
-Received: from tiffany (unknown [10.229.95.142]) by epsmtip2.samsung.com
-	(KnoxPortal) with ESMTPA id
-	20251229105858epsmtip2fefb80a8148940daf5672c3bd8f32845~FqooOs5XO2776727767epsmtip2h;
-	Mon, 29 Dec 2025 10:58:58 +0000 (GMT)
-Date: Mon, 29 Dec 2025 20:05:47 +0900
-From: Jeongho Choi <jh1012.choi@samsung.com>
-To: bpf@vger.kernel.org, kasan-dev@googlegroups.com
-Cc: jh1012.choi@samsung.com, joonki.min@samsung.com, hajun.sung@samsung.com
-Subject: [QUESTION] KASAN: invalid-access in bpf_patch_insn_data+0x22c/0x2f0
-Message-ID: <20251229110431.GA2243991@tiffany>
+	s=arc-20240116; t=1767018036; c=relaxed/simple;
+	bh=5QJ++AFvmfogtrUN4a0fBMa5IvH0wJTZNpmYFiqxjs0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ptjFUjHJJYLnU/mg/YCSAOBupRJlfC16Ko7p7CsJ1Q2jvpaYmhNBIcW1fwnq+qu5+8I+YwjtuAfFNy4qIAgbEq2iuyl2r5q99onSnlwh7U69dRXQsSbkj2S/Oac2TJbsr4+7/dCBK7cJ5uKjCcxvQPNpYCu8PnxsvNACbt58OII=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IyvdzOfp; arc=none smtp.client-ip=209.85.161.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-6598413b604so5647456eaf.0
+        for <bpf@vger.kernel.org>; Mon, 29 Dec 2025 06:20:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1767018033; x=1767622833; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=e007yG2Skbf3KR5PzHmbwLjVdg3gkGjb1eZAPsdnqA4=;
+        b=IyvdzOfpDicwEkOlRuLEIU6Woa9gdFrYUK//B5a5AdWuFnhNKRjMGe6m9iVacVG68T
+         WNG+iCBpTOSnwJmW4azdIInGpXjRapI50lFXAfo7DQ6t14DZIayIRjXhSqWOV9gh5aOT
+         0Tp0htYczd9F9Vqpd8o1TnBVjEl4Xx74uTfgWcSDN9t5pFP+lFmJ7TlCpRCrRnf5WWFa
+         s8soJBmdsFPtYXRVbsb/LzwET2wzmAaAlgm8qEwRwf1LzKaREiBWJ3o/JWue4tOlj+Ld
+         tRWisqf+FDCA+77Em/xYoTmJQsQUWkUOQ3fHlVniOiJgI7zQ/tMa31NPb79QXYIdJeh7
+         +84A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767018033; x=1767622833;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=e007yG2Skbf3KR5PzHmbwLjVdg3gkGjb1eZAPsdnqA4=;
+        b=tvB/J/jsxsJ1Sz4cg2WGeoFsLG+5FAPi7SXV+eyEg96iSLPxJmrGaiUHX8SSu9DJL4
+         GVegOirY4kViL7Q2ggjpYH4wT1pgXoUF7Yo205WoLCDKIQ7aetEYm4E/xtYIUUE7gNG5
+         1QcQFnEpKesp6oLyaDF0mb0r8On4SbqcDco8FzkrqvFkdbW9tJZTYrCE4K5BHKxs/mxO
+         yrWcj2CByoevYDrSnaQ2LwFeyO57Ghev2pqXBs4YDZWDKDWlCAWy6SohxrQTFwIAZx9F
+         VAUm74YA0KS6lcdz6EBDvbbkxLIshdqGvTB/wQxEhoyPXt/jGMD+fg9f2mNyuz5MnYdZ
+         5opw==
+X-Forwarded-Encrypted: i=1; AJvYcCWkgs8cJhm/ko2ZRM8+LUAtCJT6usUZewc+UfGjXrJoTNq6OaeYVKkbpt2Xud29cSbCyeQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyVXpHTFjdud1A4s+CLCRvWp7LIXeoP3f0UCKaRDCkYDdEZ6PcW
+	EiDM982O6LYFjS79X923HKnMHiV1OM7yl7h50UpjU6lqM5huwmOvGaIaDx56ihgl3IZ+i+G2gZC
+	Y+0KYU8d70Z3K1ETqn8qModPnyzXWIN4=
+X-Gm-Gg: AY/fxX5TK/HZV1DJGYUHU/VoC2yX/9kjm+qJhefWatnEFZ7sFtJohIHPwXn9CL2jmwf
+	3Wd1XOxl9jrhMMitATupPEJGy46JZ22bFIYbkT3ZZSE1Yz4ztcBmp+M0FAJRAjHEKwhWSspJn3R
+	oK+e5jty09va6zlRtJLqL6OIY/jWSgJhZvIw6uPSa/7YFAap35GPntJZgp820YE4+2sqr8s2GNY
+	nk/xQsQ1jlB/HCce13XzQUwJsbx29AyA5mghPzOO4Hc7o1lqEWXcqurB0UcgZy2GFF5ow9BIepe
+	YobSvqU=
+X-Google-Smtp-Source: AGHT+IGKy+9wP2on9xI54Zjjmh+IKZvqrskm+aim9BlDVJcgl1KL2yoo/qKbXq+mzLP/C8AuY1vCtfNQkHlPXn30BUA=
+X-Received: by 2002:a05:6820:4d44:10b0:659:9a49:9049 with SMTP id
+ 006d021491bc7-65d0e98b91dmr10194949eaf.20.1767018032872; Mon, 29 Dec 2025
+ 06:20:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-CMS-MailID: 20251229105858epcas2p26c433715e7955d20072e72964e83c3e7
-X-Msg-Generator: CA
-Content-Type: multipart/mixed;
-	boundary="----V_Ee6mLygYIcFboi0QdK.jy0CXpDH3EB3hR9DzJVup49CurE=_1d105d_"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-cpgsPolicy: CPGSC10-234,Y
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20251229105858epcas2p26c433715e7955d20072e72964e83c3e7
-References: <CGME20251229105858epcas2p26c433715e7955d20072e72964e83c3e7@epcas2p2.samsung.com>
+References: <20251103-1-v1-1-20e6641a57da@linux.dev> <130f896382dc8f56ead371208d9809ec06c7400c.camel@xry111.site>
+ <20251229150619.0000195f@linux.dev>
+In-Reply-To: <20251229150619.0000195f@linux.dev>
+From: Hengqi Chen <hengqi.chen@gmail.com>
+Date: Mon, 29 Dec 2025 22:20:22 +0800
+X-Gm-Features: AQt7F2pXotyzAFjPqoQjGStWE5-z1P1HK15voye9z6KXgDW0dWQRUKTGXQPLlOY
+Message-ID: <CAEyhmHTRVfDmwwH=_hPFUnFS-_ffALNUEVrSKiO9vEznfrUSSw@mail.gmail.com>
+Subject: Re: [PATCH] LoongArch: BPF: Fix sign extension for 12-bit immediates
+To: George Guo <dongtai.guo@linux.dev>
+Cc: Xi Ruoyao <xry111@xry111.site>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Tiezhu Yang <yangtiezhu@loongson.cn>, 
+	Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
+	Youling Tang <tangyouling@loongson.cn>, bpf@vger.kernel.org, loongarch@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, George Guo <guodongtai@kylinos.cn>, 
+	Bing Huang <huangbing@kylinos.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-------V_Ee6mLygYIcFboi0QdK.jy0CXpDH3EB3hR9DzJVup49CurE=_1d105d_
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
+On Mon, Dec 29, 2025 at 3:06=E2=80=AFPM George Guo <dongtai.guo@linux.dev> =
+wrote:
+>
+> On Fri, 19 Dec 2025 17:33:17 +0800
+> Xi Ruoyao <xry111@xry111.site> wrote:
+>
+> > On Mon, 2025-11-03 at 16:42 +0800, george wrote:
+> > > From: George Guo <guodongtai@kylinos.cn>
+> > >
+> > > When loading immediate values that fit within 12-bit signed range,
+> > > the move_imm function incorrectly used zero extension instead of
+> > > sign extension.
+> > >
+> > > The bug was exposed when scx_simple scheduler failed with -EINVAL
+> > > in ops.init() after passing node =3D -1 to scx_bpf_create_dsq().
+> > > Due to incorrect sign extension, `node >=3D (int)nr_node_ids`
+> > > evaluated to true instead of false, causing BPF program failure.
+> > >
+> > > Verified by testing with the scx_simple scheduler (located in
+> > > tools/sched_ext/). After building with `make` and running
+> > > ./tools/sched_ext/build/bin/scx_simple, the scheduler now
+> > > initializes successfully with this fix.
+> > >
+> > > Fix this by using sign extension (sext) instead of zero extension
+> > > for signed immediate values in move_imm.
+> > >
+> > > Fixes: 5dc615520c4d ("LoongArch: Add BPF JIT support")
+> > > Reported-by: Bing Huang <huangbing@kylinos.cn>
+> > > Signed-off-by: George Guo <guodongtai@kylinos.cn>
+> > > ---
+> > > Signed-off-by: george <dongtai.guo@linux.dev>
+> > > ---
+> > >  arch/loongarch/net/bpf_jit.h | 3 ++-
+> > >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/arch/loongarch/net/bpf_jit.h
+> > > b/arch/loongarch/net/bpf_jit.h index
+> > > 5697158fd1645fdc3d83f598b00a9e20dfaa8f6d..f1398eb135b69ae61a27ed81f80=
+b4bb0788cf0a0
+> > > 100644 --- a/arch/loongarch/net/bpf_jit.h +++
+> > > b/arch/loongarch/net/bpf_jit.h @@ -122,7 +122,8 @@ static inline
+> > > void move_imm(struct jit_ctx *ctx, enum loongarch_gpr rd, long imm
+> > > /* addiw rd, $zero, imm_11_0 */ if (is_signed_imm12(imm)) {
+> > >             emit_insn(ctx, addiw, rd, LOONGARCH_GPR_ZERO, imm);
+> > > -           goto zext;
+> > > +           emit_sext_32(ctx, rd, is32);
+> >
+> > The addi.w instruction already produces the sign-extended value.  Why
+> > do we need to sign-extend it again?
+> >
+> Hi Ruoyao,
+> I tried, it's not easy to do that.
+> It's better merge this patch, then consider next step.
+>
 
-Hello
-I'm jeongho Choi from samsung System LSI.
-I'm developing kernel BSP for exynos SoC.
+The test_bpf.ko test failed, so probably this is the wrong fix.
 
-I'm asking a question because I've recently been experiencing 
-issues after enable SW KASAN in Android17 kernel 6.18 environment.
-
-Context:
- - Kernel version: v6.18
- - Architecture: ARM64
-
-Question:
-When SW tag KASAN is enabled, we got kernel crash from bpf/verifier.
-I found that it occurred only from 6.18, not 6.12 LTS we're working on.
-
-After some tests, I found that the device is booted when 2 commits are reverted.
-
-bpf: potential double-free of env->insn_aux_data
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=b13448dd64e27752fad252cec7da1a50ab9f0b6f
-
-bpf: use realloc in bpf_patch_insn_data
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=77620d1267392b1a34bfc437d2adea3006f95865
-
-==================================================================
-[   79.419177] [4:     netbpfload:  825] BUG: KASAN: invalid-access in bpf_patch_insn_data+0x22c/0x2f0
-[   79.419415] [4:     netbpfload:  825] Write of size 27896 at addr 25ffffc08e6314d0 by task netbpfload/825
-[   79.419984] [4:     netbpfload:  825] Pointer tag: [25], memory tag: [fa]
-[   79.425193] [4:     netbpfload:  825] 
-[   79.427365] [4:     netbpfload:  825] CPU: 4 UID: 0 PID: 825 Comm: netbpfload Tainted: G           OE       6.18.0-rc6-android17-0-gd28deb424356-4k #1 PREEMPT  92293e52a7788dc6ec1b9dff6625aaee925f3475
-[   79.427374] [4:     netbpfload:  825] Tainted: [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
-[   79.427378] [4:     netbpfload:  825] Hardware name: Samsung ERD9965 board based on S5E9965 (DT)
-[   79.427382] [4:     netbpfload:  825] Call trace:
-[   79.427385] [4:     netbpfload:  825]  show_stack+0x18/0x28 (C)
-[   79.427394] [4:     netbpfload:  825]  __dump_stack+0x28/0x3c
-[   79.427401] [4:     netbpfload:  825]  dump_stack_lvl+0x7c/0xa8
-[   79.427407] [4:     netbpfload:  825]  print_address_description+0x7c/0x20c
-[   79.427414] [4:     netbpfload:  825]  print_report+0x70/0x8c
-[   79.427421] [4:     netbpfload:  825]  kasan_report+0xb4/0x114
-[   79.427427] [4:     netbpfload:  825]  kasan_check_range+0x94/0xa0
-[   79.427432] [4:     netbpfload:  825]  __asan_memmove+0x54/0x88
-[   79.427437] [4:     netbpfload:  825]  bpf_patch_insn_data+0x22c/0x2f0
-[   79.427442] [4:     netbpfload:  825]  bpf_check+0x2b44/0x8c34
-[   79.427449] [4:     netbpfload:  825]  bpf_prog_load+0x8dc/0x990
-[   79.427453] [4:     netbpfload:  825]  __sys_bpf+0x300/0x4c8
-[   79.427458] [4:     netbpfload:  825]  __arm64_sys_bpf+0x48/0x64
-[   79.427465] [4:     netbpfload:  825]  invoke_syscall+0x6c/0x13c
-[   79.427471] [4:     netbpfload:  825]  el0_svc_common+0xf8/0x138
-[   79.427478] [4:     netbpfload:  825]  do_el0_svc+0x30/0x40
-[   79.427484] [4:     netbpfload:  825]  el0_svc+0x38/0x8c
-[   79.427491] [4:     netbpfload:  825]  el0t_64_sync_handler+0x68/0xdc
-[   79.427497] [4:     netbpfload:  825]  el0t_64_sync+0x1b8/0x1bc
-[   79.427502] [4:     netbpfload:  825] 
-[   79.545586] [4:     netbpfload:  825] The buggy address belongs to a 8-page vmalloc region starting at 0x25ffffc08e631000 allocated at bpf_patch_insn_data+0x8c/0x2f0
-[   79.558777] [4:     netbpfload:  825] The buggy address belongs to the physical page:
-[   79.565029] [4:     netbpfload:  825] page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x8b308b
-[   79.573710] [4:     netbpfload:  825] memcg:c6ffff882d1d6402
-[   79.577791] [4:     netbpfload:  825] flags: 0x6f80000000000000(zone=1|kasantag=0xbe)
-[   79.584042] [4:     netbpfload:  825] raw: 6f80000000000000 0000000000000000 dead000000000122 0000000000000000
-[   79.592460] [4:     netbpfload:  825] raw: 0000000000000000 0000000000000000 00000001ffffffff c6ffff882d1d6402
-[   79.600877] [4:     netbpfload:  825] page dumped because: kasan: bad access detected
-[   79.607126] [4:     netbpfload:  825] 
-[   79.609296] [4:     netbpfload:  825] Memory state around the buggy address:
-[   79.614766] [4:     netbpfload:  825]  ffffffc08e637f00: 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
-[   79.622665] [4:     netbpfload:  825]  ffffffc08e638000: 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
-[   79.630562] [4:     netbpfload:  825] >ffffffc08e638100: 25 25 25 25 25 25 25 fa fa fa fa fa fa fe fe fe
-[   79.638463] [4:     netbpfload:  825]                                         ^
-[   79.644190] [4:     netbpfload:  825]  ffffffc08e638200: fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
-[   79.652089] [4:     netbpfload:  825]  ffffffc08e638300: fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
-[   79.659987] [4:     netbpfload:  825] ==================================================================
-
-I have a question about the above phenomenon.
-Thanks,
-Jeongho Choi
-
-------V_Ee6mLygYIcFboi0QdK.jy0CXpDH3EB3hR9DzJVup49CurE=_1d105d_
-Content-Type: text/plain; charset="utf-8"
-
-
-------V_Ee6mLygYIcFboi0QdK.jy0CXpDH3EB3hR9DzJVup49CurE=_1d105d_--
+> Thanks!
 
