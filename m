@@ -1,71 +1,125 @@
-Return-Path: <bpf+bounces-77466-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77467-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3853BCE6111
-	for <lists+bpf@lfdr.de>; Mon, 29 Dec 2025 08:00:00 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3950FCE6138
+	for <lists+bpf@lfdr.de>; Mon, 29 Dec 2025 08:07:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id A346D3000DFC
-	for <lists+bpf@lfdr.de>; Mon, 29 Dec 2025 06:59:56 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id BB3A53005E99
+	for <lists+bpf@lfdr.de>; Mon, 29 Dec 2025 07:06:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB85D2D29C7;
-	Mon, 29 Dec 2025 06:59:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 315D82D5416;
+	Mon, 29 Dec 2025 07:06:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="XKUXZswo"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rRyX1MbD"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50C3426ED37;
-	Mon, 29 Dec 2025 06:59:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 739412D2384
+	for <bpf@vger.kernel.org>; Mon, 29 Dec 2025 07:06:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766991592; cv=none; b=NN2aG5ZFU44WVwi4K0KpoZ2Wf2VDCvgCx5N9cx4NK40diQOa6V7zLmLoNb8yTkR5psY0B6heNqN8HtoxNaBbE5Fwgy7V+PNEo662yyd4H0wi1f2G67GV4VGyKuOZcGu0bLudGNQ1VDjoL+b3qR0JqiFaJmAB/0jYBgW9pCEUgGk=
+	t=1766992011; cv=none; b=ByhdyGpNWp7UpxoQw0k+EDY8Uhlr9eQxEjKJuLo5acbTKddLEyUa1Lc6gj4eu/WuJAMCPQ70sls6qSCGBQ+6dQLLSfIU5VmcEyjR31ELI3ixFqmnjWH1hjlZ81XL8eaGEdNXKSeOPhveSSvn8qXkHndIiu6KboAEROoXNoQ1RMA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766991592; c=relaxed/simple;
-	bh=g2/WFFx72wxYpqQ1Gbnm76IBQ55BtmP8Gs2PWdPLj3Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A9sUAc7e/L9Msx29ferZqws4AtAjY3qA0V54AINWCNryychRzQusv4OwkP+qK4U3tQE9OOC25m/TA6zswA1rrmQ/eL9yrdUJZ/Z5l8VNLc5QMOitgEAScbSuPRPtnzAxDjJmAkKzFrjoH2DYR9ET7NoewGG/fe/j68BxsOhGEgI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=XKUXZswo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70D89C4CEF7;
-	Mon, 29 Dec 2025 06:59:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1766991590;
-	bh=g2/WFFx72wxYpqQ1Gbnm76IBQ55BtmP8Gs2PWdPLj3Q=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XKUXZswoeNg6cLuY75yCBRRbOqcfxBrF9wUYZakqcRLhDVcrTP8PRMxiaXBMW8Fwi
-	 6Nz4ULTn6G0uZcQgI4tIF5f8Wlht8PRKaFwh92rPdIvuQpyzaIVSGxDRq30gJitygx
-	 znw8OjRKHpxrakqLA+OO9vTe0CdCOSpQnNwuDIN0=
-Date: Mon, 29 Dec 2025 07:59:46 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: MCB-SMART-BOY <mcb2720838051@gmail.com>
-Cc: rust-for-linux@vger.kernel.org, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 0/1] Rust BPF Verifier Implementation
-Message-ID: <2025122915-distort-concrete-2e5f@gregkh>
-References: <20251228190455.176910-1-mcb2720838051@gmail.com>
+	s=arc-20240116; t=1766992011; c=relaxed/simple;
+	bh=WI8FHWlGOA0apArL90hv+or5DrLzqtQvm7rbFbZqsg4=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=o0DKj1CC9OEQe9oqUV1FfI9uc3LZddCfvcp+8tTLFBfUozajPGtvblJDZtasDIiKPHKQ4guKbbeacRsNePqaOZm37MrL03eYsrAkmgyH01oQCkvN082fdci3cN8mIS/qRjhPGf+iz9twIwvIPTZtlwA60wfgte79r71icgddW8g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rRyX1MbD; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 29 Dec 2025 15:06:19 +0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1766991995;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Z7wYXeRdkMXIDCqoZ8ixYV6t3eQyv/SnG1ouQyq18Sg=;
+	b=rRyX1MbDOz0al40sqpYvj65fYFxMBERpuGtKnyLbb7IRaLp4by+kNCctx1gtLzgkj0/joB
+	LBEkH+UpOVhI5oYjsLdbCcp4KWoxebd1tGFKZtuZyhShV3HXDx7jj1y2qZdnIyvA05qKlG
+	+DZ+7Tg2rYfu4a6tAhh/jT5TOf+zoFQ=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: George Guo <dongtai.guo@linux.dev>
+To: Xi Ruoyao <xry111@xry111.site>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
+ Lau <martin.lau@linux.dev>, Eduard Zingerman	 <eddyz87@gmail.com>, Song Liu
+ <song@kernel.org>, Yonghong Song	 <yonghong.song@linux.dev>, John Fastabend
+ <john.fastabend@gmail.com>, KP Singh	 <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@fomichev.me>, Hao Luo	 <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Tiezhu Yang	 <yangtiezhu@loongson.cn>, Hengqi Chen
+ <hengqi.chen@gmail.com>, Huacai Chen	 <chenhuacai@kernel.org>, WANG Xuerui
+ <kernel@xen0n.name>, Youling Tang	 <tangyouling@loongson.cn>,
+ bpf@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-kernel@vger.kernel.org, George Guo <guodongtai@kylinos.cn>, Bing
+ Huang	 <huangbing@kylinos.cn>
+Subject: Re: [PATCH] LoongArch: BPF: Fix sign extension for 12-bit
+ immediates
+Message-ID: <20251229150619.0000195f@linux.dev>
+In-Reply-To: <130f896382dc8f56ead371208d9809ec06c7400c.camel@xry111.site>
+References: <20251103-1-v1-1-20e6641a57da@linux.dev>
+	<130f896382dc8f56ead371208d9809ec06c7400c.camel@xry111.site>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251228190455.176910-1-mcb2720838051@gmail.com>
+Content-Type: text/plain; charset=GB18030
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Sun, Dec 28, 2025 at 07:04:55PM +0000, MCB-SMART-BOY wrote:
-> Hello Rust for Linux and BPF maintainers,
+On Fri, 19 Dec 2025 17:33:17 +0800
+Xi Ruoyao <xry111@xry111.site> wrote:
+
+> On Mon, 2025-11-03 at 16:42 +0800, george wrote:
+> > From: George Guo <guodongtai@kylinos.cn>
+> > 
+> > When loading immediate values that fit within 12-bit signed range,
+> > the move_imm function incorrectly used zero extension instead of
+> > sign extension.
+> > 
+> > The bug was exposed when scx_simple scheduler failed with -EINVAL
+> > in ops.init() after passing node = -1 to scx_bpf_create_dsq().
+> > Due to incorrect sign extension, `node >= (int)nr_node_ids`
+> > evaluated to true instead of false, causing BPF program failure.
+> > 
+> > Verified by testing with the scx_simple scheduler (located in
+> > tools/sched_ext/). After building with `make` and running
+> > ./tools/sched_ext/build/bin/scx_simple, the scheduler now
+> > initializes successfully with this fix.
+> > 
+> > Fix this by using sign extension (sext) instead of zero extension
+> > for signed immediate values in move_imm.
+> > 
+> > Fixes: 5dc615520c4d ("LoongArch: Add BPF JIT support")
+> > Reported-by: Bing Huang <huangbing@kylinos.cn>
+> > Signed-off-by: George Guo <guodongtai@kylinos.cn>
+> > ---
+> > Signed-off-by: george <dongtai.guo@linux.dev>
+> > ---
+> >  arch/loongarch/net/bpf_jit.h | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/loongarch/net/bpf_jit.h
+> > b/arch/loongarch/net/bpf_jit.h index
+> > 5697158fd1645fdc3d83f598b00a9e20dfaa8f6d..f1398eb135b69ae61a27ed81f80b4bb0788cf0a0
+> > 100644 --- a/arch/loongarch/net/bpf_jit.h +++
+> > b/arch/loongarch/net/bpf_jit.h @@ -122,7 +122,8 @@ static inline
+> > void move_imm(struct jit_ctx *ctx, enum loongarch_gpr rd, long imm
+> > /* addiw rd, $zero, imm_11_0 */ if (is_signed_imm12(imm)) {
+> >  		emit_insn(ctx, addiw, rd, LOONGARCH_GPR_ZERO, imm);
+> > -		goto zext;
+> > +		emit_sext_32(ctx, rd, is32);  
 > 
-> I would like to submit an RFC for a complete Rust implementation of the
-> Linux kernel's BPF verifier (kernel/bpf/verifier.c) as part of the Rust
-> for Linux project.
+> The addi.w instruction already produces the sign-extended value.  Why
+> do we need to sign-extend it again?
+> 
+Hi Ruoyao,
+I tried, it's not easy to do that. 
+It's better merge this patch, then consider next step.
 
-This was already discussed and rejected (i.e. do not rewrite existing
-C code in rust unless you are the owner/maintainer of it).  Why bring
-this up again?
-
-thanks,
-
-greg k-h
+Thanks!
 
