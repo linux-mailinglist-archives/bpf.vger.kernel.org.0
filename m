@@ -1,113 +1,106 @@
-Return-Path: <bpf+bounces-77490-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77491-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1E25CE8386
-	for <lists+bpf@lfdr.de>; Mon, 29 Dec 2025 22:29:54 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E7EACE83C8
+	for <lists+bpf@lfdr.de>; Mon, 29 Dec 2025 22:52:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A05513016CF7
-	for <lists+bpf@lfdr.de>; Mon, 29 Dec 2025 21:29:46 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id CB4FC300E7E9
+	for <lists+bpf@lfdr.de>; Mon, 29 Dec 2025 21:52:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 322192E8897;
-	Mon, 29 Dec 2025 21:29:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mwpy8BxB"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AE992E8882;
+	Mon, 29 Dec 2025 21:52:25 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from relay.hostedemail.com (smtprelay0017.hostedemail.com [216.40.44.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CC481E1C02;
-	Mon, 29 Dec 2025 21:29:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42C333A1E63;
+	Mon, 29 Dec 2025 21:52:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767043784; cv=none; b=WHIGSoL5lvDcB15ptwsVnIE6OpadmxLbDZHzHSZzx9uMSjm05LsiuThELQbHZLoljAvkxjputPolwVHTphYFlmAEZl0m0fBG9oOJJG25lAKhabuwAmD4Zj7J9IKKgTR7PupmC8d1UnQM3moAs1nyEhWRC1Tc/cYkjBmfps5xQ2I=
+	t=1767045144; cv=none; b=lXdtCWYpOLpZoR4i8yoboSlTP5BvJpTkrMQCHmxiv+FfRrQmjq8qaViNWVNdEHH/72FiOhWIeC4aFQp+564DdA/4AIl1r9XnUhoZpR7DvcmHpcZkiU7AyZnvzOyGE4DURgZYOmEspeT3i4QXdWg4xFXT6s5pQJE9HLCwRNZ7Xiw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767043784; c=relaxed/simple;
-	bh=mdzCKbdkjkLWAsXYOk3IU5/RIWJOMHNvZN23/seJpxE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E8u82K9kgVC/IBZO8SHkHW0yPnuFhaScWiB/tTtoPogntHoqPj1pZis0ABhOzrquPZrx9GmcKy/tJFShTxqx+fJVZsMmb/0WKgl+sC2dM+a4ZRhlj203lkIEq9W3bjkNTeoVEYsSEBfVgwjauALBAGWrHJtR69v1+6jGwevu104=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mwpy8BxB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 551ADC4CEF7;
-	Mon, 29 Dec 2025 21:29:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767043784;
-	bh=mdzCKbdkjkLWAsXYOk3IU5/RIWJOMHNvZN23/seJpxE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mwpy8BxBsYaMAFRSH+yepMk2DNRlPqIQmpb4qmlcN4FeCRWDoex5RJ48WypSWoH5H
-	 WhFCe/JuqBJZqi/CcW029UZI8ytMDDth8tVcp7HQie21o/+M+V4lpqOPY2RMhCEte3
-	 O44PO8lHki2fY9mKtqytGTabhTL4cgJGOpLLjz6JjLa+AkRxspv3TRFuJayXF3cGwP
-	 6YmeLdhZltLlnQ/gUqY0fVUrv7m9mXGJ4HEEWidU26Ko8Yks8S67K5fKEYLgXlvI2z
-	 6t+nOPVoh4sc834ZyJCce8lGavqhOtosTX8IMRA/Y8w+FGHXdxhp3Fd5qIKaFjZm3m
-	 /FzZ1fbsfPc3g==
-Date: Mon, 29 Dec 2025 14:29:38 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Ihor Solodrai <ihor.solodrai@linux.dev>
-Cc: Yonghong Song <yonghong.song@linux.dev>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Petr Pavlu <petr.pavlu@suse.com>,
-	Daniel Gomez <da.gomez@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, linux-kernel@vger.kernel.org,
-	linux-modules@vger.kernel.org, bpf@vger.kernel.org,
-	linux-kbuild@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [RFC PATCH v1] module: Fix kernel panic when a symbol st_shndx
- is out of bounds
-Message-ID: <20251229212938.GA2701672@ax162>
-References: <20251224005752.201911-1-ihor.solodrai@linux.dev>
- <9edd1395-8651-446b-b056-9428076cd830@linux.dev>
- <af906e9e-8f94-41f5-9100-1a3b4526e220@linux.dev>
+	s=arc-20240116; t=1767045144; c=relaxed/simple;
+	bh=4ywAmQVU0G/pvYvKC9csakmwK7FDApBjH1KA53p9lz8=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=QLyORyfR2237l67xkB9luNiHuZhKOEGfG+DoFAGXajO9vFDsbyN6GqoZwB+eT9/0puVlqw4/ZFMslJ/7qq9wXUy/jXHlXhbt1ndbAsGXt3cuzJB2JVkgkwVKeDVwtKUo/Y3ccbWdUlLXI+2ROOH1vs0Vqm1LZjuFU25Y8f8oBb0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf14.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay09.hostedemail.com (Postfix) with ESMTP id 7EF338C9FB;
+	Mon, 29 Dec 2025 21:52:17 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf14.hostedemail.com (Postfix) with ESMTPA id E3CAB30;
+	Mon, 29 Dec 2025 21:52:06 +0000 (UTC)
+Date: Mon, 29 Dec 2025 16:52:12 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Christian Loehle <christian.loehle@arm.com>, Samuel Wu
+ <wusamuel@google.com>, Huang Rui <ray.huang@amd.com>, "Gautham R. Shenoy"
+ <gautham.shenoy@amd.com>, Mario Limonciello <mario.limonciello@amd.com>,
+ Perry Yuan <perry.yuan@amd.com>, Jonathan Corbet <corbet@lwn.net>, Viresh
+ Kumar <viresh.kumar@linaro.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Srinivas Pandruvada
+ <srinivas.pandruvada@linux.intel.com>, Len Brown <lenb@kernel.org>, Alexei
+ Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
+ <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
+ <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar
+ <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung
+ Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Alexander
+ Shishkin <alexander.shishkin@linux.intel.com>, Ian Rogers
+ <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, James Clark
+ <james.clark@linaro.org>, kernel-team@android.com,
+ linux-pm@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] cpufreq: Replace trace_cpu_frequency with
+ trace_policy_frequency
+Message-ID: <20251229165212.5bd8508d@gandalf.local.home>
+In-Reply-To: <CAJZ5v0irO1zmh=un+8vDQ8h2k-sHFTpCPCwr=iVRPcozHMRKHA@mail.gmail.com>
+References: <20251201202437.3750901-1-wusamuel@google.com>
+	<20251201202437.3750901-2-wusamuel@google.com>
+	<f28577c1-ca95-43ca-b179-32e2cd46d054@arm.com>
+	<CAJZ5v0hAmgjozeX0egBs_ii_zzKXGPsPBUWwmGD+23KD++Rzqw@mail.gmail.com>
+	<20251204114844.54953b01@gandalf.local.home>
+	<CAJZ5v0irO1zmh=un+8vDQ8h2k-sHFTpCPCwr=iVRPcozHMRKHA@mail.gmail.com>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <af906e9e-8f94-41f5-9100-1a3b4526e220@linux.dev>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: E3CAB30
+X-Stat-Signature: wceh78mpg7qfr393sy85h1jjj769oezy
+X-Rspamd-Server: rspamout05
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX1+2hC1Yzk4ER7pLFvkZFUP4nb/X3Txx7bQ=
+X-HE-Tag: 1767045126-456558
+X-HE-Meta: U2FsdGVkX18EZFLrqenngO/VKz57dSQljyE+X/DKPMolhiaAZdiq4Vdj/POhMfVCNA1v2UnrtNCySyoKeeFDLvKypXNU9MQrmExdybIHDGcgT9ZF9vVSHFW5sMC/RdNO03HxzIPWGhLsQBiZmN+bK3TWy4EPkbtQiKtRcjNqt7LDj6hIMOB7hXuiRoTg8bY1GKx18Q6CPXVaMWimem0/xdDPzzOF857I5p424BJvnPFmyjiZmGb8n+H3B/oa9N8q6Ub8zlacLYVWRIEaFMtPTRBRoRxSac6AzEieG33tgKLBJlgF5/bKl0XkhOzqoYTOzJgXeyn5dJa9a9qJM0eD2b9sJR1OrqJo
 
-Hi Ihor,
+On Thu, 4 Dec 2025 18:24:57 +0100
+"Rafael J. Wysocki" <rafael@kernel.org> wrote:
 
-On Mon, Dec 29, 2025 at 12:40:10PM -0800, Ihor Solodrai wrote:
-> I think the simplest workaround is this one: use objcopy from binutils
-> instead of llvm-objcopy when doing --update-section.
+> My concern is that the patch effectively removes one trace point
+> (cpu_frequency) and adds another one with a different format
+> (policy_frequency), updates one utility in the kernel tree and expects
+> everyone else to somehow know that they should switch over.
 > 
-> There are just 3 places where that happens, so the OBJCOPY
-> substitution is going to be localized.
-> 
-> Also binutils is a documented requirement for compiling the kernel,
-> whether with clang or not [1].
-> 
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/changes.rst?h=v6.18#n29
+> I know about at least several people who have their own scripts using
+> this tracepoint though.
 
-This would necessitate always specifying a CROSS_COMPILE variable when
-cross compiling with LLVM=1, which I would really like to avoid. The
-LLVM variants have generally been drop in substitutes for several
-versions now so some groups such as Android may not even have GNU
-binutils installed in their build environment (see a recent build
-fix [1]).
+Hi Rafael,
 
-I would much prefer detecting llvm-objcopy in Kconfig (such as by
-creating CONFIG_OBJCOPY_IS_LLVM using the existing check for
-llvm-objcopy in X86_X32_ABI in arch/x86/Kconfig) and requiring a working
-copy (>= 22.0.0 presuming the fix is soon merged) or an explicit opt
-into GNU objcopy via OBJCOPY=...objcopy for CONFIG_DEBUG_INFO_BTF to be
-selectable.
+Can you reach out to those that have scripts that use this trace event to
+see if it can be changed?
 
-> Patching llvm-objcopy would be great, it should be done. But we are
-> still going to be stuck with making sure older LLVMs can build the kernel.
-> So even if they backport the fix to v21, it won't help us much, unfortunately.
+Thanks,
 
-21.1.8 was the last planned 21.x release [2] so I think it is unlikely
-that a 21.1.9 would be released for this but we won't know until it is
-merged into main. Much agreed on handling the old versions.
-
-[1]: https://lore.kernel.org/20251218175824.3122690-1-cmllamas@google.com/
-[2]: https://discourse.llvm.org/t/llvm-21-1-8-released/89144
-
-Cheers,
-Nathan
+-- Steve
 
