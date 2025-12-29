@@ -1,166 +1,121 @@
-Return-Path: <bpf+bounces-77473-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77474-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3906FCE7B65
-	for <lists+bpf@lfdr.de>; Mon, 29 Dec 2025 18:14:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DA3F5CE7C8F
+	for <lists+bpf@lfdr.de>; Mon, 29 Dec 2025 18:56:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 58D42301A1D6
-	for <lists+bpf@lfdr.de>; Mon, 29 Dec 2025 17:14:10 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D14D330198AE
+	for <lists+bpf@lfdr.de>; Mon, 29 Dec 2025 17:56:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3036D330B22;
-	Mon, 29 Dec 2025 17:14:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 081B132B98A;
+	Mon, 29 Dec 2025 17:56:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GIqSjaYO"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Jht35+NJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C97631D726
-	for <bpf@vger.kernel.org>; Mon, 29 Dec 2025 17:14:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3FBD271456
+	for <bpf@vger.kernel.org>; Mon, 29 Dec 2025 17:56:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767028446; cv=none; b=irSRJHW1b451KYmkcMqda2KzEEMc49YkwAnzkwCgzRGcG2wdC79H3IG/6iyonI51YxTFotrzUylT7J0LZvdBUzv97b5Yug8tl84aTPzPm8OTKwUR9ZouKfeZQvf3/CZXN7q3oqT/wgj0P+9wD6eCFTw9b0vaODtMibUJT23VphQ=
+	t=1767030994; cv=none; b=cmSGObKTS8l7Ujb6Plij49BAkpnPMjuN55bXVPwhioyIXWiUrGMUAHiwKkFtayBDMopWiAAcA3vg4vS+crUJ3lrju40CVfDh3axbdaHEpSZmCHN7CtZMEIf8fFqPQM+pMO/9z8dnrLEpLRIlmLAfPk1sMHVFPM4ntDOgXQrKDPw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767028446; c=relaxed/simple;
-	bh=rPHsj2oVdQZJmJLJWmWO3toMXK9yiLTRStaMVd6JXbQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=o0odx+uqQNsgsHYNpmhKRHVM3fnzzahNh+zntT7g+NGPKhKhhbGcs4aRQLu493UUlZVLO0J/e2XmkwN+BUBH7jk6yKWrTmUJXEJN/5NOQHfl1IAXlndJhVJ/SIUnZJ1Rf98DsClXlIKyMMKqqgLqyQZ60MaoR3ttOaIXLZ1uW3o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GIqSjaYO; arc=none smtp.client-ip=209.85.215.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-ba599137cf8so3026821a12.0
-        for <bpf@vger.kernel.org>; Mon, 29 Dec 2025 09:14:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767028444; x=1767633244; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nq0hy4ZDbyOAkYMZ9R2bJ77qMoSVUcBr/BQKEBLGcD4=;
-        b=GIqSjaYO1LPsrpNx+MJUWdouSiwqq1TK0fcFqnIsRtvuZ12XgO8SfwBzriE3wgzLPo
-         e0ZYaemf16rLUaOC0HTYWCUD93l/g1Yga21wt6aElb8a0HEjxa3B5pdig/nopRdz4BeJ
-         pRZszj0yS9okHYU9ToggSWm8ewt+VW9d1ifHEWILEMtatcQCB+tR4VYF3uM52MJ4jgQb
-         i571ihJiXIx0VgN7OrSQpdRDe+4sUxTPo1AmT4Ls4ttzRXTBb712R2q/EEzQ5HGDqbpn
-         bUsoEPvxsbOczHl+Q9cfKuED+iW8LWMbNnSixSv+viCwXtPdiMEphoUSAjbtZtDYlIQe
-         uVVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767028444; x=1767633244;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=nq0hy4ZDbyOAkYMZ9R2bJ77qMoSVUcBr/BQKEBLGcD4=;
-        b=L68OKQoGZYhACHrEFV2dh8AU2x341Dh2YmdbNZRYRF5QyI7wCnuLx9tgCezrQalDC8
-         j3Xa5MoiqES9Yv2NX0r9sNfGTGdkKqskav3ziYYIMK9m4V2jw+GWElZqotMdWxk5Tm6W
-         DQU//3+aTC93ZzOqufjDgSlD6/GN3KcBO2XHGcQPOmQhVtFHiBzvYOP/fz496+A1wvDP
-         GJpILG2FcY+T6oP5kDbByKI0LhbZ0cOnHa5zmjAO8fP6dj0DJT5tdotjY2/b1zgyqugz
-         Gl2LZ9yq0zPxEFN0MoKxmmU8oSIadaQ+Uxh4jMAQrUdm7FPom2uT969FtIPxx5vJO+oi
-         u8Uw==
-X-Forwarded-Encrypted: i=1; AJvYcCXzgs45NJdF7F0nB+f0SsDgBukf/OsgPNas8JF7v13K7rll8rZJZDMJQw/28QKLSnyLN60=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywfdd1XA44ppfwK2FocPptD4Q50UfTZnJ9/7zAH9/Q5kGdnQ/Xn
-	jr3DEzOsrHYxTwKHnFcvsgTE1fCWnMWscdK0CgLHPz/H5MLkkSDLRl2h
-X-Gm-Gg: AY/fxX57TTGK1zF7q7tNZvNN88wOG6ruRYa5AA/5pnG68sXV/3v3kXDMhtZZuAcVuDj
-	cQxnbbjS1mTrTZi/EEgPDXq4fk3yBXcxwZOEYJ4d4wBPxQpDN4HOIv1KlkPiLOquNqeL0clCG7B
-	k4e/zM5CBrAETM1NQ2MY3qOQgAwzao7yzYwEB3iddQMl3MIpKZkbe3jPbuYUp/48Yg/Byf3BC20
-	NT6FDyG4vT/MGeFEvDYxh9+THeBDb4kok7PoFDF8HHRVx8S5+PGnPQWNq7CAB3xzLnPrU1RKssl
-	LaqPNgX7gzu8kM9a2mHU1WZvqghNdXXSrP2YD9aVm1O8OWf2W3Wc7UNcFRbNp8AY14wkmMFZURn
-	enL0jv2LvyGA4THazF8oPOTw1kP4wa4GGqB4sZid0CbILK+b32ub8TZUccntfl571DBNV1gDcAK
-	BdQ1Q/PDovlOGk0A9isIhQDLExb/QHckVva+FpURV//OQjKiieIA30X3KaRiIoig==
-X-Google-Smtp-Source: AGHT+IG4eXbFG3XgvqZI1V+B2x2P42ZmXTkV7Dp/LoGqVFuSVOvFy0fGaXCjk1bAi09n8KFPykhhkg==
-X-Received: by 2002:a17:90b:2e4a:b0:34c:9cec:3898 with SMTP id 98e67ed59e1d1-34e71e29544mr29378809a91.13.1767028444325;
-        Mon, 29 Dec 2025 09:14:04 -0800 (PST)
-Received: from kailas.hsd1.or.comcast.net ([2601:1c2:982:6040::e14d])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34e76ae7618sm16105280a91.1.2025.12.29.09.14.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Dec 2025 09:14:03 -0800 (PST)
-From: Ryan Foster <foster.ryan.r@gmail.com>
-To: bboscaccy@linux.microsoft.com
-Cc: James.Bottomley@hansenpartnership.com,
-	akpm@linux-foundation.org,
-	bpf@vger.kernel.org,
-	corbet@lwn.net,
-	dhowells@redhat.com,
-	foster.ryan.r@gmail.com,
-	gnoack@google.com,
-	jmorris@namei.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	linux@treblig.org,
-	mic@digikod.net,
-	paul@paul-moore.com,
-	serge@hallyn.com
-Subject: Re: [RFC 00/11] Reintroduce Hornet LSM
-Date: Mon, 29 Dec 2025 09:12:48 -0800
-Message-ID: <20251229171402.1491979-1-foster.ryan.r@gmail.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <87v7i4hpi4.fsf@microsoft.com>
-References: <87v7i4hpi4.fsf@microsoft.com>
+	s=arc-20240116; t=1767030994; c=relaxed/simple;
+	bh=CjWuNHHaVbrAnmI3EfkznNdEY9Q0OqfgNW2sSNmZyKE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RJhtdY3wD3hR1LPKgJGTgvX8m1AJqyUWkQbLmcvziojMnyA6yQhUWRI+jnxT0SeH5X7fo3Q1J2zbdg7xP51AQJWHkX3WN/EyUDqBKWFOYq1sPK9z2s7cJPNO1MVZniEMgSeXqVAqrICAwE9L8fwObiDgNsVpe8C8bmbNbrDL/18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Jht35+NJ; arc=none smtp.client-ip=95.215.58.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <72b12d0b-a513-41a6-91ac-076404a25713@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1767030987;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dtPQFeJN2I2P2evtUp/h8YnGo3x2O/6C1PcR1entX1E=;
+	b=Jht35+NJGiKlUg0dmkJElpAqxV6Fdy738vg1idA8pfrjd5hmV4fLpLFD5pk90ZzyzgbFkW
+	dAaGmvV33Vs4xpouj/vdeRJ9LEnUbDOZbRS2y+w2c/9sl4SV4ISvnuqUdycfwD8qdkjB67
+	m00VDb5lckmi3ekwtse3qUQFgT8LCPk=
+Date: Mon, 29 Dec 2025 09:56:22 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Re: [bpf-next:master 8/9] ld.lld: error: .tmp_vmlinux1.btf.o is
+ incompatible with elf32lriscv
+To: Nathan Chancellor <nathan@kernel.org>, kernel test robot <lkp@intel.com>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+ Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
+References: <202512240559.2M06DSX7-lkp@intel.com>
+ <20251228215613.GA2167770@ax162>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Ihor Solodrai <ihor.solodrai@linux.dev>
+In-Reply-To: <20251228215613.GA2167770@ax162>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Hi all,
+On 12/28/25 1:56 PM, Nathan Chancellor wrote:
+> On Wed, Dec 24, 2025 at 06:02:31AM +0800, kernel test robot wrote:
+>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+>> head:   f14cdb1367b947d373215e36cfe9c69768dbafc9
+>> commit: 522397d05e7d4a7c30b91841492360336b24f833 [8/9] resolve_btfids: Change in-place update with raw binary output
+>> config: riscv-randconfig-002-20251224 (https://download.01.org/0day-ci/archive/20251224/202512240559.2M06DSX7-lkp@intel.com/config)
+>> compiler: clang version 22.0.0git (https://github.com/llvm/llvm-project 4ef602d446057dabf5f61fb221669ecbeda49279)
+>> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251224/202512240559.2M06DSX7-lkp@intel.com/reproduce)
+>>
+>> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+>> the same patch/commit), kindly add following tags
+>> | Reported-by: kernel test robot <lkp@intel.com>
+>> | Closes: https://lore.kernel.org/oe-kbuild-all/202512240559.2M06DSX7-lkp@intel.com/
+>>
+>> All errors (new ones prefixed by >>):
+>>
+>>>> ld.lld: error: .tmp_vmlinux1.btf.o is incompatible with elf32lriscv
+> 
+> While I have not verified this, I suspect this error occurs because the
+> ${CC} command in gen_btf_o() in scripts/gen-btf.sh only includes
+> CLANG_FLAGS for the target selection but not '-m32' or '-m64' from
+> KBUILD_CFLAGS to control the word size (as documented in
+> scripts/Makefile.clang).
 
-I am considering how to reconcile the TOCTOU concern with the "don't touch BPF internals" feedback, I think a very small API might help:
+Hi Nathan, thanks for the pointer.
 
-Minimal API draft: BPF integrity measurement
+I was able to reproduce this. Your suspicion is correct. 
 
-Goal: kernel-generated measurement of the final relocated program + declared inputs, so attach/link can be enforced without poking internals.
+The .o file generated by:
 
-1) New BPF cmd
-- BPF_MEASURE_PROG (or BPF_PROG_MEASURE)
-- Input: prog_fd
-- Output: opaque measurement blob + metadata
+	echo "" | ${CC} ${CLANG_FLAGS} -c -x c -o ${btf_data} -
 
-struct bpf_prog_measure_opts {
-        __u32 size;
-        __u32 flags;
-        __u32 sig_len;
-        __u64 sig_ptr;
-        __u64 prog_id;
-        __u64 meas_id;
-};
+when cross-compiling to riscv is 64-bit, while vmlinux.o is 32-bit, hence the error.
 
-Semantics
-- Kernel computes measurement over final relocated insns + inputs explicitly in the integrity contract (e.g., sealed maps).
-- Measurement is kernel-owned and stable for a program state.
+This helps:
 
-2) Per-prog integrity state
+diff --git a/scripts/gen-btf.sh b/scripts/gen-btf.sh
+index 06c6d8becaa2..12244dbe097c 100755
+--- a/scripts/gen-btf.sh
++++ b/scripts/gen-btf.sh
+@@ -96,7 +96,7 @@ gen_btf_o()
+        # deletes all symbols including __start_BTF and __stop_BTF, which will
+        # be redefined in the linker script.
+        info OBJCOPY "${btf_data}"
+-       echo "" | ${CC} ${CLANG_FLAGS} -c -x c -o ${btf_data} -
++       echo "" | ${CC} ${CLANG_FLAGS} ${KBUILD_CFLAGS} -c -x c -o ${btf_data} -
+        ${OBJCOPY} --add-section .BTF=${ELF_FILE}.BTF \
+                --set-section-flags .BTF=alloc,readonly ${btf_data}
+        ${OBJCOPY} --only-section=.BTF --strip-all ${btf_data}
 
-enum lsm_integrity_verdict {
-        LSM_INT_VERDICT_UNSIGNED,
-        LSM_INT_VERDICT_PARTIAL,
-        LSM_INT_VERDICT_OK,
-        LSM_INT_VERDICT_BADSIG,
-};
+I'll send a proper patch later today. Have another bug report to check.
 
-struct bpf_prog_integrity {
-        __u64 meas_id;
-        enum lsm_integrity_verdict v;
-};
+> 
+> Cheers,
+> Nathan
 
-- Attach/link allowed only if policy verdict passes.
-- Any input mutation invalidates meas_id and resets verdict.
-
-3) Input immutability
-- Only sealed/frozen maps can be measured.
-- Any write to a measured map invalidates the measurement.
-
-4) LSM integration
-- Hornet (or another integrity LSM) consumes the measurement blob, verifies signatures, stores verdict.
-- SELinux/IPE/BPF LSMs can gate attach/link based on verdict.
-
-Why this helps
-- TOCTOU: verification tied to final relocated program + frozen inputs; mutations invalidate.
-- No BPF internals: LSMs use a stable syscall API, not map internals.
-- Minimal blast radius: one syscall + small per-prog state.
-
-A thought for future iterations, happy to help refine if this seems useful.
-
-Thanks,
-Ryan
 
