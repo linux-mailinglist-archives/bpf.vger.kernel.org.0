@@ -1,152 +1,239 @@
-Return-Path: <bpf+bounces-77497-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77498-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id D906CCE8783
-	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 02:14:05 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DF53CE89BD
+	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 04:03:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C20C73012741
-	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 01:13:46 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9731A3014633
+	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 03:03:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 427842DE717;
-	Tue, 30 Dec 2025 01:13:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BD222D6E78;
+	Tue, 30 Dec 2025 03:03:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="exCcTz3Y"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MdVuWYHU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 630E22DE6FB
-	for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 01:13:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 022D819EED3
+	for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 03:02:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767057224; cv=none; b=kLxgMweBoDgKa+l3UvYhee9Sj3Aa4CSkBVY2dnj0ZgjHq24NHMF5PAm5I+mK42agHgB9+5xM9MVpQlzUCtqZtzHbiCyLS5Nf2Py8Y5KcoZQNmxQn8OVfU/bTi2WxbtBYsqN2/fcVe22oTvuqgbNEtJjrWcL6/K8yo8eInD4iK4o=
+	t=1767063781; cv=none; b=Ig7Ho8tqbhpfEZEL+N20/Zp3XjaN/mpaFkZeVqGWkSd9/Uu4r7R5h4gZrnMzCc5daFLpvzZSVBuY4mPruwD31GXcTxaYLVmnl9voUGULiolBIv8UtOI4qFA0eS6E3629eH3A5d4ygWlJBXx1szlJ0lF3qRJyuvOMXou8gWaXHM0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767057224; c=relaxed/simple;
-	bh=sa7qLQI5q5Dm3mJbGTVc8XdUtcmibzgwcnRtQlAfcts=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=CAMLOGnZ8bmwxURwWAXq9KLIpQqi/wtoVdKxwqkvn6VOJ6gl0m4T1vwCxYKaoHys3pTotZpuCnT+RLOTUNECt77PU0wrx1mJy+LcySsGAHJ0mDMKio74DynrwdCjBld1DiezLFwGwFx6rrjUtyLCkgVbimbqANrY95SkK/EJw/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=exCcTz3Y; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-2a110548cdeso132719675ad.0
-        for <bpf@vger.kernel.org>; Mon, 29 Dec 2025 17:13:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767057222; x=1767662022; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=WYWIQM1Og1s1JCoAfx8pw7//2VEw3HJlAFb3SG9XsHk=;
-        b=exCcTz3YIIiHJOHKDuN+cGFAsWn0DhPOwrdps5bGe6fmxw+EeHsxDi75vs9aQAlr7y
-         YLAzQt7apvQvaPXOc8bYUKBX7Cy2HhiH8+/7K4JEys3bsCf/ZbCiz4z0RiAsUB2+f1Lt
-         z6LZ/a5tDy1tLnoBCk8uNeds5Pz5BL6RjKdMxxAADb2ekcVBNsW7F6dq5M9ItUd2ZEgw
-         4k1ZH5J2OjoXzqxbnzEhXq8nneEe6pREOO8/YoFMi1uV6iE9B/9dnMx5DsYYweLVdJCz
-         c7VM1hSuCTKodizpAaaHptDLWOiu0WEd0m9MqHWrA1mrNFDhkhLsviuDbwnmkZY9LPD0
-         oS3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767057222; x=1767662022;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WYWIQM1Og1s1JCoAfx8pw7//2VEw3HJlAFb3SG9XsHk=;
-        b=Hheb8ciyoye28cuyKgGojl213woP/XNIGPY0e5Y4ni05S4+NdoLqDedaq8AIn3euS1
-         /g9DvMl1SE9DmlitnQNqB4TtvEJ4b0z/9rwqG9nHrRB3uVa7045+e8z4UNbPGSwXE4mw
-         cD+Xh577Yzycr0/Q7KW3JRRnlnPR4/5Zrjw/M9+s4ymgvAZal9LV3FOYcWOjaQyD5bcZ
-         QfevZe8ztr+d0z1AtJgNh2rAfY1l16iIoHNsgBNIrJa78r5uv2GH2EXDRORT66bb8eh4
-         n1osueu2IAddaPWTlAfGF+SJgHWLSkPenWVbQkdSTjYlVAobzLI/47vlAYG6TuDl2d/7
-         /5eA==
-X-Forwarded-Encrypted: i=1; AJvYcCUf8ZL43nBQXDJkG+/L+Un62N5PGjAGP5paYJNvZ/nWRIDC6J+z45PUQXytvI5VAQcn/RI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyCcFVdigEt/+5rWro+yxHZUJxw1BZJzwNK5t380KSOxepNoIND
-	K3rnNemdqWXhpPEtSMmrSeE6XXbvToSTEQ3MBMQOf5Yt4TJz6wu51hbt
-X-Gm-Gg: AY/fxX721rmQES3MwWBfB1FLbg9qqEkZGfKxGI2K7+S6LRfzGuZ1gqsfyEmsYVxd/9N
-	TJbIcM03+UU5NLqMCT/37GoJ/eFLKHKe/29a35kc8YyWOciHa4rX9qITBk/caHAECdkzdubArmB
-	5TCim+5qRKSgf1pWWZslsTJRMRseqWsfdFa32wHroacQSbAcR40dUYeMqN/Gxab9YhogvkQ3i2Z
-	WZdRcNltylK9lOqHMifW/Befm5Pi3JXA48qmhrsrNak3ImCgO8msBrCfVr7PWvULoKTYcFmBJCf
-	laDLqLtDaiO+aBPqzEZz3YQ94Yuxks73fwqT5AoqNHYQdJj7B2GUd8YH+yFc7WSSfJTlrNV/Yh5
-	eR6RCUhmul4Bwh7Ls/E1dC0KF3lEwLpf/4EDyqp12McbMsbA3tcgt5AU7TMzykohCO5JNA3VolN
-	IfhOthvipf5d1zAX1UgCEv4N33zUzIZjk1DUdwma5O316sOOI=
-X-Google-Smtp-Source: AGHT+IE6mqbQgA7uzu7rDp2aK+RuMAZGHFL8WZz77h4FNUQklejhaqD6TgN8G1EKI7983eo7YVvZZw==
-X-Received: by 2002:a05:701b:251a:b0:11a:436c:2d56 with SMTP id a92af1059eb24-121722abf57mr21646958c88.2.1767057222364;
-        Mon, 29 Dec 2025 17:13:42 -0800 (PST)
-Received: from ?IPv6:2a03:83e0:115c:1:ac6b:d5ad:83fe:6cca? ([2620:10d:c090:500::2:1bc9])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-1217243bbe3sm127521342c88.0.2025.12.29.17.13.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Dec 2025 17:13:42 -0800 (PST)
-Message-ID: <62ba00524aa7afd5e1f76a5a2f4c06899bf2dd64.camel@gmail.com>
-Subject: Re: [PATCH bpf-next] verifier: add prune points to live registers
- print
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Mahe Tardy <mahe.tardy@gmail.com>, bpf <bpf@vger.kernel.org>, Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, John
- Fastabend	 <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>,
- Paul Chaignon	 <paul.chaignon@gmail.com>, shung-hsi.yu@suse.com
-Date: Mon, 29 Dec 2025 17:13:40 -0800
-In-Reply-To: <CAADnVQLsJeSjwFVE=gcnVzh7HftDqZJM+xByr2cD6TRmTRGLsA@mail.gmail.com>
-References: <20251222185813.150505-1-mahe.tardy@gmail.com>
-	 <CAADnVQLF+ihK16J3x5pQcJY0t2_gUHiur7ENZNqJdazzr+f8Pg@mail.gmail.com>
-	 <aUprAOkSFgHyUMfB@gmail.com>
-	 <4eec6b7605d007c6f906bf9a4cd95f2423781b0a.camel@gmail.com>
-	 <CAADnVQLsJeSjwFVE=gcnVzh7HftDqZJM+xByr2cD6TRmTRGLsA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
+	s=arc-20240116; t=1767063781; c=relaxed/simple;
+	bh=SZuLog+8zVtTBnqpgJMZKh/MPhflPf1t+4j6HdwPIsk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=m0scp4Mz5d5b8gsCdjcKBFni115zWZ1v88hB7r/uqQZAgh3O7RXHn6JY3APZnkX8m+4OAEoPpdM3sK06NNJhevCltv8VZ5VX1wRWB1SuRgF6l2MMY4BxIsLaZ5rd2I3lak7WG4wD1J0mh3LV3zOz2HVFOvIdvDmDo4RVFH/BSoc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MdVuWYHU; arc=none smtp.client-ip=95.215.58.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1767063766;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=pqmSOMk9I68wh+LqBe0FNnFTYilwTyQt9JRYBSNWNew=;
+	b=MdVuWYHUfUZCtXsZAm8CRBrdIlaKOT4mDyDHc51JD6524QDnJeyfeqkA3Zf2SZG1UtScCq
+	Bxxm34bHC5rkGc6V2irbKX8oxW37xLEQx/2Dm5juxHCbnGCgnSsflj/kfmthSa/qCCZ0KC
+	kikuQG26m+J2OfUehSfDfBIp3vOEGuI=
+From: Hui Zhu <hui.zhu@linux.dev>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Miguel Ojeda <ojeda@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Kees Cook <kees@kernel.org>,
+	Tejun Heo <tj@kernel.org>,
+	Jeff Xu <jeffxu@chromium.org>,
+	mkoutny@suse.com,
+	Jan Hendrik Farr <kernel@jfarr.cc>,
+	Christian Brauner <brauner@kernel.org>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Brian Gerst <brgerst@gmail.com>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	davem@davemloft.net,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	cgroups@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Cc: Hui Zhu <zhuhui@kylinos.cn>
+Subject: [RFC PATCH v2 0/3] Memory Controller eBPF support
+Date: Tue, 30 Dec 2025 11:01:58 +0800
+Message-ID: <cover.1767012332.git.zhuhui@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, 2025-12-29 at 16:42 -0800, Alexei Starovoitov wrote:
+From: Hui Zhu <zhuhui@kylinos.cn>
 
-[...]
+This series adds BPF struct_ops support to the memory controller,
+enabling dynamic control over memory pressure through the
+memcg_nr_pages_over_high mechanism. This allows administrators to
+suppress low-priority cgroups' memory usage based on custom
+policies implemented in BPF programs.
 
-> > Imo, it would be indeed more interesting to print where checkpoint
-> > match had been attempted and why it failed, e.g. as I do in [1].
-> > Here is a sample:
-> >=20
-> >   cache miss at (140, 5389): frame=3D1, reg=3D0, spi=3D-1, loop=3D0 (cu=
-r: 1) vs (old: P0)
-> >   from 5387 to 5389: frame1: R0=3D1 R1=3D0xffffffff ...
-> >=20
-> > However, in the current form it slows down log level 2 output
-> > significantly (~5 times). Okay for my debugging purposes but is not
-> > good for upstream submission.
-> >=20
-> > Thanks,
-> > Eduard.
-> >=20
-> > [1] https://github.com/kernel-patches/bpf/commit/65fcd66d03ad9d6979df79=
-628e569b90563d5368
->=20
-> bpf_print_stack_state() refactor can land.
-> While the rest potentially bpfvv can do.
-> With log_level=3D=3D2 all the previous paths through particular instructi=
-on
-> will be in the log earlier, so I can imagine clicking on an insn
-> and it will show current and all previous seen states.
-> The verifier heuristic will drop some of them, so it will show more
-> than actually known during the verification, but that's probably ok
-> for debugging to see why states don't converge.
-> bpfvv can make it easier to see the difference too instead of
-> "frame=3D1, reg=3D0, spi=3D-1, loop=3D0 (cur: 1) vs (old: P0)"
-> which is not easy to understand.
-> Only after reading the diff I realized that reg R0 is the one
-> that caused a mismatch.
+Background and Motivation
 
-In theory this can be handled in post-processing completely,
-however I'd expect mirroring states-equal logic in bpfvv
-(or any other tool) to be error prone. Which is very undesirable when
-you are debugging. To make post-processing simpler I'd print:
-- state id upon state creation
-- state ids upon cache miss + register or spi number.
+The memory controller provides memory.high limits to throttle
+cgroups exceeding their soft limit. However, the current
+implementation applies the same policy across all cgroups
+without considering priority or workload characteristics.
 
-This way post-processing tool would only need to collect register
-values for state ids in question.
+This series introduces a BPF hook that allows reporting
+additional "pages over high" for specific cgroups, effectively
+increasing memory pressure and throttling for lower-priority
+workloads when higher-priority cgroups need resources.
 
-Idk, not sure if any of this should be upstreamed, I'm fine with it
-living in my debug branch. On the other hand, this might be useful for
-people debugging 1M instruction issues, as I discussed with
-Paul Chaignon and Shung-Hsi Yu at LPC.
+Use Case: Priority-Based Memory Management
+
+Consider a system running both latency-sensitive services and
+batch processing workloads. When the high-priority service
+experiences memory pressure (detected via page scan events),
+the BPF program can artificially inflate the "over high" count
+for low-priority cgroups, causing them to be throttled more
+aggressively and freeing up memory for the critical workload.
+
+Implementation
+
+This series builds upon Roman Gushchin's BPF OOM patch series in [1].
+
+The implementation adds:
+1. A memcg_bpf_ops struct_ops type with memcg_nr_pages_over_high
+   hook
+2. Integration into memory pressure calculation paths
+3. Cgroup hierarchy management (inheritance during online/offline)
+4. SRCU protection for safe concurrent access
+
+Why Not PSI?
+
+This implementation does not use PSI for triggering, as discussed
+in [2].
+Instead, the sample code monitors PGSCAN events via tracepoints,
+which provides more direct feedback on memory pressure.
+
+Example Results
+
+Testing on x86_64 QEMU (10 CPU, 4GB RAM, cache=none swap):
+root@ubuntu:~# cat /proc/sys/vm/swappiness
+60
+root@ubuntu:~# mkdir /sys/fs/cgroup/high
+root@ubuntu:~# mkdir /sys/fs/cgroup/low
+root@ubuntu:~# ./memcg /sys/fs/cgroup/low /sys/fs/cgroup/high 100 1024
+Successfully attached!
+root@ubuntu:~# cgexec -g memory:low stress-ng --vm 4 --vm-keep --vm-bytes 80% \
+--vm-method all --seed 2025 --metrics -t 60 \
+& cgexec -g memory:high stress-ng --vm 4 --vm-keep --vm-bytes 80% \
+--vm-method all --seed 2025 --metrics -t 60
+[1] 1075
+stress-ng: info:  [1075] setting to a 1 min, 0 secs run per stressor
+stress-ng: info:  [1076] setting to a 1 min, 0 secs run per stressor
+stress-ng: info:  [1075] dispatching hogs: 4 vm
+stress-ng: info:  [1076] dispatching hogs: 4 vm
+stress-ng: metrc: [1076] stressor       bogo ops real time  usr time  sys time   bogo ops/s     bogo ops/s CPU used per       RSS Max
+stress-ng: metrc: [1076]                           (secs)    (secs)    (secs)   (real time) (usr+sys time) instance (%)          (KB)
+stress-ng: metrc: [1076] vm             21033377     60.47    158.04      3.66    347825.55      130076.67        66.85        834836
+stress-ng: info:  [1076] skipped: 0
+stress-ng: info:  [1076] passed: 4: vm (4)
+stress-ng: info:  [1076] failed: 0
+stress-ng: info:  [1076] metrics untrustworthy: 0
+stress-ng: info:  [1076] successful run completed in 1 min, 0.72 secs
+root@ubuntu:~# stress-ng: metrc: [1075] stressor       bogo ops real time  usr time  sys time   bogo ops/s     bogo ops/s CPU used per       RSS Max
+stress-ng: metrc: [1075]                           (secs)    (secs)    (secs)   (real time) (usr+sys time) instance (%)          (KB)
+stress-ng: metrc: [1075] vm                11568     65.05      0.00      0.21       177.83       56123.74         0.08          3200
+stress-ng: info:  [1075] skipped: 0
+stress-ng: info:  [1075] passed: 4: vm (4)
+stress-ng: info:  [1075] failed: 0
+stress-ng: info:  [1075] metrics untrustworthy: 0
+stress-ng: info:  [1075] successful run completed in 1 min, 5.06 secs
+
+Results show the low-priority cgroup (/sys/fs/cgroup/low) was
+significantly throttled:
+- High-priority cgroup: 21,033,377 bogo ops at 347,825 ops/s
+- Low-priority cgroup: 11,568 bogo ops at 177 ops/s
+
+The stress-ng process in the low-priority cgroup experienced a
+~99.9% slowdown in memory operations compared to the
+high-priority cgroup, demonstrating effective priority
+enforcement through BPF-controlled memory pressure.
+
+Patch Overview
+
+PATCH 1/3: Core kernel implementation
+  - Adds memcg_bpf_ops struct_ops support
+  - Implements cgroup lifecycle management
+  - Integrates hook into pressure calculation
+
+PATCH 2/3: Selftest suite
+  - Validates attach/detach behavior
+  - Tests hierarchy inheritance
+  - Verifies throttling effectiveness
+
+PATCH 3/3: Sample programs
+  - Demonstrates PGSCAN-based triggering
+  - Shows priority-based throttling
+  - Provides reference implementation
+
+Changelog:
+v2:
+According to the comments of Tejun Heo, rebased on Roman Gushchin's BPF
+OOM patch series [1] and added hierarchical delegation support.
+According to the comments of Roman Gushchin and Michal Hocko, Designed
+concrete use case scenarios and provided test results.
+
+[1] https://lore.kernel.org/lkml/20251027231727.472628-1-roman.gushchin@linux.dev/
+[2] https://lore.kernel.org/lkml/1d9a162605a3f32ac215430131f7745488deaa34@linux.dev/
+
+Hui Zhu (3):
+  mm: memcontrol: Add BPF struct_ops for memory  pressure control
+  selftests/bpf: Add tests for memcg_bpf_ops
+  samples/bpf: Add memcg priority control example
+
+ MAINTAINERS                                   |   5 +
+ include/linux/memcontrol.h                    |   2 +
+ mm/bpf_memcontrol.c                           | 241 ++++++++++++-
+ mm/bpf_memcontrol.h                           |  73 ++++
+ mm/memcontrol.c                               |  27 +-
+ samples/bpf/.gitignore                        |   1 +
+ samples/bpf/Makefile                          |   9 +-
+ samples/bpf/memcg.bpf.c                       |  95 +++++
+ samples/bpf/memcg.c                           | 204 +++++++++++
+ .../selftests/bpf/prog_tests/memcg_ops.c      | 340 ++++++++++++++++++
+ .../selftests/bpf/progs/memcg_ops_over_high.c |  95 +++++
+ 11 files changed, 1082 insertions(+), 10 deletions(-)
+ create mode 100644 mm/bpf_memcontrol.h
+ create mode 100644 samples/bpf/memcg.bpf.c
+ create mode 100644 samples/bpf/memcg.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/memcg_ops.c
+ create mode 100644 tools/testing/selftests/bpf/progs/memcg_ops_over_high.c
+
+-- 
+2.43.0
+
 
