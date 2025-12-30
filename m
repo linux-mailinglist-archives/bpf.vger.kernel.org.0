@@ -1,219 +1,147 @@
-Return-Path: <bpf+bounces-77503-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77504-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA1EDCE8D80
-	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 08:01:42 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B058CE8DDA
+	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 08:14:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B81FA3015867
-	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 07:01:38 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 30DFF302B75F
+	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 07:13:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CC762FDC37;
-	Tue, 30 Dec 2025 06:52:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78BFE2F8BD0;
+	Tue, 30 Dec 2025 07:13:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZvKP1nYc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b6BpYX4U"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+Received: from mail-pf1-f195.google.com (mail-pf1-f195.google.com [209.85.210.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1935D2FDC26
-	for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 06:52:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F9AD2F3C07
+	for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 07:13:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767077534; cv=none; b=et/tfOqIjoKE86FlP+/CWZCa4H2pXMwlopSQpL0mgfrsybxNv8vOXVemPdCBXa4QrmYg4gXRNvqnukEm9ugHRmhymp9HZVEqpQYfTlMAAaZpnqSy1dLi5AUBHgckIHA1H0WYXioNkiIP/N7s0x0OMZAHLsr8+xlTCaVELpjnOzE=
+	t=1767078810; cv=none; b=ijbAbaUDc7LRV4NSCnyhvX8gDB8koDZtpMsIP2Ozu3jXddxSHXtTqYwKdWZ4wQHlvV7ppzjSen8uTr1YtchoPg52d2cDSZjR6nRModldnKq7v6MMmQrvv5kFjHc8Md1Hqy9UxpRO2Dfn5h+OmjTBtTienNsAWjvPQexJTFdP3Zo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767077534; c=relaxed/simple;
-	bh=r36mY7/Ys8InSAZAijap1nJetdcGUHHqspG5cX6FUOA=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=pixvnHA9ts2OR8g2oSPWWqjGCMPQQJBf5H5wwqeTvEiy7f7mVi8fZEpOnSU7eKgqIWDCU4AyJfXyF7SSKuy/FieZl/DWz0rtYNs9mlzy9UHSgs83y8h/f3CXAfjYyX4bR+2INoIGfBFObG2v32i4qKyLKl0eBi84Vtw9PCnMw+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZvKP1nYc; arc=none smtp.client-ip=209.85.214.171
+	s=arc-20240116; t=1767078810; c=relaxed/simple;
+	bh=td2r/7r2fR0ea4eKTiiWL2qDTt1g/sa7gSUXH+m9BrU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=g6UhsnC0qBHKH4vJphLDSFHHjIOy2XivlkMZ7XZIVonWP/FAAwfZpYl9/XFaoRAd6CEJOHm7DDSRg/R/aJSzC0OcfuESeSNxSXnjWj67Whja8E8ASDVpdrQ1dKR4FnbUpaBNJ5k9nGp2boLeLKIbXUqDY8y1YEitf8/30BvaZHw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b6BpYX4U; arc=none smtp.client-ip=209.85.210.195
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-29efd139227so128292205ad.1
-        for <bpf@vger.kernel.org>; Mon, 29 Dec 2025 22:52:12 -0800 (PST)
+Received: by mail-pf1-f195.google.com with SMTP id d2e1a72fcca58-7b9c17dd591so8357356b3a.3
+        for <bpf@vger.kernel.org>; Mon, 29 Dec 2025 23:13:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767077532; x=1767682332; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=6U9rLwZNIYS9DVA5ViRqLHmiyAVD8oKnKmSgx7+9CoU=;
-        b=ZvKP1nYcAly1zG6g5VYoUsqa2hUglnvvOa20Mh6yrb7DYTHHxvsgNsbg8Br0iDkpiC
-         oFweZcIJ3ApZZ5Eki7xHZTnScyq79z3REdXDad4jDo5uhSqfSV4c5MHyud2ckdCIIfpR
-         YOZ3S8UGJHp0Q8ZNNz0BJ5URyPnTH0lpKOj0dAJNCKOlOtHtLxfJifxy8yEeWbH6iVaZ
-         IAXAYehn0WoPX2eQ+SdevsrZyGFcurVy9DDX9gUVDodqTaQcgwsa/XTdUYFwZIwQelRJ
-         QmJXroOQp94dS+u9BgYECbZLKrpf8TlKYEJfsP2XtFUUyVR7sxog2nDzPTUngm7LjM1c
-         mV9Q==
+        d=gmail.com; s=20230601; t=1767078807; x=1767683607; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xJz6NgaWCb2qaXDuRrNDREMtuLJHuzwHPslg7t5UBfE=;
+        b=b6BpYX4U3VD8+cd8atICEPp7ccdSmQfKFmnS7otxuXb6cMl2t8aSLLnTXBR2puuJT5
+         TJAaG89k5xoAe5YFm5HbpsY5OhYUk8E9VD1e0DOrc4g0bTnqQkruyYZQxDFChOA77U+h
+         lsz6RR6Y+Aqf8y0Uc4GSeV/srLnq7SvU+D8C5Gp1q7d6NObCidTK1s8Xbkkk/kdMl/rh
+         n11X9dtEcH9HwFaAXL3GoM1mDyk3WaWZxiRSAcTAnTvOWAcInTBGHJin1WdOwqMedIC4
+         janpbbuTuX1cGD/KD77cQLDYDWNXZ0Ni6jtY2lmyi458WeXuUvorzJuWP4zDiHKTMgUT
+         2YtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767077532; x=1767682332;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6U9rLwZNIYS9DVA5ViRqLHmiyAVD8oKnKmSgx7+9CoU=;
-        b=cx03WRKHs2d2JH/uSjkN5yumUx16Z1G+yKXzcPqM2+v8rMnC1ESNzWtvHu4k7cQDtq
-         c0DRISAb18pqHWg2AeCBvbF1+n3VGQZ9st/kgcxCKr9xSbkohCop5pjldKY8Hx7pEuUK
-         8iQHGfCZppwao1RINUFin3nZgJmimwEaThwPPSXGIslbo2v0HkmMA5cil2giOdNhJJ5X
-         BVovoetHi1FZqTnY1d5BWlxRQLPlYAD1umTT6LC5NA5Ngbtc26uNyPeEx9XWpDqtM/vj
-         Y7M+oQti33mRE+4lQ4cE+li6S57ZyL86T3/o9BSSBFsxbu/JnVzvnnh1zNQVaiSngiBu
-         Shxg==
-X-Forwarded-Encrypted: i=1; AJvYcCXfV19tvutnm2QImWRgDFhR/rpx/NMdsLDeTDdcWct3OVL+vwZIcfNQ93crOqkZhDuDLT0=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz+hylGHClAuBq67yNNwt8nAXC2QSxQA/0scvVH+DcnUV8Kop4v
-	8ff6ynFseFpTDQiD2Tp56xLp2d2IrwwbkApkrr+jOGR8LekRyZpOQGGh
-X-Gm-Gg: AY/fxX7atOWexLBZgMujSGSk/nM5zjAYybs+ymhnO4QgP8JrUL6sRrURSmJkiBw7Ej8
-	1Dy2ujqoUXRR2HgDcpERhmcTHhBKlp5GVd1xWDCrmyHQmyU5EGdNmBN4jnz1zCMwq7mQ0GrHbVu
-	Ae3vPw9lS0mndavYPjjRpPJh/sbIrtU1RQEb6wZvgCHvjT3D6YP+jr8GovTyY2CQfUrM9ulNBBY
-	0ZnAO3b+WH8exOFvEdCJbIDn/leq4/cLhhExVI8K+tS/82whL3NoYukK6va+ksCo4IR741eHbqM
-	6qx7bfBJSqoomQp25WmVptdXeQf/PziYwW3TKsxnb8+O38JPmVaM0zcJBx/d5C/0ENHHuZTiAYo
-	31SXKLK4j2AEiLAx2PyBT3/FPAZ9HqGhsdeBc9kfGaPVy6HNTpUUOxmAOALRyFdJxaN8bV+IOZ7
-	4ZMicglY8V
-X-Google-Smtp-Source: AGHT+IE7BtGrFnYI1+11/OPd3n1RonH59q1b/ieOCO6kQiGVmtM2/imlmpBdRIen73GP9K9gq8nVrw==
-X-Received: by 2002:a17:903:41cd:b0:298:55c8:eb8d with SMTP id d9443c01a7336-2a2f272bd8fmr294469855ad.35.1767077532151;
-        Mon, 29 Dec 2025 22:52:12 -0800 (PST)
-Received: from [192.168.0.226] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a2f3d5d20dsm291184545ad.67.2025.12.29.22.52.11
+        d=1e100.net; s=20230601; t=1767078807; x=1767683607;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xJz6NgaWCb2qaXDuRrNDREMtuLJHuzwHPslg7t5UBfE=;
+        b=mxFizkMNVkbGrVs18YNW2kJ0Vd47Egy7k95GwRxE3roe85szE1h/TKgE4U3PssZLhD
+         Kzts61QmxOvklpKHU76+fjxAqk7Fz7bQbgpRvvpmwD+gWJJB0n2bqoDODd6Ivlez72Ae
+         dwoY4ggLq+ikpxj+X69n/eEcgs5N6dI7/FdI1p26r7sMKDMH/POLxjiFiy8FIZxeaCxk
+         IAfFLmhPeDW+OKP+Zy+NVw5PDL1Ylt0NYujj9PNcFDL7oG02duCLfR78faAFc+ysIawb
+         SwdoL/v435LNlMoJ6Y6OvYTGdMBIaw7PtQx5gat2OmgbfWkhmwwAJNP045ONn/xCOtjZ
+         yNtA==
+X-Gm-Message-State: AOJu0YwBhHO8OEuIgLiES2loMw5VFNIclyqvpeJfR4XSBR1pSQJbAkre
+	mqnRXbn+swvP8aUSkpdPkoFnsI65//I+A0wJXkDtkoUULlR5w/qS1sT98DiDdMEHAGRgGQ==
+X-Gm-Gg: AY/fxX4giZavC6Wib5va72MPRNVC7HKGziSfND6D3zr9+vDgsEKnEo41XaybcujYbli
+	Bi3xkdN8blPBC0H+j9oKH6alTxaBAuvfkd2Ejozr1b2QIhLZpdphvYG+/QGVEr9unr9RUAjwlJ6
+	M7yc6fd2DLvMitBwKy/DOovjtgiL4AdGY4E+MufQ6UDD4RgFxF3xcnCpwgwNdRvOEBvR4JCajq9
+	oMzC4mLmHK9q15KGO6FrtnH/84WR86B+8kDzCz3QQKJw0z6NG+CVmr7HTr8AU4UiHoyLcTQdXLv
+	q2xpPmZrPFcDocO/wUUBCj9J3COMlg3/5kOvaE4nAYErINPCBchU0Z4koPlRfWqxWgd6cUsOkbo
+	rOBbj8p5pHOESV0fcRvVnPxQha1nRkPY6WVw4GhiwshYkv2wGfVuBP0tQJV1DDftBfSTRfCS+7u
+	9dF5gi1GmWXCKXDjPcTua3KqM=
+X-Google-Smtp-Source: AGHT+IF9V+J1H/LAfOR6IlDn04Xk3T45oVOdPAJfDMirL2nywsbvikPfuZ1w1+aZ0Gk0JhPLZUVrlA==
+X-Received: by 2002:a05:6a20:7349:b0:35f:5fc4:d88c with SMTP id adf61e73a8af0-376a75f54fcmr28802195637.13.1767078807540;
+        Mon, 29 Dec 2025 23:13:27 -0800 (PST)
+Received: from ezingerman-fedora-PF4V722J ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34e7723b3a8sm15578514a91.3.2025.12.29.23.13.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Dec 2025 22:52:11 -0800 (PST)
-Message-ID: <e3c26c7c9a74240b1fad2237ea0b4e205f3c1f0d.camel@gmail.com>
-Subject: Re: [QUESTION] KASAN: invalid-access in
- bpf_patch_insn_data+0x22c/0x2f0
+        Mon, 29 Dec 2025 23:13:27 -0800 (PST)
 From: Eduard Zingerman <eddyz87@gmail.com>
-To: Jeongho Choi <jh1012.choi@samsung.com>, bpf@vger.kernel.org, 
-	kasan-dev@googlegroups.com
-Cc: joonki.min@samsung.com, hajun.sung@samsung.com
-Date: Mon, 29 Dec 2025 22:52:08 -0800
-In-Reply-To: <20251229110431.GA2243991@tiffany>
-References: 
-	<CGME20251229105858epcas2p26c433715e7955d20072e72964e83c3e7@epcas2p2.samsung.com>
-	 <20251229110431.GA2243991@tiffany>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	andrii@kernel.org
+Cc: daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	kernel-team@fb.com,
+	yonghong.song@linux.dev,
+	eddyz87@gmail.com
+Subject: [PATCH 0/2] bpf: calls to bpf_loop() should have an SCC and accumulate backedges
+Date: Mon, 29 Dec 2025 23:13:06 -0800
+Message-ID: <20251229-scc-for-callbacks-v1-0-ceadfe679900@gmail.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+X-Change-ID: 20251219-scc-for-callbacks-d6d94faa2e43
+Content-Transfer-Encoding: 8bit
 
-On Mon, 2025-12-29 at 20:05 +0900, Jeongho Choi wrote:
-> Hello
-> I'm jeongho Choi from samsung System LSI.
-> I'm developing kernel BSP for exynos SoC.
->=20
-> I'm asking a question because I've recently been experiencing=20
-> issues after enable SW KASAN in Android17 kernel 6.18 environment.
+This is a correctness fix for the verification of BPF programs that
+work with callback-calling functions. The problem is the same as the
+issue fixed by series [1] for iterator-based loops: some of the states
+created while processing the callback function body might have
+incomplete read or precision marks.
 
-Hi Jeongho,
+An example of an unsafe program that is accepted without this fix can
+be found in patch #2.
 
-I'd like to reproduce this locally, is this particular kernel version
-open source? Could you please post a link to git repository and a
-commit hash you see the error at?
-Is the BPF program being loaded open source?
+There is some impact on verification performance:
 
-(Also, could you please post the output of
- scripts/decode_stacktrace.sh for the stack trace you attached?).
+File                             Program               Insns (A)  Insns (B)  Insns      (DIFF)
+-------------------------------  --------------------  ---------  ---------  -----------------
+pyperf600_bpf_loop.bpf.o         on_event                   4247       9985   +5738 (+135.11%)
+setget_sockopt.bpf.o             skops_sockopt              5719       7446    +1727 (+30.20%)
+setget_sockopt.bpf.o             socket_post_create         1253       1603     +350 (+27.93%)
+strobemeta_bpf_loop.bpf.o        on_event                   3424       7224   +3800 (+110.98%)
+test_tcp_custom_syncookie.bpf.o  tcp_custom_syncookie      11929      38307  +26378 (+221.12%)
+xdp_synproxy_kern.bpf.o          syncookie_tc              13986      23035    +9049 (+64.70%)
+xdp_synproxy_kern.bpf.o          syncookie_xdp             13881      21022    +7141 (+51.44%)
 
-> Context:
->  - Kernel version: v6.18
->  - Architecture: ARM64
->=20
-> Question:
-> When SW tag KASAN is enabled, we got kernel crash from bpf/verifier.
-> I found that it occurred only from 6.18, not 6.12 LTS we're working on.
+Total progs: 4172
+Old success: 2520
+New success: 2520
+total_insns diff min:    0.00%
+total_insns diff max:  221.12%
+0 -> value: 0
+value -> 0: 0
+total_insns abs max old: 837,487
+total_insns abs max new: 837,487
+   0 .. 5    %: 4163
+   5 .. 15   %: 2
+  25 .. 35   %: 2
+  50 .. 60   %: 1
+  60 .. 70   %: 1
+ 110 .. 120  %: 1
+ 135 .. 145  %: 1
+ 220 .. 225  %: 1
 
-I don't think that commit "bpf: use realloc in bpf_patch_insn_data"
-had been backported to 6.12, it is a performance optimization,
-not a security fix.
+[1] https://lore.kernel.org/bpf/174968344350.3524559.14906547029551737094.git-patchwork-notify@kernel.org/
 
-Thanks,
-Eduard
+---
+Eduard Zingerman (2):
+      bpf: bpf_scc_visit instance and backedges accumulation for bpf_loop()
+      selftests/bpf: test cases for bpf_loop SCC and state graph backedges
 
-> After some tests, I found that the device is booted when 2 commits are re=
-verted.
->=20
-> bpf: potential double-free of env->insn_aux_data
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit=
-/?id=3Db13448dd64e27752fad252cec7da1a50ab9f0b6f
->=20
-> bpf: use realloc in bpf_patch_insn_data
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit=
-/?id=3D77620d1267392b1a34bfc437d2adea3006f95865
->=20
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> [   79.419177] [4:     netbpfload:  825] BUG: KASAN: invalid-access in bp=
-f_patch_insn_data+0x22c/0x2f0
-> [   79.419415] [4:     netbpfload:  825] Write of size 27896 at addr 25ff=
-ffc08e6314d0 by task netbpfload/825
-> [   79.419984] [4:     netbpfload:  825] Pointer tag: [25], memory tag: [=
-fa]
-> [   79.425193] [4:     netbpfload:  825]=20
-> [   79.427365] [4:     netbpfload:  825] CPU: 4 UID: 0 PID: 825 Comm: net=
-bpfload Tainted: G           OE       6.18.0-rc6-android17-0-gd28deb424356-=
-4k #1 PREEMPT  92293e52a7788dc6ec1b9dff6625aaee925f3475
-> [   79.427374] [4:     netbpfload:  825] Tainted: [O]=3DOOT_MODULE, [E]=
-=3DUNSIGNED_MODULE
-> [   79.427378] [4:     netbpfload:  825] Hardware name: Samsung ERD9965 b=
-oard based on S5E9965 (DT)
-> [   79.427382] [4:     netbpfload:  825] Call trace:
-> [   79.427385] [4:     netbpfload:  825]  show_stack+0x18/0x28 (C)
-> [   79.427394] [4:     netbpfload:  825]  __dump_stack+0x28/0x3c
-> [   79.427401] [4:     netbpfload:  825]  dump_stack_lvl+0x7c/0xa8
-> [   79.427407] [4:     netbpfload:  825]  print_address_description+0x7c/=
-0x20c
-> [   79.427414] [4:     netbpfload:  825]  print_report+0x70/0x8c
-> [   79.427421] [4:     netbpfload:  825]  kasan_report+0xb4/0x114
-> [   79.427427] [4:     netbpfload:  825]  kasan_check_range+0x94/0xa0
-> [   79.427432] [4:     netbpfload:  825]  __asan_memmove+0x54/0x88
-> [   79.427437] [4:     netbpfload:  825]  bpf_patch_insn_data+0x22c/0x2f0
-> [   79.427442] [4:     netbpfload:  825]  bpf_check+0x2b44/0x8c34
-> [   79.427449] [4:     netbpfload:  825]  bpf_prog_load+0x8dc/0x990
-> [   79.427453] [4:     netbpfload:  825]  __sys_bpf+0x300/0x4c8
-> [   79.427458] [4:     netbpfload:  825]  __arm64_sys_bpf+0x48/0x64
-> [   79.427465] [4:     netbpfload:  825]  invoke_syscall+0x6c/0x13c
-> [   79.427471] [4:     netbpfload:  825]  el0_svc_common+0xf8/0x138
-> [   79.427478] [4:     netbpfload:  825]  do_el0_svc+0x30/0x40
-> [   79.427484] [4:     netbpfload:  825]  el0_svc+0x38/0x8c
-> [   79.427491] [4:     netbpfload:  825]  el0t_64_sync_handler+0x68/0xdc
-> [   79.427497] [4:     netbpfload:  825]  el0t_64_sync+0x1b8/0x1bc
-> [   79.427502] [4:     netbpfload:  825]=20
-> [   79.545586] [4:     netbpfload:  825] The buggy address belongs to a 8=
--page vmalloc region starting at 0x25ffffc08e631000 allocated at bpf_patch_=
-insn_data+0x8c/0x2f0
-> [   79.558777] [4:     netbpfload:  825] The buggy address belongs to the=
- physical page:
-> [   79.565029] [4:     netbpfload:  825] page: refcount:1 mapcount:0 mapp=
-ing:0000000000000000 index:0x0 pfn:0x8b308b
-> [   79.573710] [4:     netbpfload:  825] memcg:c6ffff882d1d6402
-> [   79.577791] [4:     netbpfload:  825] flags: 0x6f80000000000000(zone=
-=3D1|kasantag=3D0xbe)
-> [   79.584042] [4:     netbpfload:  825] raw: 6f80000000000000 0000000000=
-000000 dead000000000122 0000000000000000
-> [   79.592460] [4:     netbpfload:  825] raw: 0000000000000000 0000000000=
-000000 00000001ffffffff c6ffff882d1d6402
-> [   79.600877] [4:     netbpfload:  825] page dumped because: kasan: bad =
-access detected
-> [   79.607126] [4:     netbpfload:  825]=20
-> [   79.609296] [4:     netbpfload:  825] Memory state around the buggy ad=
-dress:
-> [   79.614766] [4:     netbpfload:  825]  ffffffc08e637f00: 25 25 25 25 2=
-5 25 25 25 25 25 25 25 25 25 25 25
-> [   79.622665] [4:     netbpfload:  825]  ffffffc08e638000: 25 25 25 25 2=
-5 25 25 25 25 25 25 25 25 25 25 25
-> [   79.630562] [4:     netbpfload:  825] >ffffffc08e638100: 25 25 25 25 2=
-5 25 25 fa fa fa fa fa fa fe fe fe
-> [   79.638463] [4:     netbpfload:  825]                                 =
-        ^
-> [   79.644190] [4:     netbpfload:  825]  ffffffc08e638200: fe fe fe fe f=
-e fe fe fe fe fe fe fe fe fe fe fe
-> [   79.652089] [4:     netbpfload:  825]  ffffffc08e638300: fe fe fe fe f=
-e fe fe fe fe fe fe fe fe fe fe fe
-> [   79.659987] [4:     netbpfload:  825] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
->=20
-> I have a question about the above phenomenon.
-> Thanks,
-> Jeongho Choi
+ kernel/bpf/verifier.c                     | 13 ++++--
+ tools/testing/selftests/bpf/progs/iters.c | 75 +++++++++++++++++++++++++++++++
+ 2 files changed, 84 insertions(+), 4 deletions(-)
+---
+base-commit: f14cdb1367b947d373215e36cfe9c69768dbafc9
+change-id: 20251219-scc-for-callbacks-d6d94faa2e43
 
