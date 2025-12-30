@@ -1,127 +1,152 @@
-Return-Path: <bpf+bounces-77496-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77497-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id A89C6CE8752
-	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 01:59:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D906CCE8783
+	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 02:14:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4AF743014D9F
-	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 00:59:27 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C20C73012741
+	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 01:13:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B643C2DCF67;
-	Tue, 30 Dec 2025 00:59:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 427842DE717;
+	Tue, 30 Dec 2025 01:13:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oLZ7OzKO"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="exCcTz3Y"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 523242DCF6C;
-	Tue, 30 Dec 2025 00:59:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 630E22DE6FB
+	for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 01:13:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767056365; cv=none; b=BAbbccrvCROsFgZ8qm1t6XZXBBeX7Me8exNTZDOUy3IGlHyXHMP2aKQie8wDaLOy18TfSgvynhM8OYdNOaFrmijy0vAME7w9aIIXhV3h6pGKduYWbOzUJm47VX9SBuPfY3iB9IS43Mc5OFh10EWG04ipkrFevOautum5BDoRh5k=
+	t=1767057224; cv=none; b=kLxgMweBoDgKa+l3UvYhee9Sj3Aa4CSkBVY2dnj0ZgjHq24NHMF5PAm5I+mK42agHgB9+5xM9MVpQlzUCtqZtzHbiCyLS5Nf2Py8Y5KcoZQNmxQn8OVfU/bTi2WxbtBYsqN2/fcVe22oTvuqgbNEtJjrWcL6/K8yo8eInD4iK4o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767056365; c=relaxed/simple;
-	bh=2lxDnwdsZekXe4NfDsKQJITWCMDUWP6xiRX5VchwVV4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=i/VNADts5yLU90PsjaMUHC76ju/yZY8QZQDqaVXhyhrAVL2/sh6I0NB2B76yRFF87EqSRfmBKUIaz3jvgBzOMA03fvr0Gxt/8SPJmlV/8d42Hp+i9/Aw/JAMTjAVuYRwHNutZxSM6hD6MhZCo6+6zL0xR+/9UTNqLi22wlnWpCQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oLZ7OzKO; arc=none smtp.client-ip=95.215.58.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <26800836-3864-47ec-910b-aed571758f04@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1767056351;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TSyzvjl2It73lqYA6EDJUDBcvQxjHw4X7Zb7XrvQVUQ=;
-	b=oLZ7OzKOpf4AbXx1p7wAm4IkLiVOcM7MnlHBnQYpYeKv2eymkHXiCpvQz03QcYr9tU4Bcc
-	WO/jFUHfHLy+ol+q9jTWIiewXfC4ZhoMW2JWLqXm3jpqTCQ0vVgUq9r9RnZRw1hiOGyWHH
-	FgosFZ8sEO9qw+v4wRKSoxAGCYXUflA=
-Date: Mon, 29 Dec 2025 16:59:03 -0800
+	s=arc-20240116; t=1767057224; c=relaxed/simple;
+	bh=sa7qLQI5q5Dm3mJbGTVc8XdUtcmibzgwcnRtQlAfcts=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=CAMLOGnZ8bmwxURwWAXq9KLIpQqi/wtoVdKxwqkvn6VOJ6gl0m4T1vwCxYKaoHys3pTotZpuCnT+RLOTUNECt77PU0wrx1mJy+LcySsGAHJ0mDMKio74DynrwdCjBld1DiezLFwGwFx6rrjUtyLCkgVbimbqANrY95SkK/EJw/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=exCcTz3Y; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-2a110548cdeso132719675ad.0
+        for <bpf@vger.kernel.org>; Mon, 29 Dec 2025 17:13:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1767057222; x=1767662022; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=WYWIQM1Og1s1JCoAfx8pw7//2VEw3HJlAFb3SG9XsHk=;
+        b=exCcTz3YIIiHJOHKDuN+cGFAsWn0DhPOwrdps5bGe6fmxw+EeHsxDi75vs9aQAlr7y
+         YLAzQt7apvQvaPXOc8bYUKBX7Cy2HhiH8+/7K4JEys3bsCf/ZbCiz4z0RiAsUB2+f1Lt
+         z6LZ/a5tDy1tLnoBCk8uNeds5Pz5BL6RjKdMxxAADb2ekcVBNsW7F6dq5M9ItUd2ZEgw
+         4k1ZH5J2OjoXzqxbnzEhXq8nneEe6pREOO8/YoFMi1uV6iE9B/9dnMx5DsYYweLVdJCz
+         c7VM1hSuCTKodizpAaaHptDLWOiu0WEd0m9MqHWrA1mrNFDhkhLsviuDbwnmkZY9LPD0
+         oS3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767057222; x=1767662022;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WYWIQM1Og1s1JCoAfx8pw7//2VEw3HJlAFb3SG9XsHk=;
+        b=Hheb8ciyoye28cuyKgGojl213woP/XNIGPY0e5Y4ni05S4+NdoLqDedaq8AIn3euS1
+         /g9DvMl1SE9DmlitnQNqB4TtvEJ4b0z/9rwqG9nHrRB3uVa7045+e8z4UNbPGSwXE4mw
+         cD+Xh577Yzycr0/Q7KW3JRRnlnPR4/5Zrjw/M9+s4ymgvAZal9LV3FOYcWOjaQyD5bcZ
+         QfevZe8ztr+d0z1AtJgNh2rAfY1l16iIoHNsgBNIrJa78r5uv2GH2EXDRORT66bb8eh4
+         n1osueu2IAddaPWTlAfGF+SJgHWLSkPenWVbQkdSTjYlVAobzLI/47vlAYG6TuDl2d/7
+         /5eA==
+X-Forwarded-Encrypted: i=1; AJvYcCUf8ZL43nBQXDJkG+/L+Un62N5PGjAGP5paYJNvZ/nWRIDC6J+z45PUQXytvI5VAQcn/RI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyCcFVdigEt/+5rWro+yxHZUJxw1BZJzwNK5t380KSOxepNoIND
+	K3rnNemdqWXhpPEtSMmrSeE6XXbvToSTEQ3MBMQOf5Yt4TJz6wu51hbt
+X-Gm-Gg: AY/fxX721rmQES3MwWBfB1FLbg9qqEkZGfKxGI2K7+S6LRfzGuZ1gqsfyEmsYVxd/9N
+	TJbIcM03+UU5NLqMCT/37GoJ/eFLKHKe/29a35kc8YyWOciHa4rX9qITBk/caHAECdkzdubArmB
+	5TCim+5qRKSgf1pWWZslsTJRMRseqWsfdFa32wHroacQSbAcR40dUYeMqN/Gxab9YhogvkQ3i2Z
+	WZdRcNltylK9lOqHMifW/Befm5Pi3JXA48qmhrsrNak3ImCgO8msBrCfVr7PWvULoKTYcFmBJCf
+	laDLqLtDaiO+aBPqzEZz3YQ94Yuxks73fwqT5AoqNHYQdJj7B2GUd8YH+yFc7WSSfJTlrNV/Yh5
+	eR6RCUhmul4Bwh7Ls/E1dC0KF3lEwLpf/4EDyqp12McbMsbA3tcgt5AU7TMzykohCO5JNA3VolN
+	IfhOthvipf5d1zAX1UgCEv4N33zUzIZjk1DUdwma5O316sOOI=
+X-Google-Smtp-Source: AGHT+IE6mqbQgA7uzu7rDp2aK+RuMAZGHFL8WZz77h4FNUQklejhaqD6TgN8G1EKI7983eo7YVvZZw==
+X-Received: by 2002:a05:701b:251a:b0:11a:436c:2d56 with SMTP id a92af1059eb24-121722abf57mr21646958c88.2.1767057222364;
+        Mon, 29 Dec 2025 17:13:42 -0800 (PST)
+Received: from ?IPv6:2a03:83e0:115c:1:ac6b:d5ad:83fe:6cca? ([2620:10d:c090:500::2:1bc9])
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-1217243bbe3sm127521342c88.0.2025.12.29.17.13.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Dec 2025 17:13:42 -0800 (PST)
+Message-ID: <62ba00524aa7afd5e1f76a5a2f4c06899bf2dd64.camel@gmail.com>
+Subject: Re: [PATCH bpf-next] verifier: add prune points to live registers
+ print
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Mahe Tardy <mahe.tardy@gmail.com>, bpf <bpf@vger.kernel.org>, Alexei
+ Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, John
+ Fastabend	 <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>,
+ Paul Chaignon	 <paul.chaignon@gmail.com>, shung-hsi.yu@suse.com
+Date: Mon, 29 Dec 2025 17:13:40 -0800
+In-Reply-To: <CAADnVQLsJeSjwFVE=gcnVzh7HftDqZJM+xByr2cD6TRmTRGLsA@mail.gmail.com>
+References: <20251222185813.150505-1-mahe.tardy@gmail.com>
+	 <CAADnVQLF+ihK16J3x5pQcJY0t2_gUHiur7ENZNqJdazzr+f8Pg@mail.gmail.com>
+	 <aUprAOkSFgHyUMfB@gmail.com>
+	 <4eec6b7605d007c6f906bf9a4cd95f2423781b0a.camel@gmail.com>
+	 <CAADnVQLsJeSjwFVE=gcnVzh7HftDqZJM+xByr2cD6TRmTRGLsA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH v1] module: Fix kernel panic when a symbol st_shndx is
- out of bounds
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Nathan Chancellor <nathan@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>, Luis Chamberlain
- <mcgrof@kernel.org>, Petr Pavlu <petr.pavlu@suse.com>,
- Daniel Gomez <da.gomez@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, LKML <linux-kernel@vger.kernel.org>,
- linux-modules@vger.kernel.org, bpf <bpf@vger.kernel.org>,
- Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
- clang-built-linux <llvm@lists.linux.dev>
-References: <20251224005752.201911-1-ihor.solodrai@linux.dev>
- <9edd1395-8651-446b-b056-9428076cd830@linux.dev>
- <af906e9e-8f94-41f5-9100-1a3b4526e220@linux.dev>
- <20251229212938.GA2701672@ax162>
- <6b87701b-98fb-4089-a201-a7b402e338f9@linux.dev>
- <CAADnVQ+X-a92LEgcd-HjTJUcw2zR_jtUmD9U-Z6OtNnvpVwfiw@mail.gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Ihor Solodrai <ihor.solodrai@linux.dev>
-In-Reply-To: <CAADnVQ+X-a92LEgcd-HjTJUcw2zR_jtUmD9U-Z6OtNnvpVwfiw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-On 12/29/25 4:50 PM, Alexei Starovoitov wrote:
-> On Mon, Dec 29, 2025 at 4:39 PM Ihor Solodrai <ihor.solodrai@linux.dev> wrote:
->>
->> [...]
->>
->>
->> From 7c3b9cce97cc76d0365d8948b1ca36c61faddde3 Mon Sep 17 00:00:00 2001
->> From: Ihor Solodrai <ihor.solodrai@linux.dev>
->> Date: Mon, 29 Dec 2025 15:49:51 -0800
->> Subject: [PATCH] BTF_OBJCOPY
->>
->> ---
->>  Makefile                             |  6 +++++-
->>  lib/Kconfig.debug                    |  1 +
->>  scripts/gen-btf.sh                   | 10 +++++-----
->>  scripts/link-vmlinux.sh              |  2 +-
->>  tools/testing/selftests/bpf/Makefile |  4 ++--
->>  5 files changed, 14 insertions(+), 9 deletions(-)
-> 
-> All the makefile hackery looks like overkill and wrong direction.
-> 
-> What's wrong with kernel/module/main.c change?
-> 
-> Module loading already does a bunch of sanity checks for ELF
-> in elf_validity_cache_copy().
-> 
-> + if (sym[i].st_shndx >= info->hdr->e_shnum)
-> is just one more.
-> 
-> Maybe it can be moved to elf_validity*() somewhere,
-> but that's a minor detail.
-> 
-> iiuc llvm-objcopy affects only bpf testmod, so not a general
-> issue that needs top level makefile changes.
+On Mon, 2025-12-29 at 16:42 -0800, Alexei Starovoitov wrote:
 
-AFAIU, the problem is that the llvm-objcopy bug is essentially
-use-after-free [1], that may (or may not) corrupt st_shndx value of
-some symbols when executing --update-section.
+[...]
 
-And so we can't trust this command anywhere in the kernel build, even
-though it only manifested itself in a BPF test module.
+> > Imo, it would be indeed more interesting to print where checkpoint
+> > match had been attempted and why it failed, e.g. as I do in [1].
+> > Here is a sample:
+> >=20
+> >   cache miss at (140, 5389): frame=3D1, reg=3D0, spi=3D-1, loop=3D0 (cu=
+r: 1) vs (old: P0)
+> >   from 5387 to 5389: frame1: R0=3D1 R1=3D0xffffffff ...
+> >=20
+> > However, in the current form it slows down log level 2 output
+> > significantly (~5 times). Okay for my debugging purposes but is not
+> > good for upstream submission.
+> >=20
+> > Thanks,
+> > Eduard.
+> >=20
+> > [1] https://github.com/kernel-patches/bpf/commit/65fcd66d03ad9d6979df79=
+628e569b90563d5368
+>=20
+> bpf_print_stack_state() refactor can land.
+> While the rest potentially bpfvv can do.
+> With log_level=3D=3D2 all the previous paths through particular instructi=
+on
+> will be in the log earlier, so I can imagine clicking on an insn
+> and it will show current and all previous seen states.
+> The verifier heuristic will drop some of them, so it will show more
+> than actually known during the verification, but that's probably ok
+> for debugging to see why states don't converge.
+> bpfvv can make it easier to see the difference too instead of
+> "frame=3D1, reg=3D0, spi=3D-1, loop=3D0 (cur: 1) vs (old: P0)"
+> which is not easy to understand.
+> Only after reading the diff I realized that reg R0 is the one
+> that caused a mismatch.
 
-With the gen-btf.sh changes ${OBJCOPY} --update-section is called for
-all binaries with .BTF_ids: vmlinux and all modules.
+In theory this can be handled in post-processing completely,
+however I'd expect mirroring states-equal logic in bpfvv
+(or any other tool) to be error prone. Which is very undesirable when
+you are debugging. To make post-processing simpler I'd print:
+- state id upon state creation
+- state ids upon cache miss + register or spi number.
 
-The fix in module.c is an independent kernel bug, that is hopefully
-fixed with the st_shndx check.
+This way post-processing tool would only need to collect register
+values for state ids in question.
 
-[1] https://github.com/llvm/llvm-project/issues/168060#issuecomment-3533552952
-
+Idk, not sure if any of this should be upstreamed, I'm fine with it
+living in my debug branch. On the other hand, this might be useful for
+people debugging 1M instruction issues, as I discussed with
+Paul Chaignon and Shung-Hsi Yu at LPC.
 
