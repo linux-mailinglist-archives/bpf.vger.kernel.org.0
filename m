@@ -1,183 +1,184 @@
-Return-Path: <bpf+bounces-77534-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77535-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15DF6CEA801
-	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 19:45:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 95DEACEA804
+	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 19:45:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 85414303A0B3
-	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 18:44:51 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 23C6830204A4
+	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 18:45:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E1F4322A24;
-	Tue, 30 Dec 2025 18:44:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06CCB2F12B7;
+	Tue, 30 Dec 2025 18:45:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d9PTwU5Z"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="YFU9FBMG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABFAF277017
-	for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 18:44:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D4CB28489E
+	for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 18:45:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767120290; cv=none; b=Z4AbqFaX1cp1cXL8A8jSZiEcNPLKjLWYAZ6M1h5C64q9wzqHT61gt83Xawhmf6BYDDczeiiu0/6WN+CEiaLa6zyiVRYHufs2Ppciy4yZ7IYgMP9kj5rgcXbvF8UY3wwKRIaU92GeO9n7uKhTS4CVZpzPYt1EgkT6IS2WEJoDlKM=
+	t=1767120304; cv=none; b=AJIp8Jz4verHp0iBsiFfyFRrs4XNiF9zZ3lKVJoyTnm+sAUxlJq2tZopyMxDgo3JXkPgGSadzV2Ljv1cmYmKSXF+WkEaBgi4HUhhyjevzb9d/wRZN+dLIo7drhtIEfzxjrGG23zbfCwdgN90Hq7PLtUainaoZmWqAu41V426VX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767120290; c=relaxed/simple;
-	bh=nyaBjNraBouhpprwaGgsE8CCPCA36qfk3sJVGVBBq/E=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=VsiZRsyXD9tJeb26X0T2E8FN8a3t5H2vFm+MH4YiiryFwThN2OzEL/dt1yCDyZB7q+dNpse3DpHDGsYQ2XHEo4alik1A7d5KxCMaf05sEE9XXPLhTC3gtJJzbHyL3DUkvHgyJ/4HVGMDJAJTc/6tG8rbDv8oZETcQ/Zw5Hyh04I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d9PTwU5Z; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-7bc248dc16aso8109234b3a.0
-        for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 10:44:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767120288; x=1767725088; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=rVsU17ZwOyYZEriEoc6JeACGdHYJwpiHxu6Q1MZ0RnM=;
-        b=d9PTwU5ZOVI7bYUYlWtY0v9O7v9jgIEM2s3CUZGFWzRVJakyMB9Ln8tAqsHSOG4baX
-         R8w+ohPja78t/fyjWRal/roL751uAi4NEgD0RHXUf8wyISmr5sEV7rp5qdJY8Qdwim9B
-         u/v77lNqwVq11l9xYUYJpLEcRPi40N/lwFKVVtc2phnTQAzdfo7AFJI78If8ERUbSQGc
-         UekgXm7kbw8j3SxnYtuildIKjsOkYK7+heZJYzQ8oGBBmdJxD/E6UT4fuQv1NN9kFooy
-         fq+1n9UckTIRWwjleomEVGmx81wCYsWNf6Ck5GJ+0hq3qNP+aUST6VWwlWsKxNJvLyHi
-         LhcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767120288; x=1767725088;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rVsU17ZwOyYZEriEoc6JeACGdHYJwpiHxu6Q1MZ0RnM=;
-        b=nPIdSnGkDTWCnbNWnEc2W01dcBsJGD8FgtLbfICMZSfqytw+ToBH8XSjoGvc2y0S5+
-         HWolaXXQ3RnGTFpXJjWiKMxbdVxj9pmQKX+EdBQIDvXdNN4vYvdF4qNfUaEk1k9pi3Pt
-         t+xxYVgOch+6WuD9lKFgAUJ+JN1Wh1jbNpnLJXR5X+A7qdSQ8RmiKTH2x5ZC2WSnqaHE
-         qQAy1Xu0IE0rSTrW2JP1qWSseYrsC+XtTjtxakogsIOux74nmGBAKJxfYnkwakXbGbnY
-         B8qE6js/zIIFFNHIZDnpOsACuKUJ55tiStVvy9112sTe/p6YiHRQytiJ8ZGr6xGbCz4Q
-         DvrQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUVGoT8FSoWJlEgsCc9QogTzs9BDt0wtvJEOudXGcx3o25XMiSxTm3A6sP95kluY+ElhQM=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz9ffsEeGqu4riZeB5MJbF4Z41dDcNU7OFOEo8rdhWH2+kgwUiU
-	pE+ZQhFR9e5EkUbPSUk2bTVfj7JFLYrLrZ8JPxtJ69OzxGlmzyHwFFWv
-X-Gm-Gg: AY/fxX6zmm6bfqSkwlbZWVczjeTeddvJykYzN2mh2Z5Z64l2IxeeRTWRDICLKrJJZTc
-	L2Dn8GYkJa9xn7ZU/HOEELuCoU7i6obYhpaBA4qlvzuJ25qWb6al+F+F/DBnVJxDmpXdXAQx5QK
-	b0UkUgOB9J8tUOV5a/PQwSk8mKKo+4bDlF+SKlZ0Rvt+7ncfUZD7NWOo2XoXW4hnR6yLAVE7CyC
-	llxjlhdqN36GlW58mXgehFC9vebrk60QksKnMLMTkQ7o3sW7YvPo1zIrToTB7TGdpMf2aiadkpF
-	6aZbnTI6tGFBbFyeZWt8rNecgseD3Qj+6C8qerySw4B8ohnBp/NAcYuSNKJFQRI3fI4QeiSRUvu
-	8XGOsv5G7JRZQwG2py76PCMhhLB12uRIMv8FLYHcyzDJGMC5HMOfJiwIwbzNef+7bHtFOudrYKC
-	WXjqm4/urB
-X-Google-Smtp-Source: AGHT+IHmSFc/px3pkbAxMtU5GFCYG3aBR+ZkmdZ7h7l14y8bFqbUxOjJghuzuMxxvFqsyWr2o3FpVg==
-X-Received: by 2002:a05:6a20:3943:b0:366:5c80:d5a2 with SMTP id adf61e73a8af0-376aa5f6218mr31835329637.75.1767120287950;
-        Tue, 30 Dec 2025 10:44:47 -0800 (PST)
-Received: from [192.168.0.226] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34e70dbca5fsm33838163a91.11.2025.12.30.10.44.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Dec 2025 10:44:47 -0800 (PST)
-Message-ID: <95c33c1d3dc961011ce91411ccb0682323d0f407.camel@gmail.com>
-Subject: Re: [PATCH bpf-next] verifier: add prune points to live registers
- print
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Mahe Tardy <mahe.tardy@gmail.com>, bpf <bpf@vger.kernel.org>, Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, John
- Fastabend	 <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>,
- Paul Chaignon	 <paul.chaignon@gmail.com>, Shung-Hsi Yu
- <shung-hsi.yu@suse.com>
-Date: Tue, 30 Dec 2025 10:44:44 -0800
-In-Reply-To: <CAADnVQLDfmLSuvXJFLHM=tOfViSvwPBUyGGZN8OhDP5dRy1_NQ@mail.gmail.com>
-References: <20251222185813.150505-1-mahe.tardy@gmail.com>
-	 <CAADnVQLF+ihK16J3x5pQcJY0t2_gUHiur7ENZNqJdazzr+f8Pg@mail.gmail.com>
-	 <aUprAOkSFgHyUMfB@gmail.com>
-	 <4eec6b7605d007c6f906bf9a4cd95f2423781b0a.camel@gmail.com>
-	 <CAADnVQLsJeSjwFVE=gcnVzh7HftDqZJM+xByr2cD6TRmTRGLsA@mail.gmail.com>
-	 <62ba00524aa7afd5e1f76a5a2f4c06899bf2dd64.camel@gmail.com>
-	 <CAADnVQLDfmLSuvXJFLHM=tOfViSvwPBUyGGZN8OhDP5dRy1_NQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
+	s=arc-20240116; t=1767120304; c=relaxed/simple;
+	bh=yRC9t65PO3NSduAzMKoSrj4oMSrnLS8ACvjrMDeASUk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XkVHG+oy2O6adnxx5dFaVzp0JLypmyBSF8UmjfV3ybo1AGuV10p9GysjMImJJwVIcp0W6kN0VApEqHUrJMMn6PoThnI+4ve+j+/mlypgLwtna70eBMCywvGwU6VMPr90E+YeKI3Dj9fViVnf0/MBQeXygsbcCdq4BAaqplxJUI4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=YFU9FBMG; arc=none smtp.client-ip=91.218.175.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <6f845383-563e-49a7-941c-03e9db6158cc@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1767120300;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VR4Tl9AFiA48E3t4mhEMyh1YOQgRBN3waZ3st/FSflQ=;
+	b=YFU9FBMGTOgpkSg9MZfgapPcIC9yjumwdoUDaBmMcBKdqJzVqMma9omfwqJJwbYSMJIHLe
+	W5BidMBdcnreQsqktWGCN0feiN3N6VxEb5mUdY4BkEdmpk92iJtx6b2AFKLQsbdS6XHN3z
+	/WgqNXwwu21cirsWK87Fw+setz+HDYo=
+Date: Tue, 30 Dec 2025 10:44:52 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [RFC PATCH v1] module: Fix kernel panic when a symbol st_shndx is
+ out of bounds
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Nathan Chancellor <nathan@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>, Luis Chamberlain
+ <mcgrof@kernel.org>, Petr Pavlu <petr.pavlu@suse.com>,
+ Daniel Gomez <da.gomez@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, LKML <linux-kernel@vger.kernel.org>,
+ linux-modules@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+ Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+ clang-built-linux <llvm@lists.linux.dev>
+References: <20251224005752.201911-1-ihor.solodrai@linux.dev>
+ <9edd1395-8651-446b-b056-9428076cd830@linux.dev>
+ <af906e9e-8f94-41f5-9100-1a3b4526e220@linux.dev>
+ <20251229212938.GA2701672@ax162>
+ <6b87701b-98fb-4089-a201-a7b402e338f9@linux.dev>
+ <CAADnVQ+X-a92LEgcd-HjTJUcw2zR_jtUmD9U-Z6OtNnvpVwfiw@mail.gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Ihor Solodrai <ihor.solodrai@linux.dev>
+In-Reply-To: <CAADnVQ+X-a92LEgcd-HjTJUcw2zR_jtUmD9U-Z6OtNnvpVwfiw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, 2025-12-30 at 10:06 -0800, Alexei Starovoitov wrote:
-> On Mon, Dec 29, 2025 at 5:13=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.c=
-om> wrote:
-> >=20
-> > On Mon, 2025-12-29 at 16:42 -0800, Alexei Starovoitov wrote:
-> >=20
-> > [...]
-> >=20
-> > > > Imo, it would be indeed more interesting to print where checkpoint
-> > > > match had been attempted and why it failed, e.g. as I do in [1].
-> > > > Here is a sample:
-> > > >=20
-> > > >   cache miss at (140, 5389): frame=3D1, reg=3D0, spi=3D-1, loop=3D0=
- (cur: 1) vs (old: P0)
-> > > >   from 5387 to 5389: frame1: R0=3D1 R1=3D0xffffffff ...
-> > > >=20
-> > > > However, in the current form it slows down log level 2 output
-> > > > significantly (~5 times). Okay for my debugging purposes but is not
-> > > > good for upstream submission.
-> > > >=20
-> > > > Thanks,
-> > > > Eduard.
-> > > >=20
-> > > > [1] https://github.com/kernel-patches/bpf/commit/65fcd66d03ad9d6979=
-df79628e569b90563d5368
-> > >=20
-> > > bpf_print_stack_state() refactor can land.
-> > > While the rest potentially bpfvv can do.
-> > > With log_level=3D=3D2 all the previous paths through particular instr=
-uction
-> > > will be in the log earlier, so I can imagine clicking on an insn
-> > > and it will show current and all previous seen states.
-> > > The verifier heuristic will drop some of them, so it will show more
-> > > than actually known during the verification, but that's probably ok
-> > > for debugging to see why states don't converge.
-> > > bpfvv can make it easier to see the difference too instead of
-> > > "frame=3D1, reg=3D0, spi=3D-1, loop=3D0 (cur: 1) vs (old: P0)"
-> > > which is not easy to understand.
-> > > Only after reading the diff I realized that reg R0 is the one
-> > > that caused a mismatch.
-> >=20
-> > In theory this can be handled in post-processing completely,
-> > however I'd expect mirroring states-equal logic in bpfvv
-> > (or any other tool) to be error prone. Which is very undesirable when
-> > you are debugging. To make post-processing simpler I'd print:
-> > - state id upon state creation
-> > - state ids upon cache miss + register or spi number.
-> >=20
-> > This way post-processing tool would only need to collect register
-> > values for state ids in question.
->=20
-> that will make post processing easier, but print on every miss
-> will greatly increase log_level=3D2 size, right ?
+On 12/29/25 4:50 PM, Alexei Starovoitov wrote:
+> On Mon, Dec 29, 2025 at 4:39 PM Ihor Solodrai <ihor.solodrai@linux.dev> wrote:
+>>
+>> On 12/29/25 1:29 PM, Nathan Chancellor wrote:
+>>> Hi Ihor,
+>>>
+>>> On Mon, Dec 29, 2025 at 12:40:10PM -0800, Ihor Solodrai wrote:
+>>>> I think the simplest workaround is this one: use objcopy from binutils
+>>>> instead of llvm-objcopy when doing --update-section.
+>>>>
+>>>> There are just 3 places where that happens, so the OBJCOPY
+>>>> substitution is going to be localized.
+>>>>
+>>>> Also binutils is a documented requirement for compiling the kernel,
+>>>> whether with clang or not [1].
+>>>>
+>>>> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/changes.rst?h=v6.18#n29
+>>>
+>>> This would necessitate always specifying a CROSS_COMPILE variable when
+>>> cross compiling with LLVM=1, which I would really like to avoid. The
+>>> LLVM variants have generally been drop in substitutes for several
+>>> versions now so some groups such as Android may not even have GNU
+>>> binutils installed in their build environment (see a recent build
+>>> fix [1]).
+>>>
+>>> I would much prefer detecting llvm-objcopy in Kconfig (such as by
+>>> creating CONFIG_OBJCOPY_IS_LLVM using the existing check for
+>>> llvm-objcopy in X86_X32_ABI in arch/x86/Kconfig) and requiring a working
+>>> copy (>= 22.0.0 presuming the fix is soon merged) or an explicit opt
+>>> into GNU objcopy via OBJCOPY=...objcopy for CONFIG_DEBUG_INFO_BTF to be
+>>> selectable.
+>>
+>> I like the idea of opt into GNU objcopy, however I think we should
+>> avoid requiring kbuilds that want CONFIG_DEBUG_INFO_BTF to change any
+>> configuration (such as adding an explicit OBJCOPY= in a build command).
+>>
+>> I drafted a patch (pasted below), introducing BTF_OBJCOPY which
+>> defaults to GNU objcopy. This implements the workaround, and should be
+>> easy to update with a LLVM version check later after the bug is fixed.
+>>
+>> This bit:
+>>
+>> @@ -391,6 +391,7 @@ config DEBUG_INFO_BTF
+>>         depends on PAHOLE_VERSION >= 122
+>>         # pahole uses elfutils, which does not have support for Hexagon relocations
+>>         depends on !HEXAGON
+>> +       depends on $(success,command -v $(BTF_OBJCOPY))
+>>
+>> Will turn off DEBUG_INFO_BTF if relevant GNU objcopy happens to not be
+>> installed.
+>>
+>> However I am not sure this is the right way to fail here. Because if
+>> the kernel really does need BTF (which is effectively all kernels
+>> using BPF), then we are breaking them anyways just downstream of the
+>> build.
+>>
+>> An "objcopy: command not found" might make some pipelines red, but it
+>> is very clear how to address.
+>>
+>> Thoughts?
+>>
+>>
+>> From 7c3b9cce97cc76d0365d8948b1ca36c61faddde3 Mon Sep 17 00:00:00 2001
+>> From: Ihor Solodrai <ihor.solodrai@linux.dev>
+>> Date: Mon, 29 Dec 2025 15:49:51 -0800
+>> Subject: [PATCH] BTF_OBJCOPY
+>>
+>> ---
+>>  Makefile                             |  6 +++++-
+>>  lib/Kconfig.debug                    |  1 +
+>>  scripts/gen-btf.sh                   | 10 +++++-----
+>>  scripts/link-vmlinux.sh              |  2 +-
+>>  tools/testing/selftests/bpf/Makefile |  4 ++--
+>>  5 files changed, 14 insertions(+), 9 deletions(-)
+> 
+> All the makefile hackery looks like overkill and wrong direction.
+> 
+> What's wrong with kernel/module/main.c change?
+> 
+> Module loading already does a bunch of sanity checks for ELF
+> in elf_validity_cache_copy().
+> 
+> + if (sym[i].st_shndx >= info->hdr->e_shnum)
+> is just one more.
+> 
+> Maybe it can be moved to elf_validity*() somewhere,
+> but that's a minor detail.
+> 
+> iiuc llvm-objcopy affects only bpf testmod, so not a general
+> issue that needs top level makefile changes.
 
-Here are some stats for pyperf180:
+By the way, we don't have to put BTF_OBJCOPY variable in the top level
+Makefile.  It can be defined in Makefile.btf, which is included only
+with CONFIG_DEBUG_INFO_BTF=y
 
-| Experiment                                  | Log   | Log  |
-| Kind                                        | Lines | Size |
-|---------------------------------------------+-------+------|
-| Print cache hits, misses and diffing values | 626K  | 88M  |
-| Print cache misses and diffing values       | 618K  | 88M  |
-| Print cache misses                          | 618K  | 87M  |
-| Default level 2 log                         | 577K  | 85M  |
+We have to define BTF_OBJCOPY in the top-level makefile *if* we want
+CONFIG_DEBUG_INFO_BTF to depend on it, and get disabled if BTF_OBJCOPY
+is not set/available.
 
-By "cache hit", "cache miss", "cache miss and diffing values" I mean
-printing lines like:
+I was trying to address Nathan's concern, that some kernel build
+environments might not have GNU binutils installed, and kconfig should
+detect that.  IMO putting BTF_OBJCOPY in Makefile.btf is more
+appropriate, assuming the BTF_OBJCOPY variable is at all an acceptable
+workaround for the llvm-objcopy bug.
 
-  cache hit at (44677): loop=3D0
-  cache miss at (36030): frame=3D0, reg=3D7, spi=3D-1, loop=3D0
-  cache miss at (36030): frame=3D0, reg=3D7, spi=3D-1, loop=3D0 (cur: scala=
-r(id=3D3618)) vs (old: Pscalar(id=3D3258,umin=3D1))
 
-Didn't try printing message at each new state creation.
 
-> and whole new concept of state ids just to make a post processing
-> better. I'm not convinced it's worth doing.
-
-That might be true.
-But we do need some instrument to help debugging 1M instructions situation.
 
