@@ -1,159 +1,180 @@
-Return-Path: <bpf+bounces-77508-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77509-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08491CE93DF
-	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 10:41:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 99D46CE942A
+	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 10:50:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id BEB7B3011410
-	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 09:41:45 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6584E301F278
+	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 09:49:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59EE42C033C;
-	Tue, 30 Dec 2025 09:41:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2DCF27B4E8;
+	Tue, 30 Dec 2025 09:49:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ZQAma2nr"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07B0721D3F4
-	for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 09:41:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6579B2BE02D
+	for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 09:49:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767087704; cv=none; b=eccHYrYK/o821aatPnQaDjc23qbmvbnySkqmilREK897uSZYxCS99A3YY2Cnl9C45ZrBiVXX9+CwXASy03nSi+uM2lGR2KJHRVTGhfBKjwqp0xx1AFeh5TkmNLGQMrHNjOWu1kjRDDsgm/xxsCkL2Xce3v20BxPMdZATHUJk/7A=
+	t=1767088172; cv=none; b=pYXfi/fPcP3Lj7NjFmu8BHUG6XWoKuZAs4nqZr3GV/xUaQUUeTH5WhutU0qIDfyV5V53dNnUEWaRnEw5YGDzwDB8h9LKDSdhW2S78EDL3sTMWDOO/64ZsA0ZZJdWlzZsBp5t0QtdE5osWTH9F7PekGEWKs+NC9iR/FVmxUyoPWo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767087704; c=relaxed/simple;
-	bh=Xl+DxNKuJUAyQBUhAGYXHEleG4jIs00lsrE6+NWXgeM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Sn5p9ZEqiJuUWbOkXgE/iECcPPVxRS/+hm4mVqxWg98gqzHvWMJs7Fnt+aWYclrYwhi/uY1gmh9gxIzfjdGZaawNdeobtdRdaQTgbaSpVTuGzGdrraU9FtFBEx2Er+9XIIvNH3BY63RXpqiCURP7fn98/F2Q6jFtv+34vXQ1JXo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.198])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dgSl91FdnzKHMb2
-	for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 17:41:09 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id F37974056B
-	for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 17:41:37 +0800 (CST)
-Received: from [10.67.111.192] (unknown [10.67.111.192])
-	by APP2 (Coremail) with SMTP id Syh0CgBXcYBNnlNpAr7tBw--.22205S2;
-	Tue, 30 Dec 2025 17:41:34 +0800 (CST)
-Message-ID: <d2c23a07-7072-4f10-856c-dab02e3ed15c@huaweicloud.com>
-Date: Tue, 30 Dec 2025 17:41:33 +0800
+	s=arc-20240116; t=1767088172; c=relaxed/simple;
+	bh=4eaz+1wTZP7cgGZagXDHTekg6d8pOXeESnOgAUpsxzY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mdmi53hNMm5rAS7d7cMJczNxDl74LsEesY/hBdlNpEUW3aF0QLbSqFL9hKg8ppV7E2cpB/OBfaVgXTXNPKvuVT8W1KLaoQf03r0ccGfe2VA1+HBTpuK1XwPxs1pieR/U1vGvJc2tH24b9uK8qD0VIvftitLfh8AqFqxIW+8JUjI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ZQAma2nr; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4779adb38d3so64125815e9.2
+        for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 01:49:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1767088169; x=1767692969; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4eaz+1wTZP7cgGZagXDHTekg6d8pOXeESnOgAUpsxzY=;
+        b=ZQAma2nr5pZ0Tm9NvnkydNlm2b+C0Iq5FbZGwJHmDZbAe8V8u0gO3Kf+09VffzAWtQ
+         tnaV71XLrdiHOOx67n0CE/xBYYQuHg0+zhSBMHHUFVX6ZTeEc40P5sbQrcdmgJ2lb7i7
+         kmjgxNbSDKx0QucmBhXyxKa50pSC5IXcmN6KiOxw5H3msVrJpVUdM0Lv5jxB8haRHcE+
+         hUUobucRpA7sAGfOYiKOmb2+5MQmo404KQJ3R8NEQHEPur+vNzS5M4KJfEk5gg4JYSjA
+         /ZR/41OLus4cVLISqulvTT1fLrTWsFF1W7Q1l3XtwYggtSIbcKl7i0oRJlP7D3kcTH0w
+         P8Rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767088169; x=1767692969;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4eaz+1wTZP7cgGZagXDHTekg6d8pOXeESnOgAUpsxzY=;
+        b=h7qDrFNUONssfhKRY0U3IiBpezL7o7Z5gZ7vgC17DQHe5lI5B7/TJgt4cb51GuzYfi
+         2u2tk4BMnjAXle8d+6/y0f95qU/n6AqGm4n+F6MzoxGiLDzkizDV6xmGW+f1QWwqhfI1
+         r0RZerCFXhZl7eYY2K7Xwp4dRLc8SYHfDwvWnUYCJOPklZbRTq9nDscdAB8YlFeEz3Ir
+         mduiJ6wSUf2JCiDODHg4Iq55a6tK8j5stMLUURileZaRxyXVnPFzXqQo3vWlYpXqDIYo
+         5ySaYdgTgfcLrDuP7ALGZOzeyDtDxuZMFzAvE3hbeIhlFSLQdcsFbeoxDy8iE6mDxNLM
+         GtRg==
+X-Forwarded-Encrypted: i=1; AJvYcCXjvQsn4MZs++bBlTK7k9/VEQnF4a0fLKzLLgfV7TxOTBN4Ker/f1DlMs29xVtcRsQv+b0=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy1QZtgerBED565vxTge/yM3zpgbZiJci8pegJ4Tqw34vIp5bpT
+	M1M2BGHFTR7Cw/TZ/HbT/ZYl2QgVyHW0LlHnwliPwuV0bcsXH/sgYTTqQngNS4bGNjc=
+X-Gm-Gg: AY/fxX59jRAaIauXI23NnJ4P82H5us3+PXpHpgyUSr8CFw4nM8i80wdPKIohDJgqNft
+	EFuZbjWnTCcPhYLDqt9A+oWc6rOl4DOYgBFEJakhTjDdSlCUo1xvupiv3jjXBLrCym0Xcivoi0i
+	9Zss5EkDTTjoblDgbO+hyaICs3FEeJq4iDA2R9CMpNeNlqOqa0ioIqoYbYNOEufbEL5saNFxHrg
+	7u/CjsopTyHyviNq8L9UNSGyYusKhdzjlOwVBM1I5DsahfhfYKpKTrp0e0fX9iUXAIRx8kipi+g
+	k1+8IEL4LW/JJOzb+qmwRLvGHDjbhqGBUWEcAfYfFmMd4yyrQlqGExy82DTHHM5hph8n05oSdwj
+	lxsWY/ImyMr5llEHqplRKSaPtJR3fuDAMXJqU3ANYPXEqiXdMZjZw6crleoB1b1fMf2VZNEjKh8
+	2CsqSpiS1UZKwotOTWXSWmushiYOYCH2s86jd57IYvBw==
+X-Google-Smtp-Source: AGHT+IEN/UHYtedJC5gNScUIjciAIBz4WtImq8j9JAVWa7kOqzOpjNxabiVdwQI/0HAatQaCg3ghcQ==
+X-Received: by 2002:a05:600c:1d0b:b0:479:2a0b:180d with SMTP id 5b1f17b1804b1-47d1954a5f7mr386619925e9.11.1767088168725;
+        Tue, 30 Dec 2025 01:49:28 -0800 (PST)
+Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47be26a81b6sm657711035e9.0.2025.12.30.01.49.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Dec 2025 01:49:28 -0800 (PST)
+Date: Tue, 30 Dec 2025 10:49:25 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Hui Zhu <hui.zhu@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, 
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Miguel Ojeda <ojeda@kernel.org>, 
+	Nathan Chancellor <nathan@kernel.org>, Kees Cook <kees@kernel.org>, Tejun Heo <tj@kernel.org>, 
+	Jeff Xu <jeffxu@chromium.org>, Jan Hendrik Farr <kernel@jfarr.cc>, 
+	Christian Brauner <brauner@kernel.org>, Randy Dunlap <rdunlap@infradead.org>, 
+	Brian Gerst <brgerst@gmail.com>, Masahiro Yamada <masahiroy@kernel.org>, davem@davemloft.net, 
+	Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, Hui Zhu <zhuhui@kylinos.cn>
+Subject: Re: [RFC PATCH v2 0/3] Memory Controller eBPF support
+Message-ID: <enlefo5mmoha2htsrvv76tdmj6yum4jan6hgym76adtpxuhvrp@aug6qh3ocde5>
+References: <cover.1767012332.git.zhuhui@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [QUESTION] KASAN: invalid-access in
- bpf_patch_insn_data+0x22c/0x2f0
-To: Jeongho Choi <jh1012.choi@samsung.com>, bpf@vger.kernel.org,
- kasan-dev@googlegroups.com
-Cc: joonki.min@samsung.com, hajun.sung@samsung.com
-References: <CGME20251229105858epcas2p26c433715e7955d20072e72964e83c3e7@epcas2p2.samsung.com>
- <20251229110431.GA2243991@tiffany>
-Content-Language: en-US
-From: Xu Kuohai <xukuohai@huaweicloud.com>
-In-Reply-To: <20251229110431.GA2243991@tiffany>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:Syh0CgBXcYBNnlNpAr7tBw--.22205S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxZw4ftryUur43AF1xZr1rtFb_yoW7Jw43pr
-	1qk34Ikw4kJ3y5uw4av3ZrCw12va1a93W3Gr4xJ3yFqr13Zrn3JF15tFy8Jr13u34qkr13
-	AryDKr1aqryUZaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUylb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
-	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
-	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
-	67AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxU7IJmUUUUU
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="nav7xplzwe6tizdp"
+Content-Disposition: inline
+In-Reply-To: <cover.1767012332.git.zhuhui@kylinos.cn>
 
-On 12/29/2025 7:05 PM, Jeongho Choi wrote:
-> Hello
-> I'm jeongho Choi from samsung System LSI.
-> I'm developing kernel BSP for exynos SoC.
-> 
-> I'm asking a question because I've recently been experiencing
-> issues after enable SW KASAN in Android17 kernel 6.18 environment.
-> 
-> Context:
->   - Kernel version: v6.18
->   - Architecture: ARM64
-> 
-> Question:
-> When SW tag KASAN is enabled, we got kernel crash from bpf/verifier.
-> I found that it occurred only from 6.18, not 6.12 LTS we're working on.
-> 
-> After some tests, I found that the device is booted when 2 commits are reverted.
-> 
-> bpf: potential double-free of env->insn_aux_data
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=b13448dd64e27752fad252cec7da1a50ab9f0b6f
-> 
-> bpf: use realloc in bpf_patch_insn_data
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=77620d1267392b1a34bfc437d2adea3006f95865
-> 
-> ==================================================================
-> [   79.419177] [4:     netbpfload:  825] BUG: KASAN: invalid-access in bpf_patch_insn_data+0x22c/0x2f0
-> [   79.419415] [4:     netbpfload:  825] Write of size 27896 at addr 25ffffc08e6314d0 by task netbpfload/825
-> [   79.419984] [4:     netbpfload:  825] Pointer tag: [25], memory tag: [fa]
-> [   79.425193] [4:     netbpfload:  825]
-> [   79.427365] [4:     netbpfload:  825] CPU: 4 UID: 0 PID: 825 Comm: netbpfload Tainted: G           OE       6.18.0-rc6-android17-0-gd28deb424356-4k #1 PREEMPT  92293e52a7788dc6ec1b9dff6625aaee925f3475
-> [   79.427374] [4:     netbpfload:  825] Tainted: [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
-> [   79.427378] [4:     netbpfload:  825] Hardware name: Samsung ERD9965 board based on S5E9965 (DT)
-> [   79.427382] [4:     netbpfload:  825] Call trace:
-> [   79.427385] [4:     netbpfload:  825]  show_stack+0x18/0x28 (C)
-> [   79.427394] [4:     netbpfload:  825]  __dump_stack+0x28/0x3c
-> [   79.427401] [4:     netbpfload:  825]  dump_stack_lvl+0x7c/0xa8
-> [   79.427407] [4:     netbpfload:  825]  print_address_description+0x7c/0x20c
-> [   79.427414] [4:     netbpfload:  825]  print_report+0x70/0x8c
-> [   79.427421] [4:     netbpfload:  825]  kasan_report+0xb4/0x114
-> [   79.427427] [4:     netbpfload:  825]  kasan_check_range+0x94/0xa0
-> [   79.427432] [4:     netbpfload:  825]  __asan_memmove+0x54/0x88
-> [   79.427437] [4:     netbpfload:  825]  bpf_patch_insn_data+0x22c/0x2f0
-> [   79.427442] [4:     netbpfload:  825]  bpf_check+0x2b44/0x8c34
-> [   79.427449] [4:     netbpfload:  825]  bpf_prog_load+0x8dc/0x990
-> [   79.427453] [4:     netbpfload:  825]  __sys_bpf+0x300/0x4c8
-> [   79.427458] [4:     netbpfload:  825]  __arm64_sys_bpf+0x48/0x64
-> [   79.427465] [4:     netbpfload:  825]  invoke_syscall+0x6c/0x13c
-> [   79.427471] [4:     netbpfload:  825]  el0_svc_common+0xf8/0x138
-> [   79.427478] [4:     netbpfload:  825]  do_el0_svc+0x30/0x40
-> [   79.427484] [4:     netbpfload:  825]  el0_svc+0x38/0x8c
-> [   79.427491] [4:     netbpfload:  825]  el0t_64_sync_handler+0x68/0xdc
-> [   79.427497] [4:     netbpfload:  825]  el0t_64_sync+0x1b8/0x1bc
-> [   79.427502] [4:     netbpfload:  825]
-> [   79.545586] [4:     netbpfload:  825] The buggy address belongs to a 8-page vmalloc region starting at 0x25ffffc08e631000 allocated at bpf_patch_insn_data+0x8c/0x2f0
-> [   79.558777] [4:     netbpfload:  825] The buggy address belongs to the physical page:
-> [   79.565029] [4:     netbpfload:  825] page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x8b308b
-> [   79.573710] [4:     netbpfload:  825] memcg:c6ffff882d1d6402
-> [   79.577791] [4:     netbpfload:  825] flags: 0x6f80000000000000(zone=1|kasantag=0xbe)
-> [   79.584042] [4:     netbpfload:  825] raw: 6f80000000000000 0000000000000000 dead000000000122 0000000000000000
-> [   79.592460] [4:     netbpfload:  825] raw: 0000000000000000 0000000000000000 00000001ffffffff c6ffff882d1d6402
-> [   79.600877] [4:     netbpfload:  825] page dumped because: kasan: bad access detected
-> [   79.607126] [4:     netbpfload:  825]
-> [   79.609296] [4:     netbpfload:  825] Memory state around the buggy address:
-> [   79.614766] [4:     netbpfload:  825]  ffffffc08e637f00: 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
-> [   79.622665] [4:     netbpfload:  825]  ffffffc08e638000: 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
-> [   79.630562] [4:     netbpfload:  825] >ffffffc08e638100: 25 25 25 25 25 25 25 fa fa fa fa fa fa fe fe fe
-> [   79.638463] [4:     netbpfload:  825]                                         ^
-> [   79.644190] [4:     netbpfload:  825]  ffffffc08e638200: fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
-> [   79.652089] [4:     netbpfload:  825]  ffffffc08e638300: fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
-> [   79.659987] [4:     netbpfload:  825] ==================================================================
-> 
 
-Seems it is the same as the second issue fixed by the following patch:
-https://lore.kernel.org/all/3f851f7704ab8468530f384b901b22cdef94aa43.1765978969.git.m.wieczorretman@pm.me
+--nav7xplzwe6tizdp
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [RFC PATCH v2 0/3] Memory Controller eBPF support
+MIME-Version: 1.0
 
-> I have a question about the above phenomenon.
-> Thanks,
-> Jeongho Choi
-> 
-> 
+Hi Hui.
 
+On Tue, Dec 30, 2025 at 11:01:58AM +0800, Hui Zhu <hui.zhu@linux.dev> wrote:
+> This allows administrators to suppress low-priority cgroups' memory
+> usage based on custom policies implemented in BPF programs.
+
+BTW memory.low was conceived as a work-conserving mechanism for
+prioritization of different workloads. Have you tried that? No need to
+go directly to (high) limits. (<- Main question, below are some
+secondary implementation questions/remarks.)
+
+=2E..
+> This series introduces a BPF hook that allows reporting
+> additional "pages over high" for specific cgroups, effectively
+> increasing memory pressure and throttling for lower-priority
+> workloads when higher-priority cgroups need resources.
+
+Have you considered hooking into calculate_high_delay() instead? (That
+function has undergone some evolution so it'd seem like the candidate
+for BPFication.)
+
+=2E..
+> 3. Cgroup hierarchy management (inheritance during online/offline)
+
+I see you're copying the program upon memcg creation.
+Configuration copies aren't such a good way to properly handle
+hierarchical behavior.
+I wonder if this could follow the more generic pattern of how BPF progs
+are evaluated in hierarchies, see BPF_F_ALLOW_OVERRIDE and
+BPF_F_ALLOW_MULTI.
+
+
+> Example Results
+=2E..
+> Results show the low-priority cgroup (/sys/fs/cgroup/low) was
+> significantly throttled:
+> - High-priority cgroup: 21,033,377 bogo ops at 347,825 ops/s
+> - Low-priority cgroup: 11,568 bogo ops at 177 ops/s
+>=20
+> The stress-ng process in the low-priority cgroup experienced a
+> ~99.9% slowdown in memory operations compared to the
+> high-priority cgroup, demonstrating effective priority
+> enforcement through BPF-controlled memory pressure.
+
+As a demonstrator, it'd be good to compare this with a baseline without
+any extra progs, e.g. show that high-prio performed better and low-prio
+wasn't throttled for nothing.
+
+Thanks,
+Michal
+
+--nav7xplzwe6tizdp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaVOgEhsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AjqkwEAsnaDJnUrbpBZvRNgWKP5
+6Sa4JrRHis7FmRcVhJPNvUUA/1AnWVzTnXOrXQlAm2C1hsfhl2QuvaTzWc6hD0j/
+y5wD
+=OLWl
+-----END PGP SIGNATURE-----
+
+--nav7xplzwe6tizdp--
 
