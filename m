@@ -1,163 +1,180 @@
-Return-Path: <bpf+bounces-77511-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77512-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEFA2CE9C88
-	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 14:25:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 11B49CE9F92
+	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 15:50:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3629B301FF6A
-	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 13:25:09 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id EBC683025582
+	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 14:50:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D00AB23185E;
-	Tue, 30 Dec 2025 13:25:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEC35316910;
+	Tue, 30 Dec 2025 14:50:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CwaVGuGs"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBEE91E5B95;
-	Tue, 30 Dec 2025 13:25:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27F7F2253B0;
+	Tue, 30 Dec 2025 14:50:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767101105; cv=none; b=CE7fZdmlaNVqZj5ss25Z0TuDTrviMa844NQ+TAc0MmjkKPLPxdXIq1UbEuIFByGDdG916JMGARl6kKAVixU1tRIXhnKT4Xl+bDf4M0Zsl+U+NfxcX7Td2tMN1g4EaPj+9s6uL4sTHpCAHGbKUJTIDWHlJQbmH70z4jKlzta/uWc=
+	t=1767106221; cv=none; b=FHEL3qZSnB02mdN1XCvPjitAhUudJaUoN3G6QoTA7AuuhAdf3dYIHsxmcBPJvc9hCEV6IN8VtuaxmTPLT1bsGV/3nl6LHQGI8s070I/uhE2+yUDwTraOIuoX8NiGLegZtMDRzz65O0wmcE9vLjEf+vuQX1fRZqGaXIyJ1XsnMNE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767101105; c=relaxed/simple;
-	bh=9rXcf/tMrp2AS71h6Y9QELSB2bEzY2RP0QI91OrkfqQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ReSBaQ5ZAqlmR05lZCq/jaqlQX07m0RfnNDoQ3fMHrRfAJrqhlSXQjjMfQddIIIyExFx/KTf9Vr+jqiziIJ+iHWLPDtCGeXFNe4fOCAyYGFVYPtlujtbxu22/9rAaT/v+GKb4nOH2MPP9CmKNYk41ZvGaFAtfgezUurDGp1mfMY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.170])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dgYhT6LhXzYQtsb;
-	Tue, 30 Dec 2025 21:24:09 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id A71B04056E;
-	Tue, 30 Dec 2025 21:24:58 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP4 (Coremail) with SMTP id gCh0CgAniPim0lNpM+wYCA--.38240S2;
-	Tue, 30 Dec 2025 21:24:56 +0800 (CST)
-Message-ID: <31d3fdfa-799e-426b-bb64-42e06392f0b4@huaweicloud.com>
-Date: Tue, 30 Dec 2025 21:24:53 +0800
+	s=arc-20240116; t=1767106221; c=relaxed/simple;
+	bh=8xysnLmoKexyoy3E0mV2YzmnUunnOMQmOy2mzrTjMCE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=a38WrNPDH3ygDv6Xr+phi6umrIUpCe4EXeDE0F1TIcwpfgZObBMZ0+Pa/x4fPqYys/SkO9SdfmoKJ1fN7tvPjknJPC4ysoXiRqzJIuYGODXHdKMxUEtRzOEkeErRsM9MmJa/q5vHcGA1RCeIeg7se08PtIC7ZPzhvg9WJumqiRc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CwaVGuGs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DAD1C4CEFB;
+	Tue, 30 Dec 2025 14:50:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1767106220;
+	bh=8xysnLmoKexyoy3E0mV2YzmnUunnOMQmOy2mzrTjMCE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=CwaVGuGsIxcPdLnDw48i+vYFzYBHbz5tUqfRj4fekidD/Jbn+6NbyDl7C0/UGHqFH
+	 l1ED7oxuVpfMefIFTj68Hmh1QgvIctyalEYTTGj12DBqU9MNIuav3Xch8LiIz/HPPn
+	 CBwKDXKe3Mj8cdtFSxYTrR3DMYploLE6TgNU/L2VjxvftjUcjdWJ8R155GawPdLXbd
+	 LizkNH4nha9CwPYWbHxvkt690tvpg/rom8/ULmwopDaDysgdxRILJU3K/HfIcjv3us
+	 9WMx5Ztsj23FCVNGaLSZmO/kKPKeozUaO0FbphDUyobZQO/U33jImSzTR6VtbEbtbP
+	 dUJorj2HjsXxg==
+From: Jiri Olsa <jolsa@kernel.org>
+To: Steven Rostedt <rostedt@kernel.org>,
+	Florent Revest <revest@google.com>,
+	Mark Rutland <mark.rutland@arm.com>
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Menglong Dong <menglong8.dong@gmail.com>,
+	Song Liu <song@kernel.org>
+Subject: [PATCHv6 bpf-next 0/9] ftrace,bpf: Use single direct ops for bpf trampolines
+Date: Tue, 30 Dec 2025 15:50:01 +0100
+Message-ID: <20251230145010.103439-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2 0/3] Memory Controller eBPF support
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- Hui Zhu <hui.zhu@linux.dev>, jiayuan.chen@linux.dev
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>, Miguel Ojeda <ojeda@kernel.org>,
- Nathan Chancellor <nathan@kernel.org>, Kees Cook <kees@kernel.org>,
- Tejun Heo <tj@kernel.org>, Jeff Xu <jeffxu@chromium.org>,
- Jan Hendrik Farr <kernel@jfarr.cc>, Christian Brauner <brauner@kernel.org>,
- Randy Dunlap <rdunlap@infradead.org>, Brian Gerst <brgerst@gmail.com>,
- Masahiro Yamada <masahiroy@kernel.org>, davem@davemloft.net,
- Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- Hui Zhu <zhuhui@kylinos.cn>
-References: <cover.1767012332.git.zhuhui@kylinos.cn>
- <enlefo5mmoha2htsrvv76tdmj6yum4jan6hgym76adtpxuhvrp@aug6qh3ocde5>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <enlefo5mmoha2htsrvv76tdmj6yum4jan6hgym76adtpxuhvrp@aug6qh3ocde5>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgAniPim0lNpM+wYCA--.38240S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJr4kAFW7Zw4xJr18tryxXwb_yoW8tw17pF
-	WkKFy8WFWkXw17tw4kZ39F9a1Iv395Gr43KFn3Jry7K3ZFqr12vr4Iyr4UuFZrZFnxtr10
-	vryY9w4ku3Z0v3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26rWY6Fy7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8
-	Jr1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v2
-	6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07
-	j6a0PUUUUU=
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+
+hi,
+while poking the multi-tracing interface I ended up with just one ftrace_ops
+object to attach all trampolines.
+
+This change allows to use less direct API calls during the attachment changes
+in the future code, so in effect speeding up the attachment.
+
+In current code we get a speed up from using just a single ftrace_ops object.
+
+- with current code:
+
+  Performance counter stats for 'bpftrace -e fentry:vmlinux:ksys_* {} -c true':
+
+     6,364,157,902      cycles:k
+       828,728,902      cycles:u
+     1,064,803,824      instructions:u                   #    1.28  insn per cycle
+    23,797,500,067      instructions:k                   #    3.74  insn per cycle
+
+       4.416004987 seconds time elapsed
+
+       0.164121000 seconds user
+       1.289550000 seconds sys
+
+
+- with the fix:
+
+   Performance counter stats for 'bpftrace -e fentry:vmlinux:ksys_* {} -c true':
+
+     6,535,857,905      cycles:k
+       810,809,429      cycles:u
+     1,064,594,027      instructions:u                   #    1.31  insn per cycle
+    23,962,552,894      instructions:k                   #    3.67  insn per cycle
+
+       1.666961239 seconds time elapsed
+
+       0.157412000 seconds user
+       1.283396000 seconds sys
 
 
 
-On 2025/12/30 17:49, Michal Koutný wrote:
-> Hi Hui.
-> 
-> On Tue, Dec 30, 2025 at 11:01:58AM +0800, Hui Zhu <hui.zhu@linux.dev> wrote:
->> This allows administrators to suppress low-priority cgroups' memory
->> usage based on custom policies implemented in BPF programs.
-> 
-> BTW memory.low was conceived as a work-conserving mechanism for
-> prioritization of different workloads. Have you tried that? No need to
-> go directly to (high) limits. (<- Main question, below are some
-> secondary implementation questions/remarks.)
-> 
-> ...
->> This series introduces a BPF hook that allows reporting
->> additional "pages over high" for specific cgroups, effectively
->> increasing memory pressure and throttling for lower-priority
->> workloads when higher-priority cgroups need resources.
-> 
-> Have you considered hooking into calculate_high_delay() instead? (That
-> function has undergone some evolution so it'd seem like the candidate
-> for BPFication.)
-> 
+The speedup seems to be related to the fact that with single ftrace_ops object
+we don't call ftrace_shutdown anymore (we use ftrace_update_ops instead) and
+we skip the synchronize rcu calls (each ~100ms) at the end of that function.
 
-+1
+rfc: https://lore.kernel.org/bpf/20250729102813.1531457-1-jolsa@kernel.org/
+v1:  https://lore.kernel.org/bpf/20250923215147.1571952-1-jolsa@kernel.org/
+v2:  https://lore.kernel.org/bpf/20251113123750.2507435-1-jolsa@kernel.org/
+v3:  https://lore.kernel.org/bpf/20251120212402.466524-1-jolsa@kernel.org/
+v4:  https://lore.kernel.org/bpf/20251203082402.78816-1-jolsa@kernel.org/
+v5:  https://lore.kernel.org/bpf/20251215211402.353056-10-jolsa@kernel.org/
 
-This issue[1] might be resolved by hooking into calculate_high_delay().
+v6 changes:
+- rename add_hash_entry_direct to add_ftrace_hash_entry_direct [Steven]
+- factor hash_add/hash_sub [Steven]
+- add kerneldoc header for update_ftrace_direct_* functions [Steven]
+- few assorted smaller fixes [Steven]
+- added missing direct_ops wrappers for !CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
+  case [Steven]
 
-[1] https://lore.kernel.org/cgroups/4txrfjc5lqkmydmsesfq3l5drmzdio6pkmtfb64sk3ld6bwkhs@w4dkn76s4dbo/T/#t
+v5 changes:
+- do not export ftrace_hash object [Steven]
+- fix update_ftrace_direct_add new_filter_hash leak [ci]
 
-> ...
->> 3. Cgroup hierarchy management (inheritance during online/offline)
-> 
-> I see you're copying the program upon memcg creation.
-> Configuration copies aren't such a good way to properly handle
-> hierarchical behavior.
-> I wonder if this could follow the more generic pattern of how BPF progs
-> are evaluated in hierarchies, see BPF_F_ALLOW_OVERRIDE and
-> BPF_F_ALLOW_MULTI.
-> 
-> 
->> Example Results
-> ...
->> Results show the low-priority cgroup (/sys/fs/cgroup/low) was
->> significantly throttled:
->> - High-priority cgroup: 21,033,377 bogo ops at 347,825 ops/s
->> - Low-priority cgroup: 11,568 bogo ops at 177 ops/s
->>
->> The stress-ng process in the low-priority cgroup experienced a
->> ~99.9% slowdown in memory operations compared to the
->> high-priority cgroup, demonstrating effective priority
->> enforcement through BPF-controlled memory pressure.
-> 
-> As a demonstrator, it'd be good to compare this with a baseline without
-> any extra progs, e.g. show that high-prio performed better and low-prio
-> wasn't throttled for nothing.
-> 
-> Thanks,
-> Michal
+v4 changes:
+- rebased on top of bpf-next/master (with jmp attach changes)
+  added patch 1 to deal with that
+- added extra checks for update_ftrace_direct_del/mod to address
+  the ci bot review
 
--- 
-Best regards,
-Ridong
+v3 changes:
+- rebased on top of bpf-next/master
+- fixed update_ftrace_direct_del cleanup path
+- added missing inline to update_ftrace_direct_* stubs
 
+v2 changes:
+- rebased on top fo bpf-next/master plus Song's livepatch fixes [1] 
+- renamed the API functions [2] [Steven]
+- do not export the new api [Steven]
+- kept the original direct interface:
+
+  I'm not sure if we want to melt both *_ftrace_direct and the new interface
+  into single one. It's bit different in semantic (hence the name change as
+  Steven suggested [2]) and I don't think the changes are not that big so
+  we could easily keep both APIs.
+
+v1 changes:
+- make the change x86 specific, after discussing with Mark options for
+  arm64 [Mark]
+
+thanks,
+jirka
+
+
+[1] https://lore.kernel.org/bpf/20251027175023.1521602-1-song@kernel.org/
+[2] https://lore.kernel.org/bpf/20250924050415.4aefcb91@batman.local.home/
+---
+Jiri Olsa (9):
+      ftrace,bpf: Remove FTRACE_OPS_FL_JMP ftrace_ops flag
+      ftrace: Make alloc_and_copy_ftrace_hash direct friendly
+      ftrace: Export some of hash related functions
+      ftrace: Add update_ftrace_direct_add function
+      ftrace: Add update_ftrace_direct_del function
+      ftrace: Add update_ftrace_direct_mod function
+      bpf: Add trampoline ip hash table
+      ftrace: Factor ftrace_ops ops_func interface
+      bpf,x86: Use single ftrace_ops for direct calls
+
+ arch/x86/Kconfig        |   1 +
+ include/linux/bpf.h     |   7 ++-
+ include/linux/ftrace.h  |  31 +++++++++-
+ kernel/bpf/trampoline.c | 259 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---------------
+ kernel/trace/Kconfig    |   3 +
+ kernel/trace/ftrace.c   | 406 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--------
+ 6 files changed, 632 insertions(+), 75 deletions(-)
 
