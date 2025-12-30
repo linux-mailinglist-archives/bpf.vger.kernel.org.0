@@ -1,61 +1,48 @@
-Return-Path: <bpf+bounces-77532-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77533-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 628C3CEA7A7
-	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 19:32:54 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A71FCEA7EF
+	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 19:44:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 768373000B12
-	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 18:32:53 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 24952303ADE7
+	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 18:43:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C0D732E6BE;
-	Tue, 30 Dec 2025 18:32:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3614E32ED44;
+	Tue, 30 Dec 2025 18:43:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ljkaMa7g"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FcN0ncod"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43F9D1DD525;
-	Tue, 30 Dec 2025 18:32:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93733271A7C;
+	Tue, 30 Dec 2025 18:43:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767119571; cv=none; b=IoggKmdOk/wcwGdsLZBECIjyWHEA8/iVyBE+3csCYY8CwrHt36/n1M2s1epcPtCFNZ2/Zg8HDDjrv4kMJcsJVupOei86auCv+ifykpkTbgydDnipqn/64rAH2m6rNqZuUzjJQRnrlRXBgaAJYpOlhtw2k679r24nVAERDVhz1IU=
+	t=1767120204; cv=none; b=Ufs4k4npAX9J41nfM9b3aYDusc6vOdAuLd1577aW/jPvnMzasJ8PdSSOveSQc0X3kEqmV3XR7ECJlug0eIzCGIUyq7mWYIuqYp9sAQZAzO5KO+y/oPNldvAzx3vkPRxlBRQUX9R6NG/kEweYsEl9cm455ag9C8MfX1NwqxvHZQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767119571; c=relaxed/simple;
-	bh=7tOkvUuh/6GiISbyLheGU4///m4131Mud4EO3Yo/+h8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EAtVoq39RF9gxGpfp/QCMA8RRX0rbgdmf+FiR/v8LJ1Ha9KHVrpi/I4K/2txKumPE2g/u5HoSxFLnWdWOXJNYb7sm56CX+clP9D52JHzQ0Y7t4ZD75DWAa7XdAIa6A6Qw1JYcKAE047pgLEUttR/u6WsTkH8WSxeOZLKWRHbVw0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ljkaMa7g; arc=none smtp.client-ip=95.215.58.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1767119557;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=DCQNXUyI4+4dxZcbehNgpALRC5lYnrYiYesNBz6jLuo=;
-	b=ljkaMa7g+vz0DJtiPRobYhg5W1nIKDxVIbF6J/hF5dmMLV3OmjVt9m5W1Dm9ZXkL/4H8lI
-	0SDYaYqx+RHkkflqjEdd3wDL7hoLnSiptCQvIkZWHG+pRyEcOtr0LhKnxE0Zu4Xq1dKt2c
-	3GOoS7NI44N7E8aVFuSaOB+Zvy9fghs=
-From: Ihor Solodrai <ihor.solodrai@linux.dev>
-To: Luis Chamberlain <mcgrof@kernel.org>,
-	Petr Pavlu <petr.pavlu@suse.com>,
-	Daniel Gomez <da.gomez@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	linux-modules@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-kbuild@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH] module: Fix kernel panic when a symbol st_shndx is out of bounds
-Date: Tue, 30 Dec 2025 10:32:08 -0800
-Message-ID: <20251230183208.1317279-1-ihor.solodrai@linux.dev>
+	s=arc-20240116; t=1767120204; c=relaxed/simple;
+	bh=WrlGMin2EgRjAkIaWiiWYH94N9NdEkLX6onE7jLgZQU=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=YcrZdUgHH4zUOvV0Zd/+vTIBPmiJKzetxFrITc/XsfQS9tduR9c4cZytTYmifxny+wh7VFAh9q2uANYT7KigcmSO2v9eaiMY2p00AZRSaNd1X9EpVUej0lQ+zlxgw6J9ii5jvOnMK1lAXK+BNtJmdvGjnTVWqFnBgGJGBF0Jkrc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FcN0ncod; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17211C4CEFB;
+	Tue, 30 Dec 2025 18:43:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1767120204;
+	bh=WrlGMin2EgRjAkIaWiiWYH94N9NdEkLX6onE7jLgZQU=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=FcN0ncod52lcXxeXbXHFxhG0FOF/Envk4veDSFsvm/UOqDxhR23AEanDQ9JFOnhNG
+	 LjE2YrnNbY2+xOyP4u1orsSLrQ/Gfo+VMfEOmhDm9cVaY9faDYojaZheAn1yQ/8/YC
+	 MFtKSIZ2f8VmYHYUU8yk7LHZnTxIH0wjDC81N0wDewQ/fH0kUyWXjshOr7TYj8VPnK
+	 edyhYKwzeKhK7kmSwHI2S+Zjumi12IYy5mRYH4m5r92Gl4y+KRdNjQCMsshQ6T2mP+
+	 Xs2aU/nVHpMEtisnr3PxAAz8iQWrCPZIaV/G3S9CKBugxBzHPEt+jPajGihU/vOIBD
+	 b1KKtz0EtAnQQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 3B8E33809A0D;
+	Tue, 30 Dec 2025 18:40:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,73 +50,46 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Subject: Re: [PATCH bpf-next] scripts/gen-btf.sh: Fix .btf.o generation when
+ compiling for RISCV
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <176712000605.3329931.5334657371123861484.git-patchwork-notify@kernel.org>
+Date: Tue, 30 Dec 2025 18:40:06 +0000
+References: <20251229202823.569619-1-ihor.solodrai@linux.dev>
+In-Reply-To: <20251229202823.569619-1-ihor.solodrai@linux.dev>
+To: Ihor Solodrai <ihor.solodrai@linux.dev>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, nathan@kernel.org,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kbuild@vger.kernel.org, llvm@lists.linux.dev
 
-The module loader doesn't check for bounds of the ELF section index in
-simplify_symbols():
+Hello:
 
-       for (i = 1; i < symsec->sh_size / sizeof(Elf_Sym); i++) {
-		const char *name = info->strtab + sym[i].st_name;
+This patch was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-		switch (sym[i].st_shndx) {
-		case SHN_COMMON:
+On Mon, 29 Dec 2025 12:28:23 -0800 you wrote:
+> gen-btf.sh emits a .btf.o file with BTF sections to be linked into
+> vmlinux in link-vmlinux.sh
+> 
+> This .btf.o file is created by compiling an emptystring with ${CC},
+> and then adding BTF sections into it with ${OBJCOPY}.
+> 
+> To ensure the .btf.o is linkable when cross-compiling with LLVM, we
+> have to also pass ${KBUILD_FLAGS}, which in particular control the
+> target word size.
+> 
+> [...]
 
-		[...]
+Here is the summary with links:
+  - [bpf-next] scripts/gen-btf.sh: Fix .btf.o generation when compiling for RISCV
+    https://git.kernel.org/bpf/bpf-next/c/600605853f87
 
-		default:
-			/* Divert to percpu allocation if a percpu var. */
-			if (sym[i].st_shndx == info->index.pcpu)
-				secbase = (unsigned long)mod_percpu(mod);
-			else
-  /** HERE --> **/		secbase = info->sechdrs[sym[i].st_shndx].sh_addr;
-			sym[i].st_value += secbase;
-			break;
-		}
-	}
-
-A symbol with an out-of-bounds st_shndx value, for example 0xffff
-(known as SHN_XINDEX or SHN_HIRESERVE), may cause a kernel panic:
-
-  BUG: unable to handle page fault for address: ...
-  RIP: 0010:simplify_symbols+0x2b2/0x480
-  ...
-  Kernel panic - not syncing: Fatal exception
-
-This can happen when module ELF is legitimately using SHN_XINDEX or
-when it is corrupted.
-
-Add a bounds check in simplify_symbols() to validate that st_shndx is
-within the valid range before using it.
-
-This issue was discovered due to a bug in llvm-objcopy, see relevant
-discussion for details [1].
-
-[1] https://lore.kernel.org/linux-modules/20251224005752.201911-1-ihor.solodrai@linux.dev/
-
-Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
----
- kernel/module/main.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/kernel/module/main.c b/kernel/module/main.c
-index 710ee30b3bea..5bf456fad63e 100644
---- a/kernel/module/main.c
-+++ b/kernel/module/main.c
-@@ -1568,6 +1568,13 @@ static int simplify_symbols(struct module *mod, const struct load_info *info)
- 			break;
- 
- 		default:
-+			if (sym[i].st_shndx >= info->hdr->e_shnum) {
-+				pr_err("%s: Symbol %s has an invalid section index %u (max %u)\n",
-+				       mod->name, name, sym[i].st_shndx, info->hdr->e_shnum - 1);
-+				ret = -ENOEXEC;
-+				break;
-+			}
-+
- 			/* Divert to percpu allocation if a percpu var. */
- 			if (sym[i].st_shndx == info->index.pcpu)
- 				secbase = (unsigned long)mod_percpu(mod);
+You are awesome, thank you!
 -- 
-2.52.0
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
