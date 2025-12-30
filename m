@@ -1,216 +1,144 @@
-Return-Path: <bpf+bounces-77506-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77507-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF426CE8DCE
-	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 08:13:39 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A10C8CE9320
+	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 10:22:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id C6CD730150FB
-	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 07:13:32 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4615C302F6B6
+	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 09:21:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B5222F8BD0;
-	Tue, 30 Dec 2025 07:13:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F84428C84A;
+	Tue, 30 Dec 2025 09:14:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T9RqCWbd"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="WEhTu2fs"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 842F72F90D8
-	for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 07:13:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CF12296BA5
+	for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 09:14:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767078812; cv=none; b=Xi3jwEOWGvuO77+DdBXB9IRsaxhtx78V2smgZMPDzUJKzcIwcird0L4k5N4QDu78WcgcGHniTww0Uygj1UpfEcFMkUUyCdPB6xAMVDg3VgtKLs/8GwgXh3fH1YBRVuoz8FvY/DPDLqq8lVgrHjht1w0FiOBhSE4Ku7WLsyhChB4=
+	t=1767086060; cv=none; b=plV7It+bCaXIjszcY+c6UBZaAImcIf145SCSGfdwBtv2T6w34EjqV4RviK1rRvZhKY1zF81o1Mu4ymTHXJG/4/swotazR4va3yoGNpGByEMW37pzTWsxQL9VK7hFJflsnGXj/4Xo7wLLokP9kGJthInAk/TtMCZ8ttJCUo3X1uI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767078812; c=relaxed/simple;
-	bh=XbJg3Omwe2NMszvaXw92dUbRW9jVJsTJnp2CjqNX47c=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UH6WmnOusdepB1L5YJCcChifP21fVLZODyH5lEEOhBgacxuoI0fg8MG+mu6MCUSprnqUzxdpvWiPC8VxqhvhPAEFkD0M6k5CW9uM+yLOJXP25QD1wgVX9x5VWCkbfq8d4Z8wcTQZwB0z0KVy66H2n6DS6owyWolU3f8wQ6yJl8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T9RqCWbd; arc=none smtp.client-ip=209.85.216.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-34c2f52585fso8706500a91.1
-        for <bpf@vger.kernel.org>; Mon, 29 Dec 2025 23:13:30 -0800 (PST)
+	s=arc-20240116; t=1767086060; c=relaxed/simple;
+	bh=kMYS4nDZW+xqFk8WFjUw9cG0U0R3IAGkPMZX0g8pS98=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QJD9rV0qImqT2NqpXj7XgFMa9j8O56WlTz455sLNMt7+mil4zbR5s/1j+EZ3aVnLNoNdVinAOSTEJqIMmXyJ5jonyUkwIXgRJBiaXm7Pfhn73zuHGM+tJE0YlHzVDSXP0rxdOzaEpPl1HdGUL+8a2tTqBtfNxuURFyNfmviRgno=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=fail smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=WEhTu2fs; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=suse.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-47774d3536dso77912135e9.0
+        for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 01:14:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767078810; x=1767683610; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x0h57q58CX2yKohfDk/jbjGjossZDFzfn+uFAddQCU8=;
-        b=T9RqCWbdWuIScgn5xnfpC0GJPXTzavk5DsryOvGXzxGJRwVZ9MOJluvj/BAtII0gYk
-         k8IJECPnphjaLmxgVAcmnpTDGkcaeFo1530SqkBW+oJ7LyxwpAgB6MMvIunvow1IX6S2
-         5EHg0ZHryTsUJkxOBGSdgdG6hFEuIBfhiltCOLtlRDB1cKmfDtXiHWM1V9GUlT+1wRoU
-         hHshf9J5dTQ7x/y/hpK3F7Ux74ENgEw4OF2BQKxPv4efR2ukLfpgKbKIaERUzSstotkF
-         T4Q1n9bfTUhXhy1Kov0E6QP9pXVRVeoLvr2NR7WLj5jt/64ABj789kTWPF+7TFtWUt0M
-         B1tA==
+        d=suse.com; s=google; t=1767086056; x=1767690856; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=V6HQy+93eKiQBXRGPg3IyKK5TzImasqN2aR2WZLtqxk=;
+        b=WEhTu2fsAIgu6DnvFwF/GqOKZev7dLH4f3Asap4bWY5kgFud9tUD6X2wRgjlo11UHR
+         ZqCCaBuN32tspEn2MbyOB7rlRo2Ne6CBLNtJO3tQj7MXE5L7yg59M27VgVTUlPbfMz6j
+         H9002fd3pMQ8PXnYGTxbQRhtdU7HxEkNbVw8qLAg4G6wUOEewU9H25xib/+H9nJmu7hm
+         RgDSzyirjQcC/88ATOMrgtVY0ndCfceX/5lms+T7j4CVfAUGUY0fMqq/KcvKFkumGBrk
+         ZzTqg8ISWUgLMG7amkFvnp89ccsCe27DvsF3MyBpdHFxWukC2inYngj8DuXOWRTiRjbr
+         nlPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767078810; x=1767683610;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=x0h57q58CX2yKohfDk/jbjGjossZDFzfn+uFAddQCU8=;
-        b=dQy73xGXKPWPapzldCSTPoAOwCA7v4xSbJL95sdrIlzBzVvdrk+2rhAXa6OoWvHbga
-         JkwwG7KLZHN1ZlEbESkQm8x85KUhqhh5zLqxv1ykWtrO/N6mBSwmSmBiWbvULNifD24W
-         KVTZLVgID3CwI/ZQXd2qv7R9qXXudcoyDXw+/nAFAX4HjOu8yLDRgB9lCigE8veBzEXi
-         8VxcHUHBwZ7HPyu+Dy0WpZuNCbUrwrUQ1HRbYU6BHXYIxgm+1N7VQR0c2hnvn0RKTvfv
-         ty/wEn2gdJAj+WP8BFdy5+GoTZyZWFd4YwiYVxGZoLPxAvtXTR0ELqYpJBeBs0uN0JHd
-         fw3w==
-X-Gm-Message-State: AOJu0YxjlCuiKUKexqDnAUEfXPtWCenW5c7CPPsBLBJfqduM+04QMQ4j
-	04ObXKa5+3Hhm0xdh/gVUmmc885mB+zFkgnXNA3CDDAwEJjmYPBqG6GwcoR6KbyJEl0=
-X-Gm-Gg: AY/fxX5oLMz1sFNCWJ8Nnx+T+IDWfJgWtNw4pnmkM8VDk6niaJle49Dcz87RkGUWZu8
-	/fCSdMBCxGG9SNvP7ss1/wMcafIbcb4ronzER1PNvxU484hIIaXWjvtqOyAK+zBu6FxLN0dozK/
-	OkCEbn5oU6yTfpSl3us6PPijlgQ/FVCKhzG5/p67okmdgpHBEGewFCTaGQ0e62+jEyPlgGnCNaN
-	5MchZB6eGdrwm0D5STTFQ+Lx1CBXr5Rw6wuH9jGPL6HVsVjgmJmZE+opJkEs+ybBb5nxrSnGBOC
-	jvooyhLQmzAGV+NWwbVRKWS7TsnPm2OocJ5FAK5Tw8qvS5AYvYUka4QOr5WNBNHOcprE+ckraS2
-	owF4kXJ9YRMdOqyowXhp4XQh2rk5Me9zLPkNJ7l/2TgzzA7OYP24rZZKvrqBF6PUjil16+ltgb+
-	4pjMhdYF8RGgVNbsClqIkZzmI=
-X-Google-Smtp-Source: AGHT+IFdIWZ7L2jS8RWH17dL6ONrvnKavPDOMAvIepZZKf5rHf60FLt232HObCO5p/kaXn7NFBUn5g==
-X-Received: by 2002:a17:90a:d60c:b0:34c:4c6d:ad0f with SMTP id 98e67ed59e1d1-34e921f0e35mr26407209a91.37.1767078809613;
-        Mon, 29 Dec 2025 23:13:29 -0800 (PST)
-Received: from ezingerman-fedora-PF4V722J ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34e7723b3a8sm15578514a91.3.2025.12.29.23.13.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Dec 2025 23:13:29 -0800 (PST)
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	andrii@kernel.org
-Cc: daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	kernel-team@fb.com,
-	yonghong.song@linux.dev,
-	eddyz87@gmail.com
-Subject: [PATCH 2/2] selftests/bpf: test cases for bpf_loop SCC and state graph backedges
-Date: Mon, 29 Dec 2025 23:13:08 -0800
-Message-ID: <20251229-scc-for-callbacks-v1-2-ceadfe679900@gmail.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20251229-scc-for-callbacks-v1-0-ceadfe679900@gmail.com>
-References: <20251229-scc-for-callbacks-v1-0-ceadfe679900@gmail.com>
+        d=1e100.net; s=20230601; t=1767086056; x=1767690856;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=V6HQy+93eKiQBXRGPg3IyKK5TzImasqN2aR2WZLtqxk=;
+        b=WmL47LCmfQNg5MOOUc51jKBZiBs/WCTaaCAPN6dW9RnSLioMw+r+8Hc9LN0dr2mX3R
+         CyDX22hgFrbcY+VII5I3vX67vcM9WX4Qpk+XuAsziZjbClOSzGYejH/rKYx4TfHWKS7P
+         4s2hi5FmnTVJdxuiS5tRIn+eyerz8OA99nDIux2MoB6vDDlDZxgLlTAdMHVM2NXa74z4
+         qJvJL1P8peZDeUg3XpL4WkFYXNF5ISwYBJ+JOCAsZ5dn822s1dY5WeGOF49ZuLw+OjPm
+         jbireZ0jexoN5BJw9zbMnSGkM0DSLwTC/UoL0YU+75n8XMwJ/zFxcRGMwbVWBqF/fEjJ
+         KBSA==
+X-Forwarded-Encrypted: i=1; AJvYcCXRrKyZpZe16PGKpto1Fi+aJ1Di/prcOqwmRdKbpqrkZ6IC89c25dYOrhreBW8SPSF2c50=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxZo+VXS1A1V7Oz/CqQ4DXp2+ktxX67FLzG/52JrG9XC01Vui5k
+	W5j9YhCAVE6B8rlEyTnMrzxgR9+fyNcFgfHbgnTs3kja4mK0Cuwt14C4IHqTcyAyErU=
+X-Gm-Gg: AY/fxX5u/EoBI8kZx9ISGvWu0+OXouzfIFQt9tyJic57oL8CseTAnBoubcpQpJfDSXm
+	Oz3pRQVDUDSIdtCmXDBacvqnBdg7pXydl3lmTw79fsDFM27cVbfZYehs1zFstSsdprAFpG5qyKs
+	dY9B8m6fptK+KhDLsvYf0L75cIl+NebslMqMXpXY53ctnEvd77eVpMagJNphQApVR+pgiE4rAw+
+	+EIHmZFYeiN/59XyKNS/vJo+2GVw7D/hYwyOA/rdUjIujDsELuRZPswOOjsFsk7c3bVGhkzr5ah
+	CssFUN9ULI8FyoPVHPp9MoKytU8mXE7e4pm+Q7P7zk0YTMsI9mu0jMBuVT51+agTcJz8VJ1uXFM
+	DO8fmN+V2KvPhUCM6uMU3RX1EzsFcHq41x/T3n3fiTANi/8m9sGeMfoQsriu/uRMuiGQMlpBkS2
+	DdjWlIPTv1tl4FWWrGuktdDyrbrqXV3w==
+X-Google-Smtp-Source: AGHT+IFKv3lNIvVVFE/AcEy5+lpmg1H1P5fZOOF4vDE/CodIsqYQs0HP6/eTBXDVP5Nqswfi6ttRjA==
+X-Received: by 2002:a05:600c:8b82:b0:47b:deb9:163d with SMTP id 5b1f17b1804b1-47d18b99b99mr353825415e9.7.1767086056038;
+        Tue, 30 Dec 2025 01:14:16 -0800 (PST)
+Received: from [10.0.1.22] (109-81-1-107.rct.o2.cz. [109.81.1.107])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47be3a5486dsm254520345e9.9.2025.12.30.01.14.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Dec 2025 01:14:15 -0800 (PST)
+Message-ID: <0d82084c-e633-40ff-b9fe-ce1532f28fdc@suse.com>
+Date: Tue, 30 Dec 2025 10:14:13 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v1] module: Fix kernel panic when a symbol st_shndx is
+ out of bounds
+To: Ihor Solodrai <ihor.solodrai@linux.dev>
+Cc: Luis Chamberlain <mcgrof@kernel.org>, Daniel Gomez <da.gomez@kernel.org>,
+ Sami Tolvanen <samitolvanen@google.com>,
+ Nathan Chancellor <nathan@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, linux-kernel@vger.kernel.org,
+ linux-modules@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kbuild@vger.kernel.org, llvm@lists.linux.dev
+References: <20251224005752.201911-1-ihor.solodrai@linux.dev>
+Content-Language: en-US
+From: Petr Pavlu <petr.pavlu@suse.com>
+In-Reply-To: <20251224005752.201911-1-ihor.solodrai@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Test for state graph backedges accumulation for SCCs formed by
-bpf_loop(). Equivalent to the following C program:
+On 12/24/25 1:57 AM, Ihor Solodrai wrote:
+> [...]
+> ---
+>  kernel/module/main.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/kernel/module/main.c b/kernel/module/main.c
+> index 710ee30b3bea..5bf456fad63e 100644
+> --- a/kernel/module/main.c
+> +++ b/kernel/module/main.c
+> @@ -1568,6 +1568,13 @@ static int simplify_symbols(struct module *mod, const struct load_info *info)
+>  			break;
+>  
+>  		default:
+> +			if (sym[i].st_shndx >= info->hdr->e_shnum) {
+> +				pr_err("%s: Symbol %s has an invalid section index %u (max %u)\n",
+> +				       mod->name, name, sym[i].st_shndx, info->hdr->e_shnum - 1);
+> +				ret = -ENOEXEC;
+> +				break;
+> +			}
+> +
+>  			/* Divert to percpu allocation if a percpu var. */
+>  			if (sym[i].st_shndx == info->index.pcpu)
+>  				secbase = (unsigned long)mod_percpu(mod);
 
-  int main(void) {
-    1: fp[-8] = bpf_get_prandom_u32();
-    2: fp[-16] = -32;                       // used in a memory access below
-    3: bpf_loop(7, loop_cb4, fp, 0);
-    4: return 0;
-  }
+The module loader should always at least get through the signature and
+blacklist checks without crashing due to a corrupted ELF file. After
+that point, the module content is to be trusted, but we try to error out
+for most issues that would cause problems later on.
 
-  int loop_cb4(int i, void *ctx) {
-    5: if (unlikely(ctx[-8] > bpf_get_prandom_u32()))
-    6:   *(u64 *)(fp + ctx[-16]) = 42;      // aligned access expected
-    7: if (unlikely(fp[-8] > bpf_get_prandom_u32()))
-    8:   ctx[-16] = -31;                    // makes said access unaligned
-    9: return 0;
-  }
+In this specific case, I think it is useful to add this check because
+the code potentially crashes on a valid module that uses SHN_XINDEX. The
+loader already rejects sh_link and sh_info values that are above e_shnum
+in several places, so the patch is consistent with that behavior.
 
-If state graph backedges are not accumulated properly at the SCC
-formed by loop_cb4() call from bpf_loop(), the state {ctx[-16]=-32}
-injected at instruction 9 on verification path 1,2,3,5,7,9,4 would be
-considered fully verified and would lack precision mark for ctx[-16].
-This would lead to early pruning of verification path 1,2,3,5,7,8,9 in
-state {ctx[-16]=-31}, which in turn leads to the incorrect assumption
-that the above program is safe.
-
-Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
----
- tools/testing/selftests/bpf/progs/iters.c | 75 +++++++++++++++++++++++++++++++
- 1 file changed, 75 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/progs/iters.c b/tools/testing/selftests/bpf/progs/iters.c
-index 7dd92a303bf6b3f0fc2962f6ce6cc453350561e3..69061f0309579eada74e5f2a68640470ff94a8b3 100644
---- a/tools/testing/selftests/bpf/progs/iters.c
-+++ b/tools/testing/selftests/bpf/progs/iters.c
-@@ -1926,4 +1926,79 @@ static int loop1_wrapper(void)
- 	);
- }
- 
-+/*
-+ * This is similar to a test case absent_mark_in_the_middle_state(),
-+ * but adapted for use with bpf_loop().
-+ */
-+SEC("raw_tp")
-+__flag(BPF_F_TEST_STATE_FREQ)
-+__failure __msg("math between fp pointer and register with unbounded min value is not allowed")
-+__naked void absent_mark_in_the_middle_state4(void)
-+{
-+	/*
-+	 * Equivalent to a C program below:
-+	 *
-+	 * int main(void) {
-+	 *   fp[-8] = bpf_get_prandom_u32();
-+	 *   fp[-16] = -32;                    // used in a memory access below
-+	 *   bpf_loop(7, loop_cb4, fp, 0);
-+	 *   return 0;
-+	 * }
-+	 *
-+	 * int loop_cb4(int i, void *ctx) {
-+	 *   if (unlikely(ctx[-8] > bpf_get_prandom_u32()))
-+	 *     *(u64 *)(fp + ctx[-16]) = 42;   // aligned access expected
-+	 *   if (unlikely(fp[-8] > bpf_get_prandom_u32()))
-+	 *     ctx[-16] = -31;                 // makes said access unaligned
-+	 *   return 0;
-+	 * }
-+	 */
-+	asm volatile (
-+		"call %[bpf_get_prandom_u32];"
-+		"r8 = r0;"
-+		"*(u64 *)(r10 - 8) = r0;"
-+		"*(u64 *)(r10 - 16) = -32;"
-+		"r1 = 7;"
-+		"r2 = loop_cb4 ll;"
-+		"r3 = r10;"
-+		"r4 = 0;"
-+		"call %[bpf_loop];"
-+		"r0 = 0;"
-+		"exit;"
-+		:
-+		: __imm(bpf_loop),
-+		  __imm(bpf_get_prandom_u32)
-+		: __clobber_all
-+	);
-+}
-+
-+__used __naked
-+static void loop_cb4(void)
-+{
-+	asm volatile (
-+		"r9 = r2;"
-+		"r8 = *(u64 *)(r9 - 8);"
-+		"r6 = *(u64 *)(r9 - 16);"
-+		"call %[bpf_get_prandom_u32];"
-+		"if r0 > r8 goto use_fp16_%=;"
-+	"1:"
-+		"call %[bpf_get_prandom_u32];"
-+		"if r0 > r8 goto update_fp16_%=;"
-+	"2:"
-+		"r0 = 0;"
-+		"exit;"
-+	"use_fp16_%=:"
-+		"r1 = r10;"
-+		"r1 += r6;"
-+		"*(u64 *)(r1 + 0) = 42;"
-+		"goto 1b;"
-+	"update_fp16_%=:"
-+		"*(u64 *)(r9 - 16) = -31;"
-+		"goto 2b;"
-+		:
-+		: __imm(bpf_get_prandom_u32)
-+		: __clobber_all
-+	);
-+}
-+
- char _license[] SEC("license") = "GPL";
+I suggest adding a proper commit description and sending a non-RFC
+version.
 
 -- 
-2.52.0
+Thanks,
+Petr
 
