@@ -1,184 +1,173 @@
-Return-Path: <bpf+bounces-77535-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77536-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95DEACEA804
-	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 19:45:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7ECDDCEA80D
+	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 19:46:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 23C6830204A4
-	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 18:45:06 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D533C3033D56
+	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 18:45:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06CCB2F12B7;
-	Tue, 30 Dec 2025 18:45:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 447012F28EF;
+	Tue, 30 Dec 2025 18:45:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="YFU9FBMG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j7KlYGx1"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D4CB28489E
-	for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 18:45:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25F8F1E8329
+	for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 18:45:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767120304; cv=none; b=AJIp8Jz4verHp0iBsiFfyFRrs4XNiF9zZ3lKVJoyTnm+sAUxlJq2tZopyMxDgo3JXkPgGSadzV2Ljv1cmYmKSXF+WkEaBgi4HUhhyjevzb9d/wRZN+dLIo7drhtIEfzxjrGG23zbfCwdgN90Hq7PLtUainaoZmWqAu41V426VX8=
+	t=1767120329; cv=none; b=owSeCaaxG/0mb5yyur7mi4TT24i1WlCZdZ/hv2oc+7XwLfAh6krNrdeueV4iRVMoQ79mjo7gGvyfPNOc8EUpnqSfYXcDzB7S5gAaEERpy7eB/qybjOmLRUPOZoK96RsUT0c7hYgZt4AuMCHBy4bkscHS9L32R1ItHW3jLEs2uSI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767120304; c=relaxed/simple;
-	bh=yRC9t65PO3NSduAzMKoSrj4oMSrnLS8ACvjrMDeASUk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XkVHG+oy2O6adnxx5dFaVzp0JLypmyBSF8UmjfV3ybo1AGuV10p9GysjMImJJwVIcp0W6kN0VApEqHUrJMMn6PoThnI+4ve+j+/mlypgLwtna70eBMCywvGwU6VMPr90E+YeKI3Dj9fViVnf0/MBQeXygsbcCdq4BAaqplxJUI4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=YFU9FBMG; arc=none smtp.client-ip=91.218.175.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <6f845383-563e-49a7-941c-03e9db6158cc@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1767120300;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VR4Tl9AFiA48E3t4mhEMyh1YOQgRBN3waZ3st/FSflQ=;
-	b=YFU9FBMGTOgpkSg9MZfgapPcIC9yjumwdoUDaBmMcBKdqJzVqMma9omfwqJJwbYSMJIHLe
-	W5BidMBdcnreQsqktWGCN0feiN3N6VxEb5mUdY4BkEdmpk92iJtx6b2AFKLQsbdS6XHN3z
-	/WgqNXwwu21cirsWK87Fw+setz+HDYo=
-Date: Tue, 30 Dec 2025 10:44:52 -0800
+	s=arc-20240116; t=1767120329; c=relaxed/simple;
+	bh=FpDD2TwPWa4M5fgZPts+75iyDxtNmzs1swl5kLP8onQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hQ89CJba3fe/65e5MuzOB9D13t+k9jYDfa5NwQYJ9M9b1NNBMY3PjhhBOJ+5XWwc2ma6L8Z30UbLPddggyXGYzWAiUi7IJwUOr6EbQKHd+R0W6nCSQT83zPFN1pMfjenxKnLMVrN3hbhmIS5lAdFpCtgnVp2Zw4LqMMVRclawqA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j7KlYGx1; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-431048c4068so5628118f8f.1
+        for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 10:45:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1767120326; x=1767725126; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aUs+XJ/tmGWPaZTu0VNMbHqUG+BDru/HlhrUUBVzGW4=;
+        b=j7KlYGx1FWI6AJ+ZHoHCG/APP7KhK6e7cFJZCebBO4qv8SO6X9Or1zfKYZEgfx8cCC
+         FD2VSqNTdz1DWYNKuRf4Isb8Ew8KNoSvHMV7RX/1LcvJbAPFd8rgrBCpGpIGSZ2h0kqr
+         DC3dHkQi0cBlZS7XWFT134hc4R4TQME7iizFCk1S84uJL11dayapix9sqRJhb2GqQ/oB
+         Ra6T5MWleiV/iaJHkMpCKciI8ARySAF/f7S8+Y3uz1vWlobQarHLgPzJ8H+KbnTSA4c2
+         NateL9nQilthjXRN95PR7mMqhARmWiF+jv6rAL+F33gZxEcYDE9xnlyPSxyzjZqh4oc8
+         HY0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767120326; x=1767725126;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=aUs+XJ/tmGWPaZTu0VNMbHqUG+BDru/HlhrUUBVzGW4=;
+        b=V+aN+YDoczx5gVfZOKfg3vXm2kydcvslScdoiCsHmuAdWC49PWTFXYKVgxcS0SlqKq
+         zjNSPr+WLt29nazuHF9lrFjZd+VCrhCjcQ2vyVmwlYBRR7I4kwKZEu/Ty0DQ3JS0BTNf
+         qgzMBa6kfUl/82zhC0pbLWxShAtcBbYtlWmx2Gon+VqQ+QLFSshMOGINV5/aaIvUOjoW
+         FPv6knBuCCOtEbhJO7Qud33nmhMV7haXU97FDI+HnLOmy5E3dAf6iBZba+E+6DdSiutC
+         JPwQkTU3lxFQIvmJAFquZGZ8trCWYUClh0Rt3rU+vazhjdK/KRmS7AR8aKikci2DG1CH
+         MleA==
+X-Gm-Message-State: AOJu0YyXTM7jAiNBz8N6VhrSmoScMHs7t9QYp4dtw7OHcResYaoNjdC6
+	EQtUgeFqQIEDi6Z4y3EOkxX633C1JHZtzXm24lP1RDP2VYtuMshtKMuT8RtuwxRpuZwYdPqZhM6
+	wtnKYTEkFVJX05ignucjdT1uaibQcHzE=
+X-Gm-Gg: AY/fxX6q0DiSGEjBXrBtqm/2NmoTEGhqcxbgrXtjqrjEwNqhXsAtFEQ2aiIaHiYo23p
+	OaaLiysiCiDb/MV8gglMsszd0XHemU6zk11ZpEFB8ZvVsNBenggTg2Cq1n17JVi0VOEmmK1n1Tj
+	Gi9GT8cGs2ReT52YODq5KkPrqG16d3VDPFqLT1uTGqmX/UPfYin6D7tZPwn/kKvrbyk+yjW88v1
+	bCFw1yR8fbgHkYdypI0WgLHpb32vMPWkCLYUYQcpfxg7mXUZqbqYV1vonYcEUajyWcZ/4KQoMsV
+	OvfQZaBEgqvzmQhJ0myqrI8C/IR9
+X-Google-Smtp-Source: AGHT+IFu8MxhvdTHihCZQiKGDRkvTlebUdQ6AumB41uGdBICQHMsgBN4FWTDOKDnqFuk4aCkRs13LoMSGjKvV0duIGY=
+X-Received: by 2002:a5d:5f46:0:b0:425:86da:325f with SMTP id
+ ffacd0b85a97d-4324e4379aemr44169396f8f.27.1767120326343; Tue, 30 Dec 2025
+ 10:45:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH v1] module: Fix kernel panic when a symbol st_shndx is
- out of bounds
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Nathan Chancellor <nathan@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>, Luis Chamberlain
- <mcgrof@kernel.org>, Petr Pavlu <petr.pavlu@suse.com>,
- Daniel Gomez <da.gomez@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, LKML <linux-kernel@vger.kernel.org>,
- linux-modules@vger.kernel.org, bpf <bpf@vger.kernel.org>,
- Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
- clang-built-linux <llvm@lists.linux.dev>
-References: <20251224005752.201911-1-ihor.solodrai@linux.dev>
- <9edd1395-8651-446b-b056-9428076cd830@linux.dev>
- <af906e9e-8f94-41f5-9100-1a3b4526e220@linux.dev>
- <20251229212938.GA2701672@ax162>
- <6b87701b-98fb-4089-a201-a7b402e338f9@linux.dev>
- <CAADnVQ+X-a92LEgcd-HjTJUcw2zR_jtUmD9U-Z6OtNnvpVwfiw@mail.gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Ihor Solodrai <ihor.solodrai@linux.dev>
-In-Reply-To: <CAADnVQ+X-a92LEgcd-HjTJUcw2zR_jtUmD9U-Z6OtNnvpVwfiw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20251230153006.1347742-1-puranjay@kernel.org> <20251230153006.1347742-2-puranjay@kernel.org>
+In-Reply-To: <20251230153006.1347742-2-puranjay@kernel.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 30 Dec 2025 10:45:15 -0800
+X-Gm-Features: AQt7F2q9ors-Snfqu48L457FR2jO40YzKKZSmbj4IlOAPY8qSMD1TwmQve9Ogfs
+Message-ID: <CAADnVQLFJ2a8n2xBbu4c9Soh2qEtoJsKAKUqQ6Bn+Z-OUMXTOw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: syscall: Introduce memcg enter/exit helpers
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: bpf <bpf@vger.kernel.org>, Puranjay Mohan <puranjay12@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, Kernel Team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 12/29/25 4:50 PM, Alexei Starovoitov wrote:
-> On Mon, Dec 29, 2025 at 4:39 PM Ihor Solodrai <ihor.solodrai@linux.dev> wrote:
->>
->> On 12/29/25 1:29 PM, Nathan Chancellor wrote:
->>> Hi Ihor,
->>>
->>> On Mon, Dec 29, 2025 at 12:40:10PM -0800, Ihor Solodrai wrote:
->>>> I think the simplest workaround is this one: use objcopy from binutils
->>>> instead of llvm-objcopy when doing --update-section.
->>>>
->>>> There are just 3 places where that happens, so the OBJCOPY
->>>> substitution is going to be localized.
->>>>
->>>> Also binutils is a documented requirement for compiling the kernel,
->>>> whether with clang or not [1].
->>>>
->>>> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/changes.rst?h=v6.18#n29
->>>
->>> This would necessitate always specifying a CROSS_COMPILE variable when
->>> cross compiling with LLVM=1, which I would really like to avoid. The
->>> LLVM variants have generally been drop in substitutes for several
->>> versions now so some groups such as Android may not even have GNU
->>> binutils installed in their build environment (see a recent build
->>> fix [1]).
->>>
->>> I would much prefer detecting llvm-objcopy in Kconfig (such as by
->>> creating CONFIG_OBJCOPY_IS_LLVM using the existing check for
->>> llvm-objcopy in X86_X32_ABI in arch/x86/Kconfig) and requiring a working
->>> copy (>= 22.0.0 presuming the fix is soon merged) or an explicit opt
->>> into GNU objcopy via OBJCOPY=...objcopy for CONFIG_DEBUG_INFO_BTF to be
->>> selectable.
->>
->> I like the idea of opt into GNU objcopy, however I think we should
->> avoid requiring kbuilds that want CONFIG_DEBUG_INFO_BTF to change any
->> configuration (such as adding an explicit OBJCOPY= in a build command).
->>
->> I drafted a patch (pasted below), introducing BTF_OBJCOPY which
->> defaults to GNU objcopy. This implements the workaround, and should be
->> easy to update with a LLVM version check later after the bug is fixed.
->>
->> This bit:
->>
->> @@ -391,6 +391,7 @@ config DEBUG_INFO_BTF
->>         depends on PAHOLE_VERSION >= 122
->>         # pahole uses elfutils, which does not have support for Hexagon relocations
->>         depends on !HEXAGON
->> +       depends on $(success,command -v $(BTF_OBJCOPY))
->>
->> Will turn off DEBUG_INFO_BTF if relevant GNU objcopy happens to not be
->> installed.
->>
->> However I am not sure this is the right way to fail here. Because if
->> the kernel really does need BTF (which is effectively all kernels
->> using BPF), then we are breaking them anyways just downstream of the
->> build.
->>
->> An "objcopy: command not found" might make some pipelines red, but it
->> is very clear how to address.
->>
->> Thoughts?
->>
->>
->> From 7c3b9cce97cc76d0365d8948b1ca36c61faddde3 Mon Sep 17 00:00:00 2001
->> From: Ihor Solodrai <ihor.solodrai@linux.dev>
->> Date: Mon, 29 Dec 2025 15:49:51 -0800
->> Subject: [PATCH] BTF_OBJCOPY
->>
->> ---
->>  Makefile                             |  6 +++++-
->>  lib/Kconfig.debug                    |  1 +
->>  scripts/gen-btf.sh                   | 10 +++++-----
->>  scripts/link-vmlinux.sh              |  2 +-
->>  tools/testing/selftests/bpf/Makefile |  4 ++--
->>  5 files changed, 14 insertions(+), 9 deletions(-)
-> 
-> All the makefile hackery looks like overkill and wrong direction.
-> 
-> What's wrong with kernel/module/main.c change?
-> 
-> Module loading already does a bunch of sanity checks for ELF
-> in elf_validity_cache_copy().
-> 
-> + if (sym[i].st_shndx >= info->hdr->e_shnum)
-> is just one more.
-> 
-> Maybe it can be moved to elf_validity*() somewhere,
-> but that's a minor detail.
-> 
-> iiuc llvm-objcopy affects only bpf testmod, so not a general
-> issue that needs top level makefile changes.
+On Tue, Dec 30, 2025 at 7:30=E2=80=AFAM Puranjay Mohan <puranjay@kernel.org=
+> wrote:
+>
+> Introduce bpf_map_memcg_enter() and bpf_map_memcg_exit() helpers to
+> reduce code duplication in memcg context management.
+>
+> bpf_map_memcg_enter() gets the memcg from the map, sets it as active,
+> and returns the previous active memcg.
+>
+> bpf_map_memcg_exit() restores the previous active memcg and releases the
+> reference obtained during enter.
+>
+> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+> ---
+>  include/linux/bpf.h  | 15 +++++++++++++
+>  kernel/bpf/syscall.c | 50 +++++++++++++++++++++++---------------------
+>  2 files changed, 41 insertions(+), 24 deletions(-)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 4e7d72dfbcd4..4aedc3ceb482 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -2608,6 +2608,10 @@ struct bpf_prog *bpf_prog_get_curr_or_next(u32 *id=
+);
+>  int bpf_map_alloc_pages(const struct bpf_map *map, int nid,
+>                         unsigned long nr_pages, struct page **page_array)=
+;
+>  #ifdef CONFIG_MEMCG
+> +struct mem_cgroup *bpf_map_memcg_enter(const struct bpf_map *map,
+> +                                      struct mem_cgroup **memcg);
+> +void bpf_map_memcg_exit(struct mem_cgroup *old_memcg,
+> +                       struct mem_cgroup *memcg);
+>  void *bpf_map_kmalloc_node(const struct bpf_map *map, size_t size, gfp_t=
+ flags,
+>                            int node);
+>  void *bpf_map_kmalloc_nolock(const struct bpf_map *map, size_t size, gfp=
+_t flags,
+> @@ -2632,6 +2636,17 @@ void __percpu *bpf_map_alloc_percpu(const struct b=
+pf_map *map, size_t size,
+>                 kvcalloc(_n, _size, _flags)
+>  #define bpf_map_alloc_percpu(_map, _size, _align, _flags)      \
+>                 __alloc_percpu_gfp(_size, _align, _flags)
+> +static inline struct mem_cgroup *bpf_map_memcg_enter(const struct bpf_ma=
+p *map,
+> +                                                    struct mem_cgroup **=
+memcg)
+> +{
+> +       *memcg =3D NULL;
+> +       return NULL;
+> +}
+> +
+> +static inline void bpf_map_memcg_exit(struct mem_cgroup *old_memcg,
+> +                                     struct mem_cgroup *memcg)
+> +{
+> +}
+>  #endif
+>
+>  static inline int
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index a4d38272d8bc..e7c0c469c60e 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -505,17 +505,29 @@ static struct mem_cgroup *bpf_map_get_memcg(const s=
+truct bpf_map *map)
+>         return root_mem_cgroup;
+>  }
+>
+> +struct mem_cgroup *bpf_map_memcg_enter(const struct bpf_map *map,
+> +                                      struct mem_cgroup **memcg)
+> +{
+> +       *memcg =3D bpf_map_get_memcg(map);
+> +       return set_active_memcg(*memcg);
+> +}
 
-By the way, we don't have to put BTF_OBJCOPY variable in the top level
-Makefile.  It can be defined in Makefile.btf, which is included only
-with CONFIG_DEBUG_INFO_BTF=y
+A bit odd to return two pointers differently. One as return and another as
+an argument.
+Since it cannot fail let's return both as arguments.
+That will match _exit() too.
+bpf_map_memcg_enter(map, &old_memcg, &new_memcg);
+bpf_map_memcg_exit(old_memcg, new_memcg);
 
-We have to define BTF_OBJCOPY in the top-level makefile *if* we want
-CONFIG_DEBUG_INFO_BTF to depend on it, and get disabled if BTF_OBJCOPY
-is not set/available.
-
-I was trying to address Nathan's concern, that some kernel build
-environments might not have GNU binutils installed, and kconfig should
-detect that.  IMO putting BTF_OBJCOPY in Makefile.btf is more
-appropriate, assuming the BTF_OBJCOPY variable is at all an acceptable
-workaround for the llvm-objcopy bug.
-
-
-
+pw-bot: cr
 
