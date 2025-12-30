@@ -1,148 +1,137 @@
-Return-Path: <bpf+bounces-77530-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77531-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B503CEA6AA
-	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 19:09:12 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F48CCEA747
+	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 19:20:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7DA61302035B
-	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 18:07:09 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 38E65301AE02
+	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 18:20:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA7B7280018;
-	Tue, 30 Dec 2025 18:07:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 308B12E7F32;
+	Tue, 30 Dec 2025 18:20:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jVIXveq9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NCsjpqPd"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFB8A26056D
-	for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 18:07:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E04A81A23A4
+	for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 18:20:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767118027; cv=none; b=A1Izo9mcDubJFGXDDqKNvyNfIJf0+ZKAyp6xZtUZVjGxdCLIx0vgNzGzmXTyeu6tnO+QvnAR2d3GeI37BrTPY6b7c619od6SX8A8qNxKFA1x9ijUFMSCIA5+VxAv181cWE0qDHdM8XDab3aVkltIS1yGY+TOz9D/UpFQb8URAp0=
+	t=1767118853; cv=none; b=VHlyGf4P462t6QdWcP3yocEwPFVIovpSkDcz3D66ynY6Xz5Cc9RasO5qconoBgNym7XKLWOxLu2t8LhS0rIV6/rGFxufK3NRUNLBNYG2618v7pTqntX334ZtITXhGLQYyt9nMBjyJKi1A/kzlN+568pMD6GGCI4gsuu64ODdDQY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767118027; c=relaxed/simple;
-	bh=if7BGCUQC4lDEzFB6sz4KoqdG/WVlgI7PdhKYoSdwbs=;
+	s=arc-20240116; t=1767118853; c=relaxed/simple;
+	bh=DjsYg9RABeCOzIi/VVJJg55gdLB4L0Xy7eA6JjLkkq8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rt7HjfnI6nI3644no8NLqki4Qj84W4pYlee61dJLGEV00L/Al4Qfj8vV6r7+1tSW3qpwNApFZoEAxNWil5ti2bbpif6AHAMJn+0foQCq2QnfA6PLpXdySkHM0UjAGCqr/H6bCP1cCEEYKzZ8ric01vkWZp4HfOQvxcPrDRFB3j0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jVIXveq9; arc=none smtp.client-ip=209.85.128.44
+	 To:Cc:Content-Type; b=hCMz3PJBDQwkzFNtN2qiO/hbflIHaUIWjkVT+T6NldOlL2DNZNCSdmBETdASok2yLfOboX2/YzwVJIKDcilb1ZKM7CgFjZ9KEm93tW9xw9Vl2rqc1pEM5weNxpLgtn7pQLJ5Wmiw0fSm1rVq55DLuWluW7g7pL8mQlfl4/h1aRY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NCsjpqPd; arc=none smtp.client-ip=209.85.221.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-47d1d8a49f5so49114495e9.3
-        for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 10:07:05 -0800 (PST)
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-42fb2314eb0so7873132f8f.2
+        for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 10:20:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767118024; x=1767722824; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1767118850; x=1767723650; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=jzjmgwRv2p2iqnj4MbLcXnHMXE50+6aC73Sel7gltN4=;
-        b=jVIXveq9kS+8YyxkPYasvxhOos+Hj1qV8gKsdov10wdMNlNZe219H5V7HURYQbhZZW
-         1OlvZuJqFIKILS7ynIvTXyEYHFv0YKAiPT6Ib0oyUKD9xSs/QtoOLSxYJZTPUwNxzrry
-         XIXACDXe4CjmUZf7oNpYwwaZ1exwGi9Lsq7I+rArGNJBowM9A71TgFA+waUIYqV2uAx8
-         8ut7wafDkAtJEBBNVuOFLOAnrQNW9ufHspNyp3ogK6Hbqp7AxP2+IQRe+GulQdQ7qcFm
-         UEK+eAfAWx202UdgTFXEapCcQkRxn+Fa3TLsu+5XvjfLv4urgmQtdEyPhLD5LQSx93/l
-         EHNw==
+        bh=YUf6q6itEACCb732QD4lwJfN2sH1cCir07Fliqvkcig=;
+        b=NCsjpqPdPd+KrwKpSwL88SzL2tQOT97bNlSQogXSLX7WlO13FXawD8jlJKDyDwrmo5
+         Fbb3MkmraK9jxqBMLra09pbUFsNUTf/TDfdok/WjxhJZ1YNw2UsqMbbBtd93E6S0bIGK
+         LySb0dMuC7IMVmElhl6BP2Bwt8cnvr+OO+9S+NFw+oS31g4dL3TVwQNl2rFp5NIqQ5XL
+         XIUfzNpH2iyejrJoid3QNYSQ785WZ13sKUTgImsdKXaj2qsuhPu8fsrcwQCwD9MkGUSH
+         AfD3mZMFEJIul3Fq6wuiGVuK3LDE+77QsOX0nmAUj4qIogZAUxqrDrQdo7eoRzjxTGyf
+         a88g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767118024; x=1767722824;
+        d=1e100.net; s=20230601; t=1767118850; x=1767723650;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=jzjmgwRv2p2iqnj4MbLcXnHMXE50+6aC73Sel7gltN4=;
-        b=HItTrc7pmdpjTNaujjUogMjYGLOKu/GSqoej9PZvWoRhDMu5FuwKRLR9a3lEozkg+r
-         FF248fwsVMG6KnmtmzGV/+egEgyxP0yopw+BtIcMr4xTJguuF3ywJ1Hsn7XB5swJkLyb
-         A3sKn43uZb6KrZqbC6DWMQC8X6SJBd/jSJpI/b6Copfejqft3duzvANsgyRYhvRjud/K
-         8SU5HhpTCy3fkAJBC/Vst5yRj/EoEdy9rZSvsyIZzXjdAjj26qXNlkbyDDKPbKW1l8ac
-         Z1BlpkSVIOt0yPY6ar7DDFC8f6T09knPuP3luE6HfrhrDJkOG0uityLPcThdDXCWVKOL
-         xH5A==
-X-Forwarded-Encrypted: i=1; AJvYcCU7oS6QW85coTFzsjMipnzdRrftPlDJrFQVU3o/qQAcMwHFbOLkAPuAfdvlUopZn/M32Fw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxRQ7B+ceRJAxF3VsdIe4BvngjtcqhtqgU/egSkjzdU8wpx92I3
-	zcEfEKAbKVdDk9dog+YfrRDta2jAWuoYh4Iju9q00RuYc6QGryShFz4CAj1ubec2lplZaVX/elV
-	azmkBWH2s1In8R1LjaHuj0QFdSv7xbfc=
-X-Gm-Gg: AY/fxX7Y9pFJGMmSzps241AaaetjtwC0/AslIeEyYgVR18sdZh46m5ba2Q2nO7jnkzR
-	Mz4fdxRNIjpN1/r/cJz6t/OMK7OhpZnIV7uYWy7PSwFuRe4l14curCj4c38DCOhlf+zvyHWNEDG
-	Y3zkQoNrdJ/rWk/Dx043ZgdYQ6m4NAWoUUfa+FJmcDLBL9eswbNEm8aofbuskHIjYH8f/TcbAzv
-	Rh55y0/8kJAJxo1SRmVadIYrP42G+0hFk+nxQ3+MVewucAwH+tzI7wrb0JsVYcMOqGhspGgbtQW
-	gg+r/GUyBdgh7tqQmUpjUMHXG/df
-X-Google-Smtp-Source: AGHT+IGxbWxByoZ4qZ/OqL8mjdsrQMy92tVBLl9MjFLHEOnJKjjhUcOloNpJLabmWZ5pi2qCG4otOqUFlDI6aYUHKaY=
-X-Received: by 2002:a05:600c:4e42:b0:477:7d94:5d0e with SMTP id
- 5b1f17b1804b1-47d1958fcbcmr387049085e9.27.1767118023902; Tue, 30 Dec 2025
- 10:07:03 -0800 (PST)
+        bh=YUf6q6itEACCb732QD4lwJfN2sH1cCir07Fliqvkcig=;
+        b=tL6qHo8121RCwI4gYexOAAnWsNm6FJI98qm76gUsihlUgJujCyBtTRpKFfXD13FGlF
+         QGZNt7sb8mJfjXWM61faEOxYtkMVu3CnE6fkSCMGafoSXIMOnP75LntfAKv9V1FwdNLE
+         H4VkRbFeoD0Dk2yxuPLoyPMX3xUhpcq/dsMwifFZqADQveneFXEsXUFSXEQVoAvJaElT
+         dw72HXMnAl6nPuRmPDQ1hHtYPRIgvFDRhtGPKj9602vLxoQGw5Qr1FVZRg0Hg4znIUBV
+         uJ64sdQy4vgsmrC6EUzEfysw5oQk+X57m3YOf4LdmSKnR5VpIrXWr8yWAPEzOdLfTtSU
+         4kGQ==
+X-Gm-Message-State: AOJu0YzXsnSlz67hIhsxGJjcJNeTNnkKHPS6aOjBD+QK1FDjZh4Hc9oc
+	7aeKJmSymAyWmY0b3oJav3d27Zt8RYmVqZF2HEABxhBhvtU1I+GlaBJhoSf1WcNlfHm1BMcbXpJ
+	LUjPlQIitZmkgCMC98uBV5J9IERgNzeA=
+X-Gm-Gg: AY/fxX4d0D/ySfj4N0RVloApNkFx31JHDTu1L8k9b6LoN8J/12czvIppT2Cu2ZDBJ81
+	zE3HXcZnU1IBNgo/Fssv5N6FLjU2IXJeg+RIJDLasy8JBZiZI1Nje5qCIcivBM4TbgZkr2zDcbe
+	e79R4Wd3qWlDEJQlkXNEtfGePW8xdNV5zjM705CKQmA2C6BNXdDmgtmBXFDroi4+KQ1k0Mo0a6R
+	EuNCxdmqBv1UEAJxmsQG3BVmdyIVfTNfM6Br7hJQ2bFvILq0Bq7YTqLFomC8vqyopQz7xCzW8eB
+	cxgHjrnk2XqOgLGHCA4CRJ5PX7IG
+X-Google-Smtp-Source: AGHT+IHgmg+V700bfMp+f/NOEfUiwlO8nGKFWGFaraDIRysO8U1C+LgV47XXfeXQJoza0dR+qGdPBpRKuW65UwCZA9U=
+X-Received: by 2002:a05:6000:2909:b0:42b:2dfd:5350 with SMTP id
+ ffacd0b85a97d-4324e7077c8mr45891448f8f.56.1767118850032; Tue, 30 Dec 2025
+ 10:20:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251222185813.150505-1-mahe.tardy@gmail.com> <CAADnVQLF+ihK16J3x5pQcJY0t2_gUHiur7ENZNqJdazzr+f8Pg@mail.gmail.com>
- <aUprAOkSFgHyUMfB@gmail.com> <4eec6b7605d007c6f906bf9a4cd95f2423781b0a.camel@gmail.com>
- <CAADnVQLsJeSjwFVE=gcnVzh7HftDqZJM+xByr2cD6TRmTRGLsA@mail.gmail.com> <62ba00524aa7afd5e1f76a5a2f4c06899bf2dd64.camel@gmail.com>
-In-Reply-To: <62ba00524aa7afd5e1f76a5a2f4c06899bf2dd64.camel@gmail.com>
+References: <20251227081033.240336-1-xukuohai@huaweicloud.com>
+In-Reply-To: <20251227081033.240336-1-xukuohai@huaweicloud.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 30 Dec 2025 10:06:52 -0800
-X-Gm-Features: AQt7F2rFwT6fM6gxicD6MQVtd1_S2xt4YwCocqXTjEfnpu5AW8H1smHjds6mqC0
-Message-ID: <CAADnVQLDfmLSuvXJFLHM=tOfViSvwPBUyGGZN8OhDP5dRy1_NQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] verifier: add prune points to live registers print
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Mahe Tardy <mahe.tardy@gmail.com>, bpf <bpf@vger.kernel.org>, 
+Date: Tue, 30 Dec 2025 10:20:38 -0800
+X-Gm-Features: AQt7F2ovLUIlZDlvvAljLOMXpnPY_g8ETFMjy2hA5P7laVN10rANwy1yNQezEUM
+Message-ID: <CAADnVQKJk7pGW50JHj6tZAeHLxCbgmHBdhwZCY4NT-6MTg7=sQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3] bpf: arm64: Fix panic due to missing BTI at
+ indirect jump targets
+To: Xu Kuohai <xukuohai@huaweicloud.com>
+Cc: bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
 	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Paul Chaignon <paul.chaignon@gmail.com>, Shung-Hsi Yu <shung-hsi.yu@suse.com>
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
+	Puranjay Mohan <puranjay@kernel.org>, Anton Protopopov <a.s.protopopov@gmail.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 29, 2025 at 5:13=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
+On Fri, Dec 26, 2025 at 11:49=E2=80=AFPM Xu Kuohai <xukuohai@huaweicloud.co=
+m> wrote:
 >
-> On Mon, 2025-12-29 at 16:42 -0800, Alexei Starovoitov wrote:
+> From: Xu Kuohai <xukuohai@huawei.com>
 >
-> [...]
+> When BTI is enabled, the indirect jump selftest triggers BTI exception:
 >
-> > > Imo, it would be indeed more interesting to print where checkpoint
-> > > match had been attempted and why it failed, e.g. as I do in [1].
-> > > Here is a sample:
-> > >
-> > >   cache miss at (140, 5389): frame=3D1, reg=3D0, spi=3D-1, loop=3D0 (=
-cur: 1) vs (old: P0)
-> > >   from 5387 to 5389: frame1: R0=3D1 R1=3D0xffffffff ...
-> > >
-> > > However, in the current form it slows down log level 2 output
-> > > significantly (~5 times). Okay for my debugging purposes but is not
-> > > good for upstream submission.
-> > >
-> > > Thanks,
-> > > Eduard.
-> > >
-> > > [1] https://github.com/kernel-patches/bpf/commit/65fcd66d03ad9d6979df=
-79628e569b90563d5368
-> >
-> > bpf_print_stack_state() refactor can land.
-> > While the rest potentially bpfvv can do.
-> > With log_level=3D=3D2 all the previous paths through particular instruc=
-tion
-> > will be in the log earlier, so I can imagine clicking on an insn
-> > and it will show current and all previous seen states.
-> > The verifier heuristic will drop some of them, so it will show more
-> > than actually known during the verification, but that's probably ok
-> > for debugging to see why states don't converge.
-> > bpfvv can make it easier to see the difference too instead of
-> > "frame=3D1, reg=3D0, spi=3D-1, loop=3D0 (cur: 1) vs (old: P0)"
-> > which is not easy to understand.
-> > Only after reading the diff I realized that reg R0 is the one
-> > that caused a mismatch.
+> Internal error: Oops - BTI: 0000000036000003 [#1]  SMP
+> ...
+> Call trace:
+>  bpf_prog_2e5f1c71c13ac3e0_big_jump_table+0x54/0xf8 (P)
+>  bpf_prog_run_pin_on_cpu+0x140/0x464
+>  bpf_prog_test_run_syscall+0x274/0x3ac
+>  bpf_prog_test_run+0x224/0x2b0
+>  __sys_bpf+0x4cc/0x5c8
+>  __arm64_sys_bpf+0x7c/0x94
+>  invoke_syscall+0x78/0x20c
+>  el0_svc_common+0x11c/0x1c0
+>  do_el0_svc+0x48/0x58
+>  el0_svc+0x54/0x19c
+>  el0t_64_sync_handler+0x84/0x12c
+>  el0t_64_sync+0x198/0x19c
 >
-> In theory this can be handled in post-processing completely,
-> however I'd expect mirroring states-equal logic in bpfvv
-> (or any other tool) to be error prone. Which is very undesirable when
-> you are debugging. To make post-processing simpler I'd print:
-> - state id upon state creation
-> - state ids upon cache miss + register or spi number.
+> This happens because no BTI instruction is generated by the JIT for
+> indirect jump targets.
 >
-> This way post-processing tool would only need to collect register
-> values for state ids in question.
+> Fix it by emitting BTI instruction for every possible indirect jump
+> targets when BTI is enabled. The targets are identified by traversing
+> all instruction arrays of jump table type used by the BPF program,
+> since indirect jump targets can only be read from instruction arrays
+> of jump table type.
 
-that will make post processing easier, but print on every miss
-will greatly increase log_level=3D2 size, right ?
-and whole new concept of state ids just to make a post processing
-better. I'm not convinced it's worth doing.
+earlier you said:
+
+> As Anton noted, even though jump tables are currently the only type
+> of instruction array, users may still create insn_arrays that are not
+> used as jump tables. In such cases, there is no need to emit BTIs.
+
+yes, but it's not worth it to make this micro optimization in JIT.
+If it's in insn_array just emit BTI unconditionally.
+No need to do this filtering.
+
+pw-bot: cr
 
