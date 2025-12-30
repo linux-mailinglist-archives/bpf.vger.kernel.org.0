@@ -1,80 +1,43 @@
-Return-Path: <bpf+bounces-77507-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77508-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A10C8CE9320
-	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 10:22:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 08491CE93DF
+	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 10:41:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4615C302F6B6
-	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 09:21:41 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id BEB7B3011410
+	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 09:41:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F84428C84A;
-	Tue, 30 Dec 2025 09:14:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="WEhTu2fs"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59EE42C033C;
+	Tue, 30 Dec 2025 09:41:44 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CF12296BA5
-	for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 09:14:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07B0721D3F4
+	for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 09:41:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767086060; cv=none; b=plV7It+bCaXIjszcY+c6UBZaAImcIf145SCSGfdwBtv2T6w34EjqV4RviK1rRvZhKY1zF81o1Mu4ymTHXJG/4/swotazR4va3yoGNpGByEMW37pzTWsxQL9VK7hFJflsnGXj/4Xo7wLLokP9kGJthInAk/TtMCZ8ttJCUo3X1uI=
+	t=1767087704; cv=none; b=eccHYrYK/o821aatPnQaDjc23qbmvbnySkqmilREK897uSZYxCS99A3YY2Cnl9C45ZrBiVXX9+CwXASy03nSi+uM2lGR2KJHRVTGhfBKjwqp0xx1AFeh5TkmNLGQMrHNjOWu1kjRDDsgm/xxsCkL2Xce3v20BxPMdZATHUJk/7A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767086060; c=relaxed/simple;
-	bh=kMYS4nDZW+xqFk8WFjUw9cG0U0R3IAGkPMZX0g8pS98=;
+	s=arc-20240116; t=1767087704; c=relaxed/simple;
+	bh=Xl+DxNKuJUAyQBUhAGYXHEleG4jIs00lsrE6+NWXgeM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QJD9rV0qImqT2NqpXj7XgFMa9j8O56WlTz455sLNMt7+mil4zbR5s/1j+EZ3aVnLNoNdVinAOSTEJqIMmXyJ5jonyUkwIXgRJBiaXm7Pfhn73zuHGM+tJE0YlHzVDSXP0rxdOzaEpPl1HdGUL+8a2tTqBtfNxuURFyNfmviRgno=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=fail smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=WEhTu2fs; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=suse.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-47774d3536dso77912135e9.0
-        for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 01:14:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1767086056; x=1767690856; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=V6HQy+93eKiQBXRGPg3IyKK5TzImasqN2aR2WZLtqxk=;
-        b=WEhTu2fsAIgu6DnvFwF/GqOKZev7dLH4f3Asap4bWY5kgFud9tUD6X2wRgjlo11UHR
-         ZqCCaBuN32tspEn2MbyOB7rlRo2Ne6CBLNtJO3tQj7MXE5L7yg59M27VgVTUlPbfMz6j
-         H9002fd3pMQ8PXnYGTxbQRhtdU7HxEkNbVw8qLAg4G6wUOEewU9H25xib/+H9nJmu7hm
-         RgDSzyirjQcC/88ATOMrgtVY0ndCfceX/5lms+T7j4CVfAUGUY0fMqq/KcvKFkumGBrk
-         ZzTqg8ISWUgLMG7amkFvnp89ccsCe27DvsF3MyBpdHFxWukC2inYngj8DuXOWRTiRjbr
-         nlPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767086056; x=1767690856;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=V6HQy+93eKiQBXRGPg3IyKK5TzImasqN2aR2WZLtqxk=;
-        b=WmL47LCmfQNg5MOOUc51jKBZiBs/WCTaaCAPN6dW9RnSLioMw+r+8Hc9LN0dr2mX3R
-         CyDX22hgFrbcY+VII5I3vX67vcM9WX4Qpk+XuAsziZjbClOSzGYejH/rKYx4TfHWKS7P
-         4s2hi5FmnTVJdxuiS5tRIn+eyerz8OA99nDIux2MoB6vDDlDZxgLlTAdMHVM2NXa74z4
-         qJvJL1P8peZDeUg3XpL4WkFYXNF5ISwYBJ+JOCAsZ5dn822s1dY5WeGOF49ZuLw+OjPm
-         jbireZ0jexoN5BJw9zbMnSGkM0DSLwTC/UoL0YU+75n8XMwJ/zFxcRGMwbVWBqF/fEjJ
-         KBSA==
-X-Forwarded-Encrypted: i=1; AJvYcCXRrKyZpZe16PGKpto1Fi+aJ1Di/prcOqwmRdKbpqrkZ6IC89c25dYOrhreBW8SPSF2c50=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxZo+VXS1A1V7Oz/CqQ4DXp2+ktxX67FLzG/52JrG9XC01Vui5k
-	W5j9YhCAVE6B8rlEyTnMrzxgR9+fyNcFgfHbgnTs3kja4mK0Cuwt14C4IHqTcyAyErU=
-X-Gm-Gg: AY/fxX5u/EoBI8kZx9ISGvWu0+OXouzfIFQt9tyJic57oL8CseTAnBoubcpQpJfDSXm
-	Oz3pRQVDUDSIdtCmXDBacvqnBdg7pXydl3lmTw79fsDFM27cVbfZYehs1zFstSsdprAFpG5qyKs
-	dY9B8m6fptK+KhDLsvYf0L75cIl+NebslMqMXpXY53ctnEvd77eVpMagJNphQApVR+pgiE4rAw+
-	+EIHmZFYeiN/59XyKNS/vJo+2GVw7D/hYwyOA/rdUjIujDsELuRZPswOOjsFsk7c3bVGhkzr5ah
-	CssFUN9ULI8FyoPVHPp9MoKytU8mXE7e4pm+Q7P7zk0YTMsI9mu0jMBuVT51+agTcJz8VJ1uXFM
-	DO8fmN+V2KvPhUCM6uMU3RX1EzsFcHq41x/T3n3fiTANi/8m9sGeMfoQsriu/uRMuiGQMlpBkS2
-	DdjWlIPTv1tl4FWWrGuktdDyrbrqXV3w==
-X-Google-Smtp-Source: AGHT+IFKv3lNIvVVFE/AcEy5+lpmg1H1P5fZOOF4vDE/CodIsqYQs0HP6/eTBXDVP5Nqswfi6ttRjA==
-X-Received: by 2002:a05:600c:8b82:b0:47b:deb9:163d with SMTP id 5b1f17b1804b1-47d18b99b99mr353825415e9.7.1767086056038;
-        Tue, 30 Dec 2025 01:14:16 -0800 (PST)
-Received: from [10.0.1.22] (109-81-1-107.rct.o2.cz. [109.81.1.107])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47be3a5486dsm254520345e9.9.2025.12.30.01.14.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Dec 2025 01:14:15 -0800 (PST)
-Message-ID: <0d82084c-e633-40ff-b9fe-ce1532f28fdc@suse.com>
-Date: Tue, 30 Dec 2025 10:14:13 +0100
+	 In-Reply-To:Content-Type; b=Sn5p9ZEqiJuUWbOkXgE/iECcPPVxRS/+hm4mVqxWg98gqzHvWMJs7Fnt+aWYclrYwhi/uY1gmh9gxIzfjdGZaawNdeobtdRdaQTgbaSpVTuGzGdrraU9FtFBEx2Er+9XIIvNH3BY63RXpqiCURP7fn98/F2Q6jFtv+34vXQ1JXo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.198])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dgSl91FdnzKHMb2
+	for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 17:41:09 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id F37974056B
+	for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 17:41:37 +0800 (CST)
+Received: from [10.67.111.192] (unknown [10.67.111.192])
+	by APP2 (Coremail) with SMTP id Syh0CgBXcYBNnlNpAr7tBw--.22205S2;
+	Tue, 30 Dec 2025 17:41:34 +0800 (CST)
+Message-ID: <d2c23a07-7072-4f10-856c-dab02e3ed15c@huaweicloud.com>
+Date: Tue, 30 Dec 2025 17:41:33 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -82,63 +45,115 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v1] module: Fix kernel panic when a symbol st_shndx is
- out of bounds
-To: Ihor Solodrai <ihor.solodrai@linux.dev>
-Cc: Luis Chamberlain <mcgrof@kernel.org>, Daniel Gomez <da.gomez@kernel.org>,
- Sami Tolvanen <samitolvanen@google.com>,
- Nathan Chancellor <nathan@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, linux-kernel@vger.kernel.org,
- linux-modules@vger.kernel.org, bpf@vger.kernel.org,
- linux-kbuild@vger.kernel.org, llvm@lists.linux.dev
-References: <20251224005752.201911-1-ihor.solodrai@linux.dev>
+Subject: Re: [QUESTION] KASAN: invalid-access in
+ bpf_patch_insn_data+0x22c/0x2f0
+To: Jeongho Choi <jh1012.choi@samsung.com>, bpf@vger.kernel.org,
+ kasan-dev@googlegroups.com
+Cc: joonki.min@samsung.com, hajun.sung@samsung.com
+References: <CGME20251229105858epcas2p26c433715e7955d20072e72964e83c3e7@epcas2p2.samsung.com>
+ <20251229110431.GA2243991@tiffany>
 Content-Language: en-US
-From: Petr Pavlu <petr.pavlu@suse.com>
-In-Reply-To: <20251224005752.201911-1-ihor.solodrai@linux.dev>
-Content-Type: text/plain; charset=UTF-8
+From: Xu Kuohai <xukuohai@huaweicloud.com>
+In-Reply-To: <20251229110431.GA2243991@tiffany>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:Syh0CgBXcYBNnlNpAr7tBw--.22205S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxZw4ftryUur43AF1xZr1rtFb_yoW7Jw43pr
+	1qk34Ikw4kJ3y5uw4av3ZrCw12va1a93W3Gr4xJ3yFqr13Zrn3JF15tFy8Jr13u34qkr13
+	AryDKr1aqryUZaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUylb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
+	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
+	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xII
+	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
+	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
+	67AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxU7IJmUUUUU
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 
-On 12/24/25 1:57 AM, Ihor Solodrai wrote:
-> [...]
-> ---
->  kernel/module/main.c | 7 +++++++
->  1 file changed, 7 insertions(+)
+On 12/29/2025 7:05 PM, Jeongho Choi wrote:
+> Hello
+> I'm jeongho Choi from samsung System LSI.
+> I'm developing kernel BSP for exynos SoC.
 > 
-> diff --git a/kernel/module/main.c b/kernel/module/main.c
-> index 710ee30b3bea..5bf456fad63e 100644
-> --- a/kernel/module/main.c
-> +++ b/kernel/module/main.c
-> @@ -1568,6 +1568,13 @@ static int simplify_symbols(struct module *mod, const struct load_info *info)
->  			break;
->  
->  		default:
-> +			if (sym[i].st_shndx >= info->hdr->e_shnum) {
-> +				pr_err("%s: Symbol %s has an invalid section index %u (max %u)\n",
-> +				       mod->name, name, sym[i].st_shndx, info->hdr->e_shnum - 1);
-> +				ret = -ENOEXEC;
-> +				break;
-> +			}
-> +
->  			/* Divert to percpu allocation if a percpu var. */
->  			if (sym[i].st_shndx == info->index.pcpu)
->  				secbase = (unsigned long)mod_percpu(mod);
+> I'm asking a question because I've recently been experiencing
+> issues after enable SW KASAN in Android17 kernel 6.18 environment.
+> 
+> Context:
+>   - Kernel version: v6.18
+>   - Architecture: ARM64
+> 
+> Question:
+> When SW tag KASAN is enabled, we got kernel crash from bpf/verifier.
+> I found that it occurred only from 6.18, not 6.12 LTS we're working on.
+> 
+> After some tests, I found that the device is booted when 2 commits are reverted.
+> 
+> bpf: potential double-free of env->insn_aux_data
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=b13448dd64e27752fad252cec7da1a50ab9f0b6f
+> 
+> bpf: use realloc in bpf_patch_insn_data
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=77620d1267392b1a34bfc437d2adea3006f95865
+> 
+> ==================================================================
+> [   79.419177] [4:     netbpfload:  825] BUG: KASAN: invalid-access in bpf_patch_insn_data+0x22c/0x2f0
+> [   79.419415] [4:     netbpfload:  825] Write of size 27896 at addr 25ffffc08e6314d0 by task netbpfload/825
+> [   79.419984] [4:     netbpfload:  825] Pointer tag: [25], memory tag: [fa]
+> [   79.425193] [4:     netbpfload:  825]
+> [   79.427365] [4:     netbpfload:  825] CPU: 4 UID: 0 PID: 825 Comm: netbpfload Tainted: G           OE       6.18.0-rc6-android17-0-gd28deb424356-4k #1 PREEMPT  92293e52a7788dc6ec1b9dff6625aaee925f3475
+> [   79.427374] [4:     netbpfload:  825] Tainted: [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
+> [   79.427378] [4:     netbpfload:  825] Hardware name: Samsung ERD9965 board based on S5E9965 (DT)
+> [   79.427382] [4:     netbpfload:  825] Call trace:
+> [   79.427385] [4:     netbpfload:  825]  show_stack+0x18/0x28 (C)
+> [   79.427394] [4:     netbpfload:  825]  __dump_stack+0x28/0x3c
+> [   79.427401] [4:     netbpfload:  825]  dump_stack_lvl+0x7c/0xa8
+> [   79.427407] [4:     netbpfload:  825]  print_address_description+0x7c/0x20c
+> [   79.427414] [4:     netbpfload:  825]  print_report+0x70/0x8c
+> [   79.427421] [4:     netbpfload:  825]  kasan_report+0xb4/0x114
+> [   79.427427] [4:     netbpfload:  825]  kasan_check_range+0x94/0xa0
+> [   79.427432] [4:     netbpfload:  825]  __asan_memmove+0x54/0x88
+> [   79.427437] [4:     netbpfload:  825]  bpf_patch_insn_data+0x22c/0x2f0
+> [   79.427442] [4:     netbpfload:  825]  bpf_check+0x2b44/0x8c34
+> [   79.427449] [4:     netbpfload:  825]  bpf_prog_load+0x8dc/0x990
+> [   79.427453] [4:     netbpfload:  825]  __sys_bpf+0x300/0x4c8
+> [   79.427458] [4:     netbpfload:  825]  __arm64_sys_bpf+0x48/0x64
+> [   79.427465] [4:     netbpfload:  825]  invoke_syscall+0x6c/0x13c
+> [   79.427471] [4:     netbpfload:  825]  el0_svc_common+0xf8/0x138
+> [   79.427478] [4:     netbpfload:  825]  do_el0_svc+0x30/0x40
+> [   79.427484] [4:     netbpfload:  825]  el0_svc+0x38/0x8c
+> [   79.427491] [4:     netbpfload:  825]  el0t_64_sync_handler+0x68/0xdc
+> [   79.427497] [4:     netbpfload:  825]  el0t_64_sync+0x1b8/0x1bc
+> [   79.427502] [4:     netbpfload:  825]
+> [   79.545586] [4:     netbpfload:  825] The buggy address belongs to a 8-page vmalloc region starting at 0x25ffffc08e631000 allocated at bpf_patch_insn_data+0x8c/0x2f0
+> [   79.558777] [4:     netbpfload:  825] The buggy address belongs to the physical page:
+> [   79.565029] [4:     netbpfload:  825] page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x8b308b
+> [   79.573710] [4:     netbpfload:  825] memcg:c6ffff882d1d6402
+> [   79.577791] [4:     netbpfload:  825] flags: 0x6f80000000000000(zone=1|kasantag=0xbe)
+> [   79.584042] [4:     netbpfload:  825] raw: 6f80000000000000 0000000000000000 dead000000000122 0000000000000000
+> [   79.592460] [4:     netbpfload:  825] raw: 0000000000000000 0000000000000000 00000001ffffffff c6ffff882d1d6402
+> [   79.600877] [4:     netbpfload:  825] page dumped because: kasan: bad access detected
+> [   79.607126] [4:     netbpfload:  825]
+> [   79.609296] [4:     netbpfload:  825] Memory state around the buggy address:
+> [   79.614766] [4:     netbpfload:  825]  ffffffc08e637f00: 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+> [   79.622665] [4:     netbpfload:  825]  ffffffc08e638000: 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25 25
+> [   79.630562] [4:     netbpfload:  825] >ffffffc08e638100: 25 25 25 25 25 25 25 fa fa fa fa fa fa fe fe fe
+> [   79.638463] [4:     netbpfload:  825]                                         ^
+> [   79.644190] [4:     netbpfload:  825]  ffffffc08e638200: fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
+> [   79.652089] [4:     netbpfload:  825]  ffffffc08e638300: fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
+> [   79.659987] [4:     netbpfload:  825] ==================================================================
+> 
 
-The module loader should always at least get through the signature and
-blacklist checks without crashing due to a corrupted ELF file. After
-that point, the module content is to be trusted, but we try to error out
-for most issues that would cause problems later on.
+Seems it is the same as the second issue fixed by the following patch:
+https://lore.kernel.org/all/3f851f7704ab8468530f384b901b22cdef94aa43.1765978969.git.m.wieczorretman@pm.me
 
-In this specific case, I think it is useful to add this check because
-the code potentially crashes on a valid module that uses SHN_XINDEX. The
-loader already rejects sh_link and sh_info values that are above e_shnum
-in several places, so the patch is consistent with that behavior.
+> I have a question about the above phenomenon.
+> Thanks,
+> Jeongho Choi
+> 
+> 
 
-I suggest adding a proper commit description and sending a non-RFC
-version.
-
--- 
-Thanks,
-Petr
 
