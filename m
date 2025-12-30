@@ -1,44 +1,44 @@
-Return-Path: <bpf+bounces-77523-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77524-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F287CEA113
-	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 16:31:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BFF5CEA116
+	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 16:31:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B4078303524F
-	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 15:30:36 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 356C93029B92
+	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 15:30:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1646B1C4A24;
-	Tue, 30 Dec 2025 15:30:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8246330B53F;
+	Tue, 30 Dec 2025 15:30:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="el9cUpsz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uz1kdMc6"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BBCC2DFA4A
-	for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 15:30:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA495238C2F
+	for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 15:30:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767108635; cv=none; b=C510WoxWWwo/Muw3C/G/+jeAIVnmdr3Y2/LYHQuZLw5o7dDdvHnHn7S7/BNf0w5nl7erQjoY6lVpLYIhVLQ+LjKl1CkBzZ8zbds4lbbMAbXo4WuAiH0Fkovdfbjln/orUu3lFBiCd/nfY+cR0q89Re0W7XhKpHCvzP8Z+YeRJhQ=
+	t=1767108640; cv=none; b=Ykq5tMeCIUz0Je/0UcrbqJI7tK7WGq/l+/GvfgxkK1DXdqlMleUK+8Io8NlYxBOSGX0KRE6uZzm8Qg+agqZ5P7I/CDJeaDv7eD0k1ZFxgQ7zoLBm6m3lPm7ivzp468TWl2uEUhZaVQuLTmEqHL+ftWh1PAGeKGJ0paaLHmqca5g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767108635; c=relaxed/simple;
-	bh=NdiQMPhrtDOUEqVrWn/yGupmrX0pUfSGfzHL4LYncgc=;
+	s=arc-20240116; t=1767108640; c=relaxed/simple;
+	bh=b/1vh+3ciIfSrHp4P9RP0bqKY6EOwx/tuYv2dT7BzCQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QB9Gvs9KUSCMiR7GnOlsxhbWre/esRwbXwpQHc4QjVC1qMkrPg3wntHzsTfcsKeJ065D1QLTxZabrCqprPss9bLA5tpQm1RLTVOTwmE8mIvnsv1n9sCfWY+4MZoKF0bk3lTgu2xbX55UBKf+ZHkBabSjCdaYt9PA+AIfSAt9Bds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=el9cUpsz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CC20C4CEFB;
-	Tue, 30 Dec 2025 15:30:34 +0000 (UTC)
+	 MIME-Version; b=R2EM3Jsyu+Za0AzjBi2GbXmlycsQxzHzVqWs9XZNR+Xn9KVBfiVrZqbiY2zdEDZRw3eaQZomfaGaxlolgtJ0VwEnsnPweZXZ327N9x2SMTV75fqUdlLkj4aNsMxwL3K9Zv0wWtwC1OEyADrbgWoiKG/7mq6pXcLxCXOc5Jr1CaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uz1kdMc6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F282C4CEFB;
+	Tue, 30 Dec 2025 15:30:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767108634;
-	bh=NdiQMPhrtDOUEqVrWn/yGupmrX0pUfSGfzHL4LYncgc=;
+	s=k20201202; t=1767108639;
+	bh=b/1vh+3ciIfSrHp4P9RP0bqKY6EOwx/tuYv2dT7BzCQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=el9cUpszyjdDr7W7Tsnes8UTmTvCEPSV6hGaCplTD34QcblQKo58VdDK8xg4ASwZO
-	 ZdpxpIVsSlEV1bhhP66BoRfZ4BnkjySRYl5NoNgtP1cdjjQz1IKwh1C/DR8LgMnRR/
-	 aqcE09MjbWI8rXzjyYp/7FV+skM3Vt414BMkPGqv0TvN6zKq9jzPh5qm2iF6Fo2yBc
-	 ulAesGfVJwdRewufXFsjAq0xeThteA/gl0pm9Ioq0XLdj+Hjvae7UgJkYzvMnA3AQS
-	 fSsK76ey36w4PO4NnNlFcVReIWbDowUJRSX18x046lme38hIs3TCKk6rPTFUQVL6zA
-	 hsG87vroHRbbw==
+	b=uz1kdMc62/yk6G/KC2HgvqFugBDUufJ2ybOEBqN7+AdzxnIm51Q79ZoEXu3tVEN+I
+	 mPjUSWiFdNXS5VudotPKuTI5ms9TRHzfn82HRXDj/pBSd7/Vq3yXGhZ9POc4h4SQLv
+	 W+7pLzBLzZou7RSrmv9MhauSeLJethRZWOhVEvNuwIsE0i6cUfZw42rZcnVQZE4owN
+	 4ws4qQ1QL6T4zmeBq4kA4DjXMD4xHFckx2tWMnQifXz7M1hpt3Q8q9UuzsdXc35xdY
+	 ojqL1Ov8TCSZYqoyhv2oa3RVnIH58dTLxhhib7wEzujbEgKDSRyil1/6yKRHyisb9y
+	 zR3G1ra/4TjxA==
 From: Puranjay Mohan <puranjay@kernel.org>
 To: bpf@vger.kernel.org
 Cc: Puranjay Mohan <puranjay@kernel.org>,
@@ -50,9 +50,9 @@ Cc: Puranjay Mohan <puranjay@kernel.org>,
 	Eduard Zingerman <eddyz87@gmail.com>,
 	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next 1/2] bpf: syscall: Introduce memcg enter/exit helpers
-Date: Tue, 30 Dec 2025 07:30:03 -0800
-Message-ID: <20251230153006.1347742-2-puranjay@kernel.org>
+Subject: [PATCH bpf-next 2/2] bpf: arena: Reintroduce memcg accounting
+Date: Tue, 30 Dec 2025 07:30:04 -0800
+Message-ID: <20251230153006.1347742-3-puranjay@kernel.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20251230153006.1347742-1-puranjay@kernel.org>
 References: <20251230153006.1347742-1-puranjay@kernel.org>
@@ -64,168 +64,182 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Introduce bpf_map_memcg_enter() and bpf_map_memcg_exit() helpers to
-reduce code duplication in memcg context management.
+When arena allocations were converted from bpf_map_alloc_pages() to
+kmalloc_nolock() to support non-sleepable contexts, memcg accounting was
+inadvertently lost. This commit restores proper memory accounting for
+all arena-related allocations.
 
-bpf_map_memcg_enter() gets the memcg from the map, sets it as active,
-and returns the previous active memcg.
-
-bpf_map_memcg_exit() restores the previous active memcg and releases the
-reference obtained during enter.
+All arena related allocations are accounted into memcg of the process
+that created bpf_arena.
 
 Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 ---
- include/linux/bpf.h  | 15 +++++++++++++
- kernel/bpf/syscall.c | 50 +++++++++++++++++++++++---------------------
- 2 files changed, 41 insertions(+), 24 deletions(-)
+ kernel/bpf/arena.c      | 39 ++++++++++++++++++++++++++++++++++-----
+ kernel/bpf/range_tree.c |  5 +++--
+ 2 files changed, 37 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 4e7d72dfbcd4..4aedc3ceb482 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -2608,6 +2608,10 @@ struct bpf_prog *bpf_prog_get_curr_or_next(u32 *id);
- int bpf_map_alloc_pages(const struct bpf_map *map, int nid,
- 			unsigned long nr_pages, struct page **page_array);
- #ifdef CONFIG_MEMCG
-+struct mem_cgroup *bpf_map_memcg_enter(const struct bpf_map *map,
-+				       struct mem_cgroup **memcg);
-+void bpf_map_memcg_exit(struct mem_cgroup *old_memcg,
-+			struct mem_cgroup *memcg);
- void *bpf_map_kmalloc_node(const struct bpf_map *map, size_t size, gfp_t flags,
- 			   int node);
- void *bpf_map_kmalloc_nolock(const struct bpf_map *map, size_t size, gfp_t flags,
-@@ -2632,6 +2636,17 @@ void __percpu *bpf_map_alloc_percpu(const struct bpf_map *map, size_t size,
- 		kvcalloc(_n, _size, _flags)
- #define bpf_map_alloc_percpu(_map, _size, _align, _flags)	\
- 		__alloc_percpu_gfp(_size, _align, _flags)
-+static inline struct mem_cgroup *bpf_map_memcg_enter(const struct bpf_map *map,
-+						     struct mem_cgroup **memcg)
-+{
-+	*memcg = NULL;
-+	return NULL;
-+}
-+
-+static inline void bpf_map_memcg_exit(struct mem_cgroup *old_memcg,
-+				      struct mem_cgroup *memcg)
-+{
-+}
- #endif
- 
- static inline int
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index a4d38272d8bc..e7c0c469c60e 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -505,17 +505,29 @@ static struct mem_cgroup *bpf_map_get_memcg(const struct bpf_map *map)
- 	return root_mem_cgroup;
- }
- 
-+struct mem_cgroup *bpf_map_memcg_enter(const struct bpf_map *map,
-+				       struct mem_cgroup **memcg)
-+{
-+	*memcg = bpf_map_get_memcg(map);
-+	return set_active_memcg(*memcg);
-+}
-+
-+void bpf_map_memcg_exit(struct mem_cgroup *old_memcg,
-+			struct mem_cgroup *memcg)
-+{
-+	set_active_memcg(old_memcg);
-+	mem_cgroup_put(memcg);
-+}
-+
- void *bpf_map_kmalloc_node(const struct bpf_map *map, size_t size, gfp_t flags,
- 			   int node)
+diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
+index 456ac989269d..cb9451208b0e 100644
+--- a/kernel/bpf/arena.c
++++ b/kernel/bpf/arena.c
+@@ -360,6 +360,7 @@ static vm_fault_t arena_vm_fault(struct vm_fault *vmf)
  {
- 	struct mem_cgroup *memcg, *old_memcg;
- 	void *ptr;
+ 	struct bpf_map *map = vmf->vma->vm_file->private_data;
+ 	struct bpf_arena *arena = container_of(map, struct bpf_arena, map);
++	struct mem_cgroup *memcg, *old_memcg;
+ 	struct page *page;
+ 	long kbase, kaddr;
+ 	unsigned long flags;
+@@ -377,6 +378,8 @@ static vm_fault_t arena_vm_fault(struct vm_fault *vmf)
+ 		/* already have a page vmap-ed */
+ 		goto out;
  
--	memcg = bpf_map_get_memcg(map);
--	old_memcg = set_active_memcg(memcg);
 +	old_memcg = bpf_map_memcg_enter(map, &memcg);
- 	ptr = kmalloc_node(size, flags | __GFP_ACCOUNT, node);
--	set_active_memcg(old_memcg);
--	mem_cgroup_put(memcg);
-+	bpf_map_memcg_exit(old_memcg, memcg);
- 
- 	return ptr;
- }
-@@ -526,11 +538,9 @@ void *bpf_map_kmalloc_nolock(const struct bpf_map *map, size_t size, gfp_t flags
- 	struct mem_cgroup *memcg, *old_memcg;
- 	void *ptr;
- 
--	memcg = bpf_map_get_memcg(map);
--	old_memcg = set_active_memcg(memcg);
-+	old_memcg = bpf_map_memcg_enter(map, &memcg);
- 	ptr = kmalloc_nolock(size, flags | __GFP_ACCOUNT, node);
--	set_active_memcg(old_memcg);
--	mem_cgroup_put(memcg);
-+	bpf_map_memcg_exit(old_memcg, memcg);
- 
- 	return ptr;
- }
-@@ -540,11 +550,9 @@ void *bpf_map_kzalloc(const struct bpf_map *map, size_t size, gfp_t flags)
- 	struct mem_cgroup *memcg, *old_memcg;
- 	void *ptr;
- 
--	memcg = bpf_map_get_memcg(map);
--	old_memcg = set_active_memcg(memcg);
-+	old_memcg = bpf_map_memcg_enter(map, &memcg);
- 	ptr = kzalloc(size, flags | __GFP_ACCOUNT);
--	set_active_memcg(old_memcg);
--	mem_cgroup_put(memcg);
-+	bpf_map_memcg_exit(old_memcg, memcg);
- 
- 	return ptr;
- }
-@@ -555,11 +563,9 @@ void *bpf_map_kvcalloc(struct bpf_map *map, size_t n, size_t size,
- 	struct mem_cgroup *memcg, *old_memcg;
- 	void *ptr;
- 
--	memcg = bpf_map_get_memcg(map);
--	old_memcg = set_active_memcg(memcg);
-+	old_memcg = bpf_map_memcg_enter(map, &memcg);
- 	ptr = kvcalloc(n, size, flags | __GFP_ACCOUNT);
--	set_active_memcg(old_memcg);
--	mem_cgroup_put(memcg);
-+	bpf_map_memcg_exit(old_memcg, memcg);
- 
- 	return ptr;
- }
-@@ -570,11 +576,9 @@ void __percpu *bpf_map_alloc_percpu(const struct bpf_map *map, size_t size,
- 	struct mem_cgroup *memcg, *old_memcg;
- 	void __percpu *ptr;
- 
--	memcg = bpf_map_get_memcg(map);
--	old_memcg = set_active_memcg(memcg);
-+	old_memcg = bpf_map_memcg_enter(map, &memcg);
- 	ptr = __alloc_percpu_gfp(size, align, flags | __GFP_ACCOUNT);
--	set_active_memcg(old_memcg);
--	mem_cgroup_put(memcg);
-+	bpf_map_memcg_exit(old_memcg, memcg);
- 
- 	return ptr;
- }
-@@ -615,8 +619,7 @@ int bpf_map_alloc_pages(const struct bpf_map *map, int nid,
- #ifdef CONFIG_MEMCG
- 	struct mem_cgroup *memcg, *old_memcg;
- 
--	memcg = bpf_map_get_memcg(map);
--	old_memcg = set_active_memcg(memcg);
-+	old_memcg = bpf_map_memcg_enter(map, &memcg);
- #endif
- 	for (i = 0; i < nr_pages; i++) {
- 		pg = __bpf_alloc_page(nid);
-@@ -632,8 +635,7 @@ int bpf_map_alloc_pages(const struct bpf_map *map, int nid,
++
+ 	if (arena->map.map_flags & BPF_F_SEGV_ON_FAULT)
+ 		/* User space requested to segfault when page is not allocated by bpf prog */
+ 		goto out_unlock_sigsegv;
+@@ -400,12 +403,14 @@ static vm_fault_t arena_vm_fault(struct vm_fault *vmf)
+ 		goto out_unlock_sigsegv;
  	}
- 
- #ifdef CONFIG_MEMCG
--	set_active_memcg(old_memcg);
--	mem_cgroup_put(memcg);
+ 	flush_vmap_cache(kaddr, PAGE_SIZE);
 +	bpf_map_memcg_exit(old_memcg, memcg);
- #endif
- 	return ret;
+ out:
+ 	page_ref_add(page, 1);
+ 	raw_res_spin_unlock_irqrestore(&arena->spinlock, flags);
+ 	vmf->page = page;
+ 	return 0;
+ out_unlock_sigsegv:
++	bpf_map_memcg_exit(old_memcg, memcg);
+ 	raw_res_spin_unlock_irqrestore(&arena->spinlock, flags);
+ 	return VM_FAULT_SIGSEGV;
  }
+@@ -557,7 +562,7 @@ static long arena_alloc_pages(struct bpf_arena *arena, long uaddr, long page_cnt
+ 
+ 	/* Cap allocation size to KMALLOC_MAX_CACHE_SIZE so kmalloc_nolock() can succeed. */
+ 	alloc_pages = min(page_cnt, KMALLOC_MAX_CACHE_SIZE / sizeof(struct page *));
+-	pages = kmalloc_nolock(alloc_pages * sizeof(struct page *), 0, NUMA_NO_NODE);
++	pages = kmalloc_nolock(alloc_pages * sizeof(struct page *), __GFP_ACCOUNT, NUMA_NO_NODE);
+ 	if (!pages)
+ 		return 0;
+ 	data.pages = pages;
+@@ -713,7 +718,7 @@ static void arena_free_pages(struct bpf_arena *arena, long uaddr, long page_cnt,
+ 	return;
+ 
+ defer:
+-	s = kmalloc_nolock(sizeof(struct arena_free_span), 0, -1);
++	s = kmalloc_nolock(sizeof(struct arena_free_span), __GFP_ACCOUNT, -1);
+ 	if (!s)
+ 		/*
+ 		 * If allocation fails in non-sleepable context, pages are intentionally left
+@@ -834,49 +839,69 @@ __bpf_kfunc_start_defs();
+ __bpf_kfunc void *bpf_arena_alloc_pages(void *p__map, void *addr__ign, u32 page_cnt,
+ 					int node_id, u64 flags)
+ {
++	void *ret;
+ 	struct bpf_map *map = p__map;
++	struct mem_cgroup *memcg, *old_memcg;
+ 	struct bpf_arena *arena = container_of(map, struct bpf_arena, map);
+ 
+ 	if (map->map_type != BPF_MAP_TYPE_ARENA || flags || !page_cnt)
+ 		return NULL;
+ 
+-	return (void *)arena_alloc_pages(arena, (long)addr__ign, page_cnt, node_id, true);
++	old_memcg = bpf_map_memcg_enter(map, &memcg);
++	ret = (void *)arena_alloc_pages(arena, (long)addr__ign, page_cnt, node_id, true);
++	bpf_map_memcg_exit(old_memcg, memcg);
++
++	return ret;
+ }
+ 
+ void *bpf_arena_alloc_pages_non_sleepable(void *p__map, void *addr__ign, u32 page_cnt,
+ 					  int node_id, u64 flags)
+ {
++	void *ret;
+ 	struct bpf_map *map = p__map;
++	struct mem_cgroup *memcg, *old_memcg;
+ 	struct bpf_arena *arena = container_of(map, struct bpf_arena, map);
+ 
+ 	if (map->map_type != BPF_MAP_TYPE_ARENA || flags || !page_cnt)
+ 		return NULL;
+ 
+-	return (void *)arena_alloc_pages(arena, (long)addr__ign, page_cnt, node_id, false);
++	old_memcg = bpf_map_memcg_enter(map, &memcg);
++	ret = (void *)arena_alloc_pages(arena, (long)addr__ign, page_cnt, node_id, false);
++	bpf_map_memcg_exit(old_memcg, memcg);
++
++	return ret;
+ }
+ __bpf_kfunc void bpf_arena_free_pages(void *p__map, void *ptr__ign, u32 page_cnt)
+ {
+ 	struct bpf_map *map = p__map;
++	struct mem_cgroup *memcg, *old_memcg;
+ 	struct bpf_arena *arena = container_of(map, struct bpf_arena, map);
+ 
+ 	if (map->map_type != BPF_MAP_TYPE_ARENA || !page_cnt || !ptr__ign)
+ 		return;
++	old_memcg = bpf_map_memcg_enter(map, &memcg);
+ 	arena_free_pages(arena, (long)ptr__ign, page_cnt, true);
++	bpf_map_memcg_exit(old_memcg, memcg);
+ }
+ 
+ void bpf_arena_free_pages_non_sleepable(void *p__map, void *ptr__ign, u32 page_cnt)
+ {
+ 	struct bpf_map *map = p__map;
++	struct mem_cgroup *memcg, *old_memcg;
+ 	struct bpf_arena *arena = container_of(map, struct bpf_arena, map);
+ 
+ 	if (map->map_type != BPF_MAP_TYPE_ARENA || !page_cnt || !ptr__ign)
+ 		return;
++	old_memcg = bpf_map_memcg_enter(map, &memcg);
+ 	arena_free_pages(arena, (long)ptr__ign, page_cnt, false);
++	bpf_map_memcg_exit(old_memcg, memcg);
+ }
+ 
+ __bpf_kfunc int bpf_arena_reserve_pages(void *p__map, void *ptr__ign, u32 page_cnt)
+ {
++	int ret;
+ 	struct bpf_map *map = p__map;
++	struct mem_cgroup *memcg, *old_memcg;
+ 	struct bpf_arena *arena = container_of(map, struct bpf_arena, map);
+ 
+ 	if (map->map_type != BPF_MAP_TYPE_ARENA)
+@@ -885,7 +910,11 @@ __bpf_kfunc int bpf_arena_reserve_pages(void *p__map, void *ptr__ign, u32 page_c
+ 	if (!page_cnt)
+ 		return 0;
+ 
+-	return arena_reserve_pages(arena, (long)ptr__ign, page_cnt);
++	old_memcg = bpf_map_memcg_enter(map, &memcg);
++	ret = arena_reserve_pages(arena, (long)ptr__ign, page_cnt);
++	bpf_map_memcg_exit(old_memcg, memcg);
++
++	return ret;
+ }
+ __bpf_kfunc_end_defs();
+ 
+diff --git a/kernel/bpf/range_tree.c b/kernel/bpf/range_tree.c
+index 99c63d982c5d..2f28886f3ff7 100644
+--- a/kernel/bpf/range_tree.c
++++ b/kernel/bpf/range_tree.c
+@@ -149,7 +149,8 @@ int range_tree_clear(struct range_tree *rt, u32 start, u32 len)
+ 			range_it_insert(rn, rt);
+ 
+ 			/* Add a range */
+-			new_rn = kmalloc_nolock(sizeof(struct range_node), 0, NUMA_NO_NODE);
++			new_rn = kmalloc_nolock(sizeof(struct range_node), __GFP_ACCOUNT,
++						NUMA_NO_NODE);
+ 			if (!new_rn)
+ 				return -ENOMEM;
+ 			new_rn->rn_start = last + 1;
+@@ -234,7 +235,7 @@ int range_tree_set(struct range_tree *rt, u32 start, u32 len)
+ 		right->rn_start = start;
+ 		range_it_insert(right, rt);
+ 	} else {
+-		left = kmalloc_nolock(sizeof(struct range_node), 0, NUMA_NO_NODE);
++		left = kmalloc_nolock(sizeof(struct range_node), __GFP_ACCOUNT, NUMA_NO_NODE);
+ 		if (!left)
+ 			return -ENOMEM;
+ 		left->rn_start = start;
 -- 
 2.47.3
 
