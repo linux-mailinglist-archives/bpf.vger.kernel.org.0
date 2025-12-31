@@ -1,158 +1,192 @@
-Return-Path: <bpf+bounces-77597-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77598-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE6CBCEC4EB
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 18:03:49 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3D04CEC4E5
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 18:02:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4940E3009FA8
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 17:02:22 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 4B06430056CF
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 17:02:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B8F8296BDB;
-	Wed, 31 Dec 2025 17:02:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52ADB284883;
+	Wed, 31 Dec 2025 17:02:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Oo8vQsKc"
+	dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b="b8VIPKwA"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 074851DE4DC
-	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 17:02:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767200541; cv=none; b=nw1+oHJIn+0s1davnLsSDVttgTBIREn2R/3Z7oCcVdKTsUwaPPUTN6Y8TUr3ORntvSsXsymLle2+DIUlDmvpdEYz7brnzyCvuiksk9OKXvD9UwTj8xG5e3XnoQiPmsesq+Q+ibHcukgXYWY6uzubNz2eVQxlAoFItcLghntF3CE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767200541; c=relaxed/simple;
-	bh=u/wR7+mcchXTm4HPa5r8L0m4sN4R1m6YVQa807w30p4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=t544woP6aJk0Ds46BvfV3zpWuAlbmK7RpdJXWA2/8xSzQM//7g6Q8Q90kaf9UwHew1ls4invpbb0hianjmBNy8ZWIaTOAsL1r4JjvTnBE++0HCYd24LXAeiwmDZJyyWnKdE7Lsu/OnNf7KwZJVsndh9X6qnM3o2J4J0rjjtCbPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Oo8vQsKc; arc=none smtp.client-ip=91.218.175.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1767200533;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=e6I0h3kezoKxK3IDpc47mY2gwi29RX44rQplizDpRGo=;
-	b=Oo8vQsKc6quUCd98ROWFbf+fWzFq8lj/cuYDwgh1BY3HtZGuM6BSf0E/nhEVf/mcBVfrCA
-	M8FyzK0R16mXX2PIbI6IeZpJLOZDinkySZf26rVKzHwYIie4yq7qwMWtNVB/X7NnSfv4eU
-	2RqCs5Fjk0SrJboZA6l8A8HgzfWAFkg=
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Matt Bobrowski <mattbobrowski@google.com>
-Cc: bpf@vger.kernel.org,  linux-mm@kvack.org,  linux-kernel@vger.kernel.org,
-  JP Kobryn <inwardvessel@gmail.com>,  Alexei Starovoitov <ast@kernel.org>,
-  Daniel Borkmann <daniel@iogearbox.net>,  Shakeel Butt
- <shakeel.butt@linux.dev>,  Michal Hocko <mhocko@kernel.org>,  Johannes
- Weiner <hannes@cmpxchg.org>
-Subject: Re: [PATCH bpf-next v4 3/6] mm: introduce bpf_get_root_mem_cgroup()
- BPF kfunc
-In-Reply-To: <aVTTxjwgNgWMF-9Q@google.com> (Matt Bobrowski's message of "Wed,
-	31 Dec 2025 07:41:58 +0000")
-References: <20251223044156.208250-1-roman.gushchin@linux.dev>
-	<20251223044156.208250-4-roman.gushchin@linux.dev>
-	<aVQ1zvBE9csQYffT@google.com> <7ia4ms2zwuqb.fsf@castle.c.googlers.com>
-	<aVTTxjwgNgWMF-9Q@google.com>
-Date: Wed, 31 Dec 2025 09:02:03 -0800
-Message-ID: <87qzsaoa9g.fsf@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1644229BDAE
+	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 17:02:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.214.172
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1767200553; cv=pass; b=WPrq6eHQmIJocHZ87vEXr0ypg/okcao8Vk9iOfpzTmmS9tpD0Zi9c1lOrdJmKfSZ4PkpZG+Xd+K+fovVSSB1euxsfqT0ZaCZPl+jDVOqVnJA2hQ8bydumZ7J2cfYpPQ6uoXF3OlUVfxYCwXEFvG6P5ni1L0FDbu5W07n66Ksvqk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1767200553; c=relaxed/simple;
+	bh=Sejc3sL2dVpoduNYUNAAxP+Mp7XyEBPgHXURjOZGF7A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PaDvjxUx+KRupseeS67VuU9NJ5EklEwqD0TV8P3UROlTR+O6P/CwqaWPCGlhL8Bh02QHzf2XUfw1B4c8IFJoJ0ZmmJTIBbPQ3RCPBALAsVoEoQkk5xpiWoRnNVJfYtPJ2RB2slpN4yTUWlaGwyvYg+BFE84tnp+y3flxEuuGzvw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com; spf=fail smtp.mailfrom=purestorage.com; dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b=b8VIPKwA; arc=pass smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=purestorage.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-2a0a8c2e822so29420385ad.1
+        for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 09:02:31 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1767200551; cv=none;
+        d=google.com; s=arc-20240605;
+        b=GXurKLLBn+Hfm+seJSoYvzBEF6Uv3cQC2rxxxRvepU/fdxdIkecW+s1q6sU7A/xrUu
+         XxFo//GNSG6iaYaFMD8F583lWPSXIwMliztgm5W0/RGekwEcBdyqE1H0KJwMZbT5GIwg
+         5O5bUfzMFWGDsqn+y8NptSqhx4n2QBZ9l20Lmw8VGWRlzPP4gjOKTt4PZ8khWL5yNil5
+         My3nzqMINzumoeaHhCoYRammB6xOOipxJ2YfQUMLBbDcPRO+3MRs8fkPScM5202GTjmG
+         j3cKES/zDJnRGpMkHFF4mkolLqXsiw5wi1otM01JYhYq7HAC1T6b+cVI0UXBxlzQCAdY
+         a9gA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=d0jpK130eOKxAU3spov1WU3b2naE9Ddz/5bAcQ0MTv8=;
+        fh=jo+0z++k5QVlEC5LW48BSpB0UQlYJsNTaJYVeNsIR1E=;
+        b=fQz3XW3oM4tLApgDLGEBaCBDCGCI00Bd/GNGJ9fcGqGqWRxod5gdTOQ9Oe0bT9r2lw
+         96oiZf7ADUQGjjBfVGWaC+Q64WHhl210zB5o/zrtVRNFFC5PUssjjnFgPjWfoVec1BOt
+         6CLGZ2lJqg0uKoHL4NTPmR624g4siAuKJqKk6Xr3XgHrUSO30vxz1Obt4YWcNUOlitBw
+         2cEWeZMKrfbf0X3NufhSV1PUHGAmOIv9ivoEwfCs5GnjC+qriwg2le5tjSvQofMnDAl6
+         fCVwsLWpRnqv5wex+EqOQaXL2AMSHQ/gfA+yDjVQyxX0X/6CTeOU9heGgwOWHDeh8GTl
+         G1BA==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=purestorage.com; s=google2022; t=1767200551; x=1767805351; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=d0jpK130eOKxAU3spov1WU3b2naE9Ddz/5bAcQ0MTv8=;
+        b=b8VIPKwAqW3Fi6RYvgCR3254jOtRBqLCBB3zX8kATt4+iOEkwtZ0psizBou5yOosUx
+         RFtXg8FQq8fj3JWoWratSJZ6NrQU0vlq5qgH27JSeyrWUhcoI5kDpPt8OJ6kCr3QmYyQ
+         Q+2pvTtwXXbHnlVyeDUG9USReZw18Oqgle8yJcH406BiOnJ2zVFQzQnTQEkBNm9R8toI
+         1ZGaTWAwLch+Z7VW1L5HsamLmuAy8MfL7yyIHXhpN7wj6cpH6ECqEhBI4zADThva2hr3
+         RJlW7CtEH+zDWk2EeVa+ONr+ILrbentNxk0x/SdnPnpuj/7Gpjgcxuqca7eDpYdVa+OS
+         VLAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767200551; x=1767805351;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=d0jpK130eOKxAU3spov1WU3b2naE9Ddz/5bAcQ0MTv8=;
+        b=msGQioLcpuPk8EFTPMmiotHNhmbNvwwCxRhLezyPVD0p5fGGAfdb0lfw/QoEX5RZ3N
+         3zHVu2Pk8LbTuPThZhpIBOasDDEJGfFsMZZgiPEE7vT9gedoYV8T6Td8EmfEnEhfzSD5
+         3F/s/C8UMGs7HDkw8wjeV208V1ZFVDaeX1bSsRqMQy7knjakzS5ws8KW1Ly7rbVobg7L
+         ggxyi769BHiEbHHzZbQVE923QXjh4vadzrm0nR7RiBmrz9sSf0rCmujiKdrRI09kghI6
+         n3qLuinsmjxwgFUX6hUxuevBA8ldortAr7exzJaVw4liOU+Mzb2eXT3XPY7pvXSlRIk6
+         rS4w==
+X-Forwarded-Encrypted: i=1; AJvYcCVoYxrhL8NAz8j4JNENdkA+KrwokgbSTBQEWFQADl/oQJZnOkTxhAYZfbhSH4uvJKUuFLo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzH4tW+CHLtfgDBbJrSier4cZAwvgRYY8EUDly2Pi3Iv8A4e+ow
+	5xKshAYtP7tZeR9DF9AHFaPI4eXKj8qKrQv9nJNh5yMNHJbhYg+F9U+ZTCvwYkpnUOpgseV9pTu
+	cZfzYTtgV80TvoXsqFXQeZhjX+EEm+beFQiP3+uMphg==
+X-Gm-Gg: AY/fxX4I4jUqq/lOHabVtPkIdkU0mqF3CP1UY04CCD756WX/jqpf5DI9hHERKSix4EU
+	soBvdP1kMk4GxGcfAhbuSNxxlU5gZyN0lm1cOavwBd9gbKwaGHc1t8eII7HDhwzJoaYrlaDc118
+	NRKwYFPTOQbnSNXonIvksRdtIcM5tZj8noQBgK8Vnc//cs1ToBU4nph8IekW0aaK5TrbPr5hx0S
+	sY/aD4hEyREYKevlexLSiB+LhQW+5eLG1t56pwoEwoVHwqyDWfI7cp3opYbdOwScKcUMKDI
+X-Google-Smtp-Source: AGHT+IFZaDqEo6Js3iMTg2q9hIsyQ0GQfn7ECMMLQRJj257QjrmPTbXS6jkIV+AYoaw4amu7mckhM78NkqYgMCKlHvU=
+X-Received: by 2002:a05:7022:6291:b0:11e:3e9:3e97 with SMTP id
+ a92af1059eb24-121723111fcmr18154261c88.6.1767200551098; Wed, 31 Dec 2025
+ 09:02:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Migadu-Flow: FLOW_OUT
+References: <20251104162123.1086035-1-ming.lei@redhat.com> <20251104162123.1086035-5-ming.lei@redhat.com>
+ <CADUfDZqUbJz_05m63-p4Q7XpsM1V6f4oGMCaKmPcE_wzNJvNqA@mail.gmail.com> <aVUCsQ2fuOP_hfPF@fedora>
+In-Reply-To: <aVUCsQ2fuOP_hfPF@fedora>
+From: Caleb Sander Mateos <csander@purestorage.com>
+Date: Wed, 31 Dec 2025 12:02:19 -0500
+X-Gm-Features: AQt7F2qrpAFzz8OSL-MVLsuybMgxBuqGcFK1BXK3WgxAO4M0xen24lUUw79ojrI
+Message-ID: <CADUfDZqwZQAkgS-Co=qmbKxiK1A0hoEP8XW0uHX_Z5M6tCDGMw@mail.gmail.com>
+Subject: Re: [PATCH 4/5] io_uring: bpf: add buffer support for IORING_OP_BPF
+To: Ming Lei <ming.lei@redhat.com>
+Cc: Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org, 
+	Akilesh Kailash <akailash@google.com>, bpf@vger.kernel.org, 
+	Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Matt Bobrowski <mattbobrowski@google.com> writes:
+On Wed, Dec 31, 2025 at 3:02=E2=80=AFAM Ming Lei <ming.lei@redhat.com> wrot=
+e:
+>
+> On Tue, Dec 30, 2025 at 08:42:11PM -0500, Caleb Sander Mateos wrote:
+> > On Tue, Nov 4, 2025 at 8:22=E2=80=AFAM Ming Lei <ming.lei@redhat.com> w=
+rote:
+> > >
+> > > Add support for passing 0-2 buffers to BPF operations through
+> > > IORING_OP_BPF. Buffer types are encoded in sqe->bpf_op_flags
+> > > using dedicated 3-bit fields for each buffer.
+> >
+> > I agree the 2 buffer limit seems a bit restrictive, and it would make
+> > more sense to expose kfuncs to import plain and fixed buffers. Then
+> > the BPF program could decide what buffers to import based on the SQE,
+> > BPF maps, etc. This would be analogous to how uring_cmd
+> > implementations import buffers.
+>
+> Yes, this way is too restrictive.
+>
+> I think there are at least two approaches:
+>
+> - define public buffer descriptor, which can describe plain, fixed, vecto=
+r,
+> fixed vector buffer, ...
+>
+> - user can pass this buffer descriptor array from sqe->addr & sqe->len (b=
+uf descriptor
+>   need to be defined in UAPI)
+>
+> OR
+>
+> - user can pass this buffer array from arena map (buf descriptor is just
+> API between bpf prog and userspace)
+>
+> The former could be better, because `buf descriptor` is part of UAPI, and
+> user still can choose to use bpf map to pass buffer. But defining 'buf
+> descriptor' may take a while...
+>
+> The latter way could be easier to start...
 
-> On Tue, Dec 30, 2025 at 09:00:28PM +0000, Roman Gushchin wrote:
->> Matt Bobrowski <mattbobrowski@google.com> writes:
->> 
->> > On Mon, Dec 22, 2025 at 08:41:53PM -0800, Roman Gushchin wrote:
->> >> Introduce a BPF kfunc to get a trusted pointer to the root memory
->> >> cgroup. It's very handy to traverse the full memcg tree, e.g.
->> >> for handling a system-wide OOM.
->> >> 
->> >> It's possible to obtain this pointer by traversing the memcg tree
->> >> up from any known memcg, but it's sub-optimal and makes BPF programs
->> >> more complex and less efficient.
->> >> 
->> >> bpf_get_root_mem_cgroup() has a KF_ACQUIRE | KF_RET_NULL semantics,
->> >> however in reality it's not necessary to bump the corresponding
->> >> reference counter - root memory cgroup is immortal, reference counting
->> >> is skipped, see css_get(). Once set, root_mem_cgroup is always a valid
->> >> memcg pointer. It's safe to call bpf_put_mem_cgroup() for the pointer
->> >> obtained with bpf_get_root_mem_cgroup(), it's effectively a no-op.
->> >> 
->> >> Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
->> >> ---
->> >>  mm/bpf_memcontrol.c | 20 ++++++++++++++++++++
->> >>  1 file changed, 20 insertions(+)
->> >> 
->> >> diff --git a/mm/bpf_memcontrol.c b/mm/bpf_memcontrol.c
->> >> index 82eb95de77b7..187919eb2fe2 100644
->> >> --- a/mm/bpf_memcontrol.c
->> >> +++ b/mm/bpf_memcontrol.c
->> >> @@ -10,6 +10,25 @@
->> >>  
->> >>  __bpf_kfunc_start_defs();
->> >>  
->> >> +/**
->> >> + * bpf_get_root_mem_cgroup - Returns a pointer to the root memory cgroup
->> >> + *
->> >> + * The function has KF_ACQUIRE semantics, even though the root memory
->> >> + * cgroup is never destroyed after being created and doesn't require
->> >> + * reference counting. And it's perfectly safe to pass it to
->> >> + * bpf_put_mem_cgroup()
->> >> + *
->> >> + * Return: A pointer to the root memory cgroup.
->> >> + */
->> >> +__bpf_kfunc struct mem_cgroup *bpf_get_root_mem_cgroup(void)
->> >> +{
->> >> +	if (mem_cgroup_disabled())
->> >> +		return NULL;
->> >> +
->> >> +	/* css_get() is not needed */
->> >> +	return root_mem_cgroup;
->> >> +}
->> >> +
->> >>  /**
->> >>   * bpf_get_mem_cgroup - Get a reference to a memory cgroup
->> >>   * @css: pointer to the css structure
->> >> @@ -64,6 +83,7 @@ __bpf_kfunc void bpf_put_mem_cgroup(struct mem_cgroup *memcg)
->> >>  __bpf_kfunc_end_defs();
->> >>  
->> >>  BTF_KFUNCS_START(bpf_memcontrol_kfuncs)
->> >> +BTF_ID_FLAGS(func, bpf_get_root_mem_cgroup, KF_ACQUIRE | KF_RET_NULL)
->> >
->> > I feel as though relying on KF_ACQUIRE semantics here is somewhat
->> > odd. Users of this BPF kfunc will now be forced to call
->> > bpf_put_mem_cgroup() on the returned root_mem_cgroup, despite it being
->> > completely unnecessary.
->> 
->> A agree that it's annoying, but I doubt this extra call makes any
->> difference in the real world.
->
-> Sure, that certainly holds true.
->
->> Also, the corresponding kernel code designed to hide the special
->> handling of the root cgroup. css_get()/css_put() are simple no-ops for
->> the root cgroup, but are totally valid.
->
-> Yes, I do see that.
->
->> So in most places the root cgroup is handled as any other, which
->> simplifies the code. I guess the same will be true for many bpf
->> programs.
->
-> I see, however the same might not necessarily hold for all other
-> global pointers which end up being handed out by a BPF kfunc (not
-> necessarily bpf_get_root_mem_cgroup()). This is why I was wondering
-> whether there's some sense to introducing another KF flag (or
-> something similar) which allows returned values from BPF kfuncs to be
-> implicitly treated as trusted.
+I think the latter approach (buffer interface specific to io_uring BPF
+program) probably makes more sense. Different programs may have
+different buffer needs (e.g. 1 buffer, 2 buffers, an arbitrary number
+of buffers). Programs that need an arbitrary number of buffers will
+probably have to specify the address and length of a struct iovec
+array in the SQE, or communicate via some BPF map. But this additional
+indirection would add unnecessary overhead for programs that only
+accept 1 or 2 buffers. Leaving it up to the io_uring BPF program how
+to interpret the SQE fields makes a lot of sense to me, as
+->uring_cmd() implementations already have that responsibility.
 
-Agree. It sounds like a good idea to me.
+>
+> >
+> > >
+> > > Buffer 1 can be:
+> > > - None (no buffer)
+> > > - Plain user buffer (addr=3Dsqe->addr, len=3Dsqe->len)
+> > > - Fixed/registered buffer (index=3Dsqe->buf_index, offset=3Dsqe->addr=
+,
+> >
+> > Should this say "addr=3D" instead of "offset=3D"? It's passed as buf_ad=
+dr
+> > to io_bpf_import_buffer(), so it's an absolute userspace address. The
+> > offset into the fixed buffer depends on the starting address of the
+> > fixed buffer.
+>
+> For user fixed buffer, offset is the buff addr.
+>
+> For kernel fixed buffer, it is offset.
+
+Yes, good point. I think fixed buffers are usually described in terms
+of user registered buffers (probably since those were the only kind of
+registered buffers until recently). It wouldn't hurt to be explicit
+that addr vs. offset depends on the type of registered buffer. I think
+it would also be fine to just say that this is an addr for both kinds
+of buffers, as you can think of kernel registered buffers as
+implicitly having a starting address of 0.
+
+Best,
+Caleb
 
