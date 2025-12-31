@@ -1,93 +1,139 @@
-Return-Path: <bpf+bounces-77582-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77583-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEF83CEBB70
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 10:48:30 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDF1CCEBB82
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 10:50:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3E7613025FBB
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 09:48:23 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 52A93300CB7F
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 09:50:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EC35314D0B;
-	Wed, 31 Dec 2025 09:48:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA22D3148C3;
+	Wed, 31 Dec 2025 09:50:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pU3mkzr7"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="L9cV5q5f"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93B2822301;
-	Wed, 31 Dec 2025 09:48:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9ABA31283C
+	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 09:49:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767174501; cv=none; b=eSNAsZCK0XqNmT+GeOuZeXcPymJnoqMr/4UQHvcY3qUaIygenHIAXpEio4jgSb/iBOCtwncQMf04EvqFi8GXnK6cj3lm77FCpZT/T8dox9s8dVkAupirqzEIW89QW8O2YBOQjmmtjAsWgBQ9aIKJe/12lMX5c4QgIO6thA5h/3g=
+	t=1767174600; cv=none; b=cheUSPwofjQwbw2+ZUZVYSq1x5zgfGgxbZVZVvvCbuSHZAKahRkDmE5XLZHxNpK2otmrxFZiqIdrxh4YDwUkRLCAP63j64nBcgs7O3GRdjyGDf0s3ODUXBWXln1CY9o/txXL2haTbP1WFbaOB3C/D+0ySENtscu6JYAEWmsLaww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767174501; c=relaxed/simple;
-	bh=K1E8g82sSzogoZCwD9FdLSZz5brvHfQEWBXc8AQUlFo=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=JYk0nglN6R42ZUMb2IT68YOmMCWummvq2Y8xk6Ys9S1zznIHd0sbb/PISvzzcH5vy2/Sw4HeCB5K4LcnxN91NNweanvhLxvODmxjYw/jbNCBVuy1VPJ84X0f2znq5jd1maChxdTUT1/xpERz7OX1qjf6UiIniStQ5Q22LP60tMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pU3mkzr7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE2BBC113D0;
-	Wed, 31 Dec 2025 09:48:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767174501;
-	bh=K1E8g82sSzogoZCwD9FdLSZz5brvHfQEWBXc8AQUlFo=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=pU3mkzr7B6S+erqJZrbs0cHtgUzViWuII+cgNOVlRC+7G/KAFTdx2kBPpeGxcTPpz
-	 X02UaMZKKB4JHIn0dKUQaf5HIb26k/aNsH7NAUnsir69yflvzHwl63ualTVIxOPemj
-	 pxMlbe1b1OfLkoAqe1uJxwOemdtyWcnKOKKVAwK5phUsrobQHydjFFz0RQZfCB0Fil
-	 yrjFfOnPfGQjMkK3qqPeX5DubFWDD1IK8GgydBRplrNiSGRfNUpIS5Dhw+fCq3BENL
-	 d4+TPoNv8LUChirENxIeZpXB+YQ6xWA40HozGsBoT97dNfah3deKrBwWqh/Fk+2kMh
-	 eGsUDQiQzroJA==
-Content-Type: multipart/mixed; boundary="===============6587404859822489521=="
+	s=arc-20240116; t=1767174600; c=relaxed/simple;
+	bh=F/Zl9i9tpVZDEmS/CL8ZOYBxywoJ0mjDHAb5r9PxyFQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=irwC2DLygHPNoBhqJf3OSXG/7Ejw58ZdB/15q15Kl4XzVLv54reSMnbpvdFdfM9j6Zfnt5WdQAQwfTusZDKH5gF+Wwd8+7sG68S9XZjc3c9dXWEjq/At1LSANMDfxxheSVMQcG35RSYqLysX5Umg788PkgktvhIQOSVWZdJc4Yk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=L9cV5q5f; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1767174597;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AI+iUMyfF3dGxKxZNaqJORzWknrLEklaB5g9aOWZWDQ=;
+	b=L9cV5q5fJ6zHniTLZeGl8kYJ+VxYODUgD1MtG8BZGWHehjHbrCi9ysJHBPFLr7QFHRcZyQ
+	OssRLvZA0BJwawDK3FVVeR9QPYLsw5J/RFUAcOzEFdme0ocdSRxPMFMftMaj+bznPzIgXi
+	qPX9A86s5SsAo/RQKh77cTnLRngnZhY=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-694-eAYuctNJOtOdiG1ilt-WPQ-1; Wed,
+ 31 Dec 2025 04:49:54 -0500
+X-MC-Unique: eAYuctNJOtOdiG1ilt-WPQ-1
+X-Mimecast-MFC-AGG-ID: eAYuctNJOtOdiG1ilt-WPQ_1767174593
+Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id E2C561800365;
+	Wed, 31 Dec 2025 09:49:52 +0000 (UTC)
+Received: from fedora (unknown [10.72.116.125])
+	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 9E6E130001A2;
+	Wed, 31 Dec 2025 09:49:48 +0000 (UTC)
+Date: Wed, 31 Dec 2025 17:49:43 +0800
+From: Ming Lei <ming.lei@redhat.com>
+To: Caleb Sander Mateos <csander@purestorage.com>
+Cc: Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+	Akilesh Kailash <akailash@google.com>, bpf@vger.kernel.org,
+	Alexei Starovoitov <ast@kernel.org>
+Subject: Re: [PATCH 2/5] io_uring: bpf: add io_uring_ctx setup for BPF into
+ one list
+Message-ID: <aVTxt_0DR1ZEE8SW@fedora>
+References: <20251104162123.1086035-1-ming.lei@redhat.com>
+ <20251104162123.1086035-3-ming.lei@redhat.com>
+ <CADUfDZonj-mn9oOF-cGgw2TS9Emmk0vP=3=+n0bJbhGw43ra3A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <068479a445bbedc0c50f50f817f6236444dc4809e9a8a0fdefc9216a3832c864@mail.kernel.org>
-In-Reply-To: <20251231092541.3352-1-kiraskyler@163.com>
-References: <20251231092541.3352-1-kiraskyler@163.com>
-Subject: Re: [PATCH bpf-next] bpftool: Make skeleton C++ compatible with explicit casts
-From: bot+bpf-ci@kernel.org
-To: kiraskyler@163.com,qmo@kernel.org
-Cc: ast@kernel.org,daniel@iogearbox.net,andrii@kernel.org,martin.lau@linux.dev,eddyz87@gmail.com,song@kernel.org,yonghong.song@linux.dev,john.fastabend@gmail.com,kpsingh@kernel.org,sdf@fomichev.me,haoluo@google.com,jolsa@kernel.org,kiraskyler@163.com,menglong8.dong@gmail.com,bpf@vger.kernel.org,linux-kernel@vger.kernel.org,niuwl1@chinatelecom.cn,dongml2@chinatelecom.cn,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Wed, 31 Dec 2025 09:48:20 +0000 (UTC)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CADUfDZonj-mn9oOF-cGgw2TS9Emmk0vP=3=+n0bJbhGw43ra3A@mail.gmail.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
 
---===============6587404859822489521==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+On Tue, Dec 30, 2025 at 08:13:51PM -0500, Caleb Sander Mateos wrote:
+> On Tue, Nov 4, 2025 at 8:22 AM Ming Lei <ming.lei@redhat.com> wrote:
+> >
+> > Add io_uring_ctx setup for BPF into one list, and prepare for syncing
+> > bpf struct_ops register and un-register.
+> >
+> > Signed-off-by: Ming Lei <ming.lei@redhat.com>
+> > ---
+> >  include/linux/io_uring_types.h |  5 +++++
+> >  include/uapi/linux/io_uring.h  |  5 +++++
+> >  io_uring/bpf.c                 | 15 +++++++++++++++
+> >  io_uring/io_uring.c            |  7 +++++++
+> >  io_uring/io_uring.h            |  3 ++-
+> >  io_uring/uring_bpf.h           | 11 +++++++++++
+> >  6 files changed, 45 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/include/linux/io_uring_types.h b/include/linux/io_uring_types.h
+> > index 92780764d5fa..d2e098c3fd2c 100644
+> > --- a/include/linux/io_uring_types.h
+> > +++ b/include/linux/io_uring_types.h
+> > @@ -465,6 +465,11 @@ struct io_ring_ctx {
+> >         struct io_mapped_region         ring_region;
+> >         /* used for optimised request parameter and wait argument passing  */
+> >         struct io_mapped_region         param_region;
+> > +
+> > +#ifdef CONFIG_IO_URING_BPF
+> > +       /* added to uring_bpf_ctx_list */
+> > +       struct list_head                bpf_node;
+> > +#endif
+> >  };
+> >
+> >  /*
+> > diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
+> > index b167c1d4ce6e..b8c49813b4e5 100644
+> > --- a/include/uapi/linux/io_uring.h
+> > +++ b/include/uapi/linux/io_uring.h
+> > @@ -237,6 +237,11 @@ enum io_uring_sqe_flags_bit {
+> >   */
+> >  #define IORING_SETUP_SQE_MIXED         (1U << 19)
+> >
+> > +/*
+> > + * Allow to submit bpf IO
+> > + */
+> > +#define IORING_SETUP_BPF               (1U << 20)
+> 
+> Is the setup flag really necessary? It doesn't look like there's much
+> overhead to allowing BPF programs to be used on any io_ring_ctx, so I
+> would be inclined to avoid needing to set an additional flag to use
+> it.
 
-> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-> index 993c7d9484a4..71446a776130 100644
-> --- a/tools/bpf/bpftool/gen.c
-> +++ b/tools/bpf/bpftool/gen.c
-> @@ -731,10 +731,10 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
->  		{							    \n\
->  			struct %1$s *skel;				    \n\
->  									    \n\
-> -			skel = skel_alloc(sizeof(*skel));		    \n\
-> +			skel = (struct trace_bpf *)skel_alloc(sizeof(*skel));\n\
-                                   ^^^^^^^^^
-
-Should this cast use (struct %1$s *) instead of (struct trace_bpf *)?
-
-The variable skel is declared as "struct %1$s *skel" where %1$s is replaced
-with obj_name, but the cast hardcodes "trace_bpf" regardless of what skeleton
-is being generated. This would cause C++ compilation errors for any BPF
-object with a name other than trace_bpf.
-
-For comparison, the non-loader skeleton at do_skeleton() correctly uses
-"(struct %1$s *)calloc()" to match the skeleton name.
+It is used for dealing with unregistering & registering bpf prog vs. handling IO.
 
 
----
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
 
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/20616299845
+Thanks,
+Ming
 
---===============6587404859822489521==--
 
