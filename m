@@ -1,675 +1,300 @@
-Return-Path: <bpf+bounces-77556-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77557-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45A79CEAFD2
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 02:20:09 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65322CEAFED
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 02:26:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id DEFAE301BCFC
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 01:20:07 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2584D301EC5D
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 01:26:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7D81176FB1;
-	Wed, 31 Dec 2025 01:20:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79ACE1FE44B;
+	Wed, 31 Dec 2025 01:26:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b="AHwq6s72"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Jbp05A7L"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BE7F18AE3
-	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 01:20:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04A9086352;
+	Wed, 31 Dec 2025 01:26:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767144005; cv=none; b=HeeDREtNncPtJAYPujmzGsaLjRVp1eh/hS95hF74gColW4PfSFSU3MkupqUCqAAdJIvlGiy6AOpfXF0sB/qnV17g47bBEGU+v7ZTOzQkQvKcisVC+o7cIuPpfgv2w1MAJ/XrAxmkVyPzrtuIC2cj95M3vaxekHO9JRZ4P/XEzig=
+	t=1767144374; cv=none; b=XHrlWlyH3syhKeyKYODWotbRGUJ94pe+1IEtrT5jcPh87qHMQ/dQ5WMnv24jDqB4VtQOVxAGDJbis7vrqwZqWkT9mRiQ6v5HPO+Xf18glXAQwrOpg62AGT/2I5daoPPoLYPt622NEQSV4BK18skPcSJXsE2qA5i3xpXBz5DzZVg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767144005; c=relaxed/simple;
-	bh=vU7xnWnvCE2qYi6bL/Rb2yG8ROA+2GmirbwdsgsUtHg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=B2lYtWT5lVQXFdwyxglLfr4tEK+2+nAtpH7ouKtj8vrheRabBpQPBLwnSU6hOu2nP3BN6cPGnqyI4qTXptRQY0YbRyqq1HnCeeVMPLNeJiaLWBz1GmmHFLkoTLggkfXHcYcWRg/6KkolDKp9V6tGQ9eclugCRFhq6pC3Z2Dkt78=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com; spf=fail smtp.mailfrom=purestorage.com; dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b=AHwq6s72; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=purestorage.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-2a110548f10so36048115ad.1
-        for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 17:20:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=purestorage.com; s=google2022; t=1767144002; x=1767748802; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SuVQus7dJBv6krdvPZqyyxezkDZr9ZguFO+hQr/gfGU=;
-        b=AHwq6s72dTjxFDosKru3F6MFRJbvdhjgOjCrFUC71f/9+VOms+zZzOIf03CDk1oYZ2
-         lBKo0Qzpw6C95CCwbwQMMB/BX/5KRrPadqMGS1cwcSrVAM35z7vOldS6filSWwXMvlfv
-         CKR+3s7tj3RNcr3w09CMM9EqYgpDMU/jC3nQEkWXcnwjOetgw4pa5vpJ8ZwUu7wC9pVa
-         dkXJ1vCVMjRq54cg5Dbu8r7xM4Xa/DalqmC58cXSLdfYm6RR35vZsRDJvpOWMrRtS076
-         ckT0E9DKd/1D1ZTERvANCojVeMdR1b5mXd9zi9iJTmjsJzpntozql14kMJfF9kPfWE3X
-         8CLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767144002; x=1767748802;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=SuVQus7dJBv6krdvPZqyyxezkDZr9ZguFO+hQr/gfGU=;
-        b=WchD1BLtaZztgzBW86M8cn6FSPwXK+Tkj+bHg9lf/6qdAt0wshVoXl+iusgmteMXaR
-         guOVWHGbPJsPF9VL128ApFY6pI9+wPjrUjCsJRkYZ4Kn4dYko0VlhGXQWfP6ZpBXUoAV
-         DpuvTy67W9N4wyWm2S8D8TfXJK2IT9b4dzswGxhUGKRd4JbBg5Z84DAkk//p0zqSBm3Q
-         iQhRgRcJbKVJHWW71tF8fUnajZA5jFFhuBTCP0sVJIEj+hN6oDGhCsUQF2Md0w+e4rvR
-         M1Q1oFyrbN/5LfIcG2ii3cr9ysuBhWS/3HbvPijAV3DJpYWmS4a5oK31yHjHU6WiMrgS
-         QTjQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVbWC3uJEhVTRzVcEOQnIicOcK5pW4UEq/TsfM3Ej+bu8TuBMSDr5ivR2V9yafOJpFyy6I=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxR8ccrCwvIRBcMUKcaEhsfRq0EUmAYW3kVVe28Sw7YVo37nsJ6
-	WDWV1Yo6z951gYGl1xtHjxNeSFmq+az+BeVVUwAIwg1GbY3XzvB/O2BiVRrozQ3URAdmCrcQqQl
-	/FpGMTYf+nInSZJhTBuTvk05ZMC1pKbWUz7vNJdchkYKZbASqop4ubzY=
-X-Gm-Gg: AY/fxX5taY2R68btEVhRM9KhFprzkGoovnJQFJY1JjPPJsT85ODDJoBhuig34wYQ/YU
-	is7w+qN5vXudg30/r28VBJDFt3EUBjAYrZocjw9CY+n9dAjHrID19Ctr+iMZ+Vue0tuDPuv03Z5
-	LBiQn3V8VODGRH7u4tsYEao7Sf+7a1fVNJ/W7JdMFgfGQhS1A4SsnFtpZAu94Ns1XLgOQfMTTGD
-	/Xqviwq0DFzKxAcZENgeefI1DfFDf/bT21OuEjpUMefMMGcVMrmIIkrunHBSpJnOQj+ZsJUoLRh
-	eUhP524=
-X-Google-Smtp-Source: AGHT+IEGkJVaML/hW31fapLm6yhdhm5YCD6UUqMR1USDt93s/byhrDrcN0XBlYQC+ZSo32+vWsGcCQUvhIbkDNK7YBk=
-X-Received: by 2002:a05:7022:f698:b0:119:e56b:c3f5 with SMTP id
- a92af1059eb24-121722eb266mr18109690c88.5.1767144001334; Tue, 30 Dec 2025
- 17:20:01 -0800 (PST)
+	s=arc-20240116; t=1767144374; c=relaxed/simple;
+	bh=EP81NzZERTa4WpEj5g0CAj0u3mjOAYp9iIlHjG7ghQA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Nk2P0Us92GN0c/MLo4hXYlSpnt4/atjXNAg7uU1vyXmrJv81nTeK7dPTeV9v9kdvKw0ELAywD7SCL/5bLsU2DYX1eJxeIAZTseiDjGP/E6Byb3VQNb4AdYUxZVCSpbldYgl+5SSSpT9l7zul+VVBCvGXCN8KT9OMFxhVe3m+4VY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Jbp05A7L; arc=none smtp.client-ip=91.218.175.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1767144368;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=oW1Reu5DMmVKSwa9Snx8B+yvijdb2ZtOnW+HkCnezlk=;
+	b=Jbp05A7Lwo6Z90OwyUIpXaFeUGIHS//O9l9zgriLwjjJKkuzlner+CkFFQn6D20MNYtSo7
+	nIIJ/n5TsO0jDT0UnGT9GZ9ISYdr2qZOb0rXlZSf8vBbC2DJLtujMeey1LGLDNbvOl41mh
+	Fwxwg9Hq3vW8vIbchXum4meie4bf9Mg=
+From: Ihor Solodrai <ihor.solodrai@linux.dev>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nsc@kernel.org>
+Cc: bpf@vger.kernel.org,
+	linux-kbuild@vger.kernel.org
+Subject: [PATCH bpf-next v2] resolve_btfids: Implement --patch_btfids
+Date: Tue, 30 Dec 2025 17:25:57 -0800
+Message-ID: <20251231012558.1699758-1-ihor.solodrai@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251104162123.1086035-1-ming.lei@redhat.com> <20251104162123.1086035-4-ming.lei@redhat.com>
-In-Reply-To: <20251104162123.1086035-4-ming.lei@redhat.com>
-From: Caleb Sander Mateos <csander@purestorage.com>
-Date: Tue, 30 Dec 2025 20:19:49 -0500
-X-Gm-Features: AQt7F2rg-KxYmGkk92pFKs65iEF0OkkzBXnuZT8CvEJUzBaTsHov_tyKjVQCiR4
-Message-ID: <CADUfDZrCvqR-1HConMx_xPQMgNPwn=jCDpbNBfqWrPucU3krzg@mail.gmail.com>
-Subject: Re: [PATCH 3/5] io_uring: bpf: extend io_uring with bpf struct_ops
-To: Ming Lei <ming.lei@redhat.com>
-Cc: Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org, 
-	Akilesh Kailash <akailash@google.com>, bpf@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Nov 4, 2025 at 8:22=E2=80=AFAM Ming Lei <ming.lei@redhat.com> wrote=
-:
->
-> io_uring can be extended with bpf struct_ops in the following ways:
->
-> 1) add new io_uring operation from application
-> - one typical use case is for operating device zero-copy buffer, which
-> belongs to kernel, and not visible or too expensive to export to
-> userspace, such as supporting copy data from this buffer to userspace,
-> decompressing data to zero-copy buffer in Android case[1][2], or
-> checksum/decrypting.
->
-> [1] https://lpc.events/event/18/contributions/1710/attachments/1440/3070/=
-LPC2024_ublk_zero_copy.pdf
->
-> 2) extend 64 byte SQE, since bpf map can be used to store IO data
->    conveniently
->
-> 3) communicate in IO chain, since bpf map can be shared among IOs,
-> when one bpf IO is completed, data can be written to IO chain wide
-> bpf map, then the following bpf IO can retrieve the data from this bpf
-> map, this way is more flexible than io_uring built-in buffer
->
-> 4) pretty handy to inject error for test purpose
->
-> bpf struct_ops is one very handy way to attach bpf prog with kernel, and
-> this patch simply wires existed io_uring operation callbacks with added
-> uring bpf struct_ops, so application can define its own uring bpf
-> operations.
->
-> Signed-off-by: Ming Lei <ming.lei@redhat.com>
-> ---
->  include/uapi/linux/io_uring.h |   9 ++
->  io_uring/bpf.c                | 271 +++++++++++++++++++++++++++++++++-
->  io_uring/io_uring.c           |   1 +
->  io_uring/io_uring.h           |   3 +-
->  io_uring/uring_bpf.h          |  30 ++++
->  5 files changed, 311 insertions(+), 3 deletions(-)
->
-> diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.=
-h
-> index b8c49813b4e5..94d2050131ac 100644
-> --- a/include/uapi/linux/io_uring.h
-> +++ b/include/uapi/linux/io_uring.h
-> @@ -74,6 +74,7 @@ struct io_uring_sqe {
->                 __u32           install_fd_flags;
->                 __u32           nop_flags;
->                 __u32           pipe_flags;
-> +               __u32           bpf_op_flags;
->         };
->         __u64   user_data;      /* data to be passed back at completion t=
-ime */
->         /* pack this to avoid bogus arm OABI complaints */
-> @@ -427,6 +428,13 @@ enum io_uring_op {
->  #define IORING_RECVSEND_BUNDLE         (1U << 4)
->  #define IORING_SEND_VECTORIZED         (1U << 5)
->
-> +/*
-> + * sqe->bpf_op_flags           top 8bits is for storing bpf op
-> + *                             The other 24bits are used for bpf prog
-> + */
-> +#define IORING_BPF_OP_BITS     (8)
-> +#define IORING_BPF_OP_SHIFT    (24)
+Recent changes in BTF generation [1] rely on ${OBJCOPY} command to
+update .BTF_ids section data in target ELF files.
 
-Could omit the parentheses here
+This exposed a bug in llvm-objcopy --update-section code path, that
+may lead to corruption of a target ELF file. Specifically, because of
+the bug st_shndx of some symbols may be (incorrectly) set to 0xffff
+(SHN_XINDEX) [2][3].
 
-> +
->  /*
->   * cqe.res for IORING_CQE_F_NOTIF if
->   * IORING_SEND_ZC_REPORT_USAGE was requested
-> @@ -631,6 +639,7 @@ struct io_uring_params {
->  #define IORING_FEAT_MIN_TIMEOUT                (1U << 15)
->  #define IORING_FEAT_RW_ATTR            (1U << 16)
->  #define IORING_FEAT_NO_IOWAIT          (1U << 17)
-> +#define IORING_FEAT_BPF                        (1U << 18)
->
->  /*
->   * io_uring_register(2) opcodes and arguments
-> diff --git a/io_uring/bpf.c b/io_uring/bpf.c
-> index bb1e37d1e804..8227be6d5a10 100644
-> --- a/io_uring/bpf.c
-> +++ b/io_uring/bpf.c
-> @@ -4,28 +4,95 @@
->  #include <linux/kernel.h>
->  #include <linux/errno.h>
->  #include <uapi/linux/io_uring.h>
-> +#include <linux/init.h>
-> +#include <linux/types.h>
-> +#include <linux/bpf_verifier.h>
-> +#include <linux/bpf.h>
-> +#include <linux/btf.h>
-> +#include <linux/btf_ids.h>
-> +#include <linux/filter.h>
->  #include "io_uring.h"
->  #include "uring_bpf.h"
->
-> +#define MAX_BPF_OPS_COUNT      (1 << IORING_BPF_OP_BITS)
-> +
->  static DEFINE_MUTEX(uring_bpf_ctx_lock);
->  static LIST_HEAD(uring_bpf_ctx_list);
-> +DEFINE_STATIC_SRCU(uring_bpf_srcu);
-> +static struct uring_bpf_ops bpf_ops[MAX_BPF_OPS_COUNT];
->
-> -int io_uring_bpf_issue(struct io_kiocb *req, unsigned int issue_flags)
-> +static inline unsigned char uring_bpf_get_op(unsigned int op_flags)
->  {
-> -       return -ECANCELED;
-> +       return (unsigned char)(op_flags >> IORING_BPF_OP_SHIFT);
-> +}
-> +
-> +static inline unsigned int uring_bpf_get_flags(unsigned int op_flags)
+While there is a pending fix for LLVM, it'll take some time before it
+lands (likely in 22.x). And the kernel build must keep working with
+older LLVM toolchains in the foreseeable future.
 
-u32?
+Using GNU objcopy for .BTF_ids update would work, but it would require
+changes to LLVM-based build process, likely breaking existing build
+environments as discussed in [2].
 
-> +{
-> +       return op_flags & ((1U << IORING_BPF_OP_SHIFT) - 1);
-> +}
-> +
-> +static inline struct uring_bpf_ops *uring_bpf_get_ops(struct uring_bpf_d=
-ata *data)
-> +{
-> +       return &bpf_ops[uring_bpf_get_op(data->opf)];
->  }
->
->  int io_uring_bpf_prep(struct io_kiocb *req, const struct io_uring_sqe *s=
-qe)
->  {
-> +       struct uring_bpf_data *data =3D io_kiocb_to_cmd(req, struct uring=
-_bpf_data);
-> +       unsigned int op_flags =3D READ_ONCE(sqe->bpf_op_flags);
+To work around llvm-objcopy bug, implement --patch_btfids code path in
+resolve_btfids as a drop-in replacement for:
 
-u32?
+    ${OBJCOPY} --update-section .BTF_ids=${btf_ids} ${elf}
 
-> +       struct uring_bpf_ops *ops;
-> +
-> +       if (!(req->ctx->flags & IORING_SETUP_BPF))
-> +               return -EACCES;
-> +
-> +       data->opf =3D op_flags;
-> +       ops =3D &bpf_ops[uring_bpf_get_op(data->opf)];
-> +
-> +       if (ops->prep_fn)
-> +               return ops->prep_fn(data, sqe);
->         return -EOPNOTSUPP;
->  }
->
-> +static int __io_uring_bpf_issue(struct io_kiocb *req)
-> +{
-> +       struct uring_bpf_data *data =3D io_kiocb_to_cmd(req, struct uring=
-_bpf_data);
-> +       struct uring_bpf_ops *ops =3D uring_bpf_get_ops(data);
-> +
-> +       if (ops->issue_fn)
-> +               return ops->issue_fn(data);
+Which works specifically for .BTF_ids section:
 
-Doesn't this need to use rcu_dereference() to access ops->issue_fn
-since io_bpf_reg_unreg() may concurrently modify it?
+    ${RESOLVE_BTFIDS} --patch_btfids ${btf_ids} ${elf}
 
-Also, it doesn't look safe to propagate the BPF ->issue_fn() return
-value to the ->issue() return value. If the BPF program returns
-IOU_ISSUE_SKIP_COMPLETE =3D -EIOCBQUEUED, the io_uring request will
-never be completed. And it looks like ->issue() implementations are
-meant to return either IOU_COMPLETE, IOU_RETRY, or
-IOU_ISSUE_SKIP_COMPLETE. If the BPF program returns some other value,
-it would be nice to propagate it to the io_uring CQE result and return
-IOU_COMPLETE, similar to io_uring_cmd().
+This feature in resolve_btfids can be removed at some point in the
+future, when llvm-objcopy with a relevant bugfix becomes common.
 
-> +       return -ECANCELED;
-> +}
-> +
-> +int io_uring_bpf_issue(struct io_kiocb *req, unsigned int issue_flags)
-> +{
-> +       if (issue_flags & IO_URING_F_UNLOCKED) {
-> +               int idx, ret;
-> +
-> +               idx =3D srcu_read_lock(&uring_bpf_srcu);
-> +               ret =3D __io_uring_bpf_issue(req);
-> +               srcu_read_unlock(&uring_bpf_srcu, idx);
-> +
-> +               return ret;
-> +       }
-> +       return __io_uring_bpf_issue(req);
-> +}
-> +
->  void io_uring_bpf_fail(struct io_kiocb *req)
->  {
-> +       struct uring_bpf_data *data =3D io_kiocb_to_cmd(req, struct uring=
-_bpf_data);
-> +       struct uring_bpf_ops *ops =3D uring_bpf_get_ops(data);
-> +
-> +       if (ops->fail_fn)
-> +               ops->fail_fn(data);
->  }
->
->  void io_uring_bpf_cleanup(struct io_kiocb *req)
->  {
-> +       struct uring_bpf_data *data =3D io_kiocb_to_cmd(req, struct uring=
-_bpf_data);
-> +       struct uring_bpf_ops *ops =3D uring_bpf_get_ops(data);
-> +
-> +       if (ops->cleanup_fn)
-> +               ops->cleanup_fn(data);
->  }
->
->  void uring_bpf_add_ctx(struct io_ring_ctx *ctx)
-> @@ -39,3 +106,203 @@ void uring_bpf_del_ctx(struct io_ring_ctx *ctx)
->         guard(mutex)(&uring_bpf_ctx_lock);
->         list_del(&ctx->bpf_node);
->  }
-> +
-> +static const struct btf_type *uring_bpf_data_type;
-> +
-> +static bool uring_bpf_ops_is_valid_access(int off, int size,
-> +                                      enum bpf_access_type type,
-> +                                      const struct bpf_prog *prog,
-> +                                      struct bpf_insn_access_aux *info)
-> +{
-> +       return bpf_tracing_btf_ctx_access(off, size, type, prog, info);
-> +}
+[1] https://lore.kernel.org/bpf/20251219181321.1283664-1-ihor.solodrai@linux.dev/
+[2] https://lore.kernel.org/bpf/20251224005752.201911-1-ihor.solodrai@linux.dev/
+[3] https://github.com/llvm/llvm-project/issues/168060#issuecomment-3533552952
 
-Just use bpf_tracing_btf_ctx_access instead of defining another
-equivalent function?
+Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
 
-> +
-> +static int uring_bpf_ops_btf_struct_access(struct bpf_verifier_log *log,
-> +                                       const struct bpf_reg_state *reg,
-> +                                       int off, int size)
-> +{
-> +       const struct btf_type *t;
-> +
-> +       t =3D btf_type_by_id(reg->btf, reg->btf_id);
-> +       if (t !=3D uring_bpf_data_type) {
-> +               bpf_log(log, "only read is supported\n");
+---
 
-What does this log line mean?
+Successful BPF CI run: https://github.com/kernel-patches/bpf/actions/runs/20608321584
+---
+ scripts/gen-btf.sh                   |   2 +-
+ scripts/link-vmlinux.sh              |   2 +-
+ tools/bpf/resolve_btfids/main.c      | 117 +++++++++++++++++++++++++++
+ tools/testing/selftests/bpf/Makefile |   2 +-
+ 4 files changed, 120 insertions(+), 3 deletions(-)
 
-> +               return -EACCES;
-> +       }
-> +
-> +       if (off < offsetof(struct uring_bpf_data, pdu) ||
-> +                       off + size >=3D sizeof(struct uring_bpf_data))
+diff --git a/scripts/gen-btf.sh b/scripts/gen-btf.sh
+index 12244dbe097c..0aec86615416 100755
+--- a/scripts/gen-btf.sh
++++ b/scripts/gen-btf.sh
+@@ -123,7 +123,7 @@ embed_btf_data()
+ 	fi
+ 	local btf_ids="${ELF_FILE}.BTF_ids"
+ 	if [ -f "${btf_ids}" ]; then
+-		${OBJCOPY} --update-section .BTF_ids=${btf_ids} ${ELF_FILE}
++		${RESOLVE_BTFIDS} --patch_btfids ${btf_ids} ${ELF_FILE}
+ 	fi
+ }
+ 
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index e2207e612ac3..1915adf3249b 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -266,7 +266,7 @@ vmlinux_link "${VMLINUX}"
+ 
+ if is_enabled CONFIG_DEBUG_INFO_BTF; then
+ 	info OBJCOPY ${btfids_vmlinux}
+-	${OBJCOPY} --update-section .BTF_ids=${btfids_vmlinux} ${VMLINUX}
++	${RESOLVE_BTFIDS} --patch_btfids ${btfids_vmlinux} ${VMLINUX}
+ fi
+ 
+ mksysmap "${VMLINUX}" System.map
+diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
+index 2cbc252259be..df39982f51df 100644
+--- a/tools/bpf/resolve_btfids/main.c
++++ b/tools/bpf/resolve_btfids/main.c
+@@ -862,8 +862,119 @@ static inline int make_out_path(char *buf, u32 buf_sz, const char *in_path, cons
+ 	return 0;
+ }
+ 
++/*
++ * Patch the .BTF_ids section of an ELF file with data from provided file.
++ * Equivalent to: objcopy --update-section .BTF_ids=<btfids> <elf>
++ *
++ * 1. Find .BTF_ids section in the ELF
++ * 2. Verify that blob file size matches section size
++ * 3. Update section data buffer with blob data
++ * 4. Write the ELF file
++ */
++static int patch_btfids(const char *btfids_path, const char *elf_path)
++{
++	Elf_Scn *scn = NULL;
++	FILE *btfids_file;
++	size_t shdrstrndx;
++	int fd, err = -1;
++	Elf_Data *data;
++	struct stat st;
++	GElf_Shdr sh;
++	char *name;
++	Elf *elf;
++
++	elf_version(EV_CURRENT);
++
++	fd = open(elf_path, O_RDWR, 0666);
++	if (fd < 0) {
++		pr_err("FAILED to open %s: %s\n", elf_path, strerror(errno));
++		return -1;
++	}
++
++	elf = elf_begin(fd, ELF_C_RDWR_MMAP, NULL);
++	if (!elf) {
++		close(fd);
++		pr_err("FAILED cannot create ELF descriptor: %s\n", elf_errmsg(-1));
++		return -1;
++	}
++
++	elf_flagelf(elf, ELF_C_SET, ELF_F_LAYOUT);
++
++	if (elf_getshdrstrndx(elf, &shdrstrndx) != 0) {
++		pr_err("FAILED cannot get shdr str ndx\n");
++		goto out;
++	}
++
++	while ((scn = elf_nextscn(elf, scn)) != NULL) {
++
++		if (gelf_getshdr(scn, &sh) != &sh) {
++			pr_err("FAILED to get section header\n");
++			goto out;
++		}
++
++		name = elf_strptr(elf, shdrstrndx, sh.sh_name);
++		if (!name)
++			continue;
++
++		if (strcmp(name, BTF_IDS_SECTION) == 0)
++			break;
++	}
++
++	if (!scn) {
++		pr_err("FAILED: section %s not found in %s\n", BTF_IDS_SECTION, elf_path);
++		goto out;
++	}
++
++	data = elf_getdata(scn, NULL);
++	if (!data) {
++		pr_err("FAILED to get %s section data from %s\n", BTF_IDS_SECTION, elf_path);
++		goto out;
++	}
++
++	if (stat(btfids_path, &st) < 0) {
++		pr_err("FAILED to stat %s: %s\n", btfids_path, strerror(errno));
++		goto out;
++	}
++
++	if ((size_t)st.st_size != data->d_size) {
++		pr_err("FAILED: size mismatch - %s section in %s is %zu bytes, %s is %zu bytes\n",
++		       BTF_IDS_SECTION, elf_path, data->d_size, btfids_path, (size_t)st.st_size);
++		goto out;
++	}
++
++	btfids_file = fopen(btfids_path, "rb");
++	if (!btfids_file) {
++		pr_err("FAILED to open %s: %s\n", btfids_path, strerror(errno));
++		goto out;
++	}
++
++	pr_debug("Copying data from %s to %s section of %s (%zu bytes)\n",
++		 btfids_path, BTF_IDS_SECTION, elf_path, data->d_size);
++
++	if (fread(data->d_buf, data->d_size, 1, btfids_file) != 1) {
++		pr_err("FAILED to read %s\n", btfids_path);
++		fclose(btfids_file);
++		goto out;
++	}
++	fclose(btfids_file);
++
++	elf_flagdata(data, ELF_C_SET, ELF_F_DIRTY);
++	if (elf_update(elf, ELF_C_WRITE) < 0) {
++		pr_err("FAILED to update ELF file %s\n", elf_path);
++		goto out;
++	}
++
++	err = 0;
++out:
++	elf_end(elf);
++	close(fd);
++
++	return err;
++}
++
+ static const char * const resolve_btfids_usage[] = {
+ 	"resolve_btfids [<options>] <ELF object>",
++	"resolve_btfids --patch_btfids <.BTF_ids file> <ELF object>",
+ 	NULL
+ };
+ 
+@@ -880,6 +991,7 @@ int main(int argc, const char **argv)
+ 		.funcs    = RB_ROOT,
+ 		.sets     = RB_ROOT,
+ 	};
++	const char *btfids_path = NULL;
+ 	bool fatal_warnings = false;
+ 	char out_path[PATH_MAX];
+ 
+@@ -894,6 +1006,8 @@ int main(int argc, const char **argv)
+ 			    "turn warnings into errors"),
+ 		OPT_BOOLEAN(0, "distill_base", &obj.distill_base,
+ 			    "distill --btf_base and emit .BTF.base section data"),
++		OPT_STRING(0, "patch_btfids", &btfids_path, "file",
++			   "path to .BTF_ids section data blob to patch into ELF file"),
+ 		OPT_END()
+ 	};
+ 	int err = -1;
+@@ -905,6 +1019,9 @@ int main(int argc, const char **argv)
+ 
+ 	obj.path = argv[0];
+ 
++	if (btfids_path)
++		return patch_btfids(btfids_path, obj.path);
++
+ 	if (load_btf(&obj))
+ 		goto out;
+ 
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index f28a32b16ff0..9488d076c740 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -657,7 +657,7 @@ $(TRUNNER_TEST_OBJS): $(TRUNNER_OUTPUT)/%.test.o:			\
+ 	$$(if $$(TEST_NEEDS_BTFIDS),						\
+ 		$$(call msg,BTFIDS,$(TRUNNER_BINARY),$$@)			\
+ 		$(RESOLVE_BTFIDS) --btf $(TRUNNER_OUTPUT)/btf_data.bpf.o $$@;	\
+-		$(OBJCOPY) --update-section .BTF_ids=$$@.BTF_ids $$@)
++		$(RESOLVE_BTFIDS) --patch_btfids $$@.BTF_ids $$@)
+ 
+ $(TRUNNER_TEST_OBJS:.o=.d): $(TRUNNER_OUTPUT)/%.test.d:			\
+ 			    $(TRUNNER_TESTS_DIR)/%.c			\
+-- 
+2.52.0
 
-Should be > instead of >=3D? Otherwise the last byte of pdu isn't usable.
-
-> +               return -EACCES;
-> +
-> +       return NOT_INIT;
-> +}
-> +
-> +static const struct bpf_verifier_ops io_bpf_verifier_ops =3D {
-> +       .get_func_proto =3D bpf_base_func_proto,
-> +       .is_valid_access =3D uring_bpf_ops_is_valid_access,
-> +       .btf_struct_access =3D uring_bpf_ops_btf_struct_access,
-> +};
-> +
-> +static int uring_bpf_ops_init(struct btf *btf)
-> +{
-> +       s32 type_id;
-> +
-> +       type_id =3D btf_find_by_name_kind(btf, "uring_bpf_data", BTF_KIND=
-_STRUCT);
-> +       if (type_id < 0)
-> +               return -EINVAL;
-> +       uring_bpf_data_type =3D btf_type_by_id(btf, type_id);
-> +       return 0;
-> +}
-> +
-> +static int uring_bpf_ops_check_member(const struct btf_type *t,
-> +                                  const struct btf_member *member,
-> +                                  const struct bpf_prog *prog)
-> +{
-> +       return 0;
-> +}
-
-It looks like struct bpf_struct_ops's .check_member can be omitted if
-it always succeeds
-
-> +
-> +static int uring_bpf_ops_init_member(const struct btf_type *t,
-> +                                const struct btf_member *member,
-> +                                void *kdata, const void *udata)
-> +{
-> +       const struct uring_bpf_ops *uuring_bpf_ops;
-> +       struct uring_bpf_ops *kuring_bpf_ops;
-> +       u32 moff;
-> +
-> +       uuring_bpf_ops =3D (const struct uring_bpf_ops *)udata;
-> +       kuring_bpf_ops =3D (struct uring_bpf_ops *)kdata;
-
-Don't need to explicitly cast from (const) void *. That could allow
-these initializers to be combined with the variable declarations.
-
-> +
-> +       moff =3D __btf_member_bit_offset(t, member) / 8;
-> +
-> +       switch (moff) {
-> +       case offsetof(struct uring_bpf_ops, id):
-> +               /* For dev_id, this function has to copy it and return 1 =
-to
-
-What does "dev_id" refer to?
-
-> +                * indicate that the data has been handled by the struct_=
-ops
-> +                * type, or the verifier will reject the map if the value=
- of
-> +                * those fields is not zero.
-> +                */
-> +               kuring_bpf_ops->id =3D uuring_bpf_ops->id;
-> +               return 1;
-> +       }
-> +       return 0;
-> +}
-> +
-> +static int io_bpf_reg_unreg(struct uring_bpf_ops *ops, bool reg)
-> +{
-> +       struct io_ring_ctx *ctx;
-> +       int ret =3D 0;
-> +
-> +       guard(mutex)(&uring_bpf_ctx_lock);
-> +       list_for_each_entry(ctx, &uring_bpf_ctx_list, bpf_node)
-> +               mutex_lock(&ctx->uring_lock);
-
-Locking multiple io_ring_ctx's uring_locks is deadlock prone. See
-lock_two_rings() for example, which takes care to acquire multiple
-uring_locks in a consistent order. Would it be possible to lock one
-io_ring_ctx at a time and set some flag to indicate that
-srcu_read_lock() needs to be used?
-
-> +
-> +       if (reg) {
-> +               if (bpf_ops[ops->id].issue_fn)
-> +                       ret =3D -EBUSY;
-> +               else
-> +                       bpf_ops[ops->id] =3D *ops;
-> +       } else {
-> +               bpf_ops[ops->id] =3D (struct uring_bpf_ops) {0};
-
-Don't these need to use rcu_assign_pointer() to assign
-bpf_ops[ops->id].issue_fn since __io_uring_bpf_issue() may read it
-concurrently?
-
-> +       }
-> +
-> +       synchronize_srcu(&uring_bpf_srcu);
-> +
-> +       list_for_each_entry(ctx, &uring_bpf_ctx_list, bpf_node)
-> +               mutex_unlock(&ctx->uring_lock);
-
-It might be preferable to call synchronize_srcu() after releasing the
-uring_locks (and maybe uring_bpf_ctx_lock). That would minimize the
-latency injected into io_uring requests in case synchronize_srcu()
-blocks for a long time.
-
-> +
-> +       return ret;
-> +}
-> +
-> +static int io_bpf_reg(void *kdata, struct bpf_link *link)
-> +{
-> +       struct uring_bpf_ops *ops =3D kdata;
-> +
-> +       return io_bpf_reg_unreg(ops, true);
-> +}
-> +
-> +static void io_bpf_unreg(void *kdata, struct bpf_link *link)
-> +{
-> +       struct uring_bpf_ops *ops =3D kdata;
-> +
-> +       io_bpf_reg_unreg(ops, false);
-> +}
-> +
-> +static int io_bpf_prep_io(struct uring_bpf_data *data, const struct io_u=
-ring_sqe *sqe)
-> +{
-> +       return -EOPNOTSUPP;
-
-The return value for the stub functions doesn't matter, return 0 for simpli=
-city?
-
-Also, could the stub functions be renamed to more clearly indicate
-that they are only used for their signature and shouldn't be called
-directly?
-
-> +}
-> +
-> +static int io_bpf_issue_io(struct uring_bpf_data *data)
-> +{
-> +       return -ECANCELED;
-> +}
-> +
-> +static void io_bpf_fail_io(struct uring_bpf_data *data)
-> +{
-> +}
-> +
-> +static void io_bpf_cleanup_io(struct uring_bpf_data *data)
-> +{
-> +}
-> +
-> +static struct uring_bpf_ops __bpf_uring_bpf_ops =3D {
-> +       .prep_fn        =3D io_bpf_prep_io,
-> +       .issue_fn       =3D io_bpf_issue_io,
-> +       .fail_fn        =3D io_bpf_fail_io,
-> +       .cleanup_fn     =3D io_bpf_cleanup_io,
-> +};
-> +
-> +static struct bpf_struct_ops bpf_uring_bpf_ops =3D {
-
-const?
-
-> +       .verifier_ops =3D &io_bpf_verifier_ops,
-> +       .init =3D uring_bpf_ops_init,
-> +       .check_member =3D uring_bpf_ops_check_member,
-> +       .init_member =3D uring_bpf_ops_init_member,
-> +       .reg =3D io_bpf_reg,
-> +       .unreg =3D io_bpf_unreg,
-> +       .name =3D "uring_bpf_ops",
-> +       . =3D &__bpf_uring_bpf_ops,
-> +       .owner =3D THIS_MODULE,
-> +};
-> +
-> +__bpf_kfunc_start_defs();
-> +__bpf_kfunc void uring_bpf_set_result(struct uring_bpf_data *data, int r=
-es)
-> +{
-> +       struct io_kiocb *req =3D cmd_to_io_kiocb(data);
-> +
-> +       if (res < 0)
-> +               req_set_fail(req);
-> +       io_req_set_res(req, res, 0);
-> +}
-> +
-> +/* io_kiocb layout might be changed */
-> +__bpf_kfunc struct io_kiocb *uring_bpf_data_to_req(struct uring_bpf_data=
- *data)
-
-How would the returned struct io_kiocb * be used in an io_uring BPF program=
-?
-
-> +{
-> +       return cmd_to_io_kiocb(data);
-> +}
-> +__bpf_kfunc_end_defs();
-> +
-> +BTF_KFUNCS_START(uring_bpf_kfuncs)
-> +BTF_ID_FLAGS(func, uring_bpf_set_result)
-> +BTF_ID_FLAGS(func, uring_bpf_data_to_req)
-> +BTF_KFUNCS_END(uring_bpf_kfuncs)
-> +
-> +static const struct btf_kfunc_id_set uring_kfunc_set =3D {
-> +       .owner =3D THIS_MODULE,
-> +       .set   =3D &uring_bpf_kfuncs,
-> +};
-> +
-> +int __init io_bpf_init(void)
-> +{
-> +       int err;
-> +
-> +       err =3D register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS, &urin=
-g_kfunc_set);
-> +       if (err) {
-> +               pr_warn("error while setting UBLK BPF tracing kfuncs: %d"=
-, err);
-> +               return err;
-> +       }
-> +
-> +       err =3D register_bpf_struct_ops(&bpf_uring_bpf_ops, uring_bpf_ops=
-);
-> +       if (err)
-> +               pr_warn("error while registering io_uring bpf struct ops:=
- %d", err);
-
-Is there a reason this error isn't fatal?
-
-> +
-> +       return 0;
-> +}
-> diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
-> index 38f03f6c28cb..d2517e09407a 100644
-> --- a/io_uring/io_uring.c
-> +++ b/io_uring/io_uring.c
-> @@ -3851,6 +3851,7 @@ static int __init io_uring_init(void)
->         register_sysctl_init("kernel", kernel_io_uring_disabled_table);
->  #endif
->
-> +       io_bpf_init();
-
-It doesn't look like there are any particular initialization ordering
-requirements with the rest of io_uring_init(). How about making a
-separate __initcall() in bpf.c so io_bpf_init() doesn't need to be
-visible outside that file?
-
->         return 0;
->  };
->  __initcall(io_uring_init);
-> diff --git a/io_uring/io_uring.h b/io_uring/io_uring.h
-> index 4baf21a9e1ee..3f19bb079bcc 100644
-> --- a/io_uring/io_uring.h
-> +++ b/io_uring/io_uring.h
-> @@ -34,7 +34,8 @@
->                         IORING_FEAT_RECVSEND_BUNDLE |\
->                         IORING_FEAT_MIN_TIMEOUT |\
->                         IORING_FEAT_RW_ATTR |\
-> -                       IORING_FEAT_NO_IOWAIT)
-> +                       IORING_FEAT_NO_IOWAIT |\
-> +                       IORING_FEAT_BPF);
-
-Unintentional semicolon?
-
->
->  #define IORING_SETUP_FLAGS (IORING_SETUP_IOPOLL |\
->                         IORING_SETUP_SQPOLL |\
-> diff --git a/io_uring/uring_bpf.h b/io_uring/uring_bpf.h
-> index b6cda6df99b1..c76eba887d22 100644
-> --- a/io_uring/uring_bpf.h
-> +++ b/io_uring/uring_bpf.h
-> @@ -2,6 +2,29 @@
->  #ifndef IOU_BPF_H
->  #define IOU_BPF_H
->
-> +struct uring_bpf_data {
-> +       /* readonly for bpf prog */
-
-It doesn't look like uring_bpf_ops_btf_struct_access() actually allows
-these fields to be accessed?
-
-> +       struct file     *file;
-> +       u32             opf;
-> +
-> +       /* writeable for bpf prog */
-> +       u8              pdu[64 - sizeof(struct file *) - sizeof(u32)];
-> +};
-> +
-> +typedef int (*uring_io_prep_t)(struct uring_bpf_data *data,
-> +                              const struct io_uring_sqe *sqe);
-> +typedef int (*uring_io_issue_t)(struct uring_bpf_data *data);
-> +typedef void (*uring_io_fail_t)(struct uring_bpf_data *data);
-> +typedef void (*uring_io_cleanup_t)(struct uring_bpf_data *data);
-
-"uring_io" seems like a strange name for function typedefs specific to
-io_uring BPF. How about renaming these to "uring_bpf_..." instead?
-
-Best,
-Caleb
-
-
-> +
-> +struct uring_bpf_ops {
-> +       unsigned short          id;
-> +       uring_io_prep_t         prep_fn;
-> +       uring_io_issue_t        issue_fn;
-> +       uring_io_fail_t         fail_fn;
-> +       uring_io_cleanup_t      cleanup_fn;
-> +};
-> +
->  #ifdef CONFIG_IO_URING_BPF
->  int io_uring_bpf_issue(struct io_kiocb *req, unsigned int issue_flags);
->  int io_uring_bpf_prep(struct io_kiocb *req, const struct io_uring_sqe *s=
-qe);
-> @@ -11,6 +34,8 @@ void io_uring_bpf_cleanup(struct io_kiocb *req);
->  void uring_bpf_add_ctx(struct io_ring_ctx *ctx);
->  void uring_bpf_del_ctx(struct io_ring_ctx *ctx);
->
-> +int __init io_bpf_init(void);
-> +
->  #else
->  static inline int io_uring_bpf_issue(struct io_kiocb *req, unsigned int =
-issue_flags)
->  {
-> @@ -33,5 +58,10 @@ static inline void uring_bpf_add_ctx(struct io_ring_ct=
-x *ctx)
->  static inline void uring_bpf_del_ctx(struct io_ring_ctx *ctx)
->  {
->  }
-> +
-> +static inline int __init io_bpf_init(void)
-> +{
-> +       return 0;
-> +}
->  #endif
->  #endif
-> --
-> 2.47.0
->
 
