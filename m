@@ -1,167 +1,118 @@
-Return-Path: <bpf+bounces-77548-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77549-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id C93FBCEAF3F
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 01:08:22 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BBF3CEAF55
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 01:26:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B1DC0300A36A
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 00:08:21 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7B66530245D5
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 00:26:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92806224FA;
-	Wed, 31 Dec 2025 00:08:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30C6A81ACA;
+	Wed, 31 Dec 2025 00:26:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GnOfjg64"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZESjWDdV"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15AB14A23
-	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 00:08:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1EFA139D;
+	Wed, 31 Dec 2025 00:26:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767139700; cv=none; b=NJ69OdKhXDfQ/g2zihwGVvziv5hfXu7MQrVn0OOf6NUzP095G8fmlIBiuudVWIt1u3mOzKM/hNltuUWYOk7OO8vqtE4XZZh0rIueNPGuiu2WDtzKANHfbZR2+BJB7coygN9M1pYSDIMUIfv9F0QY5+E2k2G3dVeF7zufpSDKeSY=
+	t=1767140770; cv=none; b=Y08+T9feR6HvfFf1s8QfExfRUbHEXbZFR5c4ChdoPxnETVYm/otqN9rNPWYTC+/0LpIrgweCxp/VFNu3QiezT4dkXcmZZCNJXuD+Rm0rRLNDaxpuGIowTIyQQRvWZa8++NG4BsHnPjGw9CmLLfglMBr0tTCen9ZPAsbld/baonw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767139700; c=relaxed/simple;
-	bh=h6W6KcWto0OsziEiwx0e5O7SJqt6L1hY7LfTx05DkkI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=usWPA5Ef1f24L6tlcym4Lxga2uNYagzHMQPXYre3CrsYOPWdshGTuxZan+WwXXLC6g2KFwmzoYH1x0aTwVYRehylNmDKZuaAGmt3IT9JkcQXEIM46wgCbVlSc4lEUkaCDvtge0cG67DEMHpKMJei98OUcno6DdfU38Zc3QQZgZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GnOfjg64; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AD17C116D0
-	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 00:08:19 +0000 (UTC)
+	s=arc-20240116; t=1767140770; c=relaxed/simple;
+	bh=PFwLlogIu4R2ajnsWqW1SZ/tzhd5KMKkpBQoje0WF2M=;
+	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
+	 Subject:From:To:Cc:Date; b=iH6ZVkG8By9uQMa+/d92CkxXrUjut08qmWE+hZvpTRQ/im/ICt2lrB9f04woab9G1HakmLc88/4tmpuXyKkNW5WCppItthaCSviIK0bi4ChDHsPCF7nqXFsaowGYQnajbghA+aj9mIQ3JIgpsXQoZZMrcvfkDKfeEyRc1R3PN8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZESjWDdV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8FBDC4CEFB;
+	Wed, 31 Dec 2025 00:26:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767139699;
-	bh=h6W6KcWto0OsziEiwx0e5O7SJqt6L1hY7LfTx05DkkI=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=GnOfjg64w+gXFilD+thFgs40kjmkVkIxwYoCMivN7NgCx5QA34TkBYuPg5bZAFVU8
-	 blPqVtes2kPmWRkB5Ra9BD/GBq1bYvurRUze6TN5WLEQOPcK1lsV8uOlPnVIZcTiGB
-	 rfI4yMY6yTwtybQrKScPKip9kB29p1S4OZh14ktx9QfafzXppoXd8HRcIo09UfABGg
-	 Bi3eF96Pbetzp2QQQ725+hRyLRGkqtnR5NuZKGlEpoTmsTf/MoI8r4sBqueG2UBDXA
-	 k3m9WmJSdZ4Hdqe6JncNVec9RbtsT6I2P9nNHOFzJ9JpGJ+s2nzeM242CZ26uj0aqn
-	 hQLEeTptZTCbA==
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-b79e7112398so1837517066b.3
-        for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 16:08:19 -0800 (PST)
-X-Gm-Message-State: AOJu0Yx7CZoixvjK3UOnA6WWDJu4qwWlVLZbpioK0+3B9V8R30DR4RMQ
-	ujmmsd36nNhDXfFP9Wnu9JmXkxaDx6GwJUG3qu3E6AEvtky4bNHJeq/6c4gl8/WMVvaO3S/SoRl
-	TzY7CCjnXby9HjKt+tuF/XClV1IZjmZI=
-X-Google-Smtp-Source: AGHT+IFHigZXpb/RvWw587CL+a61dnL7KIgvpuUQ31rpU+HiDaHgnKfWDdgNLJRsPrCHHiV6L1cxovZl8wLKe0tAfzY=
-X-Received: by 2002:a17:907:b18:b0:b83:95c8:15d0 with SMTP id
- a640c23a62f3a-b8395c818e1mr317021466b.52.1767139697891; Tue, 30 Dec 2025
- 16:08:17 -0800 (PST)
+	s=k20201202; t=1767140770;
+	bh=PFwLlogIu4R2ajnsWqW1SZ/tzhd5KMKkpBQoje0WF2M=;
+	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
+	b=ZESjWDdVRQhPogntnsXAhXXaF2dNs7ViIPrZjKMTj37+Ls9Kawe2+CmbxTah9m8aJ
+	 ReDbTcVtVeqmYtzPBANMxWnnKNseC82L7c7lZydPMq1gMdVdS7lNdpYjF/c13vVRud
+	 Dgr+917WXkxu5EI0daZ63j72fqJAbhpuF89XfhbdNTO/+m97soK1HPVRNygS5rrYpl
+	 nnLmBm/iGijFpolRwfv53r4Jiyr6xtNr7toTTJFyzEGmmndfobXfyf4VxkV9FAcLDx
+	 NL7mCx7LH8nY9QfLZ8Xi9ZWog53ddDHiodFfAcnv6sebaVA9mKTMyl2eI73N0j4y2z
+	 Ij+lxjdU7WmKQ==
+Content-Type: multipart/mixed; boundary="===============3641706620742822020=="
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251224192448.3176531-1-puranjay@kernel.org> <20251224192448.3176531-2-puranjay@kernel.org>
- <4cb72b4808c333156552374c5f3912260097af43.camel@gmail.com>
-In-Reply-To: <4cb72b4808c333156552374c5f3912260097af43.camel@gmail.com>
-From: Puranjay Mohan <puranjay@kernel.org>
-Date: Wed, 31 Dec 2025 00:08:06 +0000
-X-Gmail-Original-Message-ID: <CANk7y0g6s5C-mLTPUpGyvJC=ZA=v9WawYzbeVgocbsf4dcXJHw@mail.gmail.com>
-X-Gm-Features: AQt7F2r1i19UHY8VZdDv4VGx3r3CXOwaZWUZAkPUw7EqmHE5iREEJ8jcJ5hluzU
-Message-ID: <CANk7y0g6s5C-mLTPUpGyvJC=ZA=v9WawYzbeVgocbsf4dcXJHw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/7] bpf: Make KF_TRUSTED_ARGS the default for
- all kfuncs
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-Id: <bba828ccd8d2ef3871375809d56c8d66c161bc453f03df80090dc03cf31f50aa@mail.kernel.org>
+In-Reply-To: <20251231000702.1625600-1-ihor.solodrai@linux.dev>
+References: <20251231000702.1625600-1-ihor.solodrai@linux.dev>
+Subject: Re: [PATCH bpf-next v1] resolve_btfids: Implement --patch_btfids
+From: bot+bpf-ci@kernel.org
+To: ihor.solodrai@linux.dev,ast@kernel.org,daniel@iogearbox.net,andrii@kernel.org,martin.lau@linux.dev,eddyz87@gmail.com,nathan@kernel.org,nsc@kernel.org
+Cc: bpf@vger.kernel.org,linux-kbuild@vger.kernel.org,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
+Date: Wed, 31 Dec 2025 00:26:09 +0000 (UTC)
 
-On Tue, Dec 30, 2025 at 11:49=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.co=
-m> wrote:
->
-> On Wed, 2025-12-24 at 11:24 -0800, Puranjay Mohan wrote:
-> > Change the verifier to make trusted args the default requirement for
-> > all kfuncs by removing is_kfunc_trusted_args() assuming it be to always
-> > return true.
-> >
-> > This works because:
-> > 1. Context pointers (xdp_md, __sk_buff, etc.) are handled through their
-> >    own KF_ARG_PTR_TO_CTX case label and bypass the trusted check
-> > 2. Struct_ops callback arguments are already marked as PTR_TRUSTED duri=
-ng
-> >    initialization and pass is_trusted_reg()
-> > 3. KF_RCU kfuncs are handled separately via is_kfunc_rcu() checks at
-> >    call sites (always checked with || alongside is_kfunc_trusted_args)
-> >
-> > This simple change makes all kfuncs require trusted args by default
-> > while maintaining correct behavior for all existing special cases.
->
-> While I like the idea behind this patch, I don't think this is 100%
-> backwards compatible change. Not unless you check definition of every
-> kfunc in the kernel and add appropriate __nullable annotations,
-> like you do for some in patch #2.
+--===============3641706620742822020==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 
-Yes, I tried to add __nullable to places where I could find using
-breaking selftests,
-and if a kfunc expects some parameter to be NULL then we will have to
-add it to every place.
+> diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
+> index 2cbc252259be..1269efa06853 100644
+> --- a/tools/bpf/resolve_btfids/main.c
+> +++ b/tools/bpf/resolve_btfids/main.c
 
->
-> For example, consider the following kfunc from drivers/hid/bpf/hid_bpf_di=
-spatch.c:
->
->   __bpf_kfunc int
->   hid_bpf_hw_request(struct hid_bpf_ctx *ctx, __u8 *buf, size_t buf__sz,
->                      enum hid_report_type rtype, enum hid_class_request r=
-eqtype)
->           ... __hid_bpf_hw_check_params(ctx, buf, &size, rtype); ...
->
->
->   static int
->   __hid_bpf_hw_check_params(struct hid_bpf_ctx *ctx, __u8 *buf, size_t *b=
-uf__sz,
->                             enum hid_report_type rtype)
->           ...
->           if (... !buf)
->                   return -EINVAL;
->
->   BTF_ID_FLAGS(func, hid_bpf_hw_request, KF_SLEEPABLE)
->
-> Currently, it is possible to pass 'buf' parameter as NULL.
-> In this particular case it would lead to an error code returned from
-> the function, but is it the case for all kfuncs in the kernel?
-> For some kfuncs NULL parameter might be expected as a part of a
-> non-error scenario.
+[ ... ]
 
-Yes, if the kfunc expects a parameter to be NULL for both error and
-valid cases, it should mark the parameter as __nullable and then the
-kfunc needs to take care of handling the NULL value, and the verifier
-will allow it.
+> +static int patch_btfids(const char *btfids_path, const char *elf_path)
+> +{
+> +	Elf_Scn *scn = NULL;
+> +	FILE *btfids_file;
+> +	size_t shdrstrndx;
+> +	int fd, err = -1;
+> +	Elf_Data *data;
+> +	struct stat st;
+> +	GElf_Shdr sh;
+> +	char *name;
+> +	Elf *elf;
+> +
+> +	elf_version(EV_CURRENT);
+> +
+> +	fd = open(elf_path, O_RDWR, 0666);
+> +	if (fd < 0) {
+> +		pr_err("FAILED to open %s: %s\n", elf_path, strerror(errno));
+> +		return -1;
+> +	}
+> +
+> +	elf = elf_begin(fd, ELF_C_RDWR_MMAP, NULL);
+> +	if (!elf) {
+> +		close(fd);
+> +		pr_err("FAILED cannot create ELF descriptor: %s\n", elf_errmsg(-1));
+> +		return -1;
+> +	}
 
-> Also, there is a question about kfuncs declared in out of tree modules.
->
-> So, I think there are two questions to be answered:
-> - a review of all kfuncs in the kernel checking if there are
->   sufficient __nullable annotations;
-> - are we ready to potentially break BPF programs working with kfuncs
->   defined in out-of-tree modules?
->
-> Wdyt?
+[ ... ]
+
+> +	err = 0;
+> +out:
+> +	elf_end(elf);
+> +	return err;
+> +}
+
+Should the file descriptor fd be closed here? Looking at elf_collect() and its
+cleanup in main(), the pattern is to call elf_end() and then close(fd)
+separately. Without close(fd), error paths that reach 'goto out' after
+successful open() and elf_begin() will leak the file descriptor.
 
 
-As Alexei said, the out-of-tree modules are not relevant to the
-upstream kernel. I wish to do a full review of all kfuncs and make
-sure either they are tagged with correct __nullable, __opt annotation
-or fixed to make sure they are doing the right thing. But currently I
-just made sure all selftests pass, some of the kfuncs might not have
-self tests and would need manual analysis and I will have to do that.
+---
+AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
 
-Some kfuncs will have breaking changes, I am not sure how to work
-around that case, for example css_rstat_updated() could be
-successfully called from fentry programs like the selftest fixed in
-Patch 7, it worked because css_rstat_updated() doesn't mark the
-parameters with KF_TRUSTED_ARGS, but now KF_TRUSTED_ARGS is the
-default so this kfunc can't be called from fentry programs as fentry's
-parameters are not marked as trusted.
+CI run summary: https://github.com/kernel-patches/bpf/actions/runs/20608784032
 
-
-Looking at the code of css_rstat_updated() it seems that it assumes
-the parameters to be trusted and therefore not allowing it to be
-called from fentry would be the right thing to do, but it could break
-perfectly working BPF programs.
+--===============3641706620742822020==--
 
