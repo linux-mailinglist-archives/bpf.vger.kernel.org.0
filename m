@@ -1,43 +1,44 @@
-Return-Path: <bpf+bounces-77600-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77601-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43F5FCEC54B
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 18:11:35 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94E78CEC54E
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 18:11:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 38F0430019EC
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 17:11:32 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 3194C300A1C7
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 17:11:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0260A29D26E;
-	Wed, 31 Dec 2025 17:11:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F0D229B78D;
+	Wed, 31 Dec 2025 17:11:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FIlTGmMX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gNLs+4gw"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34EBA2877D6
-	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 17:11:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2731329AAE3
+	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 17:11:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767201090; cv=none; b=P58Vr+WsbL50spz6OpONEBfYKbZdWAWAOKmLvbrszWl9fmR8SuBjsKE/J3E+yMIToCg0HynC7HoLqJCNpm+WfWuyOpPWbGVR8mR/chv+g1HFe4sdYjkVw6ULa8vCrjopXP7WMqcrrj8cOUvEyRUexw/ytVvNJQzvgRZkfa1GLws=
+	t=1767201094; cv=none; b=RXhx4hmRp7gx/Ll7Nr1VhPt5vxwr+TULSc9u+03d85VKQBNzBaP+uSbfUbrlb211+wgINUDBy6ubvygTaqMlbvu2yTaEJpmGccNmqm44Y7MmHQK0Yghpn+PbBfKq20umRgbmxaKoCBK/UPbAZvdDJP94/nbk9y0fQVKtiQJsSfk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767201090; c=relaxed/simple;
-	bh=Ry///CZ0UmuFzVTygGJpRN/+kWGv/LiS2V5y3UZ8i9U=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=exhxrrZKjiSvkBPAKuCgeL+ASAowQLuiFWkbOGv9HW/KEwL+RNHatYO5OBiXbGpmvU/1y7NHxUMBzILAGrNGRGk0oaFcd/Ha2tm/C+BePHkN30a2SmwTiUYEa+3JLlffDnTN0RIGz/WfmaD4Ej7cgteTV+OE/mOOekHYpRYH1Wo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FIlTGmMX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83280C113D0;
-	Wed, 31 Dec 2025 17:11:29 +0000 (UTC)
+	s=arc-20240116; t=1767201094; c=relaxed/simple;
+	bh=AxnkvcLNVJ0+7PpZeaBgMmzleQaUcdYDaE+fSZgYJHE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=N3ALYVwPhB/+2iA4NETN98svw2zvPnzfcBy5Qn+h92So7AvowLI4NJjw4+lU17176V0ji0R9XfPu5h3Npt+Fi9kdj0wATfVx/9NqQmd/py6NEjSRAPsQIm4jEgx/LxskGMfWEXt+nZnnMEI9nBm+kRCkLuwB26+jk4mcwGQ6lCo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gNLs+4gw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61E9DC113D0;
+	Wed, 31 Dec 2025 17:11:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767201089;
-	bh=Ry///CZ0UmuFzVTygGJpRN/+kWGv/LiS2V5y3UZ8i9U=;
-	h=From:To:Cc:Subject:Date:From;
-	b=FIlTGmMXayF+UoIS4UscnpA7k6sav5ldYnMlQZbGZa5n8Gzu2cjdG4AvyjWb4gL82
-	 wQjKoqM/5/B+5h+xN63w6nw70N+PeKOgNlV6WVpAgLGoLsC6EvhLdPOmVwtwAkw7AQ
-	 RByKOwZvHwrgzi5wyM/jduX26noTOOSGYmRE5KgMf2KV2AcD1vD+49jmmOQovUqZsN
-	 e+2xt8dKujk1n72ZeAxtjl5ytcM89HBCu+Y+ESw5l3+pHV/W1NsBtl2kBole92TRuQ
-	 NdDZby+pNGMnHhHvB5bpD+8XEeuPeGCNf2L6jSbNxNtOQk21imbi26l2rcvA6iZ6H7
-	 UpYAtE4tFK3Ig==
+	s=k20201202; t=1767201093;
+	bh=AxnkvcLNVJ0+7PpZeaBgMmzleQaUcdYDaE+fSZgYJHE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=gNLs+4gwsxmaNeISXy8L/so+NsOd7wtHei21M+bRjEp1qce8NYP/xiVSm0L9M++0W
+	 3PGri3ClpMv9qaV3xSXAvF1GKkIBUh+XOio6W6aSJbFTj8xh6bElMJk/cSRdk2Ez8/
+	 iVYza/XgOMVOffG7WZSkRqmRiQNtNBfYIvt8pIy6lEpiqvWjMRljcbQe/tidPVxBH+
+	 GjLUNt7VcSjPaTMMLRqN1tArrx65rQkji0gs1NPtCUBa90DnrmedA3vbBwsM6+WyU9
+	 FBDZv6QWquYNgJTyoB3MsrvIdevZ8HRh+bLeLbYO+MAfGC7RJA4DcfYR5+6FfpzcX9
+	 Z+2OcoOdH3CIg==
 From: Puranjay Mohan <puranjay@kernel.org>
 To: bpf@vger.kernel.org
 Cc: Puranjay Mohan <puranjay@kernel.org>,
@@ -49,10 +50,12 @@ Cc: Puranjay Mohan <puranjay@kernel.org>,
 	Eduard Zingerman <eddyz87@gmail.com>,
 	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next v2 0/9] bpf: Make KF_TRUSTED_ARGS default
-Date: Wed, 31 Dec 2025 09:08:46 -0800
-Message-ID: <20251231171118.1174007-1-puranjay@kernel.org>
+Subject: [PATCH bpf-next v2 1/9] bpf: Make KF_TRUSTED_ARGS the default for all kfuncs
+Date: Wed, 31 Dec 2025 09:08:47 -0800
+Message-ID: <20251231171118.1174007-2-puranjay@kernel.org>
 X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20251231171118.1174007-1-puranjay@kernel.org>
+References: <20251231171118.1174007-1-puranjay@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -61,100 +64,127 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-v1: https://lore.kernel.org/all/20251224192448.3176531-1-puranjay@kernel.org/
-Changes in v1->v2:
-- Update kfunc_dynptr_param selftest to use a real pointer that is not
-  ptr_to_stack and not CONST_PTR_TO_DYNPTR rather than casting 1
-  (Alexei)
-- Thoroughly review all kfuncs in the to find regressions or missing
-  annotations. (Eduard)
-- Fix kfuncs found from the above step.
+Change the verifier to make trusted args the default requirement for
+all kfuncs by removing is_kfunc_trusted_args() assuming it be to always
+return true.
 
-This series makes trusted arguments the default requirement for all BPF
-kfuncs, inverting the current opt-in model. Instead of requiring
-explicit KF_TRUSTED_ARGS flags, kfuncs now require trusted arguments by
-default and must explicitly opt-out using __nullable/__opt annotations
-or the KF_RCU flag.
+This works because:
+1. Context pointers (xdp_md, __sk_buff, etc.) are handled through their
+   own KF_ARG_PTR_TO_CTX case label and bypass the trusted check
+2. Struct_ops callback arguments are already marked as PTR_TRUSTED during
+   initialization and pass is_trusted_reg()
+3. KF_RCU kfuncs are handled separately via is_kfunc_rcu() checks at
+   call sites (always checked with || alongside is_kfunc_trusted_args)
 
-This improves security and type safety by preventing BPF programs from
-passing untrusted or NULL pointers to kernel functions at verification
-time, while maintaining flexibility for the small number of kfuncs that
-legitimately need to accept NULL or RCU pointers.
+This simple change makes all kfuncs require trusted args by default
+while maintaining correct behavior for all existing special cases.
 
-MOTIVATION
+Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+---
+ Documentation/bpf/kfuncs.rst | 35 +++++++++++++++++------------------
+ kernel/bpf/verifier.c        | 14 +++-----------
+ 2 files changed, 20 insertions(+), 29 deletions(-)
 
-The current opt-in model is error-prone and inconsistent. Most kfuncs already
-require trusted pointers from sources like KF_ACQUIRE, struct_ops callbacks, or
-tracepoints. Making trusted arguments the default:
-
-- Prevents NULL pointer dereferences at verification time
-- Reduces defensive NULL checks in kernel code
-- Provides better error messages for invalid BPF programs
-- Aligns with existing patterns (context pointers, struct_ops already trusted)
-
-IMPACT ANALYSIS
-
-Comprehensive analysis of all 304+ kfuncs across 37 kernel files found:
-- Most kfuncs (299/304) are already safe and require no changes
-- Only 4 kfuncs required fixes (all included in this series)
-- 0 regressions found in independent verification
-
-TECHNICAL DETAILS
-
-The verifier now validates kfunc arguments in this order:
-1. NULL check (runs first): Rejects NULL unless parameter has __nullable/__opt
-2. Trusted check: Rejects untrusted pointers unless kfunc has KF_RCU
-
-Special cases that bypass trusted checking:
-- Context pointers (xdp_md, __sk_buff): Handled via KF_ARG_PTR_TO_CTX
-- Struct_ops callbacks: Pre-marked as PTR_TRUSTED during initialization
-- KF_RCU kfuncs: Have separate validation path for RCU pointers
-
-BACKWARD COMPATIBILITY
-
-This affects BPF program verification, not runtime:
-- Valid programs passing trusted pointers: Continue to work
-- Programs with bugs: May now fail verification (preventing runtime crashes)
-
-Puranjay Mohan (9):
-  bpf: Make KF_TRUSTED_ARGS the default for all kfuncs
-  bpf: net: netfilter: Mark kfuncs accurately
-  bpf: Remove redundant KF_TRUSTED_ARGS flag from all kfuncs
-  selftests: bpf: Update kfunc_param_nullable test for new error message
-  selftests: bpf: Update failure message for rbtree_fail
-  selftests: bpf: fix test_kfunc_dynptr_param
-  selftests: bpf: fix cgroup_hierarchical_stats
-  bpf: xfrm: drop dead NULL check in bpf_xdp_get_xfrm_state()
-  HID: bpf: drop dead NULL checks in kfuncs
-
- Documentation/bpf/kfuncs.rst                  | 35 +++++++-------
- drivers/hid/bpf/hid_bpf_dispatch.c            |  5 +-
- fs/bpf_fs_kfuncs.c                            | 13 +++---
- fs/verity/measure.c                           |  2 +-
- include/linux/btf.h                           |  3 +-
- kernel/bpf/arena.c                            |  6 +--
- kernel/bpf/cpumask.c                          |  2 +-
- kernel/bpf/helpers.c                          | 20 ++++----
- kernel/bpf/map_iter.c                         |  2 +-
- kernel/bpf/verifier.c                         | 14 ++----
- kernel/sched/ext.c                            |  8 ++--
- mm/bpf_memcontrol.c                           | 10 ++--
- net/core/filter.c                             | 10 ++--
- net/core/xdp.c                                |  2 +-
- net/netfilter/nf_conntrack_bpf.c              | 46 ++++++++++---------
- net/netfilter/nf_flow_table_bpf.c             |  2 +-
- net/netfilter/nf_nat_bpf.c                    |  2 +-
- net/sched/bpf_qdisc.c                         | 12 ++---
- net/xfrm/xfrm_state_bpf.c                     |  2 +-
- .../bpf/progs/cgroup_hierarchical_stats.c     |  6 +--
- .../testing/selftests/bpf/progs/rbtree_fail.c |  2 +-
- .../bpf/progs/test_kfunc_dynptr_param.c       |  5 +-
- .../bpf/progs/test_kfunc_param_nullable.c     |  2 +-
- .../selftests/bpf/test_kmods/bpf_testmod.c    | 20 ++++----
- 24 files changed, 109 insertions(+), 122 deletions(-)
-
-
-base-commit: ccaa6d2c9635a8db06a494d67ef123b56b967a78
+diff --git a/Documentation/bpf/kfuncs.rst b/Documentation/bpf/kfuncs.rst
+index e38941370b90..22b5a970078c 100644
+--- a/Documentation/bpf/kfuncs.rst
++++ b/Documentation/bpf/kfuncs.rst
+@@ -241,25 +241,23 @@ both are orthogonal to each other.
+ The KF_RELEASE flag is used to indicate that the kfunc releases the pointer
+ passed in to it. There can be only one referenced pointer that can be passed
+ in. All copies of the pointer being released are invalidated as a result of
+-invoking kfunc with this flag. KF_RELEASE kfuncs automatically receive the
+-protection afforded by the KF_TRUSTED_ARGS flag described below.
++invoking kfunc with this flag.
+ 
+-2.4.4 KF_TRUSTED_ARGS flag
+---------------------------
++2.4.4 KF_TRUSTED_ARGS (default behavior)
++-----------------------------------------
+ 
+-The KF_TRUSTED_ARGS flag is used for kfuncs taking pointer arguments. It
+-indicates that the all pointer arguments are valid, and that all pointers to
+-BTF objects have been passed in their unmodified form (that is, at a zero
+-offset, and without having been obtained from walking another pointer, with one
+-exception described below).
++All kfuncs now require trusted arguments by default. This means that all
++pointer arguments must be valid, and all pointers to BTF objects must be
++passed in their unmodified form (at a zero offset, and without having been
++obtained from walking another pointer, with exceptions described below).
+ 
+-There are two types of pointers to kernel objects which are considered "valid":
++There are two types of pointers to kernel objects which are considered "trusted":
+ 
+ 1. Pointers which are passed as tracepoint or struct_ops callback arguments.
+ 2. Pointers which were returned from a KF_ACQUIRE kfunc.
+ 
+ Pointers to non-BTF objects (e.g. scalar pointers) may also be passed to
+-KF_TRUSTED_ARGS kfuncs, and may have a non-zero offset.
++kfuncs, and may have a non-zero offset.
+ 
+ The definition of "valid" pointers is subject to change at any time, and has
+ absolutely no ABI stability guarantees.
+@@ -327,13 +325,14 @@ added later.
+ 2.4.7 KF_RCU flag
+ -----------------
+ 
+-The KF_RCU flag is a weaker version of KF_TRUSTED_ARGS. The kfuncs marked with
+-KF_RCU expect either PTR_TRUSTED or MEM_RCU arguments. The verifier guarantees
+-that the objects are valid and there is no use-after-free. The pointers are not
+-NULL, but the object's refcount could have reached zero. The kfuncs need to
+-consider doing refcnt != 0 check, especially when returning a KF_ACQUIRE
+-pointer. Note as well that a KF_ACQUIRE kfunc that is KF_RCU should very likely
+-also be KF_RET_NULL.
++The KF_RCU flag allows kfuncs to opt out of the default trusted args
++requirement and accept RCU pointers with weaker guarantees. The kfuncs marked
++with KF_RCU expect either PTR_TRUSTED or MEM_RCU arguments. The verifier
++guarantees that the objects are valid and there is no use-after-free. The
++pointers are not NULL, but the object's refcount could have reached zero. The
++kfuncs need to consider doing refcnt != 0 check, especially when returning a
++KF_ACQUIRE pointer. Note as well that a KF_ACQUIRE kfunc that is KF_RCU should
++very likely also be KF_RET_NULL.
+ 
+ 2.4.8 KF_RCU_PROTECTED flag
+ ---------------------------
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 0baae7828af2..a31eace4a67c 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -12040,11 +12040,6 @@ static bool is_kfunc_release(struct bpf_kfunc_call_arg_meta *meta)
+ 	return meta->kfunc_flags & KF_RELEASE;
+ }
+ 
+-static bool is_kfunc_trusted_args(struct bpf_kfunc_call_arg_meta *meta)
+-{
+-	return (meta->kfunc_flags & KF_TRUSTED_ARGS) || is_kfunc_release(meta);
+-}
+-
+ static bool is_kfunc_sleepable(struct bpf_kfunc_call_arg_meta *meta)
+ {
+ 	return meta->kfunc_flags & KF_SLEEPABLE;
+@@ -13253,9 +13248,9 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
+ 			return -EINVAL;
+ 		}
+ 
+-		if ((is_kfunc_trusted_args(meta) || is_kfunc_rcu(meta)) &&
+-		    (register_is_null(reg) || type_may_be_null(reg->type)) &&
+-			!is_kfunc_arg_nullable(meta->btf, &args[i])) {
++		if ((register_is_null(reg) || type_may_be_null(reg->type)) &&
++		    !is_kfunc_arg_nullable(meta->btf, &args[i]) &&
++		    !is_kfunc_arg_optional(meta->btf, &args[i])) {
+ 			verbose(env, "Possibly NULL pointer passed to trusted arg%d\n", i);
+ 			return -EACCES;
+ 		}
+@@ -13320,9 +13315,6 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
+ 			fallthrough;
+ 		case KF_ARG_PTR_TO_ALLOC_BTF_ID:
+ 		case KF_ARG_PTR_TO_BTF_ID:
+-			if (!is_kfunc_trusted_args(meta) && !is_kfunc_rcu(meta))
+-				break;
+-
+ 			if (!is_trusted_reg(reg)) {
+ 				if (!is_kfunc_rcu(meta)) {
+ 					verbose(env, "R%d must be referenced or trusted\n", regno);
 -- 
 2.47.3
 
