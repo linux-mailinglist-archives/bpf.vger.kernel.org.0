@@ -1,119 +1,98 @@
-Return-Path: <bpf+bounces-77616-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77623-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40E2FCEC642
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 18:37:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E8E4CEC6F3
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 19:04:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 449183004CE3
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 17:37:04 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 5B129300CCC4
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 18:04:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 290A32222C5;
-	Wed, 31 Dec 2025 17:37:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EB612F6170;
+	Wed, 31 Dec 2025 18:04:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S+1Udh28"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dd9E6Cgq"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A52062773F4
-	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 17:37:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC9FD2F5474;
+	Wed, 31 Dec 2025 18:04:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767202622; cv=none; b=QyMVf3LJSWP42TCNAgN26cUDpBhwzc7Wsh0XAx02U9R9qjAQjm6zkx0hITa7W4vr4/sci/5XvCuNVTFwNsew1gUtej965WHTkaRHVqYrr3FXuihP3ZQt8rDAbISeZJo5bznxO3YLQwTAp604x3FmUA8UlfUTYbLW4m1Ck0NL1HA=
+	t=1767204255; cv=none; b=d+fXWjWYCQEVHS98M72KbclU3Rv/a5CDJ5ChRBmPShxTSNsxb7YEr3eEKErkoejv7Ie9fCqMS8b7C7sa/tLPd+kDTXZoG0MhTuMbpdp/5iXDvR7gBr7NXwXbrm/DTCrJkmqertiFGqKG1HTSDfq9XgV0/V3BAK6C7V4GcXtLews=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767202622; c=relaxed/simple;
-	bh=Q6mz/AYlmxHG93FH1z0esaRZ0e1ZNvvGBFoEIm/SG0o=;
+	s=arc-20240116; t=1767204255; c=relaxed/simple;
+	bh=0Ro/XQqblVYAcHi56aVJIXOsSIn7Ux3IzaTJsrElFYg=;
 	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=CZJQLAEJUwPWvasFB/HOqPPqwlBAmILXuw8MfQIGlYJ+cCFqPNRUQ9lRGiR42+ZBKGfDfmit3Wn/vwp9hcyuUgI6RQz4CBFJ8dMllXFLLa406sCn2LHXjLxOeaLbBlwTwNpZ0QxrJIDNnkn06QuHBX9RAQvcz4W6KfTtGirv9gU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S+1Udh28; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F179AC116D0;
-	Wed, 31 Dec 2025 17:37:01 +0000 (UTC)
+	 Subject:From:To:Cc:Date; b=GMUlBJMl6Dh54So39ELOo0cqpLqhuK7CaHmRtB7Cu2uZjSR3Eqb1E9cTg7SBQ9oPx2wtSgGd0pqECwTyqHitv268OAtAruDnTXOVXw//ADiJ60vDsRV3JHGMmDFoUBJd3SGPKiKdM656ZnVNe8zmM9gBGJKFMj969+j5nTlnW3s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dd9E6Cgq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DCA9C113D0;
+	Wed, 31 Dec 2025 18:04:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767202622;
-	bh=Q6mz/AYlmxHG93FH1z0esaRZ0e1ZNvvGBFoEIm/SG0o=;
+	s=k20201202; t=1767204254;
+	bh=0Ro/XQqblVYAcHi56aVJIXOsSIn7Ux3IzaTJsrElFYg=;
 	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=S+1Udh28F4jP9++rBD/10AQPTv6bKaL2S7WSZkNZLOyX9vdnpDZFj+TuwH1zD3Nd+
-	 KeeLSIOyvupPEGK/fpOVd7uQKo2IjVh66nhVOhGUCXUGobfLZmkyq++QdZl1azifnp
-	 c7FCxVbvJef3i7Zsa0mTwIhfsNhVfKyG7HU8v6VUK77/Tm9vAXtZysX7Xcx4QZ9Lp8
-	 mrk1czmbrFMwFM3abA6d7x4UdCyvMAkRR6TF50MUofiYW+hgT9XpxY6o9D5Zjx2TPN
-	 ZTGpMpGMSd2/kOVAvXgY04txSw6sAuULhNnoFGnATQ4tVNtfmYS2jXpK7yZEVsFSTT
-	 +Ajbjl/M1TYIw==
-Content-Type: multipart/mixed; boundary="===============5104216385160100441=="
+	b=dd9E6CgqjuFYXrdSBGiq5lsWev299NUcKd1xVS1RKFPZZZyM30QY31MvqGgsiSpu1
+	 f/+/caqUZitQGpRxRWkODAmz/Ba+DTMSDUoDm0TtOJoPHK/rR8Hp7hRtTcRbAPJbHK
+	 nYzgsL4iaPCKzf7Ry9Lu3sNQHqGINWt5sJ7kqfrxbscHUPIY5RKxUgG/vLsbOY3Xn+
+	 Dc2H1sXmW2k1Hj/qphuHnH1KkDa34WemgE/glkWH3HT6D+ZSCR+csvHpfTFZzsjKyL
+	 FpFShgn/otYQwLUfwe30RgJi8RNJiN/a+jFC1Y2KQk/w6POn4OaI6dHxCNeYvvcNoS
+	 +xQampOmp7r+A==
+Content-Type: multipart/mixed; boundary="===============5488489058363418599=="
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <f6e020fa57cd251f33c83b4e934dc6297f12f38ef239ac8ccdf6b6a92056e612@mail.kernel.org>
-In-Reply-To: <20251231171118.1174007-2-puranjay@kernel.org>
-References: <20251231171118.1174007-2-puranjay@kernel.org>
-Subject: Re: [PATCH bpf-next v2 1/9] bpf: Make KF_TRUSTED_ARGS the default for all kfuncs
+Message-Id: <e9a1bd633fb4bb3d2820f63f41a8dd60d8c9c5e3c699fa56057ae393ef2f31d0@mail.kernel.org>
+In-Reply-To: <20251231173633.3981832-6-csander@purestorage.com>
+References: <20251231173633.3981832-6-csander@purestorage.com>
+Subject: Re: [PATCH 5/5] selftests/bpf: make cfi_stubs globals const
 From: bot+bpf-ci@kernel.org
-To: puranjay@kernel.org,bpf@vger.kernel.org
-Cc: puranjay@kernel.org,puranjay12@gmail.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,memxor@gmail.com,kernel-team@meta.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Wed, 31 Dec 2025 17:37:01 +0000 (UTC)
+To: csander@purestorage.com,jikos@kernel.org,bentiss@kernel.org,ast@kernel.org,daniel@iogearbox.net,john.fastabend@gmail.com,andrii@kernel.org,martin.lau@linux.dev,eddyz87@gmail.com,song@kernel.org,yonghong.song@linux.dev,kpsingh@kernel.org,sdf@fomichev.me,haoluo@google.com,jolsa@kernel.org,tj@kernel.org,void@manifault.com,arighi@nvidia.com,changwoo@igalia.com,mingo@redhat.com,peterz@infradead.org,juri.lelli@redhat.com,vincent.guittot@linaro.org,dietmar.eggemann@arm.com,rostedt@goodmis.org,bsegall@google.com,mgorman@suse.de,vschneid@redhat.com,davem@davemloft.net,edumazet@google.com,kuba@kernel.org,pabeni@redhat.com,horms@kernel.org,dsahern@kernel.org,jhs@mojatatu.com,xiyou.wangcong@gmail.com,jiri@resnulli.us,alibuda@linux.alibaba.com,dust.li@linux.alibaba.com,sidraya@linux.ibm.com,wenjia@linux.ibm.com,mjambigi@linux.ibm.com,tonylu@linux.alibaba.com,guwen@linux.alibaba.com,shuah@kernel.org,mcoquelin.stm32@gmail.com,alexandre.torgue@foss.st.com
+Cc: linux-input@vger.kernel.org,linux-kernel@vger.kernel.org,bpf@vger.kernel.org,netdev@vger.kernel.org,sched-ext@lists.linux.dev,linux-rdma@vger.kernel.org,linux-s390@vger.kernel.org,linux-kselftest@vger.kernel.org,linux-stm32@st-md-mailman.stormreply.com,linux-arm-kernel@lists.infradead.org,csander@purestorage.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
+Date: Wed, 31 Dec 2025 18:04:13 +0000 (UTC)
 
---===============5104216385160100441==
+--===============5488489058363418599==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 3d44c5d06623..359a962d69a1 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
+> diff --git a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
+> index 90c4b1a51de6..5e460b1dbdb6 100644
+> --- a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
+> +++ b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
 
 [ ... ]
 
-> @@ -13253,9 +13248,9 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
-> 			return -EINVAL;
-> 		}
+> @@ -1275,7 +1275,7 @@ bpf_testmod_ops__test_return_ref_kptr(int dummy, struct task_struct *task__ref,
+>  	return NULL;
+>  }
 >
-> -		if ((is_kfunc_trusted_args(meta) || is_kfunc_rcu(meta)) &&
-> -		    (register_is_null(reg) || type_may_be_null(reg->type)) &&
-> -			!is_kfunc_arg_nullable(meta->btf, &args[i])) {
-> +		if ((register_is_null(reg) || type_may_be_null(reg->type)) &&
-> +		    !is_kfunc_arg_nullable(meta->btf, &args[i]) &&
-> +		    !is_kfunc_arg_optional(meta->btf, &args[i])) {
-> 			verbose(env, "Possibly NULL pointer passed to trusted arg%d\n", i);
-> 			return -EACCES;
-> 		}
+> -static struct bpf_testmod_ops __bpf_testmod_ops = {
+> +static const struct bpf_testmod_ops __bpf_testmod_ops = {
+>  	.test_1 = bpf_testmod_test_1,
+>  	.test_2 = bpf_testmod_test_2,
 
-The NULL check guard (is_kfunc_trusted_args || is_kfunc_rcu) is removed here,
-making the check unconditional for all kfuncs. This means kfuncs that
-previously accepted NULL pointers without KF_TRUSTED_ARGS will now reject
-NULL at verification time.
+Is it safe to make __bpf_testmod_ops const here? In bpf_testmod_init(),
+this struct is modified at runtime:
 
-Several netfilter kfuncs are affected: bpf_xdp_ct_lookup(), bpf_skb_ct_lookup(),
-bpf_xdp_ct_alloc(), and bpf_skb_ct_alloc() all accept NULL for their bpf_tuple
-and opts parameters internally (checked in __bpf_nf_ct_lookup), but after this
-change the verifier rejects NULL before the kfunc is even called.
+    tramp = (void **)&__bpf_testmod_ops.tramp_1;
+    while (tramp <= (void **)&__bpf_testmod_ops.tramp_40)
+        *tramp++ = bpf_testmod_tramp;
 
-I see this is addressed in the series by commit 4ca5896ad640 ("bpf: net:
-netfilter: Mark kfuncs accurately") which adds the __nullable suffix to
-these parameters.
-
-> @@ -13320,9 +13315,6 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
-> 			fallthrough;
-> 		case KF_ARG_PTR_TO_ALLOC_BTF_ID:
-> 		case KF_ARG_PTR_TO_BTF_ID:
-> -			if (!is_kfunc_trusted_args(meta) && !is_kfunc_rcu(meta))
-> -				break;
-> -
-> 			if (!is_trusted_reg(reg)) {
-> 				if (!is_kfunc_rcu(meta)) {
-> 					verbose(env, "R%d must be referenced or trusted\n", regno);
-
-[ ... ]
+Writing to a const-qualified object is undefined behavior and may cause a
+protection fault when the compiler places this in read-only memory. Would
+the module fail to load on systems where .rodata is actually read-only?
 
 
 ---
 AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
 See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
 
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/20623776553
+CI run summary: https://github.com/kernel-patches/bpf/actions/runs/20624206229
 
---===============5104216385160100441==--
+--===============5488489058363418599==--
 
