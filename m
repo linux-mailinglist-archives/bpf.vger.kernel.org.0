@@ -1,127 +1,135 @@
-Return-Path: <bpf+bounces-77552-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77553-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93F70CEAF70
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 01:29:50 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 691A8CEAFAD
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 02:11:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 7ED32301410C
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 00:29:49 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 792513007645
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 01:11:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 931491A9F82;
-	Wed, 31 Dec 2025 00:29:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A6DD1C2324;
+	Wed, 31 Dec 2025 01:11:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A0qkH1VY"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OI5mqn5W"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1F7419E819
-	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 00:29:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EADA41754
+	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 01:11:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767140986; cv=none; b=IF93oUXn+iz+RptONOZKqwp7ri4r9vHe+cHn1K/LHpt6ljl3YrSPas0gmq+WqiQKjvNYuc7PK0K+hnSfMB0TJB64onNuLdeDqXXuk2SnpDIl75CBSkQu55/+Hzhk9S1xnIgnS+RjTwy4xY188PL94Fnnmp0BB8kTgjzG7fVQ8pI=
+	t=1767143501; cv=none; b=RdX7i8DQUVLxi7k1bdSR57Q07Omr6Ry8n9u22hgu9s2nI/NOmV1d9Ar1xKKa9mvHaI94n70BCYpXohhRK1EuC+qIOtONv6nfYFGUEBvpHXin5IjXL79sbbJ6fajkZn28Sy82gx2AQNIiEUb4uc0EioaEPthLJmJXs5wrqt5r4ho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767140986; c=relaxed/simple;
-	bh=cbwVjZ3L9v/puuEL10BeRxRmS8Ykjomj9yP/+9r+Tnc=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=lOcjEEsxAYKJkD8D3wBL2B3yeIXL2VX+6vEC+xZoi0E9OvB9QYV0LCZ0PqP8UY63T89JxF/OPi25Uv/y/PTPo4nkqCE6uMGys+4J/CMUTKMzbL/HnFTxzY6gAqBNZuv1PqOgwi6SpG169vWb1zJKWtP3omqMAfSg9txB93EB628=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A0qkH1VY; arc=none smtp.client-ip=209.85.214.178
+	s=arc-20240116; t=1767143501; c=relaxed/simple;
+	bh=2e4Aq9Gqo2HEJHlBOPKJy9xP/fSe3n86ut5ZUNJdI7g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=W22f/bQl+xY4sTmtmwmF5Cl/HmBJqP13v5gBOwZ+7MMOeRUcRYnJ7jb0WQtkX2t2yWCvijB4rHYaevdRNXyTt9TauzxHO8zXwHBa4GBwyEL2S3Hdkpi52GnanQHcMTFvG4+gnM95WQhw86pKdzr7cB6b4dfqlpqMCwltO4DbtQM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OI5mqn5W; arc=none smtp.client-ip=209.85.221.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2a0ac29fca1so88206755ad.2
-        for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 16:29:44 -0800 (PST)
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-42e2e77f519so6163554f8f.2
+        for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 17:11:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767140984; x=1767745784; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=cbwVjZ3L9v/puuEL10BeRxRmS8Ykjomj9yP/+9r+Tnc=;
-        b=A0qkH1VYCH/oFvkg62yh4htv52eidKGHdoz4CjoJCmkrtxYoO/16XWXo6L56sbYMSF
-         NY7nlOkUanxxXrj1NDx3bqG6hDZqIpac5VyB0gCg6TvU1i16seyKn/GS9mVWtEXtxgpX
-         3+9lvjjEx3o6R7EkfW7duXMiT+VaELBGodPMURiguiaicA86AByrhTHtRSzlr6nBeWDG
-         FBXmhj82zjCo+i5V2YLOjeCw9Wp5zvvpgdBrabT13bI1UJR0cPK946lnEGOcM86t2cPG
-         oxaMxCx71E81WjGWwB0nnj16iDUUotFWDEVuiXON3c8oGfSWFDKgkjEDaiODP7TZsyop
-         xF9w==
+        d=gmail.com; s=20230601; t=1767143498; x=1767748298; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fd/3/6d4XACZi+LH+qj+CcYlst0ZuEXZGvQkflYdQXg=;
+        b=OI5mqn5W/KbUqAJ+X52A6Y5ynFanyycEzWk7lOUc64n4qImWpdcDhCWGNIKHQAQwmk
+         xfBhVUqWvOlbRy7xtkrIzFkHlYaTPE8fsaQrY0dmO+gWkVxfEZpnc6zeTyvGQR3pBql3
+         1S9d27Vb6e1qPptYvjsDHVLtQBgYcXYGK4kxSR3CJsPzIdQAXCcyKcsa7JPALQ1C5RIB
+         ZyGQ4PFnTYqlpNL2KKmcgjPgwPieAXTAPtP32BnRyYMa/8+UC7wHtVf50/vZ5VPMksVe
+         uAl+3FRNSxqB4Bf4j5TnKL548CNoTwgjpJJlYETPSSxybT3vWd2nrCy6tt6OjTWLSRGf
+         7Qnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767140984; x=1767745784;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cbwVjZ3L9v/puuEL10BeRxRmS8Ykjomj9yP/+9r+Tnc=;
-        b=FYtdvPWHHyB4B16UHflAi/5iGW/GBt0wEwCgEchSFGKNO26iKvigB3y+GusUlrFrcA
-         Yrmb8OLVeZGEXmO3OuIqd2IcvcKZ5hOiuzLD/JaeSzPo2UsVyLWzkFh3oW6Razq9ixl/
-         Ape8DxUuW6NzpI4qNz30U9DTjKuzy9vrWPK8F6Pkaz2iLyqIKaITwMOYJ8Ev7cg+5uuY
-         e8RJ0xggCUMAOXpI/RXP7xq0glYIq9A3P8Q/6mACfcaBJ0N2bpJNeeIc1rN5cQEsqFrI
-         8w0DPmrF9FBDdEchR/NgnCmNmLIJ3wawJrCnzD4IEBnf7HAK51SXHTLrI0BkFO4O3qq9
-         Qi1Q==
-X-Gm-Message-State: AOJu0YyH+TuuxvrqlEL48uxoYKYyWGPEyMMq9z+/DvxuglH9NXpy7xjW
-	oSqhravqBRBRE3ABx+FQ3ZvGhMjbL8ZpMxRKZn4dt6TsG50CKLoI/D4g
-X-Gm-Gg: AY/fxX7cI6kG0RNVD9T7YPftRRv/ulLnKJgDGbG0xElNYEP9jRwgeDObTkZpZXPkxxf
-	wTCKSwiBQFiDqdlYJaRUTvYXFiK27a7PuYsC7PTJVn/eokIV8cxFOK1dTTDl9BT036YtgUIAZL/
-	JXdnc9ymuYP393lKO2Ow1W1T4LbeU5g4iJFpgPWz7PIx1KQeCOO9bCa8V9v8nzsGKSWzMpETyNo
-	VjEJx5zkQZDJGZ2h/uD3lN13TbAJcJSqJF1QT1Iiu/+vpEnyI52De60Bjjb9kipyLHE1pi+iUpW
-	tTV6LyqnC1A3hcYxMyiwDUfnX+ej4CYJkIumYbAT1xN+AgoigNJwElLXpL9Z9xzAx821zqW1g61
-	dL0tdQTmfGQ9G9Spz5sxxa18OOWV+Rwfg+ib7TCyC89txolihhYyqafXHcQBNIImG9emxExeffu
-	bVB4FBEQMM
-X-Google-Smtp-Source: AGHT+IGdw/5gRs2kGSX6ky+TLopCstFwqadA4fYBa1MsSX3chvgA+4pcWWLtFHqGxizE215efGIGfw==
-X-Received: by 2002:a17:902:f60e:b0:2a0:9028:11af with SMTP id d9443c01a7336-2a2f2a41622mr346875655ad.59.1767140984030;
-        Tue, 30 Dec 2025 16:29:44 -0800 (PST)
-Received: from [192.168.0.226] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a2f3c6b7b0sm312570405ad.16.2025.12.30.16.29.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Dec 2025 16:29:43 -0800 (PST)
-Message-ID: <6d032492af465929e1e02c53a479f71ef8964d76.camel@gmail.com>
-Subject: Re: [PATCH bpf-next 1/7] bpf: Make KF_TRUSTED_ARGS the default for
- all kfuncs
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Puranjay Mohan <puranjay@kernel.org>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Andrii
- Nakryiko	 <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau	 <martin.lau@kernel.org>, Kumar Kartikeya Dwivedi
- <memxor@gmail.com>, 	kernel-team@meta.com
-Date: Tue, 30 Dec 2025 16:29:40 -0800
-In-Reply-To: <CANk7y0g6s5C-mLTPUpGyvJC=ZA=v9WawYzbeVgocbsf4dcXJHw@mail.gmail.com>
-References: <20251224192448.3176531-1-puranjay@kernel.org>
-	 <20251224192448.3176531-2-puranjay@kernel.org>
-	 <4cb72b4808c333156552374c5f3912260097af43.camel@gmail.com>
-	 <CANk7y0g6s5C-mLTPUpGyvJC=ZA=v9WawYzbeVgocbsf4dcXJHw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.58.2 (3.58.2-1.fc43) 
+        d=1e100.net; s=20230601; t=1767143498; x=1767748298;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=fd/3/6d4XACZi+LH+qj+CcYlst0ZuEXZGvQkflYdQXg=;
+        b=RUWg9yuJwyfl7sJTACzKJjR1Km4fKZzR5L2sTn8KrrEJofGU8AzWgTBjVxf9EkSbZ1
+         2unVgV0vAE6EVwPzdLXpI1MI5RqAQnvuw5C4SpD/5mR+TXDFqlUwdCx1vHVHMuvzyyzN
+         RCsf3Sm7G2qGXtf0Vg9k7SjbfEAjmMSY1XIXg4CbVVsTwAmSayhx4OtJ2vZ6EOM3wRjw
+         YtBC09CwAqagmFMRpQYPWabOcCsookUM8MY7SeO+0EnR8ZD8s7Rae3J8bZBt9WO239ND
+         oj0LkWOgZBypnIvlE6OkEfokF90TiNhkfL+RDL57LLa0AMcQjOoa0/D9VDfyuWU1FOdK
+         +qww==
+X-Forwarded-Encrypted: i=1; AJvYcCUh4xiP5xTOK1UNGm5U9T+GNCnMH5YB1UhlIhU401VQQ55zRUfC+P10j0qi/MTxxnDNrWQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwwOcVZxGTc7xZRe0fubtifHoprXPx9xacD30OeAnZLJ67ayNwx
+	oHq5+ZYdZ6p9PyjYV0uPgm6k43wCMR5ehl9WSYlOgOW1Lv9zqaREGXSfj2Zot+N0DUWpAH1AA4y
+	YIX9+9vLPfVBG3UO4Zxxv/F0TEtgCwsE=
+X-Gm-Gg: AY/fxX4T/OgZLBYfe94u+pHnDV+OYsnMH2qNF2BJKy7Nwz6WJ5eBbxNaidyr8i9ByM9
+	L6J1zZgCx20BovQTeqseE86/Lu+7TyH0ngpnQyCQ8EWpCvvWxw/doTn8KW+VKAdJXu40Jndk3V9
+	m7HitoLENRzz3K1UI3iJAkwdQC9Y9mFDmU3tLVgx7OnsbRsmahQl0ilSpjIh8ePjwqhSFlVENyH
+	mMytioPDJseQ5Yq9kd4VhPzYuwtlHqf2tfjiOaIv2EmFB0mdaujxLEDjGoS/chUvBWJ+3e49AH6
+	lt2sEA6Ytk7ctQlM7Q42hOoTKQuVzyO3adX4hj0=
+X-Google-Smtp-Source: AGHT+IHTHcT+TiMhwT6EoniSm9+jquJWZZDxw0XsJW8Ta+O2yBOr9swIrk3e7GAhczMCzAizVhWknwkscDAydzsLZQw=
+X-Received: by 2002:a05:6000:420a:b0:431:864:d492 with SMTP id
+ ffacd0b85a97d-4324e50600dmr42192378f8f.36.1767143498404; Tue, 30 Dec 2025
+ 17:11:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20251222185813.150505-1-mahe.tardy@gmail.com> <CAADnVQLF+ihK16J3x5pQcJY0t2_gUHiur7ENZNqJdazzr+f8Pg@mail.gmail.com>
+ <aUprAOkSFgHyUMfB@gmail.com> <4eec6b7605d007c6f906bf9a4cd95f2423781b0a.camel@gmail.com>
+ <CAADnVQLsJeSjwFVE=gcnVzh7HftDqZJM+xByr2cD6TRmTRGLsA@mail.gmail.com>
+ <62ba00524aa7afd5e1f76a5a2f4c06899bf2dd64.camel@gmail.com>
+ <CAADnVQLDfmLSuvXJFLHM=tOfViSvwPBUyGGZN8OhDP5dRy1_NQ@mail.gmail.com> <95c33c1d3dc961011ce91411ccb0682323d0f407.camel@gmail.com>
+In-Reply-To: <95c33c1d3dc961011ce91411ccb0682323d0f407.camel@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 30 Dec 2025 17:11:27 -0800
+X-Gm-Features: AQt7F2ozKMWuzO-hGzpTJedCtIj0DfINeAAzK73bOdI-A4fDPHUXStdyIPsPxzk
+Message-ID: <CAADnVQLi_qYzqprvTNT+fHp2WgC5uPAHBKAN6Rr6sAhLvRqjoA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] verifier: add prune points to live registers print
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Mahe Tardy <mahe.tardy@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Paul Chaignon <paul.chaignon@gmail.com>, Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2025-12-31 at 00:08 +0000, Puranjay Mohan wrote:
+On Tue, Dec 30, 2025 at 10:44=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.co=
+m> wrote:
+>
+> >
+> > that will make post processing easier, but print on every miss
+> > will greatly increase log_level=3D2 size, right ?
+>
+> Here are some stats for pyperf180:
+>
+> | Experiment                                  | Log   | Log  |
+> | Kind                                        | Lines | Size |
+> |---------------------------------------------+-------+------|
+> | Print cache hits, misses and diffing values | 626K  | 88M  |
+> | Print cache misses and diffing values       | 618K  | 88M  |
+> | Print cache misses                          | 618K  | 87M  |
+> | Default level 2 log                         | 577K  | 85M  |
 
-[...]
+hmm. That's not that much.
+Then I don't understand why you said:
+"slows down log level 2 output significantly (~5 times)"
 
-> I wish to do a full review of all kfuncs and make
-> sure either they are tagged with correct __nullable, __opt annotation
-> or fixed to make sure they are doing the right thing. But currently I
-> just made sure all selftests pass, some of the kfuncs might not have
-> self tests and would need manual analysis and I will have to do that.
+If the total output is roughly the same, how come it's 5 times slower??
 
-Ack, sounds like a plan.
-
-> Some kfuncs will have breaking changes, I am not sure how to work
-> around that case, for example css_rstat_updated() could be
-> successfully called from fentry programs like the selftest fixed in
-> Patch 7, it worked because css_rstat_updated() doesn't mark the
-> parameters with KF_TRUSTED_ARGS, but now KF_TRUSTED_ARGS is the
-> default so this kfunc can't be called from fentry programs as fentry's
-> parameters are not marked as trusted.
->=20
->=20
-> Looking at the code of css_rstat_updated() it seems that it assumes
-> the parameters to be trusted and therefore not allowing it to be
-> called from fentry would be the right thing to do,
-> but it could break perfectly working BPF programs.
-
-Indeed, it expects 'css' to be not NULL as it dereferences the
-pointer immediately.
+> By "cache hit", "cache miss", "cache miss and diffing values" I mean
+> printing lines like:
+>
+>   cache hit at (44677): loop=3D0
+>   cache miss at (36030): frame=3D0, reg=3D7, spi=3D-1, loop=3D0
+>   cache miss at (36030): frame=3D0, reg=3D7, spi=3D-1, loop=3D0 (cur: sca=
+lar(id=3D3618)) vs (old: Pscalar(id=3D3258,umin=3D1))
+>
+> Didn't try printing message at each new state creation.
+>
+> > and whole new concept of state ids just to make a post processing
+> > better. I'm not convinced it's worth doing.
+>
+> That might be true.
+> But we do need some instrument to help debugging 1M instructions situatio=
+n.
 
