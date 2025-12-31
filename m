@@ -1,207 +1,167 @@
-Return-Path: <bpf+bounces-77627-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77628-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B697ACEC790
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 19:25:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BD62CEC7A8
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 19:38:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A53043022A81
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 18:25:50 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A19F8300DCAA
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 18:38:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 608002FFFA5;
-	Wed, 31 Dec 2025 18:25:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50B073064B5;
+	Wed, 31 Dec 2025 18:38:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FUChjnIp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CklObqs8"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D965F26F2AF
-	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 18:25:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 732BA2857F0
+	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 18:38:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767205548; cv=none; b=sDktD7c5QcYw8A63i3vVjwPKwGUb1KzY5bUX3fvtzEIl5I03SMPQGXy/HYFSLYqxZjjnMDttqBHHVYlcr/7eKDl0+sBfjlyV7nPFM1LLbqH0ABKI9RYiLD8ohJsseveYtVu6voD+Rs8y6biJVkFl4LVSr2pTo3DzmakKtpUFaeI=
+	t=1767206281; cv=none; b=nHzUrucDDnz9cWwhvZg5te8ArQzuXUKxpIL8bKWQ3F51G9qvwXuUhFWWf+NPFR1nS/fill05DKmnyO9gH01Xt6DbtSjol9IL0YFmrY8Yl+r4k5N7ZoKk7j08SX1ivhsWdXoRZBVkMbtUwuMPapN88UsVu3ylCjevnefxdclIWQc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767205548; c=relaxed/simple;
-	bh=U3NBKYIFRrWp5zzB7ZM/vooQmiqdou95tqZ9nE4O/4E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DLKjOITZtA6FXA+/ppEk7dJHUzXcfpcS/kMpbMbWz3NTKBsaKgIVQlS+Afom7+GDgfrbqKpmC+L5QWt6MjocbDLYqn3A5vanYf5IuLTpFwIlFQMtJf01DKjjrNpXG8J8t3MlOEQu/gOJNh5WZoJt/eEitcKg/0f5MTbJ5NCxhBw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FUChjnIp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 649C1C19425
-	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 18:25:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767205548;
-	bh=U3NBKYIFRrWp5zzB7ZM/vooQmiqdou95tqZ9nE4O/4E=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=FUChjnIp5egsCbQTW7DQMyaqaLj/0p7A4+qmSM/tIYlV7hej3oW+P2VxclHGaW1F5
-	 NaQKW/gjzSNFuj6P2n29Ar2wrF3HoTDqg1iMXWkyGnh+1zZqSxnYyFxOgUY/65eacv
-	 yO8d64oNvvi5Rx3hT72UzJTTRV8atIPRKa5TisrwiqUh6jOIIlkJxCPxLxqaSSNsYS
-	 q1v8BAah8efO054OulrrZ3zeeAA2WcU+1aPiBGKqvwdOz2oUKUhrE7GEy4TJLVjmhg
-	 0kFMFISvGDttcGf1tdK3Op821GjZ6Yo0HzXzBzr1v1KwwdljGhywzcYD59Lybk2L+j
-	 xrjTefn/+pLuQ==
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-b83b72508f3so52644566b.2
-        for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 10:25:48 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXlktWAuTxZwxNBM5IA8TC6KxWxDEz9mdyn31ZY6m0fi4dfd2/78Tp72p0UOXWHXwfyw6U=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyXhJtg+dtnEmI3XTH+WJaLl8XNgrN+Gav6YWN+hJrTEmE+Y4t7
-	utCIIBXaIextbWi1/OlFJJFZkCi/62Gg6qq/BorZC0T6LqR87/8UEe0YuhYTkAKSOTWioc4QqU2
-	5yilYOUgWrNUG77Tm+MZwaSMEqWST8V8=
-X-Google-Smtp-Source: AGHT+IG7DLzP1HbQYK+9ZYr0vcECBLfWNsZrTYk1ymQRdXWf/l56Ds3qg4QqVJxuqxZLQIkigGIe3m4X/T3jeL84bEA=
-X-Received: by 2002:a17:907:7207:b0:b83:7198:d425 with SMTP id
- a640c23a62f3a-b837198e005mr1168729666b.37.1767205546779; Wed, 31 Dec 2025
- 10:25:46 -0800 (PST)
+	s=arc-20240116; t=1767206281; c=relaxed/simple;
+	bh=0GK0ajNcmX4ZLpifmz7FznUkZoVE8FyqsyB13FkJjLw=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=ckgnC3Ea3bYsZb52ppIOp3UJGBa2mJ6X3v68piXPQ99L+2Q0lTT02lALN/8omvusXow/zBlr4QCfUV6lkgSq2+WOlUDl34KJmEYP+hc9F9g0tecvSIuQ9oEZNGbtY7yHxQe0kBf6QkXKn+KamhnLV4ZndPQ8s9ymg49RUqlL8c8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CklObqs8; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-2a07f8dd9cdso114628035ad.1
+        for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 10:38:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1767206280; x=1767811080; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=tdMMIVnMpSWKZDVfjzl/8xYiev+Ss29iey9QZNOAYfs=;
+        b=CklObqs8orVgqrwNwgm7cMNAb+3AuVScqUX/GFKeuV/u1a3k+BQl7547ilQPUy0q+F
+         U7l/ughz3XSiDx1ZlNjLEc7lnOJSRasmL7SQDTCSKzWdqomP+jK/5eh3n1A5VqmPwDMU
+         HJwiJur3Xa+fvytIbRJPuuMmykxanC0W/Gmad4Zf2ZsQFtubM2LaWirONQPaGzozorge
+         aSryV9i/03RKiSJYV0NB3F7QHP/9Ywa1VxC7BK1BySswaDOxRlJ99PaVmZGjKuhrqokJ
+         drQJigvIh5r6BKaluUX7b2wXBLETMFSgX1oi4I0InMRhCBCfHpt6ykheqb8FH1HckKPm
+         A5JA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767206280; x=1767811080;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tdMMIVnMpSWKZDVfjzl/8xYiev+Ss29iey9QZNOAYfs=;
+        b=dwSTTBhTXZDRubrr3KX2KcFdpfzhxQFbhdeRh8EgU6QHU++ONmX211UK29faXNlUST
+         G+HugNdfd4hSQelqCKN04Q446x25m1HRHOBpsBwEgWKZit73Db8DGi6CS/agoUBdp4wt
+         I1+ogQrCKXAv+Ixma4z2Hjoe/qaa+LB64nSZ+Y24B11l+a+yUsfjY9BKWlxcosvdKw6x
+         Z9QTfxo5Jk4vJFGqYRMjzWY4tkIf4BE6HFBKzxbNjRlVko+HYoqwUUPc2LPI2yG+I2Kv
+         Ue5mX44vNgX+P91z2IVWmn6oBs5fClsUVBdRScXLNfXBlnDg5qkoNW70W3OsRRiVXWVf
+         0SoQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX89/x21sb0+UckHV92G+73w3UalmI5c6KQqCIXAdE/Yvg+sQuMUvAfO6oy4oECCamTxJU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YySHdvh+a24r3PIClx+8+N/0WiHv6Uhz7xFbJagTcrsQUOxFW9U
+	uz8o5fOMxzCfkFZV0IexCzKJLygYc1d04zDHPShYK0LVV08X11nnV4y2
+X-Gm-Gg: AY/fxX5Eca0534Oa4QmNBzQY5N4F7LiLcEIwAYaJJiF6BUAqBY7u48vr+3FR0PHuah5
+	YOx3gyD1989PeKNI1i16l2WbelE6gsZmrUt1aYvmB4qavFWX6zmB8gbxs2Nz4geYB5jJqVQ/Mw1
+	eJDj8NJkMS4Fzok/CQGy1WzNLrAGaR/b0dBZjAfvzEdUDAhO6J+EVaMEQy1fB6OnC6FPUSvtI6H
+	WOBsFSFRehiH+W6NGJ1psLcgMfkCf2aIgHPwsNds87xTX/rqzuAb0mMR08O9v5aSQBLdYqKteb1
+	z/vKQEuNtphErgFVzq8hupGz/i+jEZ74vFoN/97BuOl0lN8FeHIL0t8wmTMgknBEXekHRsh59iL
+	2fzHh+LqiV+Dzj/mFqf/C78/cB0eBBxTgKuOKcj246LGpUzDRugFkcRwZY0hvDTjvl2S9jCL258
+	B4LOgwde1O/LZgfIftvLM=
+X-Google-Smtp-Source: AGHT+IGbxMIg8gcgaKAA8caLQqcGxLbzw8VWpH5fJ64K+7384PQ7lOg2XUxZjk5fJXjBLxRNZnchDA==
+X-Received: by 2002:a17:902:d50b:b0:2a0:f47c:cfc with SMTP id d9443c01a7336-2a2f283685amr358506705ad.34.1767206279725;
+        Wed, 31 Dec 2025 10:37:59 -0800 (PST)
+Received: from [192.168.0.226] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a2f3c820b8sm328341035ad.23.2025.12.31.10.37.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Dec 2025 10:37:59 -0800 (PST)
+Message-ID: <c1204513fe4da235d6b6b45eca9d0260a31e89ec.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/9] bpf: Make KF_TRUSTED_ARGS the default
+ for all kfuncs
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Puranjay Mohan <puranjay@kernel.org>, bpf@vger.kernel.org
+Cc: Puranjay Mohan <puranjay12@gmail.com>, Alexei Starovoitov
+ <ast@kernel.org>,  Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Martin KaFai Lau	 <martin.lau@kernel.org>, Kumar
+ Kartikeya Dwivedi <memxor@gmail.com>, 	kernel-team@meta.com
+Date: Wed, 31 Dec 2025 10:37:56 -0800
+In-Reply-To: <20251231171118.1174007-2-puranjay@kernel.org>
+References: <20251231171118.1174007-1-puranjay@kernel.org>
+	 <20251231171118.1174007-2-puranjay@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.58.2 (3.58.2-1.fc43) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251231171118.1174007-1-puranjay@kernel.org> <20251231171118.1174007-10-puranjay@kernel.org>
- <CAADnVQ+nK7bF6rTZJ=yF1L4+wifS0KN1bCNbOo7j7OJZRPaDNw@mail.gmail.com>
-In-Reply-To: <CAADnVQ+nK7bF6rTZJ=yF1L4+wifS0KN1bCNbOo7j7OJZRPaDNw@mail.gmail.com>
-From: Puranjay Mohan <puranjay@kernel.org>
-Date: Wed, 31 Dec 2025 18:25:35 +0000
-X-Gmail-Original-Message-ID: <CANk7y0iGa2xbbqE1iUEAZtbozUufBcRQgKfbhWQx9DG8WG4wgw@mail.gmail.com>
-X-Gm-Features: AQt7F2o0mnGn295ZbYxbosAyyMtiBHI9YZFGqk3hnOyaXL9QzJIedhFZaP5vOuo
-Message-ID: <CANk7y0iGa2xbbqE1iUEAZtbozUufBcRQgKfbhWQx9DG8WG4wgw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 9/9] HID: bpf: drop dead NULL checks in kfuncs
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Benjamin Tissoires <bentiss@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, Kernel Team <kernel-team@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 31, 2025 at 6:20=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Wed, 2025-12-31 at 09:08 -0800, Puranjay Mohan wrote:
+> Change the verifier to make trusted args the default requirement for
+> all kfuncs by removing is_kfunc_trusted_args() assuming it be to always
+> return true.
 >
-> On Wed, Dec 31, 2025 at 9:12=E2=80=AFAM Puranjay Mohan <puranjay@kernel.o=
-rg> wrote:
-> >
-> > As KF_TRUSTED_ARGS is now considered default for all kfuns, the verifie=
-r
-> > will not allow passing NULL pointers to these kfuns. These checks for
-> > NULL pointers can therefore be removed.
-> >
-> > Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-> > ---
-> >  drivers/hid/bpf/hid_bpf_dispatch.c | 5 +----
-> >  1 file changed, 1 insertion(+), 4 deletions(-)
+> This works because:
+> 1. Context pointers (xdp_md, __sk_buff, etc.) are handled through their
+>    own KF_ARG_PTR_TO_CTX case label and bypass the trusted check
+> 2. Struct_ops callback arguments are already marked as PTR_TRUSTED during
+>    initialization and pass is_trusted_reg()
+> 3. KF_RCU kfuncs are handled separately via is_kfunc_rcu() checks at
+>    call sites (always checked with || alongside is_kfunc_trusted_args)
 >
-> Benjamin,
+> This simple change makes all kfuncs require trusted args by default
+> while maintaining correct behavior for all existing special cases.
 >
-> please run this patch set through your testsuite.
-> We don't expect breakage, but please double check and ack.
->
+> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+> ---
 
-I did run the hid bpf selftests, I am not sure if this is enough:
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
-[root@alarm hid]# ./hid_bpf
-TAP version 13
-1..20
-# Starting 20 tests from 1 test cases.
-#  RUN           hid_bpf.test_create_uhid ...
-hid-generic 0003:0001:0A36.0001: hidraw0: USB HID v0.00 Device
-[test-uhid-device-268] on 268
-#            OK  hid_bpf.test_create_uhid
-ok 1 hid_bpf.test_create_uhid
-#  RUN           hid_bpf.raw_event ...
-hid-generic 0003:0001:0A36.0002: hidraw0: USB HID v0.00 Device
-[test-uhid-device-268] on 268
-#            OK  hid_bpf.raw_event
-ok 2 hid_bpf.raw_event
-#  RUN           hid_bpf.subprog_raw_event ...
-hid-generic 0003:0001:0A36.0003: hidraw0: USB HID v0.00 Device
-[test-uhid-device-268] on 268
-#            OK  hid_bpf.subprog_raw_event
-ok 3 hid_bpf.subprog_raw_event
-#  RUN           hid_bpf.multiple_attach ...
-hid-generic 0003:0001:0A36.0004: hidraw0: USB HID v0.00 Device
-[test-uhid-device-268] on 268
-#            OK  hid_bpf.multiple_attach
-ok 4 hid_bpf.multiple_attach
-#  RUN           hid_bpf.test_attach_detach ...
-hid-generic 0003:0001:0A36.0005: hidraw0: USB HID v0.00 Device
-[test-uhid-device-520] on 520
-#            OK  hid_bpf.test_attach_detach
-ok 5 hid_bpf.test_attach_detach
-#  RUN           hid_bpf.test_hid_change_report ...
-hid-generic 0003:0001:0A36.0006: hidraw0: USB HID v0.00 Device
-[test-uhid-device-520] on 520
-#            OK  hid_bpf.test_hid_change_report
-ok 6 hid_bpf.test_hid_change_report
-#  RUN           hid_bpf.test_hid_user_input_report_call ...
-hid-generic 0003:0001:0A36.0007: hidraw0: USB HID v0.00 Device
-[test-uhid-device-520] on 520
-#            OK  hid_bpf.test_hid_user_input_report_call
-ok 7 hid_bpf.test_hid_user_input_report_call
-#  RUN           hid_bpf.test_hid_user_output_report_call ...
-hid-generic 0003:0001:0A36.0008: hidraw0: USB HID v0.00 Device
-[test-uhid-device-520] on 520
-#            OK  hid_bpf.test_hid_user_output_report_call
-ok 8 hid_bpf.test_hid_user_output_report_call
-#  RUN           hid_bpf.test_hid_user_raw_request_call ...
-hid-generic 0003:0001:0A36.0009: hidraw0: USB HID v0.00 Device
-[test-uhid-device-520] on 520
-#            OK  hid_bpf.test_hid_user_raw_request_call
-ok 9 hid_bpf.test_hid_user_raw_request_call
-#  RUN           hid_bpf.test_hid_filter_raw_request_call ...
-hid-generic 0003:0001:0A36.000A: hidraw0: USB HID v0.00 Device
-[test-uhid-device-520] on 520
-#            OK  hid_bpf.test_hid_filter_raw_request_call
-ok 10 hid_bpf.test_hid_filter_raw_request_call
-#  RUN           hid_bpf.test_hid_change_raw_request_call ...
-hid-generic 0003:0001:0A36.000B: hidraw0: USB HID v0.00 Device
-[test-uhid-device-520] on 520
-#            OK  hid_bpf.test_hid_change_raw_request_call
-ok 11 hid_bpf.test_hid_change_raw_request_call
-#  RUN           hid_bpf.test_hid_infinite_loop_raw_request_call ...
-hid-generic 0003:0001:0A36.000C: hidraw0: USB HID v0.00 Device
-[test-uhid-device-520] on 520
-#            OK  hid_bpf.test_hid_infinite_loop_raw_request_call
-ok 12 hid_bpf.test_hid_infinite_loop_raw_request_call
-#  RUN           hid_bpf.test_hid_filter_output_report_call ...
-hid-generic 0003:0001:0A36.000D: hidraw0: USB HID v0.00 Device
-[test-uhid-device-520] on 520
-#            OK  hid_bpf.test_hid_filter_output_report_call
-ok 13 hid_bpf.test_hid_filter_output_report_call
-#  RUN           hid_bpf.test_hid_change_output_report_call ...
-hid-generic 0003:0001:0A36.000E: hidraw0: USB HID v0.00 Device
-[test-uhid-device-520] on 520
-#            OK  hid_bpf.test_hid_change_output_report_call
-ok 14 hid_bpf.test_hid_change_output_report_call
-#  RUN           hid_bpf.test_hid_infinite_loop_output_report_call ...
-hid-generic 0003:0001:0A36.000F: hidraw0: USB HID v0.00 Device
-[test-uhid-device-520] on 520
-#            OK  hid_bpf.test_hid_infinite_loop_output_report_call
-ok 15 hid_bpf.test_hid_infinite_loop_output_report_call
-#  RUN           hid_bpf.test_multiply_events_wq ...
-hid-generic 0003:0001:0A36.0010: hidraw0: USB HID v0.00 Device
-[test-uhid-device-309] on 309
-#            OK  hid_bpf.test_multiply_events_wq
-ok 16 hid_bpf.test_multiply_events_wq
-#  RUN           hid_bpf.test_multiply_events ...
-hid-generic 0003:0001:0A36.0011: hidraw0: USB HID v0.00 Device
-[test-uhid-device-309] on 309
-#            OK  hid_bpf.test_multiply_events
-ok 17 hid_bpf.test_multiply_events
-#  RUN           hid_bpf.test_hid_infinite_loop_input_report_call ...
-hid-generic 0003:0001:0A36.0012: hidraw0: USB HID v0.00 Device
-[test-uhid-device-309] on 309
-#            OK  hid_bpf.test_hid_infinite_loop_input_report_call
-ok 18 hid_bpf.test_hid_infinite_loop_input_report_call
-#  RUN           hid_bpf.test_hid_attach_flags ...
-hid-generic 0003:0001:0A36.0013: hidraw0: USB HID v0.00 Device
-[test-uhid-device-309] on 309
-#            OK  hid_bpf.test_hid_attach_flags
-ok 19 hid_bpf.test_hid_attach_flags
-#  RUN           hid_bpf.test_rdesc_fixup ...
-hid-generic 0003:0001:0A36.0014: hidraw0: USB HID v0.00 Device
-[test-uhid-device-309] on 309
-hid-generic 0003:0001:0A36.0014: hidraw0: USB HID v0.00 Device
-[test-uhid-device-309] on 309
-#            OK  hid_bpf.test_rdesc_fixup
-ok 20 hid_bpf.test_rdesc_fixup
-# PASSED: 20 / 20 tests passed.
-# Totals: pass:20 fail:0 xfail:0 xpass:0 skip:0 error:0
+Nit: I found two more textual appearances for KF_TRUSTED_ARGS:
+
+  File: fs/bpf_fs_kfuncs.c
+  71:65: * used in place of bpf_d_path() whenever possible. It enforces KF_=
+TRUSTED_ARGS
+  379:47:/* bpf_[set|remove]_dentry_xattr.* hooks have KF_TRUSTED_ARGS and
+
+  File: include/linux/bpf.h
+  756:15:  * passed to KF_TRUSTED_ARGS kfuncs or BPF helper functions.
+
+  File: kernel/bpf/verifier.c
+  12622:39:        * enforce strict matching for plain KF_TRUSTED_ARGS kfun=
+cs by default,
+
+  File: tools/testing/selftests/bpf/progs/cpumask_failure.c
+  113:21:  /* NULL passed to KF_TRUSTED_ARGS kfunc. */
+
+>  Documentation/bpf/kfuncs.rst | 35 +++++++++++++++++------------------
+>  kernel/bpf/verifier.c        | 14 +++-----------
+>  2 files changed, 20 insertions(+), 29 deletions(-)
+>
+> diff --git a/Documentation/bpf/kfuncs.rst b/Documentation/bpf/kfuncs.rst
+> index e38941370b90..22b5a970078c 100644
+> --- a/Documentation/bpf/kfuncs.rst
+> +++ b/Documentation/bpf/kfuncs.rst
+> @@ -241,25 +241,23 @@ both are orthogonal to each other.
+>  The KF_RELEASE flag is used to indicate that the kfunc releases the poin=
+ter
+>  passed in to it. There can be only one referenced pointer that can be pa=
+ssed
+>  in. All copies of the pointer being released are invalidated as a result=
+ of
+> -invoking kfunc with this flag. KF_RELEASE kfuncs automatically receive t=
+he
+> -protection afforded by the KF_TRUSTED_ARGS flag described below.
+> +invoking kfunc with this flag.
+>
+> -2.4.4 KF_TRUSTED_ARGS flag
+> ---------------------------
+> +2.4.4 KF_TRUSTED_ARGS (default behavior)
+> +-----------------------------------------
+
+Nit:
+I think section should be renamed to 'kfunc parameters' and moved to a
+separate section before '2.2 Annotating kfunc parameters'.
+Sorry, should have commented about this yesterday.
+
+[...]
 
