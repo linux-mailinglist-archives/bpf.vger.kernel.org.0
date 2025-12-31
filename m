@@ -1,326 +1,136 @@
-Return-Path: <bpf+bounces-77654-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77655-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F37FCECAB8
-	for <lists+bpf@lfdr.de>; Thu, 01 Jan 2026 00:27:04 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2ACCDCECABB
+	for <lists+bpf@lfdr.de>; Thu, 01 Jan 2026 00:29:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E348630109A8
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 23:27:00 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 8AA753006446
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 23:29:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DD9630EF6D;
-	Wed, 31 Dec 2025 23:26:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFFD130F52D;
+	Wed, 31 Dec 2025 23:29:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NvTmse/A"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lOXikN5b"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 214BE2E9ED6
-	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 23:26:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D61C6309DA1
+	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 23:29:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767223618; cv=none; b=s8LdzkyFcwXg1UXxsMA5UmQTABjqeLthnSt1gYhgjxcKE5aOLes5BoGKn8Wk+0fWTYqBmt273u1A1yoJhaDKV5uzXKcvB+EZitmcWdHDWPB1NfQ0mMTZ9n+UaeQqaeCqGXyUkSoBIgK0FSxjwcpAuig2MSWEya+YJUV8nKGtqXo=
+	t=1767223758; cv=none; b=q5bjEkZH0URV/2GTTk3WWxpGeURpTFfvN2KcvNAhIBDRxyuei+ArQBFaYaNdZkfmRba00DoNcpfL8yf9d5rSec1Wbqkkwe7VviwFMQVAvqKUQNQ6tGUFkKekPu8aB4rAoaE6WIRgGB1zAjS0kXpzzcVEnUgL6Gd+Gp9bNQ/ZI8Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767223618; c=relaxed/simple;
-	bh=FnsQHUSy+LzOk7m7wicWLGq3aIAIYOS1PWlj9gdn7UQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CJoCyAA528s8huREfKO7IeX21iNQjUqWLZRX6jK3dXqAWWvnZe2656JZlItWNGKEyqCtqlhwQxhpNu4XmVgOIVQ4Rl3ZZkUmaYUCkwSMrdSGpjTJ5jVUmo1KypBfJP81J3G35GDlppKIoSuc/ccJ+QyGfT4pYLO6yRksGkPO69E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NvTmse/A; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73C61C113D0;
-	Wed, 31 Dec 2025 23:26:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767223617;
-	bh=FnsQHUSy+LzOk7m7wicWLGq3aIAIYOS1PWlj9gdn7UQ=;
-	h=From:To:Cc:Subject:Date:From;
-	b=NvTmse/AkDYVjbqfr3/zTbr86EWe3aWhVO7bQXG7VkanoycCYYgzsnEjLa+m41Dh1
-	 boGQd/9Slh9VjJwjk7PXn5MDH6PIPApUF0JqmiJqT/ULsqNZdVw6+A8/nNfBqUl532
-	 pvAmYakqw/MjjGOHj7URr4g6jOgtrIDxHimp281u8F7AxqUQ06xmrS9wBg4JgcCJNu
-	 fCdGqlnd0U1eyaRzaxhaYwqP9+rMO5oQzE2N5nPn+G/3BwpZYeVJfG2T0qOcq0O7OY
-	 Epf+d/D5L5UOObRyL5OAF2PM5NUtUTIfk6MQm78Eqg564dtx5whuOt2NSw+vfWDpq/
-	 0Z4pX4bmWXryQ==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: bpf@vger.kernel.org
-Cc: Puranjay Mohan <puranjay@kernel.org>,
-	Puranjay Mohan <puranjay12@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>,
-	kernel-team@meta.com
-Subject: [PATCH bpf-next] bpf: Replace __opt annotation with __nullable for kfuncs
-Date: Wed, 31 Dec 2025 15:26:22 -0800
-Message-ID: <20251231232623.2713255-1-puranjay@kernel.org>
-X-Mailer: git-send-email 2.47.3
+	s=arc-20240116; t=1767223758; c=relaxed/simple;
+	bh=hB0xMx3xK4vlUcAdrxG3o1/qMew7WKffp4OlrNltVI0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=L3BaLGaXg0QpWIuAyBptCKk9KVmkbLF7tHHKETptgq97YzxDWWOLgvoO8gUG7ZIijelKPUJlt8MtqQB+og96XC2hsvnWPYXk1gi8wIiXSgxutr5hnWBZRnYm/3QIpNU4iZLGlHAzptjYlP/yu3r9BTK3z35Gxg3mec53Yw6UBVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lOXikN5b; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-b73161849e1so2130178466b.2
+        for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 15:29:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1767223755; x=1767828555; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hB0xMx3xK4vlUcAdrxG3o1/qMew7WKffp4OlrNltVI0=;
+        b=lOXikN5bgKkeBcu42Skz1ASkL9pYYZs+e6kRxYQsGzTLfqmR9Ee4K1j4ElQeWsJExI
+         U1/GyHURClr565DPGjjus22ZJ53RK6MHfegtEUJr8OFH+WU3TIiSieQchnnPCFpue0cE
+         FntDRR8892QlZU0zCWifvUfG/ammFh9HwFYirCcGAPNyYj6p1DKq1sSV7ahjyyJBaH2u
+         nr3MtXs/Qi5+kzdkK0o/1fZvWZa8nu1Ek9Z72dOPmEGZyhwVK4AQHqWSHSGErrvRHtNk
+         Yc02fj/BeRE44KtiBGu3kQQ8rPSL7nTmG0KIjgwGz66Abk+ERxghqppWEV1DvmC0WEuf
+         Lahg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767223755; x=1767828555;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=hB0xMx3xK4vlUcAdrxG3o1/qMew7WKffp4OlrNltVI0=;
+        b=T/vQlCW+iwEAE1ukCRDH+DbSjNEau0yV3D0QB9rPYTXkfpHq4gKhmhNwt61hbEnGJE
+         UdZTbh36QvmkPACpTyLlozwU+jEoXuNe9Uwz+4m2j6Eck9ZDEiMQaDTe86xMA49pziR2
+         JWWksd+Dh6JjfcOejBz7t+feV7aCMcARZjwoXDsaDt162hoVPUnZX5l5fd8jcpWqI+is
+         FobJARFPtRgjyuZbiIicBKFEpatVWZ4F0fbtDjc2WToTeve5w96Uqy4cFb6RgBaC4357
+         XBirHU/aO9lc8tQlmx5bPXFLt9csQn+6Or/+veZ/ZygQVfZN01MaGXuBWDrIxN4SSYhx
+         nlYA==
+X-Gm-Message-State: AOJu0YyNqEkR3imisJ0jq2l6UkYep7kdUNMqQn9UiH/yVMgyxT/zCoPD
+	b6g0IfxOu/TgXpnom2arKHVmxpaFkjVPoEZXirPh0hjsreROHOrPhbssEfilSf6YG99Wxy8qDKT
+	p3iR9yBBgA9Is45BhHAPj2G/mLWKMNeU=
+X-Gm-Gg: AY/fxX6sfjsf4f0bLVErJrYY6Ojcs2sk/CiNNUzRb0hLlb7gvQAuqtMnZSsLA/66+y2
+	EscvKqs9nfTaYxRHAXiRPRgSZVqqDpN/auYNa13PIVYgP6lkZ3G6Ebk3aSTgTMmo5/U/W91n5si
+	T1ptR6J9dCZSlmQ1Q/2d+byXvPi1WSzBhTIyUtzOCXeJmS74637baOv4a+ElrMeIzwzx0HlPv98
+	aDe4LS3T/LnRVc4ksfQwLlrLNTj52EhpFsoTrT9+mj+IGfvJ054d/94oKHi8Pep4uKcAopjInnD
+	Ul5R0i8FL6yUWm/KNAv2qw==
+X-Google-Smtp-Source: AGHT+IEUxyeDJXy+JLZmOMUYq1RvLPj6yg2qJS6968JMrTOiqsBqkeVqzxFsHJhb315XSzAWgI3k/Zvl7vmGpUQTMNk=
+X-Received: by 2002:a17:907:720a:b0:b7d:406f:2d3d with SMTP id
+ a640c23a62f3a-b80371da8dfmr4216679866b.54.1767223755130; Wed, 31 Dec 2025
+ 15:29:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20251231171118.1174007-1-puranjay@kernel.org> <20251231171118.1174007-7-puranjay@kernel.org>
+ <138667689e511652194fd98ad0e20d71f7738234.camel@gmail.com>
+ <CANk7y0hXxYsmgMY9km1ivtt-Bd3=tbjf4+vra5y_5M66srEh_A@mail.gmail.com> <8944ddc867831bf2e5c6d9275618f9c56c61395c.camel@gmail.com>
+In-Reply-To: <8944ddc867831bf2e5c6d9275618f9c56c61395c.camel@gmail.com>
+From: Puranjay Mohan <puranjay12@gmail.com>
+Date: Wed, 31 Dec 2025 23:29:03 +0000
+X-Gm-Features: AQt7F2qPhqYtSNo6X7KTAQlh_tv2Cdq8vpzDBPIhKZZRG8FloHDijgi4LzlzeqI
+Message-ID: <CANk7y0gfp=A-1OOj=65VPqCOvZR-E7eZnnXGQt0gnW6u=Ca2DQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 6/9] selftests: bpf: fix test_kfunc_dynptr_param
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The __opt annotation was originally introduced specifically for
-buffer/size argument pairs in bpf_dynptr_slice() and
-bpf_dynptr_slice_rdwr(), allowing the buffer pointer to be NULL while
-still validating the size as a constant.  The __nullable annotation
-serves the same purpose but is more general and is already used
-throughout the BPF subsystem for raw tracepoints, struct_ops, and other
-kfuncs.
+On Wed, Dec 31, 2025 at 7:44=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
+>
+> On Wed, 2025-12-31 at 19:39 +0000, Puranjay Mohan wrote:
+> > On Wed, Dec 31, 2025 at 7:29=E2=80=AFPM Eduard Zingerman <eddyz87@gmail=
+.com> wrote:
+> > >
+> > > On Wed, 2025-12-31 at 09:08 -0800, Puranjay Mohan wrote:
+> > > > As verifier now assumes that all kfuncs only takes trusted pointer
+> > > > arguments, passing 0 (NULL) to a kfunc that doesn't mark the argume=
+nt as
+> > > > __nullable or __opt will be rejected with a failure message of: Pos=
+sibly
+> > > > NULL pointer passed to trusted arg<n>
+> > > >
+> > > > Pass a non-null value to the kfunc to test the expected failure mod=
+e.
+> > > >
+> > > > Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+> > > > ---
+> > >
+> > > Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+> > >
+> > > Unrelated to this patch-set:
+> > > what do you think about merging __nullable and __opt?
+> >
+> >
+> > Yes, I think we should only have __nullable, because that is how
+> > programmers are used to think about functions, just pass NULL if it is
+> > unused. But I will see what the verifier expects differently from
+> > these two and send a patch to merge them.
+>
+> Ack, thank you.
+> After cursory examination seems doable to me.
+> __nullable was introduced [1] after __opt, but mailing list discussion
+> does not mention __opt at all.
+>
+> [1] https://lore.kernel.org/all/20231018061746.111364-7-zhouchuyi@bytedan=
+ce.com/T/#u
 
-This patch unifies the two annotations by replacing __opt with
-__nullable.  The key change is in the verifier's
-get_kfunc_ptr_arg_type() function, where mem/size pair detection is now
-performed before the nullable check.  This ensures that buffer/size
-pairs are correctly classified as KF_ARG_PTR_TO_MEM_SIZE even when the
-buffer is nullable, while adding an !arg_mem_size condition to the
-nullable check prevents interference with mem/size pair handling.
+It wasn't that difficult:
+https://lore.kernel.org/bpf/20251231232623.2713255-1-puranjay@kernel.org/
 
-When processing KF_ARG_PTR_TO_MEM_SIZE arguments, the verifier now uses
-is_kfunc_arg_nullable() instead of the removed is_kfunc_arg_optional()
-to determine whether to skip size validation for NULL buffers.
-
-This is the first documentation added for the __nullable annotation,
-which has been in use since it was introduced but was previously
-undocumented.
-
-No functional changes to verifier behavior - nullable buffer/size pairs
-continue to work exactly as before.
-
-Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
----
- Documentation/bpf/kfuncs.rst | 32 +++++++++++++++++++++-----------
- include/linux/bpf.h          |  2 +-
- kernel/bpf/helpers.c         | 28 ++++++++++++++--------------
- kernel/bpf/verifier.c        | 20 ++++++++------------
- 4 files changed, 44 insertions(+), 38 deletions(-)
-
-diff --git a/Documentation/bpf/kfuncs.rst b/Documentation/bpf/kfuncs.rst
-index e38941370b90..d4c96fa20859 100644
---- a/Documentation/bpf/kfuncs.rst
-+++ b/Documentation/bpf/kfuncs.rst
-@@ -115,25 +115,35 @@ Here, the dynptr will be treated as an uninitialized dynptr. Without this
- annotation, the verifier will reject the program if the dynptr passed in is
- not initialized.
- 
--2.2.4 __opt Annotation
---------------------------
-+2.2.4 __nullable Annotation
-+---------------------------
- 
--This annotation is used to indicate that the buffer associated with an __sz or __szk
--argument may be null. If the function is passed a nullptr in place of the buffer,
--the verifier will not check that length is appropriate for the buffer. The kfunc is
--responsible for checking if this buffer is null before using it.
-+This annotation is used to indicate that the pointer argument may be NULL.
-+The verifier will allow passing NULL for such arguments.
- 
- An example is given below::
- 
--        __bpf_kfunc void *bpf_dynptr_slice(..., void *buffer__opt, u32 buffer__szk)
-+        __bpf_kfunc void bpf_task_release(struct task_struct *task__nullable)
-+        {
-+        ...
-+        }
-+
-+Here, the task pointer may be NULL. The kfunc is responsible for checking
-+if the pointer is NULL before dereferencing it.
-+
-+The __nullable annotation can be combined with other annotations. For example,
-+when used with __sz or __szk annotations for memory and size pairs, the verifier
-+will skip size validation when a NULL pointer is passed, but will still process
-+the size argument to extract constant size information when needed::
-+
-+        __bpf_kfunc void *bpf_dynptr_slice(..., void *buffer__nullable, u32 buffer__szk)
-         {
-         ...
-         }
- 
--Here, the buffer may be null. If buffer is not null, it at least of size buffer_szk.
--Either way, the returned buffer is either NULL, or of size buffer_szk. Without this
--annotation, the verifier will reject the program if a null pointer is passed in with
--a nonzero size.
-+Here, the buffer may be NULL. If the buffer is not NULL, it must be at least
-+buffer__szk bytes in size. The kfunc is responsible for checking if the buffer
-+is NULL before using it.
- 
- 2.2.5 __str Annotation
- ----------------------------
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 4e7d72dfbcd4..74af06e08e26 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1434,7 +1434,7 @@ bool __bpf_dynptr_is_rdonly(const struct bpf_dynptr_kern *ptr);
- int __bpf_dynptr_write(const struct bpf_dynptr_kern *dst, u64 offset,
- 		       void *src, u64 len, u64 flags);
- void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr *p, u64 offset,
--			    void *buffer__opt, u64 buffer__szk);
-+			    void *buffer__nullable, u64 buffer__szk);
- 
- static inline int bpf_dynptr_check_off_len(const struct bpf_dynptr_kern *ptr, u64 offset, u64 len)
- {
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index db72b96f9c8c..040c47ed3746 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -2709,14 +2709,14 @@ __bpf_kfunc struct task_struct *bpf_task_from_vpid(s32 vpid)
-  * bpf_dynptr_slice() - Obtain a read-only pointer to the dynptr data.
-  * @p: The dynptr whose data slice to retrieve
-  * @offset: Offset into the dynptr
-- * @buffer__opt: User-provided buffer to copy contents into.  May be NULL
-+ * @buffer__nullable: User-provided buffer to copy contents into.  May be NULL
-  * @buffer__szk: Size (in bytes) of the buffer if present. This is the
-  *               length of the requested slice. This must be a constant.
-  *
-  * For non-skb and non-xdp type dynptrs, there is no difference between
-  * bpf_dynptr_slice and bpf_dynptr_data.
-  *
-- *  If buffer__opt is NULL, the call will fail if buffer_opt was needed.
-+ *  If buffer__nullable is NULL, the call will fail if buffer_opt was needed.
-  *
-  * If the intention is to write to the data slice, please use
-  * bpf_dynptr_slice_rdwr.
-@@ -2734,7 +2734,7 @@ __bpf_kfunc struct task_struct *bpf_task_from_vpid(s32 vpid)
-  * direct pointer)
-  */
- __bpf_kfunc void *bpf_dynptr_slice(const struct bpf_dynptr *p, u64 offset,
--				   void *buffer__opt, u64 buffer__szk)
-+				   void *buffer__nullable, u64 buffer__szk)
- {
- 	const struct bpf_dynptr_kern *ptr = (struct bpf_dynptr_kern *)p;
- 	enum bpf_dynptr_type type;
-@@ -2755,8 +2755,8 @@ __bpf_kfunc void *bpf_dynptr_slice(const struct bpf_dynptr *p, u64 offset,
- 	case BPF_DYNPTR_TYPE_RINGBUF:
- 		return ptr->data + ptr->offset + offset;
- 	case BPF_DYNPTR_TYPE_SKB:
--		if (buffer__opt)
--			return skb_header_pointer(ptr->data, ptr->offset + offset, len, buffer__opt);
-+		if (buffer__nullable)
-+			return skb_header_pointer(ptr->data, ptr->offset + offset, len, buffer__nullable);
- 		else
- 			return skb_pointer_if_linear(ptr->data, ptr->offset + offset, len);
- 	case BPF_DYNPTR_TYPE_XDP:
-@@ -2765,16 +2765,16 @@ __bpf_kfunc void *bpf_dynptr_slice(const struct bpf_dynptr *p, u64 offset,
- 		if (!IS_ERR_OR_NULL(xdp_ptr))
- 			return xdp_ptr;
- 
--		if (!buffer__opt)
-+		if (!buffer__nullable)
- 			return NULL;
--		bpf_xdp_copy_buf(ptr->data, ptr->offset + offset, buffer__opt, len, false);
--		return buffer__opt;
-+		bpf_xdp_copy_buf(ptr->data, ptr->offset + offset, buffer__nullable, len, false);
-+		return buffer__nullable;
- 	}
- 	case BPF_DYNPTR_TYPE_SKB_META:
- 		return bpf_skb_meta_pointer(ptr->data, ptr->offset + offset);
- 	case BPF_DYNPTR_TYPE_FILE:
--		err = bpf_file_fetch_bytes(ptr->data, offset, buffer__opt, buffer__szk);
--		return err ? NULL : buffer__opt;
-+		err = bpf_file_fetch_bytes(ptr->data, offset, buffer__nullable, buffer__szk);
-+		return err ? NULL : buffer__nullable;
- 	default:
- 		WARN_ONCE(true, "unknown dynptr type %d\n", type);
- 		return NULL;
-@@ -2785,14 +2785,14 @@ __bpf_kfunc void *bpf_dynptr_slice(const struct bpf_dynptr *p, u64 offset,
-  * bpf_dynptr_slice_rdwr() - Obtain a writable pointer to the dynptr data.
-  * @p: The dynptr whose data slice to retrieve
-  * @offset: Offset into the dynptr
-- * @buffer__opt: User-provided buffer to copy contents into. May be NULL
-+ * @buffer__nullable: User-provided buffer to copy contents into. May be NULL
-  * @buffer__szk: Size (in bytes) of the buffer if present. This is the
-  *               length of the requested slice. This must be a constant.
-  *
-  * For non-skb and non-xdp type dynptrs, there is no difference between
-  * bpf_dynptr_slice and bpf_dynptr_data.
-  *
-- * If buffer__opt is NULL, the call will fail if buffer_opt was needed.
-+ * If buffer__nullable is NULL, the call will fail if buffer_opt was needed.
-  *
-  * The returned pointer is writable and may point to either directly the dynptr
-  * data at the requested offset or to the buffer if unable to obtain a direct
-@@ -2824,7 +2824,7 @@ __bpf_kfunc void *bpf_dynptr_slice(const struct bpf_dynptr *p, u64 offset,
-  * direct pointer)
-  */
- __bpf_kfunc void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr *p, u64 offset,
--					void *buffer__opt, u64 buffer__szk)
-+					void *buffer__nullable, u64 buffer__szk)
- {
- 	const struct bpf_dynptr_kern *ptr = (struct bpf_dynptr_kern *)p;
- 
-@@ -2853,7 +2853,7 @@ __bpf_kfunc void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr *p, u64 offset,
- 	 * will be copied out into the buffer and the user will need to call
- 	 * bpf_dynptr_write() to commit changes.
- 	 */
--	return bpf_dynptr_slice(p, offset, buffer__opt, buffer__szk);
-+	return bpf_dynptr_slice(p, offset, buffer__nullable, buffer__szk);
- }
- 
- __bpf_kfunc int bpf_dynptr_adjust(const struct bpf_dynptr *p, u64 start, u64 end)
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 3d44c5d06623..56bf9b54db04 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -12091,11 +12091,6 @@ static bool is_kfunc_arg_const_mem_size(const struct btf *btf,
- 	return btf_param_match_suffix(btf, arg, "__szk");
- }
- 
--static bool is_kfunc_arg_optional(const struct btf *btf, const struct btf_param *arg)
--{
--	return btf_param_match_suffix(btf, arg, "__opt");
--}
--
- static bool is_kfunc_arg_constant(const struct btf *btf, const struct btf_param *arg)
- {
- 	return btf_param_match_suffix(btf, arg, "__k");
-@@ -12515,6 +12510,11 @@ get_kfunc_ptr_arg_type(struct bpf_verifier_env *env,
- 	if (meta->func_id == special_kfunc_list[KF_bpf_cast_to_kern_ctx])
- 		return KF_ARG_PTR_TO_CTX;
- 
-+	if (argno + 1 < nargs &&
-+	    (is_kfunc_arg_mem_size(meta->btf, &args[argno + 1], &regs[regno + 1]) ||
-+	     is_kfunc_arg_const_mem_size(meta->btf, &args[argno + 1], &regs[regno + 1])))
-+		arg_mem_size = true;
-+
- 	/* In this function, we verify the kfunc's BTF as per the argument type,
- 	 * leaving the rest of the verification with respect to the register
- 	 * type to our caller. When a set of conditions hold in the BTF type of
-@@ -12523,7 +12523,8 @@ get_kfunc_ptr_arg_type(struct bpf_verifier_env *env,
- 	if (btf_is_prog_ctx_type(&env->log, meta->btf, t, resolve_prog_type(env->prog), argno))
- 		return KF_ARG_PTR_TO_CTX;
- 
--	if (is_kfunc_arg_nullable(meta->btf, &args[argno]) && register_is_null(reg))
-+	if (is_kfunc_arg_nullable(meta->btf, &args[argno]) && register_is_null(reg) &&
-+	    !arg_mem_size)
- 		return KF_ARG_PTR_TO_NULL;
- 
- 	if (is_kfunc_arg_alloc_obj(meta->btf, &args[argno]))
-@@ -12580,11 +12581,6 @@ get_kfunc_ptr_arg_type(struct bpf_verifier_env *env,
- 	if (is_kfunc_arg_callback(env, meta->btf, &args[argno]))
- 		return KF_ARG_PTR_TO_CALLBACK;
- 
--	if (argno + 1 < nargs &&
--	    (is_kfunc_arg_mem_size(meta->btf, &args[argno + 1], &regs[regno + 1]) ||
--	     is_kfunc_arg_const_mem_size(meta->btf, &args[argno + 1], &regs[regno + 1])))
--		arg_mem_size = true;
--
- 	/* This is the catch all argument type of register types supported by
- 	 * check_helper_mem_access. However, we only allow when argument type is
- 	 * pointer to scalar, or struct composed (recursively) of scalars. When
-@@ -13574,7 +13570,7 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
- 			struct bpf_reg_state *size_reg = &regs[regno + 1];
- 			const struct btf_param *size_arg = &args[i + 1];
- 
--			if (!register_is_null(buff_reg) || !is_kfunc_arg_optional(meta->btf, buff_arg)) {
-+			if (!register_is_null(buff_reg) || !is_kfunc_arg_nullable(meta->btf, buff_arg)) {
- 				ret = check_kfunc_mem_size_reg(env, size_reg, regno + 1);
- 				if (ret < 0) {
- 					verbose(env, "arg#%d arg#%d memory, len pair leads to invalid memory access\n", i, i + 1);
-
-base-commit: 17c736a7b58a18e3683df2583b60f0edeaf65070
--- 
-2.47.3
-
+I guess this should be merged before default trusted_args.
 
