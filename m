@@ -1,348 +1,187 @@
-Return-Path: <bpf+bounces-77573-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77575-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BB86CEB6FB
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 08:30:47 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B5DBCEB761
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 08:42:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3FBE730255B5
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 07:30:30 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 76A3E3028F42
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 07:42:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30F613126B3;
-	Wed, 31 Dec 2025 07:30:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B486310768;
+	Wed, 31 Dec 2025 07:42:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="S2kEwC0J";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="rpghMCka"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0jB+qgm7"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC9802DEA80
-	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 07:30:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08A5F23ABBF
+	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 07:42:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767166225; cv=none; b=kE1Uc8nB/P+DKl1ppKYVswtvGrcIK2ENS6TtQDx99wQqbpO4VN5U4wqgctxt659GP/adzXYG5tO4gqbDqCrbnJlw6tlR0+7bQvjPJ00pjLwXyzN/ic2KiSFAS6B1Kz6ps3Y1tuSjqz64SCbSUJTtGpWs5eN0Vy7VGoQT40eAWQY=
+	t=1767166927; cv=none; b=VuMIM52oX/5xYG1C/LvvYyjlhykFNN8qFuHbl77ZPXP3+pSc1SPIivNleGR2ydk8fJ1sE6/CBCQcD00L9XS+JF2Ug03qroTGSn0mD9kpcBFWFGJEo9/F98M+BY8depMgjXxASjx1ib9IiDtJ9IKRuY1xTUHyfBPssOSzw31xK08=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767166225; c=relaxed/simple;
-	bh=qW79kgXnhk4c+mAfiPXpb+zTW1t7cFuRjVk2APvshTo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DICXpZeGpy/CjifFDRUilTzPgQI5kXCwwTOgpdPQOglJdZwVMFITT/p7ypNHVQPCTgvp85HM33WfuiQFYufV5zdrTuilPuNvTicL3l8EI0Q7iiOTK8MxsKoWYWjFRo3zdAiD3IriRQiLKYVqNaFuSNX7PE3QMWw0PPS39yU2+Xw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=S2kEwC0J; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=rpghMCka; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1767166221;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GPhnCFWyEhtT0+eaCZ18ZHnLuuXgUK8BIqFWn/71XHI=;
-	b=S2kEwC0JKpE+jeN0S3mn7Z8e/0z0+oJytPd/Je18rCeAlOeNjhZqVzrcH/aP/iK3cWAuwE
-	wMZWM4Y7Ht3UjJO5kzU/OCJ2Ljzb7OQUehMlhsL1umPS54HpWWJFmRQPpv5HQdUOd5eEjl
-	LptIOoiiCwlRLMc4Rx3BEhV3Rz9Qc4g=
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
- [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-148-SibwfqFTNiuzV5MpW5rxrw-1; Wed, 31 Dec 2025 02:30:19 -0500
-X-MC-Unique: SibwfqFTNiuzV5MpW5rxrw-1
-X-Mimecast-MFC-AGG-ID: SibwfqFTNiuzV5MpW5rxrw_1767166218
-Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-2a0e9e0fd49so117120075ad.0
-        for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 23:30:19 -0800 (PST)
+	s=arc-20240116; t=1767166927; c=relaxed/simple;
+	bh=GvswzSQgWtrqhQcg4WlQY7/TDalX55vAXZ5y0FYd8hw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mY+9yLk3+nin2nZgMYZWgFahRLCKoudE7prI+7vf31fJYpDd2tyBmo3vvLJN6/zVG9T+V4wBvv/AfbfdJ+LAHlzI7nCJHH+L6MKcaYso4hWY3jxLHNKvoOu2hv8UBqR/bCfyswTkexFm/PIMil43lPBhSClX7cQq3yCzZZIw6OQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0jB+qgm7; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-64b58553449so13138643a12.1
+        for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 23:42:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1767166218; x=1767771018; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GPhnCFWyEhtT0+eaCZ18ZHnLuuXgUK8BIqFWn/71XHI=;
-        b=rpghMCkaxLOWcDKN75fN2WBlPJBZW2i/AeRL4y32yydwUfEbQ+19Wr5KzoTIJ+OnVV
-         7W/RpMK+2HQQBCCAW2v/oQc3H7xpenFTwrFChl3JJDfXmcAlEnaJO7rm7TJT6Sgl7SBR
-         ClX5lsAIJcJLz7bClP58bc9oIB7qIGz9+0TdutGv1Ktztrv6EAlhD8SqU9LHDnptUtKP
-         4Nq3UnY0FDDl1rac5rsbETpl9RcjugWhGNy1aReFncPCsf5IK/le+WNf5CJwyu5r2DNG
-         73zfz/peW0Ay4Aj37sKDMqFlS4ebzRkIWHtz8XOeiiDlv3n5cuwj5UhKOmDIBWkBjRY9
-         oW2A==
+        d=google.com; s=20230601; t=1767166923; x=1767771723; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=sBxwhR+DOUWySSn1nkmmHXTpgGimoEMqTlfeKUVI3Ic=;
+        b=0jB+qgm7yJzpI0aa0dNQMBTVMPxzm3STBr0+ut3jJAG5VDIKBH8JpiRlOPCNUOJUio
+         4k1h8AlL9qeBVl6JcJ6fV3DESe+ZuX8kGtREbkONlYQbgJukEs0Qs6LqYBJrTUXcL1qO
+         35CZy1n72WbFLN2GVF+UGhYx/TOqGZw7QIez+G02/a/UAmbt9BOHwv7jyjM72Y4aBoVs
+         CSpd7vRggjS0E9oIlbC45MC/QpGcu3CbEVXGo192bZkvwxsRfXkFkWbuLG60Ff9cSEOT
+         KHIt5G1PQyNqLQQrb93Y9HGilqpN9oQE42AgVDlvHRqsSb48ji5/ReNp7ZK6bqOayW7Q
+         LMxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767166218; x=1767771018;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=GPhnCFWyEhtT0+eaCZ18ZHnLuuXgUK8BIqFWn/71XHI=;
-        b=nJ/tmKvKjbMWgIEWNomstXjy7rJf0fBVSlEDGW17439BSGHTwa2Njb/CfdiBzczPj8
-         qvhPlXl5HkUxOM2Aa8/PtmijXab8BP/s784LyC6t85aYwUlb1iJeEusKRkwpTjxqVCrc
-         dyn/JhIBswp68sS0ZKLl44zuSrz902ahwwJTE9rv9c6bkzur5VMtM+YdBrRHE1jXziI2
-         01zdokSfZWCuTtI2IoQnIt7ziay1OWuLf2P8pvk5IATY4ASPLzGlgX8LyN1NcCiOXNC4
-         Se+3wzItKCUTcJRLHMsXtzIifhaEC0krQTNlQMZsBi1gWL1wCLWDd6Enn+0WP2SAGMb1
-         mDhw==
-X-Forwarded-Encrypted: i=1; AJvYcCVPOz5bIPGD6Rh6xTxlL+fvzMVgFZ0oUuwK1XMAbGDj5WUTz5tF49G1P3BITPcNbd1Q+1o=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yznj2/XiYOJ69aWU3GWQ948KhAbHJ6rsXVR2l2cdwa9JEfGE80e
-	wC/jDIiiagDFn2cPvfwdCkM1jBZpHlllonKdgIGl27WJM9xzdXyiqK4tHe2npcEZtK5Rpm9p8de
-	Yar0SRqrDQrN/nvXdxf3KPb2Oz0ubFre8K/oiNcUFt/h1lxA2aVUb6PbFY9sgqGdGXqD43iiurB
-	NxfDWujK37l4YYtZ4JAm5vAXyAd44Z
-X-Gm-Gg: AY/fxX6yWOIih77239CPGsYHJajQ9O2qqQSZYtL3OHpMzHWQgXglyaX0SNQUHDzHobu
-	qt3vBNI3zcavPf59DXfCJuSDuk2VkjJjy4L59mRdCYp8XzJMEjwVMngVsbRSkLLamuf0FZLHXWF
-	NESp9gtLZshGULAK5pPa9Xtb0RP67GNFwDSV/aJ5LzztZxe4qhH04tOeWz/PBc+1c9l6Y=
-X-Received: by 2002:a17:903:1ae3:b0:2a0:c0cc:30b with SMTP id d9443c01a7336-2a2caa9b3d6mr437444435ad.3.1767166218219;
-        Tue, 30 Dec 2025 23:30:18 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEZeZmm01OPAuC7L3q+SVriXrZwU4mbP2V2pzZu5BBW8+ISShq+aJk2RNS0IGVs/HU1Y/6tRmzmE681fCrJVcY=
-X-Received: by 2002:a17:903:1ae3:b0:2a0:c0cc:30b with SMTP id
- d9443c01a7336-2a2caa9b3d6mr437444175ad.3.1767166217706; Tue, 30 Dec 2025
- 23:30:17 -0800 (PST)
+        d=1e100.net; s=20230601; t=1767166923; x=1767771723;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sBxwhR+DOUWySSn1nkmmHXTpgGimoEMqTlfeKUVI3Ic=;
+        b=CHcoRxDhbaJqrbaOCmj46UWGJ/JWa/DMRTTtptwkxlRB6JcGBFUSnVQ9NjzKLiMnf5
+         bjvJqb6sq7WD6crQSgmwgY0m1iLm8zPsOd5ECggEfaWy1mo33BCsr1EkHsGuoZed6pWd
+         3kiuecqbDI6ybzL3xL1CpNGTRHNRF9fmlh6h5l9Yttn7MxY8ev9N5qOHPtWRxzf+oqDt
+         LsqXbeAenecRYcmxiz0xNEgpHXQ+C8vqNkqTH/6JR1pb3SseRRbyQ/77RmtRlJj8pClW
+         sT3fHCb8U7Jef9NklBbNjzhE3sE39LLYW1FaHZ5dofsAr0gO7yAZ6fOJzfYZuEtBCQQt
+         7T4g==
+X-Gm-Message-State: AOJu0YxAx0BYyUumsKM1vMbsUWhi/dw7ozRv7trmWyT+TVSDs4vLPeHF
+	IkFbr2M0Dt9UaGBTuhwWDaSk1fWqOckB46COCUE7rlSB9yeMbZBjcBsd0G70lq6sWE7uDLnXITi
+	E+NILJQ==
+X-Gm-Gg: AY/fxX68jEtIQ11fxcx+NPPsVkGQO6L1LvffIjAmbjEFxNFq51LhpxMhiC7OHf+Mjsj
+	6jPeam7ibd6rHb/INFsDUKw4nM67Udv8EKsIya+axsPlFJcF+yb+RaNFvq3ZrOKo7v7ES6EHxkf
+	tcL2fLXvYNSXt/3yM+rV3YRZtxaMmE7iDUguZHeQVqQxCJDlx/1JqgmrEi4mdofjU3TnuGmtKcP
+	5JnSd74n5Z/CtvV+bCzWxCtOwRjuy8bFSBJ3ogA2bwErATlDr/9vl3QUfjvGL0254Yc9s5/g9HZ
+	UehlnWsfHLmp0UsIzJD7uNESiYTm5+5PUh31bXrPKFiCZb1ZsUXIKKcyh1tvgJHfq9pyTPJODCb
+	yKmoA0pK2o8YwpKJDU3V1ljXSnQAZqMSHKhh2xz7Fo+Fwn2re4fYZo1iUdM+5F25n4736rO71cS
+	tcBQjEaj+bNdxC8TVqfjmfAEl7yK8lIU4LGEuacino0UnX15oIYSWF6A==
+X-Google-Smtp-Source: AGHT+IG1aRB+d3WsL8zwpg57El7FgfpDZaQb4jebLM9i908vaeSLRjskbvtS5lkEflNe6+T45D2gZg==
+X-Received: by 2002:a05:6402:5188:b0:64b:83cb:d93e with SMTP id 4fb4d7f45d1cf-64b8eb6194bmr32320732a12.20.1767166922985;
+        Tue, 30 Dec 2025 23:42:02 -0800 (PST)
+Received: from google.com (14.59.147.34.bc.googleusercontent.com. [34.147.59.14])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-64b9ef904bcsm36693514a12.22.2025.12.30.23.42.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Dec 2025 23:42:01 -0800 (PST)
+Date: Wed, 31 Dec 2025 07:41:58 +0000
+From: Matt Bobrowski <mattbobrowski@google.com>
+To: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: bpf@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	JP Kobryn <inwardvessel@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Michal Hocko <mhocko@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>
+Subject: Re: [PATCH bpf-next v4 3/6] mm: introduce bpf_get_root_mem_cgroup()
+ BPF kfunc
+Message-ID: <aVTTxjwgNgWMF-9Q@google.com>
+References: <20251223044156.208250-1-roman.gushchin@linux.dev>
+ <20251223044156.208250-4-roman.gushchin@linux.dev>
+ <aVQ1zvBE9csQYffT@google.com>
+ <7ia4ms2zwuqb.fsf@castle.c.googlers.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251223152533.24364-1-minhquangbui99@gmail.com>
- <20251223152533.24364-2-minhquangbui99@gmail.com> <CACGkMEvXkPiTGxZ6nuC72-VGdLHVXzrGa9bAF=TcP8nqPjeZ_w@mail.gmail.com>
- <1766540234.3618076-1-xuanzhuo@linux.alibaba.com> <20251223204555-mutt-send-email-mst@kernel.org>
- <CACGkMEs7_-=-8w=7gW8R_EhzfWOwuDoj4p-iCPQ7areOa9uaUw@mail.gmail.com>
- <20251225112729-mutt-send-email-mst@kernel.org> <CACGkMEt33BAWGmeFfHWYrjQLOT4+JB7HsWWVMKUn6yFxQ9y2gg@mail.gmail.com>
- <20251226022727-mutt-send-email-mst@kernel.org> <7143657a-a52f-4cff-acbc-e89f4c713cc4@gmail.com>
-In-Reply-To: <7143657a-a52f-4cff-acbc-e89f4c713cc4@gmail.com>
-From: Jason Wang <jasowang@redhat.com>
-Date: Wed, 31 Dec 2025 15:30:06 +0800
-X-Gm-Features: AQt7F2rQX-PivS77SwzPvLVG0RtPt7RZFLVBzTZg9DAVBYBssUXbKl6MRGZkge0
-Message-ID: <CACGkMEuasGDh=wT0n5b5QFDSNNBK7muipBKHb2v5eoKCU0NWDw@mail.gmail.com>
-Subject: Re: [PATCH net 1/3] virtio-net: make refill work a per receive queue work
-To: Bui Quang Minh <minhquangbui99@gmail.com>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, netdev@vger.kernel.org, 
-	=?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	Stanislav Fomichev <sdf@fomichev.me>, virtualization@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7ia4ms2zwuqb.fsf@castle.c.googlers.com>
 
-On Wed, Dec 31, 2025 at 12:29=E2=80=AFAM Bui Quang Minh
-<minhquangbui99@gmail.com> wrote:
->
-> On 12/26/25 14:37, Michael S. Tsirkin wrote:
-> > On Fri, Dec 26, 2025 at 09:31:26AM +0800, Jason Wang wrote:
-> >> On Fri, Dec 26, 2025 at 12:27=E2=80=AFAM Michael S. Tsirkin <mst@redha=
-t.com> wrote:
-> >>> On Thu, Dec 25, 2025 at 03:33:29PM +0800, Jason Wang wrote:
-> >>>> On Wed, Dec 24, 2025 at 9:48=E2=80=AFAM Michael S. Tsirkin <mst@redh=
-at.com> wrote:
-> >>>>> On Wed, Dec 24, 2025 at 09:37:14AM +0800, Xuan Zhuo wrote:
-> >>>>>> Hi Jason,
-> >>>>>>
-> >>>>>> I'm wondering why we even need this refill work. Why not simply le=
-t NAPI retry
-> >>>>>> the refill on its next run if the refill fails? That would seem mu=
-ch simpler.
-> >>>>>> This refill work complicates maintenance and often introduces a lo=
-t of
-> >>>>>> concurrency issues and races.
-> >>>>>>
-> >>>>>> Thanks.
-> >>>>> refill work can refill from GFP_KERNEL, napi only from ATOMIC.
-> >>>>>
-> >>>>> And if GFP_ATOMIC failed, aggressively retrying might not be a grea=
-t idea.
-> >>>> Btw, I see some drivers are doing things as Xuan said. E.g
-> >>>> mlx5e_napi_poll() did:
-> >>>>
-> >>>> busy |=3D INDIRECT_CALL_2(rq->post_wqes,
-> >>>>                                  mlx5e_post_rx_mpwqes,
-> >>>>                                  mlx5e_post_rx_wqes,
-> >>>>
-> >>>> ...
-> >>>>
-> >>>> if (busy) {
-> >>>>           if (likely(mlx5e_channel_no_affinity_change(c))) {
-> >>>>                  work_done =3D budget;
-> >>>>                  goto out;
-> >>>> ...
-> >>>
-> >>> is busy a GFP_ATOMIC allocation failure?
-> >> Yes, and I think the logic here is to fallback to ksoftirqd if the
-> >> allocation fails too much.
-> >>
-> >> Thanks
+On Tue, Dec 30, 2025 at 09:00:28PM +0000, Roman Gushchin wrote:
+> Matt Bobrowski <mattbobrowski@google.com> writes:
+> 
+> > On Mon, Dec 22, 2025 at 08:41:53PM -0800, Roman Gushchin wrote:
+> >> Introduce a BPF kfunc to get a trusted pointer to the root memory
+> >> cgroup. It's very handy to traverse the full memcg tree, e.g.
+> >> for handling a system-wide OOM.
+> >> 
+> >> It's possible to obtain this pointer by traversing the memcg tree
+> >> up from any known memcg, but it's sub-optimal and makes BPF programs
+> >> more complex and less efficient.
+> >> 
+> >> bpf_get_root_mem_cgroup() has a KF_ACQUIRE | KF_RET_NULL semantics,
+> >> however in reality it's not necessary to bump the corresponding
+> >> reference counter - root memory cgroup is immortal, reference counting
+> >> is skipped, see css_get(). Once set, root_mem_cgroup is always a valid
+> >> memcg pointer. It's safe to call bpf_put_mem_cgroup() for the pointer
+> >> obtained with bpf_get_root_mem_cgroup(), it's effectively a no-op.
+> >> 
+> >> Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
+> >> ---
+> >>  mm/bpf_memcontrol.c | 20 ++++++++++++++++++++
+> >>  1 file changed, 20 insertions(+)
+> >> 
+> >> diff --git a/mm/bpf_memcontrol.c b/mm/bpf_memcontrol.c
+> >> index 82eb95de77b7..187919eb2fe2 100644
+> >> --- a/mm/bpf_memcontrol.c
+> >> +++ b/mm/bpf_memcontrol.c
+> >> @@ -10,6 +10,25 @@
+> >>  
+> >>  __bpf_kfunc_start_defs();
+> >>  
+> >> +/**
+> >> + * bpf_get_root_mem_cgroup - Returns a pointer to the root memory cgroup
+> >> + *
+> >> + * The function has KF_ACQUIRE semantics, even though the root memory
+> >> + * cgroup is never destroyed after being created and doesn't require
+> >> + * reference counting. And it's perfectly safe to pass it to
+> >> + * bpf_put_mem_cgroup()
+> >> + *
+> >> + * Return: A pointer to the root memory cgroup.
+> >> + */
+> >> +__bpf_kfunc struct mem_cgroup *bpf_get_root_mem_cgroup(void)
+> >> +{
+> >> +	if (mem_cgroup_disabled())
+> >> +		return NULL;
+> >> +
+> >> +	/* css_get() is not needed */
+> >> +	return root_mem_cgroup;
+> >> +}
+> >> +
+> >>  /**
+> >>   * bpf_get_mem_cgroup - Get a reference to a memory cgroup
+> >>   * @css: pointer to the css structure
+> >> @@ -64,6 +83,7 @@ __bpf_kfunc void bpf_put_mem_cgroup(struct mem_cgroup *memcg)
+> >>  __bpf_kfunc_end_defs();
+> >>  
+> >>  BTF_KFUNCS_START(bpf_memcontrol_kfuncs)
+> >> +BTF_ID_FLAGS(func, bpf_get_root_mem_cgroup, KF_ACQUIRE | KF_RET_NULL)
 > >
-> > True. I just don't know if this works better or worse than the
-> > current design, but it is certainly simpler and we never actually
-> > worried about the performance of the current one.
-> >
-> >
-> > So you know, let's roll with this approach.
-> >
-> > I do however ask that some testing is done on the patch forcing these O=
-OM
-> > situations just to see if we are missing something obvious.
-> >
-> >
-> > the beauty is the patch can be very small:
-> > 1. patch 1 do not schedule refill ever, just retrigger napi
-> > 2. remove all the now dead code
-> >
-> > this way patch 1 will be small and backportable to stable.
->
-> I've tried 1. with this patch
->
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 1bb3aeca66c6..9e890aff2d95 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -3035,7 +3035,7 @@ static int virtnet_receive_packets(struct virtnet_i=
-nfo *vi,
->   }
->
->   static int virtnet_receive(struct receive_queue *rq, int budget,
-> -               unsigned int *xdp_xmit)
-> +               unsigned int *xdp_xmit, bool *retry_refill)
->   {
->       struct virtnet_info *vi =3D rq->vq->vdev->priv;
->       struct virtnet_rq_stats stats =3D {};
-> @@ -3047,12 +3047,8 @@ static int virtnet_receive(struct receive_queue *r=
-q, int budget,
->           packets =3D virtnet_receive_packets(vi, rq, budget, xdp_xmit, &=
-stats);
->
->       if (rq->vq->num_free > min((unsigned int)budget, virtqueue_get_vrin=
-g_size(rq->vq)) / 2) {
-> -        if (!try_fill_recv(vi, rq, GFP_ATOMIC)) {
-> -            spin_lock(&vi->refill_lock);
-> -            if (vi->refill_enabled)
-> -                schedule_delayed_work(&vi->refill, 0);
-> -            spin_unlock(&vi->refill_lock);
-> -        }
-> +        if (!try_fill_recv(vi, rq, GFP_ATOMIC))
-> +            *retry_refill =3D true;
->       }
->
->       u64_stats_set(&stats.packets, packets);
-> @@ -3129,18 +3125,18 @@ static int virtnet_poll(struct napi_struct *napi,=
- int budget)
->       struct send_queue *sq;
->       unsigned int received;
->       unsigned int xdp_xmit =3D 0;
-> -    bool napi_complete;
-> +    bool napi_complete, retry_refill =3D false;
->
->       virtnet_poll_cleantx(rq, budget);
->
-> -    received =3D virtnet_receive(rq, budget, &xdp_xmit);
-> +    received =3D virtnet_receive(rq, budget, &xdp_xmit, &retry_refill);
->       rq->packets_in_napi +=3D received;
->
->       if (xdp_xmit & VIRTIO_XDP_REDIR)
->           xdp_do_flush();
->
->       /* Out of packets? */
-> -    if (received < budget) {
-> +    if (received < budget && !retry_refill) {
+> > I feel as though relying on KF_ACQUIRE semantics here is somewhat
+> > odd. Users of this BPF kfunc will now be forced to call
+> > bpf_put_mem_cgroup() on the returned root_mem_cgroup, despite it being
+> > completely unnecessary.
+> 
+> A agree that it's annoying, but I doubt this extra call makes any
+> difference in the real world.
 
-But you didn't return the budget when we need to retry here?
+Sure, that certainly holds true.
 
->           napi_complete =3D virtqueue_napi_complete(napi, rq->vq, receive=
-d);
->           /* Intentionally not taking dim_lock here. This may result in a
->            * spurious net_dim call. But if that happens virtnet_rx_dim_wo=
-rk
-> @@ -3230,9 +3226,11 @@ static int virtnet_open(struct net_device *dev)
->
->       for (i =3D 0; i < vi->max_queue_pairs; i++) {
->           if (i < vi->curr_queue_pairs)
-> -            /* Make sure we have some buffers: if oom use wq. */
-> -            if (!try_fill_recv(vi, &vi->rq[i], GFP_KERNEL))
-> -                schedule_delayed_work(&vi->refill, 0);
-> +            /* If this fails, we will retry later in
-> +             * NAPI poll, which is scheduled in the below
-> +             * virtnet_enable_queue_pair
-> +             */
-> +            try_fill_recv(vi, &vi->rq[i], GFP_KERNEL);
->
->           err =3D virtnet_enable_queue_pair(vi, i);
->           if (err < 0)
-> @@ -3473,15 +3471,15 @@ static void __virtnet_rx_resume(struct virtnet_in=
-fo *vi,
->                   bool refill)
->   {
->       bool running =3D netif_running(vi->dev);
-> -    bool schedule_refill =3D false;
->
-> -    if (refill && !try_fill_recv(vi, rq, GFP_KERNEL))
-> -        schedule_refill =3D true;
-> +    if (refill)
-> +        /* If this fails, we will retry later in NAPI poll, which is
-> +         * scheduled in the below virtnet_napi_enable
-> +         */
-> +        try_fill_recv(vi, rq, GFP_KERNEL);
-> +
->       if (running)
->           virtnet_napi_enable(rq);
-> -
-> -    if (schedule_refill)
-> -        schedule_delayed_work(&vi->refill, 0);
->   }
->
->   static void virtnet_rx_resume_all(struct virtnet_info *vi)
-> @@ -3777,6 +3775,7 @@ static int virtnet_set_queues(struct virtnet_info *=
-vi, u16 queue_pairs)
->       struct virtio_net_rss_config_trailer old_rss_trailer;
->       struct net_device *dev =3D vi->dev;
->       struct scatterlist sg;
-> +    int i;
->
->       if (!vi->has_cvq || !virtio_has_feature(vi->vdev, VIRTIO_NET_F_MQ))
->           return 0;
-> @@ -3829,11 +3828,8 @@ static int virtnet_set_queues(struct virtnet_info =
-*vi, u16 queue_pairs)
->       }
->   succ:
->       vi->curr_queue_pairs =3D queue_pairs;
-> -    /* virtnet_open() will refill when device is going to up. */
-> -    spin_lock_bh(&vi->refill_lock);
-> -    if (dev->flags & IFF_UP && vi->refill_enabled)
-> -        schedule_delayed_work(&vi->refill, 0);
-> -    spin_unlock_bh(&vi->refill_lock);
-> +    for (i =3D 0; i < vi->curr_queue_pairs; i++)
-> +        try_fill_recv(vi, &vi->rq[i], GFP_KERNEL);
->
->       return 0;
->   }
->
->
-> But I got an issue with selftests/drivers/net/hw/xsk_reconfig.py. This
-> test sets up XDP zerocopy (Xsk) but does not provide any descriptors to
-> the fill ring. So xsk_pool does not have any descriptors and
-> try_fill_recv will always fail. The RX NAPI keeps polling. Later, when
-> we want to disable the xsk_pool, in virtnet_xsk_pool_disable path,
->
-> virtnet_xsk_pool_disable
-> -> virtnet_rq_bind_xsk_pool
->    -> virtnet_rx_pause
->      -> __virtnet_rx_pause
->        -> virtnet_napi_disable
->          -> napi_disable
->
-> We get stuck in napi_disable because the RX NAPI is still polling.
+> Also, the corresponding kernel code designed to hide the special
+> handling of the root cgroup. css_get()/css_put() are simple no-ops for
+> the root cgroup, but are totally valid.
 
-napi_disable will set NAPI_DISABLE bit, no?
+Yes, I do see that.
 
->
-> In drivers/net/ethernet/mellanox/mlx5, AFAICS, it uses state bit for
-> synchronization between xsk setup (mlx5e_xsk_setup_pool) with RX NAPI
-> (mlx5e_napi_poll) without using napi_disable/enable. However, in
-> drivers/net/ethernet/intel/ice,
->
-> ice_xsk_pool_setup
-> -> ice_qp_dis
->    -> ice_qvec_toggle_napi
->      -> napi_disable
->
-> it still uses napi_disable. Did I miss something in the above patch?
-> I'll try to look into using another synchronization instead of
-> napi_disable/enable in xsk_pool setup path too.
->
-> Thanks,
-> Quang Minh.
->
+> So in most places the root cgroup is handled as any other, which
+> simplifies the code. I guess the same will be true for many bpf
+> programs.
 
-Thanks
-
+I see, however the same might not necessarily hold for all other
+global pointers which end up being handed out by a BPF kfunc (not
+necessarily bpf_get_root_mem_cgroup()). This is why I was wondering
+whether there's some sense to introducing another KF flag (or
+something similar) which allows returned values from BPF kfuncs to be
+implicitly treated as trusted.
 
