@@ -1,110 +1,88 @@
-Return-Path: <bpf+bounces-77587-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77588-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2A04CEBFB5
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 13:35:08 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 642D0CEC115
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 15:14:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 31F82300E8D4
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 12:35:05 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id DCC823014A12
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 14:14:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2747C322B83;
-	Wed, 31 Dec 2025 12:35:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DB3123E334;
+	Wed, 31 Dec 2025 14:14:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X3jKDzRb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qnUpSf6N"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4315E3148B8
-	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 12:35:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC7B3239E7E
+	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 14:14:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767184502; cv=none; b=oMr56gm7o5ngh0Fn9h3L6Ix2+PvZy5OR2Q1vogI08F3Zzem/Ybepi9+xSQp79B3w65U6i8CQJ+RZIcK5I0WHw8Zl+vpR5TyF1/2UyNJwyWfL6Aq/77rA6Vw9/P6QkMSEtP17MDBHt0GL89gGDR5+zpc1xzyIG51cXdPnwa85RtM=
+	t=1767190480; cv=none; b=j7m1CGjysYMHMB4IihZoUx5Gcu/VW0HcgSo2XpDca0ojV2UWUjTo/kSjL9+mPRuMMHzV5S4NcrBrnjiiqaKz1p5lE5OADIuBTdGWG/N2YTcXJwctWDibUfF9+0AyFW01vZlvieukDNvxbLbQpINwyvwSbmU0BZ7HqY5H7tgya1w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767184502; c=relaxed/simple;
-	bh=0b7e3Q4nvnJzzXG4VuhNpxvQcZV5K5/GkMiEmT25CpM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PE7YtiJcodpBsIR0NGjrtSJiiRgHryPWPLLm9oT9KL36xr4bPTkhtbDABR/7hRm427SGkAHXpLxCaKt9JKXhR3IwoSH7hKlmZ1gFP8tEmiTCEb+Xt9aModEqrrFR+TNfwFXnHFLdsa6jP6ffFzR8dAYjhxO1wTa71rq0McFv38I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X3jKDzRb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7FC0C113D0
-	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 12:34:59 +0000 (UTC)
+	s=arc-20240116; t=1767190480; c=relaxed/simple;
+	bh=pX8a16Xyxnwd09667g5i8D8Jk68h+Po6SvBUToVTuPk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mLqNam4Gn+ITIC8MJzOBlJ29ljj52pgypj+1Wtb8yRK1IlzYoJ8jMnakpg3XEPQRM6oim2aTaGeIUSHusQzZd/xtzXDyEk/8r3es3cqI+3Z3da7lkOodOiYfLvUZK2TRia7NY/AVw6hVPWYKvmgoySUILC69pF7hTz/U/PjSzcs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qnUpSf6N; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2FDDC113D0;
+	Wed, 31 Dec 2025 14:14:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767184499;
-	bh=0b7e3Q4nvnJzzXG4VuhNpxvQcZV5K5/GkMiEmT25CpM=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=X3jKDzRbZTW7iInNHx/Bp6zgFDr0bTKcx/aJHrW9ekeMRgp7rib3J3jUHZv3izM0Q
-	 ZMxUfPnwegSxduE2Z/2d7RODDTrTJSn3mA1XDtGyyd6Wk1yaNqqTMdQOhI4cqRshrX
-	 AnpVf5oDB+wgyqO9jds7zO/EDcxahHfBqr1GPdRS56S9vZEPC44drNc3sJOS2QCgWW
-	 +ivoQj6PI2NdQqg8rHLSHxVoRVLcS5QkFJkbr5jY/EIJsa32aJBA5LfQKddYI/P0Eg
-	 o9QtFgV0jYwRO6fvkj8NFdaXH5in//Ix6/flZWrBaUa6O53JfgJT5IbsuaCXpzix+U
-	 JuztJXlYnxszw==
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-b7eff205947so1538005666b.1
-        for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 04:34:59 -0800 (PST)
-X-Gm-Message-State: AOJu0Yz2FEb0vGDVZa4fJ0Hy0z3w34038rWoLVYnKlMmLL5bThDmR2bC
-	DRwTCyZVCksRyOaOxVL0UDfGegCP7zfgUz6/1ebVaNgsv9obs6FvCXt4YN/Sh0E1OybBzLfXirO
-	ziBAWUdqubDrIEfMC0Cvr1fMzPGTFkdY=
-X-Google-Smtp-Source: AGHT+IGXYzle8rsVJdOQ8Wpp6OoQEfXdEV8R5kEW66gLg4xpla5AOSlJjpClTDtvf0IgpCzJgwMj7lKdYUwh9x4kFgg=
-X-Received: by 2002:a17:907:6d1e:b0:b83:8f35:773b with SMTP id
- a640c23a62f3a-b838f35775dmr598523066b.54.1767184498401; Wed, 31 Dec 2025
- 04:34:58 -0800 (PST)
+	s=k20201202; t=1767190480;
+	bh=pX8a16Xyxnwd09667g5i8D8Jk68h+Po6SvBUToVTuPk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=qnUpSf6NSJ9QmGEjKT7EZxzaP0zUEM3BTOjIL/3n82Rd8xhzij0C/QQUwjR3zMoHI
+	 OmeWE8KYcpc/wvdl/z/F3Z3kX8q4395eKhdBZu2TUD0aBJMra1RJt56guWIBzNbdsy
+	 QoxVwcf54HG/Vtqwgr6FGEr0yT/jLlaE8Qgtgiv0MU6VoEEcBS68wzWm5x/rReK9+p
+	 g5QMQtIH+rLEAHVaIbYkCUHVujvQezzTmpkGoXjS2E3j1xhGxfBCLZpKT3eEu6bgiJ
+	 q4urteCp/GE+36A2fXwMKJBYbTcucHMPZtMZh18tu/Ba564UQkfzk2/HNzNEkbFeQv
+	 unCN4O9L4RaMg==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: bpf@vger.kernel.org
+Cc: Puranjay Mohan <puranjay@kernel.org>,
+	Puranjay Mohan <puranjay12@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	kernel-team@meta.com
+Subject: [PATCH bpf-next v2 0/2] memcg accounting for BPF arena
+Date: Wed, 31 Dec 2025 06:14:31 -0800
+Message-ID: <20251231141434.3416822-1-puranjay@kernel.org>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251224192448.3176531-1-puranjay@kernel.org> <20251224192448.3176531-2-puranjay@kernel.org>
- <4cb72b4808c333156552374c5f3912260097af43.camel@gmail.com>
- <CANk7y0g6s5C-mLTPUpGyvJC=ZA=v9WawYzbeVgocbsf4dcXJHw@mail.gmail.com> <6d032492af465929e1e02c53a479f71ef8964d76.camel@gmail.com>
-In-Reply-To: <6d032492af465929e1e02c53a479f71ef8964d76.camel@gmail.com>
-From: Puranjay Mohan <puranjay@kernel.org>
-Date: Wed, 31 Dec 2025 12:34:46 +0000
-X-Gmail-Original-Message-ID: <CANk7y0jdE-1cVE3UsyQaC2HwZ0TyjPZr=q=c4meYjH27PdUwJg@mail.gmail.com>
-X-Gm-Features: AQt7F2oP8dedVZUGVP5VjX9pABbTeEGmaCxv7N3_Ba8Dk91T058Brj2rtZvqzT8
-Message-ID: <CANk7y0jdE-1cVE3UsyQaC2HwZ0TyjPZr=q=c4meYjH27PdUwJg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/7] bpf: Make KF_TRUSTED_ARGS the default for
- all kfuncs
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Dec 31, 2025 at 12:29=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.co=
-m> wrote:
->
-> On Wed, 2025-12-31 at 00:08 +0000, Puranjay Mohan wrote:
->
-> [...]
->
-> > I wish to do a full review of all kfuncs and make
-> > sure either they are tagged with correct __nullable, __opt annotation
-> > or fixed to make sure they are doing the right thing. But currently I
-> > just made sure all selftests pass, some of the kfuncs might not have
-> > self tests and would need manual analysis and I will have to do that.
->
-> Ack, sounds like a plan.
->
-> > Some kfuncs will have breaking changes, I am not sure how to work
-> > around that case, for example css_rstat_updated() could be
-> > successfully called from fentry programs like the selftest fixed in
-> > Patch 7, it worked because css_rstat_updated() doesn't mark the
-> > parameters with KF_TRUSTED_ARGS, but now KF_TRUSTED_ARGS is the
-> > default so this kfunc can't be called from fentry programs as fentry's
-> > parameters are not marked as trusted.
-> >
-> >
-> > Looking at the code of css_rstat_updated() it seems that it assumes
-> > the parameters to be trusted and therefore not allowing it to be
-> > called from fentry would be the right thing to do,
-> > but it could break perfectly working BPF programs.
->
-> Indeed, it expects 'css' to be not NULL as it dereferences the
-> pointer immediately.
+v1: https://lore.kernel.org/all/20251230153006.1347742-1-puranjay@kernel.org/
+Changes in v1->v2:
+- Return both pointers through arguments from bpf_map_memcg_enter and
+  make it return void. (Alexei)
+- Add memcg accounting in arena_free_worker (AI)
 
-So what do you think is the right way to move forward? it will break
-some programs but for their good. I think correctness and security
-outweigh backwards compatibility.
+This set adds memcg accounting logic into arena kfuncs and other places
+that do allocations in arena.c.
+
+Puranjay Mohan (2):
+  bpf: syscall: Introduce memcg enter/exit helpers
+  bpf: arena: Reintroduce memcg accounting
+
+ include/linux/bpf.h     | 15 +++++++++++++
+ kernel/bpf/arena.c      | 44 +++++++++++++++++++++++++++++++-----
+ kernel/bpf/range_tree.c |  5 +++--
+ kernel/bpf/syscall.c    | 50 +++++++++++++++++++++--------------------
+ 4 files changed, 83 insertions(+), 31 deletions(-)
+
+
+base-commit: ccaa6d2c9635a8db06a494d67ef123b56b967a78
+-- 
+2.47.3
+
 
