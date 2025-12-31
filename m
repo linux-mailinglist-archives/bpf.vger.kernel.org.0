@@ -1,200 +1,165 @@
-Return-Path: <bpf+bounces-77630-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77631-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCE83CEC7B7
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 19:47:29 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A0D9CEC7BE
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 20:01:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A6BC2300BBB7
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 18:47:25 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 995023016DF6
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 19:01:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 536543090C1;
-	Wed, 31 Dec 2025 18:47:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62CC6219A79;
+	Wed, 31 Dec 2025 19:01:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WZ2rJi2E"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sUYZMPZ0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FDE5308F28
-	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 18:47:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B574912CDBE
+	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 19:01:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767206843; cv=none; b=FFQSA6tRpyIHCq734wI/Lo6PRL41qX2wpyQ6+u0Z2E6dFpTRK7LvV02OzYCIz+wDQbfvbQkpwew2uT6UyexYvTvuIUNgnCRo+6dN1YeABAASJeb/aUuOMpwbNveAFSIs75ExpIehDIoVqxi94MaYiM8CFMI5Oe8w+09viXyczww=
+	t=1767207669; cv=none; b=c3guho3/JiAUj+IHB2ZlhB+y9d3gkNVJ02hjOHCLSQa8bIQavH63RUotaEwqCi5X/bPQuZQyMGc2MhpjvcvsIEoDsh2j7qutMrkG64Euj1KYmVuCdyqIjxeZr1ySkoTXq8wZJDYRciuYEUY5UredTBJhJdALXtmUouemhqOk1g8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767206843; c=relaxed/simple;
-	bh=eHViu1se3YsldXmpx6sxgvswnK1NuLJRzANw/XVEnHU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HYd4UlIy1BUd3W3uCyu73l4Y+u6JP+prUzYH9ivtPQ0BMXgNzqhuVfwswFo5qYRQdNEp1r2a9C+gZg9Sm6eiGG77KajGBCrsqRJFTjZYb5IoahpAgDCpdGXSYdEexhsd9lSIsHYWi+r1SZwLjWe7mOO9G3yA2Km2R5g0uAWNoAI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WZ2rJi2E; arc=none smtp.client-ip=209.85.128.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-78d6a3c3b77so115829547b3.0
-        for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 10:47:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767206841; x=1767811641; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=TR8lxCkS4eDpppOQUREYlPdk8D1i+AlunKABWTpf3Pc=;
-        b=WZ2rJi2EuukMy7vmNMdi6EqPvhrmzqcNYNlvOAIrSQ1vhNgJuxhu3CwJv2hdfas+JB
-         gVsvjeLnYlVVl0aoUUbJBMxlO2bDbRJ3GACggCeQW3LpbxVh3IzxsXthrMpi32C/FeiD
-         DnrkKv46gKTw5HnMz8sN7QX4xO2ynPZF/IVI/5ZMJhm+rrt2ovLOqdxD4WAe80oPNa/G
-         bYZuFZqlZQwGSbdIVHweEKJWBb8jxnIRjK4XfuJStypySkehVoGLsET8X35W78pZ0hg1
-         pKHhGVstSQUyo7ivOPCB+OQsVzWbgvh4/92xlX93TBs7F6JU4RhpanIuedEmmcncc9kK
-         QUnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767206841; x=1767811641;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TR8lxCkS4eDpppOQUREYlPdk8D1i+AlunKABWTpf3Pc=;
-        b=eqNxUX8nTZO83U7suFy8l8YiHULyc52xWNzLwfGVp8uLiXnZ51X9xhe7N8KR8QYT/L
-         c71FmZOvqHGM+bcFOIIJlkpiW2Rhb6vmXmKTyBs6jLINzNlqpbmnHTEANtOH6KruaKyd
-         0Bs+mVUGSSjFBEvWiXow+RI8u6D2CXW0gjYLY+5gNuaVoLbjfOjv0KsG8VloVSWM7kXX
-         wza7y+g4GN5fh31886YjT8RyQ0bYQDnGlv4KXhDWz+AoknrVuE7NjQWy7XTcZgY5dv00
-         fY4MkF1eY2QbqWvQDpkUSEhAAKjPI4iN18I32EHMLpSPB5qJVMUrn48SFm5BR9tDHNKJ
-         EosA==
-X-Forwarded-Encrypted: i=1; AJvYcCXo1sta1/vTzMJCwNTQ6pXwamu9147eyG5CDtLOm6OFf/SYLVk3xgEY2PImsOHXhvgtR/Y=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxBGEUTx1yxibJFMz7siq2xT9USEOdzBs5OFq0Y4U34gLhxuzAK
-	jKyJcLiNkV35NRC3nZvef6WqWBa1+XzJVjPyEaPrGZgqPMJ92+ddFudh
-X-Gm-Gg: AY/fxX5ps63OhyUfLC1W84c2YEjm5Uvsgb3F/VtMfPskpWy9ebVYeqYgzkMRfsVoHdY
-	xhqNshsrSQl/Pumcsgwz8O8AXxd2UlSPLkoyq02iE70HJpW0zvvKdijkLg2BDNfDyMZRab74CPt
-	gf7y6tQoLJT0nZxA++1y6fZsIWGAgW+1RNLBcPNNWO/zSJP2JxmcYxdwcbkpAuZLCuB91AXmZTd
-	tbPUPzIFBjIMpaZsGwhJqyXTOyUcu7uysbUQ2viURsvj6/If+BkyQjKU83ACVi2PwMEBcr3Xw7Q
-	XbIGqz1sQbfbNJW4JiDpgbtjSGsV5hr+IsGdLY6rh99bgu37RQle8ZQy6Bgd94ALGlD9wA9b+cu
-	rcsJwZqy1dIz1S+pDzEBALY8qNJM6kODn/pRYu7zw0ziMAuyR3cRDeDKQwLHh82p4jHY1W/fwjd
-	PwBgbnNUSUv2t3ksjIC2H1aHI16bv41hh+UMVX1A7DzWBiDfNK2ner5ZraPTIPNyDgLs4b/K/Vy
-	kp6UWRgJg==
-X-Google-Smtp-Source: AGHT+IHEqCVRdOuzPfyY82vPKnN2kZ1OXtQIg2FDKVFLpbjMgQDZ7U+nzlNrk9xDlGuhRUgkzZ79yw==
-X-Received: by 2002:a05:690e:11cb:b0:646:5138:620c with SMTP id 956f58d0204a3-64669c44188mr27285576d50.0.1767206840973;
-        Wed, 31 Dec 2025 10:47:20 -0800 (PST)
-Received: from localhost.localdomain (108-214-96-168.lightspeed.sntcca.sbcglobal.net. [108.214.96.168])
-        by smtp.gmail.com with ESMTPSA id 956f58d0204a3-6466a8bd6ffsm17896745d50.9.2025.12.31.10.47.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Dec 2025 10:47:20 -0800 (PST)
-From: Sun Jian <sun.jian.kdev@gmail.com>
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: Eduard Zingerman <eddyz87@gmail.com>,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Shuah Khan <shuah@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Sun Jian <sun.jian.kdev@gmail.com>
-Subject: [PATCH] selftests/bpf: fix qdisc kfunc declarations
-Date: Thu,  1 Jan 2026 02:47:11 +0800
-Message-ID: <20251231184711.12163-1-sun.jian.kdev@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1767207669; c=relaxed/simple;
+	bh=KsLou18IVekifh0BOsY0KAVF2PPIHbCMMHwI00m6CUU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gog8tQXG0C/zpeTMCsDQnCPZWEuJEydsUZopAtgppJoQNEHOZ2uR1/4c+wDhj/Q/7KJFDWVQa06qZLuKlVbCQrQ67dnVN8Mt65fYSeuYb3zsbhClNxxrtrmn7+7gcBk/xiPy8dxbj31nExQSOzFuED9UCvMchtQkainBwQzikW8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sUYZMPZ0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EFF5C19423
+	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 19:01:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1767207669;
+	bh=KsLou18IVekifh0BOsY0KAVF2PPIHbCMMHwI00m6CUU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=sUYZMPZ0EGgodbxQGnEYsB6zXWDVBNYiP+ZIi0nYcxVNKDBSZ3XDYNFjUmB1u7F1V
+	 34JtVgT8ZHJJUw6VmDWcrgGnJG4Wp3R326gWcpQaLISY5DpWYmnJcYskAZmtBiwDFW
+	 j/vzIDuVcX6+N0mBJlmJKL3RnKeVoMI0PpsWSgezNxsoAqMJifX5c//x5Cvd8cIu+a
+	 MBOAh9lRWsEvFLUSGywj4ueGPu7U+GXtLMWJCpJ1YU3mOr5NX6BPXKIW3KvNGxTSB0
+	 OwgT3GITHdRLIiN8Iwgn85LdbZNrYqCgf0dm0/hg4Os6o2oRU8GdHuPYY+xM1g9fH6
+	 0aRxmOkq6Yvxw==
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-b728a43e410so2093655366b.1
+        for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 11:01:09 -0800 (PST)
+X-Gm-Message-State: AOJu0YwR2x2IPotNRVsg7ARWMTep3eMm52aJ4gVhrYHMAJN62AASccrJ
+	7gG3Qv7R7nqgpj0yee8v2NfGhEsB2+jdm3h1+0p0a0A8fBpFPhi4qVUVkBwKyxDfaWC08DNr3kW
+	GRJHZUBVQ3tuKMSnBS6w80O4IjoiqXOM=
+X-Google-Smtp-Source: AGHT+IHlha/RwNCjZbzMOl8MsmawYUHVirbTiHLy5kC2KujXiUNK+LH4NJGdRJIOKTY/rfeLI4Vdg/rBd1gJ7vUFzFk=
+X-Received: by 2002:a17:907:6d21:b0:b7d:36bc:5fbe with SMTP id
+ a640c23a62f3a-b8036f1128emr3540634066b.23.1767207667714; Wed, 31 Dec 2025
+ 11:01:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20251231171118.1174007-1-puranjay@kernel.org> <20251231171118.1174007-2-puranjay@kernel.org>
+ <c1204513fe4da235d6b6b45eca9d0260a31e89ec.camel@gmail.com>
+In-Reply-To: <c1204513fe4da235d6b6b45eca9d0260a31e89ec.camel@gmail.com>
+From: Puranjay Mohan <puranjay@kernel.org>
+Date: Wed, 31 Dec 2025 19:00:55 +0000
+X-Gmail-Original-Message-ID: <CANk7y0js_-wvW281NAbr2eaCmvMxBAyCDd0wtdf+7XGKKRxEVw@mail.gmail.com>
+X-Gm-Features: AQt7F2oQ4C4mVFQDczeKVutHG4jtJeZXUTC41WPaDrQcweOjGcog_yt1jXZq_9A
+Message-ID: <CANk7y0js_-wvW281NAbr2eaCmvMxBAyCDd0wtdf+7XGKKRxEVw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/9] bpf: Make KF_TRUSTED_ARGS the default for
+ all kfuncs
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The qdisc BPF selftests fail to build because qdisc-related kfuncs are
-used without proper declarations, and struct bpf_sk_buff_ptr is only
-introduced in a function prototype scope, triggering -Wvisibility and
-type mismatch errors under -Werror.
+On Wed, Dec 31, 2025 at 6:38=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
+>
+> On Wed, 2025-12-31 at 09:08 -0800, Puranjay Mohan wrote:
+> > Change the verifier to make trusted args the default requirement for
+> > all kfuncs by removing is_kfunc_trusted_args() assuming it be to always
+> > return true.
+> >
+> > This works because:
+> > 1. Context pointers (xdp_md, __sk_buff, etc.) are handled through their
+> >    own KF_ARG_PTR_TO_CTX case label and bypass the trusted check
+> > 2. Struct_ops callback arguments are already marked as PTR_TRUSTED duri=
+ng
+> >    initialization and pass is_trusted_reg()
+> > 3. KF_RCU kfuncs are handled separately via is_kfunc_rcu() checks at
+> >    call sites (always checked with || alongside is_kfunc_trusted_args)
+> >
+> > This simple change makes all kfuncs require trusted args by default
+> > while maintaining correct behavior for all existing special cases.
+> >
+> > Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+> > ---
+>
+> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+>
+> Nit: I found two more textual appearances for KF_TRUSTED_ARGS:
+>
+>   File: fs/bpf_fs_kfuncs.c
+>   71:65: * used in place of bpf_d_path() whenever possible. It enforces K=
+F_TRUSTED_ARGS
+>   379:47:/* bpf_[set|remove]_dentry_xattr.* hooks have KF_TRUSTED_ARGS an=
+d
+>
+>   File: include/linux/bpf.h
+>   756:15:  * passed to KF_TRUSTED_ARGS kfuncs or BPF helper functions.
+>
+>   File: kernel/bpf/verifier.c
+>   12622:39:        * enforce strict matching for plain KF_TRUSTED_ARGS kf=
+uncs by default,
+>
+>   File: tools/testing/selftests/bpf/progs/cpumask_failure.c
+>   113:21:  /* NULL passed to KF_TRUSTED_ARGS kfunc. */
+>
+> >  Documentation/bpf/kfuncs.rst | 35 +++++++++++++++++------------------
+> >  kernel/bpf/verifier.c        | 14 +++-----------
+> >  2 files changed, 20 insertions(+), 29 deletions(-)
+> >
+> > diff --git a/Documentation/bpf/kfuncs.rst b/Documentation/bpf/kfuncs.rs=
+t
+> > index e38941370b90..22b5a970078c 100644
+> > --- a/Documentation/bpf/kfuncs.rst
+> > +++ b/Documentation/bpf/kfuncs.rst
+> > @@ -241,25 +241,23 @@ both are orthogonal to each other.
+> >  The KF_RELEASE flag is used to indicate that the kfunc releases the po=
+inter
+> >  passed in to it. There can be only one referenced pointer that can be =
+passed
+> >  in. All copies of the pointer being released are invalidated as a resu=
+lt of
+> > -invoking kfunc with this flag. KF_RELEASE kfuncs automatically receive=
+ the
+> > -protection afforded by the KF_TRUSTED_ARGS flag described below.
+> > +invoking kfunc with this flag.
+> >
+> > -2.4.4 KF_TRUSTED_ARGS flag
+> > ---------------------------
+> > +2.4.4 KF_TRUSTED_ARGS (default behavior)
+> > +-----------------------------------------
+>
+> Nit:
+> I think section should be renamed to 'kfunc parameters' and moved to a
+> separate section before '2.2 Annotating kfunc parameters'.
+> Sorry, should have commented about this yesterday.
+>
+> [...]
 
-Fix the build by:
-  - adding a file-scope forward declaration for struct bpf_sk_buff_ptr
-  - declaring qdisc kfuncs (bpf_qdisc_* and bpf_skb_get_hash/bpf_kfree_skb)
-    as __ksym in the shared header
-  - including required BPF headers in qdisc test progs
+Thanks for finding these, I will make these changes and re-spin after
+I get reviews from others too.
 
-Tested: make -C tools/testing/selftests/bpf OUTPUT=/tmp/selftests-bpf \
-/tmp/selftests-bpf/bpf_qdisc_fifo.bpf.o \
-/tmp/selftests-bpf/bpf_qdisc_fq.bpf.o \
-/tmp/selftests-bpf/bpf_qdisc_fail__incompl_ops.bpf.o
+There is another aspect I want your opinion one:
 
-Signed-off-by: Sun Jian <sun.jian.kdev@gmail.com>
----
- .../selftests/bpf/progs/bpf_qdisc_common.h      | 17 +++++++++++++++++
- .../bpf/progs/bpf_qdisc_fail__incompl_ops.c     |  4 ++++
- .../selftests/bpf/progs/bpf_qdisc_fifo.c        |  4 ++++
- .../testing/selftests/bpf/progs/bpf_qdisc_fq.c  |  1 +
- 4 files changed, 26 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/progs/bpf_qdisc_common.h b/tools/testing/selftests/bpf/progs/bpf_qdisc_common.h
-index 3754f581b328..bed2294c35f9 100644
---- a/tools/testing/selftests/bpf/progs/bpf_qdisc_common.h
-+++ b/tools/testing/selftests/bpf/progs/bpf_qdisc_common.h
-@@ -3,6 +3,9 @@
- #ifndef _BPF_QDISC_COMMON_H
- #define _BPF_QDISC_COMMON_H
- 
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+
- #define NET_XMIT_SUCCESS        0x00
- #define NET_XMIT_DROP           0x01    /* skb dropped                  */
- #define NET_XMIT_CN             0x02    /* congestion notification      */
-@@ -14,6 +17,20 @@
- 
- struct bpf_sk_buff_ptr;
- 
-+/* kfunc declarations provided via vmlinux BTF */
-+extern void bpf_qdisc_skb_drop(struct sk_buff *skb,
-+			       struct bpf_sk_buff_ptr *to_free) __ksym;
-+
-+extern void bpf_qdisc_bstats_update(struct Qdisc *sch,
-+				    const struct sk_buff *skb) __ksym;
-+
-+extern void bpf_qdisc_watchdog_schedule(struct Qdisc *sch,
-+					u64 expire, u64 delta_ns) __ksym;
-+
-+extern __u32 bpf_skb_get_hash(struct sk_buff *skb) __ksym;
-+
-+extern void bpf_kfree_skb(struct sk_buff *skb) __ksym;
-+
- static struct qdisc_skb_cb *qdisc_skb_cb(const struct sk_buff *skb)
- {
- 	return (struct qdisc_skb_cb *)skb->cb;
-diff --git a/tools/testing/selftests/bpf/progs/bpf_qdisc_fail__incompl_ops.c b/tools/testing/selftests/bpf/progs/bpf_qdisc_fail__incompl_ops.c
-index f188062ed730..8f9b2d2cb9a1 100644
---- a/tools/testing/selftests/bpf/progs/bpf_qdisc_fail__incompl_ops.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_qdisc_fail__incompl_ops.c
-@@ -1,6 +1,10 @@
- // SPDX-License-Identifier: GPL-2.0
- 
- #include <vmlinux.h>
-+
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
- #include "bpf_experimental.h"
- #include "bpf_qdisc_common.h"
- 
-diff --git a/tools/testing/selftests/bpf/progs/bpf_qdisc_fifo.c b/tools/testing/selftests/bpf/progs/bpf_qdisc_fifo.c
-index 1de2be3e370b..524d3ae2c9a1 100644
---- a/tools/testing/selftests/bpf/progs/bpf_qdisc_fifo.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_qdisc_fifo.c
-@@ -1,6 +1,10 @@
- // SPDX-License-Identifier: GPL-2.0
- 
- #include <vmlinux.h>
-+
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
- #include "bpf_experimental.h"
- #include "bpf_qdisc_common.h"
- 
-diff --git a/tools/testing/selftests/bpf/progs/bpf_qdisc_fq.c b/tools/testing/selftests/bpf/progs/bpf_qdisc_fq.c
-index 1a3233a275c7..dd47820fa230 100644
---- a/tools/testing/selftests/bpf/progs/bpf_qdisc_fq.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_qdisc_fq.c
-@@ -35,6 +35,7 @@
- #include <vmlinux.h>
- #include <errno.h>
- #include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
- #include "bpf_experimental.h"
- #include "bpf_qdisc_common.h"
- 
--- 
-2.43.0
-
+Assume a kfunc returns an error when you pass in a NULL pointer for
+some parameter, it checks for NULL as if it is not valid usage, it
+returns an error. After this change, this kfunc will not return an
+error at runtime, rather will be rejected by the verifier itself. This
+should not be a problem for real programs right? I think we should
+drop the second patch: "bpf: net: netfilter: Mark kfuncs accurately"
+because these kfuncs have no real use case with NULL being passed to
+them, only a self test tries to call them with NULL parameters, I
+think we should change the self test to detect load failure and leave
+these kfuncs without __nullable annotation. What do you think?
 
