@@ -1,54 +1,90 @@
-Return-Path: <bpf+bounces-77629-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77630-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EA0BCEC7AE
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 19:40:10 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCE83CEC7B7
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 19:47:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id AF06B300B2B1
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 18:40:07 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A6BC2300BBB7
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 18:47:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B338B3064B5;
-	Wed, 31 Dec 2025 18:40:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 536543090C1;
+	Wed, 31 Dec 2025 18:47:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZKPMCBX0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WZ2rJi2E"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDCEE22D780
-	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 18:40:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FDE5308F28
+	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 18:47:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767206406; cv=none; b=Ouue6mlearCvMc4jkyIVvEpeNcnqVDy2OfJy8/GEmoe266XMHFw1vbPoDNxboP/uTwShIJcyidc6B7le/fV4Krk8C91A/SoTli/v10sH5vDbJMKOaZ+TdLYbY5CwRgAqvtbtnFB0oakHx4g8qMtn9wH7PoBNaM1a5MMTBGClj3k=
+	t=1767206843; cv=none; b=FFQSA6tRpyIHCq734wI/Lo6PRL41qX2wpyQ6+u0Z2E6dFpTRK7LvV02OzYCIz+wDQbfvbQkpwew2uT6UyexYvTvuIUNgnCRo+6dN1YeABAASJeb/aUuOMpwbNveAFSIs75ExpIehDIoVqxi94MaYiM8CFMI5Oe8w+09viXyczww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767206406; c=relaxed/simple;
-	bh=xtKqFYMr9x9sy/5E26limGxs4iDAUIR/sCKyR/ALW+0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=sFwtNmp2A27zbtc3GoFhaxicK5caq6kOW1jNtA9ylrwB11cPBrIJVzcKuduNkHsAleX39yjwQ0g27hql1nR0tYTo9WnbuNL7VcSyoMLgotXHZb65+Q6S971xxvWI4QzrM3+iRF/xWAlXBBKIL/cL0vG3PYLgPqywNHuoHQMz/pI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZKPMCBX0; arc=none smtp.client-ip=95.215.58.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1767206391;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=tsL+ME6SOiPiO9GFf0yZueNO5btH9OG1yjy0K0+IBuY=;
-	b=ZKPMCBX0ihwP5qQjuGPgPjHU9tkxeFq2ScDJmjaUaLGY0Ot97Et+eCHDdUoJAO9jHDV1kr
-	MvPEU40VaB60/WoDvMOJosFVHythcR0ePtDvN+Ksd/XET3Xt+ReH7Udp7MNDp+MQoL19lv
-	AAAeL1TCleucxXVb2rimPNzezEBqNjs=
-From: Ihor Solodrai <ihor.solodrai@linux.dev>
-To: Alexei Starovoitov <ast@kernel.org>,
+	s=arc-20240116; t=1767206843; c=relaxed/simple;
+	bh=eHViu1se3YsldXmpx6sxgvswnK1NuLJRzANw/XVEnHU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HYd4UlIy1BUd3W3uCyu73l4Y+u6JP+prUzYH9ivtPQ0BMXgNzqhuVfwswFo5qYRQdNEp1r2a9C+gZg9Sm6eiGG77KajGBCrsqRJFTjZYb5IoahpAgDCpdGXSYdEexhsd9lSIsHYWi+r1SZwLjWe7mOO9G3yA2Km2R5g0uAWNoAI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WZ2rJi2E; arc=none smtp.client-ip=209.85.128.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-78d6a3c3b77so115829547b3.0
+        for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 10:47:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1767206841; x=1767811641; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=TR8lxCkS4eDpppOQUREYlPdk8D1i+AlunKABWTpf3Pc=;
+        b=WZ2rJi2EuukMy7vmNMdi6EqPvhrmzqcNYNlvOAIrSQ1vhNgJuxhu3CwJv2hdfas+JB
+         gVsvjeLnYlVVl0aoUUbJBMxlO2bDbRJ3GACggCeQW3LpbxVh3IzxsXthrMpi32C/FeiD
+         DnrkKv46gKTw5HnMz8sN7QX4xO2ynPZF/IVI/5ZMJhm+rrt2ovLOqdxD4WAe80oPNa/G
+         bYZuFZqlZQwGSbdIVHweEKJWBb8jxnIRjK4XfuJStypySkehVoGLsET8X35W78pZ0hg1
+         pKHhGVstSQUyo7ivOPCB+OQsVzWbgvh4/92xlX93TBs7F6JU4RhpanIuedEmmcncc9kK
+         QUnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767206841; x=1767811641;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TR8lxCkS4eDpppOQUREYlPdk8D1i+AlunKABWTpf3Pc=;
+        b=eqNxUX8nTZO83U7suFy8l8YiHULyc52xWNzLwfGVp8uLiXnZ51X9xhe7N8KR8QYT/L
+         c71FmZOvqHGM+bcFOIIJlkpiW2Rhb6vmXmKTyBs6jLINzNlqpbmnHTEANtOH6KruaKyd
+         0Bs+mVUGSSjFBEvWiXow+RI8u6D2CXW0gjYLY+5gNuaVoLbjfOjv0KsG8VloVSWM7kXX
+         wza7y+g4GN5fh31886YjT8RyQ0bYQDnGlv4KXhDWz+AoknrVuE7NjQWy7XTcZgY5dv00
+         fY4MkF1eY2QbqWvQDpkUSEhAAKjPI4iN18I32EHMLpSPB5qJVMUrn48SFm5BR9tDHNKJ
+         EosA==
+X-Forwarded-Encrypted: i=1; AJvYcCXo1sta1/vTzMJCwNTQ6pXwamu9147eyG5CDtLOm6OFf/SYLVk3xgEY2PImsOHXhvgtR/Y=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxBGEUTx1yxibJFMz7siq2xT9USEOdzBs5OFq0Y4U34gLhxuzAK
+	jKyJcLiNkV35NRC3nZvef6WqWBa1+XzJVjPyEaPrGZgqPMJ92+ddFudh
+X-Gm-Gg: AY/fxX5ps63OhyUfLC1W84c2YEjm5Uvsgb3F/VtMfPskpWy9ebVYeqYgzkMRfsVoHdY
+	xhqNshsrSQl/Pumcsgwz8O8AXxd2UlSPLkoyq02iE70HJpW0zvvKdijkLg2BDNfDyMZRab74CPt
+	gf7y6tQoLJT0nZxA++1y6fZsIWGAgW+1RNLBcPNNWO/zSJP2JxmcYxdwcbkpAuZLCuB91AXmZTd
+	tbPUPzIFBjIMpaZsGwhJqyXTOyUcu7uysbUQ2viURsvj6/If+BkyQjKU83ACVi2PwMEBcr3Xw7Q
+	XbIGqz1sQbfbNJW4JiDpgbtjSGsV5hr+IsGdLY6rh99bgu37RQle8ZQy6Bgd94ALGlD9wA9b+cu
+	rcsJwZqy1dIz1S+pDzEBALY8qNJM6kODn/pRYu7zw0ziMAuyR3cRDeDKQwLHh82p4jHY1W/fwjd
+	PwBgbnNUSUv2t3ksjIC2H1aHI16bv41hh+UMVX1A7DzWBiDfNK2ner5ZraPTIPNyDgLs4b/K/Vy
+	kp6UWRgJg==
+X-Google-Smtp-Source: AGHT+IHEqCVRdOuzPfyY82vPKnN2kZ1OXtQIg2FDKVFLpbjMgQDZ7U+nzlNrk9xDlGuhRUgkzZ79yw==
+X-Received: by 2002:a05:690e:11cb:b0:646:5138:620c with SMTP id 956f58d0204a3-64669c44188mr27285576d50.0.1767206840973;
+        Wed, 31 Dec 2025 10:47:20 -0800 (PST)
+Received: from localhost.localdomain (108-214-96-168.lightspeed.sntcca.sbcglobal.net. [108.214.96.168])
+        by smtp.gmail.com with ESMTPSA id 956f58d0204a3-6466a8bd6ffsm17896745d50.9.2025.12.31.10.47.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Dec 2025 10:47:20 -0800 (PST)
+From: Sun Jian <sun.jian.kdev@gmail.com>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: Eduard Zingerman <eddyz87@gmail.com>,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Shuah Khan <shuah@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nsc@kernel.org>
-Cc: bpf@vger.kernel.org,
-	linux-kbuild@vger.kernel.org
-Subject: [PATCH bpf-next v1] scripts/gen-btf.sh: Reduce log verbosity
-Date: Wed, 31 Dec 2025 10:39:29 -0800
-Message-ID: <20251231183929.65668-1-ihor.solodrai@linux.dev>
+	Alexei Starovoitov <ast@kernel.org>,
+	Sun Jian <sun.jian.kdev@gmail.com>
+Subject: [PATCH] selftests/bpf: fix qdisc kfunc declarations
+Date: Thu,  1 Jan 2026 02:47:11 +0800
+Message-ID: <20251231184711.12163-1-sun.jian.kdev@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -56,92 +92,109 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-Remove info messages from gen-btf.sh, as they are unnecessarily
-detailed and sometimes inaccurate [1].  Verbose log can be produced by
-passing V=1 to make, which will set -x for the shell.
+The qdisc BPF selftests fail to build because qdisc-related kfuncs are
+used without proper declarations, and struct bpf_sk_buff_ptr is only
+introduced in a function prototype scope, triggering -Wvisibility and
+type mismatch errors under -Werror.
 
-[1] https://lore.kernel.org/bpf/CAADnVQ+biTSDaNtoL=ct9XtBJiXYMUqGYLqu604C3D8N+8YH9A@mail.gmail.com/
+Fix the build by:
+  - adding a file-scope forward declaration for struct bpf_sk_buff_ptr
+  - declaring qdisc kfuncs (bpf_qdisc_* and bpf_skb_get_hash/bpf_kfree_skb)
+    as __ksym in the shared header
+  - including required BPF headers in qdisc test progs
 
-Suggested-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
+Tested: make -C tools/testing/selftests/bpf OUTPUT=/tmp/selftests-bpf \
+/tmp/selftests-bpf/bpf_qdisc_fifo.bpf.o \
+/tmp/selftests-bpf/bpf_qdisc_fq.bpf.o \
+/tmp/selftests-bpf/bpf_qdisc_fail__incompl_ops.bpf.o
+
+Signed-off-by: Sun Jian <sun.jian.kdev@gmail.com>
 ---
- scripts/gen-btf.sh      | 10 ----------
- scripts/link-vmlinux.sh |  3 ++-
- 2 files changed, 2 insertions(+), 11 deletions(-)
+ .../selftests/bpf/progs/bpf_qdisc_common.h      | 17 +++++++++++++++++
+ .../bpf/progs/bpf_qdisc_fail__incompl_ops.c     |  4 ++++
+ .../selftests/bpf/progs/bpf_qdisc_fifo.c        |  4 ++++
+ .../testing/selftests/bpf/progs/bpf_qdisc_fq.c  |  1 +
+ 4 files changed, 26 insertions(+)
 
-diff --git a/scripts/gen-btf.sh b/scripts/gen-btf.sh
-index 0aec86615416..d6457661b9b6 100755
---- a/scripts/gen-btf.sh
-+++ b/scripts/gen-btf.sh
-@@ -60,28 +60,20 @@ is_enabled() {
- 	grep -q "^$1=y" ${objtree}/include/config/auto.conf
- }
+diff --git a/tools/testing/selftests/bpf/progs/bpf_qdisc_common.h b/tools/testing/selftests/bpf/progs/bpf_qdisc_common.h
+index 3754f581b328..bed2294c35f9 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_qdisc_common.h
++++ b/tools/testing/selftests/bpf/progs/bpf_qdisc_common.h
+@@ -3,6 +3,9 @@
+ #ifndef _BPF_QDISC_COMMON_H
+ #define _BPF_QDISC_COMMON_H
  
--info()
--{
--	printf "  %-7s %s\n" "${1}" "${2}"
--}
--
- case "${KBUILD_VERBOSE}" in
- *1*)
- 	set -x
- 	;;
- esac
++#include <vmlinux.h>
++#include <bpf/bpf_helpers.h>
++
+ #define NET_XMIT_SUCCESS        0x00
+ #define NET_XMIT_DROP           0x01    /* skb dropped                  */
+ #define NET_XMIT_CN             0x02    /* congestion notification      */
+@@ -14,6 +17,20 @@
  
--
- gen_btf_data()
+ struct bpf_sk_buff_ptr;
+ 
++/* kfunc declarations provided via vmlinux BTF */
++extern void bpf_qdisc_skb_drop(struct sk_buff *skb,
++			       struct bpf_sk_buff_ptr *to_free) __ksym;
++
++extern void bpf_qdisc_bstats_update(struct Qdisc *sch,
++				    const struct sk_buff *skb) __ksym;
++
++extern void bpf_qdisc_watchdog_schedule(struct Qdisc *sch,
++					u64 expire, u64 delta_ns) __ksym;
++
++extern __u32 bpf_skb_get_hash(struct sk_buff *skb) __ksym;
++
++extern void bpf_kfree_skb(struct sk_buff *skb) __ksym;
++
+ static struct qdisc_skb_cb *qdisc_skb_cb(const struct sk_buff *skb)
  {
--	info BTF "${ELF_FILE}"
- 	btf1="${ELF_FILE}.BTF.1"
- 	${PAHOLE} -J ${PAHOLE_FLAGS}			\
- 		${BTF_BASE:+--btf_base ${BTF_BASE}}	\
- 		--btf_encode_detached=${btf1}		\
- 		"${ELF_FILE}"
+ 	return (struct qdisc_skb_cb *)skb->cb;
+diff --git a/tools/testing/selftests/bpf/progs/bpf_qdisc_fail__incompl_ops.c b/tools/testing/selftests/bpf/progs/bpf_qdisc_fail__incompl_ops.c
+index f188062ed730..8f9b2d2cb9a1 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_qdisc_fail__incompl_ops.c
++++ b/tools/testing/selftests/bpf/progs/bpf_qdisc_fail__incompl_ops.c
+@@ -1,6 +1,10 @@
+ // SPDX-License-Identifier: GPL-2.0
  
--	info BTFIDS "${ELF_FILE}"
- 	${RESOLVE_BTFIDS} ${RESOLVE_BTFIDS_FLAGS}	\
- 		${BTF_BASE:+--btf_base ${BTF_BASE}}	\
- 		--btf ${btf1} "${ELF_FILE}"
-@@ -95,7 +87,6 @@ gen_btf_o()
- 	# SHF_ALLOC because .BTF will be part of the vmlinux image. --strip-all
- 	# deletes all symbols including __start_BTF and __stop_BTF, which will
- 	# be redefined in the linker script.
--	info OBJCOPY "${btf_data}"
- 	echo "" | ${CC} ${CLANG_FLAGS} ${KBUILD_CFLAGS} -c -x c -o ${btf_data} -
- 	${OBJCOPY} --add-section .BTF=${ELF_FILE}.BTF \
- 		--set-section-flags .BTF=alloc,readonly ${btf_data}
-@@ -113,7 +104,6 @@ gen_btf_o()
+ #include <vmlinux.h>
++
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
+ #include "bpf_experimental.h"
+ #include "bpf_qdisc_common.h"
  
- embed_btf_data()
- {
--	info OBJCOPY "${ELF_FILE}.BTF"
- 	${OBJCOPY} --add-section .BTF=${ELF_FILE}.BTF ${ELF_FILE}
+diff --git a/tools/testing/selftests/bpf/progs/bpf_qdisc_fifo.c b/tools/testing/selftests/bpf/progs/bpf_qdisc_fifo.c
+index 1de2be3e370b..524d3ae2c9a1 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_qdisc_fifo.c
++++ b/tools/testing/selftests/bpf/progs/bpf_qdisc_fifo.c
+@@ -1,6 +1,10 @@
+ // SPDX-License-Identifier: GPL-2.0
  
- 	# a module might not have a .BTF_ids or .BTF.base section
-diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-index 1915adf3249b..08cd8e25c65c 100755
---- a/scripts/link-vmlinux.sh
-+++ b/scripts/link-vmlinux.sh
-@@ -205,6 +205,7 @@ if is_enabled CONFIG_KALLSYMS || is_enabled CONFIG_DEBUG_INFO_BTF; then
- fi
+ #include <vmlinux.h>
++
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
+ #include "bpf_experimental.h"
+ #include "bpf_qdisc_common.h"
  
- if is_enabled CONFIG_DEBUG_INFO_BTF; then
-+	info BTF .tmp_vmlinux1
- 	if ! ${srctree}/scripts/gen-btf.sh .tmp_vmlinux1; then
- 		echo >&2 "Failed to generate BTF for vmlinux"
- 		echo >&2 "Try to disable CONFIG_DEBUG_INFO_BTF"
-@@ -265,7 +266,7 @@ fi
- vmlinux_link "${VMLINUX}"
- 
- if is_enabled CONFIG_DEBUG_INFO_BTF; then
--	info OBJCOPY ${btfids_vmlinux}
-+	info BTFIDS ${VMLINUX}
- 	${RESOLVE_BTFIDS} --patch_btfids ${btfids_vmlinux} ${VMLINUX}
- fi
+diff --git a/tools/testing/selftests/bpf/progs/bpf_qdisc_fq.c b/tools/testing/selftests/bpf/progs/bpf_qdisc_fq.c
+index 1a3233a275c7..dd47820fa230 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_qdisc_fq.c
++++ b/tools/testing/selftests/bpf/progs/bpf_qdisc_fq.c
+@@ -35,6 +35,7 @@
+ #include <vmlinux.h>
+ #include <errno.h>
+ #include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
+ #include "bpf_experimental.h"
+ #include "bpf_qdisc_common.h"
  
 -- 
-2.52.0
+2.43.0
 
 
