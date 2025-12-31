@@ -1,44 +1,44 @@
-Return-Path: <bpf+bounces-77601-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77602-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94E78CEC54E
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 18:11:40 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D5D3CEC551
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 18:11:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3194C300A1C7
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 17:11:36 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2CCE33009F9F
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 17:11:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F0D229B78D;
-	Wed, 31 Dec 2025 17:11:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B16A29BDB0;
+	Wed, 31 Dec 2025 17:11:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gNLs+4gw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AyoXFtXE"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2731329AAE3
-	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 17:11:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4DB129ACF0
+	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 17:11:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767201094; cv=none; b=RXhx4hmRp7gx/Ll7Nr1VhPt5vxwr+TULSc9u+03d85VKQBNzBaP+uSbfUbrlb211+wgINUDBy6ubvygTaqMlbvu2yTaEJpmGccNmqm44Y7MmHQK0Yghpn+PbBfKq20umRgbmxaKoCBK/UPbAZvdDJP94/nbk9y0fQVKtiQJsSfk=
+	t=1767201097; cv=none; b=FNVkSU7ODdJ58Yg2wHNavjHJWs3LQdAvoMPVQhHoouZkRD1liliDf1lRI6UFVwpTwCuXFGI++xQ9x6diJ0hnmNIzeqmFYCizDV9zMkfa18ux8hYpcFH2UDEn/q9jSjCa8XoXwzk82Rrero0PMwKXsWYbYs5xBEhYbcThcXVTqKs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767201094; c=relaxed/simple;
-	bh=AxnkvcLNVJ0+7PpZeaBgMmzleQaUcdYDaE+fSZgYJHE=;
+	s=arc-20240116; t=1767201097; c=relaxed/simple;
+	bh=PvlDGtPWoyByCVtPEgjWDNEKiVkiNakXleqmUDrZ3dE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=N3ALYVwPhB/+2iA4NETN98svw2zvPnzfcBy5Qn+h92So7AvowLI4NJjw4+lU17176V0ji0R9XfPu5h3Npt+Fi9kdj0wATfVx/9NqQmd/py6NEjSRAPsQIm4jEgx/LxskGMfWEXt+nZnnMEI9nBm+kRCkLuwB26+jk4mcwGQ6lCo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gNLs+4gw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61E9DC113D0;
-	Wed, 31 Dec 2025 17:11:33 +0000 (UTC)
+	 MIME-Version; b=E2W5xuZuUbO6Z+YGLG318CyKfGN1M1MZT/20goIp3FSEh6o7YAtHElx8Xi4UO1GghVymNGajOCXmXTTVfhIBM14HGDlWi0VNngCtTnYzd0LBKKXH39fNQ/CT9dm9EA9yLxaOkhJBZcqsNH0JEz1+CyoZZcWycyPq9uW8b9eyQCo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AyoXFtXE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 155EEC113D0;
+	Wed, 31 Dec 2025 17:11:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767201093;
-	bh=AxnkvcLNVJ0+7PpZeaBgMmzleQaUcdYDaE+fSZgYJHE=;
+	s=k20201202; t=1767201097;
+	bh=PvlDGtPWoyByCVtPEgjWDNEKiVkiNakXleqmUDrZ3dE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gNLs+4gwsxmaNeISXy8L/so+NsOd7wtHei21M+bRjEp1qce8NYP/xiVSm0L9M++0W
-	 3PGri3ClpMv9qaV3xSXAvF1GKkIBUh+XOio6W6aSJbFTj8xh6bElMJk/cSRdk2Ez8/
-	 iVYza/XgOMVOffG7WZSkRqmRiQNtNBfYIvt8pIy6lEpiqvWjMRljcbQe/tidPVxBH+
-	 GjLUNt7VcSjPaTMMLRqN1tArrx65rQkji0gs1NPtCUBa90DnrmedA3vbBwsM6+WyU9
-	 FBDZv6QWquYNgJTyoB3MsrvIdevZ8HRh+bLeLbYO+MAfGC7RJA4DcfYR5+6FfpzcX9
-	 Z+2OcoOdH3CIg==
+	b=AyoXFtXERBh4Gtfhl2/ClJRn+hE783HB7yFotnjEO2ZaqqY1tqKzJSHH8pQXOUyz5
+	 Zm3uM646GORUZy9UkoE8RyM1Vw5OqxX6PlWNRnv0XDwZZjy55sCgd9ZHhFK9Q/2dV3
+	 Y6OvtFnwxIXptcWvH4U52ihUrS0FWDbBHy1SZyHehvpMW4xL8n0+KX1JXZBZGhZkeQ
+	 uOKo4vs2d2hnvglK575CWhUe+B0iFInMoEktvQ0x+dbkHaiYeYP2T/yscstxxsP+mG
+	 iWJiB9d5s2UHplCstYWBM3hIDrWap+v1rIzgWBSASIsZJ7VylTNj42MHqyz7/JJDqf
+	 6iDWHWKrrAULw==
 From: Puranjay Mohan <puranjay@kernel.org>
 To: bpf@vger.kernel.org
 Cc: Puranjay Mohan <puranjay@kernel.org>,
@@ -50,9 +50,9 @@ Cc: Puranjay Mohan <puranjay@kernel.org>,
 	Eduard Zingerman <eddyz87@gmail.com>,
 	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next v2 1/9] bpf: Make KF_TRUSTED_ARGS the default for all kfuncs
-Date: Wed, 31 Dec 2025 09:08:47 -0800
-Message-ID: <20251231171118.1174007-2-puranjay@kernel.org>
+Subject: [PATCH bpf-next v2 2/9] bpf: net: netfilter: Mark kfuncs accurately
+Date: Wed, 31 Dec 2025 09:08:48 -0800
+Message-ID: <20251231171118.1174007-3-puranjay@kernel.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20251231171118.1174007-1-puranjay@kernel.org>
 References: <20251231171118.1174007-1-puranjay@kernel.org>
@@ -64,127 +64,120 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Change the verifier to make trusted args the default requirement for
-all kfuncs by removing is_kfunc_trusted_args() assuming it be to always
-return true.
+bpf_xdp_ct_lookup() and bpf_skb_ct_lookup() receive bpf_tuple and opts
+parameter that are then checked for NULL by __bpf_nf_ct_lookup(), so
+these kfuns expects these arguments to be NULL.
 
-This works because:
-1. Context pointers (xdp_md, __sk_buff, etc.) are handled through their
-   own KF_ARG_PTR_TO_CTX case label and bypass the trusted check
-2. Struct_ops callback arguments are already marked as PTR_TRUSTED during
-   initialization and pass is_trusted_reg()
-3. KF_RCU kfuncs are handled separately via is_kfunc_rcu() checks at
-   call sites (always checked with || alongside is_kfunc_trusted_args)
+Mark bpf_tuple and opts with __nullable so verifier allows passing NULL
+pointer for these arguments.
 
-This simple change makes all kfuncs require trusted args by default
-while maintaining correct behavior for all existing special cases.
+This change is now required because verfier will now assume that every
+kfunc expects trusted arguments by default, so even though these kfuns
+don't have the KF_TRSUTED_ARGS flag, all arguments will be treated by
+as KF_TRSUTED_ARGS by default.
 
 Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 ---
- Documentation/bpf/kfuncs.rst | 35 +++++++++++++++++------------------
- kernel/bpf/verifier.c        | 14 +++-----------
- 2 files changed, 20 insertions(+), 29 deletions(-)
+ net/netfilter/nf_conntrack_bpf.c | 38 +++++++++++++++++---------------
+ 1 file changed, 20 insertions(+), 18 deletions(-)
 
-diff --git a/Documentation/bpf/kfuncs.rst b/Documentation/bpf/kfuncs.rst
-index e38941370b90..22b5a970078c 100644
---- a/Documentation/bpf/kfuncs.rst
-+++ b/Documentation/bpf/kfuncs.rst
-@@ -241,25 +241,23 @@ both are orthogonal to each other.
- The KF_RELEASE flag is used to indicate that the kfunc releases the pointer
- passed in to it. There can be only one referenced pointer that can be passed
- in. All copies of the pointer being released are invalidated as a result of
--invoking kfunc with this flag. KF_RELEASE kfuncs automatically receive the
--protection afforded by the KF_TRUSTED_ARGS flag described below.
-+invoking kfunc with this flag.
- 
--2.4.4 KF_TRUSTED_ARGS flag
----------------------------
-+2.4.4 KF_TRUSTED_ARGS (default behavior)
-+-----------------------------------------
- 
--The KF_TRUSTED_ARGS flag is used for kfuncs taking pointer arguments. It
--indicates that the all pointer arguments are valid, and that all pointers to
--BTF objects have been passed in their unmodified form (that is, at a zero
--offset, and without having been obtained from walking another pointer, with one
--exception described below).
-+All kfuncs now require trusted arguments by default. This means that all
-+pointer arguments must be valid, and all pointers to BTF objects must be
-+passed in their unmodified form (at a zero offset, and without having been
-+obtained from walking another pointer, with exceptions described below).
- 
--There are two types of pointers to kernel objects which are considered "valid":
-+There are two types of pointers to kernel objects which are considered "trusted":
- 
- 1. Pointers which are passed as tracepoint or struct_ops callback arguments.
- 2. Pointers which were returned from a KF_ACQUIRE kfunc.
- 
- Pointers to non-BTF objects (e.g. scalar pointers) may also be passed to
--KF_TRUSTED_ARGS kfuncs, and may have a non-zero offset.
-+kfuncs, and may have a non-zero offset.
- 
- The definition of "valid" pointers is subject to change at any time, and has
- absolutely no ABI stability guarantees.
-@@ -327,13 +325,14 @@ added later.
- 2.4.7 KF_RCU flag
- -----------------
- 
--The KF_RCU flag is a weaker version of KF_TRUSTED_ARGS. The kfuncs marked with
--KF_RCU expect either PTR_TRUSTED or MEM_RCU arguments. The verifier guarantees
--that the objects are valid and there is no use-after-free. The pointers are not
--NULL, but the object's refcount could have reached zero. The kfuncs need to
--consider doing refcnt != 0 check, especially when returning a KF_ACQUIRE
--pointer. Note as well that a KF_ACQUIRE kfunc that is KF_RCU should very likely
--also be KF_RET_NULL.
-+The KF_RCU flag allows kfuncs to opt out of the default trusted args
-+requirement and accept RCU pointers with weaker guarantees. The kfuncs marked
-+with KF_RCU expect either PTR_TRUSTED or MEM_RCU arguments. The verifier
-+guarantees that the objects are valid and there is no use-after-free. The
-+pointers are not NULL, but the object's refcount could have reached zero. The
-+kfuncs need to consider doing refcnt != 0 check, especially when returning a
-+KF_ACQUIRE pointer. Note as well that a KF_ACQUIRE kfunc that is KF_RCU should
-+very likely also be KF_RET_NULL.
- 
- 2.4.8 KF_RCU_PROTECTED flag
- ---------------------------
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 0baae7828af2..a31eace4a67c 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -12040,11 +12040,6 @@ static bool is_kfunc_release(struct bpf_kfunc_call_arg_meta *meta)
- 	return meta->kfunc_flags & KF_RELEASE;
- }
- 
--static bool is_kfunc_trusted_args(struct bpf_kfunc_call_arg_meta *meta)
--{
--	return (meta->kfunc_flags & KF_TRUSTED_ARGS) || is_kfunc_release(meta);
--}
--
- static bool is_kfunc_sleepable(struct bpf_kfunc_call_arg_meta *meta)
+diff --git a/net/netfilter/nf_conntrack_bpf.c b/net/netfilter/nf_conntrack_bpf.c
+index 4a136fc3a9c0..a9f4b7d23fe0 100644
+--- a/net/netfilter/nf_conntrack_bpf.c
++++ b/net/netfilter/nf_conntrack_bpf.c
+@@ -291,16 +291,16 @@ __bpf_kfunc_start_defs();
+  */
+ __bpf_kfunc struct nf_conn___init *
+ bpf_xdp_ct_alloc(struct xdp_md *xdp_ctx, struct bpf_sock_tuple *bpf_tuple,
+-		 u32 tuple__sz, struct bpf_ct_opts *opts, u32 opts__sz)
++		 u32 tuple__sz, struct bpf_ct_opts *opts__nullable, u32 opts__sz)
  {
- 	return meta->kfunc_flags & KF_SLEEPABLE;
-@@ -13253,9 +13248,9 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
- 			return -EINVAL;
- 		}
+ 	struct xdp_buff *ctx = (struct xdp_buff *)xdp_ctx;
+ 	struct nf_conn *nfct;
  
--		if ((is_kfunc_trusted_args(meta) || is_kfunc_rcu(meta)) &&
--		    (register_is_null(reg) || type_may_be_null(reg->type)) &&
--			!is_kfunc_arg_nullable(meta->btf, &args[i])) {
-+		if ((register_is_null(reg) || type_may_be_null(reg->type)) &&
-+		    !is_kfunc_arg_nullable(meta->btf, &args[i]) &&
-+		    !is_kfunc_arg_optional(meta->btf, &args[i])) {
- 			verbose(env, "Possibly NULL pointer passed to trusted arg%d\n", i);
- 			return -EACCES;
- 		}
-@@ -13320,9 +13315,6 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
- 			fallthrough;
- 		case KF_ARG_PTR_TO_ALLOC_BTF_ID:
- 		case KF_ARG_PTR_TO_BTF_ID:
--			if (!is_kfunc_trusted_args(meta) && !is_kfunc_rcu(meta))
--				break;
--
- 			if (!is_trusted_reg(reg)) {
- 				if (!is_kfunc_rcu(meta)) {
- 					verbose(env, "R%d must be referenced or trusted\n", regno);
+ 	nfct = __bpf_nf_ct_alloc_entry(dev_net(ctx->rxq->dev), bpf_tuple, tuple__sz,
+-				       opts, opts__sz, 10);
++				       opts__nullable, opts__sz, 10);
+ 	if (IS_ERR(nfct)) {
+-		if (opts)
+-			opts->error = PTR_ERR(nfct);
++		if (opts__nullable)
++			opts__nullable->error = PTR_ERR(nfct);
+ 		return NULL;
+ 	}
+ 
+@@ -324,18 +324,19 @@ bpf_xdp_ct_alloc(struct xdp_md *xdp_ctx, struct bpf_sock_tuple *bpf_tuple,
+  *		    Must be NF_BPF_CT_OPTS_SZ (16) or 12
+  */
+ __bpf_kfunc struct nf_conn *
+-bpf_xdp_ct_lookup(struct xdp_md *xdp_ctx, struct bpf_sock_tuple *bpf_tuple,
+-		  u32 tuple__sz, struct bpf_ct_opts *opts, u32 opts__sz)
++bpf_xdp_ct_lookup(struct xdp_md *xdp_ctx, struct bpf_sock_tuple *bpf_tuple__nullable,
++		  u32 tuple__sz, struct bpf_ct_opts *opts__nullable, u32 opts__sz)
+ {
+ 	struct xdp_buff *ctx = (struct xdp_buff *)xdp_ctx;
+ 	struct net *caller_net;
+ 	struct nf_conn *nfct;
+ 
+ 	caller_net = dev_net(ctx->rxq->dev);
+-	nfct = __bpf_nf_ct_lookup(caller_net, bpf_tuple, tuple__sz, opts, opts__sz);
++	nfct = __bpf_nf_ct_lookup(caller_net, bpf_tuple__nullable, tuple__sz, opts__nullable,
++				  opts__sz);
+ 	if (IS_ERR(nfct)) {
+-		if (opts)
+-			opts->error = PTR_ERR(nfct);
++		if (opts__nullable)
++			opts__nullable->error = PTR_ERR(nfct);
+ 		return NULL;
+ 	}
+ 	return nfct;
+@@ -358,17 +359,17 @@ bpf_xdp_ct_lookup(struct xdp_md *xdp_ctx, struct bpf_sock_tuple *bpf_tuple,
+  */
+ __bpf_kfunc struct nf_conn___init *
+ bpf_skb_ct_alloc(struct __sk_buff *skb_ctx, struct bpf_sock_tuple *bpf_tuple,
+-		 u32 tuple__sz, struct bpf_ct_opts *opts, u32 opts__sz)
++		 u32 tuple__sz, struct bpf_ct_opts *opts__nullable, u32 opts__sz)
+ {
+ 	struct sk_buff *skb = (struct sk_buff *)skb_ctx;
+ 	struct nf_conn *nfct;
+ 	struct net *net;
+ 
+ 	net = skb->dev ? dev_net(skb->dev) : sock_net(skb->sk);
+-	nfct = __bpf_nf_ct_alloc_entry(net, bpf_tuple, tuple__sz, opts, opts__sz, 10);
++	nfct = __bpf_nf_ct_alloc_entry(net, bpf_tuple, tuple__sz, opts__nullable, opts__sz, 10);
+ 	if (IS_ERR(nfct)) {
+-		if (opts)
+-			opts->error = PTR_ERR(nfct);
++		if (opts__nullable)
++			opts__nullable->error = PTR_ERR(nfct);
+ 		return NULL;
+ 	}
+ 
+@@ -392,18 +393,19 @@ bpf_skb_ct_alloc(struct __sk_buff *skb_ctx, struct bpf_sock_tuple *bpf_tuple,
+  *		    Must be NF_BPF_CT_OPTS_SZ (16) or 12
+  */
+ __bpf_kfunc struct nf_conn *
+-bpf_skb_ct_lookup(struct __sk_buff *skb_ctx, struct bpf_sock_tuple *bpf_tuple,
+-		  u32 tuple__sz, struct bpf_ct_opts *opts, u32 opts__sz)
++bpf_skb_ct_lookup(struct __sk_buff *skb_ctx, struct bpf_sock_tuple *bpf_tuple__nullable,
++		  u32 tuple__sz, struct bpf_ct_opts *opts__nullable, u32 opts__sz)
+ {
+ 	struct sk_buff *skb = (struct sk_buff *)skb_ctx;
+ 	struct net *caller_net;
+ 	struct nf_conn *nfct;
+ 
+ 	caller_net = skb->dev ? dev_net(skb->dev) : sock_net(skb->sk);
+-	nfct = __bpf_nf_ct_lookup(caller_net, bpf_tuple, tuple__sz, opts, opts__sz);
++	nfct = __bpf_nf_ct_lookup(caller_net, bpf_tuple__nullable, tuple__sz, opts__nullable,
++				  opts__sz);
+ 	if (IS_ERR(nfct)) {
+-		if (opts)
+-			opts->error = PTR_ERR(nfct);
++		if (opts__nullable)
++			opts__nullable->error = PTR_ERR(nfct);
+ 		return NULL;
+ 	}
+ 	return nfct;
 -- 
 2.47.3
 
