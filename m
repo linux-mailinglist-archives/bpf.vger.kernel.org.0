@@ -1,134 +1,134 @@
-Return-Path: <bpf+bounces-77560-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77561-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 303B9CEB059
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 03:04:48 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11F7DCEB05C
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 03:05:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DD857301C3D4
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 02:04:44 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 9D731301830B
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 02:05:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCDA928C862;
-	Wed, 31 Dec 2025 02:04:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aMLhB/M2"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBCBB2E2852;
+	Wed, 31 Dec 2025 02:05:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A18934C97
-	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 02:04:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1213A41754;
+	Wed, 31 Dec 2025 02:05:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767146683; cv=none; b=krjGO+E5p5tRb2ac2OmpTaEVzZePVQG+Me5anTTqLidnYDH1n/ljNdOdm1ChUf2v71gM7MrNIKtkiaCo+4ysfd/9QK1LiGHmnXzMX8id/n7SvxcpbOgjw0p0J+KbvlTtotup9elah/s/h/eihw4MtIinb2TLPdRbrK8XX/yUJrQ=
+	t=1767146741; cv=none; b=i5rimJFXK2pJSCOLDDYEiuXptJGHXK+0XeYLdklDdHa7VRMGcfWMzntb6G1wm6kyecSPZ9HpvzJKwfPYP0Oirm8JkiYia9XPEROuqybpYufE61XB6wwCWZa+iuCRvGvyoPQLm+Q8aufgjXutXMUisRz9qs9kAp1UlnwfX5L+31s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767146683; c=relaxed/simple;
-	bh=hx/IHa/T/kTYxE4ncCqV9kVU1/SwpT6L+rU1MvWvGoA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YUQ2FHdzVCJWXfac8RopX6FrHsUYBRp0dxs1mteAHxzjbDFMpDYP9ZHhwZoWi7QlbNHoIhV99H7t4AIyjksm0+tusImNDu8fG0khr9HKqRRWb+9qOUZpcZ8AKyR0MFimgZ9U4ouTh9TXz81U8OUP5I2l//c9iaoObbFeyVVK03Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aMLhB/M2; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-42fbbc3df8fso5185319f8f.2
-        for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 18:04:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767146680; x=1767751480; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jUc5FiL+2gLRfi+r+bNROA/9D4gSk/btssUBdeBxA+g=;
-        b=aMLhB/M2N3A2bwVRzHseNrhXpQbKCKNkbykQURF/pZHGaqM2Vg+jwDNyGTU/dBBxYX
-         tVQqBRpjlNHC5+pQ7lhW9V9aP087JJhZXFj+wyAcbLoxQExF2pzwKTyRwX8qc4wU5RDp
-         w7LaPzi/1NxMxH1z3SEPiDRWsIDf3Hy9I/eRTNR7KhLqlVNK91SDweJNew4F7FMKGnB5
-         pgxm4UpRhPmz43eSVLgFMOsZaIFXmHrpy3hsUEMmbgOXZPlMLuhsDPAYENLyJFvagAlE
-         qZLwuEGDYEdV4umeKbCkA+qdEFts+TNnGetSaWkT69fN4vLcKEybJXv+YmodSJ5zcOMz
-         LtJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767146680; x=1767751480;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=jUc5FiL+2gLRfi+r+bNROA/9D4gSk/btssUBdeBxA+g=;
-        b=oaRMU8+KnkY2piLdabSgg6G5Atq/yK9GNEPRotRe1txi7aOoKZNUWdjCjYh9vfnl79
-         uVq9Nv8XNw8GpU+K2nIUmFdSIeUPGvDecV4YNr1FWhZxV25XM6aQ6umngZNdC6Es08vQ
-         wgYsIkbfc6GZWR3b+AcpAQP51h22fb3ua5gr1/FIkpeEq0kMOHa4FbjsXW6t+cgmtHoo
-         QAHhHfjf3dWrIU5sy9XbKOFltobQhR3HJztNaPR51AmVX8KqGf6xBWvoqEFpEEjMvtis
-         tTBYXvkSf8yvPE82ALcVIiGTCSYW8ptv3U6nTkLzn36HUa9HvmEBYbGNfpIfSrrLRlYl
-         LYIA==
-X-Gm-Message-State: AOJu0Ywhqi49GuB1dSW/pgu5ja4b+7QBbkn2Xs47NXsOOiwCcnjTHlLa
-	SwSzdIacCgRx1pWDrw8o36YuthFymadGON/l38AZsrMC4Ym6YL1NFYrddhMgMJHEPQpZnwhwjaT
-	pVsRf1rL/4FqTxEnNsPbgicH5xW+PeTA=
-X-Gm-Gg: AY/fxX4MQ27H9FMss9YPjF8EzDROyRznamwyDPSegbttwb3eai86ix95s8NQUcGUQvC
-	jcv9Rzi07WlwXTo+IoSEy1bTJlc/k0q+HPK1B7hJRxvfwyXA66zpgEv9N7rZmHKaJSJtPdexd1O
-	mm6XimOq6rJKzxFeiGHg19a321KPBW2pxQc5aNTuY6LTMGRG3WhygrVarr+yq6RYlXDC4nw9QRO
-	ENvbo4/onnUu5FuqRikUeeZRIaKxgG9lEz23GRRbXJ/jkT1nAUOmvggyISei5eeVExncChOyLCP
-	wben15Trkniz1T1/1IvmwxrbkzRZ
-X-Google-Smtp-Source: AGHT+IFcleih/JwENEfpDz20UDvWYCcsYDcUmPTeL4HBgUtNIDpAteui/cvPcjRRz+UNMRf4gbw+pnLMt2BmzcUXrtg=
-X-Received: by 2002:a5d:5d0e:0:b0:42f:bad7:af55 with SMTP id
- ffacd0b85a97d-4324e4c70fbmr42189311f8f.6.1767146679901; Tue, 30 Dec 2025
- 18:04:39 -0800 (PST)
+	s=arc-20240116; t=1767146741; c=relaxed/simple;
+	bh=OA/thkzRWprQjGt1o4/4Li7MBUje/rmi1f2/R/xTboU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=sayZ+oq1NEkQRh5CYNWuYayVOfj5XxJ8l8LlKBAeuekU0/EFdbXSxeUaOh8mb8NDQZY9o5OSE8tGRET/O9FC5ShH3wP1uHxRN6FD4ixPdd8ar0p2mgX2sHgk3SeAmPWnkkdAUewVTWVYpk4ozc8eh3Uln1dhgZj1vCMkxBClJxU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.177])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dgtZN6M8qzKHMKm;
+	Wed, 31 Dec 2025 10:05:00 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id BCDE94058D;
+	Wed, 31 Dec 2025 10:05:30 +0800 (CST)
+Received: from [10.67.111.192] (unknown [10.67.111.192])
+	by APP2 (Coremail) with SMTP id Syh0CgB3kYDnhFRpTFw_CA--.53654S2;
+	Wed, 31 Dec 2025 10:05:28 +0800 (CST)
+Message-ID: <0c441710-5250-4706-ba81-b6b4b1277313@huaweicloud.com>
+Date: Wed, 31 Dec 2025 10:05:27 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251224192448.3176531-1-puranjay@kernel.org> <20251224192448.3176531-7-puranjay@kernel.org>
-In-Reply-To: <20251224192448.3176531-7-puranjay@kernel.org>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 30 Dec 2025 18:04:28 -0800
-X-Gm-Features: AQt7F2r5EVLtYnhfZbzpmCFSrNudRhebwhDn_8ddqAFSOshQ6YoDAr3VBkW9JVQ
-Message-ID: <CAADnVQ+F-KZyOeAGhs=8v5jck=T8yH4SCsRdVYt0AOCzK6gg=Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 6/7] selftests: bpf: fix test_kfunc_dynptr_param
-To: Puranjay Mohan <puranjay@kernel.org>
-Cc: bpf <bpf@vger.kernel.org>, Puranjay Mohan <puranjay12@gmail.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, Kernel Team <kernel-team@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v3] bpf: arm64: Fix panic due to missing BTI at
+ indirect jump targets
+Content-Language: en-US
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Yonghong Song <yonghong.song@linux.dev>, Puranjay Mohan
+ <puranjay@kernel.org>, Anton Protopopov <a.s.protopopov@gmail.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+References: <20251227081033.240336-1-xukuohai@huaweicloud.com>
+ <CAADnVQKJk7pGW50JHj6tZAeHLxCbgmHBdhwZCY4NT-6MTg7=sQ@mail.gmail.com>
+From: Xu Kuohai <xukuohai@huaweicloud.com>
+In-Reply-To: <CAADnVQKJk7pGW50JHj6tZAeHLxCbgmHBdhwZCY4NT-6MTg7=sQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:Syh0CgB3kYDnhFRpTFw_CA--.53654S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7CF4rZr47JFWxAry3CFWfKrg_yoW8Aw1fpF
+	4DJ34j9rWDCr4kCr4xWF1jkFW3trsxG3W5Grs3J343Ca1a9r93KF4Iqa1akFnrKFZ5C3yU
+	XF4j9asYka1jyw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
+	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
+	7KsUUUUUU==
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 
-On Wed, Dec 24, 2025 at 11:25=E2=80=AFAM Puranjay Mohan <puranjay@kernel.or=
-g> wrote:
+On 12/31/2025 2:20 AM, Alexei Starovoitov wrote:
+> On Fri, Dec 26, 2025 at 11:49 PM Xu Kuohai <xukuohai@huaweicloud.com> wrote:
+>>
+>> From: Xu Kuohai <xukuohai@huawei.com>
+>>
+>> When BTI is enabled, the indirect jump selftest triggers BTI exception:
+>>
+>> Internal error: Oops - BTI: 0000000036000003 [#1]  SMP
+>> ...
+>> Call trace:
+>>   bpf_prog_2e5f1c71c13ac3e0_big_jump_table+0x54/0xf8 (P)
+>>   bpf_prog_run_pin_on_cpu+0x140/0x464
+>>   bpf_prog_test_run_syscall+0x274/0x3ac
+>>   bpf_prog_test_run+0x224/0x2b0
+>>   __sys_bpf+0x4cc/0x5c8
+>>   __arm64_sys_bpf+0x7c/0x94
+>>   invoke_syscall+0x78/0x20c
+>>   el0_svc_common+0x11c/0x1c0
+>>   do_el0_svc+0x48/0x58
+>>   el0_svc+0x54/0x19c
+>>   el0t_64_sync_handler+0x84/0x12c
+>>   el0t_64_sync+0x198/0x19c
+>>
+>> This happens because no BTI instruction is generated by the JIT for
+>> indirect jump targets.
+>>
+>> Fix it by emitting BTI instruction for every possible indirect jump
+>> targets when BTI is enabled. The targets are identified by traversing
+>> all instruction arrays of jump table type used by the BPF program,
+>> since indirect jump targets can only be read from instruction arrays
+>> of jump table type.
+> 
+> earlier you said:
+> 
+>> As Anton noted, even though jump tables are currently the only type
+>> of instruction array, users may still create insn_arrays that are not
+>> used as jump tables. In such cases, there is no need to emit BTIs.
+> 
+> yes, but it's not worth it to make this micro optimization in JIT.
+> If it's in insn_array just emit BTI unconditionally.
+> No need to do this filtering.
 >
-> As verifier now assumes that all kfuncs only takes trusted pointer
-> arguments, passing 0 (NULL) to a kfunc that doesn't mark the argument as
-> __nullable or __opt will be rejected with a failure message of: Possibly
-> NULL pointer passed to trusted arg<n>
->
-> Pass a non-null value to the kfunc to test the expected failure mode.
->
-> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-> ---
->  tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c =
-b/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
-> index 061befb004c2..11e57002ea43 100644
-> --- a/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
-> +++ b/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
-> @@ -48,7 +48,7 @@ SEC("?lsm.s/bpf")
->  __failure __msg("arg#0 expected pointer to stack or const struct bpf_dyn=
-ptr")
->  int BPF_PROG(not_ptr_to_stack, int cmd, union bpf_attr *attr, unsigned i=
-nt size, bool kernel)
->  {
-> -       unsigned long val =3D 0;
-> +       unsigned long val =3D 1;
 
-1 as a pointer looks odd here.
-Let's not introduce an oddity here that people will be tempted to copy past=
-e.
-Make it a real pointer that is not ptr_to_stack and not CONST_PTR_TO_DYNPTR=
-.
-static struct bpf_dynptr val;
-may do ?
+Hmm, that is what the v1 version does. Please take a look. If it’s okay,
+I’ll resend a rebased version.
 
->         return bpf_verify_pkcs7_signature((struct bpf_dynptr *)val,
->                                           (struct bpf_dynptr *)val, NULL)=
-;
-> --
-> 2.47.3
->
+v1: https://lore.kernel.org/bpf/20251127140318.3944249-1-xukuohai@huaweicloud.com/
+
+> pw-bot: cr
+
 
