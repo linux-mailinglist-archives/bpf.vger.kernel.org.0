@@ -1,300 +1,397 @@
-Return-Path: <bpf+bounces-77557-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77558-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65322CEAFED
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 02:26:19 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD3EACEB020
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 02:42:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2584D301EC5D
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 01:26:15 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 3ADD5302412C
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 01:42:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79ACE1FE44B;
-	Wed, 31 Dec 2025 01:26:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50F0A2D7DDE;
+	Wed, 31 Dec 2025 01:42:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Jbp05A7L"
+	dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b="FQ6vQ8t6"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04A9086352;
-	Wed, 31 Dec 2025 01:26:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B0212D77FA
+	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 01:42:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767144374; cv=none; b=XHrlWlyH3syhKeyKYODWotbRGUJ94pe+1IEtrT5jcPh87qHMQ/dQ5WMnv24jDqB4VtQOVxAGDJbis7vrqwZqWkT9mRiQ6v5HPO+Xf18glXAQwrOpg62AGT/2I5daoPPoLYPt622NEQSV4BK18skPcSJXsE2qA5i3xpXBz5DzZVg=
+	t=1767145345; cv=none; b=TVmJ3CHaZBsNy26dyz1yaJXNJmWQJP5Kk5a/Uvzed/hoVAQP3wsBm37xpTiCEY0bbfDNlTxSHINpeLDxS9WuC2zjB3k3/ckys+MS4DaW76sYsPFP9hgxDiOENs784c8iALLLjSTJdlPqhEkkc2dhHx7x7CkZ4W6oeGBgmPHw7sQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767144374; c=relaxed/simple;
-	bh=EP81NzZERTa4WpEj5g0CAj0u3mjOAYp9iIlHjG7ghQA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Nk2P0Us92GN0c/MLo4hXYlSpnt4/atjXNAg7uU1vyXmrJv81nTeK7dPTeV9v9kdvKw0ELAywD7SCL/5bLsU2DYX1eJxeIAZTseiDjGP/E6Byb3VQNb4AdYUxZVCSpbldYgl+5SSSpT9l7zul+VVBCvGXCN8KT9OMFxhVe3m+4VY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Jbp05A7L; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1767144368;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=oW1Reu5DMmVKSwa9Snx8B+yvijdb2ZtOnW+HkCnezlk=;
-	b=Jbp05A7Lwo6Z90OwyUIpXaFeUGIHS//O9l9zgriLwjjJKkuzlner+CkFFQn6D20MNYtSo7
-	nIIJ/n5TsO0jDT0UnGT9GZ9ISYdr2qZOb0rXlZSf8vBbC2DJLtujMeey1LGLDNbvOl41mh
-	Fwxwg9Hq3vW8vIbchXum4meie4bf9Mg=
-From: Ihor Solodrai <ihor.solodrai@linux.dev>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nsc@kernel.org>
-Cc: bpf@vger.kernel.org,
-	linux-kbuild@vger.kernel.org
-Subject: [PATCH bpf-next v2] resolve_btfids: Implement --patch_btfids
-Date: Tue, 30 Dec 2025 17:25:57 -0800
-Message-ID: <20251231012558.1699758-1-ihor.solodrai@linux.dev>
+	s=arc-20240116; t=1767145345; c=relaxed/simple;
+	bh=wGPT7zxLfblE3AJxUL7ZxX8aIkF0EFPu5FrCAP/34VA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Y+f9sbrAEkFm6ALAEOPFKRsFLbP007e6sUyteOM6fi5j7KAnXVMJ9VsCGd+kUBevWX3LjGWkGhFajw4GQfG9xhM4h/10s8sHZd5iZZvWJN6Xn+3KoJTu2OJMwImYB9HTsMus9BMQ2CV7gEU1bLyIHwC2s6YKdtrrEg0wxZYDjI4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com; spf=fail smtp.mailfrom=purestorage.com; dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b=FQ6vQ8t6; arc=none smtp.client-ip=209.85.216.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=purestorage.com
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-34e949d6416so944238a91.3
+        for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 17:42:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=purestorage.com; s=google2022; t=1767145343; x=1767750143; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SgNRN/JhIAyuU8OvwZCOqywgEaE99I1DcEWEsgMNE8I=;
+        b=FQ6vQ8t69rYAho0LUtTvy65hBa3hwCsaGYekwSkUxOCFB+2b5LqMY5P1CLvHXMjfWP
+         yoLIcErZN8F587B7GOSSz3A9JHXCuYw5/2Boo8L3I/PTWNmIDPQZIFk3tAdKuCQaC85H
+         877wZEmellIx/b/naBHJvqxac/zp20TD2t4GEUO9uNAvndXZMNG7vjfP/KClE1lNsAfy
+         toOM/nsSuahEoYAYVNOoCtDpbtXdv38CKaP9bpmPpYjq5Q6fZZ8IAQn3ZFVVxKxcBRKE
+         D11hoV3x8C2TveI+4HnAUJqZpq7I53nXNL0DFYSsoqsZmrtMdL2NaDw41yt4QZusoBAo
+         2BGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767145343; x=1767750143;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=SgNRN/JhIAyuU8OvwZCOqywgEaE99I1DcEWEsgMNE8I=;
+        b=CnlmU6hZqzWXdNGFsteVDnAx+bo4aOcGsAooUV59C6GY36CmlJi5mS4az7wM/XoXYh
+         IG9ZSkjLwyko+g/PLVVIDHMvZsx07AMp8xRDOnAKdvKsDfkHb2K/8bgAZn4WnKnIXo1Z
+         7/7f2EWgGHL7t/PiDwRTsZPkCXOUUbphQCTmj3wojO+0eeWDBM4Da4knod07ofsFpx89
+         6QdYBN0jiK7bJToUoFmzPS4o6k8Yvo6SSPp7055QcaGZ5gKBcJB2+/k3jnVOzbchqP8H
+         p08O97Ifa6Zfnz+YujHC9uczZYeLqT5ALXef+/pk59QG4BPy3VD89I3yoAlLayyqpJCk
+         qJtg==
+X-Forwarded-Encrypted: i=1; AJvYcCX21nQDqgFtS2lyQ1dAD4p+INu9ZJqsUOxwbw2XsD8VN8fAhZS49XerAj2MJYIjSmtWd0Q=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw9KfP3hOm/zePeFxTL46rzoEZwHT06UonjOxjEnEcr/gWbBhAS
+	z8wO2dnvCok9Qm6Ap0J2PKGEgZwW+kXS4U0NCmtKlkVkWRQhU+jOfjZqKG0Ydr8u1a0e/+BK9XD
+	ggXMs6pdSqjQoGjVtT5Rz2GuXbUn58W4g8TueCgHo3g==
+X-Gm-Gg: AY/fxX41iLiXyMJyggLZTRAGA+AH3qT9uZ2xK+xMznMK5A9EIykJ4pnHhkEePpPfkda
+	4rtW08bPz3GWFNewr+XiQDelpBCnv8d/YFNm5/1y6XzpfnxIrHOXUIL3gX47dOSfw4uuW1kDxfV
+	aqLHTPNgbTZGxIqgM/HGkCCfqx1Os+rAA1L5nNbI33e8YVsMreJJjb5yG1RoccVZkbR4ScjFrLd
+	JiseHZojAMErYIiYwRJmnZ+03Zs+TYTj6bcTSe3IvWZnmTipPtVg13WUfSPsGh62T8hhmfA
+X-Google-Smtp-Source: AGHT+IEOg+G9ZpQvsNAYCRZzEN5wlO8R5e6WiMUqaPTSdZe2B8emO9varWCJ+AJgpF5/JJQe81k9vdSSDkdMY8pa4+E=
+X-Received: by 2002:a05:7022:688c:b0:11b:1c6d:98ed with SMTP id
+ a92af1059eb24-121722b0402mr20386921c88.2.1767145343049; Tue, 30 Dec 2025
+ 17:42:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20251104162123.1086035-1-ming.lei@redhat.com> <20251104162123.1086035-5-ming.lei@redhat.com>
+In-Reply-To: <20251104162123.1086035-5-ming.lei@redhat.com>
+From: Caleb Sander Mateos <csander@purestorage.com>
+Date: Tue, 30 Dec 2025 20:42:11 -0500
+X-Gm-Features: AQt7F2qBgOUYhPj-007kgy8otUN56ENXxT1WwHOyQWk9PlIvbp-yiW7GvmEwA1s
+Message-ID: <CADUfDZqUbJz_05m63-p4Q7XpsM1V6f4oGMCaKmPcE_wzNJvNqA@mail.gmail.com>
+Subject: Re: [PATCH 4/5] io_uring: bpf: add buffer support for IORING_OP_BPF
+To: Ming Lei <ming.lei@redhat.com>
+Cc: Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org, 
+	Akilesh Kailash <akailash@google.com>, bpf@vger.kernel.org, 
+	Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Recent changes in BTF generation [1] rely on ${OBJCOPY} command to
-update .BTF_ids section data in target ELF files.
+On Tue, Nov 4, 2025 at 8:22=E2=80=AFAM Ming Lei <ming.lei@redhat.com> wrote=
+:
+>
+> Add support for passing 0-2 buffers to BPF operations through
+> IORING_OP_BPF. Buffer types are encoded in sqe->bpf_op_flags
+> using dedicated 3-bit fields for each buffer.
 
-This exposed a bug in llvm-objcopy --update-section code path, that
-may lead to corruption of a target ELF file. Specifically, because of
-the bug st_shndx of some symbols may be (incorrectly) set to 0xffff
-(SHN_XINDEX) [2][3].
+I agree the 2 buffer limit seems a bit restrictive, and it would make
+more sense to expose kfuncs to import plain and fixed buffers. Then
+the BPF program could decide what buffers to import based on the SQE,
+BPF maps, etc. This would be analogous to how uring_cmd
+implementations import buffers.
 
-While there is a pending fix for LLVM, it'll take some time before it
-lands (likely in 22.x). And the kernel build must keep working with
-older LLVM toolchains in the foreseeable future.
+>
+> Buffer 1 can be:
+> - None (no buffer)
+> - Plain user buffer (addr=3Dsqe->addr, len=3Dsqe->len)
+> - Fixed/registered buffer (index=3Dsqe->buf_index, offset=3Dsqe->addr,
 
-Using GNU objcopy for .BTF_ids update would work, but it would require
-changes to LLVM-based build process, likely breaking existing build
-environments as discussed in [2].
+Should this say "addr=3D" instead of "offset=3D"? It's passed as buf_addr
+to io_bpf_import_buffer(), so it's an absolute userspace address. The
+offset into the fixed buffer depends on the starting address of the
+fixed buffer.
 
-To work around llvm-objcopy bug, implement --patch_btfids code path in
-resolve_btfids as a drop-in replacement for:
+>   len=3Dsqe->len)
+>
+> Buffer 2 can be:
+> - None (no buffer)
+> - Plain user buffer (addr=3Dsqe->addr3, len=3Dsqe->optlen)
+>
+> The sqe->bpf_op_flags layout (32 bits):
+>   Bits 31-24: BPF operation ID (8 bits)
+>   Bits 23-21: Buffer 1 type (3 bits)
+>   Bits 20-18: Buffer 2 type (3 bits)
+>   Bits 17-0:  Custom BPF flags (18 bits)
+>
+> Using 3-bit encoding for each buffer type allows for future
+> expansion to 8 types (0-7). Currently types 0-2 are defined
+> (none/plain/fixed) and 3-7 are reserved for future use.
+>
+> Buffer 2 currently only supports none/plain types because the
+> io_uring framework can only handle one fixed buffer per request
+> (via req->buf_index). The 3-bit encoding provides room for
+> future enhancements.
+>
+> Buffer metadata (addresses, lengths) is stored in the extended
+> uring_bpf_data structure and is accessible to BPF programs with
+> readonly permissions. Buffer types can be extracted from the opf
+> field using IORING_BPF_BUF1_TYPE() and IORING_BPF_BUF2_TYPE()
+> macros.
+>
+> Valid buffer combinations:
+> - 0 buffers
+> - 1 plain buffer
+> - 1 fixed buffer
+> - 2 plain buffers
+> - 1 fixed buffer + 1 plain buffer
+>
+> Signed-off-by: Ming Lei <ming.lei@redhat.com>
+> ---
+>  include/uapi/linux/io_uring.h | 45 +++++++++++++++++++++++--
+>  io_uring/bpf.c                | 63 ++++++++++++++++++++++++++++++++++-
+>  io_uring/uring_bpf.h          | 12 ++++++-
+>  3 files changed, 116 insertions(+), 4 deletions(-)
+>
+> diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.=
+h
+> index 94d2050131ac..950f4cfbbf86 100644
+> --- a/include/uapi/linux/io_uring.h
+> +++ b/include/uapi/linux/io_uring.h
+> @@ -429,12 +429,53 @@ enum io_uring_op {
+>  #define IORING_SEND_VECTORIZED         (1U << 5)
+>
+>  /*
+> - * sqe->bpf_op_flags           top 8bits is for storing bpf op
+> - *                             The other 24bits are used for bpf prog
+> + * sqe->bpf_op_flags layout (32 bits total):
+> + *   Bits 31-24: BPF operation ID (8 bits, 256 possible operations)
+> + *   Bits 23-21: Buffer 1 type (3 bits: none/plain/fixed/reserved)
+> + *   Bits 20-18: Buffer 2 type (3 bits: none/plain/reserved)
+> + *   Bits 17-0:  Custom BPF flags (18 bits, available for BPF programs)
 
-    ${OBJCOPY} --update-section .BTF_ids=${btf_ids} ${elf}
+This doesn't seem accurate, as io_uring_bpf_prep() rejects any
+requests with these bits set?
 
-Which works specifically for .BTF_ids section:
+> + *
+> + * For IORING_OP_BPF, buffers are specified as follows:
+> + *   Buffer 1 (plain):  addr=3Dsqe->addr, len=3Dsqe->len
+> + *   Buffer 1 (fixed):  index=3Dsqe->buf_index, offset=3Dsqe->addr, len=
+=3Dsqe->len
+> + *   Buffer 2 (plain):  addr=3Dsqe->addr3, len=3Dsqe->optlen
+> + *
+> + * Note: Buffer 1 can be none/plain/fixed. Buffer 2 can only be none/pla=
+in.
+> + *       3-bit encoding for each buffer allows for future expansion to 8=
+ types (0-7).
+> + *       Currently only one fixed buffer per request is supported (buffe=
+r 1).
+> + *       Valid combinations: 0 buffers, 1 plain, 1 fixed, 2 plain, 1 fix=
+ed + 1 plain.
+>   */
+>  #define IORING_BPF_OP_BITS     (8)
+>  #define IORING_BPF_OP_SHIFT    (24)
+>
+> +/* Buffer type encoding in sqe->bpf_op_flags */
+> +#define IORING_BPF_BUF1_TYPE_SHIFT     (21)
+> +#define IORING_BPF_BUF2_TYPE_SHIFT     (18)
+> +#define IORING_BPF_BUF_TYPE_NONE       (0)     /* No buffer */
+> +#define IORING_BPF_BUF_TYPE_PLAIN      (1)     /* Plain user buffer */
+> +#define IORING_BPF_BUF_TYPE_FIXED      (2)     /* Fixed/registered buffe=
+r */
+> +#define IORING_BPF_BUF_TYPE_MASK       (7)     /* 3-bit mask */
 
-    ${RESOLVE_BTFIDS} --patch_btfids ${btf_ids} ${elf}
+What do you think about replacing the bpf_op_flags field with a struct
+containing op, buffer_flags, custom_flags fields to reduce the number
+of bitwise operations needed to read and write these values?
 
-This feature in resolve_btfids can be removed at some point in the
-future, when llvm-objcopy with a relevant bugfix becomes common.
+> +
+> +/* Helper macros to encode/decode buffer types */
+> +#define IORING_BPF_BUF1_TYPE(flags) \
+> +       (((flags) >> IORING_BPF_BUF1_TYPE_SHIFT) & IORING_BPF_BUF_TYPE_MA=
+SK)
+> +#define IORING_BPF_BUF2_TYPE(flags) \
+> +       (((flags) >> IORING_BPF_BUF2_TYPE_SHIFT) & IORING_BPF_BUF_TYPE_MA=
+SK)
 
-[1] https://lore.kernel.org/bpf/20251219181321.1283664-1-ihor.solodrai@linux.dev/
-[2] https://lore.kernel.org/bpf/20251224005752.201911-1-ihor.solodrai@linux.dev/
-[3] https://github.com/llvm/llvm-project/issues/168060#issuecomment-3533552952
+I'm not sure how userspace would use these helpers. Would it make
+sense to move them from the UAPI header to the kernel-internal code?
 
-Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
+> +#define IORING_BPF_SET_BUF1_TYPE(type) \
+> +       (((type) & IORING_BPF_BUF_TYPE_MASK) << IORING_BPF_BUF1_TYPE_SHIF=
+T)
+> +#define IORING_BPF_SET_BUF2_TYPE(type) \
+> +       (((type) & IORING_BPF_BUF_TYPE_MASK) << IORING_BPF_BUF2_TYPE_SHIF=
+T)
+> +
+> +/* Custom BPF flags mask (18 bits available, bits 17-0) */
+> +#define IORING_BPF_CUSTOM_FLAGS_MASK   ((1U << 18) - 1)
 
----
+Use IORING_BPF_BUF2_TYPE_SHIFT instead of 18?
 
-Successful BPF CI run: https://github.com/kernel-patches/bpf/actions/runs/20608321584
----
- scripts/gen-btf.sh                   |   2 +-
- scripts/link-vmlinux.sh              |   2 +-
- tools/bpf/resolve_btfids/main.c      | 117 +++++++++++++++++++++++++++
- tools/testing/selftests/bpf/Makefile |   2 +-
- 4 files changed, 120 insertions(+), 3 deletions(-)
+> +
+> +/* Encode all components into sqe->bpf_op_flags */
+> +#define IORING_BPF_OP_FLAGS(op, buf1_type, buf2_type, flags) \
+> +       (((op) << IORING_BPF_OP_SHIFT) | \
+> +        IORING_BPF_SET_BUF1_TYPE(buf1_type) | \
+> +        IORING_BPF_SET_BUF2_TYPE(buf2_type) | \
+> +        ((flags) & IORING_BPF_CUSTOM_FLAGS_MASK))
+> +
+>  /*
+>   * cqe.res for IORING_CQE_F_NOTIF if
+>   * IORING_SEND_ZC_REPORT_USAGE was requested
+> diff --git a/io_uring/bpf.c b/io_uring/bpf.c
+> index 8227be6d5a10..e837c3d57b96 100644
+> --- a/io_uring/bpf.c
+> +++ b/io_uring/bpf.c
+> @@ -11,8 +11,10 @@
+>  #include <linux/btf.h>
+>  #include <linux/btf_ids.h>
+>  #include <linux/filter.h>
+> +#include <linux/uio.h>
+>  #include "io_uring.h"
+>  #include "uring_bpf.h"
+> +#include "rsrc.h"
+>
+>  #define MAX_BPF_OPS_COUNT      (1 << IORING_BPF_OP_BITS)
+>
+> @@ -28,7 +30,7 @@ static inline unsigned char uring_bpf_get_op(unsigned i=
+nt op_flags)
+>
+>  static inline unsigned int uring_bpf_get_flags(unsigned int op_flags)
+>  {
+> -       return op_flags & ((1U << IORING_BPF_OP_SHIFT) - 1);
+> +       return op_flags & IORING_BPF_CUSTOM_FLAGS_MASK;
+>  }
+>
+>  static inline struct uring_bpf_ops *uring_bpf_get_ops(struct uring_bpf_d=
+ata *data)
+> @@ -36,18 +38,77 @@ static inline struct uring_bpf_ops *uring_bpf_get_ops=
+(struct uring_bpf_data *dat
+>         return &bpf_ops[uring_bpf_get_op(data->opf)];
+>  }
+>
+> +static int io_bpf_prep_buffers(struct io_kiocb *req,
+> +                              const struct io_uring_sqe *sqe,
+> +                              struct uring_bpf_data *data,
+> +                              unsigned int op_flags)
+> +{
+> +       u8 buf1_type, buf2_type;
+> +
+> +       /* Extract buffer configuration from bpf_op_flags */
+> +       buf1_type =3D IORING_BPF_BUF1_TYPE(op_flags);
+> +       buf2_type =3D IORING_BPF_BUF2_TYPE(op_flags);
+> +
+> +       /* Prepare buffer 1 */
+> +       if (buf1_type =3D=3D IORING_BPF_BUF_TYPE_PLAIN) {
+> +               /* Plain user buffer: addr=3Dsqe->addr, len=3Dsqe->len */
+> +               data->buf1_addr =3D READ_ONCE(sqe->addr);
+> +               data->buf1_len =3D READ_ONCE(sqe->len);
+> +       } else if (buf1_type =3D=3D IORING_BPF_BUF_TYPE_FIXED) {
+> +               /* Fixed buffer: index=3Dsqe->buf_index, offset=3Dsqe->ad=
+dr, len=3Dsqe->len */
+> +               req->buf_index =3D READ_ONCE(sqe->buf_index);
+> +               data->buf1_addr =3D READ_ONCE(sqe->addr);  /* offset with=
+in fixed buffer */
+> +               data->buf1_len =3D READ_ONCE(sqe->len);
 
-diff --git a/scripts/gen-btf.sh b/scripts/gen-btf.sh
-index 12244dbe097c..0aec86615416 100755
---- a/scripts/gen-btf.sh
-+++ b/scripts/gen-btf.sh
-@@ -123,7 +123,7 @@ embed_btf_data()
- 	fi
- 	local btf_ids="${ELF_FILE}.BTF_ids"
- 	if [ -f "${btf_ids}" ]; then
--		${OBJCOPY} --update-section .BTF_ids=${btf_ids} ${ELF_FILE}
-+		${RESOLVE_BTFIDS} --patch_btfids ${btf_ids} ${ELF_FILE}
- 	fi
- }
- 
-diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-index e2207e612ac3..1915adf3249b 100755
---- a/scripts/link-vmlinux.sh
-+++ b/scripts/link-vmlinux.sh
-@@ -266,7 +266,7 @@ vmlinux_link "${VMLINUX}"
- 
- if is_enabled CONFIG_DEBUG_INFO_BTF; then
- 	info OBJCOPY ${btfids_vmlinux}
--	${OBJCOPY} --update-section .BTF_ids=${btfids_vmlinux} ${VMLINUX}
-+	${RESOLVE_BTFIDS} --patch_btfids ${btfids_vmlinux} ${VMLINUX}
- fi
- 
- mksysmap "${VMLINUX}" System.map
-diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
-index 2cbc252259be..df39982f51df 100644
---- a/tools/bpf/resolve_btfids/main.c
-+++ b/tools/bpf/resolve_btfids/main.c
-@@ -862,8 +862,119 @@ static inline int make_out_path(char *buf, u32 buf_sz, const char *in_path, cons
- 	return 0;
- }
- 
-+/*
-+ * Patch the .BTF_ids section of an ELF file with data from provided file.
-+ * Equivalent to: objcopy --update-section .BTF_ids=<btfids> <elf>
-+ *
-+ * 1. Find .BTF_ids section in the ELF
-+ * 2. Verify that blob file size matches section size
-+ * 3. Update section data buffer with blob data
-+ * 4. Write the ELF file
-+ */
-+static int patch_btfids(const char *btfids_path, const char *elf_path)
-+{
-+	Elf_Scn *scn = NULL;
-+	FILE *btfids_file;
-+	size_t shdrstrndx;
-+	int fd, err = -1;
-+	Elf_Data *data;
-+	struct stat st;
-+	GElf_Shdr sh;
-+	char *name;
-+	Elf *elf;
-+
-+	elf_version(EV_CURRENT);
-+
-+	fd = open(elf_path, O_RDWR, 0666);
-+	if (fd < 0) {
-+		pr_err("FAILED to open %s: %s\n", elf_path, strerror(errno));
-+		return -1;
-+	}
-+
-+	elf = elf_begin(fd, ELF_C_RDWR_MMAP, NULL);
-+	if (!elf) {
-+		close(fd);
-+		pr_err("FAILED cannot create ELF descriptor: %s\n", elf_errmsg(-1));
-+		return -1;
-+	}
-+
-+	elf_flagelf(elf, ELF_C_SET, ELF_F_LAYOUT);
-+
-+	if (elf_getshdrstrndx(elf, &shdrstrndx) != 0) {
-+		pr_err("FAILED cannot get shdr str ndx\n");
-+		goto out;
-+	}
-+
-+	while ((scn = elf_nextscn(elf, scn)) != NULL) {
-+
-+		if (gelf_getshdr(scn, &sh) != &sh) {
-+			pr_err("FAILED to get section header\n");
-+			goto out;
-+		}
-+
-+		name = elf_strptr(elf, shdrstrndx, sh.sh_name);
-+		if (!name)
-+			continue;
-+
-+		if (strcmp(name, BTF_IDS_SECTION) == 0)
-+			break;
-+	}
-+
-+	if (!scn) {
-+		pr_err("FAILED: section %s not found in %s\n", BTF_IDS_SECTION, elf_path);
-+		goto out;
-+	}
-+
-+	data = elf_getdata(scn, NULL);
-+	if (!data) {
-+		pr_err("FAILED to get %s section data from %s\n", BTF_IDS_SECTION, elf_path);
-+		goto out;
-+	}
-+
-+	if (stat(btfids_path, &st) < 0) {
-+		pr_err("FAILED to stat %s: %s\n", btfids_path, strerror(errno));
-+		goto out;
-+	}
-+
-+	if ((size_t)st.st_size != data->d_size) {
-+		pr_err("FAILED: size mismatch - %s section in %s is %zu bytes, %s is %zu bytes\n",
-+		       BTF_IDS_SECTION, elf_path, data->d_size, btfids_path, (size_t)st.st_size);
-+		goto out;
-+	}
-+
-+	btfids_file = fopen(btfids_path, "rb");
-+	if (!btfids_file) {
-+		pr_err("FAILED to open %s: %s\n", btfids_path, strerror(errno));
-+		goto out;
-+	}
-+
-+	pr_debug("Copying data from %s to %s section of %s (%zu bytes)\n",
-+		 btfids_path, BTF_IDS_SECTION, elf_path, data->d_size);
-+
-+	if (fread(data->d_buf, data->d_size, 1, btfids_file) != 1) {
-+		pr_err("FAILED to read %s\n", btfids_path);
-+		fclose(btfids_file);
-+		goto out;
-+	}
-+	fclose(btfids_file);
-+
-+	elf_flagdata(data, ELF_C_SET, ELF_F_DIRTY);
-+	if (elf_update(elf, ELF_C_WRITE) < 0) {
-+		pr_err("FAILED to update ELF file %s\n", elf_path);
-+		goto out;
-+	}
-+
-+	err = 0;
-+out:
-+	elf_end(elf);
-+	close(fd);
-+
-+	return err;
-+}
-+
- static const char * const resolve_btfids_usage[] = {
- 	"resolve_btfids [<options>] <ELF object>",
-+	"resolve_btfids --patch_btfids <.BTF_ids file> <ELF object>",
- 	NULL
- };
- 
-@@ -880,6 +991,7 @@ int main(int argc, const char **argv)
- 		.funcs    = RB_ROOT,
- 		.sets     = RB_ROOT,
- 	};
-+	const char *btfids_path = NULL;
- 	bool fatal_warnings = false;
- 	char out_path[PATH_MAX];
- 
-@@ -894,6 +1006,8 @@ int main(int argc, const char **argv)
- 			    "turn warnings into errors"),
- 		OPT_BOOLEAN(0, "distill_base", &obj.distill_base,
- 			    "distill --btf_base and emit .BTF.base section data"),
-+		OPT_STRING(0, "patch_btfids", &btfids_path, "file",
-+			   "path to .BTF_ids section data blob to patch into ELF file"),
- 		OPT_END()
- 	};
- 	int err = -1;
-@@ -905,6 +1019,9 @@ int main(int argc, const char **argv)
- 
- 	obj.path = argv[0];
- 
-+	if (btfids_path)
-+		return patch_btfids(btfids_path, obj.path);
-+
- 	if (load_btf(&obj))
- 		goto out;
- 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index f28a32b16ff0..9488d076c740 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -657,7 +657,7 @@ $(TRUNNER_TEST_OBJS): $(TRUNNER_OUTPUT)/%.test.o:			\
- 	$$(if $$(TEST_NEEDS_BTFIDS),						\
- 		$$(call msg,BTFIDS,$(TRUNNER_BINARY),$$@)			\
- 		$(RESOLVE_BTFIDS) --btf $(TRUNNER_OUTPUT)/btf_data.bpf.o $$@;	\
--		$(OBJCOPY) --update-section .BTF_ids=$$@.BTF_ids $$@)
-+		$(RESOLVE_BTFIDS) --patch_btfids $$@.BTF_ids $$@)
- 
- $(TRUNNER_TEST_OBJS:.o=.d): $(TRUNNER_OUTPUT)/%.test.d:			\
- 			    $(TRUNNER_TESTS_DIR)/%.c			\
--- 
-2.52.0
+Deduplicate these assignments with the ones in the
+IORING_BPF_BUF_TYPE_PLAIN case?
 
+> +
+> +               /* Validate buffer index */
+> +               if (unlikely(!req->ctx->buf_table.nr))
+> +                       return -EFAULT;
+> +               if (unlikely(req->buf_index >=3D req->ctx->buf_table.nr))
+> +                       return -EINVAL;
+
+Why validate these here? Won't io_import_reg_buf() check these anyways?
+
+Best,
+Caleb
+
+
+> +       } else if (buf1_type =3D=3D IORING_BPF_BUF_TYPE_NONE) {
+> +               data->buf1_addr =3D 0;
+> +               data->buf1_len =3D 0;
+> +       } else {
+> +               return -EINVAL;
+> +       }
+> +
+> +       /* Prepare buffer 2 (plain only - io_uring only supports one fixe=
+d buffer) */
+> +       if (buf2_type =3D=3D IORING_BPF_BUF_TYPE_PLAIN) {
+> +               /* Plain user buffer: addr=3Dsqe->addr3, len=3Dsqe->optle=
+n */
+> +               data->buf2_addr =3D READ_ONCE(sqe->addr3);
+> +               data->buf2_len =3D READ_ONCE(sqe->optlen);
+> +       } else if (buf2_type =3D=3D IORING_BPF_BUF_TYPE_NONE) {
+> +               data->buf2_addr =3D 0;
+> +               data->buf2_len =3D 0;
+> +       } else {
+> +               return -EINVAL;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +
+>  int io_uring_bpf_prep(struct io_kiocb *req, const struct io_uring_sqe *s=
+qe)
+>  {
+>         struct uring_bpf_data *data =3D io_kiocb_to_cmd(req, struct uring=
+_bpf_data);
+>         unsigned int op_flags =3D READ_ONCE(sqe->bpf_op_flags);
+>         struct uring_bpf_ops *ops;
+> +       int ret;
+>
+>         if (!(req->ctx->flags & IORING_SETUP_BPF))
+>                 return -EACCES;
+>
+> +       if (uring_bpf_get_flags(op_flags))
+> +               return -EINVAL;
+> +
+>         data->opf =3D op_flags;
+>         ops =3D &bpf_ops[uring_bpf_get_op(data->opf)];
+>
+> +       /* Prepare buffers based on buffer type flags */
+> +       ret =3D io_bpf_prep_buffers(req, sqe, data, op_flags);
+> +       if (ret)
+> +               return ret;
+> +
+>         if (ops->prep_fn)
+>                 return ops->prep_fn(data, sqe);
+>         return -EOPNOTSUPP;
+> diff --git a/io_uring/uring_bpf.h b/io_uring/uring_bpf.h
+> index c76eba887d22..c919931cb4b0 100644
+> --- a/io_uring/uring_bpf.h
+> +++ b/io_uring/uring_bpf.h
+> @@ -7,8 +7,18 @@ struct uring_bpf_data {
+>         struct file     *file;
+>         u32             opf;
+>
+> +       /* Buffer 1 metadata - readable for bpf prog */
+> +       u32             buf1_len;               /* buffer 1 length, bytes=
+ 12-15 */
+> +       u64             buf1_addr;              /* buffer 1 address or of=
+fset, bytes 16-23 */
+> +
+> +       /* Buffer 2 metadata - readable for bpf prog (plain only) */
+> +       u64             buf2_addr;              /* buffer 2 address, byte=
+s 24-31 */
+> +       u32             buf2_len;               /* buffer 2 length, bytes=
+ 32-35 */
+> +       u32             __pad;                  /* padding, bytes 36-39 *=
+/
+> +
+>         /* writeable for bpf prog */
+> -       u8              pdu[64 - sizeof(struct file *) - sizeof(u32)];
+> +       u8              pdu[64 - sizeof(struct file *) - 4 * sizeof(u32) =
+-
+> +               2 * sizeof(u64)];
+>  };
+>
+>  typedef int (*uring_io_prep_t)(struct uring_bpf_data *data,
+> --
+> 2.47.0
+>
 
