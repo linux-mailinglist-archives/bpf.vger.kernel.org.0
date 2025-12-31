@@ -1,44 +1,44 @@
-Return-Path: <bpf+bounces-77605-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77606-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9C85CEC557
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 18:11:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CC6B6CEC55A
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 18:11:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id DD6A23007694
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 17:11:53 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id CBF573007CA9
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 17:11:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFDDC29A9FE;
-	Wed, 31 Dec 2025 17:11:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8698429D26B;
+	Wed, 31 Dec 2025 17:11:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oU9WBzh7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bVCWFqgo"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A294239E7E
-	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 17:11:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ADE429C338
+	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 17:11:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767201111; cv=none; b=dEX7JJy+2/sfGXuhA1UOu4bTagVfbw6dlKVf6QptBjU6zW1DAmHrUDB2M3cRITUUUsdXV3be6FLXeW4AthIAQDn9xs982q1CZQ/Uf3G7KUTgzZAMmSfVRVI6bYu0Ns5vB9lO+JY+6kxQWjjM5DX8BKzYzmf+QUefrnoBTyEvGYU=
+	t=1767201114; cv=none; b=sA9g+uJgvdy7E8YmtkI3qnw901h5loNn4LRlgmyfcy+He08zacBcQ2sY5V15KKDL4af8E6nnytA9ZxjhtsCjX09IUxIe38RPKmhUcbMbkKBvrxQxCn+kEcurTkMDbcoC/WvhBR8XG3v2mVmCSjXSXavkjYoxF02NqlXIsDyTeaQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767201111; c=relaxed/simple;
-	bh=xjKfBwpKP0yxYLVzPoIDxIjJwmie2MTcGH6JdyLsjoA=;
+	s=arc-20240116; t=1767201114; c=relaxed/simple;
+	bh=gxgchZuOPiy4CUyRD0RvKuYUtpG1oZ1mphFPRdvd90c=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jlV0EvJ9KGibtUgULm3gynXxLxc2TnxPMJWr/Py8SCFRzh/A1DYQs6cQbRgkubQPXk3a+ZPjMSw6u94fvEaUCZGK0BnE2XzyWzYbSJoO/2CcgNAuS9sKmL/JrQwq9k+mkMdSuIuvyHJXQSTwaa0eOPPeGyDg4gMWmwpCbtYiB/M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oU9WBzh7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90707C113D0;
-	Wed, 31 Dec 2025 17:11:50 +0000 (UTC)
+	 MIME-Version; b=jRlwBV+TJ6f8f7LIXoSj6B87rWY/ugR71DgCCnkwe4X0mECUou1qbLcXOse67FJvOGDm5DIkQUd2YhliWDMxo2+kxoUFImG06jzV+AgvGfPnz0cilbo3aVZmDXrfutHh2HQFKguRtdjY56+O3eZV5g2nbzYHJR1wKfyP793Si+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bVCWFqgo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B17BEC113D0;
+	Wed, 31 Dec 2025 17:11:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767201110;
-	bh=xjKfBwpKP0yxYLVzPoIDxIjJwmie2MTcGH6JdyLsjoA=;
+	s=k20201202; t=1767201113;
+	bh=gxgchZuOPiy4CUyRD0RvKuYUtpG1oZ1mphFPRdvd90c=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=oU9WBzh7Y9tO5n3a0Mw7E+CYhyFQWlIJ+bY4H8t3ROFHQJLY/bOJqXZBmu1WP3t4M
-	 ZDFkwkRsB7hBkfCKZ4mH19YLgQ4DtjOyAsz9k4/6Weghq/8pzNFKTAFTvVYVZJH9CE
-	 jAyn4f64GkAf8OqSOAugP0DffvOj0d0TIzz+bQkiFHuH4pQKGrzc2XMuBPkIKUMHNL
-	 RXSZNkSc8mgWfAZBd72UN6yULyTNqyaCVBubQB9orP7hp3yPE4ZAv40idDQ7mBVjtI
-	 Q7Q/LYe1FSc57yuCmNSw6+9ZIodGwPLIDuLcubv2tz3fUX+H/IyPK6samSChAvhzeQ
-	 a42Vg6VXcpLhA==
+	b=bVCWFqgo8rBI03XCSGpc2zrF1xysAL5xSDNiC0KnnAFSAa34skHRXdHn1mYtGSGwS
+	 IhlAw6LfK+2MeA8+R++/U4/STfCHBLp5xnVwTXNczt6Bq6DpmpMUXiEHOR62YbRZ9A
+	 zlm3EjW++6HDkCB0pkfXULMEYkgHft40GigPnA5iBC9aV3E5vmWetZRbmEQ6HNR8YQ
+	 F35ltd3m+gtLtUSPWS3svNZlwPESnvKzjLOmetw3bMV5QlhzhpJ/7kFqWLzfprHWFg
+	 b1g6Qh7YaFlU4///G9nhJIyr80vfiQzn8fXOvic0wtwWJGjVPc2i3NsJAXXOFK7Sve
+	 DmLh1Uy9wVF6A==
 From: Puranjay Mohan <puranjay@kernel.org>
 To: bpf@vger.kernel.org
 Cc: Puranjay Mohan <puranjay@kernel.org>,
@@ -50,9 +50,9 @@ Cc: Puranjay Mohan <puranjay@kernel.org>,
 	Eduard Zingerman <eddyz87@gmail.com>,
 	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next v2 5/9] selftests: bpf: Update failure message for rbtree_fail
-Date: Wed, 31 Dec 2025 09:08:51 -0800
-Message-ID: <20251231171118.1174007-6-puranjay@kernel.org>
+Subject: [PATCH bpf-next v2 6/9] selftests: bpf: fix test_kfunc_dynptr_param
+Date: Wed, 31 Dec 2025 09:08:52 -0800
+Message-ID: <20251231171118.1174007-7-puranjay@kernel.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20251231171118.1174007-1-puranjay@kernel.org>
 References: <20251231171118.1174007-1-puranjay@kernel.org>
@@ -64,31 +64,35 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The rbtree_api_use_unchecked_remove_retval() selftest passes a pointer
-received from bpf_rbtree_remove() to bpf_rbtree_add() without checking
-for NULL, this was earlier caught by __check_ptr_off_reg() in the
-verifier. Now the verifier assumes every kfunc only takes trusted pointer
-arguments, so it catches this NULL pointer earlier in the path and
-provides a more accurate failure message.
+As verifier now assumes that all kfuncs only takes trusted pointer
+arguments, passing 0 (NULL) to a kfunc that doesn't mark the argument as
+__nullable or __opt will be rejected with a failure message of: Possibly
+NULL pointer passed to trusted arg<n>
+
+Pass a non-null value to the kfunc to test the expected failure mode.
 
 Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 ---
- tools/testing/selftests/bpf/progs/rbtree_fail.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/rbtree_fail.c b/tools/testing/selftests/bpf/progs/rbtree_fail.c
-index 4acb6af2dfe3..70b7baf9304b 100644
---- a/tools/testing/selftests/bpf/progs/rbtree_fail.c
-+++ b/tools/testing/selftests/bpf/progs/rbtree_fail.c
-@@ -153,7 +153,7 @@ long rbtree_api_add_to_multiple_trees(void *ctx)
+diff --git a/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c b/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
+index 061befb004c2..d249113ed657 100644
+--- a/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
++++ b/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
+@@ -48,10 +48,9 @@ SEC("?lsm.s/bpf")
+ __failure __msg("arg#0 expected pointer to stack or const struct bpf_dynptr")
+ int BPF_PROG(not_ptr_to_stack, int cmd, union bpf_attr *attr, unsigned int size, bool kernel)
+ {
+-	unsigned long val = 0;
++	static struct bpf_dynptr val;
+ 
+-	return bpf_verify_pkcs7_signature((struct bpf_dynptr *)val,
+-					  (struct bpf_dynptr *)val, NULL);
++	return bpf_verify_pkcs7_signature(&val, &val, NULL);
  }
  
- SEC("?tc")
--__failure __msg("dereference of modified ptr_or_null_ ptr R2 off=16 disallowed")
-+__failure __msg("Possibly NULL pointer passed to trusted arg1")
- long rbtree_api_use_unchecked_remove_retval(void *ctx)
- {
- 	struct bpf_rb_node *res;
+ SEC("lsm.s/bpf")
 -- 
 2.47.3
 
