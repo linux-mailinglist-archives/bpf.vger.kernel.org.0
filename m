@@ -1,167 +1,209 @@
-Return-Path: <bpf+bounces-77652-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77653-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DBD4CECA36
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 23:42:50 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E11ACECAAF
+	for <lists+bpf@lfdr.de>; Thu, 01 Jan 2026 00:21:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A06653013391
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 22:42:44 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9CE6E3019195
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 23:21:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E128430C60B;
-	Wed, 31 Dec 2025 22:42:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 491C930ACE6;
+	Wed, 31 Dec 2025 23:21:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="caeSvVUc"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="FhfkJDVO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C47C150276
-	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 22:42:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 417AB2C027B
+	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 23:21:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767220962; cv=none; b=SBsWswm7n6U3TRzlgaE8/cyZMpvokQjVVjryuOOakG3u0zopsjzT6x0GmkOtKUltmw8qGQ9gqVNOVYBSyhJExNTa1cBrATJJBAKQDBtYoBM3bP+blT9+5o/Y3UtEt6q6kQkR6eVUnW3C4mYfro6/BkWy2vcWSDYlKUxRSViG4ZA=
+	t=1767223261; cv=none; b=E0FuoX/KxJGWX1yJOhg3rle4YOMFGIH40F5SiT+0wQ5uHg1wV+EV4genNh5QJ9waGeSnZerX5GEgTZiAVLVMeIHClMq3fiAKZ3xfpO41F5Ogo9UcJAWwnyqVC1cZS01rXYJd7Z6nhqncNm5PMN+7ijpCBogvnU1r6WfhkdrXewI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767220962; c=relaxed/simple;
-	bh=T4K8zxFsKyFqXvkWNU3hF4Ct3+tZ0Ex3que5nmjgQcY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pebjnYIubemQTXHKLQpiHZ6edc4Ncwn7bKjkb0/E9o1nGzYJrdH0idw9dDfIDfIESD7Ocrn4ncN0hk/Od28b3qpIXmrm+S5xoh3sNDyWVzR0TXb9M1ha1fDqPgjzmovatdJ1hNO5N+gjWBdn1J80oLLbIdAtOxCvzYVL5M4R5fg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=caeSvVUc; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-b713c7096f9so1751353966b.3
-        for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 14:42:40 -0800 (PST)
+	s=arc-20240116; t=1767223261; c=relaxed/simple;
+	bh=QbQeTPKkvqwDTi9jphXlB0QOUtZZZiT4Q18MidmASV8=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=GIuURj+HW60k77/7oBZ23Rv+z8BvA8cdrBwXQjlzWlocVxeeqiYoutvU4gCYyxmqxk41Ptn3iPepnRZ7bVxxAcbDZJu+S9LC8TT7z2M5jneI2SM2MsXF7il44HZFkWVJhlq8xSv4FZ83VScULZUeOoNMQbSLL8NahycpyY50ndQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--maze.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=FhfkJDVO; arc=none smtp.client-ip=209.85.215.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--maze.bounces.google.com
+Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-c3373f2bd74so3049570a12.3
+        for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 15:21:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767220959; x=1767825759; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=t7xVQ7sNKtOHvlX/ACB0QZttaDOgoyezL9G8wLVJ3nY=;
-        b=caeSvVUcyx3odDbmETbW6cRRNH2Rhso9NbTe50s5Z+WUOg9Gil5tiQ/isyJBhKifMT
-         WEqhAy1+zxVrubfKO2DDA4eVI5XAHnU/7Vn2j1Yf4VjxiJguqE307yVQbTxMUHV9skHf
-         94fd8E5On02ucFgOgTfDpDoqp2dQmd/5WuzgbP0QK53e1plokw8/TppZ8GcMgjGPV+hw
-         zyiS/JRGmJZWz2THiIUXCTOURk/FJsB/Yq5pax0sfG5Dwni6JH9IKj+MzO1L4ttaOUFN
-         w/27edGCCo17YwODMUSPu4cT46f9gfsrhAoz+1Jz6WDtI32XbocZ4FNkvSliMh/QjJ2g
-         PudA==
+        d=google.com; s=20230601; t=1767223260; x=1767828060; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5Fkw4pJwbf+RiOcgktvh2leaGPbqkfTxYnH0P1Ik49Q=;
+        b=FhfkJDVOGW5SC5mYvQfUZRTckHq32r336Gq8jBxoh8hRdxfyNDhLNigiu1Ssm02SuY
+         pAROAV6L35jOpeQX9OdtdzU59dIBeYiHibvm/wgkwiwlYsDA/aPULhV2nwhJx4C00Moh
+         CxKNxujnmbdXavkQrm3pXGvJ8yzk32hjBH2gQgVGwjh3VQb7UapXhv3qxIFQiva6e/Ex
+         bJQ1rS9aJoxZjzSWO5a67BW8nOVV53nRVZBqL1OQgSwG91E2sKtasHfJ2Ys8x1gNqLMx
+         7RvlFXeX4hcYEuOYxUlmjuqdGQxIz5FRx55KxAax3YoIHYVcmD4qLO02lzDlCuIIuNr+
+         /ZKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767220959; x=1767825759;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=t7xVQ7sNKtOHvlX/ACB0QZttaDOgoyezL9G8wLVJ3nY=;
-        b=viFQ0/7IVLqI2sIXVr6uDILzNKmkTdSVuqREw7AELbeLKzjAzpgbilLDx4rfWAZcgQ
-         L3lRj/Z1xD3TjYvAVn3Mx8Bmi2yM1fiKlX9+HV3B4kHtEUiShRa8ni/bF94OU12o1Z1c
-         YY+u/B5FnsOyTW5NifP4+nIBwMIeIR7+7Yr+PAOxwL/riiSvwn6pp25WdYYy1ER/9Zka
-         Oxtlwyulaic0JUUaor3DnPHlIVjBDaUhlcpkEiP5gmt9fd1a6XcOXiKG0gWPz936Y0IA
-         LFvBOjkpQt1iR48HUTG9ZS7y9S7Rs9LpBslgbw7z6N3XYqu9+6+lS5nJac9afeqG1q5W
-         bhog==
-X-Forwarded-Encrypted: i=1; AJvYcCVaNPjhX2zY1GDGEMxNNQGZM5/tZpVu829v7+cZBOhHnQp8AfMOtaYR+jUEbmAuzbl/uNU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxfEGaIKwm20M/l6LjjRDNDPa3y9eDmhaggbLRryfK4k/TdtBu+
-	E8ndaM7Ib+wNhxWrb2A1D44ggqxmjuvpM0vJyj6XxgEGO56vXGRPHEiN4MWfNR7TfnXfmtKZHES
-	C5DwdbQ1SzwgBY6wl/OtP12GufyfnDtQ=
-X-Gm-Gg: AY/fxX52lj6D2jCXF5KIPJicen0maigGvA5BK2DFp9Be0gFdhX9hV/LkwwydmXiDWZP
-	3Z1ElZy+fkTq3990XfUFQjnHmsA+AKlclVywNlgJCwQK8yBfsvt2TIm12tfiFfXpCFzpMgF3dyv
-	s9isMXRJOkmS9/RkgKcNb7qjfzhydfOyiV+yYPsrmSGVzgYQezYKOMSKO3tZqeYZruUk7JxvJt1
-	crnfnLBdSThKdr+u8g7WRv2qDx6XFGe7SrRSIcf6HYoRR0NwhO1ffRdcEVcyRUCol//ceQTH1dZ
-	O/FwZ2YS6sk=
-X-Google-Smtp-Source: AGHT+IExKbX98blDwKPhRoTaq6xKYXuuZ2J00I0SGao762cZ8gqwMwp7qeHTTu0w+qZQC+0BZGfaU+rPoIfwg0IFTzc=
-X-Received: by 2002:a17:907:6ea7:b0:b80:f2e:6eb with SMTP id
- a640c23a62f3a-b8036f2ab4emr3898324266b.21.1767220958962; Wed, 31 Dec 2025
- 14:42:38 -0800 (PST)
+        d=1e100.net; s=20230601; t=1767223260; x=1767828060;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5Fkw4pJwbf+RiOcgktvh2leaGPbqkfTxYnH0P1Ik49Q=;
+        b=gq4bCTgpTfQRYYxnL/xHCUvpBD/UfSAKrJ5tF3iP1Om6GhAsNw0ViQAA2ppaVGNX9r
+         GE3QnRQ+FlAr57QmllxD0e5EuY/s81vvZRGTKXPY4iJt2tC/eE2uuWMCNUdLeyyxsgka
+         BMspbtQTHwMjeqY/Z+bGctoD2gLevUgdljRqP4dFPHX9FVPstPDy6RBEMfo7V2kN+Odj
+         MYa/11SWhiTFIvQyaapDg7GNH2rCWAUWdWZF0AeczbGKBesTvlrfK71FS4MRWfRaxxTh
+         Sbse4a+qS/a/OzCHWNqOlpvYNO5ZPjJN3M/2J9vrsZ1vmK4heqXyifWb1GrUFs9XEYA0
+         6TBg==
+X-Forwarded-Encrypted: i=1; AJvYcCVDmP+U/tx+55+C3A89/fTvLPu+qBXEy7wAjpi15IFNd24j8/5A0s952sxhYBkSaY2rXnM=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz2huGIdD2xY3zNuSU5sd3Rm796q/vBikkEudK7N6LcdDrumx3y
+	BnbUT0HkVMfIxwYLDiTyXIxcijpJ6e2lbpdSMdDQ1M+b4o4WjDWSgNyRhWswbJuo8HJpPZZF0A=
+	=
+X-Google-Smtp-Source: AGHT+IGQ1Yo74Lfs+XDagvF/do2RICQ0VFYGB7N4aHuu3r4sO5GbnwTUXgQ19dSEciYhPBpJEkJa6lWY
+X-Received: from dlbsi4.prod.google.com ([2002:a05:7022:b884:b0:119:9f33:34a6])
+ (user=maze job=prod-delivery.src-stubby-dispatcher) by 2002:a05:7022:f401:b0:119:fb9c:4ebb
+ with SMTP id a92af1059eb24-121722ebbafmr31057680c88.30.1767223259510; Wed, 31
+ Dec 2025 15:20:59 -0800 (PST)
+Date: Wed, 31 Dec 2025 15:20:48 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20251227081033.240336-1-xukuohai@huaweicloud.com> <ce484a55ffa709dcfcacd631213b3b1ff1938c7a.camel@gmail.com>
-In-Reply-To: <ce484a55ffa709dcfcacd631213b3b1ff1938c7a.camel@gmail.com>
-From: Puranjay Mohan <puranjay12@gmail.com>
-Date: Wed, 31 Dec 2025 22:42:27 +0000
-X-Gm-Features: AQt7F2rvlMWseabyaxfs4v4wv8iqXWtzlDxehCqfM33d2M-QCN-QHXtbpaO_m48
-Message-ID: <CANk7y0jR9Ttt6QKhg=iZshs4j=7GZbDXYBgf0iUqkvhWqpQxEQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3] bpf: arm64: Fix panic due to missing BTI at
- indirect jump targets
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Xu Kuohai <xukuohai@huaweicloud.com>, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Yonghong Song <yonghong.song@linux.dev>, 
-	Anton Protopopov <a.s.protopopov@gmail.com>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Will Deacon <will@kernel.org>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.52.0.394.g0814c687bb-goog
+Message-ID: <20251231232048.2860014-1-maze@google.com>
+Subject: [PATCH bpf] bpf: 'fix' for undefined future potential exploits of BPF_PROG_LOAD
+From: "=?UTF-8?q?Maciej=20=C5=BBenczykowski?=" <maze@google.com>
+To: "=?UTF-8?q?Maciej=20=C5=BBenczykowski?=" <zenczykowski@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>
+Cc: Linux Network Development Mailing List <netdev@vger.kernel.org>, "David S . Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, BPF Mailing List <bpf@vger.kernel.org>, 
+	"=?UTF-8?q?Maciej=20=C5=BBenczykowski?=" <maze@google.com>, John Fastabend <john.fastabend@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 31, 2025 at 10:35=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.co=
-m> wrote:
->
-> On Sat, 2025-12-27 at 16:10 +0800, Xu Kuohai wrote:
-> > From: Xu Kuohai <xukuohai@huawei.com>
-> >
-> > When BTI is enabled, the indirect jump selftest triggers BTI exception:
-> >
-> > Internal error: Oops - BTI: 0000000036000003 [#1]  SMP
-> > ...
-> > Call trace:
-> >  bpf_prog_2e5f1c71c13ac3e0_big_jump_table+0x54/0xf8 (P)
-> >  bpf_prog_run_pin_on_cpu+0x140/0x464
-> >  bpf_prog_test_run_syscall+0x274/0x3ac
-> >  bpf_prog_test_run+0x224/0x2b0
-> >  __sys_bpf+0x4cc/0x5c8
-> >  __arm64_sys_bpf+0x7c/0x94
-> >  invoke_syscall+0x78/0x20c
-> >  el0_svc_common+0x11c/0x1c0
-> >  do_el0_svc+0x48/0x58
-> >  el0_svc+0x54/0x19c
-> >  el0t_64_sync_handler+0x84/0x12c
-> >  el0t_64_sync+0x198/0x19c
-> >
-> > This happens because no BTI instruction is generated by the JIT for
-> > indirect jump targets.
-> >
-> > Fix it by emitting BTI instruction for every possible indirect jump
-> > targets when BTI is enabled. The targets are identified by traversing
-> > all instruction arrays of jump table type used by the BPF program,
-> > since indirect jump targets can only be read from instruction arrays
-> > of jump table type.
-> >
-> > Fixes: f4a66cf1cb14 ("bpf: arm64: Add support for indirect jumps")
-> > Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
-> > ---
-> > v3:
-> > - Get rid of unnecessary enum definition (Yonghong Song, Anton Protopop=
-ov)
-> >
-> > v2: https://lore.kernel.org/bpf/20251223085447.139301-1-xukuohai@huawei=
-cloud.com/
-> > - Exclude instruction arrays not used for indirect jumps (Anton Protopo=
-pov)
-> >
-> > v1: https://lore.kernel.org/bpf/20251127140318.3944249-1-xukuohai@huawe=
-icloud.com/
-> > ---
->
-> Hi Xu, Anton, Alexei,
->
-> Sorry, I'm a bit late to the discussion, ignored this patch-set
-> because of the "arm64" tag.
->
-> What you are fixing here for arm64 will be an issue for x86 with CFI
-> as well, right?
+Over the years there's been a number of issues with the eBPF
+verifier/jit/codegen (incl. both code bugs & spectre related stuff).
 
-Yes, I just realized this would be a problem for x86 as well where
-endbr64 would be needed in place of BTI
+It's an amazing but very complex piece of logic, and I don't think
+it's realistic to expect it to ever be (or become) 100% secure.
 
->
-> If that is the case, I think that we should fix this in a "generic"
-> way from the start. What do you think about the following:
-> - add a field 'bool indirect_jmp_target' to 'struct bpf_insn_aux_data'
-> - set this field to true for each jump target inspected by the
->   verifier.c:check_indirect_jump()
-> - use this field in the jit to decide if to emit BTI instruction.
->
-> Seems a bit simpler than what is discussed in this patch-set.
-> Wdyt?
->
-> [...]
+For example we currently have KASAN reporting buffer length violation
+issues on 6.18 (which may or may not be due to eBPF subsystem, but are
+worrying none-the-less)
+
+Blocking bpf(BPF_PROG_LOAD, ...) is the only sure fire way to guarantee
+the inability to exploit the eBPF subsystem.
+In comparison other eBPF operations are pretty benign.
+Even map creation is usually at most a memory DoS, furthermore it
+remains useful (even with prog load disabled) due to inner maps.
+
+This new sysctl is designed primarily for verified boot systems,
+where (while the system is booting from trusted/signed media)
+BPF_PROG_LOAD can be enabled, but before untrusted user
+media is mounted or networking is enabled, BPF_PROG_LOAD
+can be outright disabled.
+
+This provides for a very simple way to limit eBPF programs to only
+those signed programs that are part of the verified boot chain,
+which has always been a requirement of eBPF use in Android.
+
+I can think of two other ways to accomplish this:
+(a) via sepolicy with booleans, but it ends up being pretty complex
+    (especially wrt verifying the correctness of the resulting policies)
+(b) via BPF_LSM bpf_prog_load hook, which requires enabling additional
+    kernel options which aren't necessarily worth the bother,
+    and requires dynamically patching the kernel (frowned upon by
+    security folks).
+
+This approach appears to simply be the most trivial.
+
+I've chosed to return EUNATCH 'Protocol driver not attached.'
+to separate it from EPERM and make it clear the eBPF program loading
+subsystem has been outright disabled (detached).  There aren't
+any permissions you could gain to make things work again (short
+of a reboot/kexec).
+
+It is intentionally kernel global and doesn't affect cBPF,
+which has various runtime use cases (incl. tcpdump style dynamic
+socket filters and seccomp sandboxing) and thus cannot be disabled,
+but (as experience shows) is also much less dangerous (mainly due
+to being much simpler).
+
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Signed-off-by: Maciej =C5=BBenczykowski <maze@google.com>
+---
+ Documentation/admin-guide/sysctl/kernel.rst |  9 +++++++++
+ kernel/bpf/syscall.c                        | 14 ++++++++++++++
+ 2 files changed, 23 insertions(+)
+
+diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/ad=
+min-guide/sysctl/kernel.rst
+index f3ee807b5d8b..4906ef08c741 100644
+--- a/Documentation/admin-guide/sysctl/kernel.rst
++++ b/Documentation/admin-guide/sysctl/kernel.rst
+@@ -1655,6 +1655,15 @@ entry will default to 2 instead of 0.
+ =3D =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+=20
+=20
++disable_bpf_prog_load
++=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
++
++Writing 1 to this entry will cause all future invocations of
++``bpf(BPF_PROG_LOAD, ...)`` to fail with -EUNATCH, thus effectively
++permanently disabling the instantiation of new eBPF programs.
++Once set to 1, this cannot be reset back to 0.
++
++
+ warn_limit
+ =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+=20
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 6589acc89ef8..ef655ff501e7 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -67,6 +67,8 @@ static DEFINE_SPINLOCK(link_idr_lock);
+ int sysctl_unprivileged_bpf_disabled __read_mostly =3D
+ 	IS_BUILTIN(CONFIG_BPF_UNPRIV_DEFAULT_OFF) ? 2 : 0;
+=20
++int sysctl_disable_bpf_prog_load =3D 0;
++
+ static const struct bpf_map_ops * const bpf_map_types[] =3D {
+ #define BPF_PROG_TYPE(_id, _name, prog_ctx_type, kern_ctx_type)
+ #define BPF_MAP_TYPE(_id, _ops) \
+@@ -2891,6 +2893,9 @@ static int bpf_prog_load(union bpf_attr *attr, bpfptr=
+_t uattr, u32 uattr_size)
+ 				 BPF_F_TOKEN_FD))
+ 		return -EINVAL;
+=20
++	if (sysctl_disable_bpf_prog_load)
++		return -EUNATCH;
++
+ 	bpf_prog_load_fixup_attach_type(attr);
+=20
+ 	if (attr->prog_flags & BPF_F_TOKEN_FD) {
+@@ -6511,6 +6516,15 @@ static const struct ctl_table bpf_syscall_table[] =
+=3D {
+ 		.extra1		=3D SYSCTL_ZERO,
+ 		.extra2		=3D SYSCTL_TWO,
+ 	},
++	{
++		.procname	=3D "disable_bpf_prog_load",
++		.data		=3D &sysctl_disable_bpf_prog_load,
++		.maxlen		=3D sizeof(sysctl_disable_bpf_prog_load),
++		.mode		=3D 0644,
++		.proc_handler	=3D proc_dointvec_minmax,
++		.extra1		=3D SYSCTL_ONE,
++		.extra2		=3D SYSCTL_ONE,
++	},
+ 	{
+ 		.procname	=3D "bpf_stats_enabled",
+ 		.data		=3D &bpf_stats_enabled_key.key,
+--=20
+2.52.0.394.g0814c687bb-goog
+
 
