@@ -1,135 +1,110 @@
-Return-Path: <bpf+bounces-77586-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77587-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 207C4CEBD5B
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 12:02:49 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2A04CEBFB5
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 13:35:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 4D9253009F18
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 11:02:46 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 31F82300E8D4
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 12:35:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EE7C30F927;
-	Wed, 31 Dec 2025 11:02:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2747C322B83;
+	Wed, 31 Dec 2025 12:35:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YRTBvpRG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X3jKDzRb"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 120AA230BCC
-	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 11:02:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4315E3148B8
+	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 12:35:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767178961; cv=none; b=rITMTIH1vEGAhvgLpWxFWOX243QikhVH6nwhBr01Fo5gkbQZVN2DJNlgTOXVVrYnufYLaXLUwakcU6W4PelGLAOKh2gSsSPG4ofo+G4Kk02iZ3BpgPv6oxk+wniyYFJt1kcAX/Mqz/Mx3QCasZmqEOTRoQKi+gRoLlkscQLrFRs=
+	t=1767184502; cv=none; b=oMr56gm7o5ngh0Fn9h3L6Ix2+PvZy5OR2Q1vogI08F3Zzem/Ybepi9+xSQp79B3w65U6i8CQJ+RZIcK5I0WHw8Zl+vpR5TyF1/2UyNJwyWfL6Aq/77rA6Vw9/P6QkMSEtP17MDBHt0GL89gGDR5+zpc1xzyIG51cXdPnwa85RtM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767178961; c=relaxed/simple;
-	bh=pZdk6JKNKt2GjJz5MMPvEGftM6pUiE/zOE1K/JTe5d8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tg8dbJTIiGjo0jvQYA/TD0HTXL/cWIsM1ZzFhmuvRhrrB6EXoLdKE+0Lt4f1AAxpaN/RvzuFHqf1w6AB03bbp6MBracx3rUsBYXtB6EyFFeC/nwzJItZg1ZcNJSXXcPh6iAqLKl66vfUerSF0c4XxTn/y1q5L/krTIqfQcvC9Bg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YRTBvpRG; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1767178958;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6SnURq+FB1fjCXRQW5ZE1rMfkvLYTJ3UZen2mW5o/OM=;
-	b=YRTBvpRGZ/fcitFzfACfv6VTbebGISd9afhbErEHyfCGi+x//My1ItojhxG6IyWEGb8Tdw
-	6ZqrfS13S2pWuyEztFQL6tl/XZMMYc6L7x70oKIPa/s8CHpdQsA6tcmhnXfGghhyEv9LpH
-	+fl5HZt/FkVFty/CEmJXmsx4ziirta8=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-662-6dafXmEEPPK3WtATJKdUqg-1; Wed,
- 31 Dec 2025 06:02:37 -0500
-X-MC-Unique: 6dafXmEEPPK3WtATJKdUqg-1
-X-Mimecast-MFC-AGG-ID: 6dafXmEEPPK3WtATJKdUqg_1767178956
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 87FB51956088;
-	Wed, 31 Dec 2025 11:02:19 +0000 (UTC)
-Received: from fedora (unknown [10.72.116.125])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 4696730002C9;
-	Wed, 31 Dec 2025 11:02:14 +0000 (UTC)
-Date: Wed, 31 Dec 2025 19:02:09 +0800
-From: Ming Lei <ming.lei@redhat.com>
-To: Caleb Sander Mateos <csander@purestorage.com>
-Cc: Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-	Akilesh Kailash <akailash@google.com>, bpf@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>
-Subject: Re: [PATCH 4/5] io_uring: bpf: add buffer support for IORING_OP_BPF
-Message-ID: <aVUCsQ2fuOP_hfPF@fedora>
-References: <20251104162123.1086035-1-ming.lei@redhat.com>
- <20251104162123.1086035-5-ming.lei@redhat.com>
- <CADUfDZqUbJz_05m63-p4Q7XpsM1V6f4oGMCaKmPcE_wzNJvNqA@mail.gmail.com>
+	s=arc-20240116; t=1767184502; c=relaxed/simple;
+	bh=0b7e3Q4nvnJzzXG4VuhNpxvQcZV5K5/GkMiEmT25CpM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PE7YtiJcodpBsIR0NGjrtSJiiRgHryPWPLLm9oT9KL36xr4bPTkhtbDABR/7hRm427SGkAHXpLxCaKt9JKXhR3IwoSH7hKlmZ1gFP8tEmiTCEb+Xt9aModEqrrFR+TNfwFXnHFLdsa6jP6ffFzR8dAYjhxO1wTa71rq0McFv38I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X3jKDzRb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7FC0C113D0
+	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 12:34:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1767184499;
+	bh=0b7e3Q4nvnJzzXG4VuhNpxvQcZV5K5/GkMiEmT25CpM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=X3jKDzRbZTW7iInNHx/Bp6zgFDr0bTKcx/aJHrW9ekeMRgp7rib3J3jUHZv3izM0Q
+	 ZMxUfPnwegSxduE2Z/2d7RODDTrTJSn3mA1XDtGyyd6Wk1yaNqqTMdQOhI4cqRshrX
+	 AnpVf5oDB+wgyqO9jds7zO/EDcxahHfBqr1GPdRS56S9vZEPC44drNc3sJOS2QCgWW
+	 +ivoQj6PI2NdQqg8rHLSHxVoRVLcS5QkFJkbr5jY/EIJsa32aJBA5LfQKddYI/P0Eg
+	 o9QtFgV0jYwRO6fvkj8NFdaXH5in//Ix6/flZWrBaUa6O53JfgJT5IbsuaCXpzix+U
+	 JuztJXlYnxszw==
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-b7eff205947so1538005666b.1
+        for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 04:34:59 -0800 (PST)
+X-Gm-Message-State: AOJu0Yz2FEb0vGDVZa4fJ0Hy0z3w34038rWoLVYnKlMmLL5bThDmR2bC
+	DRwTCyZVCksRyOaOxVL0UDfGegCP7zfgUz6/1ebVaNgsv9obs6FvCXt4YN/Sh0E1OybBzLfXirO
+	ziBAWUdqubDrIEfMC0Cvr1fMzPGTFkdY=
+X-Google-Smtp-Source: AGHT+IGXYzle8rsVJdOQ8Wpp6OoQEfXdEV8R5kEW66gLg4xpla5AOSlJjpClTDtvf0IgpCzJgwMj7lKdYUwh9x4kFgg=
+X-Received: by 2002:a17:907:6d1e:b0:b83:8f35:773b with SMTP id
+ a640c23a62f3a-b838f35775dmr598523066b.54.1767184498401; Wed, 31 Dec 2025
+ 04:34:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CADUfDZqUbJz_05m63-p4Q7XpsM1V6f4oGMCaKmPcE_wzNJvNqA@mail.gmail.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+References: <20251224192448.3176531-1-puranjay@kernel.org> <20251224192448.3176531-2-puranjay@kernel.org>
+ <4cb72b4808c333156552374c5f3912260097af43.camel@gmail.com>
+ <CANk7y0g6s5C-mLTPUpGyvJC=ZA=v9WawYzbeVgocbsf4dcXJHw@mail.gmail.com> <6d032492af465929e1e02c53a479f71ef8964d76.camel@gmail.com>
+In-Reply-To: <6d032492af465929e1e02c53a479f71ef8964d76.camel@gmail.com>
+From: Puranjay Mohan <puranjay@kernel.org>
+Date: Wed, 31 Dec 2025 12:34:46 +0000
+X-Gmail-Original-Message-ID: <CANk7y0jdE-1cVE3UsyQaC2HwZ0TyjPZr=q=c4meYjH27PdUwJg@mail.gmail.com>
+X-Gm-Features: AQt7F2oP8dedVZUGVP5VjX9pABbTeEGmaCxv7N3_Ba8Dk91T058Brj2rtZvqzT8
+Message-ID: <CANk7y0jdE-1cVE3UsyQaC2HwZ0TyjPZr=q=c4meYjH27PdUwJg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/7] bpf: Make KF_TRUSTED_ARGS the default for
+ all kfuncs
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 30, 2025 at 08:42:11PM -0500, Caleb Sander Mateos wrote:
-> On Tue, Nov 4, 2025 at 8:22 AM Ming Lei <ming.lei@redhat.com> wrote:
+On Wed, Dec 31, 2025 at 12:29=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.co=
+m> wrote:
+>
+> On Wed, 2025-12-31 at 00:08 +0000, Puranjay Mohan wrote:
+>
+> [...]
+>
+> > I wish to do a full review of all kfuncs and make
+> > sure either they are tagged with correct __nullable, __opt annotation
+> > or fixed to make sure they are doing the right thing. But currently I
+> > just made sure all selftests pass, some of the kfuncs might not have
+> > self tests and would need manual analysis and I will have to do that.
+>
+> Ack, sounds like a plan.
+>
+> > Some kfuncs will have breaking changes, I am not sure how to work
+> > around that case, for example css_rstat_updated() could be
+> > successfully called from fentry programs like the selftest fixed in
+> > Patch 7, it worked because css_rstat_updated() doesn't mark the
+> > parameters with KF_TRUSTED_ARGS, but now KF_TRUSTED_ARGS is the
+> > default so this kfunc can't be called from fentry programs as fentry's
+> > parameters are not marked as trusted.
 > >
-> > Add support for passing 0-2 buffers to BPF operations through
-> > IORING_OP_BPF. Buffer types are encoded in sqe->bpf_op_flags
-> > using dedicated 3-bit fields for each buffer.
-> 
-> I agree the 2 buffer limit seems a bit restrictive, and it would make
-> more sense to expose kfuncs to import plain and fixed buffers. Then
-> the BPF program could decide what buffers to import based on the SQE,
-> BPF maps, etc. This would be analogous to how uring_cmd
-> implementations import buffers.
-
-Yes, this way is too restrictive.
-
-I think there are at least two approaches:
-
-- define public buffer descriptor, which can describe plain, fixed, vector,
-fixed vector buffer, ...
-
-- user can pass this buffer descriptor array from sqe->addr & sqe->len (buf descriptor
-  need to be defined in UAPI)
-
-OR
-
-- user can pass this buffer array from arena map (buf descriptor is just
-API between bpf prog and userspace)
-
-The former could be better, because `buf descriptor` is part of UAPI, and
-user still can choose to use bpf map to pass buffer. But defining 'buf
-descriptor' may take a while...
-
-The latter way could be easier to start...
-
-> 
 > >
-> > Buffer 1 can be:
-> > - None (no buffer)
-> > - Plain user buffer (addr=sqe->addr, len=sqe->len)
-> > - Fixed/registered buffer (index=sqe->buf_index, offset=sqe->addr,
-> 
-> Should this say "addr=" instead of "offset="? It's passed as buf_addr
-> to io_bpf_import_buffer(), so it's an absolute userspace address. The
-> offset into the fixed buffer depends on the starting address of the
-> fixed buffer.
+> > Looking at the code of css_rstat_updated() it seems that it assumes
+> > the parameters to be trusted and therefore not allowing it to be
+> > called from fentry would be the right thing to do,
+> > but it could break perfectly working BPF programs.
+>
+> Indeed, it expects 'css' to be not NULL as it dereferences the
+> pointer immediately.
 
-For user fixed buffer, offset is the buff addr.
-
-For kernel fixed buffer, it is offset.
-
-
-Thanks, 
-Ming
-
+So what do you think is the right way to move forward? it will break
+some programs but for their good. I think correctness and security
+outweigh backwards compatibility.
 
