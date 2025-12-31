@@ -1,158 +1,137 @@
-Return-Path: <bpf+bounces-77625-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77626-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0732CEC747
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 19:14:39 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5393CCEC77B
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 19:20:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4B760302218D
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 18:14:07 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id BC46B3001194
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 18:20:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 270802FD1C2;
-	Wed, 31 Dec 2025 18:14:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CE632FFDDE;
+	Wed, 31 Dec 2025 18:20:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OfLzlWNU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U+5SmOBH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A78E32FB09A
-	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 18:14:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01F07BE5E
+	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 18:20:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767204843; cv=none; b=lxc8Bd6uWYFSkdg0FTOCu4vPL6stCA45YfsmE44qhFae9xBqlGOaKUwyDsOntY6CdAEROdP7a2FIQH2dU4Q1Br9JxWyF3rrh54NpK17YzuO4A2XJHVMQcHxe2nohysZoemFevswIkfshSX5tOgsMir8OVP+ZLDQkGtPksTDXRAA=
+	t=1767205237; cv=none; b=QZgqJEm6vOquPpB8eWQ4ydVVJncF+xHcuIG9xXL3G1oZKJTe3G/ZnyvVKmhXl17cxL0kqy+CUAJeRb0BOUkHundv6VMJWPiMymMGWcFKKSZgLX7wt9trCkHh+2rLa/X76rWvpVAcJC7ebAgeY9JrOJduv0/PEbi39TY08v4+vfk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767204843; c=relaxed/simple;
-	bh=l0LRvl1kqcmBpJ+oiXL+hUtJD8MnLQw7yRd+cy/68MI=;
+	s=arc-20240116; t=1767205237; c=relaxed/simple;
+	bh=z5Qtb1+uZjEzSgK7NXfCHCGYaeIM6TZnQ51qs5Lkpos=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CZC87ZB2YsBuFFXm/FAKxKhowgnO982o/QF9OP9YWMUHPDzDFxQnpf2wUubDxqsFHsS/xtLf4Z7Kpn51zaghJtMplfuzRaaS1SOiKUOrI9xec28JiFBJ8eTTmipiTWb5Aq+D9oPuyybTHbTT+1dLo4eebAFSVgTwrLiHc27nmZo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OfLzlWNU; arc=none smtp.client-ip=209.85.221.47
+	 To:Cc:Content-Type; b=PTdLk9/xorxQkF3FNjTQkPHD2XLZwNPAQasb18BOZJFHqMMaU7xEPaI78fCrEKPD5YVr0/9DhKBAaA79r07Mu9ubghGhrplLnoAW9WaoFN2kn+w9XxUotgahMbReGiZCkBVeLZek1L62cSw3wOV4U7pAiLbXbPSrEps2oDF48+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U+5SmOBH; arc=none smtp.client-ip=209.85.221.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-430f2ee2f00so5146317f8f.3
-        for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 10:14:00 -0800 (PST)
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-42fb4eeb482so5492499f8f.0
+        for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 10:20:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767204839; x=1767809639; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1767205234; x=1767810034; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=80wuQlyFH/FTtp28IkHfYhaeWqE7rS7z6vp3Trh+jc4=;
-        b=OfLzlWNU9tNh19lSAgaTDAAozHeFHEju+uWNAjP9QTUwb8+5hd+Nq9C8dAiR0RPdYg
-         J2czUTeqjfPVMQ4ePBDiPsfUjuCNlI2iAxFhljFDCeoTJ5vDlXEsrqi8GN7n0iQKa483
-         YmLoaPgSHLGADSqNRv6rmSRSB+8oHnY6/hy3v82ss0yvfk6125AncvXKghhsQCzenEuJ
-         drtwjRNp8bU1+aDi+7jqdM8/bS5plGkyolcMmSD9xvY/2jhlaG5q+eyFZ71S98AHJlmE
-         uQwtrCw9PU9u8SsPUsfe7ZLdrwA1qQpB6YMJJPwY1HzSzWxPQ0CllxHFZ/sYcgwVaXVz
-         J4wg==
+        bh=Ok9f6MAxhtySFdX4ilDN1MFDZoOgEM6PsYKr0jxI6Ys=;
+        b=U+5SmOBHRcGuUdXQ2DJb5oi3GjYWxgNAxUbtqUe51ORSY1jH90JEhjpy6f7cdJWhkS
+         iyus2dkwB+w7WST3ctg3KVLdj04cEZej5GtjN+X8qu5y3uM5dhLkPqsK3X6aNjuTsMV3
+         TMQwINtRU9gK0tMHWAmMJtS05a2JkcSR4pHFeWFRrVPTLqf4BCvOpITl3cxl88AHpBjy
+         4dImCzaArU3UoM7imIftSn+z/hcEQCw6im8hW2ogn6GwXiwrBI59Ys7Vdd/G5PjWvicY
+         9H9Z93D9SCcs2XQDSuCZgRmTSSniA8SOM5VQuhZ7QpnKC3y2bsKEoAxAh2zV1+baSMBo
+         qcdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767204839; x=1767809639;
+        d=1e100.net; s=20230601; t=1767205234; x=1767810034;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=80wuQlyFH/FTtp28IkHfYhaeWqE7rS7z6vp3Trh+jc4=;
-        b=iqOT4Z0BvIgj96Jw9rcoH58tiJrDDvZHK2bq7XrT/F1mGoTGB+ETfIGNkmVGRH9Y2Q
-         Z82S+9bs/TJugrtQlxTuhmEgL2xTgI7RaCgFBOqckdf60DcbnbkvfsrUoAHAiUeBbHPF
-         yB/nzcbiqFmcfUpJ4BJYhIIXe1AHqwpamB+ZeRQEKc+BEJJPjsg6Hzf7BmOKWQ4fGbDm
-         UaNRQ0tCkVVuG7hW05HkPjxuQtKgru/sMt5nvdcoGd1MdNiw+yHASS6XHe5zj92npgnY
-         DnvmdSOP+CqeWV76TWJ/X+Fq0vI+M/hMHghaiim+IZO4jsjOr4WQuIUdAZTVIaUaJ8OQ
-         G6hg==
-X-Forwarded-Encrypted: i=1; AJvYcCWPWfr50EanZhjE4LkKjmfNKkVz4kYfLhcD2p84l4/Alt4uqSFeISN9YKGEx6Y9RArJFiE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwTRF8r/lxP2Y0I2gRjZD3rez3JnofRtX1AO6UYzecnC7wVaIp1
-	AkMGm4qLxRxGSla5ps2y0IXCmpcqrJPLjcd0WjdrZX1p2dH/EJrMbu1hUxQOpcbYBL1EmHk3aZY
-	O6MQw+ME27dM+2td8diAcKeDFhGYUbzk=
-X-Gm-Gg: AY/fxX6Rz8wbni3Pi0uQeL0d2z8NT7dfiEp522QT4QExqrXyogc7JgrQQfS9+0rR3Id
-	9BDG185p9eetnqMWPqAM++E3wc9md0wQ8O5lG3wy5VVmH19IT/BLnmYyyb2j8KEhgNpawUlTAfd
-	IFQJ3/+XTgNqbR6COk2nfpiORVfcktPJH28pm9S1eaadjiwzFqNn6ECdY2G8oQ2u2isPJ7DAkgd
-	LImKc5gCZcOl9eTosLUV97QlFhbiysMtsJRxjNCO9nyq7oKMsa9xpn7ljQDi4zCWGBltcdgvPam
-	ZytXTs2c539m3zx91JdRHjU2VuJl
-X-Google-Smtp-Source: AGHT+IE7rn8UGO5FxmIqC7DPe8kHIdUtmNgCuEKioyalqiNjU4yifPpIQxEAl6/RRsYuU+/knbKXbX9dpW9nJ6ADD+Y=
-X-Received: by 2002:a05:6000:611:b0:431:3ba:1188 with SMTP id
- ffacd0b85a97d-4324e4c70e5mr40336157f8f.3.1767204838828; Wed, 31 Dec 2025
- 10:13:58 -0800 (PST)
+        bh=Ok9f6MAxhtySFdX4ilDN1MFDZoOgEM6PsYKr0jxI6Ys=;
+        b=EdBfATpdHFh1zu1fsxfNccD6BrWC9n4HATwqTgjKCV1JGGFV94WMnoZsk6FC87cZa2
+         0ozJRIfvRtZVgTm9Wle7lFTE0MuTOauLhEJNuyxrX6OuP/8BrT0s/dFSL8Eq5Q/FTA/k
+         O5KjSYB7HmJwBTAXQTti3u/tVkOcBvGnVLnKCsXxgpNao4Jug6RcGXKCJahs75vhNdo/
+         r7lRn8t5UmKevunUwCeke8TDkpG+3IfLY+fshfBu7QN5qMI3CJMmaQX2QOeotqPq2cNR
+         m0a/j1nK91aH2u/AGdJUv1HMnasYX6E1Fqsz1QjrLner500nBpCkmR4z+d9HgYsK5b8F
+         FHhw==
+X-Gm-Message-State: AOJu0YxpMCac7vSfd+PkAjcPNrrFDGn4SZJxFqpbdmWZR7iu65MLoNHe
+	tCMqERQcm8J7JUR1/jMh9c23/G+vMpYBgy8QsexFQq9JLGP1qWF++QyZ9KjKtBWDPjjBZjeByTC
+	xaRykK1+/8m5prfd/mFEiZgtLwH+wIPY=
+X-Gm-Gg: AY/fxX7Ne/fLAna6B7o/hdcsCIs7ZrCPBObdFPujU3Kr6pSJQUvUphF81yTn8DsOg5H
+	8cf75hugOiVgkgpmY7IH03ktei8pMeuFxOEmkdHEfbhpay/Fh1RYwn9Kc6AvuZ8IURsDhqoSwWZ
+	Qc34dS8HPmvbZ1HQEowjyCzZ5KdmFCfFgJE+YKCC1rnYHioyC1sPKFJLv59BuTRYsfa9FM2T0Nd
+	Ythl3j4blLRhngWs4YLI/Bphm8GsotERRBxsE+obLEdCDBCFJRAK+eO9G3LvPE9NTmdoNhXCkxL
+	D4wYvSz4kCJPEjwP26EfW1oZvnghAUpghU3MDsI=
+X-Google-Smtp-Source: AGHT+IHQsDLRVI5TrjlHljVBHzdgFnS4LiwBIK80PT/Iq55/r32LHL+4ZM+ULIxpCDyTFuxFdDs+TiyDqGpKjgbFi2A=
+X-Received: by 2002:a05:6000:186e:b0:432:4c01:db00 with SMTP id
+ ffacd0b85a97d-4324e4cff0dmr49269584f8f.27.1767205234200; Wed, 31 Dec 2025
+ 10:20:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251231173633.3981832-6-csander@purestorage.com>
- <e9a1bd633fb4bb3d2820f63f41a8dd60d8c9c5e3c699fa56057ae393ef2f31d0@mail.kernel.org>
- <CADUfDZpSSikiZ8d8eWvfucj=Cvhc=k-sHN03EVExGBQ4Lx+23Q@mail.gmail.com>
-In-Reply-To: <CADUfDZpSSikiZ8d8eWvfucj=Cvhc=k-sHN03EVExGBQ4Lx+23Q@mail.gmail.com>
+References: <20251231171118.1174007-1-puranjay@kernel.org> <20251231171118.1174007-10-puranjay@kernel.org>
+In-Reply-To: <20251231171118.1174007-10-puranjay@kernel.org>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 31 Dec 2025 10:13:47 -0800
-X-Gm-Features: AQt7F2oHF_qxr3_KPJ-VT5eeYhG4tvvvWKJxtIn11KSC3ODYIcBGmV1QpWm3ri0
-Message-ID: <CAADnVQKXUUNn=P=2-UECF1X7SR+oqm4xsr-2trpgTy1q+0c5FQ@mail.gmail.com>
-Subject: Re: [PATCH 5/5] selftests/bpf: make cfi_stubs globals const
-To: Caleb Sander Mateos <csander@purestorage.com>
-Cc: bot+bpf-ci@kernel.org, Jiri Kosina <jikos@kernel.org>, 
-	Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Tejun Heo <tj@kernel.org>, David Vernet <void@manifault.com>, Andrea Righi <arighi@nvidia.com>, 
-	Changwoo Min <changwoo@igalia.com>, Ingo Molnar <mingo@redhat.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
-	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Benjamin Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
-	Valentin Schneider <vschneid@redhat.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Simon Horman <horms@kernel.org>, David Ahern <dsahern@kernel.org>, 
-	Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>, 
-	Jiri Pirko <jiri@resnulli.us>, "D. Wythe" <alibuda@linux.alibaba.com>, 
-	Dust Li <dust.li@linux.alibaba.com>, sidraya@linux.ibm.com, wenjia@linux.ibm.com, 
-	mjambigi@linux.ibm.com, Tony Lu <tonylu@linux.alibaba.com>, guwen@linux.alibaba.com, 
-	Shuah Khan <shuah@kernel.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	"open list:HID CORE LAYER" <linux-input@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, sched-ext@lists.linux.dev, 
-	linux-rdma@vger.kernel.org, linux-s390 <linux-s390@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Chris Mason <clm@meta.com>, 
-	Ihor Solodrai <ihor.solodrai@linux.dev>
+Date: Wed, 31 Dec 2025 10:20:23 -0800
+X-Gm-Features: AQt7F2qiIiLYdy2JXTuEEF0us2Bbwn1TKakTM_NChUdpZq0-vdwPKO1ONGrE3a0
+Message-ID: <CAADnVQ+nK7bF6rTZJ=yF1L4+wifS0KN1bCNbOo7j7OJZRPaDNw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 9/9] HID: bpf: drop dead NULL checks in kfuncs
+To: Puranjay Mohan <puranjay@kernel.org>, Benjamin Tissoires <bentiss@kernel.org>
+Cc: bpf <bpf@vger.kernel.org>, Puranjay Mohan <puranjay12@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, Kernel Team <kernel-team@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 31, 2025 at 10:09=E2=80=AFAM Caleb Sander Mateos
-<csander@purestorage.com> wrote:
+On Wed, Dec 31, 2025 at 9:12=E2=80=AFAM Puranjay Mohan <puranjay@kernel.org=
+> wrote:
 >
-> On Wed, Dec 31, 2025 at 10:04=E2=80=AFAM <bot+bpf-ci@kernel.org> wrote:
-> >
-> > > diff --git a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c b/t=
-ools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-> > > index 90c4b1a51de6..5e460b1dbdb6 100644
-> > > --- a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-> > > +++ b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-> >
-> > [ ... ]
-> >
-> > > @@ -1275,7 +1275,7 @@ bpf_testmod_ops__test_return_ref_kptr(int dummy=
-, struct task_struct *task__ref,
-> > >       return NULL;
-> > >  }
-> > >
-> > > -static struct bpf_testmod_ops __bpf_testmod_ops =3D {
-> > > +static const struct bpf_testmod_ops __bpf_testmod_ops =3D {
-> > >       .test_1 =3D bpf_testmod_test_1,
-> > >       .test_2 =3D bpf_testmod_test_2,
-> >
-> > Is it safe to make __bpf_testmod_ops const here? In bpf_testmod_init(),
-> > this struct is modified at runtime:
-> >
-> >     tramp =3D (void **)&__bpf_testmod_ops.tramp_1;
-> >     while (tramp <=3D (void **)&__bpf_testmod_ops.tramp_40)
-> >         *tramp++ =3D bpf_testmod_tramp;
-> >
-> > Writing to a const-qualified object is undefined behavior and may cause=
- a
-> > protection fault when the compiler places this in read-only memory. Wou=
-ld
-> > the module fail to load on systems where .rodata is actually read-only?
+> As KF_TRUSTED_ARGS is now considered default for all kfuns, the verifier
+> will not allow passing NULL pointers to these kfuns. These checks for
+> NULL pointers can therefore be removed.
 >
-> Yup, that's indeed the bug caught by KASAN. Missed this mutation at
-> init time, I'll leave __bpf_testmod_ops as mutable.
+> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+> ---
+>  drivers/hid/bpf/hid_bpf_dispatch.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
 
-No. You're missing the point. The whole patch set is no go.
-The pointer to cfi stub can be updated just as well.
+Benjamin,
+
+please run this patch set through your testsuite.
+We don't expect breakage, but please double check and ack.
+
+> diff --git a/drivers/hid/bpf/hid_bpf_dispatch.c b/drivers/hid/bpf/hid_bpf=
+_dispatch.c
+> index 9a06f9b0e4ef..892aca026ffa 100644
+> --- a/drivers/hid/bpf/hid_bpf_dispatch.c
+> +++ b/drivers/hid/bpf/hid_bpf_dispatch.c
+> @@ -295,9 +295,6 @@ hid_bpf_get_data(struct hid_bpf_ctx *ctx, unsigned in=
+t offset, const size_t rdwr
+>  {
+>         struct hid_bpf_ctx_kern *ctx_kern;
+>
+> -       if (!ctx)
+> -               return NULL;
+> -
+>         ctx_kern =3D container_of(ctx, struct hid_bpf_ctx_kern, ctx);
+>
+>         if (rdwr_buf_size + offset > ctx->allocated_size)
+> @@ -364,7 +361,7 @@ __hid_bpf_hw_check_params(struct hid_bpf_ctx *ctx, __=
+u8 *buf, size_t *buf__sz,
+>         u32 report_len;
+>
+>         /* check arguments */
+> -       if (!ctx || !hid_ops || !buf)
+> +       if (!hid_ops)
+>                 return -EINVAL;
+>
+>         switch (rtype) {
+> --
+> 2.47.3
+>
 
