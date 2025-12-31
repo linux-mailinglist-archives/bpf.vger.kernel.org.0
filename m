@@ -1,159 +1,303 @@
-Return-Path: <bpf+bounces-77546-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77547-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A781CEAF12
-	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 00:56:36 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64FD5CEAF3C
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 01:07:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D71C33012BD6
-	for <lists+bpf@lfdr.de>; Tue, 30 Dec 2025 23:56:32 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7DED230198F5
+	for <lists+bpf@lfdr.de>; Wed, 31 Dec 2025 00:07:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D5912FE05D;
-	Tue, 30 Dec 2025 23:56:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C4F71CFBA;
+	Wed, 31 Dec 2025 00:07:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jMkozXzM"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="G8uL80H1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88A312BE7A7
-	for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 23:56:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55D08186A
+	for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 00:07:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767138991; cv=none; b=dBzA/h1q4dhYKzXrzV42ZQEAIw9sdundtnXzgYNp7nlbV6EgVWLjVfEDYIg541euUR8/TskQBrXhKGXdBWNe2RDaH7bGZ03zURKN9MP/Aepo0WuYwNK25LfNUBMseLSfpuS29EP/7nRoTyWHnmZjlqYp24xmHEMAsCCgPk5fhk0=
+	t=1767139655; cv=none; b=q/HoiV1gwOYuK6VvHnvwnCvXilyyd0Iv7ZNATxZVv9nF6gDA6D1B0b+xchWkoeEjq2CfMlcOgKXqDaG6S6ErNWKyc+XP684P/5e2LqYzXrk1vWw8ye0qbfkAu5kHceHICDUuGrr8tffJlLRIIeRGtoEI4cZYjT2VOSnseWXvgX0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767138991; c=relaxed/simple;
-	bh=viVEouxgZ4vdI4fpPCl+5MsHCSKijtEtOyKikFVFXZ4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LbSTQfnIdd6QxlpXijYoK9WpmBa/pRbj2AV8hqAx+7pVQjTuSyATqfU1vc2fYJr8YpMTZUEebhBxjzITTqIiYy4SDto86+1zbCi+Qon0ZuY0oe5z3l3UHdptKUkCvg+KN2PRoASRZpkivwKEb6bVFzy1omWSTRxblHL3bSMf46E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jMkozXzM; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-42fbc3056afso5601631f8f.2
-        for <bpf@vger.kernel.org>; Tue, 30 Dec 2025 15:56:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767138988; x=1767743788; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RBsn/djui7Bc/V/oeSQy6ChFrOic7ls0uIkky6ScPag=;
-        b=jMkozXzMTYdYNoFmNSuoNUFtdRtpJOlNBxtmsn1U9hwMQgmbZXieCc1kWFUijhfd2Y
-         hM8I9yLFotjTEIlxGSfvSG345CnA6IhJ3EWb2N90OSv1BsDi9674pq7HySY04rFFzOgL
-         garhoTmuEfxGGlg0S7iPnDddQBATNEw8vJgkcuihG3lC54S+vBreDB10rf04UgptfD4x
-         OOiRbppgTX5E7QZRWehPR/o3C9SMMLYUW25ki+2oGVnBTmJtKQyZ1V2eYV0ypMuyM+sb
-         RE/P/UOa1CAlbolvIIlR9AFBsVXkeI0CIombGsr45myZsas1kaIA4pWUN7iVscczBtgE
-         cMBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767138988; x=1767743788;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=RBsn/djui7Bc/V/oeSQy6ChFrOic7ls0uIkky6ScPag=;
-        b=LzgPOcNN42PEyUQx+SU+4S54U3GdeIOWTnTFgVuXbQRliFra5KBFSt4XRMF3AOwn0E
-         WXn0daBNOlrg1FJa5VvLoaCQrZm74N9jgTruK9b4ByBeIc+byxo10RXelMDK4r5TVRTn
-         g31p9uh5ZszrlCOfj633D1lsOSCqfSdaZjhwNbcP5QH/do6KrwQsnYUvMHJZiTjMgHdI
-         eaR32Z+gqfcSVSFkPEN1CStqAycKI9F3phkAC5oiztNEaJBj69gtyaQIW3dWFtwfZNwd
-         GB8E1tEQo+xuIRm1lUaOgMiAN3+SYaJabJHzlVePizlXAW1E7+Uir/j72NFp7XDlJLFc
-         Z0HQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX6NirD4OmEAk5SeGSku4621aAH0RQdVKueJBbBepx7v9EQmOYGjEsgykEi1mfDF2DbamI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyFK20hFAXr5h7S0beW+ErHSGDXWGz9kPWv+lcG9vldJn3C7cA+
-	bsG9Bw3H1t7HftoRak/VUs0t/mX9CW6t/GQqZ4sxsTNXpStM5ZWe+vOENB/EcnsdnINbUbFsIMh
-	aGQaFNCUWkrcf+vMwq/rjH3l4hsEimS4=
-X-Gm-Gg: AY/fxX7zIAkGYKAis4trfpBYgDRaKUe0rI2GUZg2IXWzk0EdVFRzPtfSLfWWCyFQrxU
-	yE7wuzFw7vSyBwfYEYb08G7KvT2x6Vks2not0LMD/I90QeR/8E6ZKUHxTZgK8apHn14oZyZAQsU
-	cbwLR8XSJc0CWXyBh5NrHetgFQvQJjvpb5+EZmwy40q9Y2H38Z7TgNCXVDaB9da086TuaBmpS16
-	YqBaw3IkFU/kzp1oa4bo1Hto/Hd1IUdD68ummfNtie/OpXaRjXHod7v5I5Lu7LWF7eucDLLcRvW
-	QkMVf6LGe9nrGrjck4fO4cUhPZrDkC8UEIjSx/I=
-X-Google-Smtp-Source: AGHT+IHX2DtjnU+gojgDr4wMQdBdYuFw1rhS0tG7t8tIXaiGQQcdee0mk/d6ituc5XL1XleZcjignP2Oqqu/Btl6kbQ=
-X-Received: by 2002:a05:6000:2886:b0:431:764:c25d with SMTP id
- ffacd0b85a97d-4324e4fab99mr42261292f8f.35.1767138987652; Tue, 30 Dec 2025
- 15:56:27 -0800 (PST)
+	s=arc-20240116; t=1767139655; c=relaxed/simple;
+	bh=J9IfCKHTM3DGoWM7qIKWfF+0gNz38OsznpYCOJX0GSU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SU2Zta/DuF/wR2HSJEhYmr2+GsZwiKU7tWY/cNtIo9JGbWIqOT3PQmBOaB9a0Cjo8QRsKAkK87T8ixRrS9Zq/3rwo8YLVHKLbPkpx/YVNnaH8ggHHzLm9MTQH2DA0HgW/23JzxnEfRWJNsQZ9XRu8pfclw7pILegxdkfAPNidrY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=G8uL80H1; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1767139641;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=9dNlen4Gkzqp/iQ1vIlBLyOyl86z2j0TC5jRLAGRcvE=;
+	b=G8uL80H1iaP5KBrHf/cn8Nby0aT0vIfnj+6Qe8p8KQkU2Qq4I6zFdNA1dOGLpLMxgTqPbX
+	fhTDqAvW/ucAAqE7y/D56vaVYmFKMQI27FX8Ms/Y6y/OmLQbbfuPS+I++gJCe/vno6Ekms
+	CugsLjDINbn1bLTuG9Ch1wR5CvVpuYI=
+From: Ihor Solodrai <ihor.solodrai@linux.dev>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nsc@kernel.org>
+Cc: bpf@vger.kernel.org,
+	linux-kbuild@vger.kernel.org
+Subject: [PATCH bpf-next v1] resolve_btfids: Implement --patch_btfids
+Date: Tue, 30 Dec 2025 16:07:02 -0800
+Message-ID: <20251231000702.1625600-1-ihor.solodrai@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251224192448.3176531-1-puranjay@kernel.org> <20251224192448.3176531-2-puranjay@kernel.org>
- <4cb72b4808c333156552374c5f3912260097af43.camel@gmail.com>
-In-Reply-To: <4cb72b4808c333156552374c5f3912260097af43.camel@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 30 Dec 2025 15:56:16 -0800
-X-Gm-Features: AQt7F2rXqfVMSuT9GqY-FSnnp4vWVi3lawY5AZIj2_zRPSYsH2hLGRLRYwbED0k
-Message-ID: <CAADnVQJU=pboBLKapwySw1vG3EBxuAAPX4xR_1_6ALFYoMt2vg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/7] bpf: Make KF_TRUSTED_ARGS the default for
- all kfuncs
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Puranjay Mohan <puranjay@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Puranjay Mohan <puranjay12@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
-	Kernel Team <kernel-team@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Dec 30, 2025 at 3:49=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> On Wed, 2025-12-24 at 11:24 -0800, Puranjay Mohan wrote:
-> > Change the verifier to make trusted args the default requirement for
-> > all kfuncs by removing is_kfunc_trusted_args() assuming it be to always
-> > return true.
-> >
-> > This works because:
-> > 1. Context pointers (xdp_md, __sk_buff, etc.) are handled through their
-> >    own KF_ARG_PTR_TO_CTX case label and bypass the trusted check
-> > 2. Struct_ops callback arguments are already marked as PTR_TRUSTED duri=
-ng
-> >    initialization and pass is_trusted_reg()
-> > 3. KF_RCU kfuncs are handled separately via is_kfunc_rcu() checks at
-> >    call sites (always checked with || alongside is_kfunc_trusted_args)
-> >
-> > This simple change makes all kfuncs require trusted args by default
-> > while maintaining correct behavior for all existing special cases.
->
-> While I like the idea behind this patch, I don't think this is 100%
-> backwards compatible change. Not unless you check definition of every
-> kfunc in the kernel and add appropriate __nullable annotations,
-> like you do for some in patch #2.
->
-> For example, consider the following kfunc from drivers/hid/bpf/hid_bpf_di=
-spatch.c:
->
->   __bpf_kfunc int
->   hid_bpf_hw_request(struct hid_bpf_ctx *ctx, __u8 *buf, size_t buf__sz,
->                      enum hid_report_type rtype, enum hid_class_request r=
-eqtype)
->           ... __hid_bpf_hw_check_params(ctx, buf, &size, rtype); ...
->
->
->   static int
->   __hid_bpf_hw_check_params(struct hid_bpf_ctx *ctx, __u8 *buf, size_t *b=
-uf__sz,
->                             enum hid_report_type rtype)
->           ...
->           if (... !buf)
->                   return -EINVAL;
->
->   BTF_ID_FLAGS(func, hid_bpf_hw_request, KF_SLEEPABLE)
->
-> Currently, it is possible to pass 'buf' parameter as NULL.
-> In this particular case it would lead to an error code returned from
-> the function, but is it the case for all kfuncs in the kernel?
-> For some kfuncs NULL parameter might be expected as a part of a
-> non-error scenario.
-> Also, there is a question about kfuncs declared in out of tree modules.
->
-> So, I think there are two questions to be answered:
-> - a review of all kfuncs in the kernel checking if there are
->   sufficient __nullable annotations;
+Recent changes in BTF generation [1] rely on ${OBJCOPY} command to
+update .BTF_ids section data in target ELF files.
 
-right. that's necessary and HID was missed, because it has its own
-selftests that are not part of bpf ci.
-sched-ext kfuncs need to be reviewed as well.
+This exposed a bug in llvm-objcopy --update-section code path, that
+may lead to corruption of a target ELF file. Specifically, because of
+the bug st_shndx of some symbols may be (incorrectly) set to 0xffff
+(SHN_XINDEX) [2][3].
 
-> - are we ready to potentially break BPF programs working with kfuncs
->   defined in out-of-tree modules?
+While there is a pending fix for LLVM, it'll take some time before it
+lands (likely in 22.x). And the kernel build must keep working with
+older LLVM toolchains in the foreseeable future.
 
-Absolutely. That's not even the question worth asking.
+Using GNU objcopy for .BTF_ids update would work, but it would require
+changes to LLVM-based build process, likely breaking existing build
+environments as discussed in [2].
+
+To work around llvm-objcopy bug, implement --patch_btfids code path in
+resolve_btfids as a drop-in replacement for:
+
+    ${OBJCOPY} --update-section .BTF_ids=${btf_ids} ${elf}
+
+Which works specifically for .BTF_ids section:
+
+    ${RESOLVE_BTFIDS} --patch_btfids ${btf_ids} ${elf}
+
+This feature in resolve_btfids can be removed at some point in the
+future, when llvm-objcopy with a relevant bugfix becomes common.
+
+[1] https://lore.kernel.org/bpf/20251219181321.1283664-1-ihor.solodrai@linux.dev/
+[2] https://lore.kernel.org/bpf/20251224005752.201911-1-ihor.solodrai@linux.dev/
+[3] https://github.com/llvm/llvm-project/issues/168060#issuecomment-3533552952
+
+Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
+
+---
+
+Successful BPF CI run: https://github.com/kernel-patches/bpf/actions/runs/20608321584
+---
+ scripts/gen-btf.sh                   |   2 +-
+ scripts/link-vmlinux.sh              |   2 +-
+ tools/bpf/resolve_btfids/main.c      | 116 +++++++++++++++++++++++++++
+ tools/testing/selftests/bpf/Makefile |   2 +-
+ 4 files changed, 119 insertions(+), 3 deletions(-)
+
+diff --git a/scripts/gen-btf.sh b/scripts/gen-btf.sh
+index 12244dbe097c..0aec86615416 100755
+--- a/scripts/gen-btf.sh
++++ b/scripts/gen-btf.sh
+@@ -123,7 +123,7 @@ embed_btf_data()
+ 	fi
+ 	local btf_ids="${ELF_FILE}.BTF_ids"
+ 	if [ -f "${btf_ids}" ]; then
+-		${OBJCOPY} --update-section .BTF_ids=${btf_ids} ${ELF_FILE}
++		${RESOLVE_BTFIDS} --patch_btfids ${btf_ids} ${ELF_FILE}
+ 	fi
+ }
+ 
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index e2207e612ac3..1915adf3249b 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -266,7 +266,7 @@ vmlinux_link "${VMLINUX}"
+ 
+ if is_enabled CONFIG_DEBUG_INFO_BTF; then
+ 	info OBJCOPY ${btfids_vmlinux}
+-	${OBJCOPY} --update-section .BTF_ids=${btfids_vmlinux} ${VMLINUX}
++	${RESOLVE_BTFIDS} --patch_btfids ${btfids_vmlinux} ${VMLINUX}
+ fi
+ 
+ mksysmap "${VMLINUX}" System.map
+diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
+index 2cbc252259be..1269efa06853 100644
+--- a/tools/bpf/resolve_btfids/main.c
++++ b/tools/bpf/resolve_btfids/main.c
+@@ -862,8 +862,117 @@ static inline int make_out_path(char *buf, u32 buf_sz, const char *in_path, cons
+ 	return 0;
+ }
+ 
++/*
++ * Patch the .BTF_ids section of an ELF file with data from provided file.
++ * Equivalent to: objcopy --update-section .BTF_ids=<btfids> <elf>
++ *
++ * 1. Find .BTF_ids section in the ELF
++ * 2. Verify that blob file size matches section size
++ * 3. Update section data buffer with blob data
++ * 4. Write the ELF file
++ */
++static int patch_btfids(const char *btfids_path, const char *elf_path)
++{
++	Elf_Scn *scn = NULL;
++	FILE *btfids_file;
++	size_t shdrstrndx;
++	int fd, err = -1;
++	Elf_Data *data;
++	struct stat st;
++	GElf_Shdr sh;
++	char *name;
++	Elf *elf;
++
++	elf_version(EV_CURRENT);
++
++	fd = open(elf_path, O_RDWR, 0666);
++	if (fd < 0) {
++		pr_err("FAILED to open %s: %s\n", elf_path, strerror(errno));
++		return -1;
++	}
++
++	elf = elf_begin(fd, ELF_C_RDWR_MMAP, NULL);
++	if (!elf) {
++		close(fd);
++		pr_err("FAILED cannot create ELF descriptor: %s\n", elf_errmsg(-1));
++		return -1;
++	}
++
++	elf_flagelf(elf, ELF_C_SET, ELF_F_LAYOUT);
++
++	if (elf_getshdrstrndx(elf, &shdrstrndx) != 0) {
++		pr_err("FAILED cannot get shdr str ndx\n");
++		goto out;
++	}
++
++	while ((scn = elf_nextscn(elf, scn)) != NULL) {
++
++		if (gelf_getshdr(scn, &sh) != &sh) {
++			pr_err("FAILED to get section header\n");
++			goto out;
++		}
++
++		name = elf_strptr(elf, shdrstrndx, sh.sh_name);
++		if (!name)
++			continue;
++
++		if (strcmp(name, BTF_IDS_SECTION) == 0)
++			break;
++	}
++
++	if (!scn) {
++		pr_err("FAILED: section %s not found in %s\n", BTF_IDS_SECTION, elf_path);
++		goto out;
++	}
++
++	data = elf_getdata(scn, NULL);
++	if (!data) {
++		pr_err("FAILED to get %s section data from %s\n", BTF_IDS_SECTION, elf_path);
++		goto out;
++	}
++
++	if (stat(btfids_path, &st) < 0) {
++		pr_err("FAILED to stat %s: %s\n", btfids_path, strerror(errno));
++		goto out;
++	}
++
++	if ((size_t)st.st_size != data->d_size) {
++		pr_err("FAILED: size mismatch - %s section in %s is %zu bytes, %s is %zu bytes\n",
++		       BTF_IDS_SECTION, elf_path, data->d_size, btfids_path, (size_t)st.st_size);
++		goto out;
++	}
++
++	btfids_file = fopen(btfids_path, "rb");
++	if (!btfids_file) {
++		pr_err("FAILED to open %s: %s\n", btfids_path, strerror(errno));
++		goto out;
++	}
++
++	pr_debug("Copying data from %s to %s section of %s (%zu bytes)\n",
++		 btfids_path, BTF_IDS_SECTION, elf_path, data->d_size);
++
++	if (fread(data->d_buf, data->d_size, 1, btfids_file) != 1) {
++		pr_err("FAILED to read %s\n", btfids_path);
++		fclose(btfids_file);
++		goto out;
++	}
++	fclose(btfids_file);
++
++	elf_flagdata(data, ELF_C_SET, ELF_F_DIRTY);
++	if (elf_update(elf, ELF_C_WRITE) < 0) {
++		pr_err("FAILED to update ELF file %s\n", elf_path);
++		goto out;
++	}
++
++	err = 0;
++out:
++	elf_end(elf);
++	return err;
++}
++
+ static const char * const resolve_btfids_usage[] = {
+ 	"resolve_btfids [<options>] <ELF object>",
++	"resolve_btfids --patch_btfids <.BTF_ids file> <ELF object>",
+ 	NULL
+ };
+ 
+@@ -880,6 +989,7 @@ int main(int argc, const char **argv)
+ 		.funcs    = RB_ROOT,
+ 		.sets     = RB_ROOT,
+ 	};
++	const char *btfids_path = NULL;
+ 	bool fatal_warnings = false;
+ 	char out_path[PATH_MAX];
+ 
+@@ -894,17 +1004,23 @@ int main(int argc, const char **argv)
+ 			    "turn warnings into errors"),
+ 		OPT_BOOLEAN(0, "distill_base", &obj.distill_base,
+ 			    "distill --btf_base and emit .BTF.base section data"),
++		OPT_STRING(0, "patch_btfids", &btfids_path, "file",
++			   "path to .BTF_ids section data blob to patch into ELF file"),
+ 		OPT_END()
+ 	};
+ 	int err = -1;
+ 
+ 	argc = parse_options(argc, argv, btfid_options, resolve_btfids_usage,
+ 			     PARSE_OPT_STOP_AT_NON_OPTION);
++
+ 	if (argc != 1)
+ 		usage_with_options(resolve_btfids_usage, btfid_options);
+ 
+ 	obj.path = argv[0];
+ 
++	if (btfids_path)
++		return patch_btfids(btfids_path, obj.path);
++
+ 	if (load_btf(&obj))
+ 		goto out;
+ 
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index f28a32b16ff0..9488d076c740 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -657,7 +657,7 @@ $(TRUNNER_TEST_OBJS): $(TRUNNER_OUTPUT)/%.test.o:			\
+ 	$$(if $$(TEST_NEEDS_BTFIDS),						\
+ 		$$(call msg,BTFIDS,$(TRUNNER_BINARY),$$@)			\
+ 		$(RESOLVE_BTFIDS) --btf $(TRUNNER_OUTPUT)/btf_data.bpf.o $$@;	\
+-		$(OBJCOPY) --update-section .BTF_ids=$$@.BTF_ids $$@)
++		$(RESOLVE_BTFIDS) --patch_btfids $$@.BTF_ids $$@)
+ 
+ $(TRUNNER_TEST_OBJS:.o=.d): $(TRUNNER_OUTPUT)/%.test.d:			\
+ 			    $(TRUNNER_TESTS_DIR)/%.c			\
+-- 
+2.52.0
+
 
