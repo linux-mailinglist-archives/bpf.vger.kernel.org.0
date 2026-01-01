@@ -1,177 +1,185 @@
-Return-Path: <bpf+bounces-77660-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77661-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46770CECB85
-	for <lists+bpf@lfdr.de>; Thu, 01 Jan 2026 01:57:49 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAD35CECC35
+	for <lists+bpf@lfdr.de>; Thu, 01 Jan 2026 03:11:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A67D93019B8E
-	for <lists+bpf@lfdr.de>; Thu,  1 Jan 2026 00:57:37 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id AB719300728D
+	for <lists+bpf@lfdr.de>; Thu,  1 Jan 2026 02:10:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D185424E4C3;
-	Thu,  1 Jan 2026 00:57:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1065128C871;
+	Thu,  1 Jan 2026 02:10:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="amjdY8FL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P/OVexLt"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD71024469E
-	for <bpf@vger.kernel.org>; Thu,  1 Jan 2026 00:57:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.160.172
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767229055; cv=pass; b=jeXT3qHc1hSDnvrTZs/Pt+9obyb4IGd4SoybELEmB7S123Ir3yR7uBUAMqu+CjXlAgpApoGMDCXCldDfy5aE1YaON2h6k+ZnKPcVbYdeUgbpkfPFNcNVdjWUHQ7kP78+bIOf9LW4WSIrm4KCmajuy1UVeYIU8zlPN83YH1idqeA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767229055; c=relaxed/simple;
-	bh=emxm9F4PEs7twMpgwWsBAp/Ckd0EfI6WSs7yozL7W/o=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAF66288C30
+	for <bpf@vger.kernel.org>; Thu,  1 Jan 2026 02:10:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1767233455; cv=none; b=j4V187h37FvKmoilo52GwLDZHlqi7kxCGn8AXVr2eUpFAe+h4eCRzAb6I+MjHZFM9F8HytLZKSHyk9zNjqJuHWg8ngshpqH/V/MwE2n9mch1oXsPx1Ed7VeHl8zr0WXEiij+J7SGZ3rJbDwglhdlfaWg9cVscK71R8coGTpobM4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1767233455; c=relaxed/simple;
+	bh=qqizFew/kTOzewLvL59xdtHtP4J/gkIe7g4rCO241Es=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pt/NnpU+t3cP86ZR09FQxxqqQHKt8P2dKAX7Vkx9CUYj+0aKYVWVRdK/w8aoMn9m2mgRptNi+2iwv/dGmidEKQeN0d4ea/rX3uTCChiKhyKBQHZ9J7c5jtd0OhFZj5xFwSnvirrjtZxJ6xF2grp8bjuKdEnWVuc3fnLEus9v1xU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=amjdY8FL; arc=pass smtp.client-ip=209.85.160.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-4f34f257a1bso469611cf.0
-        for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 16:57:33 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1767229053; cv=none;
-        d=google.com; s=arc-20240605;
-        b=LG8sl6IhwlsmAlyF+kXf5B375cD4xKSzKR4EByUmdusF7YJOd8VjOptdqh/MaOt3DZ
-         kP0+2/z3J3nRdXTTesg4RZ5GUBNrMFl2hM5n4VOiAbehqAnp05Eqb4C+C0lzyIuenjWx
-         FlbePr2AoHCRvHL8Xv6uCZPxslC/aL6cgkZ+t6DZJ3jMmPMsypBqdLDMO1gV18YvGyrJ
-         y+NOE5B6u9MjuA7KcF3frCQwAtqfV2FmCQLcksZrc+tPsDWJ30GidFNVsZvzsZRjZb6R
-         d+aVNWyq2T2YbZftO4UzjbNW7zeUiujl81CNzg2YB+vvW1rxMwyMsxG6GSPf7oHPRniQ
-         8EZw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=cm1BL2ERrg3kCh6F6FAnwWgqfYK5vc0iS8vU9VA7hbs=;
-        fh=6PNVSEuAIaWrTF06leIjl3itOw3wkCOSBAyAOmvtIcU=;
-        b=gRnigVyx05oRz7JrQaGnbGx8uciSsN3+HxuXbWFd7Ba+m+wndryq8mvJZINwmk40kB
-         klVHrNp8alQpK7Sf01TCDc+PL9we8/jyq1bWSCpKj7bUdfSBT2Rfhs8vuqb19s1ecgcI
-         u1mvxaCYL4r9oJRFn/q0B/B1Ki2Vg53pRLqUlEbdGNfMraC9XeGePBtsWQ/yZLrmTgC0
-         6D3OUzfbHDRhB97IDXoDTsMAKB5P1tvV3dvJO6Gj3WrHulaYbchIRNRvTUeDv5gVCIBs
-         R4oXOuB/JglbQCfDS6XHU/w8k2+omTDSfuMqVejZxhHhcrorgKcuk1kRFDABfPZ6K4PC
-         bETw==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+	 To:Cc:Content-Type; b=AnnmNkDQJt3o+8ygDrip12MXZ/4Fu82pmbOc6VFKormSvdjT8fMaFI/pcqnq3A1KJ2QvDJ2UjCqFGI0lZq7j2K0YtuyNQlJVC0Ogp5Dou+wwpwpquavYh06LaDk2szk/xgObTjD6dMvc5WmphhT116TxFG3VC2exXMRzOyWb5hI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P/OVexLt; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-47d5e021a53so10963695e9.3
+        for <bpf@vger.kernel.org>; Wed, 31 Dec 2025 18:10:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1767229053; x=1767833853; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1767233451; x=1767838251; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=cm1BL2ERrg3kCh6F6FAnwWgqfYK5vc0iS8vU9VA7hbs=;
-        b=amjdY8FLeAN+ZPHh9RDcMADBERszkJ4kfQaOgKlHdUtCNSFcLaBQ2e/s21aYebAlJE
-         vFBrpdjYlU2anp7XbCcvUDtNNxbwCPWJJXyvavH2Ck0TFajWB4Yw3aytRJjY+UXhxAlL
-         8jW9KHaEfLdfljD2vzQ0u66CEoGxeZVF3C6iTX3zVCjJepnkg/3wrtQKIBgOvXdQKlX8
-         n2bF1Y6QvNRMjnw40TtANR+jsXinOTIX95rrXHzAvY+pbyaSqVJOyfNN868wl76KDX2N
-         yvxUqI1ID85yPwF4QuDKhb8QYn6jxfErcUt0JoMyQ+8yU/g3nae7Sjr+ZV2s3DqgC6Vg
-         wWVA==
+        bh=L2EkUzQ6sigBd+WWV5Hcl6Vcy/jBU7DTMqVQsenR/Xo=;
+        b=P/OVexLtkAJL/ji/IYpg+cnW6NzdWDUSRp8Pqik1QtPmS/aI9qBe63lt/ZK4hnmsth
+         FXIHJi77ybxplKrxGUFKykkq77JbH1CLGWJINYQ+wHQ45kpk2UwoCg3D1CHM4jOrfsBb
+         tkgj8W6Kqu8JZYCI8Dgvf/cg5pkF+tDwdIikC6sCJlyvD8VcAqiEqItzGtvZTCuYkYrb
+         yFBjPVXMljpbfsi/ZePaHGVG4gsHTS1l4+LCnA0pvQBhbkrYfU7JYIjAgmrNp7jVL+Sg
+         nRgdCYJ2nefi+pYDd2aREqonc+kT0rg0ZZInMTa9f9rZrTVxR1aFN89c/eiD13eRC/nD
+         wY4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767229053; x=1767833853;
+        d=1e100.net; s=20230601; t=1767233451; x=1767838251;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=cm1BL2ERrg3kCh6F6FAnwWgqfYK5vc0iS8vU9VA7hbs=;
-        b=SUmDB5uGT/jYitHPKvXthQmYhnYdWR0oxN3HBX/y3WnEeL4USQ8XRM15COj7cIaOY4
-         GJgbHlEfri+V5pZjlT4FV0G1eIuoM0SbgwIpNdS4Zx7qMaCl7RBSQWhINxRYR9yeDcTS
-         RVAMXFd53X7mG3LIND2FX1QtY+TKi5X8gVRvuwD/X80jDWMKDuNo51iocjKdKZCVImMI
-         jpHdk8pqE4fEqSebdCXHzlf6Mv5G7JP9QC4l41aVETWVinvHyEh04mzGZBggCGprOADQ
-         nmrP++3vCRyUHyYGPjwy+mGtLPh2BLfor1/k5Whao2rysQVDSF6QBGgvSykbHtDC0Hyi
-         kYSg==
-X-Forwarded-Encrypted: i=1; AJvYcCXk+Qo+BJfBrrMh1wP60G8f21FJOPn5U/huWNYILTVUg2rcm1/DHla9taLiBH26zSe/QhA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzZVrAJLd081VOyMhF9Dcqf9jvJ4Y4fWV5BcVc6/YTLL//l6SAj
-	OZqgqpaJ/Gyg2w6erTABBvVVJaW5fKcAEyqfZV6r0Ks7Ka3atoE/Y0YFiP9lqCAtRxDrvfgXt3D
-	kkytMj8TdI0Xcn4WxZLKhoJ/EiLfcMul1UrDUJYgg
-X-Gm-Gg: AY/fxX5RpyrOMqteVDF8oN0xN8beyQR4TMHRz4LoyXJP5E3E4KlJ0ZFZfZMStX6cncp
-	CiypW+hgr4O5AMgZSKrN+2iV2UdrrkZh1rBdmQdxQxQhdca4uq2bzLRfE5AOIryz26Nao+TFgKX
-	A8Qro+WCUzCnt9UmjaEVpMXlIOHuyrfQ1mlzXBC2iHC+oW5b4TLsKGvBbujXV9vq3cCIxnbod/B
-	rU9inTlrjZKPxJOfu29VbKWTAw7DlWctvkHFHhp6L59wawnkD92kwrYJTPlQaajsaHH3oXShZ4F
-	vhsLT99fk67k5E/NvMFkgTaLrly4XCg4aND5RXM=
-X-Google-Smtp-Source: AGHT+IE5OfZJ0/hIzhA8mBhbLh4j/deDnJBAW7Dn9FJZWDt+5ezAN6a04NmIQZHYNVZNn2qTdMcz9MSn3BadTm1/mm8=
-X-Received: by 2002:ac8:7f06:0:b0:4f4:b46e:34a0 with SMTP id
- d75a77b69052e-4fbd6096b15mr8909641cf.5.1767229052434; Wed, 31 Dec 2025
- 16:57:32 -0800 (PST)
+        bh=L2EkUzQ6sigBd+WWV5Hcl6Vcy/jBU7DTMqVQsenR/Xo=;
+        b=YLUqJrnABVbrPNEdwWT6NIfGjfuDfuc5GkYmjGmov/V2c/WbkIc4lddYJKeJO9rlMO
+         79Qv2PtWIZpboi315H2vqC7/ozmTMdEiWkDrWqr42Q3dTzZ7wEHuWXy8aQh6qWn9uzYm
+         pVZ3bBV2xp9IV6U9b/oaG6CSVzYunscBXvvnOCE9uZ+Qoz9qdv68QweF+qWFTZrO+4yl
+         OwTuWeOBFZE/6pdDBKalXH8dIqAvN528g/R5niG+LFytEr3qGDOTSp1u3Y9zLTsnYebo
+         KzgLBmkVWmZkJ268TO80JRtxOBQyxNt/tQ81x8mPqqCJnodL5p+yXwPelaHbgLZAujFz
+         KU9w==
+X-Forwarded-Encrypted: i=1; AJvYcCXej+mS4hQNGdpQRE33/VKAZYyLPhtwEChoif8bmtCGTgu3MkOqmt6K/Vbb8emA1vYv6D4=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywkr764WJS67crlYi/7Y3ya8fICMCvd6SD7eCFMKiRDh3v2AT2n
+	pb3rq8dDpp226AwxopXK6HsJgL0X1jbrkA+K2Ig1gXKXHp51TRwSkzUG/qpeOCNdvQLtuC6S5jF
+	kyGd74HMILnbp/yy2Jxyf/E0/GTCsfm8=
+X-Gm-Gg: AY/fxX4C0PddmbCEjhop/DFAvk1Wa8JBqL8QjJjyB66hQJowbCVoWa+7/XEfOvO99EL
+	+iNupP6aXL4xrS9PAsUI+MRPUInIVZQRN0oicshVaunpky4gBKbJ28FQr+qnjjAtQVDmjoKVZMw
+	fwKKZfj+5fsXrWE0UU8QRgmlEdmvaOs5urIHKI6BxjTaIo6exDulXEDg1qsPV2kJ1CcqRemtT1Z
+	lxzYDu1+OD20l7ZQckd5xl1ZUe+JpFXF5QT+VpZu6leDyfEqsiVEw64UsSUqph8wupnLG/g2/cY
+	frmOQTgQ9xmmH0o67MxZPi5PxqMi
+X-Google-Smtp-Source: AGHT+IH5ZrzzFT5UNwTZptN+H56qkFUXA/Ygb+yPt8+WPgM1uThdV3rrZmNHjr6UFJLqBPNEBxHVHfwADBRcBM115zY=
+X-Received: by 2002:a05:600c:638d:b0:477:afc5:fb02 with SMTP id
+ 5b1f17b1804b1-47d4c8f4972mr206282295e9.21.1767233450902; Wed, 31 Dec 2025
+ 18:10:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251231232048.2860014-1-maze@google.com> <CAADnVQL4ZPaiwuXtB7b9nrVVMg0eDiT6gnnNGrU5Ys61UWdgCA@mail.gmail.com>
-In-Reply-To: <CAADnVQL4ZPaiwuXtB7b9nrVVMg0eDiT6gnnNGrU5Ys61UWdgCA@mail.gmail.com>
-From: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
-Date: Thu, 1 Jan 2026 01:57:20 +0100
-X-Gm-Features: AQt7F2qicWjCRjlu-6jL-eYQFIqmteU4y56SOln4I4mG55D8dWPVyDkjxlYOTGw
-Message-ID: <CANP3RGdFdAf9gP5G6NaqvoGm7QZkVvow9V1OfZrCPBzyvVDoGg@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: 'fix' for undefined future potential exploits of BPF_PROG_LOAD
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Linux Network Development Mailing List <netdev@vger.kernel.org>, "David S . Miller" <davem@davemloft.net>, 
+References: <20251231173633.3981832-6-csander@purestorage.com>
+ <e9a1bd633fb4bb3d2820f63f41a8dd60d8c9c5e3c699fa56057ae393ef2f31d0@mail.kernel.org>
+ <CADUfDZpSSikiZ8d8eWvfucj=Cvhc=k-sHN03EVExGBQ4Lx+23Q@mail.gmail.com>
+ <CAADnVQKXUUNn=P=2-UECF1X7SR+oqm4xsr-2trpgTy1q+0c5FQ@mail.gmail.com> <CADUfDZq5Bf8mVD9o=VHsUqYgqyMJx82_fhy73ZzkvawQi2Ko2g@mail.gmail.com>
+In-Reply-To: <CADUfDZq5Bf8mVD9o=VHsUqYgqyMJx82_fhy73ZzkvawQi2Ko2g@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 31 Dec 2025 18:10:39 -0800
+X-Gm-Features: AQt7F2qPTzBBxIXi7mSFxblwdWM4pyxfhqUHnmv1AUlo2Ajz8HPFxUtnTVbWXLM
+Message-ID: <CAADnVQJ0Xhmx0ZyTKbWqaiiX7QwghMznzjDL1CNmraXM4d+T7A@mail.gmail.com>
+Subject: Re: [PATCH 5/5] selftests/bpf: make cfi_stubs globals const
+To: Caleb Sander Mateos <csander@purestorage.com>
+Cc: bot+bpf-ci@kernel.org, Jiri Kosina <jikos@kernel.org>, 
+	Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Tejun Heo <tj@kernel.org>, David Vernet <void@manifault.com>, Andrea Righi <arighi@nvidia.com>, 
+	Changwoo Min <changwoo@igalia.com>, Ingo Molnar <mingo@redhat.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
+	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Benjamin Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Valentin Schneider <vschneid@redhat.com>, "David S. Miller" <davem@davemloft.net>, 
 	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, BPF Mailing List <bpf@vger.kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>
+	Simon Horman <horms@kernel.org>, David Ahern <dsahern@kernel.org>, 
+	Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>, 
+	Jiri Pirko <jiri@resnulli.us>, "D. Wythe" <alibuda@linux.alibaba.com>, 
+	Dust Li <dust.li@linux.alibaba.com>, sidraya@linux.ibm.com, wenjia@linux.ibm.com, 
+	mjambigi@linux.ibm.com, Tony Lu <tonylu@linux.alibaba.com>, guwen@linux.alibaba.com, 
+	Shuah Khan <shuah@kernel.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+	Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	"open list:HID CORE LAYER" <linux-input@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, sched-ext@lists.linux.dev, 
+	linux-rdma@vger.kernel.org, linux-s390 <linux-s390@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Chris Mason <clm@meta.com>, 
+	Ihor Solodrai <ihor.solodrai@linux.dev>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 1, 2026 at 1:07=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Wed, Dec 31, 2025 at 4:28=E2=80=AFPM Caleb Sander Mateos
+<csander@purestorage.com> wrote:
 >
-> On Wed, Dec 31, 2025 at 3:21=E2=80=AFPM Maciej =C5=BBenczykowski <maze@go=
-ogle.com> wrote:
+> On Wed, Dec 31, 2025 at 10:13=E2=80=AFAM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
 > >
-> > Over the years there's been a number of issues with the eBPF
-> > verifier/jit/codegen (incl. both code bugs & spectre related stuff).
+> > On Wed, Dec 31, 2025 at 10:09=E2=80=AFAM Caleb Sander Mateos
+> > <csander@purestorage.com> wrote:
+> > >
+> > > On Wed, Dec 31, 2025 at 10:04=E2=80=AFAM <bot+bpf-ci@kernel.org> wrot=
+e:
+> > > >
+> > > > > diff --git a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c=
+ b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
+> > > > > index 90c4b1a51de6..5e460b1dbdb6 100644
+> > > > > --- a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
+> > > > > +++ b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
+> > > >
+> > > > [ ... ]
+> > > >
+> > > > > @@ -1275,7 +1275,7 @@ bpf_testmod_ops__test_return_ref_kptr(int d=
+ummy, struct task_struct *task__ref,
+> > > > >       return NULL;
+> > > > >  }
+> > > > >
+> > > > > -static struct bpf_testmod_ops __bpf_testmod_ops =3D {
+> > > > > +static const struct bpf_testmod_ops __bpf_testmod_ops =3D {
+> > > > >       .test_1 =3D bpf_testmod_test_1,
+> > > > >       .test_2 =3D bpf_testmod_test_2,
+> > > >
+> > > > Is it safe to make __bpf_testmod_ops const here? In bpf_testmod_ini=
+t(),
+> > > > this struct is modified at runtime:
+> > > >
+> > > >     tramp =3D (void **)&__bpf_testmod_ops.tramp_1;
+> > > >     while (tramp <=3D (void **)&__bpf_testmod_ops.tramp_40)
+> > > >         *tramp++ =3D bpf_testmod_tramp;
+> > > >
+> > > > Writing to a const-qualified object is undefined behavior and may c=
+ause a
+> > > > protection fault when the compiler places this in read-only memory.=
+ Would
+> > > > the module fail to load on systems where .rodata is actually read-o=
+nly?
+> > >
+> > > Yup, that's indeed the bug caught by KASAN. Missed this mutation at
+> > > init time, I'll leave __bpf_testmod_ops as mutable.
 > >
-> > It's an amazing but very complex piece of logic, and I don't think
-> > it's realistic to expect it to ever be (or become) 100% secure.
-> >
-> > For example we currently have KASAN reporting buffer length violation
-> > issues on 6.18 (which may or may not be due to eBPF subsystem, but are
-> > worrying none-the-less)
-> >
-> > Blocking bpf(BPF_PROG_LOAD, ...) is the only sure fire way to guarantee
-> > the inability to exploit the eBPF subsystem.
-> > In comparison other eBPF operations are pretty benign.
-> > Even map creation is usually at most a memory DoS, furthermore it
-> > remains useful (even with prog load disabled) due to inner maps.
-> >
-> > This new sysctl is designed primarily for verified boot systems,
-> > where (while the system is booting from trusted/signed media)
-> > BPF_PROG_LOAD can be enabled, but before untrusted user
-> > media is mounted or networking is enabled, BPF_PROG_LOAD
-> > can be outright disabled.
-> >
-> > This provides for a very simple way to limit eBPF programs to only
-> > those signed programs that are part of the verified boot chain,
-> > which has always been a requirement of eBPF use in Android.
-> >
-> > I can think of two other ways to accomplish this:
-> > (a) via sepolicy with booleans, but it ends up being pretty complex
-> >     (especially wrt verifying the correctness of the resulting policies=
-)
-> > (b) via BPF_LSM bpf_prog_load hook, which requires enabling additional
-> >     kernel options which aren't necessarily worth the bother,
-> >     and requires dynamically patching the kernel (frowned upon by
-> >     security folks).
-> >
-> > This approach appears to simply be the most trivial.
+> > No. You're missing the point. The whole patch set is no go.
+> > The pointer to cfi stub can be updated just as well.
 >
-> You seem to ignore the existence of sysctl_unprivileged_bpf_disabled.
-> And with that the CAP_BPF is the only way to prog_load to work.
+> Do you mean the BPF core code would modify the struct pointed to by
+> cfi_stubs? Or some BPF struct_ops implementation (like this one in
+> bpf_testmod.c) would modify it? If you're talking about the BPF core
+> code, could you point out where this happens? I couldn't find it when
+> looking through the handful of uses of cfi_stubs (see patch 1/5). Or
+> are you talking about some hypothetical future code that would write
+> through the cfi_stubs pointer? If you're talking about a struct_ops
+> implementation, I certainly agree it could modify the struct pointed
+> to by cfi_stubs (before calling register_bpf_struct_ops()). But then
+> the struct_ops implementation doesn't have to declare the global
+> variable as const. A non-const pointer is allowed anywhere a const
+> pointer is expected.
 
-I am actually aware of it, but we cannot use sysctl_unprivileged_bpf_disabl=
-ed,
-because (last I checked) it disables map creation as well, which we do
-want to function
-as less privileged (though still partially priv) daemons/users (for
-inner map creation)...
-
-Additionally the problem is there is no way to globally block CAP_BPF...
-because CAP_SYS_ADMIN (per documentation, and backwards compatibility)
-implies it, and that has valid users.
-
-> I suspect you're targeting some old kernels.
-
-I don't believe so.  How are you suggesting we globally block BPF_PROG_LOAD=
-,
-while there will still be some CAP_SYS_ADMIN processes out of necessity,
-and without blocking map creation?
+You're saying that void const * cfi_stubs; pointing to non-const
+__bpf_testmod_ops is somehow ok? No. This right into undefined behavior.
+Not going to allow that.
 
