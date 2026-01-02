@@ -1,43 +1,45 @@
-Return-Path: <bpf+bounces-77676-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77677-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87A13CEECF4
-	for <lists+bpf@lfdr.de>; Fri, 02 Jan 2026 16:02:26 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 942C2CEECFA
+	for <lists+bpf@lfdr.de>; Fri, 02 Jan 2026 16:03:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 49ECF300B910
-	for <lists+bpf@lfdr.de>; Fri,  2 Jan 2026 15:01:48 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4AED23016720
+	for <lists+bpf@lfdr.de>; Fri,  2 Jan 2026 15:01:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D20621CA02;
-	Fri,  2 Jan 2026 15:01:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5CDC23AB81;
+	Fri,  2 Jan 2026 15:01:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DabqC3OW"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="EM8bLGf5"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E4AF1F16B
-	for <bpf@vger.kernel.org>; Fri,  2 Jan 2026 15:01:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A01CD1A00F0;
+	Fri,  2 Jan 2026 15:01:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767366106; cv=none; b=qf76r4CC3xKqxzgygmv4pV/A59G71Cz8I1geqdkQbuSoxL52+EWlPGRE5RNgej9qlYpU6B83zwEXalz7NWLCGzgbVWGZrilP2lg1hQYQc5xRoRJ6UMljYY84b5jZ3+kuAlKGT6hUetXgnSvHQhaalGM++UzDfB+y+abrakr9qj8=
+	t=1767366113; cv=none; b=dvTnDgmLP61JQHD6UGE3Ub4+aTe8QDPpLlxZct8wgNrbGzHGe5qKf1s62jmuBu5kpiaiLsytJsinB9Se21TeiiL7oPiD+ci8Ya/a9BSpcdKnrGr/vD/J3ojxHtGl5IjYiuebuxl5YXXdhEe/jRFrZkkmOXtORrZQnTIQxi+abE4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767366106; c=relaxed/simple;
-	bh=3/STyZQ6KuX+xvZ6JTum6U+Nz29JODH6abBJ4FGY2Xg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tWNVoiFtgTgIk1bofSGaubdWv9CWYgKj7qM6XFrPFbozksjUIFoolu34Qatuv+uePX+ugz9eLSUrqIeJ9txdzM3H3I3smdMY21hg+bdWVMZFkba0yHg6YhvvEuCJzovOZpi2u5OipL9h+dRCELepU6THqlOSAmr25JUq7rgegWg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=DabqC3OW; arc=none smtp.client-ip=95.215.58.183
+	s=arc-20240116; t=1767366113; c=relaxed/simple;
+	bh=Ijwkz7QzHZs+f5e9/V+7fXI6NvObA0hQXuFbGSjIzJQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=CtLzSnQFXuI1Liv7XlxHp3wfCr9DgLy0co1bvaSCc8g2FksmATUmmHVLOeM/hAzzb0AY6M2udEBO9tIVFHWSNDk7w2pnvPNzu0cPQnztc3cYH019c8O9WYLD6SIIOZxkoIYlfbNOP8yFXVeCKoC6i+mZYKiRBcLOqQ/G7qarqxc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=EM8bLGf5; arc=none smtp.client-ip=95.215.58.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1767366101;
+	t=1767366108;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=BiRCJtw4ELvsXjmY6Q3y3Drgdzip5X30NSHjEWzRHx0=;
-	b=DabqC3OWDAIBs9M6SPPDyL32w6/4Fhiq9+8+V0B+dkhXafrqj6RoOvDXCi0nKj/H2LekNl
-	tlQzcLDVBn687MtMndiRNxC1ZzpwZClYqefHi4YPuV0sNwc+md5/3/c+HmKCGAB7DyFCJm
-	69TpO5x1z1/hNGYzoQQSeSL8q63O0v8=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9oQ3SeDCJ6nND2F1EMtNHZ6xlfaLC5tyLUl7Cs/5SH4=;
+	b=EM8bLGf5gqL+cBIBPphk6iPPRVabq3f3nlPeYC01WIiT0Dhp2x5DkL28sodqjxwetFCMqm
+	2AeAAAi9gjt0Psmxc/crbGHUF4P20CQ0I+Xx/cpQgpJEUB0WK133rH5QuCDnd8P3LU6XZk
+	2iFBJh1F7mpTrJ1WG3lwWOgNrvjcrv0=
 From: Leon Hwang <leon.hwang@linux.dev>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -70,9 +72,11 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	netdev@vger.kernel.org,
 	kernel-patches-bot@fb.com,
 	Leon Hwang <leon.hwang@linux.dev>
-Subject: [PATCH bpf-next 0/4] bpf: tailcall: Eliminate max_entries and bpf_func access at runtime
-Date: Fri,  2 Jan 2026 23:00:28 +0800
-Message-ID: <20260102150032.53106-1-leon.hwang@linux.dev>
+Subject: [PATCH bpf-next 1/4] bpf: tailcall: Introduce bpf_arch_tail_call_prologue_offset
+Date: Fri,  2 Jan 2026 23:00:29 +0800
+Message-ID: <20260102150032.53106-2-leon.hwang@linux.dev>
+In-Reply-To: <20260102150032.53106-1-leon.hwang@linux.dev>
+References: <20260102150032.53106-1-leon.hwang@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -82,55 +86,94 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-This patch series optimizes BPF tail calls on x86_64 and arm64 by
-eliminating runtime memory accesses for max_entries and 'prog->bpf_func'
-when the prog array map is known at verification time.
+Introduce bpf_arch_tail_call_prologue_offset() to allow architectures
+to specify the offset from bpf_func to the actual program entry point
+for tail calls. This offset accounts for prologue instructions that
+should be skipped (e.g., fentry NOPs, TCC initialization).
 
-Currently, every tail call requires:
-  1. Loading max_entries from the prog array map
-  2. Dereferencing 'prog->bpf_func' to get the target address
-
-This series introduces a mechanism to precompute and cache the tail call
-target addresses (bpf_func + prologue_offset) in the prog array itself:
+When an architecture provides a non-zero prologue offset, prog arrays
+allocate additional space to cache precomputed tail call targets:
   array->ptrs[max_entries + index] = prog->bpf_func + prologue_offset
 
-When a program is added to or removed from the prog array, the cached
-target is atomically updated via xchg().
+This cached target is updated atomically via xchg() when programs are
+added or removed from the prog array, eliminating the need to compute
+the target address at runtime during tail calls.
 
-The verifier now encodes additional information in the tail call
-instruction's imm field:
-  - bits 0-7:   map index in used_maps[]
-  - bits 8-15:  dynamic array flag (1 if map pointer is poisoned)
-  - bits 16-31: poke table index + 1 for direct tail calls
+The function is exported for use by the test_bpf module.
 
-For static tail calls (map known at verification time):
-  - max_entries is embedded as an immediate in the comparison instruction
-  - The cached target from array->ptrs[max_entries + index] is used
-    directly, avoiding the 'prog->bpf_func' dereference
+Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
+---
+ include/linux/bpf.h   |  1 +
+ kernel/bpf/arraymap.c | 27 ++++++++++++++++++++++++++-
+ 2 files changed, 27 insertions(+), 1 deletion(-)
 
-For dynamic tail calls (map pointer poisoned):
-  - Fall back to runtime lookup of max_entries and prog->bpf_func
-
-This reduces cache misses and improves tail call performance for the
-common case where the prog array is statically known.
-
-Leon Hwang (4):
-  bpf: tailcall: Introduce bpf_arch_tail_call_prologue_offset
-  bpf, x64: tailcall: Eliminate max_entries and bpf_func access at
-    runtime
-  bpf, arm64: tailcall: Eliminate max_entries and bpf_func access at
-    runtime
-  bpf, lib/test_bpf: Fix broken tailcall tests
-
- arch/arm64/net/bpf_jit_comp.c | 71 +++++++++++++++++++++++++----------
- arch/x86/net/bpf_jit_comp.c   | 51 ++++++++++++++++++-------
- include/linux/bpf.h           |  1 +
- kernel/bpf/arraymap.c         | 27 ++++++++++++-
- kernel/bpf/verifier.c         | 30 ++++++++++++++-
- lib/test_bpf.c                | 39 ++++++++++++++++---
- 6 files changed, 178 insertions(+), 41 deletions(-)
-
---
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 4e7d72dfbcd4..acd85c239af9 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -3792,6 +3792,7 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type old_t,
+ 
+ void bpf_arch_poke_desc_update(struct bpf_jit_poke_descriptor *poke,
+ 			       struct bpf_prog *new, struct bpf_prog *old);
++int bpf_arch_tail_call_prologue_offset(void);
+ 
+ void *bpf_arch_text_copy(void *dst, void *src, size_t len);
+ int bpf_arch_text_invalidate(void *dst, size_t len);
+diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+index 1eeb31c5b317..beedd1281c22 100644
+--- a/kernel/bpf/arraymap.c
++++ b/kernel/bpf/arraymap.c
+@@ -127,6 +127,9 @@ static struct bpf_map *array_map_alloc(union bpf_attr *attr)
+ 			array_size += (u64) max_entries * elem_size;
+ 		}
+ 	}
++	if (attr->map_type == BPF_MAP_TYPE_PROG_ARRAY && bpf_arch_tail_call_prologue_offset())
++		/* Store tailcall targets */
++		array_size += (u64) max_entries * sizeof(void *);
+ 
+ 	/* allocate all map elements and zero-initialize them */
+ 	if (attr->map_flags & BPF_F_MMAPABLE) {
+@@ -1087,16 +1090,38 @@ void __weak bpf_arch_poke_desc_update(struct bpf_jit_poke_descriptor *poke,
+ 	WARN_ON_ONCE(1);
+ }
+ 
++int __weak bpf_arch_tail_call_prologue_offset(void)
++{
++	return 0;
++}
++EXPORT_SYMBOL_GPL(bpf_arch_tail_call_prologue_offset);
++
++static void bpf_tail_call_target_update(struct bpf_array *array, u32 key, struct bpf_prog *new)
++{
++	int offset = bpf_arch_tail_call_prologue_offset();
++	void *target;
++
++	if (!offset)
++		return;
++
++	target = new ? (void *) new->bpf_func + offset : 0;
++	xchg(array->ptrs + array->map.max_entries + key, target);
++}
++
+ static void prog_array_map_poke_run(struct bpf_map *map, u32 key,
+ 				    struct bpf_prog *old,
+ 				    struct bpf_prog *new)
+ {
+ 	struct prog_poke_elem *elem;
+ 	struct bpf_array_aux *aux;
++	struct bpf_array *array;
+ 
+-	aux = container_of(map, struct bpf_array, map)->aux;
++	array = container_of(map, struct bpf_array, map);
++	aux = array->aux;
+ 	WARN_ON_ONCE(!mutex_is_locked(&aux->poke_mutex));
+ 
++	bpf_tail_call_target_update(array, key, new);
++
+ 	list_for_each_entry(elem, &aux->poke_progs, list) {
+ 		struct bpf_jit_poke_descriptor *poke;
+ 		int i;
+-- 
 2.52.0
 
 
