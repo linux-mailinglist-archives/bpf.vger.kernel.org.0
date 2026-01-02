@@ -1,111 +1,134 @@
-Return-Path: <bpf+bounces-77715-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77716-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id C174FCEF4E4
-	for <lists+bpf@lfdr.de>; Fri, 02 Jan 2026 21:23:41 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89C30CEF560
+	for <lists+bpf@lfdr.de>; Fri, 02 Jan 2026 22:03:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B8EA0300D645
-	for <lists+bpf@lfdr.de>; Fri,  2 Jan 2026 20:23:40 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 54B56300ACCF
+	for <lists+bpf@lfdr.de>; Fri,  2 Jan 2026 21:03:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D869D2D2391;
-	Fri,  2 Jan 2026 20:23:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7D7326F2A8;
+	Fri,  2 Jan 2026 21:03:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fgfoEBNh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T49e5ifW"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FE072BE05F
-	for <bpf@vger.kernel.org>; Fri,  2 Jan 2026 20:23:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 021EB3A1C9
+	for <bpf@vger.kernel.org>; Fri,  2 Jan 2026 21:03:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767385419; cv=none; b=YgSNDXMRJiTINm/pKVSfEMWkvJuiBwWCnH0PpJjt8L9XuzA49r48kKQEG2xQs/COXVRXbQ6k0fKJj5gVT/ntUs523/gg9X2ABDDrk/E4+QOySv/xVhi0wbQ5cZ9Yn6/XT6QMuOwPP5nWDMKDskPoIpx/yp2IQmEqE3q1Y6881i8=
+	t=1767387830; cv=none; b=DTljTpx+FpiCadQqGmrbgZWKaZycKNpliyBr7yer+DMgAKpRKeoVXPCynHHTq4Z1ibkK03WEbPT8GbQ01TTAde4ZhlA78qUP8sU08LflJFLB3/hmfve1vKEVhkzMlFmXOBT4AFlj+eD8adzFfVsSyRaNcVK+J6stmjRA5O1uRgc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767385419; c=relaxed/simple;
-	bh=1FieRFvdJyHIf9RGnAO8WUPbkzzR5Mal0YbxH/DeRMk=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=T4uCXSmV8B2yXaOh9aebPepV2/nS2f5U84jfDjwHWFizoagOJh0omhB6fJocYNDeHDQvgKc5QvxeqFHB0qYtus3mq2bsG8A+Vjbexxq/9wWz+O3eOH94euVYd9r10q7So8jYiirzGrc7BUs56+029cbluwGsd6prueRnWHLIaaA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fgfoEBNh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F75FC116B1;
-	Fri,  2 Jan 2026 20:23:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767385419;
-	bh=1FieRFvdJyHIf9RGnAO8WUPbkzzR5Mal0YbxH/DeRMk=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=fgfoEBNhq0d92dgiOcFZ5fD6cOVTusMus/7ZDKDF4AyExcK6/ZDNqrWLhmmtxoub5
-	 u5wIAKWrHmG+bSDH7QMxjONsmbENX5vu1kyI1Tdo4HMcBePR4o0AT6nG+iYlNU1In5
-	 1HGdqUn5DZZ9EZaq80orGP9VqhUtVPb6dE2QU3dPHaLzX564odWaQA1Bs17GfSlVH9
-	 BrCm3vPM4KZFOyPDjWruNPHg2Bv51Qos0HRY6xmxH+zANLxZuVKJ/g/l5GEC5FMQ2l
-	 gIGiRw5ARkkZ6kphlvbs/qKgzXX0l7uuN/b2xusXCBlTqGtn7HQatHXmlCckcynw11
-	 WGRKcxBkmiGdg==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 78828380A962;
-	Fri,  2 Jan 2026 20:20:20 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1767387830; c=relaxed/simple;
+	bh=83qcuf0EMWV1a3Far5f+s9xO8CCX9uktV7+qF/tfMi8=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=HUzkg/wjK7ovVeN0a3Hdd7lIcQoDhcopSCY8dsyXlKRow7Z8e9cJvCETLLo8116C52Y0zYZevmKHsJbR4jswVhNHLyXzd1K2D3GSLz1rxsFmNx8YYIZt1qdxXDnT1K5LawSwr4uc4ocxBUkZTus4nR8+OHJkkpIwu/LrVTQBR0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T49e5ifW; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-2a0d6f647e2so200737635ad.1
+        for <bpf@vger.kernel.org>; Fri, 02 Jan 2026 13:03:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1767387828; x=1767992628; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=83qcuf0EMWV1a3Far5f+s9xO8CCX9uktV7+qF/tfMi8=;
+        b=T49e5ifWGJKRtyhzROUoXmWNAjw5ltTRsKrCLeSfMrmsSkfPu65O82hWP5dadRxDQA
+         oURCrl/nHT3JWVU0n5Bw9Fyp5C2veBL5m4+LAOYqgGI1PjCeldn7R2JB7EHKY6LdzUeu
+         NCK60vOvHOPHcquYd5Oi/J5P8UyU6n0Gpl1Z0CD2WOJnFB5A9LQrHyS/2OZLGKF0D+p7
+         iOU0ssB8rCTk6eslcI8BA4/lXVbO1zE/pwc9PgPUxlq78hN65opF1HOHYsYaxYkcTT5S
+         nS9PKEd2g174eQOgla8qhlk1/gUKrnISRxwoA9HfasTVbn6uqsAf0/2V9Bkbl5Y+EDp1
+         aLZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767387828; x=1767992628;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=83qcuf0EMWV1a3Far5f+s9xO8CCX9uktV7+qF/tfMi8=;
+        b=qyfLNomoXi6bmGwoZ65yKSpxejMEZun/pPsv6YbKh7B+TdQoKOzfEj2thplwbTdMvI
+         argdD8VXtQvuPKnM5dDUdAnzkTFoGFYU7aE18oGMY+WHPbYiV1+zUjcIfjHcfRllFKKK
+         lRtPiyhJiwVJhRPhOER89ISXKnS23Swfrwpr/KzytsjHjJpmpzUrUW8pw4TZajP/8VRm
+         9YBq8MuiBXbgC/dNd01K6gPwDXQwV+Hq+7FjeFQGgvPRhDXE8jIkgBZGs6AVDyiEpqMb
+         eTsaU6Ke4a+TEM6yB5vhqktyA/pZyM4utEE0jj+hiqY6/9PVmmVJvuPh02gUlICG+b9k
+         EkIw==
+X-Forwarded-Encrypted: i=1; AJvYcCVaI0SCr0IgcgWRzOMUKbpUSeuQqkB2KqgktS7tnS/bMLnJacIj3hvoDdfHbdC36mUxQ1A=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzli0reYtxw4LKKz+5yvIY765KDyDdIqqJKbF/IeowWhcH7HEuo
+	Nayn0bu4TaBWSZUtMuWKrSGOHY8NAfYQPUw5BcpCTKcReg37OMLyip1P
+X-Gm-Gg: AY/fxX7gUZCzDUflAKJlvgd6DjhKIOaVkDlw1anQHTzwfhkX8PRLMnLQToNUicroQ0y
+	P92rEBjW6zwIzkHSY0v1CHIjfbaP/eGKP/wuPImghtg6Krpkaa9NB/YZGTLfscaFAWzvTA0WijM
+	eHp+tf8ghdSKlhD80XDm0af88cEwZ39+GFUbQpL4dFriaTLOFWDGS7OxvDc4GnmUsNYljAyQdQR
+	PFbqvd4UT6z67ijqxuRq+8xVit89pjXNWxLnaFkn4h7C6rHt61s+6LxkXLR6cO7qTO9pUdmCbL/
+	ZiMGN8tBQEId8TRSEY1szh6O5u4peQhF8Dye96cmzMy5Cc7pR2GyfGoQGcCH/YhuFAnFOsJ+lv5
+	z/EXUBAfl2Qbl20XK6BElhAGt+xH7xwCM3QGxZC8CaL3KISIg24sFcInDioeBw20cTHxhBuzHcG
+	thOIHvmhVisorduUZPMw==
+X-Google-Smtp-Source: AGHT+IG+SKaJOm1w1KH0JiqbkcdK09u247QeX+9VFIhk65hzA3yM2aSF0+9OiQhJkalUCoIFzkf85A==
+X-Received: by 2002:a17:903:244b:b0:295:586d:677f with SMTP id d9443c01a7336-2a2f220a650mr365478205ad.10.1767387828104;
+        Fri, 02 Jan 2026 13:03:48 -0800 (PST)
+Received: from [192.168.0.56] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a2f3c8279esm378436425ad.28.2026.01.02.13.03.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Jan 2026 13:03:47 -0800 (PST)
+Message-ID: <ec04d110c596af4020d831d3c602371ecf4f3cac.camel@gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Replace __opt annotation with __nullable
+ for kfuncs
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Puranjay Mohan <puranjay@kernel.org>, bpf@vger.kernel.org
+Cc: Puranjay Mohan <puranjay12@gmail.com>, Alexei Starovoitov
+ <ast@kernel.org>,  Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Martin KaFai Lau	 <martin.lau@kernel.org>, Kumar
+ Kartikeya Dwivedi <memxor@gmail.com>, Mykyta Yatsenko
+ <mykyta.yatsenko5@gmail.com>, kernel-team@meta.com
+Date: Fri, 02 Jan 2026 13:03:45 -0800
+In-Reply-To: <20251231232623.2713255-1-puranjay@kernel.org>
+References: <20251231232623.2713255-1-puranjay@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.58.1 (3.58.1-1.fc43) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v3 00/10] bpf: Make KF_TRUSTED_ARGS default
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <176738521902.3999999.8092738930277465797.git-patchwork-notify@kernel.org>
-Date: Fri, 02 Jan 2026 20:20:19 +0000
-References: <20260102180038.2708325-1-puranjay@kernel.org>
-In-Reply-To: <20260102180038.2708325-1-puranjay@kernel.org>
-To: Puranjay Mohan <puranjay@kernel.org>
-Cc: bpf@vger.kernel.org, puranjay12@gmail.com, ast@kernel.org,
- andrii@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org,
- eddyz87@gmail.com, memxor@gmail.com, emil@etsalapatis.com,
- kernel-team@meta.com
 
-Hello:
+On Wed, 2025-12-31 at 15:26 -0800, Puranjay Mohan wrote:
+> The __opt annotation was originally introduced specifically for
+> buffer/size argument pairs in bpf_dynptr_slice() and
+> bpf_dynptr_slice_rdwr(), allowing the buffer pointer to be NULL while
+> still validating the size as a constant.=C2=A0 The __nullable annotation
+> serves the same purpose but is more general and is already used
+> throughout the BPF subsystem for raw tracepoints, struct_ops, and other
+> kfuncs.
+>=20
+> This patch unifies the two annotations by replacing __opt with
+> __nullable.=C2=A0 The key change is in the verifier's
+> get_kfunc_ptr_arg_type() function, where mem/size pair detection is now
+> performed before the nullable check.=C2=A0 This ensures that buffer/size
+> pairs are correctly classified as KF_ARG_PTR_TO_MEM_SIZE even when the
+> buffer is nullable, while adding an !arg_mem_size condition to the
+> nullable check prevents interference with mem/size pair handling.
+>=20
+> When processing KF_ARG_PTR_TO_MEM_SIZE arguments, the verifier now uses
+> is_kfunc_arg_nullable() instead of the removed is_kfunc_arg_optional()
+> to determine whether to skip size validation for NULL buffers.
+>=20
+> This is the first documentation added for the __nullable annotation,
+> which has been in use since it was introduced but was previously
+> undocumented.
+>=20
+> No functional changes to verifier behavior - nullable buffer/size pairs
+> continue to work exactly as before.
+>=20
+> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+> ---
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+Lgtm, thank you for the quick turnaround.
 
-On Fri,  2 Jan 2026 10:00:26 -0800 you wrote:
-> v2: https://lore.kernel.org/all/20251231171118.1174007-1-puranjay@kernel.org/
-> Changes in v2->v3:
-> - Fix documentation: add a new section for kfunc parameters (Eduard)
-> - Remove all occurances of KF_TRUSTED from comments, etc. (Eduard)
-> - Fix the netfilter kfuncs to drop dead NULL checks.
-> - Fix selftest for netfilter kfuncs to check for verification failures
->   and remove the runtime failure that are not possible after this
->   changes
-> 
-> [...]
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
-Here is the summary with links:
-  - [bpf-next,v3,01/10] bpf: Make KF_TRUSTED_ARGS the default for all kfuncs
-    https://git.kernel.org/bpf/bpf-next/c/1a5c01d2508a
-  - [bpf-next,v3,02/10] bpf: Remove redundant KF_TRUSTED_ARGS flag from all kfuncs
-    https://git.kernel.org/bpf/bpf-next/c/7646c7afd9a9
-  - [bpf-next,v3,03/10] bpf: net: netfilter: drop dead NULL checks
-    https://git.kernel.org/bpf/bpf-next/c/bddaf9adda72
-  - [bpf-next,v3,04/10] bpf: xfrm: drop dead NULL check in bpf_xdp_get_xfrm_state()
-    https://git.kernel.org/bpf/bpf-next/c/cd1d60949143
-  - [bpf-next,v3,05/10] HID: bpf: drop dead NULL checks in kfuncs
-    https://git.kernel.org/bpf/bpf-next/c/8fe172fa305f
-  - [bpf-next,v3,06/10] selftests: bpf: Update kfunc_param_nullable test for new error message
-    https://git.kernel.org/bpf/bpf-next/c/df5004579bbd
-  - [bpf-next,v3,07/10] selftests: bpf: Update failure message for rbtree_fail
-    https://git.kernel.org/bpf/bpf-next/c/03cc77b10e00
-  - [bpf-next,v3,08/10] selftests: bpf: fix test_kfunc_dynptr_param
-    https://git.kernel.org/bpf/bpf-next/c/230b0118e416
-  - [bpf-next,v3,09/10] selftests: bpf: fix cgroup_hierarchical_stats
-    https://git.kernel.org/bpf/bpf-next/c/cf82580c86a9
-  - [bpf-next,v3,10/10] selftests: bpf: Fix test_bpf_nf for trusted args becoming default
-    https://git.kernel.org/bpf/bpf-next/c/cf503eb2c6c3
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+[...]
 
