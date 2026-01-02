@@ -1,45 +1,45 @@
-Return-Path: <bpf+bounces-77678-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77679-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FA48CEED06
-	for <lists+bpf@lfdr.de>; Fri, 02 Jan 2026 16:05:05 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88F99CEECF1
+	for <lists+bpf@lfdr.de>; Fri, 02 Jan 2026 16:02:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4469E3031CF9
-	for <lists+bpf@lfdr.de>; Fri,  2 Jan 2026 15:02:06 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id EFC2430010C6
+	for <lists+bpf@lfdr.de>; Fri,  2 Jan 2026 15:02:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A68A7231829;
-	Fri,  2 Jan 2026 15:02:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD0F3221FCC;
+	Fri,  2 Jan 2026 15:02:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="M2RBCzNU"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CiljkX+c"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1713F221FCC
-	for <bpf@vger.kernel.org>; Fri,  2 Jan 2026 15:01:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 544A623BCEE
+	for <bpf@vger.kernel.org>; Fri,  2 Jan 2026 15:02:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767366123; cv=none; b=a9NS3AQrJ/u4O/w+anc6dKkm7r7fcnQjDyMcQHfrf3rTWiBuIXSED5DXkrwjEAVX3L0zWUL8fD/PwQSx7kgFeGVITQD427pkDeq/hsaRQeKQDTbgFeMdcffK+C1q8h9JAugpPUXpZJobsUGUQTUIatmkc5diDa9GCe1qg1hfj7I=
+	t=1767366130; cv=none; b=a4/hx/rrHj81iRJ9ylcvYDmS4ieABWdh/BMc9iomR7Wq4i7uvte5eSa/5K9CXF9GYlMgWRryiKGtKT+KFyael3TpmovsI8esZQKpmV88mWUcmTt72Vv3A9aSRaUmbU6Z+M6iw79kk4tZ+v9cA1clg7gLXBmO/iWlSlOmbcB3xgg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767366123; c=relaxed/simple;
-	bh=9z9KwVZl2eIaQzW4nWHUEeGkVv8W+C3AnzDLuPuwvtc=;
+	s=arc-20240116; t=1767366130; c=relaxed/simple;
+	bh=OY1SBWq4Ap5M1NAc2V9iWM673yY4ujTgrAy/9xNzc+4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=E9Xgbdc+4hMWmvXbigxGZU7RE+cSo66q1HN7wAhukxVzpzcSz2Jha3RZP6sppOIWQC6DJpmuSp1r6SjJAx5vSwNbzwhpYpb3t9wWSpvCHpTzGT/RGAC9WaSZmwHzKqql65lXf0RC0elfV92ASFk5eQiZc9mOKI4NuYCm4UqZFgc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=M2RBCzNU; arc=none smtp.client-ip=95.215.58.180
+	 MIME-Version; b=dT/AmKywN8TVW79fYTIW63useJYwraIwQL0VU7mRTVb+cle1aaBshmw5APTJBrEVYq9+bB6dHZvirNSryhnM1SRR0r/pJ8vrrteGckqsbN0XHCdagDIkmmiuacMWxTBUhC5+2VL4I/TQ/FKhBkT79vTPiNiZpQH83RLwoPZqnV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CiljkX+c; arc=none smtp.client-ip=95.215.58.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1767366118;
+	t=1767366126;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=GBeqdGdvFl1BmWay9YlcRFa2rBrCpDnyHLyz6aMx8E4=;
-	b=M2RBCzNUMOTNgFWAb784JlFFJsR2RBXl/a5CTpz/ThH165B1UXHNkl1Z6ivhx0WURExrcQ
-	RqglMXX/lbKgQmuIkVZ6ASmLu8QnxeO25eU+6L1LgjYdiiHqDU/JMLP3iFLYDpkyQpNPpc
-	IiB2DGVMv8jAJImawbTJkni1y9JeTiU=
+	bh=PjHUFzrsqk2p5SI+Seak6yB69TLkO5KnxAZlltu8VN0=;
+	b=CiljkX+cqHhZJB7ZlqBXKzmzY3XQReM24Odz2Ch2tN65WE9slo5Z85mQE+ILAgJPqr2Im7
+	mLE/Ag4NWpe9g7232/7M/CRvmIwLuJRidJGsjRGDnVfIVpeZZGxi8PO4qDpg2KZgZj8UMG
+	VZhWjy1LqrYgYwt/EVPSAbm1/EWuItM=
 From: Leon Hwang <leon.hwang@linux.dev>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -72,9 +72,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	netdev@vger.kernel.org,
 	kernel-patches-bot@fb.com,
 	Leon Hwang <leon.hwang@linux.dev>
-Subject: [PATCH bpf-next 2/4] bpf, x64: tailcall: Eliminate max_entries and bpf_func access at runtime
-Date: Fri,  2 Jan 2026 23:00:30 +0800
-Message-ID: <20260102150032.53106-3-leon.hwang@linux.dev>
+Subject: [PATCH bpf-next 3/4] bpf, arm64: tailcall: Eliminate max_entries and bpf_func access at runtime
+Date: Fri,  2 Jan 2026 23:00:31 +0800
+Message-ID: <20260102150032.53106-4-leon.hwang@linux.dev>
 In-Reply-To: <20260102150032.53106-1-leon.hwang@linux.dev>
 References: <20260102150032.53106-1-leon.hwang@linux.dev>
 Precedence: bulk
@@ -86,201 +86,143 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Optimize BPF tail calls on x86_64 by eliminating runtime memory accesses
-for max_entries and prog->bpf_func when the prog array map is known at
-verification time.
+Apply the same tail call optimization to arm64 as done for x86_64.
 
-The verifier now encodes three fields in the tail call instruction's imm:
-  - bits 0-7:   map index in used_maps[] (max 63)
-  - bits 8-15:  dynamic array flag (1 if map pointer is poisoned)
-  - bits 16-31: poke table index + 1 for direct tail calls (max 1023)
+When the prog array map is known at verification time (dyn_array=false):
+  - Embed max_entries as an immediate value instead of loading from memory
+  - Use the precomputed target from array->ptrs[max_entries + index]
+  - Jump directly to the cached target without dereferencing prog->bpf_func
 
-For static tail calls (map known at verification time):
-  - max_entries is embedded as an immediate in the comparison instruction
-  - The cached target from array->ptrs[max_entries + index] is used
-    directly, avoiding the prog->bpf_func dereference
+When the map is dynamically determined (dyn_array=true):
+  - Load max_entries from the array at runtime
+  - Look up prog from array->ptrs[index] and compute the target address
 
-For dynamic tail calls (map pointer poisoned):
-  - Fall back to runtime lookup of max_entries and prog->bpf_func
-
-This reduces cache misses and improves tail call performance for the
-common case where the prog array is statically known.
+Implement bpf_arch_tail_call_prologue_offset() returning
+"PROLOGUE_OFFSET * 4" to convert the instruction count to bytes.
 
 Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
 ---
- arch/x86/net/bpf_jit_comp.c | 51 +++++++++++++++++++++++++++----------
- kernel/bpf/verifier.c       | 30 ++++++++++++++++++++--
- 2 files changed, 66 insertions(+), 15 deletions(-)
+ arch/arm64/net/bpf_jit_comp.c | 71 +++++++++++++++++++++++++----------
+ 1 file changed, 51 insertions(+), 20 deletions(-)
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index e3b1c4b1d550..9fd707612da5 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -733,11 +733,13 @@ static void emit_return(u8 **pprog, u8 *ip)
-  * out:
-  */
- static void emit_bpf_tail_call_indirect(struct bpf_prog *bpf_prog,
-+					u32 map_index, bool dyn_array,
- 					u8 **pprog, bool *callee_regs_used,
- 					u32 stack_depth, u8 *ip,
- 					struct jit_context *ctx)
+diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+index 0c4d44bcfbf4..bcd890bff36a 100644
+--- a/arch/arm64/net/bpf_jit_comp.c
++++ b/arch/arm64/net/bpf_jit_comp.c
+@@ -620,8 +620,10 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
+ 	return 0;
+ }
+ 
+-static int emit_bpf_tail_call(struct jit_ctx *ctx)
++static int emit_bpf_tail_call(struct jit_ctx *ctx, u32 map_index, bool dyn_array)
  {
- 	int tcc_ptr_off = BPF_TAIL_CALL_CNT_PTR_STACK_OFF(stack_depth);
-+	struct bpf_map *map = bpf_prog->aux->used_maps[map_index];
- 	u8 *prog = *pprog, *start = *pprog;
- 	int offset;
- 
-@@ -752,11 +754,14 @@ static void emit_bpf_tail_call_indirect(struct bpf_prog *bpf_prog,
- 	 *	goto out;
++	struct bpf_map *map = ctx->prog->aux->used_maps[map_index];
++
+ 	/* bpf_tail_call(void *prog_ctx, struct bpf_array *array, u64 index) */
+ 	const u8 r2 = bpf2a64[BPF_REG_2];
+ 	const u8 r3 = bpf2a64[BPF_REG_3];
+@@ -638,9 +640,13 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
+ 	/* if (index >= array->map.max_entries)
+ 	 *     goto out;
  	 */
- 	EMIT2(0x89, 0xD2);                        /* mov edx, edx */
--	EMIT3(0x39, 0x56,                         /* cmp dword ptr [rsi + 16], edx */
--	      offsetof(struct bpf_array, map.max_entries));
-+	if (dyn_array)
-+		EMIT3(0x3B, 0x56,                 /* cmp edx, dword ptr [rsi + 16] */
-+		      offsetof(struct bpf_array, map.max_entries));
-+	else
-+		EMIT2_off32(0x81, 0xFA, map->max_entries); /* cmp edx, imm32 (map->max_entries) */
- 
- 	offset = ctx->tail_call_indirect_label - (prog + 2 - start);
--	EMIT2(X86_JBE, offset);                   /* jbe out */
-+	EMIT2(X86_JAE, offset);                   /* jae out */
- 
- 	/*
- 	 * if ((*tcc_ptr)++ >= MAX_TAIL_CALL_CNT)
-@@ -768,9 +773,15 @@ static void emit_bpf_tail_call_indirect(struct bpf_prog *bpf_prog,
- 	offset = ctx->tail_call_indirect_label - (prog + 2 - start);
- 	EMIT2(X86_JAE, offset);                   /* jae out */
- 
--	/* prog = array->ptrs[index]; */
--	EMIT4_off32(0x48, 0x8B, 0x8C, 0xD6,       /* mov rcx, [rsi + rdx * 8 + offsetof(...)] */
--		    offsetof(struct bpf_array, ptrs));
-+	/*
-+	 * if (dyn_array)
-+	 *	prog = array->ptrs[index];
-+	 * else
-+	 *	tgt = array->ptrs[max_entries + index];
-+	 */
-+	offset = offsetof(struct bpf_array, ptrs);
-+	offset += dyn_array ? 0 : map->max_entries * sizeof(void *);
-+	EMIT4_off32(0x48, 0x8B, 0x8C, 0xD6, offset); /* mov rcx, [rsi + rdx * 8 + offset] */
- 
- 	/*
- 	 * if (prog == NULL)
-@@ -803,11 +814,14 @@ static void emit_bpf_tail_call_indirect(struct bpf_prog *bpf_prog,
- 		EMIT3_off32(0x48, 0x81, 0xC4,     /* add rsp, sd */
- 			    round_up(stack_depth, 8));
- 
--	/* goto *(prog->bpf_func + X86_TAIL_CALL_OFFSET); */
--	EMIT4(0x48, 0x8B, 0x49,                   /* mov rcx, qword ptr [rcx + 32] */
--	      offsetof(struct bpf_prog, bpf_func));
--	EMIT4(0x48, 0x83, 0xC1,                   /* add rcx, X86_TAIL_CALL_OFFSET */
--	      X86_TAIL_CALL_OFFSET);
+-	off = offsetof(struct bpf_array, map.max_entries);
+-	emit_a64_mov_i64(tmp, off, ctx);
+-	emit(A64_LDR32(tmp, r2, tmp), ctx);
 +	if (dyn_array) {
-+		/* goto *(prog->bpf_func + X86_TAIL_CALL_OFFSET); */
-+		EMIT4(0x48, 0x8B, 0x49,           /* mov rcx, qword ptr [rcx + 32] */
-+		      offsetof(struct bpf_prog, bpf_func));
-+		EMIT4(0x48, 0x83, 0xC1,           /* add rcx, X86_TAIL_CALL_OFFSET */
-+		      X86_TAIL_CALL_OFFSET);
++		off = offsetof(struct bpf_array, map.max_entries);
++		emit_a64_mov_i64(tmp, off, ctx);
++		emit(A64_LDR32(tmp, r2, tmp), ctx);
++	} else {
++		emit_a64_mov_i64(tmp, map->max_entries, ctx);
 +	}
-+
- 	/*
- 	 * Now we're ready to jump into next BPF program
- 	 * rdi == ctx (1st arg)
-@@ -2461,15 +2475,21 @@ st:			if (is_imm8(insn->off))
- 		}
+ 	emit(A64_MOV(0, r3, r3), ctx);
+ 	emit(A64_CMP(0, r3, tmp), ctx);
+ 	branch1 = ctx->image + ctx->idx;
+@@ -659,15 +665,26 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
+ 	/* (*tail_call_cnt_ptr)++; */
+ 	emit(A64_ADD_I(1, tcc, tcc, 1), ctx);
  
- 		case BPF_JMP | BPF_TAIL_CALL:
--			if (imm32)
-+			bool dynamic_array = (imm32 >> 8) & 0xFF;
-+			u32 map_index = imm32 & 0xFF;
-+			s32 imm16 = imm32 >> 16;
-+
-+			if (imm16)
- 				emit_bpf_tail_call_direct(bpf_prog,
--							  &bpf_prog->aux->poke_tab[imm32 - 1],
-+							  &bpf_prog->aux->poke_tab[imm16 - 1],
- 							  &prog, image + addrs[i - 1],
- 							  callee_regs_used,
- 							  stack_depth,
- 							  ctx);
- 			else
- 				emit_bpf_tail_call_indirect(bpf_prog,
-+							    map_index,
-+							    dynamic_array,
- 							    &prog,
- 							    callee_regs_used,
- 							    stack_depth,
-@@ -4047,6 +4067,11 @@ void bpf_arch_poke_desc_update(struct bpf_jit_poke_descriptor *poke,
- 	}
+-	/* prog = array->ptrs[index];
+-	 * if (prog == NULL)
+-	 *     goto out;
+-	 */
+-	off = offsetof(struct bpf_array, ptrs);
+-	emit_a64_mov_i64(tmp, off, ctx);
+-	emit(A64_ADD(1, tmp, r2, tmp), ctx);
+-	emit(A64_LSL(1, prg, r3, 3), ctx);
+-	emit(A64_LDR64(prg, tmp, prg), ctx);
++	if (dyn_array) {
++		/* prog = array->ptrs[index];
++		 * if (prog == NULL)
++		 *     goto out;
++		 */
++		off = offsetof(struct bpf_array, ptrs);
++		emit_a64_mov_i64(tmp, off, ctx);
++		emit(A64_ADD(1, tmp, r2, tmp), ctx);
++		emit(A64_LSL(1, prg, r3, 3), ctx);
++		emit(A64_LDR64(prg, tmp, prg), ctx);
++	} else {
++		/* tgt = array->ptrs[max_entries + index];
++		 * if (tgt == 0)
++		 *     goto out;
++		 */
++		emit(A64_LSL(1, prg, r3, 3), ctx);
++		off = offsetof(struct bpf_array, ptrs) + map->max_entries * sizeof(void *);
++		emit_a64_add_i(1, prg, prg, tmp, off, ctx);
++		emit(A64_LDR64(prg, r2, prg), ctx);
++	}
+ 	branch3 = ctx->image + ctx->idx;
+ 	emit(A64_NOP, ctx);
+ 
+@@ -680,12 +697,17 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
+ 
+ 	pop_callee_regs(ctx);
+ 
+-	/* goto *(prog->bpf_func + prologue_offset); */
+-	off = offsetof(struct bpf_prog, bpf_func);
+-	emit_a64_mov_i64(tmp, off, ctx);
+-	emit(A64_LDR64(tmp, prg, tmp), ctx);
+-	emit(A64_ADD_I(1, tmp, tmp, sizeof(u32) * PROLOGUE_OFFSET), ctx);
+-	emit(A64_BR(tmp), ctx);
++	if (dyn_array) {
++		/* goto *(prog->bpf_func + prologue_offset); */
++		off = offsetof(struct bpf_prog, bpf_func);
++		emit_a64_mov_i64(tmp, off, ctx);
++		emit(A64_LDR64(tmp, prg, tmp), ctx);
++		emit(A64_ADD_I(1, tmp, tmp, sizeof(u32) * PROLOGUE_OFFSET), ctx);
++		emit(A64_BR(tmp), ctx);
++	} else {
++		/* goto *tgt; */
++		emit(A64_BR(prg), ctx);
++	}
+ 
+ 	if (ctx->image) {
+ 		off = &ctx->image[ctx->idx] - branch1;
+@@ -701,6 +723,12 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
+ 	return 0;
  }
  
 +int bpf_arch_tail_call_prologue_offset(void)
 +{
-+	return X86_TAIL_CALL_OFFSET;
++	/* offset is in instructions, convert to bytes */
++	return PROLOGUE_OFFSET * 4;
 +}
 +
- bool bpf_jit_supports_arena(void)
+ static int emit_atomic_ld_st(const struct bpf_insn *insn, struct jit_ctx *ctx)
  {
- 	return true;
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 3d44c5d06623..ab9c84e76a62 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -22602,6 +22602,18 @@ static int add_hidden_subprog(struct bpf_verifier_env *env, struct bpf_insn *pat
- 	return 0;
- }
- 
-+static int tail_call_find_map_index(struct bpf_verifier_env *env, struct bpf_map *map)
-+{
-+	int i;
+ 	const s32 imm = insn->imm;
+@@ -1617,7 +1645,10 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
+ 	}
+ 	/* tail call */
+ 	case BPF_JMP | BPF_TAIL_CALL:
+-		if (emit_bpf_tail_call(ctx))
++		bool dynamic_array = (insn->imm >> 8) & 0xFF;
++		u32 map_index = insn->imm & 0xFF;
 +
-+	for (i = 0; i < env->used_map_cnt; i++) {
-+		if (env->used_maps[i] == map)
-+			return i;
-+	}
-+
-+	return -ENOENT;
-+}
-+
- /* Do various post-verification rewrites in a single program pass.
-  * These rewrites simplify JIT and interpreter implementations.
-  */
-@@ -22993,10 +23005,24 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
- 			 * call and to prevent accidental JITing by JIT compiler
- 			 * that doesn't support bpf_tail_call yet
- 			 */
--			insn->imm = 0;
- 			insn->code = BPF_JMP | BPF_TAIL_CALL;
- 
-+			/*
-+			 * insn->imm contains 3 fields:
-+			 *   map index(8 bits):   6 bits are enough, 63 max
-+			 *   poisoned(8 bits):    1 bit is enough
-+			 *   poke index(16 bits): 1023 max
-+			 */
-+
- 			aux = &env->insn_aux_data[i + delta];
-+			insn->imm = tail_call_find_map_index(env, aux->map_ptr_state.map_ptr);
-+			if (insn->imm < 0) {
-+				verifier_bug(env, "index not found for prog array map\n");
-+				return -EINVAL;
-+			}
-+
-+			insn->imm |= bpf_map_ptr_poisoned(aux) << 8;
-+
- 			if (env->bpf_capable && !prog->blinding_requested &&
- 			    prog->jit_requested &&
- 			    !bpf_map_key_poisoned(aux) &&
-@@ -23015,7 +23041,7 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
- 					return ret;
- 				}
- 
--				insn->imm = ret + 1;
-+				insn->imm |= (ret + 1) << 16;
- 				goto next_insn;
- 			}
- 
++		if (emit_bpf_tail_call(ctx, map_index, dynamic_array))
+ 			return -EFAULT;
+ 		break;
+ 	/* function return */
 -- 
 2.52.0
 
