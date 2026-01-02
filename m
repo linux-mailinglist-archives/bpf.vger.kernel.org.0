@@ -1,134 +1,261 @@
-Return-Path: <bpf+bounces-77717-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77718-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id AECDACEF563
-	for <lists+bpf@lfdr.de>; Fri, 02 Jan 2026 22:05:51 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 547FACEF5C7
+	for <lists+bpf@lfdr.de>; Fri, 02 Jan 2026 22:41:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 669E1300F89E
-	for <lists+bpf@lfdr.de>; Fri,  2 Jan 2026 21:05:49 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8DAE63018D75
+	for <lists+bpf@lfdr.de>; Fri,  2 Jan 2026 21:41:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54C362D543E;
-	Fri,  2 Jan 2026 21:05:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB7DD2DA75F;
+	Fri,  2 Jan 2026 21:41:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bx0wTSk0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cnu5Lmsi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CC172BD00C
-	for <bpf@vger.kernel.org>; Fri,  2 Jan 2026 21:05:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EB2B261B98;
+	Fri,  2 Jan 2026 21:41:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767387946; cv=none; b=Q8IfY8o/M80XJqqYgbaV9ehKd7LhAVLbq8kR9Wvj/gXtn46bK+ilp8Wlgyy+TIpfNmiigAOAALL/cZsk+i2Kf8gj+Av1+RrCev8x8yCYzdrQBR8H33ax44UFOeRIeo6pDSwjA3k8r+Iz/E6/dne2sQa9WicDN/wBHr6EMEeLS7A=
+	t=1767390079; cv=none; b=nvJLeY58vLyWX2bDviU7kzC0twXXrtDYb9b24d5WZn4i0CqDGhP/ENC901OpkP9tgd0E8CE2kuZVzW+rFzhyKohbTSoK5d35Qbc5Fo5pXCB4yj+0jP1r1wKOTm1+MFJAEv6nrrA1Pbs5kKVgN+V3aFFX1pwJRenfUu+RxBD5EC4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767387946; c=relaxed/simple;
-	bh=oMenj1WIvFBc1efBVB/EAT+xoBQNl/GMa+8LWlC1ssg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cmGW+ilp/XYqcholGWbPHX0iYafhZizCENnohKjI1qGAtI3yW2RVKTabDBwd/AB4VlqHxbjP1S6vIpC1yTwvc1/tehUakZwQtSSVXgcQi3HQ9fUl110hxLT8vFy8dMYNiDwwzznVlnpXzLrvW3aGokm9g1Sf8IRFC2s17zTPiXY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bx0wTSk0; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-64b7a38f07eso16831755a12.0
-        for <bpf@vger.kernel.org>; Fri, 02 Jan 2026 13:05:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767387943; x=1767992743; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wvccmHN4uzQkztmQSnp++LZAR1yqTbRK/DgNSm5aFQU=;
-        b=bx0wTSk0DzVEfTVOUy3YeCD3k1cyAlNi3GBVsowurr1I4cHqlTVMlKW/i66s2vZqZi
-         Fit/niTLHL5sfooXCpNZTGYaNwoCWAbANpJXYFzwGWLZ0GFgRtoh5F6CL77b+AF8kE4+
-         wIDsmRkfz2eI2IB0RlEBQ1eoRazB/9Vo0VFkRNl4kNa/967T1Hud2TflEH2nUOfZXaZn
-         LZCJv73kxJ4BXhW8vSak/I3HgND2liwOQkP4bf/vdLfnpvcLN7KVbn/iz+SVZHPg9ecZ
-         jJDSGfUGstCP2MQzawPVZo71+EZmsbOaB0I1AireyYnvlZ6Md4IjAY5VPZ5/CCfLb4Ak
-         80hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767387943; x=1767992743;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=wvccmHN4uzQkztmQSnp++LZAR1yqTbRK/DgNSm5aFQU=;
-        b=wt0SDmfUPs2xfCwoMvAkZPpSQhfY2W2x/iNwHpjO4nPdShoyfw/3DEhbdnNgAMas20
-         YNtq5323lvRjP1Z967Wzb7rPduFSSBOvFVJXdHRJ5WH8fA7jUFeqqJxrkkmLwyPftNCr
-         x7cJ00LNV+SYAlrLNfop4j8uLJKXDcDHK8XNiWHL4ESqoiKOj+4EcQ6yLqLOt523KU1s
-         th0jQVY7rkAaVvSDno2zTkNtt/spwYOSGF3ZgutcI/DV5Uig4mEfndbX9m19bljlnUEH
-         VKPKFShDnyyn0OPmxqQh7dxiudAE43gnbKpZ3Z6nqVmODCMbmdNiw1L7rr/5jgKfowHz
-         yaEg==
-X-Gm-Message-State: AOJu0Yy2ctCfQClJYBqEU1bY90RFx7dyGQYPOvCk4gS3n6wFwoy3253u
-	pcPwNras3pHSxlI0SY+km9z2pyvsh/MplG9xzxQUNi6bzXdeh1T24lcmumHgaEnvenuNLk1Io38
-	460PVsWrDmMolh+tdsWEGhiJUc2gFLj4=
-X-Gm-Gg: AY/fxX4TugEDotQR9X4r1E+rp1GXqzU7u3T9kGCBiwy21a5OMZ7H9dDp3DtmhZ8ml3w
-	aU0eNn1MXjPyvwpGf+DJPjOLZrTzKURmjPfwp/ZDmCrgHE7d5QSCogAey3nK8LRgbdHG4/ikyUi
-	ZimBydT/5Lu+eAm7EU4f0kboEu243H0ZGRldISyUJcgkpnpv6Z98sLoVEDnM+hGstbSCArVGFhT
-	U13ec/1Y2sSgrXPUppCsoSDtdX33bGJHngAL/5aMg1G/84IYbm6ilVjyzSlAr91a3v8G3VKah5R
-	8/EmS6/5ew==
-X-Google-Smtp-Source: AGHT+IGo1MNJVJbDWKNFkrqucpo35WqQZq13v1EevJyFjol3M3+xzEX2c1BP6LLDZeCMKpRwvkqFCmP2qBtOJxj6NzE=
-X-Received: by 2002:a05:6402:268a:b0:649:d81b:7b7e with SMTP id
- 4fb4d7f45d1cf-64b8eb5fbc9mr38755118a12.8.1767387943368; Fri, 02 Jan 2026
- 13:05:43 -0800 (PST)
+	s=arc-20240116; t=1767390079; c=relaxed/simple;
+	bh=N+Nb2pbYLszKBsbqkcwsIDZ5YcU1WJHbBa4t7TXVrQs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=emSfwtj4UJEmPyPVd9Bi/CNezpolJ+7pP2DnK7uKkko8u86VGhx0BcMB3NfiXKNhNuPP19lyAaLqKGt+19u798MgEgyZ7p49DAmHdSV/hPuVtsB5B1HDEwu5d+JATkGN5T+dxvBkSRMIkPBhzCOu0G3l9On/jWQmkehBcflUkQg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cnu5Lmsi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA7BFC116B1;
+	Fri,  2 Jan 2026 21:41:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1767390079;
+	bh=N+Nb2pbYLszKBsbqkcwsIDZ5YcU1WJHbBa4t7TXVrQs=;
+	h=From:To:Cc:Subject:Date:From;
+	b=cnu5LmsiH9QN3/hByz2rEsks7PjlCsg7eBvtJIob9/hdsG2+TWUCJZnd5/7bBdRVC
+	 FgN+W3BB5AnHG9kDCCWm3C1FDl98wdoqZ+FurwAYVGzaQ86/XtfLrK6SdBMu03BJEx
+	 1Zj0R6oADHYisKxKBnWjms+kUKHPsHC5BnH57/apswo/t1lIB3zRIQOfO0xidiHifu
+	 /w8zNtpYcJpBjwKFy0N3aVURbK6/UOKqJUk40w2zkw568WjtryRpxAfktg6i+gs/UR
+	 f9V8rYVj1gqQgUPryC85dYjpEXmhh5PI7c/A0qy19B3lNunixfgx+BNA7K+jsDK7ou
+	 yD7eIIbiAGMRw==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: bpf@vger.kernel.org
+Cc: Puranjay Mohan <puranjay@kernel.org>,
+	Puranjay Mohan <puranjay12@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	Will Deacon <will@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Rob Herring <robh@kernel.org>,
+	Breno Leitao <leitao@debian.org>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-perf-users@vger.kernel.org,
+	kernel-team@meta.com
+Subject: [RFC PATCH] perf/arm64: Add BRBE support for bpf_get_branch_snapshot()
+Date: Fri,  2 Jan 2026 13:40:41 -0800
+Message-ID: <20260102214043.1410242-1-puranjay@kernel.org>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251231232623.2713255-1-puranjay@kernel.org> <ec04d110c596af4020d831d3c602371ecf4f3cac.camel@gmail.com>
-In-Reply-To: <ec04d110c596af4020d831d3c602371ecf4f3cac.camel@gmail.com>
-From: Puranjay Mohan <puranjay12@gmail.com>
-Date: Fri, 2 Jan 2026 21:05:29 +0000
-X-Gm-Features: AQt7F2r5OSGid_WUMyMgEVgo10_huAFKl5RsdBlSUiqquoCXGuGAialNmayVNPg
-Message-ID: <CANk7y0jxSViSdo0abrKxGssf3UOJxUrs3s+FdJ8exhXEE-hV0w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Replace __opt annotation with __nullable
- for kfuncs
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
-	Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Jan 2, 2026 at 9:03=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com>=
- wrote:
->
-> On Wed, 2025-12-31 at 15:26 -0800, Puranjay Mohan wrote:
-> > The __opt annotation was originally introduced specifically for
-> > buffer/size argument pairs in bpf_dynptr_slice() and
-> > bpf_dynptr_slice_rdwr(), allowing the buffer pointer to be NULL while
-> > still validating the size as a constant.  The __nullable annotation
-> > serves the same purpose but is more general and is already used
-> > throughout the BPF subsystem for raw tracepoints, struct_ops, and other
-> > kfuncs.
-> >
-> > This patch unifies the two annotations by replacing __opt with
-> > __nullable.  The key change is in the verifier's
-> > get_kfunc_ptr_arg_type() function, where mem/size pair detection is now
-> > performed before the nullable check.  This ensures that buffer/size
-> > pairs are correctly classified as KF_ARG_PTR_TO_MEM_SIZE even when the
-> > buffer is nullable, while adding an !arg_mem_size condition to the
-> > nullable check prevents interference with mem/size pair handling.
-> >
-> > When processing KF_ARG_PTR_TO_MEM_SIZE arguments, the verifier now uses
-> > is_kfunc_arg_nullable() instead of the removed is_kfunc_arg_optional()
-> > to determine whether to skip size validation for NULL buffers.
-> >
-> > This is the first documentation added for the __nullable annotation,
-> > which has been in use since it was introduced but was previously
-> > undocumented.
-> >
-> > No functional changes to verifier behavior - nullable buffer/size pairs
-> > continue to work exactly as before.
-> >
-> > Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-> > ---
->
-> Lgtm, thank you for the quick turnaround.
->
-> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
->
-> [...]
+Enable the bpf_get_branch_snapshot() BPF helper on ARM64 by implementing
+the perf_snapshot_branch_stack static call for ARM's Branch Record
+Buffer Extension (BRBE).
 
-Thanks for the review, I will rebase and send again as the trusted
-args series got merged and this needs to be fixed.
+The BPF helper bpf_get_branch_snapshot() allows BPF programs to capture
+hardware branch records on-demand. This was previously only available on
+x86 (Intel LBR, AMD BRS) but not on ARM64 despite BRBE being available
+since ARMv9.
+
+This implementation:
+
+- Follows the x86 snapshot pattern (intel_pmu_snapshot_branch_stack)
+- Performs atomic snapshot by pausing BRBE, reading records, and
+  restoring previous state without disrupting ongoing perf events
+- Reads branch records directly from BRBE registers without
+  event-specific filtering to minimize branch pollution
+- Handles all BRBE record types (complete, source-only, target-only)
+- Complies with ARM ARM synchronization requirements (ISB barriers per
+  rule PPBZP)
+- Reuses existing BRBE infrastructure (select_brbe_bank,
+  __read_brbe_regset, brbe_set_perf_entry_type, etc.)
+
+Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+---
+
+This patch is only compile tested as I don't have access to hardware with BRBE.
+
+---
+ drivers/perf/arm_brbe.c  | 95 ++++++++++++++++++++++++++++++++++++++++
+ drivers/perf/arm_brbe.h  |  9 ++++
+ drivers/perf/arm_pmuv3.c |  5 ++-
+ 3 files changed, 108 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/perf/arm_brbe.c b/drivers/perf/arm_brbe.c
+index ba554e0c846c..cda7bf522c06 100644
+--- a/drivers/perf/arm_brbe.c
++++ b/drivers/perf/arm_brbe.c
+@@ -803,3 +803,98 @@ void brbe_read_filtered_entries(struct perf_branch_stack *branch_stack,
+ done:
+ 	branch_stack->nr = nr_filtered;
+ }
++
++/*
++ * ARM-specific callback invoked through perf_snapshot_branch_stack static
++ * call, defined in include/linux/perf_event.h. See its definition for API
++ * details. It's up to caller to provide enough space in *entries* to fit all
++ * branch records, otherwise returned result will be truncated to *cnt* entries.
++ *
++ * This is similar to brbe_read_filtered_entries but optimized for snapshot mode:
++ * - No filtering based on event attributes (captures everything)
++ * - Minimal branches to avoid polluting the branch buffer
++ * - Direct register reads without event-specific processing
++ */
++int arm_brbe_snapshot_branch_stack(struct perf_branch_entry *entries, unsigned int cnt)
++{
++	unsigned long flags;
++	int nr_hw, nr_banks, nr_copied = 0;
++	u64 brbidr, brbfcr, brbcr;
++
++	/*
++	 * The sequence of steps to freeze BRBE should be completely inlined
++	 * and contain no branches to minimize contamination of branch snapshot.
++	 */
++	local_irq_save(flags);
++
++	/* Save current BRBE configuration */
++	brbfcr = read_sysreg_s(SYS_BRBFCR_EL1);
++	brbcr = read_sysreg_s(SYS_BRBCR_EL1);
++
++	/* Pause BRBE to freeze the buffer */
++	write_sysreg_s(brbfcr | BRBFCR_EL1_PAUSED, SYS_BRBFCR_EL1);
++	isb();
++
++	/* Read BRBIDR to determine number of records */
++	brbidr = read_sysreg_s(SYS_BRBIDR0_EL1);
++	if (!valid_brbidr(brbidr))
++		goto out_restore;
++
++	nr_hw = FIELD_GET(BRBIDR0_EL1_NUMREC_MASK, brbidr);
++	nr_banks = DIV_ROUND_UP(nr_hw, BRBE_BANK_MAX_ENTRIES);
++
++	/* Read branch records from BRBE banks */
++	for (int bank = 0; bank < nr_banks; bank++) {
++		int nr_remaining = nr_hw - (bank * BRBE_BANK_MAX_ENTRIES);
++		int nr_this_bank = min(nr_remaining, BRBE_BANK_MAX_ENTRIES);
++
++		select_brbe_bank(bank);
++
++		for (int i = 0; i < nr_this_bank; i++) {
++			struct brbe_regset bregs;
++			struct perf_branch_entry *entry;
++
++			if (nr_copied >= cnt)
++				goto out_restore;
++
++			if (!__read_brbe_regset(&bregs, i))
++				goto out_restore;
++
++			entry = &entries[nr_copied];
++			perf_clear_branch_entry_bitfields(entry);
++
++			/* Simple conversion without filtering */
++			if (brbe_record_is_complete(bregs.brbinf)) {
++				entry->from = bregs.brbsrc;
++				entry->to = bregs.brbtgt;
++			} else if (brbe_record_is_source_only(bregs.brbinf)) {
++				entry->from = bregs.brbsrc;
++				entry->to = 0;
++			} else if (brbe_record_is_target_only(bregs.brbinf)) {
++				entry->from = 0;
++				entry->to = bregs.brbtgt;
++			}
++
++			brbe_set_perf_entry_type(entry, bregs.brbinf);
++			entry->cycles = brbinf_get_cycles(bregs.brbinf);
++
++			if (!brbe_record_is_target_only(bregs.brbinf)) {
++				entry->mispred = brbinf_get_mispredict(bregs.brbinf);
++				entry->predicted = !entry->mispred;
++			}
++
++			if (!brbe_record_is_source_only(bregs.brbinf))
++				entry->priv = brbinf_get_perf_priv(bregs.brbinf);
++
++			nr_copied++;
++		}
++	}
++
++out_restore:
++	/* Restore BRBE to its previous state */
++	write_sysreg_s(brbcr, SYS_BRBCR_EL1);
++	isb();
++	write_sysreg_s(brbfcr, SYS_BRBFCR_EL1);
++	local_irq_restore(flags);
++	return nr_copied;
++}
+diff --git a/drivers/perf/arm_brbe.h b/drivers/perf/arm_brbe.h
+index b7c7d8796c86..c2a1824437fb 100644
+--- a/drivers/perf/arm_brbe.h
++++ b/drivers/perf/arm_brbe.h
+@@ -10,6 +10,7 @@
+ struct arm_pmu;
+ struct perf_branch_stack;
+ struct perf_event;
++struct perf_branch_entry;
+ 
+ #ifdef CONFIG_ARM64_BRBE
+ void brbe_probe(struct arm_pmu *arm_pmu);
+@@ -22,6 +23,8 @@ void brbe_disable(void);
+ bool brbe_branch_attr_valid(struct perf_event *event);
+ void brbe_read_filtered_entries(struct perf_branch_stack *branch_stack,
+ 				const struct perf_event *event);
++int arm_brbe_snapshot_branch_stack(struct perf_branch_entry *entries,
++				   unsigned int cnt);
+ #else
+ static inline void brbe_probe(struct arm_pmu *arm_pmu) { }
+ static inline unsigned int brbe_num_branch_records(const struct arm_pmu *armpmu)
+@@ -44,4 +47,10 @@ static void brbe_read_filtered_entries(struct perf_branch_stack *branch_stack,
+ 				       const struct perf_event *event)
+ {
+ }
++
++static inline int arm_brbe_snapshot_branch_stack(struct perf_branch_entry *entries,
++						 unsigned int cnt)
++{
++	return 0;
++}
+ #endif
+diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
+index 8014ff766cff..1a9f129a0f94 100644
+--- a/drivers/perf/arm_pmuv3.c
++++ b/drivers/perf/arm_pmuv3.c
+@@ -1449,8 +1449,11 @@ static int armv8_pmu_init(struct arm_pmu *cpu_pmu, char *name,
+ 	cpu_pmu->set_event_filter	= armv8pmu_set_event_filter;
+ 
+ 	cpu_pmu->pmu.event_idx		= armv8pmu_user_event_idx;
+-	if (brbe_num_branch_records(cpu_pmu))
++	if (brbe_num_branch_records(cpu_pmu)) {
+ 		cpu_pmu->pmu.sched_task		= armv8pmu_sched_task;
++		static_call_update(perf_snapshot_branch_stack,
++				   arm_brbe_snapshot_branch_stack);
++	}
+ 
+ 	cpu_pmu->name			= name;
+ 	cpu_pmu->map_event		= map_event;
+
+base-commit: c286e7e9d1f1f3d90ad11c37e896f582b02d19c4
+-- 
+2.47.3
+
 
