@@ -1,44 +1,44 @@
-Return-Path: <bpf+bounces-77694-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77695-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 331E1CEF1F9
-	for <lists+bpf@lfdr.de>; Fri, 02 Jan 2026 19:02:22 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E4D3CEF1E4
+	for <lists+bpf@lfdr.de>; Fri, 02 Jan 2026 19:01:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id F1059301EF86
-	for <lists+bpf@lfdr.de>; Fri,  2 Jan 2026 18:00:55 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 78FBE300F18B
+	for <lists+bpf@lfdr.de>; Fri,  2 Jan 2026 18:01:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AE7F2FE056;
-	Fri,  2 Jan 2026 18:00:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B9412FF169;
+	Fri,  2 Jan 2026 18:01:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KJ+2dnUE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W8BbgBjT"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5B5324501B
-	for <bpf@vger.kernel.org>; Fri,  2 Jan 2026 18:00:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E9DC2C032E
+	for <bpf@vger.kernel.org>; Fri,  2 Jan 2026 18:01:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767376854; cv=none; b=asQCW6osgsamIG2cvf1a3w1rYghZIxJaH4dun0QoVUGu0EwY4cFmpEZTR4t3NQaPamhSZXLbtChW1aB6JKz6Z1rnegR7QBUhwcoAp+lZkED4l6ELEs35EH7CIdecWbkqLEHBaZxYCNaPSQwXYB0HykLF+MQYmsPhI4RPirs3HY0=
+	t=1767376862; cv=none; b=WiHeECKkt+rqW8ctvflD17hqDT0AmXkwlrI7+PYTF//LQuXQKZayBzL2SyC9HleouWunA9hXG8NALp+bvEILpf+qklK+7EFPpWuZesXTfVUkF5UEhCQhvGLcBf1F+Cof8UTXQnWqGPPtP6yCEyswgTxkMbnCBigmhwuSP79HNow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767376854; c=relaxed/simple;
-	bh=3kqbf90NWrusK6a85JclmPAUXiiWKUPYsLUGHjoIvKg=;
+	s=arc-20240116; t=1767376862; c=relaxed/simple;
+	bh=MqAoQhUvf5ugRSk9tESVs//v1quaurPX1QBpdJ0OUWk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YW8o5HbXA/AUeJsCHt2WL3RRetm8+IWe3J4OP/+jhnc1V5LKrO76no2p7T28aWAtkMadwb/DFoCZDrEW5+lhA0N7U7mT6bdOhzhKcaBcvSuCErriQfXGKfoGE+TQJAlj0Nbn9Ez6OQwZNmFvVEvcEnb41Ihe0Hrhvi9Mz5oyD2I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KJ+2dnUE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 031FAC116B1;
-	Fri,  2 Jan 2026 18:00:53 +0000 (UTC)
+	 MIME-Version; b=EH43Gg8j8fsgbGXjb8ikJkDWsFN0y3frEWe5f6x17IOQSNbEVimfa3zk5n5mElNCYfmtvPx8g9SkKWBNPaGProGxKfoT0sCeIoOIEQvYU8+NKPwWhKn6AstV17+1o6d5Ry2V7cwzo0fY9PBNsZ0ckfA/WIZchKSCrC8BEsFm5rc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W8BbgBjT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CED6C116D0;
+	Fri,  2 Jan 2026 18:01:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767376853;
-	bh=3kqbf90NWrusK6a85JclmPAUXiiWKUPYsLUGHjoIvKg=;
+	s=k20201202; t=1767376861;
+	bh=MqAoQhUvf5ugRSk9tESVs//v1quaurPX1QBpdJ0OUWk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=KJ+2dnUEuLcED8zGolEgkssEz50PA/w/8phO469x6xbkOCL3Zzyryt4JKqS3nqTct
-	 xxti9g3xnY42uAOEcu6RhgYEBn72h95G13sS/LEHl8u+km/in6ZdJoL5cz3GnHlNco
-	 Cvg5Cwe9JV1ckOYPpA67P/7Dcanl9lqim3aXDFpulFPyU1CYYAbj++osVr7/x2M/ao
-	 7Vxu4u38gHYrqqFIiqyHAW2zyRR2GmiI+jKS1sp2CwdLPSQwqq7Ewr5kzVF/U6krbE
-	 s+l5bhKpvCaeE8PfsJRl5opOvYzxWzfNXgvEJNo34r6Jec6nh+I3UnNGQaTF0Ruli/
-	 FfdHCpjs0Mj5g==
+	b=W8BbgBjTgOaD6j9UgM2Z3RjH1sQCcEqr6plVmuVCQh93VF55uSrpZJjDUTQELzuTv
+	 zbliuQ7dXM2aGFLyLMEnqRiCmzdOTlFMurfvyL3d501wgesKi807sSIk6MZFMKwg55
+	 bFiB+q9f1mrprZ1eQtzxYFj+r+dwScgjNZsNE+lu5bD0wb1/PcCB4pmqJpJcG70/cM
+	 cOsBTnQEijNbKWnA5lT4CJHUvs9HMr8JpWtbH4lZOB8m4MaV0QyP/n1Nc1Z+WRv9yX
+	 mbevUnKVfdafB1IG7o5wGSXmVnT8D+oFamY41/L7UIddQ279TI54v/olZY7OU0oNjC
+	 u7U0Er3EFPrhA==
 From: Puranjay Mohan <puranjay@kernel.org>
 To: bpf@vger.kernel.org
 Cc: Puranjay Mohan <puranjay@kernel.org>,
@@ -51,9 +51,9 @@ Cc: Puranjay Mohan <puranjay@kernel.org>,
 	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
 	"Emil Tsalapatis" <emil@etsalapatis.com>,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next v3 01/10] bpf: Make KF_TRUSTED_ARGS the default for all kfuncs
-Date: Fri,  2 Jan 2026 10:00:27 -0800
-Message-ID: <20260102180038.2708325-2-puranjay@kernel.org>
+Subject: [PATCH bpf-next v3 02/10] bpf: Remove redundant KF_TRUSTED_ARGS flag from all kfuncs
+Date: Fri,  2 Jan 2026 10:00:28 -0800
+Message-ID: <20260102180038.2708325-3-puranjay@kernel.org>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260102180038.2708325-1-puranjay@kernel.org>
 References: <20260102180038.2708325-1-puranjay@kernel.org>
@@ -65,422 +65,449 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Change the verifier to make trusted args the default requirement for
-all kfuncs by removing is_kfunc_trusted_args() assuming it be to always
-return true.
-
-This works because:
-1. Context pointers (xdp_md, __sk_buff, etc.) are handled through their
-   own KF_ARG_PTR_TO_CTX case label and bypass the trusted check
-2. Struct_ops callback arguments are already marked as PTR_TRUSTED during
-   initialization and pass is_trusted_reg()
-3. KF_RCU kfuncs are handled separately via is_kfunc_rcu() checks at
-   call sites (always checked with || alongside is_kfunc_trusted_args)
-
-This simple change makes all kfuncs require trusted args by default
-while maintaining correct behavior for all existing special cases.
-
-Note: This change means kfuncs that previously accepted NULL pointers
-without KF_TRUSTED_ARGS will now reject NULL at verification time.
-Several netfilter kfuncs are affected: bpf_xdp_ct_lookup(),
-bpf_skb_ct_lookup(), bpf_xdp_ct_alloc(), and bpf_skb_ct_alloc() all
-accept NULL for their bpf_tuple and opts parameters internally (checked
-in __bpf_nf_ct_lookup), but after this change the verifier rejects NULL
-before the kfunc is even called. This is acceptable because these kfuncs
-don't work with NULL parameters in their proper usage. Now they will be
-rejected rather than returning an error, which shouldn't make a
-difference to BPF programs that were using these kfuncs properly.
+Now that KF_TRUSTED_ARGS is the default for all kfuncs, remove the
+explicit KF_TRUSTED_ARGS flag from all kfunc definitions and remove the
+flag itself.
 
 Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 Reviewed-by: Emil Tsalapatis <emil@etsalapatis.com>
 Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 ---
- Documentation/bpf/kfuncs.rst | 184 +++++++++++++++++------------------
- fs/bpf_fs_kfuncs.c           |  10 +-
- kernel/bpf/verifier.c        |  14 +--
- 3 files changed, 97 insertions(+), 111 deletions(-)
+ fs/bpf_fs_kfuncs.c                            | 13 ++++++------
+ fs/verity/measure.c                           |  2 +-
+ include/linux/bpf.h                           |  2 +-
+ include/linux/btf.h                           |  3 +--
+ kernel/bpf/arena.c                            |  6 +++---
+ kernel/bpf/cpumask.c                          |  2 +-
+ kernel/bpf/helpers.c                          | 20 +++++++++----------
+ kernel/bpf/map_iter.c                         |  2 +-
+ kernel/bpf/verifier.c                         |  2 +-
+ kernel/sched/ext.c                            |  8 ++++----
+ mm/bpf_memcontrol.c                           | 10 +++++-----
+ net/core/filter.c                             | 10 +++++-----
+ net/core/xdp.c                                |  2 +-
+ net/netfilter/nf_conntrack_bpf.c              |  8 ++++----
+ net/netfilter/nf_flow_table_bpf.c             |  2 +-
+ net/netfilter/nf_nat_bpf.c                    |  2 +-
+ net/sched/bpf_qdisc.c                         | 12 +++++------
+ .../selftests/bpf/progs/cpumask_failure.c     |  2 +-
+ .../selftests/bpf/test_kmods/bpf_testmod.c    | 20 +++++++++----------
+ 19 files changed, 63 insertions(+), 65 deletions(-)
 
-diff --git a/Documentation/bpf/kfuncs.rst b/Documentation/bpf/kfuncs.rst
-index e38941370b90..6cb6857bfa6f 100644
---- a/Documentation/bpf/kfuncs.rst
-+++ b/Documentation/bpf/kfuncs.rst
-@@ -50,7 +50,70 @@ A wrapper kfunc is often needed when we need to annotate parameters of the
- kfunc. Otherwise one may directly make the kfunc visible to the BPF program by
- registering it with the BPF subsystem. See :ref:`BPF_kfunc_nodef`.
- 
--2.2 Annotating kfunc parameters
-+2.2 kfunc Parameters
-+--------------------
-+
-+All kfuncs now require trusted arguments by default. This means that all
-+pointer arguments must be valid, and all pointers to BTF objects must be
-+passed in their unmodified form (at a zero offset, and without having been
-+obtained from walking another pointer, with exceptions described below).
-+
-+There are two types of pointers to kernel objects which are considered "trusted":
-+
-+1. Pointers which are passed as tracepoint or struct_ops callback arguments.
-+2. Pointers which were returned from a KF_ACQUIRE kfunc.
-+
-+Pointers to non-BTF objects (e.g. scalar pointers) may also be passed to
-+kfuncs, and may have a non-zero offset.
-+
-+The definition of "valid" pointers is subject to change at any time, and has
-+absolutely no ABI stability guarantees.
-+
-+As mentioned above, a nested pointer obtained from walking a trusted pointer is
-+no longer trusted, with one exception. If a struct type has a field that is
-+guaranteed to be valid (trusted or rcu, as in KF_RCU description below) as long
-+as its parent pointer is valid, the following macros can be used to express
-+that to the verifier:
-+
-+* ``BTF_TYPE_SAFE_TRUSTED``
-+* ``BTF_TYPE_SAFE_RCU``
-+* ``BTF_TYPE_SAFE_RCU_OR_NULL``
-+
-+For example,
-+
-+.. code-block:: c
-+
-+	BTF_TYPE_SAFE_TRUSTED(struct socket) {
-+		struct sock *sk;
-+	};
-+
-+or
-+
-+.. code-block:: c
-+
-+	BTF_TYPE_SAFE_RCU(struct task_struct) {
-+		const cpumask_t *cpus_ptr;
-+		struct css_set __rcu *cgroups;
-+		struct task_struct __rcu *real_parent;
-+		struct task_struct *group_leader;
-+	};
-+
-+In other words, you must:
-+
-+1. Wrap the valid pointer type in a ``BTF_TYPE_SAFE_*`` macro.
-+
-+2. Specify the type and name of the valid nested field. This field must match
-+   the field in the original type definition exactly.
-+
-+A new type declared by a ``BTF_TYPE_SAFE_*`` macro also needs to be emitted so
-+that it appears in BTF. For example, ``BTF_TYPE_SAFE_TRUSTED(struct socket)``
-+is emitted in the ``type_is_trusted()`` function as follows:
-+
-+.. code-block:: c
-+
-+	BTF_TYPE_EMIT(BTF_TYPE_SAFE_TRUSTED(struct socket));
-+
-+2.3 Annotating kfunc parameters
- -------------------------------
- 
- Similar to BPF helpers, there is sometime need for additional context required
-@@ -58,7 +121,7 @@ by the verifier to make the usage of kernel functions safer and more useful.
- Hence, we can annotate a parameter by suffixing the name of the argument of the
- kfunc with a __tag, where tag may be one of the supported annotations.
- 
--2.2.1 __sz Annotation
-+2.3.1 __sz Annotation
- ---------------------
- 
- This annotation is used to indicate a memory and size pair in the argument list.
-@@ -74,7 +137,7 @@ argument as its size. By default, without __sz annotation, the size of the type
- of the pointer is used. Without __sz annotation, a kfunc cannot accept a void
- pointer.
- 
--2.2.2 __k Annotation
-+2.3.2 __k Annotation
- --------------------
- 
- This annotation is only understood for scalar arguments, where it indicates that
-@@ -98,7 +161,7 @@ Hence, whenever a constant scalar argument is accepted by a kfunc which is not a
- size parameter, and the value of the constant matters for program safety, __k
- suffix should be used.
- 
--2.2.3 __uninit Annotation
-+2.3.3 __uninit Annotation
- -------------------------
- 
- This annotation is used to indicate that the argument will be treated as
-@@ -115,7 +178,7 @@ Here, the dynptr will be treated as an uninitialized dynptr. Without this
- annotation, the verifier will reject the program if the dynptr passed in is
- not initialized.
- 
--2.2.4 __opt Annotation
-+2.3.4 __opt Annotation
- -------------------------
- 
- This annotation is used to indicate that the buffer associated with an __sz or __szk
-@@ -135,7 +198,7 @@ Either way, the returned buffer is either NULL, or of size buffer_szk. Without t
- annotation, the verifier will reject the program if a null pointer is passed in with
- a nonzero size.
- 
--2.2.5 __str Annotation
-+2.3.5 __str Annotation
- ----------------------------
- This annotation is used to indicate that the argument is a constant string.
- 
-@@ -160,7 +223,7 @@ Or::
-                 ...
-         }
- 
--2.2.6 __prog Annotation
-+2.3.6 __prog Annotation
- ---------------------------
- This annotation is used to indicate that the argument needs to be fixed up to
- the bpf_prog_aux of the caller BPF program. Any value passed into this argument
-@@ -179,7 +242,7 @@ An example is given below::
- 
- .. _BPF_kfunc_nodef:
- 
--2.3 Using an existing kernel function
-+2.4 Using an existing kernel function
- -------------------------------------
- 
- When an existing function in the kernel is fit for consumption by BPF programs,
-@@ -187,7 +250,7 @@ it can be directly registered with the BPF subsystem. However, care must still
- be taken to review the context in which it will be invoked by the BPF program
- and whether it is safe to do so.
- 
--2.4 Annotating kfuncs
-+2.5 Annotating kfuncs
- ---------------------
- 
- In addition to kfuncs' arguments, verifier may need more information about the
-@@ -216,7 +279,7 @@ protected. An example is given below::
-         ...
-         }
- 
--2.4.1 KF_ACQUIRE flag
-+2.5.1 KF_ACQUIRE flag
- ---------------------
- 
- The KF_ACQUIRE flag is used to indicate that the kfunc returns a pointer to a
-@@ -226,7 +289,7 @@ referenced kptr (by invoking bpf_kptr_xchg). If not, the verifier fails the
- loading of the BPF program until no lingering references remain in all possible
- explored states of the program.
- 
--2.4.2 KF_RET_NULL flag
-+2.5.2 KF_RET_NULL flag
- ----------------------
- 
- The KF_RET_NULL flag is used to indicate that the pointer returned by the kfunc
-@@ -235,87 +298,21 @@ returned from the kfunc before making use of it (dereferencing or passing to
- another helper). This flag is often used in pairing with KF_ACQUIRE flag, but
- both are orthogonal to each other.
- 
--2.4.3 KF_RELEASE flag
-+2.5.3 KF_RELEASE flag
- ---------------------
- 
- The KF_RELEASE flag is used to indicate that the kfunc releases the pointer
- passed in to it. There can be only one referenced pointer that can be passed
- in. All copies of the pointer being released are invalidated as a result of
--invoking kfunc with this flag. KF_RELEASE kfuncs automatically receive the
--protection afforded by the KF_TRUSTED_ARGS flag described below.
--
--2.4.4 KF_TRUSTED_ARGS flag
----------------------------
--
--The KF_TRUSTED_ARGS flag is used for kfuncs taking pointer arguments. It
--indicates that the all pointer arguments are valid, and that all pointers to
--BTF objects have been passed in their unmodified form (that is, at a zero
--offset, and without having been obtained from walking another pointer, with one
--exception described below).
--
--There are two types of pointers to kernel objects which are considered "valid":
--
--1. Pointers which are passed as tracepoint or struct_ops callback arguments.
--2. Pointers which were returned from a KF_ACQUIRE kfunc.
--
--Pointers to non-BTF objects (e.g. scalar pointers) may also be passed to
--KF_TRUSTED_ARGS kfuncs, and may have a non-zero offset.
--
--The definition of "valid" pointers is subject to change at any time, and has
--absolutely no ABI stability guarantees.
--
--As mentioned above, a nested pointer obtained from walking a trusted pointer is
--no longer trusted, with one exception. If a struct type has a field that is
--guaranteed to be valid (trusted or rcu, as in KF_RCU description below) as long
--as its parent pointer is valid, the following macros can be used to express
--that to the verifier:
--
--* ``BTF_TYPE_SAFE_TRUSTED``
--* ``BTF_TYPE_SAFE_RCU``
--* ``BTF_TYPE_SAFE_RCU_OR_NULL``
--
--For example,
--
--.. code-block:: c
--
--	BTF_TYPE_SAFE_TRUSTED(struct socket) {
--		struct sock *sk;
--	};
--
--or
--
--.. code-block:: c
--
--	BTF_TYPE_SAFE_RCU(struct task_struct) {
--		const cpumask_t *cpus_ptr;
--		struct css_set __rcu *cgroups;
--		struct task_struct __rcu *real_parent;
--		struct task_struct *group_leader;
--	};
--
--In other words, you must:
--
--1. Wrap the valid pointer type in a ``BTF_TYPE_SAFE_*`` macro.
--
--2. Specify the type and name of the valid nested field. This field must match
--   the field in the original type definition exactly.
--
--A new type declared by a ``BTF_TYPE_SAFE_*`` macro also needs to be emitted so
--that it appears in BTF. For example, ``BTF_TYPE_SAFE_TRUSTED(struct socket)``
--is emitted in the ``type_is_trusted()`` function as follows:
--
--.. code-block:: c
--
--	BTF_TYPE_EMIT(BTF_TYPE_SAFE_TRUSTED(struct socket));
--
-+invoking kfunc with this flag.
- 
--2.4.5 KF_SLEEPABLE flag
-+2.5.4 KF_SLEEPABLE flag
- -----------------------
- 
- The KF_SLEEPABLE flag is used for kfuncs that may sleep. Such kfuncs can only
- be called by sleepable BPF programs (BPF_F_SLEEPABLE).
- 
--2.4.6 KF_DESTRUCTIVE flag
-+2.5.5 KF_DESTRUCTIVE flag
- --------------------------
- 
- The KF_DESTRUCTIVE flag is used to indicate functions calling which is
-@@ -324,18 +321,19 @@ rebooting or panicking. Due to this additional restrictions apply to these
- calls. At the moment they only require CAP_SYS_BOOT capability, but more can be
- added later.
- 
--2.4.7 KF_RCU flag
-+2.5.6 KF_RCU flag
- -----------------
- 
--The KF_RCU flag is a weaker version of KF_TRUSTED_ARGS. The kfuncs marked with
--KF_RCU expect either PTR_TRUSTED or MEM_RCU arguments. The verifier guarantees
--that the objects are valid and there is no use-after-free. The pointers are not
--NULL, but the object's refcount could have reached zero. The kfuncs need to
--consider doing refcnt != 0 check, especially when returning a KF_ACQUIRE
--pointer. Note as well that a KF_ACQUIRE kfunc that is KF_RCU should very likely
--also be KF_RET_NULL.
-+The KF_RCU flag allows kfuncs to opt out of the default trusted args
-+requirement and accept RCU pointers with weaker guarantees. The kfuncs marked
-+with KF_RCU expect either PTR_TRUSTED or MEM_RCU arguments. The verifier
-+guarantees that the objects are valid and there is no use-after-free. The
-+pointers are not NULL, but the object's refcount could have reached zero. The
-+kfuncs need to consider doing refcnt != 0 check, especially when returning a
-+KF_ACQUIRE pointer. Note as well that a KF_ACQUIRE kfunc that is KF_RCU should
-+very likely also be KF_RET_NULL.
- 
--2.4.8 KF_RCU_PROTECTED flag
-+2.5.7 KF_RCU_PROTECTED flag
- ---------------------------
- 
- The KF_RCU_PROTECTED flag is used to indicate that the kfunc must be invoked in
-@@ -354,7 +352,7 @@ RCU protection but do not take RCU protected arguments.
- 
- .. _KF_deprecated_flag:
- 
--2.4.9 KF_DEPRECATED flag
-+2.5.8 KF_DEPRECATED flag
- ------------------------
- 
- The KF_DEPRECATED flag is used for kfuncs which are scheduled to be
-@@ -374,7 +372,7 @@ encouraged to make their use-cases known as early as possible, and participate
- in upstream discussions regarding whether to keep, change, deprecate, or remove
- those kfuncs if and when such discussions occur.
- 
--2.5 Registering the kfuncs
-+2.6 Registering the kfuncs
- --------------------------
- 
- Once the kfunc is prepared for use, the final step to making it visible is
-@@ -397,7 +395,7 @@ type. An example is shown below::
-         }
-         late_initcall(init_subsystem);
- 
--2.6  Specifying no-cast aliases with ___init
-+2.7  Specifying no-cast aliases with ___init
- --------------------------------------------
- 
- The verifier will always enforce that the BTF type of a pointer passed to a
 diff --git a/fs/bpf_fs_kfuncs.c b/fs/bpf_fs_kfuncs.c
-index 5ace2511fec5..abd5eaa4892e 100644
+index abd5eaa4892e..e4e51a1d0de2 100644
 --- a/fs/bpf_fs_kfuncs.c
 +++ b/fs/bpf_fs_kfuncs.c
-@@ -68,10 +68,7 @@ __bpf_kfunc void bpf_put_file(struct file *file)
-  *
-  * Resolve the pathname for the supplied *path* and store it in *buf*. This BPF
-  * kfunc is the safer variant of the legacy bpf_d_path() helper and should be
-- * used in place of bpf_d_path() whenever possible. It enforces KF_TRUSTED_ARGS
-- * semantics, meaning that the supplied *path* must itself hold a valid
-- * reference, or else the BPF program will be outright rejected by the BPF
-- * verifier.
-+ * used in place of bpf_d_path() whenever possible.
-  *
-  * This BPF kfunc may only be called from BPF LSM programs.
-  *
-@@ -377,9 +374,8 @@ static int bpf_fs_kfuncs_filter(const struct bpf_prog *prog, u32 kfunc_id)
- 	return -EACCES;
- }
+@@ -356,14 +356,13 @@ __bpf_kfunc int bpf_cgroup_read_xattr(struct cgroup *cgroup, const char *name__s
+ __bpf_kfunc_end_defs();
  
--/* bpf_[set|remove]_dentry_xattr.* hooks have KF_TRUSTED_ARGS and
-- * KF_SLEEPABLE, so they are only available to sleepable hooks with
-- * dentry arguments.
-+/* bpf_[set|remove]_dentry_xattr.* hooks have KF_SLEEPABLE, so they are only
-+ * available to sleepable hooks with dentry arguments.
+ BTF_KFUNCS_START(bpf_fs_kfunc_set_ids)
+-BTF_ID_FLAGS(func, bpf_get_task_exe_file,
+-	     KF_ACQUIRE | KF_TRUSTED_ARGS | KF_RET_NULL)
++BTF_ID_FLAGS(func, bpf_get_task_exe_file, KF_ACQUIRE | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_put_file, KF_RELEASE)
+-BTF_ID_FLAGS(func, bpf_path_d_path, KF_TRUSTED_ARGS)
+-BTF_ID_FLAGS(func, bpf_get_dentry_xattr, KF_SLEEPABLE | KF_TRUSTED_ARGS)
+-BTF_ID_FLAGS(func, bpf_get_file_xattr, KF_SLEEPABLE | KF_TRUSTED_ARGS)
+-BTF_ID_FLAGS(func, bpf_set_dentry_xattr, KF_SLEEPABLE | KF_TRUSTED_ARGS)
+-BTF_ID_FLAGS(func, bpf_remove_dentry_xattr, KF_SLEEPABLE | KF_TRUSTED_ARGS)
++BTF_ID_FLAGS(func, bpf_path_d_path)
++BTF_ID_FLAGS(func, bpf_get_dentry_xattr, KF_SLEEPABLE)
++BTF_ID_FLAGS(func, bpf_get_file_xattr, KF_SLEEPABLE)
++BTF_ID_FLAGS(func, bpf_set_dentry_xattr, KF_SLEEPABLE)
++BTF_ID_FLAGS(func, bpf_remove_dentry_xattr, KF_SLEEPABLE)
+ BTF_KFUNCS_END(bpf_fs_kfunc_set_ids)
+ 
+ static int bpf_fs_kfuncs_filter(const struct bpf_prog *prog, u32 kfunc_id)
+diff --git a/fs/verity/measure.c b/fs/verity/measure.c
+index 388734132f01..6a35623ebdf0 100644
+--- a/fs/verity/measure.c
++++ b/fs/verity/measure.c
+@@ -162,7 +162,7 @@ __bpf_kfunc int bpf_get_fsverity_digest(struct file *file, struct bpf_dynptr *di
+ __bpf_kfunc_end_defs();
+ 
+ BTF_KFUNCS_START(fsverity_set_ids)
+-BTF_ID_FLAGS(func, bpf_get_fsverity_digest, KF_TRUSTED_ARGS)
++BTF_ID_FLAGS(func, bpf_get_fsverity_digest)
+ BTF_KFUNCS_END(fsverity_set_ids)
+ 
+ static int bpf_get_fsverity_digest_filter(const struct bpf_prog *prog, u32 kfunc_id)
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 4e7d72dfbcd4..9efb2ddf331c 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -753,7 +753,7 @@ enum bpf_type_flag {
+ 	MEM_ALLOC		= BIT(11 + BPF_BASE_TYPE_BITS),
+ 
+ 	/* PTR was passed from the kernel in a trusted context, and may be
+-	 * passed to KF_TRUSTED_ARGS kfuncs or BPF helper functions.
++	 * passed to kfuncs or BPF helper functions.
+ 	 * Confusingly, this is _not_ the opposite of PTR_UNTRUSTED above.
+ 	 * PTR_UNTRUSTED refers to a kptr that was read directly from a map
+ 	 * without invoking bpf_kptr_xchg(). What we really need to know is
+diff --git a/include/linux/btf.h b/include/linux/btf.h
+index f06976ffb63f..691f09784933 100644
+--- a/include/linux/btf.h
++++ b/include/linux/btf.h
+@@ -34,7 +34,7 @@
   *
-  * Setting and removing xattr requires exclusive lock on dentry->d_inode.
-  * Some hooks already locked d_inode, while some hooks have not locked
+  * And the following kfunc:
+  *
+- *	BTF_ID_FLAGS(func, bpf_task_acquire, KF_ACQUIRE | KF_TRUSTED_ARGS)
++ *	BTF_ID_FLAGS(func, bpf_task_acquire, KF_ACQUIRE)
+  *
+  * All invocations to the kfunc must pass the unmodified, unwalked task:
+  *
+@@ -66,7 +66,6 @@
+  *	return 0;
+  * }
+  */
+-#define KF_TRUSTED_ARGS (1 << 4) /* kfunc only takes trusted pointer arguments */
+ #define KF_SLEEPABLE    (1 << 5) /* kfunc may sleep */
+ #define KF_DESTRUCTIVE  (1 << 6) /* kfunc performs destructive actions */
+ #define KF_RCU          (1 << 7) /* kfunc takes either rcu or trusted pointer arguments */
+diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
+index 456ac989269d..2274319a95e6 100644
+--- a/kernel/bpf/arena.c
++++ b/kernel/bpf/arena.c
+@@ -890,9 +890,9 @@ __bpf_kfunc int bpf_arena_reserve_pages(void *p__map, void *ptr__ign, u32 page_c
+ __bpf_kfunc_end_defs();
+ 
+ BTF_KFUNCS_START(arena_kfuncs)
+-BTF_ID_FLAGS(func, bpf_arena_alloc_pages, KF_TRUSTED_ARGS | KF_ARENA_RET | KF_ARENA_ARG2)
+-BTF_ID_FLAGS(func, bpf_arena_free_pages, KF_TRUSTED_ARGS | KF_ARENA_ARG2)
+-BTF_ID_FLAGS(func, bpf_arena_reserve_pages, KF_TRUSTED_ARGS | KF_ARENA_ARG2)
++BTF_ID_FLAGS(func, bpf_arena_alloc_pages, KF_ARENA_RET | KF_ARENA_ARG2)
++BTF_ID_FLAGS(func, bpf_arena_free_pages, KF_ARENA_ARG2)
++BTF_ID_FLAGS(func, bpf_arena_reserve_pages, KF_ARENA_ARG2)
+ BTF_KFUNCS_END(arena_kfuncs)
+ 
+ static const struct btf_kfunc_id_set common_kfunc_set = {
+diff --git a/kernel/bpf/cpumask.c b/kernel/bpf/cpumask.c
+index 9876c5fe6c2a..b8c805b4b06a 100644
+--- a/kernel/bpf/cpumask.c
++++ b/kernel/bpf/cpumask.c
+@@ -477,7 +477,7 @@ __bpf_kfunc_end_defs();
+ BTF_KFUNCS_START(cpumask_kfunc_btf_ids)
+ BTF_ID_FLAGS(func, bpf_cpumask_create, KF_ACQUIRE | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_cpumask_release, KF_RELEASE)
+-BTF_ID_FLAGS(func, bpf_cpumask_acquire, KF_ACQUIRE | KF_TRUSTED_ARGS)
++BTF_ID_FLAGS(func, bpf_cpumask_acquire, KF_ACQUIRE)
+ BTF_ID_FLAGS(func, bpf_cpumask_first, KF_RCU)
+ BTF_ID_FLAGS(func, bpf_cpumask_first_zero, KF_RCU)
+ BTF_ID_FLAGS(func, bpf_cpumask_first_and, KF_RCU)
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index db72b96f9c8c..2c15f77c74db 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -4427,7 +4427,7 @@ BTF_ID_FLAGS(func, bpf_task_from_pid, KF_ACQUIRE | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_task_from_vpid, KF_ACQUIRE | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_throw)
+ #ifdef CONFIG_BPF_EVENTS
+-BTF_ID_FLAGS(func, bpf_send_signal_task, KF_TRUSTED_ARGS)
++BTF_ID_FLAGS(func, bpf_send_signal_task)
+ #endif
+ #ifdef CONFIG_KEYS
+ BTF_ID_FLAGS(func, bpf_lookup_user_key, KF_ACQUIRE | KF_RET_NULL | KF_SLEEPABLE)
+@@ -4467,14 +4467,14 @@ BTF_ID_FLAGS(func, bpf_iter_task_vma_new, KF_ITER_NEW | KF_RCU)
+ BTF_ID_FLAGS(func, bpf_iter_task_vma_next, KF_ITER_NEXT | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_iter_task_vma_destroy, KF_ITER_DESTROY)
+ #ifdef CONFIG_CGROUPS
+-BTF_ID_FLAGS(func, bpf_iter_css_task_new, KF_ITER_NEW | KF_TRUSTED_ARGS)
++BTF_ID_FLAGS(func, bpf_iter_css_task_new, KF_ITER_NEW)
+ BTF_ID_FLAGS(func, bpf_iter_css_task_next, KF_ITER_NEXT | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_iter_css_task_destroy, KF_ITER_DESTROY)
+-BTF_ID_FLAGS(func, bpf_iter_css_new, KF_ITER_NEW | KF_TRUSTED_ARGS | KF_RCU_PROTECTED)
++BTF_ID_FLAGS(func, bpf_iter_css_new, KF_ITER_NEW | KF_RCU_PROTECTED)
+ BTF_ID_FLAGS(func, bpf_iter_css_next, KF_ITER_NEXT | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_iter_css_destroy, KF_ITER_DESTROY)
+ #endif
+-BTF_ID_FLAGS(func, bpf_iter_task_new, KF_ITER_NEW | KF_TRUSTED_ARGS | KF_RCU_PROTECTED)
++BTF_ID_FLAGS(func, bpf_iter_task_new, KF_ITER_NEW | KF_RCU_PROTECTED)
+ BTF_ID_FLAGS(func, bpf_iter_task_next, KF_ITER_NEXT | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_iter_task_destroy, KF_ITER_DESTROY)
+ BTF_ID_FLAGS(func, bpf_dynptr_adjust)
+@@ -4510,8 +4510,8 @@ BTF_ID_FLAGS(func, bpf_probe_read_user_str_dynptr)
+ BTF_ID_FLAGS(func, bpf_probe_read_kernel_str_dynptr)
+ BTF_ID_FLAGS(func, bpf_copy_from_user_dynptr, KF_SLEEPABLE)
+ BTF_ID_FLAGS(func, bpf_copy_from_user_str_dynptr, KF_SLEEPABLE)
+-BTF_ID_FLAGS(func, bpf_copy_from_user_task_dynptr, KF_SLEEPABLE | KF_TRUSTED_ARGS)
+-BTF_ID_FLAGS(func, bpf_copy_from_user_task_str_dynptr, KF_SLEEPABLE | KF_TRUSTED_ARGS)
++BTF_ID_FLAGS(func, bpf_copy_from_user_task_dynptr, KF_SLEEPABLE)
++BTF_ID_FLAGS(func, bpf_copy_from_user_task_str_dynptr, KF_SLEEPABLE)
+ #endif
+ #ifdef CONFIG_DMA_SHARED_BUFFER
+ BTF_ID_FLAGS(func, bpf_iter_dmabuf_new, KF_ITER_NEW | KF_SLEEPABLE)
+@@ -4536,10 +4536,10 @@ BTF_ID_FLAGS(func, bpf_strncasestr);
+ #if defined(CONFIG_BPF_LSM) && defined(CONFIG_CGROUPS)
+ BTF_ID_FLAGS(func, bpf_cgroup_read_xattr, KF_RCU)
+ #endif
+-BTF_ID_FLAGS(func, bpf_stream_vprintk_impl, KF_TRUSTED_ARGS)
+-BTF_ID_FLAGS(func, bpf_task_work_schedule_signal_impl, KF_TRUSTED_ARGS)
+-BTF_ID_FLAGS(func, bpf_task_work_schedule_resume_impl, KF_TRUSTED_ARGS)
+-BTF_ID_FLAGS(func, bpf_dynptr_from_file, KF_TRUSTED_ARGS)
++BTF_ID_FLAGS(func, bpf_stream_vprintk_impl)
++BTF_ID_FLAGS(func, bpf_task_work_schedule_signal_impl)
++BTF_ID_FLAGS(func, bpf_task_work_schedule_resume_impl)
++BTF_ID_FLAGS(func, bpf_dynptr_from_file)
+ BTF_ID_FLAGS(func, bpf_dynptr_file_discard)
+ BTF_KFUNCS_END(common_btf_ids)
+ 
+diff --git a/kernel/bpf/map_iter.c b/kernel/bpf/map_iter.c
+index 9575314f40a6..261a03ea73d3 100644
+--- a/kernel/bpf/map_iter.c
++++ b/kernel/bpf/map_iter.c
+@@ -214,7 +214,7 @@ __bpf_kfunc s64 bpf_map_sum_elem_count(const struct bpf_map *map)
+ __bpf_kfunc_end_defs();
+ 
+ BTF_KFUNCS_START(bpf_map_iter_kfunc_ids)
+-BTF_ID_FLAGS(func, bpf_map_sum_elem_count, KF_TRUSTED_ARGS)
++BTF_ID_FLAGS(func, bpf_map_sum_elem_count)
+ BTF_KFUNCS_END(bpf_map_iter_kfunc_ids)
+ 
+ static const struct btf_kfunc_id_set bpf_map_iter_kfunc_set = {
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 3d44c5d06623..359a962d69a1 100644
+index 359a962d69a1..c9da70dd3e72 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -12040,11 +12040,6 @@ static bool is_kfunc_release(struct bpf_kfunc_call_arg_meta *meta)
- 	return meta->kfunc_flags & KF_RELEASE;
+@@ -12619,7 +12619,7 @@ static int process_kf_arg_ptr_to_btf_id(struct bpf_verifier_env *env,
+ 
+ 	/* Enforce strict type matching for calls to kfuncs that are acquiring
+ 	 * or releasing a reference, or are no-cast aliases. We do _not_
+-	 * enforce strict matching for plain KF_TRUSTED_ARGS kfuncs by default,
++	 * enforce strict matching for kfuncs by default,
+ 	 * as we want to enable BPF programs to pass types that are bitwise
+ 	 * equivalent without forcing them to explicitly cast with something
+ 	 * like bpf_cast_to_kern_ctx().
+diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
+index 94164f2dec6d..fd5423428dde 100644
+--- a/kernel/sched/ext.c
++++ b/kernel/sched/ext.c
+@@ -7229,9 +7229,9 @@ BTF_ID_FLAGS(func, scx_bpf_dsq_peek, KF_RCU_PROTECTED | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_iter_scx_dsq_new, KF_ITER_NEW | KF_RCU_PROTECTED)
+ BTF_ID_FLAGS(func, bpf_iter_scx_dsq_next, KF_ITER_NEXT | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_iter_scx_dsq_destroy, KF_ITER_DESTROY)
+-BTF_ID_FLAGS(func, scx_bpf_exit_bstr, KF_TRUSTED_ARGS)
+-BTF_ID_FLAGS(func, scx_bpf_error_bstr, KF_TRUSTED_ARGS)
+-BTF_ID_FLAGS(func, scx_bpf_dump_bstr, KF_TRUSTED_ARGS)
++BTF_ID_FLAGS(func, scx_bpf_exit_bstr)
++BTF_ID_FLAGS(func, scx_bpf_error_bstr)
++BTF_ID_FLAGS(func, scx_bpf_dump_bstr)
+ BTF_ID_FLAGS(func, scx_bpf_reenqueue_local___v2)
+ BTF_ID_FLAGS(func, scx_bpf_cpuperf_cap)
+ BTF_ID_FLAGS(func, scx_bpf_cpuperf_cur)
+@@ -7250,7 +7250,7 @@ BTF_ID_FLAGS(func, scx_bpf_cpu_curr, KF_RET_NULL | KF_RCU_PROTECTED)
+ BTF_ID_FLAGS(func, scx_bpf_task_cgroup, KF_RCU | KF_ACQUIRE)
+ #endif
+ BTF_ID_FLAGS(func, scx_bpf_now)
+-BTF_ID_FLAGS(func, scx_bpf_events, KF_TRUSTED_ARGS)
++BTF_ID_FLAGS(func, scx_bpf_events)
+ BTF_KFUNCS_END(scx_kfunc_ids_any)
+ 
+ static const struct btf_kfunc_id_set scx_kfunc_set_any = {
+diff --git a/mm/bpf_memcontrol.c b/mm/bpf_memcontrol.c
+index e8fa7f5855f9..716df49d7647 100644
+--- a/mm/bpf_memcontrol.c
++++ b/mm/bpf_memcontrol.c
+@@ -166,11 +166,11 @@ BTF_ID_FLAGS(func, bpf_get_root_mem_cgroup, KF_ACQUIRE | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_get_mem_cgroup, KF_ACQUIRE | KF_RET_NULL | KF_RCU)
+ BTF_ID_FLAGS(func, bpf_put_mem_cgroup, KF_RELEASE)
+ 
+-BTF_ID_FLAGS(func, bpf_mem_cgroup_vm_events, KF_TRUSTED_ARGS)
+-BTF_ID_FLAGS(func, bpf_mem_cgroup_memory_events, KF_TRUSTED_ARGS)
+-BTF_ID_FLAGS(func, bpf_mem_cgroup_usage, KF_TRUSTED_ARGS)
+-BTF_ID_FLAGS(func, bpf_mem_cgroup_page_state, KF_TRUSTED_ARGS)
+-BTF_ID_FLAGS(func, bpf_mem_cgroup_flush_stats, KF_TRUSTED_ARGS | KF_SLEEPABLE)
++BTF_ID_FLAGS(func, bpf_mem_cgroup_vm_events)
++BTF_ID_FLAGS(func, bpf_mem_cgroup_memory_events)
++BTF_ID_FLAGS(func, bpf_mem_cgroup_usage)
++BTF_ID_FLAGS(func, bpf_mem_cgroup_page_state)
++BTF_ID_FLAGS(func, bpf_mem_cgroup_flush_stats, KF_SLEEPABLE)
+ 
+ BTF_KFUNCS_END(bpf_memcontrol_kfuncs)
+ 
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 616e0520a0bb..d43df98e1ded 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -12438,11 +12438,11 @@ int bpf_dynptr_from_skb_rdonly(struct __sk_buff *skb, u64 flags,
  }
  
--static bool is_kfunc_trusted_args(struct bpf_kfunc_call_arg_meta *meta)
--{
--	return (meta->kfunc_flags & KF_TRUSTED_ARGS) || is_kfunc_release(meta);
--}
--
- static bool is_kfunc_sleepable(struct bpf_kfunc_call_arg_meta *meta)
- {
- 	return meta->kfunc_flags & KF_SLEEPABLE;
-@@ -13253,9 +13248,9 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
- 			return -EINVAL;
- 		}
+ BTF_KFUNCS_START(bpf_kfunc_check_set_skb)
+-BTF_ID_FLAGS(func, bpf_dynptr_from_skb, KF_TRUSTED_ARGS)
++BTF_ID_FLAGS(func, bpf_dynptr_from_skb)
+ BTF_KFUNCS_END(bpf_kfunc_check_set_skb)
  
--		if ((is_kfunc_trusted_args(meta) || is_kfunc_rcu(meta)) &&
--		    (register_is_null(reg) || type_may_be_null(reg->type)) &&
--			!is_kfunc_arg_nullable(meta->btf, &args[i])) {
-+		if ((register_is_null(reg) || type_may_be_null(reg->type)) &&
-+		    !is_kfunc_arg_nullable(meta->btf, &args[i]) &&
-+		    !is_kfunc_arg_optional(meta->btf, &args[i])) {
- 			verbose(env, "Possibly NULL pointer passed to trusted arg%d\n", i);
- 			return -EACCES;
- 		}
-@@ -13320,9 +13315,6 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
- 			fallthrough;
- 		case KF_ARG_PTR_TO_ALLOC_BTF_ID:
- 		case KF_ARG_PTR_TO_BTF_ID:
--			if (!is_kfunc_trusted_args(meta) && !is_kfunc_rcu(meta))
--				break;
--
- 			if (!is_trusted_reg(reg)) {
- 				if (!is_kfunc_rcu(meta)) {
- 					verbose(env, "R%d must be referenced or trusted\n", regno);
+ BTF_KFUNCS_START(bpf_kfunc_check_set_skb_meta)
+-BTF_ID_FLAGS(func, bpf_dynptr_from_skb_meta, KF_TRUSTED_ARGS)
++BTF_ID_FLAGS(func, bpf_dynptr_from_skb_meta)
+ BTF_KFUNCS_END(bpf_kfunc_check_set_skb_meta)
+ 
+ BTF_KFUNCS_START(bpf_kfunc_check_set_xdp)
+@@ -12455,11 +12455,11 @@ BTF_ID_FLAGS(func, bpf_sock_addr_set_sun_path)
+ BTF_KFUNCS_END(bpf_kfunc_check_set_sock_addr)
+ 
+ BTF_KFUNCS_START(bpf_kfunc_check_set_tcp_reqsk)
+-BTF_ID_FLAGS(func, bpf_sk_assign_tcp_reqsk, KF_TRUSTED_ARGS)
++BTF_ID_FLAGS(func, bpf_sk_assign_tcp_reqsk)
+ BTF_KFUNCS_END(bpf_kfunc_check_set_tcp_reqsk)
+ 
+ BTF_KFUNCS_START(bpf_kfunc_check_set_sock_ops)
+-BTF_ID_FLAGS(func, bpf_sock_ops_enable_tx_tstamp, KF_TRUSTED_ARGS)
++BTF_ID_FLAGS(func, bpf_sock_ops_enable_tx_tstamp)
+ BTF_KFUNCS_END(bpf_kfunc_check_set_sock_ops)
+ 
+ static const struct btf_kfunc_id_set bpf_kfunc_set_skb = {
+@@ -12554,7 +12554,7 @@ __bpf_kfunc int bpf_sock_destroy(struct sock_common *sock)
+ __bpf_kfunc_end_defs();
+ 
+ BTF_KFUNCS_START(bpf_sk_iter_kfunc_ids)
+-BTF_ID_FLAGS(func, bpf_sock_destroy, KF_TRUSTED_ARGS)
++BTF_ID_FLAGS(func, bpf_sock_destroy)
+ BTF_KFUNCS_END(bpf_sk_iter_kfunc_ids)
+ 
+ static int tracing_iter_filter(const struct bpf_prog *prog, u32 kfunc_id)
+diff --git a/net/core/xdp.c b/net/core/xdp.c
+index 9100e160113a..fee6d080ee85 100644
+--- a/net/core/xdp.c
++++ b/net/core/xdp.c
+@@ -964,7 +964,7 @@ __bpf_kfunc int bpf_xdp_metadata_rx_vlan_tag(const struct xdp_md *ctx,
+ __bpf_kfunc_end_defs();
+ 
+ BTF_KFUNCS_START(xdp_metadata_kfunc_ids)
+-#define XDP_METADATA_KFUNC(_, __, name, ___) BTF_ID_FLAGS(func, name, KF_TRUSTED_ARGS)
++#define XDP_METADATA_KFUNC(_, __, name, ___) BTF_ID_FLAGS(func, name)
+ XDP_METADATA_KFUNC_xxx
+ #undef XDP_METADATA_KFUNC
+ BTF_KFUNCS_END(xdp_metadata_kfunc_ids)
+diff --git a/net/netfilter/nf_conntrack_bpf.c b/net/netfilter/nf_conntrack_bpf.c
+index 4a136fc3a9c0..a630139bd0c3 100644
+--- a/net/netfilter/nf_conntrack_bpf.c
++++ b/net/netfilter/nf_conntrack_bpf.c
+@@ -516,10 +516,10 @@ BTF_ID_FLAGS(func, bpf_skb_ct_alloc, KF_ACQUIRE | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_skb_ct_lookup, KF_ACQUIRE | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_ct_insert_entry, KF_ACQUIRE | KF_RET_NULL | KF_RELEASE)
+ BTF_ID_FLAGS(func, bpf_ct_release, KF_RELEASE)
+-BTF_ID_FLAGS(func, bpf_ct_set_timeout, KF_TRUSTED_ARGS)
+-BTF_ID_FLAGS(func, bpf_ct_change_timeout, KF_TRUSTED_ARGS)
+-BTF_ID_FLAGS(func, bpf_ct_set_status, KF_TRUSTED_ARGS)
+-BTF_ID_FLAGS(func, bpf_ct_change_status, KF_TRUSTED_ARGS)
++BTF_ID_FLAGS(func, bpf_ct_set_timeout)
++BTF_ID_FLAGS(func, bpf_ct_change_timeout)
++BTF_ID_FLAGS(func, bpf_ct_set_status)
++BTF_ID_FLAGS(func, bpf_ct_change_status)
+ BTF_KFUNCS_END(nf_ct_kfunc_set)
+ 
+ static const struct btf_kfunc_id_set nf_conntrack_kfunc_set = {
+diff --git a/net/netfilter/nf_flow_table_bpf.c b/net/netfilter/nf_flow_table_bpf.c
+index 4a5f5195f2d2..cbd5b97a6329 100644
+--- a/net/netfilter/nf_flow_table_bpf.c
++++ b/net/netfilter/nf_flow_table_bpf.c
+@@ -105,7 +105,7 @@ __diag_pop()
+ __bpf_kfunc_end_defs();
+ 
+ BTF_KFUNCS_START(nf_ft_kfunc_set)
+-BTF_ID_FLAGS(func, bpf_xdp_flow_lookup, KF_TRUSTED_ARGS | KF_RET_NULL)
++BTF_ID_FLAGS(func, bpf_xdp_flow_lookup, KF_RET_NULL)
+ BTF_KFUNCS_END(nf_ft_kfunc_set)
+ 
+ static const struct btf_kfunc_id_set nf_flow_kfunc_set = {
+diff --git a/net/netfilter/nf_nat_bpf.c b/net/netfilter/nf_nat_bpf.c
+index 481be15609b1..f9dd85ccea01 100644
+--- a/net/netfilter/nf_nat_bpf.c
++++ b/net/netfilter/nf_nat_bpf.c
+@@ -55,7 +55,7 @@ __bpf_kfunc int bpf_ct_set_nat_info(struct nf_conn___init *nfct,
+ __bpf_kfunc_end_defs();
+ 
+ BTF_KFUNCS_START(nf_nat_kfunc_set)
+-BTF_ID_FLAGS(func, bpf_ct_set_nat_info, KF_TRUSTED_ARGS)
++BTF_ID_FLAGS(func, bpf_ct_set_nat_info)
+ BTF_KFUNCS_END(nf_nat_kfunc_set)
+ 
+ static const struct btf_kfunc_id_set nf_bpf_nat_kfunc_set = {
+diff --git a/net/sched/bpf_qdisc.c b/net/sched/bpf_qdisc.c
+index adcb618a2bfc..b9771788b9b3 100644
+--- a/net/sched/bpf_qdisc.c
++++ b/net/sched/bpf_qdisc.c
+@@ -271,14 +271,14 @@ __bpf_kfunc void bpf_qdisc_bstats_update(struct Qdisc *sch, const struct sk_buff
+ __bpf_kfunc_end_defs();
+ 
+ BTF_KFUNCS_START(qdisc_kfunc_ids)
+-BTF_ID_FLAGS(func, bpf_skb_get_hash, KF_TRUSTED_ARGS)
++BTF_ID_FLAGS(func, bpf_skb_get_hash)
+ BTF_ID_FLAGS(func, bpf_kfree_skb, KF_RELEASE)
+ BTF_ID_FLAGS(func, bpf_qdisc_skb_drop, KF_RELEASE)
+-BTF_ID_FLAGS(func, bpf_dynptr_from_skb, KF_TRUSTED_ARGS)
+-BTF_ID_FLAGS(func, bpf_qdisc_watchdog_schedule, KF_TRUSTED_ARGS)
+-BTF_ID_FLAGS(func, bpf_qdisc_init_prologue, KF_TRUSTED_ARGS)
+-BTF_ID_FLAGS(func, bpf_qdisc_reset_destroy_epilogue, KF_TRUSTED_ARGS)
+-BTF_ID_FLAGS(func, bpf_qdisc_bstats_update, KF_TRUSTED_ARGS)
++BTF_ID_FLAGS(func, bpf_dynptr_from_skb)
++BTF_ID_FLAGS(func, bpf_qdisc_watchdog_schedule)
++BTF_ID_FLAGS(func, bpf_qdisc_init_prologue)
++BTF_ID_FLAGS(func, bpf_qdisc_reset_destroy_epilogue)
++BTF_ID_FLAGS(func, bpf_qdisc_bstats_update)
+ BTF_KFUNCS_END(qdisc_kfunc_ids)
+ 
+ BTF_SET_START(qdisc_common_kfunc_set)
+diff --git a/tools/testing/selftests/bpf/progs/cpumask_failure.c b/tools/testing/selftests/bpf/progs/cpumask_failure.c
+index 8a2fd596c8a3..61c32e91e8c3 100644
+--- a/tools/testing/selftests/bpf/progs/cpumask_failure.c
++++ b/tools/testing/selftests/bpf/progs/cpumask_failure.c
+@@ -110,7 +110,7 @@ SEC("tp_btf/task_newtask")
+ __failure __msg("NULL pointer passed to trusted arg0")
+ int BPF_PROG(test_cpumask_null, struct task_struct *task, u64 clone_flags)
+ {
+-  /* NULL passed to KF_TRUSTED_ARGS kfunc. */
++  /* NULL passed to kfunc. */
+ 	bpf_cpumask_empty(NULL);
+ 
+ 	return 0;
+diff --git a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
+index 90c4b1a51de6..1c41d03bd5a1 100644
+--- a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
++++ b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
+@@ -693,9 +693,9 @@ BTF_ID_FLAGS(func, bpf_kfunc_dynptr_test)
+ BTF_ID_FLAGS(func, bpf_kfunc_nested_acquire_nonzero_offset_test, KF_ACQUIRE)
+ BTF_ID_FLAGS(func, bpf_kfunc_nested_acquire_zero_offset_test, KF_ACQUIRE)
+ BTF_ID_FLAGS(func, bpf_kfunc_nested_release_test, KF_RELEASE)
+-BTF_ID_FLAGS(func, bpf_kfunc_trusted_vma_test, KF_TRUSTED_ARGS)
+-BTF_ID_FLAGS(func, bpf_kfunc_trusted_task_test, KF_TRUSTED_ARGS)
+-BTF_ID_FLAGS(func, bpf_kfunc_trusted_num_test, KF_TRUSTED_ARGS)
++BTF_ID_FLAGS(func, bpf_kfunc_trusted_vma_test)
++BTF_ID_FLAGS(func, bpf_kfunc_trusted_task_test)
++BTF_ID_FLAGS(func, bpf_kfunc_trusted_num_test)
+ BTF_ID_FLAGS(func, bpf_kfunc_rcu_task_test, KF_RCU)
+ BTF_ID_FLAGS(func, bpf_kfunc_ret_rcu_test, KF_RET_NULL | KF_RCU_PROTECTED)
+ BTF_ID_FLAGS(func, bpf_kfunc_ret_rcu_test_nostruct, KF_RET_NULL | KF_RCU_PROTECTED)
+@@ -1158,7 +1158,7 @@ BTF_ID_FLAGS(func, bpf_kfunc_call_test_pass2)
+ BTF_ID_FLAGS(func, bpf_kfunc_call_test_fail1)
+ BTF_ID_FLAGS(func, bpf_kfunc_call_test_fail2)
+ BTF_ID_FLAGS(func, bpf_kfunc_call_test_fail3)
+-BTF_ID_FLAGS(func, bpf_kfunc_call_test_ref, KF_TRUSTED_ARGS | KF_RCU)
++BTF_ID_FLAGS(func, bpf_kfunc_call_test_ref, KF_RCU)
+ BTF_ID_FLAGS(func, bpf_kfunc_call_test_destructive, KF_DESTRUCTIVE)
+ BTF_ID_FLAGS(func, bpf_kfunc_call_test_static_unused_arg)
+ BTF_ID_FLAGS(func, bpf_kfunc_call_test_offset)
+@@ -1172,12 +1172,12 @@ BTF_ID_FLAGS(func, bpf_kfunc_call_kernel_sendmsg, KF_SLEEPABLE)
+ BTF_ID_FLAGS(func, bpf_kfunc_call_sock_sendmsg, KF_SLEEPABLE)
+ BTF_ID_FLAGS(func, bpf_kfunc_call_kernel_getsockname, KF_SLEEPABLE)
+ BTF_ID_FLAGS(func, bpf_kfunc_call_kernel_getpeername, KF_SLEEPABLE)
+-BTF_ID_FLAGS(func, bpf_kfunc_st_ops_test_prologue, KF_TRUSTED_ARGS | KF_SLEEPABLE)
+-BTF_ID_FLAGS(func, bpf_kfunc_st_ops_test_epilogue, KF_TRUSTED_ARGS | KF_SLEEPABLE)
+-BTF_ID_FLAGS(func, bpf_kfunc_st_ops_test_pro_epilogue, KF_TRUSTED_ARGS | KF_SLEEPABLE)
+-BTF_ID_FLAGS(func, bpf_kfunc_st_ops_inc10, KF_TRUSTED_ARGS)
+-BTF_ID_FLAGS(func, bpf_kfunc_multi_st_ops_test_1, KF_TRUSTED_ARGS)
+-BTF_ID_FLAGS(func, bpf_kfunc_multi_st_ops_test_1_impl, KF_TRUSTED_ARGS)
++BTF_ID_FLAGS(func, bpf_kfunc_st_ops_test_prologue, KF_SLEEPABLE)
++BTF_ID_FLAGS(func, bpf_kfunc_st_ops_test_epilogue, KF_SLEEPABLE)
++BTF_ID_FLAGS(func, bpf_kfunc_st_ops_test_pro_epilogue, KF_SLEEPABLE)
++BTF_ID_FLAGS(func, bpf_kfunc_st_ops_inc10)
++BTF_ID_FLAGS(func, bpf_kfunc_multi_st_ops_test_1)
++BTF_ID_FLAGS(func, bpf_kfunc_multi_st_ops_test_1_impl)
+ BTF_KFUNCS_END(bpf_testmod_check_kfunc_ids)
+ 
+ static int bpf_testmod_ops_init(struct btf *btf)
 -- 
 2.47.3
 
