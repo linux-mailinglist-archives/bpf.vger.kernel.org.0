@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-77667-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77668-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CAC3CED98E
-	for <lists+bpf@lfdr.de>; Fri, 02 Jan 2026 02:44:20 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B084CED991
+	for <lists+bpf@lfdr.de>; Fri, 02 Jan 2026 02:44:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 52C2230084F0
-	for <lists+bpf@lfdr.de>; Fri,  2 Jan 2026 01:44:16 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id DA1373003F89
+	for <lists+bpf@lfdr.de>; Fri,  2 Jan 2026 01:44:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2414F1FDA92;
-	Fri,  2 Jan 2026 01:44:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF2FB1FDE31;
+	Fri,  2 Jan 2026 01:44:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="Z1GRH1aN"
+	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="j5OhR6BE"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1766C1F03DE
-	for <bpf@vger.kernel.org>; Fri,  2 Jan 2026 01:44:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 919D91F03DE
+	for <bpf@vger.kernel.org>; Fri,  2 Jan 2026 01:44:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767318254; cv=none; b=YZqEBjTCSTrwo4aT3FNPoGWgz9gUUpfA0tyKaL2f3HMaippKpFuaS3/cNfgUamWF6GZScGozHehbdYdFjVGjyHFNpiPIVBsRVhEA5DTfGdx5UmiWxEdo7UZMreGLwZL0Z0qVaS5Plyjny9bcuA1j0YWOCH+5Qhavk7gG+mkW3sI=
+	t=1767318291; cv=none; b=b35hreVsD113PLiasM8vrUcI0fK+AXTScxEDQpP6Gi1pe3QiSAL4Rry3LRFbGHT/qujsk4Dub2HlAqFu829fSRmY0oPQ9pQ3wRonESv0lISfbGS+liz7AtL/4AC0QdArt8WQsnPTvnaJbzhmzxW0q2VlxSqukuSRNlLs/ioBuGU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767318254; c=relaxed/simple;
-	bh=LR4tU4GXthxjE6VJs3IVB6vuMon9Khg2+xuOHREpaVY=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=JLwQJ/RfKN9J+djrdEhFAxABjYWwxuUawpX2gdT1cPNSiH4jJZKoQT4Bkkt1zTUBJbuJvm2f9R5fzYxQhp9wU0cnyWrd46zCIzaFGxxgp6OKdLCbeIGvulN29NXC/MEMtvfVk6fGGBFCnrOmQ9y3GDH7EExcYtaT2HPxMphHOJs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=Z1GRH1aN; arc=none smtp.client-ip=209.85.219.43
+	s=arc-20240116; t=1767318291; c=relaxed/simple;
+	bh=xrD7MbxiYek44E8M+T/cHvTJDr/5hHz83SDD6vd5TD8=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Subject:From:To:Cc:
+	 References:In-Reply-To; b=JGRrP8bALxFebhwREKuvFOiuA2YqylKPjY9I1r3qW7aY7AT0o63sZCnKRN4VSPwrrUt9mxkyrVFZkB+u4JtPJcrET/tdNZnBn/l0x/O5RJYjuv56UKgceh82bagrsXqHqlZkQrkttf1bZTwtZtNkjtb/QY2PtXE/D7hKKIJ6Iy8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=j5OhR6BE; arc=none smtp.client-ip=209.85.160.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etsalapatis.com
-Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-8888a1c50e8so159703286d6.0
-        for <bpf@vger.kernel.org>; Thu, 01 Jan 2026 17:44:09 -0800 (PST)
+Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-4ed7024c8c5so97759241cf.3
+        for <bpf@vger.kernel.org>; Thu, 01 Jan 2026 17:44:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1767318248; x=1767923048; darn=vger.kernel.org;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
+        d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1767318288; x=1767923088; darn=vger.kernel.org;
+        h=in-reply-to:references:cc:to:from:subject:message-id:date
          :content-transfer-encoding:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HpXLMUfDuJ/Fu63DPPH8WP4FsiAvfGERa7hGELcZVVs=;
-        b=Z1GRH1aN6q/o1/+BZgsNY9Sr23HG/H5vF4oYGo10qvhRV07KOAP5S21lLY+I9qXH0v
-         BYzkcgIR+UDiu2qgUIAEiAjw9ZIefqYvUk46+az50W5OEc1qywqtb3e8EbN6Fvy0Y3mc
-         F6+OiRRyIgjv2jEq50vTPbkfIuUzixk4XVMS9PbNovjCx0f5TxNeADOoxRvpU/o1xwPC
-         Xe8F1msKaUf6gB7ZZk/MgOSWUIMR8EpNuvrz1Rg3QvFOGuEV5QBoximhX/vlKePHbB/N
-         AN1EWs2LCFL1+lBjvcvsvBjC605iDJD5pKjIot1y8NXwT1ltDqHJbcMJqXW59FkkHrGd
-         hMhA==
+        bh=SAfczwucXcapsZVwsbvSr9ZmWeGKQ59nyliMHBrVmQc=;
+        b=j5OhR6BE3/PrH/tRBRLa0VVAoQWXoYVjIALkn9XdY/pgF6Id8WFUZGDitJi4X28kp1
+         I4bAot8f1ME0TrCkXhqzL66v0ebsrFI75+QxRemhpj6qCM/0a+BVJX+wodDKGevqHnb+
+         DThsc2m+PahWWkQgXnjQsk2TKTxdTMvpRfuZWZJlx/rjBd2SMdnURHduCHj3mCD4To3X
+         0muVkJZXHzIvlsUcfJeFWOu2mx7oS49uPRKPEqhb8Ijp0WsMxuk9dosgCzf3sngL8aSi
+         EBBQHhrMGg01DcuFkehYFlcfjAzYnGWYOinFPdt32byU68uE3dl32g/RlfMvyBusbVHI
+         QqOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767318248; x=1767923048;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
+        d=1e100.net; s=20230601; t=1767318288; x=1767923088;
+        h=in-reply-to:references:cc:to:from:subject:message-id:date
          :content-transfer-encoding:mime-version:x-gm-gg:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=HpXLMUfDuJ/Fu63DPPH8WP4FsiAvfGERa7hGELcZVVs=;
-        b=MXNpVu+dSqdYAV6WI2VqT+fENCOXvMcoAwgZJbs9QHyYx53DAIsuKP+2KaJ13ALs8C
-         M8Q9NT5Rwbd+ReDi43TeytqD1IWZLVaOqruUQILBwMMccy2jkU9hSZC1ke7ytU4Iu4c+
-         8BOP2CpynEEyWfC6d+kG2dOeZY8J0EM9jiRtuLFdsUZe9eIdEb0OwmBavms/00Mo31Df
-         +UqmnesY+S2D/j73kHQpLusPsQojYzgD8jfzao/irzEQfUgpU55twwL4t1VHUXlE7Qlj
-         bVhZWesN6RCw4GzPGaJP+noZ7uBlM5oWUC7GvUepyOKe2lSmEblTcuf69qosUVFMpjPj
-         MtJQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVEQlEzA+c73BgQzC11J6Z1GpZilYphMB7JhPl46cj+f+MmqeoymnTJ3292j2TS3riQ/DY=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz0fpBX7BA7AxCDQnRZCIJ0nV3KHWglqz0lRadFcgVl6+NYEiML
-	jTVnXVixBtKJT4fey1Ej/Dy+Ohj513sgsFiNJ1iGt0Z/q8DoynTokWXEYhyvf7m4c3A=
-X-Gm-Gg: AY/fxX4VbWHHYYRc0pEvHDEp6Fiorsa34JKT0tmFz65ulsIzCAMXTBeO30S/0vOXbQv
-	BJ4oWkmJDa9qLfPAYfH9oBiVJlowIqVLeT26l2owJEafg9Fz0puuI0q79XgpjfUtHiE0H7hunC1
-	1rFjwozVpJNbM1q2kCidTp9NIRVMEgQkwxD/nVfBENVIAZ3HJr+RLVTkT2zP02J8fjInpISRgf1
-	xbyGJg1j6aEKOXR5aiOXbXOT4+g/th/wvYS2EUZof4Tq70fEIVey2byhisDA2DjphdtfYNRhVMT
-	VyV3sneI/rGA1mWricO2bqG4tiLB6tsiahVqzfGjuMf7youXN8oVhCCmoiQgSlCPNBdWJEKPaNL
-	P7ROvQZbRVeXWcjJbjnUMUfzjJqaEV8eeLLMZDIg03+FVUsiRZcmdZRgb8fsoq3IpKdeIbW02LR
-	zRbrq9IUKMRCQ=
-X-Google-Smtp-Source: AGHT+IFM7rR2a7UMIerWZ13cFNtq0CxUgIV7h2McOaP3Mu7lDNDLy/90iF0iYLDfV5ak0y+t5ANL4g==
-X-Received: by 2002:a05:6214:1924:b0:882:63cf:396f with SMTP id 6a1803df08f44-88d845357fdmr431506666d6.43.1767318248409;
-        Thu, 01 Jan 2026 17:44:08 -0800 (PST)
+        bh=SAfczwucXcapsZVwsbvSr9ZmWeGKQ59nyliMHBrVmQc=;
+        b=w0MiAX1ydG2qWINYoei49SVjv2/eKB4f/e4ETOxNpdf51RtVa0qng1UKz3zFNrhNfY
+         CTuTiHAeLBcmsRKptEJEsfiGVfl+reyDNGjLRKf7sQAk6QOSGZ7Ay0NQw9RpDkPEh1dB
+         Z6vgNeDPm/CWEQ8mRhMJVGsOY+UEpsLcbUx7e68rReT2DfTe3hQrDm1Wh2YbG9nuLBh2
+         pVINtl6VfvmfJo94gD7WbZ35/W59C1ZmO25udGmbZV3ZymfXjiAqcZOmz7PhELg/pp21
+         IgUsQ68OSCuSBYGkGbh+wKzYQjYnKDJLDPN5m/dUosJib3epwhC5z1gudr8Pl5Ferw1H
+         JAIQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVx0xuuC5UKpUYIBnjePfY9IP32hmYUkWH5g/cb2MO9Vb74atP1uTCvi2KU3vC+LIu+Rbs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxPQdRDEpWRrMgZqJ8URT3IEiz3jTD2JPh5JwH7fT4Pjn2wvYV+
+	h/oqJAHL2ibSDScW7qGaph5KdNUgwDq8DGI42NiCx/U8cT/eiJoMfW/oIA/itjo9Hfk=
+X-Gm-Gg: AY/fxX6yFRoLKcmIIFgSNcywVEaWVWxi5PaJDN+QPVZnG9FoqrKLbmjz3/VXLBaIXm+
+	3ue+WBegexZAU6rVMXUMRJ7GmP1BCwj4s5eIhLWTtO02es4o2YVcELR79wBO+Hho1Ekx7aXq/Vp
+	RBCTjvU8FamHhn2VRLfXs0vxgJsHxOJRjtcjfKMuNOUIxETNEUDqPVYOaa9rKnr8UiQJS6hZv6f
+	MRbq2GyCzxbE2ELy7uvYyIH2+xCst6Kpbj/fZUwpLSQTfxiVC7NxefMhrHHTTzf4zwVrujgQ/a7
+	Cwpwq68d3urVySnxUTB94XxV6wLm3C2QlKMzcYXgNZCFp4YQcIqw6kAEzbjo8QM7QRxFLxURoMb
+	X2GMTxsK9NSZaezxhE/MJ+OyoYEdwQFR2LQBcvZ7LV7NvpIwI59huLrjcra5Jw26n3jODmtxfO6
+	71ratwQGxTDTS08zny2Kx2zw==
+X-Google-Smtp-Source: AGHT+IHGbehIbu0+f5R9+W1Nmrbf+Z04VYkieLvJ3k027Cr9AimEDo5TvWfqWQ9RYNKqVbO31i4lKg==
+X-Received: by 2002:a05:622a:110e:b0:4ed:66bd:95ea with SMTP id d75a77b69052e-4f4abcf525emr706051751cf.29.1767318288416;
+        Thu, 01 Jan 2026 17:44:48 -0800 (PST)
 Received: from localhost ([140.174.219.137])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8c0971ed98dsm3116727185a.31.2026.01.01.17.44.07
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4f4ac649957sm288162581cf.23.2026.01.01.17.44.47
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Jan 2026 17:44:08 -0800 (PST)
+        Thu, 01 Jan 2026 17:44:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -80,57 +80,52 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Date: Thu, 01 Jan 2026 20:44:06 -0500
-Message-Id: <DFDQ169CWJOR.2LBC0TZLY5CN6@etsalapatis.com>
+Date: Thu, 01 Jan 2026 20:44:47 -0500
+Message-Id: <DFDQ1OT39TCW.JW5QMT1DMMH4@etsalapatis.com>
+Subject: Re: [PATCH bpf-next v2 5/9] selftests: bpf: Update failure message
+ for rbtree_fail
+From: "Emil Tsalapatis" <emil@etsalapatis.com>
+To: "Puranjay Mohan" <puranjay@kernel.org>, <bpf@vger.kernel.org>
 Cc: "Puranjay Mohan" <puranjay12@gmail.com>, "Alexei Starovoitov"
  <ast@kernel.org>, "Andrii Nakryiko" <andrii@kernel.org>, "Daniel Borkmann"
  <daniel@iogearbox.net>, "Martin KaFai Lau" <martin.lau@kernel.org>, "Eduard
  Zingerman" <eddyz87@gmail.com>, "Kumar Kartikeya Dwivedi"
  <memxor@gmail.com>, <kernel-team@meta.com>
-Subject: Re: [PATCH bpf-next v2 6/9] selftests: bpf: fix
- test_kfunc_dynptr_param
-From: "Emil Tsalapatis" <emil@etsalapatis.com>
-To: "Puranjay Mohan" <puranjay@kernel.org>, <bpf@vger.kernel.org>
 X-Mailer: aerc 0.20.1
 References: <20251231171118.1174007-1-puranjay@kernel.org>
- <20251231171118.1174007-7-puranjay@kernel.org>
-In-Reply-To: <20251231171118.1174007-7-puranjay@kernel.org>
+ <20251231171118.1174007-6-puranjay@kernel.org>
+In-Reply-To: <20251231171118.1174007-6-puranjay@kernel.org>
 
 On Wed Dec 31, 2025 at 12:08 PM EST, Puranjay Mohan wrote:
-> As verifier now assumes that all kfuncs only takes trusted pointer
-> arguments, passing 0 (NULL) to a kfunc that doesn't mark the argument as
-> __nullable or __opt will be rejected with a failure message of: Possibly
-> NULL pointer passed to trusted arg<n>
->
-> Pass a non-null value to the kfunc to test the expected failure mode.
+> The rbtree_api_use_unchecked_remove_retval() selftest passes a pointer
+> received from bpf_rbtree_remove() to bpf_rbtree_add() without checking
+> for NULL, this was earlier caught by __check_ptr_off_reg() in the
+> verifier. Now the verifier assumes every kfunc only takes trusted pointer
+> arguments, so it catches this NULL pointer earlier in the path and
+> provides a more accurate failure message.
 >
 > Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 
 Reviewed-by: Emil Tsalapatis <emil@etsalapatis.com>
 
 > ---
->  tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+>  tools/testing/selftests/bpf/progs/rbtree_fail.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c =
-b/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
-> index 061befb004c2..d249113ed657 100644
-> --- a/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
-> +++ b/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
-> @@ -48,10 +48,9 @@ SEC("?lsm.s/bpf")
->  __failure __msg("arg#0 expected pointer to stack or const struct bpf_dyn=
-ptr")
->  int BPF_PROG(not_ptr_to_stack, int cmd, union bpf_attr *attr, unsigned i=
-nt size, bool kernel)
->  {
-> -	unsigned long val =3D 0;
-> +	static struct bpf_dynptr val;
-> =20
-> -	return bpf_verify_pkcs7_signature((struct bpf_dynptr *)val,
-> -					  (struct bpf_dynptr *)val, NULL);
-> +	return bpf_verify_pkcs7_signature(&val, &val, NULL);
+> diff --git a/tools/testing/selftests/bpf/progs/rbtree_fail.c b/tools/test=
+ing/selftests/bpf/progs/rbtree_fail.c
+> index 4acb6af2dfe3..70b7baf9304b 100644
+> --- a/tools/testing/selftests/bpf/progs/rbtree_fail.c
+> +++ b/tools/testing/selftests/bpf/progs/rbtree_fail.c
+> @@ -153,7 +153,7 @@ long rbtree_api_add_to_multiple_trees(void *ctx)
 >  }
 > =20
->  SEC("lsm.s/bpf")
+>  SEC("?tc")
+> -__failure __msg("dereference of modified ptr_or_null_ ptr R2 off=3D16 di=
+sallowed")
+> +__failure __msg("Possibly NULL pointer passed to trusted arg1")
+>  long rbtree_api_use_unchecked_remove_retval(void *ctx)
+>  {
+>  	struct bpf_rb_node *res;
 
 
