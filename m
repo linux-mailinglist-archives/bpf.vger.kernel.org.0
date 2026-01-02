@@ -1,119 +1,109 @@
-Return-Path: <bpf+bounces-77689-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77690-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B6B5CEEE0F
-	for <lists+bpf@lfdr.de>; Fri, 02 Jan 2026 16:34:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DA892CEEE3F
+	for <lists+bpf@lfdr.de>; Fri, 02 Jan 2026 16:38:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8A36C301A715
-	for <lists+bpf@lfdr.de>; Fri,  2 Jan 2026 15:34:14 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8397430109B1
+	for <lists+bpf@lfdr.de>; Fri,  2 Jan 2026 15:38:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82C8B2264DC;
-	Fri,  2 Jan 2026 15:34:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3713275B15;
+	Fri,  2 Jan 2026 15:38:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dE5fKgc0"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="J2c9SRA/"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA7961A3029
-	for <bpf@vger.kernel.org>; Fri,  2 Jan 2026 15:34:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6F7E25A33A
+	for <bpf@vger.kernel.org>; Fri,  2 Jan 2026 15:38:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767368053; cv=none; b=G1inqTCXcDCeG2vWNVj+2+3qxzY1Gj0m6JCPsBxss254X3uPFj5jZTqdBBRLZEezBuynuhV4X7ZMeWS/FKzY0VzA7w+PQmHmOi2VziwPeVJNrVX/AaIQbdPU/tCqIXZtQ8tdeyRePBSnNcAIXhAydkYSKsFJ6llLBMqUvE6k02o=
+	t=1767368326; cv=none; b=f4MDcg7F88Grfpqc0WS8IJP3XKAuur10hzQh5Bk/Tyx0MCGwaVols7LRxAvHshh1C3b270rO7FBx3mlxXYC1KcxXPh3uDG6q5/nzactJ5KOCUnRb3lvEcZcW6DEhetmR1rmLv+lDaL3Z7JFKw+a24yUJ5S4+P0F/CCFJKz29PWw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767368053; c=relaxed/simple;
-	bh=Lc0Vaiwhg93Kftu6FwUF3q06s2V6DW0Q+a+GiQZrgTw=;
+	s=arc-20240116; t=1767368326; c=relaxed/simple;
+	bh=+iYz7m2D8U8EwGz1kSidRtFmtpogOaFyOnPfxjbl6zI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hqok9aCYO6QyOhgV7FGsb1Zdi5IHb+rrW8GOxSpY/GoL9yXPGwE/8mL6d/0cCHZ+dHcUeWc2T+IQoXeiVM3+YMq6zJw26Bkz7sKgWVO5AR8+Ye06+yLuu2EcMGYguEeCqp+QQsg9UmS2bDq0fzG/HEEcYV+Tg4WmgFfrERw+IFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dE5fKgc0; arc=none smtp.client-ip=91.218.175.188
+	 In-Reply-To:Content-Type; b=Sj9/TpsOayZUEBMOboucg0+xVn+aGgzS4OLFgGFKJih6TdTjetvzoYkhqF45tGH1UgEYNu7ZZDpALT8eAG6knPo1i7jsRJHGm7fHD/cBW8LljNzb6twD1guE5kaG1ocHUjiyIB7i0E/qwg3ZGjQgGhew/EwV1GTXK1YZrdDjDA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=J2c9SRA/; arc=none smtp.client-ip=95.215.58.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <bcd23277-a18e-4bb5-ba76-3416c84511c2@linux.dev>
+Message-ID: <883a21af-750c-49df-88c6-47bd642e03d4@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1767368038;
+	t=1767368320;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=zq7PL7Unph+1q4/lCVQBzEE0/yE1hCPnq6+DR6Z5GKU=;
-	b=dE5fKgc0cUMTP0cxONjiR/QximBbiXME50mdT2bwFrQOfC496bubQDvWMpnI5Jet8TMM1W
-	UxABwrcWqNALr/2G6Wv2F51CsQD+eQQ94yi026maOeAAG6HocWMFTGESnlLwDS+x40V5gC
-	qmkBlHRftFiIi+Apbkoy+vKzf4AL+44=
-Date: Fri, 2 Jan 2026 07:33:50 -0800
+	bh=taD8t+CRYZkYr8f56OzWxn0Ld4xi2x2xvqJmet4VYKk=;
+	b=J2c9SRA/ZhbRgjOYPehVBB39V1rco1clZMAUidT4LuwgHuP8gvVpBo+rR3q/m91jrmXejR
+	VkeWIS/+7E64XyXQfUsgt7kCFxlA4wd/JurUBVXSVh0WqktjV3xAXihcoQl/6qwP39dXq9
+	P9PAoRpEfFR5S4QDwFvEBJ/EU7V1kV8=
+Date: Fri, 2 Jan 2026 23:38:25 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next] bpf, docs: Update pahole to 1.28 for selftests
-To: Hemanth Malla <vmalla@linux.microsoft.com>, bpf@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next 1/4] bpf: tailcall: Introduce
+ bpf_arch_tail_call_prologue_offset
+To: bot+bpf-ci@kernel.org, bpf@vger.kernel.org
 Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
  martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
  yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, vmalla@microsoft.com,
- corbet@lwn.net, Alan Maguire <alan.maguire@oracle.com>,
- dwarves <dwarves@vger.kernel.org>
-References: <1767352415-24862-1-git-send-email-vmalla@linux.microsoft.com>
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, puranjay@kernel.org,
+ xukuohai@huaweicloud.com, catalin.marinas@arm.com, will@kernel.org,
+ davem@davemloft.net, dsahern@kernel.org, tglx@linutronix.de,
+ mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+ hpa@zytor.com, akpm@linux-foundation.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, kernel-patches-bot@fb.com, martin.lau@kernel.org,
+ clm@meta.com, ihor.solodrai@linux.dev
+References: <20260102150032.53106-2-leon.hwang@linux.dev>
+ <45f1e1978b7dc28e522dcc0a72954d892b37a85220749bd027c7395edb01d991@mail.kernel.org>
 Content-Language: en-US
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Ihor Solodrai <ihor.solodrai@linux.dev>
-In-Reply-To: <1767352415-24862-1-git-send-email-vmalla@linux.microsoft.com>
+From: Leon Hwang <leon.hwang@linux.dev>
+In-Reply-To: <45f1e1978b7dc28e522dcc0a72954d892b37a85220749bd027c7395edb01d991@mail.kernel.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-On 1/2/26 3:13 AM, Hemanth Malla wrote:
-> From: Hemanth Malla <vmalla@microsoft.com>
+
+
+On 2026/1/2 23:21, bot+bpf-ci@kernel.org wrote:
+>> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+>> index 1eeb31c5b317..beedd1281c22 100644
+>> --- a/kernel/bpf/arraymap.c
+>> +++ b/kernel/bpf/arraymap.c
+>> @@ -127,6 +127,9 @@ static struct bpf_map *array_map_alloc(union bpf_attr *attr)
+>>  			array_size += (u64) max_entries * elem_size;
+>>  		}
+>>  	}
+>> +	if (attr->map_type == BPF_MAP_TYPE_PROG_ARRAY && bpf_arch_tail_call_prologue_offset())
+>> +		/* Store tailcall targets */
+>> +		array_size += (u64) max_entries * sizeof(void *);
 > 
-> pahole 1.16 doesn't seem to be to sufficient anymore for running bpf
-> selftests.
+> Should array_map_mem_usage() also account for this additional space?
+> Currently array_map_mem_usage() handles special cases for percpu arrays
+> and mmapable arrays, but has no corresponding check for PROG_ARRAY maps
+> when bpf_arch_tail_call_prologue_offset() is non-zero. This would cause
+> the reported memory usage to be lower than the actual allocation when
+> an architecture implements this function (e.g., x86_64 and arm64 in the
+> subsequent patches of this series).
 > 
-> Signed-off-by: Hemanth Malla <vmalla@microsoft.com>
-> ---
->  Documentation/bpf/bpf_devel_QA.rst | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
+> [ ... ]
 > 
-> diff --git a/Documentation/bpf/bpf_devel_QA.rst b/Documentation/bpf/bpf_devel_QA.rst
-> index 0acb4c9b8d90..3a147b6c780e 100644
-> --- a/Documentation/bpf/bpf_devel_QA.rst
-> +++ b/Documentation/bpf/bpf_devel_QA.rst
-> @@ -482,7 +482,7 @@ under test should match the config file fragment in
->  tools/testing/selftests/bpf as closely as possible.
->  
->  Finally to ensure support for latest BPF Type Format features -
-> -discussed in Documentation/bpf/btf.rst - pahole version 1.16
-> +discussed in Documentation/bpf/btf.rst - pahole version 1.28
 
-Hi Hemanth, thanks for the patch.
+You are right, array_map_mem_usage() needs to stay in sync with the
+allocation logic to avoid under-reporting memory.
 
-Acked-by: Ihor Solodrai <ihor.solodrai@linux.dev>
+I will include this fix in the next revision after I’ve collected more
+feedback.
 
-1.28 is needed for --distilled_base [1], which is only a requirement
-for tests using modules. Many other tests are likely to work with
-older versions, but the minimum for the kernel build is 1.22 now [2].
-
-Not sure if it's worth it to add this nuance to the QA doc, although
-in general we should recommend people running the selftests to use the
-latest pahole release. Maybe add a comment?
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/bpf/btf.rst?h=v6.18#n986
-[2] https://lore.kernel.org/bpf/20251219181825.1289460-1-ihor.solodrai@linux.dev/
-
->  is required for kernels built with CONFIG_DEBUG_INFO_BTF=y.
->  pahole is delivered in the dwarves package or can be built
->  from source at
-> @@ -502,9 +502,6 @@ codes from
->  
->  https://fedorapeople.org/~acme/dwarves
->  
-> -Some distros have pahole version 1.16 packaged already, e.g.
-> -Fedora, Gentoo.
-> -
->  Q: Which BPF kernel selftests version should I run my kernel against?
->  ---------------------------------------------------------------------
->  A: If you run a kernel ``xyz``, then always run the BPF kernel selftests
+Thanks,
+Leon
 
 
