@@ -1,250 +1,253 @@
-Return-Path: <bpf+bounces-77664-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77665-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4662BCED440
-	for <lists+bpf@lfdr.de>; Thu, 01 Jan 2026 19:26:52 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92331CED929
+	for <lists+bpf@lfdr.de>; Fri, 02 Jan 2026 01:15:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 924123000E82
-	for <lists+bpf@lfdr.de>; Thu,  1 Jan 2026 18:26:51 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 208A030006F1
+	for <lists+bpf@lfdr.de>; Fri,  2 Jan 2026 00:15:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C4C02F12CF;
-	Thu,  1 Jan 2026 18:26:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0744B14D29B;
+	Fri,  2 Jan 2026 00:15:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZpdqYfOM"
+	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="zIF6Wuhe"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E91C52E54A3
-	for <bpf@vger.kernel.org>; Thu,  1 Jan 2026 18:26:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B92B3C465
+	for <bpf@vger.kernel.org>; Fri,  2 Jan 2026 00:15:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767292009; cv=none; b=giKMhN18jHEO6JM/llkewsxTA4TCam6ilx6g3KCbypOYgTCwEBrAdIt2v/7UyecIdpHdnhxDpbggDZY8lJLvHTg7OhR910StUeFhrmR6PRqnty8vXbl3SzrYesV4n8BZTTLgiFhEAhMBob2esWsHzaNM7uYv4zPQTa3Xtq2G+LA=
+	t=1767312908; cv=none; b=bnv+9C8w6H9G8IicGSsE/LLlt/TjtWOVIZsWdaNEBwr2kdZOT56SQJtuK/KP6bzxJPlDdLIHfAojcmUu6oAbMFGzv8cndXtU84NV35H1abqtyUY8O7kky5UHArXDOY2SPII/tpKXNB0RavYkMlHUjGKQ6cTlWlhXROJ779lgJzg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767292009; c=relaxed/simple;
-	bh=UoZu2RWFx5RR3ixW8aJGmpht6HfWVlSK9XwYIvRURzw=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=EA7b/Q9orP2mG1D2Ics+TBvWHFl5sPu+bJadqdDK+aO0ELY/sITaX9B3t7IvyQ5Y7n2b2WWiAfE+zyaBbVWxacZC4AyTmBsSb3tnjw/7Fhz9j051EI7kYzPEIUpKST51pwZtMG3WJ2EHJthmqLu2dGa800NrQ71fLCH9WYtNcTg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZpdqYfOM; arc=none smtp.client-ip=209.85.160.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-4f34c5f2f98so130364921cf.1
-        for <bpf@vger.kernel.org>; Thu, 01 Jan 2026 10:26:46 -0800 (PST)
+	s=arc-20240116; t=1767312908; c=relaxed/simple;
+	bh=r+T7OSUEXnd7gL27CeJ4YmJFi9hbKpWqPqV80KMKCLg=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Subject:From:To:Cc:
+	 References:In-Reply-To; b=jyai4nSbSeMBMUZlh2qydHH1D4PHCGAJpmy/C1qHkJDasBfcy87l67WLgM6xKEiw4sxbPjv0fStXfm1c+LLk8ntzksrmPDQveyO1Xtgd93PBu+dYUWFF8yl/dLD6HbBiBcl8ejqYfE/ThGL8JFnBV6douKL2r7LLCJMqHAd9Mbs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=zIF6Wuhe; arc=none smtp.client-ip=209.85.160.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etsalapatis.com
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-4f4c89f8cc6so98597031cf.1
+        for <bpf@vger.kernel.org>; Thu, 01 Jan 2026 16:15:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767292005; x=1767896805; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=UoZu2RWFx5RR3ixW8aJGmpht6HfWVlSK9XwYIvRURzw=;
-        b=ZpdqYfOMZRpq9mkUcxHbOtKfXCj5qPmnlCJCHwOAShcxKAQm9wlnWivdHgjleYQOB4
-         WXy8ro3JzQn7M8WY6oLWeTpkoeYDZ+6EzT4yTf1JK4sTdYj2qbxBabiXM+CahorNfRJi
-         tGf0N4RMezFs0RIPym0i5DVRgieqZZFJLvOAH49XAPZFMGHC/2v1e0LffQtRV8IItO6+
-         LUuibUKQN6SVz+dP+UAH2Vib3WfK5S+5LeUkc/8vbVL5tViKnm9NF5XzHu/5LZTs1nuw
-         ygOcTivNFlKvNpJowHjkYFWm6l4Bj+Yj99rVT7lA6wjn30yU5jlaj/T2XzeaKbt6CxRp
-         gHkg==
+        d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1767312905; x=1767917705; darn=vger.kernel.org;
+        h=in-reply-to:references:cc:to:from:subject:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6aVI5EqdRahzuudsEe3u52vwHw5jyHw9TE+dj2mykJE=;
+        b=zIF6WuheC3LpGJHXLm9QV25gb9y/fMtNcrIfnGXZC5mvi54AzPHBwwyliHLrcDXs81
+         y9a19xxZcaF82pCAIPvbWVKn6nDgs9+V4y6IELE0d30FkFMHij1Rqrd3A584hX8JlY3S
+         vH/PI5WRhrpMVphWf8376QxfCu3eWCRU7KJLAEPyk34HZDaxQMgT8t0eJD3WWC+IF5e0
+         bjbDBcbx+MugdyHYS+H+nGjNAy3q+BwriehGKlqLiUn/Nk703q1uWAOUpuqo9Y1gcYHo
+         pNkFqd+ft7ixVmJEsiGwhN3zGltJiwamRcvZKFKC6aSjz23EfGHQVuMVDoIZ8TaRkklh
+         vGKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767292005; x=1767896805;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UoZu2RWFx5RR3ixW8aJGmpht6HfWVlSK9XwYIvRURzw=;
-        b=Ibv7CL49/nNNjHmNY4YMXK1Q0AqMDEeGKWHntzpfZ01ItRZaYBCdbriMoNCZ5TGApx
-         gnpD5GWeo/UYC3NSSh6+aAr+RS9IipIBnXuYQmm1h7pv0Rcu8EGOljoD3NkA7zmjIFR+
-         PT3ofPsKw8fZZ6+ubn3heDBig4Z0OrDU88EzPwI38HxvxS7Uiu1oqy+uc88hmrXnF7hO
-         GzRDbGXIBT2EIJjO6eo53GaOrC6PoKSOX9TgMCgCS7OifFjqYPOFDdPNjewxkKzJ1Bdc
-         UyBq9ankKSOTvkkqeRbC3E/lfWkKBBDazmf4lBWzhw9jKQrPBhA9Rv3rtYkZqgUi1YFq
-         Mf9Q==
-X-Gm-Message-State: AOJu0YxvAphZzwbzF9N7HekC+HepSHRWkzIp8BP+Bwi92KjDA6QoPP8n
-	HMLRdoxVbB+J5FjP+wHvTOldiJ4vPrDpBLtdIMGj3twcgyCx+DPkgcgrJTULgmUwdv6qMWzZeeq
-	/ZhJPuq/SjEqTuJyXERfw1FQba2s+GJha7sWT
-X-Gm-Gg: AY/fxX73GhMoc+kyN96WQ01EzVBOPpzsiPebspYC59SbijcG9yYolyzoOACVy+e2jEs
-	ZELBesyfBPwtJdXR9yNA8eG/jOMWxOjbJEumzVu4wzLNlYib9RMeV9Va1j2ML8cYFq7LJSqQJn6
-	DzkY5ZL9Jg+eROZKuUGy+P+SZ1MBNmjDuYGUvemIt3NOarY6SNjmovgFUQrdxhrRhwzQkD3QsNV
-	KIO7kf8QXGDhQwjpt1WOPhfWTLrNmbKkY1yZQGfeAIFDoeTtYc40F8vtvkHoE3JxNsyfUg=
-X-Google-Smtp-Source: AGHT+IFHQg0nG0eaEMFYLqFjAh0XJlieab08wMM2OPaHkz2hikpL5OI5rx5DrsbcKn+EMOjGsc0iroENmFKu4ceHvaQ=
-X-Received: by 2002:a05:622a:198b:b0:4ee:1bc7:9d7b with SMTP id
- d75a77b69052e-4f4abd8cc1fmr533103801cf.39.1767292005551; Thu, 01 Jan 2026
- 10:26:45 -0800 (PST)
+        d=1e100.net; s=20230601; t=1767312905; x=1767917705;
+        h=in-reply-to:references:cc:to:from:subject:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-gg:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6aVI5EqdRahzuudsEe3u52vwHw5jyHw9TE+dj2mykJE=;
+        b=UI6Xw/vJ7tfCP24gIJilzTbujpLQQlxEkuTC/aGsc2Ydv/DqeNYsdDGzB6QBWPnGDk
+         XloIdrVVMV7rv/ZHOMn+fvhiipe+dVBsCDFJGhwTsOoPmU0kHP4zRDuHniyVLwEz/kaB
+         z9AtqZFGJzocdBieC5ZEbIDgWCeAoKrcS+9Sj1mgapyjeRzU9L+pPtI85mZQnRDUiA7u
+         l/cz8uQ0Kpg3tbhz471q7TmNzEceWGOD+OojkdntptkKYDrOfL6xb9wogtG3b17DOHhM
+         dhd8mGqIl8NNX6EnU/CNnRi8P4iSs+X2aLVxHyj9dfhG/NlhrHz7B9IyqDOq4Vd1Xlb9
+         iQxg==
+X-Forwarded-Encrypted: i=1; AJvYcCWnUz8gPoKcyUptFdzGShR9+plBuMfyxlFqiqn5y9+62HTvzQtj4FgyuiVwFvToCXBYubk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzMmfs4BLy11rG6kF4hiQzSYyu9db0xJyQ7SGrTtGwdvH78SpRq
+	D6R/E+kLMIP150N7q/FH0aH2owDS/3/ppF6HqbNJd2ZgN2VAZAfTvMwIpSSJJxl6c5E=
+X-Gm-Gg: AY/fxX5i8NBdaMjV+kyE9hBfFOG30dtkTJF2lFCnXNh0mQIuezNkSAIHz5rU9zaIZtr
+	68qmdlC7spMHAMQFVYVwX+iRFVYOGYog9H93DpJ5utyyEpxbawOcS7dNcf++oxJEb99ucb4xPdx
+	9705GrYSjzinPayINodYl36SJG/R+ECJgQx0W+UIu7nTjRxW668gUjlmdVFSSu+f2ND1L44Lp/7
+	QkzuTh32v8PytiUMuAiDyrFw7Eipd/YvH+O+qy0IDRUkmXudxei9uJdop82WG08XZUYtWrus033
+	81vVgel2YIXE0EZHY0avlWhM6ZscI6gNgFI0Nzkq25M2G29qlGOGBsb7HwSM9Y8EFOgW8TH3TGT
+	15Yxc4Tp1MyMdwMHot6HVW3Fg1BRdCnYo7rbzjMi0SQ5FOtdscGceaXwnruTs3cYWGtrkmNvkBQ
+	CzLs53g9rxrS8=
+X-Google-Smtp-Source: AGHT+IG2wONcolQBnWNSudLyJa9qSBkneRo2v5YBl6vAoUSDwIOTQovAH/59mPIfy/543gYUsySdWw==
+X-Received: by 2002:a05:622a:2609:b0:4f1:af8d:64c with SMTP id d75a77b69052e-4f4abcf43aemr662640061cf.31.1767312904815;
+        Thu, 01 Jan 2026 16:15:04 -0800 (PST)
+Received: from localhost ([140.174.219.137])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-88d96ddae2csm282600366d6.20.2026.01.01.16.15.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Jan 2026 16:15:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-From: Vincent Li <vincent.mc.li@gmail.com>
-Date: Thu, 1 Jan 2026 10:26:34 -0800
-X-Gm-Features: AQt7F2pVzbJ9zAGkBOcdfnBaj7HK-VnOGc1cyoB5TONH_Az28I5f_Ok9niKqqEo
-Message-ID: <CAK3+h2yu+XkEMWz6FOHiDEEQw-G_iKG2KHP=F=1CiqLr0mCgNA@mail.gmail.com>
-Subject: [BUG?]: bpf/selftests: ns_bpf_qdisc libbpf: loading object 'tc_bpf'
- from buffer
-To: bpf <bpf@vger.kernel.org>, loongarch@lists.linux.dev
-Cc: ast <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, Hengqi Chen <hengqi.chen@gmail.com>, 
-	Chenghao Duan <duanchenghao@kylinos.cn>, Tiezhu Yang <yangtiezhu@loongson.cn>, 
-	Huacai Chen <chenhuacai@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 01 Jan 2026 19:15:03 -0500
+Message-Id: <DFDO4ZDORNS8.31JCAC7DL945M@etsalapatis.com>
+Subject: Re: [PATCH bpf-next v2 1/9] bpf: Make KF_TRUSTED_ARGS the default
+ for all kfuncs
+From: "Emil Tsalapatis" <emil@etsalapatis.com>
+To: "Puranjay Mohan" <puranjay@kernel.org>, <bpf@vger.kernel.org>
+Cc: "Puranjay Mohan" <puranjay12@gmail.com>, "Alexei Starovoitov"
+ <ast@kernel.org>, "Andrii Nakryiko" <andrii@kernel.org>, "Daniel Borkmann"
+ <daniel@iogearbox.net>, "Martin KaFai Lau" <martin.lau@kernel.org>, "Eduard
+ Zingerman" <eddyz87@gmail.com>, "Kumar Kartikeya Dwivedi"
+ <memxor@gmail.com>, <kernel-team@meta.com>
+X-Mailer: aerc 0.20.1
+References: <20251231171118.1174007-1-puranjay@kernel.org>
+ <20251231171118.1174007-2-puranjay@kernel.org>
+In-Reply-To: <20251231171118.1174007-2-puranjay@kernel.org>
 
-Hi,
+On Wed Dec 31, 2025 at 12:08 PM EST, Puranjay Mohan wrote:
+> Change the verifier to make trusted args the default requirement for
+> all kfuncs by removing is_kfunc_trusted_args() assuming it be to always
+> return true.
+>
+> This works because:
+> 1. Context pointers (xdp_md, __sk_buff, etc.) are handled through their
+>    own KF_ARG_PTR_TO_CTX case label and bypass the trusted check
+> 2. Struct_ops callback arguments are already marked as PTR_TRUSTED during
+>    initialization and pass is_trusted_reg()
+> 3. KF_RCU kfuncs are handled separately via is_kfunc_rcu() checks at
+>    call sites (always checked with || alongside is_kfunc_trusted_args)
+>
+> This simple change makes all kfuncs require trusted args by default
+> while maintaining correct behavior for all existing special cases.
+>
+> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 
-I used AI to enhance my message, hope it helps :)
+Reviewed-by: Emil Tsalapatis <emil@etsalapatis.com>
 
-I am reporting test failures observed while running BPF selftests on a
-LoongArch machine. Both the ns_bpf_qdisc and xdp_synproxy tests
-exhibit WATCHDOG timeouts and eventual failures. The issue appears
-architecture-specific but I am not sure.
+For sched-ext in particular, patchset works fine (as expected).
 
-Issue Summary:
-When building and running 6.19.0-rc3 BPF selftests on a LoongArch machine:
+> ---
+>  Documentation/bpf/kfuncs.rst | 35 +++++++++++++++++------------------
+>  kernel/bpf/verifier.c        | 14 +++-----------
+>  2 files changed, 20 insertions(+), 29 deletions(-)
+>
+> diff --git a/Documentation/bpf/kfuncs.rst b/Documentation/bpf/kfuncs.rst
+> index e38941370b90..22b5a970078c 100644
+> --- a/Documentation/bpf/kfuncs.rst
+> +++ b/Documentation/bpf/kfuncs.rst
+> @@ -241,25 +241,23 @@ both are orthogonal to each other.
+>  The KF_RELEASE flag is used to indicate that the kfunc releases the poin=
+ter
+>  passed in to it. There can be only one referenced pointer that can be pa=
+ssed
+>  in. All copies of the pointer being released are invalidated as a result=
+ of
+> -invoking kfunc with this flag. KF_RELEASE kfuncs automatically receive t=
+he
+> -protection afforded by the KF_TRUSTED_ARGS flag described below.
+> +invoking kfunc with this flag.
+> =20
+> -2.4.4 KF_TRUSTED_ARGS flag
+> ---------------------------
+> +2.4.4 KF_TRUSTED_ARGS (default behavior)
+> +-----------------------------------------
+> =20
+> -The KF_TRUSTED_ARGS flag is used for kfuncs taking pointer arguments. It
+> -indicates that the all pointer arguments are valid, and that all pointer=
+s to
+> -BTF objects have been passed in their unmodified form (that is, at a zer=
+o
+> -offset, and without having been obtained from walking another pointer, w=
+ith one
+> -exception described below).
+> +All kfuncs now require trusted arguments by default. This means that all
+> +pointer arguments must be valid, and all pointers to BTF objects must be
+> +passed in their unmodified form (at a zero offset, and without having be=
+en
+> +obtained from walking another pointer, with exceptions described below).
+> =20
+> -There are two types of pointers to kernel objects which are considered "=
+valid":
+> +There are two types of pointers to kernel objects which are considered "=
+trusted":
+> =20
+>  1. Pointers which are passed as tracepoint or struct_ops callback argume=
+nts.
+>  2. Pointers which were returned from a KF_ACQUIRE kfunc.
+> =20
+>  Pointers to non-BTF objects (e.g. scalar pointers) may also be passed to
+> -KF_TRUSTED_ARGS kfuncs, and may have a non-zero offset.
+> +kfuncs, and may have a non-zero offset.
+> =20
+>  The definition of "valid" pointers is subject to change at any time, and=
+ has
+>  absolutely no ABI stability guarantees.
+> @@ -327,13 +325,14 @@ added later.
+>  2.4.7 KF_RCU flag
+>  -----------------
+> =20
+> -The KF_RCU flag is a weaker version of KF_TRUSTED_ARGS. The kfuncs marke=
+d with
+> -KF_RCU expect either PTR_TRUSTED or MEM_RCU arguments. The verifier guar=
+antees
+> -that the objects are valid and there is no use-after-free. The pointers =
+are not
+> -NULL, but the object's refcount could have reached zero. The kfuncs need=
+ to
+> -consider doing refcnt !=3D 0 check, especially when returning a KF_ACQUI=
+RE
+> -pointer. Note as well that a KF_ACQUIRE kfunc that is KF_RCU should very=
+ likely
+> -also be KF_RET_NULL.
+> +The KF_RCU flag allows kfuncs to opt out of the default trusted args
+> +requirement and accept RCU pointers with weaker guarantees. The kfuncs m=
+arked
+> +with KF_RCU expect either PTR_TRUSTED or MEM_RCU arguments. The verifier
+> +guarantees that the objects are valid and there is no use-after-free. Th=
+e
+> +pointers are not NULL, but the object's refcount could have reached zero=
+. The
+> +kfuncs need to consider doing refcnt !=3D 0 check, especially when retur=
+ning a
+> +KF_ACQUIRE pointer. Note as well that a KF_ACQUIRE kfunc that is KF_RCU =
+should
+> +very likely also be KF_RET_NULL.
+> =20
+>  2.4.8 KF_RCU_PROTECTED flag
+>  ---------------------------
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 0baae7828af2..a31eace4a67c 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -12040,11 +12040,6 @@ static bool is_kfunc_release(struct bpf_kfunc_ca=
+ll_arg_meta *meta)
+>  	return meta->kfunc_flags & KF_RELEASE;
+>  }
+> =20
+> -static bool is_kfunc_trusted_args(struct bpf_kfunc_call_arg_meta *meta)
+> -{
+> -	return (meta->kfunc_flags & KF_TRUSTED_ARGS) || is_kfunc_release(meta);
+> -}
+> -
+>  static bool is_kfunc_sleepable(struct bpf_kfunc_call_arg_meta *meta)
+>  {
+>  	return meta->kfunc_flags & KF_SLEEPABLE;
+> @@ -13253,9 +13248,9 @@ static int check_kfunc_args(struct bpf_verifier_e=
+nv *env, struct bpf_kfunc_call_
+>  			return -EINVAL;
+>  		}
+> =20
+> -		if ((is_kfunc_trusted_args(meta) || is_kfunc_rcu(meta)) &&
+> -		    (register_is_null(reg) || type_may_be_null(reg->type)) &&
+> -			!is_kfunc_arg_nullable(meta->btf, &args[i])) {
+> +		if ((register_is_null(reg) || type_may_be_null(reg->type)) &&
+> +		    !is_kfunc_arg_nullable(meta->btf, &args[i]) &&
+> +		    !is_kfunc_arg_optional(meta->btf, &args[i])) {
+>  			verbose(env, "Possibly NULL pointer passed to trusted arg%d\n", i);
+>  			return -EACCES;
+>  		}
+> @@ -13320,9 +13315,6 @@ static int check_kfunc_args(struct bpf_verifier_e=
+nv *env, struct bpf_kfunc_call_
+>  			fallthrough;
+>  		case KF_ARG_PTR_TO_ALLOC_BTF_ID:
+>  		case KF_ARG_PTR_TO_BTF_ID:
+> -			if (!is_kfunc_trusted_args(meta) && !is_kfunc_rcu(meta))
+> -				break;
+> -
+>  			if (!is_trusted_reg(reg)) {
+>  				if (!is_kfunc_rcu(meta)) {
+>  					verbose(env, "R%d must be referenced or trusted\n", regno);
 
-The "ns_bpf_qdisc/attach to mq" test fails with a WATCHDOG timeout
-after 120 seconds, followed by SIGSEGV.
-
-The xdp_synproxy test shows similar failure symptoms.
-
-During the failing ns_bpf_qdisc test, I see this log message:
-libbpf: loading object 'tc_bpf' from buffer
-This message is NOT present when the same test passes on an x86 build
-machine or on other LoongArch machines. The xdp_synproxy test likely
-has a similar loading message.
-
-Key Observations:
-
-Architecture Dependency Suspected:
-
-Both failures occur only on my LoongArch setup.
-
-The log message "libbpf: loading object 'tc_bpf' from buffer" appears
-only in the failing cases.
-
-Others have successfully run these tests on LoongArch machines without
-seeing this message.
-
-Source of the 'tc_bpf' Object:
-
-From reading libbpf.c, this message indicates loading an object from a
-BPF skeleton. However, I cannot find a skeleton named 'tc_bpf' in the
-bpf selftests skeleton source tree.
-
-A grep search shows skeletons like 'tc_bpf2bpf' and 'test_tc_bpf', but
-no exact 'tc_bpf' match.
-
-Grep results for 'tc_bpf' in skeletons:
-[root@fedora bpf]# grep -r 'tc_bpf' * | grep 's->name'
-cpuv4/tc_bpf2bpf.skel.h: s->name = "tc_bpf2bpf";
-cpuv4/test_tc_bpf.skel.h: s->name = "test_tc_bpf";
-no_alu32/tc_bpf2bpf.skel.h: s->name = "tc_bpf2bpf";
-no_alu32/test_tc_bpf.skel.h: s->name = "test_tc_bpf";
-tc_bpf2bpf.skel.h: s->name = "tc_bpf2bpf";
-test_tc_bpf.skel.h: s->name = "test_tc_bpf";
-
-Test Output:
-
-The test runs until the WATCHDOG triggers, then terminates with a
-segmentation fault.
-
-Relevant output section is included below.
-
-Questions / Next Steps:
-
-Could the 'tc_bpf' object be dynamically generated? If so, why does it
-only appear in the failing LoongArch cases?
-
-How can I debug this further? Should I enable more logging or check
-for missing dependencies?
-
-Are these two test failures (ns_bpf_qdisc and xdp_synproxy) related,
-given they both show similar timeout patterns?
-
-Environment:
-
-Kernel: 6.19.0-rc3
-
-Architecture: LoongArch
-
-Test Command: ./test_progs -t ns_bpf_qdisc
-
-Full Test Output Snippet for ns_bpf_qdisc:
-
-[root@fedora bpf]# ./test_progs -t ns_bpf_qdisc
-libbpf: loading object 'tc_bpf' from buffer
-libbpf: elf: section(2) .symtab, size 168, link 1, flags 0, type=2
-libbpf: elf: section(3) tc, size 144, link 0, flags 6, type=1
-libbpf: sec 'tc': found program 'tc_ingress' at insn offset 0 (0
-bytes), code size 18 insns (144 bytes)
-libbpf: elf: section(4) .rodata, size 36, link 0, flags 2, type=1
-libbpf: elf: section(5) license, size 4, link 0, flags 3, type=1
-libbpf: license of tc_bpf is GPL
-libbpf: elf: section(6) .reltc, size 16, link 2, flags 40, type=9
-libbpf: elf: section(7) .BTF, size 2108, link 0, flags 0, type=1
-libbpf: elf: section(8) .BTF.ext, size 284, link 0, flags 0, type=1
-libbpf: looking for externs among 7 symbols...
-libbpf: collected 0 externs total
-libbpf: map 'tc_bpf.rodata' (global data): at sec_idx 4, offset 0, flags 80.
-libbpf: map 0 is "tc_bpf.rodata"
-libbpf: sec '.reltc': collecting relocation for section(3) 'tc'
-libbpf: sec '.reltc': relo #0: insn #12 against '.rodata'
-libbpf: prog 'tc_ingress': found data map 0 (tc_bpf.rodata, sec 4, off
-0) for insn 12
-libbpf: object 'tc_bpf': failed (-95) to create BPF token from
-'/sys/fs/bpf', skipping optional step...
-libbpf: loaded kernel BTF from '/sys/kernel/btf/vmlinux'
-libbpf: sec 'tc': found 5 CO-RE relocations
-libbpf: CO-RE relocating [2] struct __sk_buff: found target candidate
-[10675] struct __sk_buff in [vmlinux]
-libbpf: prog 'tc_ingress': relo #0: <byte_off> [2] struct
-__sk_buff.protocol (0:4 @ offset 16)
-libbpf: prog 'tc_ingress': relo #0: matching candidate #0 <byte_off>
-[10675] struct __sk_buff.protocol (0:4 @ offset 16)
-libbpf: prog 'tc_ingress': relo #0: patched insn #0 (LDX/ST/STX) off 16 -> 16
-libbpf: prog 'tc_ingress': relo #1: <byte_off> [2] struct
-__sk_buff.data (0:15 @ offset 76)
-libbpf: prog 'tc_ingress': relo #1: matching candidate #0 <byte_off>
-[10675] struct __sk_buff.data (0:15 @ offset 76)
-libbpf: prog 'tc_ingress': relo #1: patched insn #2 (LDX/ST/STX) off 76 -> 76
-libbpf: prog 'tc_ingress': relo #2: <byte_off> [2] struct
-__sk_buff.data_end (0:16 @ offset 80)
-libbpf: prog 'tc_ingress': relo #2: matching candidate #0 <byte_off>
-[10675] struct __sk_buff.data_end (0:16 @ offset 80)
-libbpf: prog 'tc_ingress': relo #2: patched insn #3 (LDX/ST/STX) off 80 -> 80
-libbpf: CO-RE relocating [19] struct iphdr: found target candidate
-[28807] struct iphdr in [vmlinux]
-libbpf: prog 'tc_ingress': relo #3: <byte_off> [19] struct iphdr.ttl
-(0:6 @ offset 8)
-libbpf: prog 'tc_ingress': relo #3: matching candidate #0 <byte_off>
-[28807] struct iphdr.ttl (0:6 @ offset 8)
-libbpf: prog 'tc_ingress': relo #3: patched insn #9 (LDX/ST/STX) off 8 -> 8
-libbpf: prog 'tc_ingress': relo #4: <byte_off> [19] struct
-iphdr.tot_len (0:3 @ offset 2)
-libbpf: prog 'tc_ingress': relo #4: matching candidate #0 <byte_off>
-[28807] struct iphdr.tot_len (0:3 @ offset 2)
-libbpf: prog 'tc_ingress': relo #4: patched insn #10 (LDX/ST/STX) off 2 -> 2
-libbpf: map 'tc_bpf.rodata': created successfully, fd=5
-Successfully started! Please run sudo cat
-/sys/kernel/debug/tracing/trace_pipe to see output of the BPF program.
-..........WATCHDOG: test case ns_bpf_qdisc/attach to mq executes for
-10 seconds...
-..............................................................................................................WATCHDOG:
-test case ns_bpf_qdisc/attach to mq executes for 120 seconds,
-terminating with SIGSEGV
-#219 ns_bpf_qdisc:FAIL
-Caught signal #11!
-Stack trace:
-./test_progs(crash_handler+0x28)[0x1205b7e34]
-linux-vdso.so.1(__vdso_rt_sigreturn+0x0)[0x7ffffd058ac4]
-/lib64/libc.so.6(wait4+0x84)[0x7ffff1f84b98]
-/lib64/libc.so.6(+0x4da54)[0x7ffff1ef5a54]
-./test_progs[0x120197fdc]
-./test_progs(test_ns_bpf_qdisc+0x58)[0x12019982c]
-./test_progs[0x1205b8574]
-./test_progs(main+0x6c0)[0x1205ba5f8]
-/lib64/libc.so.6(+0x2882c)[0x7ffff1ed082c]
-/lib64/libc.so.6(__libc_start_main+0xa8)[0x7ffff1ed0918]
-./test_progs(_start+0x48)[0x12013a0e0]
-
-I would appreciate any insights or guidance on these issues. Please
-let me know if you need more information.
-
-Thanks
-
-Vincent
 
