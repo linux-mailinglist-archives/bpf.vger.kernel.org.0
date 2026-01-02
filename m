@@ -1,109 +1,208 @@
-Return-Path: <bpf+bounces-77692-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77693-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 796C9CEF1A8
-	for <lists+bpf@lfdr.de>; Fri, 02 Jan 2026 18:56:32 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EFA9CEF1F6
+	for <lists+bpf@lfdr.de>; Fri, 02 Jan 2026 19:02:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 64C573014DB0
-	for <lists+bpf@lfdr.de>; Fri,  2 Jan 2026 17:56:21 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A6F6E303A0B4
+	for <lists+bpf@lfdr.de>; Fri,  2 Jan 2026 18:00:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B84CA2FA0D3;
-	Fri,  2 Jan 2026 17:56:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F3862FD660;
+	Fri,  2 Jan 2026 18:00:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fKrqEtUu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jM2dtjy4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1E762F9C3D
-	for <bpf@vger.kernel.org>; Fri,  2 Jan 2026 17:56:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4F912FD1B5
+	for <bpf@vger.kernel.org>; Fri,  2 Jan 2026 18:00:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767376580; cv=none; b=TP1MKNdllVkcVpDqPQzekHOz9PT77x/8z/2tD4Vf+cNriR1jcnD5rrgL+gn039wzmQxIPVmcRiOezlcxEI8VSdeR6SiClzMLd6YVEbZwiaEStffZLsFR5bTu27FqS1SPTXqyku+rOQd6C+fImx5N+NX//SHWTJFi1nBaLxoVavA=
+	t=1767376848; cv=none; b=KixKL8jsIcMkdccolNWeAptZjzyN7OJP8T6fsQizEP0bJUw05KXV04dxwZYB6b7f7DCi/QuGToJ/P+g15Eg1L7L61ZqS2KzNrZsqBZsNNeiPU+K+RbIDVG7q568DTWU8PtxrEYExltQLENY9+umjSZTrTKZmG5RQBbEnV+O46Y8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767376580; c=relaxed/simple;
-	bh=UiGSZJcvecuteX7e4Bg5+YHQwmjNlbVZtc9u8UQSy2A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jVEXQ5YhDXySZZRdr7b+dgDr+cLKc1uRQE4PXeD76ZHUPSvw8MEdwUkfgr3yQVaBTnptEXMnlsH+ql6LKLAM1BpmT8GmYoUYoFk5HPspu6NUI5XQB4M5Xp0wGtAD3HMxdlClrzN42REWYe+/fayOXymiR8jGgbzLLwA5HiL4U28=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fKrqEtUu; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-430f3ef2d37so9930323f8f.3
-        for <bpf@vger.kernel.org>; Fri, 02 Jan 2026 09:56:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767376577; x=1767981377; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Cz9h0+xuHNc47sZhcMOUOohmcL0zpvfUw5YqbSiPCv4=;
-        b=fKrqEtUuBuppQvLv02PwylBhLJSVpijPLqQr4jJ531GfGgjCcd14uWuu2JH6FGhbkS
-         BmmzE5px6mtM/D9Wa19jmB8iPn72lX+TU6szVJZnCr6SopKG6VPL9YZfrFpl7xSEDu43
-         Q2O9x7IW/cVa17zXFIuDrq1jb+76i+GELO2xj1L+NXissS7DAdJ3caEgRdLiTg37SSk4
-         h8+dQU4T/g0+eZkSQsFyLZzkQLUA3kfIXF18Eb7c9X/SuzhOxJ7hV2mDsmBz7ZtrXkei
-         B0DwUXWbf2ezA3sMg4Ak5hDb6SLU3dy6JLhzWHc7uI2Ia7KCbrUkmeeN5zFixjL0r+Ct
-         3UGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767376577; x=1767981377;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=Cz9h0+xuHNc47sZhcMOUOohmcL0zpvfUw5YqbSiPCv4=;
-        b=Xxs/dti4ZzNDg1Thht3lUmwtq6zdfIMWNEZ9Mez3FJ7ZS85YlQLoy2EOi2JG4r6iIP
-         y5e+CdFwOQEAJzwYTLTffnq1HaaroPu62YYgdShJ66Rx6jkMBE5ZVBRiIJwDPyFqar6K
-         3pRW6b5xYJM2WLUFFnuk8x/Ieu7phtY+GMvyQwDN3CsldNEmL3+xZCJw6K+Ye7yrIpeP
-         edM8xsDuAh96MV3rLgQd3RBqC7CzgkyPW6YvhgbOkO1Dmh3WmPRpx2N6OCG1eRrLGbvl
-         IA0znYdM3uKxLgu6NN3h37M4JjVoMLNZ/ApnIjG56p1Lpz/t0fu0AgX4d2Tf+vLwPmVS
-         5euw==
-X-Gm-Message-State: AOJu0Yx+JR0XHbitx1UI2cUlbA7CHzWWM+2VbOvhrwuCOeH69/bSyG3j
-	LHZYYxVsu8dKOzGagScZrSG5/fYyCHTmW0iHmh0lRKCYPEsZQIfzG2L9xhdt39biUMS9h/qouX1
-	hPVzGatn1Fj/JQORA358ON/AykoHhz/k=
-X-Gm-Gg: AY/fxX52g/NBue19XHE2RDjrcG4jXNHOmo4TwwxrbkZ/KwQaf/YNszWgx8EsoPjz2uK
-	eAvWaQeGEUNRq9FzR1oHi1PwlMQESuagwNl7lDQZudLZrdIu6+l7MpZKETpWAPwNrpfvyWLbcb8
-	9jvH2eq1mk0+U2E2PyDlbtHo8zQbzAfmzOawxpHgsFMfM4lNsuwI2MNLa6QFhaCKMwXZj/DcBKS
-	b76PxExyzJIITFvPh4Av7QS0CHiZEoVFgckSBN7lZsfXlv+xnqpIHQfcs08EJ80bvO8aPRavYCS
-	VBzVKIimEq/5A/W/jVVlZLM4bHyGK7xRGhpQjDk=
-X-Google-Smtp-Source: AGHT+IFOmdXhu8glPAGRe3q0h3R/icU/g43vEh0IwZWmsvY7JQRxREgccjgcLs804tn111rO6eZbfVWfZB7ixgqDdBc=
-X-Received: by 2002:a05:6000:178e:b0:430:f7dc:7e96 with SMTP id
- ffacd0b85a97d-4324e50d6ccmr54768364f8f.48.1767376576796; Fri, 02 Jan 2026
- 09:56:16 -0800 (PST)
+	s=arc-20240116; t=1767376848; c=relaxed/simple;
+	bh=qAZcr+m9HfIU6QEoQ4y9EsXP9rKuq9XK669c7BrDUGk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ujR/Dy6emUC/jeo3vnic8bEkSXpiggqHr3074VDra/eDvASwOo4hljYFjwHhDu5MAZ5ZRMMZVm2m8+q/cg2I4gZPqG+x3ZmVFBL60dhGbU2G5JV7NTiX+uLranLRca+s0oTrGNE5QjnHcUkAQOfoZQSb1D/zuk9ax210XMUXi4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jM2dtjy4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 296EFC116B1;
+	Fri,  2 Jan 2026 18:00:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1767376848;
+	bh=qAZcr+m9HfIU6QEoQ4y9EsXP9rKuq9XK669c7BrDUGk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=jM2dtjy43RWqtJyui7I8WWa0LStbLOjx8FcB9On2dyu/tg6sYJMpXh7NsVdRj/VGm
+	 qhCZ3p9ZO/P8bsmOcywsA6vS1VakhItQWiyqcgIXYjeDXA6KgBYQZjswz3hLJq9s8s
+	 699swuK5WMWwCroE5S7Dr1ZH80M+gHWZf/SZWuuL29w92dgOSKpsPKE2A4uV4vTtOn
+	 JxtYqTl4Uua1bsxf98GQ3i+4QBra8cpO7YMEUtEXGGhHm/JZzstGcbxDLaQ3mGC8J9
+	 0FVRbuUonMCChtMwmNYD6rYb+1gN9QDWXlWqd4L1/YfmlkCCFRhmvU+9WMh2DYWEW9
+	 UHCgbQtDXZ6RA==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: bpf@vger.kernel.org
+Cc: Puranjay Mohan <puranjay@kernel.org>,
+	Puranjay Mohan <puranjay12@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	"Emil Tsalapatis" <emil@etsalapatis.com>,
+	kernel-team@meta.com
+Subject: [PATCH bpf-next v3 00/10] bpf: Make KF_TRUSTED_ARGS default
+Date: Fri,  2 Jan 2026 10:00:26 -0800
+Message-ID: <20260102180038.2708325-1-puranjay@kernel.org>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260102151852.570285-1-puranjay@kernel.org> <20260102151852.570285-3-puranjay@kernel.org>
-In-Reply-To: <20260102151852.570285-3-puranjay@kernel.org>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 2 Jan 2026 09:56:05 -0800
-X-Gm-Features: AQt7F2pUUkf-z8FlA06xsv56oFD4aTCfB9vo3ntrqumDvGd38FUgsKaBePSbLHk
-Message-ID: <CAADnVQJECvWkJ5XuCrq1Oujg9T+n+3Y-vmb=rw+Y0crRVzRkSA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/2] bpf: arena: Reintroduce memcg accounting
-To: Puranjay Mohan <puranjay@kernel.org>
-Cc: bpf <bpf@vger.kernel.org>, Puranjay Mohan <puranjay12@gmail.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, Kernel Team <kernel-team@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Jan 2, 2026 at 7:19=E2=80=AFAM Puranjay Mohan <puranjay@kernel.org>=
- wrote:
->
->         if (map->map_type !=3D BPF_MAP_TYPE_ARENA)
-> @@ -885,7 +907,11 @@ __bpf_kfunc int bpf_arena_reserve_pages(void *p__map=
-, void *ptr__ign, u32 page_c
->         if (!page_cnt)
->                 return 0;
->
-> -       return arena_reserve_pages(arena, (long)ptr__ign, page_cnt);
-> +       bpf_map_memcg_enter(map, &old_memcg, &new_memcg);
-> +       ret =3D arena_reserve_pages(arena, (long)ptr__ign, page_cnt);
-> +       bpf_map_memcg_exit(old_memcg, new_memcg);
+v2: https://lore.kernel.org/all/20251231171118.1174007-1-puranjay@kernel.org/
+Changes in v2->v3:
+- Fix documentation: add a new section for kfunc parameters (Eduard)
+- Remove all occurances of KF_TRUSTED from comments, etc. (Eduard)
+- Fix the netfilter kfuncs to drop dead NULL checks.
+- Fix selftest for netfilter kfuncs to check for verification failures
+  and remove the runtime failure that are not possible after this
+  changes
 
-This one can also move into arena_reserve_pages() for
-symmetry with the rest and wrap range_tree_clear() call.
+v1: https://lore.kernel.org/all/20251224192448.3176531-1-puranjay@kernel.org/
+Changes in v1->v2:
+- Update kfunc_dynptr_param selftest to use a real pointer that is not
+  ptr_to_stack and not CONST_PTR_TO_DYNPTR rather than casting 1
+  (Alexei)
+- Thoroughly review all kfuncs in the to find regressions or missing
+  annotations. (Eduard)
+- Fix kfuncs found from the above step.
 
-pw-bot: cr
+This series makes trusted arguments the default requirement for all BPF
+kfuncs, inverting the current opt-in model. Instead of requiring
+explicit KF_TRUSTED_ARGS flags, kfuncs now require trusted arguments by
+default and must explicitly opt-out using __nullable/__opt annotations
+or the KF_RCU flag.
+
+This improves security and type safety by preventing BPF programs from
+passing untrusted or NULL pointers to kernel functions at verification
+time, while maintaining flexibility for the small number of kfuncs that
+legitimately need to accept NULL or RCU pointers.
+
+MOTIVATION
+
+The current opt-in model is error-prone and inconsistent. Most kfuncs already
+require trusted pointers from sources like KF_ACQUIRE, struct_ops callbacks, or
+tracepoints. Making trusted arguments the default:
+
+- Prevents NULL pointer dereferences at verification time
+- Reduces defensive NULL checks in kernel code
+- Provides better error messages for invalid BPF programs
+- Aligns with existing patterns (context pointers, struct_ops already trusted)
+
+IMPACT ANALYSIS
+
+Comprehensive analysis of all 304+ kfuncs across 37 kernel files found:
+- Most kfuncs (299/304) are already safe and require no changes
+- Only 4 kfuncs required fixes (all included in this series)
+- 0 regressions found in independent verification
+
+All bpf selftests are passing. The hid_bpf tests are also passing:
+# PASSED: 20 / 20 tests passed.
+# Totals: pass:20 fail:0 xfail:0 xpass:0 skip:0 error:0
+
+bpf programs in drivers/hid/bpf/progs/ show no regression as shown by
+veristat:
+
+Done. Processed 24 files, 62 programs. Skipped 0 files, 0 programs.
+
+TECHNICAL DETAILS
+
+The verifier now validates kfunc arguments in this order:
+1. NULL check (runs first): Rejects NULL unless parameter has __nullable/__opt
+2. Trusted check: Rejects untrusted pointers unless kfunc has KF_RCU
+
+Special cases that bypass trusted checking:
+- Context pointers (xdp_md, __sk_buff): Handled via KF_ARG_PTR_TO_CTX
+- Struct_ops callbacks: Pre-marked as PTR_TRUSTED during initialization
+- KF_RCU kfuncs: Have separate validation path for RCU pointers
+
+BACKWARD COMPATIBILITY
+
+This affects BPF program verification, not runtime:
+- Valid programs passing trusted pointers: Continue to work
+- Programs with bugs: May now fail verification (preventing runtime crashes)
+
+This series introduces two intentional breaking changes to the BPF
+verifier's kfunc handling:
+
+1. NULL pointer rejection timing: Kfuncs that previously accepted NULL
+pointers without KF_TRUSTED_ARGS will now reject NULL at verification
+time instead of returning runtime errors. This affects netfilter
+connection tracking functions (bpf_xdp_ct_lookup, bpf_skb_ct_lookup,
+bpf_xdp_ct_alloc, bpf_skb_ct_alloc), which now enforce their documented
+"Cannot be NULL" requirements at load time rather than returning -EINVAL
+at runtime.
+
+2. Fentry/fexit program restrictions: BPF programs using fentry/fexit
+attachment points can no longer pass their callback arguments directly
+to kfuncs, as these arguments are not marked as trusted by default.
+Programs requiring trusted argument semantics should migrate to tp_btf
+(tracepoint with BTF) attachment points where arguments are guaranteed
+trusted by the verifier.
+
+Both changes strengthen the verifier's safety guarantees by catching
+errors earlier in the development cycle and are accompanied by
+comprehensive test updates demonstrating the new expected behaviors.
+
+Puranjay Mohan (10):
+  bpf: Make KF_TRUSTED_ARGS the default for all kfuncs
+  bpf: Remove redundant KF_TRUSTED_ARGS flag from all kfuncs
+  bpf: net: netfilter: drop dead NULL checks
+  bpf: xfrm: drop dead NULL check in bpf_xdp_get_xfrm_state()
+  HID: bpf: drop dead NULL checks in kfuncs
+  selftests: bpf: Update kfunc_param_nullable test for new error message
+  selftests: bpf: Update failure message for rbtree_fail
+  selftests: bpf: fix test_kfunc_dynptr_param
+  selftests: bpf: fix cgroup_hierarchical_stats
+  selftests: bpf: Fix test_bpf_nf for trusted args becoming default
+
+ Documentation/bpf/kfuncs.rst                  | 184 +++++++++---------
+ drivers/hid/bpf/hid_bpf_dispatch.c            |   5 +-
+ fs/bpf_fs_kfuncs.c                            |  23 +--
+ fs/verity/measure.c                           |   2 +-
+ include/linux/bpf.h                           |   2 +-
+ include/linux/btf.h                           |   3 +-
+ kernel/bpf/arena.c                            |   6 +-
+ kernel/bpf/cpumask.c                          |   2 +-
+ kernel/bpf/helpers.c                          |  20 +-
+ kernel/bpf/map_iter.c                         |   2 +-
+ kernel/bpf/verifier.c                         |  16 +-
+ kernel/sched/ext.c                            |   8 +-
+ mm/bpf_memcontrol.c                           |  10 +-
+ net/core/filter.c                             |  10 +-
+ net/core/xdp.c                                |   2 +-
+ net/netfilter/nf_conntrack_bpf.c              |  22 +--
+ net/netfilter/nf_flow_table_bpf.c             |   2 +-
+ net/netfilter/nf_nat_bpf.c                    |   2 +-
+ net/sched/bpf_qdisc.c                         |  12 +-
+ net/xfrm/xfrm_state_bpf.c                     |   2 +-
+ .../testing/selftests/bpf/prog_tests/bpf_nf.c |   5 +-
+ .../bpf/progs/cgroup_hierarchical_stats.c     |   6 +-
+ .../selftests/bpf/progs/cpumask_failure.c     |   2 +-
+ .../testing/selftests/bpf/progs/rbtree_fail.c |   2 +-
+ .../testing/selftests/bpf/progs/test_bpf_nf.c |   7 -
+ .../selftests/bpf/progs/test_bpf_nf_fail.c    |  57 ++++++
+ .../bpf/progs/test_kfunc_dynptr_param.c       |   5 +-
+ .../bpf/progs/test_kfunc_param_nullable.c     |   2 +-
+ .../selftests/bpf/test_kmods/bpf_testmod.c    |  20 +-
+ 29 files changed, 234 insertions(+), 207 deletions(-)
+
+
+base-commit: c286e7e9d1f1f3d90ad11c37e896f582b02d19c4
+-- 
+2.47.3
+
 
