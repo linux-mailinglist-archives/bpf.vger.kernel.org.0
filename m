@@ -1,135 +1,111 @@
-Return-Path: <bpf+bounces-77714-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77715-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E554CEF454
-	for <lists+bpf@lfdr.de>; Fri, 02 Jan 2026 21:07:12 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id C174FCEF4E4
+	for <lists+bpf@lfdr.de>; Fri, 02 Jan 2026 21:23:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 845543091E6C
-	for <lists+bpf@lfdr.de>; Fri,  2 Jan 2026 20:03:49 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id B8EA0300D645
+	for <lists+bpf@lfdr.de>; Fri,  2 Jan 2026 20:23:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04D6B315D21;
-	Fri,  2 Jan 2026 20:03:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D869D2D2391;
+	Fri,  2 Jan 2026 20:23:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rt1/Bdye"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fgfoEBNh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5F9F31AF07
-	for <bpf@vger.kernel.org>; Fri,  2 Jan 2026 20:03:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FE072BE05F
+	for <bpf@vger.kernel.org>; Fri,  2 Jan 2026 20:23:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767384208; cv=none; b=r230rmuVCyF8tNqAvIuQKL/b68zdGRiw3j65bFmwIlcPwuscOFrIiaOKY8OHsHj7cwn+nmvXiPueMPvcm06F/BtIye1MHPtCUAbWO5GsLCLjO3zBz9PMdxxnjLtX+Y1YcXH+rXYtLySNwpwzp3eQzuxpO2YJ8srLzny+10+wSJ4=
+	t=1767385419; cv=none; b=YgSNDXMRJiTINm/pKVSfEMWkvJuiBwWCnH0PpJjt8L9XuzA49r48kKQEG2xQs/COXVRXbQ6k0fKJj5gVT/ntUs523/gg9X2ABDDrk/E4+QOySv/xVhi0wbQ5cZ9Yn6/XT6QMuOwPP5nWDMKDskPoIpx/yp2IQmEqE3q1Y6881i8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767384208; c=relaxed/simple;
-	bh=utYT6Qt3B+Srzek1TJoeDcQ3QsbBprgnYIX3cbY9oxY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TeIO1LK7EV8xuWr2auU4KlsFW7UBqNXbexi/PIQy7ygCYJLTtgsBUTLg9/+X80zocTtfmiV631r0uYFxKctkgcPkpm2rmvQLtQPccX6PMCnG31XHWHavlPvSSHwB9Shgo+FGoHoaKJLEoY4SxskQqrKzx7CauwUn4VsgwzOibG8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rt1/Bdye; arc=none smtp.client-ip=209.85.208.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-64d02c01865so16623283a12.1
-        for <bpf@vger.kernel.org>; Fri, 02 Jan 2026 12:03:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767384205; x=1767989005; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=t4WprRmNF2jxg1BsDfte9Xooq63YAqJ3MlQ1lr10+xs=;
-        b=Rt1/BdyerbWDiCLme7ZQqaAHPf6rOoH2AtePfc5+JzYsW0nlfRLkqcOdxqTiMj/o1G
-         2kvyvNXvrcfyAqAyVQl65p6pyes/haeUkS/xdOYUzWz5bGNmTyXaw9TJtyoqpEzD6TF8
-         OG0FRDMM9DXa6rhIcbw7V2K+feoA2LjC40M4otylO8PkM9D6QvO71usQbPDFweeJEaf9
-         RSWXwdKjSWXYFdev0A5QeJmqwIJSx3CsDOyKu6yMIFI4kSRNapx33kdHdSxDuSZOE3eb
-         v1+D/pYA4c9pB69p6Ovv1zDkRWixS2kJzbsWNOat9rCJGTDZyBfK6h/k1o+ABffzscbo
-         rAIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767384205; x=1767989005;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=t4WprRmNF2jxg1BsDfte9Xooq63YAqJ3MlQ1lr10+xs=;
-        b=gVCvZ7UwtycS2L3TJ1aTlPeYP2B3LQgu3kO94ugjJjBkTSmaiy5wgThKRKneYVESOZ
-         NZdWVN0y8o5dLlAKVR0rcWPOVB7Ng1K+ZouVeWV8bDO1UcoWtOHHsrq0rleifIEue30o
-         IzAN7GtdTXER4C4BzMcLVLJdrX15uW92inTk9d4IZBYRqf7VS7T6Ouv7LGNZHTdmYdZH
-         6JhykuHdAYbDEVPGTMWOq5nLdWj58f4bFJIt0WCFo+UqQsDuIdpjodE27/NdNsR2vxqq
-         TdbEzjBuvD2bJhQAUwFXZlcKb3gytsFzEC4NE3P/aMKf1Mjn0k+ElRDjTmUa0c0z8TBf
-         PP2A==
-X-Gm-Message-State: AOJu0YzFZU2I2j843ucK2X0U1E1aQ1+VOYq7TWtarU4ki8OIo6UAmIe3
-	3oPwR1G/bZmpI+wNEip8szG0hj3d1n2+BH79Ft4JAsl/jZ46/8AH2l9C9wilDGh/BHFKUqPB2T9
-	Xtl5iqXTnel/62gHMwYy4iTAdAA/s/Rs=
-X-Gm-Gg: AY/fxX7ZKxBbsHoAcfw652Vs/xTmnYFaJZvP5s4ZGBmQNAkm5TGX6W4V9BGqvyuGBlp
-	CFfMm3yMCqSOSMR/P5AAEYBZWG6oGxY2jhijubQjlpss2c997w9lvSST4ZnECU8mBEpvg3UUA33
-	4IG+xCtXXp5gozQZs7PMsG9g+Z1rwFNVPi+pRacOM7NoEHdBK2ul9rKa9Ea0+sdx3r4wc6lonmD
-	1ljs0QIBTJ4qLtHY5qzl0TXwL7DGJF86XfaedotdFVmbyLgWe2kSo9Lv1Lig06WjSJWoVNpVjRK
-	AWBPtvLujg==
-X-Google-Smtp-Source: AGHT+IFp5exqTHgC7afk6ZVCT467XvUqQ1+XrBpwZZnS9DRITs7iFv33eep31jkvZ/aXCDxdemui/Dm+aX2YQHjpjUg=
-X-Received: by 2002:aa7:dad6:0:b0:64b:8d7a:71cf with SMTP id
- 4fb4d7f45d1cf-64b8ecb2eb3mr29679925a12.26.1767384204901; Fri, 02 Jan 2026
- 12:03:24 -0800 (PST)
+	s=arc-20240116; t=1767385419; c=relaxed/simple;
+	bh=1FieRFvdJyHIf9RGnAO8WUPbkzzR5Mal0YbxH/DeRMk=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=T4uCXSmV8B2yXaOh9aebPepV2/nS2f5U84jfDjwHWFizoagOJh0omhB6fJocYNDeHDQvgKc5QvxeqFHB0qYtus3mq2bsG8A+Vjbexxq/9wWz+O3eOH94euVYd9r10q7So8jYiirzGrc7BUs56+029cbluwGsd6prueRnWHLIaaA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fgfoEBNh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F75FC116B1;
+	Fri,  2 Jan 2026 20:23:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1767385419;
+	bh=1FieRFvdJyHIf9RGnAO8WUPbkzzR5Mal0YbxH/DeRMk=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=fgfoEBNhq0d92dgiOcFZ5fD6cOVTusMus/7ZDKDF4AyExcK6/ZDNqrWLhmmtxoub5
+	 u5wIAKWrHmG+bSDH7QMxjONsmbENX5vu1kyI1Tdo4HMcBePR4o0AT6nG+iYlNU1In5
+	 1HGdqUn5DZZ9EZaq80orGP9VqhUtVPb6dE2QU3dPHaLzX564odWaQA1Bs17GfSlVH9
+	 BrCm3vPM4KZFOyPDjWruNPHg2Bv51Qos0HRY6xmxH+zANLxZuVKJ/g/l5GEC5FMQ2l
+	 gIGiRw5ARkkZ6kphlvbs/qKgzXX0l7uuN/b2xusXCBlTqGtn7HQatHXmlCckcynw11
+	 WGRKcxBkmiGdg==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 78828380A962;
+	Fri,  2 Jan 2026 20:20:20 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260102181333.3033679-1-puranjay@kernel.org> <20260102181333.3033679-3-puranjay@kernel.org>
- <CAADnVQLzApPhFaLR-B-WpNvSz+_YBJTAYAaCs1o53yKHHA6PMw@mail.gmail.com>
-In-Reply-To: <CAADnVQLzApPhFaLR-B-WpNvSz+_YBJTAYAaCs1o53yKHHA6PMw@mail.gmail.com>
-From: Puranjay Mohan <puranjay12@gmail.com>
-Date: Fri, 2 Jan 2026 20:03:10 +0000
-X-Gm-Features: AQt7F2q8qGMHgo8ym4vSklKlSkWZ6EppDWgAm9Bjrek0OLZquLo6PBJC7annxrU
-Message-ID: <CANk7y0jJgn67=kf-Ons8JcEn1Ek7hDB_RYNoBnRT_xt2dr0E3g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 2/2] bpf: arena: Reintroduce memcg accounting
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Kernel Team <kernel-team@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v3 00/10] bpf: Make KF_TRUSTED_ARGS default
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <176738521902.3999999.8092738930277465797.git-patchwork-notify@kernel.org>
+Date: Fri, 02 Jan 2026 20:20:19 +0000
+References: <20260102180038.2708325-1-puranjay@kernel.org>
+In-Reply-To: <20260102180038.2708325-1-puranjay@kernel.org>
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: bpf@vger.kernel.org, puranjay12@gmail.com, ast@kernel.org,
+ andrii@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org,
+ eddyz87@gmail.com, memxor@gmail.com, emil@etsalapatis.com,
+ kernel-team@meta.com
 
-On Fri, Jan 2, 2026 at 7:39=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Fri, Jan 2, 2026 at 10:13=E2=80=AFAM Puranjay Mohan <puranjay@kernel.o=
-rg> wrote:
-> >                 left->rn_start =3D start;
-> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> > index c77ab2e32659..12e44f433d72 100644
-> > --- a/kernel/bpf/syscall.c
-> > +++ b/kernel/bpf/syscall.c
-> > @@ -618,7 +618,6 @@ int bpf_map_alloc_pages(const struct bpf_map *map, =
-int nid,
-> >         int ret =3D 0;
-> >         struct mem_cgroup *memcg, *old_memcg;
-> >
-> > -       bpf_map_memcg_enter(map, &old_memcg, &memcg);
-> >         for (i =3D 0; i < nr_pages; i++) {
-> >                 pg =3D __bpf_alloc_page(nid);
-> >
-> > @@ -632,7 +631,6 @@ int bpf_map_alloc_pages(const struct bpf_map *map, =
-int nid,
-> >                 break;
-> >         }
-> >
-> > -       bpf_map_memcg_exit(old_memcg, memcg);
-> >         return ret;
->
-> Sigh. See CI complains:
->
-> ../kernel/bpf/syscall.c:619:21: warning: unused variable 'memcg'
-> [-Wunused-variable]
->   619 |         struct mem_cgroup *memcg, *old_memcg;
->       |                            ^~~~~
-> ../kernel/bpf/syscall.c:619:29: warning: unused variable 'old_memcg'
-> [-Wunused-variable]
->   619 |         struct mem_cgroup *memcg, *old_memcg;
->       |                                    ^~~~~~~~~
-> 2 warnings generated.
-> New errors added
->
-> pw-bot: cr
+Hello:
 
-Sorry, sent v5 with fix.
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Fri,  2 Jan 2026 10:00:26 -0800 you wrote:
+> v2: https://lore.kernel.org/all/20251231171118.1174007-1-puranjay@kernel.org/
+> Changes in v2->v3:
+> - Fix documentation: add a new section for kfunc parameters (Eduard)
+> - Remove all occurances of KF_TRUSTED from comments, etc. (Eduard)
+> - Fix the netfilter kfuncs to drop dead NULL checks.
+> - Fix selftest for netfilter kfuncs to check for verification failures
+>   and remove the runtime failure that are not possible after this
+>   changes
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,v3,01/10] bpf: Make KF_TRUSTED_ARGS the default for all kfuncs
+    https://git.kernel.org/bpf/bpf-next/c/1a5c01d2508a
+  - [bpf-next,v3,02/10] bpf: Remove redundant KF_TRUSTED_ARGS flag from all kfuncs
+    https://git.kernel.org/bpf/bpf-next/c/7646c7afd9a9
+  - [bpf-next,v3,03/10] bpf: net: netfilter: drop dead NULL checks
+    https://git.kernel.org/bpf/bpf-next/c/bddaf9adda72
+  - [bpf-next,v3,04/10] bpf: xfrm: drop dead NULL check in bpf_xdp_get_xfrm_state()
+    https://git.kernel.org/bpf/bpf-next/c/cd1d60949143
+  - [bpf-next,v3,05/10] HID: bpf: drop dead NULL checks in kfuncs
+    https://git.kernel.org/bpf/bpf-next/c/8fe172fa305f
+  - [bpf-next,v3,06/10] selftests: bpf: Update kfunc_param_nullable test for new error message
+    https://git.kernel.org/bpf/bpf-next/c/df5004579bbd
+  - [bpf-next,v3,07/10] selftests: bpf: Update failure message for rbtree_fail
+    https://git.kernel.org/bpf/bpf-next/c/03cc77b10e00
+  - [bpf-next,v3,08/10] selftests: bpf: fix test_kfunc_dynptr_param
+    https://git.kernel.org/bpf/bpf-next/c/230b0118e416
+  - [bpf-next,v3,09/10] selftests: bpf: fix cgroup_hierarchical_stats
+    https://git.kernel.org/bpf/bpf-next/c/cf82580c86a9
+  - [bpf-next,v3,10/10] selftests: bpf: Fix test_bpf_nf for trusted args becoming default
+    https://git.kernel.org/bpf/bpf-next/c/cf503eb2c6c3
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
