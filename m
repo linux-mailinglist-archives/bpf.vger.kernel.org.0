@@ -1,155 +1,184 @@
-Return-Path: <bpf+bounces-77733-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77734-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D206ECEFD45
-	for <lists+bpf@lfdr.de>; Sat, 03 Jan 2026 10:12:05 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9496ACEFD4B
+	for <lists+bpf@lfdr.de>; Sat, 03 Jan 2026 10:13:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C7ADF302E150
-	for <lists+bpf@lfdr.de>; Sat,  3 Jan 2026 09:11:54 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 36792300CF07
+	for <lists+bpf@lfdr.de>; Sat,  3 Jan 2026 09:13:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9E631AC44D;
-	Sat,  3 Jan 2026 09:11:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B8B82F6181;
+	Sat,  3 Jan 2026 09:13:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QBUVEBi8"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PWG7YkCF";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="nQv5l98g"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E5C8233D88
-	for <bpf@vger.kernel.org>; Sat,  3 Jan 2026 09:11:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 492A223D7EA
+	for <bpf@vger.kernel.org>; Sat,  3 Jan 2026 09:13:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767431512; cv=none; b=LgiTJ6pNItJ6PPI/GXVbC+iNe1jyKGHApahl7yu/olqdwJHrdybg6kxSw/km1WfN/3p3XsK9Nidd2o+lQHLNX3DabCqOGhE5Rh8kg6/Dgo45BLoFFRdUpJxF5FeggVHryUi0CPdBoX8MLDcWST5+h4NtCFp5Sxnkz1UZAxdVO58=
+	t=1767431599; cv=none; b=jQ0o8zv9DiHmm1ITtU9Fa1zRKMBf8s+dTW1/M12TshPLQ4i30UjttpdGunPLIs1bjWuRPbsFdSejIwdT7OW5hj5i466g4IlpBEQOB1QnGBAT3KB13j5jIpqfqnI6bUsCO6vbcX/Oix6EDw01rPRHShDXnYOkWwy6K0ehFioeT0Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767431512; c=relaxed/simple;
-	bh=HA43poXcwQpADE2V9nU830RzFH6YDFnRj5guQFKHWY8=;
+	s=arc-20240116; t=1767431599; c=relaxed/simple;
+	bh=D2JUwaLgQPVcFVxnKAJxg4vCYvDrhyAGsjt3mPC1zq8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R1oZ+IMF6eAqZHZ1iSyGHFLSQV3JWTYlhPazyiWTG6CrQ5VnZcDHYbOk45QrACWs/JNbr+KG2b/cNMSWqlIXXut6f7bC5MDL2frzHOZFzeyeDWOHqQUaTLfXKkPQUt0PQlv4bafEV9vHaSYxF/k1D6evtxzVlirQhEzN+SgvR7c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QBUVEBi8; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-7acd9a03ba9so13042716b3a.1
-        for <bpf@vger.kernel.org>; Sat, 03 Jan 2026 01:11:50 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=KqOU1Jiarxk1/+fzDNPNv9KjzlqIUMhyNB8vPwiG9cp8rksnZxRp7WXZkOfaDOyN2Uf9I19rCGzJWTK/rJzbc87zA8dAn2FmX5IIQvlGjJOKtnTWZ9da0B/CR9QInXtJgLhqYX/nXrfSImVXcZ/MJtrSZ248P5I/6ofzQQlnnmE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PWG7YkCF; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=nQv5l98g; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1767431596;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4Hb8jN/L6fYCR7fWSSvv5cBYqP1P00Le5VoBUo+rlAg=;
+	b=PWG7YkCFXoMSJy7ghk1BH/BrbrhNfsQia/RyudIOFjSz2g9ua9Vr1yTp9exalFoAQr72t9
+	motspI/nHiLpS0dBcRLDtxFhihWymbi/K2R8h5dgNdXaVZ/sR0xJItiZSDi2xCGSBmeLRZ
+	i2WMvo3JHD5N/NJRgsSUPR7mHny+fM8=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-15-YsdoDsMgM4-3F4Reg46SRQ-1; Sat, 03 Jan 2026 04:13:15 -0500
+X-MC-Unique: YsdoDsMgM4-3F4Reg46SRQ-1
+X-Mimecast-MFC-AGG-ID: YsdoDsMgM4-3F4Reg46SRQ_1767431594
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-4325aa61c6bso4790706f8f.0
+        for <bpf@vger.kernel.org>; Sat, 03 Jan 2026 01:13:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767431510; x=1768036310; darn=vger.kernel.org;
+        d=redhat.com; s=google; t=1767431594; x=1768036394; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CbB/u4Boyz6wim8LLKDK6vrmsmGBVfzV79ZjNtpeGas=;
-        b=QBUVEBi82nqruvb4sfB04p3544/imFFRNhSir75cFMCYEf4h7wFYoiCRPAb2RDlCUI
-         JerEuwpOEZ0GOxQ8jFm34HljVvdV5bYZafRfcssETKyeqFGT39xc0+IHNUcmMeHbwoDU
-         FprCWxpzDtZY7DMFALG2r1vbuE8T7s6QlLk2RSj6hW+OSjM5W6mi3GBXRjauu0pptzFM
-         c3hH95Ec9RJvj4mBlgHlSQ0LUkY4aOK+PSr/O8tdqqxMbs7WpK6/LQ1EBXhbvcy+QoE0
-         FteuA3DvB8BRlyGkbU6KogeB1GAtL9ry9eLbltQrdGuLSVt3hPOqNDbi7sXQvHmDH21g
-         +JtQ==
+        bh=4Hb8jN/L6fYCR7fWSSvv5cBYqP1P00Le5VoBUo+rlAg=;
+        b=nQv5l98gQ+cgHNo7yX4C326Q7WkrMYQ1j68rqYQVQkUHlhU0x1uSd7E7EJ4DMxmkGY
+         X3WkX/VuETV2g6+DzlVFLtqdSkXTGqhmeyW7j6ej2axyu9upsywoNAOWyq1CNWOtZBRy
+         KJHaSVXHd5gSJK+rAaOfcMAyOXabRpvOpw1RyCygJ5nzbGVBpnUTOAQO8XvCr9jWlUIw
+         uKCw4VS56743CdVhhudSOM82CcolYJuwLKKhEWTgp9dNwQ4nlX4M5U9QCVmpVJ34Ag7+
+         kepOfXvcl+9zWijc0dprS+7/DARBNvlOQI7x/xaHqbkw8AeFVmQJURNWNYPBcd6uU/Mk
+         /tRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767431510; x=1768036310;
+        d=1e100.net; s=20230601; t=1767431594; x=1768036394;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CbB/u4Boyz6wim8LLKDK6vrmsmGBVfzV79ZjNtpeGas=;
-        b=jhA63eWeg5ajdYJV1+X0LqV0fCy8fCUJHV5h5PNzvUA2eg2cmT4hLGUBCEMsiyVj5G
-         NkDMOEF1nJ08I8/RMO03AWMb0R77EtK3nLK3XBKeTJKK9Qzv/lNlcb7b+Q0rpMMSumHw
-         yx9mKfw6qLzId/eNfuak4kj+7avca5+E9WrnM6WjldjKlELdTxS7bc3GHasCXtCibjS/
-         N4lZ3og0frhJR4rrGDUf6xPj9l396n6RmukZxrtV3f9Opn2uSZfzc6wIvA0zp/HrO5ZE
-         Krc3Yiqiipqf3JmOFFyzy2lzaJCsazmFF/0WEGz3IAH01Q6/HvcJrSZNE/FdwQp721D3
-         D08g==
-X-Forwarded-Encrypted: i=1; AJvYcCWFpuPdJsoUWx5kUNUsV6fB0rDZV2n4OI+gfXH1ICDMmFYYBlRFbRnZGqG25hKcLRJ2aZ0=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx5DETQaWN3ADRY266ofneXLKav1cDnb2zD93P4oIF/U8r3OlK4
-	m/FAnKfxdeSVNFP5FDaB8ER4qrKUTmSIjKifwhlxA7vV9DX4rC3tsMWJ
-X-Gm-Gg: AY/fxX4gvZ9dGN14zNPzYFjb6TK+l/q4nYUSVw0dCi/TJ18EjF/3BByS8oFTdF+a/TE
-	gssBc5mpuEvUimsemThPRnAPdon1rIVxEGhE+1K0ariQtvf/B+BSu0gK0P6eOhg5obkkPxxKzPQ
-	3w1GV3dDEDM5oM/lBVyrCmQqFBJaCaUjsd/bKrYbsFhWA8vhjuMwx33kBTBnG/vUq3jWmNxDRsq
-	wCZFlR5reUL2JP+NQ+bJ8h0aMRxw0kV4R9x8Bn5ZqxqBiNandzcTcD95dfh7RJ6h9ojG5/1+8pN
-	6aD72WMbKq6stUFbrWyR3vl7CV41dsvNxkvbytUSpjqS3XXRL8IqJjnjcjS+McMNyoH64ghqPfq
-	lBsQzO1ctcBgW1uwTzrNIwcux9HSxxGeXWurXElSdjIdTqEjbnF427Oh7ddzlxBwPMQQOkcvzUi
-	S9xUDo7Dgp7KY=
-X-Google-Smtp-Source: AGHT+IHj+Yc5i5BlyxHw8XH6x0veUjij66PZD5scVA7u5fS2kWQiygSaCY5f39DOPJCDQFwr9SkNbQ==
-X-Received: by 2002:a05:6a00:e0f:b0:7e8:4398:b34f with SMTP id d2e1a72fcca58-7ff66079339mr38129658b3a.34.1767431510268;
-        Sat, 03 Jan 2026 01:11:50 -0800 (PST)
-Received: from archie.me ([210.87.74.117])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7ff7e797aadsm42981212b3a.61.2026.01.03.01.11.48
+        bh=4Hb8jN/L6fYCR7fWSSvv5cBYqP1P00Le5VoBUo+rlAg=;
+        b=TdbuSdyrDg6Io7S7376zSz2xI9WYy6M5JcFaIEbSUMq1Q4o7ieN78ysRZ5obAxbIdC
+         rFiy2aQ8AVJCqSk/pk0syT25ogXFFHhHzAMrRDWmmpuy7QztxPMmryuQ0gnUwQXx82QU
+         z8Rew08MrNAdu5bh3pjwCx0Lv/jWzhCBay5Owt43i2wxp2UGFW/synh0l9IfJJ19+QR4
+         mDleYV1VEOoHb0v1BhMjqD6Y7cfG9ZxV8BcAL6oZnaIQs9/uQEKBmqYA/RxhmT5I0nUK
+         uRsymkhYBS8bX1DCz34ArKimJi1Zo+WW/bOK3bqk6R8kOVhnQKWr37zkKrgwFmmgsW7W
+         juuQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU6B21XVjmdzBdHIqIMBNDZJoz9M9+LnvbQJBWGemm05wVcAYOczmQuIyCxt2iKTwJuXKw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyCLYVbhNguWJEIdUiBTbWyXCzlG2ds4zwVXPdgbkDqmt7VmlYP
+	SjRFiFoS88XEiLNuG1dG1g2DjsDx7s8xt0IWvg+NKWoTtg9J2kTvZjNgfyRi83EcHdcHC4JlvJG
+	UoTe2ia54cVycEI/uar7+wT0I2RGYoHlmtkcfHwsc7G5XSwNeaKg7Fg==
+X-Gm-Gg: AY/fxX5hFZjMdkjjM5BRgmo4+WAvlIUU+ABhyreq3JJbI3AZCIijU7vlxkPN0Y1QbnR
+	l2v6vGT/z9jCI7o7UIB7GCBFm47F0XLcI59/DHJHzs2jCxWgVzcI+PpH6WYvFmNwYyaoyR9e6jU
+	V+z4GCnbfueZq/eRW2+PuitLLB9djJAuTcGbZy8kMEt+J9iuuqB/lDksI3bdKdxPe5o32jdzRJh
+	KRi5aQgRuPx/6QwAok2o6WSCnRyu7diDN2+NGveJWJxNl/XpjdnrnrgRSpXVs35Ha7q6CPxlYwL
+	7Cy2sV4FHTds04jmrVotblYSZ9LA2/4TNk5zQlpF64iexbcDG7AYM+9ukMQLfVX0AoM/w/ZR3J0
+	g3oeGAw==
+X-Received: by 2002:a05:6000:40ce:b0:430:f2ee:b220 with SMTP id ffacd0b85a97d-4324e4cb94dmr57084914f8f.19.1767431593695;
+        Sat, 03 Jan 2026 01:13:13 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IE26GgQLEflvynAD5o7MsvyW4N7h1D9HT11b4Oml4DoyBao3uW+BjntwVayJEJqPx+C7BOcZA==
+X-Received: by 2002:a05:6000:40ce:b0:430:f2ee:b220 with SMTP id ffacd0b85a97d-4324e4cb94dmr57084882f8f.19.1767431593183;
+        Sat, 03 Jan 2026 01:13:13 -0800 (PST)
+Received: from redhat.com ([2a06:c701:73d7:4800:ba30:1c4a:380d:b509])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4325b6bfe88sm80644627f8f.19.2026.01.03.01.13.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Jan 2026 01:11:48 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-	id ABA154092C2B; Sat, 03 Jan 2026 16:11:46 +0700 (WIB)
-Date: Sat, 3 Jan 2026 16:11:46 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Ihor Solodrai <ihor.solodrai@linux.dev>,
-	Hemanth Malla <vmalla@linux.microsoft.com>, bpf@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
-	yonghong.song@linux.dev, john.fastabend@gmail.com,
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
-	jolsa@kernel.org, vmalla@microsoft.com, corbet@lwn.net,
-	Alan Maguire <alan.maguire@oracle.com>,
-	dwarves <dwarves@vger.kernel.org>
-Subject: Re: [PATCH bpf-next] bpf, docs: Update pahole to 1.28 for selftests
-Message-ID: <aVjdUjai0lzpMeHv@archie.me>
-References: <1767352415-24862-1-git-send-email-vmalla@linux.microsoft.com>
- <bcd23277-a18e-4bb5-ba76-3416c84511c2@linux.dev>
+        Sat, 03 Jan 2026 01:13:12 -0800 (PST)
+Date: Sat, 3 Jan 2026 04:13:09 -0500
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Bui Quang Minh <minhquangbui99@gmail.com>
+Cc: netdev@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	Eugenio =?iso-8859-1?Q?P=E9rez?= <eperezma@redhat.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	virtualization@lists.linux.dev, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH net v2 0/3] virtio-net: fix the deadlock when disabling
+ rx NAPI
+Message-ID: <20260103041213-mutt-send-email-mst@kernel.org>
+References: <20260102152023.10773-1-minhquangbui99@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="x53cqXSfhecsAUML"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bcd23277-a18e-4bb5-ba76-3416c84511c2@linux.dev>
+In-Reply-To: <20260102152023.10773-1-minhquangbui99@gmail.com>
+
+On Fri, Jan 02, 2026 at 10:20:20PM +0700, Bui Quang Minh wrote:
+> Calling napi_disable() on an already disabled napi can cause the
+> deadlock. In commit 4bc12818b363 ("virtio-net: disable delayed refill
+> when pausing rx"), to avoid the deadlock, when pausing the RX in
+> virtnet_rx_pause[_all](), we disable and cancel the delayed refill work.
+> However, in the virtnet_rx_resume_all(), we enable the delayed refill
+> work too early before enabling all the receive queue napis.
+> 
+> The deadlock can be reproduced by running
+> selftests/drivers/net/hw/xsk_reconfig.py with multiqueue virtio-net
+> device and inserting a cond_resched() inside the for loop in
+> virtnet_rx_resume_all() to increase the success rate. Because the worker
+> processing the delayed refilled work runs on the same CPU as
+> virtnet_rx_resume_all(), a reschedule is needed to cause the deadlock.
+> In real scenario, the contention on netdev_lock can cause the
+> reschedule.
+> 
+> Due to the complexity of delayed refill worker, in this series, we remove
+> it. When we fail to refill the receive buffer, we will retry in the next
+> NAPI poll instead.
+> - Patch 1: removes delayed refill worker schedule and retry refill in next
+> NAPI
+> - Patch 2, 3: removes and clean up unused delayed refill worker code
+> 
+> For testing, I've run the following tests with no issue so far
+> - selftests/drivers/net/hw/xsk_reconfig.py which sets up the XDP zerocopy
+> without providing any descriptors to the fill ring. As a result,
+> try_fill_recv will always fail.
+> - Send TCP packets from host to guest while guest is nearly OOM and some
+> try_fill_recv calls fail.
+
+Thanks, the patches look good to me.
+Sent some nitpicking comments, with these addressed:
+
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
 
 
---x53cqXSfhecsAUML
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 02, 2026 at 07:33:50AM -0800, Ihor Solodrai wrote:
-> On 1/2/26 3:13 AM, Hemanth Malla wrote:
-> > diff --git a/Documentation/bpf/bpf_devel_QA.rst b/Documentation/bpf/bpf=
-_devel_QA.rst
-> > index 0acb4c9b8d90..3a147b6c780e 100644
-> > --- a/Documentation/bpf/bpf_devel_QA.rst
-> > +++ b/Documentation/bpf/bpf_devel_QA.rst
-> > @@ -482,7 +482,7 @@ under test should match the config file fragment in
-> >  tools/testing/selftests/bpf as closely as possible.
-> > =20
-> >  Finally to ensure support for latest BPF Type Format features -
-> > -discussed in Documentation/bpf/btf.rst - pahole version 1.16
-> > +discussed in Documentation/bpf/btf.rst - pahole version 1.28
->=20
-> Hi Hemanth, thanks for the patch.
->=20
-> Acked-by: Ihor Solodrai <ihor.solodrai@linux.dev>
->=20
-> 1.28 is needed for --distilled_base [1], which is only a requirement
-> for tests using modules. Many other tests are likely to work with
-> older versions, but the minimum for the kernel build is 1.22 now [2].
->=20
-> Not sure if it's worth it to add this nuance to the QA doc, although
-> in general we should recommend people running the selftests to use the
-> latest pahole release. Maybe add a comment?
+> Changes in v2:
+> - Remove the delayed refill worker to simplify the logic instead of trying
+> to fix it
+> - Link to v1:
+> https://lore.kernel.org/netdev/20251223152533.24364-1-minhquangbui99@gmail.com/
+> 
+> Link to the previous approach and discussion:
+> https://lore.kernel.org/netdev/20251212152741.11656-1-minhquangbui99@gmail.com/
+> 
+> Thanks,
+> Quang Minh.
+> 
+> Bui Quang Minh (3):
+>   virtio-net: don't schedule delayed refill worker
+>   virtio-net: remove unused delayed refill worker
+>   virtio-net: clean up __virtnet_rx_pause/resume
+> 
+>  drivers/net/virtio_net.c | 171 +++++++++------------------------------
+>  1 file changed, 40 insertions(+), 131 deletions(-)
+> 
+> -- 
+> 2.43.0
 
-I guess minimum pahole version can be added to
-Documentation/process/changes.rst.
-
-Thanks.
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---x53cqXSfhecsAUML
-Content-Type: application/pgp-signature; name=signature.asc
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCaVjdSgAKCRD2uYlJVVFO
-o/ofAP9+4EXkvyXn4xtHYs/ZObOs1c59JDS0PbftimugULAbBQD/bWQidzmK3WT/
-kSgpPyJVYNhsw4M7WZ30T5LQm9z0QQk=
-=xORZ
------END PGP SIGNATURE-----
-
---x53cqXSfhecsAUML--
 
