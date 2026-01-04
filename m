@@ -1,109 +1,57 @@
-Return-Path: <bpf+bounces-77778-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77779-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA2BBCF0F11
-	for <lists+bpf@lfdr.de>; Sun, 04 Jan 2026 13:42:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D517CF0EED
+	for <lists+bpf@lfdr.de>; Sun, 04 Jan 2026 13:36:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id AA63030139AB
-	for <lists+bpf@lfdr.de>; Sun,  4 Jan 2026 12:41:51 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 9B8B6300A6D9
+	for <lists+bpf@lfdr.de>; Sun,  4 Jan 2026 12:36:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB19E271457;
-	Sun,  4 Jan 2026 12:30:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TqPkms3U"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB20C28468E;
+	Sun,  4 Jan 2026 12:36:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f196.google.com (mail-yw1-f196.google.com [209.85.128.196])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from localhost.localdomain (unknown [147.136.157.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC92327FB25
-	for <bpf@vger.kernel.org>; Sun,  4 Jan 2026 12:30:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 195D12AF1D;
+	Sun,  4 Jan 2026 12:36:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.136.157.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767529843; cv=none; b=ftthqvmVtTmHpew4VU1jIK2HKa9SSk8gMQts/HSNVz2A4/eYcsix4Xj0rmWcbHcHavo61CQzZ4XoW8PguazIU37mHRtPNz0S19wvY3QNp2u6oJc7fnXeObLwmTQAOGZ++kPxotNkozZ1Oyp6W4fTWKyssiwhYHuWLIbfQUonS9k=
+	t=1767530197; cv=none; b=FZrLN6fZESmh8eJUhgL9OmAW1iFq6yO4ABe/Zc+3OBMQOs4AHhY+ACaMdIVket/xNl83DBSJ5j7lbuOPsbSLl65ezFAP/gcDPvC71txV90bKvFySY5ptLWjw1s3FZ76s72voy87HUBw1yf5F/kih3dersek5KFqHGsm7GL/g8/M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767529843; c=relaxed/simple;
-	bh=ARq0/QucFj/sxPqr+22ybRos7rUcjBBi5nq/Y4PoAvU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dRSsTYYziBjea/h3PYBVb+C8Zv50XyfbSog3dqlZjDm8y+doVvR/jhLl4xThk0JRRNp92e+U/Of45tZL9i9MIoS/Ck8W3gKHmMV5Q4IAWpLy05thodMeBcCOc7FBtpvIu4oy2M/WsbODT0gkVZSE67TaJuOeheeciJhoyU9+fQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TqPkms3U; arc=none smtp.client-ip=209.85.128.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f196.google.com with SMTP id 00721157ae682-7908ddad578so1309927b3.1
-        for <bpf@vger.kernel.org>; Sun, 04 Jan 2026 04:30:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767529841; x=1768134641; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ki8yj47Ksf2sOkp6JBKCA9cB1ptX2Wx6sb0cvY7RlMA=;
-        b=TqPkms3U+iW3ZtHfZVQjlxgEmv0kdW+TEc691Q1F9AVik7R1CxM07xU7sYmYBVdTut
-         YvJEwRyigQ5XFg1f7RzDNSD3bh2JcV7WL/9BJ3LTQ0zYR6Vdk0j9pO8dneLnayedCXqc
-         LEUM1gufSqq0uuveuXnxoag76AtvwEJ7x19FKID0Ls60Op0pCUIAQzJlHRBrGt/AkY8p
-         e4Ct6NtYXCI14AdCF8c0n5JEOY6cIEWXviAQ9nfuSF+p7cY0AKDL+2Vh8fUPuJ9uZs7W
-         vK4ovstoqjMQOr/l+xVySfCshB9DkSnht4D9YXD0x1xwbiNUOgBfzP+kpl+N1TlUZe5D
-         ltpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767529841; x=1768134641;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=ki8yj47Ksf2sOkp6JBKCA9cB1ptX2Wx6sb0cvY7RlMA=;
-        b=DeAKTzvalncqzOUXBiCKLAX0MykbdmD3wfJLG7Pn+AnChEcEAy5WbP1fs/k0I6uvt1
-         6Qbif1Glp1XmOtECs98SNiIz39F//RaWP/qW36Bda806HRW97Z+baEsTERlJLAZ4u/Ie
-         CA3DdCtUSqc0h0yNRvewCGXixn9WjIfRELD9my3lSebWtUhSrfKiy+YxsSxJCZIcDmgP
-         FFT4DSCFTeO12eK363Ox9R0iKaXFOllh4Aoei7vAY6eYyIfa6eh2aUbovco8md54pQuf
-         X58fOGlvtpzoLuflMLLwMM9XqsUK9wbYXxtr4ntRDt8xH5ZoqkQ4wIluuhr4ZhFTvTYQ
-         K53w==
-X-Forwarded-Encrypted: i=1; AJvYcCUdTsUHQYm7iGfoVHu+XZq3oxQwFFvpc1LJSr6LCq70hxm8q0VWA3EtlF7N2ldt9aHeD6g=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwAGZ2YRoLdtzkKsrnoASe2AS50l2X6KZUmVkiUAODGETp4fN4b
-	pxWSH8GoPKY0Q9aiMgQbQAR4r9px+VKJ/z/cloAKg7kDsnRzCQBo/WsQ
-X-Gm-Gg: AY/fxX4e4fCgD4Q6gABPWZjhqH11Mhdx3lPL6iFS8HofE1i/mY5D5bIYJqJ7Bz1vnnh
-	4N6taZEt+3LL9EOp7POqovEGe+PtP2D7PZj+svGt3Z+bRF9eVEuIdfhfkTCX/gS+fEZKCzFeJYu
-	ZUFqLwozScuRkrcRK/4lE1JwqkQKyfGlXceu90ypsm4UagnKjO39t8pkNgAnoDh4RFc5lRCp/Ax
-	FpcPq7LEng5KrplN8Qb19MceuDykwooZaOtmtwWRg7u8QEXagXAQtw8/iWi0m8LZuIvBcL+wW6g
-	ZAwhqaInicji7IPY+LrE84ZcawzxbBVpXEHenq+7zHJgspoRsLqY1JMqiKu8/hrSbbD52v3lYis
-	XM7hgi5PPhmOGPVpmpMc+3bGkW8LKwIk5REmJ+EwJAhv6h8RKaBnNlKDDtYnaBoKm0wDwOCmaop
-	acqK9Liic=
-X-Google-Smtp-Source: AGHT+IHvmhNvokdhiDeZCaYjQcCM0epcPEZFOjtq+9XoutL8WlCTfktxFdlZD6VAvB+jQfPzwTGVbQ==
-X-Received: by 2002:a53:acdc:0:10b0:644:79fb:7db7 with SMTP id 956f58d0204a3-6466a87f95emr31497735d50.13.1767529840792;
-        Sun, 04 Jan 2026 04:30:40 -0800 (PST)
-Received: from 7940hx ([23.94.188.235])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-78fb4378372sm175449427b3.12.2026.01.04.04.30.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Jan 2026 04:30:40 -0800 (PST)
-From: Menglong Dong <menglong8.dong@gmail.com>
-X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
-To: ast@kernel.org,
-	andrii@kernel.org
-Cc: daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	davem@davemloft.net,
-	dsahern@kernel.org,
-	tglx@linutronix.de,
-	mingo@redhat.com,
-	jiang.biao@linux.dev,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	x86@kernel.org,
-	hpa@zytor.com,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v6 10/10] selftests/bpf: test fsession mixed with fentry and fexit
-Date: Sun,  4 Jan 2026 20:28:14 +0800
-Message-ID: <20260104122814.183732-11-dongml2@chinatelecom.cn>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20260104122814.183732-1-dongml2@chinatelecom.cn>
-References: <20260104122814.183732-1-dongml2@chinatelecom.cn>
+	s=arc-20240116; t=1767530197; c=relaxed/simple;
+	bh=86+1c7H2UFQ62OsdAN8UTPAnfSH3afjSbkZR5rANUOg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EJ+4jMtrykJCwcZLJFJVXAAToVyBot8FHYlduQ1ynN5+7EA5Ro6mLA15rWR+OWRZPUqlNdq7uA4GuU5wzrderDWQn68Fx7mGM14wX1skT+nXChgGGiN596fQAydhcW+Px58qkPYQV9nmGQ7DT12eemLed/kzagQJdtLkMQglft4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=none smtp.mailfrom=localhost.localdomain; arc=none smtp.client-ip=147.136.157.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=localhost.localdomain
+Received: by localhost.localdomain (Postfix, from userid 1007)
+	id D906F8B2A13; Sun,  4 Jan 2026 20:36:27 +0800 (+08)
+From: Jiayuan Chen <jiayuan.chen@linux.dev>
+To: kasan-dev@googlegroups.com,
+	andreyknvl@gmail.com
+Cc: dvyukov@google.com,
+	vincenzo.frascino@arm.com,
+	ryabinin.a.a@gmail.com,
+	glider@google.com,
+	linux-mm@kvack.org,
+	Jiayuan Chen <jiayuan.chen@shopee.com>,
+	Jiayuan Chen <jiayuan.chen@linux.dev>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Ryan Roberts <ryan.roberts@arm.com>,
+	Dev Jain <dev.jain@arm.com>,
+	Yang Shi <yang@os.amperecomputing.com>,
+	Kevin Brodsky <kevin.brodsky@arm.com>,
+	Huang Shijie <shijie@os.amperecomputing.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH v1] kasan,mm: fix incomplete tag reset in change_memory_common()
+Date: Sun,  4 Jan 2026 20:35:27 +0800
+Message-ID: <20260104123532.272627-1-jiayuan.chen@linux.dev>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -112,38 +60,84 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Test the fsession when it is used together with fentry, fexit.
+From: Jiayuan Chen <jiayuan.chen@shopee.com>
 
-Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+Running KASAN KUnit tests with {HW,SW}_TAGS mode triggers a fault in
+change_memory_common():
+
+  Call trace:
+   change_memory_common+0x168/0x210 (P)
+   set_memory_ro+0x20/0x48
+   vmalloc_helpers_tags+0xe8/0x338
+   kunit_try_run_case+0x74/0x188
+   kunit_generic_run_threadfn_adapter+0x30/0x70
+   kthread+0x11c/0x200
+   ret_from_fork+0x10/0x20
+  ---[ end trace 0000000000000000 ]---
+      # vmalloc_helpers_tags: try faulted
+      not ok 67 vmalloc_helpers_tags
+
+Commit a06494adb7ef ("arm64: mm: use untagged address to calculate page index")
+fixed a KASAN warning in the BPF subsystem by adding kasan_reset_tag() to
+the index calculation. In the execmem flow:
+
+    bpf_prog_pack_alloc()
+      -> bpf_jit_alloc_exec()
+        -> execmem_alloc()
+
+The returned address from execmem_vmalloc/execmem_cache_alloc is passed
+through kasan_reset_tag(), so start has no tag while area->addr still
+retains the original tag. The fix correctly handled this case by resetting
+the tag on area->addr:
+
+    (start - (unsigned long)kasan_reset_tag(area->addr)) >> PAGE_SHIFT
+
+However, in normal vmalloc paths, both start and area->addr have matching
+tags(or no tags). Resetting only area->addr causes a mismatch when
+subtracting a tagged address from an untagged one, resulting in an
+incorrect index.
+
+Fix this by resetting tags on both addresses in the index calculation.
+This ensures correct results regardless of the tag state of either address.
+
+Tested with KASAN KUnit tests under CONFIG_KASAN_GENERIC,
+CONFIG_KASAN_SW_TAGS, and CONFIG_KASAN_HW_TAGS - all pass. Also verified
+the original BPF KASAN warning from [1] is still fixed.
+
+[1] https://lore.kernel.org/all/20251118164115.GA3977565@ax162/
+
+Fixes: a06494adb7ef ("arm64: mm: use untagged address to calculate page index")
+Signed-off-by: Jiayuan Chen <jiayuan.chen@shopee.com>
+Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
 ---
- .../testing/selftests/bpf/progs/fsession_test.c  | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ arch/arm64/mm/pageattr.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/fsession_test.c b/tools/testing/selftests/bpf/progs/fsession_test.c
-index 5630cf3bbd8b..acf76e20284b 100644
---- a/tools/testing/selftests/bpf/progs/fsession_test.c
-+++ b/tools/testing/selftests/bpf/progs/fsession_test.c
-@@ -180,3 +180,19 @@ int BPF_PROG(test11, int a, int ret)
- 	*cookie = 0;
- 	return 0;
- }
-+
-+__u64 test12_result = 0;
-+SEC("fexit/bpf_fentry_test1")
-+int BPF_PROG(test12, int a, int ret)
-+{
-+	test12_result = a == 1 && ret == 2;
-+	return 0;
-+}
-+
-+__u64 test13_result = 0;
-+SEC("fentry/bpf_fentry_test1")
-+int BPF_PROG(test13, int a)
-+{
-+	test13_result = a == 1;
-+	return 0;
-+}
+diff --git a/arch/arm64/mm/pageattr.c b/arch/arm64/mm/pageattr.c
+index 508986608b49..358d1dc9a576 100644
+--- a/arch/arm64/mm/pageattr.c
++++ b/arch/arm64/mm/pageattr.c
+@@ -171,7 +171,8 @@ static int change_memory_common(unsigned long addr, int numpages,
+ 	 */
+ 	area = find_vm_area((void *)addr);
+ 	if (!area ||
+-	    end > (unsigned long)kasan_reset_tag(area->addr) + area->size ||
++	    ((unsigned long)kasan_reset_tag((void *)end) >
++	     (unsigned long)kasan_reset_tag(area->addr) + area->size) ||
+ 	    ((area->flags & (VM_ALLOC | VM_ALLOW_HUGE_VMAP)) != VM_ALLOC))
+ 		return -EINVAL;
+ 
+@@ -184,7 +185,8 @@ static int change_memory_common(unsigned long addr, int numpages,
+ 	 */
+ 	if (rodata_full && (pgprot_val(set_mask) == PTE_RDONLY ||
+ 			    pgprot_val(clear_mask) == PTE_RDONLY)) {
+-		unsigned long idx = (start - (unsigned long)kasan_reset_tag(area->addr))
++		unsigned long idx = ((unsigned long)kasan_reset_tag((void *)start) -
++				     (unsigned long)kasan_reset_tag(area->addr))
+ 				    >> PAGE_SHIFT;
+ 		for (; numpages; idx++, numpages--) {
+ 			ret = __change_memory_common((u64)page_address(area->pages[idx]),
 -- 
-2.52.0
+2.43.0
 
 
