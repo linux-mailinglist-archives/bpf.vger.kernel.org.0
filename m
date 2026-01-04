@@ -1,255 +1,144 @@
-Return-Path: <bpf+bounces-77765-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77766-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6469CF0CA7
-	for <lists+bpf@lfdr.de>; Sun, 04 Jan 2026 10:31:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1956BCF0CCE
+	for <lists+bpf@lfdr.de>; Sun, 04 Jan 2026 11:01:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 15BCC301460A
-	for <lists+bpf@lfdr.de>; Sun,  4 Jan 2026 09:30:56 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7FD58300B83D
+	for <lists+bpf@lfdr.de>; Sun,  4 Jan 2026 10:01:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9133418DB35;
-	Sun,  4 Jan 2026 09:30:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F78A26ED5C;
+	Sun,  4 Jan 2026 10:01:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nvW/V5ES"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KZfKE/JN"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0921A3A1E8D
-	for <bpf@vger.kernel.org>; Sun,  4 Jan 2026 09:30:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90BF61FC8
+	for <bpf@vger.kernel.org>; Sun,  4 Jan 2026 10:00:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767519054; cv=none; b=DGm3bIxJBjI8n0JaLXxNKlh/8B7pKDESzE47/aGXSz0B/FMcAAhGOVGFGvH/CTVLZ6CJTtZd/xfI7ys+6XWmLysVcw2vj6my/MUy/g8rjWFOuyrfwIS7o0U4mDm0WuWXrViBoGpORampThqzmugjIXuFEhUhdHko42eWe/31sZ0=
+	t=1767520861; cv=none; b=XsWSZfVzDSnxdqOds2uN4bTDlUJXOcLqXqREc74zYiMwUIqNR/B29P4QaOWNbYLxTRGdU7g0bzOjHvHiG8zIAc8fnlgdZ6KPXHS0Sm4bIeJ19zDRsirGNWbf85IGxv/x3AQ1vHLXxsWBIYNZA4fr5zzwS476DOKqf7qdGWP57II=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767519054; c=relaxed/simple;
-	bh=lzSJURf3FpHYA4PkKC1xnAbqZ8zjtsvDpO+a0PvDcMw=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=FJKTbV9RgwtKTWJwqXsPXd8ThRvhheeMzrfWx5uD2+eAvOZMMknIpSSqCGouo+mAPTaqk+zqaF7RYYIb7su3qXTDofd2d/ndUxNsYATRGojjqg+9BWKE/ULURPsaX3HJKKKST3E/t08HxEpPa4bKFx0bYRrOPDfneFIVBgsiXz4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nvW/V5ES; arc=none smtp.client-ip=91.218.175.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1767520861; c=relaxed/simple;
+	bh=0RPZIxSaX4TH50/WI7hcpzHnzIU6efmP445eGO2GjgU=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=UIV0IHBnJHqIkqmMyI3N0li3wZmZS1SpNFyNm2WoDFewuGD9bTs4jDK5J43Lgpnb6ehO/VPzbYZiSVeSZqf21Hem5tiw8Lxd6Lff8hAmREpsWW+sSm3JCvk8+YhTlF+cd8gIEMM/9T5gPGjlm7M89wRv/7y6NrAZ44Y72VzWjjU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KZfKE/JN; arc=none smtp.client-ip=209.85.161.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-65d1bff2abaso7136763eaf.1
+        for <bpf@vger.kernel.org>; Sun, 04 Jan 2026 02:00:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1767520858; x=1768125658; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=lxvq+P5T+UHE6EUP4AwDIrBCHrlsHw1NSZS7vNRvQhw=;
+        b=KZfKE/JNRV2RrG1O9jAR2dk+VQYEkHj8RWSeEx3xLuMbEOtBeJVitrlH1IxRsWP2vl
+         P9v5oUfiJ8T9A+IbqzSeOL/VmdBgxHibJ3BVm3SDuKWzHmt/T2aO9i5vm3z7h5WdJU2o
+         HaR3aTXa2wS3zItECIYTa3WPROMzeKBCby0R72AhxlmRJpnCLup3uFGywCSnEP5xhDHV
+         T1oV1o81QKKwhQANWSteTwMnPsbjPrlRdDA5EnIKY9An/jfVjCYFq1xz1qMSits9Afve
+         R8xZcKZNlUjN79y5oqRmbweRFU6e3DlHlOVpEr9N81GOWZkoKwPzsHDkKcVexf2g7qFW
+         ZlJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767520858; x=1768125658;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lxvq+P5T+UHE6EUP4AwDIrBCHrlsHw1NSZS7vNRvQhw=;
+        b=SxdYI3eWDbAtcYwDl0JunncA+8EXD5ID2CGnf3+A4OkOg3ahBhGCoQFVEj5b35YnXD
+         BBXcWw9ulFALI9/T7yVaL5AFn67W+2z/9JlIyWoXakzbQ5cwnj1/58NTue00XLdvXF4X
+         wzZsUGB/XnmH27awp/pJkNPS1WfBYVPWy/GGyLRBUfeogrcMBpKOjiSDUKpHusjxCpX2
+         YicuBNfjMkQKXTnJpBOgwXpAVLcHewfqloebZbjAdhwHBEoNY1wVCbLXzD/kw+8dlnUV
+         DoXdrU6jpef0N9Dsbfbpohf57nfu+go/ue8zW+im8cfgCwP+uD/P3T5OYwh9VmVGfTlV
+         pabg==
+X-Gm-Message-State: AOJu0YwVqj9jGtIyUKY+GcoJL6F3MLoUffN50Ok5k6HjeuDg3rF4jQsl
+	jzen/pE7bcBRLT5PrUebtOqFNQl/zkmlGWXNb5ar6JUTKYHfgZoWiZ6A/G6VtTLTL4YqEtWm7hc
+	X2QyfbmGLjJJYRVyvvE+49x/r+b32OctAQ6nQpFNWQhRd
+X-Gm-Gg: AY/fxX550hl9ijzIsHYdkSaqExO2VyNv8xeJReXDQx5g5v/6a5XQTSGh7ssrf5Oad7s
+	gTbxmkOaK0BSpmGdzcWAcrQ2QqrilKb/EKFHe4wNyHfvIUMCzjRnThxeF40F8zb3qo0nUV0auqc
+	2XnkRxWt7CjbjtXh+8yWfuIwKKqC7XdugjksfvUHO4KfXSq4Rfwx2WWRsBAJ49pUQKxArtR0i36
+	fHOMk0s+amUS4HGDkTscBM1Fj/Wzn/FJonHaThyRmYfv8aN8NdZ2ld7vuk34GMwLKqP3IMs
+X-Google-Smtp-Source: AGHT+IFjOat6AafrVh3tFmMh92HqUoeMjpv0YkNMtNnWjJoZ6Gg+MtVdqZFm9Uyc8I1op1qkL/CJjpeX6q+n6WR4TiU=
+X-Received: by 2002:a4a:a551:0:b0:659:9a49:8eb0 with SMTP id
+ 006d021491bc7-65d0eb2ef2emr13926536eaf.52.1767520858269; Sun, 04 Jan 2026
+ 02:00:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1767519049;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FbFb4vZ8Kx6nmpMz19A349GuNGVDXKPfDjacOVYnMgo=;
-	b=nvW/V5ES2PyczNjvZpVF1t4am9BRAzUTJJ8Ripk0DAHp9pBEiaGEXddUhOWuwRRl16WYwf
-	FcLA1KDM4BywKQp7vaskve6uH79z18mGt5fj8gLWE8191p8slVi95gYjZwtGEqKTF0vinH
-	vWBB5y302lWNigXRCR1R+Fah5EtOfbo=
-Date: Sun, 04 Jan 2026 09:30:46 +0000
-Content-Type: text/plain; charset="utf-8"
+From: Hui Fei <feihui.ustc@gmail.com>
+Date: Sun, 4 Jan 2026 18:00:47 +0800
+X-Gm-Features: AQt7F2o_RWtXnXNA0o8EhGOMpo1RDDWryh6qk04ncBCFrlx5ap8KIL9YTaGy8yE
+Message-ID: <CADNPQri-onx+S+PqHKsOJwgwRKT6YBPyBt+U1hkDKgUr=05sPw@mail.gmail.com>
+Subject: [BUG] bpf/verifier: kernel crash in is_state_visited() during
+ bpf_prog_load (5.4.139 elrepo)
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com, 
+	yhs@fb.com, andriin@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: hui.zhu@linux.dev
-Message-ID: <a935563217affe85b2a6d0689914d7aba2ce127f@linux.dev>
-TLS-Required: No
-Subject: Re: [RFC PATCH v2 0/3] Memory Controller eBPF support
-To: "=?utf-8?B?TWljaGFsIEtvdXRuw70=?=" <mkoutny@suse.com>,
- chenridong@huaweicloud.com
-Cc: "Andrew Morton" <akpm@linux-foundation.org>, "Johannes Weiner"
- <hannes@cmpxchg.org>, "Michal Hocko" <mhocko@kernel.org>, "Roman  
- Gushchin" <roman.gushchin@linux.dev>, "Shakeel Butt"
- <shakeel.butt@linux.dev>, "Muchun Song" <muchun.song@linux.dev>, "Alexei 
-  Starovoitov" <ast@kernel.org>, "Daniel Borkmann" <daniel@iogearbox.net>,
- "Andrii Nakryiko" <andrii@kernel.org>, "Martin KaFai Lau"
- <martin.lau@linux.dev>, "Eduard Zingerman" <eddyz87@gmail.com>, "Song  
- Liu" <song@kernel.org>, "Yonghong Song" <yonghong.song@linux.dev>, "John 
-  Fastabend" <john.fastabend@gmail.com>, "KP Singh" <kpsingh@kernel.org>,
- "Stanislav Fomichev" <sdf@fomichev.me>, "Hao Luo" <haoluo@google.com>,
- "Jiri Olsa" <jolsa@kernel.org>, "Shuah Khan" <shuah@kernel.org>, "Peter  
- Zijlstra" <peterz@infradead.org>, "Miguel Ojeda" <ojeda@kernel.org>,
- "Nathan Chancellor" <nathan@kernel.org>, "Kees Cook" <kees@kernel.org>,
- "Tejun Heo" <tj@kernel.org>, "Jeff Xu" <jeffxu@chromium.org>, "Jan  
- Hendrik Farr" <kernel@jfarr.cc>, "Christian Brauner"
- <brauner@kernel.org>, "Randy Dunlap" <rdunlap@infradead.org>, "Brian  
- Gerst" <brgerst@gmail.com>, "Masahiro Yamada" <masahiroy@kernel.org>,
- davem@davemloft.net, "Jakub Kicinski" <kuba@kernel.org>, "Jesper Dangaard
-   Brouer" <hawk@kernel.org>, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, cgroups@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, "Hui Zhu" <zhuhui@kylinos.cn>
-In-Reply-To: <enlefo5mmoha2htsrvv76tdmj6yum4jan6hgym76adtpxuhvrp@aug6qh3ocde5>
-References: <cover.1767012332.git.zhuhui@kylinos.cn>
- <enlefo5mmoha2htsrvv76tdmj6yum4jan6hgym76adtpxuhvrp@aug6qh3ocde5>
-X-Migadu-Flow: FLOW_OUT
 
-2025=E5=B9=B412=E6=9C=8830=E6=97=A5 17:49, "Michal Koutn=C3=BD" <mkoutny@=
-suse.com mailto:mkoutny@suse.com?to=3D%22Michal%20Koutn%C3%BD%22%20%3Cmko=
-utny%40suse.com%3E > =E5=86=99=E5=88=B0:
+Hi BPF folks,
 
+Sorry, please ignore the previous email. I forgot to disable HTML
+formatting. I=E2=80=99m resending the message in plain text.
 
-Hi Michal and Ridong,
+We hit a kernel crash while loading/using BPF programs. The crash happens i=
+n the
+BPF verifier path during bpf_prog_load() and takes down the server.
 
->=20
->=20Hi Hui.
->=20
->=20On Tue, Dec 30, 2025 at 11:01:58AM +0800, Hui Zhu <hui.zhu@linux.dev>=
- wrote:
->=20
->=20>=20
->=20> This allows administrators to suppress low-priority cgroups' memory
-> >  usage based on custom policies implemented in BPF programs.
-> >=20
->=20BTW memory.low was conceived as a work-conserving mechanism for
-> prioritization of different workloads. Have you tried that? No need to
-> go directly to (high) limits. (<- Main question, below are some
-> secondary implementation questions/remarks.)
->=20
->=20...
->=20
+Kernel:
+  5.4.139-1.el7.elrepo.x86_64 #1 SMP Sat Aug 7 08:29:46 EDT 2021
+  x86_64 GNU/Linux
 
-memory.low=20is a helpful feature, but it can struggle to effectively
-throttle low-priority processes that continuously access their memory.
+Hardware:
+  KAYTUS KR4276-X2-A0-R0-00, BIOS 06.07.00 (10/14/2024)
+  processor : 63
+  vendor_id : GenuineIntel
+  cpu family : 6
+  model : 143
+  model name : Intel(R) Xeon(R) Gold 5416S
 
-For instance, consider the following example I ran:
-root@ubuntu:~# echo $((4 * 1024 * 1024 * 1024)) > /sys/fs/cgroup/high/mem=
-ory.low
-root@ubuntu:~# cgexec -g memory:low stress-ng --vm 4 --vm-keep --vm-bytes=
- 80% --vm-method all --seed 2025 --metrics -t 60 & cgexec -g memory:high =
-stress-ng --vm 4 --vm-keep --vm-bytes 80% --vm-method all --seed 2025 --m=
-etrics -t 60
-[1] 2011
-stress-ng: info:  [2011] setting to a 1 min, 0 secs run per stressor
-stress-ng: info:  [2012] setting to a 1 min, 0 secs run per stressor
-stress-ng: info:  [2011] dispatching hogs: 4 vm
-stress-ng: info:  [2012] dispatching hogs: 4 vm
-stress-ng: metrc: [2012] stressor       bogo ops real time  usr time  sys=
- time   bogo ops/s     bogo ops/s CPU used per       RSS Max
-stress-ng: metrc: [2012]                           (secs)    (secs)    (s=
-ecs)   (real time) (usr+sys time) instance (%)          (KB)
-stress-ng: metrc: [2012] vm                23584     60.21      2.75     =
-15.94       391.73        1262.07         7.76        649988
-stress-ng: info:  [2012] skipped: 0
-stress-ng: info:  [2012] passed: 4: vm (4)
-stress-ng: info:  [2012] failed: 0
-stress-ng: info:  [2012] metrics untrustworthy: 0
-stress-ng: info:  [2012] successful run completed in 1 min, 0.22 secs
-stress-ng: metrc: [2011] stressor       bogo ops real time  usr time  sys=
- time   bogo ops/s     bogo ops/s CPU used per       RSS Max
-stress-ng: metrc: [2011]                           (secs)    (secs)    (s=
-ecs)   (real time) (usr+sys time) instance (%)          (KB)
-stress-ng: metrc: [2011] vm                23584     60.22      3.06     =
-16.19       391.63        1224.97         7.99        688836
-stress-ng: info:  [2011] skipped: 0
-stress-ng: info:  [2011] passed: 4: vm (4)
-stress-ng: info:  [2011] failed: 0
-stress-ng: info:  [2011] metrics untrustworthy: 0
-stress-ng: info:  [2011] successful run completed in 1 min, 0.23 secs
+Workload:
+  - BPF is used by: parca-agent which is a profiling tool
 
-As the results show, setting memory.low on the cgroup with the
-high-priority workload did not improve its memory performance.
+Crash / oops (key parts):
+  BUG: unable to handle page fault for address: 00000e4900000e48
+  #PF: supervisor read access in kernel mode
+  RIP: __kmalloc_track_caller+0xa6/0x270
+  ...
+  Call Trace:
+    push_jmp_history.isra.0+0x3e/0x80
+    krealloc+0x84/0xb0
+    push_jmp_history.isra.0+0x3e/0x80
+    is_state_visited+0x48b/0x930
+    do_check+0x136/0x15a0
+    bpf_check+0x357/0x1440
+    bpf_prog_load+0x3fd/0x6f0
+    __do_sys_bpf+0x16a/0x11c0
+    __x64_sys_bpf+0x1a/0x20
+    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+  CR2: 00000e4900000e48
 
-However, memory.low is beneficial in many other scenarios.
-Perhaps extending it with eBPF support could help address a wider
-range of issues.
+Tainted: G        W         5.4.139-1.el7.elrepo.x86_64
 
-> >=20
->=20> This series introduces a BPF hook that allows reporting
-> >  additional "pages over high" for specific cgroups, effectively
-> >  increasing memory pressure and throttling for lower-priority
-> >  workloads when higher-priority cgroups need resources.
-> >=20
->=20Have you considered hooking into calculate_high_delay() instead? (Tha=
-t
-> function has undergone some evolution so it'd seem like the candidate
-> for BPFication.)
->=20
+We can provide:
+  - full dmesg around the crash
+  - the BPF program / verifier log (if you tell us which knobs you want)
+  - a vmcore if needed
 
-It=20seems that try_charge_memcg will not reach
-__mem_cgroup_handle_over_high if it only hook calculate_high_delay
-without setting memory.high.
+Questions:
+  1) Is this a known issue in 5.4.y verifier (is_state_visited /
+push_jmp_history)?
+  2) What additional info would be most useful to collect (verifier
+logs, config,
+     reproducer, etc.) to narrow this down?
+  3) Any workaround to avoid the crash?
 
-What do you think about hooking try_charge_memcg as well,
-so that it ensures __mem_cgroup_handle_over_high is called?
-
-
-> ...
->=20
->=20>=20
->=20> 3. Cgroup hierarchy management (inheritance during online/offline)
-> >=20
->=20I see you're copying the program upon memcg creation.
-> Configuration copies aren't such a good way to properly handle
-> hierarchical behavior.
-> I wonder if this could follow the more generic pattern of how BPF progs
-> are evaluated in hierarchies, see BPF_F_ALLOW_OVERRIDE and
-> BPF_F_ALLOW_MULTI.
-
-I will support them in the next version.
-
->=20
->=20>=20
->=20> Example Results
-> >=20
->=20...
->=20
->=20>=20
->=20> Results show the low-priority cgroup (/sys/fs/cgroup/low) was
-> >  significantly throttled:
-> >  - High-priority cgroup: 21,033,377 bogo ops at 347,825 ops/s
-> >  - Low-priority cgroup: 11,568 bogo ops at 177 ops/s
-> >=20=20
->=20>  The stress-ng process in the low-priority cgroup experienced a
-> >  ~99.9% slowdown in memory operations compared to the
-> >  high-priority cgroup, demonstrating effective priority
-> >  enforcement through BPF-controlled memory pressure.
-> >=20
->=20As a demonstrator, it'd be good to compare this with a baseline witho=
-ut
-> any extra progs, e.g. show that high-prio performed better and low-prio
-> wasn't throttled for nothing.
-
-Thanks for your remind.
-This is a test log in the test environment without any extra progs:
-
-root@ubuntu:~# cgexec -g memory:low stress-ng --vm 4 --vm-keep --vm-bytes=
- 80% \
---vm-method all --seed 2025 --metrics -t 60 \
-& cgexec -g memory:high stress-ng --vm 4 --vm-keep --vm-bytes 80% \
---vm-method all --seed 2025 --metrics -t 60
-[1] 982
-stress-ng: info:  [982] setting to a 1 min, 0 secs run per stressor
-stress-ng: info:  [983] setting to a 1 min, 0 secs run per stressor
-stress-ng: info:  [982] dispatching hogs: 4 vm
-stress-ng: info:  [983] dispatching hogs: 4 vm
-
-stress-ng: metrc: [982] stressor       bogo ops real time  usr time  sys =
-time   bogo ops/s     bogo ops/s CPU used per       RSS Max
-stress-ng: metrc: [982]                           (secs)    (secs)    (se=
-cs)   (real time) (usr+sys time) instance (%)          (KB)
-stress-ng: metrc: [982] vm                23544     60.08      2.90     1=
-5.74       391.85        1263.43         7.75        524708
-stress-ng: info:  [982] skipped: 0
-stress-ng: info:  [982] passed: 4: vm (4)
-stress-ng: info:  [982] failed: 0
-stress-ng: info:  [982] metrics untrustworthy: 0
-stress-ng: info:  [982] successful run completed in 1 min, 0.09 secs
-stress-ng: metrc: [983] stressor       bogo ops real time  usr time  sys =
-time   bogo ops/s     bogo ops/s CPU used per       RSS Max
-stress-ng: metrc: [983]                           (secs)    (secs)    (se=
-cs)   (real time) (usr+sys time) instance (%)          (KB)
-stress-ng: metrc: [983] vm                23544     60.09      3.12     1=
-5.91       391.81        1237.10         7.92        705076
-stress-ng: info:  [983] skipped: 0
-stress-ng: info:  [983] passed: 4: vm (4)
-stress-ng: info:  [983] failed: 0
-stress-ng: info:  [983] metrics untrustworthy: 0
-stress-ng: info:  [983] successful run completed in 1 min, 0.09 secs
-
-Best,
-Hui
-
-
->=20
->=20Thanks,
-> Michal
->
+Thanks,
+Hui Fei
 
