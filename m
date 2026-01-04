@@ -1,69 +1,95 @@
-Return-Path: <bpf+bounces-77755-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77756-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4800CCF0869
-	for <lists+bpf@lfdr.de>; Sun, 04 Jan 2026 03:18:34 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2953DCF0938
+	for <lists+bpf@lfdr.de>; Sun, 04 Jan 2026 04:23:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id CE3B030145A7
-	for <lists+bpf@lfdr.de>; Sun,  4 Jan 2026 02:18:19 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7E77230124F2
+	for <lists+bpf@lfdr.de>; Sun,  4 Jan 2026 03:23:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2564241690;
-	Sun,  4 Jan 2026 02:18:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E0D62BEFED;
+	Sun,  4 Jan 2026 03:23:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="QHsUUqTL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DyyvFlxg"
 X-Original-To: bpf@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.4])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DDFB239E9E;
-	Sun,  4 Jan 2026 02:18:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3D611EA7DF
+	for <bpf@vger.kernel.org>; Sun,  4 Jan 2026 03:23:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767493098; cv=none; b=iATHpntrCBBx/+OrvCCS9hWeJ7MHZkW1Lxz+adlKBcPHW0UsjNsIFgC2ZBqCocvj4Xiq2ZsRdL492oRxzRSpXZDRxL3r5+12+dFCkEbeS9TCqWYHddoZTBEsgXWwIrFviST5ekS/MhpS3aDga1MoiGsHeeSIqJ0cuuR2s/YrHgI=
+	t=1767497004; cv=none; b=TnzKIf3vlDke+4qhJs2zITZlImHXo80pXPgc3N2s1ZGJESrvq3dfZJRlypYkFF6I21qfZ64jpnWSAaCi+x0HKq/cAdiD3S4m+zo+LF63Y+dgGM5LU0tYUn28wIP7W2kZXrz1uWuUOtT73R60dn8GCaqIF/hCmuuBPN4Xx3rRChs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767493098; c=relaxed/simple;
-	bh=V7y0WPXu/mx7dNLScS1GjFa+Sf32uk1SQYEgjaG1NA0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=UyiSs99dJBfGQkUwaKiRRS5glexWLNNqZg5Snh5P6yvhfaXTdd2YzESR9HPTjiADR+XaGaAF/jzXykwsrfDjBi2CtsvlU209E7SylZO+daO3zPO7d4MSWzIMSpKDubiZLhHmFlYrvpmwGxISywS9LbAttBFAwcffI9GTCy4PUqo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=QHsUUqTL; arc=none smtp.client-ip=117.135.210.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=uH
-	jbJoYKvM8t/F8Mg4yiCQehxMlmwPPmei3d2I3PHwo=; b=QHsUUqTLkYnnd80D0P
-	VRLEMSwIB66ww50HZRbVKbXOslwZI5k/5/1JLY03cPjCybz913i4nQ7YaQjgNVs7
-	/YsO6Bnl1Na2DPbSJ8pZ4hDMcBFWoDPMIPM54tagSJ2MjZs2m45fEKk9aTRpIFnF
-	B07Td7cyw4oIo32vFnMLjxkI4=
-Received: from localhost.localdomain.localdomain (unknown [])
-	by gzga-smtp-mtada-g1-1 (Coremail) with SMTP id _____wBHN2r+zFlpYSkwDw--.25134S2;
-	Sun, 04 Jan 2026 10:14:24 +0800 (CST)
-From: WanLi Niu <kiraskyler@163.com>
-To: Quentin Monnet <qmo@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	WanLi Niu <kiraskyler@163.com>,
-	Menglong Dong <menglong8.dong@gmail.com>,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	WanLi Niu <niuwl1@chinatelecom.cn>,
-	Menglong Dong <dongml2@chinatelecom.cn>
-Subject: [PATCH v3 bpf-next] bpftool: Make skeleton C++ compatible with explicit casts
-Date: Sun,  4 Jan 2026 10:14:02 +0800
-Message-Id: <20260104021402.2968-1-kiraskyler@163.com>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20251231102929.3843-1-kiraskyler@163.com>
-References: <20251231102929.3843-1-kiraskyler@163.com>
+	s=arc-20240116; t=1767497004; c=relaxed/simple;
+	bh=H7Lp4hlHYKaLNrD6hSx22K2kF/5UZefq0VDM2fZgvew=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VQMHJ5ZLxaoQHwcIs4g9PIMZVazsYTV07yLkk4T/MRJ9PcERTYfW6BJbIk/ESzSOZgl9jAsOF+KCpVHU4bzhgho4dLnMTT0Wd42zhGPASLhpr5LHd0hA0DOnOZTH/foA8U9qXczLjc/XMWCLuC8rkZKqG90wRqvOWFWoKOjh/0o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DyyvFlxg; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-2a0fe77d141so148937415ad.1
+        for <bpf@vger.kernel.org>; Sat, 03 Jan 2026 19:23:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1767497002; x=1768101802; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=I84VtQc9KkyspRiC2X9X4Oiyff91gGOYfJWSeOoC4yY=;
+        b=DyyvFlxghUhBICA5ogPG+ypmRMUp0WAOCnjPFM6Y2gTJZa2PZqONkZv2+/OwVp8qBG
+         TIUZyQa5iHkGfv8BirxzuT7cXMmsYFw9KoeRxEiQr5Fx/bdyrQiUV2GE0z/LNkUcSeIA
+         O7+V7hPn77p5zNXbZfeTQ7Fm8QZ0EmkuKFBkLjaplnwegVRIulqHRDeZU59wp07YhCdV
+         y7oHn+0NjVzuDuFxJi/mI9GQ/RlSDF8VNXSFR1OZFRxgceddopnIjM8K8xhhDXNbcfOx
+         rk5stXrQUjpxXyZEq/bb/FC/2ffrjd5iV0LnnpaTBetIB9omVakDTeRDo9IdwOADhoJV
+         s0nA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767497002; x=1768101802;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=I84VtQc9KkyspRiC2X9X4Oiyff91gGOYfJWSeOoC4yY=;
+        b=Xab+ik1hDNI9nYtk2KTcQTclulLn20RVZjHLNK1kijiY2EofPzIPqGkb4qwk4OayIE
+         V1LyrbcbSywH5VwLQAp8WDUluedLDFgTWJut8jnvIJHslkSCZIT/K/6eiA6orKCfBj24
+         edrWcauiqGLlWsIjtawCUPXt4/8f0owJ4Bpwvj9dt4HHbci5mPMWEmRlCaqZb1AOvjfj
+         x8yklIlkmQmX+jTaTaLHXQLYmjXnvYNeQWFBLeQXGmChdIycwuXquYxBN3KJpvocilZI
+         niAcM/RBgzKEGytxOIVmbLfRZF8qpEV0uI0sPRKjoXaSt7L384UaRhXHVOMUq3KtFROr
+         mK8w==
+X-Gm-Message-State: AOJu0YxYu6DoM9lqVETgJ26xtdo4LQZAIbKqSg/f0YFUExhDTY0sHatx
+	nAVCSPsxdOwBPFEr/A6tl92MYA0xHEy6umAT0iO2gQJ79grfMOAzNzr9
+X-Gm-Gg: AY/fxX6fJq8P6QsECHPuoRlVucKR6rqs8UZ/1tgfhpPnQmDdxeXC1OIFb9lfpKwQPoj
+	i7NJzfOf2lwMhB9Mlr9bCprxFV9fSVMuO2wLZ0vt6vG4raXdj0GXuaXKDDMxJIi+VItdspafUH2
+	n97N8apY0yCrTsYTSVZVtcrdrlq1yZMypNcXG70b4O1zLxaQHhpZuWQKTi3Xo4dK3eXXlvdMy/f
+	VYnrTrPwjswd8sZXBV36vfhkR84DPkCGIyi9YSzGwnmq6tdU6NbahTdHaLVkmBtjsuGAJWiLuE2
+	Z1hSBUXjVvDl9LrYrUo85+16Gw8I7hrgqXdtOT/Wtx62DW8i1sTbcguLySerhcPV67Aq/lGomNE
+	lgAIq8lnu7686SKqNaU5GRwe2z8CaI4Wzf3PZWbpDfAZ8d4uYOMaKZUu6sVeO5RlS+esTHkzu/y
+	5EJ+sC6zOyVNZag4rR5UJ7wy0xRwFJEGssRn2nR6kBmpVd5TXG+FkjAZMYqXB5cHmzEOwI
+X-Google-Smtp-Source: AGHT+IH+1cbf7PbR9rmOhkZLX547un8Ww+01xAk9sjVgjF9ZNkVhQe+dnO9QBNOQLu57YQwxrNcFEA==
+X-Received: by 2002:a17:902:c403:b0:297:f527:a38f with SMTP id d9443c01a7336-2a2f2231764mr467489455ad.18.1767497001872;
+        Sat, 03 Jan 2026 19:23:21 -0800 (PST)
+Received: from KERNELXING-MB0.tencent.com ([43.132.141.21])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a2f3d6d557sm405852335ad.84.2026.01.03.19.23.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Jan 2026 19:23:21 -0800 (PST)
+From: Jason Xing <kerneljasonxing@gmail.com>
+To: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	bjorn@kernel.org,
+	magnus.karlsson@intel.com,
+	maciej.fijalkowski@intel.com,
+	jonathan.lemon@gmail.com,
+	sdf@fomichev.me,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	hawk@kernel.org,
+	john.fastabend@gmail.com
+Cc: bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	Jason Xing <kernelxing@tencent.com>
+Subject: [PATCH bpf-next v3 0/2] xsk: introduce pre-allocated memory per xsk CQ
+Date: Sun,  4 Jan 2026 11:23:11 +0800
+Message-Id: <20260104032313.76121-1-kerneljasonxing@gmail.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -71,114 +97,39 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wBHN2r+zFlpYSkwDw--.25134S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxGr1kAw4DuF45Aw48JF48Crg_yoWrJF4DpF
-	47Gw1UtrW5JF45ArW8Kw4UZryrur4rA3W0kF1DJ3y5Zrsava4DXr17tF1UWa43Jr1UtryU
-	ta10qF4jqw1DArDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zioq2tUUUUU=
-X-CM-SenderInfo: 5nlut2pn1ov2i6rwjhhfrp/xtbC2wEkgGlZzQHwsgAA3A
 
-From: WanLi Niu <niuwl1@chinatelecom.cn>
+From: Jason Xing <kernelxing@tencent.com>
 
-Fix C++ compilation errors in generated skeleton by adding explicit
-pointer casts and using integer subtraction for offset calculation.
+This series was made based on the previous work[1] to fix the issue
+without causing too much performance impact through adding a
+pre-allocated memory for each xsk.
 
-Use struct outer::inner syntax under __cplusplus to access nested skeleton map
-structs, ensuring C++ compilation compatibility while preserving C support
+[1]: commit 30f241fcf52a ("xsk: Fix immature cq descriptor production")
 
-error: invalid conversion from 'void*' to '<obj_name>*' [-fpermissive]
-      |         skel = skel_alloc(sizeof(*skel));
-      |                ~~~~~~~~~~^~~~~~~~~~~~~~~
-      |                          |
-      |                          void*
-
-error: arithmetic on pointers to void
-      |         skel->ctx.sz = (void *)&skel->links - (void *)skel;
-      |                        ~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~
-
-error: assigning to 'struct <obj_name>__<ident> *' from incompatible type 'void *'
-      |                 skel-><ident> = skel_prep_map_data((void *)data, 4096,
-      |                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      |                                                 sizeof(data) - 1);
-      |                                                 ~~~~~~~~~~~~~~~~~
-
-error: assigning to 'struct <obj_name>__<ident> *' from incompatible type 'void *'
-      |         skel-><ident> = skel_finalize_map_data(&skel->maps.<ident>.initial_value,
-      |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      |                                         4096, PROT_READ | PROT_WRITE, skel->maps.<ident>.map_fd);
-      |                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Signed-off-by: WanLi Niu <niuwl1@chinatelecom.cn>
-Co-developed-by: Menglong Dong <dongml2@chinatelecom.cn>
-Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
 ---
-changelog:
-v3:
-- Fix two additional <obj_name>__<ident> type mismatches as suggested by Yonghong Song
+v3
+link: https://lore.kernel.org/all/20251216052623.2697-1-kerneljasonxing@gmail.com/
+1. fix double free of lcq in xsk_clear_local_cq()
+2. keep lcq->prod align with cq->cached_prod, which can be found in
+xsk_cq_cancel_locked().
+3. move xsk_clear_local_cq() from xsk_release() to xsk_destruct() to
+avoid crash when using lcq in xsk_destruct_skb() after lcq is already freed.
 
-v2: https://lore.kernel.org/all/20251231102929.3843-1-kiraskyler@163.com/
-- Use generic (struct %1$s *) instead of project-specific (struct trace_bpf *)
+v2
+link: https://lore.kernel.org/all/20251209085950.96231-1-kerneljasonxing@gmail.com/
+1. add if condition to test if cq is NULL
+2. initialize the prod of local_cq
 
-v1: https://lore.kernel.org/all/20251231092541.3352-1-kiraskyler@163.com/
----
- tools/bpf/bpftool/gen.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
 
-diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-index 993c7d9484a4..010861b7d0ea 100644
---- a/tools/bpf/bpftool/gen.c
-+++ b/tools/bpf/bpftool/gen.c
-@@ -731,10 +731,10 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
- 		{							    \n\
- 			struct %1$s *skel;				    \n\
- 									    \n\
--			skel = skel_alloc(sizeof(*skel));		    \n\
-+			skel = (struct %1$s *)skel_alloc(sizeof(*skel));    \n\
- 			if (!skel)					    \n\
- 				goto cleanup;				    \n\
--			skel->ctx.sz = (void *)&skel->links - (void *)skel; \n\
-+			skel->ctx.sz = (__u64)&skel->links - (__u64)skel;   \n\
- 		",
- 		obj_name, opts.data_sz);
- 	bpf_object__for_each_map(map, obj) {
-@@ -755,13 +755,17 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
- 		\n\
- 		\";							    \n\
- 									    \n\
-+		#ifdef __cplusplus                                          \n\
-+				skel->%1$s = (struct %3$s::%3$s__%1$s *)skel_prep_map_data((void *)data, %2$zd,\n\
-+		#else                                                       \n\
- 				skel->%1$s = skel_prep_map_data((void *)data, %2$zd,\n\
-+		#endif							    \n\
- 								sizeof(data) - 1);\n\
- 				if (!skel->%1$s)			    \n\
- 					goto cleanup;			    \n\
- 				skel->maps.%1$s.initial_value = (__u64) (long) skel->%1$s;\n\
- 			}						    \n\
--			", ident, bpf_map_mmap_sz(map));
-+			", ident, bpf_map_mmap_sz(map), obj_name);
- 	}
- 	codegen("\
- 		\n\
-@@ -857,12 +861,16 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
- 
- 		codegen("\
- 		\n\
-+		#ifdef __cplusplus					    \n\
-+			skel->%1$s = (struct %4$s::%4$s__%1$s *)skel_finalize_map_data(&skel->maps.%1$s.initial_value,\n\
-+		#else							    \n\
- 			skel->%1$s = skel_finalize_map_data(&skel->maps.%1$s.initial_value,  \n\
-+		#endif							    \n\
- 							%2$zd, %3$s, skel->maps.%1$s.map_fd);\n\
- 			if (!skel->%1$s)				    \n\
- 				return -ENOMEM;				    \n\
- 			",
--		       ident, bpf_map_mmap_sz(map), mmap_flags);
-+		       ident, bpf_map_mmap_sz(map), mmap_flags, obj_name);
- 	}
- 	codegen("\
- 		\n\
+Jason Xing (2):
+  xsk: introduce local_cq for each af_xdp socket
+  xsk: introduce a dedicated local completion queue for each xsk
+
+ include/net/xdp_sock.h |   8 ++
+ net/xdp/xsk.c          | 222 +++++++++++++++++++++--------------------
+ 2 files changed, 122 insertions(+), 108 deletions(-)
+
 -- 
-2.39.1
+2.41.3
 
 
