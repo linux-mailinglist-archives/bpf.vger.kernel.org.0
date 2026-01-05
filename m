@@ -1,98 +1,209 @@
-Return-Path: <bpf+bounces-77795-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77796-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F012CF2063
-	for <lists+bpf@lfdr.de>; Mon, 05 Jan 2026 06:50:23 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 407DFCF2306
+	for <lists+bpf@lfdr.de>; Mon, 05 Jan 2026 08:21:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DDD85301119D
-	for <lists+bpf@lfdr.de>; Mon,  5 Jan 2026 05:50:18 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 00AF930022C2
+	for <lists+bpf@lfdr.de>; Mon,  5 Jan 2026 07:21:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB71E22068F;
-	Mon,  5 Jan 2026 05:50:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20B332D8773;
+	Mon,  5 Jan 2026 07:14:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="EvUXFoYx"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="IGKO9aQb"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B31D83A1E89
-	for <bpf@vger.kernel.org>; Mon,  5 Jan 2026 05:50:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF1512D7DDE;
+	Mon,  5 Jan 2026 07:14:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767592217; cv=none; b=MrqKSj/VSE11gH00fafx0YSsZqFjuXIkc6WlptW6BC+duVoyN8zFRNYOwdwDaM9b8lS1OX4EEKPEGHP4gylDPnj3nRAAvYuxrbC84NQ9g1zPjgQcTZgqYArcbGOdLsspTzkyRdI1QT7DK+KTWT5bQ0eqXf6Iuk9Yy5+6DiCR2mQ=
+	t=1767597256; cv=none; b=kdZSxs2sGQNPt8WX+fyJiGHYqP9xFEQNGge1DXhwkfZr/yKobHdLmDmuI/qCgFKBvScEEYRnfztZ5PIHp0LTBKYgNcuYl98Ny6pH+Jd+GFWcBjZy8t/isfmogG0TLYY5mwAiQissg5VAYdhrKcNDPhzYsuu4gyGIrRpzcEiS1nc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767592217; c=relaxed/simple;
-	bh=V4KqZ3driE22w5/F97L1WeQ7I+Gqva5pvc8F8ol3oyk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NOU9NXfuoGazPv7BBMzdpHKrU7afcEsXevc4S1MfZHQN5/78CMAxC3WxXkpfxdg3xH+einrvqDNWeOGh3ObLAu60opdyhDRjnpiKa8FzTbG5mffE+sxr82fkK10BGB/MGzQ8Kzg5E/LNHjljZbCqOU9cQK23DBK9F0l2d1kErSw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=EvUXFoYx; arc=none smtp.client-ip=91.218.175.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <7a2d0d37-bcca-454f-85c3-063906ecd042@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1767592212;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=V4KqZ3driE22w5/F97L1WeQ7I+Gqva5pvc8F8ol3oyk=;
-	b=EvUXFoYxVWa/4DMrkhSmRnxwi2VMErcYLJXiOHBH2ZN21LtOHFGQ1HW38zsN6YgvrsPdGq
-	62BwHeUixth06jLLS+oF3xW5CJJugPZTyVS4tOfCodTndgieesgjOVVWEWkUAYLCzx4JyY
-	4VboiG+6LWkoraGtFHMwmO25hnNDHKM=
-Date: Sun, 4 Jan 2026 21:50:04 -0800
+	s=arc-20240116; t=1767597256; c=relaxed/simple;
+	bh=pKibkbh0guOGqnEclElsVd+BuWpyIRDnDWRsL8+LjQc=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=gdsrJB5353b6f7UPyDJmDKPBtyCWyIGD8H18+NWMB+V5J/SfwArOhiGzO7uVOJb4ogvYcZi7YdPw8gGfaY/zuXRbMMQZwRP18cbdMx+RMy+EpRBSIA2llRHAjWbV6+DqB8GZXBnl4a7LgRgeG+2rBnJ57kxHEpkLPFx8CakMSXA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=IGKO9aQb; arc=none smtp.client-ip=220.197.31.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=lS
+	OwWKkzmcwU2ofJjv1+yQCRqU4vl5zKutjgwfxk59c=; b=IGKO9aQb4Ghoqw1g3c
+	xSoFxxmbWNjdsWUvhP7wjf4tbGSPxosiciA88MWVWh+PuYV3ZtzsuMGVp77E+916
+	O/WnzQ3wDhO4jZ2F5915ImKzJpN1H8eR4LfaFDbXpDitFnMeNtxdk6CYNkrUj2Fy
+	QEe5AaEtvSF96WrRa7NsMZULA=
+Received: from localhost.localdomain.localdomain (unknown [])
+	by gzga-smtp-mtada-g1-1 (Coremail) with SMTP id _____wA3bPlhZFtpZsEBEA--.3803S2;
+	Mon, 05 Jan 2026 15:12:35 +0800 (CST)
+From: WanLi Niu <kiraskyler@163.com>
+To: Quentin Monnet <qmo@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	WanLi Niu <kiraskyler@163.com>,
+	Menglong Dong <menglong8.dong@gmail.com>,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	WanLi Niu <niuwl1@chinatelecom.cn>,
+	Menglong Dong <dongml2@chinatelecom.cn>
+Subject: [PATCH v4 bpf-next] bpftool: Make skeleton C++ compatible with explicit casts
+Date: Mon,  5 Jan 2026 15:12:31 +0800
+Message-Id: <20260105071231.2501-1-kiraskyler@163.com>
+X-Mailer: git-send-email 2.39.1
+In-Reply-To: <20260104021402.2968-1-kiraskyler@163.com>
+References: <20260104021402.2968-1-kiraskyler@163.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] bpf-next: Prevent out of bound buffer write in
- __bpf_get_stack
-Content-Language: en-GB
-To: Arnaud Lecomte <contact@arnaud-lcm.com>,
- syzbot+d1b7fa1092def3628bd7@syzkaller.appspotmail.com
-Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
- daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com,
- john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
- linux-kernel@vger.kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org,
- sdf@fomichev.me, song@kernel.org, syzkaller-bugs@googlegroups.com,
- Brahmajit Das <listout@listout.xyz>
-References: <20260104205220.980752-1-contact@arnaud-lcm.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20260104205220.980752-1-contact@arnaud-lcm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wA3bPlhZFtpZsEBEA--.3803S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxGr1kAw4DuF45Aw48JF48Crg_yoWrZr17pF
+	WxG34UKrW5Jr45ArW8tw4UZry5ur4Fy3WjkFyDJ3y5Zrsava4DXr17tF1UWa43trW8tryU
+	t3W0qF4jvw1DArJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zi75r7UUUUU=
+X-CM-SenderInfo: 5nlut2pn1ov2i6rwjhhfrp/xtbC9wVjv2lbZGUX3AAA3W
 
+From: WanLi Niu <niuwl1@chinatelecom.cn>
 
+Fix C++ compilation errors in generated skeleton by adding explicit
+pointer casts and using integer subtraction for offset calculation.
 
-On 1/4/26 12:52 PM, Arnaud Lecomte wrote:
-> Syzkaller reported a KASAN slab-out-of-bounds write in __bpf_get_stack()
-> during stack trace copying.
->
-> The issue occurs when: the callchain entry (stored as a per-cpu variable)
-> grow between collection and buffer copy, causing it to exceed the initially
-> calculated buffer size based on max_depth.
->
-> The callchain collection intentionally avoids locking for performance
-> reasons, but this creates a window where concurrent modifications can
-> occur during the copy operation.
->
-> To prevent this from happening, we clamp the trace len to the max
-> depth initially calculated with the buffer size and the size of
-> a trace.
->
-> Reported-by: syzbot+d1b7fa1092def3628bd7@syzkaller.appspotmail.com
-> Closes: https://lore.kernel.org/all/691231dc.a70a0220.22f260.0101.GAE@google.com/T/
-> Fixes: e17d62fedd10 ("bpf: Refactor stack map trace depth calculation into helper function")
-> Tested-by: syzbot+d1b7fa1092def3628bd7@syzkaller.appspotmail.com
-> Cc: Brahmajit Das <listout@listout.xyz>
-> Signed-off-by: Arnaud Lecomte <contact@arnaud-lcm.com>
+Use struct outer::inner syntax under __cplusplus to access nested skeleton map
+structs, ensuring C++ compilation compatibility while preserving C support
 
-LGTM.
+error: invalid conversion from 'void*' to '<obj_name>*' [-fpermissive]
+      |         skel = skel_alloc(sizeof(*skel));
+      |                ~~~~~~~~~~^~~~~~~~~~~~~~~
+      |                          |
+      |                          void*
 
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
+error: arithmetic on pointers to void
+      |         skel->ctx.sz = (void *)&skel->links - (void *)skel;
+      |                        ~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~
+
+error: assigning to 'struct <obj_name>__<ident> *' from incompatible type 'void *'
+      |                 skel-><ident> = skel_prep_map_data((void *)data, 4096,
+      |                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |                                                 sizeof(data) - 1);
+      |                                                 ~~~~~~~~~~~~~~~~~
+
+error: assigning to 'struct <obj_name>__<ident> *' from incompatible type 'void *'
+      |         skel-><ident> = skel_finalize_map_data(&skel->maps.<ident>.initial_value,
+      |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |                                         4096, PROT_READ | PROT_WRITE, skel->maps.<ident>.map_fd);
+      |                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Minimum reproducer:
+
+	$ cat test.bpf.c
+	int val; // placed in .bss section
+
+	#include "vmlinux.h"
+	#include <bpf/bpf_helpers.h>
+
+	SEC("raw_tracepoint/sched_wakeup_new") int handle(void *ctx) { return 0; }
+
+	$ cat test.cpp
+	#include <cerrno>
+
+	extern "C" {
+	#include "test.bpf.skel.h"
+	}
+
+	$ bpftool btf dump file /sys/kernel/btf/vmlinux format c > vmlinux.h
+	$ clang -g -O2 -target bpf -c test.bpf.c -o test.bpf.o
+	$ bpftool gen skeleton test.bpf.o -L  > test.bpf.skel.h
+	$ g++ -c test.cpp -I.
+
+Signed-off-by: WanLi Niu <niuwl1@chinatelecom.cn>
+Co-developed-by: Menglong Dong <dongml2@chinatelecom.cn>
+Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+---
+changelog:
+v4:
+- Add a minimum reproducer to demonstrate the issue, as suggested by Yonghong Song
+
+v3: https://lore.kernel.org/all/20260104021402.2968-1-kiraskyler@163.com/
+- Fix two additional <obj_name>__<ident> type mismatches as suggested by Yonghong Song
+
+v2: https://lore.kernel.org/all/20251231102929.3843-1-kiraskyler@163.com/
+- Use generic (struct %1$s *) instead of project-specific (struct trace_bpf *)
+
+v1: https://lore.kernel.org/all/20251231092541.3352-1-kiraskyler@163.com/
+---
+ tools/bpf/bpftool/gen.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
+
+diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+index 993c7d9484a4..010861b7d0ea 100644
+--- a/tools/bpf/bpftool/gen.c
++++ b/tools/bpf/bpftool/gen.c
+@@ -731,10 +731,10 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
+ 		{							    \n\
+ 			struct %1$s *skel;				    \n\
+ 									    \n\
+-			skel = skel_alloc(sizeof(*skel));		    \n\
++			skel = (struct %1$s *)skel_alloc(sizeof(*skel));    \n\
+ 			if (!skel)					    \n\
+ 				goto cleanup;				    \n\
+-			skel->ctx.sz = (void *)&skel->links - (void *)skel; \n\
++			skel->ctx.sz = (__u64)&skel->links - (__u64)skel;   \n\
+ 		",
+ 		obj_name, opts.data_sz);
+ 	bpf_object__for_each_map(map, obj) {
+@@ -755,13 +755,17 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
+ 		\n\
+ 		\";							    \n\
+ 									    \n\
++		#ifdef __cplusplus                                          \n\
++				skel->%1$s = (struct %3$s::%3$s__%1$s *)skel_prep_map_data((void *)data, %2$zd,\n\
++		#else                                                       \n\
+ 				skel->%1$s = skel_prep_map_data((void *)data, %2$zd,\n\
++		#endif							    \n\
+ 								sizeof(data) - 1);\n\
+ 				if (!skel->%1$s)			    \n\
+ 					goto cleanup;			    \n\
+ 				skel->maps.%1$s.initial_value = (__u64) (long) skel->%1$s;\n\
+ 			}						    \n\
+-			", ident, bpf_map_mmap_sz(map));
++			", ident, bpf_map_mmap_sz(map), obj_name);
+ 	}
+ 	codegen("\
+ 		\n\
+@@ -857,12 +861,16 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
+ 
+ 		codegen("\
+ 		\n\
++		#ifdef __cplusplus					    \n\
++			skel->%1$s = (struct %4$s::%4$s__%1$s *)skel_finalize_map_data(&skel->maps.%1$s.initial_value,\n\
++		#else							    \n\
+ 			skel->%1$s = skel_finalize_map_data(&skel->maps.%1$s.initial_value,  \n\
++		#endif							    \n\
+ 							%2$zd, %3$s, skel->maps.%1$s.map_fd);\n\
+ 			if (!skel->%1$s)				    \n\
+ 				return -ENOMEM;				    \n\
+ 			",
+-		       ident, bpf_map_mmap_sz(map), mmap_flags);
++		       ident, bpf_map_mmap_sz(map), mmap_flags, obj_name);
+ 	}
+ 	codegen("\
+ 		\n\
+-- 
+2.39.1
 
 
