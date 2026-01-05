@@ -1,156 +1,195 @@
-Return-Path: <bpf+bounces-77888-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77889-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADD61CF5D25
-	for <lists+bpf@lfdr.de>; Mon, 05 Jan 2026 23:25:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 90356CF5D33
+	for <lists+bpf@lfdr.de>; Mon, 05 Jan 2026 23:26:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5F4BE3071B99
-	for <lists+bpf@lfdr.de>; Mon,  5 Jan 2026 22:24:59 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C4ED43071A06
+	for <lists+bpf@lfdr.de>; Mon,  5 Jan 2026 22:26:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 759863126C1;
-	Mon,  5 Jan 2026 22:24:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41DE13126CD;
+	Mon,  5 Jan 2026 22:26:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OLYfXn1w";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="iGZE8w74"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NUzh8Js3"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 547892F3618
-	for <bpf@vger.kernel.org>; Mon,  5 Jan 2026 22:24:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C73892EC0A1
+	for <bpf@vger.kernel.org>; Mon,  5 Jan 2026 22:26:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767651896; cv=none; b=YE2Ii9fqmh1M2rJ+e4LyA/kXZtKJagUozsfoTvH41OHiskp36Pr65rJJ5lv2ixy/AxOAC7DgPDZV6bTWJV06yTC02+7FA7l2y9RTFqAKL0y4O8OU3ovolDCrAaoA3LQxVIc23LVCP0iPh4Po76kSPU9I8kKmsP1V56Dz/KDtpaA=
+	t=1767651972; cv=none; b=mmTZ+1WeIk4MTZPzJKV/TN5vK1NINFQhZ0r4fC9Wch4bdZ2PdBQWNOijf2OuYTKMyLg9HoJi+ARCRQeF2h6C4c3R6TgsnoSfCRSY5tcFFoJAprowsNiykcTUAhXHBk7TAXDcmOyoj4vd+HpuIJBvSMfyDj1raxtbOzk6EWD5Sfg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767651896; c=relaxed/simple;
-	bh=4GujXFcPY78Soe5fJ5zpAxshw/1UlVOk9zQiTnAySak=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=koC96WQLY/SUFkcQtZZ6qpXbqgutgd0NazEJ56mhcCuvEeAidXEfN1q+WLQJxOlk2wpkwJJ0RAMK/ECoGbI2QYy20R5GtqmGCsmKY1X/AOnxrwauSMbc6hBt82XPoMid/07XJ196S9svHepR9Z0TuKyfc0z54RE0RmCDcTdKop8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OLYfXn1w; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=iGZE8w74; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1767651894;
+	s=arc-20240116; t=1767651972; c=relaxed/simple;
+	bh=LIzuWDpET3y2Lfu6dFUlN8AXfJbsSK1Ewb0UHNuKyHw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=stORGEi8Ui7uN9XIpdW08uNlHTym6fSObjQnMFkiBA9t91PGI2Ig1gE+Lqobv2Yhbh+22lcNq7aSwnY1nzrrMXhpkW1kAVHh5Hf9j9jvmrR0c/wWwMgyV5fqs+kl4d19ZHAN/YbJ6Bbq94vlxD7RGdbvww/U6m9b4ldrrDp0rLc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NUzh8Js3; arc=none smtp.client-ip=95.215.58.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <d267c646-1acc-4e5b-aa96-56759fca57d0@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1767651968;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=UIu36dvOmGSWGl/xVA3p8ygE7dV+HFTFGY8xQr3jAbk=;
-	b=OLYfXn1wKltSxz97KBeZIaXkqe3zKkZMOOogh2Y1d77+GDMcewGNDo/gZVBzIfuKxSB06w
-	x9L9c7yI8izwt+VbQ0FvlED8a6Ja9GP0gHXKBTsR+7Z20HAvmElS6X/eNesbZJG59Z4jvz
-	G8p5Vz9o15EwrgE2uoniKzQnIALgNWc=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-520-QHJzk_98OXeEDgyvYa1e1Q-1; Mon, 05 Jan 2026 17:24:52 -0500
-X-MC-Unique: QHJzk_98OXeEDgyvYa1e1Q-1
-X-Mimecast-MFC-AGG-ID: QHJzk_98OXeEDgyvYa1e1Q_1767651892
-Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-4f4a92bf359so9693131cf.2
-        for <bpf@vger.kernel.org>; Mon, 05 Jan 2026 14:24:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1767651892; x=1768256692; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=UIu36dvOmGSWGl/xVA3p8ygE7dV+HFTFGY8xQr3jAbk=;
-        b=iGZE8w7471qtJS6Dr67JwcDKXIwNJyH+kshUD/o3O4u+kcvuIDdSMf/eqOROSVm/KP
-         l1hXnLIjSah7gQSqKLrNIzkTjFoBnSlpRu6T3gnJ01wuxaZsf03HpNg5KlCkPrtYoNHN
-         rdNb0g08YNQw0I91u0qsMwHhdS/z+EVELCb4239P3EjdTWpWKaAwDcmmuRVxE+mKeMcV
-         jA1E99K+kwvl9ghmqQ7xDataOkJ6jUnayxbuHg9oh8dD7vSpxEK3In539EcTwHTdvq2w
-         DDTo83c9wZG2m163xWSPMn+7DVS9jBKQLwu3h9tHqAtZibpRWxiujw/n5YMWTJNHyjtt
-         J8Ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767651892; x=1768256692;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UIu36dvOmGSWGl/xVA3p8ygE7dV+HFTFGY8xQr3jAbk=;
-        b=UPFkqTKT8XhBF2AL40AgnUPIZDBR5qRf3EQ56jvOGx7I828VmIdvxx6SwPNDEaRhPG
-         cfqeJZWkdcVoYDeNuZKk3hUdICyi/ZXihg0ON/kRWrHoBspMKocgkKN5KxLmTer9jIO3
-         lqZNlMx7WDjNKpCX0khgc/zPrgNLUfYtus8VKehF3YONHwqh0PH7vkTYq+MKdqhb28Dd
-         nUcHLuTWhXyIF2lIiunLVJjoiAblAco4VJ6uwAWfPuzTd4L8CNEbb/cG88Lk9NvUOcZe
-         jQdLhHGEePt4R9rvVgrH2bJO24QBq09vHfpo4GDl3TNhy1cZWYB9H4cg2BEjtt+NUorh
-         7Agw==
-X-Forwarded-Encrypted: i=1; AJvYcCUxhBo92YPPbZrg7h20dMNw1USnLfgWjUcmioMxPxji/NuiwTjyICvJVplC+mUY7gtOhis=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxvs8qvdJKeRDbsmRkbfSLobly+vh57ugbmdz8NtFjGaY3vLrtC
-	D2sHsncS6c/9s6lXiqOITyTsCJGai1lukS9TM2KkDlSefGHMTUyZip7bEYPHkUtS3rWuqj1/5Nq
-	LJE7RgFe04zA46wMARcDq7oUCGx7K9mqzu15U2NxLnsvlKFsNH519yw==
-X-Gm-Gg: AY/fxX6yLGQz+wjck52jcgN2Sicf57eF0vKfOLzKDtgWzSkZmf/a7lmsCY9MeA7gDn1
-	NVSMYYWoHmCtRD1R1GHSBUUPJSEDTalbsKKMLHOkJRmhYaxFgyzRmKYPFb7OszB0YYsez9c8M/U
-	U86BX4NYpr+5+drE5QDaxgHj0qf5kGGSjyThzHMKTOEe5jC2MSASLzvubcxp2BqPcs4MhiVU0l2
-	tiBINfZ+QCOOq1a9bbdPP7UlQGtl/anrvWGzb8Q9yJOmnHk1wp505malEDxWzL+WUts47FBUbDP
-	7j60jAaBAa1/H20lHC92/6LiMOyZRwLzKgSBjhdMfE0+xaYIL8IoE1kR0LHainV4aCnPIMNK5wk
-	NrRYXOWlmoZyT5zzRzfsd6lCvNtBBWLctKS+q4ArDJA==
-X-Received: by 2002:a05:622a:3c8:b0:4f1:caed:da6b with SMTP id d75a77b69052e-4ffa76d8404mr15124081cf.35.1767651892401;
-        Mon, 05 Jan 2026 14:24:52 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IExNh0xTTv6L2+E9HZQoqXbrAGQ+sIzOchE6ENYBi29Y5oaqVBf9GDoOpp1unnFpjh+Y6BDeA==
-X-Received: by 2002:a05:622a:3c8:b0:4f1:caed:da6b with SMTP id d75a77b69052e-4ffa76d8404mr15123831cf.35.1767651892036;
-        Mon, 05 Jan 2026 14:24:52 -0800 (PST)
-Received: from crwood-thinkpadp16vgen1.minnmso.csb ([2601:447:cc81:56d0:ab94:b2cb:29a6:7ac0])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8907726041fsm2305706d6.45.2026.01.05.14.24.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jan 2026 14:24:51 -0800 (PST)
-Message-ID: <7f953b7e2a9d30e0f22c30c5c4e10828018bc40c.camel@redhat.com>
-Subject: Re: [PATCH v1 1/4] tools/rtla: Consolidate nr_cpus usage across all
- tools
-From: Crystal Wood <crwood@redhat.com>
-To: Tomas Glozar <tglozar@redhat.com>, Costa Shulyupin
- <costa.shul@redhat.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Wander Lairson Costa	
- <wander@redhat.com>, Ivan Pravdin <ipravdin.official@gmail.com>, John Kacur
-	 <jkacur@redhat.com>, Tiezhu Yang <yangtiezhu@loongson.cn>, 
-	linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org
-Date: Mon, 05 Jan 2026 16:24:50 -0600
-In-Reply-To: <CAP4=nvSr=Wz--CJgJ9kmXfB3r3uNYnt9bJt-_bCigH--rbbx2A@mail.gmail.com>
-References: <20251205151924.2250142-1-costa.shul@redhat.com>
-	 <CAP4=nvS9fTtNCtDCt254-ukTePD7hW3HoKExOPNPDOdppUig9g@mail.gmail.com>
-	 <CAP4=nvSr=Wz--CJgJ9kmXfB3r3uNYnt9bJt-_bCigH--rbbx2A@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
+	bh=HLFg1xSsj8PExbeHYABEqcvfWLJihB0hQrXci5fD/sg=;
+	b=NUzh8Js3Qj7lBWc2bx5YJU/XUanjhBeHSsQ03CGwDqU5hQzY/3QGDJglgWuxWGUq0ixS1L
+	aFvcYo+gHzQVBGThdHMPiX3DMLuyzzxwwa/xVUPcPazUGZSdIStd/maXSLWgDnSal71fgs
+	sZKw/WoIKcuRPoGJxQ//5ZFeiIBBBXE=
+Date: Mon, 5 Jan 2026 14:25:40 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next v2 15/16] bpf: Realign skb metadata for TC progs
+ using data_meta
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Amery Hung <ameryhung@gmail.com>, Jakub Sitnicki <jakub@cloudflare.com>,
+ Martin KaFai Lau <martin.lau@kernel.org>, bpf <bpf@vger.kernel.org>,
+ Network Development <netdev@vger.kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Stanislav Fomichev <sdf@fomichev.me>, Simon Horman <horms@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, kernel-team <kernel-team@cloudflare.com>
+References: <20260105-skb-meta-safeproof-netdevs-rx-only-v2-0-a21e679b5afa@cloudflare.com>
+ <20260105-skb-meta-safeproof-netdevs-rx-only-v2-15-a21e679b5afa@cloudflare.com>
+ <CAADnVQJbGosoXOCdyi=NZar966FVibKYobBgQ9BiyEH3=-HOsw@mail.gmail.com>
+ <CAMB2axPivi+mZOXie=VnJM8nscqkHDjSrKT=Dhp5z_copEwxLQ@mail.gmail.com>
+ <e969a85c-94eb-4cb5-a7ac-524a16ccce01@linux.dev>
+ <CAADnVQKB5vRJM4kJC5515snR6KHweE-Ld_W1wWgPSWATgiUCwg@mail.gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <CAADnVQKB5vRJM4kJC5515snR6KHweE-Ld_W1wWgPSWATgiUCwg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, 2025-12-17 at 10:06 +0100, Tomas Glozar wrote:
-> =C3=BAt 16. 12. 2025 v 15:41 odes=C3=ADlatel Tomas Glozar <tglozar@redhat=
-.com> napsal:
-> > Since commit 2f3172f9dd58c ("tools/rtla: Consolidate code between
-> > osnoise/timerlat and hist/top") that was merged into 6.18, common.h
-> > includes timerlat_u.h. Your change thus causes a double include of
-> > timerlat_u.h, leading to a build error:
-> >=20
-> > In file included from src/timerlat_u.c:20:
-> > src/timerlat_u.h:6:8: error: redefinition of =E2=80=98struct timerlat_u=
-_params=E2=80=99
-> >    6 | struct timerlat_u_params {
-> >      |        ^~~~~~~~~~~~~~~~~
-> > In file included from src/common.h:5,
-> >                 from src/timerlat_u.c:19:
-> > src/timerlat_u.h:6:8: note: originally defined here
-> >    6 | struct timerlat_u_params {
-> >      |        ^~~~~~~~~~~~~~~~~
-> >=20
-> > Please rebase your patchset and fix this so that timerlat_u.h is only
-> > included once.
-> >=20
->=20
-> Correction: the base of the patchset has nothing to do with this. It
-> is the C standard, from C23 (default in GCC 15), redefinition of
-> structs is allowed [1], so this error doesn't exist. In earlier
-> standards, this is not allowed.
->=20
-> [1] https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2863.pdf
 
-Regardless of how permissive the language might be getting in this case,
-we should have #pragma once on all of the headers to avoid this sort of
-problem.
 
--Crystal
+On 1/5/26 1:47 PM, Alexei Starovoitov wrote:
+> On Mon, Jan 5, 2026 at 12:55 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+>>
+>>
+>>
+>> On 1/5/26 11:42 AM, Amery Hung wrote:
+>>> On Mon, Jan 5, 2026 at 11:14 AM Alexei Starovoitov
+>>> <alexei.starovoitov@gmail.com> wrote:
+>>>>
+>>>> On Mon, Jan 5, 2026 at 4:15 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+>>>>>
+>>>>>
+>>>>> +__bpf_kfunc_start_defs();
+>>>>> +
+>>>>> +__bpf_kfunc void bpf_skb_meta_realign(struct __sk_buff *skb_)
+>>>>> +{
+>>>>> +       struct sk_buff *skb = (typeof(skb))skb_;
+>>>>> +       u8 *meta_end = skb_metadata_end(skb);
+>>>>> +       u8 meta_len = skb_metadata_len(skb);
+>>>>> +       u8 *meta;
+>>>>> +       int gap;
+>>>>> +
+>>>>> +       gap = skb_mac_header(skb) - meta_end;
+>>>>> +       if (!meta_len || !gap)
+>>>>> +               return;
+>>>>> +
+>>>>> +       if (WARN_ONCE(gap < 0, "skb metadata end past mac header")) {
+>>>>> +               skb_metadata_clear(skb);
+>>>>> +               return;
+>>>>> +       }
+>>>>> +
+>>>>> +       meta = meta_end - meta_len;
+>>>>> +       memmove(meta + gap, meta, meta_len);
+>>>>> +       skb_shinfo(skb)->meta_end += gap;
+>>>>> +
+>>>>> +       bpf_compute_data_pointers(skb);
+>>>>> +}
+>>>>> +
+>>>>> +__bpf_kfunc_end_defs();
+>>>>> +
+>>>>> +BTF_KFUNCS_START(tc_cls_act_hidden_ids)
+>>>>> +BTF_ID_FLAGS(func, bpf_skb_meta_realign)
+>>>>> +BTF_KFUNCS_END(tc_cls_act_hidden_ids)
+>>>>> +
+>>>>> +BTF_ID_LIST_SINGLE(bpf_skb_meta_realign_ids, func, bpf_skb_meta_realign)
+>>>>> +
+>>>>>    static int tc_cls_act_prologue(struct bpf_insn *insn_buf, u32 pkt_access_flags,
+>>>>>                                  const struct bpf_prog *prog)
+>>>>>    {
+>>>>> -       return bpf_unclone_prologue(insn_buf, pkt_access_flags, prog,
+>>>>> -                                   TC_ACT_SHOT);
+>>>>> +       struct bpf_insn *insn = insn_buf;
+>>>>> +       int cnt;
+>>>>> +
+>>>>> +       if (pkt_access_flags & PA_F_DATA_META_LOAD) {
+>>>>> +               /* Realign skb metadata for access through data_meta pointer.
+>>>>> +                *
+>>>>> +                * r6 = r1; // r6 will be "u64 *ctx"
+>>>>> +                * r0 = bpf_skb_meta_realign(r1); // r0 is undefined
+>>>>> +                * r1 = r6;
+>>>>> +                */
+>>>>> +               *insn++ = BPF_MOV64_REG(BPF_REG_6, BPF_REG_1);
+>>>>> +               *insn++ = BPF_CALL_KFUNC(0, bpf_skb_meta_realign_ids[0]);
+>>>>> +               *insn++ = BPF_MOV64_REG(BPF_REG_1, BPF_REG_6);
+>>>>> +       }
+>>>>
+>>>> I see that we already did this hack with bpf_qdisc_init_prologue()
+>>>> and bpf_qdisc_reset_destroy_epilogue().
+>>>> Not sure why we went that route back then.
+>>>>
+>>>> imo much cleaner to do BPF_EMIT_CALL() and wrap
+>>>> BPF_CALL_1(bpf_skb_meta_realign, struct sk_buff *, skb)
+>>>>
+>>>> BPF_CALL_x doesn't make it an uapi helper.
+>>>> It's still a hidden kernel function,
+>>>> while this kfunc stuff looks wrong, since kfunc isn't really hidden.
+>>>>
+>>>> I suspect progs can call this bpf_skb_meta_realign() explicitly,
+>>>> just like they can call bpf_qdisc_init_prologue() ?
+>>>>
+>>>
+>>> qdisc prologue and epilogue qdisc kfuncs should be hidden from users.
+>>> The kfunc filter, bpf_qdisc_kfunc_filter(), determines what kfunc are
+>>> actually exposed.
+>>
+>> Similar to Amery's comment, I recalled I tried the BPF_CALL_1 in the
+>> qdisc but stopped at the "fn = env->ops->get_func_proto(insn->imm,
+>> env->prog);" in do_misc_fixups(). Potentially it could add new enum ( >
+>> __BPF_FUNC_MAX_ID) outside of the uapi and the user space tool should be
+>> able to handle unknown helper also but we went with the kfunc+filter
+>> approach without thinking too much about it.
+> 
+> hmm. BPF_EMIT_CALL() does:
+> #define BPF_CALL_IMM(x) ((void *)(x) - (void *)__bpf_call_base)
+> .imm   = BPF_CALL_IMM(FUNC)
+> 
+> the imm shouldn't be going through validation anymore.
+> none of the if (insn->imm == BPF_FUNC_...) in do_misc_fixups()
+> will match, so I think I see the path where get_func_proto() is
+> called.
+> But how does it work then for all cases of BPF_EMIT_CALL?
+> All of them happen after do_misc_fixups() ?
+
+yeah, I think most (all?) of them (e.g. map_gen_lookup) happens in 
+do_misc_fixups which then does "goto next_insn;" to skip the 
+get_func_proto().
+
+> 
+> I guess we can mark such emitted call in insn_aux_data as finalized
+> and get_func_proto() isn't needed.
+
+It is a good idea.
 
 
