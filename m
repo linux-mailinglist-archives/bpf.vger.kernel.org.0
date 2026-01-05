@@ -1,132 +1,156 @@
-Return-Path: <bpf+bounces-77887-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77888-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BA0ACF5C2C
-	for <lists+bpf@lfdr.de>; Mon, 05 Jan 2026 23:03:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id ADD61CF5D25
+	for <lists+bpf@lfdr.de>; Mon, 05 Jan 2026 23:25:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A1CED302C4CC
-	for <lists+bpf@lfdr.de>; Mon,  5 Jan 2026 22:01:58 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5F4BE3071B99
+	for <lists+bpf@lfdr.de>; Mon,  5 Jan 2026 22:24:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05F032DEA93;
-	Mon,  5 Jan 2026 22:01:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 759863126C1;
+	Mon,  5 Jan 2026 22:24:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qKZNEmuc"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OLYfXn1w";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="iGZE8w74"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18ACD56B81
-	for <bpf@vger.kernel.org>; Mon,  5 Jan 2026 22:01:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 547892F3618
+	for <bpf@vger.kernel.org>; Mon,  5 Jan 2026 22:24:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767650516; cv=none; b=r3oQQg7uOZhuY4bccYLUBp3zTKGZ7yBljqOqsiJUVRVw6nAv9XYQj4A7Uu319xihyNQ8mh4+kV6CB82MHmxIUlr0pVB2xld3VflkPa0qU/OTxWwqJRqqmMU3DwiABkfASskvnhSxCWfbvzZXWSWcE/QcO5ND7Vc+RMhPI9+Z2Pw=
+	t=1767651896; cv=none; b=YE2Ii9fqmh1M2rJ+e4LyA/kXZtKJagUozsfoTvH41OHiskp36Pr65rJJ5lv2ixy/AxOAC7DgPDZV6bTWJV06yTC02+7FA7l2y9RTFqAKL0y4O8OU3ovolDCrAaoA3LQxVIc23LVCP0iPh4Po76kSPU9I8kKmsP1V56Dz/KDtpaA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767650516; c=relaxed/simple;
-	bh=pjdGQ2KtPe94IOqq2TsMeOtrdqDybwwb7f6zof5lH4s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aUMJG2o75q84uK3FnGfIeXOGAMNkDi00rn6SLvu8D7AzS/pacIhvJiyXrK91rFNG+poWIN0fDmgeqFeVrTbvg/0SnIXMuANoCWkpcAKa9PX0Q5Oex7DMV0TEARkl5xpE3SG8f0g6xEUGdmOLqM2LUVIv7ZsWwwF0LQpDe7772lI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qKZNEmuc; arc=none smtp.client-ip=91.218.175.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <ff8187bd-0bae-4b49-8844-6c975a2e79c6@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1767650502;
+	s=arc-20240116; t=1767651896; c=relaxed/simple;
+	bh=4GujXFcPY78Soe5fJ5zpAxshw/1UlVOk9zQiTnAySak=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=koC96WQLY/SUFkcQtZZ6qpXbqgutgd0NazEJ56mhcCuvEeAidXEfN1q+WLQJxOlk2wpkwJJ0RAMK/ECoGbI2QYy20R5GtqmGCsmKY1X/AOnxrwauSMbc6hBt82XPoMid/07XJ196S9svHepR9Z0TuKyfc0z54RE0RmCDcTdKop8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OLYfXn1w; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=iGZE8w74; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1767651894;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=OWDr5izXo49pXkOlm+Lks9DAXAhAWAAFj7Ad3Ul3D2o=;
-	b=qKZNEmucmlOmieL2UYG+ra6rt6XPtgIkrhrwaR047sfNSE/td34L+DZBkr7Y8OLTqPwAYH
-	Nao5OsMbgGqB/8PMTtjgu4w7LPgnPs4GnUzoYruQpWJlvsQd8Xsn6qjaePavToUOiLzmfe
-	lqYB07XyW3oPxk90+z+FLS0NJQ+LyNE=
-Date: Mon, 5 Jan 2026 14:01:36 -0800
+	bh=UIu36dvOmGSWGl/xVA3p8ygE7dV+HFTFGY8xQr3jAbk=;
+	b=OLYfXn1wKltSxz97KBeZIaXkqe3zKkZMOOogh2Y1d77+GDMcewGNDo/gZVBzIfuKxSB06w
+	x9L9c7yI8izwt+VbQ0FvlED8a6Ja9GP0gHXKBTsR+7Z20HAvmElS6X/eNesbZJG59Z4jvz
+	G8p5Vz9o15EwrgE2uoniKzQnIALgNWc=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-520-QHJzk_98OXeEDgyvYa1e1Q-1; Mon, 05 Jan 2026 17:24:52 -0500
+X-MC-Unique: QHJzk_98OXeEDgyvYa1e1Q-1
+X-Mimecast-MFC-AGG-ID: QHJzk_98OXeEDgyvYa1e1Q_1767651892
+Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-4f4a92bf359so9693131cf.2
+        for <bpf@vger.kernel.org>; Mon, 05 Jan 2026 14:24:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1767651892; x=1768256692; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=UIu36dvOmGSWGl/xVA3p8ygE7dV+HFTFGY8xQr3jAbk=;
+        b=iGZE8w7471qtJS6Dr67JwcDKXIwNJyH+kshUD/o3O4u+kcvuIDdSMf/eqOROSVm/KP
+         l1hXnLIjSah7gQSqKLrNIzkTjFoBnSlpRu6T3gnJ01wuxaZsf03HpNg5KlCkPrtYoNHN
+         rdNb0g08YNQw0I91u0qsMwHhdS/z+EVELCb4239P3EjdTWpWKaAwDcmmuRVxE+mKeMcV
+         jA1E99K+kwvl9ghmqQ7xDataOkJ6jUnayxbuHg9oh8dD7vSpxEK3In539EcTwHTdvq2w
+         DDTo83c9wZG2m163xWSPMn+7DVS9jBKQLwu3h9tHqAtZibpRWxiujw/n5YMWTJNHyjtt
+         J8Ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767651892; x=1768256692;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UIu36dvOmGSWGl/xVA3p8ygE7dV+HFTFGY8xQr3jAbk=;
+        b=UPFkqTKT8XhBF2AL40AgnUPIZDBR5qRf3EQ56jvOGx7I828VmIdvxx6SwPNDEaRhPG
+         cfqeJZWkdcVoYDeNuZKk3hUdICyi/ZXihg0ON/kRWrHoBspMKocgkKN5KxLmTer9jIO3
+         lqZNlMx7WDjNKpCX0khgc/zPrgNLUfYtus8VKehF3YONHwqh0PH7vkTYq+MKdqhb28Dd
+         nUcHLuTWhXyIF2lIiunLVJjoiAblAco4VJ6uwAWfPuzTd4L8CNEbb/cG88Lk9NvUOcZe
+         jQdLhHGEePt4R9rvVgrH2bJO24QBq09vHfpo4GDl3TNhy1cZWYB9H4cg2BEjtt+NUorh
+         7Agw==
+X-Forwarded-Encrypted: i=1; AJvYcCUxhBo92YPPbZrg7h20dMNw1USnLfgWjUcmioMxPxji/NuiwTjyICvJVplC+mUY7gtOhis=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxvs8qvdJKeRDbsmRkbfSLobly+vh57ugbmdz8NtFjGaY3vLrtC
+	D2sHsncS6c/9s6lXiqOITyTsCJGai1lukS9TM2KkDlSefGHMTUyZip7bEYPHkUtS3rWuqj1/5Nq
+	LJE7RgFe04zA46wMARcDq7oUCGx7K9mqzu15U2NxLnsvlKFsNH519yw==
+X-Gm-Gg: AY/fxX6yLGQz+wjck52jcgN2Sicf57eF0vKfOLzKDtgWzSkZmf/a7lmsCY9MeA7gDn1
+	NVSMYYWoHmCtRD1R1GHSBUUPJSEDTalbsKKMLHOkJRmhYaxFgyzRmKYPFb7OszB0YYsez9c8M/U
+	U86BX4NYpr+5+drE5QDaxgHj0qf5kGGSjyThzHMKTOEe5jC2MSASLzvubcxp2BqPcs4MhiVU0l2
+	tiBINfZ+QCOOq1a9bbdPP7UlQGtl/anrvWGzb8Q9yJOmnHk1wp505malEDxWzL+WUts47FBUbDP
+	7j60jAaBAa1/H20lHC92/6LiMOyZRwLzKgSBjhdMfE0+xaYIL8IoE1kR0LHainV4aCnPIMNK5wk
+	NrRYXOWlmoZyT5zzRzfsd6lCvNtBBWLctKS+q4ArDJA==
+X-Received: by 2002:a05:622a:3c8:b0:4f1:caed:da6b with SMTP id d75a77b69052e-4ffa76d8404mr15124081cf.35.1767651892401;
+        Mon, 05 Jan 2026 14:24:52 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IExNh0xTTv6L2+E9HZQoqXbrAGQ+sIzOchE6ENYBi29Y5oaqVBf9GDoOpp1unnFpjh+Y6BDeA==
+X-Received: by 2002:a05:622a:3c8:b0:4f1:caed:da6b with SMTP id d75a77b69052e-4ffa76d8404mr15123831cf.35.1767651892036;
+        Mon, 05 Jan 2026 14:24:52 -0800 (PST)
+Received: from crwood-thinkpadp16vgen1.minnmso.csb ([2601:447:cc81:56d0:ab94:b2cb:29a6:7ac0])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8907726041fsm2305706d6.45.2026.01.05.14.24.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jan 2026 14:24:51 -0800 (PST)
+Message-ID: <7f953b7e2a9d30e0f22c30c5c4e10828018bc40c.camel@redhat.com>
+Subject: Re: [PATCH v1 1/4] tools/rtla: Consolidate nr_cpus usage across all
+ tools
+From: Crystal Wood <crwood@redhat.com>
+To: Tomas Glozar <tglozar@redhat.com>, Costa Shulyupin
+ <costa.shul@redhat.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Wander Lairson Costa	
+ <wander@redhat.com>, Ivan Pravdin <ipravdin.official@gmail.com>, John Kacur
+	 <jkacur@redhat.com>, Tiezhu Yang <yangtiezhu@loongson.cn>, 
+	linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org
+Date: Mon, 05 Jan 2026 16:24:50 -0600
+In-Reply-To: <CAP4=nvSr=Wz--CJgJ9kmXfB3r3uNYnt9bJt-_bCigH--rbbx2A@mail.gmail.com>
+References: <20251205151924.2250142-1-costa.shul@redhat.com>
+	 <CAP4=nvS9fTtNCtDCt254-ukTePD7hW3HoKExOPNPDOdppUig9g@mail.gmail.com>
+	 <CAP4=nvSr=Wz--CJgJ9kmXfB3r3uNYnt9bJt-_bCigH--rbbx2A@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next] scripts/gen-btf.sh: Disable LTO when generating
- initial .o file
-To: Nathan Chancellor <nathan@kernel.org>, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-References: <20260105-fix-gen-btf-sh-lto-v1-1-18052ea055a9@kernel.org>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Ihor Solodrai <ihor.solodrai@linux.dev>
-In-Reply-To: <20260105-fix-gen-btf-sh-lto-v1-1-18052ea055a9@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 
-On 1/5/26 1:12 PM, Nathan Chancellor wrote:
-> After commit 600605853f87 ("scripts/gen-btf.sh: Fix .btf.o generation
-> when compiling for RISCV"), there is an error from llvm-objcopy when
-> CONFIG_LTO_CLANG is enabled:
-> 
->   llvm-objcopy: error: '.tmp_vmlinux1.btf.o': The file was not recognized as a valid object file
->   Failed to generate BTF for vmlinux
-> 
-> KBUILD_CFLAGS includes CC_FLAGS_LTO, which makes clang emit an LLVM IR
-> object, rather than an ELF one as expected by llvm-objcopy.
-> 
-> Most areas of the kernel deal with this by filtering out CC_FLAGS_LTO
-> from KBUILD_CFLAGS for the particular object or directory but this is
-> not so easy to do in bash. Just include '-fno-lto' after KBUILD_CFLAGS
-> to ensure an ELF object is consistently created as the initial .o file.
-> 
-> Fixes: 600605853f87 ("scripts/gen-btf.sh: Fix .btf.o generation when compiling for RISCV")
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> ---
->  scripts/gen-btf.sh | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/scripts/gen-btf.sh b/scripts/gen-btf.sh
-> index d6457661b9b6..08b46b91c04b 100755
-> --- a/scripts/gen-btf.sh
-> +++ b/scripts/gen-btf.sh
-> @@ -87,7 +87,7 @@ gen_btf_o()
->  	# SHF_ALLOC because .BTF will be part of the vmlinux image. --strip-all
->  	# deletes all symbols including __start_BTF and __stop_BTF, which will
->  	# be redefined in the linker script.
-> -	echo "" | ${CC} ${CLANG_FLAGS} ${KBUILD_CFLAGS} -c -x c -o ${btf_data} -
-> +	echo "" | ${CC} ${CLANG_FLAGS} ${KBUILD_CFLAGS} -fno-lto -c -x c -o ${btf_data} -
->  	${OBJCOPY} --add-section .BTF=${ELF_FILE}.BTF \
->  		--set-section-flags .BTF=alloc,readonly ${btf_data}
->  	${OBJCOPY} --only-section=.BTF --strip-all ${btf_data}
+On Wed, 2025-12-17 at 10:06 +0100, Tomas Glozar wrote:
+> =C3=BAt 16. 12. 2025 v 15:41 odes=C3=ADlatel Tomas Glozar <tglozar@redhat=
+.com> napsal:
+> > Since commit 2f3172f9dd58c ("tools/rtla: Consolidate code between
+> > osnoise/timerlat and hist/top") that was merged into 6.18, common.h
+> > includes timerlat_u.h. Your change thus causes a double include of
+> > timerlat_u.h, leading to a build error:
+> >=20
+> > In file included from src/timerlat_u.c:20:
+> > src/timerlat_u.h:6:8: error: redefinition of =E2=80=98struct timerlat_u=
+_params=E2=80=99
+> >    6 | struct timerlat_u_params {
+> >      |        ^~~~~~~~~~~~~~~~~
+> > In file included from src/common.h:5,
+> >                 from src/timerlat_u.c:19:
+> > src/timerlat_u.h:6:8: note: originally defined here
+> >    6 | struct timerlat_u_params {
+> >      |        ^~~~~~~~~~~~~~~~~
+> >=20
+> > Please rebase your patchset and fix this so that timerlat_u.h is only
+> > included once.
+> >=20
+>=20
+> Correction: the base of the patchset has nothing to do with this. It
+> is the C standard, from C23 (default in GCC 15), redefinition of
+> structs is allowed [1], so this error doesn't exist. In earlier
+> standards, this is not allowed.
+>=20
+> [1] https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2863.pdf
 
-Hi Nathan, thank you for the patch.
+Regardless of how permissive the language might be getting in this case,
+we should have #pragma once on all of the headers to avoid this sort of
+problem.
 
-I'm starting to think it wasn't a good idea to do
-
-	echo "" | ${CC} ...
-
-here, given the number of associated bugs.
-
-Before gen-btf.sh was introduced, the .btf.o binary was generated with this [1]:
-
-	${OBJCOPY} --only-section=.BTF --set-section-flags .BTF=alloc,readonly \
-		--strip-all ${1} "${btf_data}" 2>/dev/null
-
-I changed to ${CC} on the assumption it's a quicker operation than
-stripping entire vmlinux. But maybe it's not worth it and we should
-change back to --strip-all? wdyt?
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/scripts/link-vmlinux.sh?h=v6.18#n110
-
-> 
-> ---
-> base-commit: a069190b590e108223cd841a1c2d0bfb92230ecc
-> change-id: 20260105-fix-gen-btf-sh-lto-007fe4908070
-> 
-> Best regards,
-> --  
-> Nathan Chancellor <nathan@kernel.org>
-> 
+-Crystal
 
 
