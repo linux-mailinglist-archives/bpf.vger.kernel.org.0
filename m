@@ -1,101 +1,97 @@
-Return-Path: <bpf+bounces-77894-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77895-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FC00CF5FC8
-	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 00:28:38 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF755CF606B
+	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 00:46:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5E4E83065296
-	for <lists+bpf@lfdr.de>; Mon,  5 Jan 2026 23:28:30 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id D1825302BF6C
+	for <lists+bpf@lfdr.de>; Mon,  5 Jan 2026 23:46:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28DF82F39DE;
-	Mon,  5 Jan 2026 23:28:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00B802D7DCE;
+	Mon,  5 Jan 2026 23:46:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YBicwwFz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jdb/+SAI"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A79242D73A0
-	for <bpf@vger.kernel.org>; Mon,  5 Jan 2026 23:28:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74F6E2836E;
+	Mon,  5 Jan 2026 23:46:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767655708; cv=none; b=rfoN8y4/VR7FFFCQAoFlBr85lpfG+E2tK5Bg2/B1kQnxitXtGsZVlh9qLtCRZhtSptahhtd77V6kioO8NvrO708DkhIE1W2Nwysj0irp/t56H/UzUvwxra4UjXakzRjs2hN+pKdDUUlLQoOCsZbukMps7BvQdILa8lhDTAsG6TM=
+	t=1767656770; cv=none; b=oBNYxicAgd8LyKHT2m0yRnym8NaeXikUXRV5JhVHP6gCVisyAIHyvSC9wEJhq+YJGLTwVDQ5jkSlsVgS1Jr25k6MxLlJik0EtCKBMvJAru4V0431YuTmybqyRFobFNPHdKTGifvgsbtPRs/gZCF0ZqEG+KPP+WUXBt1opgYkqkE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767655708; c=relaxed/simple;
-	bh=U21q/lDfx/BO3V6IyHv1qFtq6LrV83MbndFcW6vb1iE=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=FjILRJVAfQbHGOZd/CTDFJ6pVOrR5O5viG851gnL/udX9+GGRlwgv1TtA67Dn22cGQK2aRu0W4b1kbhBzeJQcWn5XofC+8JZI22t+D9GcMLB6DFjD0zBlg5Q+zT306a+/klG2l3V6LK4nrt/rqeSGkcLPuz2QA6qA5KedgLJWhM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YBicwwFz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60CB0C116D0;
-	Mon,  5 Jan 2026 23:28:27 +0000 (UTC)
+	s=arc-20240116; t=1767656770; c=relaxed/simple;
+	bh=dvIS49jbsB+FpD9rVQ/xwSlM0vYensYCvpHNdfR853g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=T2Co7rRNbRgicNppyUJjqPTVh1bd0DN0YtLJZ6Lk1DN+nDgM00TD2kyekwcWX7GCnCfYz4gs9mK8Yu2Tp4b4TISNjujw1HPrz1fsDDaSLdq9Vq1mouxM4VPYIZ7e0n7s479k04e9RJYLefgONCSyH4BBjobvsYwXTrAwPvIQuFU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jdb/+SAI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFE1BC116D0;
+	Mon,  5 Jan 2026 23:46:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767655708;
-	bh=U21q/lDfx/BO3V6IyHv1qFtq6LrV83MbndFcW6vb1iE=;
-	h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-	b=YBicwwFzKdQXs1oEo7+hTDN44E9akaBi1P6qzgZZ7ykFOIOIENRi/AUeYoB0abnC5
-	 W6RoAVYi9u+ThqIORZR1n44jS/C/idBwlwD+NffY6w9CLCSrtj8+JHWoCyc5HOxUEu
-	 jEoc5Y3L5NEyUSQ1XXB82g3JMUPm46U6u5y24E82AZuElxP1ni1a8BznNjrm40imXW
-	 FqAP+P6sPBhPjV0f/8+B8IEg9UDIdpN61wdimxpjay+oIrufL6WUYRGYdS9CTQDMO/
-	 lOFP+0uBdgfBpmWwC7DLFo+u9PNNQkFrKM40ZfMCzxE1V33Yo98uFwGHspIDeeEKWr
-	 kwzuRHrI4dkmw==
-Date: Mon, 5 Jan 2026 16:28:26 -0700 (MST)
-From: Paul Walmsley <pjw@kernel.org>
-To: Lukas Gerlach <lukas.gerlach@cispa.de>
-cc: bpf@vger.kernel.org, linux-riscv@lists.infradead.org, bjorn@kernel.org, 
-    ast@kernel.org, daniel@iogearbox.net, luke.r.nels@gmail.com, 
-    xi.wang@gmail.com, palmer@dabbelt.com, luis.gerhorst@fau.de, 
-    daniel.weber@cispa.de, marton.bognar@kuleuven.be, jo.vanbulck@kuleuven.be, 
-    michael.schwarz@cispa.de
-Subject: Re: [PATCH] riscv, bpf: Emit fence.i for BPF_NOSPEC
-In-Reply-To: <20251228173753.56767-1-lukas.gerlach@cispa.de>
-Message-ID: <83981ed7-9d36-a47a-cf73-9010fceba5f1@kernel.org>
-References: <20251228173753.56767-1-lukas.gerlach@cispa.de>
+	s=k20201202; t=1767656769;
+	bh=dvIS49jbsB+FpD9rVQ/xwSlM0vYensYCvpHNdfR853g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Jdb/+SAINQcEyGffd+mvJMEToFc+bpGUdfmefBXU/EWBqxYCkjumV/VeAy6ke2Ix/
+	 Yd2IqNunNAyjGRfJuMcsKc3m5zKMPWksQXpDiwUiGhE3izDb2WHK6Uyx9bdxVWzreb
+	 tUq+H9am9B0aR+lbqvtVcc3xYznpWJ6AZ6nqAuy9mZPYy40oK8kdKUGtzd+n3E90+Q
+	 31zFL++axBoA6J6ycaQTqtnCeMUWHdp05uGJstyyKzdndiYBEt5ZLcEAikq7lzoBxG
+	 E4JnfwvRwzptJ8i0h6xkZFrxnGK8wEZiPougsyWVauZ3q+3wjfiWUuIMPMtcFGJ0sG
+	 geOQl3dSrHSDg==
+Date: Mon, 5 Jan 2026 16:46:05 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Ihor Solodrai <ihor.solodrai@linux.dev>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH bpf-next] scripts/gen-btf.sh: Disable LTO when generating
+ initial .o file
+Message-ID: <20260105234605.GB1276749@ax162>
+References: <20260105-fix-gen-btf-sh-lto-v1-1-18052ea055a9@kernel.org>
+ <ff8187bd-0bae-4b49-8844-6c975a2e79c6@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ff8187bd-0bae-4b49-8844-6c975a2e79c6@linux.dev>
 
-Hi Lukas, 
-
-thanks for the patch,
-
-On Sun, 28 Dec 2025, Lukas Gerlach wrote:
-
-> The BPF verifier inserts BPF_NOSPEC instructions to create speculation
-> barriers. However, the RISC-V BPF JIT emits nothing for this
-> instruction, leaving programs vulnerable to speculative execution
-> attacks.
+On Mon, Jan 05, 2026 at 02:01:36PM -0800, Ihor Solodrai wrote:
+> Hi Nathan, thank you for the patch.
 > 
-> Originally, BPF_NOSPEC was used only for Spectre v4 mitigation, programs
-> containing potential Spectre v1 gadgets were rejected by the verifier.
-> With the VeriFence changes, the verifier now accepts these
-> programs and inserts BPF_NOSPEC barriers for Spectre v1 mitigation as
-> well. On RISC-V, this means programs that were previously rejected are
-> now accepted but left unprotected against both v1 and v4 attacks.
+> I'm starting to think it wasn't a good idea to do
 > 
-> RISC-V lacks a dedicated speculation barrier instruction.
-> This patch uses the fence.i instruction as a stopgap solution.
-> However an alternative and safer approach would be to reject vulnerable bpf
-> programs again.
+> 	echo "" | ${CC} ...
 > 
-> Fixes: f5e81d111750 ("bpf: Introduce BPF nospec instruction for mitigating Spectre v4")
-> Fixes: 5fcf896efe28 ("Merge branch 'bpf-mitigate-spectre-v1-using-barriers'")
-> Signed-off-by: Lukas Gerlach <lukas.gerlach@cispa.de>
+> here, given the number of associated bugs.
 
-Have you been able to measure whether this change results in a performance 
-regression on cores that might not need these barriers, for example, 
-in-order cores with limited speculation?
+Yeah, I was wondering if a lack of KBUILD_CPPFLAGS would also be a
+problem since that contains the endianness flag for some targets. I
+cannot imagine any more issues than that but I can understand wanting to
+back out of it.
 
-Am thinking that we probably should make this conditional using code 
-similar to arch/arm64/kernel/proton-pack.c - and avoiding the fence.i when 
-cores that aren't likely to be susceptible are detected.
+> Before gen-btf.sh was introduced, the .btf.o binary was generated with this [1]:
+> 
+> 	${OBJCOPY} --only-section=.BTF --set-section-flags .BTF=alloc,readonly \
+> 		--strip-all ${1} "${btf_data}" 2>/dev/null
+> 
+> I changed to ${CC} on the assumption it's a quicker operation than
+> stripping entire vmlinux. But maybe it's not worth it and we should
+> change back to --strip-all? wdyt?
 
-Thoughts?  
+That certainly seems more robust to me. I see the logic but with
+'--only-section' and no glob, I would expect that to be a rather quick
+operation but I am running out of time today to test and benchmark such
+a change. I will try to do it tomorrow unless someone beats me to it.
 
-
-- Paul
+Cheers,
+Nathan
 
