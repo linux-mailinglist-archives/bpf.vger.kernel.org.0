@@ -1,131 +1,113 @@
-Return-Path: <bpf+bounces-77793-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77794-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85ACFCF199C
-	for <lists+bpf@lfdr.de>; Mon, 05 Jan 2026 03:04:32 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96DB2CF1FD3
+	for <lists+bpf@lfdr.de>; Mon, 05 Jan 2026 06:32:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 9C1F63008D6A
-	for <lists+bpf@lfdr.de>; Mon,  5 Jan 2026 02:04:27 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 16B8C300F32E
+	for <lists+bpf@lfdr.de>; Mon,  5 Jan 2026 05:28:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6275030DD36;
-	Mon,  5 Jan 2026 02:04:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85232325705;
+	Mon,  5 Jan 2026 05:28:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="q3Dg18ZH"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Vm8yiR9z"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A74C284884;
-	Mon,  5 Jan 2026 02:04:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D958326951
+	for <bpf@vger.kernel.org>; Mon,  5 Jan 2026 05:27:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767578663; cv=none; b=Xo2BkJoWTpnJ6fws2vZLcda4UhQQYuIjPXaUhL4Pjui8bfjMkO6HRSjFxXbNfZtAigBAJqQHfi5Cw6oBrBvmDAy3NEqk7BHP4vtDyiBAckQuS5VAKzhcA3EPaMLvI6Mw7eXyxHL3Q0q6fy9ONMaHL68PsO+Qt5yDyS6pKCYzLs8=
+	t=1767590883; cv=none; b=irXH2ogfm2W+aDRSYiMF8sMEAUgQrctH3u+jzYKUyDbsTTMqKvRwa676BypsCaylhlCYiY1IiLW5/PGr+MVZtqWxUq1pxgEB0IlXbyabW4fum9W5hLaJCazJqNyCeU117ax7lBvL8BlH2nHkUwnLtCyRKn3BmIaJbDYbtIcOt0w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767578663; c=relaxed/simple;
-	bh=VD2g4x30tYK0IfHuRuTFEHsGFn/v4l2BNWMOsIXqhR4=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=bA5fjLX+N01AVJMkJHiEdUrC1aqnpmYZzs8wI/ml6qA59doxbWuTiq1iBiNULlWJwOBbeUkQ/HflD3cEgsMO7bmX1aOKiubnGfzp+q+/94hwzCJh95zuPpIyabyHc2O3WXq2kPqH9hg69wyig5lyKWl6j6qbYsf48x/VMqNrqIk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=q3Dg18ZH; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=202503; t=1767578656;
-	bh=MOc4tm5hzHeN7w9Q5mQExScYl5WcFW9QovEg1i1Se3Q=;
-	h=Date:From:To:Cc:Subject:From;
-	b=q3Dg18ZH4rmLqswOG/zOHemv8hfDNAwIeVB24W48E+A6382/AXszIzLEokz5rcsfG
-	 g9ndmoxjmlrlPxcL/6rkKgr0oxPUV9A7HBS24u8TUaXSZ4NRYbG6EyEIEsDdEPy6c5
-	 W6UdjvZ9yxd6gZYZJSuDseWlyQKYCCQqtC5SAN+MzqImbgmD16RZqb89gGH073d3sL
-	 vCO46wTBXSUca/aCJAfRf309A1eDZbFTINC3BBSOIc7LJPCQVo+sAI/hEJXbuAVc6A
-	 Zj/m5V10NRqww/gtO4aKLYSa2YG2ExGwz9dQOdrE5CORI/UamKzZOWZ19/a+jSApt5
-	 EdTFtlLd6EXPw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange secp256r1 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4dkyKB6s4qz4wCZ;
-	Mon, 05 Jan 2026 13:04:14 +1100 (AEDT)
-Date: Mon, 5 Jan 2026 13:04:13 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov
- <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Andrew Morton
- <akpm@linux-foundation.org>
-Cc: bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>, Chen
- Ridong <chenridong@huawei.com>, JP Kobryn <inwardvessel@gmail.com>, Linux
- Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>
-Subject: linux-next: manual merge of the bpf-next tree with the mm-unstable
- tree
-Message-ID: <20260105130413.273ee0ee@canb.auug.org.au>
+	s=arc-20240116; t=1767590883; c=relaxed/simple;
+	bh=foWwT0mt+rj59iH1KVGIInZRkYBoqdVxBaoqrC3sp6A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KeOhB85pzYIrpQQ/Dhv9jvZ1Sfg6XFkJVZKlmvSGoYu/qC6ANZDWklZ1/5lmB6ZzZrmCwSekvsGd6E5zhQs5MnOwxAUHtKRNaqVASVQJRK7UZsuDRYQP9qXq1jT8Pg0hm3SFIEE1uazXvFgP7sg8XVd6Y4Viroxk9fc3eCmxhCg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Vm8yiR9z; arc=none smtp.client-ip=95.215.58.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <248eab0f-0071-40de-a9ba-cbd548ad28f7@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1767590866;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FAEotLk51p4D5KLtJz1rfZB7RPGPlJ5yytYlR3nYTq8=;
+	b=Vm8yiR9zD3YlovNFDyoXZnnXL8/0xkaaPX3Jf0ASbwVJHes1l7GTuhmFJDIflyWUls03Gg
+	hDF9RtdKNYe/ZDC6COrAFaBpQgFL11SaP3zcy/NZMiIxO9apPzveVLBOq7naRuXRvVYusP
+	HdAzBtiEUP/Xtu5J7SpgT1pEWi1V4dY=
+Date: Sun, 4 Jan 2026 21:27:29 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/QTThylcdXK9Df2AdQpaZlv1";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Subject: Re: [PATCH v3 bpf-next] bpftool: Make skeleton C++ compatible with
+ explicit casts
+Content-Language: en-GB
+To: WanLi Niu <kiraskyler@163.com>, Quentin Monnet <qmo@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Menglong Dong <menglong8.dong@gmail.com>,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ WanLi Niu <niuwl1@chinatelecom.cn>, Menglong Dong <dongml2@chinatelecom.cn>
+References: <20251231102929.3843-1-kiraskyler@163.com>
+ <20260104021402.2968-1-kiraskyler@163.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20260104021402.2968-1-kiraskyler@163.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
---Sig_/QTThylcdXK9Df2AdQpaZlv1
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-Today's linux-next merge of the bpf-next tree got a semantic conflict in:
+On 1/3/26 6:14 PM, WanLi Niu wrote:
+> From: WanLi Niu <niuwl1@chinatelecom.cn>
+>
+> Fix C++ compilation errors in generated skeleton by adding explicit
+> pointer casts and using integer subtraction for offset calculation.
+>
+> Use struct outer::inner syntax under __cplusplus to access nested skeleton map
+> structs, ensuring C++ compilation compatibility while preserving C support
+>
+> error: invalid conversion from 'void*' to '<obj_name>*' [-fpermissive]
+>        |         skel = skel_alloc(sizeof(*skel));
+>        |                ~~~~~~~~~~^~~~~~~~~~~~~~~
+>        |                          |
+>        |                          void*
+>
+> error: arithmetic on pointers to void
+>        |         skel->ctx.sz = (void *)&skel->links - (void *)skel;
+>        |                        ~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~
+>
+> error: assigning to 'struct <obj_name>__<ident> *' from incompatible type 'void *'
+>        |                 skel-><ident> = skel_prep_map_data((void *)data, 4096,
+>        |                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>        |                                                 sizeof(data) - 1);
+>        |                                                 ~~~~~~~~~~~~~~~~~
+>
+> error: assigning to 'struct <obj_name>__<ident> *' from incompatible type 'void *'
+>        |         skel-><ident> = skel_finalize_map_data(&skel->maps.<ident>.initial_value,
+>        |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>        |                                         4096, PROT_READ | PROT_WRITE, skel->maps.<ident>.map_fd);
+>        |                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>
+> Signed-off-by: WanLi Niu <niuwl1@chinatelecom.cn>
+> Co-developed-by: Menglong Dong <dongml2@chinatelecom.cn>
+> Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
 
-  include/linux/memcontrol.h
-  mm/memcontrol-v1.c
-  mm/memcontrol.c
+LGTM. Could you add a minimum reproducer in the commit message?
 
-between commit:
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
 
-  eb557e10dcac ("memcg: move mem_cgroup_usage memcontrol-v1.c")
-
-from the mm-unstable tree and commit:
-
-  99430ab8b804 ("mm: introduce BPF kfuncs to access memcg statistics and ev=
-ents")
-
-from the bpf-next tree producing this build failure:
-
-mm/memcontrol-v1.c:430:22: error: static declaration of 'mem_cgroup_usage' =
-follows non-static declaration
-  430 | static unsigned long mem_cgroup_usage(struct mem_cgroup *memcg, boo=
-l swap)
-      |                      ^~~~~~~~~~~~~~~~
-In file included from mm/memcontrol-v1.c:3:
-include/linux/memcontrol.h:953:15: note: previous declaration of 'mem_cgrou=
-p_usage' with type 'long unsigned int(struct mem_cgroup *, bool)' {aka 'lon=
-g unsigned int(struct mem_cgroup *, _Bool)'}
-  953 | unsigned long mem_cgroup_usage(struct mem_cgroup *memcg, bool swap);
-      |               ^~~~~~~~~~~~~~~~
-
-I fixed it up (I reverted the mm-unstable tree commit) and can carry the
-fix as necessary. This is now fixed as far as linux-next is concerned,
-but any non trivial conflicts should be mentioned to your upstream
-maintainer when your tree is submitted for merging.  You may also want
-to consider cooperating with the maintainer of the conflicting tree to
-minimise any particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/QTThylcdXK9Df2AdQpaZlv1
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmlbHB0ACgkQAVBC80lX
-0Gx0UQf9GEIs+Ocj8boEp+QMp8DUQ1aNk3ovf1auZzQ8bFN3wB/0VeAdZRI0su/t
-CDEecB/ND0fkbO7Ts2lBRsv4qUl1Scu9WFulyrbK1ngXYJ2yfbSkuZQjANnS1b3w
-lIi1+oz1BV4/8ofHfcqpLuf8s2LFpDxbv4YnxFPwz6ku+meyZxKiyrvJ37Mb1OAD
-uGJl5t8hhnZM2E+weQ3VTgIzLcdVGnB1D8VdaxJRjGWKBnfR3yqXvOnh/jEPD0XT
-TVSXLZGu+GZyhhbanshyv2FoXZjNVYNzEvpLDcxHRIxt8jRGTYHVlkywVBraPeyV
-LGdu9L4ERO9m3sWIYeRw/W1fJ7dy2g==
-=KjcO
------END PGP SIGNATURE-----
-
---Sig_/QTThylcdXK9Df2AdQpaZlv1--
 
