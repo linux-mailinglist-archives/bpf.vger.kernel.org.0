@@ -1,226 +1,137 @@
-Return-Path: <bpf+bounces-77799-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77800-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 341E5CF2720
-	for <lists+bpf@lfdr.de>; Mon, 05 Jan 2026 09:34:33 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D9D4CF3083
+	for <lists+bpf@lfdr.de>; Mon, 05 Jan 2026 11:43:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 373263090DE5
-	for <lists+bpf@lfdr.de>; Mon,  5 Jan 2026 08:28:14 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 249B830E231B
+	for <lists+bpf@lfdr.de>; Mon,  5 Jan 2026 10:40:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BB113314DF;
-	Mon,  5 Jan 2026 08:27:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D14B53168FA;
+	Mon,  5 Jan 2026 10:40:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yns2VgMu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iJRgwPNv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74FDE332EA2
-	for <bpf@vger.kernel.org>; Mon,  5 Jan 2026 08:27:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CBCE3161BD;
+	Mon,  5 Jan 2026 10:40:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767601639; cv=none; b=THnOktFPUDCrslcExbMjMRDXWc4TG7xqEWFFwikaP/rouxmNUl8eYFCoOjYziOczMr2OhqYUDkoI+wcq+CysC+ZgqnbKlEgRbsj3T5Pc5Wmn5//6cXsHTOCYoPVFsNiIq5MXSw3w2/GGhOUEalMdzjWzQu9EvYI4Sqf7/xHQuVU=
+	t=1767609604; cv=none; b=jqWX8uY+f7kXk59AVqz3cOYGvWbEh5ZgQstEhSzBDHbh9s1yKXNQEBBVIC9IFiINg6w4rrh44lkUF2eVBu+hJXKYoyRGeZ4NHZbD78M7tsz0smAsc5Id6lEvfjIafwKtq6sNnVX5yRIV5HGXyn3CvjwhCIuCH25i1vrFw717SkA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767601639; c=relaxed/simple;
-	bh=Q/4shMsvIqe+UVceg+uI8+MSBlld+JPMnlECd1YXtcw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KspNTwG16YfD/T1GJG0lMYvYrUxxxbnfhRJj1fYb9QkHkAobt5zrLywq5WwzE+avFz3hFGOAxORlIPxJZsKEZ7DbfMfRbbplABXI2Jit6MBb/487yhvKW2DwnA9AfKP9n0AFSSU12wGj1gEvYSdVZ10Zw7GRH8VVb3XoKtSHYVM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=yns2VgMu; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-64d1ef53cf3so14948483a12.0
-        for <bpf@vger.kernel.org>; Mon, 05 Jan 2026 00:27:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1767601636; x=1768206436; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ypkgWHkBo9WqgDQ1DB/IsjD4ESwuJWsD2d1J9VktW48=;
-        b=yns2VgMuI75H7ay1CTh197zDxa7y7a8mdIjeoRlfaX3O+Usq5ohqd7PqoJROyTGY9Q
-         Xus0MnpJAdvswNooWoBNQhPV/qu/hIJoKVmQBIQKavDVPcw26afDhksYTwT777uu9nBx
-         Vo0eT4LnLoM1igtAhBtlk1Q3mUFB3FZbnpvlerxBLtG+N0zXkvVyagHZzoyCwtSFQmwC
-         QmBDOvHk/LlP/nn5jv0WJ9ek3j5uLJmqHpPf6TgEHYg4Xfflnz+ey8Zo+4TxeFpqdcVs
-         N2s0lfDBOmngcApqJH542DmGUAWwG7wnwhiO7LkmpXszpLrOk1TRFE8nDUSDI9UTtRX8
-         LlYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767601636; x=1768206436;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ypkgWHkBo9WqgDQ1DB/IsjD4ESwuJWsD2d1J9VktW48=;
-        b=U9r+cBlDe4kpYahffl+0R+VUVa933kz19yqER3MyamiodKhWqI5gigb8rdo2rabbcj
-         8kdAz7urTTMIKNQr14dXRXPxfnDQssQSeFvLRwgY7zFYvPizJiQQnvTapzcTeulo64bZ
-         0bagRnmZvLGjIYJhmgHnZC2ZCdCCzP2hiie0sJQvbZUkMSWPG1hNWqB0F7TZ08BHNzA/
-         LPnjVEpMMVsvSQSoPX+yX83lVODWnXrC9QHpWTmDiCnXJ1P23Du/3LP3khZZwiJf7Dsu
-         ICzpbCIViqCifNdSuVaLyLKPYQ7ZuZ+OHfA1EtEPnQ3SiUrIppBtrvstttbYDrtclxhx
-         Ek2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVfEEJgUchDmJaExErljlTILsyQ+6AfQdbRQLrgfNYQpWyXYtfcCLhigCrF95WPY460Ql0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzZn+HSXEj1Dacw3kieoh6iunqq45i3guTJHNW1SKMLsMtnTjT9
-	swYPBp1ajlBOqXJm9qP+JBuAWROM6G7fjPZ78G/4jGKWwUqKzXIGmccHVu1wXJ1HLg==
-X-Gm-Gg: AY/fxX6KHnnaF9TTSN49MmdgkTVEhqJYVrbFx4PiGlmI1HI+XcPJ0AJwYxNlpTYQoFu
-	D2ebHD2zzYKheP+DRpt18fMpiSuc4ADZPT5iLN+FqZhMOGJDMJKefDcohHNoFXM/QfJEYVxw4r1
-	mZPbIm0qusB/dHtHFlepNS6q8PplGIQ0xwl3o9DbG9WzG+L10CxuQu6PobbOvB/XkpQjhMazGOw
-	TuWFLsVh5BZHiDyX4Kp8hEFZ/WbYtn1OzbSLL91vdVNffApzzHZOl0X+Qh8CgAZVoNoeER2Yuky
-	DEsEtoFX8sv/ECBRl0FQ2l2/Nd8sg9ObPCh1+yH2ydpas/mj/nJxFhe/1QbuGnv579b35/3MCAR
-	Ai1Gj+BWXE7/K58MvRJVHoZghvEfhjeUIDJRhtHEyb7orcTfBNkrYLj8CMDe9LfzbGEUTFdLXyR
-	6jFRX9YMt1Ln2/WfDqWPQ0eFzJkwjFHchrjxbNfrH8rF2cbqAlNfNHoA==
-X-Google-Smtp-Source: AGHT+IHg8IuiD2PkmJ7EJ4lhwJde9cluUgzn2k0YiKFANT0BVwSM54RIFnXDXNsAPagJmofnNzk08w==
-X-Received: by 2002:a17:907:9691:b0:b80:2315:b4ca with SMTP id a640c23a62f3a-b80371f956fmr5349308466b.46.1767601635537;
-        Mon, 05 Jan 2026 00:27:15 -0800 (PST)
-Received: from google.com (14.59.147.34.bc.googleusercontent.com. [34.147.59.14])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b8037ad806asm5604243166b.23.2026.01.05.00.27.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jan 2026 00:27:14 -0800 (PST)
-Date: Mon, 5 Jan 2026 08:27:11 +0000
-From: Matt Bobrowski <mattbobrowski@google.com>
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: Alan Maguire <alan.maguire@oracle.com>,
-	Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-	dwarves@vger.kernel.org, bpf@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [PATCH dwarves] btf_encoder: prefer strong function definitions
- for BTF generation
-Message-ID: <aVt139VXMTka-hYw@google.com>
-References: <20251231085322.3248063-1-mattbobrowski@google.com>
- <926aca4a-d7d5-4e7d-9096-77b27374c5cd@linux.dev>
+	s=arc-20240116; t=1767609604; c=relaxed/simple;
+	bh=h7TQZbRFy0uXUBt40iNG6WS7vvo9zqeFJrG/4NGqFjI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=esqOVKzsbXJB9k3B8/OmwhxQSCYLW71DvBiPRaAp4JEYLYKFFjsud3tQEz9zw8rOXzIbyjfDWVVoL0Z0XIn4IO1ynPwiqti0ePAatLTZBf09MxEGMrRMy/46FU0tOc1rNYIQcZDI5EWAfUjpjXdhejPrrvqs7DoeNnW2dkQmYmg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iJRgwPNv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AF3EC116D0;
+	Mon,  5 Jan 2026 10:40:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1767609603;
+	bh=h7TQZbRFy0uXUBt40iNG6WS7vvo9zqeFJrG/4NGqFjI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=iJRgwPNvglD1duGkXUiFXZhRkDsrcfnOujWpVzuh0AK6igS3cMfvzhAPNmEc2xOjg
+	 gTWdooH2UazbC7kk6S0mO+CO/hM3kRDtDe8rvyMMgwLLBi6yi3DkQpAAyIV5uJThHR
+	 tsRIcCSAOA6PobDI7m2465yJql+FYTZUBb7VHlXgZcXpt7OKJSbNr0N/yrm5YLedXs
+	 oAhjVKVElQq13GGK3d5S0fEyQLTWPWSehDxHsgaJT5Aexpe2HLL4YaSDUisqWiDKzr
+	 6Yu1VQgC8RMIh2OaHH7NTOU6BozoZffIIht3G4wX8YcV9EFjuQvACvNbHg2iXP0y5V
+	 RRQiUWMZZ0jTQ==
+Message-ID: <f3ab8c9f-3bb9-4427-8b43-c1ed9d488970@kernel.org>
+Date: Mon, 5 Jan 2026 10:39:59 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <926aca4a-d7d5-4e7d-9096-77b27374c5cd@linux.dev>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 bpf-next] bpftool: Make skeleton C++ compatible with
+ explicit casts
+To: WanLi Niu <kiraskyler@163.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Menglong Dong <menglong8.dong@gmail.com>,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ WanLi Niu <niuwl1@chinatelecom.cn>, Menglong Dong <dongml2@chinatelecom.cn>
+References: <20260104021402.2968-1-kiraskyler@163.com>
+ <20260105071231.2501-1-kiraskyler@163.com>
+From: Quentin Monnet <qmo@kernel.org>
+Content-Language: en-GB
+In-Reply-To: <20260105071231.2501-1-kiraskyler@163.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Jan 02, 2026 at 10:46:00AM -0800, Yonghong Song wrote:
+On 05/01/2026 07:12, WanLi Niu wrote:
+> From: WanLi Niu <niuwl1@chinatelecom.cn>
 > 
+> Fix C++ compilation errors in generated skeleton by adding explicit
+> pointer casts and using integer subtraction for offset calculation.
 > 
-> On 12/31/25 12:53 AM, Matt Bobrowski wrote:
-> > Currently, when a function has both a weak and a strong definition
-> > across different compilation units (CUs), the BTF encoder arbitrarily
-> > selects one to generate the BTF entry. This selection fundamentally is
-> > dependent on the order in which pahole processes the CUs.
-> > 
-> > This indifference often leads to a mismatch where the generated BTF
-> > reflects the weak definition's prototype, even though the linker
-> > selected the strong definition for the final vmlinux binary.
-> > 
-> > A notable example described in [0] involving function
-> > bpf_lsm_mmap_file(). Both weak and strong definitions exist,
-> > distinguished only by parameter names (e.g., file vs
-> > file__nullable). While the strong definition is linked into the
-> > vmlinux object, the generated BTF contained the prototype for the weak
-> > definition. This causes issues for BPF verifier (e.g., __nullable
-> > annotation semantics), or tools relying on accurate type information.
-> > 
-> > To fix this, ensure the BTF encoder selects the function definition
-> > corresponding to the actual code linked into the binary. This is
-> > achieved by comparing the DWARF function address (DW_AT_low_pc) with
-> > the ELF symbol address (st_value). Only the DWARF entry for the strong
-> > definition will match the final resolved ELF symbol address.
-> > 
-> > [0] https://lore.kernel.org/all/aVJY9H-e83T7ivT4@google.com/
-> > 
-> > Link: https://lore.kernel.org/all/aVJY9H-e83T7ivT4@google.com/
-> > Signed-off-by: Matt Bobrowski <mattbobrowski@google.com>
+> Use struct outer::inner syntax under __cplusplus to access nested skeleton map
+> structs, ensuring C++ compilation compatibility while preserving C support
 > 
-> LGTM with some nits below.
+> error: invalid conversion from 'void*' to '<obj_name>*' [-fpermissive]
+>       |         skel = skel_alloc(sizeof(*skel));
+>       |                ~~~~~~~~~~^~~~~~~~~~~~~~~
+>       |                          |
+>       |                          void*
+> 
+> error: arithmetic on pointers to void
+>       |         skel->ctx.sz = (void *)&skel->links - (void *)skel;
+>       |                        ~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~
+> 
+> error: assigning to 'struct <obj_name>__<ident> *' from incompatible type 'void *'
+>       |                 skel-><ident> = skel_prep_map_data((void *)data, 4096,
+>       |                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>       |                                                 sizeof(data) - 1);
+>       |                                                 ~~~~~~~~~~~~~~~~~
+> 
+> error: assigning to 'struct <obj_name>__<ident> *' from incompatible type 'void *'
+>       |         skel-><ident> = skel_finalize_map_data(&skel->maps.<ident>.initial_value,
+>       |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>       |                                         4096, PROT_READ | PROT_WRITE, skel->maps.<ident>.map_fd);
+>       |                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> Minimum reproducer:
+> 
+> 	$ cat test.bpf.c
+> 	int val; // placed in .bss section
+> 
+> 	#include "vmlinux.h"
+> 	#include <bpf/bpf_helpers.h>
+> 
+> 	SEC("raw_tracepoint/sched_wakeup_new") int handle(void *ctx) { return 0; }
+> 
+> 	$ cat test.cpp
+> 	#include <cerrno>
+> 
+> 	extern "C" {
+> 	#include "test.bpf.skel.h"
+> 	}
+> 
+> 	$ bpftool btf dump file /sys/kernel/btf/vmlinux format c > vmlinux.h
+> 	$ clang -g -O2 -target bpf -c test.bpf.c -o test.bpf.o
+> 	$ bpftool gen skeleton test.bpf.o -L  > test.bpf.skel.h
+> 	$ g++ -c test.cpp -I.
 
-Thanks for the review.
 
-> Acked-by: Yonghong Song <yonghong.song@linux.dev>
-> 
-> > ---
-> >   btf_encoder.c | 36 ++++++++++++++++++++++++++++++++++++
-> >   1 file changed, 36 insertions(+)
-> > 
-> > diff --git a/btf_encoder.c b/btf_encoder.c
-> > index b37ee7f..0462094 100644
-> > --- a/btf_encoder.c
-> > +++ b/btf_encoder.c
-> > @@ -79,6 +79,7 @@ struct btf_encoder_func_annot {
-> >   /* state used to do later encoding of saved functions */
-> >   struct btf_encoder_func_state {
-> > +	uint64_t addr;
-> >   	struct elf_function *elf;
-> >   	uint32_t type_id_off;
-> >   	uint16_t nr_parms;
-> > @@ -1258,6 +1259,7 @@ static int32_t btf_encoder__save_func(struct btf_encoder *encoder, struct functi
-> >   	if (!state)
-> >   		return -ENOMEM;
-> > +	state->addr = function__addr(fn);
-> >   	state->elf = func;
-> >   	state->nr_parms = ftype->nr_parms + (ftype->unspec_parms ? 1 : 0);
-> >   	state->ret_type_id = ftype->tag.type == 0 ? 0 : encoder->type_id_off + ftype->tag.type;
-> > @@ -1477,6 +1479,29 @@ static void btf_encoder__delete_saved_funcs(struct btf_encoder *encoder)
-> >   	encoder->func_states.cap = 0;
-> >   }
-> > +static struct btf_encoder_func_state *btf_encoder__select_canonical_state(struct btf_encoder_func_state *combined_states,
-> > +									  int combined_cnt)
-> > +{
-> > +	int i, j;
-> > +
-> > +	/*
-> > +	 * The same elf_function is shared amongst combined functions,
-> > +	 * as per saved_functions_combine().
-> > +	 */
-> > +	struct elf_function *elf = combined_states[0].elf;
-> 
-> The logic is okay. But can we limit elf->sym_cnt to be 1 here?
-> This will match the case where two functions (weak and strong)
-> co-exist in compiler and eventually only strong/global function
-> will survive.
+I tried it and could confirm that the warnings are gone.
 
-In fact, checking again I believe that the loop is redundant because
-elf_function__has_ambiguous_address() ensures that if we reach this
-point, all symbols for the function share the same address. Therefore,
-checking the first symbol (elf->syms[0]) should be sufficient and
-equivalent to checking all of them.
 
-Will send through a v2 with this amendment.
+> Signed-off-by: WanLi Niu <niuwl1@chinatelecom.cn>
+> Co-developed-by: Menglong Dong <dongml2@chinatelecom.cn>
+> Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
 
-> > +
-> > +	for (i = 0; i < combined_cnt; i++) {
-> > +		struct btf_encoder_func_state *state = &combined_states[i];
-> > +
-> > +		for (j = 0; j < elf->sym_cnt; j++) {
-> > +			if (state->addr == elf->syms[j].addr)
-> > +				return state;
-> > +		}
-> > +	}
-> > +
-> > +	return &combined_states[0];
-> > +}
-> > +
-> >   static int btf_encoder__add_saved_funcs(struct btf_encoder *encoder, bool skip_encoding_inconsistent_proto)
-> >   {
-> >   	struct btf_encoder_func_state *saved_fns = encoder->func_states.array;
-> > @@ -1517,6 +1542,17 @@ static int btf_encoder__add_saved_funcs(struct btf_encoder *encoder, bool skip_e
-> >   					0, 0);
-> >   		if (add_to_btf) {
-> > +			/*
-> > +			 * We're to add the current function within
-> > +			 * BTF. Although, from all functions that have
-> > +			 * possibly been combined via
-> > +			 * saved_functions_combine(), ensure to only
-> > +			 * select and emit BTF for the most canonical
-> > +			 * function definition.
-> > +			 */
-> > +			if (j - i > 1)
-> > +				state = btf_encoder__select_canonical_state(state, j - i);
-> > +
-> >   			if (is_kfunc_state(state))
-> >   				err = btf_encoder__add_bpf_kfunc(encoder, state);
-> >   			else
-> 
+
+Acked-by: Quentin Monnet <qmo@kernel.org>
+
+Thank you!
 
