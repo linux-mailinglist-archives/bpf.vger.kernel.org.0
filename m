@@ -1,187 +1,345 @@
-Return-Path: <bpf+bounces-77873-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77874-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F950CF55DC
-	for <lists+bpf@lfdr.de>; Mon, 05 Jan 2026 20:24:58 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40B19CF562D
+	for <lists+bpf@lfdr.de>; Mon, 05 Jan 2026 20:32:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 16029310FAF1
-	for <lists+bpf@lfdr.de>; Mon,  5 Jan 2026 19:21:02 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 05C3230773BB
+	for <lists+bpf@lfdr.de>; Mon,  5 Jan 2026 19:31:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF57C340D84;
-	Mon,  5 Jan 2026 19:20:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CF48299A8A;
+	Mon,  5 Jan 2026 19:31:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="fCTjjgcJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nsdVciYg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E743F3093AC
-	for <bpf@vger.kernel.org>; Mon,  5 Jan 2026 19:20:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FD0C22E406
+	for <bpf@vger.kernel.org>; Mon,  5 Jan 2026 19:31:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767640858; cv=none; b=a4DQawCeuYKUwTO6530jZ1sQRCh6s6PgJRjFRBEykCTh1E1L7R5M5Kn+MV8aWUCT2n0hfl05/NmVTt13d4kNTcqOfR+LQhFLvdJZP86t0ATESMe3xxlYV0MJmr2zcToTrQSCjBhCveXwbaSHqxG7WNXs2MLgAVbHozFfdv54qNU=
+	t=1767641498; cv=none; b=CCIoqISK+eFGOhDZb6voMwhx+gxvKP0AgIqOX5sjeYvlVIKXOCzK6bDK7LCx9Ytrr4QrI+NJKNzBWp9f2gRVmseug8N7rYJufJ8zjB3Pmx/7gQq5CkuHbS4qKReg4+bSbY6NHmEUGj1NwhXvQgRVNeOiyGwMpsEnt9HDGvXGvn4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767640858; c=relaxed/simple;
-	bh=zWmlkCpYCem5h2W6ZMEQmSoZQDZCl40PFtOtFFUd0AY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=SLZcTpGitQlsfa6nXcuMqShwBVE9idcoJM7qKc2Fvb1LJpbONSaSIEPbBP0F/ApEGLwLXQhQVXcsTynuvgLdEYXBfcfGzum77MwB+Xbt7gqBFe1XB6SKYgzGQBMR4Q012DjtjU1XY4rKZY9cE8slGM3Dhi5LxjbTFyoyQ+PpmXA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=fCTjjgcJ; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-b8018eba13cso49246866b.1
-        for <bpf@vger.kernel.org>; Mon, 05 Jan 2026 11:20:56 -0800 (PST)
+	s=arc-20240116; t=1767641498; c=relaxed/simple;
+	bh=5EbTfCGmVfE/X7Z/ipstJE3RcvDhvzYcTBQuVyMfcT4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=s8Xm4juOgJqU/o4rdKcxpuFcEe6H+hPAgZ4RUHsALSLj/BGNXV0udXulMG4nDhclxFJvpX+9gZ94RpwAibQtonw2ji25w97mpZjFfU8tyrN5nvDni9uY4jgFBxJ9fgzeO6pvC5ZRbDRS5ncBpCD9047uzLY+JYwSEy7RZM+fSFY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nsdVciYg; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-64b560e425eso314721a12.1
+        for <bpf@vger.kernel.org>; Mon, 05 Jan 2026 11:31:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1767640855; x=1768245655; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=v4y9De0l+kAUSbp+YogBkFSZA64WfTPRFGE8Yy+VLOo=;
-        b=fCTjjgcJTKw9EMhYztqGqh2D9CeoCyZQBozpKcJp0v9kBiq31S2DWpkf8adgZg0A6F
-         ZZbjQHJUdz0B9sG1YaYoOxKm+bftpVNbEt0phVjFkBzZfzNk224xDYALLKkAkDeYZ7mB
-         OErFkmOqVW9a6yq9KUQ1ROFriDZv3vDVnL/oY8kYZnNcYC/EOi97ZxhSxZKNVvIwwI4I
-         xOoilPr+mOPxiyFyYZLiPzaexwDZJo4ob89K4kZ/R8J9FAZGE3+IagrPgzgjhgD8pEcJ
-         H3Kr9oBps1zF9WnfltgeOGnvPW8tY6tw5+pW9qe82VIGx7sb0uPMZ87zzz/CHpqfTbQS
-         x+eA==
+        d=gmail.com; s=20230601; t=1767641494; x=1768246294; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wKP8BXcQ6rjEgwWhGXyvSC3sJuSoh+CpPU6v8uC/NLU=;
+        b=nsdVciYgaPDxR2s3Tdhz8Oyyvj6QivVZhV3NzQIUtVTo1pkB5qL4pIXLgDJQYo4pIW
+         MBEOxOJTO76VWnmmLNAVBeDOt2nSpLWMnFoTCZStMwg0G1Yk/bfLnq/Np8f/jbmmuwam
+         rE5WkD4spU1bu8K6KKrzTn29bPlPv7ASo7YgaWFHQmJ5WKQfN0Qvbje8tt8QZx4SrGtH
+         u8w0Ah9B92m6p7/yIlqbWwgqu24dAdWcskR0FH8Bo9PL22l0RnP26Kgc7M7zRVncm6uD
+         797k9hGGGVNTJ5PRO2E9sgpsPc/0yCDiWZA/89UmIqJ5g9xoyp1Qyv3KmKCq/IDuHVHd
+         Zi6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767640855; x=1768245655;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-gg:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=v4y9De0l+kAUSbp+YogBkFSZA64WfTPRFGE8Yy+VLOo=;
-        b=r45GsLDp4cH6TSOAhZbeiOoqxTziwwE0sfYJr4EXipIS/zEUSxMruukKJgjatR+m6N
-         MVDNZcGcp3G+aTHjQOYQbtna94Z+GYgRyEswwiw6UlTUBJr7elOxES49C4nYzMNpX28D
-         rkySZKRRqayoujCPMwwz3xowsOimODO7rDdTDXUNTOSLi6DK9q9xWAv0/azzfvJixIHO
-         bIgLfiJpASpTQC3QAbmRLdtfAJOeLkpCtb5mIXI2wayxX4NkhlArPD31+HxG6i3ZMuVB
-         VvZ1HZ9/sNb3oiUkSRDJ4C0g33VifvRh6XpW1yruTnlR/6iHgNnCxe6UOHnMDUMLpxah
-         Cgeg==
-X-Forwarded-Encrypted: i=1; AJvYcCXyyi1IG6yUIB8hnx6P4qUvH8mxiVA2aiN/+VDu1CLOzJuyvRuvcRuNZ7PfihBajLV1/7g=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyFiAZN9QlQQZAK8h7rMzA1U2wKp0R1lox/Ra1Rfib6LxfTUHD4
-	KnCKGXoHwtueH9sFr86mSbuE+me3F5f2Tz8rD0KlNRptYO3+qErhOvWdg96FcxZXLgE=
-X-Gm-Gg: AY/fxX4T785EDUXq+3oIMt8FexRcgrimc6MdqTrIvCyhZkY/4DQB2d7V5PzsaKIeqXO
-	fKMEf1WH5pNxhmzXKAMq6apdSfi11fmPxeKyt1gOiyUmzzG2/K/NrRqNliVMNCRnVykaopTWPv7
-	+7jb4LGChpQx79mYTAgat6V20TcOo3i8HuVmNKV+s9y/WJdHdoVgxObNFovwxFDbkQ0RcwM80AA
-	1131qQItN1nYT7oCheG4ByKvxTi8MpDKXHpK7GVxR38oK0UaEuzMM9GVOcPxpsWlmgJSVCpXKau
-	fUmPQPJ5ltSA1vHEeb/+bY7oy8+gWsblyJm6piGuuxF5ahwFgJbYSycbiyKhiJmpCzc827s9vx8
-	NITTCUMkIC5bvUZ17yHaMOT7PsueuL9DPnVSv7vwHfTQ8vJ0TxRIv0QleKsEoZiPQqNyDatAC/t
-	t+2i0=
-X-Google-Smtp-Source: AGHT+IFLNAP5DWouoGjkq63VsxfmD7DfdBkDVZaHAp82JQppde6Bf0FPnRhFnmMQtmZCqJNVEl+f/w==
-X-Received: by 2002:a17:906:7945:b0:b7f:fd02:9b4e with SMTP id a640c23a62f3a-b8426aa7960mr93851266b.28.1767640855248;
-        Mon, 05 Jan 2026 11:20:55 -0800 (PST)
-Received: from cloudflare.com ([2a09:bac5:5063:2432::39b:f4])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b842a56c552sm5760566b.68.2026.01.05.11.20.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jan 2026 11:20:54 -0800 (PST)
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Amery Hung <ameryhung@gmail.com>,  Martin KaFai Lau
- <martin.lau@kernel.org>,  bpf <bpf@vger.kernel.org>,  Network Development
- <netdev@vger.kernel.org>,  "David S. Miller" <davem@davemloft.net>,  Eric
- Dumazet <edumazet@google.com>,  Jakub Kicinski <kuba@kernel.org>,  Paolo
- Abeni <pabeni@redhat.com>,  Alexei Starovoitov <ast@kernel.org>,  Daniel
- Borkmann <daniel@iogearbox.net>,  Jesper Dangaard Brouer
- <hawk@kernel.org>,  John Fastabend <john.fastabend@gmail.com>,  Stanislav
- Fomichev <sdf@fomichev.me>,  Simon Horman <horms@kernel.org>,  Andrii
- Nakryiko <andrii@kernel.org>,  Martin KaFai Lau <martin.lau@linux.dev>,
-  Eduard Zingerman <eddyz87@gmail.com>,  Song Liu <song@kernel.org>,
-  Yonghong Song <yonghong.song@linux.dev>,  KP Singh <kpsingh@kernel.org>,
-  Hao Luo <haoluo@google.com>,  Jiri Olsa <jolsa@kernel.org>,  kernel-team
- <kernel-team@cloudflare.com>
-Subject: Re: [PATCH bpf-next v2 15/16] bpf: Realign skb metadata for TC
- progs using data_meta
-In-Reply-To: <CAADnVQJbGosoXOCdyi=NZar966FVibKYobBgQ9BiyEH3=-HOsw@mail.gmail.com>
-	(Alexei Starovoitov's message of "Mon, 5 Jan 2026 11:14:32 -0800")
-References: <20260105-skb-meta-safeproof-netdevs-rx-only-v2-0-a21e679b5afa@cloudflare.com>
-	<20260105-skb-meta-safeproof-netdevs-rx-only-v2-15-a21e679b5afa@cloudflare.com>
-	<CAADnVQJbGosoXOCdyi=NZar966FVibKYobBgQ9BiyEH3=-HOsw@mail.gmail.com>
-Date: Mon, 05 Jan 2026 20:20:53 +0100
-Message-ID: <87bjj7988a.fsf@cloudflare.com>
+        d=1e100.net; s=20230601; t=1767641494; x=1768246294;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=wKP8BXcQ6rjEgwWhGXyvSC3sJuSoh+CpPU6v8uC/NLU=;
+        b=mvHxR+9iBkPaeq86B4gDFD0zpONLhgq840lYOyxTT8FaZLp4Jac+MI08ehfI0FnEmm
+         0obF8c0Io8ZN8k773+NL99lZZIvT6n37P9AA1q8AKk3Tn5rYedVjJ2yT0tmSuRbTcElU
+         FQSYOueqtenHcjgx5r3ArE7o+fk/Q4UO3Gmjsydkqs7yP6SnTEnJ7AJCkMB65AGKdtUy
+         SH5C0fGwjfNAEcj3ZPbQqXB8U5WDDek4rvm1DlzinChyr+VOHsTWi2PIAIpWoY8Yb8uz
+         6lAeju2qIL++Rqb3sBZuc2wPHiVbMHHA7N3j/AzOwatfg8ysO556kVchmiFkB8uciHdT
+         J4uQ==
+X-Gm-Message-State: AOJu0Yz/cbaXUzY4RjpbauXZHpUGqDcY38Sc6iV82R328pIx4hif+HGc
+	h6oPKs07FOgdwTUuMLC+NtmP7z54oNjJeNEtPlXe3S94jA5MypOsgaSbl/uYK74lOCEGpitrd3q
+	JcE2i7E3poKQxSeFKheoKIro47PDPvkUu1UNSdSuLZ8l8
+X-Gm-Gg: AY/fxX4x7NB8iZzf+0zGnufWIPPllETTyBFzn/E0/PhSHVE0KiLk3DOTtNsCuquCU11
+	3ALQHH1wKMJl9EmuskGaoxogoTWRjuo6wEHjmFDkmaYn6dpGsKIPHtTNQQqgoJTSlWIJsM3DhmY
+	Lb9GxdcFXaJ2XCi9RR8Jgi3w39rUKeqMiMsiAj5WlBoBHC6BVrxVKrkyR6shRmg5BT+VP+k17ba
+	MHvrxsWZVFSKvnCIwm/126g85QZGaJi9lQI42CNT7+Z0iNTyi7u/GXrxSqO7CWXbLO71So3BZuU
+	jc/uq8VIzKI=
+X-Google-Smtp-Source: AGHT+IHWXWcSL2ypRzwrXhZGRYXDxTuhkUPTtqeF8miccqaxHJcqkcxP/4yTCaxUzXMQIBg+77A8IP9i8mP3CXWFU2c=
+X-Received: by 2002:a17:907:7288:b0:b76:eec9:a1a9 with SMTP id
+ a640c23a62f3a-b8426a56bb3mr72786566b.7.1767641494141; Mon, 05 Jan 2026
+ 11:31:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20260102214043.1410242-1-puranjay@kernel.org> <aVv5nq5QTVDOz1Zk@J2N7QTR9R3>
+In-Reply-To: <aVv5nq5QTVDOz1Zk@J2N7QTR9R3>
+From: Puranjay Mohan <puranjay12@gmail.com>
+Date: Mon, 5 Jan 2026 19:31:19 +0000
+X-Gm-Features: AQt7F2qGhDBs3pKZB2Wr69RbJg7A6Q93VsSbpiAu0Y3FJEpYrfWHO1XDHG-ebLE
+Message-ID: <CANk7y0gthCiw5K-z-8sWsWF0ZcbmDgYuDHjE4RPLfHTjQk=4nw@mail.gmail.com>
+Subject: Re: [RFC PATCH] perf/arm64: Add BRBE support for bpf_get_branch_snapshot()
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Will Deacon <will@kernel.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Rob Herring <robh@kernel.org>, 
+	Breno Leitao <leitao@debian.org>, linux-arm-kernel@lists.infradead.org, 
+	linux-perf-users@vger.kernel.org, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 05, 2026 at 11:14 AM -08, Alexei Starovoitov wrote:
-> On Mon, Jan 5, 2026 at 4:15=E2=80=AFAM Jakub Sitnicki <jakub@cloudflare.c=
-om> wrote:
->>
->>
->> +__bpf_kfunc_start_defs();
->> +
->> +__bpf_kfunc void bpf_skb_meta_realign(struct __sk_buff *skb_)
->> +{
->> +       struct sk_buff *skb =3D (typeof(skb))skb_;
->> +       u8 *meta_end =3D skb_metadata_end(skb);
->> +       u8 meta_len =3D skb_metadata_len(skb);
->> +       u8 *meta;
->> +       int gap;
->> +
->> +       gap =3D skb_mac_header(skb) - meta_end;
->> +       if (!meta_len || !gap)
->> +               return;
->> +
->> +       if (WARN_ONCE(gap < 0, "skb metadata end past mac header")) {
->> +               skb_metadata_clear(skb);
->> +               return;
->> +       }
->> +
->> +       meta =3D meta_end - meta_len;
->> +       memmove(meta + gap, meta, meta_len);
->> +       skb_shinfo(skb)->meta_end +=3D gap;
->> +
->> +       bpf_compute_data_pointers(skb);
->> +}
->> +
->> +__bpf_kfunc_end_defs();
->> +
->> +BTF_KFUNCS_START(tc_cls_act_hidden_ids)
->> +BTF_ID_FLAGS(func, bpf_skb_meta_realign)
->> +BTF_KFUNCS_END(tc_cls_act_hidden_ids)
->> +
->> +BTF_ID_LIST_SINGLE(bpf_skb_meta_realign_ids, func, bpf_skb_meta_realign)
->> +
->>  static int tc_cls_act_prologue(struct bpf_insn *insn_buf, u32 pkt_acces=
-s_flags,
->>                                const struct bpf_prog *prog)
->>  {
->> -       return bpf_unclone_prologue(insn_buf, pkt_access_flags, prog,
->> -                                   TC_ACT_SHOT);
->> +       struct bpf_insn *insn =3D insn_buf;
->> +       int cnt;
->> +
->> +       if (pkt_access_flags & PA_F_DATA_META_LOAD) {
->> +               /* Realign skb metadata for access through data_meta poi=
-nter.
->> +                *
->> +                * r6 =3D r1; // r6 will be "u64 *ctx"
->> +                * r0 =3D bpf_skb_meta_realign(r1); // r0 is undefined
->> +                * r1 =3D r6;
->> +                */
->> +               *insn++ =3D BPF_MOV64_REG(BPF_REG_6, BPF_REG_1);
->> +               *insn++ =3D BPF_CALL_KFUNC(0, bpf_skb_meta_realign_ids[0=
-]);
->> +               *insn++ =3D BPF_MOV64_REG(BPF_REG_1, BPF_REG_6);
->> +       }
+On Mon, Jan 5, 2026 at 5:49=E2=80=AFPM Mark Rutland <mark.rutland@arm.com> =
+wrote:
 >
-> I see that we already did this hack with bpf_qdisc_init_prologue()
-> and bpf_qdisc_reset_destroy_epilogue().
-> Not sure why we went that route back then.
-
-Right. That's where I "stole" it from.
-
-> imo much cleaner to do BPF_EMIT_CALL() and wrap
-> BPF_CALL_1(bpf_skb_meta_realign, struct sk_buff *, skb)
+> Hi Puranjay,
 >
-> BPF_CALL_x doesn't make it an uapi helper.
-> It's still a hidden kernel function,
-> while this kfunc stuff looks wrong, since kfunc isn't really hidden.
->
-> I suspect progs can call this bpf_skb_meta_realign() explicitly,
-> just like they can call bpf_qdisc_init_prologue() ?
+> I have a number of techincal concerns with this, noted below. At a high
+> level, I don't think this makes sense without a better description of
+> the usage, and I suspect we'd need changes to bpf_get_branch_snapshot()
+> to be able to implement something useful.
 
-Thanks for pointing me in the right direction. Will rework this.
+Hi Mark,
+
+Thanks for your review.
+
+>
+> On Fri, Jan 02, 2026 at 01:40:41PM -0800, Puranjay Mohan wrote:
+> > Enable the bpf_get_branch_snapshot() BPF helper on ARM64 by implementin=
+g
+> > the perf_snapshot_branch_stack static call for ARM's Branch Record
+> > Buffer Extension (BRBE).
+> >
+> > The BPF helper bpf_get_branch_snapshot() allows BPF programs to capture
+> > hardware branch records on-demand. This was previously only available o=
+n
+> > x86 (Intel LBR, AMD BRS) but not on ARM64 despite BRBE being available
+> > since ARMv9.
+>
+> When exactly can bpf_get_branch_snapshot() be called?
+>
+> How is it expected to be used?
+>
+> The driver is written on the expectation that BRBE records are only read
+> in the PMUv3 overflow handler.
+
+bpf_get_branch_snapshot() can be called from any BPF tracing program
+so from unknown context.
+
+>
+> > This implementation:
+> >
+> > - Follows the x86 snapshot pattern (intel_pmu_snapshot_branch_stack)
+> > - Performs atomic snapshot by pausing BRBE, reading records, and
+> >   restoring previous state without disrupting ongoing perf events
+>
+> If BRBE is stopped, then we lost contiguity of branch records (e.g. for
+> a series of branches A->B->C->D->E, we could record A->B->D->E). The
+> driver is intended to ensure contiguity of those records, and if that's
+> lost, we deliberately discard. That's why brbe_enable() calls
+> brbe_invalidate().
+>
+> Restarting BRBE without discarding will produce bogus data for other
+> consumers. If BRBE is stopped, we *must* discard.
+>
+> > - Reads branch records directly from BRBE registers without
+> >   event-specific filtering to minimize branch pollution
+>
+> If BRBE is paused, there's no polution, so this rationale doesn't make
+> sense to me.
+>
+> BRBE can be configured with various filters (specific to the event),
+> multiple events with distinct filters can be active simultaneously, and
+> if no branch-sampling events are active, BRBE won't record anything. I
+> do not think it makes sense to record whatever happens to be present,
+> without filtering. Regardless, BRBE won't be recording if you don't have
+> events. so this doesn't seem to make sense.
+
+In the expected usage of this bpf helper, perf_events are expected to
+be created with the correct filtering.
+
+From 856c02dbce4f ("bpf: Introduce helper bpf_get_branch_snapshot")
+
+    Introduce bpf_get_branch_snapshot(), which allows tracing program to ge=
+t
+    branch trace from hardware (e.g. Intel LBR). To use the feature, the
+    user need to create perf_event with proper branch_record filtering
+    on each cpu, and then calls bpf_get_branch_snapshot in the bpf function=
+.
+    On Intel CPUs, VLBR event (raw event 0x1b00) can be use for this.
+
+>
+> > - Handles all BRBE record types (complete, source-only, target-only)
+> > - Complies with ARM ARM synchronization requirements (ISB barriers per
+> >   rule PPBZP)
+> > - Reuses existing BRBE infrastructure (select_brbe_bank,
+> >   __read_brbe_regset, brbe_set_perf_entry_type, etc.)
+>
+> This duplicates other code (e.g. the body of
+> brbe_read_filtered_entries()), and I don't think this is justified.
+
+Ack.
+
+>
+> >
+> > Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+> > ---
+> >
+> > This patch is only compile tested as I don't have access to hardware wi=
+th BRBE.
+> >
+> > ---
+> >  drivers/perf/arm_brbe.c  | 95 ++++++++++++++++++++++++++++++++++++++++
+> >  drivers/perf/arm_brbe.h  |  9 ++++
+> >  drivers/perf/arm_pmuv3.c |  5 ++-
+> >  3 files changed, 108 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/perf/arm_brbe.c b/drivers/perf/arm_brbe.c
+> > index ba554e0c846c..cda7bf522c06 100644
+> > --- a/drivers/perf/arm_brbe.c
+> > +++ b/drivers/perf/arm_brbe.c
+> > @@ -803,3 +803,98 @@ void brbe_read_filtered_entries(struct perf_branch=
+_stack *branch_stack,
+> >  done:
+> >       branch_stack->nr =3D nr_filtered;
+> >  }
+> > +
+> > +/*
+> > + * ARM-specific callback invoked through perf_snapshot_branch_stack st=
+atic
+> > + * call, defined in include/linux/perf_event.h. See its definition for=
+ API
+> > + * details. It's up to caller to provide enough space in *entries* to =
+fit all
+> > + * branch records, otherwise returned result will be truncated to *cnt=
+* entries.
+> > + *
+> > + * This is similar to brbe_read_filtered_entries but optimized for sna=
+pshot mode:
+> > + * - No filtering based on event attributes (captures everything)
+> > + * - Minimal branches to avoid polluting the branch buffer
+> > + * - Direct register reads without event-specific processing
+> > + */
+>
+> As above I don't think these differences are necessary nor do I think we
+> should be duplicating this.
+
+Ack.
+
+>
+> > +int arm_brbe_snapshot_branch_stack(struct perf_branch_entry *entries, =
+unsigned int cnt)
+> > +{
+> > +     unsigned long flags;
+> > +     int nr_hw, nr_banks, nr_copied =3D 0;
+> > +     u64 brbidr, brbfcr, brbcr;
+> > +
+> > +     /*
+> > +      * The sequence of steps to freeze BRBE should be completely inli=
+ned
+> > +      * and contain no branches to minimize contamination of branch sn=
+apshot.
+> > +      */
+> > +     local_irq_save(flags);
+>
+> The PMU overflow interrupt can be delivered as a pNMI, so this can race
+> with that. Disabling interrupts is not sufficient.
+
+In that case this implementation is completely broken, Do you have
+suggestions about how this should be implemented?
+The use case is to find out how the execution reached a bpf program by
+looking at the Branch records. Do you think BRBE can be used to fulfil
+this?
+
+>
+> If this is only called within a perf event overflow handler, then we
+> already have the necessary serialization.
+>
+> > +
+> > +     /* Save current BRBE configuration */
+> > +     brbfcr =3D read_sysreg_s(SYS_BRBFCR_EL1);
+> > +     brbcr =3D read_sysreg_s(SYS_BRBCR_EL1);
+> > +
+> > +     /* Pause BRBE to freeze the buffer */
+> > +     write_sysreg_s(brbfcr | BRBFCR_EL1_PAUSED, SYS_BRBFCR_EL1);
+> > +     isb();
+> > +
+> > +     /* Read BRBIDR to determine number of records */
+> > +     brbidr =3D read_sysreg_s(SYS_BRBIDR0_EL1);
+> > +     if (!valid_brbidr(brbidr))
+> > +             goto out_restore;
+> > +
+> > +     nr_hw =3D FIELD_GET(BRBIDR0_EL1_NUMREC_MASK, brbidr);
+> > +     nr_banks =3D DIV_ROUND_UP(nr_hw, BRBE_BANK_MAX_ENTRIES);
+> > +
+> > +     /* Read branch records from BRBE banks */
+> > +     for (int bank =3D 0; bank < nr_banks; bank++) {
+> > +             int nr_remaining =3D nr_hw - (bank * BRBE_BANK_MAX_ENTRIE=
+S);
+> > +             int nr_this_bank =3D min(nr_remaining, BRBE_BANK_MAX_ENTR=
+IES);
+> > +
+> > +             select_brbe_bank(bank);
+> > +
+> > +             for (int i =3D 0; i < nr_this_bank; i++) {
+> > +                     struct brbe_regset bregs;
+> > +                     struct perf_branch_entry *entry;
+> > +
+> > +                     if (nr_copied >=3D cnt)
+> > +                             goto out_restore;
+> > +
+> > +                     if (!__read_brbe_regset(&bregs, i))
+> > +                             goto out_restore;
+> > +
+> > +                     entry =3D &entries[nr_copied];
+> > +                     perf_clear_branch_entry_bitfields(entry);
+> > +
+> > +                     /* Simple conversion without filtering */
+> > +                     if (brbe_record_is_complete(bregs.brbinf)) {
+> > +                             entry->from =3D bregs.brbsrc;
+> > +                             entry->to =3D bregs.brbtgt;
+> > +                     } else if (brbe_record_is_source_only(bregs.brbin=
+f)) {
+> > +                             entry->from =3D bregs.brbsrc;
+> > +                             entry->to =3D 0;
+> > +                     } else if (brbe_record_is_target_only(bregs.brbin=
+f)) {
+> > +                             entry->from =3D 0;
+> > +                             entry->to =3D bregs.brbtgt;
+> > +                     }
+> > +
+> > +                     brbe_set_perf_entry_type(entry, bregs.brbinf);
+> > +                     entry->cycles =3D brbinf_get_cycles(bregs.brbinf)=
+;
+> > +
+> > +                     if (!brbe_record_is_target_only(bregs.brbinf)) {
+> > +                             entry->mispred =3D brbinf_get_mispredict(=
+bregs.brbinf);
+> > +                             entry->predicted =3D !entry->mispred;
+> > +                     }
+> > +
+> > +                     if (!brbe_record_is_source_only(bregs.brbinf))
+> > +                             entry->priv =3D brbinf_get_perf_priv(breg=
+s.brbinf);
+> > +
+> > +                     nr_copied++;
+> > +             }
+> > +     }
+> > +
+> > +out_restore:
+> > +     /* Restore BRBE to its previous state */
+> > +     write_sysreg_s(brbcr, SYS_BRBCR_EL1);
+> > +     isb();
+> > +     write_sysreg_s(brbfcr, SYS_BRBFCR_EL1);
+> > +     local_irq_restore(flags);
+> > +     return nr_copied;
+> > +}
+>
+> As above, this is duplicating a lot of logic we already have. If we
+> really need this function, we should be sharing much more logic with
+> brbe_read_filtered_entries(), if not using that directly.
+>
+> Mark.
 
