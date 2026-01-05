@@ -1,246 +1,169 @@
-Return-Path: <bpf+bounces-77878-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77879-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A550CF58EA
-	for <lists+bpf@lfdr.de>; Mon, 05 Jan 2026 21:44:54 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FC2ECF5947
+	for <lists+bpf@lfdr.de>; Mon, 05 Jan 2026 21:55:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E2A363073E2E
-	for <lists+bpf@lfdr.de>; Mon,  5 Jan 2026 20:43:59 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E300E307D816
+	for <lists+bpf@lfdr.de>; Mon,  5 Jan 2026 20:55:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DC9F2DAFAA;
-	Mon,  5 Jan 2026 20:43:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 132A528C849;
+	Mon,  5 Jan 2026 20:55:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="srKcBCD1"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rrXCpRIl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D683213FEE
-	for <bpf@vger.kernel.org>; Mon,  5 Jan 2026 20:43:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90E96207A32
+	for <bpf@vger.kernel.org>; Mon,  5 Jan 2026 20:55:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767645838; cv=none; b=bcvxN7JqZkAgi3OmXqFXRfYINg51MaKnXNfarbqwprvR0eB/OH16nMGnB88QiusAmTSeNcy37nTCxqkL1t5o5JrgJBDwkeP0Gm+Rg231eQqjmofyb6Y8DkMiHk/NJbNNNq47eI9EpgUZZFwEaKbkYVsJb9pA9SShx1Rz5FysspY=
+	t=1767646514; cv=none; b=TKVAgvx3lMK1gmWrLtaiWwfV5J4pCUEQOhFQHG0TqZKE2DWLKvKHhxNmLQSGSasZspJPGr+aPXpNY7hlGkLUtEccy7nDkWBBLDyUQHpjZF/TFjzUoiuJvOr05XORfOSTbdo+iV+i73W4YVmuepgH9luyVfXGzLexV8MZBMW0dtc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767645838; c=relaxed/simple;
-	bh=WjJwmAfYdMf5SAaVPzbS5dFiogmjSrgtmAWrbrhoC3U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NDBjxpRIcjn1YNbdi1Un0QVwmBcYlSKNoMX4rg1SFFZAIRhrzYn4sOEy8mciQVb+lfBd88duD4co6sz3GMvTbEisyapOUn4APnSel2OSyLJMOi50PKhjeDJMVF024lEGL73Vkgz1Jat6xYo3EIww3f1ExsC8wikauuxXYfsmLmM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=srKcBCD1; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-64b8b5410a1so426096a12.2
-        for <bpf@vger.kernel.org>; Mon, 05 Jan 2026 12:43:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1767645835; x=1768250635; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=lMqvStSvFSxUzkQX5q2v9C9qSg4usWmTmbHR+7n7Wmc=;
-        b=srKcBCD1aMQReHlEK7wbuSuhaR07+4moAXXWyHVZBNnhKcP2T0+6mEsyPjNLAm6xyc
-         XqFvA65IAJ65i8yZvfyiMcPZXFtLtTVyEQ9A03KoXHX2vgw8Tn6cbpIHELL0wBneaThl
-         hnx4qpNsbwtDkOaciZZ+0xeCsRvtAd4fuM6iAPuQSQTPkU7IumGtZ0K4QqQWdkIz0nZ8
-         n/xXNoRZUqCzDG/SOSLcPdPUJfgkSJRQB/b+ITINmZ0GXW41X/g+tlhghUBKxPT/0nAA
-         ARin5x8ZYIvQi+jwkqYUu8mdxMK7z+5ibOokqQhKrAn8Hc9Zi6X76nNRiRE5BbYBNHj4
-         sDFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767645835; x=1768250635;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lMqvStSvFSxUzkQX5q2v9C9qSg4usWmTmbHR+7n7Wmc=;
-        b=CVlOv0XOo9/Xbm+q2qqN1x32G2SSCAJHgFj4TijkbKUQl07BdvMG240z6bHFwpGzJl
-         XvqC0/n+nj21VzQMC13M4IsX3adeCflq+waXN0epzTBiMwhAmCLEZ1YqR9sKHNWQgzHl
-         R78rIaBsZabkOfD8162yyTe84S42gA7vN5bwK+tALpTIA+EgVpCTrNJVRHhf9hcmj9pj
-         YMySFqO+CDu0We900/xYUEV3qwNlnT19Qo+e4FJ9RzSwEx99nbvMJnXsnNzuV+lso4CU
-         8+tCA3CEvFeKPAt6rYatEstqfunwOHpBxm9dkFXXmmB3fDSwwUBsBsmkMc2jP8qhOkfe
-         akRg==
-X-Forwarded-Encrypted: i=1; AJvYcCU317ewAUWCTqTgSiVzxWbYF21vbD1vElMx/xGRbyxgdGRW1+qtrr4wbzIRPOjqj43XhOU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyfRPcIIa/BRhnIKbvqYkpdhuP9B0bJF6rT0RGRvhR4xqfBLH2Q
-	wRjKkbdrLG7uMR7y3QT5Roga8tbY0i65tv3Fagm5j2aUySeRN3nDsu4ZdxxvWJ6nZw==
-X-Gm-Gg: AY/fxX7Q1PayI/3xp7dq909vpMhmXBqA6QzLfLYHPlvGokX484stxtZMZcGg9K+LaHw
-	nGKaUN7K8dT7yPYCNU5T8+BLfkD1G4iY7yIZUzhKKhi66rvFBT3M9cX+gOSMUOZSGOEmturbWXN
-	4PdV7ZdaLEC0jLpjbiqtWaLbPh9vzX5eUbLxlA/CDypM2kGuGrJUXlJcwpvyIDngzL/xIUaGeI1
-	JE4798AkCl1V/PFCRKRivx6tLb2kK/TBImmOQrv3HDY+eT04m7wANwgE1GZs2l3UU0crKfDz9Cp
-	lbRRwEbwFV8U27tmVoY+M8oX4e8QoftTl3EpPbsA4HnSrT0AFQUFuFFlq8nD+3+NceUQYlnY7d9
-	+q/qhogwgjIblVwRnZ1jCGIRT8O7w1sz9zepWn+A5d/mtSA/nB4f6yfetq4tu1uOyLMPdfFaq0c
-	0L8/osd2NKV5gCbqu/pFxfZpoMZaJQLgmmhkwSBrgVgw6gqmSfN4fM+0RXIiQonIj8
-X-Google-Smtp-Source: AGHT+IHkrrJjP4SqkLTB3N9Q9NR+A8WhQu2Nw1SmwhMvzRKlTiMI7DXKDwEtpz3SCfqBVyG07RM/9A==
-X-Received: by 2002:a05:6402:274d:b0:64d:23ac:6ca7 with SMTP id 4fb4d7f45d1cf-6507967c2fdmr607422a12.20.1767645835067;
-        Mon, 05 Jan 2026 12:43:55 -0800 (PST)
-Received: from google.com (14.59.147.34.bc.googleusercontent.com. [34.147.59.14])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-6507bf65c07sm332578a12.23.2026.01.05.12.43.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jan 2026 12:43:53 -0800 (PST)
-Date: Mon, 5 Jan 2026 20:43:50 +0000
-From: Matt Bobrowski <mattbobrowski@google.com>
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: Alan Maguire <alan.maguire@oracle.com>,
-	Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-	dwarves@vger.kernel.org, bpf@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [PATCH dwarves] btf_encoder: prefer strong function definitions
- for BTF generation
-Message-ID: <aVwihhKEszvcyNKo@google.com>
-References: <20251231085322.3248063-1-mattbobrowski@google.com>
- <926aca4a-d7d5-4e7d-9096-77b27374c5cd@linux.dev>
- <aVt139VXMTka-hYw@google.com>
- <aVuk1e73g7ZTHqMY@google.com>
- <6b0968a3-406b-412f-acbb-c00ac2ad7c93@linux.dev>
+	s=arc-20240116; t=1767646514; c=relaxed/simple;
+	bh=cPLHx2u+VtT7U+mGNRAI79mWLAumyN0Rwk2CKqpVslE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=feZWnHKbKuUfL9CLaFI2BAMV35g6UAewMscK2srg6Xgpeh+EEbC2Q9DUME7af3HRXoL0fVL5O2XY1DjYnA/Jo87m0RqfMWbcEWgV65kmFJEM+y2AZcbv08s0Tt46ciWwIQOfDzJ6/o34K6Vt9f4kxCiWFhSPahBcwV4dL4ZWjd0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rrXCpRIl; arc=none smtp.client-ip=91.218.175.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <e969a85c-94eb-4cb5-a7ac-524a16ccce01@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1767646509;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3vEP7e/4Et03fQL9fjLrx/Pt1lGtSEdxlbOHmAHK6ws=;
+	b=rrXCpRIl+cjcPXFLB7d/Rwjpw/YwkF581+7g/o5omPHJJLiTk0ImGfhVtQgixF+1u7L2n8
+	+WB2rHO4x7g5PoH2Od5XLJt4/aJKJMrxaff/eJ5MG6BYl8dWKQznp8CXxvXpz2xer1/8yf
+	TNIB5YfqF2VGPjf1aYwfdmChq3Ij2UQ=
+Date: Mon, 5 Jan 2026 12:54:55 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Subject: Re: [PATCH bpf-next v2 15/16] bpf: Realign skb metadata for TC progs
+ using data_meta
+To: Amery Hung <ameryhung@gmail.com>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Jakub Sitnicki <jakub@cloudflare.com>,
+ Martin KaFai Lau <martin.lau@kernel.org>, bpf <bpf@vger.kernel.org>,
+ Network Development <netdev@vger.kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Stanislav Fomichev <sdf@fomichev.me>, Simon Horman <horms@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, kernel-team <kernel-team@cloudflare.com>
+References: <20260105-skb-meta-safeproof-netdevs-rx-only-v2-0-a21e679b5afa@cloudflare.com>
+ <20260105-skb-meta-safeproof-netdevs-rx-only-v2-15-a21e679b5afa@cloudflare.com>
+ <CAADnVQJbGosoXOCdyi=NZar966FVibKYobBgQ9BiyEH3=-HOsw@mail.gmail.com>
+ <CAMB2axPivi+mZOXie=VnJM8nscqkHDjSrKT=Dhp5z_copEwxLQ@mail.gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <CAMB2axPivi+mZOXie=VnJM8nscqkHDjSrKT=Dhp5z_copEwxLQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <6b0968a3-406b-412f-acbb-c00ac2ad7c93@linux.dev>
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Jan 05, 2026 at 08:23:29AM -0800, Yonghong Song wrote:
-> 
-> 
-> On 1/5/26 3:47 AM, Matt Bobrowski wrote:
-> > On Mon, Jan 05, 2026 at 08:27:11AM +0000, Matt Bobrowski wrote:
-> > > On Fri, Jan 02, 2026 at 10:46:00AM -0800, Yonghong Song wrote:
-> > > > 
-> > > > On 12/31/25 12:53 AM, Matt Bobrowski wrote:
-> > > > > Currently, when a function has both a weak and a strong definition
-> > > > > across different compilation units (CUs), the BTF encoder arbitrarily
-> > > > > selects one to generate the BTF entry. This selection fundamentally is
-> > > > > dependent on the order in which pahole processes the CUs.
-> > > > > 
-> > > > > This indifference often leads to a mismatch where the generated BTF
-> > > > > reflects the weak definition's prototype, even though the linker
-> > > > > selected the strong definition for the final vmlinux binary.
-> > > > > 
-> > > > > A notable example described in [0] involving function
-> > > > > bpf_lsm_mmap_file(). Both weak and strong definitions exist,
-> > > > > distinguished only by parameter names (e.g., file vs
-> > > > > file__nullable). While the strong definition is linked into the
-> > > > > vmlinux object, the generated BTF contained the prototype for the weak
-> > > > > definition. This causes issues for BPF verifier (e.g., __nullable
-> > > > > annotation semantics), or tools relying on accurate type information.
-> > > > > 
-> > > > > To fix this, ensure the BTF encoder selects the function definition
-> > > > > corresponding to the actual code linked into the binary. This is
-> > > > > achieved by comparing the DWARF function address (DW_AT_low_pc) with
-> > > > > the ELF symbol address (st_value). Only the DWARF entry for the strong
-> > > > > definition will match the final resolved ELF symbol address.
-> > > > > 
-> > > > > [0] https://lore.kernel.org/all/aVJY9H-e83T7ivT4@google.com/
-> > > > > 
-> > > > > Link: https://lore.kernel.org/all/aVJY9H-e83T7ivT4@google.com/
-> > > > > Signed-off-by: Matt Bobrowski <mattbobrowski@google.com>
-> > > > LGTM with some nits below.
-> > > Thanks for the review.
-> > > 
-> > > > Acked-by: Yonghong Song <yonghong.song@linux.dev>
-> > > > 
-> > > > > ---
-> > > > >    btf_encoder.c | 36 ++++++++++++++++++++++++++++++++++++
-> > > > >    1 file changed, 36 insertions(+)
-> > > > > 
-> > > > > diff --git a/btf_encoder.c b/btf_encoder.c
-> > > > > index b37ee7f..0462094 100644
-> > > > > --- a/btf_encoder.c
-> > > > > +++ b/btf_encoder.c
-> > > > > @@ -79,6 +79,7 @@ struct btf_encoder_func_annot {
-> > > > >    /* state used to do later encoding of saved functions */
-> > > > >    struct btf_encoder_func_state {
-> > > > > +	uint64_t addr;
-> > > > >    	struct elf_function *elf;
-> > > > >    	uint32_t type_id_off;
-> > > > >    	uint16_t nr_parms;
-> > > > > @@ -1258,6 +1259,7 @@ static int32_t btf_encoder__save_func(struct btf_encoder *encoder, struct functi
-> > > > >    	if (!state)
-> > > > >    		return -ENOMEM;
-> > > > > +	state->addr = function__addr(fn);
-> > > > >    	state->elf = func;
-> > > > >    	state->nr_parms = ftype->nr_parms + (ftype->unspec_parms ? 1 : 0);
-> > > > >    	state->ret_type_id = ftype->tag.type == 0 ? 0 : encoder->type_id_off + ftype->tag.type;
-> > > > > @@ -1477,6 +1479,29 @@ static void btf_encoder__delete_saved_funcs(struct btf_encoder *encoder)
-> > > > >    	encoder->func_states.cap = 0;
-> > > > >    }
-> > > > > +static struct btf_encoder_func_state *btf_encoder__select_canonical_state(struct btf_encoder_func_state *combined_states,
-> > > > > +									  int combined_cnt)
-> > > > > +{
-> > > > > +	int i, j;
-> > > > > +
-> > > > > +	/*
-> > > > > +	 * The same elf_function is shared amongst combined functions,
-> > > > > +	 * as per saved_functions_combine().
-> > > > > +	 */
-> > > > > +	struct elf_function *elf = combined_states[0].elf;
-> > > > The logic is okay. But can we�limit elf->sym_cnt to be 1 here?
-> > > > This will match the case where two functions (weak and strong)
-> > > > co-exist in compiler and eventually only strong/global function
-> > > > will survive.
-> > > In fact, checking again I believe that the loop is redundant because
-> > > elf_function__has_ambiguous_address() ensures that if we reach this
-> > > point, all symbols for the function share the same address. Therefore,
-> > > checking the first symbol (elf->syms[0]) should be sufficient and
-> > > equivalent to checking all of them.
-> > > 
-> > > Will send through a v2 with this amendment.
-> > Hm, actually, no. I don't think the addresses stored within
-> > elf->syms[#].addr should all be assumed to be the same at the point
-> > which the new btf_encoder__select_canonical_state() function is called
-> > (due to things like skip_encoding_inconsistent_proto possibly taking
-> > effect). Therefore, I think it's best that we leave things as is and
-> > exhaustively iterate through all elf->syms? I don't believe there's
-> > any adverse effects in doing it this way anyway?
-> 
-> No. Your code is correct. For elf->sym_cnt, it covers both sym_cnt
-> is 1 or more than 1. My previous suggestion is to single out the
-> sym_cnt = 1 case since it is what you try to fix.
-> 
-> I am okay with the current implementation since it is correct.
-> Maybe Alan and Arnaldo have additional comments about the code.
 
-Sure, sounds good. I think leaving it as is probably our best bet at
-this point.
 
-> > > > > +
-> > > > > +	for (i = 0; i < combined_cnt; i++) {
-> > > > > +		struct btf_encoder_func_state *state = &combined_states[i];
-> > > > > +
-> > > > > +		for (j = 0; j < elf->sym_cnt; j++) {
-> > > > > +			if (state->addr == elf->syms[j].addr)
-> > > > > +				return state;
-> > > > > +		}
-> > > > > +	}
-> > > > > +
-> > > > > +	return &combined_states[0];
-> > > > > +}
-> > > > > +
-> > > > >    static int btf_encoder__add_saved_funcs(struct btf_encoder *encoder, bool skip_encoding_inconsistent_proto)
-> > > > >    {
-> > > > >    	struct btf_encoder_func_state *saved_fns = encoder->func_states.array;
-> > > > > @@ -1517,6 +1542,17 @@ static int btf_encoder__add_saved_funcs(struct btf_encoder *encoder, bool skip_e
-> > > > >    					0, 0);
-> > > > >    		if (add_to_btf) {
-> > > > > +			/*
-> > > > > +			 * We're to add the current function within
-> > > > > +			 * BTF. Although, from all functions that have
-> > > > > +			 * possibly been combined via
-> > > > > +			 * saved_functions_combine(), ensure to only
-> > > > > +			 * select and emit BTF for the most canonical
-> > > > > +			 * function definition.
-> > > > > +			 */
-> > > > > +			if (j - i > 1)
-> > > > > +				state = btf_encoder__select_canonical_state(state, j - i);
-> > > > > +
-> > > > >    			if (is_kfunc_state(state))
-> > > > >    				err = btf_encoder__add_bpf_kfunc(encoder, state);
-> > > > >    			else
+On 1/5/26 11:42 AM, Amery Hung wrote:
+> On Mon, Jan 5, 2026 at 11:14 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+>>
+>> On Mon, Jan 5, 2026 at 4:15 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+>>>
+>>>
+>>> +__bpf_kfunc_start_defs();
+>>> +
+>>> +__bpf_kfunc void bpf_skb_meta_realign(struct __sk_buff *skb_)
+>>> +{
+>>> +       struct sk_buff *skb = (typeof(skb))skb_;
+>>> +       u8 *meta_end = skb_metadata_end(skb);
+>>> +       u8 meta_len = skb_metadata_len(skb);
+>>> +       u8 *meta;
+>>> +       int gap;
+>>> +
+>>> +       gap = skb_mac_header(skb) - meta_end;
+>>> +       if (!meta_len || !gap)
+>>> +               return;
+>>> +
+>>> +       if (WARN_ONCE(gap < 0, "skb metadata end past mac header")) {
+>>> +               skb_metadata_clear(skb);
+>>> +               return;
+>>> +       }
+>>> +
+>>> +       meta = meta_end - meta_len;
+>>> +       memmove(meta + gap, meta, meta_len);
+>>> +       skb_shinfo(skb)->meta_end += gap;
+>>> +
+>>> +       bpf_compute_data_pointers(skb);
+>>> +}
+>>> +
+>>> +__bpf_kfunc_end_defs();
+>>> +
+>>> +BTF_KFUNCS_START(tc_cls_act_hidden_ids)
+>>> +BTF_ID_FLAGS(func, bpf_skb_meta_realign)
+>>> +BTF_KFUNCS_END(tc_cls_act_hidden_ids)
+>>> +
+>>> +BTF_ID_LIST_SINGLE(bpf_skb_meta_realign_ids, func, bpf_skb_meta_realign)
+>>> +
+>>>   static int tc_cls_act_prologue(struct bpf_insn *insn_buf, u32 pkt_access_flags,
+>>>                                 const struct bpf_prog *prog)
+>>>   {
+>>> -       return bpf_unclone_prologue(insn_buf, pkt_access_flags, prog,
+>>> -                                   TC_ACT_SHOT);
+>>> +       struct bpf_insn *insn = insn_buf;
+>>> +       int cnt;
+>>> +
+>>> +       if (pkt_access_flags & PA_F_DATA_META_LOAD) {
+>>> +               /* Realign skb metadata for access through data_meta pointer.
+>>> +                *
+>>> +                * r6 = r1; // r6 will be "u64 *ctx"
+>>> +                * r0 = bpf_skb_meta_realign(r1); // r0 is undefined
+>>> +                * r1 = r6;
+>>> +                */
+>>> +               *insn++ = BPF_MOV64_REG(BPF_REG_6, BPF_REG_1);
+>>> +               *insn++ = BPF_CALL_KFUNC(0, bpf_skb_meta_realign_ids[0]);
+>>> +               *insn++ = BPF_MOV64_REG(BPF_REG_1, BPF_REG_6);
+>>> +       }
+>>
+>> I see that we already did this hack with bpf_qdisc_init_prologue()
+>> and bpf_qdisc_reset_destroy_epilogue().
+>> Not sure why we went that route back then.
+>>
+>> imo much cleaner to do BPF_EMIT_CALL() and wrap
+>> BPF_CALL_1(bpf_skb_meta_realign, struct sk_buff *, skb)
+>>
+>> BPF_CALL_x doesn't make it an uapi helper.
+>> It's still a hidden kernel function,
+>> while this kfunc stuff looks wrong, since kfunc isn't really hidden.
+>>
+>> I suspect progs can call this bpf_skb_meta_realign() explicitly,
+>> just like they can call bpf_qdisc_init_prologue() ?
+>>
 > 
+> qdisc prologue and epilogue qdisc kfuncs should be hidden from users.
+> The kfunc filter, bpf_qdisc_kfunc_filter(), determines what kfunc are
+> actually exposed.
+
+Similar to Amery's comment, I recalled I tried the BPF_CALL_1 in the 
+qdisc but stopped at the "fn = env->ops->get_func_proto(insn->imm, 
+env->prog);" in do_misc_fixups(). Potentially it could add new enum ( > 
+__BPF_FUNC_MAX_ID) outside of the uapi and the user space tool should be 
+able to handle unknown helper also but we went with the kfunc+filter 
+approach without thinking too much about it.
+
+https://lore.kernel.org/bpf/3961c9ce-21d3-4a35-956c-5e1a6eb6031b@linux.dev/
 
