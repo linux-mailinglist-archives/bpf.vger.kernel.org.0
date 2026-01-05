@@ -1,202 +1,176 @@
-Return-Path: <bpf+bounces-77871-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77872-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A95B0CF54A4
-	for <lists+bpf@lfdr.de>; Mon, 05 Jan 2026 20:04:40 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4330ACF551F
+	for <lists+bpf@lfdr.de>; Mon, 05 Jan 2026 20:15:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 87DFD300BFAA
-	for <lists+bpf@lfdr.de>; Mon,  5 Jan 2026 19:04:35 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 13C863087906
+	for <lists+bpf@lfdr.de>; Mon,  5 Jan 2026 19:14:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B768F340A69;
-	Mon,  5 Jan 2026 19:04:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EE0A335579;
+	Mon,  5 Jan 2026 19:14:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eUHQX/eT";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="nRM8wwfO"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KHMP1+F3"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58B00309EF0
-	for <bpf@vger.kernel.org>; Mon,  5 Jan 2026 19:04:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 317F933F397
+	for <bpf@vger.kernel.org>; Mon,  5 Jan 2026 19:14:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767639873; cv=none; b=qlVnrXi0DPUgoTz7sK0dTXpNVYAVUWpIC1veO8FQAjTfwqtMIoBlboTsu2DGDWmJWj7JScVHKf8WHYfcFpXJB7JkhBAYSuGzkCqHo/9uOMx84uGR4TZqf0re3iLwCCEvJCx9tifcp653A4k9cI6Nmvbuq2sb/l1wwo6i6+BkhKQ=
+	t=1767640486; cv=none; b=pgDl5cyTCNhhCjhIP+JDekX2e/O6FRbwbOW951H05a4PqlaDTk+aDLy4Tjmhyvoa4Yz+3c8Nn7nDFcxnGGm9FSZgwMhir/EfylFoRfERtqW9hJ1gJAdeJlp0J8XRVytLG4f+opZ55iUKdq3G5tiSOPwGDN0Th//azX4cNS8dJCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767639873; c=relaxed/simple;
-	bh=EW35fAGpc6irv6klge1pSAUT/e498MzsYzLU58+p0RM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=sWsXpaP3LYiZJb7TIVB3f+wdhMckwnhChA2N/xaElyVEL5yFhTH//svdw2wnYpzMpbtESgKd87aVWff2onmwZhVeBNc+i/dRG9Mm20GrH/Pz9peG79jC2O6YGyK2bvqhTFNigLTxejg4wZVxos064Cbv+4DwDwV7inqmlqPjEM4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=eUHQX/eT; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=nRM8wwfO; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1767639869;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PP3X6T+cAs16XCJeSGeaAouaKAUNwzGXxOOaWFTYxXk=;
-	b=eUHQX/eTrr5XY4oY/EHMCrlXb0rIPuapBrcM9bm5QObRb4dZJibkHMIqHTLrnzSMiYe6Qx
-	apEJXS9wo38p2VCj9pQbrTL7HaT0fe9Z5iBQZ3itP5K9qxsue7out/7HqWto0GrKTjasmn
-	u5iXhHsHVsJYp2e7ZFEU7WmQjBteXUM=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-592-G2uAt_KeOjmEP9T2UODMbA-1; Mon, 05 Jan 2026 14:04:28 -0500
-X-MC-Unique: G2uAt_KeOjmEP9T2UODMbA-1
-X-Mimecast-MFC-AGG-ID: G2uAt_KeOjmEP9T2UODMbA_1767639867
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-b79fddf8e75so21150066b.3
-        for <bpf@vger.kernel.org>; Mon, 05 Jan 2026 11:04:28 -0800 (PST)
+	s=arc-20240116; t=1767640486; c=relaxed/simple;
+	bh=vbD6KpPmlOSY4oMKN6CzZa9VmQ/pu2paqrb7C9WKYBU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JmBJpWsAVN8f3ZfmV073uUOIWrGUc+EImhJXFLqdO1VbDP5FELqQyRD0F7a5Ekv4jYCBF1yk4u2EtdtGppBD1k4tzJG8Z168hjuk5toY1X2QtKyDW5uN+aU69wEQNVgPYx8Yo+VYPXbJqgWyhKoQbC9yEYJ8EL+fZx335aNpE1Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KHMP1+F3; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-477a2ab455fso2278415e9.3
+        for <bpf@vger.kernel.org>; Mon, 05 Jan 2026 11:14:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1767639867; x=1768244667; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PP3X6T+cAs16XCJeSGeaAouaKAUNwzGXxOOaWFTYxXk=;
-        b=nRM8wwfO00ZS831dTIXYEPEH9DCgFw/pK/7Yg7SSe2s6hBlazKLKhh3ecBZ/Osbrsa
-         VVBFA8zi1EbrQiE/B0RK0XUO4fo6E7bf3z0Ek6RckbiSdc01pJ3goDC1T4W7rW0htzB8
-         A2/IVlO5GKar6NGz9UmRKPTaUNEs/KhoBV4qznwiR1i/0eUF6Zqu8v62+OI7PKvHEo+w
-         WMPoguBXuyMAgg/HWqns0YEzrxfm0PATN8KgN8Gc6eWat6VTTIGmqdAZt7bAURsQMa/w
-         YcZM9n/R2CokDMFduViiDULlxfZhWoVXTHKnKqPCJQRxjhKvtqLbCTTQUOlMsyApp7QT
-         TMPA==
+        d=gmail.com; s=20230601; t=1767640483; x=1768245283; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VuboypouASyDyCh3W81iGlwUfqZjwq3w6T/f9mhZrd4=;
+        b=KHMP1+F30apmlTqbtgTM4ou9zL0l2G9aO9aJk4Gnd5bSDhKT2zG5izuYoH1eddOY84
+         KpC0UhCgQOfh0zNQsuUD2J62woIsIejLD4h+yrcfX1IfGww9x7gDDX348YaasR7Lmfrt
+         DDpbh/eyoW3XNojOw/BfJZuNITKEptRo2eMzjrgBiPde6TD3P/oXQ37/tB+HGP4kQDb+
+         Pnijq1OQhu1/58efusssIQuiXWYouNe9YMNnhWmQFpqEJdSzl8PUsOUCvXZHAT5cxdhY
+         auZZDw6QyPKyL22NSf3rMWaeSSCxAkJpO3NxnAqLNdif9kDlRzq/bfSlwlQYrpOvMrWI
+         RUAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767639867; x=1768244667;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-gg:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=PP3X6T+cAs16XCJeSGeaAouaKAUNwzGXxOOaWFTYxXk=;
-        b=TEUX1F5fQGebD9TJIPMyk63EXmSTH6GZklgxW8+ik4W7RDWRVYBjPC0HKi+zNB87R+
-         68aWTefpbP1tBq5KmBLtm/2/+GzpJeOdNdXTYsGikREApmT1p4d2junaotRECVavVTBu
-         0ncF32udDieziwjKzL2nvZmWK3wIB9RkVPvABp5FlZvmjD3Qyi0NhfnrQJDNpvFqDrL3
-         fD1ghXmBJPdSklRZC0C4ucqN34mwNGuhFxTTWxWc+Y16P3osz2uWnTDehAaVlLWDzQhW
-         HgTd+Tewj+AZNroWnZ83bsjje7l7nyF3eEfKwHgoowvJxCZoAoIVs/jV/DoUyXKrfvXC
-         LZBg==
-X-Forwarded-Encrypted: i=1; AJvYcCX/0svyKsh7QNJNRyF4nVW8ymMzvKfYJDtd1W+1Db6OLZgVKURAt0OBY/1dufe6uSh8s/A=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwEM1mKboHvsr+wLnaFiwQwXoyLn7NuMkhNjsv3I38+VP8p88Vl
-	/tt19vyeKK+gYlM/+UBiRhpQgiybuakjsbvjJv8lH5z283bRGYlZ6tO0uPHz/nIjYgosoz3N2MU
-	UV4aUGwIKViyxq2OuVUWnwB31BP1gqXEDuGidhML7/PU66fZBs6fdKQ==
-X-Gm-Gg: AY/fxX7btEReDE6y1CbIPq913EsWXqW8Z9aOB/Q/zuQjo+xwXpnhQuPQvCKB9xQ7dOT
-	+TqTJRS6VQqqUgrd8FvSgtBirKDIoYrJfuWwHhrLrMehjWEA6lwYMe6dAvOPYwqzBjWzS/8orri
-	TbHjsZFAtQdVgGD29K2Mb2QC/Eb9v002q4uwwEVafb93rFfc8GI17fdN+PNNUBjjqDIff0x2Z72
-	0vN8dwopcMchMJGdjI+7JnQiZH9OpvRD62dTbX+xxuu49MfBrTmNEfGuK4EAdY9fNhyznBZdjz4
-	LSCtI1zB3FMHk5IBWsTKcOmM6H1NDe+D+J8W88+efKJqync+93kzjMbWTxk9sftQBkdILHWatfQ
-	NMorrs9BRRePti8/gzWEqfUP8isIjb90qcigE
-X-Received: by 2002:a17:906:f59b:b0:b73:6f8c:6127 with SMTP id a640c23a62f3a-b8426a4b134mr86835966b.12.1767639866824;
-        Mon, 05 Jan 2026 11:04:26 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHbl0sMF7WNuNmxyY1IoonTxVITXROFrKJi6E+jKHxLhqK6WzqE7cMd2bm7JOrdaxhfHloe6g==
-X-Received: by 2002:a17:906:f59b:b0:b73:6f8c:6127 with SMTP id a640c23a62f3a-b8426a4b134mr86834166b.12.1767639866393;
-        Mon, 05 Jan 2026 11:04:26 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk (alrua-x1.borgediget.toke.dk. [2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b842a234000sm6862866b.4.2026.01.05.11.04.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jan 2026 11:04:25 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id DCED9407F1D; Mon, 05 Jan 2026 20:04:24 +0100 (CET)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Amery Hung <ameryhung@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, Jakub
- Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, John
- Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev
- <sdf@fomichev.me>, Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman
- <eddyz87@gmail.com>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh
- <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
- bpf@vger.kernel.org
-Subject: Re: [PATCH bpf 2/2] selftests/bpf: Update xdp_context_test_run test
- to check maximum metadata size
-In-Reply-To: <CAMB2axPO7VENB-XUSUb5eU1ae7h0NBjbVukzxaObBDMMmkGYAw@mail.gmail.com>
-References: <20260105114747.1358750-1-toke@redhat.com>
- <20260105114747.1358750-2-toke@redhat.com>
- <CAMB2axPO7VENB-XUSUb5eU1ae7h0NBjbVukzxaObBDMMmkGYAw@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Mon, 05 Jan 2026 20:04:24 +0100
-Message-ID: <87eco36fuv.fsf@toke.dk>
+        d=1e100.net; s=20230601; t=1767640483; x=1768245283;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=VuboypouASyDyCh3W81iGlwUfqZjwq3w6T/f9mhZrd4=;
+        b=VO8FA3dH8GKLl/cDSZMsnNDFcq7uePO8cgMHx691reD7CcPmk830ERumm14aaUwEl8
+         p3IppTBCVfxAypLbQafI8u3FRKA0aoczk/bdQGAIRXb5v95bHkPYMqZrE9qNyZQx5Kt1
+         WNnf0agg1SNDZSd6nH71NpCbvwf4L9MY3jUP/x+RQ/BKZ9sLotb9IgMybxrrMBBRS8Eh
+         IsFaeQMdvyeW3y/Vaf65kcQMlCqO/4JWEKQHbCSOw0FPxG9v66R3EMwyreI7pss99j/C
+         eDnXUoQcEcf+gqoDaxPyg8lcm63W6YdOX5nVEcHVnJDGKMGkWY+bfTb257zEMZL45IH8
+         D7Ig==
+X-Gm-Message-State: AOJu0YwVq8A7JsyKGtlrcoAyVwTmy3a2qEUvV/YMqDA6wr5Er2OPfkRj
+	JrphNkcW7TABy/qEn0ACMfS/19Vho8zjxR3j8mMqloDFWceoqTE0OwCq1yKO8eNMA7wh4h6tHIf
+	80rD5CQBu74GFpGWi9xr3CvXDiXCkcA4=
+X-Gm-Gg: AY/fxX7YIfWMep7I8Qo0HgWjEJ6a/6LEsnJchoZuUzs+0cMc/DeT6ScwhYkLRiJdpiD
+	MCJxSYusP8wGsHJUH+IqZT1vGiNjM8p+rf3op880siwsIn52AivgpYuz8ecdR7KEEoweFxQr2iN
+	DVr+27eZcCEA4Ua12+uEF9n+uo6O7lup3IPUWcgwei1/ONMtQECH9UeYZrhRtwANkfJIKYDdYSw
+	PVRe0XFXN22DOtf0QdzW+NMC+zNo/7zD0ukqPK//2PbN+U55+kbvDO+nFIc9+mLGkHAfVmOUJ/U
+	uR9GUsryd671/GDbhJmSY0WDcKYSEIW5mWP2
+X-Google-Smtp-Source: AGHT+IFKltkBwdtJWMmkxlddfHl2o4PRkSDN7V77CF02lxRkBqtvUJHajyKHPAucGIuMeD9ZVOROazg8QLUu1aqeT78=
+X-Received: by 2002:a05:600c:a16:b0:477:58af:a91d with SMTP id
+ 5b1f17b1804b1-47d7f06b874mr5768335e9.5.1767640483349; Mon, 05 Jan 2026
+ 11:14:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20260105-skb-meta-safeproof-netdevs-rx-only-v2-0-a21e679b5afa@cloudflare.com>
+ <20260105-skb-meta-safeproof-netdevs-rx-only-v2-15-a21e679b5afa@cloudflare.com>
+In-Reply-To: <20260105-skb-meta-safeproof-netdevs-rx-only-v2-15-a21e679b5afa@cloudflare.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 5 Jan 2026 11:14:32 -0800
+X-Gm-Features: AQt7F2r1fUZRdG3Uaw-m_HzY97lQuIogtGOtsqJSYvnBmd2txIQ_Y10cum8_WBI
+Message-ID: <CAADnVQJbGosoXOCdyi=NZar966FVibKYobBgQ9BiyEH3=-HOsw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 15/16] bpf: Realign skb metadata for TC progs
+ using data_meta
+To: Jakub Sitnicki <jakub@cloudflare.com>, Amery Hung <ameryhung@gmail.com>, 
+	Martin KaFai Lau <martin.lau@kernel.org>
+Cc: bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>, 
+	Simon Horman <horms@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	kernel-team <kernel-team@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Amery Hung <ameryhung@gmail.com> writes:
-
-> On Mon, Jan 5, 2026 at 3:48=E2=80=AFAM Toke H=C3=B8iland-J=C3=B8rgensen <=
-toke@redhat.com> wrote:
->>
->> Update the selftest to check that the metadata size check takes the
->> xdp_frame size into account in bpf_prog_test_run. The original
->> check (for meta size 256) was broken because the data frame supplied was
->> smaller than this, triggering a different EINVAL return. So supply a
->> larger data frame for this test to make sure we actually exercise the
->> check we think we are.
->>
->> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->> ---
->>  .../bpf/prog_tests/xdp_context_test_run.c          | 14 +++++++++++---
->>  1 file changed, 11 insertions(+), 3 deletions(-)
->>
->> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_context_test_run=
-.c b/tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c
->> index ee94c281888a..24d7d6d8fea1 100644
->> --- a/tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c
->> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c
->> @@ -47,6 +47,7 @@ void test_xdp_context_test_run(void)
->>         struct test_xdp_context_test_run *skel =3D NULL;
->>         char data[sizeof(pkt_v4) + sizeof(__u32)];
->>         char bad_ctx[sizeof(struct xdp_md) + 1];
->> +       char large_data[256];
->>         struct xdp_md ctx_in, ctx_out;
->>         DECLARE_LIBBPF_OPTS(bpf_test_run_opts, opts,
->>                             .data_in =3D &data,
->> @@ -94,9 +95,6 @@ void test_xdp_context_test_run(void)
->>         test_xdp_context_error(prog_fd, opts, 4, sizeof(__u32), sizeof(d=
-ata),
->>                                0, 0, 0);
->>
->> -       /* Meta data must be 255 bytes or smaller */
->> -       test_xdp_context_error(prog_fd, opts, 0, 256, sizeof(data), 0, 0=
-, 0);
->> -
->>         /* Total size of data must be data_end - data_meta or larger */
->>         test_xdp_context_error(prog_fd, opts, 0, sizeof(__u32),
->>                                sizeof(data) + 1, 0, 0, 0);
->> @@ -116,6 +114,16 @@ void test_xdp_context_test_run(void)
->>         test_xdp_context_error(prog_fd, opts, 0, sizeof(__u32), sizeof(d=
-ata),
->>                                0, 0, 1);
->>
->> +       /* Meta data must be 216 bytes or smaller (256 - sizeof(struct
->> +        * xdp_frame)). Test both nearest invalid size and nearest inval=
-id
->> +        * 4-byte-aligned size, and make sure data_in is large enough th=
-at we
->> +        * actually hit the cheeck on metadata length
+On Mon, Jan 5, 2026 at 4:15=E2=80=AFAM Jakub Sitnicki <jakub@cloudflare.com=
+> wrote:
 >
-> nit: a typo here: cheeck -> check
-
-Oops. Will leave this for the maintainers to fix up unless there's
-another reason to respin, though...
-
->> +        */
->> +       opts.data_in =3D large_data;
->> +       opts.data_size_in =3D sizeof(large_data);
->> +       test_xdp_context_error(prog_fd, opts, 0, 217, sizeof(large_data)=
-, 0, 0, 0);
->> +       test_xdp_context_error(prog_fd, opts, 0, 220, sizeof(large_data)=
-, 0, 0, 0);
->> +
->>         test_xdp_context_test_run__destroy(skel);
->>  }
 >
-> Reviewed-by: Amery Hung <ameryhung@gmail.com>
+> +__bpf_kfunc_start_defs();
+> +
+> +__bpf_kfunc void bpf_skb_meta_realign(struct __sk_buff *skb_)
+> +{
+> +       struct sk_buff *skb =3D (typeof(skb))skb_;
+> +       u8 *meta_end =3D skb_metadata_end(skb);
+> +       u8 meta_len =3D skb_metadata_len(skb);
+> +       u8 *meta;
+> +       int gap;
+> +
+> +       gap =3D skb_mac_header(skb) - meta_end;
+> +       if (!meta_len || !gap)
+> +               return;
+> +
+> +       if (WARN_ONCE(gap < 0, "skb metadata end past mac header")) {
+> +               skb_metadata_clear(skb);
+> +               return;
+> +       }
+> +
+> +       meta =3D meta_end - meta_len;
+> +       memmove(meta + gap, meta, meta_len);
+> +       skb_shinfo(skb)->meta_end +=3D gap;
+> +
+> +       bpf_compute_data_pointers(skb);
+> +}
+> +
+> +__bpf_kfunc_end_defs();
+> +
+> +BTF_KFUNCS_START(tc_cls_act_hidden_ids)
+> +BTF_ID_FLAGS(func, bpf_skb_meta_realign)
+> +BTF_KFUNCS_END(tc_cls_act_hidden_ids)
+> +
+> +BTF_ID_LIST_SINGLE(bpf_skb_meta_realign_ids, func, bpf_skb_meta_realign)
+> +
+>  static int tc_cls_act_prologue(struct bpf_insn *insn_buf, u32 pkt_access=
+_flags,
+>                                const struct bpf_prog *prog)
+>  {
+> -       return bpf_unclone_prologue(insn_buf, pkt_access_flags, prog,
+> -                                   TC_ACT_SHOT);
+> +       struct bpf_insn *insn =3D insn_buf;
+> +       int cnt;
+> +
+> +       if (pkt_access_flags & PA_F_DATA_META_LOAD) {
+> +               /* Realign skb metadata for access through data_meta poin=
+ter.
+> +                *
+> +                * r6 =3D r1; // r6 will be "u64 *ctx"
+> +                * r0 =3D bpf_skb_meta_realign(r1); // r0 is undefined
+> +                * r1 =3D r6;
+> +                */
+> +               *insn++ =3D BPF_MOV64_REG(BPF_REG_6, BPF_REG_1);
+> +               *insn++ =3D BPF_CALL_KFUNC(0, bpf_skb_meta_realign_ids[0]=
+);
+> +               *insn++ =3D BPF_MOV64_REG(BPF_REG_1, BPF_REG_6);
+> +       }
 
-Thanks!
+I see that we already did this hack with bpf_qdisc_init_prologue()
+and bpf_qdisc_reset_destroy_epilogue().
+Not sure why we went that route back then.
 
--Toke
+imo much cleaner to do BPF_EMIT_CALL() and wrap
+BPF_CALL_1(bpf_skb_meta_realign, struct sk_buff *, skb)
 
+BPF_CALL_x doesn't make it an uapi helper.
+It's still a hidden kernel function,
+while this kfunc stuff looks wrong, since kfunc isn't really hidden.
+
+I suspect progs can call this bpf_skb_meta_realign() explicitly,
+just like they can call bpf_qdisc_init_prologue() ?
+
+cc Amery, Martin.
 
