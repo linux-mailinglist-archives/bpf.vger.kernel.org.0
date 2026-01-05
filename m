@@ -1,124 +1,131 @@
-Return-Path: <bpf+bounces-77792-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77793-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29A4ECF14BB
-	for <lists+bpf@lfdr.de>; Sun, 04 Jan 2026 21:52:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 85ACFCF199C
+	for <lists+bpf@lfdr.de>; Mon, 05 Jan 2026 03:04:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id A7F83300443F
-	for <lists+bpf@lfdr.de>; Sun,  4 Jan 2026 20:52:39 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 9C1F63008D6A
+	for <lists+bpf@lfdr.de>; Mon,  5 Jan 2026 02:04:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97C432EDD6B;
-	Sun,  4 Jan 2026 20:52:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6275030DD36;
+	Mon,  5 Jan 2026 02:04:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="q3Dg18ZH"
 X-Original-To: bpf@vger.kernel.org
-Received: from plesk.hostmyservers.fr (plesk.hostmyservers.fr [45.145.164.37])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1952F185E4A;
-	Sun,  4 Jan 2026 20:52:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.145.164.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A74C284884;
+	Mon,  5 Jan 2026 02:04:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767559957; cv=none; b=j8fWK2wLOdQuEH7pYxfKsJlVuMUPAnGd5TCHfscFhMWUjvo93NWCl5Q5r7HnH6YSc1R4DV8eyzu7piMI3kJB+rt/FPCJD+alB6s1jTcPb7jHep5OEoGqv4Q07jalg6V/9HpmnYkzEZGs+DuzhZ0KKacJavaD9xYXS82WxnvhVLs=
+	t=1767578663; cv=none; b=Xo2BkJoWTpnJ6fws2vZLcda4UhQQYuIjPXaUhL4Pjui8bfjMkO6HRSjFxXbNfZtAigBAJqQHfi5Cw6oBrBvmDAy3NEqk7BHP4vtDyiBAckQuS5VAKzhcA3EPaMLvI6Mw7eXyxHL3Q0q6fy9ONMaHL68PsO+Qt5yDyS6pKCYzLs8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767559957; c=relaxed/simple;
-	bh=t106gGpXeRc4AiUFXMmFzCvrMdIePCMm3NCwCp4L6DE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pKy2Tfsigmno/+j/7o1tcqkvBkBYHgOglraQdgUkzJ1hIlTMWVYFPypNYr+mIm7XlIKGAWjFCMl4BkgHW7e0UQ/oRAwTCs/CCRXMeDft9xWpeMcZAlOu+TuJq+DgxczrXi5L8iuyWRzuFEKhQU4+wDcUx6ISkk1m6zMKxVsQGaQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com; spf=pass smtp.mailfrom=arnaud-lcm.com; arc=none smtp.client-ip=45.145.164.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arnaud-lcm.com
-Received: from localhost.localdomain (vps-f4c04b7b.vps.ovh.net [IPv6:2001:41d0:305:2100::d563])
-	by plesk.hostmyservers.fr (Postfix) with ESMTPSA id 95E4140D08;
-	Sun,  4 Jan 2026 20:52:32 +0000 (UTC)
-Authentication-Results: Plesk;
-	spf=pass (sender IP is 2001:41d0:305:2100::d563) smtp.mailfrom=contact@arnaud-lcm.com smtp.helo=localhost.localdomain
-Received-SPF: pass (Plesk: connection is authenticated)
-From: Arnaud Lecomte <contact@arnaud-lcm.com>
-To: syzbot+d1b7fa1092def3628bd7@syzkaller.appspotmail.com
-Cc: andrii@kernel.org,
-	ast@kernel.org,
-	bpf@vger.kernel.org,
-	contact@arnaud-lcm.com,
-	daniel@iogearbox.net,
-	eddyz87@gmail.com,
-	haoluo@google.com,
-	john.fastabend@gmail.com,
-	jolsa@kernel.org,
-	kpsingh@kernel.org,
-	linux-kernel@vger.kernel.org,
-	martin.lau@linux.dev,
-	netdev@vger.kernel.org,
-	sdf@fomichev.me,
-	song@kernel.org,
-	syzkaller-bugs@googlegroups.com,
-	yonghong.song@linux.dev,
-	Brahmajit Das <listout@listout.xyz>
-Subject: [PATCH] bpf-next: Prevent out of bound buffer write in
- __bpf_get_stack
-Date: Sun,  4 Jan 2026 20:52:20 +0000
-Message-ID: <20260104205220.980752-1-contact@arnaud-lcm.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1767578663; c=relaxed/simple;
+	bh=VD2g4x30tYK0IfHuRuTFEHsGFn/v4l2BNWMOsIXqhR4=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=bA5fjLX+N01AVJMkJHiEdUrC1aqnpmYZzs8wI/ml6qA59doxbWuTiq1iBiNULlWJwOBbeUkQ/HflD3cEgsMO7bmX1aOKiubnGfzp+q+/94hwzCJh95zuPpIyabyHc2O3WXq2kPqH9hg69wyig5lyKWl6j6qbYsf48x/VMqNrqIk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=q3Dg18ZH; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=202503; t=1767578656;
+	bh=MOc4tm5hzHeN7w9Q5mQExScYl5WcFW9QovEg1i1Se3Q=;
+	h=Date:From:To:Cc:Subject:From;
+	b=q3Dg18ZH4rmLqswOG/zOHemv8hfDNAwIeVB24W48E+A6382/AXszIzLEokz5rcsfG
+	 g9ndmoxjmlrlPxcL/6rkKgr0oxPUV9A7HBS24u8TUaXSZ4NRYbG6EyEIEsDdEPy6c5
+	 W6UdjvZ9yxd6gZYZJSuDseWlyQKYCCQqtC5SAN+MzqImbgmD16RZqb89gGH073d3sL
+	 vCO46wTBXSUca/aCJAfRf309A1eDZbFTINC3BBSOIc7LJPCQVo+sAI/hEJXbuAVc6A
+	 Zj/m5V10NRqww/gtO4aKLYSa2YG2ExGwz9dQOdrE5CORI/UamKzZOWZ19/a+jSApt5
+	 EdTFtlLd6EXPw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange secp256r1 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4dkyKB6s4qz4wCZ;
+	Mon, 05 Jan 2026 13:04:14 +1100 (AEDT)
+Date: Mon, 5 Jan 2026 13:04:13 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov
+ <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Andrew Morton
+ <akpm@linux-foundation.org>
+Cc: bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>, Chen
+ Ridong <chenridong@huawei.com>, JP Kobryn <inwardvessel@gmail.com>, Linux
+ Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>
+Subject: linux-next: manual merge of the bpf-next tree with the mm-unstable
+ tree
+Message-ID: <20260105130413.273ee0ee@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-PPP-Message-ID: <176755995311.29399.17282423088296445020@Plesk>
-X-PPP-Vhost: arnaud-lcm.com
+Content-Type: multipart/signed; boundary="Sig_/QTThylcdXK9Df2AdQpaZlv1";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-Syzkaller reported a KASAN slab-out-of-bounds write in __bpf_get_stack()
-during stack trace copying.
+--Sig_/QTThylcdXK9Df2AdQpaZlv1
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The issue occurs when: the callchain entry (stored as a per-cpu variable)
-grow between collection and buffer copy, causing it to exceed the initially
-calculated buffer size based on max_depth.
+Hi all,
 
-The callchain collection intentionally avoids locking for performance
-reasons, but this creates a window where concurrent modifications can
-occur during the copy operation.
+Today's linux-next merge of the bpf-next tree got a semantic conflict in:
 
-To prevent this from happening, we clamp the trace len to the max
-depth initially calculated with the buffer size and the size of
-a trace.
+  include/linux/memcontrol.h
+  mm/memcontrol-v1.c
+  mm/memcontrol.c
 
-Reported-by: syzbot+d1b7fa1092def3628bd7@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/all/691231dc.a70a0220.22f260.0101.GAE@google.com/T/
-Fixes: e17d62fedd10 ("bpf: Refactor stack map trace depth calculation into helper function")
-Tested-by: syzbot+d1b7fa1092def3628bd7@syzkaller.appspotmail.com
-Cc: Brahmajit Das <listout@listout.xyz>
-Signed-off-by: Arnaud Lecomte <contact@arnaud-lcm.com>
----
-Thanks Brahmajit Das for the initial fix he proposed that I tweaked
-with the correct justification and a better implementation in my
-opinion.
----
- kernel/bpf/stackmap.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+between commit:
 
-diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index da3d328f5c15..e56752a9a891 100644
---- a/kernel/bpf/stackmap.c
-+++ b/kernel/bpf/stackmap.c
-@@ -465,7 +465,6 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
- 
- 	if (trace_in) {
- 		trace = trace_in;
--		trace->nr = min_t(u32, trace->nr, max_depth);
- 	} else if (kernel && task) {
- 		trace = get_callchain_entry_for_task(task, max_depth);
- 	} else {
-@@ -479,7 +478,8 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
- 		goto err_fault;
- 	}
- 
--	trace_nr = trace->nr - skip;
-+	trace_nr = min(trace->nr, max_depth);
-+	trace_nr = trace_nr - skip;
- 	copy_len = trace_nr * elem_size;
- 
- 	ips = trace->ip + skip;
--- 
-2.43.0
+  eb557e10dcac ("memcg: move mem_cgroup_usage memcontrol-v1.c")
 
+from the mm-unstable tree and commit:
+
+  99430ab8b804 ("mm: introduce BPF kfuncs to access memcg statistics and ev=
+ents")
+
+from the bpf-next tree producing this build failure:
+
+mm/memcontrol-v1.c:430:22: error: static declaration of 'mem_cgroup_usage' =
+follows non-static declaration
+  430 | static unsigned long mem_cgroup_usage(struct mem_cgroup *memcg, boo=
+l swap)
+      |                      ^~~~~~~~~~~~~~~~
+In file included from mm/memcontrol-v1.c:3:
+include/linux/memcontrol.h:953:15: note: previous declaration of 'mem_cgrou=
+p_usage' with type 'long unsigned int(struct mem_cgroup *, bool)' {aka 'lon=
+g unsigned int(struct mem_cgroup *, _Bool)'}
+  953 | unsigned long mem_cgroup_usage(struct mem_cgroup *memcg, bool swap);
+      |               ^~~~~~~~~~~~~~~~
+
+I fixed it up (I reverted the mm-unstable tree commit) and can carry the
+fix as necessary. This is now fixed as far as linux-next is concerned,
+but any non trivial conflicts should be mentioned to your upstream
+maintainer when your tree is submitted for merging.  You may also want
+to consider cooperating with the maintainer of the conflicting tree to
+minimise any particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/QTThylcdXK9Df2AdQpaZlv1
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmlbHB0ACgkQAVBC80lX
+0Gx0UQf9GEIs+Ocj8boEp+QMp8DUQ1aNk3ovf1auZzQ8bFN3wB/0VeAdZRI0su/t
+CDEecB/ND0fkbO7Ts2lBRsv4qUl1Scu9WFulyrbK1ngXYJ2yfbSkuZQjANnS1b3w
+lIi1+oz1BV4/8ofHfcqpLuf8s2LFpDxbv4YnxFPwz6ku+meyZxKiyrvJ37Mb1OAD
+uGJl5t8hhnZM2E+weQ3VTgIzLcdVGnB1D8VdaxJRjGWKBnfR3yqXvOnh/jEPD0XT
+TVSXLZGu+GZyhhbanshyv2FoXZjNVYNzEvpLDcxHRIxt8jRGTYHVlkywVBraPeyV
+LGdu9L4ERO9m3sWIYeRw/W1fJ7dy2g==
+=KjcO
+-----END PGP SIGNATURE-----
+
+--Sig_/QTThylcdXK9Df2AdQpaZlv1--
 
