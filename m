@@ -1,45 +1,45 @@
-Return-Path: <bpf+bounces-77839-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77840-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6D9ACF45BF
-	for <lists+bpf@lfdr.de>; Mon, 05 Jan 2026 16:20:08 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D994CF463B
+	for <lists+bpf@lfdr.de>; Mon, 05 Jan 2026 16:28:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 4A0043009D6D
-	for <lists+bpf@lfdr.de>; Mon,  5 Jan 2026 15:20:08 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4635B316F165
+	for <lists+bpf@lfdr.de>; Mon,  5 Jan 2026 15:20:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1470831A56C;
-	Mon,  5 Jan 2026 15:19:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F43A31D36B;
+	Mon,  5 Jan 2026 15:19:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kDB7MS0n"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="m7ownR07"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A30D6314B86
-	for <bpf@vger.kernel.org>; Mon,  5 Jan 2026 15:19:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A6D92FFFBE
+	for <bpf@vger.kernel.org>; Mon,  5 Jan 2026 15:19:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767626351; cv=none; b=cROUBYQtP5nSKQDfAlHeXi3jQiSccAoZzikkkp4iQPBYjpvjtyEKo9axjnoca7mCdsj9X1bFIWbIYOoLW3STH1Z7aXlENUs6rjRUdt/mxrQP25mQU8jJLbJVDekomEiL7l6g+pGF+sSIgTGnOIJuqPWnhlJn9/ziqCa/4SUsjAU=
+	t=1767626355; cv=none; b=q05/7FVZPFpMSnHwsOLYFfxYVpfm51qO+c+3gEOXcB52/aGdT9yeYo2xb8UVb/Mg/gxqaLtPv7q1zeXx4P1e/Lyy6xaf5HA21ioOGLOROu8+HmuARX8cVmCgBGM90jwLCHdYzjOLhyxgeOWkVVYcbizUCB4vyAEurP2R84LHNZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767626351; c=relaxed/simple;
-	bh=MEYCAJTP+gciIEx+Dxm8aAPbsaociGWG+GPRUZbDF6g=;
+	s=arc-20240116; t=1767626355; c=relaxed/simple;
+	bh=NIoKlj4HsNVo49lVc+PMLR4Ylvp1LSZIljGMAzowXKI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hOaZI+JeUdVW5jdYA9yKK7zMtT94zxApTJ00umPvcVoL5U2WUNgNYGA6NOcFpfbo/Xb4WnInjsRTkclW7tgaCdebwSntxs3ghFl7tOFZp2zjacU1j+sYJP7+gOnu3FLMox5moYeLjogJke4o5k+JBdRKOi9w42ARZrDKQG8QYmw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kDB7MS0n; arc=none smtp.client-ip=91.218.175.183
+	 MIME-Version; b=SkiEHKy3vatUpvp8AvKccCqSKwsCmFpm4TTZvLqL7GJT8U1+CAfpG3J2z4SAzUUjgHaODAEFy77nank+0QsURKO14mcCWtaTtT76pdpZerUTvs5F8E8gDwQx3AviFnaIQXWg13d9KaObYQVuoGnbzdRzxtx+Q2AniElzYizir5w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=m7ownR07; arc=none smtp.client-ip=91.218.175.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1767626345;
+	t=1767626351;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=1Hk4lLHbn+xMSZg4HI2VBIcbSjPr/5SQlwXAZJ1OODQ=;
-	b=kDB7MS0nez6RSI7xKNBLEhptMEHKWyXnZrarqiwVLI66N9EtNKl0ZCbbMareH0FxyXHMli
-	u5s3fGW4ZDYhldgS6oB/mPoDkQBum72FCS099rEXRyxuMbvLvKMybWSgRR9V1hOtSPHY8k
-	3xsWKUtNydOTiR/jz+QgOhROJKHXKIU=
+	bh=0R7druIIXBBqOR3kur07q84s7+FkgECuEa0v6KyiuXA=;
+	b=m7ownR07pfMakfapmONcEKFhY0MwdppqDLNXxD/hBWh/25SxQnAEeY3XvcUhID8kJGFlmR
+	7LGMOEZzXQK8//TWLIdARMiekW8kRG7adp9rL8n9zyQRJQoPIm9rIGv9Ho1OIBchXol0ms
+	vzM9grjXQZoW204j8KA2peeGiIdwJPA=
 From: Leon Hwang <leon.hwang@linux.dev>
 To: bpf@vger.kernel.org
 Cc: Martin KaFai Lau <martin.lau@linux.dev>,
@@ -61,9 +61,9 @@ Cc: Martin KaFai Lau <martin.lau@linux.dev>,
 	linux-kernel@vger.kernel.org,
 	linux-kselftest@vger.kernel.org,
 	kernel-patches-bot@fb.com
-Subject: [PATCH bpf-next v2 2/5] bpf: lru: Factor out bpf_lru_node_reset_state helper
-Date: Mon,  5 Jan 2026 23:18:10 +0800
-Message-ID: <20260105151813.6968-3-leon.hwang@linux.dev>
+Subject: [PATCH bpf-next v2 3/5] bpf: lru: Factor out bpf_lru_move_next_inactive_rotation helper
+Date: Mon,  5 Jan 2026 23:18:11 +0800
+Message-ID: <20260105151813.6968-4-leon.hwang@linux.dev>
 In-Reply-To: <20260105151813.6968-1-leon.hwang@linux.dev>
 References: <20260105151813.6968-1-leon.hwang@linux.dev>
 Precedence: bulk
@@ -75,7 +75,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Introduce the helper bpf_lru_node_reset_state to set type and clear ref.
+Factor out a bpf_lru_move_next_inactive_rotation() helper to update
+next_inactive_rotation when handling the extra-node case.
 
 No functional change intended.
 
@@ -85,72 +86,51 @@ Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
  1 file changed, 11 insertions(+), 10 deletions(-)
 
 diff --git a/kernel/bpf/bpf_lru_list.c b/kernel/bpf/bpf_lru_list.c
-index f4e183a9c28f..b17b05f41900 100644
+index b17b05f41900..563707af8035 100644
 --- a/kernel/bpf/bpf_lru_list.c
 +++ b/kernel/bpf/bpf_lru_list.c
-@@ -41,6 +41,12 @@ static void bpf_lru_node_clear_ref(struct bpf_lru_node *node)
- 	WRITE_ONCE(node->ref, 0);
+@@ -61,6 +61,15 @@ static void bpf_lru_list_count_dec(struct bpf_lru_list *l,
+ 		l->counts[type]--;
  }
  
-+static void bpf_lru_node_reset_state(struct bpf_lru_node *node, enum bpf_lru_list_type type)
++static void bpf_lru_move_next_inactive_rotation(struct bpf_lru_list *l, struct bpf_lru_node *node)
 +{
-+	node->type = type;
-+	bpf_lru_node_clear_ref(node);
++	/* If the removing node is the next_inactive_rotation candidate,
++	 * move the next_inactive_rotation pointer also.
++	 */
++	if (&node->list == l->next_inactive_rotation)
++		l->next_inactive_rotation = l->next_inactive_rotation->prev;
 +}
 +
- static void bpf_lru_list_count_inc(struct bpf_lru_list *l,
- 				   enum bpf_lru_list_type type)
- {
-@@ -85,8 +91,7 @@ static void __bpf_lru_node_move_in(struct bpf_lru_list *l,
+ static void __bpf_lru_node_move_to_free(struct bpf_lru_list *l,
+ 					struct bpf_lru_node *node,
+ 					struct list_head *free_list,
+@@ -69,11 +78,7 @@ static void __bpf_lru_node_move_to_free(struct bpf_lru_list *l,
+ 	if (WARN_ON_ONCE(IS_LOCAL_LIST_TYPE(node->type)))
  		return;
  
- 	bpf_lru_list_count_inc(l, tgt_type);
--	node->type = tgt_type;
--	bpf_lru_node_clear_ref(node);
-+	bpf_lru_node_reset_state(node, tgt_type);
+-	/* If the removing node is the next_inactive_rotation candidate,
+-	 * move the next_inactive_rotation pointer also.
+-	 */
+-	if (&node->list == l->next_inactive_rotation)
+-		l->next_inactive_rotation = l->next_inactive_rotation->prev;
++	bpf_lru_move_next_inactive_rotation(l, node);
+ 
+ 	bpf_lru_list_count_dec(l, node->type);
+ 
+@@ -114,11 +119,7 @@ static void __bpf_lru_node_move(struct bpf_lru_list *l,
+ 	}
+ 	bpf_lru_node_clear_ref(node);
+ 
+-	/* If the moving node is the next_inactive_rotation candidate,
+-	 * move the next_inactive_rotation pointer also.
+-	 */
+-	if (&node->list == l->next_inactive_rotation)
+-		l->next_inactive_rotation = l->next_inactive_rotation->prev;
++	bpf_lru_move_next_inactive_rotation(l, node);
+ 
  	list_move(&node->list, &l->lists[tgt_type]);
  }
- 
-@@ -347,8 +352,7 @@ static void __local_list_add_pending(struct bpf_lru *lru,
- 				     struct bpf_lru_node *node)
- {
- 	node->cpu = cpu;
--	node->type = BPF_LRU_LOCAL_LIST_T_PENDING;
--	bpf_lru_node_clear_ref(node);
-+	bpf_lru_node_reset_state(node, BPF_LRU_LOCAL_LIST_T_PENDING);
- 	list_add(&node->list, local_pending_list(loc_l));
- }
- 
-@@ -513,8 +517,7 @@ static void bpf_common_lru_push_free(struct bpf_lru *lru,
- 			goto check_lru_list;
- 		}
- 
--		node->type = BPF_LRU_LOCAL_LIST_T_FREE;
--		bpf_lru_node_clear_ref(node);
-+		bpf_lru_node_reset_state(node, BPF_LRU_LOCAL_LIST_T_FREE);
- 		list_move(&node->list, local_free_list(loc_l));
- 
- 		raw_spin_unlock_irqrestore(&loc_l->lock, flags);
-@@ -559,8 +562,7 @@ static void bpf_common_lru_populate(struct bpf_lru *lru, void *buf,
- 		struct bpf_lru_node *node;
- 
- 		node = (struct bpf_lru_node *)(buf + node_offset);
--		node->type = BPF_LRU_LIST_T_FREE;
--		bpf_lru_node_clear_ref(node);
-+		bpf_lru_node_reset_state(node, BPF_LRU_LIST_T_FREE);
- 		list_add(&node->list, &l->lists[BPF_LRU_LIST_T_FREE]);
- 		buf += elem_size;
- 	}
-@@ -588,8 +590,7 @@ static void bpf_percpu_lru_populate(struct bpf_lru *lru, void *buf,
- again:
- 		node = (struct bpf_lru_node *)(buf + node_offset);
- 		node->cpu = cpu;
--		node->type = BPF_LRU_LIST_T_FREE;
--		bpf_lru_node_clear_ref(node);
-+		bpf_lru_node_reset_state(node, BPF_LRU_LIST_T_FREE);
- 		list_add(&node->list, &l->lists[BPF_LRU_LIST_T_FREE]);
- 		i++;
- 		buf += elem_size;
 -- 
 2.52.0
 
