@@ -1,242 +1,124 @@
-Return-Path: <bpf+bounces-77970-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77971-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 652DCCF942D
-	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 17:07:54 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69F2FCF9442
+	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 17:09:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 01E5530E4E92
-	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 16:00:42 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 886CE3064616
+	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 16:03:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFB1033BBD1;
-	Tue,  6 Jan 2026 16:00:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LZisChWe"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D4F1337109;
+	Tue,  6 Jan 2026 16:03:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
+Received: from relay.hostedemail.com (smtprelay0017.hostedemail.com [216.40.44.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18AD921A92F
-	for <bpf@vger.kernel.org>; Tue,  6 Jan 2026 16:00:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FF8521D590;
+	Tue,  6 Jan 2026 16:03:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767715226; cv=none; b=rxTGIm1sN13zrCwQWOQtxuo/kPkLC6ZF8l+fmQeiZuHN1kJ1zPj9Qov0rbmNTIwGNKOERtv9e8DNOeAwP6yL5Qj9qGG7kjSVz9I0Horqra5uEcy2a/utpqNK/ZU74CM5qJBblMr0vcYMXTpdnxeR5t0mnWBC2NoHh9VxfFBIM60=
+	t=1767715395; cv=none; b=LJmwDEr6reBSx9W1ClgbBIWsLvtYfuhhJsN2Byw8+WH+GE3KkbW6RqkjjCQpsLsvlEaAO96AqcqXjedDZ6svG7CWIUg6TTtFlOJyMcmsoHzFAFYyKpPqKdmEoNO0gZ98GkFRauPmMaOP31v2WNFN7RWvmy0Oz5DRTAD6sqp7piE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767715226; c=relaxed/simple;
-	bh=CA6jgoHLefY7G/weyH76ZiaFmghIr4JJtVJrQ3aUyyM=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=SALRASppO9fKmhVqPY+8oraBP98Jeqt6sDBKXjKNfUqdUftJ/yFdIbLTffaPZ3ltYiMGCTNGfdbeYTLmeq0PgGg+oyjwPR4wQ3LbdzSWedv6pkZYA/uur8LxwGsfhfdfm5ns5pmq6KBD2iF4XlKL3S8vVGzch5CjyUp4n0P5X5c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LZisChWe; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <0e954e9a-12af-4f4f-95e2-7afedbd8f63f@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1767715221;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Dslxvrdq4F6zyq8ezCJjZHNkGMQK1oFjUWDRruSut24=;
-	b=LZisChWe7evTuQIciZh6NXoXk85dHwBC5glhvLu378H5Hq9EKZrKsdqMhqMUDClLyU9s0c
-	dtS++wWgbZVje+Uh1KCdxyOGD/L4AGzFDWNYLjKOFvElBRO1C8+CDmh2fzZRUjGQbpW9VU
-	6fg9kX55oVi7MBXJ1ZrQ3ICzgRaril8=
-Date: Wed, 7 Jan 2026 00:00:07 +0800
+	s=arc-20240116; t=1767715395; c=relaxed/simple;
+	bh=1uCe5s/d537zHC8VxNaiuQFq01bkKuh5qVX/xRNx5qs=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=jtj0SohvvOGl9WVFJ7THj7Iuujf5X27YE2jcJlaolXk6hUIbYUgcajtABcrUdFhWwicmhQi2/PQzn5vixn5O7N4mPwD6UZcAKxORAfq9AMRmWtkkSshU0yLQ6H773ie2LbI7+kztOOEIsqDTZelGBP0IjcAVciKf8zcfrxQA4BY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf07.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay06.hostedemail.com (Postfix) with ESMTP id 411A91AA7A3;
+	Tue,  6 Jan 2026 16:03:10 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf07.hostedemail.com (Postfix) with ESMTPA id DAC252002C;
+	Tue,  6 Jan 2026 16:03:07 +0000 (UTC)
+Date: Tue, 6 Jan 2026 11:03:32 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Wander Lairson Costa <wander@redhat.com>
+Cc: Tomas Glozar <tglozar@redhat.com>, Crystal Wood <crwood@redhat.com>,
+ Ivan Pravdin <ipravdin.official@gmail.com>, Costa Shulyupin
+ <costa.shul@redhat.com>, John Kacur <jkacur@redhat.com>, Tiezhu Yang
+ <yangtiezhu@loongson.cn>, linux-trace-kernel@vger.kernel.org (open
+ list:Real-time Linux Analysis (RTLA) tools), linux-kernel@vger.kernel.org
+ (open list:Real-time Linux Analysis (RTLA) tools), bpf@vger.kernel.org
+ (open list:BPF [MISC]:Keyword:(?:\b|_)bpf(?:\b|_))
+Subject: Re: [PATCH v2 13/18] rtla: Fix buffer size for strncpy in
+ timerlat_aa
+Message-ID: <20260106110332.4b46ed80@gandalf.local.home>
+In-Reply-To: <20260106133655.249887-14-wander@redhat.com>
+References: <20260106133655.249887-1-wander@redhat.com>
+	<20260106133655.249887-14-wander@redhat.com>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v7 2/2] bpf: Hold the perf callchain entry until
- used completely
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Tao Chen <chen.dylane@linux.dev>
-To: peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
- namhyung@kernel.org, mark.rutland@arm.com,
- alexander.shishkin@linux.intel.com, jolsa@kernel.org, irogers@google.com,
- adrian.hunter@intel.com, kan.liang@linux.intel.com, song@kernel.org,
- ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, eddyz87@gmail.com, yonghong.song@linux.dev,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com
-Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org
-References: <20251217093326.1745307-1-chen.dylane@linux.dev>
- <20251217093326.1745307-3-chen.dylane@linux.dev>
- <db97ccea-8cb4-40ea-b040-79f0f63a398e@linux.dev>
-In-Reply-To: <db97ccea-8cb4-40ea-b040-79f0f63a398e@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Stat-Signature: 74jxxefxp4aiqxn7za7cbgbh7hhpr6me
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: DAC252002C
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX19LlWeM5YVkEL5nf4GQjc2j68V9r2EESkU=
+X-HE-Tag: 1767715387-91106
+X-HE-Meta: U2FsdGVkX19Lzgmc72zj7tANIJGAdWubUS/ZEXquaGlxLBibrrcCiyrvI54PcGos1U+gLOG8i4dmAmfUt2bUQaSnvDyXxILKv7FCt6osAsGuoJLKM6X6kO4JiDWxFmFPNAR7qmjG5Bv2S05eMcOqQH7F/+OLckYGCvjCvRNHaKPuhU+FSCr85PeYiSWv41vrtcDwUC93qLZNHwPxrLQNPyXpJpymYqatIQN4aRGaBGij/bK60YN6s0aG/cJGg7mcOTmL6LspwpogM/XV0teaRNxc8eq1eUdBYOx1HE+bniPzaGxupOQUwImK+d3HQ5GuQBCNcyNxA0x6IbeHkG2xjnxzYjKIxqxh
 
-在 2025/12/23 14:29, Tao Chen 写道:
-> 在 2025/12/17 17:33, Tao Chen 写道:
->> As Alexei noted, get_perf_callchain() return values may be reused
->> if a task is preempted after the BPF program enters migrate disable
->> mode. The perf_callchain_entres has a small stack of entries, and
->> we can reuse it as follows:
->>
->> 1. get the perf callchain entry
->> 2. BPF use...
->> 3. put the perf callchain entry
->>
->> And Peter suggested that get_recursion_context used with preemption
->> disabled, so we should disable preemption at BPF side.
->>
->> Acked-by: Yonghong Song <yonghong.song@linux.dev>
->> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
->> ---
->>   kernel/bpf/stackmap.c | 68 +++++++++++++++++++++++++++++++++++--------
->>   1 file changed, 56 insertions(+), 12 deletions(-)
->>
->> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
->> index da3d328f5c1..3bdd99a630d 100644
->> --- a/kernel/bpf/stackmap.c
->> +++ b/kernel/bpf/stackmap.c
->> @@ -210,13 +210,14 @@ static void stack_map_get_build_id_offset(struct 
->> bpf_stack_build_id *id_offs,
->>   }
->>   static struct perf_callchain_entry *
->> -get_callchain_entry_for_task(struct task_struct *task, u32 max_depth)
->> +get_callchain_entry_for_task(int *rctx, struct task_struct *task, u32 
->> max_depth)
->>   {
->>   #ifdef CONFIG_STACKTRACE
->>       struct perf_callchain_entry *entry;
->> -    int rctx;
->> -    entry = get_callchain_entry(&rctx);
->> +    preempt_disable();
->> +    entry = get_callchain_entry(rctx);
->> +    preempt_enable();
->>       if (!entry)
->>           return NULL;
->> @@ -238,8 +239,6 @@ get_callchain_entry_for_task(struct task_struct 
->> *task, u32 max_depth)
->>               to[i] = (u64)(from[i]);
->>       }
->> -    put_callchain_entry(rctx);
->> -
->>       return entry;
->>   #else /* CONFIG_STACKTRACE */
->>       return NULL;
->> @@ -320,6 +319,34 @@ static long __bpf_get_stackid(struct bpf_map *map,
->>       return id;
->>   }
->> +static struct perf_callchain_entry *
->> +bpf_get_perf_callchain(int *rctx, struct pt_regs *regs, bool kernel, 
->> bool user,
->> +               int max_stack, bool crosstask)
->> +{
->> +    struct perf_callchain_entry_ctx ctx;
->> +    struct perf_callchain_entry *entry;
->> +
->> +    preempt_disable();
->> +    entry = get_callchain_entry(rctx);
->> +    preempt_enable();
->> +
->> +    if (unlikely(!entry))
->> +        return NULL;
->> +
->> +    __init_perf_callchain_ctx(&ctx, entry, max_stack, false);
->> +    if (kernel)
->> +        __get_perf_callchain_kernel(&ctx, regs);
->> +    if (user && !crosstask)
->> +        __get_perf_callchain_user(&ctx, regs, 0);
->> +
->> +    return entry;
->> +}
->> +
->> +static void bpf_put_perf_callchain(int rctx)
->> +{
->> +    put_callchain_entry(rctx);
->> +}
->> +
->>   BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map 
->> *, map,
->>          u64, flags)
->>   {
->> @@ -328,20 +355,25 @@ BPF_CALL_3(bpf_get_stackid, struct pt_regs *, 
->> regs, struct bpf_map *, map,
->>       struct perf_callchain_entry *trace;
->>       bool kernel = !user;
->>       u32 max_depth;
->> +    int rctx, ret;
->>       if (unlikely(flags & ~(BPF_F_SKIP_FIELD_MASK | BPF_F_USER_STACK |
->>                      BPF_F_FAST_STACK_CMP | BPF_F_REUSE_STACKID)))
->>           return -EINVAL;
->>       max_depth = stack_map_calculate_max_depth(map->value_size, 
->> elem_size, flags);
->> -    trace = get_perf_callchain(regs, kernel, user, max_depth,
->> -                   false, false, 0);
->> +
->> +    trace = bpf_get_perf_callchain(&rctx, regs, kernel, user, max_depth,
->> +                       false);
->>       if (unlikely(!trace))
->>           /* couldn't fetch the stack trace */
->>           return -EFAULT;
->> -    return __bpf_get_stackid(map, trace, flags);
->> +    ret = __bpf_get_stackid(map, trace, flags);
->> +    bpf_put_perf_callchain(rctx);
->> +
->> +    return ret;
->>   }
->>   const struct bpf_func_proto bpf_get_stackid_proto = {
->> @@ -435,6 +467,7 @@ static long __bpf_get_stack(struct pt_regs *regs, 
->> struct task_struct *task,
->>       bool kernel = !user;
->>       int err = -EINVAL;
->>       u64 *ips;
->> +    int rctx;
->>       if (unlikely(flags & ~(BPF_F_SKIP_FIELD_MASK | BPF_F_USER_STACK |
->>                      BPF_F_USER_BUILD_ID)))
->> @@ -467,18 +500,26 @@ static long __bpf_get_stack(struct pt_regs 
->> *regs, struct task_struct *task,
->>           trace = trace_in;
->>           trace->nr = min_t(u32, trace->nr, max_depth);
->>       } else if (kernel && task) {
->> -        trace = get_callchain_entry_for_task(task, max_depth);
->> +        trace = get_callchain_entry_for_task(&rctx, task, max_depth);
->>       } else {
->> -        trace = get_perf_callchain(regs, kernel, user, max_depth,
->> -                       crosstask, false, 0);
->> +        trace = bpf_get_perf_callchain(&rctx, regs, kernel, user, 
->> max_depth,
->> +                           crosstask);
->>       }
->> -    if (unlikely(!trace) || trace->nr < skip) {
->> +    if (unlikely(!trace)) {
->>           if (may_fault)
->>               rcu_read_unlock();
->>           goto err_fault;
->>       }
->> +    if (trace->nr < skip) {
->> +        if (may_fault)
->> +            rcu_read_unlock();
->> +        if (!trace_in)
->> +            bpf_put_perf_callchain(rctx);
->> +        goto err_fault;
->> +    }
->> +
->>       trace_nr = trace->nr - skip;
->>       copy_len = trace_nr * elem_size;
->> @@ -497,6 +538,9 @@ static long __bpf_get_stack(struct pt_regs *regs, 
->> struct task_struct *task,
->>       if (may_fault)
->>           rcu_read_unlock();
->> +    if (!trace_in)
->> +        bpf_put_perf_callchain(rctx);
->> +
->>       if (user_build_id)
->>           stack_map_get_build_id_offset(buf, trace_nr, user, may_fault);
-> 
-> Hi Peter,
-> 
-> As Alexei said, the patch needs your ack, please review again, thanks.
-> 
+On Tue,  6 Jan 2026 08:49:49 -0300
+Wander Lairson Costa <wander@redhat.com> wrote:
 
-ping...
+> The run_thread_comm and current_comm character arrays in struct
+> timerlat_aa_data are defined with size MAX_COMM (24 bytes), but
+> strncpy() is called with MAX_COMM as the size parameter. If the
+> source string is exactly MAX_COMM bytes or longer, strncpy() will
+> copy exactly MAX_COMM bytes without null termination, potentially
+> causing buffer overruns when these strings are later used.
 
--- 
-Best Regards
-Tao Chen
+We should implement something like the kernel has of "strscpy()" which not
+only truncates but also adds a null terminating byte.
+
+> 
+> Increase the buffer sizes to MAX_COMM+1 to ensure there is always
+> room for the null terminator. This guarantees that even when strncpy()
+> copies the maximum number of characters, the buffer remains properly
+> null-terminated and safe to use in subsequent string operations.
+> 
+> Signed-off-by: Wander Lairson Costa <wander@redhat.com>
+> ---
+>  tools/tracing/rtla/src/timerlat_aa.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/tracing/rtla/src/timerlat_aa.c b/tools/tracing/rtla/src/timerlat_aa.c
+> index 31e66ea2b144c..d310fe65abace 100644
+> --- a/tools/tracing/rtla/src/timerlat_aa.c
+> +++ b/tools/tracing/rtla/src/timerlat_aa.c
+> @@ -47,7 +47,7 @@ struct timerlat_aa_data {
+>  	 * note: "unsigned long long" because they are fetch using tep_get_field_val();
+>  	 */
+>  	unsigned long long	run_thread_pid;
+> -	char			run_thread_comm[MAX_COMM];
+> +	char			run_thread_comm[MAX_COMM+1];
+
+The reason why I suggest strscpy() is because now you just made every this
+unaligned in the struct. 24 bytes fits nicely as 3 8 byte words. Now by
+adding another byte, you just added 7 bytes of useless padding between this
+and the next field.
+
+-- Steve
+
+
+>  	unsigned long long	thread_blocking_duration;
+>  	unsigned long long	max_exit_idle_latency;
+>  
+> @@ -88,7 +88,7 @@ struct timerlat_aa_data {
+>  	/*
+>  	 * Current thread.
+>  	 */
+> -	char			current_comm[MAX_COMM];
+> +	char			current_comm[MAX_COMM+1];
+>  	unsigned long long	current_pid;
+>  
+>  	/*
+
 
