@@ -1,200 +1,244 @@
-Return-Path: <bpf+bounces-77981-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77982-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED013CF99D0
-	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 18:18:30 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A0C1CF9D34
+	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 18:46:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8764B310AB87
-	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 17:12:35 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 3D679304485B
+	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 17:46:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4CA233EAE6;
-	Tue,  6 Jan 2026 17:03:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C69134D4E5;
+	Tue,  6 Jan 2026 17:21:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="zFNCkXUc"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JYC3BMro"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BC0733D6F5
-	for <bpf@vger.kernel.org>; Tue,  6 Jan 2026 17:03:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F392234D4E0
+	for <bpf@vger.kernel.org>; Tue,  6 Jan 2026 17:20:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767719039; cv=none; b=bOOa0f+rWa+gqt+CfWCfF6yWdGzXQKmDIZ/HWCvA9WO4C5LXpZHpETF75KTrFQyJY4Z12GrN2gf0n5NL6eexnzyO5Rt6R/z+NJj6IeBon+WyhXY84L+dxrV5lDOqzZvrCmfuKTT4DfGG3aDhLHd7LS3VLmymV5gMaB35X/a/EI4=
+	t=1767720060; cv=none; b=vGLqZ//BBKvTIftKTvx7Ig8gE7Bn2vNwhstBfST9LTKzhIKiXtDRIgbd0aZF+/Or7RKS1tcuBYdx9J4JUitnUOe2Qw8KPdnk6ec2+aQUdgJwz+JRvTGi7ULeHZJ+RiQ4v/drgKG9zghPCrblinLjKDhCphQPcTSfPaYAkLbqENk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767719039; c=relaxed/simple;
-	bh=aGI5WeO7SEZvcXW+ydarFc1VyBSejFA3GhZZEelRvPE=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=STulnSV7jgt8yOXRjJko3FkngAMmIVV/qHiFPTvy8OolToM0iLFwR9otp5QvnbSSVowKMlAHxvOdc9aG9JmbhZydiSttKFYYG6GK7Mcr4ZliCHwDGhaK2FrhWXLRgKlG+3A4SpjXL3WuUL0fVtQ2lPfzfG35ghHK2U43GqWAKjc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=zFNCkXUc; arc=none smtp.client-ip=209.85.222.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etsalapatis.com
-Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-8c15e8b2f1aso103109385a.0
-        for <bpf@vger.kernel.org>; Tue, 06 Jan 2026 09:03:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1767719036; x=1768323836; darn=vger.kernel.org;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2hL5ti5R4NBGjkAFeF/WqOAh2oqdwOkZ3eTDIF5WGAQ=;
-        b=zFNCkXUccf1l9pd4OY90suRsjXFf0p0QBRQT0yIw+5JMiieT2WcUqumwePH2hYCjNG
-         Cu3qPwXZQsLZ/C3p9ejdnaC+Fl8U8mbBvZhMKzYFEybRefRyqb8McLadp5VFDOI7jMGM
-         ZgCmeYlHcNj/Mc9VYDSxc0eIRZdMLhOyxS/Drjyew4u2yknApXRtwTDDPwKTELueF2xy
-         rllYtBXZOd7rmFtJiepJqEi9UWgRTIp/nzrZkdyMEmUd7bI+oP6tcVSZtobkovtTUgGB
-         RvC1lz4k/IMpETYe2cshPUrmixTPIK3PVYwlyaGsZXpyyocFTQP7VmTrukPpzYLEkhjG
-         kKwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767719036; x=1768323836;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-gg:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2hL5ti5R4NBGjkAFeF/WqOAh2oqdwOkZ3eTDIF5WGAQ=;
-        b=IBckLm8apo6bje1+f3W7KQayhTvNxkw0Xkubns/W3ihll2WF3Io++kFJjAFb7KrFPn
-         qGPvoZiiYd30Tdfixirxyk91cAsERyJU/r4bTouT6DCspM4NKDiHZcVmGZBgYCbJ87ZG
-         0gJ3LFBcyOmUOnguBFmZuwzjWzD9stXi138zu6AAfGLMc1yTYSZcOruDNb2YY2T/nJ/X
-         1tjrXi5cqHDxWKiH/C8h72fU4s3PGncxrEupvieFx4dpawCUFkt+suvOFGT5bdPPt9pt
-         k/SZ3W7K3UEO7C0B6FHLQQ43sknxymmuyl0l8gpaJbcmnWsuK/4SH2MvT6Se5396XBrQ
-         xpTw==
-X-Forwarded-Encrypted: i=1; AJvYcCWjhX30bgI9eOea9S8qrJFTU9JAEzBAMvnjPuu4eG7QYng9ieLWtePn8b+obxapmOJupos=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw2QtJx+vAWsOK88EOVTgEQH9EOeuIpwhqIF+z3EAr8u2f3+HDr
-	E1UQHfiIcZDSgo+bZTJ2o158CdOu9aU7pMU85omqnC/3QGGGztfaixGY7LntKO4Iw6Q=
-X-Gm-Gg: AY/fxX5/rvb9ZDhrd6UnSFDAVyItnckJF0LTXiYchhuSaWi+yQsEOd89SVwH2lkDY0y
-	1g3AU9/TfYYJOs1THlJwpyvtqY2sw/tOX7x6tUAEVr25SoM1uUdoC9+YxpBZN5noqxRctY6PopY
-	mUCRIRowO8M6J7L+ZS4qHJh3JEaAT0//5kWL34mTVCJyYHvh9IgQFLPMi3jDLxWpgz7uXUwGKcx
-	FS1JVk9Phz20MaECX0f+NbQZnDKHAFLprYSUa9x8z3wb67kmMBYEVslIQux9Zx12IBfsaWBd8Bc
-	5rKocKxD3Vd0XL7RJpgsNA6TH8x6XIP/1paXDiCfjsmUVAgcVedcxrsZgTd8AHxfNdDqVK82Hyo
-	8kXBEZLX+9lkQxU+xLyzcG6QLPWI9bhMtxJjSK7aYfOPZW+HJrolE1tLtw1RA5ZHBYP+oEcqU5Y
-	8985j74DCuuW34rFCOgWMO5w==
-X-Google-Smtp-Source: AGHT+IFq1IeBHUQXb7DqAofeXlDum6gvP/uhD3UOpMgp8OV/0IpFAKsqsQDRKv5dwK1JWcF3d51Spw==
-X-Received: by 2002:a05:620a:6a0e:b0:8c3:8794:917 with SMTP id af79cd13be357-8c387941677mr61934085a.85.1767719036126;
-        Tue, 06 Jan 2026 09:03:56 -0800 (PST)
-Received: from localhost ([140.174.219.137])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8c37f51cdcesm198599685a.26.2026.01.06.09.03.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Jan 2026 09:03:55 -0800 (PST)
+	s=arc-20240116; t=1767720060; c=relaxed/simple;
+	bh=oxIVZtcibxIdlrQ7G9EZOx7tfCuyfYgUcq67L6JvSzw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=qSYUwH6D7kKGe3Ls7NDA13HhX8QN8750rp+ERGoQkdzG9+He0iDhLi7YLcxKHBAnaExlE3TQCPDOZTRjRsS4Dha+mqGhR0TQwkv5RyUsH5/ChB4N9r3/M7b9ylVh6rVy0tlVzJrk1cXfsq9liDqNy0CD6q1OWSeUPY8mxg3mfjc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=JYC3BMro; arc=none smtp.client-ip=91.218.175.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1767720055;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZUTAxF7YINRUTHUdOTMsQNv3ktVF4OtuYgRb7ZMltyA=;
+	b=JYC3BMroxaBUPT3WVKVOx+ECGYzrd7VwPMrtmd2gljQKOTk8rLjQilWzK1Zm7viLE5Id7f
+	gi9Mh5SO8TLkVmXDLF+Fg5xzeSzIkQ1OzQjptjEPOjotjyafKdX/Xtk3zVqHY4AUQdGyHi
+	bfOW3E4b8T2IZOaRigUxPDBEb1keE10=
+From: Leon Hwang <leon.hwang@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Leon Hwang <leon.hwang@linux.dev>,
+	Seth Forshee <sforshee@kernel.org>,
+	Yuichiro Tsuji <yuichtsu@amazon.com>,
+	Andrey Albershteyn <aalbersh@redhat.com>,
+	Willem de Bruijn <willemb@google.com>,
+	Jason Xing <kerneljasonxing@gmail.com>,
+	Paul Chaignon <paul.chaignon@gmail.com>,
+	Mykyta Yatsenko <yatsenko@meta.com>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	Anton Protopopov <a.s.protopopov@gmail.com>,
+	Amery Hung <ameryhung@gmail.com>,
+	Rong Tao <rongtao@cestc.cn>,
+	linux-kernel@vger.kernel.org,
+	linux-api@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	kernel-patches-bot@fb.com
+Subject: [RESEND PATCH bpf-next v4 1/9] bpf: Extend bpf syscall with common attributes support
+Date: Wed,  7 Jan 2026 01:20:10 +0800
+Message-ID: <20260106172018.57757-2-leon.hwang@linux.dev>
+In-Reply-To: <20260106172018.57757-1-leon.hwang@linux.dev>
+References: <20260106172018.57757-1-leon.hwang@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 06 Jan 2026 12:03:53 -0500
-Message-Id: <DFHO3L0N5VLG.1R5C2MOI03WKD@etsalapatis.com>
-Cc: "Puranjay Mohan" <puranjay@kernel.org>, <bot+bpf-ci@kernel.org>, "bpf"
- <bpf@vger.kernel.org>, "Alexei Starovoitov" <ast@kernel.org>, "Daniel
- Borkmann" <daniel@iogearbox.net>, "Andrii Nakryiko" <andrii@kernel.org>,
- "Martin KaFai Lau" <martin.lau@linux.dev>, "Eduard" <eddyz87@gmail.com>,
- "Song Liu" <song@kernel.org>, "Yonghong Song" <yonghong.song@linux.dev>,
- "Martin KaFai Lau" <martin.lau@kernel.org>, "Chris Mason" <clm@meta.com>,
- "Ihor Solodrai" <ihor.solodrai@linux.dev>
-Subject: Re: [PATCH 1/2] bpf/verifier: allow calls to arena functions while
- holding spinlocks
-From: "Emil Tsalapatis" <emil@etsalapatis.com>
-To: "Alexei Starovoitov" <alexei.starovoitov@gmail.com>, "Kumar Kartikeya
- Dwivedi" <memxor@gmail.com>
-X-Mailer: aerc 0.20.1
-References: <20260106-arena-under-lock-v1-1-6ca9c121d826@etsalapatis.com>
- <853906c538414477bdd9683e918652b42b1b733498dcd95d62048180d227b5ca@mail.kernel.org> <CANk7y0jf0QaFbhJuNL2u7UK5NF8omFjn45X_nGAmszGd9Vd9gA@mail.gmail.com> <CAP01T74TUoURu0KzQtBBEWHi=vRdi_FuZ2PMgTUS3stNoyCdHg@mail.gmail.com> <CAADnVQ++ZmSn3b7FmCc-uWSCsN6_v-NqE=G_O52K1xufPpnTdw@mail.gmail.com>
-In-Reply-To: <CAADnVQ++ZmSn3b7FmCc-uWSCsN6_v-NqE=G_O52K1xufPpnTdw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue Jan 6, 2026 at 11:36 AM EST, Alexei Starovoitov wrote:
-> On Tue, Jan 6, 2026 at 7:26=E2=80=AFAM Kumar Kartikeya Dwivedi <memxor@gm=
-ail.com> wrote:
->>
->> On Tue, 6 Jan 2026 at 10:31, Puranjay Mohan <puranjay@kernel.org> wrote:
->> >
->> > On Tue, Jan 6, 2026 at 6:45=E2=80=AFAM <bot+bpf-ci@kernel.org> wrote:
->> > >
->> > > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> > > > index 9394b0de2ef0..9b3067b16507 100644
->> > > > --- a/kernel/bpf/verifier.c
->> > > > +++ b/kernel/bpf/verifier.c
->> > >
->> > > [ ... ]
->> > >
->> > > > @@ -12883,10 +12885,17 @@ static bool is_bpf_res_spin_lock_kfunc(u=
-32 btf_id)
->> > > >              btf_id =3D=3D special_kfunc_list[KF_bpf_res_spin_unlo=
-ck_irqrestore];
->> > > >  }
->> > > >
->> > > > +static bool is_bpf_arena_kfunc(u32 btf_id)
->> > > > +{
->> > > > +     return btf_id =3D=3D special_kfunc_list[KF_bpf_arena_alloc_p=
-ages] ||
->> > > > +            btf_id =3D=3D special_kfunc_list[KF_bpf_arena_free_pa=
-ges] ||
->> > > > +            btf_id =3D=3D special_kfunc_list[KF_bpf_arena_reserve=
-_pages];
->> > > > +}
->> > > > +
->> > > >  static bool kfunc_spin_allowed(u32 btf_id)
->> > > >  {
->> > > >       return is_bpf_graph_api_kfunc(btf_id) || is_bpf_iter_num_api=
-_kfunc(btf_id) ||
->> > > > -            is_bpf_res_spin_lock_kfunc(btf_id);
->> > > > +            is_bpf_res_spin_lock_kfunc(btf_id) || is_bpf_arena_kf=
-unc(btf_id);
->> > > >  }
->> > >
->> > > Can this cause sleeping in atomic context when calling bpf_arena_fre=
-e_pages()
->> > > while holding a BPF spinlock?
->> > >
->> > > When bpf_spin_lock() is held, IRQs are disabled. The call path is:
->> > >
->> > >   bpf_arena_free_pages() [sleepable=3Dtrue]
->> > >     -> arena_free_pages()
->> > >        -> raw_res_spin_unlock_irqrestore() [releases arena lock]
->> > >        -> zap_pages()
->> > >           -> guard(mutex)(&arena->lock)  <-- mutex acquisition!
->> > >
->> > > The arena's rqspinlock is released before zap_pages(), but the BPF p=
-rogram's
->> > > spinlock is still held with IRQs disabled (the arena lock's irqresto=
-re
->> > > restores to IRQs-disabled state). The zap_pages() function then trie=
-s to
->> > > acquire arena->lock which is a mutex, calling might_sleep().
->> > >
->> > > Looking at in_sleepable_context() in verifier.c:
->> > >
->> > >     static inline bool in_sleepable_context(struct bpf_verifier_env =
-*env)
->> > >     {
->> > >         return !env->cur_state->active_rcu_locks &&
->> > >                !env->cur_state->active_preempt_locks &&
->> > >                !env->cur_state->active_irq_id &&
->> > >                in_sleepable(env);
->> > >     }
->> > >
->> > > This does not check active_locks, so when holding a BPF spinlock the
->> > > verifier won't set non_sleepable=3Dtrue, meaning bpf_arena_free_page=
-s_non_sleepable()
->> > > won't be selected instead of bpf_arena_free_pages().
->> > >
->> > > Should in_sleepable_context() also check env->cur_state->active_lock=
-s to
->> > > ensure the non-sleepable variant is used when calling arena kfuncs w=
-hile
->> > > holding a BPF spinlock?
->> >
->> > This analysis looks correct, I think we should add
->> > !env->cur_state->active_locks here, but we need to see if it would
->> > cause any regressions.
->>
->> Agreed, it wasn't necessary until now since this wasn't being opened up.
->> But it's surely an oversight and should be fixed.
->
-> That's one impressive code analysis by LLM!
-> The chain of events to set non_sleepable, and use it to select kfunc,
-> and chains of calls in bpf_arena_free_pages()... not trivial at all.
-> Wins the best review award :)
->
-> Emil,
-> please add the fix as a separate first patch in your series.
+Extend the BPF syscall to support a set of common attributes shared
+across all BPF commands:
 
-Sounds good, I will add the extra patch and respin.
+1. 'log_buf': User-provided buffer for storing logs.
+2. 'log_size': Size of the log buffer.
+3. 'log_level': Log verbosity level.
+4. 'log_true_size': The size of log reported by kernel.
+
+These common attributes are passed as the 4th argument to the BPF
+syscall, with the 5th argument specifying the size of this structure.
+
+To indicate the use of these common attributes from userspace, a new flag
+'BPF_COMMON_ATTRS' ('1 << 16') is introduced. This flag is OR-ed into the
+'cmd' field of the syscall.
+
+When 'cmd & BPF_COMMON_ATTRS' is set, the kernel will copy the common
+attributes from userspace into kernel space for use.
+
+Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
+---
+ include/linux/syscalls.h       |  3 ++-
+ include/uapi/linux/bpf.h       |  8 ++++++++
+ kernel/bpf/syscall.c           | 25 +++++++++++++++++++++----
+ tools/include/uapi/linux/bpf.h |  8 ++++++++
+ 4 files changed, 39 insertions(+), 5 deletions(-)
+
+diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
+index cf84d98964b2..729659202d77 100644
+--- a/include/linux/syscalls.h
++++ b/include/linux/syscalls.h
+@@ -937,7 +937,8 @@ asmlinkage long sys_seccomp(unsigned int op, unsigned int flags,
+ asmlinkage long sys_getrandom(char __user *buf, size_t count,
+ 			      unsigned int flags);
+ asmlinkage long sys_memfd_create(const char __user *uname_ptr, unsigned int flags);
+-asmlinkage long sys_bpf(int cmd, union bpf_attr __user *attr, unsigned int size);
++asmlinkage long sys_bpf(int cmd, union bpf_attr __user *attr, unsigned int size,
++			struct bpf_common_attr __user *attr_common, unsigned int size_common);
+ asmlinkage long sys_execveat(int dfd, const char __user *filename,
+ 			const char __user *const __user *argv,
+ 			const char __user *const __user *envp, int flags);
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 84ced3ed2d21..dcae1f3e50b7 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -986,6 +986,7 @@ enum bpf_cmd {
+ 	BPF_PROG_STREAM_READ_BY_FD,
+ 	BPF_PROG_ASSOC_STRUCT_OPS,
+ 	__MAX_BPF_CMD,
++	BPF_COMMON_ATTRS = 1 << 16, /* Indicate carrying bpf_common_attr. */
+ };
+ 
+ enum bpf_map_type {
+@@ -1489,6 +1490,13 @@ struct bpf_stack_build_id {
+ 	};
+ };
+ 
++struct bpf_common_attr {
++	__u64 log_buf;
++	__u32 log_size;
++	__u32 log_level;
++	__u32 log_true_size;
++};
++
+ #define BPF_OBJ_NAME_LEN 16U
+ 
+ enum {
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 6dd2ad2f9e81..8f464b847405 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -6160,8 +6160,10 @@ static int prog_assoc_struct_ops(union bpf_attr *attr)
+ 	return ret;
+ }
+ 
+-static int __sys_bpf(enum bpf_cmd cmd, bpfptr_t uattr, unsigned int size)
++static int __sys_bpf(enum bpf_cmd cmd, bpfptr_t uattr, unsigned int size,
++		     bpfptr_t uattr_common, unsigned int size_common)
+ {
++	struct bpf_common_attr common_attrs;
+ 	union bpf_attr attr;
+ 	int err;
+ 
+@@ -6175,6 +6177,20 @@ static int __sys_bpf(enum bpf_cmd cmd, bpfptr_t uattr, unsigned int size)
+ 	if (copy_from_bpfptr(&attr, uattr, size) != 0)
+ 		return -EFAULT;
+ 
++	memset(&common_attrs, 0, sizeof(common_attrs));
++	if (cmd & BPF_COMMON_ATTRS) {
++		err = bpf_check_uarg_tail_zero(uattr_common, sizeof(common_attrs), size_common);
++		if (err)
++			return err;
++
++		cmd &= ~BPF_COMMON_ATTRS;
++		size_common = min_t(u32, size_common, sizeof(common_attrs));
++		if (copy_from_bpfptr(&common_attrs, uattr_common, size_common) != 0)
++			return -EFAULT;
++	} else {
++		size_common = 0;
++	}
++
+ 	err = security_bpf(cmd, &attr, size, uattr.is_kernel);
+ 	if (err < 0)
+ 		return err;
+@@ -6310,9 +6326,10 @@ static int __sys_bpf(enum bpf_cmd cmd, bpfptr_t uattr, unsigned int size)
+ 	return err;
+ }
+ 
+-SYSCALL_DEFINE3(bpf, int, cmd, union bpf_attr __user *, uattr, unsigned int, size)
++SYSCALL_DEFINE5(bpf, int, cmd, union bpf_attr __user *, uattr, unsigned int, size,
++		struct bpf_common_attr __user *, uattr_common, unsigned int, size_common)
+ {
+-	return __sys_bpf(cmd, USER_BPFPTR(uattr), size);
++	return __sys_bpf(cmd, USER_BPFPTR(uattr), size, USER_BPFPTR(uattr_common), size_common);
+ }
+ 
+ static bool syscall_prog_is_valid_access(int off, int size,
+@@ -6343,7 +6360,7 @@ BPF_CALL_3(bpf_sys_bpf, int, cmd, union bpf_attr *, attr, u32, attr_size)
+ 	default:
+ 		return -EINVAL;
+ 	}
+-	return __sys_bpf(cmd, KERNEL_BPFPTR(attr), attr_size);
++	return __sys_bpf(cmd, KERNEL_BPFPTR(attr), attr_size, KERNEL_BPFPTR(NULL), 0);
+ }
+ 
+ 
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 6b92b0847ec2..2cb847b38f20 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -986,6 +986,7 @@ enum bpf_cmd {
+ 	BPF_PROG_STREAM_READ_BY_FD,
+ 	BPF_PROG_ASSOC_STRUCT_OPS,
+ 	__MAX_BPF_CMD,
++	BPF_COMMON_ATTRS = 1 << 16, /* Indicate carrying bpf_common_attr. */
+ };
+ 
+ enum bpf_map_type {
+@@ -1489,6 +1490,13 @@ struct bpf_stack_build_id {
+ 	};
+ };
+ 
++struct bpf_common_attr {
++	__u64 log_buf;
++	__u32 log_size;
++	__u32 log_level;
++	__u32 log_true_size;
++};
++
+ #define BPF_OBJ_NAME_LEN 16U
+ 
+ enum {
+-- 
+2.52.0
+
 
