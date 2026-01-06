@@ -1,162 +1,206 @@
-Return-Path: <bpf+bounces-77901-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77902-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F587CF61D2
-	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 01:52:56 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59D8BCF6305
+	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 02:07:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5A0D8306C773
-	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 00:52:05 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id F045730434B9
+	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 01:07:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A7A01E9B12;
-	Tue,  6 Jan 2026 00:52:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 338F9277037;
+	Tue,  6 Jan 2026 01:07:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NBZyW95V"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="sNtSauTl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64FDB4A33
-	for <bpf@vger.kernel.org>; Tue,  6 Jan 2026 00:52:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8F38330D3B
+	for <bpf@vger.kernel.org>; Tue,  6 Jan 2026 01:07:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767660723; cv=none; b=gNpl0JmhkgSrMIH6fZxjmCWkzXx+ViUzbfkvDHs2ayI5jmJRgQNKJdmCWUNENSyXcf0/TwANPcmV6Qf2Bm6whE1D3cSy32AS06Zz+kZYPgJoaSKeFWdNTAVD16OhaEO6vdTzBBpU/P1oVIpq3H2BHrjCoytsub89PJuWzWknFnU=
+	t=1767661635; cv=none; b=Ws2JrzHSFY8VEwr3M+X7q3JiHmcQYBRA6mNZr0ars2W/3VsgcG0KVbm/OiAbddttsFCzAUnxr+V19vFCtO6QT/Z4X6yoFjIrWA+iqTXEWgTT6x6Ico3wIUZNDAJ1oVPIQOWO6Gnemf+I3UPY0W/mPu52/6o424rMSVva+krTdXU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767660723; c=relaxed/simple;
-	bh=121YepIIPK3mdJqqn2NtkzokqFn0EteVfZ0Rhg8h070=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VKlNYTIt0CVQydjn8dFI49IAoigH7hp6CaetYZy7tM5dSGlOxQmlAa+yKscwv3cQSZC+hBL7D2gM9kYM1QoYufn1rT0xRhCO4v6PXEkGP1Pl6b4ZFQ5srqsBFqZwdMhpTUk+EjyXeNAF1wRJ/D4bmD64ulDRD9XPTKScGz2QSMI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NBZyW95V; arc=none smtp.client-ip=209.85.216.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-34c363eb612so561716a91.0
-        for <bpf@vger.kernel.org>; Mon, 05 Jan 2026 16:52:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767660721; x=1768265521; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qAD6YtZZBHQIK4oM5dCNs2iuqj3Y+7DXU4uKX2S0GE4=;
-        b=NBZyW95VecLft/W80maeDo6q4A2+a8cSGZgYzHikTq3bnTwjIJgpouJrlnZBm86OfB
-         ttF0Gs7DJqB4pkRd95tBCYphrLG70YeZNAKd4TNJj1veagU/kZJAm8njj0IY65OmE42V
-         wuFW1nS9gNvnEO0qFuiUWx/R4zTmRgwKnJ7nNiB1hjNZGKnrxX/ojTXC+xn9bnG17zvl
-         NixOzD1xfJO1u+krWRal5RmZe8a/ep1CSe7p8/obY0rHdpjtrOh3VaShXz5p5myA+HiV
-         li9entmLOtuYnDQVm9z1qbk6AdR679Z3P8G4PGZOWht/G4kXcW7KStVApjG2PQUXULll
-         L5wQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767660721; x=1768265521;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=qAD6YtZZBHQIK4oM5dCNs2iuqj3Y+7DXU4uKX2S0GE4=;
-        b=oJxWUNigtFc8DWnQGNkrZ0b53solWiUl5YNeYL3FlqQMFuRVyfEA72oitt60pfFe3i
-         ZR4cj8H2GG2Yb14coNl4FEEEKFnw/bQLUrz1us0tWpH2Yt4+X97/upT4kGeLJ+v37T7C
-         d9Pd0vKD4VQ5j2ONwJaArlX6MQu5qiT6y3qEAPVm4XlSvD1YYkLUBjE6uBq1UvkbxfiL
-         9lLDW+L7a0PzNV38c3Q0W6TENKaqxYg/hIOonRSsQ2pD0b2O41VBd65qFUi+ao44YvjF
-         0t2k5QY/IqfmeLuqFHEsdN9ECvK/ntMa6Ac+aRzZDsO2rNYCV//OyD975oOZEyDWo6WU
-         PKRg==
-X-Forwarded-Encrypted: i=1; AJvYcCVp4KZaZH2vhLKq9sA/Ot5iuX5qNeNvyoYoj6z9A+aUAeqZfo/HtJ3GDKOUWwSPaiVzGyI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyUTb7ay+Li7Ct8kKj3M6EaQeOIId/pcnrYBUd1nuD0DjMXV+bG
-	sZMVkbjEvFfriBVyUpomZj2Zwdmt6fg62o3kuHVIpbrJ4/VSp8yJAFmo5Bng7fmOaxKkrB2LPN0
-	CAj+K9h+773yHieH5yX8avdhiRWZ2IA4=
-X-Gm-Gg: AY/fxX7gU4RUOUdAsjbu6kLBkV6fichtvYsmFse4JKTUFtpkfIx0Op2s7bPK7Dz91ll
-	/f+tAgqNaMlOacqMdov46ahS/CvVDAPmmTcQM0cu7Uqr4WN8yUqb6bggPdhQeHbPhTl3bAQDPlu
-	WT9pa99bF64rOCU4O25QEVK5iessUB5PEbF+h2WpFK56E2Npfqv12MTMP3/Ex3IlCYcRZKSV2Nt
-	36jh0r+tio0UO9OUqbC7K6aEdwYwKcTJCK0Fxuxr4DTa6nhIc+Hr0qUbKLNa1F8j3ej2aZ5B1Qt
-	l5vW5dsw7R0=
-X-Google-Smtp-Source: AGHT+IFv603VqYElE35SX3ELAvBCRGlQYtqXiilEa9Qkts21oLcu00Lv08iVpktL/hQ99CcCQkhb+hhuq/1eVssKoUg=
-X-Received: by 2002:a17:90b:2d4d:b0:341:abdc:8ea2 with SMTP id
- 98e67ed59e1d1-34f5f36e115mr904799a91.37.1767660720750; Mon, 05 Jan 2026
- 16:52:00 -0800 (PST)
+	s=arc-20240116; t=1767661635; c=relaxed/simple;
+	bh=wlKyS3PRGFWV7qxw0e/pdzEygk0ZENtPmb5Wq+JIJFE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Xu9xgkku1zVtZF3nv9jnyRlL+txvLye9xEiP+CIJVqst6035cC5GPl9RKXLxq+wMumauj62ttTuuuLYsIJAVdOaIiDTCzd2wdMxxzmo8BUJnGUJFXnRsOq1YDgERv8UsEtBSvR6AqYwNQxeM+6aZwAJXy0mDB3BHTp5pAB3RBGo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=sNtSauTl; arc=none smtp.client-ip=95.215.58.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <6908562f-4a99-44ea-bffb-19f33fcffe83@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1767661621;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=c7xYbDqAgfLdGwtu0uzVYsQkSvajSsHD9SkxWwTo6WY=;
+	b=sNtSauTlLKMoon9ITkEUV42eUtFomjhZDRDFIdawl3fQc09hoVwYrCp/7yQnApnKr67CSu
+	PeClGkygf4UkRFTQUPGuxbsRyfaA4EGKHVN3WX77K3suMtxHnjnn3e5hbS/vLFQVI46yyK
+	CF5NNd9RzdNnxc0i9hKRmDUcOT0nyIQ=
+Date: Mon, 5 Jan 2026 17:06:49 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260104205220.980752-1-contact@arnaud-lcm.com>
-In-Reply-To: <20260104205220.980752-1-contact@arnaud-lcm.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 5 Jan 2026 16:51:48 -0800
-X-Gm-Features: AQt7F2pWBNs-OAi0pD2XDPRGnH3bUZqznbZCdhovb5g-fSH9tIlvDDzLKUS1k10
-Message-ID: <CAEf4BzYakog+DLSfA6aiHCPW0QHR-=TC8pVi+jDVo27Ljk5uuA@mail.gmail.com>
-Subject: Re: [PATCH] bpf-next: Prevent out of bound buffer write in __bpf_get_stack
-To: Arnaud Lecomte <contact@arnaud-lcm.com>
-Cc: syzbot+d1b7fa1092def3628bd7@syzkaller.appspotmail.com, andrii@kernel.org, 
-	ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net, eddyz87@gmail.com, 
-	haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org, 
-	kpsingh@kernel.org, linux-kernel@vger.kernel.org, martin.lau@linux.dev, 
-	netdev@vger.kernel.org, sdf@fomichev.me, song@kernel.org, 
-	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev, 
-	Brahmajit Das <listout@listout.xyz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next] scripts/gen-btf.sh: Disable LTO when generating
+ initial .o file
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+References: <20260105-fix-gen-btf-sh-lto-v1-1-18052ea055a9@kernel.org>
+ <ff8187bd-0bae-4b49-8844-6c975a2e79c6@linux.dev>
+ <20260105234605.GB1276749@ax162>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Ihor Solodrai <ihor.solodrai@linux.dev>
+In-Reply-To: <20260105234605.GB1276749@ax162>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Sun, Jan 4, 2026 at 12:52=E2=80=AFPM Arnaud Lecomte <contact@arnaud-lcm.=
-com> wrote:
->
-> Syzkaller reported a KASAN slab-out-of-bounds write in __bpf_get_stack()
-> during stack trace copying.
->
-> The issue occurs when: the callchain entry (stored as a per-cpu variable)
-> grow between collection and buffer copy, causing it to exceed the initial=
-ly
-> calculated buffer size based on max_depth.
->
-> The callchain collection intentionally avoids locking for performance
-> reasons, but this creates a window where concurrent modifications can
-> occur during the copy operation.
->
-> To prevent this from happening, we clamp the trace len to the max
-> depth initially calculated with the buffer size and the size of
-> a trace.
->
-> Reported-by: syzbot+d1b7fa1092def3628bd7@syzkaller.appspotmail.com
-> Closes: https://lore.kernel.org/all/691231dc.a70a0220.22f260.0101.GAE@goo=
-gle.com/T/
-> Fixes: e17d62fedd10 ("bpf: Refactor stack map trace depth calculation int=
-o helper function")
-> Tested-by: syzbot+d1b7fa1092def3628bd7@syzkaller.appspotmail.com
-> Cc: Brahmajit Das <listout@listout.xyz>
-> Signed-off-by: Arnaud Lecomte <contact@arnaud-lcm.com>
-> ---
-> Thanks Brahmajit Das for the initial fix he proposed that I tweaked
-> with the correct justification and a better implementation in my
-> opinion.
-> ---
->  kernel/bpf/stackmap.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-> index da3d328f5c15..e56752a9a891 100644
-> --- a/kernel/bpf/stackmap.c
-> +++ b/kernel/bpf/stackmap.c
-> @@ -465,7 +465,6 @@ static long __bpf_get_stack(struct pt_regs *regs, str=
-uct task_struct *task,
->
->         if (trace_in) {
->                 trace =3D trace_in;
-> -               trace->nr =3D min_t(u32, trace->nr, max_depth);
->         } else if (kernel && task) {
->                 trace =3D get_callchain_entry_for_task(task, max_depth);
->         } else {
-> @@ -479,7 +478,8 @@ static long __bpf_get_stack(struct pt_regs *regs, str=
-uct task_struct *task,
->                 goto err_fault;
->         }
->
-> -       trace_nr =3D trace->nr - skip;
-> +       trace_nr =3D min(trace->nr, max_depth);
+On 1/5/26 3:46 PM, Nathan Chancellor wrote:
+> On Mon, Jan 05, 2026 at 02:01:36PM -0800, Ihor Solodrai wrote:
+>> Hi Nathan, thank you for the patch.
+>>
+>> I'm starting to think it wasn't a good idea to do
+>>
+>> 	echo "" | ${CC} ...
+>>
+>> here, given the number of associated bugs.
+> 
+> Yeah, I was wondering if a lack of KBUILD_CPPFLAGS would also be a
+> problem since that contains the endianness flag for some targets. I
+> cannot imagine any more issues than that but I can understand wanting to
+> back out of it.
+> 
+>> Before gen-btf.sh was introduced, the .btf.o binary was generated with this [1]:
+>>
+>> 	${OBJCOPY} --only-section=.BTF --set-section-flags .BTF=alloc,readonly \
+>> 		--strip-all ${1} "${btf_data}" 2>/dev/null
+>>
+>> I changed to ${CC} on the assumption it's a quicker operation than
+>> stripping entire vmlinux. But maybe it's not worth it and we should
+>> change back to --strip-all? wdyt?
+> 
+> That certainly seems more robust to me. I see the logic but with
+> '--only-section' and no glob, I would expect that to be a rather quick
+> operation but I am running out of time today to test and benchmark such
+> a change. I will try to do it tomorrow unless someone beats me to it.
 
-there is `trace->nr < skip` check right above, should it be moved here
-and done against adjusted trace_nr (but before we subtract skip, of
-course)?
+I got curious and did a little experiment. Basically, I ran perf stat
+on this part of gen-btf.sh:
 
-> +       trace_nr =3D trace_nr - skip;
->         copy_len =3D trace_nr * elem_size;
->
->         ips =3D trace->ip + skip;
-> --
-> 2.43.0
->
+	echo "" | ${CC} ${CLANG_FLAGS} ${KBUILD_CFLAGS} -c -x c -o ${btf_data} -
+	${OBJCOPY} --add-section .BTF=${ELF_FILE}.BTF \
+		--set-section-flags .BTF=alloc,readonly ${btf_data}
+	${OBJCOPY} --only-section=.BTF --strip-all ${btf_data}
+
+Replacing ${CC} command with:
+
+	${OBJCOPY} --strip-all "${ELF_FILE}" ${btf_data} 2>/dev/null
+
+for comparison.
+
+TL;DR is that using ${CC} is:
+  * about 1.5x faster than GNU objcopy --strip-all .tmp_vmlinux1
+  * about 16x (!) faster than llvm-objcopy --strip-all .tmp_vmlinux1
+
+With obvious caveats that this is a particular machine (Threadripper
+PRO 3975WX), toolchain etc:
+  * clang version 21.1.7
+  * gcc (GCC) 15.2.1 20251211
+
+This is bpf-next (a069190b590e) with BPF CI-like kconfig.
+
+Pasting perf stat output below.
+
+
+# llvm-objcopy --strip-all
+$ perf stat -r 31 -- ./gen-btf.o_strip.sh
+
+ Performance counter stats for './gen-btf.o_strip.sh' (31 runs):
+
+     1,300,945,256      task-clock:u                     #    0.962 CPUs utilized               ( +-  0.10% )
+                 0      context-switches:u               #    0.000 /sec                      
+                 0      cpu-migrations:u                 #    0.000 /sec                      
+           327,311      page-faults:u                    #  251.595 K/sec                       ( +-  0.00% )
+     1,532,927,570      instructions:u                   #    1.33  insn per cycle            
+                                                  #    0.03  stalled cycles per insn     ( +-  0.00% )
+     1,155,639,083      cycles:u                         #    0.888 GHz                         ( +-  0.18% )
+        53,144,866      stalled-cycles-frontend:u        #    4.60% frontend cycles idle        ( +-  0.99% )
+       297,229,466      branches:u                       #  228.472 M/sec                       ( +-  0.00% )
+           903,337      branch-misses:u                  #    0.30% of all branches             ( +-  0.02% )
+
+           1.35200 +- 0.00137 seconds time elapsed  ( +-  0.10% )
+
+
+# GNU objcopy --strip-all
+$ perf stat -r 31 -- ./gen-btf.o_strip.sh
+
+ Performance counter stats for './gen-btf.o_strip.sh' (31 runs):
+
+       119,747,488      task-clock:u                     #    0.970 CPUs utilized               ( +-  0.41% )
+                 0      context-switches:u               #    0.000 /sec                      
+                 0      cpu-migrations:u                 #    0.000 /sec                      
+             9,186      page-faults:u                    #   76.711 K/sec                       ( +-  0.01% )
+       132,651,881      instructions:u                   #    1.68  insn per cycle            
+                                                  #    0.08  stalled cycles per insn     ( +-  0.00% )
+        79,191,259      cycles:u                         #    0.661 GHz                         ( +-  1.06% )
+        10,136,981      stalled-cycles-frontend:u        #   12.80% frontend cycles idle        ( +-  2.58% )
+        28,422,807      branches:u                       #  237.356 M/sec                       ( +-  0.00% )
+           354,981      branch-misses:u                  #    1.25% of all branches             ( +-  0.02% )
+
+          0.123415 +- 0.000564 seconds time elapsed  ( +-  0.46% )
+
+
+# echo "" | clang ...
+$ perf stat -r 31 -- ./gen-btf.o_llvm.sh
+
+ Performance counter stats for './gen-btf.o_llvm.sh' (31 runs):
+
+        62,107,490      task-clock:u                     #    0.774 CPUs utilized               ( +-  0.31% )
+                 0      context-switches:u               #    0.000 /sec                      
+                 0      cpu-migrations:u                 #    0.000 /sec                      
+             9,755      page-faults:u                    #  157.066 K/sec                       ( +-  0.01% )
+        88,196,854      instructions:u                   #    1.18  insn per cycle            
+                                                  #    0.19  stalled cycles per insn     ( +-  0.00% )
+        74,944,793      cycles:u                         #    1.207 GHz                         ( +-  0.50% )
+        16,494,448      stalled-cycles-frontend:u        #   22.01% frontend cycles idle        ( +-  0.48% )
+        17,914,949      branches:u                       #  288.451 M/sec                       ( +-  0.00% )
+           459,548      branch-misses:u                  #    2.57% of all branches             ( +-  0.10% )
+
+          0.080237 +- 0.000313 seconds time elapsed  ( +-  0.39% )
+
+
+# echo "" | gcc ...
+$ perf stat -r 31 -- ./gen-btf.o_gnu.sh
+
+ Performance counter stats for './gen-btf.o_gnu.sh' (31 runs):
+
+        53,683,797      task-clock:u                     #    0.770 CPUs utilized               ( +-  0.33% )
+                 0      context-switches:u               #    0.000 /sec                      
+                 0      cpu-migrations:u                 #    0.000 /sec                      
+             8,390      page-faults:u                    #  156.286 K/sec                       ( +-  0.01% )
+        69,398,474      instructions:u                   #    1.22  insn per cycle            
+                                                  #    0.17  stalled cycles per insn     ( +-  0.00% )
+        56,763,954      cycles:u                         #    1.057 GHz                         ( +-  0.39% )
+        12,103,546      stalled-cycles-frontend:u        #   21.32% frontend cycles idle        ( +-  0.47% )
+        14,064,366      branches:u                       #  261.985 M/sec                       ( +-  0.00% )
+           347,383      branch-misses:u                  #    2.47% of all branches             ( +-  0.09% )
+
+          0.069735 +- 0.000253 seconds time elapsed  ( +-  0.36% )
+
+
+> 
+> Cheers,
+> Nathan
+
 
