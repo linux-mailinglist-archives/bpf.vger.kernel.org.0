@@ -1,74 +1,76 @@
-Return-Path: <bpf+bounces-77904-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77905-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id B41C4CF6462
-	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 02:31:25 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9BC8CF6468
+	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 02:31:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 2D28030060E6
-	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 01:31:25 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 9749930119EB
+	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 01:31:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C35E12550D5;
-	Tue,  6 Jan 2026 01:31:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56522279DC0;
+	Tue,  6 Jan 2026 01:31:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CMGZkyea"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cizdRs/4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04FA51E3DCD
-	for <bpf@vger.kernel.org>; Tue,  6 Jan 2026 01:31:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D1DD26D4DD
+	for <bpf@vger.kernel.org>; Tue,  6 Jan 2026 01:31:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767663082; cv=none; b=sBk7KpI7r6XOUgDUUlWhZqMfCLKA+LPEGJ9t+YTw0yutzFl8Pvj9gqNmkhPmvmyDG5BFvbEXTm8l2dosBelXWW18V2a9BLtPc5N68bKkusHU9JEbhUJD2q8V4SHMgInL3SjtfeB6oGfmmxG/sgQgjFHW6tM6BNIUGmkwd2owi+E=
+	t=1767663086; cv=none; b=CMsDsB75+wqtqTV71J7XnpQ+0vA6b0Za8DMIDp8VBNKCvN8M1YXDlwubWCUnXFcNoCN18huVYYXCWK+/rZgsk2Fo7xLYYz3L/wqBC/BwX05o6eySRpjJJTdqzngEiY5ab444xvss3+SsGDr8cWWVtAHYWurE0Vaf9l5lEgoFu+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767663082; c=relaxed/simple;
-	bh=XXlo8TVy0D+U60r4gF9lesILAKXn+1/8h93MrVZGXnY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UchirzVLt791Yj9nojCRXHEmpTZplF7uWvvZRRPPwcmFhN9QEhz6eH8n0ILLXHVTa0Roaxf8St0MDQeJyG/fIFsTwcCEArukeNYoVp0jqfH3kUTa6e75ZYB7OvkzAAK2mrgGXCYD30NQ1hqZBknliNIXKjTFv4kMCCL3UM4q4xU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CMGZkyea; arc=none smtp.client-ip=209.85.216.50
+	s=arc-20240116; t=1767663086; c=relaxed/simple;
+	bh=iFOjWoPhxg3t7eBaMyFBLT+tXL3mjtPxiiafXceNxzE=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=iBv/iVLig7K9g0wcwVHKyctSTVkE3ydM0BdIvHsLWVfN0CL8N8Cr4DxplOQ174Ng06oxSWWsvInMuK0NdgCgWMmaV+FYSEb53DBgbciFCwdMuo/aq50hDkSoIpuDiK9lSDXQ7cW587ZDT4mEA+MzjUiVwW1o6JmUVOaLvE7LSFc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cizdRs/4; arc=none smtp.client-ip=209.85.216.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-34c1d84781bso514823a91.2
-        for <bpf@vger.kernel.org>; Mon, 05 Jan 2026 17:31:20 -0800 (PST)
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-34be2be4b7cso429843a91.3
+        for <bpf@vger.kernel.org>; Mon, 05 Jan 2026 17:31:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767663080; x=1768267880; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=z4YAEli/oXuIfYQ/ot1/+zoBf8JMyj/sAgBytJYu+9E=;
-        b=CMGZkyeaUsHn372umWB6yy27yP7RoJipgdK7GBAoS0HGc76M+1KaFFSyyd4yaWEiV4
-         EqO/3zuFRNiQz5zUZ6nIpT6sfVh6zlVXQ76uslX+qQQeT0KSnFhwXRGQINfw7kSdZlMY
-         iDeDRt+rC/GHG9LdOtM1GVvNWyWqUFAGlfO1A2Gae6/d41rUgd3gDfORG1B2z4/5rn0i
-         64sh+hOqJjdqeURSU9loUJlZVFRDuoo8e+rrbZ7hOVhBGSpg6zDvODyElPhGSEgRE4iU
-         SZJEqZB8GAN6+VMiEwblx2rjFF6tStu6MZE/fK3+oO8KON6lmQY7BPnA3Qfb1KE7ifMF
-         Jwhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767663080; x=1768267880;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1767663084; x=1768267884; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=z4YAEli/oXuIfYQ/ot1/+zoBf8JMyj/sAgBytJYu+9E=;
-        b=RsvrF1r2foWyNMlaO+17G2QMIdWK2wZhPXi5UwOZs976t3DjzPDjzNJfXVv+UjlsbA
-         RBCUqH7ZhVz8OZdMYRs7WiI8oWcUZax+st+pMM0I1xoRWu7X7zC/TLvCesL5tAEu8gTa
-         5jo4cjJeIdAJxvuW2NNmCrobwWZHL5o5yFXwrnFmNBJas43gfaaLdrwDFQcftp5zfbvL
-         8inVCNJVVfeds/UMpb/I1d4ys9dWkgegXu+1YW8X71byHD0L5gTlWUC8Mj+Ull7wDEmk
-         DKFOx62QjCDUx+MXvcV+iBHi7oiyD/rDQQheir736YaWoLCg0AgtkRHtcu/7wpO5zqFZ
-         IaMQ==
-X-Gm-Message-State: AOJu0YxigwJD4o5io0+bjrzwSOCLY3QvAZhXE6JARGBe0p9whfaeyC9X
-	tRKD6GDCjBArc7ttVQHZ/PHFBubn291kGa2hJpW+EDx0s6dP462ZD/5K
-X-Gm-Gg: AY/fxX49OA+nvvJoukkGFQC/Mjx9yGokfjmxyOB9+1sCsVdDnDB3ZhqTb5eZG1rJA9b
-	ELP4P+NQaqBGZhSbWcpltdNJKz6GQ/9jgzBDE9MOlcdF/0LPMCqzlxlq99TC6jIXsuAcvWn4Uu4
-	Vkg1qGPEhl8Y6RkY5CGPlm/+WxIb91W2FgQtiZLAEFXFq2CfvrX/YP0nUjLcmjQnLrUCMVhEqP9
-	9WVpx1Peu3UElqZR1GDvqC0t8st3HdrlRtg1aBmMpDS+EBjCi8WXjAP4ZPXDaP09SpKfUT1YY44
-	U8kheDj4Otlc/5CGG05VtF/MpFnzCMtcWsAVooQaOPd0wsTFxYDd7uAAcRe7f5ap/FA+HyffOHU
-	EQFLxzDNJQ5sYwlWP1vqdkxrIDH5lk4rrSrQd2+x9EN/VTdzggNsD55UtvzdrdTHzMAb1bX52nb
-	0d1AZmY5P/7y0/2TclD5ZXJLYuykV7VGUgkh0NFV+HwAQc1YWybcTsSf8a4WIWd3b9od+L
-X-Google-Smtp-Source: AGHT+IFFA/XN6UYnjtPDWZslaUtRHocpcB7HSI1R42TMlNz90/QyWyaCta2RK9pzyj2DIYG/Su5bMQ==
-X-Received: by 2002:a17:90a:c890:b0:340:bb51:17eb with SMTP id 98e67ed59e1d1-34f5f287947mr1004850a91.15.1767663080086;
-        Mon, 05 Jan 2026 17:31:20 -0800 (PST)
+        bh=36dhxZqhoIQQhhEMrHz1gupE6TH8vQ91Ce45pP+oIbU=;
+        b=cizdRs/4iMXJM0qhCIRftpm6RvSPGVCE667I5lpyfe3UtY14krYdfxM4BnjBvUYu+N
+         DdfmsKgCoBn2Y4xkp1ZDYOzAvd4UlIRt+13ooqCxkDMJAmry1kxFn/LGCVyjpDGmQCk3
+         9/2JWRc14m/Nj7J0CZxEDCJcOcNqUt0s6pml+zQ8iLDN8nrq4h5XOWOzVm95i/iBDDkz
+         5my8zvoHJhe8Ma6uXzD/WhFTdH8l4e+4/324YRP3DGxpwQSuUErRrqO4wodL5JbCoiAb
+         Sxk3yJ52NYLfS08cT9+hpyWPOXdUYGZY7OMmIh+PinQqyyfBbDqTg75jjWF638PL0elO
+         ZTTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767663084; x=1768267884;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=36dhxZqhoIQQhhEMrHz1gupE6TH8vQ91Ce45pP+oIbU=;
+        b=CMqrCGqDEsnxhQxV0RdEQ3s5RfCx2ytKwb46t0p4VC4eatVo3VrsOfIVC0Qp0dg5K8
+         zNAmZ77yZTvWln93+7DaB3r9YpTN7pamZDizuuHZFfEIElPEWmI/G9Eimdw2z0K8Lyb4
+         RiuZwDHUiwXGxhRBkq4dJq4Ie5IFGw6xIXlAyWIz86csebk4ifyfyodsTTRDou/wWITl
+         rQ4N3gc5zTUxjf85U8Bo5umMtyZgD8UNGt/YxLyDDMyiqwC/BvWekKig/2oKIJu0aDWL
+         qXCIRBIiscD6z7jumqrp+O9Dd1ph5/3562cu4m7mvtPDnIrUJ7xBF/W28NIQ/fV9nkl1
+         oiWA==
+X-Gm-Message-State: AOJu0YwzFHtmEEO9S9XeZObd8PR/9GHHusMybt/In5oAXvZvVfT6Mj86
+	wma3tbbMDo6WjigbPM7AnN8LuC4v9vHv8p0XmZgdEET1PSPzga6B1CVG
+X-Gm-Gg: AY/fxX6d0iP4qmSgatf2yedG/uJIT0IG047NsnVPrA/NMy6omBThMK5cNdT/A4KYkpw
+	ZdqPLML6Vs5HTreBk9lAvnAwir7hny5g5lfRq0h0gvupejZfUxDXB4unQEHVX8PCPhiX0gB3J9W
+	rSeiGTtE6MLuVdihsII8OOVY7QPJO2Uy4Ej0Gsm9v1Acv+lwqSznVxn5PPJuaxrDuGQcDL1IfYo
+	uuNXHaJyf7MtDheOGd4vljzVq73nSixKwwF1aQgvo31OqVCN/IuSj1jMZzas6racg1o/64Mi/Ae
+	iyc/yoAH/l3D20U7KW/t7FDX62PUS7J3Yx8/Keaows3XHMpsdkbac03U2Nq5ykC3EhN0Sni4L6+
+	Xv6OjhkpJY+xd6JYc/wXkM7/gMJpJ7DTLZmQvjv7CrkqnyHSMc4gCZI6ZrUGnQjPBTowMDmszR/
+	EjDIpvVB+HWBbJb2m44sjfhkkHckA9ulWQTrYBXP/m5Hj8oLZNgAjsPC3/EA==
+X-Google-Smtp-Source: AGHT+IErBTNSHUDX0zHCfa/WUUuMGzglARLgnRlxXuYU2Hb7tlAOlT4KteEsa05VTV0DkrnjSf9tHw==
+X-Received: by 2002:a17:90b:33cf:b0:340:bc27:97bd with SMTP id 98e67ed59e1d1-34f5f280ebbmr949225a91.9.1767663084319;
+        Mon, 05 Jan 2026 17:31:24 -0800 (PST)
 Received: from KERNELXING-MB0.tencent.com ([43.132.141.25])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34f5fa947ecsm544110a91.6.2026.01.05.17.31.16
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34f5fa947ecsm544110a91.6.2026.01.05.17.31.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jan 2026 17:31:19 -0800 (PST)
+        Mon, 05 Jan 2026 17:31:23 -0800 (PST)
 From: Jason Xing <kerneljasonxing@gmail.com>
 To: davem@davemloft.net,
 	edumazet@google.com,
@@ -86,10 +88,12 @@ To: davem@davemloft.net,
 Cc: bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	Jason Xing <kernelxing@tencent.com>
-Subject: [PATCH bpf-next v4 0/2] xsk: introduce pre-allocated memory per xsk CQ
-Date: Tue,  6 Jan 2026 09:31:10 +0800
-Message-Id: <20260106013112.56250-1-kerneljasonxing@gmail.com>
+Subject: [PATCH bpf-next v4 1/2] xsk: introduce local_cq for each af_xdp socket
+Date: Tue,  6 Jan 2026 09:31:11 +0800
+Message-Id: <20260106013112.56250-2-kerneljasonxing@gmail.com>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20260106013112.56250-1-kerneljasonxing@gmail.com>
+References: <20260106013112.56250-1-kerneljasonxing@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -100,37 +104,147 @@ Content-Transfer-Encoding: 8bit
 
 From: Jason Xing <kernelxing@tencent.com>
 
-This series was made based on the previous work[1] to fix the issue
-without causing too much performance impact through adding a
-pre-allocated memory for each xsk.
+This is a prep that will be used to store the addr(s) of descriptors so
+that each skb going to the end of life can publish corresponding addr(s)
+in its completion queue that can be read by userspace.
 
-[1]: commit 30f241fcf52a ("xsk: Fix immature cq descriptor production")
+Signed-off-by: Jason Xing <kernelxing@tencent.com>
 ---
-v4
-link: https://lore.kernel.org/all/CAL+tcoB6eCogZXXxDQ58nxp-VxWFOPR2DP4pyLVxGtjXdWPQXA@mail.gmail.com/
-1. use u64 addr in xsk_cq_write_addr()
+ include/net/xdp_sock.h |  8 +++++++
+ net/xdp/xsk.c          | 54 ++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 62 insertions(+)
 
-v3
-link: https://lore.kernel.org/all/20251216052623.2697-1-kerneljasonxing@gmail.com/
-1. fix double free of lcq in xsk_clear_local_cq()
-2. keep lcq->prod align with cq->cached_prod, which can be found in
-xsk_cq_cancel_locked().
-3. move xsk_clear_local_cq() from xsk_release() to xsk_destruct() to
-avoid crash when using lcq in xsk_destruct_skb() after lcq is already freed.
-
-v2
-link: https://lore.kernel.org/all/20251209085950.96231-1-kerneljasonxing@gmail.com/
-1. add if condition to test if cq is NULL
-2. initialize the prod of local_cq
-
-Jason Xing (2):
-  xsk: introduce local_cq for each af_xdp socket
-  xsk: introduce a dedicated local completion queue for each xsk
-
- include/net/xdp_sock.h |   8 ++
- net/xdp/xsk.c          | 223 +++++++++++++++++++++--------------------
- 2 files changed, 123 insertions(+), 108 deletions(-)
-
+diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
+index 23e8861e8b25..c53ab2609d8c 100644
+--- a/include/net/xdp_sock.h
++++ b/include/net/xdp_sock.h
+@@ -45,6 +45,12 @@ struct xsk_map {
+ 	struct xdp_sock __rcu *xsk_map[];
+ };
+ 
++struct local_cq {
++	u32 prod ____cacheline_aligned_in_smp;
++	u32 ring_mask ____cacheline_aligned_in_smp;
++	u64 desc[] ____cacheline_aligned_in_smp;
++};
++
+ struct xdp_sock {
+ 	/* struct sock must be the first member of struct xdp_sock */
+ 	struct sock sk;
+@@ -89,6 +95,8 @@ struct xdp_sock {
+ 	struct mutex mutex;
+ 	struct xsk_queue *fq_tmp; /* Only as tmp storage before bind */
+ 	struct xsk_queue *cq_tmp; /* Only as tmp storage before bind */
++	/* Maintain addr(s) of descriptors locally */
++	struct local_cq *lcq;
+ };
+ 
+ /*
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index f093c3453f64..f41e0b480aa4 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -1212,6 +1212,34 @@ static void xsk_delete_from_maps(struct xdp_sock *xs)
+ 	}
+ }
+ 
++/* Initialize local compeletion queue for each xsk */
++static int xsk_init_local_cq(struct xdp_sock *xs)
++{
++	struct xsk_queue *cq = xs->pool->cq;
++	size_t size;
++
++	if (!cq || !cq->nentries)
++		return -EINVAL;
++
++	size = struct_size_t(struct local_cq, desc, cq->nentries);
++	xs->lcq = vmalloc(size);
++	if (!xs->lcq)
++		return -ENOMEM;
++	xs->lcq->ring_mask = cq->nentries - 1;
++	xs->lcq->prod = 0;
++
++	return 0;
++}
++
++static void xsk_clear_local_cq(struct xdp_sock *xs)
++{
++	if (!xs->lcq)
++		return;
++
++	vfree(xs->lcq);
++	xs->lcq = NULL;
++}
++
+ static int xsk_release(struct socket *sock)
+ {
+ 	struct sock *sk = sock->sk;
+@@ -1360,9 +1388,18 @@ static int xsk_bind(struct socket *sock, struct sockaddr_unsized *addr, int addr
+ 				goto out_unlock;
+ 			}
+ 
++			err = xsk_init_local_cq(xs);
++			if (err) {
++				xp_destroy(xs->pool);
++				xs->pool = NULL;
++				sockfd_put(sock);
++				goto out_unlock;
++			}
++
+ 			err = xp_assign_dev_shared(xs->pool, umem_xs, dev,
+ 						   qid);
+ 			if (err) {
++				xsk_clear_local_cq(xs);
+ 				xp_destroy(xs->pool);
+ 				xs->pool = NULL;
+ 				sockfd_put(sock);
+@@ -1380,6 +1417,13 @@ static int xsk_bind(struct socket *sock, struct sockaddr_unsized *addr, int addr
+ 			xp_get_pool(umem_xs->pool);
+ 			xs->pool = umem_xs->pool;
+ 
++			err = xsk_init_local_cq(xs);
++			if (err) {
++				xp_put_pool(xs->pool);
++				xs->pool = NULL;
++				sockfd_put(sock);
++				goto out_unlock;
++			}
+ 			/* If underlying shared umem was created without Tx
+ 			 * ring, allocate Tx descs array that Tx batching API
+ 			 * utilizes
+@@ -1387,6 +1431,7 @@ static int xsk_bind(struct socket *sock, struct sockaddr_unsized *addr, int addr
+ 			if (xs->tx && !xs->pool->tx_descs) {
+ 				err = xp_alloc_tx_descs(xs->pool, xs);
+ 				if (err) {
++					xsk_clear_local_cq(xs);
+ 					xp_put_pool(xs->pool);
+ 					xs->pool = NULL;
+ 					sockfd_put(sock);
+@@ -1409,8 +1454,16 @@ static int xsk_bind(struct socket *sock, struct sockaddr_unsized *addr, int addr
+ 			goto out_unlock;
+ 		}
+ 
++		err = xsk_init_local_cq(xs);
++		if (err) {
++			xp_destroy(xs->pool);
++			xs->pool = NULL;
++			goto out_unlock;
++		}
++
+ 		err = xp_assign_dev(xs->pool, dev, qid, flags);
+ 		if (err) {
++			xsk_clear_local_cq(xs);
+ 			xp_destroy(xs->pool);
+ 			xs->pool = NULL;
+ 			goto out_unlock;
+@@ -1836,6 +1889,7 @@ static void xsk_destruct(struct sock *sk)
+ 	if (!sock_flag(sk, SOCK_DEAD))
+ 		return;
+ 
++	xsk_clear_local_cq(xs);
+ 	if (!xp_put_pool(xs->pool))
+ 		xdp_put_umem(xs->umem, !xs->pool);
+ }
 -- 
 2.41.3
 
