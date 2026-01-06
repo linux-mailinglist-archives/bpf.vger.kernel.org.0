@@ -1,289 +1,266 @@
-Return-Path: <bpf+bounces-77898-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77899-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CB25CF617E
-	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 01:38:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 29F95CF61AE
+	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 01:47:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 96BE7304F140
-	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 00:38:26 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id BF5773061142
+	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 00:46:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3811A1C5D59;
-	Tue,  6 Jan 2026 00:38:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5CB31DF751;
+	Tue,  6 Jan 2026 00:46:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jJm70Sj7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Li/oIHyr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BFED12B94
-	for <bpf@vger.kernel.org>; Tue,  6 Jan 2026 00:38:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 615F01C5D72
+	for <bpf@vger.kernel.org>; Tue,  6 Jan 2026 00:46:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767659904; cv=none; b=QORGQpbpeKzfiuobnuJ1IeCSI2t0x2hLjz/aOaEO5DPUTE1P0ZmRA6+ifEcvy/xDcCTSLQ0RGU087DUOyqBD3QU/6fFsLb71eG9e/rwpFzrcqUkOIqqfZuBeUUw6v1jw+FNa09mVo5GDKDPt8UcJk26OHF5NxNIMvuxhjc1SUVI=
+	t=1767660408; cv=none; b=RqEl1rSu5TEy8PdQizG/Y9mOx2EDS/yr3qyd3QDBVZC+J8xiaiP+pjXGFz0YGQMseT3TLjde3UxvFl9DrDe/oXtv7qFJYq3GkFj0snrWnapXnBkjKqfxYimAXZuv6UqZc9xjbWObCrvQ4uyu8eG3rT0fcNTIDfuWj+tPaCK15bU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767659904; c=relaxed/simple;
-	bh=rERWV7O0CcQsrfIouvXmvEXsone/7NEP1LFUUE6kado=;
+	s=arc-20240116; t=1767660408; c=relaxed/simple;
+	bh=3ps+PEURLvrLWFLfgANLnIZ6N9CTGHZn9LKOodC4TJM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aQzqepGjNfTGoRGHjsebiPVaAf212xs8CBac3RckplislrIzRvisMfPdKzYrqVpgA1/JkrYkIUW45ty2YebAflDU/hF4OZtnfztznh2bS2bSzF0GjIaB2nglBb2kLitTLsXwt/lDhG6zvAZVNf543upzQ+qDZUwUiZvtlhIk/ec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jJm70Sj7; arc=none smtp.client-ip=209.85.216.47
+	 To:Cc:Content-Type; b=gL+Nk3UpeL7GeKD6HVUu16QVuOOJEv/XCB1s8YyclwKb2EOKj4pAmQ400ZDYG0UDPCoxmvZPeYZ5klF2LwCj28NM7gh3BvE8BYXY/86vRfewCWf6CVS3ZUkbROWpytxKJgsPP5WrIoxDka6VFqQtrvp7V7NWGgcrE3Ecw+k9BaM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Li/oIHyr; arc=none smtp.client-ip=209.85.210.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-34e730f5fefso524919a91.0
-        for <bpf@vger.kernel.org>; Mon, 05 Jan 2026 16:38:23 -0800 (PST)
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-7b8bbf16b71so544967b3a.2
+        for <bpf@vger.kernel.org>; Mon, 05 Jan 2026 16:46:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767659902; x=1768264702; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1767660405; x=1768265205; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wOiP6TQYlO4ogCR8ymysffKGJoXfH/tNjvvgGuMC2zA=;
-        b=jJm70Sj7FGl3910dfLYyjsVbR7H8Nyrtb7+ZvfuuLIXWir5bmbD8kfiJoUy4Rzhh99
-         ixqkgd9DvTM+a4j6LIzfiz4gY0jeRyFunQNa2LAUKPa39t7WWqGJ9N/1YQJvrAz4Z+em
-         aY4SW5A2KLhqGY8WaacyUIgoU7gqjg9XX72Yn4q5182DNdbvuEINJ36YIEGnPy/rfhnq
-         uRlTyBoXe/sbT6lc7kxbLTaTNNFdcip0D3fJWs2GGHNqMfZIe0QpQ/qQ51qaBj/B5NbM
-         B/kBk9+2mRFI3tXICm/PW0Ilby6ILaWKDUmBORqavOd9xDayhmTTzH52aA8KTYnBs16a
-         8VDQ==
+        bh=v59EJCKdQ/rJwGad/P0KyJhvAyQle9hgCtAe6P0sjJs=;
+        b=Li/oIHyrBeixPKIgf+wuu6/HsWt2AXbhKl3Y9D7w7/Ip2hdZ/tkvTTeWehpZNCVKsD
+         jfHRvQCGgsNQiLY7Lrn6kNQI03T/dBI0sUuZl6/b1T5anGvIZoBMfviyBfCJ0Uf4GuEw
+         Dkc9d5ZWaE8umpguJriXtyvMUAv+HmdV5Od6VAS/YRXDjho4x2TtZipMBqwtqayGYJhM
+         G0bbP/PtXFENmfO1XH3FudX8v6ABOQmotAVeEnOsu15juKgq3OyVWF9y+4cEXulftGcZ
+         NNaH3CtCdAMqWIUmLPZiTrN5uHw3EHiKTp/QQOIkrO3KttuyxD40aSBcdoLGdxdZdttB
+         y/vA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767659902; x=1768264702;
+        d=1e100.net; s=20230601; t=1767660405; x=1768265205;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=wOiP6TQYlO4ogCR8ymysffKGJoXfH/tNjvvgGuMC2zA=;
-        b=lbkfTRjoIYSFHNMQ7XqLeNpWt1ezdP4dhERN5I5ogXzqDn8+v+GF1OUVcPxyUB1Xjf
-         0UwQVmYJbg3D7WzYuo2CHQY0R5PD2PLDLqrPBxzVYEAQ1KGzv9reAOn8gwtZr4N/cM8+
-         nMLeH9M+E7041h1qUeMtgkKt9Gaivt7rrJYQIjIsLIrA5/v4V3zAI7OMm/EIpZZ2BxF9
-         NAb/c2UyyLceBGSQ9qCTUFLBLrWy7Gjhf3XHYQZ5RzsUMf7EZWoBIpjwoU2MUavLsT0+
-         NmGIATj5TFuvDt5DtinEUTbpFPLRQnqVWEFn5oB5dP5a0vNvHGN13aVFqp4wGHre6g/C
-         3zWQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXGF48SP7bWLG6Hi4cgRX+jBG7wMggddIXmmGSqaXgXNbdIs+hrvlVbc7Xb0FRpjQxiIik=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxfKz7wN8yWQcZgGWewwl2k5ieYUzvBVdCJ6hUNjeFAo/8bKj8p
-	CSAuC9UTSXdlLtMyB7AG/S7/3mxGrb1ZhY/DrssaAplIhfhdpFHlwyUZlTf7j9QC1voFQ5rwT2A
-	XGtWBVab/oBBeeB1rVTW81ql4+PksVqk=
-X-Gm-Gg: AY/fxX48c/MkrRvLmrTKAVOZXuB1lGr1A6VXkYIezpaZtvKv9ds3UfkKSTYigdKyiH7
-	as/4RMZAhDYatOxdKUaYXbLJrfYIdxWIopBmCZ5YZXy7dRAL5ryGBr2Aw1DZtZXmyZwChascJdi
-	63a5zh0zytP6cOvH9YRuPBKbNIdiWeWnmEOEW9rEJoQO9lY+vNzQwLGINUb1sgjesDTxyB6b0Gi
-	vPYl3drFO0uzSNRTNnFtGRgkvC0mZaBcB8/6GVHiEghHZJqJf+9wMzMdjM0Y5CoquqLSSHXSvSL
-	0hKkG+Cu31U=
-X-Google-Smtp-Source: AGHT+IE0eHroknlvOLRLMPL0uinJx1nh+nJrugeGqg2K4J/onGIKUQHzLdNzZaTkGdjgENGb10MddeWBvMjAentrCnw=
-X-Received: by 2002:a17:90b:4e8e:b0:341:ae23:85fd with SMTP id
- 98e67ed59e1d1-34f5f28342amr730665a91.11.1767659902429; Mon, 05 Jan 2026
- 16:38:22 -0800 (PST)
+        bh=v59EJCKdQ/rJwGad/P0KyJhvAyQle9hgCtAe6P0sjJs=;
+        b=Sabt6+7r/38eyvSkziP5sO3DJ0XfFBLyw+lcX3BYzuVQ7LVdbngppFt7lLCUQrc5wM
+         PFCwwPe9MTzCkndanduy19RFrQtBlBxZL1IqKDk/Buy3MpVUg+Y/4Xp7ebPmtYipUfrq
+         BLKTy2MOrLem8g5ECxJGNk2hWvBgFeymGVNlOL5ZoC5WU/ChGCJxdiFtpPSfAOgsUxlx
+         rSIRPXgowtNfwr8tBHbShRcGB3KIKVO3veph/AI6iQvNLek/bcAI+vfpz/7hMPwFDsSY
+         WXab7UKCHJ2A9EsRm+vVWV1+1WefY+GAMsgUenHkTP/Josocna8jLoLfmbxspHYGhO+D
+         h2mg==
+X-Forwarded-Encrypted: i=1; AJvYcCVT5Tm/nnHaz1ZElwZyiD849UmkNLmWo/d+TtEekbkkjFw+tyg+ar0eOhelpZfBlyEU5uw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyLSsJoLClo/rhAszH8DK5T7XPJIPeXduzsqKkKXsNjT+1J4f6m
+	WEcPNIWwdKLSMSeREFxkfnLtrn8PF+FApZLpHSJpT8NZqsjYdBafxROGx9L3tNNWzWgK9bfSU1S
+	vrdTWit5f7A8J6uDGkH926TNDSLK3hmE=
+X-Gm-Gg: AY/fxX7mZSnIrC1OsmkCad12EKW7Mp2fRot3wTgUZSHjr+neL96UFEMd4zocbAzq+6/
+	niak7IzBwqliMC2dOVRLFr1CrRoSwGA2/Alk9A3bgO4LB5oc469JU/+o9ZxuUAnn7ps7KaBp+GC
+	6VwmSHviRDVKWaGYYxLZ7m6OpqKobggit2bT5jTJazjiNWKkxyzjLIZAVSfCVaXzwYSY5bEVV79
+	DdS3KK3HEVWbqV2bCUhccHGN2Q8SSPog4jxGjYDMn6hATpfBgkaBzfA6+YagLz9232EC+ulLuXW
+	rjwilmgIcAk=
+X-Google-Smtp-Source: AGHT+IHM2Th9d4bXEcmoMWNJdXVah2byaKz0QadHnazpxYuHPAAVtGzA8bprh21HYBb6aCRPr9zDGYTfmvfMp7O2AIg=
+X-Received: by 2002:a05:6300:4093:b0:364:14f3:22a7 with SMTP id
+ adf61e73a8af0-389823808d6mr1021989637.42.1767660405425; Mon, 05 Jan 2026
+ 16:46:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251218113051.455293-1-dolinux.peng@gmail.com>
- <20251218113051.455293-5-dolinux.peng@gmail.com> <CAEf4BzbSMwW4es5D9i=bpSjALo8u+oW-9vdQ7=DBoTBtMoJ1Tg@mail.gmail.com>
- <CAErzpmv1N1JA+=c6xxdYTqANqSBRaRauD2wzZiwUS+VeWQG14A@mail.gmail.com>
- <CAEf4BzZrZZ-YHHAUE-izLaAexm4VZ7aCurKnOofCtKaV=D9qvQ@mail.gmail.com>
- <CAErzpmvpmx=WM7kHLC-WFbCx0=OpK5f8KJJuOA8gyb7LmRjk2g@mail.gmail.com> <CAErzpmuE+bKVn7_nx+Ug=3fGcOkNKGXNYk2pro8OM_EZOqzG4w@mail.gmail.com>
-In-Reply-To: <CAErzpmuE+bKVn7_nx+Ug=3fGcOkNKGXNYk2pro8OM_EZOqzG4w@mail.gmail.com>
+References: <20251231102929.3843-1-kiraskyler@163.com> <20260104021402.2968-1-kiraskyler@163.com>
+In-Reply-To: <20260104021402.2968-1-kiraskyler@163.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 5 Jan 2026 16:38:10 -0800
-X-Gm-Features: AQt7F2rJlOyKoUFvORCKEWJAG5w4R1JFmHEXrWXiWFyv40ZTKxQ_svqBZuIbbrU
-Message-ID: <CAEf4BzZ-27YRE=XmxCmWpDkptu7PXEnrWn3KmUXOCJtJeGYpxA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v10 04/13] libbpf: Optimize type lookup with
- binary search for sorted BTF
-To: Donglin Peng <dolinux.peng@gmail.com>
-Cc: ast@kernel.org, eddyz87@gmail.com, zhangxiaoqin@xiaomi.com, 
-	ihor.solodrai@linux.dev, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	pengdonglin <pengdonglin@xiaomi.com>, Alan Maguire <alan.maguire@oracle.com>
+Date: Mon, 5 Jan 2026 16:46:33 -0800
+X-Gm-Features: AQt7F2rcfbH9Y5m7UeUYkDt5o299KZ3ytnuUuKeZyIgmB5E7qPEvEMOV74U2TiQ
+Message-ID: <CAEf4BzbKfqef+GS8UrpXNPZRZ+Nk-w+wjnNFY1SLJYPxYq3DBg@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next] bpftool: Make skeleton C++ compatible with
+ explicit casts
+To: WanLi Niu <kiraskyler@163.com>
+Cc: Quentin Monnet <qmo@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Menglong Dong <menglong8.dong@gmail.com>, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, WanLi Niu <niuwl1@chinatelecom.cn>, 
+	Menglong Dong <dongml2@chinatelecom.cn>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Dec 21, 2025 at 5:58=E2=80=AFPM Donglin Peng <dolinux.peng@gmail.co=
-m> wrote:
+On Sat, Jan 3, 2026 at 6:15=E2=80=AFPM WanLi Niu <kiraskyler@163.com> wrote=
+:
 >
-> On Sat, Dec 20, 2025 at 5:38=E2=80=AFPM Donglin Peng <dolinux.peng@gmail.=
-com> wrote:
-> >
-> > On Sat, Dec 20, 2025 at 1:28=E2=80=AFAM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Thu, Dec 18, 2025 at 6:53=E2=80=AFPM Donglin Peng <dolinux.peng@gm=
-ail.com> wrote:
-> > > >
-> > > > On Fri, Dec 19, 2025 at 7:29=E2=80=AFAM Andrii Nakryiko
-> > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > >
-> > > > > On Thu, Dec 18, 2025 at 3:31=E2=80=AFAM Donglin Peng <dolinux.pen=
-g@gmail.com> wrote:
-> > > > > >
-> > > > > > From: pengdonglin <pengdonglin@xiaomi.com>
-> > > > > >
-> > > > > > This patch introduces binary search optimization for BTF type l=
-ookups
-> > > > > > when the BTF instance contains sorted types.
-> > > > > >
-> > > > > > The optimization significantly improves performance when search=
-ing for
-> > > > > > types in large BTF instances with sorted types. For unsorted BT=
-F, the
-> > > > > > implementation falls back to the original linear search.
-> > > > > >
-> > > > > > Cc: Eduard Zingerman <eddyz87@gmail.com>
-> > > > > > Cc: Alexei Starovoitov <ast@kernel.org>
-> > > > > > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> > > > > > Cc: Alan Maguire <alan.maguire@oracle.com>
-> > > > > > Cc: Ihor Solodrai <ihor.solodrai@linux.dev>
-> > > > > > Cc: Xiaoqin Zhang <zhangxiaoqin@xiaomi.com>
-> > > > > > Signed-off-by: pengdonglin <pengdonglin@xiaomi.com>
-> > > > > > ---
-> > > > > >  tools/lib/bpf/btf.c | 103 ++++++++++++++++++++++++++++++++++--=
---------
-> > > > > >  1 file changed, 80 insertions(+), 23 deletions(-)
-> > > > > >
-> > > > >
-> > > > > [...]
-> > > > >
-> > > > > > +       l =3D start_id;
-> > > > > > +       r =3D end_id;
-> > > > > > +       while (l <=3D r) {
-> > > > > > +               m =3D l + (r - l) / 2;
-> > > > > > +               t =3D btf_type_by_id(btf, m);
-> > > > > > +               tname =3D btf__str_by_offset(btf, t->name_off);
-> > > > > > +               ret =3D strcmp(tname, name);
-> > > > > > +               if (ret < 0) {
-> > > > > > +                       l =3D m + 1;
-> > > > > > +               } else {
-> > > > > > +                       if (ret =3D=3D 0)
-> > > > > > +                               lmost =3D m;
-> > > > > > +                       r =3D m - 1;
-> > > > > > +               }
-> > > > > >         }
-> > > > >
-> > > > > this differs from what we discussed in [0], you said you'll use t=
-hat
-> > > > > approach. Can you please elaborate on why you didn't?
-> > > > >
-> > > > >   [0] https://lore.kernel.org/bpf/CAEf4Bzb3Eu0J83O=3DY4KA-LkzBMjt=
-x7cbonxPzkiduzZ1Pedajg@mail.gmail.com/
-> > > >
-> > > > Yes. As mentioned in the v8 changelog [1], the binary search approa=
-ch
-> > > > you referenced was implemented in versions v6 and v7 [2]. However,
-> > > > testing revealed a slight performance regression. The root cause wa=
-s
-> > > > an extra strcmp operation introduced in v7, as discussed in [3]. Th=
-erefore,
-> > > > in v8, I reverted to the approach from v5 [4] and refactored it for=
- clarity.
-> > >
-> > > If you keep oscillating like that this patch set will never land. 4%
-> > > (500us) gain on artificial and unrealistic micro-benchmark is
-> > > meaningless and irrelevant, you are just adding more work for yoursel=
-f
-> > > and for reviewers by constantly changing your implementation between
-> > > revisions for no good reason.
-> >
-> > Thank you, I understand and will learn from it. I think the performance=
- gain
-> > makes sense. I=E2=80=99d like to share a specific real-world case where=
- this
-> > optimization
-> > could matter:  the `btf_find_by_name_kind()` function is indeed infrequ=
-ently
-> > used by the BPF subsystem, but it=E2=80=99s heavily relied upon by the =
-ftrace
-> > subsystem=E2=80=99s features like `func-args`, `funcgraph-args` [1], an=
-d the upcoming
-> > `funcgraph-retval` [2]. These features invoke the function nearly once =
-per
-> > trace line when outputting, with a call frequency that can reach **100=
-=E2=80=AFkHz**
-> > in intensive tracing workloads.
+> From: WanLi Niu <niuwl1@chinatelecom.cn>
 >
-> Hi Andrii,
-> I think we can refactor the code based on your suggestion like this:
+> Fix C++ compilation errors in generated skeleton by adding explicit
+> pointer casts and using integer subtraction for offset calculation.
 >
-> 1. If the binary search finds the matching name type, return its index.
->     Else, return btf__type_cnt(btf). It will make the code streamlined.
-> 2. Skip the name checking in the first loop to eliminate the extra strcmp=
-.
+> Use struct outer::inner syntax under __cplusplus to access nested skeleto=
+n map
+> structs, ensuring C++ compilation compatibility while preserving C suppor=
+t
 >
-> What do you think?
+> error: invalid conversion from 'void*' to '<obj_name>*' [-fpermissive]
+>       |         skel =3D skel_alloc(sizeof(*skel));
+>       |                ~~~~~~~~~~^~~~~~~~~~~~~~~
+>       |                          |
+>       |                          void*
 >
-> tatic __s32 btf_find_by_name_bsearch(const struct btf *btf, const char *n=
-ame,
->                                       __s32 start_id)
-> {
->         const struct btf_type *t;
->         const char *tname;
->         __s32 end_id =3D btf__type_cnt(btf) - 1;
->         __s32 l, r, m, lmost =3D end_id + 1;
->         int ret;
+> error: arithmetic on pointers to void
+>       |         skel->ctx.sz =3D (void *)&skel->links - (void *)skel;
+>       |                        ~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~
 >
->         l =3D start_id;
->         r =3D end_id;
->         while (l <=3D r) {
->                 m =3D l + (r - l) / 2;
->                 t =3D btf_type_by_id(btf, m);
->                 tname =3D btf__str_by_offset(btf, t->name_off);
->                 ret =3D strcmp(tname, name);
->                 if (ret < 0) {
->                         l =3D m + 1;
->                 } else {
->                         if (ret =3D=3D 0)
->                                 lmost =3D m;
->                         r =3D m - 1;
->                 }
+> error: assigning to 'struct <obj_name>__<ident> *' from incompatible type=
+ 'void *'
+>       |                 skel-><ident> =3D skel_prep_map_data((void *)data=
+, 4096,
+>       |                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
+~
+>       |                                                 sizeof(data) - 1)=
+;
+>       |                                                 ~~~~~~~~~~~~~~~~~
+>
+> error: assigning to 'struct <obj_name>__<ident> *' from incompatible type=
+ 'void *'
+>       |         skel-><ident> =3D skel_finalize_map_data(&skel->maps.<ide=
+nt>.initial_value,
+>       |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
+~~~~~~~~
+>       |                                         4096, PROT_READ | PROT_WR=
+ITE, skel->maps.<ident>.map_fd);
+>       |                                         ~~~~~~~~~~~~~~~~~~~~~~~~~=
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>
+> Signed-off-by: WanLi Niu <niuwl1@chinatelecom.cn>
+> Co-developed-by: Menglong Dong <dongml2@chinatelecom.cn>
+> Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+> ---
+> changelog:
+> v3:
+> - Fix two additional <obj_name>__<ident> type mismatches as suggested by =
+Yonghong Song
+>
+> v2: https://lore.kernel.org/all/20251231102929.3843-1-kiraskyler@163.com/
+> - Use generic (struct %1$s *) instead of project-specific (struct trace_b=
+pf *)
+>
+> v1: https://lore.kernel.org/all/20251231092541.3352-1-kiraskyler@163.com/
+> ---
+>  tools/bpf/bpftool/gen.c | 16 ++++++++++++----
+>  1 file changed, 12 insertions(+), 4 deletions(-)
+>
+> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+> index 993c7d9484a4..010861b7d0ea 100644
+> --- a/tools/bpf/bpftool/gen.c
+> +++ b/tools/bpf/bpftool/gen.c
+> @@ -731,10 +731,10 @@ static int gen_trace(struct bpf_object *obj, const =
+char *obj_name, const char *h
+>                 {                                                        =
+   \n\
+>                         struct %1$s *skel;                               =
+   \n\
+>                                                                          =
+   \n\
+> -                       skel =3D skel_alloc(sizeof(*skel));              =
+     \n\
+> +                       skel =3D (struct %1$s *)skel_alloc(sizeof(*skel))=
+;    \n\
+>                         if (!skel)                                       =
+   \n\
+>                                 goto cleanup;                            =
+   \n\
+> -                       skel->ctx.sz =3D (void *)&skel->links - (void *)s=
+kel; \n\
+> +                       skel->ctx.sz =3D (__u64)&skel->links - (__u64)ske=
+l;   \n\
+
+I'm wondering if this can also trigger some warnings under some
+circumstances? void * is castable to long or unsigned long, but __u64
+can be defined as long long (plus it's a question what happens on
+32-bit architectures). Why worry about this if we can cast to `char *`
+to calculate this size?
+
+>                 ",
+>                 obj_name, opts.data_sz);
+>         bpf_object__for_each_map(map, obj) {
+> @@ -755,13 +755,17 @@ static int gen_trace(struct bpf_object *obj, const =
+char *obj_name, const char *h
+>                 \n\
+>                 \";                                                      =
+   \n\
+>                                                                          =
+   \n\
+> +               #ifdef __cplusplus                                       =
+   \n\
+> +                               skel->%1$s =3D (struct %3$s::%3$s__%1$s *=
+)skel_prep_map_data((void *)data, %2$zd,\n\
+
+we already use __typeof__() (see gen_st_ops_shadow_init), so let's use
+that unconditionally without __cplusplus special casing
+
+pw-bot: cr
+
+
+> +               #else                                                    =
+   \n\
+>                                 skel->%1$s =3D skel_prep_map_data((void *=
+)data, %2$zd,\n\
+> +               #endif                                                   =
+   \n\
+>                                                                 sizeof(da=
+ta) - 1);\n\
+>                                 if (!skel->%1$s)                         =
+   \n\
+>                                         goto cleanup;                    =
+   \n\
+>                                 skel->maps.%1$s.initial_value =3D (__u64)=
+ (long) skel->%1$s;\n\
+>                         }                                                =
+   \n\
+> -                       ", ident, bpf_map_mmap_sz(map));
+> +                       ", ident, bpf_map_mmap_sz(map), obj_name);
 >         }
+>         codegen("\
+>                 \n\
+> @@ -857,12 +861,16 @@ static int gen_trace(struct bpf_object *obj, const =
+char *obj_name, const char *h
 >
->         return lmost;
-> }
->
-> static __s32 btf_find_by_name_kind(const struct btf *btf, int start_id,
->                                    const char *type_name, __u32 kind)
-> {
->        ......
->        if (btf_is_sorted(btf) && type_name[0]) {
->                 bool first_loop =3D true;
->
->                 start_id =3D max(start_id, btf_sorted_start_id(btf));
->                 idx =3D btf_find_by_name_bsearch(btf, type_name, start_id=
-);
->                 for (; idx < btf__type_cnt(btf); idx++) {
->                         t =3D btf__type_by_id(btf, idx);
->                         tname =3D btf__str_by_offset(btf, t->name_off);
->                         if (!first_loop && strcmp(tname, type_name) !=3D =
-0)
->                                 return libbpf_err(-ENOENT);
+>                 codegen("\
+>                 \n\
+> +               #ifdef __cplusplus                                       =
+   \n\
+> +                       skel->%1$s =3D (struct %4$s::%4$s__%1$s *)skel_fi=
+nalize_map_data(&skel->maps.%1$s.initial_value,\n\
 
-no, let's keep it simple, please revert to previous implementation we
-agreed upon
+same as above, __typeof__ ?
 
->                         if (kind =3D=3D -1 || btf_kind(t) =3D=3D kind)
->                                 return idx;
->                         if (first_loop)
->                                 first_loop =3D false;
->                 }
->         } else {
->                 ......
+> +               #else                                                    =
+   \n\
+>                         skel->%1$s =3D skel_finalize_map_data(&skel->maps=
+.%1$s.initial_value,  \n\
+> +               #endif                                                   =
+   \n\
+>                                                         %2$zd, %3$s, skel=
+->maps.%1$s.map_fd);\n\
+>                         if (!skel->%1$s)                                 =
+   \n\
+>                                 return -ENOMEM;                          =
+   \n\
+>                         ",
+> -                      ident, bpf_map_mmap_sz(map), mmap_flags);
+> +                      ident, bpf_map_mmap_sz(map), mmap_flags, obj_name)=
+;
 >         }
+>         codegen("\
+>                 \n\
+> --
+> 2.39.1
 >
->         return libbpf_err(-ENOENT);
-> }
->
-> >
-> > In such scenarios, the extra `strcmp` operations translate to ~100,000
-> > additional
-> > string comparisons per second. While this might seem negligible in isol=
-ation,
-> > the overhead accumulates under high-frequency tracing=E2=80=94potential=
-ly impacting
-> > latency for users relying on detailed function argument/return value tr=
-acing.
-> >
-> > Thanks again for pushing for rigor=E2=80=94it helps make the code more =
-cleaner
-> > and robust.
-> >
-> > [1] https://lore.kernel.org/all/20250227185822.639418500@goodmis.org/
-> > [2] https://lore.kernel.org/all/20251215034153.2367756-1-dolinux.peng@g=
-mail.com/
-> >
-
-[...]
 
