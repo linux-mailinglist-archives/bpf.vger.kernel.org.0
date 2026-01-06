@@ -1,79 +1,81 @@
-Return-Path: <bpf+bounces-78022-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78023-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFEDBCFB5B7
-	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 00:39:22 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEC64CFB5B1
+	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 00:37:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 54644300CBB8
-	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 23:37:13 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 645EC304F519
+	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 23:37:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42C7B2FFFBE;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3AFB303CB0;
 	Tue,  6 Jan 2026 23:37:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="WkTUKRUt"
+	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="DDR+XWbc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECEDF2E1F08
-	for <bpf@vger.kernel.org>; Tue,  6 Jan 2026 23:37:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A75D62D7DF6
+	for <bpf@vger.kernel.org>; Tue,  6 Jan 2026 23:37:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767742631; cv=none; b=R1CXgu+BRPxhU2+qv1QgHyHsmhcNmfvMB2xCiFBqSWHf3UklyyJXq1nGXGQAxwGojEy0Byb3mUIpFnXjlSSIF09cjvTZjaB6iaCuKewWUaozSg9D5oduLIIo7RgLHmTeJpl58jR/YEyha3roQiLNJ4ZxlQSfEzEQXAxWMu4BaRY=
+	t=1767742632; cv=none; b=qNhDhfoAkxe+9s1gtRzvsHsEaPywpUJe5vzZ+R4weEy/FKkGj8XkHvn99RReaZUs22DfzYQ812dHso0qgVxWJ2KPm1vC8EksD6xp25S08Nr/nX8XwjB9pcBVWboI7nzetSdA2DVuuwXPV7zfNHSmL1EuHCp6vk7i9UkFSojTptQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767742631; c=relaxed/simple;
-	bh=MKhpMoCT26gN9N8XNquP6Safv1WlIXOcwA2RX84BRZ4=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=Sszy4M0Z9ZjYXnfTzFnFW3HG11ZEhholEiu9NKgSjxNwrCRtMMFlUMSblbX23wHtdXhsb3qI4S2Nl3UGYkJTWWvRI/I7NftYLuhPD56tLk3ohLb33kUFaso67evtobhiR3lnjooIDqMhT2uTltB3eKKA5rBUQzR/Zefj1PKeNMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=WkTUKRUt; arc=none smtp.client-ip=209.85.219.45
+	s=arc-20240116; t=1767742632; c=relaxed/simple;
+	bh=4orF0VFoVlgyE20ve7vnEJbQo8WlSXVCfqKF/5kORUQ=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=FwxPH7FjhZwBL2HCEtIQKkAU5pgiU7xadB6Sa0M+xRyaJ9y2Dm7M9H74Fhff0h9dCb25FpAXapovngrtano0leqmGzdnH7g73Erik+n8rIE9PIk4/wQ2hWKotf6LZzEi133xx+yQ7Pbkg6fvIG8UG4jospkAQ/wperswlA9Kzr4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=DDR+XWbc; arc=none smtp.client-ip=209.85.160.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etsalapatis.com
-Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-88888d80590so17011596d6.3
-        for <bpf@vger.kernel.org>; Tue, 06 Jan 2026 15:37:09 -0800 (PST)
+Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-4ed861eb98cso16188271cf.3
+        for <bpf@vger.kernel.org>; Tue, 06 Jan 2026 15:37:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1767742629; x=1768347429; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=LP62EAq+P9/lxxyuv9oa+yCPENsH82yut1NvO1F8Wog=;
-        b=WkTUKRUtwTVTfpr9+31dfoDtqLXIQMuJXcAtu3vu4fyIuPd56hrbB4ElFMOLQ31PVB
-         vQK4X5non/1XqJVTEuyJckM8TVxbJBVwP6pFd44iI9Ryep/9m8exgGzOBbwlQrGu6GJE
-         JKkspbwxZdrQ/QedS4xnLkMQ/0X2EmRiIzos8xlSntjInH4hCSMgijjHQuoxvCY46EaT
-         C9cS1/CNxz8fJjO79VaKinIeSq2bAhnzaR0EWlgbv+G0bsnu4ZRpVxCNTRWiXnVSjuMS
-         tKyVnNluqht7LXtRs3m90pl0yIBE39mm7S4tZZXuC5LH+2SHS9lLhGMAIXvZ82hmFnH3
-         4ODw==
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bx3Sb+U9AcS65PTbSPsETeB9XJNjmwm7iKYzRjyz6Ng=;
+        b=DDR+XWbc7wD0s3b2E+TCWxYMp1/bsUKTUdsqhnzni1+yyJ+N5mhG/mu1ehkJMLdV4f
+         PtDMu49v5MMp+lVlAgIlp0sCIkVNfDI1rZaUN5HeojFxMzcA2sR7h6/g9HWhJ8HALXvd
+         4IQg18vjXLuhLMkmCf8Q/d99aFe+I7sHa1/Nikr8KzrMXo6U874d8VMAkRgXbCgmnvYw
+         2Nu4qI7U73uaywF5dtl7kHN82tkWCk2Zi7Q68nBXdtp9HE85iiwjru/Ip9Do2966ntyZ
+         ad5123YfCT0F+C0za1CNj75R0oRE97MurCqFGu9u4GjDgWTs8k+xnfKInguXd/LbcW7K
+         cLbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1767742629; x=1768347429;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LP62EAq+P9/lxxyuv9oa+yCPENsH82yut1NvO1F8Wog=;
-        b=IUogb/BZodYqmhBwfyz0hFuIukrlGAxTJDQWr5Ux+YDZTnS+Wg1HhvD29gxac91eI9
-         jqqt0VEacGA+HBjp+231ySQJGi1SaK4bJRrG7f3NY9k3aCsgFT8BzEIUf2iVZ/U84vvj
-         SprQ0T5zL3gY2q5DwS52oCG+6d1ISH0RTJFntM5rNsauUCnMbxY3uiSpKwnLtiT32w5Y
-         jmHxglxWLhIxB+LI3hmmWZF4GttBOdjzXByyWpD50783IycjPRYiDEJID/weG7GXhdIN
-         3JQJn5Y/CS7Xs6vQo7rbn2ISwgGdxMfBh8Ymvt4UvfH+bv8GdpgTaJeMbs6N4xMkKX3c
-         H4UQ==
-X-Gm-Message-State: AOJu0Ywx4BO77zegfzCjDruFdPUnNCKRDJbldH1tWRpOT1pZE5tiQUNb
-	2fVubtff8L4AQoSZAZF5T3XEvKAyzoo1vjtjpWG9xx/IRZvFMVKzDa7TtriBgM3luXE=
-X-Gm-Gg: AY/fxX6GlBigR1OhVI0Z9nFKh/pM/RyqCenUVMQAquq8BOVdVq9nHIvFXuataHzbNua
-	kZkvXZ1SamSJvqLn5KWNpjGod3E2oY+3BtGDGtWQ6xRwaCHOuHyqAfaIy3Hk1u8LRfHy18deLif
-	Bk+CEwQ0/+hz3wdWvMPUriSGqMquMKcg7dtvKG2A1Kelm5GEWm755UPBASReiTf5iyFcTeJAdUO
-	FNnOgHP44Qto6VCSRHlLtOB2dq9Timyg/vXRFOYlhFMigPlB4pA8uXQgyWd2c2gZY9C+G6RgnzT
-	zBrPmbPam9ZnWBVxI+tjLzrz+AwAQg3oCIiY8pv0Dt+2D52pCxjUQQBAH6In6nl/wkk3v5bIzyf
-	hfIBdJ8c+e8U4lhVDr2VhZli7PQYMyvEVwPVbYDDm/A19CDnA4HZ/TpfMB/Fpk9UcMHtHBmogjW
-	7ZKlVUvWp8OOx/iTev
-X-Google-Smtp-Source: AGHT+IH2vaxiSC0M5ZuAB48pnotkEf0QAgo28d3ugBdcMkQ7gkMxmcFEKXLfCXOB1QlDzk3OSIWing==
-X-Received: by 2002:ad4:5963:0:b0:888:4930:797e with SMTP id 6a1803df08f44-890842f59f9mr11423946d6.70.1767742628738;
-        Tue, 06 Jan 2026 15:37:08 -0800 (PST)
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=bx3Sb+U9AcS65PTbSPsETeB9XJNjmwm7iKYzRjyz6Ng=;
+        b=DMhj5iJyRvLtah3srhaPXKPgPxhyjxKw9tkxijeqMMZbi1dkXHtDs401P4OKo+jXzd
+         7Q9XJKIOlTm3TC54+5luw1H92dw2cgsK8OdPgRSHHcygcpmJEXLx1I/if+/gmlIaw48M
+         OCf3Yqm9cp0C3BVf3b3Cn1gvAgruigOP/5yDnPvn1jSLG+yNK0xnq4/mRU3LeSQZDrht
+         bhxp/joPbEzeEtmd2XDApmk5n0AIsEw2tL34KHenX7JCwGOtQOyUUhp0NSaTuWJB+Ph3
+         n5zF+QwbtePH0+tTJ2jOh0jDylyCd71EtvBRN3aGb5SVoYXSiVcK8i2UDYf4RYjfCKTP
+         G4zQ==
+X-Gm-Message-State: AOJu0YzxpqZQb/CeRzEN3dZmXJ98Plb3K+jh313MJEsJfekkcV1pJcdi
+	GXav1Fq1Cxau5uzV+L9Jo3FjPV8KV9O8nE8CuNypu4crikRdSWL6VDTrtLKlBHIgWT41qdGAYFX
+	yIFESkNg=
+X-Gm-Gg: AY/fxX6XUnsmsqe8/2l22bwnbQZZiYYnoLomihuFDp+tY6c01z0YE7LIqto0F21WVLw
+	Sysveh+TMcNSyLPV9CRugqp7NAuaozLAsNkZuK78oBhFUoTF/yrDVPwO6gkrD7kSembvqFz1u35
+	9y5FIzvCj0Bed9epN5vyQ0c4p9NPlb+Y1nRRKR00R0xyCVfRb2WrreJLJm4EAjCoqP4IEmcmluU
+	sbP41JR+D9GH2Mlj72vzAexKleo0GzQW+LP3asBK3TI6FR61Dz5QGTzevbAxTbWWv7gRRg+gwDa
+	qOCYT/Z2Wkw6iNqVOcpfjFUWKoFWoZChpGCKGsLu9/WuDHedCwBcZS5khy5Mrv4CP4I4WsO1yLI
+	uoKNrlyPmVDYUDwK3T8OZBvlni3aiLQBCjknh8C7HROJsrZySMQ88WLTtLMzy5gAe9kbHsY6vQG
+	L6yjQLTw90SAg2KJRI
+X-Google-Smtp-Source: AGHT+IEldlL4XImBuFMAjBp4T25yUaW48TRNAyLVhtwzVD29cxk+FeX8sp2GoQG4qO902cy0mCNZdQ==
+X-Received: by 2002:a05:622a:480a:b0:4ee:1b0e:861a with SMTP id d75a77b69052e-4ffb47ed367mr11107161cf.13.1767742629545;
+        Tue, 06 Jan 2026 15:37:09 -0800 (PST)
 Received: from [192.168.0.7] ([140.174.219.137])
         by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8907724ef8fsm22590116d6.42.2026.01.06.15.37.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jan 2026 15:37:08 -0800 (PST)
+        Tue, 06 Jan 2026 15:37:09 -0800 (PST)
 From: Emil Tsalapatis <emil@etsalapatis.com>
-Subject: [PATCH v2 0/3] bpf/verifier: allow calling arena functions when
- holding BPF lock
-Date: Tue, 06 Jan 2026 18:36:42 -0500
-Message-Id: <20260106-arena-under-lock-v2-0-378e9eab3066@etsalapatis.com>
+Date: Tue, 06 Jan 2026 18:36:43 -0500
+Subject: [PATCH v2 1/3] bpf/verifier: check active lock count in
+ in_sleepable_context
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -82,11 +84,9 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAIqcXWkC/32NQQrCMBBFr1Jm7UgmSGxceQ/pYkhHO1iTktSil
- N7d6AFcvgf//RWKZJUCp2aFLIsWTbGC3TUQBo43Qe0rgzXWGTIOOUtkfMZeMo4p3NGbo28dOfF
- 0gDqbslz19UteusqDljnl9+9hoa/9E1sIDbrAPpClvrXuLHPhkSeetexDekC3bdsHqsA/EbYAA
- AA=
-X-Change-ID: 20260106-arena-under-lock-90798616e914
+Message-Id: <20260106-arena-under-lock-v2-1-378e9eab3066@etsalapatis.com>
+References: <20260106-arena-under-lock-v2-0-378e9eab3066@etsalapatis.com>
+In-Reply-To: <20260106-arena-under-lock-v2-0-378e9eab3066@etsalapatis.com>
 To: bpf@vger.kernel.org
 Cc: Emil Tsalapatis <emil@etsalapatis.com>, ast@kernel.org, 
  daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
@@ -94,32 +94,34 @@ Cc: Emil Tsalapatis <emil@etsalapatis.com>, ast@kernel.org,
  yonghong.song@linux.dev, puranjay@kernel.org
 X-Mailer: b4 0.14.2
 
-BPF arena-related kfuncs now cannot sleep, so they are safe to call
-while holding a spinlock. However, the verifier still rejects
-programs that do so. Update the verifier to allow arena kfunc
-calls while holding a lock.
+The in_sleepable_context function is used to specialize the BPF code
+in do_misc_fixups(). With the addition of nonsleepable arena kfuncs,
+there are kfuncs whose specialization depends on whether we are
+holding a lock: We should use the nonsleepable version while
+holding a lock and the sleepable one when not.
+
+Add a check for active_locks to account for locking when specializing
+arena kfuncs.
 
 Signed-off-by: Emil Tsalapatis <emil@etsalapatis.com>
 ---
-Changes v1->v2: (https://lore.kernel.org/r/20260106-arena-under-lock-v1-0-6ca9c121d826@etsalapatis.com)
- 
-- Added patch to account for active locks in_sleepable_context() (AI)
+ kernel/bpf/verifier.c | 1 +
+ 1 file changed, 1 insertion(+)
 
----
-Emil Tsalapatis (3):
-      bpf/verifier: check active lock count in in_sleepable_context
-      bpf/verifier: allow calls to arena functions while holding spinlocks
-      selftests/bpf: add tests for arena kfuncs under lock
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 9394b0de2ef0085690b0a0052f82cd48d8722e89..7f82e27dd7e7c3e8328a5c4aa629b79db2dbe03f 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -11466,6 +11466,7 @@ static inline bool in_sleepable_context(struct bpf_verifier_env *env)
+ {
+ 	return !env->cur_state->active_rcu_locks &&
+ 	       !env->cur_state->active_preempt_locks &&
++	       !env->cur_state->active_locks &&
+ 	       !env->cur_state->active_irq_id &&
+ 	       in_sleepable(env);
+ }
 
- kernel/bpf/verifier.c                              | 12 ++++++-
- tools/testing/selftests/bpf/progs/verifier_arena.c | 38 ++++++++++++++++++++++
- 2 files changed, 49 insertions(+), 1 deletion(-)
----
-base-commit: a069190b590e108223cd841a1c2d0bfb92230ecc
-change-id: 20260106-arena-under-lock-90798616e914
-
-Best regards,
 -- 
-Emil Tsalapatis <emil@etsalapatis.com>
+2.49.0
 
 
