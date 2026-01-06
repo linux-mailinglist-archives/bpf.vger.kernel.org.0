@@ -1,48 +1,77 @@
-Return-Path: <bpf+bounces-77923-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77924-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF48CCF6B94
-	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 06:03:59 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13C2ECF6C2B
+	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 06:18:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 1C1493036CA4
-	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 05:03:38 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9F62E3024108
+	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 05:15:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA8682DF138;
-	Tue,  6 Jan 2026 05:03:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 050802F9D98;
+	Tue,  6 Jan 2026 05:15:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CT/6EEeI"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CJKxxvqs"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38A324503B;
-	Tue,  6 Jan 2026 05:03:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 388132FE076
+	for <bpf@vger.kernel.org>; Tue,  6 Jan 2026 05:15:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767675813; cv=none; b=ATc7jsaMysGC/aZPob6fws+bYdoeRn2PgooTnaO9gaPOMnNIlmsBoNrdHd02UectrslxpKRI7bjur0rM58oVm1komIrlayKSRu+QxGzg8/LLDTt2NsYL0LHxusRDPV8A892hz5wRVbxWDxGE+SjBKk+2meYTsxpr1igigFtPpiM=
+	t=1767676520; cv=none; b=QN6Aok7+NBaBXJokcDBveYDX01eY+1fE3ls7nkj/cIPpP7msoucCyDIhPzSAXJoH72qJL32ik5POBPel0f8Sqw27/aHNSzeCcS/mykhnrnrihJyyJrPm2yNx8oQqiH5VqjNgPaIuys3g1cWrJm+5KJbQrmZSAUd3MwhS7TIz5mA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767675813; c=relaxed/simple;
-	bh=JvnsPFzgdpuJbwNkNOh7OjJ5Da6sHmBA8uij6Y+5XGU=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=VX9kzuZMFqEnVJ3Ztwv/D+beohDrSqd1lnq8rS90qdDdeWNQ0VxoGB9GZrvZPIz4eBdqSyjZvms0ikVuGvx0LEYp5BQT1mjyGWKe1PXMPII24i4ql9+dgv88rC9Rvy+8utzSqcd+C615nMjub/qq2nQauFzOk6QDzD+Bz0JaOJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CT/6EEeI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1669C116C6;
-	Tue,  6 Jan 2026 05:03:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767675812;
-	bh=JvnsPFzgdpuJbwNkNOh7OjJ5Da6sHmBA8uij6Y+5XGU=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=CT/6EEeI/nkYrnOfqMzybUOr3yT9jLjNv8kdex6higPXsuuWsSQITytU3RVx1kDwA
-	 hc6bqh2gxysqsmPpEvnGYDlfbyFhPbX7lgoLHioLyid5TRYhHxZDuIbmshJ5qv1xxo
-	 4CStB15d5SdMuMaaeanQGt3USu7+GA6DmPoQ42QYT3X5ZLKstzk/03jirLcQXNqNAB
-	 VjO6YvPt++Kn8cim4Uub9QFAkCeYl3dbepJ97y0PMoOCCv+9Mx13+EBGzoJoaP+HQq
-	 gPXshDc1DLV4BP9bAXmU1RRqKpWO3wCTy+RN2pf2czkRnHAoKNmhITQPwUAreoeOmo
-	 ugoUla7xa+vkw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id F2B64380AAD0;
-	Tue,  6 Jan 2026 05:00:11 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1767676520; c=relaxed/simple;
+	bh=TuPp7WRjSZPVGVI2cMdIEn3hrzWhHrmg4jLFGaXFUSk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Zwen1jxJiGuZ/Jb69EmY8vr3zUSC4vNMcnB8iaRbhIn+AHF/Bk6+Tk2oA65cjP1c2MsdQUMmzQKf0LH6Y9/5S9wTU7kUyCAMsu9GiGmHq6KMhEqmdSk51bSFYp2TsdBiIdIEU9vbzvsyN9y3wy6coRoAOe1Rrym0hfmNVx8mRlw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CJKxxvqs; arc=none smtp.client-ip=91.218.175.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1767676515;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=PLbanlcsfq7B7IXC/WLAHoATzRDwc4SP705X6ZE5Cg8=;
+	b=CJKxxvqszkT+dJvLi7z/zcxnzVE4yW4QIiVzXRqJHhlvh1g+iY5cFTGLhooW+cgap/ZWw4
+	PmMKbKQqur3jfT0M0qLH/aTb/0juGh+Iy0z1rehLjSQYHRNqXa2cWMVwFsnpLoHzXdhUcW
+	nJR/+jZbbxi9RKAy0i49TTw8GATzKeo=
+From: Jiayuan Chen <jiayuan.chen@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Jiayuan Chen <jiayuan.chen@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Jakub Sitnicki <jakub@cloudflare.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	Neal Cardwell <ncardwell@google.com>,
+	Kuniyuki Iwashima <kuniyu@google.com>,
+	David Ahern <dsahern@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Stefano Garzarella <sgarzare@redhat.com>,
+	Michal Luczaj <mhal@rbox.co>,
+	Cong Wang <cong.wang@bytedance.com>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf-next v5 0/3] bpf: Fix FIONREAD and copied_seq issues
+Date: Tue,  6 Jan 2026 13:14:26 +0800
+Message-ID: <20260106051458.279151-1-jiayuan.chen@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -50,42 +79,78 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] mm: drop mem_cgroup_usage() declaration from
- memcontrol.h
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <176767561079.1822645.1463406009745390513.git-patchwork-notify@kernel.org>
-Date: Tue, 06 Jan 2026 05:00:10 +0000
-References: <20260106042313.140256-1-roman.gushchin@linux.dev>
-In-Reply-To: <20260106042313.140256-1-roman.gushchin@linux.dev>
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: alexei.starovoitov@gmail.com, sfr@canb.auug.org.au, daniel@iogearbox.net,
- andrii@kernel.org, akpm@linux-foundation.org, bpf@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-next@vger.kernel.org
+X-Migadu-Flow: FLOW_OUT
 
-Hello:
+syzkaller reported a bug [1] where a socket using sockmap, after being
+unloaded, exposed incorrect copied_seq calculation. The selftest I
+provided can be used to reproduce the issue reported by syzkaller.
 
-This patch was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+TCP recvmsg seq # bug 2: copied E92C873, seq E68D125, rcvnxt E7CEB7C, fl 40
+WARNING: CPU: 1 PID: 5997 at net/ipv4/tcp.c:2724 tcp_recvmsg_locked+0xb2f/0x2910 net/ipv4/tcp.c:2724
+Call Trace:
+ <TASK>
+ receive_fallback_to_copy net/ipv4/tcp.c:1968 [inline]
+ tcp_zerocopy_receive+0x131a/0x2120 net/ipv4/tcp.c:2200
+ do_tcp_getsockopt+0xe28/0x26c0 net/ipv4/tcp.c:4713
+ tcp_getsockopt+0xdf/0x100 net/ipv4/tcp.c:4812
+ do_sock_getsockopt+0x34d/0x440 net/socket.c:2421
+ __sys_getsockopt+0x12f/0x260 net/socket.c:2450
+ __do_sys_getsockopt net/socket.c:2457 [inline]
+ __se_sys_getsockopt net/socket.c:2454 [inline]
+ __x64_sys_getsockopt+0xbd/0x160 net/socket.c:2454
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xcd/0xfa0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
-On Mon,  5 Jan 2026 20:23:13 -0800 you wrote:
-> mem_cgroup_usage() is not used outside of memcg-v1 code,
-> the declaration was added by a mistake.
-> 
-> Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
-> ---
->  include/linux/memcontrol.h | 1 -
->  1 file changed, 1 deletion(-)
+A sockmap socket maintains its own receive queue (ingress_msg) which may
+contain data from either its own protocol stack or forwarded from other
+sockets.
 
-Here is the summary with links:
-  - [bpf-next] mm: drop mem_cgroup_usage() declaration from memcontrol.h
-    https://git.kernel.org/bpf/bpf-next/c/ea180ffbd27c
+                                                     FD1:read()
+                                                     --  FD1->copied_seq++
+                                                         |  [read data]
+                                                         |
+                                [enqueue data]           v
+                  [sockmap]     -> ingress to self ->  ingress_msg queue
+FD1 native stack  ------>                                 ^
+-- FD1->rcv_nxt++               -> redirect to other      | [enqueue data]
+                                       |                  |
+                                       |             ingress to FD1
+                                       v                  ^
+                                      ...                 |  [sockmap]
+                                                     FD2 native stack
 
-You are awesome, thank you!
+The issue occurs when reading from ingress_msg: we update tp->copied_seq
+by default, but if the data comes from other sockets (not the socket's
+own protocol stack), tcp->rcv_nxt remains unchanged. Later, when
+converting back to a native socket, reads may fail as copied_seq could
+be significantly larger than rcv_nxt.
+
+Additionally, FIONREAD calculation based on copied_seq and rcv_nxt is
+insufficient for sockmap sockets, requiring separate field tracking.
+
+[1] https://syzkaller.appspot.com/bug?extid=06dbd397158ec0ea4983
+
+---
+
+v1 -> v5: Use skmsg.sk instead of extending BPF_F_XXX macro and fix CI
+          failure reported by CI
+v1: https://lore.kernel.org/bpf/20251117110736.293040-1-jiayuan.chen@linux.dev/
+
+Jiayuan Chen (3):
+  bpf, sockmap: Fix incorrect copied_seq calculation
+  bpf, sockmap: Fix FIONREAD for sockmap
+  bpf, selftest: Add tests for FIONREAD and copied_seq
+
+ include/linux/skmsg.h                         |  69 +++++-
+ net/core/skmsg.c                              |  28 ++-
+ net/ipv4/tcp_bpf.c                            |  26 ++-
+ net/ipv4/udp_bpf.c                            |  25 ++-
+ .../selftests/bpf/prog_tests/sockmap_basic.c  | 202 +++++++++++++++++-
+ .../bpf/progs/test_sockmap_pass_prog.c        |  14 ++
+ 6 files changed, 347 insertions(+), 17 deletions(-)
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.43.0
 
 
