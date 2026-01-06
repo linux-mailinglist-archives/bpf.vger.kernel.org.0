@@ -1,75 +1,75 @@
-Return-Path: <bpf+bounces-77955-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77956-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C65CCF8A4E
-	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 14:59:31 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4AD7CF8A00
+	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 14:56:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 17CFB30C0497
-	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 13:48:46 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E727630133B6
+	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 13:49:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78D9D313E1A;
-	Tue,  6 Jan 2026 13:47:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCEB9335BDB;
+	Tue,  6 Jan 2026 13:47:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iTWIQoiy"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="P5eK66jL"
 X-Original-To: bpf@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67D4628643C
-	for <bpf@vger.kernel.org>; Tue,  6 Jan 2026 13:47:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB7B73346B2
+	for <bpf@vger.kernel.org>; Tue,  6 Jan 2026 13:47:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767707231; cv=none; b=WjEQaZDtOnxXIiZxQhP/98+5E8uUcHDSJV5uNsHmsBMIqkamoC6qy3oO7fmLd6MD2OoMwGg3AQbvwXCBg+H1aYnV7uSXJ7IsgSXcYspYPyGczTecHT3kM/FDB5EFpSCQOxh254Tj0aw8qfPqF5QvfCzqAIyZtGYZ5E8ozAUtfi4=
+	t=1767707271; cv=none; b=Ha41R82A1j3NY3PnkQoQhza7d76+fCmJTA63MWMot0eEnOokPLx5awTBXBg1xjqQzHau8KJ+SlzdKgJmxg83hqyIacLsKHD/zOWt9/6j6Oj4mRHyHKiA8frPzhNJNuqX0B+2kXSNJN7mxnTnzrhN5ZQUW2yfhjQzfg+hwXvwtao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767707231; c=relaxed/simple;
-	bh=kLhmG8r8/G/ZBzcMsD21dGTit7z/QexGf+BuN2OdGGU=;
+	s=arc-20240116; t=1767707271; c=relaxed/simple;
+	bh=X0mhfphzyzLPUFjrtvGZjqO0h8g5+dpKSw/dmcSM54k=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=u7rbXLXecxwBnaGxl49Jn43Rski+PYmc1IypHwAUFlRNFpKKtrzqJSNtXVNLOsA4nLwF9Q3Yehx/8Rsn8SZGFhkQbaxpSVAJK7Ci51nDYgvhWawmMnLGArXH87J3wNpn3MC3M2M1MLLyKdS46Dg6sLNEKPFGN/9Ad4uuyu9/gtU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=iTWIQoiy; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version; b=GOYtjPQWv0ZwvJDjeYx/lsb1Xbi+43sFH42mGbpx4uNsnZzZclGoQ+rAhmDT2kvsKumYxQOhZyyOr5tYKupnRXK74lRons+m20JfBMOcQPkmCpZsbCaJnOu8MVxBWHWD3VYnDgoKTl/ILXfu2LY6hdyUJN93y4S9xE969n1qlq0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=P5eK66jL; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1767707229;
+	s=mimecast20190719; t=1767707268;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=K2MacZa0tkiAD+rR0g1h1MHJtgQHxTFEHFa+WubSNqk=;
-	b=iTWIQoiyAoSb3kk9SuO/BYIKymogCmt40Vtgv4CYZ926nDTqW8j3FuCsqB2ITx5gSfnz6n
-	4vV64pm2SPnQzX0f8Nwl3yj8Lxkj0pu+bLo642TpAOLfim2dg2DR3ra0GjPvjmo0TlbaJ9
-	vHocGHGqWsbQ5z3VoEYymTpPgPgdL2c=
+	bh=D2PckU0JC5Ea9d4GrF2OBPBlpYWIkdOC3Apu6J3z5gQ=;
+	b=P5eK66jLDIhtwubLs1VPTivaxePnM1lcsp45tp4JAqkBW1hyu2oxhEFwvr8yDRSnLITgu1
+	mIoiYy+YfhhrLx6c4SGMPXBhR+rqG3mDaSWV662OlTMFXkpTZgxFjrYcib97R4LeaL17xF
+	mbj8qz8Oo+TLssmv2VI1DApuf2YRO5c=
 Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-404-U3IkJEZZNYiniFGAwG_s1A-1; Tue,
- 06 Jan 2026 08:47:06 -0500
-X-MC-Unique: U3IkJEZZNYiniFGAwG_s1A-1
-X-Mimecast-MFC-AGG-ID: U3IkJEZZNYiniFGAwG_s1A_1767707225
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-354-oRXwTd-_OTqtkSl4qfStLA-1; Tue,
+ 06 Jan 2026 08:47:44 -0500
+X-MC-Unique: oRXwTd-_OTqtkSl4qfStLA-1
+X-Mimecast-MFC-AGG-ID: oRXwTd-_OTqtkSl4qfStLA_1767707263
 Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 117521956068;
-	Tue,  6 Jan 2026 13:47:05 +0000 (UTC)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 5D0191956068;
+	Tue,  6 Jan 2026 13:47:43 +0000 (UTC)
 Received: from wcosta-thinkpadt14gen4.rmtbr.csb (unknown [10.22.89.23])
-	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 8A7DD1800367;
-	Tue,  6 Jan 2026 13:47:01 +0000 (UTC)
+	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 42DE21800667;
+	Tue,  6 Jan 2026 13:47:39 +0000 (UTC)
 From: Wander Lairson Costa <wander@redhat.com>
 To: Steven Rostedt <rostedt@goodmis.org>,
 	Tomas Glozar <tglozar@redhat.com>,
 	Wander Lairson Costa <wander@redhat.com>,
-	Crystal Wood <crwood@redhat.com>,
 	Ivan Pravdin <ipravdin.official@gmail.com>,
+	Crystal Wood <crwood@redhat.com>,
 	Costa Shulyupin <costa.shul@redhat.com>,
 	John Kacur <jkacur@redhat.com>,
 	Tiezhu Yang <yangtiezhu@loongson.cn>,
 	linux-trace-kernel@vger.kernel.org (open list:Real-time Linux Analysis (RTLA) tools),
 	linux-kernel@vger.kernel.org (open list:Real-time Linux Analysis (RTLA) tools),
 	bpf@vger.kernel.org (open list:BPF [MISC]:Keyword:(?:\b|_)bpf(?:\b|_))
-Subject: [PATCH v2 15/18] rtla: Make stop_tracing variable volatile
-Date: Tue,  6 Jan 2026 08:49:51 -0300
-Message-ID: <20260106133655.249887-16-wander@redhat.com>
+Subject: [PATCH v2 16/18] rtla: Ensure null termination after read operations in utils.c
+Date: Tue,  6 Jan 2026 08:49:52 -0300
+Message-ID: <20260106133655.249887-17-wander@redhat.com>
 In-Reply-To: <20260106133655.249887-1-wander@redhat.com>
 References: <20260106133655.249887-1-wander@redhat.com>
 Precedence: bulk
@@ -81,51 +81,56 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
 
-The stop_tracing global variable is accessed from both the signal
-handler context and the main program flow without synchronization.
-This creates a potential race condition where compiler optimizations
-could cache the variable value in registers, preventing the signal
-handler's updates from being visible to other parts of the program.
+Add explicit null termination and buffer initialization for read()
+operations in procfs_is_workload_pid() and get_self_cgroup() functions.
+The read() system call does not null-terminate the data it reads, and
+when the buffer is filled to capacity, subsequent string operations
+will read past the buffer boundary searching for a null terminator.
 
-Add the volatile qualifier to stop_tracing in both common.c and
-common.h to ensure all accesses to this variable bypass compiler
-optimizations and read directly from memory. This guarantees that
-when the signal handler sets stop_tracing, the change is immediately
-visible to the main program loop, preventing potential hangs or
-delayed shutdown when termination signals are received.
+In procfs_is_workload_pid(), explicitly set buffer[MAX_PATH-1] to '\0'
+to ensure the buffer is always null-terminated before passing it to
+strncmp(). In get_self_cgroup(), use memset() to zero the path buffer
+before reading, which ensures null termination when retval is less than
+MAX_PATH. Additionally, set path[MAX_PATH-1] to '\0' after the read to
+handle the case where the buffer is filled completely.
+
+These defensive buffer handling practices prevent potential buffer
+overruns and align with the ongoing buffer safety improvements across
+the rtla codebase.
 
 Signed-off-by: Wander Lairson Costa <wander@redhat.com>
 ---
- tools/tracing/rtla/src/common.c | 2 +-
- tools/tracing/rtla/src/common.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ tools/tracing/rtla/src/utils.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/tools/tracing/rtla/src/common.c b/tools/tracing/rtla/src/common.c
-index d608ffe12e7b0..1e6542a1e9630 100644
---- a/tools/tracing/rtla/src/common.c
-+++ b/tools/tracing/rtla/src/common.c
-@@ -8,7 +8,7 @@
- #include "common.h"
+diff --git a/tools/tracing/rtla/src/utils.c b/tools/tracing/rtla/src/utils.c
+index e0f31e5cae844..508b8891acd86 100644
+--- a/tools/tracing/rtla/src/utils.c
++++ b/tools/tracing/rtla/src/utils.c
+@@ -317,6 +317,7 @@ static int procfs_is_workload_pid(const char *comm_prefix, struct dirent *proc_e
+ 	if (retval <= 0)
+ 		return 0;
  
- struct trace_instance *trace_inst;
--int stop_tracing;
-+volatile int stop_tracing;
++	buffer[MAX_PATH-1] = '\0';
+ 	retval = strncmp(comm_prefix, buffer, strlen(comm_prefix));
+ 	if (retval)
+ 		return 0;
+@@ -750,6 +751,7 @@ static int get_self_cgroup(char *self_cg, int sizeof_self_cg)
+ 	if (fd < 0)
+ 		return 0;
  
- static void stop_trace(int sig)
- {
-diff --git a/tools/tracing/rtla/src/common.h b/tools/tracing/rtla/src/common.h
-index f2c9e21c03651..283641f3e7c9b 100644
---- a/tools/tracing/rtla/src/common.h
-+++ b/tools/tracing/rtla/src/common.h
-@@ -54,7 +54,7 @@ struct osnoise_context {
- };
++	memset(path, 0, sizeof(path));
+ 	retval = read(fd, path, MAX_PATH);
  
- extern struct trace_instance *trace_inst;
--extern int stop_tracing;
-+extern volatile int stop_tracing;
+ 	close(fd);
+@@ -757,6 +759,7 @@ static int get_self_cgroup(char *self_cg, int sizeof_self_cg)
+ 	if (retval <= 0)
+ 		return 0;
  
- struct hist_params {
- 	char			no_irq;
++	path[MAX_PATH-1] = '\0';
+ 	start = path;
+ 
+ 	start = strstr(start, ":");
 -- 
 2.52.0
 
