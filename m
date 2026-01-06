@@ -1,170 +1,175 @@
-Return-Path: <bpf+bounces-77958-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77939-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 917BACF8A2D
-	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 14:57:53 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE506CF86F0
+	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 14:12:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id BCFB330FE0B0
-	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 13:50:12 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 78B7E3038189
+	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 13:12:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05451346E70;
-	Tue,  6 Jan 2026 13:49:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D4D632F751;
+	Tue,  6 Jan 2026 13:12:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XZumnRRX"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="cmD2ttOr"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F268C33A9C4
-	for <bpf@vger.kernel.org>; Tue,  6 Jan 2026 13:49:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EBA332ED27;
+	Tue,  6 Jan 2026 13:12:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767707348; cv=none; b=m5rbaemYt2QSFWJ6LRne5utDaaPnS7gEQgX9BV3BDhysaXmYOistv8vc1gkjeellEbwGEV8zpJNzpJl7kRUFqdNDfICKiZ53tBUxk0tr2I3YA4owECo5wwG5jKfmtp1O7TCfVwamU8uS3EXMirHTU3apAdyJ3eK7qkXT6DTVGJA=
+	t=1767705140; cv=none; b=S8Q7eHs6oe2U4wmF2VW/vZoxYOaoTN3MYLCrXeTOXhoBA5Dyc9LcejYg/Djt2bEGk+zr3rkyVjuwN2h8uDxwkioX0r1bFASuTxqz5Zk3VBBvaBnLRPMycUtwKQXMYv1Tav5K5PnD2tHCf1IUf+kIIQ5dzCE75Id1azcIynKoe0g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767707348; c=relaxed/simple;
-	bh=khr4HXouOlKmupfOwr1RNYMaHRidP4N+XAnyKcMrmB4=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Wgh5A2LvsXqxZ7fd91pkFJv9ZXyvpMH3shearQPwQPkIAMv9GT0/PHOsNkc7HDzVba/GAxoQT9AZn9+ZkipzCcPTn4EQUmXAiOqEmXn52uhuEbODNad0e61RYPdL8pzI+BU9PPONJYv42PNL/06VWqvlxro/boIdm5L2IbMyFvI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XZumnRRX; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1767707346;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Km5rA7vjuSWs0NIc9MqaKbnKolitv5jNiI4g81bW+B4=;
-	b=XZumnRRX6/8C886DOhnY1olrsjgvOSPc5Inf4yHRoemtxk9ycseAXRtwsCsNY1tu69dni8
-	pFQcDA0MFzY/2y1nDl5qbvS9hG2Z/eUMRIOYAy8vvYETDcnR6Qkz+v2Afz7EdBDEONn3jA
-	EWM3j7lWExfSynUYTCIyM6jG0TTn5GQ=
-Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-396-ES6CsnRGPX2AIcy5TtcRvw-1; Tue,
- 06 Jan 2026 08:49:03 -0500
-X-MC-Unique: ES6CsnRGPX2AIcy5TtcRvw-1
-X-Mimecast-MFC-AGG-ID: ES6CsnRGPX2AIcy5TtcRvw_1767707342
-Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 083B81801207;
-	Tue,  6 Jan 2026 13:49:02 +0000 (UTC)
-Received: from wcosta-thinkpadt14gen4.rmtbr.csb (unknown [10.22.89.23])
-	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 9A3181800576;
-	Tue,  6 Jan 2026 13:48:57 +0000 (UTC)
-From: Wander Lairson Costa <wander@redhat.com>
-To: Steven Rostedt <rostedt@goodmis.org>,
-	Tomas Glozar <tglozar@redhat.com>,
-	Wander Lairson Costa <wander@redhat.com>,
-	Crystal Wood <crwood@redhat.com>,
-	Ivan Pravdin <ipravdin.official@gmail.com>,
-	Costa Shulyupin <costa.shul@redhat.com>,
-	John Kacur <jkacur@redhat.com>,
-	Tiezhu Yang <yangtiezhu@loongson.cn>,
-	linux-trace-kernel@vger.kernel.org (open list:Real-time Linux Analysis (RTLA) tools),
-	linux-kernel@vger.kernel.org (open list:Real-time Linux Analysis (RTLA) tools),
-	bpf@vger.kernel.org (open list:BPF [MISC]:Keyword:(?:\b|_)bpf(?:\b|_))
-Subject: [PATCH v2 18/18] rtla: Simplify code by caching string lengths
-Date: Tue,  6 Jan 2026 08:49:54 -0300
-Message-ID: <20260106133655.249887-19-wander@redhat.com>
-In-Reply-To: <20260106133655.249887-1-wander@redhat.com>
-References: <20260106133655.249887-1-wander@redhat.com>
+	s=arc-20240116; t=1767705140; c=relaxed/simple;
+	bh=Bdv/9Apil9GsQrz9Iyd7SQghRPpsyfcb/tFA8K+sz+I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=sv2vPFB9/6wbSf19O/5LSRlxoWt07wi9VzxGcHtZvYLNqBThAjEQuSR4/kHkdqW3SbiMwsRe8S2e6SI5KUn+hjhGRaxBhNeIAcPQU6C+s7cdaChbay5OztI6YzmAdpi97bjksIY9koi4QAb2UC8mYq01pMkCKYf44yaa1bq+RhI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=cmD2ttOr; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=jtPJL4ueN+NLUJL1/EIAuRCHXAci0f2p2ksqNzuXF/Y=; b=cmD2ttOrmjUI0wOuG/vL8jIx8b
+	+axfpKvjrUxojLQwP1+0rKJtqa6LLNCUpz/KGT78cADU2wVu+uIhH3LIL6LB+UV3jqiSZD+iolkws
+	SwNRjO8g+qNiwllTW2G6n2dc5R9AhA4JFXEBuyWvhGJtd3RRADkUNranKMHsjmaoCoKihinhKyMDC
+	zZd+uYpURPT2w/IjY15LpwuNZ+/Owe8xug2wL8bO9tDGkrI6bmOpWBZC9t/RmwpXiV5gpxqgYUvuh
+	aQyQcuFJOhs5ufqPWQFhlFB0UyTZmXS6482TrRBnipb2UANCB1nBnCY06o6XUDTttFeqtT59NW1SD
+	MZuuwgFg==;
+Received: from sslproxy08.your-server.de ([78.47.166.52])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1vd6qm-000Esp-06;
+	Tue, 06 Jan 2026 14:11:52 +0100
+Received: from localhost ([127.0.0.1])
+	by sslproxy08.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1vd6qk-000Fm9-1l;
+	Tue, 06 Jan 2026 14:11:50 +0100
+Message-ID: <545a9978-41fb-485b-8ad8-fe759322d4a4@iogearbox.net>
+Date: Tue, 6 Jan 2026 14:11:49 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] bpftool: Add 'prepend' option for tcx attach to insert
+ at chain start
+To: gyutae.opensource@navercorp.com, Quentin Monnet <qmo@kernel.org>,
+ bpf@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Gyutae Bae <gyutae.bae@navercorp.com>,
+ Siwan Kim <siwan.kim@navercorp.com>, Daniel Xu <dxu@dxuuu.xyz>,
+ Jiayuan Chen <jiayuan.chen@linux.dev>, Tao Chen <chen.dylane@linux.dev>,
+ Kumar Kartikeya Dwivedi <memxor@gmail.com>
+References: <43c23468-530b-45f3-af22-f03484e5148c@kernel.org>
+ <20260106085527.4774-1-gyutae.opensource@navercorp.com>
+Content-Language: en-US
+From: Daniel Borkmann <daniel@iogearbox.net>
+Autocrypt: addr=daniel@iogearbox.net; keydata=
+ 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
+In-Reply-To: <20260106085527.4774-1-gyutae.opensource@navercorp.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: Clear (ClamAV 1.0.9/27872/Tue Jan  6 08:24:33 2026)
 
-Simplify trace_event_save_hist() and set_comm_cgroup() by computing
-string lengths once and storing them in local variables, rather than
-calling strlen() multiple times on the same unchanged strings. This
-makes the code clearer by eliminating redundant function calls and
-improving readability.
+Hi Gyutae,
 
-In trace_event_save_hist(), the write loop previously called strlen()
-on the hist buffer twice per iteration for both the size calculation
-and loop condition. Store the length in hist_len before entering the
-loop. In set_comm_cgroup(), strlen() was called on cgroup_path up to
-three times in succession. Store the result in cg_path_len to use in
-both the offset calculation and size parameter for subsequent append
-operations.
+On 1/6/26 9:55 AM, gyutae.opensource@navercorp.com wrote:
+> From: Gyutae Bae <gyutae.bae@navercorp.com>
+> 
+> Add support for the 'prepend' option when attaching tcx_ingress and
+> tcx_egress programs. This option allows inserting a BPF program at
+> the beginning of the TCX chain instead of appending it at the end.
+> 
+> The implementation queries the first program ID in the chain and uses
+> BPF_F_BEFORE flag with the relative_id to insert the new program before
+> the existing first program. If the chain is empty, the program is simply
+> attached normally.
+> 
+> This change includes:
+> - Add get_first_tcx_prog_id() helper to retrieve the first program ID
+> - Modify do_attach_tcx() to support prepend insertion using BPF_F_BEFORE
+> - Update documentation to describe the new 'prepend' option
+> - Add bash completion support for the 'prepend' option on tcx attach types
+> - Add example usage in the documentation
+> 
+> The 'prepend' option is only valid for tcx_ingress and tcx_egress attach
+> types. For XDP attach types, the existing 'overwrite' option remains
+> available.
+> 
+> Example usage:
+>    # bpftool net attach tcx_ingress name tc_prog dev lo prepend
+> 
+> This feature is useful when the order of program execution in the TCX
+> chain matters and users need to ensure certain programs run first.
 
-This simplification makes the code easier to read and maintain without
-changing program behavior.
+Could we make this a bit more generic? The internal API has BPF_F_BEFORE
+and BPF_F_AFTER flags, so we could also support relative ids. Alternatively
+"prepend" / "append" is imho also ok and the "before" / "after" could be
+added at a later point to bpftool.
 
-Signed-off-by: Wander Lairson Costa <wander@redhat.com>
----
- tools/tracing/rtla/src/trace.c |  6 ++++--
- tools/tracing/rtla/src/utils.c | 11 +++++++----
- 2 files changed, 11 insertions(+), 6 deletions(-)
+BPF_F_BEFORE as a standalone flag (and BPF_F_AFTER as a standalone) flag
+will have prepend and append behavior, so your approach of adding
+get_first_tcx_prog_id() helper to retrieve the first program id is not
+necessary, see also tcx BPF selftests [0].
 
-diff --git a/tools/tracing/rtla/src/trace.c b/tools/tracing/rtla/src/trace.c
-index 092fcab77dc4c..223ab97e50aed 100644
---- a/tools/tracing/rtla/src/trace.c
-+++ b/tools/tracing/rtla/src/trace.c
-@@ -346,6 +346,7 @@ static void trace_event_save_hist(struct trace_instance *instance,
- 	mode_t mode = 0644;
- 	char path[MAX_PATH];
- 	char *hist;
-+	size_t hist_len;
- 
- 	if (!tevent)
- 		return;
-@@ -376,9 +377,10 @@ static void trace_event_save_hist(struct trace_instance *instance,
- 	}
- 
- 	index = 0;
-+	hist_len = strlen(hist);
- 	do {
--		index += write(out_fd, &hist[index], strlen(hist) - index);
--	} while (index < strlen(hist));
-+		index += write(out_fd, &hist[index], hist_len - index);
-+	} while (index < hist_len);
- 
- 	free(hist);
- out_close:
-diff --git a/tools/tracing/rtla/src/utils.c b/tools/tracing/rtla/src/utils.c
-index 4093030e446ab..aee7f02b1e9b4 100644
---- a/tools/tracing/rtla/src/utils.c
-+++ b/tools/tracing/rtla/src/utils.c
-@@ -870,6 +870,7 @@ int set_comm_cgroup(const char *comm_prefix, const char *cgroup)
- 	DIR *procfs;
- 	int retval;
- 	int cg_fd;
-+	size_t cg_path_len;
- 
- 	if (strlen(comm_prefix) >= MAX_PATH) {
- 		err_msg("Command prefix is too long: %d < strlen(%s)\n",
-@@ -883,16 +884,18 @@ int set_comm_cgroup(const char *comm_prefix, const char *cgroup)
- 		return 0;
- 	}
- 
-+	cg_path_len = strlen(cgroup_path);
-+
- 	if (!cgroup) {
--		retval = get_self_cgroup(&cgroup_path[strlen(cgroup_path)],
--				sizeof(cgroup_path) - strlen(cgroup_path));
-+		retval = get_self_cgroup(&cgroup_path[cg_path_len],
-+				sizeof(cgroup_path) - cg_path_len);
- 		if (!retval) {
- 			err_msg("Did not find self cgroup\n");
- 			return 0;
- 		}
- 	} else {
--		snprintf(&cgroup_path[strlen(cgroup_path)],
--				sizeof(cgroup_path) - strlen(cgroup_path), "%s/", cgroup);
-+		snprintf(&cgroup_path[cg_path_len],
-+				sizeof(cgroup_path) - cg_path_len, "%s/", cgroup);
- 	}
- 
- 	snprintf(cgroup_procs, MAX_PATH, "%s/cgroup.procs", cgroup_path);
--- 
-2.52.0
+Thanks,
+Daniel
 
+   [0] tools/testing/selftests/bpf/prog_tests/tc_links.c
 
