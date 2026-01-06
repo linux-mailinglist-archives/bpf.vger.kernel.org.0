@@ -1,296 +1,244 @@
-Return-Path: <bpf+bounces-77974-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77975-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E8C5CF96F9
-	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 17:46:33 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5DC7CF97FC
+	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 18:00:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 51FE63052ED5
-	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 16:44:06 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id AC6EA302A462
+	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 17:00:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BD0F33B6E9;
-	Tue,  6 Jan 2026 16:43:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E28D280327;
+	Tue,  6 Jan 2026 17:00:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="rZcsN54B"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="u2HcALvs"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B8AF33ADB9;
-	Tue,  6 Jan 2026 16:43:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4FB92F6562
+	for <bpf@vger.kernel.org>; Tue,  6 Jan 2026 17:00:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767717821; cv=none; b=a9Im5WuRnhWF6Wju8RWd/7GuvcCalJnS7bRG72edy/8zrG97qkSKBSyaGCAPiAex5dhXBvlWudqNy8wHPNlwg5jS9c5bBJhgKkfsIX7c3MBYS7FGjGze7MTVA+BdovTdD9lYESJInpP//+7CYBVQANsezAkpXdsnViwjqxaLCHA=
+	t=1767718808; cv=none; b=G3Q40vFQkdxZHol1Ow7/nUSKaI+PC0aasvwkZ/yFwveAntAnADdy2l1sxGIA0JfthLsYHUPkZA4uB1RBR5stIZhZZDRnNsTY1XQ4qrbEJLvZMpibzhRhPHkAvkTrq5UntdH7+TTIL3SfSX59Z038WTm/xluHEn+/DNo+gI5e8lA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767717821; c=relaxed/simple;
-	bh=JFUJGb6a2tiXXuw/l9L5ZI/JHw7GzkLasqeAZ17OdR4=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=bexOoB+B1jxNDnkn2HueoCbolCCtvcBynk+HxQ4hZGo7kiQv/MtuWH2VsmEc97jSo38vm8sxzhX1g0ysuREa7PEbRfemMY4593Auod5Lm+iZm4vW37dU/03vrW1wUeifSKNOxBu5aox/RPDGdaFhq7doq9+vNJAHcXvl7UpQspI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=rZcsN54B; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 606G04n5017255;
-	Tue, 6 Jan 2026 16:43:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=Hvjq7R
-	AJM+qrNyt4O58uFTb81BE3vAUuat6DzFjDnoE=; b=rZcsN54BDc9sRcTiVN8lA0
-	TcCgtXubk4tLidxvs2QNbOiJSXc9S3pJmH/laaCM42jEl8y6OnDgXUCtTH8eg+Am
-	TYfU09JrC7s7raH8kzFR20V5nQ6GS+lU8SbkIsICOmmPLSplxEUlmckG9aovBYKW
-	YYhvwu8vkizlwOzFuz9kgTDbHzOsjkf6pNPAsGRDrJvBEDB0o59Aht35B+bwnL2j
-	crSDZ1+rz7cbYpW4CM8ID70PPktYQS/3YjQpZHReeXBB4CqXMWBoQoGaTIpItEIu
-	0KGOU/UB886lknWIa3xK5/W/LpF5JNThz5HP4QS7pZxMkjE1ViB7W5i3xkVUjvfg
-	==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4betu64uyc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 06 Jan 2026 16:43:34 +0000 (GMT)
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 606GaFS7032159;
-	Tue, 6 Jan 2026 16:43:34 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4betu64uy7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 06 Jan 2026 16:43:34 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 606DvBnc012604;
-	Tue, 6 Jan 2026 16:43:33 GMT
-Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4bffnjc8g6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 06 Jan 2026 16:43:33 +0000
-Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
-	by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 606GhEvP31785662
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 6 Jan 2026 16:43:15 GMT
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2841458056;
-	Tue,  6 Jan 2026 16:43:32 +0000 (GMT)
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id CE05158052;
-	Tue,  6 Jan 2026 16:43:29 +0000 (GMT)
-Received: from [9.111.89.66] (unknown [9.111.89.66])
-	by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Tue,  6 Jan 2026 16:43:29 +0000 (GMT)
-Message-ID: <ba9e9b96-5782-46a2-ba1f-c2b679b7ea3d@linux.ibm.com>
-Date: Tue, 6 Jan 2026 22:13:27 +0530
+	s=arc-20240116; t=1767718808; c=relaxed/simple;
+	bh=oxIVZtcibxIdlrQ7G9EZOx7tfCuyfYgUcq67L6JvSzw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Oj21SJ6bL9Vi2UcnkeKHfzYimzvlQmNxLBIelQGJUvArMd80D7UfCEIy6pFgZlC7FkgVf/9bVhs8QXNlVSCLQOSEz0aieh6umpVPVdXL2bNvyYZluZV4ayO1cJ3oDBsqKXlFGoeDytfOVe5cUmorlQn5XjPbZcLSH88esjwrP4k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=u2HcALvs; arc=none smtp.client-ip=91.218.175.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1767718803;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZUTAxF7YINRUTHUdOTMsQNv3ktVF4OtuYgRb7ZMltyA=;
+	b=u2HcALvs0CiGxOjd5OFYr+fS1XYGuRKqyjHukvxkiJnfA3MC0JEXVHITaQ+6W5Y70JTImk
+	yXyiQ6dz2eOCRPUm4ir8bZZbyv9Fz7amJgEkfNzJYTOFeUWGr0GwEDAZQbJDqdYPODEtfF
+	YFnz3mAX8PGtvyQnasCG9F/Rdwyz4ec=
+From: Leon Hwang <leon.hwang@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Leon Hwang <leon.hwang@linux.dev>,
+	Seth Forshee <sforshee@kernel.org>,
+	Yuichiro Tsuji <yuichtsu@amazon.com>,
+	Andrey Albershteyn <aalbersh@redhat.com>,
+	Willem de Bruijn <willemb@google.com>,
+	Jason Xing <kerneljasonxing@gmail.com>,
+	Paul Chaignon <paul.chaignon@gmail.com>,
+	Mykyta Yatsenko <yatsenko@meta.com>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	Anton Protopopov <a.s.protopopov@gmail.com>,
+	Amery Hung <ameryhung@gmail.com>,
+	Rong Tao <rongtao@cestc.cn>,
+	linux-kernel@vger.kernel.org,
+	linux-api@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	kernel-patches-bot@fb.com
+Subject: [PATCH bpf-next v4 1/9] bpf: Extend bpf syscall with common attributes support
+Date: Wed,  7 Jan 2026 00:58:59 +0800
+Message-ID: <20260106165907.53631-2-leon.hwang@linux.dev>
+In-Reply-To: <20260106165907.53631-1-leon.hwang@linux.dev>
+References: <20260106165907.53631-1-leon.hwang@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: kernel build failure when CONFIG_DEBUG_INFO_BTF and CONFIG_KCSAN
- are enabled
-From: Nilay Shroff <nilay@linux.ibm.com>
-To: Alan Maguire <alan.maguire@oracle.com>, Jiri Olsa <olsajiri@gmail.com>
-Cc: bpf@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
-References: <42a1b4b0-83d0-4dda-b1df-15a1b7c7638d@linux.ibm.com>
- <aSgz3h0Ywa6i3gKT@krava> <214308ce-763c-47a8-8719-70564b3ef49c@oracle.com>
- <65e3ff98-4490-413e-a075-c1df8e7b2bd1@linux.ibm.com>
- <a9643691-f456-4414-a13f-a50abf1ac8b4@oracle.com>
- <6e326cbf-2f19-4619-aa27-3e8b72835b03@linux.ibm.com>
-Content-Language: en-US
-In-Reply-To: <6e326cbf-2f19-4619-aa27-3e8b72835b03@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Authority-Analysis: v=2.4 cv=QbNrf8bv c=1 sm=1 tr=0 ts=695d3bb6 cx=c_pps
- a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
- a=IkcTkHD0fZMA:10 a=vUbySO9Y5rIA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=yPCof4ZbAAAA:8 a=iowt1JT-1UugtLDoFqgA:9
- a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-Proofpoint-ORIG-GUID: oaiXtfYn4eFo8SbU6b8ohRwXaELvxluS
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTA2MDE0MSBTYWx0ZWRfX5LQSQQa3wT7C
- MakpDf/BPQ2YEIQCMI6oj8aDewNZr7NICDFVPEe2Pzl9r1KG82VG41jBXdUag1uo0WVFe/GJfLB
- 2SaYior7J7umNlQrrdUG5R8nNSgDDTzUJEzJPpysr6CDdcO2EwbLW/mHbC1ofxlm+5U8m36Wa6g
- J7fhi+KqNuaVkbzZb9zfU9ntgIwJDkZXdBcZYA1WXVwv5NKV0RfbihDTmsmwEfIBdQazyvOpsLy
- hNiYKwDODDlxG7bXF7l/F39zi1w6ei3ztgXTnLklNq9LGI8bVQCZ1FaeZhsfQtOt+z1xmgUg6fk
- v0c5sJY/5sMX2GjXHJ7Q7E9Cq75yLXEJhAMwsqPtd4Wv9m4nU4qS+CzGJIkPjN0jrHbHIfjiYjO
- 2a6bYECxO2ekZEIUdcC2gHTz9OcdpXoNJJ6Tyxvv1zJsK0fRDG4+h6AKjecpjAFnQIqJUJ1EW1X
- HTK5Fuz8r7oPZddtnpw==
-X-Proofpoint-GUID: xu4xudJNxNuO1ByHqorCGFN43gitJpGV
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2026-01-06_01,2026-01-06_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- spamscore=0 clxscore=1015 bulkscore=0 suspectscore=0 priorityscore=1501
- adultscore=0 lowpriorityscore=0 impostorscore=0 phishscore=0 malwarescore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2512120000 definitions=main-2601060141
+X-Migadu-Flow: FLOW_OUT
 
-Hi Alan,
+Extend the BPF syscall to support a set of common attributes shared
+across all BPF commands:
 
-Gentle ping on this patch...
+1. 'log_buf': User-provided buffer for storing logs.
+2. 'log_size': Size of the log buffer.
+3. 'log_level': Log verbosity level.
+4. 'log_true_size': The size of log reported by kernel.
 
-Did you get a chance to formally send this path upstream?
-On the latest upstream kernel, I could still reproduce this 
-error.
+These common attributes are passed as the 4th argument to the BPF
+syscall, with the 5th argument specifying the size of this structure.
 
-Thanks,
---Nilay
+To indicate the use of these common attributes from userspace, a new flag
+'BPF_COMMON_ATTRS' ('1 << 16') is introduced. This flag is OR-ed into the
+'cmd' field of the syscall.
 
-On 11/28/25 3:14 PM, Nilay Shroff wrote:
-> 
-> 
-> On 11/28/25 1:23 PM, Alan Maguire wrote:
->> On 28/11/2025 06:27, Nilay Shroff wrote:
->>>
->>> Hi Alan,
->>>
->>> On 11/27/25 9:06 PM, Alan Maguire wrote:
->>>> On 27/11/2025 11:19, Jiri Olsa wrote:
->>>>> On Wed, Nov 26, 2025 at 03:59:28PM +0530, Nilay Shroff wrote:
->>>>>> Hi,
->>>>>>
->>>>>> I am encountering the following build failures when compiling the kernel source checked out
->>>>>> from the for-6.19/block branch [1]:
->>>>>>
->>>>>>   KSYMS   .tmp_vmlinux2.kallsyms.S
->>>>>>   AS      .tmp_vmlinux2.kallsyms.o
->>>>>>   LD      vmlinux.unstripped
->>>>>>   BTFIDS  vmlinux.unstripped
->>>>>> WARN: multiple IDs found for 'task_struct': 110, 3046 - using 110
->>>>>> WARN: multiple IDs found for 'module': 170, 3055 - using 170
->>>>>> WARN: multiple IDs found for 'file': 697, 3130 - using 697
->>>>>> WARN: multiple IDs found for 'vm_area_struct': 714, 3140 - using 714
->>>>>> WARN: multiple IDs found for 'seq_file': 1060, 3167 - using 1060
->>>>>> WARN: multiple IDs found for 'cgroup': 2355, 3304 - using 2355
->>>>>> WARN: multiple IDs found for 'inode': 553, 3339 - using 553
->>>>>> WARN: multiple IDs found for 'path': 586, 3369 - using 586
->>>>>> WARN: multiple IDs found for 'bpf_prog': 2565, 3640 - using 2565
->>>>>> WARN: multiple IDs found for 'bpf_map': 2657, 3837 - using 2657
->>>>>> WARN: multiple IDs found for 'bpf_link': 2849, 3965 - using 2849
->>>>>> [...]
->>>>>> make[2]: *** [scripts/Makefile.vmlinux:72: vmlinux.unstripped] Error 255
->>>>>> make[2]: *** Deleting file 'vmlinux.unstripped'
->>>>>> make[1]: *** [/home/src/linux/Makefile:1242: vmlinux] Error 2
->>>>>> make: *** [Makefile:248: __sub-make] Error 2
->>>>>>
->>>>>>
->>>>>> The build failure appears after commit 42adb2d4ef24 (“fs: Add the __data_racy annotation
->>>>>> to backing_dev_info.ra_pages”) and commit 935a20d1bebf (“block: Remove queue freezing
->>>>>> from several sysfs store callbacks”). However, the root cause does not seem to be specific
->>>>>
->>>>> yep, looks like __data_racy macro that adds 'volatile' to struct member is causing
->>>>> the mismatch during deduplication
->>>>>
->>>>> when you enable KCSAN some objects may opt out from it (via KCSAN_SANITIZE := n or
->>>>> such) and they will be compiled without __SANITIZE_THREAD__ macro defined which means
->>>>> __data_racy will be empty .. and we will get 2 versions of 'struct backing_dev_info'
->>>>> which cascades up to the task_struct and others
->>>>>
->>>>> not sure what's the best solution in here.. could we ignore volatile for
->>>>> the field in the struct during deduplication? 
->>>>>
->>>>
->>>> Yeah, it seems like a slightly looser form of equivalence matching might be needed.
->>>> The following libbpf change ignores modifiers in type equivalence comparison and 
->>>> resolves the issue for me. It might be too big a hammer though, what do folks think?
->>>>
->>>> From 160fb6610d75d3cdc38a9729cc17875a302a7189 Mon Sep 17 00:00:00 2001
->>>> From: Alan Maguire <alan.maguire@oracle.com>
->>>> Date: Thu, 27 Nov 2025 15:22:04 +0000
->>>> Subject: [RFC bpf-next] libbpf: BTF dedup should ignore modifiers in type
->>>>  equivalence checks
->>>>
->>>> We see identical type problems in [1] as a result of an occasionally
->>>> applied volatile modifier to kernel data structures. Such things can
->>>> result from different header include patterns, explicit Makefile
->>>> rules etc.  As a result consider types with modifiers (const, volatile,
->>>> restrict, type tag) as equivalent for dedup equivalence testing purposes.
->>>>
->>>> [1] https://lore.kernel.org/bpf/42a1b4b0-83d0-4dda-b1df-15a1b7c7638d@linux.ibm.com/
->>>>
->>>> Reported-by: Nilay Shroff <nilay@linux.ibm.com>
->>>> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
->>>> ---
->>>>  tools/lib/bpf/btf.c | 27 +++++++++++++++++++++------
->>>>  1 file changed, 21 insertions(+), 6 deletions(-)
->>>>
->>>> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
->>>> index e5003885bda8..384194a6cdae 100644
->>>> --- a/tools/lib/bpf/btf.c
->>>> +++ b/tools/lib/bpf/btf.c
->>>> @@ -4678,12 +4678,10 @@ static int btf_dedup_is_equiv(struct btf_dedup *d, __u32 cand_id,
->>>>  	cand_kind = btf_kind(cand_type);
->>>>  	canon_kind = btf_kind(canon_type);
->>>>  
->>>> -	if (cand_type->name_off != canon_type->name_off)
->>>> -		return 0;
->>>> -
->>>>  	/* FWD <--> STRUCT/UNION equivalence check, if enabled */
->>>> -	if ((cand_kind == BTF_KIND_FWD || canon_kind == BTF_KIND_FWD)
->>>> -	    && cand_kind != canon_kind) {
->>>> +	if ((cand_kind == BTF_KIND_FWD || canon_kind == BTF_KIND_FWD) &&
->>>> +	    cand_type->name_off == canon_type->name_off &&
->>>> +	    cand_kind != canon_kind) {
->>>>  		__u16 real_kind;
->>>>  		__u16 fwd_kind;
->>>>  
->>>> @@ -4700,7 +4698,24 @@ static int btf_dedup_is_equiv(struct btf_dedup *d, __u32 cand_id,
->>>>  		return fwd_kind == real_kind;
->>>>  	}
->>>>  
->>>> -	if (cand_kind != canon_kind)
->>>> +	/*
->>>> +	 * Types are considered equivalent if modifiers (const, volatile,
->>>> +	 * restrict, type tag) are present for one but not the other.
->>>> +	 */
->>>> +	if (cand_kind != canon_kind) {
->>>> +		__u32 next_cand_id = cand_id;
->>>> +		__u32 next_canon_id = canon_id;
->>>> +
->>>> +		if (btf_is_mod(cand_type))
->>>> +			next_cand_id = cand_type->type;
->>>> +		if (btf_is_mod(canon_type))
->>>> +			next_canon_id = canon_type->type;
->>>> +		if (cand_id == next_cand_id && canon_id == next_canon_id)
->>>> +			return 0;
->>>> +		return btf_dedup_is_equiv(d, next_cand_id, next_canon_id);
->>>> +	}
->>>> +
->>>> +	if (cand_type->name_off != canon_type->name_off)
->>>>  		return 0;
->>>>  
->>>>  	switch (cand_kind) {
->>>
->>> Thanks for your patch! I just applied it on my tree and rebuild the 
->>> tree. However I am still seeing the same compilation warnings. I am
->>> using the latest for-6.19/block branch[1].
->>>
->>> [1] https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux.git/log/?h=for-6.19/block 
->>>
->>
->> hi Nilay,
->>
->> The tricky part with testing this is ensure that pahole is using the updated libbpf 
->> rather than just the kernel itself. Did you  "make install" the modified libbpf and 
->> ensure that pahole was using it by building pahole with the cmake option 
->> -DLIBBPF_EMBEDDED=OFF ? That's the easiest way to ensure the change makes it into pahole; 
->> you can check shared library usage using  "ldd /usr/local/bin/pahole". The other option 
->> is to apply the change to the embedded libbpf in the lib/bpf directory in pahole.
->>
->> I tested the for-6.19/block branch with your config before and after making the
->> above change and applying it to pahole and things woorked. If that's doable from your
->> side that would be great. Thanks!
->>
-> Thanks Alan! And obviously I didn't updated pahole using patched libbpf. Now I have 
-> just updated pahole which uses the your patched libbpf. With this change, I confirmed
-> that your patch fixes this compilation warnings for me. 
-> 
-> # which pahole
-> /usr/local/bin/pahole
-> 
-> # ldd /usr/local/bin/pahole | grep libbpf
-> 	libbpf.so.1 => /usr/local/lib64/libbpf.so.1 (0x00007fffa2fc0000)
-> 
-> With this test, please feel free to add,
-> 
-> Acked-by: Nilay Shroff<nilay@linux.ibm.com>
-> 
+When 'cmd & BPF_COMMON_ATTRS' is set, the kernel will copy the common
+attributes from userspace into kernel space for use.
+
+Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
+---
+ include/linux/syscalls.h       |  3 ++-
+ include/uapi/linux/bpf.h       |  8 ++++++++
+ kernel/bpf/syscall.c           | 25 +++++++++++++++++++++----
+ tools/include/uapi/linux/bpf.h |  8 ++++++++
+ 4 files changed, 39 insertions(+), 5 deletions(-)
+
+diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
+index cf84d98964b2..729659202d77 100644
+--- a/include/linux/syscalls.h
++++ b/include/linux/syscalls.h
+@@ -937,7 +937,8 @@ asmlinkage long sys_seccomp(unsigned int op, unsigned int flags,
+ asmlinkage long sys_getrandom(char __user *buf, size_t count,
+ 			      unsigned int flags);
+ asmlinkage long sys_memfd_create(const char __user *uname_ptr, unsigned int flags);
+-asmlinkage long sys_bpf(int cmd, union bpf_attr __user *attr, unsigned int size);
++asmlinkage long sys_bpf(int cmd, union bpf_attr __user *attr, unsigned int size,
++			struct bpf_common_attr __user *attr_common, unsigned int size_common);
+ asmlinkage long sys_execveat(int dfd, const char __user *filename,
+ 			const char __user *const __user *argv,
+ 			const char __user *const __user *envp, int flags);
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 84ced3ed2d21..dcae1f3e50b7 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -986,6 +986,7 @@ enum bpf_cmd {
+ 	BPF_PROG_STREAM_READ_BY_FD,
+ 	BPF_PROG_ASSOC_STRUCT_OPS,
+ 	__MAX_BPF_CMD,
++	BPF_COMMON_ATTRS = 1 << 16, /* Indicate carrying bpf_common_attr. */
+ };
+ 
+ enum bpf_map_type {
+@@ -1489,6 +1490,13 @@ struct bpf_stack_build_id {
+ 	};
+ };
+ 
++struct bpf_common_attr {
++	__u64 log_buf;
++	__u32 log_size;
++	__u32 log_level;
++	__u32 log_true_size;
++};
++
+ #define BPF_OBJ_NAME_LEN 16U
+ 
+ enum {
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 6dd2ad2f9e81..8f464b847405 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -6160,8 +6160,10 @@ static int prog_assoc_struct_ops(union bpf_attr *attr)
+ 	return ret;
+ }
+ 
+-static int __sys_bpf(enum bpf_cmd cmd, bpfptr_t uattr, unsigned int size)
++static int __sys_bpf(enum bpf_cmd cmd, bpfptr_t uattr, unsigned int size,
++		     bpfptr_t uattr_common, unsigned int size_common)
+ {
++	struct bpf_common_attr common_attrs;
+ 	union bpf_attr attr;
+ 	int err;
+ 
+@@ -6175,6 +6177,20 @@ static int __sys_bpf(enum bpf_cmd cmd, bpfptr_t uattr, unsigned int size)
+ 	if (copy_from_bpfptr(&attr, uattr, size) != 0)
+ 		return -EFAULT;
+ 
++	memset(&common_attrs, 0, sizeof(common_attrs));
++	if (cmd & BPF_COMMON_ATTRS) {
++		err = bpf_check_uarg_tail_zero(uattr_common, sizeof(common_attrs), size_common);
++		if (err)
++			return err;
++
++		cmd &= ~BPF_COMMON_ATTRS;
++		size_common = min_t(u32, size_common, sizeof(common_attrs));
++		if (copy_from_bpfptr(&common_attrs, uattr_common, size_common) != 0)
++			return -EFAULT;
++	} else {
++		size_common = 0;
++	}
++
+ 	err = security_bpf(cmd, &attr, size, uattr.is_kernel);
+ 	if (err < 0)
+ 		return err;
+@@ -6310,9 +6326,10 @@ static int __sys_bpf(enum bpf_cmd cmd, bpfptr_t uattr, unsigned int size)
+ 	return err;
+ }
+ 
+-SYSCALL_DEFINE3(bpf, int, cmd, union bpf_attr __user *, uattr, unsigned int, size)
++SYSCALL_DEFINE5(bpf, int, cmd, union bpf_attr __user *, uattr, unsigned int, size,
++		struct bpf_common_attr __user *, uattr_common, unsigned int, size_common)
+ {
+-	return __sys_bpf(cmd, USER_BPFPTR(uattr), size);
++	return __sys_bpf(cmd, USER_BPFPTR(uattr), size, USER_BPFPTR(uattr_common), size_common);
+ }
+ 
+ static bool syscall_prog_is_valid_access(int off, int size,
+@@ -6343,7 +6360,7 @@ BPF_CALL_3(bpf_sys_bpf, int, cmd, union bpf_attr *, attr, u32, attr_size)
+ 	default:
+ 		return -EINVAL;
+ 	}
+-	return __sys_bpf(cmd, KERNEL_BPFPTR(attr), attr_size);
++	return __sys_bpf(cmd, KERNEL_BPFPTR(attr), attr_size, KERNEL_BPFPTR(NULL), 0);
+ }
+ 
+ 
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 6b92b0847ec2..2cb847b38f20 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -986,6 +986,7 @@ enum bpf_cmd {
+ 	BPF_PROG_STREAM_READ_BY_FD,
+ 	BPF_PROG_ASSOC_STRUCT_OPS,
+ 	__MAX_BPF_CMD,
++	BPF_COMMON_ATTRS = 1 << 16, /* Indicate carrying bpf_common_attr. */
+ };
+ 
+ enum bpf_map_type {
+@@ -1489,6 +1490,13 @@ struct bpf_stack_build_id {
+ 	};
+ };
+ 
++struct bpf_common_attr {
++	__u64 log_buf;
++	__u32 log_size;
++	__u32 log_level;
++	__u32 log_true_size;
++};
++
+ #define BPF_OBJ_NAME_LEN 16U
+ 
+ enum {
+-- 
+2.52.0
 
 
