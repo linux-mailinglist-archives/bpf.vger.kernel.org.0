@@ -1,196 +1,235 @@
-Return-Path: <bpf+bounces-77896-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77897-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id D83C6CF6105
-	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 01:11:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 026F3CF6178
+	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 01:36:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 01804303C980
-	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 00:11:34 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D2CA83046575
+	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 00:36:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CF12F4F1;
-	Tue,  6 Jan 2026 00:11:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF0E81BBBE5;
+	Tue,  6 Jan 2026 00:36:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RGJRLYWu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RegCasxz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C90017993
-	for <bpf@vger.kernel.org>; Tue,  6 Jan 2026 00:11:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D56624A33
+	for <bpf@vger.kernel.org>; Tue,  6 Jan 2026 00:36:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767658292; cv=none; b=Z8W2Fi/aecRwj21VOU4yBDx6uSOwkiW/0QXDPpyFyjflUGdAyNwfEUXBT7Wajh6yhDSVEhWKszbppiACLhQjlynC/X05JX0TPFJiy/93PY3nQv12e7qUjfGeQlSmZuYiAZ0PK2WPwBxeLifjVldPqsm5WO9DC2PAEAlc7BuGyIs=
+	t=1767659781; cv=none; b=EaciryKkkMFOgdHq3rcPTlwKdNxjHKJKYAUNmi+uY5ueERJQDEXNm16RMP6bWqE1mVcSwpU5iEOCYLKIELAXUapsZBFaozKD/LYP3ocK4k8tDm/ZxyimQ1NLoc4pgsmLw28xXJ+PuhyoubYcrTHL7jIrE5UE9QuAo4cgYoQZFOI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767658292; c=relaxed/simple;
-	bh=F6+3je+EEmJmWIQ0SfdR3X2JK05w+tFnGByabsfYQOE=;
+	s=arc-20240116; t=1767659781; c=relaxed/simple;
+	bh=1luL4mdhsHlNFo6fvzhLuVz0DsEkiUFCsmlZ0pzsSrc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MiqCjMcdwy+SdRilqXDJS4nZB6LZRweX2XvKOSG83NtmNvQTvuvAj7/bNzko8fUpIJgESBpMVJeCUw3ndU7JCGKSF84ngZMACe0BlrZOFqRfU2m+HoXfNRmM3NAKCwEur2psdPDyVPZUNk0vBg2hZquys7IQIdiljyxATwcIQgs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RGJRLYWu; arc=none smtp.client-ip=209.85.216.48
+	 To:Cc:Content-Type; b=Nun8PBzwEklkVjKPIET+BEdaFUf5LDBUqrMHBykp4OijB9IcdmDwVon1YtwfCPSO8wS8XDW92DpCXawQnf46FdiZ01xV1hM0zqotUDhrpV6AvTEvijFV6AT9+EItygi4idubLQ3T3IqXZPpcu62W9qUUqQQ3Xjqgric/DeeXDP4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RegCasxz; arc=none smtp.client-ip=209.85.216.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-34c3cb504efso511031a91.2
-        for <bpf@vger.kernel.org>; Mon, 05 Jan 2026 16:11:30 -0800 (PST)
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-34aa62f9e74so624039a91.1
+        for <bpf@vger.kernel.org>; Mon, 05 Jan 2026 16:36:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767658290; x=1768263090; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1767659779; x=1768264579; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=F6+3je+EEmJmWIQ0SfdR3X2JK05w+tFnGByabsfYQOE=;
-        b=RGJRLYWuauOf8FhOLxco6O68Frp5yiMECL+YxeGYnxbyrWfYXczrbTe0NhmB+OqETR
-         nY5vrcxu6y8c1H99C2IRF1phVezJvyS9itDQKK6JxJwNtroSDMIJbNsf++Rd5LiYljQ3
-         42CnBdnTbGFg3fFO42uDwsUfImvRm3XYC6VTFJjhAuA8oi2Qesvh6JSbjB5Jb92dILLP
-         1osmwr4H2YSXfnyUDhBwrUo/57PF/MM1WEEKazdwdDxPVQXZL/eNWUqkqRmctXP55dp8
-         sH1/h5vavnw9+RiDD3lYeU8ftL9oIhWVjpiIZmhsQmNxYUy0TB8OqtM2TNDp1ieeAVLc
-         yJoA==
+        bh=GzDWosFi526k2GTj3TOJmox+IqiH+JnvR+Pd+Lyo/TI=;
+        b=RegCasxzmkErNkE4cK0zumMESazgHslo6/dSwP02byv3axaxKQ9HLob0I/alxF7F9D
+         XXP2NIsmRs0bUSJQBoj/gHIN3DkifzileY085uOLtr4ckdNaUMW35W27NbRcv/lz9Mqt
+         kfi97MDWuVEKGSyah2pYrE/mfxUsA6AzLbmyfyQe1+P+AvKKldw7ZTDRK3xdBWQwzPLq
+         C7yoTPPezne2YQanJ8dWBLXHGrkj48PHe+nurr9jDo7tIJNMwtesPFYUyLofp7GpZfxp
+         wDUnkvzUp+yHlVrQIHqfU0/8fZUqduv0Niqf5+gPyKmRMeuRdfKRDMRGAm0ODptK2qcG
+         LVkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767658290; x=1768263090;
+        d=1e100.net; s=20230601; t=1767659779; x=1768264579;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=F6+3je+EEmJmWIQ0SfdR3X2JK05w+tFnGByabsfYQOE=;
-        b=F8tsLexPB2u93gUZgzeL+IjrJQwIse1mKOxeVk4eI9jHh0X6RRYOnx4lQijeyi3NYA
-         xGJTaNE+8oZuHy7mAU2gQmqqHDxWX1VwS+AKyBvd3yq+ihTbk/ev9SSCXR8K0PPXLGJv
-         nXU+15wocyMUfPAGoCeR0zSRo6H/0Pub2nYXrw4pN+iyLNF1/nZdxmADR2IAqi9H1+Vu
-         zUd8ZXGqgjslJL4RNu5mhqJ9bVP9U3YVL/PRxpBtygMBrNlQijo8s3V4r2U9+8fvrspg
-         1PWNzCaXL+sMEn2VLal7MQgnh7sx9WZuMPzrvjXQt4sm0wslxiWqSiGtRKy+iX8M5Zgt
-         qoiQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU8IWe7YVuRJUpY6nFfnfM3rkSDT0yi3Owj/aVJg4LG2NUnps0AgiI4+vUPlFBVztdQNNQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyjUj5ygphJWYxXKL8EwsFEaVSrbLaTvYsX+P9KWHBOxfN8PUVu
-	acu7Kwp4MyYKijT70yIWd3wmnStfUQ1LHQZ6lnZ6cmawWK0nz0PlRTl+FTXWP42ZzhqGvhOvjfT
-	gtaStBjuvYXIeVwFnytL8mO9JBWewAzA=
-X-Gm-Gg: AY/fxX5VDtEPo0RuJvwgKB7c2c4Zf3lVX+lbJ/SJuIjDQxR+nnGw5CR2wYfsPP9iFaw
-	djqxMVDSKcVEOF/DEHOot6aLdaoCTceE7pByf/Lf1pLVshaAm30XLfrO5afTEd8vnuPJaUk9tHh
-	kfnum9tY47D950jv9lEOdz/tNvWAuDQ31Rs3qIR4fkifAlkvR3VJUf9JN651YK8P0gzJmmTNfz0
-	9wPRehBWsQo3Z3pNjfq+cun1iqbxCl0HJpkyZa2H+skhDnqiGm7OfhOQCZdJsEUhPl0+1qE2t64
-	99bdYBYhz7Fqm5/lo86dcg==
-X-Google-Smtp-Source: AGHT+IF1W5jEPGTE3aO4fb62l3pc/M9aoHV+BLLJRBDWE9QCDCwnUu3zt/BFxfFOf8AaVmseyHCr4NqXQK3qwatTR5s=
-X-Received: by 2002:a17:90a:d2c6:b0:340:b908:9665 with SMTP id
- 98e67ed59e1d1-34f5f32f41bmr868940a91.37.1767658289829; Mon, 05 Jan 2026
- 16:11:29 -0800 (PST)
+        bh=GzDWosFi526k2GTj3TOJmox+IqiH+JnvR+Pd+Lyo/TI=;
+        b=PsNGOr6V+DRNXQO/iyN0nemYQf4Ses1vyW0jH6zoFgi8BmLUqlchDqvzmpyUB/ngME
+         xXYgY7O/T348mHiK1jAWqvXl8WL5eC46ckJGxw27V6nnXxBzrLDltQ4CKsR3FwUi0lzU
+         COY6uDJ63DtLjm5DzR/BrzCnQ/cOaVrfRt2yF5mvHkE1lU5YQPyN7XrEgIy7S3Iu9tYi
+         ZEGrw9BZH6YvZK6YmvVetnOKtivhf2Z5M6lVzoDnRiI6GQA1L+RjHhm62vYA+bAmc5zX
+         dL9zl3Si7cpbRSAMse70aYgIXdimYmwM9RtxLLqcxdAOT1gg/w4C9L0jzu+Ij1vtPMxL
+         M1eA==
+X-Forwarded-Encrypted: i=1; AJvYcCXuUJyQ7/Pbvc7YAS+Da3aVkfkY47p8t9cnPG/kZfacRFP3UgSHVG6pC4RMNajyAIH4VWM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YySc7uQL5qpPzsI/wZiCb48CAKcrt4+cHlgMCdxSNIetDqw9nkD
+	PRTcelH95sU2zU+j1ZtyQh8lgC9W6BxB0I8pCrcgXrCcj3Nj4rInd8PTdJS8V1tJmp91aKidYkL
+	xLl/ZfCOeBIwj9h31Otp33tZrMYvWMzQ=
+X-Gm-Gg: AY/fxX4GSj/lUudqXkMk8U+DcsxTcZRu65waw2PFZTXbOYZRZyLxf2Ph1yICPH6H7sQ
+	JDitR3ZFiEKEKlU5bUQjYFLg5Qz9CKkWOWEcEwxAV5Pp9NuNdzRHOzOpjHp/wmjjY87xTqKVPTd
+	fHrBXziR5PVw5PtSw9KetbpbD0f+/9qepRv4N/reNLdJZURYL6DresqEAJOzB6BNlyzvox5QD7B
+	0hJYZQepFHlDXurzE1zM4Xo6AJEjqld8191/8FtK0NLyaVQfYjuxR9Dh3dKkqEEYfl2p5W/nGn5
+	ZtFDnbB3QL0=
+X-Google-Smtp-Source: AGHT+IGaq4nV9rT2IikXOLC5buF0kWJUKb6Pxr5o1fVAMfZzFiIuIaqDkHL0CEPQYno51nkfNN2TcDZe2Qyyt6XlNcY=
+X-Received: by 2002:a17:90b:3843:b0:32b:c9c0:2a11 with SMTP id
+ 98e67ed59e1d1-34f5f26e0cfmr873124a91.4.1767659779081; Mon, 05 Jan 2026
+ 16:36:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251215091730.1188790-1-alan.maguire@oracle.com>
- <20251215091730.1188790-2-alan.maguire@oracle.com> <CAEf4Bzaw6KRU2yDbawOe+eusCjCwvg0FwhkpvGA3HE=gC=ZLbQ@mail.gmail.com>
- <42914a9b-0f34-4cee-bc36-4847373fa0b5@oracle.com> <CAEf4BzZuikZK5cZQyV=ge6UBKHxc+dwTLjcHZB_1Smw1AwntNA@mail.gmail.com>
- <e2df60e1-db17-4b75-8e0e-56fcfdb53686@oracle.com> <CAEf4BzarPLAcwKApft_nBVM_d3WW58zytZfLQVz387TF2c2FVg@mail.gmail.com>
- <CAADnVQ+achE6ebfCxyfHyxMMFJ-Oq=hUK=JkWUAGwz+7HeV4Qw@mail.gmail.com>
- <22c54404-512c-4229-8c93-8ec1321619e0@oracle.com> <CAADnVQ+VU_nRgPS0H6j6=macgT49+eW7KCf7zPEn9V5K0HN5-A@mail.gmail.com>
- <19a4596d-06dc-42ae-b149-cc2b52fffae9@oracle.com>
-In-Reply-To: <19a4596d-06dc-42ae-b149-cc2b52fffae9@oracle.com>
+References: <20251218113051.455293-1-dolinux.peng@gmail.com>
+ <20251218113051.455293-5-dolinux.peng@gmail.com> <CAEf4BzbSMwW4es5D9i=bpSjALo8u+oW-9vdQ7=DBoTBtMoJ1Tg@mail.gmail.com>
+ <CAErzpmv1N1JA+=c6xxdYTqANqSBRaRauD2wzZiwUS+VeWQG14A@mail.gmail.com>
+ <CAEf4BzZrZZ-YHHAUE-izLaAexm4VZ7aCurKnOofCtKaV=D9qvQ@mail.gmail.com> <CAErzpmvpmx=WM7kHLC-WFbCx0=OpK5f8KJJuOA8gyb7LmRjk2g@mail.gmail.com>
+In-Reply-To: <CAErzpmvpmx=WM7kHLC-WFbCx0=OpK5f8KJJuOA8gyb7LmRjk2g@mail.gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 5 Jan 2026 16:11:17 -0800
-X-Gm-Features: AQt7F2rJzuwfcRiuuaVgCyIvWFj0PWFvoIx4vn4W02DceGhrvAOlPrR6ywNywr0
-Message-ID: <CAEf4BzbCxGaFu5E_oYdMxzkqhtVxSnwHawcUv5jM5Sodut5cdA@mail.gmail.com>
-Subject: Re: [PATCH v8 bpf-next 01/10] btf: add kind layout encoding to UAPI
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Quentin Monnet <qmo@kernel.org>, 
-	Ihor Solodrai <ihor.solodrai@linux.dev>, dwarves <dwarves@vger.kernel.org>, 
-	bpf <bpf@vger.kernel.org>, Thierry Treyer <ttreyer@meta.com>, 
-	Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+Date: Mon, 5 Jan 2026 16:36:07 -0800
+X-Gm-Features: AQt7F2oo4zrqdALy9hXqYi2bNPhd4VHGmwOW0Y1qjwvkt9UBt3iFaAsqckLsq80
+Message-ID: <CAEf4BzZ2suink0XjpZBZoLtDXHL3eKRJHwtmRQ4M2uuAhepwow@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v10 04/13] libbpf: Optimize type lookup with
+ binary search for sorted BTF
+To: Donglin Peng <dolinux.peng@gmail.com>
+Cc: ast@kernel.org, eddyz87@gmail.com, zhangxiaoqin@xiaomi.com, 
+	ihor.solodrai@linux.dev, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	pengdonglin <pengdonglin@xiaomi.com>, Alan Maguire <alan.maguire@oracle.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 23, 2025 at 3:09=E2=80=AFAM Alan Maguire <alan.maguire@oracle.c=
-om> wrote:
+On Sat, Dec 20, 2025 at 1:38=E2=80=AFAM Donglin Peng <dolinux.peng@gmail.co=
+m> wrote:
 >
-> On 22/12/2025 19:03, Alexei Starovoitov wrote:
-> > On Sun, Dec 21, 2025 at 10:58=E2=80=AFPM Alan Maguire <alan.maguire@ora=
-cle.com> wrote:
-> >>
-> >>>
-> >>> Hold on. I'm missing how libbpf will sanitize things for older kernel=
-s?
-> >>
-> >> The sanitization we can get from layout info is for handling a kernel =
-built with
-> >> newer kernel/module BTF. The userspace tooling (libbpf and others) doe=
-s not fully
-> >> understand it due to the presence of new kinds. In such a case layout =
-data gives us
-> >> info to parse it by providing info on kind layout, and libbpf can sani=
-tize it
-> >> to be usable for some cases (where the type graph is not fatally compr=
-omised
-> >> by the lack of a kind). This will always be somewhat limited, but it
-> >> does provide more usability than we have today.
+> On Sat, Dec 20, 2025 at 1:28=E2=80=AFAM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
 > >
-> > I'm even more confused now. libbpf will sanitize BTF for the sake of
-> > user space? That's not something it ever did. libbpf sanitizes BTF
-> > only to
+> > On Thu, Dec 18, 2025 at 6:53=E2=80=AFPM Donglin Peng <dolinux.peng@gmai=
+l.com> wrote:
+> > >
+> > > On Fri, Dec 19, 2025 at 7:29=E2=80=AFAM Andrii Nakryiko
+> > > <andrii.nakryiko@gmail.com> wrote:
+> > > >
+> > > > On Thu, Dec 18, 2025 at 3:31=E2=80=AFAM Donglin Peng <dolinux.peng@=
+gmail.com> wrote:
+> > > > >
+> > > > > From: pengdonglin <pengdonglin@xiaomi.com>
+> > > > >
+> > > > > This patch introduces binary search optimization for BTF type loo=
+kups
+> > > > > when the BTF instance contains sorted types.
+> > > > >
+> > > > > The optimization significantly improves performance when searchin=
+g for
+> > > > > types in large BTF instances with sorted types. For unsorted BTF,=
+ the
+> > > > > implementation falls back to the original linear search.
+> > > > >
+> > > > > Cc: Eduard Zingerman <eddyz87@gmail.com>
+> > > > > Cc: Alexei Starovoitov <ast@kernel.org>
+> > > > > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> > > > > Cc: Alan Maguire <alan.maguire@oracle.com>
+> > > > > Cc: Ihor Solodrai <ihor.solodrai@linux.dev>
+> > > > > Cc: Xiaoqin Zhang <zhangxiaoqin@xiaomi.com>
+> > > > > Signed-off-by: pengdonglin <pengdonglin@xiaomi.com>
+> > > > > ---
+> > > > >  tools/lib/bpf/btf.c | 103 ++++++++++++++++++++++++++++++++++----=
+------
+> > > > >  1 file changed, 80 insertions(+), 23 deletions(-)
+> > > > >
+> > > >
+> > > > [...]
+> > > >
+> > > > > +       l =3D start_id;
+> > > > > +       r =3D end_id;
+> > > > > +       while (l <=3D r) {
+> > > > > +               m =3D l + (r - l) / 2;
+> > > > > +               t =3D btf_type_by_id(btf, m);
+> > > > > +               tname =3D btf__str_by_offset(btf, t->name_off);
+> > > > > +               ret =3D strcmp(tname, name);
+> > > > > +               if (ret < 0) {
+> > > > > +                       l =3D m + 1;
+> > > > > +               } else {
+> > > > > +                       if (ret =3D=3D 0)
+> > > > > +                               lmost =3D m;
+> > > > > +                       r =3D m - 1;
+> > > > > +               }
+> > > > >         }
+> > > >
+> > > > this differs from what we discussed in [0], you said you'll use tha=
+t
+> > > > approach. Can you please elaborate on why you didn't?
+> > > >
+> > > >   [0] https://lore.kernel.org/bpf/CAEf4Bzb3Eu0J83O=3DY4KA-LkzBMjtx7=
+cbonxPzkiduzZ1Pedajg@mail.gmail.com/
+> > >
+> > > Yes. As mentioned in the v8 changelog [1], the binary search approach
+> > > you referenced was implemented in versions v6 and v7 [2]. However,
+> > > testing revealed a slight performance regression. The root cause was
+> > > an extra strcmp operation introduced in v7, as discussed in [3]. Ther=
+efore,
+> > > in v8, I reverted to the approach from v5 [4] and refactored it for c=
+larity.
+> >
+> > If you keep oscillating like that this patch set will never land. 4%
+> > (500us) gain on artificial and unrealistic micro-benchmark is
+> > meaningless and irrelevant, you are just adding more work for yourself
+> > and for reviewers by constantly changing your implementation between
+> > revisions for no good reason.
 >
-> Right; it's an extension of the sanitization concept from what it does to=
-day.
-> Today we sanitize newer _program_ BTF to ensure it is acceptable to a ker=
-nel which
-> lacks specific aspects of that BTF; the goal here is to support some simp=
-le sanitization
-> of the newer _kernel_ BTF by libbpf to help tools (that know about kind l=
-ayout but may lack
-> latest kind info kernel has) to make that kernel BTF usable.
-
-Wait, is that really a goal? I get why Alexei is confused now :)
-
-I think we should stick to libbpf sanitizing only BPF program's BTFs
-for the sake of loading it into the kernel. If some user space tool is
-trying to work with kernel BTF that has BTF features that tool doesn't
-support, then we only have two reasonable options: a) tool just fails
-to process that BTF altogether or b) the tool is smart enough to
-utilize BTF layout information to know which BTF types it can safely
-skip (that's where those flags I argue for would be useful). In both
-cases libbpf's btf__parse() will succeed because libbpf can utilize
-layout info to construct a lookup table for btf__type_by_id(). And
-libbpf doesn't need to do anything beyond that, IMO.
-
-We'll teach bpftool to dump as much of BTF as possible (I mean
-`bpftool btf dump file`), so it's possible to get an idea of what part
-of BTF is not supported and show those that we know about. We could
-teach btf_dump to ignore those types that are "safe modifier-like
-reference kind" (as marked with that flag I proposed earlier), so that
-`format c` works as well (though I wouldn't recommend using such
-output as a proper vmlinux.h, users should update bpftool ASAP for
-such use cases).
-
-As far as the kernel is concerned, BTF layout is not used and should
-not be used or trusted (it can be "spoofed" by the user). It can
-validate it for sanity, but that's pretty much it. Other than that, if
-the kernel doesn't *completely* understand every single piece of BTF,
-it should reject it (and that's also why libbpf should sanitize BPF
-object's BTF, of course).
-
-> Both address mismatches between
-> kernel BTF version and userspace. The sanitization available in this case=
- is quite limited,
-> but it would work for cases like BTF location info where it's optional an=
-d doesn't get
-> entangled in the type graph. We could call it something else if it would =
-help distinguish
-> the concepts, but it is a similar sort of activity.
+> Thank you, I understand and will learn from it. I think the performance g=
+ain
+> makes sense. I=E2=80=99d like to share a specific real-world case where t=
+his
+> optimization
+> could matter:  the `btf_find_by_name_kind()` function is indeed infrequen=
+tly
+> used by the BPF subsystem, but it=E2=80=99s heavily relied upon by the ft=
+race
+> subsystem=E2=80=99s features like `func-args`, `funcgraph-args` [1], and =
+the upcoming
+> `funcgraph-retval` [2]. These features invoke the function nearly once pe=
+r
+> trace line when outputting, with a call frequency that can reach **100=E2=
+=80=AFkHz**
+> in intensive tracing workloads.
 >
+> In such scenarios, the extra `strcmp` operations translate to ~100,000
+> additional
+> string comparisons per second. While this might seem negligible in isolat=
+ion,
+
+I'm pretty confident it is quite negligible compared to all other
+*useful* work you'll have to do to use that BTF type to format those
+arguments. Yes, 100KHz is pretty frequent, but it won't be anywhere
+close to 4% if you profile the entire end-to-end overhead of emitting
+arguments using func-args.
+
+> the overhead accumulates under high-frequency tracing=E2=80=94potentially=
+ impacting
+> latency for users relying on detailed function argument/return value trac=
+ing.
 >
-> > be loaded in the older kernel where the original BTF was
-> > generated for a newer one. There is no reason to mangle BTF right until
-> > the point of loading. Presence of a kind layout helps user space toolin=
-g
-> > to print it, but that's not sanitization. The tools will just skip over=
-.
+> Thanks again for pushing for rigor=E2=80=94it helps make the code more cl=
+eaner
+> and robust.
 >
-> With the help of flags, we can do a bit more than just have bpftool print=
- types; we can
-> also support generation of a vmlinux.h in some cases, support some fentry=
- tracing etc.
-> Anything that requires a close type match or relies on the newer BTF feat=
-ures we do not
-> support will not work of course, but it still salvages some usability whe=
-n kernel BTF is
-> newer.
+> [1] https://lore.kernel.org/all/20250227185822.639418500@goodmis.org/
+> [2] https://lore.kernel.org/all/20251215034153.2367756-1-dolinux.peng@gma=
+il.com/
+>
+> >
+> >
+> > >
+> > > Benchmark results show that v8 achieves a 4.2% performance improvemen=
+t
+> > > over v7. If we don't care the performance gain, I will revert to the =
+approach
+> > > in v7 in the next version.
+> > >
+> > > [1] https://lore.kernel.org/bpf/20251126085025.784288-1-dolinux.peng@=
+gmail.com/
+> > > [2] https://lore.kernel.org/all/20251119031531.1817099-1-dolinux.peng=
+@gmail.com/
+> > > [3] https://lore.kernel.org/all/CAEf4BzaqEPD46LddJHO1-k5KPGyVWf6d=3Dd=
+uDAxG1q=3DjykJkMBg@mail.gmail.com/
+> > > [4] https://lore.kernel.org/all/20251106131956.1222864-4-dolinux.peng=
+@gmail.com/
+> > >
+
+[...]
 
