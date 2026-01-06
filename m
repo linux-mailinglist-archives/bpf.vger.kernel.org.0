@@ -1,234 +1,145 @@
-Return-Path: <bpf+bounces-77919-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77920-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B31FCF6997
-	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 04:25:45 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9829ACF6A73
+	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 05:21:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 8224E3008195
-	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 03:25:44 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 434C1303FE0B
+	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 04:21:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1002D21A92F;
-	Tue,  6 Jan 2026 03:25:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC31527CB04;
+	Tue,  6 Jan 2026 04:21:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WQev8DxU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dCHN+fAr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3F6C1C5D44
-	for <bpf@vger.kernel.org>; Tue,  6 Jan 2026 03:25:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1767186E2E
+	for <bpf@vger.kernel.org>; Tue,  6 Jan 2026 04:21:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767669941; cv=none; b=YhFJlmAVL8MuUSowTZwKdAIJbHT7Ljfk8KC8oymu47dlr+0YOJqZCiJLDDUyxPFALVO5+suXVuGeZbSxtgbPPKs04JkMpIbpYlvejW69POvUxSpzkdd/zTRkrz1ogg8uedQXjv7a0RA3TiYMq1kpXgJOqJtszuwQogXtLRwyWb4=
+	t=1767673269; cv=none; b=N5hr/C/8gsQXHb6fogbyWzDwHnyLGiPJEn1w8ysGS+u/xauXG5db5ZuXMvbaoMDFw8xZDBfZLDlw5G82v8hlKuEHNlhfF+T602s87fYrSU9Ic67Kf7Cqv4vvwr/n3jEtd8FyLT+AgXRbv6H/d+SHtXjJVYM9cm4N52XHiZxm4XE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767669941; c=relaxed/simple;
-	bh=fFdZERkQq7qcoX44VzNM9NF/W5K6GE3Gkb6xhhWGgiA=;
+	s=arc-20240116; t=1767673269; c=relaxed/simple;
+	bh=QdiGgC8bGawkE/NfYgtXXjps+ZdKPkdxylhntu8tO68=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dgjaBvmdEb+njQoPywpk+uNbdrDFjhdcF+qq2wGO/DTRTjECLGXcFlydzrzLBykM5cCzYf1hTr357MeyE+kb5QgH/FHEXOAjasRvo8mestwJQUtd/rtj1Os7ExYcwWeY83wBp7wN+u7qxnoIYVFG3vlgzb2vP2oQyGuHVc4Dxsk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WQev8DxU; arc=none smtp.client-ip=209.85.161.47
+	 To:Cc:Content-Type; b=pkEiaJr1OZaCZ8awLtxid3faOlSCUngxkjwFJpQS8+35tSI+j15kKmf18DWithmwNIlxpy8RTDx8tpGNR6iL9fQ7aUD40R2KNmqQcN4C0Fpt91fD8zvyGpCbtPwSLvG3su3b12qSZbykyGEN5dCTYxBfZlhbyGlhnlsbcV+dDy0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dCHN+fAr; arc=none smtp.client-ip=209.85.221.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-65ec86c5e70so344071eaf.3
-        for <bpf@vger.kernel.org>; Mon, 05 Jan 2026 19:25:39 -0800 (PST)
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-43260a5a096so317843f8f.0
+        for <bpf@vger.kernel.org>; Mon, 05 Jan 2026 20:21:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767669939; x=1768274739; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1767673266; x=1768278066; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7adoCRWWLhZQUEHRqlXRuMHWuAIXead0Q42trhJ7/5c=;
-        b=WQev8DxUoroT658VM5yA6uZvGDDXtncDyL8daFIqtnZJbqpKr6sBoF+OtWPk06m976
-         1SPOC9vGV6zSxADREkl5H0UIYl9Q8RLlcfI69/u062DS+4kpR0aF+oxMvdS9deQbXLhR
-         UI0E0eCMAcv0KOPmGVGhdNDdutSn3HT8V7MT9bqbQVgbov8Axjj0AoVEC345dBU78wQA
-         71YAVkl3qtg1CMaRdFJxLm0wJ7WtduS7mmLNDzC49KZHVjWJZsExhp5ta7hXF3ENRAtx
-         RtZw3zp03pMHvDFynY8ra/ZPotEtXo4IZXKTLAxJrISgk+uVFUhNJ93oqUxaJG3twuDK
-         WElw==
+        bh=4RnWf8bR9MzpHmNENe1Pna05tYYxiGOL+UoXNiAdXb8=;
+        b=dCHN+fAr9wG0o3BMSBj7dsyVEVAWyfU579BfS7pdZLcU5cCQsPR/MXkJ6XFJ3+J9bZ
+         JsmDAdrfVNfH7oaANzw+i0vjuHOH20MlKG9I5nm4jKbmN9ZYpq+v/gAVqvyTHLK/PemH
+         yt5lhZS1FB8761MFc5jv34PTSkp/3JoUqBwXA+TpNqqj7UHwMybk1rHs0pswxVPMSXmo
+         SZZpoBBZJHS5bVC6z3O0YeAx8E0ZqZ1dvplsINcrKD2msYKC9ke/bI2BqPV4ZT7k3Rar
+         eFN5ss7A75rKy+DJGJCNtf+78SJJAeyw3fd7EYHv7QJrGgv3gtn/TNhi1Jt7cPmruu/0
+         bVCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767669939; x=1768274739;
+        d=1e100.net; s=20230601; t=1767673266; x=1768278066;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=7adoCRWWLhZQUEHRqlXRuMHWuAIXead0Q42trhJ7/5c=;
-        b=YBVWdt2L4J1WaLMCc9Gz/C0+Vh9Bjrs2V3WCtyFLqKOUvTLLOH/f1AknTQtH637K4j
-         3ph2FYseChLDSePlSqytNEYuwIF+KGqyPWe3IyZZ2nFhpG0kJTqeM7ojQtXs2JubeS/+
-         AtPaoklv0NKJMt5PBbDLnL+LCgEIl1bhNSr2+ArPFgpPPObWx1zy5XBu38adAOnhYwTD
-         KocisEfNT6vxdkqCzp7B0+EO86G+iSlQG0hwhyAa9G7wTkItp89KQsEvozdUAXTiEuVa
-         8VaW0b1FAO+nwK4EH2CzZQt6/6Qn/eGcLXQvoa61ovMPcXhq8i50xb2zGrynpOIJg+q7
-         TSkw==
-X-Forwarded-Encrypted: i=1; AJvYcCU5ihRiGd0JmX8CEUdgu6ZH+i7ABW6cYU7g9sRprAJeuPtTIdAoB5KMDf2IHMgFwlrOKR4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxiZ0vehzi8/zcSJez7fRv8k0bGCxKHuO2biwtlDVttHmPUlpW6
-	IFx1X0ywn2N0pjdQ83mYYxbNes/4VeMl8P4579uS0QS4LnAZ22n70iBPz5ZuaILY0kuNlOvcJgn
-	yistLInTxaJWCfBxeinUOj4CdNGJgWKA=
-X-Gm-Gg: AY/fxX6CiOdsu5pQ6KecAsJdA9CBuLJzkCKbn7JDgXJ6UZCMLp1ftahlyUMBT1q82Sj
-	PuMwt+98u2jLSK3dHiCKzPsjWxqMqiECJ4fTEhgNr+VepVlzBAkWF08alU/3seUV7FjSjugG8kL
-	Z+yS5cYrUVyxstE9Da5El8TNj7EtBNYX48lA7yTVdeDd4TWVNkLOax0SZ8NOKkbT+IV9F+Q8qZy
-	UvwCyR0/4ZVnru1HSpFkM5HV/YqEu8ybHkxCsOlTI/QYqHkiPUY4fJWomuW0Xsq4Z4EFh38
-X-Google-Smtp-Source: AGHT+IE5K5h7PkETUmLZNIi2espKhWrZ/bV63HHw1GbilIoMq0LWNjMm/em3uFC9RVyPysLjbOR4QCMhToU5QexgT0U=
-X-Received: by 2002:a05:6820:1501:b0:65d:88b:c012 with SMTP id
- 006d021491bc7-65f47ab1515mr1059429eaf.72.1767669938846; Mon, 05 Jan 2026
- 19:25:38 -0800 (PST)
+        bh=4RnWf8bR9MzpHmNENe1Pna05tYYxiGOL+UoXNiAdXb8=;
+        b=fc2dEhMpfxI2CG8097sxqRkVZ7ACIvyfcPfy6PEE6J7r4XhJRzQFLI195O/2V8ZYRs
+         H9L79NB8VICoDgweFBTSJv8o3ps2AeBal3cqebb0IhqqZVJVirb5Vv1QydtX6iTG/cYr
+         7AY5rGeK3ntfGHIJpkN0jaqxd8khV2GVtONkGrr2yRvneTth/BHfV9ul30WG/IX3WX1p
+         TnatSSVqO9jxSZ6/PfAdCaWobQC8mZUENb+wiB3oS5HEN0jnQYx86rXhxTxFucBysY+j
+         IGZsFbo7JoxAwQYDscOUK/ye+1pUQQ7ad10Zkd4TFGnZm89jo8qIOz9V365oZQc41pPL
+         wjXw==
+X-Forwarded-Encrypted: i=1; AJvYcCV+52f3aS/C9Ux4xVnlq4TyBa2ntTFeR0zvdUp8qjoV3lxTgnH1PwcZXqI80fCCkjR7lwg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxO/dV+0kkM4/1avYVuV/pkdU5W22fQrQPWNuAALjXQ99ECNUJk
+	l1ANmaMkvXM2lVt0h36ZFjN9S3ERcEBAX97qsB416PhM8+N0hskrCOWX4LKYc9fx8dpqt3EUw4H
+	CQMPiEICn+XncFN5j2BdLLx/e71fH6fM=
+X-Gm-Gg: AY/fxX6xESWS6MtOlMPuBleH54u1pEi4HueJtSzSXZEUBkikBfihtRxfa7m6H4Qgx4x
+	AC/auUIaW5H/0OzX35B3s/zghk9AxGaNPsj0wK3wq83857u2+vpyWfsyX5hEEZS22FlYDoKkCvy
+	lTGap5NHNohkaIh8zMHAN1RNc4kgg08VtFj0RCyOEkEKs7Z2y/MLJCh+m1zChAh0RG4l+WOWgAV
+	Oqk+TI6CBWKs/yWRunDgGmv+/fOi2vDf8aBJ9nd3rRgWCsGo9e66+PqVqae0aYSkV0qEJxpX+YV
+	Ky0IktHj45Is56Kia+t/o+iMcAdd7B0vmaom6Kk=
+X-Google-Smtp-Source: AGHT+IGrNVIBe2BPS/FffT+/FZLhy1duokS4RUbj4ZYSgo+6/ME+WKqfIwPeJgaazC6hjd/emIAeqGklTt6LRXVEM8k=
+X-Received: by 2002:a05:6000:4301:b0:432:8667:51c7 with SMTP id
+ ffacd0b85a97d-432bca522demr2379580f8f.44.1767673265769; Mon, 05 Jan 2026
+ 20:21:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260106013112.56250-3-kerneljasonxing@gmail.com> <89fee0bdf782c9fab10781be2a42c099bfb9f99a53c342dd6e41fd99651943f6@mail.kernel.org>
-In-Reply-To: <89fee0bdf782c9fab10781be2a42c099bfb9f99a53c342dd6e41fd99651943f6@mail.kernel.org>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Tue, 6 Jan 2026 11:25:02 +0800
-X-Gm-Features: AQt7F2rLl5PRrK_saI0AlLXbGM3sprVHqPrvdAsBvJqZUrt6U1Qh_jNjwM51pBM
-Message-ID: <CAL+tcoAHRct5w4xpfzHcafpf0ZHiUAofDjLuhxKibwrB3aaZ=g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 2/2] xsk: introduce a dedicated local
- completion queue for each xsk
-To: bot+bpf-ci@kernel.org
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	pabeni@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com, 
-	maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com, sdf@fomichev.me, 
-	ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org, 
-	john.fastabend@gmail.com, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	kernelxing@tencent.com, andrii@kernel.org, martin.lau@kernel.org, 
-	eddyz87@gmail.com, yonghong.song@linux.dev, clm@meta.com, 
-	ihor.solodrai@linux.dev
+References: <20260104122814.183732-1-dongml2@chinatelecom.cn>
+ <CAEf4BzbCyMWr5tq5i45SB3jPvUFd4zOAYwJG3KBBeaoWmEq8kw@mail.gmail.com> <3389151.aeNJFYEL58@7940hx>
+In-Reply-To: <3389151.aeNJFYEL58@7940hx>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 5 Jan 2026 20:20:54 -0800
+X-Gm-Features: AQt7F2qISJSYqOQWH8CWZ2k3IT3E58T_18khV0bzCNj5zV0_W1jo093f_ClmF0Y
+Message-ID: <CAADnVQ+EzgMEXAN9oJ8asRj_WYOZh2VQOKDJz8mhkqehr7f=3g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 00/10] bpf: fsession support
+To: Menglong Dong <menglong.dong@linux.dev>
+Cc: Menglong Dong <menglong8.dong@gmail.com>, Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	"David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, jiang.biao@linux.dev, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>, 
+	"H. Peter Anvin" <hpa@zytor.com>, bpf <bpf@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 6, 2026 at 9:47=E2=80=AFAM <bot+bpf-ci@kernel.org> wrote:
+On Mon, Jan 5, 2026 at 7:05=E2=80=AFPM Menglong Dong <menglong.dong@linux.d=
+ev> wrote:
 >
-> > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> > index f41e0b480aa4..f80721165fdc 100644
-> > --- a/net/xdp/xsk.c
-> > +++ b/net/xdp/xsk.c
->
-> [ ... ]
->
-> > -static int xsk_cq_reserve_locked(struct xsk_buff_pool *pool)
-> > +static int xsk_cq_reserve_addr_locked(struct xdp_sock *xs, u64 addr)
-> >  {
-> > +     struct xsk_buff_pool *pool =3D xs->pool;
-> > +     struct local_cq *lcq =3D xs->lcq;
-> >       int ret;
+> On 2026/1/6 05:20 Andrii Nakryiko <andrii.nakryiko@gmail.com> write:
+> > On Sun, Jan 4, 2026 at 4:28=E2=80=AFAM Menglong Dong <menglong8.dong@gm=
+ail.com> wrote:
+> > >
+> > > Hi, all.
+> > >
+> [......]
+> > > Maybe it's possible to reuse the existing bpf_session_cookie() and
+> > > bpf_session_is_return(). First, we move the nr_regs from stack to str=
+uct
+> > > bpf_tramp_run_ctx, as Andrii suggested before. Then, we define the se=
+ssion
+> > > cookies as flexible array in bpf_tramp_run_ctx like this:
+> > >     struct bpf_tramp_run_ctx {
+> > >         struct bpf_run_ctx run_ctx;
+> > >         u64 bpf_cookie;
+> > >         struct bpf_run_ctx *saved_run_ctx;
+> > >         u64 func_meta; /* nr_args, cookie_index, etc */
+> > >         u64 fsession_cookies[];
+> > >     };
+> > >
+> > > The problem of this approach is that we can't inlined the bpf helper
+> > > anymore, such as get_func_arg, get_func_ret, get_func_arg_cnt, etc, a=
+s
+> > > we can't use the "current" in BPF assembly.
+> > >
 > >
-> >       spin_lock(&pool->cq_cached_prod_lock);
-> >       ret =3D xskq_prod_reserve(pool->cq);
-> >       spin_unlock(&pool->cq_cached_prod_lock);
-> > +     if (!ret)
-> > +             lcq->desc[lcq->prod++ & lcq->ring_mask] =3D addr;
-> >
-> >       return ret;
-> >  }
+> > We can, as Alexei suggested on your other patch set. Is this still a
+> > valid concern?
 >
-> [ ... ]
+> Yeah, with the support of BPF_MOV64_PERCPU_REG, it's much easier
+> now.
 >
-> > +/* Record the position of first desc in local cq */
-> > +static void xsk_skb_destructor_set_addr(struct sk_buff *skb,
-> > +                                     struct xdp_sock *xs)
-> >  {
-> > -     skb_shinfo(skb)->destructor_arg =3D (void *)((uintptr_t)addr | 0x=
-1UL);
-> > +     long val;
-> > +
-> > +     val =3D ((xs->lcq->prod - 1) & xs->lcq->ring_mask) << XSK_DESTRUC=
-TOR_DESCS_SHIFT;
-> > +     skb_shinfo(skb)->destructor_arg =3D (void *)val;
-> >  }
->
-> [ ... ]
->
-> > +static void xsk_cq_write_addr(struct sk_buff *skb, u32 desc_processed)
-> > +{
-> > +     struct xsk_buff_pool *pool =3D xdp_sk(skb->sk)->pool;
-> > +     u32 idx, pos =3D xsk_get_start_addr(skb);
-> > +     struct xdp_sock *xs =3D xdp_sk(skb->sk);
-> > +     u64 addr;
-> > +
-> > +     idx =3D xskq_get_prod(pool->cq) + desc_processed;
-> > +     addr =3D xs->lcq->desc[(pos + desc_processed) & xs->lcq->ring_mas=
-k];
-> >                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> > +     xskq_prod_write_addr(pool->cq, idx, addr);
-> > +}
->
-> Can this read stale or corrupted data from lcq->desc[] if skb destructors
-> run out of order?
->
-> Consider this scenario with a completion queue of 4 entries:
->   1. SKB1 reserves and writes to lcq[0], stores start_pos=3D0
->   2. SKB2 reserves and writes to lcq[1], stores start_pos=3D1
->   3. SKB3 reserves and writes to lcq[2], stores start_pos=3D2
->   4. SKB4 reserves and writes to lcq[3], stores start_pos=3D3
->   5. Backpressure - cq is full
->   6. Network completes SKB4 first (out of order), destructor reads lcq[3]=
-,
->      submits to cq, space becomes available
->   7. SKB5 reserves and writes to lcq[0] (wraparound), overwriting SKB1's =
-data
->   8. SKB1's destructor finally runs, reads lcq[0] which now contains SKB5=
-'s
->      address instead of SKB1's original address
->
-> The old code stored addresses in a per-skb xsk_addrs structure, so each s=
-kb
-> had its own copy that could not be overwritten. The new shared ring buffe=
-r
-> design appears to be vulnerable to out-of-order completion corrupting the
-> address data.
+> So what approach should I use now? Change the prototype of
+> bpf_session_is_return/bpf_session_cookie, as Alexei suggested, or
+> use the approach here? I think both works, and I'm a little torn
+> now. Any suggestions?
 
-Right, this case makes me rethink if I should continue with this
-series as it's apparently becoming more and more complicated than
-expected.
-
-I will try to fix it well with minimum changes.
-
-Thanks,
-Jason
-
->
-> > +static void xsk_cq_submit_addr_locked(struct sk_buff *skb)
-> >  {
-> > -     u32 num_descs =3D xsk_get_num_desc(skb);
-> > -     struct xsk_addrs *xsk_addr;
-> > -     u32 descs_processed =3D 0;
-> > +     struct xsk_buff_pool *pool =3D xdp_sk(skb->sk)->pool;
-> > +     u8 i, num =3D xsk_get_num_desc(skb);
-> >       unsigned long flags;
-> > -     u32 idx, i;
-> >
-> >       spin_lock_irqsave(&pool->cq_prod_lock, flags);
-> > -     idx =3D xskq_get_prod(pool->cq);
-> > -
-> > -     if (unlikely(num_descs > 1)) {
-> > -             xsk_addr =3D (struct xsk_addrs *)skb_shinfo(skb)->destruc=
-tor_arg;
-> > -
-> > -             for (i =3D 0; i < num_descs; i++) {
-> > -                     xskq_prod_write_addr(pool->cq, idx + descs_proces=
-sed,
-> > -                                          xsk_addr->addrs[i]);
-> > -                     descs_processed++;
-> > -             }
-> > -             kmem_cache_free(xsk_tx_generic_cache, xsk_addr);
-> > -     } else {
-> > -             xskq_prod_write_addr(pool->cq, idx,
-> > -                                  xsk_skb_destructor_get_addr(skb));
-> > -             descs_processed++;
-> > -     }
-> > -     xskq_prod_submit_n(pool->cq, descs_processed);
-> > +     for (i =3D 0; i < num; i++)
-> > +             xsk_cq_write_addr(skb, i);
-> > +     xskq_prod_submit_n(pool->cq, num);
-> >       spin_unlock_irqrestore(&pool->cq_prod_lock, flags);
-> >  }
->
-> [ ... ]
->
->
-> ---
-> AI reviewed your patch. Please fix the bug or email reply why it's not a =
-bug.
-> See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/READM=
-E.md
->
-> CI run summary: https://github.com/kernel-patches/bpf/actions/runs/207350=
-04935
+I think adding 'void *ctx' to existing kfuncs makes tramp-based
+kfuncs faster, since less work needs to be done to store/read
+the same data from run_ctx/current.
+So that's my preference.
 
