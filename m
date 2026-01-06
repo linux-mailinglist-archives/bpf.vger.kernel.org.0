@@ -1,96 +1,98 @@
-Return-Path: <bpf+bounces-78014-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78015-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61AEACFB3C8
-	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 23:17:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8204ECFB391
+	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 23:13:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 60496305E347
-	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 22:16:36 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id CFFE93026B20
+	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 22:12:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB1062E8E07;
-	Tue,  6 Jan 2026 22:10:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 186B72EC54C;
+	Tue,  6 Jan 2026 22:12:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qi+MZXd1"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CgTvNe1l"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0FAB288C13;
-	Tue,  6 Jan 2026 22:10:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B70E22ECEBB
+	for <bpf@vger.kernel.org>; Tue,  6 Jan 2026 22:12:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767737453; cv=none; b=nNtj3PGbilqA4TRjJfkn7Mm49rafA9MQSgYtw9P0rCyN0fca4gmLJ42JY9j/R4+HN8XmGJfSx8vlz2o1gkOF179+D7ajYpXmNAa1494M3EAOy7nchw3Cqt6oBkqn9aLwOywLFFQ5hgYYd/5rReJogNJSxRX8y741qVV0UxnT3U0=
+	t=1767737545; cv=none; b=nUttCrNJJdzAGfrLuAGDT022p6d+MMrfmZGy6WOAJIOep9Z5gY7A2uWtR1CBpUoN2SLrp9OxRr3xzvS566Wk/f+JzmhB/eWHeCl+0YwLHq0tupDAR1hTFbay/K+1ptexXkp013dEr8g3HMdE0KeX6YJVowbJzERy29zZggkgxEs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767737453; c=relaxed/simple;
-	bh=3ItmZWXe7SLATqaA/No0vinjdYjMYE4Kv3BCtuInokY=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=JxBZZ9W1Et5lmEsn7y29taKQQowRX6cOZR7ZEsIaDT1TQQtTHg1wvzySeCiKHkzKJT4oNp55oKcva4LrDIM5WZ1YHD+/hu4p15dcqi8B4lfL6Q2mUWHcm4tF4yLWFMXh2kKjgWlaMUURI/N8Azx3tH6tYfFFZmilmbSdaWWpzaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qi+MZXd1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5845FC19421;
-	Tue,  6 Jan 2026 22:10:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767737452;
-	bh=3ItmZWXe7SLATqaA/No0vinjdYjMYE4Kv3BCtuInokY=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=qi+MZXd1/oLdWLcHvlwqpwcdkrYHzdtmHT3UgLO+nOBkwS3ltGhH3Hu6g3YkQJqM7
-	 wJmRt1U0p7fUaarV6lfCX+laBGFcXHKL14KfF+GkMm4m9hwlCbOlAG5EDnYBTFQUBX
-	 pyMbndCiICGcvQPXXiV8JBIqIYWg5eeZlRstgw5QXjHFHh40PVxhN9YzZSXLtYJ3zT
-	 nrZWEI5ajr1HQ0lJLLeVY6gVq3KG1iLntKBXJCwKPUaUTaWp0SvKX84NcDLZYoyaQp
-	 9JB/IuzyIr62iqM90v5gmVD8zx13GGdpWUG9Ao1jMffjSfyUMwmpovwmHz0+4IVHhG
-	 R28nCoOf2KRjg==
-From: Nathan Chancellor <nathan@kernel.org>
-To: Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nsc@kernel.org>, 
- Brian Cain <bcain@kernel.org>, 
- =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, 
- bpf@vger.kernel.org, linux-hexagon@vger.kernel.org
-In-Reply-To: <20251223-uapi-nostdinc-v1-0-d91545d794f7@linutronix.de>
-References: <20251223-uapi-nostdinc-v1-0-d91545d794f7@linutronix.de>
-Subject: Re: [PATCH 0/5] kbuild: uapi: improvements to header testing
-Message-Id: <176773745004.1983625.3214132191933293574.b4-ty@kernel.org>
-Date: Tue, 06 Jan 2026 15:10:50 -0700
+	s=arc-20240116; t=1767737545; c=relaxed/simple;
+	bh=udzO7jzqWyR1EVEo78AX3W184D1928dk9ftVb7kARmI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=t2mooYIcCgsHT4MG9nyGINk3k6T3xOke/AukNMfpLF//qq3Q0bkSbNQTsVBTDNVGzMt/RXqk2hO54rcV0GsGS+vSWIJwMaqEVSaDq6k0BhQabNCHeUx11aXLfJ56NLux8xbiCZOEctv/ttEZ53BIzW84Qlj5eDsOSXiwsDqetGE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CgTvNe1l; arc=none smtp.client-ip=91.218.175.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <afb45da9-5731-4f7b-afc1-cd4dc26a0166@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1767737541;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1d6rGS30zhJFKH3xp2dbt9eqhgPyFglX2SCUjcGokIs=;
+	b=CgTvNe1lnErk5ZJZhdX2lbw7/ZI86ijQymlwpxnuM9tjc26bM4zLZUCGZVCGoJvrmCiXoL
+	RDLdjK3Eduz3/2OElkHZ+5BupxXzwz7uTzNd4EGzzEH5BTWtxe355tmbO4Czkglyc3elT3
+	KLIqB9txoK/3cEvVtZ2nuOUXY3u3VQY=
+Date: Tue, 6 Jan 2026 22:12:19 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.15-dev
+Subject: Re: [PATCH bpf-next v4 3/6] bpf: Add hash kfunc for cryptographic
+ hashing
+To: Daniel Hodges <git@danielhodges.dev>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Song Liu <song@kernel.org>,
+ Mykyta Yatsenko <yatsenko@meta.com>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Yonghong Song
+ <yonghong.song@linux.dev>, Herbert Xu <herbert@gondor.apana.org.au>,
+ "David S . Miller" <davem@davemloft.net>, linux-crypto@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20260105173755.22515-1-git@danielhodges.dev>
+ <20260105173755.22515-4-git@danielhodges.dev>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+In-Reply-To: <20260105173755.22515-4-git@danielhodges.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, 23 Dec 2025 08:04:07 +0100, Thomas Weißschuh wrote:
-> Also validate that UAPI headers do not depend on libc and remove the
-> dependency on CC_CAN_LINK.
+On 05/01/2026 17:37, Daniel Hodges wrote:
+> Extend bpf_crypto_type structure with hash operations:
+>   - hash(): Performs hashing operation
+>   - digestsize(): Returns hash output size
+
+well, as I've already mentioned, none of them are actually introduced in
+the patchset.
+
 > 
+> Update bpf_crypto_ctx_create() to support keyless operations:
+>   - Hash algorithms don't require keys, unlike ciphers
+>   - Only validates key presence if type->setkey is defined
+>   - Conditionally sets IV/state length for cipher operations only
 > 
-
-Applied to
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/kbuild/linux.git kbuild-next-unstable
-
-Thanks!
-
-[1/5] kbuild: uapi: validate that headers do not use libc
-      https://git.kernel.org/kbuild/c/6059b880a93c3
-[2/5] hexagon: Drop invalid UAPI header asm/signal.h
-      https://git.kernel.org/kbuild/c/cc45d2ea5cfb8
-[3/5] kbuild: uapi: don't compile test bpf_perf_event.h on xtensa
-      https://git.kernel.org/kbuild/c/e2772ba5f43df
-[4/5] kbuild: uapi: split out command conditions into variables
-      https://git.kernel.org/kbuild/c/4ac85d9bc73ed
-[5/5] kbuild: uapi: drop dependency on CC_CAN_LINK
-      https://git.kernel.org/kbuild/c/e3970d77ec504
-
-Please look out for regression or issue reports or other follow up
-comments, as they may result in the patch/series getting dropped or
-reverted. Patches applied to an "unstable" branch are accepted pending
-wider testing in -next and any post-commit review; they will generally
-be moved to the main branch in a week if no issues are found.
-
-Best regards,
--- 
-Nathan Chancellor <nathan@kernel.org>
-
+> Add bpf_crypto_hash() kfunc that works with any hash algorithm
+> registered in the kernel's crypto API through the BPF crypto type
+> system. This enables BPF programs to compute cryptographic hashes for
+> use cases such as content verification, integrity checking, and data
+> authentication.
+> 
+> Signed-off-by: Daniel Hodges <git@danielhodges.dev>
+> ---
+>   kernel/bpf/crypto.c | 78 ++++++++++++++++++++++++++++++++++++++++-----
+>   1 file changed, 70 insertions(+), 8 deletions(-)
+> 
 
