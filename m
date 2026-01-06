@@ -1,228 +1,242 @@
-Return-Path: <bpf+bounces-77969-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77970-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 410CDCF9225
-	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 16:45:07 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 652DCCF942D
+	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 17:07:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 29746301C950
-	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 15:39:21 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 01E5530E4E92
+	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 16:00:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6900D34404F;
-	Tue,  6 Jan 2026 15:39:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFB1033BBD1;
+	Tue,  6 Jan 2026 16:00:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S6vpMjOZ"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LZisChWe"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61997342539
-	for <bpf@vger.kernel.org>; Tue,  6 Jan 2026 15:39:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18AD921A92F
+	for <bpf@vger.kernel.org>; Tue,  6 Jan 2026 16:00:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767713959; cv=none; b=isW5oxRihvGAOLiKSanVT8XYdIr0hQGVBCEYe6KHNgNsF1B92qp/DSfASlrv1dXaQXEQHsCly+eZXVlIRlBe9ow1Ab64/M9BVM6RNRn9I4yCoGnhd37AgnRQCwjQrll+BAfYxNtAMwS1MQD/QwwE5/9/xwAydKFKx8M7pZKehb8=
+	t=1767715226; cv=none; b=rxTGIm1sN13zrCwQWOQtxuo/kPkLC6ZF8l+fmQeiZuHN1kJ1zPj9Qov0rbmNTIwGNKOERtv9e8DNOeAwP6yL5Qj9qGG7kjSVz9I0Horqra5uEcy2a/utpqNK/ZU74CM5qJBblMr0vcYMXTpdnxeR5t0mnWBC2NoHh9VxfFBIM60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767713959; c=relaxed/simple;
-	bh=D4XuZS2ZZKPSGLViie1fG90SrMO9FTV7FKRiDM5R9zI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ryq/TjI2IqJAE3/doeMFc1dOyQCDQWwWogg00GT+27SaomdiDFXdobMJ6lqI6iT5p9KvU76tiLii2BcSLHyOsuG4h6Yju75mRGu8Q0pLQ9xIbZPJVQVI2QyP7OOO3kwlqS7fPwuskr3Q6VUsUZ8/fAmOCFn+tX++Qesc+vOerP4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S6vpMjOZ; arc=none smtp.client-ip=209.85.215.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-c1e7cdf0905so746346a12.0
-        for <bpf@vger.kernel.org>; Tue, 06 Jan 2026 07:39:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767713957; x=1768318757; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+nev3k8GrDkYwcfroMD2vo+UrG57sb0fdXcs5RtCMf0=;
-        b=S6vpMjOZRqWdca3LDKcQDvfDsyo1UOKeorJcDUGSQzlM5emg7xtexu2X15h7m0qSeD
-         Ibr57JuQu1xDKDfH7LbgoDYFdnyF9gQ8EjaDJbLIH2kmKFbH9eJLqQcIRgEd6CHGMdnf
-         A/ArzBzGE753QkfZBGAAcNlDGwkSn7epFRCza2uhfJWjjLA5mdXHy4NdA4gw8ddZpDyx
-         hAQZ69HfR4qfZaUY1M90NyELCql/nhKUztseYnNk13lMfvdq4doLX5BUnE2yLP5C/T2k
-         mLs1glPgGlW2r/SOMMYa0z1tuMKkd/vTRkkKyePtz7WoZtlzEhUUhlPurlV0O7VPC1Lf
-         OHLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767713957; x=1768318757;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+nev3k8GrDkYwcfroMD2vo+UrG57sb0fdXcs5RtCMf0=;
-        b=m/SPW7doXqndy9xqNsgRPYVxw7zimXjmlqoqlSdxzvOwxv2zacG74Y+8pmlrs5zRjh
-         gMkU2NUNgJSxzgEDqSfl8GCYJs372OF0PY34BnmCVTVEwv/qto3SL9lQ8QIeseYhDLbD
-         S5PvF9/NmR9qzzrAJOZxC+DlfD1R78gzDwNc48JdWC6xDJ5f2uu82WVu+k/l06ZyDNq/
-         o0N+YoWAd5BOR3Y1/eNsi/oAotsyHM40qy1IYd2bdLSG/NAWuEPyyr7wv/35owt0ejMB
-         ttXUXq3k8GxulO7Rw017BiA3BzzRfI304jM+O9evhJMIGQAldxKcWrWjkxFvhHNOUY/u
-         obxg==
-X-Forwarded-Encrypted: i=1; AJvYcCXpSPz/k4zLfnNl5z2AUzUdXvyh/eqApfVwIYr/Pl89ZdZxRiClm9pZGFieiDxJjqnvc20=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx7JtTNYylyU1NBZGfM6ZPtiOb9ux3EESiOY76HYzmUexmSUJ2y
-	G+TIuiNzsQBJoe/Dmu2iI2QJ0KNmlluJwt58uBf4yNExNxtC2u31Nv5E
-X-Gm-Gg: AY/fxX5oU27mtEt/e/D5p/dB5jQvVuNxm3bmTgKwy1vi4ABsitaPLfrfg03w1HU9QVC
-	Adr+c+ou75pJi+wHcIaZ6Z9Fy/gXqCjLvkt1b1V/D5Fw8ISubKedUxNyjiaLNHj6mF+9LbhFYdZ
-	iO7Lj1OlpYWkjYbqTx/u3GhdYexhuBHK44TQqUezgdzv9lPgKEmI2cioLsvfkSHIx70j8/hcrw7
-	ekBwIz4TClbqDyYaH2K80bYIMRzUp8+iy7tx2ocD5XiipYb+nxySOWTYRhER3TqyBEgfTNLQYox
-	J1z0gmtZBPPlv36ZUM0V+s3C7QEaXy9Gc2CHBcWB55mrUkdA3xAXrQlipju35WDRszXaTlGoRWr
-	rCcrAFhWomTMTqxpbyBb02EpLca7E/6Nc4q1slXBjSMcShkpAbYlR0j8rq9S/Nczq5Mu7ex8yMK
-	uzqrQuC3eN+PU49csXy4mn
-X-Google-Smtp-Source: AGHT+IF0mZFbkjRBIubqLKVOfr698jKaejtisA/43GyJJji0AoxWu2L/C2JuZyOyvdKgIUNJcZv0HA==
-X-Received: by 2002:a05:6a21:6da1:b0:366:584c:62ef with SMTP id adf61e73a8af0-389823c3f46mr3343295637.65.1767713956663;
-        Tue, 06 Jan 2026 07:39:16 -0800 (PST)
-Received: from [192.168.0.118] ([14.187.47.150])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c4cc95d5f10sm2712050a12.26.2026.01.06.07.39.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Jan 2026 07:39:16 -0800 (PST)
-Message-ID: <e8db28a3-61ae-4988-9ac6-ba67926056ab@gmail.com>
-Date: Tue, 6 Jan 2026 22:39:09 +0700
+	s=arc-20240116; t=1767715226; c=relaxed/simple;
+	bh=CA6jgoHLefY7G/weyH76ZiaFmghIr4JJtVJrQ3aUyyM=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=SALRASppO9fKmhVqPY+8oraBP98Jeqt6sDBKXjKNfUqdUftJ/yFdIbLTffaPZ3ltYiMGCTNGfdbeYTLmeq0PgGg+oyjwPR4wQ3LbdzSWedv6pkZYA/uur8LxwGsfhfdfm5ns5pmq6KBD2iF4XlKL3S8vVGzch5CjyUp4n0P5X5c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LZisChWe; arc=none smtp.client-ip=91.218.175.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <0e954e9a-12af-4f4f-95e2-7afedbd8f63f@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1767715221;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Dslxvrdq4F6zyq8ezCJjZHNkGMQK1oFjUWDRruSut24=;
+	b=LZisChWe7evTuQIciZh6NXoXk85dHwBC5glhvLu378H5Hq9EKZrKsdqMhqMUDClLyU9s0c
+	dtS++wWgbZVje+Uh1KCdxyOGD/L4AGzFDWNYLjKOFvElBRO1C8+CDmh2fzZRUjGQbpW9VU
+	6fg9kX55oVi7MBXJ1ZrQ3ICzgRaril8=
+Date: Wed, 7 Jan 2026 00:00:07 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v3 1/3] virtio-net: don't schedule delayed refill
- worker
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: netdev@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
- Xuan Zhuo <xuanzhuo@linux.alibaba.com>, =?UTF-8?Q?Eugenio_P=C3=A9rez?=
- <eperezma@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Stanislav Fomichev <sdf@fomichev.me>, virtualization@lists.linux.dev,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org, stable@vger.kernel.org
-References: <20260106150438.7425-1-minhquangbui99@gmail.com>
- <20260106150438.7425-2-minhquangbui99@gmail.com>
- <20260106100959-mutt-send-email-mst@kernel.org>
-Content-Language: en-US
-From: Bui Quang Minh <minhquangbui99@gmail.com>
-In-Reply-To: <20260106100959-mutt-send-email-mst@kernel.org>
+Subject: Re: [PATCH bpf-next v7 2/2] bpf: Hold the perf callchain entry until
+ used completely
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Tao Chen <chen.dylane@linux.dev>
+To: peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+ namhyung@kernel.org, mark.rutland@arm.com,
+ alexander.shishkin@linux.intel.com, jolsa@kernel.org, irogers@google.com,
+ adrian.hunter@intel.com, kan.liang@linux.intel.com, song@kernel.org,
+ ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, yonghong.song@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com
+Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org
+References: <20251217093326.1745307-1-chen.dylane@linux.dev>
+ <20251217093326.1745307-3-chen.dylane@linux.dev>
+ <db97ccea-8cb4-40ea-b040-79f0f63a398e@linux.dev>
+In-Reply-To: <db97ccea-8cb4-40ea-b040-79f0f63a398e@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On 1/6/26 22:29, Michael S. Tsirkin wrote:
-> On Tue, Jan 06, 2026 at 10:04:36PM +0700, Bui Quang Minh wrote:
->> When we fail to refill the receive buffers, we schedule a delayed worker
->> to retry later. However, this worker creates some concurrency issues.
->> For example, when the worker runs concurrently with virtnet_xdp_set,
->> both need to temporarily disable queue's NAPI before enabling again.
->> Without proper synchronization, a deadlock can happen when
->> napi_disable() is called on an already disabled NAPI. That
->> napi_disable() call will be stuck and so will the subsequent
->> napi_enable() call.
+在 2025/12/23 14:29, Tao Chen 写道:
+> 在 2025/12/17 17:33, Tao Chen 写道:
+>> As Alexei noted, get_perf_callchain() return values may be reused
+>> if a task is preempted after the BPF program enters migrate disable
+>> mode. The perf_callchain_entres has a small stack of entries, and
+>> we can reuse it as follows:
 >>
->> To simplify the logic and avoid further problems, we will instead retry
->> refilling in the next NAPI poll.
+>> 1. get the perf callchain entry
+>> 2. BPF use...
+>> 3. put the perf callchain entry
 >>
->> Fixes: 4bc12818b363 ("virtio-net: disable delayed refill when pausing rx")
->> Reported-by: Paolo Abeni <pabeni@redhat.com>
->> Closes: https://netdev-ctrl.bots.linux.dev/logs/vmksft/drv-hw-dbg/results/400961/3-xdp-py/stderr
->> Cc: stable@vger.kernel.org
->> Suggested-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
->> Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
-> Acked-by: Michael S. Tsirkin <mst@redhat.com>
->
-> and CC stable I think. Can you do that pls?
-
-I've added Cc stable already.
-
-Thanks for you review.
-
->
+>> And Peter suggested that get_recursion_context used with preemption
+>> disabled, so we should disable preemption at BPF side.
+>>
+>> Acked-by: Yonghong Song <yonghong.song@linux.dev>
+>> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
 >> ---
->>   drivers/net/virtio_net.c | 48 +++++++++++++++++++++-------------------
->>   1 file changed, 25 insertions(+), 23 deletions(-)
+>>   kernel/bpf/stackmap.c | 68 +++++++++++++++++++++++++++++++++++--------
+>>   1 file changed, 56 insertions(+), 12 deletions(-)
 >>
->> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
->> index 1bb3aeca66c6..f986abf0c236 100644
->> --- a/drivers/net/virtio_net.c
->> +++ b/drivers/net/virtio_net.c
->> @@ -3046,16 +3046,16 @@ static int virtnet_receive(struct receive_queue *rq, int budget,
->>   	else
->>   		packets = virtnet_receive_packets(vi, rq, budget, xdp_xmit, &stats);
->>   
->> +	u64_stats_set(&stats.packets, packets);
->>   	if (rq->vq->num_free > min((unsigned int)budget, virtqueue_get_vring_size(rq->vq)) / 2) {
->> -		if (!try_fill_recv(vi, rq, GFP_ATOMIC)) {
->> -			spin_lock(&vi->refill_lock);
->> -			if (vi->refill_enabled)
->> -				schedule_delayed_work(&vi->refill, 0);
->> -			spin_unlock(&vi->refill_lock);
->> -		}
->> +		if (!try_fill_recv(vi, rq, GFP_ATOMIC))
->> +			/* We need to retry refilling in the next NAPI poll so
->> +			 * we must return budget to make sure the NAPI is
->> +			 * repolled.
->> +			 */
->> +			packets = budget;
->>   	}
->>   
->> -	u64_stats_set(&stats.packets, packets);
->>   	u64_stats_update_begin(&rq->stats.syncp);
->>   	for (i = 0; i < ARRAY_SIZE(virtnet_rq_stats_desc); i++) {
->>   		size_t offset = virtnet_rq_stats_desc[i].offset;
->> @@ -3230,9 +3230,10 @@ static int virtnet_open(struct net_device *dev)
->>   
->>   	for (i = 0; i < vi->max_queue_pairs; i++) {
->>   		if (i < vi->curr_queue_pairs)
->> -			/* Make sure we have some buffers: if oom use wq. */
->> -			if (!try_fill_recv(vi, &vi->rq[i], GFP_KERNEL))
->> -				schedule_delayed_work(&vi->refill, 0);
->> +			/* Pre-fill rq agressively, to make sure we are ready to
->> +			 * get packets immediately.
->> +			 */
->> +			try_fill_recv(vi, &vi->rq[i], GFP_KERNEL);
->>   
->>   		err = virtnet_enable_queue_pair(vi, i);
->>   		if (err < 0)
->> @@ -3472,16 +3473,15 @@ static void __virtnet_rx_resume(struct virtnet_info *vi,
->>   				struct receive_queue *rq,
->>   				bool refill)
->>   {
->> -	bool running = netif_running(vi->dev);
->> -	bool schedule_refill = false;
->> +	if (netif_running(vi->dev)) {
->> +		/* Pre-fill rq agressively, to make sure we are ready to get
->> +		 * packets immediately.
->> +		 */
->> +		if (refill)
->> +			try_fill_recv(vi, rq, GFP_KERNEL);
->>   
->> -	if (refill && !try_fill_recv(vi, rq, GFP_KERNEL))
->> -		schedule_refill = true;
->> -	if (running)
->>   		virtnet_napi_enable(rq);
+>> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+>> index da3d328f5c1..3bdd99a630d 100644
+>> --- a/kernel/bpf/stackmap.c
+>> +++ b/kernel/bpf/stackmap.c
+>> @@ -210,13 +210,14 @@ static void stack_map_get_build_id_offset(struct 
+>> bpf_stack_build_id *id_offs,
+>>   }
+>>   static struct perf_callchain_entry *
+>> -get_callchain_entry_for_task(struct task_struct *task, u32 max_depth)
+>> +get_callchain_entry_for_task(int *rctx, struct task_struct *task, u32 
+>> max_depth)
+>>   {
+>>   #ifdef CONFIG_STACKTRACE
+>>       struct perf_callchain_entry *entry;
+>> -    int rctx;
+>> -    entry = get_callchain_entry(&rctx);
+>> +    preempt_disable();
+>> +    entry = get_callchain_entry(rctx);
+>> +    preempt_enable();
+>>       if (!entry)
+>>           return NULL;
+>> @@ -238,8 +239,6 @@ get_callchain_entry_for_task(struct task_struct 
+>> *task, u32 max_depth)
+>>               to[i] = (u64)(from[i]);
+>>       }
+>> -    put_callchain_entry(rctx);
 >> -
->> -	if (schedule_refill)
->> -		schedule_delayed_work(&vi->refill, 0);
->> +	}
->>   }
->>   
->>   static void virtnet_rx_resume_all(struct virtnet_info *vi)
->> @@ -3829,11 +3829,13 @@ static int virtnet_set_queues(struct virtnet_info *vi, u16 queue_pairs)
->>   	}
->>   succ:
->>   	vi->curr_queue_pairs = queue_pairs;
->> -	/* virtnet_open() will refill when device is going to up. */
->> -	spin_lock_bh(&vi->refill_lock);
->> -	if (dev->flags & IFF_UP && vi->refill_enabled)
->> -		schedule_delayed_work(&vi->refill, 0);
->> -	spin_unlock_bh(&vi->refill_lock);
->> +	if (dev->flags & IFF_UP) {
->> +		local_bh_disable();
->> +		for (int i = 0; i < vi->curr_queue_pairs; ++i)
->> +			virtqueue_napi_schedule(&vi->rq[i].napi, vi->rq[i].vq);
+>>       return entry;
+>>   #else /* CONFIG_STACKTRACE */
+>>       return NULL;
+>> @@ -320,6 +319,34 @@ static long __bpf_get_stackid(struct bpf_map *map,
+>>       return id;
+>>   }
+>> +static struct perf_callchain_entry *
+>> +bpf_get_perf_callchain(int *rctx, struct pt_regs *regs, bool kernel, 
+>> bool user,
+>> +               int max_stack, bool crosstask)
+>> +{
+>> +    struct perf_callchain_entry_ctx ctx;
+>> +    struct perf_callchain_entry *entry;
 >> +
->> +		local_bh_enable();
->> +	}
->>   
->>   	return 0;
->>   }
->> -- 
->> 2.43.0
+>> +    preempt_disable();
+>> +    entry = get_callchain_entry(rctx);
+>> +    preempt_enable();
+>> +
+>> +    if (unlikely(!entry))
+>> +        return NULL;
+>> +
+>> +    __init_perf_callchain_ctx(&ctx, entry, max_stack, false);
+>> +    if (kernel)
+>> +        __get_perf_callchain_kernel(&ctx, regs);
+>> +    if (user && !crosstask)
+>> +        __get_perf_callchain_user(&ctx, regs, 0);
+>> +
+>> +    return entry;
+>> +}
+>> +
+>> +static void bpf_put_perf_callchain(int rctx)
+>> +{
+>> +    put_callchain_entry(rctx);
+>> +}
+>> +
+>>   BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map 
+>> *, map,
+>>          u64, flags)
+>>   {
+>> @@ -328,20 +355,25 @@ BPF_CALL_3(bpf_get_stackid, struct pt_regs *, 
+>> regs, struct bpf_map *, map,
+>>       struct perf_callchain_entry *trace;
+>>       bool kernel = !user;
+>>       u32 max_depth;
+>> +    int rctx, ret;
+>>       if (unlikely(flags & ~(BPF_F_SKIP_FIELD_MASK | BPF_F_USER_STACK |
+>>                      BPF_F_FAST_STACK_CMP | BPF_F_REUSE_STACKID)))
+>>           return -EINVAL;
+>>       max_depth = stack_map_calculate_max_depth(map->value_size, 
+>> elem_size, flags);
+>> -    trace = get_perf_callchain(regs, kernel, user, max_depth,
+>> -                   false, false, 0);
+>> +
+>> +    trace = bpf_get_perf_callchain(&rctx, regs, kernel, user, max_depth,
+>> +                       false);
+>>       if (unlikely(!trace))
+>>           /* couldn't fetch the stack trace */
+>>           return -EFAULT;
+>> -    return __bpf_get_stackid(map, trace, flags);
+>> +    ret = __bpf_get_stackid(map, trace, flags);
+>> +    bpf_put_perf_callchain(rctx);
+>> +
+>> +    return ret;
+>>   }
+>>   const struct bpf_func_proto bpf_get_stackid_proto = {
+>> @@ -435,6 +467,7 @@ static long __bpf_get_stack(struct pt_regs *regs, 
+>> struct task_struct *task,
+>>       bool kernel = !user;
+>>       int err = -EINVAL;
+>>       u64 *ips;
+>> +    int rctx;
+>>       if (unlikely(flags & ~(BPF_F_SKIP_FIELD_MASK | BPF_F_USER_STACK |
+>>                      BPF_F_USER_BUILD_ID)))
+>> @@ -467,18 +500,26 @@ static long __bpf_get_stack(struct pt_regs 
+>> *regs, struct task_struct *task,
+>>           trace = trace_in;
+>>           trace->nr = min_t(u32, trace->nr, max_depth);
+>>       } else if (kernel && task) {
+>> -        trace = get_callchain_entry_for_task(task, max_depth);
+>> +        trace = get_callchain_entry_for_task(&rctx, task, max_depth);
+>>       } else {
+>> -        trace = get_perf_callchain(regs, kernel, user, max_depth,
+>> -                       crosstask, false, 0);
+>> +        trace = bpf_get_perf_callchain(&rctx, regs, kernel, user, 
+>> max_depth,
+>> +                           crosstask);
+>>       }
+>> -    if (unlikely(!trace) || trace->nr < skip) {
+>> +    if (unlikely(!trace)) {
+>>           if (may_fault)
+>>               rcu_read_unlock();
+>>           goto err_fault;
+>>       }
+>> +    if (trace->nr < skip) {
+>> +        if (may_fault)
+>> +            rcu_read_unlock();
+>> +        if (!trace_in)
+>> +            bpf_put_perf_callchain(rctx);
+>> +        goto err_fault;
+>> +    }
+>> +
+>>       trace_nr = trace->nr - skip;
+>>       copy_len = trace_nr * elem_size;
+>> @@ -497,6 +538,9 @@ static long __bpf_get_stack(struct pt_regs *regs, 
+>> struct task_struct *task,
+>>       if (may_fault)
+>>           rcu_read_unlock();
+>> +    if (!trace_in)
+>> +        bpf_put_perf_callchain(rctx);
+>> +
+>>       if (user_build_id)
+>>           stack_map_get_build_id_offset(buf, trace_nr, user, may_fault);
+> 
+> Hi Peter,
+> 
+> As Alexei said, the patch needs your ack, please review again, thanks.
+> 
 
+ping...
+
+-- 
+Best Regards
+Tao Chen
 
