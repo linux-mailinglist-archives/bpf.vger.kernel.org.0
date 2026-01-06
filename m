@@ -1,267 +1,221 @@
-Return-Path: <bpf+bounces-77993-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77994-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50411CF9E3C
-	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 18:56:46 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01E5FCFA32A
+	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 19:34:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2B4343198084
-	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 17:43:35 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1A0CC32D1D9E
+	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 17:47:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6C0833ADB8;
-	Tue,  6 Jan 2026 17:36:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71A6833D4FC;
+	Tue,  6 Jan 2026 17:36:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="auEtpelz"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="T4bTQuXI";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="I/dgroTq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 545D133AD8D
-	for <bpf@vger.kernel.org>; Tue,  6 Jan 2026 17:36:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767720982; cv=none; b=WySBd2GFDy+L9Y0ZA2pQmA2iPzPZxcoPLzxRjrz9vA0tDTrpV+hxlODJ3UTldD0zBmp2+3t7tEihOrQiv9inHC+S+Nk+3H76ldoNpS+iCIP2vdBcTbwahhzSSiG+KEtiw30xEhmEZ9SI+D1Gpiyf2awPT2tT+GiA3USo1sMVLd0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767720982; c=relaxed/simple;
-	bh=fo6/8+kdlZ0dFLmNumPcPKDPDCvmXdAKosj88KnESN0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=UThq4wamk4Ii+Ka88S+HULCADwtw2zU1+KXZyh4WT4xU7YlacaWoZHEH0RjasXbuenUAN1WZ3CvYTheq4Sdm1+7mSQc/KJUydTZn/auVEM7pB1wmoFU5XSdEdBR/T+FPjjJE0yMcx9vsYPdli6A/5qgTb/UIYPk/VJYfNoAzu/0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=auEtpelz; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-b7cf4a975d2so207439666b.2
-        for <bpf@vger.kernel.org>; Tue, 06 Jan 2026 09:36:20 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F07233CE8F
+	for <bpf@vger.kernel.org>; Tue,  6 Jan 2026 17:36:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1767721018; cv=fail; b=edZHY94DH1AoDGgyKtXrW8K70NKTqxBkGNKU9CfTa00RmjXQE0G9lzlRf+4bgNdBzAc2s7TgWr/FXVGD6drpVpjOVBMLsHJ2nwv23XLwjylR3ZD3QBqTAZrMXJVJnceXFcsp2x6t0/NS0q1bWXG+b11Cv4ZCiv7pztNUEIp/tyA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1767721018; c=relaxed/simple;
+	bh=2UNJXJKtlqfEBNmCrf851jJx7agWUP5MG9WQ+FR3J6U=;
+	h=From:To:Subject:Date:Message-Id:Content-Type:MIME-Version; b=VMJ3kVFRGmijS+u2WfWeN7PYc94BT6PH6Y74uOTwILi9qeF+eSBkbV6R/mZO0xjhDX+IDrt5Bmbjy7zs/6bCPKAvxIzQ4/W7BWLW4tzVQnEfuowC1BJSXBm48v7Pv2/zweALyKLigmIMEgb3zXGlafGyIdRgkZ7Do05huoe98qU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=T4bTQuXI; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=I/dgroTq; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 606H5DIq131634
+	for <bpf@vger.kernel.org>; Tue, 6 Jan 2026 17:36:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
+	content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=corp-2025-04-25; bh=Uw2mf6JLTWwZnkam
+	MKdo/9WrWhC/UdJTBZZlMUShv6I=; b=T4bTQuXIfsvivZdWeOyDUK29rGznZUag
+	/h5vD+pT+oJ0GmxTxoU909sxddfWtBrKJTvAQll1Yj/wsx59XidsR7EhzXl/8Mqa
+	Ev/IqTdzH6CbDHFeoF7odC8fxaCLBgXl4t7anAbwdLbz74hIsiT2bskk7uSdhfLH
+	HnOeffMEiAELwemcg6kBHQ0iKtn/KtZrgLVwRfyKrAevSzmeIbK1QeS7zqaYMOew
+	ZJk4jsP93iEW5YK6FtVzQnAvzh/bXeFn0o1ok1xLhXnSvVzvkDDOvJTibTySWaVp
+	3DdhDyfG+asVMv3TtWKzReveX/v37w6FUrtgq07ocI6faTSbGXgupw==
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4bh6g1g23u-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+	for <bpf@vger.kernel.org>; Tue, 06 Jan 2026 17:36:56 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 606FuYkX034124
+	for <bpf@vger.kernel.org>; Tue, 6 Jan 2026 17:36:56 GMT
+Received: from ph7pr06cu001.outbound.protection.outlook.com (mail-westus3azon11010011.outbound.protection.outlook.com [52.101.201.11])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 4besj8v37m-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+	for <bpf@vger.kernel.org>; Tue, 06 Jan 2026 17:36:55 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=HwF1zapDu+WavoioR/RnO5JkRbGfNfGmfYyylc+IqCzpj2Ie8fKZS+qkxX7YlQRfnWxf+td1M5zm9W6kco2fgq44X7/iCRitCWrR6qOH8nHFnToE16ns6vRnIBadho6H0flJlcbWmcdkxTP3LxrYgxMsbqGVYoY4/WonZJgyvPJoMjtkFUA6CO5IheaEZ3pDB9j2kQSfDN7FYRPuGMVIuCyVv2pBJCsR4C+1Tk8q7Rlub1BgPv//zJP1M8VzdeaK0GMO7YHeEKiM3DtlmOaFxs2atq0bGUUiaLIdySF/RYla/GPn78s1It1QEneAz30Ib3w/X6UEEJtbpVAJPS662Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Uw2mf6JLTWwZnkamMKdo/9WrWhC/UdJTBZZlMUShv6I=;
+ b=DtruM/HWB36jSTEsedKtPVADrkm6UNM3+pM67F1v6FDOWrN/qXMFVRAbtP8CyJNOL4diYw7qW5zy0yjzRMnJattiYCvbBqOONVP01fH+e3Jv55RgEE7XbO51ndgncYpGFHEJtXJeuz9Ob4TbWmoPyn70g6r2KTzrIlCNHddsTH8sqXl57QmSyXyqZaJvh+nd03x6+6WTWZhOzPEG5WzzoSDKatGObXYzXvub3FWywdYeTbZFSZfdF3qxYqi7yZBuKEz5HCFOpF0p1ABjkbgyoDUYerbXiVdIiNyXfpvkQzOoa+yCjRhjxDltUh+PQxjyp2HnA5qZN5wOb66KiZI5Ng==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1767720978; x=1768325778; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wP9E0qysQZIRA2vm7VM8VwpeWASEBJ2dhbY3Y0RyprU=;
-        b=auEtpelzHBX8/rzqtGh/pOOG2Eb4R6osmpBLoMBBqIER/47XKxjOdt3kwI2u9XLymr
-         /CuZ8yMszVWrpUOAmV4o9mU5jyDb4lrVP3WE2IouWAzhvj7pjBLsEx/lBjlpti74/utw
-         8CjjsSZ5aeMQbUmWgSfYnrstjuEGR2cfE1VfwfFZFIuDJlW67mpv4uftMw5rqUghFUTd
-         k3jwekxXFLquvv1iJzppHcmZJ85PRYMj/yN6G1SJktR19QAGBLrZrJcFIsIh9hUc4s1W
-         n8AzJDlnXCuuv533QBHIXxafru9LOzXftBg1JNFi0AhBUlGSx3ZXX7I/d67yELcBiWzX
-         p6og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767720978; x=1768325778;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-gg:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=wP9E0qysQZIRA2vm7VM8VwpeWASEBJ2dhbY3Y0RyprU=;
-        b=Yiv17JAXE1iN2KboslMl432iEQ+fNd+80/EnegJNqQj7R/pT9OwAle6tWH00BJSnEE
-         jlewvgOl9Suqx2YmSY4Z4V91xmLrV9F5n0jyzuVKjERGQgO+Omh9LXqZBe3pniPmw3tR
-         2ZyrMI1SNtExHATfhyvr36N9qnoYnqPvgGc5N4CHujpLrBYNzNFdDrBF5mmHBijBfk3y
-         WMHFmxss0kZ+fhCawCST18qNq1zq9d1IuSfw6tvFlyTpLGfgUsAtj3/EPVaIkgotVGel
-         esWg04oLu5yb4BtXu0rY1GYrDqgnqNY2PbH8NlDeN8LmRkYUxEQDnIDCN3SlD1jFHaDO
-         E83g==
-X-Forwarded-Encrypted: i=1; AJvYcCUYNOAuz+yluzCRI/kXkv3S7qONY/tAq3TZs5KnCcsxDC+LL+nA35/Yx5fKcMG3o5IZAiQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw94kguDA5FrrbSmbWYZBDolDxstWx3ao4ZcvzOZxyQzw0X2m5t
-	EkzRV9s0mvbQCDSDY7ofrMRw9uka5VEFu3YfCDJQ4WBcparRXtFfx79/F7RsNUImBAU=
-X-Gm-Gg: AY/fxX7/lAQ637jzGnzhyIvXnc1+VtWX/lxSbRqV5MTvWO+Q0/GxCMJvhgCNp2xMOdS
-	sMk0A7ag1vXhbEs4hL3HAU0sNt0F8WILaSDSnrVj9DgKV2taqhksBNHs1Q6SwsxTqHCefmtCwlT
-	JQ7ri96FVDwQP9VE+ii5wQ7iHF2xeUtKAwoLLsZ36UOjge8XHY/bJJz8l18QDBzikGedmaoQFaa
-	3hqf7E9UGPu3RKjPbae8hYy+rGEUiQlcoY+osJPQmLJL6G9tMLmG0z9XQx5OBY+iYRoGud3ieFA
-	rhA9zX6VGYzrJuJUW0CfjzqHyTGws2jHz7P201Wov9SvoVP3qJzuU0Zv/jGrcDh4XYMvtxUnrvm
-	65a+Zo0qDCOtKxhMpsTX07KyUMD+RNx62nSYscxo4lSN9jLR6/ghLh1CDZ4P9jHy0KfogwivIpv
-	1oS0c=
-X-Google-Smtp-Source: AGHT+IGv5m5chqO7/NkQLwJTvhAjypa9+J+Q2oaCM/gLRdVDnPUP9exZPGKs9mpar/FC8P/F7/XzUA==
-X-Received: by 2002:a17:907:940a:b0:b80:4032:147d with SMTP id a640c23a62f3a-b8426cb60d0mr322618966b.29.1767720978417;
-        Tue, 06 Jan 2026 09:36:18 -0800 (PST)
-Received: from cloudflare.com ([2a09:bac5:5063:295f::41f:27])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b842a27c665sm275508866b.15.2026.01.06.09.36.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jan 2026 09:36:17 -0800 (PST)
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Amery Hung <ameryhung@gmail.com>,  Martin KaFai Lau
- <martin.lau@linux.dev>,  Martin KaFai Lau <martin.lau@kernel.org>,  bpf
- <bpf@vger.kernel.org>,  Network Development <netdev@vger.kernel.org>,
-  "David S. Miller" <davem@davemloft.net>,  Eric Dumazet
- <edumazet@google.com>,  Jakub Kicinski <kuba@kernel.org>,  Paolo Abeni
- <pabeni@redhat.com>,  Alexei Starovoitov <ast@kernel.org>,  Daniel
- Borkmann <daniel@iogearbox.net>,  Jesper Dangaard Brouer
- <hawk@kernel.org>,  John Fastabend <john.fastabend@gmail.com>,  Stanislav
- Fomichev <sdf@fomichev.me>,  Simon Horman <horms@kernel.org>,  Andrii
- Nakryiko <andrii@kernel.org>,  Eduard Zingerman <eddyz87@gmail.com>,  Song
- Liu <song@kernel.org>,  Yonghong Song <yonghong.song@linux.dev>,  KP Singh
- <kpsingh@kernel.org>,  Hao Luo <haoluo@google.com>,  Jiri Olsa
- <jolsa@kernel.org>,  kernel-team <kernel-team@cloudflare.com>
-Subject: Re: [PATCH bpf-next v2 15/16] bpf: Realign skb metadata for TC
- progs using data_meta
-In-Reply-To: <CAADnVQJ=kmVAZsgkG9P2nEBTUG3E4PrDG=Yz8tfeFysH4ZBqVw@mail.gmail.com>
-	(Alexei Starovoitov's message of "Mon, 5 Jan 2026 18:04:28 -0800")
-References: <20260105-skb-meta-safeproof-netdevs-rx-only-v2-0-a21e679b5afa@cloudflare.com>
-	<20260105-skb-meta-safeproof-netdevs-rx-only-v2-15-a21e679b5afa@cloudflare.com>
-	<CAADnVQJbGosoXOCdyi=NZar966FVibKYobBgQ9BiyEH3=-HOsw@mail.gmail.com>
-	<CAMB2axPivi+mZOXie=VnJM8nscqkHDjSrKT=Dhp5z_copEwxLQ@mail.gmail.com>
-	<e969a85c-94eb-4cb5-a7ac-524a16ccce01@linux.dev>
-	<CAADnVQKB5vRJM4kJC5515snR6KHweE-Ld_W1wWgPSWATgiUCwg@mail.gmail.com>
-	<d267c646-1acc-4e5b-aa96-56759fca57d0@linux.dev>
-	<CAMB2axM+Z9npytoRDb-D1xVQSSx__nW0GOPMOP_uMNU-ZE=AZA@mail.gmail.com>
-	<CAADnVQJ=kmVAZsgkG9P2nEBTUG3E4PrDG=Yz8tfeFysH4ZBqVw@mail.gmail.com>
-Date: Tue, 06 Jan 2026 18:36:17 +0100
-Message-ID: <877btu8wz2.fsf@cloudflare.com>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Uw2mf6JLTWwZnkamMKdo/9WrWhC/UdJTBZZlMUShv6I=;
+ b=I/dgroTq0QN0Ca9AhnK06VZ/X3ixltv3/TDiVJRBuYd9+K2HiA4KeTu2tUn8ASTdaoYYmXNP+I4FIi9v/lrF6K5uKQRv8gQwA7med8QUChbGqs8lF1KECRdStyq+1H6r+WL0kKHf1mBOiwhpZrCYYxK47yGp2EuLH+uy823YgR0=
+Received: from CO1PR10MB4500.namprd10.prod.outlook.com (2603:10b6:303:98::18)
+ by PH7PR10MB6311.namprd10.prod.outlook.com (2603:10b6:510:1b2::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9456.12; Tue, 6 Jan
+ 2026 17:36:53 +0000
+Received: from CO1PR10MB4500.namprd10.prod.outlook.com
+ ([fe80::8a:149b:1a7a:c7dc]) by CO1PR10MB4500.namprd10.prod.outlook.com
+ ([fe80::8a:149b:1a7a:c7dc%5]) with mapi id 15.20.9478.004; Tue, 6 Jan 2026
+ 17:36:53 +0000
+From: "Jose E. Marchesi" <jose.marchesi@oracle.com>
+To: bpf@vger.kernel.org
+Subject: [PATCH bpf-next 0/2] bpf: selftests fixes for GCC-BPF 16
+Date: Tue,  6 Jan 2026 18:36:48 +0100
+Message-Id: <20260106173650.18191-1-jose.marchesi@oracle.com>
+X-Mailer: git-send-email 2.30.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: FR4P281CA0005.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:c8::13) To CO1PR10MB4500.namprd10.prod.outlook.com
+ (2603:10b6:303:98::18)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PR10MB4500:EE_|PH7PR10MB6311:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1ef1491b-ea23-473d-3d7e-08de4d4a2dfe
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|366016|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?/rHQB41GxLgK6m6Yr/IHOkM0g89Kw/+Nh0jUgw6v2EDkO6Vip3ubWwpLnJqr?=
+ =?us-ascii?Q?bgB+9qczTRGOtAXwckIulgIPMxf5T1fO9Py01+VCYHFXP6d6JbXNfCjeNU6V?=
+ =?us-ascii?Q?AC8IkLvf45ttlYY2vqNRzRp4ekoN7PAK4DcHcPfJDNz95qhuCcndhdoFtRth?=
+ =?us-ascii?Q?PQa9fdy+n5L8UvsqmvkRXvDXiH+10j7BWS62uJvfwKAcf4+0ua9XBJ1C0GJq?=
+ =?us-ascii?Q?xindOoXoRbsAd0JdbWT3C/dzYcCMJnwuv76VFONNs4jQSoyAHm8jz1MS0xU6?=
+ =?us-ascii?Q?Dc26dQ8YqquIZ/LzF/13HcaaIxDFU/sMeKUVPK7xshNs1dtHDfBhIcGz5ovq?=
+ =?us-ascii?Q?eQ/oh7/NuDHDkANdjGBMfdCs+0U1e9U01I+mpFu/Sog1TnBU7UeuK0bvI00V?=
+ =?us-ascii?Q?5iVQXtai18Io7PXPP1hqajCPZGwNHTDriFzxuMSE8gQ4iCaS9hX8iM+gNLtp?=
+ =?us-ascii?Q?cizRzAHaj5hpn1LfgejYexYFpgqOYOZUJ3ZD77N5bcKxLtVMVxbwwJV28Usi?=
+ =?us-ascii?Q?lak4vPvbX4f9RliGpYkUd4l8iJy5SayTW8H6Fk4CHImvrQuGJDYfKQf0hl6u?=
+ =?us-ascii?Q?GbEd758eDxNuvXdL8OfgCbG9WRcPqK7vJkGjXm6sTHq8TORDfE4pC9vzGKiX?=
+ =?us-ascii?Q?7DmxjthNGzfS9TMaiGG/BFofi955PT0f2PrQrl7sclw3NPxJT7Z4Tf3Ln9sZ?=
+ =?us-ascii?Q?6rBHJVeg/+QSXufBobxP6HeS0JSGQPFnVS6i4Ccx5FPzALNOsWhGLbJNOVaV?=
+ =?us-ascii?Q?nJCRBYMYcsWQ8MRIlPwThRT2qOeAJqCS12hq6KaOJAl4lHQXEOQQXBMQKG/v?=
+ =?us-ascii?Q?pzlU1F4R+hCNGKRU3gHiZHz5VdaqmKIckMuO3TrK3WDL3oQf0wgPhYvEuSWC?=
+ =?us-ascii?Q?PT/X4JnCM1n2UwLQQwWcOGBh32s/a9QX8qJUx+aama0Z3f8oYxP2qGv1qYtO?=
+ =?us-ascii?Q?yWwQmVUWzpZR4MNOO13zpw4fCJSewicAbUy5eEmRLlPo+AHjG9anuX6R4LAI?=
+ =?us-ascii?Q?ivR2FZ7dr0LXu0iZx/zXTK9yABdQKfhVkzEF5B9H/zymttErnmvl2UFpeqj2?=
+ =?us-ascii?Q?NZ6rR5LmvvUPFM6gG1w8xNWLn0E3ueUq94bo+1Dvsp7vIfgJBxARTjJe9JUS?=
+ =?us-ascii?Q?ZlXsaM8AedOPHMt5FOKpAUNVoiYmrBxzcmloqjF/4JHd5Aw7MjOMt0J3Bc2t?=
+ =?us-ascii?Q?C4JQD304ofxgM3S4H5UbvSy2hcNBVEdXFVCoMCPxbO/ri5IGs/fg0ISWU1jI?=
+ =?us-ascii?Q?RVeNLyDBHOY4vUJgvU82URk/BUgDAatx0yKReCBwS43OZ3/At3PA7BZku8ym?=
+ =?us-ascii?Q?rU8GgSVouj448G2s3njJWMYkeYKmUbwrHMkvF0Rj4qud5pt6/etrPyKNMrMK?=
+ =?us-ascii?Q?W4AqnqkgL3tjTofe/VaxqVneKpYtFui0IDFLzYpVlD6WSH3n3S7fP2b+50RG?=
+ =?us-ascii?Q?F2Bbm0zPofOV1d+S09DdJ7tQXhh5oo7u?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR10MB4500.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?UObnrcJRlfdDlbbHUiiFeIaYlODKVNHOzYKtIFTlXbWxCOuUfN9QsHEDuUBm?=
+ =?us-ascii?Q?L08Bp4Y36RTUXi/oiNWRADGXyBqNiAvljZU619u3+PUbBN0mIrv00ira80Pc?=
+ =?us-ascii?Q?Ek7P4qFFMWEtoUd5e68Gq8Hx6aK8hhN+L5BR/j4N56Erze0nlNZItHgftXDp?=
+ =?us-ascii?Q?qroE2AgopTslAitIuCnNiNox5ULtSzgEx9twGAkBhCAx62guRuwYneNZZYXd?=
+ =?us-ascii?Q?JrcWUx1JwFLUuuH+PP+GSFIcFLyD50nF/kpregCfEsoS5Sa9v0u8cLilEs/V?=
+ =?us-ascii?Q?TV+xkm8+UPNPYwpALcvTcaP5lPrtYqlRAT6+2JcdxBfhLDG+/jLsX0XP6e4B?=
+ =?us-ascii?Q?xtmfmVN5Fd5AvgJnyIUks/DcEmUBTXvKni9HacLmUK/eR+PEwS9q8V/pPTvo?=
+ =?us-ascii?Q?wzvgxErOhTXkDYF4vDra92+aJRhh5eCGZv1dJMk+V5pVR7o9uD2pNrP+nKA4?=
+ =?us-ascii?Q?SL61HuvknyOBxxXbw0DvvJ8nm239twvrWvDnYfwbkBFv01zHStQa7GWSRIq8?=
+ =?us-ascii?Q?4UQlfaQPE4ch5s3JPr4bjiChvoYwe69g8u5w2MsDjxAhpTMGJzWUJBNuYwf0?=
+ =?us-ascii?Q?iVrjI2xEDPySyudgqJQRM/feYNs82l79X65IoqTBV2MwJRedCzeleOzxVGIM?=
+ =?us-ascii?Q?svz4vwOeJrETjXGUqv4fsl5vJ+HpsPIkpEEPzk6IC9MtZVuiYjXsp4dsN95i?=
+ =?us-ascii?Q?c1gRVazm4CMAxu1Xae4E9bzRZATJo3uz734FIMgAuyPPPOAQrhfPJk1pfJgY?=
+ =?us-ascii?Q?I5R/Hv/QdpVHFxRKfJBJlrqQz6xrUgeVjLh/TF2Kgj1CSNTe6aKMunpW00iL?=
+ =?us-ascii?Q?C/J4sXUUlOVsUDgP86Kc7ejbRBq0YCWUPjk6JylbelfVXpGlu4N/cGzsN5I/?=
+ =?us-ascii?Q?3MFNXNd9szpn96a3+8ifkbqUt5XzS9zsL9Tf8ytYsx8vBu9+H7t+nf5dIh/k?=
+ =?us-ascii?Q?31p7SJsaSF9OWs1Wptinst7ON13cxhonLCuHNRynnYi1Kd4CF4qSiuNqZzvS?=
+ =?us-ascii?Q?YWeiKr5z+lzVXWy03/Dsl5uj6XdN0YgUMyBYZUl7SbmWoYMZ6hTcUb5nfOO2?=
+ =?us-ascii?Q?Svuc8rjMCgsXnKgOyO3G/f7dmxFvg0Md147mo97xndOd8/pACQKGUOaNfi7k?=
+ =?us-ascii?Q?RpM1+RiDzyfEDyxoVWCDa0F8zjuiPdBOm5AoTUvfsb53WH3nbTyfZg07qQgN?=
+ =?us-ascii?Q?XoLO/zTfvuW+ivSl7VQWojWrwQOCtmH3jnTzaj4Fl969PNAwcfr7JFWf/Ok0?=
+ =?us-ascii?Q?Uw8W9NuqXgtYuPLdRVfu7fwX+oYoeF2/0c+/66Tv/fUom6jdIn1tRffi1auo?=
+ =?us-ascii?Q?j9UNJL2T0wWrdXLKG9Vuk4gJ3aiwrLloTq8rP5wsg4mcbukaN0zwLqVZaeEn?=
+ =?us-ascii?Q?LHskrjGSi5JY8OWM3UfsKUQNa+PzxH+IK1UxRPI2v7aNiahVzakD1EGW2J+1?=
+ =?us-ascii?Q?ggDeDpoSnh89dbxZAogdZeHUbeobfXHMZwnt9zQMURzdLYFGZSyIoZqiduQj?=
+ =?us-ascii?Q?o+d0hlGQdBI6JeILg43VElV5XpQJv8Ej2s/Rg2FOqEJLzJu7xH08nSVHZkoq?=
+ =?us-ascii?Q?m+za3wRYLfQIN7qQDcgIRUY/3SMrZIWD1q1uLgktnj1MXTIU6dL2ERQOhl2D?=
+ =?us-ascii?Q?8iMwr8sdIlz2yeGF9teAdRbFjt2KQTRXY3xw+y9n/k2L+eC6sRstuHAWVn0d?=
+ =?us-ascii?Q?Ihnw6aJGqnfcktn80I19fxcJEmmIG/CYT0u7nDi9/o+VzoKi+jzOGrXX36Om?=
+ =?us-ascii?Q?9cm2fTGRFapaOvP3R0k0WXwuYcC79rg=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	X+jol++rO9CWPSccNhbN1oEACX7e8/yqPgHOw7TXdY9BFsi3MzrNU2KNsrFbZiqLksGd4IkmZi2I5dnd80cEIq1yd4h8K9SoXNC9fpTjFrb9YcRPTieZYmSrZ+x6ySneIKhqdmB8DJymdYHskHm2mnW5XafLVAVeoS3WOsU6h5ElJJHrZWfxx6Wx0CI3TlPlsuLx55CgeJF092yrcZtPWky1kzVVCQjIzXvTVYfmyEdMd85aBVoIdrnSTkfqc/+qdwiVwG2l36ke2rUijBL1jekUCQWsI7zS0GJ92i+HTxAnEPwqm5/uPzz/8ieUZy2GL9XzZ1nNEnnhp8TI8FcRpTNw79HAjOVDzRgsShk7jz1a1NNpD01NPbcAiDSjLhFD098Hbs2eci2IkBOs/msLp3OAF2rbbfMHHZi2I85UwmSfxa+qEBYdREFlisUTu4SoD7NVlVMSQ5j56Fr72dOXmcGJ/j1qQdf3eori2MxfVUB9PsXmo7ihmIcParYhWJcduYodUJavwteHQ2XfuNy1PpV0xGPa/pNI9XooPtlKxWY9NRMqODTw3KEOJKlOpYQHPqilvTV02Vigt800bBcol6+T6OKUuqEHlqYOom/sshM=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1ef1491b-ea23-473d-3d7e-08de4d4a2dfe
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR10MB4500.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jan 2026 17:36:52.9469
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mLR01zxhr1aH46Mb5boh3uKKuxCJI9O2hIZNmcr0zjXQS+Teubj+5htkz/ozAbmI+kgQyvW4PClyYyZsiz2UcKgWdB5LfceTJ+CBsDNCULw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB6311
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2026-01-06_01,2026-01-06_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0
+ mlxlogscore=708 phishscore=0 malwarescore=0 spamscore=0 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2512120000 definitions=main-2601060152
+X-Proofpoint-GUID: -1Hx9HRSXeiNviiQIH2Vs_zMni6bGwDj
+X-Proofpoint-ORIG-GUID: -1Hx9HRSXeiNviiQIH2Vs_zMni6bGwDj
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTA2MDE1MyBTYWx0ZWRfX+nFr/fc5Yz2W
+ 4XSJUD8Rbtif/csCc23SOVLwbgsmpWexGviOs20JMMBL/ljLEgCmH2LsfUODFHBQwMmO1BdoJS1
+ QcUWXBdHzyej+BHtun6tDGAYfSyVyfdPDs5gXqz/DA9rrFApzmU2IuNDxAfyTaY1o7CRg9usGkX
+ f/3h5dF22+p0j2WN7xwZFZsuWEDcknQpIdU6MJCKp7y0gFokdn2yJ6NIIP70GYdyv+T0sY2ui7l
+ Ia6YfYV4EHquMFjc2gsTu/rXNlgui6dIB+FUzNLlzel696m3hq/B7rKarV48iosUGu5nKaSlORH
+ BiHuJijFFfD0dBX9wiTHwIcDi7F0xzc+N2byGTsiERevnwsw+HJfYSdTB8ApuE9ANQQMozfFSBM
+ GV7Vjod5qFdkSoP46TxXLqbddTPPi6LQu2wLURa3tSfG29FwyUfz+3jv3NLVqGlzAxhTeQ8gIt+
+ RwpciSG7HH8ka6JpFSA==
+X-Authority-Analysis: v=2.4 cv=GboaXAXL c=1 sm=1 tr=0 ts=695d4838 b=1 cx=c_pps
+ a=WeWmnZmh0fydH62SvGsd2A==:117 a=WeWmnZmh0fydH62SvGsd2A==:17
+ a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
+ a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=xqWC_Br6kY4A:10 a=vUbySO9Y5rIA:10
+ a=GoEa3M9JfhUA:10 a=VkNPw1HP01LnGYTKEx00:22 a=CsbV5m2PV3gDiFHaLRsA:9
 
-On Mon, Jan 05, 2026 at 06:04 PM -08, Alexei Starovoitov wrote:
-> On Mon, Jan 5, 2026 at 3:19=E2=80=AFPM Amery Hung <ameryhung@gmail.com> w=
-rote:
->>
->> >
->> > >
->> > > I guess we can mark such emitted call in insn_aux_data as finalized
->> > > and get_func_proto() isn't needed.
->> >
->> > It is a good idea.
->> >
->>
->> Hmm, insn_aux_data has to be marked in gen_{pro,epi}logue since this
->> is the only place we know whether the call needs fixup or not. However
->> insn_aux_data is not available yet in gen_{pro,epi}logue because we
->> haven't resized insn_aux_data.
->>
->> Can we do some hack based on the fact that calls emitted by
->> BPF_EMIT_CALL() are finalized while calls emitted by BPF_RAW_INSN()
->> most likely are not?
->> Let BPF_EMIT_CALL() mark the call insn as finalized temporarily (e.g.,
->> .off =3D 1). Then, when do_misc_fixups() encounters it just reset off to
->> 0 and don't call get_func_proto().
->
-> marking inside insn via off=3D1 or whatever is an option,
-> but once we remove BPF_CALL_KFUNC from gen_prologue we can
-> delete add_kfunc_in_insns() altogether and replace it with
-> a similar loop that does
-> if (bpf_helper_call()) mark insn_aux_data.
->
-> That would be a nice benefit, since add_kfunc_call() from there
-> was always a bit odd, since we're adding kfuncs early before the main
-> verifier pass and after, because of gen_prologue.
+Hello.
 
-Thanks for all the pointers.
+Just a couple of small fixes to get the BPF selftests build with what
+will become GCC 16 this spring.  One of the regressions is due to a
+change in the behavior of a warning in GCC 16.  The other is due to
+the fact that GCC 16 actually implements btf_decl_tag and
+btf_type_tag.
 
-I understood we're looking for something like this:
+Salud!
 
----8<---
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index b32ddf0f0ab3..9ccd56c04a45 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -561,6 +561,7 @@ struct bpf_insn_aux_data {
- 	bool non_sleepable; /* helper/kfunc may be called from non-sleepable cont=
-ext */
- 	bool is_iter_next; /* bpf_iter_<type>_next() kfunc call */
- 	bool call_with_percpu_alloc_ptr; /* {this,per}_cpu_ptr() with prog percpu=
- alloc */
-+	bool finalized_call; /* call holds function offset relative to __bpf_base=
-_call */
- 	u8 alu_state; /* used in combination with alu_limit */
- 	/* true if STX or LDX instruction is a part of a spill/fill
- 	 * pattern for a bpf_fastcall call.
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 1ca5c5e895ee..cc737d103cdd 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -21806,6 +21806,14 @@ static int convert_ctx_accesses(struct bpf_verifie=
-r_env *env)
- 			env->prog =3D new_prog;
- 			delta +=3D cnt - 1;
-=20
-+			/* gen_prologue emits function calls with target address
-+			 * relative to __bpf_call_base. Skip patch_call_imm fixup.
-+			 */
-+			for (i =3D 0; i < cnt - 1; i++) {
-+				if (bpf_helper_call(&env->prog->insnsi[i]))
-+					env->insn_aux_data[i].finalized_call =3D true;
-+			}
-+
- 			ret =3D add_kfunc_in_insns(env, insn_buf, cnt - 1);
- 			if (ret < 0)
- 				return ret;
-@@ -23412,6 +23420,9 @@ static int do_misc_fixups(struct bpf_verifier_env *=
-env)
- 			goto next_insn;
- 		}
- patch_call_imm:
-+		if (env->insn_aux_data[i + delta].finalized_call)
-+			goto next_insn;
-+
- 		fn =3D env->ops->get_func_proto(insn->imm, env->prog);
- 		/* all functions that have prototype and verifier allowed
- 		 * programs to call them, must be real in-kernel functions
-@@ -23423,6 +23434,7 @@ static int do_misc_fixups(struct bpf_verifier_env *=
-env)
- 			return -EFAULT;
- 		}
- 		insn->imm =3D fn->func - __bpf_call_base;
-+		env->insn_aux_data[i + delta].finalized_call =3D true;
- next_insn:
- 		if (subprogs[cur_subprog + 1].start =3D=3D i + delta + 1) {
- 			subprogs[cur_subprog].stack_depth +=3D stack_depth_extra;
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 7f5bc6a505e1..53993c2c492d 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -9082,8 +9082,7 @@ static int bpf_unclone_prologue(struct bpf_insn *insn=
-_buf, u32 pkt_access_flags,
- 	/* ret =3D bpf_skb_pull_data(skb, 0); */
- 	*insn++ =3D BPF_MOV64_REG(BPF_REG_6, BPF_REG_1);
- 	*insn++ =3D BPF_ALU64_REG(BPF_XOR, BPF_REG_2, BPF_REG_2);
--	*insn++ =3D BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0,
--			       BPF_FUNC_skb_pull_data);
-+	*insn++ =3D BPF_EMIT_CALL(bpf_skb_pull_data);
- 	/* if (!ret)
- 	 *      goto restore;
- 	 * return TC_ACT_SHOT;
-@@ -9135,11 +9134,8 @@ static int bpf_gen_ld_abs(const struct bpf_insn *ori=
-g,
- 	return insn - insn_buf;
- }
-=20
--__bpf_kfunc_start_defs();
--
--__bpf_kfunc void bpf_skb_meta_realign(struct __sk_buff *skb_)
-+static void bpf_skb_meta_realign(struct sk_buff *skb)
- {
--	struct sk_buff *skb =3D (typeof(skb))skb_;
- 	u8 *meta_end =3D skb_metadata_end(skb);
- 	u8 meta_len =3D skb_metadata_len(skb);
- 	u8 *meta;
-@@ -9161,14 +9157,6 @@ __bpf_kfunc void bpf_skb_meta_realign(struct __sk_bu=
-ff *skb_)
- 	bpf_compute_data_pointers(skb);
- }
-=20
--__bpf_kfunc_end_defs();
--
--BTF_KFUNCS_START(tc_cls_act_hidden_ids)
--BTF_ID_FLAGS(func, bpf_skb_meta_realign)
--BTF_KFUNCS_END(tc_cls_act_hidden_ids)
--
--BTF_ID_LIST_SINGLE(bpf_skb_meta_realign_ids, func, bpf_skb_meta_realign)
--
- static int tc_cls_act_prologue(struct bpf_insn *insn_buf, u32 pkt_access_f=
-lags,
- 			       const struct bpf_prog *prog)
- {
-@@ -9182,8 +9170,10 @@ static int tc_cls_act_prologue(struct bpf_insn *insn=
-_buf, u32 pkt_access_flags,
- 		 * r0 =3D bpf_skb_meta_realign(r1); // r0 is undefined
- 		 * r1 =3D r6;
- 		 */
-+		BUILD_BUG_ON(!__same_type(&bpf_skb_meta_realign,
-+					  (void (*)(struct sk_buff *skb))NULL));
- 		*insn++ =3D BPF_MOV64_REG(BPF_REG_6, BPF_REG_1);
--		*insn++ =3D BPF_CALL_KFUNC(0, bpf_skb_meta_realign_ids[0]);
-+		*insn++ =3D BPF_EMIT_CALL(bpf_skb_meta_realign);
- 		*insn++ =3D BPF_MOV64_REG(BPF_REG_1, BPF_REG_6);
- 	}
- 	cnt =3D bpf_unclone_prologue(insn, pkt_access_flags, prog, TC_ACT_SHOT);
+Jose E. Marchesi (2):
+  bpf: adapt selftests to GCC 16 -Wunused-but-set-variable
+  bpf: GCC requires function attributes before the declarator
+
+ tools/testing/selftests/bpf/progs/free_timer.c        | 10 ++++++++++
+ tools/testing/selftests/bpf/progs/rcu_read_lock.c     | 10 ++++++++++
+ tools/testing/selftests/bpf/progs/test_btf_decl_tag.c |  2 +-
+ 3 files changed, 21 insertions(+), 1 deletion(-)
+
+-- 
+2.30.2
+
 
