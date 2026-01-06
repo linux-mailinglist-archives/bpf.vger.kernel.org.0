@@ -1,152 +1,100 @@
-Return-Path: <bpf+bounces-78007-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78008-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1B21CFAC20
-	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 20:45:01 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA85BCFAD5B
+	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 20:59:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 19976301A4FB
-	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 19:44:55 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 3B66630390CE
+	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 19:53:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 215CB2FD69A;
-	Tue,  6 Jan 2026 19:43:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C893F2C11C9;
+	Tue,  6 Jan 2026 19:53:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XgLJapAX"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NxYxmcWD"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yx1-f47.google.com (mail-yx1-f47.google.com [74.125.224.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0A562FE078
-	for <bpf@vger.kernel.org>; Tue,  6 Jan 2026 19:43:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4432B2135D7;
+	Tue,  6 Jan 2026 19:53:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767728591; cv=none; b=ASa4FDzYoh87sN9aUdXub9foToUMB/SAJo2hSLuW9ELkY/K9O99I/P44Ahw3A5484lFtaMciyWQ3LH/btSv3DTPEAvVVGCm+xIpFHBNFu1n6SdGZITnIM5QTZd3hUREnfk1Dj2qrsibwbKa6B3b3YY0cZXMA4KzQLqwRwGmC6KE=
+	t=1767729212; cv=none; b=mffaO/msNHbHOKY3W9OLNp4FqjLgfgiMz6B0w/rBmwQ4nDRdFjK6fAaFkVrNMzUEPqoOb1jH6Vg8/03DTyUWpKIEwRBVv7YMPJb6yISrGYV93ocAVS/qmzzJxNT5Thvw9Ktg914wAXPxCzzuMcL8qmxl0oapweAa60XraXaRt0Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767728591; c=relaxed/simple;
-	bh=cQkCwpLfMHgFECHSgiTdiHx6C721NMxhQ4A1ljBuofk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bXd8T8dDRr1Jl7r3wKEvlllDHsDZSTx8kZ5MhQo2zPUgpbpzk006D/aKZ1bqJUSBBR4dRQdP6adfOO/+hWfQ6XB0ind6wkAJk4mcS7cLGKExOge096rqfj0D6qDTj6lKMmNVECXeh4DCl3JhD/067nVQS/NQ6H90JNiLim0u87o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XgLJapAX; arc=none smtp.client-ip=74.125.224.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yx1-f47.google.com with SMTP id 956f58d0204a3-6420c0cf4abso1240851d50.1
-        for <bpf@vger.kernel.org>; Tue, 06 Jan 2026 11:43:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767728587; x=1768333387; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=p7/Azh4zwRmV8HgO8z+Rp5x3OtBJOTRULAPqMlyrXYk=;
-        b=XgLJapAXBoPNglc9NVDTvu95shZPCAhHj1hmfgj0iyZXPK7uDzNetNrK+LZHzbGluR
-         gcbVt0pEDYsKvY/Gszc+Qeee0PRVcArlsJ3sYCgGw4PfA7bXNYNRPXpaDmEolsSDmnyS
-         ztIaHlPFC4g46Inop5IcIeKxSJB1clj3GxFfmxhISt4BFZGYWAO94akImL9Ta9FpRqr3
-         a5ItzFCtDMvk7yhiVu68gycnrZHhh3tEdGdb7vWINn32kOumPSWMtkIOl7cA9sVZgnSL
-         Ij+Cr00ubqnp5I5sayUD3BrDtgCJD6O6DLF2MlU6+iewP3KTwFNZHYVqDESVeZOFYNUa
-         2f0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767728587; x=1768333387;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=p7/Azh4zwRmV8HgO8z+Rp5x3OtBJOTRULAPqMlyrXYk=;
-        b=HdvdzQTWkjtP1PnXyr7hgZqr0nYJZ1w4hv4INlOxmZeKVMtroXdrSVS9pzPIPVvcNe
-         4UClbo3hTH+0UVpB4u4qqgChWPjS9eO0tmXoG+u2LORUloy+katvwnQGKs/DZ9aI4htc
-         tDD8oWfMe9A44d0pGOSZ2gg58x4gaTSSrNEb5c6es2UPERQbK+YHiUJIfZEDmYLm+xhD
-         tqCOXZleah1nKdLFUURFB3T5n21dRrC+HAkaBZuHVKKnOtyS/5E+m48Tpmo46/0Faw+p
-         U8h70OmmUtcMagd5mrbP4v2lL7qtG+epcFnPie8Zk1ofoyoZSj7lfReSeMgjoBcnMzWk
-         wDAA==
-X-Forwarded-Encrypted: i=1; AJvYcCUBXU6fkQ1lHqDCOK2GCr8S7ouV00F2iC37MPjvjkKDOJsZ6weUla0axXuWKTsWThSiIgE=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz+AHHzDc6/sNFaUhBaBuqbS1zLQH4LcOpBEsgMSY3APIGa6j5H
-	C9w0f7tpf9xshMawjmgnhl+o5miC9I/pF0snPiQzhhJQVTSYvPrPx2CzS20HeMLC8IrkKnw12rM
-	ZxIZVdJru4Wqqr3tsyhKn/k1NMlZAsjk=
-X-Gm-Gg: AY/fxX5Jk9aZtK5obD1/dsUl5lpASGLw8LeTTVnkGgb8e2dBMSOtAhqnW6j/FZejbMq
-	9CkcWwEOX1a1m0b8EuRgF9pc7n9Gk/1BOHIFil3HBGiLJRAVKSsJAbmvGSS+HXCJwBPRhItRVQ8
-	HWJFicttrwyEIsUp3W/JCoidHPAY/5IiPiUsI8mizXcZS0r2YUb9ugm++Lc3oIDVCEkB5c/YkDD
-	ghC/Q7VD1fh1/8d2e6kdcGeO4UAgby1nmi6krHEr3lUDwyDZ90v8ku0tFYle96Cvcdzs8xKJW6o
-	i4dZXusZuI8=
-X-Google-Smtp-Source: AGHT+IFq1+DSiAXRqUWE1kc0JcF82BATUlLMIxXXAO0gDD9PD3IPczJG27PxqkLRnUeu4+f+nC+UN6DHny0PaZ8Pijg=
-X-Received: by 2002:a05:690e:1898:b0:63f:55de:63cc with SMTP id
- 956f58d0204a3-64716b8e33cmr149478d50.31.1767728587032; Tue, 06 Jan 2026
- 11:43:07 -0800 (PST)
+	s=arc-20240116; t=1767729212; c=relaxed/simple;
+	bh=EB5RagK69EMro02hnOlcswWF5eVi8MSQE7EmS1HRUIE=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=TuerIPMJLgsUMDcub7g8Tws10W11aWKvKQ0OXtULYLQVJIdHIbPasWYnvmsnqJtWd3Y+T2xqiatnUF4jQkroPZchPcJ5cdFs8zqksHdIGkcX45H7i5qg4IuJrC1ojxSVLD04799AcXdVHjIP6G/PuFjhb3fc7ucb/2bc5KBBSUs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NxYxmcWD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B33BEC116C6;
+	Tue,  6 Jan 2026 19:53:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1767729211;
+	bh=EB5RagK69EMro02hnOlcswWF5eVi8MSQE7EmS1HRUIE=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=NxYxmcWDrAI5b84WziSDMyz22XoDhd1dHBx4nbLXC4hIgFJclHK9qgsEhZZVIZS4X
+	 uzOzMyOioiv5Gw7Ji1ZIw3NKFBcrZ4udu4/RTEi/lsmqmZzHS8qNFTikLA2RthTMj0
+	 ec2QsKDLtGKid4RExgiTIfbJ30D9AYDWH03HV8P0+wojjwfieqvLtnYcUEu5NcANLR
+	 9Dx6JKrF0qSn2qc4gpRpgJPlrreUJL2v4i5wqbhYfnIwwxv87RmUS50PLIk2ozOeW3
+	 eOGKvV/POgpJYLp5Je08OsGHGCQv7kkGos9dishV9HSd7JBMF6iM2pUvEgwZjvH6CQ
+	 kNDhA9X4bO4kg==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 8214B380CEED;
+	Tue,  6 Jan 2026 19:50:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260105-skb-meta-safeproof-netdevs-rx-only-v2-0-a21e679b5afa@cloudflare.com>
- <20260105-skb-meta-safeproof-netdevs-rx-only-v2-15-a21e679b5afa@cloudflare.com>
- <CAADnVQJbGosoXOCdyi=NZar966FVibKYobBgQ9BiyEH3=-HOsw@mail.gmail.com>
- <CAMB2axPivi+mZOXie=VnJM8nscqkHDjSrKT=Dhp5z_copEwxLQ@mail.gmail.com>
- <e969a85c-94eb-4cb5-a7ac-524a16ccce01@linux.dev> <CAADnVQKB5vRJM4kJC5515snR6KHweE-Ld_W1wWgPSWATgiUCwg@mail.gmail.com>
- <d267c646-1acc-4e5b-aa96-56759fca57d0@linux.dev> <CAMB2axM+Z9npytoRDb-D1xVQSSx__nW0GOPMOP_uMNU-ZE=AZA@mail.gmail.com>
- <CAADnVQJ=kmVAZsgkG9P2nEBTUG3E4PrDG=Yz8tfeFysH4ZBqVw@mail.gmail.com>
- <877btu8wz2.fsf@cloudflare.com> <CAMB2axNnCWp0-ow7Xbg2Go7G61N=Ls_e+DVNq5wBWFbqbFZn-A@mail.gmail.com>
- <87qzs2imh3.fsf@cloudflare.com>
-In-Reply-To: <87qzs2imh3.fsf@cloudflare.com>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Tue, 6 Jan 2026 11:42:55 -0800
-X-Gm-Features: AQt7F2o23PNEu4IjMYve2RPbJIZtZVOwPPQtczTw_MCkphfX-k0Ojeorcl0AwDw
-Message-ID: <CAMB2axO3E30y2862=uMH-S-_KvCzsWyEfBK7gntgF0gyyVZg2g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 15/16] bpf: Realign skb metadata for TC progs
- using data_meta
-To: Jakub Sitnicki <jakub@cloudflare.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Network Development <netdev@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Simon Horman <horms@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	kernel-team <kernel-team@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf 1/2] bpf,
+ test_run: Subtract size of xdp_frame from allowed metadata size
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <176772900932.2120849.10780715204750127993.git-patchwork-notify@kernel.org>
+Date: Tue, 06 Jan 2026 19:50:09 +0000
+References: <20260105114747.1358750-1-toke@redhat.com>
+In-Reply-To: <20260105114747.1358750-1-toke@redhat.com>
+To: =?utf-8?b?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIDx0b2tlQHJlZGhhdC5jb20+?=@codeaurora.org
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
+ kuba@kernel.org, hawk@kernel.org, dddddd@hust.edu.cn, M202472210@hust.edu.cn,
+ edumazet@google.com, pabeni@redhat.com, horms@kernel.org,
+ bpf@vger.kernel.org, netdev@vger.kernel.org
 
-On Tue, Jan 6, 2026 at 11:12=E2=80=AFAM Jakub Sitnicki <jakub@cloudflare.co=
-m> wrote:
->
-> On Tue, Jan 06, 2026 at 09:46 AM -08, Amery Hung wrote:
-> > On Tue, Jan 6, 2026 at 9:36=E2=80=AFAM Jakub Sitnicki <jakub@cloudflare=
-.com> wrote:
-> >> --- a/kernel/bpf/verifier.c
-> >> +++ b/kernel/bpf/verifier.c
-> >> @@ -21806,6 +21806,14 @@ static int convert_ctx_accesses(struct bpf_ve=
-rifier_env *env)
-> >>                         env->prog =3D new_prog;
-> >>                         delta +=3D cnt - 1;
-> >>
-> >> +                       /* gen_prologue emits function calls with targ=
-et address
-> >> +                        * relative to __bpf_call_base. Skip patch_cal=
-l_imm fixup.
-> >> +                        */
-> >> +                       for (i =3D 0; i < cnt - 1; i++) {
-> >> +                               if (bpf_helper_call(&env->prog->insnsi=
-[i]))
-> >> +                                       env->insn_aux_data[i].finalize=
-d_call =3D true;
-> >> +                       }
-> >> +
-> >>                         ret =3D add_kfunc_in_insns(env, insn_buf, cnt =
-- 1);
-> >
-> > And then we can get rid of this function as there is no use case for
-> > having a new kfunc in gen_{pro,epi}logue.
->
-> Happy to convert bpf_{qdisc,testmod} gen_{pro,epi}logue to use
-> BPF_EMIT_CALL instead of BPF_CALL_KFUNC.
->
-> If it's alright with you, I'd like to kill kfunc support in
-> {pro,epi}logue as a follow up.
->
+Hello:
 
-Totally. Appreciate it!
+This series was applied to bpf/bpf.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-Make sense to do in another patchset.
+On Mon,  5 Jan 2026 12:47:45 +0100 you wrote:
+> The xdp_frame structure takes up part of the XDP frame headroom,
+> limiting the size of the metadata. However, in bpf_test_run, we don't
+> take this into account, which makes it possible for userspace to supply
+> a metadata size that is too large (taking up the entire headroom).
+> 
+> If userspace supplies such a large metadata size in live packet mode,
+> the xdp_update_frame_from_buff() call in xdp_test_run_init_page() call
+> will fail, after which packet transmission proceeds with an
+> uninitialised frame structure, leading to the usual Bad Stuff.
+> 
+> [...]
 
-> Looks like there will be a bit of churn in selftests to remove the
-> coverage. And this series is getting quite long.
+Here is the summary with links:
+  - [bpf,1/2] bpf, test_run: Subtract size of xdp_frame from allowed metadata size
+    https://git.kernel.org/bpf/bpf/c/e558cca21779
+  - [bpf,2/2] selftests/bpf: Update xdp_context_test_run test to check maximum metadata size
+    (no matching commit)
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
