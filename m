@@ -1,104 +1,193 @@
-Return-Path: <bpf+bounces-77912-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-77913-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28CACCF673D
-	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 03:22:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 61EE3CF67AF
+	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 03:34:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D5C40313CB5C
-	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 02:17:26 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 68049305B1ED
+	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 02:32:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF7F32C21EB;
-	Tue,  6 Jan 2026 02:16:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A5E21D5178;
+	Tue,  6 Jan 2026 02:32:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TP0wzhJk"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="YxQdRVnu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yx1-f52.google.com (mail-yx1-f52.google.com [74.125.224.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.4])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B72C923958A
-	for <bpf@vger.kernel.org>; Tue,  6 Jan 2026 02:15:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 005F03A1E92;
+	Tue,  6 Jan 2026 02:32:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767665760; cv=none; b=aTCQP5IGceUI5AeX9iHsHrkEX8UDfCGy1uXKlWq4n2QcYg8zmzIVPoYnUeQqW963Yx8sQL5TF32cvIewhjy07t3+1N28rzQBMQam4jXdxeof7aGUXXn3xny/3sJug89Czj2Lo1Et3WWnveH0LzrjtDd/GZdOBc+Jsll/RhmN66c=
+	t=1767666776; cv=none; b=tq6a0O/4+3B7smUx9x2JOhm+3KpXhgRe6IaNQm1/nDmaLqBLfbvGnfEBmmfv7EZxEEsps7g1SwOUyTMVR7tR5NizKyv4CP9uYGQqcOFcJMXLmThr2Ahw+Xkz1OOghM4HTMcwUDxpeWXJW4F+vg+FNNrYI68HcowK+KYxAI1ewPU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767665760; c=relaxed/simple;
-	bh=KFKQv2r3eWqnikxLSVGzdUh1ujEU3so4QdL9eMYB7pM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gaK7EN7zpRZB6iXcBlxlQi65C5UgoLwpqeyhPBrPStsKjcHloLjaRauridILe3IWInKBVzo+zX8GNtgCKf9XW374oPex8/wU0+FlBs6uvQWOudBDauVOPZICVMnvhOHU6KAMSTB6PL79PhKxib35njtQ5N7ml+9bw7FSz3bW+NU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TP0wzhJk; arc=none smtp.client-ip=74.125.224.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yx1-f52.google.com with SMTP id 956f58d0204a3-640d4f2f13dso455879d50.1
-        for <bpf@vger.kernel.org>; Mon, 05 Jan 2026 18:15:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767665758; x=1768270558; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KFKQv2r3eWqnikxLSVGzdUh1ujEU3so4QdL9eMYB7pM=;
-        b=TP0wzhJk0fOc613zkTf1C+Azm0ZkWKTc/8N3Xdu4eH4hZzZwr+vCSTfHqtWhdsmaD/
-         bKzbeuaP72mGOz0nn5dQJfHqwiIXW/cTfALehvGEdAxqslJvKD8EH2A5uCM164OCGVNV
-         CXCPoVzk5MMNhAx+5hPKYkv3rLE417MnBCz9A46Kfd8UNW0iuXHX/5Eb7S4iFn6cqQzZ
-         5sQ03KsKa+SE2zGElvm1KFITwcYOvveNw53kKBSXklnfgsz4W4EvDQleXgywaTxOCzq4
-         oKOOAU83QsDDSQ4nBy+TCiTHQj/2BLI6rgpW6j++/UZLSO6Pef90rq6YSfO5yBmU9VN8
-         z9TA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767665758; x=1768270558;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=KFKQv2r3eWqnikxLSVGzdUh1ujEU3so4QdL9eMYB7pM=;
-        b=mCI5Eme2uSovrvlIa4QODYlFXNeQs0x4brajR13gRJxCaMCrxZ+F1UZmlvvZriIi7R
-         i89qKrGlLZeKd4tVaWWim1dSJrY20B3T2i20PGUll+qWvLG+VZNiZ9Y3FaI5mkal2Q/N
-         F0xYAARGp+MZNGXXt6A+K115UQJCsxdkZXsaqKiLz38NQykKBFk/RJ8+yjML1Xl+G/3U
-         TR684WPt1Lwz/FxEQtMngt6RqlbERkvsRNheVq+/AlYtm5dshpYmlJi79mSmq1hNVLeu
-         MezuFgyGEOPJabfCAxHIb1267TGLeduQB3AP3q9JYxi7YRhCcnx6wix2YdIJtPOd81Sy
-         7+yg==
-X-Forwarded-Encrypted: i=1; AJvYcCWqSsh4zg/V9ih+ZCmC7u/dytwYj3GGRivBJ/XMySxOnlHDeBYniM2dG/uhGh4KbV6w6zI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YweGTOK4vQbcT7DW3w5A3o0kgThK2YAwVnZTsiejz2Odhn6keWL
-	sWhbVRM+b98U7N3rMekjwQeDZAdIIM8QTDkIEpb89hxCn89HeDa6ERNICjYCruGN6XwY75Z4aml
-	uakiy7OFq0+Bd+UzQPnDlYsycZJsqLwg=
-X-Gm-Gg: AY/fxX4Kco5/LJgSFr5N2LJEOWFlai1b29YROEuVrx50cEpLvLLT3TFqND6FSaMwn5D
-	8vGoBWE0Cdiwl34afA+ixIVj0YEkByRLxXSQCt7xPKqUS6oPJei3peEMVNEGBIBdoEyokK4nA6U
-	rsLaKl/OiSUCmOrL7+x4cfa6kP35HPTG79lQL7GvlAp9pjV0/Bc40jDe/7ZMEGb7hXFREf77M0C
-	JBjqJFDAYAUNaWcnHX3ctgyw5V/o+62hnaVXxj0/M97RlT5aPbtPqYMqbwgfWpaBLWVmUMxuwlZ
-	TCTct7df
-X-Google-Smtp-Source: AGHT+IEuoYm+bzvqZhk4qg/A4XrmfEhgVpnTZ0+iG9FOGEwqDlWTCZKfH2wbr1nFvQ4jU0oborf9p5hfIyPDSKcCa1s=
-X-Received: by 2002:a05:690e:188f:b0:644:6f3c:11f3 with SMTP id
- 956f58d0204a3-6470c85f217mr1377138d50.27.1767665757810; Mon, 05 Jan 2026
- 18:15:57 -0800 (PST)
+	s=arc-20240116; t=1767666776; c=relaxed/simple;
+	bh=EbCn9kbANE7eCm6uterbmNY38HDgNt7chk7kfU5nklQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=tsVq8h8FHebz9XJJ/WrouZAS2ldTWrkMSSvgtkAxFR/f/3i1k6hGVHHZHganBwPTyS3x6sltVydyRhU+Jm7ne5cjfqXE4mW32XTV0cblSpsKtZfOUHGALelHxunntqYy33a3+9eY6RG78euR9U6zXMSYi25EhiJ81Yvn6qwpgFg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=YxQdRVnu; arc=none smtp.client-ip=117.135.210.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=oc
+	sj9lYwNUviQnHwZw4RrPehuv0STtzSLtNRAnMc2eU=; b=YxQdRVnufCl9NNi9vn
+	uFsK9iQDVsQWrmT0sya83sR6U6qMixPP7PMN2B/D/SLOz7JA2/4EXh5AjSvtBZwH
+	0yjQ1T5ZKeVDC7LlLerXKbGvxX2fyVWsYPMl0rBbeku5Yhbz1DWwmreAaV22v4iv
+	AQIPAjyGw/WevKoy9AgUPMplY=
+Received: from localhost.localdomain.localdomain (unknown [])
+	by gzga-smtp-mtada-g0-3 (Coremail) with SMTP id _____wBXpfoSdFxpLl2dEg--.598S2;
+	Tue, 06 Jan 2026 10:31:48 +0800 (CST)
+From: WanLi Niu <kiraskyler@163.com>
+To: Quentin Monnet <qmo@kernel.org>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	jose.marchesi@oracle.com,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	WanLi Niu <kiraskyler@163.com>,
+	Menglong Dong <menglong8.dong@gmail.com>,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	WanLi Niu <niuwl1@chinatelecom.cn>,
+	Menglong Dong <dongml2@chinatelecom.cn>
+Subject: [PATCH v5 bpf-next] bpftool: Make skeleton C++ compatible with explicit casts
+Date: Tue,  6 Jan 2026 10:31:23 +0800
+Message-Id: <20260106023123.2928-1-kiraskyler@163.com>
+X-Mailer: git-send-email 2.39.1
+In-Reply-To: <20260105071231.2501-1-kiraskyler@163.com>
+References: <20260105071231.2501-1-kiraskyler@163.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251231184711.12163-1-sun.jian.kdev@gmail.com> <CAADnVQLUzhEi=T3shodJ_9N-e+=epH52Ui=B=2eFXMRfZf8jTw@mail.gmail.com>
-In-Reply-To: <CAADnVQLUzhEi=T3shodJ_9N-e+=epH52Ui=B=2eFXMRfZf8jTw@mail.gmail.com>
-From: sun jian <sun.jian.kdev@gmail.com>
-Date: Tue, 6 Jan 2026 10:16:01 +0800
-X-Gm-Features: AQt7F2pZTZFApaEXJLIPVtPv0XKDWKU5mlw01GM4QZNDB9Ur-GVrYMXHYBhMmoA
-Message-ID: <CABFUUZHY-T0O9k2SQJOh8+JnJcc2PDJFxz7PAa_q0VVMbiNATg@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: fix qdisc kfunc declarations
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Alexei Starovoitov <ast@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wBXpfoSdFxpLl2dEg--.598S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxGr1kCr13ZryDKrWDCFW5trb_yoWrWF1kpF
+	48Cw1UKrW5Jr45ArW8Kw4UZr1Uuw4Fy3WjyrykJw45ZrsavrykXw17tF1jgasxArW8tFyj
+	y3WIqF4DZw1DArJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zi75r7UUUUU=
+X-CM-SenderInfo: 5nlut2pn1ov2i6rwjhhfrp/xtbC9xWT72lcdBWiAgAA3q
 
-On Thu, Jan 1, 2026 at 5:34=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+From: WanLi Niu <niuwl1@chinatelecom.cn>
 
-> Stop this spam.
-> You keep ignoring earlier feedback.
+Fix C++ compilation errors in generated skeleton by adding explicit
+pointer casts and use char * subtraction for offset calculation
 
-Sorry. I misdiagnosed a local build/setup issue as a kernel bug. I=E2=80=99=
-ll
-stop sending patches and fix my setup first.
+error: invalid conversion from 'void*' to '<obj_name>*' [-fpermissive]
+      |         skel = skel_alloc(sizeof(*skel));
+      |                ~~~~~~~~~~^~~~~~~~~~~~~~~
+      |                          |
+      |                          void*
 
-Thanks,
-Sun
+error: arithmetic on pointers to void
+      |         skel->ctx.sz = (void *)&skel->links - (void *)skel;
+      |                        ~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~
+
+error: assigning to 'struct <obj_name>__<ident> *' from incompatible type 'void *'
+      |                 skel-><ident> = skel_prep_map_data((void *)data, 4096,
+      |                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |                                                 sizeof(data) - 1);
+      |                                                 ~~~~~~~~~~~~~~~~~
+
+error: assigning to 'struct <obj_name>__<ident> *' from incompatible type 'void *'
+      |         skel-><ident> = skel_finalize_map_data(&skel->maps.<ident>.initial_value,
+      |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |                                         4096, PROT_READ | PROT_WRITE, skel->maps.<ident>.map_fd);
+      |                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Minimum reproducer:
+
+	$ cat test.bpf.c
+	int val; // placed in .bss section
+
+	#include "vmlinux.h"
+	#include <bpf/bpf_helpers.h>
+
+	SEC("raw_tracepoint/sched_wakeup_new") int handle(void *ctx) { return 0; }
+
+	$ cat test.cpp
+	#include <cerrno>
+
+	extern "C" {
+	#include "test.bpf.skel.h"
+	}
+
+	$ bpftool btf dump file /sys/kernel/btf/vmlinux format c > vmlinux.h
+	$ clang -g -O2 -target bpf -c test.bpf.c -o test.bpf.o
+	$ bpftool gen skeleton test.bpf.o -L  > test.bpf.skel.h
+	$ g++ -c test.cpp -I.
+
+Signed-off-by: WanLi Niu <niuwl1@chinatelecom.cn>
+Co-developed-by: Menglong Dong <dongml2@chinatelecom.cn>
+Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+---
+changelog:
+v5:
+- Use char * arithmetic instead of integer subtraction for offsets as suggested by Andrii Nakryiko
+- Use __typeof__() without __cplusplus special casing as suggested by Andrii Nakryiko
+
+v4: https://lore.kernel.org/all/20260105071231.2501-1-kiraskyler@163.com/
+- Add a minimum reproducer to demonstrate the issue, as suggested by Yonghong Song
+
+v3: https://lore.kernel.org/all/20260104021402.2968-1-kiraskyler@163.com/
+- Fix two additional <obj_name>__<ident> type mismatches as suggested by Yonghong Song
+
+v2: https://lore.kernel.org/all/20251231102929.3843-1-kiraskyler@163.com/
+- Use generic (struct %1$s *) instead of project-specific (struct trace_bpf *)
+
+v1: https://lore.kernel.org/all/20251231092541.3352-1-kiraskyler@163.com/
+---
+ tools/bpf/bpftool/gen.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+index 993c7d9484a4..2f9e10752e28 100644
+--- a/tools/bpf/bpftool/gen.c
++++ b/tools/bpf/bpftool/gen.c
+@@ -731,10 +731,10 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
+ 		{							    \n\
+ 			struct %1$s *skel;				    \n\
+ 									    \n\
+-			skel = skel_alloc(sizeof(*skel));		    \n\
++			skel = (struct %1$s *)skel_alloc(sizeof(*skel));    \n\
+ 			if (!skel)					    \n\
+ 				goto cleanup;				    \n\
+-			skel->ctx.sz = (void *)&skel->links - (void *)skel; \n\
++			skel->ctx.sz = (char *)&skel->links - (char *)skel; \n\
+ 		",
+ 		obj_name, opts.data_sz);
+ 	bpf_object__for_each_map(map, obj) {
+@@ -755,7 +755,7 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
+ 		\n\
+ 		\";							    \n\
+ 									    \n\
+-				skel->%1$s = skel_prep_map_data((void *)data, %2$zd,\n\
++				skel->%1$s = (__typeof__(skel->%1$s))skel_prep_map_data((void *)data, %2$zd,\n\
+ 								sizeof(data) - 1);\n\
+ 				if (!skel->%1$s)			    \n\
+ 					goto cleanup;			    \n\
+@@ -857,7 +857,7 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
+ 
+ 		codegen("\
+ 		\n\
+-			skel->%1$s = skel_finalize_map_data(&skel->maps.%1$s.initial_value,  \n\
++			skel->%1$s = (__typeof__(skel->%1$s))skel_finalize_map_data(&skel->maps.%1$s.initial_value,\n\
+ 							%2$zd, %3$s, skel->maps.%1$s.map_fd);\n\
+ 			if (!skel->%1$s)				    \n\
+ 				return -ENOMEM;				    \n\
+-- 
+2.39.1
+
 
