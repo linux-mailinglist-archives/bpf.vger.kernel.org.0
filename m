@@ -1,113 +1,96 @@
-Return-Path: <bpf+bounces-78013-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78014-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8825CFB34D
-	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 23:08:32 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61AEACFB3C8
+	for <lists+bpf@lfdr.de>; Tue, 06 Jan 2026 23:17:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 11966302DCB2
-	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 22:08:26 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 60496305E347
+	for <lists+bpf@lfdr.de>; Tue,  6 Jan 2026 22:16:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 441C62877FC;
-	Tue,  6 Jan 2026 22:08:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB1062E8E07;
+	Tue,  6 Jan 2026 22:10:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="njmTilVw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qi+MZXd1"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29D4D23D2A1
-	for <bpf@vger.kernel.org>; Tue,  6 Jan 2026 22:08:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0FAB288C13;
+	Tue,  6 Jan 2026 22:10:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767737303; cv=none; b=gLwLErw+3/buEawQZm6aIie6CwMgpFrQPFEGnB1A4cWv2Dx6UkBbchkWlcjVCyop8qv/M7gzUiPdVBsW0/LsUOwbV9LaBkmJI4ZmiEzO0oGyV8TSMr/UywtQAU+ufVyedhUsCBcvgvn9e28eFS+qEt3JmXB7uBDoBzQVcuGW55w=
+	t=1767737453; cv=none; b=nNtj3PGbilqA4TRjJfkn7Mm49rafA9MQSgYtw9P0rCyN0fca4gmLJ42JY9j/R4+HN8XmGJfSx8vlz2o1gkOF179+D7ajYpXmNAa1494M3EAOy7nchw3Cqt6oBkqn9aLwOywLFFQ5hgYYd/5rReJogNJSxRX8y741qVV0UxnT3U0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767737303; c=relaxed/simple;
-	bh=bU8ogkEbaGHhNlVPkDcepHcBU2SD511/GXcJgtgYpa0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VIaFwQqqOCX2WLZ2we1EBMmipRKsz9QvdghGd2QG5T+iGGuQSuQLybXUvGGGwBx6ut35nGgpxlesWXl8s9ze5OcOIhHchNhSWTw1lFlZ4icdhuxMySC+MGP2T3H6J6uP7nnZZNyPNYyIdJy3rMzeD3DIyr4HKWg1ZAgPvO85x6A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=njmTilVw; arc=none smtp.client-ip=91.218.175.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <ede58147-3bde-4408-9f69-d2d717b4ee40@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1767737290;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BSzAwhWmuZ11Qa58R83OSA0oTMM8Un3L3Ne+d4r8jec=;
-	b=njmTilVwW1iTQR/hfzm4MXcfzCifDvyC4qfnNuZ5hdrJyP/wpIIebo/TL1l8YdIzeIqiYi
-	e+Y3SvyJp7cpk1Z5d/5OZyPvt9QRTsv4rdaOQH6z2oX3DCK1fc5/2xcpCbp5gZFA4cFITv
-	uzcSIjM+ZWYx3e+MO6WCwCYbryMOgWo=
-Date: Tue, 6 Jan 2026 22:08:06 +0000
+	s=arc-20240116; t=1767737453; c=relaxed/simple;
+	bh=3ItmZWXe7SLATqaA/No0vinjdYjMYE4Kv3BCtuInokY=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=JxBZZ9W1Et5lmEsn7y29taKQQowRX6cOZR7ZEsIaDT1TQQtTHg1wvzySeCiKHkzKJT4oNp55oKcva4LrDIM5WZ1YHD+/hu4p15dcqi8B4lfL6Q2mUWHcm4tF4yLWFMXh2kKjgWlaMUURI/N8Azx3tH6tYfFFZmilmbSdaWWpzaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qi+MZXd1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5845FC19421;
+	Tue,  6 Jan 2026 22:10:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1767737452;
+	bh=3ItmZWXe7SLATqaA/No0vinjdYjMYE4Kv3BCtuInokY=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=qi+MZXd1/oLdWLcHvlwqpwcdkrYHzdtmHT3UgLO+nOBkwS3ltGhH3Hu6g3YkQJqM7
+	 wJmRt1U0p7fUaarV6lfCX+laBGFcXHKL14KfF+GkMm4m9hwlCbOlAG5EDnYBTFQUBX
+	 pyMbndCiICGcvQPXXiV8JBIqIYWg5eeZlRstgw5QXjHFHh40PVxhN9YzZSXLtYJ3zT
+	 nrZWEI5ajr1HQ0lJLLeVY6gVq3KG1iLntKBXJCwKPUaUTaWp0SvKX84NcDLZYoyaQp
+	 9JB/IuzyIr62iqM90v5gmVD8zx13GGdpWUG9Ao1jMffjSfyUMwmpovwmHz0+4IVHhG
+	 R28nCoOf2KRjg==
+From: Nathan Chancellor <nathan@kernel.org>
+To: Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nsc@kernel.org>, 
+ Brian Cain <bcain@kernel.org>, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
+Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ bpf@vger.kernel.org, linux-hexagon@vger.kernel.org
+In-Reply-To: <20251223-uapi-nostdinc-v1-0-d91545d794f7@linutronix.de>
+References: <20251223-uapi-nostdinc-v1-0-d91545d794f7@linutronix.de>
+Subject: Re: [PATCH 0/5] kbuild: uapi: improvements to header testing
+Message-Id: <176773745004.1983625.3214132191933293574.b4-ty@kernel.org>
+Date: Tue, 06 Jan 2026 15:10:50 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v4 2/6] crypto: Add BPF signature algorithm type
- registration module
-To: Daniel Hodges <git@danielhodges.dev>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Song Liu <song@kernel.org>,
- Mykyta Yatsenko <yatsenko@meta.com>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Yonghong Song
- <yonghong.song@linux.dev>, Herbert Xu <herbert@gondor.apana.org.au>,
- "David S . Miller" <davem@davemloft.net>, linux-crypto@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20260105173755.22515-1-git@danielhodges.dev>
- <20260105173755.22515-3-git@danielhodges.dev>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-In-Reply-To: <20260105173755.22515-3-git@danielhodges.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.15-dev
 
-On 05/01/2026 17:37, Daniel Hodges wrote:
-> Add a new bpf_crypto_sig module that registers signature verification
-> algorithms with the BPF crypto type system. This enables signature
-> operations (like ECDSA) to use the unified bpf_crypto_ctx structure
-> instead of requiring separate context types.
+On Tue, 23 Dec 2025 08:04:07 +0100, Thomas Weißschuh wrote:
+> Also validate that UAPI headers do not depend on libc and remove the
+> dependency on CC_CAN_LINK.
 > 
-> The module provides:
-> - alloc_tfm/free_tfm for crypto_sig transform lifecycle
-> - has_algo to check algorithm availability
-> - get_flags for crypto API flags
 > 
-> This allows ECDSA and other signature verification operations to
-> integrate with the existing BPF crypto infrastructure.
-> 
-> Signed-off-by: Daniel Hodges <git@danielhodges.dev>
 
-[...]
+Applied to
 
-> +static int bpf_crypto_sig_setkey(void *tfm, const u8 *key, unsigned int keylen)
-> +{
-> +	return crypto_sig_set_pubkey(tfm, key, keylen);
-> +}
+  https://git.kernel.org/pub/scm/linux/kernel/git/kbuild/linux.git kbuild-next-unstable
 
-That effectively means that signature verification only is provided for
-BPF programs? Do we plan to extend API to sign a buffer?
+Thanks!
 
-> +
-> +static const struct bpf_crypto_type bpf_crypto_sig_type = {
-> +	.alloc_tfm	= bpf_crypto_sig_alloc_tfm,
-> +	.free_tfm	= bpf_crypto_sig_free_tfm,
-> +	.has_algo	= bpf_crypto_sig_has_algo,
-> +	.get_flags	= bpf_crypto_sig_get_flags,
-> +	.setkey		= bpf_crypto_sig_setkey,
-> +	.owner		= THIS_MODULE,
-> +	.name		= "sig",
-> +};
+[1/5] kbuild: uapi: validate that headers do not use libc
+      https://git.kernel.org/kbuild/c/6059b880a93c3
+[2/5] hexagon: Drop invalid UAPI header asm/signal.h
+      https://git.kernel.org/kbuild/c/cc45d2ea5cfb8
+[3/5] kbuild: uapi: don't compile test bpf_perf_event.h on xtensa
+      https://git.kernel.org/kbuild/c/e2772ba5f43df
+[4/5] kbuild: uapi: split out command conditions into variables
+      https://git.kernel.org/kbuild/c/4ac85d9bc73ed
+[5/5] kbuild: uapi: drop dependency on CC_CAN_LINK
+      https://git.kernel.org/kbuild/c/e3970d77ec504
 
-I think we have to introduce verify() callback here.
+Please look out for regression or issue reports or other follow up
+comments, as they may result in the patch/series getting dropped or
+reverted. Patches applied to an "unstable" branch are accepted pending
+wider testing in -next and any post-commit review; they will generally
+be moved to the main branch in a week if no issues are found.
 
+Best regards,
+-- 
+Nathan Chancellor <nathan@kernel.org>
 
 
