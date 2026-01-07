@@ -1,85 +1,107 @@
-Return-Path: <bpf+bounces-78159-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78160-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5295CFFEA7
-	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 21:06:34 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B29AD00098
+	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 21:42:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4884230FB4FD
-	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 19:44:26 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C06563043558
+	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 20:40:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB9D8318ECF;
-	Wed,  7 Jan 2026 19:44:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 119AC3346B9;
+	Wed,  7 Jan 2026 20:40:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m3wWllin"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0015.hostedemail.com [216.40.44.15])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FD503446DE;
-	Wed,  7 Jan 2026 19:44:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15D05236A73
+	for <bpf@vger.kernel.org>; Wed,  7 Jan 2026 20:40:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767815062; cv=none; b=TnK7NCfzG206vghR8p3ehAkntjGezkbWVSLc9WiwtIbcRcg5LbR7yyrxs1Bwzcj2cvNQp4VYiyVUZIQN/kYBRyEwzICtmx8qsMn7oGFlt14rFlZM0NxVRh/fdEaF2jl4btr3WyizdaZp8PQkJjooAm6Tc+riWu0hWpjiX1bVS3k=
+	t=1767818440; cv=none; b=mvd/Bwgit0lF+OIPsy+ZaYMIs0CHZ3Ho5krYuXYyXK8s0W+5bIMfEXCmtc7+VwKi7hXhPOyVb+kjfTLdkZmy1yvhyzEaSqSygKg/jKqwsf5HjTPeVT8GLpk5ErxLpRxLj0hjfuup9in6OR5/MaA9EhS6Cn3/9u9qXWxBpuVl3Ek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767815062; c=relaxed/simple;
-	bh=BDWvavId5yMpmavgH+5HopBuuoPKcwZOJTX/4K6NxXY=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=iTC2CENovOuqS/NQuWE9EL0ffp6hmPta+Qr5MzviWQaTK5BZ568MOmhRZLv30K83pcdHGwQIzxwGLHQRO5oPupAEdS1VEC3UqUxxB2PftBTa1Fxs7r5qKQe6ReQBBAvuTnM8C+z/QK8zinPrLg4X1RA6HySUK13+IvXNQ0hB434=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf02.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay09.hostedemail.com (Postfix) with ESMTP id 75D3F8BC0E;
-	Wed,  7 Jan 2026 19:44:11 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf02.hostedemail.com (Postfix) with ESMTPA id 7B40480014;
-	Wed,  7 Jan 2026 19:44:07 +0000 (UTC)
-Date: Wed, 7 Jan 2026 14:44:34 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Maurice Hieronymus <mhi@mailbox.org>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
- andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com,
- song@kernel.org, yonghong.song@linux.dev, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, mhiramat@kernel.org,
- mark.rutland@arm.com, mathieu.desnoyers@efficios.com,
- georges.aureau@hpe.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/2] kallsyms: Always initialize modbuildid on ftrace
- address
-Message-ID: <20260107144434.233c1c15@gandalf.local.home>
-In-Reply-To: <20251220181838.63242-2-mhi@mailbox.org>
-References: <20251220181838.63242-1-mhi@mailbox.org>
-	<20251220181838.63242-2-mhi@mailbox.org>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1767818440; c=relaxed/simple;
+	bh=YGms/BPfyqA9p3mN94Fmnsa/PjI6bcYTJ2lyjmNidrs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Iyg0x9m1pIqM4rMgvda47irHAh5tcZud5k/noVn8CvzKYbLAFTR+jb1pgmhpTdo4vjeQzX3CoEQBv+YMbJ9mECC1Bwn181OtFmpgzwbNVCvUiG9FWqLI2mmu5Di/an9HaQD2Bbuuxakv1fAcdqrkfhs/ysvSutdICE/yMjLR4dE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m3wWllin; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60623C4CEF1;
+	Wed,  7 Jan 2026 20:40:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1767818439;
+	bh=YGms/BPfyqA9p3mN94Fmnsa/PjI6bcYTJ2lyjmNidrs=;
+	h=From:To:Cc:Subject:Date:From;
+	b=m3wWllin3D/MxysLVhK8rZ0GtZkUIl/joNgi73zN/3yYLguYJeXpUbCeYAX87IfEM
+	 ebYJngnsptAvxhxHpbupSxnV32zRxLw15UkmUIT6C0sC00BFaNi9NAnT4/6QA63ENS
+	 10t8eJ0UIqMuhDJGNZDcxvQEp1sTCWhNkCL8i8WjQN02rTT9LoFXbpDVRFgqnpchdh
+	 C1LK3wX1BKoMsiaxj4N4mRPITgkf0Ss65DpqQoxPwSCLNa8jRMVwQvQWIx0MBw0791
+	 aGORCanstfgNDVffKkHBJdRvGlCTut+SGSpkXuhczY5VRZ1515eNE54ImbnWgvUNZJ
+	 eqXjlmZzuoSvg==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: bpf@vger.kernel.org
+Cc: Puranjay Mohan <puranjay@kernel.org>,
+	Puranjay Mohan <puranjay12@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>,
+	kernel-team@meta.com
+Subject: [PATCH bpf-next 0/3] bpf: Improve linked register tracking
+Date: Wed,  7 Jan 2026 12:39:33 -0800
+Message-ID: <20260107203941.1063754-1-puranjay@kernel.org>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 7B40480014
-X-Stat-Signature: 1fzuq6dibqskupp1hcexpedbrfzekfmd
-X-Rspamd-Server: rspamout05
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX19RdrMjBReEh0DGiEMvIHZvmu5ln5nIhyE=
-X-HE-Tag: 1767815047-727664
-X-HE-Meta: U2FsdGVkX18A3DoOlTzqb88a5+Y6hLUBJ/DBCmaRfaYIrm4fpHBY4XIzY5lecY0xf2GZ0Mwp8GEmdCAEWG92zRK9XElcvGX+MMMX19/slztkuSW7uPraPNdTmxRMSThH61rMbAYT5S63u1Nq7ixUpnkRZUd3n2CjdwCJHTVRzcyrNutzWi9k258AgzhwdyUH16nOVVIGB/dbLOQ6dZv5G2eMEzfhlEIOGLfwK4ZCO4HWjYzafIvJF5tePcQqgtLT1cPKwMBDe2xRFmeQ2SfSBpAiRKQtOIatNj1XKQdKUnxtS8CpPe1gxjxXLPHAv39WsgQUrPK7QeFUMn0PnBgeLrMXZqYpM2eNWuUEBrJqnQLiIbNZ1MiwrGQ6Eq/7vtvW
+Content-Transfer-Encoding: 8bit
 
-On Sat, 20 Dec 2025 19:18:37 +0100
-Maurice Hieronymus <mhi@mailbox.org> wrote:
+This series extends the BPF verifier's linked register tracking to handle
+negative offsets and BPF_SUB operations, enabling better bounds propagation for
+common arithmetic patterns.
 
-> modbuildid is never set when kallsyms_lookup_buildid is returning via
-> successful ftrace_mod_address_lookup.
-> 
-> This leads to an uninitialized pointer dereference on x86 when
-> CONFIG_STACKTRACE_BUILD_ID=y inside __sprint_symbol.
-> 
+The verifier previously only tracked positive constant deltas between linked
+registers using BPF_ADD. This meant patterns using negative offsets or
+subtraction couldn't benefit from bounds propagation:
 
-Nothing should be getting a buildid from the ftrace kallsyms lookup.
+  r1 = r0
+  r1 += -4
+  if r1 s>= 0 goto ...   // r1 >= 0 implies r0 >= 4
+  // verifier couldn't propagate bounds back to r0
 
-This code is used to find the names of init functions of modules after
-those init functions have been freed. Nothing but ftrace should be looking
-for these addresses, and ftrace doesn't care about buildids.
+Patch 1 extends scalar_min_max_add() to:
+  - Accept BPF_SUB in addition to BPF_ADD (treating r1 -= 4 as r1 += -4)
+  - Change the overflow check to properly validate s32 range
+  - Add a guard against S32_MIN negation overflow
+  - Retain the !alu32 restriction due to known issues with 32-bit ALU upper bits
 
--- Steve
+Patches 2-3 update the selftests:
+  - Patch 2 adds comprehensive tests covering success cases (negative offsets,
+    BPF_SUB), failure cases (32-bit ALU, double ADD), and large delta edge cases
+    (S32_MIN/S32_MAX offsets)
+  - Patch 3 updates an existing test's expected output to reflect the new
+    tracking behavior
+
+Puranjay Mohan (3):
+  bpf: Support negative offsets and BPF_SUB for linked register tracking
+  selftests/bpf: Add tests for linked register tracking with negative
+    offsets
+  selftests/bpf: Update expected output for sub64_partial_overflow test
+
+ kernel/bpf/verifier.c                         |  26 ++-
+ .../selftests/bpf/progs/verifier_bounds.c     |   2 +-
+ .../bpf/progs/verifier_linked_scalars.c       | 213 ++++++++++++++++++
+ 3 files changed, 233 insertions(+), 8 deletions(-)
+
+
+base-commit: 2175ccfb93fd91d0ece74684eb7ab9443de806ec
+-- 
+2.47.3
+
 
