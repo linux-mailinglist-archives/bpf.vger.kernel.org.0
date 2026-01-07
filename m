@@ -1,80 +1,80 @@
-Return-Path: <bpf+bounces-78106-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78108-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEF60CFE583
-	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 15:38:18 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD2E2CFE553
+	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 15:36:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 53B4530274D7
-	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 14:37:49 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id D8E95300E83E
+	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 14:36:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E7B534D910;
-	Wed,  7 Jan 2026 14:28:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFDE434D92B;
+	Wed,  7 Jan 2026 14:28:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="IcKoetNa"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="OTW7PRbX"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 657FB34D4F3
-	for <bpf@vger.kernel.org>; Wed,  7 Jan 2026 14:28:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DD2734D4F9
+	for <bpf@vger.kernel.org>; Wed,  7 Jan 2026 14:28:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767796105; cv=none; b=LE06RBikqSQhU2ePLfUCNhsYaF0+VtmGi0y9PGE8q8btxTJvM6u9i8q4VmypZ7ABeK7EA3/+laZaeZA3kG4Sc66ne8STj9vFQZeWYfF8mULPz1X+dLtgpVzwWqBMi9CLjM21l629Hs46UJcHmgB1z5UhTRdHZ84KiVx21xXUkwA=
+	t=1767796106; cv=none; b=IgV5sAi+cRyjp37/+iYRniPoD9NjZMHqQWLCrpjnyUODZ4IkfvTzKvRfsMpsnVJGJG39YhO/R86O+anlOEoWRPSHMyN8Tfl1f+NC/qm93K+fFi12mtfRdLU/N0TGCOq4ET2RYiNOzREjnklQ22XZot7DxvXsRvI8aqU94bFkaMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767796105; c=relaxed/simple;
-	bh=WT/cVrduuTUnevhi7OdGjx/0N6WuyL4V30i0R0DiyjY=;
+	s=arc-20240116; t=1767796106; c=relaxed/simple;
+	bh=6lMcvdGQpi2foE2oBOW6tI/SoaizyaDOcJJTSblfqDI=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=VCB3/vYnA928+/jlz3NsNlZoRkyEJn8i6MXgEUDFXVz1jsXRfYhIOERgSJQjBW0QapkV/KbSYHRJxTX61t28cP5Bn76l2zU03H1B7lygX02yVk5kL2Yodw1K5RZlERKQn1BMiz0+GztRMpNy3V8X6W7rGBP5PKh57P3y0c0aOHI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=IcKoetNa; arc=none smtp.client-ip=209.85.208.48
+	 In-Reply-To:To:Cc; b=fxd4kAxo0Jsjf5YZsuNtUIkq8oPAaHT8hWjbjrpmUYnKgkF1+LA84Urxh0MbfHJIvg5o8UPJNfBb12GdVwcPqECg/FlkCtGCPirNyQivc6RbTz+L0APrS/+qSwmGFrBgKmCp414b7waJ69tIYB6eV+CdNa3UAyBfYNJxzi8IDZs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=OTW7PRbX; arc=none smtp.client-ip=209.85.208.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-65063a95558so2998685a12.0
-        for <bpf@vger.kernel.org>; Wed, 07 Jan 2026 06:28:23 -0800 (PST)
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-64b560e425eso2890246a12.1
+        for <bpf@vger.kernel.org>; Wed, 07 Jan 2026 06:28:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1767796102; x=1768400902; darn=vger.kernel.org;
+        d=cloudflare.com; s=google09082023; t=1767796103; x=1768400903; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=2l2Lii3KJnfBvilvcH77hhKV1TnL2JWP++fNz6VDxQ0=;
-        b=IcKoetNaky/nhIb9E//kwN7nJ9iLB2oG2C3XEU5BjsWWhT6Rm3tPXEqbXGKlX6Vgnp
-         EeDN1FLRb1ACsW039Ps19ijy91Xr31G3/KtraDR44tBWIQmaFtKeoZZv0D7xclyGm8ee
-         IStMk9+l+NabihjlkcIWjKo/XWA872f4vanRcrDgGQA1/K3H9oRZOwOAGhe0dWUoMrrZ
-         HTMpx/5t5rlhjsHRyn2m1IjwIkUIF6ZO+Rr1+Ii8stfInllSn7rpN53Ppfwo0D1G/E6P
-         RbPY4qVX403FpWtYp/WKT9obNZlSGJoILr7QK+k/61zQr/dGdEODThoxH3utbVz45HJK
-         zQlg==
+        bh=FrW1MKYtA+mRp8728oM7KJK7fuvYwT0zUVH3NAyGVNQ=;
+        b=OTW7PRbXIVe2LqIaHOIi5CiqE9xRRAnFtRXQSTWGTT2HIXZt9F9WCnS2FEbWQe8UWn
+         2a3za/DrOeNnqr9knlLJqnzLrtLUaDyd5pemNk4MIdoREcPxRjY+EC/+fJt/XL3ntgmX
+         wnHippzrJtWrCDkzH+jnRf4DlxSAznqcwg2PxSaY3Ypo84RBEo0cw+59OAnornTdGgab
+         SPMdz8fTV8busTp6Rt7L+fTHY6B/P23TPdL5b+sPQvUqzDwE0voeX/nWZp8cQlddDtCP
+         BaV0icZ7KZFcjwscmoi7i0ppFHuUllUrVA9DylCD0y+FqbOJ8v72dA0bvc8VKr2Vw05K
+         FHoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767796102; x=1768400902;
+        d=1e100.net; s=20230601; t=1767796103; x=1768400903;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=2l2Lii3KJnfBvilvcH77hhKV1TnL2JWP++fNz6VDxQ0=;
-        b=gBQUSDKKfsdDC18VLHRWmH6K2k4GRY8zlGfcNYfdoCahrl1I6P/u8tOZtKVa9dL1oY
-         UvDWJy3bTtuvgdeci5bdN9lDYLcKm0MNdjyyPfNDUNKEwo+yO+NujjsPpdDuR3I1yRGh
-         DGyQkLtach/6aG0MwJsJSuqwes5/4AuQKfrDUqNI0TfMJ0UKnXJKH5yNIoOyy+XCoVXl
-         HXDdppBVifjTnZyx7mxVPuT2cXko+0W2IQfGWstyrZg0gf+5o7iCOzv4O4iht24mo7qy
-         vE6P1Ys7A3pPx964QEb7O8eevFKbiB7OiktyuBSkn7ozS1VkUUxfUCWG3GC2ydrioBNt
-         g2/g==
-X-Gm-Message-State: AOJu0YwLY9Cqi91XJGdP3X8pGUvDsTTT6vcwhl5O8KaGQvlOorzG3KnK
-	7LiK2zgxm/whztzb7ZSYPXbJcOfAfIkEVYE/VSCnfSdPHooxwryE+iFuyK7D6kY9b8Q=
-X-Gm-Gg: AY/fxX4mj4wJnl5lF92io0OGDzbQB0Vd7KtRD4X1mclndUWrDnMbxy3FKREhSK+nYTY
-	sEGLezCH5jZuP5KuBxUaKezuGVswSgV457F+UAwBRxDU2+R6B8aHWaksytDZD07Hk50BjxBGNct
-	BKvC6s6msFbH6yCaiSx1m1OcMxWkX+wvo6KT51csYeq6uTy849pvdzbQ3Pm+RTCC3vNrnbpoafB
-	bCXH6DubBdsHwVyzO5k3Wb/hL7nfzYpFb60u/dCpozZ1mzqEMf1iy6WzhYl0Co72pP5y/z1bvyV
-	qf2WjHYOjcYR8pKKson4maUqVvxI+skRR4A8XMCbng8zg8NBpDxL5A7v3KpECLc7xaaK+qpjxBb
-	ArC//Ald/UnrNrQU0Xg19mFfZSFpdgDkzW19mPAisREQZwrWmTcjk1o49SGh58CyDxvHMg0ASZ6
-	dosMCAdUjIm6iJo5PYxmr5li9rXzjQIwcu/Rn+MDlhD9kzMfNl5MdRHCRGzBc=
-X-Google-Smtp-Source: AGHT+IHj0rIlSxaqyqY5C9Li83/93PvHz2qjb3WAVIT1cRA9Z2cp7g9RrODJ3vch9OxbPuTGNJa4pA==
-X-Received: by 2002:a17:907:3e0c:b0:b7a:1bdd:3311 with SMTP id a640c23a62f3a-b8445460d5fmr269562166b.62.1767796101595;
-        Wed, 07 Jan 2026 06:28:21 -0800 (PST)
+        bh=FrW1MKYtA+mRp8728oM7KJK7fuvYwT0zUVH3NAyGVNQ=;
+        b=R+EdsX/1l4G7Io9NfJgfpQtrkdWdrYuWENPINsRF/fVnSGPSCcU/CbobximocQzfhx
+         d0mGP27J+wCyTNNqabOr/SLV6RmnWauXEYM9LolToKMIXqJgzgUjHbC9JfSHaybAbIH9
+         5BMQrIrJy1mKnwDJH8qZsq5vlTU0xh5Mj9OP8Ign8LHgBupB7B5koYnnXXMmRI0jZQ6S
+         f6eCPfULpIlSTzpQA9CSigq4S3EAzr4rHlC/MmrI43P0UkkwqlYzOv7c10aq5yUxPiK+
+         xTWNuOFRpTwkzQ4teovD8cmOguLouTZZRWqAJnuvfLr0s/0Dvk4eOkv3neZ/29kNsNeK
+         srgQ==
+X-Gm-Message-State: AOJu0YzG3WXcCjfNAAbUpxLnxSCC2KK5/taN7yuBqYE96b6hEFR3dFQA
+	fqcizGIMKCL2plk8REiLa+IuZuvKCcjdXFuATwgyxEPGggHOErblPucAfroRvWfdNj0=
+X-Gm-Gg: AY/fxX5xR8R2/CY6fiDYxcW5wxJ40wgY0MclnXHtyZ44cwYK191eP4ALiF5rEVrB+us
+	EkW/i42kH49N4ZZKhBgpicYFWEUyUfONRug71cjos5/DpQwrD9lGaN4KYRpUwksPzk23ydkczHb
+	U8ZVNcmQOkLzcP0xNVlecmFfe++6iNyi0CtYaqK748kjIj2x11hpZVUFKvQpmZuD7z8IiIcXysO
+	TPUOjgSWyoAz2PX0fKWDfEVlI1auR76q83I6LDZp9zemlAQDUk92EM7D1kHWlp/+7hVAfNkuc6U
+	hu6itilj3HRajPaJgiJ56dg2TNOD7/klEWfo7dNJFkCxyANdwt8psEtaqYALSbCGnkxEEfclhHJ
+	lqEtbkBtfq87++YW7NXQu0C0t9z/GxWZ6Jhj3YdrNmOVdDLrh3cajcDi4DodzrU8cmAdEA2HSXH
+	agMpn6mQl02Sc8loyjvaQsoxrhlXLuFghhA+6wKrH9sZszxdzmiY2+SKaLL6k=
+X-Google-Smtp-Source: AGHT+IEPP+Q5FCwmvRHpwEcY1WSaFLcMya5NZNvRNO1KNjvo9pGoRDtitahVD+VXc/cVw8std524ug==
+X-Received: by 2002:a17:907:3d46:b0:b83:84b0:9419 with SMTP id a640c23a62f3a-b84453eb2dcmr290909166b.46.1767796102786;
+        Wed, 07 Jan 2026 06:28:22 -0800 (PST)
 Received: from cloudflare.com (79.184.207.118.ipv4.supernova.orange.pl. [79.184.207.118])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b842a27c8f3sm524117666b.16.2026.01.07.06.28.21
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b842a4d1c61sm516649966b.35.2026.01.07.06.28.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jan 2026 06:28:21 -0800 (PST)
+        Wed, 07 Jan 2026 06:28:22 -0800 (PST)
 From: Jakub Sitnicki <jakub@cloudflare.com>
-Date: Wed, 07 Jan 2026 15:28:10 +0100
-Subject: [PATCH bpf-next v3 10/17] net: Track skb metadata end separately
- from MAC offset
+Date: Wed, 07 Jan 2026 15:28:11 +0100
+Subject: [PATCH bpf-next v3 11/17] bpf, verifier: Remove side effects from
+ may_access_direct_pkt_data
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -83,7 +83,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260107-skb-meta-safeproof-netdevs-rx-only-v3-10-0d461c5e4764@cloudflare.com>
+Message-Id: <20260107-skb-meta-safeproof-netdevs-rx-only-v3-11-0d461c5e4764@cloudflare.com>
 References: <20260107-skb-meta-safeproof-netdevs-rx-only-v3-0-0d461c5e4764@cloudflare.com>
 In-Reply-To: <20260107-skb-meta-safeproof-netdevs-rx-only-v3-0-0d461c5e4764@cloudflare.com>
 To: bpf@vger.kernel.org
@@ -102,132 +102,104 @@ Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
  kernel-team@cloudflare.com
 X-Mailer: b4 0.15-dev-07fe9
 
-Currently skb metadata location is derived from the MAC header offset.
-This breaks when L2 tunnel/tagging devices (VLAN, GRE, etc.) reset the MAC
-offset after pulling the encapsulation header, making the metadata
-inaccessible.
+The may_access_direct_pkt_data() helper sets env->seen_direct_write as a
+side effect, which creates awkward calling patterns:
 
-A naive fix would be to move metadata on every skb_pull() path. However, we
-can avoid a memmove on L2 decapsulation if we can locate metadata
-independently of the MAC offset.
+- check_special_kfunc() has a comment warning readers about the side effect
+- specialize_kfunc() must save and restore the flag around the call
 
-Introduce a meta_end field in skb_shared_info to track where metadata ends,
-decoupling it from mac_header. The new field takes 2 bytes out of the
-existing 4 byte hole, with structure size unchanged if we reorder the
-gso_type field.
+Make the helper a pure function by moving the seen_direct_write flag
+setting to call sites that need it.
 
-Update skb_metadata_set() to record meta_end at the time of the call, and
-adjust skb_data_move() and pskb_expand_head() to keep meta_end in sync with
-head buffer layout.
-
-Remove the now-unneeded metadata adjustment in skb_reorder_vlan_header().
-
-Note that this breaks BPF skb metadata access through skb->data_meta when
-there is a gap between meta_end and skb->data. Following BPF verifier
-changes address this.
-
-Also, we still need to relocate the metadata on encapsulation on forward
-path. VLAN and QinQ have already been patched when fixing TC BPF helpers
-[1], but other tagging/tunnel code still requires similar changes. This
-will be done as a follow up.
-
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 ---
- include/linux/skbuff.h | 14 ++++++++++++--
- net/core/skbuff.c      | 10 ++--------
- 2 files changed, 14 insertions(+), 10 deletions(-)
+ kernel/bpf/verifier.c | 33 ++++++++++++---------------------
+ 1 file changed, 12 insertions(+), 21 deletions(-)
 
-diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-index 86737076101d..6dd09f55a975 100644
---- a/include/linux/skbuff.h
-+++ b/include/linux/skbuff.h
-@@ -595,15 +595,16 @@ struct skb_shared_info {
- 	__u8		meta_len;
- 	__u8		nr_frags;
- 	__u8		tx_flags;
-+	u16		meta_end;
- 	unsigned short	gso_size;
- 	/* Warning: this field is not always filled in (UFO)! */
- 	unsigned short	gso_segs;
-+	unsigned int	gso_type;
- 	struct sk_buff	*frag_list;
- 	union {
- 		struct skb_shared_hwtstamps hwtstamps;
- 		struct xsk_tx_metadata_compl xsk_meta;
- 	};
--	unsigned int	gso_type;
- 	u32		tskey;
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 53635ea2e41b..1158c7764a34 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -6151,13 +6151,9 @@ static bool may_access_direct_pkt_data(struct bpf_verifier_env *env,
+ 		if (meta)
+ 			return meta->pkt_access;
  
- 	/*
-@@ -4499,7 +4500,7 @@ static inline u8 skb_metadata_len(const struct sk_buff *skb)
+-		env->seen_direct_write = true;
+ 		return true;
  
- static inline void *skb_metadata_end(const struct sk_buff *skb)
- {
--	return skb_mac_header(skb);
-+	return skb->head + skb_shinfo(skb)->meta_end;
- }
- 
- static inline bool __skb_metadata_differs(const struct sk_buff *skb_a,
-@@ -4554,8 +4555,16 @@ static inline bool skb_metadata_differs(const struct sk_buff *skb_a,
- 	       true : __skb_metadata_differs(skb_a, skb_b, len_a);
- }
- 
-+/**
-+ * skb_metadata_set - Record packet metadata length and location.
-+ * @skb: packet carrying the metadata
-+ * @meta_len: number of bytes of metadata preceding skb->data
-+ *
-+ * Must be called when skb->data already points past the metadata area.
-+ */
- static inline void skb_metadata_set(struct sk_buff *skb, u8 meta_len)
- {
-+	skb_shinfo(skb)->meta_end = skb_headroom(skb);
- 	skb_shinfo(skb)->meta_len = meta_len;
- }
- 
-@@ -4601,6 +4610,7 @@ static inline void skb_data_move(struct sk_buff *skb, const int len,
- 	}
- 
- 	memmove(meta + len, meta, meta_len + n);
-+	skb_shinfo(skb)->meta_end += len;
- 	return;
- 
- no_metadata:
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index a00808f7be6a..afff023e70b1 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -2325,6 +2325,7 @@ int pskb_expand_head(struct sk_buff *skb, int nhead, int ntail,
- #endif
- 	skb->tail	      += off;
- 	skb_headers_offset_update(skb, nhead);
-+	skb_shinfo(skb)->meta_end += nhead;
- 	skb->cloned   = 0;
- 	skb->hdr_len  = 0;
- 	skb->nohdr    = 0;
-@@ -6238,8 +6239,7 @@ EXPORT_SYMBOL_GPL(skb_scrub_packet);
- 
- static struct sk_buff *skb_reorder_vlan_header(struct sk_buff *skb)
- {
--	int mac_len, meta_len;
--	void *meta;
-+	int mac_len;
- 
- 	if (skb_cow(skb, skb_headroom(skb)) < 0) {
- 		kfree_skb(skb);
-@@ -6252,12 +6252,6 @@ static struct sk_buff *skb_reorder_vlan_header(struct sk_buff *skb)
- 			mac_len - VLAN_HLEN - ETH_TLEN);
- 	}
- 
--	meta_len = skb_metadata_len(skb);
--	if (meta_len) {
--		meta = skb_metadata_end(skb) - meta_len;
--		memmove(meta + VLAN_HLEN, meta, meta_len);
--	}
+ 	case BPF_PROG_TYPE_CGROUP_SOCKOPT:
+-		if (t == BPF_WRITE)
+-			env->seen_direct_write = true;
 -
- 	skb->mac_header += VLAN_HLEN;
- 	return skb;
- }
+ 		return true;
+ 
+ 	default:
+@@ -7708,15 +7704,17 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+ 			err = check_stack_write(env, regno, off, size,
+ 						value_regno, insn_idx);
+ 	} else if (reg_is_pkt_pointer(reg)) {
+-		if (t == BPF_WRITE && !may_access_direct_pkt_data(env, NULL, t)) {
+-			verbose(env, "cannot write into packet\n");
+-			return -EACCES;
+-		}
+-		if (t == BPF_WRITE && value_regno >= 0 &&
+-		    is_pointer_value(env, value_regno)) {
+-			verbose(env, "R%d leaks addr into packet\n",
+-				value_regno);
+-			return -EACCES;
++		if (t == BPF_WRITE) {
++			if (!may_access_direct_pkt_data(env, NULL, BPF_WRITE)) {
++				verbose(env, "cannot write into packet\n");
++				return -EACCES;
++			}
++			if (value_regno >= 0 && is_pointer_value(env, value_regno)) {
++				verbose(env, "R%d leaks addr into packet\n",
++					value_regno);
++				return -EACCES;
++			}
++			env->seen_direct_write = true;
+ 		}
+ 		err = check_packet_access(env, regno, off, size, false);
+ 		if (!err && t == BPF_READ && value_regno >= 0)
+@@ -13893,11 +13891,11 @@ static int check_special_kfunc(struct bpf_verifier_env *env, struct bpf_kfunc_ca
+ 		if (meta->func_id == special_kfunc_list[KF_bpf_dynptr_slice]) {
+ 			regs[BPF_REG_0].type |= MEM_RDONLY;
+ 		} else {
+-			/* this will set env->seen_direct_write to true */
+ 			if (!may_access_direct_pkt_data(env, NULL, BPF_WRITE)) {
+ 				verbose(env, "the prog does not allow writes to packet data\n");
+ 				return -EINVAL;
+ 			}
++			env->seen_direct_write = true;
+ 		}
+ 
+ 		if (!meta->initialized_dynptr.id) {
+@@ -22398,7 +22396,6 @@ static int fixup_call_args(struct bpf_verifier_env *env)
+ static int specialize_kfunc(struct bpf_verifier_env *env, struct bpf_kfunc_desc *desc, int insn_idx)
+ {
+ 	struct bpf_prog *prog = env->prog;
+-	bool seen_direct_write;
+ 	void *xdp_kfunc;
+ 	bool is_rdonly;
+ 	u32 func_id = desc->func_id;
+@@ -22414,16 +22411,10 @@ static int specialize_kfunc(struct bpf_verifier_env *env, struct bpf_kfunc_desc
+ 			addr = (unsigned long)xdp_kfunc;
+ 		/* fallback to default kfunc when not supported by netdev */
+ 	} else if (func_id == special_kfunc_list[KF_bpf_dynptr_from_skb]) {
+-		seen_direct_write = env->seen_direct_write;
+ 		is_rdonly = !may_access_direct_pkt_data(env, NULL, BPF_WRITE);
+ 
+ 		if (is_rdonly)
+ 			addr = (unsigned long)bpf_dynptr_from_skb_rdonly;
+-
+-		/* restore env->seen_direct_write to its original value, since
+-		 * may_access_direct_pkt_data mutates it
+-		 */
+-		env->seen_direct_write = seen_direct_write;
+ 	} else if (func_id == special_kfunc_list[KF_bpf_set_dentry_xattr]) {
+ 		if (bpf_lsm_has_d_inode_locked(prog))
+ 			addr = (unsigned long)bpf_set_dentry_xattr_locked;
 
 -- 
 2.43.0
