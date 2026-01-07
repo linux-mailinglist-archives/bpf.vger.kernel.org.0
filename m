@@ -1,153 +1,143 @@
-Return-Path: <bpf+bounces-78149-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78150-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 550EBCFF747
-	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 19:31:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D06DCFF732
+	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 19:30:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 31817300EA37
-	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 18:31:09 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 0F145300CCFC
+	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 18:30:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0820E33291D;
-	Wed,  7 Jan 2026 18:22:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C199C344026;
+	Wed,  7 Jan 2026 18:22:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UFvISZUo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HkGxOE5r"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83AED1B4223
-	for <bpf@vger.kernel.org>; Wed,  7 Jan 2026 18:22:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A40A28134C
+	for <bpf@vger.kernel.org>; Wed,  7 Jan 2026 18:22:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767810156; cv=none; b=qNNiICf5om1co3n2vCJ/c7M26nhGXkiqK493hHjm8Ti3lYxOC+iyGFPKLVYBe7l3SUQu2hfEQXay8Y6C7/mvRvLP1Q6lmbmKCmnRbCEk7700FfrtRNJ+72zyV+qiKYG1d8PR/DbzYCu8L3AQFvb2Pj/rkWoKnUJXj7kTJ601oSo=
+	t=1767810158; cv=none; b=R+2caEuLVOic7M0Yhg/bfCflZHnb2gGpMs2Ig1yFPwlKzJh6dnNcR5dsI3m+JdvdrZQlt3WpedfLN2pPuWXcFvFgg1tfSgQfbfW/5GypCXITTHNMZ5kLJo5IoeLGLZTTPk4ICCiErESAKe2vXvzrLw+UuV73oVEwevyk3fHeNUs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767810156; c=relaxed/simple;
-	bh=m1iTDFWznU2Cys2Jealkw99qbGi/W0CBA9H2wry137c=;
+	s=arc-20240116; t=1767810158; c=relaxed/simple;
+	bh=QiswS6jPmY0/wqvpoU2JHohNeXutpxKwr4R+O2GGgyo=;
 	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=NOKS0762zpA8Kn5+7AYUiEJe45sTW95m1Vs69KCExe087u+r3tSzgQ63gxSmLnst4D7F6MMqB1dm/ZFc3uEpagXKo7OlKQeBP5BIpWQOjMT/NHlqdyTeqjJkeZ4EWxzL1PpxZyqVf9oMcdWpfavMKUAF9CHgEsTFgDZwWUEecMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UFvISZUo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB842C4CEF1;
-	Wed,  7 Jan 2026 18:22:35 +0000 (UTC)
+	 Subject:From:To:Cc:Date; b=AlwPIhdw7zWGrAD/5hYoC8WgVEH2EjDQtHv3neOEMEEDu1fpmah6Y9MPmsO8Vg1qjvfb5ZLDAFNhwfaYRFjt6D8i2PDMnWRavGvMSXgb9A7s3ObO5mOhFoCgqQcyo0MJzsLqeIbRkzPfuC+tcYLz1Wo+/Jxb8Egz1gG+OPogAAM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HkGxOE5r; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83176C4CEF1;
+	Wed,  7 Jan 2026 18:22:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767810156;
-	bh=m1iTDFWznU2Cys2Jealkw99qbGi/W0CBA9H2wry137c=;
+	s=k20201202; t=1767810157;
+	bh=QiswS6jPmY0/wqvpoU2JHohNeXutpxKwr4R+O2GGgyo=;
 	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=UFvISZUoZAQicoa458YPxeZmObQ2B94nW9xTSa8OJytSOCCJ6tGZv5U6sQTZ7gHcR
-	 xyOV51Sssg3FeUwPxmOuSpwKRuSuc4/LQBCqMQsGQlo8O6ziTwf1fn1+yk7kyRZsNC
-	 DA6AADL4VCuU4j5VPEsipfQNoNX91nu4YsaksDbIB44H1P0F+4PncDeLnX28y43il0
-	 rBzKDg692veaIDsZpjwBco8dMAyym9a10IHKtT7MZ+BYiLDkCiYZ+PzFJypUKQoNFJ
-	 sEXPoT7xllWRQ43KQgJHkmPTSRGBiRdjtIb9oPEREamfre7CH6s0PvrNARzKCzHCwc
-	 O2u6xWG0N2p8w==
-Content-Type: multipart/mixed; boundary="===============7542137245249880390=="
+	b=HkGxOE5rUhSFP3YPGlThKLGSN6cZJ+Q4la5zimMqZtsRMLAOKZF8akfAVVH4SLSwF
+	 u5AIuhmlu7LlJf4RpeuCG25C2QGs0NnUffQ4jHqjkUmSmAs0DHUqreGhcJesp+dxjk
+	 fkz6pP2syHws25RETYFhnz743wxO2aL6UOJzin+iibIKYdYo0xUxyw4ar7jMVoMUYf
+	 jiJEMYPa0jP0tSTqQgSm1GpUZEKrgPulLvEXNYuc+Kp0GS1nXFgdSUPDPPUObD2piT
+	 srspFmesCDuMR+lEoZaafnD5uh/SmrBmuMKc3qlIaRfAXrJFCoP3thwQ7rMnFX4hnd
+	 H6dxUxBF+/sTQ==
+Content-Type: multipart/mixed; boundary="===============0284102991959556445=="
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <a5d511079216cec4be7e3f87ffac426bf4b6b757ed667527d41451aebc73336a@mail.kernel.org>
-In-Reply-To: <20260107-timer_nolock-v3-5-740d3ec3e5f9@meta.com>
-References: <20260107-timer_nolock-v3-5-740d3ec3e5f9@meta.com>
-Subject: Re: [PATCH RFC v3 05/10] bpf: Enable bpf timer and workqueue use in NMI
+Message-Id: <de0af4dceddabe72f6a329980dc36e0bd045024eca617b489c6634afab7b85cd@mail.kernel.org>
+In-Reply-To: <20260107-timer_nolock-v3-3-740d3ec3e5f9@meta.com>
+References: <20260107-timer_nolock-v3-3-740d3ec3e5f9@meta.com>
+Subject: Re: [PATCH RFC v3 03/10] bpf: Simplify bpf_timer_cancel()
 From: bot+bpf-ci@kernel.org
 To: mykyta.yatsenko5@gmail.com,bpf@vger.kernel.org,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,kafai@meta.com,kernel-team@meta.com,memxor@gmail.com,eddyz87@gmail.com
 Cc: yatsenko@meta.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Wed,  7 Jan 2026 18:22:35 +0000 (UTC)
+Date: Wed,  7 Jan 2026 18:22:37 +0000 (UTC)
 
---===============7542137245249880390==
+--===============0284102991959556445==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
 > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index dc8ed948321e..b90b005a17e1 100644
+> index ff3c1e1160db..dc8ed948321e 100644
 > --- a/kernel/bpf/helpers.c
 > +++ b/kernel/bpf/helpers.c
 
 [ ... ]
 
-> +static int bpf_async_schedule_op(struct bpf_async_cb *cb, u32 op, u64 nsec, u32 timer_mode)
-> +{
-> +	struct bpf_mpmc_cell_ctl *ctl = &cb->ctl;
-> +	struct bpf_async_cmd *cmd;
-> +
-> +	cmd = bpf_mpmc_cell_write_begin(ctl);
-> +	if (!cmd)
-> +		return -EBUSY;
-> +
-> +	cmd->nsec = nsec;
-> +	cmd->mode = timer_mode;
-> +	cmd->op = op;
-> +
-> +	bpf_mpmc_cell_write_commit(ctl);
-> +
-> +	if (!refcount_inc_not_zero(&cb->refcnt))
-> +		return -EBUSY;
-> +
-> +	irq_work_queue(&cb->worker);
-> +
-> +	return 0;
-> +}
-
-[ ... ]
-
-> -BPF_CALL_3(bpf_timer_start, struct bpf_async_kern *, timer, u64, nsecs, u64, flags)
-> +BPF_CALL_3(bpf_timer_start, struct bpf_async_kern *, async, u64, nsecs, u64, flags)
->  {
->  	struct bpf_hrtimer *t;
-> -	int ret = 0;
-> -	enum hrtimer_mode mode;
-> +	u32 mode;
+> @@ -1454,13 +1454,12 @@ BPF_CALL_1(bpf_timer_cancel, struct bpf_async_kern *, timer)
 >
-> -	if (in_nmi())
-> -		return -EOPNOTSUPP;
->  	if (flags & ~(BPF_F_TIMER_ABS | BPF_F_TIMER_CPU_PIN))
->  		return -EINVAL;
->
+>  	if (in_nmi())
+>  		return -EOPNOTSUPP;
+> -	rcu_read_lock();
+> -	__bpf_spin_lock_irqsave(&timer->lock);
+> -	t = timer->timer;
+> -	if (!t) {
+> -		ret = -EINVAL;
+> -		goto out;
+> -	}
+> +
 > +	guard(rcu)();
 > +
 > +	t = async->timer;
-> +	if (!t || !t->cb.prog)
+> +	if (!t)
 > +		return -EINVAL;
 
 [ ... ]
 
-> -	hrtimer_start(&t->timer, ns_to_ktime(nsecs), mode);
+> @@ -1492,20 +1490,19 @@ BPF_CALL_1(bpf_timer_cancel, struct bpf_async_kern *, timer)
+>  		 * cancelling and waiting for it synchronously, since it might
+>  		 * do the same. Bail!
+>  		 */
+> -		ret = -EDEADLK;
+> -		goto out;
+> +		atomic_dec(&t->cancelling);
+> +		return -EDEADLK;
+>  	}
+> +
+>  drop:
+> -	drop_prog_refcnt(&t->cb);
 > -out:
 > -	__bpf_spin_unlock_irqrestore(&timer->lock);
-> -	return ret;
-> +	return bpf_async_schedule_op(&t->cb, BPF_ASYNC_START, nsecs, mode);
->  }
+> +	__bpf_async_set_callback(async, NULL, NULL);
 
-[ ... ]
+With the lock removed here, can bpf_timer_cancel() race with
+__bpf_async_cancel_and_free()? The concern is that both paths can
+attempt to drop the prog reference:
 
-> @@ -3093,15 +3188,14 @@ __bpf_kfunc int bpf_wq_start(struct bpf_wq *wq, unsigned int flags)
->  	struct bpf_async_kern *async = (struct bpf_async_kern *)wq;
->  	struct bpf_work *w;
->
-> -	if (in_nmi())
-> -		return -EOPNOTSUPP;
->  	if (flags)
->  		return -EINVAL;
->  	w = READ_ONCE(async->work);
->  	if (!w || !READ_ONCE(w->cb.prog))
->  		return -EINVAL;
->
-> -	schedule_work(&w->work);
-> +	bpf_async_schedule_op(&w->cb, BPF_ASYNC_START, 0, 0);
+  bpf_timer_cancel():
+    __bpf_async_set_callback(async, NULL, NULL)
+      -> prev = xchg(&cb->prog, NULL)
+      -> bpf_prog_put(prev)
+
+  __bpf_async_cancel_and_free():
+    -> drop_prog_refcnt(cb)
+      -> prog = cb->prog  (plain read)
+      -> bpf_prog_put(prog)
+
+The xchg in __bpf_async_set_callback() is atomic, but drop_prog_refcnt()
+uses a plain read of cb->prog. If drop_prog_refcnt() reads cb->prog
+before the xchg sets it to NULL, both paths would call bpf_prog_put() on
+the same program, leading to a double put of the reference count.
+
+Note: This appears to be addressed later in the series by commit
+0035985a0a23 ("bpf: Enable bpf timer and workqueue use in NMI") which
+moves bpf_prog_put() to the RCU callback, but the race window exists in
+this intermediate commit.
+
+>  	/* Cancel the timer and wait for associated callback to finish
+>  	 * if it was running.
+>  	 */
+> -	ret = ret ?: hrtimer_cancel(&t->timer);
+> +	ret = hrtimer_cancel(&t->timer);
 > +
->  	return 0;
+>  	if (inc)
+>  		atomic_dec(&t->cancelling);
+> -	rcu_read_unlock();
+>  	return ret;
 >  }
-
-Should this return the result of bpf_async_schedule_op() instead of
-unconditionally returning 0? The new bpf_async_schedule_op() can fail
-with -EBUSY (when the mpmc cell write fails or when refcount_inc_not_zero
-fails), but this error is silently dropped.
-
-For comparison, bpf_timer_start() does return the result of
-bpf_async_schedule_op(). This inconsistency could cause bpf_wq_start()
-callers to believe work was successfully scheduled when it was not.
 
 
 ---
@@ -156,5 +146,5 @@ See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
 
 CI run summary: https://github.com/kernel-patches/bpf/actions/runs/20791345842
 
---===============7542137245249880390==--
+--===============0284102991959556445==--
 
