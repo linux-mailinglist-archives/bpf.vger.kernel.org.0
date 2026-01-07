@@ -1,80 +1,79 @@
-Return-Path: <bpf+bounces-78138-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78140-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5F0BCFF8DA
-	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 19:51:01 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22620CFF899
+	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 19:48:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id F03A332D8611
-	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 18:01:46 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 606A532BFBC7
+	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 18:01:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CC6F395DBA;
-	Wed,  7 Jan 2026 17:49:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDE13397ACB;
+	Wed,  7 Jan 2026 17:49:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PcY5Dccl"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iZ5F7ukn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69DDF38E114
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEC58376BC5
 	for <bpf@vger.kernel.org>; Wed,  7 Jan 2026 17:49:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767808190; cv=none; b=YBoFkUz+WUonl5NUwBDlI9HR6B8jqbGrAD9NaeYItTWVmMGz1kpR56cBV0z6966FFpz91dCcjU+lm/DqQAdkNmyvN/J/RsT2Q5OWdz30cz9brvo3wKZM91Dh4Ca08I7cbrZ4b60phZCQygdlmelha70AFJ70ggEyXityJ4BKCoY=
+	t=1767808192; cv=none; b=bnX02LeaGHiwPfSdVsEs7eDzfTkqUyTZg4nj2VrsTCr8bty8nH49pbN+u45VALudU0tEQ0KMEG45SKdNdzSRi7PSQCn2eZglt4Zu8TCF90CuGxJ/lxKgeun9emjCdJnioboRBO7KSkAxMxxVbv1W3KSnZiGssbXuFk/cM20EIR8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767808190; c=relaxed/simple;
-	bh=X6UKRarJWRtPWspRzmJnourQ7yTXQI81RebA43t8ovI=;
+	s=arc-20240116; t=1767808192; c=relaxed/simple;
+	bh=3ZwcEzyETQicE5ksFjWJaJIKAw6O2apJP863bJMMnh8=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=DWEemxCJlk49PIFrU5vj0+u8BMTsKGCrfzYO07xnfWFKsmp42ymKnPsHLwYyzbmovaserAtvHO4/GQ6Ps8qZi7M6EhYQ/iKRm6uRhrMGLww62w9wcFoERuG5JVHDXngQB3yv8rSOpqCmHcXFXYEEjplq5pPq+gcZzUQy+mOdQVQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PcY5Dccl; arc=none smtp.client-ip=209.85.221.45
+	 In-Reply-To:To:Cc; b=EVca2EeQPv+F9G8XbRY86j1f1Xk/I4jDI+pkCwD4t7SbP7LBXQfOroNatLPluC7SeZqmu77nfGD9H8XvJwrY2JdPfgPOOAwos37HTltMQEguakLniwtwp3HfewV+8tGXS0eIYgb9Um9sd+Arvw9O1M0N9mmQ3RkvgwQliDPhsfA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iZ5F7ukn; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-42fbc305882so1226162f8f.0
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-477770019e4so19449295e9.3
         for <bpf@vger.kernel.org>; Wed, 07 Jan 2026 09:49:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767808178; x=1768412978; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1767808179; x=1768412979; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=noMW5oHSw7PXB3rdW7+IEoPFpWTJ36fd52j0eUwLZBo=;
-        b=PcY5DcclmeGD22A0a/iVyXNB0B7BQsbxo2YRLSbp5Kn8aeJsCjIEwk5tZ4H6KLFXUO
-         ebyc56GvixNESzVycCBj6edvVEqq/eu6au/T8FUA/A+vYi0lz2p5S96CFU/E1BpuoK7+
-         AOXKYIL7iJAkTDkj7PyZRK8qdBR1xUAovqaheDPu+3oERY/XauFjykscPtC+2UsWogR1
-         HEVJjCQMhGnTlOMal4u0BcZ0Y5li/Zb3l9YNYFSWby0GCgW0TZtdqV/dguvev4M998hw
-         tRvGtTaMEQ3QHoaDob1tf3YoVPf3gC885NFjrUnfuYEsGZywOAGQo3brdlVqqNmUuHbB
-         wtag==
+        bh=uL0hc0B2d2JeQdXAGmFIKiLGWAuC3m53S6Fw/7Ju8Yc=;
+        b=iZ5F7uknUGeA3kXVsC+tYKxIgZWL+sRATaXIwUVP2SI4HT3wEBOvIgxkYKRaX6Gcie
+         R/ekdUii7i+v4ZC8+RpMLAlXatV8SiLDjvQV3aQ2wg6+RUf4ZqTxUpmIPhkVEy0iiA7L
+         rbhz/2T2cvgKiB4uAvI1eqNn+hQ1mvK4DDBTtjdhVkwlXR4K2zUlJcIvd8dMvpUmfyxI
+         Ey+hRBwEhSPo7WM5IqhcRF7VBmptTCJHXEJBS/8g+T5RK4hhYUnj7/dNVn4Fd6+iapln
+         3IzzThm3YkoyuY7cF1JTEy3LzEyCmpYHUmkS9d2E3GOS2fdxD++2YFLefK968ZoUCmhr
+         tGoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767808178; x=1768412978;
+        d=1e100.net; s=20230601; t=1767808179; x=1768412979;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=noMW5oHSw7PXB3rdW7+IEoPFpWTJ36fd52j0eUwLZBo=;
-        b=w6z1W6oGbw5YuGvFT8d1ljjXOp/3RCuB3RGpUsdxnIRZ+MmsPR8CzZIpi6eCyppzaJ
-         /GMIiW40WUyekkqbSge5lvWJhSERWC8hAwK/Rm5/s9xfQuA7naMSL+GD2xCuA2MiI1tj
-         Dt19M7aS5dNjtxOJFNZSu0SkODQmASwxGvPk1X/Z99VHWbCTcnJczXLxoMvUaHCBk8X8
-         1BgHs4AQNR+t8IT1tKWANtl3CI1pX9Jn4fcWZ5NX7x7peonGtzDYPy+ahk0IlsSb8zSa
-         fkEaydk+YsSAz50Lq/kcI1InPBQPni+V6sRiTJlLQqTYqOJJh4h4xLvJAEpqtpASaSUv
-         xx6Q==
-X-Gm-Message-State: AOJu0Yy/VSoE2R3OG2ognr1s9fyzFYGRtNV8+RPtv9LDNFYigA70Q4Or
-	N1cQatHhPejkkWYIRhsx86cQq73CcILul4eYC+HBBkV44IBBC/TJwj+r
-X-Gm-Gg: AY/fxX4WqvtLZ2uuCCBt1L/9iGYVh2h/YUFvzCG96altgDs1k6Oa+NymU4dXM2BcWtK
-	H9hDeujUcvYVm/V4jr81XfJ5Vjj/4rW40obLgPyJ6fx5/7cSkK+ukb6+ZSAV1xSO19O23B/XB6f
-	ozx09iYdQ1+Sjz4deoO8kS2i0/s/qXrsfctA4J5sxvZQgd01gHOwn7PSixUnDuF6jBT94CjLI0O
-	yZZaDEHbBzylw/B7yRgvFkT+xOFLOdr3AcZMn/zE02nat3KqG8u+iKHzip6uYfpXDeYpNXSh8Yf
-	/i45Z2OrcoFvv5HUjYvBt5NP2Mv3cuwneu7lS77baNZwNTiQY12fjb/xG1Kf1iBiQatcdmiurgf
-	+CtT162Z4DqP69uYKJNhVGER/1WsvSeXsp9g9zFO1xzJyRwbEdu6aqmM1shD6x9+slgaeJf659Z
-	htZA==
-X-Google-Smtp-Source: AGHT+IEz7qSfw5IFHqa1e5dM73SOBDU+E5IU2kKhHrYTfLSM7MrdBWiDPoABpgGJClE8v2rSkFWhnw==
-X-Received: by 2002:a05:6000:40df:b0:431:9b2:61c0 with SMTP id ffacd0b85a97d-432c3632d11mr4385873f8f.24.1767808178405;
-        Wed, 07 Jan 2026 09:49:38 -0800 (PST)
+        bh=uL0hc0B2d2JeQdXAGmFIKiLGWAuC3m53S6Fw/7Ju8Yc=;
+        b=QtYZ1WD/iNRU5bb3ufg2e93cZLRNsdGVwA0JBMA5trLYQRPjPGCm1Rt8MK75VgbX4g
+         QHT9TaTXoBwLS52XxkxrJPvqUhZnY9jK0XMWeJYgLUC7l7WPojZ7FzlLQJFaMMv8cojb
+         JZuSw7XI628fkVEtFllSegxEkwCDKWW0jqo5yTXeu/vvfX5cCZXP2XV2UnvEwVBU+KdI
+         K0w/mPI63UQXMAYU3E8p+KxUOMTt3LGfvtAn36w1LuWilDfQc/1tJZcubOJ2meDgV9Ov
+         YZySlIA/y9usxQLZF+lKgqBW9Bc+1Z8ew69b+VxnGIz/tV/a/J+8dM1WL/5ji7xAWo7g
+         GQpQ==
+X-Gm-Message-State: AOJu0YytFWVD/fAGAyBZW8tgYItCEN7FKe5K371MoJEmX3+lA3KQNwaL
+	2+0cQ1jKRNBNyxiPp/HYHR0h0kLbc7MgZDz7kgHGLhJxktsTI6tmOeWR
+X-Gm-Gg: AY/fxX4hWkoDHS/zQTV1QuQuWvljrMllRxaAeEqry9yygC5oMznHWW4/Vq5dUqsK9hF
+	EyLI9Gve8Ih+ZDASPehGp38PVs4VWsC+juCOVC7t/f0dko5Eef1Z4VOYm/thg9nZMKrOOm0v1m/
+	dEPL7tXBxwaDhZZfl3SUdmaQ4r0G7OT/ffsluHVWSmzjRIkn2fCYD+zjns3V9BD4JqsYSC2bb6z
+	G/vULQ9WntgISKb419x/Xs7+8U5jvQKTrsMiNiAkpkZSCSbealYocCGaMNaPqHbyK9y77+EaAH2
+	OfkooakVj721Zx8EuiFgA3Nfv1AEoJHPrc45RNjOshX6w2M0+wSw0qaKy6Cdh+hyUyEquWT8nsw
+	MX0QSPifu71g868E78mZcWtiZq6C/kKUi0QP7709C3D+HKH3HFA8XeJiBqARklD3hB80=
+X-Google-Smtp-Source: AGHT+IGLCru/G7VhoIk8vlZk8m8j8rZzZd7k2h5uiwjcFRhmaS3sKl0F2sEURNzj5Lq1OPLYKu48iQ==
+X-Received: by 2002:a05:600c:1d0a:b0:477:8b77:155e with SMTP id 5b1f17b1804b1-47d84b17b55mr43849105e9.15.1767808179409;
+        Wed, 07 Jan 2026 09:49:39 -0800 (PST)
 Received: from localhost ([2620:10d:c092:500::5:d4be])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-432bd5df96asm11403997f8f.28.2026.01.07.09.49.37
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47d8715b5f7sm19137785e9.4.2026.01.07.09.49.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jan 2026 09:49:38 -0800 (PST)
+        Wed, 07 Jan 2026 09:49:39 -0800 (PST)
 From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-Date: Wed, 07 Jan 2026 17:49:06 +0000
-Subject: [PATCH RFC v3 04/10] bpf: Add lock-free cell for NMI-safe async
- operations
+Date: Wed, 07 Jan 2026 17:49:07 +0000
+Subject: [PATCH RFC v3 05/10] bpf: Enable bpf timer and workqueue use in
+ NMI
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -83,7 +82,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260107-timer_nolock-v3-4-740d3ec3e5f9@meta.com>
+Message-Id: <20260107-timer_nolock-v3-5-740d3ec3e5f9@meta.com>
 References: <20260107-timer_nolock-v3-0-740d3ec3e5f9@meta.com>
 In-Reply-To: <20260107-timer_nolock-v3-0-740d3ec3e5f9@meta.com>
 To: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
@@ -91,251 +90,495 @@ To: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
  memxor@gmail.com, eddyz87@gmail.com
 Cc: Mykyta Yatsenko <yatsenko@meta.com>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1767808173; l=8423;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1767808173; l=13777;
  i=yatsenko@meta.com; s=20251031; h=from:subject:message-id;
- bh=I4HvxoShB6kAfdk+Apv50HsoWDl/U2i6Ej465yC6jnc=;
- b=OJ5mvh8d1zZVjV0tPz+Ui8+sUf2slflGK6zZnG3+eugbZRlFm48Zc1UxomH/9TYb2WQfefN/t
- Mm/v4HhWDo2BkBvabfbIbruaGe15SUEYyNIYw4hPJpO1oowEPN+Qw4m
+ bh=Yg/5IPS2iQyipQoiK4nT0Yb3JhIdDuUmbj/Xe45d8IE=;
+ b=aANAp4N0Hf0iEWi1ZOG4nkMuMb/aH2ue/5oefeNVezQginOardaJsZgKj7aVOVKO8eavtjvs6
+ P/XahzlyhJ7AFqrkwgyFbzwTFZlYXz0oGWbsm3rS3zoyoaFsJ0UYErH
 X-Developer-Key: i=yatsenko@meta.com; a=ed25519;
  pk=TFoLStOoH/++W4HJHRgNr8zj8vPFB1W+/QECPcQygzo=
 
 From: Mykyta Yatsenko <yatsenko@meta.com>
 
-Introduce mpmc_cell, a lock-free cell primitive designed to support
-concurrent writes to struct in NMI context (only one writer advances),
-allowing readers to consume consistent snapshot.
+Refactor bpf timer and workqueue helpers to allow calling them from NMI
+context by making all operations lock-free and deferring NMI-unsafe
+work to irq_work.
 
-Implementation details:
- Double buffering allows writers run concurrently with readers (read
- from one cell, write to another)
+Previously, bpf_timer_start(), and bpf_wq_start()
+could not be called from NMI context because they acquired
+bpf_spin_lock and called hrtimer/schedule_work APIs directly. This
+patch removes these limitations.
 
- The implementation uses a sequence-number-based protocol to enable
- exclusive writes.
-  * Bit 0 of seq indicates an active writer
-  * Bits 1+ form a generation counter
-  * (seq & 2) >> 1 selects the read cell, write cell is opposite
-  * Writers atomically set bit 0, write to the inactive cell, then
-    increment seq to publish
-  * Readers snapshot seq, read from the active cell, then validate
-    that seq hasn't changed
+Key changes:
+ * Remove bpf_spin_lock from struct bpf_async_kern. Replace locked
+   operations with atomic cmpxchg() for initialization and xchg() for
+   cancel and free.
+ * Add per-async irq_work to defer NMI-unsafe operations (hrtimer_start,
+   hrtimer_try_to_cancel, schedule_work) from NMI to softirq context.
+ * Use the lock-free mpmc_cell (added in the previous commit) to pass
+   operation commands (start/cancel/free) along with their parameters
+   (nsec, mode) from NMI-safe callers to the irq_work handler.
+ * Add reference counting to bpf_async_cb to ensure the object stays
+   alive until all scheduled irq_work completes and the timer/work
+   callback finishes.
+ * Move bpf_prog_put() to RCU callback to handle races between
+   set_callback() and cancel_and_free().
 
-mpmc_cell expects users to pre-allocate double buffers.
-
-Key properties:
- * Writers never block (fail if lost the race to another writer)
- * Readers never block writers (double buffering), but may require
- retries if write updates the snapshot concurrently.
-
-This will be used by BPF timer and workqueue helpers to defer NMI-unsafe
-operations (like hrtimer_start()) to irq_work effectively allowing BPF
-programs to initiate timers and workqueues from NMI context.
+This enables BPF programs attached to NMI-context hooks (perf
+events) to use timers and workqueues for deferred processing.
 
 Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
 ---
- kernel/bpf/Makefile    |   2 +-
- kernel/bpf/mpmc_cell.c |  62 +++++++++++++++++++++++++++
- kernel/bpf/mpmc_cell.h | 112 +++++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 175 insertions(+), 1 deletion(-)
+ kernel/bpf/helpers.c | 288 ++++++++++++++++++++++++++++++++++-----------------
+ 1 file changed, 191 insertions(+), 97 deletions(-)
 
-diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-index 79cf22860a99ba31a9daf08a29de0f3a162ba89f..753fa63e0c24dc0a332d86c2c424894300f2d611 100644
---- a/kernel/bpf/Makefile
-+++ b/kernel/bpf/Makefile
-@@ -6,7 +6,7 @@ cflags-nogcse-$(CONFIG_X86)$(CONFIG_CC_IS_GCC) := -fno-gcse
- endif
- CFLAGS_core.o += -Wno-override-init $(cflags-nogcse-yy)
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index dc8ed948321e6c535d2cc2e8f9fbdd0636cdcabf..b90b005a17e1de9c0c62056a665d124b883c6320 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -29,6 +29,7 @@
+ #include <linux/task_work.h>
+ #include <linux/irq_work.h>
+ #include <linux/buildid.h>
++#include <mpmc_cell.h>
  
--obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o log.o token.o liveness.o
-+obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o log.o token.o liveness.o mpmc_cell.o
- obj-$(CONFIG_BPF_SYSCALL) += bpf_iter.o map_iter.o task_iter.o prog_iter.o link_iter.o
- obj-$(CONFIG_BPF_SYSCALL) += hashtab.o arraymap.o percpu_freelist.o bpf_lru_list.o lpm_trie.o map_in_map.o bloom_filter.o
- obj-$(CONFIG_BPF_SYSCALL) += local_storage.o queue_stack_maps.o ringbuf.o bpf_insn_array.o
-diff --git a/kernel/bpf/mpmc_cell.c b/kernel/bpf/mpmc_cell.c
-new file mode 100644
-index 0000000000000000000000000000000000000000..ca91b4308c8b552bc81cfefa2d975290a64b596d
---- /dev/null
-+++ b/kernel/bpf/mpmc_cell.c
-@@ -0,0 +1,62 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
+ #include "../../lib/kstrtox.h"
+ 
+@@ -1095,6 +1096,23 @@ static void *map_key_from_value(struct bpf_map *map, void *value, u32 *arr_idx)
+ 	return (void *)value - round_up(map->key_size, 8);
+ }
+ 
++enum bpf_async_type {
++	BPF_ASYNC_TYPE_TIMER = 0,
++	BPF_ASYNC_TYPE_WQ,
++};
 +
-+#include "mpmc_cell.h"
++enum bpf_async_op {
++	BPF_ASYNC_START,
++	BPF_ASYNC_CANCEL,
++	BPF_ASYNC_CANCEL_AND_FREE,
++};
 +
-+static u32 read_cell_idx(struct bpf_mpmc_cell_ctl *ctl, u32 seq)
++struct bpf_async_cmd {
++	u64 nsec;
++	u32 mode;
++	u32 op;
++};
++
+ struct bpf_async_cb {
+ 	struct bpf_map *map;
+ 	struct bpf_prog *prog;
+@@ -1105,6 +1123,12 @@ struct bpf_async_cb {
+ 		struct work_struct delete_work;
+ 	};
+ 	u64 flags;
++	struct irq_work worker;
++	struct bpf_mpmc_cell_ctl ctl;
++	struct bpf_async_cmd cmd[2];
++	atomic_t last_seq;
++	refcount_t refcnt;
++	enum bpf_async_type type;
+ };
+ 
+ /* BPF map elements can contain 'struct bpf_timer'.
+@@ -1142,18 +1166,8 @@ struct bpf_async_kern {
+ 		struct bpf_hrtimer *timer;
+ 		struct bpf_work *work;
+ 	};
+-	/* bpf_spin_lock is used here instead of spinlock_t to make
+-	 * sure that it always fits into space reserved by struct bpf_timer
+-	 * regardless of LOCKDEP and spinlock debug flags.
+-	 */
+-	struct bpf_spin_lock lock;
+ } __attribute__((aligned(8)));
+ 
+-enum bpf_async_type {
+-	BPF_ASYNC_TYPE_TIMER = 0,
+-	BPF_ASYNC_TYPE_WQ,
+-};
+-
+ static DEFINE_PER_CPU(struct bpf_hrtimer *, hrtimer_running);
+ 
+ static enum hrtimer_restart bpf_timer_cb(struct hrtimer *hrtimer)
+@@ -1219,6 +1233,13 @@ static void bpf_async_cb_rcu_free(struct rcu_head *rcu)
+ {
+ 	struct bpf_async_cb *cb = container_of(rcu, struct bpf_async_cb, rcu);
+ 
++	/*
++	 * Drop the last reference to prog only after RCU GP, as set_callback()
++	 * may race with cancel_and_free()
++	 */
++	if (cb->prog)
++		bpf_prog_put(cb->prog);
++
+ 	kfree_nolock(cb);
+ }
+ 
+@@ -1246,18 +1267,17 @@ static void bpf_timer_delete_work(struct work_struct *work)
+ 	call_rcu(&t->cb.rcu, bpf_async_cb_rcu_free);
+ }
+ 
++static void __bpf_async_cancel_and_free(struct bpf_async_kern *async);
++static void bpf_async_irq_worker(struct irq_work *work);
++
+ static int __bpf_async_init(struct bpf_async_kern *async, struct bpf_map *map, u64 flags,
+ 			    enum bpf_async_type type)
+ {
+-	struct bpf_async_cb *cb;
++	struct bpf_async_cb *cb, *old_cb;
+ 	struct bpf_hrtimer *t;
+ 	struct bpf_work *w;
+ 	clockid_t clockid;
+ 	size_t size;
+-	int ret = 0;
+-
+-	if (in_nmi())
+-		return -EOPNOTSUPP;
+ 
+ 	switch (type) {
+ 	case BPF_ASYNC_TYPE_TIMER:
+@@ -1270,18 +1290,13 @@ static int __bpf_async_init(struct bpf_async_kern *async, struct bpf_map *map, u
+ 		return -EINVAL;
+ 	}
+ 
+-	__bpf_spin_lock_irqsave(&async->lock);
+ 	t = async->timer;
+-	if (t) {
+-		ret = -EBUSY;
+-		goto out;
+-	}
++	if (t)
++		return -EBUSY;
+ 
+ 	cb = bpf_map_kmalloc_nolock(map, size, 0, map->numa_node);
+-	if (!cb) {
+-		ret = -ENOMEM;
+-		goto out;
+-	}
++	if (!cb)
++		return -ENOMEM;
+ 
+ 	switch (type) {
+ 	case BPF_ASYNC_TYPE_TIMER:
+@@ -1304,9 +1319,19 @@ static int __bpf_async_init(struct bpf_async_kern *async, struct bpf_map *map, u
+ 	cb->map = map;
+ 	cb->prog = NULL;
+ 	cb->flags = flags;
++	cb->worker = IRQ_WORK_INIT(bpf_async_irq_worker);
++	bpf_mpmc_cell_init(&cb->ctl, &cb->cmd[0], &cb->cmd[1]);
++	refcount_set(&cb->refcnt, 1); /* map's reference */
++	atomic_set(&cb->last_seq, 0);
++	cb->type = type;
+ 	rcu_assign_pointer(cb->callback_fn, NULL);
+ 
+-	WRITE_ONCE(async->cb, cb);
++	old_cb = cmpxchg(&async->cb, NULL, cb);
++	if (old_cb) {
++		/* Lost the race to initialize this bpf_async_kern, drop the allocated object */
++		kfree_nolock(cb);
++		return -EBUSY;
++	}
+ 	/* Guarantee the order between async->cb and map->usercnt. So
+ 	 * when there are concurrent uref release and bpf timer init, either
+ 	 * bpf_timer_cancel_and_free() called by uref release reads a no-NULL
+@@ -1317,13 +1342,11 @@ static int __bpf_async_init(struct bpf_async_kern *async, struct bpf_map *map, u
+ 		/* maps with timers must be either held by user space
+ 		 * or pinned in bpffs.
+ 		 */
+-		WRITE_ONCE(async->cb, NULL);
+-		kfree_nolock(cb);
+-		ret = -EPERM;
++		__bpf_async_cancel_and_free(async);
++		return -EPERM;
+ 	}
+-out:
+-	__bpf_spin_unlock_irqrestore(&async->lock);
+-	return ret;
++
++	return 0;
+ }
+ 
+ BPF_CALL_3(bpf_timer_init, struct bpf_async_kern *, timer, struct bpf_map *, map,
+@@ -1354,6 +1377,61 @@ static const struct bpf_func_proto bpf_timer_init_proto = {
+ 	.arg3_type	= ARG_ANYTHING,
+ };
+ 
++static int bpf_async_schedule_op(struct bpf_async_cb *cb, u32 op, u64 nsec, u32 timer_mode)
 +{
-+	return (seq & 2) >> 1;
-+}
++	struct bpf_mpmc_cell_ctl *ctl = &cb->ctl;
++	struct bpf_async_cmd *cmd;
 +
-+void bpf_mpmc_cell_init(struct bpf_mpmc_cell_ctl *ctl, void *cell1, void *cell2)
-+{
-+	atomic_set(&ctl->seq, 0);
-+	ctl->cell[0] = cell1;
-+	ctl->cell[1] = cell2;
-+}
++	cmd = bpf_mpmc_cell_write_begin(ctl);
++	if (!cmd)
++		return -EBUSY;
 +
-+void *bpf_mpmc_cell_read_begin(struct bpf_mpmc_cell_ctl *ctl, u32 *seq)
-+{
-+	*seq = atomic_read_acquire(&ctl->seq);
-+	/* Mask out acive writer bit */
-+	*seq &= ~1;
++	cmd->nsec = nsec;
++	cmd->mode = timer_mode;
++	cmd->op = op;
 +
-+	return ctl->cell[read_cell_idx(ctl, *seq)];
-+}
++	bpf_mpmc_cell_write_commit(ctl);
 +
-+int bpf_mpmc_cell_read_end(struct bpf_mpmc_cell_ctl *ctl, u32 seq)
-+{
-+	u32 new_seq;
++	if (!refcount_inc_not_zero(&cb->refcnt))
++		return -EBUSY;
 +
-+	/* Ensure cell reads complete before checking seq */
-+	smp_rmb();
-+
-+	new_seq = atomic_read_acquire(&ctl->seq);
-+	new_seq &= ~1; /* Ignore active write bit */
-+	/* Check if seq changed between begin and end, if it did, new snapshot is available */
-+	if (new_seq != seq)
-+		return -EAGAIN;
++	irq_work_queue(&cb->worker);
 +
 +	return 0;
 +}
 +
-+void *bpf_mpmc_cell_write_begin(struct bpf_mpmc_cell_ctl *ctl)
++static int bpf_async_read_op(struct bpf_async_cb *cb, enum bpf_async_op *op,
++			     u64 *nsec, u32 *flags)
 +{
-+	u32 seq;
++	struct bpf_mpmc_cell_ctl *ctl = &cb->ctl;
++	struct bpf_async_cmd *cmd;
++	u32 seq, last_seq;
++
++	do {
++		last_seq = atomic_read_acquire(&cb->last_seq);
++		cmd = bpf_mpmc_cell_read_begin(ctl, &seq);
++
++		/* Return -EBUSY if current seq is consumed by another reader */
++		if (seq == last_seq)
++			return -EBUSY;
++
++		*nsec = cmd->nsec;
++		*flags = cmd->mode;
++		*op = cmd->op;
 +
 +	/*
-+	 * Try to set the lowest bit, on success, writer owns cell exclusively,
-+	 * other writers fail
++	 * Retry read on one of the two conditions:
++	 *  1. Some writer produced new snapshot while we were reading. Our snapshot may have been
++	 *     modified, and not consistent.
++	 *  2. Another reader consumed some snapshot. We need to validate that this snapshot is not
++	 *     consumed. This prevents duplicate op processing.
 +	 */
-+	seq = atomic_fetch_or_acquire(1, &ctl->seq);
-+	if (seq & 1) /* Check if another writer is active */
-+		return NULL;
++	} while (bpf_mpmc_cell_read_end(ctl, seq) == -EAGAIN ||
++		 atomic_cmpxchg_release(&cb->last_seq, last_seq, seq) != last_seq);
 +
-+	/* Write to opposite to read buffer */
-+	return ctl->cell[read_cell_idx(ctl, seq) ^ 1];
++	return 0;
 +}
 +
-+void bpf_mpmc_cell_write_commit(struct bpf_mpmc_cell_ctl *ctl)
+ static int __bpf_async_set_callback(struct bpf_async_kern *async, void *callback_fn,
+ 				    struct bpf_prog *prog)
+ {
+@@ -1395,22 +1473,19 @@ static const struct bpf_func_proto bpf_timer_set_callback_proto = {
+ 	.arg2_type	= ARG_PTR_TO_FUNC,
+ };
+ 
+-BPF_CALL_3(bpf_timer_start, struct bpf_async_kern *, timer, u64, nsecs, u64, flags)
++BPF_CALL_3(bpf_timer_start, struct bpf_async_kern *, async, u64, nsecs, u64, flags)
+ {
+ 	struct bpf_hrtimer *t;
+-	int ret = 0;
+-	enum hrtimer_mode mode;
++	u32 mode;
+ 
+-	if (in_nmi())
+-		return -EOPNOTSUPP;
+ 	if (flags & ~(BPF_F_TIMER_ABS | BPF_F_TIMER_CPU_PIN))
+ 		return -EINVAL;
+-	__bpf_spin_lock_irqsave(&timer->lock);
+-	t = timer->timer;
+-	if (!t || !t->cb.prog) {
+-		ret = -EINVAL;
+-		goto out;
+-	}
++
++	guard(rcu)();
++
++	t = async->timer;
++	if (!t || !t->cb.prog)
++		return -EINVAL;
+ 
+ 	if (flags & BPF_F_TIMER_ABS)
+ 		mode = HRTIMER_MODE_ABS_SOFT;
+@@ -1420,10 +1495,7 @@ BPF_CALL_3(bpf_timer_start, struct bpf_async_kern *, timer, u64, nsecs, u64, fla
+ 	if (flags & BPF_F_TIMER_CPU_PIN)
+ 		mode |= HRTIMER_MODE_PINNED;
+ 
+-	hrtimer_start(&t->timer, ns_to_ktime(nsecs), mode);
+-out:
+-	__bpf_spin_unlock_irqrestore(&timer->lock);
+-	return ret;
++	return bpf_async_schedule_op(&t->cb, BPF_ASYNC_START, nsecs, mode);
+ }
+ 
+ static const struct bpf_func_proto bpf_timer_start_proto = {
+@@ -1435,17 +1507,6 @@ static const struct bpf_func_proto bpf_timer_start_proto = {
+ 	.arg3_type	= ARG_ANYTHING,
+ };
+ 
+-static void drop_prog_refcnt(struct bpf_async_cb *async)
+-{
+-	struct bpf_prog *prog = async->prog;
+-
+-	if (prog) {
+-		bpf_prog_put(prog);
+-		async->prog = NULL;
+-		rcu_assign_pointer(async->callback_fn, NULL);
+-	}
+-}
+-
+ BPF_CALL_1(bpf_timer_cancel, struct bpf_async_kern *, async)
+ {
+ 	struct bpf_hrtimer *t, *cur_t;
+@@ -1513,27 +1574,16 @@ static const struct bpf_func_proto bpf_timer_cancel_proto = {
+ 	.arg1_type	= ARG_PTR_TO_TIMER,
+ };
+ 
+-static struct bpf_async_cb *__bpf_async_cancel_and_free(struct bpf_async_kern *async)
++static void __bpf_async_cancel_and_free(struct bpf_async_kern *async)
+ {
+ 	struct bpf_async_cb *cb;
+ 
+-	/* Performance optimization: read async->cb without lock first. */
+-	if (!READ_ONCE(async->cb))
+-		return NULL;
+-
+-	__bpf_spin_lock_irqsave(&async->lock);
+-	/* re-read it under lock */
+-	cb = async->cb;
++	cb = xchg(&async->cb, NULL);
+ 	if (!cb)
+-		goto out;
+-	drop_prog_refcnt(cb);
+-	/* The subsequent bpf_timer_start/cancel() helpers won't be able to use
+-	 * this timer, since it won't be initialized.
+-	 */
+-	WRITE_ONCE(async->cb, NULL);
+-out:
+-	__bpf_spin_unlock_irqrestore(&async->lock);
+-	return cb;
++		return;
++
++	/* Consume map's refcnt */
++	irq_work_queue(&cb->worker);
+ }
+ 
+ static void bpf_timer_delete(struct bpf_hrtimer *t)
+@@ -1588,19 +1638,76 @@ static void bpf_timer_delete(struct bpf_hrtimer *t)
+ 	}
+ }
+ 
++static void bpf_async_process_op(struct bpf_async_cb *cb, u32 op,
++				 u64 timer_nsec, u32 timer_mode)
 +{
-+	atomic_fetch_add_release(1, &ctl->seq);
++	switch (cb->type) {
++	case BPF_ASYNC_TYPE_TIMER: {
++		struct bpf_hrtimer *t = container_of(cb, struct bpf_hrtimer, cb);
++
++		switch (op) {
++		case BPF_ASYNC_START:
++			hrtimer_start(&t->timer, ns_to_ktime(timer_nsec), timer_mode);
++			break;
++		case BPF_ASYNC_CANCEL:
++			hrtimer_try_to_cancel(&t->timer);
++			break;
++		case BPF_ASYNC_CANCEL_AND_FREE:
++			bpf_timer_delete(t);
++			break;
++		default:
++			break;
++		}
++		break;
++	}
++	case BPF_ASYNC_TYPE_WQ: {
++		struct bpf_work *w = container_of(cb, struct bpf_work, cb);
++
++		switch (op) {
++		case BPF_ASYNC_START:
++			schedule_work(&w->work);
++			break;
++		case BPF_ASYNC_CANCEL_AND_FREE:
++			/*
++			 * Trigger cancel of the sleepable work, but *do not* wait for
++			 * it to finish.
++			 * kfree will be called once the work has finished.
++			 */
++			schedule_work(&w->delete_work);
++			break;
++		default:
++			break;
++		}
++		break;
++	}
++	}
 +}
-diff --git a/kernel/bpf/mpmc_cell.h b/kernel/bpf/mpmc_cell.h
-new file mode 100644
-index 0000000000000000000000000000000000000000..8b57226927a6c51460fae3113b94d8631173da63
---- /dev/null
-+++ b/kernel/bpf/mpmc_cell.h
-@@ -0,0 +1,112 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+#ifndef __BPF_MPMC_CELL_H__
-+#define __BPF_MPMC_CELL_H__
-+#include <linux/smp.h>
 +
-+/**
-+ * DOC: BPF MPMC Cell
-+ *
-+ * Multi-producer, multi-consumer lock-free double buffer.
-+ * Designed for writers producing data in NMI context where locking is not possible.
-+ *
-+ * Writers never block or wait, but may fail (return NULL) if another writer is active
-+ * (assume these writers are overridden)
-+ * Readers never block writers. Readers may need to retry if a write
-+ * completes during the read window (return -EAGAIN)
-+ *
-+ * User should provide two allocated cells.
-+ *
-+ * Typical usage:
-+ *
-+ *   // Writer (from NMI or any context):
-+ *   cell = bpf_mpmc_cell_write_begin(ctl);
-+ *   if (!IS_ERR(cell)) {
-+ *       memcpy(cell, data, size);
-+ *       bpf_mpmc_cell_write_commit(ctl);
-+ *   }
-+ *
-+ *   // Reader (from irq_work or similar):
-+ *   cell = bpf_mpmc_cell_read_begin(ctl, &seq);
-+ *   memcpy(local, cell, size);
-+ *   ret = bpf_mpmc_cell_read_end(ctl, seq);
-+ *   if (ret == 0)
-+ *       process(local);  // success, we own this snapshot
-+ *   else if (ret == -EAGAIN)
-+ *       retry;           // snapshot changed or lost race
-+ */
++static void bpf_async_irq_worker(struct irq_work *work)
++{
++	struct bpf_async_cb *cb = container_of(work, struct bpf_async_cb, worker);
++	u32 op, timer_mode;
++	u64 nsec;
++	int err;
 +
-+/**
-+ * struct bpf_mpmc_cell_ctl - control structure for mpmc cell
-+ * @seq: sequence number (odd = write active, seq/2 = generation)
-+ * @cell: pointers to two allocated cells to support double buffering
-+ *
-+ */
-+struct bpf_mpmc_cell_ctl {
-+	atomic_t seq;
-+	void *cell[2];
-+};
++	err = bpf_async_read_op(cb, &op, &nsec, &timer_mode);
++	if (err)
++		goto out;
 +
-+/**
-+ * bpf_mpmc_cell_init() - initialize mpmc cell control structure
-+ * @ctl: pointer to control structure to initialize
-+ * @cell1: pointer to an allocated cell
-+ * @cell2: pointer to another same sized cell
-+ *
-+ * Must be called before any read/write operations.
-+ * Caller must allocate two same sized cells (buffers, structs) and pass
-+ * them to this function, those two cells are used for double-buffering,
-+ * supporting concurrent reads/writes: readers use one cell, writers another.
-+ *
-+ * Context: Any context.
-+ * Return: void.
-+ */
-+void bpf_mpmc_cell_init(struct bpf_mpmc_cell_ctl *ctl, void *cell1, void *cell2);
++	bpf_async_process_op(cb, op, nsec, timer_mode);
 +
-+/**
-+ * bpf_mpmc_cell_read_begin() - begin a read operation
-+ * @ctl: pointer to control structure
-+ * @seq: output parameter, sequence number for this read
-+ *
-+ * Returns: pointer to the current read cell. Caller must copy data
-+ * out and then call bpf_mpmc_cell_read_end() to validate.
-+ */
-+void *bpf_mpmc_cell_read_begin(struct bpf_mpmc_cell_ctl *ctl, u32 *seq);
++out:
++	if (refcount_dec_and_test(&cb->refcnt))
++		bpf_async_process_op(cb, BPF_ASYNC_CANCEL_AND_FREE, 0, 0);
++}
 +
-+/**
-+ * bpf_mpmc_cell_read_end() - validate read operation.
-+ * @ctl: pointer to control structure
-+ * @seq: sequence number from matching bpf_mpmc_cell_read_begin()
-+ *
-+ * Validates that the snapshot read between bpf_mpmc_cell_read_begin()
-+ * and bpf_mpmc_cell_read_end() is consistent.
-+ *
-+ * Return:
-+ *   0        - success, snapshot is consistent
-+ *   -EAGAIN  - snapshot invalidated (another writer completed)
-+ */
-+int bpf_mpmc_cell_read_end(struct bpf_mpmc_cell_ctl *ctl, u32 seq);
+ /*
+  * This function is called by map_delete/update_elem for individual element and
+  * by ops->map_release_uref when the user space reference to a map reaches zero.
+  */
+ void bpf_timer_cancel_and_free(void *val)
+ {
+-	struct bpf_hrtimer *t;
+-
+-	t = (struct bpf_hrtimer *)__bpf_async_cancel_and_free(val);
+-	if (!t)
+-		return;
+-
+-	bpf_timer_delete(t);
++	__bpf_async_cancel_and_free(val);
+ }
+ 
+ /* This function is called by map_delete/update_elem for individual element and
+@@ -1608,19 +1715,7 @@ void bpf_timer_cancel_and_free(void *val)
+  */
+ void bpf_wq_cancel_and_free(void *val)
+ {
+-	struct bpf_work *work;
+-
+-	BTF_TYPE_EMIT(struct bpf_wq);
+-
+-	work = (struct bpf_work *)__bpf_async_cancel_and_free(val);
+-	if (!work)
+-		return;
+-	/* Trigger cancel of the sleepable work, but *do not* wait for
+-	 * it to finish if it was running as we might not be in a
+-	 * sleepable context.
+-	 * kfree will be called once the work has finished.
+-	 */
+-	schedule_work(&work->delete_work);
++	__bpf_async_cancel_and_free(val);
+ }
+ 
+ BPF_CALL_2(bpf_kptr_xchg, void *, dst, void *, ptr)
+@@ -3093,15 +3188,14 @@ __bpf_kfunc int bpf_wq_start(struct bpf_wq *wq, unsigned int flags)
+ 	struct bpf_async_kern *async = (struct bpf_async_kern *)wq;
+ 	struct bpf_work *w;
+ 
+-	if (in_nmi())
+-		return -EOPNOTSUPP;
+ 	if (flags)
+ 		return -EINVAL;
+ 	w = READ_ONCE(async->work);
+ 	if (!w || !READ_ONCE(w->cb.prog))
+ 		return -EINVAL;
+ 
+-	schedule_work(&w->work);
++	bpf_async_schedule_op(&w->cb, BPF_ASYNC_START, 0, 0);
 +
-+/**
-+ * bpf_mpmc_cell_write_begin() - begin a write operation
-+ * @ctl: pointer to control structure
-+ *
-+ * Attempts to acquire exclusive writer access. Only one writer can be
-+ * active at a time. On success, caller must write data and call
-+ * bpf_mpmc_cell_write_commit(). There is no write abort mechanism.
-+ *
-+ * Return: Pointer to the write cell, or NULL if another writer is
-+ * active.
-+ */
-+void *bpf_mpmc_cell_write_begin(struct bpf_mpmc_cell_ctl *ctl);
-+
-+/**
-+ * bpf_mpmc_cell_write_commit() - complete a write operation
-+ * @ctl: pointer to control structure
-+ *
-+ * Publishes the written data, making it visible to readers.
-+ * Must be called after successful bpf_mpmc_cell_write_begin().
-+ */
-+void bpf_mpmc_cell_write_commit(struct bpf_mpmc_cell_ctl *ctl);
-+
-+#endif
+ 	return 0;
+ }
+ 
 
 -- 
 2.52.0
