@@ -1,132 +1,139 @@
-Return-Path: <bpf+bounces-78095-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78107-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3E4FCFE85A
-	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 16:17:28 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24BCBCFEF0D
+	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 17:47:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 4BA1430AC165
-	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 15:11:25 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 624D1339F8E1
+	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 16:38:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8421533F395;
-	Wed,  7 Jan 2026 14:16:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FB5B34D911;
+	Wed,  7 Jan 2026 14:28:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cOew/IRO"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="UPOL8Vpf"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48A2133EB13;
-	Wed,  7 Jan 2026 14:16:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 547E534D4DF
+	for <bpf@vger.kernel.org>; Wed,  7 Jan 2026 14:28:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767795371; cv=none; b=bub7//TK9uq9c7yVtTVvDlisizq7gpEcSayuBsDFeF055SzFSarYf42pLl+KbLENhWISiPIif6T/noB3Uqx3i/oL1rPN55aWhB1LmiQu1yPvi9oDE+fZaPZBvl20I4NDYA4Rcs3Hhtzn9thA6AECNS/AA5YcmgG75dy6j84TElQ=
+	t=1767796105; cv=none; b=uMtM5SfufFf+kld3lt+5Zl1WvniB+EQQCIT6wC6v2qK0UeMy9n+aQ5isAD9zPL67nKUqbJLX2vygm1YnnYBVWImFxTpOG7BrbKfjUiQqaXlv1PxpZ3Zs6dhN4o8yyhByTD80mSuQ0scqIkQHg0oWcVtjAiJL4Q7rYezoH2l5ZRo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767795371; c=relaxed/simple;
-	bh=Hfk0xs9mtMTgHWqYqiIZSwai97YK7tXfeXKFSxGISsw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=He96GHWhJlE215gBreXw2oJTc45Rba7p1AV739FgKS/DvkbpLWXrbKr/PQawKwarGWaMY1DRu1Rdbeh+WaakoO5Meko6YInBHYTlIwGaiT/sT5XTJ1vuVuWAOJd7/5C35DMd6zSZoNuuIgpIaIGPswM+CRtPpoXO1PhCJz0bSGc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cOew/IRO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 911F4C4CEF1;
-	Wed,  7 Jan 2026 14:16:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767795371;
-	bh=Hfk0xs9mtMTgHWqYqiIZSwai97YK7tXfeXKFSxGISsw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cOew/IROfm9qzOOTQIlOisZOSH2KDoX3TgEbHyuflgqC5Z5szpbbIyuEetC1flL6Y
-	 SYTDzqJW12y5zkLVrJYPlpNkw9Wxr3Wl6b6qFj2lSry637N+RjGLs1BNZp3EX/T67s
-	 doWTIk3TUg3TiyRXTEGzUuGaNUaYKOTU75qGJxUFaPkUDAdFQlmbe0SXBxJB+IQaq8
-	 a1gL6Qy83KbVAlQgf6RA1sokeiZ2VtjnXC/YcLo3oT9GhG7GFW01i8XXcMFp9YP8Ju
-	 1t/kHF5utWwL9fzUqEQ285i3g1aeqr3Kn+MnpolB5I9wfd2ytmGhbMHTjmxNF/kKxZ
-	 YCtS4FD8oCXVw==
-Date: Wed, 7 Jan 2026 14:16:05 +0000
-From: Will Deacon <will@kernel.org>
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mahe Tardy <mahe.tardy@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, x86@kernel.org,
-	Yonghong Song <yhs@fb.com>, Song Liu <songliubraving@fb.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH bpf-next 1/2] arm64/ftrace,bpf: Fix partial regs after
- bpf_prog_run
-Message-ID: <aV5qpZwxgVRu2Q8w@willie-the-truck>
-References: <20260107093256.54616-1-jolsa@kernel.org>
+	s=arc-20240116; t=1767796105; c=relaxed/simple;
+	bh=NaLr3kuYmZoB45GFF481B9GG1CmkcJsN17rUBCCL3X0=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=ISnWBAY8cXngi39xg1BwU53JuGXA82VCLQWuY4IVlTvBYOuc3VTzCda6JLfIY1Frw15mLEGzL494gHxTbf1J4oG1rY2NmX7IMVGtHtscX4E931wMNQZviRFFBb1csh0lrI0V3FAuU0jRbghhbUerTWYOse0hRNwzNqdfEgEsadA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=UPOL8Vpf; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-64d0d41404cso3144426a12.0
+        for <bpf@vger.kernel.org>; Wed, 07 Jan 2026 06:28:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1767796100; x=1768400900; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2BAkb07UvD2AJKDS63sluZRYEIGpz2hmyS1/vul3M/g=;
+        b=UPOL8VpfuzfUh3FI6D3L2ER6M04DjigHiZ7CZbaRgH3a/AuWjEwfBKUCOtfnTslerT
+         X6XwbytS1loQr42ioieOG7/fkZ3NZ2hCL7d7h6qQ8tcQT6T/SSyRe1T3zOVwm4SaExr3
+         mqBJDC3RqJkhLx/iFCNy/1eEfJRYsoE5xEXWD6yZpRCtIBJdH0ooZx8gK/zToURiEBCr
+         6BbxTIjegrYLNOSYXxiS3LLYkjuPerRlmplfwSbGrN2EzbxkqHAi/Grxzs/STbsqZdE7
+         6ZZS9jAIeBlQhf8UWR2D71iUa8G4otcr+SXhmqfVUfIgglb1gfU1HQbGKuIShM9CQPTH
+         S/pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767796100; x=1768400900;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=2BAkb07UvD2AJKDS63sluZRYEIGpz2hmyS1/vul3M/g=;
+        b=hVaBU2jZjQsXG3bpu/xb7dIvsyertKuRvH0XUCsTwIJuIGdo/xbKn2NsYLJuGy2tdN
+         uk8vpbeBybpk9+srDcmVTMt1jnV9zORvArvdiG3KsTxjBp5MPJhnMlN7CiDu3Zhis0zx
+         I53SUpY2Bd/pwfhPaUvyozTIJxErZsnJP53yKRwPpTc/m5aQ4yP2afoCviRcCpR0Yfh2
+         WWEJjuoLyv/qW6ZKqBSCJy6RYfWxP775lM+qVkvgi0V7+S2HAWBdP+k6Trutiw7qq0vL
+         Xoke/BYZfGeSQpQC7O3dOHTjNdFxj7sJn0n5vfiBZhaHpS+lUyIiOi9E6covKzlA+JhV
+         7eYg==
+X-Gm-Message-State: AOJu0YzTqs1y5u8RcxZNVkDmOc4x2Y4QmNOa4S/iIKju4j3dNABZ6/pi
+	0KrDql75dLmukdnzgARlbnUU68RZ655l2CKMy8MYYp9ZFDnd/AX9oySCW2LOBxzTBio=
+X-Gm-Gg: AY/fxX66ReZrn5RXF0Q+20zKlns02jREIPqZZjI0xFE09rvOGiXu19l9GDxfjgLNg1/
+	SzehSTXrp2Gi9ltYQn7JAxn+jmN6MqaKGBnKZFqfoSmFd3fHu50NMUYrgGehhdF4QwQhigs6S6v
+	4GC1RuL1KK0Kaf/iAueC3vlz8X+Y02OOlIDZwunca4lcnF0m4q4ZHFGtuuKy4nA+9oOZljGXxJh
+	iW52zTEAXqTIf9jRNXzFghBUF5M08GZ8TAXbTF7wWRxxR3n63x5zyAeSccgd8VhnYhAWZEnd4v7
+	jgpRd5rZdCiFarZ3v5JIsHPZsTH7lMXSksF+/0e1ZgebZhDmZ5tufIEaVGe+no2rPj5PDU5QWXj
+	CPn/X7xA8IR0dLUtOSmBSDn4dlodylkQF2bo4xGxBsCNgkh8zR4qms9CV41nBwCicrgJ/cZctvM
+	b3Tlfn9QiZHyzX/EIyk6hoAzAGoP03NFn5ekIk4KBxmOYCrXOzmFL+N2/9ALw=
+X-Google-Smtp-Source: AGHT+IHitZah3Va/SbksXm73SZCgETkvGSFo9DYkkuJ9TIdifet1Vj9nG1ONYb08mumiFWDsb4Zn3Q==
+X-Received: by 2002:a05:6402:51c6:b0:64b:7dd2:6ba4 with SMTP id 4fb4d7f45d1cf-65097dc62b6mr2416519a12.4.1767796100477;
+        Wed, 07 Jan 2026 06:28:20 -0800 (PST)
+Received: from cloudflare.com (79.184.207.118.ipv4.supernova.orange.pl. [79.184.207.118])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-6507b9d4c89sm4626004a12.10.2026.01.07.06.28.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jan 2026 06:28:20 -0800 (PST)
+From: Jakub Sitnicki <jakub@cloudflare.com>
+Date: Wed, 07 Jan 2026 15:28:09 +0100
+Subject: [PATCH bpf-next v3 09/17] xdp: Call skb_metadata_set when
+ skb->data points at metadata end
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260107093256.54616-1-jolsa@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20260107-skb-meta-safeproof-netdevs-rx-only-v3-9-0d461c5e4764@cloudflare.com>
+References: <20260107-skb-meta-safeproof-netdevs-rx-only-v3-0-0d461c5e4764@cloudflare.com>
+In-Reply-To: <20260107-skb-meta-safeproof-netdevs-rx-only-v3-0-0d461c5e4764@cloudflare.com>
+To: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ Jesper Dangaard Brouer <hawk@kernel.org>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Stanislav Fomichev <sdf@fomichev.me>, Simon Horman <horms@kernel.org>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+ kernel-team@cloudflare.com
+X-Mailer: b4 0.15-dev-07fe9
 
-On Wed, Jan 07, 2026 at 10:32:55AM +0100, Jiri Olsa wrote:
-> Mahe reported issue with bpf_override_return helper not working when
-> executed from kprobe.multi bpf program on arm.
-> 
-> The problem is that on arm we use alternate storage for pt_regs object
-> that is passed to bpf_prog_run and if any register is changed (which
-> is the case of bpf_override_return) it's not propagated back to actual
-> pt_regs object.
-> 
-> Fixing this by introducing and calling ftrace_partial_regs_update function
-> to propagate the values of changed registers (ip and stack).
-> 
-> Fixes: b9b55c8912ce ("tracing: Add ftrace_partial_regs() for converting ftrace_regs to pt_regs")
-> Reported-by: Mahe Tardy <mahe.tardy@gmail.com>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
-> v1 changes:
->  - used ftrace_partial_regs_update with comments from Steven
-> 
->  arch/arm64/include/asm/ftrace.h | 24 ++++++++++++++++++++++++
->  include/linux/ftrace.h          |  3 +++
->  kernel/trace/bpf_trace.c        |  1 +
->  3 files changed, 28 insertions(+)
-> 
-> diff --git a/arch/arm64/include/asm/ftrace.h b/arch/arm64/include/asm/ftrace.h
-> index 1621c84f44b3..177c7bbf3b84 100644
-> --- a/arch/arm64/include/asm/ftrace.h
-> +++ b/arch/arm64/include/asm/ftrace.h
-> @@ -157,6 +157,30 @@ ftrace_partial_regs(const struct ftrace_regs *fregs, struct pt_regs *regs)
->  	return regs;
->  }
->  
-> +/*
-> + * ftrace_partial_regs_update - update the original ftrace_regs from regs
-> + * @fregs: The ftrace_regs to update from @regs
-> + * @regs: The partial regs from ftrace_partial_regs() that was updated
-> + *
-> + * Some architectures have the partial regs living in the ftrace_regs
-> + * structure, whereas other architectures need to make a different copy
-> + * of the @regs. If a partial @regs is retrieved by ftrace_partial_regs() and
-> + * if the code using @regs updates a field (like the instruction pointer or
-> + * stack pointer) it may need to propagate that change to the original @fregs
-> + * it retrieved the partial @regs from. Use this function to guarantee that
-> + * update happens.
-> + */
-> +static __always_inline void
-> +ftrace_partial_regs_update(const struct ftrace_regs *fregs, struct pt_regs *regs)
-> +{
-> +	struct __arch_ftrace_regs *afregs = arch_ftrace_regs(fregs);
-> +
-> +	if (afregs->pc != regs->pc) {
-> +		afregs->pc = regs->pc;
-> +		afregs->regs[0] = regs->regs[0];
-> +	}
-> +}
+Prepare to track skb metadata location independently of MAC header offset.
 
-I still don't understand why we need anything new in the arch code for this.
+Following changes will make skb_metadata_set() record where metadata ends
+relative to skb->head. Hence the helper must be called when skb->data
+points just past the metadata area.
 
-We've selected HAVE_ARCH_FTRACE_REGS and we implement
-ftrace_regs_set_instruction_pointer() and ftrace_regs_set_return_value()
-so the core code already has everything it needs to make this work
-without additional arch support.
+Tweak XDP generic mode accordingly.
 
-Will
+Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+---
+ net/core/dev.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 9094c0fb8c68..7f984d86dfe9 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -5467,8 +5467,11 @@ u32 bpf_prog_run_generic_xdp(struct sk_buff *skb, struct xdp_buff *xdp,
+ 		break;
+ 	case XDP_PASS:
+ 		metalen = xdp->data - xdp->data_meta;
+-		if (metalen)
++		if (metalen) {
++			__skb_push(skb, mac_len);
+ 			skb_metadata_set(skb, metalen);
++			__skb_pull(skb, mac_len);
++		}
+ 		break;
+ 	}
+ 
+
+-- 
+2.43.0
+
 
