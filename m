@@ -1,139 +1,142 @@
-Return-Path: <bpf+bounces-78107-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78115-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24BCBCFEF0D
-	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 17:47:36 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 176A0CFEA2E
+	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 16:42:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 624D1339F8E1
-	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 16:38:46 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 55A7E304485A
+	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 15:33:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FB5B34D911;
-	Wed,  7 Jan 2026 14:28:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99B53357A26;
+	Wed,  7 Jan 2026 15:06:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="UPOL8Vpf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XyZCt7UO"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 547E534D4DF
-	for <bpf@vger.kernel.org>; Wed,  7 Jan 2026 14:28:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8366E33C192
+	for <bpf@vger.kernel.org>; Wed,  7 Jan 2026 15:06:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767796105; cv=none; b=uMtM5SfufFf+kld3lt+5Zl1WvniB+EQQCIT6wC6v2qK0UeMy9n+aQ5isAD9zPL67nKUqbJLX2vygm1YnnYBVWImFxTpOG7BrbKfjUiQqaXlv1PxpZ3Zs6dhN4o8yyhByTD80mSuQ0scqIkQHg0oWcVtjAiJL4Q7rYezoH2l5ZRo=
+	t=1767798393; cv=none; b=kExKBBr3xGqboWdANTC+ksVexjjBrTWuH+E2kGBzLpfleL3uLagqy/meAcVsdYdmwtyvXZLzQbUlnKAt5k+FkGsOToQ2HAwamoM+2Aa8sBwvNpKGraSsBAHLPKL6Z+UacTnvcxa7OFp802UJRpEI+sQDLJ86qZ6I5B05qfCv/xs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767796105; c=relaxed/simple;
-	bh=NaLr3kuYmZoB45GFF481B9GG1CmkcJsN17rUBCCL3X0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=ISnWBAY8cXngi39xg1BwU53JuGXA82VCLQWuY4IVlTvBYOuc3VTzCda6JLfIY1Frw15mLEGzL494gHxTbf1J4oG1rY2NmX7IMVGtHtscX4E931wMNQZviRFFBb1csh0lrI0V3FAuU0jRbghhbUerTWYOse0hRNwzNqdfEgEsadA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=UPOL8Vpf; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-64d0d41404cso3144426a12.0
-        for <bpf@vger.kernel.org>; Wed, 07 Jan 2026 06:28:22 -0800 (PST)
+	s=arc-20240116; t=1767798393; c=relaxed/simple;
+	bh=nRzEKcnodrdmLOT68bKUkftXlKNUGFjzka5YXEhqvZY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=b+HhmjREsBLrIPQNW+NVbIXKYz+xx+6eZMyUuPa89Kvi5LZjY+B+OoBAlww0f6ESQftkmyMrJriN4FByazUgfeVNzwtlLAkIDaoCJRKQORms1WodXLqYgqC35rzSudlT+gjVHW6pFx7CibAgJK1P+E22WjQdMkit1tJwxXkkZ8A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XyZCt7UO; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-6505cbe47d8so3458276a12.1
+        for <bpf@vger.kernel.org>; Wed, 07 Jan 2026 07:06:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1767796100; x=1768400900; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2BAkb07UvD2AJKDS63sluZRYEIGpz2hmyS1/vul3M/g=;
-        b=UPOL8VpfuzfUh3FI6D3L2ER6M04DjigHiZ7CZbaRgH3a/AuWjEwfBKUCOtfnTslerT
-         X6XwbytS1loQr42ioieOG7/fkZ3NZ2hCL7d7h6qQ8tcQT6T/SSyRe1T3zOVwm4SaExr3
-         mqBJDC3RqJkhLx/iFCNy/1eEfJRYsoE5xEXWD6yZpRCtIBJdH0ooZx8gK/zToURiEBCr
-         6BbxTIjegrYLNOSYXxiS3LLYkjuPerRlmplfwSbGrN2EzbxkqHAi/Grxzs/STbsqZdE7
-         6ZZS9jAIeBlQhf8UWR2D71iUa8G4otcr+SXhmqfVUfIgglb1gfU1HQbGKuIShM9CQPTH
-         S/pw==
+        d=gmail.com; s=20230601; t=1767798390; x=1768403190; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=3uIR9HTLjoZ4sczTjOd7p4sVCibBxQvhYaojSMiHmj0=;
+        b=XyZCt7UOGsMYv+KZ4eeM03leGEGLDSvL57DnYVU5Gu92AaXgEntPoJD/silGVD1afC
+         lwa8fHHZBT86CPSgJ1o6GaosbPzDka0f/c+V/CVxNgnAvhEWlwFGO4S55QCT6KLL+7sX
+         KKwVbVck7kqmwEEz66Ozkzd8t5zdYSmbwO6QbecSi966nQVzbR2dCcZdGqA1m143ugxo
+         utydplDMr/yNARphrFFHjgjG7gFCw7lhwWAapO7kNfCfnNqDA6nkpas7yvFeClDSTo/k
+         a9nQNdnjMEllesVV/s1565uKSmGDjYnLKhEtU9agRI6jWX5Q9tDAF4fKQh6rEIcD6ntb
+         IZFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767796100; x=1768400900;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=2BAkb07UvD2AJKDS63sluZRYEIGpz2hmyS1/vul3M/g=;
-        b=hVaBU2jZjQsXG3bpu/xb7dIvsyertKuRvH0XUCsTwIJuIGdo/xbKn2NsYLJuGy2tdN
-         uk8vpbeBybpk9+srDcmVTMt1jnV9zORvArvdiG3KsTxjBp5MPJhnMlN7CiDu3Zhis0zx
-         I53SUpY2Bd/pwfhPaUvyozTIJxErZsnJP53yKRwPpTc/m5aQ4yP2afoCviRcCpR0Yfh2
-         WWEJjuoLyv/qW6ZKqBSCJy6RYfWxP775lM+qVkvgi0V7+S2HAWBdP+k6Trutiw7qq0vL
-         Xoke/BYZfGeSQpQC7O3dOHTjNdFxj7sJn0n5vfiBZhaHpS+lUyIiOi9E6covKzlA+JhV
-         7eYg==
-X-Gm-Message-State: AOJu0YzTqs1y5u8RcxZNVkDmOc4x2Y4QmNOa4S/iIKju4j3dNABZ6/pi
-	0KrDql75dLmukdnzgARlbnUU68RZ655l2CKMy8MYYp9ZFDnd/AX9oySCW2LOBxzTBio=
-X-Gm-Gg: AY/fxX66ReZrn5RXF0Q+20zKlns02jREIPqZZjI0xFE09rvOGiXu19l9GDxfjgLNg1/
-	SzehSTXrp2Gi9ltYQn7JAxn+jmN6MqaKGBnKZFqfoSmFd3fHu50NMUYrgGehhdF4QwQhigs6S6v
-	4GC1RuL1KK0Kaf/iAueC3vlz8X+Y02OOlIDZwunca4lcnF0m4q4ZHFGtuuKy4nA+9oOZljGXxJh
-	iW52zTEAXqTIf9jRNXzFghBUF5M08GZ8TAXbTF7wWRxxR3n63x5zyAeSccgd8VhnYhAWZEnd4v7
-	jgpRd5rZdCiFarZ3v5JIsHPZsTH7lMXSksF+/0e1ZgebZhDmZ5tufIEaVGe+no2rPj5PDU5QWXj
-	CPn/X7xA8IR0dLUtOSmBSDn4dlodylkQF2bo4xGxBsCNgkh8zR4qms9CV41nBwCicrgJ/cZctvM
-	b3Tlfn9QiZHyzX/EIyk6hoAzAGoP03NFn5ekIk4KBxmOYCrXOzmFL+N2/9ALw=
-X-Google-Smtp-Source: AGHT+IHitZah3Va/SbksXm73SZCgETkvGSFo9DYkkuJ9TIdifet1Vj9nG1ONYb08mumiFWDsb4Zn3Q==
-X-Received: by 2002:a05:6402:51c6:b0:64b:7dd2:6ba4 with SMTP id 4fb4d7f45d1cf-65097dc62b6mr2416519a12.4.1767796100477;
-        Wed, 07 Jan 2026 06:28:20 -0800 (PST)
-Received: from cloudflare.com (79.184.207.118.ipv4.supernova.orange.pl. [79.184.207.118])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-6507b9d4c89sm4626004a12.10.2026.01.07.06.28.19
+        d=1e100.net; s=20230601; t=1767798390; x=1768403190;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3uIR9HTLjoZ4sczTjOd7p4sVCibBxQvhYaojSMiHmj0=;
+        b=wsKMdhGum8brbZwFJKZ7vhhDqF0/Bv8dVxEdSJgLlPYlGf+vhYILOuZFRsh5lvU5qB
+         hqES/q9YPMRq5lz10vCUUXKywerQfX0u4U7ZvQA4NcSvhGyNIIkbg/0N992iZpnQlvqd
+         sV+HcnEDu3DqFlAWdiENetCFlCa4Wo0MWeTouwy9+4OQGeWPfizwol+F7wxFPUw8lKD0
+         ei1pagTXBsEAPgiPSTfEntwXKe8ghVsp/XanTikQsyaOY5o/fSovBWYopVYMMDusRaue
+         OSQlPfC/ojrtrRhVie3LaDO2qNmXs0KVf5OVGGKnIEya4aGGdjzhwCiPg+yBknqTaLfj
+         3tsg==
+X-Forwarded-Encrypted: i=1; AJvYcCVCeru/NLfrCiLCfnDbdjCfG5f3GLNlfp7r9ReBNN37ESgSoOQJbWdx7ZMOrvDC6MNDMM4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyYdFtF+nwtm0dUTXyFqQjjqkQIBWYFWvMuInFN8sMyOE1wUUD0
+	jKNsvg3uz++vosps8BroJwijM5lcPJ/x6OtaS1ZPmYgahP7KeoUyqXKI
+X-Gm-Gg: AY/fxX7MF6m7PWUvTRspR8RAhyN2YMQUJE9BAjs5iZTzW8fRq7BN3oEWesmMIN6q+5v
+	Cs7PmKyvaNYAhw/k52gJseCgSS5mp/uIDYGlWe+ePCjh+7Kfo7lBZtxuSGVcrsi+oYz2wqtOGcn
+	HEdL9+RVNPPKSS7e7NT++0P0GfqJwHfgyQ7/caWDVh283Oe8w0BEwgL3AnYFL8u/EgwAmlcdC8F
+	4wS2Yf7dsoNhU6SiJVc4KPXkNeGuAW+6q39IVohOeUq0Fl7slpXjhvgcYZAZJWeAciiu5yONxxF
+	Smnxvn38H+oa+NWOPDP3DJiUV0Q+Fs0DqkccOiXLnJbeVx6xRejS82/emPLgkbwOWVgBk8tGphd
+	k5QbLOX71vDuh1Igxjr4pl867hl+9QjdDiJx+kVJ9Ck12/63XRWFLz63mIyTowE+uB+A5V1dY1G
+	pj0y59Axupnv/u4xtzv9jE
+X-Google-Smtp-Source: AGHT+IGcUjLtmqammuUY5/5e9+ebHEbXFlq3HVVRDEEFsa5885mTL91FVn6Ih8ghp5wb7VofdeQMRA==
+X-Received: by 2002:a05:6402:254c:b0:649:815e:3fac with SMTP id 4fb4d7f45d1cf-65097e5d180mr2289193a12.23.1767798389602;
+        Wed, 07 Jan 2026 07:06:29 -0800 (PST)
+Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-6507b8c4048sm5007292a12.2.2026.01.07.07.06.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jan 2026 06:28:20 -0800 (PST)
-From: Jakub Sitnicki <jakub@cloudflare.com>
-Date: Wed, 07 Jan 2026 15:28:09 +0100
-Subject: [PATCH bpf-next v3 09/17] xdp: Call skb_metadata_set when
- skb->data points at metadata end
+        Wed, 07 Jan 2026 07:06:29 -0800 (PST)
+Date: Wed, 7 Jan 2026 15:14:03 +0000
+From: Anton Protopopov <a.s.protopopov@gmail.com>
+To: Deepanshu Kartikey <kartikey406@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com,
+	song@kernel.org, yonghong.song@linux.dev, kpsingh@kernel.org,
+	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+	syzbot+2c29addf92581b410079@syzkaller.appspotmail.com
+Subject: Re: [PATCH] bpf: Reject BPF_MAP_TYPE_INSN_ARRAY in
+ check_reg_const_str()
+Message-ID: <aV54O3KWzy5GLuyj@mail.gmail.com>
+References: <20260107021037.289644-1-kartikey406@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260107-skb-meta-safeproof-netdevs-rx-only-v3-9-0d461c5e4764@cloudflare.com>
-References: <20260107-skb-meta-safeproof-netdevs-rx-only-v3-0-0d461c5e4764@cloudflare.com>
-In-Reply-To: <20260107-skb-meta-safeproof-netdevs-rx-only-v3-0-0d461c5e4764@cloudflare.com>
-To: bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- Jesper Dangaard Brouer <hawk@kernel.org>, 
- John Fastabend <john.fastabend@gmail.com>, 
- Stanislav Fomichev <sdf@fomichev.me>, Simon Horman <horms@kernel.org>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
- kernel-team@cloudflare.com
-X-Mailer: b4 0.15-dev-07fe9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260107021037.289644-1-kartikey406@gmail.com>
 
-Prepare to track skb metadata location independently of MAC header offset.
+On 26/01/07 07:40AM, Deepanshu Kartikey wrote:
+> BPF_MAP_TYPE_INSN_ARRAY maps store instruction pointers in their
+> ips array, not string data. The map_direct_value_addr callback for
+> this map type returns the address of the ips array, which is not
+> suitable for use as a constant string argument.
+> 
+> When a BPF program passes a pointer to an insn_array map value as
+> ARG_PTR_TO_CONST_STR (e.g., to bpf_snprintf), the verifier's
+> null-termination check in check_reg_const_str() operates on the
+> wrong memory region, and at runtime bpf_bprintf_prepare() can read
+> out of bounds searching for a null terminator.
+> 
+> Reject BPF_MAP_TYPE_INSN_ARRAY in check_reg_const_str() since this
+> map type is not designed to hold string data.
+> 
+> Reported-by: syzbot+2c29addf92581b410079@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=2c29addf92581b410079
+> Tested-by: syzbot+2c29addf92581b410079@syzkaller.appspotmail.com
+> Fixes: 493d9e0d6083 ("bpf, x86: add support for indirect jumps")
+> Signed-off-by: Deepanshu Kartikey <kartikey406@gmail.com>
+> ---
+>  kernel/bpf/verifier.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index f0ca69f888fa..3135643d5695 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -9609,6 +9609,11 @@ static int check_reg_const_str(struct bpf_verifier_env *env,
+>  	if (reg->type != PTR_TO_MAP_VALUE)
+>  		return -EINVAL;
+>  
+> +	if (map->map_type == BPF_MAP_TYPE_INSN_ARRAY) {
+> +		verbose(env, "R%d points to insn_array map which cannot be used as const string\n", regno);
+> +		return -EACCES;
+> +	}
+> +
+>  	if (!bpf_map_is_rdonly(map)) {
+>  		verbose(env, "R%d does not point to a readonly map'\n", regno);
+>  		return -EACCES;
+> -- 
+> 2.43.0
+> 
 
-Following changes will make skb_metadata_set() record where metadata ends
-relative to skb->head. Hence the helper must be called when skb->data
-points just past the metadata area.
-
-Tweak XDP generic mode accordingly.
-
-Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
----
- net/core/dev.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 9094c0fb8c68..7f984d86dfe9 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -5467,8 +5467,11 @@ u32 bpf_prog_run_generic_xdp(struct sk_buff *skb, struct xdp_buff *xdp,
- 		break;
- 	case XDP_PASS:
- 		metalen = xdp->data - xdp->data_meta;
--		if (metalen)
-+		if (metalen) {
-+			__skb_push(skb, mac_len);
- 			skb_metadata_set(skb, metalen);
-+			__skb_pull(skb, mac_len);
-+		}
- 		break;
- 	}
- 
-
--- 
-2.43.0
-
+Acked-by: Anton Protopopov <a.s.protopopov@gmail.com>
 
