@@ -1,91 +1,157 @@
-Return-Path: <bpf+bounces-78043-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78044-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 678C6CFC0B1
-	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 06:13:40 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71905CFC1DF
+	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 06:53:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 98AAB3027E08
-	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 05:13:34 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 7BB40303BFB6
+	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 05:53:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6441C2561A2;
-	Wed,  7 Jan 2026 05:13:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5659D155C97;
+	Wed,  7 Jan 2026 05:53:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c8S4MJ5m"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="g6g6HHH8"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC869225402
-	for <bpf@vger.kernel.org>; Wed,  7 Jan 2026 05:13:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E6E08F48
+	for <bpf@vger.kernel.org>; Wed,  7 Jan 2026 05:53:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767762811; cv=none; b=B+tVcJ3oVWZgfcV7KMh8eUDsYk+kS5vc/Pp8yEHFqsrbBdJvcG0rMquQer6Xu1MzlDdW2RP3sCCY63pdCZbNdj+WTOHDxwlpTZV3sn5j/qATwgz8m3kW5VX+f3/DyTwsSGE5TpJ5sLy9yZfXFoUzftE34mSSRlVaepNYwBml5z0=
+	t=1767765194; cv=none; b=EnshepXIULpNLyjbUe8nrkDXs776GuDlaGjAEBGz+ZaQLj/W2hKZeS9C4tjpMQuHUeEoLvyChenp8RUNgLS2tKdfbOTGmdJKhLoQcdPlXitZ04U86Xt2u2uj77Baj3xkDtM4bJLfc9doOjYtQ/du2KD6GTrdy93zsXwiWg8nUqI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767762811; c=relaxed/simple;
-	bh=tcvx8NrJAa+6WtVycEHMFhl2oFdJskggJ+mp9EMiHIQ=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=k0+3UYU/lh4+3PpW+wKcbrb1GhrvBRf3iJ3wwoGR8k5WAZFL2pazDX5Naok0oHs96SahIEFC2iTT0AiaP8De4bg/wN+DkIZVTUP3/mtBbT2o8424/r5drVJIUoCA4aObVexkod8gQ37XiKIlCho0QHgbgwG3NThXtizccD2MJMI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c8S4MJ5m; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FF07C4CEF7;
-	Wed,  7 Jan 2026 05:13:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767762811;
-	bh=tcvx8NrJAa+6WtVycEHMFhl2oFdJskggJ+mp9EMiHIQ=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=c8S4MJ5m6JK9xd3+vgcXyclo/GtFzvFw/fwcn2mTmqb1xPraoRCb2dSl7K0qG1nGu
-	 3QEB7ckr6mGgRX5Ai538r+ZLYUZTvqL7fWPYT/KOB+/MJUho3CONU7ViS6ruV8+ZoG
-	 Y0e9CQDO4G8JJ706UQF4y/AP4PkYNNtBQtF1iY8wxfTduIYrSjkuTPcTvFpMfXNqFM
-	 tIKhjjWl6DXH1VGPlwVVOjR2VaWUJdIkQgmzTkGF/V0mFafF/E/9UmEuPLI1XUSjFH
-	 1DSOrqygyRu+SdVa5MCH0Hh6yKjSHyjckuAcogCda26DCDCFnCtenIOnjOdjlva2cs
-	 HJ9bfOYU1wbOA==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id F29AB380CEFA;
-	Wed,  7 Jan 2026 05:10:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1767765194; c=relaxed/simple;
+	bh=HcjLGWYieERxNzxeV0f3JCGMow367byA2J+B+qDXz7c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CzNpcc5oMhKuxnCR2Vvm6VakHiFLMEN+Wd37JEfDCa3vN83jY29csfaeUdc6bFJGbLgPWA3eQtOjxVU5olCnj96POfrtH6AYbzvjwCVyHPPuHt8GER+IGraJAg7dEEeNwGGVrrRVTskR5DlwwdZyp3XOctGxsSYhy295SqK6+ac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=g6g6HHH8; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <372fbef8-6f47-4167-8568-eb39f9332d49@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1767765189;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hLKVDqRUS0hVmv/xMmhO9alAau2LJVz5FvvBuelJ1hc=;
+	b=g6g6HHH8Nmr4Bf0ZFQBcsiU/8GdDUIRCx+VUYdcYzDjzZexcgsEKy2RkO1M5kjiTUfKnFS
+	RqqdG/bWULRoifxWmoHASKGEmsADf3HGa8iYoRMzME5+SS2z5TUT2tb90n5Gl8m1K6w6kx
+	qT3HVPNvhoag/rt9FjO+D8gnXmpeEU8=
+Date: Wed, 7 Jan 2026 13:52:48 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next 0/2] bpf: selftests fixes for GCC-BPF 16
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <176776260879.2236065.1916613970347217236.git-patchwork-notify@kernel.org>
-Date: Wed, 07 Jan 2026 05:10:08 +0000
-References: <20260106173650.18191-1-jose.marchesi@oracle.com>
-In-Reply-To: <20260106173650.18191-1-jose.marchesi@oracle.com>
-To: Jose E. Marchesi <jose.marchesi@oracle.com>
-Cc: bpf@vger.kernel.org
+Subject: Re: [RESEND PATCH bpf-next v4 3/9] bpf: Refactor reporting
+ log_true_size for prog_load
+Content-Language: en-US
+To: bot+bpf-ci@kernel.org, bpf@vger.kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, shuah@kernel.org,
+ brauner@kernel.org, oleg@redhat.com, sforshee@kernel.org,
+ yuichtsu@amazon.com, aalbersh@redhat.com, willemb@google.com,
+ kerneljasonxing@gmail.com, paul.chaignon@gmail.com, yatsenko@meta.com,
+ memxor@gmail.com, a.s.protopopov@gmail.com, ameryhung@gmail.com,
+ rongtao@cestc.cn, linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, kernel-patches-bot@fb.com,
+ martin.lau@kernel.org, clm@meta.com, ihor.solodrai@linux.dev
+References: <20260106172018.57757-4-leon.hwang@linux.dev>
+ <53542ad28c0d27ffcfcf9ea325fb6a77eeb3d569e17a6fad9d95685b5ea25467@mail.kernel.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Leon Hwang <leon.hwang@linux.dev>
+In-Reply-To: <53542ad28c0d27ffcfcf9ea325fb6a77eeb3d569e17a6fad9d95685b5ea25467@mail.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Hello:
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
 
-On Tue,  6 Jan 2026 18:36:48 +0100 you wrote:
-> Hello.
+On 7/1/26 01:44, bot+bpf-ci@kernel.org wrote:
+>> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+>> index 8f464b847405..1739601fb7bd 100644
+>> --- a/kernel/bpf/syscall.c
+>> +++ b/kernel/bpf/syscall.c
 > 
-> Just a couple of small fixes to get the BPF selftests build with what
-> will become GCC 16 this spring.  One of the regressions is due to a
-> change in the behavior of a warning in GCC 16.  The other is due to
-> the fact that GCC 16 actually implements btf_decl_tag and
-> btf_type_tag.
+> [ ... ]
 > 
-> [...]
+>> @@ -6160,12 +6160,22 @@ static int prog_assoc_struct_ops(union bpf_attr *attr)
+>>  	return ret;
+>>  }
+>>
+>> +static int copy_prog_load_log_true_size(union bpf_attr *attr, bpfptr_t uattr, unsigned int size)
+>> +{
+>> +	if (size >= offsetofend(union bpf_attr, log_true_size) &&
+>> +	    copy_to_bpfptr_offset(uattr, offsetof(union bpf_attr, log_true_size),
+>> +				  &attr->log_true_size, sizeof(attr->log_true_size)))
+>> +		return -EFAULT;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>  static int __sys_bpf(enum bpf_cmd cmd, bpfptr_t uattr, unsigned int size,
+>>  		     bpfptr_t uattr_common, unsigned int size_common)
+>>  {
+>>  	struct bpf_common_attr common_attrs;
+>>  	union bpf_attr attr;
+>> -	int err;
+>> +	int err, ret;
+> 
+> [ ... ]
+> 
+>> @@ -6215,7 +6225,10 @@ static int __sys_bpf(enum bpf_cmd cmd, bpfptr_t uattr, unsigned int size,
+>>  		err = map_freeze(&attr);
+>>  		break;
+>>  	case BPF_PROG_LOAD:
+>> -		err = bpf_prog_load(&attr, uattr, size);
+>> +		attr.log_true_size = 0;
+>> +		err = bpf_prog_load(&attr, uattr);
+>> +		ret = copy_prog_load_log_true_size(&attr, uattr, size);
+>> +		err = ret ? ret : err;
+>                     ^^^^^^^^^^^^^^^^^^^^
+> 
+> If bpf_prog_load() succeeds, it returns a positive file descriptor.
+> Then if copy_prog_load_log_true_size() fails with -EFAULT, this line
+> overwrites err with -EFAULT, losing the FD value.
+> 
+> The BPF program has already been loaded and the FD allocated at this
+> point. Since the FD is never returned to userspace, the program
+> remains loaded but unreachable - could this leak the BPF program?
+> 
 
-Here is the summary with links:
-  - [bpf-next,1/2] bpf: adapt selftests to GCC 16 -Wunused-but-set-variable
-    https://git.kernel.org/bpf/bpf-next/c/97fb54d86d21
-  - [bpf-next,2/2] bpf: GCC requires function attributes before the declarator
-    https://git.kernel.org/bpf/bpf-next/c/681600647c59
+Indeed, the normal FD could be leaked if 'ret == -EFAULT'.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+I'll address it in the next revision.
 
+Thanks,
+Leon
+
+> In the previous code, the copy_to_bpfptr_offset() happened inside
+> bpf_check() before the program was fully committed:
+> 
+>     if (uattr_size >= offsetofend(...) &&
+>         copy_to_bpfptr_offset(...)) {
+>             ret = -EFAULT;
+>             goto err_release_maps;
+>         }
+> 
+> This goto caused bpf_check() to return an error, preventing the FD
+> allocation in bpf_prog_load(). Moving the copy outside changes the
+> semantics - the FD can now be allocated before a copy failure occurs.
+> 
+>> +		break;
+> 
+> 
+> ---
+> AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+> See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
+> 
+> CI run summary: https://github.com/kernel-patches/bpf/actions/runs/20756616585
 
 
