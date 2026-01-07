@@ -1,54 +1,42 @@
-Return-Path: <bpf+bounces-78044-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78045-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71905CFC1DF
-	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 06:53:17 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82077CFC218
+	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 06:59:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 7BB40303BFB6
-	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 05:53:16 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 630783048174
+	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 05:57:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5659D155C97;
-	Wed,  7 Jan 2026 05:53:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="g6g6HHH8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E084125FA3B;
+	Wed,  7 Jan 2026 05:57:24 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E6E08F48
-	for <bpf@vger.kernel.org>; Wed,  7 Jan 2026 05:53:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CA2C26E70E;
+	Wed,  7 Jan 2026 05:57:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767765194; cv=none; b=EnshepXIULpNLyjbUe8nrkDXs776GuDlaGjAEBGz+ZaQLj/W2hKZeS9C4tjpMQuHUeEoLvyChenp8RUNgLS2tKdfbOTGmdJKhLoQcdPlXitZ04U86Xt2u2uj77Baj3xkDtM4bJLfc9doOjYtQ/du2KD6GTrdy93zsXwiWg8nUqI=
+	t=1767765444; cv=none; b=Yl+5JYAfwvzQtlVjlrapRdNFyqOlkGD2I29WkY7bcDljmaACzU49pJ+i/PM6kctw6MVZheTbXKg+onicoSV5qVpHUVtwUM9d520JGASUwobApUmWhLCbU+FMIgij54gMpHLfmmU6HRNAwThGEXKh8T33llGRKRljMciYk9rW9CA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767765194; c=relaxed/simple;
-	bh=HcjLGWYieERxNzxeV0f3JCGMow367byA2J+B+qDXz7c=;
+	s=arc-20240116; t=1767765444; c=relaxed/simple;
+	bh=zckY3JTsbhzorS2s16UH1LxAB7xdfcUPjIUmaASvJmY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CzNpcc5oMhKuxnCR2Vvm6VakHiFLMEN+Wd37JEfDCa3vN83jY29csfaeUdc6bFJGbLgPWA3eQtOjxVU5olCnj96POfrtH6AYbzvjwCVyHPPuHt8GER+IGraJAg7dEEeNwGGVrrRVTskR5DlwwdZyp3XOctGxsSYhy295SqK6+ac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=g6g6HHH8; arc=none smtp.client-ip=95.215.58.181
+	 In-Reply-To:Content-Type; b=REzkQJVn34ibwSorrKGNEacrCYkNAOykIfyqJYP8vcwk2qBztnOAzLyVHg6A9XNEqAZuIudKVqEY/NnFvNVt+/K/1ZMTJZtuehR89H2YAMGoKlnX8EcCzxReySPZXXVdsJi7JPda+FKCxEd1sL76zUW/NQFxQaK0VZyMOCEdOSY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; arc=none smtp.client-ip=91.218.175.186
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <372fbef8-6f47-4167-8568-eb39f9332d49@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1767765189;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hLKVDqRUS0hVmv/xMmhO9alAau2LJVz5FvvBuelJ1hc=;
-	b=g6g6HHH8Nmr4Bf0ZFQBcsiU/8GdDUIRCx+VUYdcYzDjzZexcgsEKy2RkO1M5kjiTUfKnFS
-	RqqdG/bWULRoifxWmoHASKGEmsADf3HGa8iYoRMzME5+SS2z5TUT2tb90n5Gl8m1K6w6kx
-	qT3HVPNvhoag/rt9FjO+D8gnXmpeEU8=
-Date: Wed, 7 Jan 2026 13:52:48 +0800
+Message-ID: <28ace50f-9ae6-46da-a05d-eab31f33f9cb@linux.dev>
+Date: Wed, 7 Jan 2026 13:56:51 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RESEND PATCH bpf-next v4 3/9] bpf: Refactor reporting
- log_true_size for prog_load
+Subject: Re: [RESEND PATCH bpf-next v4 7/9] bpf: Add common attr support for
+ map_create
 Content-Language: en-US
 To: bot+bpf-ci@kernel.org, bpf@vger.kernel.org
 Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
@@ -62,90 +50,68 @@ Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
  rongtao@cestc.cn, linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
  linux-kselftest@vger.kernel.org, kernel-patches-bot@fb.com,
  martin.lau@kernel.org, clm@meta.com, ihor.solodrai@linux.dev
-References: <20260106172018.57757-4-leon.hwang@linux.dev>
- <53542ad28c0d27ffcfcf9ea325fb6a77eeb3d569e17a6fad9d95685b5ea25467@mail.kernel.org>
+References: <20260106172018.57757-8-leon.hwang@linux.dev>
+ <db428e27fdf0110ea05cdadf8980c7758d7f4dcd61289293394db7e34ce99601@mail.kernel.org>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Leon Hwang <leon.hwang@linux.dev>
-In-Reply-To: <53542ad28c0d27ffcfcf9ea325fb6a77eeb3d569e17a6fad9d95685b5ea25467@mail.kernel.org>
+In-Reply-To: <db428e27fdf0110ea05cdadf8980c7758d7f4dcd61289293394db7e34ce99601@mail.kernel.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
 
 
 On 7/1/26 01:44, bot+bpf-ci@kernel.org wrote:
 >> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
->> index 8f464b847405..1739601fb7bd 100644
+>> index 14fc5738f2b9..e64cc7504731 100644
 >> --- a/kernel/bpf/syscall.c
 >> +++ b/kernel/bpf/syscall.c
 > 
 > [ ... ]
 > 
->> @@ -6160,12 +6160,22 @@ static int prog_assoc_struct_ops(union bpf_attr *attr)
->>  	return ret;
->>  }
+>> @@ -6279,7 +6345,11 @@ static int __sys_bpf(enum bpf_cmd cmd, bpfptr_t uattr, unsigned int size,
 >>
->> +static int copy_prog_load_log_true_size(union bpf_attr *attr, bpfptr_t uattr, unsigned int size)
->> +{
->> +	if (size >= offsetofend(union bpf_attr, log_true_size) &&
->> +	    copy_to_bpfptr_offset(uattr, offsetof(union bpf_attr, log_true_size),
->> +				  &attr->log_true_size, sizeof(attr->log_true_size)))
->> +		return -EFAULT;
->> +
->> +	return 0;
->> +}
->> +
->>  static int __sys_bpf(enum bpf_cmd cmd, bpfptr_t uattr, unsigned int size,
->>  		     bpfptr_t uattr_common, unsigned int size_common)
->>  {
->>  	struct bpf_common_attr common_attrs;
->>  	union bpf_attr attr;
->> -	int err;
->> +	int err, ret;
-> 
-> [ ... ]
-> 
->> @@ -6215,7 +6225,10 @@ static int __sys_bpf(enum bpf_cmd cmd, bpfptr_t uattr, unsigned int size,
->>  		err = map_freeze(&attr);
->>  		break;
->>  	case BPF_PROG_LOAD:
->> -		err = bpf_prog_load(&attr, uattr, size);
->> +		attr.log_true_size = 0;
->> +		err = bpf_prog_load(&attr, uattr);
->> +		ret = copy_prog_load_log_true_size(&attr, uattr, size);
+>>  	switch (cmd) {
+>>  	case BPF_MAP_CREATE:
+>> -		err = map_create(&attr, uattr);
+>> +		common_attrs.log_true_size = 0;
+>> +		err = map_create(&attr, uattr, &common_attrs);
+>> +		ret = copy_common_attr_log_true_size(uattr_common, size_common,
+>> +						     &common_attrs.log_true_size);
 >> +		err = ret ? ret : err;
->                     ^^^^^^^^^^^^^^^^^^^^
 > 
-> If bpf_prog_load() succeeds, it returns a positive file descriptor.
-> Then if copy_prog_load_log_true_size() fails with -EFAULT, this line
-> overwrites err with -EFAULT, losing the FD value.
+> When map_create() succeeds, it returns a file descriptor that is already
+> installed in the caller's fd table via bpf_map_new_fd(). If
+> copy_common_attr_log_true_size() then fails (e.g., user provided a
+> read-only buffer for uattr_common), the syscall returns -EFAULT but the
+> fd remains installed.
 > 
-> The BPF program has already been loaded and the FD allocated at this
-> point. Since the FD is never returned to userspace, the program
-> remains loaded but unreachable - could this leak the BPF program?
+> Could this leak the file descriptor? The user gets an error and has no
+> way to know what fd number was allocated, so they cannot close it.
 > 
 
-Indeed, the normal FD could be leaked if 'ret == -EFAULT'.
+Good catch — you’re right.
 
-I'll address it in the next revision.
+If 'map_create()' succeeds and 'copy_common_attr_log_true_size()' later
+fails (e.g. returning -EFAULT), the newly created file descriptor would
+remain installed and could be leaked.
+
+I’ll fix this in the next revision by explicitly closing the fd when
+ret is non-zero.
 
 Thanks,
 Leon
 
-> In the previous code, the copy_to_bpfptr_offset() happened inside
-> bpf_check() before the program was fully committed:
-> 
->     if (uattr_size >= offsetofend(...) &&
->         copy_to_bpfptr_offset(...)) {
->             ret = -EFAULT;
->             goto err_release_maps;
->         }
-> 
-> This goto caused bpf_check() to return an error, preventing the FD
-> allocation in bpf_prog_load(). Moving the copy outside changes the
-> semantics - the FD can now be allocated before a copy failure occurs.
+> The sequence would be:
+>   1. map_create() succeeds, returns fd (e.g., 5)
+>   2. copy_common_attr_log_true_size() fails, ret = -EFAULT
+>   3. err = ret ? ret : err = -EFAULT
+>   4. syscall returns -EFAULT
+>   5. map and fd persist, but user cannot close fd 5
 > 
 >> +		break;
+>>  	case BPF_MAP_LOOKUP_ELEM:
+>>  		err = map_lookup_elem(&attr);
 > 
 > 
 > ---
