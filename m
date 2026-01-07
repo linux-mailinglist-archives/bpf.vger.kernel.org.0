@@ -1,240 +1,89 @@
-Return-Path: <bpf+bounces-78126-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78129-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 736A3CFF204
-	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 18:34:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CFA3CFF1DA
+	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 18:32:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C9D343385A25
-	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 16:19:37 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9B4F831CC736
+	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 16:17:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D907F3A97E2;
-	Wed,  7 Jan 2026 15:54:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eJGoCKwm"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51DF038BF80;
+	Wed,  7 Jan 2026 16:08:11 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from relay.hostedemail.com (smtprelay0014.hostedemail.com [216.40.44.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBFAA37BE8C;
-	Wed,  7 Jan 2026 15:53:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 469E833A01E;
+	Wed,  7 Jan 2026 16:07:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767801241; cv=none; b=hgxtW7GEW40ow4cqSUrIY1TcTiB402yWchuoKuXOvp8SpklHUKiLNMcFkWip7HPVjdAm/CYY6nSE07NXbtQix2NhwWXzSSBdIjWA4CCKGFYWI9n80h3j1ATeBZpZaETh/Ku9B7zOxVL9A/GS93p1JRbI3widNY7E7/XotfW/vDw=
+	t=1767802084; cv=none; b=YCGKs9idJOR6AVq+sespyyKnnsSXhR5XiaEyb1Iv5kWdRSQ02fG6pFSB7UnGMhMqj9C15ECc2LT/IZ9Te0bvCu8H7BCJ1Sutaw0KrZqA66SkizWxEQyJwdOoWoDThxxJh6aDTXreXce/vJrFw348SGr4mV2ayJYdBoDjWKqD1Ww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767801241; c=relaxed/simple;
-	bh=cs21N9MiDRScheFdM57oelbKb1VxtVwcvzerWe0JBpQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bPchmCqb6v93SCiBdmOIuLGWUl+1n0lzKKEGDCQs4nGRfQ8hl9kLnGVnQmwOqAb+kmOHz3EF9G9wfgmpfY/ejBdHl2s4INsvYzXFUj1LuWZagvaby/i31XTAe9tU/+O0VA0KRbtUJcZEGihReAAWpAPensdzGQ7MgcnawMTGQ3M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eJGoCKwm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F28A1C4CEF1;
-	Wed,  7 Jan 2026 15:53:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767801239;
-	bh=cs21N9MiDRScheFdM57oelbKb1VxtVwcvzerWe0JBpQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=eJGoCKwm52H3ME44zctEbx8zYvtIV7ZLlmnE/vpVS4nt0LMZ3cGhdRc1nHrEivLP6
-	 12cPreEIC0k4ApSI/RmSwa4JBq1nDVSJhChrTCRQtU6a3mWW9qDUM52R48Xp+GI6o2
-	 vGPMUYMpdiULqqp7zTs1qKgWC7NNUVmyPX4ds2aB9TsSIWeBHhrrGAE2XFfxTdAO6+
-	 +FGDyVMeRTGwiOS6xSR2xHPjUDCA/JnoSYMOLUtWHFwWxhs3W1rDWHiYixEfvZrR73
-	 s5F5J2l9oYqCaJb2i00cFKzLBsd4fqAAj7UqlaUAkE+7pO3mSyTjd+jGZKbJlscu5v
-	 A/pPXFzrmDyQw==
-From: Sasha Levin <sashal@kernel.org>
-To: patches@lists.linux.dev,
-	stable@vger.kernel.org
-Cc: Chenghao Duan <duanchenghao@kylinos.cn>,
-	Huacai Chen <chenhuacai@loongson.cn>,
-	Sasha Levin <sashal@kernel.org>,
-	chenhuacai@kernel.org,
-	masahiroy@kernel.org,
-	jiaxun.yang@flygoat.com,
-	arnd@arndb.de,
-	yangtiezhu@loongson.cn,
-	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.18-6.1] LoongArch: Enable exception fixup for specific ADE subcode
-Date: Wed,  7 Jan 2026 10:53:15 -0500
-Message-ID: <20260107155329.4063936-13-sashal@kernel.org>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20260107155329.4063936-1-sashal@kernel.org>
-References: <20260107155329.4063936-1-sashal@kernel.org>
+	s=arc-20240116; t=1767802084; c=relaxed/simple;
+	bh=rAdTjzfI6ZefcjNO2L8Jejw5vRP0yRdJuiyw0aoSZQ0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ltUbPokvGAqLAA5TNnRwe5aD0i3fVzbijywg/3RTAS2VBsu6T2fcNpJKcyV+W53khQhGEZINoCCIF5+tm0GLy6UFanVqFPUSpTuYhE3MOU4cHQ8DJo9RPOp4I+b4NAVLwVPZZyzq09TaKXsajZdtRNyDViI0Pm5yk5sAjajFsBA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf06.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay07.hostedemail.com (Postfix) with ESMTP id DB827160420;
+	Wed,  7 Jan 2026 16:07:50 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf06.hostedemail.com (Postfix) with ESMTPA id 301EF2000E;
+	Wed,  7 Jan 2026 16:07:48 +0000 (UTC)
+Date: Wed, 7 Jan 2026 11:08:14 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Will Deacon <will@kernel.org>
+Cc: Jiri Olsa <jolsa@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Mahe Tardy <mahe.tardy@gmail.com>, Peter Zijlstra <peterz@infradead.org>,
+ bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, x86@kernel.org, Yonghong Song
+ <yhs@fb.com>, Song Liu <songliubraving@fb.com>, Andrii Nakryiko
+ <andrii@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH bpf-next 1/2] arm64/ftrace,bpf: Fix partial regs after
+ bpf_prog_run
+Message-ID: <20260107110814.1dfc9ec0@gandalf.local.home>
+In-Reply-To: <aV5qpZwxgVRu2Q8w@willie-the-truck>
+References: <20260107093256.54616-1-jolsa@kernel.org>
+	<aV5qpZwxgVRu2Q8w@willie-the-truck>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.18.3
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Stat-Signature: qy4j19qy53bj957cygb9gkss444jbwzi
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: 301EF2000E
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX19Psz/3Po3Wu+zE9EFiNolFBPIekU7NMl0=
+X-HE-Tag: 1767802068-600516
+X-HE-Meta: U2FsdGVkX19MpXNmjRTzf5eqNvutq13fH6LNi6K+gfHE6MtwcqV9v17WFTdDoZ8hnovtbZRxIDPYuPGSnvVQCPErohKxIFTHtJ3uDJi0CJvWrwxOSPNMwdbhjophPBLCXWhG8yHdzUuQ6JTsnRw2906L0DpujHMONSJT/3aVtTdaEybCmKF1nYcXDFg6NwiuJoCoPl+iio7bxppqMkJx2nyNMjvkNM2F5DGs1OoayfjqZtxfFwAIADNBVxZv81v1kVsEIr92L9frvqK9SgbPTxiFrrSFhOXnUVht2QY/GD9Sh0hUXlym1QLlWvB0Jke+Gl3j9N4ImY5uAJYWmYknfOXC8irHT0XR
 
-From: Chenghao Duan <duanchenghao@kylinos.cn>
+On Wed, 7 Jan 2026 14:16:05 +0000
+Will Deacon <will@kernel.org> wrote:
 
-[ Upstream commit 9bdc1ab5e4ce6f066119018d8f69631a46f9c5a0 ]
+> I still don't understand why we need anything new in the arch code for this.
+> 
+> We've selected HAVE_ARCH_FTRACE_REGS and we implement
+> ftrace_regs_set_instruction_pointer() and ftrace_regs_set_return_value()
+> so the core code already has everything it needs to make this work
+> without additional arch support.
 
-This patch allows the LoongArch BPF JIT to handle recoverable memory
-access errors generated by BPF_PROBE_MEM* instructions.
+I believe the issue is that the BPF code takes a pt_regs and does the
+update directly with that, and not the ftrace_regs.
 
-When a BPF program performs memory access operations, the instructions
-it executes may trigger ADEM exceptions. The kernel’s built-in BPF
-exception table mechanism (EX_TYPE_BPF) will generate corresponding
-exception fixup entries in the JIT compilation phase; however, the
-architecture-specific trap handling function needs to proactively call
-the common fixup routine to achieve exception recovery.
+I'm guessing this is due to BPF programs modifying the pt_regs directly,
+and BPF programs do not yet understand ftrace_regs?
 
-do_ade(): fix EX_TYPE_BPF memory access exceptions for BPF programs,
-ensure safe execution.
+Because arm64 requires making a copy of pt_regs as the ftrace_regs has a
+different layout, and the ftrace_regs is what does the changes, if the
+pt_regs passed to the BPF program modifies the values it needs a way to
+propagate that back to the ftrace_regs.
 
-Relevant test cases: illegal address access tests in module_attach and
-subprogs_extable of selftests/bpf.
-
-Signed-off-by: Chenghao Duan <duanchenghao@kylinos.cn>
-Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
-
-LLM Generated explanations, may be completely bogus:
-
-## Analysis of LoongArch Exception Fixup Commit
-
-### 1. COMMIT MESSAGE ANALYSIS
-
-The subject "LoongArch: Enable exception fixup for specific ADE subcode"
-and message clearly indicate this is a **bug fix** for BPF exception
-handling. Key phrases:
-- "handle recoverable memory access errors generated by BPF_PROBE_MEM*
-  instructions"
-- "fix EX_TYPE_BPF memory access exceptions for BPF programs, ensure
-  safe execution"
-- References specific failing test cases (module_attach,
-  subprogs_extable in selftests/bpf)
-
-### 2. CODE CHANGE ANALYSIS
-
-The change is in `do_ade()` (Address alignment exception handler):
-
-```c
-+   unsigned int esubcode = FIELD_GET(CSR_ESTAT_ESUBCODE,
-regs->csr_estat);
-+
-+   if ((esubcode == EXSUBCODE_ADEM) && fixup_exception(regs))
-+       goto out;
-```
-
-**The bug mechanism:**
-- BPF programs using `BPF_PROBE_MEM*` instructions may intentionally
-  access invalid memory addresses
-- The BPF JIT properly creates exception table entries (EX_TYPE_BPF)
-  during compilation
-- However, the LoongArch `do_ade()` handler was NOT calling
-  `fixup_exception()` to check these entries
-- Result: Instead of graceful recovery, the kernel dies
-  (`die_if_kernel`) or sends SIGBUS
-
-**The fix mechanism:**
-- Checks for ADEM (Address Exception - Memory) subcode specifically
-- Calls `fixup_exception()` to look up the exception table
-- If a fixup exists, recovers gracefully via the `goto out` path
-- Falls back to original behavior if no fixup is found
-
-This follows the same pattern used by other architectures (x86, arm64)
-for handling BPF exception recovery.
-
-### 3. CLASSIFICATION
-
-This is a **bug fix**, not a new feature:
-- The BPF exception table mechanism already exists
-- The `fixup_exception()` infrastructure already exists
-- This completes incomplete exception handling that was causing crashes
-
-### 4. SCOPE AND RISK ASSESSMENT
-
-**Size:** Very small
-- 5 lines added
-- 1 file modified
-- Single architecture affected (LoongArch only)
-
-**Risk:** LOW
-- Conservative change with explicit fallback to original behavior
-- Uses well-established kernel infrastructure (`fixup_exception`,
-  `FIELD_GET`)
-- Only affects specific ADEM exception subcode
-- No changes to hot paths for non-exception cases
-
-### 5. USER IMPACT
-
-**Affected users:** LoongArch systems running BPF programs that probe
-memory (bpftrace, BPF-based tracing/security tools)
-
-**Severity:** HIGH for affected users
-- Without fix: Kernel panic or SIGBUS when BPF probes invalid memory
-- BPF_PROBE_MEM is designed for safe memory probing; without this, it's
-  broken on LoongArch
-
-### 6. STABILITY INDICATORS
-
-- Signed-off-by from LoongArch maintainer (Huacai Chen) - indicates
-  proper review
-- Specific test cases mentioned (suggests it was tested)
-- The change follows patterns well-established in other architectures
-
-### 7. DEPENDENCY CHECK
-
-The fix is standalone, requiring only:
-- LoongArch architecture support (5.19+)
-- LoongArch BPF JIT with exception table support
-- These prerequisites should exist in stable trees that have LoongArch
-
-### SUMMARY
-
-**Meets stable kernel criteria:**
-1. ✅ **Obviously correct:** Standard pattern used by other architectures
-2. ✅ **Fixes a real bug:** BPF programs crash/panic on memory probe
-   operations
-3. ✅ **Important issue:** Kernel crashes/panics are severe
-4. ✅ **Small and contained:** 5 lines, single file, single architecture
-5. ✅ **No new features:** Uses existing infrastructure, just enables
-   proper behavior
-6. ✅ **Low risk:** Fallback to original behavior when no fixup exists
-
-**Risk vs Benefit:**
-- Risk: Minimal - architecture-specific, conservative, well-tested
-  pattern
-- Benefit: High - fixes kernel crashes for LoongArch BPF users
-
-This is a small, surgical fix to LoongArch exception handling that
-enables proper BPF exception recovery. Without it, BPF programs using
-probe_mem operations will cause kernel panics on LoongArch. The fix
-follows patterns already used by other architectures and has minimal
-risk.
-
-**YES**
-
- arch/loongarch/kernel/traps.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/arch/loongarch/kernel/traps.c b/arch/loongarch/kernel/traps.c
-index da5926fead4a..8e51ce004572 100644
---- a/arch/loongarch/kernel/traps.c
-+++ b/arch/loongarch/kernel/traps.c
-@@ -535,10 +535,15 @@ asmlinkage void noinstr do_fpe(struct pt_regs *regs, unsigned long fcsr)
- asmlinkage void noinstr do_ade(struct pt_regs *regs)
- {
- 	irqentry_state_t state = irqentry_enter(regs);
-+	unsigned int esubcode = FIELD_GET(CSR_ESTAT_ESUBCODE, regs->csr_estat);
-+
-+	if ((esubcode == EXSUBCODE_ADEM) && fixup_exception(regs))
-+		goto out;
- 
- 	die_if_kernel("Kernel ade access", regs);
- 	force_sig_fault(SIGBUS, BUS_ADRERR, (void __user *)regs->csr_badvaddr);
- 
-+out:
- 	irqentry_exit(regs, state);
- }
- 
--- 
-2.51.0
-
+-- Steve
 
