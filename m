@@ -1,149 +1,85 @@
-Return-Path: <bpf+bounces-78158-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78159-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 918ABCFFD7E
-	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 20:50:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D5295CFFEA7
+	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 21:06:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 330DA319F68E
-	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 19:28:00 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4884230FB4FD
+	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 19:44:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 117742D8379;
-	Wed,  7 Jan 2026 19:26:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ksCe5Bo/"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB9D8318ECF;
+	Wed,  7 Jan 2026 19:44:24 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+Received: from relay.hostedemail.com (smtprelay0015.hostedemail.com [216.40.44.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA3BB3A0B22
-	for <bpf@vger.kernel.org>; Wed,  7 Jan 2026 19:26:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FD503446DE;
+	Wed,  7 Jan 2026 19:44:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767813986; cv=none; b=pReSSXlBfpXAemouiqC6i2KW0bqNu2uQ6VCgKhanPzOEAcpR3ziGPCKytldfyewYh+yqqrBggHme2Zks7lG6tDrAoqf8W6AUyxDeiNAh3PdVwl4FHrUHdFWyWehCABK10aKi10LSl6yr7gQg9A7Fq0RLsCf7EfuPVT5hD1Nqwsk=
+	t=1767815062; cv=none; b=TnK7NCfzG206vghR8p3ehAkntjGezkbWVSLc9WiwtIbcRcg5LbR7yyrxs1Bwzcj2cvNQp4VYiyVUZIQN/kYBRyEwzICtmx8qsMn7oGFlt14rFlZM0NxVRh/fdEaF2jl4btr3WyizdaZp8PQkJjooAm6Tc+riWu0hWpjiX1bVS3k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767813986; c=relaxed/simple;
-	bh=MTYMrV+Yymv4Cd/avn0CLByEMclgUVINm5O/bdwOWB8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZYkMSiO2bZdzPFw07B0qtPoiEj7IwPLMA3FFk+k0kNK4Z7wJGlBE1IleYM2pyAb8kCeYnh/OKI8kLqDVD47HWq8mrTTTc3b+wAXs1MUrwO/fn2ADOVWi9KYp/p1PsKleh/pvxKvhhqEuPuPNX7NmeNcBBj7+DC5fAD2qKibie4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ksCe5Bo/; arc=none smtp.client-ip=91.218.175.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <e26b8ff0-c176-4d94-a25a-4e29992611c1@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1767813980;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WcB8G3y5iz+8intAQ2MzrTuvbBYtEhwRblwqeC5cVu4=;
-	b=ksCe5Bo/EPvK+Yybn2Q4RtDdQIIfm2yAJStNI/8d7/7WVqQsANcOBJj465bf6HWSAzwhLs
-	Ty4edCKZq2IY9d/jXLadET9lMp3SLgo6JPTJ5EHVC7LP/fu65QsgKSjByKGo5N8Wg51DKP
-	oMU66hLaVaQ2xlxQfVuoWnI746hW/ig=
-Date: Wed, 7 Jan 2026 11:26:16 -0800
+	s=arc-20240116; t=1767815062; c=relaxed/simple;
+	bh=BDWvavId5yMpmavgH+5HopBuuoPKcwZOJTX/4K6NxXY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=iTC2CENovOuqS/NQuWE9EL0ffp6hmPta+Qr5MzviWQaTK5BZ568MOmhRZLv30K83pcdHGwQIzxwGLHQRO5oPupAEdS1VEC3UqUxxB2PftBTa1Fxs7r5qKQe6ReQBBAvuTnM8C+z/QK8zinPrLg4X1RA6HySUK13+IvXNQ0hB434=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf02.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay09.hostedemail.com (Postfix) with ESMTP id 75D3F8BC0E;
+	Wed,  7 Jan 2026 19:44:11 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf02.hostedemail.com (Postfix) with ESMTPA id 7B40480014;
+	Wed,  7 Jan 2026 19:44:07 +0000 (UTC)
+Date: Wed, 7 Jan 2026 14:44:34 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Maurice Hieronymus <mhi@mailbox.org>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com,
+ song@kernel.org, yonghong.song@linux.dev, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, mhiramat@kernel.org,
+ mark.rutland@arm.com, mathieu.desnoyers@efficios.com,
+ georges.aureau@hpe.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] kallsyms: Always initialize modbuildid on ftrace
+ address
+Message-ID: <20260107144434.233c1c15@gandalf.local.home>
+In-Reply-To: <20251220181838.63242-2-mhi@mailbox.org>
+References: <20251220181838.63242-1-mhi@mailbox.org>
+	<20251220181838.63242-2-mhi@mailbox.org>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: kernel build failure when CONFIG_DEBUG_INFO_BTF and CONFIG_KCSAN
- are enabled
-Content-Language: en-GB
-To: Nilay Shroff <nilay@linux.ibm.com>, Alan Adamson
- <alan.adamson@oracle.com>, bpf@vger.kernel.org
-Cc: Bart Van Assche <bvanassche@acm.org>,
- "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
-References: <42a1b4b0-83d0-4dda-b1df-15a1b7c7638d@linux.ibm.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <42a1b4b0-83d0-4dda-b1df-15a1b7c7638d@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 7B40480014
+X-Stat-Signature: 1fzuq6dibqskupp1hcexpedbrfzekfmd
+X-Rspamd-Server: rspamout05
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX19RdrMjBReEh0DGiEMvIHZvmu5ln5nIhyE=
+X-HE-Tag: 1767815047-727664
+X-HE-Meta: U2FsdGVkX18A3DoOlTzqb88a5+Y6hLUBJ/DBCmaRfaYIrm4fpHBY4XIzY5lecY0xf2GZ0Mwp8GEmdCAEWG92zRK9XElcvGX+MMMX19/slztkuSW7uPraPNdTmxRMSThH61rMbAYT5S63u1Nq7ixUpnkRZUd3n2CjdwCJHTVRzcyrNutzWi9k258AgzhwdyUH16nOVVIGB/dbLOQ6dZv5G2eMEzfhlEIOGLfwK4ZCO4HWjYzafIvJF5tePcQqgtLT1cPKwMBDe2xRFmeQ2SfSBpAiRKQtOIatNj1XKQdKUnxtS8CpPe1gxjxXLPHAv39WsgQUrPK7QeFUMn0PnBgeLrMXZqYpM2eNWuUEBrJqnQLiIbNZ1MiwrGQ6Eq/7vtvW
 
+On Sat, 20 Dec 2025 19:18:37 +0100
+Maurice Hieronymus <mhi@mailbox.org> wrote:
 
+> modbuildid is never set when kallsyms_lookup_buildid is returning via
+> successful ftrace_mod_address_lookup.
+> 
+> This leads to an uninitialized pointer dereference on x86 when
+> CONFIG_STACKTRACE_BUILD_ID=y inside __sprint_symbol.
+> 
 
-On 11/26/25 2:29 AM, Nilay Shroff wrote:
-> Hi,
->
-> I am encountering the following build failures when compiling the kernel source checked out
-> from the for-6.19/block branch [1]:
->
->    KSYMS   .tmp_vmlinux2.kallsyms.S
->    AS      .tmp_vmlinux2.kallsyms.o
->    LD      vmlinux.unstripped
->    BTFIDS  vmlinux.unstripped
-> WARN: multiple IDs found for 'task_struct': 110, 3046 - using 110
-> WARN: multiple IDs found for 'module': 170, 3055 - using 170
-> WARN: multiple IDs found for 'file': 697, 3130 - using 697
-> WARN: multiple IDs found for 'vm_area_struct': 714, 3140 - using 714
-> WARN: multiple IDs found for 'seq_file': 1060, 3167 - using 1060
-> WARN: multiple IDs found for 'cgroup': 2355, 3304 - using 2355
-> WARN: multiple IDs found for 'inode': 553, 3339 - using 553
-> WARN: multiple IDs found for 'path': 586, 3369 - using 586
-> WARN: multiple IDs found for 'bpf_prog': 2565, 3640 - using 2565
-> WARN: multiple IDs found for 'bpf_map': 2657, 3837 - using 2657
-> WARN: multiple IDs found for 'bpf_link': 2849, 3965 - using 2849
-> [...]
-> make[2]: *** [scripts/Makefile.vmlinux:72: vmlinux.unstripped] Error 255
-> make[2]: *** Deleting file 'vmlinux.unstripped'
-> make[1]: *** [/home/src/linux/Makefile:1242: vmlinux] Error 2
-> make: *** [Makefile:248: __sub-make] Error 2
->
->
-> The build failure appears after commit 42adb2d4ef24 (“fs: Add the __data_racy annotation
-> to backing_dev_info.ra_pages”) and commit 935a20d1bebf (“block: Remove queue freezing
-> from several sysfs store callbacks”). However, the root cause does not seem to be specific
-> to these commits or to the block layer changes themselves. Instead, the issue is triggered
-> by the introduction of the __data_racy annotation on several fields in struct request_queue
-> and struct backing_dev_info.
->
-> It seems likely that some compilation units are built with KCSAN disabled, in which case
-> the preprocessor expands __data_racy to nothing. Other units have KCSAN enabled, where
-> __data_racy expands to the volatile qualifier. This results in two different versions
-> of both struct request_queue and struct backing_dev_info: one where fields such as
-> rq_timeout or ra_pages are declared volatile, and another where they are not.
->
-> During BTF generation, the resolver encounters these conflicting type definitions.
-> Although the reported error does not explicitly reference struct request_queue or
-> struct backing_dev_info, it likely surfaces through types such as task_struct or
-> others that embed these structures deep within their type hierarchies.
->
-> For reference, gcc and pahole versions are shown below. Also, attached kernel .config:
->
-> # gcc --version
-> gcc (GCC) 11.4.1 20231218 (Red Hat 11.4.1-3)
-> Copyright (C) 2021 Free Software Foundation, Inc.
-> This is free software; see the source for copying conditions.  There is NO
-> warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
->
-> # pahole --version
-> v1.27
->
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux.git/log/?h=for-6.19/block
+Nothing should be getting a buildid from the ftrace kallsyms lookup.
 
-I tried with clang with CONFIG_DEBUG_INFO_BTF and CONFIG_KCSAN enabled.
-I am using the latest bpf-next.
-   $ make LLVM=1 -j
-   ...
-   KSYMS   .tmp_vmlinux0.kallsyms.S
-   AS      .tmp_vmlinux0.kallsyms.o
-   LD      .tmp_vmlinux1
-   BTF     .tmp_vmlinux1
-      <==== hang here
+This code is used to find the names of init functions of modules after
+those init functions have been freed. Nothing but ftrace should be looking
+for these addresses, and ftrace doesn't care about buildids.
 
-^Cmake[2]: *** [/home/yhs/work/bpf-next/scripts/Makefile.vmlinux:72: vmlinux.unstripped] Interrupt
-make[1]: *** [/home/yhs/work/bpf-next/Makefile:1277: vmlinux] Interrupt
-make: *** [/home/yhs/work/bpf-next/Makefile:248: __sub-make] Interrupt
-
-I am using latest clang22 and latest pahole master (v1.31).
-
-I will debug further from clang side.
-
-
->
-> Thanks,
-> --Nilay
-
+-- Steve
 
