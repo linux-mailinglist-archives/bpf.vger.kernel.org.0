@@ -1,187 +1,138 @@
-Return-Path: <bpf+bounces-78085-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78086-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84F05CFDD53
-	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 14:07:57 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E51ACCFDD6F
+	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 14:09:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3907030DB50F
-	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 13:01:35 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A4B0D30596A1
+	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 13:03:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 377F43191B8;
-	Wed,  7 Jan 2026 13:01:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB04F3191B9;
+	Wed,  7 Jan 2026 13:03:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="YS0lg+fh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fR+PBtZx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f66.google.com (mail-ed1-f66.google.com [209.85.208.66])
+Received: from mail-dl1-f41.google.com (mail-dl1-f41.google.com [74.125.82.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE024314D2A
-	for <bpf@vger.kernel.org>; Wed,  7 Jan 2026 13:01:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAB782EA169
+	for <bpf@vger.kernel.org>; Wed,  7 Jan 2026 13:03:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767790892; cv=none; b=JMGGlZJIDHNLHSlFxap6Cm2DN/qsrimNTUyWd+z0cZ4kQmOZCxq1NvbjomAZ71nkftHwjg+JlPwCAv/HbUnHsqHWIm3X1wj8N6L5wHOX+SIjPEDpbabto+whx/g29UOL0Vghg23jGd1K6af96vaccy8iNl7+vU5p6rCaMP+6NWY=
+	t=1767791018; cv=none; b=Ofn4n5rOxcRd36lr5xBRAQMVz739ylOgdyxxnRY9IKMDTKsm3Anf57H/y5Npju0HQS9urds8O2igCh2qGOksj7tqh2I0JKWdvf5B1s2sA6zFspwZO8BrtX7bFdhLiF23rJWavnQ/96j/A5DYEnogeliW0YYBDUFhuZb56Z+6hjY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767790892; c=relaxed/simple;
-	bh=ZFBHKnCoBPdFWOIGkoJWE8ZkaUPWI6yc4PvUJ0tWoVo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=CIUzZXpCJCOHyJIEJgkyWPEYEYFsPJQdEe+wlM2y2BS6YkYciZh7IZNRk9fqglAe/tBi6/5EpFT2lxPIK0oMKEsA69v9PNIETI35KYGe/ImwfLEN8TD71QBPS/uUu9ul7yvivoIuRvSPti8AqA0QHG8yUqswY9VBUjfI0qT6oIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=YS0lg+fh; arc=none smtp.client-ip=209.85.208.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ed1-f66.google.com with SMTP id 4fb4d7f45d1cf-64b9dfc146fso1621470a12.0
-        for <bpf@vger.kernel.org>; Wed, 07 Jan 2026 05:01:30 -0800 (PST)
+	s=arc-20240116; t=1767791018; c=relaxed/simple;
+	bh=s7GTh11L2i2KI3LvsWAFeFcx8JWTGou+tuO3WnXU218=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=RzBMymSFyhcwYml3OR+CHmmgKqC6h3e9OBylBXc/0PBJ7QRRkGVBVugfXcLzn4AaSriJ8wPl5STZXUQtNLW0cSuHtj1efd4QKns62Ef2U/MtI5tLxoUCUEijjA/OY5OrqzuCClc+3X3BMNYlYfmyg0ge35wSB+vjoNT69GZYtRM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fR+PBtZx; arc=none smtp.client-ip=74.125.82.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-dl1-f41.google.com with SMTP id a92af1059eb24-121a0bcd364so1612723c88.0
+        for <bpf@vger.kernel.org>; Wed, 07 Jan 2026 05:03:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1767790889; x=1768395689; darn=vger.kernel.org;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Xir3ca+ukIVh/RHVo7Ct0xUP1DZl1QDE+zdc0E28knM=;
-        b=YS0lg+fhzEioA+R8RLxRY1rbXQ6hSQLdrteJEAnmTIu0R23HV2yEDITk58AnTuRfc8
-         mMZRMYrKgIIH25vtVbeqvp7dS/epFGw+cfX9TG3LOmnIXSuIpgz16MRuBjYCJN04xI+j
-         BuVpJvCmmzY7GyyyiZP59ttTQMJBhI+F+woOAt1DHnMfXBJKOQbIU0HouBJXA7qBgXnx
-         AbTZChIiXkOhQUWKjaZja9nkhUcOwqTL0EQqj63+/Qkx31KwgeyEKtOZpgRS1qLD1lh5
-         bDy2NTZkWngCLIFhGY1vvVffQXTLoOf3DHvizYVnzt9/EE4vI/9Lke+kCY/WBZ99J4gu
-         dNzg==
+        d=gmail.com; s=20230601; t=1767791016; x=1768395816; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s7GTh11L2i2KI3LvsWAFeFcx8JWTGou+tuO3WnXU218=;
+        b=fR+PBtZxEY+N0Njaja/uKAKcp5uQMBZcHwjdMwGFFFrkviInaQ6jX6hZSFgvoqEw3o
+         fEQU3b6aDbISNzAIfXKmPuUXuUhgU8LHhVp0uBucCxUSsWC87Fng6bj/y0/LCsVscJ0P
+         s0SAvUH0BR9KDX9/wEgpgtuS0JRexJFF5ejooEfkz4RwoXA9rEL0ET4Z4goCU1S4lCu2
+         56FVZ0/3YAW+B5ak8XjSAk2TRhKGmopesDakWfY3WxKDLcFy6w4hSU6Z+pPR/4icehJR
+         RjFOIPAyoNa9UIiZVMmQd94OsvCbI2pTJ6Y8XsPmAHTOlE31U0oqw29G9H8Z4xiS95yL
+         iYyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767790889; x=1768395689;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Xir3ca+ukIVh/RHVo7Ct0xUP1DZl1QDE+zdc0E28knM=;
-        b=CGtWMZM+C1Mvze55rW4s32v0EmygV0USIcrcnpzI70fNWyYgecWRvbRtlp8BdEZKDV
-         PIdx3QIhddLPBVQDy+dLCDPaFuguDP8lTO1w2BcxeENBF0s3Idr1m/CXOyQ+zmyBtOx7
-         858xH/4UEfHaU8y0tQeTAVgrBteCM4iSK8rUW3q96WU6/XgI1J6npWNQuuRGNtFkn7OW
-         pjHDN+ORBhZd6vO5ExWmErLinZS6rxW1D1VBe7lX6WHutOPm6yjENuZKUF7MPhd1G4QS
-         GxM7VyxfrRb6HZsXkGeIr+HBYsZ5QUeEW6JcVihr4/f4s5yZzgkp8tevP2ugdshNRevP
-         pVqg==
-X-Gm-Message-State: AOJu0Yxs3QKANEelzcEfMkQvbfabAUKMpH1asQIhzQ/uWLQ25sQXs1+x
-	mQDrNyJ3pJb7SiKdwjKfbQBwMcUqxr84V5/tkJw0QsqWRjUiM7RTx0nGEkNDLQ382t8=
-X-Gm-Gg: AY/fxX783io/hSGXaLsNf+4kTPUsee/FU0V0BuphWXP2qH++YFIqEv9DyFymR7brCG2
-	ea2qamIGB1fbjdYiKEhkrAuA6ciy7JLNOwNEn0CR5hDVJMRW+WqBUBSRSZ0ipB8Os27r5cSdC89
-	Dp5NO13/7r4pMwbw/HapMHovJcMLw2eF+7HTLLiz0dGA3KGpqZBj/pyP0pwQV2LXYBstJbgODBB
-	ZzKTSs6Dg5wYn4NdWofXkERmKlRbmcaRGFjiuXzkWTVvez8wtsSO5KKQN+BUhIumh+n3Zx1gaYe
-	ugg8VMBtNCOllZJ/2Gz6xd1U9+chkiKfBCvI5k7sDeBqu4aICEYfHIdr9ibzQkqnAn4IStpafeL
-	Xec11tN0JUzKnbfBU+Wdkbxg5KujI5NJuunbRAxGccOEM1K5Fw4G7cCvtJscxEVWXMKVyHaP7qQ
-	mQ4mzroKEWOvJEbw==
-X-Google-Smtp-Source: AGHT+IEHgppdZ9+MA6XjO99QW33t8OQ8GPnpF0g3kbKM6o5sKERqSqJ/zi1nzB6V76byczxXQVMLPg==
-X-Received: by 2002:aa7:d74d:0:b0:649:81d7:581c with SMTP id 4fb4d7f45d1cf-6507bc3d7fbmr4690740a12.1.1767790888994;
-        Wed, 07 Jan 2026 05:01:28 -0800 (PST)
-Received: from cloudflare.com ([2a09:bac5:5063:2969::420:12])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-6507b9d4c89sm4429789a12.10.2026.01.07.05.01.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jan 2026 05:01:28 -0800 (PST)
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: Jiayuan Chen <jiayuan.chen@linux.dev>
-Cc: bpf@vger.kernel.org,  John Fastabend <john.fastabend@gmail.com>,  "David
- S. Miller" <davem@davemloft.net>,  Eric Dumazet <edumazet@google.com>,
-  Jakub Kicinski <kuba@kernel.org>,  Paolo Abeni <pabeni@redhat.com>,
-  Simon Horman <horms@kernel.org>,  Neal Cardwell <ncardwell@google.com>,
-  Kuniyuki Iwashima <kuniyu@google.com>,  David Ahern <dsahern@kernel.org>,
-  Alexei Starovoitov <ast@kernel.org>,  Daniel Borkmann
- <daniel@iogearbox.net>,  Andrii Nakryiko <andrii@kernel.org>,  Martin
- KaFai Lau <martin.lau@linux.dev>,  Eduard Zingerman <eddyz87@gmail.com>,
-  Song Liu <song@kernel.org>,  Yonghong Song <yonghong.song@linux.dev>,  KP
- Singh <kpsingh@kernel.org>,  Stanislav Fomichev <sdf@fomichev.me>,  Hao
- Luo <haoluo@google.com>,  Jiri Olsa <jolsa@kernel.org>,  Shuah Khan
- <shuah@kernel.org>,  Stefano Garzarella <sgarzare@redhat.com>,  Michal
- Luczaj <mhal@rbox.co>,  Cong Wang <cong.wang@bytedance.com>,
-  netdev@vger.kernel.org,  linux-kernel@vger.kernel.org,
-  linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf-next v5 1/3] bpf, sockmap: Fix incorrect copied_seq
- calculation
-In-Reply-To: <20260106051458.279151-2-jiayuan.chen@linux.dev> (Jiayuan Chen's
-	message of "Tue, 6 Jan 2026 13:14:27 +0800")
-References: <20260106051458.279151-1-jiayuan.chen@linux.dev>
-	<20260106051458.279151-2-jiayuan.chen@linux.dev>
-Date: Wed, 07 Jan 2026 14:01:27 +0100
-Message-ID: <87ms2pinko.fsf@cloudflare.com>
+        d=1e100.net; s=20230601; t=1767791016; x=1768395816;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-gg:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=s7GTh11L2i2KI3LvsWAFeFcx8JWTGou+tuO3WnXU218=;
+        b=VHeNOrpct74AfHbWmNkqZwkyURRpX51nWy+BeChvj5ka4COcxPxmDFlNCTKgflpPNu
+         DID3UGH9x5hMh/DMcIzgJf60ZtfynUy/N9CqTZPTzVVCmpDBmm6cjXRGeppSLq/1wRqh
+         2sRohYsP7b4y08Qpfl5lGq/V7HRJ3U6s/QbD++3gTjVqQDgC/oijeqvKX/XrwGM4tqj2
+         3ckY5wE6JeXpmR/eB1qPWvIOabvWzxhu5oUZqYnnOfWMiTa52kTDIAqKEaKjkgt89EAm
+         2IesePMZmv+iW2OIg46RPR32VnYZXDwO0A8EB9dR5/gPbvsmgdvafteUwsY5V1GgTfZo
+         uS5g==
+X-Forwarded-Encrypted: i=1; AJvYcCXaeuqHP45JYO6rhdZXS8q3uTVW0IN8T9z3khAp2nuiw0d1zB9Q7Q4RN0P2oMJAF/rxJMY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzI97sKEZz2ECbPPWl2BamrdtPMu0teT3JpwOXPUCHlqZt6KJIF
+	zFI6muiE1esirc6nCWbry1lYm07qXpZAk7pYALsmxZxfq/GFv7wsroLa
+X-Gm-Gg: AY/fxX5z9Xm6/FOtGgH7CM/n7+ObDttfLU45tMjY/k2ZeLvNYJ3mI2q+EOHz8uQYpgJ
+	abiKPgzaTKn5wZmEyn+xBPRvJ+Tsv3G743jC2vuzWSJFjgAkIGAWBVcjs51c9H3xG2nFy2pVZeF
+	orcQlpYSJERrQtoW2OTNS7yOKYbUaxzY189Wdt+g/LQlxXCRWtOeCDyBY51XTSB8Cyj4R/arWKI
+	UIiwABVIlszrlfKBbHApJVObk0GWJsbaXRjM1Jy++SnMhIv0M0DjJB/jtpCs8Tax1hZ2h51lg2D
+	zGfktfpYM6BYdqouHP+02uMhcAYitACNp3GYE/4lnLMtwckSQvqX+7mOvnXbVIpyyZbQftGGUfI
+	Sp/owTTh6U/q78KgcifnV3pY1PXag0PqVWlGTZujH2+sh8owmY+pLWt83UFCxew0ETPgVv8TyBW
+	B1bTjRUHUn7vWosWHlZLZtgX29
+X-Google-Smtp-Source: AGHT+IGnL2xjS0GT/VWvHOK4H+jFG4Caomv3SQN7QcEqr0Gwfdq8sN01qehGzYICVgdBY7YOseFREg==
+X-Received: by 2002:a05:7022:eacd:b0:11b:79f1:847 with SMTP id a92af1059eb24-121f8b14836mr1854896c88.12.1767791015447;
+        Wed, 07 Jan 2026 05:03:35 -0800 (PST)
+Received: from smtpclient.apple ([38.207.158.4])
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-121f24a65b9sm7985515c88.17.2026.01.07.05.03.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 07 Jan 2026 05:03:35 -0800 (PST)
+Content-Type: text/plain;
+	charset=us-ascii
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.700.81.1.4\))
+Subject: Re: [PATCH bpf 2/2] bpf: Require ARG_PTR_TO_MEM with memory flag
+From: Zesen Liu <ftyghome@gmail.com>
+In-Reply-To: <5be9eb70fb41e7278771d9ff1fe3493444a7c33d28f300f04fb8e3be73005ec4@mail.kernel.org>
+Date: Wed, 7 Jan 2026 21:03:16 +0800
+Cc: ast@kernel.org,
+ daniel@iogearbox.net,
+ andrii@kernel.org,
+ martin.lau@linux.dev,
+ eddyz87@gmail.com,
+ song@kernel.org,
+ yonghong.song@linux.dev,
+ john.fastabend@gmail.com,
+ kpsingh@kernel.org,
+ sdf@fomichev.me,
+ haoluo@google.com,
+ jolsa@kernel.org,
+ mattbobrowski@google.com,
+ rostedt@goodmis.org,
+ mhiramat@kernel.org,
+ mathieu.desnoyers@efficios.com,
+ davem@davemloft.net,
+ edumazet@google.com,
+ kuba@kernel.org,
+ pabeni@redhat.com,
+ horms@kernel.org,
+ dxu@dxuuu.xyz,
+ bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org,
+ netdev@vger.kernel.org,
+ electronlsr@gmail.com,
+ gplhust955@gmail.com,
+ haoran.ni.cs@gmail.com,
+ martin.lau@kernel.org,
+ clm@meta.com,
+ ihor.solodrai@linux.dev
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <9A68EC8A-3F7B-4CA0-B75B-195BE5E7495A@gmail.com>
+References: <20260107-helper_proto-v1-2-e387e08271cc@gmail.com>
+ <5be9eb70fb41e7278771d9ff1fe3493444a7c33d28f300f04fb8e3be73005ec4@mail.kernel.org>
+To: bot+bpf-ci@kernel.org
+X-Mailer: Apple Mail (2.3826.700.81.1.4)
 
-On Tue, Jan 06, 2026 at 01:14 PM +08, Jiayuan Chen wrote:
-> A socket using sockmap has its own independent receive queue: ingress_msg.
-> This queue may contain data from its own protocol stack or from other
-> sockets.
->
-> The issue is that when reading from ingress_msg, we update tp->copied_seq
-> by default. However, if the data is not from its own protocol stack,
-> tcp->rcv_nxt is not increased. Later, if we convert this socket to a
-> native socket, reading from this socket may fail because copied_seq might
-> be significantly larger than rcv_nxt.
->
-> This fix also addresses the syzkaller-reported bug referenced in the
-> Closes tag.
->
-> This patch marks the skmsg objects in ingress_msg. When reading, we update
-> copied_seq only if the data is from its own protocol stack.
->
->                                                      FD1:read()
->                                                      --  FD1->copied_seq++
->                                                          |  [read data]
->                                                          |
->                                 [enqueue data]           v
->                   [sockmap]     -> ingress to self ->  ingress_msg queue
-> FD1 native stack  ------>                                 ^
-> -- FD1->rcv_nxt++               -> redirect to other      | [enqueue data]
->                                        |                  |
->                                        |             ingress to FD1
->                                        v                  ^
->                                       ...                 |  [sockmap]
->                                                      FD2 native stack
->
-> Closes: https://syzkaller.appspot.com/bug?extid=06dbd397158ec0ea4983
-> Fixes: 04919bed948dc ("tcp: Introduce tcp_read_skb()")
-> Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
-> ---
->  include/linux/skmsg.h |  2 ++
->  net/core/skmsg.c      | 25 ++++++++++++++++++++++---
->  net/ipv4/tcp_bpf.c    |  5 +++--
->  3 files changed, 27 insertions(+), 5 deletions(-)
->
-> diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-> index 49847888c287..0323a2b6cf5e 100644
-> --- a/include/linux/skmsg.h
-> +++ b/include/linux/skmsg.h
-> @@ -141,6 +141,8 @@ int sk_msg_memcopy_from_iter(struct sock *sk, struct iov_iter *from,
->  			     struct sk_msg *msg, u32 bytes);
->  int sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
->  		   int len, int flags);
-> +int __sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
-> +		     int len, int flags, int *from_self_copied);
->  bool sk_msg_is_readable(struct sock *sk);
->  
->  static inline void sk_msg_check_to_free(struct sk_msg *msg, u32 i, u32 bytes)
-> diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-> index 2ac7731e1e0a..d73e03f7713a 100644
-> --- a/net/core/skmsg.c
-> +++ b/net/core/skmsg.c
-> @@ -409,14 +409,14 @@ int sk_msg_memcopy_from_iter(struct sock *sk, struct iov_iter *from,
->  }
->  EXPORT_SYMBOL_GPL(sk_msg_memcopy_from_iter);
->  
-> -/* Receive sk_msg from psock->ingress_msg to @msg. */
-> -int sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
-> -		   int len, int flags)
-> +int __sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
-> +		     int len, int flags, int *from_self_copied)
->  {
->  	struct iov_iter *iter = &msg->msg_iter;
->  	int peek = flags & MSG_PEEK;
->  	struct sk_msg *msg_rx;
->  	int i, copied = 0;
-> +	bool to_self;
+You're right. I'll add the missing flags to these prototypes and address =
+this in v2.
 
-Nit: Can we unify the naming and make it read more naturally?
 
-s/to_self/from_self/
-s/from_self_copied/copied_from_self/
+> On Jan 7, 2026, at 20:44, bot+bpf-ci@kernel.org wrote:
+>=20
+> Would these helpers fail check_func_proto() after this change, causing
+> BPF programs using them to fail verification? Should these prototypes
+> be updated to include MEM_RDONLY (since they read from the memory), or
+> should the check skip ARG_PTR_TO_FIXED_SIZE_MEM?
 
-Otherwise LGTM:
 
-Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
 
