@@ -1,196 +1,187 @@
-Return-Path: <bpf+bounces-78084-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78085-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75A94CFDD26
-	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 14:05:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 84F05CFDD53
+	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 14:07:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C47903089CF8
-	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 12:59:20 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 3907030DB50F
+	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 13:01:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C3CB3164DF;
-	Wed,  7 Jan 2026 12:59:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 377F43191B8;
+	Wed,  7 Jan 2026 13:01:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j7LlGH0S"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="YS0lg+fh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-dl1-f41.google.com (mail-dl1-f41.google.com [74.125.82.41])
+Received: from mail-ed1-f66.google.com (mail-ed1-f66.google.com [209.85.208.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E7C6313E1A
-	for <bpf@vger.kernel.org>; Wed,  7 Jan 2026 12:59:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE024314D2A
+	for <bpf@vger.kernel.org>; Wed,  7 Jan 2026 13:01:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767790759; cv=none; b=PhfeoQ6k+aAk4XLFRExLhGMemWyM7hijqpoogLaTzT5g5PacmNrERD4Wue2jPOsALv7q51pdMgqui5yfPRPZ0EATAzKN3rvclb0bzVtlGcIj22q+CMHZEd6fSDxlWJ+tjPhNOnGBf1RmZ2gMrCbe1a8Fb8Qj8e9vA68tXrsN3i4=
+	t=1767790892; cv=none; b=JMGGlZJIDHNLHSlFxap6Cm2DN/qsrimNTUyWd+z0cZ4kQmOZCxq1NvbjomAZ71nkftHwjg+JlPwCAv/HbUnHsqHWIm3X1wj8N6L5wHOX+SIjPEDpbabto+whx/g29UOL0Vghg23jGd1K6af96vaccy8iNl7+vU5p6rCaMP+6NWY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767790759; c=relaxed/simple;
-	bh=yVRQvTYqks6WbGzMXjQJfIjrDLN7t/f8i40RrbFnp5E=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=O3TzCrEBVygPhLmZcAGBO2WBDkgpBkFNFF7XF9LhFPO0+QIzjRlmLUvgZ0s9d2ykPrt7ST/HTNMZ8YRmoYsM5xQCM/OrfAmADxOHLP0yf5N9immgWiaeewkWmQ1bYKnePlIhQy8l3B1lm1pmcaSV+bFEHEO6W0jUeEYovU/kAx8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j7LlGH0S; arc=none smtp.client-ip=74.125.82.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-dl1-f41.google.com with SMTP id a92af1059eb24-1205a8718afso1615207c88.0
-        for <bpf@vger.kernel.org>; Wed, 07 Jan 2026 04:59:17 -0800 (PST)
+	s=arc-20240116; t=1767790892; c=relaxed/simple;
+	bh=ZFBHKnCoBPdFWOIGkoJWE8ZkaUPWI6yc4PvUJ0tWoVo=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=CIUzZXpCJCOHyJIEJgkyWPEYEYFsPJQdEe+wlM2y2BS6YkYciZh7IZNRk9fqglAe/tBi6/5EpFT2lxPIK0oMKEsA69v9PNIETI35KYGe/ImwfLEN8TD71QBPS/uUu9ul7yvivoIuRvSPti8AqA0QHG8yUqswY9VBUjfI0qT6oIE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=YS0lg+fh; arc=none smtp.client-ip=209.85.208.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ed1-f66.google.com with SMTP id 4fb4d7f45d1cf-64b9dfc146fso1621470a12.0
+        for <bpf@vger.kernel.org>; Wed, 07 Jan 2026 05:01:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767790756; x=1768395556; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=c90q6NkDlao/1+SazP175P0A95xZu097+S3xFQ88J8k=;
-        b=j7LlGH0Stx34iFsGShuJp5y2QTgVCiqKtqytfSCDwLD3K0/CmbH78JTONuQVQHLrft
-         +6YxENsuMAVtrbFjYutiQY2k/+Rzy/1gseYiJt4kpHrm+86im1suoeTx+XjiYBErqfYH
-         KplgodcEW52HX8eGb5z8gQxIJ4r6V7RDsAHgYGP5dj0HI7Ls4CvaTF9Diy3qURtsiVtQ
-         /lr1ufpBRYb9L4AFW6FQj1dW9HrBMunXqC8GzJGRQtbeASETUmsr8Rg7dZQd4EJ7hOqh
-         ys8m9qW0U4+ypnEHWNJdoFvcy9ECnl1tqPrAJ1+wAnuKS0EJ5OWKQRawI+I5ByigcAHU
-         WtCA==
+        d=cloudflare.com; s=google09082023; t=1767790889; x=1768395689; darn=vger.kernel.org;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xir3ca+ukIVh/RHVo7Ct0xUP1DZl1QDE+zdc0E28knM=;
+        b=YS0lg+fhzEioA+R8RLxRY1rbXQ6hSQLdrteJEAnmTIu0R23HV2yEDITk58AnTuRfc8
+         mMZRMYrKgIIH25vtVbeqvp7dS/epFGw+cfX9TG3LOmnIXSuIpgz16MRuBjYCJN04xI+j
+         BuVpJvCmmzY7GyyyiZP59ttTQMJBhI+F+woOAt1DHnMfXBJKOQbIU0HouBJXA7qBgXnx
+         AbTZChIiXkOhQUWKjaZja9nkhUcOwqTL0EQqj63+/Qkx31KwgeyEKtOZpgRS1qLD1lh5
+         bDy2NTZkWngCLIFhGY1vvVffQXTLoOf3DHvizYVnzt9/EE4vI/9Lke+kCY/WBZ99J4gu
+         dNzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767790756; x=1768395556;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-gg:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=c90q6NkDlao/1+SazP175P0A95xZu097+S3xFQ88J8k=;
-        b=ZH661WQpD5kijq8l4flNJkKGKTfr/SRS4Si+F0g3942LUgpWi/G/Jfej4A+uadkrgY
-         MumlUHsFCpDvkXCaOouwVWrbpxjJtWZCxX/7np9T78PgDjRnAxFPrG5qwhp+yYpfdz8A
-         ysuBrB5jCsuZC/VbSUvt6UxCnz1g46MhcjBxzrxXfvxqpUXWiY34HuoiK02KiMtfrS2K
-         lD4QR7at/cQ6eo+kCFmu73lcQ57Sca8Y5c6iCm2EDRdlCimMC4XFUMxeFz3qBK17C64G
-         vNMcd3V/LF3LgzYoGNKsnhF8DEoGXjD19/54F6LEyH5NDvzIETVglfHEUIv54xnsvXSN
-         eU6A==
-X-Gm-Message-State: AOJu0YxjnK+MqxTNo6gxcGzo8iCwXW6ZFIBUC75PEKtKQB/k/Gp7ucL9
-	5opgtUhX3nDU/fsb+yxcqrNjTrJqlvxLwaz2wVe0jv8rxIP/aZ/NPe6y
-X-Gm-Gg: AY/fxX42pJFFLfZqu19abXNsaUr4A00a/vy7YgZgvQPQf6vgTf49GRDtKXHQFuwkE64
-	+CHOhf6wcyYCeWyQLp71OFf1JBdBpScoeV3IRqz8KR7j+6U17sPNh730lOVtbv7Gpcl698oHnvv
-	oud2WkI+Lt0Jn8r0dvLaTGKCrHNQHSBlcZ2UiWLvCMT6UyTLJt6SnXAGPkOYIpxsQu4tpkwsxC0
-	PCYWLZYQ9uYr9V3slUE8ABZ3R+yiDWxwb9fNt9HL1nWJN96q/5FabmuBCfOg14YNg1EnfCMhcxT
-	oofQXZ/DQ6/llzsV/HJ6lZFpPHmrVlf3mo6Lvej2AIaViKIatuP9GocGbWTpvcNGKi7QPREiLfy
-	nz+5hrxknor+/hT/V2ozqnYd2Zded6R5BI2opDJO9Cl4zScb9+mmpCSQQ+l1ADDyA+hkEehgfmw
-	IYQCE+6u7FMwUgPA==
-X-Google-Smtp-Source: AGHT+IFyRoeDF8QLM4gvq4mXYpk3Y//U7k/g8364xasTSjDpFWrMntZUAZ1BhFLrd1yzMNyYI7sMdQ==
-X-Received: by 2002:a05:7022:113:b0:119:e55a:9bff with SMTP id a92af1059eb24-121f8b7b229mr1585926c88.27.1767790755982;
-        Wed, 07 Jan 2026 04:59:15 -0800 (PST)
-Received: from smtpclient.apple ([38.207.158.4])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-121f23b798asm7651266c88.0.2026.01.07.04.59.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 07 Jan 2026 04:59:15 -0800 (PST)
-Content-Type: text/plain;
-	charset=us-ascii
+        d=1e100.net; s=20230601; t=1767790889; x=1768395689;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Xir3ca+ukIVh/RHVo7Ct0xUP1DZl1QDE+zdc0E28knM=;
+        b=CGtWMZM+C1Mvze55rW4s32v0EmygV0USIcrcnpzI70fNWyYgecWRvbRtlp8BdEZKDV
+         PIdx3QIhddLPBVQDy+dLCDPaFuguDP8lTO1w2BcxeENBF0s3Idr1m/CXOyQ+zmyBtOx7
+         858xH/4UEfHaU8y0tQeTAVgrBteCM4iSK8rUW3q96WU6/XgI1J6npWNQuuRGNtFkn7OW
+         pjHDN+ORBhZd6vO5ExWmErLinZS6rxW1D1VBe7lX6WHutOPm6yjENuZKUF7MPhd1G4QS
+         GxM7VyxfrRb6HZsXkGeIr+HBYsZ5QUeEW6JcVihr4/f4s5yZzgkp8tevP2ugdshNRevP
+         pVqg==
+X-Gm-Message-State: AOJu0Yxs3QKANEelzcEfMkQvbfabAUKMpH1asQIhzQ/uWLQ25sQXs1+x
+	mQDrNyJ3pJb7SiKdwjKfbQBwMcUqxr84V5/tkJw0QsqWRjUiM7RTx0nGEkNDLQ382t8=
+X-Gm-Gg: AY/fxX783io/hSGXaLsNf+4kTPUsee/FU0V0BuphWXP2qH++YFIqEv9DyFymR7brCG2
+	ea2qamIGB1fbjdYiKEhkrAuA6ciy7JLNOwNEn0CR5hDVJMRW+WqBUBSRSZ0ipB8Os27r5cSdC89
+	Dp5NO13/7r4pMwbw/HapMHovJcMLw2eF+7HTLLiz0dGA3KGpqZBj/pyP0pwQV2LXYBstJbgODBB
+	ZzKTSs6Dg5wYn4NdWofXkERmKlRbmcaRGFjiuXzkWTVvez8wtsSO5KKQN+BUhIumh+n3Zx1gaYe
+	ugg8VMBtNCOllZJ/2Gz6xd1U9+chkiKfBCvI5k7sDeBqu4aICEYfHIdr9ibzQkqnAn4IStpafeL
+	Xec11tN0JUzKnbfBU+Wdkbxg5KujI5NJuunbRAxGccOEM1K5Fw4G7cCvtJscxEVWXMKVyHaP7qQ
+	mQ4mzroKEWOvJEbw==
+X-Google-Smtp-Source: AGHT+IEHgppdZ9+MA6XjO99QW33t8OQ8GPnpF0g3kbKM6o5sKERqSqJ/zi1nzB6V76byczxXQVMLPg==
+X-Received: by 2002:aa7:d74d:0:b0:649:81d7:581c with SMTP id 4fb4d7f45d1cf-6507bc3d7fbmr4690740a12.1.1767790888994;
+        Wed, 07 Jan 2026 05:01:28 -0800 (PST)
+Received: from cloudflare.com ([2a09:bac5:5063:2969::420:12])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-6507b9d4c89sm4429789a12.10.2026.01.07.05.01.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jan 2026 05:01:28 -0800 (PST)
+From: Jakub Sitnicki <jakub@cloudflare.com>
+To: Jiayuan Chen <jiayuan.chen@linux.dev>
+Cc: bpf@vger.kernel.org,  John Fastabend <john.fastabend@gmail.com>,  "David
+ S. Miller" <davem@davemloft.net>,  Eric Dumazet <edumazet@google.com>,
+  Jakub Kicinski <kuba@kernel.org>,  Paolo Abeni <pabeni@redhat.com>,
+  Simon Horman <horms@kernel.org>,  Neal Cardwell <ncardwell@google.com>,
+  Kuniyuki Iwashima <kuniyu@google.com>,  David Ahern <dsahern@kernel.org>,
+  Alexei Starovoitov <ast@kernel.org>,  Daniel Borkmann
+ <daniel@iogearbox.net>,  Andrii Nakryiko <andrii@kernel.org>,  Martin
+ KaFai Lau <martin.lau@linux.dev>,  Eduard Zingerman <eddyz87@gmail.com>,
+  Song Liu <song@kernel.org>,  Yonghong Song <yonghong.song@linux.dev>,  KP
+ Singh <kpsingh@kernel.org>,  Stanislav Fomichev <sdf@fomichev.me>,  Hao
+ Luo <haoluo@google.com>,  Jiri Olsa <jolsa@kernel.org>,  Shuah Khan
+ <shuah@kernel.org>,  Stefano Garzarella <sgarzare@redhat.com>,  Michal
+ Luczaj <mhal@rbox.co>,  Cong Wang <cong.wang@bytedance.com>,
+  netdev@vger.kernel.org,  linux-kernel@vger.kernel.org,
+  linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf-next v5 1/3] bpf, sockmap: Fix incorrect copied_seq
+ calculation
+In-Reply-To: <20260106051458.279151-2-jiayuan.chen@linux.dev> (Jiayuan Chen's
+	message of "Tue, 6 Jan 2026 13:14:27 +0800")
+References: <20260106051458.279151-1-jiayuan.chen@linux.dev>
+	<20260106051458.279151-2-jiayuan.chen@linux.dev>
+Date: Wed, 07 Jan 2026 14:01:27 +0100
+Message-ID: <87ms2pinko.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.700.81.1.4\))
-Subject: Re: [PATCH bpf 2/2] bpf: Require ARG_PTR_TO_MEM with memory flag
-From: Zesen Liu <ftyghome@gmail.com>
-In-Reply-To: <20260107-helper_proto-v1-2-21fa523fccfd@gmail.com>
-Date: Wed, 7 Jan 2026 20:58:58 +0800
-Cc: bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org,
- netdev@vger.kernel.org,
- Shuran Liu <electronlsr@gmail.com>,
- Peili Gao <gplhust955@gmail.com>,
- Haoran Ni <haoran.ni.cs@gmail.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <774A6E90-11F3-4EEB-B6DD-210FD4CAB267@gmail.com>
-References: <20260107-helper_proto-v1-0-21fa523fccfd@gmail.com>
- <20260107-helper_proto-v1-2-21fa523fccfd@gmail.com>
-To: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>,
- Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>,
- Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>,
- Matt Bobrowski <mattbobrowski@google.com>,
- Steven Rostedt <rostedt@goodmis.org>,
- Masami Hiramatsu <mhiramat@kernel.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>,
- Simon Horman <horms@kernel.org>,
- Daniel Xu <dxu@dxuuu.xyz>
-X-Mailer: Apple Mail (2.3826.700.81.1.4)
+MIME-Version: 1.0
+Content-Type: text/plain
 
-Hi,
-
-It seems my mail server blocked the cover letter (0/2) of this patchset. =
-Please ignore this thread, I will resend the complete series.
-Sorry for the noise.
-
-Thanks,
-Zesen Liu
-
-> On Jan 7, 2026, at 20:16, Zesen Liu <ftyghome@gmail.com> wrote:
->=20
-> Add check to ensure that ARG_PTR_TO_MEM is used with either MEM_WRITE =
-or
-> MEM_RDONLY.
->=20
-> Using ARG_PTR_TO_MEM alone without tags does not make sense because:
->=20
-> - If the helper does not change the argument, missing MEM_RDONLY =
-causes the
-> verifier to incorrectly reject a read-only buffer.
-> - If the helper does change the argument, missing MEM_WRITE causes the
-> verifier to incorrectly assume the memory is unchanged, leading to =
-errors
-> in code optimization.
->=20
-> Co-developed-by: Shuran Liu <electronlsr@gmail.com>
-> Signed-off-by: Shuran Liu <electronlsr@gmail.com>
-> Co-developed-by: Peili Gao <gplhust955@gmail.com>
-> Signed-off-by: Peili Gao <gplhust955@gmail.com>
-> Co-developed-by: Haoran Ni <haoran.ni.cs@gmail.com>
-> Signed-off-by: Haoran Ni <haoran.ni.cs@gmail.com>
-> Signed-off-by: Zesen Liu <ftyghome@gmail.com>
+On Tue, Jan 06, 2026 at 01:14 PM +08, Jiayuan Chen wrote:
+> A socket using sockmap has its own independent receive queue: ingress_msg.
+> This queue may contain data from its own protocol stack or from other
+> sockets.
+>
+> The issue is that when reading from ingress_msg, we update tp->copied_seq
+> by default. However, if the data is not from its own protocol stack,
+> tcp->rcv_nxt is not increased. Later, if we convert this socket to a
+> native socket, reading from this socket may fail because copied_seq might
+> be significantly larger than rcv_nxt.
+>
+> This fix also addresses the syzkaller-reported bug referenced in the
+> Closes tag.
+>
+> This patch marks the skmsg objects in ingress_msg. When reading, we update
+> copied_seq only if the data is from its own protocol stack.
+>
+>                                                      FD1:read()
+>                                                      --  FD1->copied_seq++
+>                                                          |  [read data]
+>                                                          |
+>                                 [enqueue data]           v
+>                   [sockmap]     -> ingress to self ->  ingress_msg queue
+> FD1 native stack  ------>                                 ^
+> -- FD1->rcv_nxt++               -> redirect to other      | [enqueue data]
+>                                        |                  |
+>                                        |             ingress to FD1
+>                                        v                  ^
+>                                       ...                 |  [sockmap]
+>                                                      FD2 native stack
+>
+> Closes: https://syzkaller.appspot.com/bug?extid=06dbd397158ec0ea4983
+> Fixes: 04919bed948dc ("tcp: Introduce tcp_read_skb()")
+> Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
 > ---
-> kernel/bpf/verifier.c | 17 +++++++++++++++++
-> 1 file changed, 17 insertions(+)
->=20
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index f0ca69f888fa..c7ebddb66385 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -10349,10 +10349,27 @@ static bool check_btf_id_ok(const struct =
-bpf_func_proto *fn)
-> return true;
-> }
->=20
-> +static bool check_mem_arg_rw_flag_ok(const struct bpf_func_proto *fn)
-> +{
-> + int i;
-> +
-> + for (i =3D 0; i < ARRAY_SIZE(fn->arg_type); i++) {
-> + enum bpf_arg_type arg_type =3D fn->arg_type[i];
-> +
-> + if (base_type(arg_type) !=3D ARG_PTR_TO_MEM)
-> + continue;
-> + if (!(arg_type & (MEM_WRITE | MEM_RDONLY)))
-> + return false;
-> + }
-> +
-> + return true;
-> +}
-> +
-> static int check_func_proto(const struct bpf_func_proto *fn, int =
-func_id)
-> {
-> return check_raw_mode_ok(fn) &&
->       check_arg_pair_ok(fn) &&
-> +   check_mem_arg_rw_flag_ok(fn) &&
->       check_btf_id_ok(fn) ? 0 : -EINVAL;
-> }
->=20
->=20
-> --=20
-> 2.43.0
->=20
+>  include/linux/skmsg.h |  2 ++
+>  net/core/skmsg.c      | 25 ++++++++++++++++++++++---
+>  net/ipv4/tcp_bpf.c    |  5 +++--
+>  3 files changed, 27 insertions(+), 5 deletions(-)
+>
+> diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
+> index 49847888c287..0323a2b6cf5e 100644
+> --- a/include/linux/skmsg.h
+> +++ b/include/linux/skmsg.h
+> @@ -141,6 +141,8 @@ int sk_msg_memcopy_from_iter(struct sock *sk, struct iov_iter *from,
+>  			     struct sk_msg *msg, u32 bytes);
+>  int sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
+>  		   int len, int flags);
+> +int __sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
+> +		     int len, int flags, int *from_self_copied);
+>  bool sk_msg_is_readable(struct sock *sk);
+>  
+>  static inline void sk_msg_check_to_free(struct sk_msg *msg, u32 i, u32 bytes)
+> diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+> index 2ac7731e1e0a..d73e03f7713a 100644
+> --- a/net/core/skmsg.c
+> +++ b/net/core/skmsg.c
+> @@ -409,14 +409,14 @@ int sk_msg_memcopy_from_iter(struct sock *sk, struct iov_iter *from,
+>  }
+>  EXPORT_SYMBOL_GPL(sk_msg_memcopy_from_iter);
+>  
+> -/* Receive sk_msg from psock->ingress_msg to @msg. */
+> -int sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
+> -		   int len, int flags)
+> +int __sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
+> +		     int len, int flags, int *from_self_copied)
+>  {
+>  	struct iov_iter *iter = &msg->msg_iter;
+>  	int peek = flags & MSG_PEEK;
+>  	struct sk_msg *msg_rx;
+>  	int i, copied = 0;
+> +	bool to_self;
 
+Nit: Can we unify the naming and make it read more naturally?
+
+s/to_self/from_self/
+s/from_self_copied/copied_from_self/
+
+Otherwise LGTM:
+
+Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
 
