@@ -1,147 +1,209 @@
-Return-Path: <bpf+bounces-78094-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78097-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E2B7CFE225
-	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 15:02:59 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A994CFE4DA
+	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 15:30:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 37417307CE66
-	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 13:53:46 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id CE6FC303DAB2
+	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 14:28:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C97F328B61;
-	Wed,  7 Jan 2026 13:50:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 208FF34C820;
+	Wed,  7 Jan 2026 14:28:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="M6NGY53S"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="LwmwbkUV"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f68.google.com (mail-ej1-f68.google.com [209.85.218.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8133B3168E3
-	for <bpf@vger.kernel.org>; Wed,  7 Jan 2026 13:50:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C108634C154
+	for <bpf@vger.kernel.org>; Wed,  7 Jan 2026 14:28:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767793839; cv=none; b=VpYzfXjnAYXpGevyiGq/QXBKi2IJFTsjAIMfN8TBbaw+ZiG6zqh6FrDiW7hORx5AjG2vtIXmjAZObbcPKm5sSL8/Aam5Z2ZuEpMXoGQsgZg+9A34MaQBlrSUxfn7zPY5YLYpF6Ua/0J1U89b2nw/1h0E+3wHFRf/Adwi5gL0V8M=
+	t=1767796093; cv=none; b=JcTFXFhDb5VL9pU/3qvBdGIFYwgSBeW+PLT1bkGtRw1xdjooZvZs+dlIjiZZcx+78k1+bwRQYhM4patkSPr/+E9HeT66ccpmV8Fo+H/+pC76ieeUXAb2FesJ6HcIOdmKJ0WEe2XVyVRDJ5ylSkAMcH/00GEHcFj1rLsCdl86vtk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767793839; c=relaxed/simple;
-	bh=fK02nfm3x/WpspVjzqsxTFJxRC/x1RuacbvrfeaPNFU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hrBnbqDVHGg6kFtECX/ZwVie7IDAy6mUPiLT5QZgmicpTfnREDk3ojEWC7/NK90FoiqvfWHKUEepEKm3/kMNMKHj9d9jt87DB/zxHOJ8bemcQaovXjZlE7zjoxJyEmB0C4EBVye7gUkmVnfy3y7470o6UkyFLkqdkMIqu0B9YPU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=M6NGY53S; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1767793836;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LwU3Ac+NpGby+4CQIUS5mhzem4J8LDUziJc+mt+weZc=;
-	b=M6NGY53SvZdqcok2/vEkS+o1Be+flSXui11kHO04hlf1rKFRc6wxDjhdNXIQAd5kuF0a1S
-	mQ/s/QFweK2QKgpCPUsQJWYyYaMfb69/HkGoHmlYzAuiViUAye9Z4rGnPfXVejgQ8woSyS
-	54G0FOjQMtGgPZ2j7wA3OXpzKv/4/GY=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-663-EqiT7SACOKCdNoF4yWp4eQ-1; Wed, 07 Jan 2026 08:50:35 -0500
-X-MC-Unique: EqiT7SACOKCdNoF4yWp4eQ-1
-X-Mimecast-MFC-AGG-ID: EqiT7SACOKCdNoF4yWp4eQ_1767793834
-Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-38301621868so3293031fa.0
-        for <bpf@vger.kernel.org>; Wed, 07 Jan 2026 05:50:35 -0800 (PST)
+	s=arc-20240116; t=1767796093; c=relaxed/simple;
+	bh=Eu6ilaH8UuDw7IwCHWdvumqfGOwaK2NCp0A8fqgTDQ8=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=hcgnqmsLx8AqgPuGpHaXAMCYWW3UHaPGtg8aUw7uBCJzgdCCA3RuXFcfQU9408BIuv/fQLYZqjSMe93aID8WP5c7R/NAhlzVJ/OTynAOeH0GPfljDOgEAeWux1DjB0rJGR82uFkgrZipfuIXuqeGl8h2bPE5AlF5wrsYDRJMvGw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=LwmwbkUV; arc=none smtp.client-ip=209.85.218.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ej1-f68.google.com with SMTP id a640c23a62f3a-b83122f9d78so345795366b.0
+        for <bpf@vger.kernel.org>; Wed, 07 Jan 2026 06:28:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1767796090; x=1768400890; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dXZ/1IRyrkfvpzIX9P5wE04Wi2LMwB98c3ecDlM6NcQ=;
+        b=LwmwbkUV8BY/zPjtQZxuyUPZK5xGiLqgdSa6g8wSkpQAQbHSIVVFjzs80AyBNpUMvM
+         shG9X+3IhRmk9c1HPC3gAz78mdSuIVwiYXDEdGNtPNBC9Km657BKsJkmC+uJFt65yc1L
+         mfcbsykfhNY/Fpc0MeVPmnvOSbIMgifT6ognkDDbPowA+9h7bPMx25TpRVIOPWZsfmb4
+         R1LEFayVkGFV7/gE24Bs1ltbkS2+cm5Tf7kFVDrn+8fYNnbVnR9BMAUGLM8q3nUxivrS
+         Ad1kXDETzV55irfmEY6M9ufGXyLiTOYAm4/58vHsTo70UA/ZGFa6Xu9AUbsCAvyUmIA5
+         Ktew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767793834; x=1768398634;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=LwU3Ac+NpGby+4CQIUS5mhzem4J8LDUziJc+mt+weZc=;
-        b=oj2oQWCG0UutHLuEnKRNXUix0+15IrXs2LO43lJbqVgllG05BIyv4gfxccbOCJBtLX
-         BC36INvWhLcQdeDmZO+uOibrajlpWB1F1W0mVfedhn2lx2pz9SZ7yLhzIMA7bBr6T7ay
-         eKa5ps9iw0cYTxttmm0aN/0y43e4IfK3RotH1H+DeSfQzxAbFz+bA4j/Ebd92GFyZJdT
-         MQYLg4+PRtXg45qeOxJcJlp5/D8xX/1CTxdvCsaRlWDqLjNj/4+N9egEzygQZriOnegI
-         //QUrOhblx9Y7kan6vHUFnYYGOSFdiGVtgRc2bJhtg6pzKGdtZisbhp0RFjzdhobTsKw
-         gEyw==
-X-Forwarded-Encrypted: i=1; AJvYcCXyD8k7kJlJWT+FiYgd1lRnuhVqG4GFFRbnsL2vMnrT7bph1V/HF0wphi8cHoyR+L6LCSs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxBX5W1ID0pSEgNz97F5TGJHauHqupl2t0b4lyFYeIsFR2GLxEQ
-	PkhYkEL4vLzNSq0D0RK5ahTX9JLonhgd6J4/u2XHCFTETRFMB2/VBpTizZSMbHZJGlhn8ESixLq
-	u0Lzxfv+VexMj6h71icfvd5d014ihNXBvHZeScg0rfeEuJlwtICYD0x+ZmgD8p+GbhMjjJp+6WF
-	zovQrxU435hi2CQzbC7nDLjvF3t07y
-X-Gm-Gg: AY/fxX4N9P4Zvhwb1BTIt9Fr7Z/I55kD7GN30CEU6rizIM0aQ+9mrBLmvdawYAaQand
-	rDwnbdvFSG1zqpzTX49EP/upI3rdG0TK6kVFR92qZ6w6IeUYXakhq7UM3X9f0YO1n9m/8dVBOhI
-	gOia+htaVhlK++6bAIL2/hXC8oHgX39Ut3Gbxqrb7hH9ciIBij5eBhjY6S6IgaHfXt+MHjKEkQM
-	7bD0A80WKcx4WeABdgA5fOoMn+XBrSek2r2uOrKx/0sX01prWoqXPypqw/ON5iIiUyNKQ==
-X-Received: by 2002:a05:651c:2212:b0:37a:584c:23fb with SMTP id 38308e7fff4ca-382ff6dd8eemr7013461fa.20.1767793833662;
-        Wed, 07 Jan 2026 05:50:33 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHm0tMT9u9iiOgRGj9K4E0/pPEVxnBe2X5bK9p2XFMNMGYd0BXK04nFgMfu+eVzo44KLvloczFrjtUOGz4zwfc=
-X-Received: by 2002:a05:651c:2212:b0:37a:584c:23fb with SMTP id
- 38308e7fff4ca-382ff6dd8eemr7013361fa.20.1767793833177; Wed, 07 Jan 2026
- 05:50:33 -0800 (PST)
+        d=1e100.net; s=20230601; t=1767796090; x=1768400890;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dXZ/1IRyrkfvpzIX9P5wE04Wi2LMwB98c3ecDlM6NcQ=;
+        b=pilDYOR4uAZFjn1xgF2ReVCWRA2Sz8uDXDEngcfMWmssUrqXQacDKyebaNONTXjgNk
+         M6P072k1bcjzVIuPMNttUlb/KP6l8iAaxrTwioFUWwvddCwF3G7hkEwlOTAT3nM+Vg79
+         CgLp427/0M5v4ivOgwTSICaqa6Xzux8Y64FPIq1oZHa2+qaoZStdNmma3JVi4Qb3Rmxa
+         i04ZQzUktskzFpU15cII5Cjjf4us0l3/9j7A8t7Zc8RfhXk2Ois5hC48+96XjqtW+G/O
+         Sgb5cquE26ILAtDWc43hI/vGUxuvn/gUvDjvf+ARqmHDgDgy5LjivGNZpQNUdbUwcWd/
+         ipcQ==
+X-Gm-Message-State: AOJu0Ywhps3Ew/lvr4qIy2xEvt7lulgLenWxveqA9iryoi4H5j1+OKuy
+	ZSaR7BjweGV6rWVIB8hifYWWGy62I/gM0YKw8elVFZ7H0QksAGW+Lv890kgwiCaINZM=
+X-Gm-Gg: AY/fxX7imZxtpeE19vLoLtsx/M7f0UrCjY+fInabm7uPTiCC2BRdro7pCskWtOtZsSb
+	NJD3LHPIoBMCqUIA5ciiGK+k6IwhQWWpt1BcbbFYITpiQFxDvOZXCEC5cWnUA//woy/D621Fzkg
+	mTfoUlrG6R8zkNMsh12AfDj9wrOMzy51kqW0FQAErzcuZp6ZQT4OQUfnI2OKiVs1qckieDYglms
+	d67L8Nyg0rjAVtAQMfT+yZaAm+sYpyQqgP9obqg3v+s3p7v67gZOqtkY7cFA+lwiCtWhtA2XRnF
+	wGYpvRDvx4FaUNEQpfjpDkbDTSwGjhyOaXmcalolOd9ekfDZHKRHvau0ISml/sgn2yz2v+cKqUO
+	s6dfTNKSdaBlm8ok5DWJXlCk5bRvRLjel09RNGk/NuAQa7UlbQNWJLsjpdYpKnoaMVAGX3+nQ7X
+	JNuP5YqQ7wp8pUTtKBGbKQcgKA9TYSaBNYvTEWArBKBam1EXynUtEEYdszqLY=
+X-Google-Smtp-Source: AGHT+IGoIuvDrbD78kTl/itHNAZl4UA1IKW8Enb2OFYQWSEoOEC/UFEEv9VXia2+Uk2rY/X+EVzxPQ==
+X-Received: by 2002:a17:907:1b1d:b0:b79:f984:1557 with SMTP id a640c23a62f3a-b8445378cb2mr279344166b.46.1767796089952;
+        Wed, 07 Jan 2026 06:28:09 -0800 (PST)
+Received: from cloudflare.com (79.184.207.118.ipv4.supernova.orange.pl. [79.184.207.118])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b842a56962esm534525266b.66.2026.01.07.06.28.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jan 2026 06:28:09 -0800 (PST)
+From: Jakub Sitnicki <jakub@cloudflare.com>
+Subject: [PATCH bpf-next v3 00/17] Decouple skb metadata tracking from MAC
+ header offset
+Date: Wed, 07 Jan 2026 15:28:00 +0100
+Message-Id: <20260107-skb-meta-safeproof-netdevs-rx-only-v3-0-0d461c5e4764@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260106133655.249887-1-wander@redhat.com> <20260106133655.249887-8-wander@redhat.com>
- <CAP4=nvT2oPtM73nfPkSJZ4612mcAPw1LWbHNrszFBVAmSJOVbw@mail.gmail.com>
- <CAAq0SUmrRecimVNCa=zv-h3uPm-GpQo3g+ZTV4zLNVA4ZVo-EQ@mail.gmail.com> <CAP4=nvTeFtHF+K0h0FkWMh6uLb5Qwy6LnYPcrbrbNOM6M6kFNA@mail.gmail.com>
-In-Reply-To: <CAP4=nvTeFtHF+K0h0FkWMh6uLb5Qwy6LnYPcrbrbNOM6M6kFNA@mail.gmail.com>
-From: Wander Lairson Costa <wander@redhat.com>
-Date: Wed, 7 Jan 2026 10:50:21 -0300
-X-Gm-Features: AQt7F2rnfMsmprZP2rAt--ee_rglZ18N55qI7Xvqb6bhHKWfVtx_oS-Vwti0GG8
-Message-ID: <CAAq0SU=QWnfQnfKM=YOcBVBh6wuqaFub4kDf5taSv7PCMaOfnA@mail.gmail.com>
-Subject: Re: [PATCH v2 07/18] rtla: Introduce common_restart() helper
-To: Tomas Glozar <tglozar@redhat.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Crystal Wood <crwood@redhat.com>, 
-	Ivan Pravdin <ipravdin.official@gmail.com>, Costa Shulyupin <costa.shul@redhat.com>, 
-	John Kacur <jkacur@redhat.com>, Tiezhu Yang <yangtiezhu@loongson.cn>, 
-	"open list:Real-time Linux Analysis (RTLA) tools" <linux-trace-kernel@vger.kernel.org>, 
-	"open list:Real-time Linux Analysis (RTLA) tools" <linux-kernel@vger.kernel.org>, 
-	"open list:BPF [MISC]:Keyword:(?:b|_)bpf(?:b|_)" <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAHBtXmkC/42PwU7EIBRFf6VhLQZombaz8j+Mi0d5WGJbOsCQT
+ ib9d5EZY4zGuLy5eee8eyUBvcVAjtWVeEw2WLfkUD9UZBhheUVqdc5EMCE5FzUNb4rOGIEGMLh
+ 65wxdMGpMgfqNumW60NoILZjmEjWQDFo9GrsVyTNR68fBFsnLrfF4OmdrvNczhgDFeqxuTia/n
+ NmwQhxpaiijckDFOuhV3aqnYXJnbSbw+Di4ucBHG6LzlzIt8UK/r2j+syLx7Oj6tjOSyabh7W+
+ OJD65B/bt0z+4InNBcDy0vZJg4Ad33/d3YU8H2ZgBAAA=
+X-Change-ID: 20251123-skb-meta-safeproof-netdevs-rx-only-3f2d20d15eda
+To: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ Jesper Dangaard Brouer <hawk@kernel.org>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Stanislav Fomichev <sdf@fomichev.me>, Simon Horman <horms@kernel.org>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+ kernel-team@cloudflare.com
+X-Mailer: b4 0.15-dev-07fe9
 
-On Wed, Jan 7, 2026 at 10:47=E2=80=AFAM Tomas Glozar <tglozar@redhat.com> w=
-rote:
->
-> st 7. 1. 2026 v 13:43 odes=C3=ADlatel Wander Lairson Costa
-> <wander@redhat.com> napsal:
-> > >
-> > > The deduplication idea is good, but I find the name of the helper
-> > > quite confusing. The main function of the helper is not to restart
-> > > tracing, it is to handle a latency threshold overflow - restarting
-> > > tracing is only one of possible effects, and one that is only applied
-> > > when using --on-threshold continue which is not the most common use
-> > > case. Could something like common_handle_stop_tracing() perhaps be
-> > > better?
-> > >
-> >
-> > Sure, I will change the name in v3.
-> >
->
-> Thanks.
->
-> > > > +enum restart_result {
-> > > > +       RESTART_OK,
-> > > > +       RESTART_STOP,
-> > > > +       RESTART_ERROR =3D -1,
-> > > > +};
-> > >
-> > > Do we really need a separate return value enum just for this one help=
-er?
-> > >
-> >
-> > If it was success/failure type of return value, we wouldn't need.
-> > However, a three state code, I think it is worth for code readiness.
-> > Do you have something else in mind?
-> >
->
-> The main loop can simply use the continue flag, just like in the old
-> version, no need to duplicate that information into the return value
-> of common_restart().
->
+This series continues the effort to provide reliable access to xdp/skb
+metadata from BPF context on the receive path. We have recently talked
+about it at Plumbers [1].
 
-Ok, I will change it in v3.
+Currently skb metadata location is tied to the MAC header offset:
 
-> Tomas
->
+  [headroom][metadata][MAC hdr][L3 pkt]
+                      ^
+                      skb_metadata_end = head + mac_header
+
+This design breaks on L2 decapsulation (VLAN, GRE, etc.) when the MAC
+offset is reset. The naive fix is to memmove metadata on every decap path,
+but we can avoid this cost by tracking metadata position independently.
+
+Introduce a dedicated meta_end field in skb_shared_info that records where
+metadata ends relative to skb->head:
+
+  [headroom][metadata][gap][MAC hdr][L3 pkt]
+                     ^
+                     skb_metadata_end = head + meta_end
+                     
+This allows BPF dynptr access (bpf_dynptr_from_skb_meta()) to work without
+memmove. For skb->data_meta pointer access, which expects metadata
+immediately before skb->data, make the verifier inject realignment code in
+TC BPF prologue.
+
+Patches 1-9 enforce the calling convention: skb_metadata_set() must be
+called after skb->data points past the metadata area, ensuring meta_end
+captures the correct position. Patch 10 implements the core change.
+Patches 11-14 extend the verifier to track data_meta usage, and patch 15
+adds the realignment logic. Patch 16 adds selftests covering L2 decap
+scenarios.
+
+Note: This series does not address moving metadata on L2 encapsulation when
+forwarding packets. VLAN and QinQ have already been patched when fixing TC
+BPF helpers [2], but other tagging/tunnel code still requires changes.
+
+Note to maintainers: This is not a typical series, in the sense that it
+touches both the networking drivers and the BPF verifier. The driver
+changes (patches 1-9) can be split out, if it makes patch wrangling easier.
+
+Thanks,
+-jkbs
+
+[1] https://lpc.events/event/19/contributions/2269/
+[2] https://lore.kernel.org/all/20251105-skb-meta-rx-path-v4-0-5ceb08a9b37b@cloudflare.com/
+
+Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+---
+Changes in v3:
+- Use BPF_EMIT_CALL in gen_prologue (patch 15, 16) (Alexei)
+  (Will convert bpf_qdisc/testmod as a follow up.)
+- Link to v2: https://lore.kernel.org/r/20260105-skb-meta-safeproof-netdevs-rx-only-v2-0-a21e679b5afa@cloudflare.com
+
+Changes in v2:
+- Add veth driver fix (patch 7)
+- Add selftests for L2 decap paths (patch 16)
+- Link to RFC: https://lore.kernel.org/r/20251124-skb-meta-safeproof-netdevs-rx-only-v1-0-8978f5054417@cloudflare.com
+
+---
+Jakub Sitnicki (17):
+      bnxt_en: Call skb_metadata_set when skb->data points at metadata end
+      i40e: Call skb_metadata_set when skb->data points at metadata end
+      igb: Call skb_metadata_set when skb->data points at metadata end
+      igc: Call skb_metadata_set when skb->data points at metadata end
+      ixgbe: Call skb_metadata_set when skb->data points at metadata end
+      net/mlx5e: Call skb_metadata_set when skb->data points at metadata end
+      veth: Call skb_metadata_set when skb->data points at metadata end
+      xsk: Call skb_metadata_set when skb->data points at metadata end
+      xdp: Call skb_metadata_set when skb->data points at metadata end
+      net: Track skb metadata end separately from MAC offset
+      bpf, verifier: Remove side effects from may_access_direct_pkt_data
+      bpf, verifier: Turn seen_direct_write flag into a bitmap
+      bpf, verifier: Propagate packet access flags to gen_prologue
+      bpf, verifier: Track when data_meta pointer is loaded
+      bpf, verifier: Support direct kernel calls in gen_prologue
+      bpf: Realign skb metadata for TC progs using data_meta
+      selftests/bpf: Test skb metadata access after L2 decapsulation
+
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c          |   2 +-
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c         |   2 +-
+ drivers/net/ethernet/intel/igb/igb_xsk.c           |   2 +-
+ drivers/net/ethernet/intel/igc/igc_main.c          |   4 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c       |   2 +-
+ .../net/ethernet/mellanox/mlx5/core/en/xsk/rx.c    |   2 +-
+ drivers/net/veth.c                                 |   4 +-
+ include/linux/bpf.h                                |   2 +-
+ include/linux/bpf_verifier.h                       |   8 +-
+ include/linux/skbuff.h                             |  37 ++-
+ kernel/bpf/cgroup.c                                |   2 +-
+ kernel/bpf/verifier.c                              |  54 ++--
+ net/core/dev.c                                     |   5 +-
+ net/core/filter.c                                  |  62 ++++-
+ net/core/skbuff.c                                  |  10 +-
+ net/core/xdp.c                                     |   2 +-
+ net/sched/bpf_qdisc.c                              |   3 +-
+ tools/testing/selftests/bpf/config                 |   6 +-
+ .../bpf/prog_tests/xdp_context_test_run.c          | 292 +++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/test_xdp_meta.c  |  48 ++--
+ .../testing/selftests/bpf/test_kmods/bpf_testmod.c |   6 +-
+ 21 files changed, 466 insertions(+), 89 deletions(-)
 
 
