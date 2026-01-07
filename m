@@ -1,133 +1,105 @@
-Return-Path: <bpf+bounces-78152-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78153-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9737CFFBC2
-	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 20:26:05 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BAD7CFFABF
+	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 20:15:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 085B230A8EA6
-	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 18:32:29 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 303ED3452824
+	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 18:43:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AEE733DEE6;
-	Wed,  7 Jan 2026 18:31:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 367DD331A44;
+	Wed,  7 Jan 2026 18:31:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DB7YYQgL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SO++xmxz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f65.google.com (mail-wr1-f65.google.com [209.85.221.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AF8130AD15
-	for <bpf@vger.kernel.org>; Wed,  7 Jan 2026 18:30:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDB7C22A4FE;
+	Wed,  7 Jan 2026 18:31:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767810671; cv=none; b=PKfGIa9BPKIf25Oa640aUV29xmPxj75kYzMx7QhLduladjNv8D1w226BfjexEhP+okqKl5k7DjJ5Zhg2vaoXQ8fJDj7fFCMf3bgM6ncTE8SJSiBQ/pxva4QDYWZ+iodj3e4MvymKZ3QZ+U7TM648QFsNsZq8Llk7FBaOg+iJaXU=
+	t=1767810701; cv=none; b=FayYlo63fqAtMWfU/ucM0XJVnBKa6ekeaDiYd4xuawkDhwWgiIBy6nLTAZ3va+TwXxdHZ06f0rwfbiV0UNTmawvKvB+BHKfOJvzZjN4i0ZygsoSHgGTNmBdtw6Xk1df5nJukPPWwT8d7fTx9X2akcJbpOe+cm01rGKJPJjti4F8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767810671; c=relaxed/simple;
-	bh=L1UE6UZGVBGpjUXO8FTNKoTJdBuYU5aYHJ6eSBWdquo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LsB7FcOpqHAloQT+HqKpq2ofcEz4pyNc5m8K5IMyOl6CDUrNtAPUJj89zN4o5W+pD8sz8DsKVaVeC3JIdsSFLqZQLHw1VeVM9YWbyBqWl1+apiDQNioOFnt3haQxanPgxlyojrwwA9l0ypHbVhRbzxOHVDPOzWnTHXx7RkId4j0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DB7YYQgL; arc=none smtp.client-ip=209.85.221.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f65.google.com with SMTP id ffacd0b85a97d-43246af170aso665582f8f.0
-        for <bpf@vger.kernel.org>; Wed, 07 Jan 2026 10:30:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767810657; x=1768415457; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=bx2taddgtABc2OMI6OXSOW8L/uzHIuesESNW5Hivnss=;
-        b=DB7YYQgLDI/4ktw1dAYFByaOv2awzHeuEjbzOyj6b+0Sh+Fp2Mvx0JiXk99xN2vVt/
-         ZoKKmXOK2ZXW5JrPcxHU5J97THmC4YDMuxQLoCPOD1SYDSAjBkdOWv6CbhUPmP3llBA+
-         DhD6EQ5qm9+drK+Tkir5bW8TWtuW5i2WWC+eAq/OOwNYA8Mz1LkjNfCwPnlYfu1oe9dB
-         pRvvpIz6+jSr/YetwKIsLYVf2O6cH8cg5SSDRSmf7yjS34HRVLbc0PjfNbhvMFhiGbKu
-         fTO4T/an20VGKBFojYhXu67bT1jJ0ZGB2RBa8aD9xM4wjGg/fKnTfbWqMObAuI1afUT0
-         aNQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767810657; x=1768415457;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bx2taddgtABc2OMI6OXSOW8L/uzHIuesESNW5Hivnss=;
-        b=QE8xe4+SdEqPeGAiF/GbuoixIygcWBy2FG6yppwgFQQzTjhxTqmkwk89GaWrz761/U
-         0j6hsMvo+h21jt/uRYRmLeVByoKhO68muqy1fL2h92ajXU2EVi31KWI4kkLpYBoaR2xZ
-         OmpfdjY/6osfyInGWGzb/dmQMCUCK+IDoAm9DkoUHWrm41IIjxjOJiwx+UqBpRDxygBf
-         YTCq9S/jzdHmSfnEwHU6QHl38W6d1XJHwDe6NRM24nFyBvDJIvneU8VQzW/BvTYOgvfP
-         /k5egZY3S0VgKzd9HahwCIfI9hlBidq7C7ZyurnMadaUZ4CX4GjXSS9nW/MEceHWMaCS
-         Vefw==
-X-Gm-Message-State: AOJu0Yy8h071Qsm4Cc5kvwHyG8TYp6WVuZk0YdvV0FFPvJoPZ7T+gl0G
-	TFI/Xl4mzGCxANuyPcMAI4XQd1yVvzymoaC2szyrpRYwUUJs9zIVxM+al83sAQyaPjCfSLEXu0C
-	0Ps7hIY9sHpQ7UEv0wWr109H3ythXNbo=
-X-Gm-Gg: AY/fxX4DF1wMoxz0blN8mfTBsSxypMI1f8EkKy80ahHUITHY/XgyQNIOlMHG5PAIDwf
-	98yhVIIajiCcteZOdkIRTksFyrBxyjOzH1ax92OjSopos6CTmv8DNAxPWJRVxj5DKdHHQqO/W5h
-	7Dd0xRdE1+JTSltaCSVJxV3I5h8tcIk/004hvjg090ht07vCaQjP+B5DejFz8RKOjlIR+t5aTt4
-	dwzAQTdgx0Vs/xqrjOJeCFsjFB2O4KwRziLqyOQ1YsX3FVIbsyE8xJwP9D9aefzam0PhrDNoTtG
-	wkDOP68DR3HfMvGmn9wv4k9trAqjSg==
-X-Google-Smtp-Source: AGHT+IGYNguBgltfyQNIxy5vX+0ih/uFM+OYVueRe/Him0Roz6kWWUUu4dQGg4Qvyh6cR2NN9qLuVJm7IwDQvcELAbU=
-X-Received: by 2002:a5d:5d11:0:b0:429:d3c9:b8af with SMTP id
- ffacd0b85a97d-432c3764450mr4468788f8f.25.1767810656483; Wed, 07 Jan 2026
- 10:30:56 -0800 (PST)
+	s=arc-20240116; t=1767810701; c=relaxed/simple;
+	bh=tiWz7ZyYMf9ScXUa+wyIt+0EmMop/T91xq6X1lu4fp0=;
+	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
+	 Subject:From:To:Cc:Date; b=K7mkT4TKPZmTTObIdQOCSqnn4USnhKU3BI26tilurOk6Ez7T2dXNUprHprp4bTmKoTXNaWbQ3jOKg9VoPKpG3VBp7mypNTZvAXmcC394T4/HgBng3KvhLquCvu6/LfKRFfJRI1w7Y2nz5wo/hFmy9HqESJdbdZ+9q03BLsjN8ak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SO++xmxz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 320ABC4CEF7;
+	Wed,  7 Jan 2026 18:31:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1767810698;
+	bh=tiWz7ZyYMf9ScXUa+wyIt+0EmMop/T91xq6X1lu4fp0=;
+	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
+	b=SO++xmxzPDQhvT0ukuzFTp50glP8aCmy3aPwcO4/kTEtFhrloNlmyM5miDINAYfSv
+	 DAhCWxxOO85tpM1in4P24usWMMv/l89qpWPVbDkgRfvcubP5nxyDxS3yTwUGjCj1PN
+	 8CXCSIkNa4fGTPFqJNSw5mmRvTNzrXloQ2bJJuHRkym0dOVbZ82fd4QJ7p0Regnv+J
+	 UdNQxejJVBwNJaeccRpPsoYxwAigKX6Ze1YWt2QhkWXJb/gd1OzwRSSx5V69YFH48O
+	 9NuX4C7ndr1SWfiL82UuwfKUc2n8e/EZgDS6b7hx9BuJ3Y0ooLx4Qi5vZctar7GC4j
+	 +YosWtw4YHuDw==
+Content-Type: multipart/mixed; boundary="===============7187549189809104809=="
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260107-timer_nolock-v3-0-740d3ec3e5f9@meta.com> <20260107-timer_nolock-v3-4-740d3ec3e5f9@meta.com>
-In-Reply-To: <20260107-timer_nolock-v3-4-740d3ec3e5f9@meta.com>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Wed, 7 Jan 2026 19:30:19 +0100
-X-Gm-Features: AQt7F2p2cU5phKP92KVSajP9NIwfXLm6yH7_ZZJ5nrHdnMzcM5XQo-ul1gSKBAA
-Message-ID: <CAP01T77h5caT6EprhREYMNmjTkbBZ9-OT7HkxdnJUNNME2evQQ@mail.gmail.com>
-Subject: Re: [PATCH RFC v3 04/10] bpf: Add lock-free cell for NMI-safe async operations
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, eddyz87@gmail.com, 
-	Mykyta Yatsenko <yatsenko@meta.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <f0c89037c4870388696751365cec002fe3ded78c7ef260bd99e1934ceb245acd@mail.kernel.org>
+In-Reply-To: <20260107181237.1075490-1-contact@arnaud-lcm.com>
+References: <20260107181237.1075490-1-contact@arnaud-lcm.com>
+Subject: Re: [PATCH v2] bpf-next: Prevent out of bound buffer write in __bpf_get_stack
+From: bot+bpf-ci@kernel.org
+To: contact@arnaud-lcm.com,syzbot+d1b7fa1092def3628bd7@syzkaller.appspotmail.com
+Cc: andrii@kernel.org,ast@kernel.org,bpf@vger.kernel.org,contact@arnaud-lcm.com,daniel@iogearbox.net,eddyz87@gmail.com,haoluo@google.com,john.fastabend@gmail.com,jolsa@kernel.org,kpsingh@kernel.org,linux-kernel@vger.kernel.org,martin.lau@linux.dev,netdev@vger.kernel.org,sdf@fomichev.me,song@kernel.org,syzkaller-bugs@googlegroups.com,yonghong.song@linux.dev,listout@listout.xyz,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
+Date: Wed,  7 Jan 2026 18:31:38 +0000 (UTC)
 
-On Wed, 7 Jan 2026 at 18:49, Mykyta Yatsenko <mykyta.yatsenko5@gmail.com> wrote:
->
-> From: Mykyta Yatsenko <yatsenko@meta.com>
->
-> Introduce mpmc_cell, a lock-free cell primitive designed to support
-> concurrent writes to struct in NMI context (only one writer advances),
-> allowing readers to consume consistent snapshot.
->
-> Implementation details:
->  Double buffering allows writers run concurrently with readers (read
->  from one cell, write to another)
->
->  The implementation uses a sequence-number-based protocol to enable
->  exclusive writes.
->   * Bit 0 of seq indicates an active writer
->   * Bits 1+ form a generation counter
->   * (seq & 2) >> 1 selects the read cell, write cell is opposite
->   * Writers atomically set bit 0, write to the inactive cell, then
->     increment seq to publish
->   * Readers snapshot seq, read from the active cell, then validate
->     that seq hasn't changed
->
-> mpmc_cell expects users to pre-allocate double buffers.
->
-> Key properties:
->  * Writers never block (fail if lost the race to another writer)
->  * Readers never block writers (double buffering), but may require
->  retries if write updates the snapshot concurrently.
->
-> This will be used by BPF timer and workqueue helpers to defer NMI-unsafe
-> operations (like hrtimer_start()) to irq_work effectively allowing BPF
-> programs to initiate timers and workqueues from NMI context.
->
-> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
-> ---
+--===============7187549189809104809==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 
-We already have a dual-versioned concurrency control primitive in the
-kernel (seqcount_latch_t). I would just use that instead of
-reinventing it here. I don't see much of a difference except writer
-serialization, which can be done on top of it. If it was already
-considered and discarded for some reason, please add that reason to
-the commit message.
-
->  [...]
+> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+> index da3d328f5c15..c0a430f9eafb 100644
+> --- a/kernel/bpf/stackmap.c
+> +++ b/kernel/bpf/stackmap.c
+> @@ -465,7 +465,6 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
 >
+>  	if (trace_in) {
+>  		trace = trace_in;
+> -		trace->nr = min_t(u32, trace->nr, max_depth);
+>  	} else if (kernel && task) {
+>  		trace = get_callchain_entry_for_task(task, max_depth);
+>  	} else {
+> @@ -473,13 +472,15 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
+>  					   crosstask, false, 0);
+>  	}
+>
+> +	trace_nr = min(trace->nr, max_depth);
+                       ^^^^^^^^
+
+Can this dereference trace when it is NULL? Both get_callchain_entry_for_task()
+and get_perf_callchain() can return NULL, and several callers pass trace_in as
+NULL (bpf_get_stack, bpf_get_stack_sleepable, __bpf_get_task_stack, and one
+path in bpf_get_stack_pe).
+
+The NULL check below comes after this dereference:
+
+> +
+> +	if (unlikely(!trace) || trace_nr < skip) {
+                    ^^^^^^
+
+This check is now ineffective because trace->nr was already dereferenced above.
+
+[ ... ]
+
+
+---
+AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
+
+CI run summary: https://github.com/kernel-patches/bpf/actions/runs/20791981532
+
+--===============7187549189809104809==--
 
