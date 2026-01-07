@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-78041-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78042-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E39D1CFC093
-	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 06:03:44 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6595BCFC09C
+	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 06:04:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 604E1303C224
-	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 05:03:43 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1A3BA3037CFB
+	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 05:03:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8079523C503;
-	Wed,  7 Jan 2026 05:03:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 801BF261B71;
+	Wed,  7 Jan 2026 05:03:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KTiwa7a7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hYQ+q5NP"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1E16156CA;
-	Wed,  7 Jan 2026 05:03:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F201B257828;
+	Wed,  7 Jan 2026 05:03:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767762220; cv=none; b=G177WWEijCs0o7Q/3tt+mWu+hYzSqzlios7sOmXrfsJ/pOcmVMBeNjAPoh4Zt/pxRFOLDRAbTnotHc8sNVfQja1Z3GtW5DDifvomrhLvemwRMUq+Un7Ub+AE2hsIpmXnuqnThgITXrjfMdHobpyin7yByi+0zxpLxfHPmhARdaA=
+	t=1767762221; cv=none; b=LM9mPc4ey3g9XA160GQr/FV1QK8eAYsTlmJRxW+rrurAUKeXgZ9cRSCy5I8B+WgHqspXCfdSw9MavxM6voB+8YMO+pCrl+dzfVZheDNYFVhIPT14zBnaA9a8YKc5pRFLXwdqSTye5BdyySec95v1gYvV3vldNWo+icDcDhKIOL8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767762220; c=relaxed/simple;
-	bh=EpkIaYKG/O/Y7prZYnfs97/0GqH0oV7SxYp1rt3diXs=;
+	s=arc-20240116; t=1767762221; c=relaxed/simple;
+	bh=Mw/HM2NiutzZ5I+gGaNyr68w91B8BKl1ebFDVbo1zqM=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=JbSy24FhmrQD+xKnwcSHTeWwSwC5rzqNtUL7mrXD6vaM2WphmklEoNu/ZI2dafFRQDoy8gJTJTsFNscCQyemqNIiLiCwuMV4pT4tb/POMGIREPLMuDCvw9fn5CQO4BBtptuJNX2WRuYZNKBiChPYwNf+zUn/D9Ba7o5cNpDTX6g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KTiwa7a7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 603CFC4CEF7;
-	Wed,  7 Jan 2026 05:03:39 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=gMfbIzK8v/y9FSjbrnefMcy3Hioy9t/exEPEQRRIEtwtdGJD++gnVmiqO0uY9OOGPlG/A64LKpwpbfTPwwGqt3+Xm2hUp8t8sptbrIXh99wLYP+tR+QU+fWjU/7S/4uOqsbDq6sXSmxy2v6+g4SmR5hapGyPLrRDl8i7pVm15qU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hYQ+q5NP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9255AC4CEF7;
+	Wed,  7 Jan 2026 05:03:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767762219;
-	bh=EpkIaYKG/O/Y7prZYnfs97/0GqH0oV7SxYp1rt3diXs=;
+	s=k20201202; t=1767762220;
+	bh=Mw/HM2NiutzZ5I+gGaNyr68w91B8BKl1ebFDVbo1zqM=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=KTiwa7a7wkpox6DUVk6GMH0EbZ2O5MvLO1dogiXwTiiohryuwjQNxSIgahlNCKFHB
-	 b4DuTfSQYLIIDsw5k2LQSNJ3fTBr7t2bohWY5oGC1jiGcqZv3+jOGMnSKND3681uRL
-	 EWUDRbOn721DL3zx+tcTQuTtMij+wMCijSLbSdBA8qu8ttGLr49anqDGP/JmzKZj97
-	 syRUitg92aed38PzTfnnYnhfpp5T9AjUpsuyfhNcUG/6T7GXmvyDsYWQINBdW2LBYr
-	 1rBoo8E94iId0SaGaHS6bofe8R4o/0xeAkOfU8rPqHE/5rJtstoqj6rdn0dp4GxKd6
-	 CVEwkklsdm8yg==
+	b=hYQ+q5NPFUQq7vpIFuRN1f2LQvYzk7Lq5lkx1nmjevI0iBR9nCnwstskORA7f3c0v
+	 q5UksxwM+NVKlYY6mo2lJGiEqShNMsj/YTJkkaH4g5+pYnvmOdO5pHgRYZ51YZ5oeQ
+	 qmgiNZJF5zP95UADD1U58kyMzehfReRaoc047Wa3KRe5gzeWULuu/5vxiJ91vJAd+t
+	 C8BLJCVLbN7b46RKqGnPtxNRx62aLaMQ06LBGZxDAPtjahy/o5+dm+pehO47vU+dUR
+	 dXtwW5oDQphe+wssKCvO8scSEMNOm4d8V924u1BKoAYeHps8kZwZccqJrxK8zNXLEI
+	 f40qBMkPUpgFQ==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id F29A4380CEFA;
-	Wed,  7 Jan 2026 05:00:17 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 3BA47380CEFA;
+	Wed,  7 Jan 2026 05:00:19 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -50,60 +50,38 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v13 0/7] bpf: Introduce BPF_F_CPU and
- BPF_F_ALL_CPUS
- flags for percpu maps
+Subject: Re: [PATCH bpf-next v2] scripts/gen-btf.sh: Ensure initial object in
+ gen_btf_o is ELF with correct endianness
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <176776201679.2234404.5069514097125787379.git-patchwork-notify@kernel.org>
-Date: Wed, 07 Jan 2026 05:00:16 +0000
-References: <20260107022022.12843-1-leon.hwang@linux.dev>
-In-Reply-To: <20260107022022.12843-1-leon.hwang@linux.dev>
-To: Leon Hwang <leon.hwang@linux.dev>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, jolsa@kernel.org, yonghong.song@linux.dev,
- song@kernel.org, eddyz87@gmail.com, martin.lau@linux.dev,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, shuah@kernel.org, kerneljasonxing@gmail.com,
- willemb@google.com, yatsenko@meta.com, chen.dylane@linux.dev,
- memxor@gmail.com, a.s.protopopov@gmail.com, ameryhung@gmail.com,
- tklauser@distanz.ch, rongtao@cestc.cn, dxu@dxuuu.xyz, deso@posteo.net,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- kernel-patches-bot@fb.com
+ <176776201803.2234404.13594705347777050753.git-patchwork-notify@kernel.org>
+Date: Wed, 07 Jan 2026 05:00:18 +0000
+References: <20260106-fix-gen-btf-sh-lto-v2-1-01d3e1c241c4@kernel.org>
+In-Reply-To: <20260106-fix-gen-btf-sh-lto-v2-1-01d3e1c241c4@kernel.org>
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, yonghong.song@linux.dev,
+ ihor.solodrai@linux.dev, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ llvm@lists.linux.dev
 
 Hello:
 
-This series was applied to bpf/bpf-next.git (master)
+This patch was applied to bpf/bpf-next.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Wed,  7 Jan 2026 10:20:15 +0800 you wrote:
-> This patch set introduces the BPF_F_CPU and BPF_F_ALL_CPUS flags for
-> percpu maps, as the requirement of BPF_F_ALL_CPUS flag for percpu_array
-> maps was discussed in the thread of
-> "[PATCH bpf-next v3 0/4] bpf: Introduce global percpu data"[1].
+On Tue, 06 Jan 2026 15:44:20 -0700 you wrote:
+> After commit 600605853f87 ("scripts/gen-btf.sh: Fix .btf.o generation
+> when compiling for RISCV"), there is an error from llvm-objcopy when
+> CONFIG_LTO_CLANG is enabled:
 > 
-> The goal of BPF_F_ALL_CPUS flag is to reduce data caching overhead in light
-> skeletons by allowing a single value to be reused to update values across all
-> CPUs. This avoids the M:N problem where M cached values are used to update a
-> map on N CPUs kernel.
+>   llvm-objcopy: error: '.tmp_vmlinux1.btf.o': The file was not recognized as a valid object file
+>   Failed to generate BTF for vmlinux
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf-next,v13,1/7] bpf: Introduce BPF_F_CPU and BPF_F_ALL_CPUS flags
-    https://git.kernel.org/bpf/bpf-next/c/2b421662c788
-  - [bpf-next,v13,2/7] bpf: Add BPF_F_CPU and BPF_F_ALL_CPUS flags support for percpu_array maps
-    https://git.kernel.org/bpf/bpf-next/c/8eb76cb03f0f
-  - [bpf-next,v13,3/7] bpf: Add BPF_F_CPU and BPF_F_ALL_CPUS flags support for percpu_hash and lru_percpu_hash maps
-    https://git.kernel.org/bpf/bpf-next/c/c6936161fd55
-  - [bpf-next,v13,4/7] bpf: Copy map value using copy_map_value_long for percpu_cgroup_storage maps
-    https://git.kernel.org/bpf/bpf-next/c/8526397c3caf
-  - [bpf-next,v13,5/7] bpf: Add BPF_F_CPU and BPF_F_ALL_CPUS flags support for percpu_cgroup_storage maps
-    https://git.kernel.org/bpf/bpf-next/c/47c79f05aa0d
-  - [bpf-next,v13,6/7] libbpf: Add BPF_F_CPU and BPF_F_ALL_CPUS flags support for percpu maps
-    https://git.kernel.org/bpf/bpf-next/c/2546863b4a72
-  - [bpf-next,v13,7/7] selftests/bpf: Add cases to test BPF_F_CPU and BPF_F_ALL_CPUS flags
-    https://git.kernel.org/bpf/bpf-next/c/07bf7aa58e5e
+  - [bpf-next,v2] scripts/gen-btf.sh: Ensure initial object in gen_btf_o is ELF with correct endianness
+    https://git.kernel.org/bpf/bpf-next/c/2421649778dc
 
 You are awesome, thank you!
 -- 
