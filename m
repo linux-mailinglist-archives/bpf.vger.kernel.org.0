@@ -1,106 +1,172 @@
-Return-Path: <bpf+bounces-78064-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78065-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62274CFC6AB
-	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 08:41:21 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7224CFC72C
+	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 08:50:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9A10830596AE
-	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 07:35:32 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2E93D302E167
+	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 07:46:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3A5128506C;
-	Wed,  7 Jan 2026 07:29:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3302B2765F8;
+	Wed,  7 Jan 2026 07:46:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oijOWwFO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com [209.85.160.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF4DC283FCE
-	for <bpf@vger.kernel.org>; Wed,  7 Jan 2026 07:29:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF99F72623
+	for <bpf@vger.kernel.org>; Wed,  7 Jan 2026 07:46:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767770966; cv=none; b=gTD6xope/YfLm71IeHLpAdC0VKxTupeMzv8k3njR8lsnSkmeyMkrLr1somNxZ6BKJdxSh5cYjtxjLaLNdfBajMP+IYhHkGWEoolh/MexsCTuMfxiIx6FvAPSZAX6jdAkwkYEOuuBWtk21GmKqinIcmNhQBYHpyjxmTeOhExjZ54=
+	t=1767771987; cv=none; b=WX2QP0/l1A53ECpZ1YK3vAdUTdvqcI2reaw/2Sdxush3kX66stlCAJot6yQ7mUqKMePB9wNHnbArVE4vjYER7yoRk0NTwn8CdkGcECMU0Y/zPIoJXNW/kLsKdbHBNOIZ2Y9rGCL/L4XHyArbEHbw3TwMDFlJpvTdE3GsEf4HvxA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767770966; c=relaxed/simple;
-	bh=oXZ/VxxFvoRTH/Hdlj7ntLkVgYqF1VkD+JkzH4H0f0c=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=rqtRiiPua/D5WXgU1aAfM7pFjGxt25a9EVMt84d3wLQK8sQVazih/juGKwiIP/ddUMp+sBKtHvwgWlObaTxXOgSRSNd4q++CjiLhLWg6Pobme+75y7N2Sr8oF/f52YNi5mA0YfPVvvJX7pbcppbk2wLbgdW53RDhhdmZ3Qfq6Uk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.160.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-3f578b8136fso3344223fac.0
-        for <bpf@vger.kernel.org>; Tue, 06 Jan 2026 23:29:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767770964; x=1768375764;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RBNQlFSpOWikq2upNZ347sFpZ5DDCPFQ27sxi/uRBv0=;
-        b=X+8Lom6eYUHATlwEKHwJ1Kw6OUFR0E99suUzGlwTzJttkpoxduENo13Kzf3FHg5ZVk
-         F2D6n3j46dSUjX7txGQLkXDV1Rm93kipXyWf2atSeGWWPqUDY2lqtXn52YeWJ6qeB/ew
-         taX5TXMsjqXje8l7LdDsjkjQkY7AaqqvqGQUQOHWOY8zwEkb2oifuaqcv6UoIJcyi8aL
-         qb/882gpzHzr8En6E3bvaw7aSPRIyvA0PLTxJj0ctpuGDTVj3gvXERA02+Xs+UY9TJrH
-         3pZlE9HoUElwOY8aCONts1mW5p32uFXaeE+m3frTUoiJR7iHAqZKBWcbD3k3I1tkjeE+
-         K5GA==
-X-Forwarded-Encrypted: i=1; AJvYcCVIKibxMqoJVWH10Ro0T2KTxPSs3igqEcoBRboL1AVFlbpX6w7H6kw6woKWTfZkhBWjMQ8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxC7htzPo/U4hx330RIoUYcG9fiv3IhnwO4I0gCQHJDfzJ6m84V
-	JhORqAy6nHgQuoQnD45HQMniubbgnRoXsTCSFfIPmbOLtgHEQr8+/4iBUnnjRjObmuIWhHjJhyQ
-	I0uqZ8tTY/IbA5Un4veQTR+15tAuxOAeWjJrk7w/VnmzZbaxWGWdNmtFugok=
-X-Google-Smtp-Source: AGHT+IEoiGwPv4xtw8wzEKNctXlrYznqAJM+9nMBEr3S4l2wo0fjXBm7iQcvvCs2AVhMJVbsuUurNfoyL6XpRzgwDKbkrvjWvOXk
+	s=arc-20240116; t=1767771987; c=relaxed/simple;
+	bh=oEHgf362nF3r5k5tYC3FJ8OE41yoA8yImFGjf7YyWiE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=MifUElJdVKJ3iwHwL+v0Vozn4oLyiSLQClp5MyBuy7h0wDjExzDrO+sUZFKWnqMvsKAT8dVbq+E9GaKYPX1eigAL32rbCWKVOxSOwViWtl8W747YS0OX+pgBdfzbNFPP0pa1rVeXw/5wbiaKco9mREkUs0uTeijpGJvv92EbKnk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oijOWwFO; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1767771983;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uiX85Z5lezt2DFKZA4ouDdPBVCKxRzKzaRrSuznEhAc=;
+	b=oijOWwFOLaMMGtVO/AQFlDcGZqTXn8O3y0EVRpepyFKMEogXUTUVG/CuPcvZAWTIyk6Dh2
+	7uorVC5/l2AN1RUdmq90lqAniT0WUPNcuUc1tyBMRy0UOZe3NdeXMjRTDROQn5UAk6ZKGm
+	gcjKW/P1hVSYCSHGk/9lNl59/p9Y/Mk=
+From: Menglong Dong <menglong.dong@linux.dev>
+To: menglong8.dong@gmail.com, bot+bpf-ci@kernel.org
+Cc: ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+ martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
+ dsahern@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+ jiang.biao@linux.dev, bp@alien8.de, dave.hansen@linux.intel.com,
+ x86@kernel.org, hpa@zytor.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, martin.lau@kernel.org, eddyz87@gmail.com,
+ yonghong.song@linux.dev, clm@meta.com, ihor.solodrai@linux.dev
+Subject:
+ Re: [PATCH bpf-next v7 04/11] bpf: support fsession for bpf_session_is_return
+Date: Wed, 07 Jan 2026 15:45:51 +0800
+Message-ID: <5069825.31r3eYUQgx@7940hx>
+In-Reply-To:
+ <7b965f06828236a16f0146550e01a581b1c202c427584a894d5a70a42ff06435@mail.kernel.org>
+References:
+ <20260107064352.291069-5-dongml2@chinatelecom.cn>
+ <7b965f06828236a16f0146550e01a581b1c202c427584a894d5a70a42ff06435@mail.kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6820:22a9:b0:659:9a49:8f9c with SMTP id
- 006d021491bc7-65f54f08b59mr652901eaf.21.1767770963918; Tue, 06 Jan 2026
- 23:29:23 -0800 (PST)
-Date: Tue, 06 Jan 2026 23:29:23 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <695e0b53.050a0220.1c677c.0358.GAE@google.com>
-Subject: [syzbot] Monthly bpf report (Jan 2026)
-From: syzbot <syzbot+listb163e051df01405c9eff@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"
+X-Migadu-Flow: FLOW_OUT
 
-Hello bpf maintainers/developers,
+On 2026/1/7 15:11 bot+bpf-ci@kernel.org write:
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index 41228b0add52..95248b0d28ab 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -1229,6 +1229,9 @@ enum {
+> >  #endif
+> >  };
+> >
+> > +#define BPF_TRAMP_M_NR_ARGS	0
+> > +#define BPF_TRAMP_M_IS_RETURN	8
+> 
+> [ ... ]
+> 
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index bfff3f84fd91..d3709edd0e51 100644
+> 
+> [ ... ]
+> 
+> > @@ -22558,6 +22564,13 @@ static int fixup_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+> >  		   desc->func_id == special_kfunc_list[KF_bpf_rdonly_cast]) {
+> >  		insn_buf[0] = BPF_MOV64_REG(BPF_REG_0, BPF_REG_1);
+> >  		*cnt = 1;
+> > +	} else if (desc->func_id == special_kfunc_list[KF_bpf_session_is_return] &&
+> > +		   env->prog->expected_attach_type == BPF_TRACE_FSESSION) {
+> > +		/* Load nr_args from ctx - 8 */
+> > +		insn_buf[0] = BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -8);
+> > +		insn_buf[1] = BPF_ALU64_IMM(BPF_RSH, BPF_REG_0, BPF_TRAMP_M_IS_RETURN);
+> > +		insn_buf[2] = BPF_ALU64_IMM(BPF_AND, BPF_REG_0, 1);
+> > +		*cnt = 3;
+>                 ^^^^
+> 
+> This inlined code reads the BPF_TRAMP_M_IS_RETURN bit (bit 8) from ctx[-1]
+> to determine if the program is running at function exit. However, looking
+> at arch/x86/net/bpf_jit_comp.c, the trampoline only stores nr_regs to
+> ctx[-8] at this point in the series:
+> 
+>     emit_mov_imm64(&prog, BPF_REG_0, 0, (u32) nr_regs);
+>     emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -nregs_off);
+> 
+> The BPF_TRAMP_M_IS_RETURN flag is not being set by the trampoline code.
+> Is this intentional? The arch code that sets this bit appears to be added
+> in a later commit in the series (93d4641b9513 "bpf,x86: add fsession
+> support for x86_64").
+> 
+> At this commit, bpf_session_is_return() for fsession programs will always
+> return false, even during fexit execution, because bit 8 is never set.
 
-This is a 31-day syzbot report for the bpf subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/bpf
+Yeah, this is intentional. The fsession is architecture specific feature.
+For the architecture that doesn't support this feature, the "is_return"
+flag will never be set.
 
-During the period, 6 new issues were detected and 0 were fixed.
-In total, 26 issues are still open and 316 have already been fixed.
+After the commit (93d4641b9513 "bpf,x86: add fsession support for x86_64"),
+x86_64 support this feature, and the flag will be set for fsession.
 
-Some of the still happening issues:
+> 
+> > +	}
+> >
+> >  	if (env->insn_aux_data[insn_idx].arg_prog) {
+> 
+> [ ... ]
+> 
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index 736b32cf2195..9d3bf3bbe8f6 100644
+> 
+> [ ... ]
+> 
+> > @@ -3314,6 +3314,12 @@ static u64 bpf_uprobe_multi_entry_ip(struct bpf_run_ctx *ctx)
+> >  }
+> >  #endif /* CONFIG_UPROBES */
+> >
+> > +bool bpf_fsession_is_return(void *ctx)
+> > +{
+> > +	/* This helper call is inlined by verifier. */
+> > +	return !!(((u64 *)ctx)[-1] & (1 << BPF_TRAMP_M_IS_RETURN));
+> > +}
+> 
+> The same issue exists here in bpf_fsession_is_return() - it reads bit 8
+> which is not set by the trampoline at this point in the series. The
+> comment indicates this is inlined by the verifier, but both code paths
+> have the same problem.
 
-Ref Crashes Repro Title
-<1> 12832   Yes   WARNING in reg_bounds_sanity_check (2)
-                  https://syzkaller.appspot.com/bug?extid=c950cc277150935cc0b5
-<2> 101     No    INFO: task hung in dev_map_free (3)
-                  https://syzkaller.appspot.com/bug?extid=9bb2e1829da8582dcffa
-<3> 34      No    KMSAN: uninit-value in handle_bug
-                  https://syzkaller.appspot.com/bug?extid=ba80855313e6fa65717a
-<4> 29      No    KCSAN: data-race in __htab_map_lookup_elem / bpf_lru_pop_free
-                  https://syzkaller.appspot.com/bug?extid=ad4661d6ca888ce7fe11
-<5> 21      Yes   inconsistent lock state in bpf_lru_push_free
-                  https://syzkaller.appspot.com/bug?extid=c69a0a2c816716f1e0d5
-<6> 4       Yes   INFO: rcu detected stall in task_work_add
-                  https://syzkaller.appspot.com/bug?extid=f2cf09711ff194bc2c22
-<7> 3       Yes   KMSAN: uninit-value in bpf_prog_test_run_skb
-                  https://syzkaller.appspot.com/bug?extid=619b9ef527f510a57cfc
+The logic here is right, as I said above.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> [ ... ]
+> 
+> 
+> ---
+> AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+> See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
+> 
+> CI run summary: https://github.com/kernel-patches/bpf/actions/runs/20773233136
+> 
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
 
-You may send multiple commands in a single email message.
+
 
