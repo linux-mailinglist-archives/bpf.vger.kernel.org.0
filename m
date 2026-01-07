@@ -1,146 +1,149 @@
-Return-Path: <bpf+bounces-78157-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78158-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2047DCFFD0C
-	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 20:45:33 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 918ABCFFD7E
+	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 20:50:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 365C33314F41
-	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 19:06:22 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 330DA319F68E
+	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 19:28:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DB5B3328E0;
-	Wed,  7 Jan 2026 19:05:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 117742D8379;
+	Wed,  7 Jan 2026 19:26:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cuM29+Qo"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ksCe5Bo/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 399B232F741
-	for <bpf@vger.kernel.org>; Wed,  7 Jan 2026 19:05:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA3BB3A0B22
+	for <bpf@vger.kernel.org>; Wed,  7 Jan 2026 19:26:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767812743; cv=none; b=HGzguIRuxLWa1KOirPvXpZWNJtD17I6xRIuCddMZnNpYgLt6FjhbfJ7ATLcTIMNOw0IPd7kvoXuyMjkzre3ojUu2r8Clkcg2fKculyfwoCLxAg92havQtk7gNI9bj9Bxb7JG91SpSKZOpgOxIBOUNKdCEcsdI6/yJ5oCFErGjuA=
+	t=1767813986; cv=none; b=pReSSXlBfpXAemouiqC6i2KW0bqNu2uQ6VCgKhanPzOEAcpR3ziGPCKytldfyewYh+yqqrBggHme2Zks7lG6tDrAoqf8W6AUyxDeiNAh3PdVwl4FHrUHdFWyWehCABK10aKi10LSl6yr7gQg9A7Fq0RLsCf7EfuPVT5hD1Nqwsk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767812743; c=relaxed/simple;
-	bh=Z9K1U5qcHc6IKvb1kBZrpQlxEokyPVVSVMGXJ5dObn8=;
+	s=arc-20240116; t=1767813986; c=relaxed/simple;
+	bh=MTYMrV+Yymv4Cd/avn0CLByEMclgUVINm5O/bdwOWB8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=j4SwPw2G2pulzTwl0b4bb82OoM61AUTCICUl+lWqSSoPvOW5yCVlWnnlxLgrFtlQ7AF7PbN+IehCvxENFD8qaNZqi2TiH4nQ3tGW01ceQ98cFb88VQcetdth22Lgg+gM458pT15x7F4ccWy5veIrarL8cvxrhDa+UIwJjhiJem0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cuM29+Qo; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-47aa03d3326so20839705e9.3
-        for <bpf@vger.kernel.org>; Wed, 07 Jan 2026 11:05:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767812740; x=1768417540; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yV2GAzN/rOYaFDderfCFwznQg734j5qWy6h3Uqhklv4=;
-        b=cuM29+QoLclZBiRWCeYNsiYvVq9Bll4Z+1x26darFHLrw7CBMV2ehcZ5JjtrqqUqLR
-         Yzxu05HFwCEp+L/yJYYYqdwFBL6lK2kyJQX/PjM5rwqyZOsh+Ys2uzfd9SWULDnb/zx1
-         sGFw+aMyA+Vahtreza9W95tiCc3yKSjtDvn0NvbXX9H3Zr/74la5XXP3iikp5TMFRQAx
-         CymTuwwUqdDxFdCwJhm7OTjhMU4wxEApKvg4824jDGQ8YOCnkNdMiHK6NH7MVS6HB+ND
-         stLEMwTEv/+14K69ipJiG2inKhGeI0V1ypcHIyt1oiPuX4nY3cP7jfcD/EwDiiE6UL6h
-         oQcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767812740; x=1768417540;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yV2GAzN/rOYaFDderfCFwznQg734j5qWy6h3Uqhklv4=;
-        b=u5pKCTv/kYt4NSfQGjTgFMJyqXVTxcshQCr5gDQ4gModbapNcSzvQKZ2t4mHnIlk5Z
-         Tj3cWOSxRBSQ3yRyAye80R+xLu7TS17fUAEJpMR1wHL5F/7XF86PzWoz2RHfPx+ThkYQ
-         /STzpShDZpVyUmHwYfZ/nXuMxyT8LAhtcma/vWPmwyOvloaO2MyKkbaYJcS9Tmid7XS0
-         2NaFEOkG3do74jryKqOZgdj2fwsuB6n3V6g8WVaNNMaMGXx4SdauE4B/aEG6aPwdvgn8
-         j7lwv8Uiwod+B34JLGF1hT94NXaWyapJzmL5b/BcIe0Lvq8TfUWXo0fvOFSEn5vGThBI
-         WTag==
-X-Gm-Message-State: AOJu0YyJQKdZtwA+nGmZkfuPPtwm38XaefaiBGnD2CPgtW0NQF8U3x/r
-	veX2bgFaDQ+4M8ysu7u/4NDBosrtqwq3aSm368vFY6A1lvNFkrJU8PHL
-X-Gm-Gg: AY/fxX61FKHEEf24IZN8mPSbRMRmYS395ONbXjLzjR5FwA3GnFrm0NVPyun7ERnrj5D
-	1AXY0mj7DnmNNBQo+Zuje+kHdvK9VAmcYj2vhgC4sZ/re2B1IHXKqKC2wQmqsCy47N2t6Tnmg7W
-	sphBp0TVFnw9g62hdPWmSu09r2vr5r2TRSGvbFeIPnJWJguOuH0O73CmWb6DenisFT214ocWTAY
-	S/7KzJg/qqOow6q15mNOOma+VW0UgGr8GXegNAL+DmpdOdUW7BuhqdQaCtPoffn5bi54IBdjISe
-	LnB/M3WRjhGXugRMqYKDSo7RyjzV86IM3e2HCf6vPJJ8ds+ddGUTf71syzHd69ym4N5bjh1z4iG
-	fU71KW9LlEiFySkkaiWC55Evd6w3KeOoaWyW+A92pexrzXTZ4J2AU2VzLEFM9K2eXIBt9X1RvJ1
-	6HE14E9OGTgj3TYvgBhGwh87JFXA+DERkWtcun6jdgg4iLtoY=
-X-Google-Smtp-Source: AGHT+IHyy9s+ZUVKJ+rFCDUfHXHwkqBs2cte5XZUdotZJAZmzxhrf4Iw8bX8j9IYH/rJFAJ+PLhWTg==
-X-Received: by 2002:a05:600c:3152:b0:45d:dc85:c009 with SMTP id 5b1f17b1804b1-47d84b1a04amr47874555e9.10.1767812740116;
-        Wed, 07 Jan 2026 11:05:40 -0800 (PST)
-Received: from ?IPV6:2a03:83e0:1126:4:5e8:9143:852f:9288? ([2620:10d:c092:500::5:d4be])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-432bd5df8besm11338361f8f.26.2026.01.07.11.05.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Jan 2026 11:05:39 -0800 (PST)
-Message-ID: <e4eee776-e9c7-4186-b239-733f81a9ae4a@gmail.com>
-Date: Wed, 7 Jan 2026 19:05:37 +0000
+	 In-Reply-To:Content-Type; b=ZYkMSiO2bZdzPFw07B0qtPoiEj7IwPLMA3FFk+k0kNK4Z7wJGlBE1IleYM2pyAb8kCeYnh/OKI8kLqDVD47HWq8mrTTTc3b+wAXs1MUrwO/fn2ADOVWi9KYp/p1PsKleh/pvxKvhhqEuPuPNX7NmeNcBBj7+DC5fAD2qKibie4w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ksCe5Bo/; arc=none smtp.client-ip=91.218.175.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <e26b8ff0-c176-4d94-a25a-4e29992611c1@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1767813980;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WcB8G3y5iz+8intAQ2MzrTuvbBYtEhwRblwqeC5cVu4=;
+	b=ksCe5Bo/EPvK+Yybn2Q4RtDdQIIfm2yAJStNI/8d7/7WVqQsANcOBJj465bf6HWSAzwhLs
+	Ty4edCKZq2IY9d/jXLadET9lMp3SLgo6JPTJ5EHVC7LP/fu65QsgKSjByKGo5N8Wg51DKP
+	oMU66hLaVaQ2xlxQfVuoWnI746hW/ig=
+Date: Wed, 7 Jan 2026 11:26:16 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v3 04/10] bpf: Add lock-free cell for NMI-safe async
- operations
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com,
- eddyz87@gmail.com, Mykyta Yatsenko <yatsenko@meta.com>
-References: <20260107-timer_nolock-v3-0-740d3ec3e5f9@meta.com>
- <20260107-timer_nolock-v3-4-740d3ec3e5f9@meta.com>
- <CAP01T77h5caT6EprhREYMNmjTkbBZ9-OT7HkxdnJUNNME2evQQ@mail.gmail.com>
-Content-Language: en-US
-From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-In-Reply-To: <CAP01T77h5caT6EprhREYMNmjTkbBZ9-OT7HkxdnJUNNME2evQQ@mail.gmail.com>
+Subject: Re: kernel build failure when CONFIG_DEBUG_INFO_BTF and CONFIG_KCSAN
+ are enabled
+Content-Language: en-GB
+To: Nilay Shroff <nilay@linux.ibm.com>, Alan Adamson
+ <alan.adamson@oracle.com>, bpf@vger.kernel.org
+Cc: Bart Van Assche <bvanassche@acm.org>,
+ "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
+References: <42a1b4b0-83d0-4dda-b1df-15a1b7c7638d@linux.ibm.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <42a1b4b0-83d0-4dda-b1df-15a1b7c7638d@linux.ibm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On 1/7/26 18:30, Kumar Kartikeya Dwivedi wrote:
-> On Wed, 7 Jan 2026 at 18:49, Mykyta Yatsenko <mykyta.yatsenko5@gmail.com> wrote:
->> From: Mykyta Yatsenko <yatsenko@meta.com>
->>
->> Introduce mpmc_cell, a lock-free cell primitive designed to support
->> concurrent writes to struct in NMI context (only one writer advances),
->> allowing readers to consume consistent snapshot.
->>
->> Implementation details:
->>   Double buffering allows writers run concurrently with readers (read
->>   from one cell, write to another)
->>
->>   The implementation uses a sequence-number-based protocol to enable
->>   exclusive writes.
->>    * Bit 0 of seq indicates an active writer
->>    * Bits 1+ form a generation counter
->>    * (seq & 2) >> 1 selects the read cell, write cell is opposite
->>    * Writers atomically set bit 0, write to the inactive cell, then
->>      increment seq to publish
->>    * Readers snapshot seq, read from the active cell, then validate
->>      that seq hasn't changed
->>
->> mpmc_cell expects users to pre-allocate double buffers.
->>
->> Key properties:
->>   * Writers never block (fail if lost the race to another writer)
->>   * Readers never block writers (double buffering), but may require
->>   retries if write updates the snapshot concurrently.
->>
->> This will be used by BPF timer and workqueue helpers to defer NMI-unsafe
->> operations (like hrtimer_start()) to irq_work effectively allowing BPF
->> programs to initiate timers and workqueues from NMI context.
->>
->> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
->> ---
-> We already have a dual-versioned concurrency control primitive in the
-> kernel (seqcount_latch_t). I would just use that instead of
-> reinventing it here. I don't see much of a difference except writer
-> serialization, which can be done on top of it. If it was already
-> considered and discarded for some reason, please add that reason to
-> the commit message.
-yes, multiple concurrent  writers support would is the main difference
-between seqcount_latch_t and my implementation. I'll switch to
-seqcount_latch_t and external synchronization for writers.
->>   [...]
->>
+
+
+On 11/26/25 2:29 AM, Nilay Shroff wrote:
+> Hi,
+>
+> I am encountering the following build failures when compiling the kernel source checked out
+> from the for-6.19/block branch [1]:
+>
+>    KSYMS   .tmp_vmlinux2.kallsyms.S
+>    AS      .tmp_vmlinux2.kallsyms.o
+>    LD      vmlinux.unstripped
+>    BTFIDS  vmlinux.unstripped
+> WARN: multiple IDs found for 'task_struct': 110, 3046 - using 110
+> WARN: multiple IDs found for 'module': 170, 3055 - using 170
+> WARN: multiple IDs found for 'file': 697, 3130 - using 697
+> WARN: multiple IDs found for 'vm_area_struct': 714, 3140 - using 714
+> WARN: multiple IDs found for 'seq_file': 1060, 3167 - using 1060
+> WARN: multiple IDs found for 'cgroup': 2355, 3304 - using 2355
+> WARN: multiple IDs found for 'inode': 553, 3339 - using 553
+> WARN: multiple IDs found for 'path': 586, 3369 - using 586
+> WARN: multiple IDs found for 'bpf_prog': 2565, 3640 - using 2565
+> WARN: multiple IDs found for 'bpf_map': 2657, 3837 - using 2657
+> WARN: multiple IDs found for 'bpf_link': 2849, 3965 - using 2849
+> [...]
+> make[2]: *** [scripts/Makefile.vmlinux:72: vmlinux.unstripped] Error 255
+> make[2]: *** Deleting file 'vmlinux.unstripped'
+> make[1]: *** [/home/src/linux/Makefile:1242: vmlinux] Error 2
+> make: *** [Makefile:248: __sub-make] Error 2
+>
+>
+> The build failure appears after commit 42adb2d4ef24 (“fs: Add the __data_racy annotation
+> to backing_dev_info.ra_pages”) and commit 935a20d1bebf (“block: Remove queue freezing
+> from several sysfs store callbacks”). However, the root cause does not seem to be specific
+> to these commits or to the block layer changes themselves. Instead, the issue is triggered
+> by the introduction of the __data_racy annotation on several fields in struct request_queue
+> and struct backing_dev_info.
+>
+> It seems likely that some compilation units are built with KCSAN disabled, in which case
+> the preprocessor expands __data_racy to nothing. Other units have KCSAN enabled, where
+> __data_racy expands to the volatile qualifier. This results in two different versions
+> of both struct request_queue and struct backing_dev_info: one where fields such as
+> rq_timeout or ra_pages are declared volatile, and another where they are not.
+>
+> During BTF generation, the resolver encounters these conflicting type definitions.
+> Although the reported error does not explicitly reference struct request_queue or
+> struct backing_dev_info, it likely surfaces through types such as task_struct or
+> others that embed these structures deep within their type hierarchies.
+>
+> For reference, gcc and pahole versions are shown below. Also, attached kernel .config:
+>
+> # gcc --version
+> gcc (GCC) 11.4.1 20231218 (Red Hat 11.4.1-3)
+> Copyright (C) 2021 Free Software Foundation, Inc.
+> This is free software; see the source for copying conditions.  There is NO
+> warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+>
+> # pahole --version
+> v1.27
+>
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux.git/log/?h=for-6.19/block
+
+I tried with clang with CONFIG_DEBUG_INFO_BTF and CONFIG_KCSAN enabled.
+I am using the latest bpf-next.
+   $ make LLVM=1 -j
+   ...
+   KSYMS   .tmp_vmlinux0.kallsyms.S
+   AS      .tmp_vmlinux0.kallsyms.o
+   LD      .tmp_vmlinux1
+   BTF     .tmp_vmlinux1
+      <==== hang here
+
+^Cmake[2]: *** [/home/yhs/work/bpf-next/scripts/Makefile.vmlinux:72: vmlinux.unstripped] Interrupt
+make[1]: *** [/home/yhs/work/bpf-next/Makefile:1277: vmlinux] Interrupt
+make: *** [/home/yhs/work/bpf-next/Makefile:248: __sub-make] Interrupt
+
+I am using latest clang22 and latest pahole master (v1.31).
+
+I will debug further from clang side.
+
+
+>
+> Thanks,
+> --Nilay
 
 
