@@ -1,102 +1,131 @@
-Return-Path: <bpf+bounces-78146-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78147-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45802CFF4A7
-	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 19:08:18 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91697CFF4BC
+	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 19:09:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 3D5D43000DFA
-	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 18:08:15 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 1CCFE300E7C9
+	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 18:09:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE251335BAF;
-	Wed,  7 Jan 2026 18:08:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JKl3+A28"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7BD1343D60;
+	Wed,  7 Jan 2026 18:09:12 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from plesk.hostmyservers.fr (plesk.hostmyservers.fr [45.145.164.37])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEA183385B3
-	for <bpf@vger.kernel.org>; Wed,  7 Jan 2026 18:08:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0ADC86353;
+	Wed,  7 Jan 2026 18:09:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.145.164.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767809292; cv=none; b=Vq3dI/8KFMh4mLxhMDrc0DFI0PL3LW9/SJvGi/efTqSXdZMaRnCoGYjiUbffZwksMi3DlF2E0IRtWe5J4fOxhdODLIohtD3OLecjWYZ/Ynf4MvWeDc6PZl7hXkr+0ZSpOf9cp0oreZB7YjXtOg0oTP8P8LAvz8GQIbtAYBf5buw=
+	t=1767809352; cv=none; b=Ef++6XlXWQQPHT138ZVITHhizDmICqvVj93fOQVFdaRShXbf7hJc/QHahR+9+TObGzIRToWHsA1lrHRliXI4UQmUt5rz4AwPqKjZNUbt25Gz+4II02pbbivbIC3I2046ic4y88ycE6bKHU1ekrmRaAvm5/uTD92CRoAGstKrv4k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767809292; c=relaxed/simple;
-	bh=+g+NKEx7tWKhm5+SLjoaSYYRyJwJD6n6NYk+q4LHdRA=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=Ph9OIgSzq2xdYsrmsORpLQDZm6p5pxLBTOF1pHRMm2PbYutrv+Um+Q/4hii+ph7F8bR56mxXgG1kAiZM1fboc3v4n+hDLHA68RqvJRBj2EK2HBJ5/NbgkQJ8S2AEwZqL7iZYgjW5rbMBmREpztV9cOxljY59cjtH1/K3XO4ixfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JKl3+A28; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B6A2C4CEF1;
-	Wed,  7 Jan 2026 18:08:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767809291;
-	bh=+g+NKEx7tWKhm5+SLjoaSYYRyJwJD6n6NYk+q4LHdRA=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=JKl3+A28qTV4P+E+upNTecTg3mtyW5fdPe/02M69i0JnW5OIpT5fkjM8fXzW5mdHb
-	 NW/Lu+X3bOQG0Ux1j7eoAOBbVk2R5Bgl5n1AVjSlliZBNmaP+1jOQb18Qyng4Dfgr+
-	 d7U4/Av9S6cgF+dHUKubmJwgW9KYLdcupG/E+HFjEFq7LpJEsWqsOlGeq5ZlWZnrbK
-	 Kn88U3xZUL1w/4Kac+3/ZhK3meV0FrIhUbUFdxEJHdwEJwu+RMTmXXeaAPan5+2h/K
-	 i+SSoY6Qkm1dWWKAG27+zAQO3sscgETPdD7w72fcqzDtiMAsi0nkA05ppz2s8ch6RN
-	 WhE7sIDyJHE8A==
-Content-Type: multipart/mixed; boundary="===============2682747788224255827=="
+	s=arc-20240116; t=1767809352; c=relaxed/simple;
+	bh=X4iKbMrp9EnF9hvvRNToH26WmDZSmTNOYInzf6roSQg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=N1BFSQ0+MGMhpeNuOYx6JBblBqoS8bmQgaAupwDxjOZ4C+lOM4+7jO3nvSm4lXNn4L2Wsl0sNMmCYp2KuPk0SK5Zuk44j4t3B971BIWyl/RiJuqhH31FZ/YN1+BMqnsEqN6lO6XhB4RgId/9HUkJqGebOBqnET4bS3zZEJs1ULg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com; spf=pass smtp.mailfrom=arnaud-lcm.com; arc=none smtp.client-ip=45.145.164.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arnaud-lcm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arnaud-lcm.com
+Received: from [192.168.16.164] (unknown [54.239.6.188])
+	by plesk.hostmyservers.fr (Postfix) with ESMTPSA id 5B62140215;
+	Wed,  7 Jan 2026 18:08:58 +0000 (UTC)
+Authentication-Results: Plesk;
+        spf=pass (sender IP is 54.239.6.188) smtp.mailfrom=contact@arnaud-lcm.com smtp.helo=[192.168.16.164]
+Received-SPF: pass (Plesk: connection is authenticated)
+Message-ID: <3c22314c-a677-4e59-be51-a807d26e7d33@arnaud-lcm.com>
+Date: Wed, 7 Jan 2026 19:08:58 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <fb0b4b7a235f51ad07038f9d9b074561c4302e6f0df950be35477c80e4ae5076@mail.kernel.org>
-In-Reply-To: <20260107-timer_nolock-v3-4-740d3ec3e5f9@meta.com>
-References: <20260107-timer_nolock-v3-4-740d3ec3e5f9@meta.com>
-Subject: Re: [PATCH RFC v3 04/10] bpf: Add lock-free cell for NMI-safe async operations
-From: bot+bpf-ci@kernel.org
-To: mykyta.yatsenko5@gmail.com,bpf@vger.kernel.org,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,kafai@meta.com,kernel-team@meta.com,memxor@gmail.com,eddyz87@gmail.com
-Cc: yatsenko@meta.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Wed,  7 Jan 2026 18:08:11 +0000 (UTC)
-
---===============2682747788224255827==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-
-> diff --git a/kernel/bpf/mpmc_cell.h b/kernel/bpf/mpmc_cell.h
-> new file mode 100644
-> index 000000000000..8b57226927a6
-> --- /dev/null
-> +++ b/kernel/bpf/mpmc_cell.h
-> @@ -0,0 +1,112 @@
-
-[ ... ]
-
-> + * Typical usage:
-> + *
-> + *   // Writer (from NMI or any context):
-> + *   cell = bpf_mpmc_cell_write_begin(ctl);
-> + *   if (!IS_ERR(cell)) {
-> + *       memcpy(cell, data, size);
-> + *       bpf_mpmc_cell_write_commit(ctl);
-> + *   }
-
-Should this check be "if (cell)" instead of "if (!IS_ERR(cell))"?
-
-bpf_mpmc_cell_write_begin() returns NULL when another writer is active,
-not an ERR_PTR. Since IS_ERR(NULL) returns false, "!IS_ERR(cell)" will
-evaluate to true when cell is NULL, causing the memcpy to execute with
-a NULL pointer.
-
-The function documentation correctly states "Return: Pointer to the
-write cell, or NULL if another writer is active", but the example code
-here uses the wrong check pattern.
-
-[ ... ]
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bpf-next: Prevent out of bound buffer write in
+ __bpf_get_stack
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: syzbot+d1b7fa1092def3628bd7@syzkaller.appspotmail.com, andrii@kernel.org,
+ ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+ eddyz87@gmail.com, haoluo@google.com, john.fastabend@gmail.com,
+ jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+ martin.lau@linux.dev, netdev@vger.kernel.org, sdf@fomichev.me,
+ song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev,
+ Brahmajit Das <listout@listout.xyz>
+References: <20260104205220.980752-1-contact@arnaud-lcm.com>
+ <CAEf4BzYakog+DLSfA6aiHCPW0QHR-=TC8pVi+jDVo27Ljk5uuA@mail.gmail.com>
+Content-Language: en-US
+From: "Lecomte, Arnaud" <contact@arnaud-lcm.com>
+In-Reply-To: 
+ <CAEf4BzYakog+DLSfA6aiHCPW0QHR-=TC8pVi+jDVo27Ljk5uuA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-PPP-Message-ID: <176780933927.17561.10847490935245177895@Plesk>
+X-PPP-Vhost: arnaud-lcm.com
 
 
----
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
-
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/20791345842
-
---===============2682747788224255827==--
+On 06/01/2026 01:51, Andrii Nakryiko wrote:
+> On Sun, Jan 4, 2026 at 12:52 PM Arnaud Lecomte <contact@arnaud-lcm.com> wrote:
+>> Syzkaller reported a KASAN slab-out-of-bounds write in __bpf_get_stack()
+>> during stack trace copying.
+>>
+>> The issue occurs when: the callchain entry (stored as a per-cpu variable)
+>> grow between collection and buffer copy, causing it to exceed the initially
+>> calculated buffer size based on max_depth.
+>>
+>> The callchain collection intentionally avoids locking for performance
+>> reasons, but this creates a window where concurrent modifications can
+>> occur during the copy operation.
+>>
+>> To prevent this from happening, we clamp the trace len to the max
+>> depth initially calculated with the buffer size and the size of
+>> a trace.
+>>
+>> Reported-by: syzbot+d1b7fa1092def3628bd7@syzkaller.appspotmail.com
+>> Closes: https://lore.kernel.org/all/691231dc.a70a0220.22f260.0101.GAE@google.com/T/
+>> Fixes: e17d62fedd10 ("bpf: Refactor stack map trace depth calculation into helper function")
+>> Tested-by: syzbot+d1b7fa1092def3628bd7@syzkaller.appspotmail.com
+>> Cc: Brahmajit Das <listout@listout.xyz>
+>> Signed-off-by: Arnaud Lecomte <contact@arnaud-lcm.com>
+>> ---
+>> Thanks Brahmajit Das for the initial fix he proposed that I tweaked
+>> with the correct justification and a better implementation in my
+>> opinion.
+>> ---
+>>   kernel/bpf/stackmap.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+>> index da3d328f5c15..e56752a9a891 100644
+>> --- a/kernel/bpf/stackmap.c
+>> +++ b/kernel/bpf/stackmap.c
+>> @@ -465,7 +465,6 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
+>>
+>>          if (trace_in) {
+>>                  trace = trace_in;
+>> -               trace->nr = min_t(u32, trace->nr, max_depth);
+>>          } else if (kernel && task) {
+>>                  trace = get_callchain_entry_for_task(task, max_depth);
+>>          } else {
+>> @@ -479,7 +478,8 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
+>>                  goto err_fault;
+>>          }
+>>
+>> -       trace_nr = trace->nr - skip;
+>> +       trace_nr = min(trace->nr, max_depth);
+> there is `trace->nr < skip` check right above, should it be moved here
+> and done against adjusted trace_nr (but before we subtract skip, of
+> course)?
+We could indeed be more proactive on the clamping even-though I would
+  say it does not fundamentally change anything in my opinion.
+Happy to raise a new rev.
+>> +       trace_nr = trace_nr - skip;
+>>          copy_len = trace_nr * elem_size;
+>>
+>>          ips = trace->ip + skip;
+>> --
+>> 2.43.0
+>>
+Thanks for the review !
+Arnaud
 
