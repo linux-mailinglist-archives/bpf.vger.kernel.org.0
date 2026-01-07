@@ -1,80 +1,85 @@
-Return-Path: <bpf+bounces-78037-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78038-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FDCDCFBB6E
-	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 03:27:12 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44460CFBBF8
+	for <lists+bpf@lfdr.de>; Wed, 07 Jan 2026 03:36:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 4EE783003FC9
-	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 02:27:09 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id DFD84307F00C
+	for <lists+bpf@lfdr.de>; Wed,  7 Jan 2026 02:29:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3DE32550CD;
-	Wed,  7 Jan 2026 02:26:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 614A6253F05;
+	Wed,  7 Jan 2026 02:29:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Nb7H5lRU"
+	dkim=pass (2048-bit key) header.d=navercorp.com header.i=@navercorp.com header.b="kWUT7JrI"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+Received: from cvsmtppost03.nmdf.navercorp.com (cvsmtppost03.nmdf.navercorp.com [114.111.35.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64C5124A044
-	for <bpf@vger.kernel.org>; Wed,  7 Jan 2026 02:26:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C73F23D2B2
+	for <bpf@vger.kernel.org>; Wed,  7 Jan 2026 02:29:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.111.35.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767752792; cv=none; b=IsJqM7ioBGXPW4VyC8UkHi2NNU6eK6qzhRnulzFxZlGZ2NLmD0fTHPtkN422Mii8fA2TGkheZ+N3ZUvHvkd40ZgF7b/3UOgjL48JQc2XeAmGi44iIWaryUemy8NBUL9CG46B6QVNewLkXs0tFnhAyJUlDeYcCZJl4Tdm0ava82w=
+	t=1767752975; cv=none; b=b1ZYUeMTy3XkxSyvoKJ84ECi2iGd8bQDLK/hBJkAYv0hGM3rk0g7DMRXeU0ycCPnMLl0QmvGmFjKue6wfbKajNYkbyU7f2uwOaD/7zgzlgjKAc9FRwWUtcrZSmvyG/zAtUT3uSNWfRS75f7FquQtVrjq3HEFOtH+Uydotr+Ifns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767752792; c=relaxed/simple;
-	bh=pSpX9BDHndA8BkwLbnT8yUfgALM3o7O6L9FBFQxFFrQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=O45fD0rwtsasluN5Ze88lsW41ibCABC4yoQnfcCc/cxzeNUxU4ovx5w1EUiSnw/9D8BlZwmiRESUDaPpjwbw+blb8SHVPrG8H3+lbFr1Ul6B0DYlp6sB3H9uj5+Z6ik/aTAodnRVhSM1PwBikxfggzVWxZNRvsEwEJswR0dTV4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Nb7H5lRU; arc=none smtp.client-ip=95.215.58.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1767752788;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SBJD/n9/2fLTfY2pW96rS4FJpOq5ZjubJAJBt8Nb/PA=;
-	b=Nb7H5lRUXUI7csIUNoa0zXX3SQZFWEhFaZE4BETXgEt3iYs7vSnDrSfTW1h0nunt8JMVRP
-	62WdtLoiOdGmGVi4DAxEmFrBZ+Tbz40udM5Zv65nvtAjlanT3c8FaoC8hQMKaSVCFDlCQL
-	ZUbkfSlucHWTu/JbnGF8u9/XOlU66as=
-From: Leon Hwang <leon.hwang@linux.dev>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
+	s=arc-20240116; t=1767752975; c=relaxed/simple;
+	bh=vrmaHrm+Bj/vX/5LtR1MsluGwpf9RwxIyyEm0x6F5YY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=DtTfxsHbRFxnYooACPjvB/tqcoHeZLCNVrbAPeYvbZ6DuYhXGwDF5sNvRXEub9xASgfJVORjMC5lcLfGYAYbQ0UdrWO+2e+3OwVXGGkCP7lfwJ9dYz06CDk2UHUa9FbzZ3PXSYeYaYqTJ7W/G+vqoZM0WAiQLFV5/vICIp7jCJk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=navercorp.com; spf=pass smtp.mailfrom=navercorp.com; dkim=pass (2048-bit key) header.d=navercorp.com header.i=@navercorp.com header.b=kWUT7JrI; arc=none smtp.client-ip=114.111.35.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=navercorp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=navercorp.com
+Received: from cvsendbo03.nmdf ([10.112.20.53])
+  by cvsmtppost03.nmdf.navercorp.com with ESMTP id 2p4SqTpHRRq61q0ehucBAg
+  for <bpf@vger.kernel.org>;
+  Wed, 07 Jan 2026 02:29:30 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=navercorp.com;
+	s=s20171120; t=1767752970;
+	bh=vrmaHrm+Bj/vX/5LtR1MsluGwpf9RwxIyyEm0x6F5YY=;
+	h=From:To:Subject:Date:Message-Id:From:Subject:Feedback-ID:
+	 X-Works-Security;
+	b=kWUT7JrIcA4eWaRBs+M/BEZa83RsMJkpSR5WrrOEKwEPK9jrkavnZRXF1OAA8PYSI
+	 zX4nETfIos44NMJO0BCikMOVFjW9eiAg2VL5G+4PSfJTSlBIna+ABPmhBK5G1HzHsD
+	 u81aAZM+lm111ANmLeTWnhNh+Y9Ulmnu30mvopGk0rjUJUWdL/BJD0wZjV+E5K91dw
+	 OQcL39JEh2QrOexxxRRx282WHyMd5SRXq21iQPaXg4JC+mfexkzsZBkTbyt2noTIeH
+	 fIeHnvXP/4HEmiKWOr1isWvqFEuFp0th3Og2ux6GnrynrHTIWgsfdc4GC9Lo35MhFm
+	 mrZngkUltOvXQ==
+X-Session-ID: 1OH1s1e9RmaR0aFndciuog
+X-Works-Send-Opt: xQbwjAiYjHm2KHwYjHmlUVg=
+X-Works-Smtp-Source: QZKZFqbrFqJZ+HmmFqEm+6E=
+Received: from localhost.localdomain ([10.25.143.76])
+  by cvnsmtp01.nmdf.navercorp.com with ESMTP id 1OH1s1e9RmaR0aFndciuog
+  for <multiple recipients>
+  (version=TLSv1.3 cipher=TLS_CHACHA20_POLY1305_SHA256);
+  Wed, 07 Jan 2026 02:29:30 -0000
+From: gyutae.opensource@navercorp.com
+To: Quentin Monnet <qmo@kernel.org>,
+	bpf@vger.kernel.org,
+	Daniel Borkmann <daniel@iogearbox.net>
+Cc: linux-kernel@vger.kernel.org,
+	Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
 	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
 	John Fastabend <john.fastabend@gmail.com>,
 	KP Singh <kpsingh@kernel.org>,
 	Stanislav Fomichev <sdf@fomichev.me>,
 	Hao Luo <haoluo@google.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Jason Xing <kerneljasonxing@gmail.com>,
-	Willem de Bruijn <willemb@google.com>,
-	Mykyta Yatsenko <yatsenko@meta.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Gyutae Bae <gyutae.bae@navercorp.com>,
+	Siwan Kim <siwan.kim@navercorp.com>,
+	Daniel Xu <dxu@dxuuu.xyz>,
+	Jiayuan Chen <jiayuan.chen@linux.dev>,
 	Tao Chen <chen.dylane@linux.dev>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Anton Protopopov <a.s.protopopov@gmail.com>,
-	Amery Hung <ameryhung@gmail.com>,
-	Tobias Klauser <tklauser@distanz.ch>,
-	Rong Tao <rongtao@cestc.cn>,
-	dxu@dxuuu.xyz,
-	deso@posteo.net,
-	Leon Hwang <leon.hwang@linux.dev>,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	kernel-patches-bot@fb.com
-Subject: [PATCH bpf-next v13 7/7] selftests/bpf: Add cases to test BPF_F_CPU and BPF_F_ALL_CPUS flags
-Date: Wed,  7 Jan 2026 10:20:22 +0800
-Message-ID: <20260107022022.12843-8-leon.hwang@linux.dev>
-In-Reply-To: <20260107022022.12843-1-leon.hwang@linux.dev>
-References: <20260107022022.12843-1-leon.hwang@linux.dev>
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Subject: [PATCH v3] bpftool: Add 'prepend' option for tcx attach to insert at chain start
+Date: Wed,  7 Jan 2026 11:29:11 +0900
+Message-Id: <20260107022911.81672-1-gyutae.opensource@navercorp.com>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
+In-Reply-To: <43c23468-530b-45f3-af22-f03484e5148c@kernel.org>
+References: <43c23468-530b-45f3-af22-f03484e5148c@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -82,431 +87,216 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-Add test coverage for the new BPF_F_CPU and BPF_F_ALL_CPUS flags support
-in percpu maps. The following APIs are exercised:
+From: Gyutae Bae <gyutae.bae@navercorp.com>
 
-* bpf_map_update_batch()
-* bpf_map_lookup_batch()
-* bpf_map_update_elem()
-* bpf_map__update_elem()
-* bpf_map_lookup_elem_flags()
-* bpf_map__lookup_elem()
+Add support for the 'prepend' option when attaching tcx_ingress and
+tcx_egress programs. This option allows inserting a BPF program at
+the beginning of the TCX chain instead of appending it at the end.
 
-For lru_percpu_hash map, set max_entries to
-'libbpf_num_possible_cpus() + 1' and only use the first
-'libbpf_num_possible_cpus()' entries. This ensures a spare entry is always
-available in the LRU free list, avoiding eviction.
+The implementation uses BPF_F_BEFORE flag which automatically inserts
+the program at the beginning of the chain when no relative reference
+is specified.
 
-When updating an existing key in lru_percpu_hash map:
+This change includes:
+- Modify do_attach_tcx() to support prepend insertion using BPF_F_BEFORE
+- Update documentation to describe the new 'prepend' option
+- Add bash completion support for the 'prepend' option on tcx attach types
+- Add example usage in the documentation
 
-1. l_new = prealloc_lru_pop();  /* Borrow from free list */
-2. l_old = lookup_elem_raw();   /* Found, key exists */
-3. pcpu_copy_value();           /* In-place update */
-4. bpf_lru_push_free();         /* Return l_new to free list */
+The 'prepend' option is only valid for tcx_ingress and tcx_egress attach
+types. For XDP attach types, the existing 'overwrite' option remains
+available.
 
-Also add negative tests to verify that non-percpu array and hash maps
-reject the BPF_F_CPU and BPF_F_ALL_CPUS flags.
+Example usage:
+  # bpftool net attach tcx_ingress name tc_prog dev lo prepend
 
-Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
+This feature is useful when the order of program execution in the TCX
+chain matters and users need to ensure certain programs run first.
+
+Co-developed-by: Siwan Kim <siwan.kim@navercorp.com>
+Signed-off-by: Siwan Kim <siwan.kim@navercorp.com>
+Signed-off-by: Gyutae Bae <gyutae.bae@navercorp.com>
 ---
- .../selftests/bpf/prog_tests/percpu_alloc.c   | 328 ++++++++++++++++++
- .../selftests/bpf/progs/percpu_alloc_array.c  |  32 ++
- 2 files changed, 360 insertions(+)
+Hi Daniel.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/percpu_alloc.c b/tools/testing/selftests/bpf/prog_tests/percpu_alloc.c
-index 343da65864d6..c1d0949f093f 100644
---- a/tools/testing/selftests/bpf/prog_tests/percpu_alloc.c
-+++ b/tools/testing/selftests/bpf/prog_tests/percpu_alloc.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <test_progs.h>
-+#include "cgroup_helpers.h"
- #include "percpu_alloc_array.skel.h"
- #include "percpu_alloc_cgrp_local_storage.skel.h"
- #include "percpu_alloc_fail.skel.h"
-@@ -115,6 +116,321 @@ static void test_failure(void) {
- 	RUN_TESTS(percpu_alloc_fail);
+Thank you for the detailed feedback. Thanks to your explanation,
+I now understand that BPF_F_BEFORE and BPF_F_AFTER work as standalone flags.
+This has made the implementation much simpler and cleaner.
+
+Thanks,
+Gyutae.
+
+Changes in v3:
+- Simplified implementation by using BPF_F_BEFORE alone (Daniel)
+- Removed get_first_tcx_prog_id() helper function (Daniel)
+
+Changes in v2:
+- Renamed 'head' to 'prepend' for consistency with 'overwrite' (Quentin)
+- Moved relative_id variable to relevant scope inside if block (Quentin)
+- Changed condition style from '== 0' to '!' (Quentin)
+- Updated documentation to clarify 'overwrite' is XDP-only (Quentin)
+- Removed outdated "only XDP-related modes are supported" note (Quentin)
+- Removed extra help text from do_help() for consistency (Quentin)
+
+ .../bpf/bpftool/Documentation/bpftool-net.rst | 30 ++++++++++++++-----
+ tools/bpf/bpftool/bash-completion/bpftool     |  9 +++++-
+ tools/bpf/bpftool/net.c                       | 23 +++++++++++---
+ 3 files changed, 50 insertions(+), 12 deletions(-)
+
+diff --git a/tools/bpf/bpftool/Documentation/bpftool-net.rst b/tools/bpf/bpftool/Documentation/bpftool-net.rst
+index a9ed8992800f..22da07087e42 100644
+--- a/tools/bpf/bpftool/Documentation/bpftool-net.rst
++++ b/tools/bpf/bpftool/Documentation/bpftool-net.rst
+@@ -24,7 +24,7 @@ NET COMMANDS
+ ============
+
+ | **bpftool** **net** { **show** | **list** } [ **dev** *NAME* ]
+-| **bpftool** **net attach** *ATTACH_TYPE* *PROG* **dev** *NAME* [ **overwrite** ]
++| **bpftool** **net attach** *ATTACH_TYPE* *PROG* **dev** *NAME* [ **overwrite** | **prepend** ]
+ | **bpftool** **net detach** *ATTACH_TYPE* **dev** *NAME*
+ | **bpftool** **net help**
+ |
+@@ -58,11 +58,9 @@ bpftool net { show | list } [ dev *NAME* ]
+     then all bpf programs attached to non clsact qdiscs, and finally all bpf
+     programs attached to root and clsact qdisc.
+
+-bpftool net attach *ATTACH_TYPE* *PROG* dev *NAME* [ overwrite ]
++bpftool net attach *ATTACH_TYPE* *PROG* dev *NAME* [ overwrite | prepend ]
+     Attach bpf program *PROG* to network interface *NAME* with type specified
+-    by *ATTACH_TYPE*. Previously attached bpf program can be replaced by the
+-    command used with **overwrite** option. Currently, only XDP-related modes
+-    are supported for *ATTACH_TYPE*.
++    by *ATTACH_TYPE*.
+
+     *ATTACH_TYPE* can be of:
+     **xdp** - try native XDP and fallback to generic XDP if NIC driver does not support it;
+@@ -72,11 +70,18 @@ bpftool net attach *ATTACH_TYPE* *PROG* dev *NAME* [ overwrite ]
+     **tcx_ingress** - Ingress TCX. runs on ingress net traffic;
+     **tcx_egress** - Egress TCX. runs on egress net traffic;
+
++    For XDP-related attach types (**xdp**, **xdpgeneric**, **xdpdrv**,
++    **xdpoffload**), the **overwrite** option can be used to replace a
++    previously attached bpf program.
++
++    For **tcx_ingress** and **tcx_egress** attach types, the **prepend** option
++    can be used to attach the program at the beginning of the chain instead of
++    at the end.
++
+ bpftool net detach *ATTACH_TYPE* dev *NAME*
+     Detach bpf program attached to network interface *NAME* with type specified
+     by *ATTACH_TYPE*. To detach bpf program, same *ATTACH_TYPE* previously used
+-    for attach must be specified. Currently, only XDP-related modes are
+-    supported for *ATTACH_TYPE*.
++    for attach must be specified.
+
+ bpftool net help
+     Print short help message.
+@@ -191,6 +196,17 @@ EXAMPLES
+       tc:
+       lo(1) tcx/ingress tc_prog prog_id 29
+
++|
++| **# bpftool net attach tcx_ingress name tc_prog2 dev lo prepend**
++| **# bpftool net**
++|
++
++::
++
++      tc:
++      lo(1) tcx/ingress tc_prog2 prog_id 30
++      lo(1) tcx/ingress tc_prog prog_id 29
++
+ |
+ | **# bpftool net attach tcx_ingress name tc_prog dev lo**
+ | **# bpftool net detach tcx_ingress dev lo**
+diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
+index 53bcfeb1a76e..a28f0cc522e4 100644
+--- a/tools/bpf/bpftool/bash-completion/bpftool
++++ b/tools/bpf/bpftool/bash-completion/bpftool
+@@ -1142,7 +1142,14 @@ _bpftool()
+                             return 0
+                             ;;
+                         8)
+-                            _bpftool_once_attr 'overwrite'
++                            case ${words[3]} in
++                                tcx_ingress|tcx_egress)
++                                    _bpftool_once_attr 'prepend'
++                                    ;;
++                                *)
++                                    _bpftool_once_attr 'overwrite'
++                                    ;;
++                            esac
+                             return 0
+                             ;;
+                     esac
+diff --git a/tools/bpf/bpftool/net.c b/tools/bpf/bpftool/net.c
+index cfc6f944f7c3..1a2ba3312a82 100644
+--- a/tools/bpf/bpftool/net.c
++++ b/tools/bpf/bpftool/net.c
+@@ -666,10 +666,16 @@ static int get_tcx_type(enum net_attach_type attach_type)
+ 	}
  }
- 
-+static void test_percpu_map_op_cpu_flag(struct bpf_map *map, void *keys, size_t key_sz, u32 entries,
-+					int nr_cpus, bool test_batch)
-+{
-+	size_t value_sz = sizeof(u32), value_sz_cpus, value_sz_total;
-+	u32 *values = NULL, *values_percpu = NULL;
-+	const u32 value = 0xDEADC0DE;
-+	int i, j, cpu, map_fd, err;
-+	u64 batch = 0, flags;
-+	void *values_row;
-+	u32 count, v;
-+	LIBBPF_OPTS(bpf_map_batch_opts, batch_opts);
-+
-+	value_sz_cpus = value_sz * nr_cpus;
-+	values = calloc(entries, value_sz_cpus);
-+	if (!ASSERT_OK_PTR(values, "calloc values"))
-+		return;
-+
-+	values_percpu = calloc(entries, roundup(value_sz, 8) * nr_cpus);
-+	if (!ASSERT_OK_PTR(values_percpu, "calloc values_percpu")) {
-+		free(values);
-+		return;
-+	}
-+
-+	value_sz_total = value_sz_cpus * entries;
-+	memset(values, 0, value_sz_total);
-+
-+	map_fd = bpf_map__fd(map);
-+	flags = BPF_F_CPU | BPF_F_ALL_CPUS;
-+	err = bpf_map_lookup_elem_flags(map_fd, keys, values, flags);
-+	if (!ASSERT_ERR(err, "bpf_map_lookup_elem_flags cpu|all_cpus"))
-+		goto out;
-+
-+	err = bpf_map_update_elem(map_fd, keys, values, flags);
-+	if (!ASSERT_ERR(err, "bpf_map_update_elem cpu|all_cpus"))
-+		goto out;
-+
-+	flags = BPF_F_ALL_CPUS;
-+	err = bpf_map_lookup_elem_flags(map_fd, keys, values, flags);
-+	if (!ASSERT_ERR(err, "bpf_map_lookup_elem_flags all_cpus"))
-+		goto out;
-+
-+	flags = BPF_F_LOCK | BPF_F_CPU;
-+	err = bpf_map_lookup_elem_flags(map_fd, keys, values, flags);
-+	if (!ASSERT_ERR(err, "bpf_map_lookup_elem_flags BPF_F_LOCK"))
-+		goto out;
-+
-+	flags = BPF_F_LOCK | BPF_F_ALL_CPUS;
-+	err = bpf_map_update_elem(map_fd, keys, values, flags);
-+	if (!ASSERT_ERR(err, "bpf_map_update_elem BPF_F_LOCK"))
-+		goto out;
-+
-+	flags = (u64)nr_cpus << 32 | BPF_F_CPU;
-+	err = bpf_map_update_elem(map_fd, keys, values, flags);
-+	if (!ASSERT_EQ(err, -ERANGE, "bpf_map_update_elem -ERANGE"))
-+		goto out;
-+
-+	err = bpf_map__update_elem(map, keys, key_sz, values, value_sz, flags);
-+	if (!ASSERT_EQ(err, -ERANGE, "bpf_map__update_elem -ERANGE"))
-+		goto out;
-+
-+	err = bpf_map_lookup_elem_flags(map_fd, keys, values, flags);
-+	if (!ASSERT_EQ(err, -ERANGE, "bpf_map_lookup_elem_flags -ERANGE"))
-+		goto out;
-+
-+	err = bpf_map__lookup_elem(map, keys, key_sz, values, value_sz, flags);
-+	if (!ASSERT_EQ(err, -ERANGE, "bpf_map__lookup_elem -ERANGE"))
-+		goto out;
-+
-+	for (cpu = 0; cpu < nr_cpus; cpu++) {
-+		/* clear value on all cpus */
-+		values[0] = 0;
-+		flags = BPF_F_ALL_CPUS;
-+		for (i = 0; i < entries; i++) {
-+			err = bpf_map__update_elem(map, keys + i * key_sz, key_sz, values,
-+						   value_sz, flags);
-+			if (!ASSERT_OK(err, "bpf_map__update_elem all_cpus"))
-+				goto out;
-+		}
-+
-+		/* update value on specified cpu */
-+		for (i = 0; i < entries; i++) {
-+			values[0] = value;
-+			flags = (u64)cpu << 32 | BPF_F_CPU;
-+			err = bpf_map__update_elem(map, keys + i * key_sz, key_sz, values,
-+						   value_sz, flags);
-+			if (!ASSERT_OK(err, "bpf_map__update_elem specified cpu"))
-+				goto out;
-+
-+			/* lookup then check value on CPUs */
-+			for (j = 0; j < nr_cpus; j++) {
-+				flags = (u64)j << 32 | BPF_F_CPU;
-+				err = bpf_map__lookup_elem(map, keys + i * key_sz, key_sz, values,
-+							   value_sz, flags);
-+				if (!ASSERT_OK(err, "bpf_map__lookup_elem specified cpu"))
-+					goto out;
-+				if (!ASSERT_EQ(values[0], j != cpu ? 0 : value,
-+					       "bpf_map__lookup_elem value on specified cpu"))
-+					goto out;
-+			}
-+		}
-+	}
-+
-+	if (!test_batch)
-+		goto out;
-+
-+	count = entries;
-+	batch_opts.elem_flags = (u64)nr_cpus << 32 | BPF_F_CPU;
-+	err = bpf_map_update_batch(map_fd, keys, values, &count, &batch_opts);
-+	if (!ASSERT_EQ(err, -ERANGE, "bpf_map_update_batch -ERANGE"))
-+		goto out;
-+
-+	for (cpu = 0; cpu < nr_cpus; cpu++) {
-+		memset(values, 0, value_sz_total);
-+
-+		/* clear values across all CPUs */
-+		count = entries;
-+		batch_opts.elem_flags = BPF_F_ALL_CPUS;
-+		err = bpf_map_update_batch(map_fd, keys, values, &count, &batch_opts);
-+		if (!ASSERT_OK(err, "bpf_map_update_batch all_cpus"))
-+			goto out;
-+
-+		/* update values on specified CPU */
-+		for (i = 0; i < entries; i++)
-+			values[i] = value;
-+
-+		count = entries;
-+		batch_opts.elem_flags = (u64)cpu << 32 | BPF_F_CPU;
-+		err = bpf_map_update_batch(map_fd, keys, values, &count, &batch_opts);
-+		if (!ASSERT_OK(err, "bpf_map_update_batch specified cpu"))
-+			goto out;
-+
-+		/* lookup values on specified CPU */
-+		batch = 0;
-+		count = entries;
-+		memset(values, 0, entries * value_sz);
-+		err = bpf_map_lookup_batch(map_fd, NULL, &batch, keys, values, &count, &batch_opts);
-+		if (!ASSERT_TRUE(!err || err == -ENOENT, "bpf_map_lookup_batch specified cpu"))
-+			goto out;
-+
-+		for (i = 0; i < entries; i++)
-+			if (!ASSERT_EQ(values[i], value,
-+				       "bpf_map_lookup_batch value on specified cpu"))
-+				goto out;
-+
-+		/* lookup values from all CPUs */
-+		batch = 0;
-+		count = entries;
-+		batch_opts.elem_flags = 0;
-+		memset(values_percpu, 0, roundup(value_sz, 8) * nr_cpus * entries);
-+		err = bpf_map_lookup_batch(map_fd, NULL, &batch, keys, values_percpu, &count,
-+					   &batch_opts);
-+		if (!ASSERT_TRUE(!err || err == -ENOENT, "bpf_map_lookup_batch all_cpus"))
-+			goto out;
-+
-+		for (i = 0; i < entries; i++) {
-+			values_row = (void *) values_percpu +
-+				     roundup(value_sz, 8) * i * nr_cpus;
-+			for (j = 0; j < nr_cpus; j++) {
-+				v = *(u32 *) (values_row + roundup(value_sz, 8) * j);
-+				if (!ASSERT_EQ(v, j != cpu ? 0 : value,
-+					       "bpf_map_lookup_batch value all_cpus"))
-+					goto out;
-+			}
-+		}
-+	}
-+
-+out:
-+	free(values_percpu);
-+	free(values);
-+}
-+
-+
-+static void test_percpu_map_cpu_flag(enum bpf_map_type map_type)
-+{
-+	struct percpu_alloc_array *skel;
-+	size_t key_sz = sizeof(int);
-+	int *keys, nr_cpus, i, err;
-+	struct bpf_map *map;
-+	u32 max_entries;
-+
-+	nr_cpus = libbpf_num_possible_cpus();
-+	if (!ASSERT_GT(nr_cpus, 0, "libbpf_num_possible_cpus"))
-+		return;
-+
-+	max_entries = nr_cpus + 1;
-+	keys = calloc(max_entries, key_sz);
-+	if (!ASSERT_OK_PTR(keys, "calloc keys"))
-+		return;
-+
-+	for (i = 0; i < max_entries; i++)
-+		keys[i] = i;
-+
-+	skel = percpu_alloc_array__open();
-+	if (!ASSERT_OK_PTR(skel, "percpu_alloc_array__open")) {
-+		free(keys);
-+		return;
-+	}
-+
-+	map = skel->maps.percpu;
-+	bpf_map__set_type(map, map_type);
-+	bpf_map__set_max_entries(map, max_entries);
-+
-+	err = percpu_alloc_array__load(skel);
-+	if (!ASSERT_OK(err, "test_percpu_alloc__load"))
-+		goto out;
-+
-+	test_percpu_map_op_cpu_flag(map, keys, key_sz, max_entries - 1, nr_cpus, true);
-+out:
-+	percpu_alloc_array__destroy(skel);
-+	free(keys);
-+}
-+
-+static void test_percpu_array_cpu_flag(void)
-+{
-+	test_percpu_map_cpu_flag(BPF_MAP_TYPE_PERCPU_ARRAY);
-+}
-+
-+static void test_percpu_hash_cpu_flag(void)
-+{
-+	test_percpu_map_cpu_flag(BPF_MAP_TYPE_PERCPU_HASH);
-+}
-+
-+static void test_lru_percpu_hash_cpu_flag(void)
-+{
-+	test_percpu_map_cpu_flag(BPF_MAP_TYPE_LRU_PERCPU_HASH);
-+}
-+
-+static void test_percpu_cgroup_storage_cpu_flag(void)
-+{
-+	struct percpu_alloc_array *skel = NULL;
-+	struct bpf_cgroup_storage_key key;
-+	int cgroup, prog_fd, nr_cpus, err;
-+	struct bpf_map *map;
-+
-+	nr_cpus = libbpf_num_possible_cpus();
-+	if (!ASSERT_GT(nr_cpus, 0, "libbpf_num_possible_cpus"))
-+		return;
-+
-+	err = setup_cgroup_environment();
-+	if (!ASSERT_OK(err, "setup_cgroup_environment"))
-+		return;
-+
-+	cgroup = create_and_get_cgroup("/cg_percpu");
-+	if (!ASSERT_GE(cgroup, 0, "create_and_get_cgroup")) {
-+		cleanup_cgroup_environment();
-+		return;
-+	}
-+
-+	err = join_cgroup("/cg_percpu");
-+	if (!ASSERT_OK(err, "join_cgroup"))
-+		goto out;
-+
-+	skel = percpu_alloc_array__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "percpu_alloc_array__open_and_load"))
-+		goto out;
-+
-+	prog_fd = bpf_program__fd(skel->progs.cgroup_egress);
-+	err = bpf_prog_attach(prog_fd, cgroup, BPF_CGROUP_INET_EGRESS, 0);
-+	if (!ASSERT_OK(err, "bpf_prog_attach"))
-+		goto out;
-+
-+	map = skel->maps.percpu_cgroup_storage;
-+	err = bpf_map_get_next_key(bpf_map__fd(map), NULL, &key);
-+	if (!ASSERT_OK(err, "bpf_map_get_next_key"))
-+		goto out;
-+
-+	test_percpu_map_op_cpu_flag(map, &key, sizeof(key), 1, nr_cpus, false);
-+out:
-+	bpf_prog_detach2(-1, cgroup, BPF_CGROUP_INET_EGRESS);
-+	close(cgroup);
-+	cleanup_cgroup_environment();
-+	percpu_alloc_array__destroy(skel);
-+}
-+
-+static void test_map_op_cpu_flag(enum bpf_map_type map_type)
-+{
-+	u32 max_entries = 1, count = max_entries;
-+	u64 flags, batch = 0, val = 0;
-+	int err, map_fd, key = 0;
-+	LIBBPF_OPTS(bpf_map_batch_opts, batch_opts);
-+
-+	map_fd = bpf_map_create(map_type, "test_cpu_flag", sizeof(int), sizeof(u64), max_entries,
-+				NULL);
-+	if (!ASSERT_GE(map_fd, 0, "bpf_map_create"))
-+		return;
-+
-+	flags = BPF_F_ALL_CPUS;
-+	err = bpf_map_update_elem(map_fd, &key, &val, flags);
-+	ASSERT_ERR(err, "bpf_map_update_elem all_cpus");
-+
-+	batch_opts.elem_flags = BPF_F_ALL_CPUS;
-+	err = bpf_map_update_batch(map_fd, &key, &val, &count, &batch_opts);
-+	ASSERT_ERR(err, "bpf_map_update_batch all_cpus");
-+
-+	flags = BPF_F_CPU;
-+	err = bpf_map_lookup_elem_flags(map_fd, &key, &val, flags);
-+	ASSERT_ERR(err, "bpf_map_lookup_elem_flags cpu");
-+
-+	batch_opts.elem_flags = BPF_F_CPU;
-+	err = bpf_map_lookup_batch(map_fd, NULL, &batch, &key, &val, &count, &batch_opts);
-+	ASSERT_ERR(err, "bpf_map_lookup_batch cpu");
-+
-+	close(map_fd);
-+}
-+
-+static void test_array_cpu_flag(void)
-+{
-+	test_map_op_cpu_flag(BPF_MAP_TYPE_ARRAY);
-+}
-+
-+static void test_hash_cpu_flag(void)
-+{
-+	test_map_op_cpu_flag(BPF_MAP_TYPE_HASH);
-+}
-+
- void test_percpu_alloc(void)
+
+-static int do_attach_tcx(int progfd, enum net_attach_type attach_type, int ifindex)
++static int do_attach_tcx(int progfd, enum net_attach_type attach_type, int ifindex, bool prepend)
  {
- 	if (test__start_subtest("array"))
-@@ -125,4 +441,16 @@ void test_percpu_alloc(void)
- 		test_cgrp_local_storage();
- 	if (test__start_subtest("failure_tests"))
- 		test_failure();
-+	if (test__start_subtest("cpu_flag_percpu_array"))
-+		test_percpu_array_cpu_flag();
-+	if (test__start_subtest("cpu_flag_percpu_hash"))
-+		test_percpu_hash_cpu_flag();
-+	if (test__start_subtest("cpu_flag_lru_percpu_hash"))
-+		test_lru_percpu_hash_cpu_flag();
-+	if (test__start_subtest("cpu_flag_percpu_cgroup_storage"))
-+		test_percpu_cgroup_storage_cpu_flag();
-+	if (test__start_subtest("cpu_flag_array"))
-+		test_array_cpu_flag();
-+	if (test__start_subtest("cpu_flag_hash"))
-+		test_hash_cpu_flag();
+ 	int type = get_tcx_type(attach_type);
+
++	if (prepend) {
++		LIBBPF_OPTS(bpf_prog_attach_opts, opts,
++			.flags = BPF_F_BEFORE
++		);
++		return bpf_prog_attach_opts(progfd, ifindex, type, &opts);
++	}
+ 	return bpf_prog_attach(progfd, ifindex, type, 0);
  }
-diff --git a/tools/testing/selftests/bpf/progs/percpu_alloc_array.c b/tools/testing/selftests/bpf/progs/percpu_alloc_array.c
-index 37c2d2608ec0..ed6a2a93d5a5 100644
---- a/tools/testing/selftests/bpf/progs/percpu_alloc_array.c
-+++ b/tools/testing/selftests/bpf/progs/percpu_alloc_array.c
-@@ -187,4 +187,36 @@ int BPF_PROG(test_array_map_10)
- 	return 0;
- }
- 
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__uint(max_entries, 2);
-+	__type(key, int);
-+	__type(value, u32);
-+} percpu SEC(".maps");
-+
-+SEC("?fentry/bpf_fentry_test1")
-+int BPF_PROG(test_percpu_array, int x)
-+{
-+	u64 value = 0xDEADC0DE;
-+	int key = 0;
-+
-+	bpf_map_update_elem(&percpu, &key, &value, BPF_ANY);
-+	return 0;
-+}
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE);
-+	__type(key, struct bpf_cgroup_storage_key);
-+	__type(value, u32);
-+} percpu_cgroup_storage SEC(".maps");
-+
-+SEC("cgroup_skb/egress")
-+int cgroup_egress(struct __sk_buff *skb)
-+{
-+	u32 *val = bpf_get_local_storage(&percpu_cgroup_storage, 0);
-+
-+	*val = 1;
-+	return 1;
-+}
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.52.0
+
+@@ -685,6 +691,7 @@ static int do_attach(int argc, char **argv)
+ 	enum net_attach_type attach_type;
+ 	int progfd, ifindex, err = 0;
+ 	bool overwrite = false;
++	bool prepend = false;
+
+ 	/* parse attach args */
+ 	if (!REQ_ARGS(5))
+@@ -710,8 +717,16 @@ static int do_attach(int argc, char **argv)
+ 	if (argc) {
+ 		if (is_prefix(*argv, "overwrite")) {
+ 			overwrite = true;
++		} else if (is_prefix(*argv, "prepend")) {
++			if (attach_type != NET_ATTACH_TYPE_TCX_INGRESS &&
++			    attach_type != NET_ATTACH_TYPE_TCX_EGRESS) {
++				p_err("'prepend' is only supported for tcx_ingress/tcx_egress");
++				err = -EINVAL;
++				goto cleanup;
++			}
++			prepend = true;
+ 		} else {
+-			p_err("expected 'overwrite', got: '%s'?", *argv);
++			p_err("expected 'overwrite' or 'prepend', got: '%s'?", *argv);
+ 			err = -EINVAL;
+ 			goto cleanup;
+ 		}
+@@ -728,7 +743,7 @@ static int do_attach(int argc, char **argv)
+ 	/* attach tcx prog */
+ 	case NET_ATTACH_TYPE_TCX_INGRESS:
+ 	case NET_ATTACH_TYPE_TCX_EGRESS:
+-		err = do_attach_tcx(progfd, attach_type, ifindex);
++		err = do_attach_tcx(progfd, attach_type, ifindex, prepend);
+ 		break;
+ 	default:
+ 		break;
+@@ -985,7 +1000,7 @@ static int do_help(int argc, char **argv)
+
+ 	fprintf(stderr,
+ 		"Usage: %1$s %2$s { show | list } [dev <devname>]\n"
+-		"       %1$s %2$s attach ATTACH_TYPE PROG dev <devname> [ overwrite ]\n"
++		"       %1$s %2$s attach ATTACH_TYPE PROG dev <devname> [ overwrite | prepend ]\n"
+ 		"       %1$s %2$s detach ATTACH_TYPE dev <devname>\n"
+ 		"       %1$s %2$s help\n"
+ 		"\n"
+--
+2.39.5 (Apple Git-154)
 
 
