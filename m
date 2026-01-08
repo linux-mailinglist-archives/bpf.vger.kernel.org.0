@@ -1,441 +1,315 @@
-Return-Path: <bpf+bounces-78243-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78244-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id A18E7D05722
-	for <lists+bpf@lfdr.de>; Thu, 08 Jan 2026 19:19:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 26A52D058ED
+	for <lists+bpf@lfdr.de>; Thu, 08 Jan 2026 19:32:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 2D9C93035A80
-	for <lists+bpf@lfdr.de>; Thu,  8 Jan 2026 18:18:57 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 452B430537A0
+	for <lists+bpf@lfdr.de>; Thu,  8 Jan 2026 18:28:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 715ED30FC32;
-	Thu,  8 Jan 2026 18:18:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C381531326B;
+	Thu,  8 Jan 2026 18:28:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="NA5UXynL";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="d5XwgHA3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J+nsCcUw"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A85B30F921;
-	Thu,  8 Jan 2026 18:18:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767896335; cv=fail; b=IWBeVTyNOn1B4pu/mMzwA8fSSaswE5ruXkf4tZmsIJ85u2dqarPA82sHIhE2rszwqJIeYdAtn+jRn3qK5Y4Uv/thFjQdfuFJKNXqhB6fayU+OJTQWXoTZdo2rNpzl/FCYanYmfN3aaNlsqJUVNViapeJVl4S4HFmTxd6IpLPrSg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767896335; c=relaxed/simple;
-	bh=i2fhqxCgZX2aA/6Wz+QjjikZpClCpeBpt9jmfJyXdIA=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=LB7EMxs9ZV5iZBgHmVXVnHWbTb7F1H41ESw/CKYtKGbMf+a1OWpasAVaTU4uI9BjsjLblwE+HwdesmVZLiLQQvL3kRTRbwiWlwjJvTaGqubZ4ZWb4FZrbIyjKkezkjy+QTDU8OOeX9E4T66fTwmwUQhaahcN6eZmbjsACnV4Vpo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=NA5UXynL; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=d5XwgHA3; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 608FnHa8424970;
-	Thu, 8 Jan 2026 18:18:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	corp-2025-04-25; bh=ub3RKgI8h4dhqLgX8sLc0Ugv1rVt6SW+ERNa+o5pYfg=; b=
-	NA5UXynLTkfM/nsgbmRNsSzBXIv3nBdEhcx7oS0ffIND8F3k7ogLpFQt9jlg8Wgi
-	DGfR1qoRvXOq1eLj/wml7qmPS2uaLxQI5MZ+t3Vis7dEyy02wvoW5cVj+2Ki2LLZ
-	xqJ/oWhRbJtZU+6EPOYGQxWIQe/n/m7RlXKZBTPZIXvPS02ax02gqDgwzYUJsxS+
-	ik1PJGF7MgppybV7K/KMQILaZ1P6MLyejc8rRYKe+KuV3lKiPgcpfJgN65MICKVg
-	cpgy8lwLW3EkGSEnqFRdjdP6C2Mzp3KEVQZbEm5jP+4FL4vKim2F4rjVbA1oUwVz
-	90WmBPLYC9IoIF3md3Evjg==
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4bjfjd87t3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 08 Jan 2026 18:18:28 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 608HNZxf030767;
-	Thu, 8 Jan 2026 18:18:27 GMT
-Received: from sa9pr02cu001.outbound.protection.outlook.com (mail-southcentralusazon11013012.outbound.protection.outlook.com [40.93.196.12])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 4besjfegce-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 08 Jan 2026 18:18:27 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=k+8GJYGM95Yp/mEtZQLFJ04tRER6wPT5u8bn7QPfgeIqpXrH8ltgp88IRWDpW6gM78FDX6KmnkY9uOy2lDEfpI2ib4+4wf3jUiUDGQVm0eGwdSpTaSuM1xIg4pLFcf/moBK4+BMSo+BLwBeIvOaXbMnUkztGJ0S7QoZsrYR2G/9dLO/lx08YVlzTPkOv3Y5O3CWo0uyNCE2oj2Ww9LbzdZfg6NW3b30swIMuDP8e1ZNYTTyrXY2xpvKE7ZfPgZomJBut/LCBw3vmcWiO8HF7Q8Lwcs6+HM6qG1VK3h0OyIquLzBIoP0jZnp/9oxwN92LbY7q2NOIsa85L/87ECTR1g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ub3RKgI8h4dhqLgX8sLc0Ugv1rVt6SW+ERNa+o5pYfg=;
- b=fXt/vVu1auJaU2VapIOmYLxmoprNYBPC4DWE+R5qN/uyhGpoz+10YXrDf1N2i2gTxLCU505sIUkyB+zwHSA1bQaBoB/Ja/JgMMhR2WxBTpLg0SfzaCmxRqOIUv4N25Pz0omXLN5hMQqU5B5F7Ej/QP6QVcSlFW170XwYM6SnCHSFBGLNdWhxinNx0CnZO6kTxHJVL+eJlHbdtbfPiWdy29eAMkc4LpKgPzP4zx/NB5+fCJSFSEBQONLJ090quXV+xBBol0rvXBTiaqRk4C/GHIAKzeO+4YiKQNyj7jaAqGSUBmkA8Bi7LFWfrJkFGdl5vDON/WZjzW8+Ae3uoYMUtg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 910D330F7E8
+	for <bpf@vger.kernel.org>; Thu,  8 Jan 2026 18:28:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1767896931; cv=none; b=uRumIymfznU4X0p/dMrPsvIi0Yko7Y3LBR7Ujf7H+sNhUrB2a38Fri0EBssxPiqT2jYWT1DUBUNE/sZsu8n9BIgz7usCa0nGG4q2K7iZ1/sphsARJlQzeegcf/R9NUIGieiyJ+/mu9r3jB6aWgAAN7kgyedm1qUVQ3tU3EohWSI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1767896931; c=relaxed/simple;
+	bh=8s2JMPvj3seXrHZOd2ri0cCgv0uQomBHGcpFMqML/bQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MIPXUf0AqGNKhiznsAfsaAxQtkeThCQhXUpvrvRj99l0ecTjlLS/q8fhgrW+jZn/2dW5No4WMPI1lKDg5SWPYWavf1cXozb1tMJCnVvwYsu9tJCAT0LQEG2c0+8EKmdUi3TJSfVf+IUyBLYTGX6nNHfz+bEzR2Hs8bGp3MltrIw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J+nsCcUw; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-b8052725de4so489833866b.0
+        for <bpf@vger.kernel.org>; Thu, 08 Jan 2026 10:28:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ub3RKgI8h4dhqLgX8sLc0Ugv1rVt6SW+ERNa+o5pYfg=;
- b=d5XwgHA3pj5acSR44rv8LZvlZWR1HnzuAgS8YRXGlPMPPdGMdQgS+7mybaZu3kbcVKYSp5U4EhMPGM8J0zwRHemPpq7jibc7crIU/5L+gbPgAWYMtH/tKhxRBrD/KTqMPhSRA2XBXfAWZF4wZ2Y5+0RHLO2ZA9QX54c1uW6o+kk=
-Received: from DS0PR10MB6271.namprd10.prod.outlook.com (2603:10b6:8:d1::15) by
- SJ0PR10MB5696.namprd10.prod.outlook.com (2603:10b6:a03:3ef::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9499.2; Thu, 8 Jan 2026 18:18:20 +0000
-Received: from DS0PR10MB6271.namprd10.prod.outlook.com
- ([fe80::940b:88ca:dd2d:6b0c]) by DS0PR10MB6271.namprd10.prod.outlook.com
- ([fe80::940b:88ca:dd2d:6b0c%7]) with mapi id 15.20.9478.004; Thu, 8 Jan 2026
- 18:18:19 +0000
-Message-ID: <a25bddfb-4b43-47ab-a23c-03db99279435@oracle.com>
-Date: Thu, 8 Jan 2026 18:18:07 +0000
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH dwarves] btf_encoder: prefer strong function definitions
- for BTF generation
-To: Matt Bobrowski <mattbobrowski@google.com>
-Cc: Yonghong Song <yonghong.song@linux.dev>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        dwarves@vger.kernel.org, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-        KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>
-References: <20251231085322.3248063-1-mattbobrowski@google.com>
- <926aca4a-d7d5-4e7d-9096-77b27374c5cd@linux.dev>
- <aVt139VXMTka-hYw@google.com> <aVuk1e73g7ZTHqMY@google.com>
- <6b0968a3-406b-412f-acbb-c00ac2ad7c93@linux.dev>
- <aVwihhKEszvcyNKo@google.com>
- <ace92738-a52a-4248-b7d8-bcfce6f9af22@oracle.com>
- <aV6sNbs3vwCoGk49@google.com>
-Content-Language: en-GB
-From: Alan Maguire <alan.maguire@oracle.com>
-In-Reply-To: <aV6sNbs3vwCoGk49@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR0P281CA0132.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:97::14) To DS0PR10MB6271.namprd10.prod.outlook.com
- (2603:10b6:8:d1::15)
+        d=gmail.com; s=20230601; t=1767896928; x=1768501728; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5vdmP2Kw/hHYYv9cvUSxpu24BUomG1HqL2ISBo+CyrM=;
+        b=J+nsCcUwZFSHyEIrQ1528SxN3hvm39HyIE4t7xwvasIXUBAlyDayCKoiHTFYN3GxRA
+         tjOq3n/FIqqokZVHgwuT99j+nVt7HqjVldjuQanmxAvVn5OzC1+4kvJ4EWp1wajmHDOb
+         zlN9VdPThdtww1AFkdtS3o3/zc23MFQwOvTNLl50VqV/A2wL9cLvZ9U3Txzbw+5cT8BR
+         Y6lGKs8YyeW0NweBOC7rwxVbTDP7SGGspa7pQxztDktRJB2l9/1FjsEEQ4J3ZSDhaEVK
+         fe5ngQXTeCAwADL2OeFth/WsWVHWypohSL3280+mF1A2LBLt32B5B5QkMRZq3U7jd5hB
+         dw/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767896928; x=1768501728;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=5vdmP2Kw/hHYYv9cvUSxpu24BUomG1HqL2ISBo+CyrM=;
+        b=UmOMNiQvW9x/P9a2c86O5BDpvRdwVtOxdYhnrRwOkujnGtKDO3oy/OoFAuJl8rf+W+
+         pzhxD2kEF+Hjdxh8CGYPxhm3xxjZXumfkG9oKTsF6i/GdX8x1FtA+A5WBZ+77jwh4GYq
+         FbnB3bH5aeZGkuBXbukoNeCOcg3LH8/A/aQEWA7rVQ1rsWMuOkvsbxxXCrmZQCwcRko6
+         9gtrnQfR68ikXOXN5nh81blC4gpUU8DsUYCdd03WwO+EpLFnKfLGeBqy3y40cdWWgy3j
+         lD6bHZU1R4EJNLI+vcFMPedm1RSKWSVmWUEoeUf4kbo0Hc7m8lFOhiQSqc5wti2J7qRX
+         SGww==
+X-Gm-Message-State: AOJu0YzJrW3RRCg7g18eNSwliSnowZJ7J+L8c1IMxswIIuXkB+whh+IS
+	cmOTS1P+D2lajS532bqvv+9G5E718ZoOP73t2bcLtECuFT/ataN3Yvn01Tnu2/0Jw9ED8JGbMIS
+	BxyXVgZW43aGUaodaHHIEAL3eWJE+qKc=
+X-Gm-Gg: AY/fxX6AKKSTvSOiQsd/tx654xOY4HpwkNOqoFepSNubCOQKhgyyNXX8TM3MM7o6wSb
+	xGfAfrNy7O+XXgXXdai9+u+8z8GlOF66okHrsxGvxE1/osxRAm5echSC20C8T/tNdAf12InAy+G
+	btmdEqAjjqLifJcxln0+HT+MXnlVgoSh/VIqW14jGwwjsEqTilSra6WlcdKSGO6m5g8C+7e0r1f
+	06/blwo6sbigBsXdq3oQiKdzu7ewP1kMHqx+cK6hF+EW7dhIBW4YdmVR2AbUhjvfTcJZOQ8Wjk6
+	4mnM4ZiBSJf0XnlOpsx2jg==
+X-Google-Smtp-Source: AGHT+IGgRglr3/tqPTOH6oyogUHc3Ppspwvof351FjUqK+avtAK/hTRDCr+78SgSo0QnH/7RZY8Tv0L2Z5SaYUP46KE=
+X-Received: by 2002:a17:906:c103:b0:b72:d56f:3468 with SMTP id
+ a640c23a62f3a-b8444fc5b06mr698072266b.50.1767896927684; Thu, 08 Jan 2026
+ 10:28:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR10MB6271:EE_|SJ0PR10MB5696:EE_
-X-MS-Office365-Filtering-Correlation-Id: dabbae42-d3cb-43f2-23c1-08de4ee24d1e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|7416014|376014|366016|13003099007;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?ZUFGbjdIb3NiMDkwNHFVbDVjeGVXY2hTVlZlWm1DU0lvNTdFaXlBSHovKzRE?=
- =?utf-8?B?ZW84a09QOTNYaG9JaEpLZmwxRVorZmhhVFdPZkpwL3ZwOWIwSWV5WmxrN0hW?=
- =?utf-8?B?UXJIK0s4V2NSRWxSRWhocEJGS05zeVgvSGJNK285ZFJyS1IyOHdlU1J3dlpj?=
- =?utf-8?B?dXIyOUF4MkRLNFFxR05ZVUVqKzRDSU5NRnZwbDZCNHhiRnVzWVU3bkwwbDJq?=
- =?utf-8?B?OWJMdVh3dk5WODNTS3IvalhyOFJqQW41ejA0bTZEeGhKdEdYTjVKTmZLMVVh?=
- =?utf-8?B?VzNTeVR6YVE2dSt5a3k2OHUxYUx2SThkT29OL3pKeFBxd1c0N3QrZCs3NHZU?=
- =?utf-8?B?NDZHWm1YR1U3VS83ZGJOYWdYdVBDMHJzV2dzWEt5Y1BFY2xjeENMR0RrVjZS?=
- =?utf-8?B?NWZDM3BWcjQxa3cyQ01mSW1Cajc4dmk5RlRaK25XZkduNHdmVm5YZnZIR0w3?=
- =?utf-8?B?MXRQMG9aNHB1SE5FZUc1MnlQZmUrck1Qc0Y3anNXZm4rTmMzRmpGejlFVjgz?=
- =?utf-8?B?Ni9lcFJUeTVIQit0cDJ5ZjVFZFlWOVRDOEdmbENiNkc1RDNnZ2JsMS9udDln?=
- =?utf-8?B?dCtnS0l1dGpUZW80c0p1a0R2VHhXTzVzZjlHejh4cStpK20ycFRGci82TnNX?=
- =?utf-8?B?VWhMNkg0QUZ4MkVoenkzOWRMNFlSdkFBMUxBdEpSc2xVcjJXZEp1aWNOckhj?=
- =?utf-8?B?VG43S2FYSzIxN3VQanVIN200SUhxeFBTeFdNa3V3Y2JxYmdSUk8xejlmKy9v?=
- =?utf-8?B?NlpNWjZsWktoMHEyWTdPcWx4T1o4elZoYSs2bzNSVGsvQnFKSHFyTFVWQ2dE?=
- =?utf-8?B?dTBqNEhISkFqRXpDOENxQ1ZseFNCYlJ4SWxrdGdOay9LVVNramlwRDVVdS9a?=
- =?utf-8?B?bjJ6RGNKamp0UVptWGxrTFBYd1BSZFZjWVZmUXJYMVJ6ckgxOEl1TXZqVzdC?=
- =?utf-8?B?cWFXbmRSdU1QZERyWUpFdXNxbkxMVHZtd2hTSzB3UFFYYVgxMDF1My9oTWhE?=
- =?utf-8?B?SHE1K3FjcDVPQkJLSU9wV0RaaXRjU0d3SzlJWmhuTUxOMXNSNzJlTHdac0g0?=
- =?utf-8?B?K3MrczhQS2lOcVdRdDNHV29EdzdMaHJ3R3V5OCtBdkcxdy9VaFVBaFVDanRX?=
- =?utf-8?B?Y3lqbGZGSFRrU1dEQThRKzJYT04wL01FZFUwSUE0TmpCckxRM2xWOUpUc1BK?=
- =?utf-8?B?YU9nVktWdzV3MUNLY2VKcVJFWG5jWS9mYnBYRjBRS3hwWGtnRW52SXFYTlpr?=
- =?utf-8?B?NzBHM1EzZjlUY0FtS0NuUjFwcldVclAxYlJ5aWhyNkpEN1FGZnN2TVZ3YW4r?=
- =?utf-8?B?NnN4VUp1ckZkVXU4NjlIZHAzZDBrNFhNUGRKRjFDR3M2ZFNyb0pSU0I4RzBZ?=
- =?utf-8?B?UzhmNGVOaEhkcGY4VHdmK0JlNFl2dGdtNHp1bU1ldmxIcThaSW1NRTVwM3VR?=
- =?utf-8?B?blVXRXlmNlo2eHRJUHVWQW1HWC9KVTJkMExTY1JsYzJFc0VxOWlqUHRuN3Ni?=
- =?utf-8?B?cUo3QjZIZ2Q1SlM0WTE2TE9oV2dmS2kxMGtoL294Q3VsbHhPY1hNUmFyTmVh?=
- =?utf-8?B?WWdFZ085NlZMQ0ZvTllLNkdlV1VTY1RRS0JGTlQyOHJIZVJCQmQ0ZTdTSHRv?=
- =?utf-8?B?RlJJRVp2M1FaaUpoL2JTc1pPc1lGM0RJMHlSeVNNdSs2blJZWk9qd1ZLc0dF?=
- =?utf-8?B?V3ZDQ0hpODkweUU4R1J4L2hXMXBWdHlWU1BoaXZ2NnA1cnI1a3J6aU85c2Zk?=
- =?utf-8?B?aXpwd2xaaWl1OG8ybXZQNGFFYi9lcU5oV0pMQk11NGZYSFJiVk9aYlRUV2pl?=
- =?utf-8?B?bUM3b2ZmMXBvMmF6c3czRzJQRmdIdWpRYjdXZlUwWi9acm0vUmkyU2JDVWJr?=
- =?utf-8?B?ZU1CRW1ZZ3pBZklGRkxzUUFJMVZRT0lxR0pOeXFzN1krUzF1a0FESGZaQ200?=
- =?utf-8?B?OFBCOHB5ZVFJRXpmcDFJVUR1ZEtIaVJEMVQ4WFVkNDZzNnZLY1RuR3dlVVlw?=
- =?utf-8?B?ajViM1BEM3p3PT0=?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR10MB6271.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(376014)(366016)(13003099007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?VUFFUTVESWFpWGpEOTJmMHNMUkliaTcrblZMZzh0Z0s5K0JEYWNpRjlLd1cz?=
- =?utf-8?B?dTY1dEMxcGdYLzdnNDZXTUJ5WVZuY1BHUFluUjhHdk51OHpvNGlmYVNrdE1C?=
- =?utf-8?B?ZGFnaC9JT1k2aUUzMEl5RnBiN3k4clhKU1dUaW01VFY4ZER2STJvMDdWWjYx?=
- =?utf-8?B?STJwV0RKRnErN0xiSHhBVEhwNWYzYThyNklBNkVZL2dqKzRueVdwRm1Dc3or?=
- =?utf-8?B?TEdjbUUwSUJhUSsyb0RYNVl4SExRZ0ZCVXdBeHVYVG1uNlpwd2syT3FUTlF3?=
- =?utf-8?B?cTlGN3F1UXlYK1FDZXJIc1BKS1BIM0xrOEVLM2Vxa2o3QTJiZFJmS3VIQ2Z2?=
- =?utf-8?B?bkVncDJOVnlua01SME5GUFVodjc4d0F1VUVZK2l5UHZtUmQwZk8rM3RMbTRW?=
- =?utf-8?B?cU5TV1V5aGxsajBxSjVIT21GNjcxNm1ucFRwZkxoQ0wyNm4zTUxxOGNKUXpZ?=
- =?utf-8?B?Y0ppcjU3ZHZQajdYNlE5TEhNR0REMjlrM0Nsd2hHaExuWEN5MzZvaVY4aGFl?=
- =?utf-8?B?YkdDNUQrZUVXYlUvTWZDOGplYW5EanBjLzlPVm5ETElTcXBOMi9qeXkza2x0?=
- =?utf-8?B?UDlYbUZjU0pDZ3VMUmxkSGRoZml0UDJUY0xjSVNucWppWHFRSFV0dWJwWGpD?=
- =?utf-8?B?NUdIcFJlUFA5TGFGSE02VkF1VTZXZEtKSmxUZmVqMFoxUnNvS2EyZ1ZHQko5?=
- =?utf-8?B?OHBZQXVGOUxTdGVOTFhxeGw3QW1PRUJqa0E1NUQzSTMzWS83bStGQ2dlQkZ2?=
- =?utf-8?B?MEZ4NEhTVkE5Tnl3K1dWU1J0YzA5cnFGTWl3eG00SkJ3TktQWUpMNkY2L2Qx?=
- =?utf-8?B?RnhlUy9ON1p2VDVaY1JTcnZLWUN4L2ZnS2dRZWNES3BaTFFPdTRvK1lDTy9P?=
- =?utf-8?B?NjRzVkJNN0Q3MmRlSGNoVXYzVGdVbjhRRkZFVm5YQ09pczlkNjM0NTRPM3Q2?=
- =?utf-8?B?VzRBREdGeDVnNHBIWmFGcVg4NEdWZXhsaFFpNUpIRTgrem9qM3ZXUmdLUS9D?=
- =?utf-8?B?MVNxcFRBa1JWNkNRQTMyZmoyK2VqUk8wVS9HUTh1YTFyUE9wSnA5NVhSQTFo?=
- =?utf-8?B?VG45NkhTbU9mQmRZbzB1YktTbkdpRU9Pd2xhUGpGOXR4bDZCemoxWG5ENkx6?=
- =?utf-8?B?Y3ZvMzdLRnlKcjU2ZitSeFBYS1pZQnkrSVYrbzIrazhqeExJRlBBVTc5SVZM?=
- =?utf-8?B?TkkwenNrWjFWL01QYnhUYkUyMmtsbEY2SGl5eVhjS3UwVURWZjM2Ui9MTGJl?=
- =?utf-8?B?NzlSdFJHTU5OVHZNY0Y3eUJLN1ZqbmxNeDdVRm1Ia0lrMkV2Y2kwZnpZUEJF?=
- =?utf-8?B?bzhKZk5TeThJOGlxNmkrakF0YUJMcnRiU1pKd0djS1ZUeU1YOTN2Nk9ERUVo?=
- =?utf-8?B?TC9PTTVuNGZUYTJuMjN5bVhUdk50WVBTK1hadVo1b2EySFFkMXZFNzhCN2Vx?=
- =?utf-8?B?bG5XWlZrMlJObUNkcnVyaEU0d0hlemloSVhQc0JnT1NMZGVFVy9tRVE3REVk?=
- =?utf-8?B?M0VGZWk1S1QwNS8zcUJTTjByKzJUMWlyTktGVUpiMmZPbXZ6SGNjYUZYWnpz?=
- =?utf-8?B?d2F3NDJicEExRTQwbjUxWkx5YzZLU0ZBKytZd3pPRTN1Skc3T3c1enlCaEJW?=
- =?utf-8?B?dWFubzJUQ1V5VzJZbTl4NlpGd2dFVDJPRE10RzIxTmhsK2FuY2RsOWpOajB4?=
- =?utf-8?B?cFVFUEV1bHJCVHF5dGRPYlNuZHovNGNpOFVObXZzMjcyemVOVTBzcEtidGlz?=
- =?utf-8?B?UlZRMnd2THlRZnhVeTNuUWFqQ25tN0EvL0dLTFRPaUFpSFBQNlNtMnJyL2Vh?=
- =?utf-8?B?NFIvQXBocEtLQm9IMHRSU2Y0NDJrcWUraUpQOG42ZWVTTmdybjRRYWU5L1Nl?=
- =?utf-8?B?OG9IRmtROUlZcnNUWjk5b2NRTHVqd3Q2czJ6N21QWi8zYUN2eHJvZ1pwOTJI?=
- =?utf-8?B?eHgrUStjL1FxWHFKdXUzRFUxd3dIajNhQUFLRUxUb25RclRaNHplTEl4U1VT?=
- =?utf-8?B?SnhrSWFMTGVMR0dYOWd6bEhCTjF6eUQ2alNmanUxTzU5UDk1TEtXZ3ZjT1lx?=
- =?utf-8?B?aU9BbGZKUnh6Y2VwODdVRTBHYlgydXRBV3BLVWFHV040dVpKYVo0Ulc5NkEr?=
- =?utf-8?B?b2ZBOEtQR2xMMmpkaEdpOXE5OE9nSGxTajlJK3NIZkwzU1ovTWFIY09kd1lI?=
- =?utf-8?B?ZW9OQWFVc21lY2NVN1BtbTdYcjZiVStKMDVNaG9JeGo5WGo0Vk5qQUticG5X?=
- =?utf-8?B?ck13SS9Cd0h2WTEzTnRMMFc0YkoyZW55UWNhbHFnVGVkQlRMY0RWd01IODl1?=
- =?utf-8?B?WFBQTlBuenR5L0c5TUlVa3BnbktrRjJZbkQvdWs4RlRPUW92ajVsUT09?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	cKNkywVpoN4SxYyiKCZhSYGayhErUMqQybYyKTrcNTPkAO5OQ3RnwsUQJ+RtyaiWKBTyYAbwexckjJzbvd0aBAYvA4NgVKqjxpfT0WEb+bS6lEU8Z1WIg0Cwv3q7M/qKg/OldIlIhrgrXqFzCZQp8VqzJJnF6YWNWgGXFCnA6EyyrOOc92pRyfsryGRe4U0vmNeqhqzY6j5wG6cBhuV2tw0vUangEnU1wAQw9p8DHnP3LmW+d/bLkjU5fXnOKTMEInVhjIjzngaHKVzMG6BYxg6aQzEzntx4R8LXhytWCO/QAIx8isqxUZgLtlacQIn7bmLHxzo/m/6JI/f0gTjWLCch8GJ80Yw74Giiploam0Qz63576uE55vXFcci4vuP4MB9UfE0MUK84adWP0+mOYzgyRSIW6pGOX5CQjrjAXtaBHdPQA01Y24EIhll8fVLfDoGabIAgV1skq5wXJBWXwykABG3gx1wq1XP0u43mvvBAJPX/u5jOUdpj5McS/aQVV1IqaMdzmdBUgUXxx9T/VxEXGxPl43iPpMES852Cwaf0YpTZOAPQuW79kr+XKxd14YmHfB4MW8+IsZvZr00oeMvXM143AyayYV1GXOid2uk=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dabbae42-d3cb-43f2-23c1-08de4ee24d1e
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR10MB6271.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jan 2026 18:18:19.8088
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qVQAluM/4FcbnzU4Pqs3BqtleQBajJwByrH5D6BrssCrhi5T7dT0rHnoBpQHtJjWEYN6vv2GvXMEmcxepTL3KQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB5696
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2026-01-08_03,2026-01-08_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 adultscore=0
- malwarescore=0 suspectscore=0 mlxscore=0 spamscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2512120000
- definitions=main-2601080136
-X-Proofpoint-ORIG-GUID: 8QRg-tNX2EGlWASqL4c0aPtSoJHz1665
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTA4MDEzNSBTYWx0ZWRfXxmbgxNBbAt4M
- 7eHsgyQboJ0fY1BUB672V8nErfl3NwnvhS1YqVes0Z1618hxcdZFBBeq2r7S15EvV9oLd1AQmBI
- GczQcpGnllkb1vIB5eeHuAK/dZQk62hYZALM/hCIUg+0gpqZL3sfmHCOGWw/cWHtbyvIjeMQ5Fw
- VJy81dDEAU7w6b0IG/zrLdEl1Lv1KM2ClLcjYzfm1AGqn84ZyOmbEk51jc9lS2FiG1fibXC70vb
- seOL6PD7RXbVICG0tvwuuvSmx9ly7pJbJm41MQx4Fdwi15DdtyZyCzLk71Hv9RAutnsDEMk9agt
- uuKzBtML72aIV+w8ZPfxPhyASTIIukAryzRwNV4hV8iHxCcDHJEkGBSZyv512TTtdYMiMvN4W4H
- 6VLso/vyS1+3pfTMalwcC8XXTQp3CmcciEeLmpdCATevpZHptUXY8/JzraVXIPpUC/N7NlQwBw0
- i4dS57jbA76Jq58ckpPU9jEitDCBqF0Jq3ZxJt7I=
-X-Authority-Analysis: v=2.4 cv=MOJtWcZl c=1 sm=1 tr=0 ts=695ff4f4 b=1 cx=c_pps
- a=e1sVV491RgrpLwSTMOnk8w==:117 a=e1sVV491RgrpLwSTMOnk8w==:17
- a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
- a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10
- a=vUbySO9Y5rIA:10 a=GoEa3M9JfhUA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=VwQbUJbxAAAA:8 a=1XWaLZrsAAAA:8 a=NEAV23lmAAAA:8 a=Mp1grWxiFYy-YdmhCNAA:9
- a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 cc=ntf awl=host:13654
-X-Proofpoint-GUID: 8QRg-tNX2EGlWASqL4c0aPtSoJHz1665
+References: <20260103022310.935686-1-puranjay@kernel.org> <20260103022310.935686-2-puranjay@kernel.org>
+ <CAEf4BzYeF2sUqEzfT6aLuBVuh1W8fkxHoFjBf-e5nvJW9UgQLw@mail.gmail.com>
+In-Reply-To: <CAEf4BzYeF2sUqEzfT6aLuBVuh1W8fkxHoFjBf-e5nvJW9UgQLw@mail.gmail.com>
+From: Puranjay Mohan <puranjay12@gmail.com>
+Date: Thu, 8 Jan 2026 18:28:33 +0000
+X-Gm-Features: AQt7F2qCR8WR5YVEW2vl19BSHXKZKEpu2ZAF0MfjsMR6COjRoIK8JYetbNfmCbI
+Message-ID: <CANk7y0j_BW_t7Y6rPm-UaCsamJ6G3S9i5_0cYLWZ56xp1Dehkw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: Recognize special arithmetic shift
+ in the verifier
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, kernel-team@meta.com, 
+	sunhao.th@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 07/01/2026 18:55, Matt Bobrowski wrote:
-> On Wed, Jan 07, 2026 at 03:50:40PM +0000, Alan Maguire wrote:
->> On 05/01/2026 20:43, Matt Bobrowski wrote:
->>> On Mon, Jan 05, 2026 at 08:23:29AM -0800, Yonghong Song wrote:
->>>>
->>>>
->>>> On 1/5/26 3:47 AM, Matt Bobrowski wrote:
->>>>> On Mon, Jan 05, 2026 at 08:27:11AM +0000, Matt Bobrowski wrote:
->>>>>> On Fri, Jan 02, 2026 at 10:46:00AM -0800, Yonghong Song wrote:
->>>>>>>
->>>>>>> On 12/31/25 12:53 AM, Matt Bobrowski wrote:
->>>>>>>> Currently, when a function has both a weak and a strong definition
->>>>>>>> across different compilation units (CUs), the BTF encoder arbitrarily
->>>>>>>> selects one to generate the BTF entry. This selection fundamentally is
->>>>>>>> dependent on the order in which pahole processes the CUs.
->>>>>>>>
->>>>>>>> This indifference often leads to a mismatch where the generated BTF
->>>>>>>> reflects the weak definition's prototype, even though the linker
->>>>>>>> selected the strong definition for the final vmlinux binary.
->>>>>>>>
->>>>>>>> A notable example described in [0] involving function
->>>>>>>> bpf_lsm_mmap_file(). Both weak and strong definitions exist,
->>>>>>>> distinguished only by parameter names (e.g., file vs
->>>>>>>> file__nullable). While the strong definition is linked into the
->>>>>>>> vmlinux object, the generated BTF contained the prototype for the weak
->>>>>>>> definition. This causes issues for BPF verifier (e.g., __nullable
->>>>>>>> annotation semantics), or tools relying on accurate type information.
->>>>>>>>
->>>>>>>> To fix this, ensure the BTF encoder selects the function definition
->>>>>>>> corresponding to the actual code linked into the binary. This is
->>>>>>>> achieved by comparing the DWARF function address (DW_AT_low_pc) with
->>>>>>>> the ELF symbol address (st_value). Only the DWARF entry for the strong
->>>>>>>> definition will match the final resolved ELF symbol address.
->>>>>>>>
->>>>>>>> [0] https://lore.kernel.org/all/aVJY9H-e83T7ivT4@google.com/
->>>>>>>>
->>>>>>>> Link: https://lore.kernel.org/all/aVJY9H-e83T7ivT4@google.com/
->>>>>>>> Signed-off-by: Matt Bobrowski <mattbobrowski@google.com>
->>>>>>> LGTM with some nits below.
->>>>>> Thanks for the review.
->>>>>>
->>>>>>> Acked-by: Yonghong Song <yonghong.song@linux.dev>
->>>>>>>
->>>>>>>> ---
->>>>>>>>    btf_encoder.c | 36 ++++++++++++++++++++++++++++++++++++
->>>>>>>>    1 file changed, 36 insertions(+)
->>>>>>>>
->>>>>>>> diff --git a/btf_encoder.c b/btf_encoder.c
->>>>>>>> index b37ee7f..0462094 100644
->>>>>>>> --- a/btf_encoder.c
->>>>>>>> +++ b/btf_encoder.c
->>>>>>>> @@ -79,6 +79,7 @@ struct btf_encoder_func_annot {
->>>>>>>>    /* state used to do later encoding of saved functions */
->>>>>>>>    struct btf_encoder_func_state {
->>>>>>>> +	uint64_t addr;
->>>>>>>>    	struct elf_function *elf;
->>>>>>>>    	uint32_t type_id_off;
->>>>>>>>    	uint16_t nr_parms;
->>>>>>>> @@ -1258,6 +1259,7 @@ static int32_t btf_encoder__save_func(struct btf_encoder *encoder, struct functi
->>>>>>>>    	if (!state)
->>>>>>>>    		return -ENOMEM;
->>>>>>>> +	state->addr = function__addr(fn);
->>>>>>>>    	state->elf = func;
->>>>>>>>    	state->nr_parms = ftype->nr_parms + (ftype->unspec_parms ? 1 : 0);
->>>>>>>>    	state->ret_type_id = ftype->tag.type == 0 ? 0 : encoder->type_id_off + ftype->tag.type;
->>>>>>>> @@ -1477,6 +1479,29 @@ static void btf_encoder__delete_saved_funcs(struct btf_encoder *encoder)
->>>>>>>>    	encoder->func_states.cap = 0;
->>>>>>>>    }
->>>>>>>> +static struct btf_encoder_func_state *btf_encoder__select_canonical_state(struct btf_encoder_func_state *combined_states,
->>>>>>>> +									  int combined_cnt)
->>>>>>>> +{
->>>>>>>> +	int i, j;
->>>>>>>> +
->>>>>>>> +	/*
->>>>>>>> +	 * The same elf_function is shared amongst combined functions,
->>>>>>>> +	 * as per saved_functions_combine().
->>>>>>>> +	 */
->>>>>>>> +	struct elf_function *elf = combined_states[0].elf;
->>>>>>> The logic is okay. But can we limit elf->sym_cnt to be 1 here?
->>>>>>> This will match the case where two functions (weak and strong)
->>>>>>> co-exist in compiler and eventually only strong/global function
->>>>>>> will survive.
->>>>>> In fact, checking again I believe that the loop is redundant because
->>>>>> elf_function__has_ambiguous_address() ensures that if we reach this
->>>>>> point, all symbols for the function share the same address. Therefore,
->>>>>> checking the first symbol (elf->syms[0]) should be sufficient and
->>>>>> equivalent to checking all of them.
->>>>>>
->>>>>> Will send through a v2 with this amendment.
->>>>> Hm, actually, no. I don't think the addresses stored within
->>>>> elf->syms[#].addr should all be assumed to be the same at the point
->>>>> which the new btf_encoder__select_canonical_state() function is called
->>>>> (due to things like skip_encoding_inconsistent_proto possibly taking
->>>>> effect). Therefore, I think it's best that we leave things as is and
->>>>> exhaustively iterate through all elf->syms? I don't believe there's
->>>>> any adverse effects in doing it this way anyway?
->>>>
->>>> No. Your code is correct. For elf->sym_cnt, it covers both sym_cnt
->>>> is 1 or more than 1. My previous suggestion is to single out the
->>>> sym_cnt = 1 case since it is what you try to fix.
->>>>
->>>> I am okay with the current implementation since it is correct.
->>>> Maybe Alan and Arnaldo have additional comments about the code.
->>>
->>> Sure, sounds good. I think leaving it as is probably our best bet at
->>> this point.
->>>
->>
->> hi Matt, I ran the change through github CI and there is some differences in
->> the set of generated functions from vmlinux (see the "Compare functions generated"
->> step):
->>
->> https://github.com/alan-maguire/dwarves/actions/runs/20786255742/job/59698755550
->>
->> Specifically we see changes in some function signatures like this:
->>
->> < int neightbl_fill_info(struct sk_buff * skb, struct neigh_table * tbl, u32 pid, u32 seq, int type, int flags);
->> ---
->>> int neightbl_fill_info(struct sk_buff * skb, struct neigh_table * tbl, u32 pid, u32 seq, int flags, int type);
->>
->> Note the reordering of the last two parameters. The "<" line matches the source code, and the
->> ">" line is what we get from pahole with your change. We've seen this before and the reason is 
->> that we're not paying close enough attention to cases where the actual function omits parameters
->> due to optimization; that last "type" parameter doesn't have a DW_AT_location and that indicates 
->> it's been optimized out. We should really get in this case is:
->>
->> int neightbl_fill_info.constprop.0(struct sk_buff * skb, struct neigh_table * tbl, u32 pid, u32 seq, int flags);
->>
->> So it's not that your change causes this exactly; it's that paradoxically because
->> your change does a better job of selecting the real function signature in the CU
->> (and then we go on to misrepresent it) the problem is more glaringly exposed.
->>
->> The good news is I think I have a workable fix for this problem; what I'd propose is - 
->> presuming it works - we land it prior to your change. Once I've tested that out a bit
->> I'll follow up. Thanks!
-> 
-> Ha, interesting! Curious, should the .constprop.0 based functions also
-> not be emitted within the generated BTF given that they too
-> technically would exist in the .text section and can be called?
-
-Yep, but the original policy - that we are changing - was to avoid encoding
-anything that violated source-level expectations. So if a .constprop
-function omitted a parameter it was left out of BTF encoding. But annoyingly
-we often weren't detecting that correctly, so we would up with function signatures
-that had out-of-order parameters which should have been recognized as having
-missng parameters (and thus omitted). We're moving towards the concept of "true" 
-function signatures where we emit a possibly changed function with its "." suffix
-name; see Yonghong's presentation at Linux Plumbers for more details.
-
-I've put together a series that weaves together better detection of
-misordered/missing parameters, optional support for emitting true function 
-signatures for optimized functions and finally your patch. With the prerequisite
-patches in place, your patch (which needed some merging but is essentially the
-same) no longer emits signatures with different ordered parameters; we better
-detect such cases. See [1]; changes are in branch in [2].
-
-Most of the detected function signature changes are syscalls which have
-the pt_regs "regs" name rather than "__unused"; but in this case:
-
-< int pcibios_enable_device(struct pci_dev * dev, int bars);
-< void pcibios_fixup_bus(struct pci_bus * bus);
----
-> int pcibios_enable_device(struct pci_dev * dev, int mask);
-> void pcibios_fixup_bus(struct pci_bus * b);
-
-the signatures match the strong rather than weak declarations:
-
-strong: 
-
- int pcibios_enable_device(struct pci_dev *dev, int mask);
- void pcibios_fixup_bus(struct pci_bus *b);
-
-weak:
-
-  int __weak pcibios_enable_device(struct pci_dev *dev, int bars);
-  void __weak pcibios_fixup_bus(struct pci_bus *bus);
+On Tue, Jan 6, 2026 at 5:22=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Fri, Jan 2, 2026 at 6:24=E2=80=AFPM Puranjay Mohan <puranjay@kernel.or=
+g> wrote:
+> >
+> > From: Alexei Starovoitov <ast@kernel.org>
+> >
+> > cilium bpf_wiregard.bpf.c when compiled with -O1 fails to load
+> > with the following verifier log:
+> >
+> > 192: (79) r2 =3D *(u64 *)(r10 -304)     ; R2=3Dpkt(r=3D40) R10=3Dfp0 fp=
+-304=3Dpkt(r=3D40)
+> > ...
+> > 227: (85) call bpf_skb_store_bytes#9          ; R0=3Dscalar()
+> > 228: (bc) w2 =3D w0                     ; R0=3Dscalar() R2=3Dscalar(smi=
+n=3D0,smax=3Dumax=3D0xffffffff,var_off=3D(0x0; 0xffffffff))
+> > 229: (c4) w2 s>>=3D 31                  ; R2=3Dscalar(smin=3D0,smax=3Du=
+max=3D0xffffffff,smin32=3D-1,smax32=3D0,var_off=3D(0x0; 0xffffffff))
+> > 230: (54) w2 &=3D -134                  ; R2=3Dscalar(smin=3D0,smax=3Du=
+max=3Dumax32=3D0xffffff7a,smax32=3D0x7fffff7a,var_off=3D(0x0; 0xffffff7a))
+> > ...
+> > 232: (66) if w2 s> 0xffffffff goto pc+125     ; R2=3Dscalar(smin=3Dumin=
+=3Dumin32=3D0x80000000,smax=3Dumax=3Dumax32=3D0xffffff7a,smax32=3D-134,var_=
+off=3D(0x80000000; 0x7fffff7a))
+> > ...
+> > 238: (79) r4 =3D *(u64 *)(r10 -304)     ; R4=3Dscalar() R10=3Dfp0 fp-30=
+4=3Dscalar()
+> > 239: (56) if w2 !=3D 0xffffff78 goto pc+210     ; R2=3D0xffffff78 // -1=
+36
+> > ...
+> > 258: (71) r1 =3D *(u8 *)(r4 +0)
+> > R4 invalid mem access 'scalar'
+> >
+> > The error might confuse most bpf authors, since fp-304 slot had 'pkt'
+> > pointer at insn 192 and became 'scalar' at 238. That happened because
+> > bpf_skb_store_bytes() clears all packet pointers including those in
+> > the stack. On the first glance it might look like a bug in the source
+> > code, since ctx->data pointer should have been reloaded after the call
+> > to bpf_skb_store_bytes().
+> >
+> > The relevant part of cilium source code looks like this:
+> >
+> > // bpf/lib/nodeport.h
+> > int dsr_set_ipip6()
+> > {
+> >         if (ctx_adjust_hroom(...))
+> >                 return DROP_INVALID; // -134
+> >         if (ctx_store_bytes(...))
+> >                 return DROP_WRITE_ERROR; // -141
+> >         return 0;
+> > }
+> >
+> > bool dsr_fail_needs_reply(int code)
+> > {
+> >         if (code =3D=3D DROP_FRAG_NEEDED) // -136
+> >                 return true;
+> >         return false;
+> > }
+> >
+> > tail_nodeport_ipv6_dsr()
+> > {
+> >         ret =3D dsr_set_ipip6(...);
+> >         if (!IS_ERR(ret)) {
+> >                 ...
+> >         } else {
+> >                 if (dsr_fail_needs_reply(ret))
+> >                         return dsr_reply_icmp6(...);
+> >         }
+> > }
+> >
+> > The code doesn't have arithmetic shift by 31 and it reloads ctx->data
+> > every time it needs to access it. So it's not a bug in the source code.
+> >
+> > The reason is DAGCombiner::foldSelectCCToShiftAnd() LLVM transformation=
+:
+> >
+> >   // If this is a select where the false operand is zero and the compar=
+e is a
+> >   // check of the sign bit, see if we can perform the "gzip trick":
+> >   // select_cc setlt X, 0, A, 0 -> and (sra X, size(X)-1), A
+> >   // select_cc setgt X, 0, A, 0 -> and (not (sra X, size(X)-1)), A
+> >
+> > The conditional branch in dsr_set_ipip6() and its return values
+> > are optimized into BPF_ARSH plus BPF_AND:
+> >
+> > 227: (85) call bpf_skb_store_bytes#9
+> > 228: (bc) w2 =3D w0
+> > 229: (c4) w2 s>>=3D 31   ; R2=3Dscalar(smin=3D0,smax=3Dumax=3D0xfffffff=
+f,smin32=3D-1,smax32=3D0,var_off=3D(0x0; 0xffffffff))
+> > 230: (54) w2 &=3D -134   ; R2=3Dscalar(smin=3D0,smax=3Dumax=3Dumax32=3D=
+0xffffff7a,smax32=3D0x7fffff7a,var_off=3D(0x0; 0xffffff7a))
+> >
+> > after insn 230 the register w2 can only be 0 or -134,
+> > but the verifier approximates it, since there is no way to
+> > represent two scalars in bpf_reg_state.
+> > After fallthough at insn 232 the w2 can only be -134,
+> > hence the branch at insn
+> > 239: (56) if w2 !=3D -136 goto pc+210
+> > should be always taken, and trapping insn 258 should never execute.
+> > LLVM generated correct code, but the verifier follows impossible
+> > path and rejects valid program. To fix this issue recognize this
+> > special LLVM optimization and fork the verifier state.
+> > So after insn 229: (c4) w2 s>>=3D 31
+> > the verifier has two states to explore:
+> > one with w2 =3D 0 and another with w2 =3D 0xffffffff
+> > which makes the verifier accept bpf_wiregard.c
+> >
+> > Note there are 20+ such patterns in bpf_wiregard.o compiled
+> > with -O1 and -O2, but they're rarely seen in other production
+> > bpf programs, so push_stack() approach is not a concern.
+> >
+> > Reported-by: Hao Sun <sunhao.th@gmail.com>
+> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> > Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+> > Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+> > ---
+> >  kernel/bpf/verifier.c | 34 ++++++++++++++++++++++++++++++++++
+> >  1 file changed, 34 insertions(+)
+> >
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index c9da70dd3e72..6dbcfae5615b 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -15490,6 +15490,35 @@ static bool is_safe_to_compute_dst_reg_range(s=
+truct bpf_insn *insn,
+> >         }
+> >  }
+> >
+> > +static int maybe_fork_scalars(struct bpf_verifier_env *env, struct bpf=
+_insn *insn,
+> > +                             struct bpf_reg_state *dst_reg)
+> > +{
+> > +       struct bpf_verifier_state *branch;
+> > +       struct bpf_reg_state *regs;
+> > +       bool alu32;
+> > +
+> > +       if (dst_reg->smin_value =3D=3D -1 && dst_reg->smax_value =3D=3D=
+ 0)
+> > +               alu32 =3D false;
+> > +       else if (dst_reg->s32_min_value =3D=3D -1 && dst_reg->s32_max_v=
+alue =3D=3D 0)
+> > +               alu32 =3D true;
+> > +       else
+> > +               return 0;
+> > +
+> > +       branch =3D push_stack(env, env->insn_idx + 1, env->insn_idx, fa=
+lse);
+> > +       if (IS_ERR(branch))
+> > +               return PTR_ERR(branch);
+> > +
+> > +       regs =3D branch->frame[branch->curframe]->regs;
+> > +       if (alu32) {
+> > +               __mark_reg32_known(&regs[insn->dst_reg], 0);
+> > +               __mark_reg32_known(dst_reg, -1ull);
+>
+> Did you get a chance to run veristat with these changes against
+> selftests, scx, maybe also Meta BPF objects? Curious if there are any
+> noticeable differences.
+>
+> Also, the choice of which branch gets zero vs one set might have
+> meaningful differences (heuristically, "linear path" should preferably
+> explore conditions that lead to more complete and complex states), so
+> I'd be interested to see if and what difference does it make in
+> practice.
 
 
-so that's what we want.
+I have data using selftests, meta, and sched-ext bpf objects. I
+compared baselined (bpf-next/master), previous version of this patch
+(fork after arsh), and this patch (fork before and), here are the
+results:
 
-I need to do a bit more testing but it seems like this gets the behaviour
-you want without the side-effects due to existing brokenness in pahole.
-Let me know what you think. Thanks!
+I used this command: ./veristat -C -e file,prog,states,insns -f
+"insns_pct>1" before.csv after.csv
 
-Alan
+I did not see any change from baseline -> fork_after_arsh ->
+fork_before_and for all selftests and meta bpf programs.
+
+But for one sched_ext program I saw this:
+
+../../veristat/src/veristat -C -e file,prog,states,insns -f
+"insns_pct>1" sched_baseline.csv sched_fork_after_arsh.csv
+File          Program              States (A)  States (B)  States
+(DIFF)  Insns (A)  Insns (B)  Insns (DIFF)
+------------  -------------------  ----------  ----------
+-------------  ---------  ---------  ------------
+scxtop.bpf.o  schedule_stop_trace           1           1    +0
+(+0.00%)         14         16  +2 (+14.29%)
 
 
-[1] https://github.com/alan-maguire/dwarves/actions/runs/20813525302/job/59783355126
-[2] https://github.com/acmel/dwarves/compare/master...alan-maguire:dwarves:refs/heads/pahole-next-true-sig-gcc
+../../veristat/src/veristat -C -e file,prog,states,insns -f
+"insns_pct>1" sched_fork_after_arsh.csv sched_fork_before_and.csv
+File          Program              States (A)  States (B)  States
+(DIFF)  Insns (A)  Insns (B)  Insns (DIFF)
+------------  -------------------  ----------  ----------
+-------------  ---------  ---------  ------------
+scxtop.bpf.o  schedule_stop_trace           1           1    +0
+(+0.00%)         16         15   -1 (-6.25%)
 
 
-> Apologies if I'm not understanding something correctly here, but my
-> current understanding is that non-.constprop.0 and .constprop.0
-> variants share differing addresses.
-> 
-> Anyway, please keep me updated on how you're progressing with the fix
-> that you're intending to work on.
+So, I think we should go with the fork before and version (this patch)
+because the sequence we want to detect is arsh -> and and therefore
+forking after arsh not optimal because every such arsh will not be
+followed by an AND operation with a constant.
 
+This is what you see when you compare this version (fork before and)
+and previous (fork after arsh) on the selftests added in this set:
+
+../../veristat/src/veristat -C -e file,prog,states,insns -f
+"insns_pct>1" fork_after_arsh fork_before_and
+File                   Program  States (A)  States (B)  States (DIFF)
+Insns (A)  Insns (B)  Insns (DIFF)
+---------------------  -------  ----------  ----------  -------------
+---------  ---------  ------------
+verifier_subreg.bpf.o  arsh_31           1           1    +0 (+0.00%)
+       12         11   -1 (-8.33%)
+verifier_subreg.bpf.o  arsh_63           1           1    +0 (+0.00%)
+       12         11   -1 (-8.33%)
+
+Thanks,
+Puranjy
 
