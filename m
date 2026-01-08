@@ -1,126 +1,110 @@
-Return-Path: <bpf+bounces-78224-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78225-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C5F7D03566
-	for <lists+bpf@lfdr.de>; Thu, 08 Jan 2026 15:27:43 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC495D02FC0
+	for <lists+bpf@lfdr.de>; Thu, 08 Jan 2026 14:23:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B29B93133AE2
-	for <lists+bpf@lfdr.de>; Thu,  8 Jan 2026 13:59:31 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id B2CB9300FD62
+	for <lists+bpf@lfdr.de>; Thu,  8 Jan 2026 13:22:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D45C6289367;
-	Thu,  8 Jan 2026 12:37:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCAB64DDCD9;
+	Thu,  8 Jan 2026 13:14:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="a2tE4Xjh"
 X-Original-To: bpf@vger.kernel.org
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sg-1-110.ptr.blmpb.com (sg-1-110.ptr.blmpb.com [118.26.132.110])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25C0025F96D;
-	Thu,  8 Jan 2026 12:37:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E71C24DB945
+	for <bpf@vger.kernel.org>; Thu,  8 Jan 2026 13:14:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=118.26.132.110
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767875837; cv=none; b=jziZZe7fEX7xhteIZdCWQs2IjdN3xGW1cGFFcaUeoJ7UGF/M214yUSSUlB88ksVDNpgsWdOe/T0yl64U435i47xeQFjaZSSrvJs9fisODQuPg08LZ6GYkwhqwhmZIjUMNDIskzmMiTzbXabUMA4SZXAq2La/i+kcyYfHw8kt3y4=
+	t=1767878046; cv=none; b=BLsY4sH4Z/tBm8js+RfIVF0eMl8XOGNIT19moebxDJj64Eyxx3T69FtTEtkj0sfqnWBhsTBjVe3i1ay3zwXhATNv6o8PmMt4PwapyIgzMW+ITMYrwOXUAhVP7ejd9ThFahRVZwiapOuPMDeNjHN7dfylVSi69cNnFwljKjvB1g0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767875837; c=relaxed/simple;
-	bh=wpKLk8BQH1V2xzo/cRXxx/KORapCsDPw2V9PiZlnX8Q=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=tM6Zx7hGcWf37ZNvdfwyI7dUlNy7XJx+LC264vbVHTkxvB/4tmdhWhCAw7P8xuA7jXPezY6lSc0LkIfFJWiyGIXQ5YFmAgGt8zUgmTkzgM7WIm9WZfvi4bRvxWtKTDO5g/3PFp+e4ah8iJcQMi5JqUeMWePDfyNwOeyiom6+yuQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from www262.sakura.ne.jp (localhost [127.0.0.1])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 608Callq002465;
-	Thu, 8 Jan 2026 21:36:47 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from [192.168.1.10] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 608CalOZ002460
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Thu, 8 Jan 2026 21:36:47 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <af090e53-9d9b-4412-8acb-957733b3975c@I-love.SAKURA.ne.jp>
-Date: Thu, 8 Jan 2026 21:36:48 +0900
+	s=arc-20240116; t=1767878046; c=relaxed/simple;
+	bh=SFmiJaN3ONjkE9h4CmYC+F0bzaOxK/UW37PXwRAcUnw=;
+	h=To:Subject:Cc:Message-Id:Mime-Version:Content-Type:From:Date; b=XysBhaNNtNvaiBG9IOMho5LqSZEGO1DoyBTdIz6mC9vQ/WZRF97XR1r6xeIMTKnBqmmTGl6Ha36PcXazppQZj7ktLoEDz8k93+ZaDFIAtYLKkNU03JLZqcmTESKTg/akaiGr2MZ9d7/ZdqJjA0Xw4+xSgFpWwGuCaOCpoa4u1+w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=a2tE4Xjh; arc=none smtp.client-ip=118.26.132.110
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ s=2212171451; d=bytedance.com; t=1767878036; h=from:subject:
+ mime-version:from:date:message-id:subject:to:cc:reply-to:content-type:
+ mime-version:in-reply-to:message-id;
+ bh=kybuBjhJ8ENNqYO08HJbTeAe8vlxFKiTuQ7Y009ja4c=;
+ b=a2tE4Xjh4cWfs3RUpllW7etRrObMpNkj16bh07jRH6vCW3iJ3eZEC9+h/p45xyuCNxbXHw
+ Zg/iCIki1d39obFTDxnUhvoPGUbw+kjPWqMjShoWisRjNFj9Ft6omnQTV84Y2mtbRk2PO4
+ sSJi1OLLkUNmOAha3cQr0pxuJReko8v9MjsMnX4Rf/GrZ7znZs9z4Fqixzfv9llk4o8/0p
+ 1r4kXBSXfQHwNBTTT10c4VqJdkgLvRTWC82hpydYe9jOXZ94xR4Qn1wFKlRb/EtGEghslh
+ 70rb52jhTXoPdt+26V0JLo/eblIMWZXL/GjRaEDjMlhJYgCIBVjaIdPgBvGvgw==
+To: <netdev@vger.kernel.org>
+Subject: Question about RPS hash collisions with IPv6 flow labels
+Content-Transfer-Encoding: 7bit
+X-Original-From: Zigit Zo <zuozhijie@bytedance.com>
+Cc: <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
+Message-Id: <b7aa237d-e35e-4af7-a4c3-f8315c2f7310@bytedance.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Alexei Starovoitov <ast@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Toke Hoiland-Jorgensen <toke@redhat.com>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Subject: [PATCH] bpf: fix reference count leak in bpf_prog_test_run_xdp()
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Anti-Virus-Server: fsav105.rs.sakura.ne.jp
-X-Virus-Status: clean
+From: "Zigit Zo" <zuozhijie@bytedance.com>
+Date: Thu, 8 Jan 2026 21:13:01 +0800
+Content-Language: en-US
+X-Lms-Return-Path: <lba+2695fad92+c1662e+vger.kernel.org+zuozhijie@bytedance.com>
 
-syzbot is reporting
+Hello netdev,
 
-  unregister_netdevice: waiting for sit0 to become free. Usage count = 2
+We have observed unexpected RPS behavior related to IPv6 flow labels on
+5.10/5.15 and would like to ask for advice, on our 5.10 and 5.15 kernels
+under the following conditions:
 
-problem. A debug printk() patch found that a refcount is obtained at
-xdp_convert_md_to_buff() from bpf_prog_test_run_xdp().
+a. virtio-net (no hash offload)
+b. RPS enabled, skb_get_hash calculates the hash here
+c. IPv6 with default auto_flowlabels enabled
 
-According to commit ec94670fcb3b ("bpf: Support specifying ingress via
-xdp_md context in BPF_PROG_TEST_RUN"), the refcount obtained by
-xdp_convert_md_to_buff() will be released by xdp_convert_buff_to_md().
+This causes RPS to keep selecting the same CPU with very similar hashes.
+This might be a coincidence, but it keeps happening on these machines,
+affecting around 10 RX machines. We have selected one RX machine:
 
-Therefore, we can consider that the error handling path introduced by
-commit 1c1949982524 ("bpf: introduce frags support to
-bpf_prog_test_run_xdp()") forgot to call xdp_convert_buff_to_md().
+xxxx:71b::50 -> yyyy, [flowlabel 0xeaf27] [skb->hash 3568038043] [cpu 79]
+xxxx:71d::36 -> yyyy, [flowlabel 0xbf206] [skb->hash 3544518926] [cpu 79]
+xxxx:71a::34 -> yyyy, [flowlabel 0x7b6a8] [skb->hash 3538231196] [cpu 79]
+xxxx:71d::40 -> yyyy, [flowlabel 0xbd4a4] [skb->hash 3572956790] [cpu 79]
+xxxx:71a::37 -> yyyy, [flowlabel 0x5dbe5] [skb->hash 3573425965] [cpu 79]
+xxxx:71f::41 -> yyyy, [flowlabel 0x6acdf] [skb->hash 3571406812] [cpu 79]
+xxxx:706::22 -> yyyy, [flowlabel 0x124ae] [skb->hash 3541372961] [cpu 79]
+xxxx:718::28 -> yyyy, [flowlabel 0x5ca00] [skb->hash 3551598012] [cpu 79]
+xxxx:708::29 -> yyyy, [flowlabel 0x1dfa9] [skb->hash 3559424332] [cpu 79]
+xxxx:71c::40 -> yyyy, [flowlabel 0xfeb81] [skb->hash 3545152152] [cpu 79]
 
-Reported-by: syzbot+881d65229ca4f9ae8c84@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=881d65229ca4f9ae8c84
-Fixes: 1c1949982524 ("bpf: introduce frags support to bpf_prog_test_run_xdp()")
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
----
-Since syzbot has no reproducer for this problem, I can't test this patch.
+Most of the connections are long-lived, but even when the flow label is
+changed on retransmission, RPS still keeps selecting the same CPU. We are
+wondering why this happens. One possibility is that the TX side is running
+a rather old kernel which still uses prandom to generate sk_txhash (flow
+label), leading to a higher chance of hash collisions. However, we are not
+sure about this, so we would like to ask for help:
 
- net/bpf/test_run.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+- Does anyone know how to explain these hash collisions if they are
+  generated by prandom? Is this very likely to occur, or is it really a
+  corner case that we hit?
 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 655efac6f133..9a16293ba14b 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -1355,13 +1355,13 @@ int bpf_prog_test_run_xdp(struct bpf_prog *prog, const union bpf_attr *kattr,
- 
- 			if (sinfo->nr_frags == MAX_SKB_FRAGS) {
- 				ret = -ENOMEM;
--				goto out;
-+				goto out_put_dev;
- 			}
- 
- 			page = alloc_page(GFP_KERNEL);
- 			if (!page) {
- 				ret = -ENOMEM;
--				goto out;
-+				goto out_put_dev;
- 			}
- 
- 			frag = &sinfo->frags[sinfo->nr_frags++];
-@@ -1373,7 +1373,7 @@ int bpf_prog_test_run_xdp(struct bpf_prog *prog, const union bpf_attr *kattr,
- 			if (copy_from_user(page_address(page), data_in + size,
- 					   data_len)) {
- 				ret = -EFAULT;
--				goto out;
-+				goto out_put_dev;
- 			}
- 			sinfo->xdp_frags_size += data_len;
- 			size += data_len;
-@@ -1388,6 +1388,7 @@ int bpf_prog_test_run_xdp(struct bpf_prog *prog, const union bpf_attr *kattr,
- 		ret = bpf_test_run_xdp_live(prog, &xdp, repeat, batch_size, &duration);
- 	else
- 		ret = bpf_test_run(prog, &xdp, repeat, &retval, &duration, true);
-+out_put_dev:
- 	/* We convert the xdp_buff back to an xdp_md before checking the return
- 	 * code so the reference count of any held netdevice will be decremented
- 	 * even if the test run failed.
+- Linux has limited ability to ignore or override the flow label in RPS
+  (for performance or security reasons). Are there any ideas or plans to
+  improve this?
+
+- The flow dissector BPF attach point is somewhat hard to use, especially
+  for IPv6 with extension headers. We want to remove the flow label from
+  the keys rather than recomputing the rest of the keys that we are not
+  interested in. It also affects many other places (we are using the host
+  network without network namespaces), such as the fib, which we do not
+  want to touch. A tc BPF program can modify packets to clear the IPv6 flow
+  label, but this still has a wide impact.
+
 -- 
-2.47.3
-
+Regards,
 
