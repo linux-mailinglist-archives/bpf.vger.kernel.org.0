@@ -1,260 +1,158 @@
-Return-Path: <bpf+bounces-78264-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78265-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1076D067EA
-	for <lists+bpf@lfdr.de>; Thu, 08 Jan 2026 23:58:41 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28FCDD0687D
+	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 00:21:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 49F2F30693E3
-	for <lists+bpf@lfdr.de>; Thu,  8 Jan 2026 22:57:03 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 4E5DD3012ABA
+	for <lists+bpf@lfdr.de>; Thu,  8 Jan 2026 23:21:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8F983382F1;
-	Thu,  8 Jan 2026 22:57:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E26333D6CE;
+	Thu,  8 Jan 2026 23:21:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="cNh1gNXD"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PoYU/nyR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-dy1-f201.google.com (mail-dy1-f201.google.com [74.125.82.201])
+Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A44973346B9
-	for <bpf@vger.kernel.org>; Thu,  8 Jan 2026 22:57:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767913022; cv=none; b=jxlNkPv6NEWVN38wJcQm2+H0lZRyaDdiRBmMTl+ZKvu0thMc1Bz7LVc/bUmHdRYX+bhh2vgXFtEOOXTqya1dRgJ2xHKct/ZLjIeOZGGr5SzpjoFfxmxpJs12U6nsZT+9UUoUT0R6e0Nu0KL1jeKgr2RDZh+yk7tR4V1YZF+/Nk0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767913022; c=relaxed/simple;
-	bh=J3XoNh2+ursfIFHZ04dZbCicr+2/5qQvrat3UOVe13E=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=J2lEV8U9PF1ibr55w0EUOZncmLeUUVqpzdkBFXT/2C4/laWj6X30i+qN4vJcIZu7KetS8t/58usll003Tsqg685piJyL7StZNlNgvpJahbhn66hf5ROxZepTvgorJAaOh3U+jwhdehq53Hsh/uf3SJ/XAAdzyZhGxxczmUikGd0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--wusamuel.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=cNh1gNXD; arc=none smtp.client-ip=74.125.82.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 572DE279DCA
+	for <bpf@vger.kernel.org>; Thu,  8 Jan 2026 23:20:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.160.171
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1767914462; cv=pass; b=YT17OnZXwaZ4BJSWCxMis4/h/WUpx2qumqt3wykO8HMtUFQ1IxAlE3NBi1gFD0kmvLzqsfKI9iImFty2+DWO7gljKRzBk8xmb1PqElgz5owGhQMBX1JiBPkqWMZOLr0QHS9kzSTzLoKJF239C4OhjxRfzaGUgUY1m86XpqUgk4I=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1767914462; c=relaxed/simple;
+	bh=rhCQWH/yPA2hIsQ82SImjkWBzo10eMRYT8Mz8RFa9JE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=W+PA7Yois/tLzvtnhxR8MDrYW2xIQjsFZ0IPZn19QwfgJ8kMWY4ycZuJhmE0oy6IFzYe02ozXJvMDfxttKjgBpnZ0kq+PXslxSjt2HCfE5L/tHsfSP04JyNZwOUOErYdXFClFGxrpJxe5HZ/uQDQO8GF0jN0ZqgAtGllK7XETzs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PoYU/nyR; arc=pass smtp.client-ip=209.85.160.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--wusamuel.bounces.google.com
-Received: by mail-dy1-f201.google.com with SMTP id 5a478bee46e88-2b0531e07e3so3094575eec.1
-        for <bpf@vger.kernel.org>; Thu, 08 Jan 2026 14:57:00 -0800 (PST)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-4ee243b98caso79631cf.1
+        for <bpf@vger.kernel.org>; Thu, 08 Jan 2026 15:20:59 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1767914458; cv=none;
+        d=google.com; s=arc-20240605;
+        b=LOZjZ+V6rpD3hWW4oWWt2/BviIW3Ngrd1PQIsYXQo9KD2sjMvvvenm8DqhlMrwKAwk
+         ZrZhP35SOcyrNFu4Tl17GZxIG6dp6CSJIa7k3qBsYJsumamdWVyoSFfPJ/fEb7Jin/lq
+         FJQvXRzmAANE+vHOZUWrPUe2GKwHzRMabOE2DJYLhJ7BVDHI3ffDsqWIpnzwEbrJdCiS
+         Bs5/XvZddX61PTJ4T8NyZuK7ubz8OoUwy0ZTXRNcOOff1/+eAcrGlTorPUAG3op2YcQ9
+         qbr7wAIH/h7ErmbbjeNuKCZpCLH/AkM3MT45zk/9Nenjz4q4InJ5h0cQUKRNTZ6q2Ji4
+         QRdw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=wj+2ERqBcujhHCH9Aw3uOT+r18qxiQCPwhg6TrYRXaA=;
+        fh=4/W5F26rSOLOtAQ5Tmqbhyl62Y75GPPW45XOjlvuqyU=;
+        b=LCc5ramh0oSh6AoH01hm/AY3CUKGrkk7tuHGA3ngDtpJ305J/Z1p24lGgvxuUzk6+9
+         cLXXSS5HF6NwmqjrBoH7XFIQyhI+RlFqwuXQ/Enu+8Pkyv2z4bSYIuZGMAyWtXLYMBTC
+         AZJ0LCfd3fY4c7Y1nAAPBMZ3b5dZKSSdyUJ8TJphDtcLXh4uBHf6R3Z8lRTeGGURbvoK
+         nFWQGDlycWrLBGzYDypbnFoGaUypuLUpiBoCjShaGNXEGTK0EXAe/7f/t0SthTw6I2Ea
+         hNx7Cs9PjP5ZO8aiv0QNbVhdMsNbIcnUfmVF2Po+byUXS76JR3OGwtdKsBjvqoE/Wjgh
+         a8OA==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1767913020; x=1768517820; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=dpKXlsbK0t3fSowv1Ag5XF8DahHUNU6JO1yHiv556M0=;
-        b=cNh1gNXD6XVz/fZTmCbklLappsSX5mJGfM1fN/NnhQAF4uaYXxQ/N9IiqzDrhR/1t7
-         CWEXLkzRfzN3EjM4jh73XANse1tSoq3lGEGZOJ0i5PVz8Nuz8qXVYqA4ljcpeoSJQ4Qz
-         m9q1y7HW4WNGohHziRu14KwHOOSPJYBj0zv7VFnpdTu89mMnFM4xCp1aHSOhR01hffFv
-         CvkqjJmuh6fFd8g9xdPQq624uTt2VVAFgMiD7i1g47/nXOHWnqLdgD3BOyd1lzsuD/vJ
-         NrqrA2YwkMKs2AMsOXmClUoQJNDwNT+5V8uvvYLhEUBSKYsxv0Oy4srGavk0kgU5Qh2i
-         GOiA==
+        d=google.com; s=20230601; t=1767914458; x=1768519258; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wj+2ERqBcujhHCH9Aw3uOT+r18qxiQCPwhg6TrYRXaA=;
+        b=PoYU/nyRL6U8AMm+w6+xHu6Rp4iz1e1Zjwndtf1P91rPFzimAMia/xk5fhd449Yzxq
+         wOals5bwl/YzYefe3/yTZAjAWkISnRAZn8K1QbpSXs2ccRYiBBAN7hFiMcvfG2xwNXC1
+         K57zh+rov+V7kAdpWShLKBCoQ9SSw7P9vZDUIf9q4Q8vTWZJ0QcuRBaPhvGnNIkmk64d
+         tEo937ako0z2KeIh2dBrKuWwBp5257PoYUZg7RYNYYdqCoTlndR5zq6h3fwcT3bizaPf
+         M86h+FD6RdajgFP379GAaSe+QJc4JG99+Zv5ieYjS26cJc7oZwDse17dx9FHSYA2SaM6
+         5gIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767913020; x=1768517820;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dpKXlsbK0t3fSowv1Ag5XF8DahHUNU6JO1yHiv556M0=;
-        b=TlrWI4C4ZKFRbLbqi1o1nR3uJlr8Rf2JcOKOpI87nsvyZm0qQqYyLk8Y8Fq90vwUEs
-         ynvBkGxiws78EMmvIhMgc5zHDbludrCt6YNlZ8PjFM8aJoAvn3MA1/sceDECHKPLV+aV
-         /GX3ABaZS/dwtSmpAfVGDBjxMlHQ4UQ8QHotXWkvGA7kQ1DAMzLH5G19c/BXrIRx/nwP
-         gpYnUelp70qFb2mZxbrR+RuGagw2CA9j2ouBrjwyVrw2k93KLGW1iPydTuG3GQqQiBFE
-         ai12iuqU5t/l8gim1YUqDso1Ppb0BJv14pcH+jM/SRxQ1RNTEXdMNyn+WeBItljpzkoW
-         WbBg==
-X-Forwarded-Encrypted: i=1; AJvYcCU2SHCrS8agQ5NskZbvIpWERUHuXq9o5FspIX0zZzTW4lL0az2QX9zS1Z5PUOeE8bYQq38=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwjYlApqLBRFHuDa135xa2epLXnFJ0WoXuY9HvFEOqYgWezrf4D
-	udnaDozG2I2D4SjKY+TYkKUDQGjFZnYwbIFsEpS3JI+ggaS3Mf2zxemNVof2JUIWfwRHsqgvAoE
-	B4Q6YYjCr0P83NA==
-X-Google-Smtp-Source: AGHT+IG9bQDjpCq6ehJqqADDNDIcyIIU2S/qsuw+XaSMLcji1Lvxu5teMn1SSSthcF42Rd0wF4s4ZbXQTh9E7w==
-X-Received: from dlbuu5.prod.google.com ([2002:a05:7022:7e85:b0:11d:cfec:1ad2])
- (user=wusamuel job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:7022:2495:b0:11b:9e5e:1a66 with SMTP id a92af1059eb24-121f8b16424mr6507148c88.14.1767913019880;
- Thu, 08 Jan 2026 14:56:59 -0800 (PST)
-Date: Thu,  8 Jan 2026 14:55:21 -0800
-In-Reply-To: <20260108225523.3268383-1-wusamuel@google.com>
+        d=1e100.net; s=20230601; t=1767914458; x=1768519258;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=wj+2ERqBcujhHCH9Aw3uOT+r18qxiQCPwhg6TrYRXaA=;
+        b=kAEJprZbNtYmNvmCPAzL4rSpRaeFpRI63YUZYS7GqUp4lUkhP509wF5iDEyr4oZVeA
+         fvHVKvYMOqYe7OvfDWzsvBrKYJONFFhkyvJYWDIh1v5J7ckTxUF+Qoi25m9JKj0TCSya
+         KNjU3twAVFolqQaReZCIAi4G2PGqGHgi7l7QCngZwdZJjNiXmbaG98FirRmTxDa2kTIw
+         Jhm3DyfI52cslU3goXZIdMCTCLSuVxWJdWXXET0hoa4nmokKfZ2DGTOr0Qpe99szNKz9
+         2KU7Vg4wyBsTFcvQ111BSJOjAPiURuizLB9jsl2lXLE+S3emHMneYPcVPLm917udYb7e
+         CFhA==
+X-Forwarded-Encrypted: i=1; AJvYcCUiwIgitldBhz5td2utFIrq34iY7M7JT1z4qEdoGPH6d3w2pg1wJIGIcnJiLd0+2JLB/vU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YznhE5OwsXvu2odJbEXGKH6etEHL5zmuGBqs5gvfNds0cVjhEpO
+	eb0LU3hL3BkGmAuYKSrAhgokHyz5azOBVR0FRbo+J57KrbP1kh9HkXhbdH9KnlUJ5E4+Q+dkfVD
+	C7VXUJUvj7UuXTL3xZcDfqWU0Jv2xzyYk6j25C+Cd
+X-Gm-Gg: AY/fxX5briW3lkq4cU7N3cAGIyGlL7Ww66LMiiXU1I9XjwCtOzICNgMJ95Y0KnIpQx+
+	JRlOz9HyeYQGwh9OYronsP9zPAuDmKpdcFBcv5735+ZYCDetm51F6Lm5N8HWXVjOzaGK36YyQi9
+	w4g4lvc5c2I/03j8OhIOHcmF0yfLMfHWdmsARTAeE86ojaVq7O3oqOKDOrBv0Ims94HSRMBex13
+	Qr1s2guRCMMHbgK3mZxTlqPSTfj/EZSzxKoAugbpzf5vGg89oHq3RKFj/uLHwwymaqJXG5vZPBs
+	d8kfDqtRqPNtfCJ0myIivAafEuaiSgfLLUcwgjAXPkUFg5XoXzMoWgueUE2XdveW0LvIYQ==
+X-Received: by 2002:a05:622a:451:b0:4ff:bffa:d9e4 with SMTP id
+ d75a77b69052e-4ffcb20efa3mr2340841cf.13.1767914457681; Thu, 08 Jan 2026
+ 15:20:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20260108225523.3268383-1-wusamuel@google.com>
-X-Mailer: git-send-email 2.52.0.457.g6b5491de43-goog
-Message-ID: <20260108225523.3268383-5-wusamuel@google.com>
-Subject: [PATCH bpf-next v2 4/4] selftests/bpf: Open coded BPF wakeup_sources test
-From: Samuel Wu <wusamuel@google.com>
-To: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>
-Cc: Samuel Wu <wusamuel@google.com>, kernel-team@android.com, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
+MIME-Version: 1.0
+References: <20260108155816.36001-1-chia-yu.chang@nokia-bell-labs.com>
+ <20260108155816.36001-2-chia-yu.chang@nokia-bell-labs.com> <CADVnQykTJWJf7kjxWrdYMYaeamo20JDbd_SijTejLj1ES37j7Q@mail.gmail.com>
+In-Reply-To: <CADVnQykTJWJf7kjxWrdYMYaeamo20JDbd_SijTejLj1ES37j7Q@mail.gmail.com>
+From: Neal Cardwell <ncardwell@google.com>
+Date: Thu, 8 Jan 2026 18:20:40 -0500
+X-Gm-Features: AQt7F2pqVzz9M7qiJp7DfsnUleYfVSMGUfqYVX43z4keU7aZSTGIZ7pkvS8mv_0
+Message-ID: <CADVnQynohH4UyvyKm9rUNcCMbnepJKMwhOCPRFzM5wTvpDR1ZA@mail.gmail.com>
+Subject: Re: [PATCH net-next 1/1] selftests/net: Add packetdrill packetdrill cases
+To: chia-yu.chang@nokia-bell-labs.com
+Cc: pabeni@redhat.com, edumazet@google.com, parav@nvidia.com, 
+	linux-doc@vger.kernel.org, corbet@lwn.net, horms@kernel.org, 
+	dsahern@kernel.org, kuniyu@google.com, bpf@vger.kernel.org, 
+	netdev@vger.kernel.org, dave.taht@gmail.com, jhs@mojatatu.com, 
+	kuba@kernel.org, stephen@networkplumber.org, xiyou.wangcong@gmail.com, 
+	jiri@resnulli.us, davem@davemloft.net, andrew+netdev@lunn.ch, 
+	donald.hunter@gmail.com, ast@fiberby.net, liuhangbin@gmail.com, 
+	shuah@kernel.org, linux-kselftest@vger.kernel.org, ij@kernel.org, 
+	koen.de_schepper@nokia-bell-labs.com, g.white@cablelabs.com, 
+	ingemar.s.johansson@ericsson.com, mirja.kuehlewind@ericsson.com, 
+	cheshire@apple.com, rs.ietf@gmx.at, Jason_Livingood@comcast.com, 
+	vidhi_goel@apple.com, Willem de Bruijn <willemb@google.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This commit introduces a new selftest for the BPF wakeup_source iterator
-to verify the functionality of open-coded iteration.
+On Thu, Jan 8, 2026 at 5:46=E2=80=AFPM Neal Cardwell <ncardwell@google.com>=
+ wrote:
+>
+> On Thu, Jan 8, 2026 at 10:58=E2=80=AFAM <chia-yu.chang@nokia-bell-labs.co=
+m> wrote:
+> >
+> > From: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
+> >
+> > Linux Accurate ECN test sets using ACE counters and AccECN options to
+> > cover several scenarios: Connection teardown, different ACK conditions,
+> > counter wrapping, SACK space grabbing, fallback schemes, negotiation
+> > retransmission/reorder/loss, AccECN option drop/loss, different
+> > handshake reflectors, data with marking, and different sysctl values.
+> >
+> > Co-developed-by: Ilpo J=C3=A4rvinen <ij@kernel.org>
+> > Signed-off-by: Ilpo J=C3=A4rvinen <ij@kernel.org>
+> > Co-developed-by: Neal Cardwell <ncardwell@google.com>
+> > Signed-off-by: Neal Cardwell <ncardwell@google.com>
+> > ---
+>
+> Chia-Yu, thank you for posting the packetdrill tests.
+>
+> A couple thoughts:
+>
+> (1) These tests are using the experimental AccECN packetdrill support
+> that is not in mainline packetdrill yet. Can you please share the
+> github URL for the version of packetdrill you used? I will work on
+> merging the appropriate experimental AccECN packetdrill support into
+> the Google packetdrill mainline branch.
 
-The test adds:
-- A new BPF map `test_ws_hash` to track iterated wakeup source names.
-- A BPF program `iter_ws_for_each` that iterates over wakeup sources and
-  updates the `test_ws_hash` map with the names of found sources.
-- A new subtest `subtest_ws_iter_check_open_coded` to trigger the BPF
-  program and assert that the expected wakeup sources are marked in the
-  map.
+Oh, for that part I see you mentioned this already in the cover letter:
 
-Signed-off-by: Samuel Wu <wusamuel@google.com>
----
- .../testing/selftests/bpf/bpf_experimental.h  |  5 ++
- .../bpf/prog_tests/wakeup_source_iter.c       | 42 +++++++++++++++++
- .../selftests/bpf/progs/wakeup_source_iter.c  | 47 +++++++++++++++++++
- 3 files changed, 94 insertions(+)
+  The used packetdrill is commit 6f2116af6b7e1936a53e80ab31b77f74abda1aaa
+  of the branch: https://github.com/minuscat/packetdrill_accecn
 
-diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testing/selftests/bpf/bpf_experimental.h
-index 2cd9165c7348..e532999b91ca 100644
---- a/tools/testing/selftests/bpf/bpf_experimental.h
-+++ b/tools/testing/selftests/bpf/bpf_experimental.h
-@@ -598,6 +598,11 @@ extern void bpf_iter_dmabuf_destroy(struct bpf_iter_dmabuf *it) __weak __ksym;
- 
- extern int bpf_cgroup_read_xattr(struct cgroup *cgroup, const char *name__str,
- 				 struct bpf_dynptr *value_p) __weak __ksym;
-+struct bpf_iter_wakeup_source;
-+extern int bpf_iter_wakeup_source_new(struct bpf_iter_wakeup_source *it) __weak __ksym;
-+extern struct wakeup_source *bpf_iter_wakeup_source_next(
-+		struct bpf_iter_wakeup_source *it) __weak __ksym;
-+extern void bpf_iter_wakeup_source_destroy(struct bpf_iter_wakeup_source *it) __weak __ksym;
- 
- #define PREEMPT_BITS	8
- #define SOFTIRQ_BITS	8
-diff --git a/tools/testing/selftests/bpf/prog_tests/wakeup_source_iter.c b/tools/testing/selftests/bpf/prog_tests/wakeup_source_iter.c
-index 31729f11585e..7b4d4cb25fd0 100644
---- a/tools/testing/selftests/bpf/prog_tests/wakeup_source_iter.c
-+++ b/tools/testing/selftests/bpf/prog_tests/wakeup_source_iter.c
-@@ -241,9 +241,37 @@ static void subtest_ws_iter_check_no_infinite_reads(
- 	close(iter_fd);
- }
- 
-+static void subtest_ws_iter_check_open_coded(struct wakeup_source_iter *skel,
-+					     int map_fd)
-+{
-+	LIBBPF_OPTS(bpf_test_run_opts, topts);
-+	char key[WAKEUP_SOURCE_NAME_LEN] = {0};
-+	int err, fd;
-+	bool found = false;
-+
-+	fd = bpf_program__fd(skel->progs.iter_ws_for_each);
-+
-+	err = bpf_prog_test_run_opts(fd, &topts);
-+	if (!ASSERT_OK(err, "test_run_opts err"))
-+		return;
-+	if (!ASSERT_OK(topts.retval, "test_run_opts retval"))
-+		return;
-+
-+	strncpy(key, test_ws_name, WAKEUP_SOURCE_NAME_LEN - 1);
-+
-+	if (!ASSERT_OK(bpf_map_lookup_elem(map_fd, key, &found),
-+		       "lookup test_ws_name"))
-+		return;
-+
-+	ASSERT_TRUE(found, "found test ws via bpf_for_each");
-+}
-+
- void test_wakeup_source_iter(void)
- {
- 	struct wakeup_source_iter *skel = NULL;
-+	int map_fd;
-+	const bool found_val = false;
-+	char key[WAKEUP_SOURCE_NAME_LEN] = {0};
- 
- 	if (geteuid() != 0) {
- 		fprintf(stderr,
-@@ -256,6 +284,17 @@ void test_wakeup_source_iter(void)
- 	if (!ASSERT_OK_PTR(skel, "wakeup_source_iter__open_and_load"))
- 		return;
- 
-+	map_fd = bpf_map__fd(skel->maps.test_ws_hash);
-+	if (!ASSERT_OK_FD(map_fd, "map_fd"))
-+		goto destroy_skel;
-+
-+	/* Copy test name to key buffer, ensuring it's zero-padded */
-+	strncpy(key, test_ws_name, WAKEUP_SOURCE_NAME_LEN - 1);
-+
-+	if (!ASSERT_OK(bpf_map_update_elem(map_fd, key, &found_val, BPF_ANY),
-+		       "insert test_ws_name"))
-+		goto destroy_skel;
-+
- 	if (!ASSERT_OK(setup_test_ws(), "setup_test_ws"))
- 		goto destroy;
- 
-@@ -274,8 +313,11 @@ void test_wakeup_source_iter(void)
- 		subtest_ws_iter_check_sleep_times(skel);
- 	if (test__start_subtest("no_infinite_reads"))
- 		subtest_ws_iter_check_no_infinite_reads(skel);
-+	if (test__start_subtest("open_coded"))
-+		subtest_ws_iter_check_open_coded(skel, map_fd);
- 
- destroy:
- 	teardown_test_ws();
-+destroy_skel:
- 	wakeup_source_iter__destroy(skel);
- }
-diff --git a/tools/testing/selftests/bpf/progs/wakeup_source_iter.c b/tools/testing/selftests/bpf/progs/wakeup_source_iter.c
-index 9a377fd28f4e..a95718dadcc7 100644
---- a/tools/testing/selftests/bpf/progs/wakeup_source_iter.c
-+++ b/tools/testing/selftests/bpf/progs/wakeup_source_iter.c
-@@ -9,6 +9,13 @@
- 
- char _license[] SEC("license") = "GPL";
- 
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(key_size, WAKEUP_SOURCE_NAME_LEN);
-+	__type(value, bool);
-+	__uint(max_entries, 5);
-+} test_ws_hash SEC(".maps");
-+
- SEC("iter/wakeup_source")
- int wakeup_source_collector(struct bpf_iter__wakeup_source *ctx)
- {
-@@ -68,3 +75,43 @@ int wakeup_source_collector(struct bpf_iter__wakeup_source *ctx)
- 		       wakeup_count);
- 	return 0;
- }
-+
-+SEC("syscall")
-+int iter_ws_for_each(const void *ctx)
-+{
-+	struct wakeup_source *ws;
-+
-+	bpf_for_each(wakeup_source, ws) {
-+		char name[WAKEUP_SOURCE_NAME_LEN];
-+		const char *pname;
-+		bool *found;
-+		long len;
-+		int i;
-+
-+		if (bpf_core_read(&pname, sizeof(pname), &ws->name))
-+			return 1;
-+
-+		if (!pname)
-+			continue;
-+
-+		len = bpf_probe_read_kernel_str(name, sizeof(name), pname);
-+		if (len < 0)
-+			return 1;
-+
-+		/*
-+		 * Clear the remainder of the buffer to ensure a stable key for
-+		 * the map lookup.
-+		 */
-+		bpf_for(i, len, WAKEUP_SOURCE_NAME_LEN)
-+			name[i] = 0;
-+
-+		found = bpf_map_lookup_elem(&test_ws_hash, name);
-+		if (found) {
-+			bool t = true;
-+
-+			bpf_map_update_elem(&test_ws_hash, name, &t, BPF_EXIST);
-+		}
-+	}
-+
-+	return 0;
-+}
--- 
-2.52.0.457.g6b5491de43-goog
-
+Thanks!
+neal
 
