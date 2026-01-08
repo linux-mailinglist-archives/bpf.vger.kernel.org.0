@@ -1,107 +1,91 @@
-Return-Path: <bpf+bounces-78237-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78238-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A0E7D040F6
-	for <lists+bpf@lfdr.de>; Thu, 08 Jan 2026 16:54:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 89143D042FD
+	for <lists+bpf@lfdr.de>; Thu, 08 Jan 2026 17:08:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id C703C30692F5
-	for <lists+bpf@lfdr.de>; Thu,  8 Jan 2026 15:48:53 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 4F972301266A
+	for <lists+bpf@lfdr.de>; Thu,  8 Jan 2026 15:58:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5DBB221FC6;
-	Thu,  8 Jan 2026 15:47:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 934EA272E6D;
+	Thu,  8 Jan 2026 15:54:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GZsCXQ+q"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="anmTV0HF"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 371DE226D1E;
-	Thu,  8 Jan 2026 15:47:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE83B264A86;
+	Thu,  8 Jan 2026 15:54:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767887264; cv=none; b=f3oaqmO14f6M24h4cwVjbxY5VHStJLrjKcel94qA1YpE261UC7n4AxHxp2ExrbmV8icgckhj9LxJ10mh4EUMpYrphHS/xdalcev5VU/W6GpZQGaevOwxBsvuhSwRGkTmeVFyt52rbIfH9HisHFYYAq7xHP4x7LgXNDyBb56/I7I=
+	t=1767887667; cv=none; b=M7cvIqbWLJAYpTvrViT8YR0E/jjWm58vTjjg4NIZSCHn3ySSsfW6/v84KSnuB8sMmElubUMWvIwARWc5jsS4gC571Tb/AINBvfWunYkTT5r2ooe5nOjrP2KD00yI5kkGuQbwlZDosV5TTdOAc2ycFgD38a1Dy9RGDOeEqusr4Qk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767887264; c=relaxed/simple;
-	bh=rRafGtka+Zehe/QV1cX6sSl/+Pxyy/fwaUZk3pYs55Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Du/cmT6JqNpMjE8JSosoYUrHqyY2NMx5NZqOQLVj3+jIcBFHqPZ+rEFn7vpHAKIe4+/iIewJyc/Bx3Rf8X9vBbOUZvEie1/JZJrLB3CTlbdRPuBnq/Ifu3hAAX8wkSFiMf/MkKPQgaYOf7QMMVXJAUgONQ4TGi4O9Lnr/KbAuKQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GZsCXQ+q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB20DC116C6;
-	Thu,  8 Jan 2026 15:47:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767887263;
-	bh=rRafGtka+Zehe/QV1cX6sSl/+Pxyy/fwaUZk3pYs55Y=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=GZsCXQ+qr4G1mL9qEBvyZjVtrMbkDrUDLNLc+WyF5b0Es1yI189MtmWSzSSZQoguW
-	 UqvcF4BSDnEqZDdfDdcBGVDrYM3TI538kbyQTNLQHGRG918U8GBPPHeNs1+xdDFbos
-	 vc9SjEraU0d9IHkY1sbo8Vl92b3yyGo9gsEopcSTjNS6wxmGPC6QVaYXyTbcrbtjEW
-	 0MDNk2S4PvLVn/rL2wHH/SGTjqtdbqvaXlKqVkBPgvMTsY2zmIGR9bVznzhnTEQMAC
-	 d1K34JgHKgbPCXRNG97lJ/qSHdZz16k3UgJ6PdfD79sqk8LXA8HTXqv4qjM3M0J9uQ
-	 rQn/5WvQjbCYg==
-Date: Thu, 8 Jan 2026 07:47:41 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Jakub Sitnicki <jakub@cloudflare.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
- <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John
- Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>,
- Simon Horman <horms@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- kernel-team@cloudflare.com
-Subject: Re: [PATCH bpf-next v3 00/17] Decouple skb metadata tracking from
- MAC header offset
-Message-ID: <20260108074741.00bd532f@kernel.org>
-In-Reply-To: <20260107-skb-meta-safeproof-netdevs-rx-only-v3-0-0d461c5e4764@cloudflare.com>
-References: <20260107-skb-meta-safeproof-netdevs-rx-only-v3-0-0d461c5e4764@cloudflare.com>
+	s=arc-20240116; t=1767887667; c=relaxed/simple;
+	bh=D7mFMv1M/e+pJMtAzOs2WcvquDi6G1yfA7fqyx8qQAc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ro6XQCBY2o+plSTqWi9cJv14tjkgpMQm8saJp0dSPRYArwa0Pd6CjATpdns9+JFixMw/Q4JdeShNp7X6dAUOdEm7NTyexRGk1qhY5pd9n0XQzNPYTC7laQKPilHoPKhwc38Ii2IyMT6APDYdcUYTGvffX/GDC7x9JmP6xbDWhIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=anmTV0HF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCCDFC116C6;
+	Thu,  8 Jan 2026 15:54:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1767887666;
+	bh=D7mFMv1M/e+pJMtAzOs2WcvquDi6G1yfA7fqyx8qQAc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=anmTV0HFmn5QQsF+PGyK0sxpR71b+VQYn95yley/jmx7xSc2D+J2/LfZN+pv2xppz
+	 Juou0wOhbO2Ns0uZJNIhO8+6kXiQy/XJN/urquVjzd5GAGvSlL5y2ykTQKI1L+bwld
+	 BIw9GXlbMSMduRu+KeIJg7cF4v75ANEcje9+Ox98=
+Date: Thu, 8 Jan 2026 16:54:22 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: HarinadhD <harinadh.dommaraju@broadcom.com>
+Cc: stable@vger.kernel.org, john.fastabend@gmail.com, daniel@iogearbox.net,
+	jakub@cloudflare.com, lmb@cloudflare.com, davem@davemloft.net,
+	kuba@kernel.org, ast@kernel.org, andrii@kernel.org, kafai@fb.com,
+	songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
+	netdev@vger.kernel.org, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, ajay.kaher@broadcom.com,
+	alexey.makhalov@broadcom.com,
+	vamsi-krishna.brahmajosyula@broadcom.com, yin.ding@broadcom.com,
+	tapas.kundu@broadcom.com, Eric Dumazet <edumazet@google.com>,
+	Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH v5.10.y] bpf, sockmap: Don't let
+ sock_map_{close,destroy,unhash} call itself
+Message-ID: <2026010808-nearby-endurable-8e19@gregkh>
+References: <20251212035458.1794979-1-harinadh.dommaraju@broadcom.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251212035458.1794979-1-harinadh.dommaraju@broadcom.com>
 
-On Wed, 07 Jan 2026 15:28:00 +0100 Jakub Sitnicki wrote:
-> This series continues the effort to provide reliable access to xdp/skb
-> metadata from BPF context on the receive path. We have recently talked
-> about it at Plumbers [1].
+On Fri, Dec 12, 2025 at 03:54:58AM +0000, HarinadhD wrote:
+> From: Jakub Sitnicki <jakub@cloudflare.com>
 > 
-> Currently skb metadata location is tied to the MAC header offset:
+> [ Upstream commit 5b4a79ba65a1ab479903fff2e604865d229b70a9 ]
 > 
->   [headroom][metadata][MAC hdr][L3 pkt]
->                       ^
->                       skb_metadata_end = head + mac_header
+> sock_map proto callbacks should never call themselves by design. Protect
+> against bugs like [1] and break out of the recursive loop to avoid a stack
+> overflow in favor of a resource leak.
 > 
-> This design breaks on L2 decapsulation (VLAN, GRE, etc.) when the MAC
-> offset is reset. The naive fix is to memmove metadata on every decap path,
-> but we can avoid this cost by tracking metadata position independently.
+> [1] https://lore.kernel.org/all/00000000000073b14905ef2e7401@google.com/
 > 
-> Introduce a dedicated meta_end field in skb_shared_info that records where
-> metadata ends relative to skb->head:
-> 
->   [headroom][metadata][gap][MAC hdr][L3 pkt]
->                      ^
->                      skb_metadata_end = head + meta_end
->                      
-> This allows BPF dynptr access (bpf_dynptr_from_skb_meta()) to work without
-> memmove. For skb->data_meta pointer access, which expects metadata
-> immediately before skb->data, make the verifier inject realignment code in
-> TC BPF prologue.
+> Suggested-by: Eric Dumazet <edumazet@google.com>
+> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+> Acked-by: John Fastabend <john.fastabend@gmail.com>
+> Link: https://lore.kernel.org/r/20230113-sockmap-fix-v2-1-1e0ee7ac2f90@cloudflare.com
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> [ Harinadh: Modified to apply on v5.10.y ]
+> Signed-off-by: HarinadhD <Harinadh.Dommaraju@broadcom.com>
 
-I don't understand what semantics for the buffer layout you're trying
-to establish, we now have "headroom" and "gap"?
+Please use your name for your signed-off-by.
 
-	[headroom][metadata][gap][packet]
+thanks,
 
-You're not solving the encap side either, skb_push() will still happily
-encroach on the metadata. Feel like duct tape, we can't fundamentally
-update the layout of the skb without updating all the helpers.
-metadata works perfectly fine for its intended use case - passing info
-about the frame from XDP offload to XDP and then to TC.
+greg k-h
 
