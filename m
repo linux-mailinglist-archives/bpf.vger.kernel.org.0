@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-78194-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78195-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 545A0D00D7A
-	for <lists+bpf@lfdr.de>; Thu, 08 Jan 2026 04:20:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DB43FD00D80
+	for <lists+bpf@lfdr.de>; Thu, 08 Jan 2026 04:21:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 335FB3090A5D
-	for <lists+bpf@lfdr.de>; Thu,  8 Jan 2026 03:17:12 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 625DE30A83B2
+	for <lists+bpf@lfdr.de>; Thu,  8 Jan 2026 03:17:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70697EAC7;
-	Thu,  8 Jan 2026 03:17:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ED2B28851F;
+	Thu,  8 Jan 2026 03:17:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hBJ/HBOO"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Lw/12P0x"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3565D285066
-	for <bpf@vger.kernel.org>; Thu,  8 Jan 2026 03:17:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07AEB286D70
+	for <bpf@vger.kernel.org>; Thu,  8 Jan 2026 03:17:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767842223; cv=none; b=s6qZHw6556Hd2n7R+HF3/k8vHDfiJwwX86GG+GQ4d6vhRQIy4qfJvSNlrBhzQ2lErb9Dq0ZM/jCAY3XgQWSzHALUuD7SE+ipl77rFukL7yzAzmBPNb6CD4QVRQH1LJeYrn9K048bl47G/nFEngwQJBzSePDHMTIsIO1/VLJ/2mM=
+	t=1767842226; cv=none; b=WetVvAumh4KEjDnRe8Rr3Eivgg9/KrvUdkWocHcwjx2tiLT+kKMrrNkkZjeG8BckU7G8nes6ARv3VUvy5ZQ5n4nged+hWgdXfnELADNSyZOEhzb7agV0dRDHkq3TI2Uq5EIpM8p/+9XrFqYWSlxnsOiLmKtY6GT/pM8SvAKpWks=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767842223; c=relaxed/simple;
-	bh=V2vGk2Zy5fJHvJb6bZZNfPor1jIBJ/nlZMkVKHTwBMQ=;
+	s=arc-20240116; t=1767842226; c=relaxed/simple;
+	bh=ZOq8fJcGVS/fCpvZMwV/P+/0vrcfuhuBwBc7kMUvfWk=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=nb1b0asgWv/Ig4RA0HgbETVeb4nGO8MbNDVqQNWpTOcWJOXOgGp8+XfFWsCJqChlbfvBmVEbZt32jg8+RsK7mtgy4tcTSk3gjkWGUfJ20LJxAbRUIrGqq3prpaXcp7oPNKSsHaJ46bpkr8fYPMXrnkNY+Pl+I46uNRfkeYuIvwQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hBJ/HBOO; arc=none smtp.client-ip=209.85.210.170
+	 MIME-Version; b=c94+l7+Vw08UhbRIotluQPWU4R+YvGS3gGnAnprvteLbgLDu/7ATBSaE8Ijl43rLwTpkM42KB0w7YteOBeeXyv6XX2pmsRjiDwguCMCQ49VweA3uDiBuWMk/ouVCCyA+aak3Xt+f1uQsdeVPiJLGuujN7o0rSsoC8v8PZb5lf68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Lw/12P0x; arc=none smtp.client-ip=209.85.210.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-7e2762ad850so2338539b3a.3
-        for <bpf@vger.kernel.org>; Wed, 07 Jan 2026 19:17:02 -0800 (PST)
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-803474aaa8bso826657b3a.0
+        for <bpf@vger.kernel.org>; Wed, 07 Jan 2026 19:17:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767842221; x=1768447021; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1767842224; x=1768447024; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Bty2Mx4T9JTfidtdE5tI1SEQacGBSMSmT3cGtlsXrrQ=;
-        b=hBJ/HBOOqNmmDb60WJtTA3CBMUoSqXFl8m0u7RHYAUSyczcDRXN8mMmdu1PeymdAOT
-         UQ09oYEwBwBXED8N6TIgDPyFSTSa72rDE7YV9aYFzibI4tFlhJJpkPfcpZkinzscZuyc
-         LT+0zRmewT7mqdpnogKV9ejwAQ6nBOqyw+P0a3Qsb17BRfyGBsxgMLGqonz3zcWtWNVz
-         kUNsZQTs6LtL5hScszsmkg1W3d505Q3lgJNvEMPXiRxlFKzp0gt6vOE8OmMk2j1sP/n2
-         dGosZdFTHvslwOCy1Lf79yHUko39ioX/PGoig/bndqrdMY4jZ7eRgnInGDNWn2AJjuuV
-         8y8Q==
+        bh=s8++2dvjEi+Fcakj7nAgD/5PeeKaHx/ulT/qgv8H064=;
+        b=Lw/12P0xtRGABs9Y4UcApVxlTn+szjObplaqbaP7nv4jZGXX54i+VEGI55nSn2u71/
+         vsnLhdlb9E2OcpEMg3rBGV19iUSyllXdHwc5WH8EFxRVKYyJpqi6dl9Aj1Tze5jfqB0+
+         SuqTsOkUNFFWG2OrCCHFgE+sc+Px0Ts8fJPkvWDX6PUg+zmnggaKM4eqwPDsk8useEIo
+         uAlgF8VRKlk5GgTjXS/UIJfe0LI5PFDbMNvLzyBzIONNJRI1DLEFrc3raYKiE7yeFLWY
+         CXq1R8YvBnaZFDYJz4YuZJEJRdHtPw/KphpX1w7Fje25MefWNij0dOSknRWvtAslw4Dy
+         oNeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767842221; x=1768447021;
+        d=1e100.net; s=20230601; t=1767842224; x=1768447024;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=Bty2Mx4T9JTfidtdE5tI1SEQacGBSMSmT3cGtlsXrrQ=;
-        b=Cn9NuShw8dxJsLmOL/WHnh0VPsII9M6YSxh4assDWrJZPNep2FD41gKSK5hkHv3pP0
-         3gxE0/Z0jBldO13I+hMFhGchOQArgJmwY1npU9kTDM6663gM9oa5eOkkzeFQuf9kJJcH
-         Y8vNUWs95p5FBr091QCHsGy6x66mrgeobj+S9Zi5aRetW0NmzWGScw9IqDQUYySwqL+c
-         LLL+vRu+mxoUfza1cJYn0B+6qmtiyT9x/WvmvVIwBDNUHM6ereBm5Wk2FLze7K3U5fN+
-         WOavfBzyANk22igljN9UQsI+imcQE1xHHEzIgwVl4QcgAl5kU5pkCVu13umIaxl2k5wE
-         tv/A==
-X-Forwarded-Encrypted: i=1; AJvYcCXGMuFCHsNsOItbzZJ/zw0YUZFH2w3W39cva7gPpff2K5Zt5njj0hdqN99whXa/rsKVXc8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyOcuXzaeozR7HgHKORIawl/PjQyFnaT/CAnKbRuinj1tg9+IER
-	gpIWDSSk1e3Up3q2tibT+iI47arY3MwHDXD5jRczEDku0U7FvfKOBDts
-X-Gm-Gg: AY/fxX5EAnFBbWKUHiy7lIOiDdmpujnynB9Ecm/6BzfnCtcmTSezmhIzNkYqC2swV0M
-	uup2oYO4sM8O6jbww+tJhPFXLutmjNhElhLAZuSV5hxxharK+hxfz8p5+/pT+PvOYlffjDWFGVu
-	ODJBSBnQLsK7R2CDJecbockZQFkoAf0SiilmXqNDYwe8Y0pzDJlmI0pNYi4kzska3bpAiv/O3jI
-	hqTJw0O+O7hAPGDalvhqVI4fhmiB21K2/SzTiW20QR/G7aOe9QQiluhJuQS7iz3Y1hiF2F3J7hT
-	B6IItavycx8YCY7vbFBYTKVeGWYgwB6On/SxhfZWkW/MZgEEwYGGQj1Bi0zSGbGD8F5eHNkf5bI
-	el44qmE4bwpf2YCKTElMGdSL7TD4DU4ta5KBZDmtWvOCj557x2M/bUtRnEfH0TpNH0JHQynM3oW
-	52IUTH9g/KVhD/ij3xJE8EiBs62/I=
-X-Google-Smtp-Source: AGHT+IHMEKVP3mhXgUpos/Q5KytBuzrqYEqaOFBA7IWN01A7RqP3IhiAjx4qP/6grxzJEKNhfrReQQ==
-X-Received: by 2002:a05:6a00:3288:b0:7e8:4433:8fac with SMTP id d2e1a72fcca58-81b7fdc379bmr3840681b3a.52.1767842221498;
-        Wed, 07 Jan 2026 19:17:01 -0800 (PST)
+        bh=s8++2dvjEi+Fcakj7nAgD/5PeeKaHx/ulT/qgv8H064=;
+        b=LA1IoTIxtK2Cmv/avP+CIKfWxyJPF/x54K7MXUa1oAWmmks8Yttwk+B+Ly/pN3g+oB
+         a45H+b0Gx1aAMrre66CIAMqvvgmeLqhxFM9sN51kK/Ft6s8HmPifOjC8PdAFTiPt1ELA
+         cGc0X/GucBtGoNM2Tj98Bn1iqe0ILUhXuJ+cyiL6Fe5SIaYi/e802vdi2BI8KtM30mIO
+         4ckCI1HgamDjXnENvT1gV9pU91TZUWzah+/j4c1IbkxKnNVlgk26gwbUpXKnIgvsr/9F
+         9JA8nZ5SYf08kcReVhmSM3Nqop4TFaId05DH+PEAtfr8Up9Rhdb4z28cgtraeOOr8UJD
+         CdJw==
+X-Forwarded-Encrypted: i=1; AJvYcCXyqXiCPMflq8OO62Bkwe3UBAoS0CE7/Y7a1OyiCnKgFPFtlyg/BXrdNAq7UVEEZIyWeUs=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy6AIk2BH2aF7GzN7X7OADUy0E1CrbDGel3muDxR9A+YSzQkHT4
+	qEOWohuNNAkXLD1nKM7kx7kj0ydsvM6NaWfpAWrqO6X1iQ01hajdFCCL
+X-Gm-Gg: AY/fxX4xh/Y5ErkT13252+giL1vkMOUeJEwp47LUYYLNGaFBcmgrzH6ZtgEZI6EMSvw
+	eUO5FVZojAgpjrGGJQ9Ad5kh1WDua150xJpvTWGXGpL9oVp0KH0zCPSUul7JmX6xY9N2i4Izbf+
+	iK9Jz5EV1rV7rLt0Od00JgdAGWTdiBuhwCGBKMKFTiGcRlY4lKHFiQIvWeVKVtPcOQeU2/ZRWA2
+	gI7uUMwMd2J3UUSTcXShzKxbUuImBNHzMbJPBEkr3uNDKmveJ64bSg48Pmryl0ECr7VfTRfZlGt
+	SmS7IBSILYDX3eePSYGEFDO/dD9pIDNvucC7cJxUpmunyOKa24K/q4J5pKzLHRfPpzranJ7l/+W
+	TdrZL6IuJEvBsKMoaqNN1pNfc8h2Blvt6D4yYt2tEKTY6wmM6aGH7nNzD+jW9vWFMMPcdmiC4br
+	Q8QHHXqk2p/Cbn4Vm8jtuq7SSJpnYGfSd1R2lACw==
+X-Google-Smtp-Source: AGHT+IFGwdUyqDwaYlBr4lLMYhoJJzPw06Sbar1py7DjIxEkSI4qkacyGr98gxp0p7UuMGdseTWxoA==
+X-Received: by 2002:a05:6a00:408c:b0:7a9:f465:f29 with SMTP id d2e1a72fcca58-81b7684e6a1mr4560405b3a.10.1767842224292;
+        Wed, 07 Jan 2026 19:17:04 -0800 (PST)
 Received: from pengdl-pc.mioffice.cn ([43.224.245.249])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-819c5de655bsm6134860b3a.60.2026.01.07.19.16.59
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-819c5de655bsm6134860b3a.60.2026.01.07.19.17.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jan 2026 19:17:01 -0800 (PST)
+        Wed, 07 Jan 2026 19:17:03 -0800 (PST)
 From: Donglin Peng <dolinux.peng@gmail.com>
 To: ast@kernel.org,
 	andrii.nakryiko@gmail.com,
@@ -82,9 +82,9 @@ Cc: zhangxiaoqin@xiaomi.com,
 	bpf@vger.kernel.org,
 	Donglin Peng <pengdonglin@xiaomi.com>,
 	Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH bpf-next v11 03/11] tools/resolve_btfids: Support BTF sorting feature
-Date: Thu,  8 Jan 2026 11:16:37 +0800
-Message-Id: <20260108031645.1350069-4-dolinux.peng@gmail.com>
+Subject: [PATCH bpf-next v11 04/11] libbpf: Optimize type lookup with binary search for sorted BTF
+Date: Thu,  8 Jan 2026 11:16:38 +0800
+Message-Id: <20260108031645.1350069-5-dolinux.peng@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20260108031645.1350069-1-dolinux.peng@gmail.com>
 References: <20260108031645.1350069-1-dolinux.peng@gmail.com>
@@ -98,9 +98,12 @@ Content-Transfer-Encoding: 8bit
 
 From: Donglin Peng <pengdonglin@xiaomi.com>
 
-This introduces a new BTF sorting phase that specifically sorts
-BTF types by name in ascending order, so that the binary search
-can be used to look up types.
+This patch introduces binary search optimization for BTF type lookups
+when the BTF instance contains sorted types.
+
+The optimization significantly improves performance when searching for
+types in large BTF instances with sorted types. For unsorted BTF, the
+implementation falls back to the original linear search.
 
 Cc: Eduard Zingerman <eddyz87@gmail.com>
 Cc: Alexei Starovoitov <ast@kernel.org>
@@ -109,93 +112,155 @@ Cc: Alan Maguire <alan.maguire@oracle.com>
 Cc: Ihor Solodrai <ihor.solodrai@linux.dev>
 Cc: Xiaoqin Zhang <zhangxiaoqin@xiaomi.com>
 Signed-off-by: Donglin Peng <pengdonglin@xiaomi.com>
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- tools/bpf/resolve_btfids/main.c | 64 +++++++++++++++++++++++++++++++++
- 1 file changed, 64 insertions(+)
+ tools/lib/bpf/btf.c | 90 +++++++++++++++++++++++++++++++++------------
+ 1 file changed, 66 insertions(+), 24 deletions(-)
 
-diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
-index df39982f51df..343d08050116 100644
---- a/tools/bpf/resolve_btfids/main.c
-+++ b/tools/bpf/resolve_btfids/main.c
-@@ -850,6 +850,67 @@ static int dump_raw_btf(struct btf *btf, const char *out_path)
- 	return 0;
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index bf75f770d29a..60ff8eafea83 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -92,6 +92,8 @@ struct btf {
+ 	 *   - for split BTF counts number of types added on top of base BTF.
+ 	 */
+ 	__u32 nr_types;
++	/* the start IDs of named types in sorted BTF */
++	int named_start_id;
+ 	/* if not NULL, points to the base BTF on top of which the current
+ 	 * split BTF is based
+ 	 */
+@@ -897,46 +899,83 @@ int btf__resolve_type(const struct btf *btf, __u32 type_id)
+ 	return type_id;
  }
  
-+/*
-+ * Sort types by name in ascending order resulting in all
-+ * anonymous types being placed before named types.
-+ */
-+static int cmp_type_names(const void *a, const void *b, void *priv)
-+{
-+	struct btf *btf = (struct btf *)priv;
-+	const struct btf_type *ta = btf__type_by_id(btf, *(__u32 *)a);
-+	const struct btf_type *tb = btf__type_by_id(btf, *(__u32 *)b);
-+	const char *na, *nb;
-+
-+	na = btf__str_by_offset(btf, ta->name_off);
-+	nb = btf__str_by_offset(btf, tb->name_off);
-+	return strcmp(na, nb);
-+}
-+
-+static int sort_btf_by_name(struct btf *btf)
-+{
-+	__u32 *permute_ids = NULL, *id_map = NULL;
-+	int nr_types, i, err = 0;
-+	__u32 start_id = 0, start_offs = 1, id;
-+
-+	if (btf__base_btf(btf)) {
-+		start_id = btf__type_cnt(btf__base_btf(btf));
-+		start_offs = 0;
-+	}
-+	nr_types = btf__type_cnt(btf) - start_id;
-+
-+	permute_ids = calloc(nr_types, sizeof(*permute_ids));
-+	if (!permute_ids) {
-+		err = -ENOMEM;
-+		goto out;
-+	}
-+
-+	id_map = calloc(nr_types, sizeof(*id_map));
-+	if (!id_map) {
-+		err = -ENOMEM;
-+		goto out;
-+	}
-+
-+	for (i = 0, id = start_id; i < nr_types; i++, id++)
-+		permute_ids[i] = id;
-+
-+	qsort_r(permute_ids + start_offs, nr_types - start_offs,
-+		sizeof(*permute_ids), cmp_type_names, btf);
-+
-+	for (i = 0; i < nr_types; i++) {
-+		id = permute_ids[i] - start_id;
-+		id_map[id] = i + start_id;
-+	}
-+
-+	err = btf__permute(btf, id_map, nr_types, NULL);
-+	if (err)
-+		pr_err("FAILED: btf permute: %s\n", strerror(-err));
-+
-+out:
-+	free(permute_ids);
-+	free(id_map);
-+	return err;
-+}
-+
- static inline int make_out_path(char *buf, u32 buf_sz, const char *in_path, const char *suffix)
+-__s32 btf__find_by_name(const struct btf *btf, const char *type_name)
++static __s32 btf_find_type_by_name_bsearch(const struct btf *btf, const char *name,
++					   __s32 start_id)
  {
- 	int len = snprintf(buf, buf_sz, "%s%s", in_path, suffix);
-@@ -1025,6 +1086,9 @@ int main(int argc, const char **argv)
- 	if (load_btf(&obj))
- 		goto out;
- 
-+	if (sort_btf_by_name(obj.btf))
-+		goto out;
+-	__u32 i, nr_types = btf__type_cnt(btf);
+-
+-	if (!strcmp(type_name, "void"))
+-		return 0;
+-
+-	for (i = 1; i < nr_types; i++) {
+-		const struct btf_type *t = btf__type_by_id(btf, i);
+-		const char *name = btf__name_by_offset(btf, t->name_off);
+-
+-		if (name && !strcmp(type_name, name))
+-			return i;
++	const struct btf_type *t;
++	const char *tname;
++	__s32 l, r, m;
 +
- 	if (elf_collect(&obj))
- 		goto out;
++	l = start_id;
++	r = btf__type_cnt(btf) - 1;
++	while (l <= r) {
++		m = l + (r - l) / 2;
++		t = btf_type_by_id(btf, m);
++		tname = btf__str_by_offset(btf, t->name_off);
++		if (strcmp(tname, name) >= 0) {
++			if (l == r)
++				return r;
++			r = m;
++		} else {
++			l = m + 1;
++		}
+ 	}
  
+-	return libbpf_err(-ENOENT);
++	return btf__type_cnt(btf);
+ }
+ 
+ static __s32 btf_find_by_name_kind(const struct btf *btf, int start_id,
+-				   const char *type_name, __u32 kind)
++				   const char *type_name, __s32 kind)
+ {
+-	__u32 i, nr_types = btf__type_cnt(btf);
++	const struct btf_type *t;
++	const char *tname;
++	__s32 idx;
++
++	if (start_id < btf->start_id) {
++		idx = btf_find_by_name_kind(btf->base_btf, start_id,
++					    type_name, kind);
++		if (idx >= 0)
++			return idx;
++		start_id = btf->start_id;
++	}
+ 
+-	if (kind == BTF_KIND_UNKN || !strcmp(type_name, "void"))
++	if (kind == BTF_KIND_UNKN || strcmp(type_name, "void") == 0)
+ 		return 0;
+ 
+-	for (i = start_id; i < nr_types; i++) {
+-		const struct btf_type *t = btf__type_by_id(btf, i);
+-		const char *name;
++	if (btf->named_start_id > 0 && type_name[0]) {
++		start_id = max(start_id, btf->named_start_id);
++		idx = btf_find_type_by_name_bsearch(btf, type_name, start_id);
++		for (; idx < btf__type_cnt(btf); idx++) {
++			t = btf__type_by_id(btf, idx);
++			tname = btf__str_by_offset(btf, t->name_off);
++			if (strcmp(tname, type_name) != 0)
++				return libbpf_err(-ENOENT);
++			if (kind < 0 || btf_kind(t) == kind)
++				return idx;
++		}
++	} else {
++		__u32 i, total;
+ 
+-		if (btf_kind(t) != kind)
+-			continue;
+-		name = btf__name_by_offset(btf, t->name_off);
+-		if (name && !strcmp(type_name, name))
+-			return i;
++		total = btf__type_cnt(btf);
++		for (i = start_id; i < total; i++) {
++			t = btf_type_by_id(btf, i);
++			if (kind > 0 && btf_kind(t) != kind)
++				continue;
++			tname = btf__str_by_offset(btf, t->name_off);
++			if (strcmp(tname, type_name) == 0)
++				return i;
++		}
+ 	}
+ 
+ 	return libbpf_err(-ENOENT);
+ }
+ 
++/* the kind value of -1 indicates that kind matching should be skipped */
++__s32 btf__find_by_name(const struct btf *btf, const char *type_name)
++{
++	return btf_find_by_name_kind(btf, btf->start_id, type_name, -1);
++}
++
+ __s32 btf__find_by_name_kind_own(const struct btf *btf, const char *type_name,
+ 				 __u32 kind)
+ {
+@@ -1006,6 +1045,7 @@ static struct btf *btf_new_empty(struct btf *base_btf)
+ 	btf->fd = -1;
+ 	btf->ptr_sz = sizeof(void *);
+ 	btf->swapped_endian = false;
++	btf->named_start_id = 0;
+ 
+ 	if (base_btf) {
+ 		btf->base_btf = base_btf;
+@@ -1057,6 +1097,7 @@ static struct btf *btf_new(const void *data, __u32 size, struct btf *base_btf, b
+ 	btf->start_id = 1;
+ 	btf->start_str_off = 0;
+ 	btf->fd = -1;
++	btf->named_start_id = 0;
+ 
+ 	if (base_btf) {
+ 		btf->base_btf = base_btf;
+@@ -1715,6 +1756,7 @@ static void btf_invalidate_raw_data(struct btf *btf)
+ 		free(btf->raw_data_swapped);
+ 		btf->raw_data_swapped = NULL;
+ 	}
++	btf->named_start_id = 0;
+ }
+ 
+ /* Ensure BTF is ready to be modified (by splitting into a three memory
 -- 
 2.34.1
 
