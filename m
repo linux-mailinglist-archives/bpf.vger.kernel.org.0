@@ -1,149 +1,147 @@
-Return-Path: <bpf+bounces-78187-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78188-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 416C8D00B38
-	for <lists+bpf@lfdr.de>; Thu, 08 Jan 2026 03:40:12 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34F17D00BC8
+	for <lists+bpf@lfdr.de>; Thu, 08 Jan 2026 03:55:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B4AF2305D91B
-	for <lists+bpf@lfdr.de>; Thu,  8 Jan 2026 02:35:45 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 3DE2230245D9
+	for <lists+bpf@lfdr.de>; Thu,  8 Jan 2026 02:53:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AB682C08A1;
-	Thu,  8 Jan 2026 02:26:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1539526B2DA;
+	Thu,  8 Jan 2026 02:53:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D+gxs4JB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BKrdHrZk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yx1-f67.google.com (mail-yx1-f67.google.com [74.125.224.67])
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDCE22773FC
-	for <bpf@vger.kernel.org>; Thu,  8 Jan 2026 02:26:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D20C18AE2
+	for <bpf@vger.kernel.org>; Thu,  8 Jan 2026 02:53:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767839215; cv=none; b=SrY3jg4iClj1vQTTjaBJUb2rUsr+TUl/ojZIDlE++ir4gj9TU/1o2ss2/+dMDT62NEeIgeTg1oeLbN62BM9hPjkF3CZ9ZvBlh5i5AGfaHetT+qfPGiUxGCiaxG+GbVBvXuI0fQeDdghttsvqiOBpa+wjCpM2ffIIsVTjaxB8vw4=
+	t=1767840834; cv=none; b=I7vd3AdTOZGrkIXIge1QrVJCThmR1O/YaTdTb8SZ66epim/yOoiTxyDsWMTsS1HGKAjH86YEJKRbDVITpf6+mRGL6YfKXSkDeFKm295C1B5WXVnPuFPWaP/ma8NPYo4YZpnFSWtHUMQXXsLAr5fc93uD8y9O3OkamaGPBGoaJJg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767839215; c=relaxed/simple;
-	bh=agW6uKNys5gOeoTrVORTjBOaAxozAsYVc4VUeEIRBqk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kU/8RswQSHk2ovF/OjuvVQgTnBzsT5wbeCHB2I7CUp+eZOh3qvdIt00yx29ixYeCoKHVXqisDAFqPfwiDxB9psnbmrpd19N2A+CwYm71ARvyDn3I/4hGn2e7szwZZ6CRKyrZNg5J2nuRItSckQu55rfZ9Ak5vfa+b/SbPzBbuE4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D+gxs4JB; arc=none smtp.client-ip=74.125.224.67
+	s=arc-20240116; t=1767840834; c=relaxed/simple;
+	bh=Me82hG12KkvjoheaWtxZ9QjNDyrlIj3htOyxES/dasM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Z7ve6vlrYxTJnzHd8vQnpXK34wscOHZyId9vIDd5hwjksjCzmgm8Hc/cfGXXnxgyYuJFoOBCD7Gdb/C2SFT54wAPGTJIHLnf3cQQjiLjodJ08OscZjhUFKbBBS68ubLGuLXExeuX/+loSIEeK+o1vbaUKA+kPyuE+ylPBR+xTw0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BKrdHrZk; arc=none smtp.client-ip=209.85.221.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yx1-f67.google.com with SMTP id 956f58d0204a3-64661975669so2896713d50.3
-        for <bpf@vger.kernel.org>; Wed, 07 Jan 2026 18:26:53 -0800 (PST)
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-430f2ee2f00so1438770f8f.3
+        for <bpf@vger.kernel.org>; Wed, 07 Jan 2026 18:53:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767839213; x=1768444013; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1767840831; x=1768445631; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ft9yy1vLUwNJD7u+x5LfWhJWNGjlertbzF816wc1jaU=;
-        b=D+gxs4JBvmPohLOa6xu+ek9dPGh0LUhzNzFdNUgnNa0a7WUf/hKIlxq7lWziQIzJTG
-         +36N2C6K6TWODC4YakBQfQvN4Jqmza1UmsB5rn8O4iLBpmQPvkBQM7iZWSckkpRbGGTp
-         D6k7R3vRny/Fw0wj1QqjEmxLKqytBwUb+KP4APYecMNDSaYIFoccw4pZqln8sWTucRgs
-         UcpKIsOrTWVHhAMRvOYpxZ4FZa0fwAxBTIZVDnvq/KFci/5HenC0d81+1YytnBNUZPkC
-         bMOtcBWV1E/R8Vv0SY70JVZgsQI7iB3Xqt9KVvmy+aeEBxjDGRelbPXrIq/HJLetJ86W
-         T2RQ==
+        bh=aeigwwto9xme0VMTpwv3pEFxa5Z1vhoQ8IGxPY8PzUU=;
+        b=BKrdHrZkMW+ev0keRgkL3rsfsZsoRjfNmArwZZZkelP9+8QUEoqO/nYRMapc4dxAp1
+         Vdymv38DzldktDVO6f2yhPARbeYrhnv/10PC90ox15NpUyOBOAh1tpWarzpD7W/eD8el
+         fQf1SkoG7jSZEheWtb2xu99GDxUbAmrKtd/vCksSpJYwTPmM7W2XjcEi5JX3pMWlSNLI
+         2MQixL+P6EWkY4hl2EJq+GYOD0Z2Dlp+2E/wAlTA8s0nLuWzfAxtQarjWtm2j03BXUIi
+         9TdXVGa2iNqrp7TZUIyzmPXiczr/mTDBBjOT9+HOa4c9Jz6uUk3SUJ2jNHq3LO1yOwvf
+         tDYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767839213; x=1768444013;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+        d=1e100.net; s=20230601; t=1767840831; x=1768445631;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=ft9yy1vLUwNJD7u+x5LfWhJWNGjlertbzF816wc1jaU=;
-        b=f8hyV6Pn5wW87WGQIaCj3+hSsRBJd8HTJ+IpL3KmWnoHDAVSWkMrUP9xfLxlV2lkxh
-         y0PAE4X/3qeKZHWZhJyx/J3DZd5DHyQaoXPom2iXMnbtzplCwS1laEaDh24YOsbJkoIq
-         V2WiX9NGA39gaooOKU2eURfvhSl8PXU/9tZXfCgz58w9zhOVvY4VDkh3+e+b1ruoiI8f
-         JhY76k1u8ki1U/6MH9/xX7oCb1pINaUMSIKT6ICrPDuCQM/ZJX/p9Jn6JngyMXbTTaIG
-         gu4MlfYQ/cdzau7GmtQ6tAriZxu3Poj2uiXbL1fPVb8jo6bsAZeGOZvHwUFyaWEQ/DEh
-         BIyw==
-X-Forwarded-Encrypted: i=1; AJvYcCULXNTtyOX4o8sONaUquVHAd8Lvl1wEcGIkNFfc7wJ0xWosqQ2Waptm9xqsu06cdvz7vsQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyMQLReZW82CHCp7/BXn3mGq5NdY70opJlZwYEAu2CfyaBvB2Tx
-	c0940DyEtOzhYjj+TfbA+xM4yUdfxcHgN3om+qoY0UCeMS3zCPz+bFYb
-X-Gm-Gg: AY/fxX5zaSoZzmS59zBvBQfMJlqXZHlNqAzS75pDgcw3yEbb5Soy302cZDu3UrjAoyK
-	wpvO0zF9CW+In9WcrXt8PpFRvjRVU/AC/4aBiC9N0CDMLYV9DDeqdnre0QvEZk0Wu1NwS70Sz9X
-	2OWVON0i63S1QzWXdajXkSPHwJZb63iG3/EYDtaZsWJj3GQZDmWuCOp17V0MUR5K6ahmLzC2Kup
-	CkGwsXmTWNai0CCBIA6+QPNJ8N5+TX9cSY0FBdsHIoSWSOi9EFD5OkA5/f2alkKZb3DAIAa2ZtA
-	ujnDx4DXSpDgwBd1cuA7KWxMJNjDyV4UoInCS3e96lelRS6ux5bgZveeLV/30Kkhn07aTe3gmtm
-	CYU6wJjfo+PrlgPQvr2CfYrpbDQZJP/Na1VR+l24PDSkx6OdnsFCE+LDoplTYr2pi2D2z5JwKvW
-	hhyav2DeE=
-X-Google-Smtp-Source: AGHT+IHzDlEVf8/d6QbnaKBb4bXfG6njhvfNqB2OjCcNdUEx2bLbQR8avY4Ht9YmtBQ9rseOaNNR2A==
-X-Received: by 2002:a05:690e:1c1b:b0:647:101f:cc90 with SMTP id 956f58d0204a3-64716c392f0mr4161680d50.53.1767839212841;
-        Wed, 07 Jan 2026 18:26:52 -0800 (PST)
-Received: from 7940hx ([23.94.188.235])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-790aa57deacsm24855027b3.20.2026.01.07.18.26.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jan 2026 18:26:52 -0800 (PST)
-From: Menglong Dong <menglong8.dong@gmail.com>
-X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
-To: ast@kernel.org,
-	andrii@kernel.org
-Cc: daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	davem@davemloft.net,
-	dsahern@kernel.org,
-	tglx@linutronix.de,
-	mingo@redhat.com,
-	jiang.biao@linux.dev,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	x86@kernel.org,
-	hpa@zytor.com,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v8 11/11] selftests/bpf: test fsession mixed with fentry and fexit
-Date: Thu,  8 Jan 2026 10:24:50 +0800
-Message-ID: <20260108022450.88086-12-dongml2@chinatelecom.cn>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20260108022450.88086-1-dongml2@chinatelecom.cn>
-References: <20260108022450.88086-1-dongml2@chinatelecom.cn>
+        bh=aeigwwto9xme0VMTpwv3pEFxa5Z1vhoQ8IGxPY8PzUU=;
+        b=Knp4M0d11zgpF/MKpxIwUPmwClq3rB7HEIgsbleRI/t05NxF3B18y2rF8WQNPBdCSN
+         wS6zd4mMs/v8eQKj7JISunDffuGYU7aVkY1X9wN4FNSikg1V4rvpjPCCdreIsivsG5Gq
+         TgqGWjUb+RPiAR5GKHh0pD+R97tOgZVTdrZKldIwbyhhuunY74oWBxCjAavwuYSIVKvE
+         4Ow3QE14etIUigeZUUoqZA8VSTOUt9pCi5UtiXb9uqwFgel17S1kjrUtG4XIsCYIlYzX
+         zUxqK/qmgPSa5fjVbic4g+iMPFxYY0jRl+Qhnr4fMRliRcrX5Rgf53hhH7X4VW9l/AjV
+         qWww==
+X-Forwarded-Encrypted: i=1; AJvYcCWLcKKSlRUvtVjrcuBPvSpuZPUja8SDjVKizOuwAWCqXIF9QYFLQaDfFeW8TLDS9IFB/IA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzSZZ14xgw14EMH3/TOprkwXjaaWpEEk3InKN2i6xI0OX2boFoC
+	n4m3yVzU4uWXRVqfr3txmm4ZiBvqfCgiMdmT8Ldr1sZj7pLMYV8pyAWpWv1a17znCPZq+R4MCpu
+	jxLKiqYg8k5kJCgoSNffxXy6H6PBJNuzv00ad
+X-Gm-Gg: AY/fxX6RGb7dLMrjtEFoCChWXo3bbsdfiOV6xZUzDs+EavbtFXv1R+XCt0wciC0PRSW
+	dMzxppwhA5rNGDbXYPoxumjytUi+sP4b1X+TO/IjuAFkvV/9Pbm0M8ZpeX+Y/ZmGiJXj4mT0m5e
+	E+wqcH0hryavDW08TN7d56eKkElDkZEvFWw8OzH+zMiZ2cHLQ6HC+Qs6MbTB6IeyI5kC03g0twt
+	oyaH5nYG4FJ5H9eAd384+8uaObamhVn+sWbYt+jxkrKbDGjkZ1uIQrouBsnDbgO/yQXtPPnEygf
+	AJ9q+j+miTY5zpT6dYfHG1pKVwow
+X-Google-Smtp-Source: AGHT+IHI2CTpVPDPv77S1k4b5QxvMsEq7pAgZB43DzIBs6k48oSef2jUb5i9Kuu/AUkVkp8HorTkZZ8DqFfnxFDOzyc=
+X-Received: by 2002:a05:6000:200d:b0:432:8504:8989 with SMTP id
+ ffacd0b85a97d-432c37c32bemr5383308f8f.56.1767840831171; Wed, 07 Jan 2026
+ 18:53:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20260107203941.1063754-1-puranjay@kernel.org> <20260107203941.1063754-2-puranjay@kernel.org>
+ <5fa1d856b98cb7f0cb4eb402f616946b0c6c9211.camel@gmail.com> <5e6bfb044463123d7671cf1eb4b9b416c5fe5c1d.camel@gmail.com>
+In-Reply-To: <5e6bfb044463123d7671cf1eb4b9b416c5fe5c1d.camel@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 7 Jan 2026 18:53:39 -0800
+X-Gm-Features: AQt7F2qcXe8Rk_GgMLWberYsud4O37H99SUUZVhMFWZYnCZl6mYFj7a0vdkis9o
+Message-ID: <CAADnVQJuRbnuuj6W77ZJTe22+JDUMGAJN+grSTTtU_HdGh=VtA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/3] bpf: Support negative offsets and BPF_SUB
+ for linked register tracking
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Puranjay Mohan <puranjay@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Puranjay Mohan <puranjay12@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
+	Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, Kernel Team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Test the fsession when it is used together with fentry, fexit.
+On Wed, Jan 7, 2026 at 5:47=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com>=
+ wrote:
+>
+> On Wed, 2026-01-07 at 17:40 -0800, Eduard Zingerman wrote:
+> > On Wed, 2026-01-07 at 12:39 -0800, Puranjay Mohan wrote:
+> > > Extend the linked register tracking to support:
+> > >
+> > > 1. Negative offsets via BPF_ADD (e.g., r1 +=3D -4)
+> > > 2. BPF_SUB operations (e.g., r1 -=3D 4), which is treated as r1 +=3D =
+-4
+> > >
+> > > Previously, the verifier only tracked positive constant deltas betwee=
+n
+> > > linked registers using BPF_ADD. This limitation meant patterns like:
+> > >
+> > >   r1 =3D r0
+> > >   r1 +=3D -4
+> > >   if r1 s>=3D 0 goto ...   // r1 >=3D 0 implies r0 >=3D 4
+> > >   // verifier couldn't propagate bounds back to r0
+> > >
+> > > With this change, the verifier can now track negative deltas in reg->=
+off
+> > > (which is already s32), enabling bound propagation for the above patt=
+ern.
+> > >
+> > > The changes include:
+> > > - Accept BPF_SUB in addition to BPF_ADD
+> > > - Change overflow check from val > (u32)S32_MAX to checking if val fi=
+ts
+> > >   in s32 range: (s64)val !=3D (s64)(s32)val
+> > > - For BPF_SUB, negate the offset with a guard against S32_MIN overflo=
+w
+> > > - Keep !alu32 restriction as 32-bit ALU has known issues with upper b=
+its
+> >
+> > This is because we don't know if other registers with the same id have
+> > their upper 32-bits as zeroes, right?
+>
+> Nah, we do know if their upper halves are zeroes or not,
+> registers with same id are identical up to the ->off field.
+> So, it appears that this restriction can be partially lifted if we
+> check if dst_reg upper half is zero before operation.
+> Wdyt?
 
-Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
----
- .../testing/selftests/bpf/progs/fsession_test.c  | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+Let's figure out how to support w-registers too.
+Hao Sun's 1st category:
+https://lore.kernel.org/bpf/CACkBjsauBbmKRAgEhOujtpGBeAWksar9yS+0hk1i9pLYwt=
+QN3A@mail.gmail.com/
+is exactly this missing feature.
+Instead of adding them as failures in patch 2, let's make them successes.
 
-diff --git a/tools/testing/selftests/bpf/progs/fsession_test.c b/tools/testing/selftests/bpf/progs/fsession_test.c
-index 85e89f7219a7..c14dc0ed28e9 100644
---- a/tools/testing/selftests/bpf/progs/fsession_test.c
-+++ b/tools/testing/selftests/bpf/progs/fsession_test.c
-@@ -180,3 +180,19 @@ int BPF_PROG(test11, int a, int ret)
- 	*cookie = 0;
- 	return 0;
- }
-+
-+__u64 test12_result = 0;
-+SEC("fexit/bpf_fentry_test1")
-+int BPF_PROG(test12, int a, int ret)
-+{
-+	test12_result = a == 1 && ret == 2;
-+	return 0;
-+}
-+
-+__u64 test13_result = 0;
-+SEC("fentry/bpf_fentry_test1")
-+int BPF_PROG(test13, int a)
-+{
-+	test13_result = a == 1;
-+	return 0;
-+}
--- 
-2.52.0
-
+pw-bot: cr
 
