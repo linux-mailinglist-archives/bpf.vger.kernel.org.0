@@ -1,151 +1,132 @@
-Return-Path: <bpf+bounces-78209-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78215-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C20ED0264D
-	for <lists+bpf@lfdr.de>; Thu, 08 Jan 2026 12:31:18 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63097D02619
+	for <lists+bpf@lfdr.de>; Thu, 08 Jan 2026 12:28:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id DC80F309CAB0
-	for <lists+bpf@lfdr.de>; Thu,  8 Jan 2026 11:30:39 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C79D530F4D58
+	for <lists+bpf@lfdr.de>; Thu,  8 Jan 2026 11:07:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ACC9345CC2;
-	Thu,  8 Jan 2026 08:42:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 120B848A2A8;
+	Thu,  8 Jan 2026 10:40:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VBurWId2";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="H0ZaHClA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V+EuXV8O"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 615B632A3CC
-	for <bpf@vger.kernel.org>; Thu,  8 Jan 2026 08:41:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90A4D4611ED
+	for <bpf@vger.kernel.org>; Thu,  8 Jan 2026 10:39:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767861716; cv=none; b=sSVDPvsfLjzAVgoD6ohHszJS/a9ELDEK1RqbHcNL6ei4QBMHNwP53zEJR7CLQZBzWHqvOIhM1O+3GoT7Hh5KG+BYvTffvGdFL6DQ7qN94PmsilskCQFlg3QYc6FDq/bmr0Lmze8b9e3/UPj1wiissEODfdmScouqWV45bliH7fA=
+	t=1767868803; cv=none; b=n4koBq8TUlWSFvNeYell0ZagNIYhxZsky7QdeAkhkJvPmxTavl7wRvv+ogUU+mFPDMrav2OeWSwFmEVlCqb0PHH7pGgz+ZNdpxCsn5KlnX5SdzJJLG3KBthgAzvMuU1VfQuMCUHzb1QQn/mjMibPhhTHQ/MO9LQ0DkH+dhj/NKY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767861716; c=relaxed/simple;
-	bh=T3g1hkv59Wof+KEXGfr6rRK1rS6rPS46Y5/WRoZTizA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=auwxx/aMgMcY+xJ1671SZCHfXkQlXL+NZx89GgWlvVemdNIah9Ht3uQgHpNQDGx4I/SYk80FectZiC2Mu8mCuK+aa0IYMDcHAiKvf1z+Glhk6Uomaos7irg/U1sbrxJfniu94qPwSr95BzLkJv30bQ2SVY7HfJVwjsAGvHhiauA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VBurWId2; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=H0ZaHClA; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1767861703;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5RGxvIn5fQFYR3/ngtCtv4UC6h+IZmTY0D3VzGMTF2k=;
-	b=VBurWId2HqDrerkVnZFpzr+u2oijSKw/y5AwinLgSSqHcGcgpuwRuA5rqmcZWF2crUSpTe
-	RgcDPzslfnlUj/2Hr/2KycWtH0/2yuS2lGUT6xY69D3DF84Za6K3U2G1Z4229diie6+XUQ
-	c2Y1jJGUlznxQPsD4sy68uJajZBycuA=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-475-kWPnxg8OPBeLAEsZvTsQ1Q-1; Thu, 08 Jan 2026 03:41:42 -0500
-X-MC-Unique: kWPnxg8OPBeLAEsZvTsQ1Q-1
-X-Mimecast-MFC-AGG-ID: kWPnxg8OPBeLAEsZvTsQ1Q_1767861701
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-477964c22e0so14115175e9.0
-        for <bpf@vger.kernel.org>; Thu, 08 Jan 2026 00:41:41 -0800 (PST)
+	s=arc-20240116; t=1767868803; c=relaxed/simple;
+	bh=9rxcaH0XqfpFzaFSC2tVEZqpmrAprad3wZiQ8PdrRiU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LXzfrkvMpvV9fz6fLH4qVCyKxvOoUDJ5O9akvQ/dmK3s2ulvXCU8MFKIjvqTiljMF4/IVIKS1H13kz4TjhmzSjV4poOKd3TFnuiDL8kei7rdWy2kurPeDj0p/3hswR+Ca0EuHC/d8C1dnzipcJMDa32r9zeVFvOX0UH1DrSW8To=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V+EuXV8O; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-65063a95558so4271345a12.0
+        for <bpf@vger.kernel.org>; Thu, 08 Jan 2026 02:39:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1767861701; x=1768466501; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=5RGxvIn5fQFYR3/ngtCtv4UC6h+IZmTY0D3VzGMTF2k=;
-        b=H0ZaHClA6c3KoNXD+3tXrJmCoOMCR4qT4eAFmnf2dOeabJW5fsJqAWfno/Hnr6IrJF
-         PZsl7U0+3YU3OI4CFlEzjkH45/HO0+BSrGX9ycowVi6hz+rbrBz7lDIeSMLATjJQ8fpj
-         4bcunlq7X/5aKBSUWaT5w7dl3OVtHYcGXCexzwle5no4JMZ2LS/+MjdiFTy4ANdhEH/D
-         EyZTVPMJdL1rs56ukgozYGLyIfpVz8OLhjT6Pu9aHsf61+U5LHYQAbpy+Mb13jGJg28V
-         njkHf0BGhtJDYMe/xcmy1utfrDHkmj/67hrPfw1S16/xnMmMbWsfk3Xjx2at6abqluqP
-         Y8cw==
+        d=gmail.com; s=20230601; t=1767868792; x=1768473592; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R67t3/y7Vy0NRDZFClRFUWiyayd2hkScl9Wg2asEBDA=;
+        b=V+EuXV8OGX4zWncqRwcokOxWbm3Xf4Y+hIetkMJDTFK8IYlaP4SoUUw7Nc9YomOx20
+         AyEk0UwS1XW6NLUtswzk0XGbuNNloDI10XXcMH9crlsV077DVJlMXcWIZ0ilZ9SdQUIP
+         T8d2oGfqe9LURelcV3ccSfTPOKO3OAv7f03mtTT4uBJzU1/9Xvj6ca3jsht5LoJWpvod
+         gmlSsr7H8qcsX1LCF7Jw8iSxanoZPvlQDhjJOjXy5vlB4kX9mKM47wYvs3/oRGlsTwpk
+         2VgiRxncejRCG2r7Wag1S6hnwwlUdeOLHh0uRzjXVpftQajUBd5Jw13e3uOwl1oQeADH
+         5fFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767861701; x=1768466501;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5RGxvIn5fQFYR3/ngtCtv4UC6h+IZmTY0D3VzGMTF2k=;
-        b=c/BgX5RNAQb/1nui4FfdrEz2IBPRrsgAKWTgERAO9MpvimCX7S4g5vQ/Ppc+QmRjbB
-         oDBVCrpVvjPIxfxXiwqu4pjJhghAEbqnqE1mG8gwlgZxnfkD/JnVX6qZUXPQaOOcZao1
-         PmSnsqqF/9yRVdcL0oy8CQXAeJrcXMNm6GVATGOFRpwCSvTONZqpegP6vx02He4qP2+P
-         82ASlcfpp5M30HRv4R35/ZCdN31xSTpjzCx2EOca9cHZjSrDR7upkpl/I7hLsMbfzWX3
-         aQP1FVSvjl9KciMgIGnCj9YU1g6HeVCEjTt37mBQW+3NiG/cB4nmIjzkt8Bbeq+zbD/w
-         qtBg==
-X-Forwarded-Encrypted: i=1; AJvYcCUMbtQFoz/U/bz7Q48l1cM5/ieDKB//GMhyKAAxTkdvzQ+H7Or3KsR3XfrQ+0ZK1RCrY60=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyRX5YwsMJfW+oej5uq8jPfHlTdJBR6pYMVoTGnkzIsdohC8vxT
-	ECEt/TsCj3KPhmMxBHzIqbkgqWFntqeXJO4hcDoclmsA/qqwSHE/XA0znKBvMl73tYkZBFx6BSk
-	OEZqZmi7FkCNAWJDGO9i/I9BaIJzRDOkBTzGSt0Bh/iiCgSHM05XG0w==
-X-Gm-Gg: AY/fxX7j6gsMwwEhd/Zc2f26tupFPNGzTLR8fIhICgNQkG2a7874XPnlLANWYYJWMtP
-	eB3iiiCxhKoAfy2diwcuEt8NZpFOI3+xOWV8tev5tbzUgpQEvS2GTI6MXbC6xmeHF/INLnI/Fje
-	8yuzg+/dQNkBaJ1q3sh3gA4dkukEoy54zBDzE2IpgJPhpGkpAtX2yiKInqi8v/XUlM+Fs8WDRSv
-	QLl2r2ytoKq3MPh+b3jzwodssKxiYJnBf0H6z7fW/HtnQ+ecUC/JV4/M5n0RkwdqSbo/Gifn3SU
-	fK67Bw7aqlTsrZw5uhA11uZ9acv2PuwLG6PyaG3X3lS6V4BDlnKn8TDqzF87TvYPt3I9YTjWdfM
-	YBu9XQfyGejT9mw==
-X-Received: by 2002:a05:600c:6749:b0:471:5c0:94fc with SMTP id 5b1f17b1804b1-47d84849fb2mr69623915e9.6.1767861700967;
-        Thu, 08 Jan 2026 00:41:40 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHMRmXfUT8h/fx23p3HVnSIevvQ/xZpWdXJvjJswXBBTxuR8fZK2hfXFsrWgfe2gcekBcZ2PQ==
-X-Received: by 2002:a05:600c:6749:b0:471:5c0:94fc with SMTP id 5b1f17b1804b1-47d84849fb2mr69623615e9.6.1767861700621;
-        Thu, 08 Jan 2026 00:41:40 -0800 (PST)
-Received: from [192.168.88.32] ([212.105.149.145])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47d7f703a8csm139970835e9.13.2026.01.08.00.41.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Jan 2026 00:41:40 -0800 (PST)
-Message-ID: <56f6f3dd-14a8-44e9-a13d-eeb0a27d81d2@redhat.com>
-Date: Thu, 8 Jan 2026 09:41:37 +0100
+        d=1e100.net; s=20230601; t=1767868792; x=1768473592;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=R67t3/y7Vy0NRDZFClRFUWiyayd2hkScl9Wg2asEBDA=;
+        b=OS3B+URcRebKJee99o3CCSqTuPZiEawDUlgzIv0roQ2/f8g1LnGoSajiqxPWQ3LEOy
+         07vPpAu/IhouphkoWIK0bEi2jQ58T3l/4OhZp5TcXAvEZPbmoIBHFmzmj327yDPxFQh2
+         NOCBmGEpvx0ZYSIkzIZd+R0wH18H2/ZUAkzR0dUiXCQaUCiKh2wvh3JXO440LWuC7Uo6
+         VdY0no+2WYf9zcmUhkSViO7UTnis1qwGRX/SOvXWQpj9Q2p4LnofztVinwk40lkwUg0W
+         yJSLEs7d8vMKF6VAr7OnJa5OV1eghl/LKxk9KYNhImPivTuWToG9v0+ozZfTZy18lsra
+         bU2A==
+X-Gm-Message-State: AOJu0YzbBi89+3XsnZlDLKVtsjpGLy9kNALBBSRh0YFUf4IFdQCyuzPA
+	AII7TI5G6ZkJ7DJNY/a36lswSQnuN/XXwbtc+9Xg4Lh7BVK54lo4keWShGUwfsnfLw++n3aNlpl
+	6DNYtzTdKC8PWteXmd+2QuVNBxTXwhCI=
+X-Gm-Gg: AY/fxX7xDGiU8TzETDtN7m4iZeszr+bFFHB7QwXO3e0TvrIS8G2JCTQIFclNypsZsk6
+	oDqm7gqlmwOaug8cw1kjlkk+EziA1a3P/bvPDqcdenxes4POzHQS3HSAxVoCJKXngPJ1csV57Xj
+	Tjg6CO5Utl/Fx0rCMZS9WzvWTk9AtsGVFhs/KJaR8rObb34Uw7W+3RKtbSsiRyTLzI7YAdprXB3
+	LwLoGaliIL1dqMb11wSplBEztHXn7MlB3emGJ+mq4WThsJK6ptLB+vA7FJXqD+Mrlw2NOWKbHB/
+	jWjBhnFyasA=
+X-Google-Smtp-Source: AGHT+IGCYQyz/RLKT3W08NRV/2R7Cn1ezLmmZAOZrvocGXcs8stVuZq68/ef3tFY440YfK/htzas+forWJ4jial60mE=
+X-Received: by 2002:a05:6402:270a:b0:647:54ba:6c42 with SMTP id
+ 4fb4d7f45d1cf-65097dcd9fdmr4950878a12.4.1767868791586; Thu, 08 Jan 2026
+ 02:39:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 net-next 00/13] AccECN protocol case handling series
-To: chia-yu.chang@nokia-bell-labs.com, edumazet@google.com, parav@nvidia.com,
- linux-doc@vger.kernel.org, corbet@lwn.net, horms@kernel.org,
- dsahern@kernel.org, kuniyu@google.com, bpf@vger.kernel.org,
- netdev@vger.kernel.org, dave.taht@gmail.com, jhs@mojatatu.com,
- kuba@kernel.org, stephen@networkplumber.org, xiyou.wangcong@gmail.com,
- jiri@resnulli.us, davem@davemloft.net, andrew+netdev@lunn.ch,
- donald.hunter@gmail.com, ast@fiberby.net, liuhangbin@gmail.com,
- shuah@kernel.org, linux-kselftest@vger.kernel.org, ij@kernel.org,
- ncardwell@google.com, koen.de_schepper@nokia-bell-labs.com,
- g.white@cablelabs.com, ingemar.s.johansson@ericsson.com,
- mirja.kuehlewind@ericsson.com, cheshire@apple.com, rs.ietf@gmx.at,
- Jason_Livingood@comcast.com, vidhi_goel@apple.com
-References: <20260103131028.10708-1-chia-yu.chang@nokia-bell-labs.com>
-Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <20260103131028.10708-1-chia-yu.chang@nokia-bell-labs.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20260107203941.1063754-1-puranjay@kernel.org> <20260107203941.1063754-4-puranjay@kernel.org>
+ <d64c1ff42310fc6c6284add088e598df078559cb.camel@gmail.com>
+In-Reply-To: <d64c1ff42310fc6c6284add088e598df078559cb.camel@gmail.com>
+From: Puranjay Mohan <puranjay12@gmail.com>
+Date: Thu, 8 Jan 2026 10:39:37 +0000
+X-Gm-Features: AQt7F2p3MvIxgq1GLJh4piVYbZ8TRVj2WWcZFZnv8FQbNY_3OjsmbfkuExaAucI
+Message-ID: <CANk7y0gJjhRmgVo5jmEHx53WWCz5BBEYp7XXqo+9Nz2oH5zACA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: Update expected output for
+ sub64_partial_overflow test
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
+	Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 1/3/26 2:10 PM, chia-yu.chang@nokia-bell-labs.com wrote:
-> From: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
-> 
-> Hello,
-> 
-> Plesae find the v7 AccECN case handling patch series, which covers
-> several excpetional case handling of Accurate ECN spec (RFC9768),
-> adds new identifiers to be used by CC modules, adds ecn_delta into
-> rate_sample, and keeps the ACE counter for computation, etc.
-> 
-> This patch series is part of the full AccECN patch series, which is available at
-> https://github.com/L4STeam/linux-net-next/commits/upstream_l4steam/
-> 
-> Best regards,
-> Chia-Yu
+On Thu, Jan 8, 2026 at 6:59=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com>=
+ wrote:
+>
+> On Wed, 2026-01-07 at 12:39 -0800, Puranjay Mohan wrote:
+> > Update the expected regex pattern for the sub64_partial_overflow test.
+> > With BPF_SUB now supporting linked register tracking, the verifier
+> > output shows R3=3Dscalar(id=3D1-1) instead of R3=3Dscalar() because r3 =
+is
+> > now tracked as linked to r0 with an offset of -1.
+> >
+> > Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+> > ---
+>
+> W/o this patch selftests fail after patch #1, right?
+> We usually keep such test fixes in verifier patches.
+> Such that selftests are passing after each commit,
+> This makes any potential git bisect simpler.
 
-I had just a minor comment on patch 11/13. I think this deserves
-explicit ack from Eric, Neal or Kuniyuki; please wait a little longer
-for them before resend.
+Yes, I will merge this with the first patch in v2.
 
-Side note: it would be great to pair the AccECN behaviours with some
-pktdrill tests, do you have plan for it?
-
-Thanks,
-
-Paolo
-
+>
+> >  tools/testing/selftests/bpf/progs/verifier_bounds.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/progs/verifier_bounds.c b/tool=
+s/testing/selftests/bpf/progs/verifier_bounds.c
+> > index 411a18437d7e..560531404bce 100644
+> > --- a/tools/testing/selftests/bpf/progs/verifier_bounds.c
+> > +++ b/tools/testing/selftests/bpf/progs/verifier_bounds.c
+> > @@ -1477,7 +1477,7 @@ __naked void sub64_full_overflow(void)
+> >  SEC("socket")
+> >  __description("64-bit subtraction, partial overflow, result in unbound=
+ed reg")
+> >  __success __log_level(2)
+> > -__msg("3: (1f) r3 -=3D r2 {{.*}} R3=3Dscalar()")
+> > +__msg("3: (1f) r3 -=3D r2 {{.*}} R3=3Dscalar(id=3D1-1)")
+> >  __retval(0)
+> >  __naked void sub64_partial_overflow(void)
+> >  {
 
