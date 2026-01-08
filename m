@@ -1,45 +1,45 @@
-Return-Path: <bpf+bounces-78233-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78234-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D8D1D03A71
-	for <lists+bpf@lfdr.de>; Thu, 08 Jan 2026 16:05:32 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6277ED03BF0
+	for <lists+bpf@lfdr.de>; Thu, 08 Jan 2026 16:19:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 291CC300F690
-	for <lists+bpf@lfdr.de>; Thu,  8 Jan 2026 15:05:01 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2928E333482F
+	for <lists+bpf@lfdr.de>; Thu,  8 Jan 2026 15:05:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C83D349AF0;
-	Thu,  8 Jan 2026 15:01:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4EBD34DB4A;
+	Thu,  8 Jan 2026 15:02:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="OdxHuz/s"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RQDGXtFA"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D00BD345738
-	for <bpf@vger.kernel.org>; Thu,  8 Jan 2026 15:01:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF97134D4DE
+	for <bpf@vger.kernel.org>; Thu,  8 Jan 2026 15:02:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767884517; cv=none; b=liPVDZ7+FuxDMnBhSv6tIDDTFLmBxe79gpgYmYX38ZiuunVw3TghAaA7vhAJ1mTnvca62PxY2lggxt8CtsUyngHiKijymdr5byRMcJu3dUEvsSYwvQ/AokBJBOHT/30IUTfrptXC5UGSgUmmBOhOqtFiF8wmYlwISvSyABrd/gg=
+	t=1767884533; cv=none; b=qmP/uulg2n3ZBbXTFZuyr0ui96JCIDTEmLXSyW2uYmWG/WUfhf4mroWaAwL4hwI7f0yUbFZ1b+jpe3/Dj5ZzU6JDJJIQNtJc5RPL3qhKGUn6vCNBv/wrQhtwO1yx3W0noH+k78G7bQwKZsKVJHdDkvzkWXuCPPlk3BFiKoEWRrU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767884517; c=relaxed/simple;
-	bh=uTEFHpms52+Kj/Dc4NysMNrKs5pVaTqCqNbbyg6NOM4=;
+	s=arc-20240116; t=1767884533; c=relaxed/simple;
+	bh=JKnwGSkyGevgNvKWzN55WmXYew/BftNa5hJhfvDZxto=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qAEG9Udqws1J6nj5AqUwSLa1wDxfFynYskoXFmlpjPNBhGlyAM8grLFORLo9Thj8NFEc0v2v4cVM0LRH76mPwPYmUFuGnRKptWT/5WVe1bh2ODlHgIBV8wzEZgtAX9cEhnQPohxobgtspjBcsYtmkxQ0S+oBZbKI00+HzqPtmGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=OdxHuz/s; arc=none smtp.client-ip=91.218.175.173
+	 MIME-Version; b=Az0dbGs3K1bwxDzOD6rtc+inAaN8zFCATGV5+EPzW+WLaUhIC08DgZo1l8/UL9ahUIr0buUm6r5Qrjtux/PIrt1ShObIasK3CadBILz+XFQYxmqJfNN97v1OkfWpAUcYwbG3Qa4+P6oCkRHLuxG6wimVVg8CJwsPFnujMzp0ogs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RQDGXtFA; arc=none smtp.client-ip=91.218.175.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1767884512;
+	t=1767884529;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=FVVMWCFl5G9DkyqwHkJQ7Ai+veghGpKUotVxRpUoQF0=;
-	b=OdxHuz/sWbci864VCBIybj9JkymCjaHqxjPEiKotcFT63PcaryjHwQvkjN4/mBSdOfDjHu
-	YG7o2rVgKiZtJpnP2fffD6TdF7oRpTcjAasgQerBdi5vuVaUeJsFEvsbeo7W35GpF+b6RG
-	DkFaCJT532qETJkFhw4YGXZlxhCawI0=
+	bh=beUzW2xmxVFqLxvkldhMYdz/cxTMf0BaGcwXoiZvxGw=;
+	b=RQDGXtFAvFUnjplxHc74SDABwFQFsbMixEq4s1LqjC+P/iOtOjblaw10kl2Q7gzUCHYRG1
+	08sAt9h04F6PNspKtPHWapqUoNntjnajv14aF+y3x5B24PFwYUOdgxltUquaPFFv7LKTYg
+	zKn6YjkVxZy7OY/y2ZYDO45VNnVP7pg=
 From: Jiayuan Chen <jiayuan.chen@linux.dev>
 To: bpf@vger.kernel.org
 Cc: Jiayuan Chen <jiayuan.chen@linux.dev>,
@@ -65,14 +65,15 @@ Cc: Jiayuan Chen <jiayuan.chen@linux.dev>,
 	Hao Luo <haoluo@google.com>,
 	Jiri Olsa <jolsa@kernel.org>,
 	Shuah Khan <shuah@kernel.org>,
+	Stefano Garzarella <sgarzare@redhat.com>,
 	Michal Luczaj <mhal@rbox.co>,
 	Cong Wang <cong.wang@bytedance.com>,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next v6 2/3] bpf, sockmap: Fix FIONREAD for sockmap
-Date: Thu,  8 Jan 2026 23:00:31 +0800
-Message-ID: <20260108150102.12563-3-jiayuan.chen@linux.dev>
+Subject: [PATCH bpf-next v6 3/3] bpf, selftest: Add tests for FIONREAD and copied_seq
+Date: Thu,  8 Jan 2026 23:00:32 +0800
+Message-ID: <20260108150102.12563-4-jiayuan.chen@linux.dev>
 In-Reply-To: <20260108150102.12563-1-jiayuan.chen@linux.dev>
 References: <20260108150102.12563-1-jiayuan.chen@linux.dev>
 Precedence: bulk
@@ -84,275 +85,322 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-A socket using sockmap has its own independent receive queue: ingress_msg.
-This queue may contain data from its own protocol stack or from other
-sockets.
+This commit adds two new test functions: one to reproduce the bug reported
+by syzkaller [1], and another to cover the calculation of copied_seq.
 
-Therefore, for sockmap, relying solely on copied_seq and rcv_nxt to
-calculate FIONREAD is not enough.
+The tests primarily involve installing and uninstalling sockmap on
+sockets, then reading data to verify proper functionality.
 
-This patch adds a new msg_tot_len field in the psock structure to record
-the data length in ingress_msg. Additionally, we implement new ioctl
-interfaces for TCP and UDP to intercept FIONREAD operations.
+Additionally, extend the do_test_sockmap_skb_verdict_fionread() function
+to support UDP FIONREAD testing.
 
-Unix and VSOCK sockets have similar issues, but fixing them is outside
-the scope of this patch as it would require more intrusive changes.
+[1] https://syzkaller.appspot.com/bug?extid=06dbd397158ec0ea4983
 
-Previous work by John Fastabend made some efforts towards FIONREAD support:
-commit e5c6de5fa025 ("bpf, sockmap: Incorrectly handling copied_seq")
-Although the current patch is based on the previous work by John Fastabend,
-it is acceptable for our Fixes tag to point to the same commit.
-
-                                                      FD1:read()
-                                                      --  FD1->copied_seq++
-                                                          |  [read data]
-                                                          |
-                                   [enqueue data]         v
-                  [sockmap]     -> ingress to self ->  ingress_msg queue
-FD1 native stack  ------>                                 ^
--- FD1->rcv_nxt++               -> redirect to other      | [enqueue data]
-                                       |                  |
-                                       |             ingress to FD1
-                                       v                  ^
-                                      ...                 |  [sockmap]
-                                                     FD2 native stack
-
-Fixes: 04919bed948dc ("tcp: Introduce tcp_read_skb()")
 Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
 ---
- include/linux/skmsg.h | 68 +++++++++++++++++++++++++++++++++++++++++--
- net/core/skmsg.c      |  3 ++
- net/ipv4/tcp_bpf.c    | 21 +++++++++++++
- net/ipv4/udp_bpf.c    | 20 ++++++++++---
- 4 files changed, 106 insertions(+), 6 deletions(-)
+ .../selftests/bpf/prog_tests/sockmap_basic.c  | 205 +++++++++++++++++-
+ .../bpf/progs/test_sockmap_pass_prog.c        |  14 ++
+ 2 files changed, 213 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-index dfdc158ab88c..829b281d6c9c 100644
---- a/include/linux/skmsg.h
-+++ b/include/linux/skmsg.h
-@@ -97,6 +97,8 @@ struct sk_psock {
- 	struct sk_buff_head		ingress_skb;
- 	struct list_head		ingress_msg;
- 	spinlock_t			ingress_lock;
-+	/** @msg_tot_len: Total bytes queued in ingress_msg list. */
-+	u32				msg_tot_len;
- 	unsigned long			state;
- 	struct list_head		link;
- 	spinlock_t			link_lock;
-@@ -321,6 +323,27 @@ static inline void sock_drop(struct sock *sk, struct sk_buff *skb)
- 	kfree_skb(skb);
+diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+index 1e3e4392dcca..928659030ef6 100644
+--- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
++++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+@@ -1,7 +1,8 @@
+ // SPDX-License-Identifier: GPL-2.0
+ // Copyright (c) 2020 Cloudflare
+ #include <error.h>
+-#include <netinet/tcp.h>
++#include <linux/tcp.h>
++#include <linux/socket.h>
+ #include <sys/epoll.h>
+ 
+ #include "test_progs.h"
+@@ -22,6 +23,15 @@
+ #define TCP_REPAIR_ON		1
+ #define TCP_REPAIR_OFF_NO_WP	-1	/* Turn off without window probes */
+ 
++/**
++ * SOL_TCP is defined in <netinet/tcp.h> (glibc), but the copybuf_address
++ * field of tcp_zerocopy_receive is not yet included in older versions.
++ * This workaround remains necessary until the glibc update propagates.
++ */
++#ifndef SOL_TCP
++#define SOL_TCP 6
++#endif
++
+ static int connected_socket_v4(void)
+ {
+ 	struct sockaddr_in addr = {
+@@ -536,13 +546,14 @@ static void test_sockmap_skb_verdict_shutdown(void)
  }
  
-+static inline u32 sk_psock_get_msg_len_nolock(struct sk_psock *psock)
-+{
-+	/* Used by ioctl to read msg_tot_len only; lock-free for performance */
-+	return READ_ONCE(psock->msg_tot_len);
-+}
-+
-+static inline void sk_psock_msg_len_add_locked(struct sk_psock *psock, int diff)
-+{
-+	/* Use WRITE_ONCE to ensure correct read in sk_psock_get_msg_len_nolock().
-+	 * ingress_lock should be held to prevent concurrent updates to msg_tot_len
-+	 */
-+	WRITE_ONCE(psock->msg_tot_len, psock->msg_tot_len + diff);
-+}
-+
-+static inline void sk_psock_msg_len_add(struct sk_psock *psock, int diff)
-+{
-+	spin_lock_bh(&psock->ingress_lock);
-+	sk_psock_msg_len_add_locked(psock, diff);
-+	spin_unlock_bh(&psock->ingress_lock);
-+}
-+
- static inline bool sk_psock_queue_msg(struct sk_psock *psock,
- 				      struct sk_msg *msg)
+ 
+-static void test_sockmap_skb_verdict_fionread(bool pass_prog)
++static void do_test_sockmap_skb_verdict_fionread(int sotype, bool pass_prog)
  {
-@@ -329,6 +352,7 @@ static inline bool sk_psock_queue_msg(struct sk_psock *psock,
- 	spin_lock_bh(&psock->ingress_lock);
- 	if (sk_psock_test_state(psock, SK_PSOCK_TX_ENABLED)) {
- 		list_add_tail(&msg->list, &psock->ingress_msg);
-+		sk_psock_msg_len_add_locked(psock, msg->sg.size);
- 		ret = true;
+ 	int err, map, verdict, c0 = -1, c1 = -1, p0 = -1, p1 = -1;
+ 	int expected, zero = 0, sent, recvd, avail;
+ 	struct test_sockmap_pass_prog *pass = NULL;
+ 	struct test_sockmap_drop_prog *drop = NULL;
+ 	char buf[256] = "0123456789";
++	int split_len = sizeof(buf) / 2;
+ 
+ 	if (pass_prog) {
+ 		pass = test_sockmap_pass_prog__open_and_load();
+@@ -550,7 +561,10 @@ static void test_sockmap_skb_verdict_fionread(bool pass_prog)
+ 			return;
+ 		verdict = bpf_program__fd(pass->progs.prog_skb_verdict);
+ 		map = bpf_map__fd(pass->maps.sock_map_rx);
+-		expected = sizeof(buf);
++		if (sotype == SOCK_DGRAM)
++			expected = split_len; /* FIONREAD for UDP is different from TCP */
++		else
++			expected = sizeof(buf);
  	} else {
- 		sk_msg_free(psock->sk, msg);
-@@ -345,18 +369,25 @@ static inline struct sk_msg *sk_psock_dequeue_msg(struct sk_psock *psock)
+ 		drop = test_sockmap_drop_prog__open_and_load();
+ 		if (!ASSERT_OK_PTR(drop, "open_and_load"))
+@@ -566,7 +580,7 @@ static void test_sockmap_skb_verdict_fionread(bool pass_prog)
+ 	if (!ASSERT_OK(err, "bpf_prog_attach"))
+ 		goto out;
  
- 	spin_lock_bh(&psock->ingress_lock);
- 	msg = list_first_entry_or_null(&psock->ingress_msg, struct sk_msg, list);
--	if (msg)
-+	if (msg) {
- 		list_del(&msg->list);
-+		sk_psock_msg_len_add_locked(psock, -msg->sg.size);
+-	err = create_socket_pairs(AF_INET, SOCK_STREAM, &c0, &c1, &p0, &p1);
++	err = create_socket_pairs(AF_INET, sotype, &c0, &c1, &p0, &p1);
+ 	if (!ASSERT_OK(err, "create_socket_pairs()"))
+ 		goto out;
+ 
+@@ -574,8 +588,9 @@ static void test_sockmap_skb_verdict_fionread(bool pass_prog)
+ 	if (!ASSERT_OK(err, "bpf_map_update_elem(c1)"))
+ 		goto out_close;
+ 
+-	sent = xsend(p1, &buf, sizeof(buf), 0);
+-	ASSERT_EQ(sent, sizeof(buf), "xsend(p0)");
++	sent = xsend(p1, &buf, split_len, 0);
++	sent += xsend(p1, &buf, sizeof(buf) - split_len, 0);
++	ASSERT_EQ(sent, sizeof(buf), "xsend(p1)");
+ 	err = ioctl(c1, FIONREAD, &avail);
+ 	ASSERT_OK(err, "ioctl(FIONREAD) error");
+ 	ASSERT_EQ(avail, expected, "ioctl(FIONREAD)");
+@@ -597,6 +612,12 @@ static void test_sockmap_skb_verdict_fionread(bool pass_prog)
+ 		test_sockmap_drop_prog__destroy(drop);
+ }
+ 
++static void test_sockmap_skb_verdict_fionread(bool pass_prog)
++{
++	do_test_sockmap_skb_verdict_fionread(SOCK_STREAM, pass_prog);
++	do_test_sockmap_skb_verdict_fionread(SOCK_DGRAM, pass_prog);
++}
++
+ static void test_sockmap_skb_verdict_change_tail(void)
+ {
+ 	struct test_sockmap_change_tail *skel;
+@@ -1042,6 +1063,172 @@ static void test_sockmap_vsock_unconnected(void)
+ 	xclose(map);
+ }
+ 
++/* it is used to reproduce WARNING */
++static void test_sockmap_zc(void)
++{
++	int map, err, sent, recvd, zero = 0, one = 1, on = 1;
++	char buf[10] = "0123456789", rcv[11], addr[100];
++	struct test_sockmap_pass_prog *skel = NULL;
++	int c0 = -1, p0 = -1, c1 = -1, p1 = -1;
++	struct tcp_zerocopy_receive zc;
++	socklen_t zc_len = sizeof(zc);
++	struct bpf_program *prog;
++
++	skel = test_sockmap_pass_prog__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "open_and_load"))
++		return;
++
++	if (create_socket_pairs(AF_INET, SOCK_STREAM, &c0, &c1, &p0, &p1))
++		goto end;
++
++	prog = skel->progs.prog_skb_verdict_ingress;
++	map = bpf_map__fd(skel->maps.sock_map_rx);
++
++	err = bpf_prog_attach(bpf_program__fd(prog), map, BPF_SK_SKB_STREAM_VERDICT, 0);
++	if (!ASSERT_OK(err, "bpf_prog_attach"))
++		goto end;
++
++	err = bpf_map_update_elem(map, &zero, &p0, BPF_ANY);
++	if (!ASSERT_OK(err, "bpf_map_update_elem"))
++		goto end;
++
++	err = bpf_map_update_elem(map, &one, &p1, BPF_ANY);
++	if (!ASSERT_OK(err, "bpf_map_update_elem"))
++		goto end;
++
++	sent = xsend(c0, buf, sizeof(buf), 0);
++	if (!ASSERT_EQ(sent, sizeof(buf), "xsend"))
++		goto end;
++
++	/* trigger tcp_bpf_recvmsg_parser and inc copied_seq of p1 */
++	recvd = recv_timeout(p1, rcv, sizeof(rcv), MSG_DONTWAIT, 1);
++	if (!ASSERT_EQ(recvd, sent, "recv_timeout(p1)"))
++		goto end;
++
++	/* uninstall sockmap of p1 */
++	bpf_map_delete_elem(map, &one);
++
++	/* trigger tcp stack and the rcv_nxt of p1 is less than copied_seq */
++	sent = xsend(c1, buf, sizeof(buf) - 1, 0);
++	if (!ASSERT_EQ(sent, sizeof(buf) - 1, "xsend"))
++		goto end;
++
++	err = setsockopt(p1, SOL_SOCKET, SO_ZEROCOPY, &on, sizeof(on));
++	if (!ASSERT_OK(err, "setsockopt"))
++		goto end;
++
++	memset(&zc, 0, sizeof(zc));
++	zc.copybuf_address = (__u64)((unsigned long)addr);
++	zc.copybuf_len = sizeof(addr);
++
++	err = getsockopt(p1, IPPROTO_TCP, TCP_ZEROCOPY_RECEIVE, &zc, &zc_len);
++	if (!ASSERT_OK(err, "getsockopt"))
++		goto end;
++
++end:
++	if (c0 >= 0)
++		close(c0);
++	if (p0 >= 0)
++		close(p0);
++	if (c1 >= 0)
++		close(c1);
++	if (p1 >= 0)
++		close(p1);
++	test_sockmap_pass_prog__destroy(skel);
++}
++
++/* it is used to check whether copied_seq of sk is correct */
++static void test_sockmap_copied_seq(bool strp)
++{
++	int i, map, err, sent, recvd, zero = 0, one = 1;
++	struct test_sockmap_pass_prog *skel = NULL;
++	int c0 = -1, p0 = -1, c1 = -1, p1 = -1;
++	char buf[10] = "0123456789", rcv[11];
++	struct bpf_program *prog;
++
++	skel = test_sockmap_pass_prog__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "open_and_load"))
++		return;
++
++	if (create_socket_pairs(AF_INET, SOCK_STREAM, &c0, &c1, &p0, &p1))
++		goto end;
++
++	prog = skel->progs.prog_skb_verdict_ingress;
++	map = bpf_map__fd(skel->maps.sock_map_rx);
++
++	err = bpf_prog_attach(bpf_program__fd(prog), map, BPF_SK_SKB_STREAM_VERDICT, 0);
++	if (!ASSERT_OK(err, "bpf_prog_attach verdict"))
++		goto end;
++
++	if (strp) {
++		prog = skel->progs.prog_skb_verdict_ingress_strp;
++		err = bpf_prog_attach(bpf_program__fd(prog), map, BPF_SK_SKB_STREAM_PARSER, 0);
++		if (!ASSERT_OK(err, "bpf_prog_attach parser"))
++			goto end;
 +	}
- 	spin_unlock_bh(&psock->ingress_lock);
- 	return msg;
- }
- 
-+static inline struct sk_msg *sk_psock_peek_msg_locked(struct sk_psock *psock)
-+{
-+	return list_first_entry_or_null(&psock->ingress_msg, struct sk_msg, list);
-+}
 +
- static inline struct sk_msg *sk_psock_peek_msg(struct sk_psock *psock)
- {
- 	struct sk_msg *msg;
- 
- 	spin_lock_bh(&psock->ingress_lock);
--	msg = list_first_entry_or_null(&psock->ingress_msg, struct sk_msg, list);
-+	msg = sk_psock_peek_msg_locked(psock);
- 	spin_unlock_bh(&psock->ingress_lock);
- 	return msg;
- }
-@@ -523,6 +554,39 @@ static inline bool sk_psock_strp_enabled(struct sk_psock *psock)
- 	return !!psock->saved_data_ready;
- }
- 
-+/* for tcp only, sk is locked */
-+static inline ssize_t sk_psock_msg_inq(struct sock *sk)
-+{
-+	struct sk_psock *psock;
-+	ssize_t inq = 0;
++	err = bpf_map_update_elem(map, &zero, &p0, BPF_ANY);
++	if (!ASSERT_OK(err, "bpf_map_update_elem(p0)"))
++		goto end;
 +
-+	psock = sk_psock_get(sk);
-+	if (likely(psock)) {
-+		inq = sk_psock_get_msg_len_nolock(psock);
-+		sk_psock_put(sk, psock);
++	err = bpf_map_update_elem(map, &one, &p1, BPF_ANY);
++	if (!ASSERT_OK(err, "bpf_map_update_elem(p1)"))
++		goto end;
++
++	/* just trigger sockamp: data sent by c0 will be received by p1 */
++	sent = xsend(c0, buf, sizeof(buf), 0);
++	if (!ASSERT_EQ(sent, sizeof(buf), "xsend(c0), bpf"))
++		goto end;
++
++	/* do partial read */
++	recvd = recv_timeout(p1, rcv, 1, MSG_DONTWAIT, 1);
++	recvd += recv_timeout(p1, rcv + 1, sizeof(rcv) - 1, MSG_DONTWAIT, 1);
++	if (!ASSERT_EQ(recvd, sent, "recv_timeout(p1), bpf") ||
++	    !ASSERT_OK(memcmp(buf, rcv, recvd), "data mismatch"))
++		goto end;
++
++	/* uninstall sockmap of p1 and p0 */
++	err = bpf_map_delete_elem(map, &one);
++	if (!ASSERT_OK(err, "bpf_map_delete_elem(1)"))
++		goto end;
++
++	err = bpf_map_delete_elem(map, &zero);
++	if (!ASSERT_OK(err, "bpf_map_delete_elem(0)"))
++		goto end;
++
++	/* now all sockets become plain socket, they should still work */
++	for (i = 0; i < 5; i++) {
++		/* test copied_seq of p1 by running tcp native stack */
++		sent = xsend(c1, buf, sizeof(buf), 0);
++		if (!ASSERT_EQ(sent, sizeof(buf), "xsend(c1), native"))
++			goto end;
++
++		recvd = recv(p1, rcv, sizeof(rcv), MSG_DONTWAIT);
++		if (!ASSERT_EQ(recvd, sent, "recv_timeout(p1), native"))
++			goto end;
++
++		/* p0 previously redirected skb to p1, we also check copied_seq of p0 */
++		sent = xsend(c0, buf, sizeof(buf), 0);
++		if (!ASSERT_EQ(sent, sizeof(buf), "xsend(c0), native"))
++			goto end;
++
++		recvd = recv(p0, rcv, sizeof(rcv), MSG_DONTWAIT);
++		if (!ASSERT_EQ(recvd, sent, "recv_timeout(p0), native"))
++			goto end;
 +	}
-+	return inq;
++
++end:
++	if (c0 >= 0)
++		close(c0);
++	if (p0 >= 0)
++		close(p0);
++	if (c1 >= 0)
++		close(c1);
++	if (p1 >= 0)
++		close(p1);
++	test_sockmap_pass_prog__destroy(skel);
 +}
 +
-+/* for udp only, sk is not locked */
-+static inline ssize_t sk_msg_first_len(struct sock *sk)
-+{
-+	struct sk_psock *psock;
-+	struct sk_msg *msg;
-+	ssize_t inq = 0;
-+
-+	psock = sk_psock_get(sk);
-+	if (likely(psock)) {
-+		spin_lock_bh(&psock->ingress_lock);
-+		msg = sk_psock_peek_msg_locked(psock);
-+		if (msg)
-+			inq = msg->sg.size;
-+		spin_unlock_bh(&psock->ingress_lock);
-+		sk_psock_put(sk, psock);
-+	}
-+	return inq;
-+}
-+
- #if IS_ENABLED(CONFIG_NET_SOCK_MSG)
- 
- #define BPF_F_STRPARSER	(1UL << 1)
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index 3d147837b82c..57a94e9fb8c1 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -455,6 +455,7 @@ int __sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg
- 					atomic_sub(copy, &sk->sk_rmem_alloc);
- 				}
- 				msg_rx->sg.size -= copy;
-+				sk_psock_msg_len_add(psock, -copy);
- 
- 				if (!sge->length) {
- 					sk_msg_iter_var_next(i);
-@@ -819,9 +820,11 @@ static void __sk_psock_purge_ingress_msg(struct sk_psock *psock)
- 		list_del(&msg->list);
- 		if (!msg->skb)
- 			atomic_sub(msg->sg.size, &psock->sk->sk_rmem_alloc);
-+		sk_psock_msg_len_add(psock, -msg->sg.size);
- 		sk_msg_free(psock->sk, msg);
- 		kfree(msg);
- 	}
-+	WARN_ON_ONCE(psock->msg_tot_len);
+ void test_sockmap_basic(void)
+ {
+ 	if (test__start_subtest("sockmap create_update_free"))
+@@ -1108,4 +1295,10 @@ void test_sockmap_basic(void)
+ 		test_sockmap_skb_verdict_vsock_poll();
+ 	if (test__start_subtest("sockmap vsock unconnected"))
+ 		test_sockmap_vsock_unconnected();
++	if (test__start_subtest("sockmap with zc"))
++		test_sockmap_zc();
++	if (test__start_subtest("sockmap recover"))
++		test_sockmap_copied_seq(false);
++	if (test__start_subtest("sockmap recover with strp"))
++		test_sockmap_copied_seq(true);
+ }
+diff --git a/tools/testing/selftests/bpf/progs/test_sockmap_pass_prog.c b/tools/testing/selftests/bpf/progs/test_sockmap_pass_prog.c
+index 69aacc96db36..ef9edca184ea 100644
+--- a/tools/testing/selftests/bpf/progs/test_sockmap_pass_prog.c
++++ b/tools/testing/selftests/bpf/progs/test_sockmap_pass_prog.c
+@@ -44,4 +44,18 @@ int prog_skb_parser(struct __sk_buff *skb)
+ 	return SK_PASS;
  }
  
- static void __sk_psock_zap_ingress(struct sk_psock *psock)
-diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-index 5c698fd7fbf8..1660b4efe5d2 100644
---- a/net/ipv4/tcp_bpf.c
-+++ b/net/ipv4/tcp_bpf.c
-@@ -10,6 +10,7 @@
- 
- #include <net/inet_common.h>
- #include <net/tls.h>
-+#include <asm/ioctls.h>
- 
- void tcp_eat_skb(struct sock *sk, struct sk_buff *skb)
- {
-@@ -332,6 +333,25 @@ static int tcp_bpf_recvmsg_parser(struct sock *sk,
- 	return copied;
- }
- 
-+static int tcp_bpf_ioctl(struct sock *sk, int cmd, int *karg)
++SEC("sk_skb/stream_verdict")
++int prog_skb_verdict_ingress(struct __sk_buff *skb)
 +{
-+	bool slow;
++	int one = 1;
 +
-+	/* we only care about FIONREAD */
-+	if (cmd != SIOCINQ)
-+		return tcp_ioctl(sk, cmd, karg);
-+
-+	/* works similar as tcp_ioctl */
-+	if (sk->sk_state == TCP_LISTEN)
-+		return -EINVAL;
-+
-+	slow = lock_sock_fast(sk);
-+	*karg = sk_psock_msg_inq(sk);
-+	unlock_sock_fast(sk, slow);
-+
-+	return 0;
++	return bpf_sk_redirect_map(skb, &sock_map_rx, one, BPF_F_INGRESS);
 +}
 +
- static int tcp_bpf_recvmsg(struct sock *sk, struct msghdr *msg, size_t len,
- 			   int flags, int *addr_len)
- {
-@@ -610,6 +630,7 @@ static void tcp_bpf_rebuild_protos(struct proto prot[TCP_BPF_NUM_CFGS],
- 	prot[TCP_BPF_BASE].close		= sock_map_close;
- 	prot[TCP_BPF_BASE].recvmsg		= tcp_bpf_recvmsg;
- 	prot[TCP_BPF_BASE].sock_is_readable	= sk_msg_is_readable;
-+	prot[TCP_BPF_BASE].ioctl		= tcp_bpf_ioctl;
- 
- 	prot[TCP_BPF_TX]			= prot[TCP_BPF_BASE];
- 	prot[TCP_BPF_TX].sendmsg		= tcp_bpf_sendmsg;
-diff --git a/net/ipv4/udp_bpf.c b/net/ipv4/udp_bpf.c
-index 0735d820e413..424f664df71b 100644
---- a/net/ipv4/udp_bpf.c
-+++ b/net/ipv4/udp_bpf.c
-@@ -5,6 +5,7 @@
- #include <net/sock.h>
- #include <net/udp.h>
- #include <net/inet_common.h>
-+#include <asm/ioctls.h>
- 
- #include "udp_impl.h"
- 
-@@ -111,12 +112,23 @@ enum {
- static DEFINE_SPINLOCK(udpv6_prot_lock);
- static struct proto udp_bpf_prots[UDP_BPF_NUM_PROTS];
- 
-+static int udp_bpf_ioctl(struct sock *sk, int cmd, int *karg)
++SEC("sk_skb/stream_parser")
++int prog_skb_verdict_ingress_strp(struct __sk_buff *skb)
 +{
-+	if (cmd != SIOCINQ)
-+		return udp_ioctl(sk, cmd, karg);
-+
-+	/* works similar as udp_ioctl. */
-+	*karg = sk_msg_first_len(sk);
-+	return 0;
++	return skb->len;
 +}
 +
- static void udp_bpf_rebuild_protos(struct proto *prot, const struct proto *base)
- {
--	*prot        = *base;
--	prot->close  = sock_map_close;
--	prot->recvmsg = udp_bpf_recvmsg;
--	prot->sock_is_readable = sk_msg_is_readable;
-+	*prot			= *base;
-+	prot->close		= sock_map_close;
-+	prot->recvmsg		= udp_bpf_recvmsg;
-+	prot->sock_is_readable	= sk_msg_is_readable;
-+	prot->ioctl		= udp_bpf_ioctl;
- }
- 
- static void udp_bpf_check_v6_needs_rebuild(struct proto *ops)
+ char _license[] SEC("license") = "GPL";
 -- 
 2.43.0
 
