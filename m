@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-78201-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78202-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB7CBD00D98
-	for <lists+bpf@lfdr.de>; Thu, 08 Jan 2026 04:23:46 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A1A6D00D71
+	for <lists+bpf@lfdr.de>; Thu, 08 Jan 2026 04:19:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2737F30605BD
-	for <lists+bpf@lfdr.de>; Thu,  8 Jan 2026 03:19:09 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 4B3463004F3B
+	for <lists+bpf@lfdr.de>; Thu,  8 Jan 2026 03:19:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30D8228934F;
-	Thu,  8 Jan 2026 03:17:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A7802882D7;
+	Thu,  8 Jan 2026 03:17:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b+FlhBeU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lhFRc36Y"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f196.google.com (mail-pf1-f196.google.com [209.85.210.196])
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C8C9288C24
-	for <bpf@vger.kernel.org>; Thu,  8 Jan 2026 03:17:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32FD8287502
+	for <bpf@vger.kernel.org>; Thu,  8 Jan 2026 03:17:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767842243; cv=none; b=YrIvkMgqaZIK5qqOIg9UTVlnuwd41W2kvQprj8WPhz3vHPDkpqg39FPmG51AlUd3Vf3SAiaXtLwxhImf/xWi0oSPnod0ow/IGXd+hkrWfAf4PadvSa95SNrgDQdAz/NLOJSOxsrqrlMPPXc0RhND0K7zTV13LrH+qk2nb+lwHbM=
+	t=1767842246; cv=none; b=a/MwTGPzyOI1jJIdih7K4zcILqStP+1QVoEaNcHZ6tDo6hC4daBslUYR/5nWHjRR4jMKtRqJYg5zAErYn3iYaP1aTPtirVe087x+d+6fM/e81NekHmlJALkm51O726YgqtuJyxQLnEAkgc7RTFDE95G3J2q8srGHCAlSNq9oaJE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767842243; c=relaxed/simple;
-	bh=k/SsHZ5DiNBKCwpIZ6HyT/U/YK/VAISbL5KNMEGIsjA=;
+	s=arc-20240116; t=1767842246; c=relaxed/simple;
+	bh=HSH2cDhcqa8hihNqzM0cmWjWRa6J9Mh9nklD8GnTVc8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Owm36p3HUGnjA2JPzC35aOmuOyWcIv14zza+Xz+U0JPMj33xaPNTJTAnH39i0ZgLT6s7G38SRjQ4pgJtfNiJM1AD7zKaQdx4eIUITa5pJ6VpE3UsBFmMuyzmNi0FemHiFBkghAt7D46sbM0dzxHpvxQQY/7qjNM3fPDgFx2J3AM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b+FlhBeU; arc=none smtp.client-ip=209.85.210.196
+	 MIME-Version; b=k7dZWxzO2N8vqO6sCqG/1KiQFlENXsMmKz/ljCEa3wH2wf2g1qygAFaWV/zM8WkLJ8h2PNiXsqVIQCHvLiHv7kjR4zMDKFSgK6+h9ky2pYAa7RJlqUqQTJ1S29qOAXti8v6lRQjg5Jat04LQS7YRXIzjy20pVXSnjFZV43kS2rE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lhFRc36Y; arc=none smtp.client-ip=209.85.214.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f196.google.com with SMTP id d2e1a72fcca58-7b852bb31d9so2471707b3a.0
-        for <bpf@vger.kernel.org>; Wed, 07 Jan 2026 19:17:22 -0800 (PST)
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-2a12ed4d205so19311485ad.0
+        for <bpf@vger.kernel.org>; Wed, 07 Jan 2026 19:17:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767842241; x=1768447041; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1767842244; x=1768447044; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ppA0C32r+tZo1J9bYSHe7omsyAFm3sfGap53g1ih6tk=;
-        b=b+FlhBeU98dF8LDu2Yuc9JsHL4tJjq+ppZoCYorYprgrL8SgHV67QMKDNd+TAvVL8W
-         nmmMpGr9+w871ztSfWdBfJnjs1Hcr4vuRB2NfgW8FvhYUeCW/yqX1teWisxZD4oy3WPe
-         s9NOi/SigXV3vS/xlhmx7ASIR45lEVGtEK0a8VKZMYRvJXfBKCKHY37sUF0UL4b81Hih
-         8A0uO7BzGgb2u913Y/yZ3VAq6OoEHXv9FORLMyK2Y3Y2W0dcigKwoDbOYh5ZGU//9Bm4
-         T8LYnq7wxyimzoGxPO2DQGPJe5CZLGIlvZtw+qH8Q93lf6/9VeIMa9tsPGbE4nygjvz8
-         O/9Q==
+        bh=CdiOPkebuRw2iRYJsvN/KjHUwH4DMOaF+wqFYzZkeeI=;
+        b=lhFRc36YaOEhMJZpF06mTmuwayWrtFDDX6byf3UYkjBw3lEqrhU/BH7gRrSsJxe3qS
+         9AtTQWmXzV3EivzR8cvzQQ5iNXvScIuNOb56+r7UGWs7vq2578gvvkGZaFdV6rmRQP7J
+         Id0xV3BO0+NBpOv/MNlGYGGmSqZwfnfkJWf5sq+uAPXnOAWJ/As0hkP8XalEyn/oue8e
+         m5NXmK7CUum4P0aPxYUVVePEKLlam7hpLyLcT2tRiF160bTBF2Kzz1GBoeU74yHwlZTI
+         ETSgzxZwertf1PW9+Dq7LdpdsxTKTzFJuqFLHhlLykYrE4CUQx9W98WUdfUaXumpCb3y
+         O0Jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767842241; x=1768447041;
+        d=1e100.net; s=20230601; t=1767842244; x=1768447044;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=ppA0C32r+tZo1J9bYSHe7omsyAFm3sfGap53g1ih6tk=;
-        b=CaaXqxfGklEU1DJ8dHBVcn3EKcbn9G7RWqclo9C4aUiueenu55WEsU5jQwZaIBTHre
-         oy/09Nru8nT8ID0+lZGT6g5m85thDz39wPliMA/5PNnJuR5op/U2QCaOOifWx4ZmHIeF
-         GUa8HGSDcXq56O1s5cqtsPGTUJ9PtHzlOSL5l0yU9g3eNKZ7pSzJPw2Jpc5aZp2va88v
-         YSit0wN5A0g1vMn5/AcHX8+a2iwm0DtKL0+KU2zKJ0B3hh5XMUcO0gyDHppZOZHWhJfY
-         tvu04WLQ4nGQA5/57FSg7tPAZrbucizEG+bvvRryw6Y4DhXIvnmF/gUEodOuSNEGCzhH
-         qNxQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXnjly9JynuVYhgX5agO9SNAFjSUV/lCaVYCHHCdZLHSIlnrdHvblsRTKig/BmLR2QrQyg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyYQF347UsBFeFRv4TJMnMy+AjnHnmWo8hRe7wm7B21NxGAc7gQ
-	KhTNTsrD4ZAp6U/TP6DBhbkg1s8Kz23y56BHgxGNTS7OFYxPNUJIwfyr
-X-Gm-Gg: AY/fxX7Wl7OEeT0ISDgnwHm+CTfxI0imw/MOuh4wzgoc+Z+Czhjlk+Qkm8PaCKeRfEc
-	0aA9h8D3Y8n0yW6J5gxEERhDo+PxaoodL8PfbAMOUR3TotMgod5DuYAvNuqilAdoN0sp1vCeBH5
-	SNNHFXqqlqIWKChI9ot6pv08UqnIw7CBZS6QzEQygwEel4B38OZHF9CiyFKfoV/la7ETrrm0/Qh
-	CMN9ox5iKMezzWff6BS/AsK8RuoCKOjLNN1a6wrvg/VyoPTdv5ugBZ6rMc/5wnyFCm+y7Q3U62n
-	m+IfoGnO4IBrkvw7xkGGy65qK9OCnnnrTJU9gV9j+3PKnoSuVD1VDGHJEOS0xjTXPFL+XK9ChsO
-	3/6oxscI2c5jVfffT9096JNGm6YMDlXHzZUK7iRRT4VfaR6D7IjeIwlotW7tHv23h6iPYTgOOFW
-	v9de9lDQ5tmx4iNldHO5rCClfBXeA=
-X-Google-Smtp-Source: AGHT+IFST5MI6yDneKKwxRZqXrRJHnWyFrSyRG8+UfqIpoNr8TF9Bt7R6vZlLpFwpqTGnOdCk3i6vg==
-X-Received: by 2002:a05:6a00:90a6:b0:7ef:3f4e:9176 with SMTP id d2e1a72fcca58-81b7f9d1932mr3793392b3a.49.1767842241503;
-        Wed, 07 Jan 2026 19:17:21 -0800 (PST)
+        bh=CdiOPkebuRw2iRYJsvN/KjHUwH4DMOaF+wqFYzZkeeI=;
+        b=aFTZnRiG7dYKjbN+IaaOBApmZhjkQ5Y28tFXgZgGVv2V0VNa91cUYu+CjfS5kPpeyH
+         IjIleZzF2B9WpTCP2KIixy4QahTpMc5ejzLrzGiLEP2MFua+BfRlYSCVivJ6e/xiGhv/
+         7INn7//cw3edQHTCi7y9wSgPzGeMVN6QmWsTDDm4PtuK/eLXH99S98RA3wnbgG7zNwv7
+         aBK+I3fp7PVRQ3WP8arI1/a1HAhuVz6Aor7WbGKzf5KJuQ8iLNoRDXwUm/kRqCvKEVwr
+         1bhsPFDWEoqkgiXQivJbBFcCCQqMkTQO22oPflbrZJ09/9zHABN6yyX8om3Ol5k7p84N
+         LVMw==
+X-Forwarded-Encrypted: i=1; AJvYcCVpnD/+QSVMlcN4UbhJT1doSIPTVVzXsJ5Q9N1VrWU6G7F1hFHFz6KItNcuvTEwh6MrRb8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwafLA8I7wZmUVGzEqB8nlm+pwy04NQ+dIYlLlnQS8YD/XkpqVW
+	V2IaWKvg/ISSwiAphY2Vpek5bxW1FWINqu8Wmgi7mr9n/AcnVRgQ85U7
+X-Gm-Gg: AY/fxX68WBr3VpJEO5h1jyYxAYQVXMUX0OlYWl5qlMpUHg+nH5EAqV6l5teOxd5j4uo
+	HJSHnnJWj7Qo3ua4qHEjU9qwM2aqrqk3hFq9N1u3IL78r2Jxpd9qU/Yo+UVeslxQD69YcHf2wZG
+	6uamwulOhlV5Y+xGlhsSDx/zRaeSn9cn9duO8RzGCHYd2sBrmYA8TwJlc0F2pBSRB4WtRPOjg69
+	KKbW1q9S+TvNz6bj+rHAuEQkLO1P6OCV8Fen/KHDuOHR2L62rL5eYLKyRmieDz+IDDHc/y1tZ4A
+	NM/DKDLl2H/O5WAHpLyWMEgJkN46SWIyVFe30xC/5jt0AgUHzJg5N7biWE2ZC8OUDhX4OuDxsuS
+	EkRZkt9bZ0knv61glhEz2qdkbJmpXkAsyXs+1PH0E6/Br/gHYVRmKcDMRo2djfNa+rd8uEGhsMJ
+	eHMNAbyEqHf4Qc5/FyfWtWV1P7tco=
+X-Google-Smtp-Source: AGHT+IFHwpnuvrFOHyCGVuhHu+rmSokA2SwaPRlM6b2SPtuMKwHghdpOZ5xiMR48M1E38yqC4qytXw==
+X-Received: by 2002:a17:903:228a:b0:2a0:9a07:f8be with SMTP id d9443c01a7336-2a3ee436040mr42072775ad.22.1767842244426;
+        Wed, 07 Jan 2026 19:17:24 -0800 (PST)
 Received: from pengdl-pc.mioffice.cn ([43.224.245.249])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-819c5de655bsm6134860b3a.60.2026.01.07.19.17.18
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-819c5de655bsm6134860b3a.60.2026.01.07.19.17.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jan 2026 19:17:20 -0800 (PST)
+        Wed, 07 Jan 2026 19:17:23 -0800 (PST)
 From: Donglin Peng <dolinux.peng@gmail.com>
 To: ast@kernel.org,
 	andrii.nakryiko@gmail.com,
@@ -81,11 +81,10 @@ Cc: zhangxiaoqin@xiaomi.com,
 	linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org,
 	Donglin Peng <pengdonglin@xiaomi.com>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH bpf-next v11 10/11] libbpf: Optimize the performance of determine_ptr_size
-Date: Thu,  8 Jan 2026 11:16:44 +0800
-Message-Id: <20260108031645.1350069-11-dolinux.peng@gmail.com>
+	Alan Maguire <alan.maguire@oracle.com>
+Subject: [PATCH bpf-next v11 11/11] btf: Refactor the code by calling str_is_empty
+Date: Thu,  8 Jan 2026 11:16:45 +0800
+Message-Id: <20260108031645.1350069-12-dolinux.peng@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20260108031645.1350069-1-dolinux.peng@gmail.com>
 References: <20260108031645.1350069-1-dolinux.peng@gmail.com>
@@ -99,10 +98,8 @@ Content-Transfer-Encoding: 8bit
 
 From: Donglin Peng <pengdonglin@xiaomi.com>
 
-Leverage the performance improvement of btf__find_by_name_kind() when
-BTF is sorted. For sorted BTF, the function uses binary search with
-O(log n) complexity instead of linear search, providing significant
-performance benefits, especially for large BTF like vmlinux.
+Calling the str_is_empty function to clarify the code and
+no functional changes are introduced.
 
 Cc: Eduard Zingerman <eddyz87@gmail.com>
 Cc: Alexei Starovoitov <ast@kernel.org>
@@ -112,51 +109,190 @@ Cc: Ihor Solodrai <ihor.solodrai@linux.dev>
 Cc: Xiaoqin Zhang <zhangxiaoqin@xiaomi.com>
 Signed-off-by: Donglin Peng <pengdonglin@xiaomi.com>
 Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/lib/bpf/btf.c | 20 ++++++--------------
- 1 file changed, 6 insertions(+), 14 deletions(-)
+ tools/lib/bpf/btf.c    | 34 +++++++++++++++++-----------------
+ tools/lib/bpf/libbpf.c |  4 ++--
+ 2 files changed, 19 insertions(+), 19 deletions(-)
 
 diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 277df0077df6..9e8911755a79 100644
+index 9e8911755a79..a10019338ca4 100644
 --- a/tools/lib/bpf/btf.c
 +++ b/tools/lib/bpf/btf.c
-@@ -659,29 +659,21 @@ static int determine_ptr_size(const struct btf *btf)
- 		"int long unsigned",
- 	};
- 	const struct btf_type *t;
--	const char *name;
--	int i, j, n;
-+	int i, id;
+@@ -2128,7 +2128,7 @@ int btf__add_int(struct btf *btf, const char *name, size_t byte_sz, int encoding
+ 	int sz, name_off;
  
- 	if (btf->base_btf && btf->base_btf->ptr_sz > 0)
- 		return btf->base_btf->ptr_sz;
+ 	/* non-empty name */
+-	if (!name || !name[0])
++	if (str_is_empty(name))
+ 		return libbpf_err(-EINVAL);
+ 	/* byte_sz must be power of 2 */
+ 	if (!byte_sz || (byte_sz & (byte_sz - 1)) || byte_sz > 16)
+@@ -2176,7 +2176,7 @@ int btf__add_float(struct btf *btf, const char *name, size_t byte_sz)
+ 	int sz, name_off;
  
--	n = btf__type_cnt(btf);
--	for (i = 1; i < n; i++) {
--		t = btf__type_by_id(btf, i);
--		if (!btf_is_int(t))
-+	for (i = 0; i < ARRAY_SIZE(long_aliases); i++) {
-+		id = btf__find_by_name_kind(btf, long_aliases[i], BTF_KIND_INT);
-+		if (id < 0)
- 			continue;
+ 	/* non-empty name */
+-	if (!name || !name[0])
++	if (str_is_empty(name))
+ 		return libbpf_err(-EINVAL);
  
-+		t = btf__type_by_id(btf, id);
- 		if (t->size != 4 && t->size != 8)
- 			continue;
+ 	/* byte_sz must be one of the explicitly allowed values */
+@@ -2231,7 +2231,7 @@ static int btf_add_ref_kind(struct btf *btf, int kind, const char *name, int ref
+ 	if (!t)
+ 		return libbpf_err(-ENOMEM);
  
--		name = btf__name_by_offset(btf, t->name_off);
--		if (!name)
--			continue;
--
--		for (j = 0; j < ARRAY_SIZE(long_aliases); j++) {
--			if (strcmp(name, long_aliases[j]) == 0)
--				return t->size;
--		}
-+		return t->size;
+-	if (name && name[0]) {
++	if (!str_is_empty(name)) {
+ 		name_off = btf__add_str(btf, name);
+ 		if (name_off < 0)
+ 			return name_off;
+@@ -2308,7 +2308,7 @@ static int btf_add_composite(struct btf *btf, int kind, const char *name, __u32
+ 	if (!t)
+ 		return libbpf_err(-ENOMEM);
+ 
+-	if (name && name[0]) {
++	if (!str_is_empty(name)) {
+ 		name_off = btf__add_str(btf, name);
+ 		if (name_off < 0)
+ 			return name_off;
+@@ -2409,7 +2409,7 @@ int btf__add_field(struct btf *btf, const char *name, int type_id,
+ 	if (!m)
+ 		return libbpf_err(-ENOMEM);
+ 
+-	if (name && name[0]) {
++	if (!str_is_empty(name)) {
+ 		name_off = btf__add_str(btf, name);
+ 		if (name_off < 0)
+ 			return name_off;
+@@ -2447,7 +2447,7 @@ static int btf_add_enum_common(struct btf *btf, const char *name, __u32 byte_sz,
+ 	if (!t)
+ 		return libbpf_err(-ENOMEM);
+ 
+-	if (name && name[0]) {
++	if (!str_is_empty(name)) {
+ 		name_off = btf__add_str(btf, name);
+ 		if (name_off < 0)
+ 			return name_off;
+@@ -2505,7 +2505,7 @@ int btf__add_enum_value(struct btf *btf, const char *name, __s64 value)
+ 		return libbpf_err(-EINVAL);
+ 
+ 	/* non-empty name */
+-	if (!name || !name[0])
++	if (str_is_empty(name))
+ 		return libbpf_err(-EINVAL);
+ 	if (value < INT_MIN || value > UINT_MAX)
+ 		return libbpf_err(-E2BIG);
+@@ -2582,7 +2582,7 @@ int btf__add_enum64_value(struct btf *btf, const char *name, __u64 value)
+ 		return libbpf_err(-EINVAL);
+ 
+ 	/* non-empty name */
+-	if (!name || !name[0])
++	if (str_is_empty(name))
+ 		return libbpf_err(-EINVAL);
+ 
+ 	/* decompose and invalidate raw data */
+@@ -2622,7 +2622,7 @@ int btf__add_enum64_value(struct btf *btf, const char *name, __u64 value)
+  */
+ int btf__add_fwd(struct btf *btf, const char *name, enum btf_fwd_kind fwd_kind)
+ {
+-	if (!name || !name[0])
++	if (str_is_empty(name))
+ 		return libbpf_err(-EINVAL);
+ 
+ 	switch (fwd_kind) {
+@@ -2658,7 +2658,7 @@ int btf__add_fwd(struct btf *btf, const char *name, enum btf_fwd_kind fwd_kind)
+  */
+ int btf__add_typedef(struct btf *btf, const char *name, int ref_type_id)
+ {
+-	if (!name || !name[0])
++	if (str_is_empty(name))
+ 		return libbpf_err(-EINVAL);
+ 
+ 	return btf_add_ref_kind(btf, BTF_KIND_TYPEDEF, name, ref_type_id, 0);
+@@ -2710,7 +2710,7 @@ int btf__add_restrict(struct btf *btf, int ref_type_id)
+  */
+ int btf__add_type_tag(struct btf *btf, const char *value, int ref_type_id)
+ {
+-	if (!value || !value[0])
++	if (str_is_empty(value))
+ 		return libbpf_err(-EINVAL);
+ 
+ 	return btf_add_ref_kind(btf, BTF_KIND_TYPE_TAG, value, ref_type_id, 0);
+@@ -2727,7 +2727,7 @@ int btf__add_type_tag(struct btf *btf, const char *value, int ref_type_id)
+  */
+ int btf__add_type_attr(struct btf *btf, const char *value, int ref_type_id)
+ {
+-	if (!value || !value[0])
++	if (str_is_empty(value))
+ 		return libbpf_err(-EINVAL);
+ 
+ 	return btf_add_ref_kind(btf, BTF_KIND_TYPE_TAG, value, ref_type_id, 1);
+@@ -2746,7 +2746,7 @@ int btf__add_func(struct btf *btf, const char *name,
+ {
+ 	int id;
+ 
+-	if (!name || !name[0])
++	if (str_is_empty(name))
+ 		return libbpf_err(-EINVAL);
+ 	if (linkage != BTF_FUNC_STATIC && linkage != BTF_FUNC_GLOBAL &&
+ 	    linkage != BTF_FUNC_EXTERN)
+@@ -2832,7 +2832,7 @@ int btf__add_func_param(struct btf *btf, const char *name, int type_id)
+ 	if (!p)
+ 		return libbpf_err(-ENOMEM);
+ 
+-	if (name && name[0]) {
++	if (!str_is_empty(name)) {
+ 		name_off = btf__add_str(btf, name);
+ 		if (name_off < 0)
+ 			return name_off;
+@@ -2867,7 +2867,7 @@ int btf__add_var(struct btf *btf, const char *name, int linkage, int type_id)
+ 	int sz, name_off;
+ 
+ 	/* non-empty name */
+-	if (!name || !name[0])
++	if (str_is_empty(name))
+ 		return libbpf_err(-EINVAL);
+ 	if (linkage != BTF_VAR_STATIC && linkage != BTF_VAR_GLOBAL_ALLOCATED &&
+ 	    linkage != BTF_VAR_GLOBAL_EXTERN)
+@@ -2916,7 +2916,7 @@ int btf__add_datasec(struct btf *btf, const char *name, __u32 byte_sz)
+ 	int sz, name_off;
+ 
+ 	/* non-empty name */
+-	if (!name || !name[0])
++	if (str_is_empty(name))
+ 		return libbpf_err(-EINVAL);
+ 
+ 	if (btf_ensure_modifiable(btf))
+@@ -2993,7 +2993,7 @@ static int btf_add_decl_tag(struct btf *btf, const char *value, int ref_type_id,
+ 	struct btf_type *t;
+ 	int sz, value_off;
+ 
+-	if (!value || !value[0] || component_idx < -1)
++	if (str_is_empty(value) || component_idx < -1)
+ 		return libbpf_err(-EINVAL);
+ 
+ 	if (validate_type_id(ref_type_id))
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 1a52d818a76c..96c6db972855 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -2904,7 +2904,7 @@ static int bpf_object__init_user_btf_map(struct bpf_object *obj,
+ 	var_extra = btf_var(var);
+ 	map_name = btf__name_by_offset(obj->btf, var->name_off);
+ 
+-	if (map_name == NULL || map_name[0] == '\0') {
++	if (str_is_empty(map_name)) {
+ 		pr_warn("map #%d: empty name.\n", var_idx);
+ 		return -EINVAL;
  	}
+@@ -4281,7 +4281,7 @@ static int bpf_object__collect_externs(struct bpf_object *obj)
+ 		if (!sym_is_extern(sym))
+ 			continue;
+ 		ext_name = elf_sym_str(obj, sym->st_name);
+-		if (!ext_name || !ext_name[0])
++		if (str_is_empty(ext_name))
+ 			continue;
  
- 	return -1;
+ 		ext = obj->externs;
 -- 
 2.34.1
 
