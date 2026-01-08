@@ -1,380 +1,250 @@
-Return-Path: <bpf+bounces-78175-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78176-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D982D009D1
-	for <lists+bpf@lfdr.de>; Thu, 08 Jan 2026 03:12:16 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94973D00A65
+	for <lists+bpf@lfdr.de>; Thu, 08 Jan 2026 03:25:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 74F03302AFEC
-	for <lists+bpf@lfdr.de>; Thu,  8 Jan 2026 02:11:35 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 58D693015011
+	for <lists+bpf@lfdr.de>; Thu,  8 Jan 2026 02:25:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69E48233711;
-	Thu,  8 Jan 2026 02:11:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57C0026E16C;
+	Thu,  8 Jan 2026 02:25:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ko202Zd1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OvUfN5aa"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-dy1-f172.google.com (mail-dy1-f172.google.com [74.125.82.172])
+Received: from mail-yw1-f193.google.com (mail-yw1-f193.google.com [209.85.128.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B1FD157A5A
-	for <bpf@vger.kernel.org>; Thu,  8 Jan 2026 02:11:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A84F239E80
+	for <bpf@vger.kernel.org>; Thu,  8 Jan 2026 02:25:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767838294; cv=none; b=f5Bmmb/F1fMNplX+RIHj/q4LPhaKm0zlCGn/AQaP2+lQr/NMI/ATvyDhN9Lqz83MOJL6wVezMNm/9Ebk8zNQmojb+WEjKSCTkRRa2NaazCPf2a4B9kGZxGZNSZfURkC6/R5prrNohGsj2JFhKZKmNCYHKj56/blb4w4nX4JMxIg=
+	t=1767839109; cv=none; b=N1h+ilpIwLIvRn3dPwPSGpgNKV8PGLk5MsNzEzrzva+J94Yd+7hk9MQPtEBOc62BRECjuY1AtGCN3zuIZj/HMS/JyPVmi7KLdDabDn40xXhtM5NP3PWbRaMqR6KnCb3gYPsSn8fYkFehZwlLb+YqoQ1sXrtEj4pUTMtBO8z45z8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767838294; c=relaxed/simple;
-	bh=cVftGJ2LYMFqOac9oezkJjImltv09C8Dcl60pbTDQCw=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=dvQdgGjaCzNcYYxT0DQ5aKmdJlYwCXyrINuACffOGyKEJ2aSrFAEL0fnBv3BoG1uGu7D0ddZl2+/DZ3Oqne6BUp64M6qlXAsRKxJNsF6wxXJm9H5WHEQSARNSzKVu+DEokttY/U3S/1aaZXDSmID2ygmKqhlnu6dy91Ybx4XX2M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ko202Zd1; arc=none smtp.client-ip=74.125.82.172
+	s=arc-20240116; t=1767839109; c=relaxed/simple;
+	bh=xfdNQ2XA68GlBRZpCq8tdYnWYNvGWUgpb8PtyiF52zE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VFqYoeFsGV5OcMbnCxbLM37ix2X1GJOJvUblp2AGDn+9gpqZUpzlkTCYUpcroG30V6i5VEi7GK/gFQgAGSeUfTDXQgV/8h04VTnFrwF7pshv0Y2j74B6jToMNMf2asyZDQXnhUlF8rK/zFfPhuoSy8KcaAuRFqMXbsjlzMRAH+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OvUfN5aa; arc=none smtp.client-ip=209.85.128.193
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-dy1-f172.google.com with SMTP id 5a478bee46e88-2ae38f81be1so2422820eec.0
-        for <bpf@vger.kernel.org>; Wed, 07 Jan 2026 18:11:32 -0800 (PST)
+Received: by mail-yw1-f193.google.com with SMTP id 00721157ae682-78fd6189c88so34365597b3.0
+        for <bpf@vger.kernel.org>; Wed, 07 Jan 2026 18:25:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767838291; x=1768443091; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=gfjdDeHpDq05/eRfWHcvgl+Rhr5y5MvHRF1sn4N97oM=;
-        b=ko202Zd1JWMH9CMkq1EjZMJy6LlntHn039mgMY4Zz2YfMicDRIWHaJNwjqchcGV2h8
-         ShfdSgzC5uDt9HmMxQ4HXhE4tV+td/3wGV80C2TZz6+b9Mt9vCiV80A/hhgJCSld0WNT
-         reV9d10esnlUXnE9bb23gdie+V/GUesOYOHpVYReere2FB9wcVn5yxtfWX0tQKnjhLfm
-         rbm3GJggNvGmKSaLuJv+wNR03OrRJrO8zNiim/ENjbn+Yh5Lrf59BizKXT/2nw5R3AbT
-         i+cQKwO1fjGtbNos8DrWF1Z9PbBh8dGgtNdG/SIcGQYwQgQ9xE/0HsrP4Zo2KV51eDqX
-         XH2w==
+        d=gmail.com; s=20230601; t=1767839106; x=1768443906; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=XDmPh0kcLh99Yodm8W+qP3GmDAc+OuMsfP+N1S3aEqA=;
+        b=OvUfN5aawwd3/fa0hXW9mr5jw/ym9eXKNdl1usGqEwgDLngAt0E0MsJpfxcm2+pWx6
+         0z9RyBRyipsiiyKtc95kmu+mAKJikh5I6cta2qNSCLOCc3MiAI6mdRSM5jbNMl6ERJ5K
+         nVdAsxnc+OROnuZBy15DlcwcN6ATYN2X4v15KvZ37KrwAtfA+UUCAVtEsBtyA1c/gU/+
+         vVsk+pXk0Est1KNCvOY8APJ4tRxgn+gpMc3+uda27zhDmRVFsp4G/5qj3I45Zi+7oLsP
+         b/oDPwPRByDlIZnU2cet9ubeZmS6sFwVr9ejfFd+4/OW40AThOE9gl6yC57J18Cyt10H
+         +Fgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767838291; x=1768443091;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gfjdDeHpDq05/eRfWHcvgl+Rhr5y5MvHRF1sn4N97oM=;
-        b=q2fIlkmD+3cLrFjIAfxIho8rSKr+jryw+pPRkJ4kfTMEGBnw0sEhXGndMeRykA53M8
-         zEOaWIAJQ0H3dUr0IrzByOKVH3T1BfVcMcVja/6qWJz7RWzopocnx4vqhaNXYzfh93EI
-         cCMWD9krrxFWH3fSwdEI3x+vq9gsOnxQn7Un/ZPbYuc3ADXgBtZM+VT2MvnVLzQH2Z+F
-         LZEHva6KzLMbgKbRfh+Z0yEZnWzwQB67t3tJSfGfakpE2PwACkg0R2Jvk7Sj44pLBBjc
-         HWRlrCwOKD/2dRo2sC5s1g5rPEeBo7nnTKmZh9wscnXmOtIczGSFPr6hzrJMRstqj26t
-         SJZg==
-X-Forwarded-Encrypted: i=1; AJvYcCWGxmM+zyJSvT4mUxGypiPQ4+AFCcRT2OH59GiersDnp6B3L9GoMvWseYPRbN/mMjBlrwk=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz0BpG6V7cygUj5Ih80KbmAOh4g9U+Z3bv4oi0SPWE7O7ZFQLOI
-	W2t8RV6RvlZDoHSzOf+MhrBdldR08X8+wrRK+qKHCLjIVWRfevxsfw9h
-X-Gm-Gg: AY/fxX6nKlP2Nt0sKT2SwUstEFD7fAVeS/wLDEdy/VbIz3/WHtePrFzMpp+6/10JkIW
-	l1kNAjpkXfyR/DFFEIs2jNUFF5a/5uiRtZ+vwXNRmaN1czgyokeKsu97DoQL8NZWvEUUTb6j1qZ
-	WntNMqq3dFTjaA5CkC1awYnTWZ7dsaO0P343uBLSlYhm5HKTqc4Pv4F+LUcbxuH3WDeXmTmSBYo
-	tQ9/mmph9ZjrBulbM7kPa1GxN1F1OnZBNxoPXMVHk9m0HvrMS87ldzyD+Tc/JxgDqtfn30228u0
-	0HCsVxrOyvR5Aat6k2eRuRGZPFXVCBKcAphD1ghhsn9iLwf79TtpZljEAKph4SqDIPyfhOm50Fo
-	9AG/kAmfuTGU9690Z5PFJXESY5S5MSAerz4GVvsmy5Z6leWXW44DZxhhV6CZIi2csfDyee3P2zg
-	XDS/VLeXEWiJzq4mv6xD5a6PJEOBBLNZ4NPM10
-X-Google-Smtp-Source: AGHT+IEr4Is3D6/1yk6IhtXWFD9soqpY6qaGGTgwnoRzkqh+zl6kb1AUs6+MEROHzDjSkxibFuVeuA==
-X-Received: by 2002:a05:7300:6916:b0:2ae:4f61:892e with SMTP id 5a478bee46e88-2b17d2c9a9bmr5108278eec.36.1767838291315;
-        Wed, 07 Jan 2026 18:11:31 -0800 (PST)
-Received: from ?IPv6:2a03:83e0:115c:1:6741:9f57:1ccc:45f2? ([2620:10d:c090:500::2:4706])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2b17067327csm7730332eec.7.2026.01.07.18.11.29
+        d=1e100.net; s=20230601; t=1767839106; x=1768443906;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XDmPh0kcLh99Yodm8W+qP3GmDAc+OuMsfP+N1S3aEqA=;
+        b=Hcb0wlploG7+HrlcBm0vEuORsc9U+d8si0gMO/vdMZNI1kyyvDiOSW1MUtIEgEOAq3
+         Xh6mGchqkn9z4ElI3TCc6yq+bd5Gg2cw9abg2UsjfwlYOdmbanYsi65GxZ8rRPMLb934
+         0NYLPlAnEf1buMGyvxTDTSokRyq3EiUBT0ELhdpANITmmR8p6dn8UXtMzU9gMLKwnwi5
+         3rvrkEJSpBhXEIG0fizFdr5MAwNNNZvfKfD8CtA2Jajs7e4emx9pvBxlC2/72ldo9AVP
+         zPQ3oJuaNJZDhkLh9gedF3fS6cUyMi/ustzr0T+sFpF+dMWpbB0mC/dzRh84T/L1WpoU
+         0hdg==
+X-Forwarded-Encrypted: i=1; AJvYcCUmuIq+BKVZNoarKQmiC9Hn0StkdVDNkhcwVzLFPb/LecS4ll8532R14x1kkShFxhwBDkk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwtB0WiowtDXmPGcinTQy617Prho9vRsHycnBnyzTlLVX8F0JRN
+	YwXzvZxHtfM8lULeJBYUbZJf0iB+K8fOAFIqBfUWlgE82evZ8d/03/u9
+X-Gm-Gg: AY/fxX7vPP/k5Q8U/XH4aFzbD4bkZKOEyg4lxmGscfjv5nKFHKKRc1Fr04PZP222iTN
+	lSywisoPgJqL+Zf16urDNMSzZ98GA+cw8rNvsuONXZVNekiOHD4/4szG11Qby+SfHU9U99MxV0X
+	l1qR578/Nhu+/HIjeFld9YDwyrWX8oTEQ/lNNz1KebBf9Z1Nb7oFS4AXhDBjaeZFp4auDJ95Jim
+	4QYQSKAdPr+7JaMFRInLOlLULhjJ8rvPR3KCCrOTYYRR2PQ7mNTkkRrM2kfCMVCgsqR+gJ81F00
+	USF5No3G/zDZiqEtUp5Mf3BCONsoRp+UnDboTSlI/NL9d8mRq04lGFtzLD6jUWtgAmx68qk4Qf+
+	21zuz+V38UsHOWq3CF9glRVwozD/aaMJs1toreP25kNgSvVh920jn9IhC1Y0Hpw0D8ME/WGXAJ4
+	491yrE84c=
+X-Google-Smtp-Source: AGHT+IHo3jIMxjvEUUtYQi7Cc32nik6Lt6iHBlx54LQGsXeHWV7cN1w7JXfSzMvO65F2LWWOIaRXvQ==
+X-Received: by 2002:a05:690e:128f:b0:644:6f03:b3be with SMTP id 956f58d0204a3-64716b36237mr3758858d50.1.1767839106253;
+        Wed, 07 Jan 2026 18:25:06 -0800 (PST)
+Received: from 7940hx ([23.94.188.235])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-790aa57deacsm24855027b3.20.2026.01.07.18.24.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jan 2026 18:11:30 -0800 (PST)
-Message-ID: <18201538f7dd8166dc0171b0970f15d4ab638f51.camel@gmail.com>
-Subject: Re: [PATCH bpf-next 2/3] selftests/bpf: Add tests for linked
- register tracking with negative offsets
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Puranjay Mohan <puranjay@kernel.org>, bpf@vger.kernel.org
-Cc: Puranjay Mohan <puranjay12@gmail.com>, Alexei Starovoitov
- <ast@kernel.org>,  Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Martin KaFai Lau	 <martin.lau@kernel.org>, Kumar
- Kartikeya Dwivedi <memxor@gmail.com>, Mykyta Yatsenko
- <mykyta.yatsenko5@gmail.com>, kernel-team@meta.com
-Date: Wed, 07 Jan 2026 18:11:29 -0800
-In-Reply-To: <20260107203941.1063754-3-puranjay@kernel.org>
-References: <20260107203941.1063754-1-puranjay@kernel.org>
-	 <20260107203941.1063754-3-puranjay@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.58.2 (3.58.2-1.fc43) 
+        Wed, 07 Jan 2026 18:25:05 -0800 (PST)
+From: Menglong Dong <menglong8.dong@gmail.com>
+X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
+To: ast@kernel.org,
+	andrii@kernel.org
+Cc: daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	davem@davemloft.net,
+	dsahern@kernel.org,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	jiang.biao@linux.dev,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	hpa@zytor.com,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v8 00/11] bpf: fsession support
+Date: Thu,  8 Jan 2026 10:24:39 +0800
+Message-ID: <20260108022450.88086-1-dongml2@chinatelecom.cn>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Wed, 2026-01-07 at 12:39 -0800, Puranjay Mohan wrote:
-> Add tests for linked register tracking with negative offsets and BPF_SUB:
->=20
-> Success cases (64-bit ALU, tracking works):
-> - scalars_neg: r1 +=3D -4 with signed comparison
-> - scalars_neg_sub: r1 -=3D 4 with signed comparison
-> - scalars_pos: r1 +=3D 4 with unsigned comparison
-> - scalars_sub_neg_imm: r1 -=3D -4 (equivalent to r1 +=3D 4)
->=20
-> Failure cases (tracking disabled, documents limitations):
-> - scalars_neg_alu32_add: 32-bit ADD not tracked
-> - scalars_neg_alu32_sub: 32-bit SUB not tracked
-> - scalars_double_add: Double ADD clears ID
->=20
-> Large delta tests (verifies 64-bit arithmetic in sync_linked_regs):
-> - scalars_sync_delta_overflow: S32_MIN offset
-> - scalars_sync_delta_overflow_large_range: S32_MAX offset
->=20
-> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-> ---
->  .../bpf/progs/verifier_linked_scalars.c       | 213 ++++++++++++++++++
->  1 file changed, 213 insertions(+)
->=20
-> diff --git a/tools/testing/selftests/bpf/progs/verifier_linked_scalars.c =
-b/tools/testing/selftests/bpf/progs/verifier_linked_scalars.c
-> index 8f755d2464cf..2e1ef0f96717 100644
-> --- a/tools/testing/selftests/bpf/progs/verifier_linked_scalars.c
-> +++ b/tools/testing/selftests/bpf/progs/verifier_linked_scalars.c
-> @@ -31,4 +31,217 @@ l1:						\
->  "	::: __clobber_all);
->  }
-> =20
-> +SEC("socket")
-> +__description("scalars: linked scalars with negative offset")
+Hi, all.
 
-Nit: I think that __description tag should be avoided in the new code.
-     w/o this tag the test case could be executed as follows:
+In this version, I fixed the exception that didn't use the last byte of
+nr_args for bpf_get_func_arg_cnt() in the 2nd patch.
 
-       ./test_progs -t verifier_linked_scalars/scalars_reg
+overall
+-------
+Sometimes, we need to hook both the entry and exit of a function with
+TRACING. Therefore, we need define a FENTRY and a FEXIT for the target
+function, which is not convenient.
 
-     with this tag the test case should be executed as:
+Therefore, we add a tracing session support for TRACING. Generally
+speaking, it's similar to kprobe session, which can hook both the entry
+and exit of a function with a single BPF program.
 
-       ./test_progs -t "verifier_linked_scalars/scalars: linked scalars wit=
-h negative offset"
+We allow the usage of bpf_get_func_ret() to get the return value in the
+fentry of the tracing session, as it will always get "0", which is safe
+enough and is OK.
 
-     and I'm not sure test_progs handles spaces properly (even if it does, =
-the invocation is inconvenient).
-     So, I'd just put the description in the comments.
+Session cookie is also supported with the kfunc bpf_session_cookie().
+In order to limit the stack usage, we limit the maximum number of cookies
+to 4.
 
-> +__success
-> +__naked void scalars_neg(void)
-> +{
-> +	asm volatile ("					\
-> +	call %[bpf_get_prandom_u32];			\
-> +	r0 &=3D 0xff;					\
-> +	r1 =3D r0;					\
-> +	r1 +=3D -4;					\
-> +	if r1 s< 0 goto l2;				\
-                        ^^
-	This is a file-global label.
-	It's better to use `goto 1f ...; 1: <code>` in such cases,
-	or a special `%=3D` substitution. There are multiple examples
-	for both in the test cases. See [1] and [2].
+kfunc design
+------------
+In order to keep consistency with existing kfunc, we don't introduce new
+kfunc for fsession. Instead, we reuse the existing kfunc
+bpf_session_cookie() and bpf_session_is_return().
 
-[1] https://sourceware.org/binutils/docs-2.36/as.html#Symbol-Names (local l=
-abels)
-[2] https://gcc.gnu.org/onlinedocs/gcc-14.1.0/gcc/Extended-Asm.html#Special=
--format-strings
+The prototype of bpf_session_cookie() and bpf_session_is_return() don't
+satisfy our needs, so we change their prototype by adding the argument
+"void *ctx" to them.
 
-> +	if r0 !=3D 0 goto l2;				\
-> +	r0 /=3D 0;					\
-> +l2:							\
-> +	r0 =3D 0;						\
-> +	exit;						\
-> +"	:
-> +	: __imm(bpf_get_prandom_u32)
-> +	: __clobber_all);
-> +}
-> +
-> +/* Same test but using BPF_SUB instead of BPF_ADD with negative immediat=
-e */
-> +SEC("socket")
-> +__description("scalars: linked scalars with SUB")
-> +__success
-> +__naked void scalars_neg_sub(void)
-> +{
-> +	asm volatile ("					\
-> +	call %[bpf_get_prandom_u32];			\
-> +	r0 &=3D 0xff;					\
-> +	r1 =3D r0;					\
-> +	r1 -=3D 4;					\
-> +	if r1 s< 0 goto l2_sub;				\
-> +	if r0 !=3D 0 goto l2_sub;				\
-> +	r0 /=3D 0;					\
-> +l2_sub:							\
-> +	r0 =3D 0;						\
-> +	exit;						\
-> +"	:
-> +	: __imm(bpf_get_prandom_u32)
-> +	: __clobber_all);
-> +}
-> +
-> +/* 32-bit ALU: linked scalar tracking not supported, ID cleared */
-> +SEC("socket")
-> +__description("scalars: linked scalars 32-bit ADD not tracked")
-> +__failure
-> +__msg("div by zero")
-> +__naked void scalars_neg_alu32_add(void)
-> +{
-> +	asm volatile ("					\
-> +	call %[bpf_get_prandom_u32];			\
-> +	w0 &=3D 0xff;					\
-> +	w1 =3D w0;					\
-> +	w1 +=3D -4;					\
-> +	if w1 s< 0 goto l2_alu32_add;			\
-> +	if w0 !=3D 0 goto l2_alu32_add;			\
-> +	r0 /=3D 0;					\
-> +l2_alu32_add:						\
-> +	r0 =3D 0;						\
-> +	exit;						\
-> +"	:
-> +	: __imm(bpf_get_prandom_u32)
-> +	: __clobber_all);
-> +}
-> +
-> +/* 32-bit ALU: linked scalar tracking not supported, ID cleared */
-> +SEC("socket")
-> +__description("scalars: linked scalars 32-bit SUB not tracked")
-> +__failure
-> +__msg("div by zero")
-> +__naked void scalars_neg_alu32_sub(void)
-> +{
-> +	asm volatile ("					\
-> +	call %[bpf_get_prandom_u32];			\
-> +	w0 &=3D 0xff;					\
-> +	w1 =3D w0;					\
-> +	w1 -=3D 4;					\
-> +	if w1 s< 0 goto l2_alu32_sub;			\
-> +	if w0 !=3D 0 goto l2_alu32_sub;			\
-> +	r0 /=3D 0;					\
-> +l2_alu32_sub:						\
-> +	r0 =3D 0;						\
-> +	exit;						\
-> +"	:
-> +	: __imm(bpf_get_prandom_u32)
-> +	: __clobber_all);
-> +}
-> +
-> +/* Positive offset: r1 =3D r0 + 4, then if r1 >=3D 6, r0 >=3D 2, so r0 !=
-=3D 0 */
-> +SEC("socket")
-> +__description("scalars: linked scalars positive offset")
-> +__success
-> +__naked void scalars_pos(void)
-> +{
-> +	asm volatile ("					\
-> +	call %[bpf_get_prandom_u32];			\
-> +	r0 &=3D 0xff;					\
-> +	r1 =3D r0;					\
-> +	r1 +=3D 4;					\
-> +	if r1 < 6 goto l2_pos;				\
-> +	if r0 !=3D 0 goto l2_pos;				\
-> +	r0 /=3D 0;					\
-> +l2_pos:							\
-> +	r0 =3D 0;						\
-> +	exit;						\
-> +"	:
-> +	: __imm(bpf_get_prandom_u32)
-> +	: __clobber_all);
-> +}
-> +
-> +/* SUB with negative immediate: r1 -=3D -4 is equivalent to r1 +=3D 4 */
-> +SEC("socket")
-> +__description("scalars: linked scalars SUB negative immediate")
-> +__success
-> +__naked void scalars_sub_neg_imm(void)
-> +{
-> +	asm volatile ("					\
-> +	call %[bpf_get_prandom_u32];			\
-> +	r0 &=3D 0xff;					\
-> +	r1 =3D r0;					\
-> +	r1 -=3D -4;					\
-> +	if r1 < 6 goto l2_sub_neg;			\
-> +	if r0 !=3D 0 goto l2_sub_neg;			\
-> +	r0 /=3D 0;					\
-> +l2_sub_neg:						\
-> +	r0 =3D 0;						\
-> +	exit;						\
-> +"	:
-> +	: __imm(bpf_get_prandom_u32)
-> +	: __clobber_all);
-> +}
-> +
-> +/* Double ADD clears the ID (can't accumulate offsets) */
-> +SEC("socket")
-> +__description("scalars: linked scalars double ADD clears ID")
-> +__failure
-> +__msg("div by zero")
-> +__naked void scalars_double_add(void)
-> +{
-> +	asm volatile ("					\
-> +	call %[bpf_get_prandom_u32];			\
-> +	r0 &=3D 0xff;					\
-> +	r1 =3D r0;					\
-> +	r1 +=3D 2;					\
-> +	r1 +=3D 2;					\
-> +	if r1 < 6 goto l2_double;			\
-> +	if r0 !=3D 0 goto l2_double;			\
-> +	r0 /=3D 0;					\
-> +l2_double:						\
-> +	r0 =3D 0;						\
-> +	exit;						\
-> +"	:
-> +	: __imm(bpf_get_prandom_u32)
-> +	: __clobber_all);
-> +}
-> +
-> +/*
-> + * Test that sync_linked_regs() correctly handles large offset differenc=
-es.
-> + * r1.off =3D S32_MIN, r2.off =3D 1, delta =3D S32_MIN - 1 requires 64-b=
-it math.
-> + */
-> +SEC("socket")
-> +__description("scalars: linked regs sync with large delta (S32_MIN offse=
-t)")
-> +__success
-> +__naked void scalars_sync_delta_overflow(void)
-> +{
-> +	asm volatile ("					\
-> +	call %[bpf_get_prandom_u32];			\
-> +	r0 &=3D 0xff;					\
-> +	r1 =3D r0;					\
-> +	r2 =3D r0;					\
-> +	r1 +=3D %[s32_min];				\
-> +	r2 +=3D 1;					\
-> +	if r2 s< 100 goto l2_overflow;			\
-> +	if r1 s< 0 goto l2_overflow;			\
-> +	r0 /=3D 0;					\
-> +l2_overflow:						\
-> +	r0 =3D 0;						\
-> +	exit;						\
-> +"	:
-> +	: __imm(bpf_get_prandom_u32),
-> +	  [s32_min]"i"((int)(-2147483647 - 1))
-                             ^^^^^^^^^^^
-                        Nit: use INT_MIN?
+We introduce the function bpf_fsession_is_return() and
+bpf_fsession_cookie(), and change the calling to bpf_session_cookie() and
+bpf_session_is_return() to them in verifier for fsession.
 
-> +	: __clobber_all);
-> +}
-> +
-> +/*
-> + * Another large delta case: r1.off =3D S32_MAX, r2.off =3D -1.
-> + * delta =3D S32_MAX - (-1) =3D S32_MAX + 1 requires 64-bit math.
-> + */
-> +SEC("socket")
-> +__description("scalars: linked regs sync with large delta (S32_MAX offse=
-t)")
-> +__success
-> +__naked void scalars_sync_delta_overflow_large_range(void)
-> +{
-> +	asm volatile ("					\
-> +	call %[bpf_get_prandom_u32];			\
-> +	r0 &=3D 0xff;					\
-> +	r1 =3D r0;					\
-> +	r2 =3D r0;					\
-> +	r1 +=3D %[s32_max];				\
-> +	r2 +=3D -1;					\
-> +	if r2 s< 0 goto l2_large;			\
-> +	if r1 s>=3D 0 goto l2_large;			\
-> +	r0 /=3D 0;					\
-> +l2_large:						\
-> +	r0 =3D 0;						\
-> +	exit;						\
-> +"	:
-> +	: __imm(bpf_get_prandom_u32),
-> +	  [s32_max]"i"((int)2147483647)
-> +	: __clobber_all);
-> +}
-> +
->  char _license[] SEC("license") =3D "GPL";
+architecture
+------------
+The fsession stuff is arch related, so the -EOPNOTSUPP will be returned if
+it is not supported yet by the arch. In this series, we only support
+x86_64. And later, other arch will be implemented.
+
+Changes since v7:
+* use the last byte of nr_args for bpf_get_func_arg_cnt() in the 2nd patch
+
+Changes since v6:
+* change the prototype of bpf_session_cookie() and bpf_session_is_return(),
+  and reuse them instead of introduce new kfunc for fsession.
+
+Changes since v5:
+* No changes in this version, just a rebase to deal with conflicts.
+
+Changes since v4:
+* use fsession terminology consistently in all patches
+* 1st patch:
+  - use more explicit way in __bpf_trampoline_link_prog()
+* 4th patch:
+  - remove "cookie_cnt" in struct bpf_trampoline
+* 6th patch:
+  - rename nr_regs to func_md
+  - define cookie_off in a new line
+* 7th patch:
+  - remove the handling of BPF_TRACE_SESSION in legacy fallback path for
+    BPF_RAW_TRACEPOINT_OPEN
+
+Changes since v3:
+* instead of adding a new hlist to progs_hlist in trampoline, add the bpf
+  program to both the fentry hlist and the fexit hlist.
+* introduce the 2nd patch to reuse the nr_args field in the stack to
+  store all the information we need(except the session cookies).
+* limit the maximum number of cookies to 4.
+* remove the logic to skip fexit if the fentry return non-zero.
+
+Changes since v2:
+* squeeze some patches:
+  - the 2 patches for the kfunc bpf_tracing_is_exit() and
+    bpf_fsession_cookie() are merged into the second patch.
+  - the testcases for fsession are also squeezed.
+
+* fix the CI error by move the testcase for bpf_get_func_ip to
+  fsession_test.c
+
+Changes since v1:
+* session cookie support.
+  In this version, session cookie is implemented, and the kfunc
+  bpf_fsession_cookie() is added.
+
+* restructure the layout of the stack.
+  In this version, the session stuff that stored in the stack is changed,
+  and we locate them after the return value to not break
+  bpf_get_func_ip().
+
+* testcase enhancement.
+  Some nits in the testcase that suggested by Jiri is fixed. Meanwhile,
+  the testcase for get_func_ip and session cookie is added too.
+
+Menglong Dong (11):
+  bpf: add fsession support
+  bpf: use last 8-bits for the nr_args in trampoline
+  bpf: change prototype of bpf_session_{cookie,is_return}
+  bpf: support fsession for bpf_session_is_return
+  bpf: support fsession for bpf_session_cookie
+  bpf,x86: introduce emit_st_r0_imm64() for trampoline
+  bpf,x86: add fsession support for x86_64
+  libbpf: add fsession support
+  selftests/bpf: add testcases for fsession
+  selftests/bpf: add testcases for fsession cookie
+  selftests/bpf: test fsession mixed with fentry and fexit
+
+ arch/x86/net/bpf_jit_comp.c                   |  48 ++++-
+ include/linux/bpf.h                           |  40 ++++
+ include/uapi/linux/bpf.h                      |   1 +
+ kernel/bpf/btf.c                              |   2 +
+ kernel/bpf/syscall.c                          |  18 +-
+ kernel/bpf/trampoline.c                       |  53 ++++-
+ kernel/bpf/verifier.c                         |  79 +++++--
+ kernel/trace/bpf_trace.c                      |  52 +++--
+ net/bpf/test_run.c                            |   1 +
+ net/core/bpf_sk_storage.c                     |   1 +
+ tools/bpf/bpftool/common.c                    |   1 +
+ tools/include/uapi/linux/bpf.h                |   1 +
+ tools/lib/bpf/bpf.c                           |   1 +
+ tools/lib/bpf/libbpf.c                        |   3 +
+ tools/testing/selftests/bpf/bpf_kfuncs.h      |   4 +-
+ .../selftests/bpf/prog_tests/fsession_test.c  | 115 ++++++++++
+ .../bpf/prog_tests/tracing_failure.c          |   2 +-
+ .../selftests/bpf/progs/fsession_test.c       | 198 ++++++++++++++++++
+ .../bpf/progs/kprobe_multi_session_cookie.c   |  12 +-
+ .../bpf/progs/uprobe_multi_session.c          |   4 +-
+ .../bpf/progs/uprobe_multi_session_cookie.c   |  12 +-
+ .../progs/uprobe_multi_session_recursive.c    |   8 +-
+ 22 files changed, 584 insertions(+), 72 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/fsession_test.c
+ create mode 100644 tools/testing/selftests/bpf/progs/fsession_test.c
+
+-- 
+2.52.0
+
 
