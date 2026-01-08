@@ -1,75 +1,77 @@
-Return-Path: <bpf+bounces-78191-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78192-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7219D00D38
-	for <lists+bpf@lfdr.de>; Thu, 08 Jan 2026 04:16:57 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05B1DD00D3F
+	for <lists+bpf@lfdr.de>; Thu, 08 Jan 2026 04:17:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id BA686300307F
-	for <lists+bpf@lfdr.de>; Thu,  8 Jan 2026 03:16:56 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 775FD3004842
+	for <lists+bpf@lfdr.de>; Thu,  8 Jan 2026 03:16:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07634279DAB;
-	Thu,  8 Jan 2026 03:16:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAFACEAC7;
+	Thu,  8 Jan 2026 03:16:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qhw+O/Ya"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KGBBOouk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF53F1FF5E3
-	for <bpf@vger.kernel.org>; Thu,  8 Jan 2026 03:16:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3CF022B8B6
+	for <bpf@vger.kernel.org>; Thu,  8 Jan 2026 03:16:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767842215; cv=none; b=TLPIfksJ9mEPE1jdBzcEuzRNLtZGDtf6eExhghaIuX44TP7uc5+DqLHvbMEk9B3D+oWCHhd+bckGOwhxtRuansrCjwZdlcR9JFXtp33+kXuK8vqFrANlwOMr5L7rTxoJ0kmDewm2QX+gQnF5X+jvsZU0F7vBuVR9GVhQU4no55M=
+	t=1767842218; cv=none; b=fR3hyBkwH8bIlm9tdMu4JzrmJ+UxoqOQETqBH9K2iDaOErF+MX7d8rsDab6p+WvOkADkEtyN1oaALzWgpgZeSTtuwPG9BLGuXZEvRYo9y6U/Vn2VI0b2SqWnzquVY7wKUX6loP7hRD6GDdA4ZZbUuNIUD2xDs8fc3h4iJw6wolc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767842215; c=relaxed/simple;
-	bh=/YFoSyUjs5bD+/Y5VdZ1T5rQ7gIWrMuQd8IcCRoqEnc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=J4VVkeoameR2WWHjHpX9TusBIGl0sDeERpJCLPqH1VVe66cldk/JiDQNUBUal1qWchRayhpu5JhaaNHx2ElHhvehFgQGOzRFlg3AryiBho/IH6KMnyxzvb4UsgtWP0k88GMaR8PErCBE05GxOA9V+gF9NAubOlyIZaqhQYkEEFA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Qhw+O/Ya; arc=none smtp.client-ip=209.85.210.182
+	s=arc-20240116; t=1767842218; c=relaxed/simple;
+	bh=ksqELPO0cXKauiYwTecfnPaKtxldFgV/kANERx4D1IY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Asn8NhQQ6TYU0T/TQCDNDKFpzM6at0EKUd5RriLnpTROsljZJEKTcvLf0oLTRVpmcYeyTZfBJNy/RJVTTgRdAeRq9lvf3c2veFJMWv6uU8e3KaahbVl0j6iqnUGAAXOC95n9619rP+VsIIOOszLoOIui78021/YjvHVDF2nuVMA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KGBBOouk; arc=none smtp.client-ip=209.85.210.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-7aab061e7cbso3007061b3a.1
-        for <bpf@vger.kernel.org>; Wed, 07 Jan 2026 19:16:53 -0800 (PST)
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-7aa9be9f03aso1782566b3a.2
+        for <bpf@vger.kernel.org>; Wed, 07 Jan 2026 19:16:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767842213; x=1768447013; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xxFhutl2oHOHq5rqyty4oHx6se5JmQANi3FKuiF+KbY=;
-        b=Qhw+O/Yag810MJd8oIVrJkGvqBwTQVMgv48k73jRcpsU9IZ4q7/p6Xn17neRTXTM7o
-         n0OVKuW0IMZ4vZDMx7NkAUqFY1+xFF9Vajvt1FcbOR1Ika/X4Y2VnlZOuDyZTvHXsGYR
-         1Mp/OarCesbNi/y6yX7slBMQnot33K6RLFd4KD4CIkVdOPTigBmlcrB+bbZxfB/pUjfG
-         hO0FsnCNytZ9gLdBiEnX8XUeUBTtk/R86bWWYYOQ/3cE4KBa8l9wn+M0iUALWH+UgnJi
-         Qzd5aeSH8bPQ/Q1SY0EJPacqDNVos0E3Myk9O7584U6ItMDP99DSbQJRiqNuGE5pTSa0
-         53Eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767842213; x=1768447013;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1767842216; x=1768447016; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xxFhutl2oHOHq5rqyty4oHx6se5JmQANi3FKuiF+KbY=;
-        b=VsC4dc8uQVeTRi+Gw1EA+961ZVvvdvhBwLkkhRn1QTphG84StC0PhGJKyXHM7aVhHJ
-         ZbHCt8dr0krDTeOpxzvyALeEjoZODsxzxsvd/vK9YRmGhqRZkvSSv3Bxx007nGgYvKEo
-         y5nkL3Gf7wrVS7I1iW4tpx/VKxLXIn0WmOiKwgtIZrRKf99Gi7uGGdMtmpiT4Ijg9CX8
-         xCrm6N9Nl7HtfVOvlgLor5F5N8rBUWL7PfW4URx4O6LoAKSEHTwnrqaRf4JWeEApqcav
-         RnCR+FKQfLg8GwBlqYGFJfCJQYSBStDwRPwrw4wBT4GVig7rWowQCp9rKXw2X3zv53dm
-         KbVQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXEP5zmyTZXoBbGS56DPrEY/ydeDsEbRrLGihsSE7qyKWdoWb8sexgV8FzkQnDHh89h15s=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxw5fDQAt+gs7PL0lmY38tvs6OC2oy3WS/KSDWTR4xhrcTdMrQQ
-	PT4Q8EstrYJoKLJt/95Lh1+d0kseaC6GXOdSRhFEg+z90HrgdxpmbNxk
-X-Gm-Gg: AY/fxX40ngKBdC1+lQyVZjzHNrT4orUsroOcSNwuKk7wyOA+rnuIpSUaMFpKmNSJnZ7
-	xmhpjpBAQ+GYiiCk1V+0RFWS0/Mfrw8Vg5s1I1F8vonQ5LWfA5/ldGPw7R4Ucg6iwAb4vG8LfD8
-	XOgPca88rmT9wwnpcjq3VmHkRWf9gYmi4YWReLG0eU6m8Kj0AUniPaHzE2KUFV7dQ0lgCFpvfif
-	KcVvsPpyqzNNNmKkljoke7vttn8jYmYTYdz+JGXNyfRBr8b1J5eDnHKBpTmg32f2eGC+ffulxfu
-	khQtZ1J2yyy1y86Xooc5h3SzHy3cuY4jJJ9xADP4G10SU0LwJWq3hK/Ta53IU2OQNbSFHtPA1k2
-	9CFtvS+tU4kUGAJ/GsTYQkJRfipN2vupA/TyjPI8/u8zeeRZjaWeHjznFPMwiHbWn50wokg9nDZ
-	AfD7/Hg608XYYP6lp7SVwXnLoygXvKCTxBakSrwg==
-X-Google-Smtp-Source: AGHT+IE4R3f6As98S6/xqrtAtQ5kxnEaw51TwT7IllO6CVfi77GjBuf5laZ3GIX8jjOHo4OBvgUInA==
-X-Received: by 2002:a05:6a00:3391:b0:7b8:ac7f:5968 with SMTP id d2e1a72fcca58-81b7de5db9bmr4069157b3a.24.1767842213097;
-        Wed, 07 Jan 2026 19:16:53 -0800 (PST)
+        bh=PQF9Y2EREf+dgAVABdiiMRWyZAZapN+hexHBR/LqK4M=;
+        b=KGBBOoukJlESMM5DeiT9zqoi9PHV8qR8FU9VSHoScQVtsdqoLxMyBjn8uPLU5r1Z8+
+         89uhIf2gKHJSoVkQJLeLYrVZhQnDhKGDXyWfNagRXyg2g6On6g8Nlqj2Xndf8HE+C27P
+         Sqewzf7eGsqCrTWIP8WgU5ZMaOieh2PdoJFywof1xbxxAo+t6ZIYUZUerijqF99vaEBO
+         IkUJf9Pr48iNSYYUKkWVc9Sgrn8trHjw2ZsCz2dRlq2gDIEmx4Y5TuKa2uRgosF+q0I3
+         Oc0lt7VrMUaXzhc30rw/LAHvzn+5XEnaQO4tas1bdlCI8AADXT4pqv1vuruo7669OL3B
+         9hEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767842216; x=1768447016;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=PQF9Y2EREf+dgAVABdiiMRWyZAZapN+hexHBR/LqK4M=;
+        b=vYyxXeG5l2v2c8xjGLgfOrOuomh5a01d8+/QICurZaPsdkVXzSTgONLzkgNi1QkT+0
+         yri0KPgJjGdTR6ORT2XEf9rTDNp4oQZcOwBCwRcgXlASbdmjgc/JabVLqdS6h6HLQqzp
+         fq70lqlpBhw5njBdq2jjCPJ7hTNCFtdDaILJ/sb/vyxYjaDOo3dBOn6a7/ozgBxJZWHC
+         QalNA1wz5FJmJrbQGw90QI+/yX0NWu9oJL+g5mKrgora7pfbt7qawby7ugETjqMYQ0rY
+         w4fF7+/pytD1ISyhmt58EzB7mEn+rZste9yGIbO1oeiA2EAIegGVWG5doGCUQTLLQ8cU
+         AKiw==
+X-Forwarded-Encrypted: i=1; AJvYcCXRxoupJSVlKfucizgqNvp6rs45s38wtSQBCGxOyLNH+g2Mc3pCy4MfKY4ivfFERK0p5GE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxdnPMUlpBCBbbnK/oWYeis265IDedI+MnZbtemqgExsVfExoOD
+	n84AF93GpzXfLHLfcRhLllcjKKBnBzVxploong+Rrq0S6qpIC5Lf/B7n
+X-Gm-Gg: AY/fxX6N2TGtHl+nY8kKtLRMktX45T/+EC/QhuLC1+R+9BCDuC2su4/pHoB67Cakqwg
+	1/shd5hvCfhJoEPcf6teJnTnWsM3qFceKXzzVOXEBXAnMGcVDRBmDl6RwIcrs5UXcoQmeUgMk/f
+	CjXNVjKuiIKXQbMUsCxBttZ+RsHlMtTAokrGxXbBXSZnn+YVf1illL/wP/6yScJvmd8l86HYY6X
+	9tqHzaKnYhSCA0SrfJNM0zEaWB9dLcUQUAYMRp1FzY9E+DndtyyjwghXcicGGPj8rTDUyBYlPKx
+	xrQNUrdgPzNa6x+DKUwAJSsqDLwXbYQSFWJIvulw5Ny2AZNmiJOxo81AaBp9m75wZNp7lOuZGsI
+	dQSyCMQjAx4xAQ7sqE5cb9gbXLjPcjLE3GYdqQn97ZgSuUU8FR9zBni4g/FyjeUglOPQBADM0lH
+	PIrVBg4V66qpRtp6sVPbGP25C6hRI=
+X-Google-Smtp-Source: AGHT+IHxJx1chwNx2IMHnP6vHObc0mE/s4CGIeE8/R0IOP6ROUhqtKdhAwZnrXNr1L4jq8gp1O7kbw==
+X-Received: by 2002:a05:6a00:3019:b0:819:6dbc:caf6 with SMTP id d2e1a72fcca58-81b7f101badmr3643122b3a.44.1767842215894;
+        Wed, 07 Jan 2026 19:16:55 -0800 (PST)
 Received: from pengdl-pc.mioffice.cn ([43.224.245.249])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-819c5de655bsm6134860b3a.60.2026.01.07.19.16.50
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-819c5de655bsm6134860b3a.60.2026.01.07.19.16.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jan 2026 19:16:52 -0800 (PST)
+        Wed, 07 Jan 2026 19:16:55 -0800 (PST)
 From: Donglin Peng <dolinux.peng@gmail.com>
 To: ast@kernel.org,
 	andrii.nakryiko@gmail.com,
@@ -78,11 +80,14 @@ Cc: zhangxiaoqin@xiaomi.com,
 	ihor.solodrai@linux.dev,
 	linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org,
-	Donglin Peng <pengdonglin@xiaomi.com>
-Subject: [PATCH bpf-next v11 00/11] Improve the performance of BTF type lookups with binary search
-Date: Thu,  8 Jan 2026 11:16:34 +0800
-Message-Id: <20260108031645.1350069-1-dolinux.peng@gmail.com>
+	Donglin Peng <pengdonglin@xiaomi.com>,
+	Alan Maguire <alan.maguire@oracle.com>
+Subject: [PATCH bpf-next v11 01/11] libbpf: Add BTF permutation support for type reordering
+Date: Thu,  8 Jan 2026 11:16:35 +0800
+Message-Id: <20260108031645.1350069-2-dolinux.peng@gmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20260108031645.1350069-1-dolinux.peng@gmail.com>
+References: <20260108031645.1350069-1-dolinux.peng@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -93,164 +98,228 @@ Content-Transfer-Encoding: 8bit
 
 From: Donglin Peng <pengdonglin@xiaomi.com>
 
-The series addresses the performance limitations of linear search in large
-BTFs by:
-1. Adding BTF permutation support
-2. Using resolve_btfids to sort BTF during the build phase
-3. Checking BTF sorting
-4. Using binary search when looking up types
+Introduce btf__permute() API to allow in-place rearrangement of BTF types.
+This function reorganizes BTF type order according to a provided array of
+type IDs, updating all type references to maintain consistency.
 
-Patch #1 introduces an interface for btf__permute in libbpf to relay out BTF.
-Patch #2 adds test cases to validate the functionality of btf__permute in base
-and split BTF scenarios.
-Patch #3 introduces a new phase in the resolve_btfids tool to sort BTF by name
-in ascending order.
-Patches #4-#7 implement the sorting check and binary search.
-Patches #8-#10 optimize type lookup performance of some functions by skipping
-anonymous types or invoking btf_find_by_name_kind.
-Patch #11 refactors the code by calling str_is_empty.
+Cc: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Alan Maguire <alan.maguire@oracle.com>
+Cc: Ihor Solodrai <ihor.solodrai@linux.dev>
+Cc: Xiaoqin Zhang <zhangxiaoqin@xiaomi.com>
+Signed-off-by: Donglin Peng <pengdonglin@xiaomi.com>
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+---
+ tools/lib/bpf/btf.c      | 133 +++++++++++++++++++++++++++++++++++++++
+ tools/lib/bpf/btf.h      |  42 +++++++++++++
+ tools/lib/bpf/libbpf.map |   1 +
+ 3 files changed, 176 insertions(+)
 
-Here is a simple performance test result [1] for lookups to find 87,584 named
-types in vmlinux BTF:
-
-./vmtest.sh -- ./test_progs -t btf_permute/perf -v
-
-Results:
-| Condition          | Lookup Time | Improvement  |
-|--------------------|-------------|--------------|
-| Unsorted (Linear)  |  36,534 ms  | Baseline     |
-| Sorted (Binary)    |      15 ms  | 2437x faster |
-
-The binary search implementation reduces lookup time from 36.5 seconds to 15
-milliseconds, achieving a **2437x** speedup for large-scale type queries.
-
-Changelog:
-v11:
-- PATCH #1: Modify implementation of btf__permute: id_map[0] must be 0 for base BTF (Andrii)
-- PATCH #3: Refactor the code (Andrii)
-- PATCH #4~8:
-  - Revert to using the binary search in v7 to simplify the code (Andrii)
-  - Refactor the code of btf_check_sorted (Andrii, Eduard)
-  - Rename sorted_start_id to named_start_id
-  - Rename btf_sorted_start_id to btf_named_start_id, and add comments (Andrii, Eduard)
-
-v10:
-- Link: https://lore.kernel.org/all/20251218113051.455293-1-dolinux.peng@gmail.com/
-- Improve btf__permute() documentation (Eduard)
-- Fall back to linear search when locating anonymous types (Eduard)
-- Remove redundant NULL name check in libbpf's linear search path (Eduard)
-- Simplify btf_check_sorted() implementation (Eduard)
-- Treat kernel modules as unsorted by default
-- Introduce btf_is_sorted and btf_sorted_start_id for clarity (Eduard)
-- Fix optimizations in btf_find_decl_tag_value() and btf_prepare_func_args()
-  to support split BTF
-- Remove linear search branch in determine_ptr_size()
-- Rebase onto Ihor's v4 patch series [4]
-
-v9:
-- Link: https://lore.kernel.org/bpf/20251208062353.1702672-1-dolinux.peng@gmail.com/
-- Optimize the performance of the function determine_ptr_size by invoking
-  btf__find_by_name_kind
-- Optimize the performance of btf_find_decl_tag_value/btf_prepare_func_args/
-  bpf_core_add_cands by skipping anonymous types
-- Rebase the patch series onto Ihor's v3 patch series [3]
-
-v8
-- Link: https://lore.kernel.org/bpf/20251126085025.784288-1-dolinux.peng@gmail.com/
-- Remove the type dropping feature of btf__permute (Andrii)
-- Refactor the code of btf__permute (Andrii, Eduard)
-- Make the self-test code cleaner (Eduard)
-- Reconstruct the BTF sorting patch based on Ihor's patch series [2]
-- Simplify the sorting logic and place anonymous types before named types
-  (Andrii, Eduard)
-- Optimize type lookup performance of two kernel functions
-- Refactoring the binary search and type lookup logic achieves a 4.2%
-  performance gain, reducing the average lookup time (via the perf test
-  code in [1] for 60,995 named types in vmlinux BTF) from 10,217 us (v7) to
-  9,783 us (v8).
-
-v7:
-- Link: https://lore.kernel.org/all/20251119031531.1817099-1-dolinux.peng@gmail.com/
-- btf__permute API refinement: Adjusted id_map and id_map_cnt parameter
-  usage so that for base BTF, id_map[0] now contains the new id of original
-  type id 1 (instead of VOID type id 0), improving logical consistency
-- Selftest updates: Modified test cases to align with the API usage changes
-- Refactor the code of resolve_btfids
-
-v6:
-- Link: https://lore.kernel.org/all/20251117132623.3807094-1-dolinux.peng@gmail.com/
-- ID Map-based reimplementation of btf__permute (Andrii)
-- Build-time BTF sorting using resolve_btfids (Alexei, Eduard)
-- Binary search method refactoring (Andrii)
-- Enhanced selftest coverage
-
-v5:
-- Link: https://lore.kernel.org/all/20251106131956.1222864-1-dolinux.peng@gmail.com/
-- Refactor binary search implementation for improved efficiency
-  (Thanks to Andrii and Eduard)
-- Extend btf__permute interface with 'ids_sz' parameter to support
-  type dropping feature (suggested by Andrii). Plan subsequent reimplementation of
-  id_map version for comparative analysis with current sequence interface
-- Add comprehensive test coverage for type dropping functionality
-- Enhance function comment clarity and accuracy
-
-v4:
-- Link: https://lore.kernel.org/all/20251104134033.344807-1-dolinux.peng@gmail.com/
-- Abstracted btf_dedup_remap_types logic into a helper function (suggested by Eduard).
-- Removed btf_sort.c and implemented sorting separately for libbpf and kernel (suggested by Andrii).
-- Added test cases for both base BTF and split BTF scenarios (suggested by Eduard).
-- Added validation for name-only sorting of types (suggested by Andrii)
-- Refactored btf__permute implementation to reduce complexity (suggested by Andrii)
-- Add doc comments for btf__permute (suggested by Andrii)
-
-v3:
-- Link: https://lore.kernel.org/all/20251027135423.3098490-1-dolinux.peng@gmail.com/
-- Remove sorting logic from libbpf and provide a generic btf__permute() interface (suggested
-  by Andrii)
-- Omitted the search direction patch to avoid conflicts with base BTF (suggested by Eduard).
-- Include btf_sort.c directly in btf.c to reduce function call overhead
-
-v2:
-- Link: https://lore.kernel.org/all/20251020093941.548058-1-dolinux.peng@gmail.com/
-- Moved sorting to the build phase to reduce overhead (suggested by Alexei).
-- Integrated sorting into btf_dedup_compact_and_sort_types (suggested by Eduard).
-- Added sorting checks during BTF parsing.
-- Consolidated common logic into btf_sort.c for sharing (suggested by Alan).
-
-v1:
-- Link: https://lore.kernel.org/all/20251013131537.1927035-1-dolinux.peng@gmail.com/
-
-[1] https://github.com/pengdonglin137/btf_sort_test
-[2] https://lore.kernel.org/bpf/20251126012656.3546071-1-ihor.solodrai@linux.dev/
-[3] https://lore.kernel.org/bpf/20251205223046.4155870-1-ihor.solodrai@linux.dev/
-[4] https://lore.kernel.org/bpf/20251218003314.260269-1-ihor.solodrai@linux.dev/
-
-Donglin Peng (11):
-  libbpf: Add BTF permutation support for type reordering
-  selftests/bpf: Add test cases for btf__permute functionality
-  tools/resolve_btfids: Support BTF sorting feature
-  libbpf: Optimize type lookup with binary search for sorted BTF
-  libbpf: Verify BTF sorting
-  btf: Optimize type lookup with binary search
-  btf: Verify BTF sorting
-  bpf: Skip anonymous types in type lookup for performance
-  bpf: Optimize the performance of find_bpffs_btf_enums
-  libbpf: Optimize the performance of determine_ptr_size
-  btf: Refactor the code by calling str_is_empty
-
- include/linux/btf.h                           |   1 +
- kernel/bpf/btf.c                              | 143 ++++++++-
- kernel/bpf/inode.c                            |  42 +--
- kernel/bpf/verifier.c                         |   7 +-
- tools/bpf/resolve_btfids/main.c               |  64 ++++
- tools/lib/bpf/btf.c                           | 296 +++++++++++++++---
- tools/lib/bpf/btf.h                           |  42 +++
- tools/lib/bpf/libbpf.c                        |   4 +-
- tools/lib/bpf/libbpf.map                      |   1 +
- .../selftests/bpf/prog_tests/btf_permute.c    | 244 +++++++++++++++
- 10 files changed, 746 insertions(+), 98 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/btf_permute.c
-
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index b136572e889a..bf75f770d29a 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -5887,3 +5887,136 @@ int btf__relocate(struct btf *btf, const struct btf *base_btf)
+ 		btf->owns_base = false;
+ 	return libbpf_err(err);
+ }
++
++struct btf_permute {
++	struct btf *btf;
++	__u32 *id_map;
++	__u32 start_offs;
++};
++
++/* Callback function to remap individual type ID references */
++static int btf_permute_remap_type_id(__u32 *type_id, void *ctx)
++{
++	struct btf_permute *p = ctx;
++	__u32 new_id = *type_id;
++
++	/* refer to the base BTF or VOID type */
++	if (new_id < p->btf->start_id)
++		return 0;
++
++	if (new_id >= btf__type_cnt(p->btf))
++		return -EINVAL;
++
++	*type_id = p->id_map[new_id - p->btf->start_id + p->start_offs];
++	return 0;
++}
++
++int btf__permute(struct btf *btf, __u32 *id_map, __u32 id_map_cnt,
++		 const struct btf_permute_opts *opts)
++{
++	struct btf_permute p;
++	struct btf_ext *btf_ext;
++	void *nt, *new_types = NULL;
++	__u32 *order_map = NULL;
++	int err = 0, i;
++	__u32 n, id, start_offs = 0;
++
++	if (!OPTS_VALID(opts, btf_permute_opts))
++		return libbpf_err(-EINVAL);
++
++	if (btf__base_btf(btf)) {
++		n = btf->nr_types;
++	} else {
++		if (id_map[0] != 0)
++			return libbpf_err(-EINVAL);
++		n = btf__type_cnt(btf);
++		start_offs = 1;
++	}
++
++	if (id_map_cnt != n)
++		return libbpf_err(-EINVAL);
++
++	/* record the sequence of types */
++	order_map = calloc(id_map_cnt, sizeof(*id_map));
++	if (!order_map) {
++		err = -ENOMEM;
++		goto done;
++	}
++
++	new_types = calloc(btf->hdr->type_len, 1);
++	if (!new_types) {
++		err = -ENOMEM;
++		goto done;
++	}
++
++	if (btf_ensure_modifiable(btf)) {
++		err = -ENOMEM;
++		goto done;
++	}
++
++	for (i = start_offs; i < id_map_cnt; i++) {
++		id = id_map[i];
++		if (id < btf->start_id || id >= btf__type_cnt(btf)) {
++			err = -EINVAL;
++			goto done;
++		}
++		id -= btf->start_id - start_offs;
++		/* cannot be mapped to the same ID */
++		if (order_map[id]) {
++			err = -EINVAL;
++			goto done;
++		}
++		order_map[id] = i + btf->start_id - start_offs;
++	}
++
++	p.btf = btf;
++	p.id_map = id_map;
++	p.start_offs = start_offs;
++	nt = new_types;
++	for (i = start_offs; i < id_map_cnt; i++) {
++		struct btf_field_iter it;
++		const struct btf_type *t;
++		__u32 *type_id;
++		int type_size;
++
++		id = order_map[i];
++		t = btf__type_by_id(btf, id);
++		type_size = btf_type_size(t);
++		memcpy(nt, t, type_size);
++
++		/* fix up referenced IDs for BTF */
++		err = btf_field_iter_init(&it, nt, BTF_FIELD_ITER_IDS);
++		if (err)
++			goto done;
++		while ((type_id = btf_field_iter_next(&it))) {
++			err = btf_permute_remap_type_id(type_id, &p);
++			if (err)
++				goto done;
++		}
++
++		nt += type_size;
++	}
++
++	/* fix up referenced IDs for btf_ext */
++	btf_ext = OPTS_GET(opts, btf_ext, NULL);
++	if (btf_ext) {
++		err = btf_ext_visit_type_ids(btf_ext, btf_permute_remap_type_id, &p);
++		if (err)
++			goto done;
++	}
++
++	for (nt = new_types, i = 0; i < id_map_cnt - start_offs; i++) {
++		btf->type_offs[i] = nt - new_types;
++		nt += btf_type_size(nt);
++	}
++
++	free(order_map);
++	free(btf->types_data);
++	btf->types_data = new_types;
++	return 0;
++
++done:
++	free(order_map);
++	free(new_types);
++	return libbpf_err(err);
++}
+diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
+index cc01494d6210..b30008c267c0 100644
+--- a/tools/lib/bpf/btf.h
++++ b/tools/lib/bpf/btf.h
+@@ -281,6 +281,48 @@ LIBBPF_API int btf__dedup(struct btf *btf, const struct btf_dedup_opts *opts);
+  */
+ LIBBPF_API int btf__relocate(struct btf *btf, const struct btf *base_btf);
+ 
++struct btf_permute_opts {
++	size_t sz;
++	/* optional .BTF.ext info along the main BTF info */
++	struct btf_ext *btf_ext;
++	size_t :0;
++};
++#define btf_permute_opts__last_field btf_ext
++
++/**
++ * @brief **btf__permute()** rearranges BTF types in-place according to a specified ID mapping
++ * @param btf BTF object to permute
++ * @param id_map Array mapping original type IDs to new IDs
++ * @param id_map_cnt Number of elements in @id_map
++ * @param opts Optional parameters, including BTF extension data for reference updates
++ * @return 0 on success, negative error code on failure
++ *
++ * **btf__permute()** reorders BTF types based on the provided @id_map array,
++ * updating all internal type references to maintain consistency. The function
++ * operates in-place, modifying the BTF object directly.
++ *
++ * For **base BTF**:
++ * - @id_map must include all types from ID 0 to `btf__type_cnt(btf) - 1`
++ * - @id_map_cnt must be `btf__type_cnt(btf)`
++ * - Mapping is defined as `id_map[original_id] = new_id`
++ * - `id_map[0]` must be 0 (void type cannot be moved)
++ *
++ * For **split BTF**:
++ * - @id_map must include only split types (types added on top of the base BTF)
++ * - @id_map_cnt must be `btf__type_cnt(btf) - btf__type_cnt(btf__base_btf(btf))`
++ * - Mapping is defined as `id_map[original_id - start_id] = new_id`
++ * - `start_id` equals `btf__type_cnt(btf__base_btf(btf))`
++ *
++ * After permutation, all type references within the BTF data and optional
++ * BTF extension (if provided via @opts) are updated automatically.
++ *
++ * On error, returns a negative error code and sets errno:
++ *   - `-EINVAL`: Invalid parameters or invalid ID mapping
++ *   - `-ENOMEM`: Memory allocation failure
++ */
++LIBBPF_API int btf__permute(struct btf *btf, __u32 *id_map, __u32 id_map_cnt,
++			    const struct btf_permute_opts *opts);
++
+ struct btf_dump;
+ 
+ struct btf_dump_opts {
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index 84fb90a016c9..d18fbcea7578 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -453,4 +453,5 @@ LIBBPF_1.7.0 {
+ 		bpf_map__exclusive_program;
+ 		bpf_prog_assoc_struct_ops;
+ 		bpf_program__assoc_struct_ops;
++		btf__permute;
+ } LIBBPF_1.6.0;
 -- 
 2.34.1
 
