@@ -1,131 +1,107 @@
-Return-Path: <bpf+bounces-78251-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78252-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B440D06250
-	for <lists+bpf@lfdr.de>; Thu, 08 Jan 2026 21:42:52 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA921D0656D
+	for <lists+bpf@lfdr.de>; Thu, 08 Jan 2026 22:35:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 65A2930123F9
-	for <lists+bpf@lfdr.de>; Thu,  8 Jan 2026 20:40:44 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 64C50301518D
+	for <lists+bpf@lfdr.de>; Thu,  8 Jan 2026 21:35:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B43F330320;
-	Thu,  8 Jan 2026 20:40:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF1BD33CEAF;
+	Thu,  8 Jan 2026 21:35:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fevDRRIs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y6S6ftNb"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C2C329AAF3
-	for <bpf@vger.kernel.org>; Thu,  8 Jan 2026 20:40:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AD36284B58;
+	Thu,  8 Jan 2026 21:35:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767904843; cv=none; b=eSFhBr6IL+g/A5B4Xn4vpU3hOSRE1RqxkaN3EUV0ziiyYZ4KdvVyM45rZlD/jSvdkh8y71F5N5xHGeIkKcQ7U0w1itMb0r6DtoYCwTK2xw+Ts7xL3RXJKBzszfPXr8/kjV2re0PnkXIrS5xV3UZMO9wubfTgEsiJClN6eEJ7WX0=
+	t=1767908153; cv=none; b=JlgjZckWdC5zo1JqZxa8+m5EvWGgXu9qepF12T9YhJV02QYny5c9WLQJpSNl81uiGjqmtgnwyqlZJWLSlHa8AN4I0snAUIFbdPucJLl/zCyD6JuwCZbhZVeDNv0rmkeFiORrLe0rmFzd3JsSI43D6yTMmLZI/HkvAFcR7Y/hAdw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767904843; c=relaxed/simple;
-	bh=ZC+GaLOedqG+vnnsl+BrV19OUtejsr+nLom7bNc9P6I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=W2OloYdAfSXIKyVmZpDhZbznEjOzVbItjWYxxR/LoRAOodDohr7M6OOBQrT4XNv9k7f3g2oS3pyeM6lhBf2NrzCU82AXBg7bpwMFGc3k2/KR9wkoMBTc4pNco6nfxNiMp0yDRTWkRsboldDILYlHBUCAbfI817LVIobKaxj81fw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fevDRRIs; arc=none smtp.client-ip=95.215.58.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <5b801c37-d9e8-48f8-a0bc-4acd03a2acd6@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1767904839;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yXeimtVMK2Ohvz2xSObLh7cvohzsH69iBC6/85r1n6s=;
-	b=fevDRRIs1vrnY5tcRaEBV6kOJhxQn058haNxcIXLLagfkVwdyYPLYu9Bl9gquIrd6oYKR6
-	ubH6JN9nURZHLKtvKVMSJ9SOab/etUnQK3gw4WakkayZHFCMaDFfkNv7NU0I5DQX4SZqmP
-	7Dq9hWBwSw+VZDMPtBE3YxTsqXu6Stc=
-Date: Thu, 8 Jan 2026 12:40:29 -0800
+	s=arc-20240116; t=1767908153; c=relaxed/simple;
+	bh=RYTc/j72DSJS6wvoSkh81+TKqgFZgRCTQkO2un1ijM0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XBoiPOXYtBkI1/+e1AuGZNwtpk+6DHHbB0+g2iHem812/14SnyLsCUUl+U2Z5jDnzdDFHZXrUrMO2UeycohB/Xg6/DLbG1xPRDMIDaSuFfh+2rJ7YZWUjCVFNp3DhNKRg+tXjkkHOhhlxdx40Eg19uj9lVA7+IbDH70xyHf0MDk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y6S6ftNb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCB41C116C6;
+	Thu,  8 Jan 2026 21:35:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1767908153;
+	bh=RYTc/j72DSJS6wvoSkh81+TKqgFZgRCTQkO2un1ijM0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Y6S6ftNbmXXW0NysORAKoesBalPZCAHs3vhEl1XKviZ8aGUT+rkYbX+89sY1BH6Bu
+	 IDuaw5rtrfiadKN9BlQdam9Vv9jp3Goe8wpCMxsOugTx3KsG/drreadnhAfoiCOPkQ
+	 J+r6EYbK72MpG+7aSljrzhCKyvgrVLXfAd0hAIRWRpsD7v3c90oczl4D0U/LYegu/i
+	 sKBmG632pcGxeyceXA2jEYF/+QZdSS5yQv6Dduhpb+dCeH6lA4sziidz9QIKST3peM
+	 RciUgkFv1yKETzqr3mr/SPoDiKjV7xPdrnnpoqsb9cCZTjjUvCXkN2QsY7NodcrDjQ
+	 ByslcFSRZ9xvQ==
+Date: Thu, 8 Jan 2026 21:35:45 +0000
+From: Will Deacon <will@kernel.org>
+To: Ankur Arora <ankur.a.arora@oracle.com>
+Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
+	bpf@vger.kernel.org, arnd@arndb.de, catalin.marinas@arm.com,
+	peterz@infradead.org, akpm@linux-foundation.org,
+	mark.rutland@arm.com, harisokn@amazon.com, cl@gentwo.org,
+	ast@kernel.org, rafael@kernel.org, daniel.lezcano@linaro.org,
+	memxor@gmail.com, zhenglifeng1@huawei.com,
+	xueshuai@linux.alibaba.com, joao.m.martins@oracle.com,
+	boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
+Subject: Re: [PATCH v8 04/12] arm64: support WFET in
+ smp_cond_relaxed_timeout()
+Message-ID: <aWAjMbSqN2g7v58Z@willie-the-truck>
+References: <20251215044919.460086-1-ankur.a.arora@oracle.com>
+ <20251215044919.460086-5-ankur.a.arora@oracle.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v3 01/16] bpf: Convert bpf_selem_unlink_map to
- failable
-To: ameryhung@gmail.com
-Cc: bot+bpf-ci@kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
- alexei.starovoitov@gmail.com, andrii@kernel.org, daniel@iogearbox.net,
- memxor@gmail.com, martin.lau@kernel.org, kpsingh@kernel.org,
- yonghong.song@linux.dev, song@kernel.org, haoluo@google.com,
- kernel-team@meta.com, ast@kernel.org, eddyz87@gmail.com, clm@meta.com,
- ihor.solodrai@linux.dev
-References: <20251218175628.1460321-2-ameryhung@gmail.com>
- <1a31d5b805f81b28ea95cdfdd57b8e2fb88ab29bfbbc034b4443978b4dddb5c6@mail.kernel.org>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <1a31d5b805f81b28ea95cdfdd57b8e2fb88ab29bfbbc034b4443978b4dddb5c6@mail.kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251215044919.460086-5-ankur.a.arora@oracle.com>
 
+On Sun, Dec 14, 2025 at 08:49:11PM -0800, Ankur Arora wrote:
+> +#define __CMPWAIT_CASE(w, sfx, sz)						\
+> +static inline void __cmpwait_case_##sz(volatile void *ptr,			\
+> +				       unsigned long val,			\
+> +				       s64 timeout_ns)				\
+> +{										\
+> +	unsigned long tmp;							\
+> +										\
+> +	if (!alternative_has_cap_unlikely(ARM64_HAS_WFXT) || timeout_ns <= 0) {	\
+> +		asm volatile(							\
+> +		"	sevl\n"							\
+> +		"	wfe\n"							\
+> +		"	ldxr" #sfx "\t%" #w "[tmp], %[v]\n"			\
+> +		"	eor	%" #w "[tmp], %" #w "[tmp], %" #w "[val]\n"	\
+> +		"	cbnz	%" #w "[tmp], 1f\n"				\
+> +		"	wfe\n"							\
+> +		"1:"								\
+> +		: [tmp] "=&r" (tmp), [v] "+Q" (*(u##sz *)ptr)			\
+> +		: [val] "r" (val));						\
+> +	} else {								\
+> +		u64 ecycles = arch_timer_read_counter() +			\
+> +				NSECS_TO_CYCLES(timeout_ns);			\
+> +		asm volatile(							\
+> +		"	sevl\n"							\
+> +		"	wfe\n"							\
+> +		"	ldxr" #sfx "\t%" #w "[tmp], %[v]\n"			\
+> +		"	eor	%" #w "[tmp], %" #w "[tmp], %" #w "[val]\n"	\
+> +		"	cbnz	%" #w "[tmp], 2f\n"				\
+> +		"	msr s0_3_c1_c0_0, %[ecycles]\n"				\
+> +		"2:"								\
+> +		: [tmp] "=&r" (tmp), [v] "+Q" (*(u##sz *)ptr)			\
+> +		: [val] "r" (val), [ecycles] "r" (ecycles));			\
+> +	}									\
 
-On 12/18/25 10:27 AM, bot+bpf-ci@kernel.org wrote:
->> diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
->> index e2fe6c32822b..4e3f227fd634 100644
->> --- a/kernel/bpf/bpf_local_storage.c
->> +++ b/kernel/bpf/bpf_local_storage.c
-> 
-> [ ... ]
-> 
->> @@ -488,9 +516,10 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
->>   {
->>   	struct bpf_local_storage_data *old_sdata = NULL;
->>   	struct bpf_local_storage_elem *alloc_selem, *selem = NULL;
->> +	struct bpf_local_storage_map_bucket *b, *old_b = NULL;
->> +	unsigned long flags, b_flags, old_b_flags;
->>   	struct bpf_local_storage *local_storage;
->>   	HLIST_HEAD(old_selem_free_list);
->> -	unsigned long flags;
->>   	int err;
-> 
-> [ ... ]
-> 
->> @@ -574,20 +603,37 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
->>   		goto unlock;
->>   	}
->>
->> +	b = select_bucket(smap, selem);
->> +
->> +	if (old_sdata) {
->> +		old_b = select_bucket(smap, SELEM(old_sdata));
->> +		old_b = old_b == b ? NULL : old_b;
->> +	}
->> +
->> +	raw_spin_lock_irqsave(&b->lock, b_flags);
->> +
->> +	if (old_b)
->> +		raw_spin_lock_irqsave(&old_b->lock, old_b_flags);
->                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> 
-> Could this introduce an ABBA deadlock between two bucket locks? If two
-> threads concurrently update storage on the same map with different owners,
-> their new and old selems could hash to different buckets with reversed
-> order:
-> 
->    Thread 1: new_selem -> bucket_A, old_selem -> bucket_B
->              acquires b->lock (A), then waits for old_b->lock (B)
-> 
->    Thread 2: new_selem -> bucket_B, old_selem -> bucket_A
->              acquires b->lock (B), then waits for old_b->lock (A)
-> 
-> Since the locks are regular raw_spinlocks (not rqspinlocks yet), they
-> will block indefinitely in this scenario.
-> 
-> Note: I see that commit 615477732ee8 ("bpf: Change local_storage->lock
-> and b->lock to rqspinlock") later in this series changes to rqspinlock
-> which has deadlock detection and can return -EDEADLK instead of blocking.
-> However, in the current commit the locks are still raw_spinlocks.
+Why not have a separate helper for the WFXT version and avoid the runtime
+check on timeout_ns?
 
-I just catch up on this ai-review, so I made a similar comment on this 
-raw_spinlock in another reply instead of here. imo, we should still 
-avoid this even the rqspinlock is used in the later patch.
-
+Will
 
