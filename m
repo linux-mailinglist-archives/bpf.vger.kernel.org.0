@@ -1,45 +1,45 @@
-Return-Path: <bpf+bounces-78330-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78331-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E0C6D0A938
-	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 15:15:10 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55370D0A990
+	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 15:22:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7273B305CA35
-	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 14:11:38 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5820430E42D2
+	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 14:16:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1544335E524;
-	Fri,  9 Jan 2026 14:11:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1100E35E548;
+	Fri,  9 Jan 2026 14:16:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UQbDIfcb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WG46vr/E"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9364433C534;
-	Fri,  9 Jan 2026 14:11:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FEC32E8DFE;
+	Fri,  9 Jan 2026 14:16:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767967896; cv=none; b=QkNO1ULHJ31seM0n/9qau7LIxw+pU2YDJ9awaZiwg0C9y9u144AmD67PWlZn75yqD+2sEFomPE0+U0jbwBvPl39uFff4BwVv6s+3rDIbh1Q13NqsSPAWM2WTCRzMWpDl9wxQobbJcFCee7RPtRUPNqMOe0G7G6PMsVlDFZFD6Z8=
+	t=1767968184; cv=none; b=XvYXPJUsF3OnB7dJAmHTG/3u6/XpY4usqussiTdM6b+wbqWuUpbNT8YEDhNduxRWhVT7gE5NxOymLK665AW4mqFsc4B2B23qteZ8MhlSbNtY8u408fup4I6AlLHJWVLC2Lf3XuN8oPFtSw3mDSuWG3BcTwhTIZYkHh8xf1qxong=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767967896; c=relaxed/simple;
-	bh=Nc65wkMyCazsYeM+KI3rb7LhY4lOgQfED4l3qKX4Srs=;
+	s=arc-20240116; t=1767968184; c=relaxed/simple;
+	bh=CrekNb1dyF5mdDmLDlXBHlZWJJ6T0rEqpIAPw8943rE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D/D8V3Z9RufBr02j4XXOKj/T4Ytmxne4GlU9+21rbnxm+Mkf8J7B3GjyoyDuWhMgB7pjBE+1UGg3ONTIS38+tpkAObjqkxm80OuKhFvkyBpphIF11eCRvGZ0A4ZJXjHTIR9SCjyXo1PQvUlQxXyQr9CEIgjLrxm/UTvoYpVsp4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UQbDIfcb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03713C4CEF1;
-	Fri,  9 Jan 2026 14:11:31 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=VJZzpXEvRIFOwfKu5wnmn9WvXmBxYMuuQSeEqj4vWp2B5zdhF+6rWF79yCTvIK1KZt2IYN/pSzx9R4JGeH5/uAaWMp3FcMHhgMDMEgSKQV+q20k2vNd/JtXOYiRTWJ5q1SeTK8I5oPnnMye2W19k1aqZsaqHEwFstY9lnTeeLD8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WG46vr/E; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A1E0C19421;
+	Fri,  9 Jan 2026 14:16:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767967896;
-	bh=Nc65wkMyCazsYeM+KI3rb7LhY4lOgQfED4l3qKX4Srs=;
+	s=k20201202; t=1767968184;
+	bh=CrekNb1dyF5mdDmLDlXBHlZWJJ6T0rEqpIAPw8943rE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UQbDIfcbMQHPYaONy0xw9eDeUtqr6fNL4fM5tkLehvmUCkfobfoEcTA0ebVhwOpop
-	 euUY3QVP9Pw7W8GAbH9hSjYS43dpx26c5gkwD9TEnnb3/OhKE+UlE3J6/SG24oBLX0
-	 lyoA3JT/+SjKXC1C3wrikvNCNmJuCErVX/X1N0fnffoxWU55+RywqExZsTwdkN6pMB
-	 vsjz27RPhRNXlgXwSPIzwiEh0HHdKf9+iVPFnLI4P6QNKK5Pp4AR6KkGd33FYlhDU3
-	 +vxOFyg5OmvWHtnmGNfR5hFgAxbm2LfbVj4+qlNzYv8eNP2iQNd8T98G4x3ov2t3Sh
-	 dJC7MnnXMnjLA==
-Date: Fri, 9 Jan 2026 14:11:28 +0000
+	b=WG46vr/EzI5fbUdRrIc3zQ3nu8+ECZ/t7wbnWcjsusUN84kOQ8YmlLLE4JjpIcvcX
+	 YitKYrV/LbR+LfReyDPxL/QBCHeXBZ7VvqC6GC93gC6HW9LHURXlAdDhhgf1lmPaa4
+	 DtcPDy5a5TiazlSFVHClgCUSYTTsK9u5p7SOjhchrNvccMZjKKIBi76J6mPeaqBgAL
+	 ohkI3oEQe7JejBBlHD7e9iZ6xMehQ5ADBVn30LHU8F2ETT3DkwuZs4sxERFXSF4SCW
+	 7aVx1T9AA9+jkZg708xRh5mtPLZk0MXlg1sZJyG0sXbruSWyyy368nTs3v91142ER+
+	 ayMmzicQeFRkw==
+Date: Fri, 9 Jan 2026 14:16:17 +0000
 From: Will Deacon <will@kernel.org>
 To: Ankur Arora <ankur.a.arora@oracle.com>
 Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
@@ -50,12 +50,14 @@ Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
 	ast@kernel.org, rafael@kernel.org, daniel.lezcano@linaro.org,
 	memxor@gmail.com, zhenglifeng1@huawei.com,
 	xueshuai@linux.alibaba.com, joao.m.martins@oracle.com,
-	boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-	Boqun Feng <boqun.feng@gmail.com>
-Subject: Re: [PATCH v8 07/12] atomic: Add atomic_cond_read_*_timeout()
-Message-ID: <aWEMkHbBOgOkx_9f@willie-the-truck>
+	boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
+Subject: Re: [PATCH v8 04/12] arm64: support WFET in
+ smp_cond_relaxed_timeout()
+Message-ID: <aWENsQywXuM880_l@willie-the-truck>
 References: <20251215044919.460086-1-ankur.a.arora@oracle.com>
- <20251215044919.460086-8-ankur.a.arora@oracle.com>
+ <20251215044919.460086-5-ankur.a.arora@oracle.com>
+ <aWAjMbSqN2g7v58Z@willie-the-truck>
+ <874iovp34a.fsf@oracle.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -64,39 +66,74 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251215044919.460086-8-ankur.a.arora@oracle.com>
+In-Reply-To: <874iovp34a.fsf@oracle.com>
 
-On Sun, Dec 14, 2025 at 08:49:14PM -0800, Ankur Arora wrote:
-> Add atomic load wrappers, atomic_cond_read_*_timeout() and
-> atomic64_cond_read_*_timeout() for the cond-load timeout interfaces.
+On Fri, Jan 09, 2026 at 01:05:57AM -0800, Ankur Arora wrote:
 > 
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Boqun Feng <boqun.feng@gmail.com>
-> Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
-> ---
->  include/linux/atomic.h | 10 ++++++++++
->  1 file changed, 10 insertions(+)
+> Will Deacon <will@kernel.org> writes:
 > 
-> diff --git a/include/linux/atomic.h b/include/linux/atomic.h
-> index 8dd57c3a99e9..5bcb86e07784 100644
-> --- a/include/linux/atomic.h
-> +++ b/include/linux/atomic.h
-> @@ -31,6 +31,16 @@
->  #define atomic64_cond_read_acquire(v, c) smp_cond_load_acquire(&(v)->counter, (c))
->  #define atomic64_cond_read_relaxed(v, c) smp_cond_load_relaxed(&(v)->counter, (c))
->  
-> +#define atomic_cond_read_acquire_timeout(v, c, e, t) \
-> +	smp_cond_load_acquire_timeout(&(v)->counter, (c), (e), (t))
-> +#define atomic_cond_read_relaxed_timeout(v, c, e, t) \
-> +	smp_cond_load_relaxed_timeout(&(v)->counter, (c), (e), (t))
-> +
-> +#define atomic64_cond_read_acquire_timeout(v, c, e, t) \
-> +	smp_cond_load_acquire_timeout(&(v)->counter, (c), (e), (t))
-> +#define atomic64_cond_read_relaxed_timeout(v, c, e, t) \
-> +	smp_cond_load_relaxed_timeout(&(v)->counter, (c), (e), (t))
+> > On Sun, Dec 14, 2025 at 08:49:11PM -0800, Ankur Arora wrote:
+> >> +#define __CMPWAIT_CASE(w, sfx, sz)						\
+> >> +static inline void __cmpwait_case_##sz(volatile void *ptr,			\
+> >> +				       unsigned long val,			\
+> >> +				       s64 timeout_ns)				\
+> >> +{										\
+> >> +	unsigned long tmp;							\
+> >> +										\
+> >> +	if (!alternative_has_cap_unlikely(ARM64_HAS_WFXT) || timeout_ns <= 0) {	\
+> >> +		asm volatile(							\
+> >> +		"	sevl\n"							\
+> >> +		"	wfe\n"							\
+> >> +		"	ldxr" #sfx "\t%" #w "[tmp], %[v]\n"			\
+> >> +		"	eor	%" #w "[tmp], %" #w "[tmp], %" #w "[val]\n"	\
+> >> +		"	cbnz	%" #w "[tmp], 1f\n"				\
+> >> +		"	wfe\n"							\
+> >> +		"1:"								\
+> >> +		: [tmp] "=&r" (tmp), [v] "+Q" (*(u##sz *)ptr)			\
+> >> +		: [val] "r" (val));						\
+> >> +	} else {								\
+> >> +		u64 ecycles = arch_timer_read_counter() +			\
+> >> +				NSECS_TO_CYCLES(timeout_ns);			\
+> >> +		asm volatile(							\
+> >> +		"	sevl\n"							\
+> >> +		"	wfe\n"							\
+> >> +		"	ldxr" #sfx "\t%" #w "[tmp], %[v]\n"			\
+> >> +		"	eor	%" #w "[tmp], %" #w "[tmp], %" #w "[val]\n"	\
+> >> +		"	cbnz	%" #w "[tmp], 2f\n"				\
+> >> +		"	msr s0_3_c1_c0_0, %[ecycles]\n"				\
+> >> +		"2:"								\
+> >> +		: [tmp] "=&r" (tmp), [v] "+Q" (*(u##sz *)ptr)			\
+> >> +		: [val] "r" (val), [ecycles] "r" (ecycles));			\
+> >> +	}									\
+> >
+> > Why not have a separate helper for the WFXT version and avoid the runtime
+> > check on timeout_ns?
+> 
+> My main reason for keeping them together was that a separate helper
+> needed duplication of a lot of the __CMPWAIT_CASE and __CMPWAIT_GEN
+> stuff.
+> 
+> Relooking at it, I think we could get by without duplicating the
+> __CMPWAIT_GEN (the WFE helper just needs to take an unused timeout_ns
+> paramter).
+> 
+> But, it seems overkill to get rid of the unnecessary check on timeout_ns
+> (which AFAICT should be well predicted) and the duplicate static branch.
 
-Please update the atomic_t documentation to explain what these do.
+tbh, I was actually struggling to see what the check achieves. In fact,
+why is 'timeout_ns' signed in the first place? Has BPF invented time
+travel now? :p
+
+If the requested timeout is 0 then we should return immediately (or issue
+a WFET which will wake up immediately).
+
+If the requested timeout is negative, then WFET may end up with a really
+long timeout, but that should still be no worse than a plain WFE.
+
+If the check is only there to de-multiplex __cmpwait() vs
+__cmpwait_relaxed_timeout() as the caller, then I think we should just
+avoid muxing them in the first place. The duplication argument doesn't
+hold a lot of water when the asm block is already mostly copy-paste.
 
 Will
 
