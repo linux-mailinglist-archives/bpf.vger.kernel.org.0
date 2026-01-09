@@ -1,284 +1,214 @@
-Return-Path: <bpf+bounces-78428-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78429-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C29DD0C90E
-	for <lists+bpf@lfdr.de>; Sat, 10 Jan 2026 00:47:56 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 073CED0C91A
+	for <lists+bpf@lfdr.de>; Sat, 10 Jan 2026 00:51:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 178D930274DC
-	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 23:47:48 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 511E830285B7
+	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 23:51:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D86530C354;
-	Fri,  9 Jan 2026 23:47:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0748A3385B1;
+	Fri,  9 Jan 2026 23:51:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="noh2xcWp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I2KjQrR7"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90EC91531E8
-	for <bpf@vger.kernel.org>; Fri,  9 Jan 2026 23:47:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E9E121C9EA
+	for <bpf@vger.kernel.org>; Fri,  9 Jan 2026 23:51:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768002467; cv=none; b=MJEix6szDHAIYYGECaK2TEx26UDJaLt8hEXcGP8J/pK8M8wDtOVsqKTmKMKZaBwG9Ll3/Bk3WDKupQXfr3qhgfCXNKpuan/GYOGI+EH+zRekPRPIyFBZl1Jxa4RI5dpOPfLWkivzNfgjGQ8aJ6wkQF8xZ53qI/T5M9PRRbchtN8=
+	t=1768002675; cv=none; b=MSY815ep++vhdCzI4Cgv1wwwcGsWPIZ7KX7z4kHYf6+JkoWY7XKsttPIlDowe9X1Nif903ZOGgIuXnZNT3HGT8jJ0Lz36LhT+Lewo+I5+Q1qNV3ikRIMFuvb+Yf8Cwq70SVR9xPgLfvWsdx1gpcdKtI512UNVQsYKOJJkDQOJNY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768002467; c=relaxed/simple;
-	bh=N1+r/aQt/Lt3seqrxbec5CLUW7FCRWxmpoR4OKKZs+E=;
+	s=arc-20240116; t=1768002675; c=relaxed/simple;
+	bh=CoU7L7Dvw78UvQ3b8Y4jyHMTXf6htmudeyV9RZlTR/o=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hNP2owzKprx/CEASP2AFYuKxJp1ABBP2gXh2UDKGymGK3gXjw4Pqzrn1ZVqnUqINdYffUDf+CUeRUgxCECtvqz8OiqKxtNgI9K8BB8FXjBEd6lSrNId3Ul8fd7f1kK4mWl5tJSODOHbh55NNPrn1X/sokGbg9kdm4h8eGOj0tHQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=noh2xcWp; arc=none smtp.client-ip=209.85.216.52
+	 To:Cc:Content-Type; b=YhfjBW+M+65ErgHZhs+Dwg8cDINJjsC0KanAqsAZzcCLZjuUukphJzH3ipE7up6F1HsXyFdL8ECGjbwLh6vCjHDsZT27mo20YZ9JVFAtDxym9OTiDM14+/OuxyTvBCuKiSoNCv/m+OmHlsvyZDt3YrVW88D9I9c5Uw8op8Dv/rE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I2KjQrR7; arc=none smtp.client-ip=209.85.221.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-34c565c3673so1726268a91.0
-        for <bpf@vger.kernel.org>; Fri, 09 Jan 2026 15:47:45 -0800 (PST)
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-42fb4eeb482so2684988f8f.0
+        for <bpf@vger.kernel.org>; Fri, 09 Jan 2026 15:51:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768002465; x=1768607265; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1768002672; x=1768607472; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TLD52LJJpgXkbHmHOmGMHJXgRsruMv9okey27w/iLfA=;
-        b=noh2xcWp1pGZW+1shUql9K2u9LxEw9Z1AKZrVEejAbsf26y3y/DR7IiSVzO41Dg5AG
-         88ycg/Sa2tWzIGafmv9le6zVU5xAyXfgtzuxiV2qLP/bDIzRKU5Jg9t5srfqningOwEY
-         /3SqoewHO4yy9Re5FLv20sbRCrPmZpEpokLRP3UCXjsnPnyswgEPSzRatjFHDPl9WLyl
-         i5ZyBfCB6CLmxcSFgaBgHt0+07Cvp03/jjb1YEG4IyqN9/axM9F7bJVWPCrVN2SKDy73
-         0N/D47LgToPOnCvM78qX3DJHM0cdEaBzQf/b+WFWZj4ZK6lQPkafFM0OyR+B0a54vwAY
-         Vedg==
+        bh=bkEPmXZ96f0x8Jxg6AU3HOhNZWflSboslqCovElBuNA=;
+        b=I2KjQrR77553x6nLzJlHvLyrnctHMAINn072HWUzvE4ipF8pQxbdZvIoh8El+rL8FA
+         9CwpU3S9oi9b63Q+qdJrP9wp4112iBf3PfmhX7KKNOCTQPtwKgWlhwvfSJVVyE1bd4QS
+         lgzgZ0XyLL0mB78HgfTSHXQrPdQMLGnxAeqYOFuP19+N732vyheaRvANohTd/YRnfT3z
+         sE3NG4pLGKE2NprU+TJ1NrBD3SGHHQ/86k7SSn42fmTdeT/Uj7gRVHLka/d/Gxz8KsPc
+         KdrW1GJ3nKTJE56jOf+9eU13QwwTj8uVahpsZveOynqBRpte5Iejhg41h/OKzGWYydhV
+         f0Ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768002465; x=1768607265;
+        d=1e100.net; s=20230601; t=1768002672; x=1768607472;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=TLD52LJJpgXkbHmHOmGMHJXgRsruMv9okey27w/iLfA=;
-        b=mWLSSv/CzdgEzUs5zXzJ1l+R3jEq1yJSmbVUrDEndkOkXWsbpTyXeDeI1Sds6rUUnJ
-         sSIt/EiOX5qwfw+i+5FWL6Box3lDBzNMYdk5jj5XCxFuJg0JJQ5rXoh/4szYyJlqZ5YD
-         dbfEh6eCOrl192PA+GvEGfxpUsMGZByDrHvC9AW2W6veNZHH0x9VRal7ZhsRP1kxMHpG
-         c58+x2RAsdKbbJxIxiUrwbTLdxXgE4RdyNMtM+3zICP+W9MYNmPy0FuWnIZhqZoqDJCK
-         EGk208m2OEz7dyEQjRop+ZhBXf+e17OnS30b+FrQoWtZgrOQ10kcYm8EbQBCHZsWBfJW
-         4lAA==
-X-Forwarded-Encrypted: i=1; AJvYcCXg4ylSXyDhlLGysoxWtl67QTZdz2QjyyVOtYCcnUcTZ+VfCCjEon56EjQ3uV/PmUrMQUo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzrtF8ZXTcO/7AeNbKoRJEbVtceD2e5X3nwWLR7r6oB8/aEslUe
-	7z7hBTK709qDv0r+XDQWQxx8TjbNSaeECT2Es8l1QpYvs+xJIx6blJWfCflZr4aLV7BQcWmwcL2
-	0ho4preOdHJ3GDeC42mPMNL+w8469GU0=
-X-Gm-Gg: AY/fxX64hZX4BXq6oeqDm+5fw+Lpl24xJ9Pp/FGsoyFxW1YhKrjeAmxzj6e4cLrSrSH
-	AJ6V3hN5h7CMfaTs3rn5JvkZr6LKCA2a0k+A2mor4bwU9ORCUtYVAEaQgB0IHPIGABUBj0D38/m
-	H0hECkrlvQceeCk6bI5WOu1y0GRqvidjESqMPCcKE19x7mr1VWzxouzGD/QPDa3vFxDH3pZtetU
-	PUpV4qOS+ubgxsRrTuFJxchj3ebDy4UWrf6FzD7OIr9bOV0nE+AvwxhxV9Q4Jb+9sb+RDeoOYo0
-	jngZhfKFXKKB24KHObw=
-X-Google-Smtp-Source: AGHT+IFJmOmEq5ZJ5Ob58NZv80I9S0T5bbkH3sTY5dP35LUd9nVJtqcd258ZtmaQELz99GKrQ6IBs4xrZMe+LUmoh1g=
-X-Received: by 2002:a17:90b:2e8f:b0:343:3898:e7c7 with SMTP id
- 98e67ed59e1d1-34f68c010d0mr10254222a91.12.1768002464973; Fri, 09 Jan 2026
- 15:47:44 -0800 (PST)
+        bh=bkEPmXZ96f0x8Jxg6AU3HOhNZWflSboslqCovElBuNA=;
+        b=q1xuDkmsk3OKR/ykeJ23atX5GV6njqKwBxW/jMdKlRbP0bUFGRKqhW07PqHnDe40qy
+         XFup2+VHTh2i5B5sjPp6ctA6Y7G0fonJiFfwxYw5LRmjdgx2ykgKikWuQAuyiHaLM2Eq
+         db243B32J0GjIQwAC5CjbwDXH4U1Ldpe1b7MhqbL/GadqtY7oPD6WRE7buYWIXzW9alg
+         ctCOIFAfcqzYzlBsyujiGTAexic+cMlehFxLwYITHw5syC9WBXE5vqH7ZLz+yH0Th7Xr
+         dS22443tTHgl5pFUZl8xPYZgPUoqDbNYj/UuPsGksqgosYQ3aPuNpg0tzus170v5XGpS
+         5MHg==
+X-Forwarded-Encrypted: i=1; AJvYcCXMeWn6uPrKcE51v3REuupaBhhzQSNOx4y/9ikePvTOa1rBif/w1pCrYc1wcnUzHLwTApc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyLi803bmhrrokznHRy1yHbhDC6Bq6W0ca/WPBITLuurXsl1DOZ
+	79SgoK6nBUCm+Kek8GDo7Hs8B27rr1QlcdQE4CE9Bk7GvXlWQnPQsCkVpBUYFHl9hSmHi3XVA2v
+	uizh+o0OZ/m/PB0LvIXXijLe17Q/xdIE=
+X-Gm-Gg: AY/fxX7PL0PwTJmpF7C5r3zMjBe0r7BaeARb2GLYH+57GGHz/xK9O2Fx24/J36cL6hB
+	NIcnBLmTGvX2EglCOZqkjYECR3LZWuzhyHzCjUxpyGqNIWI03VrrQxZxamnd+8Q57T1lIvGv2SX
+	48okBY8jCux7L6bq00XZk2xeQVZc/20Q+OqmmXmHTfJrmr8q7VcJTghgb7pFh4t0HIxYeRdOziX
+	uj9ApQ/PCDW8LTS0+IMxwBXVaCQvwzBGJtCdY608GNEDfBe1n1/PHOp9LVQcEgS/X1Djheqra6A
+	mH5mFBQs9HFCWBYayTTnF5OTPgkB
+X-Google-Smtp-Source: AGHT+IEHMFuGHCKj+vRbTXKdqJQpbRYfDhPrfKyBL+akJ05GMYMtZ0LCEEsLwGA8WhNrkeap8RgSWBnOKNLWNkdP7SQ=
+X-Received: by 2002:a5d:5850:0:b0:42f:bb08:d1f0 with SMTP id
+ ffacd0b85a97d-432c3779051mr13318642f8f.60.1768002672266; Fri, 09 Jan 2026
+ 15:51:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251217093326.1745307-1-chen.dylane@linux.dev>
- <20251217093326.1745307-3-chen.dylane@linux.dev> <db97ccea-8cb4-40ea-b040-79f0f63a398e@linux.dev>
- <0e954e9a-12af-4f4f-95e2-7afedbd8f63f@linux.dev>
-In-Reply-To: <0e954e9a-12af-4f4f-95e2-7afedbd8f63f@linux.dev>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 9 Jan 2026 15:47:32 -0800
-X-Gm-Features: AQt7F2rFowr36ExP9mQOZTVNeDjdZr3kjVkP3CFzkP2LL6frIhP61S8ZnoVIQl4
-Message-ID: <CAEf4BzZLCVMXFyfD9R0SUq_3Sinc_uFzJWnDcwZtdhJWpB3+uA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v7 2/2] bpf: Hold the perf callchain entry until
- used completely
-To: Tao Chen <chen.dylane@linux.dev>, peterz@infradead.org
-Cc: mingo@redhat.com, acme@kernel.org, namhyung@kernel.org, 
-	mark.rutland@arm.com, alexander.shishkin@linux.intel.com, jolsa@kernel.org, 
-	irogers@google.com, adrian.hunter@intel.com, kan.liang@linux.intel.com, 
-	song@kernel.org, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@linux.dev, eddyz87@gmail.com, yonghong.song@linux.dev, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
-	haoluo@google.com, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <20260107-timer_nolock-v3-0-740d3ec3e5f9@meta.com>
+ <20260107-timer_nolock-v3-4-740d3ec3e5f9@meta.com> <CAP01T77h5caT6EprhREYMNmjTkbBZ9-OT7HkxdnJUNNME2evQQ@mail.gmail.com>
+ <e4eee776-e9c7-4186-b239-733f81a9ae4a@gmail.com> <CAEf4BzYY0s6yF8JACTENANzJXd6abZctiB1iP+jYARq_xPDm0A@mail.gmail.com>
+ <c5269858-7285-4e44-a5ef-72e69e9c00a2@gmail.com> <CAEf4BzZNGnufqerj=FY8K+oj3hpZ_xwzvOG5kPZN3UATACU_Dg@mail.gmail.com>
+In-Reply-To: <CAEf4BzZNGnufqerj=FY8K+oj3hpZ_xwzvOG5kPZN3UATACU_Dg@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 9 Jan 2026 15:51:01 -0800
+X-Gm-Features: AZwV_QhU289X5pT0oqDdIQ7Hal1FOZi_SxRFqQgTLIywYSp7SR1s9undmsYVN2Q
+Message-ID: <CAADnVQLwDqcKSRHKy+F-mtOn85_QiBvwe+-=Zj2W6r-pbu=LPQ@mail.gmail.com>
+Subject: Re: [PATCH RFC v3 04/10] bpf: Add lock-free cell for NMI-safe async operations
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
+	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Martin Lau <kafai@meta.com>, 
+	Kernel Team <kernel-team@meta.com>, Eduard <eddyz87@gmail.com>, 
+	Mykyta Yatsenko <yatsenko@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 6, 2026 at 8:00=E2=80=AFAM Tao Chen <chen.dylane@linux.dev> wro=
-te:
+On Fri, Jan 9, 2026 at 10:47=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> =E5=9C=A8 2025/12/23 14:29, Tao Chen =E5=86=99=E9=81=93:
-> > =E5=9C=A8 2025/12/17 17:33, Tao Chen =E5=86=99=E9=81=93:
-> >> As Alexei noted, get_perf_callchain() return values may be reused
-> >> if a task is preempted after the BPF program enters migrate disable
-> >> mode. The perf_callchain_entres has a small stack of entries, and
-> >> we can reuse it as follows:
-> >>
-> >> 1. get the perf callchain entry
-> >> 2. BPF use...
-> >> 3. put the perf callchain entry
-> >>
-> >> And Peter suggested that get_recursion_context used with preemption
-> >> disabled, so we should disable preemption at BPF side.
-> >>
-> >> Acked-by: Yonghong Song <yonghong.song@linux.dev>
-> >> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
-> >> ---
-> >>   kernel/bpf/stackmap.c | 68 +++++++++++++++++++++++++++++++++++------=
---
-> >>   1 file changed, 56 insertions(+), 12 deletions(-)
-> >>
-> >> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-> >> index da3d328f5c1..3bdd99a630d 100644
-> >> --- a/kernel/bpf/stackmap.c
-> >> +++ b/kernel/bpf/stackmap.c
-> >> @@ -210,13 +210,14 @@ static void stack_map_get_build_id_offset(struct
-> >> bpf_stack_build_id *id_offs,
-> >>   }
-> >>   static struct perf_callchain_entry *
-> >> -get_callchain_entry_for_task(struct task_struct *task, u32 max_depth)
-> >> +get_callchain_entry_for_task(int *rctx, struct task_struct *task, u32
-> >> max_depth)
-> >>   {
-> >>   #ifdef CONFIG_STACKTRACE
-> >>       struct perf_callchain_entry *entry;
-> >> -    int rctx;
-> >> -    entry =3D get_callchain_entry(&rctx);
-> >> +    preempt_disable();
-> >> +    entry =3D get_callchain_entry(rctx);
-> >> +    preempt_enable();
-> >>       if (!entry)
-> >>           return NULL;
-> >> @@ -238,8 +239,6 @@ get_callchain_entry_for_task(struct task_struct
-> >> *task, u32 max_depth)
-> >>               to[i] =3D (u64)(from[i]);
-> >>       }
-> >> -    put_callchain_entry(rctx);
-> >> -
-> >>       return entry;
-> >>   #else /* CONFIG_STACKTRACE */
-> >>       return NULL;
-> >> @@ -320,6 +319,34 @@ static long __bpf_get_stackid(struct bpf_map *map=
-,
-> >>       return id;
-> >>   }
-> >> +static struct perf_callchain_entry *
-> >> +bpf_get_perf_callchain(int *rctx, struct pt_regs *regs, bool kernel,
-> >> bool user,
-> >> +               int max_stack, bool crosstask)
-> >> +{
-> >> +    struct perf_callchain_entry_ctx ctx;
-> >> +    struct perf_callchain_entry *entry;
-> >> +
-> >> +    preempt_disable();
-> >> +    entry =3D get_callchain_entry(rctx);
-> >> +    preempt_enable();
-> >> +
-> >> +    if (unlikely(!entry))
-> >> +        return NULL;
-> >> +
-> >> +    __init_perf_callchain_ctx(&ctx, entry, max_stack, false);
-> >> +    if (kernel)
-> >> +        __get_perf_callchain_kernel(&ctx, regs);
-> >> +    if (user && !crosstask)
-> >> +        __get_perf_callchain_user(&ctx, regs, 0);
-> >> +
-> >> +    return entry;
-> >> +}
-> >> +
-> >> +static void bpf_put_perf_callchain(int rctx)
-> >> +{
-> >> +    put_callchain_entry(rctx);
-> >> +}
-> >> +
-> >>   BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map
-> >> *, map,
-> >>          u64, flags)
-> >>   {
-> >> @@ -328,20 +355,25 @@ BPF_CALL_3(bpf_get_stackid, struct pt_regs *,
-> >> regs, struct bpf_map *, map,
-> >>       struct perf_callchain_entry *trace;
-> >>       bool kernel =3D !user;
-> >>       u32 max_depth;
-> >> +    int rctx, ret;
-> >>       if (unlikely(flags & ~(BPF_F_SKIP_FIELD_MASK | BPF_F_USER_STACK =
-|
-> >>                      BPF_F_FAST_STACK_CMP | BPF_F_REUSE_STACKID)))
-> >>           return -EINVAL;
-> >>       max_depth =3D stack_map_calculate_max_depth(map->value_size,
-> >> elem_size, flags);
-> >> -    trace =3D get_perf_callchain(regs, kernel, user, max_depth,
-> >> -                   false, false, 0);
-> >> +
-> >> +    trace =3D bpf_get_perf_callchain(&rctx, regs, kernel, user, max_d=
-epth,
-> >> +                       false);
-> >>       if (unlikely(!trace))
-> >>           /* couldn't fetch the stack trace */
-> >>           return -EFAULT;
-> >> -    return __bpf_get_stackid(map, trace, flags);
-> >> +    ret =3D __bpf_get_stackid(map, trace, flags);
-> >> +    bpf_put_perf_callchain(rctx);
-> >> +
-> >> +    return ret;
-> >>   }
-> >>   const struct bpf_func_proto bpf_get_stackid_proto =3D {
-> >> @@ -435,6 +467,7 @@ static long __bpf_get_stack(struct pt_regs *regs,
-> >> struct task_struct *task,
-> >>       bool kernel =3D !user;
-> >>       int err =3D -EINVAL;
-> >>       u64 *ips;
-> >> +    int rctx;
-> >>       if (unlikely(flags & ~(BPF_F_SKIP_FIELD_MASK | BPF_F_USER_STACK =
-|
-> >>                      BPF_F_USER_BUILD_ID)))
-> >> @@ -467,18 +500,26 @@ static long __bpf_get_stack(struct pt_regs
-> >> *regs, struct task_struct *task,
-> >>           trace =3D trace_in;
-> >>           trace->nr =3D min_t(u32, trace->nr, max_depth);
-> >>       } else if (kernel && task) {
-> >> -        trace =3D get_callchain_entry_for_task(task, max_depth);
-> >> +        trace =3D get_callchain_entry_for_task(&rctx, task, max_depth=
-);
-> >>       } else {
-> >> -        trace =3D get_perf_callchain(regs, kernel, user, max_depth,
-> >> -                       crosstask, false, 0);
-> >> +        trace =3D bpf_get_perf_callchain(&rctx, regs, kernel, user,
-> >> max_depth,
-> >> +                           crosstask);
-> >>       }
-> >> -    if (unlikely(!trace) || trace->nr < skip) {
-> >> +    if (unlikely(!trace)) {
-> >>           if (may_fault)
-> >>               rcu_read_unlock();
-> >>           goto err_fault;
-> >>       }
-> >> +    if (trace->nr < skip) {
-> >> +        if (may_fault)
-> >> +            rcu_read_unlock();
-> >> +        if (!trace_in)
-> >> +            bpf_put_perf_callchain(rctx);
-> >> +        goto err_fault;
-> >> +    }
-> >> +
-> >>       trace_nr =3D trace->nr - skip;
-> >>       copy_len =3D trace_nr * elem_size;
-> >> @@ -497,6 +538,9 @@ static long __bpf_get_stack(struct pt_regs *regs,
-> >> struct task_struct *task,
-> >>       if (may_fault)
-> >>           rcu_read_unlock();
-> >> +    if (!trace_in)
-> >> +        bpf_put_perf_callchain(rctx);
-> >> +
-> >>       if (user_build_id)
-> >>           stack_map_get_build_id_offset(buf, trace_nr, user, may_fault=
-);
+> On Fri, Jan 9, 2026 at 10:22=E2=80=AFAM Mykyta Yatsenko
+> <mykyta.yatsenko5@gmail.com> wrote:
 > >
-> > Hi Peter,
+> > On 1/9/26 01:18, Andrii Nakryiko wrote:
+> > > On Wed, Jan 7, 2026 at 11:05=E2=80=AFAM Mykyta Yatsenko
+> > > <mykyta.yatsenko5@gmail.com> wrote:
+> > >> On 1/7/26 18:30, Kumar Kartikeya Dwivedi wrote:
+> > >>> On Wed, 7 Jan 2026 at 18:49, Mykyta Yatsenko <mykyta.yatsenko5@gmai=
+l.com> wrote:
+> > >>>> From: Mykyta Yatsenko <yatsenko@meta.com>
+> > >>>>
+> > >>>> Introduce mpmc_cell, a lock-free cell primitive designed to suppor=
+t
+> > >>>> concurrent writes to struct in NMI context (only one writer advanc=
+es),
+> > >>>> allowing readers to consume consistent snapshot.
+> > >>>>
+> > >>>> Implementation details:
+> > >>>>    Double buffering allows writers run concurrently with readers (=
+read
+> > >>>>    from one cell, write to another)
+> > >>>>
+> > >>>>    The implementation uses a sequence-number-based protocol to ena=
+ble
+> > >>>>    exclusive writes.
+> > >>>>     * Bit 0 of seq indicates an active writer
+> > >>>>     * Bits 1+ form a generation counter
+> > >>>>     * (seq & 2) >> 1 selects the read cell, write cell is opposite
+> > >>>>     * Writers atomically set bit 0, write to the inactive cell, th=
+en
+> > >>>>       increment seq to publish
+> > >>>>     * Readers snapshot seq, read from the active cell, then valida=
+te
+> > >>>>       that seq hasn't changed
+> > >>>>
+> > >>>> mpmc_cell expects users to pre-allocate double buffers.
+> > >>>>
+> > >>>> Key properties:
+> > >>>>    * Writers never block (fail if lost the race to another writer)
+> > >>>>    * Readers never block writers (double buffering), but may requi=
+re
+> > >>>>    retries if write updates the snapshot concurrently.
+> > >>>>
+> > >>>> This will be used by BPF timer and workqueue helpers to defer NMI-=
+unsafe
+> > >>>> operations (like hrtimer_start()) to irq_work effectively allowing=
+ BPF
+> > >>>> programs to initiate timers and workqueues from NMI context.
+> > >>>>
+> > >>>> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+> > >>>> ---
+> > >>> We already have a dual-versioned concurrency control primitive in t=
+he
+> > >>> kernel (seqcount_latch_t). I would just use that instead of
+> > >>> reinventing it here. I don't see much of a difference except writer
+> > >>> serialization, which can be done on top of it. If it was already
+> > >>> considered and discarded for some reason, please add that reason to
+> > >>> the commit message.
+> > >> yes, multiple concurrent  writers support would is the main differen=
+ce
+> > >> between seqcount_latch_t and my implementation. I'll switch to
+> > >> seqcount_latch_t and external synchronization for writers.
+> > > One advantage of custom primitive is that we don't need a second
+> > > atomic counter for writers. Here we combine the reader latch counter
+> > > (it's just scaled 2x for custom implementation) and "writer is active=
+"
+> > > bit (even/odd counter).
+> > >
+> > > With potentially millions of timer activations per second for some
+> > > extreme cases, would performance be enough reason to have custom
+> > > "seqlock latch"? (I'm not sure myself, trying to get opinions)
+> > >
+> > Actually seqcount_latch_t variant may be faster (correct me if I'm wron=
+g),
+> > because mpmc_cell requires 2 lock prefixed instructions to enter the wr=
+ite
+> > critical section and seqcount_latch_t just 1.
 > >
-> > As Alexei said, the patch needs your ack, please review again, thanks.
+> > mpmc_cell:
 > >
+> > if (1&atomic_fetch_or_acquire(1, &ctl->seq)) // first lock prefixed ins=
+n
+> > return;
+> > ...
+> >        atomic_fetch_add_release(1, &ctl->seq);     // second lock
+> > prefixed insn
+> >
+> > seqcount_latch_t based:
+> >
+> >      if (atomic_cmpxchg(&ctl->lock, 0, 1))        // first lock prefixe=
+d
+> > insn
+> >          return;
+> > write_seqcount_latch_begin(&ctl->seq);       // inc with barriers
+> >      ...
+> >      write_seqcount_latch(&ctl->seq);            // inc with barriers
+> >      atomic_set(&ctl->lock, 0);            // plain mov on x86_64
+> >
+> > Does it look right?
 >
-> ping...
+> So I think you are overpivoting on atomic vs non-atomic differences
+> here: when uncontended, atomic is almost as fast as non-atomic
+> (difference is irrelevant). But under contention, those four writes
+> due to separate latch is four cache line bounces (potentially) between
+> competing CPUs, while with custom sequence logic it's just two.
+>
+> I'm not dead set on one approach or the other, but I don't think that
+> latch adds that match value. But if Kumar or others insist on latch, I
+> don't mind, in the end both will work.
 
-Peter, if I understand correctly, this will go through bpf-next tree,
-but it would be great if you could take a look and confirm this
-overall is not broken. Thanks!
-
->
-> --
-> Best Regards
-> Tao Chen
+I think it's worth writing a micro benchmark for it.
+Intuitively I feel seqcount_latch_t approach will be faster
+and it has all the kcsan annotation around it,
+while this new primitive still needs work to teach kcsan
+about it.
 
