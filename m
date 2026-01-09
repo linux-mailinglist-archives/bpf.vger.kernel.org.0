@@ -1,78 +1,77 @@
-Return-Path: <bpf+bounces-78309-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78311-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D6C4D08E3D
-	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 12:29:51 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7BCDD08EE5
+	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 12:34:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id AD2DD300B9ED
-	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 11:29:50 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id E8805309B581
+	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 11:30:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7626A35C191;
-	Fri,  9 Jan 2026 11:29:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91FD135CB7D;
+	Fri,  9 Jan 2026 11:29:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hXe9VPz5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h+0hgalO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 078C735B13E
-	for <bpf@vger.kernel.org>; Fri,  9 Jan 2026 11:29:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4C7C359F99
+	for <bpf@vger.kernel.org>; Fri,  9 Jan 2026 11:29:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767958158; cv=none; b=cVck1p8Z4NoqCnvzomaILQJySFl+s1+WK/fIoUGRpm7l2r1u6QG3Z9xS1dqOWNM1RLHSpotY1qlIvliOrpM5ORyUasUnLBgxg8Q69r9/T+KIhD66hRfAhcj2zH1Xo5WN4gDrLyODQhWCSyPeAvPNgbnisqmi8Pd4TjaY/yBwarI=
+	t=1767958162; cv=none; b=MOY4l9Ew4nAM368frs6uFI9joe0z580a8A+6cehOjgUqWdRgBZbeshHE3SEAvFK9tlJ4hMJxEq0YETGpBSLvePkDypXpR1JfoN70h0UVsx/AmyHXHCBAUex04DpcDZDRAtSE6tOTb/XwUEFbGP8sX7zglsc4aC0JszwaS/BfoTk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767958158; c=relaxed/simple;
-	bh=F6waAxUTN0XHkxjyQT+jUXiZnFRXTIpv+p7I9hYKiIU=;
+	s=arc-20240116; t=1767958162; c=relaxed/simple;
+	bh=/jxCrpK8l6glGcqt49LNeHrXzbo3WZk9EY0AmmIwENo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=c+Rh0ThFstrHlg5Brckc4EytiYnLVH3P35jtK6MDIM5XI0m2MMzRZBkmWjd5RFsdFobgNNHquROhPBi7Vw6ug6Y4J1gCZyz1UGesJJQRBVD5ipFntjKOFAonhLUXpFbHFkYCSAa1SY9lVbfZ70MJWqorY0NfCVrGPyjJXir4lZk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hXe9VPz5; arc=none smtp.client-ip=209.85.128.44
+	 MIME-Version; b=OFwnD1iJzCyAW8vqwoPbftBMXzQ6YGmosLCKr91c6YIIUWau0NqhXCBuMcS072wDglmmu/klV2QePCqL6Wi3Rf019MizU+551b7IxWNA3KG21fzvvDkBiL0iCCj8gLLZ8BbVBG9ebdv70ys6mpp1WYj2PxIN9yJl1uFWw6jRq2I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h+0hgalO; arc=none smtp.client-ip=209.85.128.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-47a8195e515so30228215e9.0
-        for <bpf@vger.kernel.org>; Fri, 09 Jan 2026 03:29:15 -0800 (PST)
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-47d493a9b96so24568415e9.1
+        for <bpf@vger.kernel.org>; Fri, 09 Jan 2026 03:29:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767958153; x=1768562953; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1767958155; x=1768562955; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HkGYuXz+QxHGRROmceDvRDL3xnFuc5UQrONsfTFdwcU=;
-        b=hXe9VPz5zpwUdxHdQiNA7nI7D89AQSveggNCgVpkqkyCGsukQrI2unq7opkC9S70QQ
-         Ma3zfkPfDUchjPMEWupLTGaO52psc0mwkWd9sHH0rVDMpJ/s47PPp/C/qQYRoWs5cWOw
-         p0zwWsuRel4KPLiXU1oykrX0YVN3ZClfZLk69wJYfhTz2dgqJjX5InV/gzoij6MTQFzj
-         ZZcTi2drf7HmcEjpmvWNx1GOynGzLktFNmg/od6VyS2UB7nPosKJXOSHbHPMZufx9OxL
-         CuzbUvqb6Ugpd5rIAnXpo+GMO05CiFtWBfNlTCgqkedlFa8dFNmiVxO9h0hHzAqwFhRW
-         NJkg==
+        bh=WJRC4dPidxMIa9vqar4Y3LK2OFHt6WzESXNCWKhLD0s=;
+        b=h+0hgalOLvkaiVreIVlWnFsD7FLxMGxgYjcECpRiFlLppOrRDuSOin4WdyW83RlYK4
+         4SeCVO9+TvbdniM3n7n0RV0JHTKrPFphJJC/dXsDoV5NsL898yYMH8Q0r/E2fJxAgbjy
+         qxA2+cAt2tmQfgW5WfGwgmoSZyd5R6tpVnqkwEEee3MTFFUKoBHdtId+pxPW0w4F2J+q
+         RGjZIyzmTENj1Qa1QkhlDr6Z25G7VOwQvrtv94NFpD80LN0YYXp0HUBO8PFU9YA5kGDG
+         y45NLgx/HYPMjNarPZ3hyLahLByhGvYD1964kMaDn/T56iD0aOJURD1NMaeNn+UzI3tg
+         6tQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767958153; x=1768562953;
+        d=1e100.net; s=20230601; t=1767958155; x=1768562955;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=HkGYuXz+QxHGRROmceDvRDL3xnFuc5UQrONsfTFdwcU=;
-        b=Dw4Q+4mHAV5+Wty6FqTfotlyj1BzoLmim/uIJwNjv57bSTP334zLfHYvQWYfmQbQCx
-         vekMKguOsmxQczaAEkiBqy9YNCn5K1wIGNcL5QYIf/xmXLmnICiEWt5NmxJbhqPlYTyC
-         gUo6tcQp2ksb/RWfiYWr1dLPGzdC5s0OPniYxB/cMVyuRS8ICVyo6iHtB6D+dHf+jEr6
-         36HKtDKWW/+Azw6t82XlEDvcKcENJi+zXurhTEqOaMfpb/AL27CSPh0QA5HFADARhh++
-         iOfHjnjvbRbRsvuP2sNj8mU/J4LtrRA48Tp/sKUkmXZUWem2Dr3JMVpMFu/AHVLSUDXW
-         ySdg==
-X-Forwarded-Encrypted: i=1; AJvYcCWiPWU0/bjHi7VQAIXNWRuv0ywunwPiKbRbhQn0adg7luQXzs1hskKRXFOi17V9a9K47Ac=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzB4k7Z+/gdCMERPfYXMhzZzXPS2FfiLk835KBJNiQLjE84VQko
-	dsiEmIgkFjR+ob6+c8YtZI9s9GkQoALO/wSR8Yi5Rj4nXxJuxsM5xt8g
-X-Gm-Gg: AY/fxX6Ja8JtV4seeVyPdAULGQw3qJtRqoPJGdJu7oIO4ppiJ+nIDssM0pUGO5PtXyB
-	tVB/PBuuigegFUJtI53G7TzlG7Sk5rHL5mOQ80T4MMZ0Y53SytA3UliGaGdJsohmsHW+KQhcgLf
-	7S8ljvtn2phbBf1sYsdopaENyxSnw2Vd04X0WjPkpAJGQlVcYsUvXyZoTA/l6RggiMqYOwYcCMY
-	puBYbxsmbLtZRle6E43pTldXTaUZCLAPtOd2lbS2NHfHHGiF0c7X4zbYm+VsOfXVHiYQz6X9FoA
-	39fyEnVF5w81y0IobIv/MnQrQx7AZmdo6wizNpa4u/rS5lB397U8j/XTQvPeyY+qnYnafO5AWXD
-	KK2XBHHDcnfeG+Oeh0R3fcV/JNEfBLkV+F/d6WJOhfNh5WG2tOppzoVBRatr9V0sO6aa0vTSs6E
-	9Mqv92l1Rw2w1z1As69BMwqD/e4i1EUTgJl4Wdtl76BGfMIb4tmGe7kGO/LgLN/SJ3Kbe4Glk01
-	Mbk9CeY
-X-Google-Smtp-Source: AGHT+IFSy1+lFxUURQmqDSNKN0HOOFkFOx1ujyLXJg2nypF43Lq0YrQtt9+vrxTHS0Rrgmo+7XmdqQ==
-X-Received: by 2002:a05:600c:1d14:b0:477:97c7:9be7 with SMTP id 5b1f17b1804b1-47d84b0a7bdmr104836275e9.1.1767958152875;
-        Fri, 09 Jan 2026 03:29:12 -0800 (PST)
+        bh=WJRC4dPidxMIa9vqar4Y3LK2OFHt6WzESXNCWKhLD0s=;
+        b=EG7teS9Hqqpumvx1wmtlzgG9DUknYqKrZZwhHkA1Rah0yvk+zxIoWui/6QouUBDpkt
+         XukX6zA6mBVgabBO+vFjpjJ+0DjCpOqZkOydomr8VpbNkBNWrD+vEhup7uR749JHeQep
+         BXBscDghJauenntguXYMHRipvo2ybjq2Lxxo9HU/FlM7SrE5XbFCydzyWy1cWIhqEq7B
+         EdNTxe1O/2y3+wSHlyYIZ+C48dpnI4QaMcgL8mSlyYHEltYyXS/yBpMu3fs48wHBaGoN
+         vhBgszbbnYXwu+YHT7a0Mc7vQDJ0FTvhWXuDS1OE3YxYs5fpem7uycnvE8E2ePXbxVsi
+         qGNg==
+X-Forwarded-Encrypted: i=1; AJvYcCUt8EBW8npYfG5DGos9fYrHc9IVl8BI/ypRybgzgiX3lZKla8EfgPZ8D7Hp8c8hpBfdET0=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywhht9miT03XIuc3jc2cVC0VdrfEeSCvYj3G26B1CvdoL6trjdf
+	ZWpdTitPVNDUp3oqgyfYZV7sthPGnD5UD9/r4krtJNNQXsIOqzvAf+Vm
+X-Gm-Gg: AY/fxX45n9dtDvcPl8WA/SoKKwoQohBIXjlfxUicX8ZwIJsf5sfp3Gfz0wmmBf+INX7
+	Yhffq+mnOFS8+x6qE8JV/dIl36G71oySM2EeuLZ97X7ii735lE9MnQhLcawjxQ8aprupnZNUhES
+	RC3Yu0ZgbpZqGj4FQIfrNV02KfLFNiV/UKfFmierWHPR/ysG8QgMunowTn3KwKlrAILK5fpvvnL
+	hXxjhGqE3WUMBKWPfrrXmIhz/H6qdLIx9mre+aJcq7IQfOxStP7HW+DGLZm40wL0HJ5cVNeiG+a
+	L77bSlhW23VRlev1i+sxnTGZimQvpFv679LkVwjUn+jaRs9Gf7hw07RqIO8oKu7U1onnFyJ9Puu
+	JYFz5OM3dLpoBr/YOoiGPRfSGsD+i5VjeEASwdcizm4jvzX/TF0hS+x/yM7CfJTy2ICeQuodZf6
+	V+Z47HJ2whe2Y/QAFYaRSwgwMkFJTQ+905QSIAqQMy+i5Fl6BR3Vg0fbThuRRnAnh8hRcyCQ==
+X-Google-Smtp-Source: AGHT+IFP8GKWdVbTR4kP2eSXOtP3B21YVVOqcaO/WazPjd6IKdKiRPGp9LwPNLHkHaCIs9RrvfXe8w==
+X-Received: by 2002:a05:600c:8b57:b0:477:54f9:6ac2 with SMTP id 5b1f17b1804b1-47d849bdfa7mr100045195e9.0.1767958154803;
+        Fri, 09 Jan 2026 03:29:14 -0800 (PST)
 Received: from 127.com ([2620:10d:c092:600::1:69b5])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47d8636c610sm60056985e9.0.2026.01.09.03.29.09
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47d8636c610sm60056985e9.0.2026.01.09.03.29.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jan 2026 03:29:12 -0800 (PST)
+        Fri, 09 Jan 2026 03:29:14 -0800 (PST)
 From: Pavel Begunkov <asml.silence@gmail.com>
 To: netdev@vger.kernel.org
 Cc: "David S . Miller" <davem@davemloft.net>,
@@ -126,9 +125,9 @@ Cc: "David S . Miller" <davem@davemloft.net>,
 	linux-kselftest@vger.kernel.org,
 	dtatulea@nvidia.com,
 	io-uring@vger.kernel.org
-Subject: [PATCH net-next v8 7/9] eth: bnxt: support qcfg provided rx page size
-Date: Fri,  9 Jan 2026 11:28:46 +0000
-Message-ID: <28028611f572ded416b8ab653f1b9515b0337fba.1767819709.git.asml.silence@gmail.com>
+Subject: [PATCH net-next v8 8/9] selftests: iou-zcrx: test large chunk sizes
+Date: Fri,  9 Jan 2026 11:28:47 +0000
+Message-ID: <bb51fe4e6f30b0bd2335bfc665dc3e30b8de7acb.1767819709.git.asml.silence@gmail.com>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <cover.1767819709.git.asml.silence@gmail.com>
 References: <cover.1767819709.git.asml.silence@gmail.com>
@@ -140,118 +139,209 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Implement support for qcfg provided rx page sizes. For that, implement
-the ndo_default_qcfg callback and validate the config on restart. Also,
-use the current config's value in bnxt_init_ring_struct to retain the
-correct size across resets.
+Add a test using large chunks for zcrx memory area.
 
 Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt.c | 36 ++++++++++++++++++++++-
- drivers/net/ethernet/broadcom/bnxt/bnxt.h |  1 +
- 2 files changed, 36 insertions(+), 1 deletion(-)
+ .../selftests/drivers/net/hw/iou-zcrx.c       | 72 +++++++++++++++----
+ .../selftests/drivers/net/hw/iou-zcrx.py      | 37 ++++++++++
+ 2 files changed, 97 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-index 137e348d2b9c..3ffe4fe159d3 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -4325,6 +4325,7 @@ static void bnxt_init_ring_struct(struct bnxt *bp)
- 		struct bnxt_rx_ring_info *rxr;
- 		struct bnxt_tx_ring_info *txr;
- 		struct bnxt_ring_struct *ring;
-+		struct netdev_rx_queue *rxq;
+diff --git a/tools/testing/selftests/drivers/net/hw/iou-zcrx.c b/tools/testing/selftests/drivers/net/hw/iou-zcrx.c
+index 62456df947bc..0a19b573f4f5 100644
+--- a/tools/testing/selftests/drivers/net/hw/iou-zcrx.c
++++ b/tools/testing/selftests/drivers/net/hw/iou-zcrx.c
+@@ -12,6 +12,7 @@
+ #include <unistd.h>
  
- 		if (!bnapi)
- 			continue;
-@@ -4342,7 +4343,8 @@ static void bnxt_init_ring_struct(struct bnxt *bp)
- 		if (!rxr)
- 			goto skip_rx;
+ #include <arpa/inet.h>
++#include <linux/mman.h>
+ #include <linux/errqueue.h>
+ #include <linux/if_packet.h>
+ #include <linux/ipv6.h>
+@@ -37,6 +38,23 @@
  
--		rxr->rx_page_size = BNXT_RX_PAGE_SIZE;
-+		rxq = __netif_get_rx_queue(bp->dev, i);
-+		rxr->rx_page_size = rxq->qcfg.rx_page_size;
+ #include <liburing.h>
  
- 		ring = &rxr->rx_ring_struct;
- 		rmem = &ring->ring_mem;
-@@ -15932,6 +15934,29 @@ static const struct netdev_stat_ops bnxt_stat_ops = {
- 	.get_base_stats		= bnxt_get_base_stats,
- };
- 
-+static void bnxt_queue_default_qcfg(struct net_device *dev,
-+				    struct netdev_queue_config *qcfg)
-+{
-+	qcfg->rx_page_size = BNXT_RX_PAGE_SIZE;
-+}
++#define SKIP_CODE	42
 +
-+static int bnxt_validate_qcfg(struct bnxt *bp, struct netdev_queue_config *qcfg)
-+{
-+	/* Older chips need MSS calc so rx_page_size is not supported */
-+	if (!(bp->flags & BNXT_FLAG_CHIP_P5_PLUS) &&
-+	     qcfg->rx_page_size != BNXT_RX_PAGE_SIZE)
-+		return -EINVAL;
++struct t_io_uring_zcrx_ifq_reg {
++	__u32	if_idx;
++	__u32	if_rxq;
++	__u32	rq_entries;
++	__u32	flags;
 +
-+	if (!is_power_of_2(qcfg->rx_page_size))
-+		return -ERANGE;
++	__u64	area_ptr; /* pointer to struct io_uring_zcrx_area_reg */
++	__u64	region_ptr; /* struct io_uring_region_desc * */
 +
-+	if (qcfg->rx_page_size < BNXT_RX_PAGE_SIZE ||
-+	    qcfg->rx_page_size > BNXT_MAX_RX_PAGE_SIZE)
-+		return -ERANGE;
++	struct io_uring_zcrx_offsets offsets;
++	__u32	zcrx_id;
++	__u32	rx_buf_len;
++	__u64	__resv[3];
++};
 +
-+	return 0;
-+}
+ static long page_size;
+ #define AREA_SIZE (8192 * page_size)
+ #define SEND_SIZE (512 * 4096)
+@@ -65,6 +83,8 @@ static bool cfg_oneshot;
+ static int cfg_oneshot_recvs;
+ static int cfg_send_size = SEND_SIZE;
+ static struct sockaddr_in6 cfg_addr;
++static unsigned cfg_rx_buf_len;
++static bool cfg_dry_run;
+ 
+ static char *payload;
+ static void *area_ptr;
+@@ -128,14 +148,28 @@ static void setup_zcrx(struct io_uring *ring)
+ 	if (!ifindex)
+ 		error(1, 0, "bad interface name: %s", cfg_ifname);
+ 
+-	area_ptr = mmap(NULL,
+-			AREA_SIZE,
+-			PROT_READ | PROT_WRITE,
+-			MAP_ANONYMOUS | MAP_PRIVATE,
+-			0,
+-			0);
+-	if (area_ptr == MAP_FAILED)
+-		error(1, 0, "mmap(): zero copy area");
++	if (cfg_rx_buf_len && cfg_rx_buf_len != page_size) {
++		area_ptr = mmap(NULL,
++				AREA_SIZE,
++				PROT_READ | PROT_WRITE,
++				MAP_ANONYMOUS | MAP_PRIVATE |
++				MAP_HUGETLB | MAP_HUGE_2MB,
++				-1,
++				0);
++		if (area_ptr == MAP_FAILED) {
++			printf("Can't allocate huge pages\n");
++			exit(SKIP_CODE);
++		}
++	} else {
++		area_ptr = mmap(NULL,
++				AREA_SIZE,
++				PROT_READ | PROT_WRITE,
++				MAP_ANONYMOUS | MAP_PRIVATE,
++				0,
++				0);
++		if (area_ptr == MAP_FAILED)
++			error(1, 0, "mmap(): zero copy area");
++	}
+ 
+ 	ring_size = get_refill_ring_size(rq_entries);
+ 	ring_ptr = mmap(NULL,
+@@ -157,17 +191,23 @@ static void setup_zcrx(struct io_uring *ring)
+ 		.flags = 0,
+ 	};
+ 
+-	struct io_uring_zcrx_ifq_reg reg = {
++	struct t_io_uring_zcrx_ifq_reg reg = {
+ 		.if_idx = ifindex,
+ 		.if_rxq = cfg_queue_id,
+ 		.rq_entries = rq_entries,
+ 		.area_ptr = (__u64)(unsigned long)&area_reg,
+ 		.region_ptr = (__u64)(unsigned long)&region_reg,
++		.rx_buf_len = cfg_rx_buf_len,
+ 	};
+ 
+-	ret = io_uring_register_ifq(ring, &reg);
+-	if (ret)
++	ret = io_uring_register_ifq(ring, (void *)&reg);
++	if (cfg_rx_buf_len && (ret == -EINVAL || ret == -EOPNOTSUPP ||
++			       ret == -ERANGE)) {
++		printf("Large chunks are not supported %i\n", ret);
++		exit(SKIP_CODE);
++	} else if (ret) {
+ 		error(1, 0, "io_uring_register_ifq(): %d", ret);
++	}
+ 
+ 	rq_ring.khead = (unsigned int *)((char *)ring_ptr + reg.offsets.head);
+ 	rq_ring.ktail = (unsigned int *)((char *)ring_ptr + reg.offsets.tail);
+@@ -323,6 +363,8 @@ static void run_server(void)
+ 	io_uring_queue_init(512, &ring, flags);
+ 
+ 	setup_zcrx(&ring);
++	if (cfg_dry_run)
++		return;
+ 
+ 	add_accept(&ring, fd);
+ 
+@@ -383,7 +425,7 @@ static void parse_opts(int argc, char **argv)
+ 		usage(argv[0]);
+ 	cfg_payload_len = max_payload_len;
+ 
+-	while ((c = getopt(argc, argv, "sch:p:l:i:q:o:z:")) != -1) {
++	while ((c = getopt(argc, argv, "sch:p:l:i:q:o:z:x:d")) != -1) {
+ 		switch (c) {
+ 		case 's':
+ 			if (cfg_client)
+@@ -418,6 +460,12 @@ static void parse_opts(int argc, char **argv)
+ 		case 'z':
+ 			cfg_send_size = strtoul(optarg, NULL, 0);
+ 			break;
++		case 'x':
++			cfg_rx_buf_len = page_size * strtoul(optarg, NULL, 0);
++			break;
++		case 'd':
++			cfg_dry_run = true;
++			break;
+ 		}
+ 	}
+ 
+diff --git a/tools/testing/selftests/drivers/net/hw/iou-zcrx.py b/tools/testing/selftests/drivers/net/hw/iou-zcrx.py
+index 712c806508b5..83061b27f2f2 100755
+--- a/tools/testing/selftests/drivers/net/hw/iou-zcrx.py
++++ b/tools/testing/selftests/drivers/net/hw/iou-zcrx.py
+@@ -7,6 +7,7 @@ from lib.py import ksft_run, ksft_exit, KsftSkipEx
+ from lib.py import NetDrvEpEnv
+ from lib.py import bkg, cmd, defer, ethtool, rand_port, wait_port_listen
+ 
++SKIP_CODE = 42
+ 
+ def _get_current_settings(cfg):
+     output = ethtool(f"-g {cfg.ifname}", json=True)[0]
+@@ -132,6 +133,42 @@ def test_zcrx_rss(cfg) -> None:
+         cmd(tx_cmd, host=cfg.remote)
+ 
+ 
++def test_zcrx_large_chunks(cfg) -> None:
++    cfg.require_ipver('6')
 +
- static int bnxt_queue_mem_alloc(struct net_device *dev,
- 				struct netdev_queue_config *qcfg,
- 				void *qmem, int idx)
-@@ -15944,6 +15969,10 @@ static int bnxt_queue_mem_alloc(struct net_device *dev,
- 	if (!bp->rx_ring)
- 		return -ENETDOWN;
- 
-+	rc = bnxt_validate_qcfg(bp, qcfg);
-+	if (rc < 0)
-+		return rc;
++    combined_chans = _get_combined_channels(cfg)
++    if combined_chans < 2:
++        raise KsftSkipEx('at least 2 combined channels required')
++    (rx_ring, hds_thresh) = _get_current_settings(cfg)
++    port = rand_port()
 +
- 	rxr = &bp->rx_ring[idx];
- 	clone = qmem;
- 	memcpy(clone, rxr, sizeof(*rxr));
-@@ -15955,6 +15984,7 @@ static int bnxt_queue_mem_alloc(struct net_device *dev,
- 	clone->rx_sw_agg_prod = 0;
- 	clone->rx_next_cons = 0;
- 	clone->need_head_pool = false;
-+	clone->rx_page_size = qcfg->rx_page_size;
- 
- 	rc = bnxt_alloc_rx_page_pool(bp, clone, rxr->page_pool->p.nid);
- 	if (rc)
-@@ -16081,6 +16111,8 @@ static void bnxt_copy_rx_ring(struct bnxt *bp,
- 	src_ring = &src->rx_agg_ring_struct;
- 	src_rmem = &src_ring->ring_mem;
- 
-+	dst->rx_page_size = src->rx_page_size;
++    ethtool(f"-G {cfg.ifname} tcp-data-split on")
++    defer(ethtool, f"-G {cfg.ifname} tcp-data-split auto")
 +
- 	WARN_ON(dst_rmem->nr_pages != src_rmem->nr_pages);
- 	WARN_ON(dst_rmem->page_size != src_rmem->page_size);
- 	WARN_ON(dst_rmem->flags != src_rmem->flags);
-@@ -16235,6 +16267,8 @@ static const struct netdev_queue_mgmt_ops bnxt_queue_mgmt_ops = {
- 	.ndo_queue_mem_free	= bnxt_queue_mem_free,
- 	.ndo_queue_start	= bnxt_queue_start,
- 	.ndo_queue_stop		= bnxt_queue_stop,
-+	.ndo_default_qcfg	= bnxt_queue_default_qcfg,
-+	.supported_params	= QCFG_RX_PAGE_SIZE,
- };
- 
- static void bnxt_remove_one(struct pci_dev *pdev)
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.h b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-index 4c880a9fba92..d245eefbbdda 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-@@ -760,6 +760,7 @@ struct nqe_cn {
- #endif
- 
- #define BNXT_RX_PAGE_SIZE (1 << BNXT_RX_PAGE_SHIFT)
-+#define BNXT_MAX_RX_PAGE_SIZE BIT(15)
- 
- #define BNXT_MAX_MTU		9500
- 
++    ethtool(f"-G {cfg.ifname} hds-thresh 0")
++    defer(ethtool, f"-G {cfg.ifname} hds-thresh {hds_thresh}")
++
++    ethtool(f"-G {cfg.ifname} rx 64")
++    defer(ethtool, f"-G {cfg.ifname} rx {rx_ring}")
++
++    ethtool(f"-X {cfg.ifname} equal {combined_chans - 1}")
++    defer(ethtool, f"-X {cfg.ifname} default")
++
++    flow_rule_id = _set_flow_rule(cfg, port, combined_chans - 1)
++    defer(ethtool, f"-N {cfg.ifname} delete {flow_rule_id}")
++
++    rx_cmd = f"{cfg.bin_local} -s -p {port} -i {cfg.ifname} -q {combined_chans - 1} -x 2"
++    tx_cmd = f"{cfg.bin_remote} -c -h {cfg.addr_v['6']} -p {port} -l 12840"
++
++    probe = cmd(rx_cmd + " -d", fail=False)
++    if probe.ret == SKIP_CODE:
++        raise KsftSkipEx(probe.stdout)
++
++    with bkg(rx_cmd, exit_wait=True):
++        wait_port_listen(port, proto="tcp")
++        cmd(tx_cmd, host=cfg.remote)
++
++
+ def main() -> None:
+     with NetDrvEpEnv(__file__) as cfg:
+         cfg.bin_local = path.abspath(path.dirname(__file__) + "/../../../drivers/net/hw/iou-zcrx")
 -- 
 2.52.0
 
