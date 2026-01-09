@@ -1,171 +1,87 @@
-Return-Path: <bpf+bounces-78337-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78338-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BD21D0AFB5
-	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 16:41:15 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EEE5D0B373
+	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 17:25:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id D3FF4304921A
-	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 15:37:48 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 3BB02305B482
+	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 16:18:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D510333CE92;
-	Fri,  9 Jan 2026 15:37:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Mm1147DI"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABC1A5CDF1;
+	Fri,  9 Jan 2026 16:17:45 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+Received: from relay.hostedemail.com (smtprelay0010.hostedemail.com [216.40.44.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63DF2322B7F
-	for <bpf@vger.kernel.org>; Fri,  9 Jan 2026 15:37:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 060CD30E853;
+	Fri,  9 Jan 2026 16:17:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767973057; cv=none; b=kGaFtTeP34tQVrXB8DpwIjYMFpPqSgjGBjb9B0OzaBXCG1mu6mbcMyytrEuzcm45tIwThwBqMnfhX57KgDGchT6KboIivzcxK5zhSU/OlBg0sFTERfwGltohka9ImJ0n0ERNEBRaq2oXxKOSgkrRZvSMw18l8aUETigIOWqQ5ik=
+	t=1767975465; cv=none; b=DrAHcHtIZ/le9/oPs/cCw0XluPovwe6jPl4QRMiD7lUCSOzWqOpI7X8rEsUFtquzJczhjhNybQt0tUyZMRt+wK+U2yQg+un79rHFkKzlqVQUrmdPWGjSkxEhBjZ5NiPrKz3k0mj26eOh/6ZUwkgbTqboNkOFWI8V/IUiR0q5fnY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767973057; c=relaxed/simple;
-	bh=olXGm4lhKZ/DUlPJ4xDJl2D4L2YZF2AiKKcbPFW+qYo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mrxFtC8yiXIDhTUkpFEcomdOW9YKSKEteaII0sI6oUA+oTI6XsWBrneozsvOCpT1ek8Xnjuz8Zjr6u9D6O9POGqJQj2O1s6DrNBM3J3MWUPcpJLRTZfSv+m60h4CCkP1iSUqeUxXu/ZkgHvbxgfLgIZ2mZaBfcU3wHSTchroVMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Mm1147DI; arc=none smtp.client-ip=95.215.58.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1767973053;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zGmQZRRwHlrtsRbft3WSiOCAz3aFQwD5zodc3tv48HM=;
-	b=Mm1147DIHhLW7zP2EauxyHdsXI9RKxz3GC3qUwmoLQ4yuNjCPdidgxYYT9PcDapwg/HC7B
-	MIvVhpXMv5LqUDNM6kDVe2b6YwJnRCuX5+WfKrlJoHQ8IOb6UHl2QQHnDRVNPXoNFbNqIf
-	R0eRMuWuubcK/ROndIFPVPTrdcatV40=
-From: Leon Hwang <leon.hwang@linux.dev>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	"David S . Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org,
-	"H . Peter Anvin" <hpa@zytor.com>,
-	Matt Bobrowski <mattbobrowski@google.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Leon Hwang <leon.hwang@linux.dev>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	kernel-patches-bot@fb.com
-Subject: [PATCH bpf-next 3/3] selftests/bpf: Add BPF_BRANCH_SNAPSHOT_F_COPY test
-Date: Fri,  9 Jan 2026 23:34:20 +0800
-Message-ID: <20260109153420.32181-4-leon.hwang@linux.dev>
-In-Reply-To: <20260109153420.32181-1-leon.hwang@linux.dev>
-References: <20260109153420.32181-1-leon.hwang@linux.dev>
+	s=arc-20240116; t=1767975465; c=relaxed/simple;
+	bh=u4xJagi6nb7Yc6X9FQFypEMGidVDdmf5kxoL21Ph7G4=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=L7oky1HgbYFr5tfoz2Y1yCcCB/tYOiUww+RqAr9PMiAIvFbosM1COx8OIUF6vjkH/vr7R+Fkv8IduOG+s5j/FELpFHQE/NBgfH1mfAu7KXurHnte3xnf1+yMflIaqeWOO4E38sL6U5S7LFIrlIoVIBnk0bK+9gavhyMfyN3rmaA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf07.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay07.hostedemail.com (Postfix) with ESMTP id 40B7F160333;
+	Fri,  9 Jan 2026 16:17:36 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf07.hostedemail.com (Postfix) with ESMTPA id 7C3552002C;
+	Fri,  9 Jan 2026 16:17:33 +0000 (UTC)
+Date: Fri, 9 Jan 2026 11:18:04 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Will Deacon <will@kernel.org>,
+ Mahe Tardy <mahe.tardy@gmail.com>, Peter Zijlstra <peterz@infradead.org>,
+ bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, x86@kernel.org, Yonghong Song
+ <yhs@fb.com>, Song Liu <songliubraving@fb.com>, Andrii Nakryiko
+ <andrii@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCHv2 bpf-next 1/2] arm64/ftrace,bpf: Fix partial regs after
+ bpf_prog_run
+Message-ID: <20260109111804.481a6f20@gandalf.local.home>
+In-Reply-To: <20260109093454.389295-1-jolsa@kernel.org>
+References: <20260109093454.389295-1-jolsa@kernel.org>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Server: rspamout06
+X-Rspamd-Queue-Id: 7C3552002C
+X-Stat-Signature: f8aus8gwt9gwwghji8dnqrqaet4ioy6e
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX1+dsryzGlYq/IBaVcXmTxW02qO+AtSzCCE=
+X-HE-Tag: 1767975453-939575
+X-HE-Meta: U2FsdGVkX195HTS3PXdoSrXMaKW9jSAqMC2F/Zr2Crpg0MiCloYO/UukNadfj8DBKa27oZ27laPKm/4He9R+NuUHpk6ZGtccKIKcGfY1T9mIju3yta15pVGhCsAjwPOP6oPCBuH/XmjyjXw8274URJ7oA7jwvw5b9EtIk662f2w5s+yFnw8OyJioll9LUPMhshmXpiMGzRVnTS+iMFJgImpS30y4O+Wj1gMyXdQMGCq5Fx+WF0QEa+qLcbzoI456A5q7Jgyv5eEIOt5SDZHm9yUWIjNt/aDsZdfMPQ5ZpY90q7BzwAsiwGprE//EDWLHCDd3z+Ajbnnh14kJleRYrTL+ooQCFoK6kixAZ3n8EeCIvhGQdH0Z/SLDZxU8yTijGfgy/xE9hzqWJAJEcCDEySYDlazdn704J1SZt0Bu7jc=
 
-Add test for BPF_BRANCH_SNAPSHOT_F_COPY flag by adding flag to the
-callsite of bpf_get_branch_snapshot helper.
+On Fri,  9 Jan 2026 10:34:53 +0100
+Jiri Olsa <jolsa@kernel.org> wrote:
 
-Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
----
- .../bpf/prog_tests/get_branch_snapshot.c      | 26 ++++++++++++++++---
- .../selftests/bpf/progs/get_branch_snapshot.c |  3 ++-
- 2 files changed, 25 insertions(+), 4 deletions(-)
+> Mahe reported issue with bpf_override_return helper not working when
+> executed from kprobe.multi bpf program on arm.
+> 
+> The problem is that on arm we use alternate storage for pt_regs object
+> that is passed to bpf_prog_run and if any register is changed (which
+> is the case of bpf_override_return) it's not propagated back to actual
+> pt_regs object.
+> 
+> Fixing this by introducing and calling ftrace_partial_regs_update function
+> to propagate the values of changed registers (ip and stack).
+> 
+> Reported-by: Mahe Tardy <mahe.tardy@gmail.com>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c b/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c
-index 0394a1156d99..6b8ab1655ab0 100644
---- a/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c
-+++ b/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c
-@@ -73,7 +73,7 @@ static void close_perf_events(void)
- 	free(pfd_array);
- }
- 
--void serial_test_get_branch_snapshot(void)
-+static void test_branch_snapshot(int flags)
- {
- 	struct get_branch_snapshot *skel = NULL;
- 	int err;
-@@ -89,8 +89,14 @@ void serial_test_get_branch_snapshot(void)
- 		goto cleanup;
- 	}
- 
--	skel = get_branch_snapshot__open_and_load();
--	if (!ASSERT_OK_PTR(skel, "get_branch_snapshot__open_and_load"))
-+	skel = get_branch_snapshot__open();
-+	if (!ASSERT_OK_PTR(skel, "get_branch_snapshot__open"))
-+		goto cleanup;
-+
-+	skel->rodata->flags = flags;
-+
-+	err = get_branch_snapshot__load(skel);
-+	if (!ASSERT_OK(err, "get_branch_snapshot__load"))
- 		goto cleanup;
- 
- 	err = kallsyms_find("bpf_testmod_loop_test", &skel->bss->address_low);
-@@ -128,3 +134,17 @@ void serial_test_get_branch_snapshot(void)
- 	get_branch_snapshot__destroy(skel);
- 	close_perf_events();
- }
-+
-+void serial_test_get_branch_snapshot(void)
-+{
-+	test_branch_snapshot(0);
-+}
-+
-+enum {
-+	BPF_BRANCH_SNAPSHOT_F_COPY	= 1,	/* Copy branch snapshot from bpf_branch_snapshot. */
-+};
-+
-+void serial_test_copy_branch_snapshot(void)
-+{
-+	test_branch_snapshot(BPF_BRANCH_SNAPSHOT_F_COPY);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/get_branch_snapshot.c b/tools/testing/selftests/bpf/progs/get_branch_snapshot.c
-index 511ac634eef0..47a1984bdf46 100644
---- a/tools/testing/selftests/bpf/progs/get_branch_snapshot.c
-+++ b/tools/testing/selftests/bpf/progs/get_branch_snapshot.c
-@@ -6,6 +6,7 @@
- 
- char _license[] SEC("license") = "GPL";
- 
-+volatile const int flags = 0;
- __u64 test1_hits = 0;
- __u64 address_low = 0;
- __u64 address_high = 0;
-@@ -25,7 +26,7 @@ int BPF_PROG(test1, int n, int ret)
- {
- 	long i;
- 
--	total_entries = bpf_get_branch_snapshot(entries, sizeof(entries), 0);
-+	total_entries = bpf_get_branch_snapshot(entries, sizeof(entries), flags);
- 	total_entries /= sizeof(struct perf_branch_entry);
- 
- 	for (i = 0; i < ENTRY_CNT; i++) {
--- 
-2.52.0
+Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
+-- Steve
 
