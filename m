@@ -1,198 +1,169 @@
-Return-Path: <bpf+bounces-78350-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78354-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 103F3D0BEA7
-	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 19:47:25 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3A10D0BEEF
+	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 19:50:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id A064030188C5
-	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 18:47:19 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 72DA6305CB15
+	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 18:49:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74CF12D9EC8;
-	Fri,  9 Jan 2026 18:47:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 776AB2E0405;
+	Fri,  9 Jan 2026 18:49:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Hg/pngey"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="AmbduUQt"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B29F2D9784
-	for <bpf@vger.kernel.org>; Fri,  9 Jan 2026 18:47:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 323FE2DEA70;
+	Fri,  9 Jan 2026 18:49:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767984436; cv=none; b=Ax3KGqM9QVOQj0MYqVBXDkPkmUyV3topvp7voGaIjnIfD8bmVeZ5fTgXtT8zWpZvU3O12gD/nXdo0Jce7Wg/EUJpOaRs79Y2tTUjUXfJBA2X6pO8OmV50B4hVKPVhpJrDhvL5fB/fQ/Z8zMhPHK76ibJU9LTWZLVLpK6vWLYtzk=
+	t=1767984579; cv=none; b=SmXpUiaWIuti7Pz08ozqCBUp3avGVNsfUhEBDdk8zIxNL/5KF8WOizHyCWqxsyoCMMvm9+rY9rTg7fW4G/0ZoeAVHQXw8ijK6Q1semR3++TqQyRdVQ8FFqW1Xu3QFixLsVk9MKseE9FfFO8IXQuNqSBk9IqktgV+0xoFVCKAw2Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767984436; c=relaxed/simple;
-	bh=3Ih4MI9kS4MldSyVi0fRb2lJPE6EtpcZFZjCTjuOKnw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uWMCmKoa2eaWUADQpMBWb/OrAR85o8iTgZhU0uDQpZkdtaWnOZO9NlKDcRUEWw4PxdgnIihzm5FvNvd/Q/WafiHv7JOTKcN2sDpap64jLn8WaK0LBWWfYR99n+y5fiPlFe/MQ7tzYBq4q9pnsg7207yO7JvvZjPYqs38eD3z4Iw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Hg/pngey; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-2a0c09bb78cso25936045ad.0
-        for <bpf@vger.kernel.org>; Fri, 09 Jan 2026 10:47:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767984433; x=1768589233; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rGBvDDpxTKsSKi/PBBmzaVZCoI4skoibmdHf0mi5fA0=;
-        b=Hg/pngeyTA7GrLdmE7PBe4ZmQbpbM/erhU3hsCRQetBnlXqo+IESQzLbFbaeYxGORZ
-         4QnMnt3Xet7y+PtjkgueUKQKUj2N0nU+dwAV5pCluBbnnUeGXjH/aSFqRYoefcsr70Lw
-         jog2ezLQZ1J20QCddbGAbHnmw8xQDJnZyKyA7F2ZwAs1sUKsS6bVQ1Y3haas06Uxltn9
-         aCLVaxXBx8iPj9XZQCBb+irk+s4P0UwjykPxL9lTgPdQWJPB439HRoCobxVXJTlrcPI9
-         lOyzzcp4+PlIc68RJ/5hJfPjUKQHj2rs439LI5sfqcspNwuXkOPwUBfhU15bxPCT4QV7
-         IFGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767984433; x=1768589233;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=rGBvDDpxTKsSKi/PBBmzaVZCoI4skoibmdHf0mi5fA0=;
-        b=sj6Zy2x01wvJE8tlgnFgSXxzVssgpBtJUnZEyFpFzfLH73Pc/+oycXENfQQJfBNH0Z
-         1jSuDA8biRjKCHET98pFYOErn2iDVSPv0Jif/CYvBsWO2+XYgU5GBtrg8Hwz0eLIrAC8
-         ep285Jc2EPF5SWK+R00fl16cGK52/lXhvEgQRELEfXnuThOzcXddu7AfJwMFVatKAv8H
-         UYkBbKphj/ovMXKeP7WJcIiRT6YZRgN5ccPkiza1LEPUDyaQHv8Qf6wlhMoIILmbuXTF
-         w6poG/KbgVAq8R0MWfKOvbO80k/o+LjUSy19p1M9RelAsOqTXneO4L555aU9IWjgGTj5
-         QVWg==
-X-Forwarded-Encrypted: i=1; AJvYcCWUGEYf3cPUJmcq+P2EmrTqQruf6K3IwNOvegEBhoKJVBI1QWBwmKGBm93eKG5p0AD5v8s=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwYMBYWU0avzLshdIDyq8LqPo1wgJJK395ybwNLdWEHZEZuzBAN
-	wW+SLTLvkLz6ksVAi4Yd0RkddcecDMcD7IiHmKva6HLQhqntQDcxqorfDrRknIfUzvA6YPp1vcW
-	/FFxih+FKoxoiWT0szNUq74tuAgnwccM=
-X-Gm-Gg: AY/fxX5NyhFrC2/+hrdRwuxP3IcfMfJxbPCYX7wMPxYEAQK6EJFBF5c5yfzh5hIwG1b
-	CubRWkNwFJw5jv/WQVwUkwZfJXzoP1IWXQJPHjzw1MJkx2arRa1aWugWGasNJsIvEtRSp/BlAGi
-	3PvtbDMpaFHp3BlPhf/V5HW/BdCPCZUgS6WeOpLKtCV8l58PFOaCmTijo7fzJQTXMJvcorVNS+V
-	nHmoLamlK6067ldyom7FAGbD+nljNvtbVTa61B+rYVhXBiBr8FCCpIlpyLbMbcvzENSnkVvtbKf
-	rKFin/Dd
-X-Google-Smtp-Source: AGHT+IE1oMv04+pjB2sGdJhPF1mMtjjU2SHeSXJ7nafoDxLPhSJBVXd3Z2q0yG3h3JVYq6/trfj1vb/oYVlW/m/mtAM=
-X-Received: by 2002:a17:902:d50e:b0:29f:cb81:8be2 with SMTP id
- d9443c01a7336-2a3e39e58dcmr129420785ad.20.1767984433218; Fri, 09 Jan 2026
- 10:47:13 -0800 (PST)
+	s=arc-20240116; t=1767984579; c=relaxed/simple;
+	bh=vK2UmMO8h7KVieYaIxTUrkuf30QyV/hQOQhzVsKcz6w=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=daEb5DB9eWZptX9WHEc6z0WB/13B4MgG2C6i52//LNg7iFStfx8FawSNqQ+ysi5n3Of5p9P49OAjbRl9x4NAL3k9IEYTjDUh8H6aEo0A5gxx3lZbGr/Dx7Cm1Sbl3X2MXu4iDon9fPJt+1p6brTrA2+ixm9rL3xWjeBaV9e9lWs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=AmbduUQt; arc=none smtp.client-ip=95.215.58.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1767984565;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=ab5DkkNPh3SFtvknH3++tX6PIlvk40xERYOZ8UrmrN4=;
+	b=AmbduUQtPh/D8uUnQGUzRe2hpBXk0v4iKYf/caeuSve+DZ2gBmiYjnC/c+bvNc5zn5YrVi
+	yfnEnsT7c6s3xxvD1Us9PX5XvJywHqesFGwJzkj96enWanqZ6cxLnmOT2k/KaFK+rv/L2C
+	6c1s2Mi2fxa8n/FLeROj8bf19IuIRYw=
+From: Ihor Solodrai <ihor.solodrai@linux.dev>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>
+Cc: Mykyta Yatsenko <yatsenko@meta.com>,
+	Tejun Heo <tj@kernel.org>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	Benjamin Tissoires <bentiss@kernel.org>,
+	Jiri Kosina <jikos@kernel.org>,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-input@vger.kernel.org,
+	sched-ext@lists.linux.dev
+Subject: [PATCH bpf-next v1 00/10] bpf: Kernel functions with KF_IMPLICIT_ARGS
+Date: Fri,  9 Jan 2026 10:48:42 -0800
+Message-ID: <20260109184852.1089786-1-ihor.solodrai@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260107-timer_nolock-v3-0-740d3ec3e5f9@meta.com>
- <20260107-timer_nolock-v3-4-740d3ec3e5f9@meta.com> <CAP01T77h5caT6EprhREYMNmjTkbBZ9-OT7HkxdnJUNNME2evQQ@mail.gmail.com>
- <e4eee776-e9c7-4186-b239-733f81a9ae4a@gmail.com> <CAEf4BzYY0s6yF8JACTENANzJXd6abZctiB1iP+jYARq_xPDm0A@mail.gmail.com>
- <c5269858-7285-4e44-a5ef-72e69e9c00a2@gmail.com>
-In-Reply-To: <c5269858-7285-4e44-a5ef-72e69e9c00a2@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 9 Jan 2026 10:47:00 -0800
-X-Gm-Features: AQt7F2qopkyMd3ofhXN8fUaVyfJ7WOobwJ3alPE5OCXmr7MxA_ag9j-h0HoXd_4
-Message-ID: <CAEf4BzZNGnufqerj=FY8K+oj3hpZ_xwzvOG5kPZN3UATACU_Dg@mail.gmail.com>
-Subject: Re: [PATCH RFC v3 04/10] bpf: Add lock-free cell for NMI-safe async operations
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org, ast@kernel.org, 
-	andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, 
-	eddyz87@gmail.com, Mykyta Yatsenko <yatsenko@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Jan 9, 2026 at 10:22=E2=80=AFAM Mykyta Yatsenko
-<mykyta.yatsenko5@gmail.com> wrote:
->
-> On 1/9/26 01:18, Andrii Nakryiko wrote:
-> > On Wed, Jan 7, 2026 at 11:05=E2=80=AFAM Mykyta Yatsenko
-> > <mykyta.yatsenko5@gmail.com> wrote:
-> >> On 1/7/26 18:30, Kumar Kartikeya Dwivedi wrote:
-> >>> On Wed, 7 Jan 2026 at 18:49, Mykyta Yatsenko <mykyta.yatsenko5@gmail.=
-com> wrote:
-> >>>> From: Mykyta Yatsenko <yatsenko@meta.com>
-> >>>>
-> >>>> Introduce mpmc_cell, a lock-free cell primitive designed to support
-> >>>> concurrent writes to struct in NMI context (only one writer advances=
-),
-> >>>> allowing readers to consume consistent snapshot.
-> >>>>
-> >>>> Implementation details:
-> >>>>    Double buffering allows writers run concurrently with readers (re=
-ad
-> >>>>    from one cell, write to another)
-> >>>>
-> >>>>    The implementation uses a sequence-number-based protocol to enabl=
-e
-> >>>>    exclusive writes.
-> >>>>     * Bit 0 of seq indicates an active writer
-> >>>>     * Bits 1+ form a generation counter
-> >>>>     * (seq & 2) >> 1 selects the read cell, write cell is opposite
-> >>>>     * Writers atomically set bit 0, write to the inactive cell, then
-> >>>>       increment seq to publish
-> >>>>     * Readers snapshot seq, read from the active cell, then validate
-> >>>>       that seq hasn't changed
-> >>>>
-> >>>> mpmc_cell expects users to pre-allocate double buffers.
-> >>>>
-> >>>> Key properties:
-> >>>>    * Writers never block (fail if lost the race to another writer)
-> >>>>    * Readers never block writers (double buffering), but may require
-> >>>>    retries if write updates the snapshot concurrently.
-> >>>>
-> >>>> This will be used by BPF timer and workqueue helpers to defer NMI-un=
-safe
-> >>>> operations (like hrtimer_start()) to irq_work effectively allowing B=
-PF
-> >>>> programs to initiate timers and workqueues from NMI context.
-> >>>>
-> >>>> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
-> >>>> ---
-> >>> We already have a dual-versioned concurrency control primitive in the
-> >>> kernel (seqcount_latch_t). I would just use that instead of
-> >>> reinventing it here. I don't see much of a difference except writer
-> >>> serialization, which can be done on top of it. If it was already
-> >>> considered and discarded for some reason, please add that reason to
-> >>> the commit message.
-> >> yes, multiple concurrent  writers support would is the main difference
-> >> between seqcount_latch_t and my implementation. I'll switch to
-> >> seqcount_latch_t and external synchronization for writers.
-> > One advantage of custom primitive is that we don't need a second
-> > atomic counter for writers. Here we combine the reader latch counter
-> > (it's just scaled 2x for custom implementation) and "writer is active"
-> > bit (even/odd counter).
-> >
-> > With potentially millions of timer activations per second for some
-> > extreme cases, would performance be enough reason to have custom
-> > "seqlock latch"? (I'm not sure myself, trying to get opinions)
-> >
-> Actually seqcount_latch_t variant may be faster (correct me if I'm wrong)=
-,
-> because mpmc_cell requires 2 lock prefixed instructions to enter the writ=
-e
-> critical section and seqcount_latch_t just 1.
->
-> mpmc_cell:
->
-> if (1&atomic_fetch_or_acquire(1, &ctl->seq)) // first lock prefixed insn
-> return;
-> ...
->        atomic_fetch_add_release(1, &ctl->seq);     // second lock
-> prefixed insn
->
-> seqcount_latch_t based:
->
->      if (atomic_cmpxchg(&ctl->lock, 0, 1))        // first lock prefixed
-> insn
->          return;
-> write_seqcount_latch_begin(&ctl->seq);       // inc with barriers
->      ...
->      write_seqcount_latch(&ctl->seq);            // inc with barriers
->      atomic_set(&ctl->lock, 0);            // plain mov on x86_64
->
-> Does it look right?
+This series implements a generic "implicit arguments" feature for BPF
+kernel functions.
 
-So I think you are overpivoting on atomic vs non-atomic differences
-here: when uncontended, atomic is almost as fast as non-atomic
-(difference is irrelevant). But under contention, those four writes
-due to separate latch is four cache line bounces (potentially) between
-competing CPUs, while with custom sequence logic it's just two.
+This is the next iteration of previous work [1][2], although it's not
+really a v3, as parts of the implementation have changed
+significantly.
 
-I'm not dead set on one approach or the other, but I don't think that
-latch adds that match value. But if Kumar or others insist on latch, I
-don't mind, in the end both will work.
+A mechanism is created for kfuncs to have arguments that are not
+visible to the BPF programs, and are provided to the kernel function
+implementation by the verifier.
 
-> >>>>    [...]
-> >>>>
->
+This mechanism is then used to define new APIs, that use
+KF_IMPLICIT_ARGS flag, for the kfuncs that have a parameter with
+__prog annotation [3], which is the current way of passing struct
+bpf_prog_aux pointer to kfuncs.
+
+The key difference in comparison to earlier work is that the necessary
+BTF modifications are done by resolve_btfids (patch #4) instead of
+pahole. The groundwork for this to be possible has been landed
+recently [4].
+
+This approach simplifies the implementation and future maintenance as
+pahole is an out-of-tree tool, while resolve_btfids is not.
+
+Another difference is in handling of the "legacy" case. This
+implementation is more strict: the usage of <kfunc>_impl functions in
+BPF is only allowed for kfuncs with an explicit kernel (or kmodule)
+declaration (that is, existing _impl functions [5]). A <kfunc>_impl
+function generated in BTF for a kfunc with implicit args does not have
+a "bpf_kfunc" decl tag, and a kernel address. The verifier will reject
+a program trying to call such an _impl kfunc.
+
+The function with implicit arguments is defined by KF_IMPLICIT_ARGS
+flag in BTF_IDS_FLAGS set. In this series, only a pointer to struct
+bpf_prog_aux can be implicit, although it is simple to extend this to
+more types.
+
+The verifier handles a kfunc with KF_IMPLICIT_ARGS by resolving it to
+a different (actual) BTF prototype early in verification (patch #3).
+
+The series consists of the following patches:
+  - patches #1 and #2 are non-functional refactoring in kernel/bpf
+  - patch #3 defines KF_IMPLICIT_ARGS flag and teaches the verifier
+    about it, enabling __prog args to also be implicit
+  - patch #4 implements the necessary btf2btf transformation in
+    resolve_btfids
+  - patch #5 adds selftests specific to KF_IMPLICIT_ARGS feature
+  - patches #6-#9 update the current users of __prog argument to use
+    KF_IMPLICIT_ARGS
+  - patch #10 updates relevant documentation
+
+[1] https://lore.kernel.org/bpf/20251029190113.3323406-1-ihor.solodrai@linux.dev/
+[2] https://lore.kernel.org/bpf/20250924211716.1287715-1-ihor.solodrai@linux.dev/
+[3] https://docs.kernel.org/bpf/kfuncs.html#prog-annotation
+[4] https://lore.kernel.org/bpf/20251219181321.1283664-1-ihor.solodrai@linux.dev/
+[5] https://lore.kernel.org/bpf/20251104-implv2-v3-0-4772b9ae0e06@meta.com/
+
+---
+
+Ihor Solodrai (10):
+  bpf: Refactor btf_kfunc_id_set_contains
+  bpf: Introduce struct bpf_kfunc_meta
+  bpf: Verifier support for KF_IMPLICIT_ARGS
+  resolve_btfids: Support for KF_IMPLICIT_ARGS
+  selftests/bpf: Add tests for KF_IMPLICIT_ARGS
+  bpf: Add bpf_wq_set_callback kfunc with KF_IMPLICIT_ARGS
+  HID: Use bpf_wq_set_callback kernel function
+  bpf: Add bpf_task_work_schedule_* kfuncs with KF_IMPLICIT_ARGS
+  bpf: Add bpf_stream_vprintk with KF_IMPLICIT_ARGS
+  bpf,docs: Document KF_IMPLICIT_ARGS flag
+
+ Documentation/bpf/kfuncs.rst                  |  44 ++-
+ drivers/hid/bpf/progs/hid_bpf_helpers.h       |   8 +-
+ include/linux/btf.h                           |   5 +-
+ kernel/bpf/btf.c                              |  70 +++--
+ kernel/bpf/helpers.c                          |  47 ++-
+ kernel/bpf/stream.c                           |  11 +-
+ kernel/bpf/verifier.c                         | 247 ++++++++++-----
+ tools/bpf/resolve_btfids/main.c               | 282 ++++++++++++++++++
+ tools/lib/bpf/bpf_helpers.h                   |   6 +-
+ .../testing/selftests/bpf/bpf_experimental.h  |   5 -
+ .../bpf/prog_tests/kfunc_implicit_args.c      |  10 +
+ .../testing/selftests/bpf/progs/file_reader.c |   4 +-
+ .../selftests/bpf/progs/kfunc_implicit_args.c |  41 +++
+ .../testing/selftests/bpf/progs/stream_fail.c |   6 +-
+ tools/testing/selftests/bpf/progs/task_work.c |  11 +-
+ .../selftests/bpf/progs/task_work_fail.c      |  16 +-
+ .../selftests/bpf/progs/task_work_stress.c    |   5 +-
+ .../bpf/progs/verifier_async_cb_context.c     |   6 +-
+ tools/testing/selftests/bpf/progs/wq.c        |   2 +-
+ .../testing/selftests/bpf/progs/wq_failures.c |   4 +-
+ .../selftests/bpf/test_kmods/bpf_testmod.c    |  26 ++
+ tools/testing/selftests/hid/Makefile          |   4 +-
+ .../selftests/hid/progs/hid_bpf_helpers.h     |   8 +-
+ 23 files changed, 724 insertions(+), 144 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/kfunc_implicit_args.c
+ create mode 100644 tools/testing/selftests/bpf/progs/kfunc_implicit_args.c
+
+-- 
+2.52.0
+
 
