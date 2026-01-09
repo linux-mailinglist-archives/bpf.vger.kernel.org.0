@@ -1,45 +1,45 @@
-Return-Path: <bpf+bounces-78355-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78356-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC5E0D0BEF8
-	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 19:50:56 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51D05D0BEE3
+	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 19:50:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B509F3063D91
-	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 18:49:53 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 459073026DAD
+	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 18:50:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50C402E1747;
-	Fri,  9 Jan 2026 18:49:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB5402DEA73;
+	Fri,  9 Jan 2026 18:49:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xWngQGm4"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cARZLPNB"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F276A2DCF6B
-	for <bpf@vger.kernel.org>; Fri,  9 Jan 2026 18:49:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C2AA2FDC3C
+	for <bpf@vger.kernel.org>; Fri,  9 Jan 2026 18:49:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767984579; cv=none; b=b1jA1RXONIb7lEyEvzlWExE9hL73EmEBzzXsoSjMcJrSMhuhL6tsF7n9Ylgn6e0zsuRNelrjl/V+I2abFBWvTAC7kJtXqti2++YMmXQ9B5YBdxHwPojsLwHGYUKfLM0BPNUIgabMNsZ4SbmkpmlAjjUwHpEs7MXT7VVGszG9u3I=
+	t=1767984584; cv=none; b=dcKPMCJ1Om2502mpVdIpjolZaMj/yqoKV+EKuhMc8N2scT5qzUqz7IkLvec3yEUu2jKN8w0xHyMV6rIY6HrHufrTjvw1ezpaQxSPJkLwmLl6O3GtRTQHHszm4EQPjoNbrOyMS6WPxuFggsB6S0rKIy/AXIPm1EDcUmNhQB2wJ/k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767984579; c=relaxed/simple;
-	bh=15NPuVR5DtlN3yq8b2IbqJp94TpD0TA5/2gjIsoju0I=;
+	s=arc-20240116; t=1767984584; c=relaxed/simple;
+	bh=SNs1i8LcwXa9cchGiRUFS/dIt7OS7g3yh0iQEBysHAI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sl1PySVHExXzbz+jqIwkBDOMIx9wHBPlGRZsYLvFOR0/j1KumF3aG/j1jBXf7/LynjeAVgvvy/l4rU7nGxUzQBGjFD2ao4Y/FdvobXImF8GHAxHHnZ6czy26oYKAB6PpEsa1mnlWCtxEeUBkT+tBMt8Fm14eAvxPgw2L3i6+KV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=xWngQGm4; arc=none smtp.client-ip=95.215.58.176
+	 MIME-Version; b=F5EpyUVfQKX2U4AaT5UmlOBvuhKa5lBNUt+li3gnCRoMvjX7UEGC5I1IZh1MNDD33bpbvpUjAoStANnzjMUUol59igM0fRgtiv2x581KxMZpiBlxxHn0SVsFZeIzXNf4xoaTQ6ppnGnNUMuCzsv4GQEK9EvWFsu0VbYoRP+oH+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=cARZLPNB; arc=none smtp.client-ip=95.215.58.187
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1767984576;
+	t=1767984580;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=jlNrmptAUYBhTiSJ2YTfzkhzyxLU5Ig/IkkoeZb5N6I=;
-	b=xWngQGm4KUEjiw1yUtjeW6pompkABMLMAo9zsGRGhIaFE43q7YArnbSR3ElpdQnFdwGnwG
-	DFUIe2lYc+HcoxpzG7HbtEh1UEQMQrjThD/X4N6TEQCeAMgWIahRhqRdH5rwTsMh36KVh/
-	FeZjcOjT37Q316wk4zMOovtmk2sexh0=
+	bh=EHBcpvdYxSh081KgasitZRLy+wsjBEkvKgfdrrzW0MA=;
+	b=cARZLPNBS+q4FSKx7ZouYfUFF6m4J6o15DVE6/Q58SaTBQkKqWbZ9cSw6+vKK6YJANfw7V
+	PxdotazeZ4rkepF89Z6sBhPz8sXHHLhlmmYDVjsRHI6TBjweDksHezNSGqrChAskW6X3kN
+	FI7+cJr8hqbPn4TrURnTuQtSSVNfxLc=
 From: Ihor Solodrai <ihor.solodrai@linux.dev>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
@@ -55,9 +55,9 @@ Cc: Mykyta Yatsenko <yatsenko@meta.com>,
 	linux-kernel@vger.kernel.org,
 	linux-input@vger.kernel.org,
 	sched-ext@lists.linux.dev
-Subject: [PATCH bpf-next v1 03/10] bpf: Verifier support for KF_IMPLICIT_ARGS
-Date: Fri,  9 Jan 2026 10:48:45 -0800
-Message-ID: <20260109184852.1089786-4-ihor.solodrai@linux.dev>
+Subject: [PATCH bpf-next v1 04/10] resolve_btfids: Support for KF_IMPLICIT_ARGS
+Date: Fri,  9 Jan 2026 10:48:46 -0800
+Message-ID: <20260109184852.1089786-5-ihor.solodrai@linux.dev>
 In-Reply-To: <20260109184852.1089786-1-ihor.solodrai@linux.dev>
 References: <20260109184852.1089786-1-ihor.solodrai@linux.dev>
 Precedence: bulk
@@ -69,193 +69,348 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-A kernel function bpf_foo marked with KF_IMPLICIT_ARGS flag is
-expected to have two associated types in BTF:
-  * `bpf_foo` with a function prototype that omits implicit arguments
-  * `bpf_foo_impl` with a function prototype that matches the kernel
-     declaration of `bpf_foo`, but doesn't have a ksym associated with
-     its name
+Implement BTF modifications in resolve_btfids to support BPF kernel
+functions with implicit arguments.
 
-In order to support kfuncs with implicit arguments, the verifier has
-to know how to resolve a call of `bpf_foo` to the correct BTF function
-prototype and address.
+For a kfunc marked with KF_IMPLICIT_ARGS flag, a new function
+prototype is added to BTF that does not have implicit arguments. The
+kfunc's prototype is then updated to a new one in BTF. This prototype
+is the intended interface for the BPF programs.
 
-To implement this, in add_kfunc_call() kfunc flags are checked for
-KF_IMPLICIT_ARGS. For such kfuncs a BTF func prototype is adjusted to
-the one found for `bpf_foo_impl` (func_name + "_impl" suffix, by
-convention) function in BTF.
+A <func_name>_impl function is added to BTF to make the original kfunc
+prototype searchable for the BPF verifier. If a <func_name>_impl
+function already exists in BTF, its interpreted as a legacy case, and
+this step is skipped.
 
-This effectively changes the signature of the `bpf_foo` kfunc in the
-context of verification: from one without implicit args to the one
-with full argument list.
+Whether an argument is implicit is determined by its type:
+currently only `struct bpf_prog_aux *` is supported.
 
-Whether a kfunc argument is implicit or not is determined by
-is_kfunc_arg_implicit(). The values of implicit arguments by design
-are provided by the verifier, and so they can only be of particular
-types. In this patch the only allowed implicit arg type is a pointer
-to struct bpf_prog_aux. The __prog args (usually void *) are also
-considered implicit for backwards compatibility.
+As a result, the BTF associated with kfunc is changed from
 
-In order to enable the verifier to correctly set an implicit
-bpf_prog_aux arg value at runtime, is_kfunc_arg_prog() is extended to
-check for the arg type. At a point when prog arg is determined in
-check_kfunc_args() the kfunc with implicit args already has a
-prototype with full argument list, so the existing value patch
-mechanism just works.
+    __bpf_kfunc bpf_foo(int arg1, struct bpf_prog_aux *aux);
 
-If a new kfunc with KF_IMPLICIT_ARG is declared for an existing kfunc
-that uses a __prog argument (a legacy case), the prototype
-substitution works in exactly the same way, assuming the kfunc follows
-the _impl naming convention. The difference is only in how _impl
-prototype is added to the BTF, which is not the verifier's
-concern. See a subsequent resolve_btfids patch for details.
+into
 
-In check_kfunc_call() reset the subreg_def of registers holding
-implicit arguments to correctly track zero extensions.
+    bpf_foo_impl(int arg1, struct bpf_prog_aux *aux);
+    __bpf_kfunc bpf_foo(int arg1);
+
+For more context see previous discussions and patches [1][2].
+
+[1] https://lore.kernel.org/dwarves/ba1650aa-fafd-49a8-bea4-bdddee7c38c9@linux.dev/
+[2] https://lore.kernel.org/bpf/20251029190113.3323406-1-ihor.solodrai@linux.dev/
 
 Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
 ---
- include/linux/btf.h   |  1 +
- kernel/bpf/verifier.c | 70 +++++++++++++++++++++++++++++++++++++++++--
- 2 files changed, 69 insertions(+), 2 deletions(-)
+ tools/bpf/resolve_btfids/main.c | 282 ++++++++++++++++++++++++++++++++
+ 1 file changed, 282 insertions(+)
 
-diff --git a/include/linux/btf.h b/include/linux/btf.h
-index bd261015c4bc..f64cc40ab96f 100644
---- a/include/linux/btf.h
-+++ b/include/linux/btf.h
-@@ -78,6 +78,7 @@
- #define KF_ARENA_RET    (1 << 13) /* kfunc returns an arena pointer */
- #define KF_ARENA_ARG1   (1 << 14) /* kfunc takes an arena pointer as its first argument */
- #define KF_ARENA_ARG2   (1 << 15) /* kfunc takes an arena pointer as its second argument */
-+#define KF_IMPLICIT_ARGS (1 << 16) /* kfunc has implicit arguments supplied by the verifier */
- 
- /*
-  * Tag marking a kernel function as a kfunc. This is meant to minimize the
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 9618e4c37fce..5541ab674e30 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -3271,6 +3271,38 @@ static struct btf *find_kfunc_desc_btf(struct bpf_verifier_env *env, s16 offset)
- 	return btf_vmlinux ?: ERR_PTR(-ENOENT);
- }
- 
-+#define KF_IMPL_SUFFIX "_impl"
-+
-+static const struct btf_type *find_kfunc_impl_proto(struct bpf_verifier_env *env,
-+						    struct btf *btf,
-+						    const char *func_name)
-+{
-+	char impl_name[KSYM_SYMBOL_LEN];
-+	const struct btf_type *func;
-+	s32 impl_id;
-+	int len;
-+
-+	len = snprintf(impl_name, sizeof(impl_name), "%s%s", func_name, KF_IMPL_SUFFIX);
-+	if (len < 0 || len >= sizeof(impl_name)) {
-+		verbose(env, "function name %s%s is too long\n", func_name, KF_IMPL_SUFFIX);
-+		return NULL;
-+	}
-+
-+	impl_id = btf_find_by_name_kind(btf, impl_name, BTF_KIND_FUNC);
-+	if (impl_id <= 0) {
-+		verbose(env, "cannot find function %s in BTF\n", impl_name);
-+		return NULL;
-+	}
-+
-+	func = btf_type_by_id(btf, impl_id);
-+	if (!func || !btf_type_is_func(func)) {
-+		verbose(env, "%s (btf_id %d) is not a function\n", impl_name, impl_id);
-+		return NULL;
-+	}
-+
-+	return btf_type_by_id(btf, func->type);
-+}
-+
- static int fetch_kfunc_meta(struct bpf_verifier_env *env,
- 			    s32 func_id,
- 			    s16 offset,
-@@ -3308,7 +3340,16 @@ static int fetch_kfunc_meta(struct bpf_verifier_env *env,
- 	}
- 
- 	func_name = btf_name_by_offset(btf, func->name_off);
--	func_proto = btf_type_by_id(btf, func->type);
-+
-+	/*
-+	 * An actual prototype of a kfunc with KF_IMPLICIT_ARGS flag
-+	 * can be found through the counterpart _impl kfunc.
-+	 */
-+	if (unlikely(kfunc_flags && KF_IMPLICIT_ARGS & *kfunc_flags))
-+		func_proto = find_kfunc_impl_proto(env, btf, func_name);
-+	else
-+		func_proto = btf_type_by_id(btf, func->type);
-+
- 	if (!func_proto || !btf_type_is_func_proto(func_proto)) {
- 		verbose(env, "kernel function btf_id %d does not have a valid func_proto\n",
- 			func_id);
-@@ -12173,9 +12214,16 @@ static bool is_kfunc_arg_irq_flag(const struct btf *btf, const struct btf_param
- 	return btf_param_match_suffix(btf, arg, "__irq_flag");
- }
- 
-+static bool is_kfunc_arg_prog_aux(const struct btf *btf, const struct btf_param *arg);
-+
- static bool is_kfunc_arg_prog(const struct btf *btf, const struct btf_param *arg)
- {
--	return btf_param_match_suffix(btf, arg, "__prog");
-+	return btf_param_match_suffix(btf, arg, "__prog") || is_kfunc_arg_prog_aux(btf, arg);
-+}
-+
-+static bool is_kfunc_arg_implicit(const struct btf *btf, const struct btf_param *arg)
-+{
-+	return is_kfunc_arg_prog(btf, arg);
- }
- 
- static bool is_kfunc_arg_scalar_with_name(const struct btf *btf,
-@@ -12206,6 +12254,7 @@ enum {
- 	KF_ARG_WORKQUEUE_ID,
- 	KF_ARG_RES_SPIN_LOCK_ID,
- 	KF_ARG_TASK_WORK_ID,
-+	KF_ARG_PROG_AUX_ID
+diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
+index df39982f51df..b361e726fa36 100644
+--- a/tools/bpf/resolve_btfids/main.c
++++ b/tools/bpf/resolve_btfids/main.c
+@@ -152,6 +152,18 @@ struct object {
+ 	int nr_typedefs;
  };
  
- BTF_ID_LIST(kf_arg_btf_ids)
-@@ -12217,6 +12266,7 @@ BTF_ID(struct, bpf_rb_node)
- BTF_ID(struct, bpf_wq)
- BTF_ID(struct, bpf_res_spin_lock)
- BTF_ID(struct, bpf_task_work)
-+BTF_ID(struct, bpf_prog_aux)
++#define KF_IMPLICIT_ARGS (1 << 16)
++#define KF_IMPL_SUFFIX "_impl"
++#define MAX_BPF_FUNC_REG_ARGS 5
++#define MAX_KFUNCS 256
++#define MAX_DECL_TAGS (MAX_KFUNCS * 4)
++
++struct btf2btf_context {
++	struct btf *btf;
++	u32 nr_decl_tags;
++	s32 decl_tags[MAX_DECL_TAGS];
++};
++
+ static int verbose;
+ static int warnings;
  
- static bool __is_kfunc_ptr_arg_type(const struct btf *btf,
- 				    const struct btf_param *arg, int type)
-@@ -12297,6 +12347,11 @@ static bool is_kfunc_arg_callback(struct bpf_verifier_env *env, const struct btf
- 	return true;
+@@ -972,6 +984,273 @@ static int patch_btfids(const char *btfids_path, const char *elf_path)
+ 	return err;
  }
  
-+static bool is_kfunc_arg_prog_aux(const struct btf *btf, const struct btf_param *arg)
++static s64 collect_kfunc_ids_by_flags(struct object *obj,
++				      u32 flags,
++				      s32 kfunc_ids[],
++				      const u32 kfunc_ids_sz)
 +{
-+	return __is_kfunc_ptr_arg_type(btf, arg, KF_ARG_PROG_AUX_ID);
++	Elf_Data *data = obj->efile.idlist;
++	struct rb_node *next;
++	s64 nr_kfuncs = 0;
++	int i;
++
++	next = rb_first(&obj->sets);
++	while (next) {
++		struct btf_id_set8 *set8 = NULL;
++		unsigned long addr, off;
++		struct btf_id *id;
++
++		id = rb_entry(next, struct btf_id, rb_node);
++
++		if (id->kind != BTF_ID_KIND_SET8)
++			goto skip;
++
++		addr = id->addr[0];
++		off = addr - obj->efile.idlist_addr;
++		set8 = data->d_buf + off;
++
++		for (i = 0; i < set8->cnt; i++) {
++			if (set8->pairs[i].flags & flags) {
++				if (nr_kfuncs >= kfunc_ids_sz) {
++					pr_err("ERROR: resolve_btfids: too many kfuncs with flags %u - limit %d\n",
++					       flags, kfunc_ids_sz);
++					return -E2BIG;
++				}
++				kfunc_ids[nr_kfuncs++] = set8->pairs[i].id;
++			}
++		}
++skip:
++		next = rb_next(next);
++	}
++
++	return nr_kfuncs;
 +}
 +
- /* Returns true if struct is composed of scalars, 4 levels of nesting allowed */
- static bool __btf_type_is_scalar_struct(struct bpf_verifier_env *env,
- 					const struct btf *btf,
-@@ -14303,6 +14358,17 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 	for (i = 0; i < nargs; i++) {
- 		u32 regno = i + 1;
- 
-+		/*
-+		 * Implicit kfunc arguments are set after main verification pass.
-+		 * For correct tracking of zero-extensions we have to reset subreg_def for such
-+		 * args. Otherwise mark_btf_func_reg_size() will be inspecting subreg_def of regs
-+		 * from an earlier (irrelevant) point in the program, which may lead to an error
-+		 * in opt_subreg_zext_lo32_rnd_hi32().
-+		 */
-+		if (unlikely(KF_IMPLICIT_ARGS & meta.kfunc_flags
-+				&& is_kfunc_arg_implicit(desc_btf, &args[i])))
-+			regs[regno].subreg_def = DEF_NOT_SUBREG;
++static const struct btf_type *btf__unqualified_type_by_id(const struct btf *btf, s32 type_id)
++{
++	const struct btf_type *t = btf__type_by_id(btf, type_id);
 +
- 		t = btf_type_skip_modifiers(desc_btf, args[i].type, NULL);
- 		if (btf_type_is_ptr(t))
- 			mark_btf_func_reg_size(env, regno, sizeof(void *));
++	while (btf_is_mod(t))
++		t = btf__type_by_id(btf, t->type);
++
++	return t;
++}
++
++/* Implicit BPF kfunc arguments can only be of particular types */
++static bool btf__is_kf_implicit_arg(const struct btf *btf, const struct btf_param *p)
++{
++	static const char *const kf_implicit_arg_types[] = {
++		"bpf_prog_aux",
++	};
++	const struct btf_type *t;
++	const char *name;
++
++	t = btf__unqualified_type_by_id(btf, p->type);
++	if (!btf_is_ptr(t))
++		return false;
++
++	t = btf__unqualified_type_by_id(btf, t->type);
++	if (!btf_is_struct(t))
++		return false;
++
++	name = btf__name_by_offset(btf, t->name_off);
++	if (!name)
++		return false;
++
++	for (int i = 0; i < ARRAY_SIZE(kf_implicit_arg_types); i++)
++		if (strcmp(name, kf_implicit_arg_types[i]) == 0)
++			return true;
++
++	return false;
++}
++
++/*
++ * For a kfunc with KF_IMPLICIT_ARGS we do the following:
++ *   1. Add a new function with _impl suffix in the name, with the prototype
++ *      of the original kfunc.
++ *   2. Add all decl tags except "bpf_kfunc" for the _impl func.
++ *   3. Add a new function prototype with modified list of arguments:
++ *      omitting implicit args.
++ *   4. Change the prototype of the original kfunc to the new one.
++ *
++ * This way we transform the BTF associated with the kfunc from
++ *	__bpf_kfunc bpf_foo(int arg1, void *implicit_arg);
++ * into
++ *	bpf_foo_impl(int arg1, void *implicit_arg);
++ *	__bpf_kfunc bpf_foo(int arg1);
++ *
++ * If a kfunc with KF_IMPLICIT_ARGS already has an _impl counterpart
++ * in BTF, then it's a legacy case: an _impl function is declared in the
++ * source code. In this case, we can skip adding an _impl function, but we
++ * still have to add a func prototype that omits implicit args.
++ */
++static s64 process_kfunc_with_implicit_args(struct btf2btf_context *ctx, s32 kfunc_id)
++{
++	struct btf_param new_params[MAX_BPF_FUNC_REG_ARGS];
++	const char *kfunc_name, *param_name, *tag_name;
++	s32 proto_id, new_proto_id, new_func_id;
++	int err, len, name_len, nr_params;
++	const struct btf_param *params;
++	enum btf_func_linkage linkage;
++	char tmp_name[KSYM_NAME_LEN];
++	struct btf *btf = ctx->btf;
++	struct btf_type *t;
++
++	t = (struct btf_type *)btf__type_by_id(btf, kfunc_id);
++	if (!t || !btf_is_func(t)) {
++		pr_err("WARN: resolve_btfids: btf id %d is not a function\n", kfunc_id);
++		return -EINVAL;
++	}
++
++	kfunc_name = btf__name_by_offset(btf, t->name_off);
++	name_len = strlen(kfunc_name);
++	linkage = btf_vlen(t);
++
++	proto_id = t->type;
++	t = (struct btf_type *)btf__type_by_id(btf, proto_id);
++	if (!t || !btf_is_func_proto(t)) {
++		pr_err("ERROR: resolve_btfids: btf id %d is not a function prototype\n", proto_id);
++		return -EINVAL;
++	}
++
++	len = snprintf(tmp_name, sizeof(tmp_name), "%s%s", kfunc_name, KF_IMPL_SUFFIX);
++	if (len < 0 || len >= sizeof(tmp_name)) {
++		pr_err("ERROR: function name is too long: %s%s\n", kfunc_name, KF_IMPL_SUFFIX);
++		return -E2BIG;
++	}
++
++	if (btf__find_by_name_kind(btf, tmp_name, BTF_KIND_FUNC) > 0) {
++		pr_debug("resolve_btfids: function %s already exists in BTF\n", tmp_name);
++		goto add_new_proto;
++	}
++
++	/* Add a new function with _impl suffix and original prototype */
++	new_func_id = btf__add_func(btf, tmp_name, linkage, proto_id);
++	if (new_func_id < 0) {
++		pr_err("ERROR: resolve_btfids: failed to add func %s to BTF\n", tmp_name);
++		return new_func_id;
++	}
++
++	/* Copy all decl tags except "bpf_kfunc" from the original kfunc to the new one */
++	for (int i = 0; i < ctx->nr_decl_tags; i++) {
++		t = (struct btf_type *)btf__type_by_id(btf, ctx->decl_tags[i]);
++		if (t->type != kfunc_id)
++			continue;
++
++		tag_name = btf__name_by_offset(btf, t->name_off);
++		if (strcmp(tag_name, "bpf_kfunc") == 0)
++			continue;
++
++		err = btf__add_decl_tag(btf, tag_name, new_func_id, -1);
++		if (err < 0) {
++			pr_err("ERROR: resolve_btfids: failed to add decl tag %s for %s\n",
++			       tag_name, tmp_name);
++			return -EINVAL;
++		}
++	}
++
++add_new_proto:
++	/*
++	 * Drop the _impl suffix and point kfunc_name to the local buffer for later use.
++	 * When BTF is modified the original pointer is invalidated.
++	 */
++	tmp_name[name_len] = '\0';
++	kfunc_name = tmp_name;
++
++	/* Load non-implicit args from the original prototype */
++	t = (struct btf_type *)btf__type_by_id(btf, proto_id);
++	params = btf_params(t);
++	nr_params = 0;
++	for (int i = 0; i < btf_vlen(t); i++) {
++		if (btf__is_kf_implicit_arg(btf, &params[i]))
++			break;
++		new_params[nr_params++] = params[i];
++	}
++
++	new_proto_id = btf__add_func_proto(btf, t->type);
++	if (new_proto_id < 0) {
++		pr_err("ERROR: resolve_btfids: failed to add func proto for %s\n", kfunc_name);
++		return new_proto_id;
++	}
++
++	/* Add non-implicit args to the new prototype */
++	for (int i = 0; i < nr_params; i++) {
++		param_name = btf__name_by_offset(btf, new_params[i].name_off);
++		err = btf__add_func_param(btf, param_name, new_params[i].type);
++		if (err < 0) {
++			pr_err("ERROR: resolve_btfids: failed to add param %s for %s\n",
++			       param_name, kfunc_name);
++			return err;
++		}
++	}
++
++	/* Finally change the prototype of the original kfunc to the new one */
++	t = (struct btf_type *)btf__type_by_id(btf, kfunc_id);
++	t->type = new_proto_id;
++
++	pr_debug("resolve_btfids: updated BTF for kfunc with implicit args %s\n", kfunc_name);
++
++	return 0;
++}
++
++static s64 btf__collect_decl_tags(const struct btf *btf, s32 *decl_tags, u32 decl_tags_sz)
++{
++	const u32 type_cnt = btf__type_cnt(btf);
++	const struct btf_type *t;
++	s64 nr_decl_tags = 0;
++
++	for (u32 id = 1; id < type_cnt; id++) {
++		t = btf__type_by_id(btf, id);
++		if (!btf_is_decl_tag(t))
++			continue;
++		if (nr_decl_tags >= decl_tags_sz) {
++			pr_err("ERROR: resolve_btfids: too many decl tags in BTF - limit %s\n",
++				decl_tags_sz);
++			return -E2BIG;
++		}
++		decl_tags[nr_decl_tags++] = id;
++	}
++
++	return nr_decl_tags;
++}
++
++static s64 build_btf2btf_context(struct object *obj, struct btf2btf_context *ctx)
++{
++	s64 nr_decl_tags;
++
++	nr_decl_tags = btf__collect_decl_tags(obj->btf, ctx->decl_tags, ARRAY_SIZE(ctx->decl_tags));
++	if (nr_decl_tags < 0)
++		return nr_decl_tags;
++
++	ctx->btf = obj->btf;
++	ctx->nr_decl_tags = nr_decl_tags;
++
++	return 0;
++}
++
++static s64 finalize_btf(struct object *obj)
++{
++	struct btf2btf_context ctx = {};
++	s32 kfuncs[MAX_KFUNCS];
++	s64 err, nr_kfuncs;
++
++	err = build_btf2btf_context(obj, &ctx);
++	if (err < 0)
++		return err;
++
++	nr_kfuncs = collect_kfunc_ids_by_flags(obj, KF_IMPLICIT_ARGS, kfuncs, ARRAY_SIZE(kfuncs));
++	if (nr_kfuncs < 0)
++		return nr_kfuncs;
++
++	for (u32 i = 0; i < nr_kfuncs; i++) {
++		err = process_kfunc_with_implicit_args(&ctx, kfuncs[i]);
++		if (err < 0)
++			return err;
++	}
++
++	return 0;
++}
++
+ static const char * const resolve_btfids_usage[] = {
+ 	"resolve_btfids [<options>] <ELF object>",
+ 	"resolve_btfids --patch_btfids <.BTF_ids file> <ELF object>",
+@@ -1047,6 +1326,9 @@ int main(int argc, const char **argv)
+ 	if (symbols_patch(&obj))
+ 		goto out;
+ 
++	if (finalize_btf(&obj))
++		goto out;
++
+ 	err = make_out_path(out_path, sizeof(out_path), obj.path, BTF_IDS_SECTION);
+ 	err = err ?: dump_raw_btf_ids(&obj, out_path);
+ 	if (err)
 -- 
 2.52.0
 
