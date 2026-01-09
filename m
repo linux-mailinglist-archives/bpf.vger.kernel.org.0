@@ -1,118 +1,109 @@
-Return-Path: <bpf+bounces-78370-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78371-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C246D0C040
-	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 20:10:34 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AAD1D0C098
+	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 20:18:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 5BEA1301077C
-	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 19:10:32 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9865730D8FEA
+	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 19:15:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 481262E7F29;
-	Fri,  9 Jan 2026 19:10:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 881412E8DE3;
+	Fri,  9 Jan 2026 19:15:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AwPaGK6y"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XxZvkyBl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 750C017A2F6
-	for <bpf@vger.kernel.org>; Fri,  9 Jan 2026 19:10:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C1521D618A;
+	Fri,  9 Jan 2026 19:15:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767985830; cv=none; b=Y996HjB8DdMi54fEtb0QDtAS1ujlYp9eskKprkZeYTvIHEJBfwIL91ixHw/HJfjtqvtBTS8A+PBJSUU4ZAJLTeCGbN+GHPNZ5NXPwrCtxvvQdFqmsQCqHpVKYFOwUZwkHooAoSFIRT5o7kMH3mQD5AIXQjwfKMIofxBGgqs3wrY=
+	t=1767986151; cv=none; b=jbKWavlowT2Ql/62zW8njnJijxgQP6n312BJLTuRvrO1aj2DRFxqgZ/Os0GstxGYErHdKF6fJIYJKi+460mnZVLvhUvu8xXdIwRlH6V6sG4447fNBxNvwOa+sc/4gCS/mf6aXw6BvBAg5fbCtpv2ajoR6RWiptsxt4Q8Rbi/cHI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767985830; c=relaxed/simple;
-	bh=1xhvN85TB4UEq+IIEOBG/k7NvMp9qQEZ1H+rsYW6/Ik=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Q7oGPGa61dff6+pRNDZa0YUehmcCh8e0QV0pt6bTPrPbe0ttG8deDsHwDNMkZkOi4om05RfBn/B5+c6hj1vDTWB/krSBIgcJce3dr3x+r4UZM58vp2ZssvXnO82NXPz+99R12XRLoWV7sr+qMMvL2DRqpe5gNhs4Xhe10g9EX8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AwPaGK6y; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-477bf34f5f5so36065465e9.0
-        for <bpf@vger.kernel.org>; Fri, 09 Jan 2026 11:10:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767985828; x=1768590628; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1xhvN85TB4UEq+IIEOBG/k7NvMp9qQEZ1H+rsYW6/Ik=;
-        b=AwPaGK6y4cIuw25gY5e8WIkURlo4eSdyP+U/ZuUc68RY77cu33+8TbSPqZsebrZe7M
-         770YjMHVJLLnxQOMZLuOh3l4IS9dJjx2eD/4m6NJKkdaONnWbkDpW8zTnhgTPDUoVCCW
-         WE30VeXqCgYFuPzmO2DySnPOtgzA19q7taJ4q5kP9FYKEeqs3W7L2fyUgUqPHT5SjTOX
-         od44tBpx0xu41u73EKhaEBbD5znxZBFto229xLXh8u0jV6K0EY5HkKTJnSVwWQR+wOQW
-         FXEqhCaqSN0Q3qoIVuHqObjRrb69Izw7QHkxQNbyavgmKMmfpNV5tWI0geGVKYJuhRnk
-         tbZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767985828; x=1768590628;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=1xhvN85TB4UEq+IIEOBG/k7NvMp9qQEZ1H+rsYW6/Ik=;
-        b=karnUGkK/f5H1dUqLxZsRaBEFr5RpPhN2o6zqAg0VpwmOZ2bAUtwx3s4WZR2Ojjq7z
-         wtgYp8j1EM2/lubVV49hm0RY1fT0DWiugGjc+mpj1yOHDYri5M0p9qCuWjO4SXtGJKWY
-         RDjrWuPTvt2r/5zU1+0OC+0PLK6aOYAn4KKNN63GoDKx7wj6wO7KZJ5UmRctIk1+qXjf
-         fcfQ61oeSwq8Z2rzTYK8Efi7eiIVvvu9yxli/vkl3Yp+zHWfjCzq6i2Yo01fmiYvBxSM
-         8+PXhq9DfDWzsJ7CHBspM8FdGxKYMtgx2a2v0/G4iGxQ62xnOpyXcVtVFjzKWOc9PKsh
-         Fpeg==
-X-Forwarded-Encrypted: i=1; AJvYcCUmfL3IFj+TOVDFLsB5OsoCqfg2k0+4qcO2dHC9A7i/kef/yvLPbf81t6jw10eu2c819UE=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy7Rh3tCWSPzc3o3bgeq4NhkJdA7sXjlu9Mpqd7OZmbYIp7DBLl
-	5UmU4Y8OgS58JxFpkEGoH1woaWM5Kym05+xTO0uiSIpKb2fWnJpdnclDSLI2L6A+KydE/B/7AxH
-	B6OQlBDoIaj4MFCymIcKowuXeXid3uuk=
-X-Gm-Gg: AY/fxX40k/Q42uDupniCJEqI2uTHaOAFRK+snzFCkPRDTHMCPVQPzWDfZZi/Q44RteM
-	s6n/UlW4FXXV/MzQGAux1xz2//eoOFD1CXu+M1dwtHBajZ0BbtJC3fA0yappekr4q9e0VxgaLSR
-	t1tuRBqIAew7UZiiNrT4qOCJiTqixDcbkVZUITDAgB55q/zZbE6aIqnFEEAHIj8qShZ6GRD3J5p
-	ilxn8uKw43HdHMno2lZwI/4pVwDUYsw6y1xQGMrpYUXec/TXLq/jz9QmuI8S1Wfpu67D/K5kin3
-	LbOPw2dlJAkletCiUq/vVo6Pze17
-X-Google-Smtp-Source: AGHT+IGCA/LEYVTWUrX9KAIYdfMYJCZpS+oMbhPxZE2ZJPBTP5d+xWoHiQl/KaPfPT1JqMx+Lfan2oGwA5Nmv4TJyYs=
-X-Received: by 2002:a05:600c:3543:b0:47d:649b:5c48 with SMTP id
- 5b1f17b1804b1-47d8e4a3c73mr62018205e9.36.1767985827558; Fri, 09 Jan 2026
- 11:10:27 -0800 (PST)
+	s=arc-20240116; t=1767986151; c=relaxed/simple;
+	bh=jjYlMgeOb7iZKTx6uD7Orq9iSBiO6P8v8IczmbWjp2A=;
+	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
+	 Subject:From:To:Cc:Date; b=oe/27JiLF4x3GWFpmIKBtNq9tjD8OqdUEGvqWQPA0kOBnajd5OD6MdH5KhGP50MV5t8oTwlbPt//H7kHffrrEg3bzzNI5ZQ1CYi6l0WBivq9+vS/fB5EvllmcrvlsK4r4MCZYtv57pH9SugugT6RReJTBhSV/YavPRILAp5CaTE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XxZvkyBl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AE86C4CEF1;
+	Fri,  9 Jan 2026 19:15:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1767986150;
+	bh=jjYlMgeOb7iZKTx6uD7Orq9iSBiO6P8v8IczmbWjp2A=;
+	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
+	b=XxZvkyBl68y/CkL/OQhuUpUHHg8ja7SnGl5z9p6ZEo3gTKpv1B0O1yNbjSjY1TDTb
+	 /+OtFOde3/qwV+5Nd+7addATX5zOU+1cU0PIxc6QYjvr689owdXzTOnncxp8VkcGQe
+	 9JDO3TqSHiMW1B66xx+inEvdLnFWChtK6Gvb7BaZF/7gPV0yfTG2zDrkTVolfT7C2M
+	 +mFsy1D2uMGyD0hbaZ8fC071bQQgzaQNqP13KIwPXLTMxPUBeTrQTbItrt9iOW0iHM
+	 IItfpqm3BTxKFwgv1p+ZY84zoieJD4gFKFLuY/wLF23YJT/VBnR5qJcMfu3Nf+ksEH
+	 I+yFaKrBjW1Ig==
+Content-Type: multipart/mixed; boundary="===============1158628782040348513=="
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260108220550.2f6638f3@fedora> <da261242-482f-4b47-81c6-b065c5a95c4b@efficios.com>
-In-Reply-To: <da261242-482f-4b47-81c6-b065c5a95c4b@efficios.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 9 Jan 2026 11:10:16 -0800
-X-Gm-Features: AZwV_QjcVAwec7ZuTAKhzlsAjlEUvQcPDYYfd4qq_4MFRTrN2yy8vZMt5WIw9Fw
-Message-ID: <CAADnVQJMa+p_BcYxKUgve2=sqRBwSs3wLGAGhbA0r6hwFpJ+6Q@mail.gmail.com>
-Subject: Re: [PATCH v5] tracing: Guard __DECLARE_TRACE() use of
- __DO_TRACE_CALL() with SRCU-fast
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Linux trace kernel <linux-trace-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-Id: <614a1ac62ade1a2c93f3669dea78d37d1fba159f1f00e79c5e8047047a772d75@mail.kernel.org>
+In-Reply-To: <20260109184852.1089786-5-ihor.solodrai@linux.dev>
+References: <20260109184852.1089786-5-ihor.solodrai@linux.dev>
+Subject: Re: [PATCH bpf-next v1 04/10] resolve_btfids: Support for KF_IMPLICIT_ARGS
+From: bot+bpf-ci@kernel.org
+To: ihor.solodrai@linux.dev,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@linux.dev,eddyz87@gmail.com
+Cc: yatsenko@meta.com,tj@kernel.org,alan.maguire@oracle.com,bentiss@kernel.org,jikos@kernel.org,bpf@vger.kernel.org,linux-kernel@vger.kernel.org,linux-input@vger.kernel.org,sched-ext@lists.linux.dev,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
+Date: Fri,  9 Jan 2026 19:15:50 +0000 (UTC)
 
-On Fri, Jan 9, 2026 at 6:45=E2=80=AFAM Mathieu Desnoyers
-<mathieu.desnoyers@efficios.com> wrote:
->
-> On 2026-01-08 22:05, Steven Rostedt wrote:
-> > From: "Paul E. McKenney" <paulmck@kernel.org>
-> [...]
->
-> I disagree with many elements of the proposed approach.
->
-> On one end we have BPF wanting to hook on arbitrary tracepoints without
-> adding significant latency to PREEMPT RT kernels.
->
-> One the other hand, we have high-speed tracers which execute very short
-> critical sections to serialize trace data into ring buffers.
->
-> All of those users register to the tracepoint API.
->
-> We also have to consider that migrate disable is *not* cheap at all
-> compared to preempt disable.
+--===============1158628782040348513==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 
-Looks like your complaint comes from lack of engagement in kernel
-development.
-migrate_disable _was_ not cheap.
-Try to benchmark it now.
-It's inlined. It's a fraction of extra overhead on top of preempt_disable.
+> diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
+> index df39982f51df..b361e726fa36 100644
+> --- a/tools/bpf/resolve_btfids/main.c
+> +++ b/tools/bpf/resolve_btfids/main.c
+
+[ ... ]
+
+> +static s64 btf__collect_decl_tags(const struct btf *btf, s32 *decl_tags, u32 decl_tags_sz)
+> +{
+> +	const u32 type_cnt = btf__type_cnt(btf);
+> +	const struct btf_type *t;
+> +	s64 nr_decl_tags = 0;
+> +
+> +	for (u32 id = 1; id < type_cnt; id++) {
+> +		t = btf__type_by_id(btf, id);
+> +		if (!btf_is_decl_tag(t))
+> +			continue;
+> +		if (nr_decl_tags >= decl_tags_sz) {
+> +			pr_err("ERROR: resolve_btfids: too many decl tags in BTF - limit %s\n",
+> +				decl_tags_sz);
+                                ^^^^^^^^^^^^^^^^^
+
+Should this be %u instead of %s? The decl_tags_sz parameter is a u32, but
+the format specifier %s expects a string pointer. When the error path is
+triggered (more than MAX_DECL_TAGS decl tags in BTF), this will cause
+undefined behavior as printf tries to interpret the integer value as a
+memory address to read a string from.
+
+> +			return -E2BIG;
+> +		}
+> +		decl_tags[nr_decl_tags++] = id;
+> +	}
+> +
+> +	return nr_decl_tags;
+> +}
+
+[ ... ]
+
+
+---
+AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
+
+CI run summary: https://github.com/kernel-patches/bpf/actions/runs/20862592244
+
+--===============1158628782040348513==--
 
