@@ -1,68 +1,61 @@
-Return-Path: <bpf+bounces-78329-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78330-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3817FD0A813
-	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 14:52:46 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E0C6D0A938
+	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 15:15:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 399263007198
-	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 13:51:56 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7273B305CA35
+	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 14:11:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7454F35C1BB;
-	Fri,  9 Jan 2026 13:51:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1544335E524;
+	Fri,  9 Jan 2026 14:11:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fBroDu6I"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UQbDIfcb"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED5A0336ED1;
-	Fri,  9 Jan 2026 13:51:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9364433C534;
+	Fri,  9 Jan 2026 14:11:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767966715; cv=none; b=WPxHPLqYUeGro4+255w7FvA0mgIJNUe7z/dA+IdMKo+IA2Qe1xGT8nTWoU1ykAPk11Sw4v3fR+ZIYimnntuXoUnDdaGIEGiHaLLsRK+cI8zB92RWe5OFHu2B4q3HFh/uMM4nf6nRwxew2MlyAw8/HnjONgAvy+TBrNHkn9r9gfw=
+	t=1767967896; cv=none; b=QkNO1ULHJ31seM0n/9qau7LIxw+pU2YDJ9awaZiwg0C9y9u144AmD67PWlZn75yqD+2sEFomPE0+U0jbwBvPl39uFff4BwVv6s+3rDIbh1Q13NqsSPAWM2WTCRzMWpDl9wxQobbJcFCee7RPtRUPNqMOe0G7G6PMsVlDFZFD6Z8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767966715; c=relaxed/simple;
-	bh=CLZvYIsZyfLJIsGhoiYPM3t/q9SwiCeDSBIF6jrDkOE=;
+	s=arc-20240116; t=1767967896; c=relaxed/simple;
+	bh=Nc65wkMyCazsYeM+KI3rb7LhY4lOgQfED4l3qKX4Srs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tyqjzlz/HCmVqhDmgZvjSydvki6eQHog/vW5NFmG4qw6YhQW68uDHBs1t62iCBK6/iIAo1hidqbLXToXD9x+Ibkh7TGCPCAmj09kuABX/ju5/d6DSqOm9WZWfaBWdZFcEnRnNdHrHX/5MHX38KATvTxHS7ugyXy4ohA0y1TSGRg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fBroDu6I; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9487C4CEF1;
-	Fri,  9 Jan 2026 13:51:53 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=D/D8V3Z9RufBr02j4XXOKj/T4Ytmxne4GlU9+21rbnxm+Mkf8J7B3GjyoyDuWhMgB7pjBE+1UGg3ONTIS38+tpkAObjqkxm80OuKhFvkyBpphIF11eCRvGZ0A4ZJXjHTIR9SCjyXo1PQvUlQxXyQr9CEIgjLrxm/UTvoYpVsp4E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UQbDIfcb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03713C4CEF1;
+	Fri,  9 Jan 2026 14:11:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767966714;
-	bh=CLZvYIsZyfLJIsGhoiYPM3t/q9SwiCeDSBIF6jrDkOE=;
+	s=k20201202; t=1767967896;
+	bh=Nc65wkMyCazsYeM+KI3rb7LhY4lOgQfED4l3qKX4Srs=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fBroDu6IN+2tkXyeN5U5QMYb0DBexlKu0/2Zg/2VFDJQ43930saje+YN+kzqeQeX+
-	 u209JM5Zc1YixNnK1OfMUFPqPon20e82wpwxDGFsYfSt5O8uoFHH24jhcLQ4tPGRGO
-	 DMXvkwfXGDK6i7eSqaHWbaY9ask2AohBoxnUfqNLh/o4ZIaVnNrDMF9NicfCgpDpaK
-	 6D5mmeg+QLuPthnOJh0H19g9/AihyIF5/N6+jdsICFCPKGjNOWAB5sudlV+OqWck0l
-	 mhyICObKpOj1w9pYFrvQFSSpnSlyqsyFy/cH8OgmW/gwFh2Zw/27nVEbt1EPx0KMtf
-	 JuCJk3+AY+Dxg==
-Date: Fri, 9 Jan 2026 19:18:22 +0530
-From: Naveen N Rao <naveen@kernel.org>
-To: Hari Bathini <hbathini@linux.ibm.com>
-Cc: Madhavan Srinivasan <maddy@linux.ibm.com>, 
-	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, bpf@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Song Liu <songliubraving@fb.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Viktor Malik <vmalik@redhat.com>, live-patching@vger.kernel.org, 
-	Josh Poimboeuf <jpoimboe@kernel.org>, Joe Lawrence <joe.lawrence@redhat.com>, 
-	Jiri Kosina <jikos@kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Subject: Re: [PATCH] powerpc64/bpf: support direct_call on livepatch function
-Message-ID: <aWEFaNhwUaRSqISq@blrnaveerao1>
-References: <20251002192755.86441-1-hbathini@linux.ibm.com>
- <amwerofvasp7ssmq3zlrjakqj5aygyrgplcqzweno4ef42tiav@uex2ildqjvx2>
- <17f49a63-eccb-4075-91dd-b1f37aa762c7@linux.ibm.com>
- <unegysw3bihg32od7aham3npsdpm5govboo3uglorwsrjqfqfk@pbyzwwztmqtc>
- <42d72061-3d23-43db-bb02-d5f75333c924@linux.ibm.com>
- <dvvv5cytyak2iquer7d6g57ttum3qcckupyahsqsmvpzfjbyni@wbsr77swnrcl>
- <79946463-4742-4919-9d56-927a0a6f1c7c@linux.ibm.com>
- <nuinyo7o7uniemqqmoboctwrkkwkuv77nt7yk6td6eb3x43hv2@2lukfuvcmcko>
- <e34ddd05-d926-4eb4-b861-4bf8fd5635bb@linux.ibm.com>
+	b=UQbDIfcbMQHPYaONy0xw9eDeUtqr6fNL4fM5tkLehvmUCkfobfoEcTA0ebVhwOpop
+	 euUY3QVP9Pw7W8GAbH9hSjYS43dpx26c5gkwD9TEnnb3/OhKE+UlE3J6/SG24oBLX0
+	 lyoA3JT/+SjKXC1C3wrikvNCNmJuCErVX/X1N0fnffoxWU55+RywqExZsTwdkN6pMB
+	 vsjz27RPhRNXlgXwSPIzwiEh0HHdKf9+iVPFnLI4P6QNKK5Pp4AR6KkGd33FYlhDU3
+	 +vxOFyg5OmvWHtnmGNfR5hFgAxbm2LfbVj4+qlNzYv8eNP2iQNd8T98G4x3ov2t3Sh
+	 dJC7MnnXMnjLA==
+Date: Fri, 9 Jan 2026 14:11:28 +0000
+From: Will Deacon <will@kernel.org>
+To: Ankur Arora <ankur.a.arora@oracle.com>
+Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
+	bpf@vger.kernel.org, arnd@arndb.de, catalin.marinas@arm.com,
+	peterz@infradead.org, akpm@linux-foundation.org,
+	mark.rutland@arm.com, harisokn@amazon.com, cl@gentwo.org,
+	ast@kernel.org, rafael@kernel.org, daniel.lezcano@linaro.org,
+	memxor@gmail.com, zhenglifeng1@huawei.com,
+	xueshuai@linux.alibaba.com, joao.m.martins@oracle.com,
+	boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+	Boqun Feng <boqun.feng@gmail.com>
+Subject: Re: [PATCH v8 07/12] atomic: Add atomic_cond_read_*_timeout()
+Message-ID: <aWEMkHbBOgOkx_9f@willie-the-truck>
+References: <20251215044919.460086-1-ankur.a.arora@oracle.com>
+ <20251215044919.460086-8-ankur.a.arora@oracle.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -71,35 +64,39 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e34ddd05-d926-4eb4-b861-4bf8fd5635bb@linux.ibm.com>
+In-Reply-To: <20251215044919.460086-8-ankur.a.arora@oracle.com>
 
-On Mon, Dec 08, 2025 at 10:05:44PM +0530, Hari Bathini wrote:
-> > 
-> > One of the other thoughts I had was if we could stuff the function
-> > address into the ftrace OOL stub. I had considered this back when I
-> > implemented the OOL stubs, but didn't do it due to the extra memory
-> > requirement. However, given the dance we're having to do, I'm now
-> > thinking that may make sense and can simplify the code. If we can also
-> > hook into livepatch, then we should be able to update the function
-> > address in the stub to point to the new address and the trampoline
-> > should then "just work" since it already saves/restores the TOC [We may
-> > additionally have to update the function IP in _R12, but that would be a
-> > minor change overall]
-> > 
-> > We will still need a way to restore livepatch TOC if the BPF trampoline
-> > doesn't itself call into the function, but we may be able to handle that
-> > if we change the return address to jump to a stub that restores the TOC
-> > from the livepatch stack.
+On Sun, Dec 14, 2025 at 08:49:14PM -0800, Ankur Arora wrote:
+> Add atomic load wrappers, atomic_cond_read_*_timeout() and
+> atomic64_cond_read_*_timeout() for the cond-load timeout interfaces.
 > 
-> Sounds doable. Looking into a couple of other things at the moment
-> though. Will try out this suggestion and get back post that.
-> Having said that, your thoughts on whether the current approach
-> is a viable option if bpf_get_func_ip() can be fixed somehow?
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Boqun Feng <boqun.feng@gmail.com>
+> Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
+> ---
+>  include/linux/atomic.h | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/include/linux/atomic.h b/include/linux/atomic.h
+> index 8dd57c3a99e9..5bcb86e07784 100644
+> --- a/include/linux/atomic.h
+> +++ b/include/linux/atomic.h
+> @@ -31,6 +31,16 @@
+>  #define atomic64_cond_read_acquire(v, c) smp_cond_load_acquire(&(v)->counter, (c))
+>  #define atomic64_cond_read_relaxed(v, c) smp_cond_load_relaxed(&(v)->counter, (c))
+>  
+> +#define atomic_cond_read_acquire_timeout(v, c, e, t) \
+> +	smp_cond_load_acquire_timeout(&(v)->counter, (c), (e), (t))
+> +#define atomic_cond_read_relaxed_timeout(v, c, e, t) \
+> +	smp_cond_load_relaxed_timeout(&(v)->counter, (c), (e), (t))
+> +
+> +#define atomic64_cond_read_acquire_timeout(v, c, e, t) \
+> +	smp_cond_load_acquire_timeout(&(v)->counter, (c), (e), (t))
+> +#define atomic64_cond_read_relaxed_timeout(v, c, e, t) \
+> +	smp_cond_load_relaxed_timeout(&(v)->counter, (c), (e), (t))
 
-Oh, that's fine -- feel free to go with whatever approach you think 
-works best.
+Please update the atomic_t documentation to explain what these do.
 
-
-- Naveen
-
+Will
 
