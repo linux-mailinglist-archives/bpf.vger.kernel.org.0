@@ -1,189 +1,117 @@
-Return-Path: <bpf+bounces-78405-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78406-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id A26F5D0C63D
-	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 22:50:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D7FED0C64F
+	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 22:54:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4F7223043220
-	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 21:50:15 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0BE2330486AB
+	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 21:53:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E952533F370;
-	Fri,  9 Jan 2026 21:50:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78BA933E37C;
+	Fri,  9 Jan 2026 21:53:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="StnXoUL9"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="K0NhceFr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4134133EB0A
-	for <bpf@vger.kernel.org>; Fri,  9 Jan 2026 21:50:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A61D31B131
+	for <bpf@vger.kernel.org>; Fri,  9 Jan 2026 21:53:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767995411; cv=none; b=ouzSe1HzqTUu11h9+wyhdiMd5GMbNbJhWNMtFhXT04AfMxdDND1XelgveJ3fE3/TdVyPeK4zxE2b3QAGrvPV+Ddz5ZuE04HYmPpMowbYY+PcaFBslXSO+w3SnCYQBOk8w7ekptH+lEEmaZ8iJe9W6DkInAoHtnyFGtqCYTUgop4=
+	t=1767995630; cv=none; b=R2qmH6+siMY+SPWcU2Dt12x3G9OK66xNXKKDrQhOAgzEgrr5WN1p9DlWJvt9FUHQV+Cvu92Gl5GsgGawZdF44Lpb+VuHM5zqcO1jjO0g50G4uz7/l7M5Fw7g35sEgt3MLfpxmdFwLGnuap8cN0RwcVawLWbEYcSz6AMMDxdZOTM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767995411; c=relaxed/simple;
-	bh=mBMSWquYxXBQQw52dfRLKavEQ3650dPnys2FBUwMDww=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=infdPQeOYs+D/6O1V7GkkzB6v/1t7ONgJVvW5eTTDoLCa7Q7T07vGlwbEqk8Dylo1Ygsa8gwQUTiLyg8hld+p7MFRjB8VIXarzxPBTbAgASsSe908DHp7MaIViMFnr0IGa6diYXjzspvNQ6f14AunDQB/LcBpNdKXlU9ACgKeIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=StnXoUL9; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-432d2c96215so1722620f8f.3
-        for <bpf@vger.kernel.org>; Fri, 09 Jan 2026 13:50:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767995406; x=1768600206; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Yl2jfUOFQFw9ZFM/F9NwPFBQh1GrXlHRzkKM76uazgM=;
-        b=StnXoUL9YIMvTjkNGsUF1yeyVpEi4B08aYmprhpYsokcO1p0CpqjeS1HKyvHoGgZE2
-         kn/ZvEJtnqfShyhTMo3U1cBWBJHiw6U64mNAeXuj433P7ZZxuu7H/JT25MzGQN8aEee7
-         XrBreFULSSUDXY5ggGSYbefnIFtWAggM0QWjPPmdxGdj03R/aZmytiiGE4F0Z/Z0p+TQ
-         CYMcLqeTrmXRGGauxOdAqD84xJgGIi/83EsAVatM1qjDpqQjsMkJav91yCFtCuuPkOZN
-         EXnOI+v8uYhLJGQLdl7pK+UKXpAXkuod7CM3eBMw7FReH8OkQBDwBSZla9rHlBci1KfY
-         m3yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767995406; x=1768600206;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=Yl2jfUOFQFw9ZFM/F9NwPFBQh1GrXlHRzkKM76uazgM=;
-        b=OFrlZyVYAYBIPz4XbdLM55NkhwIyVspdw902XvGAZ2S8xSkekbSwCkJyl6YeN1QwXz
-         uN3Tkt2xsHQxK5d3fLUjZTMv6xZK49uZb2TODJB6hZnoxe7WUQ91p30N2pGKd7z5/7Zq
-         TT4NSj9vYXjyOo79cR9VRjjdclB8w+AUn/emPm+yCQA5jvUv1psvgqir9HJgho3MByDO
-         0ZOTuigTN2y4QN1ESv5H/XJ/fbrggb4roF/+za6Rwi7X1nbdf4ZriJGoP9o9W47DGWgJ
-         2qoGGrBU8kCoIHJ4asyc9aOzidKf10QYLZYOYpPASP+D5JgIvxt0rKBesBV4mqyWvGhb
-         HZ9w==
-X-Forwarded-Encrypted: i=1; AJvYcCWMeSafqEcypNqZuI+ntW1csR5tXjXixtg4Y2p54x2fARyNn2CL3cbVNRglDN/VOpsHfL4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyrVZ2uQuvu8ZSt9/5k5tdZhaXgfKbqK8+JS5FxwmohDBSgeVDX
-	z0Xo3dUfBiTIE6Rt+kNJjw7pqulP91Sf60qQ2YQWSvE/Zgn+61zWRp114Wg4LB+XHiEx52KuB6C
-	7E6OFgmjzPHsxtZBEmcy/lGLH0LPF5R8=
-X-Gm-Gg: AY/fxX6glRSujl5Yu9n+LMAd7XdVvr/Rz+d/+PCrwAhRlPKt2N+FlauSFtcbCHaRv6h
-	2mM281uTW3uzQCeeMBVdyTycqrMPrFEiLQr84GvpBcfSuQ6Q1sJy5VlV68VQF1kWJ8FRGnZI6ro
-	s3DN5UXY6KilVMgRNsUUeifciSQGs+sdWDWQKQbx+6cwP4xwR7UvhFBvYE7hEYAABOnaCdKEyTP
-	7/htMZPEhoe35GU5gTK5DQdlDYoy/GEXpFqW31gaXuniBgDvpCiYCMplQHjSw8vzb5lfBy5eECV
-	ESxNV97ar98hGADvo0dPt0r/NdWl
-X-Google-Smtp-Source: AGHT+IEpNN2VtUtAub0I99rIc50Il63UXhoIXIO7xQkcbeKDdyOPhjh/6O//ElBqJPm/iBdeBYBhI/6PQzhggWV4zbA=
-X-Received: by 2002:a5d:5d08:0:b0:430:f879:a0ee with SMTP id
- ffacd0b85a97d-432c378a075mr13975409f8f.5.1767995406380; Fri, 09 Jan 2026
- 13:50:06 -0800 (PST)
+	s=arc-20240116; t=1767995630; c=relaxed/simple;
+	bh=gkxei1XV+7jup5mq3CbS6/u/Lk1Gm3xGtyjrSAmN83U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=U2UVCJkB/EC8vCCHtMgESxH0S6koAmkPH3HGh2jQR581DhnKKmLCsGpLY2SKXUvjX5n6WXRkC7yRfHKnc3uE15XsW+ywrAeG+My+6TdIUzSUrMXUVVhEfzuLJeZSHxGDDwoHC/vZg8Yn+a9erTKlvzg4+WhP64CCT2hwbI99YME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=K0NhceFr; arc=none smtp.client-ip=95.215.58.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <f3e041d4-c65a-4c16-99ff-37caceebb54a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1767995615;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=513Ls91pZJUmzplWGcunk0nQa90ZGydxvckD4eQkbpI=;
+	b=K0NhceFr24pkhGGDbk9t7ZAZzu8znxijquW618kMieD3a6l6LM5bExNk1DbCU9wsoEIRX2
+	TjFkLr/BQbdLI6ett5AHQRUEs/jw/Sy0m1Hv3J7I3oids0hDHMuZTfvE4x3vpl1YbScJas
+	2M03mGMFHehLTqaqvjmgqPXaL8zlkRQ=
+Date: Fri, 9 Jan 2026 13:53:28 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260109184852.1089786-1-ihor.solodrai@linux.dev>
- <20260109184852.1089786-9-ihor.solodrai@linux.dev> <CAADnVQJDv80_T+1jz=7_8y+8hRTjMqqkm38in2er8iRU-p9W+g@mail.gmail.com>
- <b099a95e-5e69-4eeb-a2c9-9a52b8042a85@linux.dev> <CAADnVQ+_AmiwuupkVJTGyKY3KOp68GLuivs2LMEr0M_yaHPUUg@mail.gmail.com>
- <0c4d84ab-1725-45bc-9c1c-8bdc1f5fc032@linux.dev>
-In-Reply-To: <0c4d84ab-1725-45bc-9c1c-8bdc1f5fc032@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 9 Jan 2026 13:49:55 -0800
-X-Gm-Features: AZwV_Qg2PKLZpr1E2blvwzcDGguOO_nPvhlw-fT8WZOdgqaH2F_J59Sj-VuHinQ
-Message-ID: <CAADnVQ+k-nbq-2PGRSPJDRZ3G9sp9zu3Owqsj7zqO_G+3OQEww@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 08/10] bpf: Add bpf_task_work_schedule_*
- kfuncs with KF_IMPLICIT_ARGS
-To: Ihor Solodrai <ihor.solodrai@linux.dev>
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Mykyta Yatsenko <yatsenko@meta.com>, Tejun Heo <tj@kernel.org>, 
-	Alan Maguire <alan.maguire@oracle.com>, Benjamin Tissoires <bentiss@kernel.org>, 
-	Jiri Kosina <jikos@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	"open list:HID CORE LAYER" <linux-input@vger.kernel.org>, sched-ext@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v3 01/16] bpf: Convert bpf_selem_unlink_map to
+ failable
+To: Amery Hung <ameryhung@gmail.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
+ alexei.starovoitov@gmail.com, andrii@kernel.org, daniel@iogearbox.net,
+ memxor@gmail.com, martin.lau@kernel.org, kpsingh@kernel.org,
+ yonghong.song@linux.dev, song@kernel.org, haoluo@google.com,
+ kernel-team@meta.com
+References: <20251218175628.1460321-1-ameryhung@gmail.com>
+ <20251218175628.1460321-2-ameryhung@gmail.com>
+ <74fa8337-b0cb-42fb-af8a-fdf6877e558d@linux.dev>
+ <CAMB2axP5OvZKhHDnW9UD95S+2nTYaR4xLRHdg+oeXtpRJOfKrA@mail.gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <CAMB2axP5OvZKhHDnW9UD95S+2nTYaR4xLRHdg+oeXtpRJOfKrA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Jan 9, 2026 at 1:39=E2=80=AFPM Ihor Solodrai <ihor.solodrai@linux.d=
-ev> wrote:
->
-> On 1/9/26 12:47 PM, Alexei Starovoitov wrote:
-> > On Fri, Jan 9, 2026 at 12:02=E2=80=AFPM Ihor Solodrai <ihor.solodrai@li=
-nux.dev> wrote:
-> >>
-> >> On 1/9/26 11:58 AM, Alexei Starovoitov wrote:
-> >>> On Fri, Jan 9, 2026 at 10:50=E2=80=AFAM Ihor Solodrai <ihor.solodrai@=
-linux.dev> wrote:
-> >>>>
-> >>>> +__bpf_kfunc int bpf_task_work_schedule_signal(struct task_struct *t=
-ask, struct bpf_task_work *tw,
-> >>>> +                                             void *map__map, bpf_ta=
-sk_work_callback_t callback,
-> >>>> +                                             struct bpf_prog_aux *a=
-ux)
-> >>>> +{
-> >>>> +       return bpf_task_work_schedule(task, tw, map__map, callback, =
-aux, TWA_SIGNAL);
-> >>>> +}
-> >>>> +
-> >>>>  __bpf_kfunc int bpf_task_work_schedule_signal_impl(struct task_stru=
-ct *task,
-> >>>>                                                    struct bpf_task_w=
-ork *tw, void *map__map,
-> >>>>                                                    bpf_task_work_cal=
-lback_t callback,
-> >>>>                                                    void *aux__prog)
-> >>>>  {
-> >>>> -       return bpf_task_work_schedule(task, tw, map__map, callback, =
-aux__prog, TWA_SIGNAL);
-> >>>> +       return bpf_task_work_schedule_signal(task, tw, map__map, cal=
-lback, aux__prog);
-> >>>>  }
-> >>>
-> >>> I thought we decided that _impl() will not be marked as __bpf_kfunc
-> >>> and will not be in BTF_ID(func, _impl).
-> >>> We can mark it as __weak noinline and it will be in kallsyms.
-> >>> That's all we need for the verifier and resolve_btfid, no?
-> >>>
-> >>> Sorry, it's been a long time. I must have forgotten something.
-> >>
-> >> For the *generated* _impl kfuncs there is no decl tags and the ids are
-> >> absent from BTF_ID sets, yes.
-> >>
-> >> However for the "legacy" cases it must be there for backwards
-> >> compatibility, as well as relevant verifier checks.
-> >
-> > I see.
-> > I feel bpf_task_work_schedule_resume() is ok to break, since it's so ne=
-w.
-> > We can remove bpf_task_work_schedule_[resume|singal]_impl()
-> > to avoid carrying forward forever.
-> >
-> > bpf_stream_vprintk_impl() is not that clear. I would remove it too.
->
-> That leaves only bpf_wq_set_callback_impl(). Can we break that too?
+On 1/9/26 10:39 AM, Amery Hung wrote:
+>>> @@ -574,20 +603,37 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
+>>>                goto unlock;
+>>>        }
+>>>
+>>> +     b = select_bucket(smap, selem);
+>>> +
+>>> +     if (old_sdata) {
+>>> +             old_b = select_bucket(smap, SELEM(old_sdata));
+>>> +             old_b = old_b == b ? NULL : old_b;
+>>> +     }
+>>> +
+>>> +     raw_spin_lock_irqsave(&b->lock, b_flags);
+>>> +
+>>> +     if (old_b)
+>>> +             raw_spin_lock_irqsave(&old_b->lock, old_b_flags);
+>> This will deadlock because of the lock ordering of b and old_b.
+>> Replacing it with res_spin_lock in the later patch can detect it and
+>> break it more gracefully. imo, we should not introduce a known deadlock
+>> logic in the kernel code in the syscall code path and ask the current
+>> user to retry the map_update_elem syscall.
+>>
+>> What happened to the patch in the earlier revision that uses the
+>> local_storage (or owner) for select_bucket?
+> Thanks for reviewing!
+> 
+> I decided to revert it because this introduces the dependency of selem
+> to local_storage when unlinking. bpf_selem_unlink_lockless() cannot
+> assume map or local_storage associated with a selem to be alive. In
+> the case where local_storage is already destroyed, we won't be able to
+> figure out the bucket if select_bucket() uses local_storage for
+> hashing.
+> 
+> A middle ground is to use local_storage for hashing, but save the
+> bucket index in selem so that local_storage pointer won't be needed
+> later. WDYT?
 
-Sounds like Benjamin is ok removing it.
-So I think we can indeed remove them all.
+I would try not to add another "const"-like value to selem if it does 
+not have to. imo, it is quite wasteful considering the number of 
+selem(s) that can live in the system. Yes, there is one final 8-byte 
+hole in selem, but it still should not be used lightly unless nothing 
+else can be shared. The atomic/u16/bool added in this set can be 
+discussed later once patch 10 is concluded.
 
-> Then there won't be legacy cases at all. It was introduced in v6.16
-> along the with __prog suffix [1][2].
->
-> If we go this route, we could clean up __prog support/docs too.
->
-> I think it's worth it to make an "all or nothing" decision here:
-> either break all 4 existing kfuncs, or backwards-support all of them.
+For select_bucket in bpf_selem_unlink_lockless, map_free should know the 
+bucket. destroy() should have the local_storage, no?
 
-I don't see why "all or nothing" is a good thing.
-It won't be "all" anyway.
-We have bpf_rbtree_add_impl(), bpf_list_push_front_impl(), etc.
-And those we cannot remove. sched-ext is using them.
-Another few categories are bpf_obj_new_impl(), bpf_obj_drop_impl().
-There are not __prog type, but conceptually the same thing and
-KF_IMPLICIT_ARGS should support them too eventually.
-
-
-> git tag --contains bc049387b41f | grep -v rc
-> v6.16
-> v6.17
-> v6.18
->
-> [1] https://lore.kernel.org/all/20250513142812.1021591-1-memxor@gmail.com=
-/
-> [2] https://lore.kernel.org/all/20240420-bpf_wq-v2-13-6c986a5a741f@kernel=
-.org/
->
->
 
