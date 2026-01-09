@@ -1,212 +1,232 @@
-Return-Path: <bpf+bounces-78300-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78301-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76F92D08CBC
-	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 12:04:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F1B36D08D16
+	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 12:09:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A938E30845A1
-	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 11:00:45 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 09AD23045F5A
+	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 11:07:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EC7833BBA8;
-	Fri,  9 Jan 2026 11:00:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8179A335BC6;
+	Fri,  9 Jan 2026 11:07:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="UEracFfx"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="e6u/lY3j"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+Received: from mail-qt1-f226.google.com (mail-qt1-f226.google.com [209.85.160.226])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93F6C31577B
-	for <bpf@vger.kernel.org>; Fri,  9 Jan 2026 11:00:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A539D338931
+	for <bpf@vger.kernel.org>; Fri,  9 Jan 2026 11:07:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.226
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767956444; cv=none; b=aXIapQlbDMsH5AfVrZacV+0Bay2k6NjmsAp8oaJFsVjZLawzgzSb8dg9nHHA1tCu0MmtkyeCOfuWi2sFIqjFfDI6Zzhr1CvAzcxsbeBHwKzdYuP9jY7hMZ/U+L+vL8dYIIFNsFnTIKzwAx1Xu6WNhPiGJ6irV2s1xqK4vGq3+WQ=
+	t=1767956860; cv=none; b=CK6D+Vf/q+ouMurxAG4/A0+GmAbA7WQCxKXQ8/L2qW6HV82WsYXaUGoRV74f09ujBMF1fzYcKwnLsEP5DWSFpelEjMkX5Iu5Gm9QPBtH4JOP84zAEJZ9ASh2O4xPZLjxYauMD+O3hhqk8lAdfOTzVsRMcchLfA4sG8es9SXiz6g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767956444; c=relaxed/simple;
-	bh=UzKA2JDACUFSDnPUA78pprzjYQcXltITZwawpmK0/jE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NVkP2FqwI1Gf9pJrnosWAGeCIq6GCGr6zLiXDfFfGDnFTqeIbv0MngiHpuIFJ5ER4pLFopHBnlAyTwzREHU14K1mmQet+tdRJgWPbd/f1xgy2ZirB7i3gEGjmi20o15gSNTqR7Gp6UptoI1R+YlzDu/l1LZ+pYYYfqyrl9AIHaM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=UEracFfx; arc=none smtp.client-ip=209.85.221.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-43277900fb4so1316558f8f.1
-        for <bpf@vger.kernel.org>; Fri, 09 Jan 2026 03:00:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1767956441; x=1768561241; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WAxQ7MQdYxU/tGt0pWJm8Xb00GKZdoezyggvKWirzVw=;
-        b=UEracFfx2vTe1GmFeWRLyu7wFfIwN4dLlsiJLvA49ZXLKEFhR6hcLNgwB5WMEsKpwb
-         K1zjW6HsAlFR8BSLgeuDvkgx46WAWyWAeW1RgyolnFHu1GTWqJINP37cauW8bgfAT9wR
-         8tsw7W3o9U7bciJ0ifrERLq1C+oU7RSA3UsXALjMJFhJ31lySwNaytHxZNesC67rzFG0
-         6l1JUKrENuwKVXhGQ+TSf93JkA3zD/al9uNIBSWbZuWUdjqfkJ+tVl1DMWeJ3VcqX9Lv
-         Xy/fAapaDSNZuqYjZ8G9iFgjiVgOwbT8eEwNnIPL58anyRD9SfjX9vAxkNWiekSdVerx
-         jszw==
+	s=arc-20240116; t=1767956860; c=relaxed/simple;
+	bh=bClo26dKQKfmtH6wmORSjwie/4l4DK0i8SN38XFShIg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RbPhx7VPQoV9AuAg9f2iZ5TFnLuKSD5Yh7uC4wGG3XJBeMdNy1O6wbAgAeFObzrWrRgRNpK9H86y4Sogo6Urv82W/MSwJzKqNbYcGfOhFqxT3EXd6FYESbkV8uqqkO/hcyeNz/tngFrkPq8LHnK4OME+hN4rCat694tze1FZLEg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=e6u/lY3j; arc=none smtp.client-ip=209.85.160.226
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-qt1-f226.google.com with SMTP id d75a77b69052e-4ffbc2b861eso26146141cf.1
+        for <bpf@vger.kernel.org>; Fri, 09 Jan 2026 03:07:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767956441; x=1768561241;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1767956857; x=1768561657;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:dkim-signature:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WAxQ7MQdYxU/tGt0pWJm8Xb00GKZdoezyggvKWirzVw=;
-        b=h2ZfmVUi4Adm3MK7qoROjZAPH0EF71z5Hk2To9U3R5zGKwTmj97h2QuWYL88sHUYxv
-         kEGB/8trxlcJkTCZcZrv1sd1DBdJOu2VKYGZ5syRLlkz6LAcwD4Dn0gYbordzzgjlg6K
-         A/iAfz8gaDU/qdNFSqigwyk7t1vxrDPFnjfNKgcEqGDByxfgpjef4eS0KQ7uFn3hLLvS
-         LFohMnvw4aVfGowZdXbs7Atj8ymbnTF3wOTold2Tu9v7mEMaJBKWEzlEBhpyFhfMFK4i
-         /tycAq5Geh6IjvHvRRhzPVhs3Z4ptRw1tv5qymioSIyJbfUBhDtzYUdioeP0typTUzyy
-         gGJg==
-X-Forwarded-Encrypted: i=1; AJvYcCXHj9UVDPecnKJzFt4s0nA+hZawJvWbxOIuQCq7RJwks4XezG0/Pe/6kG3TINEhFFDRO+0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzJ35QL2pSQqnZTib6rOHOYsMcBoCtJnhLqVacwJU7OogheQ/uO
-	u2OgmzvRZMToL1sZiYxHtaO1X0iQxhUM2nWywMlCsGvweVrfOBURZaluda5pCCFVfG8=
-X-Gm-Gg: AY/fxX7ZK0D3pw0DxzvMsnmWrq1Ev1vrfF22SAnfpjULA8sjR94tXlIbPZqvsfgMtyk
-	4XJuHv1ywx6K2bcfuX0TssSalJMMMSVqAReWGVyCUPiEO19GU79vYZP/oBAsKsZJdkmhvFMueUH
-	NKWYpM0lNn0vP/Y5aUEp1l0vMM8LoX8PYAD720kQzX78BY+FZ16KKdsergkfBZk0BfoUGGU4zdv
-	SrIddgiurXFNNJ8TK66YWvPDNN2DsQ7pMOy/jSyDeMr/uJT3SgzD+Sn5uYyC3AFSbSed9n11AII
-	upRLN/IZtF5AViz5IPjzV30/Az2NNEj/rZ/1a4M93QONXY4uFVfEJCvuAehz5tc6fG5v4yMYKK9
-	F0uryPvx/7J7+EX9e9+r5tDl4FGwkWfleBbgjye9LrZzA1j8H/LlWmF3iWA4skIfmgrI0KDMKo+
-	OIEbfdEhAOWoBHBxn3PlgPU4d2J+vzydU=
-X-Google-Smtp-Source: AGHT+IGRsE8Hv/AUhz+iHbvTJwK3vPHDZw2H+8Bf3HHUP23TuJFtXMnG1VVlGoGvmO2o8IeTQqDYgw==
-X-Received: by 2002:a05:6000:3106:b0:3ea:6680:8fb9 with SMTP id ffacd0b85a97d-432c362bf54mr11704014f8f.3.1767956440814;
-        Fri, 09 Jan 2026 03:00:40 -0800 (PST)
-Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-432bd0dad8bsm22304319f8f.8.2026.01.09.03.00.39
+        bh=eD5pHYGilsMyb5v5eXOJGZgBHsDewfP3AwzPbcKcT5s=;
+        b=vJeHU7DJhc+6/+0p5u/tZEgKXAnqVrXIGx0csqEvjY/XUNGLnw2hFVpV/dh60x7wcf
+         zCTExugQKAC5cfmySZ3hxEr8n1knFA9QApyESdejqGdzH4oDx3uju0/1+ya81to+hL48
+         /1CVsOPb+KLfMiMsqYbxsZQI9oRZ+QjmUXrZcc49vPpOlRLN0abDLdvhYcNiPdU6kpMm
+         NHobYKhiZOvFWWQXl0V3pEv59LMggpFT95hAKkE3a4nUUrF2dfDvgMy43DXDW7YW/aWu
+         BrTq9j8HlcSRW58WUkBKlkrhUEnWRg2cSE0OZdGyCNAXn+OxcAjL28ZiXLT0z1BN/CqZ
+         Pqog==
+X-Forwarded-Encrypted: i=1; AJvYcCUz6yadQiJ4e+Cq2tsjYZ98I+gWlXE8lM0VJ/WQot1I555hkUxtmHHNll+Nlrr+n/Dhzdk=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw6KK4RO4tzy8xgvVgiYQ+QtnVVrf9wEsiA5sclOuq+Y7vTFHxL
+	dRQjM7T3ACggzdIhxBQuMHuojFy0HkduxcrkhX0XuRdmvc3RNMKLUsEv0eknGTfjlIUBEiV0wx/
+	gzEhvaeO7tmsiTukJYJkD/j95s3vsIkM175syO+m0D7e2aUXFPvRcReoOz/nqjxaFQOK/qx60ky
+	Rzg4IxLK0fttHmkzbE+3mK6b3n+iJ7bdaqqrY8e2EM4eIS0Ahl24dBd2KCKHu4aGpZfXSxm9HTC
+	hvH/PGdt796y2Al8w==
+X-Gm-Gg: AY/fxX5aW/Kj3APfkC7F9yDqkJTxdVlP3DV9pDvlbFHFgN0ejHZiY/+QX7aQxX+5Ttu
+	6oyNbTPTXQx8iSBMa1ZFgfZevWkdVfnBaIzTHDIO5SHrgjXEkiAdJ5YY1wt381Au4K36V1U0rib
+	2xyNshFTGwW5Ck4hhfoqDATjCpycccpgVuyfBvyGcWcDPaEouaA3VtmpidJsU+2T73PL2VI/yuT
+	xWIXe+MSoJbjpWVhafBBmwg/XErlSnhisM1qFbaXGPll0Dx4exdaXWp0Aq79SInI86WUHw8MtqM
+	5G5iQqgQUP06lWralXQ2J478TK5Gr5bv4spNM6QNKQzBZTf7ml8Drjijaw9qPkJx/X4IznSxPAz
+	wp+AWQTNV59ttPcDc0xrzVJas12cmKR++jcIdh7aCAkY4kIfkWfyT8leI4QWEZ+rjVVYtw0fzyY
+	QPzDtZwv+chVxehKz6/xDUImwhAjbZL24TCDWtxuBmUUMTaWlgdlcLaBw=
+X-Google-Smtp-Source: AGHT+IGwe01oPDNKG3IPPqxJppSqE14nDWVA40U6Gt61sgnS2MHbTqZQIhtGqn0VvVOu2Z4ox2o5IUeOnSwx
+X-Received: by 2002:ac8:7fce:0:b0:4ee:1800:615 with SMTP id d75a77b69052e-4ffb48b77bdmr124056901cf.14.1767956857338;
+        Fri, 09 Jan 2026 03:07:37 -0800 (PST)
+Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-120.dlp.protect.broadcom.com. [144.49.247.120])
+        by smtp-relay.gmail.com with ESMTPS id 6a1803df08f44-8907715cdc9sm12662066d6.28.2026.01.09.03.07.37
+        for <bpf@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 09 Jan 2026 03:07:37 -0800 (PST)
+X-Relaying-Domain: broadcom.com
+X-CFilter-Loop: Reflected
+Received: by mail-dy1-f200.google.com with SMTP id 5a478bee46e88-2ac363a9465so3245990eec.0
+        for <bpf@vger.kernel.org>; Fri, 09 Jan 2026 03:07:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1767956856; x=1768561656; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eD5pHYGilsMyb5v5eXOJGZgBHsDewfP3AwzPbcKcT5s=;
+        b=e6u/lY3jiyHaefD2gMMsIPSsetyln1ny1Vsbu96XaS/t3uXU5mJx/Y3BE/Iky4nuAY
+         UtQyGqLngUqAUmrqwPviYJrWPfxzG2YA5XCDj7DdZu9T+ws1CXYSjs5NA7spnr+eOXYY
+         09Q2GES7lXRiWZPf8YNJLcQqaE1fWiXgsVRbc=
+X-Forwarded-Encrypted: i=1; AJvYcCWrgQdBZ96frF10CmkbwXFCHoZCq52yvO49PLyd/8VUgUaObyJ9QB1Dd1quc962Lx3NHPw=@vger.kernel.org
+X-Received: by 2002:a05:7301:7214:b0:2ae:5d7d:4f1d with SMTP id 5a478bee46e88-2b17d238b33mr8081331eec.1.1767956856161;
+        Fri, 09 Jan 2026 03:07:36 -0800 (PST)
+X-Received: by 2002:a05:7301:7214:b0:2ae:5d7d:4f1d with SMTP id 5a478bee46e88-2b17d238b33mr8081297eec.1.1767956855605;
+        Fri, 09 Jan 2026 03:07:35 -0800 (PST)
+Received: from photon-big-dev.. ([192.19.161.250])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2b1775fe27dsm8783818eec.29.2026.01.09.03.07.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jan 2026 03:00:40 -0800 (PST)
-Date: Fri, 9 Jan 2026 12:00:37 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: hui.zhu@linux.dev
-Cc: chenridong@huaweicloud.com, Andrew Morton <akpm@linux-foundation.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, 
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Miguel Ojeda <ojeda@kernel.org>, 
-	Nathan Chancellor <nathan@kernel.org>, Kees Cook <kees@kernel.org>, Tejun Heo <tj@kernel.org>, 
-	Jeff Xu <jeffxu@chromium.org>, Jan Hendrik Farr <kernel@jfarr.cc>, 
-	Christian Brauner <brauner@kernel.org>, Randy Dunlap <rdunlap@infradead.org>, 
-	Brian Gerst <brgerst@gmail.com>, Masahiro Yamada <masahiroy@kernel.org>, davem@davemloft.net, 
-	Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, Hui Zhu <zhuhui@kylinos.cn>
-Subject: Re: [RFC PATCH v2 0/3] Memory Controller eBPF support
-Message-ID: <tuxit3rxedp5ujprdnkzqarwbjw37izpp45u5ryn3tg5h4z7hv@a73ydhb2gona>
-References: <cover.1767012332.git.zhuhui@kylinos.cn>
- <enlefo5mmoha2htsrvv76tdmj6yum4jan6hgym76adtpxuhvrp@aug6qh3ocde5>
- <a935563217affe85b2a6d0689914d7aba2ce127f@linux.dev>
+        Fri, 09 Jan 2026 03:07:35 -0800 (PST)
+From: HarinadhD <harinadh.dommaraju@broadcom.com>
+To: stable@vger.kernel.org,
+	gregkh@linuxfoundation.org
+Cc: john.fastabend@gmail.com,
+	daniel@iogearbox.net,
+	jakub@cloudflare.com,
+	lmb@cloudflare.com,
+	davem@davemloft.net,
+	kuba@kernel.org,
+	ast@kernel.org,
+	andrii@kernel.org,
+	kafai@fb.com,
+	songliubraving@fb.com,
+	yhs@fb.com,
+	kpsingh@kernel.org,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	ajay.kaher@broadcom.com,
+	alexey.makhalov@broadcom.com,
+	vamsi-krishna.brahmajosyula@broadcom.com,
+	yin.ding@broadcom.com,
+	tapas.kundu@broadcom.com,
+	Eric Dumazet <edumazet@google.com>,
+	Sasha Levin <sashal@kernel.org>,
+	Harinadh Dommaraju <Harinadh.Dommaraju@broadcom.com>
+Subject: [PATCH v2 v5.10.y] bpf, sockmap: Don't let sock_map_{close,destroy,unhash} call itself
+Date: Fri,  9 Jan 2026 10:20:11 +0000
+Message-ID: <20260109102011.3904861-1-harinadh.dommaraju@broadcom.com>
+X-Mailer: git-send-email 2.43.7
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="6ugyd27enu6zatdi"
-Content-Disposition: inline
-In-Reply-To: <a935563217affe85b2a6d0689914d7aba2ce127f@linux.dev>
+Content-Transfer-Encoding: 8bit
+X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
 
+From: Jakub Sitnicki <jakub@cloudflare.com>
 
---6ugyd27enu6zatdi
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [RFC PATCH v2 0/3] Memory Controller eBPF support
-MIME-Version: 1.0
+[ Upstream commit 5b4a79ba65a1ab479903fff2e604865d229b70a9 ]
 
-On Sun, Jan 04, 2026 at 09:30:46AM +0000, hui.zhu@linux.dev wrote:
-> memory.low is a helpful feature, but it can struggle to effectively
-> throttle low-priority processes that continuously access their memory.
->=20
-> For instance, consider the following example I ran:
-> root@ubuntu:~# echo $((4 * 1024 * 1024 * 1024)) > /sys/fs/cgroup/high/mem=
-ory.low
-> root@ubuntu:~# cgexec -g memory:low stress-ng --vm 4 --vm-keep --vm-bytes=
- 80% --vm-method all --seed 2025 --metrics -t 60 &=20
->                cgexec -g memory:high stress-ng --vm 4 --vm-keep --vm-byte=
-s 80% --vm-method all --seed 2025 --metrics -t 60
-> [1] 2011
-> stress-ng: info:  [2011] setting to a 1 min, 0 secs run per stressor
-> stress-ng: info:  [2011] dispatching hogs: 4 vm
-> stress-ng: metrc: [2011] stressor       bogo ops real time  usr time  sys=
- time   bogo ops/s     bogo ops/s CPU used per       RSS Max
-> stress-ng: metrc: [2011]                           (secs)    (secs)    (s=
-ecs)   (real time) (usr+sys time) instance (%)          (KB)
-> stress-ng: metrc: [2011] vm                23584     60.22      3.06     =
-16.19       391.63        1224.97         7.99        688836
-> stress-ng: info:  [2011] skipped: 0
-> stress-ng: info:  [2011] passed: 4: vm (4)
-> stress-ng: info:  [2011] failed: 0
-> stress-ng: info:  [2011] metrics untrustworthy: 0
-> stress-ng: info:  [2011] successful run completed in 1 min, 0.23 secs
->
-> stress-ng: info:  [2012] setting to a 1 min, 0 secs run per stressor
-> stress-ng: info:  [2012] dispatching hogs: 4 vm
-> stress-ng: metrc: [2012] stressor       bogo ops real time  usr time  sys=
- time   bogo ops/s     bogo ops/s CPU used per       RSS Max
-> stress-ng: metrc: [2012]                           (secs)    (secs)    (s=
-ecs)   (real time) (usr+sys time) instance (%)          (KB)
-> stress-ng: metrc: [2012] vm                23584     60.21      2.75     =
-15.94       391.73        1262.07         7.76        649988
-> stress-ng: info:  [2012] skipped: 0
-> stress-ng: info:  [2012] passed: 4: vm (4)
-> stress-ng: info:  [2012] failed: 0
-> stress-ng: info:  [2012] metrics untrustworthy: 0
-> stress-ng: info:  [2012] successful run completed in 1 min, 0.22 secs
-=20
+sock_map proto callbacks should never call themselves by design. Protect
+against bugs like [1] and break out of the recursive loop to avoid a stack
+overflow in favor of a resource leak.
 
-> As the results show, setting memory.low on the cgroup with the
-> high-priority workload did not improve its memory performance.
+[1] https://lore.kernel.org/all/00000000000073b14905ef2e7401@google.com/
 
-It could also be that memory isn't the bottleneck here. I reckon that
-80%+80% > 100% but I don't know how quickly stress-ng accesses it. I.e.
-actual workingset size may be lower than those 80%.
+Suggested-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+Link: https://lore.kernel.org/r/20230113-sockmap-fix-v2-1-1e0ee7ac2f90@cloudflare.com
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+[Harinadh: Modified to apply on v5.10.y ]
+Signed-off-by: Harinadh Dommaraju <Harinadh.Dommaraju@broadcom.com>
+---
+ net/core/sock_map.c | 53 +++++++++++++++++++++++++--------------------
+ 1 file changed, 30 insertions(+), 23 deletions(-)
 
-If it was accompanied with a run in one cg only, it'd help determning
-benchmark's baseline.
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index 3a9e0046a780..438bbef5ff75 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -1558,15 +1558,16 @@ void sock_map_unhash(struct sock *sk)
+ 	psock = sk_psock(sk);
+ 	if (unlikely(!psock)) {
+ 		rcu_read_unlock();
+-		if (sk->sk_prot->unhash)
+-			sk->sk_prot->unhash(sk);
+-		return;
++		saved_unhash = READ_ONCE(sk->sk_prot)->unhash;
++	} else {
++		saved_unhash = psock->saved_unhash;
++		sock_map_remove_links(sk, psock);
++		rcu_read_unlock();
+ 	}
+-
+-	saved_unhash = psock->saved_unhash;
+-	sock_map_remove_links(sk, psock);
+-	rcu_read_unlock();
+-	saved_unhash(sk);
++	if (WARN_ON_ONCE(saved_unhash == sock_map_unhash))
++		return;
++	if (saved_unhash)
++		saved_unhash(sk);
+ }
+ 
+ void sock_map_destroy(struct sock *sk)
+@@ -1578,16 +1579,17 @@ void sock_map_destroy(struct sock *sk)
+ 	psock = sk_psock_get(sk);
+ 	if (unlikely(!psock)) {
+ 		rcu_read_unlock();
+-		if (sk->sk_prot->destroy)
+-			sk->sk_prot->destroy(sk);
+-		return;
++		saved_destroy = READ_ONCE(sk->sk_prot)->destroy;
++	} else {
++		saved_destroy = psock->saved_destroy;
++		sock_map_remove_links(sk, psock);
++		rcu_read_unlock();
++		sk_psock_put(sk, psock);
+ 	}
+-
+-	saved_destroy = psock->saved_destroy;
+-	sock_map_remove_links(sk, psock);
+-	rcu_read_unlock();
+-	sk_psock_put(sk, psock);
+-	saved_destroy(sk);
++	if (WARN_ON_ONCE(saved_destroy == sock_map_destroy))
++		return;
++	if (saved_destroy)
++		saved_destroy(sk);
+ }
+ EXPORT_SYMBOL_GPL(sock_map_destroy);
+ 
+@@ -1602,13 +1604,18 @@ void sock_map_close(struct sock *sk, long timeout)
+ 	if (unlikely(!psock)) {
+ 		rcu_read_unlock();
+ 		release_sock(sk);
+-		return sk->sk_prot->close(sk, timeout);
++		saved_close = READ_ONCE(sk->sk_prot)->close;
++	} else {
++		saved_close = psock->saved_close;
++		sock_map_remove_links(sk, psock);
++		rcu_read_unlock();
++		release_sock(sk);
+ 	}
+-
+-	saved_close = psock->saved_close;
+-	sock_map_remove_links(sk, psock);
+-	rcu_read_unlock();
+-	release_sock(sk);
++	/* Make sure we do not recurse. This is a bug.
++	 * Leak the socket instead of crashing on a stack overflow.
++	 */
++	if (WARN_ON_ONCE(saved_close == sock_map_close))
++		return;
+ 	saved_close(sk, timeout);
+ }
+ 
+-- 
+2.43.7
 
-> It seems that try_charge_memcg will not reach
-> __mem_cgroup_handle_over_high if it only hook calculate_high_delay
-> without setting memory.high.
-
-That's expected, no action is needed when the current consumption is
-below memory.high.
-
-> What do you think about hooking try_charge_memcg as well,
-> so that it ensures __mem_cgroup_handle_over_high is called?
-
-The logic in try_charge_memcg is alredy quite involved and I think only
-simple concepts (that won't deviate too much as implementation changes)
-should be exposed to the hooks.
-
-> Thanks for your remind.
-> This is a test log in the test environment without any extra progs:
-
-Thanks, it's similar to the example above (I assume you're after "bogo
-ops/s" in real time, RSS footprint isn't the observed metric), i.e. the
-jobs don't differ.=20
-But it made me to review the results in your original posting (with your
-patch) and the high group has RSS Max of 834836 KB (so that'd be the
-actual workingset size for the stressor). So both of them should easily
-fit into the 4G of the machine, hence I guess the bottleneck is IO
-(you have swap right?), that's where prioritization should be applied
-(at least in this demostration/representative case).
-
-HTH,
-Michal
-
---6ugyd27enu6zatdi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaWDf0xsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AhD7gEAqbDeK7bs5Q5B6uh4H3ax
-vNaAumbDhzgQCFvmqk75yM8A/jgi6uwOxMpREcWR0EkkxBTGpymsLE7wBTJyBtKE
-ksMM
-=HyJ4
------END PGP SIGNATURE-----
-
---6ugyd27enu6zatdi--
 
