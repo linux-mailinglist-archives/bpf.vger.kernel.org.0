@@ -1,108 +1,163 @@
-Return-Path: <bpf+bounces-78407-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78408-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAA53D0C658
-	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 22:55:02 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BA90D0C66D
+	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 22:57:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6B4263005BB7
-	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 21:54:50 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D6B5B30393FD
+	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 21:56:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4B9533F392;
-	Fri,  9 Jan 2026 21:54:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8556C33E348;
+	Fri,  9 Jan 2026 21:56:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D0g6DY/3"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="BpXSOh+L"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C992E33EB0B
-	for <bpf@vger.kernel.org>; Fri,  9 Jan 2026 21:54:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4608222AE65
+	for <bpf@vger.kernel.org>; Fri,  9 Jan 2026 21:56:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767995688; cv=none; b=Whb8AdkZ+RM+djCPkuKW7NONGFWdXAxPrTlmp5BQ6IKy7tg4FZPAjgtXqIt7BPhuTRmE6QNCFwRNBuZ0YBa9+/o1pfewPxW0OryARKVlSI/k6NSVvfQlSCGPGrgGvH0U7fVmsCEkheSDUtxbr6JQYDCmmQ6ZbIkr9TE9LnWrOnI=
+	t=1767995816; cv=none; b=U1vx6uO0eKxdHrZ9T/3duDpY02zjfXu1/TJGFipomgGmzhZDoHVdS4+QrffWAooMJ50wbUEPhBny3+ZSrLNthR9s31tGJz3zQoWTBWWCZDkV8IMJ6qTva12n+Hyf9uVgu+x1jneSQLWrs3VuBNeCk8SQWg/IsJTCkvEvCHXKay8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767995688; c=relaxed/simple;
-	bh=SyDIWAo0tBvOlQkzTsioGpGAoFU46xUIN8egUPSsTAE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VuifeIG2xXrVvMKmj7p0zDcPBt4lbH5yfXOl8yS4UdWN3268hla4eeHtQxaMWyQEWfYeA9X6d3t37EhBljR59JijHjnpF1Zww6ctANnFmhHHWvpW7C4uxHv9fq69qQ251xR1cQhOCGRjXdPE04mkYnPEKz+SPdv/2mvHDytjd4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D0g6DY/3; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-432d2c7dd52so1633019f8f.2
-        for <bpf@vger.kernel.org>; Fri, 09 Jan 2026 13:54:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767995685; x=1768600485; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tVAFv8E90nuSwTqKxRgnODazUOEjPtiM1PD2YijofnQ=;
-        b=D0g6DY/3wtCyvp/Gf0LO22FxthxTddH9B0/0kRqrLwXA3kvpeMrHam+Qejs9zAx1PS
-         lLdrlHbATh2+5etRjYaApirPXaOg4CqVKWo4AWEEt2z3y+zXRE+WjXeoYNQW+xXAtB1f
-         lsfPiGt4j2W1GJbYKRnlQnFEbs0YrmvMKcZYwsbWuvtXHbxQtrso+vt7UnPgecYLfg1O
-         6iKGjP3WvMH16sity4HUszas2d+vjmeGMU2aILSSJX0JXK2HD/fQ6+dWEsVPaeDWAOAE
-         oIUGvdf1H6Lr1kWLQKDmMMlfHPNz9PC1l+JKJtTommqh2+M4aUdfUJnAejAw4lnDTOqO
-         Pe4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767995685; x=1768600485;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=tVAFv8E90nuSwTqKxRgnODazUOEjPtiM1PD2YijofnQ=;
-        b=nDiUwxVxLXhELyDBJQpG1vLilnSgmgcZPfwAqsRFEBKBso2a1+jFmKkD0TjCRHJdqQ
-         mzcHW16ymTH1kobr3draXVnIWODQmr4+e26RROEqFc4FCSEQlVIbscNh32I/am64TRdq
-         moYPuh6VrR56xaJGV5Wb7QOgPlymZdFFg+GnPIYJ6S/XXU59/YbHgo/QXv1YgNDcda8f
-         oQ/CZchnA3Efq8XcVNC7CptDPr6RoKs0JXUNtiWT8P/0CsbPaK3Aayx6H+fi4Pka3JOH
-         KJvFyUQOgWIzCdQO4Vao2xmGuLZoGiDxg4Wgf4nIUlafQT2FyPpXtDZRtRtzThk0TziK
-         A91w==
-X-Forwarded-Encrypted: i=1; AJvYcCVCO3LewVEVSuZEbk1EiH5ogimvuMzW6jinyxsqKeiLLW8Tb/etV8uVdaJaaPYuWAVJuM4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxOGWac5xyrAZpIrfUuaoqKcFntUSvGfm/ITuANv5O+3XcAI5ol
-	YcHmvr9G+I2vqKXlNfGHTgNyNAhtyZeYGquFbw6hLziNXlPzE+RPGhxVVg6hQYF1ERUWGbibp6s
-	6q+geLuEfAcmrhCcFI6+WMzJKmWQOeuszrg==
-X-Gm-Gg: AY/fxX7+jv9WxcVltJpeuXbnaoHDWQem2hH5cti8wDXzB54AWquaSdCMy/J4vgHtQee
-	aYuR5jJcU4rcWs4npRqe55yE+zCQaC2V7/JzgZQe2YhiC/yVPC9SZWo3AATKcU1GVlJK8C0GygP
-	DeNt76Hr8fYDlDLsQqw5EiHtIvOoqki9ybjFjuFeBN+oXNh+3VAxI+eVP4Cga9sH1kPlIZrcESJ
-	yS7ZuZeZxq2+63Joh0gNdRWMoe9zLepevkaqHOJLFwY/SzsdExq/eJ3gk1QNx1JWR3NddL9ksju
-	O74m2thAHDTTrMyY9eCrFUn+63gV
-X-Google-Smtp-Source: AGHT+IG51RWpvxWbJijZnqsewtYtgtXdOCi2ZMsxFXQVmXp52Ns/wca2BEkmDyNH6PdrUAOuSauZw7OBjggY3NBoASo=
-X-Received: by 2002:a05:6000:18a7:b0:430:ff81:296c with SMTP id
- ffacd0b85a97d-432c37983f5mr12201224f8f.34.1767995685071; Fri, 09 Jan 2026
- 13:54:45 -0800 (PST)
+	s=arc-20240116; t=1767995816; c=relaxed/simple;
+	bh=6ZnbqF7/kXh5P0Ia9WUeE2BLIbZDXhE7dBGh2KAO1WQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ezWsgqfx26Ixo0e+BEVEaf8AzLQNK3hMYImC1S1HUV2K5s7623LHLIwzP3HFO9Ku/mvW0D+G4xchY2tpShkauQVoDFhze1s0N1MXlM9BkAP68y40r/E+/4NVZuyGCcyQY2mE18sCWeUdRIbLuZR5daB7UCb6y39MVQyp8PLb+JM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=BpXSOh+L; arc=none smtp.client-ip=95.215.58.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <f0e63b55-65c3-4367-b3da-275df18147a1@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1767995802;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nHltPQvu0bb8b9qFGSmvXZdn22+rgNKMValwGJobJKw=;
+	b=BpXSOh+LAYUeeksBKEmd/uUTGZ1ZZmWzxY2lIc+BqkFPTMpELsMayzEqBJvKZBIcGGvH8r
+	lJ0jVgMfSQAfUJnjASoBRjGN5Aj8Fwp2Kx+HSKs51Vbm00DBMITy1PRC7JO4HqbK7WSHhr
+	KFh77kVnvy5wkA+22OZH0srsTooBe+c=
+Date: Fri, 9 Jan 2026 13:56:26 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260108220550.2f6638f3@fedora> <da261242-482f-4b47-81c6-b065c5a95c4b@efficios.com>
- <CAADnVQJMa+p_BcYxKUgve2=sqRBwSs3wLGAGhbA0r6hwFpJ+6Q@mail.gmail.com>
- <20260109141930.6deb2a0a@gandalf.local.home> <3c0df437-f6e5-47c6-aed5-f4cc26fe627a@efficios.com>
-In-Reply-To: <3c0df437-f6e5-47c6-aed5-f4cc26fe627a@efficios.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 9 Jan 2026 13:54:34 -0800
-X-Gm-Features: AZwV_Qh4smiERtW1bxrkxiHXol6EIjr5MaZya9ZuXLg6cgDa8X3XSY9z9aVSQwI
-Message-ID: <CAADnVQLeCLRhx1Oe5DdJCT0e+WWq4L3Rdee1Ky0JNNh3LdozeQ@mail.gmail.com>
-Subject: Re: [PATCH v5] tracing: Guard __DECLARE_TRACE() use of
- __DO_TRACE_CALL() with SRCU-fast
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Linux trace kernel <linux-trace-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v1 08/10] bpf: Add bpf_task_work_schedule_*
+ kfuncs with KF_IMPLICIT_ARGS
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Mykyta Yatsenko <yatsenko@meta.com>,
+ Tejun Heo <tj@kernel.org>, Alan Maguire <alan.maguire@oracle.com>,
+ Benjamin Tissoires <bentiss@kernel.org>, Jiri Kosina <jikos@kernel.org>,
+ bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+ "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+ sched-ext@lists.linux.dev
+References: <20260109184852.1089786-1-ihor.solodrai@linux.dev>
+ <20260109184852.1089786-9-ihor.solodrai@linux.dev>
+ <CAADnVQJDv80_T+1jz=7_8y+8hRTjMqqkm38in2er8iRU-p9W+g@mail.gmail.com>
+ <b099a95e-5e69-4eeb-a2c9-9a52b8042a85@linux.dev>
+ <CAADnVQ+_AmiwuupkVJTGyKY3KOp68GLuivs2LMEr0M_yaHPUUg@mail.gmail.com>
+ <0c4d84ab-1725-45bc-9c1c-8bdc1f5fc032@linux.dev>
+ <CAADnVQ+k-nbq-2PGRSPJDRZ3G9sp9zu3Owqsj7zqO_G+3OQEww@mail.gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Ihor Solodrai <ihor.solodrai@linux.dev>
+In-Reply-To: <CAADnVQ+k-nbq-2PGRSPJDRZ3G9sp9zu3Owqsj7zqO_G+3OQEww@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Jan 9, 2026 at 12:21=E2=80=AFPM Mathieu Desnoyers
-<mathieu.desnoyers@efficios.com> wrote:
->
->
-> * preempt disable/enable pair:                                     1.1 ns
-> * srcu-fast lock/unlock:                                           1.5 ns
->
-> CONFIG_RCU_REF_SCALE_TEST=3Dy
-> * migrate disable/enable pair:                                     3.0 ns
+On 1/9/26 1:49 PM, Alexei Starovoitov wrote:
+> On Fri, Jan 9, 2026 at 1:39 PM Ihor Solodrai <ihor.solodrai@linux.dev> wrote:
+>>
+>> On 1/9/26 12:47 PM, Alexei Starovoitov wrote:
+>>> On Fri, Jan 9, 2026 at 12:02 PM Ihor Solodrai <ihor.solodrai@linux.dev> wrote:
+>>>>
+>>>> On 1/9/26 11:58 AM, Alexei Starovoitov wrote:
+>>>>> On Fri, Jan 9, 2026 at 10:50 AM Ihor Solodrai <ihor.solodrai@linux.dev> wrote:
+>>>>>>
+>>>>>> +__bpf_kfunc int bpf_task_work_schedule_signal(struct task_struct *task, struct bpf_task_work *tw,
+>>>>>> +                                             void *map__map, bpf_task_work_callback_t callback,
+>>>>>> +                                             struct bpf_prog_aux *aux)
+>>>>>> +{
+>>>>>> +       return bpf_task_work_schedule(task, tw, map__map, callback, aux, TWA_SIGNAL);
+>>>>>> +}
+>>>>>> +
+>>>>>>  __bpf_kfunc int bpf_task_work_schedule_signal_impl(struct task_struct *task,
+>>>>>>                                                    struct bpf_task_work *tw, void *map__map,
+>>>>>>                                                    bpf_task_work_callback_t callback,
+>>>>>>                                                    void *aux__prog)
+>>>>>>  {
+>>>>>> -       return bpf_task_work_schedule(task, tw, map__map, callback, aux__prog, TWA_SIGNAL);
+>>>>>> +       return bpf_task_work_schedule_signal(task, tw, map__map, callback, aux__prog);
+>>>>>>  }
+>>>>>
+>>>>> I thought we decided that _impl() will not be marked as __bpf_kfunc
+>>>>> and will not be in BTF_ID(func, _impl).
+>>>>> We can mark it as __weak noinline and it will be in kallsyms.
+>>>>> That's all we need for the verifier and resolve_btfid, no?
+>>>>>
+>>>>> Sorry, it's been a long time. I must have forgotten something.
+>>>>
+>>>> For the *generated* _impl kfuncs there is no decl tags and the ids are
+>>>> absent from BTF_ID sets, yes.
+>>>>
+>>>> However for the "legacy" cases it must be there for backwards
+>>>> compatibility, as well as relevant verifier checks.
+>>>
+>>> I see.
+>>> I feel bpf_task_work_schedule_resume() is ok to break, since it's so new.
+>>> We can remove bpf_task_work_schedule_[resume|singal]_impl()
+>>> to avoid carrying forward forever.
+>>>
+>>> bpf_stream_vprintk_impl() is not that clear. I would remove it too.
+>>
+>> That leaves only bpf_wq_set_callback_impl(). Can we break that too?
+> 
+> Sounds like Benjamin is ok removing it.
+> So I think we can indeed remove them all.
+> 
+>> Then there won't be legacy cases at all. It was introduced in v6.16
+>> along the with __prog suffix [1][2].
+>>
+>> If we go this route, we could clean up __prog support/docs too.
+>>
+>> I think it's worth it to make an "all or nothing" decision here:
+>> either break all 4 existing kfuncs, or backwards-support all of them.
+> 
+> I don't see why "all or nothing" is a good thing.
+> It won't be "all" anyway.
+> We have bpf_rbtree_add_impl(), bpf_list_push_front_impl(), etc.
+> And those we cannot remove. sched-ext is using them.
+> Another few categories are bpf_obj_new_impl(), bpf_obj_drop_impl().
+> There are not __prog type, but conceptually the same thing and
+> KF_IMPLICIT_ARGS should support them too eventually.
 
-.. and you're arguing that 3ns vs 1ns difference is so important
-for your out-of-tree tracer that in-tree tracers need to do
-some workarounds?! wtf
+I was thinking we could remove/simplify code relevant to backwards
+compat of existing _impl kfuncs. But you're right, if we start using
+implicit args for other types/kfuncs, the "legacy" case still has to
+work.
+
+Ok, in the next revision I'll remove all the __prog users, but leave
+the "legacy" case support in place for future use.
+
+> 
+> 
+>> git tag --contains bc049387b41f | grep -v rc
+>> v6.16
+>> v6.17
+>> v6.18
+>>
+>> [1] https://lore.kernel.org/all/20250513142812.1021591-1-memxor@gmail.com/
+>> [2] https://lore.kernel.org/all/20240420-bpf_wq-v2-13-6c986a5a741f@kernel.org/
+>>
+>>
+
 
