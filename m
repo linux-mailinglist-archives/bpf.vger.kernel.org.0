@@ -1,60 +1,68 @@
-Return-Path: <bpf+bounces-78328-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78329-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E7E5D0A804
-	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 14:52:10 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3817FD0A813
+	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 14:52:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E543A3034374
-	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 13:47:30 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 399263007198
+	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 13:51:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 340BD33B962;
-	Fri,  9 Jan 2026 13:47:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7454F35C1BB;
+	Fri,  9 Jan 2026 13:51:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C1FWGrPc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fBroDu6I"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2C2D20459A;
-	Fri,  9 Jan 2026 13:47:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED5A0336ED1;
+	Fri,  9 Jan 2026 13:51:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767966449; cv=none; b=ZOo3qUMFM6u+5JfjVXsVZ6dCuD9EjzLcb63DikZ1fQhYoEiCAOaZalpgoz+YtSVYBVDvZXy9Zp065dwG4NNXgzOJqN59zJD5RwnyGbeYVXGhxZPIJ3f3P+/dtGpKXzDkTaFMUJYfsKR7qSjYzN+OjaM4Ef2n5Xj6BOWnQjw/1Fk=
+	t=1767966715; cv=none; b=WPxHPLqYUeGro4+255w7FvA0mgIJNUe7z/dA+IdMKo+IA2Qe1xGT8nTWoU1ykAPk11Sw4v3fR+ZIYimnntuXoUnDdaGIEGiHaLLsRK+cI8zB92RWe5OFHu2B4q3HFh/uMM4nf6nRwxew2MlyAw8/HnjONgAvy+TBrNHkn9r9gfw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767966449; c=relaxed/simple;
-	bh=cEF2HlQxucHUoV1e6UadmpWp+jSEoVJADc0Y46qZqbs=;
+	s=arc-20240116; t=1767966715; c=relaxed/simple;
+	bh=CLZvYIsZyfLJIsGhoiYPM3t/q9SwiCeDSBIF6jrDkOE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m+jw+7EVxjY99Mgn4ueQ4swdznzN5JJNtie0I+s0SwnBiJkCyPkFcDVkwuc1qyxfkp4A64HE/tR83D0iAcVwgENZ3oSODnsvZ3hPadQJ8bZvFVAOzEY8GZXoJPNvwx3noQBWiULz7UUE9tK7BHr5s+hycK0A8Do5ww7qLnGkDZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C1FWGrPc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB8A3C19422;
-	Fri,  9 Jan 2026 13:47:26 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=tyqjzlz/HCmVqhDmgZvjSydvki6eQHog/vW5NFmG4qw6YhQW68uDHBs1t62iCBK6/iIAo1hidqbLXToXD9x+Ibkh7TGCPCAmj09kuABX/ju5/d6DSqOm9WZWfaBWdZFcEnRnNdHrHX/5MHX38KATvTxHS7ugyXy4ohA0y1TSGRg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fBroDu6I; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9487C4CEF1;
+	Fri,  9 Jan 2026 13:51:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767966449;
-	bh=cEF2HlQxucHUoV1e6UadmpWp+jSEoVJADc0Y46qZqbs=;
+	s=k20201202; t=1767966714;
+	bh=CLZvYIsZyfLJIsGhoiYPM3t/q9SwiCeDSBIF6jrDkOE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=C1FWGrPcQeROcGwnj7vSyZsZ1zoSFgaD4Ln4/ur1+e7jz2eTTP6zYm4hc6t69Rtx4
-	 ZMmzuPPYsHpinghqDInHPL7rn5HeCDufgC5QuhRtbfMLhWFLcCU60gr6oeygzkIrDL
-	 3jFoHuAyXCVfTLXcowVvzN7EuhmBtm8euqQh7RyfCox9zqcC/B5cvi9niLHeasjEIb
-	 QD6oexPs+n4lFjegd2rI/pWCvTT1Tedm5O83ZKR50AEKyofkAbTp3btKM6ZjDQrz9Q
-	 k7/CFJCmNVlIFPAnncs0QS5avgRg0WcLROqnnMZwJBKdvA8WGI9ZJFpKbjdQ9nuecr
-	 R94qzMn7rVI1g==
-Date: Fri, 9 Jan 2026 13:47:23 +0000
-From: Will Deacon <will@kernel.org>
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mahe Tardy <mahe.tardy@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, x86@kernel.org,
-	Yonghong Song <yhs@fb.com>, Song Liu <songliubraving@fb.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCHv2 bpf-next 1/2] arm64/ftrace,bpf: Fix partial regs after
- bpf_prog_run
-Message-ID: <aWEG685zlaV0o7M7@willie-the-truck>
-References: <20260109093454.389295-1-jolsa@kernel.org>
+	b=fBroDu6IN+2tkXyeN5U5QMYb0DBexlKu0/2Zg/2VFDJQ43930saje+YN+kzqeQeX+
+	 u209JM5Zc1YixNnK1OfMUFPqPon20e82wpwxDGFsYfSt5O8uoFHH24jhcLQ4tPGRGO
+	 DMXvkwfXGDK6i7eSqaHWbaY9ask2AohBoxnUfqNLh/o4ZIaVnNrDMF9NicfCgpDpaK
+	 6D5mmeg+QLuPthnOJh0H19g9/AihyIF5/N6+jdsICFCPKGjNOWAB5sudlV+OqWck0l
+	 mhyICObKpOj1w9pYFrvQFSSpnSlyqsyFy/cH8OgmW/gwFh2Zw/27nVEbt1EPx0KMtf
+	 JuCJk3+AY+Dxg==
+Date: Fri, 9 Jan 2026 19:18:22 +0530
+From: Naveen N Rao <naveen@kernel.org>
+To: Hari Bathini <hbathini@linux.ibm.com>
+Cc: Madhavan Srinivasan <maddy@linux.ibm.com>, 
+	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
+	Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, bpf@vger.kernel.org, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Song Liu <songliubraving@fb.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Viktor Malik <vmalik@redhat.com>, live-patching@vger.kernel.org, 
+	Josh Poimboeuf <jpoimboe@kernel.org>, Joe Lawrence <joe.lawrence@redhat.com>, 
+	Jiri Kosina <jikos@kernel.org>, linux-trace-kernel@vger.kernel.org, 
+	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Subject: Re: [PATCH] powerpc64/bpf: support direct_call on livepatch function
+Message-ID: <aWEFaNhwUaRSqISq@blrnaveerao1>
+References: <20251002192755.86441-1-hbathini@linux.ibm.com>
+ <amwerofvasp7ssmq3zlrjakqj5aygyrgplcqzweno4ef42tiav@uex2ildqjvx2>
+ <17f49a63-eccb-4075-91dd-b1f37aa762c7@linux.ibm.com>
+ <unegysw3bihg32od7aham3npsdpm5govboo3uglorwsrjqfqfk@pbyzwwztmqtc>
+ <42d72061-3d23-43db-bb02-d5f75333c924@linux.ibm.com>
+ <dvvv5cytyak2iquer7d6g57ttum3qcckupyahsqsmvpzfjbyni@wbsr77swnrcl>
+ <79946463-4742-4919-9d56-927a0a6f1c7c@linux.ibm.com>
+ <nuinyo7o7uniemqqmoboctwrkkwkuv77nt7yk6td6eb3x43hv2@2lukfuvcmcko>
+ <e34ddd05-d926-4eb4-b861-4bf8fd5635bb@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,68 +71,35 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260109093454.389295-1-jolsa@kernel.org>
+In-Reply-To: <e34ddd05-d926-4eb4-b861-4bf8fd5635bb@linux.ibm.com>
 
-On Fri, Jan 09, 2026 at 10:34:53AM +0100, Jiri Olsa wrote:
-> Mahe reported issue with bpf_override_return helper not working when
-> executed from kprobe.multi bpf program on arm.
+On Mon, Dec 08, 2025 at 10:05:44PM +0530, Hari Bathini wrote:
+> > 
+> > One of the other thoughts I had was if we could stuff the function
+> > address into the ftrace OOL stub. I had considered this back when I
+> > implemented the OOL stubs, but didn't do it due to the extra memory
+> > requirement. However, given the dance we're having to do, I'm now
+> > thinking that may make sense and can simplify the code. If we can also
+> > hook into livepatch, then we should be able to update the function
+> > address in the stub to point to the new address and the trampoline
+> > should then "just work" since it already saves/restores the TOC [We may
+> > additionally have to update the function IP in _R12, but that would be a
+> > minor change overall]
+> > 
+> > We will still need a way to restore livepatch TOC if the BPF trampoline
+> > doesn't itself call into the function, but we may be able to handle that
+> > if we change the return address to jump to a stub that restores the TOC
+> > from the livepatch stack.
 > 
-> The problem is that on arm we use alternate storage for pt_regs object
-> that is passed to bpf_prog_run and if any register is changed (which
-> is the case of bpf_override_return) it's not propagated back to actual
-> pt_regs object.
-> 
-> Fixing this by introducing and calling ftrace_partial_regs_update function
-> to propagate the values of changed registers (ip and stack).
-> 
-> Reported-by: Mahe Tardy <mahe.tardy@gmail.com>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
-> v2 changes:
-> - moved ftrace_partial_regs_update to generic code [Will]
-> 
->  include/linux/ftrace_regs.h | 25 +++++++++++++++++++++++++
->  kernel/trace/bpf_trace.c    |  1 +
->  2 files changed, 26 insertions(+)
-> 
-> diff --git a/include/linux/ftrace_regs.h b/include/linux/ftrace_regs.h
-> index 15627ceea9bc..f9a7c009cdae 100644
-> --- a/include/linux/ftrace_regs.h
-> +++ b/include/linux/ftrace_regs.h
-> @@ -33,6 +33,31 @@ struct ftrace_regs;
->  #define ftrace_regs_get_frame_pointer(fregs) \
->  	frame_pointer(&arch_ftrace_regs(fregs)->regs)
->  
-> +static __always_inline void
-> +ftrace_partial_regs_update(const struct ftrace_regs *fregs, struct pt_regs *regs) { }
-> +
-> +#else
-> +
-> +/*
-> + * ftrace_partial_regs_update - update the original ftrace_regs from regs
-> + * @fregs: The ftrace_regs to update from @regs
-> + * @regs: The partial regs from ftrace_partial_regs() that was updated
-> + *
-> + * Some architectures have the partial regs living in the ftrace_regs
-> + * structure, whereas other architectures need to make a different copy
-> + * of the @regs. If a partial @regs is retrieved by ftrace_partial_regs() and
-> + * if the code using @regs updates a field (like the instruction pointer or
-> + * stack pointer) it may need to propagate that change to the original @fregs
-> + * it retrieved the partial @regs from. Use this function to guarantee that
-> + * update happens.
-> + */
-> +static __always_inline void
-> +ftrace_partial_regs_update(const struct ftrace_regs *fregs, struct pt_regs *regs)
-> +{
-> +	ftrace_regs_set_instruction_pointer(fregs, instruction_pointer(regs));
-> +	ftrace_regs_set_return_value(fregs, regs_return_value(regs));
-> +}
+> Sounds doable. Looking into a couple of other things at the moment
+> though. Will try out this suggestion and get back post that.
+> Having said that, your thoughts on whether the current approach
+> is a viable option if bpf_get_func_ip() can be fixed somehow?
 
-I think the AI thingy is right about dropping the const qualifier here
-but overall I prefer this to the previous revisions. Thanks for sticking
-with it!
+Oh, that's fine -- feel free to go with whatever approach you think 
+works best.
 
-Acked-by: Will Deacon <will@kernel.org>
 
-Will
+- Naveen
+
 
