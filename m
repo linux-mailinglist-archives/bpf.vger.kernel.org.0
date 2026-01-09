@@ -1,123 +1,141 @@
-Return-Path: <bpf+bounces-78267-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78268-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3405DD0688F
-	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 00:22:30 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38340D06969
+	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 01:05:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7ADE530433F0
-	for <lists+bpf@lfdr.de>; Thu,  8 Jan 2026 23:21:53 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id DE5B5300854B
+	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 00:05:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF22533D6EC;
-	Thu,  8 Jan 2026 23:21:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 383FC10A1E;
+	Fri,  9 Jan 2026 00:05:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VW6bXm9s"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d0SOKeY6"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B5A53382DC;
-	Thu,  8 Jan 2026 23:21:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32AC1500945
+	for <bpf@vger.kernel.org>; Fri,  9 Jan 2026 00:05:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767914511; cv=none; b=NpT/YSapuR79gxQp6UrMjjcs/aRi0LetQSp7049/OCVvK5HxBLNXlCUBiT43nsngz9J2Lfhhsh8Tn6hh+6QvDH5ugeUdoibmuNAXMLGt8AG5FWQPjE43qukLhv/AaB8/O0qN+Nv6twobQ7zKI7hcTIDGhDtCD+PJUJayFOo2Erc=
+	t=1767917126; cv=none; b=uyQCMecTINXEnU4txIXi1QaJolGL+Ec0mHxfpF0bcWv3QLpXLLgXKYKavFKw2BG284WDw4TDjppdyEXq47HrS6xUBfevAwbjH4qTMMLpoeoaSklIwv1sliAiQR5OF9ZpPPZDkBD97c1S6UQYcCvx94Czn12u2AFcblcgSDQvajI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767914511; c=relaxed/simple;
-	bh=fULRMJ8gNERzqVof9K4oQyTZcTL+iKG/CWpQf9d+U30=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=mm5mdtuEbR/aiY5oJintjDKBl0//5LonzjmQfQoTkNVMrMUf4YYJj/nsuvcSg/DmtPDnVtbR15CYjxdRlRI6hJuekuGawD4qlFnAXcj0rzrFAZxk2bfaO0z1bLDtw6CSzJA2NLrGDgXzqOXlC/IAr6nKOEV7Aa+kqMJbWKc4shQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VW6bXm9s; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52C57C116C6;
-	Thu,  8 Jan 2026 23:21:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767914511;
-	bh=fULRMJ8gNERzqVof9K4oQyTZcTL+iKG/CWpQf9d+U30=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=VW6bXm9s+w+tCw0CuySHz0g8hd2ex6TYcVZpJ9Amb0fBTiMYdLbIXwC8nf+KbO81w
-	 XbGeSdQQdbjc+q1TjOa+XZ7oCHF0JsyBMy64dRtYR6bBgNrOc9MuJrgHAdAOYeNOSY
-	 jkoIkZIRS4VuNK75f4llaXiXh9zQWxx4LmojEX/ALzkIvpli8UcGhWlmHC9m7SkCmA
-	 9FSxpTKh4qLWqOsi//DRVtXl1zu9MM9OlzIRYhOx69JMHrlL90PNOX4VvA2dTaLaZ8
-	 bfFn/HS5nDiR9uR2m9PBnaGv6KdojABAFrYImawJsBk1fm8wli9ISwREliPq6yryfT
-	 FKv42+g4LPL8A==
-Content-Type: multipart/mixed; boundary="===============3358533704666574923=="
+	s=arc-20240116; t=1767917126; c=relaxed/simple;
+	bh=vW5ADiDJ75eZDrfL5GHxW5o18qrNlKplRzYnqxEx/S0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QoQDKDvCuA/TvWGvQWchGktMXkO+/aEG9wLeaFIjI7PM7sjzCsC38KrrcStc6X6hnH7ICgCkFn6NP1RYnX3Wo+kWKG6BwxN6J4CUBpeYCkwqG5t0xkzMsWh5A0gANrlZ/hMqliyvvrn9WZO2Fr28rzJT+4rnYq02ALqlbK4eunI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d0SOKeY6; arc=none smtp.client-ip=209.85.221.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-42fb0fc5aa9so1708889f8f.1
+        for <bpf@vger.kernel.org>; Thu, 08 Jan 2026 16:05:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1767917123; x=1768521923; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ErfUaunZ6GdgjxdErmo5UizwYIWkhLbRVfZXrc8E7is=;
+        b=d0SOKeY6XvbpVo1rXy0nih2S8qUXTTzOKo5uqJoEgLQoBu+CjFziyxqcjB17yarQiK
+         mbgjQuNjK6kh81WmTK8mdvDDTPp1yVcTSDUpvLC6ptKL/S+ed2+5CYSnD+KzNzCh6BSt
+         sZAB8UUaoxtXKScxhijrXJlb0LMZiPOyE6MNuYY3ygu1YXpqq0LOTGA+Mea3dIIuMZ6r
+         NZojzQScY10e337Du9sWeiNtxrI2gsUjeG4XKvAQhfinOCofhwpunj9zbYb8C3mnwSmU
+         YsL5dRR61lpS5ApqTHouY5q5TsDk7zsBco13HTbaubV0Qd6rEOZ6JOeeigSLzwzFAzQh
+         aj4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767917123; x=1768521923;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=ErfUaunZ6GdgjxdErmo5UizwYIWkhLbRVfZXrc8E7is=;
+        b=npZJz8GzuSWkArL0fkdYnZPW5RWC0v5XmdxKhLVGk3uXYzvWsvJmRxDXYLq9Tr0k6x
+         R7gHvMqSZVrk0MnRkna045NuGPr4XEwhAwRGYiJbRQ4bPDq6s7GvkQwr4Rk7X9nR7H0D
+         EkvWcoOhEn3A9SGS4EB9YCx84SQ+llNDIeujSQa/C3zRcXFk4WArruIOzJhPIC3Hb1s7
+         E5b5ffF2whzoMZr8IHW+h8+aOm6H1AtI8F53c2RzGy1FykU2wsbBaahnaMbP4BuvzI/V
+         AcS1ziIaY53yLnuSxWxIpcCMlHWqfKxnoO9ATLRTprl5e7C8jb8AcutyoilNPlHP3jZo
+         zPuA==
+X-Forwarded-Encrypted: i=1; AJvYcCViorFOf/mwYj0XlrpvOCSfixyOtO26ivPd0xL5z545avhJ3Rga46VI5u1VAumEsO7H+fA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzigSoA9T0sKGTXgRbBizZFD/9c1w/AlMEPeCfXbseHzDGbCBjW
+	r9DmQ3enQJ8HON1gWaIaMgMfoHGu8Kwu+C7HLjKl0+1SZ+j3MykqD8Tl+84j+NAqCZxMyKs7Zfj
+	sG8/ldVQnCkeiZc06ck0uu4N7udPRfiI=
+X-Gm-Gg: AY/fxX4KJlDRnzXTLZ25v2JoPmeRSkApnElJ6Gl4/HLAHm582cR+s+aTv57dzmbyxqJ
+	T8sXa7vd9NFS7Qp0y0OHmR5bxQOWKLMsKWt3gLQar8Ha2CiuOGjCc/LnuM6FYH+NWGYkFVq2XZm
+	VnhpL/s7RZFqKyyHAtQLV1pKT8iSpptrK37F/vV22bW93e7ebYOnIBoONnsRbdapmtLuD7joNkz
+	+33yjykAZvQYQtuVNdJel//FB4phbWfrN+gA0d6chLmqhGrrFUEOx2tzIDYWLqXNUYCXuyrMzgU
+	/2QhV9b5EdqJ7jlAvnlawZHi6Xrj
+X-Google-Smtp-Source: AGHT+IGQft91ItcYpzKCXBOqanxZUsL87GFzGcJq3XkI9xH/wZR/PUpMyvECl59NQXIbutHb2ywkSP9Vj0l/9gxZGaQ=
+X-Received: by 2002:a5d:5888:0:b0:42f:edb6:3642 with SMTP id
+ ffacd0b85a97d-432c37767acmr10670060f8f.60.1767917123383; Thu, 08 Jan 2026
+ 16:05:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <0823b48aff04b144bc67d0e4d3c633ad80ed3feb94f546a911de01592aaac049@mail.kernel.org>
-In-Reply-To: <20260108225523.3268383-3-wusamuel@google.com>
-References: <20260108225523.3268383-3-wusamuel@google.com>
-Subject: Re: [PATCH bpf-next v2 2/4] bpf: Open coded BPF for wakeup_sources
-From: bot+bpf-ci@kernel.org
-To: wusamuel@google.com,ast@kernel.org,daniel@iogearbox.net,andrii@kernel.org,martin.lau@linux.dev,eddyz87@gmail.com,song@kernel.org,yonghong.song@linux.dev,john.fastabend@gmail.com,kpsingh@kernel.org,sdf@fomichev.me,haoluo@google.com,jolsa@kernel.org,shuah@kernel.org
-Cc: wusamuel@google.com,kernel-team@android.com,linux-kernel@vger.kernel.org,bpf@vger.kernel.org,linux-kselftest@vger.kernel.org,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Thu,  8 Jan 2026 23:21:50 +0000 (UTC)
+References: <87plb17ijl.fsf@fau.de> <20251005104500.999626-1-luis.gerhorst@fau.de>
+In-Reply-To: <20251005104500.999626-1-luis.gerhorst@fau.de>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 8 Jan 2026 16:05:12 -0800
+X-Gm-Features: AZwV_Qg8NOb4zGwDgdCmfAX9eUNC39y22gTQCGFmlnUEH1TCoEwtSoNiCmwlGeE
+Message-ID: <CAADnVQLGu_=Ko+sny5mONbrSysdg-iLRRO2vGaC-D1H4sNFDtQ@mail.gmail.com>
+Subject: Re: [RFC 3/3] selftests/bpf: Add missing SPEC_V1-ifdefs
+To: Luis Gerhorst <luis.gerhorst@fau.de>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Eduard <eddyz87@gmail.com>, Hengqi Chen <hengqi.chen@gmail.com>, 
+	Tiezhu Yang <yangtiezhu@loongson.cn>, Yonghong Song <yonghong.song@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
---===============3358533704666574923==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+On Sun, Oct 5, 2025 at 3:45=E2=80=AFAM Luis Gerhorst <luis.gerhorst@fau.de>=
+ wrote:
+>
+> For errors that only occur if bpf_jit_bypass_spec_v1() is set (e.g., on
+> LoongArch), add the missing '#ifdef SPEC_V1' to the selftests.
+>
+> Fixes: 03c68a0f8c68 ("bpf, arm64, powerpc: Add bpf_jit_bypass_spec_v1/v4(=
+)")
+> Reported-by: Hengqi Chen <hengqi.chen@gmail.com>
+> Closes: https://lore.kernel.org/bpf/CAEyhmHTvj4cDRfu1FXSEXmdCqyWfs3ehw5gt=
+B9qJCrThuUy2Kw@mail.gmail.com/
+> Signed-off-by: Luis Gerhorst <luis.gerhorst@fau.de>
+> ---
+>  .../selftests/bpf/progs/verifier_bounds.c     |  6 ++++
+>  .../verifier_direct_stack_access_wraparound.c |  2 ++
+>  .../bpf/progs/verifier_map_ptr_mixing.c       |  5 +++-
+>  .../bpf/progs/verifier_runtime_jit.c          | 12 ++++++--
+>  .../selftests/bpf/progs/verifier_stack_ptr.c  | 30 ++++++++++++++++---
+>  .../selftests/bpf/progs/verifier_unpriv.c     | 12 +++++---
+>  .../bpf/progs/verifier_value_ptr_arith.c      | 30 +++++++++++++++----
+>  .../selftests/bpf/progs/verifier_var_off.c    | 25 ++++++++++++----
+>  8 files changed, 100 insertions(+), 22 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/progs/verifier_bounds.c b/tools/=
+testing/selftests/bpf/progs/verifier_bounds.c
+> index a8fc9b38633b..033211c3f486 100644
+> --- a/tools/testing/selftests/bpf/progs/verifier_bounds.c
+> +++ b/tools/testing/selftests/bpf/progs/verifier_bounds.c
+> @@ -48,7 +48,9 @@ SEC("socket")
+>  __description("subtraction bounds (map value) variant 2")
+>  __failure
+>  __msg("R0 min value is negative, either use unsigned index or do a if (i=
+ndex >=3D0) check.")
+> +#ifdef SPEC_V1
+>  __msg_unpriv("R0 pointer arithmetic of map value goes out of range, proh=
+ibited for !root")
+> +#endif
 
-> diff --git a/kernel/bpf/wakeup_source_iter.c b/kernel/bpf/wakeup_source_iter.c
-> index ab83d212a1f9..149baecfe436 100644
-> --- a/kernel/bpf/wakeup_source_iter.c
-> +++ b/kernel/bpf/wakeup_source_iter.c
+Sorry for the long delay.
+Patches 1 and 2 look reasonable. Pls resubmit with bpf-next tag and drop RF=
+C.
 
-[ ... ]
-
-> +__bpf_kfunc int bpf_iter_wakeup_source_new(struct bpf_iter_wakeup_source *it)
-> +{
-> +	it->srcuidx = wakeup_sources_read_lock();
-> +	it->ws = wakeup_sources_walk_start();
-> +
-> +	return 0;
-> +}
-> +
-> +__bpf_kfunc struct wakeup_source *bpf_iter_wakeup_source_next(struct bpf_iter_wakeup_source *it)
-> +{
-> +	struct wakeup_source *prev = it->ws;
-> +
-> +	if (!prev)
-> +		return NULL;
-> +
-> +	it->ws = wakeup_sources_walk_next(it->ws);
-> +
-> +	return prev;
-> +}
-
-When the wakeup_sources list is empty, wakeup_sources_walk_start() returns
-a bogus pointer via list_entry_rcu()/container_of() on the list head itself,
-rather than NULL.  The check "if (!prev)" at line 112 will not catch this
-bogus pointer since it is non-NULL.
-
-Does this return a bogus pointer to the BPF program when the wakeup_sources
-list is empty?  If so, the BPF program could then access invalid memory when
-it tries to read fields of the returned wakeup_source.
-
-For reference, wakeup_sources_walk_start() in drivers/base/power/wakeup.c:
-
-    struct wakeup_source *wakeup_sources_walk_start(void)
-    {
-        struct list_head *ws_head = &wakeup_sources;
-        return list_entry_rcu(ws_head->next, struct wakeup_source, entry);
-    }
-
-When wakeup_sources is empty, ws_head->next == ws_head, so this returns
-container_of(ws_head, struct wakeup_source, entry) which points to memory
-before the wakeup_sources variable rather than a valid wakeup_source struct.
-
-Other BPF open-coded iterators like bpf_iter_dmabuf handle this differently
-by initializing to NULL and getting the first element lazily in _next().
-Would a similar approach work here?
-
-
----
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
-
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/20835022582
-
---===============3358533704666574923==--
+This one I'm not excited about.
+I didn't like earlier additions of ifdef SPEC_V1,
+but now it's getting too much.
+Especially all of it for loongarch that we don't even run in BPF CI.
+Pls think of an alternative.
+Or just drop the patch?
+I don't know how many other selftest are failing on that arch.
+If pass rate is not 100% then few extra failures is a noise anyway.
 
