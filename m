@@ -1,209 +1,168 @@
-Return-Path: <bpf+bounces-78400-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78402-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A57BD0C4FC
-	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 22:28:35 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1E9BD0C559
+	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 22:37:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B08C3305DE61
-	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 21:27:24 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4A0E13037518
+	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 21:34:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCA6233DECB;
-	Fri,  9 Jan 2026 21:27:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E81D433D6C4;
+	Fri,  9 Jan 2026 21:34:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="WMpA2VPT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GnQES+yn"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D013A340263;
-	Fri,  9 Jan 2026 21:27:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7496C31B133;
+	Fri,  9 Jan 2026 21:34:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767994038; cv=none; b=kUcG9f+bqTz7lFz8QQHoiq2s0SSpJIqsiKzWQ66xsuG65suyvV/XAjjdZxljJ2BMeHfrNQ5MgTcBSQvpuJUFQHlBeSfPGfw7rTvGXD/l80NI5Xv9jiQtRMElP7Kn3LVZOtuFd76jUfW7BbW/Z03Lo0qmtKj3TEuK0KfzydxZF74=
+	t=1767994458; cv=none; b=GeqSWS3P5+EmwQjHF7T3uzb9wCzCUob1Dr80HehnSEuLxDxVxuN6YS1oLNpW/lcK6XbneqZM+WS+BDmz5YqvRI8ESfKV75AAV42uaV8SmR2XcHw36zLx+0MNFjsAfgsCEF0XArsFK2/xonkL7W/4Bo+iZBQj/wrUxY1Lo+WBZSw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767994038; c=relaxed/simple;
-	bh=ds3vmtRO482oJ4L9zl1gi+HwQInYAfVxpdU9illDGlw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZzHAZVY/eXlb7uv6758d/fIC4kDykrrRSIOk40kzk6TNpxhFw8hh1/b4xxAFWn9iI+s2gQXf01tcJ3sSF4lL7S818ygs0JRvnrxYjVrXjFQBixYvWlSeX1+kcd8/4gkHUEteMdpiYh4nbxVBIkyCRDlQ+Voto8UtkUNumcXX87c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=WMpA2VPT; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=A3JhZ4YZgwR/rLOGJb+FXJJbVesXMoF+77HTdLn+a1E=; b=WMpA2VPTK6beS1GaMaGAkR9fVL
-	ybbQBmnTMvs/WcjEAsmm197H8s6OAu2hXIP3eWUsEXt3B8MnTPVEy4ho0SymARNJO7Ail/m/rcSSk
-	EHje5LVcJe46BrSzDETZQMkxc+H5E7Q33RNik4wR1xtODMlZlbp+cjyLnTc3o7XzEaBh6TGYRLR3Y
-	DVoVrp62UBEAlxpX7BHbymA0rZNUVbYYL+ko18o494lqqM6oxO4kr6E1W546x7ReMJIq1RQuAJE69
-	mKUl9EkoEsetMYHT3PBlO/4nMpKyI+2smrONHdN+0Ng+kKbqmS8J/YHuyc4BxZNxi7duieQAX1VEu
-	2yubTsoQ==;
-Received: from localhost ([127.0.0.1])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1veK0S-00056W-02;
-	Fri, 09 Jan 2026 22:26:52 +0100
-From: Daniel Borkmann <daniel@iogearbox.net>
-To: netdev@vger.kernel.org
-Cc: bpf@vger.kernel.org,
-	kuba@kernel.org,
-	davem@davemloft.net,
-	razor@blackwall.org,
-	pabeni@redhat.com,
-	willemb@google.com,
-	sdf@fomichev.me,
-	john.fastabend@gmail.com,
-	martin.lau@kernel.org,
-	jordan@jrife.io,
-	maciej.fijalkowski@intel.com,
-	magnus.karlsson@intel.com,
-	dw@davidwei.uk,
-	toke@redhat.com,
-	yangzhenze@bytedance.com,
-	wangdongdong.6@bytedance.com
-Subject: [PATCH net-next v5 16/16] selftests/net: Add netkit container tests
-Date: Fri,  9 Jan 2026 22:26:32 +0100
-Message-ID: <20260109212632.146920-17-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260109212632.146920-1-daniel@iogearbox.net>
-References: <20260109212632.146920-1-daniel@iogearbox.net>
+	s=arc-20240116; t=1767994458; c=relaxed/simple;
+	bh=O1z7mjpOke5bocjNdQ/DFQ2hI1k1t1Kx9JNBeNNHJ7o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=H/30fgmjwiDjGhq4dVjSHwexWAAmqVq9Wwml8Rmc8PuqKHjbAYxWBYdinonGQztoG5se/Zs8tJpaHCwGIkS/pwyAsPOL58MG8akuvknJlsGhPm2fCQbJPwjLJF5H70u66eK2d+17aEGODyXmmSHsjKzX68jafZMxHBPknHPXyxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GnQES+yn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63242C4CEF1;
+	Fri,  9 Jan 2026 21:34:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1767994458;
+	bh=O1z7mjpOke5bocjNdQ/DFQ2hI1k1t1Kx9JNBeNNHJ7o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GnQES+ynIcoNO+2c0ex19j3XxEa7jMX3EeNFpMGM+9wPA8rHoBYZkT6+aA2A9nppW
+	 JVZp08hnesLU8y4d7iJZmWtrlgRnj+P7yOn7yWHhsyYQSCEDJ9gvFurxM49g/x52qk
+	 IRxJpvrQ9HRwbVIeg7l537i+inLmSM28NrI1/Rk8YFaApkJhgpH11VfxRZDaoGB8GP
+	 n0yN1sczxEIDiUsr8kKQccBrTLrFN9F7nB6yBKoKrlrMQA9pwGP8NRJXMnrXkBz7Vy
+	 VLLG4GBoIlLwf2pA9TENTe+Jr6SZKNMTDTwxNwMVHQ8vD5D5NJ+RkQyGzaUiWemspC
+	 e7GeuNK50snkg==
+Date: Fri, 9 Jan 2026 22:34:12 +0100
+From: Benjamin Tissoires <bentiss@kernel.org>
+To: Ihor Solodrai <ihor.solodrai@linux.dev>
+Cc: Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, 
+	Mykyta Yatsenko <yatsenko@meta.com>, Tejun Heo <tj@kernel.org>, 
+	Alan Maguire <alan.maguire@oracle.com>, Jiri Kosina <jikos@kernel.org>, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, sched-ext@lists.linux.dev
+Subject: Re: [PATCH bpf-next v1 07/10] HID: Use bpf_wq_set_callback kernel
+ function
+Message-ID: <orvnpqolvwpbalpwcqp2izn5r2otkyikzk7jqbu6mynbizsm2b@iodguv7xvd3x>
+References: <20260109184852.1089786-1-ihor.solodrai@linux.dev>
+ <20260109184852.1089786-8-ihor.solodrai@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: Clear (ClamAV 1.0.9/27875/Fri Jan  9 08:26:02 2026)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260109184852.1089786-8-ihor.solodrai@linux.dev>
 
-From: David Wei <dw@davidwei.uk>
+On Jan 09 2026, Ihor Solodrai wrote:
+> Remove extern declaration of bpf_wq_set_callback_impl() from
+> hid_bpf_helpers.h and replace bpf_wq_set_callback macro with a
+> corresponding new declaration.
+> 
+> Fix selftests/hid build failure caused by missing BPF_CFLAGS.
 
-Add two tests using NetDrvContEnv. One basic test that sets up a netkit
-pair, with one end in a netns. Use LOCAL_PREFIX_V6 and nk_forward BPF
-program to ping from a remote host to the netkit in netns.
+Already fixed in e03fb369b083 ("selftests/hid: fix bpf compilations due to -fms-extensions")
 
-Second is a selftest for netkit queue leasing, using io_uring zero copy
-test binary inside of a netns with netkit. This checks that memory
-providers can be bound against virtual queues in a netkit within a
-netns that are leasing from a physical netdev in the default netns.
+> 
+> Tested with:
+>   # append tools/testing/selftests/hid/config and build the kernel
+>   $ make -C tools/testing/selftests/hid
+>   # in built kernel
+>   $ ./tools/testing/selftests/hid/hid_bpf -t test_multiply_events_wq
+> 
+>   TAP version 13
+>   1..1
+>   # Starting 1 tests from 1 test cases.
+>   #  RUN           hid_bpf.test_multiply_events_wq ...
+>   [    2.575520] hid-generic 0003:0001:0A36.0001: hidraw0: USB HID v0.00 Device [test-uhid-device-138] on 138
+>   #            OK  hid_bpf.test_multiply_events_wq
+>   ok 1 hid_bpf.test_multiply_events_wq
+>   # PASSED: 1 / 1 tests passed.
+>   # Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
+>   PASS
+> 
+> Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
+> ---
+>  drivers/hid/bpf/progs/hid_bpf_helpers.h             | 8 +++-----
+>  tools/testing/selftests/hid/Makefile                | 4 +++-
+>  tools/testing/selftests/hid/progs/hid_bpf_helpers.h | 8 +++-----
+>  3 files changed, 9 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/hid/bpf/progs/hid_bpf_helpers.h b/drivers/hid/bpf/progs/hid_bpf_helpers.h
+> index bf19785a6b06..228f8d787567 100644
+> --- a/drivers/hid/bpf/progs/hid_bpf_helpers.h
+> +++ b/drivers/hid/bpf/progs/hid_bpf_helpers.h
+> @@ -33,11 +33,9 @@ extern int hid_bpf_try_input_report(struct hid_bpf_ctx *ctx,
+>  /* bpf_wq implementation */
+>  extern int bpf_wq_init(struct bpf_wq *wq, void *p__map, unsigned int flags) __weak __ksym;
+>  extern int bpf_wq_start(struct bpf_wq *wq, unsigned int flags) __weak __ksym;
+> -extern int bpf_wq_set_callback_impl(struct bpf_wq *wq,
+> -		int (callback_fn)(void *map, int *key, void *value),
+> -		unsigned int flags__k, void *aux__ign) __ksym;
+> -#define bpf_wq_set_callback(wq, cb, flags) \
+> -	bpf_wq_set_callback_impl(wq, cb, flags, NULL)
+> +extern int bpf_wq_set_callback(struct bpf_wq *wq,
+> +		int (*callback_fn)(void *, int *, void *),
+> +		unsigned int flags) __weak __ksym;
 
-Signed-off-by: David Wei <dw@davidwei.uk>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
----
- .../testing/selftests/drivers/net/hw/Makefile |  2 +
- .../selftests/drivers/net/hw/nk_netns.py      | 23 ++++++++
- .../selftests/drivers/net/hw/nk_qlease.py     | 55 +++++++++++++++++++
- 3 files changed, 80 insertions(+)
- create mode 100755 tools/testing/selftests/drivers/net/hw/nk_netns.py
- create mode 100755 tools/testing/selftests/drivers/net/hw/nk_qlease.py
+FWIW, if I'm the only one using bpf_wq_set_callback_impl() that you are
+aware of, I'm fine removing the _impl kfunc from the kernel, I can deal
+with this when loading the programs.
 
-diff --git a/tools/testing/selftests/drivers/net/hw/Makefile b/tools/testing/selftests/drivers/net/hw/Makefile
-index 9c163ba6feee..39ad86d693b3 100644
---- a/tools/testing/selftests/drivers/net/hw/Makefile
-+++ b/tools/testing/selftests/drivers/net/hw/Makefile
-@@ -32,6 +32,8 @@ TEST_PROGS = \
- 	irq.py \
- 	loopback.sh \
- 	nic_timestamp.py \
-+	nk_netns.py \
-+	nk_qlease.py \
- 	pp_alloc_fail.py \
- 	rss_api.py \
- 	rss_ctx.py \
-diff --git a/tools/testing/selftests/drivers/net/hw/nk_netns.py b/tools/testing/selftests/drivers/net/hw/nk_netns.py
-new file mode 100755
-index 000000000000..afa8638195d8
---- /dev/null
-+++ b/tools/testing/selftests/drivers/net/hw/nk_netns.py
-@@ -0,0 +1,23 @@
-+#!/usr/bin/env python3
-+# SPDX-License-Identifier: GPL-2.0
-+
-+from lib.py import ksft_run, ksft_exit
-+from lib.py import NetDrvContEnv
-+from lib.py import cmd
-+
-+
-+def test_ping(cfg) -> None:
-+    cfg.require_ipver("6")
-+
-+    cmd(f"ping -c 1 -W5 {cfg.nk_guest_ipv6}", host=cfg.remote)
-+    cmd(f"ping -c 1 -W5 {cfg.remote_addr_v['6']}", ns=cfg.netns)
-+
-+
-+def main() -> None:
-+    with NetDrvContEnv(__file__) as cfg:
-+        ksft_run([test_ping], args=(cfg,))
-+    ksft_exit()
-+
-+
-+if __name__ == "__main__":
-+    main()
-diff --git a/tools/testing/selftests/drivers/net/hw/nk_qlease.py b/tools/testing/selftests/drivers/net/hw/nk_qlease.py
-new file mode 100755
-index 000000000000..738a46d2d20c
---- /dev/null
-+++ b/tools/testing/selftests/drivers/net/hw/nk_qlease.py
-@@ -0,0 +1,55 @@
-+#!/usr/bin/env python3
-+# SPDX-License-Identifier: GPL-2.0
-+
-+import re
-+from os import path
-+from lib.py import ksft_run, ksft_exit
-+from lib.py import NetDrvContEnv
-+from lib.py import bkg, cmd, defer, ethtool, rand_port, wait_port_listen
-+
-+
-+def create_rss_ctx(cfg):
-+    output = ethtool(f"-X {cfg.ifname} context new start {cfg.src_queue} equal 1").stdout
-+    values = re.search(r'New RSS context is (\d+)', output).group(1)
-+    return int(values)
-+
-+
-+def set_flow_rule(cfg):
-+    output = ethtool(f"-N {cfg.ifname} flow-type tcp6 dst-port {cfg.port} action {cfg.src_queue}").stdout
-+    values = re.search(r'ID (\d+)', output).group(1)
-+    return int(values)
-+
-+
-+def set_flow_rule_rss(cfg, rss_ctx_id):
-+    output = ethtool(f"-N {cfg.ifname} flow-type tcp6 dst-port {cfg.port} context {rss_ctx_id}").stdout
-+    values = re.search(r'ID (\d+)', output).group(1)
-+    return int(values)
-+
-+
-+def test_iou_zcrx(cfg) -> None:
-+    cfg.require_ipver('6')
-+
-+    ethtool(f"-X {cfg.ifname} equal {cfg.src_queue}")
-+    defer(ethtool, f"-X {cfg.ifname} default")
-+
-+    flow_rule_id = set_flow_rule(cfg)
-+    defer(ethtool, f"-N {cfg.ifname} delete {flow_rule_id}")
-+
-+    rx_cmd = f"ip netns exec {cfg.netns.name} {cfg.bin_local} -s -p {cfg.port} -i {cfg._nk_guest_ifname} -q {cfg.nk_queue}"
-+    tx_cmd = f"{cfg.bin_remote} -c -h {cfg.nk_guest_ipv6} -p {cfg.port} -l 12840"
-+    with bkg(rx_cmd, exit_wait=True):
-+        wait_port_listen(cfg.port, proto="tcp", ns=cfg.netns)
-+        cmd(tx_cmd, host=cfg.remote)
-+
-+
-+def main() -> None:
-+    with NetDrvContEnv(__file__, lease=True) as cfg:
-+        cfg.bin_local = path.abspath(path.dirname(__file__) + "/../../../drivers/net/hw/iou-zcrx")
-+        cfg.bin_remote = cfg.remote.deploy(cfg.bin_local)
-+        cfg.port = rand_port()
-+        ksft_run([test_iou_zcrx], args=(cfg,))
-+    ksft_exit()
-+
-+
-+if __name__ == "__main__":
-+    main()
--- 
-2.43.0
+>  
+>  #define HID_MAX_DESCRIPTOR_SIZE	4096
+>  #define HID_IGNORE_EVENT	-1
+> diff --git a/tools/testing/selftests/hid/Makefile b/tools/testing/selftests/hid/Makefile
+> index 2839d2612ce3..4c01bb649913 100644
+> --- a/tools/testing/selftests/hid/Makefile
+> +++ b/tools/testing/selftests/hid/Makefile
+> @@ -184,7 +184,9 @@ MENDIAN=$(if $(IS_LITTLE_ENDIAN),-mlittle-endian,-mbig-endian)
+>  
+>  CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG))
+>  BPF_CFLAGS = -g -Werror -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN) 		\
+> -	     -I$(INCLUDE_DIR)
+> +	     -I$(INCLUDE_DIR)						\
+> +	     -Wno-microsoft-anon-tag					\
+> +	     -fms-extensions
 
+Already in Linus' tree.
+
+>  
+>  CLANG_CFLAGS = $(CLANG_SYS_INCLUDES) \
+>  	       -Wno-compare-distinct-pointer-types
+> diff --git a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h b/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
+> index 531228b849da..80ab60905865 100644
+> --- a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
+> +++ b/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
+> @@ -116,10 +116,8 @@ extern int hid_bpf_try_input_report(struct hid_bpf_ctx *ctx,
+>  /* bpf_wq implementation */
+>  extern int bpf_wq_init(struct bpf_wq *wq, void *p__map, unsigned int flags) __weak __ksym;
+>  extern int bpf_wq_start(struct bpf_wq *wq, unsigned int flags) __weak __ksym;
+> -extern int bpf_wq_set_callback_impl(struct bpf_wq *wq,
+> -		int (callback_fn)(void *map, int *key, void *wq),
+> -		unsigned int flags__k, void *aux__ign) __weak __ksym;
+> -#define bpf_wq_set_callback(timer, cb, flags) \
+> -	bpf_wq_set_callback_impl(timer, cb, flags, NULL)
+> +extern int bpf_wq_set_callback(struct bpf_wq *wq,
+> +		int (*callback_fn)(void *, int *, void *),
+> +		unsigned int flags) __weak __ksym;
+>  
+>  #endif /* __HID_BPF_HELPERS_H */
+> -- 
+> 2.52.0
+> 
+
+Acked-by: Benjamin Tissoires <bentiss@kernel.org>
+
+Cheers,
+Benjamin
 
