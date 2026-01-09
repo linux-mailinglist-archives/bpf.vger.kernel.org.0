@@ -1,105 +1,118 @@
-Return-Path: <bpf+bounces-78373-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78374-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B8B2D0C0E0
-	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 20:24:33 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1EB5D0C158
+	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 20:35:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6B69530963F9
-	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 19:20:15 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 060133025DB3
+	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 19:35:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A04752E974D;
-	Fri,  9 Jan 2026 19:20:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABC0730DEB8;
+	Fri,  9 Jan 2026 19:34:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Vttmsl0D"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="U4tjFHp2"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4F4F23EA9B
-	for <bpf@vger.kernel.org>; Fri,  9 Jan 2026 19:20:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B9BE3398A;
+	Fri,  9 Jan 2026 19:34:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767986414; cv=none; b=t1sPHCOkB4Pdc4rec1TtMlRhcCYHprtVTKijeOXbeuSYHW1qoi59icMIG3eYr2RAXGi1p8SdpoGQF1ehA7kkv/u0Pc6jIACD1CGTxTSnE3iW3/9xiKqKCY9K0bwH6uB/v9qFz2nsHnVKekxgn0Y8x2cRgr88U1fUX9S0v2QOFac=
+	t=1767987298; cv=none; b=Fj+kH+3wJmlf7iEb8k1BO4odEKXS4H15y0D5x66W1ZVbPBRMKVsgo8kBPKX+NppZAFE1E5OC6sTdKq4Fjq+QVV9BhiamFj8yffVbqOwAuHg2H5cos6nGGzdANjG5Rt/Bu3dXcZvcFbGJ6aswa5ybyRwytikKFwwGwWU/jmVfXGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767986414; c=relaxed/simple;
-	bh=UA1W3ffSHy7mmLgxQmLPlqFxO0jlzVXsdLrfVgn9j0g=;
+	s=arc-20240116; t=1767987298; c=relaxed/simple;
+	bh=1LYPlAuuSKe87kSWcWwfw07rnIjC7+5DOoOpWTyd90g=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZMQ3oTk/8/SmLuPMUV3LXrwDdazfb/V4RUCejxyeFewOThKQjZ98UnCds6e7AeqpmwfA6+j6tlkP/mB2C+fge4D7BZVfJU5/ACRME2TeLP0+hK+zyzBkysixyd507Q/NePOuRZPv6dxj/Y2wXjIcniK2JhNDg9AaUYTItx7gOls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Vttmsl0D; arc=none smtp.client-ip=91.218.175.171
+	 In-Reply-To:Content-Type; b=myJW6upPwH6IzVN5YRnBLoNagiUoIJXVU5RYtXSUZjnzGUeZ+ExMcqbu1ahbU1TU7IM1bfyl6bnTIRlJJkfDnHXsKIrQnuY5dVxC7Ib6a1UGq40KGvAOuscJZTcptzKLTKJI0S4H4aggJQ0X9IRgXLtsbcqKwouHBISVR4TNqDo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=U4tjFHp2; arc=none smtp.client-ip=91.218.175.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <dcc3a509-d8fd-4f46-8051-683d7277fde7@linux.dev>
+Message-ID: <959cbc0f-6ec9-440e-96cb-64bb2cc26817@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1767986400;
+	t=1767987294;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=UA1W3ffSHy7mmLgxQmLPlqFxO0jlzVXsdLrfVgn9j0g=;
-	b=Vttmsl0DV1JUxe2J1IX2yXZn0oMFTmNsr0ZW1XJKtM/WQGp/gwI+E52GE0zK5yP6JfadOM
-	sw78Cdxe3/6bazMgiHftgF8t4uwBnxNmPRqjgnbQruZ+KbB9q9RTy5SHTkrQiLNTB1l4gF
-	wklC42gZp+4Ln5jS2V7V6iCt5ZfdwF0=
-Date: Fri, 9 Jan 2026 11:19:55 -0800
+	bh=IRQAvj0Fe38gDGKQiHCGy2Q/83lfJaDQOBTGVSZfwDc=;
+	b=U4tjFHp2WMerzMT4jif1pQ99jKZ/hjfBapw4rsscbVAAkvf8I9Ox7wwZMo+vTwMPf9zHnV
+	FtNejbXyzUF016CL7YMxN+GGdgBHN4XH4Y9YQqDYNasDD/MjQa6t01EfZ0KOq2biI4yYIl
+	zhmlVjhxd43u+DAVWc3F3a7ETD+MSOU=
+Date: Fri, 9 Jan 2026 11:34:46 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v5] tracing: Guard __DECLARE_TRACE() use of
- __DO_TRACE_CALL() with SRCU-fast
-Content-Language: en-GB
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, LKML
- <linux-kernel@vger.kernel.org>,
- Linux trace kernel <linux-trace-kernel@vger.kernel.org>,
- bpf <bpf@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Thomas Gleixner <tglx@linutronix.de>
-References: <20260108220550.2f6638f3@fedora>
- <da261242-482f-4b47-81c6-b065c5a95c4b@efficios.com>
- <CAADnVQJMa+p_BcYxKUgve2=sqRBwSs3wLGAGhbA0r6hwFpJ+6Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 04/10] resolve_btfids: Support for
+ KF_IMPLICIT_ARGS
+To: bot+bpf-ci@kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, martin.lau@linux.dev, eddyz87@gmail.com
+Cc: yatsenko@meta.com, tj@kernel.org, alan.maguire@oracle.com,
+ bentiss@kernel.org, jikos@kernel.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+ sched-ext@lists.linux.dev, martin.lau@kernel.org, yonghong.song@linux.dev,
+ clm@meta.com
+References: <20260109184852.1089786-5-ihor.solodrai@linux.dev>
+ <614a1ac62ade1a2c93f3669dea78d37d1fba159f1f00e79c5e8047047a772d75@mail.kernel.org>
+Content-Language: en-US
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAADnVQJMa+p_BcYxKUgve2=sqRBwSs3wLGAGhbA0r6hwFpJ+6Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+From: Ihor Solodrai <ihor.solodrai@linux.dev>
+In-Reply-To: <614a1ac62ade1a2c93f3669dea78d37d1fba159f1f00e79c5e8047047a772d75@mail.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 
+On 1/9/26 11:15 AM, bot+bpf-ci@kernel.org wrote:
+>> diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
+>> index df39982f51df..b361e726fa36 100644
+>> --- a/tools/bpf/resolve_btfids/main.c
+>> +++ b/tools/bpf/resolve_btfids/main.c
+> 
+> [ ... ]
+> 
+>> +static s64 btf__collect_decl_tags(const struct btf *btf, s32 *decl_tags, u32 decl_tags_sz)
+>> +{
+>> +	const u32 type_cnt = btf__type_cnt(btf);
+>> +	const struct btf_type *t;
+>> +	s64 nr_decl_tags = 0;
+>> +
+>> +	for (u32 id = 1; id < type_cnt; id++) {
+>> +		t = btf__type_by_id(btf, id);
+>> +		if (!btf_is_decl_tag(t))
+>> +			continue;
+>> +		if (nr_decl_tags >= decl_tags_sz) {
+>> +			pr_err("ERROR: resolve_btfids: too many decl tags in BTF - limit %s\n",
+>> +				decl_tags_sz);
+>                                 ^^^^^^^^^^^^^^^^^
+> 
+> Should this be %u instead of %s? The decl_tags_sz parameter is a u32, but
+> the format specifier %s expects a string pointer. When the error path is
+> triggered (more than MAX_DECL_TAGS decl tags in BTF), this will cause
+> undefined behavior as printf tries to interpret the integer value as a
+> memory address to read a string from.
 
+Correct, it should be %u or %d.
 
-On 1/9/26 11:10 AM, Alexei Starovoitov wrote:
-> On Fri, Jan 9, 2026 at 6:45 AM Mathieu Desnoyers
-> <mathieu.desnoyers@efficios.com> wrote:
->> On 2026-01-08 22:05, Steven Rostedt wrote:
->>> From: "Paul E. McKenney" <paulmck@kernel.org>
->> [...]
->>
->> I disagree with many elements of the proposed approach.
->>
->> On one end we have BPF wanting to hook on arbitrary tracepoints without
->> adding significant latency to PREEMPT RT kernels.
->>
->> One the other hand, we have high-speed tracers which execute very short
->> critical sections to serialize trace data into ring buffers.
->>
->> All of those users register to the tracepoint API.
->>
->> We also have to consider that migrate disable is *not* cheap at all
->> compared to preempt disable.
-> Looks like your complaint comes from lack of engagement in kernel
-> development.
-> migrate_disable _was_ not cheap.
-> Try to benchmark it now.
-> It's inlined. It's a fraction of extra overhead on top of preempt_disable.
->
-The following are related patches to inline migrate_disable():
-
-35561bab768977c9e05f1f1a9bc00134c85f3e28 arch: Add the macro COMPILE_OFFSETS to all the asm-offsets.c
-88a90315a99a9120cd471bf681515cc77cd7cdb8 rcu: Replace preempt.h with sched.h in include/linux/rcupdate.h
-378b7708194fff77c9020392067329931c3fcc04 sched: Make migrate_{en,dis}able() inline
+> 
+>> +			return -E2BIG;
+>> +		}
+>> +		decl_tags[nr_decl_tags++] = id;
+>> +	}
+>> +
+>> +	return nr_decl_tags;
+>> +}
+> 
+> [ ... ]
+> 
+> 
+> ---
+> AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+> See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
+> 
+> CI run summary: https://github.com/kernel-patches/bpf/actions/runs/20862592244
 
 
