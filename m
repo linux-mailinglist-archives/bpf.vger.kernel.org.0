@@ -1,171 +1,211 @@
-Return-Path: <bpf+bounces-78426-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78427-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B49D2D0C8F0
-	for <lists+bpf@lfdr.de>; Sat, 10 Jan 2026 00:37:33 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DCF5D0C902
+	for <lists+bpf@lfdr.de>; Sat, 10 Jan 2026 00:43:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id ED6CF302E616
-	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 23:37:19 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id EBE6D301CE99
+	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 23:43:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA57634251C;
-	Fri,  9 Jan 2026 23:37:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A5BC340D86;
+	Fri,  9 Jan 2026 23:43:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lbR2tvXy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ix/gH/gI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E527033D6CE
-	for <bpf@vger.kernel.org>; Fri,  9 Jan 2026 23:37:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07580320CDF
+	for <bpf@vger.kernel.org>; Fri,  9 Jan 2026 23:43:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768001836; cv=none; b=qGHidvQCMWduq2ZCI0Y1mJ71BxVCDU7B2ANau5inCF2sWVIlVdtXm5bIMqkLUl2CfkvtOnUMlecax2WD1zAWgGnHmH8NMJdPYYdmaEyxJd1RzYk2YEd3GT42GDTEiHcuMqnFNERhnSyagRQ9ozpMvbjRY+q0nLySAz5PDWv7ALE=
+	t=1768002207; cv=none; b=lp5Z7mRq1bGaoIMnXKKITAsrBTyvQgJO/ha9RBJI7xGuBiNzb66NDn2sqez/x4VGReEq4ZIYWWjN8pZg2WIi0hf5mx7h3tOffmp/R+qqrSBscUJX6DiqQgnPuzonrESs8Wu7I++3DapIZGJvTqMo61KWJieD6MAm5sFe5mdZTpM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768001836; c=relaxed/simple;
-	bh=1SlvpZwfawOOFUbunaO4aOZEDljdwcY5JnICiqQ/8qo=;
+	s=arc-20240116; t=1768002207; c=relaxed/simple;
+	bh=Sb5r0wywbagilleJPW6QO97Po4jOyhKWAwIHTnrvyVw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=U8+CYJT1C/RCNwJcJi/1wDCcRNi9xHVJ2ThSugUEKrto9O1Ez/PDZieWvKx0Y4fhaF0XWdO3oMHy/3/cbHSxZIBJMOA87ITnK689/5uUba+fZb+Zdh8U/hWSMHxgsVXM/JiXNqAAR0C5o536zl/XMTiM8nrmjS+zRDYMyG5GL8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lbR2tvXy; arc=none smtp.client-ip=209.85.216.41
+	 To:Cc:Content-Type; b=qW1itL82XP1tiKUPV41eBoL+nGjIyw5xiRaFH1yCL8GMXDZhDFd7jwuSgsr3h99ckxL/3DsY8QNGr0s3f4EL0EYsiA7zo4N2KeiJRV3lonOJnRbV0plDXqzWVravMQWy4K+LRrLbNxOdcHz2w9rtb6/QCz5NkPrl8SMzzVbz9gY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ix/gH/gI; arc=none smtp.client-ip=209.85.210.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-34c30f0f12eso2788547a91.1
-        for <bpf@vger.kernel.org>; Fri, 09 Jan 2026 15:37:14 -0800 (PST)
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-81ef4b87291so288368b3a.0
+        for <bpf@vger.kernel.org>; Fri, 09 Jan 2026 15:43:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768001834; x=1768606634; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1768002205; x=1768607005; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ZETOpYKlt2aIMK30at0U6iQ9diSp7g6ayNJ4wI5uaek=;
-        b=lbR2tvXyBBav/AVLELFWzMeSi8dBPL3VSa+gkX3WeC7HnfrIPSkzgo7dyWHH6hUhHz
-         x7HnXJOD4vXmK+2XCYyx0xxjdNJxUcIO+Ej5Z87zHJdygYolqmBP5+aJF1p6CmxZ6226
-         Z577wueCUa0JcmD7T9Yu4bi5yxMGyeuVJhIBkQhMX+R/fHZcvAz6JBMK9aGaKhJ+ujiK
-         SUR/Q5wZklsLauTk5qpODMGz0EM8Ft+0I84WJeFtGFbfEQiT3qQoBnKM+thuw1f3PtDh
-         eXUhgGvLe2IiYgMqeZDEk8+qAzdhBPKt8f5iK9o1EezxtSoZciUbE5W1aiy6oqf3tzWr
-         4GYg==
+        bh=DHCpnerOC5um4xc4HZEsI+ZEnjV9mj0ABla+PkLDu8I=;
+        b=Ix/gH/gIRS9RehlY08NZx7X2go06xceu7MSXRB27DO1Ct2FFDExN7QYgPdqrUE/qe7
+         fFOLq9van0tr/SgVLM5IcG6bd9qEZe+fxbSHhOoQE/uaad4DelGemnDVb8nt/LC9pvh4
+         kVU4NJkVnggi4LsyGOOlexvtlK8V02zwvY7ZJ0aPzb0wTLunkKFsP3UxGjEkEGjwz7o1
+         RtISwT/8rXNW7Rj7t/Li8KPc6+cc2LdtO6WP9BAwpg1GIz3wpBxhUVoncx7A3C5RpnM6
+         /1JiOitrjjVfNyjK4vAc/EvgiFLnWhfpPMihNV7aHC6UK7LuSeUDyBb8YIxcywmy+q1c
+         dMMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768001834; x=1768606634;
+        d=1e100.net; s=20230601; t=1768002205; x=1768607005;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=ZETOpYKlt2aIMK30at0U6iQ9diSp7g6ayNJ4wI5uaek=;
-        b=erOHkRyRUUMKJUAhoxtYx0mSAWQrQSRQ3ZJi4W4qNGKU2al9VYsGe6OloSWQHnxgDW
-         QkKTPKfWiHsD+TLQyXBo6tcIbx7g/BWtgzdcH/SAFl0zZS+PjUQ98GZ6EAZGUxY5RADL
-         SmlBzNu7BoSKrOtIW+wHsSp8+lKnJHScFVQAQ4Ol4FIov3lf5NJhSDA3s+B45pTA3Ori
-         RQevzPIIXJwNPi6sJ1jdNM9aajVTLBEVKcjGcdmvr2lRSEXCpvV6sV4YMYxd/N2y16Kp
-         6wlEin7J+LTCVhVKpvGxnsaWJmhQDrx15maJhMpc5A4at4y+jeMgYZ6ph3wECq++90wR
-         ZhIA==
-X-Forwarded-Encrypted: i=1; AJvYcCVklH74BD/+jEAeCtICJpaRrY+9pzZdQAwkKAMYEviD19o75B6kMd5HTf51xtgbz84fLgQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyRuvgK9RxARpcEaixQpIpdMeqQoOofVyFQteFM4HX2w6rjm3/t
-	oTjiUL/n9OpYv+GMJtKll5BFV/D3Ufid584gM3G2b26zOblWczfjBQyp/ZwBb2ipfpTCP40q9mb
-	9kzGT/vdLWTSx8K9nHHO3YdHVxoaXf+s=
-X-Gm-Gg: AY/fxX6KroubguWsWv+rNeBzKWNpsp/VIF/XbI6tEnaDoqwC8zHevVSu1s1NNoSRpSm
-	moAQGKwN8wuLq0lQFwNZRZtPShU6rZejahhyckdqL2L/7HeF+dTcqam/8BAJo/iioROGR1bRSqG
-	S+4s+8SSMhm8dpY1RDetF+1tmWAYWXcYVPHiv+3g/rkSforInyF6Btz2SQnLYuZYT6s320V+Pjb
-	DSvhGiAn+CsWRh+yiVS37C1fDGfZKPuw8K/CtbFwizeZJRB8mfAsNxcao/UAczUX0Pt0LEuzueo
-	QZublSqR
-X-Google-Smtp-Source: AGHT+IGOpR73HGmsdZPqBRAPTMSGiSBBXviNkDMHjCXiL4Wfh991JTJhNzAWgluLVqxIQYzhOuAz42p4QQc1bZL4hr8=
-X-Received: by 2002:a17:90b:17cf:b0:33b:bf8d:6172 with SMTP id
- 98e67ed59e1d1-34f68c47b32mr9547057a91.34.1768001834119; Fri, 09 Jan 2026
- 15:37:14 -0800 (PST)
+        bh=DHCpnerOC5um4xc4HZEsI+ZEnjV9mj0ABla+PkLDu8I=;
+        b=qBIeogstDV7O4vCxmH6nahD2BOTIVyFtD2pDDDJ+byK86L7KlCTJ3nJ6w1163VzCJs
+         tMnS+XGtkl7Q5zX3hsMHxmEZM027m/vTsRAX+iE0YbbebQXhRa73HgCTf7tGOoEEXZ0G
+         1E0efQi0rxYM5S736vFUxToFFJY5ra435KiJ79+hloWZiFR5AUcVcstDqmGH2O0CJgBN
+         dKNsHvJLO+jQgNVZ7deX8Rd1suY5kg+2IoElh0QBrrhxr19SIXDXlIHlhgVYCtBTvhD3
+         p0oI4Wjb80xqX4EJqe/U2lq45fWVg4lvJlHJSanxr/JIgXjWwfnc6KPAfZ3o0RSQUHis
+         FQmw==
+X-Forwarded-Encrypted: i=1; AJvYcCURaC190oJeOrD+Ur/T1lhAnbVc7i/6pRC0oahFSqb9WJRBsh+ZBHWiDbD8f60RtzNSRFA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxN4l7d+fFtBzRtE1DKlihLHiZy5HFEH2AO9ii3vj8wl+c1OEyw
+	btbwV6VCCOKdfou6WpMHGafFPZS+VYCsEorXR3fyPtOcqtj2sOFaacjR3gO8ZbSdQcnnamcD7/0
+	e8ogysJGrZhM+B5KEzNMdpiNj5m8C310=
+X-Gm-Gg: AY/fxX6KLPNc9ZdK2iZA+0cqrAI4xUJNRxhcevSudBN1aVoRsLMiH6Gr5s/175mZzq9
+	+RqbOZ70E1j8X25HqYNtvKEgYRmVajKCYtyd/Z6fd+SbIghESF4gSxkrj1RPGIS84fOc+JO2vuQ
+	+Zy0qplI/ho+amayTsLiquVop3wJEK7qrWs0C8EbcFs6FSLURtBjXOzEhN4xfZbEXsXS0YGt41M
+	UD4kw/XDnh+I76QibFqmswtY87CVFOavhTifwB+q9ULZtMESl0eaFdQ8wx0hiSp2P3bk3Qi7xPJ
+	smbWZQkB
+X-Google-Smtp-Source: AGHT+IHsqm595MasKmBW9NPEldGblkfM3NXLU1oq+e7lUifnNa7rZBL4P9VMRWULEBtPSdfo3CSEVDVgqQasmKva4fg=
+X-Received: by 2002:a17:90b:3e43:b0:34a:b4a2:f0bf with SMTP id
+ 98e67ed59e1d1-34f68c28716mr11665088a91.16.1768002205140; Fri, 09 Jan 2026
+ 15:43:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260108225523.3268383-1-wusamuel@google.com>
-In-Reply-To: <20260108225523.3268383-1-wusamuel@google.com>
+References: <20251223103214.2412446-1-wangjinchao600@gmail.com>
+ <20251223092932.0a804e046fc2e5de236ced69@linux-foundation.org>
+ <86b3f8af-299a-4ae7-b2dc-0b068046fe92@kernel.org> <CAEf4BzaozamTRoK8YromvPZ3b1wNBvxwWrbpfpX4ZFwkMDbMGg@mail.gmail.com>
+ <b15ad63d-100e-4326-961b-5cb2de3332d8@kernel.org>
+In-Reply-To: <b15ad63d-100e-4326-961b-5cb2de3332d8@kernel.org>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 9 Jan 2026 15:37:02 -0800
-X-Gm-Features: AQt7F2rytjA3C04wtUx2mrFaOoAem4wdNbep4rCP4kTsqog7NcxooRbuSyKXfj0
-Message-ID: <CAEf4BzZv9kCAmX0Fo4kR8qh9mu5NB-wLDmNAK_R=VzcxL7VPpQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 0/4] Add wakeup_source iterators
-To: Samuel Wu <wusamuel@google.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+Date: Fri, 9 Jan 2026 15:43:12 -0800
+X-Gm-Features: AQt7F2oHmRI8vjhhnfCk44dtIj4x1B7ASPD5jcy31R0S7xg8y2qUDCvf6V0Bb2k
+Message-ID: <CAEf4BzaRABPLFV-tVXqCrAgd07nkvcqNA-QZqt8RvSLcmu16mQ@mail.gmail.com>
+Subject: Re: [PATCH] buildid: validate page-backed file before parsing build ID
+To: "David Hildenbrand (Red Hat)" <david@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Jinchao Wang <wangjinchao600@gmail.com>, 
+	Song Liu <song@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, 
 	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
 	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, kernel-team@android.com, 
 	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
+	syzbot+e008db2ac01e282550ee@syzkaller.appspotmail.com, 
+	Axel Rasmussen <axelrasmussen@google.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, Michal Hocko <mhocko@kernel.org>, 
+	Qi Zheng <zhengqi.arch@bytedance.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Wei Xu <weixugc@google.com>, Yuanchu Xie <yuanchu@google.com>, Omar Sandoval <osandov@fb.com>, 
+	Deepanshu Kartikey <kartikey406@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 8, 2026 at 2:56=E2=80=AFPM Samuel Wu <wusamuel@google.com> wrot=
-e:
+On Tue, Jan 6, 2026 at 11:16=E2=80=AFAM David Hildenbrand (Red Hat)
+<david@kernel.org> wrote:
 >
-> This patch series introduces BPF iterators for wakeup_source, enabling
-> BPF programs to efficiently traverse a device's wakeup sources.
->
-> Currently, inspecting wakeup sources typically involves reading interface=
+> On 1/5/26 23:52, Andrii Nakryiko wrote:
+> > On Tue, Dec 30, 2025 at 2:11=E2=80=AFPM David Hildenbrand (Red Hat)
+> > <david@kernel.org> wrote:
+> >>
+> >> On 12/23/25 18:29, Andrew Morton wrote:
+> >>> On Tue, 23 Dec 2025 18:32:07 +0800 Jinchao Wang <wangjinchao600@gmail=
+.com> wrote:
+> >>>
+> >>>> __build_id_parse() only works on page-backed storage.  Its helper pa=
+ths
+> >>>> eventually call mapping->a_ops->read_folio(), so explicitly reject V=
+MAs
+> >>>> that do not map a regular file or lack valid address_space operation=
+s.
+> >>>>
+> >>>> Reported-by: syzbot+e008db2ac01e282550ee@syzkaller.appspotmail.com
+> >>>> Signed-off-by: Jinchao Wang <wangjinchao600@gmail.com>
+> >>>>
+> >>>> ...
+> >>>>
+> >>>> --- a/lib/buildid.c
+> >>>> +++ b/lib/buildid.c
+> >>>> @@ -280,7 +280,10 @@ static int __build_id_parse(struct vm_area_stru=
+ct *vma, unsigned char *build_id,
+> >>>>       int ret;
+> >>>>
+> >>>>       /* only works for page backed storage  */
+> >>>> -    if (!vma->vm_file)
+> >>>> +    if (!vma->vm_file ||
+> >>>> +        !S_ISREG(file_inode(vma->vm_file)->i_mode) ||
+> >>>> +        !vma->vm_file->f_mapping->a_ops ||
+> >>>> +        !vma->vm_file->f_mapping->a_ops->read_folio)
+> >>>>               return -EINVAL;
+> >>
+> >> Just wondering, we are fine with MAP_PRIVATE files, right? I guess it'=
 s
-> like /sys/class/wakeup/* or debugfs. The repeated syscalls to query the
-> sysfs nodes is inefficient, as there can be hundreds of wakeup_sources, a=
-nd
-> each wakeup source have multiple stats, with one sysfs node per stat.
-> debugfs is unstable and insecure.
+> >> not about the actual content in the VMA (which might be different for =
+a
+> >> MAP_PRIVATE VMA), but only about the content of the mapped file.
+> >
+> > Yep, this code is fetching contents of a file that backs given VMA.
 >
-> This series implements two types of iterators:
-> 1. Standard BPF Iterator: Allows creating a BPF link to iterate over
->    wakeup sources
-> 2. Open-coded Iterator: Enables the use of wakeup_source iterators direct=
-ly
->    within BPF programs
+> Good!
 >
-> Both iterators utilize pre-existing APIs wakeup_sources_walk_* to travers=
-e
-> over the SRCU that backs the list of wakeup_sources.
-
-One reason to add either open-coded iterator or iterator program is
-when you need to work with some kernel object (i.e., if there is some
-additional API that takes that object and somehow manipulates it) or
-if traversal logic is involved in terms of synchronization primitives
-necessary.
-
-In your case neither concern seems to apply. Looking at
-wakeup_sources_walk_* helpers, it's just a simple linked list
-traversal and struct wakeup_source has plenty of plain data fields of
-interest, if I understand correctly. You probably are not intending to
-allow locking it or manipulate wakeirq, is that right?
-
-So I'd say you should do this using bpf_for() generic loop and
-bpf_core_cast() helper. The only problem is that wakeup_sources global
-variable is static, so it's not that easy to get its memory address
-(to start iteration). Maybe look into working around that first?
-
-pw-bot: cr
-
-
+> >
+> >>
+> >>
+> >> LGTM, although I wonder whether some of these these checks should be
+> >> exposed as part of the read_cache_folio()/do_read_cache_folio() API.
+> >>
+> >> Like, having a helper function that tells us whether we can use
+> >> do_read_cache_folio() against a given mapping+file.
+> >
+> > I agree, this seems to be leaking a lot of internal mm details into
+> > higher-level caller (__build_id_parse). Right now we try to fetch
+> > folio with filemap_get_folio() and if that succeeds, then we do
+> > read_cache_folio. Would it be possible for filemap_get_folio() to
+> > return error if the folio cannot be read using read_cache_folio()? Or
+> > maybe have a variant of filemap_get_folio() that would have this
+> > semantic?
 >
-> Changes in v2:
->  - Guard BPF Makefile with CONFIG_PM_SLEEP to fix build errors
->  - Update copyright from 2025 to 2026
->  - v1 link: https://lore.kernel.org/all/20251204025003.3162056-1-wusamuel=
-@google.com/
+> Good question. But really, for files that always have everything in the p=
+agecache,
+> there would not be a problem, right? I'm thinking about hugetlb, for exam=
+ple.
 >
-> Samuel Wu (4):
->   bpf: Add wakeup_source iterator
->   bpf: Open coded BPF for wakeup_sources
->   selftests/bpf: Add tests for wakeup_sources
->   selftests/bpf: Open coded BPF wakeup_sources test
+> There, we never expect to fallback to do_read_cache_folio().
 >
->  kernel/bpf/Makefile                           |   3 +
->  kernel/bpf/helpers.c                          |   3 +
->  kernel/bpf/wakeup_source_iter.c               | 137 ++++++++
->  .../testing/selftests/bpf/bpf_experimental.h  |   5 +
->  tools/testing/selftests/bpf/config            |   1 +
->  .../bpf/prog_tests/wakeup_source_iter.c       | 323 ++++++++++++++++++
->  .../selftests/bpf/progs/wakeup_source_iter.c  | 117 +++++++
->  7 files changed, 589 insertions(+)
->  create mode 100644 kernel/bpf/wakeup_source_iter.c
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/wakeup_source_=
-iter.c
->  create mode 100644 tools/testing/selftests/bpf/progs/wakeup_source_iter.=
-c
+> So maybe we could just teach do_read_cache_folio() to fail properly?
+>
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index ebd75684cb0a7..3f81b8481af4c 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -4051,8 +4051,11 @@ static struct folio *do_read_cache_folio(struct ad=
+dress_space *mapping,
+>          struct folio *folio;
+>          int err;
+>
+> -       if (!filler)
+> +       if (!filler) {
+> +               if (!mapping->a_ops || !mapping->a_ops->read_folio)
+> +                       return ERR_PTR(-EINVAL);
+>                  filler =3D mapping->a_ops->read_folio;
+> +       }
+>   repeat:
+>          folio =3D filemap_get_folio(mapping, index);
+>          if (IS_ERR(folio)) {
+>
+> Then __build_id_parse() would only check for the existence of vma->vm_fil=
+e and maybe
+> the !S_ISREG(file_inode(vma->vm_file)->i_mode).
+>
+
+That would be great. But something like this was proposed earlier and
+Matthew didn't particularly like this approach ([0]).
+
+  [0] https://lore.kernel.org/all/aReUv1kVACh3UKv-@casper.infradead.org/
+
 >
 > --
-> 2.52.0.457.g6b5491de43-goog
+> Cheers
 >
+> David
 
