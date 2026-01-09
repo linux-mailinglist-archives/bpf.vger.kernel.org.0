@@ -1,292 +1,315 @@
-Return-Path: <bpf+bounces-78348-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78349-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF5C6D0BD96
-	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 19:34:42 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A87D5D0BE2F
+	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 19:40:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 9E0643015829
-	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 18:34:29 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 64188305A206
+	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 18:39:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 304751DE89A;
-	Fri,  9 Jan 2026 18:34:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3529C1FBEB0;
+	Fri,  9 Jan 2026 18:39:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eFaYMB7V"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RmBzmseP"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+Received: from mail-yx1-f45.google.com (mail-yx1-f45.google.com [74.125.224.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EC3119CCF7
-	for <bpf@vger.kernel.org>; Fri,  9 Jan 2026 18:34:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B3DA500960
+	for <bpf@vger.kernel.org>; Fri,  9 Jan 2026 18:39:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767983667; cv=none; b=o+4JzRktlpYrpak1KleFq8vcqOqoV1MLUFzNyTFr24QbMvQP9IcMwRhZU2C+eRIw1XrfxyTg0PbYpA0I7LruTOQCfhShkWR+2QLH3swljp0DD8/klgD0OTx7C4UGBV+zNvpT2gMKgSAC9hHmy6Vi8+zjAqbRWySpLTx812T+Iaw=
+	t=1767983988; cv=none; b=eTBjiiZx6A2W/gGew+dVGnMVJMDHV5OLcHpZ4aKmrbPtLFhApgqKuvw8JLwBaU+VzRoSVjgcUTIRQI3Q9ZNu2F9uE0UJaIE+QSRTrwdsCoTtTqSWq0RUn6pjkxN1BKDq4amN8I0ZxE1r7GCYcJqqe6xao87bPiicjFui3OBBNHU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767983667; c=relaxed/simple;
-	bh=fH1ZaG1r6e9ipB8caS3Az/FSjQNAZq64CfHYQ5eEQfU=;
+	s=arc-20240116; t=1767983988; c=relaxed/simple;
+	bh=0thPSSAt6iGN6qIIoVDgFEDM1RmwR2vjdkx/LsGdBzQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HRELr0zc9KLiEe5mwBi4qcE5hG02UM+Bq8KWZ/eo5+weXIpjPlPt06gWLk4Z9Qm1HLM/H+8ZkOZZV9lnJI4laqzlD9czdYylCschO+i/5vx2O5X0wW7orCk2NBhHtgAXT9U5B35PuwvMl7Bpw6rgi29fteZR+El2LbDpWIG+uqI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eFaYMB7V; arc=none smtp.client-ip=209.85.128.50
+	 To:Cc:Content-Type; b=GyaaubARawlAYVunjWPqJa8w572i/tml5nRkz6Itb4R8+/SwsgwIPUCl9QgyHVVaoU8DPTjTTUHwdbBngCmoLxFmTnkG8ibx3moVDQN1jZpwUIsg/wyqUMpjpdu4TVlkPZbVXTzln0WcU86oIn+8DDuCqZ7WQ4SgeWh2lqQz9w0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RmBzmseP; arc=none smtp.client-ip=74.125.224.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-477bf34f5f5so35818185e9.0
-        for <bpf@vger.kernel.org>; Fri, 09 Jan 2026 10:34:26 -0800 (PST)
+Received: by mail-yx1-f45.google.com with SMTP id 956f58d0204a3-6446d7a8eadso4077974d50.0
+        for <bpf@vger.kernel.org>; Fri, 09 Jan 2026 10:39:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767983665; x=1768588465; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1767983984; x=1768588784; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=s8iHWfuMGKS8j6ybHjB9zSAEdHZWhU6h34FrPMJ5qeU=;
-        b=eFaYMB7Vfj9JbkS+XsaLZp1TTSK55NugMvIKoUKLmU+knC6lNrvm1r4NzpGZjPtluE
-         rKQ1BRtMtDTRzLA5hNoqVWsyZL98LEhf69vNgi+yX09y2sf2NH4OuK4SPegmRLUWJHct
-         nOeW2lgGc/giVZ7KJZECmBGuk1FTMdN7KCBgOMtXP7Oq5kW69jcsj2Dbtj4DmZYuIdYC
-         4nJnnh7q8cbZap4Di0wGY24lqO3V9QeP09Zr/FjSDzYKw/c6EZHzXQToc8K4AtaKcDpX
-         5Zu2rt5BWFhLFRmFHmMsUrdSYNuNpCpJSijq2rUS7nb2H/PSdPTG9rikHouLxFJSxEtY
-         fBTQ==
+        bh=u0MzdrVzYLJ6Sbyf1X9bAK4sVlGZYheMiqhPnsL5Nag=;
+        b=RmBzmsePL7Yz9zbioKWsQMHUvZkdUtAdC+cJrAf0q4Tj11MvCRrGABknNkGrZGNybC
+         LpcCKTCzD0CEbW0I45ob45vnx6aKCL84bd16SmUIvWY52Q6N7n0t8t4G/KBS0q3TYPqa
+         nvN5ajhmSMJRyqoE5sdtU5MFMF4d/CYmkSp6O36hEaYhREtFGId02OTktZJy3Eiqlr46
+         H2uZEHEeukuMwdjoqqLfvPSwZ3O6liI1QLPFCh50CiKC+qGR2WMqtrCzcBTn2F2RS/FY
+         0GuqR2R+t/7i1mjs1rpzuUhponu3L2aQyawUicl9LyxcDThcPy1XFMfWa+IgymRIYas9
+         cVHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767983665; x=1768588465;
+        d=1e100.net; s=20230601; t=1767983984; x=1768588784;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=s8iHWfuMGKS8j6ybHjB9zSAEdHZWhU6h34FrPMJ5qeU=;
-        b=VYZuFjQ2zjWSVeVGJsNPXmPwQND48RBaUubMnfwHNXtNgZACXyu/8yArJNQv4t6WtV
-         8wy+n53bqKwQSnMo/AX62h2OHSzBF8/RMFLtCPE4DPSu91KhioZ0+qaEeTn2CGU+iBh3
-         csTc7GZsqZPZqaMfwCUvXB5+hceI0gNTOgW+jLN2XH670mOKgwg1zCoQg5qMcEME0j6s
-         /nRlZJHy+dXM1iAdk0Jq8itMO9sd+pxZ0Q+csnWa9lMKua/j8CutwYu7UL7Ck7yInxrc
-         im6bUHaZel24KtHCuE1vbPlX8t7Rk9XdGucLQwrSeT3/0iY0th6m60qWD30AawK2Apry
-         lXyQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUlsf7iFirIQa8dxTK7FduU737c2rtn01H9DSFY1F9GZjrZ2nJ5p1YqqLWnsoRsQw7AghY=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzuok71hwZ0hi5Te1Z5mkwV0KfkvjZLyxZWhxmk5r4wnBzuu0ck
-	gcE2RsXgtRmhXR1xqul9N05YN30lsnnU/TBiAl63vzf8z4yRBmnt6ciBWLxr1qgrZK4WlXqioUD
-	J9s4p+D6CSvKz9dygU6pFi7hXTf+R+qo=
-X-Gm-Gg: AY/fxX4CaRAU9/3M0qdqcJ/IUnypM2kVspmCcwML6b99ICjHn+DzOpYj34gyRy1Sm1H
-	Ww2xWDEM90nkK9BiCebwPhJe3G3Te4tHWH1PDFpROcifsgpZQuF1k2yDe3lLR7I3VzU+8DCpIMd
-	ogsQWBDK2/nbOjMG8IwBbrTw6idCo/8Nm2kujUYCgJs9lw6qwCsx/E0H4VZjvpkUSP9AbmxxUSX
-	De6NF+sKnZ9t0swbyt5J6rFpBl5TH2U0RCIShIPymQLmW+wG9NVIRYjRTqZQd7GH2or07a3TTxr
-	TbOLhbNrI+irI8gVCo7+ukHRIGVM
-X-Google-Smtp-Source: AGHT+IFLr8GzWHhXzIEoH7vQcTU0TCGdTOBs91ac1EtIOVmBJLXMY3xqzbWFBNxBgdbQib3fB5CcIOjZPbNfl2T768s=
-X-Received: by 2002:a05:600c:8b0c:b0:477:5b0a:e616 with SMTP id
- 5b1f17b1804b1-47d84b18a9fmr115215235e9.5.1767983664398; Fri, 09 Jan 2026
- 10:34:24 -0800 (PST)
+        bh=u0MzdrVzYLJ6Sbyf1X9bAK4sVlGZYheMiqhPnsL5Nag=;
+        b=dfDNgz4VJQ6erxIe71Gk1u/HupYh00YQCEW4RLXrNaif/ZQH2lwLV/25wU/GYTJpmH
+         2feXVxEN6WwidFyN5YJnWcLr1ykNinUNp63jSRYmSFoKU69C3FpesbCSunoLcru25TIb
+         yTuvPTbm+8lfRHVyDHYq9vusfdHbETT5oeXFjQEjB+WQm50ozofN0un3S2NEyggaiqqW
+         YqNrVrReYD5Pxh54TPLyEOVSzoj9Y3/YABLpxx/y7NpSGyAkP7fZSD4pxTfTYH85UpC4
+         XOuPUZWCxvF8Wu2zEWjnU1ixniwX3gzIQzf+gjYmy1f4JHHvdAyHDfRaLWmZhh+YxduW
+         zGnQ==
+X-Gm-Message-State: AOJu0Yzp5LXpfTWxcs2yPk+jp8JgfJubtYDmCBzslXRNLrVkOdOv1MyT
+	31OpGJWH5ledzgS1hYSBm4h3PCTxgcrufKG2YfTqLD0axnTiSrF0Et+/CGt9m3Pm087E54RwDd6
+	k41YHAlzKboOpCzbUfp23qacwfUzzVT4=
+X-Gm-Gg: AY/fxX5esQAI1FZm/ntqBCR68vq9Dpwcn2oI0QEoanKExw8/xnRXEBVuPVQZ3uG4O92
+	VX0XXfp6u/LEQ6lVQFi+5rGqecF9q36Se2c7++nElpFqHbR5pS2Tv25EpddYeAjLhzn9HknyiAR
+	CVovh0mC6s1lH93y4NumtWuikfX0rCi9o8kzi3MFS6pnYLMrSiJiIaD3Wc+4uGiszAg/2yIGO/r
+	GLUSYPWr0wwR9BES8Ir9aS+LWlUbSq47aoRnNTunRBn7sCYGSKcmxKvONrg1kO5x/0l1Z3NNAYn
+	j+Wt7dfb0tY=
+X-Google-Smtp-Source: AGHT+IFz8uJOxgMQYoQ9UkpvXTtzp7NP0Ci6dhYvdN7HuiLsejwnnQCvITbOBe66Z6eXMJX5KzhBjyLE3xpgCXkzro0=
+X-Received: by 2002:a05:690e:c49:b0:640:e352:4e37 with SMTP id
+ 956f58d0204a3-64716b37ff1mr9005521d50.20.1767983984036; Fri, 09 Jan 2026
+ 10:39:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251215091730.1188790-1-alan.maguire@oracle.com>
- <42914a9b-0f34-4cee-bc36-4847373fa0b5@oracle.com> <CAEf4BzZuikZK5cZQyV=ge6UBKHxc+dwTLjcHZB_1Smw1AwntNA@mail.gmail.com>
- <e2df60e1-db17-4b75-8e0e-56fcfdb53686@oracle.com> <CAEf4BzarPLAcwKApft_nBVM_d3WW58zytZfLQVz387TF2c2FVg@mail.gmail.com>
- <CAADnVQ+achE6ebfCxyfHyxMMFJ-Oq=hUK=JkWUAGwz+7HeV4Qw@mail.gmail.com>
- <22c54404-512c-4229-8c93-8ec1321619e0@oracle.com> <CAADnVQ+VU_nRgPS0H6j6=macgT49+eW7KCf7zPEn9V5K0HN5-A@mail.gmail.com>
- <19a4596d-06dc-42ae-b149-cc2b52fffae9@oracle.com> <CAEf4BzbCxGaFu5E_oYdMxzkqhtVxSnwHawcUv5jM5Sodut5cdA@mail.gmail.com>
- <CAADnVQKYTMPyWLNn-5HHnA23Ay3qNdGUJ9TNVcy62zPEf013Xg@mail.gmail.com>
- <CAEf4Bzb5askzzBL4BnR1tcjio+jW3zdVs_pPPgSq7vd+N5zuXA@mail.gmail.com>
- <64de60b6-4912-4ec8-9c85-342b314c3c5c@oracle.com> <CAEf4BzZYS5QN0B-B7HfPrmiag26-XYqiGNEv+n0gAMhg5uYjrA@mail.gmail.com>
- <CAADnVQLFCPDoRQt4nWxsHVt3AG=HnyE=PepaniWv1yeigozaoA@mail.gmail.com> <da5823ad-bc47-4fb3-a308-645e9857947b@oracle.com>
-In-Reply-To: <da5823ad-bc47-4fb3-a308-645e9857947b@oracle.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 9 Jan 2026 10:34:13 -0800
-X-Gm-Features: AZwV_QjL68y-bOWjV6UCf9dTSo5LVXTgeDKDrkbWf4pSZDBaalZi7b5Yp0jLv8E
-Message-ID: <CAADnVQLpGFkNnbex6CmbDjpPgXEH4TPvA9XrtY76SX_RaoRq9g@mail.gmail.com>
-Subject: Re: [PATCH v8 bpf-next 01/10] btf: add kind layout encoding to UAPI
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Quentin Monnet <qmo@kernel.org>, 
-	Ihor Solodrai <ihor.solodrai@linux.dev>, dwarves <dwarves@vger.kernel.org>, 
-	bpf <bpf@vger.kernel.org>, Thierry Treyer <ttreyer@meta.com>, 
-	Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+References: <20251218175628.1460321-1-ameryhung@gmail.com> <20251218175628.1460321-2-ameryhung@gmail.com>
+ <74fa8337-b0cb-42fb-af8a-fdf6877e558d@linux.dev>
+In-Reply-To: <74fa8337-b0cb-42fb-af8a-fdf6877e558d@linux.dev>
+From: Amery Hung <ameryhung@gmail.com>
+Date: Fri, 9 Jan 2026 10:39:32 -0800
+X-Gm-Features: AQt7F2qDYhRm4xZwC_DghkoWKzs0ibEMqCGzRAN17csiANoJZt0OPhbISE9qYxU
+Message-ID: <CAMB2axP5OvZKhHDnW9UD95S+2nTYaR4xLRHdg+oeXtpRJOfKrA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 01/16] bpf: Convert bpf_selem_unlink_map to failable
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, alexei.starovoitov@gmail.com, 
+	andrii@kernel.org, daniel@iogearbox.net, memxor@gmail.com, 
+	martin.lau@kernel.org, kpsingh@kernel.org, yonghong.song@linux.dev, 
+	song@kernel.org, haoluo@google.com, kernel-team@meta.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 9, 2026 at 5:21=E2=80=AFAM Alan Maguire <alan.maguire@oracle.co=
-m> wrote:
+On Thu, Jan 8, 2026 at 12:29=E2=80=AFPM Martin KaFai Lau <martin.lau@linux.=
+dev> wrote:
 >
-> On 09/01/2026 01:40, Alexei Starovoitov wrote:
-> > On Thu, Jan 8, 2026 at 5:24=E2=80=AFPM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> >>
-> >> On Thu, Jan 8, 2026 at 10:55=E2=80=AFAM Alan Maguire <alan.maguire@ora=
-cle.com> wrote:
-> >>>
-> >>> On 06/01/2026 01:19, Andrii Nakryiko wrote:
-> >>>> On Mon, Jan 5, 2026 at 4:51=E2=80=AFPM Alexei Starovoitov
-> >>>> <alexei.starovoitov@gmail.com> wrote:
-> >>>>>
-> >>>>> On Mon, Jan 5, 2026 at 4:11=E2=80=AFPM Andrii Nakryiko
-> >>>>> <andrii.nakryiko@gmail.com> wrote:
-> >>>>>>
-> >>>>>> On Tue, Dec 23, 2025 at 3:09=E2=80=AFAM Alan Maguire <alan.maguire=
-@oracle.com> wrote:
-> >>>>>>>
-> >>>>>>> On 22/12/2025 19:03, Alexei Starovoitov wrote:
-> >>>>>>>> On Sun, Dec 21, 2025 at 10:58=E2=80=AFPM Alan Maguire <alan.magu=
-ire@oracle.com> wrote:
-> >>>>>>>>>
-> >>>>>>>>>>
-> >>>>>>>>>> Hold on. I'm missing how libbpf will sanitize things for older=
- kernels?
-> >>>>>>>>>
-> >>>>>>>>> The sanitization we can get from layout info is for handling a =
-kernel built with
-> >>>>>>>>> newer kernel/module BTF. The userspace tooling (libbpf and othe=
-rs) does not fully
-> >>>>>>>>> understand it due to the presence of new kinds. In such a case =
-layout data gives us
-> >>>>>>>>> info to parse it by providing info on kind layout, and libbpf c=
-an sanitize it
-> >>>>>>>>> to be usable for some cases (where the type graph is not fatall=
-y compromised
-> >>>>>>>>> by the lack of a kind). This will always be somewhat limited, b=
-ut it
-> >>>>>>>>> does provide more usability than we have today.
-> >>>>>>>>
-> >>>>>>>> I'm even more confused now. libbpf will sanitize BTF for the sak=
-e of
-> >>>>>>>> user space? That's not something it ever did. libbpf sanitizes B=
-TF
-> >>>>>>>> only to
-> >>>>>>>
-> >>>>>>> Right; it's an extension of the sanitization concept from what it=
- does today.
-> >>>>>>> Today we sanitize newer _program_ BTF to ensure it is acceptable =
-to a kernel which
-> >>>>>>> lacks specific aspects of that BTF; the goal here is to support s=
-ome simple sanitization
-> >>>>>>> of the newer _kernel_ BTF by libbpf to help tools (that know abou=
-t kind layout but may lack
-> >>>>>>> latest kind info kernel has) to make that kernel BTF usable.
-> >>>>>>
-> >>>>>> Wait, is that really a goal? I get why Alexei is confused now :)
-> >>>>>>
-> >>>>>> I think we should stick to libbpf sanitizing only BPF program's BT=
-Fs
-> >>>>>> for the sake of loading it into the kernel. If some user space too=
-l is
-> >>>>>> trying to work with kernel BTF that has BTF features that tool doe=
-sn't
-> >>>>>> support, then we only have two reasonable options: a) tool just fa=
-ils
-> >>>>>> to process that BTF altogether or b) the tool is smart enough to
-> >>>>>> utilize BTF layout information to know which BTF types it can safe=
-ly
-> >>>>>> skip (that's where those flags I argue for would be useful). In bo=
-th
-> >>>>>> cases libbpf's btf__parse() will succeed because libbpf can utiliz=
-e
-> >>>>>> layout info to construct a lookup table for btf__type_by_id(). And
-> >>>>>> libbpf doesn't need to do anything beyond that, IMO.
-> >>>>>>
-> >>>>>> We'll teach bpftool to dump as much of BTF as possible (I mean
-> >>>>>> `bpftool btf dump file`), so it's possible to get an idea of what =
-part
-> >>>>>> of BTF is not supported and show those that we know about. We coul=
+> On 12/18/25 9:56 AM, Amery Hung wrote:
+> > To prepare for changing bpf_local_storage_map_bucket::lock to rqspinloc=
+k,
+> > convert bpf_selem_unlink_map() to failable. It still always succeeds an=
 d
-> >>>>>> teach btf_dump to ignore those types that are "safe modifier-like
-> >>>>>> reference kind" (as marked with that flag I proposed earlier), so =
-that
-> >>>>>> `format c` works as well (though I wouldn't recommend using such
-> >>>>>> output as a proper vmlinux.h, users should update bpftool ASAP for
-> >>>>>> such use cases).
-> >>>>>>
-> >>>>>> As far as the kernel is concerned, BTF layout is not used and shou=
-ld
-> >>>>>> not be used or trusted (it can be "spoofed" by the user). It can
-> >>>>>> validate it for sanity, but that's pretty much it. Other than that=
-, if
-> >>>>>> the kernel doesn't *completely* understand every single piece of B=
-TF,
-> >>>>>> it should reject it (and that's also why libbpf should sanitize BP=
-F
-> >>>>>> object's BTF, of course).
-> >>>>>
-> >>>>> +1 to all of the above, except ok-to-skip flag, since I feel
-> >>>>> it will cause more bike sheding and arguing whether a particular
-> >>>>> new addition to BTF is skippable or not. Like upcoming location inf=
-o.
-> >>>>
-> >>>> I was thinking about something like TYPE_TAG, where it's in the chai=
+> > returns 0 for now.
+> >
+> > Since some operations updating local storage cannot fail in the middle,
+> > open-code bpf_selem_unlink_map() to take the b->lock before the
+> > operation. There are two such locations:
+> >
+> > - bpf_local_storage_alloc()
+> >
+> >    The first selem will be unlinked from smap if cmpxchg owner_storage_=
+ptr
+> >    fails, which should not fail. Therefore, hold b->lock when linking
+> >    until allocation complete. Helpers that assume b->lock is held by
+> >    callers are introduced: bpf_selem_link_map_nolock() and
+> >    bpf_selem_unlink_map_nolock().
+> >
+> > - bpf_local_storage_update()
+> >
+> >    The three step update process: link_map(new_selem),
+> >    link_storage(new_selem), and unlink_map(old_selem) should not fail i=
 n
-> >>>> of types and is unavoidable when processing STRUCT and its field.
-> >>>> Having a flag specifying that it's ref-like (so btf_type::type field
-> >>>> points to a valid type ID) would allow it to still make sense of the
-> >>>> entire struct and its fields, though you might be missing some
-> >>>> (presumably) optional and highly-specialized extra annotation.
-> >>>>
-> >>>> But it's fine not to add it, just some type graphs will be completel=
-y
-> >>>> unprocessable using old tools. Perhaps not such a big deal.
-> >>>>
-> >>>> I suspect all the newly added BTF kinds will be of "ok-to-skip" kind=
-,
-> >>>> whether they are more like DECL_TAG (roots pointing to other types) =
-or
-> >>>> TYPE_TAG (in the middle of type chain, being pointed to from STRUCT
-> >>>> fields, PROTO args, etc).
-> >>>>
-> >>>>> Is it skippable? kinda. Or, say, we decide to add vector types to B=
-TF.
-> >>>>> Skippable? One might argue that they are while they are mandatory
-> >>>>> for some other use case.
-> >>>>> Looking at it differently, if the kernel is old and cannot understa=
-nd that
-> >>>>> BTF feature the libbpf has to sanitize it no matter skippable or no=
-t.
-> >>>>> While from btf__parse() pov it also doesn't matter.
-> >>>>> btf_new()->btf_parse_hdr() will remember kind layout,
-> >>>>> and btf_parse_type_sec() can construct the index for the whole thin=
-g
-> >>>>> with layout info,
-> >>>>> while btf_validate_type() has to warn about unknown kind regardless
-> >>>>> of skippable flag. The tool (bpftool or else) needs to yell when
-> >>>>> final vmlinux.h is incomplete. Skipping printing modifier-like decl=
-_tag
-> >>>>> is pretty bad for vmlinux.h. It's really not skippable (in my opini=
-on)
-> >>>>> though one might argue that they are.
-> >>>>
-> >>>> Yeah, I agree about vmlinux.h. One way to enforce this would be to
-> >>>> have btf_dump emit something uncompilable as
-> >>>> "HERE_BE_DRAGONS_SKIPPED_SOMETHING"  as if it was const/volatile
-> >>>> modified.
-> >>>>
-> >>>> But yeah, we don't want bikeshedding. It's fine.
-> >>>>
-> >>>
-> >>> Ok so is it best to leave out flags entirely then? If so where we
-> >>> are now is to have each kind layout entry have a string name offset,
-> >>> a singular element size and a vlen-specified object size. To be
-> >>> conservative it might make sense to allow 16 bits for each size field=
-,
-> >>> leaving us with 64 bits per kind, 160 bytes in total for the 20 kinds=
-.
-> >>> We could cut down further by leaving out kind name strings if needed.
-> >>
-> >> Are we sure we will *never* need flags? I'd probably stick to
-> >> single-byte sizes and have 2 bytes reserved for flags or whatever we
-> >> might need in the future?
+> >    the middle.
 > >
-> > Just to clarify what I was saying.
-> > I think it's a good thing to have flags space and reserve it.
-> > I just struggle to see the value of 'ok-to-skip' flag.
+> > In bpf_selem_unlink(), bpf_selem_unlink_map() and
+> > bpf_selem_unlink_storage() should either all succeed or fail as a whole
+> > instead of failing in the middle. So, return if unlink_map() failed.
 > >
-> > So 2 bytes of reserved space for flags makes sense to me.
+> > In bpf_local_storage_destroy(), since it cannot deadlock with itself or
+> > bpf_local_storage_map_free() who the function might be racing with,
+> > retry if bpf_selem_unlink_map() fails due to rqspinlock returning
+> > errors.
+> >
+> > Signed-off-by: Amery Hung <ameryhung@gmail.com>
+> > ---
+> >   kernel/bpf/bpf_local_storage.c | 64 +++++++++++++++++++++++++++++----=
+-
+> >   1 file changed, 55 insertions(+), 9 deletions(-)
+> >
+> > diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_stor=
+age.c
+> > index e2fe6c32822b..4e3f227fd634 100644
+> > --- a/kernel/bpf/bpf_local_storage.c
+> > +++ b/kernel/bpf/bpf_local_storage.c
+> > @@ -347,7 +347,7 @@ void bpf_selem_link_storage_nolock(struct bpf_local=
+_storage *local_storage,
+> >       hlist_add_head_rcu(&selem->snode, &local_storage->list);
+> >   }
+> >
+> > -static void bpf_selem_unlink_map(struct bpf_local_storage_elem *selem)
+> > +static int bpf_selem_unlink_map(struct bpf_local_storage_elem *selem)
 >
-> Ok sounds good; I think there is still value in having the single flag
-> that tells us that the type/size field in struct btf_type refers
-> to a type though, right?
+> This will end up only be used by bpf_selem_unlink(). It may as well
+> remove this function and open code in the bpf_selem_unlink(). I think it
+> may depend on how patch 10 goes and also if it makes sense to remove
+> bpf_selem_"link"_map and bpf_selem_unlink_map_nolock also, so treat it
+> as a nit note for now.
 
-What's the value?
+Noted
 
-I sort-of kinda see small value of a set of flags like:
-- this kind is a type (int, ptr, array, struct, func_proto)
-- this kind is a modifier of a type (volatile, const, restrict, type_tag)
+>
+> >   {
+> >       struct bpf_local_storage_map *smap;
+> >       struct bpf_local_storage_map_bucket *b;
+> > @@ -355,7 +355,7 @@ static void bpf_selem_unlink_map(struct bpf_local_s=
+torage_elem *selem)
+> >
+> >       if (unlikely(!selem_linked_to_map_lockless(selem)))
+>
+> In the later patch where both local_storage's and map-bucket's locks
+> must be acquired, will this check still be needed if there is an earlier
+> check that ensures the selem is still linked to the local_storage? It
+> does not matter in terms of perf, but I think it will help code reading
+> in the future for the common code path (i.e. the code paths other than
+> bpf_local_storage_destroy and bpf_local_storage_map_free).
 
-but then we cannot quite classify var, datasec, decl_tag, func..
+Makes sense to remove it. Common code path still follow the unlink
+order and do not partial unlink.
 
-So it feels like it's getting into the bikeshed category again.
+>
+> >               /* selem has already be unlinked from smap */
+> > -             return;
+> > +             return 0;
+> >
+> >       smap =3D rcu_dereference_check(SDATA(selem)->smap, bpf_rcu_lock_h=
+eld());
+> >       b =3D select_bucket(smap, selem);
+> > @@ -363,6 +363,14 @@ static void bpf_selem_unlink_map(struct bpf_local_=
+storage_elem *selem)
+> >       if (likely(selem_linked_to_map(selem)))
+> >               hlist_del_init_rcu(&selem->map_node);
+> >       raw_spin_unlock_irqrestore(&b->lock, flags);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static void bpf_selem_unlink_map_nolock(struct bpf_local_storage_elem =
+*selem)
+> > +{
+> > +     if (likely(selem_linked_to_map(selem)))
+>
+> Take this chance to remove the selem_linked_to_map() check.
+> hlist_del_init_rcu has the same check.
+
+Noted
+
+>
+> > +             hlist_del_init_rcu(&selem->map_node);
+> >   }
+> >
+> >   void bpf_selem_link_map(struct bpf_local_storage_map *smap,
+> > @@ -376,13 +384,26 @@ void bpf_selem_link_map(struct bpf_local_storage_=
+map *smap,
+> >       raw_spin_unlock_irqrestore(&b->lock, flags);
+> >   }
+> >
+> > +static void bpf_selem_link_map_nolock(struct bpf_local_storage_map *sm=
+ap,
+> > +                                   struct bpf_local_storage_elem *sele=
+m,
+> > +                                   struct bpf_local_storage_map_bucket=
+ *b)
+> > +{
+> > +     RCU_INIT_POINTER(SDATA(selem)->smap, smap);
+>
+> Is it needed? bpf_selem_alloc should have init the SDATA(selem)->smap.
+
+Good catch. Forgot to remove it when rebasing. This is redundant as we
+already do it in bpf_selem_alloc()
+
+>
+> > +     hlist_add_head_rcu(&selem->map_node, &b->list);
+> > +}
+> > +
+>
+> [ ... ]
+>
+> > @@ -574,20 +603,37 @@ bpf_local_storage_update(void *owner, struct bpf_=
+local_storage_map *smap,
+> >               goto unlock;
+> >       }
+> >
+> > +     b =3D select_bucket(smap, selem);
+> > +
+> > +     if (old_sdata) {
+> > +             old_b =3D select_bucket(smap, SELEM(old_sdata));
+> > +             old_b =3D old_b =3D=3D b ? NULL : old_b;
+> > +     }
+> > +
+> > +     raw_spin_lock_irqsave(&b->lock, b_flags);
+> > +
+> > +     if (old_b)
+> > +             raw_spin_lock_irqsave(&old_b->lock, old_b_flags);
+>
+> This will deadlock because of the lock ordering of b and old_b.
+> Replacing it with res_spin_lock in the later patch can detect it and
+> break it more gracefully. imo, we should not introduce a known deadlock
+> logic in the kernel code in the syscall code path and ask the current
+> user to retry the map_update_elem syscall.
+>
+> What happened to the patch in the earlier revision that uses the
+> local_storage (or owner) for select_bucket?
+
+Thanks for reviewing!
+
+I decided to revert it because this introduces the dependency of selem
+to local_storage when unlinking. bpf_selem_unlink_lockless() cannot
+assume map or local_storage associated with a selem to be alive. In
+the case where local_storage is already destroyed, we won't be able to
+figure out the bucket if select_bucket() uses local_storage for
+hashing.
+
+A middle ground is to use local_storage for hashing, but save the
+bucket index in selem so that local_storage pointer won't be needed
+later. WDYT?
+
+>
+> [ will continue with the rest of the patches a bit later ]
+>
+> > +
+> >       alloc_selem =3D NULL;
+> >       /* First, link the new selem to the map */
+> > -     bpf_selem_link_map(smap, selem);
+> > +     bpf_selem_link_map_nolock(smap, selem, b);
+> >
+> >       /* Second, link (and publish) the new selem to local_storage */
+> >       bpf_selem_link_storage_nolock(local_storage, selem);
+> >
+> >       /* Third, remove old selem, SELEM(old_sdata) */
+> >       if (old_sdata) {
+> > -             bpf_selem_unlink_map(SELEM(old_sdata));
+> > +             bpf_selem_unlink_map_nolock(SELEM(old_sdata));
+> >               bpf_selem_unlink_storage_nolock(local_storage, SELEM(old_=
+sdata),
+> >                                               &old_selem_free_list);
+> >       }
+> >
+> > +     if (old_b)
+> > +             raw_spin_unlock_irqrestore(&old_b->lock, old_b_flags);
+> > +
+> > +     raw_spin_unlock_irqrestore(&b->lock, b_flags);
+> > +
+> >   unlock:
+> >       raw_spin_unlock_irqrestore(&local_storage->lock, flags);
+> >       bpf_selem_free_list(&old_selem_free_list, false);
+> > @@ -679,7 +725,7 @@ void bpf_local_storage_destroy(struct bpf_local_sto=
+rage *local_storage)
+> >               /* Always unlink from map before unlinking from
+> >                * local_storage.
+> >                */
+> > -             bpf_selem_unlink_map(selem);
+> > +             WARN_ON(bpf_selem_unlink_map(selem));
+> >               /* If local_storage list has only one element, the
+> >                * bpf_selem_unlink_storage_nolock() will return true.
+> >                * Otherwise, it will return false. The current loop iter=
+ation
+>
 
