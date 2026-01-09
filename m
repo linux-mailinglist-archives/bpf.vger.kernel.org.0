@@ -1,163 +1,495 @@
-Return-Path: <bpf+bounces-78275-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78276-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2274D06E3C
-	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 03:54:16 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0ACDCD06EA3
+	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 04:06:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 5E29A300E8D3
-	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 02:54:13 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5BEFF30248A3
+	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 03:06:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C6F831A05E;
-	Fri,  9 Jan 2026 02:54:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ckPsTtlW"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 318533195EA;
+	Fri,  9 Jan 2026 03:05:58 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay.hostedemail.com (smtprelay0011.hostedemail.com [216.40.44.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 540272E764D
-	for <bpf@vger.kernel.org>; Fri,  9 Jan 2026 02:54:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 732101A9FB4;
+	Fri,  9 Jan 2026 03:05:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767927249; cv=none; b=nAMOYssljhLZmYLzOh6EzJ25LD39yE8KK8pMsDc7lxHfoIgRDTGN7qLH6NvToxY0n9BbWbBLtt77sR2hftE2zNgtS9ew4RBwI01Krd0BgtLm2tWg6K8VlR/XbsKz6b6579hmtLZyafDU4Szt0et47FnDTGTlk36jMw2gDXZmk4o=
+	t=1767927957; cv=none; b=tq9CLTV5b+z0MvgFhyB9mOHMyyTui+zfoD1qndbG0qen7rBwhATfRpC7FeCfPbKCbnfpMfUYUurVtlEVFO4dKql1D8Hc+65YlaURvwkkuqKetS4w2+pAKwrr5/U+s+16GDxWF87Yc3e3tDPacWIp6+YxnsBr1AC0fpViPL/QeBc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767927249; c=relaxed/simple;
-	bh=hH7wgjaWxa0FYw0kb/Gbii9Xh3dhVydAUVtTyjGUrG8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NxPBFTYFwevc/UxcghPz9z+IHRq3Cw+hJyIz5bV2VuiYc+8unmjzQEphBOVECyRdjf2Dci4qlzJSI5bkP4TMHkPeKtcFwntRi6KfKwug866yz0eNlRebK+WLR0b7gwPi9oiJIGw154WsQIcdJKnGenAbpzCtEraScEY1R5hQKok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ckPsTtlW; arc=none smtp.client-ip=209.85.221.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-432d28870ddso690003f8f.3
-        for <bpf@vger.kernel.org>; Thu, 08 Jan 2026 18:54:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767927246; x=1768532046; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zbU2Pp5Em5DwHirgnQ62/oWwr5tj1iPwm211miSamZM=;
-        b=ckPsTtlW/lsOJCYoMF6AgVWVcE8VEF7qpRM8Pw7M51uAQXjeagN4B7En3xZfz4Deg4
-         k4f2Cq5iU284U0V1olSls9gRoxZMC13EaHhK2OeVfakrr6Ag8ez8hVdk0GH0+Dr5Pcug
-         4B5wQZIp3VOMaq+v/NGW2rnClZYjF0F76O6rsJhUhlA67SUHgE8NvNwrrx2DKYC84VBp
-         E2xmfmT9m4mSMKU7iKj0LP4AGtrysHz2OvGoHcjyf3Q44nxhFp9IDIVpMcAn9PAx8nQ9
-         /yoUaTErMaIOkl6LYneXEIj6g3X2rhGhueENlTQOV00D/EatVjjek7Br93sTBJpO1hA+
-         N6ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767927246; x=1768532046;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=zbU2Pp5Em5DwHirgnQ62/oWwr5tj1iPwm211miSamZM=;
-        b=rn2sCSuNQfb7w8XZeJwujUaxb8acvJjKbSn0HrwsWiFfwetfDP6pmAYh3Ezl2ZOXzi
-         BOA+rLd1/3V3KWx75BptYZfPxE9+vlqND5ruuNKvYCZSkQYbFe5Ir5RWjVDftP9nvZHR
-         t8suDgMl1W+2c/QXfvxlzZ3nt6244/mzSg6xCppCctu7FotVn8ew0qgMadMv1oDwboJY
-         fY0bHGVR0ielXbHqyJfMvXiVluXbaz0yMkZuxfORalCKKdNbro431Kb3M8lJ5GxvoS5C
-         Y35pCxN/+J06NDMZ1b0tKVqeTl9dZmW57/017KluAFxGcqvQHAggEpglIRa6XrwM9LyC
-         x9qw==
-X-Forwarded-Encrypted: i=1; AJvYcCVDHy9R1f5XhaU6gM4kCZp1reEBuFdcS/jNuDdNC4P/jGadW6UoMs4hNEq1+l+8UaSVOjE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzuRpLbPl2AE4EDlX9lOVA7VHoghr9afoTpvzib3mlLd6AZ0j/D
-	ACs6n6iMwLsSsQkwZib+A6jCgjHCPxDiSy00+inMXPlnkADvLLYboOyQ/WwMgbGoE3ls4pjGMgc
-	woJVtxLQYxP8tGT8SiG4d1HgJLnjzARc=
-X-Gm-Gg: AY/fxX63hz2C+1pah0RVFZsNvFNy57fqRvZYx+wLqJvPkArl+yX5IeXd8lQ54nBER6O
-	f1bH72yfc8HIMzuscVsNb0smGCGzxz4DRf3iIakf/H6ZJgnRWsfZHtuh0u3cdQ26EIxsMKZIh2j
-	gAggMGUxbjUUdePakHNS0XBAlgvm52FoMlc/GW42+FEXPdLQLP2Fs5rCC/5qzVZXBqbmzfQ5ntE
-	OVjMun6f2jclr9HgLsZ9N6pGPx4xCe/ZRekQgF+kYc57EXsiIothnAGXIB8wpyWS4+VQhKczyNa
-	foC4AWf1MAWuvnA5m3mKmY6o1Wyp
-X-Google-Smtp-Source: AGHT+IHwT0tLewsay21AhJ68o5l+UwA+efLA2bBvJ2oPagdv7QxMG9nivdVqAMeOeOWu0/Jv4bWlPfsjJzE0XA62jWk=
-X-Received: by 2002:a05:6000:1843:b0:432:b951:e9ff with SMTP id
- ffacd0b85a97d-432c376158amr11309112f8f.53.1767927246333; Thu, 08 Jan 2026
- 18:54:06 -0800 (PST)
+	s=arc-20240116; t=1767927957; c=relaxed/simple;
+	bh=+rEWV//8mME6tOSh2kmdANAoQVF+s2aJ3Vmbr4Kh3QA=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=McBMqDsp1FAqwVo8jLn2WBTUWaN7yZAOVxJWS589iDj1bEJX9mY7az1AtdkdpvZNecskUKRhYezx6iVdzGdc6+Kn2Wq7+V7Rfk0Dk3L0eXUokZ29KRu7MgOhVGPZu2JTVKSb0yBaKwsqR5bFFp6rA7OJUa5HsQsVb3B6oj+gimU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf13.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay04.hostedemail.com (Postfix) with ESMTP id 1AC9E1A0354;
+	Fri,  9 Jan 2026 03:05:54 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf13.hostedemail.com (Postfix) with ESMTPA id 360682000D;
+	Fri,  9 Jan 2026 03:05:52 +0000 (UTC)
+Date: Thu, 8 Jan 2026 22:05:50 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: LKML <linux-kernel@vger.kernel.org>, Linux trace kernel
+ <linux-trace-kernel@vger.kernel.org>, bpf@vger.kernel.org
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, "Paul E. McKenney" <paulmck@kernel.org>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [PATCH v5] tracing: Guard __DECLARE_TRACE() use of
+ __DO_TRACE_CALL() with SRCU-fast
+Message-ID: <20260108220550.2f6638f3@fedora>
+X-Mailer: Claws Mail 4.3.1 (GTK 3.24.51; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260103022310.935686-1-puranjay@kernel.org> <20260103022310.935686-2-puranjay@kernel.org>
- <CAEf4BzYeF2sUqEzfT6aLuBVuh1W8fkxHoFjBf-e5nvJW9UgQLw@mail.gmail.com>
- <CANk7y0j_BW_t7Y6rPm-UaCsamJ6G3S9i5_0cYLWZ56xp1Dehkw@mail.gmail.com>
- <cf707af183cd296c33576e478c5ba5f561350b43.camel@gmail.com>
- <CAADnVQ+wK8qYt=Gm=Q26Kh_enOHGOk7_t8FX70J08WUMu5y_Nw@mail.gmail.com> <b0c80439d8da0faddde08260d6e796629d55e9d6.camel@gmail.com>
-In-Reply-To: <b0c80439d8da0faddde08260d6e796629d55e9d6.camel@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 8 Jan 2026 18:53:55 -0800
-X-Gm-Features: AZwV_Qjs8KqWSlu4dtQLpcYImt2X9h4g-TCQRQ-nelsIwyiFjOOOF7t0idZkNbw
-Message-ID: <CAADnVQJnjZjRdJNgSOSzt8z8DfRN7z5Ksgfi5gkY-O4Dp1e-yA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/2] bpf: Recognize special arithmetic shift
- in the verifier
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Puranjay Mohan <puranjay12@gmail.com>, Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
-	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
-	Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, Kernel Team <kernel-team@meta.com>, 
-	Hao Sun <sunhao.th@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Stat-Signature: ibfda1c8g7g1pxr1nb5d4w8zggcweubb
+X-Rspamd-Server: rspamout03
+X-Rspamd-Queue-Id: 360682000D
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX18imiyAyTL5j4Yi0Esz8fsl+ueqFmZJjm0=
+X-HE-Tag: 1767927952-392533
+X-HE-Meta: U2FsdGVkX19GUiWOAyC/jD/fGdWyjgPG+rMoFeiD3mre3vRvXgdVUiCr7OfWj5HmJmpA3inpiLP4RZ9ck8VssfloKfLcvvONmwfGqs0FVff4BeC7Z8J+p52QkygAMnh+0priVQYOmbW3V+AXZVvH4X3h9vBnJl46qav1MF6wBpoGrxjVKozEaBwIe1bmSFQdoPdm/mSXZpZYkbntD2YzqiC3ucnuhHfU8MvELkEZHtOIhD8xwYEcbliRPCQ4Co7DBtECVa/N9daOP3MA0/tpshK+aiTi8m5gvei9i9URSCyRuNWPflsUHepalsmFa7XVI7KPiQW2A+Ll5eUmoGYw5bZ+YxnFoyHNefllS9kFu5C50XUrMXKVD9S03IV7Fj2qRjgPyJYV853JBN+bjmzjSw==
 
-On Thu, Jan 8, 2026 at 6:07=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com>=
- wrote:
->
-> On Thu, 2026-01-08 at 17:18 -0800, Alexei Starovoitov wrote:
-> > On Thu, Jan 8, 2026 at 10:45=E2=80=AFAM Eduard Zingerman <eddyz87@gmail=
-.com> wrote:
-> > >
-> > > On Thu, 2026-01-08 at 18:28 +0000, Puranjay Mohan wrote:
-> > >
-> > > [...]
-> > >
-> > > > This is what you see when you compare this version (fork before and=
-)
-> > > > and previous (fork after arsh) on the selftests added in this set:
-> > > >
-> > > > ../../veristat/src/veristat -C -e file,prog,states,insns -f
-> > > > "insns_pct>1" fork_after_arsh fork_before_and
-> > > > File                   Program  States (A)  States (B)  States (DIF=
-F)
-> > > > Insns (A)  Insns (B)  Insns (DIFF)
-> > > > ---------------------  -------  ----------  ----------  -----------=
---
-> > > > ---------  ---------  ------------
-> > > > verifier_subreg.bpf.o  arsh_31           1           1    +0 (+0.00=
-%)
-> > > >        12         11   -1 (-8.33%)
-> > > > verifier_subreg.bpf.o  arsh_63           1           1    +0 (+0.00=
-%)
-> > > >        12         11   -1 (-8.33%)
-> > >
-> > > Given that difference is very small, I'd prefer forking after arsh.
-> >
-> > why?
-> > I thought last time we discussed the conclusion was to fork it
-> > before AND, since at the time of ARSH the range is still properly repre=
-sented,
-> > so reason to take chances and do it early.
-> >
-> > > Could you please take a cursory look at DAGCombiner implementation an=
-d
-> > > try to check if there are other patterns that use arsh or arsh+and is
-> > > the only one?
-> >
-> > Well, it's in commit log:
-> >
-> >   // select_cc setlt X, 0, A, 0 -> and (sra X, size(X)-1), A
-> >   // select_cc setgt X, 0, A, 0 -> and (not (sra X, size(X)-1)), A
-> >
-> > I suspect 2nd case should work with 'before AND' approach too,
-> > since 'not' should be compiled into XOR which suppose to [-1,0] ->
-> > into the same [-1, 0]
-> > But better to double check, of course.
->
-> Here another example from DAGCombiner.cpp:
->
->   i32 X > -1 ? C1 : -1 --> (X >>s 31) | C1
->
-> The same trick, X>>s31 is in range [-1,0].
-> But we can fork on OR as well, of-course.
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Good catch. This one can also be done "before OR".
-I doubt there will be more combinations that make
-"after ARSH" argument stronger.
-I guess I don't mind either option. Let's pick.
+The current use of guard(preempt_notrace)() within __DECLARE_TRACE()
+to protect invocation of __DO_TRACE_CALL() means that BPF programs
+attached to tracepoints are non-preemptible.  This is unhelpful in
+real-time systems, whose users apparently wish to use BPF while also
+achieving low latencies.  (Who knew?)
+
+One option would be to use preemptible RCU, but this introduces
+many opportunities for infinite recursion, which many consider to
+be counterproductive, especially given the relatively small stacks
+provided by the Linux kernel.  These opportunities could be shut down
+by sufficiently energetic duplication of code, but this sort of thing
+is considered impolite in some circles.
+
+Therefore, use the shiny new SRCU-fast API, which provides somewhat faster
+readers than those of preemptible RCU, at least on Paul E. McKenney's
+laptop, where task_struct access is more expensive than access to per-CPU
+variables.  And SRCU-fast provides way faster readers than does SRCU,
+courtesy of being able to avoid the read-side use of smp_mb().  Also,
+it is quite straightforward to create srcu_read_{,un}lock_fast_notrace()
+functions.
+
+While in the area, SRCU now supports early boot call_srcu().  Therefore,
+remove the checks that used to avoid such use from rcu_free_old_probes()
+before this commit was applied:
+
+e53244e2c893 ("tracepoint: Remove SRCU protection")
+
+The current commit can be thought of as an approximate revert of that
+commit, with some compensating additions of preemption disabling.
+This preemption disabling uses guard(preempt_notrace)().
+
+However, Yonghong Song points out that BPF assumes that non-sleepable
+BPF programs will remain on the same CPU, which means that migration
+must be disabled whenever preemption remains enabled.  In addition,
+non-RT kernels have performance expectations that would be violated by
+allowing the BPF programs to be preempted.
+
+Therefore, continue to disable preemption in non-RT kernels, and protect
+the BPF program with both SRCU and migration disabling for RT kernels,
+and even then only if preemption is not already disabled.
+
+Link: https://lore.kernel.org/all/20250613152218.1924093-1-bigeasy@linutronix.de/
+
+Co-developed-by: Steve Rostedt (Google) <rostedt@goodmis.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+Changes since v4: https://lore.kernel.org/all/20251216120819.3499e00e@gandalf.local.home/
+
+- Added kerneldoc to trace_event_buffer_reserve{_syscall}
+
+- Restructured the tracepoint.c code to not have #ifdef within functions
+
+ include/linux/trace_events.h  | 24 ++++++++++++++
+ include/linux/tracepoint.h    | 25 ++++++++++++--
+ include/trace/perf.h          |  4 +--
+ include/trace/trace_events.h  | 21 ++++++++++--
+ kernel/trace/trace_events.c   | 61 +++++++++++++++++++++++++++++------
+ kernel/trace/trace_syscalls.c |  4 +--
+ kernel/tracepoint.c           | 44 +++++++++++++++++++++++++
+ 7 files changed, 164 insertions(+), 19 deletions(-)
+
+diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+index 3690221ba3d8..a2704c35eda8 100644
+--- a/include/linux/trace_events.h
++++ b/include/linux/trace_events.h
+@@ -222,6 +222,26 @@ static inline unsigned int tracing_gen_ctx_dec(void)
+ 	return trace_ctx;
+ }
+ 
++/*
++ * When PREEMPT_RT is enabled, trace events are called with disabled
++ * migration. The trace events need to know if the tracepoint disabled
++ * migration or not so that what is recorded to the ring buffer shows
++ * the state of when the trace event triggered, and not the state caused
++ * by the trace event.
++ */
++#ifdef CONFIG_PREEMPT_RT
++static inline unsigned int tracing_gen_ctx_dec_cond(void)
++{
++	unsigned int trace_ctx;
++
++	trace_ctx = tracing_gen_ctx_dec();
++	/* The migration counter starts at bit 4 */
++	return trace_ctx - (1 << 4);
++}
++#else
++# define tracing_gen_ctx_dec_cond() tracing_gen_ctx_dec()
++#endif
++
+ struct trace_event_file;
+ 
+ struct ring_buffer_event *
+@@ -313,6 +333,10 @@ void *trace_event_buffer_reserve(struct trace_event_buffer *fbuffer,
+ 				  struct trace_event_file *trace_file,
+ 				  unsigned long len);
+ 
++void *trace_event_buffer_reserve_syscall(struct trace_event_buffer *fbuffer,
++					 struct trace_event_file *trace_file,
++					 unsigned long len);
++
+ void trace_event_buffer_commit(struct trace_event_buffer *fbuffer);
+ 
+ enum {
+diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
+index 8a56f3278b1b..0563c7d9fcb2 100644
+--- a/include/linux/tracepoint.h
++++ b/include/linux/tracepoint.h
+@@ -100,6 +100,25 @@ void for_each_tracepoint_in_module(struct module *mod,
+ }
+ #endif /* CONFIG_MODULES */
+ 
++/*
++ * BPF programs can attach to the tracepoint callbacks. But if the
++ * callbacks are called with preemption disabled, the BPF programs
++ * can cause quite a bit of latency. When PREEMPT_RT is enabled,
++ * instead of disabling preemption, use srcu_fast_notrace() for
++ * synchronization. As BPF programs that are attached to tracepoints
++ * expect to stay on the same CPU, also disable migration.
++ */
++#ifdef CONFIG_PREEMPT_RT
++extern struct srcu_struct tracepoint_srcu;
++# define tracepoint_sync() synchronize_srcu(&tracepoint_srcu);
++# define tracepoint_guard()				\
++	guard(srcu_fast_notrace)(&tracepoint_srcu);	\
++	guard(migrate)()
++#else
++# define tracepoint_sync() synchronize_rcu();
++# define tracepoint_guard() guard(preempt_notrace)()
++#endif
++
+ /*
+  * tracepoint_synchronize_unregister must be called between the last tracepoint
+  * probe unregistration and the end of module exit to make sure there is no
+@@ -115,7 +134,7 @@ void for_each_tracepoint_in_module(struct module *mod,
+ static inline void tracepoint_synchronize_unregister(void)
+ {
+ 	synchronize_rcu_tasks_trace();
+-	synchronize_rcu();
++	tracepoint_sync();
+ }
+ static inline bool tracepoint_is_faultable(struct tracepoint *tp)
+ {
+@@ -275,13 +294,13 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+ 		return static_branch_unlikely(&__tracepoint_##name.key);\
+ 	}
+ 
+-#define __DECLARE_TRACE(name, proto, args, cond, data_proto)		\
++#define __DECLARE_TRACE(name, proto, args, cond, data_proto)			\
+ 	__DECLARE_TRACE_COMMON(name, PARAMS(proto), PARAMS(args), PARAMS(data_proto)) \
+ 	static inline void __do_trace_##name(proto)			\
+ 	{								\
+ 		TRACEPOINT_CHECK(name)					\
+ 		if (cond) {						\
+-			guard(preempt_notrace)();			\
++			tracepoint_guard();				\
+ 			__DO_TRACE_CALL(name, TP_ARGS(args));		\
+ 		}							\
+ 	}								\
+diff --git a/include/trace/perf.h b/include/trace/perf.h
+index a1754b73a8f5..348ad1d9b556 100644
+--- a/include/trace/perf.h
++++ b/include/trace/perf.h
+@@ -71,6 +71,7 @@ perf_trace_##call(void *__data, proto)					\
+ 	u64 __count __attribute__((unused));				\
+ 	struct task_struct *__task __attribute__((unused));		\
+ 									\
++	guard(preempt_notrace)();					\
+ 	do_perf_trace_##call(__data, args);				\
+ }
+ 
+@@ -85,9 +86,8 @@ perf_trace_##call(void *__data, proto)					\
+ 	struct task_struct *__task __attribute__((unused));		\
+ 									\
+ 	might_fault();							\
+-	preempt_disable_notrace();					\
++	guard(preempt_notrace)();					\
+ 	do_perf_trace_##call(__data, args);				\
+-	preempt_enable_notrace();					\
+ }
+ 
+ /*
+diff --git a/include/trace/trace_events.h b/include/trace/trace_events.h
+index 4f22136fd465..6fb58387e9f1 100644
+--- a/include/trace/trace_events.h
++++ b/include/trace/trace_events.h
+@@ -429,6 +429,22 @@ do_trace_event_raw_event_##call(void *__data, proto)			\
+ 	trace_event_buffer_commit(&fbuffer);				\
+ }
+ 
++/*
++ * When PREEMPT_RT is enabled, the tracepoint does not disable preemption
++ * but instead disables migration. The callbacks for the trace events
++ * need to have a consistent state so that it can reflect the proper
++ * preempt_disabled counter.
++ */
++#ifdef CONFIG_PREEMPT_RT
++/* disable preemption for RT so that the counters still match */
++# define trace_event_guard() guard(preempt_notrace)()
++/* Have syscalls up the migrate disable counter to emulate non-syscalls */
++# define trace_syscall_event_guard() guard(migrate)()
++#else
++# define trace_event_guard()
++# define trace_syscall_event_guard()
++#endif
++
+ #undef DECLARE_EVENT_CLASS
+ #define DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print)	\
+ __DECLARE_EVENT_CLASS(call, PARAMS(proto), PARAMS(args), PARAMS(tstruct), \
+@@ -436,6 +452,7 @@ __DECLARE_EVENT_CLASS(call, PARAMS(proto), PARAMS(args), PARAMS(tstruct), \
+ static notrace void							\
+ trace_event_raw_event_##call(void *__data, proto)			\
+ {									\
++	trace_event_guard();						\
+ 	do_trace_event_raw_event_##call(__data, args);			\
+ }
+ 
+@@ -447,9 +464,9 @@ static notrace void							\
+ trace_event_raw_event_##call(void *__data, proto)			\
+ {									\
+ 	might_fault();							\
+-	preempt_disable_notrace();					\
++	trace_syscall_event_guard();					\
++	guard(preempt_notrace)();					\
+ 	do_trace_event_raw_event_##call(__data, args);			\
+-	preempt_enable_notrace();					\
+ }
+ 
+ /*
+diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
+index 137b4d9bb116..758c8a4ec7c2 100644
+--- a/kernel/trace/trace_events.c
++++ b/kernel/trace/trace_events.c
+@@ -649,9 +649,9 @@ bool trace_event_ignore_this_pid(struct trace_event_file *trace_file)
+ }
+ EXPORT_SYMBOL_GPL(trace_event_ignore_this_pid);
+ 
+-void *trace_event_buffer_reserve(struct trace_event_buffer *fbuffer,
+-				 struct trace_event_file *trace_file,
+-				 unsigned long len)
++static __always_inline void *buffer_reserve(struct trace_event_buffer *fbuffer,
++					    struct trace_event_file *trace_file,
++					    unsigned long len)
+ {
+ 	struct trace_event_call *event_call = trace_file->event_call;
+ 
+@@ -659,13 +659,6 @@ void *trace_event_buffer_reserve(struct trace_event_buffer *fbuffer,
+ 	    trace_event_ignore_this_pid(trace_file))
+ 		return NULL;
+ 
+-	/*
+-	 * If CONFIG_PREEMPTION is enabled, then the tracepoint itself disables
+-	 * preemption (adding one to the preempt_count). Since we are
+-	 * interested in the preempt_count at the time the tracepoint was
+-	 * hit, we need to subtract one to offset the increment.
+-	 */
+-	fbuffer->trace_ctx = tracing_gen_ctx_dec();
+ 	fbuffer->trace_file = trace_file;
+ 
+ 	fbuffer->event =
+@@ -679,8 +672,56 @@ void *trace_event_buffer_reserve(struct trace_event_buffer *fbuffer,
+ 	fbuffer->entry = ring_buffer_event_data(fbuffer->event);
+ 	return fbuffer->entry;
+ }
++
++/**
++ * trace_event_buffer_reserve - reserve space on the ring buffer for an event
++ * @fbuffer: information about how to save the event
++ * @trace_file: the instance file descriptor for the event
++ * @len: The length of the event
++ *
++ * The @fbuffer has information about the ring buffer and data will
++ * be added to it to be used by the call to trace_event_buffer_commit().
++ * The @trace_file is the desrciptor with information about the status
++ * of the given event for a specific trace_array instance.
++ * The @len is the length of data to save for the event.
++ *
++ * Returns a pointer to the data on the ring buffer or NULL if the
++ *   event was not reserved (event was filtered, too big, or the buffer
++ *   simply was disabled for write).
++ */
++void *trace_event_buffer_reserve(struct trace_event_buffer *fbuffer,
++				 struct trace_event_file *trace_file,
++				 unsigned long len)
++{
++	fbuffer->trace_ctx = tracing_gen_ctx_dec_cond();
++	return buffer_reserve(fbuffer, trace_file, len);
++}
+ EXPORT_SYMBOL_GPL(trace_event_buffer_reserve);
+ 
++/**
++ * trace_event_buffer_reserve_syscall - reserve space for a syscall event
++ * @fbuffer: information about how to save the event
++ * @trace_file: the instance file descriptor for the event
++ * @len: The length of the event
++ *
++ * This behaves exactly the same as trace_event_buffer_reserve(), but
++ * needs to act slightly different for system call events when PREEMPT_RT
++ * is enabled. The way the preempt count and migration disabled are
++ * set is different than trace_event_buffer_reserve(), as normal events
++ * have migration disabled instead of preemption in PREEMPT_RT, system
++ * call events do not disable migrating but still disable preemption.
++ *
++ * Returns the same as trace_event_buffer_reserve().
++ */
++void *trace_event_buffer_reserve_syscall(struct trace_event_buffer *fbuffer,
++					 struct trace_event_file *trace_file,
++					 unsigned long len)
++{
++	fbuffer->trace_ctx = tracing_gen_ctx_dec();
++	return buffer_reserve(fbuffer, trace_file, len);
++}
++
++
+ int trace_event_reg(struct trace_event_call *call,
+ 		    enum trace_reg type, void *data)
+ {
+diff --git a/kernel/trace/trace_syscalls.c b/kernel/trace/trace_syscalls.c
+index e96d0063cbcf..f330fd22ea78 100644
+--- a/kernel/trace/trace_syscalls.c
++++ b/kernel/trace/trace_syscalls.c
+@@ -909,7 +909,7 @@ static void ftrace_syscall_enter(void *data, struct pt_regs *regs, long id)
+ 
+ 	size += sizeof(*entry) + sizeof(unsigned long) * sys_data->nb_args;
+ 
+-	entry = trace_event_buffer_reserve(&fbuffer, trace_file, size);
++	entry = trace_event_buffer_reserve_syscall(&fbuffer, trace_file, size);
+ 	if (!entry)
+ 		return;
+ 
+@@ -955,7 +955,7 @@ static void ftrace_syscall_exit(void *data, struct pt_regs *regs, long ret)
+ 	if (!sys_data)
+ 		return;
+ 
+-	entry = trace_event_buffer_reserve(&fbuffer, trace_file, sizeof(*entry));
++	entry = trace_event_buffer_reserve_syscall(&fbuffer, trace_file, sizeof(*entry));
+ 	if (!entry)
+ 		return;
+ 
+diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
+index 62719d2941c9..17e11d91d029 100644
+--- a/kernel/tracepoint.c
++++ b/kernel/tracepoint.c
+@@ -34,9 +34,32 @@ enum tp_transition_sync {
+ 
+ struct tp_transition_snapshot {
+ 	unsigned long rcu;
++	unsigned long srcu_gp;
+ 	bool ongoing;
+ };
+ 
++/* In PREEMPT_RT, SRCU is used to protect the tracepoint callbacks */
++#ifdef CONFIG_PREEMPT_RT
++DEFINE_SRCU_FAST(tracepoint_srcu);
++EXPORT_SYMBOL_GPL(tracepoint_srcu);
++static inline void start_rt_synchronize(struct tp_transition_snapshot *snapshot)
++{
++	snapshot->srcu_gp = start_poll_synchronize_srcu(&tracepoint_srcu);
++}
++static inline void poll_rt_synchronize(struct tp_transition_snapshot *snapshot)
++{
++	if (!poll_state_synchronize_srcu(&tracepoint_srcu, snapshot->srcu_gp))
++		synchronize_srcu(&tracepoint_srcu);
++}
++#else
++static inline void start_rt_synchronize(struct tp_transition_snapshot *snapshot)
++{
++}
++static inline void poll_rt_synchronize(struct tp_transition_snapshot *snapshot)
++{
++}
++#endif
++
+ /* Protected by tracepoints_mutex */
+ static struct tp_transition_snapshot tp_transition_snapshot[_NR_TP_TRANSITION_SYNC];
+ 
+@@ -46,6 +69,7 @@ static void tp_rcu_get_state(enum tp_transition_sync sync)
+ 
+ 	/* Keep the latest get_state snapshot. */
+ 	snapshot->rcu = get_state_synchronize_rcu();
++	start_rt_synchronize(snapshot);
+ 	snapshot->ongoing = true;
+ }
+ 
+@@ -56,6 +80,7 @@ static void tp_rcu_cond_sync(enum tp_transition_sync sync)
+ 	if (!snapshot->ongoing)
+ 		return;
+ 	cond_synchronize_rcu(snapshot->rcu);
++	poll_rt_synchronize(snapshot);
+ 	snapshot->ongoing = false;
+ }
+ 
+@@ -101,10 +126,22 @@ static inline void *allocate_probes(int count)
+ 	return p == NULL ? NULL : p->probes;
+ }
+ 
++#ifdef CONFIG_PREEMPT_RT
++static void srcu_free_old_probes(struct rcu_head *head)
++{
++	kfree(container_of(head, struct tp_probes, rcu));
++}
++
++static void rcu_free_old_probes(struct rcu_head *head)
++{
++	call_srcu(&tracepoint_srcu, head, srcu_free_old_probes);
++}
++#else
+ static void rcu_free_old_probes(struct rcu_head *head)
+ {
+ 	kfree(container_of(head, struct tp_probes, rcu));
+ }
++#endif
+ 
+ static inline void release_probes(struct tracepoint *tp, struct tracepoint_func *old)
+ {
+@@ -112,6 +149,13 @@ static inline void release_probes(struct tracepoint *tp, struct tracepoint_func
+ 		struct tp_probes *tp_probes = container_of(old,
+ 			struct tp_probes, probes[0]);
+ 
++		/*
++		 * Tracepoint probes are protected by either RCU or
++		 * Tasks Trace RCU and also by SRCU.  By calling the SRCU
++		 * callback in the [Tasks Trace] RCU callback we cover
++		 * both cases. So let us chain the SRCU and [Tasks Trace]
++		 * RCU callbacks to wait for both grace periods.
++		 */
+ 		if (tracepoint_is_faultable(tp))
+ 			call_rcu_tasks_trace(&tp_probes->rcu, rcu_free_old_probes);
+ 		else
+-- 
+2.51.0
+
 
