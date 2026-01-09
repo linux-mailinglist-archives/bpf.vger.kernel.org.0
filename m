@@ -1,117 +1,108 @@
-Return-Path: <bpf+bounces-78406-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78407-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D7FED0C64F
-	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 22:54:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CAA53D0C658
+	for <lists+bpf@lfdr.de>; Fri, 09 Jan 2026 22:55:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0BE2330486AB
-	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 21:53:51 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6B4263005BB7
+	for <lists+bpf@lfdr.de>; Fri,  9 Jan 2026 21:54:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78BA933E37C;
-	Fri,  9 Jan 2026 21:53:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4B9533F392;
+	Fri,  9 Jan 2026 21:54:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="K0NhceFr"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D0g6DY/3"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A61D31B131
-	for <bpf@vger.kernel.org>; Fri,  9 Jan 2026 21:53:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C992E33EB0B
+	for <bpf@vger.kernel.org>; Fri,  9 Jan 2026 21:54:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767995630; cv=none; b=R2qmH6+siMY+SPWcU2Dt12x3G9OK66xNXKKDrQhOAgzEgrr5WN1p9DlWJvt9FUHQV+Cvu92Gl5GsgGawZdF44Lpb+VuHM5zqcO1jjO0g50G4uz7/l7M5Fw7g35sEgt3MLfpxmdFwLGnuap8cN0RwcVawLWbEYcSz6AMMDxdZOTM=
+	t=1767995688; cv=none; b=Whb8AdkZ+RM+djCPkuKW7NONGFWdXAxPrTlmp5BQ6IKy7tg4FZPAjgtXqIt7BPhuTRmE6QNCFwRNBuZ0YBa9+/o1pfewPxW0OryARKVlSI/k6NSVvfQlSCGPGrgGvH0U7fVmsCEkheSDUtxbr6JQYDCmmQ6ZbIkr9TE9LnWrOnI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767995630; c=relaxed/simple;
-	bh=gkxei1XV+7jup5mq3CbS6/u/Lk1Gm3xGtyjrSAmN83U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=U2UVCJkB/EC8vCCHtMgESxH0S6koAmkPH3HGh2jQR581DhnKKmLCsGpLY2SKXUvjX5n6WXRkC7yRfHKnc3uE15XsW+ywrAeG+My+6TdIUzSUrMXUVVhEfzuLJeZSHxGDDwoHC/vZg8Yn+a9erTKlvzg4+WhP64CCT2hwbI99YME=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=K0NhceFr; arc=none smtp.client-ip=95.215.58.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <f3e041d4-c65a-4c16-99ff-37caceebb54a@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1767995615;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=513Ls91pZJUmzplWGcunk0nQa90ZGydxvckD4eQkbpI=;
-	b=K0NhceFr24pkhGGDbk9t7ZAZzu8znxijquW618kMieD3a6l6LM5bExNk1DbCU9wsoEIRX2
-	TjFkLr/BQbdLI6ett5AHQRUEs/jw/Sy0m1Hv3J7I3oids0hDHMuZTfvE4x3vpl1YbScJas
-	2M03mGMFHehLTqaqvjmgqPXaL8zlkRQ=
-Date: Fri, 9 Jan 2026 13:53:28 -0800
+	s=arc-20240116; t=1767995688; c=relaxed/simple;
+	bh=SyDIWAo0tBvOlQkzTsioGpGAoFU46xUIN8egUPSsTAE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VuifeIG2xXrVvMKmj7p0zDcPBt4lbH5yfXOl8yS4UdWN3268hla4eeHtQxaMWyQEWfYeA9X6d3t37EhBljR59JijHjnpF1Zww6ctANnFmhHHWvpW7C4uxHv9fq69qQ251xR1cQhOCGRjXdPE04mkYnPEKz+SPdv/2mvHDytjd4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D0g6DY/3; arc=none smtp.client-ip=209.85.221.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-432d2c7dd52so1633019f8f.2
+        for <bpf@vger.kernel.org>; Fri, 09 Jan 2026 13:54:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1767995685; x=1768600485; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tVAFv8E90nuSwTqKxRgnODazUOEjPtiM1PD2YijofnQ=;
+        b=D0g6DY/3wtCyvp/Gf0LO22FxthxTddH9B0/0kRqrLwXA3kvpeMrHam+Qejs9zAx1PS
+         lLdrlHbATh2+5etRjYaApirPXaOg4CqVKWo4AWEEt2z3y+zXRE+WjXeoYNQW+xXAtB1f
+         lsfPiGt4j2W1GJbYKRnlQnFEbs0YrmvMKcZYwsbWuvtXHbxQtrso+vt7UnPgecYLfg1O
+         6iKGjP3WvMH16sity4HUszas2d+vjmeGMU2aILSSJX0JXK2HD/fQ6+dWEsVPaeDWAOAE
+         oIUGvdf1H6Lr1kWLQKDmMMlfHPNz9PC1l+JKJtTommqh2+M4aUdfUJnAejAw4lnDTOqO
+         Pe4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767995685; x=1768600485;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=tVAFv8E90nuSwTqKxRgnODazUOEjPtiM1PD2YijofnQ=;
+        b=nDiUwxVxLXhELyDBJQpG1vLilnSgmgcZPfwAqsRFEBKBso2a1+jFmKkD0TjCRHJdqQ
+         mzcHW16ymTH1kobr3draXVnIWODQmr4+e26RROEqFc4FCSEQlVIbscNh32I/am64TRdq
+         moYPuh6VrR56xaJGV5Wb7QOgPlymZdFFg+GnPIYJ6S/XXU59/YbHgo/QXv1YgNDcda8f
+         oQ/CZchnA3Efq8XcVNC7CptDPr6RoKs0JXUNtiWT8P/0CsbPaK3Aayx6H+fi4Pka3JOH
+         KJvFyUQOgWIzCdQO4Vao2xmGuLZoGiDxg4Wgf4nIUlafQT2FyPpXtDZRtRtzThk0TziK
+         A91w==
+X-Forwarded-Encrypted: i=1; AJvYcCVCO3LewVEVSuZEbk1EiH5ogimvuMzW6jinyxsqKeiLLW8Tb/etV8uVdaJaaPYuWAVJuM4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxOGWac5xyrAZpIrfUuaoqKcFntUSvGfm/ITuANv5O+3XcAI5ol
+	YcHmvr9G+I2vqKXlNfGHTgNyNAhtyZeYGquFbw6hLziNXlPzE+RPGhxVVg6hQYF1ERUWGbibp6s
+	6q+geLuEfAcmrhCcFI6+WMzJKmWQOeuszrg==
+X-Gm-Gg: AY/fxX7+jv9WxcVltJpeuXbnaoHDWQem2hH5cti8wDXzB54AWquaSdCMy/J4vgHtQee
+	aYuR5jJcU4rcWs4npRqe55yE+zCQaC2V7/JzgZQe2YhiC/yVPC9SZWo3AATKcU1GVlJK8C0GygP
+	DeNt76Hr8fYDlDLsQqw5EiHtIvOoqki9ybjFjuFeBN+oXNh+3VAxI+eVP4Cga9sH1kPlIZrcESJ
+	yS7ZuZeZxq2+63Joh0gNdRWMoe9zLepevkaqHOJLFwY/SzsdExq/eJ3gk1QNx1JWR3NddL9ksju
+	O74m2thAHDTTrMyY9eCrFUn+63gV
+X-Google-Smtp-Source: AGHT+IG51RWpvxWbJijZnqsewtYtgtXdOCi2ZMsxFXQVmXp52Ns/wca2BEkmDyNH6PdrUAOuSauZw7OBjggY3NBoASo=
+X-Received: by 2002:a05:6000:18a7:b0:430:ff81:296c with SMTP id
+ ffacd0b85a97d-432c37983f5mr12201224f8f.34.1767995685071; Fri, 09 Jan 2026
+ 13:54:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v3 01/16] bpf: Convert bpf_selem_unlink_map to
- failable
-To: Amery Hung <ameryhung@gmail.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
- alexei.starovoitov@gmail.com, andrii@kernel.org, daniel@iogearbox.net,
- memxor@gmail.com, martin.lau@kernel.org, kpsingh@kernel.org,
- yonghong.song@linux.dev, song@kernel.org, haoluo@google.com,
- kernel-team@meta.com
-References: <20251218175628.1460321-1-ameryhung@gmail.com>
- <20251218175628.1460321-2-ameryhung@gmail.com>
- <74fa8337-b0cb-42fb-af8a-fdf6877e558d@linux.dev>
- <CAMB2axP5OvZKhHDnW9UD95S+2nTYaR4xLRHdg+oeXtpRJOfKrA@mail.gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <CAMB2axP5OvZKhHDnW9UD95S+2nTYaR4xLRHdg+oeXtpRJOfKrA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20260108220550.2f6638f3@fedora> <da261242-482f-4b47-81c6-b065c5a95c4b@efficios.com>
+ <CAADnVQJMa+p_BcYxKUgve2=sqRBwSs3wLGAGhbA0r6hwFpJ+6Q@mail.gmail.com>
+ <20260109141930.6deb2a0a@gandalf.local.home> <3c0df437-f6e5-47c6-aed5-f4cc26fe627a@efficios.com>
+In-Reply-To: <3c0df437-f6e5-47c6-aed5-f4cc26fe627a@efficios.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 9 Jan 2026 13:54:34 -0800
+X-Gm-Features: AZwV_Qh4smiERtW1bxrkxiHXol6EIjr5MaZya9ZuXLg6cgDa8X3XSY9z9aVSQwI
+Message-ID: <CAADnVQLeCLRhx1Oe5DdJCT0e+WWq4L3Rdee1Ky0JNNh3LdozeQ@mail.gmail.com>
+Subject: Re: [PATCH v5] tracing: Guard __DECLARE_TRACE() use of
+ __DO_TRACE_CALL() with SRCU-fast
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Linux trace kernel <linux-trace-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 1/9/26 10:39 AM, Amery Hung wrote:
->>> @@ -574,20 +603,37 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
->>>                goto unlock;
->>>        }
->>>
->>> +     b = select_bucket(smap, selem);
->>> +
->>> +     if (old_sdata) {
->>> +             old_b = select_bucket(smap, SELEM(old_sdata));
->>> +             old_b = old_b == b ? NULL : old_b;
->>> +     }
->>> +
->>> +     raw_spin_lock_irqsave(&b->lock, b_flags);
->>> +
->>> +     if (old_b)
->>> +             raw_spin_lock_irqsave(&old_b->lock, old_b_flags);
->> This will deadlock because of the lock ordering of b and old_b.
->> Replacing it with res_spin_lock in the later patch can detect it and
->> break it more gracefully. imo, we should not introduce a known deadlock
->> logic in the kernel code in the syscall code path and ask the current
->> user to retry the map_update_elem syscall.
->>
->> What happened to the patch in the earlier revision that uses the
->> local_storage (or owner) for select_bucket?
-> Thanks for reviewing!
-> 
-> I decided to revert it because this introduces the dependency of selem
-> to local_storage when unlinking. bpf_selem_unlink_lockless() cannot
-> assume map or local_storage associated with a selem to be alive. In
-> the case where local_storage is already destroyed, we won't be able to
-> figure out the bucket if select_bucket() uses local_storage for
-> hashing.
-> 
-> A middle ground is to use local_storage for hashing, but save the
-> bucket index in selem so that local_storage pointer won't be needed
-> later. WDYT?
+On Fri, Jan 9, 2026 at 12:21=E2=80=AFPM Mathieu Desnoyers
+<mathieu.desnoyers@efficios.com> wrote:
+>
+>
+> * preempt disable/enable pair:                                     1.1 ns
+> * srcu-fast lock/unlock:                                           1.5 ns
+>
+> CONFIG_RCU_REF_SCALE_TEST=3Dy
+> * migrate disable/enable pair:                                     3.0 ns
 
-I would try not to add another "const"-like value to selem if it does 
-not have to. imo, it is quite wasteful considering the number of 
-selem(s) that can live in the system. Yes, there is one final 8-byte 
-hole in selem, but it still should not be used lightly unless nothing 
-else can be shared. The atomic/u16/bool added in this set can be 
-discussed later once patch 10 is concluded.
-
-For select_bucket in bpf_selem_unlink_lockless, map_free should know the 
-bucket. destroy() should have the local_storage, no?
-
+.. and you're arguing that 3ns vs 1ns difference is so important
+for your out-of-tree tracer that in-tree tracers need to do
+some workarounds?! wtf
 
