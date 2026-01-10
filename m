@@ -1,72 +1,73 @@
-Return-Path: <bpf+bounces-78447-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78448-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id E54B3D0CECF
-	for <lists+bpf@lfdr.de>; Sat, 10 Jan 2026 05:08:03 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74B33D0D061
+	for <lists+bpf@lfdr.de>; Sat, 10 Jan 2026 07:05:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id E61DD301F23A
-	for <lists+bpf@lfdr.de>; Sat, 10 Jan 2026 04:04:27 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C6411303804F
+	for <lists+bpf@lfdr.de>; Sat, 10 Jan 2026 06:05:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 183FA2773F4;
-	Sat, 10 Jan 2026 04:04:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7734333984D;
+	Sat, 10 Jan 2026 06:05:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ap4wVykx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XclxCg3Y"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yx1-f65.google.com (mail-yx1-f65.google.com [74.125.224.65])
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1694274B23
-	for <bpf@vger.kernel.org>; Sat, 10 Jan 2026 04:04:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DFAF1A5BB4
+	for <bpf@vger.kernel.org>; Sat, 10 Jan 2026 06:05:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768017865; cv=none; b=drK23lggl85QSnctU/doxnvpzeDf5ygNH4Z2XzdHkBDyDqusZbtRALNRUi2qxMS0Z3bgOHZLOWfTdKg8CPPxY4D4bGA2U3uk2m8L7EDBy6L5pZ6pOGWQwZpX/M1ZTN5pm9q5GPtdg9W+5ja7e2E807QMX8tamKv8UUTGyqd663U=
+	t=1768025131; cv=none; b=sgEdp8VeZgpCA3FoJz7in9rze4dAyTwNvIqXkeulV+n6egJvwAzgOwFzRlubHgtqJcj1Nwmmg8bZ/IqM6Q1fHpcVTBp8EpsWBqmuibz9IAbyKy/9p7qgb/03+tl7xdRyEd8PDoPHKpLgXraiXBPGnelTEMFZ8DybVLE5ZKJXvEU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768017865; c=relaxed/simple;
-	bh=RuvbIvw2NqCibI37H+OxSzBuDzFZJky1Zs/JoE79A44=;
+	s=arc-20240116; t=1768025131; c=relaxed/simple;
+	bh=kevaTriPoK7uo2zRxhJdxm5S4k5lh+Y4F4KTuM+3wzU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=urtq/lOtus96/Hj0+vh26xCdtGWT6ejFxYfa1wD9Ywej6pEiNhaD1RQbM6qdxYu0UeC4CufLzW+h1tGeL4ZPi3zGpEKkJzLTR85Ct9IfSF0Tzg8zcZbdB/ev2UsPuoqE548XzJax9Xi6tk6k9x2m1U6Akz9+xMDOFKrEPK99hNw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ap4wVykx; arc=none smtp.client-ip=74.125.224.65
+	 To:Cc:Content-Type; b=YBbAesYykF+4yQoko/g7IOchHBc+soYlMLDIt2onwhHEFkqTjxeG+LYzMBWeTczxfOJQt+EYya3HuBS3ZZ/jGg2wj54fseTiSYEEoio51SdbsIXksu2oJE2UPREZDJKro45ztA+Qpcu9HcY750olIsSRJMK4u7IHpSq3ZJxtDgQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XclxCg3Y; arc=none smtp.client-ip=209.85.221.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yx1-f65.google.com with SMTP id 956f58d0204a3-6447743ce90so5075581d50.2
-        for <bpf@vger.kernel.org>; Fri, 09 Jan 2026 20:04:23 -0800 (PST)
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-430f57cd471so2502769f8f.0
+        for <bpf@vger.kernel.org>; Fri, 09 Jan 2026 22:05:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768017862; x=1768622662; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1768025128; x=1768629928; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8WVxIntMlBs0ySdA8Un2AaznZD95MeZBJNv/gf6NUZc=;
-        b=ap4wVykxl8jF+5FXEylR/jolZPTWkMkC1KIf0bEv8sGTeB2Q17j4JZefmxG0663OKy
-         Pp3mYKpCeoac3yq1Sk1txtXX8Xuif9VE5VlWJB/aUlqdyjmXI7DGBJbvWzMkVFehLNzM
-         5yrkl5ZercvRodqunIPfdIKfc2Fj9JW2bvXOIfIZwyeoklz9R/JQLjbvAkSJzVlCLJ2b
-         5p2W+lRKzgvyCvFTWPUcgExaACOOH4Rp7R0V/i+LYo8xSzsBLQCl1BD4fTLomu77shte
-         RuIJIt3YGUmFpiX0IQWTtChWZs1Oz/g3WG88KqE7N16osl10/Md4MreEun8IpjhfT4va
-         1Ipw==
+        bh=bglbtsHOxySnlTuSr3LlIYflvRTUmpsnMOYiW/z1XSg=;
+        b=XclxCg3YHOW/ach8zwvZEGFCpjKih4E62+62YA6FZ6KCeq7gIiepxrIAkTmcEjiExk
+         bj3o3jLx7DBOQKlMaoFd16pQWf1xoPc+BisMXjWTvnFbcCjHZXb/47w51TOACj29Duk3
+         T7E3Vb0cXIIzb6Y/AGAAmYSYbPAF3eAqPf5LNwxbKIgpg59lfF6DY+GdiOq3Lqf9h/PX
+         At45eKSGjR0lsWQztI9tNK4BKobjob8s3B+Ypj8El/PnfjxNLLbHEmVmHzWMBHZklZGM
+         0Yd1fEufcIUAG36+M7vPBfQuIlFfnsSs57ZkGxyjlDmm387JOfXsJlLdsZRXoS8VjBFi
+         O6rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768017862; x=1768622662;
+        d=1e100.net; s=20230601; t=1768025128; x=1768629928;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=8WVxIntMlBs0ySdA8Un2AaznZD95MeZBJNv/gf6NUZc=;
-        b=w/Ldt8iubyp4UZ8oNqn+4h38X8NnoORxbTqTL6BoMNH3b2Ao8oy+68vMW0kwzr4oUt
-         ZU3a8nEi3Q296Y9Nf5xk4jElfgMZkLSt/EG98dMS4q+ibND4G4cTWBEA+zcwS5KmMYRj
-         Cwed06V7p8r8j1FmblQXwhZBRXrBNENaSASG6YzU41Kv6ckCh5RW5yojSxFfEtw4q6GB
-         4zCQ1lCszxLjBXsvryWrLTABQTfncSQ02/aodlkPZgLIp5JzOSUHdn6RqlvwW+4sod6v
-         m2oWTGn55i3hV40b3t4ABdIQyiZKQRPIGkJmHteNURXoCCcbq/zHH7rtNZchnjSDPwCh
-         sFUQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX2dJc0bqoy2WsUWnME3wEc8mgzu5WaQZLpkdPnxOhYBUG0lVINXDiWzO2R7W3tBA/RaNE=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy6C86qI2JNqfrMdIOiB513LuZhTFbwve/t91mIS3BwJOA3WnX9
-	ihEsPLRPvPJe4IyoWCctBliowfbpRbVw3KVImEsjLSoEPgMR0NrmVe6/wpJE1RynF1TdqfrA3aT
-	z/6WU6m00yGLWWpppZq8GnsA2uL1mAIE=
-X-Gm-Gg: AY/fxX53Sy3SzOgujNedSLPXEcPCEWCnW1j1WrngbgzBVXAhanHDCCGRyHh0E1I8gZ9
-	S4ZWSWaWarrAKZlXtie7pBNznTmC3IyYFLD3pBxyUhweFOO6FYBac2hhs9Y6X2VuKMvjaT91UyI
-	WrPpOJI1Mzt/qCd+Y3JsIk8gDV+ioXBjdf+X8S5KrrSe7X9G5Kd3j1FN/DIiKWMZadncZ6SvjqX
-	1igumWlhEwUfnWkZ/DHIo8GBzx4T6EvnXYNdUh3hZB2IJ5uiJfCKCcqSy3TgLnajG6K6ng=
-X-Google-Smtp-Source: AGHT+IHtbog5VwGJhCAd+Xx56EnWFj9zq679lQ/SYwMv7Nxmks2n8+hBmm9sSzyFScp5sSSIDt7W5P7DvQDS818kd/g=
-X-Received: by 2002:a05:690e:10c:b0:644:4b86:e7d1 with SMTP id
- 956f58d0204a3-64716bbb915mr7884976d50.10.1768017861920; Fri, 09 Jan 2026
- 20:04:21 -0800 (PST)
+        bh=bglbtsHOxySnlTuSr3LlIYflvRTUmpsnMOYiW/z1XSg=;
+        b=t1nb/fTXqFa8fceDUVYJj73Tax0CgKv7j3dyKSq+AwbubedCaeLr4qoxPPgpHqLnzg
+         WxhjLXnKvxggxx7XjxiBc+bHFKPmLkCCo9osFYHH1YAtoY6Wdtat122BbCvo6os5lqoC
+         ydZ6rnT8Onf6LdycPBhTTPQU403VgPKEcW+Z04nyfg7jNnX7Lvzil+Mt2l9cCPm6Vh5a
+         b1rNsHJrbzmbt1flpPVhSZkrFWdCDoERiVxVfAPyBej8W37g0MSx2FS0q20HSqhrZguT
+         CMeKpsdnywCBPiBs5TIH7IHUTomp6AkbRLeQ8nUAvcFd4OM5a1dVrUAkxFfgTmx1CymS
+         H1QA==
+X-Forwarded-Encrypted: i=1; AJvYcCVVx8djhLQm5EWuaXPrWcCoRStlR8utkLHTx+xAvsPyF/Lo/uio3OH+xSzt82nAqjRsqzs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxJt+lR7KTiKaIgoocruCl33mV1OGEvWaSB0Fvf/pOvqcoot0Mt
+	niaKj+0ujOKtGjlZDnVJUq2KiFI3hM2Tq4QQg9de1h7mIhQrQyQ2tqAlmlOutInJHFjn80TTHy9
+	wojSMTgGEej6tVItx32u+WPHH7RQtdLM=
+X-Gm-Gg: AY/fxX4C2eWg3HdhSz9hf7do0yaGLLwnZAs3ufzC3esBmfRr5NRgQ1GN1PPJnHsIvkC
+	VPmoe8B31q33IymMF7ajLCBtReitN0SgEY2TgJMagzCWWiGBMgaa3896aXdN6DDA0GZZawc2JHY
+	vMgleZsxL3EMytUtEBYYp2iYDdS5lDnfktwsysv+IsqBD2RatPr6p320/7PkFMqSukZ5HmPEAOt
+	MjwDu/DWucZ/ZSBas2yVHF7s7/fupbM0T7F47dQYEw2t6MrZ3zVVzmgxMDGO8hnGggZKPajOpJg
+	OD0fJJLuqGdFVJ9AHdrh5buDUELT
+X-Google-Smtp-Source: AGHT+IFIGMY70drcXjnQqo814e6yw5emZ0xAl+kZ2Ch2S72OzxevXU0Aef6RQ5bd7MfcTI3HfveNSiRcr2htHPQ/eDc=
+X-Received: by 2002:a05:6000:420c:b0:431:67d:5390 with SMTP id
+ ffacd0b85a97d-432c37757demr16763024f8f.54.1768025127786; Fri, 09 Jan 2026
+ 22:05:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -77,13 +78,13 @@ References: <20260108022450.88086-1-dongml2@chinatelecom.cn>
  <20260108022450.88086-5-dongml2@chinatelecom.cn> <CAADnVQLj4c-nc6gLbBiaT24KXWEpG3AzFT=P1tszu_akXhyD=Q@mail.gmail.com>
  <5075208.31r3eYUQgx@7950hx>
 In-Reply-To: <5075208.31r3eYUQgx@7950hx>
-From: Menglong Dong <menglong8.dong@gmail.com>
-Date: Sat, 10 Jan 2026 12:04:11 +0800
-X-Gm-Features: AZwV_QhydPjR2gj4qZAUo1kuoFwZGFBEoaurqLGgE-_VGTEItdt2KQLoEYaN3-M
-Message-ID: <CADxym3YkfSju-mcLSA5_44e-rdQ935Pt_sv75M_BGm3RiDcq2w@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 9 Jan 2026 22:05:16 -0800
+X-Gm-Features: AZwV_QiyO19oQ1GqYdcTiEpyTcAEmMfkfKsihDLDsu69uCPWQedF0QdILw5JDow
+Message-ID: <CAADnVQJTc3qegim-hyzaurnCX-8pRQWoj+r9+0jgBQ-WmpLHuw@mail.gmail.com>
 Subject: Re: [PATCH bpf-next v8 04/11] bpf: support fsession for bpf_session_is_return
 To: Menglong Dong <menglong.dong@linux.dev>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+Cc: Menglong Dong <menglong8.dong@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
 	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
 	Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
 	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
@@ -96,38 +97,9 @@ Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Alexei Starovoitov <ast@k
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Jan 10, 2026 at 11:38=E2=80=AFAM Menglong Dong <menglong.dong@linux=
-.dev> wrote:
+On Fri, Jan 9, 2026 at 7:38=E2=80=AFPM Menglong Dong <menglong.dong@linux.d=
+ev> wrote:
 >
-> On 2026/1/10 10:40, Alexei Starovoitov wrote:
-> > On Wed, Jan 7, 2026 at 6:25=E2=80=AFPM Menglong Dong <menglong8.dong@gm=
-ail.com> wrote:
-> > >
-> > > +       } else if (func_id =3D=3D special_kfunc_list[KF_bpf_session_i=
-s_return]) {
-> > > +               if (prog->expected_attach_type =3D=3D BPF_TRACE_FSESS=
-ION)
-> > > +                       addr =3D (unsigned long)bpf_fsession_is_retur=
-n;
-> >
-> > ...
-> >
-> > > +bool bpf_fsession_is_return(void *ctx)
-> > > +{
-> > > +       /* This helper call is inlined by verifier. */
-> > > +       return !!(((u64 *)ctx)[-1] & (1 << BPF_TRAMP_M_IS_RETURN));
-> > > +}
-> > > +
-> >
-> > Why do this specialization and introduce a global function
-> > that will never be called, since it will be inlined anyway?
->
-> Ah, the specialization and the definition of the global function
-> is not unnecessary. I thought that it's kinda fallback solution
-      ^
-typo: is not necessary
-
-> that we define the function even if it is inlined by the verifier.
 >
 > >
 > > Remove the first hunk and make the 2nd a comment instead of a real func=
@@ -143,11 +115,8 @@ nd the logic is:
 > +         */
 > +        return false;
 > +}
->
-> >
-> >
->
->
->
->
+
+No need to define an empty function.
+A comment next to 'inline-by-bpf-asm' part explaining what is going on
+will be enough.
 
