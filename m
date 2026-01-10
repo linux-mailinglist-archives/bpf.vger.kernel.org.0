@@ -1,193 +1,126 @@
-Return-Path: <bpf+bounces-78442-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78443-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D54FD0CDB2
-	for <lists+bpf@lfdr.de>; Sat, 10 Jan 2026 03:48:59 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9494BD0CDED
+	for <lists+bpf@lfdr.de>; Sat, 10 Jan 2026 04:38:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 155AA3025F9F
-	for <lists+bpf@lfdr.de>; Sat, 10 Jan 2026 02:48:45 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A20083026289
+	for <lists+bpf@lfdr.de>; Sat, 10 Jan 2026 03:38:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6D852737EE;
-	Sat, 10 Jan 2026 02:48:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB52C24729A;
+	Sat, 10 Jan 2026 03:38:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cKzs2ijA"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aN++cn0o"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36CAB19F40B;
-	Sat, 10 Jan 2026 02:48:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B97B2135B8;
+	Sat, 10 Jan 2026 03:38:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768013323; cv=none; b=YHpBAqSkt/vzStGotyY+yfZhnfcyEj+EOFHjkkpywdeQ6YqBbdx5lKAhbCVcigaE9PBpjSz9wh7GmxfTlFRKJNBnbd0wg+M7p5vBO+k3mjQKMpVTo3JC769vIiROvb+JkGE3wZbMt0UpV7jzIvTPgjyzItTCvgZuj8WzjCULEd8=
+	t=1768016294; cv=none; b=tvhGKsyeJ2x7noki5/JHM4rDYFR1QVi22Ag/ORsN/XfAKsKQvIPjg9vnj6jvKJTL9Z87ef5kPcjpCqzPDEf696PSote7bCs6UIoJjQieUWzFDe3b5py0DQC3SSTI3hyGqLrOGsERfV6OxvA6DrNdNQo9XE1v38lV3Sk91k7XS08=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768013323; c=relaxed/simple;
-	bh=aHklHrw3blkZTH/0dkEA0bbd0UzqokyvlwjwMUkFJ+I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aqUBwjg1H6NYb07h7Ih1LpNHd4+MtukAYRXsaUfWAKoyj98YD/YSbh3dmBE7lzelLuOcxOGFmyEBYbckf/l/vaimb+SGeaaapovxdCwe9S5+gYLkH/7xp/YboqFswAILH/kTapOdIRd9bT1ih+vGx6ONShLpAakUMF7H5BZ54ow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cKzs2ijA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5285C4CEF1;
-	Sat, 10 Jan 2026 02:48:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768013322;
-	bh=aHklHrw3blkZTH/0dkEA0bbd0UzqokyvlwjwMUkFJ+I=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=cKzs2ijAhsSN1EV6QfNfuKlh6Xv3xXPxVPuj1DgzWBT5IvHwSwBP4bjd29GV4s8ZR
-	 hWoI8MRq0Cbuy1z2IJ3BwNwUF8Z+w+J86aAjZVSx4zIqEcm8nB/jln5PkJdNtYZrYx
-	 3hYih38pJYJkTpuzxVdHYXp2SvvPtbychTu0zlLV2pXSUE7SY2WYFIiQdYOMJyV9/P
-	 iODqPP0R0xzrPHEBYuOfrAfpf1JzzhFNMrGTLAFIgY0xeVDPTmZv/j1YDxx9lHtB+3
-	 eniLuTxdJr6uNm5dteGR99PuUA0IbOcvSksvAhNzvxjYDw1dCQ4S9yRQFnxSxfRWGL
-	 dNC8gS5bOoNlg==
-Message-ID: <2886aafa-871f-4bc2-9d7b-3dc69f3a5424@kernel.org>
-Date: Sat, 10 Jan 2026 02:48:36 +0000
+	s=arc-20240116; t=1768016294; c=relaxed/simple;
+	bh=rbIr3G/sW7tRGoNZ+lF0F2oYqivDF8mzxOqrDuVr/88=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=A8k+/bdUSDzfjqStrooQijEhhTEusJ4VJzQIxKAV5qClj0O1vfuMJezBae6Lx+YneIcX2868aQL7R1L3wap4LwNlqLSdNQ0eYZzD6ZCZ+oK6fwG2s9SLyBO1M4ohaGyQEcai+GJjwVFmp9+VjgTv1FKTOWIF2ag42MjR2aW/x+I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aN++cn0o; arc=none smtp.client-ip=91.218.175.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1768016280;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=72prxwM+ojfoTekETnLlr6xQXFg53cmyt9vRtB4B73k=;
+	b=aN++cn0otad3+7YNgPtpf0lvNpW7gJJ0oMPXzKHu4GUOuhen3cS4UWUJL0Z6MNoBt/OSk+
+	kPJe3RItRF5CtzB15jURXpbkgfkOZUHZ/lQbTAHu0oH+0J29LFdmIv/OSUka/F+E2T4Toh
+	famgV50J0xEwONJg6nubm97gPWpQL1g=
+From: Menglong Dong <menglong.dong@linux.dev>
+To: Menglong Dong <menglong8.dong@gmail.com>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+ David Ahern <dsahern@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, jiang.biao@linux.dev,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+ bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>
+Subject:
+ Re: [PATCH bpf-next v8 04/11] bpf: support fsession for bpf_session_is_return
+Date: Sat, 10 Jan 2026 11:37:36 +0800
+Message-ID: <5075208.31r3eYUQgx@7950hx>
+In-Reply-To:
+ <CAADnVQLj4c-nc6gLbBiaT24KXWEpG3AzFT=P1tszu_akXhyD=Q@mail.gmail.com>
+References:
+ <20260108022450.88086-1-dongml2@chinatelecom.cn>
+ <20260108022450.88086-5-dongml2@chinatelecom.cn>
+ <CAADnVQLj4c-nc6gLbBiaT24KXWEpG3AzFT=P1tszu_akXhyD=Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] bpftool: Add 'prepend' option for tcx attach to insert
- at chain start
-To: gyutae.opensource@navercorp.com, bpf@vger.kernel.org,
- Daniel Borkmann <daniel@iogearbox.net>
-Cc: linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Gyutae Bae <gyutae.bae@navercorp.com>,
- Siwan Kim <siwan.kim@navercorp.com>, Daniel Xu <dxu@dxuuu.xyz>,
- Jiayuan Chen <jiayuan.chen@linux.dev>, Tao Chen <chen.dylane@linux.dev>,
- Kumar Kartikeya Dwivedi <memxor@gmail.com>
-References: <43c23468-530b-45f3-af22-f03484e5148c@kernel.org>
- <20260107022911.81672-1-gyutae.opensource@navercorp.com>
-From: Quentin Monnet <qmo@kernel.org>
-Content-Language: en-GB
-In-Reply-To: <20260107022911.81672-1-gyutae.opensource@navercorp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+X-Migadu-Flow: FLOW_OUT
 
-On 07/01/2026 02:29, gyutae.opensource@navercorp.com wrote:
-> From: Gyutae Bae <gyutae.bae@navercorp.com>
-> 
-> Add support for the 'prepend' option when attaching tcx_ingress and
-> tcx_egress programs. This option allows inserting a BPF program at
-> the beginning of the TCX chain instead of appending it at the end.
-> 
-> The implementation uses BPF_F_BEFORE flag which automatically inserts
-> the program at the beginning of the chain when no relative reference
-> is specified.
-> 
-> This change includes:
-> - Modify do_attach_tcx() to support prepend insertion using BPF_F_BEFORE
-> - Update documentation to describe the new 'prepend' option
-> - Add bash completion support for the 'prepend' option on tcx attach types
-> - Add example usage in the documentation
-> 
-> The 'prepend' option is only valid for tcx_ingress and tcx_egress attach
-> types. For XDP attach types, the existing 'overwrite' option remains
-> available.
-> 
-> Example usage:
->   # bpftool net attach tcx_ingress name tc_prog dev lo prepend
-> 
-> This feature is useful when the order of program execution in the TCX
-> chain matters and users need to ensure certain programs run first.
-> 
-> Co-developed-by: Siwan Kim <siwan.kim@navercorp.com>
-> Signed-off-by: Siwan Kim <siwan.kim@navercorp.com>
-> Signed-off-by: Gyutae Bae <gyutae.bae@navercorp.com>
-> ---
-> Hi Daniel.
-> 
-> Thank you for the detailed feedback. Thanks to your explanation,
-> I now understand that BPF_F_BEFORE and BPF_F_AFTER work as standalone flags.
-> This has made the implementation much simpler and cleaner.
-> 
-> Thanks,
-> Gyutae.
-> 
-> Changes in v3:
-> - Simplified implementation by using BPF_F_BEFORE alone (Daniel)
-> - Removed get_first_tcx_prog_id() helper function (Daniel)
-> 
-> Changes in v2:
-> - Renamed 'head' to 'prepend' for consistency with 'overwrite' (Quentin)
-> - Moved relative_id variable to relevant scope inside if block (Quentin)
-> - Changed condition style from '== 0' to '!' (Quentin)
-> - Updated documentation to clarify 'overwrite' is XDP-only (Quentin)
-> - Removed outdated "only XDP-related modes are supported" note (Quentin)
-> - Removed extra help text from do_help() for consistency (Quentin)
-> 
->  .../bpf/bpftool/Documentation/bpftool-net.rst | 30 ++++++++++++++-----
->  tools/bpf/bpftool/bash-completion/bpftool     |  9 +++++-
->  tools/bpf/bpftool/net.c                       | 23 +++++++++++---
->  3 files changed, 50 insertions(+), 12 deletions(-)
-> 
+On 2026/1/10 10:40, Alexei Starovoitov wrote:
+> On Wed, Jan 7, 2026 at 6:25=E2=80=AFPM Menglong Dong <menglong8.dong@gmai=
+l.com> wrote:
+> >
+> > +       } else if (func_id =3D=3D special_kfunc_list[KF_bpf_session_is_=
+return]) {
+> > +               if (prog->expected_attach_type =3D=3D BPF_TRACE_FSESSIO=
+N)
+> > +                       addr =3D (unsigned long)bpf_fsession_is_return;
+>=20
+> ...
+>=20
+> > +bool bpf_fsession_is_return(void *ctx)
+> > +{
+> > +       /* This helper call is inlined by verifier. */
+> > +       return !!(((u64 *)ctx)[-1] & (1 << BPF_TRAMP_M_IS_RETURN));
+> > +}
+> > +
+>=20
+> Why do this specialization and introduce a global function
+> that will never be called, since it will be inlined anyway?
 
-[...]
+Ah, the specialization and the definition of the global function
+is not unnecessary. I thought that it's kinda fallback solution
+that we define the function even if it is inlined by the verifier.
 
-> diff --git a/tools/bpf/bpftool/net.c b/tools/bpf/bpftool/net.c
-> index cfc6f944f7c3..1a2ba3312a82 100644
-> --- a/tools/bpf/bpftool/net.c
-> +++ b/tools/bpf/bpftool/net.c
-> @@ -666,10 +666,16 @@ static int get_tcx_type(enum net_attach_type attach_type)
->  	}
->  }
-> 
-> -static int do_attach_tcx(int progfd, enum net_attach_type attach_type, int ifindex)
-> +static int do_attach_tcx(int progfd, enum net_attach_type attach_type, int ifindex, bool prepend)
->  {
->  	int type = get_tcx_type(attach_type);
-> 
-> +	if (prepend) {
-> +		LIBBPF_OPTS(bpf_prog_attach_opts, opts,
-> +			.flags = BPF_F_BEFORE
-> +		);
-> +		return bpf_prog_attach_opts(progfd, ifindex, type, &opts);
-> +	}
->  	return bpf_prog_attach(progfd, ifindex, type, 0);
->  }
-> 
-> @@ -685,6 +691,7 @@ static int do_attach(int argc, char **argv)
->  	enum net_attach_type attach_type;
->  	int progfd, ifindex, err = 0;
->  	bool overwrite = false;
-> +	bool prepend = false;
-> 
->  	/* parse attach args */
->  	if (!REQ_ARGS(5))
-> @@ -710,8 +717,16 @@ static int do_attach(int argc, char **argv)
->  	if (argc) {
->  		if (is_prefix(*argv, "overwrite")) {
->  			overwrite = true;
+>=20
+> Remove the first hunk and make the 2nd a comment instead of a real functi=
+on?
+
+Agree. So it will be:
+
++static bool bpf_fsession_is_return(void *ctx)
++{
++       /* This helper call is implemented and inlined by the verifier, and=
+ the logic is:
++         *   return !!(((u64 *)ctx)[-1] & (1 << BPF_TRAMP_M_IS_RETURN));
++         */
++        return false;
++}
+
+>=20
+>=20
 
 
-Just one minor thing, can we error out here if the attach type is tcx
-please? Like you do for "prepend" below, when it's not tcx. So that we
-don't let users believe they're overwriting their program.
 
 
-> +		} else if (is_prefix(*argv, "prepend")) {
-> +			if (attach_type != NET_ATTACH_TYPE_TCX_INGRESS &&
-> +			    attach_type != NET_ATTACH_TYPE_TCX_EGRESS) {
-> +				p_err("'prepend' is only supported for tcx_ingress/tcx_egress");
-> +				err = -EINVAL;
-> +				goto cleanup;
-> +			}
-> +			prepend = true;
->  		} else {
-> -			p_err("expected 'overwrite', got: '%s'?", *argv);
-> +			p_err("expected 'overwrite' or 'prepend', got: '%s'?", *argv);
->  			err = -EINVAL;
->  			goto cleanup;
->  		}
-
-
-Looks good otherwise, thank you! Pending that change:
-
-Reviewed-by: Quentin Monnet <qmo@kernel.org>
 
