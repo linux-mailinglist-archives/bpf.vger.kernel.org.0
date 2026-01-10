@@ -1,68 +1,68 @@
-Return-Path: <bpf+bounces-78456-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78455-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E167D0D32E
-	for <lists+bpf@lfdr.de>; Sat, 10 Jan 2026 09:26:55 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A5BED0D332
+	for <lists+bpf@lfdr.de>; Sat, 10 Jan 2026 09:27:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 2B8F43014755
-	for <lists+bpf@lfdr.de>; Sat, 10 Jan 2026 08:26:15 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 217193034400
+	for <lists+bpf@lfdr.de>; Sat, 10 Jan 2026 08:26:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0762E2DEA61;
-	Sat, 10 Jan 2026 08:26:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E4682D9EF4;
+	Sat, 10 Jan 2026 08:26:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1aUYk9bM"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Dq0ffHx8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-dy1-f202.google.com (mail-dy1-f202.google.com [74.125.82.202])
+Received: from mail-dl1-f74.google.com (mail-dl1-f74.google.com [74.125.82.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FD6C4A02
-	for <bpf@vger.kernel.org>; Sat, 10 Jan 2026 08:26:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B07002D5A01
+	for <bpf@vger.kernel.org>; Sat, 10 Jan 2026 08:26:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768033571; cv=none; b=QjEsRyleFoi5TGGQIbkfyC49khCLzqdFrXhUi8eJh16gMlcRpZkHjP0KAE85dlphy0fdDb8rZ3V+vTHZn2OnrOS4b7dqzlTYqzKrep72M+RsjarZGkrU7qoBSeAGb4QWxut9qa0m0xk8ZtbdzSCydaH2xyZQdFEfjqs9uDAANLs=
+	t=1768033570; cv=none; b=WRNN8Jm0IXPBciOshoRGEk/acvrdEAzqaAu2RQo9q4lvnQuBmDxXdPagZHEpu1l23NSPfl8ZsRYfcTwtfTrQEjLveUbdIUdpx89ykXR+Ffek0NRMj25TGEXOsPZ/zWw2AX0Es5wI5/G/by3pyq6ajvwyFXNaj/8AERQEraMYkDA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768033571; c=relaxed/simple;
-	bh=fU9tXtVUuvz++hhVpv6nOf14ncQA9HihGffXc9Blti4=;
+	s=arc-20240116; t=1768033570; c=relaxed/simple;
+	bh=whKXq2UaWgwSKq4RZq/7tWTQr5a1lYl0L1Z4K3S66gE=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=K9JlxyzN7bVMs/69AyY4sIDkP+NsM+IWRi3ViQD98fBvFdGIe9S4C1HsderbCDNDCljsxHyp4nl0LqmoSvOwDc+t+fdmEpPlOGKA9ocLCHgWDgDGcGChVmL7b8QisquuL7JBCGk6plqQLHzS4o43Pup5gAFOCSrTflS8Pw54x58=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--samitolvanen.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1aUYk9bM; arc=none smtp.client-ip=74.125.82.202
+	 To:Cc:Content-Type; b=o9nBzQxE5F7nAIgCTvbrxZnaO5G232fhB90rZP3WMxMKPzbKIybNwyE4+1Kw9HpPOeE6Um2VPGCstM36NctrRGk0bLlUG6pU/0xNO9G8Q7vyRH2scMAtfhpEGQYu/etJudS8oxQ0OgZ/n8+filGP9KXP3UTNZFjJ3T1CLqOPML4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--samitolvanen.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Dq0ffHx8; arc=none smtp.client-ip=74.125.82.74
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--samitolvanen.bounces.google.com
-Received: by mail-dy1-f202.google.com with SMTP id 5a478bee46e88-2b0751d8de7so6545039eec.1
-        for <bpf@vger.kernel.org>; Sat, 10 Jan 2026 00:26:00 -0800 (PST)
+Received: by mail-dl1-f74.google.com with SMTP id a92af1059eb24-11f3d181ef2so24040223c88.1
+        for <bpf@vger.kernel.org>; Sat, 10 Jan 2026 00:26:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1768033560; x=1768638360; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1768033562; x=1768638362; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PZhkoiS2Eo/kq3Cli8CQX1phFsPCl4naA/gjIFzyLV8=;
-        b=1aUYk9bMCBtiYbJSy8auWrAI2DyPvbN+xBIkVdWjy+Ppe3JPx1TqgTU1UL0Zz0t2W1
-         xXyRSkgXR1uprPKNStP19RBOLEKEolshdB0V3J7HrNPS6gWzXDT03JDuhzBeoWWkW9Qo
-         Z9u4XB+b2ZMB+afa0CymDJpgDPjnPVoDZ/ZHM9Az7TAZVFDCLEbw4oF5gM4P2GlrlYwf
-         K6yLJRRq2oRqB2T1+6vzG92FaBJ2nxPWY8qG0wUhAZOtvUGleoSo5s5GpA/ILwLWXtaF
-         7LZ9TJJrLloXwGIIuy1eDeVflrM/l5VtgoZ8qUVwy4meTDHJ/TqUMm2A1f2JD87xf/fy
-         iiWg==
+        bh=449w4GO5uhfdBtS4/XTNprUslLajoNDu3/A2T7RPjYg=;
+        b=Dq0ffHx8cuxc7SY5L5uSAO9W09tvZVV1zjpxbrGWKNph+tSQvrhSnvHTJdCyYa7ahQ
+         asNsPMHxD2NLM1HgnehQEAyoJDntDCpa06rvdR4pK0PxCqwHJA2w7ZHax3D/A3MsR6M3
+         jmEXqaAEMdli5A2jLXwak4pzsO9+dIi/3ADms2G4lPJ6TJmhSogzmAktU8D7uJExn+M2
+         gzcn4zG/FZ6Ctw7pMccN+9pYfvbT5nuOImJfJ1ICWuomDLGFsPW55nrBW9djo8aOprzm
+         SybwU769IjL70JJ1OLjrPLqf9SiqW/SgQmbL3XIQCsFe0OSmnXfxW35CKDKrWyN/xtaE
+         hkKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768033560; x=1768638360;
+        d=1e100.net; s=20230601; t=1768033562; x=1768638362;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PZhkoiS2Eo/kq3Cli8CQX1phFsPCl4naA/gjIFzyLV8=;
-        b=eBPAtC/T22KKiw3ZA00LiLzIG6scJ2MBkWgf14BdpGyB5TNZhIhc8WipgLX5hTYMwQ
-         QfZdJZU4PuWQqMxvHIyfcdViEjOKc2ZigEHTJ8TJi+3AZjYAS/s2uNmaNv3ATcM55N14
-         41ggWsrIAEqPXpTbr/YrD6OBNTV1ln6CNbVaytKZFWGvaKSPNiFlpS/f9UGPuE7JfUlH
-         OsrFFxnkKH0HCOvzBw3TDt5SH4msR67Q+GzLIDHbH2xqaSRCZkTa9nxhVLnYvkVussEK
-         UXG6wsIy4bVX0/hX5ngDWy5S3DiD6MMmyYef026c6qEGkPi2iF9vRddA5+53+BEILG3p
-         kZ8g==
-X-Gm-Message-State: AOJu0Yx4kUEOvhvlCjMA2MO0ey2azl7lakDqbg8OqX/Yxmb9MLe61gyw
-	g2JMPq/ClSRihSeAWZAkrBt2vi8zbKEsuLRDQo4Fdu0LcvRqzEpu7cKxfM0J9yUM0tr4zTS7hu1
-	96kLxYb/qHepO3CILIR67Zls21ibYHPIRO/gKJvAd1Lp0d/WYzRi/IfyC3aAeai4YEG5Y0g3NQE
-	tTO9s0ucCKuSFnyiO0W68+/Nso7TBV/Atti+MYjAttXnEYKP7rRWjCO3pZGD+7YYyG
-X-Google-Smtp-Source: AGHT+IG9YKCSq7wS7f0FWH0qnCPG7v4Hjw/ILCg0+RfetXQsjFo9F+6oxi8SmQfwivw3ZF8EVRkWhSbDDRqzXAdk+xg=
-X-Received: from dycog7.prod.google.com ([2002:a05:7301:9a87:b0:2ae:3278:d74f])
+        bh=449w4GO5uhfdBtS4/XTNprUslLajoNDu3/A2T7RPjYg=;
+        b=s7PNfsORgDel7VjYfWrt/29LydKaXvZZYFRj750Ox5KeDyH7GLAVjThKGL6LJ3uQE2
+         IAo2Ca3K5xIPvPS8kNmhf/d6G8OEAj0Kkoy7zOsjJQfmiAMUBd9AQWKoZ1p5HKQsMbMj
+         7qREp31340JozBdEh4842xtl6bFrV69IjwrWM7K5F1/6bE/Voy8Me71Yj8syP2c851f9
+         eHitiqvzc766TsEseqHs/umAnY90Sec2v4HjZMo0PsWEP2js2rvmE+ZDnFpgD+S3v+FI
+         n8TUQSpKs7aSGjHiUKzpjTs81rktLwcbBakhwhl1mrACsLwYZzEBMiPhJd0AkHIxJoO5
+         Tnfg==
+X-Gm-Message-State: AOJu0YwwmF+ZZA/tfIGVU8QpdmoGiYXtp9/Q8Oq8UAVCsSM98pHa/PMQ
+	lxhT2Vvbvf7xV5kWv/eC9sVmgjIxk2TSxf+zE8un9RqP9S9ynkT28QwVGX0HJc24K7eBc0AJ7Us
+	+VAcc9kAyqgKpzPcKff9TRPNt3qt2+xubvwrE4xj+UPyfA6b7y4Pgdw5DWcc0PNZrNWi5Ort6Jr
+	Q4mo8mzLlf3tLKSSGVPglP1K5kLnDEhMcIOoBsl4qESif/HqeTR9ZvFvoBEI5M+9+g
+X-Google-Smtp-Source: AGHT+IFmCO0K26hEWmtQlpwGJLRbVYg5Bg8Mr7O4+TQDB1V1dghyXNnxJOkHNounSDF02rQTVtkHOfl1+QITfS5Xnp4=
+X-Received: from dlbdm14.prod.google.com ([2002:a05:7022:6b8e:b0:119:9f33:34ae])
  (user=samitolvanen job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:7300:e9d9:20b0:2b0:582e:fe51 with SMTP id 5a478bee46e88-2b17d2a841dmr7814723eec.20.1768033560093;
- Sat, 10 Jan 2026 00:26:00 -0800 (PST)
-Date: Sat, 10 Jan 2026 08:25:52 +0000
+ 2002:a05:7022:791:b0:11d:c91e:3b58 with SMTP id a92af1059eb24-121f8b60617mr11760954c88.39.1768033561654;
+ Sat, 10 Jan 2026 00:26:01 -0800 (PST)
+Date: Sat, 10 Jan 2026 08:25:53 +0000
 In-Reply-To: <20260110082548.113748-6-samitolvanen@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -72,15 +72,14 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20260110082548.113748-6-samitolvanen@google.com>
 X-Developer-Key: i=samitolvanen@google.com; a=openpgp; fpr=35CCFB63B283D6D3AEB783944CB5F6848BBC56EE
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1607; i=samitolvanen@google.com;
- h=from:subject; bh=fU9tXtVUuvz++hhVpv6nOf14ncQA9HihGffXc9Blti4=;
- b=owGbwMvMwCUWxa662nLh8irG02pJDJlJvHwP4ydbut2RMjnQ9ODCnS2OKqy+lja+XC473u2V/
- rt9QYdSRykLgxgXg6yYIkvL19Vbd393Sn31uUgCZg4rE8gQBi5OAZiIziVGho2HN68R23FxSueL
- Hab7bx5u1xBQ2VO556dvY/lcnR5Z72SG/xn92xL+WF+wn8H//Vi40D6OmGk7HFhWpV5am8jbL5f yiQMA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=898; i=samitolvanen@google.com;
+ h=from:subject; bh=whKXq2UaWgwSKq4RZq/7tWTQr5a1lYl0L1Z4K3S66gE=;
+ b=owGbwMvMwCUWxa662nLh8irG02pJDJlJvPx6jzfYi5ROYond+/r3wTd7whiz1s1coLJkX221S
+ tIdxp7THaUsDGJcDLJiiiwtX1dv3f3dKfXV5yIJmDmsTCBDGLg4BWAiSoUMf+U+2kytUlgbn771
+ 1e2DYdc9iu3fc2kYTlac99+n55y7HAvD/7wZXnxBn/MWu77TymXu+3dvYU/leh4LdtVV7+0VJ93 M5wIA
 X-Mailer: git-send-email 2.52.0.457.g6b5491de43-goog
-Message-ID: <20260110082548.113748-9-samitolvanen@google.com>
-Subject: [PATCH bpf-next v5 3/4] selftests/bpf: Use the correct destructor
- kfunc type
+Message-ID: <20260110082548.113748-10-samitolvanen@google.com>
+Subject: [PATCH bpf-next v5 4/4] bpf, btf: Enforce destructor kfunc type with CFI
 From: Sami Tolvanen <samitolvanen@google.com>
 To: bpf@vger.kernel.org
 Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
@@ -94,45 +93,34 @@ Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>, Alexei Starovoitov <ast@kernel.
 	Sami Tolvanen <samitolvanen@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-With CONFIG_CFI enabled, the kernel strictly enforces that indirect
-function calls use a function pointer type that matches the target
-function. As bpf_testmod_ctx_release() signature differs from the
-btf_dtor_kfunc_t pointer type used for the destructor calls in
-bpf_obj_free_fields(), add a stub function with the correct type to
-fix the type mismatch.
+Ensure that registered destructor kfuncs have the same type
+as btf_dtor_kfunc_t to avoid a kernel panic on systems with
+CONFIG_CFI enabled.
 
 Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 Acked-by: Yonghong Song <yonghong.song@linux.dev>
 ---
- tools/testing/selftests/bpf/test_kmods/bpf_testmod.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ kernel/bpf/btf.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-index 1c41d03bd5a1..bc07ce9d5477 100644
---- a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-@@ -285,6 +285,12 @@ __bpf_kfunc void bpf_testmod_ctx_release(struct bpf_testmod_ctx *ctx)
- 		call_rcu(&ctx->rcu, testmod_free_cb);
- }
- 
-+__bpf_kfunc void bpf_testmod_ctx_release_dtor(void *ctx)
-+{
-+	bpf_testmod_ctx_release(ctx);
-+}
-+CFI_NOSEAL(bpf_testmod_ctx_release_dtor);
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 539c9fdea41d..2c6076fc29b9 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -8846,6 +8846,13 @@ static int btf_check_dtor_kfuncs(struct btf *btf, const struct btf_id_dtor_kfunc
+ 		 */
+ 		if (!t || !btf_type_is_ptr(t))
+ 			return -EINVAL;
 +
- static struct bpf_testmod_ops3 *st_ops3;
- 
- static int bpf_testmod_test_3(void)
-@@ -707,7 +713,7 @@ BTF_KFUNCS_END(bpf_testmod_common_kfunc_ids)
- 
- BTF_ID_LIST(bpf_testmod_dtor_ids)
- BTF_ID(struct, bpf_testmod_ctx)
--BTF_ID(func, bpf_testmod_ctx_release)
-+BTF_ID(func, bpf_testmod_ctx_release_dtor)
- 
- static const struct btf_kfunc_id_set bpf_testmod_common_kfunc_set = {
- 	.owner = THIS_MODULE,
++		if (IS_ENABLED(CONFIG_CFI_CLANG)) {
++			/* Ensure the destructor kfunc type matches btf_dtor_kfunc_t */
++			t = btf_type_by_id(btf, t->type);
++			if (!btf_type_is_void(t))
++				return -EINVAL;
++		}
+ 	}
+ 	return 0;
+ }
 -- 
 2.52.0.457.g6b5491de43-goog
 
