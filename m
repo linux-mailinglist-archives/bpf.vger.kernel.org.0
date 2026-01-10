@@ -1,81 +1,81 @@
-Return-Path: <bpf+bounces-78490-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78489-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81867D0DDE8
-	for <lists+bpf@lfdr.de>; Sat, 10 Jan 2026 22:09:07 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D449AD0DDB2
+	for <lists+bpf@lfdr.de>; Sat, 10 Jan 2026 22:06:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C4D3F308C388
+	by sin.lore.kernel.org (Postfix) with ESMTP id EE912300C9A3
 	for <lists+bpf@lfdr.de>; Sat, 10 Jan 2026 21:05:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46DFC2C21C9;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4222D2C21C4;
 	Sat, 10 Jan 2026 21:05:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="HRbnXVxh"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="b89wQ7Nd"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D14D2C17B3
-	for <bpf@vger.kernel.org>; Sat, 10 Jan 2026 21:05:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB6022C11DD
+	for <bpf@vger.kernel.org>; Sat, 10 Jan 2026 21:05:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768079143; cv=none; b=PFPmVx1MihiovDW/OH/yaB7UZcFsv40X4AwxjchPpNaIp/oFDfXVm6afWHeVKVCLXgPIHK585sHUCicfO0Kg9fVZ1SwE2li9iZsonVNGWK4eLesER1ga5IVIoIWvoO7On7pi0oNSQqY7dDuUin5NK1+orC7e42Uboazxf7P9Be4=
+	t=1768079143; cv=none; b=gsXgpnIDYq7lgsExSEj76l7a8LzI0v/XH4XWHsSVEaiva1V3L2bZGrD0iWxWdt+mNRUTzfJyvkXnUYlRcCUu1cppBRSJ357DnbfDlTsH+KKDg2YAjnNvuLXOCUDEglPeoiaJ5jhruadZG/QZRffc+hX1Gj1YqdWuVMx1o3iM6pA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1768079143; c=relaxed/simple;
-	bh=I8Ub+6vTkOU9LlgcA8t80PJC7kRZceopVhWvGXoTsW8=;
+	bh=YYFkbgvHW4ptRZ3yNdkkSZwpQMcaeTni1eEXsRHp1lQ=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=psBI8e3dGTLVHViahcqhKY+J2Q1r4lv5Gt4NVfY6rK/8XbUlb49wcnAQYvS/3yuDgJKCnOtpjBzGf+q+paUk2tIIL43zCrlPHH7uj3CPkGE51785ysvLspKW14ZfT9oaGtl/1HPIU4WZ0VGY4Nmdl61YXiRjICrN5l0P7d1XffQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=HRbnXVxh; arc=none smtp.client-ip=209.85.208.41
+	 In-Reply-To:To:Cc; b=Ap5EaBJh5gM253B7imJ7a6mQYpb+A7jQrOZsTcAmsESQbslTfa0KfCxcTZ8SHJXd3HkUD8Wkk8ELDDqYCQyBukclMUSSmc23BWvmPpihn5c9T6FXqQa0sKoneMXaMzx653gdqG26yWEwupbylslibPIMnBeNeutN4r8LNknPi+s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=b89wQ7Nd; arc=none smtp.client-ip=209.85.218.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-64b9d01e473so8625106a12.2
-        for <bpf@vger.kernel.org>; Sat, 10 Jan 2026 13:05:36 -0800 (PST)
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-b72b495aa81so1005395866b.2
+        for <bpf@vger.kernel.org>; Sat, 10 Jan 2026 13:05:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1768079135; x=1768683935; darn=vger.kernel.org;
+        d=cloudflare.com; s=google09082023; t=1768079136; x=1768683936; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=3qhyznqsQeHYrRcXEj2wKTRt+KnMhdHylhV/MRU3QAQ=;
-        b=HRbnXVxhrVlXaM3caQF3j+NNuavbVAGQQiA+S20XjUmlUoBA+6BBXT/IaD+Xa/ba2O
-         g0YwJ6kKKRbPRVB5mHgzlXgttty/BY9+BU/HIQN6q4UuV3gOqqnVFxazum39VYMFS3zR
-         vThQdzIhuNabBgCo2ZYkvimuzQVhbh6+/75j9M4/JOjkpxHQ7y/cganGSpeuMwHjYz48
-         CchdyLRsPu6rJM7L+CrKUKcMasXNNxFF0umDF5Z9Fh42sLspaHDo7WzKsckcY6ZS5XYi
-         ZX9oPgiWLedvHlf9py7MjEVfBc7fhVUXvsfv/ED7c8XFa5aNoPQRbfrJLPB/C0vs0rnM
-         mslw==
+        bh=gJGe4F24ZVfayrOmF+dW97eXhP3gCrceZMdfXokyiw8=;
+        b=b89wQ7NdRStyFOGmSJCzk56eWd0V7i8uIRjgF07pV0S14YytTnZvLn1CRLy8TlNj1w
+         4SW0HOGJkzQb+2zicB2Udj9v0re3Yh0K6F9EBmvQ6d4Dh1C7GP6r6h3AVY2WdJMOqMM/
+         bqZIiheq5qjb78RdvNx5DeES4KT3DIQqCf0KjWlWyT5YFgiPeS4i+LRezDD1YZKCuFpy
+         85lOBk0OMKEvPK9DwMIpHf4eOZrTKeKbpVqTMpMxdyflNh8Am/ApIh5sZk1JIom9P7Nl
+         GAev2N06i7FPAS4BO5Dn6nlS/ZsGMOq/r1vOqQ0Ue1fyg5Ottj2xa/SUZIOv7Abk13RH
+         G+QQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768079135; x=1768683935;
+        d=1e100.net; s=20230601; t=1768079136; x=1768683936;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=3qhyznqsQeHYrRcXEj2wKTRt+KnMhdHylhV/MRU3QAQ=;
-        b=wWsKGZkH1wq61AAOwx6Fudo4aGFIL8RQjJe4oB8FJxlJu5vn+KWrr1kL+hOgHBKiyP
-         XNcNwQ9AXKXAs0iody7DUQOmRxxnt4UUtwDwjOwgTR7te+KyHcmv/rwDTNGGk7bGzJ4L
-         PSblcUM7eViIusjn/sBVy5bCpQQQrTNNWSgpfOLrer7ztbSie0OXGpgjhFfBBdurE042
-         6e6Xkqv6x+rY4iothxGaTXJ+l4lb8z22qhny0DtPLOjQ+Ftbr1P++sQiqXaA+VvhOrZA
-         qqc5TOjwrwZSJZO/L5o6470PPNkPxrXb6aoAolQCead0Gra7QKvwauZZW4Nd3FJoZK1+
-         V5/A==
-X-Forwarded-Encrypted: i=1; AJvYcCUYvqjZUuJ6GmpTziqkENDnVWPU3k5wwuqV0d9lPKuT7dk4b/q/nG7nXe+Wll8VGQZ38kw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwfdtWUnaq2zC8NIyqWOHJ+Qr0xtFi5LcmQFuupsab6ROSRnjOE
-	1HLvN2iWtTH5X5E1mBHR24Jcp2i2isxolt691hrshht2/7Z8JRCptFhhnrxcBc3FKD4IJlO95OW
-	01ydK
-X-Gm-Gg: AY/fxX4ayjUQ6kX1z+rrLLOS+oCDDBJ3dvdyZsIt2+yWJP7IhnhhdQPXrXhogtjSeh+
-	JJQyKx1wLb839Is1XENLbKhxESkCbSgW7VmBEYqtZDjWrFC8oN4T2CHOaR5m9P2NdM2uXmQtEYd
-	laytZrreMosUyAWFg5gwEz1JtBQZqN6IQ8mqc+RvbMcMczGc6DCMj8OXDx4m1vLQx+JmvGyq/BL
-	IngI03s9zGEkG9btl26x4+n531FGf5mh1iZHz20xvVM9ZwdOgBbgWL60KyfO7s2Uinrjti14w5C
-	J/tqTcCMvy6qlYc0JgtXY83wS/XxQRupvUJRrxuIZbRqYRyx5OsUr7xehz38yJR8Ei7EUX/V3GG
-	M4SWS17JIw0tze7a81lupT/421ydtJG5I072LyG3dxkLNd6Aa1YbM/lqZYnNUOO8lmmE82Krgoc
-	3WxAOcA2iqYWjVVeV5yGyVql1/XTdujeBrGM+ySPxj54eYwIyakLsM+DaOetE=
-X-Google-Smtp-Source: AGHT+IHEj3UjKJezXJmgXkOXIgfXnXeUfZzoN/s16lHRjWyrvzci193qQh2S6+WItUf3e13YEOGqTA==
-X-Received: by 2002:a17:907:2689:b0:b83:972a:6af6 with SMTP id a640c23a62f3a-b8444fa0b03mr1257356566b.44.1768079134594;
-        Sat, 10 Jan 2026 13:05:34 -0800 (PST)
+        bh=gJGe4F24ZVfayrOmF+dW97eXhP3gCrceZMdfXokyiw8=;
+        b=PdH4IJLKn3iQoas3xRgV6uW9w9hLciAZLZlljv35rvq+XitWLIxdk27vqB2Nd0SqYb
+         GEANGWl0U0lKeypnvq7tXTBg5aQqL5VjU43j/DIiUeDw371vcElWPpnBPoEHhC5Rqqsm
+         XxiW+JVPH9A8PPiQzLdNBAkkKLFvOi1g2i/pq/iF94HyQfoZB0r93NwxYzE/H+/NHaEN
+         kCFsO3XblLEgJyTvGMdIyO6Rft9eE4SE0YYgoOxZ6l547BPs8jlHKb6kfdLwOQY2MLB/
+         pDW+uIbSqqBp+Rg+eHRH6vTq5P9/p/P6gGYznsHnxUF+xpJY5u3yjQ+JLY0VwZQAXdyF
+         i1GA==
+X-Forwarded-Encrypted: i=1; AJvYcCXgbLhff4zPSSco9oagbml+SXvIyUNcnN5Wehq64RRd/UhwijgBez8S/Oe0ec0dCiYtH6Y=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxu2eGr2Liqeetn1eFtWPawl81igIeWl5pzd5IaPsyjwNqmPWUJ
+	Xl7L3pOw88xnSIhr4J5R8QCGWmq0RM+6w0CsMTUJZDoKpmGVrIh3BbUoP968P+NVbMn8XYkOb/2
+	hmt0I
+X-Gm-Gg: AY/fxX42BNAkkGEho93jC/EK/+4Z/0+vwIr+lyfmkzCoR7XDFgFKJr7CUAmYkZd3IHb
+	zSsCFAQ0ynN0vR7dtfBdG8ASZL0rCsyZMceXw0NWyat1wUjYeizfDzdfZB4rCzbuR5bHek93W0h
+	md7Xv5T5p3kKXsqqMU2cUk/W41WM4DolrP68dO5loeP2UXQp8sh3+JtvGO1nDW34F5dvI2z848V
+	imKx/y4PUOL/rhVLU6erqlJuHbYYBQXIYkQeL6v5iKtgnJ27fypXWQKKGmTKozken8vhgd+EzOP
+	aZr92TnheC3/Y670ad19d5GcIpfn6sxYTrBAwRRgm6pJS4lDojsgG1VgpXNY9XHIqfN8qrSfPAb
+	yWgeVWSkzXdq3/iaW2/XhjfgIkIwBo0xUiDPa1yYipqhnB/7xruieDYlCbTrvUAW+jAaE7Fg2ge
+	Q3RxFd+2RPEOkviGYLSpr1u1AApX4VjeuOYJCGV34y1zWQ4h/jQx/NTh+6xHpYn//UNUc8aA==
+X-Google-Smtp-Source: AGHT+IG5ojyykHKJrNS2iqi01P/vtltLLnJRqU4cDTs8uiHP43TabkDLYPv8nJjlhqnzI9Nx6i13Jw==
+X-Received: by 2002:a17:907:97d0:b0:b84:22ab:a830 with SMTP id a640c23a62f3a-b8445233534mr1342410266b.18.1768079135871;
+        Sat, 10 Jan 2026 13:05:35 -0800 (PST)
 Received: from cloudflare.com (79.184.207.118.ipv4.supernova.orange.pl. [79.184.207.118])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b842a23432dsm1467488166b.11.2026.01.10.13.05.34
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b842a234000sm1495187766b.4.2026.01.10.13.05.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Jan 2026 13:05:34 -0800 (PST)
+        Sat, 10 Jan 2026 13:05:35 -0800 (PST)
 From: Jakub Sitnicki <jakub@cloudflare.com>
-Date: Sat, 10 Jan 2026 22:05:23 +0100
-Subject: [PATCH net-next 09/10] xsk: Call skb_metadata_set when skb->data
+Date: Sat, 10 Jan 2026 22:05:24 +0100
+Subject: [PATCH net-next 10/10] xdp: Call skb_metadata_set when skb->data
  points past metadata
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -85,7 +85,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260110-skb-meta-fixup-skb_metadata_set-calls-v1-9-1047878ed1b0@cloudflare.com>
+Message-Id: <20260110-skb-meta-fixup-skb_metadata_set-calls-v1-10-1047878ed1b0@cloudflare.com>
 References: <20260110-skb-meta-fixup-skb_metadata_set-calls-v1-0-1047878ed1b0@cloudflare.com>
 In-Reply-To: <20260110-skb-meta-fixup-skb_metadata_set-calls-v1-0-1047878ed1b0@cloudflare.com>
 To: netdev@vger.kernel.org
@@ -108,27 +108,31 @@ X-Mailer: b4 0.15-dev-07fe9
 
 Prepare to copy the XDP metadata into an skb extension in skb_metadata_set.
 
-Adjust AF_XDP to pull from skb->data before calling skb_metadata_set.
+XDP generic mode runs after MAC header has been already pulled. Adjust
+skb->data before calling skb_metadata_set to adhere to new contract.
 
 Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 ---
- net/core/xdp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/core/dev.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/net/core/xdp.c b/net/core/xdp.c
-index 9100e160113a..e86ac1d6ad6d 100644
---- a/net/core/xdp.c
-+++ b/net/core/xdp.c
-@@ -768,8 +768,8 @@ struct sk_buff *xdp_build_skb_from_zc(struct xdp_buff *xdp)
- 
- 	metalen = xdp->data - xdp->data_meta;
- 	if (metalen > 0) {
--		skb_metadata_set(skb, metalen);
- 		__skb_pull(skb, metalen);
-+		skb_metadata_set(skb, metalen);
+diff --git a/net/core/dev.c b/net/core/dev.c
+index c711da335510..f8e5672e835f 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -5468,8 +5468,11 @@ u32 bpf_prog_run_generic_xdp(struct sk_buff *skb, struct xdp_buff *xdp,
+ 		break;
+ 	case XDP_PASS:
+ 		metalen = xdp->data - xdp->data_meta;
+-		if (metalen)
++		if (metalen) {
++			__skb_push(skb, mac_len);
+ 			skb_metadata_set(skb, metalen);
++			__skb_pull(skb, mac_len);
++		}
+ 		break;
  	}
  
- 	skb_record_rx_queue(skb, rxq->queue_index);
 
 -- 
 2.43.0
