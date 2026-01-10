@@ -1,45 +1,45 @@
-Return-Path: <bpf+bounces-78443-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78444-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9494BD0CDED
-	for <lists+bpf@lfdr.de>; Sat, 10 Jan 2026 04:38:31 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E913ED0CDF6
+	for <lists+bpf@lfdr.de>; Sat, 10 Jan 2026 04:39:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A20083026289
-	for <lists+bpf@lfdr.de>; Sat, 10 Jan 2026 03:38:15 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B264A3025F8C
+	for <lists+bpf@lfdr.de>; Sat, 10 Jan 2026 03:38:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB52C24729A;
-	Sat, 10 Jan 2026 03:38:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8241256C6C;
+	Sat, 10 Jan 2026 03:38:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aN++cn0o"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SVKRUx7n"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B97B2135B8;
-	Sat, 10 Jan 2026 03:38:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DECD922CBC6
+	for <bpf@vger.kernel.org>; Sat, 10 Jan 2026 03:38:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768016294; cv=none; b=tvhGKsyeJ2x7noki5/JHM4rDYFR1QVi22Ag/ORsN/XfAKsKQvIPjg9vnj6jvKJTL9Z87ef5kPcjpCqzPDEf696PSote7bCs6UIoJjQieUWzFDe3b5py0DQC3SSTI3hyGqLrOGsERfV6OxvA6DrNdNQo9XE1v38lV3Sk91k7XS08=
+	t=1768016317; cv=none; b=a0S/+GT40ktEpX7RQaeeulDipITRqXhcNvx4q0SFWsxnTeoXsWNMh5oIyW17M2dMvKbceov603DKAPDGqcUryhzZDAeN9pTQWalruKuiHQy144h3rD+Tvm9YcNDu3MiJA+yapE6Xy2MQruUl5jkZQHk6IJFx9oOnIkPs+wrwgjw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768016294; c=relaxed/simple;
-	bh=rbIr3G/sW7tRGoNZ+lF0F2oYqivDF8mzxOqrDuVr/88=;
+	s=arc-20240116; t=1768016317; c=relaxed/simple;
+	bh=c5Wo/st2+sAGS/EFOFCnLO9oT0KKZTnx/lM3SuLi8is=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=A8k+/bdUSDzfjqStrooQijEhhTEusJ4VJzQIxKAV5qClj0O1vfuMJezBae6Lx+YneIcX2868aQL7R1L3wap4LwNlqLSdNQ0eYZzD6ZCZ+oK6fwG2s9SLyBO1M4ohaGyQEcai+GJjwVFmp9+VjgTv1FKTOWIF2ag42MjR2aW/x+I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aN++cn0o; arc=none smtp.client-ip=91.218.175.179
+	 MIME-Version:Content-Type; b=H6WJBOv1TP6zLsmfNiP0LpztglFsm/tfnFcUoBA8x5GvEb3svhw+OfPd3FsZcDsBSeUBIMZMcV9zw58Sfe+CAjivOICE/eQ8OyzUXITsXLshwDkv4tI76/P932CRHGAG8ZtzVWssHanMIqeS7mPgw3wGYVcSDjLW/t1CCdIoTDo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SVKRUx7n; arc=none smtp.client-ip=91.218.175.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1768016280;
+	t=1768016313;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=72prxwM+ojfoTekETnLlr6xQXFg53cmyt9vRtB4B73k=;
-	b=aN++cn0otad3+7YNgPtpf0lvNpW7gJJ0oMPXzKHu4GUOuhen3cS4UWUJL0Z6MNoBt/OSk+
-	kPJe3RItRF5CtzB15jURXpbkgfkOZUHZ/lQbTAHu0oH+0J29LFdmIv/OSUka/F+E2T4Toh
-	famgV50J0xEwONJg6nubm97gPWpQL1g=
+	bh=OZBYECfPSQ3dr8bx6aRQm1r3SvRlxssMGEF9FguxNIY=;
+	b=SVKRUx7nETtnWTvD+gmO64MnCZU8huySbw6mZlRazRAfivAPblmvc4UXmYk/xmVqKNJ7PV
+	x5Gnc9UMd9wQNt97pALvqZLSMG+MDCzXO+NIPeLcYHEzgg/IUd0QdDYK2b2nDH+89DiWHo
+	I0nwyEp7mYCtn8+xLtxjM9jEthaug1Q=
 From: Menglong Dong <menglong.dong@linux.dev>
 To: Menglong Dong <menglong8.dong@gmail.com>,
  Alexei Starovoitov <alexei.starovoitov@gmail.com>
@@ -57,15 +57,15 @@ Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
  bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>,
  LKML <linux-kernel@vger.kernel.org>
 Subject:
- Re: [PATCH bpf-next v8 04/11] bpf: support fsession for bpf_session_is_return
-Date: Sat, 10 Jan 2026 11:37:36 +0800
-Message-ID: <5075208.31r3eYUQgx@7950hx>
+ Re: [PATCH bpf-next v8 05/11] bpf: support fsession for bpf_session_cookie
+Date: Sat, 10 Jan 2026 11:38:11 +0800
+Message-ID: <2401703.ElGaqSPkdT@7950hx>
 In-Reply-To:
- <CAADnVQLj4c-nc6gLbBiaT24KXWEpG3AzFT=P1tszu_akXhyD=Q@mail.gmail.com>
+ <CAADnVQJtyGS5BQKcnzsqRNEDO7Kcs_89k6Q5tBi10iaff=tbtQ@mail.gmail.com>
 References:
  <20260108022450.88086-1-dongml2@chinatelecom.cn>
- <20260108022450.88086-5-dongml2@chinatelecom.cn>
- <CAADnVQLj4c-nc6gLbBiaT24KXWEpG3AzFT=P1tszu_akXhyD=Q@mail.gmail.com>
+ <20260108022450.88086-6-dongml2@chinatelecom.cn>
+ <CAADnVQJtyGS5BQKcnzsqRNEDO7Kcs_89k6Q5tBi10iaff=tbtQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -76,46 +76,25 @@ Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset="utf-8"
 X-Migadu-Flow: FLOW_OUT
 
-On 2026/1/10 10:40, Alexei Starovoitov wrote:
-> On Wed, Jan 7, 2026 at 6:25=E2=80=AFPM Menglong Dong <menglong8.dong@gmai=
+On 2026/1/10 10:42, Alexei Starovoitov wrote:
+> On Wed, Jan 7, 2026 at 6:26=E2=80=AFPM Menglong Dong <menglong8.dong@gmai=
 l.com> wrote:
 > >
-> > +       } else if (func_id =3D=3D special_kfunc_list[KF_bpf_session_is_=
-return]) {
-> > +               if (prog->expected_attach_type =3D=3D BPF_TRACE_FSESSIO=
-N)
-> > +                       addr =3D (unsigned long)bpf_fsession_is_return;
->=20
-> ...
->=20
-> > +bool bpf_fsession_is_return(void *ctx)
+> >
+> > +u64 *bpf_fsession_cookie(void *ctx)
 > > +{
 > > +       /* This helper call is inlined by verifier. */
-> > +       return !!(((u64 *)ctx)[-1] & (1 << BPF_TRAMP_M_IS_RETURN));
-> > +}
+> > +       u64 off =3D (((u64 *)ctx)[-1] >> BPF_TRAMP_M_COOKIE) & 0xFF;
 > > +
+> > +       return &((u64 *)ctx)[-off];
+> > +}
 >=20
-> Why do this specialization and introduce a global function
-> that will never be called, since it will be inlined anyway?
+> Same question... this can be a comment.
+> For some of the helpers earlier we kept C functions to make
+> things work on architectures where JIT is not available,
+> but kfuncs require JIT, so for kfuncs there is no fallback necessary.
 
-Ah, the specialization and the definition of the global function
-is not unnecessary. I thought that it's kinda fallback solution
-that we define the function even if it is inlined by the verifier.
-
->=20
-> Remove the first hunk and make the 2nd a comment instead of a real functi=
-on?
-
-Agree. So it will be:
-
-+static bool bpf_fsession_is_return(void *ctx)
-+{
-+       /* This helper call is implemented and inlined by the verifier, and=
- the logic is:
-+         *   return !!(((u64 *)ctx)[-1] & (1 << BPF_TRAMP_M_IS_RETURN));
-+         */
-+        return false;
-+}
+Yeah, it make sense.
 
 >=20
 >=20
