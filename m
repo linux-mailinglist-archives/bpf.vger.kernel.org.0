@@ -1,127 +1,241 @@
-Return-Path: <bpf+bounces-78455-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78457-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A5BED0D332
-	for <lists+bpf@lfdr.de>; Sat, 10 Jan 2026 09:27:11 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4647D0D370
+	for <lists+bpf@lfdr.de>; Sat, 10 Jan 2026 09:37:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 217193034400
-	for <lists+bpf@lfdr.de>; Sat, 10 Jan 2026 08:26:14 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9FA243015EC6
+	for <lists+bpf@lfdr.de>; Sat, 10 Jan 2026 08:37:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E4682D9EF4;
-	Sat, 10 Jan 2026 08:26:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Dq0ffHx8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9863A2D9EF4;
+	Sat, 10 Jan 2026 08:37:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-dl1-f74.google.com (mail-dl1-f74.google.com [74.125.82.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B07002D5A01
-	for <bpf@vger.kernel.org>; Sat, 10 Jan 2026 08:26:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE6873D6F;
+	Sat, 10 Jan 2026 08:37:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768033570; cv=none; b=WRNN8Jm0IXPBciOshoRGEk/acvrdEAzqaAu2RQo9q4lvnQuBmDxXdPagZHEpu1l23NSPfl8ZsRYfcTwtfTrQEjLveUbdIUdpx89ykXR+Ffek0NRMj25TGEXOsPZ/zWw2AX0Es5wI5/G/by3pyq6ajvwyFXNaj/8AERQEraMYkDA=
+	t=1768034237; cv=none; b=phqKlmyDqRpJTmgTHGKTYEfqe9JzNDdu/1BSIrZMONnWtofNsIvl1P5lkLZaV6YMaGzyIfKXsje3gTR0uSJw71uaA4eVvp99ZurqAsa47aea7VLtBVwrQJWStvqk20D+TmfFuTc2crO6xoRWGTqnd2wtn6+6edah9nRN7jVOQs4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768033570; c=relaxed/simple;
-	bh=whKXq2UaWgwSKq4RZq/7tWTQr5a1lYl0L1Z4K3S66gE=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=o9nBzQxE5F7nAIgCTvbrxZnaO5G232fhB90rZP3WMxMKPzbKIybNwyE4+1Kw9HpPOeE6Um2VPGCstM36NctrRGk0bLlUG6pU/0xNO9G8Q7vyRH2scMAtfhpEGQYu/etJudS8oxQ0OgZ/n8+filGP9KXP3UTNZFjJ3T1CLqOPML4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--samitolvanen.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Dq0ffHx8; arc=none smtp.client-ip=74.125.82.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--samitolvanen.bounces.google.com
-Received: by mail-dl1-f74.google.com with SMTP id a92af1059eb24-11f3d181ef2so24040223c88.1
-        for <bpf@vger.kernel.org>; Sat, 10 Jan 2026 00:26:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1768033562; x=1768638362; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=449w4GO5uhfdBtS4/XTNprUslLajoNDu3/A2T7RPjYg=;
-        b=Dq0ffHx8cuxc7SY5L5uSAO9W09tvZVV1zjpxbrGWKNph+tSQvrhSnvHTJdCyYa7ahQ
-         asNsPMHxD2NLM1HgnehQEAyoJDntDCpa06rvdR4pK0PxCqwHJA2w7ZHax3D/A3MsR6M3
-         jmEXqaAEMdli5A2jLXwak4pzsO9+dIi/3ADms2G4lPJ6TJmhSogzmAktU8D7uJExn+M2
-         gzcn4zG/FZ6Ctw7pMccN+9pYfvbT5nuOImJfJ1ICWuomDLGFsPW55nrBW9djo8aOprzm
-         SybwU769IjL70JJ1OLjrPLqf9SiqW/SgQmbL3XIQCsFe0OSmnXfxW35CKDKrWyN/xtaE
-         hkKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768033562; x=1768638362;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=449w4GO5uhfdBtS4/XTNprUslLajoNDu3/A2T7RPjYg=;
-        b=s7PNfsORgDel7VjYfWrt/29LydKaXvZZYFRj750Ox5KeDyH7GLAVjThKGL6LJ3uQE2
-         IAo2Ca3K5xIPvPS8kNmhf/d6G8OEAj0Kkoy7zOsjJQfmiAMUBd9AQWKoZ1p5HKQsMbMj
-         7qREp31340JozBdEh4842xtl6bFrV69IjwrWM7K5F1/6bE/Voy8Me71Yj8syP2c851f9
-         eHitiqvzc766TsEseqHs/umAnY90Sec2v4HjZMo0PsWEP2js2rvmE+ZDnFpgD+S3v+FI
-         n8TUQSpKs7aSGjHiUKzpjTs81rktLwcbBakhwhl1mrACsLwYZzEBMiPhJd0AkHIxJoO5
-         Tnfg==
-X-Gm-Message-State: AOJu0YwwmF+ZZA/tfIGVU8QpdmoGiYXtp9/Q8Oq8UAVCsSM98pHa/PMQ
-	lxhT2Vvbvf7xV5kWv/eC9sVmgjIxk2TSxf+zE8un9RqP9S9ynkT28QwVGX0HJc24K7eBc0AJ7Us
-	+VAcc9kAyqgKpzPcKff9TRPNt3qt2+xubvwrE4xj+UPyfA6b7y4Pgdw5DWcc0PNZrNWi5Ort6Jr
-	Q4mo8mzLlf3tLKSSGVPglP1K5kLnDEhMcIOoBsl4qESif/HqeTR9ZvFvoBEI5M+9+g
-X-Google-Smtp-Source: AGHT+IFmCO0K26hEWmtQlpwGJLRbVYg5Bg8Mr7O4+TQDB1V1dghyXNnxJOkHNounSDF02rQTVtkHOfl1+QITfS5Xnp4=
-X-Received: from dlbdm14.prod.google.com ([2002:a05:7022:6b8e:b0:119:9f33:34ae])
- (user=samitolvanen job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:7022:791:b0:11d:c91e:3b58 with SMTP id a92af1059eb24-121f8b60617mr11760954c88.39.1768033561654;
- Sat, 10 Jan 2026 00:26:01 -0800 (PST)
-Date: Sat, 10 Jan 2026 08:25:53 +0000
-In-Reply-To: <20260110082548.113748-6-samitolvanen@google.com>
+	s=arc-20240116; t=1768034237; c=relaxed/simple;
+	bh=O/PpOg36FNM2ei1vhJaHdz1sULiLmjd+N8Mpmu1yecg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hqY/tkpFFs4zQ5QiR6eBIE767u/G068ICTILeUGA/dqTjUPwY8GV9t3jHHKoAkj2fZRgpZzavQtVKRiSNSR+7K84NFNtIQ+/sjrpwakcerO+8c9hZZyLuESE1NjERYd3hYoH0ozyEi+5BN7qf0BY6fU4Ltb47qI8v6t6sdjwKwo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
+Received: from [192.168.2.217] (p5dc55726.dip0.t-ipconnect.de [93.197.87.38])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pmenzel)
+	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 905F42394AFD3;
+	Sat, 10 Jan 2026 09:35:59 +0100 (CET)
+Message-ID: <43dafae2-e1f1-44ce-91c1-7fc236966f58@molgen.mpg.de>
+Date: Sat, 10 Jan 2026 09:35:58 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20260110082548.113748-6-samitolvanen@google.com>
-X-Developer-Key: i=samitolvanen@google.com; a=openpgp; fpr=35CCFB63B283D6D3AEB783944CB5F6848BBC56EE
-X-Developer-Signature: v=1; a=openpgp-sha256; l=898; i=samitolvanen@google.com;
- h=from:subject; bh=whKXq2UaWgwSKq4RZq/7tWTQr5a1lYl0L1Z4K3S66gE=;
- b=owGbwMvMwCUWxa662nLh8irG02pJDJlJvPx6jzfYi5ROYond+/r3wTd7whiz1s1coLJkX221S
- tIdxp7THaUsDGJcDLJiiiwtX1dv3f3dKfXV5yIJmDmsTCBDGLg4BWAiSoUMf+U+2kytUlgbn771
- 1e2DYdc9iu3fc2kYTlac99+n55y7HAvD/7wZXnxBn/MWu77TymXu+3dvYU/leh4LdtVV7+0VJ93 M5wIA
-X-Mailer: git-send-email 2.52.0.457.g6b5491de43-goog
-Message-ID: <20260110082548.113748-10-samitolvanen@google.com>
-Subject: [PATCH bpf-next v5 4/4] bpf, btf: Enforce destructor kfunc type with CFI
-From: Sami Tolvanen <samitolvanen@google.com>
-To: bpf@vger.kernel.org
-Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Jamal Hadi Salim <jhs@mojatatu.com>, 
-	Cong Wang <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>, 
-	Viktor Malik <vmalik@redhat.com>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Intel-wired-lan] [PATCH iwl-next v4] idpf: export RX hardware
+ timestamping information to XDP
+To: Mina Almasry <almasrymina@google.com>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, YiFei Zhu <zhuyifei@google.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Stanislav Fomichev <sdf@fomichev.me>,
+ Tony Nguyen <anthony.l.nguyen@intel.com>,
+ Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>,
+ Paolo Abeni <pabeni@redhat.com>,
+ Alexander Lobakin <aleksander.lobakin@intel.com>,
+ Richard Cochran <richardcochran@gmail.com>,
+ intel-wired-lan@lists.osuosl.org,
+ Aleksandr Loktionov <aleksandr.loktionov@intel.com>
+References: <20251223194649.3050648-1-almasrymina@google.com>
+Content-Language: en-US
+From: Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <20251223194649.3050648-1-almasrymina@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Ensure that registered destructor kfuncs have the same type
-as btf_dtor_kfunc_t to avoid a kernel panic on systems with
-CONFIG_CFI enabled.
+Dear Mina,
 
-Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
----
- kernel/bpf/btf.c | 7 +++++++
- 1 file changed, 7 insertions(+)
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 539c9fdea41d..2c6076fc29b9 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -8846,6 +8846,13 @@ static int btf_check_dtor_kfuncs(struct btf *btf, const struct btf_id_dtor_kfunc
- 		 */
- 		if (!t || !btf_type_is_ptr(t))
- 			return -EINVAL;
-+
-+		if (IS_ENABLED(CONFIG_CFI_CLANG)) {
-+			/* Ensure the destructor kfunc type matches btf_dtor_kfunc_t */
-+			t = btf_type_by_id(btf, t->type);
-+			if (!btf_type_is_void(t))
-+				return -EINVAL;
-+		}
- 	}
- 	return 0;
- }
--- 
-2.52.0.457.g6b5491de43-goog
+Thank you for your patch. Some minor comments, should you resend.
 
+Am 23.12.25 um 20:46 schrieb Mina Almasry via Intel-wired-lan:
+> From: YiFei Zhu <zhuyifei@google.com>
+> 
+> The logic is similar to idpf_rx_hwtstamp, but the data is exported
+> as a BPF kfunc instead of appended to an skb to support grabbing
+> timestamps in xsk packets.
+> 
+> A idpf_queue_has(PTP, rxq) condition is added to check the queue
+> supports PTP similar to idpf_rx_process_skb_fields.
+> 
+> Tested using an xsk connection and checking xdp timestamps are
+> retreivable in received packets.
+
+retr*ie*vable
+
+It’d be great if you could share the commands.
+
+> Cc: intel-wired-lan@lists.osuosl.org
+> Signed-off-by: YiFei Zhu <zhuyifei@google.com>
+> Signed-off-by: Mina Almasry <almasrymina@google.com>
+> Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
+> 
+> ---
+> 
+> v4: https://lore.kernel.org/netdev/20251219202957.2309698-1-almasrymina@google.com/
+> - Fix indentation (lobakin)
+> - I kept the (u64) casts for all bit shifted bits in idpf_xdp_get_qw3
+>    and friends as I see all idpf_xdp_get_qw* functions do the cast in all
+>    bit-shifted variables.
+> 
+> v3: https://lore.kernel.org/netdev/20251218022948.3288897-1-almasrymina@google.com/
+> - Do the idpf_queue_has(PTP) check before we read qw1 (lobakin)
+> - Fix _qw1 not copying over ts_low on on !__LIBETH_WORD_ACCESS systems
+>    (AI)
+> 
+> v2: https://lore.kernel.org/netdev/20251122140839.3922015-1-almasrymina@google.com/
+> - Fixed alphabetical ordering
+> - Use the xdp desc type instead of virtchnl one (required some added
+>    helpers)
+> 
+> ---
+>   drivers/net/ethernet/intel/idpf/xdp.c | 31 +++++++++++++++++++++++++++
+>   drivers/net/ethernet/intel/idpf/xdp.h | 20 +++++++++++++++++
+>   2 files changed, 51 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/intel/idpf/xdp.c b/drivers/net/ethernet/intel/idpf/xdp.c
+> index 958d16f87424..0916d201bf98 100644
+> --- a/drivers/net/ethernet/intel/idpf/xdp.c
+> +++ b/drivers/net/ethernet/intel/idpf/xdp.c
+> @@ -2,6 +2,7 @@
+>   /* Copyright (C) 2025 Intel Corporation */
+>   
+>   #include "idpf.h"
+> +#include "idpf_ptp.h"
+>   #include "idpf_virtchnl.h"
+>   #include "xdp.h"
+>   #include "xsk.h"
+> @@ -391,8 +392,38 @@ static int idpf_xdpmo_rx_hash(const struct xdp_md *ctx, u32 *hash,
+>   				    pt);
+>   }
+>   
+> +static int idpf_xdpmo_rx_timestamp(const struct xdp_md *ctx, u64 *timestamp)
+> +{
+> +	const struct libeth_xdp_buff *xdp = (typeof(xdp))ctx;
+> +	struct idpf_xdp_rx_desc desc __uninitialized;
+> +	const struct idpf_rx_queue *rxq;
+> +	u64 cached_time, ts_ns;
+> +	u32 ts_high;
+> +
+> +	rxq = libeth_xdp_buff_to_rq(xdp, typeof(*rxq), xdp_rxq);
+> +
+> +	if (!idpf_queue_has(PTP, rxq))
+> +		return -ENODATA;
+> +
+> +	idpf_xdp_get_qw1(&desc, xdp->desc);
+> +
+> +	if (!(idpf_xdp_rx_ts_low(&desc) & VIRTCHNL2_RX_FLEX_TSTAMP_VALID))
+> +		return -ENODATA;
+> +
+> +	cached_time = READ_ONCE(rxq->cached_phc_time);
+> +
+> +	idpf_xdp_get_qw3(&desc, xdp->desc);
+> +
+> +	ts_high = idpf_xdp_rx_ts_high(&desc);
+> +	ts_ns = idpf_ptp_tstamp_extend_32b_to_64b(cached_time, ts_high);
+> +
+> +	*timestamp = ts_ns;
+> +	return 0;
+> +}
+> +
+>   static const struct xdp_metadata_ops idpf_xdpmo = {
+>   	.xmo_rx_hash		= idpf_xdpmo_rx_hash,
+> +	.xmo_rx_timestamp	= idpf_xdpmo_rx_timestamp,
+
+Append the unit?
+
+>   };
+>   
+>   void idpf_xdp_set_features(const struct idpf_vport *vport)
+> diff --git a/drivers/net/ethernet/intel/idpf/xdp.h b/drivers/net/ethernet/intel/idpf/xdp.h
+> index 479f5ef3c604..1748a0d73547 100644
+> --- a/drivers/net/ethernet/intel/idpf/xdp.h
+> +++ b/drivers/net/ethernet/intel/idpf/xdp.h
+> @@ -112,11 +112,13 @@ struct idpf_xdp_rx_desc {
+>   	aligned_u64		qw1;
+>   #define IDPF_XDP_RX_BUF		GENMASK_ULL(47, 32)
+>   #define IDPF_XDP_RX_EOP		BIT_ULL(1)
+> +#define IDPF_XDP_RX_TS_LOW	GENMASK_ULL(31, 24)
+>   
+>   	aligned_u64		qw2;
+>   #define IDPF_XDP_RX_HASH	GENMASK_ULL(31, 0)
+>   
+>   	aligned_u64		qw3;
+> +#define IDPF_XDP_RX_TS_HIGH	GENMASK_ULL(63, 32)
+>   } __aligned(4 * sizeof(u64));
+>   static_assert(sizeof(struct idpf_xdp_rx_desc) ==
+>   	      sizeof(struct virtchnl2_rx_flex_desc_adv_nic_3));
+> @@ -128,6 +130,8 @@ static_assert(sizeof(struct idpf_xdp_rx_desc) ==
+>   #define idpf_xdp_rx_buf(desc)	FIELD_GET(IDPF_XDP_RX_BUF, (desc)->qw1)
+>   #define idpf_xdp_rx_eop(desc)	!!((desc)->qw1 & IDPF_XDP_RX_EOP)
+>   #define idpf_xdp_rx_hash(desc)	FIELD_GET(IDPF_XDP_RX_HASH, (desc)->qw2)
+> +#define idpf_xdp_rx_ts_low(desc)	FIELD_GET(IDPF_XDP_RX_TS_LOW, (desc)->qw1)
+> +#define idpf_xdp_rx_ts_high(desc)	FIELD_GET(IDPF_XDP_RX_TS_HIGH, (desc)->qw3)
+>   
+>   static inline void
+>   idpf_xdp_get_qw0(struct idpf_xdp_rx_desc *desc,
+> @@ -149,6 +153,9 @@ idpf_xdp_get_qw1(struct idpf_xdp_rx_desc *desc,
+>   	desc->qw1 = ((const typeof(desc))rxd)->qw1;
+>   #else
+>   	desc->qw1 = ((u64)le16_to_cpu(rxd->buf_id) << 32) |
+> +		    ((u64)rxd->ts_low << 24) |
+> +		    ((u64)rxd->fflags1 << 16) |
+> +		    ((u64)rxd->status_err1 << 8) |
+>   		    rxd->status_err0_qw1;
+>   #endif
+>   }
+> @@ -166,6 +173,19 @@ idpf_xdp_get_qw2(struct idpf_xdp_rx_desc *desc,
+>   #endif
+>   }
+>   
+> +static inline void
+> +idpf_xdp_get_qw3(struct idpf_xdp_rx_desc *desc,
+> +		 const struct virtchnl2_rx_flex_desc_adv_nic_3 *rxd)
+> +{
+> +#ifdef __LIBETH_WORD_ACCESS
+> +	desc->qw3 = ((const typeof(desc))rxd)->qw3;
+> +#else
+> +	desc->qw3 = ((u64)le32_to_cpu(rxd->ts_high) << 32) |
+> +		    ((u64)le16_to_cpu(rxd->fmd6) << 16) |
+> +		    le16_to_cpu(rxd->l2tag1);
+> +#endif
+
+It’s done elsewhere in the file, but I wonder why use the preprocessor 
+and not plain C code, and let the linker(?) remove the unneeded branch?
+
+> +}
+> +
+>   void idpf_xdp_set_features(const struct idpf_vport *vport);
+>   
+>   int idpf_xdp(struct net_device *dev, struct netdev_bpf *xdp);
+
+
+Kind regards,
+
+Paul
 
