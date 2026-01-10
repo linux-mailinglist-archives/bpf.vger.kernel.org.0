@@ -1,149 +1,136 @@
-Return-Path: <bpf+bounces-78473-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78474-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3109BD0D71A
-	for <lists+bpf@lfdr.de>; Sat, 10 Jan 2026 15:14:42 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CE02D0D79C
+	for <lists+bpf@lfdr.de>; Sat, 10 Jan 2026 15:43:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id DAD5C301CA1B
-	for <lists+bpf@lfdr.de>; Sat, 10 Jan 2026 14:13:36 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id DA516300E813
+	for <lists+bpf@lfdr.de>; Sat, 10 Jan 2026 14:42:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C6C9346ACE;
-	Sat, 10 Jan 2026 14:13:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59E29346AFA;
+	Sat, 10 Jan 2026 14:42:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KwTu+i8v"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NtdREh71"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f194.google.com (mail-pf1-f194.google.com [209.85.210.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6A57346797
-	for <bpf@vger.kernel.org>; Sat, 10 Jan 2026 14:13:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB5E217C69;
+	Sat, 10 Jan 2026 14:42:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768054409; cv=none; b=aevdzd7VbQ/dfcrNos67ycbYyLHuJSxLU8Vm6Xp/q34ZmSO8e+xpc15+uQOSFMR7Zpz9XEbmdED9j/Nxd03mJFbQMVjP7kTVAji9reglbnjLn71zNyhH60M4ou/3Hxnz0qIGuII94a379Wm9LkpVebUlZjRc9wGxjXJvtq8IKqg=
+	t=1768056159; cv=none; b=Q9RJFf+w30JAYMcXKwAg31TEcQcKxbntMfIg7l/QV9+m9k6GjnKfu9x9pRRb8je4VTvyglNK0mvreCW4SwDoHNRHzk9nRN+8B9BtadekwrgRSE6S7WaiwWJuzi+HfgWLb+8LEZvkaBHIlUcZQBkBDfpWy7QbVGrkfT52qHhORA4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768054409; c=relaxed/simple;
-	bh=agW6uKNys5gOeoTrVORTjBOaAxozAsYVc4VUeEIRBqk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PzpDkneaxvmK9l+JCV5OMzDjndf1sE662LS60qpO5ryBUJlpmpmxe5kFCP/O01931YlTtZ9hGdiwpfDIdRk4+A88w7JMY6dRlDljGzA3jLBtByOO0lHG6p43KJ4c2Fu1/kznquzfP6XsZwZUjohOPTMatUwj5f2Hyk8SXlkkzyM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KwTu+i8v; arc=none smtp.client-ip=209.85.210.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f194.google.com with SMTP id d2e1a72fcca58-81f223c70d8so694762b3a.1
-        for <bpf@vger.kernel.org>; Sat, 10 Jan 2026 06:13:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768054407; x=1768659207; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ft9yy1vLUwNJD7u+x5LfWhJWNGjlertbzF816wc1jaU=;
-        b=KwTu+i8vVe4PjPzD2MKoi/yFtVnu3zAxaXFSXwm7eO8SoL0aSTamAdrmPLoPOMQ4K6
-         0TEJ2F8hs0q9fvTBikL2RsWZwgrbr8ipb3hPfRZXeL7fzOZMMofCs9sswusdXD6d6pFk
-         RtB5MACqzQt+/ewRh62x7dy0HDBPp+BlkQqvdJU40VOi7rpnzCZx5cTK7mka90xPylJD
-         YDPxAIfoHElX6TUTETfYStS59e8VgRKW4QEveUhZFOv8DmFtoEOgtUKPf9oX0Z6jkRoh
-         70kLf3LHLzW9zc9MHEuSumoas0OmuJjdUHzl5rZMaSntJJsQcW+2DMQ7pTrXLrdX1I74
-         UjLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768054407; x=1768659207;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=ft9yy1vLUwNJD7u+x5LfWhJWNGjlertbzF816wc1jaU=;
-        b=PhX5PKA8+aegiDTU1awi5XOB3vI2LHA8QOdBWNh995DdENuJZ5TFIy9f2bjlVhWidW
-         PQv2N45XxkHStqXGLbkDC07B3i2lxqFVaaIwwge+yqHKxnkVFKM99JHPBv4UQEZnxOrQ
-         ruMZHuWnEltC8bs3ccX8etda2qKV/KA1WozFThlI0ehCXC+/sqf10bZvBiSamxrASrEZ
-         ZEp9eRJugz7LZjChhO4ZxQsPFYVEbswFKgH6hNU7f5/rloS0YQemin44C/4ge2LWyraU
-         FS0AB8nfCefKbAYX0K3Unbk5f/bhsTWohCmDBbLzrOUJPaGxO05AxOQO3as4cRq8zZj/
-         SqOg==
-X-Forwarded-Encrypted: i=1; AJvYcCUp75MzvgNvG5T8TD2ySEEYKp06Vsxn/pF/+MxgjhZlz6khNIoW0tEVrCTfWenZOo6AS10=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy7WxuaYGD/vdxtLW2973P2+aR+xe5ZOwA9vnrIt5grFg40H9+7
-	5j+Ji/crJPZ5VyX6cYS79D6+zC6INWQ63U11BKh1Wyd0yY5vKcXb4xDm
-X-Gm-Gg: AY/fxX4Ph2b2KTWlgaPnuyyKvKP1y1RYSzS6j12L4JUgxxSI+5H2dpsCm244utAAZqY
-	kXRYEjGUvi7iurdssvu/jiLBKkC7xK8LCDPBthuy1FXTyOWDeGpPxfAF9jDZAYPQdnCRIXvAEw7
-	UvgJ8vRJQzkNvXO3PYpDlxqKM+DkAhJPP9yrX9NUszLydaNxWGr172zSbkIjIe2Rc4eoWpYbJ0q
-	OIJpdukNVPgG0ux4h6Kf9D2HLQXLldvdKa2XxSGRfAONIHY7TV9lS747ibT15/BwYjgFDZqJddL
-	f9tsRrtyISCg3TQTn61V9Byr9t+KJGQzUVdC4wuD0DEtu1K0zmHwNzNQXNzAlYk7qCbfmTt82uc
-	rQty60sEeXwiGeMISxp4pjy/Yz2yIr7JJN2K9Aw89wil/RG1WSXwZD7UGeCOAZ2aY3JliyzlNd9
-	3CAB9kiUY=
-X-Google-Smtp-Source: AGHT+IGlvr7nkz2s+OAg6Cq422OLetEIPAeEPAoKEzaZnt/qGoDTuQsWGmx5xIko0mpEb8nDogHi4w==
-X-Received: by 2002:a05:6a00:ab85:b0:81f:1a4b:bf55 with SMTP id d2e1a72fcca58-81f1a4bc2a9mr3208433b3a.39.1768054406977;
-        Sat, 10 Jan 2026 06:13:26 -0800 (PST)
-Received: from 7950hx ([160.187.0.149])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-81f42658f03sm1481079b3a.20.2026.01.10.06.13.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Jan 2026 06:13:26 -0800 (PST)
-From: Menglong Dong <menglong8.dong@gmail.com>
-X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
-To: ast@kernel.org,
-	andrii@kernel.org
-Cc: daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	davem@davemloft.net,
-	dsahern@kernel.org,
-	tglx@linutronix.de,
-	mingo@redhat.com,
-	jiang.biao@linux.dev,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	x86@kernel.org,
-	hpa@zytor.com,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v9 11/11] selftests/bpf: test fsession mixed with fentry and fexit
-Date: Sat, 10 Jan 2026 22:11:15 +0800
-Message-ID: <20260110141115.537055-12-dongml2@chinatelecom.cn>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20260110141115.537055-1-dongml2@chinatelecom.cn>
-References: <20260110141115.537055-1-dongml2@chinatelecom.cn>
+	s=arc-20240116; t=1768056159; c=relaxed/simple;
+	bh=iTXDCqANfSeXRv+qSHgCRwDHWMGQZiT7FnsxOdP6i28=;
+	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
+	 Subject:From:To:Cc:Date; b=GkXkAgB5rgGz3ZpX1WHjri0Bs1Y4tqanvyPmlzsbP8EfLRSHdhmSwgbuZrtRNLt2FjpQ/XbpOpkqfTWSg4Cme11efH0g//3NdY7eJqCGrBY9KKW5RrIho9u3/dPS+cZwh1599sMMXDYH+42PlgZIb1bWXFthVEGMUFnc717Ixbk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NtdREh71; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E90DBC4CEF1;
+	Sat, 10 Jan 2026 14:42:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768056159;
+	bh=iTXDCqANfSeXRv+qSHgCRwDHWMGQZiT7FnsxOdP6i28=;
+	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
+	b=NtdREh71wsjCReGMqegjwvo3CrYAbGq9xCy+sEEYutZZ1N1IESgCjKxAtvxAdm86z
+	 4FIP4D2CSJhCHUCU9YlRZG2tFEovrKCt1RHIE45olF4ElnhPTQRbfHr+3RGVOna4B7
+	 VuOltbh0LTT37fPLXJ42PQO+ece6SvuQsYt+NawCdtZKIEp4nHVDWIsnRn0+fniWAt
+	 Kt/Jf7YtqMVQCf+4e++S7W9JZUUN7k8L9j9f9naLbdV4720o5fdxa0VsUZhpG7LoXa
+	 gLquhf7Zn6PdoB40hIK7OHFwch9631emjXQGZuYE8IjQpzuwh0avd2vFVi6rSsEBfr
+	 cFuOMqk5NoE9A==
+Content-Type: multipart/mixed; boundary="===============6645288537249107646=="
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-Id: <75ddb4013c7de3c454d564f3052afc81a0906226a17d75aa4301f750e3ef7723@mail.kernel.org>
+In-Reply-To: <20260110141115.537055-6-dongml2@chinatelecom.cn>
+References: <20260110141115.537055-6-dongml2@chinatelecom.cn>
+Subject: Re: [PATCH bpf-next v9 05/11] bpf: support fsession for bpf_session_cookie
+From: bot+bpf-ci@kernel.org
+To: menglong8.dong@gmail.com,ast@kernel.org,andrii@kernel.org
+Cc: daniel@iogearbox.net,martin.lau@linux.dev,eddyz87@gmail.com,song@kernel.org,yonghong.song@linux.dev,john.fastabend@gmail.com,kpsingh@kernel.org,sdf@fomichev.me,haoluo@google.com,jolsa@kernel.org,davem@davemloft.net,dsahern@kernel.org,tglx@linutronix.de,mingo@redhat.com,jiang.biao@linux.dev,bp@alien8.de,dave.hansen@linux.intel.com,x86@kernel.org,hpa@zytor.com,bpf@vger.kernel.org,netdev@vger.kernel.org,linux-kernel@vger.kernel.org,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
+Date: Sat, 10 Jan 2026 14:42:38 +0000 (UTC)
 
-Test the fsession when it is used together with fentry, fexit.
+--===============6645288537249107646==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 2640ec2157e1..a416050e0dd2 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1231,6 +1231,7 @@ enum {
+>
+>  #define BPF_TRAMP_M_NR_ARGS	0
+>  #define BPF_TRAMP_M_IS_RETURN	8
+> +#define BPF_TRAMP_M_COOKIE	9
+
+[ ... ]
+
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 1b0292a03186..b91fd8af2393 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+
+[ ... ]
+
+> @@ -22571,6 +22575,22 @@ static int fixup_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+>  		insn_buf[1] = BPF_ALU64_IMM(BPF_RSH, BPF_REG_0, BPF_TRAMP_M_IS_RETURN);
+>  		insn_buf[2] = BPF_ALU64_IMM(BPF_AND, BPF_REG_0, 1);
+>  		*cnt = 3;
+> +	} else if (desc->func_id == special_kfunc_list[KF_bpf_session_cookie] &&
+> +		   env->prog->expected_attach_type == BPF_TRACE_FSESSION) {
+> +		/* inline bpf_session_cookie() for fsession:
+> +		 *   __u64 *bpf_session_cookie(void *ctx)
+> +		 *   {
+> +		 *       u64 off = (((u64 *)ctx)[-1] >> BPF_TRAMP_M_COOKIE) & 0xFF;
+> +		 *       return &((u64 *)ctx)[-off];
+> +		 *   }
+> +		 */
+> +		insn_buf[0] = BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -8);
+> +		insn_buf[1] = BPF_ALU64_IMM(BPF_RSH, BPF_REG_0, BPF_TRAMP_M_COOKIE);
+> +		insn_buf[2] = BPF_ALU64_IMM(BPF_AND, BPF_REG_0, 0xFF);
+> +		insn_buf[3] = BPF_ALU64_IMM(BPF_LSH, BPF_REG_0, 3);
+> +		insn_buf[4] = BPF_ALU64_REG(BPF_SUB, BPF_REG_0, BPF_REG_1);
+> +		insn_buf[5] = BPF_ALU64_IMM(BPF_NEG, BPF_REG_0, 0);
+                        ^^^^^^^^
+
+This inline code reads the cookie offset from (ctx[-1] >> 9) & 0xFF, but
+does the x86 trampoline actually store the cookie offset at bit position 9?
+
+Looking at arch/x86/net/bpf_jit_comp.c in __arch_prepare_bpf_trampoline(),
+the trampoline stores nr_regs to the nregs_off location:
+
+    emit_mov_imm64(&prog, BPF_REG_0, 0, (u32) nr_regs);
+    emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -nregs_off);
+
+This sets ctx[-1] to a small value like 0x0000000000000006, with the high
+bits all zero. When the inline code executes:
+
+    off = (ctx[-1] >> 9) & 0xFF  --> off = 0
+
+The function then returns &ctx[-0] = ctx itself, which points to the
+function arguments instead of the session cookie.
+
+Is there a missing dependency on a later commit in the series? Commit
+983968c39241 ("bpf,x86: add fsession support for x86_64") appears to add
+the trampoline code that stores the cookie offset, but it comes after this
+commit in the patch series.
+
+> +		*cnt = 6;
+> +	}
+
+
 ---
- .../testing/selftests/bpf/progs/fsession_test.c  | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
 
-diff --git a/tools/testing/selftests/bpf/progs/fsession_test.c b/tools/testing/selftests/bpf/progs/fsession_test.c
-index 85e89f7219a7..c14dc0ed28e9 100644
---- a/tools/testing/selftests/bpf/progs/fsession_test.c
-+++ b/tools/testing/selftests/bpf/progs/fsession_test.c
-@@ -180,3 +180,19 @@ int BPF_PROG(test11, int a, int ret)
- 	*cookie = 0;
- 	return 0;
- }
-+
-+__u64 test12_result = 0;
-+SEC("fexit/bpf_fentry_test1")
-+int BPF_PROG(test12, int a, int ret)
-+{
-+	test12_result = a == 1 && ret == 2;
-+	return 0;
-+}
-+
-+__u64 test13_result = 0;
-+SEC("fentry/bpf_fentry_test1")
-+int BPF_PROG(test13, int a)
-+{
-+	test13_result = a == 1;
-+	return 0;
-+}
--- 
-2.52.0
+CI run summary: https://github.com/kernel-patches/bpf/actions/runs/20879693280
 
+--===============6645288537249107646==--
 
