@@ -1,158 +1,145 @@
-Return-Path: <bpf+bounces-78502-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78503-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AB94D0FA12
-	for <lists+bpf@lfdr.de>; Sun, 11 Jan 2026 20:19:12 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D139D0FC18
+	for <lists+bpf@lfdr.de>; Sun, 11 Jan 2026 21:05:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 3540C30178D0
-	for <lists+bpf@lfdr.de>; Sun, 11 Jan 2026 19:19:08 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 3EF0330021C6
+	for <lists+bpf@lfdr.de>; Sun, 11 Jan 2026 20:05:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8C20352C56;
-	Sun, 11 Jan 2026 19:19:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CFD723ED6A;
+	Sun, 11 Jan 2026 20:05:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qkrNUyoh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y209hanC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D254C219FC
-	for <bpf@vger.kernel.org>; Sun, 11 Jan 2026 19:19:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.167.47
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768159143; cv=pass; b=NjVbQ1zzAGfMxILO26rDyLetw3xW22FmOv6hOu7g+4GD5lmjTqixH4ykbEsDRmwvH1WAKnwGgx0vhISA0yrus+CWonfdpNKGSonzjpRpBjFkBDh9b0F4rvBEkZqVpSlaaDloCyFFFShLPtmO4Jpznxn6VOffuQ+qLdq+ksWFOjY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768159143; c=relaxed/simple;
-	bh=o3N2ccNOiCXPwAFzm5HRCPw881IHfs+lbmruDzyx/rw=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9E84221F2F
+	for <bpf@vger.kernel.org>; Sun, 11 Jan 2026 20:05:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768161906; cv=none; b=hsNRjmEi/vwZVPWaMItZHaBs5GKjX1JN8kY6A98KFo2cISqCw7yQLaX/kjZFrjmIbNjUgzOQ/G4XbBgCQTCWTpOmFr2P02eHg30WMbEx9yLvw6OuRTut/Re9SYF0CC2snqgMTRVEPTb2wyzyapOfpkJrxFTiQWaR/K5RATBUoHY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768161906; c=relaxed/simple;
+	bh=VnD9VQIsOYRuD2TRSfBYBzobHdi1a55IuYUd9pyL4jo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=V83gXd5mTQlgRMVr4m7VAk2qbKvEt4IRARrok3QW/Uaa++yoOXZIgC/i64dRRYnfCYO7hGx7KaNOeAsnBiIuiURkC8bcRM8GbFTOw/v15hD0fvakZvEgbwnXiQsv7VYpWV0cz9YQlWEzvtIA0vavzwou22UMtc//eHTGDuJoFiE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qkrNUyoh; arc=pass smtp.client-ip=209.85.167.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-59b737450f6so4182e87.0
-        for <bpf@vger.kernel.org>; Sun, 11 Jan 2026 11:19:01 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1768159140; cv=none;
-        d=google.com; s=arc-20240605;
-        b=gsxO6QXkLPFYqyiDmG4qVSvoe6TWNwf2SRT8EgyU4i8vY1Zyaf+ye0z7D8p0hPj/av
-         sRxa59zvUDPyg069BtGeUs40UIHb7kp0woVzMaqvU9xj6rZeFZ3HhSkT4gGExu9Ed9vR
-         aML/nCJrSpgXdmLqUArKHz1DqxE6k/u1JX7R/nzL7mTH8zGvpfl/DWf6c4GbiVC7Xe+v
-         6HdUuO3DCUN+y7di+ifUx9ZfTOhUt0R6G7Mx188TS0A6zew6NZ3/ZfvyUB4IiRjiGPpM
-         lK81QgD6HEZolBHqnRQCylKMdx7vU1dRrS2q/b9CH/gEL1DJg+WRWll7K8G3qET9DqcB
-         IImw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=o3N2ccNOiCXPwAFzm5HRCPw881IHfs+lbmruDzyx/rw=;
-        fh=ufu1iHiuuZcN9a6A1Zq/y2pJqUaIR5T1Gx+lsTXglas=;
-        b=KAAU6hna1Bh5GXLlzmL3Z45oCBoGtJ/Qjak6hrsivjnIV8HyallhbwKKW/IBWbvMI6
-         KXixXvGFYOuzEu4Wml8+x9Vwv/6otYU9+I5Ir6eSZR0EN8yKZGW597Ggj8blWNhenHd1
-         nLBczM/DfVhun4MrMYYzG8jFHIfkPB0JXaMHcBobqLlHzs594Fh/MOW9DlAVp2/oARaL
-         AjJEChOTIk/48k9Ht3poQ0E0RRRuWVUao+NCrQ/D2McBvVkpcNxj2Jge0/Y684lyGuZP
-         bakgbtuLazhAD6UEJ9gERMbeOcJjTJSgqh+YyS5eLIcO80rg3GiJX4T+Q5FEtVZZSBYb
-         GBww==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+	 To:Cc:Content-Type; b=KErJrpkG7GETMuvCR8XEF1y1QkQjfY3yN2NCZrmGHkTBU0INYaBzqtQizmbhYWmF3KUilC/zZsYX8jH8/ELUAhrHv1cL7Sy9l0YCZrKZbqNuxdEnMJDAtm9k9QSnemLQaEjX/HBhgjW2mpolpltKy0b0Rh4xZbzTiQukrKDaB/Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y209hanC; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-4327778df7fso3564665f8f.3
+        for <bpf@vger.kernel.org>; Sun, 11 Jan 2026 12:05:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1768159140; x=1768763940; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1768161903; x=1768766703; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=o3N2ccNOiCXPwAFzm5HRCPw881IHfs+lbmruDzyx/rw=;
-        b=qkrNUyohZvSHSSQfb1dbFsufEMZV0ZlZClceMW5DVsjpagf5Pvf5wsNdkEjj/UmiQJ
-         5W436NtjCigmWPdV0nyuBxBeuyI0DqtjbJpPp1i6wbUM1wT20lyauk2JDBKyC1bjkxBj
-         7iAy4DXJ6gjA3XWhygNWWeUK5t6/hkzgRzy9fBqppiHqrXpHwQfdIyIl2uqweFHbLIn5
-         lob4ANNeFpvtDsvkEnkXN3ghjRBFX3bEtpdSK1vN68m2OdjSEqTyFIMe4lZiFUy0mdVa
-         r66A6h+9FrdJ8xkCHEldeX7mD0NF7BY4S6nc1aUhxiKYDf0eCZeFdbPHYefxgH760T+J
-         3JxA==
+        bh=VnD9VQIsOYRuD2TRSfBYBzobHdi1a55IuYUd9pyL4jo=;
+        b=Y209hanCdlkhdl+rc9Kxxk9KhOyf+6y/pJSwa0tW077/l4fZ/gNOwOYw7Db69D+GvS
+         4e67nXCWdrdfQ9UaaiT/h1LJuLZRXjoimXf0tWTH2QrjLPXMd6B8zR/T1Y8RwyuPF6nA
+         tCj2Z3hiN7puwrVoz+kOuP0SxrD0bXLWnA/DmTsPgHwQQajAdWDdfnyy4+/eUvoMf+zY
+         PkZiTja1EAGdz3TGJVTVKMa5EV0glvbJQDuvefsl2UDQ4/53/ZDYo2ceD+kgaqw3cHXV
+         3mFX5P29OhK0DRsArw8KC4KtjdomoG6+DOc8ppX9A4IeP7Zecv65IUc7Wv496HzCTZvU
+         l+RQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768159140; x=1768763940;
+        d=1e100.net; s=20230601; t=1768161903; x=1768766703;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=o3N2ccNOiCXPwAFzm5HRCPw881IHfs+lbmruDzyx/rw=;
-        b=M6G/9YMqOqfjXVwDrhTimPAqfP6i9KmhG9w9F1LIltTXUAtobW0QOHSAEc+T2VQU4D
-         RoUItVLYaFDcx5RvC7kMQMa14AY8X2d/OeOlqR3nb0N256Z8SWDVpLHhBmR6RCRxfxKZ
-         YahiDTmoXbNEW0YVYtzs2Z1Ive64AXVoErNbCCKbIYafKjUfSrsRiMIYWNiW/CRcQ8Yc
-         Q51aOxdUBQ16JjOWleC0ipBTPAkVSxhtAfxloUkogqJg5kO+NPJRy+iELiGvVEyhFKae
-         9V6VOZIvVJZcd7t8fOn5JaiKOKN/7pDH0sxRx4Zs33jag2IH4SwgDq5wq19akKDbYANv
-         gIhA==
-X-Forwarded-Encrypted: i=1; AJvYcCXYKRlGvLihPq6pljnKkiwtuz2I6vS1clllKYv+4zzE4ILebK7IJYiDYurRdNxqVL4APE8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyLLWUDcTF79SbAw195uKES2LSXgMzb420ykIRnkRkJyqfjBjY9
-	3HwYP30m39OeuBhfW6VMuKHSss7dNa2DUHE1krJRzXyrbBceZt8Ufh/JP61x9k56l8I1YNApwYv
-	rPNmyp3VXWnOrMjxtPrmE4P+xjl8kvBnOKqz4SAJvBeH+7c935oV+xj5BIp4=
-X-Gm-Gg: AY/fxX4Nbdt4IaOD+JCrzMP5wylF8Qjz0uiU8IAD36kva2AmV4I9CrRqWYU9AZaBS5I
-	dhTRRTTEgx/7r6ptQO7ft6ZB13BT7CkY4YOhTxdfDuq0J492d+oEid/5+aKal3qBxAhjPOIUlVa
-	WrBybZE60HGBBeXxl4hfn+kKGQfm4kqpnlrMgyjPHu7flYYVgTHAeaqJcGvij0Ly2hU2DstyRxe
-	tFbePGIXsWaKu+hJskbKyLLmD8fElo69yYurX+EeeGf3MFwsOz0rZgIoIizQmycC13Y2lw=
-X-Received: by 2002:a05:6512:639b:20b0:59b:57ed:3622 with SMTP id
- 2adb3069b0e04-59b87c43391mr83611e87.1.1768159139730; Sun, 11 Jan 2026
- 11:18:59 -0800 (PST)
+        bh=VnD9VQIsOYRuD2TRSfBYBzobHdi1a55IuYUd9pyL4jo=;
+        b=VSTlv0haTwkCd+/ynE1VJIefbcLDQMeA1CvVeMAjpEx7ghz6TwvMph1h59n9UyA6pe
+         lW5UMWw+ZvCRm7OXIDXBHk4nlmo3c8Y1fklktRNairQ9TX9RhAsfuCLiM3P5eqVFA00E
+         UkFhgLJhQkBtkuBUsebC/SxDo0qTlo47yvLHFaY8WQo8h7iAA8WidqBkr/N7lyE3JXKc
+         pMuAwaDna+hwrdZ1DFaPw/p7mctKlUEWillyl5+XjqwCApVLoTh4LL39IngVSItF9hH/
+         /jkH35mYOJWGssk9qLibdHAY1Lvrvr+zs2rxZ+I/gbpcU4zFCIfNshjJRtcUqtBcisfN
+         sf7g==
+X-Forwarded-Encrypted: i=1; AJvYcCWCejPvTbFkqpUCPj061AG3USHKxzRnfue7sGZ3NSZo/kNNlGY+Zi6VAlw3nxdGU+038Hg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwW9I6OaUn1foP5QPhWg9e4eA7hAJNHQWMV0XhXfSEXT/VUf7vT
+	nbD4oo6DpaTC2CYp71rJ1NQGFX8YCvwY7NcX4VZkPCjMmzFYqhVzXunZXB+ak1y/1cqZfPt95v3
+	ujY5+wAQk49aDMDA+tPtEc5BvxBT9IcM=
+X-Gm-Gg: AY/fxX4vH1TtsP/fwORG4kDIsnuXtb9uXB62SWVHpMnlgJfxlmsGgviIbUc80bdn3U+
+	jQeH33a2yo2vmKPpluB1gq4ZKPwc2PXTZ3hAFKnMLIQqTp8tqSWpn2qjQR0juB5AA+nxK+soqGq
+	Hfk7qlN2aKEw4ujeX6QQeMc3tZQgurxqchlGi4p8F5y7+Dq8y/IRMYVGtPYgJ24qRqiIeakEFYX
+	gHrx+pq0NhMEzGSVhUDjUrINxPp37Dwi7BPx+79vzIEvrvQ67HuC5GxGgd6nnfSBzBi31MYOETJ
+	4LjHwA0gbOVAVNNGthkAISq9wE6l
+X-Google-Smtp-Source: AGHT+IEKZRrWP3vGMG5mEyctC7P1X4jEpLLMEM8zFqBJqcHJv1TYRiUxZ+Y31COICMXVYqH7Chn2rYWs4tVKLwxDBTo=
+X-Received: by 2002:a05:6000:3104:b0:42f:bc6d:e468 with SMTP id
+ ffacd0b85a97d-432c3778de3mr15674848f8f.55.1768161902844; Sun, 11 Jan 2026
+ 12:05:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251223194649.3050648-1-almasrymina@google.com> <43dafae2-e1f1-44ce-91c1-7fc236966f58@molgen.mpg.de>
-In-Reply-To: <43dafae2-e1f1-44ce-91c1-7fc236966f58@molgen.mpg.de>
-From: Mina Almasry <almasrymina@google.com>
-Date: Sun, 11 Jan 2026 11:18:45 -0800
-X-Gm-Features: AZwV_QjQhMoevwA58NGfYpT2i-RPV2KkpfFJ2IlmuJKbZfsyf_TMKOH2OuGi6DA
-Message-ID: <CAHS8izO2fjT3DuqHzQQiF2LUvcAPuR4Spav5Ap9wG=VgsAtDbQ@mail.gmail.com>
-Subject: Re: [Intel-wired-lan] [PATCH iwl-next v4] idpf: export RX hardware
- timestamping information to XDP
-To: Paul Menzel <pmenzel@molgen.mpg.de>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	YiFei Zhu <zhuyifei@google.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, 
-	Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>, 
-	Tony Nguyen <anthony.l.nguyen@intel.com>, Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>, 
-	Paolo Abeni <pabeni@redhat.com>, Alexander Lobakin <aleksander.lobakin@intel.com>, 
-	Richard Cochran <richardcochran@gmail.com>, intel-wired-lan@lists.osuosl.org, 
-	Aleksandr Loktionov <aleksandr.loktionov@intel.com>
+References: <20260108220550.2f6638f3@fedora> <da261242-482f-4b47-81c6-b065c5a95c4b@efficios.com>
+ <CAADnVQJMa+p_BcYxKUgve2=sqRBwSs3wLGAGhbA0r6hwFpJ+6Q@mail.gmail.com>
+ <20260109141930.6deb2a0a@gandalf.local.home> <3c0df437-f6e5-47c6-aed5-f4cc26fe627a@efficios.com>
+ <CAADnVQLeCLRhx1Oe5DdJCT0e+WWq4L3Rdee1Ky0JNNh3LdozeQ@mail.gmail.com>
+ <20260109170028.0068a14d@fedora> <CAADnVQKGm-t2SdN_vFVMn0tNiQ5Fs6FutD2Au-jO69aGdhKS7Q@mail.gmail.com>
+ <20260109173326.616e873c@fedora> <20260109173915.1e8a784e@fedora>
+ <CAADnVQKB4dAWtX7T15yh31NYNcBUugoqcnTZ3U9APo8SZkTuwg@mail.gmail.com> <20260110111454.7d1a7b66@fedora>
+In-Reply-To: <20260110111454.7d1a7b66@fedora>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Sun, 11 Jan 2026 12:04:51 -0800
+X-Gm-Features: AZwV_Qh7Wgo_T3tbbD-7bHz3BAnmG7D3hD0wHDV0Nrd5u0SMnqSUPlz3CHnt7p8
+Message-ID: <CAADnVQJ_L_TvFogq0+-qOH=vxe5bzU9iz3c-6-N7VFYE6cBnjQ@mail.gmail.com>
+Subject: Re: [PATCH v5] tracing: Guard __DECLARE_TRACE() use of
+ __DO_TRACE_CALL() with SRCU-fast
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, LKML <linux-kernel@vger.kernel.org>, 
+	Linux trace kernel <linux-trace-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Thomas Gleixner <tglx@linutronix.de>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Jan 10, 2026 at 12:36=E2=80=AFAM Paul Menzel <pmenzel@molgen.mpg.de=
+On Sat, Jan 10, 2026 at 8:14=E2=80=AFAM Steven Rostedt <rostedt@goodmis.org=
 > wrote:
 >
-> Dear Mina,
+> On Fri, 9 Jan 2026 16:35:10 -0800
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 >
+> > migrate_enable/disable() wasn't inlined for a long time.
+> > It bothered us enough, since sleepable bpf is the main user
+> > of it besides RT, so we made an effort to inline it.
 >
-> Thank you for your patch. Some minor comments, should you resend.
+> It did bother us too. it went through lots of iterations to become more
+> efficient over the years (it was really bad in the beginning while
+> still in the rt-patch), and hopefully that will continue.
 >
-
-Thanks, looks like I have reviews and this is on its way, but should I
-resend I will fix the minor comments.
-
-> Am 23.12.25 um 20:46 schrieb Mina Almasry via Intel-wired-lan:
-> > From: YiFei Zhu <zhuyifei@google.com>
 > >
-> > The logic is similar to idpf_rx_hwtstamp, but the data is exported
-> > as a BPF kfunc instead of appended to an skb to support grabbing
-> > timestamps in xsk packets.
-> >
-> > A idpf_queue_has(PTP, rxq) condition is added to check the queue
-> > supports PTP similar to idpf_rx_process_skb_fields.
-> >
-> > Tested using an xsk connection and checking xdp timestamps are
-> > retreivable in received packets.
+> > RT, at the same time, doesn't inline rt_spin_lock() itself
+> > so inlining migrate_disable() or not is not 10x at all.
+> > Benchmark spin_lock on RT in-tree and in-module and I bet
+> > there won't be a big difference.
 >
-> retr*ie*vable
->
-> It=E2=80=99d be great if you could share the commands.
->
+> I'll put that on my todo list. But still, having migrate_disable a
+> function for modules and 100% inlined for in-kernel code just because
+> it needs access to a field in the run queue that doesn't need to be in
+> the run queue seems like it should be fixed.
 
-I don't have easy repro to share in the commit message. The test
-involves hacking up the xsk_rr Sami used for his busypolling patch to
-enable xdp metadata and retrieve timestamps, or (what I did) actually
-set up openonload with this patch and test onload can get the
-timestamps. Let me see what I can do, but it's likely too much context
-for someone unfamiliar to piece together.
+There was plenty of discussion with Peter regarding different
+ways to inline migrate_disable. What was landed was the best
+option at that point, but feel free to restart the discussion.
 
---=20
-Thanks,
-Mina
+>
+> As for tracepoints, BPF is the only one that needs migrate disable.
+> It's not needed for ftrace or perf (although perf uses preempt
+> disable). It should be moved into the BPF callback code as perf has its
+> preempt disable in its callback code.
+>
+> If BPF doesn't care about the extra overhead of migrate_disable() for
+> modules, then why should XFS suffer from that too?
+
+The diff has nothing to do with bpf needs and/or bpf internals.
+It's really about being a good citizen of PREEMP_RT.
+bpf side already does migrate_disable,
+rcu_read_lock, srcu_fast/task_trace when necessary.
+Most of the time we don't rely on any external preempt state or rcu/srcu.
+Removing guard(preempt_notrace)(); from tracepoint invocation
+would be just fine for bpf. Simple remove will trigger bug
+on cant_sleep(), but that's a trivial fix.
 
