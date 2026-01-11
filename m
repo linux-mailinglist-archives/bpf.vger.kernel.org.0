@@ -1,178 +1,158 @@
-Return-Path: <bpf+bounces-78501-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78502-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87C3BD0F986
-	for <lists+bpf@lfdr.de>; Sun, 11 Jan 2026 19:44:44 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AB94D0FA12
+	for <lists+bpf@lfdr.de>; Sun, 11 Jan 2026 20:19:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8FB8730505A3
-	for <lists+bpf@lfdr.de>; Sun, 11 Jan 2026 18:44:34 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 3540C30178D0
+	for <lists+bpf@lfdr.de>; Sun, 11 Jan 2026 19:19:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C31DD34F254;
-	Sun, 11 Jan 2026 18:44:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8C20352C56;
+	Sun, 11 Jan 2026 19:19:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="KvzfPYUP"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qkrNUyoh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92776350A11;
-	Sun, 11 Jan 2026 18:44:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768157072; cv=none; b=C/06I4eeeolyHK0cm1gBV/AoUpLnyG19pRMHhULVsqnDcCfEBi+pcd+zCTsrIm6AJ5keUHlF4b6UGXytqkwl3BCdOLN3bLrmHVF056tOusRVfl0XnImEJIT0ytfh8mwY4KEVLfH5HEdekNrYIcptDGMJ7ct46qJ+UqDOF5dSBFQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768157072; c=relaxed/simple;
-	bh=sEoDqpEraiU9zmei/pVvp/zUOKftWACUq1UchK1JNQE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eolktC7iIM1+Wn4f9+I07VTKGI3A1ikopydIfWj69Oipl6NUfGpG5oZ8R3WUCxy+2w3gTUGGVsxeA6Li87rbhQqitWlKCq4Us1MEx0mqetIqNeaXkcrtFaE5ruy+C3PUlpoTLhbHTl7/6gIevr5qwBDqKEk7zhhz/7EsmvY7aUo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=KvzfPYUP; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 60B4F7AT001684;
-	Sun, 11 Jan 2026 18:43:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=4E/veO
-	nYUJg19tqlhN7S29P/tWOVYXD7tshyyPLlWU4=; b=KvzfPYUPDl/0oIg/1rUqlU
-	3bcqj1BP8ofqwFJPheNXWN1VFjHAhfyMsJThHovAVEC1fxsJqhNVUYtjqAyoI2fk
-	5cWmFqardfMawcLwpHvnBzbte2Vbf4hWNdW6Ru3QwS3+hnpqdNj41GwovvBtlpvj
-	h1zLdK4auDw6P+wbPpMWt0L+TI6/TcjwP0WNgdgG+aNdKDdCEwMl0Rl3b6s27sWO
-	CUlbZ3vOUchw45+fPAaYqS0wg6SY7ipfrQCjosO8cKTLxTQNagXYO2DGWd0Y8dBD
-	mLUEan2YdGLfHXwBl/EQ6HsR0gsRPRkC0gi/MQ6Mux4fW5sb5VANyUUd3ZxnXGVw
-	==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4bkeg44d4n-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 11 Jan 2026 18:43:29 +0000 (GMT)
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 60BIhSil002697;
-	Sun, 11 Jan 2026 18:43:29 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4bkeg44d4h-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 11 Jan 2026 18:43:28 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 60BEhpQU031250;
-	Sun, 11 Jan 2026 18:43:27 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4bm3t1aapp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 11 Jan 2026 18:43:27 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 60BIhNoL54198696
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sun, 11 Jan 2026 18:43:24 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C754D20043;
-	Sun, 11 Jan 2026 18:43:23 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id D333220040;
-	Sun, 11 Jan 2026 18:43:17 +0000 (GMT)
-Received: from [9.43.37.142] (unknown [9.43.37.142])
-	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Sun, 11 Jan 2026 18:43:17 +0000 (GMT)
-Message-ID: <24d8437d-3227-4abd-a31b-e6f03f4d7414@linux.ibm.com>
-Date: Mon, 12 Jan 2026 00:13:16 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D254C219FC
+	for <bpf@vger.kernel.org>; Sun, 11 Jan 2026 19:19:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.167.47
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768159143; cv=pass; b=NjVbQ1zzAGfMxILO26rDyLetw3xW22FmOv6hOu7g+4GD5lmjTqixH4ykbEsDRmwvH1WAKnwGgx0vhISA0yrus+CWonfdpNKGSonzjpRpBjFkBDh9b0F4rvBEkZqVpSlaaDloCyFFFShLPtmO4Jpznxn6VOffuQ+qLdq+ksWFOjY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768159143; c=relaxed/simple;
+	bh=o3N2ccNOiCXPwAFzm5HRCPw881IHfs+lbmruDzyx/rw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=V83gXd5mTQlgRMVr4m7VAk2qbKvEt4IRARrok3QW/Uaa++yoOXZIgC/i64dRRYnfCYO7hGx7KaNOeAsnBiIuiURkC8bcRM8GbFTOw/v15hD0fvakZvEgbwnXiQsv7VYpWV0cz9YQlWEzvtIA0vavzwou22UMtc//eHTGDuJoFiE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qkrNUyoh; arc=pass smtp.client-ip=209.85.167.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-59b737450f6so4182e87.0
+        for <bpf@vger.kernel.org>; Sun, 11 Jan 2026 11:19:01 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1768159140; cv=none;
+        d=google.com; s=arc-20240605;
+        b=gsxO6QXkLPFYqyiDmG4qVSvoe6TWNwf2SRT8EgyU4i8vY1Zyaf+ye0z7D8p0hPj/av
+         sRxa59zvUDPyg069BtGeUs40UIHb7kp0woVzMaqvU9xj6rZeFZ3HhSkT4gGExu9Ed9vR
+         aML/nCJrSpgXdmLqUArKHz1DqxE6k/u1JX7R/nzL7mTH8zGvpfl/DWf6c4GbiVC7Xe+v
+         6HdUuO3DCUN+y7di+ifUx9ZfTOhUt0R6G7Mx188TS0A6zew6NZ3/ZfvyUB4IiRjiGPpM
+         lK81QgD6HEZolBHqnRQCylKMdx7vU1dRrS2q/b9CH/gEL1DJg+WRWll7K8G3qET9DqcB
+         IImw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=o3N2ccNOiCXPwAFzm5HRCPw881IHfs+lbmruDzyx/rw=;
+        fh=ufu1iHiuuZcN9a6A1Zq/y2pJqUaIR5T1Gx+lsTXglas=;
+        b=KAAU6hna1Bh5GXLlzmL3Z45oCBoGtJ/Qjak6hrsivjnIV8HyallhbwKKW/IBWbvMI6
+         KXixXvGFYOuzEu4Wml8+x9Vwv/6otYU9+I5Ir6eSZR0EN8yKZGW597Ggj8blWNhenHd1
+         nLBczM/DfVhun4MrMYYzG8jFHIfkPB0JXaMHcBobqLlHzs594Fh/MOW9DlAVp2/oARaL
+         AjJEChOTIk/48k9Ht3poQ0E0RRRuWVUao+NCrQ/D2McBvVkpcNxj2Jge0/Y684lyGuZP
+         bakgbtuLazhAD6UEJ9gERMbeOcJjTJSgqh+YyS5eLIcO80rg3GiJX4T+Q5FEtVZZSBYb
+         GBww==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1768159140; x=1768763940; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=o3N2ccNOiCXPwAFzm5HRCPw881IHfs+lbmruDzyx/rw=;
+        b=qkrNUyohZvSHSSQfb1dbFsufEMZV0ZlZClceMW5DVsjpagf5Pvf5wsNdkEjj/UmiQJ
+         5W436NtjCigmWPdV0nyuBxBeuyI0DqtjbJpPp1i6wbUM1wT20lyauk2JDBKyC1bjkxBj
+         7iAy4DXJ6gjA3XWhygNWWeUK5t6/hkzgRzy9fBqppiHqrXpHwQfdIyIl2uqweFHbLIn5
+         lob4ANNeFpvtDsvkEnkXN3ghjRBFX3bEtpdSK1vN68m2OdjSEqTyFIMe4lZiFUy0mdVa
+         r66A6h+9FrdJ8xkCHEldeX7mD0NF7BY4S6nc1aUhxiKYDf0eCZeFdbPHYefxgH760T+J
+         3JxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768159140; x=1768763940;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=o3N2ccNOiCXPwAFzm5HRCPw881IHfs+lbmruDzyx/rw=;
+        b=M6G/9YMqOqfjXVwDrhTimPAqfP6i9KmhG9w9F1LIltTXUAtobW0QOHSAEc+T2VQU4D
+         RoUItVLYaFDcx5RvC7kMQMa14AY8X2d/OeOlqR3nb0N256Z8SWDVpLHhBmR6RCRxfxKZ
+         YahiDTmoXbNEW0YVYtzs2Z1Ive64AXVoErNbCCKbIYafKjUfSrsRiMIYWNiW/CRcQ8Yc
+         Q51aOxdUBQ16JjOWleC0ipBTPAkVSxhtAfxloUkogqJg5kO+NPJRy+iELiGvVEyhFKae
+         9V6VOZIvVJZcd7t8fOn5JaiKOKN/7pDH0sxRx4Zs33jag2IH4SwgDq5wq19akKDbYANv
+         gIhA==
+X-Forwarded-Encrypted: i=1; AJvYcCXYKRlGvLihPq6pljnKkiwtuz2I6vS1clllKYv+4zzE4ILebK7IJYiDYurRdNxqVL4APE8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyLLWUDcTF79SbAw195uKES2LSXgMzb420ykIRnkRkJyqfjBjY9
+	3HwYP30m39OeuBhfW6VMuKHSss7dNa2DUHE1krJRzXyrbBceZt8Ufh/JP61x9k56l8I1YNApwYv
+	rPNmyp3VXWnOrMjxtPrmE4P+xjl8kvBnOKqz4SAJvBeH+7c935oV+xj5BIp4=
+X-Gm-Gg: AY/fxX4Nbdt4IaOD+JCrzMP5wylF8Qjz0uiU8IAD36kva2AmV4I9CrRqWYU9AZaBS5I
+	dhTRRTTEgx/7r6ptQO7ft6ZB13BT7CkY4YOhTxdfDuq0J492d+oEid/5+aKal3qBxAhjPOIUlVa
+	WrBybZE60HGBBeXxl4hfn+kKGQfm4kqpnlrMgyjPHu7flYYVgTHAeaqJcGvij0Ly2hU2DstyRxe
+	tFbePGIXsWaKu+hJskbKyLLmD8fElo69yYurX+EeeGf3MFwsOz0rZgIoIizQmycC13Y2lw=
+X-Received: by 2002:a05:6512:639b:20b0:59b:57ed:3622 with SMTP id
+ 2adb3069b0e04-59b87c43391mr83611e87.1.1768159139730; Sun, 11 Jan 2026
+ 11:18:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/6] powerpc64/bpf: Tailcall handling with trampolines
-To: bot+bpf-ci@kernel.org, adubey@linux.ibm.com, bpf@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc: sachinpb@linux.ibm.com, venkat88@linux.ibm.com, andrii@kernel.org,
-        eddyz87@gmail.com, mykolal@fb.com, ast@kernel.org,
-        daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
-        yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
-        christophe.leroy@csgroup.eu, naveen@kernel.org, maddy@linux.ibm.com,
-        mpe@ellerman.id.au, npiggin@gmail.com, memxor@gmail.com,
-        iii@linux.ibm.com, shuah@kernel.org, martin.lau@kernel.org,
-        clm@meta.com, ihor.solodrai@linux.dev
-References: <20260105105212.136645-3-adubey@linux.ibm.com>
- <655a960bb1b98cf56777481bd84ce53c2a17e527a8230edf9ad7523e98cce565@mail.kernel.org>
-Content-Language: en-US
-From: Hari Bathini <hbathini@linux.ibm.com>
-In-Reply-To: <655a960bb1b98cf56777481bd84ce53c2a17e527a8230edf9ad7523e98cce565@mail.kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTExMDE2OSBTYWx0ZWRfX/4etHatfZqhM
- HPuVxsLruTUOYPwp5KrfIJrb0gvjUYtEvx+dxwFI3Pp3JIa8H1dCB6cmMOiaBjwHg7IJyd6B9Ie
- HLVBJ9NocPQMgSuzzWeOgYK1PZPb1u5LzwhsoqUCxCoF4dxBjUE8RoS6j6uZOfrrLZVQ0Du2ea8
- e6YaIln5nzSOrU9K8AYdjUWuNDgu4H3SDgr2i3HWjbWsz41omqlm7qafasemg2G3NiPKxhpnqsC
- XXRXLwremKPoSucKLQehZQVymcAk7+gSOAP9Caz5k23gOxh9sFrZMej9ah39c0qGHVKRa2AcYrA
- 6NsYsqhn/qHreb7UglwWmaD8B461tEwwce3ELfTPPYpxkPJtqHZ31JAVuy2Hcc9OO1Iebzn5GY5
- KzgGqyzICEXstFocnkNao05CoojKr0pYUvP9iRPlMFMRhW3pyp09gtC4Xc03Q3Uq1eomQwTp3gR
- 9uBv4NZFuLGwMkQPjIA==
-X-Proofpoint-ORIG-GUID: WyaYviypZ-Hql3b69_ji-yXJCJxKElKm
-X-Authority-Analysis: v=2.4 cv=B/60EetM c=1 sm=1 tr=0 ts=6963ef51 cx=c_pps
- a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
- a=IkcTkHD0fZMA:10 a=vUbySO9Y5rIA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=VwQbUJbxAAAA:8 a=qd48AjYRKxYDT3Iv1msA:9 a=QEXdDO2ut3YA:10
-X-Proofpoint-GUID: hAJ1JxaWMfoY_e0HRGFdt5logLPYWCj1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2026-01-11_07,2026-01-09_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501 suspectscore=0 bulkscore=0 spamscore=0 impostorscore=0
- malwarescore=0 phishscore=0 adultscore=0 clxscore=1011 lowpriorityscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2512120000 definitions=main-2601110169
+References: <20251223194649.3050648-1-almasrymina@google.com> <43dafae2-e1f1-44ce-91c1-7fc236966f58@molgen.mpg.de>
+In-Reply-To: <43dafae2-e1f1-44ce-91c1-7fc236966f58@molgen.mpg.de>
+From: Mina Almasry <almasrymina@google.com>
+Date: Sun, 11 Jan 2026 11:18:45 -0800
+X-Gm-Features: AZwV_QjQhMoevwA58NGfYpT2i-RPV2KkpfFJ2IlmuJKbZfsyf_TMKOH2OuGi6DA
+Message-ID: <CAHS8izO2fjT3DuqHzQQiF2LUvcAPuR4Spav5Ap9wG=VgsAtDbQ@mail.gmail.com>
+Subject: Re: [Intel-wired-lan] [PATCH iwl-next v4] idpf: export RX hardware
+ timestamping information to XDP
+To: Paul Menzel <pmenzel@molgen.mpg.de>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	YiFei Zhu <zhuyifei@google.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, 
+	Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>, 
+	Tony Nguyen <anthony.l.nguyen@intel.com>, Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
+	Andrew Lunn <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>, 
+	Paolo Abeni <pabeni@redhat.com>, Alexander Lobakin <aleksander.lobakin@intel.com>, 
+	Richard Cochran <richardcochran@gmail.com>, intel-wired-lan@lists.osuosl.org, 
+	Aleksandr Loktionov <aleksandr.loktionov@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Sat, Jan 10, 2026 at 12:36=E2=80=AFAM Paul Menzel <pmenzel@molgen.mpg.de=
+> wrote:
+>
+> Dear Mina,
+>
+>
+> Thank you for your patch. Some minor comments, should you resend.
+>
 
+Thanks, looks like I have reviews and this is on its way, but should I
+resend I will fix the minor comments.
 
-On 05/01/26 4:45 pm, bot+bpf-ci@kernel.org wrote:
->> diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_comp.c
->> index 069a8822c30d..4aaa0a287a45 100644
->> --- a/arch/powerpc/net/bpf_jit_comp.c
->> +++ b/arch/powerpc/net/bpf_jit_comp.c
-> 
-> [ ... ]
-> 
->> -static void bpf_trampoline_setup_tail_call_cnt(u32 *image, struct codegen_context *ctx,
->> -					       int func_frame_offset, int r4_off)
->> +static void bpf_trampoline_setup_tail_call_info(u32 *image, struct codegen_context *ctx,
->> +					       int func_frame_offset,
->> +					       int bpf_dummy_frame_size, int r4_off)
->>   {
->>   	if (IS_ENABLED(CONFIG_PPC64)) {
->>   		/* See bpf_jit_stack_tailcallinfo_offset() */
->> -		int tailcallcnt_offset = 7 * 8;
->> +		int tailcallinfo_offset = BPF_PPC_STACK_SAVE + SZL;
-> 
-> [ ... ]
-> 
->> +		EMIT(PPC_RAW_STL(_R3, _R1, func_frame_offset
->> +				- bpf_dummy_frame_size - tailcallinfo_offset));
->                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> 
-> The new setup function stores tail_call_info at offset
-> (func_frame_offset - bpf_dummy_frame_size - tailcallinfo_offset) from R1.
-> Since func_frame_offset = bpf_dummy_frame_size + bpf_frame_size, this
-> resolves to (bpf_frame_size - 56), which is a positive offset from R1.
+> Am 23.12.25 um 20:46 schrieb Mina Almasry via Intel-wired-lan:
+> > From: YiFei Zhu <zhuyifei@google.com>
+> >
+> > The logic is similar to idpf_rx_hwtstamp, but the data is exported
+> > as a BPF kfunc instead of appended to an skb to support grabbing
+> > timestamps in xsk packets.
+> >
+> > A idpf_queue_has(PTP, rxq) condition is added to check the queue
+> > supports PTP similar to idpf_rx_process_skb_fields.
+> >
+> > Tested using an xsk connection and checking xdp timestamps are
+> > retreivable in received packets.
+>
+> retr*ie*vable
+>
+> It=E2=80=99d be great if you could share the commands.
+>
 
-With this patchset, back propagation of tail call count is not needed
-anymore, as tail call count is saved only at one place and all 
-subsequent uses only hold the pointer to it. So, I can't think of a
-good reason to restore tailcall count. Restore can be skipped?
+I don't have easy repro to share in the commit message. The test
+involves hacking up the xsk_rr Sami used for his busypolling patch to
+enable xdp metadata and retrieve timestamps, or (what I did) actually
+set up openonload with this patch and test onload can get the
+timestamps. Let me see what I can do, but it's likely too much context
+for someone unfamiliar to piece together.
 
-@abhishek, a comment explaining how tailcall count/pointer is being
-setup would help here...
-
-Also, the trampoline frame has increased by as much as the size of
-the redzone for bpf program. We are doing that just to keep tailcall
-info at the same offset. No reason to save the NVRs in this frame
-though. I suggest to adjust the stack layout to have tailcall info
-as the first doubleword in the redzone instead of being the (n+1)th
-doubleword after n NVRs. Saves stack space and makes tailcall info
-offset calculation simpler.
-
-- Hari
+--=20
+Thanks,
+Mina
 
