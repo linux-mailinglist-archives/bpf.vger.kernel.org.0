@@ -1,125 +1,178 @@
-Return-Path: <bpf+bounces-78500-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78501-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 433B0D0F923
-	for <lists+bpf@lfdr.de>; Sun, 11 Jan 2026 19:30:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 87C3BD0F986
+	for <lists+bpf@lfdr.de>; Sun, 11 Jan 2026 19:44:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7F5613021E66
-	for <lists+bpf@lfdr.de>; Sun, 11 Jan 2026 18:30:55 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8FB8730505A3
+	for <lists+bpf@lfdr.de>; Sun, 11 Jan 2026 18:44:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 533BE34F46D;
-	Sun, 11 Jan 2026 18:30:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C31DD34F254;
+	Sun, 11 Jan 2026 18:44:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IQMiICfa"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="KvzfPYUP"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AB4D34EEF9
-	for <bpf@vger.kernel.org>; Sun, 11 Jan 2026 18:30:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92776350A11;
+	Sun, 11 Jan 2026 18:44:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768156249; cv=none; b=RYb5X0a9VBGKxACLeSrDXf1NChZ05vlXzISYQ5uCMbBMGWrDnTgzvdhGbfi4v/AUIBkuY4AxpCPfSV7cbRuGfzmQ5d8wVNET6lNINfmWgkSqmA0+FzuKJCrQGl3VRD/PAKN0M1FZMBmzCDu5ZW8iFSY3uGId/rfL+/O3MuzO9/g=
+	t=1768157072; cv=none; b=C/06I4eeeolyHK0cm1gBV/AoUpLnyG19pRMHhULVsqnDcCfEBi+pcd+zCTsrIm6AJ5keUHlF4b6UGXytqkwl3BCdOLN3bLrmHVF056tOusRVfl0XnImEJIT0ytfh8mwY4KEVLfH5HEdekNrYIcptDGMJ7ct46qJ+UqDOF5dSBFQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768156249; c=relaxed/simple;
-	bh=27/hwHfRplEYOsAj/mEqpxA0rzfoNrjPMXEP/7OgZEA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pdKhpsXNA7dsqwYhF0RXqWCcH5ydNwTLF2CqEnyKhY55HO2sdbtPhJXS0eWpMzGK8OFy4ULQMHkbsr68PMZUUzoaEUOJgX7bRRvaktgB/39f8CDmVtl7WlmPrJibjWIOnWLLE6G4gzT+vq4pRr/zgEDcqHT17xaqC3I52yr09Bo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IQMiICfa; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-29f0f875bc5so47065165ad.3
-        for <bpf@vger.kernel.org>; Sun, 11 Jan 2026 10:30:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768156239; x=1768761039; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=VLXCGVwOxr4nQIa+VGVURzIZv8X8WoVvvqo03YCIdJE=;
-        b=IQMiICfa/D1ZQCRMG/bpglaZYjFnfY6X/fV5lZDie7bP3KAbnoD4XeqpA10OJWccox
-         gfoOvAAQtXGAjpRAFP03ABSycsxAX59bKWbFoPOLctu5VoNodjErjyv74TzDgS3tIIy5
-         tJPQWTyytTkMXMpzNC+RsfAMvg4xatD0AWaTh6aI0Sp7JB/sWTS9uizjptE+fS18To/F
-         4fJ9/xNqjHAFgtVPqnPsFQskjA2nv4qbqkAb9+Ejj3fbmmL9MsPatdjIP3+SgOnsroyI
-         U794V+4J2mJFMOTrKDo70xG8tUw1dWP86V/pvO6YdfzrUayPJ3UwmcM07pFwpu/eTZTQ
-         ykxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768156239; x=1768761039;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VLXCGVwOxr4nQIa+VGVURzIZv8X8WoVvvqo03YCIdJE=;
-        b=HnpoGTyeyHlz36wPtMWcmyugkF4XFDXQ9gR2dhRASXvnHfXWgPO7htgWaxaBUQZ1rp
-         sjxi9yu3pWkwucm019Q//nlBulnRAypuZxlyaT/wh/t0cwe/IsUX+pty1faKk18RSbps
-         18TdxXzN5AqNNIgNTSOMwJ/jyrT9C3AEIXZBixXtOCj0sTRZySIrtOKM5rPkJcP0HDrd
-         TV3HGdCSPHy/jDuLwnJVEQoWY84j0s1y2u8yUqKP3GZ6QMvwRsagrufCOtFlxuSf/dng
-         DIq1p609EVxr+JKyDf9LbTRMYzfthtxJAqcVnWsdLukGjDNYDXkGjTNmXuyfobQHYd/A
-         +Ovg==
-X-Forwarded-Encrypted: i=1; AJvYcCXebAXh1g5IMgtF/Zqq52/NBqoDPnEbu4nJVW9MzpuNS6KdqBIeS+lcKLpN1rhD9fQf3d0=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywvw2vLlM2vQZvwSe9OHbvZ5CzMRdcoP4LAZslo2JccgLulmz5m
-	/zjLzFS/VMZCCEOnH9yGZXNVSfaRImtjWmf3i6rEkxBwZp+FF95fdEQ=
-X-Gm-Gg: AY/fxX541aHpZ9qdGeL/kwjgeuWCA8ZjiDkoZf6S9Lw0cwiwM7bFmF1EE55dwXiPR8K
-	jOZS9j0NG7seuqCpRsVyKHDRcpzsDApYTihrL5tbe4kDoATSk9vSGYpvBj3TAiN72mEF+L9HyUy
-	1nVmZ8AAd5BA4Nziyusyfj5MlPsFm8vg5p7nRb32eIdkBcQw096nbyI/PeuFwwtx82X7WbZ1Ys+
-	goCFaG6ytxwoqF9XwRMmZmmdfYc5TNQyHmAUl+Lpl+anjFGRaWEVACZ6tCo155SpfTNDNXGwrfc
-	nBKN5Mvm3OKH5ejxNlwlNnaTIv28gZ09QqqlA7vIeln5Z9/pJb4dwHhzsWC0oXjPNDRnXrH7mmz
-	BIOdn2SnUWGj5gqj0ra/+kPWmeeq3skljOIn98id+MTNQToQJqoJpYCnGU+Kg69WNd9ED7myexB
-	V9YWxhrKfP123a8PWsJCSnZvH2DhQ=
-X-Google-Smtp-Source: AGHT+IG7tGdXNVW+K8M3zBdcOr6kzP17WJTO0ouLD6AX7yzqCXjKgsGl8uc5QXDKvcm8spRxsXZ06Q==
-X-Received: by 2002:a17:903:1104:b0:297:d45b:6d97 with SMTP id d9443c01a7336-2a3ee47d2b6mr129007745ad.14.1768156239347;
-        Sun, 11 Jan 2026 10:30:39 -0800 (PST)
-Received: from DESKTOP-BKIPFGN ([45.136.255.173])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a3e3ba03f9sm152585615ad.0.2026.01.11.10.30.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Jan 2026 10:30:39 -0800 (PST)
-From: Kery Qi <qikeyu2017@gmail.com>
-To: andrii@kernel.org
-Cc: martin.lau@linux.dev,
-	bpf@vger.kernel.org,
-	Kery Qi <qikeyu2017@gmail.com>
-Subject: [PATCH] selftests/bpf: wq: fix skel leak in serial_test_wq()
-Date: Mon, 12 Jan 2026 02:30:24 +0800
-Message-ID: <20260111183024.2273-1-qikeyu2017@gmail.com>
-X-Mailer: git-send-email 2.50.1.windows.1
+	s=arc-20240116; t=1768157072; c=relaxed/simple;
+	bh=sEoDqpEraiU9zmei/pVvp/zUOKftWACUq1UchK1JNQE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=eolktC7iIM1+Wn4f9+I07VTKGI3A1ikopydIfWj69Oipl6NUfGpG5oZ8R3WUCxy+2w3gTUGGVsxeA6Li87rbhQqitWlKCq4Us1MEx0mqetIqNeaXkcrtFaE5ruy+C3PUlpoTLhbHTl7/6gIevr5qwBDqKEk7zhhz/7EsmvY7aUo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=KvzfPYUP; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 60B4F7AT001684;
+	Sun, 11 Jan 2026 18:43:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=4E/veO
+	nYUJg19tqlhN7S29P/tWOVYXD7tshyyPLlWU4=; b=KvzfPYUPDl/0oIg/1rUqlU
+	3bcqj1BP8ofqwFJPheNXWN1VFjHAhfyMsJThHovAVEC1fxsJqhNVUYtjqAyoI2fk
+	5cWmFqardfMawcLwpHvnBzbte2Vbf4hWNdW6Ru3QwS3+hnpqdNj41GwovvBtlpvj
+	h1zLdK4auDw6P+wbPpMWt0L+TI6/TcjwP0WNgdgG+aNdKDdCEwMl0Rl3b6s27sWO
+	CUlbZ3vOUchw45+fPAaYqS0wg6SY7ipfrQCjosO8cKTLxTQNagXYO2DGWd0Y8dBD
+	mLUEan2YdGLfHXwBl/EQ6HsR0gsRPRkC0gi/MQ6Mux4fW5sb5VANyUUd3ZxnXGVw
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4bkeg44d4n-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 11 Jan 2026 18:43:29 +0000 (GMT)
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 60BIhSil002697;
+	Sun, 11 Jan 2026 18:43:29 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4bkeg44d4h-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 11 Jan 2026 18:43:28 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 60BEhpQU031250;
+	Sun, 11 Jan 2026 18:43:27 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4bm3t1aapp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 11 Jan 2026 18:43:27 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 60BIhNoL54198696
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Sun, 11 Jan 2026 18:43:24 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id C754D20043;
+	Sun, 11 Jan 2026 18:43:23 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D333220040;
+	Sun, 11 Jan 2026 18:43:17 +0000 (GMT)
+Received: from [9.43.37.142] (unknown [9.43.37.142])
+	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Sun, 11 Jan 2026 18:43:17 +0000 (GMT)
+Message-ID: <24d8437d-3227-4abd-a31b-e6f03f4d7414@linux.ibm.com>
+Date: Mon, 12 Jan 2026 00:13:16 +0530
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/6] powerpc64/bpf: Tailcall handling with trampolines
+To: bot+bpf-ci@kernel.org, adubey@linux.ibm.com, bpf@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc: sachinpb@linux.ibm.com, venkat88@linux.ibm.com, andrii@kernel.org,
+        eddyz87@gmail.com, mykolal@fb.com, ast@kernel.org,
+        daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
+        yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
+        christophe.leroy@csgroup.eu, naveen@kernel.org, maddy@linux.ibm.com,
+        mpe@ellerman.id.au, npiggin@gmail.com, memxor@gmail.com,
+        iii@linux.ibm.com, shuah@kernel.org, martin.lau@kernel.org,
+        clm@meta.com, ihor.solodrai@linux.dev
+References: <20260105105212.136645-3-adubey@linux.ibm.com>
+ <655a960bb1b98cf56777481bd84ce53c2a17e527a8230edf9ad7523e98cce565@mail.kernel.org>
+Content-Language: en-US
+From: Hari Bathini <hbathini@linux.ibm.com>
+In-Reply-To: <655a960bb1b98cf56777481bd84ce53c2a17e527a8230edf9ad7523e98cce565@mail.kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTExMDE2OSBTYWx0ZWRfX/4etHatfZqhM
+ HPuVxsLruTUOYPwp5KrfIJrb0gvjUYtEvx+dxwFI3Pp3JIa8H1dCB6cmMOiaBjwHg7IJyd6B9Ie
+ HLVBJ9NocPQMgSuzzWeOgYK1PZPb1u5LzwhsoqUCxCoF4dxBjUE8RoS6j6uZOfrrLZVQ0Du2ea8
+ e6YaIln5nzSOrU9K8AYdjUWuNDgu4H3SDgr2i3HWjbWsz41omqlm7qafasemg2G3NiPKxhpnqsC
+ XXRXLwremKPoSucKLQehZQVymcAk7+gSOAP9Caz5k23gOxh9sFrZMej9ah39c0qGHVKRa2AcYrA
+ 6NsYsqhn/qHreb7UglwWmaD8B461tEwwce3ELfTPPYpxkPJtqHZ31JAVuy2Hcc9OO1Iebzn5GY5
+ KzgGqyzICEXstFocnkNao05CoojKr0pYUvP9iRPlMFMRhW3pyp09gtC4Xc03Q3Uq1eomQwTp3gR
+ 9uBv4NZFuLGwMkQPjIA==
+X-Proofpoint-ORIG-GUID: WyaYviypZ-Hql3b69_ji-yXJCJxKElKm
+X-Authority-Analysis: v=2.4 cv=B/60EetM c=1 sm=1 tr=0 ts=6963ef51 cx=c_pps
+ a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
+ a=IkcTkHD0fZMA:10 a=vUbySO9Y5rIA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=VwQbUJbxAAAA:8 a=qd48AjYRKxYDT3Iv1msA:9 a=QEXdDO2ut3YA:10
+X-Proofpoint-GUID: hAJ1JxaWMfoY_e0HRGFdt5logLPYWCj1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2026-01-11_07,2026-01-09_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501 suspectscore=0 bulkscore=0 spamscore=0 impostorscore=0
+ malwarescore=0 phishscore=0 adultscore=0 clxscore=1011 lowpriorityscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2512120000 definitions=main-2601110169
 
-serial_test_wq() returns early when ASSERT_OK_PTR(wq_skel, "wq_skel_load")
-fails. In that case wq__open_and_load() may still have returned a non-NULL
-skeleton, and the early return skips wq__destroy(), leaking resources and
-triggering ASAN leak reports in selftests runs.
 
-Jump to the common clean_up label instead, so wq__destroy() is executed on
-all exit paths. Also fix the missing semicolon after 'goto clean_up'.
 
-Fixes: 8290dba51910 ("selftests/bpf: wq: add bpf_wq_start() checks")
-Signed-off-by: Kery Qi <qikeyu2017@gmail.com>
----
- tools/testing/selftests/bpf/prog_tests/wq.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On 05/01/26 4:45 pm, bot+bpf-ci@kernel.org wrote:
+>> diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_comp.c
+>> index 069a8822c30d..4aaa0a287a45 100644
+>> --- a/arch/powerpc/net/bpf_jit_comp.c
+>> +++ b/arch/powerpc/net/bpf_jit_comp.c
+> 
+> [ ... ]
+> 
+>> -static void bpf_trampoline_setup_tail_call_cnt(u32 *image, struct codegen_context *ctx,
+>> -					       int func_frame_offset, int r4_off)
+>> +static void bpf_trampoline_setup_tail_call_info(u32 *image, struct codegen_context *ctx,
+>> +					       int func_frame_offset,
+>> +					       int bpf_dummy_frame_size, int r4_off)
+>>   {
+>>   	if (IS_ENABLED(CONFIG_PPC64)) {
+>>   		/* See bpf_jit_stack_tailcallinfo_offset() */
+>> -		int tailcallcnt_offset = 7 * 8;
+>> +		int tailcallinfo_offset = BPF_PPC_STACK_SAVE + SZL;
+> 
+> [ ... ]
+> 
+>> +		EMIT(PPC_RAW_STL(_R3, _R1, func_frame_offset
+>> +				- bpf_dummy_frame_size - tailcallinfo_offset));
+>                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+> The new setup function stores tail_call_info at offset
+> (func_frame_offset - bpf_dummy_frame_size - tailcallinfo_offset) from R1.
+> Since func_frame_offset = bpf_dummy_frame_size + bpf_frame_size, this
+> resolves to (bpf_frame_size - 56), which is a positive offset from R1.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/wq.c b/tools/testing/selftests/bpf/prog_tests/wq.c
-index 1dcdeda84853..b32e22876492 100644
---- a/tools/testing/selftests/bpf/prog_tests/wq.c
-+++ b/tools/testing/selftests/bpf/prog_tests/wq.c
-@@ -17,11 +17,11 @@ void serial_test_wq(void)
- 
- 	wq_skel = wq__open_and_load();
- 	if (!ASSERT_OK_PTR(wq_skel, "wq_skel_load"))
--		return;
-+		goto clean_up;
- 
- 	err = wq__attach(wq_skel);
- 	if (!ASSERT_OK(err, "wq_attach"))
--		goto clean_up
-+		goto clean_up;
- 
- 	prog_fd = bpf_program__fd(wq_skel->progs.test_syscall_array_sleepable);
- 	err = bpf_prog_test_run_opts(prog_fd, &topts);
--- 
-2.34.1
+With this patchset, back propagation of tail call count is not needed
+anymore, as tail call count is saved only at one place and all 
+subsequent uses only hold the pointer to it. So, I can't think of a
+good reason to restore tailcall count. Restore can be skipped?
 
+@abhishek, a comment explaining how tailcall count/pointer is being
+setup would help here...
+
+Also, the trampoline frame has increased by as much as the size of
+the redzone for bpf program. We are doing that just to keep tailcall
+info at the same offset. No reason to save the NVRs in this frame
+though. I suggest to adjust the stack layout to have tailcall info
+as the first doubleword in the redzone instead of being the (n+1)th
+doubleword after n NVRs. Saves stack space and makes tailcall info
+offset calculation simpler.
+
+- Hari
 
