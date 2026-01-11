@@ -1,145 +1,118 @@
-Return-Path: <bpf+bounces-78503-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78504-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D139D0FC18
-	for <lists+bpf@lfdr.de>; Sun, 11 Jan 2026 21:05:11 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B294D0FCA8
+	for <lists+bpf@lfdr.de>; Sun, 11 Jan 2026 21:24:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 3EF0330021C6
-	for <lists+bpf@lfdr.de>; Sun, 11 Jan 2026 20:05:08 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id CD0583012EA4
+	for <lists+bpf@lfdr.de>; Sun, 11 Jan 2026 20:24:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CFD723ED6A;
-	Sun, 11 Jan 2026 20:05:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1871B2586C2;
+	Sun, 11 Jan 2026 20:24:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y209hanC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HE1jDNj/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+Received: from mail-dl1-f52.google.com (mail-dl1-f52.google.com [74.125.82.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9E84221F2F
-	for <bpf@vger.kernel.org>; Sun, 11 Jan 2026 20:05:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AA0E24DD1F
+	for <bpf@vger.kernel.org>; Sun, 11 Jan 2026 20:24:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768161906; cv=none; b=hsNRjmEi/vwZVPWaMItZHaBs5GKjX1JN8kY6A98KFo2cISqCw7yQLaX/kjZFrjmIbNjUgzOQ/G4XbBgCQTCWTpOmFr2P02eHg30WMbEx9yLvw6OuRTut/Re9SYF0CC2snqgMTRVEPTb2wyzyapOfpkJrxFTiQWaR/K5RATBUoHY=
+	t=1768163065; cv=none; b=n43RgU5KxWKc1Js0Cm2eym+06V9Cm9lFFTLEw5EaZ7gxkrMM1lsrNkroOOR/2Heg3OFnyadeeSZ1j0IlQ6nmwwVckW5vJ/UV7e6q9XHxPhSrrsWRtkiBOZXrjSm5vXmmJNg9G12aPGfUhZsLrNRcUYVYC5HR6Wu+tCZHwmxUHhY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768161906; c=relaxed/simple;
-	bh=VnD9VQIsOYRuD2TRSfBYBzobHdi1a55IuYUd9pyL4jo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KErJrpkG7GETMuvCR8XEF1y1QkQjfY3yN2NCZrmGHkTBU0INYaBzqtQizmbhYWmF3KUilC/zZsYX8jH8/ELUAhrHv1cL7Sy9l0YCZrKZbqNuxdEnMJDAtm9k9QSnemLQaEjX/HBhgjW2mpolpltKy0b0Rh4xZbzTiQukrKDaB/Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y209hanC; arc=none smtp.client-ip=209.85.221.43
+	s=arc-20240116; t=1768163065; c=relaxed/simple;
+	bh=deIbbfF3aE6NEGow9ffRJxFX9y3yO1u7y4vot9gCTNM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hvzmJrjSKCWS7lJGQUFyR+ZUQc3fHPpo42O6Ee3nU+HUvf94rsCMcN6aEezbmkFNkMy6/O7UrjmeOR0/tB45E7X4TsdZyQ6P9otBaaAc4H6f1snnLEYqtiMN+04Zpek58IgnUbj08wo/MBKKwwfTYBov2I65CPZxD6P/ftfiJ18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HE1jDNj/; arc=none smtp.client-ip=74.125.82.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-4327778df7fso3564665f8f.3
-        for <bpf@vger.kernel.org>; Sun, 11 Jan 2026 12:05:04 -0800 (PST)
+Received: by mail-dl1-f52.google.com with SMTP id a92af1059eb24-121b14efeb8so3142658c88.1
+        for <bpf@vger.kernel.org>; Sun, 11 Jan 2026 12:24:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768161903; x=1768766703; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VnD9VQIsOYRuD2TRSfBYBzobHdi1a55IuYUd9pyL4jo=;
-        b=Y209hanCdlkhdl+rc9Kxxk9KhOyf+6y/pJSwa0tW077/l4fZ/gNOwOYw7Db69D+GvS
-         4e67nXCWdrdfQ9UaaiT/h1LJuLZRXjoimXf0tWTH2QrjLPXMd6B8zR/T1Y8RwyuPF6nA
-         tCj2Z3hiN7puwrVoz+kOuP0SxrD0bXLWnA/DmTsPgHwQQajAdWDdfnyy4+/eUvoMf+zY
-         PkZiTja1EAGdz3TGJVTVKMa5EV0glvbJQDuvefsl2UDQ4/53/ZDYo2ceD+kgaqw3cHXV
-         3mFX5P29OhK0DRsArw8KC4KtjdomoG6+DOc8ppX9A4IeP7Zecv65IUc7Wv496HzCTZvU
-         l+RQ==
+        d=gmail.com; s=20230601; t=1768163063; x=1768767863; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+LlzxQrvrypvBifS3gj3xyozetYMJTVLlEycrj5WMGs=;
+        b=HE1jDNj/Lw1KeGB04EL4YObjLehjmWyjPk8mrTuwomxmidWvwRSmBSYERZRCOkz/90
+         pCSV45YJcFhZ4Y797zGomK28qF5X3aaERweEaH88Bd0WiIHSDB7orr9GFuo/CkDKJw25
+         7U06J8DIpwxIrFnKm7KTBOjBDV5JakRexEWdyA+g5zMR2vIxt3hDcrVJ7FJC1I3HM/Q+
+         167+hk7vBEO+RvWUGF41QoT6hcofveWUKxnU1N3DdpOa0f2rqBUrA+IxB+Kl2QJuA/00
+         5jYosY7C07AxGoGHhMoqJBm/pWRsdVLtCRvt6WcbKE7m6g2aZQa0m3J+UqRFldtpYHjn
+         3FZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768161903; x=1768766703;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=VnD9VQIsOYRuD2TRSfBYBzobHdi1a55IuYUd9pyL4jo=;
-        b=VSTlv0haTwkCd+/ynE1VJIefbcLDQMeA1CvVeMAjpEx7ghz6TwvMph1h59n9UyA6pe
-         lW5UMWw+ZvCRm7OXIDXBHk4nlmo3c8Y1fklktRNairQ9TX9RhAsfuCLiM3P5eqVFA00E
-         UkFhgLJhQkBtkuBUsebC/SxDo0qTlo47yvLHFaY8WQo8h7iAA8WidqBkr/N7lyE3JXKc
-         pMuAwaDna+hwrdZ1DFaPw/p7mctKlUEWillyl5+XjqwCApVLoTh4LL39IngVSItF9hH/
-         /jkH35mYOJWGssk9qLibdHAY1Lvrvr+zs2rxZ+I/gbpcU4zFCIfNshjJRtcUqtBcisfN
-         sf7g==
-X-Forwarded-Encrypted: i=1; AJvYcCWCejPvTbFkqpUCPj061AG3USHKxzRnfue7sGZ3NSZo/kNNlGY+Zi6VAlw3nxdGU+038Hg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwW9I6OaUn1foP5QPhWg9e4eA7hAJNHQWMV0XhXfSEXT/VUf7vT
-	nbD4oo6DpaTC2CYp71rJ1NQGFX8YCvwY7NcX4VZkPCjMmzFYqhVzXunZXB+ak1y/1cqZfPt95v3
-	ujY5+wAQk49aDMDA+tPtEc5BvxBT9IcM=
-X-Gm-Gg: AY/fxX4vH1TtsP/fwORG4kDIsnuXtb9uXB62SWVHpMnlgJfxlmsGgviIbUc80bdn3U+
-	jQeH33a2yo2vmKPpluB1gq4ZKPwc2PXTZ3hAFKnMLIQqTp8tqSWpn2qjQR0juB5AA+nxK+soqGq
-	Hfk7qlN2aKEw4ujeX6QQeMc3tZQgurxqchlGi4p8F5y7+Dq8y/IRMYVGtPYgJ24qRqiIeakEFYX
-	gHrx+pq0NhMEzGSVhUDjUrINxPp37Dwi7BPx+79vzIEvrvQ67HuC5GxGgd6nnfSBzBi31MYOETJ
-	4LjHwA0gbOVAVNNGthkAISq9wE6l
-X-Google-Smtp-Source: AGHT+IEKZRrWP3vGMG5mEyctC7P1X4jEpLLMEM8zFqBJqcHJv1TYRiUxZ+Y31COICMXVYqH7Chn2rYWs4tVKLwxDBTo=
-X-Received: by 2002:a05:6000:3104:b0:42f:bc6d:e468 with SMTP id
- ffacd0b85a97d-432c3778de3mr15674848f8f.55.1768161902844; Sun, 11 Jan 2026
- 12:05:02 -0800 (PST)
+        d=1e100.net; s=20230601; t=1768163063; x=1768767863;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+LlzxQrvrypvBifS3gj3xyozetYMJTVLlEycrj5WMGs=;
+        b=qHYo22NLPN4XRYt7b0BCvUfigPjeM0Xuv1n4bx5M7UXCtrOplEQ3VOVwn6lHHHlQvZ
+         gqkO/AQHCI3lmcKx06Ln1zEzlNP8ZCOMWp/CWiTzILnDp86pZ16pEjRE5Lxb3YuzrDTj
+         ZAtiJ1gLI+VJ7e6nNxHSwg/vqaqaOI1f/XhIoKQBvZsegP11d6MzXXvVjNJL7Rz4IDOX
+         iDe1H98EjO8GiYT4hgdK8vdwcwbTkjY0DXMKZ1qY40uabJ92DMCqManVIQsIPpYLIpte
+         Q6gJbdaD0rG5PAfOu9I/R2ZWCwaFGAQq6WpzGLQoi6OfJQqjzQ2uDEbHkx6uyvOc7JgI
+         47zQ==
+X-Gm-Message-State: AOJu0YwiViQLv5fwV5GAhY1aJ1tirhW45PVOAgDJ73JRYIEY4ZIAWbNv
+	3SX6IQ2a2OhJ7gXqgAstuFA/5/6gV92OhUl69YKMhiwuvHlIj4w+kWI=
+X-Gm-Gg: AY/fxX45ha49eUYbVtBqOrUBle6b9vPYGzrH0j6OtaxCd4spk+u/UtK9ZY9A0iLorQb
+	uJtxFkIzixPRxFQV0t2LOXf7ugx6KhZc3AUhGBYD+my56/9uVr7/IAAA0MFkIpa7f5gOkMQNYxk
+	KNsO+mmw9rSTXylFKNS0GRYYVwD/NOG5WXRx7UjU52rYOqwaXY74sSIbvWsGb4do30Z10g/XmEk
+	RuzoVGlpDSTi0jnA3Y48XOnw8V1M04Csiy07TIaagDK+sRH8EO8i4Iq4idjSm3uSdzcHiXKTvlh
+	hqbW09rFvZk4uA5g6Wxb537p05c0YJnR+kQwX7Wo1d8yEjzL6UvK1mkf1IYTBYDZ7fpI84s2Umv
+	e6SaKV5wsY+O2mTS7hK+J8oLG2hFVFGksmZDscrSb0ODztv+AHVL4mSxU+vo58yZlxxNOmqFr0i
+	F8mT90px4k77F3tlC2xFwGEWV1flXw5v/0/5Mjrm5qTbBXG/T8LRyhNeb6gqtePVWvN23g1G6j0
+	p4NFg==
+X-Google-Smtp-Source: AGHT+IH5t82/4L9yYhR9he01IEguX47jqahDJRJ9kRchowIrWjdKOGkJt8ogG4X/WEXF520AltWuTA==
+X-Received: by 2002:a05:7022:3708:b0:11a:335d:80d3 with SMTP id a92af1059eb24-121f8afc350mr12072513c88.22.1768163063040;
+        Sun, 11 Jan 2026 12:24:23 -0800 (PST)
+Received: from localhost (c-76-102-12-149.hsd1.ca.comcast.net. [76.102.12.149])
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-121f248c239sm19032604c88.9.2026.01.11.12.24.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Jan 2026 12:24:22 -0800 (PST)
+Date: Sun, 11 Jan 2026 12:24:21 -0800
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: Kery Qi <qikeyu2017@gmail.com>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, bjorn@kernel.org,
+	hawk@kernel.org, pabeni@redhat.com, magnus.karlsson@intel.com,
+	daniel@iogearbox.net, maciej.fijalkowski@intel.com, kuba@kernel.org,
+	edumazet@google.com, horms@kernel.org, ast@kernel.org,
+	sdf@fomichev.me, john.fastabend@gmail.com
+Subject: Re: [PATCH bpf] xsk: fix init race causing NPD/UAF in xsk_create()
+Message-ID: <aWQG9Xujon2RWeci@mini-arch>
+References: <20260109104643.1988-2-qikeyu2017@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260108220550.2f6638f3@fedora> <da261242-482f-4b47-81c6-b065c5a95c4b@efficios.com>
- <CAADnVQJMa+p_BcYxKUgve2=sqRBwSs3wLGAGhbA0r6hwFpJ+6Q@mail.gmail.com>
- <20260109141930.6deb2a0a@gandalf.local.home> <3c0df437-f6e5-47c6-aed5-f4cc26fe627a@efficios.com>
- <CAADnVQLeCLRhx1Oe5DdJCT0e+WWq4L3Rdee1Ky0JNNh3LdozeQ@mail.gmail.com>
- <20260109170028.0068a14d@fedora> <CAADnVQKGm-t2SdN_vFVMn0tNiQ5Fs6FutD2Au-jO69aGdhKS7Q@mail.gmail.com>
- <20260109173326.616e873c@fedora> <20260109173915.1e8a784e@fedora>
- <CAADnVQKB4dAWtX7T15yh31NYNcBUugoqcnTZ3U9APo8SZkTuwg@mail.gmail.com> <20260110111454.7d1a7b66@fedora>
-In-Reply-To: <20260110111454.7d1a7b66@fedora>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Sun, 11 Jan 2026 12:04:51 -0800
-X-Gm-Features: AZwV_Qh7Wgo_T3tbbD-7bHz3BAnmG7D3hD0wHDV0Nrd5u0SMnqSUPlz3CHnt7p8
-Message-ID: <CAADnVQJ_L_TvFogq0+-qOH=vxe5bzU9iz3c-6-N7VFYE6cBnjQ@mail.gmail.com>
-Subject: Re: [PATCH v5] tracing: Guard __DECLARE_TRACE() use of
- __DO_TRACE_CALL() with SRCU-fast
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, LKML <linux-kernel@vger.kernel.org>, 
-	Linux trace kernel <linux-trace-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20260109104643.1988-2-qikeyu2017@gmail.com>
 
-On Sat, Jan 10, 2026 at 8:14=E2=80=AFAM Steven Rostedt <rostedt@goodmis.org=
-> wrote:
->
-> On Fri, 9 Jan 2026 16:35:10 -0800
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
->
-> > migrate_enable/disable() wasn't inlined for a long time.
-> > It bothered us enough, since sleepable bpf is the main user
-> > of it besides RT, so we made an effort to inline it.
->
-> It did bother us too. it went through lots of iterations to become more
-> efficient over the years (it was really bad in the beginning while
-> still in the rt-patch), and hopefully that will continue.
->
-> >
-> > RT, at the same time, doesn't inline rt_spin_lock() itself
-> > so inlining migrate_disable() or not is not 10x at all.
-> > Benchmark spin_lock on RT in-tree and in-module and I bet
-> > there won't be a big difference.
->
-> I'll put that on my todo list. But still, having migrate_disable a
-> function for modules and 100% inlined for in-kernel code just because
-> it needs access to a field in the run queue that doesn't need to be in
-> the run queue seems like it should be fixed.
+On 01/09, Kery Qi wrote:
+> xsk_init() previously registered the PF_XDP socket family before the
+> per-net subsystem and other prerequisites (netdevice notifier, caches)
+> were fully initialized.
+> 
+> This exposed .create = xsk_create() to user space while per-netns
+> state (net->xdp.lock/list) was still uninitialized. A task with
+> CAP_NET_RAW could trigger this during boot/module load by calling
+> socket(PF_XDP, SOCK_RAW, 0) concurrently with xsk_init(), leading
+> to a NULL pointer dereference or use-after-free in the list manipulation.
+> 
+> To fix this, move sock_register() to the end of the initialization
+> sequence, ensuring that all required kernel structures are ready before
+> exposing the AF_XDP interface to userspace.
+> 
+> Accordingly, reorder the error unwind path to ensure proper cleanup
+> in reverse order of initialization. Also, explicitly add
+> kmem_cache_destroy() in the error path to prevent leaking
+> xsk_tx_generic_cache if the registration fails.
 
-There was plenty of discussion with Peter regarding different
-ways to inline migrate_disable. What was landed was the best
-option at that point, but feel free to restart the discussion.
-
->
-> As for tracepoints, BPF is the only one that needs migrate disable.
-> It's not needed for ftrace or perf (although perf uses preempt
-> disable). It should be moved into the BPF callback code as perf has its
-> preempt disable in its callback code.
->
-> If BPF doesn't care about the extra overhead of migrate_disable() for
-> modules, then why should XFS suffer from that too?
-
-The diff has nothing to do with bpf needs and/or bpf internals.
-It's really about being a good citizen of PREEMP_RT.
-bpf side already does migrate_disable,
-rcu_read_lock, srcu_fast/task_trace when necessary.
-Most of the time we don't rely on any external preempt state or rcu/srcu.
-Removing guard(preempt_notrace)(); from tracepoint invocation
-would be just fine for bpf. Simple remove will trigger bug
-on cant_sleep(), but that's a trivial fix.
+Is it something that you've hit in real life? xsk_init happens
+so early during the init process (fs_init) that I don't understand
+why the oder would matter.
 
