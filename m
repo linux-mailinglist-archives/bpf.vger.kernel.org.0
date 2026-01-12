@@ -1,320 +1,400 @@
-Return-Path: <bpf+bounces-78509-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78510-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B22FD1080F
-	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 04:45:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3499DD10A98
+	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 06:53:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 1210A3031CEC
-	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 03:45:43 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 83B093044BBF
+	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 05:52:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D1F0262FFC;
-	Mon, 12 Jan 2026 03:45:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A04E530F94C;
+	Mon, 12 Jan 2026 05:52:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=navercorp.com header.i=@navercorp.com header.b="wajf3ORW"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="o4kjtN8r"
 X-Original-To: bpf@vger.kernel.org
-Received: from cvsmtppost03.nmdf.navercorp.com (cvsmtppost03.nmdf.navercorp.com [114.111.35.180])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 817261BC2A
-	for <bpf@vger.kernel.org>; Mon, 12 Jan 2026 03:45:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.111.35.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF07830F80F;
+	Mon, 12 Jan 2026 05:52:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768189541; cv=none; b=Zj7z1NBnO1yFipyR9gmJCkIbN8ukzFNlI2XmXON425gQ3J/BIwphzzEeRr1dgFEBWJo+klZ0388cfezfT2PfDw9TmaAJfk3apn9PM/OH3NX6fPjzs3q3R7xu5nquJDxMkHn9so7jnnnFC3KvAK6fr6hrMbLvAzKrSNH2Lo4xnKg=
+	t=1768197174; cv=none; b=uwzrmAiuMB/oPZ0KBTDyqM0YVIabSTZMFzsEEeMG+bA3gddygi2deWU3dv7mfHipc1XqG5XA8hSMV+EkysCaSyis1WYfZnD26uC/STJqOHAu4ou8F3pXn+XL6qKMZ4ZMaXPPGrUu7/GI07lTQ80TQEVI2+klB6314y7sUANm/90=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768189541; c=relaxed/simple;
-	bh=sCeFqIwAWGDeyUlCQkBn25TfdGNVyKMhBiuKuXgbbIk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=HhqyVl6YEd4Y7U8CV/lgKBofiFYt8+u4yFAOenrt7cqi2SoTcD1axGZwfOXkqPcxfn9ouwln0UgIfBuQ3VdkPa9wtPtLxLBrch4pn96GfdnzcAZhuTCrRk7/t/3pkOmc/TjSj1hLxtgPjOj2GYBkWGMcIojDqfCuWJpMjvAwAq4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=navercorp.com; spf=pass smtp.mailfrom=navercorp.com; dkim=pass (2048-bit key) header.d=navercorp.com header.i=@navercorp.com header.b=wajf3ORW; arc=none smtp.client-ip=114.111.35.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=navercorp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=navercorp.com
-Received: from cvsendbo02.nmdf ([10.112.18.65])
-  by cvsmtppost03.nmdf.navercorp.com with ESMTP id Jrh4kByFTsOVFBZ-nnV9kg
-  for <bpf@vger.kernel.org>;
-  Mon, 12 Jan 2026 03:45:32 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=navercorp.com;
-	s=s20171120; t=1768189532;
-	bh=sCeFqIwAWGDeyUlCQkBn25TfdGNVyKMhBiuKuXgbbIk=;
-	h=From:To:Subject:Date:Message-Id:From:Subject:Feedback-ID:
-	 X-Works-Security;
-	b=wajf3ORWqULwraXrrVgFPeCnUq+BhryT2fJJXqk5uehkehARDB5jS/hgMiaWgqkT1
-	 jdlZUv+5IFYOxZaO4DBkk1A80eLiuZWQNryKJ3HTx3yTAQHdw3LsXvAyq4FOgJTwGs
-	 mKeRCz0MN4h9oXG7T4KqystslL2XQypYHbJuwPCZJkXrJ20vqLaouO4EDU+rMNWg+Q
-	 8w7GrFUXKqoh25W/R4Bg+YyDEYQqrkBKJSgQjD5vXQTH+gFO2R6XoZzrizcaxMOv/c
-	 WXMwEou1E1SIOnABlvY+njoUmIda/bL+6W/x5QosfwpXD4v7PWsu1iHBiJaMgOHClv
-	 AOuQ+1IT/Bxxg==
-X-Session-ID: 6sGnAhroRnOzy6PsAElM+g
-X-Works-Send-Opt: xQbwjAiYjHm2KHwYjHmlUVg=
-X-Works-Smtp-Source: YZb9Kx2rFqJZ+HmZKquX+6E=
-Received: from localhost.localdomain ([10.25.152.220])
-  by mvnsmtp02.nmdf.navercorp.com with ESMTP id 6sGnAhroRnOzy6PsAElM+g
-  for <multiple recipients>
-  (version=TLSv1.3 cipher=TLS_CHACHA20_POLY1305_SHA256);
-  Mon, 12 Jan 2026 03:45:32 -0000
-From: gyutae.opensource@navercorp.com
-To: Quentin Monnet <qmo@kernel.org>,
-	bpf@vger.kernel.org,
-	Daniel Borkmann <daniel@iogearbox.net>
-Cc: linux-kernel@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Gyutae Bae <gyutae.bae@navercorp.com>,
-	Siwan Kim <siwan.kim@navercorp.com>,
-	Daniel Xu <dxu@dxuuu.xyz>,
-	Jiayuan Chen <jiayuan.chen@linux.dev>,
-	Tao Chen <chen.dylane@linux.dev>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: [PATCH v4] bpftool: Add 'prepend' option for tcx attach to insert at chain start
-Date: Mon, 12 Jan 2026 12:45:16 +0900
-Message-Id: <20260112034516.22723-1-gyutae.opensource@navercorp.com>
-X-Mailer: git-send-email 2.39.5 (Apple Git-154)
-In-Reply-To: <43c23468-530b-45f3-af22-f03484e5148c@kernel.org>
-References: <43c23468-530b-45f3-af22-f03484e5148c@kernel.org>
+	s=arc-20240116; t=1768197174; c=relaxed/simple;
+	bh=DIlgZ41C5DXD3qjouLC3u/aY7lWRHIKK4ScA2APJXxA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OXMMIeggWH0LYnt1WccWXJT6fTgS2PI352RIvXqLJHtmK0qsEcQbRwX+dEUzUDjb6uhPors+LBi2LqEOoHJWqdOgVRFiLNsikEjyqtBvKutceHtdfCI6aT7jYYGlWqkvEmDzqme7bQGjDnpx1bpmG/XJKlZj+Povy8ZMEsWfAUo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=o4kjtN8r; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 60BAZi6h004230;
+	Mon, 12 Jan 2026 05:52:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=pp1; bh=+Ua6pb9zOj2M4q9+0KWg2eiG6oHegv
+	QJ8kdvcdM9eiU=; b=o4kjtN8r0vs6DVRx+xbFwkzsRT5dXR84L9TugWAUjUPyHU
+	3SCLTinbFkzqqFJLSQ7hMH2RsdIFHtf5+8aR2ekZmGrptfcChyvr0KI1CVNo+fth
+	kSLoDSFMrMaCN5NFzGoAEQ//L3+imBPXL8EJ48HZCsKRDgwgvgGYhwBEIGAMX/s0
+	S46FvjbtQCZeTyOVNYKr+/j2EX9HIcHlKX+ciw/6T70Z90ZKJfnmkzYGtA6JLJv3
+	1RVBkOMTWZS8spOtBvFdOqJzvXPUMvOpP3Hja6/MAgmeQL8VYzl3Fy/StaaSEEpp
+	F5oLCEf2jokGj7TD4nFA2yg/Cl4XVYtTzE3s8kzw==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4bke92nnyd-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Jan 2026 05:52:08 +0000 (GMT)
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 60C5q8EQ027755;
+	Mon, 12 Jan 2026 05:52:08 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4bke92nny9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Jan 2026 05:52:08 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 60C2afT7031255;
+	Mon, 12 Jan 2026 05:52:07 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4bm3t1c1vu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Jan 2026 05:52:06 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 60C5q3Pl49349064
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 12 Jan 2026 05:52:03 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 2B76A20040;
+	Mon, 12 Jan 2026 05:52:03 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 93C8F2004B;
+	Mon, 12 Jan 2026 05:51:57 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.109.207.131])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Mon, 12 Jan 2026 05:51:57 +0000 (GMT)
+Date: Mon, 12 Jan 2026 11:21:24 +0530
+From: Saket Kumar Bhaskar <skb99@linux.ibm.com>
+To: adubey@linux.ibm.com
+Cc: bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hbathini@linux.ibm.com, sachinpb@linux.ibm.com, venkat88@linux.ibm.com,
+        andrii@kernel.org, eddyz87@gmail.com, mykolal@fb.com, ast@kernel.org,
+        daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
+        yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
+        christophe.leroy@csgroup.eu, naveen@kernel.org, maddy@linux.ibm.com,
+        mpe@ellerman.id.au, npiggin@gmail.com, memxor@gmail.com,
+        iii@linux.ibm.com, shuah@kernel.org
+Subject: Re: [PATCH 5/6] powerpc64/bpf: Support exceptions
+Message-ID: <aWSL3DlSf5WA20lf@linux.ibm.com>
+References: <20260105105212.136645-1-adubey@linux.ibm.com>
+ <20260105105212.136645-6-adubey@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260105105212.136645-6-adubey@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: we4GdtOeD-dhZUz5j0NAl3H0r_dggRXt
+X-Authority-Analysis: v=2.4 cv=dYyNHHXe c=1 sm=1 tr=0 ts=69648c08 cx=c_pps
+ a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
+ a=kj9zAlcOel0A:10 a=vUbySO9Y5rIA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=DU0EyFXtAAAA:8 a=VnNF1IyMAAAA:8 a=7eL7mY7D3S2MA_tuV2QA:9 a=CjuIK1q_8ugA:10
+ a=UCR5be5CC-YrbG9FbbB0:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTEyMDA0NCBTYWx0ZWRfX1WygZDgOZfq8
+ se7HPSblEQrJUIta9i5pxpR8KEyDMyeZF31Dg3AyEFf6Gnu/OQJ+kRYxihBXtSpXeROmgLNRybv
+ ZdyLBJxcnPHCdVeE21jaGsBWP3gF6Kb0WJtZC5h8aEBxg350TkcCQi3BnA8zuvRbn9nwCOQRb9F
+ QKxmNR8hDTiazMZPOkeaFK42wLqeTB2YSzDPKOh4tbchQKayjNyRv4rKqHMt1uad1ecBtwMnYam
+ P2HwewQy+7bPnN2W0yYsy0q7X9s+mJqQx7NgnXcYpKx3uVp7WavVLfOiBQ4i+ZKlvSlgUePTYOK
+ rSOx0vlKQGw+bIxWU++rUTcwLi6cjg+GxwnppM0MhzUuZ1uUF39cVMTh+H0RAwxLZzg6Qz5lNOP
+ Kovns+QMjhBYuYwbMzZzPymLo7zIsKqkY8TyFG4x4rWHuyG1IlGB3GOPVl7fzRHx2OB3zMxfydh
+ 0UVtH1cTio0hq5aFYzw==
+X-Proofpoint-GUID: 1jrOj4XPgVEdzEJJUopexmaPWOwuRB1j
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2026-01-12_01,2026-01-09_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ spamscore=0 impostorscore=0 adultscore=0 priorityscore=1501 suspectscore=0
+ bulkscore=0 phishscore=0 clxscore=1011 lowpriorityscore=0 malwarescore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2512120000 definitions=main-2601120044
 
-From: Gyutae Bae <gyutae.bae@navercorp.com>
-
-Add support for the 'prepend' option when attaching tcx_ingress and
-tcx_egress programs. This option allows inserting a BPF program at
-the beginning of the TCX chain instead of appending it at the end.
-
-The implementation uses BPF_F_BEFORE flag which automatically inserts
-the program at the beginning of the chain when no relative reference
-is specified.
-
-This change includes:
-- Modify do_attach_tcx() to support prepend insertion using BPF_F_BEFORE
-- Update documentation to describe the new 'prepend' option
-- Add bash completion support for the 'prepend' option on tcx attach types
-- Add example usage in the documentation
-- Add validation to reject 'overwrite' for non-XDP attach types
-
-The 'prepend' option is only valid for tcx_ingress and tcx_egress attach
-types. For XDP attach types, the existing 'overwrite' option remains
-available.
-
-Example usage:
-  # bpftool net attach tcx_ingress name tc_prog dev lo prepend
-
-This feature is useful when the order of program execution in the TCX
-chain matters and users need to ensure certain programs run first.
-
-Co-developed-by: Siwan Kim <siwan.kim@navercorp.com>
-Signed-off-by: Siwan Kim <siwan.kim@navercorp.com>
-Signed-off-by: Gyutae Bae <gyutae.bae@navercorp.com>
-Reviewed-by: Quentin Monnet <qmo@kernel.org>
----
-Hi Quentin.
-
-Thank you for the review! I have added the validation for 'overwrite'
-option as you suggested.
-
-I used a whitelist approach (rejecting non-XDP types) rather than
-a blacklist approach (rejecting TCX types) to be consistent with the
-'prepend' validation style and to ensure that any future attach types
-will also be rejected by default unless explicitly allowed.
+On Mon, Jan 05, 2026 at 04:22:11PM +0530, adubey@linux.ibm.com wrote:
+> From: Abhishek Dubey <adubey@linux.ibm.com>
+> 
+> The modified prologue/epilogue generation code now
+> enables exception-callback to use the stack frame of
+> the program marked as exception boundary, where callee
+> saved registers are stored.
+> 
+> As per ppc64 ABIv2 documentation[1], r14-r31 are callee
+> saved registers. BPF programs on ppc64 already saves
+> r26-r31 registers. Saving the remaining set of callee
+> saved registers(r14-r25) is handled in the next patch.
+> 
+> [1] https://ftp.rtems.org/pub/rtems/people/sebh/ABI64BitOpenPOWERv1.1_16July2015_pub.pdf
+> 
+> Following is exceptions selftest result on ppc64le:
+> 
+> # ./test_progs -t exceptions
+> #100/1   exceptions/exception_throw_always_1:OK
+> #100/2   exceptions/exception_throw_always_2:OK
+> #100/3   exceptions/exception_throw_unwind_1:OK
+> #100/4   exceptions/exception_throw_unwind_2:OK
+> #100/5   exceptions/exception_throw_default:OK
+> #100/6   exceptions/exception_throw_default_value:OK
+> #100/7   exceptions/exception_tail_call:OK
+> #100/8   exceptions/exception_ext:OK
+> #100/9   exceptions/exception_ext_mod_cb_runtime:OK
+> #100/10  exceptions/exception_throw_subprog:OK
+> #100/11  exceptions/exception_assert_nz_gfunc:OK
+> #100/12  exceptions/exception_assert_zero_gfunc:OK
+> #100/13  exceptions/exception_assert_neg_gfunc:OK
+> #100/14  exceptions/exception_assert_pos_gfunc:OK
+> #100/15  exceptions/exception_assert_negeq_gfunc:OK
+> #100/16  exceptions/exception_assert_poseq_gfunc:OK
+> #100/17  exceptions/exception_assert_nz_gfunc_with:OK
+> #100/18  exceptions/exception_assert_zero_gfunc_with:OK
+> #100/19  exceptions/exception_assert_neg_gfunc_with:OK
+> #100/20  exceptions/exception_assert_pos_gfunc_with:OK
+> #100/21  exceptions/exception_assert_negeq_gfunc_with:OK
+> #100/22  exceptions/exception_assert_poseq_gfunc_with:OK
+> #100/23  exceptions/exception_bad_assert_nz_gfunc:OK
+> #100/24  exceptions/exception_bad_assert_zero_gfunc:OK
+> #100/25  exceptions/exception_bad_assert_neg_gfunc:OK
+> #100/26  exceptions/exception_bad_assert_pos_gfunc:OK
+> #100/27  exceptions/exception_bad_assert_negeq_gfunc:OK
+> #100/28  exceptions/exception_bad_assert_poseq_gfunc:OK
+> #100/29  exceptions/exception_bad_assert_nz_gfunc_with:OK
+> #100/30  exceptions/exception_bad_assert_zero_gfunc_with:OK
+> #100/31  exceptions/exception_bad_assert_neg_gfunc_with:OK
+> #100/32  exceptions/exception_bad_assert_pos_gfunc_with:OK
+> #100/33  exceptions/exception_bad_assert_negeq_gfunc_with:OK
+> #100/34  exceptions/exception_bad_assert_poseq_gfunc_with:OK
+> #100/35  exceptions/exception_assert_range:OK
+> #100/36  exceptions/exception_assert_range_with:OK
+> #100/37  exceptions/exception_bad_assert_range:OK
+> #100/38  exceptions/exception_bad_assert_range_with:OK
+> #100/39  exceptions/non-throwing fentry -> exception_cb:OK
+> #100/40  exceptions/throwing fentry -> exception_cb:OK
+> #100/41  exceptions/non-throwing fexit -> exception_cb:OK
+> #100/42  exceptions/throwing fexit -> exception_cb:OK
+> #100/43  exceptions/throwing extension (with custom cb) -> exception_cb:OK
+> #100/44  exceptions/throwing extension -> global func in exception_cb:OK
+> #100/45  exceptions/exception_ext_mod_cb_runtime:OK
+> #100/46  exceptions/throwing extension (with custom cb) -> global func in exception_cb:OK
+> #100/47  exceptions/exception_ext:OK
+> #100/48  exceptions/non-throwing fentry -> non-throwing subprog:OK
+> #100/49  exceptions/throwing fentry -> non-throwing subprog:OK
+> #100/50  exceptions/non-throwing fentry -> throwing subprog:OK
+> #100/51  exceptions/throwing fentry -> throwing subprog:OK
+> #100/52  exceptions/non-throwing fexit -> non-throwing subprog:OK
+> #100/53  exceptions/throwing fexit -> non-throwing subprog:OK
+> #100/54  exceptions/non-throwing fexit -> throwing subprog:OK
+> #100/55  exceptions/throwing fexit -> throwing subprog:OK
+> #100/56  exceptions/non-throwing fmod_ret -> non-throwing subprog:OK
+> #100/57  exceptions/non-throwing fmod_ret -> non-throwing global subprog:OK
+> #100/58  exceptions/non-throwing extension -> non-throwing subprog:OK
+> #100/59  exceptions/non-throwing extension -> throwing subprog:OK
+> #100/60  exceptions/non-throwing extension -> non-throwing subprog:OK
+> #100/61  exceptions/non-throwing extension -> throwing global subprog:OK
+> #100/62  exceptions/throwing extension -> throwing global subprog:OK
+> #100/63  exceptions/throwing extension -> non-throwing global subprog:OK
+> #100/64  exceptions/non-throwing extension -> main subprog:OK
+> #100/65  exceptions/throwing extension -> main subprog:OK
+> #100/66  exceptions/reject_exception_cb_type_1:OK
+> #100/67  exceptions/reject_exception_cb_type_2:OK
+> #100/68  exceptions/reject_exception_cb_type_3:OK
+> #100/69  exceptions/reject_exception_cb_type_4:OK
+> #100/70  exceptions/reject_async_callback_throw:OK
+> #100/71  exceptions/reject_with_lock:OK
+> #100/72  exceptions/reject_subprog_with_lock:OK
+> #100/73  exceptions/reject_with_rcu_read_lock:OK
+> #100/74  exceptions/reject_subprog_with_rcu_read_lock:OK
+> #100/75  exceptions/reject_with_rbtree_add_throw:OK
+> #100/76  exceptions/reject_with_reference:OK
+> #100/77  exceptions/reject_with_cb_reference:OK
+> #100/78  exceptions/reject_with_cb:OK
+> #100/79  exceptions/reject_with_subprog_reference:OK
+> #100/80  exceptions/reject_throwing_exception_cb:OK
+> #100/81  exceptions/reject_exception_cb_call_global_func:OK
+> #100/82  exceptions/reject_exception_cb_call_static_func:OK
+> #100/83  exceptions/reject_multiple_exception_cb:OK
+> #100/84  exceptions/reject_exception_throw_cb:OK
+> #100/85  exceptions/reject_exception_throw_cb_diff:OK
+> #100/86  exceptions/reject_set_exception_cb_bad_ret1:OK
+> #100/87  exceptions/reject_set_exception_cb_bad_ret2:OK
+> #100/88  exceptions/check_assert_eq_int_min:OK
+> #100/89  exceptions/check_assert_eq_int_max:OK
+> #100/90  exceptions/check_assert_eq_zero:OK
+> #100/91  exceptions/check_assert_eq_llong_min:OK
+> #100/92  exceptions/check_assert_eq_llong_max:OK
+> #100/93  exceptions/check_assert_lt_pos:OK
+> #100/94  exceptions/check_assert_lt_zero:OK
+> #100/95  exceptions/check_assert_lt_neg:OK
+> #100/96  exceptions/check_assert_le_pos:OK
+> #100/97  exceptions/check_assert_le_zero:OK
+> #100/98  exceptions/check_assert_le_neg:OK
+> #100/99  exceptions/check_assert_gt_pos:OK
+> #100/100 exceptions/check_assert_gt_zero:OK
+> #100/101 exceptions/check_assert_gt_neg:OK
+> #100/102 exceptions/check_assert_ge_pos:OK
+> #100/103 exceptions/check_assert_ge_zero:OK
+> #100/104 exceptions/check_assert_ge_neg:OK
+> #100/105 exceptions/check_assert_range_s64:OK
+> #100/106 exceptions/check_assert_range_u64:OK
+> #100/107 exceptions/check_assert_single_range_s64:OK
+> #100/108 exceptions/check_assert_single_range_u64:OK
+> #100/109 exceptions/check_assert_generic:OK
+> #100/110 exceptions/check_assert_with_return:OK
+> #100     exceptions:OK
+> Summary: 1/110 PASSED, 0 SKIPPED, 0 FAILED
+> 
+It would be great to include this selftest output in the cover letter
+instead, since it makes the git log excessively long.
 
 Thanks,
-Gyutae.
-
-Changes in v4:
-- Add validation to reject 'overwrite' for non-XDP attach types (Quentin)
-
-Changes in v3:
-- Simplified implementation by using BPF_F_BEFORE alone (Daniel)
-- Removed get_first_tcx_prog_id() helper function (Daniel)
-
-Changes in v2:
-- Renamed 'head' to 'prepend' for consistency with 'overwrite' (Quentin)
-- Moved relative_id variable to relevant scope inside if block (Quentin)
-- Changed condition style from '== 0' to '!' (Quentin)
-- Updated documentation to clarify 'overwrite' is XDP-only (Quentin)
-- Removed outdated "only XDP-related modes are supported" note (Quentin)
-- Removed extra help text from do_help() for consistency (Quentin)
-
- .../bpf/bpftool/Documentation/bpftool-net.rst | 30 +++++++++++++-----
- tools/bpf/bpftool/bash-completion/bpftool     |  9 +++++-
- tools/bpf/bpftool/net.c                       | 31 ++++++++++++++++---
- 3 files changed, 58 insertions(+), 12 deletions(-)
-
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-net.rst b/tools/bpf/bpftool/Documentation/bpftool-net.rst
-index a9ed8992800f..22da07087e42 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-net.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-net.rst
-@@ -24,7 +24,7 @@ NET COMMANDS
- ============
- 
- | **bpftool** **net** { **show** | **list** } [ **dev** *NAME* ]
--| **bpftool** **net attach** *ATTACH_TYPE* *PROG* **dev** *NAME* [ **overwrite** ]
-+| **bpftool** **net attach** *ATTACH_TYPE* *PROG* **dev** *NAME* [ **overwrite** | **prepend** ]
- | **bpftool** **net detach** *ATTACH_TYPE* **dev** *NAME*
- | **bpftool** **net help**
- |
-@@ -58,11 +58,9 @@ bpftool net { show | list } [ dev *NAME* ]
-     then all bpf programs attached to non clsact qdiscs, and finally all bpf
-     programs attached to root and clsact qdisc.
- 
--bpftool net attach *ATTACH_TYPE* *PROG* dev *NAME* [ overwrite ]
-+bpftool net attach *ATTACH_TYPE* *PROG* dev *NAME* [ overwrite | prepend ]
-     Attach bpf program *PROG* to network interface *NAME* with type specified
--    by *ATTACH_TYPE*. Previously attached bpf program can be replaced by the
--    command used with **overwrite** option. Currently, only XDP-related modes
--    are supported for *ATTACH_TYPE*.
-+    by *ATTACH_TYPE*.
- 
-     *ATTACH_TYPE* can be of:
-     **xdp** - try native XDP and fallback to generic XDP if NIC driver does not support it;
-@@ -72,11 +70,18 @@ bpftool net attach *ATTACH_TYPE* *PROG* dev *NAME* [ overwrite ]
-     **tcx_ingress** - Ingress TCX. runs on ingress net traffic;
-     **tcx_egress** - Egress TCX. runs on egress net traffic;
- 
-+    For XDP-related attach types (**xdp**, **xdpgeneric**, **xdpdrv**,
-+    **xdpoffload**), the **overwrite** option can be used to replace a
-+    previously attached bpf program.
-+
-+    For **tcx_ingress** and **tcx_egress** attach types, the **prepend** option
-+    can be used to attach the program at the beginning of the chain instead of
-+    at the end.
-+
- bpftool net detach *ATTACH_TYPE* dev *NAME*
-     Detach bpf program attached to network interface *NAME* with type specified
-     by *ATTACH_TYPE*. To detach bpf program, same *ATTACH_TYPE* previously used
--    for attach must be specified. Currently, only XDP-related modes are
--    supported for *ATTACH_TYPE*.
-+    for attach must be specified.
- 
- bpftool net help
-     Print short help message.
-@@ -191,6 +196,17 @@ EXAMPLES
-       tc:
-       lo(1) tcx/ingress tc_prog prog_id 29
- 
-+|
-+| **# bpftool net attach tcx_ingress name tc_prog2 dev lo prepend**
-+| **# bpftool net**
-+|
-+
-+::
-+
-+      tc:
-+      lo(1) tcx/ingress tc_prog2 prog_id 30
-+      lo(1) tcx/ingress tc_prog prog_id 29
-+
- |
- | **# bpftool net attach tcx_ingress name tc_prog dev lo**
- | **# bpftool net detach tcx_ingress dev lo**
-diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
-index 53bcfeb1a76e..a28f0cc522e4 100644
---- a/tools/bpf/bpftool/bash-completion/bpftool
-+++ b/tools/bpf/bpftool/bash-completion/bpftool
-@@ -1142,7 +1142,14 @@ _bpftool()
-                             return 0
-                             ;;
-                         8)
--                            _bpftool_once_attr 'overwrite'
-+                            case ${words[3]} in
-+                                tcx_ingress|tcx_egress)
-+                                    _bpftool_once_attr 'prepend'
-+                                    ;;
-+                                *)
-+                                    _bpftool_once_attr 'overwrite'
-+                                    ;;
-+                            esac
-                             return 0
-                             ;;
-                     esac
-diff --git a/tools/bpf/bpftool/net.c b/tools/bpf/bpftool/net.c
-index cfc6f944f7c3..f25d66c8395e 100644
---- a/tools/bpf/bpftool/net.c
-+++ b/tools/bpf/bpftool/net.c
-@@ -666,10 +666,16 @@ static int get_tcx_type(enum net_attach_type attach_type)
- 	}
- }
- 
--static int do_attach_tcx(int progfd, enum net_attach_type attach_type, int ifindex)
-+static int do_attach_tcx(int progfd, enum net_attach_type attach_type, int ifindex, bool prepend)
- {
- 	int type = get_tcx_type(attach_type);
- 
-+	if (prepend) {
-+		LIBBPF_OPTS(bpf_prog_attach_opts, opts,
-+			.flags = BPF_F_BEFORE
-+		);
-+		return bpf_prog_attach_opts(progfd, ifindex, type, &opts);
-+	}
- 	return bpf_prog_attach(progfd, ifindex, type, 0);
- }
- 
-@@ -685,6 +691,7 @@ static int do_attach(int argc, char **argv)
- 	enum net_attach_type attach_type;
- 	int progfd, ifindex, err = 0;
- 	bool overwrite = false;
-+	bool prepend = false;
- 
- 	/* parse attach args */
- 	if (!REQ_ARGS(5))
-@@ -709,9 +716,25 @@ static int do_attach(int argc, char **argv)
- 
- 	if (argc) {
- 		if (is_prefix(*argv, "overwrite")) {
-+			if (attach_type != NET_ATTACH_TYPE_XDP &&
-+			    attach_type != NET_ATTACH_TYPE_XDP_GENERIC &&
-+			    attach_type != NET_ATTACH_TYPE_XDP_DRIVER &&
-+			    attach_type != NET_ATTACH_TYPE_XDP_OFFLOAD) {
-+				p_err("'overwrite' is only supported for xdp types");
-+				err = -EINVAL;
-+				goto cleanup;
-+			}
- 			overwrite = true;
-+		} else if (is_prefix(*argv, "prepend")) {
-+			if (attach_type != NET_ATTACH_TYPE_TCX_INGRESS &&
-+			    attach_type != NET_ATTACH_TYPE_TCX_EGRESS) {
-+				p_err("'prepend' is only supported for tcx_ingress/tcx_egress");
-+				err = -EINVAL;
-+				goto cleanup;
-+			}
-+			prepend = true;
- 		} else {
--			p_err("expected 'overwrite', got: '%s'?", *argv);
-+			p_err("expected 'overwrite' or 'prepend', got: '%s'?", *argv);
- 			err = -EINVAL;
- 			goto cleanup;
- 		}
-@@ -728,7 +751,7 @@ static int do_attach(int argc, char **argv)
- 	/* attach tcx prog */
- 	case NET_ATTACH_TYPE_TCX_INGRESS:
- 	case NET_ATTACH_TYPE_TCX_EGRESS:
--		err = do_attach_tcx(progfd, attach_type, ifindex);
-+		err = do_attach_tcx(progfd, attach_type, ifindex, prepend);
- 		break;
- 	default:
- 		break;
-@@ -985,7 +1008,7 @@ static int do_help(int argc, char **argv)
- 
- 	fprintf(stderr,
- 		"Usage: %1$s %2$s { show | list } [dev <devname>]\n"
--		"       %1$s %2$s attach ATTACH_TYPE PROG dev <devname> [ overwrite ]\n"
-+		"       %1$s %2$s attach ATTACH_TYPE PROG dev <devname> [ overwrite | prepend ]\n"
- 		"       %1$s %2$s detach ATTACH_TYPE dev <devname>\n"
- 		"       %1$s %2$s help\n"
- 		"\n"
--- 
-2.39.5 (Apple Git-154)
-
+Saket
+> Signed-off-by: Abhishek Dubey <adubey@linux.ibm.com>
+> ---
+>  arch/powerpc/net/bpf_jit.h        |  2 ++
+>  arch/powerpc/net/bpf_jit_comp.c   |  7 ++++
+>  arch/powerpc/net/bpf_jit_comp64.c | 53 +++++++++++++++++++++----------
+>  3 files changed, 45 insertions(+), 17 deletions(-)
+> 
+> diff --git a/arch/powerpc/net/bpf_jit.h b/arch/powerpc/net/bpf_jit.h
+> index 98e8b1f9c2f9..b9316780a501 100644
+> --- a/arch/powerpc/net/bpf_jit.h
+> +++ b/arch/powerpc/net/bpf_jit.h
+> @@ -177,6 +177,8 @@ struct codegen_context {
+>  	u64 arena_vm_start;
+>  	u64 user_vm_start;
+>  	bool is_subprog;
+> +	bool exception_boundary;
+> +	bool exception_cb;
+>  };
+>  
+>  #define bpf_to_ppc(r)	(ctx->b2p[r])
+> diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_comp.c
+> index b09d294084d4..3c030a7d8e73 100644
+> --- a/arch/powerpc/net/bpf_jit_comp.c
+> +++ b/arch/powerpc/net/bpf_jit_comp.c
+> @@ -207,6 +207,8 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+>  	cgctx.arena_vm_start = bpf_arena_get_kern_vm_start(fp->aux->arena);
+>  	cgctx.user_vm_start = bpf_arena_get_user_vm_start(fp->aux->arena);
+>  	cgctx.is_subprog = bpf_is_subprog(fp);
+> +	cgctx.exception_boundary = fp->aux->exception_boundary;
+> +	cgctx.exception_cb = fp->aux->exception_cb;
+>  
+>  	/* Scouting faux-generate pass 0 */
+>  	if (bpf_jit_build_body(fp, NULL, NULL, &cgctx, addrs, 0, false)) {
+> @@ -436,6 +438,11 @@ void bpf_jit_free(struct bpf_prog *fp)
+>  	bpf_prog_unlock_free(fp);
+>  }
+>  
+> +bool bpf_jit_supports_exceptions(void)
+> +{
+> +       return IS_ENABLED(CONFIG_PPC64);
+> +}
+> +
+>  bool bpf_jit_supports_subprog_tailcalls(void)
+>  {
+>  	return IS_ENABLED(CONFIG_PPC64);
+> diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
+> index 0f3af67914d6..5ec8e3654098 100644
+> --- a/arch/powerpc/net/bpf_jit_comp64.c
+> +++ b/arch/powerpc/net/bpf_jit_comp64.c
+> @@ -85,7 +85,9 @@ static inline bool bpf_has_stack_frame(struct codegen_context *ctx)
+>  	 * - the bpf program uses its stack area
+>  	 * The latter condition is deduced from the usage of BPF_REG_FP
+>  	 */
+> -	return ctx->seen & SEEN_FUNC || bpf_is_seen_register(ctx, bpf_to_ppc(BPF_REG_FP));
+> +	return ctx->seen & SEEN_FUNC ||
+> +	       bpf_is_seen_register(ctx, bpf_to_ppc(BPF_REG_FP)) ||
+> +	       ctx->exception_cb;
+>  }
+>  
+>  /*
+> @@ -180,23 +182,32 @@ void bpf_jit_build_prologue(u32 *image, struct codegen_context *ctx)
+>  		EMIT(PPC_RAW_STDU(_R1, _R1, -(BPF_PPC_STACKFRAME + ctx->stack_size)));
+>  	}
+>  
+> -	/*
+> -	 * Back up non-volatile regs -- BPF registers 6-10
+> -	 * If we haven't created our own stack frame, we save these
+> -	 * in the protected zone below the previous stack frame
+> -	 */
+> -	for (i = BPF_REG_6; i <= BPF_REG_10; i++)
+> -		if (bpf_is_seen_register(ctx, bpf_to_ppc(i)))
+> -			EMIT(PPC_RAW_STD(bpf_to_ppc(i), _R1, bpf_jit_stack_offsetof(ctx, bpf_to_ppc(i))));
+> +	if (!ctx->exception_cb) {
+> +		/*
+> +		 * Back up non-volatile regs -- BPF registers 6-10
+> +		 * If we haven't created our own stack frame, we save these
+> +		 * in the protected zone below the previous stack frame
+> +		 */
+> +		for (i = BPF_REG_6; i <= BPF_REG_10; i++)
+> +			if (ctx->exception_boundary || bpf_is_seen_register(ctx, bpf_to_ppc(i)))
+> +				EMIT(PPC_RAW_STD(bpf_to_ppc(i), _R1,
+> +					bpf_jit_stack_offsetof(ctx, bpf_to_ppc(i))));
+>  
+> -	if (ctx->arena_vm_start)
+> -		EMIT(PPC_RAW_STD(bpf_to_ppc(ARENA_VM_START), _R1,
+> +		if (ctx->exception_boundary || ctx->arena_vm_start)
+> +			EMIT(PPC_RAW_STD(bpf_to_ppc(ARENA_VM_START), _R1,
+>  				 bpf_jit_stack_offsetof(ctx, bpf_to_ppc(ARENA_VM_START))));
+>  
+> -	/* Setup frame pointer to point to the bpf stack area */
+> -	if (bpf_is_seen_register(ctx, bpf_to_ppc(BPF_REG_FP)))
+> -		EMIT(PPC_RAW_ADDI(bpf_to_ppc(BPF_REG_FP), _R1,
+> +		/* Setup frame pointer to point to the bpf stack area */
+> +		if (bpf_is_seen_register(ctx, bpf_to_ppc(BPF_REG_FP)))
+> +			EMIT(PPC_RAW_ADDI(bpf_to_ppc(BPF_REG_FP), _R1,
+>  				STACK_FRAME_MIN_SIZE + ctx->stack_size));
+> +	} else {
+> +		/*
+> +		 * Exception callback receives Frame Pointer of main
+> +		 * program as third arg
+> +		 */
+> +		EMIT(PPC_RAW_MR(_R1, _R5));
+> +        }
+>  
+>  	if (ctx->arena_vm_start)
+>  		PPC_LI64(bpf_to_ppc(ARENA_VM_START), ctx->arena_vm_start);
+> @@ -208,17 +219,25 @@ static void bpf_jit_emit_common_epilogue(u32 *image, struct codegen_context *ctx
+>  
+>  	/* Restore NVRs */
+>  	for (i = BPF_REG_6; i <= BPF_REG_10; i++)
+> -		if (bpf_is_seen_register(ctx, bpf_to_ppc(i)))
+> +		if (ctx->exception_cb || bpf_is_seen_register(ctx, bpf_to_ppc(i)))
+>  			EMIT(PPC_RAW_LD(bpf_to_ppc(i), _R1, bpf_jit_stack_offsetof(ctx, bpf_to_ppc(i))));
+>  
+> -	if (ctx->arena_vm_start)
+> +	if (ctx->exception_cb || ctx->arena_vm_start)
+>  		EMIT(PPC_RAW_LD(bpf_to_ppc(ARENA_VM_START), _R1,
+>  				bpf_jit_stack_offsetof(ctx, bpf_to_ppc(ARENA_VM_START))));
+>  
+> +	if (ctx->exception_cb) {
+> +		/*
+> +		 * LR value from boundary-frame is received as second parameter
+> +		 * in exception callback.
+> +		 */
+> +		EMIT(PPC_RAW_MTLR(_R4));
+> +	}
+> +
+>  	/* Tear down our stack frame */
+>  	if (bpf_has_stack_frame(ctx)) {
+>  		EMIT(PPC_RAW_ADDI(_R1, _R1, BPF_PPC_STACKFRAME + ctx->stack_size));
+> -		if (ctx->seen & SEEN_FUNC) {
+> +		if (ctx->seen & SEEN_FUNC || ctx->exception_cb) {
+>  			EMIT(PPC_RAW_LD(_R0, _R1, PPC_LR_STKOFF));
+>  			EMIT(PPC_RAW_MTLR(_R0));
+>  		}
+> -- 
+> 2.48.1
+> 
 
