@@ -1,133 +1,154 @@
-Return-Path: <bpf+bounces-78553-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78554-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F475D12930
-	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 13:39:25 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E396ED12FA8
+	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 15:02:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 67F97302EA23
-	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 12:39:20 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 4E8CA3009FFD
+	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 14:02:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E039357738;
-	Mon, 12 Jan 2026 12:39:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Z1Rkhz04";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="MDJwFEJs"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAD3E35CBB4;
+	Mon, 12 Jan 2026 14:02:19 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from relay.hostedemail.com (smtprelay0013.hostedemail.com [216.40.44.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97C20356A0D
-	for <bpf@vger.kernel.org>; Mon, 12 Jan 2026 12:39:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8E5827FD45;
+	Mon, 12 Jan 2026 14:02:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768221558; cv=none; b=LIZ9IRSHEKSfxT9w9BAsNw92IaAIOpra1OwUqalLpHIzq+DGFpJd+chnzwidenGjgSo2BI6HkUD/gcxAQ5jA9/kk4j9szNmOm2Zsh+4Kv1107MnXzQaz1Wp6Aoony4+8IPL5kgsohixnekV9CYvN/q772D38WsOMRFhQhMn3dE8=
+	t=1768226539; cv=none; b=NdhiPpsEXptQ8Z63fMr0JvJyEYFzvUPVlu7HR+FmYWgCb+g52t4C2qfcRG8/BzGwn3rGxzIuOtEKODe9+587988iobPCzjtRqXdnV8F581h9KRyCPYgKnx+IS1p7Bg7QKnCTmwRspapeid9/gd/HoPFFWZtjXi3aprLtSdnZKY0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768221558; c=relaxed/simple;
-	bh=zPmMnIUeMW/xGbc72LiA4361srUY4NN+6TfLE/qZZo8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nzIyydMBFIda5pB1V4tY2iB3VBVjuVd1FRXRKwmQ1jtXYa8PIF9jr1F/YyV73P8YnBDEOIz5lyKxsVqtDkodiqn8Nglxe015G/vX0iNPxuwk4eLmZyBKtHfFdbLOU9ae474rUVHi/hxJVbmD84kisVeioX+iru5uVkFtJ4g3Suc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Z1Rkhz04; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=MDJwFEJs; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1768221556;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zPmMnIUeMW/xGbc72LiA4361srUY4NN+6TfLE/qZZo8=;
-	b=Z1Rkhz04RE21eprrJc5oAZs1rckpqwON6+JRWGgnucQEoZXttSy+BS3Rzvt4Nnv7ZvJtWS
-	h6LoMhDXI/XHEprB3jkkbSb303jUo9nX1YAeaUU1utkuWPcb/SI1RXl9wighYKnIWWBjpA
-	cz6dlKS8AfJd0tf+eY5zkpRyZlHg3CA=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-500-XhBkSdjqN9-Z3OhK1bcm6w-1; Mon, 12 Jan 2026 07:39:15 -0500
-X-MC-Unique: XhBkSdjqN9-Z3OhK1bcm6w-1
-X-Mimecast-MFC-AGG-ID: XhBkSdjqN9-Z3OhK1bcm6w_1768221554
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-b871403f69eso130087966b.2
-        for <bpf@vger.kernel.org>; Mon, 12 Jan 2026 04:39:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1768221554; x=1768826354; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zPmMnIUeMW/xGbc72LiA4361srUY4NN+6TfLE/qZZo8=;
-        b=MDJwFEJsRM6qKgqUQy47+FCWP/odarzGWUKPwMlIeYrPe1TuqlBWURxzFT/dxYpf5S
-         XSWH1jc2HJW4+8WriGNDcMBz7VXsxm980El0eQZL1mQ0tEQMue1Dn/baf2gSkzjRytMs
-         LAr+sudTmXzvTifc8zaIRQQ0BXG1Mi4d6t8a3WniO5A4acEd5bVlaaPj0nztAQM7l6Yl
-         nD5ZohXdCx3t628autASZmHCDHnZsoQaIBGYf/DMQxf3izhv46OKOHeSg0pxYPEqHBBZ
-         7Vju1EHO3LVpfs2hTnrySqGXleRL9L1y+1D21JZRSWbOg9fCoMylJq7it1tjDk4/9h/t
-         WYUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768221554; x=1768826354;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=zPmMnIUeMW/xGbc72LiA4361srUY4NN+6TfLE/qZZo8=;
-        b=UkeHpkjsnnUm2sgY94BAmL8ojHQIU/NMH5ZcPJd4tfll5bSFJmwKCxAvvJwCz28wR9
-         R+8GWmMJx3Wizfs7fddZ2WymWQ+Ot3v7/F6VWIz+lqRkKIk/fihssx9JCaLA0G33YwbS
-         Fhu8rMYq0AEMD0odpvNnZMwZPoBof9/7aCruL4CANwI8OXQZmhescb+FmsxDmEArVckz
-         dS9H0d7RXpUP/WOXRoSMkFCC8as868l9JLttcbcy/dociOHZoM4kGZeELS/qLvAjxc9X
-         2NWL6DqdGCr7I5PJY6lMHBam8VTfVUdKlYLu/kfrgZUsq+dLP/cjLPySB2DNHkw4VQhs
-         dhBg==
-X-Forwarded-Encrypted: i=1; AJvYcCUSBkuMifpdEAHDAwNC2pwwVVXCPizdntrf8A1lrrHgK44OxYQdLr3h0xTrUoAtTPRdonI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwyfUfC8RcP9fNivgdugjXSz8m3rwJDJAjJJc8UvPJ7RxLQnLjp
-	fTYfdXP0byXaUSoPjTo3kOO3ROMJTFcDA4DXjXy0i29P4YvOkgtsmiD3T1mGYWHgSrV/7pDaS5S
-	iS8OBBZFdt9k6PqKkpTj3p0heGwi4L0w5JSUuT/XOj681TEWvrwSjwzIEBVmFX7g/bKRKGn7caV
-	RcBtZJKkIYo1jYBO1DdUsA8cQQqYDr
-X-Gm-Gg: AY/fxX4jEb9bsOYFgBxraItc6tXAPy506mAYt51AVTk3qQYidSRaJSO+Ay4NzQPhjwQ
-	o6Wz138kaVz25+hfXPsmy3wod0A/fKssaC3fUscK+RXSp4tkvZqamIRG49MVv7cP+jJ0i0MAFwH
-	nVYmD1dbaMrj014LlxwzlbRTe5IKJFo85R3D7LRy4OFiRaaOQKBJfQWODjAaVIouI2WnP9J6OqO
-	zLGhKe6uKRQGcM4DWmPueNT
-X-Received: by 2002:a17:906:d54f:b0:b87:718:5da2 with SMTP id a640c23a62f3a-b8707185ecfmr471401266b.1.1768221554304;
-        Mon, 12 Jan 2026 04:39:14 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IH3+obAgvpI3XGqVs/x4/87zfrvhtWt19z8TWgbdUn/UY6KiSt7yf30J8rO+jMO6vWIwvauNVnXpg2n56+W+L0=
-X-Received: by 2002:a17:906:d54f:b0:b87:718:5da2 with SMTP id
- a640c23a62f3a-b8707185ecfmr471398866b.1.1768221553899; Mon, 12 Jan 2026
- 04:39:13 -0800 (PST)
+	s=arc-20240116; t=1768226539; c=relaxed/simple;
+	bh=XmcTzjP+IJ00WyfHItPCpaDCCeKe1TYq6v4q5Ysbfgo=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=rewhoa2tzbx8PWYHef3f9EHOyCId3NhLTj+IwtJaBiby/UCnRWpd6c/Qic4DKiBwtQZp46fH6jQ8YxCAOimgnGv4bunnyu/a0l1wognRYMnINIMG6j/13MPJWnXMfys292lgo9UpU9zAZWTYSq2pQQT+hWGcC+T2oFX1HwQgtDI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
+Received: from omf13.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay06.hostedemail.com (Postfix) with ESMTP id 45DC11AC23A;
+	Mon, 12 Jan 2026 13:53:23 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf13.hostedemail.com (Postfix) with ESMTPA id 1890B20012;
+	Mon, 12 Jan 2026 13:53:20 +0000 (UTC)
+Date: Mon, 12 Jan 2026 08:53:19 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, LKML
+ <linux-kernel@vger.kernel.org>, Linux trace kernel
+ <linux-trace-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, Masami
+ Hiramatsu <mhiramat@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Thomas Gleixner
+ <tglx@linutronix.de>
+Subject: Re: [PATCH v5] tracing: Guard __DECLARE_TRACE() use of
+ __DO_TRACE_CALL() with SRCU-fast
+Message-ID: <20260112085257.26bb7b5b@fedora>
+In-Reply-To: <CAADnVQJiEhDrfYVEyV8eGUECE_XFt7PGG=PFJRKU4jRBn-TsvA@mail.gmail.com>
+References: <20260108220550.2f6638f3@fedora>
+	<da261242-482f-4b47-81c6-b065c5a95c4b@efficios.com>
+	<CAADnVQJMa+p_BcYxKUgve2=sqRBwSs3wLGAGhbA0r6hwFpJ+6Q@mail.gmail.com>
+	<20260109141930.6deb2a0a@gandalf.local.home>
+	<3c0df437-f6e5-47c6-aed5-f4cc26fe627a@efficios.com>
+	<CAADnVQLeCLRhx1Oe5DdJCT0e+WWq4L3Rdee1Ky0JNNh3LdozeQ@mail.gmail.com>
+	<20260109170028.0068a14d@fedora>
+	<CAADnVQKGm-t2SdN_vFVMn0tNiQ5Fs6FutD2Au-jO69aGdhKS7Q@mail.gmail.com>
+	<20260109173326.616e873c@fedora>
+	<20260109173915.1e8a784e@fedora>
+	<CAADnVQKB4dAWtX7T15yh31NYNcBUugoqcnTZ3U9APo8SZkTuwg@mail.gmail.com>
+	<20260110111454.7d1a7b66@fedora>
+	<CAADnVQJ_L_TvFogq0+-qOH=vxe5bzU9iz3c-6-N7VFYE6cBnjQ@mail.gmail.com>
+	<20260111170953.49127c00@fedora>
+	<CAADnVQJiEhDrfYVEyV8eGUECE_XFt7PGG=PFJRKU4jRBn-TsvA@mail.gmail.com>
+X-Mailer: Claws Mail 4.3.1 (GTK 3.24.51; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260106133655.249887-1-wander@redhat.com> <20260106133655.249887-5-wander@redhat.com>
- <CADDUTFyEJxLHKHiaxya5QxW49kzWdhj=hzTygQYa9JPUOe8Zgw@mail.gmail.com>
-In-Reply-To: <CADDUTFyEJxLHKHiaxya5QxW49kzWdhj=hzTygQYa9JPUOe8Zgw@mail.gmail.com>
-From: Tomas Glozar <tglozar@redhat.com>
-Date: Mon, 12 Jan 2026 13:39:01 +0100
-X-Gm-Features: AZwV_QiopI6W-8pUbNsGpRjKtlB-Ai6Lekl1JIddbiz00sbteCjQLnK3nAzzz4g
-Message-ID: <CAP4=nvQaunTud=CT8Dp4cYCuB=m7t_0VsCsvmxRtBxC_T6dvzg@mail.gmail.com>
-Subject: Re: [PATCH v2 04/18] rtla: Replace atoi() with a robust strtoi()
-To: Costa Shulyupin <costa.shul@redhat.com>
-Cc: Wander Lairson Costa <wander@redhat.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Ivan Pravdin <ipravdin.official@gmail.com>, Crystal Wood <crwood@redhat.com>, 
-	John Kacur <jkacur@redhat.com>, Tiezhu Yang <yangtiezhu@loongson.cn>, 
-	"open list:Real-time Linux Analysis (RTLA) tools" <linux-trace-kernel@vger.kernel.org>, 
-	"open list:Real-time Linux Analysis (RTLA) tools" <linux-kernel@vger.kernel.org>, 
-	"open list:BPF [MISC]:Keyword:(?:b|_)bpf(?:b|_)" <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Server: rspamout07
+X-Rspamd-Queue-Id: 1890B20012
+X-Stat-Signature: gcjjox51mrxtmsrreow5a3i5gw9tp9u1
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX18VqfY3Eg7yuckf9KrSUxHmnxOL9VS9acY=
+X-HE-Tag: 1768226000-715225
+X-HE-Meta: U2FsdGVkX1+wTUSCcvJ9YKpsslDni28EAev+O6hnTL6tiTGLW0myv/79edh+fekfijsTR7aIpnz8hmKYF2xhvPXobM33rS2uQkTVovE2iyUdXw0rOq7B6E/4uX86Jjy+eftROHVdeBEaxZal79AXTNZkiNEVP6iIFv8v5TPx7M95BmtmfvkQPmNR1EvQel25yBF8V417IqDiLvCakFAO6b0Rje3Mxqst/KERgAA79+LQ26kJMd0u0Ghq2pOXZqPFggnEww5/QYezuNqZCfByYGTxwo0Jl3PQt+Y2+CP499laogRxBUT1XxWYJ9irixSKd3Iw5B2VRttQTRHg43D2bTkoIXr/c2my
 
-po 12. 1. 2026 v 13:28 odes=C3=ADlatel Costa Shulyupin
-<costa.shul@redhat.com> napsal:
->
-> This commit breaks parse_cpu_set
->
-> ./rtla timerlat hist -D -c 1,3
-> Error parsing the cpu set 1,3
-> Invalid -c cpu list
->
-> ./rtla timerlat hist -D -c 1-3
-> Error parsing the cpu set 1-3
-> Invalid -c cpu list
->
+On Sun, 11 Jan 2026 15:38:38 -0800
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-It might not be the worst idea to test more than just "-c 0" in
-tests/timerlat.t :)
+> > Oh, so you are OK replacing the preempt_disable in the tracepoint
+> > callbacks with fast SRCU?  
+> 
+> yes, but..
+> 
+> > Then I guess we can simply do that. Would it be fine to do that for
+> > both RT and non-RT? That will simplify the code quite a bit.  
+> 
+> Agree. perf needs preempt_disable in their callbacks (as this patch does)
+> and bpf side needs to add migrate_disable in __bpf_trace_run for now.
+> Though syscall tracepoints are sleepable we don't take advantage of
+> that on the bpf side. Eventually we will, and then rcu_lock
+> inside __bpf_trace_run will become srcu_fast_lock.
+> 
+> The way to think about generic infrastructure like tracepoints is
+> to minimize their overhead no matter what out-of-tree and in-tree
+> users' assumptions are today, so why do we need preempt_disable
+> or srcu_fast there?
 
-Tomas
+Either preempt disable or srcu_fast is still needed.
 
+> I think today it's there because all callbacks (perf, ftrace, bpf)
+> expect preemption to be disabled, but can we just remove it from tp side?
+> and move preempt_disable to callbacks that actually need it?
+
+Yes if we are talking about switching from preempt_disable to src_fast.
+No if you mean to remove both as it still needs RCU protection. It's
+used for synchronizing changes in the tracepoint infrastructure itself.
+That __DO_TRACE_CALL() macro is the guts of the tracepoint callback
+code. It needs to handle races with additions and removals of callbacks
+there, as the callbacks also get data passed to them. If it gets out of
+sync, a callback could be called with another callback's data.
+
+That's why it has:
+
+                it_func_ptr =                                           \
+                        rcu_dereference_raw((&__tracepoint_##name)->funcs);
+
+> 
+> I'm looking at release_probes(). It's fine as-is, no?
+
+That's just freeing, and as you see, there's RCU synchronization
+required.
+
+Updates to tracepoints require RCU protection. It started out with
+preempt_disable() for all tracepoints (which was synchronized with
+synchronized_sched() which later became just synchronize_rcu()).
+
+The issue that came about was that both ftrace and perf had an
+assumption that its tracepoint callbacks always have preempt disabled
+when being called. To move to srcu_fast() that is no longer the case.
+And we need to do that for PREEMPT_RT if BPF is running very long
+callbacks to the tracepoints.
+
+Ftrace has been fixed to not require it, but still needs to take into
+account if tracepoints disable preemption or not so that it can display
+the preempt_count() of when the tracepoint was called correctly.
+
+Perf is trivial to fix as it can simply add a preempt_disable() in its
+handler.
+
+But we were originally told that BPF had an issue because it had the
+assumption that tracepoint callbacks wouldn't migrate. That's where
+this patch came about.
+
+Now if you are saying that BPF will handle migrate_disable() on its own
+and not require the tracepoint infrastructure to do it for it, then
+this is perfect. And I can then simplify this code, and just use
+srcu_fast for both RT and !RT.
+
+-- Steve
 
