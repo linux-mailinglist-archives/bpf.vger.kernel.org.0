@@ -1,179 +1,100 @@
-Return-Path: <bpf+bounces-78523-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78524-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51BD2D10C41
-	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 07:54:19 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6464AD10C2C
+	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 07:52:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DCB9C30C2B45
-	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 06:51:45 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 533FD301581E
+	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 06:52:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08BDF31AAA2;
-	Mon, 12 Jan 2026 06:51:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E07D031A55A;
+	Mon, 12 Jan 2026 06:52:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="njl9no/1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m67jyqlm"
 X-Original-To: bpf@vger.kernel.org
-Received: from xmbghk7.mail.qq.com (xmbghk7.mail.qq.com [43.163.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f65.google.com (mail-wr1-f65.google.com [209.85.221.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E192D3101BD;
-	Mon, 12 Jan 2026 06:51:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.163.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DB19314B7C
+	for <bpf@vger.kernel.org>; Mon, 12 Jan 2026 06:52:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768200703; cv=none; b=M6B4M1ooafwXycGip+9jB6wKgG+m1enIUYT1yo7LhCoh9WbSYBxo/yPPlri0CX6FqL4qXejl+ENve4PVcB+ovbLQF/Ab/86PaC8hVNlCpTvCC3nrQW6T/BrJosD9+p7f5KWD0Iw1hmRUyanPMM9mc16KNncK1u+Mge+WUIu664g=
+	t=1768200748; cv=none; b=Jt5oIeMTYJEJvBstvW58FJVDKGmbVSaIEH04m5xzy7v+BDRTJKhzClxaMJhacpVeBb4CK9n3QSV85UCDN2eHIKRDSG+QOad/pmWxEO9ERkOnjiakF1QRoNpvFljIe36l3EpMVNpaKQvraZ7PwLmJI7H540C46raWRCrv3nTCXVI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768200703; c=relaxed/simple;
-	bh=quJvE8vwHYpHVBavlYKLXNnhs4IOSsGtUMCeys7CZnE=;
-	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=Lt9nvXZzooURnTGNiwGH3W72lWkyOA/UXEci0ZIZpJJyYLtaApgSc70LAPhy+7P0F+85Divzw6BuIlWGxsaxb/Hcm/bcyz8wvST8bQQiReBgj4bLXLycATAg9n6t/e5NC3oyV+umpX6+iCRa2BqQZOf74877HuoyLkm4ZSPjfQU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=njl9no/1; arc=none smtp.client-ip=43.163.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1768200693; bh=Qa6tB27g4TuNvXPUs8YdrNgF61XPByBVroSOodFWU0A=;
-	h=From:To:Cc:Subject:Date;
-	b=njl9no/1aj2JlbX4oPu9+hzj18RLS8Sy0tae3cHNNO5oj32BnqDeL34mOTzI7EhFs
-	 PRlIhQ7sSDFpDr0SF5rk9M4HJMmrucIZAEOIuogGyDfFpSuzUOJBneAVPak7QHyh6S
-	 tEVqQHIglC/Jglpv0smd8r8fo10/3j4MbXq9+cTQ=
-Received: from localhost.localdomain ([101.227.46.167])
-	by newxmesmtplogicsvrszb51-0.qq.com (NewEsmtp) with SMTP
-	id C8F278E1; Mon, 12 Jan 2026 14:50:15 +0800
-X-QQ-mid: xmsmtpt1768200615tlg886l4c
-Message-ID: <tencent_B4B492A164C782F98C9C2E607E74B638FC0A@qq.com>
-X-QQ-XMAILINFO: OIJV+wUmQOUAVnYhePoI1LQs7l55OAEmSe3roA+0jNNeRUynkl2oQrlDHJLL/3
-	 6SZFBhrueazgJ05Z0DFPHPyPzBZJzZzweNyLf1ma3hurBhzCYKHqdRd4dw7jil2FbIeVHLPmFIT5
-	 Erk6rNH0c2ny3CkeCri2IKIhyYMpVHBvSqsu6ULGwaL8KWfQQAEKMUMKXsmbSuT5GnycDDeHXBsi
-	 FK750W25u2ch+P0mXbxLTqOTvzUX5aXsbQ8iLBF4zcRenWYFG2btiK3t7DkYwt0AS4iWnErwU72/
-	 ZfNsAFa60t2o8WaUqpC1qfigkpVprKI00so5hbteDXX/O8cKgJ0AJUnSPhRPg+LqRMO38uEV8eBa
-	 zfCXiq6BDgXmoNosa0+XMn8N4uyxJuIL9H2Ypgo6Cym8TO82Cf3sDRHVw7PwparAUUl36N0mkbzo
-	 kQFyxd1sSYRD4xlTEwE1TmuW1S8KCWnouJYMHh+iz2Ik55ERp0IWN8prwE47M7WMUz8AA+cXKX4q
-	 Aip+kWGwP3mZHa45zUBYEKyBu3u733aU/I35sc7XX4hqUelu8XwsVKLHXSHh4bmya2kUckV89cF5
-	 lxcwGFEzh/BVp6YpepGsKA3sM30AdQlM+0LS5tO28jt6EiGcGVuHRuzUgBpKNNynUW4/L3XXxPCO
-	 pSXHEDGDbO07Tt1LBAMepIOH+IVwpZ1qeD5vDkPPMoBWZ0bC5IOBx6bRKO72AKRzGKuNe/2vn52/
-	 bSawyAIzw1E3qi2+uCWa2uNKRGy6FhF84ibf+UxZOW555oUNY6h/co3WGKx8OJuxhi5GAZFVtSTT
-	 qMyZONxTdEucQFIMEGLdVOJ+rXUtIJcmeg8OGK2fNqFmJJPhQ3sjO1VwvItf8T4LxnSQsVRFu/Np
-	 NBGT4jbwfsWjGA1IijUAbn0UXzAp0Tc2xfqbid8oN7r82TwpJZes+JYhb4mEdWUIfva+dSxQvfGs
-	 X9YVq77zuHgsw7w8ORztDtWrjvQ9NojFF0xWvDuPDZkoE+MIJypY89J+6wDqZHGXGGgk++emRk1p
-	 sb8J2NUdgAieBXUkbJXDOEJKSHD96AyPQfsjVPIdKAH/BH1Ay2eqmfNv0yMhw=
-X-QQ-XMRINFO: MPJ6Tf5t3I/ylTmHUqvI8+Wpn+Gzalws3A==
-From: wujing <realwujing@qq.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: John Fastabend <john.fastabend@gmail.com>,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	wujing <realwujing@qq.com>,
-	Qiliang Yuan <yuanql9@chinatelecom.cn>
-Subject: [PATCH] bpf/verifier: implement slab cache for verifier state list
-Date: Mon, 12 Jan 2026 14:49:53 +0800
-X-OQ-MSGID: <20260112064953.933973-1-realwujing@qq.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1768200748; c=relaxed/simple;
+	bh=6Vs9eutlyUalFlEp8jpnBCMGyuuyKr0XHqhsSUUI9D0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ph7s0SgVaQBSpX+FPcQQJBPRwrwpECr1RpgMQJBwyzrgzKjf6C6xUeJqjI0MzqUgFUl8ITWx2Ov8Vlbe+dGY86JCqOU4hZEf0buPk4vSWgDgsyBvWUfZbpu0mt4LtInMzlNcpQjucr9aUFvHxHjbuYSMz38CnTd1nMKBh3BYr+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m67jyqlm; arc=none smtp.client-ip=209.85.221.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f65.google.com with SMTP id ffacd0b85a97d-4327778df7fso3724098f8f.3
+        for <bpf@vger.kernel.org>; Sun, 11 Jan 2026 22:52:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1768200745; x=1768805545; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=6Vs9eutlyUalFlEp8jpnBCMGyuuyKr0XHqhsSUUI9D0=;
+        b=m67jyqlmnQxlm4W8gHv6YhaehafVOhLL+/o+jkfwwZRLsYjlrmE40MoHhn/saAD7TW
+         diplWx9+c3POGXKrFRb10Zz6fIpFFX0TClOV0Iamj0F5KdIBXoznL3Fwg7m0s9lurKrL
+         4Qa6VP6cMBFUGLQqmHjn4vCeD7tdR5F+0v29Fwp0VPhRDByMe490sM78NGLLzW1sqLQJ
+         s0+GhzneFZ08YiRr8OCb0AeLiZYdusnp/YVkMvFhh609jgv7kqF1Y7RjrNhhDBlRuhDv
+         VxTcmGoaNwkLGcHK3IFx+3XyyuboJbUwU35G96tByRlL/hhKgXL46GtJ/jNnlYZEZUC7
+         ZaHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768200745; x=1768805545;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6Vs9eutlyUalFlEp8jpnBCMGyuuyKr0XHqhsSUUI9D0=;
+        b=tfS99YCg0T3T5Zli2TPqG+ntxJwm6r331CQWYgdW9xG4A4pC0kn1ActT1paImBv7DC
+         C+lFHOt1YSjmdxYUvkRiU0aR2sXbRrf3pi4JP5S62huLxDc3D1TEI0AiehIk0wpFzHvJ
+         XxrFsKNZeoJlQevgPbYHLGeyygPvqkDVS4wLS7Awf6L4robjUv0Pwl0E+98tJkp/v/NQ
+         PJ9wI9DnNe4Y3x+i2cQiXjmpqJGfyjK3ESnBMdEYdF3dL8L6Z5JyvRpzCRvGV0qfKr1a
+         0wEuOeDx77OedzkyMwQOjoAJVdExrG7pUPffILKVd86GV9XfmtUsL48+YnXUuSq2bXvv
+         2+Ww==
+X-Gm-Message-State: AOJu0YxGuBphQNaNLrBCqmPlNFbcEUfyBg8/LbdTVo7ibRkAhmrAqreI
+	gfFtb45VK4I3RJAiKI5RxZmEuPLkxjE4GDhEq70cshfLuuH7iIukekS49jTr0jScnyXMXh8gtqQ
+	lxV1MWDR8Jmr/xygrmh7daFakOM6IDlI=
+X-Gm-Gg: AY/fxX62iE0IN6XSjlTuNIRRdJmTPfaa9cYuDi3BwBAgpGi5Jq7yFD2Ihw14POEnSfm
+	8HZZ+7fT4lN071wId5g4F/YP87WvhBqy1VGRmh/K80f5wA3qovgfZZUdcR8o16kCS34o5UFYyqK
+	0jCppQw//0u61pnEcGBsYBB2hZJQ2kFqofN0gQb2WsygZ8wU+w5xWmQi257lqxb2xCjUQmhK2pm
+	aCVpvBxdFkgiZh6XVxjhnzbrb/IrY1Pbs0LQttPijf5tHpRG6E7FlLeSPgWOhRAXKXOe3ppkYJZ
+	zbuLx5yWznOTQrIf+V4Q8h/R60h8ww==
+X-Google-Smtp-Source: AGHT+IEWWCROZ9W2XvupSh0FHs9eo+ngEG6sTxMlknORvN+lv005fT9kAg9rRfr7QkToLile3In7OBAFa3CiWT/gw/w=
+X-Received: by 2002:a05:6000:4301:b0:42b:5592:ebe6 with SMTP id
+ ffacd0b85a97d-432c32f701cmr16434006f8f.0.1768200745476; Sun, 11 Jan 2026
+ 22:52:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20260107-timer_nolock-v3-0-740d3ec3e5f9@meta.com> <20260107-timer_nolock-v3-2-740d3ec3e5f9@meta.com>
+In-Reply-To: <20260107-timer_nolock-v3-2-740d3ec3e5f9@meta.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Mon, 12 Jan 2026 07:51:48 +0100
+X-Gm-Features: AZwV_QhmNxcDfnsblipm-NVjvzOd1RAtFRKLjVZgen2v5s2lxT0Mq6yRr0zRzC4
+Message-ID: <CAP01T76ccrFiQ3a8XEw_ZMVpupk+is-3V-se+vVCcsdyx1MVbA@mail.gmail.com>
+Subject: Re: [PATCH RFC v3 02/10] bpf: Factor out timer deletion helper
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, eddyz87@gmail.com, 
+	Mykyta Yatsenko <yatsenko@meta.com>
+Content-Type: text/plain; charset="UTF-8"
 
-The BPF verifier's state exploration logic in is_state_visited()
-frequently allocates and deallocates 'struct bpf_verifier_state_list'
-nodes to track explored states and prune the search space.
+On Wed, 7 Jan 2026 at 18:49, Mykyta Yatsenko <mykyta.yatsenko5@gmail.com> wrote:
+>
+> From: Mykyta Yatsenko <yatsenko@meta.com>
+>
+> Move the timer deletion logic into a dedicated bpf_timer_delete()
+> helper so it can be reused by later patches.
+>
+> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+> ---
 
-Currently, these allocations use generic kzalloc(), which can lead to
-unnecessary memory fragmentation and performance overhead when
-verifying high-complexity BPF programs with thousands of potential
-states.
-
-This patch introduces a dedicated slab cache, 'bpf_verifier_state_list',
-to manage these allocations more efficiently. This provides better
-allocation speed, reduced fragmentation, and improved cache locality
-during the verification process.
-
-Summary of changes:
-- Define global 'bpf_verifier_state_list_cachep'.
-- Initialize the cache via late_initcall() in bpf_verifier_init().
-- Use kmem_cache_zalloc() in is_state_visited() to allocate new states.
-- Replace kfree() with kmem_cache_free() in maybe_free_verifier_state(),
-  is_state_visited() error paths, and free_states().
-
-Signed-off-by: wujing <realwujing@qq.com>
-Signed-off-by: Qiliang Yuan <yuanql9@chinatelecom.cn>
----
- kernel/bpf/verifier.c | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 169845710c7e..5c1be0cae4c2 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -46,6 +46,7 @@ static const struct bpf_verifier_ops * const bpf_verifier_ops[] = {
- 
- struct bpf_mem_alloc bpf_global_percpu_ma;
- static bool bpf_global_percpu_ma_set;
-+static struct kmem_cache *bpf_verifier_state_list_cachep;
- 
- /* bpf_check() is a static code analyzer that walks eBPF program
-  * instruction by instruction and updates register/stack state.
-@@ -1711,7 +1712,7 @@ static void maybe_free_verifier_state(struct bpf_verifier_env *env,
- 			loop_entry_sl->state.used_as_loop_entry--;
- 		list_del(&sl->node);
- 		free_verifier_state(&sl->state, false);
--		kfree(sl);
-+		kmem_cache_free(bpf_verifier_state_list_cachep, sl);
- 		env->free_list_size--;
- 		sl = loop_entry_sl;
- 	}
-@@ -19282,7 +19283,7 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
- 	 * When looping the sl->state.branches will be > 0 and this state
- 	 * will not be considered for equivalence until branches == 0.
- 	 */
--	new_sl = kzalloc(sizeof(struct bpf_verifier_state_list), GFP_KERNEL);
-+	new_sl = kmem_cache_zalloc(bpf_verifier_state_list_cachep, GFP_KERNEL);
- 	if (!new_sl)
- 		return -ENOMEM;
- 	env->total_states++;
-@@ -19300,7 +19301,7 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
- 	err = copy_verifier_state(new, cur);
- 	if (err) {
- 		free_verifier_state(new, false);
--		kfree(new_sl);
-+		kmem_cache_free(bpf_verifier_state_list_cachep, new_sl);
- 		return err;
- 	}
- 	new->insn_idx = insn_idx;
-@@ -22666,7 +22667,7 @@ static void free_states(struct bpf_verifier_env *env)
- 	list_for_each_safe(pos, tmp, &env->free_list) {
- 		sl = container_of(pos, struct bpf_verifier_state_list, node);
- 		free_verifier_state(&sl->state, false);
--		kfree(sl);
-+		kmem_cache_free(bpf_verifier_state_list_cachep, sl);
- 	}
- 	INIT_LIST_HEAD(&env->free_list);
- 
-@@ -22679,7 +22680,7 @@ static void free_states(struct bpf_verifier_env *env)
- 		list_for_each_safe(pos, tmp, head) {
- 			sl = container_of(pos, struct bpf_verifier_state_list, node);
- 			free_verifier_state(&sl->state, false);
--			kfree(sl);
-+			kmem_cache_free(bpf_verifier_state_list_cachep, sl);
- 		}
- 		INIT_LIST_HEAD(&env->explored_states[i]);
- 	}
-@@ -24199,3 +24200,12 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
- 	kvfree(env);
- 	return ret;
- }
-+
-+static int __init bpf_verifier_init(void)
-+{
-+	bpf_verifier_state_list_cachep = kmem_cache_create("bpf_verifier_state_list",
-+							   sizeof(struct bpf_verifier_state_list),
-+							   0, SLAB_PANIC, NULL);
-+	return 0;
-+}
-+late_initcall(bpf_verifier_init);
--- 
-2.43.0
-
+Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 
