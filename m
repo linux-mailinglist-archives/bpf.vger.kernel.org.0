@@ -1,44 +1,44 @@
-Return-Path: <bpf+bounces-78626-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78627-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A6F8D157C0
-	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 22:50:32 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id B397FD157C3
+	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 22:50:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 384B63009D78
-	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 21:50:29 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 31ECF3009D64
+	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 21:50:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 150A53446A7;
-	Mon, 12 Jan 2026 21:50:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CFC83446B6;
+	Mon, 12 Jan 2026 21:50:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fm8NP9Ra"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KUEGGosz"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99DBA1C84D7;
-	Mon, 12 Jan 2026 21:50:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0F6E342512;
+	Mon, 12 Jan 2026 21:50:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768254625; cv=none; b=DNLyjKI+GXiNXt3Xteo+5RWydt/GrQuQHf40Wi1Ef1ECwCUZ8+Nxa2y9izzKBeyR4nJwiaQos5KM9KisPqgcv9SGimNjEmsW4rydAr9QI/ihJa5nWluwZdbHoPhC+ZooCcXsbpY5thOjXcjP90yIkJXlCZ81BxzxVCLAXvC0i1E=
+	t=1768254636; cv=none; b=rJZYGZNMPaMNsdMG2jGZS9/f/e9dcFC0mzU4ocH+/1ibBH3nQe4mTcbLxJz/FvJMEzRKTbZnTvA1iow71a7LtyKaQHu4wbLxJ4f75CyTPYR55DKuzIXAB/oFW1ipCR7D5Idxv5THCATOxmGVktecGwdTVWSfxgpuYdbO0Ar/uTs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768254625; c=relaxed/simple;
-	bh=xhRljmXigdry4f9PbyrJi+AYA6WIKqd/bXcrjJ/9MtA=;
+	s=arc-20240116; t=1768254636; c=relaxed/simple;
+	bh=BKAlzB8ae2rvFp3J172DYzy+dW8gueCU5Wr5zuoFG4s=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eKzpy2oJZedB66ykwb1GSC2Do+4hnQ/jm/8Z4JzY22ksDdau0lrbsixgoyJzCZtTvHj7XpXR6VoMnihfIx4pxTlJncCVMrcbRhOciNqGow1rRcyt+JArNbts+4XI5RDBFp6M4v7lGCyMyB/4KG5CfdBMNKaPMyaVUTDVkSlXyVI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Fm8NP9Ra; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60AE3C116D0;
-	Mon, 12 Jan 2026 21:50:22 +0000 (UTC)
+	 MIME-Version; b=BcB3XWJ7BB+GjHraEdVJTSoPkpRVPRGgfy1iLe9rEAKnqCHtLkbKCtzr3PYihjh4KIyWiwxPFRyY7F5UReJLy7s41C28Brq0NAfoWQnGCaBawEqZHFeDLv//ecvuXJgvh8nFodnxY9Iv9/WoFMSzQXNajiZtZtQuWPQjJB7Tr7k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KUEGGosz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A17FFC116D0;
+	Mon, 12 Jan 2026 21:50:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768254625;
-	bh=xhRljmXigdry4f9PbyrJi+AYA6WIKqd/bXcrjJ/9MtA=;
+	s=k20201202; t=1768254635;
+	bh=BKAlzB8ae2rvFp3J172DYzy+dW8gueCU5Wr5zuoFG4s=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Fm8NP9Ra8K5sLEHcvUXo8FmzonROpH1MftpOyD5oqwNoJI+Qeir7IHkB6kooy1DWk
-	 Ah1OyOcbUEaRi9vQ0ZpX4QlBHz/t6KLsTC5pIH7vkYXXKfrmMhConzsFb30SO0Esz4
-	 0+u4fyS6b8+BuYzjiyU7ZMaC7ny6FApfVJufwgckPVPiUfCQB5YnMOdYe6WMQiCvwm
-	 8WNvpzxCQ5AZtdmSXDcJ+p7eAYsaR7TdyMH8pGhDKdJo9lvDeLkCEfsG+jgkaAj/P9
-	 PrjAZsPyqx8+Yq7PnTXPiLgHnTNXAhR0sJI+81n90c3o4cv6KXHkobEJwypqy6/Ftu
-	 uLdmySDYcAWpQ==
+	b=KUEGGoszgb39p5yxBxjRZuXhqc+KyUrbgP2661umrAaXaIPGIC5EMpbB9WZgK7I5A
+	 UU790JY3I2pym8voY7SRD0C2L9GGq/nBSItFPT4z7cWI1dTXWk/OGG0XmWwti+YHQ/
+	 iel2xoC53DFFCn152UuaDfeXaYRaeUqXRPV4oyjBvAdNo4tH+kBuiTV5Q45qV22QOj
+	 rspM0Jydi2p5Z1UbBMgqQ60FEBnbsjEVz+MHJgQOyRbVWwxaB09dFfjNePWTA09c2z
+	 gRoJBepVJNfn/ZVg4TSYSmhiDrNVMO+xGECPlNCbAGl57L1R1wE7jxXBZVW1hpSQxo
+	 Qjj1L1arY33Zw==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Masami Hiramatsu <mhiramat@kernel.org>,
 	Steven Rostedt <rostedt@goodmis.org>,
@@ -51,9 +51,9 @@ Cc: Peter Zijlstra <peterz@infradead.org>,
 	Song Liu <songliubraving@fb.com>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Mahe Tardy <mahe.tardy@gmail.com>
-Subject: [PATCH bpf-next 3/4] selftests/bpf: Fix kprobe multi stacktrace_ips test
-Date: Mon, 12 Jan 2026 22:49:39 +0100
-Message-ID: <20260112214940.1222115-4-jolsa@kernel.org>
+Subject: [PATCH bpf-next 4/4] selftests/bpf: Allow to benchmark trigger with stacktrace
+Date: Mon, 12 Jan 2026 22:49:40 +0100
+Message-ID: <20260112214940.1222115-5-jolsa@kernel.org>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260112214940.1222115-1-jolsa@kernel.org>
 References: <20260112214940.1222115-1-jolsa@kernel.org>
@@ -65,29 +65,101 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-We now include the attached function in the stack trace,
-fixing the test accordingly.
+Adding support to call bpf_get_stackid helper from trigger programs,
+so far added for kprobe multi.
 
-Fixes: c9e208fa93cd ("selftests/bpf: Add stacktrace ips test for kprobe_multi/kretprobe_multi")
+Adding the --stacktrace/-g option to enable it.
+
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/testing/selftests/bpf/prog_tests/stacktrace_ips.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ tools/testing/selftests/bpf/bench.c            |  4 ++++
+ tools/testing/selftests/bpf/bench.h            |  1 +
+ .../selftests/bpf/benchs/bench_trigger.c       |  1 +
+ .../selftests/bpf/progs/trigger_bench.c        | 18 ++++++++++++++++++
+ 4 files changed, 24 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/stacktrace_ips.c b/tools/testing/selftests/bpf/prog_tests/stacktrace_ips.c
-index c9efdd2a5b18..43781a67051b 100644
---- a/tools/testing/selftests/bpf/prog_tests/stacktrace_ips.c
-+++ b/tools/testing/selftests/bpf/prog_tests/stacktrace_ips.c
-@@ -74,7 +74,8 @@ static void test_stacktrace_ips_kprobe_multi(bool retprobe)
+diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftests/bpf/bench.c
+index bd29bb2e6cb5..8dadd9c928ec 100644
+--- a/tools/testing/selftests/bpf/bench.c
++++ b/tools/testing/selftests/bpf/bench.c
+@@ -265,6 +265,7 @@ static const struct argp_option opts[] = {
+ 	{ "verbose", 'v', NULL, 0, "Verbose debug output"},
+ 	{ "affinity", 'a', NULL, 0, "Set consumer/producer thread affinity"},
+ 	{ "quiet", 'q', NULL, 0, "Be more quiet"},
++	{ "stacktrace", 'g', NULL, 0, "Get stack trace"},
+ 	{ "prod-affinity", ARG_PROD_AFFINITY_SET, "CPUSET", 0,
+ 	  "Set of CPUs for producer threads; implies --affinity"},
+ 	{ "cons-affinity", ARG_CONS_AFFINITY_SET, "CPUSET", 0,
+@@ -350,6 +351,9 @@ static error_t parse_arg(int key, char *arg, struct argp_state *state)
+ 	case 'q':
+ 		env.quiet = true;
+ 		break;
++	case 'g':
++		env.stacktrace = true;
++		break;
+ 	case ARG_PROD_AFFINITY_SET:
+ 		env.affinity = true;
+ 		if (parse_num_list(arg, &env.prod_cpus.cpus,
+diff --git a/tools/testing/selftests/bpf/bench.h b/tools/testing/selftests/bpf/bench.h
+index bea323820ffb..7cf21936e7ed 100644
+--- a/tools/testing/selftests/bpf/bench.h
++++ b/tools/testing/selftests/bpf/bench.h
+@@ -26,6 +26,7 @@ struct env {
+ 	bool list;
+ 	bool affinity;
+ 	bool quiet;
++	bool stacktrace;
+ 	int consumer_cnt;
+ 	int producer_cnt;
+ 	int nr_cpus;
+diff --git a/tools/testing/selftests/bpf/benchs/bench_trigger.c b/tools/testing/selftests/bpf/benchs/bench_trigger.c
+index 34018fc3927f..aeec9edd3851 100644
+--- a/tools/testing/selftests/bpf/benchs/bench_trigger.c
++++ b/tools/testing/selftests/bpf/benchs/bench_trigger.c
+@@ -146,6 +146,7 @@ static void setup_ctx(void)
+ 	bpf_program__set_autoload(ctx.skel->progs.trigger_driver, true);
  
- 	load_kallsyms();
+ 	ctx.skel->rodata->batch_iters = args.batch_iters;
++	ctx.skel->rodata->stacktrace = env.stacktrace;
+ }
  
--	check_stacktrace_ips(bpf_map__fd(skel->maps.stackmap), skel->bss->stack_key, 4,
-+	check_stacktrace_ips(bpf_map__fd(skel->maps.stackmap), skel->bss->stack_key, 5,
-+			     ksym_get_addr("bpf_testmod_stacktrace_test"),
- 			     ksym_get_addr("bpf_testmod_stacktrace_test_3"),
- 			     ksym_get_addr("bpf_testmod_stacktrace_test_2"),
- 			     ksym_get_addr("bpf_testmod_stacktrace_test_1"),
+ static void load_ctx(void)
+diff --git a/tools/testing/selftests/bpf/progs/trigger_bench.c b/tools/testing/selftests/bpf/progs/trigger_bench.c
+index 2898b3749d07..479400d96fa4 100644
+--- a/tools/testing/selftests/bpf/progs/trigger_bench.c
++++ b/tools/testing/selftests/bpf/progs/trigger_bench.c
+@@ -25,6 +25,23 @@ static __always_inline void inc_counter(void)
+ 	__sync_add_and_fetch(&hits[cpu & CPU_MASK].value, 1);
+ }
+ 
++volatile const int stacktrace;
++
++typedef __u64 stack_trace_t[128];
++
++struct {
++	__uint(type, BPF_MAP_TYPE_STACK_TRACE);
++	__uint(max_entries, 16384);
++	__type(key, __u32);
++	__type(value, stack_trace_t);
++} stackmap SEC(".maps");
++
++static __always_inline void do_stacktrace(void *ctx)
++{
++	if (stacktrace)
++		bpf_get_stackid(ctx, &stackmap, 0);
++}
++
+ SEC("?uprobe")
+ int bench_trigger_uprobe(void *ctx)
+ {
+@@ -96,6 +113,7 @@ SEC("?kprobe.multi/bpf_get_numa_node_id")
+ int bench_trigger_kprobe_multi(void *ctx)
+ {
+ 	inc_counter();
++	do_stacktrace(ctx);
+ 	return 0;
+ }
+ 
 -- 
 2.52.0
 
