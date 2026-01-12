@@ -1,147 +1,132 @@
-Return-Path: <bpf+bounces-78611-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78612-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 957A0D14D06
-	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 19:55:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F7EAD14DD3
+	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 20:08:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C1E15303EBA4
-	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 18:54:15 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id F09A030285DD
+	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 19:08:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E56323876D4;
-	Mon, 12 Jan 2026 18:54:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Bw3Ys4yY"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F79E311C38;
+	Mon, 12 Jan 2026 19:08:47 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail.davidv.dev (mail.davidv.dev [78.46.233.60])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BED43815C5
-	for <bpf@vger.kernel.org>; Mon, 12 Jan 2026 18:54:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61797311951
+	for <bpf@vger.kernel.org>; Mon, 12 Jan 2026 19:08:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.46.233.60
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768244054; cv=none; b=iWl7NcQlHRDMqqtzVUcZgaNANeSYjyl43Bwy4eQQyrubL+JXaF+/01D60GVkXAMXg4Qs9lklmHKNTYRO3pWxbEY5993lcAMxWZabqZ2MEgxJqD+zgzZUtC+hrA9XpQT6qHycvHlkVC3r2NVBXAXf7fTtJNHrcqq7ZYsnYvpAvX8=
+	t=1768244927; cv=none; b=gesNhSLAF5aAVEqqTqCdqSfn4m7BGKoRHL4wzFNlYLypKi6sdyCW093yC+a+PFdwhi2OiGFjg6RmoT1o2T3kjnjUpFFyEDTAeHlfgyygHs9UpHi+sNv7pq7dsUFKCIKzxthaTbKeqLageYrVvnZgtNAs7Aal5ri5YHVDrBuFIQ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768244054; c=relaxed/simple;
-	bh=QqykXITTByyTT+FGlcEOND0SlMloNxcQl9qxBKW1MJ0=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=cXOU8m4NqRGboV9XrwJBj4+JVSGam2miQe4oU61uWucxqiwwZqNQpKS405+0NFRg6dcWbKan6qPFw+SmjLXBcT677+zlwLaWg4nL5JnyBGtanb6gkm4HKQ8Prz3wv6Y52uAaoAY4Es5VDhY+3gQFVq3bW5cGvZOAkoUJPUwhzGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Bw3Ys4yY; arc=none smtp.client-ip=91.218.175.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <3a697699-ffcb-4e2f-a7a4-9e3f571aa402@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1768244039;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/9vtTJ8E+WsBFblmJc5UE1EN6AZB8Sa5imYu+eocYP4=;
-	b=Bw3Ys4yYFJsGcrFo94H7o4SnkRA4tr8AFowTqSo0kSbLHRH2fm7D/evq7AdA/S2U9Y/TG4
-	T62PnUk+mExAbwv2FPR7pjVaQJCHzjjl8B+lHaA2tGuvkeRlpe6l9qLum4aAB576+c6rnd
-	mWcYkqF0IzDnkAW7JNrPExrWO7RglpU=
-Date: Mon, 12 Jan 2026 10:53:53 -0800
+	s=arc-20240116; t=1768244927; c=relaxed/simple;
+	bh=ykMtPQ2rz3FZgGuysQEKnShJGTFv8Id4bjm/Y/4POmc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=srI8IdY4BbX9xasAYVk9UAHnPPmFYZ06I1E34glO/zB/D8gmbhg4XYFMWRjHluQTdGW2MGBubVWZVfYBzlDv1q2+LM9YAoakmI43y7ET8SeCsRqbx3MNOzvbJwsJJXDNMGw5Eau53w5F4WfwhQ1PWFl+JoHLBPtjoVcgSls494I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidv.dev; spf=pass smtp.mailfrom=davidv.dev; arc=none smtp.client-ip=78.46.233.60
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidv.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=davidv.dev
+X-Spam-Action: no action
+X-Spam-Score: 0.01
+Received: from [192.168.2.144]
+	by mail.davidv.dev (chasquid) with ESMTPSA
+	tls TLS_CHACHA20_POLY1305_SHA256
+	(over submission+TLS, TLS-1.3, envelope from "david@davidv.dev")
+	; Mon, 12 Jan 2026 20:08:43 +0100
+Message-ID: <bb6a3ada-ddcf-417d-82c7-f86cde6ed4f7@davidv.dev>
+Date: Mon, 12 Jan 2026 20:08:42 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v1 08/10] bpf: Add bpf_task_work_schedule_*
- kfuncs with KF_IMPLICIT_ARGS
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Ihor Solodrai <ihor.solodrai@linux.dev>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Mykyta Yatsenko <yatsenko@meta.com>,
- Tejun Heo <tj@kernel.org>, Alan Maguire <alan.maguire@oracle.com>,
- Benjamin Tissoires <bentiss@kernel.org>, Jiri Kosina <jikos@kernel.org>,
- bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
- "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
- sched-ext@lists.linux.dev
-References: <20260109184852.1089786-1-ihor.solodrai@linux.dev>
- <20260109184852.1089786-9-ihor.solodrai@linux.dev>
- <CAADnVQJDv80_T+1jz=7_8y+8hRTjMqqkm38in2er8iRU-p9W+g@mail.gmail.com>
- <b099a95e-5e69-4eeb-a2c9-9a52b8042a85@linux.dev>
- <CAADnVQ+_AmiwuupkVJTGyKY3KOp68GLuivs2LMEr0M_yaHPUUg@mail.gmail.com>
- <0c4d84ab-1725-45bc-9c1c-8bdc1f5fc032@linux.dev>
- <CAADnVQ+k-nbq-2PGRSPJDRZ3G9sp9zu3Owqsj7zqO_G+3OQEww@mail.gmail.com>
- <f0e63b55-65c3-4367-b3da-275df18147a1@linux.dev>
+User-Agent: Mozilla Thunderbird
+Subject: Re: Usage of kfuncs in tracepoints
+To: Alan Maguire <alan.maguire@oracle.com>, bpf@vger.kernel.org
+References: <f5e6c1e4-f2f2-4982-a796-e3a49c522bbf@davidv.dev>
+ <3735a372-1641-4a37-a7e2-54b7533caf83@oracle.com>
 Content-Language: en-US
-In-Reply-To: <f0e63b55-65c3-4367-b3da-275df18147a1@linux.dev>
-Content-Type: text/plain; charset=UTF-8
+From: David <david@davidv.dev>
+In-Reply-To: <3735a372-1641-4a37-a7e2-54b7533caf83@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-On 1/9/26 1:56 PM, Ihor Solodrai wrote:
-> On 1/9/26 1:49 PM, Alexei Starovoitov wrote:
->> On Fri, Jan 9, 2026 at 1:39 PM Ihor Solodrai <ihor.solodrai@linux.dev> wrote:
->>>
->>> [...]
->>>
->>>> I feel bpf_task_work_schedule_resume() is ok to break, since it's so new.
->>>> We can remove bpf_task_work_schedule_[resume|singal]_impl()
->>>> to avoid carrying forward forever.
->>>>
->>>> bpf_stream_vprintk_impl() is not that clear. I would remove it too.
->>>
->>> That leaves only bpf_wq_set_callback_impl(). Can we break that too?
->>
->> Sounds like Benjamin is ok removing it.
->> So I think we can indeed remove them all.
->>
->>> Then there won't be legacy cases at all. It was introduced in v6.16
->>> along the with __prog suffix [1][2].
->>>
->>> If we go this route, we could clean up __prog support/docs too.
->>>
->>> I think it's worth it to make an "all or nothing" decision here:
->>> either break all 4 existing kfuncs, or backwards-support all of them.
->>
->> I don't see why "all or nothing" is a good thing.
->> It won't be "all" anyway.
->> We have bpf_rbtree_add_impl(), bpf_list_push_front_impl(), etc.
->> And those we cannot remove. sched-ext is using them.
->> Another few categories are bpf_obj_new_impl(), bpf_obj_drop_impl().
->> There are not __prog type, but conceptually the same thing and
->> KF_IMPLICIT_ARGS should support them too eventually.
-> 
-> I was thinking we could remove/simplify code relevant to backwards
-> compat of existing _impl kfuncs. But you're right, if we start using
-> implicit args for other types/kfuncs, the "legacy" case still has to
-> work.
-> 
-> Ok, in the next revision I'll remove all the __prog users, but leave
-> the "legacy" case support in place for future use.
+On 12/01/2026 19:03, Alan Maguire wrote:
 
-I just had an off-list chat with Andrii, and we agreed that leaving
-the existing _impl kfuncs supported may be a good idea.
+ > Most of the examples use a bpftool-generated vmlinux.h
 
-It doesn't cost us much: we keep the mechanism for legacy functions
-anyways, so supporting bpf_wq_set_callback_impl() and co only requires
-keeping definitions in the kernel.
+I am using a generated header, but not seeing bpf_strstr in the output:
 
-The only benefit of *removing* these _impl functions is that we could
-clean up __prog support.
+```
 
-But having backwards compat seems like a better deal.
-What do you think?
+$ bpftool btf dump file ~/git/linux-6.18.2/vmlinux.unstripped | grep strstr
+[42254] FUNC 'strstr' type_id=42253 linkage=static
+[51220] FUNC 'bpf_strstr' type_id=51198 linkage=static
+$ bpftool btf dump file ~/git/linux-6.18.2/vmlinux.unstripped format c  
+| grep -c strstr
+0
+```
 
+I am generating my header with an older bpftool:
 
-> 
->>
->>
->>> git tag --contains bc049387b41f | grep -v rc
->>> v6.16
->>> v6.17
->>> v6.18
->>>
->>> [1] https://lore.kernel.org/all/20250513142812.1021591-1-memxor@gmail.com/
->>> [2] https://lore.kernel.org/all/20240420-bpf_wq-v2-13-6c986a5a741f@kernel.org/
->>>
->>>
-> 
+```
+$ bpftool --version
+bpftool v7.4.0
+using libbpf v1.4
+features:
+```
+
+But I'm using libbpf v1.6.2 on my custom loader.
+
+> I think you need to add "__ksym __weak";" here i.e.
+
+This change let me load the program, however, libbpf cannot find a 
+kernel image at
+/sys/kernel/btf/vmlinux, because /sys/kernel/btf is not populated on my 
+system.
+
+My kernel _is_ built with CONFIG_DEBUG_INFO_BTF=y, is there something 
+else I need to do
+  to get this path populated?
+
+Because this path is missing, libbpf reports:
+
+```
+kernel BTF is missing at '/sys/kernel/btf/vmlinux', was 
+CONFIG_DEBUG_INFO_BTF enabled?
+```
+
+But I see from strace that it tries a few fallback paths.
+In the meantime, I copied my kernel into /boot/vmlinux-6.18.2 so libbpf 
+can find it, but
+now the loader says
+
+```
+calling kernel function is not supported without CONFIG_DEBUG_INFO_BTF
+```
+
+with strace showing a return value of ENOTSUPP + error 524:
+
+```
+bpf(BPF_PROG_LOAD, {prog_type=BPF_PROG_TYPE_TRACEPOINT, insn_cnt=6, 
+insns=0x7f6ab777c230, license="GPL", log_level=0, log_size=0, 
+log_buf=NULL, kern_version=KERNEL_VERSION(6, 18, 2), prog_flags=0, 
+prog_name="trace_sendto
+_en", prog_ifindex=0, expected_attach_type=BPF_CGROUP_INET_INGRESS, 
+prog_btf_fd=8, func_info_rec_size=8, func_info=0x7f6ab777d280, 
+func_info_cnt=1, line_info_rec_size=16, line_info=0x7f6ab777ed40, 
+line_info_cnt=2, attach_btf_id=0, a
+ttach_prog_fd=0, core_relo_cnt=0, fd_array=NULL, core_relos=NULL, 
+core_relo_rec_size=0, log_true_size=0, prog_token_fd=0, fd_array_cnt=0}, 
+152) = -1 ENOTSUPP (Unknown error 524)
+```
+
+Can I not use `bpf_strstr` on a tracepoint? To validate, I tried a 
+`raw_tp` but
+had the same result.
+
+David
 
 
