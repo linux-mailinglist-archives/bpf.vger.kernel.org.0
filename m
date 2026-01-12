@@ -1,134 +1,147 @@
-Return-Path: <bpf+bounces-78610-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78611-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09308D14CB8
-	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 19:46:02 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 957A0D14D06
+	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 19:55:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 992B73011036
-	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 18:46:00 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C1E15303EBA4
+	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 18:54:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B1A02E1EF4;
-	Mon, 12 Jan 2026 18:45:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E56323876D4;
+	Mon, 12 Jan 2026 18:54:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fw8I5bXZ"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Bw3Ys4yY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50D8D500953
-	for <bpf@vger.kernel.org>; Mon, 12 Jan 2026 18:45:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BED43815C5
+	for <bpf@vger.kernel.org>; Mon, 12 Jan 2026 18:54:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768243556; cv=none; b=b2pFI5LRQqycjPDaMvXqPNex2A6EDPrnUXBBDcddFVbPxtz+539m1fOjL/Z09IAGECyRwwNGCB1eHG711WlozmkG4V0xkGZ6e9OfdVJSznq96cBABK+GOr1wfH49v3bvxmyu+g5/sgtMl3WlzxTO8wC/bOpBs7XzriqO2jIjMl8=
+	t=1768244054; cv=none; b=iWl7NcQlHRDMqqtzVUcZgaNANeSYjyl43Bwy4eQQyrubL+JXaF+/01D60GVkXAMXg4Qs9lklmHKNTYRO3pWxbEY5993lcAMxWZabqZ2MEgxJqD+zgzZUtC+hrA9XpQT6qHycvHlkVC3r2NVBXAXf7fTtJNHrcqq7ZYsnYvpAvX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768243556; c=relaxed/simple;
-	bh=HQMMkDbyMecrvmFNIGiO4WMQ2qFyv5NB+etWkTIWzoU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=s6TyvDbmlywHlv4hh8vylUpMuHvhPf0fdVIx0N68FT97qxC5spxYUk7AVRTQmTg1LZDWdty7qhKMIZl8IsSq0TriGTAsGEylcMmg8eXPCn3ue7K/n9r2fDt0T24QUZsSWhz799lPLQix7t3pQav+LjafIMtXncv3r9GC0Mz3ORE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fw8I5bXZ; arc=none smtp.client-ip=209.85.128.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-78fb5764382so71434117b3.0
-        for <bpf@vger.kernel.org>; Mon, 12 Jan 2026 10:45:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768243554; x=1768848354; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/bkpZS15J+hY6WH2SVrR58uTL066wnHNE27qIMNpOqQ=;
-        b=fw8I5bXZRHyoj563ovIE435WZeGQh1/1zqlm8DA1/BgkfYSIlWJ9SxKajXtfe2+330
-         IXTMuaNt+474Ej8mokxo+T6HXmKXeQU2hktkdd/lCSdAquS4tyzcjIgI+3sfmuVTek8s
-         Fr21wzQzjT25igRyrDpfbzuWIctP/xFOGW1nEvwOKMtabjrvRSm/mbZkax6HBE1Y+D7Z
-         qKxMb20T2gewhETeTqEemEb1l53c2pPmLnVltu/d4g1ALgUJElE0Lk3he+gLqPJbUTB2
-         Cl0H05tXuv8zOGGMSam46Vcgq6JhyPjGIOrRGBMzDC7sdRZrEqxS3//RkCw5dkYKoKA1
-         8+kQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768243554; x=1768848354;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=/bkpZS15J+hY6WH2SVrR58uTL066wnHNE27qIMNpOqQ=;
-        b=D1H/bY1YhRR0aJADGexL73WyoYAtVmNKh00Xy2lEHrhIhhhI8FuXmciqtqcI762vOk
-         kPL8uXeftick7su7fwCOXQYrbMjTars5vEYOiJ7vO1tzOWUh1b9STtyFgt1CmxXzGQeI
-         ZOeOv+5Bh4POe9LamyHkZbkE3pJyhwVxGeEZnWkZQBgAQEbkyIb4lCTnN6X1IflPnTwz
-         wVRNq+4qxsHFSHXn/++5PL7/2Z0FXbwuaLuI99QFfNxBvRAdM6y1cInn9+ZeEdc5/IwH
-         H1yRysFNyLETEdtOmuH5pfokfpSgKNZLas86xWa4FHGsUvZGtufeq9jZcziXjw7rpjvA
-         Ankg==
-X-Gm-Message-State: AOJu0Yxs27CtOkUm1urfp6MyxV88UZW40tjXryeR+UBJ5Y2pesi7qLAx
-	HgIZFnVOTdMbqakaD5P4FiG/2koIcuxE5wbApf0cmJcCqszSn6o3uwUDcuYaDLkD0Fu6fy3ymyB
-	k7vCqhbDG73RI+KULypjjomhplIS7OlQ=
-X-Gm-Gg: AY/fxX5mCGAf4mSiyLqF/tZLFZeDJbzylX8sxT5pHGBNFG0Muq26ulCoi6yflKlsMZV
-	gXxVl4jXjzfHcOnoZsA5WqGuWJJdBH4nzXZC5Nb+hO6S+ZztpNm7DLicbZyft50gZxWNTf/Va7s
-	9/3GP6XDWx0HjlnRH0Ze1Galh3FsK3ILN5fPmSr30msm3uPmm5TjoQVJvlgDk9K9KutDnMK08a1
-	RF08LINClmeQbH0YxZrsLc2dJmByYX8478HmfB4GZ1Uk0Pd36n5kNrUSJ1GSJippffoDG2aNDG5
-	TVe7cUvDyxbTf+SpIxUl9T7fpVo1QHr0YHqp
-X-Google-Smtp-Source: AGHT+IEMmNHOIH/e7SlQmK1zeXkV+XcUP0N3iiHHmsm3ocE9tJEfL8cxo17jFOGW1BHMx0RiAMAY8n59K+jchIYbPUE=
-X-Received: by 2002:a05:690e:14c8:b0:640:d174:3839 with SMTP id
- 956f58d0204a3-64716bb9758mr13781514d50.36.1768243554224; Mon, 12 Jan 2026
- 10:45:54 -0800 (PST)
+	s=arc-20240116; t=1768244054; c=relaxed/simple;
+	bh=QqykXITTByyTT+FGlcEOND0SlMloNxcQl9qxBKW1MJ0=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=cXOU8m4NqRGboV9XrwJBj4+JVSGam2miQe4oU61uWucxqiwwZqNQpKS405+0NFRg6dcWbKan6qPFw+SmjLXBcT677+zlwLaWg4nL5JnyBGtanb6gkm4HKQ8Prz3wv6Y52uAaoAY4Es5VDhY+3gQFVq3bW5cGvZOAkoUJPUwhzGk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Bw3Ys4yY; arc=none smtp.client-ip=91.218.175.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <3a697699-ffcb-4e2f-a7a4-9e3f571aa402@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1768244039;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/9vtTJ8E+WsBFblmJc5UE1EN6AZB8Sa5imYu+eocYP4=;
+	b=Bw3Ys4yYFJsGcrFo94H7o4SnkRA4tr8AFowTqSo0kSbLHRH2fm7D/evq7AdA/S2U9Y/TG4
+	T62PnUk+mExAbwv2FPR7pjVaQJCHzjjl8B+lHaA2tGuvkeRlpe6l9qLum4aAB576+c6rnd
+	mWcYkqF0IzDnkAW7JNrPExrWO7RglpU=
+Date: Mon, 12 Jan 2026 10:53:53 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260111153047.8388-1-a.s.protopopov@gmail.com>
- <20260111153047.8388-3-a.s.protopopov@gmail.com> <DFMS1OCR2VM0.30PBICO8ECI9O@etsalapatis.com>
-In-Reply-To: <DFMS1OCR2VM0.30PBICO8ECI9O@etsalapatis.com>
-From: Anton Protopopov <a.s.protopopov@gmail.com>
-Date: Mon, 12 Jan 2026 19:45:43 +0100
-X-Gm-Features: AZwV_Qg02VhDy1gnlsbLbuP8Yk3J8M59wIAbywiK4Y9ak3zFBzIXk8Gaeel9ICo
-Message-ID: <CAGn_itxu+pCwxBZ4rmXqEjzynmObD8gnbFrQC_Xn5Z_uxYgJ3Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/3] bpf: insn array: return EACCES for incorrect
- map access
-To: Emil Tsalapatis <emil@etsalapatis.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v1 08/10] bpf: Add bpf_task_work_schedule_*
+ kfuncs with KF_IMPLICIT_ARGS
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Ihor Solodrai <ihor.solodrai@linux.dev>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Mykyta Yatsenko <yatsenko@meta.com>,
+ Tejun Heo <tj@kernel.org>, Alan Maguire <alan.maguire@oracle.com>,
+ Benjamin Tissoires <bentiss@kernel.org>, Jiri Kosina <jikos@kernel.org>,
+ bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+ "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+ sched-ext@lists.linux.dev
+References: <20260109184852.1089786-1-ihor.solodrai@linux.dev>
+ <20260109184852.1089786-9-ihor.solodrai@linux.dev>
+ <CAADnVQJDv80_T+1jz=7_8y+8hRTjMqqkm38in2er8iRU-p9W+g@mail.gmail.com>
+ <b099a95e-5e69-4eeb-a2c9-9a52b8042a85@linux.dev>
+ <CAADnVQ+_AmiwuupkVJTGyKY3KOp68GLuivs2LMEr0M_yaHPUUg@mail.gmail.com>
+ <0c4d84ab-1725-45bc-9c1c-8bdc1f5fc032@linux.dev>
+ <CAADnVQ+k-nbq-2PGRSPJDRZ3G9sp9zu3Owqsj7zqO_G+3OQEww@mail.gmail.com>
+ <f0e63b55-65c3-4367-b3da-275df18147a1@linux.dev>
+Content-Language: en-US
+In-Reply-To: <f0e63b55-65c3-4367-b3da-275df18147a1@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Jan 12, 2026 at 6:12=E2=80=AFPM Emil Tsalapatis <emil@etsalapatis.c=
-om> wrote:
->
-> On Sun Jan 11, 2026 at 10:30 AM EST, Anton Protopopov wrote:
-> > The insn_array_map_direct_value_addr() function currently returns
-> > -EINVAL when the offset within the map is invalid. Change this to
-> > return -EACCES, so that it is consistent with similar boundary access
-> > checks in the verifier.
-> >
-> > Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
-> > ---
-> >  kernel/bpf/bpf_insn_array.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/bpf/bpf_insn_array.c b/kernel/bpf/bpf_insn_array.c
-> > index 37b43102953e..c0286f25ca3c 100644
-> > --- a/kernel/bpf/bpf_insn_array.c
-> > +++ b/kernel/bpf/bpf_insn_array.c
-> > @@ -123,7 +123,7 @@ static int insn_array_map_direct_value_addr(const s=
-truct bpf_map *map, u64 *imm,
-> >
-> >       if ((off % sizeof(long)) !=3D 0 ||
-> >           (off / sizeof(long)) >=3D map->max_entries)
-> > -             return -EINVAL;
-> > +             return -EACCES;
->
-> -EACCES is reasonable but the other .direct_valud_addr() methods use
-> -EINVAL (array) and -ERANGE (arena). If we're going for consistency
-> can we change them all to the same error code?
+On 1/9/26 1:56 PM, Ihor Solodrai wrote:
+> On 1/9/26 1:49 PM, Alexei Starovoitov wrote:
+>> On Fri, Jan 9, 2026 at 1:39 PM Ihor Solodrai <ihor.solodrai@linux.dev> wrote:
+>>>
+>>> [...]
+>>>
+>>>> I feel bpf_task_work_schedule_resume() is ok to break, since it's so new.
+>>>> We can remove bpf_task_work_schedule_[resume|singal]_impl()
+>>>> to avoid carrying forward forever.
+>>>>
+>>>> bpf_stream_vprintk_impl() is not that clear. I would remove it too.
+>>>
+>>> That leaves only bpf_wq_set_callback_impl(). Can we break that too?
+>>
+>> Sounds like Benjamin is ok removing it.
+>> So I think we can indeed remove them all.
+>>
+>>> Then there won't be legacy cases at all. It was introduced in v6.16
+>>> along the with __prog suffix [1][2].
+>>>
+>>> If we go this route, we could clean up __prog support/docs too.
+>>>
+>>> I think it's worth it to make an "all or nothing" decision here:
+>>> either break all 4 existing kfuncs, or backwards-support all of them.
+>>
+>> I don't see why "all or nothing" is a good thing.
+>> It won't be "all" anyway.
+>> We have bpf_rbtree_add_impl(), bpf_list_push_front_impl(), etc.
+>> And those we cannot remove. sched-ext is using them.
+>> Another few categories are bpf_obj_new_impl(), bpf_obj_drop_impl().
+>> There are not __prog type, but conceptually the same thing and
+>> KF_IMPLICIT_ARGS should support them too eventually.
+> 
+> I was thinking we could remove/simplify code relevant to backwards
+> compat of existing _impl kfuncs. But you're right, if we start using
+> implicit args for other types/kfuncs, the "legacy" case still has to
+> work.
+> 
+> Ok, in the next revision I'll remove all the __prog users, but leave
+> the "legacy" case support in place for future use.
 
-Would be nice, but I doubt this is possible, as this should break
-plenty of existing user space progs (for insn array userspace code
-with off !=3D 0 actually don't exist afaik).
+I just had an off-list chat with Andrii, and we agreed that leaving
+the existing _impl kfuncs supported may be a good idea.
 
-(I am also pretty fine with not doing s/EINVAL/EACCESS for insn array,
-but without this change selftests in the third patch look kinda
-weird.)
+It doesn't cost us much: we keep the mechanism for legacy functions
+anyways, so supporting bpf_wq_set_callback_impl() and co only requires
+keeping definitions in the kernel.
 
-> >
-> >       /* from BPF's point of view, this map is a jump table */
-> >       *imm =3D (unsigned long)insn_array->ips;
->
+The only benefit of *removing* these _impl functions is that we could
+clean up __prog support.
+
+But having backwards compat seems like a better deal.
+What do you think?
+
+
+> 
+>>
+>>
+>>> git tag --contains bc049387b41f | grep -v rc
+>>> v6.16
+>>> v6.17
+>>> v6.18
+>>>
+>>> [1] https://lore.kernel.org/all/20250513142812.1021591-1-memxor@gmail.com/
+>>> [2] https://lore.kernel.org/all/20240420-bpf_wq-v2-13-6c986a5a741f@kernel.org/
+>>>
+>>>
+> 
+
 
