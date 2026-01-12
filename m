@@ -1,91 +1,91 @@
-Return-Path: <bpf+bounces-78514-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78515-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75FB8D10B6F
-	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 07:35:25 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 616FBD10B57
+	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 07:34:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8FC4230779A1
-	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 06:33:59 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 876D63010D42
+	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 06:34:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1408F30FF06;
-	Mon, 12 Jan 2026 06:33:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 240A23101C4;
+	Mon, 12 Jan 2026 06:34:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="D3CQ3Mxy"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="ThAgV2pu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f99.google.com (mail-pj1-f99.google.com [209.85.216.99])
+Received: from mail-pf1-f227.google.com (mail-pf1-f227.google.com [209.85.210.227])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2BBC3081C2
-	for <bpf@vger.kernel.org>; Mon, 12 Jan 2026 06:33:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.99
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C74E71E4AB
+	for <bpf@vger.kernel.org>; Mon, 12 Jan 2026 06:34:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.227
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768199638; cv=none; b=gToyfREkpUBeJh9HQFcw5igZdXxMedOrGb5LdEUqfTjKESemm65G9mIjHmuedCEMJRxEK+uvgnmhoHw+ON3/D/4yM2F+gg4YW5zGjligSo9+WuXiFkHcr2famecRvBe/J5kv6SNrNjEdHda2xHLs85TfbaqjQpqdoY7fcqo9jTw=
+	t=1768199647; cv=none; b=PKvK8CpWqwP7lZlu4GP7FMeYUuGtrdo0UC+w9pXwtWhUz5bwkaB05w5f1ePvaaXUzDdPWC7cr2sVH4D2IrWEtKtDHUOzedAY6+epMHTjuD2qWlbYKRcuxrQmNx6EBK5d9DgcxgRgcmZgqU+VPmbjKU0gk21kjgIGUiDd/KvYT8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768199638; c=relaxed/simple;
-	bh=RWuTHL2vG6VXYYw+aleWdAzTOjFVPPbKCGWiPi4YKYw=;
+	s=arc-20240116; t=1768199647; c=relaxed/simple;
+	bh=QgXU/7yNwhrctzlcitKYbDUmDIC7I+TCoOtStmFwLvY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Tk5JIF5IB/oBPeFWhSQXTwqyZ7yS9vtTX9MSUfhXhstg+jh4WzkXTU+M4D2vfjOmDDFSLu3HKJ3L0wDw/TALxF0yRxnghWuhSqjGVHmKAGhed+badKWlNqbIKiMXERK7WERCOK6vFJ8a2iVxMx9NhTtwRkpUPM5aEZnkWDldL+I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=D3CQ3Mxy; arc=none smtp.client-ip=209.85.216.99
+	 MIME-Version; b=Ay4iU9A/bvTkOboeZ4YPydZ1rvhR+0yUCk6kLkzEQ+F7O2x6dzhfnu5IiEAVQiIXQ3rcFSFOrffnZnaRDkP6hcTXvGMZaJq5VkpiI6rJEF8xko8konjaQaLFrZme4u8uqslGz/R/1KQymwcNetKB5MNBCFTcD4kuZRYGxIb32qg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=ThAgV2pu; arc=none smtp.client-ip=209.85.210.227
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pj1-f99.google.com with SMTP id 98e67ed59e1d1-34c567db0a9so431639a91.1
-        for <bpf@vger.kernel.org>; Sun, 11 Jan 2026 22:33:56 -0800 (PST)
+Received: by mail-pf1-f227.google.com with SMTP id d2e1a72fcca58-81e86d7ff8eso61463b3a.1
+        for <bpf@vger.kernel.org>; Sun, 11 Jan 2026 22:34:01 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768199636; x=1768804436;
+        d=1e100.net; s=20230601; t=1768199641; x=1768804441;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:dkim-signature:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=y6I5h2vtJMAW+jL+bI0U3FZ65rr+yn6OcLWKLyGnstA=;
-        b=mR9IVLyQm+7j1KBHxdgBzmIeRsZhPTzxv9bfOd/ATOMSX5FhpZCWYbrTgqgnL3geQ3
-         bJYPGzeUxOgWIpcVuHadYk77XBom0+8nAmwudUvNunGKrb966/ZAzQ7/uDZVPx5awbB2
-         xUx/HD7R1x9KXZiOqfwTWna0UuFE7nnaotLjasPh7X5hK1t17i3JP/wWiYKkesmoQ9W/
-         aUBWb3EnExQT9mufiLhe0/s4LqH59Rg7Wbm/bDCoibeVZeojWZzIKXvGJ3GgqDhFK2pS
-         MQawFsrM1UhbuPsk5cdw9WpI4pwenaS5OWSsayu+31aQHkg2VOwFFIMm2mE5Vz5Zmd/O
-         jwag==
-X-Forwarded-Encrypted: i=1; AJvYcCXPuUxXqp9rJF2GpHs/Zyd42mJnP+CFxC448MxVmwTzvHClp338sl7Qkmm/6MWYoDkpQzw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxuBdGXw8xt3caVfC96HWONAEZHh6oAJztiwnZ1Z+vHacqijG2X
-	zOnS7juWsXewN9PXTELD0JVTxukODBTyn3OPtk1MgqVkimKdBCZcfHXYVODYNAEcMT1meqkmmJH
-	gjWRCA4QPioW7AsLx24CwCDkNIKhnLlGdBtgQYOVrvJZ1aq97+bYANjwEaspS8Q7VN+CMlFRao/
-	LjkTGuqpsVuBQE3aRV4c+b57DUfBkhcNnvEmjd9373RhCOKH+6W+JJu21YRIqYJUgwbWwVEjeDp
-	c1Hw54HH/JwAtZyOUpakUzZF6A=
-X-Gm-Gg: AY/fxX5V7O/NRAH7UGfqc7hwOJlCs6s9MUzQ5yxgS7gF9FcUCOeSitsQMZvA0yGMbqS
-	vaamR2JyUBiITJ0soLlJ0ILKBeMApZBXFm3V1Ot3M0+ZAykXqMo1hipMxi7D1FckLz9GN5mxNN+
-	XBWoiQ6MoGPnV/7FY0HYs1o7TWCy0WU2jFBvjb07i0/yO/6KqglHetL0cNoo9TqKORt0upx5TVz
-	8D4VU6sxWGj82gRNmPjvAsRUOm0eJN4P8b19McWPG78UaMsKGt2FUTjOl+n4tV30jSy66sDTXmX
-	No+oYU/WLAkLjCX+izrqsWirYF7DQe/PAR/X8Li4saloBm888RWRpTcH1Jk0cUK/7Gb7RwRy5pF
-	fJt4DOLwqYXMrU8vy5bWq3Cw91ZQOVmG2iyElcgVhbfwmUp7EFVCjA700GO/hOF17JcGzRqIBtz
-	ybhtsBih5Gdu093p17yrKGUAtG8qNEUW9MhrqDP8PXvA5M7Zb2gEX+LRi8A8g=
-X-Google-Smtp-Source: AGHT+IGiN1jzED2MdPAN7sK7pWgDThMOqr9HV/mNh+ZvUVCLogdhQYF9oBsRAAyfht3kC8gaAz4ocHx9tVek
-X-Received: by 2002:a17:90a:fc46:b0:340:b8f2:250c with SMTP id 98e67ed59e1d1-34f68b47b08mr10645729a91.1.1768199636165;
-        Sun, 11 Jan 2026 22:33:56 -0800 (PST)
+        bh=fj8sUP59dWob41aCsZ9BHl56sg70okF+kqjbtKr6YBw=;
+        b=DsWNfZsWFlD1kgvtkf6UMaMTDITLYVo2BaRoJqPaaIOvwMG4NJ7hbNrfEi+kaTR5lG
+         OUt3PdrvNAkqnYlfkIRWKw7AwvB36VzwnwrnXGb7Otdwf2ao9OPaB/7jmy9BR1oTLswj
+         lBoolYbgei+CNJCyyTpiyUsU2ITfixYCilGK/h+clODtsWo9WgvyFkI5fsrGr2kA0RJO
+         Ui6SnN5eU/WOMM0xWDSGkhfvBtS6byQadIYtUuxldluin0sbnwj1Hi5wLoCC/z4etHdm
+         aMJsrh+hPwYZTweMmJ+lht2z6QOmo/2dCpzWgxpfgwbo9UU5OHtaJT+3wrmfzBBbpZ0U
+         NF8A==
+X-Forwarded-Encrypted: i=1; AJvYcCV0y7Y+fCZoRaWH+hspHeNzzwj5DckWwebjnCx3t1CRb6xiTAd95IvSu/N+3b3qNujSuVc=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzn/7E/pYHeXaZ9fMYpOPRbqqqGuO6MpC+IKBfM5pfHTLLpQkJ+
+	40Q42QSyC4gsV/LARysSteUtDB8tbtBs7bzSpCHQI/EzX4g353x6+dR1+wzTI0Gh/xs6TK1A9WD
+	B7SLtBNwYbojh6+uSgs9PmJDfbM4WbCGFjRKg5GAHfkbHGcRz64izUUoP8i+6RYRfzN7cSN8Ecw
+	Xrq3wApb/0Zyi+TDBNVB4G9g2wMDywYOHAjLGC2yozOBMnevivj/a5PpyshwMuL8jHvUu4rCTBx
+	sgAgNbV25c94/mAwa1RcOYr+2M=
+X-Gm-Gg: AY/fxX6igKQLtcRYyLUG0jVLHQj53mpISpP8/bWb6WbbYyiBAcbEJ0niaZPeWzbi5Bc
+	CzAj+VWFBpJ9olgy3GkVR2O4c7irQQieyXow2/axG9aD/uZp3VhruH6t6aLSB1cKBEoC617bUGr
+	d57e2yAvMA89NfT1nBBmW1Pkp9W9/v66n/tdxqp3afIX8hPFqt4Jdhww5/QWH5jWqwukzXOZ26L
+	Jb+7KDpflHdpW7pGUDOUePmoT6bN72xgyaM3yadog0BioJ9/NiJzcHdOttsCCwdLddSUkWglNV1
+	zSoORr+YMIPuhw77GUty3fQ+aoKklwYWqrEzKQO0pyB1ElBL/p4IgtMPVJ+F1NAabnZRhUrYIGQ
+	LvOrVkipyuebkxpS5C5sKj8V8JZcDfz62gjhK+mJFMSvVGwU+wrCv+L1TcYFFG7YrmGxUiVYtOM
+	FNpSn+HUYWp9PP7Ain9Z+W2A2qirfqMO0JKTpKYaxBam0jtpgZzFvunDl9Mng=
+X-Google-Smtp-Source: AGHT+IGMPXUpRGir0xRZy/xTbjJjviwhEiZBzdFpLYPMQ1OxSGxpsHl3CWb1jNkBT8y9UFe23gPoKxKuP3+X
+X-Received: by 2002:a17:903:1ca:b0:2a0:d662:7283 with SMTP id d9443c01a7336-2a3ee436196mr117812125ad.3.1768199641009;
+        Sun, 11 Jan 2026 22:34:01 -0800 (PST)
 Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-2.dlp.protect.broadcom.com. [144.49.247.2])
-        by smtp-relay.gmail.com with ESMTPS id 98e67ed59e1d1-34f5fb4ce76sm2550786a91.7.2026.01.11.22.33.55
+        by smtp-relay.gmail.com with ESMTPS id d9443c01a7336-2a3e3c3bc69sm20506625ad.9.2026.01.11.22.34.00
         for <bpf@vger.kernel.org>
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 11 Jan 2026 22:33:56 -0800 (PST)
+        Sun, 11 Jan 2026 22:34:01 -0800 (PST)
 X-Relaying-Domain: broadcom.com
 X-CFilter-Loop: Reflected
-Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-8b2ea2b51cfso142405085a.0
-        for <bpf@vger.kernel.org>; Sun, 11 Jan 2026 22:33:55 -0800 (PST)
+Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-88a26989018so10038926d6.0
+        for <bpf@vger.kernel.org>; Sun, 11 Jan 2026 22:34:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1768199635; x=1768804435; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1768199640; x=1768804440; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=y6I5h2vtJMAW+jL+bI0U3FZ65rr+yn6OcLWKLyGnstA=;
-        b=D3CQ3Mxye8QpcUZIhbG6wp4M0lYb2Ja3TYS0hWlLWGWeK2VuosaF3kOgrH50w+ZkQh
-         iyVDyjmFecWmrkQmvkG6jLxDoL37g8RN4ABjXZ8dLd62Fi6y5Mzmn/h0TMf3q1bwnidQ
-         FQ0F7LALUuOj2ExAkvj1yowUDV4gzpBbFLWfI=
-X-Forwarded-Encrypted: i=1; AJvYcCWzzI/CLDvUrC1mcatKp3/he8cXfgomdw7m3vBRtOhPA7w6IypLE5fBcx1Glj7Y171R8X0=@vger.kernel.org
-X-Received: by 2002:a05:620a:2886:b0:878:7b3e:7bbf with SMTP id af79cd13be357-8c38937a047mr1725531785a.3.1768199634869;
-        Sun, 11 Jan 2026 22:33:54 -0800 (PST)
-X-Received: by 2002:a05:620a:2886:b0:878:7b3e:7bbf with SMTP id af79cd13be357-8c38937a047mr1725529485a.3.1768199634468;
-        Sun, 11 Jan 2026 22:33:54 -0800 (PST)
+        bh=fj8sUP59dWob41aCsZ9BHl56sg70okF+kqjbtKr6YBw=;
+        b=ThAgV2pubm4Q7pp3q9FJDD2nM3KMDZhJFl7CqmIgihg7TH+444o1HybUOpKBLqZD3+
+         nL4uRVC4EoCVe1XcLuoRra1iGqciBAevz393+GAUWs9RYsK9Ssik64JOSGZmwHv1o8nU
+         VeV83qVSIoBKyUDZfMlbbWO+AF0+L9W9fKRuE=
+X-Forwarded-Encrypted: i=1; AJvYcCU0mzvp5Q/v9Xmj0wb/zIq/TbNGiOf6WyYAjWQrmkQFxxYczgQPR4ivTAqTHcS3MEU2hBQ=@vger.kernel.org
+X-Received: by 2002:ad4:5c48:0:b0:880:52f6:775e with SMTP id 6a1803df08f44-89084275c91mr188503766d6.6.1768199639739;
+        Sun, 11 Jan 2026 22:33:59 -0800 (PST)
+X-Received: by 2002:ad4:5c48:0:b0:880:52f6:775e with SMTP id 6a1803df08f44-89084275c91mr188503536d6.6.1768199639235;
+        Sun, 11 Jan 2026 22:33:59 -0800 (PST)
 Received: from keerthanak-ph5-dev.. ([192.19.161.250])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8c37f4a794bsm1472324885a.9.2026.01.11.22.33.51
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8c37f4a794bsm1472324885a.9.2026.01.11.22.33.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Jan 2026 22:33:53 -0800 (PST)
+        Sun, 11 Jan 2026 22:33:58 -0800 (PST)
 From: Keerthana K <keerthana.kalyanasundaram@broadcom.com>
 To: stable@vger.kernel.org,
 	gregkh@linuxfoundation.org
@@ -112,11 +112,12 @@ Cc: davem@davemloft.net,
 	vamsi-krishna.brahmajosyula@broadcom.com,
 	yin.ding@broadcom.com,
 	tapas.kundu@broadcom.com,
-	Tariq Toukan <tariqt@nvidia.com>,
+	Kuniyuki Iwashima <kuniyu@google.com>,
+	Sabrina Dubroca <sd@queasysnail.net>,
 	Keerthana K <keerthana.kalyanasundaram@broadcom.com>
-Subject: [PATCH v5.10.y 2/3] net: netdevice: Add operation ndo_sk_get_lower_dev
-Date: Mon, 12 Jan 2026 06:30:38 +0000
-Message-ID: <20260112063039.2968980-3-keerthana.kalyanasundaram@broadcom.com>
+Subject: [PATCH v5.10.y 3/3] tls: Use __sk_dst_get() and dst_dev_rcu() in get_netdev_for_sock().
+Date: Mon, 12 Jan 2026 06:30:39 +0000
+Message-ID: <20260112063039.2968980-4-keerthana.kalyanasundaram@broadcom.com>
 X-Mailer: git-send-email 2.43.7
 In-Reply-To: <20260112063039.2968980-1-keerthana.kalyanasundaram@broadcom.com>
 References: <20260112063039.2968980-1-keerthana.kalyanasundaram@broadcom.com>
@@ -129,91 +130,65 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
 
-From: Tariq Toukan <tariqt@nvidia.com>
+From: Kuniyuki Iwashima <kuniyu@google.com>
 
-[ Upstream commit 719a402cf60311b1cdff3f6320abaecdcc5e46b7]
+[ Upstream commit c65f27b9c3be2269918e1cbad6d8884741f835c5 ]
 
-ndo_sk_get_lower_dev returns the lower netdev that corresponds to
-a given socket.
-Additionally, we implement a helper netdev_sk_get_lowest_dev() to get
-the lowest one in chain.
+get_netdev_for_sock() is called during setsockopt(),
+so not under RCU.
 
-Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-Reviewed-by: Boris Pismenny <borisp@nvidia.com>
+Using sk_dst_get(sk)->dev could trigger UAF.
+
+Let's use __sk_dst_get() and dst_dev_rcu().
+
+Note that the only ->ndo_sk_get_lower_dev() user is
+bond_sk_get_lower_dev(), which uses RCU.
+
+Fixes: e8f69799810c ("net/tls: Add generic NIC offload infrastructure")
+Signed-off-by: Kuniyuki Iwashima <kuniyu@google.com>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Reviewed-by: Sabrina Dubroca <sd@queasysnail.net>
+Link: https://patch.msgid.link/20250916214758.650211-6-kuniyu@google.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 [ Keerthana: Backported the patch to v5.10.y ]
 Signed-off-by: Keerthana K <keerthana.kalyanasundaram@broadcom.com>
 ---
- include/linux/netdevice.h |  4 ++++
- net/core/dev.c            | 33 +++++++++++++++++++++++++++++++++
- 2 files changed, 37 insertions(+)
+ net/tls/tls_device.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index d3a3e77a18df..c9f2a88a6c83 100644
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -1435,6 +1435,8 @@ struct net_device_ops {
- 	struct net_device*	(*ndo_get_xmit_slave)(struct net_device *dev,
- 						      struct sk_buff *skb,
- 						      bool all_slaves);
-+	struct net_device*	(*ndo_sk_get_lower_dev)(struct net_device *dev,
-+							struct sock *sk);
- 	netdev_features_t	(*ndo_fix_features)(struct net_device *dev,
- 						    netdev_features_t features);
- 	int			(*ndo_set_features)(struct net_device *dev,
-@@ -2914,6 +2916,8 @@ int init_dummy_netdev(struct net_device *dev);
- struct net_device *netdev_get_xmit_slave(struct net_device *dev,
- 					 struct sk_buff *skb,
- 					 bool all_slaves);
-+struct net_device *netdev_sk_get_lowest_dev(struct net_device *dev,
-+					    struct sock *sk);
- struct net_device *dev_get_by_index(struct net *net, int ifindex);
- struct net_device *__dev_get_by_index(struct net *net, int ifindex);
- struct net_device *dev_get_by_index_rcu(struct net *net, int ifindex);
-diff --git a/net/core/dev.c b/net/core/dev.c
-index c0dc524548ee..ad2be47b48a9 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -8169,6 +8169,39 @@ struct net_device *netdev_get_xmit_slave(struct net_device *dev,
- }
- EXPORT_SYMBOL(netdev_get_xmit_slave);
- 
-+static struct net_device *netdev_sk_get_lower_dev(struct net_device *dev,
-+						  struct sock *sk)
-+{
-+	const struct net_device_ops *ops = dev->netdev_ops;
-+
-+	if (!ops->ndo_sk_get_lower_dev)
-+		return NULL;
-+	return ops->ndo_sk_get_lower_dev(dev, sk);
-+}
-+
-+/**
-+ * netdev_sk_get_lowest_dev - Get the lowest device in chain given device and socket
-+ * @dev: device
-+ * @sk: the socket
-+ *
-+ * %NULL is returned if no lower device is found.
-+ */
-+
-+struct net_device *netdev_sk_get_lowest_dev(struct net_device *dev,
-+					    struct sock *sk)
-+{
-+	struct net_device *lower;
-+
-+	lower = netdev_sk_get_lower_dev(dev, sk);
-+	while (lower) {
-+		dev = lower;
-+		lower = netdev_sk_get_lower_dev(dev, sk);
-+	}
-+
-+	return dev;
-+}
-+EXPORT_SYMBOL(netdev_sk_get_lowest_dev);
-+
- static void netdev_adjacent_add_links(struct net_device *dev)
+diff --git a/net/tls/tls_device.c b/net/tls/tls_device.c
+index 8e89ff403073..8cf4e1651b0c 100644
+--- a/net/tls/tls_device.c
++++ b/net/tls/tls_device.c
+@@ -113,17 +113,19 @@ static void tls_device_queue_ctx_destruction(struct tls_context *ctx)
+ /* We assume that the socket is already connected */
+ static struct net_device *get_netdev_for_sock(struct sock *sk)
  {
- 	struct netdev_adjacent *iter;
+-	struct dst_entry *dst = sk_dst_get(sk);
+-	struct net_device *netdev = NULL;
++	struct net_device *dev, *lowest_dev = NULL;
++	struct dst_entry *dst;
+ 
+-	if (likely(dst)) {
+-		netdev = dst->dev;
+-		dev_hold(netdev);
++	rcu_read_lock();
++	dst = __sk_dst_get(sk);
++	dev = dst ? dst_dev_rcu(dst) : NULL;
++	if (likely(dev)) {
++		lowest_dev = netdev_sk_get_lowest_dev(dev, sk);
++		dev_hold(lowest_dev);
+ 	}
++	rcu_read_unlock();
+ 
+-	dst_release(dst);
+-
+-	return netdev;
++	return lowest_dev;
+ }
+ 
+ static void destroy_record(struct tls_record_info *record)
 -- 
 2.43.7
 
