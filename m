@@ -1,92 +1,98 @@
-Return-Path: <bpf+bounces-78619-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78620-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 783A7D153CF
-	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 21:34:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 89346D1559B
+	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 22:01:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D0917306D29D
-	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 20:33:39 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AFB863045CD3
+	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 21:00:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 049122D5C8E;
-	Mon, 12 Jan 2026 20:33:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A75E340D86;
+	Mon, 12 Jan 2026 21:00:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="EUhMqNkC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LgkcLwAs"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FBB931326C;
-	Mon, 12 Jan 2026 20:33:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0276A333427;
+	Mon, 12 Jan 2026 21:00:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768250018; cv=none; b=WmeTvlZ0q9XcE2BE9VFuQo14WGxBvlM6IwIm1EExZwIQShTRYXOfOWAVyGDhW/ivZ8jJ0mjNx9YV2oFebaY4J+317tSkkAe5VjoQKUE2hNblimn2mts6DmDNqgtOerdo5fiKouEJOakM4nwEhxubCMKlw2tWfz8dRGcqqJav1AE=
+	t=1768251620; cv=none; b=RGLpVaPH9dflsjJFtIRuCDxo/BgjiQRZeKED0eDyi4yrQbBip6EiPQKOxBD7VViRj8llfF65K3Hh+zA+fQW4+CfD6I7nCoWikpfCatLian22yUAxwt56jRt776sNUWZWwXKgk8gGWoaAw8IjJHTcKBocRfjidhemkBqJLQPKupA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768250018; c=relaxed/simple;
-	bh=6E5ir0MKvTzLi3KjeQ67vT4rjxiQJWGb+HPPvyVahF8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=psP+1o1/uQMW98B+IJOVR/G9vtSYwFnv2A0yK+2wPVZ/be3AHqMsjy+lU2Yh2ZEMwPaUcR3uBNDnhzDYlczajCPfnN5n0mGIZ1SkvTS+H+GaEZDbhyOkH3IYmEf/zi3LEISZWtqlZ1FxGitTwaT3fNhWmQm3DdbQ6cHscrvsJx8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=EUhMqNkC; arc=none smtp.client-ip=95.215.58.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <a71a2980-9814-4f94-875b-cd6da6822a31@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1768250004;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uZwAZadttIzjQgCgVSRvtALF13IG3cbZd+R+sJcZlcY=;
-	b=EUhMqNkCjNyynrPQz1qcS4A/nBCP6IMO+ZRiU6uQgjq41ze4qU3IYqJotfgfSM61LKypAE
-	ZlTdXNkEeMdTYc6CHzikiBEyiOFKgVInodHi20Oh1mTEj1R6eBZGTE/6N0H/uSNqU4FbNg
-	YNwxAOJYzzIixOR2qdxxhzTt6xxCB4M=
-Date: Mon, 12 Jan 2026 12:33:15 -0800
+	s=arc-20240116; t=1768251620; c=relaxed/simple;
+	bh=6MvNfPDEFcfkquy8gkIp2qFI3WAKNMNlg7aMEqc5UPQ=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=ERtHecbpFTVvUQgoq3mKiP8eIaz9kHj/5fxQKXiHsqsv8ctGXjxn88VXglqXaimvyjX1QOq4TBY6lGUgTQykhVsClf6SFc9HUIaNTKlvxFf951EUK6TvvsMO1SOt+iLThXmKpjAqx8u1KA0Jc/HLs84ZKW4hkOgZ1Vs4XF/ptMk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LgkcLwAs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4E83C19421;
+	Mon, 12 Jan 2026 21:00:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768251619;
+	bh=6MvNfPDEFcfkquy8gkIp2qFI3WAKNMNlg7aMEqc5UPQ=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=LgkcLwAsPnG17Go3if3ARUaYuY6re3WqdWam724Cf73tWVhHlbqqCgvwrF++2XyXy
+	 kOKhDWMIqvR5mU1NtNU17VXiLcVjpbvyTFtMS3RWsvxmXwmmL9/9eDNU7cIrqRcbHk
+	 jqMuQ3inTaS3LMDX5R1JgacNIdUvO1cz/iD21E2hvoMuMgMjYHp49zV1XtsTDB09+W
+	 hJw6WXswv3FzQQsIrvwpSlxXw84bdcAm6qGrqCYqB+3WUenRoxILEkAm7D17yYI+k9
+	 68nNnbFdp7FPPgsEylEuftWqYjRsrajx/KluUEcpzmTHYh7mMtD4uMcIJi0/7hMql5
+	 a9Av7ANHpOfhQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id F2CF0380CFD5;
+	Mon, 12 Jan 2026 20:56:54 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v5 0/4] Use correct destructor kfunc types
-To: Sami Tolvanen <samitolvanen@google.com>
-Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Jamal Hadi Salim <jhs@mojatatu.com>,
- Cong Wang <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>,
- Viktor Malik <vmalik@redhat.com>, netdev@vger.kernel.org,
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v3 0/3] virtio-net: fix the deadlock when disabling rx
+ NAPI
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <176825141377.1092878.9401605106447575333.git-patchwork-notify@kernel.org>
+Date: Mon, 12 Jan 2026 20:56:53 +0000
+References: <20260106150438.7425-1-minhquangbui99@gmail.com>
+In-Reply-To: <20260106150438.7425-1-minhquangbui99@gmail.com>
+To: Bui Quang Minh <minhquangbui99@gmail.com>
+Cc: netdev@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
+ xuanzhuo@linux.alibaba.com, eperezma@redhat.com, andrew+netdev@lunn.ch,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+ john.fastabend@gmail.com, sdf@fomichev.me, virtualization@lists.linux.dev,
  linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-References: <20260110082548.113748-6-samitolvanen@google.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20260110082548.113748-6-samitolvanen@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 
-On 1/10/26 12:25 AM, Sami Tolvanen wrote:
-> Hi folks,
-> 
-> While running BPF self-tests with CONFIG_CFI (Control Flow
-> Integrity) enabled, I ran into a couple of failures in
-> bpf_obj_free_fields() caused by type mismatches between the
-> btf_dtor_kfunc_t function pointer type and the registered
-> destructor functions.
-> 
-> It looks like we can't change the argument type for these
-> functions to match btf_dtor_kfunc_t because the verifier doesn't
-> like void pointer arguments for functions used in BPF programs,
-> so this series fixes the issue by adding stubs with correct types
-> to use as destructors for each instance of this I found in the
-> kernel tree.
-> 
-> The last patch changes btf_check_dtor_kfuncs() to enforce the
-> function type when CFI is enabled, so we don't end up registering
-> destructors that panic the kernel.
+Hello:
 
-Acked-by: Martin KaFai Lau <martin.lau@kernel.org>
+This series was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Tue,  6 Jan 2026 22:04:35 +0700 you wrote:
+> Calling napi_disable() on an already disabled napi can cause the
+> deadlock. In commit 4bc12818b363 ("virtio-net: disable delayed refill
+> when pausing rx"), to avoid the deadlock, when pausing the RX in
+> virtnet_rx_pause[_all](), we disable and cancel the delayed refill work.
+> However, in the virtnet_rx_resume_all(), we enable the delayed refill
+> work too early before enabling all the receive queue napis.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net,v3,1/3] virtio-net: don't schedule delayed refill worker
+    https://git.kernel.org/netdev/net/c/fcdef3bcbb2c
+  - [net,v3,2/3] virtio-net: remove unused delayed refill worker
+    https://git.kernel.org/netdev/net/c/1e7b90aa7988
+  - [net,v3,3/3] virtio-net: clean up __virtnet_rx_pause/resume
+    https://git.kernel.org/netdev/net/c/a0c159647e66
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
