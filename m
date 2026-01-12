@@ -1,188 +1,223 @@
-Return-Path: <bpf+bounces-78522-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78519-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7435D10C1D
-	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 07:51:00 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10439D10BDB
+	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 07:48:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C07E530CD397
-	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 06:49:09 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id D932530119EE
+	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 06:48:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D586E31A567;
-	Mon, 12 Jan 2026 06:49:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3136A3195FD;
+	Mon, 12 Jan 2026 06:48:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="HULDzgV0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A5srX00C"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ot1-f98.google.com (mail-ot1-f98.google.com [209.85.210.98])
+Received: from mail-wm1-f67.google.com (mail-wm1-f67.google.com [209.85.128.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0217314B77
-	for <bpf@vger.kernel.org>; Mon, 12 Jan 2026 06:49:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35C513191D3
+	for <bpf@vger.kernel.org>; Mon, 12 Jan 2026 06:48:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768200547; cv=none; b=Etxz29ytRM7VCbpBd+9zR32boM1XGe6pt2Ne3VHOs4kFRmvL4wCLlp9d/Pvty20QG995zwJwRM5O/jsUppJnz8zvbXnAxcq8f6Njg2gcdg43D4kz35ahFMUyeSgd8/dEn83O7QNneEx7HzTbscypmcrzW2Z9S3J3mX7Cz5wfASc=
+	t=1768200502; cv=none; b=CvprBiPZ0bWDpQZx7up8YBW63Gxf6NqhKxC8c3TXfoUYneeXOol+APtEJMHBn1l3dVjDN1BgMTn1/nlUGZmpUs1xzYqC0Wj+BGd6JMDeo0efFiBwBvj2L/YAljEl59xwupHsbtJ48FUGxjSb6vcQ7+vtHVbO5APE6NpH8F01E34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768200547; c=relaxed/simple;
-	bh=/NupvgywEukBz4QryS1IcnmPfJQHRj4TZPz9BZQSMgM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BZebZlfZto57hS0UP0bDxvGaDZMtU+v9Wr8gP9cEueM6lNgkwsVgol7H16XlPIwi6KyDyfcDfMVb2qJgsFk4pH5o29GQmXhIJdzn2VDA/KkOoy0oTMMNopn0QCTrIaveP8rfp7Kr9bvGpSe0URkYgghu7wm5BV3DiobzZ4R9p2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=HULDzgV0; arc=none smtp.client-ip=209.85.210.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-ot1-f98.google.com with SMTP id 46e09a7af769-7c914482db2so1087769a34.3
-        for <bpf@vger.kernel.org>; Sun, 11 Jan 2026 22:49:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768200544; x=1768805344;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:dkim-signature:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jPMqt7OubTukSzfJGmFa7NplH3SyhzWtPIziyN+vzQc=;
-        b=PDwxdk6CeOznofUmS0vw8FlKuDh4gyD1oa7Z0CduO0eLOY3gg3c3xe0qU65bzrBPxh
-         DklCaxHt6aRhSGGHM7gebupuakMt9nlni7rd72THghlvCEIR/Y8DrA37su6jQE+ihxFQ
-         HlpAft4OWZ8uquqT4O/rfChjCObEiFu4xypW5NiFq1ZpiePoVYCeHETUBBauXaLggUhZ
-         FE2lX6UeH08i+KWlasXrp+6dvjogC/gNbTbmXob5T6KIb8HwKTSVNDNiXbS7nJupnvUP
-         qzs2vOhqtCLTP/eBEJ/mgGEgtwsa052oV22VCvJcW879bjzGzD9enPNVJTvthhcb5fHv
-         0sHA==
-X-Forwarded-Encrypted: i=1; AJvYcCXDJtUG2V4R+vlNYusgma759d7eRYb5LzycZs4HsqBYG6EwGWxKEYeUPJLsU1q6aY2u06w=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxrVvcfyQ6rzxMBOnZf72QL/ruRn5/A6/ke5zikmMAPkWWb6Dq9
-	JJ4r5Ys3BlTe9SrsUR1q4QThf1mb8oqwzWPRGL8Gf/OecWfTN8ZHonDPm6g+Ul0eV7OiByukdYx
-	8z8w3xmwds0BWNWZf74uTqSd5VFvu/k6eVa9Ne2W2o2p9xVdIk+Hs58cjToRCy/CTg9cF9GWP9K
-	t4U4HREa6dzgVWftah72+Gx3p4leCaAZqSgygvmxv/0eTZDnFkL1G60fKkAFUL5l8wYwSRNxZR7
-	ygRV6bQMmCjF3NmPM8WP9OeG/8=
-X-Gm-Gg: AY/fxX7sg7c6QoXcOFVLAxgFGUA0rImMv3nPGqbwRU7Do6vXe43a2RgCo84sSv7QbIS
-	Um30T5gMro4kvpuKAXSJjtINVYNNwo9oPTupifuf0s9xzCT2n1IlcUlX17OqIlM5ZJMEi4Skp+v
-	5adU0yF4NBJmEEWjE56/mstR0u0WIr/nbOb8TdFHowyuASJE/XyIZKhKwDCt3J1Pq7VsSIn1jIC
-	hGr+yHFcfW50n+x8Q6mZA+b3Wpe67e3dEiH+K60c1i1NBSOx8XPyYkEOz487dQ9OaIr586z7VHf
-	hY1MlLaRw8H802Lk//r4BezlfxVSL+Q1P1px4Cox9Y/4LalhkPb0rSTv7GfUoFnxKSdMAyNvjI3
-	zRrbfvXqms/UmwW9G0VKFFLHM+9zt7tVwIRioSHIaAzAqu77ergMD/KHW+TMt+Nh7xKByyMjh2N
-	JDwcAnDuLa1abeXiXOctqEwrGgIGzwZ3VVmiqx0G/zlwUt0p2ImkAFfd5kDoU=
-X-Google-Smtp-Source: AGHT+IGU3Q3DTE3paAR6KyIYjM++1ol6X6uwXmSKDO3eBOccd4t/HzMs/1I8jCuuILom7vu69OstOHdhk6M+
-X-Received: by 2002:a05:6870:b251:b0:3e8:952c:bacc with SMTP id 586e51a60fabf-3ffc094bcd7mr7723550fac.1.1768200544468;
-        Sun, 11 Jan 2026 22:49:04 -0800 (PST)
-Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-2.dlp.protect.broadcom.com. [144.49.247.2])
-        by smtp-relay.gmail.com with ESMTPS id 586e51a60fabf-3ffa4dee33bsm2009447fac.1.2026.01.11.22.49.03
-        for <bpf@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 11 Jan 2026 22:49:04 -0800 (PST)
-X-Relaying-Domain: broadcom.com
-X-CFilter-Loop: Reflected
-Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-88fd7ddba3fso24055676d6.1
-        for <bpf@vger.kernel.org>; Sun, 11 Jan 2026 22:49:03 -0800 (PST)
+	s=arc-20240116; t=1768200502; c=relaxed/simple;
+	bh=rpUMG7VCejDbORClQkt0L6wApaMWxdJ2USHhfDb3EfA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QqetL6jERcO/0juwzW5KOtN/QrIVwM3UWh/tysfxKz1L4N/LxtIYjQCZBS8hoojUwXYAEaIiD8L437sboZMgcIHnGsBOqe+s07JYCzNgNWklshsxWR5/+f0O+kfNd7lk/NTata+ojKhkc5t3bLn5Yh+BTi8p5TgMTRkICNLChMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A5srX00C; arc=none smtp.client-ip=209.85.128.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f67.google.com with SMTP id 5b1f17b1804b1-47a95efd2ceso53267935e9.2
+        for <bpf@vger.kernel.org>; Sun, 11 Jan 2026 22:48:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1768200543; x=1768805343; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1768200500; x=1768805300; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=BMGywwOftAtIOE9Ma0M+1p0gAOjyGugzA0x5uDVxtlE=;
+        b=A5srX00CzsnAXu2dgdhAVNCSSfgysV5gsMl2HtYmVlMFRHWdD83MdK18e+iRAp+X6F
+         uMYaeKJ+9Uk+PGghiXC4DEe5bUnu4gfdTu2joNVvmmLiDwBc+iyDjs44f4fGJE4AS4E4
+         Y7Zc1Je3KBlg+2uGK10qgV08kSL4c0UoGmbHm95UL6jE+krVRYAIzARw1kRF9cT0n2kK
+         z1R7vZDVhapTt2ZU5ibJuRGNeAERvAF+wxjU1NCr1Et2YJtO5rA1M3Hn6aQHmxNG7YmN
+         3GC7iw+1F3W7twG3cYyUOyfPzgbVk2kh8Ij16ZGTstvQjbUQeDfT9HHIqc3K9lJYNAYU
+         CxXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768200500; x=1768805300;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=jPMqt7OubTukSzfJGmFa7NplH3SyhzWtPIziyN+vzQc=;
-        b=HULDzgV0xNjjSDM0vQDvUI6wFElpZDOEMzhjLyc0Zk2D0LMSxBEPRLi4ELVQC2Zckj
-         +t0+mYjt0a+14Ys/HHcXrEkZecSP7mRKLNoLAbvQ34qFg1tmnQlWVTfUaw17GkjwMuvP
-         tY4Ic7ug4kHP2ApvIjskPOrgGh9/eHxqAw+/M=
-X-Forwarded-Encrypted: i=1; AJvYcCUM0wUPqEkQyHCe0/ePFMIi6VXhKD39QZ07AZSW0Em26gJ8wI6b2pEE25uuDyhlzC779qY=@vger.kernel.org
-X-Received: by 2002:a05:6214:2481:b0:70d:e7e1:840f with SMTP id 6a1803df08f44-890842cb736mr185047256d6.3.1768200542672;
-        Sun, 11 Jan 2026 22:49:02 -0800 (PST)
-X-Received: by 2002:a05:6214:2481:b0:70d:e7e1:840f with SMTP id 6a1803df08f44-890842cb736mr185047146d6.3.1768200542333;
-        Sun, 11 Jan 2026 22:49:02 -0800 (PST)
-Received: from keerthanak-ph5-dev.. ([192.19.161.250])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-890770e472csm131125426d6.23.2026.01.11.22.48.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Jan 2026 22:49:01 -0800 (PST)
-From: Keerthana K <keerthana.kalyanasundaram@broadcom.com>
-To: stable@vger.kernel.org,
-	gregkh@linuxfoundation.org
-Cc: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	dsahern@kernel.org,
-	borisp@nvidia.com,
-	john.fastabend@gmail.com,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	ajay.kaher@broadcom.com,
-	alexey.makhalov@broadcom.com,
-	vamsi-krishna.brahmajosyula@broadcom.com,
-	yin.ding@broadcom.com,
-	tapas.kundu@broadcom.com,
-	Kuniyuki Iwashima <kuniyu@google.com>,
-	Sabrina Dubroca <sd@queasysnail.net>,
-	Sasha Levin <sashal@kernel.org>,
-	Keerthana K <keerthana.kalyanasundaram@broadcom.com>
-Subject: [PATCH v6.6.y 2/2] tls: Use __sk_dst_get() and dst_dev_rcu() in get_netdev_for_sock().
-Date: Mon, 12 Jan 2026 06:45:54 +0000
-Message-ID: <20260112064554.2969656-3-keerthana.kalyanasundaram@broadcom.com>
-X-Mailer: git-send-email 2.43.7
-In-Reply-To: <20260112064554.2969656-1-keerthana.kalyanasundaram@broadcom.com>
-References: <20260112064554.2969656-1-keerthana.kalyanasundaram@broadcom.com>
+        bh=BMGywwOftAtIOE9Ma0M+1p0gAOjyGugzA0x5uDVxtlE=;
+        b=I6ceXMSv2YU5C9kA7xUw+xlOfhEN+FkFj54cV8cuC2LmmeG/J9F8oDjluf8efeXNVK
+         vNnhR3mvuHPUlFKUXV8sdvm9yZyEz/ITA+0xJgGl64kXwQEw9Rk6ps8vdJrCLe51XTDD
+         PEOOLPtlxFoNaEIZl17HAHJzF1av2Bu+LkM9UVqRoupvLjO0zW66E4dfRZErxOEf74YN
+         rRcqPGJmlf3Ddv6mHZKG/xt+JpPGewURIJSPXh9KqUiFmNMYajVwoefuU9XjJ+Lp8Gx/
+         ymwld2qGhc4Y3mqoCzYA11C9Un3MhwbNNdy+PGSFjNoWFOsFCcr4sfuoZCyAVI6AUPIa
+         Nekg==
+X-Gm-Message-State: AOJu0Yw6gvq8MshZdG25lNWH9SWq9guLhpBoETH9TlAtP7BenkORkTET
+	LQwJB9CAIYAwjgwZ8jktqfny6xQKZ0r8QSyFx3+cAPQq1HPxa7prTkNKSRA0cy4292Oh1XjE2n0
+	QgCTAR2gZHv1ReGllSCUQEkDhYZH57MI=
+X-Gm-Gg: AY/fxX5W/Z2XzD4sgJnllRZYYARmFBIzTGyyG2EwM/ED34bThrgnv2C0WvaqVDzGUOx
+	zo6yXjy3FhaRF+eMAsmNFiEXtwajUMZdkTeZxma0yxRPQ1dW5PJYOaefcObc0BW+sxVhlRtXDqe
+	meA63zzxciW+M6UOMZP7E02cpvNVtYD/Wf9RYULfjN2ysUMrxUbvVsu13o74FweZzPioYPawsei
+	c1iVOZEbpAKpWBMIN7Q778Wt3lcEexKZ9+voYl/9XAoK12FKiIVqwBsvZsh4c9KX82qbIucq6SX
+	/bzMm2XZ9hx7xyLormabfAQB8L1+QA==
+X-Google-Smtp-Source: AGHT+IEhlXyXqtRW9jYjXtqtbcxsdidMM6tcgJbc7HTEps9KImsYI840348wv9y6tglmEJK7qiM9fXyo1mMyAlpgFmM=
+X-Received: by 2002:a05:600c:3114:b0:47d:403e:90c9 with SMTP id
+ 5b1f17b1804b1-47d84b18663mr178040655e9.11.1768200499456; Sun, 11 Jan 2026
+ 22:48:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
+References: <20260107-timer_nolock-v3-0-740d3ec3e5f9@meta.com> <20260107-timer_nolock-v3-1-740d3ec3e5f9@meta.com>
+In-Reply-To: <20260107-timer_nolock-v3-1-740d3ec3e5f9@meta.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Mon, 12 Jan 2026 07:47:43 +0100
+X-Gm-Features: AZwV_Qg29P_sOJq55zOYM8D-5QrItk4nN_QfUqhXjRxV-aswWqTSpvjIbiawtZo
+Message-ID: <CAP01T74v_m7X6Osd=WndWbQaBnsifkT8j2mKDVCaWKX269gKKg@mail.gmail.com>
+Subject: Re: [PATCH RFC v3 01/10] bpf: Refactor __bpf_async_set_callback()
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, eddyz87@gmail.com, 
+	Mykyta Yatsenko <yatsenko@meta.com>
+Content-Type: text/plain; charset="UTF-8"
 
-From: Kuniyuki Iwashima <kuniyu@google.com>
+On Wed, 7 Jan 2026 at 18:49, Mykyta Yatsenko <mykyta.yatsenko5@gmail.com> wrote:
+>
+> From: Mykyta Yatsenko <yatsenko@meta.com>
+>
+> Refactor __bpf_async_set_callback() getting rid of locks. The idea of the
+> algorithm is to store both callback_fn and prog in struct bpf_async_cb
+> and verify that both pointers are stored, if any pointer does not
+> match (because of the concurrent update), retry until complete match.
+> On each iteration, increment refcnt of the prog that is going to
+> be set and decrement the one that is evicted, ensuring that get/put are
+> balanced, as each iteration has both inc/dec.
+>
+> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+> ---
+>  kernel/bpf/helpers.c | 61 ++++++++++++++++++----------------------------------
+>  1 file changed, 21 insertions(+), 40 deletions(-)
+>
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index 9eaa4185e0a79b903c6fc2ccb310f521a4b14a1d..954bd61310a6ad3a0d540c1b1ebe8c35a9c0119c 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -1355,55 +1355,36 @@ static const struct bpf_func_proto bpf_timer_init_proto = {
+>  };
+>
+>  static int __bpf_async_set_callback(struct bpf_async_kern *async, void *callback_fn,
+> -                                   struct bpf_prog_aux *aux, unsigned int flags,
+> -                                   enum bpf_async_type type)
+> +                                   struct bpf_prog *prog)
+>  {
+> -       struct bpf_prog *prev, *prog = aux->prog;
+> -       struct bpf_async_cb *cb;
+> -       int ret = 0;
+> +       struct bpf_prog *prev;
+> +       struct bpf_async_cb *cb = async->cb;
+>
+> -       if (in_nmi())
+> -               return -EOPNOTSUPP;
 
-[ Upstream commit c65f27b9c3be2269918e1cbad6d8884741f835c5 ]
+I'm just nitpicking, but it may be cleaner to drop this hunk in the
+commit which marks both NMI-safe, and keep this commit topical to
+making this function lockless and ensuring nothing breaks.
 
-get_netdev_for_sock() is called during setsockopt(),
-so not under RCU.
+> -       __bpf_spin_lock_irqsave(&async->lock);
+> -       cb = async->cb;
+> -       if (!cb) {
+> -               ret = -EINVAL;
+> -               goto out;
+> -       }
+> -       if (!atomic64_read(&cb->map->usercnt)) {
+> -               /* maps with timers must be either held by user space
+> -                * or pinned in bpffs. Otherwise timer might still be
+> -                * running even when bpf prog is detached and user space
+> -                * is gone, since map_release_uref won't ever be called.
+> -                */
+> -               ret = -EPERM;
+> -               goto out;
+> -       }
+> -       prev = cb->prog;
+> -       if (prev != prog) {
+> -               /* Bump prog refcnt once. Every bpf_timer_set_callback()
+> -                * can pick different callback_fn-s within the same prog.
+> -                */
+> -               prog = bpf_prog_inc_not_zero(prog);
+> -               if (IS_ERR(prog)) {
+> -                       ret = PTR_ERR(prog);
+> -                       goto out;
+> +       if (!cb)
+> +               return -EPERM;
+> +
+> +       do {
+> +               if (prog) {
+> +                       prog = bpf_prog_inc_not_zero(prog);
+> +                       if (IS_ERR(prog))
+> +                               return PTR_ERR(prog);
+>                 }
+> +
+> +               prev = xchg(&cb->prog, prog);
+> +               rcu_assign_pointer(cb->callback_fn, callback_fn);
+> +
+>                 if (prev)
+> -                       /* Drop prev prog refcnt when swapping with new prog */
+>                         bpf_prog_put(prev);
 
-Using sk_dst_get(sk)->dev could trigger UAF.
+I was wondering whether bpf_prog_put needs adjustment when done in NMI context.
+At this point I forgot what my conclusion was when looking at it for
+task_work, but there are two things that may require care:
+1) whether in_hardirq() || irqs_disabled() is enough to detect NMI
+context too. This seems to be fine on x86, but I am not sure it will
+be the same across architectures.
+2) whether schedule_work() can deadlock when invoked from NMI while
+its locks are held in some lower context.
 
-Let's use __sk_dst_get() and dst_dev_rcu().
+Once this function is opened up to be called in NMI context you can
+have a reentrant async_set_callback on the same CPU. This will require
+both dec_and_test() to drop to 0 on the same CPU somehow. Thus, we may
+need to defer to irq_work for bpf_prog_put. queue_work() et. al. have
+local_irq_save() so hardirq/task reentrancy should be prevented for them
+(they are already supposed to work fine in such cases), even after we
+lose our own irqsave through the spin lock.
 
-Note that the only ->ndo_sk_get_lower_dev() user is
-bond_sk_get_lower_dev(), which uses RCU.
 
-Fixes: e8f69799810c ("net/tls: Add generic NIC offload infrastructure")
-Signed-off-by: Kuniyuki Iwashima <kuniyu@google.com>
-Reviewed-by: Eric Dumazet <edumazet@google.com>
-Reviewed-by: Sabrina Dubroca <sd@queasysnail.net>
-Link: https://patch.msgid.link/20250916214758.650211-6-kuniyu@google.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
-[ Keerthana: Backport to v6.6.y ]
-Signed-off-by: Keerthana K <keerthana.kalyanasundaram@broadcom.com>
----
- net/tls/tls_device.c | 17 ++++++++++-------
- 1 file changed, 10 insertions(+), 7 deletions(-)
 
-diff --git a/net/tls/tls_device.c b/net/tls/tls_device.c
-index 4f72fd26a..55b46df65 100644
---- a/net/tls/tls_device.c
-+++ b/net/tls/tls_device.c
-@@ -125,17 +125,19 @@ static void tls_device_queue_ctx_destruction(struct tls_context *ctx)
- /* We assume that the socket is already connected */
- static struct net_device *get_netdev_for_sock(struct sock *sk)
- {
--	struct dst_entry *dst = sk_dst_get(sk);
--	struct net_device *netdev = NULL;
-+	struct net_device *dev, *lowest_dev = NULL;
-+	struct dst_entry *dst;
- 
--	if (likely(dst)) {
--		netdev = netdev_sk_get_lowest_dev(dst->dev, sk);
--		dev_hold(netdev);
-+	rcu_read_lock();
-+	dst = __sk_dst_get(sk);
-+	dev = dst ? dst_dev_rcu(dst) : NULL;
-+	if (likely(dev)) {
-+		lowest_dev = netdev_sk_get_lowest_dev(dev, sk);
-+		dev_hold(lowest_dev);
- 	}
-+	rcu_read_unlock();
- 
--	dst_release(dst);
--
--	return netdev;
-+	return lowest_dev;
- }
- 
- static void destroy_record(struct tls_record_info *record)
--- 
-2.43.7
-
+> -               cb->prog = prog;
+> -       }
+> -       rcu_assign_pointer(cb->callback_fn, callback_fn);
+> -out:
+> -       __bpf_spin_unlock_irqrestore(&async->lock);
+> -       return ret;
+> +
+> +       } while (READ_ONCE(cb->prog) != prog || READ_ONCE(cb->callback_fn) != callback_fn);
+> +
+> +       return 0;
+>  }
+>
+>  BPF_CALL_3(bpf_timer_set_callback, struct bpf_async_kern *, timer, void *, callback_fn,
+>            struct bpf_prog_aux *, aux)
+>  {
+> -       return __bpf_async_set_callback(timer, callback_fn, aux, 0, BPF_ASYNC_TYPE_TIMER);
+> +       return __bpf_async_set_callback(timer, callback_fn, aux->prog);
+>  }
+>
+>  static const struct bpf_func_proto bpf_timer_set_callback_proto = {
+> @@ -3131,7 +3112,7 @@ __bpf_kfunc int bpf_wq_set_callback_impl(struct bpf_wq *wq,
+>         if (flags)
+>                 return -EINVAL;
+>
+> -       return __bpf_async_set_callback(async, callback_fn, aux, flags, BPF_ASYNC_TYPE_WQ);
+> +       return __bpf_async_set_callback(async, callback_fn, aux->prog);
+>  }
+>
+>  __bpf_kfunc void bpf_preempt_disable(void)
+>
+> --
+> 2.52.0
+>
 
