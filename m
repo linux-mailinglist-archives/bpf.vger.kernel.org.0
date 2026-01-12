@@ -1,140 +1,320 @@
-Return-Path: <bpf+bounces-78508-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78509-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52740D10276
-	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 00:38:59 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B22FD1080F
+	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 04:45:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0606D304718E
-	for <lists+bpf@lfdr.de>; Sun, 11 Jan 2026 23:38:54 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1210A3031CEC
+	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 03:45:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1BBD2D97A2;
-	Sun, 11 Jan 2026 23:38:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D1F0262FFC;
+	Mon, 12 Jan 2026 03:45:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V1GsXbc7"
+	dkim=pass (2048-bit key) header.d=navercorp.com header.i=@navercorp.com header.b="wajf3ORW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from cvsmtppost03.nmdf.navercorp.com (cvsmtppost03.nmdf.navercorp.com [114.111.35.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 094051E4AB
-	for <bpf@vger.kernel.org>; Sun, 11 Jan 2026 23:38:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 817261BC2A
+	for <bpf@vger.kernel.org>; Mon, 12 Jan 2026 03:45:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.111.35.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768174732; cv=none; b=Qbf46DcKMAxugxmJywMfQYZIwfrop1wOL+WaV5CdqmrlhQd2HTmyGDOwUZiFmF1XUaxqfNzAJFp18XdibByVyAvEDyl4qiKUVUPy8tiLGv8r2GXwLHgXtWA/8R799Xs/JMfohu67HRwRFcuuW5WRfTFbJmf61YtKOIwpZ7XQRHg=
+	t=1768189541; cv=none; b=Zj7z1NBnO1yFipyR9gmJCkIbN8ukzFNlI2XmXON425gQ3J/BIwphzzEeRr1dgFEBWJo+klZ0388cfezfT2PfDw9TmaAJfk3apn9PM/OH3NX6fPjzs3q3R7xu5nquJDxMkHn9so7jnnnFC3KvAK6fr6hrMbLvAzKrSNH2Lo4xnKg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768174732; c=relaxed/simple;
-	bh=kiXWuKzIX1x06aBMcxfYYewoOyDtnrGOZE+OOoXbLNM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=K6NSpk1tVY6zh1TlCxjLYEIR99nFmP+QwnH5DiZIl0YEcATL5cEU2XZfGTrxDehexP8WHZDveoUmM1d6vBrlcuRtvenw5wiyLtWf7rA8ae5fNe7AuPQ3cg9ewevMZ7XucbB3AryaJ9BrM4OP9eZNXnXBKssWqZlW5exHi1BH9Y4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V1GsXbc7; arc=none smtp.client-ip=209.85.221.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-432d256c2a9so2545841f8f.3
-        for <bpf@vger.kernel.org>; Sun, 11 Jan 2026 15:38:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768174729; x=1768779529; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kiXWuKzIX1x06aBMcxfYYewoOyDtnrGOZE+OOoXbLNM=;
-        b=V1GsXbc7qHCqdkB30tri7P3dRfDxGmDg0h3datuwhBVVKAOL5jgFJGSqVrdNh3BVBP
-         nZ9mEM/ZJVFaOtyz4T4p8FvlYEzgOgdFipeGG08JMgQiGPCzgOLYkuKxJnR1JB5losbd
-         eCgF4tvyZG3SwinyLbXgQ3GYf6Q0c3vXHnaM5vIhzEOUYfoCBXRVypCiVIaaUj5jNaYg
-         Iu6rFaUfK4zPKfFHO+ofbtpWH6ts5f+HH3rktq6suD9b9AfXyqF7fW/HwGZL2hKYKY/6
-         adPlUKDesamGBDUxC0m6bJscDn5RCoOJbIfmFT+/Yu2JXFED52+JeUwtKeBP+TpdBuBZ
-         N4Ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768174729; x=1768779529;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=kiXWuKzIX1x06aBMcxfYYewoOyDtnrGOZE+OOoXbLNM=;
-        b=CPZcU3/XtFb9ANnVuc8LZ6GZtaAdOVDnC4X6tAeR70b93kQUJIt3/HddYXbY+VKWMp
-         4EetM42jBiR55D2iPpZJzSPAzQGgQTL16CkQneoucAALUTAmi41aLFud8NWyVAhTuyTg
-         ErlvYGaHIT1H0ce1rKO8I1R69li1e/j4vxLIo4S8K3l9fy4gc4uT2bH4f5vomzMy1UyX
-         l9vy0G5vZXQPYNdpCHU7s1gvGw+8MGsv/UZ/7XkyEDdp3H26u63aEdAaW+Okva3tPLw/
-         gnphI2LJv3+bm0BK8SA78DJ5OJ5hreLaD2PZjev7PHM5RS//a5bwAZaQhEMrwpSCiozv
-         5Fzw==
-X-Forwarded-Encrypted: i=1; AJvYcCUIRO36vLx0fqUymxp4bf5FFNk263cYJqnh/i/2a2iBETHn02LUeyYugZcXqmywXQHaVFA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwlgpdiNaUzIp9Cwr9Niwv9dZ2GumphaHovj26kr/QlWHb1afot
-	Tiy4rLBBIARTRqnc84FNPzZafhirAddgQPFKUII02Qq6l1wLjf9pdUGVuHH6NQESNYosWXpfa6Y
-	6PfOKXRQZ7dcKR9/Bm2+KEwg8hJVuGTo=
-X-Gm-Gg: AY/fxX6cyVdWhxVlfmcBBsrKXeZfyZd7PdIqanc+5yDqEiwJWV1NIEIaS4BvTXIA/Cx
-	IAyUuBqLv+CJIpS9FFlYtFA5zWU8WbSKBzoOu5HI/3r9dOsFdBhVH6tD356l1sq9itS7xvMOu8t
-	YQdLlesRlozKNiuYPRa0ZkaNUxQ01klLddUMakFD6HxrDs2ztEx7mF3WtXx3hoOn3pUbLAtTIAZ
-	RHjO/ZWX2rDr4FELUJ3PfwsEaab9SNNlToVM2hfgkIsBWnjfgDAU1DurcfwhcQj5SepEzQXH7uB
-	/qTzXEVsuarLw3yP8osoIBTbXKaHviGk0ZXyFvU=
-X-Google-Smtp-Source: AGHT+IFUOvDT34dvyomwn3c7ZwM6ALEAOAqRH7FWOKzQCzQUJjuK/9NtjeBwyRJsMcrShx2AnzXOyQRd8inlOoww4Fo=
-X-Received: by 2002:a05:6000:4287:b0:430:f41f:bd5d with SMTP id
- ffacd0b85a97d-432c37a300emr17145280f8f.55.1768174729186; Sun, 11 Jan 2026
- 15:38:49 -0800 (PST)
+	s=arc-20240116; t=1768189541; c=relaxed/simple;
+	bh=sCeFqIwAWGDeyUlCQkBn25TfdGNVyKMhBiuKuXgbbIk=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=HhqyVl6YEd4Y7U8CV/lgKBofiFYt8+u4yFAOenrt7cqi2SoTcD1axGZwfOXkqPcxfn9ouwln0UgIfBuQ3VdkPa9wtPtLxLBrch4pn96GfdnzcAZhuTCrRk7/t/3pkOmc/TjSj1hLxtgPjOj2GYBkWGMcIojDqfCuWJpMjvAwAq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=navercorp.com; spf=pass smtp.mailfrom=navercorp.com; dkim=pass (2048-bit key) header.d=navercorp.com header.i=@navercorp.com header.b=wajf3ORW; arc=none smtp.client-ip=114.111.35.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=navercorp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=navercorp.com
+Received: from cvsendbo02.nmdf ([10.112.18.65])
+  by cvsmtppost03.nmdf.navercorp.com with ESMTP id Jrh4kByFTsOVFBZ-nnV9kg
+  for <bpf@vger.kernel.org>;
+  Mon, 12 Jan 2026 03:45:32 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=navercorp.com;
+	s=s20171120; t=1768189532;
+	bh=sCeFqIwAWGDeyUlCQkBn25TfdGNVyKMhBiuKuXgbbIk=;
+	h=From:To:Subject:Date:Message-Id:From:Subject:Feedback-ID:
+	 X-Works-Security;
+	b=wajf3ORWqULwraXrrVgFPeCnUq+BhryT2fJJXqk5uehkehARDB5jS/hgMiaWgqkT1
+	 jdlZUv+5IFYOxZaO4DBkk1A80eLiuZWQNryKJ3HTx3yTAQHdw3LsXvAyq4FOgJTwGs
+	 mKeRCz0MN4h9oXG7T4KqystslL2XQypYHbJuwPCZJkXrJ20vqLaouO4EDU+rMNWg+Q
+	 8w7GrFUXKqoh25W/R4Bg+YyDEYQqrkBKJSgQjD5vXQTH+gFO2R6XoZzrizcaxMOv/c
+	 WXMwEou1E1SIOnABlvY+njoUmIda/bL+6W/x5QosfwpXD4v7PWsu1iHBiJaMgOHClv
+	 AOuQ+1IT/Bxxg==
+X-Session-ID: 6sGnAhroRnOzy6PsAElM+g
+X-Works-Send-Opt: xQbwjAiYjHm2KHwYjHmlUVg=
+X-Works-Smtp-Source: YZb9Kx2rFqJZ+HmZKquX+6E=
+Received: from localhost.localdomain ([10.25.152.220])
+  by mvnsmtp02.nmdf.navercorp.com with ESMTP id 6sGnAhroRnOzy6PsAElM+g
+  for <multiple recipients>
+  (version=TLSv1.3 cipher=TLS_CHACHA20_POLY1305_SHA256);
+  Mon, 12 Jan 2026 03:45:32 -0000
+From: gyutae.opensource@navercorp.com
+To: Quentin Monnet <qmo@kernel.org>,
+	bpf@vger.kernel.org,
+	Daniel Borkmann <daniel@iogearbox.net>
+Cc: linux-kernel@vger.kernel.org,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Gyutae Bae <gyutae.bae@navercorp.com>,
+	Siwan Kim <siwan.kim@navercorp.com>,
+	Daniel Xu <dxu@dxuuu.xyz>,
+	Jiayuan Chen <jiayuan.chen@linux.dev>,
+	Tao Chen <chen.dylane@linux.dev>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Subject: [PATCH v4] bpftool: Add 'prepend' option for tcx attach to insert at chain start
+Date: Mon, 12 Jan 2026 12:45:16 +0900
+Message-Id: <20260112034516.22723-1-gyutae.opensource@navercorp.com>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
+In-Reply-To: <43c23468-530b-45f3-af22-f03484e5148c@kernel.org>
+References: <43c23468-530b-45f3-af22-f03484e5148c@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260108220550.2f6638f3@fedora> <da261242-482f-4b47-81c6-b065c5a95c4b@efficios.com>
- <CAADnVQJMa+p_BcYxKUgve2=sqRBwSs3wLGAGhbA0r6hwFpJ+6Q@mail.gmail.com>
- <20260109141930.6deb2a0a@gandalf.local.home> <3c0df437-f6e5-47c6-aed5-f4cc26fe627a@efficios.com>
- <CAADnVQLeCLRhx1Oe5DdJCT0e+WWq4L3Rdee1Ky0JNNh3LdozeQ@mail.gmail.com>
- <20260109170028.0068a14d@fedora> <CAADnVQKGm-t2SdN_vFVMn0tNiQ5Fs6FutD2Au-jO69aGdhKS7Q@mail.gmail.com>
- <20260109173326.616e873c@fedora> <20260109173915.1e8a784e@fedora>
- <CAADnVQKB4dAWtX7T15yh31NYNcBUugoqcnTZ3U9APo8SZkTuwg@mail.gmail.com>
- <20260110111454.7d1a7b66@fedora> <CAADnVQJ_L_TvFogq0+-qOH=vxe5bzU9iz3c-6-N7VFYE6cBnjQ@mail.gmail.com>
- <20260111170953.49127c00@fedora>
-In-Reply-To: <20260111170953.49127c00@fedora>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Sun, 11 Jan 2026 15:38:38 -0800
-X-Gm-Features: AZwV_QhL36czEI7sCQwGEwK5X-GlTAcDBYsReVH0tRCSZhjpYR06hlv9A0Tnzbo
-Message-ID: <CAADnVQJiEhDrfYVEyV8eGUECE_XFt7PGG=PFJRKU4jRBn-TsvA@mail.gmail.com>
-Subject: Re: [PATCH v5] tracing: Guard __DECLARE_TRACE() use of
- __DO_TRACE_CALL() with SRCU-fast
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, LKML <linux-kernel@vger.kernel.org>, 
-	Linux trace kernel <linux-trace-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Sun, Jan 11, 2026 at 2:09=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org=
-> wrote:
->
-> On Sun, 11 Jan 2026 12:04:51 -0800
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
->
-> > The diff has nothing to do with bpf needs and/or bpf internals.
-> > It's really about being a good citizen of PREEMP_RT.
-> > bpf side already does migrate_disable,
-> > rcu_read_lock, srcu_fast/task_trace when necessary.
-> > Most of the time we don't rely on any external preempt state or rcu/src=
-u.
-> > Removing guard(preempt_notrace)(); from tracepoint invocation
-> > would be just fine for bpf. Simple remove will trigger bug
-> > on cant_sleep(), but that's a trivial fix.
->
-> Oh, so you are OK replacing the preempt_disable in the tracepoint
-> callbacks with fast SRCU?
+From: Gyutae Bae <gyutae.bae@navercorp.com>
 
-yes, but..
+Add support for the 'prepend' option when attaching tcx_ingress and
+tcx_egress programs. This option allows inserting a BPF program at
+the beginning of the TCX chain instead of appending it at the end.
 
-> Then I guess we can simply do that. Would it be fine to do that for
-> both RT and non-RT? That will simplify the code quite a bit.
+The implementation uses BPF_F_BEFORE flag which automatically inserts
+the program at the beginning of the chain when no relative reference
+is specified.
 
-Agree. perf needs preempt_disable in their callbacks (as this patch does)
-and bpf side needs to add migrate_disable in __bpf_trace_run for now.
-Though syscall tracepoints are sleepable we don't take advantage of
-that on the bpf side. Eventually we will, and then rcu_lock
-inside __bpf_trace_run will become srcu_fast_lock.
+This change includes:
+- Modify do_attach_tcx() to support prepend insertion using BPF_F_BEFORE
+- Update documentation to describe the new 'prepend' option
+- Add bash completion support for the 'prepend' option on tcx attach types
+- Add example usage in the documentation
+- Add validation to reject 'overwrite' for non-XDP attach types
 
-The way to think about generic infrastructure like tracepoints is
-to minimize their overhead no matter what out-of-tree and in-tree
-users' assumptions are today, so why do we need preempt_disable
-or srcu_fast there?
-I think today it's there because all callbacks (perf, ftrace, bpf)
-expect preemption to be disabled, but can we just remove it from tp side?
-and move preempt_disable to callbacks that actually need it?
+The 'prepend' option is only valid for tcx_ingress and tcx_egress attach
+types. For XDP attach types, the existing 'overwrite' option remains
+available.
 
-I'm looking at release_probes(). It's fine as-is, no?
+Example usage:
+  # bpftool net attach tcx_ingress name tc_prog dev lo prepend
+
+This feature is useful when the order of program execution in the TCX
+chain matters and users need to ensure certain programs run first.
+
+Co-developed-by: Siwan Kim <siwan.kim@navercorp.com>
+Signed-off-by: Siwan Kim <siwan.kim@navercorp.com>
+Signed-off-by: Gyutae Bae <gyutae.bae@navercorp.com>
+Reviewed-by: Quentin Monnet <qmo@kernel.org>
+---
+Hi Quentin.
+
+Thank you for the review! I have added the validation for 'overwrite'
+option as you suggested.
+
+I used a whitelist approach (rejecting non-XDP types) rather than
+a blacklist approach (rejecting TCX types) to be consistent with the
+'prepend' validation style and to ensure that any future attach types
+will also be rejected by default unless explicitly allowed.
+
+Thanks,
+Gyutae.
+
+Changes in v4:
+- Add validation to reject 'overwrite' for non-XDP attach types (Quentin)
+
+Changes in v3:
+- Simplified implementation by using BPF_F_BEFORE alone (Daniel)
+- Removed get_first_tcx_prog_id() helper function (Daniel)
+
+Changes in v2:
+- Renamed 'head' to 'prepend' for consistency with 'overwrite' (Quentin)
+- Moved relative_id variable to relevant scope inside if block (Quentin)
+- Changed condition style from '== 0' to '!' (Quentin)
+- Updated documentation to clarify 'overwrite' is XDP-only (Quentin)
+- Removed outdated "only XDP-related modes are supported" note (Quentin)
+- Removed extra help text from do_help() for consistency (Quentin)
+
+ .../bpf/bpftool/Documentation/bpftool-net.rst | 30 +++++++++++++-----
+ tools/bpf/bpftool/bash-completion/bpftool     |  9 +++++-
+ tools/bpf/bpftool/net.c                       | 31 ++++++++++++++++---
+ 3 files changed, 58 insertions(+), 12 deletions(-)
+
+diff --git a/tools/bpf/bpftool/Documentation/bpftool-net.rst b/tools/bpf/bpftool/Documentation/bpftool-net.rst
+index a9ed8992800f..22da07087e42 100644
+--- a/tools/bpf/bpftool/Documentation/bpftool-net.rst
++++ b/tools/bpf/bpftool/Documentation/bpftool-net.rst
+@@ -24,7 +24,7 @@ NET COMMANDS
+ ============
+ 
+ | **bpftool** **net** { **show** | **list** } [ **dev** *NAME* ]
+-| **bpftool** **net attach** *ATTACH_TYPE* *PROG* **dev** *NAME* [ **overwrite** ]
++| **bpftool** **net attach** *ATTACH_TYPE* *PROG* **dev** *NAME* [ **overwrite** | **prepend** ]
+ | **bpftool** **net detach** *ATTACH_TYPE* **dev** *NAME*
+ | **bpftool** **net help**
+ |
+@@ -58,11 +58,9 @@ bpftool net { show | list } [ dev *NAME* ]
+     then all bpf programs attached to non clsact qdiscs, and finally all bpf
+     programs attached to root and clsact qdisc.
+ 
+-bpftool net attach *ATTACH_TYPE* *PROG* dev *NAME* [ overwrite ]
++bpftool net attach *ATTACH_TYPE* *PROG* dev *NAME* [ overwrite | prepend ]
+     Attach bpf program *PROG* to network interface *NAME* with type specified
+-    by *ATTACH_TYPE*. Previously attached bpf program can be replaced by the
+-    command used with **overwrite** option. Currently, only XDP-related modes
+-    are supported for *ATTACH_TYPE*.
++    by *ATTACH_TYPE*.
+ 
+     *ATTACH_TYPE* can be of:
+     **xdp** - try native XDP and fallback to generic XDP if NIC driver does not support it;
+@@ -72,11 +70,18 @@ bpftool net attach *ATTACH_TYPE* *PROG* dev *NAME* [ overwrite ]
+     **tcx_ingress** - Ingress TCX. runs on ingress net traffic;
+     **tcx_egress** - Egress TCX. runs on egress net traffic;
+ 
++    For XDP-related attach types (**xdp**, **xdpgeneric**, **xdpdrv**,
++    **xdpoffload**), the **overwrite** option can be used to replace a
++    previously attached bpf program.
++
++    For **tcx_ingress** and **tcx_egress** attach types, the **prepend** option
++    can be used to attach the program at the beginning of the chain instead of
++    at the end.
++
+ bpftool net detach *ATTACH_TYPE* dev *NAME*
+     Detach bpf program attached to network interface *NAME* with type specified
+     by *ATTACH_TYPE*. To detach bpf program, same *ATTACH_TYPE* previously used
+-    for attach must be specified. Currently, only XDP-related modes are
+-    supported for *ATTACH_TYPE*.
++    for attach must be specified.
+ 
+ bpftool net help
+     Print short help message.
+@@ -191,6 +196,17 @@ EXAMPLES
+       tc:
+       lo(1) tcx/ingress tc_prog prog_id 29
+ 
++|
++| **# bpftool net attach tcx_ingress name tc_prog2 dev lo prepend**
++| **# bpftool net**
++|
++
++::
++
++      tc:
++      lo(1) tcx/ingress tc_prog2 prog_id 30
++      lo(1) tcx/ingress tc_prog prog_id 29
++
+ |
+ | **# bpftool net attach tcx_ingress name tc_prog dev lo**
+ | **# bpftool net detach tcx_ingress dev lo**
+diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
+index 53bcfeb1a76e..a28f0cc522e4 100644
+--- a/tools/bpf/bpftool/bash-completion/bpftool
++++ b/tools/bpf/bpftool/bash-completion/bpftool
+@@ -1142,7 +1142,14 @@ _bpftool()
+                             return 0
+                             ;;
+                         8)
+-                            _bpftool_once_attr 'overwrite'
++                            case ${words[3]} in
++                                tcx_ingress|tcx_egress)
++                                    _bpftool_once_attr 'prepend'
++                                    ;;
++                                *)
++                                    _bpftool_once_attr 'overwrite'
++                                    ;;
++                            esac
+                             return 0
+                             ;;
+                     esac
+diff --git a/tools/bpf/bpftool/net.c b/tools/bpf/bpftool/net.c
+index cfc6f944f7c3..f25d66c8395e 100644
+--- a/tools/bpf/bpftool/net.c
++++ b/tools/bpf/bpftool/net.c
+@@ -666,10 +666,16 @@ static int get_tcx_type(enum net_attach_type attach_type)
+ 	}
+ }
+ 
+-static int do_attach_tcx(int progfd, enum net_attach_type attach_type, int ifindex)
++static int do_attach_tcx(int progfd, enum net_attach_type attach_type, int ifindex, bool prepend)
+ {
+ 	int type = get_tcx_type(attach_type);
+ 
++	if (prepend) {
++		LIBBPF_OPTS(bpf_prog_attach_opts, opts,
++			.flags = BPF_F_BEFORE
++		);
++		return bpf_prog_attach_opts(progfd, ifindex, type, &opts);
++	}
+ 	return bpf_prog_attach(progfd, ifindex, type, 0);
+ }
+ 
+@@ -685,6 +691,7 @@ static int do_attach(int argc, char **argv)
+ 	enum net_attach_type attach_type;
+ 	int progfd, ifindex, err = 0;
+ 	bool overwrite = false;
++	bool prepend = false;
+ 
+ 	/* parse attach args */
+ 	if (!REQ_ARGS(5))
+@@ -709,9 +716,25 @@ static int do_attach(int argc, char **argv)
+ 
+ 	if (argc) {
+ 		if (is_prefix(*argv, "overwrite")) {
++			if (attach_type != NET_ATTACH_TYPE_XDP &&
++			    attach_type != NET_ATTACH_TYPE_XDP_GENERIC &&
++			    attach_type != NET_ATTACH_TYPE_XDP_DRIVER &&
++			    attach_type != NET_ATTACH_TYPE_XDP_OFFLOAD) {
++				p_err("'overwrite' is only supported for xdp types");
++				err = -EINVAL;
++				goto cleanup;
++			}
+ 			overwrite = true;
++		} else if (is_prefix(*argv, "prepend")) {
++			if (attach_type != NET_ATTACH_TYPE_TCX_INGRESS &&
++			    attach_type != NET_ATTACH_TYPE_TCX_EGRESS) {
++				p_err("'prepend' is only supported for tcx_ingress/tcx_egress");
++				err = -EINVAL;
++				goto cleanup;
++			}
++			prepend = true;
+ 		} else {
+-			p_err("expected 'overwrite', got: '%s'?", *argv);
++			p_err("expected 'overwrite' or 'prepend', got: '%s'?", *argv);
+ 			err = -EINVAL;
+ 			goto cleanup;
+ 		}
+@@ -728,7 +751,7 @@ static int do_attach(int argc, char **argv)
+ 	/* attach tcx prog */
+ 	case NET_ATTACH_TYPE_TCX_INGRESS:
+ 	case NET_ATTACH_TYPE_TCX_EGRESS:
+-		err = do_attach_tcx(progfd, attach_type, ifindex);
++		err = do_attach_tcx(progfd, attach_type, ifindex, prepend);
+ 		break;
+ 	default:
+ 		break;
+@@ -985,7 +1008,7 @@ static int do_help(int argc, char **argv)
+ 
+ 	fprintf(stderr,
+ 		"Usage: %1$s %2$s { show | list } [dev <devname>]\n"
+-		"       %1$s %2$s attach ATTACH_TYPE PROG dev <devname> [ overwrite ]\n"
++		"       %1$s %2$s attach ATTACH_TYPE PROG dev <devname> [ overwrite | prepend ]\n"
+ 		"       %1$s %2$s detach ATTACH_TYPE dev <devname>\n"
+ 		"       %1$s %2$s help\n"
+ 		"\n"
+-- 
+2.39.5 (Apple Git-154)
+
 
