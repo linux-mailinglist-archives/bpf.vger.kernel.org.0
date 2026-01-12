@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-78533-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78534-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08B5AD11FE4
-	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 11:46:49 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01C8DD11FD5
+	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 11:46:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 446CC308790F
-	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 10:45:48 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 9975D30533DE
+	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 10:45:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 070EA320A04;
-	Mon, 12 Jan 2026 10:45:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0118333DED4;
+	Mon, 12 Jan 2026 10:45:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ayD2FLn/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mm7rC8+2"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-pl1-f195.google.com (mail-pl1-f195.google.com [209.85.214.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BC5D29D29A
-	for <bpf@vger.kernel.org>; Mon, 12 Jan 2026 10:45:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60AB325B31D
+	for <bpf@vger.kernel.org>; Mon, 12 Jan 2026 10:45:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768214747; cv=none; b=HzDp/P9IaYRJbdiwblBQHDgM5XYeuiD35rZvplfG9uY6F//T9ZzL2MtUuHFRCOd9D+3UcbrFjTArxs0xq/Fs0LAZbGkZF7BBn2dIDwg17xBzCOC5dv1eOvBkH03q3TuWhd7GIwQGFZcOdQm992FQkj9RzoUCNEaj0dhy8YOB9Tg=
+	t=1768214752; cv=none; b=pVaF8WwfV3KLgleV6IL4lK9cYZwdlwn935XKu26BYrv3/sJ5rDU+nzxj7JmWAxoW9nZ4/DB+c2ksGSjNkUmXE1BZEQ9dTY7G/ExQh0PIdlA73Cipm8tRvJEqNNL4dBpkyKl8nQBbonMkzV4BurgdbBS+4r4L/380q2EEq791Lco=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768214747; c=relaxed/simple;
-	bh=fHGYT2wKIjsZzvpzHiDp2/v0DzQ4msIuSE/Oy76VwKY=;
+	s=arc-20240116; t=1768214752; c=relaxed/simple;
+	bh=FctuMLOWdPB2KETKqv0GYttuTULzaHfty9crA5vDYSc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YnoWsYZNH5yE4+7FSk5nqUo02WO0oLL3V2NMQVNLZ+eiEU+BdG8zyKrItopYPmFiaIxH/A5AR+Rs9gR4bn3TG1YU/Et7wHLcsch8soy+OXAbp53SuPb1KUSaz6V9fmq7GkvPiX1tKxxjN6upay5FdIB0ffSGcOaIFote022u2uE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ayD2FLn/; arc=none smtp.client-ip=209.85.214.195
+	 MIME-Version; b=PAmp0b1CZSEhiTdoTSdaUaYThMwNhTq9wpEW/eY0rW+VbdgliOHZc234oMgxfy3qxSacgUF+Z5V0OVOkKWG5NqEaQSR/kPPYUdw0L3T5v0us4/fo2kKfgHIC/ID7wDXKhWeytS6RR7ulYb9lwHHyde4BwjNOo66kx/tDSMC/d5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mm7rC8+2; arc=none smtp.client-ip=209.85.214.195
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f195.google.com with SMTP id d9443c01a7336-2a081c163b0so41363525ad.0
-        for <bpf@vger.kernel.org>; Mon, 12 Jan 2026 02:45:45 -0800 (PST)
+Received: by mail-pl1-f195.google.com with SMTP id d9443c01a7336-2a0d6f647e2so62932625ad.1
+        for <bpf@vger.kernel.org>; Mon, 12 Jan 2026 02:45:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768214745; x=1768819545; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1768214751; x=1768819551; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+OtfIkJz+WopDcxIb9oG5mLIsx9842RNgnwqX2RofzM=;
-        b=ayD2FLn/jzx19QbOI3MjGwLDZAq7zC3mW94Ibe5FC3PDRi5Qvc2o1FKvFHax/f0UTC
-         wjsTPVRhmW7sfDYTyTGgNTmCZ6qfVEGyLMc42wIYTG7lFZ1BdYalkis+X9mZaGn7I+41
-         +jnm/SE9emPDz2oYqenLrXgHbId+swjV1ZfaMTcNG3HeASYPc+39GFspjAj8pWP5La3B
-         3WObxC/bGYspC/QTUdh0Sdoy2k+NhV/IuPbKxpmAVBBNToH11q+WutGyGuLBmTl2AIXC
-         O6eAv02baE+PtuYRxiPE2HczebU9+xMkqKum/LZyvNKnC+m18efnFC7d4GoS/4kdzUj1
-         xaiQ==
+        bh=pl/AXVati0RhQqhH4MEINBt0YenTEWtEVHqv/M8mNDk=;
+        b=mm7rC8+23Wa2oeMEWx0GAwY7PX7VXsujPOC+GLvxi9tV8s5WK3tgElNI1zKWKc8+kN
+         BHT7MRgurd+lNIbkfjtYH6OOvnNEH8ofOLZ7vs1yMKh4OdRFgWozzZD/06KAQXYzax1Y
+         ePU0DAVxqjG4j2TOW3n9YtCwi0vyPFH71DUQGglx7NSKKGPaKBQ3BMUicxXoPfsNMiVa
+         XRQ6z6c17GnO/N7+iXA4eTU8uURiRRgOr2EkUBkTMYaK7kR5gIX7zcQNp7qcsT1gvBCk
+         hXfSqzG2WQr9hgSxpSzb8yHoLKH3I5tzlxXOPgI0azOqNMb5lz2h4XO0ukIqVPzr30tR
+         D9SA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768214745; x=1768819545;
+        d=1e100.net; s=20230601; t=1768214751; x=1768819551;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=+OtfIkJz+WopDcxIb9oG5mLIsx9842RNgnwqX2RofzM=;
-        b=n43sez8dGqy0Z35x5cUFxmubitLhE6yHeM4DWwO938TNIxjldHxzot8OAiYM85tew7
-         Pu8rECuHicFPkFOzkdEpDFebmj0H0oH2mUz1Nkpq3yru5wjleZOnMzkf8aOvn6cqiTSf
-         xe4fmILz3Sjj9xYI2bGpsSRaSwIK2mxohF3OOOt8/t591Gbki5ggb7BKMGjI2i8b3H2H
-         aSZ6docZLhFkuGjfcuf2LdONzDpOLVGvWN4yo2bMtzW+zf53SCoj948LaiNyAZ2uDDPa
-         d8HgSPDnQSob9T7lLLnjrkFgzApY5KaGiXM9WPvLIhwXmFeutt2WutVLg15XsXdXI+T+
-         uFZA==
-X-Forwarded-Encrypted: i=1; AJvYcCUAuZszDTOxSs11n8t8BCttEpumZUPId58kUhVEBPY1bBOsq19NRfXEBB1lvWIHeTtC3jw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzzK05I8oH4JaiV+nqN3wLhXAaVf3pIKV16uwcsfy+aseP68xDP
-	RAwkSKN3EGtgFWiyRSvaGIM1MlEyg4S7Z55d7WIZR27qzHpFe7bW+t1P
-X-Gm-Gg: AY/fxX4+tLGB+zFxL4g2/ZZG+AsnF7oipMecl1TtPEH6jlsCADKgmoiUV2TYwzms4XW
-	1qPdDphKlH+adTJMT+zs5V7u8SiwhmKzqVMTp5VJEYsq8rydeIn7JY9LaI8+go36wI0x0x8LGMW
-	SpSZRc9IOyB7EBebdS2rNCf0ZqLQHafNPA8aDPku18Lb+bRMNSLIoLwyldn0YxN5D7DxT6/4w4v
-	kTbWaJcMg8WuVsR/xgYeQsIpxjSH+mJGFhq8z4HLotbOAP7AvcGCzPVa4OeV9ZCf6jTlx8ydyH6
-	m3GLo2jYeogBBSndEkFU9R++nyaLeWkvAj5x+pFCt+NfbUcvR8jjU6CD0sJ/NpLJltAyTvTcm1A
-	NIZLzk9xn/9R80uN5yXMQSKIQ0xZdCmaHGRSD2mgf8FRj9Gj1s5692aH5GgYOd6cazwUd2KTsbm
-	pngOcqpbg=
-X-Google-Smtp-Source: AGHT+IFHYPz6czyuK+LvhbdH8QCXTjjrCywR7dF8EBPHJM5pOUuVPi0LV1ijswiqYj1oDCPUz3rFGg==
-X-Received: by 2002:a17:902:ce91:b0:297:d4c4:4d99 with SMTP id d9443c01a7336-2a3ee40e4b1mr165119795ad.6.1768214744938;
-        Mon, 12 Jan 2026 02:45:44 -0800 (PST)
+        bh=pl/AXVati0RhQqhH4MEINBt0YenTEWtEVHqv/M8mNDk=;
+        b=MFv0+54NlPKMRLTcH+J1ikI9U7gCiF2KXPauJcZwKGEeTdgC7FJm4UCUjlFO42yf4j
+         fV62npYQp5HlXke50fz5uRINZMSuFHh6AT3+91z5I74OTND5igB9NSEXD6e3D6JjB8/s
+         QxTsoaGG8peP94zcoFzE+J8q6JWX3uapdmLLYMhWn4RgIvnkHfj3g5tnc6oRbxUaslgr
+         mMc+j7xWOLPXxtsngRA6zslz9/D3HixWfy90lGxhK14HT4Vf/pD7aKyGo13mMhNom+Hd
+         oE5/LxcSil3XbddjHNbGVsMMEP/odr5adqWmZ31GqC+a/jLQFk802RbpvIls+cu1glI5
+         yUOw==
+X-Forwarded-Encrypted: i=1; AJvYcCU3+5UlVx7DbN+dXiqF65VK0AFzRcwpekKfg5Xarr5Hj5Q8uwZErmSCBRinoJkQmu+B7ZE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxiPruwJ1R0nMJtbeBOUJiHq5afH1B7bIH45338YV4JcdkebhRG
+	M2saGPhUFOMdPu2EDKdjRp51LEg9Ujnq1sOPyLTvaFhCKV0p9eyrYJIL
+X-Gm-Gg: AY/fxX7ocCLhIUFIpxDED/8ZAiTbjkML0//aINOYk/CkY8ZjarJ3kR8JufjAmtLs/oR
+	sQRMJVKxR5Ame2kAYGzpuB9Pj5FR3SS98jOr1oaXiPB5Ul5SXR7Wt0VPNv9ZgBJlPAXtY2URkky
+	74fLIElJlv3RcYk1xWhVrXm2wEX58g/19CMsqyVO8NgbqGDw+GLe/KpGbgvn31ufK6xQDSX7l7c
+	yoskVhQrKOX1bnp3iN45//hBDgX3Otfpy5hje5YTipoDfRNb4lWMuIjQB7d+e3C3euXEuA4K2O5
+	2CI3y68do1sUV7mbptRv6zLQ3bK5mahm3ulEag23AvZiEIysREsi2HtnGItInofTlVdjP56Ybz/
+	MKWDAiZdjyY4QNLqmz2x+vifiFqYYVaISS/uOFWL34tz8n82TEXauEGCUmmFyzxT4i2e+0FIGZs
+	j5bCnZZSg=
+X-Google-Smtp-Source: AGHT+IGBW2CRWrtwyacUZsl5YgLmbet1+VCuEiQHvwANEzzhJC/Pwk5wY/VYTlUedfeKRQw8hYzTbQ==
+X-Received: by 2002:a17:903:1a6b:b0:295:8da5:c634 with SMTP id d9443c01a7336-2a3ee41354amr153710185ad.9.1768214750682;
+        Mon, 12 Jan 2026 02:45:50 -0800 (PST)
 Received: from 7940hx ([160.187.0.149])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a3e3cb2df6sm173551775ad.61.2026.01.12.02.45.39
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a3e3cb2df6sm173551775ad.61.2026.01.12.02.45.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jan 2026 02:45:44 -0800 (PST)
+        Mon, 12 Jan 2026 02:45:50 -0800 (PST)
 From: Menglong Dong <menglong8.dong@gmail.com>
 X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
 To: ast@kernel.org,
@@ -88,9 +88,9 @@ Cc: daniel@iogearbox.net,
 	jolsa@kernel.org,
 	bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v4 1/2] bpf, x86: inline bpf_get_current_task() for x86_64
-Date: Mon, 12 Jan 2026 18:45:28 +0800
-Message-ID: <20260112104529.224645-2-dongml2@chinatelecom.cn>
+Subject: [PATCH bpf-next v4 2/2] selftests/bpf: test the jited inline of bpf_get_current_task
+Date: Mon, 12 Jan 2026 18:45:29 +0800
+Message-ID: <20260112104529.224645-3-dongml2@chinatelecom.cn>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260112104529.224645-1-dongml2@chinatelecom.cn>
 References: <20260112104529.224645-1-dongml2@chinatelecom.cn>
@@ -102,71 +102,76 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Inline bpf_get_current_task() and bpf_get_current_task_btf() for x86_64
-to obtain better performance.
-
-In !CONFIG_SMP case, the percpu variable is just a normal variable, and
-we can read the current_task directly.
+Add the testcase for the jited inline of bpf_get_current_task().
 
 Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
 ---
-v4:
-- handle the !CONFIG_SMP case
+ .../selftests/bpf/prog_tests/verifier.c       |  2 ++
+ .../selftests/bpf/progs/verifier_jit_inline.c | 35 +++++++++++++++++++
+ 2 files changed, 37 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_jit_inline.c
 
-v3:
-- implement it in the verifier with BPF_MOV64_PERCPU_REG() instead of in
-  x86_64 JIT.
----
- kernel/bpf/verifier.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 3d44c5d06623..12e99171afd8 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -17688,6 +17688,8 @@ static bool verifier_inlines_helper_call(struct bpf_verifier_env *env, s32 imm)
- 	switch (imm) {
- #ifdef CONFIG_X86_64
- 	case BPF_FUNC_get_smp_processor_id:
-+	case BPF_FUNC_get_current_task_btf:
-+	case BPF_FUNC_get_current_task:
- 		return env->prog->jit_requested && bpf_jit_supports_percpu_insn();
- #endif
- 	default:
-@@ -23273,6 +23275,33 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
- 			insn      = new_prog->insnsi + i + delta;
- 			goto next_insn;
- 		}
+diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
+index 5829ffd70f8f..47eb78c808c0 100644
+--- a/tools/testing/selftests/bpf/prog_tests/verifier.c
++++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
+@@ -110,6 +110,7 @@
+ #include "verifier_xdp_direct_packet_access.skel.h"
+ #include "verifier_bits_iter.skel.h"
+ #include "verifier_lsm.skel.h"
++#include "verifier_jit_inline.skel.h"
+ #include "irq.skel.h"
+ 
+ #define MAX_ENTRIES 11
+@@ -251,6 +252,7 @@ void test_verifier_bits_iter(void) { RUN(verifier_bits_iter); }
+ void test_verifier_lsm(void)                  { RUN(verifier_lsm); }
+ void test_irq(void)			      { RUN(irq); }
+ void test_verifier_mtu(void)		      { RUN(verifier_mtu); }
++void test_verifier_jit_inline(void)               { RUN(verifier_jit_inline); }
+ 
+ static int init_test_val_map(struct bpf_object *obj, char *map_name)
+ {
+diff --git a/tools/testing/selftests/bpf/progs/verifier_jit_inline.c b/tools/testing/selftests/bpf/progs/verifier_jit_inline.c
+new file mode 100644
+index 000000000000..0938ca1dac87
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/verifier_jit_inline.c
+@@ -0,0 +1,35 @@
++// SPDX-License-Identifier: GPL-2.0
 +
-+		/* Implement bpf_get_current_task() and bpf_get_current_task_btf() inline. */
-+		if ((insn->imm == BPF_FUNC_get_current_task || insn->imm == BPF_FUNC_get_current_task_btf) &&
-+		    verifier_inlines_helper_call(env, insn->imm)) {
-+#ifdef CONFIG_SMP
-+			insn_buf[0] = BPF_MOV64_IMM(BPF_REG_0, (u32)(unsigned long)&current_task);
-+			insn_buf[1] = BPF_MOV64_PERCPU_REG(BPF_REG_0, BPF_REG_0);
-+			insn_buf[2] = BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_0, 0);
++#include <vmlinux.h>
++#include <bpf/bpf_helpers.h>
++#include "bpf_misc.h"
++
++#if defined(__TARGET_ARCH_x86) || defined(__TARGET_ARCH_arm64)
++
++SEC("fentry/bpf_fentry_test1")
++__description("Jit inline, bpf_get_current_task")
++__success __retval(0)
++__arch_x86_64
++__jited("	addq	%gs:{{.*}}, %rax")
++__arch_arm64
++__jited("	mrs	x7, SP_EL0")
++int inline_bpf_get_current_task(void)
++{
++	bpf_get_current_task();
++
++	return 0;
++}
++
 +#else
-+			struct bpf_insn ld_current_addr[2] = {
-+				BPF_LD_IMM64(BPF_REG_0, (unsigned long)&current_task)
-+			};
-+			insn_buf[0] = ld_current_addr[0];
-+			insn_buf[1] = ld_current_addr[1];
-+			insn_buf[2] = BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_0, 0);
++
++SEC("kprobe")
++__description("Jit inline is not supported, use a dummy test")
++__success
++int dummy_test(void)
++{
++	return 0;
++}
++
 +#endif
-+			cnt = 3;
 +
-+			new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
-+			if (!new_prog)
-+				return -ENOMEM;
-+
-+			delta    += cnt - 1;
-+			env->prog = prog = new_prog;
-+			insn      = new_prog->insnsi + i + delta;
-+			goto next_insn;
-+		}
- #endif
- 		/* Implement bpf_get_func_arg inline. */
- 		if (prog_type == BPF_PROG_TYPE_TRACING &&
++char _license[] SEC("license") = "GPL";
 -- 
 2.52.0
 
