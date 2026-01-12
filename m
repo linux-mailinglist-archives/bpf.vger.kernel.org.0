@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-78625-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78626-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBA1AD157BD
-	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 22:50:20 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A6F8D157C0
+	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 22:50:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id C0D9A301C08D
-	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 21:50:18 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 384B63009D78
+	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 21:50:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 411343446A4;
-	Mon, 12 Jan 2026 21:50:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 150A53446A7;
+	Mon, 12 Jan 2026 21:50:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rFrLolB5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fm8NP9Ra"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C57D0342512;
-	Mon, 12 Jan 2026 21:50:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99DBA1C84D7;
+	Mon, 12 Jan 2026 21:50:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768254614; cv=none; b=PiV6nyXZ+7BNEMOc9+eXjX1dkMbdQkIO++dSa1OtIbFL6bcEmy4cRTpDKm7cCSqStaQIObu3vX19K6YYihnaRvGhAEnydoajvaWsqnD7khX+8ecO2JZGuq+42pO5/34OABArkhOTpLQUt4rEhfpDVu/Do4KEawoLpvkB6c6oDdU=
+	t=1768254625; cv=none; b=DNLyjKI+GXiNXt3Xteo+5RWydt/GrQuQHf40Wi1Ef1ECwCUZ8+Nxa2y9izzKBeyR4nJwiaQos5KM9KisPqgcv9SGimNjEmsW4rydAr9QI/ihJa5nWluwZdbHoPhC+ZooCcXsbpY5thOjXcjP90yIkJXlCZ81BxzxVCLAXvC0i1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768254614; c=relaxed/simple;
-	bh=ajNpjb6n2s84loIPdjzeQXwqcnHNnx6ykiY8orO5VdY=;
+	s=arc-20240116; t=1768254625; c=relaxed/simple;
+	bh=xhRljmXigdry4f9PbyrJi+AYA6WIKqd/bXcrjJ/9MtA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=SYoNgq18aRoUWTvIblBJFTlVPwtsc3YWK7jASEUOV8f2kbCitGLMoPJNlYFdFu/LCKZlQ+YPe3xyTIrsbftePHcLcSE6+Tt6OIdsA+2jms0fEUO6TbHYE55cR0xR+bB6Cfn1x3rMPFif5zWmOrvoGBLhJwVGHhHqwhIMXJHuURs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rFrLolB5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4B26C116D0;
-	Mon, 12 Jan 2026 21:50:11 +0000 (UTC)
+	 MIME-Version; b=eKzpy2oJZedB66ykwb1GSC2Do+4hnQ/jm/8Z4JzY22ksDdau0lrbsixgoyJzCZtTvHj7XpXR6VoMnihfIx4pxTlJncCVMrcbRhOciNqGow1rRcyt+JArNbts+4XI5RDBFp6M4v7lGCyMyB/4KG5CfdBMNKaPMyaVUTDVkSlXyVI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Fm8NP9Ra; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60AE3C116D0;
+	Mon, 12 Jan 2026 21:50:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768254614;
-	bh=ajNpjb6n2s84loIPdjzeQXwqcnHNnx6ykiY8orO5VdY=;
+	s=k20201202; t=1768254625;
+	bh=xhRljmXigdry4f9PbyrJi+AYA6WIKqd/bXcrjJ/9MtA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rFrLolB5Wr2cdV+yJ96zWImAQXdOkO7TLKU9TSQB/5b8wWrWKDmWtTsdiPO45/I0Q
-	 BlOtqXezod64LAWEiulCpwQk1qA+fmu+RyW+xNwRH0ZVBlV0DnnUyf/VAHLfCmp3DV
-	 piynMwqwpSi31H23LxRHdqKN387SxaPT500bVk0WML5T08Fw7h9b6aWYD98Y4WhbLX
-	 nNm0Vf/JtaCZvuhg2hnqydQUKAmIdzGBYH7JXSKW/Li3kHp08I43GXqC2+jdwo2dO8
-	 VjhE8yqKXyb2kCfdTs3p/5T3DJ/t+i3+wbEj7Djw/bvTspCc7TxX86PzVFO36Iatk5
-	 8osaaOhT6YZyg==
+	b=Fm8NP9Ra8K5sLEHcvUXo8FmzonROpH1MftpOyD5oqwNoJI+Qeir7IHkB6kooy1DWk
+	 Ah1OyOcbUEaRi9vQ0ZpX4QlBHz/t6KLsTC5pIH7vkYXXKfrmMhConzsFb30SO0Esz4
+	 0+u4fyS6b8+BuYzjiyU7ZMaC7ny6FApfVJufwgckPVPiUfCQB5YnMOdYe6WMQiCvwm
+	 8WNvpzxCQ5AZtdmSXDcJ+p7eAYsaR7TdyMH8pGhDKdJo9lvDeLkCEfsG+jgkaAj/P9
+	 PrjAZsPyqx8+Yq7PnTXPiLgHnTNXAhR0sJI+81n90c3o4cv6KXHkobEJwypqy6/Ftu
+	 uLdmySDYcAWpQ==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Masami Hiramatsu <mhiramat@kernel.org>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: Mahe Tardy <mahe.tardy@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
+Cc: Peter Zijlstra <peterz@infradead.org>,
 	bpf@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org,
 	x86@kernel.org,
 	Yonghong Song <yhs@fb.com>,
 	Song Liu <songliubraving@fb.com>,
-	Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH bpf-next 2/4] x86/fgraph,bpf: Switch kprobe_multi program stack unwind to hw_regs path
-Date: Mon, 12 Jan 2026 22:49:38 +0100
-Message-ID: <20260112214940.1222115-3-jolsa@kernel.org>
+	Andrii Nakryiko <andrii@kernel.org>,
+	Mahe Tardy <mahe.tardy@gmail.com>
+Subject: [PATCH bpf-next 3/4] selftests/bpf: Fix kprobe multi stacktrace_ips test
+Date: Mon, 12 Jan 2026 22:49:39 +0100
+Message-ID: <20260112214940.1222115-4-jolsa@kernel.org>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260112214940.1222115-1-jolsa@kernel.org>
 References: <20260112214940.1222115-1-jolsa@kernel.org>
@@ -63,121 +63,31 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Mahe reported missing function from stack trace on top of kprobe
-multi program. The missing function is the very first one in the
-stacktrace, the one that the bpf program is attached to.
+We now include the attached function in the stack trace,
+fixing the test accordingly.
 
-  # bpftrace -e 'kprobe:__x64_sys_newuname* { print(kstack)}'
-  Attaching 1 probe...
-
-        do_syscall_64+134
-        entry_SYSCALL_64_after_hwframe+118
-
-  ('*' is used for kprobe_multi attachment)
-
-The reason is that the previous change (the Fixes commit) fixed
-stack unwind for tracepoint, but removed attached function address
-from the stack trace on top of kprobe multi programs, which I also
-overlooked in the related test (check following patch).
-
-The tracepoint and kprobe_multi have different stack setup, but use
-same unwind path. I think it's better to keep the previous change,
-which fixed tracepoint unwind and instead change the kprobe multi
-unwind as explained below.
-
-The bpf program stack unwind calls perf_callchain_kernel for kernel
-portion and it follows two unwind paths based on X86_EFLAGS_FIXED
-bit in pt_regs.flags.
-
-When the bit set we unwind from stack represented by pt_regs argument,
-otherwise we unwind currently executed stack up to 'first_frame'
-boundary.
-
-The 'first_frame' value is taken from regs.rsp value, but ftrace_caller
-and ftrace_regs_caller (ftrace trampoline) functions set the regs.rsp
-to the previous stack frame, so we skip the attached function entry.
-
-If we switch kprobe_multi unwind to use the X86_EFLAGS_FIXED bit,
-we can control the start of the unwind and get back the attached
-function address. As another benefit we also cut extra unwind cycles
-needed to reach the 'first_frame' boundary.
-
-The speedup can be meassured with trigger bench for kprobe_multi
-program and stacktrace support.
-
-- without bpf_get_stackid call:
-
-    # ./bench -w2 -d5  -a  -p1  trig-kprobe-multi
-
-    Summary: hits    0.857 ± 0.003M/s (  0.857M/prod), drops 0.000 ± 0.000M/s, total operations 0.857 ± 0.003M/s
-
--  with bpf_get_stackid call:
-
-    # ./bench -w2 -d5  -a -g -p1  trig-kprobe-multi
-
-    Summary: hits    1.302 ± 0.002M/s (  1.302M/prod), drops 0.000 ± 0.000M/s, total operations 1.302 ± 0.002M/s
-
-Note the '-g' option for stacktrace added in following change.
-
-To recreate same stack setup for return probe as we have for entry
-probe, we set the instruction pointer to the attached function address,
-which gets us the same unwind setup and same stack trace.
-
-With the fix, entry probe:
-
-  # bpftrace -e 'kprobe:__x64_sys_newuname* { print(kstack)}'
-  Attaching 1 probe...
-
-        __x64_sys_newuname+9
-        do_syscall_64+134
-        entry_SYSCALL_64_after_hwframe+118
-
-return probe:
-
-  # bpftrace -e 'kretprobe:__x64_sys_newuname* { print(kstack)}'
-  Attaching 1 probe...
-
-        __x64_sys_newuname+4
-        do_syscall_64+134
-        entry_SYSCALL_64_after_hwframe+118
-
-Fixes: 6d08340d1e35 ("Revert "perf/x86: Always store regs->ip in perf_callchain_kernel()"")
-Reported-by: Mahe Tardy <mahe.tardy@gmail.com>
+Fixes: c9e208fa93cd ("selftests/bpf: Add stacktrace ips test for kprobe_multi/kretprobe_multi")
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- arch/x86/include/asm/ftrace.h | 2 +-
- kernel/trace/fgraph.c         | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ tools/testing/selftests/bpf/prog_tests/stacktrace_ips.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/include/asm/ftrace.h b/arch/x86/include/asm/ftrace.h
-index b08c95872eed..c56e1e63b893 100644
---- a/arch/x86/include/asm/ftrace.h
-+++ b/arch/x86/include/asm/ftrace.h
-@@ -57,7 +57,7 @@ arch_ftrace_get_regs(struct ftrace_regs *fregs)
- }
+diff --git a/tools/testing/selftests/bpf/prog_tests/stacktrace_ips.c b/tools/testing/selftests/bpf/prog_tests/stacktrace_ips.c
+index c9efdd2a5b18..43781a67051b 100644
+--- a/tools/testing/selftests/bpf/prog_tests/stacktrace_ips.c
++++ b/tools/testing/selftests/bpf/prog_tests/stacktrace_ips.c
+@@ -74,7 +74,8 @@ static void test_stacktrace_ips_kprobe_multi(bool retprobe)
  
- #define arch_ftrace_partial_regs(regs) do {	\
--	regs->flags &= ~X86_EFLAGS_FIXED;	\
-+	regs->flags |= X86_EFLAGS_FIXED;	\
- 	regs->cs = __KERNEL_CS;			\
- } while (0)
+ 	load_kallsyms();
  
-diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
-index cc48d16be43e..6279e0a753cf 100644
---- a/kernel/trace/fgraph.c
-+++ b/kernel/trace/fgraph.c
-@@ -825,7 +825,7 @@ __ftrace_return_to_handler(struct ftrace_regs *fregs, unsigned long frame_pointe
- 	}
- 
- 	if (fregs)
--		ftrace_regs_set_instruction_pointer(fregs, ret);
-+		ftrace_regs_set_instruction_pointer(fregs, trace.func);
- 
- 	bit = ftrace_test_recursion_trylock(trace.func, ret);
- 	/*
+-	check_stacktrace_ips(bpf_map__fd(skel->maps.stackmap), skel->bss->stack_key, 4,
++	check_stacktrace_ips(bpf_map__fd(skel->maps.stackmap), skel->bss->stack_key, 5,
++			     ksym_get_addr("bpf_testmod_stacktrace_test"),
+ 			     ksym_get_addr("bpf_testmod_stacktrace_test_3"),
+ 			     ksym_get_addr("bpf_testmod_stacktrace_test_2"),
+ 			     ksym_get_addr("bpf_testmod_stacktrace_test_1"),
 -- 
 2.52.0
 
