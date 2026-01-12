@@ -1,133 +1,171 @@
-Return-Path: <bpf+bounces-78614-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78615-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 622C2D14E62
-	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 20:23:02 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB1B7D15240
+	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 20:58:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DB86530388A7
-	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 19:22:48 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 7254030082D4
+	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 19:58:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA7DC31B812;
-	Mon, 12 Jan 2026 19:22:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E78F327206;
+	Mon, 12 Jan 2026 19:58:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZMc2VYzS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KFbiEq4D"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEE6C311C17;
-	Mon, 12 Jan 2026 19:22:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41DEE13D51E
+	for <bpf@vger.kernel.org>; Mon, 12 Jan 2026 19:58:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768245767; cv=none; b=PoZtR1j3bdfJw55KXkT8mnGWCf2DPt25KFUPuyu8zzNZcOQCVZZ9ld3MSMLg8P+PFptaIWcFgUxVE7pGA41yFG57Aqz4kpEPLtgrbZmJCb4E3jhJF1wRweBoK7MF1dQ5I7NwUJVQq3VmJvNg0vZaUBwWhWt/RVWhdOSPj6FaVME=
+	t=1768247907; cv=none; b=D6HSXf0Z510IJI2OmmjCg0meNnHTjgF+thfj1UXslXNYPwjw6JcrvzDDKu0QzzHZFUmmJrTpjsC/s7ANK2Xvco6vtXs/sXwWag4OSS/0CYUMBdw2GGFpaIYEa2JOGb9Z4z8wosWP9wFmk+wl6APcqySEA/orQFRXj3MD+JDwJZU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768245767; c=relaxed/simple;
-	bh=gy3vUzeNs/9BwKXtMR4uniH68yQHA+hJ41Jnz6faEIM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oUdIc3Z3B+utFvoVnYVOK5U3Tk/OrY/7heVycXv0xHbUCTGZc5UFlzaL5lFU7il+RdaC0RHT71sSSvMc2Db6JBXuT96U1I3tuISr3DU63l2SO38LBMFh8wuWBhko1IzAzfBIOSHNy/y2ROnmg4DFqi9SyN2sEX1g2beuvegXTpQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZMc2VYzS; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1768245766; x=1799781766;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=gy3vUzeNs/9BwKXtMR4uniH68yQHA+hJ41Jnz6faEIM=;
-  b=ZMc2VYzSquSajN6kv1927+5UfrI12PNR7To/VfrurD/W1STSoH36TWr3
-   v13giALa9e9vzUTR0N6c6xeZaF7feKH8bOMzXl/s1ofyEHp12m3B1xc0i
-   pGyINlwiaShF70RMA7siAbQPX77c2rveBmBxjJVcTHGOXdSMQwRejaGnF
-   01fLtCNFJKczPjtSSFTYpASmByWkkEhD0pCtzMxfK8Gi8J7AFLYPB0KHp
-   Zp69V9E7UtHEoK5950/GJjqTPveGdxwqM5hN6DlaG1CG1cELFPJvuCC+M
-   yXKBELwTK7yTfR40/btjmIeD0+7aU8OeV+u4ZDOnth+OSGOu7ePblQclV
-   g==;
-X-CSE-ConnectionGUID: iuBLUA5TQN2VbdU4j5CfyA==
-X-CSE-MsgGUID: XOG1mdt3SziU7q191vypPQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11669"; a="69259621"
-X-IronPort-AV: E=Sophos;i="6.21,221,1763452800"; 
-   d="scan'208";a="69259621"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2026 11:22:45 -0800
-X-CSE-ConnectionGUID: CjsHXDcET8G3zdx532W5jQ==
-X-CSE-MsgGUID: Et1a2lnCR3m3hPhoCRr6cw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,221,1763452800"; 
-   d="scan'208";a="235411831"
-Received: from igk-lkp-server01.igk.intel.com (HELO 8581b2e2a62c) ([10.211.93.152])
-  by fmviesa001.fm.intel.com with ESMTP; 12 Jan 2026 11:22:39 -0800
-Received: from kbuild by 8581b2e2a62c with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1vfNUq-000000000yP-3Vw4;
-	Mon, 12 Jan 2026 19:22:36 +0000
-Date: Mon, 12 Jan 2026 20:22:22 +0100
-From: kernel test robot <lkp@intel.com>
-To: Leon Hwang <leon.hwang@linux.dev>, bpf@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	"David S . Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H . Peter Anvin" <hpa@zytor.com>,
-	Matt Bobrowski <mattbobrowski@google.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Leon Hwang <leon.hwang@linux.dev>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next 2/3] bpf: Introduce BPF_BRANCH_SNAPSHOT_F_COPY
- flag for bpf_get_branch_snapshot helper
-Message-ID: <202601122013.hmoeIXXs-lkp@intel.com>
-References: <20260109153420.32181-3-leon.hwang@linux.dev>
+	s=arc-20240116; t=1768247907; c=relaxed/simple;
+	bh=mdVF+wmZtFB/MYrbNPhv8ax3nMAbQoBY588QV0ABZL4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qNusViuf1rZqZ4o3V+UEOhbmNfaNic7Cwg2usoUX+Kxa8CBLkPzEXvn6KfFw4nEgjL94iBPAcOgUwFdZlaU4UeMCj16gwc8Tp2qNfjTQR2WNMoXzlN/cmqXo64KgHjinLwxSOE7T1pGI17mbp8TDxLxnU365Z8Ccmqq6kMgBaYY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KFbiEq4D; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-64b8123c333so10783275a12.3
+        for <bpf@vger.kernel.org>; Mon, 12 Jan 2026 11:58:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1768247905; x=1768852705; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UHUtQco2qt4VlshN/yTDFydpX8nzqbujiBBoi02h7a4=;
+        b=KFbiEq4DwcJ53X4tdXCqf5NeLa5OAXionrUY3TLQjXjch0wGdy9z6L7wAhJO8j1+0Y
+         XElgih625kVO21IcHWcwcEOlytEeAJLsdOJ839wOSVhGZpCdCDNvQC9LNHjtMgAqYObk
+         xdOt2MXqWVhUtOWoV4JQTmW1M/awLXDmj6cqaPMgvwd4fDlj5TYg9co9Gfs4IWMkhWU/
+         AnF0kFY+dYN0J3UH72dJ3nMMTvoPfE0fHh/nbfbqDvvhulXrrSFcdHonNFv53R7fgMpF
+         3jtTjvJ/8pO0BoMeOF5SZnmtHX+pBKZITqpefxGn9ceZ4eCwRGfXtj0K2MzzvW/BcZna
+         s3Pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768247905; x=1768852705;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=UHUtQco2qt4VlshN/yTDFydpX8nzqbujiBBoi02h7a4=;
+        b=e8hvKNgXFYTCnlIIcQ/WxzarkEvU1yJj/6bfXHAWQJjO0WmmySaAVb5/0StSCfWCE1
+         AEkym6QMJXoIr6kq1ohin8x+u3Yzhr4VtPmfwBfJeEqunpeKtX0rHJ+Wpz1tqZpBnLjT
+         rDsabZoDPQQPc7n6lgAsH36L8H5WtdN7ENr9jFxx+9LYowSqHEzhvs0W89pQdgdwPcdj
+         Nq6jF8ZTtAx9fJfpE634/my6xFUO1dmSLTFE17/j4qcItHaTYzYHoW9jAuZImuscQ9mp
+         ihBo3S7Y3/CRt5HIDrzkHwCD3kqxBYmWzhLYQMAuBjWAcRShVtKLOiveBABKlUHU5Y7i
+         DoRQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWox0lBvzN/JRSkK776AnhmjYnclMIQYEPsSkH1pHcm3GX6LCwP5ArAk/8jJXch1ehbeBw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwXWd6WgGcm+l9GYCiLe/aJlbTcaM0E2UF3XjOTIF6HvA5mZGwI
+	j6jHZQfwahMT+3xyxJvKS8PZFCZvnjzjf2UWIfOg7GGY4SG9aRX8tqMF1uAinkEUYq4Nx90KHdM
+	Q4IWgPC641c1PT4PAqltvAAKNfBV1vkgGeQ==
+X-Gm-Gg: AY/fxX6MX0IeSb5owzmskb/95bIpolURJT4HDPaLDbaOfbfRQPhRXbjy/GkJ0PoAxqO
+	01q02OYU5TNJctlNXj79tl+FBqZJYo/SYLMWEwOiZ7cpWiBP5X/ZgoJMFlEWa1vAHqDNVOPYFG5
+	FfMGt0vMdXklOJgYJcwOuaVNIyKJBvpcTaKPwcwwhgicOsPB921wZzKQWFGwyBlRYT8U5ChwTrd
+	NLz9CEzlzDH/GqOFd3/tYq6kc+tgotwsy2aNW0/zmd88l3Y7jFe1dl+Av1DV4YOpxlSZ0A=
+X-Google-Smtp-Source: AGHT+IGRjgKFcYhR2lrEoiZv42ht5/YcDMnXrpV/QdRZPj5LH+0I5K/4xxCc4OuFIVui/+LKwogLNDay8aGcm5Byt3E=
+X-Received: by 2002:a17:907:7294:b0:b87:253a:dd2c with SMTP id
+ a640c23a62f3a-b87253ae349mr345891366b.24.1768247904295; Mon, 12 Jan 2026
+ 11:58:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260109153420.32181-3-leon.hwang@linux.dev>
+References: <20260103022310.935686-1-puranjay@kernel.org> <20260103022310.935686-2-puranjay@kernel.org>
+ <CAEf4BzYeF2sUqEzfT6aLuBVuh1W8fkxHoFjBf-e5nvJW9UgQLw@mail.gmail.com>
+ <CANk7y0j_BW_t7Y6rPm-UaCsamJ6G3S9i5_0cYLWZ56xp1Dehkw@mail.gmail.com>
+ <cf707af183cd296c33576e478c5ba5f561350b43.camel@gmail.com>
+ <CAADnVQ+wK8qYt=Gm=Q26Kh_enOHGOk7_t8FX70J08WUMu5y_Nw@mail.gmail.com>
+ <b0c80439d8da0faddde08260d6e796629d55e9d6.camel@gmail.com> <CAADnVQJnjZjRdJNgSOSzt8z8DfRN7z5Ksgfi5gkY-O4Dp1e-yA@mail.gmail.com>
+In-Reply-To: <CAADnVQJnjZjRdJNgSOSzt8z8DfRN7z5Ksgfi5gkY-O4Dp1e-yA@mail.gmail.com>
+From: Puranjay Mohan <puranjay12@gmail.com>
+Date: Mon, 12 Jan 2026 20:58:12 +0100
+X-Gm-Features: AZwV_QhYHn1jX1Gr8nn4nPd1TDDDf15jdas6mXYEqvaLRcGRfdQysALpUsnWWmU
+Message-ID: <CANk7y0g=EA05bnR_uiji0v+w-5fdV4FBmsOwjRpRf0VE1ny7TA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: Recognize special arithmetic shift
+ in the verifier
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
+	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
+	Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, Kernel Team <kernel-team@meta.com>, 
+	Hao Sun <sunhao.th@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Leon,
+On Fri, Jan 9, 2026 at 3:54=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Thu, Jan 8, 2026 at 6:07=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.co=
+m> wrote:
+> >
+> > On Thu, 2026-01-08 at 17:18 -0800, Alexei Starovoitov wrote:
+> > > On Thu, Jan 8, 2026 at 10:45=E2=80=AFAM Eduard Zingerman <eddyz87@gma=
+il.com> wrote:
+> > > >
+> > > > On Thu, 2026-01-08 at 18:28 +0000, Puranjay Mohan wrote:
+> > > >
+> > > > [...]
+> > > >
+> > > > > This is what you see when you compare this version (fork before a=
+nd)
+> > > > > and previous (fork after arsh) on the selftests added in this set=
+:
+> > > > >
+> > > > > ../../veristat/src/veristat -C -e file,prog,states,insns -f
+> > > > > "insns_pct>1" fork_after_arsh fork_before_and
+> > > > > File                   Program  States (A)  States (B)  States (D=
+IFF)
+> > > > > Insns (A)  Insns (B)  Insns (DIFF)
+> > > > > ---------------------  -------  ----------  ----------  ---------=
+----
+> > > > > ---------  ---------  ------------
+> > > > > verifier_subreg.bpf.o  arsh_31           1           1    +0 (+0.=
+00%)
+> > > > >        12         11   -1 (-8.33%)
+> > > > > verifier_subreg.bpf.o  arsh_63           1           1    +0 (+0.=
+00%)
+> > > > >        12         11   -1 (-8.33%)
+> > > >
+> > > > Given that difference is very small, I'd prefer forking after arsh.
+> > >
+> > > why?
+> > > I thought last time we discussed the conclusion was to fork it
+> > > before AND, since at the time of ARSH the range is still properly rep=
+resented,
+> > > so reason to take chances and do it early.
+> > >
+> > > > Could you please take a cursory look at DAGCombiner implementation =
+and
+> > > > try to check if there are other patterns that use arsh or arsh+and =
+is
+> > > > the only one?
+> > >
+> > > Well, it's in commit log:
+> > >
+> > >   // select_cc setlt X, 0, A, 0 -> and (sra X, size(X)-1), A
+> > >   // select_cc setgt X, 0, A, 0 -> and (not (sra X, size(X)-1)), A
+> > >
+> > > I suspect 2nd case should work with 'before AND' approach too,
+> > > since 'not' should be compiled into XOR which suppose to [-1,0] ->
+> > > into the same [-1, 0]
+> > > But better to double check, of course.
+> >
+> > Here another example from DAGCombiner.cpp:
+> >
+> >   i32 X > -1 ? C1 : -1 --> (X >>s 31) | C1
+> >
+> > The same trick, X>>s31 is in range [-1,0].
+> > But we can fork on OR as well, of-course.
+>
+> Good catch. This one can also be done "before OR".
+> I doubt there will be more combinations that make
+> "after ARSH" argument stronger.
+> I guess I don't mind either option. Let's pick.
 
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on bpf-next/master]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Leon-Hwang/bpf-x64-Call-perf_snapshot_branch_stack-in-trampoline/20260109-234435
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20260109153420.32181-3-leon.hwang%40linux.dev
-patch subject: [PATCH bpf-next 2/3] bpf: Introduce BPF_BRANCH_SNAPSHOT_F_COPY flag for bpf_get_branch_snapshot helper
-config: x86_64-kexec (https://download.01.org/0day-ci/archive/20260112/202601122013.hmoeIXXs-lkp@intel.com/config)
-compiler: clang version 20.1.8 (https://github.com/llvm/llvm-project 87f0227cb60147a26a1eeb4fb06e3b505e9c7261)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260112/202601122013.hmoeIXXs-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202601122013.hmoeIXXs-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> ld.lld: error: undefined symbol: bpf_branch_snapshot
-   >>> referenced by bpf_trace.c:1182 (kernel/trace/bpf_trace.c:1182)
-   >>>               vmlinux.o:(bpf_get_branch_snapshot)
-   >>> referenced by bpf_trace.c:0 (kernel/trace/bpf_trace.c:0)
-   >>>               vmlinux.o:(bpf_get_branch_snapshot)
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+So, Eduard and I discussed off-list to go with before and / before or,
+so I will post the next version with that.
 
