@@ -1,100 +1,243 @@
-Return-Path: <bpf+bounces-78524-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78525-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6464AD10C2C
-	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 07:52:40 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BBBBD10D63
+	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 08:20:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 533FD301581E
-	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 06:52:33 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D74EF3055764
+	for <lists+bpf@lfdr.de>; Mon, 12 Jan 2026 07:19:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E07D031A55A;
-	Mon, 12 Jan 2026 06:52:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 931A832E6A3;
+	Mon, 12 Jan 2026 07:19:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m67jyqlm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eMZIqTAG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f65.google.com (mail-wr1-f65.google.com [209.85.221.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DB19314B7C
-	for <bpf@vger.kernel.org>; Mon, 12 Jan 2026 06:52:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A0ED32A3F1;
+	Mon, 12 Jan 2026 07:19:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768200748; cv=none; b=Jt5oIeMTYJEJvBstvW58FJVDKGmbVSaIEH04m5xzy7v+BDRTJKhzClxaMJhacpVeBb4CK9n3QSV85UCDN2eHIKRDSG+QOad/pmWxEO9ERkOnjiakF1QRoNpvFljIe36l3EpMVNpaKQvraZ7PwLmJI7H540C46raWRCrv3nTCXVI=
+	t=1768202399; cv=none; b=SsaxkYgKFUuHvAUxqqBKzlOR+4E3U5RVt1ZP0ihHn2K4qj9IKUl2EsnsS9usl6UwARWWaqMNC9FuRIgzHTv5zsdNqmMxiGLJ3hbGC6H9+2BpN5OeZc+XTWjRaelknbyB7ZAShemJgTJz4JvdNUlnLPu2DknFulJ2DzmZgJe1X6A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768200748; c=relaxed/simple;
-	bh=6Vs9eutlyUalFlEp8jpnBCMGyuuyKr0XHqhsSUUI9D0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ph7s0SgVaQBSpX+FPcQQJBPRwrwpECr1RpgMQJBwyzrgzKjf6C6xUeJqjI0MzqUgFUl8ITWx2Ov8Vlbe+dGY86JCqOU4hZEf0buPk4vSWgDgsyBvWUfZbpu0mt4LtInMzlNcpQjucr9aUFvHxHjbuYSMz38CnTd1nMKBh3BYr+8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m67jyqlm; arc=none smtp.client-ip=209.85.221.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f65.google.com with SMTP id ffacd0b85a97d-4327778df7fso3724098f8f.3
-        for <bpf@vger.kernel.org>; Sun, 11 Jan 2026 22:52:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768200745; x=1768805545; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=6Vs9eutlyUalFlEp8jpnBCMGyuuyKr0XHqhsSUUI9D0=;
-        b=m67jyqlmnQxlm4W8gHv6YhaehafVOhLL+/o+jkfwwZRLsYjlrmE40MoHhn/saAD7TW
-         diplWx9+c3POGXKrFRb10Zz6fIpFFX0TClOV0Iamj0F5KdIBXoznL3Fwg7m0s9lurKrL
-         4Qa6VP6cMBFUGLQqmHjn4vCeD7tdR5F+0v29Fwp0VPhRDByMe490sM78NGLLzW1sqLQJ
-         s0+GhzneFZ08YiRr8OCb0AeLiZYdusnp/YVkMvFhh609jgv7kqF1Y7RjrNhhDBlRuhDv
-         VxTcmGoaNwkLGcHK3IFx+3XyyuboJbUwU35G96tByRlL/hhKgXL46GtJ/jNnlYZEZUC7
-         ZaHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768200745; x=1768805545;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6Vs9eutlyUalFlEp8jpnBCMGyuuyKr0XHqhsSUUI9D0=;
-        b=tfS99YCg0T3T5Zli2TPqG+ntxJwm6r331CQWYgdW9xG4A4pC0kn1ActT1paImBv7DC
-         C+lFHOt1YSjmdxYUvkRiU0aR2sXbRrf3pi4JP5S62huLxDc3D1TEI0AiehIk0wpFzHvJ
-         XxrFsKNZeoJlQevgPbYHLGeyygPvqkDVS4wLS7Awf6L4robjUv0Pwl0E+98tJkp/v/NQ
-         PJ9wI9DnNe4Y3x+i2cQiXjmpqJGfyjK3ESnBMdEYdF3dL8L6Z5JyvRpzCRvGV0qfKr1a
-         0wEuOeDx77OedzkyMwQOjoAJVdExrG7pUPffILKVd86GV9XfmtUsL48+YnXUuSq2bXvv
-         2+Ww==
-X-Gm-Message-State: AOJu0YxGuBphQNaNLrBCqmPlNFbcEUfyBg8/LbdTVo7ibRkAhmrAqreI
-	gfFtb45VK4I3RJAiKI5RxZmEuPLkxjE4GDhEq70cshfLuuH7iIukekS49jTr0jScnyXMXh8gtqQ
-	lxV1MWDR8Jmr/xygrmh7daFakOM6IDlI=
-X-Gm-Gg: AY/fxX62iE0IN6XSjlTuNIRRdJmTPfaa9cYuDi3BwBAgpGi5Jq7yFD2Ihw14POEnSfm
-	8HZZ+7fT4lN071wId5g4F/YP87WvhBqy1VGRmh/K80f5wA3qovgfZZUdcR8o16kCS34o5UFYyqK
-	0jCppQw//0u61pnEcGBsYBB2hZJQ2kFqofN0gQb2WsygZ8wU+w5xWmQi257lqxb2xCjUQmhK2pm
-	aCVpvBxdFkgiZh6XVxjhnzbrb/IrY1Pbs0LQttPijf5tHpRG6E7FlLeSPgWOhRAXKXOe3ppkYJZ
-	zbuLx5yWznOTQrIf+V4Q8h/R60h8ww==
-X-Google-Smtp-Source: AGHT+IEWWCROZ9W2XvupSh0FHs9eo+ngEG6sTxMlknORvN+lv005fT9kAg9rRfr7QkToLile3In7OBAFa3CiWT/gw/w=
-X-Received: by 2002:a05:6000:4301:b0:42b:5592:ebe6 with SMTP id
- ffacd0b85a97d-432c32f701cmr16434006f8f.0.1768200745476; Sun, 11 Jan 2026
- 22:52:25 -0800 (PST)
+	s=arc-20240116; t=1768202399; c=relaxed/simple;
+	bh=k5ZWMJroAH9X6RMhuRdisILf2c/lZu6r5O2cLbbc4Cg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ELHRPeFRH3sWjaYFIJaimzXRmJ4vyJn5D6Az2QWKXYL3eMCxzLhJuaQoFdWVrAo1kOjo9xh7wI9vN/VkEC8YXE1KSRrnQkia6vp/hbaUyy59V/CvnQVyTnLHV+HRCKSMWqmdJ4RbUDSVgUu5uNQCuzYiQC/f4yPbi34cNLdgNyc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eMZIqTAG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FB10C116D0;
+	Mon, 12 Jan 2026 07:19:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768202398;
+	bh=k5ZWMJroAH9X6RMhuRdisILf2c/lZu6r5O2cLbbc4Cg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=eMZIqTAGXMeBkdP6Gy3xxqAiJKHoBTxBJQXTWn9y/8FxBAap2QqskH4pr73a5dMPZ
+	 OKmeOens5OeTThblZDu/hh3vE41wZpapG/hnfDE008cNcR4xUGA+TN35CMn29x0qbG
+	 zUE9ciRE8A6GwLQh+PwFS+FGPiH7U2w7ypJOb/4OMTfvU2NOQVuKM0a7fxV3keNtbr
+	 /8131lnWyKJIcyWR2plaZcvyV9f230+l7rsrw4Q2tUilCCfj8KfTcFli2QGBef0td5
+	 TII2sZa0ebgND5CNNWv8iXtGtC1G+9KDJ9Vy3O/7xWXfyWwbOsMHjWQ+HiirzDkRR7
+	 6DB1Sx9+w1zqw==
+Message-ID: <d22105ed-01e8-4abd-ade9-86686f48d221@kernel.org>
+Date: Mon, 12 Jan 2026 08:19:51 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260107-timer_nolock-v3-0-740d3ec3e5f9@meta.com> <20260107-timer_nolock-v3-2-740d3ec3e5f9@meta.com>
-In-Reply-To: <20260107-timer_nolock-v3-2-740d3ec3e5f9@meta.com>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Mon, 12 Jan 2026 07:51:48 +0100
-X-Gm-Features: AZwV_QhmNxcDfnsblipm-NVjvzOd1RAtFRKLjVZgen2v5s2lxT0Mq6yRr0zRzC4
-Message-ID: <CAP01T76ccrFiQ3a8XEw_ZMVpupk+is-3V-se+vVCcsdyx1MVbA@mail.gmail.com>
-Subject: Re: [PATCH RFC v3 02/10] bpf: Factor out timer deletion helper
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, eddyz87@gmail.com, 
-	Mykyta Yatsenko <yatsenko@meta.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5/6] powerpc64/bpf: Support exceptions
+To: adubey <adubey@imap.linux.ibm.com>,
+ Saket Kumar Bhaskar <skb99@linux.ibm.com>
+Cc: adubey@linux.ibm.com, bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+ hbathini@linux.ibm.com, sachinpb@linux.ibm.com, venkat88@linux.ibm.com,
+ andrii@kernel.org, eddyz87@gmail.com, mykolal@fb.com, ast@kernel.org,
+ daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, naveen@kernel.org,
+ maddy@linux.ibm.com, mpe@ellerman.id.au, npiggin@gmail.com,
+ memxor@gmail.com, iii@linux.ibm.com, shuah@kernel.org
+References: <20260105105212.136645-1-adubey@linux.ibm.com>
+ <20260105105212.136645-6-adubey@linux.ibm.com>
+ <aWSL3DlSf5WA20lf@linux.ibm.com>
+ <9102a4504413501f382cf3e22118e88f@imap.linux.ibm.com>
+Content-Language: fr-FR
+From: "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>
+In-Reply-To: <9102a4504413501f382cf3e22118e88f@imap.linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, 7 Jan 2026 at 18:49, Mykyta Yatsenko <mykyta.yatsenko5@gmail.com> wrote:
->
-> From: Mykyta Yatsenko <yatsenko@meta.com>
->
-> Move the timer deletion logic into a dedicated bpf_timer_delete()
-> helper so it can be reused by later patches.
->
-> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
-> ---
 
-Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+
+Le 12/01/2026 à 07:58, adubey a écrit :
+> [Vous ne recevez pas souvent de courriers de adubey@imap.linux.ibm.com. 
+> D?couvrez pourquoi ceci est important ? https://aka.ms/ 
+> LearnAboutSenderIdentification ]
+> 
+> On 2026-01-12 11:21, Saket Kumar Bhaskar wrote:
+>> On Mon, Jan 05, 2026 at 04:22:11PM +0530, adubey@linux.ibm.com wrote:
+>>> From: Abhishek Dubey <adubey@linux.ibm.com>
+>>>
+>>> The modified prologue/epilogue generation code now
+>>> enables exception-callback to use the stack frame of
+>>> the program marked as exception boundary, where callee
+>>> saved registers are stored.
+>>>
+>>> As per ppc64 ABIv2 documentation[1], r14-r31 are callee
+>>> saved registers. BPF programs on ppc64 already saves
+>>> r26-r31 registers. Saving the remaining set of callee
+>>> saved registers(r14-r25) is handled in the next patch.
+>>>
+>>> [1]
+>>> https://eur01.safelinks.protection.outlook.com/? 
+>>> url=https%3A%2F%2Fftp.rtems.org%2Fpub%2Frtems%2Fpeople%2Fsebh%2FABI64BitOpenPOWERv1.1_16July2015_pub.pdf&data=05%7C02%7Cchristophe.leroy%40csgroup.eu%7Cdecf1943ac9949608edb08de51a7f357%7C8b87af7d86474dc78df45f69a2011bb5%7C0%7C0%7C639037978954052961%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=uCfpmnY2bQT7yD3esp8nkyLPGfEzpK9UoCgV2sm0j80%3D&reserved=0
+>>>
+>>> Following is exceptions selftest result on ppc64le:
+>>>
+>>> # ./test_progs -t exceptions
+>>> #100/1   exceptions/exception_throw_always_1:OK
+>>> #100/2   exceptions/exception_throw_always_2:OK
+>>> #100/3   exceptions/exception_throw_unwind_1:OK
+>>> #100/4   exceptions/exception_throw_unwind_2:OK
+>>> #100/5   exceptions/exception_throw_default:OK
+>>> #100/6   exceptions/exception_throw_default_value:OK
+>>> #100/7   exceptions/exception_tail_call:OK
+>>> #100/8   exceptions/exception_ext:OK
+>>> #100/9   exceptions/exception_ext_mod_cb_runtime:OK
+>>> #100/10  exceptions/exception_throw_subprog:OK
+>>> #100/11  exceptions/exception_assert_nz_gfunc:OK
+>>> #100/12  exceptions/exception_assert_zero_gfunc:OK
+>>> #100/13  exceptions/exception_assert_neg_gfunc:OK
+>>> #100/14  exceptions/exception_assert_pos_gfunc:OK
+>>> #100/15  exceptions/exception_assert_negeq_gfunc:OK
+>>> #100/16  exceptions/exception_assert_poseq_gfunc:OK
+>>> #100/17  exceptions/exception_assert_nz_gfunc_with:OK
+>>> #100/18  exceptions/exception_assert_zero_gfunc_with:OK
+>>> #100/19  exceptions/exception_assert_neg_gfunc_with:OK
+>>> #100/20  exceptions/exception_assert_pos_gfunc_with:OK
+>>> #100/21  exceptions/exception_assert_negeq_gfunc_with:OK
+>>> #100/22  exceptions/exception_assert_poseq_gfunc_with:OK
+>>> #100/23  exceptions/exception_bad_assert_nz_gfunc:OK
+>>> #100/24  exceptions/exception_bad_assert_zero_gfunc:OK
+>>> #100/25  exceptions/exception_bad_assert_neg_gfunc:OK
+>>> #100/26  exceptions/exception_bad_assert_pos_gfunc:OK
+>>> #100/27  exceptions/exception_bad_assert_negeq_gfunc:OK
+>>> #100/28  exceptions/exception_bad_assert_poseq_gfunc:OK
+>>> #100/29  exceptions/exception_bad_assert_nz_gfunc_with:OK
+>>> #100/30  exceptions/exception_bad_assert_zero_gfunc_with:OK
+>>> #100/31  exceptions/exception_bad_assert_neg_gfunc_with:OK
+>>> #100/32  exceptions/exception_bad_assert_pos_gfunc_with:OK
+>>> #100/33  exceptions/exception_bad_assert_negeq_gfunc_with:OK
+>>> #100/34  exceptions/exception_bad_assert_poseq_gfunc_with:OK
+>>> #100/35  exceptions/exception_assert_range:OK
+>>> #100/36  exceptions/exception_assert_range_with:OK
+>>> #100/37  exceptions/exception_bad_assert_range:OK
+>>> #100/38  exceptions/exception_bad_assert_range_with:OK
+>>> #100/39  exceptions/non-throwing fentry -> exception_cb:OK
+>>> #100/40  exceptions/throwing fentry -> exception_cb:OK
+>>> #100/41  exceptions/non-throwing fexit -> exception_cb:OK
+>>> #100/42  exceptions/throwing fexit -> exception_cb:OK
+>>> #100/43  exceptions/throwing extension (with custom cb) ->
+>>> exception_cb:OK
+>>> #100/44  exceptions/throwing extension -> global func in
+>>> exception_cb:OK
+>>> #100/45  exceptions/exception_ext_mod_cb_runtime:OK
+>>> #100/46  exceptions/throwing extension (with custom cb) -> global func
+>>> in exception_cb:OK
+>>> #100/47  exceptions/exception_ext:OK
+>>> #100/48  exceptions/non-throwing fentry -> non-throwing subprog:OK
+>>> #100/49  exceptions/throwing fentry -> non-throwing subprog:OK
+>>> #100/50  exceptions/non-throwing fentry -> throwing subprog:OK
+>>> #100/51  exceptions/throwing fentry -> throwing subprog:OK
+>>> #100/52  exceptions/non-throwing fexit -> non-throwing subprog:OK
+>>> #100/53  exceptions/throwing fexit -> non-throwing subprog:OK
+>>> #100/54  exceptions/non-throwing fexit -> throwing subprog:OK
+>>> #100/55  exceptions/throwing fexit -> throwing subprog:OK
+>>> #100/56  exceptions/non-throwing fmod_ret -> non-throwing subprog:OK
+>>> #100/57  exceptions/non-throwing fmod_ret -> non-throwing global
+>>> subprog:OK
+>>> #100/58  exceptions/non-throwing extension -> non-throwing subprog:OK
+>>> #100/59  exceptions/non-throwing extension -> throwing subprog:OK
+>>> #100/60  exceptions/non-throwing extension -> non-throwing subprog:OK
+>>> #100/61  exceptions/non-throwing extension -> throwing global
+>>> subprog:OK
+>>> #100/62  exceptions/throwing extension -> throwing global subprog:OK
+>>> #100/63  exceptions/throwing extension -> non-throwing global
+>>> subprog:OK
+>>> #100/64  exceptions/non-throwing extension -> main subprog:OK
+>>> #100/65  exceptions/throwing extension -> main subprog:OK
+>>> #100/66  exceptions/reject_exception_cb_type_1:OK
+>>> #100/67  exceptions/reject_exception_cb_type_2:OK
+>>> #100/68  exceptions/reject_exception_cb_type_3:OK
+>>> #100/69  exceptions/reject_exception_cb_type_4:OK
+>>> #100/70  exceptions/reject_async_callback_throw:OK
+>>> #100/71  exceptions/reject_with_lock:OK
+>>> #100/72  exceptions/reject_subprog_with_lock:OK
+>>> #100/73  exceptions/reject_with_rcu_read_lock:OK
+>>> #100/74  exceptions/reject_subprog_with_rcu_read_lock:OK
+>>> #100/75  exceptions/reject_with_rbtree_add_throw:OK
+>>> #100/76  exceptions/reject_with_reference:OK
+>>> #100/77  exceptions/reject_with_cb_reference:OK
+>>> #100/78  exceptions/reject_with_cb:OK
+>>> #100/79  exceptions/reject_with_subprog_reference:OK
+>>> #100/80  exceptions/reject_throwing_exception_cb:OK
+>>> #100/81  exceptions/reject_exception_cb_call_global_func:OK
+>>> #100/82  exceptions/reject_exception_cb_call_static_func:OK
+>>> #100/83  exceptions/reject_multiple_exception_cb:OK
+>>> #100/84  exceptions/reject_exception_throw_cb:OK
+>>> #100/85  exceptions/reject_exception_throw_cb_diff:OK
+>>> #100/86  exceptions/reject_set_exception_cb_bad_ret1:OK
+>>> #100/87  exceptions/reject_set_exception_cb_bad_ret2:OK
+>>> #100/88  exceptions/check_assert_eq_int_min:OK
+>>> #100/89  exceptions/check_assert_eq_int_max:OK
+>>> #100/90  exceptions/check_assert_eq_zero:OK
+>>> #100/91  exceptions/check_assert_eq_llong_min:OK
+>>> #100/92  exceptions/check_assert_eq_llong_max:OK
+>>> #100/93  exceptions/check_assert_lt_pos:OK
+>>> #100/94  exceptions/check_assert_lt_zero:OK
+>>> #100/95  exceptions/check_assert_lt_neg:OK
+>>> #100/96  exceptions/check_assert_le_pos:OK
+>>> #100/97  exceptions/check_assert_le_zero:OK
+>>> #100/98  exceptions/check_assert_le_neg:OK
+>>> #100/99  exceptions/check_assert_gt_pos:OK
+>>> #100/100 exceptions/check_assert_gt_zero:OK
+>>> #100/101 exceptions/check_assert_gt_neg:OK
+>>> #100/102 exceptions/check_assert_ge_pos:OK
+>>> #100/103 exceptions/check_assert_ge_zero:OK
+>>> #100/104 exceptions/check_assert_ge_neg:OK
+>>> #100/105 exceptions/check_assert_range_s64:OK
+>>> #100/106 exceptions/check_assert_range_u64:OK
+>>> #100/107 exceptions/check_assert_single_range_s64:OK
+>>> #100/108 exceptions/check_assert_single_range_u64:OK
+>>> #100/109 exceptions/check_assert_generic:OK
+>>> #100/110 exceptions/check_assert_with_return:OK
+>>> #100     exceptions:OK
+>>> Summary: 1/110 PASSED, 0 SKIPPED, 0 FAILED
+>>>
+>> It would be great to include this selftest output in the cover letter
+>> instead, since it makes the git log excessively long.
+>>
+>> Thanks,
+>> Saket
+> 
+> Major contributors in the community routinely include test case results
+> in commit messages, and this is not viewed as problematic.
+> Eg: bpf-next : e59997d9052599feb17419289f2a57ed300e1dfa,
+
+This is a merge commit, the message comes from the cover letter of the 
+series: 
+https://lore.kernel.org/all/20240201125225.72796-1-puranjay12@gmail.com/
+
+> 6c17a882d3804dce1c66e1fec25f96d39a184067
+
+In this one the list of tests is rather small compared to the entire 
+commit message.
+
+So I also recommend to move this big list of tests in the cover letter.
+
+Christophe
+
 
