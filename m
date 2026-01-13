@@ -1,335 +1,359 @@
-Return-Path: <bpf+bounces-78727-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78728-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3990BD19E19
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 16:28:10 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57FD5D19FA2
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 16:43:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id C9260305A474
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 15:26:02 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 251D1301EFEB
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 15:43:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DD6A392B90;
-	Tue, 13 Jan 2026 15:25:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 469813939AD;
+	Tue, 13 Jan 2026 15:43:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bPXlBcZA"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="eCIGcp39"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC855392B87
-	for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 15:25:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBF9129D27D
+	for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 15:43:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768317956; cv=none; b=k3jJlU7y7crEuRcUllRiTjPVOpxhyCfm5qbllB7qriuXGazF26Ha9g/VVhDIsY3Pfx4lpqcrthirMNUeiwRQj8cc1JqEldHEufnfaO13KeLWkIPwYHTfqKdi9w1EYrsLCOmpn1vezyhpXwZQIjN9N5jNwxJ9O+2HPOwJwD+r5bY=
+	t=1768318984; cv=none; b=rdtwV3bAJZ+ARJPjHczHd/ZfyzQuj1HQDh4rLxxHn8IQF/dQhSManELAu7F6ki5NQLYYX8GHHThHRSMLNvuy89+RkPnhRucrE9SOhMgc/GADUyn+o3yHN9WCuBh7sgDDWx/FNc56FzsguZx8r1DkD0uQ+8lLrMRP+9Nwp2nDzKA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768317956; c=relaxed/simple;
-	bh=x9hcPe9UpPmJcCw8SaKx5rYwAyP1CR0dRK6Ml/MNVLI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XNLdwUi6sZPIEjWlZPiVhDaWu/ht/wj8j+0AgCOKiSvLXw0BQJwtLPmWhpooHGr67QzRfEGclVSRn1HNOhzeEs2GyB3940Br2zx/gVjRNk+Jd/9mwtRJD9NoVEqMTAxsc2cLGfn4/BXDp1DLgvgRaAoWDj3Bok5XnP88k5t/mhA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bPXlBcZA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46821C116C6;
-	Tue, 13 Jan 2026 15:25:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768317956;
-	bh=x9hcPe9UpPmJcCw8SaKx5rYwAyP1CR0dRK6Ml/MNVLI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bPXlBcZAOn5B7znMixykT2D0Tu7QT4GRLSEk84+1wbb7CUGjdOp7NGRw7Buhz4Od0
-	 NdHUuFknXwZAKFSu2rzgoU6QAYzHZ1Gv80Z3+Hqnec3zK3t//1T1j4MRvfEmbA51/q
-	 ohDaT7cjZbe/nLjOYEEabdA/eT+eikR4/D3SNv9VwCtaCnCFHufuWyU+wXsUpkjEeu
-	 pC78NBywispaf33Ds/809otVQpzFuXEFxsEw4QjalAhZW438166Hap5z9ukHqYA8U3
-	 nrNZC2h8Kx/llZbqJa7Yrdm8YkczVCKsg6ajeL3d34T3vinoP4MPalVmTpdnBkytZc
-	 +aaC4PJ/fKqfg==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: bpf@vger.kernel.org
-Cc: Puranjay Mohan <puranjay@kernel.org>,
-	Puranjay Mohan <puranjay12@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>,
-	kernel-team@meta.com
-Subject: [PATCH bpf-next v2 2/2] selftests/bpf: Add tests for improved linked register tracking
-Date: Tue, 13 Jan 2026 07:25:26 -0800
-Message-ID: <20260113152529.3217648-3-puranjay@kernel.org>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20260113152529.3217648-1-puranjay@kernel.org>
-References: <20260113152529.3217648-1-puranjay@kernel.org>
+	s=arc-20240116; t=1768318984; c=relaxed/simple;
+	bh=JgIlqtTWa84pDzYHYRBImp47HFwfIHOmtysB9ghZeBg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EqtROwzI86v9JiY1iRCISvHk47+Hx2CnOjwmmFtnZrQ67CB6CbrM5vcQC/cUSZZ2GTvXDYFFgWPGb/ESmQczvG/XVgKEFFfzgugB/m27Uif2wv4Nx6iiciki8z1x7RiDrQNxRloRIhnsFmg/6f3qhNFENFhq5QPxEQObhVciBHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=eCIGcp39; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Tue, 13 Jan 2026 23:42:29 +0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1768318971;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kcT0Rq2eZ+lNzxPFLAdKQnxD9hPonR7DRC64KveBJ74=;
+	b=eCIGcp39cm1nzeXHF6v15sJCklJtGZ5xlNyipFNcX4XcjcZemAhgzbLyf9nJKR4d3Aa+sI
+	gwwX0qDl5Mr4glgVXXp8RED3x6I56Vw13qkj+0H6NnM4cdR/tCVQIRcrM2cT+0uzyxqF0b
+	97J55dhMMXrsT3/hQ1K8wN9/rw1iiTM=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Hao Li <hao.li@linux.dev>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Harry Yoo <harry.yoo@oracle.com>, Petr Tesarik <ptesarik@suse.com>, 
+	Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	Uladzislau Rezki <urezki@gmail.com>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
+	Suren Baghdasaryan <surenb@google.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
+	Alexei Starovoitov <ast@kernel.org>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	linux-rt-devel@lists.linux.dev, bpf@vger.kernel.org, kasan-dev@googlegroups.com
+Subject: Re: [PATCH RFC v2 06/20] slab: make percpu sheaves compatible with
+ kmalloc_nolock()/kfree_nolock()
+Message-ID: <2hsm2byyftzi2d4xxdtkakqnfggtyemr23ofrnqgkzhkh7q7vc@zoqqfr7hba6f>
+References: <20260112-sheaves-for-all-v2-0-98225cfb50cf@suse.cz>
+ <20260112-sheaves-for-all-v2-6-98225cfb50cf@suse.cz>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260112-sheaves-for-all-v2-6-98225cfb50cf@suse.cz>
+X-Migadu-Flow: FLOW_OUT
 
-Add tests for linked register tracking with negative offsets, BPF_SUB,
-and alu32. These test for all edge cases like over-flows, etc.
+On Mon, Jan 12, 2026 at 04:17:00PM +0100, Vlastimil Babka wrote:
+> Before we enable percpu sheaves for kmalloc caches, we need to make sure
+> kmalloc_nolock() and kfree_nolock() will continue working properly and
+> not spin when not allowed to.
+> 
+> Percpu sheaves themselves use local_trylock() so they are already
+> compatible. We just need to be careful with the barn->lock spin_lock.
+> Pass a new allow_spin parameter where necessary to use
+> spin_trylock_irqsave().
+> 
+> In kmalloc_nolock_noprof() we can now attempt alloc_from_pcs() safely,
+> for now it will always fail until we enable sheaves for kmalloc caches
+> next. Similarly in kfree_nolock() we can attempt free_to_pcs().
+> 
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> ---
+>  mm/slub.c | 79 +++++++++++++++++++++++++++++++++++++++++++++------------------
+>  1 file changed, 57 insertions(+), 22 deletions(-)
+> 
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 06d5cf794403..0177a654a06a 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -2881,7 +2881,8 @@ static void pcs_destroy(struct kmem_cache *s)
+>  	s->cpu_sheaves = NULL;
+>  }
+>  
+> -static struct slab_sheaf *barn_get_empty_sheaf(struct node_barn *barn)
+> +static struct slab_sheaf *barn_get_empty_sheaf(struct node_barn *barn,
+> +					       bool allow_spin)
+>  {
+>  	struct slab_sheaf *empty = NULL;
+>  	unsigned long flags;
+> @@ -2889,7 +2890,10 @@ static struct slab_sheaf *barn_get_empty_sheaf(struct node_barn *barn)
+>  	if (!data_race(barn->nr_empty))
+>  		return NULL;
+>  
+> -	spin_lock_irqsave(&barn->lock, flags);
+> +	if (likely(allow_spin))
+> +		spin_lock_irqsave(&barn->lock, flags);
+> +	else if (!spin_trylock_irqsave(&barn->lock, flags))
+> +		return NULL;
+>  
+>  	if (likely(barn->nr_empty)) {
+>  		empty = list_first_entry(&barn->sheaves_empty,
+> @@ -2966,7 +2970,8 @@ static struct slab_sheaf *barn_get_full_or_empty_sheaf(struct node_barn *barn)
+>   * change.
+>   */
+>  static struct slab_sheaf *
+> -barn_replace_empty_sheaf(struct node_barn *barn, struct slab_sheaf *empty)
+> +barn_replace_empty_sheaf(struct node_barn *barn, struct slab_sheaf *empty,
+> +			 bool allow_spin)
+>  {
+>  	struct slab_sheaf *full = NULL;
+>  	unsigned long flags;
+> @@ -2974,7 +2979,10 @@ barn_replace_empty_sheaf(struct node_barn *barn, struct slab_sheaf *empty)
+>  	if (!data_race(barn->nr_full))
+>  		return NULL;
+>  
+> -	spin_lock_irqsave(&barn->lock, flags);
+> +	if (likely(allow_spin))
+> +		spin_lock_irqsave(&barn->lock, flags);
+> +	else if (!spin_trylock_irqsave(&barn->lock, flags))
+> +		return NULL;
+>  
+>  	if (likely(barn->nr_full)) {
+>  		full = list_first_entry(&barn->sheaves_full, struct slab_sheaf,
+> @@ -2995,7 +3003,8 @@ barn_replace_empty_sheaf(struct node_barn *barn, struct slab_sheaf *empty)
+>   * barn. But if there are too many full sheaves, reject this with -E2BIG.
+>   */
+>  static struct slab_sheaf *
+> -barn_replace_full_sheaf(struct node_barn *barn, struct slab_sheaf *full)
+> +barn_replace_full_sheaf(struct node_barn *barn, struct slab_sheaf *full,
+> +			bool allow_spin)
+>  {
+>  	struct slab_sheaf *empty;
+>  	unsigned long flags;
+> @@ -3006,7 +3015,10 @@ barn_replace_full_sheaf(struct node_barn *barn, struct slab_sheaf *full)
+>  	if (!data_race(barn->nr_empty))
+>  		return ERR_PTR(-ENOMEM);
+>  
+> -	spin_lock_irqsave(&barn->lock, flags);
+> +	if (likely(allow_spin))
+> +		spin_lock_irqsave(&barn->lock, flags);
+> +	else if (!spin_trylock_irqsave(&barn->lock, flags))
+> +		return ERR_PTR(-EBUSY);
+>  
+>  	if (likely(barn->nr_empty)) {
+>  		empty = list_first_entry(&barn->sheaves_empty, struct slab_sheaf,
+> @@ -5000,7 +5012,8 @@ __pcs_replace_empty_main(struct kmem_cache *s, struct slub_percpu_sheaves *pcs,
+>  		return NULL;
+>  	}
+>  
+> -	full = barn_replace_empty_sheaf(barn, pcs->main);
+> +	full = barn_replace_empty_sheaf(barn, pcs->main,
+> +					gfpflags_allow_spinning(gfp));
+>  
+>  	if (full) {
+>  		stat(s, BARN_GET);
+> @@ -5017,7 +5030,7 @@ __pcs_replace_empty_main(struct kmem_cache *s, struct slub_percpu_sheaves *pcs,
+>  			empty = pcs->spare;
+>  			pcs->spare = NULL;
+>  		} else {
+> -			empty = barn_get_empty_sheaf(barn);
+> +			empty = barn_get_empty_sheaf(barn, true);
+>  		}
+>  	}
+>  
+> @@ -5157,7 +5170,8 @@ void *alloc_from_pcs(struct kmem_cache *s, gfp_t gfp, int node)
+>  }
+>  
+>  static __fastpath_inline
+> -unsigned int alloc_from_pcs_bulk(struct kmem_cache *s, size_t size, void **p)
+> +unsigned int alloc_from_pcs_bulk(struct kmem_cache *s, gfp_t gfp, size_t size,
+> +				 void **p)
+>  {
+>  	struct slub_percpu_sheaves *pcs;
+>  	struct slab_sheaf *main;
+> @@ -5191,7 +5205,8 @@ unsigned int alloc_from_pcs_bulk(struct kmem_cache *s, size_t size, void **p)
+>  			return allocated;
+>  		}
+>  
+> -		full = barn_replace_empty_sheaf(barn, pcs->main);
+> +		full = barn_replace_empty_sheaf(barn, pcs->main,
+> +						gfpflags_allow_spinning(gfp));
+>  
+>  		if (full) {
+>  			stat(s, BARN_GET);
+> @@ -5700,7 +5715,7 @@ void *kmalloc_nolock_noprof(size_t size, gfp_t gfp_flags, int node)
+>  	gfp_t alloc_gfp = __GFP_NOWARN | __GFP_NOMEMALLOC | gfp_flags;
+>  	struct kmem_cache *s;
+>  	bool can_retry = true;
+> -	void *ret = ERR_PTR(-EBUSY);
+> +	void *ret;
+>  
+>  	VM_WARN_ON_ONCE(gfp_flags & ~(__GFP_ACCOUNT | __GFP_ZERO |
+>  				      __GFP_NO_OBJ_EXT));
+> @@ -5727,6 +5742,12 @@ void *kmalloc_nolock_noprof(size_t size, gfp_t gfp_flags, int node)
+>  		 */
+>  		return NULL;
+>  
+> +	ret = alloc_from_pcs(s, alloc_gfp, node);
+> +	if (ret)
+> +		goto success;
+> +
+> +	ret = ERR_PTR(-EBUSY);
+> +
+>  	/*
+>  	 * Do not call slab_alloc_node(), since trylock mode isn't
+>  	 * compatible with slab_pre_alloc_hook/should_failslab and
+> @@ -5763,6 +5784,7 @@ void *kmalloc_nolock_noprof(size_t size, gfp_t gfp_flags, int node)
+>  		ret = NULL;
+>  	}
+>  
+> +success:
+>  	maybe_wipe_obj_freeptr(s, ret);
+>  	slab_post_alloc_hook(s, NULL, alloc_gfp, 1, &ret,
+>  			     slab_want_init_on_alloc(alloc_gfp, s), size);
+> @@ -6083,7 +6105,8 @@ static void __pcs_install_empty_sheaf(struct kmem_cache *s,
+>   * unlocked.
+>   */
+>  static struct slub_percpu_sheaves *
+> -__pcs_replace_full_main(struct kmem_cache *s, struct slub_percpu_sheaves *pcs)
+> +__pcs_replace_full_main(struct kmem_cache *s, struct slub_percpu_sheaves *pcs,
+> +			bool allow_spin)
+>  {
+>  	struct slab_sheaf *empty;
+>  	struct node_barn *barn;
+> @@ -6107,7 +6130,7 @@ __pcs_replace_full_main(struct kmem_cache *s, struct slub_percpu_sheaves *pcs)
+>  	put_fail = false;
+>  
+>  	if (!pcs->spare) {
+> -		empty = barn_get_empty_sheaf(barn);
+> +		empty = barn_get_empty_sheaf(barn, allow_spin);
+>  		if (empty) {
+>  			pcs->spare = pcs->main;
+>  			pcs->main = empty;
+> @@ -6121,7 +6144,7 @@ __pcs_replace_full_main(struct kmem_cache *s, struct slub_percpu_sheaves *pcs)
+>  		return pcs;
+>  	}
+>  
+> -	empty = barn_replace_full_sheaf(barn, pcs->main);
+> +	empty = barn_replace_full_sheaf(barn, pcs->main, allow_spin);
+>  
+>  	if (!IS_ERR(empty)) {
+>  		stat(s, BARN_PUT);
+> @@ -6129,6 +6152,17 @@ __pcs_replace_full_main(struct kmem_cache *s, struct slub_percpu_sheaves *pcs)
+>  		return pcs;
+>  	}
+>  
+> +	if (!allow_spin) {
+> +		/*
+> +		 * sheaf_flush_unused() or alloc_empty_sheaf() don't support
+> +		 * !allow_spin and instead of trying to support them it's
+> +		 * easier to fall back to freeing the object directly without
+> +		 * sheaves
+> +		 */
+> +		local_unlock(&s->cpu_sheaves->lock);
+> +		return NULL;
+> +	}
 
-Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
----
- .../bpf/progs/verifier_linked_scalars.c       | 232 +++++++++++++++++-
- 1 file changed, 230 insertions(+), 2 deletions(-)
+It looks like when "allow_spin" is false, __pcs_replace_full_main() can
+still end up calling alloc_empty_sheaf() if pcs->spare is NULL (via the
+"goto alloc_empty" path). Would it make sense to bail out a bit earlier
+in that case?
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_linked_scalars.c b/tools/testing/selftests/bpf/progs/verifier_linked_scalars.c
-index 8f755d2464cf..62454d97a7c1 100644
---- a/tools/testing/selftests/bpf/progs/verifier_linked_scalars.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_linked_scalars.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- 
- #include <linux/bpf.h>
-+#include <limits.h>
- #include <bpf/bpf_helpers.h>
- #include "bpf_misc.h"
- 
-@@ -18,9 +19,9 @@ __naked void scalars(void)
- 	r4 = r1;				\
- 	w2 += 0x7FFFFFFF;			\
- 	w4 += 0;				\
--	if r2 == 0 goto l1;			\
-+	if r2 == 0 goto l0_%=;			\
- 	exit;					\
--l1:						\
-+l0_%=:						\
- 	r4 >>= 63;				\
- 	r3 = 1;					\
- 	r3 -= r4;				\
-@@ -31,4 +32,231 @@ l1:						\
- "	::: __clobber_all);
- }
- 
-+SEC("socket")
-+__success
-+__naked void scalars_neg(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r0 &= 0xff;					\
-+	r1 = r0;					\
-+	r1 += -4;					\
-+	if r1 s< 0 goto l0_%=;				\
-+	if r0 != 0 goto l0_%=;				\
-+	r0 /= 0;					\
-+l0_%=:							\
-+	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+/* Same test but using BPF_SUB instead of BPF_ADD with negative immediate */
-+SEC("socket")
-+__success
-+__naked void scalars_neg_sub(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r0 &= 0xff;					\
-+	r1 = r0;					\
-+	r1 -= 4;					\
-+	if r1 s< 0 goto l0_%=;				\
-+	if r0 != 0 goto l0_%=;				\
-+	r0 /= 0;					\
-+l0_%=:							\
-+	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+/* alu32 with negative offset */
-+SEC("socket")
-+__success
-+__naked void scalars_neg_alu32_add(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	w0 &= 0xff;					\
-+	w1 = w0;					\
-+	w1 += -4;					\
-+	if w1 s< 0 goto l0_%=;				\
-+	if w0 != 0 goto l0_%=;				\
-+	r0 /= 0;					\
-+l0_%=:							\
-+	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+/* alu32 with negative offset using SUB */
-+SEC("socket")
-+__success
-+__naked void scalars_neg_alu32_sub(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	w0 &= 0xff;					\
-+	w1 = w0;					\
-+	w1 -= 4;					\
-+	if w1 s< 0 goto l0_%=;				\
-+	if w0 != 0 goto l0_%=;				\
-+	r0 /= 0;					\
-+l0_%=:							\
-+	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+/* Positive offset: r1 = r0 + 4, then if r1 >= 6, r0 >= 2, so r0 != 0 */
-+SEC("socket")
-+__success
-+__naked void scalars_pos(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r0 &= 0xff;					\
-+	r1 = r0;					\
-+	r1 += 4;					\
-+	if r1 < 6 goto l0_%=;				\
-+	if r0 != 0 goto l0_%=;				\
-+	r0 /= 0;					\
-+l0_%=:							\
-+	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+/* SUB with negative immediate: r1 -= -4 is equivalent to r1 += 4 */
-+SEC("socket")
-+__success
-+__naked void scalars_sub_neg_imm(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r0 &= 0xff;					\
-+	r1 = r0;					\
-+	r1 -= -4;					\
-+	if r1 < 6 goto l0_%=;				\
-+	if r0 != 0 goto l0_%=;				\
-+	r0 /= 0;					\
-+l0_%=:							\
-+	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+/* Double ADD clears the ID (can't accumulate offsets) */
-+SEC("socket")
-+__failure
-+__msg("div by zero")
-+__naked void scalars_double_add(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r0 &= 0xff;					\
-+	r1 = r0;					\
-+	r1 += 2;					\
-+	r1 += 2;					\
-+	if r1 < 6 goto l0_%=;				\
-+	if r0 != 0 goto l0_%=;				\
-+	r0 /= 0;					\
-+l0_%=:							\
-+	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+/*
-+ * Test that sync_linked_regs() correctly handles large offset differences.
-+ * r1.off = S32_MIN, r2.off = 1, delta = S32_MIN - 1 requires 64-bit math.
-+ */
-+SEC("socket")
-+__success
-+__naked void scalars_sync_delta_overflow(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r0 &= 0xff;					\
-+	r1 = r0;					\
-+	r2 = r0;					\
-+	r1 += %[s32_min];				\
-+	r2 += 1;					\
-+	if r2 s< 100 goto l0_%=;			\
-+	if r1 s< 0 goto l0_%=;				\
-+	r0 /= 0;					\
-+l0_%=:							\
-+	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32),
-+	  [s32_min]"i"(INT_MIN)
-+	: __clobber_all);
-+}
-+
-+/*
-+ * Another large delta case: r1.off = S32_MAX, r2.off = -1.
-+ * delta = S32_MAX - (-1) = S32_MAX + 1 requires 64-bit math.
-+ */
-+SEC("socket")
-+__success
-+__naked void scalars_sync_delta_overflow_large_range(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r0 &= 0xff;					\
-+	r1 = r0;					\
-+	r2 = r0;					\
-+	r1 += %[s32_max];				\
-+	r2 += -1;					\
-+	if r2 s< 0 goto l0_%=;				\
-+	if r1 s>= 0 goto l0_%=;				\
-+	r0 /= 0;					\
-+l0_%=:							\
-+	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32),
-+	  [s32_max]"i"(INT_MAX)
-+	: __clobber_all);
-+}
-+
-+/*
-+ * Test linked scalar tracking with alu32 and large positive offset (0x7FFFFFFF).
-+ * After w1 += 0x7FFFFFFF, w1 wraps to negative for any r0 >= 1.
-+ * If w1 is signed-negative, then r0 >= 1, so r0 != 0.
-+ */
-+SEC("socket")
-+__success
-+__naked void scalars_alu32_big_offset(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	w0 &= 0xff;					\
-+	w1 = w0;					\
-+	w1 += 0x7FFFFFFF;				\
-+	if w1 s>= 0 goto l0_%=;				\
-+	if w0 != 0 goto l0_%=;				\
-+	r0 /= 0;					\
-+l0_%=:							\
-+	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
- char _license[] SEC("license") = "GPL";
 -- 
-2.47.3
+Thanks
+Hao
 
+> +
+>  	if (PTR_ERR(empty) == -E2BIG) {
+>  		/* Since we got here, spare exists and is full */
+>  		struct slab_sheaf *to_flush = pcs->spare;
+> @@ -6196,7 +6230,7 @@ __pcs_replace_full_main(struct kmem_cache *s, struct slub_percpu_sheaves *pcs)
+>   * The object is expected to have passed slab_free_hook() already.
+>   */
+>  static __fastpath_inline
+> -bool free_to_pcs(struct kmem_cache *s, void *object)
+> +bool free_to_pcs(struct kmem_cache *s, void *object, bool allow_spin)
+>  {
+>  	struct slub_percpu_sheaves *pcs;
+>  
+> @@ -6207,7 +6241,7 @@ bool free_to_pcs(struct kmem_cache *s, void *object)
+>  
+>  	if (unlikely(pcs->main->size == s->sheaf_capacity)) {
+>  
+> -		pcs = __pcs_replace_full_main(s, pcs);
+> +		pcs = __pcs_replace_full_main(s, pcs, allow_spin);
+>  		if (unlikely(!pcs))
+>  			return false;
+>  	}
+> @@ -6314,7 +6348,7 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj)
+>  			goto fail;
+>  		}
+>  
+> -		empty = barn_get_empty_sheaf(barn);
+> +		empty = barn_get_empty_sheaf(barn, true);
+>  
+>  		if (empty) {
+>  			pcs->rcu_free = empty;
+> @@ -6435,7 +6469,7 @@ static void free_to_pcs_bulk(struct kmem_cache *s, size_t size, void **p)
+>  		goto no_empty;
+>  
+>  	if (!pcs->spare) {
+> -		empty = barn_get_empty_sheaf(barn);
+> +		empty = barn_get_empty_sheaf(barn, true);
+>  		if (!empty)
+>  			goto no_empty;
+>  
+> @@ -6449,7 +6483,7 @@ static void free_to_pcs_bulk(struct kmem_cache *s, size_t size, void **p)
+>  		goto do_free;
+>  	}
+>  
+> -	empty = barn_replace_full_sheaf(barn, pcs->main);
+> +	empty = barn_replace_full_sheaf(barn, pcs->main, true);
+>  	if (IS_ERR(empty)) {
+>  		stat(s, BARN_PUT_FAIL);
+>  		goto no_empty;
+> @@ -6699,7 +6733,7 @@ void slab_free(struct kmem_cache *s, struct slab *slab, void *object,
+>  
+>  	if (likely(!IS_ENABLED(CONFIG_NUMA) || slab_nid(slab) == numa_mem_id())
+>  	    && likely(!slab_test_pfmemalloc(slab))) {
+> -		if (likely(free_to_pcs(s, object)))
+> +		if (likely(free_to_pcs(s, object, true)))
+>  			return;
+>  	}
+>  
+> @@ -6960,7 +6994,8 @@ void kfree_nolock(const void *object)
+>  	 * since kasan quarantine takes locks and not supported from NMI.
+>  	 */
+>  	kasan_slab_free(s, x, false, false, /* skip quarantine */true);
+> -	do_slab_free(s, slab, x, x, 0, _RET_IP_);
+> +	if (!free_to_pcs(s, x, false))
+> +		do_slab_free(s, slab, x, x, 0, _RET_IP_);
+>  }
+>  EXPORT_SYMBOL_GPL(kfree_nolock);
+>  
+> @@ -7512,7 +7547,7 @@ int kmem_cache_alloc_bulk_noprof(struct kmem_cache *s, gfp_t flags, size_t size,
+>  		size--;
+>  	}
+>  
+> -	i = alloc_from_pcs_bulk(s, size, p);
+> +	i = alloc_from_pcs_bulk(s, flags, size, p);
+>  
+>  	if (i < size) {
+>  		/*
+> 
+> -- 
+> 2.52.0
+> 
 
