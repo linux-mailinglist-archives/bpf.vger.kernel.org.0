@@ -1,140 +1,121 @@
-Return-Path: <bpf+bounces-78631-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78632-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D35BD15F20
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 01:16:12 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0F81D1630A
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 02:43:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 17AB730393FD
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 00:15:38 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 84C89302573D
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 01:43:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D791621257B;
-	Tue, 13 Jan 2026 00:15:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6014227E045;
+	Tue, 13 Jan 2026 01:43:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LeI67RfI"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WAnavtjN"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBBCB1C5F1B
-	for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 00:15:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E3FC274B59
+	for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 01:43:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768263336; cv=none; b=O6aU2hjgU94tLnMuu+/3BrW1atuaRghuQPu5JI/dMCwHFkBo/x6PfOZqLXv2Y34obeq09ZMl+WOoDMqmFZZMZF95ONCKwxcjovYKjV0wWYfGlFCOxUSZfohYZ4x/nQ42+MPWZ32qapESg+Zf22ZY0773EsVECZkL0nZUViqgVAQ=
+	t=1768268612; cv=none; b=Ku12VYkjK/qMMk+MD5IJ+jFLHVANGM5G2MIQKp4g/RROZZ9nHcgVJrMgIajSqZY6zleNqixE5+hnv+j1az9/7ssMEUlX5FHqfyqEqEGyi4cfnyCQCMfqw+LvpSS1lWDGe+J/26oWcuSu1YOyToRyLT8ohddmXfQoMoAH4q5DXZM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768263336; c=relaxed/simple;
-	bh=gvHbvF+alHW/GFmZwyIqoDQwp8tglUaEb3uXXAOyTz4=;
+	s=arc-20240116; t=1768268612; c=relaxed/simple;
+	bh=AzGYY8TVf6kHgCekFCUzEbv5VDS1oXckWndMM4wUWIQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jUBgX26hLO8yVoqSgnuFTAHYV24Jcrg5nWNwhaCfk4lSfHXESG9fUi3LyncY6h/pos8GQgtGlXNDRQn91nisiSCaGsR7Pmixf/bRB0nBrx7wbLOQbd4CPtlX7B1+oxGSj8yX5y78rtwKvp2dAJfV8mxiKkdb4VSscaCkw/2XL9s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LeI67RfI; arc=none smtp.client-ip=91.218.175.172
+	 In-Reply-To:Content-Type; b=idChCsZB2q35rlTtnNcvb4C9AOTeNWUy5XZ9ZPLlyDR0nnUJajuKbH69NACvPFfBnvqjdW3w01932a6rvj+s7lHi3/EOmGlrpoZ7dUWcr8eBQSl3iiNQ7+vc3+S2xx+dapdOQklFQ1vUZnN5KYGsrmwYjcefPDAtVE+TAUzzIns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=WAnavtjN; arc=none smtp.client-ip=95.215.58.188
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <1eb1715a-c1b0-4741-8d2d-f66adffcf91d@linux.dev>
+Message-ID: <39acf3ae-031e-41fe-8343-9445775f312c@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1768263323;
+	t=1768268599;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=eHAD91F192HxWa7NlcF9nJf3tRWljkeKZQty/FQBwSI=;
-	b=LeI67RfIZQK6RmNFheDra64ma8/vGrHEaePeIAt/I6825Jo6bIwlaaJi5gRY94NSE4g29z
-	K79TJMy0H0G6GwGZpbmpS6RRct8+SOzOv1pYSvH/YVRz862igkd7ot1w6atuBxRtg0lw33
-	daxtdN86tdo1sSN3q4xV7tby6HkPU78=
-Date: Mon, 12 Jan 2026 16:15:17 -0800
+	bh=HlY+CfNE9yvpYaQbltrehDKBAIWVYvJbFw7ICzfvQHs=;
+	b=WAnavtjN1+zzKw4FnoeX0yz4HzyCQ7l3gW29koNOFbo8Zn1rd132wS6VXPuiccj09DukFR
+	DQa9tTNenc+jK1CJJX2Rvy95LPOqU7GeSjJIRiLLDmi90sMXRQi4rmbj5Dql2r6uMQ+Qq/
+	KB67rxnIDrFeqvIYT0uMhIXiZ3RJ/V0=
+Date: Tue, 13 Jan 2026 09:43:02 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v3 10/16] bpf: Support lockless unlink when
- freeing map or local storage
-To: Amery Hung <ameryhung@gmail.com>
-Cc: netdev@vger.kernel.org, alexei.starovoitov@gmail.com, andrii@kernel.org,
- daniel@iogearbox.net, memxor@gmail.com, martin.lau@kernel.org,
- kpsingh@kernel.org, yonghong.song@linux.dev, song@kernel.org,
- haoluo@google.com, kernel-team@meta.com, bpf@vger.kernel.org
-References: <20251218175628.1460321-1-ameryhung@gmail.com>
- <20251218175628.1460321-11-ameryhung@gmail.com>
- <337d8ebe-d3d4-4818-92d8-4937da835843@linux.dev>
- <CAMB2axNcc5yJwhXjcEcQJuLxrjB7MgVK6XXpKqO9EiFPtQH6bQ@mail.gmail.com>
- <36b3dc2d-b850-491f-bfc5-3581d5de7b82@linux.dev>
- <CAMB2axNtrFEL0x+j6M3De-ezR38cv5s7LFtpuAeN7QCf_AyHaQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] bpf: Introduce BPF_BRANCH_SNAPSHOT_F_COPY
+ flag for bpf_get_branch_snapshot helper
 Content-Language: en-US
+To: kernel test robot <lkp@intel.com>, bpf@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, "David S . Miller" <davem@davemloft.net>,
+ David Ahern <dsahern@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+ "H . Peter Anvin" <hpa@zytor.com>, Matt Bobrowski
+ <mattbobrowski@google.com>, Steven Rostedt <rostedt@goodmis.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Shuah Khan <skhan@linuxfoundation.org>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+References: <20260109153420.32181-3-leon.hwang@linux.dev>
+ <202601122013.hmoeIXXs-lkp@intel.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <CAMB2axNtrFEL0x+j6M3De-ezR38cv5s7LFtpuAeN7QCf_AyHaQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Leon Hwang <leon.hwang@linux.dev>
+In-Reply-To: <202601122013.hmoeIXXs-lkp@intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 
+Hi kernel test robot,
 
+Thanks for the test results.
 
-On 1/12/26 2:38 PM, Amery Hung wrote:
->> [ btw, a nit, I think it can use a better function name instead of
->> "lockless". This function still takes the lock if it can. ]
-> Does using _nofail suffix make it more clear?
+No further testing is needed for this patch series, as it will not be
+pursued further and is not expected to be accepted upstream.
 
-sgtm.
+Thanks again for the testing effort.
 
+Thanks,
+Leon
+
+On 13/1/26 03:22, kernel test robot wrote:
+> Hi Leon,
 > 
->>> sure how destroy() can hold b->lock in a way that causes map_free() to
->>> fail acquiring b->lock.
->> I recall ETIMEDOUT was mentioned to be the likely (only?) case here.
->> Assume the b->lock did fail in map_free here, there are >1 selem(s)
->> using the same b->lock. Is it always true that the selem that failed at
->> the b->lock in map_free() here must race with the very same selem in
->> destroy()?
-
-This is still an open issue/question.
-
->>
->>>>> +             }
->>>>> +     }
->>>>> +
->>>>> +     /*
->>>>> +      * Only let destroy() unlink from local_storage->list and do mem_uncharge
->>>>> +      * as owner is guaranteed to be valid in destroy().
->>>>> +      */
->>>>> +     if (local_storage && caller == BPF_LOCAL_STORAGE_DESTROY) {
->>>> If I read here correctly, only bpf_local_storage_destroy() can do the
->>>> bpf_selem_free(). For example, if a bpf_sk_storage_map is going away,
->>>> the selem (which is memcg charged) will stay in the sk until the sk is
->>>> closed?
->>> You read it correctly and Yes there will be stale elements in
->>> local_storage->list.
->>>
->>> I would hope the unlink from local_storage part is doable from
->>> map_free() and destroy(), but it is hard to guarantee (1) mem_uncharge
->>> is done only once (2) while the owner is still valid in a lockless
->>> way.
->> This needs to be addressed. It cannot leave the selem lingering. At
->> least the selem should be freed for the common case (i.e., succeeds in
->> both locks). Lingering selem is ok in case of lock failure. Many sk can
->> be long-lived connections. The user space may want to recreate the map,
->> and it will be limited by the memcg.
-> I think this is doable by maintaining a local memory charge in local storage.
+> kernel test robot noticed the following build errors:
 > 
-> So, remove selem->size and have a copy of total selem memory charge in
-> a new local_storage->selem_size. Update will be protected by
-> local_storage->lock in common paths (not in bpf_selem_unlink_nofail).
-> More specifically, charge in bpf_selem_link_storage_nolock() when a
-> selem is going to be publicized. uncharge in
-> bpf_selem_unlink_storage_nolock() when a selem is being deleted. Then,
-> in destroy() we simply get the total amount to be uncharged from the
-> owner from local_storage->selem_size.
-
-Right, I had a similar thought before. Because of the nofail/lockless 
-consideration, I suspect the local_storage->selem_size will need to be 
-atomic. I am not sure if it is enough though, e.g. there is a debug/warn 
-on sk->sk_omem_alloc in __sk_destruct to ensure it is 0, so I stopped 
-thinking on it for now, but it could be a direction to explore.
-
-If it is the case, it is another atomic in the destruct/map_free code 
-path. I am still open-minded on the nofail requirement for both locks, 
-but complexity is building up. Kumar has also commented that b->lock in 
-map_free should not fail. Regardless, I think lets get the nofail code 
-path for map_free() sorted out first. Then we can move on to handle this 
-case.
+> [auto build test ERROR on bpf-next/master]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/Leon-Hwang/bpf-x64-Call-perf_snapshot_branch_stack-in-trampoline/20260109-234435
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+> patch link:    https://lore.kernel.org/r/20260109153420.32181-3-leon.hwang%40linux.dev
+> patch subject: [PATCH bpf-next 2/3] bpf: Introduce BPF_BRANCH_SNAPSHOT_F_COPY flag for bpf_get_branch_snapshot helper
+> config: x86_64-kexec (https://download.01.org/0day-ci/archive/20260112/202601122013.hmoeIXXs-lkp@intel.com/config)
+> compiler: clang version 20.1.8 (https://github.com/llvm/llvm-project 87f0227cb60147a26a1eeb4fb06e3b505e9c7261)
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260112/202601122013.hmoeIXXs-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202601122013.hmoeIXXs-lkp@intel.com/
+> 
+> All errors (new ones prefixed by >>):
+> 
+>>> ld.lld: error: undefined symbol: bpf_branch_snapshot
+>    >>> referenced by bpf_trace.c:1182 (kernel/trace/bpf_trace.c:1182)
+>    >>>               vmlinux.o:(bpf_get_branch_snapshot)
+>    >>> referenced by bpf_trace.c:0 (kernel/trace/bpf_trace.c:0)
+>    >>>               vmlinux.o:(bpf_get_branch_snapshot)
+> 
 
 
