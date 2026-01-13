@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-78700-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78701-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DA76D18A5B
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 13:13:28 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E1F6D18A61
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 13:13:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4F84B3038891
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 12:13:02 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 37343303D8B6
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 12:13:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D744138E5EB;
-	Tue, 13 Jan 2026 12:13:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B564B38E5F3;
+	Tue, 13 Jan 2026 12:13:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dj2/i4F2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L9Wes4aL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B45938E5CA
-	for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 12:12:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B973438E5DD
+	for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 12:13:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768306381; cv=none; b=J2WbtTzlEuvpSByV4gAWeWZbiINeEE9nDFzo8zEY/eWpEdS0G6dAq3ZRX3r9NRCnqNrcsk+i8/VhBasbV7YsmwuVGVkqsetOPm8nfiUvuPfqL1u8BM5FuFgNVblS9azs+QLw9/TPf2/mF6ROdHu6LHY6+4Rq+BNcMEd1cvR9mkc=
+	t=1768306386; cv=none; b=UtFA7tNTVywHvX4XXFkWwljrkzSKxKj3pHTFk9l3zKBeqDGc9Qo9RlNGGcG3ptWceWJeNbJP+N2AyDksbqO0peVNSEAwLfIQBlzI0EyQqcliWN7goNEbBj/dSFZBvR4opGzbp+gaAKkyN7HxAZ953gLEIsWOIFqV5ZCZk/TWfY4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768306381; c=relaxed/simple;
-	bh=qVqKiwO+ARDSwmibR89f45pwx/6IO1wOyMRAKWoharQ=;
+	s=arc-20240116; t=1768306386; c=relaxed/simple;
+	bh=vfmH95SocIK2+iN81F6d7tSSpqj9q3Js1VxKpA19Sqo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mlmrossATUuokiUPmxF/J7FZJCfg8Jq68eBnpRjdkkcgz43Xw9AekYhqBJCzZN/QkCoOa/lCGNXR0kdOahYpF7mv6C7nxooxpObSvmvjGCN+lKwihuUvxyvxOLSqfbQ3/UjZtcz4NXe182n/yiisOvfYoIkfCbqmiM5sP7C2vJk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dj2/i4F2; arc=none smtp.client-ip=209.85.210.171
+	 MIME-Version; b=RbOevD9faVKuHWcEqIg8S/jHTX+5uZSsn7lzwr6E1xYid+j/j2ZUy6Jrh64SfwDGkkZcirnTtXFdFSiharE46zj7PyNPvGRsXkUjoFliR0PuLXg0F5/q0i5Uh4njrpwn1TqL2X8m5fNlu3xF/K1Lh3PetLc6g4R/oIKadY1k4FA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L9Wes4aL; arc=none smtp.client-ip=209.85.210.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-81ecbdfdcebso2031459b3a.1
-        for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 04:12:59 -0800 (PST)
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-81f4dfa82edso1166902b3a.0
+        for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 04:13:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768306379; x=1768911179; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1768306384; x=1768911184; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0CR8k0pTAI0hGNUsgPy6QCqv5Ph7dVkX9F3Lq2Xl3H0=;
-        b=dj2/i4F2hkiDqcHYc33f0+MNbiZch0AjkZOKRGscWlIYB0haUckK33UgG17ocDOHRN
-         2mhaDtwe4UyfaFZlYsNk8ZR9QxWSN6vg3S+YkrdJiR/iTKPS8uMJ8xZ7uiO3oCmdAjrA
-         1WYr0C9PFli9l8dFi4Rg8Llr26uFKPH4SRb0JSYzN76yEdMErSNDnKU/9PFlY3b8rZE8
-         MD69goBJpHqP9W9dyf2JSRRxGzSlL2IRPvwwIy7rLgN5w7K4t/0d/Gki26xUEyIx8+8i
-         dBrFYZ9HlxJmFn9XBg3/Bh3WA0GhGM2K/1ZESWpN8Yc/jjJIkibOR9B6+7bVWeS1cQRl
-         9weQ==
+        bh=yn6xpjrnCqbqcpG1ijdeHcwn4K62gY18RMymEm3vNG0=;
+        b=L9Wes4aL9spb1sbdsegGsTdCbpyCvwhVfxmZjpo25dqoeE8DtRHfNrVIuguO8gcRz3
+         n67p/A2/8c8IW9IY0FfxpTLl16Fy8yPPbRK+bfq2bMg5EZk4SuwbdutR+hFyiZsEZsCy
+         zg4By2KEPEyBhkP1i5E1XKpQl/fS408HSNKLXGAUF5WbpVmQv+04MTuTeN2FMjhwfgbg
+         HrDz2rfMKrl0vaEnCwwKFhaG2ZObLjnriPqlX/gpOBySUVBxJu4JghKiqkhARbSDcogn
+         eFu60KBoF/63easmb9l4YhowE3C/irRd5AslHGhnmnXPEtHsZ9NKshrUogYergIjRIFG
+         YszA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768306379; x=1768911179;
+        d=1e100.net; s=20230601; t=1768306384; x=1768911184;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=0CR8k0pTAI0hGNUsgPy6QCqv5Ph7dVkX9F3Lq2Xl3H0=;
-        b=eWHRE9qIKuP3JLKBchYKB3fjp2tAvCFo7Eqhne2XVOGnBUEi/2SbzVySOYBw17M6gi
-         Kh5OXGwzIpwdL2NVY44JNU/BUCjdHcb/UeiyEE3c3X2CBPz2IJB35TF3AutMKHdRsDS8
-         JYSBHPeQPFUiK4gn0QbiLzIUE9A6s4T/1j9RhIobtXx2GYbdslE4tYnQkAbN6u9sJXph
-         NXZwfp4OiL8d/vCDGNfGK9PIz9UsXBbl4WSRNybJLE5446F7G5Xh2tfYsJxYbNi1WeOi
-         uJHsWxM4ZzijBxUbY9SXQHQHjpdJwXq8ajzhCRaDYcLWFOziCQLx7pHm+qfLfBVx6TXY
-         pDJw==
-X-Gm-Message-State: AOJu0YwXROLQkcXfiSwCjxCYv8NpgntBHcCRTZkDYuufn94OCbLEZkgF
-	jVvKLTvuAZOfFywtv1cOJh6bxdWkg1pNVTFC/YKuxDTOFNDXaOSGQKjV
-X-Gm-Gg: AY/fxX4vg+hI/zHA5Wcx01FIo7VkAGHpCNc5JUP2743lWzndgK3NBUj1+/iStg3O3aw
-	dAILuhAVCEQxt7Brg1lnHkyoqGHAHIe4KCPK8BimpkvEjivEVJjfTsssARY4vKle29/18lpTelx
-	/rZ/6bGd+qDOA3KyhDq1QCIBBJnCQVY3ccQZRjI3C6FqkVafFypn4/T734IwL8PnuN4s3seJ9D4
-	Y3W+GnbMw6RuyAzGPhPyaG71O2PNglTjwY04lovCcYDxjUFZGGscc63DYhxCfdJO9jiNSSS30AE
-	6HYem8+yLM6+BF6dwomAZfhLz9oyrs/94Q5xHa3z3p4Hi7tLX3e8wBOTtCYbbwJuZIs+gwbOGde
-	cFb0eERp3UqMlWEOye/yHHoZ45+ziI4lnaENeozS6LzFfGzKf9kfgWbBfO0IE/vfySEa+7w+9aI
-	0Z9BeeQ1fJ7wPzsy4hKge/x80BJ54HI+jiaQAay/U86f66eNkE0jVpSSc=
-X-Google-Smtp-Source: AGHT+IG0J1J8i4JW8r6X8gc354XKnnX74EUP/eXr+s6KgXRsgR4zZ72avJxBpsfeA9EuyLQWDSHFfA==
-X-Received: by 2002:a05:6a00:430e:b0:81f:4cf5:f252 with SMTP id d2e1a72fcca58-81f4cf605e8mr7205461b3a.24.1768306379241;
-        Tue, 13 Jan 2026 04:12:59 -0800 (PST)
+        bh=yn6xpjrnCqbqcpG1ijdeHcwn4K62gY18RMymEm3vNG0=;
+        b=j7g/wCZAkYi3JzExDEQp7FozpZF0UkA7ahE0aqzC4bPnbgYMriBgTR/jPjVYz2eqWn
+         ASYdFsNDwrEI0HsPrNRejU8qdqkbx+5tx1vf1RZaK5/CZ2B/VFwkVz5C4Z+2XH6Mi3sr
+         LMHp8Gw+VQSm4Cmd7uGqshxMlLpQTL5KGaQku7ERA6D0SjmIGvvpebwtOHoIBZ+b0qHZ
+         xYd77KDyRTASTfwj37ioyfpT949RqZuDzgiPghhs8S1FUSuBMh8PxOxusJzk4YoUvQcb
+         NJ6Iagrx6014bRlg17b9820gO3EN1FqMypXRNWZ54dGHJzauXd7tXACm9f968gol91kE
+         NzOg==
+X-Gm-Message-State: AOJu0YwTZbC/4hJ4aD4ifKD1uxbsyBfcgFNynTCZnzFjhhOyh3UueGNq
+	G9RKgHEA5/NNpXIRJ2iUZi5gcKgIX8Y6Td73QKleN1+td/dh+U97N2+Q
+X-Gm-Gg: AY/fxX7bc9eCFnxTXHi8WhVzS6mQjetHUOzVHWrmCBOw8J9t3yf4eSW9bzgScuqhtZK
+	K41NRhl7b5v6kUiI6E7JtFLPLsJuE97J6Jlj4fH6oDPEm4HNG+NTt/i/ApphCN6eoaAwHF0qxMA
+	2yq8XIMJP6BYaDtgZ5ocfGIhzrA86V8TRT3nbmTq0Wt4qyw2wQalxhrY1x0o8XtOhHXtwGROh6T
+	I3LH3hURrxTHePi94nA/HTuDzSYgfVya271+7kvrBHOtlUiqUZhFtS+tmvadGUIAWpNlsw1uNh+
+	A0ULlI5dxwOS508iSbUQROZHvHp273bzi2cAT3zjKn2FTQQewdU2p3pBN7iQiyFhCF3edzg0EYZ
+	xy6vifYQmBCi//8jz9XAsJGeXVbNXjzHtkxMC73ef7fM/grv02pzc7w4ki8JymEGEd6wAmH+/eJ
+	fWkzuT8fv/0brKk//rsxEkkmhmVbiVpaNXnKjP3cEWg8mfCp3H5Pi7ObM=
+X-Google-Smtp-Source: AGHT+IGmz5X7RmHTN7Om3Y73fhpr1DCMUZXlhaYVrlBKhzxTpjZRQOCkR/MHPw9SZol8kY+ggzWVcg==
+X-Received: by 2002:a05:6a00:6c91:b0:81f:3d13:e070 with SMTP id d2e1a72fcca58-81f3d13e574mr9704595b3a.12.1768306384014;
+        Tue, 13 Jan 2026 04:13:04 -0800 (PST)
 Received: from localhost.localdomain ([2409:891f:1d24:c3f5:8074:4004:163:94af])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-81e7fd708fdsm11596703b3a.65.2026.01.13.04.12.55
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-81e7fd708fdsm11596703b3a.65.2026.01.13.04.12.59
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 13 Jan 2026 04:12:58 -0800 (PST)
+        Tue, 13 Jan 2026 04:13:03 -0800 (PST)
 From: Yafang Shao <laoar.shao@gmail.com>
 To: roman.gushchin@linux.dev,
 	inwardvessel@gmail.com,
@@ -85,9 +85,9 @@ To: roman.gushchin@linux.dev,
 Cc: bpf@vger.kernel.org,
 	linux-mm@kvack.org,
 	Yafang Shao <laoar.shao@gmail.com>
-Subject: [RFC PATCH bpf-next 1/3] sched: add helpers for numa balancing
-Date: Tue, 13 Jan 2026 20:12:36 +0800
-Message-ID: <20260113121238.11300-2-laoar.shao@gmail.com>
+Subject: [RFC PATCH bpf-next 2/3] mm: add support for bpf based numa balancing
+Date: Tue, 13 Jan 2026 20:12:37 +0800
+Message-ID: <20260113121238.11300-3-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <20260113121238.11300-1-laoar.shao@gmail.com>
 References: <20260113121238.11300-1-laoar.shao@gmail.com>
@@ -99,251 +99,347 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Three new helpers task_numab_enabled(), task_numab_mode_normal() and
-task_numab_mode_tiering() are introduced for later use.
+bpf_numab_ops enables NUMA balancing for tasks within a specific memcg,
+even when global NUMA balancing is disabled. This allows selective NUMA
+optimization for workloads that benefit from it, while avoiding potential
+latency spikes for other workloads.
+
+The policy must be attached to a leaf memory cgroup. To reduce lookup
+overhead, we can cache memcg::bpf_numab in the mm_struct of tasks within
+the memcg when it becomes a performance bottleneck.
+
+The cgroup ID is embedded in bpf_numab_ops as a compile-time constant,
+which restricts each instance to a single cgroup and prevents attachment
+to multiple cgroups. Roman is working on a solution to remove this
+limitation, after which we can migrate to the new approach.
+
+Currently only the normal mode is supported.
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- include/linux/sched/numa_balancing.h | 27 +++++++++++++++++++++++++++
- kernel/sched/fair.c                  | 15 +++++++--------
- kernel/sched/sched.h                 |  1 -
- mm/memory-tiers.c                    |  3 ++-
- mm/mempolicy.c                       |  3 +--
- mm/migrate.c                         |  7 ++++---
- mm/vmscan.c                          |  7 +++----
- 7 files changed, 44 insertions(+), 19 deletions(-)
+ MAINTAINERS                          |   1 +
+ include/linux/memcontrol.h           |   6 +
+ include/linux/sched/numa_balancing.h |  10 +-
+ mm/Makefile                          |   5 +
+ mm/bpf_numa_balancing.c              | 224 +++++++++++++++++++++++++++
+ 5 files changed, 245 insertions(+), 1 deletion(-)
+ create mode 100644 mm/bpf_numa_balancing.c
 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 70c2b73b3941..0d2c083557e0 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4807,6 +4807,7 @@ L:	bpf@vger.kernel.org
+ L:	linux-mm@kvack.org
+ S:	Maintained
+ F:	mm/bpf_memcontrol.c
++F:	mm/bpf_numa_balancing.c
+ 
+ BPF [MISC]
+ L:	bpf@vger.kernel.org
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 229ac9835adb..b02e8f380275 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -29,6 +29,7 @@ struct obj_cgroup;
+ struct page;
+ struct mm_struct;
+ struct kmem_cache;
++struct bpf_numab_ops;
+ 
+ /* Cgroup-specific page state, on top of universal node page state */
+ enum memcg_stat_item {
+@@ -284,6 +285,11 @@ struct mem_cgroup {
+ 	struct lru_gen_mm_list mm_list;
+ #endif
+ 
++#ifdef CONFIG_BPF
++	/* per cgroup NUMA balancing control */
++	struct bpf_numab_ops __rcu *bpf_numab;
++#endif
++
+ #ifdef CONFIG_MEMCG_V1
+ 	/* Legacy consumer-oriented counters */
+ 	struct page_counter kmem;		/* v1 only */
 diff --git a/include/linux/sched/numa_balancing.h b/include/linux/sched/numa_balancing.h
-index 52b22c5c396d..792b6665f476 100644
+index 792b6665f476..c58d32ab39a7 100644
 --- a/include/linux/sched/numa_balancing.h
 +++ b/include/linux/sched/numa_balancing.h
-@@ -8,6 +8,7 @@
-  */
- 
- #include <linux/sched.h>
-+#include <linux/sched/sysctl.h>
- 
- #define TNF_MIGRATED	0x01
- #define TNF_NO_GROUP	0x02
-@@ -32,6 +33,28 @@ extern void set_numabalancing_state(bool enabled);
- extern void task_numa_free(struct task_struct *p, bool final);
- bool should_numa_migrate_memory(struct task_struct *p, struct folio *folio,
+@@ -35,17 +35,25 @@ bool should_numa_migrate_memory(struct task_struct *p, struct folio *folio,
  				int src_nid, int dst_cpu);
-+
-+extern struct static_key_false sched_numa_balancing;
-+static inline bool task_numab_enabled(struct task_struct *p)
-+{
-+	if (static_branch_unlikely(&sched_numa_balancing))
-+		return true;
-+	return false;
-+}
-+
-+static inline bool task_numab_mode_normal(void)
-+{
-+	if (sysctl_numa_balancing_mode & NUMA_BALANCING_NORMAL)
-+		return true;
-+	return false;
-+}
-+
-+static inline bool task_numab_mode_tiering(void)
-+{
-+	if (sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING)
-+		return true;
-+	return false;
-+}
- #else
- static inline void task_numa_fault(int last_node, int node, int pages,
- 				   int flags)
-@@ -52,6 +75,10 @@ static inline bool should_numa_migrate_memory(struct task_struct *p,
+ 
+ extern struct static_key_false sched_numa_balancing;
++extern struct static_key_false bpf_numab_enabled_key;
++int bpf_numab_hook(struct task_struct *p);
+ static inline bool task_numab_enabled(struct task_struct *p)
  {
- 	return true;
+ 	if (static_branch_unlikely(&sched_numa_balancing))
+ 		return true;
+-	return false;
++	if (!static_branch_unlikely(&bpf_numab_enabled_key))
++		return false;
++
++	/* A BPF prog is attached. */
++	return bpf_numab_hook(p);
  }
-+static inline bool task_numab_enabled(struct task_struct *p)
-+{
-+	return false;
-+}
- #endif
  
- #endif /* _LINUX_SCHED_NUMA_BALANCING_H */
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index da46c3164537..4f6583ef83b2 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -1932,8 +1932,8 @@ bool should_numa_migrate_memory(struct task_struct *p, struct folio *folio,
- 	this_cpupid = cpu_pid_to_cpupid(dst_cpu, current->pid);
- 	last_cpupid = folio_xchg_last_cpupid(folio, this_cpupid);
- 
--	if (!(sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING) &&
--	    !node_is_toptier(src_nid) && !cpupid_valid(last_cpupid))
-+	if (!(task_numab_mode_tiering()) && !node_is_toptier(src_nid) &&
-+	    !cpupid_valid(last_cpupid))
- 		return false;
- 
- 	/*
-@@ -3140,7 +3140,7 @@ void task_numa_fault(int last_cpupid, int mem_node, int pages, int flags)
- 	struct numa_group *ng;
- 	int priv;
- 
--	if (!static_branch_likely(&sched_numa_balancing))
-+	if (!task_numab_enabled(p))
- 		return;
- 
- 	/* for example, ksmd faulting in a user's mm */
-@@ -3151,8 +3151,7 @@ void task_numa_fault(int last_cpupid, int mem_node, int pages, int flags)
- 	 * NUMA faults statistics are unnecessary for the slow memory
- 	 * node for memory tiering mode.
- 	 */
--	if (!node_is_toptier(mem_node) &&
--	    (sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING ||
-+	if (!node_is_toptier(mem_node) && (task_numab_mode_tiering() ||
- 	     !cpupid_valid(last_cpupid)))
- 		return;
- 
-@@ -3611,7 +3610,7 @@ static void update_scan_period(struct task_struct *p, int new_cpu)
- 	int src_nid = cpu_to_node(task_cpu(p));
- 	int dst_nid = cpu_to_node(new_cpu);
- 
--	if (!static_branch_likely(&sched_numa_balancing))
-+	if (!task_numab_enabled(p))
- 		return;
- 
- 	if (!p->mm || !p->numa_faults || (p->flags & PF_EXITING))
-@@ -9353,7 +9352,7 @@ static long migrate_degrades_locality(struct task_struct *p, struct lb_env *env)
- 	unsigned long src_weight, dst_weight;
- 	int src_nid, dst_nid, dist;
- 
--	if (!static_branch_likely(&sched_numa_balancing))
-+	if (!task_numab_enabled(p))
- 		return 0;
- 
- 	if (!p->numa_faults || !(env->sd->flags & SD_NUMA))
-@@ -13374,7 +13373,7 @@ static void task_tick_fair(struct rq *rq, struct task_struct *curr, int queued)
- 		entity_tick(cfs_rq, se, queued);
- 	}
- 
--	if (static_branch_unlikely(&sched_numa_balancing))
-+	if (task_numab_enabled(curr))
- 		task_tick_numa(rq, curr);
- 
- 	update_misfit_status(curr, rq);
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index d30cca6870f5..1247e4b0c2b0 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -2269,7 +2269,6 @@ extern struct static_key sched_feat_keys[__SCHED_FEAT_NR];
- 
- #endif /* !CONFIG_JUMP_LABEL */
- 
--extern struct static_key_false sched_numa_balancing;
- extern struct static_key_false sched_schedstats;
- 
- static inline u64 global_rt_period(void)
-diff --git a/mm/memory-tiers.c b/mm/memory-tiers.c
-index 864811fff409..cb14d557a995 100644
---- a/mm/memory-tiers.c
-+++ b/mm/memory-tiers.c
-@@ -7,6 +7,7 @@
- #include <linux/memory-tiers.h>
- #include <linux/notifier.h>
- #include <linux/sched/sysctl.h>
-+#include <linux/sched/numa_balancing.h>
- 
- #include "internal.h"
- 
-@@ -64,7 +65,7 @@ static const struct bus_type memory_tier_subsys = {
-  */
- bool folio_use_access_time(struct folio *folio)
+ static inline bool task_numab_mode_normal(void)
  {
--	return (sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING) &&
-+	return (task_numab_mode_tiering()) &&
- 	       !node_is_toptier(folio_nid(folio));
+ 	if (sysctl_numa_balancing_mode & NUMA_BALANCING_NORMAL)
+ 		return true;
++	if (static_branch_unlikely(&bpf_numab_enabled_key))
++		return true;
+ 	return false;
  }
- #endif
-diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-index 68a98ba57882..589bf37bc4ee 100644
---- a/mm/mempolicy.c
-+++ b/mm/mempolicy.c
-@@ -863,8 +863,7 @@ bool folio_can_map_prot_numa(struct folio *folio, struct vm_area_struct *vma,
- 	 * Skip scanning top tier node if normal numa
- 	 * balancing is disabled
- 	 */
--	if (!(sysctl_numa_balancing_mode & NUMA_BALANCING_NORMAL) &&
--	    node_is_toptier(nid))
-+	if (!task_numab_mode_normal() && node_is_toptier(nid))
- 		return false;
  
- 	if (folio_use_access_time(folio))
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 5169f9717f60..aa540f4d4cc8 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -41,6 +41,7 @@
- #include <linux/ptrace.h>
- #include <linux/memory.h>
- #include <linux/sched/sysctl.h>
+diff --git a/mm/Makefile b/mm/Makefile
+index bf46fe31dc14..c2b887491f09 100644
+--- a/mm/Makefile
++++ b/mm/Makefile
+@@ -107,8 +107,13 @@ ifdef CONFIG_SWAP
+ obj-$(CONFIG_MEMCG) += swap_cgroup.o
+ endif
+ ifdef CONFIG_BPF_SYSCALL
++ifdef CONFIG_NUMA_BALANCING
+ obj-$(CONFIG_MEMCG) += bpf_memcontrol.o
+ endif
++endif
++ifdef CONFIG_BPF_SYSCALL
++obj-$(CONFIG_MEMCG) += bpf_numa_balancing.o
++endif
+ obj-$(CONFIG_CGROUP_HUGETLB) += hugetlb_cgroup.o
+ obj-$(CONFIG_GUP_TEST) += gup_test.o
+ obj-$(CONFIG_DMAPOOL_TEST) += dmapool_test.o
+diff --git a/mm/bpf_numa_balancing.c b/mm/bpf_numa_balancing.c
+new file mode 100644
+index 000000000000..aac4eec7c6ba
+--- /dev/null
++++ b/mm/bpf_numa_balancing.c
+@@ -0,0 +1,224 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++
++#include <linux/bpf.h>
++#include <linux/btf.h>
++#include <linux/memcontrol.h>
 +#include <linux/sched/numa_balancing.h>
- #include <linux/memory-tiers.h>
- #include <linux/pagewalk.h>
- 
-@@ -802,7 +803,7 @@ void folio_migrate_flags(struct folio *newfolio, struct folio *folio)
- 	 * memory node, reset cpupid, because that is used to record
- 	 * page access time in slow memory node.
- 	 */
--	if (sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING) {
-+	if (task_numab_mode_tiering()) {
- 		bool f_toptier = node_is_toptier(folio_nid(folio));
- 		bool t_toptier = node_is_toptier(folio_nid(newfolio));
- 
-@@ -2685,7 +2686,7 @@ int migrate_misplaced_folio_prepare(struct folio *folio,
- 	if (!migrate_balanced_pgdat(pgdat, nr_pages)) {
- 		int z;
- 
--		if (!(sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING))
-+		if (!task_numab_mode_tiering())
- 			return -EAGAIN;
- 		for (z = pgdat->nr_zones - 1; z >= 0; z--) {
- 			if (managed_zone(pgdat->node_zones + z))
-@@ -2737,7 +2738,7 @@ int migrate_misplaced_folio(struct folio *folio, int node)
- 	if (nr_succeeded) {
- 		count_vm_numa_events(NUMA_PAGE_MIGRATE, nr_succeeded);
- 		count_memcg_events(memcg, NUMA_PAGE_MIGRATE, nr_succeeded);
--		if ((sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING)
-+		if (task_numab_mode_tiering()
- 		    && !node_is_toptier(folio_nid(folio))
- 		    && node_is_toptier(node))
- 			mod_lruvec_state(lruvec, PGPROMOTE_SUCCESS, nr_succeeded);
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 670fe9fae5ba..7ee5695326e3 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -65,6 +65,7 @@
- #include <linux/swapops.h>
- #include <linux/balloon_compaction.h>
- #include <linux/sched/sysctl.h>
-+#include <linux/sched/numa_balancing.h>
- 
- #include "internal.h"
- #include "swap.h"
-@@ -4843,9 +4844,7 @@ static bool should_abort_scan(struct lruvec *lruvec, struct scan_control *sc)
- 	if (!current_is_kswapd() || sc->order)
- 		return false;
- 
--	mark = sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING ?
--	       WMARK_PROMO : WMARK_HIGH;
--
-+	mark = task_numab_mode_tiering() ? WMARK_PROMO : WMARK_HIGH;
- 	for (i = 0; i <= sc->reclaim_idx; i++) {
- 		struct zone *zone = lruvec_pgdat(lruvec)->node_zones + i;
- 		unsigned long size = wmark_pages(zone, mark) + MIN_LRU_BATCH;
-@@ -6774,7 +6773,7 @@ static bool pgdat_balanced(pg_data_t *pgdat, int order, int highest_zoneidx)
- 		enum zone_stat_item item;
- 		unsigned long free_pages;
- 
--		if (sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING)
-+		if (task_numab_mode_tiering())
- 			mark = promo_wmark_pages(zone);
- 		else
- 			mark = high_wmark_pages(zone);
++
++typedef int numab_fn_t(struct task_struct *p);
++
++struct bpf_numab_ops {
++	numab_fn_t *numab_hook;
++
++	/* TODO:
++	 * The cgroup_id embedded in this struct is set at compile time
++	 * and cannot be modified during BPF program attach time.
++	 * Modifying it at attach time requires libbpf support,
++	 * which is currently under development by Roman.
++	 */
++	int cgroup_id;
++};
++
++static DEFINE_SPINLOCK(numab_ops_lock);
++DEFINE_STATIC_KEY_FALSE(bpf_numab_enabled_key);
++
++int bpf_numab_hook(struct task_struct *p)
++{
++	struct bpf_numab_ops *bpf_numab;
++	struct mem_cgroup *task_memcg;
++	int ret = 0;
++
++	if (!p->mm)
++		return 0;
++
++	/* We can cache memcg::bpf_numab to mm::bpf_numab if it becomes a bettleneck */
++	rcu_read_lock();
++	task_memcg = mem_cgroup_from_task(rcu_dereference(p->mm->owner));
++	if (!task_memcg)
++		goto out;
++
++	/* Users can install BPF NUMA policies on leaf memory cgroups.
++	 * This eliminates the need to traverse the cgroup hierarchy or
++	 * propagate policies during registration, simplifying the kernel design.
++	 */
++	bpf_numab = rcu_dereference(task_memcg->bpf_numab);
++	if (!bpf_numab || !bpf_numab->numab_hook)
++		goto out;
++
++	ret = bpf_numab->numab_hook(p);
++
++out:
++	rcu_read_unlock();
++	return ret;
++}
++
++static const struct bpf_func_proto *
++bpf_numab_get_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
++{
++	return bpf_base_func_proto(func_id, prog);
++}
++
++static bool bpf_numab_ops_is_valid_access(int off, int size,
++					  enum bpf_access_type type,
++					  const struct bpf_prog *prog,
++					  struct bpf_insn_access_aux *info)
++{
++	return bpf_tracing_btf_ctx_access(off, size, type, prog, info);
++}
++
++static const struct bpf_verifier_ops bpf_numab_verifier_ops = {
++	.get_func_proto = bpf_numab_get_func_proto,
++	.is_valid_access = bpf_numab_ops_is_valid_access,
++};
++
++static int bpf_numab_init(struct btf *btf)
++{
++	return 0;
++}
++
++static int bpf_numab_check_member(const struct btf_type *t,
++				  const struct btf_member *member,
++				  const struct bpf_prog *prog)
++{
++	/* The call site operates under RCU protection. */
++	if (prog->sleepable)
++		return -EINVAL;
++	return 0;
++}
++
++static int bpf_numab_init_member(const struct btf_type *t,
++			       const struct btf_member *member,
++			       void *kdata, const void *udata)
++{
++	const struct bpf_numab_ops *ubpf_numab;
++	struct bpf_numab_ops *kbpf_numab;
++	u32 moff;
++
++	ubpf_numab = (const struct bpf_numab_ops *)udata;
++	kbpf_numab = (struct bpf_numab_ops *)kdata;
++
++	moff = __btf_member_bit_offset(t, member) / 8;
++	switch (moff) {
++	case offsetof(struct bpf_numab_ops, cgroup_id):
++		/* bpf_struct_ops only handles func ptrs and zero-ed members.
++		 * Return 1 to bypass the default handler.
++		 */
++		kbpf_numab->cgroup_id = ubpf_numab->cgroup_id;
++		return 1;
++	}
++	return 0;
++}
++
++static int bpf_numab_reg(void *kdata, struct bpf_link *link)
++{
++	struct bpf_numab_ops *ops = kdata;
++	struct mem_cgroup *memcg;
++	int err = 0;
++
++	/* Only the link mode is supported. */
++	if (!link)
++		return -EOPNOTSUPP;
++
++	/* Depends on CONFIG_SHRINKER_DEBUG */
++	memcg = mem_cgroup_get_from_ino(ops->cgroup_id);
++	if (!memcg || IS_ERR(memcg))
++		return -ENOENT;
++
++	spin_lock(&numab_ops_lock);
++	/* Each memory cgroup can have at most one attached BPF program to ensure
++	 * exclusive control and avoid interference between different BPF policies.
++	 */
++	if (rcu_access_pointer(memcg->bpf_numab)) {
++		err = -EBUSY;
++		goto out;
++	}
++	rcu_assign_pointer(memcg->bpf_numab, ops);
++	spin_unlock(&numab_ops_lock);
++	static_branch_inc(&bpf_numab_enabled_key);
++
++out:
++	mem_cgroup_put(memcg);
++	return err;
++}
++
++static void bpf_numab_unreg(void *kdata, struct bpf_link *link)
++{
++	struct bpf_numab_ops *ops = kdata;
++	struct mem_cgroup *memcg;
++
++	memcg = mem_cgroup_get_from_ino(ops->cgroup_id);
++	if (!memcg)
++		return;
++
++	spin_lock(&numab_ops_lock);
++	if (!rcu_access_pointer(memcg->bpf_numab)) {
++		spin_unlock(&numab_ops_lock);
++		return;
++	}
++	rcu_replace_pointer(memcg->bpf_numab, NULL, lockdep_is_held(&numab_ops_lock));
++	spin_unlock(&numab_ops_lock);
++	static_branch_dec(&bpf_numab_enabled_key);
++	synchronize_rcu();
++}
++
++static int bpf_numab_update(void *kdata, void *old_kdata, struct bpf_link *link)
++{
++	struct bpf_numab_ops *ops = kdata;
++	struct mem_cgroup *memcg;
++
++	memcg = mem_cgroup_get_from_ino(ops->cgroup_id);
++	if (!memcg)
++		return -EINVAL;
++
++	spin_lock(&numab_ops_lock);
++	/* The update can proceed regardless of whether memcg->bpf_numab has been previously set. */
++	rcu_replace_pointer(memcg->bpf_numab, ops, lockdep_is_held(&numab_ops_lock));
++	spin_unlock(&numab_ops_lock);
++	synchronize_rcu();
++	return 0;
++}
++
++static int bpf_numab_validate(void *kdata)
++{
++	struct bpf_numab_ops *ops = kdata;
++
++	if (!ops->numab_hook) {
++		pr_err("bpf_numab: required ops isn't implemented\n");
++		return -EINVAL;
++	}
++	return 0;
++}
++
++static int bpf_numa_balancing(struct task_struct *p)
++{
++	return 1;
++}
++
++static struct bpf_numab_ops __bpf_numab_ops = {
++	.numab_hook = (numab_fn_t *)bpf_numa_balancing,
++};
++
++static struct bpf_struct_ops bpf_bpf_numab_ops = {
++	.verifier_ops = &bpf_numab_verifier_ops,
++	.init = bpf_numab_init,
++	.check_member = bpf_numab_check_member,
++	.init_member = bpf_numab_init_member,
++	.reg = bpf_numab_reg,
++	.unreg = bpf_numab_unreg,
++	.update = bpf_numab_update,
++	.validate = bpf_numab_validate,
++	.cfi_stubs = &__bpf_numab_ops,
++	.owner = THIS_MODULE,
++	.name = "bpf_numab_ops",
++};
++
++static int __init bpf_numab_ops_init(void)
++{
++	int err;
++
++	err = register_bpf_struct_ops(&bpf_bpf_numab_ops, bpf_numab_ops);
++	if (err)
++		pr_err("bpf_numab: Failed to register struct_ops (%d)\n", err);
++	return err;
++}
++late_initcall(bpf_numab_ops_init);
 -- 
 2.43.5
 
