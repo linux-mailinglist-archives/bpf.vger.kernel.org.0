@@ -1,439 +1,384 @@
-Return-Path: <bpf+bounces-78737-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78738-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EFF7D1A3C1
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 17:27:45 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6623D1A6EF
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 17:56:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C159130915D8
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 16:22:29 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id E9F8830049CF
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 16:56:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC82A2ECD39;
-	Tue, 13 Jan 2026 16:22:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 628D234EF02;
+	Tue, 13 Jan 2026 16:56:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b="WM2l9TN6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D1lLNe1x"
 X-Original-To: bpf@vger.kernel.org
-Received: from GVXPR05CU001.outbound.protection.outlook.com (mail-swedencentralazon11013043.outbound.protection.outlook.com [52.101.83.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CE802EA498;
-	Tue, 13 Jan 2026 16:22:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.83.43
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768321348; cv=fail; b=SxOSD8qbYLnsXup6FAty2E3qn1bf83/NpNpayPumQQkvO7AUOAinGP5JlGL9ULRbNZ4Vqr3bNZgb3975n9A00IzF4+kHIy2QLOFYtgs2x8Bk0QptbMCE2apr1997kgLd3Pyq2ZBO+6utwwqvhba0UZmFIcYnchrRA3mXbO4TRpo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768321348; c=relaxed/simple;
-	bh=bIUL29shfJ8vfop+tJyVRggY3fdjVSHDhLpfeNn68+k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=iR34TUy0EzhU2r35HRMWtPE0yhLf+wW/JIcUv1pcUD17Y+jwt+L6kLGU3tFADbFEWhY1GbECi86002EYoQZhxckXUfjVSHLSyJZ/xrXns/Mr8TKeE6vbPPxYuf+/TgTGyzI80iNibYxYgo4piKp5cGP8l88JvTJmEfAvhZnD+vA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b=WM2l9TN6; arc=fail smtp.client-ip=52.101.83.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=H2kLNMQcNw9FPB/fJlJ9vSCiZp0SwX2RgTyi+LDRD03V96RsJxKpNrMwbMipboDhUuzQDPDOoZGxLvYbUSliBdhuWBxQyYPNAJ6mLltWRZBfQFrvxQE3YkyCHq/6vwDsx+6NY4dwqfH0SVjnD+/Sk9Ydr1UHfjYtwCrHJCCDJEt/9jM0q+SKvgokvKjbWidRuWlqfetK+4+NSWCFzKlsDi5xIeuJPlfr8VWHDtNX5d+CiR2TGdsGGjiFTNt4q1xDdeQsPhdmtD2qJVRcb/UrrAZ8vGiL2PIcmd1L3k4F19H7vz5aOtfS72HsUKqYiQlwDhIR75TF0gKWzs3cvR1gVA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ioqzSQJOi2fSGDA/vh+rcUHV4gFkWuNXNbzHB5ztj9M=;
- b=cwwswN5M9e+ROkjM7aoI2iP6Fkd2kud9IEjXZb1E9ypSChbnWNYrE6CdNDxuelntPcuZ1nnqguCvzNVNjlhnICGuaWhQuIrwEmEFOlR7W3teOcDiOsXXoLy6xtyhIB3PYehgOJqbj6RN3T6VcWg4bvcx7Jt+Ewx2lbFaqVgd3l24wXXh0ktopB26ltTwKSNrYX8tjGR8wX718hPQKiQz4vYs4uOiQr4ajl/Uaj44ZDlN37FEbU9537XWATnsA4QpssCDp57qybjNwYE7TSptepo/WpzsfJBjm8TUbbjkCvUxYZIiWfWqbmVvM+YvtKe1uaN/N+p1LlAEiff2ffP9Eg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ioqzSQJOi2fSGDA/vh+rcUHV4gFkWuNXNbzHB5ztj9M=;
- b=WM2l9TN6icai8KE2/ExCHrwODvU4O5o32SLAuYiAyRh2sG4MaNHSc+uew61uMuXpKTFJMBbUoa15tQ52gdNPCgZK5go7CvOoWSIlv3yNhZkO8pSdXn2zJLhUihRuzGC55Ukotez0Ckg2ZJsssQPTj5QdEIxyxAOIdS4LmST3dzK1b0qisQNuNuYJLOsRu6j9vBt1QNYazsTZt2orsivNZnKGMO1TIziv2tvO5MK62XNkS03GDQEyBxCtIObBsBPX6Zqx2beZdDgjRVdtcOXsrs8+Yvm6OFCTJZH6cuU45dztiClykKLCC59GrWAVwQWuh0kOfkbMiLjOFyJWDuBh+Q==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AS8PR04MB8948.eurprd04.prod.outlook.com (2603:10a6:20b:42f::17)
- by GVXPR04MB10660.eurprd04.prod.outlook.com (2603:10a6:150:221::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9499.7; Tue, 13 Jan
- 2026 16:22:22 +0000
-Received: from AS8PR04MB8948.eurprd04.prod.outlook.com
- ([fe80::843f:752e:60d:3e5e]) by AS8PR04MB8948.eurprd04.prod.outlook.com
- ([fe80::843f:752e:60d:3e5e%4]) with mapi id 15.20.9499.002; Tue, 13 Jan 2026
- 16:22:22 +0000
-Date: Tue, 13 Jan 2026 11:22:12 -0500
-From: Frank Li <Frank.li@nxp.com>
-To: Wei Fang <wei.fang@nxp.com>
-Cc: shenwei.wang@nxp.com, xiaoning.wang@nxp.com, andrew+netdev@lunn.ch,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
-	hawk@kernel.org, john.fastabend@gmail.com, sdf@fomichev.me,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	imx@lists.linux.dev, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next 07/11] net: fec: use switch statement to check
- the type of tx_buf
-Message-ID: <aWZxNFIh2trMm04T@lizhi-Precision-Tower-5810>
-References: <20260113032939.3705137-1-wei.fang@nxp.com>
- <20260113032939.3705137-8-wei.fang@nxp.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260113032939.3705137-8-wei.fang@nxp.com>
-X-ClientProxiedBy: SJ0PR13CA0218.namprd13.prod.outlook.com
- (2603:10b6:a03:2c1::13) To AS8PR04MB8948.eurprd04.prod.outlook.com
- (2603:10a6:20b:42f::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B5BF34E74F
+	for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 16:56:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768323365; cv=none; b=RE9Jb/EZaPMpw/JefOhOgPpuIuWfRXz2h5yRfs/ytOBEKvIPMKfwdbQCuNzdltYzejjFR/JasUv9W5x5Y8PMXHZqCIu7033MTaWD+PBS5BmmD1poB91H2brgSZxye+3JU2I5FxBsgBvSBjQYyFfn6RxlzQXpA/9RumaPv0qItDM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768323365; c=relaxed/simple;
+	bh=AYJEviHMdEId3t6NVCqtgofmR91OvzaBv4PrGb355Tc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FN5R61/GWN6NXEliDmCTcCQ494BXjTPWrRTuzS74j+naAZXsZ3bPlqco5ytNUezLeMibjtQJ2JS3KDTFvxQQYL1+PRaI7fhNhpL2ALmVcJEiOIigbRtEJWhxIWJxTxIPcfm/pMORiUjZhcolL7vZ2ddt3bu7PdrYLN/JFSuJWwI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D1lLNe1x; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-2a1388cdac3so54921385ad.0
+        for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 08:56:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1768323363; x=1768928163; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=c72nseukprRkDnD6LRooG/wsQ7/nXs6s0pp5X/yGXVE=;
+        b=D1lLNe1xGes0sEt0DpQ90Cxz4s6XvYhWKWTjPDbCl7RpoTNBPLfB2a4W/13eB3hq+L
+         oK+mMg3PlBCC16HAPsRJfAqzg4aUbgK/Pc0vetvOLVYlZMpXA4Ct0jlFRsvRydon3cEj
+         58ZzIgHb/JXB7HvZ6mAjs2ZUi4LiXorD7VPr7fbRlHopI7kitx6obY5CrGulQFOSyaN5
+         BxxXxKOXxvKSR2dIeBPXtKM+fd0kP8RshpANaH+wSjhM3pGcjZ7PDzvrF2HeRxMU4VMp
+         pwWMb+FWq1XEZ9G+Hayv4OvrsbDJIVoMtEpXeHnBkTWgLqZzUz+h/KT2cqrAI/5S/UxY
+         22ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768323363; x=1768928163;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=c72nseukprRkDnD6LRooG/wsQ7/nXs6s0pp5X/yGXVE=;
+        b=ue0o9/AgmYZz0ceascjiIyKnY2FenkJyHadIIkIqlZfcxHIPU8ccZ6tm96xTMn8ZKM
+         OipcftXzwIkvKcklem06YYWbTPC9X4vqe0OvP0ebnXEL7xV5emHz+sGMgJT9u6dmJo8x
+         tWF5ZGJfIaBZJTkeAv0/m9DSU1HtTR+xxUoJ+m0zqDa0vOhhF590KVUVYIdHFKch+A5D
+         NFhzfBEr+UUR2ZG64kR16ISImDzN3qnMOBwKAl4CquO2VvE1y/qAj+gaFmMRWMtpsXBo
+         SS+v4OuPAoBnA9jB3tcy3OuJCTaT0Ri73qZapaTxcvjLCc92hDLTzIc44AqNISHLzZ15
+         Psxw==
+X-Forwarded-Encrypted: i=1; AJvYcCXpLok7GYxheGk6fAYiZE5mEHOe8cyElX7dJDB+DVrJe0sPZGy5ZybhHK5ejVCeIZ34KsE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YweStenxjLrQ+LsJCwo1HudpnZpCbahUNDLnRiolRP0xifVGIv/
+	0e/4lTP+AfpKEAbAB8eWAEp4KKW74hOs6f87Rkq4ojk2/p8KDCWIsNEz0HHY9nGy02fnKllVCFz
+	PFeQT5FPhKoVBI76BGbAzWXFWUhgUyAY=
+X-Gm-Gg: AY/fxX7IkaaJ9FzGkaWPACYKhCUkPZPlF40SH5cP8oTPHe2oUe2Ppm+iVTDc/rmqH6F
+	r3Vu35bUZmAp3kIoVQaCMcwn5gQMiiGl8A7b7Rs6UR33GwOd+JH6E1PMolqW+1OPhQntvgKqQdY
+	oWYwhUoUOv2tKAdWzek0oCrFe7987zTGl47NihwGBSF3V210tEH2buBVu4gdI17x4oftvfAJj13
+	wkv5Oqnbgu6MCdlAARbiAMjDQWs0GuXT3TRoSN543RoYIVwyvpBL75TlaZi7NVRS70pRl4oD25C
+	+V1TPBCYPIc=
+X-Google-Smtp-Source: AGHT+IFIxoxup+hrHccZ24WU/oG6KH1/tlBu9GncLXzEEHkAImvk2s72E3X925uVOOnlVXa8GmYeNCaescJi731vjMo=
+X-Received: by 2002:a17:90b:164d:b0:340:c64d:38d3 with SMTP id
+ 98e67ed59e1d1-34f68b9a10amr24614223a91.12.1768323362464; Tue, 13 Jan 2026
+ 08:56:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB8948:EE_|GVXPR04MB10660:EE_
-X-MS-Office365-Filtering-Correlation-Id: 82fa5b02-c374-4c11-cbcc-08de52bfedf3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|52116014|19092799006|376014|7416014|366016|1800799024|38350700014;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?XXOdNnd5GXh1ZtrudXRLNWxf1poerY8iTAPFsNXPtUNDc9sU4Nof15rlENGk?=
- =?us-ascii?Q?0YnqKrMDxrgELFXl7rmAsS1BNOtrfBMg7awh5bxzgJKuCQqCLbyUL35pxHJ1?=
- =?us-ascii?Q?emvy91iEooH2KtlVQ+agOgaIWlPBv7vQVwrwWonwtPZlZK2Kkl/nvMHZOXkj?=
- =?us-ascii?Q?f6HKl+GykDU+CzATZTNWrazIrfs+NGhwvdcYzIrHK0WmW1XSIwS4EQE60Boc?=
- =?us-ascii?Q?zNQVNMcpnbVlnDonP7BplMiwlvwskdk6WebI5dbpDZLELp9eG0iYCKlo479k?=
- =?us-ascii?Q?pGI52iwNkZ9EYExzwngPHmR9gDWLptge+VNxFbq5jpEsHpnHKUrQRvSGkyNG?=
- =?us-ascii?Q?diCl9mdwjkOcCZ2J9iGMKkxAmwZeYnMe3tI4aeNhK5R/red61t501IU4CkGH?=
- =?us-ascii?Q?9S/0VpCPMp9i1J7dK1V0Yurs0efTLfyqouffdMvnlrUL8aryEBh3sg/fQcu7?=
- =?us-ascii?Q?d2dc8JbNlHfBsSQL1FPyAFLL6+PLrv+vF0Mql7CR3YXQmls8mGDLpSLNsqBv?=
- =?us-ascii?Q?BQJQDB1lQy1cNsANK8d3VuWShAOPQF5FDZuu+ZnQ1NmuE+ChROvEuhzD1/8/?=
- =?us-ascii?Q?EOADlHza0hqHCjcv5FwLnfGh5rPXmuPeSyJKlDFUWNci4evKKnr4m85EiTZ7?=
- =?us-ascii?Q?GwviJBU0OzEWM+uDfBkm+OSgk3jkNQ7XsBbUl3z4e0JGx8GtVkNAy20Lymc+?=
- =?us-ascii?Q?fUIcPPr8BsIXT5DQRwhJmFnDKfPoQd5rBrkWSceW6VMpteqPi7HZoHu0+Yig?=
- =?us-ascii?Q?5KHQegOXDIRmN1QCqcjEQwqJTt6XAmCc8BIUhXDV76RTMF+fG3+dB299xYaS?=
- =?us-ascii?Q?jRllt/Ae6kRkMo9JDIaPx7oO+uUfS2A8oi49TlXKjyDq+sxwi3jEyoYDwncB?=
- =?us-ascii?Q?IQOgICmWh3E2KRi6qR10D+HpQzIS2JEsaeMLebWnXxPUXUhmqeWNIAFw/7Md?=
- =?us-ascii?Q?Wjc9TKgEu9h6O+5HYt1fO7FL7edJNOoTXo+alISSwFBff6KW6wQcVR314fhM?=
- =?us-ascii?Q?Izk08u6Xa2JKVLqY42CR52FG9OfspghrgaNe3j518Z/EC7oHOq9Mcwz8m/3w?=
- =?us-ascii?Q?Fj3IVV/HSpIw+KGaY7H+VkjJoGefVzMUG3jcfFvEV3WXsaKp9fzYjP/b1DgE?=
- =?us-ascii?Q?nOPGVFzfrFRWmAz5lODMc+WNnnJ5dKVAyZ3v5HNxlcWJuwS8bP9lEl0s16oJ?=
- =?us-ascii?Q?AwNY8yMhHSrblPTfBK8iFOU4vuBl07LAy/lVuuawfdY1UMEoExrK+hND2082?=
- =?us-ascii?Q?5x79HDJXGDKtu2ZPgkMcBwW02+4C6DWbvXEhuKVfz0JAFPzwjBqWEjXAcPxz?=
- =?us-ascii?Q?VrDOflyvaJGzFBStVCFmuR2VOBK5xKX8ugfr6oHL5ifn4i5xMik2iwhWWyHq?=
- =?us-ascii?Q?o4cwsEAaOiS9m30DeGoqT6M0Fhq1zc8Di+q2JmDmA81nv6o3X28QHVvCeVFt?=
- =?us-ascii?Q?rXrz0gR3xmFtcjt5SGpMHhsw9tKQFum0qNglSZ8AKGr6QjpOcpvwnwG+2VJX?=
- =?us-ascii?Q?txdB9CH3PHIOKS+RyKgf+Oit5vB5c3/oOKp+?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8948.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(52116014)(19092799006)(376014)(7416014)(366016)(1800799024)(38350700014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?MIfvvYVTbIi5OE20jOCs9LpqfddhdG9EKR55dRV+clR+FCDhnUqFFRtIbg6y?=
- =?us-ascii?Q?dS+neiDij5BcIXNtebZa+EuLPUti++8IASBUS6SodVuBH/fYUYfz2NXjd6Zy?=
- =?us-ascii?Q?PZyrxM6PXQxISDgiqhUuNvg+5nt2xuakM7Rb8ynBwG7XavE8nt/oxdh5w3+h?=
- =?us-ascii?Q?AyimVqYLZzKs+O7mFEqyatAyC7a7wVUOmQDVcslDDWupEBMkwNo35jApjkdH?=
- =?us-ascii?Q?dp4s7seuXxdh0gef3MhP5wHGptdp5q0XDRBvZBLGIjAlJWeDiE3DKl3l8yV0?=
- =?us-ascii?Q?W/Aia6J0XjQr62d+b0yqo743e2pFdTSA2p4nWpH5eAZbEv7ifCWfYGuo0y/b?=
- =?us-ascii?Q?HCKAL8UEyBSd5Qlh0t6Ta4WFRdSnb2sOduf3YNRH8U0hX2d6IMTGBIiOugBW?=
- =?us-ascii?Q?iZcFlKqlw45+T4LmMlKxkZ39jTcd2fNKgg8MEMhAa/PcjWiq0/XMAzL1Z9st?=
- =?us-ascii?Q?hWR6IAFzppd4otRcnd0tbMKLgYD0Q0MM+zLmbcSwtta9dwPHIu/akUZ+MNzq?=
- =?us-ascii?Q?FQBBKtZJ852hzFowRWAThxmUan/nC2Ys7k6vJ88jmfsng97XU8g/v6XnMFwi?=
- =?us-ascii?Q?WcH8yUKUXY9p0dFpTw23gy99LIrIxVzWTnawwKXctb68EDtxdFk30OjkNpZ2?=
- =?us-ascii?Q?iCplQioJcCMTeIcFjowRaJAUAlbSHtr0sNbKDBUy4ylSaG0Tn9CjS7yMjjmX?=
- =?us-ascii?Q?ySjQL0FCXx7RHkDz335BBCKEJVm6S/8RTH/gW3B0M/uaxc7R7nXOEn0Bkfst?=
- =?us-ascii?Q?SCRo2O1NKgda5S8qwm3LImRtWFPiVQjXCBxQ5HOXDDeegk9LV1wgcLizd2N3?=
- =?us-ascii?Q?oZdm1utYTfTYqlmrzZV4bMa1r2h3B/IHpptFfNE/b62rtbNPym7d4Qvy5N4j?=
- =?us-ascii?Q?I5f9uLpx2z+omqVdN0MKAbC93spQXaUXGVC7sjMHPfiiRIG5wHUQp5K0I9m1?=
- =?us-ascii?Q?5UG4hOuWZaEE1TdzPJlWsxvcETkTvfssLI8g9YAMZ5+zFKiMTdCoGqWehyFK?=
- =?us-ascii?Q?qIZpS3JXWt618cG/cv1jek3u42CmIgPFK1tPT3ptJ12zfyNVnZuBum63VcMY?=
- =?us-ascii?Q?QtSeTtvEcXfo4vMbJBp6VhYfNwOSanyUoIOmd4kFgXdja5C06ouVjA+Bk2uW?=
- =?us-ascii?Q?yFAIYm6ww/z16x3c4+VZsZ0MNMkEQ7vtsrpWVQvZu/bpSXtzV5M8ykpu66u3?=
- =?us-ascii?Q?T4OtKP4REZ9yvWka6xqIf3l4756rNpg9A9saaO/rcaegRSwhfhiR1zboLC5L?=
- =?us-ascii?Q?a+A8QSd/q1VHo4q1KNmiVFT55Usb7w9zGKW1F5URaQg/ahNj8FsUSKehArdP?=
- =?us-ascii?Q?KI0Xa0HHA59D1z9MXYji4uWI867KbiC10GLM5UvpfluH5WDgYo+gA3ttbFbj?=
- =?us-ascii?Q?FOONgEXd0bMelgMuhCCUWcD+2/Uz0p+xGBIG/SbETItI/3rkex+0KsM5f/kG?=
- =?us-ascii?Q?IgnMYjVts3gLsdIEu0kmKemX3dxInmz4C53GwGQxAgEedgpAMxDwNNgYLtKp?=
- =?us-ascii?Q?Re8fllFi9RnWoO92YfUthbR+NwaLeMTF9+Wfoo2ivPB0//15Qe3g8w6zehHD?=
- =?us-ascii?Q?qU4hYp9DbOmbAjTzkxx3iANgKQeCHmPsUKRXPshlElwiTe8p475cFo708PC3?=
- =?us-ascii?Q?8pcLzC7qgXMx4ITyLb7Bu6C1GoYkGtk0Ud1xMU4JOtkCHhoj7kQJbmwEekWY?=
- =?us-ascii?Q?ZGr4rCOJd9fDMA50fovzHhKQZi8Xa2I5qtqhJYPC5itBX6Ei4EazlZ7hAmiL?=
- =?us-ascii?Q?X0LAGsAASg=3D=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 82fa5b02-c374-4c11-cbcc-08de52bfedf3
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8948.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jan 2026 16:22:22.0198
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: P1e6zu3vGVd6WxODwfAxOPGLqrNSux2wgB8S+lFataqdfKmr7Z/IDMTREq1Y8Z73lGgRTwYjB1YJZhm6BJNCPg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVXPR04MB10660
+References: <20260109184852.1089786-1-ihor.solodrai@linux.dev>
+ <20260109184852.1089786-5-ihor.solodrai@linux.dev> <CAEf4BzYcZ5pLCvfn8uWiKCjpBXBw9dxR_WZnKxVz1Bhf96xOGg@mail.gmail.com>
+ <2ea17ba8-3248-4a01-8fed-183ce66aa39c@linux.dev> <CAEf4BzYuchyyw9M6eQo0Gou=09PcM-o_Ay7D8DM1gDitiG6Tbg@mail.gmail.com>
+ <5bcd3bb1-6ed0-4ad8-9de8-46385de908cb@linux.dev>
+In-Reply-To: <5bcd3bb1-6ed0-4ad8-9de8-46385de908cb@linux.dev>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 13 Jan 2026 08:55:47 -0800
+X-Gm-Features: AZwV_QiWPztxopPzkBqdMF_fg2QqJyPvVgk72TVzCvEI2gyDpEwwqi72d41vchE
+Message-ID: <CAEf4BzYfdrteD95CPs_P9gqaxCvOKmk99J=m18uS1CpqeFuyew@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 04/10] resolve_btfids: Support for KF_IMPLICIT_ARGS
+To: Ihor Solodrai <ihor.solodrai@linux.dev>
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Mykyta Yatsenko <yatsenko@meta.com>, Tejun Heo <tj@kernel.org>, 
+	Alan Maguire <alan.maguire@oracle.com>, Benjamin Tissoires <bentiss@kernel.org>, 
+	Jiri Kosina <jikos@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-input@vger.kernel.org, sched-ext@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 13, 2026 at 11:29:35AM +0800, Wei Fang wrote:
-> The tx_buf has three types: FEC_TXBUF_T_SKB, FEC_TXBUF_T_XDP_NDO and
-> FEC_TXBUF_T_XDP_TX. Currently, the driver uses 'if...else...' statements
-> to check the type and perform the corresponding processing. This is very
-> detrimental to future expansion. For example, if new types are added to
-> support XDP zero copy in the future, continuing to use 'if...else...'
-> would be a very bad coding style. So the 'if...else...' statements in
-> the current driver are replaced with switch statements to support XDP
-> zero copy in the future.
+On Mon, Jan 12, 2026 at 5:49=E2=80=AFPM Ihor Solodrai <ihor.solodrai@linux.=
+dev> wrote:
 >
-> Signed-off-by: Wei Fang <wei.fang@nxp.com>
-> ---
->  drivers/net/ethernet/freescale/fec_main.c | 167 +++++++++++-----------
->  1 file changed, 82 insertions(+), 85 deletions(-)
+> On 1/12/26 8:51 AM, Andrii Nakryiko wrote:
+> > On Fri, Jan 9, 2026 at 5:15=E2=80=AFPM Ihor Solodrai <ihor.solodrai@lin=
+ux.dev> wrote:
+> >>
+> >> [...]
+> >>>>
+> >>>> diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btf=
+ids/main.c
+> >>>> index df39982f51df..b361e726fa36 100644
+> >>>> --- a/tools/bpf/resolve_btfids/main.c
+> >>>> +++ b/tools/bpf/resolve_btfids/main.c
+> >>>> @@ -152,6 +152,18 @@ struct object {
+> >>>>         int nr_typedefs;
+> >>>>  };
+> >>>>
+> >>>> +#define KF_IMPLICIT_ARGS (1 << 16)
+> >>>> +#define KF_IMPL_SUFFIX "_impl"
+> >>>> +#define MAX_BPF_FUNC_REG_ARGS 5
+> >>>> +#define MAX_KFUNCS 256
+> >>>> +#define MAX_DECL_TAGS (MAX_KFUNCS * 4)
+> >>>
+> >>> can't we get that from include/linux/bpf.h? seems like
+> >>> resolve_btfids's main.c include internal headers just fine, so why
+> >>> duplicate definitions?
+> >>
+> >> Hi Andrii, thank you for a quick review.
+> >>
+> >> Including internal include/linux/btf.h directly doesn't work, which is
+> >> probably expected.
+> >>
+> >> resolve_btfids is currently built with:
+> >>
+> >> HOSTCFLAGS_resolve_btfids +=3D -g \
+> >>           -I$(srctree)/tools/include \
+> >>           -I$(srctree)/tools/include/uapi \
+> >
+> > so I don't know if that will solve the issue, but I don't think it
+> > makes sense to build resolve_btfids using tools' version of includes.
+> > tools/include is mostly for perf's benefit (maybe so that they don't
+> > accidentally take some kernel-internal dependency, not sure). But
+> > resolve_btfids is built for the kernel during the kernel build, we
+> > should have access to full kernel headers. Try changing this and see
+> > if build errors go away?
+> >
+> >>           -I$(LIBBPF_INCLUDE) \
+> >>           -I$(SUBCMD_INCLUDE) \
+> >>           $(LIBELF_FLAGS) \
+> >>           -Wall -Werror
+> >>
+> >> If I add -I$(srctree)/include option and then
+> >>
+> >>     #include <linux/btf.h>
+> >>
+> >> A bunch of build errors happen.
+> >>
+> >> AFAIU we'd have to create a stripped copy of relevant headers in
+> >> tools/include first.  Is that what you're suggesting?
+> >
+> > see above, the opposite -- just use -I$(srctree)/include directly
 >
-> diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
-> index f3e93598a27c..3bd89d7f105b 100644
-> --- a/drivers/net/ethernet/freescale/fec_main.c
-> +++ b/drivers/net/ethernet/freescale/fec_main.c
-> @@ -1023,33 +1023,33 @@ static void fec_enet_bd_init(struct net_device *dev)
->  		txq->bd.cur = bdp;
+> Andrii,
 >
->  		for (i = 0; i < txq->bd.ring_size; i++) {
-> +			dma_addr_t dma = fec32_to_cpu(bdp->cbd_bufaddr);
-> +			struct page *page;
-> +
->  			/* Initialize the BD for every fragment in the page. */
->  			bdp->cbd_sc = cpu_to_fec16(0);
-> -			if (txq->tx_buf[i].type == FEC_TXBUF_T_SKB) {
-> -				if (bdp->cbd_bufaddr &&
-> -				    !IS_TSO_HEADER(txq, fec32_to_cpu(bdp->cbd_bufaddr)))
-> -					dma_unmap_single(&fep->pdev->dev,
-> -							 fec32_to_cpu(bdp->cbd_bufaddr),
-> -							 fec16_to_cpu(bdp->cbd_datlen),
-> -							 DMA_TO_DEVICE);
-> -				if (txq->tx_buf[i].buf_p)
-> -					dev_kfree_skb_any(txq->tx_buf[i].buf_p);
-> -			} else if (txq->tx_buf[i].type == FEC_TXBUF_T_XDP_NDO) {
-> -				if (bdp->cbd_bufaddr)
-> -					dma_unmap_single(&fep->pdev->dev,
-> -							 fec32_to_cpu(bdp->cbd_bufaddr),
-> +			switch (txq->tx_buf[i].type) {
-> +			case FEC_TXBUF_T_SKB:
-> +				if (dma && !IS_TSO_HEADER(txq, dma))
-> +					dma_unmap_single(&fep->pdev->dev, dma,
->  							 fec16_to_cpu(bdp->cbd_datlen),
->  							 DMA_TO_DEVICE);
+> I made a low-effort attempt to switch away from tools/include and it
+> looks like too much trouble. See a sample splat below.
 >
-> -				if (txq->tx_buf[i].buf_p)
-> -					xdp_return_frame(txq->tx_buf[i].buf_p);
-> -			} else {
-> -				struct page *page = txq->tx_buf[i].buf_p;
-> -
-> -				if (page)
-> -					page_pool_put_page(pp_page_to_nmdesc(page)->pp,
-> -							   page, 0,
-> -							   false);
-> +				dev_kfree_skb_any(txq->tx_buf[i].buf_p);
-> +				break;
-> +			case FEC_TXBUF_T_XDP_NDO:
-> +				dma_unmap_single(&fep->pdev->dev, dma,
-> +						 fec16_to_cpu(bdp->cbd_datlen),
-> +						 DMA_TO_DEVICE);
-> +				xdp_return_frame(txq->tx_buf[i].buf_p);
+> I think the issue is that resolve_btfids uses a couple of inherently
+> user-space things (stdlib, libelf), which themselves may include
+> system headers. And there is actually a difference between the kernel
+> and tools/include headers. For example, check
+>
+>   ./include/linux/rbtree.h
+> vs
+>   ./tools/include/linux/rbtree.h
+>
+> Maybe we can make it work (with our own local tools/include?), but it
+> doesn't look worth it for just a couple of constant #define-s.
+>
+> Let me know if I am missing something.
 
-look like logic is not exactly same as original one
+No, it's fine, no big deal, at least we know that it's not as simple.
+Thanks for trying!
 
-if (txq->tx_buf[i].type == FEC_TXBUF_T_XDP_NDO) {
-	if (bdp->cbd_bufaddr)
-		...
-
-Frank
-
-> +				break;
-> +			case FEC_TXBUF_T_XDP_TX:
-> +				page = txq->tx_buf[i].buf_p;
-> +				page_pool_put_page(pp_page_to_nmdesc(page)->pp,
-> +						   page, 0, false);
-> +				break;
-> +			default:
-> +				break;
->  			}
 >
->  			txq->tx_buf[i].buf_p = NULL;
-> @@ -1514,45 +1514,66 @@ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id, int budget)
->  			break;
 >
->  		index = fec_enet_get_bd_index(bdp, &txq->bd);
-> +		frame_len = fec16_to_cpu(bdp->cbd_datlen);
+> $ make
+>   INSTALL libsubcmd_headers
+>   HOSTCC  /home/isolodrai/workspace/prog-aux/linux/tools/bpf/resolve_btfi=
+ds/main.o
+> In file included from /home/isolodrai/workspace/prog-aux/linux/include/ua=
+pi/linux/stat.h:5,
+>                  from /home/isolodrai/workspace/prog-aux/linux/include/li=
+nux/stat.h:7,
+>                  from main.c:70:
+> /home/isolodrai/workspace/prog-aux/linux/include/linux/types.h:20:33: err=
+or: conflicting types for =E2=80=98fd_set=E2=80=99; have =E2=80=98__kernel_=
+fd_set=E2=80=99
+>    20 | typedef __kernel_fd_set         fd_set;
+>       |                                 ^~~~~~
+> In file included from /usr/include/sys/types.h:179,
+>                  from /usr/include/stdlib.h:394,
+>                  from main.c:67:
+> /usr/include/sys/select.h:70:5: note: previous declaration of =E2=80=98fd=
+_set=E2=80=99 with type =E2=80=98fd_set=E2=80=99
+>    70 |   } fd_set;
+>       |     ^~~~~~
+> In file included from /home/isolodrai/workspace/prog-aux/linux/include/ua=
+pi/linux/stat.h:5,
+>                  from /home/isolodrai/workspace/prog-aux/linux/include/li=
+nux/stat.h:7,
+>                  from main.c:70:
+> /home/isolodrai/workspace/prog-aux/linux/include/linux/types.h:21:33: err=
+or: conflicting types for =E2=80=98dev_t=E2=80=99; have =E2=80=98__kernel_d=
+ev_t=E2=80=99 {aka =E2=80=98unsigned int=E2=80=99}
+>    21 | typedef __kernel_dev_t          dev_t;
+>       |                                 ^~~~~
+> In file included from /usr/include/stdlib.h:394,
+>                  from main.c:67:
+> /usr/include/sys/types.h:59:17: note: previous declaration of =E2=80=98de=
+v_t=E2=80=99 with type =E2=80=98dev_t=E2=80=99 {aka =E2=80=98long unsigned =
+int=E2=80=99}
+>    59 | typedef __dev_t dev_t;
+>       |                 ^~~~~
+> In file included from /home/isolodrai/workspace/prog-aux/linux/include/ua=
+pi/linux/stat.h:5,
+>                  from /home/isolodrai/workspace/prog-aux/linux/include/li=
+nux/stat.h:7,
+>                  from main.c:70:
+> /home/isolodrai/workspace/prog-aux/linux/include/linux/types.h:25:33: err=
+or: conflicting types for =E2=80=98nlink_t=E2=80=99; have =E2=80=98u32=E2=
+=80=99 {aka =E2=80=98unsigned int=E2=80=99}
+>    25 | typedef u32                     nlink_t;
+>       |                                 ^~~~~~~
+> In file included from /usr/include/stdlib.h:394,
+>                  from main.c:67:
+> /usr/include/sys/types.h:74:19: note: previous declaration of =E2=80=98nl=
+ink_t=E2=80=99 with type =E2=80=98nlink_t=E2=80=99 {aka =E2=80=98long unsig=
+ned int=E2=80=99}
+>    74 | typedef __nlink_t nlink_t;
+>       |                   ^~~~~~~
+> In file included from /home/isolodrai/workspace/prog-aux/linux/include/ua=
+pi/linux/stat.h:5,
+>                  from /home/isolodrai/workspace/prog-aux/linux/include/li=
+nux/stat.h:7,
+>                  from main.c:70:
+> /home/isolodrai/workspace/prog-aux/linux/include/linux/types.h:31:33: err=
+or: conflicting types for =E2=80=98timer_t=E2=80=99; have =E2=80=98__kernel=
+_timer_t=E2=80=99 {aka =E2=80=98int=E2=80=99}
+>    31 | typedef __kernel_timer_t        timer_t;
+>       |                                 ^~~~~~~
+> In file included from /usr/include/sys/types.h:130,
+>                  from /usr/include/stdlib.h:394,
+>                  from main.c:67:
+> /usr/include/bits/types/timer_t.h:7:19: note: previous declaration of =E2=
+=80=98timer_t=E2=80=99 with type =E2=80=98timer_t=E2=80=99 {aka =E2=80=98vo=
+id *=E2=80=99}
+>     7 | typedef __timer_t timer_t;
+>       |                   ^~~~~~~
+> In file included from /home/isolodrai/workspace/prog-aux/linux/include/ua=
+pi/linux/stat.h:5,
+>                  from /home/isolodrai/workspace/prog-aux/linux/include/li=
+nux/stat.h:7,
+>                  from main.c:70:
+> /home/isolodrai/workspace/prog-aux/linux/include/linux/types.h:52:33: err=
+or: conflicting types for =E2=80=98loff_t=E2=80=99; have =E2=80=98__kernel_=
+loff_t=E2=80=99 {aka =E2=80=98long long int=E2=80=99}
+>    52 | typedef __kernel_loff_t         loff_t;
+>       |                                 ^~~~~~
+> In file included from /usr/include/stdlib.h:394,
+>                  from main.c:67:
+> /usr/include/sys/types.h:42:18: note: previous declaration of =E2=80=98lo=
+ff_t=E2=80=99 with type =E2=80=98loff_t=E2=80=99 {aka =E2=80=98long int=E2=
+=80=99}
+>    42 | typedef __loff_t loff_t;
+>       |                  ^~~~~~
+> In file included from /home/isolodrai/workspace/prog-aux/linux/include/ua=
+pi/linux/stat.h:5,
+>                  from /home/isolodrai/workspace/prog-aux/linux/include/li=
+nux/stat.h:7,
+>                  from main.c:70:
+> /home/isolodrai/workspace/prog-aux/linux/include/linux/types.h:53:9: erro=
+r: unknown type name =E2=80=98__kernel_uoff_t=E2=80=99
+>    53 | typedef __kernel_uoff_t         uoff_t;
+>       |         ^~~~~~~~~~~~~~~
+> /home/isolodrai/workspace/prog-aux/linux/include/linux/types.h:115:33: er=
+ror: conflicting types for =E2=80=98uint64_t=E2=80=99; have =E2=80=98u64=E2=
+=80=99 {aka =E2=80=98long long unsigned int=E2=80=99}
+>   115 | typedef u64                     uint64_t;
+>       |                                 ^~~~~~~~
+> In file included from /usr/include/stdint.h:37,
+>                  from /usr/lib/gcc/x86_64-redhat-linux/11/include/stdint.=
+h:9,
+>                  from /usr/include/libelf.h:32,
+>                  from main.c:68:
+> /usr/include/bits/stdint-uintn.h:27:20: note: previous declaration of =E2=
+=80=98uint64_t=E2=80=99 with type =E2=80=98uint64_t=E2=80=99 {aka =E2=80=98=
+long unsigned int=E2=80=99}
+>    27 | typedef __uint64_t uint64_t;
+>       |                    ^~~~~~~~
+> In file included from /home/isolodrai/workspace/prog-aux/linux/include/ua=
+pi/linux/stat.h:5,
+>                  from /home/isolodrai/workspace/prog-aux/linux/include/li=
+nux/stat.h:7,
+>                  from main.c:70:
+> /home/isolodrai/workspace/prog-aux/linux/include/linux/types.h:116:33: er=
+ror: conflicting types for =E2=80=98u_int64_t=E2=80=99; have =E2=80=98u64=
+=E2=80=99 {aka =E2=80=98long long unsigned int=E2=80=99}
+>   116 | typedef u64                     u_int64_t;
+>       |                                 ^~~~~~~~~
+> In file included from /usr/include/stdlib.h:394,
+>                  from main.c:67:
+> /usr/include/sys/types.h:161:20: note: previous declaration of =E2=80=98u=
+_int64_t=E2=80=99 with type =E2=80=98u_int64_t=E2=80=99 {aka =E2=80=98long =
+unsigned int=E2=80=99}
+>   161 | typedef __uint64_t u_int64_t;
+>       |                    ^~~~~~~~~
+> In file included from /home/isolodrai/workspace/prog-aux/linux/include/ua=
+pi/linux/stat.h:5,
+>                  from /home/isolodrai/workspace/prog-aux/linux/include/li=
+nux/stat.h:7,
+>                  from main.c:70:
+> /home/isolodrai/workspace/prog-aux/linux/include/linux/types.h:117:33: er=
+ror: conflicting types for =E2=80=98int64_t=E2=80=99; have =E2=80=98s64=E2=
+=80=99 {aka =E2=80=98long long int=E2=80=99}
+>   117 | typedef s64                     int64_t;
+>       |                                 ^~~~~~~
+> In file included from /usr/include/sys/types.h:155,
+>                  from /usr/include/stdlib.h:394,
+>                  from main.c:67:
+> /usr/include/bits/stdint-intn.h:27:19: note: previous declaration of =E2=
+=80=98int64_t=E2=80=99 with type =E2=80=98int64_t=E2=80=99 {aka =E2=80=98lo=
+ng int=E2=80=99}
+>    27 | typedef __int64_t int64_t;
+>       |                   ^~~~~~~
+> In file included from /home/isolodrai/workspace/prog-aux/linux/include/ua=
+pi/linux/stat.h:5,
+>                  from /home/isolodrai/workspace/prog-aux/linux/include/li=
+nux/stat.h:7,
+>                  from main.c:70:
+> /home/isolodrai/workspace/prog-aux/linux/include/linux/types.h:138:13: er=
+ror: conflicting types for =E2=80=98blkcnt_t=E2=80=99; have =E2=80=98u64=E2=
+=80=99 {aka =E2=80=98long long unsigned int=E2=80=99}
+>   138 | typedef u64 blkcnt_t;
+>       |             ^~~~~~~~
+> In file included from /usr/include/stdlib.h:394,
+>                  from main.c:67:
+> /usr/include/sys/types.h:192:20: note: previous declaration of =E2=80=98b=
+lkcnt_t=E2=80=99 with type =E2=80=98blkcnt_t=E2=80=99 {aka =E2=80=98long in=
+t=E2=80=99}
+>   192 | typedef __blkcnt_t blkcnt_t;     /* Type to count number of disk =
+blocks.  */
+>       |                    ^~~~~~~~
+> In file included from /home/isolodrai/workspace/prog-aux/linux/include/ua=
+pi/linux/stat.h:5,
+>                  from /home/isolodrai/workspace/prog-aux/linux/include/li=
+nux/stat.h:7,
+>                  from main.c:70:
+> /home/isolodrai/workspace/prog-aux/linux/include/linux/types.h:266:34: er=
+ror: expected =E2=80=98:=E2=80=99, =E2=80=98,=E2=80=99, =E2=80=98;=E2=80=99=
+, =E2=80=98}=E2=80=99 or =E2=80=98__attribute__=E2=80=99 before =E2=80=98*=
+=E2=80=99 token
+>   266 |         struct task_struct __rcu *task;
+>       |                                  ^
+> In file included from /home/isolodrai/workspace/prog-aux/linux/include/li=
+nux/cache.h:6,
+>                  from /home/isolodrai/workspace/prog-aux/linux/include/li=
+nux/time.h:5,
+>                  from /home/isolodrai/workspace/prog-aux/linux/include/li=
+nux/stat.h:19,
+>                  from main.c:70:
+> /home/isolodrai/workspace/prog-aux/linux/include/vdso/cache.h:5:10: fatal=
+ error: asm/cache.h: No such file or directory
+>     5 | #include <asm/cache.h>
+>       |          ^~~~~~~~~~~~~
+> compilation terminated.
+> make[1]: *** [/home/isolodrai/workspace/prog-aux/linux/tools/build/Makefi=
+le.build:86: /home/isolodrai/workspace/prog-aux/linux/tools/bpf/resolve_btf=
+ids/main.o] Error 1
+> make: *** [Makefile:81: /home/isolodrai/workspace/prog-aux/linux/tools/bp=
+f/resolve_btfids//resolve_btfids-in.o] Error 2
 >
-> -		if (txq->tx_buf[index].type == FEC_TXBUF_T_SKB) {
-> -			skb = txq->tx_buf[index].buf_p;
-> +		switch (txq->tx_buf[index].type) {
-> +		case FEC_TXBUF_T_SKB:
->  			if (bdp->cbd_bufaddr &&
->  			    !IS_TSO_HEADER(txq, fec32_to_cpu(bdp->cbd_bufaddr)))
->  				dma_unmap_single(&fep->pdev->dev,
->  						 fec32_to_cpu(bdp->cbd_bufaddr),
-> -						 fec16_to_cpu(bdp->cbd_datlen),
-> -						 DMA_TO_DEVICE);
-> -			bdp->cbd_bufaddr = cpu_to_fec32(0);
-> +						 frame_len, DMA_TO_DEVICE);
-> +
-> +			skb = txq->tx_buf[index].buf_p;
->  			if (!skb)
->  				goto tx_buf_done;
-> -		} else {
-> +
-> +			frame_len = skb->len;
-> +
-> +			/* NOTE: SKBTX_IN_PROGRESS being set does not imply it's we who
-> +			 * are to time stamp the packet, so we still need to check time
-> +			 * stamping enabled flag.
-> +			 */
-> +			if (unlikely(skb_shinfo(skb)->tx_flags & SKBTX_IN_PROGRESS &&
-> +				     fep->hwts_tx_en) && fep->bufdesc_ex) {
-> +				struct bufdesc_ex *ebdp = (struct bufdesc_ex *)bdp;
-> +				struct skb_shared_hwtstamps shhwtstamps;
-> +
-> +				fec_enet_hwtstamp(fep, fec32_to_cpu(ebdp->ts), &shhwtstamps);
-> +				skb_tstamp_tx(skb, &shhwtstamps);
-> +			}
-> +
-> +			/* Free the sk buffer associated with this last transmit */
-> +			napi_consume_skb(skb, budget);
-> +			break;
-> +		case FEC_TXBUF_T_XDP_NDO:
->  			/* Tx processing cannot call any XDP (or page pool) APIs if
->  			 * the "budget" is 0. Because NAPI is called with budget of
->  			 * 0 (such as netpoll) indicates we may be in an IRQ context,
->  			 * however, we can't use the page pool from IRQ context.
->  			 */
->  			if (unlikely(!budget))
-> -				break;
-> +				goto out;
 >
-> -			if (txq->tx_buf[index].type == FEC_TXBUF_T_XDP_NDO) {
-> -				xdpf = txq->tx_buf[index].buf_p;
-> -				if (bdp->cbd_bufaddr)
-> -					dma_unmap_single(&fep->pdev->dev,
-> -							 fec32_to_cpu(bdp->cbd_bufaddr),
-> -							 fec16_to_cpu(bdp->cbd_datlen),
-> -							 DMA_TO_DEVICE);
-> -			} else {
-> -				page = txq->tx_buf[index].buf_p;
-> -			}
-> -
-> -			bdp->cbd_bufaddr = cpu_to_fec32(0);
-> -			if (unlikely(!txq->tx_buf[index].buf_p)) {
-> -				txq->tx_buf[index].type = FEC_TXBUF_T_SKB;
-> -				goto tx_buf_done;
-> -			}
-> +			xdpf = txq->tx_buf[index].buf_p;
-> +			dma_unmap_single(&fep->pdev->dev,
-> +					 fec32_to_cpu(bdp->cbd_bufaddr),
-> +					 frame_len,  DMA_TO_DEVICE);
-> +			xdp_return_frame_rx_napi(xdpf);
-> +			break;
-> +		case FEC_TXBUF_T_XDP_TX:
-> +			if (unlikely(!budget))
-> +				goto out;
->
-> -			frame_len = fec16_to_cpu(bdp->cbd_datlen);
-> +			page = txq->tx_buf[index].buf_p;
-> +			/* The dma_sync_size = 0 as XDP_TX has already synced
-> +			 * DMA for_device
-> +			 */
-> +			page_pool_put_page(pp_page_to_nmdesc(page)->pp, page,
-> +					   0, true);
-> +			break;
-> +		default:
-> +			break;
->  		}
->
->  		/* Check for errors. */
-> @@ -1572,11 +1593,7 @@ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id, int budget)
->  				ndev->stats.tx_carrier_errors++;
->  		} else {
->  			ndev->stats.tx_packets++;
-> -
-> -			if (txq->tx_buf[index].type == FEC_TXBUF_T_SKB)
-> -				ndev->stats.tx_bytes += skb->len;
-> -			else
-> -				ndev->stats.tx_bytes += frame_len;
-> +			ndev->stats.tx_bytes += frame_len;
->  		}
->
->  		/* Deferred means some collisions occurred during transmit,
-> @@ -1585,35 +1602,12 @@ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id, int budget)
->  		if (status & BD_ENET_TX_DEF)
->  			ndev->stats.collisions++;
->
-> -		if (txq->tx_buf[index].type == FEC_TXBUF_T_SKB) {
-> -			/* NOTE: SKBTX_IN_PROGRESS being set does not imply it's we who
-> -			 * are to time stamp the packet, so we still need to check time
-> -			 * stamping enabled flag.
-> -			 */
-> -			if (unlikely(skb_shinfo(skb)->tx_flags & SKBTX_IN_PROGRESS &&
-> -				     fep->hwts_tx_en) && fep->bufdesc_ex) {
-> -				struct skb_shared_hwtstamps shhwtstamps;
-> -				struct bufdesc_ex *ebdp = (struct bufdesc_ex *)bdp;
-> -
-> -				fec_enet_hwtstamp(fep, fec32_to_cpu(ebdp->ts), &shhwtstamps);
-> -				skb_tstamp_tx(skb, &shhwtstamps);
-> -			}
-> -
-> -			/* Free the sk buffer associated with this last transmit */
-> -			napi_consume_skb(skb, budget);
-> -		} else if (txq->tx_buf[index].type == FEC_TXBUF_T_XDP_NDO) {
-> -			xdp_return_frame_rx_napi(xdpf);
-> -		} else { /* recycle pages of XDP_TX frames */
-> -			/* The dma_sync_size = 0 as XDP_TX has already synced DMA for_device */
-> -			page_pool_put_page(pp_page_to_nmdesc(page)->pp, page,
-> -					   0, true);
-> -		}
-> -
->  		txq->tx_buf[index].buf_p = NULL;
->  		/* restore default tx buffer type: FEC_TXBUF_T_SKB */
->  		txq->tx_buf[index].type = FEC_TXBUF_T_SKB;
->
->  tx_buf_done:
-> +		bdp->cbd_bufaddr = cpu_to_fec32(0);
->  		/* Make sure the update to bdp and tx_buf are performed
->  		 * before dirty_tx
->  		 */
-> @@ -1632,6 +1626,8 @@ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id, int budget)
->  		}
->  	}
->
-> +out:
-> +
->  	/* ERR006358: Keep the transmitter going */
->  	if (bdp != txq->bd.cur &&
->  	    readl(txq->bd.reg_desc_active) == 0)
-> @@ -3413,6 +3409,7 @@ static void fec_enet_free_buffers(struct net_device *ndev)
->  	unsigned int i;
->  	struct fec_enet_priv_tx_q *txq;
->  	struct fec_enet_priv_rx_q *rxq;
-> +	struct page *page;
->  	unsigned int q;
->
->  	for (q = 0; q < fep->num_rx_queues; q++) {
-> @@ -3436,20 +3433,20 @@ static void fec_enet_free_buffers(struct net_device *ndev)
->  			kfree(txq->tx_bounce[i]);
->  			txq->tx_bounce[i] = NULL;
->
-> -			if (!txq->tx_buf[i].buf_p) {
-> -				txq->tx_buf[i].type = FEC_TXBUF_T_SKB;
-> -				continue;
-> -			}
-> -
-> -			if (txq->tx_buf[i].type == FEC_TXBUF_T_SKB) {
-> +			switch (txq->tx_buf[i].type) {
-> +			case FEC_TXBUF_T_SKB:
->  				dev_kfree_skb(txq->tx_buf[i].buf_p);
-> -			} else if (txq->tx_buf[i].type == FEC_TXBUF_T_XDP_NDO) {
-> +				break;
-> +			case FEC_TXBUF_T_XDP_NDO:
->  				xdp_return_frame(txq->tx_buf[i].buf_p);
-> -			} else {
-> -				struct page *page = txq->tx_buf[i].buf_p;
-> -
-> +				break;
-> +			case FEC_TXBUF_T_XDP_TX:
-> +				page = txq->tx_buf[i].buf_p;
->  				page_pool_put_page(pp_page_to_nmdesc(page)->pp,
->  						   page, 0, false);
-> +				break;
-> +			default:
-> +				break;
->  			}
->
->  			txq->tx_buf[i].buf_p = NULL;
-> --
-> 2.34.1
->
+> >
+> > [...]
+> >
 
