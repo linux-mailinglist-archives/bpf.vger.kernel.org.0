@@ -1,223 +1,170 @@
-Return-Path: <bpf+bounces-78696-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78697-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C79A9D1899C
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 12:58:38 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4D46D18A29
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 13:08:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id CD2E33002891
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 11:58:37 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 3D1D830115CB
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 12:08:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC17538E5DF;
-	Tue, 13 Jan 2026 11:58:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B785238E5E9;
+	Tue, 13 Jan 2026 12:08:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B1SPQIWS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cv0a/Qtw"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3E7A38E121
-	for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 11:58:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 953FB2BE7D6
+	for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 12:08:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768305513; cv=none; b=FEiHB9eBQ96WWxDqGdnrDhNR3ZXUlpne/VRzlWMzoxLV4Fm8qrLKNXczmo1UaX4dSQJbTBX+Cu7FCY/F6W6fUdsFGJhZ42Ojzr+ix2lLmTKor+yR2jD1NAIB2vbk+0jcDMj03Jq+WuwQ9xD834AQTNw8xWyeJpGUNjqfejv5kE8=
+	t=1768306105; cv=none; b=mutkPc/3Eg/WsBsCh88gFNXVn8/wlOSvMAtMxN5bOF6xf8vQ/04j+Mk0HQTz9ISetxDxiPwbvcPAMIlaClb5h3JQjxKfTHGuamN8u6FLu+k3GT+lLNzSsJJgqaOZ6eVG0qL/aSZkjLfx8lHJng6uhsr53nZ1Aygj+xO/LhysR0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768305513; c=relaxed/simple;
-	bh=pPh4+HAZOzKHytLYGjFQqq/F7FgALn9JcQIVEqzGSJs=;
+	s=arc-20240116; t=1768306105; c=relaxed/simple;
+	bh=gYpv1TmAj01mtK45BmSmSMaz0s06ZLJS2JRQwI5w9d0=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gyr4R4Ci7jxkc1og29k1G/WbzVNiKBkGGa88fqsj5j2bSmfS9oKJh+R57WmXZsNolzmSsCNVvms+aPnsVmMYoQbvykUqJzTT8+9PAuNtY1g9DgQovGIReusw196EoftU8DJGPzukWoctdwak+xy/ImkGNH5R0b0JjcMVX3jxJUQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B1SPQIWS; arc=none smtp.client-ip=209.85.221.51
+	 Content-Type:Content-Disposition:In-Reply-To; b=e9mYW2L4Na1//kqeRT0lkdyxfd4aFfUZ/hAAXj/WSsc81/ucTzri1yteqV7qLkLszu4AG2gYACBNRZFL4PN6jB9LnT/PiZ02YXsG7R+/rHSDUDDkey5zPPdPtK2KvhO6PiQhCjSnRpYY91SVb40nOVhQSfq1EnO+DkgTgmLD68Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cv0a/Qtw; arc=none smtp.client-ip=209.85.128.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-432755545fcso4389993f8f.1
-        for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 03:58:31 -0800 (PST)
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-47d3ba3a4deso43349615e9.2
+        for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 04:08:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768305510; x=1768910310; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1768306101; x=1768910901; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:date:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=2SGd3tXmtLkKwF012MQCllNNXd7BPnjgwOvsuNzDErw=;
-        b=B1SPQIWStJcLCrNYC1t/16rjgbxToMBDJsewVl6wrF2vz7A9ZEIfFM8tb8OX0qotQU
-         PQmMk4aaXts+E3rGweynk6SZxkbPjwSQvpLpqmliK/rl8+t3pGQl0mR/Aeo+2Derdf5E
-         qZcgavPjJy2PeZbERIaPR+4iV4VnDfpWN4DOOfYn9LSSm/FUgYDfTv1FekXME335Adh5
-         x4Oq1tN5DyC7nQFr2GRDXxHxVTUESMFQ+Id1b58V/QNieHotiTCC50ndnyqwR8nWxcDx
-         iTv0oP1sTKv40bwukheQhLgz9aiTBetVbye/oP2jrhgOMqcGRr4zt7cshPz9qnUI8XSb
-         KAIw==
+        bh=tSQvCi29akm08N5Mw9WY17zV/EyUsoGyptBD5STXYks=;
+        b=cv0a/QtwiaQDMn93BcBcBtlaw6Y+eu6WRPP9p7liBAB8IBnzIqs646/pPEzxvqy2rO
+         KH4KBpitat/izYbpSqBKlDNj+C4KqK+UGcfM4/a/s5VUbye4KZW33k9MpAm2EIpI8P4P
+         TF7AX+7p/mxlmURBBwTr5KP4aXHLgQZbRYo9DNs2erO9TkF0V2O+HEooOUFSC4V4pIRt
+         EGaR/29IPEBnPpRWDmM81dtk+JFUFhTLZQ2a2vUPYKk7XBIcg+BH/gZbXBm+4AslwK9l
+         ppm48p2RR6yRvvYYfVz9ItiX1tCUKHOYuBjSItKLP0XiOuGR+9BtTqR2bupjJKMN12Oh
+         XDZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768305510; x=1768910310;
+        d=1e100.net; s=20230601; t=1768306101; x=1768910901;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2SGd3tXmtLkKwF012MQCllNNXd7BPnjgwOvsuNzDErw=;
-        b=BfgbQVQ/hICmIKOmXHtLErxoteuKf+eWqDQa70nLdPJ7UKXmNeJTVbCj4G7VxRE/N6
-         ps5aERb4YMYKtor9o6NczE/J5wbWORXM73tvR/AblwLmTY5UcRfVqT460oh4Z470ecBw
-         Bgt6iHsplXT+TTYFVlZUYFv9s1wDKK5F76vaTZZPjnu5CY0mlVb2nc2XzTTDquIDtkkl
-         1vgBPXDxGbtkMrY7Ack8+7qJJAVbx7vt8aXJBkL0vvsi3FeM2d1OtpwTF0m/lsA1os6n
-         Rmlro49oP9Io1RSLjgtM9A28VRRDwY4jE5STmF9f61wjC6u4alg54Re7aipyN7VvH9io
-         8RxA==
-X-Forwarded-Encrypted: i=1; AJvYcCVMaeZZrQ4K6C6/amV7OQIZ3TMg7Qv6G17lLIYWuC/eiCar6H3m5LUX+Yybn4XyKM7JZoQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw80WRDPFUrhLT8fXKUwWqfu6sR+9ORAHFC2HrgMP94q2OwopZ7
-	vyyItQqPuQv+rVsYNyC/h8k4mQbdKLURKEUtem5jPJBao+0X8KrofAwj
-X-Gm-Gg: AY/fxX4eShOBahzMQ1ZTtgv4o7VsA3mFYnIKJ2TteXkbtB6xgu4K/9sBF3Try6uj4n2
-	s/OYniQiTUKmtjpffMM1KN064VlXtNEPR1JAnnQh0JAtM08uWDnpmNaKSMTfAXO6XAj5+gZb+a4
-	ADyoPbOBLYFTALzVrJzhjZtPxXtULscVFICc4c+RYaI7Sxnz7SY9hGetlINMSe8anesvuYmX7yX
-	7joQUcpArF6Xb3GwLWmsii3GJ0ThANXpjYvH+xnLb93LU8YQsjlhfHDTYRHsvbdSVBr96eB9Hoc
-	OhiIolieKvERj30NR2sGDk8fIrJ9SXkbMLsLxfj/B3I1yp2+DnnQ7/50FDHsxNKZ4skJDhXLOyB
-	Dh43QvP4fgx04a6YT7TjaWr+B0uXUM8c3LhaLauN1Ul9s3uRses7Z93Yq5stT
-X-Google-Smtp-Source: AGHT+IGkvUuVDJVo/hzAbWsKzxOrW1kEblMrgxzCuB8BjwrLokZwyC+CIexQPCRUge4jrjh3WK73TA==
-X-Received: by 2002:a5d:64e6:0:b0:432:851d:3676 with SMTP id ffacd0b85a97d-432c3774267mr27499901f8f.57.1768305509864;
-        Tue, 13 Jan 2026 03:58:29 -0800 (PST)
+        bh=tSQvCi29akm08N5Mw9WY17zV/EyUsoGyptBD5STXYks=;
+        b=hqhDyRCwJgyyMuQSx71wfJFya1Wt8DMJwXyqUwOXPY81Ux9cAO9WUroJLsh3P2BDzE
+         WVwN3qT2v2QTd1LJog7JGcEnWCEuwE/BRe3N2nWH05Di9KRJTVP2NAjRzmSs81fGmzAa
+         7AuYJQhCgX3wnvy+66/DuoVjb+de26ZDUsh7jMp/RYK7aUzzfJxNUqOaBmQvtyyZ7vLY
+         367enjkdRP7jOVFkxs6oc8CNtU4Y3dDZgnL9yEw24lcLXQnr/ka+3M9s3+nVtJDXDg3K
+         /Iuvccxcl/RZquMIH27kkkv6NZp2DhROmCKaJiVP835rd8DF1wPNZzr40hkwYCbuV329
+         9k6w==
+X-Forwarded-Encrypted: i=1; AJvYcCWlHfSbMWkHOdtrPBDNZEtAWubmHH1yOHqLaTtjR0urIcCKO1RxT4PGQwUYJzPs5ERnZdw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzKrIYb5Mi5fRax6ClIweSSux1rCSzipZfe1nTHnPyu6tqTT/b9
+	8KECLrq45FVyFPO77nWvgbDtKiF3ymrqox8iUopUl2hepiCZnHALLhY+c4bZYA==
+X-Gm-Gg: AY/fxX5dJbLE9pqdfNJlffefXIVWnkQUnz8f8LZ/qJFdQLPfkmAM8LWGGtuun+/EEGE
+	dTfgY5/1tRPREoth+yRLT9soT5kQuDR/rvRDOBprusYz2xCFfEoLyeeARvBcNEm6KjtPXG2kafR
+	iCzRC6fpF45T4NBp2ymJpxErGr5dExFVSrF1nqTF+2ONDHJpHndd+u4/nDuyDPGJBoZvsP6qb8B
+	T5z1TBCov0sKDUTwzbZ3HZPhp4leJaP0sxG76e2wjlCrktgzpuUaiOBKsDmHdZBy4CHJ3k1rCgP
+	UD9Xigv537oWsgA0R9C8iYqUJ/+HNzbyMoEvjYWWwkwJfp8onoQ25LlJREgJgQGA+00aZ1OcOEr
+	/4nVO2V7u6anlRlGVv0jxxfkb3L+jmg4yre1Nw7aDWkdatniwDysTGBLK/eit
+X-Google-Smtp-Source: AGHT+IHxhS2Y6mE+jXejm6/rZedYm8xSZBdvuUC4IiCKJpoKzunpsBcgKv2n5QJpjm7Sy8S+xmw1TA==
+X-Received: by 2002:a05:600c:3b27:b0:477:429b:3b93 with SMTP id 5b1f17b1804b1-47d8fc55375mr157315875e9.18.1768306101164;
+        Tue, 13 Jan 2026 04:08:21 -0800 (PST)
 Received: from krava ([2a02:8308:a00c:e200::b44f])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-432bd5df9afsm46383138f8f.24.2026.01.13.03.58.29
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47ed9b2a92bsm15307675e9.0.2026.01.13.04.08.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jan 2026 03:58:29 -0800 (PST)
+        Tue, 13 Jan 2026 04:08:20 -0800 (PST)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 13 Jan 2026 12:58:28 +0100
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>,
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-	Steven Rostedt <rostedt@kernel.org>,
-	Florent Revest <revest@google.com>,
-	Mark Rutland <mark.rutland@arm.com>, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Menglong Dong <menglong8.dong@gmail.com>,
-	Song Liu <song@kernel.org>
-Subject: Re: [PATCHv6 bpf-next 7/9] bpf: Add trampoline ip hash table
-Message-ID: <aWYzZBBkIJCyuwbH@krava>
-References: <20251230145010.103439-1-jolsa@kernel.org>
- <20251230145010.103439-8-jolsa@kernel.org>
- <CAEf4BzYgqWXoKTffa5Y6Xm-nPbL9aFgrStR0GfUs4-88f10EgQ@mail.gmail.com>
- <aWVnVzeqWJBXwBze@krava>
- <98436a72-236a-43c4-b6ac-9d74b53b0223@oracle.com>
+Date: Tue, 13 Jan 2026 13:08:19 +0100
+To: David <david@davidv.dev>
+Cc: Viktor Malik <vmalik@redhat.com>, bpf@vger.kernel.org,
+	Alan Maguire <alan.maguire@oracle.com>
+Subject: Re: Usage of kfuncs in tracepoints
+Message-ID: <aWY1s2S2zw3UHyTP@krava>
+References: <f5e6c1e4-f2f2-4982-a796-e3a49c522bbf@davidv.dev>
+ <3735a372-1641-4a37-a7e2-54b7533caf83@oracle.com>
+ <bb6a3ada-ddcf-417d-82c7-f86cde6ed4f7@davidv.dev>
+ <793831f1-a8ea-4e0b-a0e8-c86c30b1ab2f@redhat.com>
+ <b07a7008-a093-4a31-8096-1d5c33890c9d@davidv.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <98436a72-236a-43c4-b6ac-9d74b53b0223@oracle.com>
+In-Reply-To: <b07a7008-a093-4a31-8096-1d5c33890c9d@davidv.dev>
 
-On Tue, Jan 13, 2026 at 11:02:33AM +0000, Alan Maguire wrote:
-> On 12/01/2026 21:27, Jiri Olsa wrote:
-> > On Fri, Jan 09, 2026 at 04:36:41PM -0800, Andrii Nakryiko wrote:
-> >> On Tue, Dec 30, 2025 at 6:51â€¯AM Jiri Olsa <jolsa@kernel.org> wrote:
-> >>>
-> >>> Following changes need to lookup trampoline based on its ip address,
-> >>> adding hash table for that.
-> >>>
-> >>> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> >>> ---
-> >>>  include/linux/bpf.h     |  7 +++++--
-> >>>  kernel/bpf/trampoline.c | 30 +++++++++++++++++++-----------
-> >>>  2 files changed, 24 insertions(+), 13 deletions(-)
-> >>>
-> >>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> >>> index 4e7d72dfbcd4..c85677aae865 100644
-> >>> --- a/include/linux/bpf.h
-> >>> +++ b/include/linux/bpf.h
-> >>> @@ -1325,14 +1325,17 @@ struct bpf_tramp_image {
-> >>>  };
-> >>>
-> >>>  struct bpf_trampoline {
-> >>> -       /* hlist for trampoline_table */
-> >>> -       struct hlist_node hlist;
-> >>> +       /* hlist for trampoline_key_table */
-> >>> +       struct hlist_node hlist_key;
-> >>> +       /* hlist for trampoline_ip_table */
-> >>> +       struct hlist_node hlist_ip;
-> >>>         struct ftrace_ops *fops;
-> >>>         /* serializes access to fields of this trampoline */
-> >>>         struct mutex mutex;
-> >>>         refcount_t refcnt;
-> >>>         u32 flags;
-> >>>         u64 key;
-> >>> +       unsigned long ip;
-> >>>         struct {
-> >>>                 struct btf_func_model model;
-> >>>                 void *addr;
-> >>> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-> >>> index 789ff4e1f40b..bdac9d673776 100644
-> >>> --- a/kernel/bpf/trampoline.c
-> >>> +++ b/kernel/bpf/trampoline.c
-> >>> @@ -24,9 +24,10 @@ const struct bpf_prog_ops bpf_extension_prog_ops = {
-> >>>  #define TRAMPOLINE_HASH_BITS 10
-> >>>  #define TRAMPOLINE_TABLE_SIZE (1 << TRAMPOLINE_HASH_BITS)
-> >>>
-> >>> -static struct hlist_head trampoline_table[TRAMPOLINE_TABLE_SIZE];
-> >>> +static struct hlist_head trampoline_key_table[TRAMPOLINE_TABLE_SIZE];
-> >>> +static struct hlist_head trampoline_ip_table[TRAMPOLINE_TABLE_SIZE];
-> >>>
-> >>> -/* serializes access to trampoline_table */
-> >>> +/* serializes access to trampoline tables */
-> >>>  static DEFINE_MUTEX(trampoline_mutex);
-> >>>
-> >>>  #ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
-> >>> @@ -135,15 +136,15 @@ void bpf_image_ksym_del(struct bpf_ksym *ksym)
-> >>>                            PAGE_SIZE, true, ksym->name);
-> >>>  }
-> >>>
-> >>> -static struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
-> >>> +static struct bpf_trampoline *bpf_trampoline_lookup(u64 key, unsigned long ip)
-> >>>  {
-> >>>         struct bpf_trampoline *tr;
-> >>>         struct hlist_head *head;
-> >>>         int i;
-> >>>
-> >>>         mutex_lock(&trampoline_mutex);
-> >>> -       head = &trampoline_table[hash_64(key, TRAMPOLINE_HASH_BITS)];
-> >>> -       hlist_for_each_entry(tr, head, hlist) {
-> >>> +       head = &trampoline_key_table[hash_64(key, TRAMPOLINE_HASH_BITS)];
-> >>> +       hlist_for_each_entry(tr, head, hlist_key) {
-> >>>                 if (tr->key == key) {
-> >>>                         refcount_inc(&tr->refcnt);
-> >>>                         goto out;
-> >>> @@ -164,8 +165,12 @@ static struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
-> >>>  #endif
-> >>>
-> >>>         tr->key = key;
-> >>> -       INIT_HLIST_NODE(&tr->hlist);
-> >>> -       hlist_add_head(&tr->hlist, head);
-> >>> +       tr->ip = ftrace_location(ip);
-> >>> +       INIT_HLIST_NODE(&tr->hlist_key);
-> >>> +       INIT_HLIST_NODE(&tr->hlist_ip);
-> >>> +       hlist_add_head(&tr->hlist_key, head);
-> >>> +       head = &trampoline_ip_table[hash_64(tr->ip, TRAMPOLINE_HASH_BITS)];
-> >>
-> >> For key lookups we check that there is no existing trampoline for the
-> >> given key. Can it happen that we have two trampolines at the same IP
-> >> but using two different keys?
+On Tue, Jan 13, 2026 at 12:53:18PM +0100, David wrote:
+> On 13/01/2026 09:05, Viktor Malik wrote:
+> > On 1/12/26 20:08, David wrote:
+> > > On 12/01/2026 19:03, Alan Maguire wrote:
+> > > 
+> > > > I think you need to add "__ksym __weak";" here i.e.
+> > > This change let me load the program, however, libbpf cannot find a
+> > > kernel image at
+> > > /sys/kernel/btf/vmlinux, because /sys/kernel/btf is not populated on my
+> > > system.
+> > > 
+> > > My kernel _is_ built with CONFIG_DEBUG_INFO_BTF=y, is there something
+> > > else I need to do
+> > >    to get this path populated?
+> > Did you try rebuilding from scratch (with `make clean`) after enabling
+> > CONFIG_DEBUG_INFO_BTF? If the sources were already built without debug
+> > info, they will not be automatically rebuilt just by adding the config
+> > option.
 > > 
-> > so multiple keys (different static functions with same name) resolving to
-> > the same ip happened in past and we should now be able to catch those in
-> > pahole, right? CC-ing Alan ;-)
-> >
+> I thought the change took place because `make vmlinux` took a while,
+> but after a clean build, it does work.
 > 
-> We could catch this I think, but today we don't. We have support to avoid 
-> encoding BTF where a function name has multiple instances (ambiguous address).
-> Here you're concerned with mapping from ip to function name, where multiple 
-> names share the same ip, right?
-
-so trampolines work only on top of BTF func record, so the 'key' represents
-BTF_KIND_FUNC record.. and as such it can resolve to just single ip, because
-pahole filters out functions with ambiguous instances IIUC
-
+> > > Because this path is missing, libbpf reports:
+> > > 
+> > > ```
+> > > kernel BTF is missing at '/sys/kernel/btf/vmlinux', was
+> > > CONFIG_DEBUG_INFO_BTF enabled?
+> > > ```
+> > > 
+> > > But I see from strace that it tries a few fallback paths.
+> > > In the meantime, I copied my kernel into /boot/vmlinux-6.18.2 so libbpf
+> > > can find it, but
+> > > now the loader says
+> > > 
+> > > ```
+> > > calling kernel function is not supported without CONFIG_DEBUG_INFO_BTF
+> > > ```
+> > While libbpf may try other fallback paths to find BTF, using kfuncs
+> > requires the kernel to find that kfunc in BTF and kernel will only use
+> > the system BTF (the one from /sys/kernel/vmlinux/btf).
+> > 
+> This is good to know, thanks. I've removed the /boot/ file from my system.
+> > > Can I not use `bpf_strstr` on a tracepoint? To validate, I tried a
+> > > `raw_tp` but
+> > > had the same result.
+> > There shouldn't be any issue using bpf_strstr from tracepoints (or any
+> > other program type).
+> > 
+> > Viktor
+> > 
+> Do you happen to know how to generate the kfunc headers with bpftool?
+> Even a new bpftool build from the newest commit,
+> ad5d76e5c6b622e5ed05fecfa68029bae949d408, does not generate headers:
 > 
-> A quick scan of System.map suggests there's a ~150 of these,
-> excluding __pfx_ entries:
+> ```
+> $ ./bpftool btf dump file ~/git/linux-6.18.2/vmlinux | grep strstr
+> [28376] FUNC 'bpf_strstr' type_id=28354 linkage=static
+> [60023] FUNC 'strstr' type_id=60022 linkage=static
+> $ ./bpftool btf dump file ~/git/linux-6.18.2/vmlinux format c  | grep -c
+> strstr
+> 0
+> ```
 > 
-> $ awk 'NR > 1 && ($2 == "T" || $2 == "t") && $1 == prev_field { print;} { prev_field = $1}' System.map|egrep -v __pfx|wc -l
-> 155
+> Could this be related to my host's kernel being older than 6.18?
+> 
+> For now, I'll generate my files from `kernel/bpf/helpers.c`, but it'd be
+> great if I could use bpftool.
 
-right, but these are just regular kernel symbols with aliases and other
-shared stuff
+hi,
+do you use the latest pahole ?
 
 jirka
 
