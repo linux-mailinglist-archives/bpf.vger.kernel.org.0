@@ -1,36 +1,36 @@
-Return-Path: <bpf+bounces-78688-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78687-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F867D18136
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 11:36:52 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D81F3D18178
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 11:39:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 9409030042B1
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 10:36:51 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D8355305713E
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 10:36:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A9CF32A3FD;
-	Tue, 13 Jan 2026 10:36:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DC613382C9;
+	Tue, 13 Jan 2026 10:36:44 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [207.46.229.174])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0F672D5432
-	for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 10:36:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.46.229.174
+Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [52.229.168.213])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AB1732D0CF
+	for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 10:36:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.229.168.213
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768300610; cv=none; b=G+51FrpyB9bYcKGaOYoHsSWTttSTdWgNvKJkrwfZikux1v7Qqf8rXgLA5/PA+Ke0xU5eCbCdGpnJ2G3Qvn3olXdRP1sh4F1vUdiBexNPPfrvtwQW34eksXkQwReNEc4HiB88bVaElmk9Xh9m1iMTbn97Rxb5QTIZQ+FzKc1rg1o=
+	t=1768300603; cv=none; b=d2x+8pIjF+4bjOOhR2tMNIcVA3+JRY5exE1prTaTWhxqblwe3qdQzmKSPIO/tksIj7W9eyYEyZ8gApSpGQtrtgXfDeYjwf6uAjuqbArKRv+25TrG/xyx2L50ORsxPFH9FFi15QRPsX52arXR9XpRiUFyfaPBgmhvn+DgGLC6B48=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768300610; c=relaxed/simple;
-	bh=OpVZVMX/ThqnvW1GSfmlN/0P3WgnJv4eqWyHgX/2z1M=;
+	s=arc-20240116; t=1768300603; c=relaxed/simple;
+	bh=2f1p5LZirNZtEZFzkGIiqDQmV52MN2qM4XkP6no000k=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=N8DM1ab1syQ1TFEhLl78bjS2div1bmXt/fjkto3HntoWfkrQn8okMTwXpzbuE7GGGhdvaXwyDGMsL4m43pYJJANAK2JoNUgdfS6r1wk5IA0EmRHRuZuV0kQX8GwPFidbRh9rgYsVIKjXM3a2Bge8QqX7C4VApLy3d28S41lfnbI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=207.46.229.174
+	 MIME-Version; b=HuVyeFJ2O9nXw3XGnT0QSGchLS2ozBFbw/Ek+UrgbGaSfKj3wIoPfF1SvoYjoPYdY6Zw9uBc/Xm16CGzwlAPPbMkPwiMvya34JgqLn5SG5Yv6O7MKUWw9r+1GCd+TyH5BDX3xb6Q3GEl+opND2bwv0IRfysISULNIk7CFQBIG8Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=52.229.168.213
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
 Received: from zju.edu.cn (unknown [10.14.28.207])
-	by mtasvr (Coremail) with SMTP id _____wAX8tocIGZpx1i6AQ--.2118S3;
-	Tue, 13 Jan 2026 18:36:12 +0800 (CST)
+	by mtasvr (Coremail) with SMTP id _____wC3RZYeIGZp1Fi6AQ--.2139S3;
+	Tue, 13 Jan 2026 18:36:14 +0800 (CST)
 Received: from lutetium.tail477849.ts.net (unknown [10.14.28.207])
-	by mail-app3 (Coremail) with SMTP id zS_KCgDX2m0XIGZpu8iSBQ--.30181S2;
-	Tue, 13 Jan 2026 18:36:07 +0800 (CST)
+	by mail-app3 (Coremail) with SMTP id zS_KCgD3kGMcIGZpzciSBQ--.15286S2;
+	Tue, 13 Jan 2026 18:36:13 +0800 (CST)
 From: Yazhou Tang <tangyazhou@zju.edu.cn>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org,
@@ -47,11 +47,10 @@ Cc: ast@kernel.org,
 	jolsa@kernel.org,
 	tangyazhou518@outlook.com,
 	shenghaoyuan0928@163.com,
-	ziye@zju.edu.cn,
-	syzbot@syzkaller.appspotmail.com
-Subject: [PATCH bpf-next v3 1/2] bpf: Add range tracking for BPF_DIV and BPF_MOD
-Date: Tue, 13 Jan 2026 18:35:51 +0800
-Message-ID: <20260113103552.3435695-2-tangyazhou@zju.edu.cn>
+	ziye@zju.edu.cn
+Subject: [PATCH bpf-next v3 2/2] selftests/bpf: Add tests for BPF_DIV and BPF_MOD range tracking
+Date: Tue, 13 Jan 2026 18:35:52 +0800
+Message-ID: <20260113103552.3435695-3-tangyazhou@zju.edu.cn>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260113103552.3435695-1-tangyazhou@zju.edu.cn>
 References: <20260113103552.3435695-1-tangyazhou@zju.edu.cn>
@@ -62,540 +61,901 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:zS_KCgDX2m0XIGZpu8iSBQ--.30181S2
-X-CM-SenderInfo: qssvjiasrsq6lmxovvfxof0/1tbiAggFCmletwUeXgAEsE
-X-CM-DELIVERINFO: =?B?u4slJwXKKxbFmtjJiESix3B1w3vD7IpoGYuur0o+r46DyAi5OfOO+T4vrW4FyUBIyu
-	9q9B+mI5GDwxuQL0PB6Ii/1Uo0fiebzxKn7yw9/KDGAk5mZUEG8gi+GiLFyqcKQuTyDrwv
-	oxqLUT/52+PbzqXza8Nn3CJTIcWTEcyNoa5LWH5myaLyJodOOGcB0eJgeEaryw==
-X-Coremail-Antispam: 1Uk129KBj9fXoWfGw1DCryfurWfXw4UJw4xGrX_yoW8Ar4fuo
-	WFgF1IyryxKFn2gF92krn5A3WYgw1xCr1kGFW5K3Z8CF1UAr13Xa48C39rXF4Fvw10krWU
-	Z3WDJ39xZFykJanxl-sFpf9Il3svdjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8wcxFpf
+X-CM-TRANSID:zS_KCgD3kGMcIGZpzciSBQ--.15286S2
+X-CM-SenderInfo: qssvjiasrsq6lmxovvfxof0/1tbiAggFCmletwUeXgAFsF
+X-CM-DELIVERINFO: =?B?cG6Y2wXKKxbFmtjJiESix3B1w3vD7IpoGYuur0o+r46DyAi5OfOO+T4vrW4FyUBIyu
+	9q9B+mI5GDwxuQL0PB6Ii/1Uoyor4jY9rBvP4GhGwwJJJmn11dxjOLUAAT3g+BnTNH8Aus
+	VgCUlKfgG9K6YuYAB4SHXC9aSZay4oRvPNShsQPUQpuuqNdVw98iUE3Wmtcsfg==
+X-Coremail-Antispam: 1Uk129KBj9fXoWfXw4fAryfGr1xWryfWFWrtFc_yoW8trWxZo
+	WY939xX3yrKr15uFWq9FWSgr13X3W3K34kJry3Kr15Ga1xJ3ykA340kan8ur109F1ayFZ5
+	Za45Gr1Svw45Janrl-sFpf9Il3svdjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8wcxFpf
 	9Il3svdxBIdaVrn0xqx4xG64xvF2IEw4CE5I8CrVC2j2Jv73VFW2AGmfu7bjvjm3AaLaJ3
-	UjIYCTnIWjp_UUUYp7kC6x804xWl14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI
-	8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xG
+	UjIYCTnIWjp_UUUYp7kC6x804xWl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI
+	8IcIk0rVWrJVCq3wAFIxvE14AKwVWUGVWUXwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xG
 	Y2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14
 	v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAF
 	wI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
-	Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE
+	Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE
 	14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjcxG0xvY0x
 	0EwIxGrVCF72vEw4AK0wACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY0x0EwIxGrwCF
 	x2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14
 	v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY
 	67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2
 	IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_
-	Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UNtxhUUUUU=
+	Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j0lksUUUUU=
 
 From: Yazhou Tang <tangyazhou518@outlook.com>
 
-This patch implements range tracking (interval analysis) for BPF_DIV and
-BPF_MOD operations when the divisor is a constant, covering both signed
-and unsigned variants.
+Now BPF_DIV has range tracking support via interval analysis. This patch
+adds selftests to cover various cases of BPF_DIV and BPF_MOD operations
+when the divisor is a constant, also covering both signed and unsigned variants.
 
-While LLVM typically optimizes integer division and modulo by constants
-into multiplication and shift sequences, this optimization is less
-effective for the BPF target when dealing with 64-bit arithmetic.
+This patch includes several types of tests in 32-bit and 64-bit variants:
+1. For UDIV
+   - positive divisor
+   - zero divisor
+2. For SDIV
+   - positive divisor, dividend cross zero
+   - negative divisor, dividend cross zero
+   - zero divisor
+   - overflow (SIGNED_MIN/-1), normal dividend
+   - overflow (SIGNED_MIN/-1), constant dividend
+3. For UMOD
+   - positive divisor
+   - positive divisor, small dividend
+   - zero divisor
+4. For SMOD
+   - positive divisor, dividend cross zero
+   - positive divisor, dividend cross zero, small dividend
+   - negative divisor, dividend cross zero
+   - negative divisor, dividend cross zero, small dividend
+   - zero divisor
+   - overflow (SIGNED_MIN/-1), normal dividend
+   - overflow (SIGNED_MIN/-1), constant dividend
 
-Currently, the verifier does not track bounds for scalar division or
-modulo, treating the result as "unbounded". This leads to false positive
-rejections for safe code patterns.
-
-For example, the following code (compiled with -O2):
-
-```c
-int test(struct pt_regs *ctx) {
-    char buffer[6] = {1};
-    __u64 x = bpf_ktime_get_ns();
-    __u64 res = x % sizeof(buffer);
-    char value = buffer[res];
-    bpf_printk("res = %llu, val = %d", res, value);
-    return 0;
-}
-```
-
-Generates a raw `BPF_MOD64` instruction:
-
-```asm
-;     __u64 res = x % sizeof(buffer);
-       1:	97 00 00 00 06 00 00 00	r0 %= 0x6
-;     char value = buffer[res];
-       2:	18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00	r1 = 0x0 ll
-       4:	0f 01 00 00 00 00 00 00	r1 += r0
-       5:	91 14 00 00 00 00 00 00	r4 = *(s8 *)(r1 + 0x0)
-```
-
-Without this patch, the verifier fails with "math between map_value
-pointer and register with unbounded min value is not allowed" because
-it cannot deduce that `r0` is within [0, 5].
-
-According to the BPF instruction set[1], the instruction's offset field
-(`insn->off`) is used to distinguish between signed (`off == 1`) and
-unsigned division (`off == 0`). Moreover, we also follow the BPF division
-and modulo semantics (runtime behavior) to handle special cases, such as
-division by zero and signed division overflow.
-
-- UDIV: dst = (src != 0) ? (dst / src) : 0
-- SDIV: dst = (src == 0) ? 0 : ((src == -1 && dst == LLONG_MIN) ? LLONG_MIN : (dst / src))
-- UMOD: dst = (src != 0) ? (dst % src) : dst
-- SMOD: dst = (src == 0) ? dst : ((src == -1 && dst == LLONG_MIN) ? 0: (dst s% src))
-
-Here is the overview of the changes made in this patch (See the code comments
-for more details and examples):
-
-For BPF_DIV:
-1. Main analysis:
-   - General cases and "division by zero" case: compute the new range by
-     dividing max_dividend and min_dividend by the constant divisor.
-     Use helper functions `__bpf_udiv32`, `__bpf_udiv`, `__bpf_sdiv32`,
-     and `__bpf_sdiv` to encapsulate the division logic, including handling
-     division by zero.
-   - "SIGNED_MIN / -1" case in signed division: mark the result as unbounded
-     if the dividend is not a single number.
-2. Post-processing:
-   - Domain reset: Signed analysis resets unsigned bounds to unbounded,
-     and vice versa.
-   - Width reset: 32-bit analysis resets 64-bit bounds to unbounded
-     (and vice versa) to maintain consistency.
-   - Tnum reset: reset `var_off` to unknown since precise bitwise tracking
-     for division is not implemented.
-
-For BPF_MOD:
-1. Main analysis:
-   - General case: For signed modulo, the result's sign matches the
-     dividend's sign. The result's absolute value is strictly bounded
-     by min(abs(dividend), abs(divisor) - 1).
-     Special care is taken when the divisor is SIGNED_MIN. By casting
-     to unsigned before negation and subtracting 1, we avoid signed
-     overflow and correctly calculate the maximum possible magnitude
-     (`res_max_abs` in the code).
-   - "Division by zero" case: If the divisor is zero, the destination
-     register remains unchanged (matching runtime behavior).
-   - "Small dividend" case: If the dividend is already within the possible
-     result range (e.g., [2, 5] % 10), the operation is an identity
-     function, and the register state remains unchanged.
-2. Post-processing (if the result is changed compared to the dividend):
-   - Domain reset: Signed analysis resets unsigned bounds to unbounded,
-     and vice versa.
-   - Width reset: 32-bit analysis resets 64-bit bounds to unbounded
-     (and vice versa) to maintain consistency.
-   - Tnum reset: reset `var_off` to unknown since precise bitwise tracking
-     for division is not implemented.
-
-Also updated existing selftests based on the expected BPF_DIV and
-BPF_MOD behavior.
-
-[1] https://www.kernel.org/doc/Documentation/bpf/standardization/instruction-set.rst
+Specifically, these selftests are based on dead code elimination:
+If the BPF verifier can precisely analyze the result of BPF_DIV/BPF_MOD
+instruction, it can prune the path that leads to an error (here we use
+invalid memory access as the error case), allowing the program to pass
+verification.
 
 Co-developed-by: Shenghao Yuan <shenghaoyuan0928@163.com>
 Signed-off-by: Shenghao Yuan <shenghaoyuan0928@163.com>
 Co-developed-by: Tianci Cao <ziye@zju.edu.cn>
 Signed-off-by: Tianci Cao <ziye@zju.edu.cn>
 Signed-off-by: Yazhou Tang <tangyazhou518@outlook.com>
-Tested-by: syzbot@syzkaller.appspotmail.com
 ---
- kernel/bpf/verifier.c                         | 326 ++++++++++++++++++
- .../bpf/progs/verifier_value_illegal_alu.c    |   7 +-
- .../testing/selftests/bpf/verifier/precise.c  |   4 +-
- 3 files changed, 332 insertions(+), 5 deletions(-)
+Hello everyone,
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 53635ea2e41b..f3b51751d990 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -15077,6 +15077,283 @@ static void scalar_min_max_mul(struct bpf_reg_state *dst_reg,
- 	}
- }
- 
-+static u32 __bpf_udiv32(u32 a, u32 b)
+Thanks for reviewing our patch! This patch adds the necessary selftests
+for the BPF_DIV and BPF_MOD range tracking enhancements.
+
+Regarding the test implementation: I noticed multiple patterns for BPF
+selftests (e.g., out-of-bounds read in `verifier_bounds.c`, illegal
+return value in `verifier_mul.c` and `verifier_precision.v`). I have
+opted for the invalid memory access approach with `__msg` label as it
+is concise and straightforward.
+
+If the community prefers these tests to be integrated into existing
+files or follow a different pattern, please let me know and I will
+gladly refactor them.
+
+Best,
+
+Yazhou Tang
+
+ .../selftests/bpf/prog_tests/verifier.c       |   2 +
+ .../bpf/progs/verifier_div_mod_bounds.c       | 781 ++++++++++++++++++
+ 2 files changed, 783 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_div_mod_bounds.c
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
+index 5829ffd70f8f..ceeda5cd1dd8 100644
+--- a/tools/testing/selftests/bpf/prog_tests/verifier.c
++++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
+@@ -33,6 +33,7 @@
+ #include "verifier_direct_packet_access.skel.h"
+ #include "verifier_direct_stack_access_wraparound.skel.h"
+ #include "verifier_div0.skel.h"
++#include "verifier_div_mod_bounds.skel.h"
+ #include "verifier_div_overflow.skel.h"
+ #include "verifier_global_subprogs.skel.h"
+ #include "verifier_global_ptr_args.skel.h"
+@@ -174,6 +175,7 @@ void test_verifier_d_path(void)               { RUN(verifier_d_path); }
+ void test_verifier_direct_packet_access(void) { RUN(verifier_direct_packet_access); }
+ void test_verifier_direct_stack_access_wraparound(void) { RUN(verifier_direct_stack_access_wraparound); }
+ void test_verifier_div0(void)                 { RUN(verifier_div0); }
++void test_verifier_div_mod_bounds(void)       { RUN(verifier_div_mod_bounds); }
+ void test_verifier_div_overflow(void)         { RUN(verifier_div_overflow); }
+ void test_verifier_global_subprogs(void)      { RUN(verifier_global_subprogs); }
+ void test_verifier_global_ptr_args(void)      { RUN(verifier_global_ptr_args); }
+diff --git a/tools/testing/selftests/bpf/progs/verifier_div_mod_bounds.c b/tools/testing/selftests/bpf/progs/verifier_div_mod_bounds.c
+new file mode 100644
+index 000000000000..9367233a104f
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/verifier_div_mod_bounds.c
+@@ -0,0 +1,781 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/bpf.h>
++#include <limits.h>
++#include <bpf/bpf_helpers.h>
++#include "bpf_misc.h"
++
++/* This file contains unit tests for signed/unsigned division and modulo
++ * operations (with divisor as a constant), focusing on verifying whether
++ * BPF verifier's range tracking module soundly and precisely computes
++ * the results.
++ */
++
++SEC("socket")
++__description("UDIV32, positive divisor")
++__success __retval(0) __log_level(2)
++__msg("w1 /= 3 {{.*}}; R1=scalar(smin=smin32=0,smax=umax=smax32=umax32=3,var_off=(0x0; 0x3))")
++__naked void udiv32_pos_divisor(void)
 +{
-+	/* BPF div specification: x / 0 = 0 */
-+	if (unlikely(b == 0))
-+		return 0;
-+	return a / b;
-+}
-+
-+static u64 __bpf_udiv(u64 a, u64 b)
-+{
-+	/* BPF div specification: x / 0 = 0 */
-+	if (unlikely(b == 0))
-+		return 0;
-+	return a / b;
-+}
-+
-+static s32 __bpf_sdiv32(s32 a, s32 b)
-+{
-+	/* BPF div specification: x / 0 = 0 */
-+	if (unlikely(b == 0))
-+		return 0;
-+	return a / b;
-+}
-+
-+static s64 __bpf_sdiv(s64 a, s64 b)
-+{
-+	/* BPF div specification: x / 0 = 0 */
-+	if (unlikely(b == 0))
-+		return 0;
-+	return a / b;
-+}
-+
-+static void scalar32_min_max_udiv(struct bpf_reg_state *dst_reg,
-+				  struct bpf_reg_state *src_reg)
-+{
-+	u32 *dst_umin = &dst_reg->u32_min_value;
-+	u32 *dst_umax = &dst_reg->u32_max_value;
-+	u32 src_val = src_reg->u32_min_value; /* const divisor */
-+
-+	*dst_umin = __bpf_udiv32(*dst_umin, src_val);
-+	*dst_umax = __bpf_udiv32(*dst_umax, src_val);
-+
-+	/* Reset signed range to unbounded. */
-+	dst_reg->s32_min_value = S32_MIN;
-+	dst_reg->s32_max_value = S32_MAX;
-+}
-+
-+static void scalar_min_max_udiv(struct bpf_reg_state *dst_reg,
-+				struct bpf_reg_state *src_reg)
-+{
-+	u64 *dst_umin = &dst_reg->umin_value;
-+	u64 *dst_umax = &dst_reg->umax_value;
-+	u64 src_val = src_reg->umin_value; /* const divisor */
-+
-+	*dst_umin = __bpf_udiv(*dst_umin, src_val);
-+	*dst_umax = __bpf_udiv(*dst_umax, src_val);
-+
-+	/* Reset signed range to unbounded. */
-+	dst_reg->smin_value = S64_MIN;
-+	dst_reg->smax_value = S64_MAX;
-+}
-+
-+static void scalar32_min_max_sdiv(struct bpf_reg_state *dst_reg,
-+				  struct bpf_reg_state *src_reg)
-+{
-+	s32 *dst_smin = &dst_reg->s32_min_value;
-+	s32 *dst_smax = &dst_reg->s32_max_value;
-+	s32 src_val = src_reg->u32_min_value; /* const divisor */
-+	s32 res1, res2;
-+
-+	/* BPF div specification: S32_MIN / -1 = S32_MIN */
-+	if (*dst_smin == S32_MIN && src_val == -1) {
-+		/* If dividend is not a single number, e.g., [S32_MIN, S32_MIN+10]/(-1),
-+		 * the result = {S32_MIN} U [-(S32_MIN+10), -(S32_MIN+1)]
-+		 *            = {S32_MIN} U [S32_MAX-9, S32_MAX] = [S32_MIN, S32_MAX]
-+		 * which is unbounded.
-+		 */
-+		if (*dst_smax != S32_MIN)
-+			__mark_reg32_unbounded(dst_reg);
-+		return;
-+	}
-+
-+	res1 = __bpf_sdiv32(*dst_smin, src_val);
-+	res2 = __bpf_sdiv32(*dst_smax, src_val);
-+	*dst_smin = min(res1, res2);
-+	*dst_smax = max(res1, res2);
-+
-+	/* Reset unsigned range to unbounded. */
-+	dst_reg->u32_min_value = 0;
-+	dst_reg->u32_max_value = U32_MAX;
-+}
-+
-+static void scalar_min_max_sdiv(struct bpf_reg_state *dst_reg,
-+				struct bpf_reg_state *src_reg)
-+{
-+	s64 *dst_smin = &dst_reg->smin_value;
-+	s64 *dst_smax = &dst_reg->smax_value;
-+	s64 src_val = src_reg->umin_value; /* const divisor */
-+	s64 res1, res2;
-+
-+	/* BPF div specification: S64_MIN / -1 = S64_MIN */
-+	if (*dst_smin == S64_MIN && src_val == -1) {
-+		/* If dividend is not a single number, e.g., [S64_MIN, S64_MIN+10]/(-1),
-+		 * the result = {S64_MIN} U [-(S64_MIN+10), -(S64_MIN+1)]
-+		 *            = {S64_MIN} U [S64_MAX-9, S64_MAX] = [S64_MIN, S64_MAX]
-+		 * which is unbounded.
-+		 */
-+		if (*dst_smax != S64_MIN)
-+			__mark_reg64_unbounded(dst_reg);
-+		return;
-+	}
-+
-+	res1 = __bpf_sdiv(*dst_smin, src_val);
-+	res2 = __bpf_sdiv(*dst_smax, src_val);
-+	*dst_smin = min(res1, res2);
-+	*dst_smax = max(res1, res2);
-+
-+	/* Reset unsigned range to unbounded. */
-+	dst_reg->umin_value = 0;
-+	dst_reg->umax_value = U64_MAX;
-+}
-+
-+static bool scalar32_min_max_umod(struct bpf_reg_state *dst_reg,
-+				  struct bpf_reg_state *src_reg)
-+{
-+	u32 *dst_umin = &dst_reg->u32_min_value;
-+	u32 *dst_umax = &dst_reg->u32_max_value;
-+	u32 src_val = src_reg->u32_min_value; /* const divisor */
-+	u32 res_max = src_val - 1;
-+
-+	/* 1. BPF mod specification: x % 0 = x
-+	 *    If src_val == 0, i.e. divisor is certainly 0,
-+	 *    then the result remains unchanged, [a,b] % [0,0] = [a,b].
-+	 * 2. Optimization: If dst_umax <= res_max,
-+	 *    then the result remains unchanged. e.g., [2, 5] % 10 = [2, 5].
-+	 */
-+	if (src_val == 0 || *dst_umax <= res_max)
-+		return false;
-+
-+	*dst_umin = 0;
-+	*dst_umax = min(*dst_umax, res_max);
-+
-+	/* Reset signed range to unbounded. */
-+	dst_reg->s32_min_value = S32_MIN;
-+	dst_reg->s32_max_value = S32_MAX;
-+	return true;
-+}
-+
-+static bool scalar_min_max_umod(struct bpf_reg_state *dst_reg,
-+				struct bpf_reg_state *src_reg)
-+{
-+	u64 *dst_umin = &dst_reg->umin_value;
-+	u64 *dst_umax = &dst_reg->umax_value;
-+	u64 src_val = src_reg->umin_value; /* const divisor */
-+	u64 res_max = src_val - 1;
-+
-+	/* 1. BPF mod specification: x % 0 = x
-+	 *    If src_val == 0, i.e. divisor is certainly 0,
-+	 *    then the result remains unchanged, [a,b] % [0,0] = [a,b].
-+	 * 2. Optimization: If dst_umax <= res_max,
-+	 *    then the result remains unchanged. e.g., [2, 5] % 10 = [2, 5].
-+	 */
-+	if (src_val == 0 || *dst_umax <= res_max)
-+		return false;
-+
-+	*dst_umin = 0;
-+	*dst_umax = min(*dst_umax, res_max);
-+
-+	/* Reset signed range to unbounded. */
-+	dst_reg->smin_value = S64_MIN;
-+	dst_reg->smax_value = S64_MAX;
-+	return true;
-+}
-+
-+static bool scalar32_min_max_smod(struct bpf_reg_state *dst_reg,
-+				  struct bpf_reg_state *src_reg)
-+{
-+	s32 *dst_smin = &dst_reg->s32_min_value;
-+	s32 *dst_smax = &dst_reg->s32_max_value;
-+	s32 src_val = src_reg->s32_min_value; /* const divisor */
-+	u32 src_abs; /* unsigned to avoid overflow */
-+	s32 res_max_abs;
-+
-+	/* 1. BPF mod specification: x % 0 = x
-+	 *    If src_val == 0, i.e. divisor is certainly 0,
-+	 *    then the result remains unchanged, [a,b] % [0,0] = [a,b].
-+	 */
-+	if (src_val == 0)
-+		return false;
-+
-+	/* Safe absolute value calculation:
-+	 * If src_val == S32_MIN (-2147483648), src_abs becomes 2147483648.
-+	 */
-+	src_abs = (src_val > 0) ? (u32)src_val : -(u32)src_val;
-+
-+	/* Calculate the maximum possible absolute value of the result.
-+	 * Even if src_abs is 2147483648 (S32_MIN), subtracting 1 gives
-+	 * 2147483647 (S32_MAX), which fits perfectly in s32.
-+	 */
-+	res_max_abs = src_abs - 1;
-+
-+	/* 2. Optimization: If the dividend is already within the result range,
-+	 *    then the result remains unchanged. e.g., [-2, 5] % 10 = [-2, 5].
-+	 */
-+	if (*dst_smin >= -res_max_abs && *dst_smax <= res_max_abs)
-+		return false;
-+
-+	/* General case: result has the same sign as the dividend. */
-+	if (*dst_smin >= 0) {
-+		*dst_smin = 0;
-+		*dst_smax = min(*dst_smax, res_max_abs);
-+	} else if (*dst_smax <= 0) {
-+		*dst_smax = 0;
-+		*dst_smin = max(*dst_smin, -res_max_abs);
-+	} else {
-+		*dst_smin = -res_max_abs;
-+		*dst_smax = res_max_abs;
-+	}
-+
-+	/* Reset unsigned range to unbounded. */
-+	dst_reg->u32_min_value = 0;
-+	dst_reg->u32_max_value = U32_MAX;
-+	return true;
-+}
-+
-+static bool scalar_min_max_smod(struct bpf_reg_state *dst_reg,
-+				struct bpf_reg_state *src_reg)
-+{
-+	s64 *dst_smin = &dst_reg->smin_value;
-+	s64 *dst_smax = &dst_reg->smax_value;
-+	s64 src_val = src_reg->smin_value; /* const divisor */
-+	u64 src_abs; /* unsigned to avoid overflow */
-+	s64 res_max_abs;
-+
-+	/* 1. BPF mod specification: x % 0 = x
-+	 *    If src_val == 0, i.e. divisor is certainly 0,
-+	 *    then the result remains unchanged, [a,b] % [0,0] = [a,b].
-+	 */
-+	if (src_val == 0)
-+		return false;
-+
-+	/* Safe absolute value calculation:
-+	 * If src_val == S64_MIN (-2^63), src_abs becomes 2^63.
-+	 */
-+	src_abs = (src_val > 0) ? (u64)src_val : -(u64)src_val;
-+
-+	/* Calculate the maximum possible absolute value of the result.
-+	 * Even if src_abs is 2^63 (S64_MIN), subtracting 1 gives
-+	 * 2^63 - 1 (S64_MAX), which fits perfectly in s64.
-+	 */
-+	res_max_abs = src_abs - 1;
-+
-+	/* Optimization: If the dividend is already within the result range,
-+	 * then the result remains unchanged.
-+	 * Example: [-2, 5] % 10 = [-2, 5].
-+	 */
-+	if (*dst_smin >= -res_max_abs && *dst_smax <= res_max_abs)
-+		return false;
-+
-+	/* General case: result has the same sign as the dividend. */
-+	if (*dst_smin >= 0) {
-+		*dst_smin = 0;
-+		*dst_smax = min(*dst_smax, res_max_abs);
-+	} else if (*dst_smax <= 0) {
-+		*dst_smax = 0;
-+		*dst_smin = max(*dst_smin, -res_max_abs);
-+	} else {
-+		*dst_smin = -res_max_abs;
-+		*dst_smax = res_max_abs;
-+	}
-+
-+	/* Reset unsigned range to unbounded. */
-+	dst_reg->umin_value = 0;
-+	dst_reg->umax_value = U64_MAX;
-+	return true;
-+}
-+
- static void scalar32_min_max_and(struct bpf_reg_state *dst_reg,
- 				 struct bpf_reg_state *src_reg)
- {
-@@ -15482,6 +15759,13 @@ static bool is_safe_to_compute_dst_reg_range(struct bpf_insn *insn,
- 	case BPF_MUL:
- 		return true;
- 
-+	/* Division and modulo operators range is only safe to compute when the
-+	 * divisor is a constant.
-+	 */
-+	case BPF_DIV:
-+	case BPF_MOD:
-+		return src_is_const;
-+
- 	/* Shift operators range is only computable if shift dimension operand
- 	 * is a constant. Shifts greater than 31 or 63 are undefined. This
- 	 * includes shifts by a negative number.
-@@ -15505,6 +15789,7 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
- 				      struct bpf_reg_state src_reg)
- {
- 	u8 opcode = BPF_OP(insn->code);
-+	s16 off = insn->off;
- 	bool alu32 = (BPF_CLASS(insn->code) != BPF_ALU64);
- 	int ret;
- 
-@@ -15556,6 +15841,47 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
- 		scalar32_min_max_mul(dst_reg, &src_reg);
- 		scalar_min_max_mul(dst_reg, &src_reg);
- 		break;
-+	case BPF_DIV:
-+		if (alu32) {
-+			if (off == 1)
-+				scalar32_min_max_sdiv(dst_reg, &src_reg);
-+			else
-+				scalar32_min_max_udiv(dst_reg, &src_reg);
-+			__mark_reg64_unbounded(dst_reg);
-+		} else {
-+			if (off == 1)
-+				scalar_min_max_sdiv(dst_reg, &src_reg);
-+			else
-+				scalar_min_max_udiv(dst_reg, &src_reg);
-+			__mark_reg32_unbounded(dst_reg);
-+		}
-+		/* Since we don't have precise tnum analysis for division yet,
-+		 * we must reset var_off to unknown to avoid inconsistency.
-+		 * Subsequent reg_bounds_sync() will rebuild it from scalar bounds.
-+		 */
-+		dst_reg->var_off = tnum_unknown;
-+		break;
-+	case BPF_MOD:
-+		bool changed = true;
-+		if (alu32)
-+			changed = (off == 1) ? scalar32_min_max_smod(dst_reg, &src_reg)
-+						: scalar32_min_max_umod(dst_reg, &src_reg);
-+		else
-+			changed = (off == 1) ? scalar_min_max_smod(dst_reg, &src_reg)
-+						: scalar_min_max_umod(dst_reg, &src_reg);
-+		/* Similar to BPF_DIV, we need to reset var_off and 32/64 range
-+		 * to unknown (unbounded). But if the result is equal to dividend
-+		 * (due to special cases in BPF_MOD analysis), we can also keep
-+		 * them unchanged.
-+		 */
-+		if (changed) {
-+			if (alu32)
-+				__mark_reg64_unbounded(dst_reg);
-+			else
-+				__mark_reg32_unbounded(dst_reg);
-+			dst_reg->var_off = tnum_unknown;
-+		}
-+		break;
- 	case BPF_AND:
- 		dst_reg->var_off = tnum_and(dst_reg->var_off, src_reg.var_off);
- 		scalar32_min_max_and(dst_reg, &src_reg);
-diff --git a/tools/testing/selftests/bpf/progs/verifier_value_illegal_alu.c b/tools/testing/selftests/bpf/progs/verifier_value_illegal_alu.c
-index 2129e4353fd9..4d8273c258d5 100644
---- a/tools/testing/selftests/bpf/progs/verifier_value_illegal_alu.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_value_illegal_alu.c
-@@ -173,14 +173,15 @@ __naked void flow_keys_illegal_variable_offset_alu(void)
- 	asm volatile("					\
- 	r6 = r1;					\
- 	r7 = *(u64*)(r6 + %[flow_keys_off]);		\
--	r8 = 8;						\
--	r8 /= 1;					\
++	asm volatile ("					\
 +	call %[bpf_get_prandom_u32];			\
-+	r8 = r0;					\
- 	r8 &= 8;					\
- 	r7 += r8;					\
- 	r0 = *(u64*)(r7 + 0);				\
- 	exit;						\
- "	:
--	: __imm_const(flow_keys_off, offsetof(struct __sk_buff, flow_keys))
-+	: __imm_const(flow_keys_off, offsetof(struct __sk_buff, flow_keys)),
++	w1 = w0;					\
++	w1 &= 8;					\
++	w1 |= 1;					\
++	w1 /= 3;					\
++	if w1 > 3 goto l0_%=;				\
++	r0 = 0;						\
++	exit;						\
++l0_%=:	r0 = *(u64 *)(r1 + 0);				\
++	exit;						\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("UDIV32, zero divisor")
++__success __retval(0) __log_level(2)
++__msg("w1 /= w2 {{.*}}; R1=0 R2=0")
++__naked void udiv32_zero_divisor(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	w1 = w0;					\
++	w1 &= 8;					\
++	w1 |= 1;					\
++	w2 = 0;						\
++	w1 /= w2;					\
++	if w1 != 0 goto l0_%=;				\
++	r0 = 0;						\
++	exit;						\
++l0_%=:	r0 = *(u64 *)(r1 + 0);				\
++	exit;						\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("UDIV64, positive divisor")
++__success __retval(0) __log_level(2)
++__msg("r1 /= 3 {{.*}}; R1=scalar(smin=smin32=0,smax=umax=smax32=umax32=3,var_off=(0x0; 0x3))")
++__naked void udiv64_pos_divisor(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	r1 = r0;					\
++	r1 &= 8;					\
++	r1 |= 1;					\
++	r1 /= 3;					\
++	if r1 > 3 goto l0_%=;				\
++	r0 = 0;						\
++	exit;						\
++l0_%=:	r0 = *(u64 *)(r1 + 0);				\
++	exit;						\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("UDIV64, zero divisor")
++__success __retval(0) __log_level(2)
++__msg("r1 /= r2 {{.*}}; R1=0 R2=0")
++__naked void udiv64_zero_divisor(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	r1 = r0;					\
++	r1 &= 8;					\
++	r1 |= 1;					\
++	r2 = 0;						\
++	r1 /= r2;					\
++	if r1 != 0 goto l0_%=;				\
++	r0 = 0;						\
++	exit;						\
++l0_%=:	r0 = *(u64 *)(r1 + 0);				\
++	exit;						\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("SDIV32, positive divisor")
++__success __retval(0) __log_level(2)
++__msg("w1 s/= 3 {{.*}}; R1=scalar(smin=0,smax=umax=0xffffffff,smin32=-2,smax32=3,var_off=(0x0; 0xffffffff))")
++__naked void sdiv32_pos_divisor(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	w1 = w0;					\
++	if w1 s< -8 goto l0_%=;				\
++	if w1 s> 10 goto l0_%=;				\
++	w1 s/= 3;					\
++	if w1 s< -2 goto l1_%=;				\
++	if w1 s> 3 goto l1_%=;				\
++l0_%=:	r0 = 0;						\
++	exit;						\
++l1_%=:	r0 = *(u64 *)(r1 + 0);				\
++	exit;						\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("SDIV32, negative divisor")
++__success __retval(0) __log_level(2)
++__msg("w1 s/= -3 {{.*}}; R1=scalar(smin=0,smax=umax=0xffffffff,smin32=-3,smax32=2,var_off=(0x0; 0xffffffff))")
++__naked void sdiv32_neg_divisor(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	w1 = w0;					\
++	if w1 s< -8 goto l0_%=;				\
++	if w1 s> 10 goto l0_%=;				\
++	w1 s/= -3;					\
++	if w1 s< -3 goto l1_%=;				\
++	if w1 s> 2 goto l1_%=;				\
++l0_%=:	r0 = 0;						\
++	exit;						\
++l1_%=:	r0 = *(u64 *)(r1 + 0);				\
++	exit;						\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("SDIV32, zero divisor")
++__success __retval(0) __log_level(2)
++__msg("w1 s/= w2 {{.*}}; R1=0 R2=0")
++__naked void sdiv32_zero_divisor(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	w1 = w0;					\
++	w1 &= 8;					\
++	w1 |= 1;					\
++	w2 = 0;						\
++	w1 s/= w2;					\
++	if w1 != 0 goto l0_%=;				\
++	r0 = 0;						\
++	exit;						\
++l0_%=:	r0 = *(u64 *)(r1 + 0);				\
++	exit;						\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("SDIV32, overflow (S32_MIN/-1)")
++__success __retval(0) __log_level(2)
++__msg("w1 s/= -1 {{.*}}; R1=scalar(smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff))")
++__naked void sdiv32_overflow_1(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	w1 = w0;					\
++	w2 = %[int_min];				\
++	w2 += 10;					\
++	if w1 s> w2 goto l0_%=;				\
++	w1 s/= -1;					\
++l0_%=:	r0 = 0;						\
++	exit;						\
++"	:
++	: __imm_const(int_min, INT_MIN),
 +	  __imm(bpf_get_prandom_u32)
- 	: __clobber_all);
- }
- 
-diff --git a/tools/testing/selftests/bpf/verifier/precise.c b/tools/testing/selftests/bpf/verifier/precise.c
-index 59a020c35647..061d98f6e9bb 100644
---- a/tools/testing/selftests/bpf/verifier/precise.c
-+++ b/tools/testing/selftests/bpf/verifier/precise.c
-@@ -229,11 +229,11 @@
- {
- 	"precise: program doesn't prematurely prune branches",
- 	.insns = {
--		BPF_ALU64_IMM(BPF_MOV, BPF_REG_6, 0x400),
-+		BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_get_prandom_u32),
-+		BPF_ALU64_REG(BPF_MOV, BPF_REG_6, BPF_REG_0),
- 		BPF_ALU64_IMM(BPF_MOV, BPF_REG_7, 0),
- 		BPF_ALU64_IMM(BPF_MOV, BPF_REG_8, 0),
- 		BPF_ALU64_IMM(BPF_MOV, BPF_REG_9, 0x80000000),
--		BPF_ALU64_IMM(BPF_MOD, BPF_REG_6, 0x401),
- 		BPF_JMP_IMM(BPF_JA, 0, 0, 0),
- 		BPF_JMP_REG(BPF_JLE, BPF_REG_6, BPF_REG_9, 2),
- 		BPF_ALU64_IMM(BPF_MOD, BPF_REG_6, 1),
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("SDIV32, overflow (S32_MIN/-1), constant dividend")
++__success __retval(0) __log_level(2)
++__msg("w1 s/= -1 {{.*}}; R1=0x80000000")
++__naked void sdiv32_overflow_2(void)
++{
++	asm volatile ("					\
++	w1 = %[int_min];				\
++	w1 s/= -1;					\
++	if w1 != %[int_min] goto l0_%=;			\
++	r0 = 0;						\
++	exit;						\
++l0_%=:	r0 = *(u64 *)(r1 + 0);				\
++	exit;						\
++"	:
++	: __imm_const(int_min, INT_MIN)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("SDIV64, positive divisor")
++__success __retval(0) __log_level(2)
++__msg("r1 s/= 3 {{.*}}; R1=scalar(smin=smin32=-2,smax=smax32=3)")
++__naked void sdiv64_pos_divisor(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	r1 = r0;					\
++	if r1 s< -8 goto l0_%=;				\
++	if r1 s> 10 goto l0_%=;				\
++	r1 s/= 3;					\
++	if r1 s< -2 goto l1_%=;				\
++	if r1 s> 3 goto l1_%=;				\
++l0_%=:	r0 = 0;						\
++	exit;						\
++l1_%=:	r0 = *(u64 *)(r1 + 0);				\
++	exit;						\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("SDIV64, negative divisor")
++__success __retval(0) __log_level(2)
++__msg("r1 s/= -3 {{.*}}; R1=scalar(smin=smin32=-3,smax=smax32=2)")
++__naked void sdiv64_neg_divisor(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	r1 = r0;					\
++	if r1 s< -8 goto l0_%=;				\
++	if r1 s> 10 goto l0_%=;				\
++	r1 s/= -3;					\
++	if r1 s< -3 goto l1_%=;				\
++	if r1 s> 2 goto l1_%=;				\
++l0_%=:	r0 = 0;						\
++	exit;						\
++l1_%=:	r0 = *(u64 *)(r1 + 0);				\
++	exit;						\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("SDIV64, zero divisor")
++__success __retval(0) __log_level(2)
++__msg("r1 s/= r2 {{.*}}; R1=0 R2=0")
++__naked void sdiv64_zero_divisor(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	r1 = r0;					\
++	r1 &= 8;					\
++	r1 |= 1;					\
++	r2 = 0;						\
++	r1 s/= r2;					\
++	if r1 != 0 goto l0_%=;				\
++	r0 = 0;						\
++	exit;						\
++l0_%=:	r0 = *(u64 *)(r1 + 0);				\
++	exit;						\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("SDIV64, overflow (S64_MIN/-1)")
++__success __retval(0) __log_level(2)
++__msg("r1 s/= -1 {{.*}}; R1=scalar()")
++__naked void sdiv64_overflow_1(void)
++{
++	asm volatile ("					\
++	call %[bpf_ktime_get_ns];			\
++	r1 = r0;					\
++	r2 = %[llong_min] ll;				\
++	r2 += 10;					\
++	if r1 s> r2 goto l0_%=;				\
++	r1 s/= -1;					\
++l0_%=:	r0 = 0;						\
++	exit;						\
++"	:
++	: __imm_const(llong_min, LLONG_MIN),
++	  __imm(bpf_ktime_get_ns)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("SDIV64, overflow (S64_MIN/-1), constant dividend")
++__success __retval(0) __log_level(2)
++__msg("r1 s/= -1 {{.*}}; R1=0x8000000000000000")
++__naked void sdiv64_overflow_2(void)
++{
++	asm volatile ("					\
++	r1 = %[llong_min] ll;				\
++	r1 s/= -1;					\
++	r2 = %[llong_min] ll;				\
++	if r1 != r2 goto l0_%=;				\
++	r0 = 0;						\
++	exit;						\
++l0_%=:	r0 = *(u64 *)(r1 + 0);				\
++	exit;						\
++"	:
++	: __imm_const(llong_min, LLONG_MIN)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("UMOD32, positive divisor")
++__success __retval(0) __log_level(2)
++__msg("w1 %= 3 {{.*}}; R1=scalar(smin=smin32=0,smax=umax=smax32=umax32=2,var_off=(0x0; 0x3))")
++__naked void umod32_pos_divisor(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	w1 = w0;					\
++	w1 &= 8;					\
++	w1 |= 1;					\
++	w1 %%= 3;					\
++	if w1 > 3 goto l0_%=;				\
++	r0 = 0;						\
++	exit;						\
++l0_%=:	r0 = *(u64 *)(r1 + 0);				\
++	exit;						\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("UMOD32, positive divisor, small dividend")
++__success __retval(0) __log_level(2)
++__msg("w1 %= 10 {{.*}}; R1=scalar(smin=umin=smin32=umin32=1,smax=umax=smax32=umax32=9,var_off=(0x1; 0x8))")
++__naked void umod32_pos_divisor_unchanged(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	w1 = w0;					\
++	w1 &= 8;					\
++	w1 |= 1;					\
++	w1 %%= 10;					\
++	if w1 < 1 goto l0_%=;				\
++	if w1 > 9 goto l0_%=;				\
++	if w1 & 1 != 1 goto l0_%=;			\
++	r0 = 0;						\
++	exit;						\
++l0_%=:	r0 = *(u64 *)(r1 + 0);				\
++	exit;						\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("UMOD32, zero divisor")
++__success __retval(0) __log_level(2)
++__msg("w1 %= w2 {{.*}}; R1=scalar(smin=umin=smin32=umin32=1,smax=umax=smax32=umax32=9,var_off=(0x1; 0x8)) R2=0")
++__naked void umod32_zero_divisor(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	w1 = w0;					\
++	w1 &= 8;					\
++	w1 |= 1;					\
++	w2 = 0;						\
++	w1 %%= w2;					\
++	if w1 < 1 goto l0_%=;				\
++	if w1 > 9 goto l0_%=;				\
++	if w1 & 1 != 1 goto l0_%=;			\
++	r0 = 0;						\
++	exit;						\
++l0_%=:	r0 = *(u64 *)(r1 + 0);				\
++	exit;						\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("UMOD64, positive divisor")
++__success __retval(0) __log_level(2)
++__msg("r1 %= 3 {{.*}}; R1=scalar(smin=smin32=0,smax=umax=smax32=umax32=2,var_off=(0x0; 0x3))")
++__naked void umod64_pos_divisor(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	r1 = r0;					\
++	r1 &= 8;					\
++	r1 |= 1;					\
++	r1 %%= 3;					\
++	if r1 > 3 goto l0_%=;				\
++	r0 = 0;						\
++	exit;						\
++l0_%=:	r0 = *(u64 *)(r1 + 0);				\
++	exit;						\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("UMOD64, positive divisor, small dividend")
++__success __retval(0) __log_level(2)
++__msg("r1 %= 10 {{.*}}; R1=scalar(smin=umin=smin32=umin32=1,smax=umax=smax32=umax32=9,var_off=(0x1; 0x8))")
++__naked void umod64_pos_divisor_unchanged(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	r1 = r0;					\
++	r1 &= 8;					\
++	r1 |= 1;					\
++	r1 %%= 10;					\
++	if r1 < 1 goto l0_%=;				\
++	if r1 > 9 goto l0_%=;				\
++	if r1 & 1 != 1 goto l0_%=;			\
++	r0 = 0;						\
++	exit;						\
++l0_%=:	r0 = *(u64 *)(r1 + 0);				\
++	exit;						\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("UMOD64, zero divisor")
++__success __retval(0) __log_level(2)
++__msg("r1 %= r2 {{.*}}; R1=scalar(smin=umin=smin32=umin32=1,smax=umax=smax32=umax32=9,var_off=(0x1; 0x8)) R2=0")
++__naked void umod64_zero_divisor(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	r1 = r0;					\
++	r1 &= 8;					\
++	r1 |= 1;					\
++	r2 = 0;						\
++	r1 %%= r2;					\
++	if r1 < 1 goto l0_%=;				\
++	if r1 > 9 goto l0_%=;				\
++	if r1 & 1 != 1 goto l0_%=;			\
++	r0 = 0;						\
++	exit;						\
++l0_%=:	r0 = *(u64 *)(r1 + 0);				\
++	exit;						\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("SMOD32, positive divisor")
++__success __retval(0) __log_level(2)
++__msg("w1 s%= 3 {{.*}}; R1=scalar(smin=0,smax=umax=0xffffffff,smin32=-2,smax32=2,var_off=(0x0; 0xffffffff))")
++__naked void smod32_pos_divisor(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	w1 = w0;					\
++	if w1 s< -8 goto l0_%=;				\
++	if w1 s> 10 goto l0_%=;				\
++	w1 s%%= 3;					\
++	if w1 s< -2 goto l1_%=;				\
++	if w1 s> 2 goto l1_%=;				\
++l0_%=:	r0 = 0;						\
++	exit;						\
++l1_%=:	r0 = *(u64 *)(r1 + 0);				\
++	exit;						\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("SMOD32, positive divisor, small dividend")
++__success __retval(0) __log_level(2)
++__msg("w1 s%= 11 {{.*}}; R1=scalar(smin=0,smax=umax=0xffffffff,smin32=-8,smax32=10,var_off=(0x0; 0xffffffff))")
++__naked void smod32_pos_divisor_unchanged(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	w1 = w0;					\
++	if w1 s< -8 goto l0_%=;				\
++	if w1 s> 10 goto l0_%=;				\
++	w1 s%%= 11;					\
++	if w1 s< -8 goto l1_%=;				\
++	if w1 s> 10 goto l1_%=;				\
++l0_%=:	r0 = 0;						\
++	exit;						\
++l1_%=:	r0 = *(u64 *)(r1 + 0);				\
++	exit;						\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("SMOD32, negative divisor")
++__success __retval(0) __log_level(2)
++__msg("w1 s%= -3 {{.*}}; R1=scalar(smin=0,smax=umax=0xffffffff,smin32=-2,smax32=2,var_off=(0x0; 0xffffffff))")
++__naked void smod32_neg_divisor(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	w1 = w0;					\
++	if w1 s< -8 goto l0_%=;				\
++	if w1 s> 10 goto l0_%=;				\
++	w1 s%%= -3;					\
++	if w1 s< -2 goto l1_%=;				\
++	if w1 s> 2 goto l1_%=;				\
++l0_%=:	r0 = 0;						\
++	exit;						\
++l1_%=:	r0 = *(u64 *)(r1 + 0);				\
++	exit;						\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("SMOD32, negative divisor, small dividend")
++__success __retval(0) __log_level(2)
++__msg("w1 s%= -11 {{.*}}; R1=scalar(smin=0,smax=umax=0xffffffff,smin32=-8,smax32=10,var_off=(0x0; 0xffffffff))")
++__naked void smod32_neg_divisor_unchanged(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	w1 = w0;					\
++	if w1 s< -8 goto l0_%=;				\
++	if w1 s> 10 goto l0_%=;				\
++	w1 s%%= -11;					\
++	if w1 s< -8 goto l1_%=;				\
++	if w1 s> 10 goto l1_%=;				\
++l0_%=:	r0 = 0;						\
++	exit;						\
++l1_%=:	r0 = *(u64 *)(r1 + 0);				\
++	exit;						\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("SMOD32, zero divisor")
++__success __retval(0) __log_level(2)
++__msg("w1 s%= w2 {{.*}}; R1=scalar(smin=0,smax=umax=0xffffffff,smin32=-8,smax32=10,var_off=(0x0; 0xffffffff)) R2=0")
++__naked void smod32_zero_divisor(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	w1 = w0;					\
++	if w1 s< -8 goto l0_%=;				\
++	if w1 s> 10 goto l0_%=;				\
++	w2 = 0;					 \
++	w1 s%%= w2;					\
++	if w1 s< -8 goto l1_%=;				\
++	if w1 s> 10 goto l1_%=;				\
++l0_%=:	r0 = 0;						\
++	exit;						\
++l1_%=:	r0 = *(u64 *)(r1 + 0);				\
++	exit;						\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("SMOD32, overflow (S32_MIN%-1)")
++__success __retval(0) __log_level(2)
++__msg("w1 s%= -1 {{.*}}; R1=0")
++__naked void smod32_overflow_1(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	w1 = w0;					\
++	w2 = %[int_min];				\
++	w2 += 10;					\
++	if w1 s> w2 goto l0_%=;				\
++	w1 s%%= -1;					\
++	if w1 != 0 goto l1_%=;				\
++l0_%=:	r0 = 0;						\
++	exit;						\
++l1_%=:	r0 = *(u64 *)(r1 + 0);				\
++	exit;						\
++"	:
++	: __imm_const(int_min, INT_MIN),
++	  __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("SMOD32, overflow (S32_MIN%-1), constant dividend")
++__success __retval(0) __log_level(2)
++__msg("w1 s%= -1 {{.*}}; R1=0")
++__naked void smod32_overflow_2(void)
++{
++	asm volatile ("					\
++	w1 = %[int_min];				\
++	w1 s%%= -1;					\
++	if w1 != 0 goto l0_%=;				\
++	r0 = 0;						\
++	exit;						\
++l0_%=:	r0 = *(u64 *)(r1 + 0);				\
++	exit;						\
++"	:
++	: __imm_const(int_min, INT_MIN)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("SMOD64, positive divisor")
++__success __retval(0) __log_level(2)
++__msg("r1 s%= 3 {{.*}}; R1=scalar(smin=smin32=-2,smax=smax32=2)")
++__naked void smod64_pos_divisor(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	r1 = r0;					\
++	if r1 s< -8 goto l0_%=;				\
++	if r1 s> 10 goto l0_%=;				\
++	r1 s%%= 3;					\
++	if r1 s< -2 goto l1_%=;				\
++	if r1 s> 2 goto l1_%=;				\
++l0_%=:	r0 = 0;						\
++	exit;						\
++l1_%=:	r0 = *(u64 *)(r1 + 0);				\
++	exit;						\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("SMOD64, positive divisor, small dividend")
++__success __retval(0) __log_level(2)
++__msg("r1 s%= 11 {{.*}}; R1=scalar(smin=smin32=-8,smax=smax32=10)")
++__naked void smod64_pos_divisor_unchanged(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	r1 = r0;					\
++	if r1 s< -8 goto l0_%=;				\
++	if r1 s> 10 goto l0_%=;				\
++	r1 s%%= 11;					\
++	if r1 s< -8 goto l1_%=;				\
++	if r1 s> 10 goto l1_%=;				\
++l0_%=:	r0 = 0;						\
++	exit;						\
++l1_%=:	r0 = *(u64 *)(r1 + 0);				\
++	exit;						\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("SMOD64, negative divisor")
++__success __retval(0) __log_level(2)
++__msg("r1 s%= -3 {{.*}}; R1=scalar(smin=smin32=-2,smax=smax32=2)")
++__naked void smod64_neg_divisor(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	r1 = r0;					\
++	if r1 s< -8 goto l0_%=;				\
++	if r1 s> 10 goto l0_%=;				\
++	r1 s%%= -3;					\
++	if r1 s< -2 goto l1_%=;				\
++	if r1 s> 2 goto l1_%=;				\
++l0_%=:	r0 = 0;						\
++	exit;						\
++l1_%=:	r0 = *(u64 *)(r1 + 0);				\
++	exit;						\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("SMOD64, negative divisor, small dividend")
++__success __retval(0) __log_level(2)
++__msg("r1 s%= -11 {{.*}}; R1=scalar(smin=smin32=-8,smax=smax32=10)")
++__naked void smod64_neg_divisor_unchanged(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	r1 = r0;					\
++	if r1 s< -8 goto l0_%=;				\
++	if r1 s> 10 goto l0_%=;				\
++	r1 s%%= -11;					\
++	if r1 s< -8 goto l1_%=;				\
++	if r1 s> 10 goto l1_%=;				\
++l0_%=:	r0 = 0;						\
++	exit;						\
++l1_%=:	r0 = *(u64 *)(r1 + 0);				\
++	exit;						\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("SMOD64, zero divisor")
++__success __retval(0) __log_level(2)
++__msg("r1 s%= r2 {{.*}}; R1=scalar(smin=smin32=-8,smax=smax32=10) R2=0")
++__naked void smod64_zero_divisor(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	r1 = r0;					\
++	if r1 s< -8 goto l0_%=;				\
++	if r1 s> 10 goto l0_%=;				\
++	r2 = 0;					 \
++	r1 s%%= r2;					\
++	if r1 s< -8 goto l1_%=;				\
++	if r1 s> 10 goto l1_%=;				\
++l0_%=:	r0 = 0;						\
++	exit;						\
++l1_%=:	r0 = *(u64 *)(r1 + 0);				\
++	exit;						\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("SMOD64, overflow (S64_MIN%-1)")
++__success __retval(0) __log_level(2)
++__msg("r1 s%= -1 {{.*}}; R1=0")
++__naked void smod64_overflow_1(void)
++{
++	asm volatile ("					\
++	call %[bpf_ktime_get_ns];			\
++	r1 = r0;					\
++	r2 = %[llong_min] ll;				\
++	r2 += 10;					\
++	if r1 s> r2 goto l0_%=;				\
++	r1 s%%= -1;					\
++	if r1 != 0 goto l1_%=;				\
++l0_%=:	r0 = 0;						\
++	exit;						\
++l1_%=:	r0 = *(u64 *)(r1 + 0);				\
++	exit;						\
++"	:
++	: __imm_const(llong_min, LLONG_MIN),
++	  __imm(bpf_ktime_get_ns)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("SMOD64, overflow (S64_MIN%-1), constant dividend")
++__success __retval(0) __log_level(2)
++__msg("r1 s%= -1 {{.*}}; R1=0")
++__naked void smod64_overflow_2(void)
++{
++	asm volatile ("					\
++	r1 = %[llong_min] ll;				\
++	r1 s%%= -1;					\
++	if r1 != 0 goto l0_%=;				\
++	r0 = 0;						\
++	exit;						\
++l0_%=:	r0 = *(u64 *)(r1 + 0);				\
++	exit;						\
++"	:
++	: __imm_const(llong_min, LLONG_MIN)
++	: __clobber_all);
++}
 -- 
 2.52.0
 
