@@ -1,158 +1,171 @@
-Return-Path: <bpf+bounces-78662-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78661-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F273D16B71
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 06:38:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 43CD4D16B6B
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 06:38:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id C3C12300CF06
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 05:38:16 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 56FB2300CEFD
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 05:38:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 937252E62A2;
-	Tue, 13 Jan 2026 05:38:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7114235BDDF;
+	Tue, 13 Jan 2026 05:38:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="BkdaaE9/"
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="cVkF3omA"
 X-Original-To: bpf@vger.kernel.org
-Received: from fhigh-b5-smtp.messagingengine.com (fhigh-b5-smtp.messagingengine.com [202.12.124.156])
+Received: from flow-b5-smtp.messagingengine.com (flow-b5-smtp.messagingengine.com [202.12.124.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9B622C235D;
-	Tue, 13 Jan 2026 05:38:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.156
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD4DB2343C0;
+	Tue, 13 Jan 2026 05:37:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.140
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768282692; cv=none; b=VeKn8ExdHP0vhTwm2gSKXvk551/qQcXm349ENWphCY6seDTYVyfo+JMirne9BzZpfOe/QCMaIMxtQcnCmetrvfBiyvPmiOCCFVr6tKqZ4REoiheiji3cOIZffbLnXODwOokn1j+ZR5fufSBltVhMkBQNOH+P3YzeIaqgBkqJr10=
+	t=1768282680; cv=none; b=au6FPa2818T7diEsa4FSYDbqvH99KhlEvuidKdwyDWWQCiMvgyElRrQ5z6wd1FfyX2uaiOOWCmiT+kqOJLOefMxg7UtQmmEb0bSiYATSk9sTqKZonNeUSt0/5KaMDcbudbnuBhJPjaHstwLEQAEH5IFLqHSqmmLW72bThTVj8Wc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768282692; c=relaxed/simple;
-	bh=6BaawB/5vhO7v/rumx07zT9BPZyyoYZDc4iUgex6uao=;
-	h=To:Cc:Message-ID:In-Reply-To:References:From:Subject:Date; b=joqkWf3zcI9ENORlrSHPkQLBUrtFBg7CIVtfX5wNbcmQLSk4z/lU7m7AW/IDIWh/ZlE5pXjcSBncU7tnjBE2Keb5M0igFqouUuLu1KVkiVWDyIhOiWe4U3qFYjUcr3dSOwoo0SeuoHH0VxiveoZq04FPck3RUp1sExVcRlmWNcA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=BkdaaE9/; arc=none smtp.client-ip=202.12.124.156
+	s=arc-20240116; t=1768282680; c=relaxed/simple;
+	bh=puNEXADyslbCDUE/v5uUZSgeX6mBadwDTQUGSLFJl80=;
+	h=Message-ID:From:Subject:Date:To:Cc; b=R01mAg630skoJzIhstX1+y7KNQhgmM0y5c0K8HhXos6Pe2qKw8wu7gD27a8zFsP8F8vRCgAumwRc5gwtFIuoRU6RnFgnaxZUjtLpTeV199Hwm04/TXp9vu0yXk2d7uXfuUh68qtFliAi6MOJ0yjRkOeBItsab114z8/nmZAmpPo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=cVkF3omA; arc=none smtp.client-ip=202.12.124.140
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id 7E5EA7A0095;
-	Tue, 13 Jan 2026 00:38:09 -0500 (EST)
+Received: from phl-compute-12.internal (phl-compute-12.internal [10.202.2.52])
+	by mailflow.stl.internal (Postfix) with ESMTP id BE8EF1300343;
+	Tue, 13 Jan 2026 00:37:56 -0500 (EST)
 Received: from phl-frontend-04 ([10.202.2.163])
-  by phl-compute-05.internal (MEProxy); Tue, 13 Jan 2026 00:38:10 -0500
+  by phl-compute-12.internal (MEProxy); Tue, 13 Jan 2026 00:37:57 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-	:feedback-id:from:from:in-reply-to:in-reply-to:message-id
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1768282689; x=
-	1768369089; bh=nL9oXUgaQPIU6S4mzvMLiKSGthFWHu05i1DeuxQmtGs=; b=B
-	kdaaE9/oX7QGz5QHKWUNZ4An3q2fXEMCkfsh4lC+F9/IEaVj1yMi10ugkkWh4O9X
-	1/M3K8L0CEozQLX7MnMDdc8sc9aAucY5J2IUrhom4LApPHwQ0Yz0qdg6YTG0drtw
-	LzrS+P/p9tHKdwmQE0hVAqqMwuPbbhJNY51ydx4rgXtzJQ72GA1KnNIqoDZGmV7e
-	8C6RmkBR7ZBGbQwqK5zwsLZxCM/VQR727BCqvFxhc5r1WfU7L3xQdq2/yoTitzO4
-	ngADxD4rYNH3cOdIK34ws/L23izVcc+CZzh2hS+ngTMyBZnGyVYar0IzTBix98rP
-	u4pdL9xHfPudO3ShY4y0g==
-X-ME-Sender: <xms:QNplaTkNm-MXZh55LywoqMCdyW4erTATlkQ8LhMM8vliQp3qx9igvA>
-    <xme:QNplaawenKMlmyo-hM1sXO_Us1nq3JDv6tv6L5a4i2qeLkzM9tJvSUrbQusjE9VZJ
-    nnsnbPBQBxyqJS5lOLQ8nk8BkGBJabYF3erA8fiEkSbmDsyRzpFFljo>
-X-ME-Received: <xmr:QNplaSLXVKQLjzX-d3nSWRzEI6H3fYIKeWi2Amaw9UZGw2Cl2Rokvo7y8pZoDU4nQDas3hQ_XigtowQRG9NpilunoRkFUqBto_A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdduudelhedtucetufdoteggodetrf
+	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
+	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1768282676; x=1768289876; bh=SIZTTLX4L6b0H0FhsrLfjIbPTzJy
+	CXQADM2Gtk5KlLg=; b=cVkF3omA6kRd1qDwlC/QjBcG/sNoji8l1VMwZh5ITsAj
+	IQH6XZmZbiJVGHRbZNI1spqePSMKyrqoDMwwPKT9X9TMQdtXMcjAsyEdPy0ukA+L
+	ZDMfLblW0EcIBWBADvSLA/TyX2BJ76a1kqJzcx0V7tJNb+YJgWt26WyVbIZNDovh
+	+KfxQIQ8/tQiKcSqZ7RT5cyIeTi3y45MAu/acBvX6U89CV4q8v+CTVDg9HJQiU7y
+	GsWTn9e7YKSKZdta713rl4jdQ6gbpZqw0svYrmk0r8Kv7cn5uW0qkBsKgYOlexTe
+	z/U9BUOXaf/dlsiRUJjnncK0nDS/gBUsTG2khjBzTQ==
+X-ME-Sender: <xms:MdplabFx4HZLJLMziJHDEDG2yjqQPhBzPJXL-QYtHWol7NNEGN-ELQ>
+    <xme:MdplafnUsZUQBoeF4TMLPpNBbeOMJ1EI4E5B6pqf71NlUXdjIBACyqf3r5lar53ES
+    kQixSPNrmZK3JHIUbpBN6BwF7966HMzXYNKP-5kfaZIR9mRcF-WtWw>
+X-ME-Received: <xmr:MdplaVvGJrSgw57AxEir5QXbr8Hf3KarYkVry3b_CgvoDAadbXaqc0rtPWQ1dJj85bqGsM5mKXFgei277sEuAWPiCdT86ugL6OI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdduudelgeelucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
     rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepvfevkfgjfhfhufffsedttdertddttddtnecuhfhrohhmpefhihhnnhcuvfhhrghi
-    nhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtthgvrh
-    hnpeevgffgtdfhhfefveeuudfgtdeugfeftedtveekieeggfduleetgeegueehgeffffen
-    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrg
-    hinheslhhinhhugidqmheikehkrdhorhhgpdhnsggprhgtphhtthhopedvgedpmhhouggv
-    pehsmhhtphhouhhtpdhrtghpthhtoheprghkphhmsehlihhnuhigqdhfohhunhgurghtih
-    honhdrohhrghdprhgtphhtthhopehpvghtvghriiesihhnfhhrrgguvggrugdrohhrghdp
-    rhgtphhtthhopeifihhllheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghrnhguse
-    grrhhnuggsrdguvgdprhgtphhtthhopegsohhquhhnrdhfvghnghesghhmrghilhdrtgho
-    mhdprhgtphhtthhopehgrghrhiesghgrrhihghhuohdrnhgvthdprhgtphhtthhopehmrg
-    hrkhdrrhhuthhlrghnugesrghrmhdrtghomhdprhgtphhtthhopehlihhnuhigqdgrrhgt
-    hhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnh
-    gvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:QNplaVI2nHIzCqJKwkB5l4wLlFnPQm97_sanwjp-zHyc5csrSwzTWA>
-    <xmx:QNplaZUfsSO-12B5sDfCU-hUUWWyPDSBywHSK8P5H39fjJSs_9j60g>
-    <xmx:QNplaVBib6f_91lccA9oDuxMDoDwq72ZFoe1yr9HFRKr5I8bSbMonQ>
-    <xmx:QNplaUHica4Gso_m9XvYzOEYqrkEPVrrd6SmZo1V8w_3iQDN1bsVFg>
-    <xmx:QdplafqODDGdKEJwDRbWQFCeOxok8dv6lwO73Ib2Moyr-nVggvQamg8A>
+    gurhepkffhufffvfevsedttdertddttddtnecuhfhrohhmpefhihhnnhcuvfhhrghinhcu
+    oehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtthgvrhhnpe
+    duvedtieevfedvffetudehteeihedtkefhkeeivdelvddtheekteeiueduudefueenucff
+    ohhmrghinhepudejrddqnhgvfienucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgpdhnsggp
+    rhgtphhtthhopeegvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheprghkphhmse
+    hlihhnuhigqdhfohhunhgurghtihhonhdrohhrghdprhgtphhtthhopehpvghtvghriies
+    ihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopeifihhllheskhgvrhhnvghlrdhorh
+    hgpdhrtghpthhtoheprghnughrihhisehkvghrnhgvlhdrohhrghdprhgtphhtthhopegr
+    rhgusgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghrnhgusegrrhhnuggsrdguvg
+    dprhgtphhtthhopegrshhtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegsohhquhhn
+    rdhfvghnghesghhmrghilhdrtghomhdprhgtphhtthhopegsphesrghlihgvnhekrdguvg
+X-ME-Proxy: <xmx:MdplaWfWDzJqylD0Q-inIpIDSD06wMZgNgisba95LM8ZqH9j-8puIA>
+    <xmx:MdplaZapD7buZRwzH-snNYQesF6AwmfpTygoHl_WtRd6-frTzgudew>
+    <xmx:MdplabwrPZ6kLZY2A-42jyKbCsUSAnXHPnvAEOkJND4oDJMMrkh70A>
+    <xmx:MdplaZuJDr6dR3rUZhQyV3fs-ebQXLUJaLVhJ_WlTWsWT4gY7leaQQ>
+    <xmx:NNplaVbhFZWckmFtSGQdtiTPrkO2GI3Doh1qH3ZXcq4wglQsyizSWuJI>
 Feedback-ID: i58a146ae:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 13 Jan 2026 00:38:05 -0500 (EST)
+ 13 Jan 2026 00:37:46 -0500 (EST)
+Message-ID: <cover.1768281748.git.fthain@linux-m68k.org>
+From: Finn Thain <fthain@linux-m68k.org>
+Subject: [PATCH v7 0/4] Align atomic storage
+Date: Tue, 13 Jan 2026 16:22:28 +1100
 To: Andrew Morton <akpm@linux-foundation.org>,
     Peter Zijlstra <peterz@infradead.org>,
     Will Deacon <will@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-    Boqun Feng <boqun.feng@gmail.com>,
-    Gary Guo <gary@garyguo.net>,
-    Mark Rutland <mark.rutland@arm.com>,
-    linux-arch@vger.kernel.org,
-    linux-kernel@vger.kernel.org,
-    linux-m68k@lists.linux-m68k.org,
-    Alexei Starovoitov <ast@kernel.org>,
+Cc: Andrii Nakryiko <andrii@kernel.org>,    Ard Biesheuvel <ardb@kernel.org>,
+    Arnd Bergmann <arnd@arndb.de>,    Alexei Starovoitov <ast@kernel.org>,
+    Boqun Feng <boqun.feng@gmail.com>,    Borislav Petkov <bp@alien8.de>,
+    bpf@vger.kernel.org,    Rich Felker <dalias@libc.org>,
     Daniel Borkmann <daniel@iogearbox.net>,
-    Andrii Nakryiko <andrii@kernel.org>,
-    Martin KaFai Lau <martin.lau@linux.dev>,
-    Eduard Zingerman <eddyz87@gmail.com>,
-    Song Liu <song@kernel.org>,
-    Yonghong Song <yonghong.song@linux.dev>,
-    John Fastabend <john.fastabend@gmail.com>,
-    KP Singh <kpsingh@kernel.org>,
-    Stanislav Fomichev <sdf@fomichev.me>,
-    Hao Luo <haoluo@google.com>,
-    Jiri Olsa <jolsa@kernel.org>,
+    Dave Hansen <dave.hansen@linux.intel.com>,
+    Dinh Nguyen <dinguyen@kernel.org>,
+    Eduard Zingerman <eddyz87@gmail.com>,    Gary Guo <gary@garyguo.net>,
     Geert Uytterhoeven <geert@linux-m68k.org>,
-    bpf@vger.kernel.org
-Message-ID: <8a83876b07d1feacc024521e44059ae89abbb1ea.1768281748.git.fthain@linux-m68k.org>
-In-Reply-To: <cover.1768281748.git.fthain@linux-m68k.org>
-References: <cover.1768281748.git.fthain@linux-m68k.org>
-From: Finn Thain <fthain@linux-m68k.org>
-Subject: [PATCH v7 1/4] bpf: Explicitly align bpf_res_spin_lock
-Date: Tue, 13 Jan 2026 16:22:28 +1100
+    John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+    Guo Ren <guoren@kernel.org>,    Hao Luo <haoluo@google.com>,
+    "H. Peter Anvin" <hpa@zytor.com>,
+    John Fastabend <john.fastabend@gmail.com>,
+    Jiri Olsa <jolsa@kernel.org>,    Jonas Bonn <jonas@southpole.se>,
+    KP Singh <kpsingh@kernel.org>,    linux-arch@vger.kernel.org,
+    linux-csky@vger.kernel.org,    linux-kernel@vger.kernel.org,
+    linux-m68k@lists.linux-m68k.org,    linux-openrisc@vger.kernel.org,
+    linux-sh@vger.kernel.org,    Mark Rutland <mark.rutland@arm.com>,
+    Martin KaFai Lau <martin.lau@linux.dev>,
+    Ingo Molnar <mingo@redhat.com>,    Sasha Levin <sashal@kernel.org>,
+    Stanislav Fomichev <sdf@fomichev.me>,
+    Stafford Horne <shorne@gmail.com>,    Song Liu <song@kernel.org>,
+    Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+    Thomas Gleixner <tglx@linutronix.de>,
+    Yonghong Song <yonghong.song@linux.dev>,
+    Yoshinori Sato <ysato@users.sourceforge.jp>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 
-Align bpf_res_spin_lock to avoid a BUILD_BUG_ON() when the alignment
-changes, as it will do on m68k when, in a subsequent patch, the minimum
-alignment of the atomic_t member of struct rqspinlock gets increased
-from 2 to 4. Drop the BUILD_BUG_ON() as it becomes redundant.
+This series adds the __aligned attribute to atomic_t and atomic64_t
+definitions in include/linux and include/asm-generic (respectively)
+to get natural alignment of both types on csky, m68k, microblaze,
+nios2, openrisc and sh.
 
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Acked-by: Alexei Starovoitov <ast@kernel.org>
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+This series also adds Kconfig options to enable a new run-time warning
+to help reveal misaligned atomic accesses on platforms which don't
+trap that.
+
+The performance impact is expected to vary across platforms and workloads.
+The measurements I made on m68k show that some workloads run faster and
+others slower.
+
 ---
+
+Changed since v6
+ - Test for __DISABLE_EXPORTS macro instead of __DISABLE_BUG_TABLE macro.
 
 Changed since v5:
- - Added tag from Arnd Bergmann.
----
- include/asm-generic/rqspinlock.h | 2 +-
- kernel/bpf/rqspinlock.c          | 1 -
- 2 files changed, 1 insertion(+), 2 deletions(-)
+ - Added acked-by and revewed-by tags.
+ - Added a new macro to inhibit emission of __bug_table section, for the
+ benefit of pre-boot code like the EFI stub loader.
 
-diff --git a/include/asm-generic/rqspinlock.h b/include/asm-generic/rqspinlock.h
-index 0f2dcbbfee2f..dd36ac96bf66 100644
---- a/include/asm-generic/rqspinlock.h
-+++ b/include/asm-generic/rqspinlock.h
-@@ -28,7 +28,7 @@ struct rqspinlock {
-  */
- struct bpf_res_spin_lock {
- 	u32 val;
--};
-+} __aligned(__alignof__(struct rqspinlock));
- 
- struct qspinlock;
- #ifdef CONFIG_QUEUED_SPINLOCKS
-diff --git a/kernel/bpf/rqspinlock.c b/kernel/bpf/rqspinlock.c
-index f7d0c8d4644e..8d892fb099ac 100644
---- a/kernel/bpf/rqspinlock.c
-+++ b/kernel/bpf/rqspinlock.c
-@@ -694,7 +694,6 @@ __bpf_kfunc int bpf_res_spin_lock(struct bpf_res_spin_lock *lock)
- 	int ret;
- 
- 	BUILD_BUG_ON(sizeof(rqspinlock_t) != sizeof(struct bpf_res_spin_lock));
--	BUILD_BUG_ON(__alignof__(rqspinlock_t) != __alignof__(struct bpf_res_spin_lock));
- 
- 	preempt_disable();
- 	ret = res_spin_lock((rqspinlock_t *)lock);
+Changed since v4:
+ - Dropped parisc header file patch as it's been merged already.
+ - Submitted as PATCH instead of RFC.
+
+Changed since v3:
+ - Rebased on v6.17.
+ - New patch to resolve header dependency issue on parisc.
+ - Dropped documentation patch.
+
+Changed since v2:
+ - Specify natural alignment for atomic64_t.
+ - CONFIG_DEBUG_ATOMIC checks for natural alignment again.
+ - New patch to add weakened alignment check.
+ - New patch for explicit alignment in BPF header.
+
+---
+
+Finn Thain (3):
+  bpf: Explicitly align bpf_res_spin_lock
+  atomic: Specify alignment for atomic_t and atomic64_t
+  atomic: Add option for weaker alignment check
+
+Peter Zijlstra (1):
+  atomic: Add alignment check to instrumented atomic operations
+
+ include/asm-generic/atomic64.h   |  2 +-
+ include/asm-generic/rqspinlock.h |  2 +-
+ include/linux/instrumented.h     | 17 +++++++++++++++++
+ include/linux/types.h            |  2 +-
+ kernel/bpf/rqspinlock.c          |  1 -
+ lib/Kconfig.debug                | 18 ++++++++++++++++++
+ 6 files changed, 38 insertions(+), 4 deletions(-)
+
 -- 
 2.49.1
 
