@@ -1,122 +1,161 @@
-Return-Path: <bpf+bounces-78781-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78782-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F974D1BBE6
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 00:44:48 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87B24D1BC07
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 00:49:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 348813035338
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 23:44:40 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 376BB300FA0D
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 23:49:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01FDB355036;
-	Tue, 13 Jan 2026 23:44:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCC18349AED;
+	Tue, 13 Jan 2026 23:49:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hEDNyfpP"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Xmpahncb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C79C036BCC3
-	for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 23:44:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46B2E28EA56
+	for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 23:49:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768347878; cv=none; b=Wt1UCo1EMsZyDJNlq4LQAbzJnk76KUvKFoalSi5QK+WhAZex4bw/v22Ka4lTBe+x18T5dJqJi624jWSJlE6jnrLoIYXYtVKe3wKTyFGf32F0rPsfT2CocUInYPMOs/FLplhp15V5t6CLaxOjWDlYO8Ue1U7ljLw0bnlZXErHEjA=
+	t=1768348147; cv=none; b=XraNkbdhDF0KHLXR3srp4DgJRJPt4azjfSQIUuBTdo6bzoOciCb2BybiJrPhH2XWorxqfzig50q/o5sRUJxLYoiVy6nBdfTLQu9sLLHpFNaJ0NqG2yHzpsdgAJAjP439pwJXwUjvQIMDHZu2MXjvJmRqCcxSGgfdSUxepMbyEGc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768347878; c=relaxed/simple;
-	bh=naWJNIFRQlEdpMHmk5ownLngDFSb+6b+Xjr/XcBcU3c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fgJ6hoi55VeIf2tl4pUnRzUMiLZkmgZezW2jlgnS3Cqy8KWpnHsZ+Lsz3SjwpRBGn2WQoKHaeaDXTi1jZmnyso2Nyk1QAby+LQz914MTsMgKw6+sqyBrB4IL/+5NacH1slYMCxIvQPne18xY3A2GP0NB4G/O43x60nZ4xyCfvWg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hEDNyfpP; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-432d256c2a9so4394257f8f.3
-        for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 15:44:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768347875; x=1768952675; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=naWJNIFRQlEdpMHmk5ownLngDFSb+6b+Xjr/XcBcU3c=;
-        b=hEDNyfpPmk7rSlHY7ocQAO5eIShqlrfcBBUJ3bzBlZmysJw+HGu7hP2lDP4Yno+W/C
-         xtzbkpVzU16BM/JlLbCscKV3kqzEhi5nTFWgZv8dSdApl0QrzDZUqN3Cu3dEhbbJEt27
-         qNwchFflme1TsAJLLvIlTgisf9Q/MnSI58q5LpPBaTutlOT+H8bQAY4LuA5OA735uqb+
-         Ujjq7uH7U7LuJtLTjfvul5nlk8k0pu0HFJ/cB29B1aCioHSObW4cxKOnYQZXUIB6UVyY
-         me/8rNkgVWvTzxodP3W+crtPd0CrX9jb0rEjhKmmakkFrMIw0OMyIUjyUIMOVIps1BCq
-         LsOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768347875; x=1768952675;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=naWJNIFRQlEdpMHmk5ownLngDFSb+6b+Xjr/XcBcU3c=;
-        b=vf43AXLpeZ0gLikc3VKqfeJblNqLEMvM8ptylWQswDG9yM8xAVdSL5Ws3Qj4FYFJjl
-         ysl4qlWZfuh7fW0MDyStQwD5VYo15DHtb3GYpTfnc8Ji4+A5aLZOFjUXqUnr6EVpcDjw
-         bIYIQP1UkOTr88ofB1KNlxvi1ME/nVTLW2n6BSgOEJdnu/ZdoLj+wkYxaFPeXEVVE8/7
-         ZAzGmU6ShK7YskcXG9ZIAj7bYJkQ56v8iTzFhJKlsybABNkTfcwviA19ShgovbWOlLfO
-         OEkhV6Fc2YW8EupJHlueZHbqLaNGm/T2S4BM3vz1Y8Krglo+L9xuS5Lin3gKPHlpcPOJ
-         s2NA==
-X-Forwarded-Encrypted: i=1; AJvYcCVqGLGPfRCxn8spmVhE6F4eVvDs01XltTI83oIlWQwj+eHoM2sjc30j4G8V9pg2DX0v34A=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxzfUVyojoYXRU9qvaENVL3bm/oYPX2XZR9B7+9CEQ9URi7rI89
-	BAmDO5o4Lr+O7b1ap079UR6MMAxwpNQAOfSaY5OMfjjbxIarxJE/hzsXW4q0pOBS2e6LgBMYYcQ
-	PNEm6YGhjMAFArX/qugpi7u5gYJDyFz4=
-X-Gm-Gg: AY/fxX4gZyDtGS6DnZeojPoD+BjQaFqwq8CISQ1oCYzHsUa19+vjr005KlPv8VkVFe4
-	XPe/GzflM/s2Mrta31NJL8oYJj0CoFoASGPevB/IEzfEj59MRfC4c6ilPlyR9QuGQ0QzTylSy40
-	M0eQpUtiMaabSWXN9cRJgxwk8uFPTPp02Sa3QKj2b0Lgm9xHI7Z7ixjbgMhsNFnwxdW2SROp4Dm
-	3b+4KkuqwfLcXgwmq+xjuM54s9Y4RsQYFylnP3ApYMTOmH0z1D/IzMI4mQ7sNgRjKxwV8wbwaRN
-	jnP+buG40wXFbRWCbPe1cuWKnGCh
-X-Received: by 2002:a05:6000:2502:b0:430:f622:8cd4 with SMTP id
- ffacd0b85a97d-4342c5576a2mr546852f8f.49.1768347875049; Tue, 13 Jan 2026
- 15:44:35 -0800 (PST)
+	s=arc-20240116; t=1768348147; c=relaxed/simple;
+	bh=DUH76cB8+wNy9ug2fjFCXnYtm17ft1rTAtoxq8rCmww=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=Bfdwwj66mjDYxYxAu2lIMDAqpqCTC/Grjk0RWxNIbsZ1MAoedFSHvQrJin5+OSZAFLElFu6Rf4+lE4cM8bDzH5MMoHdKlHkthUHShUsFcNn+96hJvgHVpHNUBdRdxffzkiV1eFVvOoF1Zq3q1Sn0J4SW++WgLmlamnwKhy4M0iE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Xmpahncb; arc=none smtp.client-ip=91.218.175.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <c7e2a776-52f9-46ad-8422-3a9202bbd9f1@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1768348133;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OXsX80XR+FtGMycqqbMbOn/mhho8xAVX0B2c+Pifl9Y=;
+	b=Xmpahncb8n6gnl0jviTGKHQ4eR/qUtK5TyZQiWrJwkF8bbeJsj/wP/qTbEgNgzYrvOVqAc
+	N5hHvzir/M8mqYo2T8EjnJyJIMv4gXR78xio4wmdoTylJKhog2xHBEWNBPaTyUSyLTCUUk
+	1rQu10dqZ17K3nP83beoqm21fvh72LI=
+Date: Tue, 13 Jan 2026 15:48:46 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAADnVQKGm-t2SdN_vFVMn0tNiQ5Fs6FutD2Au-jO69aGdhKS7Q@mail.gmail.com>
- <20260109173326.616e873c@fedora> <20260109173915.1e8a784e@fedora>
- <CAADnVQKB4dAWtX7T15yh31NYNcBUugoqcnTZ3U9APo8SZkTuwg@mail.gmail.com>
- <20260110111454.7d1a7b66@fedora> <CAADnVQJ_L_TvFogq0+-qOH=vxe5bzU9iz3c-6-N7VFYE6cBnjQ@mail.gmail.com>
- <20260111170953.49127c00@fedora> <CAADnVQJiEhDrfYVEyV8eGUECE_XFt7PGG=PFJRKU4jRBn-TsvA@mail.gmail.com>
- <20260112085257.26bb7b5b@fedora> <CAADnVQKvY026HSFGOsavJppm3-Ajm-VsLzY-OeFUe+BaKMRnDg@mail.gmail.com>
- <20260113142340.xEFFVvni@linutronix.de>
-In-Reply-To: <20260113142340.xEFFVvni@linutronix.de>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 13 Jan 2026 15:44:23 -0800
-X-Gm-Features: AZwV_QiZTOkqU7DSGKGdqwRyoCz_0cyvCLSbxWK4R4mCP4W56GAgkxLydSRDg94
-Message-ID: <CAADnVQKMR6kkqC5JQceg6A8F6qSd_cYQE--1ToxwDUxTytPbGA@mail.gmail.com>
-Subject: Re: [PATCH v5] tracing: Guard __DECLARE_TRACE() use of
- __DO_TRACE_CALL() with SRCU-fast
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	Linux trace kernel <linux-trace-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v1 03/10] bpf: Verifier support for
+ KF_IMPLICIT_ARGS
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Ihor Solodrai <ihor.solodrai@linux.dev>
+To: Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov
+ <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Mykyta Yatsenko <yatsenko@meta.com>, Tejun Heo <tj@kernel.org>,
+ Alan Maguire <alan.maguire@oracle.com>,
+ Benjamin Tissoires <bentiss@kernel.org>, Jiri Kosina <jikos@kernel.org>,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-input@vger.kernel.org, sched-ext@lists.linux.dev
+References: <20260109184852.1089786-1-ihor.solodrai@linux.dev>
+ <20260109184852.1089786-4-ihor.solodrai@linux.dev>
+ <952853dd064d5303a7e7ec8e58028e9ee88f2fad.camel@gmail.com>
+ <93ecdc25-aa5e-485b-8ff4-a9db3b585861@linux.dev>
+Content-Language: en-US
+In-Reply-To: <93ecdc25-aa5e-485b-8ff4-a9db3b585861@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Jan 13, 2026 at 6:23=E2=80=AFAM Sebastian Andrzej Siewior
-<bigeasy@linutronix.de> wrote:
+On 1/13/26 2:03 PM, Ihor Solodrai wrote:
+> On 1/13/26 12:39 PM, Eduard Zingerman wrote:
+>> On Fri, 2026-01-09 at 10:48 -0800, Ihor Solodrai wrote:
+>>> 
+>>
+>> [...]
+>>
+>>> @@ -14303,6 +14358,17 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+>>>  	for (i = 0; i < nargs; i++) {
+>>>  		u32 regno = i + 1;
+>>>  
+>>> +		/*
+>>> +		 * Implicit kfunc arguments are set after main verification pass.
+>>> +		 * For correct tracking of zero-extensions we have to reset subreg_def for such
+>>> +		 * args. Otherwise mark_btf_func_reg_size() will be inspecting subreg_def of regs
+>>> +		 * from an earlier (irrelevant) point in the program, which may lead to an error
+>>> +		 * in opt_subreg_zext_lo32_rnd_hi32().
+>>> +		 */
+>>> +		if (unlikely(KF_IMPLICIT_ARGS & meta.kfunc_flags
+>>> +				&& is_kfunc_arg_implicit(desc_btf, &args[i])))
+>>> +			regs[regno].subreg_def = DEF_NOT_SUBREG;
+>>> +
+>>
+>> Did you try doing this in `mark_reg_not_init()`?
+>> This function is called for R1-R5 some time prior this hunk.
+> 
+>> Did you try doing this in `mark_reg_not_init()`?
+> 
+> Just tried, it doesn't work because REG0 is considered a caller saved
+> register, and so it breaks the zext tracking:
+> 
+>         #define CALLER_SAVED_REGS 6
+>         static const int caller_saved[CALLER_SAVED_REGS] = {
+> 	     BPF_REG_0, BPF_REG_1, BPF_REG_2, BPF_REG_3, BPF_REG_4, BPF_REG_5
+>         };
+> 
+>         [...]
+> 
+> 	for (i = 0; i < CALLER_SAVED_REGS; i++)
+> 		mark_reg_not_init(env, regs, caller_saved[i]);
+> 
+> CI run for the diff below (on top of this series):
+> https://github.com/kernel-patches/bpf/actions/runs/20972520708
+> 
 >
-> On 2026-01-12 09:19:58 [-0800], Alexei Starovoitov wrote:
-> > > Now if you are saying that BPF will handle migrate_disable() on its o=
-wn
-> > > and not require the tracepoint infrastructure to do it for it, then
-> > > this is perfect. And I can then simplify this code, and just use
-> > > srcu_fast for both RT and !RT.
-> >
-> > Agree. Just add migrate_disable to __bpf_trace_run,
-> > or, better yet, use rcu_read_lock_dont_migrate() in there.
->
-> Wonderful, thank you.
->
-> Is this "must remain on the same CPU and can be re-entrant" because BPF
-> core code such memory allocator/ data structures use per-CPU data
-> structures and must use the same through the whole invocation?
+> [...]
+> 
+> ---
+> 
+> Resetting all reg args appears to be working however (see below).
+> CI: https://github.com/kernel-patches/bpf/actions/runs/20973490221
+> 
 
-It's per-cpu maps.
-htab_percpu_map_lookup_elem() returns a pointer to per-cpu value
-which needs to be valid for the duration of the program.
-Not much else.
+A follow up after a chat with Eduard.
+
+This change in check_kfunc_call() appears to be working:
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 092003cc7841..ff743335111c 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -13958,8 +13958,11 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+                regs = branch->frame[branch->curframe]->regs;
+ 
+                /* Clear r0-r5 registers in forked state */
+-               for (i = 0; i < CALLER_SAVED_REGS; i++)
+-                       mark_reg_not_init(env, regs, caller_saved[i]);
++               for (i = 0; i < CALLER_SAVED_REGS; i++) {
++                       u32 regno = caller_saved[i];
++                       mark_reg_not_init(env, regs, regno);
++                       regs[regno].subreg_def = DEF_NOT_SUBREG;
++               }
+ 
+                mark_reg_unknown(env, regs, BPF_REG_0);
+                err = __mark_reg_s32_range(env, regs, BPF_REG_0, -MAX_ERRNO, -1);
+
+https://github.com/kernel-patches/bpf/actions/runs/20975419422
+
+Apparently, doing .subreg_def = DEF_NOT_SUBREG in mark_reg_not_init()
+breaks zero-extension tracking somewhere else.  But this is not
+directly relevant to the series.
+
+Eduard, Alexei, any concerns with this diff? Should I send a separate
+patch?
+
+
+>  [...]
+
 
