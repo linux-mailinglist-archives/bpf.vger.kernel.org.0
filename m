@@ -1,32 +1,32 @@
-Return-Path: <bpf+bounces-78776-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78778-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DAC4D1BB53
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 00:24:56 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E562D1BB86
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 00:28:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 69140303E69A
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 23:23:44 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 615A130C4322
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 23:23:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EFD636BCE4;
-	Tue, 13 Jan 2026 23:23:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4630736C0BB;
+	Tue, 13 Jan 2026 23:23:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="MAbLe5aS"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="AC0eEgzN"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D281436AB70;
-	Tue, 13 Jan 2026 23:23:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C442436BCC4;
+	Tue, 13 Jan 2026 23:23:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768346618; cv=none; b=suHPofTan3Dje3TH3ZMZtpCUbw0XhIx4tOOlnnS8frVjb2XpQckScNEHVSWdMc8c9VjNP7PuKjLHNP5xTvHrkVpSXXOBI5KfzeTny6vP8vnVPAcgkNRuuIUVTCESExH06CxQkM3f6M7C9J8lqG1Y6ZCQbfSuoW93W2aAT9OsjS0=
+	t=1768346621; cv=none; b=Zhi4E22eIvngS6ZGV+Lra8+5tfDKhvYj35znEfq7mK1CoQa01zfHzlbBsNp3iIm3K1HKFMSuB4EUoExRwP31G+zjvn86Fsta2O9Lm98cvYfSOAOF+MCiUb+1QW6BUu3lx5z0vCpOVeDwwvSrxff7TPT7STpzl3Xj2sIs067xQBg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768346618; c=relaxed/simple;
-	bh=ht50qx0eWUsXxg6HGzg8ZdcraZV8s6kM+v4/eeBWnoo=;
+	s=arc-20240116; t=1768346621; c=relaxed/simple;
+	bh=ds3vmtRO482oJ4L9zl1gi+HwQInYAfVxpdU9illDGlw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fx3+hHW1dyrJxAclbYKwS4L9pwBrbYYXkON9qfw81NeuvHEsqrbJgQRwFbYLuRN+N82etwLRCdIp0TPwu+S8wpzFz9zwT8nOQdF4vN/3guvXB3prTeuoJpIS0Mqgy5NqmRgHfmaUJMrNlJ79MMNeFCp5aIbu9qQZKT0wNf/Ssx8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=MAbLe5aS; arc=none smtp.client-ip=213.133.104.62
+	 MIME-Version; b=m1C5bVXK49KJguxdiQlGbUUi+CSbTsJEtLemL0QKJMWMp9kEfLkdDTjXrzulC1wBXw4gdpbY/DijmQveMzZNP2iT6MZd768AsGBcvBqHNQzubGm3IYgHOxyn9nto7TsmEoc7emOcISMwgL+IReliXl6517HUx9OQh0U8hlNCk4o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=AC0eEgzN; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -34,18 +34,18 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=Dzel2yIddAlfKGkxOKkHid0/2vVYdgQL8nG/zjjyM6M=; b=MAbLe5aSfEMQe+lxUKQlrNQbTW
-	voufO3FkcVNATVYZVxLh7ZOzXllGg1hTBl3f7g4PTTysUQGvwEo1fcephrLyEpEoY04sPVoUEOLZk
-	q1tTACKFJauyGM8P8rWpPgwjMlm2UFmR8VA48u8kSCKuyrk4XAFIGol7FOh+8XwMR4kzVyGuJxcFd
-	XiUdkEH27UcVXrgZ9HNPmWejhnMZXcWEQc82NisLiymDd9SkC2n87tfJHCs+5I6xCGg95gMIdw6F+
-	GJvkoYE3/JwjdZ5gewUFPmQWLbUzcRl0Wyf+WrxuwoE9Pmne0hauwk8D729gW8MGByYwlTzEbT5C+
-	I24Td2AA==;
+	bh=A3JhZ4YZgwR/rLOGJb+FXJJbVesXMoF+77HTdLn+a1E=; b=AC0eEgzNgKiJ7Oa4gF1bUyeYpp
+	VXUl7x3tvo2EPBSsSgIPBuc9A469P0ZtOUKBZodEmbk2JWNbFtDsI0ohu9j8gHKJrg8A7zh4EkYWR
+	1IJrWpbZUEQ8CTmomxdanIp9Upy50U4E+nrrxknWvRhzZfEhc9pN/wuj0Uwk56HInnwpipMspzD8N
+	YupAiruwXQNl/RwN/QnZ939HRXAWfdKt60ZCi0Mf2nCIvbHaJyCoVMEkXEWVuAoUiebmckHfD4yAP
+	RgopjSVZOHlqZ5n2r7L4/fmvwiZERYutV5UTgNWjjX4tB5vMidTo+gQtSmVYiObb6mVX1UsdYLSHQ
+	Jr4B5lGg==;
 Received: from localhost ([127.0.0.1])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1vfnjI-0003j0-1Q;
-	Wed, 14 Jan 2026 00:23:16 +0100
+	id 1vfnjJ-0003jK-1d;
+	Wed, 14 Jan 2026 00:23:17 +0100
 From: Daniel Borkmann <daniel@iogearbox.net>
 To: netdev@vger.kernel.org
 Cc: bpf@vger.kernel.org,
@@ -64,9 +64,9 @@ Cc: bpf@vger.kernel.org,
 	toke@redhat.com,
 	yangzhenze@bytedance.com,
 	wangdongdong.6@bytedance.com
-Subject: [PATCH net-next v6 15/16] selftests/net: Make NetDrvContEnv support queue leasing
-Date: Wed, 14 Jan 2026 00:22:56 +0100
-Message-ID: <20260113232257.200036-16-daniel@iogearbox.net>
+Subject: [PATCH net-next v6 16/16] selftests/net: Add netkit container tests
+Date: Wed, 14 Jan 2026 00:22:57 +0100
+Message-ID: <20260113232257.200036-17-daniel@iogearbox.net>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20260113232257.200036-1-daniel@iogearbox.net>
 References: <20260113232257.200036-1-daniel@iogearbox.net>
@@ -81,115 +81,128 @@ X-Virus-Scanned: Clear (ClamAV 1.4.3/27879/Tue Jan 13 08:26:16 2026)
 
 From: David Wei <dw@davidwei.uk>
 
-Add a new parameter `lease` to NetDrvContEnv that sets up queue leasing
-in the env.
+Add two tests using NetDrvContEnv. One basic test that sets up a netkit
+pair, with one end in a netns. Use LOCAL_PREFIX_V6 and nk_forward BPF
+program to ping from a remote host to the netkit in netns.
 
-The NETIF also has some ethtool parameters changed to support memory
-provider tests. This is needed in NetDrvContEnv rather than individual
-test cases since the cleanup to restore NETIF can't be done, until the
-netns in the env is gone.
+Second is a selftest for netkit queue leasing, using io_uring zero copy
+test binary inside of a netns with netkit. This checks that memory
+providers can be bound against virtual queues in a netkit within a
+netns that are leasing from a physical netdev in the default netns.
 
 Signed-off-by: David Wei <dw@davidwei.uk>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 ---
- .../selftests/drivers/net/lib/py/env.py       | 46 ++++++++++++++++++-
- 1 file changed, 45 insertions(+), 1 deletion(-)
+ .../testing/selftests/drivers/net/hw/Makefile |  2 +
+ .../selftests/drivers/net/hw/nk_netns.py      | 23 ++++++++
+ .../selftests/drivers/net/hw/nk_qlease.py     | 55 +++++++++++++++++++
+ 3 files changed, 80 insertions(+)
+ create mode 100755 tools/testing/selftests/drivers/net/hw/nk_netns.py
+ create mode 100755 tools/testing/selftests/drivers/net/hw/nk_qlease.py
 
-diff --git a/tools/testing/selftests/drivers/net/lib/py/env.py b/tools/testing/selftests/drivers/net/lib/py/env.py
-index 3a60c12b9087..25da2c0b98d7 100644
---- a/tools/testing/selftests/drivers/net/lib/py/env.py
-+++ b/tools/testing/selftests/drivers/net/lib/py/env.py
-@@ -9,6 +9,7 @@ from lib.py import KsftSkipEx, KsftXfailEx
- from lib.py import ksft_setup, wait_file
- from lib.py import cmd, ethtool, ip, CmdExitFailure, bpftool
- from lib.py import NetNS, NetdevSimDev
-+from lib.py import NetdevFamily, EthtoolFamily
- from .remote import Remote
- 
- 
-@@ -296,7 +297,7 @@ class NetDrvContEnv(NetDrvEpEnv):
-     between the physical interface and a network namespace.
-     """
- 
--    def __init__(self, src_path, nk_rxqueues=1, **kwargs):
-+    def __init__(self, src_path, lease=False, **kwargs):
-         super().__init__(src_path, **kwargs)
- 
-         self.require_ipver("6")
-@@ -304,6 +305,9 @@ class NetDrvContEnv(NetDrvEpEnv):
-         if not local_prefix:
-             raise KsftSkipEx("LOCAL_PREFIX_V6 required")
- 
-+        self.netdevnl = NetdevFamily()
-+        self.ethnl = EthtoolFamily()
+diff --git a/tools/testing/selftests/drivers/net/hw/Makefile b/tools/testing/selftests/drivers/net/hw/Makefile
+index 9c163ba6feee..39ad86d693b3 100644
+--- a/tools/testing/selftests/drivers/net/hw/Makefile
++++ b/tools/testing/selftests/drivers/net/hw/Makefile
+@@ -32,6 +32,8 @@ TEST_PROGS = \
+ 	irq.py \
+ 	loopback.sh \
+ 	nic_timestamp.py \
++	nk_netns.py \
++	nk_qlease.py \
+ 	pp_alloc_fail.py \
+ 	rss_api.py \
+ 	rss_ctx.py \
+diff --git a/tools/testing/selftests/drivers/net/hw/nk_netns.py b/tools/testing/selftests/drivers/net/hw/nk_netns.py
+new file mode 100755
+index 000000000000..afa8638195d8
+--- /dev/null
++++ b/tools/testing/selftests/drivers/net/hw/nk_netns.py
+@@ -0,0 +1,23 @@
++#!/usr/bin/env python3
++# SPDX-License-Identifier: GPL-2.0
 +
-         local_prefix = local_prefix.rstrip("/64").rstrip("::").rstrip(":")
-         self.ipv6_prefix = f"{local_prefix}::"
-         self.nk_host_ipv6 = f"{local_prefix}::2:1"
-@@ -315,7 +319,11 @@ class NetDrvContEnv(NetDrvEpEnv):
-         self._tc_attached = False
-         self._bpf_prog_pref = None
-         self._bpf_prog_id = None
-+        self._lease = lease
- 
-+        nk_rxqueues = 1
-+        if lease:
-+            nk_rxqueues = 2
-         ip(f"link add type netkit mode l2 forward peer forward numrxqueues {nk_rxqueues}")
- 
-         all_links = ip("-d link show", json=True)
-@@ -332,6 +340,9 @@ class NetDrvContEnv(NetDrvEpEnv):
-         self.nk_host_ifindex = netkit_links[1]['ifindex']
-         self.nk_guest_ifindex = netkit_links[0]['ifindex']
- 
-+        if self._lease:
-+            self._lease_queues()
++from lib.py import ksft_run, ksft_exit
++from lib.py import NetDrvContEnv
++from lib.py import cmd
 +
-         self._setup_ns()
-         self._attach_bpf()
- 
-@@ -349,8 +360,41 @@ class NetDrvContEnv(NetDrvEpEnv):
-             del self.netns
-             self.netns = None
- 
-+        if self._lease:
-+            self.ethnl.rings_set({'header': {'dev-index': self.ifindex},
-+                                  'tcp-data-split': 'unknown',
-+                                  'hds-thresh': self._hds_thresh,
-+                                  'rx': self._rx_rings})
-+            self._lease = False
 +
-         super().__del__()
- 
-+    def _lease_queues(self):
-+        channels = self.ethnl.channels_get({'header': {'dev-index': self.ifindex}})
-+        channels = channels['combined-count']
-+        if channels < 2:
-+            raise KsftSkipEx('Test requires NETIF with at least 2 combined channels')
++def test_ping(cfg) -> None:
++    cfg.require_ipver("6")
 +
-+        rings = self.ethnl.rings_get({'header': {'dev-index': self.ifindex}})
-+        self._rx_rings = rings['rx']
-+        self._hds_thresh = rings.get('hds-thresh', 0)
-+        self.ethnl.rings_set({'header': {'dev-index': self.ifindex},
-+                            'tcp-data-split': 'enabled',
-+                            'hds-thresh': 0,
-+                            'rx': 64})
-+        self.src_queue = channels - 1
-+        bind_result = self.netdevnl.queue_create(
-+            {
-+                "ifindex": self.nk_guest_ifindex,
-+                "type": "rx",
-+                "lease": {
-+                    "ifindex": self.ifindex,
-+                    "queue": {"id": self.src_queue, "type": "rx"},
-+                },
-+            }
-+        )
-+        self.nk_queue = bind_result['id']
++    cmd(f"ping -c 1 -W5 {cfg.nk_guest_ipv6}", host=cfg.remote)
++    cmd(f"ping -c 1 -W5 {cfg.remote_addr_v['6']}", ns=cfg.netns)
 +
-     def _setup_ns(self):
-         self.netns = NetNS()
-         ip(f"link set dev {self._nk_guest_ifname} netns {self.netns.name}")
++
++def main() -> None:
++    with NetDrvContEnv(__file__) as cfg:
++        ksft_run([test_ping], args=(cfg,))
++    ksft_exit()
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/tools/testing/selftests/drivers/net/hw/nk_qlease.py b/tools/testing/selftests/drivers/net/hw/nk_qlease.py
+new file mode 100755
+index 000000000000..738a46d2d20c
+--- /dev/null
++++ b/tools/testing/selftests/drivers/net/hw/nk_qlease.py
+@@ -0,0 +1,55 @@
++#!/usr/bin/env python3
++# SPDX-License-Identifier: GPL-2.0
++
++import re
++from os import path
++from lib.py import ksft_run, ksft_exit
++from lib.py import NetDrvContEnv
++from lib.py import bkg, cmd, defer, ethtool, rand_port, wait_port_listen
++
++
++def create_rss_ctx(cfg):
++    output = ethtool(f"-X {cfg.ifname} context new start {cfg.src_queue} equal 1").stdout
++    values = re.search(r'New RSS context is (\d+)', output).group(1)
++    return int(values)
++
++
++def set_flow_rule(cfg):
++    output = ethtool(f"-N {cfg.ifname} flow-type tcp6 dst-port {cfg.port} action {cfg.src_queue}").stdout
++    values = re.search(r'ID (\d+)', output).group(1)
++    return int(values)
++
++
++def set_flow_rule_rss(cfg, rss_ctx_id):
++    output = ethtool(f"-N {cfg.ifname} flow-type tcp6 dst-port {cfg.port} context {rss_ctx_id}").stdout
++    values = re.search(r'ID (\d+)', output).group(1)
++    return int(values)
++
++
++def test_iou_zcrx(cfg) -> None:
++    cfg.require_ipver('6')
++
++    ethtool(f"-X {cfg.ifname} equal {cfg.src_queue}")
++    defer(ethtool, f"-X {cfg.ifname} default")
++
++    flow_rule_id = set_flow_rule(cfg)
++    defer(ethtool, f"-N {cfg.ifname} delete {flow_rule_id}")
++
++    rx_cmd = f"ip netns exec {cfg.netns.name} {cfg.bin_local} -s -p {cfg.port} -i {cfg._nk_guest_ifname} -q {cfg.nk_queue}"
++    tx_cmd = f"{cfg.bin_remote} -c -h {cfg.nk_guest_ipv6} -p {cfg.port} -l 12840"
++    with bkg(rx_cmd, exit_wait=True):
++        wait_port_listen(cfg.port, proto="tcp", ns=cfg.netns)
++        cmd(tx_cmd, host=cfg.remote)
++
++
++def main() -> None:
++    with NetDrvContEnv(__file__, lease=True) as cfg:
++        cfg.bin_local = path.abspath(path.dirname(__file__) + "/../../../drivers/net/hw/iou-zcrx")
++        cfg.bin_remote = cfg.remote.deploy(cfg.bin_local)
++        cfg.port = rand_port()
++        ksft_run([test_iou_zcrx], args=(cfg,))
++    ksft_exit()
++
++
++if __name__ == "__main__":
++    main()
 -- 
 2.43.0
 
