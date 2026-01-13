@@ -1,48 +1,77 @@
-Return-Path: <bpf+bounces-78637-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78638-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id B00F6D16468
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 03:28:31 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B600D165D0
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 03:52:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 2C3303012CED
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 02:28:30 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 72E713032FEF
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 02:51:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 600712EF66E;
-	Tue, 13 Jan 2026 02:28:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 086912DECA3;
+	Tue, 13 Jan 2026 02:51:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QKT0E1aw"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="H2OmdoeL"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E359125393B;
-	Tue, 13 Jan 2026 02:28:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EBC7277C9D
+	for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 02:51:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768271309; cv=none; b=pdyn7DUHlv6waskH673UvMqtYkgZ8N5RxNdGWu76KOtJo3vtiUhMyEtDAjOY0abO7jQtFOd3uKLB56duke9mBxke527WEzqWml8YnIsLjx5ZuQQIfw+T1ZCHWBPmfjGunDNBdQg61jjk0lY5sNH32wL4B+d/qVCcDfrJUiVCed8=
+	t=1768272711; cv=none; b=SUIWbjXHldVkTps8RvEeEXEeELliKBKuWAdBu/GfMot8NB4jBypCH+bDRNOh9zQtdppBAuS39S4sN52+SH4+on3kvnGXfk4dXShPJysLMEL3dZEInmbiG1U+p/RouaPJhYl4Jf8uB+acCW3sUsTDg6F75+niGJVr1VNPiKtKh0g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768271309; c=relaxed/simple;
-	bh=3ODfP5lodPYJ3ACrnsiZdAIgL7loZ95W9fuQfz7CadU=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=EJgrFxfpnFzkQoTxgs4+9td4kJ7ypl5/4FVQ4M+Ws5TgANH0BQkyRB3QsNaq5x+0/WQWeGdt5QKQd5NOdgROpct5/UyyrONz+X45TV7BsJntZfYPPrfqBQSpY9Q1U5e6n5GIkLDSySLBVjI3E2+HEmqZrriIqIrSW+pb9VXi9Nw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QKT0E1aw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72082C116D0;
-	Tue, 13 Jan 2026 02:28:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768271308;
-	bh=3ODfP5lodPYJ3ACrnsiZdAIgL7loZ95W9fuQfz7CadU=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=QKT0E1awzMVBtMBpIdVgjg26XOPtRi8SIbjJgqXEEX3SlBVzsCtX85xen0ciqRyC3
-	 qqlRfl4iQvbr8OMkSHXRgCirSueKm/fNc02Onla+qUID5lPkd8erwLubZfGBHZisyY
-	 Uc3D/vgIgnNR+x+M27CLjfW2uGo9WqPlwxCzJfi+yDuKZQL7gA49oWWVdGVuWilSPG
-	 +38THnfkZ8eUH5dA8Qskouinc7Jb7iTsFTCSzIFDIO4ASAI2gLiKrEz9M/q7uqXI6r
-	 sNGQ360HjaW1gV+omSa1I+4eBTgk9X5uT9dn7JKPCPaK7CgAxGQzcBS9gli/0k1whV
-	 myOraGM/PtOEA==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 78DE5380CFDE;
-	Tue, 13 Jan 2026 02:25:03 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1768272711; c=relaxed/simple;
+	bh=zdmc/4b/IdcJRYG41ZjUCKsHTmEBzw04JdTDUL4m8jo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tz5NqoCfgisRMXh3MY8JkkY9YjZyiZpwzl4PWv+I+teV8U+xdS3DLWq+/w0KiOFGSoDo60yFQjW2+j1EUpDp7cdfz31p2g/+FB3M6fCDrUpS97+7NP0U3ihryqz4XqrDGku6bAlhjcQOyc4AvQt9u20vG4iNnyNPjPyshjhY4nU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=H2OmdoeL; arc=none smtp.client-ip=95.215.58.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1768272706;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=IAvJQU4T0fm2xve7nVWfrsGO5CzxQEsmvhbPRJX4b7Y=;
+	b=H2OmdoeLtGLspxKUjXr0KEYglU25fVHfQn81EkIsKm0eZ+v2xCwge18liNobo+vuOzFo+H
+	XtIpnn07qcO9MPIT/Ka4U7pZrRr2P6ZMdBmsuuvzOqFJ2DmsayRKSBQ130T0FyPPOI679d
+	3d5x+4e27yTiLDcOP4agQCbGyhCY1LY=
+From: Jiayuan Chen <jiayuan.chen@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Jiayuan Chen <jiayuan.chen@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Jakub Sitnicki <jakub@cloudflare.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	Neal Cardwell <ncardwell@google.com>,
+	Kuniyuki Iwashima <kuniyu@google.com>,
+	David Ahern <dsahern@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Michal Luczaj <mhal@rbox.co>,
+	Stefano Garzarella <sgarzare@redhat.com>,
+	Cong Wang <cong.wang@bytedance.com>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf-next v7 0/3] bpf: Fix FIONREAD and copied_seq issues
+Date: Tue, 13 Jan 2026 10:50:48 +0800
+Message-ID: <20260113025121.197535-1-jiayuan.chen@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -50,40 +79,80 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] bpf: fix reference count leak in bpf_prog_test_run_xdp()
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <176827110202.1606835.9428948719532592789.git-patchwork-notify@kernel.org>
-Date: Tue, 13 Jan 2026 02:25:02 +0000
-References: <af090e53-9d9b-4412-8acb-957733b3975c@I-love.SAKURA.ne.jp>
-In-Reply-To: <af090e53-9d9b-4412-8acb-957733b3975c@I-love.SAKURA.ne.jp>
-To: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Cc: ast@kernel.org, john.fastabend@gmail.com, lorenzo@kernel.org,
- toke@redhat.com, bpf@vger.kernel.org, netdev@vger.kernel.org
+X-Migadu-Flow: FLOW_OUT
 
-Hello:
+syzkaller reported a bug [1] where a socket using sockmap, after being
+unloaded, exposed incorrect copied_seq calculation. The selftest I
+provided can be used to reproduce the issue reported by syzkaller.
 
-This patch was applied to bpf/bpf.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+TCP recvmsg seq # bug 2: copied E92C873, seq E68D125, rcvnxt E7CEB7C, fl 40
+WARNING: CPU: 1 PID: 5997 at net/ipv4/tcp.c:2724 tcp_recvmsg_locked+0xb2f/0x2910 net/ipv4/tcp.c:2724
+Call Trace:
+ <TASK>
+ receive_fallback_to_copy net/ipv4/tcp.c:1968 [inline]
+ tcp_zerocopy_receive+0x131a/0x2120 net/ipv4/tcp.c:2200
+ do_tcp_getsockopt+0xe28/0x26c0 net/ipv4/tcp.c:4713
+ tcp_getsockopt+0xdf/0x100 net/ipv4/tcp.c:4812
+ do_sock_getsockopt+0x34d/0x440 net/socket.c:2421
+ __sys_getsockopt+0x12f/0x260 net/socket.c:2450
+ __do_sys_getsockopt net/socket.c:2457 [inline]
+ __se_sys_getsockopt net/socket.c:2454 [inline]
+ __x64_sys_getsockopt+0xbd/0x160 net/socket.c:2454
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xcd/0xfa0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
-On Thu, 8 Jan 2026 21:36:48 +0900 you wrote:
-> syzbot is reporting
-> 
->   unregister_netdevice: waiting for sit0 to become free. Usage count = 2
-> 
-> problem. A debug printk() patch found that a refcount is obtained at
-> xdp_convert_md_to_buff() from bpf_prog_test_run_xdp().
-> 
-> [...]
+A sockmap socket maintains its own receive queue (ingress_msg) which may
+contain data from either its own protocol stack or forwarded from other
+sockets.
 
-Here is the summary with links:
-  - bpf: fix reference count leak in bpf_prog_test_run_xdp()
-    https://git.kernel.org/bpf/bpf/c/ec69daabe452
+                                                     FD1:read()
+                                                     --  FD1->copied_seq++
+                                                         |  [read data]
+                                                         |
+                                [enqueue data]           v
+                  [sockmap]     -> ingress to self ->  ingress_msg queue
+FD1 native stack  ------>                                 ^
+-- FD1->rcv_nxt++               -> redirect to other      | [enqueue data]
+                                       |                  |
+                                       |             ingress to FD1
+                                       v                  ^
+                                      ...                 |  [sockmap]
+                                                     FD2 native stack
 
-You are awesome, thank you!
+The issue occurs when reading from ingress_msg: we update tp->copied_seq
+by default, but if the data comes from other sockets (not the socket's
+own protocol stack), tcp->rcv_nxt remains unchanged. Later, when
+converting back to a native socket, reads may fail as copied_seq could
+be significantly larger than rcv_nxt.
+
+Additionally, FIONREAD calculation based on copied_seq and rcv_nxt is
+insufficient for sockmap sockets, requiring separate field tracking.
+
+[1] https://syzkaller.appspot.com/bug?extid=06dbd397158ec0ea4983
+
+---
+v5 -> v7: Some modifications suggested by Jakub Sitnicki, and added Reviewed-by tag.
+https://lore.kernel.org/bpf/20260106051458.279151-1-jiayuan.chen@linux.dev/
+
+v1 -> v5: Use skmsg.sk instead of extending BPF_F_XXX macro and fix CI
+          failure reported by CI
+v1: https://lore.kernel.org/bpf/20251117110736.293040-1-jiayuan.chen@linux.dev/
+
+Jiayuan Chen (3):
+  bpf, sockmap: Fix incorrect copied_seq calculation
+  bpf, sockmap: Fix FIONREAD for sockmap
+  bpf, selftest: Add tests for FIONREAD and copied_seq
+
+ include/linux/skmsg.h                         |  70 ++++-
+ net/core/skmsg.c                              |  31 +-
+ net/ipv4/tcp_bpf.c                            |  37 ++-
+ net/ipv4/udp_bpf.c                            |  23 +-
+ .../selftests/bpf/prog_tests/sockmap_basic.c  | 277 +++++++++++++++++-
+ .../bpf/progs/test_sockmap_pass_prog.c        |  14 +
+ 6 files changed, 435 insertions(+), 17 deletions(-)
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.43.0
 
 
