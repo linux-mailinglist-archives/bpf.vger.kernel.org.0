@@ -1,99 +1,59 @@
-Return-Path: <bpf+bounces-78684-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78685-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69444D18142
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 11:37:06 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 899B3D18163
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 11:38:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id F1A5C302CF62
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 10:35:02 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 24C863017216
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 10:36:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EED33161BA;
-	Tue, 13 Jan 2026 10:35:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E28C431A044;
+	Tue, 13 Jan 2026 10:36:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hLxVIXLS";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="I/BldoKD"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="K3E1aHio"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 820A928314C
-	for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 10:34:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB2CD31352F;
+	Tue, 13 Jan 2026 10:36:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768300501; cv=none; b=ElTmxQU5Q5HfMrFjEpGpGcmlaKPKWENUhmIAsqErTtwS2doNE6V6K7QjBjRf0WJISm5t8XQAfS/6xGFxrLDb1GmeYxHS2T93ju6+gaXGo/LeMxIt7PUtUe1T9J6s22bQNBW74BSOSAgvy4WC4Lzbbk9niv0CKkJHCFt1+NmgS7k=
+	t=1768300578; cv=none; b=QNEWiS4+HYeeZ7ayOt7USQEM3vCReR4ukQ1udrCWK/f9lPZiEqsu6hwwyLYLzmgaqx2lFdNu29BvO+aVIJrRPcturOWoAPxnfbuBXDLUWpSubnfyTrWoJ6atbrBJpFMQ14NhebAas/M3uC+aof+tHtfQ5Gke3/rG1Va+v4zdK14=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768300501; c=relaxed/simple;
-	bh=Ce/nJEZGmO6L0kVT9kwF9kuqtSrijP123A9vTXnzjo0=;
+	s=arc-20240116; t=1768300578; c=relaxed/simple;
+	bh=ed1wFRUSiBmSlsIl85imC/zBWft8jqjoy8peu1S1QCU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PGHwg8xdo5UGksc4zhR2///C04IgVCg9+KTlsfKcwS24O7Z3PC7CXk1Ws+4SxLzvPlmB5yp55Wfc0fL8V/5CRSaUkmH5boMvCyIBG2fTmJGiTtbee9xhzvxClmjdILdMr/3yzdjt71mbLt7WAMLwEfgcAFmtCFo9USr10nzzdw4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hLxVIXLS; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=I/BldoKD; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1768300498;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Rp88EAkvfg7NazK48Kg9GATXkhl8V5Ket6LfkoWWXus=;
-	b=hLxVIXLSIx82KCrBqxVHv7uGcuTpw5x0BoTbOcaQUtxgJXD4szDVENDVmSLj3INUxbszTt
-	Mn7NeN8Yks00K2rEH5rveW2iLZrGVNuc78gWxhMzKLU7jilp5O3mJRKuQTBD6szadNM72j
-	C1z1GgF6hSlxBrJMnuFu9this8jKumw=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-36-RX6mHDk0PPycTAdmnMqQMA-1; Tue, 13 Jan 2026 05:34:57 -0500
-X-MC-Unique: RX6mHDk0PPycTAdmnMqQMA-1
-X-Mimecast-MFC-AGG-ID: RX6mHDk0PPycTAdmnMqQMA_1768300496
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-4775e00b16fso57717515e9.2
-        for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 02:34:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1768300496; x=1768905296; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Rp88EAkvfg7NazK48Kg9GATXkhl8V5Ket6LfkoWWXus=;
-        b=I/BldoKDFrmM/AO6uquFDiuDV89YIRCDuCy+/EISJHa8n3W7Qy3XKx+h3cpF55rgS/
-         3k+/857zy66cTkNp3ajj5M/k+57No+J/t52KsY4k4Iw3mQEZtktNa86w2HRePSs4k3nW
-         StyJVv/a1fHz6n6EerUaD/TTE7fuh+2LWUIAaV9eHAeDPrOMpSQpOtdnqvchwMTj+336
-         F5acjg1VpS1qdlOO1Dw/hPb4EDd6Vn6o4Yg3JJTWmhmFlgFfIwp7TVWD4y4fCbd9jzD6
-         +YyUsQO2gj2pfTcxoTNfNbTWaTrHXS6OLvHKnRS+onyFaE+me9f2MWkFkaI4ROJjdule
-         QOGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768300496; x=1768905296;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Rp88EAkvfg7NazK48Kg9GATXkhl8V5Ket6LfkoWWXus=;
-        b=JP3tNFq4+hpFNzUTGXAlWV+uzMxKIaH9+d/DrnpQFvARumfsXkdOBat4w0bh9M+2fX
-         kYrzDei47yj/FRwWRhgHrDo3bcZ9ph3wKbr8iE29iVpICb7lAQqu0pNM+uNqM3h9xTTj
-         Lbd/lu9z64cHunvmH6TcBG0yZ0n0tWnu1m4fftEWI/qDXb5OYO6HYJhmkZR/6AsIC6XC
-         mi2OKsh17e3wAM6EukU20dD8LTAUFDD9YiAbrpZI7XUSJ3A0u8SE6qL671fZhYUSewy0
-         1J9GIZp/MXR+P9kQUXizB1juSdgq25cVyoJdoG5y9AIGv6Z7MRupGswlOFcI0j20fADi
-         Jgnw==
-X-Forwarded-Encrypted: i=1; AJvYcCVHxWyTCG5oEHDv+VUzPIaD6WnMjM/du1pVXUvOwGjlRPWxtSDi0mbbF9Um+HEdEKT3qhs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxzJP2L5F7Bk/1uZlA9UCKToqIiT/51Bg6A+vE+LYsG91U6H4G9
-	8I+B3C34FOlxrj6PeUSp8Exf5vTTLT8iFxhwBByBWheKgh1ogib+8ByEo1r/URwW3gIWBNA+ObL
-	mBBe6xFNYk94U/FlY2PYyuCzuHrSCxrxy9xNSzAzSryvVoiS2of+nVQ==
-X-Gm-Gg: AY/fxX4hqSM8f8uUjdYMoocKo0s2V6bbEevswizgejvc38eJDLVUDhAWG4EzzWwKXdW
-	OOoF4wCbvN19S2C8s1MSBYJ9gi9QGlUxze8ZQ9nmAoMWO6KG22GFUzOumJpLgl/Pby33cGm86Hi
-	KipaUwLwLGF5nqchtwYXVjXEh/LdmbhtjxFLC4WnRPvgAhCASkicBcv91KNfFeM6Oc0T6QnDyGV
-	kzJ0TnHMzz461PVWwVgf5sdcxGzzacenXrHBrZReQNzPEWJOzH+v+gb0HHiXS4BXOULhE8XFF42
-	laAOyt0JJlr8lcsNSxbkJdgiTFuFyoiapk8V/JTSTYyjdunqU5egA7ljruw6F71UrdE8HJUO9PD
-	wmAKOwIP3cpIZ
-X-Received: by 2002:a05:600c:3b1f:b0:477:8a29:582c with SMTP id 5b1f17b1804b1-47d84b52b9cmr217868265e9.34.1768300496039;
-        Tue, 13 Jan 2026 02:34:56 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IH39g2T92Y4/kmCEQ96bzsNq0jo0zpd85gtHjgmQsLxOO+v0ajp2k6EhijDpMlzAG7BPPZlZA==
-X-Received: by 2002:a05:600c:3b1f:b0:477:8a29:582c with SMTP id 5b1f17b1804b1-47d84b52b9cmr217867695e9.34.1768300495534;
-        Tue, 13 Jan 2026 02:34:55 -0800 (PST)
-Received: from [192.168.88.32] ([212.105.155.93])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47d7f41eb3bsm414015045e9.7.2026.01.13.02.34.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Jan 2026 02:34:54 -0800 (PST)
-Message-ID: <6d4941fd-9807-4288-a385-28b699972637@redhat.com>
-Date: Tue, 13 Jan 2026 11:34:51 +0100
+	 In-Reply-To:Content-Type; b=I3jK2rt4jmFNRj8aI+LhPXNJAY21p2fPNL8wsWmF2HUublxm+0g2u5HSGRswPkSQ72PRNRtuTds99SLz/SZUd/3LpbBfu7OgSzal/eAwCMdjc4fAi1CT87O9BuMiwb0emmpo5VPyuiLAXbHVczB/x/z8ezSEH5zk7aQ3IRCoB+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=K3E1aHio; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=z5JJuAUWsjgQXnDUAB6ofm+BujPxFurQ3QfMXkOWHdo=; b=K3E1aHio8FxppTSftS/PYJFiu3
+	oXDwn0mO01R/ycOW+f92Z7m8h9bd17l1yniLHYmFD31zUzcU3eCGdIVtukIogBboNHnsuwuJ5eaPD
+	TUhkHFflLtnKDAu4IcmdbMHuoe1qmL4DFF7gnJLwOGLOvIGg2WnVnrIxRsJSPxi9dS/I9LgUAcr9z
+	3pUgrWQSi9iWIkmw+5h+kQ/VYJCPtVDMR0XxsHn0QJxObKUMXCrsSjkd1U9Pq5GlF6swFVaWpD3+X
+	rpkAv005GiOa0rUvh+iLXh0X2zQpHexFPvKOkkKsVGxK+/dyLfMblCiheyo0FkTQ/XNWuyScg54Zw
+	GCvat29Q==;
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1vfbkS-000Hqw-2j;
+	Tue, 13 Jan 2026 11:35:40 +0100
+Received: from localhost ([127.0.0.1])
+	by sslproxy03.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1vfbkR-000FA7-1b;
+	Tue, 13 Jan 2026 11:35:39 +0100
+Message-ID: <7aad7c92-8160-495f-b2bf-a4984a4516fe@iogearbox.net>
+Date: Tue, 13 Jan 2026 11:35:38 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -101,67 +61,95 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v8 8/9] selftests: iou-zcrx: test large chunk
- sizes
-To: Pavel Begunkov <asml.silence@gmail.com>, netdev@vger.kernel.org
-Cc: "David S . Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Jonathan Corbet <corbet@lwn.net>, Michael Chan <michael.chan@broadcom.com>,
- Pavan Chebbi <pavan.chebbi@broadcom.com>, Andrew Lunn
- <andrew+netdev@lunn.ch>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Joshua Washington <joshwash@google.com>,
- Harshitha Ramamurthy <hramamurthy@google.com>,
- Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
- Mark Bloch <mbloch@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- Alexander Duyck <alexanderduyck@fb.com>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>, Shuah Khan
- <shuah@kernel.org>, Willem de Bruijn <willemb@google.com>,
- Ankit Garg <nktgrg@google.com>, Tim Hostetler <thostet@google.com>,
- Alok Tiwari <alok.a.tiwari@oracle.com>, Ziwei Xiao <ziweixiao@google.com>,
- John Fraker <jfraker@google.com>,
- Praveen Kaligineedi <pkaligineedi@google.com>,
- Mohsin Bashir <mohsin.bashr@gmail.com>, Joe Damato <joe@dama.to>,
- Mina Almasry <almasrymina@google.com>,
- Dimitri Daskalakis <dimitri.daskalakis1@gmail.com>,
- Stanislav Fomichev <sdf@fomichev.me>, Kuniyuki Iwashima <kuniyu@google.com>,
- Samiullah Khawaja <skhawaja@google.com>, Ahmed Zaki <ahmed.zaki@intel.com>,
- Alexander Lobakin <aleksander.lobakin@intel.com>, David Wei
- <dw@davidwei.uk>, Yue Haibing <yuehaibing@huawei.com>,
- Haiyue Wang <haiyuewa@163.com>, Jens Axboe <axboe@kernel.dk>,
- Simon Horman <horms@kernel.org>, Vishwanath Seshagiri <vishs@fb.com>,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-kselftest@vger.kernel.org, dtatulea@nvidia.com,
- io-uring@vger.kernel.org
-References: <cover.1767819709.git.asml.silence@gmail.com>
- <bb51fe4e6f30b0bd2335bfc665dc3e30b8de7acb.1767819709.git.asml.silence@gmail.com>
+Subject: Re: [net-next,v5,03/16] net: Add lease info to queue-get response
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, jordan@jrife.io,
+ maciej.fijalkowski@intel.com, willemb@google.com, yangzhenze@bytedance.com,
+ razor@blackwall.org, dw@davidwei.uk, pabeni@redhat.com, sdf@fomichev.me,
+ wangdongdong.6@bytedance.com, john.fastabend@gmail.com,
+ martin.lau@kernel.org, magnus.karlsson@intel.com, toke@redhat.com,
+ davem@davemloft.net
+References: <20260109212632.146920-4-daniel@iogearbox.net>
+ <20260113035353.405418-1-kuba@kernel.org>
 Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <bb51fe4e6f30b0bd2335bfc665dc3e30b8de7acb.1767819709.git.asml.silence@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+From: Daniel Borkmann <daniel@iogearbox.net>
+Autocrypt: addr=daniel@iogearbox.net; keydata=
+ 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
+In-Reply-To: <20260113035353.405418-1-kuba@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: Clear (ClamAV 1.4.3/27879/Tue Jan 13 08:26:16 2026)
 
-On 1/9/26 12:28 PM, Pavel Begunkov wrote:
-> @@ -65,6 +83,8 @@ static bool cfg_oneshot;
->  static int cfg_oneshot_recvs;
->  static int cfg_send_size = SEND_SIZE;
->  static struct sockaddr_in6 cfg_addr;
-> +static unsigned cfg_rx_buf_len;
+On 1/13/26 4:53 AM, Jakub Kicinski wrote:
+[...]
+>> @@ -410,6 +413,37 @@ netdev_nl_queue_fill_one(struct sk_buff *rsp, struct net_device *netdev,
+>>   		if (nla_put_napi_id(rsp, rxq->napi))
+>>   			goto nla_put_failure;
+>>
+>> +		if (netif_rx_queue_lease_get_owner(&netdev, &lease_q_idx)) {
+>> +			struct net *net, *peer_net;
+>> +
+>> +			nest_lease = nla_nest_start(rsp, NETDEV_A_QUEUE_LEASE);
+>> +			if (!nest_lease)
+>> +				goto nla_put_failure;
+>> +			nest_queue = nla_nest_start(rsp, NETDEV_A_LEASE_QUEUE);
+>> +			if (!nest_lease)
+>                              ^^^^^^^^^^
+> 
+> Should this check nest_queue instead of nest_lease? The assignment is to
+> nest_queue but the check is on nest_lease. If nla_nest_start() fails for
+> NETDEV_A_LEASE_QUEUE and returns NULL, the check passes because nest_lease
+> is non-NULL from the previous successful call. This would lead to
+> nla_nest_end(rsp, nest_queue) being called with a NULL pointer, causing a
+> NULL pointer dereference when accessing start->nla_len.
 
-Checkpatch prefers 'unsigned int' above
+Oh well, thanks AI, great catch! Will fix this up along with the other findings.
 
-> @@ -132,6 +133,42 @@ def test_zcrx_rss(cfg) -> None:
->          cmd(tx_cmd, host=cfg.remote)
->  
->  
-> +def test_zcrx_large_chunks(cfg) -> None:
+>> +				goto nla_put_failure;
+> 
+> [ ... ]
 
-pylint laments the lack of docstring. Perhaps explicitly silencing the
-warning?
-
-/P
-
+Thanks,
+Daniel
 
