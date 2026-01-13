@@ -1,133 +1,326 @@
-Return-Path: <bpf+bounces-78742-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78743-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08D05D1A83D
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 18:06:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BC08D1ABBC
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 18:50:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 762863044869
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 17:04:12 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AECE1302C8EF
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 17:50:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE469350295;
-	Tue, 13 Jan 2026 17:04:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F4148350285;
+	Tue, 13 Jan 2026 17:50:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="aZaSPe7G"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TgD7C9SC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 388EE34DB4A
-	for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 17:04:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDD1D329C74
+	for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 17:50:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768323851; cv=none; b=RgyrGDZI7MHwy59fJVBP8bjuyQspFCuP+1Pz2Gtm5Y9M5tNuOXH0zaHxmxupS/79ouo2+Ti2aO4yazw+mKJ3CHUc1OwkAyXxNQ/GlKSJvUcAjoHLekRob3/8S9Io2gY1xEPFJydOpMF5JqwTSJME8zwU+OyrUEVExSG8P+nHn0s=
+	t=1768326624; cv=none; b=PNFt7Sff4D/5ZV2eD6MFOecGjdCgDPX81dcrJkYTayxbEX99bN6b+ujrWNOqpMgwryCfF0fLlbQPd9YddWKUIuYRykShzYw7gfxCuLInWiImi4M7KbKC3v5U+BJENiEhBfG5uf02p6XNu4avZP5NZO9m/NnkiIWhVRtPa6qA6NU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768323851; c=relaxed/simple;
-	bh=myAwfZK3pBeUDJYltOPnMulKp5k0GkhmmxDW3qcNe8c=;
-	h=Mime-Version:Content-Type:Date:Message-Id:From:To:Cc:Subject:
-	 References:In-Reply-To; b=j94gkrGw71yu4L32CWBffTgsY8l6RyyOZVR8Iym9ff+TEi+sYXfLMI4uNfF1CD7QQhK94e4quHCa8ozSmBDqvD6DrLqbkh/W6X2a75/Zxvo46QJ1WytNvqQ/xS8IZv61Aj0q8UxXSEj/9+1uOCwzWxKJ+GAaIQjUFhMsQBGAn1U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=aZaSPe7G; arc=none smtp.client-ip=209.85.222.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etsalapatis.com
-Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-8c2f74ffd81so806716785a.1
-        for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 09:04:09 -0800 (PST)
+	s=arc-20240116; t=1768326624; c=relaxed/simple;
+	bh=yvtATxvntIONIeu7tCkO7/DBIbbWQzwIrQI8gP5er6U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hxXmL3BOq39Qn8eNz6D9HLE8d8/XbI0CjR0+0md1n1zyOZf+PvQ0S5Uz7c2Jq5iCvCqnF/gj6JYSasAFGMusT1o85gk0IynmvsZDg0E2Hi0LtmXgeGAvH0pSOi6dYW6HvnK9qYbGtcVxkgbPbHT+DIE9UEm26W8Xrlmwxn520LA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TgD7C9SC; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-47edd6111b4so6974835e9.1
+        for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 09:50:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1768323849; x=1768928649; darn=vger.kernel.org;
-        h=in-reply-to:references:subject:cc:to:from:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1768326621; x=1768931421; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=g/95kNCiyvFVaVHQF9HHwQ/ObVa9tN1q/3Mo53VWDQg=;
-        b=aZaSPe7GEiXQU+/Ia4iw19P58g9RY+w5Zsvfg46/HPbQtXFn+IBiLpGoLKe5R05Hj2
-         hZWjHFKtSI+VOCE+VPJ6gCJsQaUhA/syt9ELPM3wp7BTxH579SyUFZNNHX3uzN7lfq7R
-         lR2AzOJzJlFbqGrOm9T2xd7ErfjUDTj62fRytvvHPQkmxJV4tHnSue0HhgRXhQXfrVqw
-         yqtd3JPHZnfgLJnU940SiC/mQlDkAnojoup7TsoEUl3dhnSCmvse2CteuLPJLjTlhzpi
-         BWqJjRYB9EsdbO41XS7qvmscXowl4/ZTvcIIpBBJmLTaq93rK35c8wVt1IAlIUQgtKje
-         PsUw==
+        bh=mTSAaAKJKjmdyoQwz5h5Y5dDJTSFPiip4+2oV5TweqA=;
+        b=TgD7C9SC2JHamOu+/eDepe5qbqYBQw2PA5m2W24d9Gf8s1yQZ7j/+15wlkaFzrcYBj
+         uegHkCVtRj63LommEiisr2NPTaYDCy6KBDY7hc1UQg9tdSD7nt9GQWK/SytBx3SHCsle
+         widddKm6xDl7PPriKnmRmcTfbyg4kguCnAida5NbHmuPZmdU5WomsGx/NDLI3Zajh+PR
+         B925lsu3mlScs+R5EpriJzm7k7WyOb1rVgOW7BtULxxA3LFMXP74F/4fIr8z08XMkqQL
+         2Z7hJhKcsqWX2R3VhH+R9SSDKfLVNbMdBndywBkUSb5vOoPotmt9K/J91L+NYfgu/DqA
+         CBWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768323849; x=1768928649;
-        h=in-reply-to:references:subject:cc:to:from:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-gg:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=g/95kNCiyvFVaVHQF9HHwQ/ObVa9tN1q/3Mo53VWDQg=;
-        b=SOJH+mn0nH3TuOjqux3TZxUtRa4j5pT/fZScQrMIR9MCJkrrvCMXlT+vRPl+vPYi4d
-         gfFrAVG77+LU6bucXwVZ7NPm4vUeX+o/OxhXGuPT+gJ/N98dJJY7QZ1pXvIMvhvUVvyu
-         I6DcGRLn8Btcokxje4Sg9Rz5LY+N9fZAiC1CBkIu7Wrt6WapIgz49z5av5kI6C2IuuBO
-         5Xn9BPEDqs5fON/Hk3cxmnxcSk702rgG6Ap3KU4zdt0wrviZhjNvK5tUoN/02+x7MiCU
-         ty3vIkcJdXhQK9DmK8pO+AEzks9Z9lBqicox2VORx3wtcMyMXdQzSrBTF83m8x/DfNmU
-         iEIw==
-X-Forwarded-Encrypted: i=1; AJvYcCWB0FEw5+AjlNmImEE2oGu7R33A723ogadBtrSZZD/oPyvyVpwzj3sQmhlKwcPG09aSK60=@vger.kernel.org
-X-Gm-Message-State: AOJu0YziXd9bA+XXDPs319RWDXHU8ezffK9nmiGLKazDw0MtvIVH6Bxt
-	MQDSvgrLhf7m9VGUlLjsCJtOmwQGwW88zNokvUTnun/ZQdvsoK2IEUw/4EBfzoxxK7U=
-X-Gm-Gg: AY/fxX6ZbqidrB8ETvQ0KmTTJsHU+mVgXpRqmgQHvPYfoUTKtB1oHgDCy5EJqrsSoxs
-	ta8QKseWwGbkSvo7nFDGG9ph3D5HQtr5YFQ8Ctk1po6mHpNGzzX5KpfFg+T6vq+AVu5GbdlvVBQ
-	nH4cLUoXZDeIk9taisXirTbQov2+iiUEvYOPWkCrYWJSM4zAwpeC16sDFIJxT76OmNaTEis97y+
-	FtoBaeXJ3iTuUusPTiqdLQLRz8j+QBoucC6QonuPpe8A95NR1Ur5olvU/yvGT5QXPjYjwgZPolu
-	u2uWbcBzEfTmmWkR9Fmht6p++Ad5BRERSdpXDHq6VQpGt7Ws4RLpSSZ4L+39LO+/VQc0+GN5p2y
-	WbF5MkbNtZZMKp/GaojrbMV4/6yNg8591ADmI+6u9i9KiRsRnl3g6pcDPYCBoSD9qeXADpcb63P
-	h7DcIhRxv3IvE=
-X-Google-Smtp-Source: AGHT+IHrigtzczoZmIUBtOr447a+SGkdCdiNOcuOwbuKwxgdHgPDklWiMq+lgoZcPPhV5w+rYtbkaA==
-X-Received: by 2002:a05:620a:4444:b0:8b2:e177:fb17 with SMTP id af79cd13be357-8c3893dca80mr2949157985a.45.1768323848858;
-        Tue, 13 Jan 2026 09:04:08 -0800 (PST)
-Received: from localhost ([140.174.219.137])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8c37f5438f6sm1728247485a.53.2026.01.13.09.04.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Jan 2026 09:04:08 -0800 (PST)
+        d=1e100.net; s=20230601; t=1768326621; x=1768931421;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=mTSAaAKJKjmdyoQwz5h5Y5dDJTSFPiip4+2oV5TweqA=;
+        b=oEkRwD8TDKnbJGplCc+IEhP6Y/gI7v4YjjAhI+RWS+/V9qnQPUjeW37vlxDm9Ii3XA
+         y9LoNyBPcqSo9Iom9EncP6ZhNh7Q9IQ/5JJKw+abmKa6/VXwf+Pi7yyFcmWAxIfCO8Me
+         UbxMkJdtxATwlM4lFO+QWr6aDJ6l3M2Ng8Q1Wmg4Jh6XSPedJpbDQ53uqsyS5QcoAxjA
+         xxrdWkFRbFRMg7HHepiyj4yQ6PogJH1bqmDvnt7GtyuINs0/yNj1YmK2eSsUcOsuoNM3
+         lcKykLaqxCNPI9G3+H3KRf0BECArw2zDm8FGTqbsW7l/Yy/p+RDq4oh+dWYFxskLzVWs
+         uDnw==
+X-Forwarded-Encrypted: i=1; AJvYcCUpVrag+dgHNZxhlczs3s58doowjLmLW0qOeCuTRobmPgkAXnw6+IwsnhrqsjHiA8BKBew=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyfSOxdbjPr6cSDqfOsmbsrRDmjkc/dPlcqm9hjySkqXrZdQyL6
+	PVTmHceK87E6FeyEq9xZOpx0WYem/MgqLM818s7xqLn0sISsJG1dHYHH2HxBZqdXnAe05YO03tN
+	1FODi8LIS26gNYZPhj3VSdLGzniHYPSM=
+X-Gm-Gg: AY/fxX6ju1nw6fZ+cZE7hmg9ox/0eFF3Ez+Q6Ctx6pJU42oe/62OaJ14yrdX83fmE4F
+	Su6rmpzUWEGWa2WHP9GTNAGmq9mp1cjnJxT+Kjr1wZ2IbJggwT7A+kMFSVRoPOVKMOVezCqfbOe
+	8/p9u3+WSBs+yhJNNpdXdhAf2eztEuorxLYm3kaDz1hVpTMRpZFmtPxz1YllEWr5a85gQFYhQSb
+	zGJ65eNzPlyohMddadz87f/cIaPijILoWKQtXnxXLKxg3B8tXdANxFDwGjm4l+IHND702e4o9m8
+	Jjf0X+inzPmbLujSYg+9ZSchnkir
+X-Received: by 2002:a05:600c:35c3:b0:46e:35a0:3587 with SMTP id
+ 5b1f17b1804b1-47ee338c150mr230355e9.27.1768326621287; Tue, 13 Jan 2026
+ 09:50:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0
+References: <20260112104529.224645-1-dongml2@chinatelecom.cn> <20260112104529.224645-2-dongml2@chinatelecom.cn>
+In-Reply-To: <20260112104529.224645-2-dongml2@chinatelecom.cn>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 13 Jan 2026 09:50:09 -0800
+X-Gm-Features: AZwV_Qi9no7Gk6JTVzhk-tHSf6BaxSAoq33DCAhPs2svUU2YlMOpDhNV_kI_PVY
+Message-ID: <CAADnVQLMztSfxCSxak900PVN+CtiN0FF=hkRcB8cHKiHipd4Dg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 1/2] bpf, x86: inline bpf_get_current_task()
+ for x86_64
+To: Menglong Dong <menglong8.dong@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Eduard <eddyz87@gmail.com>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 13 Jan 2026 12:04:06 -0500
-Message-Id: <DFNMHKDB1A40.3D0RBKLJVJ5HW@etsalapatis.com>
-From: "Emil Tsalapatis" <emil@etsalapatis.com>
-To: "Yonghong Song" <yonghong.song@linux.dev>, <bpf@vger.kernel.org>
-Cc: "Alexei Starovoitov" <ast@kernel.org>, "Andrii Nakryiko"
- <andrii@kernel.org>, "Daniel Borkmann" <daniel@iogearbox.net>,
- <kernel-team@fb.com>, "Martin KaFai Lau" <martin.lau@kernel.org>
-Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: Fix verifier_arena_globals1
- failure with 64K page
-X-Mailer: aerc 0.20.1
-References: <20260113061018.3797051-1-yonghong.song@linux.dev>
- <20260113061033.3798549-1-yonghong.song@linux.dev>
-In-Reply-To: <20260113061033.3798549-1-yonghong.song@linux.dev>
 
-On Tue Jan 13, 2026 at 1:10 AM EST, Yonghong Song wrote:
-> With 64K page on arm64, verifier_arena_globals1 failed like below:
->   ...
->   libbpf: map 'arena': failed to create: -E2BIG
->   ...
->   #509/1   verifier_arena_globals1/check_reserve1:FAIL
->   ...
+On Mon, Jan 12, 2026 at 2:45=E2=80=AFAM Menglong Dong <menglong8.dong@gmail=
+.com> wrote:
 >
-> For 64K page, if the number of arena pages is (1UL << 20), the total
-> memory will exceed 4G and this will cause map creation failure.
-> Adjusting ARENA_PAGES based on the actual page size fixed the problem.
+> Inline bpf_get_current_task() and bpf_get_current_task_btf() for x86_64
+> to obtain better performance.
 >
-> Cc: Emil Tsalapatis <emil@etsalapatis.com>
-> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+> In !CONFIG_SMP case, the percpu variable is just a normal variable, and
+> we can read the current_task directly.
+>
+> Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
 > ---
-
-Reviewed-by: Emil Tsalapatis <emil@etsalapatis.com>
-
->  tools/testing/selftests/bpf/progs/verifier_arena_globals1.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> v4:
+> - handle the !CONFIG_SMP case
 >
-> diff --git a/tools/testing/selftests/bpf/progs/verifier_arena_globals1.c =
-b/tools/testing/selftests/bpf/progs/verifier_arena_globals1.c
-> index 14afef3d6442..83182ddbfb95 100644
-> --- a/tools/testing/selftests/bpf/progs/verifier_arena_globals1.c
-> +++ b/tools/testing/selftests/bpf/progs/verifier_arena_globals1.c
-> @@ -9,7 +9,7 @@
->  #include "bpf_arena_common.h"
->  #include "bpf_misc.h"
-> =20
-> -#define ARENA_PAGES (1UL<< (32 - 12))
-> +#define ARENA_PAGES (1UL<< (32 - __builtin_ffs(__PAGE_SIZE) + 1))
->  #define GLOBAL_PAGES (16)
-> =20
->  struct {
+> v3:
+> - implement it in the verifier with BPF_MOV64_PERCPU_REG() instead of in
+>   x86_64 JIT.
+> ---
+>  kernel/bpf/verifier.c | 29 +++++++++++++++++++++++++++++
+>  1 file changed, 29 insertions(+)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 3d44c5d06623..12e99171afd8 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -17688,6 +17688,8 @@ static bool verifier_inlines_helper_call(struct b=
+pf_verifier_env *env, s32 imm)
+>         switch (imm) {
+>  #ifdef CONFIG_X86_64
+>         case BPF_FUNC_get_smp_processor_id:
+> +       case BPF_FUNC_get_current_task_btf:
+> +       case BPF_FUNC_get_current_task:
+>                 return env->prog->jit_requested && bpf_jit_supports_percp=
+u_insn();
+>  #endif
+>         default:
+> @@ -23273,6 +23275,33 @@ static int do_misc_fixups(struct bpf_verifier_en=
+v *env)
+>                         insn      =3D new_prog->insnsi + i + delta;
+>                         goto next_insn;
+>                 }
+> +
+> +               /* Implement bpf_get_current_task() and bpf_get_current_t=
+ask_btf() inline. */
+> +               if ((insn->imm =3D=3D BPF_FUNC_get_current_task || insn->=
+imm =3D=3D BPF_FUNC_get_current_task_btf) &&
+> +                   verifier_inlines_helper_call(env, insn->imm)) {
 
+Though verifier_inlines_helper_call() gates this with CONFIG_X86_64,
+I think we still need explicit:
+#if defined(CONFIG_X86_64) && !defined(CONFIG_UML)
+
+just like we did for BPF_FUNC_get_smp_processor_id.
+Please check. I suspect UML will break without it.
+
+> +#ifdef CONFIG_SMP
+> +                       insn_buf[0] =3D BPF_MOV64_IMM(BPF_REG_0, (u32)(un=
+signed long)&current_task);
+> +                       insn_buf[1] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0, B=
+PF_REG_0);
+> +                       insn_buf[2] =3D BPF_LDX_MEM(BPF_DW, BPF_REG_0, BP=
+F_REG_0, 0);
+> +#else
+> +                       struct bpf_insn ld_current_addr[2] =3D {
+> +                               BPF_LD_IMM64(BPF_REG_0, (unsigned long)&c=
+urrent_task)
+> +                       };
+> +                       insn_buf[0] =3D ld_current_addr[0];
+> +                       insn_buf[1] =3D ld_current_addr[1];
+> +                       insn_buf[2] =3D BPF_LDX_MEM(BPF_DW, BPF_REG_0, BP=
+F_REG_0, 0);
+> +#endif
+
+I wouldn't bother with !SMP.
+If we need to add
+
+
+On Mon, Jan 12, 2026 at 2:45=E2=80=AFAM Menglong Dong <menglong8.dong@gmail=
+.com> wrote:
+>
+> Inline bpf_get_current_task() and bpf_get_current_task_btf() for x86_64
+> to obtain better performance.
+>
+> In !CONFIG_SMP case, the percpu variable is just a normal variable, and
+> we can read the current_task directly.
+>
+> Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+> ---
+> v4:
+> - handle the !CONFIG_SMP case
+>
+> v3:
+> - implement it in the verifier with BPF_MOV64_PERCPU_REG() instead of in
+>   x86_64 JIT.
+> ---
+>  kernel/bpf/verifier.c | 29 +++++++++++++++++++++++++++++
+>  1 file changed, 29 insertions(+)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 3d44c5d06623..12e99171afd8 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -17688,6 +17688,8 @@ static bool verifier_inlines_helper_call(struct b=
+pf_verifier_env *env, s32 imm)
+>         switch (imm) {
+>  #ifdef CONFIG_X86_64
+>         case BPF_FUNC_get_smp_processor_id:
+> +       case BPF_FUNC_get_current_task_btf:
+> +       case BPF_FUNC_get_current_task:
+>                 return env->prog->jit_requested && bpf_jit_supports_percp=
+u_insn();
+>  #endif
+>         default:
+> @@ -23273,6 +23275,33 @@ static int do_misc_fixups(struct bpf_verifier_en=
+v *env)
+>                         insn      =3D new_prog->insnsi + i + delta;
+>                         goto next_insn;
+>                 }
+> +
+> +               /* Implement bpf_get_current_task() and bpf_get_current_t=
+ask_btf() inline. */
+> +               if ((insn->imm =3D=3D BPF_FUNC_get_current_task || insn->=
+imm =3D=3D BPF_FUNC_get_current_task_btf) &&
+> +                   verifier_inlines_helper_call(env, insn->imm)) {
+
+Though verifier_inlines_helper_call() gates this with CONFIG_X86_64,
+I think we still need explicit:
+#if defined(CONFIG_X86_64) && !defined(CONFIG_UML)
+
+just like we did for BPF_FUNC_get_smp_processor_id.
+Please check. I suspect UML will break without it.
+
+> +#ifdef CONFIG_SMP
+> +                       insn_buf[0] =3D BPF_MOV64_IMM(BPF_REG_0, (u32)(un=
+signed long)&current_task);
+> +                       insn_buf[1] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0, B=
+PF_REG_0);
+> +                       insn_buf[2] =3D BPF_LDX_MEM(BPF_DW, BPF_REG_0, BP=
+F_REG_0, 0);
+> +#else
+> +                       struct bpf_insn ld_current_addr[2] =3D {
+> +                               BPF_LD_IMM64(BPF_REG_0, (unsigned long)&c=
+urrent_task)
+> +                       };
+> +                       insn_buf[0] =3D ld_current_addr[0];
+> +                       insn_buf[1] =3D ld_current_addr[1];
+> +                       insn_buf[2] =3D BPF_LDX_MEM(BPF_DW, BPF_REG_0, BP=
+F_REG_0, 0);
+> +#endif
+
+I wouldn't bother with !SMP.
+If we need to add
+
+
+On Mon, Jan 12, 2026 at 2:45=E2=80=AFAM Menglong Dong <menglong8.dong@gmail=
+.com> wrote:
+>
+> Inline bpf_get_current_task() and bpf_get_current_task_btf() for x86_64
+> to obtain better performance.
+>
+> In !CONFIG_SMP case, the percpu variable is just a normal variable, and
+> we can read the current_task directly.
+>
+> Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+> ---
+> v4:
+> - handle the !CONFIG_SMP case
+>
+> v3:
+> - implement it in the verifier with BPF_MOV64_PERCPU_REG() instead of in
+>   x86_64 JIT.
+> ---
+>  kernel/bpf/verifier.c | 29 +++++++++++++++++++++++++++++
+>  1 file changed, 29 insertions(+)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 3d44c5d06623..12e99171afd8 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -17688,6 +17688,8 @@ static bool verifier_inlines_helper_call(struct b=
+pf_verifier_env *env, s32 imm)
+>         switch (imm) {
+>  #ifdef CONFIG_X86_64
+>         case BPF_FUNC_get_smp_processor_id:
+> +       case BPF_FUNC_get_current_task_btf:
+> +       case BPF_FUNC_get_current_task:
+>                 return env->prog->jit_requested && bpf_jit_supports_percp=
+u_insn();
+>  #endif
+>         default:
+> @@ -23273,6 +23275,33 @@ static int do_misc_fixups(struct bpf_verifier_en=
+v *env)
+>                         insn      =3D new_prog->insnsi + i + delta;
+>                         goto next_insn;
+>                 }
+> +
+> +               /* Implement bpf_get_current_task() and bpf_get_current_t=
+ask_btf() inline. */
+> +               if ((insn->imm =3D=3D BPF_FUNC_get_current_task || insn->=
+imm =3D=3D BPF_FUNC_get_current_task_btf) &&
+> +                   verifier_inlines_helper_call(env, insn->imm)) {
+
+Though verifier_inlines_helper_call() gates this with CONFIG_X86_64,
+I think we still need explicit:
+#if defined(CONFIG_X86_64) && !defined(CONFIG_UML)
+
+just like we did for BPF_FUNC_get_smp_processor_id.
+Please check. I suspect UML will break without it.
+
+> +#ifdef CONFIG_SMP
+> +                       insn_buf[0] =3D BPF_MOV64_IMM(BPF_REG_0, (u32)(un=
+signed long)&current_task);
+> +                       insn_buf[1] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0, B=
+PF_REG_0);
+> +                       insn_buf[2] =3D BPF_LDX_MEM(BPF_DW, BPF_REG_0, BP=
+F_REG_0, 0);
+> +#else
+> +                       struct bpf_insn ld_current_addr[2] =3D {
+> +                               BPF_LD_IMM64(BPF_REG_0, (unsigned long)&c=
+urrent_task)
+> +                       };
+> +                       insn_buf[0] =3D ld_current_addr[0];
+> +                       insn_buf[1] =3D ld_current_addr[1];
+> +                       insn_buf[2] =3D BPF_LDX_MEM(BPF_DW, BPF_REG_0, BP=
+F_REG_0, 0);
+> +#endif
+
+I wouldn't bother with !SMP.
+If we need to add defined(CONFIG_X86_64) && !defined(CONFIG_UML)
+I would add && defined(CONFIG_SMP) to it.
+
+pw-bot: cr
 
