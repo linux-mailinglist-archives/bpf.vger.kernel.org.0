@@ -1,283 +1,111 @@
-Return-Path: <bpf+bounces-78633-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78634-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEC57D16367
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 02:49:51 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BE66D16388
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 02:52:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 85CEC300DB1E
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 01:49:45 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 4F40A300D423
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 01:51:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E949E279DC8;
-	Tue, 13 Jan 2026 01:49:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC6DE2820A4;
+	Tue, 13 Jan 2026 01:51:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="lSWEdAlb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U0WmTyuS"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EB5923314B
-	for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 01:49:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A3BB28136F
+	for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 01:51:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768268976; cv=none; b=WvVnLvr/V1xs/VIeZVRcC03PaX0eGFrwxQuL1mgpyaZr21q3t3EuPWJf+UIgu0NbagNvLgSxo8HeV9oCmZxkrEvD533RK+8sUhmJa40DqKYLkW1K1fB/c8XlwHNlYrUzh7cJi7EMLLnMS0lyUl2kkHUVKty/WLBMmRAGshG2hEI=
+	t=1768269116; cv=none; b=oxHNGAXVndDnf1+YxbGfusCehdhCpIPv7QHYr2PbVcGN8m4OXsc6Jp+5eO//lubfOsCq6F4EtFRxUVpZushW5/MAy1i0pwgWA7PstUz/gOQ/EUXEKVdA34BRaxKiu7V1egAaJZB5ZWJMc/f0U3JE6EPMuBvsSsvokJUDlzzBKww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768268976; c=relaxed/simple;
-	bh=bSK4CcnScNRHMalMCjYSwEi6oFia9/n/YNRFraGXq/w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FdhupWoll+KDeWOpYqTXZCeL6pv2fENCyBTthHgB6shiEBZkDBlSD9gXNBgbvt+QzQ1x1+AzHwhwvGr5EW5RfsJIMev4F4A01uWXC+H5AvacSqUIREvGxO+IXEiHt7rJNhRBfKqZ4ksXu0Tr7Rjj2tSZROFnQpriC3jDC0rK3GA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=lSWEdAlb; arc=none smtp.client-ip=95.215.58.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <5bcd3bb1-6ed0-4ad8-9de8-46385de908cb@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1768268972;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YxMG4i3aLl1pLM38OkkjaumzApF3ephBc54bqt60bRs=;
-	b=lSWEdAlb2ZVSXIpcS2cZyhiEazdQBF/83oz5ygbEmYo2duCR5qjPd0HK8rl1+v0TSZnl4s
-	QuRyixMLPRo1mVSkf5lqlr7ZCu3AQd+v8pH44RDPdRH2EkOisqy9quC59TlCH83Wbw/8Ec
-	sfxC7QJo96Ei/+GbXAyeg99DQwYf+fc=
-Date: Mon, 12 Jan 2026 17:49:14 -0800
+	s=arc-20240116; t=1768269116; c=relaxed/simple;
+	bh=jqyuwK6rVatG5SgEyHj8Jgxvss1mk94ml+mkdOlelwI=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=nj9LG01/OfM+OoaTfc265oXxK9raIMNk/2ufFP9oaBN3+mGN1n5TW5FaWRfWeO0RS8aLzyVKmZZfgknXLEKsHTEZd7ljHMGccgoEdo6zv0dg77VMwuYT0ByQknsgMNs3wwAZ83iakoZtEKDXU/MYJVhePRSghzkqPGY7XeepBOo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U0WmTyuS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 168AAC116D0;
+	Tue, 13 Jan 2026 01:51:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768269112;
+	bh=jqyuwK6rVatG5SgEyHj8Jgxvss1mk94ml+mkdOlelwI=;
+	h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+	b=U0WmTyuSCqAnqH3aFvsMV5z9wqf8M8aCsqMf1cZJMztZ83fyCz4dkS4vedTwKjkBE
+	 JOFzYZ94+KvLMSHCzaS0X/+UT0EmbcG6X6kyQcKN1TQ7B5x1x3dZ/lkEYeLUeIhlre
+	 qpI5ED79kAwui4V7xdCpcul+EQmlzMEE5PNk+/GxmBVZC7FPBN36kiSgnjtD3pEF2D
+	 O/hVXLuc6MM+8LNP1MTJSpS3S5Nv0fyKir9FsrPJF9NdOzMfm5e3x/bq/QCt3sbgTj
+	 QFsUbr/I4LyZsew56MA0m7bzsC4HP3wjjKySpVhjoMNpOaV2DPkeGLvZNlurJIX2ud
+	 fRc5A12MdKtuA==
+Date: Mon, 12 Jan 2026 18:51:48 -0700 (MST)
+From: Paul Walmsley <pjw@kernel.org>
+To: Bo Gan <ganboing@gmail.com>
+cc: Lukas Gerlach <lukas.gerlach@cispa.de>, bpf@vger.kernel.org, 
+    linux-riscv@lists.infradead.org, tech-speculation-barriers@lists.riscv.org, 
+    bjorn@kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+    luke.r.nels@gmail.com, xi.wang@gmail.com, palmer@dabbelt.com, 
+    luis.gerhorst@fau.de, daniel.weber@cispa.de, marton.bognar@kuleuven.be, 
+    jo.vanbulck@kuleuven.be, michael.schwarz@cispa.de
+Subject: Re: [PATCH] riscv, bpf: Emit fence.i for BPF_NOSPEC
+In-Reply-To: <b39e9af7-bdbf-4e02-ab7e-ec24626cada4@gmail.com>
+Message-ID: <65f1b958-e420-c517-9a60-86f9085de702@kernel.org>
+References: <20251228173753.56767-1-lukas.gerlach@cispa.de> <b39e9af7-bdbf-4e02-ab7e-ec24626cada4@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v1 04/10] resolve_btfids: Support for
- KF_IMPLICIT_ARGS
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Mykyta Yatsenko <yatsenko@meta.com>,
- Tejun Heo <tj@kernel.org>, Alan Maguire <alan.maguire@oracle.com>,
- Benjamin Tissoires <bentiss@kernel.org>, Jiri Kosina <jikos@kernel.org>,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-input@vger.kernel.org, sched-ext@lists.linux.dev
-References: <20260109184852.1089786-1-ihor.solodrai@linux.dev>
- <20260109184852.1089786-5-ihor.solodrai@linux.dev>
- <CAEf4BzYcZ5pLCvfn8uWiKCjpBXBw9dxR_WZnKxVz1Bhf96xOGg@mail.gmail.com>
- <2ea17ba8-3248-4a01-8fed-183ce66aa39c@linux.dev>
- <CAEf4BzYuchyyw9M6eQo0Gou=09PcM-o_Ay7D8DM1gDitiG6Tbg@mail.gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Ihor Solodrai <ihor.solodrai@linux.dev>
-In-Reply-To: <CAEf4BzYuchyyw9M6eQo0Gou=09PcM-o_Ay7D8DM1gDitiG6Tbg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=US-ASCII
 
-On 1/12/26 8:51 AM, Andrii Nakryiko wrote:
-> On Fri, Jan 9, 2026 at 5:15 PM Ihor Solodrai <ihor.solodrai@linux.dev> wrote:
->>
->> [...]
->>>>
->>>> diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
->>>> index df39982f51df..b361e726fa36 100644
->>>> --- a/tools/bpf/resolve_btfids/main.c
->>>> +++ b/tools/bpf/resolve_btfids/main.c
->>>> @@ -152,6 +152,18 @@ struct object {
->>>>         int nr_typedefs;
->>>>  };
->>>>
->>>> +#define KF_IMPLICIT_ARGS (1 << 16)
->>>> +#define KF_IMPL_SUFFIX "_impl"
->>>> +#define MAX_BPF_FUNC_REG_ARGS 5
->>>> +#define MAX_KFUNCS 256
->>>> +#define MAX_DECL_TAGS (MAX_KFUNCS * 4)
->>>
->>> can't we get that from include/linux/bpf.h? seems like
->>> resolve_btfids's main.c include internal headers just fine, so why
->>> duplicate definitions?
->>
->> Hi Andrii, thank you for a quick review.
->>
->> Including internal include/linux/btf.h directly doesn't work, which is
->> probably expected.
->>
->> resolve_btfids is currently built with:
->>
->> HOSTCFLAGS_resolve_btfids += -g \
->>           -I$(srctree)/tools/include \
->>           -I$(srctree)/tools/include/uapi \
+Hi,
+
+On Mon, 12 Jan 2026, Bo Gan wrote:
+
+> Please also check out Ved's response from the Speculation Barrier TG:
 > 
-> so I don't know if that will solve the issue, but I don't think it
-> makes sense to build resolve_btfids using tools' version of includes.
-> tools/include is mostly for perf's benefit (maybe so that they don't
-> accidentally take some kernel-internal dependency, not sure). But
-> resolve_btfids is built for the kernel during the kernel build, we
-> should have access to full kernel headers. Try changing this and see
-> if build errors go away?
+> https://lists.riscv.org/g/tech-speculation-barriers/message/21
 > 
->>           -I$(LIBBPF_INCLUDE) \
->>           -I$(SUBCMD_INCLUDE) \
->>           $(LIBELF_FLAGS) \
->>           -Wall -Werror
->>
->> If I add -I$(srctree)/include option and then
->>
->>     #include <linux/btf.h>
->>
->> A bunch of build errors happen.
->>
->> AFAIU we'd have to create a stripped copy of relevant headers in
->> tools/include first.  Is that what you're suggesting?
-> 
-> see above, the opposite -- just use -I$(srctree)/include directly
+> I think the best way forward is to wait for the TG to clearly define
+> speculation barrier instructions, and use them for future cores. 
 
-Andrii,
+Waiting for the speculation barriers TG to complete their work is 
+unfortunately a non-starter.  It seems unlikely to do so for quite some 
+time.  Even once the extension is ratified, it's likely to take years 
+before these instructions enter silicon and are widely available.  
+Meanwhile, there are already newer designs in silicon targeting use cases 
+that will need mitigations.
 
-I made a low-effort attempt to switch away from tools/include and it
-looks like too much trouble. See a sample splat below.
+> For existing HW, emit a warning and do nothing. 
 
-I think the issue is that resolve_btfids uses a couple of inherently
-user-space things (stdlib, libelf), which themselves may include
-system headers. And there is actually a difference between the kernel
-and tools/include headers. For example, check
+Can we really assume that this use case is the same as everyone else's?  
+So far the Linux approach to microarchitectural attacks is to implement 
+mitigations, with the expensive ones switchable, and then to give users 
+the choice as to whether to disable mitigations for their use case.  Is 
+there a reason for arch/riscv to take a substantially different approach?
 
-  ./include/linux/rbtree.h
-vs
-  ./tools/include/linux/rbtree.h
+> I don't want to see bpf doing fence.i universally for all riscv.
 
-Maybe we can make it work (with our own local tools/include?), but it
-doesn't look worth it for just a couple of constant #define-s.
+I think there's already agreement here - 
 
-Let me know if I am missing something.
+  https://lore.kernel.org/linux-riscv/20260106084410.94496-1-lukas.gerlach@cispa.de/
 
+> Neither do I like it guessing this and that specific core implementation 
+> needing fence.i or not. We simply don't know how each vendor design 
+> their cores. Let the vendor tell us what's the best instruction to use 
+> for our existing HW.  E.g., for JH7110, it's really U74 from Sifive, so 
+> we can ask them to fill-in
 
-$ make
-  INSTALL libsubcmd_headers
-  HOSTCC  /home/isolodrai/workspace/prog-aux/linux/tools/bpf/resolve_btfids/main.o
-In file included from /home/isolodrai/workspace/prog-aux/linux/include/uapi/linux/stat.h:5,
-                 from /home/isolodrai/workspace/prog-aux/linux/include/linux/stat.h:7,
-                 from main.c:70:
-/home/isolodrai/workspace/prog-aux/linux/include/linux/types.h:20:33: error: conflicting types for ‘fd_set’; have ‘__kernel_fd_set’
-   20 | typedef __kernel_fd_set         fd_set;
-      |                                 ^~~~~~
-In file included from /usr/include/sys/types.h:179,
-                 from /usr/include/stdlib.h:394,
-                 from main.c:67:
-/usr/include/sys/select.h:70:5: note: previous declaration of ‘fd_set’ with type ‘fd_set’
-   70 |   } fd_set;
-      |     ^~~~~~
-In file included from /home/isolodrai/workspace/prog-aux/linux/include/uapi/linux/stat.h:5,
-                 from /home/isolodrai/workspace/prog-aux/linux/include/linux/stat.h:7,
-                 from main.c:70:
-/home/isolodrai/workspace/prog-aux/linux/include/linux/types.h:21:33: error: conflicting types for ‘dev_t’; have ‘__kernel_dev_t’ {aka ‘unsigned int’}
-   21 | typedef __kernel_dev_t          dev_t;
-      |                                 ^~~~~
-In file included from /usr/include/stdlib.h:394,
-                 from main.c:67:
-/usr/include/sys/types.h:59:17: note: previous declaration of ‘dev_t’ with type ‘dev_t’ {aka ‘long unsigned int’}
-   59 | typedef __dev_t dev_t;
-      |                 ^~~~~
-In file included from /home/isolodrai/workspace/prog-aux/linux/include/uapi/linux/stat.h:5,
-                 from /home/isolodrai/workspace/prog-aux/linux/include/linux/stat.h:7,
-                 from main.c:70:
-/home/isolodrai/workspace/prog-aux/linux/include/linux/types.h:25:33: error: conflicting types for ‘nlink_t’; have ‘u32’ {aka ‘unsigned int’}
-   25 | typedef u32                     nlink_t;
-      |                                 ^~~~~~~
-In file included from /usr/include/stdlib.h:394,
-                 from main.c:67:
-/usr/include/sys/types.h:74:19: note: previous declaration of ‘nlink_t’ with type ‘nlink_t’ {aka ‘long unsigned int’}
-   74 | typedef __nlink_t nlink_t;
-      |                   ^~~~~~~
-In file included from /home/isolodrai/workspace/prog-aux/linux/include/uapi/linux/stat.h:5,
-                 from /home/isolodrai/workspace/prog-aux/linux/include/linux/stat.h:7,
-                 from main.c:70:
-/home/isolodrai/workspace/prog-aux/linux/include/linux/types.h:31:33: error: conflicting types for ‘timer_t’; have ‘__kernel_timer_t’ {aka ‘int’}
-   31 | typedef __kernel_timer_t        timer_t;
-      |                                 ^~~~~~~
-In file included from /usr/include/sys/types.h:130,
-                 from /usr/include/stdlib.h:394,
-                 from main.c:67:
-/usr/include/bits/types/timer_t.h:7:19: note: previous declaration of ‘timer_t’ with type ‘timer_t’ {aka ‘void *’}
-    7 | typedef __timer_t timer_t;
-      |                   ^~~~~~~
-In file included from /home/isolodrai/workspace/prog-aux/linux/include/uapi/linux/stat.h:5,
-                 from /home/isolodrai/workspace/prog-aux/linux/include/linux/stat.h:7,
-                 from main.c:70:
-/home/isolodrai/workspace/prog-aux/linux/include/linux/types.h:52:33: error: conflicting types for ‘loff_t’; have ‘__kernel_loff_t’ {aka ‘long long int’}
-   52 | typedef __kernel_loff_t         loff_t;
-      |                                 ^~~~~~
-In file included from /usr/include/stdlib.h:394,
-                 from main.c:67:
-/usr/include/sys/types.h:42:18: note: previous declaration of ‘loff_t’ with type ‘loff_t’ {aka ‘long int’}
-   42 | typedef __loff_t loff_t;
-      |                  ^~~~~~
-In file included from /home/isolodrai/workspace/prog-aux/linux/include/uapi/linux/stat.h:5,
-                 from /home/isolodrai/workspace/prog-aux/linux/include/linux/stat.h:7,
-                 from main.c:70:
-/home/isolodrai/workspace/prog-aux/linux/include/linux/types.h:53:9: error: unknown type name ‘__kernel_uoff_t’
-   53 | typedef __kernel_uoff_t         uoff_t;
-      |         ^~~~~~~~~~~~~~~
-/home/isolodrai/workspace/prog-aux/linux/include/linux/types.h:115:33: error: conflicting types for ‘uint64_t’; have ‘u64’ {aka ‘long long unsigned int’}
-  115 | typedef u64                     uint64_t;
-      |                                 ^~~~~~~~
-In file included from /usr/include/stdint.h:37,
-                 from /usr/lib/gcc/x86_64-redhat-linux/11/include/stdint.h:9,
-                 from /usr/include/libelf.h:32,
-                 from main.c:68:
-/usr/include/bits/stdint-uintn.h:27:20: note: previous declaration of ‘uint64_t’ with type ‘uint64_t’ {aka ‘long unsigned int’}
-   27 | typedef __uint64_t uint64_t;
-      |                    ^~~~~~~~
-In file included from /home/isolodrai/workspace/prog-aux/linux/include/uapi/linux/stat.h:5,
-                 from /home/isolodrai/workspace/prog-aux/linux/include/linux/stat.h:7,
-                 from main.c:70:
-/home/isolodrai/workspace/prog-aux/linux/include/linux/types.h:116:33: error: conflicting types for ‘u_int64_t’; have ‘u64’ {aka ‘long long unsigned int’}
-  116 | typedef u64                     u_int64_t;
-      |                                 ^~~~~~~~~
-In file included from /usr/include/stdlib.h:394,
-                 from main.c:67:
-/usr/include/sys/types.h:161:20: note: previous declaration of ‘u_int64_t’ with type ‘u_int64_t’ {aka ‘long unsigned int’}
-  161 | typedef __uint64_t u_int64_t;
-      |                    ^~~~~~~~~
-In file included from /home/isolodrai/workspace/prog-aux/linux/include/uapi/linux/stat.h:5,
-                 from /home/isolodrai/workspace/prog-aux/linux/include/linux/stat.h:7,
-                 from main.c:70:
-/home/isolodrai/workspace/prog-aux/linux/include/linux/types.h:117:33: error: conflicting types for ‘int64_t’; have ‘s64’ {aka ‘long long int’}
-  117 | typedef s64                     int64_t;
-      |                                 ^~~~~~~
-In file included from /usr/include/sys/types.h:155,
-                 from /usr/include/stdlib.h:394,
-                 from main.c:67:
-/usr/include/bits/stdint-intn.h:27:19: note: previous declaration of ‘int64_t’ with type ‘int64_t’ {aka ‘long int’}
-   27 | typedef __int64_t int64_t;
-      |                   ^~~~~~~
-In file included from /home/isolodrai/workspace/prog-aux/linux/include/uapi/linux/stat.h:5,
-                 from /home/isolodrai/workspace/prog-aux/linux/include/linux/stat.h:7,
-                 from main.c:70:
-/home/isolodrai/workspace/prog-aux/linux/include/linux/types.h:138:13: error: conflicting types for ‘blkcnt_t’; have ‘u64’ {aka ‘long long unsigned int’}
-  138 | typedef u64 blkcnt_t;
-      |             ^~~~~~~~
-In file included from /usr/include/stdlib.h:394,
-                 from main.c:67:
-/usr/include/sys/types.h:192:20: note: previous declaration of ‘blkcnt_t’ with type ‘blkcnt_t’ {aka ‘long int’}
-  192 | typedef __blkcnt_t blkcnt_t;     /* Type to count number of disk blocks.  */
-      |                    ^~~~~~~~
-In file included from /home/isolodrai/workspace/prog-aux/linux/include/uapi/linux/stat.h:5,
-                 from /home/isolodrai/workspace/prog-aux/linux/include/linux/stat.h:7,
-                 from main.c:70:
-/home/isolodrai/workspace/prog-aux/linux/include/linux/types.h:266:34: error: expected ‘:’, ‘,’, ‘;’, ‘}’ or ‘__attribute__’ before ‘*’ token
-  266 |         struct task_struct __rcu *task;
-      |                                  ^
-In file included from /home/isolodrai/workspace/prog-aux/linux/include/linux/cache.h:6,
-                 from /home/isolodrai/workspace/prog-aux/linux/include/linux/time.h:5,
-                 from /home/isolodrai/workspace/prog-aux/linux/include/linux/stat.h:19,
-                 from main.c:70:
-/home/isolodrai/workspace/prog-aux/linux/include/vdso/cache.h:5:10: fatal error: asm/cache.h: No such file or directory
-    5 | #include <asm/cache.h>
-      |          ^~~~~~~~~~~~~
-compilation terminated.
-make[1]: *** [/home/isolodrai/workspace/prog-aux/linux/tools/build/Makefile.build:86: /home/isolodrai/workspace/prog-aux/linux/tools/bpf/resolve_btfids/main.o] Error 1
-make: *** [Makefile:81: /home/isolodrai/workspace/prog-aux/linux/tools/bpf/resolve_btfids//resolve_btfids-in.o] Error 2
+We should make sure that the sequence used can be determined per- 
+microarchitecture.  But if there's no guidance from the vendor, then the 
+community should implement something that seems to work.  This should also 
+encourage vendors to engage with us to make sure that the most efficient 
+workarounds or mitigations are implemented.  That hopefully should also 
+encourage vendors to design hardware that don't have these known 
+vulnerabilities.
 
 
-> 
-> [...]
-> 
+- Paul
 
