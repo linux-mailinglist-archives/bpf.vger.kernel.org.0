@@ -1,171 +1,228 @@
-Return-Path: <bpf+bounces-78672-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78673-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68926D17364
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 09:10:56 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 817D8D1755A
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 09:40:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 49676309BC16
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 08:07:35 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 4205030057DC
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 08:39:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 801113793B2;
-	Tue, 13 Jan 2026 08:07:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5583F37FF4C;
+	Tue, 13 Jan 2026 08:39:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CBz7Dsth";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="ed8CfGmy"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fF7hhCR9"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f73.google.com (mail-ej1-f73.google.com [209.85.218.73])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AF7435C1BA
-	for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 08:07:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DD0B192B75
+	for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 08:39:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768291653; cv=none; b=iOrW942CpXWhZdmsVjXfU6UuzeBQCgK2R+32wBqR5gOwht5KTIl5ZVrDtwCJep9LhqIzKRGX1eKHsMNRSTloTsEPJ4qTZzg9SW3WzKcB3FlDbfMPGb/aHmN156fgJ8BgXMJorr7IgUaNxgfVnJiD1GWLXIe+iWte9TEhpRqPM8g=
+	t=1768293595; cv=none; b=O99LDV6HjU+KDpBV/AmDpiGvPtu59UXQeG+6tZozR1DjP/8MmnSZo7zdpotJoAjd6KnlzuHM29SyL2Zu8hBxF5f7CzYrVv6LRC7UD54BMgxt/NmFFDRyMnXHLOaveZnIxDUDwb9B9eItq2RncdCwqmLC90AlXnPFYEq+RzMpmpw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768291653; c=relaxed/simple;
-	bh=QqHS8tGSO+lAiUJDu64Fy3Z87MlLp6hIRj3FncezFoo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=h+PSQv23jThKIwduMpKj3Kb0hiMdiodL5yZ8LLZ+kgOp/BIj8kjmkEE/Y9fomakN1LqJTX0RCVp372JThJMF6jXCVVvBEEWOSePeBysp/IrKuZNigmLc7hZdL/rfYTDXlasTCMJb2zjTwsY9emW5oX2P3iTqDojpa7FWJSAPFf0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CBz7Dsth; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=ed8CfGmy; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1768291650;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xpFpD/66JMzeRmJEIFuITSB9NnlDWQx+ollnQo+GVf4=;
-	b=CBz7DsthE4vc27GB1wvMHrqnNeLj1JTsEyDIMHP4UfexI+5JebCBp7cZ3VJ0wRhHaYKrKf
-	8NnErHCaMoNUA1DpAz2IDuY8jN0LrnfuX1a3hTKH4U7g6MPU9NQCyHCQTWNdo4WaYhKK1J
-	AqsDWaaTQWGTfSOzcTr64X8i9Zwg5qQ=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-110-wGJa-ceJOXu8cLUXSh4ZSw-1; Tue, 13 Jan 2026 03:07:29 -0500
-X-MC-Unique: wGJa-ceJOXu8cLUXSh4ZSw-1
-X-Mimecast-MFC-AGG-ID: wGJa-ceJOXu8cLUXSh4ZSw_1768291648
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-47d4029340aso74775255e9.3
-        for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 00:07:29 -0800 (PST)
+	s=arc-20240116; t=1768293595; c=relaxed/simple;
+	bh=0Bj/UQwFA/9sJ1+Wt/ydZldy4sypVfyWunVem3ZJNPk=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=tDk8Ab6nRNLP/ZGz1s7M4eV8REtdkMtsPAs+0FlCumGBdEnuB1HBKqzBlE8YFV9LLj7PQrKkkcJsYohbAmoQ2m8UinFSEjFf2EhTEyRI2VvNWJs5+KZTrKOTyPKOER3mnC4lUhvC9d/U4edWltlB7S11/gveUHW+Hv6xa/7Zwl0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--mattbobrowski.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fF7hhCR9; arc=none smtp.client-ip=209.85.218.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--mattbobrowski.bounces.google.com
+Received: by mail-ej1-f73.google.com with SMTP id a640c23a62f3a-b841fc79f3eso732551866b.2
+        for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 00:39:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1768291648; x=1768896448; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xpFpD/66JMzeRmJEIFuITSB9NnlDWQx+ollnQo+GVf4=;
-        b=ed8CfGmyBD0iCkq2DLkqoHqtkOvdr3HG7Mll8xuZHKEdRpfXzcPQVONz0+4ffq9hE6
-         snR0Qi9dIyKDtDrhH0XEXRGyN/obMzHpXslvCD7B31CctHBVY5TamnJ/MZb+p/LmDXpO
-         5akYvGgcebbhmDh094ZBGHVX1tKlfCnVniTjTInXfuhlNnB1MC3FV/UorEcJGFq5pHyc
-         Jfp7xu5bZrTqDDG8ankhVybdnnH41pAbe+ynm4jQq3xuKlTHM6d5rNK5h1pty+ZwE+4O
-         EaxImmAcQ1n9mtT4WgsM26lR+H283+fumPLLzLVOn4IK79i01yJMZqZBBuB1M6iUl3lj
-         Xc/w==
+        d=google.com; s=20230601; t=1768293593; x=1768898393; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Yw76fE362CdtUTRilAeI36uhCgPu5mppsQkieHhvjCY=;
+        b=fF7hhCR93MB1FtplbGvRVwfmbVOxR5uWocV7QhGpaF9mwokWPtau09xhARjTi/1dcv
+         sB04v63Fu1K4unCQ95IAJX8nYE0Oy0Sx7bj409QbciV4zkXsqiHI2UJZ8UVoTkYLjLit
+         5nfmFPWEXA35VoqqA5bGt5OBnk7RV9EwvpQIya0GSrtmACi0Jmnm/IBpjwxJsI/AhcpC
+         7ZhtJzfQXUdWtzyPB8ambmV5JcNCh/7nR59kE6w5W3Was2nVVRDKXHwwHK/iVtUs9XkL
+         JTTzq2whSXmZqFeYlnLB/FAtbZmiIKR1D+YckSbwPJuxsDPQ/DOVcaY3uJNCTeL4VJZ4
+         8o9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768291648; x=1768896448;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xpFpD/66JMzeRmJEIFuITSB9NnlDWQx+ollnQo+GVf4=;
-        b=eeoYHwUI8pMf8FL+8TAb17mWpvc7dNYDEGTVI9xAnRNKFHklmNgXM79LTdSk75Hbpq
-         4LayC+Yi+ZJso3o1uQriUvoxsPESE4F55tpHi2WNul8vFdUhaQ0o/GS6HswjQxOnMkgz
-         gmhMhI9eQzSAPa9PLNNVLnMMoQUgby+thw1MKgloWXINEjE+lBppPILDYG//mkb2BwWt
-         KgPRaDNm19ddH9h65VPVMg0GJNhAcfdlCDlQHDM44b1CN/thSkpvtxGemDBXXcIV94rV
-         qJgQR+qJhEDSqrh+Y3Iu4ojkyVsUqIKgrxscgouWFunhE1aFs4jEYCOB7c7jdTukcpMe
-         jqLg==
-X-Forwarded-Encrypted: i=1; AJvYcCV3SK214nMTytEGddqty80Wi8iWchqKFhRn+VOsOaK62tZlPBPcDN+96WV4wFUZq65PeC4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzPsgATDpLi0HqN9mVfgoB78aB1ycNKoS/EkwR68Ihqo6dc49Xg
-	/Mdq6aIeW6uJMcI/6lfAUkf2WnNLQHi5/T6rrRWhCL5bxXevSBUP0E4ISw+J3qTabtHZ3o7T3LD
-	ndioMgjfWeb5U4uQdLydvrBsMM9uDamFCvLQS0C+BleT9Pvvvz0aD+g==
-X-Gm-Gg: AY/fxX7ZnkVF7TxB0+R1ocOTcdwF3eCJa1Tx8d9Gso+FPln8Y4U/CMU2L9qxBmlz/eY
-	TPlp9oJhPIltI7baLfHuUas8ckfKdMXNmu67h9bHfnndSHQ493/bGJuTkVz6AwAEIJrPqDPHARu
-	Vqw+2uPaE6wmKTEXk1msKGTF1NRr9GZjfRHOeZbsyBO+qnJxFmetAnHOHYDtnJEMRuoRuEDVpmE
-	qM9BHsEJwySz318//i100GGBF+MP+IYWLSKFyDlP0jhLSKqy7cDgjOylfsmPwp4asz20NZx7vW7
-	UT8OE9I4nVQV5fRihh4QzlATWnhQdaeGfIz01x/jnBJpTZTbKuZeWWGqAPT8FzAgNZkR6e0doYb
-	DikZMWmS6Nqv4
-X-Received: by 2002:a05:600c:4e8a:b0:479:1b0f:dfff with SMTP id 5b1f17b1804b1-47d84b170famr271324495e9.10.1768291647860;
-        Tue, 13 Jan 2026 00:07:27 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHOFVjo+JswERF7bNgzNfXDlKZqG+DpPg56zhYUkxZzuUQMa8aCTbd70GGyky4hiW1KBY5XaA==
-X-Received: by 2002:a05:600c:4e8a:b0:479:1b0f:dfff with SMTP id 5b1f17b1804b1-47d84b170famr271324195e9.10.1768291647476;
-        Tue, 13 Jan 2026 00:07:27 -0800 (PST)
-Received: from [192.168.88.32] ([212.105.155.93])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-432bd0e6784sm43665733f8f.19.2026.01.13.00.07.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Jan 2026 00:07:26 -0800 (PST)
-Message-ID: <c9fca0a2-227e-4081-b7f9-ea7c2189f6d2@redhat.com>
-Date: Tue, 13 Jan 2026 09:07:24 +0100
+        d=1e100.net; s=20230601; t=1768293593; x=1768898393;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Yw76fE362CdtUTRilAeI36uhCgPu5mppsQkieHhvjCY=;
+        b=mBIqMldLrlp8K+za/102W8eIuj39FMvLLqJ13YEj7w2Qh7FmmeirI9JqfDLL/0zl1n
+         Ju8MjWCXbqjSj2YI71H/NV90k17QpreddBQ8Ti91MreLnCbQzcgpzQG4Sn+/6/49geg2
+         iKTbYPS5sBr2Liz8AGr0Xl4TDtybvGPF1AC3a5yMgWj7Vc40RgIM7ZrAfyox2SfoUIPS
+         +Z/lX+6JcxuJvUeT6B0mrCgtiEuFYcIdTDWMSHnefNZ3+DItLwVb8tcvhrmL/FzZD6MI
+         j4ZZk5JgPWu0vyZOWvZq3ZfPNxBeOn4w2tFZTQhDMWDgoblUr2cJJaEBlNeDqW8QwWWm
+         KzTQ==
+X-Gm-Message-State: AOJu0YxS+NuEchrIaIFOG1WjWGwz33qgil1phZm1ADcVEo65uR1e76wx
+	omrzidpCFX/77zhadvWxkerZQpBriXj5hD4lCAYObr2LJ5KeFVFuB2vAWPybVPw4BChzRKrjE/+
+	eyhC3K1W2f1Gf5N0+kd9OFenGY6OCb6Emwy4MIgYc+ykOoYk1A0eaIhMvrMq+mcXvTPfZhkb5FT
+	s0B0A4ChzY+W94uJeX6kQw2vlANl5TPkeZczrAiXLyIk1D5vScqhKV869ktumhQrHouh7TWg==
+X-Google-Smtp-Source: AGHT+IEs6AdU0LNJdo4Bthofb1VHEw25bdXgS3mpF/jaF9RNAnk4T1zp/oRFIAheLUIN0PpC4kobpnYGAaLuKhTYiyiw
+X-Received: from edtq11.prod.google.com ([2002:aa7:cc0b:0:b0:64b:9458:71b4])
+ (user=mattbobrowski job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a17:907:2689:b0:b7f:f862:df26 with SMTP id a640c23a62f3a-b8445194555mr1975754066b.14.1768293592713;
+ Tue, 13 Jan 2026 00:39:52 -0800 (PST)
+Date: Tue, 13 Jan 2026 08:39:47 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 net-next 00/13] AccECN protocol case handling series
-To: "Chia-Yu Chang (Nokia)" <chia-yu.chang@nokia-bell-labs.com>,
- Eric Dumazet <edumazet@google.com>, Neal Cardwell <ncardwell@google.com>
-Cc: "parav@nvidia.com" <parav@nvidia.com>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "corbet@lwn.net" <corbet@lwn.net>, "horms@kernel.org" <horms@kernel.org>,
- "dsahern@kernel.org" <dsahern@kernel.org>,
- "kuniyu@google.com" <kuniyu@google.com>,
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "dave.taht@gmail.com" <dave.taht@gmail.com>,
- "jhs@mojatatu.com" <jhs@mojatatu.com>, "kuba@kernel.org" <kuba@kernel.org>,
- "stephen@networkplumber.org" <stephen@networkplumber.org>,
- "xiyou.wangcong@gmail.com" <xiyou.wangcong@gmail.com>,
- "jiri@resnulli.us" <jiri@resnulli.us>,
- "davem@davemloft.net" <davem@davemloft.net>,
- "andrew+netdev@lunn.ch" <andrew+netdev@lunn.ch>,
- "donald.hunter@gmail.com" <donald.hunter@gmail.com>,
- "ast@fiberby.net" <ast@fiberby.net>,
- "liuhangbin@gmail.com" <liuhangbin@gmail.com>,
- "shuah@kernel.org" <shuah@kernel.org>,
- "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
- "ij@kernel.org" <ij@kernel.org>,
- "Koen De Schepper (Nokia)" <koen.de_schepper@nokia-bell-labs.com>,
- "g.white@cablelabs.com" <g.white@cablelabs.com>,
- "ingemar.s.johansson@ericsson.com" <ingemar.s.johansson@ericsson.com>,
- "mirja.kuehlewind@ericsson.com" <mirja.kuehlewind@ericsson.com>,
- cheshire <cheshire@apple.com>, "rs.ietf@gmx.at" <rs.ietf@gmx.at>,
- "Jason_Livingood@comcast.com" <Jason_Livingood@comcast.com>,
- Vidhi Goel <vidhi_goel@apple.com>
-References: <20260103131028.10708-1-chia-yu.chang@nokia-bell-labs.com>
- <56f6f3dd-14a8-44e9-a13d-eeb0a27d81d2@redhat.com>
- <PAXPR07MB798456B62DBAC92A9F5915DAA385A@PAXPR07MB7984.eurprd07.prod.outlook.com>
- <9d64dd7e-273b-4627-ba0c-a3c8aab2dcb1@redhat.com>
- <CANn89iKRAs86PVNAGKMUgE49phgZ2zpZU99rRkJq=cc_kNYf=Q@mail.gmail.com>
- <PAXPR07MB79845267EDCDAF9FA379B139A385A@PAXPR07MB7984.eurprd07.prod.outlook.com>
-Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <PAXPR07MB79845267EDCDAF9FA379B139A385A@PAXPR07MB7984.eurprd07.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.52.0.457.g6b5491de43-goog
+Message-ID: <20260113083949.2502978-1-mattbobrowski@google.com>
+Subject: [PATCH bpf-next 1/3] bpf: return PTR_TO_BTF_ID | PTR_TRUSTED from BPF
+ kfuncs by default
+From: Matt Bobrowski <mattbobrowski@google.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, ohn Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Matt Bobrowski <mattbobrowski@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On 1/8/26 5:01 PM, Chia-Yu Chang (Nokia) wrote:
->> On Thu, Jan 8, 2026 at 1:05 PM Paolo Abeni <pabeni@redhat.com> wrote:
->>> On 1/8/26 9:47 AM, Chia-Yu Chang (Nokia) wrote:
->>>> Regarding the packetdrill cases for AccECN, shall I can include in this patch series (v8) or is it suggested to submit them in a standalone series?
->>>
->>> IMHO can be in a separate series, mainly because this one is already 
->>> quite big.
->>>
->>> /P
->>>
->>
->> If possible, please send a packetdrill series _before_ adding more code.
->>
->> I have been reluctant to review your changes, because there is no test.
-> 
-> Hi Eric and Neal,
-> 
-> A separated AccECN selftest patch series has been submitted.
-> You can find the used packetdrill commit and github link in the cover letter.
+Teach the BPF verifier to treat pointers to struct types returned from
+BPF kfuncs as implicitly trusted (PTR_TO_BTF_ID | PTR_TRUSTED) by
+default. Returning untrusted pointers to struct types from BPF kfuncs
+should be considered an exception only, and certainly not the norm.
 
-I marked this revision as 'changes requested' because I think a resubmit
-after pktdrill patches merge will help the review process.
+Update existing selftests to reflect the change in register type
+printing (e.g. `ptr_` becoming `trusted_ptr_` in verifier error
+messages).
 
-/P
+Link: https://lore.kernel.org/bpf/aV4nbCaMfIoM0awM@google.com/
+Signed-off-by: Matt Bobrowski <mattbobrowski@google.com>
+---
+ kernel/bpf/verifier.c                         | 46 ++++++++++++-------
+ .../selftests/bpf/progs/map_kptr_fail.c       |  4 +-
+ .../struct_ops_kptr_return_fail__wrong_type.c |  2 +-
+ .../bpf/progs/verifier_global_ptr_args.c      |  2 +-
+ tools/testing/selftests/bpf/verifier/calls.c  |  2 +-
+ 5 files changed, 34 insertions(+), 22 deletions(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 53635ea2e41b..095bfd5c1716 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -14216,26 +14216,38 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+ 			if (is_kfunc_rcu_protected(&meta))
+ 				regs[BPF_REG_0].type |= MEM_RCU;
+ 		} else {
+-			mark_reg_known_zero(env, regs, BPF_REG_0);
+-			regs[BPF_REG_0].btf = desc_btf;
+-			regs[BPF_REG_0].type = PTR_TO_BTF_ID;
+-			regs[BPF_REG_0].btf_id = ptr_type_id;
++			enum bpf_reg_type type = PTR_TO_BTF_ID;
+ 
+ 			if (meta.func_id == special_kfunc_list[KF_bpf_get_kmem_cache])
+-				regs[BPF_REG_0].type |= PTR_UNTRUSTED;
+-			else if (is_kfunc_rcu_protected(&meta))
+-				regs[BPF_REG_0].type |= MEM_RCU;
+-
+-			if (is_iter_next_kfunc(&meta)) {
+-				struct bpf_reg_state *cur_iter;
+-
+-				cur_iter = get_iter_from_state(env->cur_state, &meta);
+-
+-				if (cur_iter->type & MEM_RCU) /* KF_RCU_PROTECTED */
+-					regs[BPF_REG_0].type |= MEM_RCU;
+-				else
+-					regs[BPF_REG_0].type |= PTR_TRUSTED;
++				type |= PTR_UNTRUSTED;
++			else if (is_kfunc_rcu_protected(&meta) ||
++				 (is_iter_next_kfunc(&meta) &&
++				  (get_iter_from_state(env->cur_state, &meta)
++					   ->type & MEM_RCU))) {
++				/*
++				 * If the iterator's constructor (the _new
++				 * function e.g., bpf_iter_task_new) has been
++				 * annotated with BPF kfunc flag
++				 * KF_RCU_PROTECTED and was called within a RCU
++				 * read-side critical section, also propagate
++				 * the MEM_RCU flag to the pointer returned from
++				 * the iterator's next function (e.g.,
++				 * bpf_iter_task_next).
++				 */
++				type |= MEM_RCU;
++			} else {
++				/*
++				 * Any PTR_TO_BTF_ID that is returned from a BPF
++				 * kfunc should by default be treated as
++				 * implicitly trusted.
++				 */
++				type |= PTR_TRUSTED;
+ 			}
++
++			mark_reg_known_zero(env, regs, BPF_REG_0);
++			regs[BPF_REG_0].btf = desc_btf;
++			regs[BPF_REG_0].type = type;
++			regs[BPF_REG_0].btf_id = ptr_type_id;
+ 		}
+ 
+ 		if (is_kfunc_ret_null(&meta)) {
+diff --git a/tools/testing/selftests/bpf/progs/map_kptr_fail.c b/tools/testing/selftests/bpf/progs/map_kptr_fail.c
+index 4c0ff01f1a96..6443b320c732 100644
+--- a/tools/testing/selftests/bpf/progs/map_kptr_fail.c
++++ b/tools/testing/selftests/bpf/progs/map_kptr_fail.c
+@@ -272,7 +272,7 @@ int reject_untrusted_xchg(struct __sk_buff *ctx)
+ 
+ SEC("?tc")
+ __failure
+-__msg("invalid kptr access, R2 type=ptr_prog_test_ref_kfunc expected=ptr_prog_test_member")
++__msg("invalid kptr access, R2 type=trusted_ptr_prog_test_ref_kfunc expected=ptr_prog_test_member")
+ int reject_bad_type_xchg(struct __sk_buff *ctx)
+ {
+ 	struct prog_test_ref_kfunc *ref_ptr;
+@@ -291,7 +291,7 @@ int reject_bad_type_xchg(struct __sk_buff *ctx)
+ }
+ 
+ SEC("?tc")
+-__failure __msg("invalid kptr access, R2 type=ptr_prog_test_ref_kfunc")
++__failure __msg("invalid kptr access, R2 type=trusted_ptr_prog_test_ref_kfunc")
+ int reject_member_of_ref_xchg(struct __sk_buff *ctx)
+ {
+ 	struct prog_test_ref_kfunc *ref_ptr;
+diff --git a/tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__wrong_type.c b/tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__wrong_type.c
+index 6a2dd5367802..c8d217e89eea 100644
+--- a/tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__wrong_type.c
++++ b/tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__wrong_type.c
+@@ -12,7 +12,7 @@ void bpf_task_release(struct task_struct *p) __ksym;
+  * reject programs returning a referenced kptr of the wrong type.
+  */
+ SEC("struct_ops/test_return_ref_kptr")
+-__failure __msg("At program exit the register R0 is not a known value (ptr_or_null_)")
++__failure __msg("At program exit the register R0 is not a known value (trusted_ptr_or_null_)")
+ struct task_struct *BPF_PROG(kptr_return_fail__wrong_type, int dummy,
+ 			     struct task_struct *task, struct cgroup *cgrp)
+ {
+diff --git a/tools/testing/selftests/bpf/progs/verifier_global_ptr_args.c b/tools/testing/selftests/bpf/progs/verifier_global_ptr_args.c
+index 1204fbc58178..e7dae0cf9c17 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_global_ptr_args.c
++++ b/tools/testing/selftests/bpf/progs/verifier_global_ptr_args.c
+@@ -72,7 +72,7 @@ int trusted_task_arg_nonnull_fail1(void *ctx)
+ 
+ SEC("?tp_btf/task_newtask")
+ __failure __log_level(2)
+-__msg("R1 type=ptr_or_null_ expected=ptr_, trusted_ptr_, rcu_ptr_")
++__msg("R1 type=trusted_ptr_or_null_ expected=ptr_, trusted_ptr_, rcu_ptr_")
+ __msg("Caller passes invalid args into func#1 ('subprog_trusted_task_nonnull')")
+ int trusted_task_arg_nonnull_fail2(void *ctx)
+ {
+diff --git a/tools/testing/selftests/bpf/verifier/calls.c b/tools/testing/selftests/bpf/verifier/calls.c
+index c8d640802cce..9ca83dce100d 100644
+--- a/tools/testing/selftests/bpf/verifier/calls.c
++++ b/tools/testing/selftests/bpf/verifier/calls.c
+@@ -220,7 +220,7 @@
+ 	},
+ 	.result_unpriv = REJECT,
+ 	.result = REJECT,
+-	.errstr = "variable ptr_ access var_off=(0x0; 0x7) disallowed",
++	.errstr = "variable trusted_ptr_ access var_off=(0x0; 0x7) disallowed",
+ },
+ {
+ 	"calls: invalid kfunc call: referenced arg needs refcounted PTR_TO_BTF_ID",
+-- 
+2.52.0.457.g6b5491de43-goog
 
 
