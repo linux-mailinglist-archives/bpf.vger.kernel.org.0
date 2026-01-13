@@ -1,338 +1,143 @@
-Return-Path: <bpf+bounces-78710-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78711-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6A10D18E96
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 13:49:57 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C452D18F37
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 13:55:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 36DBF3015170
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 12:49:51 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D71423034A19
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 12:52:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE93F38F25C;
-	Tue, 13 Jan 2026 12:49:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D55F938E5FB;
+	Tue, 13 Jan 2026 12:52:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jLU6Ree+"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="UJCF6D6L"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0BE338F237;
-	Tue, 13 Jan 2026 12:49:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D605138E5DB
+	for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 12:52:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768308590; cv=none; b=fiLr3kLwaLU6rcdG+eGWKm3lrQ9GI4+RIfmwYW8OBUtqFhP+1u8tdyTDFOuOm5KQLHEeyUScbU/7H+x1uo5Y/Sw7T6RdzwHJPDCfsoOoq36Pg36Z62AtzDwp1jJ9Vv7incUylzP3Q2qxihqi/hRJGtAZAJlVJ7jZrySXqOIR55c=
+	t=1768308740; cv=none; b=XD1IEdMjJCabO/mLotoFlIGfVq2Wug0lJtYbbDchYMUPFylD/2Yk/k+aUiCrK5fgYdiGmjeGJPKkwLyUobq/Z3l8iliYPuWmNho4eadC4kPZW8HWUuTED3jcgFPzmyLvAJLx7beVEfpOGYeimQ9c+k5EpKxdj+GKCIO0i7cvLaE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768308590; c=relaxed/simple;
-	bh=XB9QVUVkuxx9/TnVSxEpBESY3hz7LuXtWsWOxfK4Fic=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b3F7R8pKaBqGRo5mwlC2Pm9N1oL0GHjbIGD6QDNrm5pl1otbznzzBiUj9oLDJDLqTEiWHDcZtwlTA5xOj5FcWY1Xp6nzLT+FRQMwoVyJuATaLPXs45ofpeYEj37ukUBznyj47tlRtkoRvA4FCM51tcBMoEgTAP+QJLGk7NBeMPI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=jLU6Ree+; arc=none smtp.client-ip=91.218.175.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 13 Jan 2026 20:49:33 +0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1768308585;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sXIxaaUrGFoA3E6hwhyauqFe+XDhkHXUkgt2L3qneUY=;
-	b=jLU6Ree+r24DyTvStABI0J3kzJMvugG/W65z/zvvIraHAhGCMhkhqhANfLFqn5X+eY2SiZ
-	Cbo19z5LofX7nxip9ep2nFeZwcYbs5JKCnUMFdxWfEFLBNSrhb4ifcFNL5iUv7VWcTFMX8
-	N87hBg6WI/1NbfFcNDKKgdibHEDwG2E=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Hao Li <hao.li@linux.dev>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Harry Yoo <harry.yoo@oracle.com>, Petr Tesarik <ptesarik@suse.com>, 
-	Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
-	Uladzislau Rezki <urezki@gmail.com>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
-	Suren Baghdasaryan <surenb@google.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
-	Alexei Starovoitov <ast@kernel.org>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	linux-rt-devel@lists.linux.dev, bpf@vger.kernel.org, kasan-dev@googlegroups.com
-Subject: Re: [PATCH RFC v2 05/20] slab: introduce percpu sheaves bootstrap
-Message-ID: <leaboap7yhlnvuxnxvqtl5kazbseimfq3efwfhaon74glfmmc3@paib6qlfee3i>
-References: <20260112-sheaves-for-all-v2-0-98225cfb50cf@suse.cz>
- <20260112-sheaves-for-all-v2-5-98225cfb50cf@suse.cz>
+	s=arc-20240116; t=1768308740; c=relaxed/simple;
+	bh=M3cd1ChoyL/JPoUh1TebMNfZNb0CMOQ+wKlup/AKWzI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=d8+xXMldUYZRoKFopKzLXkTZp/aic/zuznCTgy3i0faVTHhcT3/uFHFZsQ06DIedZERUF0G17w+MGkURSsKyzF5Br5FC3sYm6LbtFv2ueZrWQSf69tEVgnD+UsdnjBRn6Y/OrAEbSEzMgm3ThIXTqszyQTRAY8ZF2RcdXNj33rw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=UJCF6D6L; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-b8719aeebc8so349962266b.3
+        for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 04:52:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1768308737; x=1768913537; darn=vger.kernel.org;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=uEb4fpri3npogF5JFpOtWuoL+P7ayMQsw+8rwNvJPCI=;
+        b=UJCF6D6LC6b8pKI37H8H6uwCtxnY+bmQP6DMaYddWTbJSgZpLHhTbQM358bn5S5xS4
+         qIgDKfHKxt5ShNajmTZNOhEI6lk6dyOQlTDrirBc/A8rsebRG2RSVrBTNrtAR/k50ezj
+         AB+B9ZIrmnZaUo5Vu04Dm+3jgdsJRSOCRFDr4H5yrjPn7XTa+kAMk/t9Y5NDkRDalhwr
+         e4+ATGp6OfT6Aq2vke/Sp/Vc/a4sn0E/FUdSLjGXS/ugfe72mM9LiZFsoQwavbbTYCpf
+         GsUqSfYGJKTk+3x7IhEJJyA7wHrHwyORGItLVyEzl8TDBE/0z6oGOgxGBlnYiq7omenn
+         i3tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768308737; x=1768913537;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uEb4fpri3npogF5JFpOtWuoL+P7ayMQsw+8rwNvJPCI=;
+        b=wvGz0Jpq+TejO53+ZGrGQOoQv0wZdeBlAMY13z6fN5JivwSOIyqTb9/iyiopotR5lK
+         HgkEfSyUOotYVISIxrWtv/xZ9kBVEG8t4xfCyrG/SkbQC+3a/yHGhdDv1OPy8MORj7yu
+         NaUVWZATgpTQQZm/ET+yGQnXd2GsT8Sc0ZaN0IsWZce7pcB9kqn9OQoYfwXxHf+mSg+w
+         rXFt5YX4V+aUcyZBLoOWoFejKeRg5KYuuR1Th7gDcLWA+/Tdm2j25wXzBBD35+viSUF3
+         i7aWfuoPhmI2NAhvMdzxacSgUYWOoOgKqpLk4DeQ/GrYXmiDGI00Sz3pk/508yqLrbT3
+         5Juw==
+X-Forwarded-Encrypted: i=1; AJvYcCW9QeCg8da+GQfAxxQQQxtdMAWLeubpzB1FhCbAs9wdeYLrvfvYRzf+ecLsLp77KX/EGv0=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx6g8KSJ0Zh6BRggup+DpJhBvzo2yZWkfWjVedjK/lJDk/FfVms
+	kAvoj87G01aYKlY0npmMmyJ8N8HBhwAc9e/4hvHmIegBEV0BSPJHYhVLhjOIAgnM5J4=
+X-Gm-Gg: AY/fxX4w9lyd/saxaPsrtIfE0NNf6Po2BIZEJk/U4vStyPy3zYucsdTsm3CK4thIJKs
+	6nk2ErDH4Wiyl4M8bUOvXjdWtEFf9c14CSUfovgK53SJ04wTsmXvHmcvRkfJAUhtXjv2DYUzIhR
+	tOUW6LHFKXpz6ztnlUI8qwwpf2G6qn7EsaTBQ0ROIjv11xAbrLcahHj6xEQKgX5OjG5VGTwVk/q
+	n5jh1E4I5dGNAA4/6oNM07w49PJlzyb4BNOsCEt+3XiMnuZHjSNsyNDYsRcvSoSSVwOfeUhnh3V
+	KNyDwfgbrTz4XDjROAh7YmbSIOIMcq00+9Od2AatuxcDMc8uc/wPQOW7Z0wWmuQrIM5jZtDok1n
+	ILmKpxcJrEg959yN0S6XO4UgTmxWSwuuGKgwCw0iy/cnJr9RfU8wK6zWofV8eDKyVJMqKqUVQYk
+	XtUbO4rtzo8NyQ
+X-Google-Smtp-Source: AGHT+IFX81GRz/hwINL72rPQLm6j5tregnFNpNUvMTj08WVBOxYe/hO3B2KEOTqbE2tiVZ7xDeaggw==
+X-Received: by 2002:a17:907:7293:b0:b87:2fcd:1955 with SMTP id a640c23a62f3a-b872fcd1bf1mr388012666b.50.1768308737057;
+        Tue, 13 Jan 2026 04:52:17 -0800 (PST)
+Received: from cloudflare.com ([2a09:bac5:5063:2dc::49:1cb])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b8706c2604bsm780426066b.16.2026.01.13.04.52.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jan 2026 04:52:16 -0800 (PST)
+From: Jakub Sitnicki <jakub@cloudflare.com>
+To: Tariq Toukan <ttoukan.linux@gmail.com>
+Cc: netdev@vger.kernel.org,  "David S. Miller" <davem@davemloft.net>,  Eric
+ Dumazet <edumazet@google.com>,  Jakub Kicinski <kuba@kernel.org>,  Paolo
+ Abeni <pabeni@redhat.com>,  Simon Horman <horms@kernel.org>,  Michael Chan
+ <michael.chan@broadcom.com>,  Pavan Chebbi <pavan.chebbi@broadcom.com>,
+  Andrew Lunn <andrew+netdev@lunn.ch>,  Tony Nguyen
+ <anthony.l.nguyen@intel.com>,  Przemek Kitszel
+ <przemyslaw.kitszel@intel.com>,  Saeed Mahameed <saeedm@nvidia.com>,  Leon
+ Romanovsky <leon@kernel.org>,  Tariq Toukan <tariqt@nvidia.com>,  Mark
+ Bloch <mbloch@nvidia.com>,  Alexei Starovoitov <ast@kernel.org>,  Daniel
+ Borkmann <daniel@iogearbox.net>,  Jesper Dangaard Brouer
+ <hawk@kernel.org>,  John Fastabend <john.fastabend@gmail.com>,  Stanislav
+ Fomichev <sdf@fomichev.me>,  intel-wired-lan@lists.osuosl.org,
+  bpf@vger.kernel.org,  kernel-team@cloudflare.com
+Subject: Re: [PATCH net-next 07/10] mlx5e: Call skb_metadata_set when
+ skb->data points past metadata
+In-Reply-To: <4261e437-84b2-4d0d-af52-c5ee7fcf07cb@gmail.com> (Tariq Toukan's
+	message of "Tue, 13 Jan 2026 08:08:48 +0200")
+References: <20260110-skb-meta-fixup-skb_metadata_set-calls-v1-0-1047878ed1b0@cloudflare.com>
+	<20260110-skb-meta-fixup-skb_metadata_set-calls-v1-7-1047878ed1b0@cloudflare.com>
+	<4261e437-84b2-4d0d-af52-c5ee7fcf07cb@gmail.com>
+Date: Tue, 13 Jan 2026 13:52:15 +0100
+Message-ID: <873449wu80.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260112-sheaves-for-all-v2-5-98225cfb50cf@suse.cz>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain
 
-On Mon, Jan 12, 2026 at 04:16:59PM +0100, Vlastimil Babka wrote:
-> Until now, kmem_cache->cpu_sheaves was !NULL only for caches with
-> sheaves enabled. Since we want to enable them for almost all caches,
-> it's suboptimal to test the pointer in the fast paths, so instead
-> allocate it for all caches in do_kmem_cache_create(). Instead of testing
-> the cpu_sheaves pointer to recognize caches (yet) without sheaves, test
-> kmem_cache->sheaf_capacity for being 0, where needed.
-> 
-> However, for the fast paths sake we also assume that the main sheaf
-> always exists (pcs->main is !NULL), and during bootstrap we cannot
-> allocate sheaves yet.
-> 
-> Solve this by introducing a single static bootstrap_sheaf that's
-> assigned as pcs->main during bootstrap. It has a size of 0, so during
-> allocations, the fast path will find it's empty. Since the size of 0
-> matches sheaf_capacity of 0, the freeing fast paths will find it's
-> "full". In the slow path handlers, we check sheaf_capacity to recognize
-> that the cache doesn't (yet) have real sheaves, and fall back. Thus
-> sharing the single bootstrap sheaf like this for multiple caches and
-> cpus is safe.
-> 
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> ---
->  mm/slub.c | 93 ++++++++++++++++++++++++++++++++++++++++++++++-----------------
->  1 file changed, 69 insertions(+), 24 deletions(-)
-> 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 6e05e3cc5c49..06d5cf794403 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -2855,6 +2855,10 @@ static void pcs_destroy(struct kmem_cache *s)
->  		if (!pcs->main)
->  			continue;
->  
-> +		/* bootstrap or debug caches, it's the bootstrap_sheaf */
-> +		if (!pcs->main->cache)
-> +			continue;
-> +
->  		/*
->  		 * We have already passed __kmem_cache_shutdown() so everything
->  		 * was flushed and there should be no objects allocated from
-> @@ -4052,7 +4056,7 @@ static void flush_cpu_slab(struct work_struct *w)
->  
->  	s = sfw->s;
->  
-> -	if (s->cpu_sheaves)
-> +	if (s->sheaf_capacity)
->  		pcs_flush_all(s);
->  
->  	flush_this_cpu_slab(s);
-> @@ -4179,7 +4183,7 @@ static int slub_cpu_dead(unsigned int cpu)
->  	mutex_lock(&slab_mutex);
->  	list_for_each_entry(s, &slab_caches, list) {
->  		__flush_cpu_slab(s, cpu);
-> -		if (s->cpu_sheaves)
-> +		if (s->sheaf_capacity)
->  			__pcs_flush_all_cpu(s, cpu);
->  	}
->  	mutex_unlock(&slab_mutex);
-> @@ -4979,6 +4983,12 @@ __pcs_replace_empty_main(struct kmem_cache *s, struct slub_percpu_sheaves *pcs,
->  
->  	lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock));
->  
-> +	/* Bootstrap or debug cache, back off */
-> +	if (unlikely(!s->sheaf_capacity)) {
-> +		local_unlock(&s->cpu_sheaves->lock);
-> +		return NULL;
-> +	}
-> +
->  	if (pcs->spare && pcs->spare->size > 0) {
->  		swap(pcs->main, pcs->spare);
->  		return pcs;
-> @@ -5165,6 +5175,11 @@ unsigned int alloc_from_pcs_bulk(struct kmem_cache *s, size_t size, void **p)
->  		struct slab_sheaf *full;
->  		struct node_barn *barn;
->  
-> +		if (unlikely(!s->sheaf_capacity)) {
-> +			local_unlock(&s->cpu_sheaves->lock);
-> +			return allocated;
-> +		}
-> +
->  		if (pcs->spare && pcs->spare->size > 0) {
->  			swap(pcs->main, pcs->spare);
->  			goto do_alloc;
-> @@ -5244,8 +5259,7 @@ static __fastpath_inline void *slab_alloc_node(struct kmem_cache *s, struct list
->  	if (unlikely(object))
->  		goto out;
->  
-> -	if (s->cpu_sheaves)
-> -		object = alloc_from_pcs(s, gfpflags, node);
-> +	object = alloc_from_pcs(s, gfpflags, node);
->  
->  	if (!object)
->  		object = __slab_alloc_node(s, gfpflags, node, addr, orig_size);
-> @@ -6078,6 +6092,12 @@ __pcs_replace_full_main(struct kmem_cache *s, struct slub_percpu_sheaves *pcs)
->  restart:
->  	lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock));
->  
-> +	/* Bootstrap or debug cache, back off */
-> +	if (unlikely(!s->sheaf_capacity)) {
-> +		local_unlock(&s->cpu_sheaves->lock);
-> +		return NULL;
-> +	}
-> +
->  	barn = get_barn(s);
->  	if (!barn) {
->  		local_unlock(&s->cpu_sheaves->lock);
-> @@ -6276,6 +6296,12 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj)
->  		struct slab_sheaf *empty;
->  		struct node_barn *barn;
->  
-> +		/* Bootstrap or debug cache, fall back */
-> +		if (!unlikely(s->sheaf_capacity)) {
-> +			local_unlock(&s->cpu_sheaves->lock);
-> +			goto fail;
-> +		}
-> +
->  		if (pcs->spare && pcs->spare->size == 0) {
->  			pcs->rcu_free = pcs->spare;
->  			pcs->spare = NULL;
-> @@ -6401,6 +6427,9 @@ static void free_to_pcs_bulk(struct kmem_cache *s, size_t size, void **p)
->  	if (likely(pcs->main->size < s->sheaf_capacity))
->  		goto do_free;
->  
-> +	if (unlikely(!s->sheaf_capacity))
-> +		goto no_empty;
-> +
->  	barn = get_barn(s);
->  	if (!barn)
->  		goto no_empty;
-> @@ -6668,9 +6697,8 @@ void slab_free(struct kmem_cache *s, struct slab *slab, void *object,
->  	if (unlikely(!slab_free_hook(s, object, slab_want_init_on_free(s), false)))
->  		return;
->  
-> -	if (s->cpu_sheaves && likely(!IS_ENABLED(CONFIG_NUMA) ||
-> -				     slab_nid(slab) == numa_mem_id())
-> -			   && likely(!slab_test_pfmemalloc(slab))) {
-> +	if (likely(!IS_ENABLED(CONFIG_NUMA) || slab_nid(slab) == numa_mem_id())
-> +	    && likely(!slab_test_pfmemalloc(slab))) {
->  		if (likely(free_to_pcs(s, object)))
->  			return;
->  	}
-> @@ -7484,8 +7512,7 @@ int kmem_cache_alloc_bulk_noprof(struct kmem_cache *s, gfp_t flags, size_t size,
->  		size--;
->  	}
->  
-> -	if (s->cpu_sheaves)
-> -		i = alloc_from_pcs_bulk(s, size, p);
-> +	i = alloc_from_pcs_bulk(s, size, p);
->  
->  	if (i < size) {
->  		/*
-> @@ -7696,6 +7723,7 @@ static inline int alloc_kmem_cache_cpus(struct kmem_cache *s)
->  
->  static int init_percpu_sheaves(struct kmem_cache *s)
->  {
-> +	static struct slab_sheaf bootstrap_sheaf = {};
->  	int cpu;
->  
->  	for_each_possible_cpu(cpu) {
-> @@ -7705,7 +7733,28 @@ static int init_percpu_sheaves(struct kmem_cache *s)
->  
->  		local_trylock_init(&pcs->lock);
->  
-> -		pcs->main = alloc_empty_sheaf(s, GFP_KERNEL);
-> +		/*
-> +		 * Bootstrap sheaf has zero size so fast-path allocation fails.
-> +		 * It has also size == s->sheaf_capacity, so fast-path free
-> +		 * fails. In the slow paths we recognize the situation by
-> +		 * checking s->sheaf_capacity. This allows fast paths to assume
-> +		 * s->pcs_sheaves and pcs->main always exists and is valid.
-> +		 * It's also safe to share the single static bootstrap_sheaf
-> +		 * with zero-sized objects array as it's never modified.
-> +		 *
-> +		 * bootstrap_sheaf also has NULL pointer to kmem_cache so we
-> +		 * recognize it and not attempt to free it when destroying the
-> +		 * cache
-> +		 *
-> +		 * We keep bootstrap_sheaf for kmem_cache and kmem_cache_node,
-> +		 * caches with debug enabled, and all caches with SLUB_TINY.
-> +		 * For kmalloc caches it's used temporarily during the initial
-> +		 * bootstrap.
-> +		 */
-> +		if (!s->sheaf_capacity)
-> +			pcs->main = &bootstrap_sheaf;
-> +		else
-> +			pcs->main = alloc_empty_sheaf(s, GFP_KERNEL);
->  
->  		if (!pcs->main)
->  			return -ENOMEM;
-> @@ -7803,7 +7852,7 @@ static int init_kmem_cache_nodes(struct kmem_cache *s)
->  			continue;
->  		}
->  
-> -		if (s->cpu_sheaves) {
-> +		if (s->sheaf_capacity) {
->  			barn = kmalloc_node(sizeof(*barn), GFP_KERNEL, node);
->  
->  			if (!barn)
-> @@ -8121,7 +8170,7 @@ int __kmem_cache_shutdown(struct kmem_cache *s)
->  	flush_all_cpus_locked(s);
->  
->  	/* we might have rcu sheaves in flight */
-> -	if (s->cpu_sheaves)
-> +	if (s->sheaf_capacity)
->  		rcu_barrier();
->  
->  	/* Attempt to free all objects */
-> @@ -8433,7 +8482,7 @@ static int slab_mem_going_online_callback(int nid)
->  		if (get_node(s, nid))
->  			continue;
->  
-> -		if (s->cpu_sheaves) {
-> +		if (s->sheaf_capacity) {
->  			barn = kmalloc_node(sizeof(*barn), GFP_KERNEL, nid);
->  
->  			if (!barn) {
-> @@ -8641,12 +8690,10 @@ int do_kmem_cache_create(struct kmem_cache *s, const char *name,
->  
->  	set_cpu_partial(s);
->  
-> -	if (s->sheaf_capacity) {
-> -		s->cpu_sheaves = alloc_percpu(struct slub_percpu_sheaves);
-> -		if (!s->cpu_sheaves) {
-> -			err = -ENOMEM;
-> -			goto out;
-> -		}
-> +	s->cpu_sheaves = alloc_percpu(struct slub_percpu_sheaves);
+On Tue, Jan 13, 2026 at 08:08 AM +02, Tariq Toukan wrote:
+> On 10/01/2026 23:05, Jakub Sitnicki wrote:
+>> Prepare to copy the XDP metadata into an skb extension in skb_metadata_set.
+>> Adjust the driver to pull from skb->data before calling skb_metadata_set.
+>> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+>> ---
+>>   drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c
+>> b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c
+>> index 2b05536d564a..20c983c3ce62 100644
+>> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c
+>> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c
+>> @@ -237,8 +237,8 @@ static struct sk_buff *mlx5e_xsk_construct_skb(struct mlx5e_rq *rq, struct xdp_b
+>>   	skb_put_data(skb, xdp->data_meta, totallen);
+>>     	if (metalen) {
+>> -		skb_metadata_set(skb, metalen);
+>>   		__skb_pull(skb, metalen);
+>> +		skb_metadata_set(skb, metalen);
+>>   	}
+>>     	return skb;
+>> 
+>
+> Patch itself is simple..
+>
+> I share my concerns about the perf impact of the series idea.
+> Do you have some working PoC? Please share some perf numbers..
 
-Since we allocate cpu_sheaves for all SLUB caches, the "if (!s->cpu_sheaves)"
-condition in has_pcs_used() should be always false in practice (unless I'm
-misunderstanding something). Would it make sense to change it to "if
-(!s->sheaf_capacity)" instead?
+Sorry, nothing to show yet. I've shared more context in my reply to
+Jakub [1].
 
-Also, while trying to understand the difference between checking s->cpu_sheaves
-vs s->sheaf_capacity, I noticed that most occurrences of "if (s->cpu_sheaves)"
-(except the one in __kmem_cache_release) could be expressed as "if
-(s->sheaf_capacity)" as well.
+The series itself is an interface cleanup, whether we end up needing it
+for the metadata effort or not. Hence I wanted to salvage it from [2].
 
-And Perhaps we could introduce a small helper around "if (s->sheaf_capacity)" to
-make the intent a bit more explicit.
+[1] https://lore.kernel.org/all/87bjixwv41.fsf@cloudflare.com/
+[2] https://lore.kernel.org/r/20260107-skb-meta-safeproof-netdevs-rx-only-v3-0-0d461c5e4764@cloudflare.com
 
--- 
-Thanks,
-Hao
-
-> +	if (!s->cpu_sheaves) {
-> +		err = -ENOMEM;
-> +		goto out;
->  	}
->  
->  #ifdef CONFIG_NUMA
-> @@ -8665,11 +8712,9 @@ int do_kmem_cache_create(struct kmem_cache *s, const char *name,
->  	if (!alloc_kmem_cache_cpus(s))
->  		goto out;
->  
-> -	if (s->cpu_sheaves) {
-> -		err = init_percpu_sheaves(s);
-> -		if (err)
-> -			goto out;
-> -	}
-> +	err = init_percpu_sheaves(s);
-> +	if (err)
-> +		goto out;
->  
->  	err = 0;
->  
-> 
-> -- 
-> 2.52.0
-> 
 
