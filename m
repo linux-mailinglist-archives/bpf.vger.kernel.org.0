@@ -1,122 +1,161 @@
-Return-Path: <bpf+bounces-78706-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78707-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57333D18E4A
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 13:47:07 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3206BD18F5F
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 13:55:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 8D810302AE36
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 12:42:36 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 4844B307D16D
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 12:43:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7F93392B88;
-	Tue, 13 Jan 2026 12:40:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5716E3921C1;
+	Tue, 13 Jan 2026 12:42:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="NH11nssh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SsPwlrXZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF8A638F940
-	for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 12:40:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCB9338FEFB
+	for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 12:42:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768308050; cv=none; b=cHoYogj8743WZvKOS3NFiG91Wl/TnoW86zDhK6UUQ7ckrPRCQxOkAaP1y3bqppi0NH9RIAiYGxQvUiQaUnm+9SxyeOzVWJlzbIjYABYAPAhcXAMDEnDF6rIYG/2WkmbHsm1vlgskfabXIkr69VtGro/VElD9+6Yo8+lIK4mXFu4=
+	t=1768308161; cv=none; b=sjMBKYjZYdoIEF3yumSAwU2Ey3WJItbU+oeKw8e0NJ1JsbvlcM6poqaM5IdpkdFPDSPxP4Kgsr82b8VPfiYwo9FedP3j6imhREX6EK7i3acuhprHd5YPp+JNV15Y7hMXqCibxQ6PnDIQc6H9P5QlgbSTQ3fZT9lMo9ABMHllh6A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768308050; c=relaxed/simple;
-	bh=oo3D+KUuyl/yK0+7LdxWePxgnNUD84eN60bLtmw0kwY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=T6NYrQ3U1w/a0n7hddKZgFNis/zo87hJFGrDrrJEp4QpNMo0DlGCnSZDSlA0FcE2Vo/822teKtLc5HW1Y5085mHUNyGvS/eWwTzroxIWe61De4cnL1uwpsMUdhVX2VOZKq/qI7twJEa2MJ09GR56YSvUZuxdfNFzIMNzYlmuteo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=NH11nssh; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-65089cebdb4so10222966a12.0
-        for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 04:40:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1768308047; x=1768912847; darn=vger.kernel.org;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=oo3D+KUuyl/yK0+7LdxWePxgnNUD84eN60bLtmw0kwY=;
-        b=NH11nssh+k22p7s8RSm9iDuub85Z70C/jSb/02d/cC24gF+iNC0atJZYnuw6hFTYxc
-         LO0/BAyIwsyQtKerxaS/2Mem0wVTakN218J8wY1ULWaorNuJ7t128P+oOL30wqVkKHXB
-         UpyVCScIK6a4+BaKtHXh+0Kn9iolI70z0sLaO9P4DA0FrykDQEDEpD8z3TmV1atUoS0u
-         brxMPpw/JHRs9YfmKPdrriMLymOv2eSAxkCBwTeOrQysOJkSoSAZBhGYchvLt1VIQOuE
-         Nqhn1+8dMiiolSPDJT+dz0T1yoSsB6MgGn0a9BvU2vwZcA8ugV+EXU6q9GFjLsdVKY7k
-         RZ6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768308047; x=1768912847;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oo3D+KUuyl/yK0+7LdxWePxgnNUD84eN60bLtmw0kwY=;
-        b=C0gAgMwNqZFuxgxuwTMaYEmRLdXktRbUTEFHSxmldEnLIiXeCIgB93Zg2wgtQ7/SBz
-         gz4feWiforL3Uq6QHi5cxFxpu5VnLCKQlWDU4RCtF2z6ovrFbnQKTFMF1wWXCEzZdVbh
-         I7jZYUPC06QKlsy1Bl0dmhDh84pH3dYXX3oULasUTBwaYASc598u8b/byFu3kRB210+/
-         XrfvzD070BO751KWnICi8O1yHOPoJO5+2tW4LHMhXYJ544bgKEfL28hjxTtq8Val70Hz
-         Ai/oc30vE3qUI8llB/UFXuIF9974ZhgVzV5eXkAGeFoN+E9AIduxx5kFTv5JLk2mFJMS
-         AiQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUO2Cg9t8yL8VQ/fRERdwHaqMz9mRMsJEzs96QIETyGPQ8XqpXsZKfKaxpYGkSFjOsGolc=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyf/1zSQ7MtWnaC08u4Dp3iIkkbWccphLULqsWdRRI00lxqcHVP
-	BT7hrlZPwPFT8rrPA//GbM93PcKym01SiJute2zxDDQXlAmuVYQ/kpBSW7TrOcRiPQ0=
-X-Gm-Gg: AY/fxX51lxeuuHqDr/LkrVkWbWOW/gGZj9nCYKOuqYWspBnv9cFUSbKKsU4t9YjXHn+
-	RIHc5l8T9xS243YIFEl65OWfEROq92z/Q2s9wG4ZtVsHWk93wAmWb6yxuD0VznDuhkuCKNXQ6zb
-	/hXbbRFlMGXI3AX8DHXpJNPdQKCXUg0EBXP8LY84kl45qdIrEepUYK8mr6BW+CbkLTQRoDmm+VE
-	EvQ4m/xF7e5EYkwJE1kVmmgteGt/bn7OVXjkQSurGaMAmB6Yq0BDky5DhSLlnsugy0RzVq7u5/V
-	J/7S3nYsHgVN3YrY+awK4nFmRgqiIEY6rCMbDi2bCee8HnGgp2xPwTFQKr7KPI5QJL+0XZq1P95
-	YOMWLD8rStuOoQ9H/TPuPnGBAvTmWKSpmnkctVeR8Dxh8PnoiqWSPzrga7oQ0pAudlpMMC7XjXJ
-	bQVRRBqmLniUGp
-X-Google-Smtp-Source: AGHT+IHoJX3rCd0dhCoGHhRCveaoE/dAFFrqPqKvVA8s0p5/eN32SkcJ5IaE78DU2yIQ1+O6SF/OiA==
-X-Received: by 2002:a05:6402:27ca:b0:64c:9e19:9831 with SMTP id 4fb4d7f45d1cf-65097de5b1fmr19532557a12.12.1768308047256;
-        Tue, 13 Jan 2026 04:40:47 -0800 (PST)
-Received: from cloudflare.com ([2a09:bac5:5063:2dc::49:1cb])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-6507bf65ca0sm19578895a12.24.2026.01.13.04.40.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jan 2026 04:40:46 -0800 (PST)
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: Paolo Abeni <pabeni@redhat.com>
-Cc: Jakub Kicinski <kuba@kernel.org>,  netdev@vger.kernel.org,  "David S.
- Miller" <davem@davemloft.net>,  Eric Dumazet <edumazet@google.com>,  Simon
- Horman <horms@kernel.org>,  Michael Chan <michael.chan@broadcom.com>,
-  Pavan Chebbi <pavan.chebbi@broadcom.com>,  Andrew Lunn
- <andrew+netdev@lunn.ch>,  Tony Nguyen <anthony.l.nguyen@intel.com>,
-  Przemek Kitszel <przemyslaw.kitszel@intel.com>,  Saeed Mahameed
- <saeedm@nvidia.com>,  Leon Romanovsky <leon@kernel.org>,  Tariq Toukan
- <tariqt@nvidia.com>,  Mark Bloch <mbloch@nvidia.com>,  Alexei Starovoitov
- <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>,  Jesper
- Dangaard Brouer <hawk@kernel.org>,  John Fastabend
- <john.fastabend@gmail.com>,  Stanislav Fomichev <sdf@fomichev.me>,
-  intel-wired-lan@lists.osuosl.org,  bpf@vger.kernel.org,
-  kernel-team@cloudflare.com
-Subject: Re: [Intel-wired-lan] [PATCH net-next 00/10] Call skb_metadata_set
- when skb->data points past metadata
-In-Reply-To: <36deb505-1c82-4339-bb44-f72f9eacb0ac@redhat.com> (Paolo Abeni's
-	message of "Tue, 13 Jan 2026 13:09:45 +0100")
-References: <20260110-skb-meta-fixup-skb_metadata_set-calls-v1-0-1047878ed1b0@cloudflare.com>
-	<20260112190856.3ff91f8d@kernel.org>
-	<36deb505-1c82-4339-bb44-f72f9eacb0ac@redhat.com>
-Date: Tue, 13 Jan 2026 13:40:46 +0100
-Message-ID: <877btlwur5.fsf@cloudflare.com>
+	s=arc-20240116; t=1768308161; c=relaxed/simple;
+	bh=/rhdd0wg985rvZA9gm6N7N3iXKw1yrmZh8uRIqjK0qo=;
+	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
+	 Subject:From:To:Cc:Date; b=X3uxxVccmtnGK/y9j63BoVM6LcT2smasx4vM0yd88gvZa7172553sDhf9nfJD5adgFQJWogkQ4/I7E98z5ki5vzkyRI/vw7sN/MpyFI0PC9fTISdKb/at51bzHJJ+ACdsCXEQJCrI0whnY9/3gxBEL7phJySxfdwbyTsz4+v4ac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SsPwlrXZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28B28C116C6;
+	Tue, 13 Jan 2026 12:42:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768308161;
+	bh=/rhdd0wg985rvZA9gm6N7N3iXKw1yrmZh8uRIqjK0qo=;
+	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
+	b=SsPwlrXZcHLRfd87zRrnL+Q21oqGj51gsGYWaR52R/vOCEaLJfgENJEQiEn3DO7WS
+	 S4yQCnT/jsxWr80b+rpcgHtDmuloJ4sePU1DLwEsMllM01BVOYCpTbe4Lki9yozr+j
+	 4AhMXgP6IUBOZ7IkTIZzPErwQx1RVjGkDJZnOUKrgvesq+2u76+ejE/EFrgN9VCje3
+	 0UNXkRW+nMdY6gskOYLPYwnWn2Yt/lK9wIl4iyt0QkyW3pO/YDue3cE41R/FSNY+XC
+	 XuT9OrN3+apsA1n2ctlWm9EPeTqeVUmRpuxaJ7QAxLd/O4tdwJvpsWhc+zZiBojR8b
+	 epVhr8xC9APWg==
+Content-Type: multipart/mixed; boundary="===============4672709832961997223=="
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Message-Id: <8496feb711aed72644504926d9ff358550c011e3144dea088833ad723f4fe852@mail.kernel.org>
+In-Reply-To: <20260113121238.11300-2-laoar.shao@gmail.com>
+References: <20260113121238.11300-2-laoar.shao@gmail.com>
+Subject: Re: [RFC PATCH bpf-next 1/3] sched: add helpers for numa balancing
+From: bot+bpf-ci@kernel.org
+To: laoar.shao@gmail.com,roman.gushchin@linux.dev,inwardvessel@gmail.com,shakeel.butt@linux.dev,akpm@linux-foundation.org,ast@kernel.org,daniel@iogearbox.net,andrii@kernel.org,mkoutny@suse.com,yu.c.chen@intel.com,zhao1.liu@intel.com
+Cc: bpf@vger.kernel.org,linux-mm@kvack.org,laoar.shao@gmail.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
+Date: Tue, 13 Jan 2026 12:42:41 +0000 (UTC)
 
-On Tue, Jan 13, 2026 at 01:09 PM +01, Paolo Abeni wrote:
-> IIRC, at early MPTCP impl time, Eric suggested increasing struct sk_buff
-> size as an alternative to the mptcp skb extension, leaving the added
-> trailing part uninitialized when the sk_buff is allocated.
+--===============4672709832961997223==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+
+> diff --git a/include/linux/sched/numa_balancing.h b/include/linux/sched/numa_balancing.h
+> index 52b22c5c396d..792b6665f476 100644
+> --- a/include/linux/sched/numa_balancing.h
+> +++ b/include/linux/sched/numa_balancing.h
+
+[ ... ]
+
+> @@ -32,6 +33,28 @@ extern void set_numabalancing_state(bool enabled);
+> extern void task_numa_free(struct task_struct *p, bool final);
+> bool should_numa_migrate_memory(struct task_struct *p, struct folio *folio,
+> 				int src_nid, int dst_cpu);
+> +
+> +extern struct static_key_false sched_numa_balancing;
+> +static inline bool task_numab_enabled(struct task_struct *p)
+> +{
+> +	if (static_branch_unlikely(&sched_numa_balancing))
+> +		return true;
+> +	return false;
+> +}
+> +
+> +static inline bool task_numab_mode_normal(void)
+> +{
+> +	if (sysctl_numa_balancing_mode & NUMA_BALANCING_NORMAL)
+> +		return true;
+> +	return false;
+> +}
+> +
+> +static inline bool task_numab_mode_tiering(void)
+> +{
+> +	if (sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING)
+> +		return true;
+> +	return false;
+> +}
+>  #else
+>  static inline void task_numa_fault(int last_node, int node, int pages,
+> 				   int flags)
+
+[ ... ]
+
+> @@ -52,6 +75,10 @@ static inline bool should_numa_migrate_memory(struct task_struct *p,
+>  {
+>  	return true;
+>  }
+> +static inline bool task_numab_enabled(struct task_struct *p)
+> +{
+> +	return false;
+> +}
+>  #endif
+
+The #else block adds a stub for task_numab_enabled(), but task_numab_mode_normal()
+and task_numab_mode_tiering() are missing from this section. These helpers are
+defined when CONFIG_NUMA_BALANCING is enabled, but have no stubs when it is
+disabled.
+
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 670fe9fae5ba..7ee5695326e3 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+
+[ ... ]
+
+> @@ -4843,9 +4844,7 @@ static bool should_abort_scan(struct lruvec *lruvec, struct scan_control *sc)
+>  	if (!current_is_kswapd() || sc->order)
+>  		return false;
 >
-> If skb extensions usage become so ubicuos they are basically allocated
-> for each packet, the total skb extension is kept under strict control
-> and remains reasonable (assuming it is :), perhaps we could consider
-> revisiting the above mentioned approach?
+> -	mark = sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING ?
+> -	       WMARK_PROMO : WMARK_HIGH;
+> -
+> +	mark = task_numab_mode_tiering() ? WMARK_PROMO : WMARK_HIGH;
 
-I've been thinking the same thing. Great to hear that this idea is not
-new.
+[ ... ]
 
-FWIW, in our use cases we'd want to attach metadata to the first packet
-of new TCP/QUIC flow, and ocassionally to sampled skbs for tracing.
+> @@ -6774,7 +6773,7 @@ static bool pgdat_balanced(pg_data_t *pgdat, int order, int highest_zoneidx)
+>  		enum zone_stat_item item;
+>  		unsigned long free_pages;
+>
+> -		if (sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING)
+> +		if (task_numab_mode_tiering())
+>  			mark = promo_wmark_pages(zone);
 
+The original sysctl_numa_balancing_mode is defined to 0 when CONFIG_NUMA_BALANCING
+is disabled (see include/linux/sched/sysctl.h), allowing this code to compile and
+work correctly in both configurations. The new task_numab_mode_tiering() helper
+lacks a stub in the #else block, so should_abort_scan() and pgdat_balanced() in
+mm/vmscan.c will fail to compile when CONFIG_NUMA_BALANCING is not enabled.
+
+Would it make sense to add stubs for task_numab_mode_normal() and
+task_numab_mode_tiering() to the #else block, returning false to match the
+original behavior when sysctl_numa_balancing_mode is defined as 0?
+
+
+---
+AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
+
+CI run summary: https://github.com/kernel-patches/bpf/actions/runs/20956455529
+
+--===============4672709832961997223==--
 
