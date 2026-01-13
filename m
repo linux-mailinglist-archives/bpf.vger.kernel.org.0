@@ -1,194 +1,135 @@
-Return-Path: <bpf+bounces-78759-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78760-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B097D1B78E
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 22:48:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 22C34D1B815
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 22:59:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 00733301330B
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 21:48:46 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 3124E301331F
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 21:59:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0119934F486;
-	Tue, 13 Jan 2026 21:48:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C93B35294A;
+	Tue, 13 Jan 2026 21:59:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bUxBuetq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z9RH8xyH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DB2B2F0673
-	for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 21:48:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88E52350D49
+	for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 21:59:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768340923; cv=none; b=TE59SgGqgkya+JSvaNKm//Uq49Oxx/AzNjCgogzCCciGOkUYgWXcdnMvABBgSUFNSzNahNMyR8RaH9Z4QLcRVTme8NOSh2D30BH1jAnX7BRUwhjY8yzUsGlPXpu+iWzOQDuivgbKu1XibW+0tmaxTI5BAgMmj3VjWgJgrM5RObA=
+	t=1768341588; cv=none; b=SEs0VgOVtxIBB2PcmVRH2x/UZ9aVWh7qT51sPL6Izby7aFgFwFsHAQBkN4vCdvIShfkL0/9UaSPRGwN2rDJtL5feisCKux/GZZnjD/tYd1BobitEyv8g+XeD6tOP//DK1YmEaYj2O6xyqZr5Oo3+S1olCP0gqxphucU3hrVpVjA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768340923; c=relaxed/simple;
-	bh=aErz8emqgeCpQtkjg9AsSfwVcW8uVHHhVnL68m3sTbc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eZVKk3ObGDC2/guR2oMcbAjkIAFXbkxTdLfBcdlN34eWFRGQnGhUigaCMpznJZRoDL9OkWC8tIgOELV3pBJ3ShNAu9BERVzDUnOEniAqHrGsxMFbet7AoDao1nVvbpNUjQiBJkcyLQjiA7wCd4NKLRvaqtfs5cSeEBBjukVnaYU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bUxBuetq; arc=none smtp.client-ip=209.85.216.44
+	s=arc-20240116; t=1768341588; c=relaxed/simple;
+	bh=JMKPIWgq8b9DBCFSMppOOhRohcyexWNss6iyCclDIgo=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=sKPTFiA4BmBq9BvldLqqZdhQm+xl/ld5Tr4Nz3hgyqfIFzZlgq5hcQ3+p7ILaeK1H5ja1HQTJwDo8lMDQIhg8TdpKh75MImmidGAYWGPFYle2vVyDnRfC9KBrYZ55fxC/mmp7TU9QWBk+jU4eEtjdry+kEz5TBmfJHxi0P1adwg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z9RH8xyH; arc=none smtp.client-ip=209.85.215.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-34c718c5481so4371061a91.3
-        for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 13:48:42 -0800 (PST)
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-c5e051a47ddso122448a12.1
+        for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 13:59:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768340922; x=1768945722; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4RFNh+HDYy9tOBUkdGcS+1QynsmwkEBfw+8yeTkYEJ8=;
-        b=bUxBuetq0IYgpZJLdO6a8EZApFFdAT6mm60HH9JPPZgs/yAc8hN52uG1F2meDpTZvs
-         QZohlYXb4D8xVEhwjn8DAJ1Oxiqo+vc8p2tHySEnlRiILxkCr8KPIfzyi1Q5QvJxmQmN
-         Rn2L0nZpu5zdEUIOWOrnz64Pzw8YdTnQDK710ogRCbiqxoohsacjDcC5WwHC4PtylOd4
-         DkNLrsFDMwr993untC8JJuvGRCfy37jdNSGybnqaOmQgHzyDDnbDrW6SmWYYhIUy3wfg
-         JorcdGTcHIM6OI7Og95Dpoy44jvSxeho2e7ADGuFn90q4cB/y+WHcKQmvrENuMssnCZn
-         Oz8g==
+        d=gmail.com; s=20230601; t=1768341587; x=1768946387; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=JTlRjbsQTQjHMPHLzcQF6C84Ga9JaD/ogkGGtY0cAkU=;
+        b=Z9RH8xyH2sm7aH7YqwaAaxnwhUbjgwMdMuT9dk/anRy8cfvnKPQQjd5UKB2CS+Lpc8
+         NFG+NkUnaGn5QiMuU2Z6PqctYPtelOkqXXjQQuJBG2FqQuMv1atXsxQ76j5pkb8dClkH
+         I4ZEpCwiLh1O3CCvBCz6yn+dFIcBgSPyQsJRL4lNGbJguq+aMhHvEV/lD9GbjR1uKj0C
+         L3aVmfrxVcfEjTdHuGzQ3dm4PkbuLjCBmCQpNO7yqOI4Dn9qVuXcqTo2mVAwum/CI8PN
+         d2kser1YMMIMbEWX+o0wO1lKk6pytpNTHdPcXaTKvgVrAFVcAuALhCqs0oKRZoQuKunt
+         Vywg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768340922; x=1768945722;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=4RFNh+HDYy9tOBUkdGcS+1QynsmwkEBfw+8yeTkYEJ8=;
-        b=VnzvM/tImYXSDzMZbrvwoyUAAKHsTs6LdU9IasKdBfoiL2lVomNrLRPFOPeVRCPKnB
-         bgsBG68k7uCEQ2mTEbdBHra1NtHt+tngVRQXbvK5koYEbplp33ToE9xsHpKDvL3woJyk
-         z9gxNQi4q3hWaYjAQ82u1lWs/QFhWhTAbNzikfRV6V1WTImbUgCPTdMc75sEWMH0u7Tr
-         spBOJh7Hn8IrBqv5Y/iXjDPUpOT/qQZyqZbgfdJnIW1BWTYWQlP94gaQJeBeOwtps6G1
-         U25Eu5hbzH/PjoPSLYJKQMl5llzhYTE5ezrmQNJ0cZtMPJeJ0aTIg46Vd1PKWPxyhWOc
-         JHYg==
-X-Forwarded-Encrypted: i=1; AJvYcCVocgOzmq/28TPz5OMVBixqiROV9IDAx5HwYw2K8YT74fzHOxBmJer2iTQJ4nnBVfT3HBs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzMhvaA2SrwyVZ0+rA5qCEg5bRT61UPZKtem63sZYfzuulCU2rh
-	Eon6ETV4S9cJGAWaFu6aqpxiHDQYewWT8ar0blvuhfJd1uytQfwg81ShxYenDiX4Jgybi0Hca+8
-	q0qAL94rH3IRn4QK+uN0GQvR+5KuztcI=
-X-Gm-Gg: AY/fxX67DoH3Kod20g5cK3IctENkf7oZVbiE/h6WEVv3E3Moay69Abh+H3qHkja//on
-	yGPJ5DUH0u3Yg5/VolYTk1t9jGh2J8sYsyYfdBQCTmGi5SOEihG+UMeGaa8wUSbAwW1X0zUD4+Z
-	9o98J9wqhCj9MOiITMghM/eSkJgHB2s8eMFBltJSZsEFjKIKYsQyDiq104cH/0IUOxcrE+hJhSl
-	kEiv7zP00We/1tbiahlQu47bjD/yHY134b/igp1nsXaw3yi/jRAEFSxKyFeUGS4Vj2PIq4U684n
-	ygzAElFCzuA+X2hkUnk4iQ==
-X-Received: by 2002:a17:90b:56d0:b0:34e:63c1:4a08 with SMTP id
- 98e67ed59e1d1-35109129c68mr482532a91.20.1768340921572; Tue, 13 Jan 2026
- 13:48:41 -0800 (PST)
+        d=1e100.net; s=20230601; t=1768341587; x=1768946387;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JTlRjbsQTQjHMPHLzcQF6C84Ga9JaD/ogkGGtY0cAkU=;
+        b=jw6/Iwli5XIYWz5EP4K05ihDP5lAEGS7WOGMZM8xOhXSZ7YoGOP56HjYWPydOQ/T7g
+         mDhAE452Lwlf3fdZfbxJFEU1ReO4UFRZ+VxHFz0PN1kgo8637cZXUxnglGNEJ5AgbU0t
+         BkL8xHwXpIUv6tlYaqhflMyZjd8B+bbODu6KEwm8mGt3uSPmWuEz/J8m93KgJ7na4ST2
+         ZXGEZNODw5T8kWuH8IYcY6xRr7TAzyLbeGNu3Lkmt8Y8ylBx3xdjqR8jlhfJyYBj86pN
+         fwXGGGuaoGeaKfAul06qmDAXYwwLraCLy70u+V0yq2icmHQg9NfoJH4q0KQ+XeZqsA3f
+         +nGw==
+X-Forwarded-Encrypted: i=1; AJvYcCW7/JDE9f6MYky2qvjFDnxXmIOkuu9doz9yM0S6Gcn4nRyOMue9jDefpDg9DdATGIeo9wU=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy2bmu4ZbFm1QaKe5UkH41hPybjQTyYBgB6BPoIHIVBgnyJZ7E+
+	kiw7po7qMBalL02uZE/uG/AzQbeRMArnPJVV79MNMagZCzUNj5ck7wbM
+X-Gm-Gg: AY/fxX4tS2i/y6zWlEFUcVp3+5H1NUSUmBLEX/VWs1yxuAvyCsLMjqIlJ40k+iUbsih
+	gOnBJqa0sd70API+j+b4MHBAcNhfm0ad7LqBSQnEJwwmAuAwNDJ4kyMo3XPqX+R8p10mm2eHM1L
+	awBD0rD7OHEPUv9kVeTcoBea0aDPZWGOh7+gDUkTXKpm/NrDfKt7RbYfHgmIlZVV6ZPWJxOxHLy
+	NKEGYT4mxHvH3ZTMxoR0REkUXIPLi7HU/QSFU+vE0z2HG2meiL4j75hES3qsu8Xo34R+cmDqZeA
+	zs4MZNzbDt407moakan2ZxYZJcP6A+VQkDtLFPU7sR8TgM23LFa1lPUHVQOo1fuidiFDMOscQpP
+	EHkZo940E3J7WUCKfns+YGLh2oW1kBvXYFTbeCqW4FNnSWKkgA7APIjFr+aWsAyjFuRIP198/Cu
+	e4IIvBcN+PK1k00ncf6J3H9zARSUVX5Uc+psWharmWHevl1khZPN0=
+X-Received: by 2002:a05:6a20:2445:b0:384:f573:42bf with SMTP id adf61e73a8af0-38bed1c96b9mr512725637.53.1768341586883;
+        Tue, 13 Jan 2026 13:59:46 -0800 (PST)
+Received: from [192.168.0.226] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c4cc05cd87asm20802106a12.15.2026.01.13.13.59.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jan 2026 13:59:46 -0800 (PST)
+Message-ID: <18d9b15319bf8d71a3cd5b08239529505714dc96.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v1 03/10] bpf: Verifier support for
+ KF_IMPLICIT_ARGS
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Ihor Solodrai <ihor.solodrai@linux.dev>, Alexei Starovoitov
+ <ast@kernel.org>,  Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Mykyta Yatsenko <yatsenko@meta.com>, Tejun Heo <tj@kernel.org>, Alan
+ Maguire <alan.maguire@oracle.com>, Benjamin Tissoires <bentiss@kernel.org>,
+ Jiri Kosina	 <jikos@kernel.org>, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, 	linux-input@vger.kernel.org,
+ sched-ext@lists.linux.dev
+Date: Tue, 13 Jan 2026 13:59:43 -0800
+In-Reply-To: <20260109184852.1089786-4-ihor.solodrai@linux.dev>
+References: <20260109184852.1089786-1-ihor.solodrai@linux.dev>
+	 <20260109184852.1089786-4-ihor.solodrai@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.58.2 (3.58.2-1.fc43) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260109101325.47721-1-alan.maguire@oracle.com>
- <CAEf4Bzaysi-ji0Q2m=6Fc0YTPnrKVOPDNoQW9Y6rB03R4Pe3aw@mail.gmail.com> <9594c48f-1651-4448-b8e1-5a8a07f64108@oracle.com>
-In-Reply-To: <9594c48f-1651-4448-b8e1-5a8a07f64108@oracle.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 13 Jan 2026 13:48:29 -0800
-X-Gm-Features: AZwV_QgW1RHhSdmoO18Yw2tx5X-Xm6B2-eAoZ0pUuLrW8TZ3qu5iJrQRXsHy0_0
-Message-ID: <CAEf4BzZzPRwEYqDotyHPTY9Djnk+PC1aBXeKKH2gtRqnp6e=VQ@mail.gmail.com>
-Subject: Re: [PATCH bpf] libbpf: BTF dedup should ignore modifiers in type
- equivalence checks
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: andrii@kernel.org, ast@kernel.org, yonghong.song@linux.dev, 
-	jolsa@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
-	eddyz87@gmail.com, song@kernel.org, john.fastabend@gmail.com, 
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, nilay@linux.ibm.com, 
-	bvanassche@acm.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Sat, Jan 10, 2026 at 6:05=E2=80=AFAM Alan Maguire <alan.maguire@oracle.c=
-om> wrote:
->
-> On 09/01/2026 17:28, Andrii Nakryiko wrote:
-> > On Fri, Jan 9, 2026 at 2:14=E2=80=AFAM Alan Maguire <alan.maguire@oracl=
-e.com> wrote:
-> >>
-> >> We see identical type problems in [1] as a result of an occasionally
-> >> applied volatile modifier to kernel data structures. Such things can
-> >> result from different header include patterns, explicit Makefile
-> >> rules etc.  As a result consider types with modifiers const, volatile
-> >> and restrict as equivalent for dedup equivalence testing purposes.
-> >>
-> >> Type tag is excluded from modifier equivalence as it would be possible
-> >> we would end up with the type without the type tag annotations in the
-> >> final BTF, which could potentially lead to information loss.
-> >
-> > Hold on... I'm not a fan of just randomly ignoring modifiers in BTF
-> > dedup. If we think volatile is not important, let pahole just drop it.
->
-> It's important to stress that the final BTF representation doesn't ignore
-> the volatile modifier; in fact it is included in the final BTF for the tw=
-o
-> cases where __data_racy is used in a structure (in structs backing_dev_in=
-fo
-> and request_queue). See my response to the AI bot for the reason we weigh=
-t
-> towards choosing the more complete type as canonical.
+On Fri, 2026-01-09 at 10:48 -0800, Ihor Solodrai wrote:
 
-I'm probably very slow, but I don't see how we actually consciously
-pick a fuller type definition as canonical. You have symmetrical
-single-level modifier stripping for both canon and cand types. So I
-don't see what prevents us from saying that `int` is the canonical
-type for `volatile int` and never really have `volatile int` in a type
-chain anymore.
+[...]
 
-Symmetry that you mentioned doesn't help here either, because we will
-declare success on the first lucky match, regardless of which side is
-volatile on (candidate or canonical).
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -3271,6 +3271,38 @@ static struct btf *find_kfunc_desc_btf(struct bpf_=
+verifier_env *env, s16 offset)
+>  	return btf_vmlinux ?: ERR_PTR(-ENOENT);
+>  }
+> =20
+> +#define KF_IMPL_SUFFIX "_impl"
+> +
+> +static const struct btf_type *find_kfunc_impl_proto(struct bpf_verifier_=
+env *env,
+> +						    struct btf *btf,
+> +						    const char *func_name)
+> +{
+> +	char impl_name[KSYM_SYMBOL_LEN];
 
-So if we at all do this, we need to only strip modifiers on the
-canonical side, so that cand=3D`volatile int` never matches canon=3D`int`,
-but eventually they flip order and cand=3D`int` does match to `volatile
-int`.
+Oh, as we discussed already, this should use env->tmp_str_buf.
 
-But even that gives me pause, because hypot_map on successful type
-graph match will stop being "hypothetical" and will be real
-(btf_dedup_merge_hypot_map), and so all `int`'s within that
-compilation unit will suddenly become "volatile int".
+> +	const struct btf_type *func;
+> +	s32 impl_id;
+> +	int len;
+> +
+> +	len =3D snprintf(impl_name, sizeof(impl_name), "%s%s", func_name, KF_IM=
+PL_SUFFIX);
+> +	if (len < 0 || len >=3D sizeof(impl_name)) {
+> +		verbose(env, "function name %s%s is too long\n", func_name, KF_IMPL_SU=
+FFIX);
+> +		return NULL;
+> +	}
 
-It's just a mess. If volatile is not important, I'd rather have pahole
-strip it out completely for the kernel (as an extra option). *That* I
-can at least reason about in terms of consequences. While with your
-patch I can't convince myself we are not introducing subtle problems.
-
->
-> > I think BTF dedup itself shouldn't be randomly ignoring information
-> > like this.
-> >
-> > Better yet, of course, is to fix kernel headers to not have mismatched
-> > type definitions, no?
-> >
->
-> Of course, but these are not mutually exclusive activities. Some issues
-> like [1] admit to such a fix fairly easily.
->
-> In this specific case however the __data_racy annotation definition depen=
-ds
-> on __SANITIZE_THREAD__ which is set via compiler flag, and there are case=
-s
-> where KCSAN is deliberately disabled; from scripts/Makefile.lib:
->
-> #
-> # Enable KCSAN flags except some files or directories we don't want to ch=
-eck
-> # (depends on variables KCSAN_SANITIZE_obj.o, KCSAN_SANITIZE)
-> #
-> ifeq ($(CONFIG_KCSAN),y)
-> _c_flags +=3D $(if $(patsubst n%,, \
->         $(KCSAN_SANITIZE_$(target-stem).o)$(KCSAN_SANITIZE)$(is-kernel-ob=
-ject)), \
->         $(CFLAGS_KCSAN))
-> # Some uninstrumented files provide implied barriers required to avoid fa=
-lse
-> # positives: set KCSAN_INSTRUMENT_BARRIERS for barrier instrumentation on=
-ly.
-> _c_flags +=3D $(if $(patsubst n%,, \
->         $(KCSAN_INSTRUMENT_BARRIERS_$(target-stem).o)$(KCSAN_INSTRUMENT_B=
-ARRIERS)n), \
->         -D__KCSAN_INSTRUMENT_BARRIERS__)
-> endif
->
-> So there's nothing to fix for such cases; for some objects, disabling KCS=
-AN is
-> intentional. Since some core .o like mm slab/slub files disable KCSAN, th=
-e
-> non-volatile fields proliferate widely.
->
-> [1] https://lore.kernel.org/netdev/20251121181231.64337-1-alan.maguire@or=
-acle.com/
+[...]
 
