@@ -1,143 +1,267 @@
-Return-Path: <bpf+bounces-78711-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78712-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C452D18F37
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 13:55:14 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC6B6D19078
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 14:09:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D71423034A19
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 12:52:21 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 8D48730090FA
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 13:09:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D55F938E5FB;
-	Tue, 13 Jan 2026 12:52:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B77F38FF13;
+	Tue, 13 Jan 2026 13:09:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="UJCF6D6L"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="he4nxkmu";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9INIt8ZC";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="L3MVY4Fs";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="CU/L/Y80"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D605138E5DB
-	for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 12:52:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EFE338FEFE
+	for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 13:09:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768308740; cv=none; b=XD1IEdMjJCabO/mLotoFlIGfVq2Wug0lJtYbbDchYMUPFylD/2Yk/k+aUiCrK5fgYdiGmjeGJPKkwLyUobq/Z3l8iliYPuWmNho4eadC4kPZW8HWUuTED3jcgFPzmyLvAJLx7beVEfpOGYeimQ9c+k5EpKxdj+GKCIO0i7cvLaE=
+	t=1768309779; cv=none; b=cNwW8zrRWbQ6f0rt3g52wYOTmviXrBvd5zyRzQooOHWqw3Zycf5I7VsQlS+y+mm+UR5tg9aBm/l1fuVsxdX2EWEy7yHpLkANgiPqAlKhwELSgZnyrJQu/WUiDuUU0av8ubImuaiEp/OuewqpoVrdonnQVBl7PDrQK4zHUxkz50g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768308740; c=relaxed/simple;
-	bh=M3cd1ChoyL/JPoUh1TebMNfZNb0CMOQ+wKlup/AKWzI=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=d8+xXMldUYZRoKFopKzLXkTZp/aic/zuznCTgy3i0faVTHhcT3/uFHFZsQ06DIedZERUF0G17w+MGkURSsKyzF5Br5FC3sYm6LbtFv2ueZrWQSf69tEVgnD+UsdnjBRn6Y/OrAEbSEzMgm3ThIXTqszyQTRAY8ZF2RcdXNj33rw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=UJCF6D6L; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-b8719aeebc8so349962266b.3
-        for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 04:52:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1768308737; x=1768913537; darn=vger.kernel.org;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=uEb4fpri3npogF5JFpOtWuoL+P7ayMQsw+8rwNvJPCI=;
-        b=UJCF6D6LC6b8pKI37H8H6uwCtxnY+bmQP6DMaYddWTbJSgZpLHhTbQM358bn5S5xS4
-         qIgDKfHKxt5ShNajmTZNOhEI6lk6dyOQlTDrirBc/A8rsebRG2RSVrBTNrtAR/k50ezj
-         AB+B9ZIrmnZaUo5Vu04Dm+3jgdsJRSOCRFDr4H5yrjPn7XTa+kAMk/t9Y5NDkRDalhwr
-         e4+ATGp6OfT6Aq2vke/Sp/Vc/a4sn0E/FUdSLjGXS/ugfe72mM9LiZFsoQwavbbTYCpf
-         GsUqSfYGJKTk+3x7IhEJJyA7wHrHwyORGItLVyEzl8TDBE/0z6oGOgxGBlnYiq7omenn
-         i3tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768308737; x=1768913537;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uEb4fpri3npogF5JFpOtWuoL+P7ayMQsw+8rwNvJPCI=;
-        b=wvGz0Jpq+TejO53+ZGrGQOoQv0wZdeBlAMY13z6fN5JivwSOIyqTb9/iyiopotR5lK
-         HgkEfSyUOotYVISIxrWtv/xZ9kBVEG8t4xfCyrG/SkbQC+3a/yHGhdDv1OPy8MORj7yu
-         NaUVWZATgpTQQZm/ET+yGQnXd2GsT8Sc0ZaN0IsWZce7pcB9kqn9OQoYfwXxHf+mSg+w
-         rXFt5YX4V+aUcyZBLoOWoFejKeRg5KYuuR1Th7gDcLWA+/Tdm2j25wXzBBD35+viSUF3
-         i7aWfuoPhmI2NAhvMdzxacSgUYWOoOgKqpLk4DeQ/GrYXmiDGI00Sz3pk/508yqLrbT3
-         5Juw==
-X-Forwarded-Encrypted: i=1; AJvYcCW9QeCg8da+GQfAxxQQQxtdMAWLeubpzB1FhCbAs9wdeYLrvfvYRzf+ecLsLp77KX/EGv0=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx6g8KSJ0Zh6BRggup+DpJhBvzo2yZWkfWjVedjK/lJDk/FfVms
-	kAvoj87G01aYKlY0npmMmyJ8N8HBhwAc9e/4hvHmIegBEV0BSPJHYhVLhjOIAgnM5J4=
-X-Gm-Gg: AY/fxX4w9lyd/saxaPsrtIfE0NNf6Po2BIZEJk/U4vStyPy3zYucsdTsm3CK4thIJKs
-	6nk2ErDH4Wiyl4M8bUOvXjdWtEFf9c14CSUfovgK53SJ04wTsmXvHmcvRkfJAUhtXjv2DYUzIhR
-	tOUW6LHFKXpz6ztnlUI8qwwpf2G6qn7EsaTBQ0ROIjv11xAbrLcahHj6xEQKgX5OjG5VGTwVk/q
-	n5jh1E4I5dGNAA4/6oNM07w49PJlzyb4BNOsCEt+3XiMnuZHjSNsyNDYsRcvSoSSVwOfeUhnh3V
-	KNyDwfgbrTz4XDjROAh7YmbSIOIMcq00+9Od2AatuxcDMc8uc/wPQOW7Z0wWmuQrIM5jZtDok1n
-	ILmKpxcJrEg959yN0S6XO4UgTmxWSwuuGKgwCw0iy/cnJr9RfU8wK6zWofV8eDKyVJMqKqUVQYk
-	XtUbO4rtzo8NyQ
-X-Google-Smtp-Source: AGHT+IFX81GRz/hwINL72rPQLm6j5tregnFNpNUvMTj08WVBOxYe/hO3B2KEOTqbE2tiVZ7xDeaggw==
-X-Received: by 2002:a17:907:7293:b0:b87:2fcd:1955 with SMTP id a640c23a62f3a-b872fcd1bf1mr388012666b.50.1768308737057;
-        Tue, 13 Jan 2026 04:52:17 -0800 (PST)
-Received: from cloudflare.com ([2a09:bac5:5063:2dc::49:1cb])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b8706c2604bsm780426066b.16.2026.01.13.04.52.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jan 2026 04:52:16 -0800 (PST)
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: Tariq Toukan <ttoukan.linux@gmail.com>
-Cc: netdev@vger.kernel.org,  "David S. Miller" <davem@davemloft.net>,  Eric
- Dumazet <edumazet@google.com>,  Jakub Kicinski <kuba@kernel.org>,  Paolo
- Abeni <pabeni@redhat.com>,  Simon Horman <horms@kernel.org>,  Michael Chan
- <michael.chan@broadcom.com>,  Pavan Chebbi <pavan.chebbi@broadcom.com>,
-  Andrew Lunn <andrew+netdev@lunn.ch>,  Tony Nguyen
- <anthony.l.nguyen@intel.com>,  Przemek Kitszel
- <przemyslaw.kitszel@intel.com>,  Saeed Mahameed <saeedm@nvidia.com>,  Leon
- Romanovsky <leon@kernel.org>,  Tariq Toukan <tariqt@nvidia.com>,  Mark
- Bloch <mbloch@nvidia.com>,  Alexei Starovoitov <ast@kernel.org>,  Daniel
- Borkmann <daniel@iogearbox.net>,  Jesper Dangaard Brouer
- <hawk@kernel.org>,  John Fastabend <john.fastabend@gmail.com>,  Stanislav
- Fomichev <sdf@fomichev.me>,  intel-wired-lan@lists.osuosl.org,
-  bpf@vger.kernel.org,  kernel-team@cloudflare.com
-Subject: Re: [PATCH net-next 07/10] mlx5e: Call skb_metadata_set when
- skb->data points past metadata
-In-Reply-To: <4261e437-84b2-4d0d-af52-c5ee7fcf07cb@gmail.com> (Tariq Toukan's
-	message of "Tue, 13 Jan 2026 08:08:48 +0200")
-References: <20260110-skb-meta-fixup-skb_metadata_set-calls-v1-0-1047878ed1b0@cloudflare.com>
-	<20260110-skb-meta-fixup-skb_metadata_set-calls-v1-7-1047878ed1b0@cloudflare.com>
-	<4261e437-84b2-4d0d-af52-c5ee7fcf07cb@gmail.com>
-Date: Tue, 13 Jan 2026 13:52:15 +0100
-Message-ID: <873449wu80.fsf@cloudflare.com>
+	s=arc-20240116; t=1768309779; c=relaxed/simple;
+	bh=94B8HF31RDRqM7tsDLCR4LF97xjNHTyMaCD+pdLqxaM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=okL2qhiu4tTZMNkK7RkrZiLBZ4rK/KfQaFnhNC7sddUlK395qXQd+vgcxz9ykoW9PaA/D4OKOT5vlPkmqChZ10JN/GJRdn4I6FqDvsaCYA81dy5R1szS19M1cSca9nGBi8SylU/KZ5RlPY6wyxVpEt5jN+KTLSFq0aIg7z6xXww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=he4nxkmu; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=9INIt8ZC; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=L3MVY4Fs; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=CU/L/Y80; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 996545BCCA;
+	Tue, 13 Jan 2026 13:09:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1768309775; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zIiny1vZ64O9oq3h+HMX+5IRUmdaD2DDrx5wZTHdXc0=;
+	b=he4nxkmuWzN3/gfcDTtA+t3171gX7bx0foMZ8v6sFWmZixWVb542bQR/KZBnnLuyWBAIoj
+	jE4vl7WFHp68g/VnDLVE/nacid69kbxFE1zb3V8RiA0RLSEA5y+FFojh23GAJhLX3kScl3
+	/91qUVCiRqP4PNXe4yNjPmID429nq+c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1768309775;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zIiny1vZ64O9oq3h+HMX+5IRUmdaD2DDrx5wZTHdXc0=;
+	b=9INIt8ZC3kSlnuKdcRwKXXOeBbxYJ7TiVqdo7RD4yLmvmHdrEJQy2+StaVxMJ8SzHrXnxn
+	fTf3kY8poQ6VGRAA==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=L3MVY4Fs;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="CU/L/Y80"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1768309774; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zIiny1vZ64O9oq3h+HMX+5IRUmdaD2DDrx5wZTHdXc0=;
+	b=L3MVY4FsJrsDayEdRdXo/FC3Sc4zfufICzKTedm6Iml0u2C7jyuY9oQ0WfMwrIRJgl834+
+	dhdgMrwskzQlNc5CneYWf34trey6UZqhgALCwvZPV7n9I/leLQH19yNz/55UwdVJXoDB5R
+	eYkkzQId5poZaDgPvzJi7UTer5SEJQA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1768309774;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zIiny1vZ64O9oq3h+HMX+5IRUmdaD2DDrx5wZTHdXc0=;
+	b=CU/L/Y80jO8HWUI1QyzcAd6MMuC7un332e7lvk8MquLzhV5MRFzu4l0yah7Yv8c15MbIw0
+	lYwGyulI8XablpCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 854E33EA63;
+	Tue, 13 Jan 2026 13:09:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 5ldRIA5EZmklfQAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Tue, 13 Jan 2026 13:09:34 +0000
+Message-ID: <342a2a8f-43ee-4eff-a062-6d325faa8899@suse.cz>
+Date: Tue, 13 Jan 2026 14:09:33 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC v2 01/20] mm/slab: add rcu_barrier() to
+ kvfree_rcu_barrier_on_cache()
+To: Harry Yoo <harry.yoo@oracle.com>
+Cc: Petr Tesarik <ptesarik@suse.com>, Christoph Lameter <cl@gentwo.org>,
+ David Rientjes <rientjes@google.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>, Hao Li <hao.li@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Uladzislau Rezki <urezki@gmail.com>,
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+ Suren Baghdasaryan <surenb@google.com>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Alexei Starovoitov <ast@kernel.org>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, linux-rt-devel@lists.linux.dev,
+ bpf@vger.kernel.org, kasan-dev@googlegroups.com,
+ kernel test robot <oliver.sang@intel.com>, stable@vger.kernel.org
+References: <20260112-sheaves-for-all-v2-0-98225cfb50cf@suse.cz>
+ <20260112-sheaves-for-all-v2-1-98225cfb50cf@suse.cz>
+ <aWWpE-7R1eBF458i@hyeyoo> <6e1f4acd-23f3-4a92-9212-65e11c9a7d1a@suse.cz>
+ <aWY7K0SmNsW1O3mv@hyeyoo>
+From: Vlastimil Babka <vbabka@suse.cz>
+Content-Language: en-US
+In-Reply-To: <aWY7K0SmNsW1O3mv@hyeyoo>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -4.51
+X-Spamd-Result: default: False [-4.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[19];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCVD_TLS_ALL(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[suse.com,gentwo.org,google.com,linux.dev,linux-foundation.org,gmail.com,oracle.com,linutronix.de,kernel.org,kvack.org,vger.kernel.org,lists.linux.dev,googlegroups.com,intel.com];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:mid,suse.cz:email]
+X-Spam-Level: 
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 996545BCCA
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
 
-On Tue, Jan 13, 2026 at 08:08 AM +02, Tariq Toukan wrote:
-> On 10/01/2026 23:05, Jakub Sitnicki wrote:
->> Prepare to copy the XDP metadata into an skb extension in skb_metadata_set.
->> Adjust the driver to pull from skb->data before calling skb_metadata_set.
->> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
->> ---
->>   drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c
->> b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c
->> index 2b05536d564a..20c983c3ce62 100644
->> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c
->> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c
->> @@ -237,8 +237,8 @@ static struct sk_buff *mlx5e_xsk_construct_skb(struct mlx5e_rq *rq, struct xdp_b
->>   	skb_put_data(skb, xdp->data_meta, totallen);
->>     	if (metalen) {
->> -		skb_metadata_set(skb, metalen);
->>   		__skb_pull(skb, metalen);
->> +		skb_metadata_set(skb, metalen);
->>   	}
->>     	return skb;
->> 
->
-> Patch itself is simple..
->
-> I share my concerns about the perf impact of the series idea.
-> Do you have some working PoC? Please share some perf numbers..
+On 1/13/26 1:31 PM, Harry Yoo wrote:
+> On Tue, Jan 13, 2026 at 10:32:33AM +0100, Vlastimil Babka wrote:
+>> On 1/13/26 3:08 AM, Harry Yoo wrote:
+>>> On Mon, Jan 12, 2026 at 04:16:55PM +0100, Vlastimil Babka wrote:
+>>>> After we submit the rcu_free sheaves to call_rcu() we need to make sure
+>>>> the rcu callbacks complete. kvfree_rcu_barrier() does that via
+>>>> flush_all_rcu_sheaves() but kvfree_rcu_barrier_on_cache() doesn't. Fix
+>>>> that.
+>>>
+>>> Oops, my bad.
+>>>
+>>>> Reported-by: kernel test robot <oliver.sang@intel.com>
+>>>> Closes: https://lore.kernel.org/oe-lkp/202601121442.c530bed3-lkp@intel.com
+>>>> Fixes: 0f35040de593 ("mm/slab: introduce kvfree_rcu_barrier_on_cache() for cache destruction")
+>>>> Cc: stable@vger.kernel.org
+>>>> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+>>>> ---
+>>>
+>>> The fix looks good to me, but I wonder why
+>>> `if (s->sheaf_capacity) rcu_barrier();` in __kmem_cache_shutdown()
+>>> didn't prevent the bug from happening?
+>>
+>> Hmm good point, didn't notice it's there.
+>>
+>> I think it doesn't help because it happens only after
+>> flush_all_cpus_locked(). And the callback from rcu_free_sheaf_nobarn()
+>> will do sheaf_flush_unused() and end up installing the cpu slab again.
+> 
+> I thought about it a little bit more...
+> 
+> It's not because a cpu slab was installed again (for list_slab_objects()
+> to be called on a slab, it must be on n->partial list), but because
 
-Sorry, nothing to show yet. I've shared more context in my reply to
-Jakub [1].
+Hmm that's true.
 
-The series itself is an interface cleanup, whether we end up needing it
-for the metadata effort or not. Hence I wanted to salvage it from [2].
+> flush_slab() cannot handle concurrent frees to the cpu slab.
+> 
+> CPU X                                CPU Y
+> 
+> - flush_slab() reads
+>   c->freelist
+>                                      rcu_free_sheaf_nobarn()
+> 				     ->sheaf_flush_unused()
+> 				     ->__kmem_cache_free_bulk()
+> 				     ->do_slab_free()
+> 				       -> sees slab == c->slab
+> 				       -> frees to c->freelist
+> - c->slab = NULL,
+>   c->freelist = NULL
+> - call deactivate_slab()
+>   ^ the object freed by sheaf_flush_unused() is leaked,
+>     thus slab->inuse != 0
 
-[1] https://lore.kernel.org/all/87bjixwv41.fsf@cloudflare.com/
-[2] https://lore.kernel.org/r/20260107-skb-meta-safeproof-netdevs-rx-only-v3-0-0d461c5e4764@cloudflare.com
+But for this to be the same "c" it has to be the same cpu, not different
+X and Y, no?
+And that case is protected I think, the action by X with
+local_lock_irqsave() prevents an irq handler to execute Y. Action Y is
+using __update_cpu_freelist_fast to find out it was interrupted by X
+messing with c-> fields.
+
+
+> That said, flush_slab() works fine only when it is guaranteed that
+> there will be no concurrent frees to the cpu slab (acquiring local_lock
+> in flush_slab() doesn't help because free fastpath doesn't take it)
+> 
+> calling rcu_barrier() before flush_all_cpus_locked() ensures
+> there will be no concurrent frees.
+> 
+> A side question; I'm not sure how __kmem_cache_shrink(),
+> validate_slab_cache(), cpu_partial_store() are supposed to work
+> correctly? They call flush_all() without guaranteeing there will be
+> no concurrent frees to the cpu slab.
+> 
+> ...probably doesn't matter after sheaves-for-all :)
+> 
+>> Because the bot flagged commit "slab: add sheaves to most caches" where
+>> cpu slabs still exist. It's thus possible that with the full series, the
+>> bug is gone. But we should prevent it upfront anyway.
+> 
+>> The rcu_barrier() in __kmem_cache_shutdown() however is probably
+>> unnecessary then and we can remove it, right?
+> 
+> Agreed. As it's called (after flushing rcu sheaves) in
+> kvfree_rcu_barrier_on_cache(), it's not necessary in
+> __kmem_cache_shutdown().
+> 
+>>>>  mm/slab_common.c | 5 ++++-
+>>>>  1 file changed, 4 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/mm/slab_common.c b/mm/slab_common.c
+>>>> index eed7ea556cb1..ee994ec7f251 100644
+>>>> --- a/mm/slab_common.c
+>>>> +++ b/mm/slab_common.c
+>>>> @@ -2133,8 +2133,11 @@ EXPORT_SYMBOL_GPL(kvfree_rcu_barrier);
+>>>>   */
+>>>>  void kvfree_rcu_barrier_on_cache(struct kmem_cache *s)
+>>>>  {
+>>>> -	if (s->cpu_sheaves)
+>>>> +	if (s->cpu_sheaves) {
+>>>>  		flush_rcu_sheaves_on_cache(s);
+>>>> +		rcu_barrier();
+>>>> +	}
+>>>> +
+>>>>  	/*
+>>>>  	 * TODO: Introduce a version of __kvfree_rcu_barrier() that works
+>>>>  	 * on a specific slab cache.
+> 
 
 
