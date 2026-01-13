@@ -1,96 +1,140 @@
-Return-Path: <bpf+bounces-78747-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78748-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66B8AD1AD16
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 19:21:07 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA277D1AD9C
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 19:32:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id DFACD300E428
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 18:21:06 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D51C73045DC6
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 18:32:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C207134DCFD;
-	Tue, 13 Jan 2026 18:21:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5165E31812E;
+	Tue, 13 Jan 2026 18:32:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WpvrOccM"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="eCi15rBU"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DABC34B68F
-	for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 18:21:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F836288530
+	for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 18:32:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768328464; cv=none; b=rsB4771vDzTwI4WjRU6wovW+89hpPLvqIE3Z82uV8RSft0tnWlBTftlvwU7E8mnbElh57cJbTwdtheURme9JaYNPs8/KowrSCFxZafjEyk5yyg0ZnO0L/vjN0og3mXHlNZc4/6/duSDIGGIeIcmsoD/jefqtIlfZTK9CN8qsrPA=
+	t=1768329145; cv=none; b=kajdGoyxCc6OIjP8O2ScfRC9bozzTHMt+GEAfV2YEaTwA28D6FZp9CufCx5ANsmZPGs4JaijrCDCZbgBoZ41niVhnXtLGa9P7m6dlN558oEZHySKQLYR18VEovgObqGcjOyAKZmLWG60BV2oeSiJgq/F4QR5+TBwz5OKsLkGaoA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768328464; c=relaxed/simple;
-	bh=3wJpDfhSVDDqjM949aqENvQ/NKfSy/gYdIC55v1uQDk=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=UU+FhH71hRNlCnMxqvMI59mkWn8/5dXypMDsL4RF2nDcvMzzgsedop1ptkgNFW65MXZBjT1kcAICsCPgyOsGfeLajFLNZfQx04pSmDXB55olggMQY05tuhSyhnJ0pchOflBMirf+P0OFJuu9vQQuMKLFkl7m5k3Q68bAIOAaHgo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WpvrOccM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE0DDC19422;
-	Tue, 13 Jan 2026 18:21:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768328463;
-	bh=3wJpDfhSVDDqjM949aqENvQ/NKfSy/gYdIC55v1uQDk=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=WpvrOccMbsyymVfQWcdxE0wiHSxd00XH/hvdqtD6UtSiY39EjJZiTQxFLA1tPkByf
-	 UH7idwpFLklzqGjJ4jaVUsG71NMMztl+CIFWEeqWB7UQTyHUDFXZC0csb6HKropKW1
-	 5gT6/DC9yI5LiaJhxjKVk8MJHG1BOnI2IWdR2qcOb+6ElTO4y+i7d/R0JOs2o/rojo
-	 kxU2uV2gw5I2XIU6EdH391ZZOacfitMA3ObiuToGo0jJvquRaLKFOP6GL+sD1xjX6l
-	 6kTot6/H7DAETx8C4DE245g469781AAfEApIRPx1W63Nb1zpdpVBVIUHQMZ2nPsCpC
-	 z1oa7Ysdy9DtA==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 79C8E3808200;
-	Tue, 13 Jan 2026 18:17:38 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1768329145; c=relaxed/simple;
+	bh=ENG+11mj1pGt7Skmt2T/CyLWWh2v/nVikkxAGUFTx50=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Vz/7fiSfg7zeqXcHwEA73wWMRioL9FgxUyo7I3PEScREsJ9k/hTaPIn5eI2Gdl4aDq8O1PIiDRIrDuIpn9DjFTi80+CQcZ176Mk4HbGWKbVo6XEiO6oL3yNU/iFBjNrt30DGylNS6IqOeVTqdHzOH311RCOnWeS2nvesHOyFX2c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=eCi15rBU; arc=none smtp.client-ip=91.218.175.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <362ab824-6726-49ad-9602-ea25490e3298@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1768329132;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mGvPwcyoxR1wA0wC6H8sOa53pn7aq0IjfadSr+fYNdY=;
+	b=eCi15rBUj+eB5SiM2coXa8NqCk8wIoT0mdJk/+jFGJK9YvmKjor5UHRzKypdpHz6pKS9lk
+	IIDor356XMj6nWZ5OxOSz3PhTQb9nlsDXOnyxY751EoPz37lnSYsUuvGdvGawiBHRmpsvN
+	sEtGn0lGYgrU3Hwyn9RKrrq0lxayudo=
+Date: Tue, 13 Jan 2026 10:32:06 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v4 0/2] bpf: Recognize special arithmetic shift
- in
- the verifier
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <176832825702.2345780.7373274588102237050.git-patchwork-notify@kernel.org>
-Date: Tue, 13 Jan 2026 18:17:37 +0000
-References: <20260112201424.816836-1-puranjay@kernel.org>
-In-Reply-To: <20260112201424.816836-1-puranjay@kernel.org>
-To: Puranjay Mohan <puranjay@kernel.org>
-Cc: bpf@vger.kernel.org, puranjay12@gmail.com, ast@kernel.org,
- andrii@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org,
- eddyz87@gmail.com, memxor@gmail.com, mykyta.yatsenko5@gmail.com,
- kernel-team@meta.com, sunhao.th@gmail.com
+Subject: Re: [PATCH dwarves 2/4] btf_encoder: Refactor elf_functions__new()
+ with struct btf_encoder as argument
+To: Alan Maguire <alan.maguire@oracle.com>, yonghong.song@linux.dev,
+ mattbobrowski@google.com
+Cc: eddyz87@gmail.com, jolsa@kernel.org, andrii@kernel.org, ast@kernel.org,
+ dwarves@vger.kernel.org, bpf@vger.kernel.org
+References: <20260113131352.2395024-1-alan.maguire@oracle.com>
+ <20260113131352.2395024-3-alan.maguire@oracle.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Ihor Solodrai <ihor.solodrai@linux.dev>
+In-Reply-To: <20260113131352.2395024-3-alan.maguire@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
-
-On Mon, 12 Jan 2026 12:13:56 -0800 you wrote:
-> v3: https://lore.kernel.org/all/20260103022310.935686-1-puranjay@kernel.org/
-> Changes in v3->v4:
-> - Fork verifier state while processing BPF_OR when src_reg has [-1,0]
->   range and 2nd operand is a constant. This is to detect the following pattern:
-> 	i32 X > -1 ? C1 : -1 --> (X >>s 31) | C1
-> - Add selftests for above.
-> - Remove __description("s>>=63") (Eduard in another patchset)
+On 1/13/26 5:13 AM, Alan Maguire wrote:
+> From: Yonghong Song <yonghong.song@linux.dev>
 > 
-> [...]
+> For elf_functions__new(), replace original argument 'Elf *elf' with
+> 'struct btf_encoder *encoder' for future use.
+> 
+> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+> ---
+>  btf_encoder.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/btf_encoder.c b/btf_encoder.c
+> index 2c3cef9..5bc61cb 100644
+> --- a/btf_encoder.c
+> +++ b/btf_encoder.c
+> @@ -187,11 +187,13 @@ static inline void elf_functions__delete(struct elf_functions *funcs)
+>  
+>  static int elf_functions__collect(struct elf_functions *functions);
+>  
+> -struct elf_functions *elf_functions__new(Elf *elf)
+> +struct elf_functions *elf_functions__new(struct btf_encoder *encoder)
 
-Here is the summary with links:
-  - [bpf-next,v4,1/2] bpf: Recognize special arithmetic shift in the verifier
-    https://git.kernel.org/bpf/bpf-next/c/bffacdb80b93
-  - [bpf-next,v4,2/2] selftests/bpf: Add tests for s>>=31 and s>>=63
-    https://git.kernel.org/bpf/bpf-next/c/9160335317cb
+Hi Alan, Yonghong,
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+I assume "future use" refers to this patch:
+https://lore.kernel.org/dwarves/20251130040350.2636774-1-yonghong.song@linux.dev/
 
+Do I understand correctly that you're passing btf_encoder here in
+order to detect that the `encoder->dotted_true_signature` feature flag
+is set? If so, I think this is a bit of an overkill.
+
+How about just store the flag in struct elf_functions, pass it to the
+elf_functions__new() directly and set it there:
+
+	funcs->elf = elf;
+	funcs->dotted_true_signature = dotted_true_signature; // <--
+	err = elf_functions__collect(funcs);
+	if (err < 0)
+		goto out_delete;
+
+And even then, it doesn't feel right to me that the contents of the
+*ELF* functions table changes based on a feature flag. But we are
+discarding the suffixes currently, so I understand why this was done.
+
+Taking a step back, I remember Yonghong mentioned some pushback both
+from LLVM and DWARF side regarding the introduction of true signatures
+to DWARF data. Is there a feasible path forward landing all that?
+
+I haven't followed this work in detail, so apologies if I missed
+anything. Just want to have a high-level understanding of the
+situation.
+
+Thank you!
+
+
+>  {
+>  	struct elf_functions *funcs;
+> +	Elf *elf;
+>  	int err;
+>  
+> +	elf = encoder->cu->elf;
+>  	funcs = calloc(1, sizeof(*funcs));
+>  	if (!funcs) {
+>  		err = -ENOMEM;
+> @@ -1552,7 +1554,7 @@ static struct elf_functions *btf_encoder__elf_functions(struct btf_encoder *enco
+>  
+>  	funcs = elf_functions__find(encoder->cu->elf, &encoder->elf_functions_list);
+>  	if (!funcs) {
+> -		funcs = elf_functions__new(encoder->cu->elf);
+> +		funcs = elf_functions__new(encoder);
+>  		if (funcs)
+>  			list_add(&funcs->node, &encoder->elf_functions_list);
+>  	}
 
 
