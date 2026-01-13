@@ -1,111 +1,133 @@
-Return-Path: <bpf+bounces-78741-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78742-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C2E0D1A7EC
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 18:02:37 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08D05D1A83D
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 18:06:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id BD512302ADA1
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 16:58:58 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 762863044869
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 17:04:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 647D0350293;
-	Tue, 13 Jan 2026 16:58:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE469350295;
+	Tue, 13 Jan 2026 17:04:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b="arPqkIoj"
+	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="aZaSPe7G"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-dy1-f181.google.com (mail-dy1-f181.google.com [74.125.82.181])
+Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 854B12F0685
-	for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 16:58:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 388EE34DB4A
+	for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 17:04:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768323506; cv=none; b=d42konpUR86v+1ROJcy48W+pOth06DDRpbzW9bgz+mS4PHDQEgyZ5OTIi9l9t8aJbb6FntadfgwhdXx+G47Rz0m9FWideXq6khWhduVQoMZy4O7Ov44p6W4bJ8FnUiMVw0Mp/LPRoNbxbIjC58ZK4fXN36++7RuyaZV0FWGzuDs=
+	t=1768323851; cv=none; b=RgyrGDZI7MHwy59fJVBP8bjuyQspFCuP+1Pz2Gtm5Y9M5tNuOXH0zaHxmxupS/79ouo2+Ti2aO4yazw+mKJ3CHUc1OwkAyXxNQ/GlKSJvUcAjoHLekRob3/8S9Io2gY1xEPFJydOpMF5JqwTSJME8zwU+OyrUEVExSG8P+nHn0s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768323506; c=relaxed/simple;
-	bh=6Qy9RFFnU7FhdGhT3OFG5W3FiZMln0ipNVP7RahSUfs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AZx4EcFeHqQHd4+cTjwgOGMr8hiWew6VwfcaNX5bH38zFf+vKgEWiWrI/9QNmSJ2rGWp2VBXYjUujrPXse9RJlK1fJXEXkyTF6y+/dCf8NEt6v8wDsfOhslcflCOvhXNlcsiObgyDw1ujhFw+v/1Oq7ppJgO+3NRL87F2iJsBJ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk; spf=none smtp.mailfrom=davidwei.uk; dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b=arPqkIoj; arc=none smtp.client-ip=74.125.82.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=davidwei.uk
-Received: by mail-dy1-f181.google.com with SMTP id 5a478bee46e88-2ae255ac8bdso2888762eec.0
-        for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 08:58:22 -0800 (PST)
+	s=arc-20240116; t=1768323851; c=relaxed/simple;
+	bh=myAwfZK3pBeUDJYltOPnMulKp5k0GkhmmxDW3qcNe8c=;
+	h=Mime-Version:Content-Type:Date:Message-Id:From:To:Cc:Subject:
+	 References:In-Reply-To; b=j94gkrGw71yu4L32CWBffTgsY8l6RyyOZVR8Iym9ff+TEi+sYXfLMI4uNfF1CD7QQhK94e4quHCa8ozSmBDqvD6DrLqbkh/W6X2a75/Zxvo46QJ1WytNvqQ/xS8IZv61Aj0q8UxXSEj/9+1uOCwzWxKJ+GAaIQjUFhMsQBGAn1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=aZaSPe7G; arc=none smtp.client-ip=209.85.222.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etsalapatis.com
+Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-8c2f74ffd81so806716785a.1
+        for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 09:04:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=davidwei-uk.20230601.gappssmtp.com; s=20230601; t=1768323502; x=1768928302; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=n77cGqLpADKbmUH705Nn9XH804i7piONdOwkUPIPb3g=;
-        b=arPqkIojm3BzWuNVp2unot0Dq1MnPVId9dYHXNjLMCDQTh+ob4APFE2WwP4l9Om5Jx
-         Oeng1DFBi0Ez33Y7YL7r4w8QGzhhxrO8fbjZeblQPMaI+yLDl2L+MA2fSz5Np/aPayzV
-         Zop8flHOiBM+7ypmlUG96uCWIPgxQWOU6NJcqPeKC4T8OuTq034w+p5nsu6YGjBaKC+d
-         6M4uPLGr4bpd8wSTX+ArhjLM9zfDrV5N8wYyLjMWNvJhkQR8IrPNFyzu/njerrJNsn9V
-         hGL98ph8uXRqGQCMNpaXenCJo2kHSPSrKkC2jIbBBEt22xrxJ6JRVvyzD6xWpcjOVFst
-         n+ng==
+        d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1768323849; x=1768928649; darn=vger.kernel.org;
+        h=in-reply-to:references:subject:cc:to:from:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g/95kNCiyvFVaVHQF9HHwQ/ObVa9tN1q/3Mo53VWDQg=;
+        b=aZaSPe7GEiXQU+/Ia4iw19P58g9RY+w5Zsvfg46/HPbQtXFn+IBiLpGoLKe5R05Hj2
+         hZWjHFKtSI+VOCE+VPJ6gCJsQaUhA/syt9ELPM3wp7BTxH579SyUFZNNHX3uzN7lfq7R
+         lR2AzOJzJlFbqGrOm9T2xd7ErfjUDTj62fRytvvHPQkmxJV4tHnSue0HhgRXhQXfrVqw
+         yqtd3JPHZnfgLJnU940SiC/mQlDkAnojoup7TsoEUl3dhnSCmvse2CteuLPJLjTlhzpi
+         BWqJjRYB9EsdbO41XS7qvmscXowl4/ZTvcIIpBBJmLTaq93rK35c8wVt1IAlIUQgtKje
+         PsUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768323502; x=1768928302;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=n77cGqLpADKbmUH705Nn9XH804i7piONdOwkUPIPb3g=;
-        b=raQecYD80MI1w53FmWhqdOFxVFSSc4HfLyKZVPas1qnzCGg60hi6VmB1GKA7zA/V8x
-         voYDK10OC+VtreFri7C+2z4lPt7+U00dS5lBzq6ohJaoJ80RDsdDwJujSMn3lvqd2CRS
-         zivT5vDgZw5Uq2UC0O73+Kk9h7kh9PhvV0AIRXkABcd7wJTa43w9APqj7QYEkRPC7rAG
-         X8neTjl48wQLtFol9PXCVeSGnnxslCcdq05uzC5ujfU/nsOelC4kGjmZ0bxIzYv35gkX
-         ZqJbHp5q1w2pWbRG7YHZkM0n78UGxVcpGSEEcistBoZ3s0hD3w7rwGiAm7/THOdGpcPM
-         U1PA==
-X-Forwarded-Encrypted: i=1; AJvYcCVTrEl4t8KpSkwlYCpqYFt5in4+YemoVCGdvRscZH+tCYYXzaX6cnOrjEqWPpH/n3y4V9s=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzJJIWNwhswu8z+FTJz8M/H+mnIak2yQDy6qCQP8DMLQ6Vl9Inc
-	VXWQYdx7MCBmdYeWLpiqH2+JDOdTq+gcFbBj3cYVeGVNB9Sy2r9mlrS4M33ErbbfLwc=
-X-Gm-Gg: AY/fxX6bCiUfO6T9UEaE6+07Juo2SAuutv+yUBYKsSi0rP5m7fc/V/cLZ+Z6gHCUYKu
-	92iWVfWmUhUAfOayvmrwaby1d58E9zh52Df8KnXSYRfZY6ibxyPW7r/AaKnxwoeO9EVpT2HYbW+
-	PGzl6IzBdop2tr+p32VDfDapom5s629b1fnpWYaCOls03/SIJUSpCn4iEfPbO08MSGbfNyoFqsh
-	keva0RqOnmk1m9tx6DThOOzkki6H8qPXPmwhu6UB+rcQqlEt4maAssd9AuL3NXxxp/5ayYD0xQ1
-	jB6cNvW1fjVvRwGqLPfecTrYpZQkbUm7jAw2cFp0uriKeei3QDkL/bnlPrpkz+eJk6g+NMczLST
-	mCnNF04AJolz5hMCBYSxzgNkrapQapWl75WYT2u8ZGrZcQOjTooLha/+B0vef2Gct68wFoD44cP
-	hH8Bk8UfcD0chHnWc0BnsQMSz6ipqtwlO8/WqadDOmWUowdZ0RsPcIFcoZ1rw6NvdeCle6ilSyE
-	tFg8RzWGKYqXI8FMHUj
-X-Google-Smtp-Source: AGHT+IFPbxTriagZU/H3z0UHuDj2NqhqlCDbpNot88w6o+ZauEKhsAYhZNwxljY/4wB3cG8nkebtwQ==
-X-Received: by 2002:a05:7300:5415:b0:2a4:3593:6453 with SMTP id 5a478bee46e88-2b17d2294f6mr23252353eec.3.1768323501600;
-        Tue, 13 Jan 2026 08:58:21 -0800 (PST)
-Received: from ?IPV6:2a03:83e0:1156:1:c8f:b917:4342:fa09? ([2620:10d:c090:500::7ecc])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2b1707d57aasm17121126eec.30.2026.01.13.08.58.19
+        d=1e100.net; s=20230601; t=1768323849; x=1768928649;
+        h=in-reply-to:references:subject:cc:to:from:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-gg:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=g/95kNCiyvFVaVHQF9HHwQ/ObVa9tN1q/3Mo53VWDQg=;
+        b=SOJH+mn0nH3TuOjqux3TZxUtRa4j5pT/fZScQrMIR9MCJkrrvCMXlT+vRPl+vPYi4d
+         gfFrAVG77+LU6bucXwVZ7NPm4vUeX+o/OxhXGuPT+gJ/N98dJJY7QZ1pXvIMvhvUVvyu
+         I6DcGRLn8Btcokxje4Sg9Rz5LY+N9fZAiC1CBkIu7Wrt6WapIgz49z5av5kI6C2IuuBO
+         5Xn9BPEDqs5fON/Hk3cxmnxcSk702rgG6Ap3KU4zdt0wrviZhjNvK5tUoN/02+x7MiCU
+         ty3vIkcJdXhQK9DmK8pO+AEzks9Z9lBqicox2VORx3wtcMyMXdQzSrBTF83m8x/DfNmU
+         iEIw==
+X-Forwarded-Encrypted: i=1; AJvYcCWB0FEw5+AjlNmImEE2oGu7R33A723ogadBtrSZZD/oPyvyVpwzj3sQmhlKwcPG09aSK60=@vger.kernel.org
+X-Gm-Message-State: AOJu0YziXd9bA+XXDPs319RWDXHU8ezffK9nmiGLKazDw0MtvIVH6Bxt
+	MQDSvgrLhf7m9VGUlLjsCJtOmwQGwW88zNokvUTnun/ZQdvsoK2IEUw/4EBfzoxxK7U=
+X-Gm-Gg: AY/fxX6ZbqidrB8ETvQ0KmTTJsHU+mVgXpRqmgQHvPYfoUTKtB1oHgDCy5EJqrsSoxs
+	ta8QKseWwGbkSvo7nFDGG9ph3D5HQtr5YFQ8Ctk1po6mHpNGzzX5KpfFg+T6vq+AVu5GbdlvVBQ
+	nH4cLUoXZDeIk9taisXirTbQov2+iiUEvYOPWkCrYWJSM4zAwpeC16sDFIJxT76OmNaTEis97y+
+	FtoBaeXJ3iTuUusPTiqdLQLRz8j+QBoucC6QonuPpe8A95NR1Ur5olvU/yvGT5QXPjYjwgZPolu
+	u2uWbcBzEfTmmWkR9Fmht6p++Ad5BRERSdpXDHq6VQpGt7Ws4RLpSSZ4L+39LO+/VQc0+GN5p2y
+	WbF5MkbNtZZMKp/GaojrbMV4/6yNg8591ADmI+6u9i9KiRsRnl3g6pcDPYCBoSD9qeXADpcb63P
+	h7DcIhRxv3IvE=
+X-Google-Smtp-Source: AGHT+IHrigtzczoZmIUBtOr447a+SGkdCdiNOcuOwbuKwxgdHgPDklWiMq+lgoZcPPhV5w+rYtbkaA==
+X-Received: by 2002:a05:620a:4444:b0:8b2:e177:fb17 with SMTP id af79cd13be357-8c3893dca80mr2949157985a.45.1768323848858;
+        Tue, 13 Jan 2026 09:04:08 -0800 (PST)
+Received: from localhost ([140.174.219.137])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8c37f5438f6sm1728247485a.53.2026.01.13.09.04.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Jan 2026 08:58:21 -0800 (PST)
-Message-ID: <745cf43b-05f5-4129-abea-117fe1c53a70@davidwei.uk>
-Date: Tue, 13 Jan 2026 08:58:18 -0800
+        Tue, 13 Jan 2026 09:04:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v5 15/16] selftests/net: Make NetDrvContEnv
- support queue leasing
-To: Jakub Kicinski <kuba@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
- razor@blackwall.org, pabeni@redhat.com, willemb@google.com, sdf@fomichev.me,
- john.fastabend@gmail.com, martin.lau@kernel.org, jordan@jrife.io,
- maciej.fijalkowski@intel.com, magnus.karlsson@intel.com, toke@redhat.com,
- yangzhenze@bytedance.com, wangdongdong.6@bytedance.com
-References: <20260109212632.146920-1-daniel@iogearbox.net>
- <20260109212632.146920-16-daniel@iogearbox.net>
- <20260112195915.5af68b2d@kernel.org>
-Content-Language: en-US
-From: David Wei <dw@davidwei.uk>
-In-Reply-To: <20260112195915.5af68b2d@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 13 Jan 2026 12:04:06 -0500
+Message-Id: <DFNMHKDB1A40.3D0RBKLJVJ5HW@etsalapatis.com>
+From: "Emil Tsalapatis" <emil@etsalapatis.com>
+To: "Yonghong Song" <yonghong.song@linux.dev>, <bpf@vger.kernel.org>
+Cc: "Alexei Starovoitov" <ast@kernel.org>, "Andrii Nakryiko"
+ <andrii@kernel.org>, "Daniel Borkmann" <daniel@iogearbox.net>,
+ <kernel-team@fb.com>, "Martin KaFai Lau" <martin.lau@kernel.org>
+Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: Fix verifier_arena_globals1
+ failure with 64K page
+X-Mailer: aerc 0.20.1
+References: <20260113061018.3797051-1-yonghong.song@linux.dev>
+ <20260113061033.3798549-1-yonghong.song@linux.dev>
+In-Reply-To: <20260113061033.3798549-1-yonghong.song@linux.dev>
 
-On 2026-01-12 19:59, Jakub Kicinski wrote:
-> On Fri,  9 Jan 2026 22:26:31 +0100 Daniel Borkmann wrote:
->> -from lib.py import cmd, ethtool, ip, CmdExitFailure, bpftool
->> +from lib.py import cmd, defer, ethtool, ip, CmdExitFailure, bpftool
-> 
-> tools/testing/selftests/drivers/net/lib/py/env.py:10: [F401] `lib.py.defer` imported but unused
+On Tue Jan 13, 2026 at 1:10 AM EST, Yonghong Song wrote:
+> With 64K page on arm64, verifier_arena_globals1 failed like below:
+>   ...
+>   libbpf: map 'arena': failed to create: -E2BIG
+>   ...
+>   #509/1   verifier_arena_globals1/check_reserve1:FAIL
+>   ...
+>
+> For 64K page, if the number of arena pages is (1UL << 20), the total
+> memory will exceed 4G and this will cause map creation failure.
+> Adjusting ARENA_PAGES based on the actual page size fixed the problem.
+>
+> Cc: Emil Tsalapatis <emil@etsalapatis.com>
+> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+> ---
 
-Will remove.
+Reviewed-by: Emil Tsalapatis <emil@etsalapatis.com>
+
+>  tools/testing/selftests/bpf/progs/verifier_arena_globals1.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/testing/selftests/bpf/progs/verifier_arena_globals1.c =
+b/tools/testing/selftests/bpf/progs/verifier_arena_globals1.c
+> index 14afef3d6442..83182ddbfb95 100644
+> --- a/tools/testing/selftests/bpf/progs/verifier_arena_globals1.c
+> +++ b/tools/testing/selftests/bpf/progs/verifier_arena_globals1.c
+> @@ -9,7 +9,7 @@
+>  #include "bpf_arena_common.h"
+>  #include "bpf_misc.h"
+> =20
+> -#define ARENA_PAGES (1UL<< (32 - 12))
+> +#define ARENA_PAGES (1UL<< (32 - __builtin_ffs(__PAGE_SIZE) + 1))
+>  #define GLOBAL_PAGES (16)
+> =20
+>  struct {
+
 
