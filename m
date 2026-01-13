@@ -1,81 +1,81 @@
-Return-Path: <bpf+bounces-78740-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78741-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D57F9D1A82B
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 18:04:50 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C2E0D1A7EC
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 18:02:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 679E53040297
-	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 16:58:59 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id BD512302ADA1
+	for <lists+bpf@lfdr.de>; Tue, 13 Jan 2026 16:58:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68F00350298;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 647D0350293;
 	Tue, 13 Jan 2026 16:58:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b="JhDK7wHk"
+	dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b="arPqkIoj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-dl1-f43.google.com (mail-dl1-f43.google.com [74.125.82.43])
+Received: from mail-dy1-f181.google.com (mail-dy1-f181.google.com [74.125.82.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDEEF34EEF1
-	for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 16:58:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 854B12F0685
+	for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 16:58:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768323506; cv=none; b=FLvchXeeQeQa/B6Ye6YeCOO1UPczwnmy/b7ptnTD3LDi81sWobHwzrutOZXGNv+ueWpn0SAvP+xM+B+CEArEJ4zuPod0XsHBQDYdq8XUMUXUew4gwLY4LXeNh5fxeTz30NEmgn/rnYxie7LomcFfCmpSenNWEoiOBRitresfo0U=
+	t=1768323506; cv=none; b=d42konpUR86v+1ROJcy48W+pOth06DDRpbzW9bgz+mS4PHDQEgyZ5OTIi9l9t8aJbb6FntadfgwhdXx+G47Rz0m9FWideXq6khWhduVQoMZy4O7Ov44p6W4bJ8FnUiMVw0Mp/LPRoNbxbIjC58ZK4fXN36++7RuyaZV0FWGzuDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1768323506; c=relaxed/simple;
-	bh=tSOcPb7ZAFlwQU6op9fudwzWNn1hmHkkASUV4coELWA=;
+	bh=6Qy9RFFnU7FhdGhT3OFG5W3FiZMln0ipNVP7RahSUfs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VamSPR0EpDaZsQlJPl7YXh9K8Nf3fKroQcvFanG7Z26AxSRsb3KPkldeq/QUS0U7jjkbV7kVU6wmiFIIfczT/vNXtQjt26/dBz+YV7RfPo6RKQz+negmElDMtEOmfTyY4/FBnWB69/7gQphl25FlX61R4bp9RPZ5oOsqKiIgXJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk; spf=none smtp.mailfrom=davidwei.uk; dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b=JhDK7wHk; arc=none smtp.client-ip=74.125.82.43
+	 In-Reply-To:Content-Type; b=AZx4EcFeHqQHd4+cTjwgOGMr8hiWew6VwfcaNX5bH38zFf+vKgEWiWrI/9QNmSJ2rGWp2VBXYjUujrPXse9RJlK1fJXEXkyTF6y+/dCf8NEt6v8wDsfOhslcflCOvhXNlcsiObgyDw1ujhFw+v/1Oq7ppJgO+3NRL87F2iJsBJ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk; spf=none smtp.mailfrom=davidwei.uk; dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b=arPqkIoj; arc=none smtp.client-ip=74.125.82.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=davidwei.uk
-Received: by mail-dl1-f43.google.com with SMTP id a92af1059eb24-121b14d0089so8651252c88.0
-        for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 08:58:10 -0800 (PST)
+Received: by mail-dy1-f181.google.com with SMTP id 5a478bee46e88-2ae255ac8bdso2888762eec.0
+        for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 08:58:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=davidwei-uk.20230601.gappssmtp.com; s=20230601; t=1768323486; x=1768928286; darn=vger.kernel.org;
+        d=davidwei-uk.20230601.gappssmtp.com; s=20230601; t=1768323502; x=1768928302; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=ON88RRtAB2t+A02dvq9Ch82cNipWI4+bDnMpxNyjngk=;
-        b=JhDK7wHkTwMKLDV2L6IAKLEx8KACxj0l1psCIX7tCfCs2cY3ktIOQqvOb2Yt3n4Rm2
-         7AqZvJajl6FF4HsVvfdD8TMReqz+8/1DTU2/+PYuC7boUP/Bd7dl9ih6t3cYnG8WFXtX
-         f5vt6uhp+j0bpX/vLGuOEqfNx+GTHX7Jw6sAfM9Y0HLasy3IFor3by1zifwwYAQSB5Dm
-         5/5azA7ORvFqgrA7Rv5FAfYHAhfDrTHqHQ7X14gmSXn2Fot5JQJPVGOX5/7hJN+YeMBF
-         Yw5+BUKlphEtaflT88R16jT20O1qiINm/WS2iMlF5DKnaTaCY4wpKDFnvHUBaC2bkfXm
-         Zzew==
+        bh=n77cGqLpADKbmUH705Nn9XH804i7piONdOwkUPIPb3g=;
+        b=arPqkIojm3BzWuNVp2unot0Dq1MnPVId9dYHXNjLMCDQTh+ob4APFE2WwP4l9Om5Jx
+         Oeng1DFBi0Ez33Y7YL7r4w8QGzhhxrO8fbjZeblQPMaI+yLDl2L+MA2fSz5Np/aPayzV
+         Zop8flHOiBM+7ypmlUG96uCWIPgxQWOU6NJcqPeKC4T8OuTq034w+p5nsu6YGjBaKC+d
+         6M4uPLGr4bpd8wSTX+ArhjLM9zfDrV5N8wYyLjMWNvJhkQR8IrPNFyzu/njerrJNsn9V
+         hGL98ph8uXRqGQCMNpaXenCJo2kHSPSrKkC2jIbBBEt22xrxJ6JRVvyzD6xWpcjOVFst
+         n+ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768323486; x=1768928286;
+        d=1e100.net; s=20230601; t=1768323502; x=1768928302;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ON88RRtAB2t+A02dvq9Ch82cNipWI4+bDnMpxNyjngk=;
-        b=WLoyickUm/mzxb2dIV81m+iU57XpjAEp+xV2ewb4p+etvRXVMjATHwsycxZimUDaBp
-         rUo/8NfU8s5YmBWMDUFy+En04clbmAJxsAVK0NCceKPquyDtUXyeqUvnxpVQDQgwFJ3J
-         xZJP0xAle8lBzwPksqitLJNk/8fgeBhMmhTTyvMYed4xFZZvpZP2r8JRPSSM1mEJrWte
-         ep6Za74DNbqWSUcnzxv6qOmMALXWtBPuHxG/KKFK4YxDJNSck7xRQsCpr8E+6EW30vTk
-         /aRY2KsgzHLcjJf5Gn3e/s5K0Sh6i/GYZAGWQ5sbA2lQIA6Pe57DDq672jXgW4QzI9mr
-         xhQw==
-X-Forwarded-Encrypted: i=1; AJvYcCWG0fOPjY6LtOnYwZCfWwN2jJVrPMDwaVd1JoSld9m9IIh5Auiyng93e1q1iAghgDcX7dY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwdI718/mWo0m9qsp3IgzkyPFhr2CqJ+TUA/0jYYjFc4RD4QYMJ
-	Du6wfve0/rU5o4Hj253o3n/82gJuGxd9nZzCSKkWK8E/BaiQpEUUX8X4gxBfZNkaP+Y=
-X-Gm-Gg: AY/fxX4g9nuayRvs7zQ/2V2gm85gKHwnGW+bLWEcYuQ0WFiFObbtSuvU8Mt8TqzLHMj
-	wriQwdR4b2fmEJvOSU9PgInvOhcLdWzjaqWVKOwq9jjxt/yIrSFFXsJyEYCCHSW1AfF2Hwmo/KS
-	fv2UDvMbeRjRIlQJLiJLIDuPKzMj9eebDp1P9rWeTgFO7wg9Av/1RTCNyQmDEOVw/3aizybp7YO
-	CaQqdCQsfTZ59YiD8x66rmzZirKuekuaL4EuQ16p7hQR+SVYfvek/oayNr7VnxZi9C498T+++rn
-	hDieemh4X2qB6KDWDemsz/CZ4nec9WD0AGI93pd/V5fGPasfkw+4m+B16WmyYDwMREm1VaCAPD6
-	aKPynklIozKvaNBQ1Si/tHi6iG533nW4nOY3YqsX0oBht/9GfxgnisiQyJEkKntFCzsxsE9JU6c
-	YppveAJ4CszLk8M2LN3Gw1cdwokZfnPM5aiWqhSkNsX1yy55SYxNyfZ5sxgO7jGmbiAy9haM79w
-	VOdXo1V6g==
-X-Google-Smtp-Source: AGHT+IGVQRe1fdI9Qq2JBPWbzVxXkMCTfRiu053lQwRYE6yRyJOQ4RpPEZHGOsc/7AMUQsuHSS9lmg==
-X-Received: by 2002:a05:701b:250b:b0:123:2d9d:a90d with SMTP id a92af1059eb24-1232d9da967mr2625938c88.17.1768323486006;
-        Tue, 13 Jan 2026 08:58:06 -0800 (PST)
+        bh=n77cGqLpADKbmUH705Nn9XH804i7piONdOwkUPIPb3g=;
+        b=raQecYD80MI1w53FmWhqdOFxVFSSc4HfLyKZVPas1qnzCGg60hi6VmB1GKA7zA/V8x
+         voYDK10OC+VtreFri7C+2z4lPt7+U00dS5lBzq6ohJaoJ80RDsdDwJujSMn3lvqd2CRS
+         zivT5vDgZw5Uq2UC0O73+Kk9h7kh9PhvV0AIRXkABcd7wJTa43w9APqj7QYEkRPC7rAG
+         X8neTjl48wQLtFol9PXCVeSGnnxslCcdq05uzC5ujfU/nsOelC4kGjmZ0bxIzYv35gkX
+         ZqJbHp5q1w2pWbRG7YHZkM0n78UGxVcpGSEEcistBoZ3s0hD3w7rwGiAm7/THOdGpcPM
+         U1PA==
+X-Forwarded-Encrypted: i=1; AJvYcCVTrEl4t8KpSkwlYCpqYFt5in4+YemoVCGdvRscZH+tCYYXzaX6cnOrjEqWPpH/n3y4V9s=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzJJIWNwhswu8z+FTJz8M/H+mnIak2yQDy6qCQP8DMLQ6Vl9Inc
+	VXWQYdx7MCBmdYeWLpiqH2+JDOdTq+gcFbBj3cYVeGVNB9Sy2r9mlrS4M33ErbbfLwc=
+X-Gm-Gg: AY/fxX6bCiUfO6T9UEaE6+07Juo2SAuutv+yUBYKsSi0rP5m7fc/V/cLZ+Z6gHCUYKu
+	92iWVfWmUhUAfOayvmrwaby1d58E9zh52Df8KnXSYRfZY6ibxyPW7r/AaKnxwoeO9EVpT2HYbW+
+	PGzl6IzBdop2tr+p32VDfDapom5s629b1fnpWYaCOls03/SIJUSpCn4iEfPbO08MSGbfNyoFqsh
+	keva0RqOnmk1m9tx6DThOOzkki6H8qPXPmwhu6UB+rcQqlEt4maAssd9AuL3NXxxp/5ayYD0xQ1
+	jB6cNvW1fjVvRwGqLPfecTrYpZQkbUm7jAw2cFp0uriKeei3QDkL/bnlPrpkz+eJk6g+NMczLST
+	mCnNF04AJolz5hMCBYSxzgNkrapQapWl75WYT2u8ZGrZcQOjTooLha/+B0vef2Gct68wFoD44cP
+	hH8Bk8UfcD0chHnWc0BnsQMSz6ipqtwlO8/WqadDOmWUowdZ0RsPcIFcoZ1rw6NvdeCle6ilSyE
+	tFg8RzWGKYqXI8FMHUj
+X-Google-Smtp-Source: AGHT+IFPbxTriagZU/H3z0UHuDj2NqhqlCDbpNot88w6o+ZauEKhsAYhZNwxljY/4wB3cG8nkebtwQ==
+X-Received: by 2002:a05:7300:5415:b0:2a4:3593:6453 with SMTP id 5a478bee46e88-2b17d2294f6mr23252353eec.3.1768323501600;
+        Tue, 13 Jan 2026 08:58:21 -0800 (PST)
 Received: from ?IPV6:2a03:83e0:1156:1:c8f:b917:4342:fa09? ([2620:10d:c090:500::7ecc])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-121f243496asm27149784c88.1.2026.01.13.08.58.04
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2b1707d57aasm17121126eec.30.2026.01.13.08.58.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Jan 2026 08:58:05 -0800 (PST)
-Message-ID: <1b35b5d4-f1f5-48f1-84ae-fd975893ef19@davidwei.uk>
-Date: Tue, 13 Jan 2026 08:58:03 -0800
+        Tue, 13 Jan 2026 08:58:21 -0800 (PST)
+Message-ID: <745cf43b-05f5-4129-abea-117fe1c53a70@davidwei.uk>
+Date: Tue, 13 Jan 2026 08:58:18 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -83,8 +83,8 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v5 14/16] selftests/net: Add env for container
- based tests
+Subject: Re: [PATCH net-next v5 15/16] selftests/net: Make NetDrvContEnv
+ support queue leasing
 To: Jakub Kicinski <kuba@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>
 Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
  razor@blackwall.org, pabeni@redhat.com, willemb@google.com, sdf@fomichev.me,
@@ -92,19 +92,20 @@ Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
  maciej.fijalkowski@intel.com, magnus.karlsson@intel.com, toke@redhat.com,
  yangzhenze@bytedance.com, wangdongdong.6@bytedance.com
 References: <20260109212632.146920-1-daniel@iogearbox.net>
- <20260109212632.146920-15-daniel@iogearbox.net>
- <20260112195834.733c0ffe@kernel.org>
+ <20260109212632.146920-16-daniel@iogearbox.net>
+ <20260112195915.5af68b2d@kernel.org>
 Content-Language: en-US
 From: David Wei <dw@davidwei.uk>
-In-Reply-To: <20260112195834.733c0ffe@kernel.org>
+In-Reply-To: <20260112195915.5af68b2d@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 2026-01-12 19:58, Jakub Kicinski wrote:
-> On Fri,  9 Jan 2026 22:26:30 +0100 Daniel Borkmann wrote:
->> +            cmd(f"tc filter del dev {self.ifname} ingress pref {self._bpf_prog_pref}").stdout
+On 2026-01-12 19:59, Jakub Kicinski wrote:
+> On Fri,  9 Jan 2026 22:26:31 +0100 Daniel Borkmann wrote:
+>> -from lib.py import cmd, ethtool, ip, CmdExitFailure, bpftool
+>> +from lib.py import cmd, defer, ethtool, ip, CmdExitFailure, bpftool
 > 
-> tools/testing/selftests/drivers/net/lib/py/env.py:380:12: W0106: Expression "cmd(f'tc filter del dev {self.ifname} ingress pref {self._bpf_prog_pref}').stdout" is assigned to nothing (expression-not-assigned)
+> tools/testing/selftests/drivers/net/lib/py/env.py:10: [F401] `lib.py.defer` imported but unused
 
-Will remove and remember to run Pylint myself in the future.
+Will remove.
 
