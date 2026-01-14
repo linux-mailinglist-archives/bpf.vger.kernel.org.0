@@ -1,99 +1,126 @@
-Return-Path: <bpf+bounces-78831-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78830-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97AACD1C444
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 04:34:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FDB4D1C432
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 04:31:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C18D5301396D
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 03:33:36 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6140130142C7
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 03:31:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00EF029C347;
-	Wed, 14 Jan 2026 03:33:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA3F6284896;
+	Wed, 14 Jan 2026 03:31:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AIvLJtc1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U1kTo595"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85CCA296BB7
-	for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 03:33:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2161C2E401
+	for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 03:31:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768361615; cv=none; b=hO8VnnILpepJmj3MSazeNME4Zn3CkNhid5xtDKs7HidvIcHJYxb8DPpfLmWua8LbpLx7fxk5COkIJxE6lFLJQUHOe6bOMVESR/A7fb/8P6jEdQ0ox4vL8elYE7zmOhLJVLlY8pF8gU5iRJvzn0oLYQj3bY+9roT8wKk0ns27lWY=
+	t=1768361485; cv=none; b=c2QpZzlFj23WV1I6ZKS7W422NgTLhlB7L0Rl4NX2w0A8BKQDMDckvA2ghq8x1oTECd/fl81F/BMwA8t92bL11HicxnpP/tE5v2/4qPHyf8CaSFiXzVqGaUBgx+eDzMaoTIavNoJN+Oa05scOsO3XlYcqS6wBILdb0Ts42pkuv8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768361615; c=relaxed/simple;
-	bh=T4NBtFIdP/fLg6TaBmyozxSZkwNBM+xXu5POzC9e80k=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=ESnMVWzy6K0X7jNAncFgqxN9OQLmDruk5IF7FbmXrxBJe1CQ29FeFZqkpGlny/Xy8SFJelFwMGDDdWvqH4EBd1MwOxQ3mCleof/rV8mBXRVcyfJ7hBVqpxta+84yB8DUbUHlI5DKL768b0b1jSAwUK221XtPGWKFuZ+vbSpwgqg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AIvLJtc1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BF04C4CEF7;
-	Wed, 14 Jan 2026 03:33:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768361615;
-	bh=T4NBtFIdP/fLg6TaBmyozxSZkwNBM+xXu5POzC9e80k=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=AIvLJtc1z/teuLf/kvmEpz627AcgN6vdWwKpCqyv8fDP20LiJwYF8sqQgXOqBWJ9U
-	 rzAhwEAkPd2AxaNIQQtzFQJry/jc5kjauPpfauWVwZtFbIASb9Z2WN7Kz5r9vUUO+G
-	 BBLL9JkeemlGnxPSWLWkyLZc83FWgVacqD4Xfl2T9OybTs4rABJgzgzwSMDmOSdvIL
-	 8fwM7eHyHwwdds8opyZfNN5pCZgvrcnYParUr2o3Lpsrzj1DPOPeZgn5Pkm0dLz8Ck
-	 fjhIF9pcoC3Nj5NUpof9MRlLKB3+1xP5gPpg7Pytx9/tOhJo978FZKfjr9oHk30ERL
-	 AwUUNG7VbCpVw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 7890D3808200;
-	Wed, 14 Jan 2026 03:30:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1768361485; c=relaxed/simple;
+	bh=cfrqsW8sP5o7ktsIS6ZHNgJ7VMmSDGubBh2uclhq+J8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Q3c+xp/BuhrT/pDrncGV1GIWie9+uSNnA8Ybl2AyFI/H7iofRyYEVExGjru0wAr05VER2cw92s2mbj42Lfkubrb/t4EBye9R4NMhw4zX8nh43szw3sJQVOq5fxABZ3EpwZLYDBcC9jGpfN3U/FgAvv+cVihKjlXvOT0718PHcrc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U1kTo595; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-430f57cd471so4139742f8f.0
+        for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 19:31:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1768361482; x=1768966282; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tAwkswLSDvceXj/iX0pI2u7qJO+mp3M2B3KW95gBNSc=;
+        b=U1kTo595A6nqbOS6KJi2juLmo2M+W9Wp5chwQzvnESOMwgdS6K57Xvb48P3FbcXlWs
+         4ZzLsmN7GYENKfNVEyZRq6hLTkTk7kMlXSd1l7xmQguUThm/LKkeYbL6xdUP9+OsnPCk
+         NwcQof6WgRapdRBb8zDqfH9dsM0RuxG1NGMQ3tO+l3B/lP24zK8ocs8+jsyCOEg6CMO6
+         LsaOAPdCoiY012XRQrGhABrhr7yjhN3rtfcBXklFwTQtpTCgOVhYf8jRdt0jCWwN/OJH
+         YtiwCR0WLUjq8eX5gM1RcGiSJlqK+3RkWiyxVdUa8rTmPgbRKniEa5RCnytAM8EXVyIQ
+         f2Ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768361482; x=1768966282;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=tAwkswLSDvceXj/iX0pI2u7qJO+mp3M2B3KW95gBNSc=;
+        b=CmrKV184PvOCjYVfxzgSaJLjyaBA0grVTMjC/lglkf9yP01BrXiEmloh689u/g+J8a
+         Lu7lMPc8C9LRtxQUwPALFI2zMgpDfJ8wrC1YR2PcByXkLNoqcp4gesDgk6gDrBoxw6Vg
+         Syvi0RIIwwE7SZuZiKPCHuzjJSzKEaU2VYpT9jPoryqy/J3S2DB/RIm2kkMyebfqhD6a
+         oxYDYEHlt1CqhrXf0yfYNCIKOSYb1c4enruDUDSM9DjKmZqchev9Up5jREyB2CE9c92c
+         AyYxfyAsDQQ3uM+JJTDLTov6NqI2G043WR/Q3WZ9JGw4gvyZ29JN6mGiLAzAnQdVOdcf
+         f21Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWEx9iJ6yG45gTTHhbkuzmjv1HJK8lDYq4IML+pjqeqdl31erdyNABd7ndQ2gao0ZSdj9U=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw5Ji6nDaL40TAU7lYtSWJEaVJzRVADLOaOU0nDXolU847feATT
+	/SeAuEeal8/rIRbfuVFIcM1Wrk3mPUwpqTFWsU/iax/fTyyhAQA2jY6KNr1ovx01nFi80EST1kR
+	fsR5+uMwEEmaWexI3SvzbCtpDeUifVHM=
+X-Gm-Gg: AY/fxX7cvPE3RJZlrGWFxbShRJq92X6qFR68wfj8kzPNzw10kbnVJDNWBoa0/MUeISD
+	JtbmOQ8zSF6nVt0wALmri5rKh43mQ+dVdBwJQxHxdIqOyNqAkfDcVwgOyPtfph3IedWk67/MvZE
+	cXwzxO2TotlE6mSTsMQjVzWHAUECQtyfzNS2J8ly7dB5S3QwP/u4HEoiWggKlGqakPGayPG1vF6
+	yKH4dQziIKE5sRonQubDGH15rZLqu3ob0LDOjBvhXqpLCtWZqQAXe7VYkkFU3DCqgmC0FAr0DmV
+	PjvGJinfp0C9E7wLYBXA1KTHkkwS
+X-Received: by 2002:a05:6000:310c:b0:430:fc63:8c8 with SMTP id
+ ffacd0b85a97d-4342c54759dmr1005118f8f.35.1768361482534; Tue, 13 Jan 2026
+ 19:31:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next 1/3] bpf: return PTR_TO_BTF_ID | PTR_TRUSTED from
- BPF
- kfuncs by default
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <176836140815.2572275.11630296761858309141.git-patchwork-notify@kernel.org>
-Date: Wed, 14 Jan 2026 03:30:08 +0000
-References: <20260113083949.2502978-1-mattbobrowski@google.com>
-In-Reply-To: <20260113083949.2502978-1-mattbobrowski@google.com>
-To: Matt Bobrowski <mattbobrowski@google.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, jolsa@kernel.org, memxor@gmail.com
+References: <20260112-sheaves-for-all-v2-0-98225cfb50cf@suse.cz> <20260112-sheaves-for-all-v2-13-98225cfb50cf@suse.cz>
+In-Reply-To: <20260112-sheaves-for-all-v2-13-98225cfb50cf@suse.cz>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 13 Jan 2026 19:31:11 -0800
+X-Gm-Features: AZwV_QjU8IHt4ADtGwZuCMWdsEN668TGd1jbbhsvRKh-PS7J4GcDNvMn4EbhZYo
+Message-ID: <CAADnVQKBt2xmqs+o0onUwd7G-0UDbE8LECnkJJUCVbywAr2tUg@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 13/20] slab: simplify kmalloc_nolock()
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Harry Yoo <harry.yoo@oracle.com>, Petr Tesarik <ptesarik@suse.com>, 
+	Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Hao Li <hao.li@linux.dev>, 
+	Andrew Morton <akpm@linux-foundation.org>, Uladzislau Rezki <urezki@gmail.com>, 
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>, Suren Baghdasaryan <surenb@google.com>, 
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Alexei Starovoitov <ast@kernel.org>, linux-mm <linux-mm@kvack.org>, 
+	LKML <linux-kernel@vger.kernel.org>, linux-rt-devel@lists.linux.dev, 
+	bpf <bpf@vger.kernel.org>, kasan-dev <kasan-dev@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+On Mon, Jan 12, 2026 at 7:17=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
+ote:
+>
+> The kmalloc_nolock() implementation has several complications and
+> restrictions due to SLUB's cpu slab locking, lockless fastpath and
+> PREEMPT_RT differences. With cpu slab usage removed, we can simplify
+> things:
+>
+> - the local_lock_cpu_slab() macros became unused, remove them
+>
+> - we no longer need to set up lockdep classes on PREEMPT_RT
+>
+> - we no longer need to annotate ___slab_alloc as NOKPROBE_SYMBOL
+>   since there's no lockless cpu freelist manipulation anymore
+>
+> - __slab_alloc_node() can be called from kmalloc_nolock_noprof()
+>   unconditionally. It can also no longer return EBUSY. But trylock
+>   failures can still happen so retry with the larger bucket if the
+>   allocation fails for any reason.
+>
+> Note that we still need __CMPXCHG_DOUBLE, because while it was removed
+> we don't use cmpxchg16b on cpu freelist anymore, we still use it on
+> slab freelist, and the alternative is slab_lock() which can be
+> interrupted by a nmi. Clarify the comment to mention it specifically.
+>
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+sheaves and corresponding simplification of nolock() logic
+in patches 11,12,13 look very promising to me.
 
-On Tue, 13 Jan 2026 08:39:47 +0000 you wrote:
-> Teach the BPF verifier to treat pointers to struct types returned from
-> BPF kfuncs as implicitly trusted (PTR_TO_BTF_ID | PTR_TRUSTED) by
-> default. Returning untrusted pointers to struct types from BPF kfuncs
-> should be considered an exception only, and certainly not the norm.
-> 
-> Update existing selftests to reflect the change in register type
-> printing (e.g. `ptr_` becoming `trusted_ptr_` in verifier error
-> messages).
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next,1/3] bpf: return PTR_TO_BTF_ID | PTR_TRUSTED from BPF kfuncs by default
-    https://git.kernel.org/bpf/bpf-next/c/f8ade2342e22
-  - [bpf-next,2/3] bpf: drop KF_ACQUIRE flag on BPF kfunc bpf_get_root_mem_cgroup()
-    https://git.kernel.org/bpf/bpf-next/c/e463b6de9da1
-  - [bpf-next,3/3] selftests/bpf: assert BPF kfunc default trusted pointer semantics
-    https://git.kernel.org/bpf/bpf-next/c/bbdbed193bcf
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Acked-by: Alexei Starovoitov <ast@kernel.org>
 
