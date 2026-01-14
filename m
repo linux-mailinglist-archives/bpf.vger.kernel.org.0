@@ -1,41 +1,41 @@
-Return-Path: <bpf+bounces-78854-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78856-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 479D1D1D76A
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 10:19:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C4658D1D770
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 10:19:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 9E910300922A
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 09:19:43 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 011AF300EE55
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 09:19:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9585C3876C8;
-	Wed, 14 Jan 2026 09:19:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E57B389455;
+	Wed, 14 Jan 2026 09:19:42 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E6FD387376;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E63937F732;
 	Wed, 14 Jan 2026 09:19:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768382381; cv=none; b=cfWr8G/sZqjiQxYTr51e8u+76AjAd7KfTWmZfuFSYB05Y4tr1kdtVJLGorJLTmhzP7VuMdJHnl1AO6vhajzSc1vYTxuO/YoZlTgHSiBYP4zT1HMs7pMuPVDBsuLE5ykSw3PXCjFFYRvIWql28X1C3dPACHh+NEXnnEKq9efedeA=
+	t=1768382382; cv=none; b=bpXiZJemrinaigmCa6Hm+LOA5QCZ1CUU9Dya2rPhUgrjYkZQW2eJt6t48wM0I+c1wm1y9BZsehv6NecklbtVo49+yGK6k4J/U8IREiRkugXJt7TwyVDtVqf4+GMHygg5KL6MbuF0hEW/lcOrQrsn9qmqQWrftEOXDvKwEgp5rfk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768382381; c=relaxed/simple;
-	bh=FfnYyZqbIuPhFnXISvjq7/1+uz7K6mlBSL0DqoCpePY=;
+	s=arc-20240116; t=1768382382; c=relaxed/simple;
+	bh=c8YoUE4ujbZcNATjKXA/sAyyBDxZVcJjqtu9JZ9t+O8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JkEwCKmMhe1eGs7qwUSvE+zi/Daxjf0k/GR1m+eyKzkpqA80/DcGdXZ6UcwYjwW/3I5BT33IamM0jDKtC1tD6SDqnwDTUPKLttTBCEtcCMP+FPC4NzsjqyustK9OM4N925ezPt9yIIg4fSKvVOGQIpALg86uCNvL4UDolWBWjsE=
+	 MIME-Version; b=PYC3EtPMuOsJL90jWdV66gDbJKhhuxrFhQ+bBeh180hsiv7HgdFiLWFzXlaT3Yo42GqN9btbOpfawlykiT5U4Ervu6SbjcJFboXBpzML8uawV15lC78kSzc0aVvdh/YC/MB8vRA/vLZ4X+qEyA1po74+/siqT2m32pIW4okqP6s=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.170])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4drgXG2JbGzKHMSk;
+Received: from mail.maildlp.com (unknown [172.19.163.198])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4drgXG2Vl4zKHMSk;
 	Wed, 14 Jan 2026 17:18:38 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 229B240539;
+	by mail.maildlp.com (Postfix) with ESMTP id 2B16E40576;
 	Wed, 14 Jan 2026 17:19:30 +0800 (CST)
 Received: from k01.k01 (unknown [10.67.174.197])
-	by APP2 (Coremail) with SMTP id Syh0CgCXsYCfX2dpDhLdDg--.16789S4;
-	Wed, 14 Jan 2026 17:19:29 +0800 (CST)
+	by APP2 (Coremail) with SMTP id Syh0CgCXsYCfX2dpDhLdDg--.16789S5;
+	Wed, 14 Jan 2026 17:19:30 +0800 (CST)
 From: Xu Kuohai <xukuohai@huaweicloud.com>
 To: bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
@@ -48,9 +48,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>,
 	Puranjay Mohan <puranjay@kernel.org>,
 	Anton Protopopov <a.s.protopopov@gmail.com>
-Subject: [PATCH bpf-next v4 2/4] bpf: Add helper to detect indirect jump targets
-Date: Wed, 14 Jan 2026 17:39:12 +0800
-Message-ID: <20260114093914.2403982-3-xukuohai@huaweicloud.com>
+Subject: [PATCH bpf-next v4 3/4] bpf, x86: Emit ENDBR for indirect jump targets
+Date: Wed, 14 Jan 2026 17:39:13 +0800
+Message-ID: <20260114093914.2403982-4-xukuohai@huaweicloud.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260114093914.2403982-1-xukuohai@huaweicloud.com>
 References: <20260114093914.2403982-1-xukuohai@huaweicloud.com>
@@ -61,12 +61,12 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgCXsYCfX2dpDhLdDg--.16789S4
-X-Coremail-Antispam: 1UD129KBjvJXoW3Cw47JF4rCF47XFWDKF1UGFg_yoWDWw43pF
-	4DW3s7Ar4UXrsFgwnrAa18Ary3ta1rWa4DKFW7W3y8Aw1YqrnYgF4F9FWavF98trWUCw1x
-	ZF4j9rW7Wry7ZFJanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:Syh0CgCXsYCfX2dpDhLdDg--.16789S5
+X-Coremail-Antispam: 1UD129KBjvJXoWxZr4DXF1DAFW8JrWfur1Dtrb_yoW5CF1Upa
+	9xArySvrZ8Wr4qyrnrXF47Ary7AF4qgryxXF4ft3yfZwsxWryagF1aga4SqFy5JryfArs3
+	Xa4UAF1Du3WkuwUanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUmab4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
 	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
 	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
 	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
@@ -78,298 +78,106 @@ X-Coremail-Antispam: 1UD129KBjvJXoW3Cw47JF4rCF47XFWDKF1UGFg_yoWDWw43pF
 	CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1x
 	MIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF
 	4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsG
-	vfC2KfnxnUUI43ZEXa7IU8go7tUUUUU==
+	vfC2KfnxnUUI43ZEXa7IU8D5r7UUUUU==
 X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 
 From: Xu Kuohai <xukuohai@huawei.com>
 
-Introduce helper bpf_insn_is_indirect_target to determine whether a BPF
-instruction is an indirect jump target. This helper will be used by
-follow-up patches to decide where to emit indirect landing pad instructions.
+On CPUs that support CET/IBT, the indirect jump selftest triggers
+a kernel panic because the indirect jump targets lack ENDBR
+instructions.
 
-Add a new flag to struct bpf_insn_aux_data to mark instructions that are
-indirect jump targets. The BPF verifier sets this flag, and the helper
-checks it to determine whether an instruction is an indirect jump target.
+To fix it, emit an ENDBR instruction to each indirect jump target. Since
+the ENDBR instruction shifts the position of original jited instructions,
+fix the instruction address calculation wherever the addresses are used.
 
-Since bpf_insn_aux_data is only available before JIT stage, add a new
-field to struct bpf_prog_aux to store a pointer to the bpf_insn_aux_data
-array, making it accessible to the JIT.
+For reference, below is a sample panic log.
 
-For programs with multiple subprogs, each subprog uses its own private
-copy of insn_aux_data, since subprogs may insert additional instructions
-during JIT and need to update the array. For non-subprog, the verifier's
-insn_aux_data array is used directly to avoid unnecessary copying.
+ Missing ENDBR: bpf_prog_2e5f1c71c13ac3e0_big_jump_table+0x97/0xe1
+ ------------[ cut here ]------------
+ kernel BUG at arch/x86/kernel/cet.c:133!
+ Oops: invalid opcode: 0000 [#1] SMP NOPTI
 
+ ...
+
+  ? 0xffffffffc00fb258
+  ? bpf_prog_2e5f1c71c13ac3e0_big_jump_table+0x97/0xe1
+  bpf_prog_test_run_syscall+0x110/0x2f0
+  ? fdget+0xba/0xe0
+  __sys_bpf+0xe4b/0x2590
+  ? __kmalloc_node_track_caller_noprof+0x1c7/0x680
+  ? bpf_prog_test_run_syscall+0x215/0x2f0
+  __x64_sys_bpf+0x21/0x30
+  do_syscall_64+0x85/0x620
+  ? bpf_prog_test_run_syscall+0x1e2/0x2f0
+
+Fixes: 493d9e0d6083 ("bpf, x86: add support for indirect jumps")
 Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
 ---
- include/linux/bpf.h          |  2 ++
- include/linux/bpf_verifier.h | 10 ++++---
- kernel/bpf/core.c            | 51 +++++++++++++++++++++++++++++++++---
- kernel/bpf/verifier.c        | 51 +++++++++++++++++++++++++++++++++++-
- 4 files changed, 105 insertions(+), 9 deletions(-)
+ arch/x86/net/bpf_jit_comp.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 5936f8e2996f..e7d7e705327e 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1533,6 +1533,7 @@ bool bpf_has_frame_pointer(unsigned long ip);
- int bpf_jit_charge_modmem(u32 size);
- void bpf_jit_uncharge_modmem(u32 size);
- bool bpf_prog_has_trampoline(const struct bpf_prog *prog);
-+bool bpf_insn_is_indirect_target(const struct bpf_prog *prog, int idx);
- #else
- static inline int bpf_trampoline_link_prog(struct bpf_tramp_link *link,
- 					   struct bpf_trampoline *tr,
-@@ -1760,6 +1761,7 @@ struct bpf_prog_aux {
- 	struct bpf_stream stream[2];
- 	struct mutex st_ops_assoc_mutex;
- 	struct bpf_map __rcu *st_ops_assoc;
-+	struct bpf_insn_aux_data *insn_aux;
- };
- 
- #define BPF_NR_CONTEXTS        4       /* normal, softirq, hardirq, NMI */
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index 130bcbd66f60..758086b384df 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -574,16 +574,18 @@ struct bpf_insn_aux_data {
- 
- 	/* below fields are initialized once */
- 	unsigned int orig_idx; /* original instruction index */
--	bool jmp_point;
--	bool prune_point;
-+	u32 jmp_point:1;
-+	u32 prune_point:1;
- 	/* ensure we check state equivalence and save state checkpoint and
- 	 * this instruction, regardless of any heuristics
- 	 */
--	bool force_checkpoint;
-+	u32 force_checkpoint:1;
- 	/* true if instruction is a call to a helper function that
- 	 * accepts callback function as a parameter.
- 	 */
--	bool calls_callback;
-+	u32 calls_callback:1;
-+	/* true if the instruction is an indirect jump target */
-+	u32 indirect_target:1;
- 	/*
- 	 * CFG strongly connected component this instruction belongs to,
- 	 * zero if it is a singleton SCC.
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index e0b8a8a5aaa9..bb870936e74b 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -1486,6 +1486,35 @@ static void adjust_insn_arrays(struct bpf_prog *prog, u32 off, u32 len)
- #endif
- }
- 
-+static int adjust_insn_aux(struct bpf_prog *prog, int off, int cnt)
-+{
-+	size_t size;
-+	struct bpf_insn_aux_data *new_aux;
-+
-+	if (cnt == 1)
-+		return 0;
-+
-+	/* prog->len already accounts for the cnt - 1 newly inserted instructions */
-+	size = array_size(prog->len, sizeof(struct bpf_insn_aux_data));
-+	new_aux = vrealloc(prog->aux->insn_aux, size, GFP_KERNEL_ACCOUNT | __GFP_ZERO);
-+	if (!new_aux)
-+		return -ENOMEM;
-+
-+	/* follow the same behavior as adjust_insn_array(): leave [0, off] unchanged and shift
-+	 * [off + 1, end) to [off + cnt, end). Otherwise, the JIT would emit landing pads at
-+	 * wrong locations, as the actual indirect jump target remains at off.
-+	 */
-+	size = array_size(prog->len - off - cnt, sizeof(struct bpf_insn_aux_data));
-+	memmove(new_aux + off + cnt, new_aux + off + 1, size);
-+
-+	size = array_size(cnt - 1, sizeof(struct bpf_insn_aux_data));
-+	memset(new_aux + off + 1, 0, size);
-+
-+	prog->aux->insn_aux = new_aux;
-+
-+	return 0;
-+}
-+
- struct bpf_prog *bpf_jit_blind_constants(struct bpf_prog *prog)
- {
- 	struct bpf_insn insn_buff[16], aux[2];
-@@ -1541,6 +1570,11 @@ struct bpf_prog *bpf_jit_blind_constants(struct bpf_prog *prog)
- 		clone = tmp;
- 		insn_delta = rewritten - 1;
- 
-+		if (adjust_insn_aux(clone, i, rewritten)) {
-+			bpf_jit_prog_release_other(prog, clone);
-+			return ERR_PTR(-ENOMEM);
-+		}
-+
- 		/* Instructions arrays must be updated using absolute xlated offsets */
- 		adjust_insn_arrays(clone, prog->aux->subprog_start + i, rewritten);
- 
-@@ -1553,6 +1587,11 @@ struct bpf_prog *bpf_jit_blind_constants(struct bpf_prog *prog)
- 	clone->blinded = 1;
- 	return clone;
- }
-+
-+bool bpf_insn_is_indirect_target(const struct bpf_prog *prog, int idx)
-+{
-+	return prog->aux->insn_aux && prog->aux->insn_aux[idx].indirect_target;
-+}
- #endif /* CONFIG_BPF_JIT */
- 
- /* Base function for offset calculation. Needs to go into .text section,
-@@ -2540,24 +2579,24 @@ struct bpf_prog *bpf_prog_select_runtime(struct bpf_prog *fp, int *err)
- 	if (!bpf_prog_is_offloaded(fp->aux)) {
- 		*err = bpf_prog_alloc_jited_linfo(fp);
- 		if (*err)
--			return fp;
-+			goto free_insn_aux;
- 
- 		fp = bpf_int_jit_compile(fp);
- 		bpf_prog_jit_attempt_done(fp);
- 		if (!fp->jited && jit_needed) {
- 			*err = -ENOTSUPP;
--			return fp;
-+			goto free_insn_aux;
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index e3b1c4b1d550..ef79baac42d7 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -1733,6 +1733,9 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image
+ 				dst_reg = X86_REG_R9;
  		}
- 	} else {
- 		*err = bpf_prog_offload_compile(fp);
- 		if (*err)
--			return fp;
-+			goto free_insn_aux;
- 	}
  
- finalize:
- 	*err = bpf_prog_lock_ro(fp);
- 	if (*err)
--		return fp;
-+		goto free_insn_aux;
++		if (bpf_insn_is_indirect_target(bpf_prog, i - 1))
++			EMIT_ENDBR();
++
+ 		switch (insn->code) {
+ 			/* ALU */
+ 		case BPF_ALU | BPF_ADD | BPF_X:
+@@ -2439,7 +2442,7 @@ st:			if (is_imm8(insn->off))
  
- 	/* The tail call compatibility check can only be done at
- 	 * this late stage as we need to determine, if we deal
-@@ -2566,6 +2605,10 @@ struct bpf_prog *bpf_prog_select_runtime(struct bpf_prog *fp, int *err)
- 	 */
- 	*err = bpf_check_tail_call(fp);
+ 			/* call */
+ 		case BPF_JMP | BPF_CALL: {
+-			u8 *ip = image + addrs[i - 1];
++			u8 *ip = image + addrs[i - 1] + (prog - temp);
  
-+free_insn_aux:
-+	vfree(fp->aux->insn_aux);
-+	fp->aux->insn_aux = NULL;
-+
- 	return fp;
- }
- EXPORT_SYMBOL_GPL(bpf_prog_select_runtime);
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 22605d9e0ffa..f2fe6baeceb9 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -3852,6 +3852,11 @@ static bool is_jmp_point(struct bpf_verifier_env *env, int insn_idx)
- 	return env->insn_aux_data[insn_idx].jmp_point;
- }
+ 			func = (u8 *) __bpf_call_base + imm32;
+ 			if (src_reg == BPF_PSEUDO_CALL && tail_call_reachable) {
+@@ -2464,7 +2467,8 @@ st:			if (is_imm8(insn->off))
+ 			if (imm32)
+ 				emit_bpf_tail_call_direct(bpf_prog,
+ 							  &bpf_prog->aux->poke_tab[imm32 - 1],
+-							  &prog, image + addrs[i - 1],
++							  &prog,
++							  image + addrs[i - 1] + (prog - temp),
+ 							  callee_regs_used,
+ 							  stack_depth,
+ 							  ctx);
+@@ -2473,7 +2477,7 @@ st:			if (is_imm8(insn->off))
+ 							    &prog,
+ 							    callee_regs_used,
+ 							    stack_depth,
+-							    image + addrs[i - 1],
++							    image + addrs[i - 1] + (prog - temp),
+ 							    ctx);
+ 			break;
  
-+static void mark_indirect_target(struct bpf_verifier_env *env, int idx)
-+{
-+	env->insn_aux_data[idx].indirect_target = true;
-+}
-+
- #define LR_FRAMENO_BITS	3
- #define LR_SPI_BITS	6
- #define LR_ENTRY_BITS	(LR_SPI_BITS + LR_FRAMENO_BITS + 1)
-@@ -20337,6 +20342,7 @@ static int check_indirect_jump(struct bpf_verifier_env *env, struct bpf_insn *in
- 	}
+@@ -2638,7 +2642,8 @@ st:			if (is_imm8(insn->off))
+ 			break;
  
- 	for (i = 0; i < n; i++) {
-+		mark_indirect_target(env, env->gotox_tmp_buf->items[i]);
- 		other_branch = push_stack(env, env->gotox_tmp_buf->items[i],
- 					  env->insn_idx, env->cur_state->speculative);
- 		if (IS_ERR(other_branch))
-@@ -21243,6 +21249,37 @@ static void convert_pseudo_ld_imm64(struct bpf_verifier_env *env)
- 	}
- }
+ 		case BPF_JMP | BPF_JA | BPF_X:
+-			emit_indirect_jump(&prog, insn->dst_reg, image + addrs[i - 1]);
++			emit_indirect_jump(&prog, insn->dst_reg,
++					   image + addrs[i - 1] + (prog - temp));
+ 			break;
+ 		case BPF_JMP | BPF_JA:
+ 		case BPF_JMP32 | BPF_JA:
+@@ -2728,7 +2733,7 @@ st:			if (is_imm8(insn->off))
+ 			ctx->cleanup_addr = proglen;
+ 			if (bpf_prog_was_classic(bpf_prog) &&
+ 			    !ns_capable_noaudit(&init_user_ns, CAP_SYS_ADMIN)) {
+-				u8 *ip = image + addrs[i - 1];
++				u8 *ip = image + addrs[i - 1] + (prog - temp);
  
-+static int clone_insn_aux_data(struct bpf_prog *prog, struct bpf_verifier_env *env, u32 off)
-+{
-+	u32 i;
-+	size_t size;
-+	bool has_indirect_target = false;
-+	struct bpf_insn_aux_data *insn_aux;
-+
-+	for (i = 0; i < prog->len; i++) {
-+		if (env->insn_aux_data[off + i].indirect_target) {
-+			has_indirect_target = true;
-+			break;
-+		}
-+	}
-+
-+	/* insn_aux is copied into bpf_prog so the JIT can check whether an instruction is an
-+	 * indirect jump target. If no indirect jump targets exist, copying is unnecessary.
-+	 */
-+	if (!has_indirect_target)
-+		return 0;
-+
-+	size = array_size(sizeof(struct bpf_insn_aux_data), prog->len);
-+	insn_aux = vzalloc(size);
-+	if (!insn_aux)
-+		return -ENOMEM;
-+
-+	memcpy(insn_aux, env->insn_aux_data + off, size);
-+	prog->aux->insn_aux = insn_aux;
-+
-+	return 0;
-+}
-+
- /* single env->prog->insni[off] instruction was replaced with the range
-  * insni[off, off + cnt).  Adjust corresponding insn_aux_data by copying
-  * [0, off) and [off, end) to new locations, so the patched range stays zero
-@@ -22239,6 +22276,10 @@ static int jit_subprogs(struct bpf_verifier_env *env)
- 		if (!i)
- 			func[i]->aux->exception_boundary = env->seen_exception;
- 
-+		err = clone_insn_aux_data(func[i], env, subprog_start);
-+		if (err < 0)
-+			goto out_free;
-+
- 		/*
- 		 * To properly pass the absolute subprog start to jit
- 		 * all instruction adjustments should be accumulated
-@@ -22306,6 +22347,8 @@ static int jit_subprogs(struct bpf_verifier_env *env)
- 	for (i = 0; i < env->subprog_cnt; i++) {
- 		func[i]->aux->used_maps = NULL;
- 		func[i]->aux->used_map_cnt = 0;
-+		vfree(func[i]->aux->insn_aux);
-+		func[i]->aux->insn_aux = NULL;
- 	}
- 
- 	/* finally lock prog and jit images for all functions and
-@@ -22367,6 +22410,7 @@ static int jit_subprogs(struct bpf_verifier_env *env)
- 	for (i = 0; i < env->subprog_cnt; i++) {
- 		if (!func[i])
- 			continue;
-+		vfree(func[i]->aux->insn_aux);
- 		func[i]->aux->poke_tab = NULL;
- 		bpf_jit_free(func[i]);
- 	}
-@@ -25350,6 +25394,7 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
- 	env->verification_time = ktime_get_ns() - start_time;
- 	print_verification_stats(env);
- 	env->prog->aux->verified_insns = env->insn_processed;
-+	env->prog->aux->insn_aux = env->insn_aux_data;
- 
- 	/* preserve original error even if log finalization is successful */
- 	err = bpf_vlog_finalize(&env->log, &log_true_size);
-@@ -25428,7 +25473,11 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
- 	if (!is_priv)
- 		mutex_unlock(&bpf_verifier_lock);
- 	clear_insn_aux_data(env, 0, env->prog->len);
--	vfree(env->insn_aux_data);
-+	/* on success, insn_aux_data will be freed by bpf_prog_select_runtime */
-+	if (ret) {
-+		vfree(env->insn_aux_data);
-+		env->prog->aux->insn_aux = NULL;
-+	}
- err_free_env:
- 	bpf_stack_liveness_free(env);
- 	kvfree(env->cfg.insn_postorder);
+ 				if (emit_spectre_bhb_barrier(&prog, ip, bpf_prog))
+ 					return -EINVAL;
 -- 
 2.47.3
 
