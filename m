@@ -1,608 +1,590 @@
-Return-Path: <bpf+bounces-78938-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78939-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31491D20498
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 17:47:22 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64D34D2062D
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 18:00:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0FAA2302E71A
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 16:47:10 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 1115C308BD6F
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 16:57:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B06142441A6;
-	Wed, 14 Jan 2026 16:47:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38C123A784D;
+	Wed, 14 Jan 2026 16:56:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PR41azQl"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="FnRvKk20";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="TNk3keNy"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5241A3A4F23;
-	Wed, 14 Jan 2026 16:47:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768409229; cv=none; b=V2htGhuAZ/eDK3ye0cF2cO/uSM7xEZTN/r8d1QVpR4EnYo/yoVRPX7Dbs8+A0STnP8oiWCyq4Xqg4JnMwAflyONYZyU1jY3Zyli5ul/Bo2Gc1Li8BNsbv1n3WnUEMmViDeCynMsOQXkxvqVaNEUWw8JiPGXb2yXLbNj6ruj++9k=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768409229; c=relaxed/simple;
-	bh=EzycDMpq2jHVOqqH80bCxoEYvUe/tN0Q/0cmWc3xYEo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XezJtgffqHUdCmIUckyDOkaWqeQktLjKV+ec/5159e+Z4Ot+JVjBSdtmYqdTeWv/a2MDZyEm9Xz5YHnsnqDiiGlyg3araPHaGFRp12B5Dv/IEBBJU2UC/1ITa7uLQd1aUlY9RYmCQRGX6x0DcRAo09BFd+Wv5zEOExJv74a9Htg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PR41azQl; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1768409227; x=1799945227;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=EzycDMpq2jHVOqqH80bCxoEYvUe/tN0Q/0cmWc3xYEo=;
-  b=PR41azQlfBxGawLtbYKy1ntX+u4LPNDmEAaNBdH841HRRPYAx6qqM2S1
-   s7ADCgxYshA8c5DtDVXduYChua5d/LuIIprSqb4xQyCXrg5/byWiYuCRn
-   ni4rElRgSReS6DNksZabDjWG2zUoUPgdmYggdzQUmP5oZinON9jAo8RAe
-   kNJY9z5Hmvf91Uj0SbvSCDY5VUGu7UtX1uoR8v3ZktRSIkW/1vjnYN+6x
-   e7YbXx6Ev7xrxF+MKpf2BKAcW1wH3IL+AQRNmhjoX1STcQuFRqNUm7NR8
-   zNJQJ2Om3eDe3WvjDe4pcTYqseZB0Muv4olFzKDNURIV6WVZpKpfH9XMX
-   g==;
-X-CSE-ConnectionGUID: oB9svY36TomZLZ8IXMwcIA==
-X-CSE-MsgGUID: CKKyV1s2S7anb2I1kaS40w==
-X-IronPort-AV: E=McAfee;i="6800,10657,11671"; a="80433682"
-X-IronPort-AV: E=Sophos;i="6.21,225,1763452800"; 
-   d="scan'208";a="80433682"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2026 08:47:05 -0800
-X-CSE-ConnectionGUID: cM7znGc7Q2G6xSzcbsfusQ==
-X-CSE-MsgGUID: Lu3opdRzTP+yYXUyMxmeiQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,225,1763452800"; 
-   d="scan'208";a="209771997"
-Received: from lkp-server01.sh.intel.com (HELO 765f4a05e27f) ([10.239.97.150])
-  by orviesa005.jf.intel.com with ESMTP; 14 Jan 2026 08:47:02 -0800
-Received: from kbuild by 765f4a05e27f with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1vg41L-00000000GfS-0sEs;
-	Wed, 14 Jan 2026 16:46:59 +0000
-Date: Thu, 15 Jan 2026 00:46:30 +0800
-From: kernel test robot <lkp@intel.com>
-To: Xu Kuohai <xukuohai@huaweicloud.com>, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc: oe-kbuild-all@lists.linux.dev, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Puranjay Mohan <puranjay@kernel.org>,
-	Anton Protopopov <a.s.protopopov@gmail.com>
-Subject: Re: [PATCH bpf-next v4 3/4] bpf, x86: Emit ENDBR for indirect jump
- targets
-Message-ID: <202601150016.x24DRk9R-lkp@intel.com>
-References: <20260114093914.2403982-4-xukuohai@huaweicloud.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C90FB3A7DFE;
+	Wed, 14 Jan 2026 16:56:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768409813; cv=fail; b=eiO1s/bU1WC3zGK363e2YIHRaxJssLcuLPWurFRfvl734+A8ON+EJBwyJCwp46H9Jhj11RYgp8biNNimdgy+BnSjx2hQ30amjAi9lMgGr8BvIbMYuag5swrNgin/xOIfVauEKCaoKs4rBkdukZxm/uxXPZtzktCCBgylXkPeMrI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768409813; c=relaxed/simple;
+	bh=oqDg5qEyqVNCcfOLztpqyNVQPLPgowpSnX+5Ngcebcc=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=ojsEZFw0UVsT9Ph+7A0uII4dQfSq5u2OS8Lol1xTb2ytG5Pl9nSo0xQa5GxYGnrd2BwGYuoo2QGljOgNWj2vmnslsYd9q4mLuCZ9h+n6wzHLmB6WLoXeYGIGWSX0ErFiN7/otScsLkSaaVQiXLt4b2tiv3kVWkUrX+74ZiW5wPg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=FnRvKk20; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=TNk3keNy; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 60E6RApC1361981;
+	Wed, 14 Jan 2026 16:55:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	corp-2025-04-25; bh=f6C/IGd80Iauktmf/6jG9BkaThKTerxShDj77qybMI4=; b=
+	FnRvKk20CyCcnDcj4mp+u+rWK3n3zLtGLgkalTXjkP+8vVQ17rDJLPjJFnHomVB2
+	R2qQdTznnhZA0KBEf+67VLi6JFOy2OfY9gd4tN0XJhP5pK0UCu1tp5BlTxA2idXm
+	82hzIvlM2BZE3OsM9C4ANXp2Fnz/fVgpaKrke3BKOBbvlasGJVX1pakfbAtQU83i
+	ARIMtA5ftkThHmeZ81tMb5cu4zBZzsfSWAadfHLTkZRi1lEEqoAc4gP8kYv3TSiB
+	R+FALhZnjPeG5OMCdDsLiqSq6qgyIgctVw09n6VF09kIhzya51/UtXUwk0b5dyrY
+	at87+SqY3Wqg6AZ/V9aqDg==
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4bp5vp0u19-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 14 Jan 2026 16:55:41 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 60EFF0Yd039278;
+	Wed, 14 Jan 2026 16:55:40 GMT
+Received: from ch1pr05cu001.outbound.protection.outlook.com (mail-northcentralusazon11010054.outbound.protection.outlook.com [52.101.193.54])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 4bkd7e1tw0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 14 Jan 2026 16:55:40 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=GGEtFoVGSAGeVkDmEDWcNcVEa8Rq756PpUHjd+hisRc3zp8rPsHCVL3Ll09xIG+/i+rcJo4dFq5eFbuIuzq7pwAlYiBJu+Bv3oIVjwDRnvid7fx5TEOSp+p61aiX9DkuJTnX7QzDiGw6+0EVqM7lGXiFWH8jVNYK8L3apK7/dYPwK66HvBKg72x3wPCHu5qSBLKThztIcqHFLw6vK7sqWJ3sCdV/WRLR1SE2t0ygqsudOZOKVUO/7fDFce71m5X2WTQW63iUceVzc+PY2DIP52r9qaX2xcUr9hyayu/FCiNZQ4V4G/wrldhZlp8Yl55IplubmtlcEeV54gTaPCC9SQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=f6C/IGd80Iauktmf/6jG9BkaThKTerxShDj77qybMI4=;
+ b=Fw0DPKBz51DrDGsDuTzJ836h0Zb+obO7//EMSU1aBs2g+7LgKqeXM1i53Ya1X/KFv9sfOCGCyTwUtNijIVU2Xjm7rFyXG4NVfxoL/y9/6+ZHTBER1J3XCRJCN9eZkkM9ubAOxP+CoM7muSA5rCmAlGR4WOlPh3PKn7Bh/AYFf8AyD4kWiPG3mkWubA7hlkXYBUn1Nt8doYpKV4u0unjIpalG94BV1oxsSpq4/K67rVt7FOPGe4vQrnBuDSc9k6r7mpBIm/jOzLnv4qXdO9XmM5dsMU1X52Ek5m5Nqubn6tzPO4Hi/dUTizFfA06s0+qQHNuGdmbGk9BFQcPmx7kX9w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f6C/IGd80Iauktmf/6jG9BkaThKTerxShDj77qybMI4=;
+ b=TNk3keNycKbVvUWBt1FXf/1+NGZxFLQrHbQPrw/3DbLDxg2QTQ1yv2BdLOtgLRnZV2WkwIhpXsWOVFA6TFapd9u3RAQphGIoc7pLnZl+kmqO74o131iIt7uWdc+ck15vSzowevMxDzLJyu6STlWgpUj4MdwdmCqxOYbVzR1Hdvk=
+Received: from DS0PR10MB6271.namprd10.prod.outlook.com (2603:10b6:8:d1::15) by
+ SJ0PR10MB6399.namprd10.prod.outlook.com (2603:10b6:a03:44b::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9499.7; Wed, 14 Jan
+ 2026 16:55:36 +0000
+Received: from DS0PR10MB6271.namprd10.prod.outlook.com
+ ([fe80::940b:88ca:dd2d:6b0c]) by DS0PR10MB6271.namprd10.prod.outlook.com
+ ([fe80::940b:88ca:dd2d:6b0c%7]) with mapi id 15.20.9478.004; Wed, 14 Jan 2026
+ 16:55:36 +0000
+Message-ID: <0486f774-6e09-483f-8e25-0e440eff1234@oracle.com>
+Date: Wed, 14 Jan 2026 16:55:15 +0000
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH dwarves 3/4] btf_encoder: Add true_signature feature
+ support for "."-suffixed functions
+To: Yonghong Song <yonghong.song@linux.dev>, mattbobrowski@google.com
+Cc: eddyz87@gmail.com, ihor.solodrai@linux.dev, jolsa@kernel.org,
+        andrii@kernel.org, ast@kernel.org, dwarves@vger.kernel.org,
+        bpf@vger.kernel.org, "Jose E. Marchesi" <jose.marchesi@oracle.com>,
+        David Faust <david.faust@oracle.com>
+References: <20260113131352.2395024-1-alan.maguire@oracle.com>
+ <20260113131352.2395024-4-alan.maguire@oracle.com>
+ <79fac2fa-b5f8-4a7e-aafb-5b80d596db34@linux.dev>
+Content-Language: en-GB
+From: Alan Maguire <alan.maguire@oracle.com>
+In-Reply-To: <79fac2fa-b5f8-4a7e-aafb-5b80d596db34@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: LO4P123CA0029.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:151::16) To DS0PR10MB6271.namprd10.prod.outlook.com
+ (2603:10b6:8:d1::15)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260114093914.2403982-4-xukuohai@huaweicloud.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR10MB6271:EE_|SJ0PR10MB6399:EE_
+X-MS-Office365-Filtering-Correlation-Id: dede6697-ad77-4782-0d27-08de538dbd10
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?R0tVdU5aRGE2aFRKbXpSZVRIV3BMNkRTK1NZUiswNEZaUEV4UW4zT1JaNk1V?=
+ =?utf-8?B?S3Q2TlUxVWo2ZWpDM01udTFxbnVnVW1ZeXhBdVB5ZDg1SjNza24zSys0aDJk?=
+ =?utf-8?B?VFdWckViMHVpdklrbjR3ZkR2QmVUcndndVEvRFZFTVNSUDNiVEdoMWtJNHpl?=
+ =?utf-8?B?aDRsNWI0b3dDM05GeVBMMWIyM0s5K2NJSUJMT0NJQ0JHMXZwT0VPdHhsVHY4?=
+ =?utf-8?B?eWkxNi9KbFBYUzdweEhrVG5HTTFPSTB5VkZTc0ZQcXhBdTVoWk1la3EyRkNC?=
+ =?utf-8?B?aU5la2NTTjVTczg5S0xZRHJ5Y3pYREJpZVZER25MZ3AwME1PMUpRNmtlbE9j?=
+ =?utf-8?B?WkVxenJTOEl6T0tVYmluRTQrR2hCaUswQmxjcXFqTm1uakZTVHpDUWx3UWNE?=
+ =?utf-8?B?ZG5aYmVVd3NaUkxtUWFHajY3c3VqZ2NBd3pZSjBkUGNYSDVZVFBMcFFpeG5H?=
+ =?utf-8?B?NDR4OUxhZGJUSnY0ckQzVnVLMTAzeDR1K2Y2NWQ4eUNOWUNzZzdYNEpZSTVG?=
+ =?utf-8?B?OGNQNWN5aVQ3S1hvajdsVFFKVC9oVS9BZDdOQ2d3NGNXaXlwZHNxNFFTNERQ?=
+ =?utf-8?B?L01aYjBWOGsxZmdMRFYrUnNCaklUdEUxajZyVFU3S0wrTkkxVjVkeHpUSzRW?=
+ =?utf-8?B?RFQrRDdRR2Vta3RXM1pKNmN3aXFUMmZ5R0IyWjBWT2gycHVlWUtoL2N3UjdW?=
+ =?utf-8?B?dXB2RU1zelUwMTJXNlV6bXFMcVA3SERTNWRvU3JLTTZ0L2QvWHowaGlsWG41?=
+ =?utf-8?B?SjFhZ1F1dFF6T21BckR6TTBZWmVyN3NVTFJCclBsTlpkdmF4VzBqaWJhdjlH?=
+ =?utf-8?B?Sy8yTlgyeWFZRGZpUjBNN1MyaFY3RFhlbHU1NURhUTh1MFFDM0NTK21LT2Y4?=
+ =?utf-8?B?UFZ2NTdrZ2xhVStTUkVqSjk4TGd3NEFaYkhhZysrRWovOXJUV2tVby9WNUsr?=
+ =?utf-8?B?ekFYN2NOazBYRDR0bDlKbE1QYjJlK0xoSzhweFBSNnlTK0tIUC9xb3dVUmw3?=
+ =?utf-8?B?ZWUvQUkvN2VXRis3Q2JUY0pBMWk3VkhsVkVXTzRUWjV2dzJUTFduazZ4c1U2?=
+ =?utf-8?B?K2RNY1dwMVQ0Z0VsdDB6QktTc3VkVlNSc3JSNUUyaHJ4VmRvWHpsZlRhdWgx?=
+ =?utf-8?B?U3FIbUhWOWlaUWp4VUlNTlBDb3AxcEhWRzN2NmZ6OGtkcDhqdXZWUVhrYlhi?=
+ =?utf-8?B?Z0hWckxGaE1kNFlMVm1YWG1nUzFTME5PWkYvQXVvVWJJNDNXSXUyZ24wN01T?=
+ =?utf-8?B?OUY4c2FJcVZUcmUvdEJ1WWZMd05PeDJTM1Mzd29zMk9ac1FFbnBhbGJVL08z?=
+ =?utf-8?B?TTBCMGYrVFcwSU8zbUFOVWVIdVBUaGhzOFFmRjNKT08vTnhKZUQwM1k2anl2?=
+ =?utf-8?B?YXNiclhnUDNUd0JKWXFNK3RsMUk3QnNkQU94R0p1bFpNQTlVU2RmbEEzeElI?=
+ =?utf-8?B?UWNqV212N3BsdWptY3dhTnE0VEM2SU1mWHpOcVNnWTNNTS9LQUVEdkJTeWZt?=
+ =?utf-8?B?bkRXcUdTZnlkTUZYZkZobFE3NG9RKzhiZkdkcUZBallxS0ViNGVVVlNVem45?=
+ =?utf-8?B?OGIxcmozcENlZmZjMzRBU3UwL2ZJcnQ2V2kyZTZObEtGMDVnZFBHRnQ4YmVG?=
+ =?utf-8?B?TnRhdDNkZDVKdnJOdWtyQXBXZzhWUHdOczBFcklneHE1TTNjMUpPdzRDbDV1?=
+ =?utf-8?B?dmhKbEN3eFJ4Q0pwd2czUTlUcDcvWVZaWWxWRkFMUGpaRHRwbGlSY0gwamF0?=
+ =?utf-8?B?dWpESmFYY3RtMExFS2I3MUJzVTRKWGJyaG1vcmFka2VzRDBwYXF4VThiSjNU?=
+ =?utf-8?B?UzJPSE85c0UzbGhHVUEwNFZNN0MzU1Bnam9xQkllc3BsY1grRTBPUnQ3ZVdy?=
+ =?utf-8?B?UGNIZ0g5MGs1UmNXb29qTHdkZGVNU3FRaGZCMkFMNTBLTjJRMjJjcmQzSFhJ?=
+ =?utf-8?B?ajFHaW0xcFllemluRFA2R0owZWM0QXNrcXUvTkZDN2JTbUE4VSt5MVQwZTc2?=
+ =?utf-8?B?UlErTUNybTJ3dGxoUUhFWTcvUWVBNTA0TUtCOCsxVW9VcEZERi9oaS9DeDZV?=
+ =?utf-8?B?QkJrbkpGTTFUY0RDUGNTMGE1MXBDcmZWZ015M3lnVjlrZmtFY3NmaU95RjBO?=
+ =?utf-8?Q?SJHw=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR10MB6271.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?T0RicGgrS1RuRmFOWFgzYkFwUUVGUENQcUppZ0F2a2lCbm1IY1FkakNxcXc3?=
+ =?utf-8?B?UUxlWENJcjRIVk03ODdMdnB5UmN5L2Q3enFtcVFXTGFwdngzUEJCQis0YUs2?=
+ =?utf-8?B?eVYxOXZpcWVET1VEL3dUOG5ORmppVWxQczQ3bUJqQVpPV29lRjJpNGNCUzBO?=
+ =?utf-8?B?NWxpMHdpVk4zY1J6ZlVIdEE0TmUxbHlSYzlveVE0V3d3amRQTEp2M1lhV2FB?=
+ =?utf-8?B?eTl5ek9XL1RtL0x0U2R3Q3pBeFBrZWl2SW80U2FHc0MrQmx2OUxaaDJhWFdl?=
+ =?utf-8?B?VFNPdmE3L3NHV1AvRzlId0hMQWUxYm9kR1YwaE5sbzhBZXEyQ1g4bWlYYytj?=
+ =?utf-8?B?dE9aVmQ5Y1loOXNqSFlmRzhJRDgrWWk0RXlEcXRJYXh4WGUxbFp1MXZjZnQz?=
+ =?utf-8?B?N000YzhFeU1qYXdXR1UydDFXVSs2RWFwZmNHeWN6YVdOUDNZTVp4K1NhdFRZ?=
+ =?utf-8?B?WWlnTWhJNVFEbTlRSENuQUdMZEg3Qndyd3E0WTNRd05PYUFubzdTQzRYc1Bv?=
+ =?utf-8?B?RWRHYno5ZmlaWkNQcVBYQUpPUGZVa1FYQUZDRmFKWUwxQktHek1QMFV2K0xX?=
+ =?utf-8?B?NEJ0L0JmSW1jVTZkZVRpTnRoeXFHVGgzU2d5WmpCN05JWTBEcVFPT1V6dWhl?=
+ =?utf-8?B?dWxSWlhhWTZKcnExSE5GWGQxeEJpRXNGZ3lzMXhOSzJEOVA4K0ZSVjlCWE43?=
+ =?utf-8?B?dDJPeU0yRjdDZWNTb1JuOHkvUi8xZ3V2anFOTm85SG0wbW1EMFNYNEhrL2pq?=
+ =?utf-8?B?Z05jV3RuRGZSMlRsVVZVeWFHTHRiVXV1eWpxbVFwdEoxNmhvQmJNdmNSbGdI?=
+ =?utf-8?B?bWZYLy9iYVQ2WnhzZE1zOVlLZ2xaVExZZEQ2OSsweFRSZ3hpR3JzdzE2VFVZ?=
+ =?utf-8?B?SG9XNWVQcXg1SGcrK3RiNWNKY0YzV2c2MVBCR0RVSVBVV1ozc2hwSjUzYXho?=
+ =?utf-8?B?dUk5MTZOZjVZNHpsbnhESmM4ZUtvQndaT3M4WHhaTFNmWkJ4R2NFdE5CZC8z?=
+ =?utf-8?B?eDUxUmJJaXpSVVFRci80US9EUGg4TUVtYXljQ3BmNUlQeUN0M2MxM0dQUTU0?=
+ =?utf-8?B?cklSMlZYdDhibzFwQU04dDlOSEdPb0EwaGpGalVkYmwwZEIyWk5UV2hDeFJr?=
+ =?utf-8?B?dVVHWldHckJnaFJQV0kzNTBsSCtzQ1NndHJRSnNrR0VFdXRKNkZwWWtyR2Rw?=
+ =?utf-8?B?UGJUU0h1QllHOXVPYU9KQmt1Y0hVbitDOTJaT2VzSy9idUc5dVVzN1lKa3NX?=
+ =?utf-8?B?dzkrcFN5bUtDbFBnTTgzQ3Q5YzdiRnFuKzQvYVB6WTM0Tmw5Q1FJZ29MRnB5?=
+ =?utf-8?B?UW5LMWd2djBad3VIK0EvdXdCYTBGcWVOaXQ3SExxMnZlY2xrMUdMRzQwd0lN?=
+ =?utf-8?B?cVpZclEwMGVGa1VoOURLcFJNMk95VXFhUEJSRnUvdTFQWTdQVmZQZDRPUGpM?=
+ =?utf-8?B?bkkva0Rxdk1QV1lUcGpPQmdRY0VUYnlXNmpoM2F1bjl0Zy9EM0F3NFBhV1dQ?=
+ =?utf-8?B?REhJN0RpalQxZHo4VDQ0RlBDb2czeER2MGlvbGlRNTNZSEl2UEIvMGFORlhM?=
+ =?utf-8?B?dDJmcGs5S0JyUm14OVRlc3BEK05YdGVFdkVqZE5WVGMxN3dNMlhTYnUwNHVB?=
+ =?utf-8?B?MEpZckw3M3R4MEVTb2VCYkk1ZEU2SUpHYVk0d3lMWWxtWGhkckdscHVIZkxH?=
+ =?utf-8?B?Z1d6YmV1ZFFOSUk3a0ZMak5XMjJWSENtVjZJQnN5Z1dlWUNWK3B2alNNTkZz?=
+ =?utf-8?B?YWJKV2djbVhLY2V1Z3MxSjQ4UnIrVG9lKzJvaVlqbkNEK2J3QWRWa0ptZ0Jw?=
+ =?utf-8?B?TGRyRnFOQWk2Q3VzbS9DWm4xdm80RWhQanhnT0lucmJ2ZFF2aU96YXpZK3I1?=
+ =?utf-8?B?RGFSNEF0elpGVVplMEhMTlBzRFhkSklyeVBrc1ZZWjJrcjJCL2lXVkdJZng4?=
+ =?utf-8?B?YTJEZlFpYzdMSEp0WEtNemkrbEZyaW5vVVUzTHRoZ1dhUnluVThnN2hTMm96?=
+ =?utf-8?B?ek1MKy9Rcm9oQUVCdnpiaXdMVm9TZFhrVjM4SGtmYkJ1MHB5VWxaT3dIOEhQ?=
+ =?utf-8?B?TGp2dDdTMzJVSjBiMjBpOGJQL2YydHRYTXNtUjEwL3kvdXkvRytJeXExc3BS?=
+ =?utf-8?B?YzFRUlRrbG1rQVBLRkptQTd5TE44VE10amJSUTZLM2JtZWFaZHdXRmdRWWtt?=
+ =?utf-8?B?ekR0M1dpelcza2prbTYzOVpZRXNMNXZrRHZUMXN5ODQ1OXlSOUNaZFR5aEYx?=
+ =?utf-8?B?OVd4NHkvMTFuZVEyblczOUVReDJBMlFGTWNrWUVma0NHeVJWd05wMnIwWWVY?=
+ =?utf-8?B?cC9LSU1yeGpvUVZKYmVoT3QwUzd4MW5tZ2twTlhTd0dQNE1TY1ZNZz09?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	gI6egVeROUjlfG6H94vNQdASDyKboU283hSY3jkxAGuYejgcBBZaUPpg8jx8SWXrAAb4Romz0k+m1fc/r0vwwebJ9Zk7XQ0UAGntK5c3HRlsR56Cywmw8txTjAjB4AMrBXGbZgzTlck0dZpXuYkRxc7Ws8MfN2hlPqIBqNS7CTwl1dW+8XhctYYzDbQgkAyPixDiyt4YoAOtUUAlZ+yy+nzrbbWf92nsrU9EQU0h5PhFe4EaixNz2i5MkAb4l/qC5n2oBINnAw7sipJVE1RdhKfwSK4Ru98c+1bGzL5MNP5CUYzrvnlVntwynCE4jxLPrHQ2R01EnxTPA/CRLHDquid0rX66VB/i1D8ppVMWh8O3HqYBlHRVp4pWNt2ZP+etklELGNNuD/I6mvCzr+eYyCtrxrU2UQa6p4mMMu1HcHOZ6CsXgbPwUvEUAxZrIzYH7HOj3Gii0uwhCM0oiRr8oSs1PxXZAC4qfjPOb4Ynjh6YEUdswpH9DxqK9W6QjU8CLN5fTQYHpWaw6y1QBHRXIqhRaaHP2xPL4mgGdA/wdSHBXYn2Yf94odWelyL8W61B0d4TaNDVs+W1z08YoRGZBoQm2hU0rC+YLGmKNg/ilt4=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dede6697-ad77-4782-0d27-08de538dbd10
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR10MB6271.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jan 2026 16:55:36.2640
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: TF9PqK2GcVOqI1tbpBLNMWoWs80qaCSi76SeMpN38dWoORiB4o4geBRsbvQD5qLKwHjqS1yES0KKvkulnx/apw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB6399
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2026-01-14_05,2026-01-14_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 bulkscore=0
+ suspectscore=0 spamscore=0 mlxlogscore=999 adultscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2512120000
+ definitions=main-2601140142
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTE0MDE0MiBTYWx0ZWRfX9MtROI5A3G2c
+ x5+W5CTCg1/WZrzrr6CUkLfzkdP2SKzGa01vq9otlasDSWMN58sXhrBhRpo5Oipy5kiyDpVvCJq
+ Ha34t1LdoqF0u0HhmfnkuwDE9Dmc4gyvd/MOCDxvC5eB0ZECRBGM/xr7mFu80G4GkmvGW/eXwla
+ F4Y5xiybctgEjG2EDsLV1cx9mQViO/owO50m+N/TdKMwbxPal4iR5oT98B+Qx+KRjRIWsqmTgvL
+ Go5zh3K3ac2gGqxRA9mS83Ab27toceOoc5mBn4Mz9Ti51VQOvDRWIkH9/iLjLm9zM0yu4BZFu7N
+ dYNOZwULV7prmC7VA2VIH4d3JZVuE+OC59D9Uxz6GL/Mr4nqvwc/xaFI59f6XfKgZo6X3jMtLE+
+ 1FPbSCEILMfhJP/64+UV5BjMvW1D0c74x0dcVBE4LIGnl5dnyz6SiU8BkpcLa9VcqLt2Mju4TKU
+ QF/e0icRWkptV/P8yHHHzdocAR6NVxH7QqvLHu3E=
+X-Proofpoint-GUID: a4jhW1viFDaJ9dRXNx6FiEsk4P9Lnk3k
+X-Authority-Analysis: v=2.4 cv=aZtsXBot c=1 sm=1 tr=0 ts=6967ca8d b=1 cx=c_pps
+ a=e1sVV491RgrpLwSTMOnk8w==:117 a=e1sVV491RgrpLwSTMOnk8w==:17
+ a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
+ a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10
+ a=vUbySO9Y5rIA:10 a=GoEa3M9JfhUA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=yPCof4ZbAAAA:8 a=8Ue_EvT9psjrZuRCt4kA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+ cc=ntf awl=host:13654
+X-Proofpoint-ORIG-GUID: a4jhW1viFDaJ9dRXNx6FiEsk4P9Lnk3k
 
-Hi Xu,
+On 14/01/2026 16:15, Yonghong Song wrote:
+> 
+> 
+> On 1/13/26 5:13 AM, Alan Maguire wrote:
+>> Currently we collate function information by name and add functions
+>> provided there are no inconsistencies across various representations.
+>>
+>> For true_signature support - where we wish to add the real signature
+>> of a function even if it differs from source level - we need to do
+>> a few things:
+>>
+>> 1. For "."-suffixed functions, we need to match from DWARF->ELF;
+>>     we can do this via the address associated with the function.
+>>     In doing this, we can then be confident that the debug info
+>>     for foo.isra.0 is the right info for the function at that
+>>     address.
+>>
+>> 2. When adding saved functions we need to look for such cases
+>>     and provided they do not violate other constraints around BTF
+>>     representation - unexpected reg usage for function, uncertain
+>>     parameter location or ambiguous address - we add them with
+>>     their "."-suffixed name.  The latter can be used as a signal
+>>     that the function is transformed from the original.
+>>
+>> Doing this adds 500 functions to BTF.  These are traceable with
+>> their "."-suffix names and because we have excluded ambiguous
+>> address cases we know exactly which function address they refer
+>> to.
+>>
+>> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+>> ---
+>>   btf_encoder.c | 73 ++++++++++++++++++++++++++++++++++++++++++++++-----
+>>   dwarves.h     |  1 +
+>>   pahole.c      |  1 +
+>>   3 files changed, 68 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/btf_encoder.c b/btf_encoder.c
+>> index 5bc61cb..01fd469 100644
+>> --- a/btf_encoder.c
+>> +++ b/btf_encoder.c
+>> @@ -77,9 +77,16 @@ struct btf_encoder_func_annot {
+>>       int16_t component_idx;
+>>   };
+>>   +struct elf_function_sym {
+>> +    const char *name;
+>> +    uint64_t addr;
+>> +};
+>> +
+>>   /* state used to do later encoding of saved functions */
+>>   struct btf_encoder_func_state {
+>>       struct elf_function *elf;
+>> +    struct elf_function_sym *sym;
+>> +    uint64_t addr;
+>>       uint32_t type_id_off;
+>>       uint16_t nr_parms;
+>>       uint16_t nr_annots;
+>> @@ -94,11 +101,6 @@ struct btf_encoder_func_state {
+>>       struct btf_encoder_func_annot *annots;
+>>   };
+>>   -struct elf_function_sym {
+>> -    const char *name;
+>> -    uint64_t addr;
+>> -};
+>> -
+>>   struct elf_function {
+>>       char        *name;
+>>       struct elf_function_sym *syms;
+>> @@ -145,7 +147,8 @@ struct btf_encoder {
+>>                 skip_encoding_decl_tag,
+>>                 tag_kfuncs,
+>>                 gen_distilled_base,
+>> -              encode_attributes;
+>> +              encode_attributes,
+>> +              true_signature;
+>>       uint32_t      array_index_id;
+>>       struct elf_secinfo *secinfo;
+>>       size_t             seccnt;
+>> @@ -1271,14 +1274,34 @@ static int32_t btf_encoder__save_func(struct btf_encoder *encoder, struct functi
+>>               goto out;
+>>           }
+>>       }
+>> +    if (encoder->true_signature && fn->lexblock.ip.addr) {
+>> +        int i;
+>> +
+>> +        for (i = 0; i < func->sym_cnt; i++) {
+>> +            if (fn->lexblock.ip.addr != func->syms[i].addr)
+>> +                continue;
+>> +            /* Only need to record address for '.'-suffixed
+>> +             * functions, since we only currently need true
+>> +             * signatures for them.
+>> +             */
+>> +            if (!strchr(func->syms[i].name, '.'))
+>> +                continue;
+>> +            state->sym = &func->syms[i];
+>> +            break;
+>> +        }
+>> +    }
+>>       state->inconsistent_proto = ftype->inconsistent_proto;
+>>       state->unexpected_reg = ftype->unexpected_reg;
+>>       state->optimized_parms = ftype->optimized_parms;
+>>       state->uncertain_parm_loc = ftype->uncertain_parm_loc;
+>>       state->reordered_parm = ftype->reordered_parm;
+>>       ftype__for_each_parameter(ftype, param) {
+>> -        const char *name = parameter__name(param) ?: "";
+>> +        const char *name;
+>>   +        /* No location info + reordered means optimized out. */
+>> +        if (ftype->reordered_parm && !param->has_loc)
+>> +            continue;
+>> +        name = parameter__name(param) ?: "";
+>>           str_off = btf__add_str(btf, name);
+>>           if (str_off < 0) {
+>>               err = str_off;
+>> @@ -1367,6 +1390,9 @@ static int32_t btf_encoder__add_func(struct btf_encoder *encoder,
+>>         btf_fnproto_id = btf_encoder__add_func_proto_for_state(encoder, state);
+>>       name = func->name;
+>> +    if (encoder->true_signature && state->sym)
+>> +        name = state->sym->name;
+>> +
+>>       if (btf_fnproto_id >= 0)
+>>           btf_fn_id = btf_encoder__add_ref_type(encoder, BTF_KIND_FUNC, btf_fnproto_id,
+>>                                 name, false);
+>> @@ -1509,6 +1535,38 @@ static int btf_encoder__add_saved_funcs(struct btf_encoder *encoder, bool skip_e
+>>           while (j < nr_saved_fns && saved_functions_combine(encoder, &saved_fns[i], &saved_fns[j]) == 0)
+>>               j++;
+>>   +        /* Add true signatures for case where we have an exact
+>> +         * symbol match by address from DWARF->ELF and have a
+>> +         * "." suffixed name.
+>> +         */
+>> +        if (encoder->true_signature) {
+>> +            int k;
+>> +
+>> +            for (k = i; k < nr_saved_fns; k++) {
+>> +                struct btf_encoder_func_state *true_state = &saved_fns[k];
+>> +
+>> +                if (state->elf != true_state->elf)
+>> +                    break;
+>> +                if (!true_state->sym)
+>> +                    continue;
+>> +                /* Unexpected reg, uncertain parm loc and
+>> +                 * ambiguous address mean we cannot trust fentry.
+>> +                 */
+>> +                if (true_state->unexpected_reg ||
+>> +                    true_state->uncertain_parm_loc ||
+>> +                    true_state->ambiguous_addr)
+>> +                    continue;
+>> +                err = btf_encoder__add_func(encoder, true_state);
+>> +                if (err < 0)
+>> +                    goto out;
+>> +                break;
+>> +            }
+>> +        }
+>> +
+>> +        /* True symbol that was handled above; skip. */
+>> +        if (state->sym)
+>> +            continue;
+>> +
+>>           /* do not exclude functions with optimized-out parameters; they
+>>            * may still be _called_ with the right parameter values, they
+>>            * just do not _use_ them.  Only exclude functions with
+>> @@ -2585,6 +2643,7 @@ struct btf_encoder *btf_encoder__new(struct cu *cu, const char *detached_filenam
+>>           encoder->tag_kfuncs     = conf_load->btf_decl_tag_kfuncs;
+>>           encoder->gen_distilled_base = conf_load->btf_gen_distilled_base;
+>>           encoder->encode_attributes = conf_load->btf_attributes;
+>> +        encoder->true_signature = conf_load->true_signature;
+>>           encoder->verbose     = verbose;
+>>           encoder->has_index_type  = false;
+>>           encoder->need_index_type = false;
+>> diff --git a/dwarves.h b/dwarves.h
+>> index 78bedf5..d7c6474 100644
+>> --- a/dwarves.h
+>> +++ b/dwarves.h
+>> @@ -101,6 +101,7 @@ struct conf_load {
+>>       bool            btf_decl_tag_kfuncs;
+>>       bool            btf_gen_distilled_base;
+>>       bool            btf_attributes;
+>> +    bool            true_signature;
+>>       uint8_t            hashtable_bits;
+>>       uint8_t            max_hashtable_bits;
+>>       uint16_t        kabi_prefix_len;
+>> diff --git a/pahole.c b/pahole.c
+>> index ef01e58..02a0d19 100644
+>> --- a/pahole.c
+>> +++ b/pahole.c
+>> @@ -1234,6 +1234,7 @@ struct btf_feature {
+>>       BTF_NON_DEFAULT_FEATURE(global_var, encode_btf_global_vars, false),
+>>       BTF_NON_DEFAULT_FEATURE_CHECK(attributes, btf_attributes, false,
+>>                         attributes_check),
+>> +    BTF_NON_DEFAULT_FEATURE(true_signature, true_signature, false),
+>>   };
+>>     #define BTF_MAX_FEATURE_STR    1024
+> 
+> Currently, in pahole, when checking whether signature has changed during
+> optimization or not, we only check parameters.
+> 
+> But compiler optimization may optimize away return value and such
+> information is not available in dwarf.
+> 
+> For example,
+> 
+> $ cat test.c
+> #include <stdio.h>
+> unsigned tar(int a);
+> __attribute__((noinline)) static int foo(int a, int b)
+> {
+>   return tar(a) + tar(a + 1);
+> }
+> __attribute__((noinline)) int bar(int a)
+> {
+>   foo(a, 1);
+>   return 0;
+> }
+> 
+> In this particular case, the return value of foo() is actually not used
+> and the compiler will optimize it away with returning void (at least
+> for llvm).
+> 
+> $ /opt/rh/gcc-toolset-15/root/usr/bin/gcc -O2 -g -c test.c
+> $ llvm-dwarfdump test.o
+> ...
+> 0x000000d9:   DW_TAG_subprogram
+>                 DW_AT_name      ("foo")
+>                 DW_AT_decl_file ("/home/yhs/tests/sig-change/deadret/test.c")
+>                 DW_AT_decl_line (3)
+>                 DW_AT_decl_column       (38)
+>                 DW_AT_prototyped        (true)
+>                 DW_AT_type      (0x0000005d "int")
+>                 DW_AT_inline    (DW_INL_inlined)
+>                 DW_AT_sibling   (0x000000fb)
+>                                                                                                                     0x000000ea:     DW_TAG_formal_parameter
+>                   DW_AT_name    ("a")
+>                   DW_AT_decl_file       ("/home/yhs/tests/sig-change/deadret/test.c")
+>                   DW_AT_decl_line       (3)
+>                   DW_AT_decl_column     (46)
+>                   DW_AT_type    (0x0000005d "int")
+>                                                                                                                     0x000000f2:     DW_TAG_formal_parameter
+>                   DW_AT_name    ("b")
+>                   DW_AT_decl_file       ("/home/yhs/tests/sig-change/deadret/test.c")
+>                   DW_AT_decl_line       (3)
+>                   DW_AT_decl_column     (53)
+>                   DW_AT_type    (0x0000005d "int")
+> 
+> 0x000000fa:     NULL
+> 
+> 0x000000fb:   DW_TAG_subprogram
+>                 DW_AT_abstract_origin   (0x000000d9 "foo")
+>                 DW_AT_low_pc    (0x0000000000000000)
+>                 DW_AT_high_pc   (0x0000000000000011)
+>                 DW_AT_frame_base        (DW_OP_call_frame_cfa)
+>                 DW_AT_call_all_calls    (true)
+> 
+> 0x00000112:     DW_TAG_formal_parameter
+>                   DW_AT_abstract_origin (0x000000ea "a")
+>                   DW_AT_location        (0x00000026:
+>                      [0x0000000000000000, 0x0000000000000007): DW_OP_reg5 RDI
+>                      [0x0000000000000007, 0x000000000000000c): DW_OP_reg3 RBX
+>                      [0x000000000000000c, 0x0000000000000010): DW_OP_breg5 RDI-1, DW_OP_stack_value
+>                      [0x0000000000000010, 0x0000000000000011): DW_OP_entry_value(DW_OP_reg5 RDI), DW_OP_stack_value)
+>                   DW_AT_GNU_locviews    (0x0000001e)
+> 
+> 0x0000011f:     DW_TAG_formal_parameter
+>                   DW_AT_abstract_origin (0x000000f2 "b")
+>                   DW_AT_const_value     (0x01)
+> ...
+> 
+> Assembly code:
+> 0000000000000000 <foo.constprop.0.isra.0>:
+>        0: 53                            pushq   %rbx
+>        1: 89 fb                         movl    %edi, %ebx
+>        3: e8 00 00 00 00                callq   0x8 <foo.constprop.0.isra.0+0x8>
+>        8: 8d 7b 01                      leal    0x1(%rbx), %edi
+>        b: 5b                            popq    %rbx
+>        c: e9 00 00 00 00                jmp     0x11 <foo.constprop.0.isra.0+0x11>
+>       11: 66 66 2e 0f 1f 84 00 00 00 00 00      nopw    %cs:(%rax,%rax)
+>       1c: 0f 1f 40 00                   nopl    (%rax)
+> 
+> 0000000000000020 <bar>:
+>       20: 48 83 ec 08                   subq    $0x8, %rsp
+>       24: e8 d7 ff ff ff                callq   0x0 <foo.constprop.0.isra.0>
+>       29: 31 c0                         xorl    %eax, %eax
+>       2b: 48 83 c4 08                   addq    $0x8, %rsp
+>       2f: c3                            retq
+> 
+> $ clang -O2 -g -c test.c
+> $ llvm-dwarfdump test.o
+> ...
+> 0x0000004e:   DW_TAG_subprogram
+>                 DW_AT_low_pc    (0x0000000000000010)
+>                 DW_AT_high_pc   (0x0000000000000022)
+>                 DW_AT_frame_base        (DW_OP_reg7 RSP)
+>                 DW_AT_call_all_calls    (true)
+>                 DW_AT_name      ("foo")
+>                 DW_AT_decl_file ("/home/yhs/tests/sig-change/deadret/test.c")
+>                 DW_AT_decl_line (3)
+>                 DW_AT_prototyped        (true)
+>                 DW_AT_calling_convention        (DW_CC_nocall)
+>                 DW_AT_type      (0x00000096 "int")
+> 
+> 0x0000005e:     DW_TAG_formal_parameter
+>                   DW_AT_location        (indexed (0x1) loclist = 0x00000022:
+>                      [0x0000000000000010, 0x0000000000000018): DW_OP_reg5 RDI
+>                      [0x0000000000000018, 0x000000000000001a): DW_OP_reg3 RBX
+>                      [0x000000000000001a, 0x0000000000000022): DW_OP_entry_value(DW_OP_reg5 RDI), DW_OP_stack_value)
+>                   DW_AT_name    ("a")
+>                   DW_AT_decl_file       ("/home/yhs/tests/sig-change/deadret/test.c")
+>                   DW_AT_decl_line       (3)
+>                   DW_AT_type    (0x00000096 "int")
+> 
+> 0x00000067:     DW_TAG_formal_parameter
+>                   DW_AT_name    ("b")
+>                   DW_AT_decl_file       ("/home/yhs/tests/sig-change/deadret/test.c")
+>                   DW_AT_decl_line       (3)
+>                   DW_AT_type    (0x00000096 "int")
+> ...
+> Assembly code:encs 
+> 0000000000000000 <bar>:
+>        0: 50                            pushq   %rax
+>        1: e8 0a 00 00 00                callq   0x10 <foo>
+>        6: 31 c0                         xorl    %eax, %eax
+>        8: 59                            popq    %rcx
+>        9: c3                            retq
+>        a: 66 0f 1f 44 00 00             nopw    (%rax,%rax)
+> 
+> 0000000000000010 <foo>:
+>       10: 53                            pushq   %rbx
+>       11: 89 fb                         movl    %edi, %ebx
+>       13: e8 00 00 00 00                callq   0x18 <foo+0x8>
+>       18: ff c3                         incl    %ebx
+>       1a: 89 df                         movl    %ebx, %edi
+>       1c: 5b                            popq    %rbx
+>       1d: e9 00 00 00 00                jmp     0x22 <foo+0x12>
+> 
+> 
+> The compiler knows whether the return type has changed or not.
+> Unfortunately the information is not available in dwarf. So
+> BTF will encode source level return type even if the actual
+> return type could be void due to optimization.
+> 
+> This is not perfect but at least it is an improvement
+> for true signature. But it would be great if llvm/gcc
+> side can coordinate to propose something in compiler/dwarf
+> to encode return type change as well. In llvm,
+> AFAIK, the only return type change will be
+> 'original non-void type' -> 'void type'.
+> 
 
-kernel test robot noticed the following build warnings:
+Yeah, we dug into this a bit on the gcc side with David's help and it 
+appears the only mechanism used seems to be abstract origin reference 
+unfortunately. It seems to me that in theory the compiler could encode 
+the actual type for return types and any parameters that change type
+from the abstract to concrete representation, and we could end up with
+a mix of abstract origin refererences for the types that don't change and
+non-abstract for the types that do.
 
-[auto build test WARNING on bpf-next/master]
+David, Jose, I'm wondering if the information is available to gcc to do 
+that at late DWARF encoding time? Thanks!
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Xu-Kuohai/bpf-Fix-an-off-by-one-error-in-check_indirect_jump/20260114-172632
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20260114093914.2403982-4-xukuohai%40huaweicloud.com
-patch subject: [PATCH bpf-next v4 3/4] bpf, x86: Emit ENDBR for indirect jump targets
-config: x86_64-buildonly-randconfig-002-20260114 (https://download.01.org/0day-ci/archive/20260115/202601150016.x24DRk9R-lkp@intel.com/config)
-compiler: gcc-14 (Debian 14.2.0-19) 14.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260115/202601150016.x24DRk9R-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202601150016.x24DRk9R-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   arch/x86/net/bpf_jit_comp.c: In function 'do_jit':
->> arch/x86/net/bpf_jit_comp.c:1737:37: warning: suggest braces around empty body in an 'if' statement [-Wempty-body]
-    1737 |                         EMIT_ENDBR();
-         |                                     ^
-
-
-vim +/if +1737 arch/x86/net/bpf_jit_comp.c
-
-  1650	
-  1651	static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image,
-  1652			  int oldproglen, struct jit_context *ctx, bool jmp_padding)
-  1653	{
-  1654		bool tail_call_reachable = bpf_prog->aux->tail_call_reachable;
-  1655		struct bpf_insn *insn = bpf_prog->insnsi;
-  1656		bool callee_regs_used[4] = {};
-  1657		int insn_cnt = bpf_prog->len;
-  1658		bool seen_exit = false;
-  1659		u8 temp[BPF_MAX_INSN_SIZE + BPF_INSN_SAFETY];
-  1660		void __percpu *priv_frame_ptr = NULL;
-  1661		u64 arena_vm_start, user_vm_start;
-  1662		void __percpu *priv_stack_ptr;
-  1663		int i, excnt = 0;
-  1664		int ilen, proglen = 0;
-  1665		u8 *prog = temp;
-  1666		u32 stack_depth;
-  1667		int err;
-  1668	
-  1669		stack_depth = bpf_prog->aux->stack_depth;
-  1670		priv_stack_ptr = bpf_prog->aux->priv_stack_ptr;
-  1671		if (priv_stack_ptr) {
-  1672			priv_frame_ptr = priv_stack_ptr + PRIV_STACK_GUARD_SZ + round_up(stack_depth, 8);
-  1673			stack_depth = 0;
-  1674		}
-  1675	
-  1676		arena_vm_start = bpf_arena_get_kern_vm_start(bpf_prog->aux->arena);
-  1677		user_vm_start = bpf_arena_get_user_vm_start(bpf_prog->aux->arena);
-  1678	
-  1679		detect_reg_usage(insn, insn_cnt, callee_regs_used);
-  1680	
-  1681		emit_prologue(&prog, image, stack_depth,
-  1682			      bpf_prog_was_classic(bpf_prog), tail_call_reachable,
-  1683			      bpf_is_subprog(bpf_prog), bpf_prog->aux->exception_cb);
-  1684	
-  1685		bpf_prog->aux->ksym.fp_start = prog - temp;
-  1686	
-  1687		/* Exception callback will clobber callee regs for its own use, and
-  1688		 * restore the original callee regs from main prog's stack frame.
-  1689		 */
-  1690		if (bpf_prog->aux->exception_boundary) {
-  1691			/* We also need to save r12, which is not mapped to any BPF
-  1692			 * register, as we throw after entry into the kernel, which may
-  1693			 * overwrite r12.
-  1694			 */
-  1695			push_r12(&prog);
-  1696			push_callee_regs(&prog, all_callee_regs_used);
-  1697		} else {
-  1698			if (arena_vm_start)
-  1699				push_r12(&prog);
-  1700			push_callee_regs(&prog, callee_regs_used);
-  1701		}
-  1702		if (arena_vm_start)
-  1703			emit_mov_imm64(&prog, X86_REG_R12,
-  1704				       arena_vm_start >> 32, (u32) arena_vm_start);
-  1705	
-  1706		if (priv_frame_ptr)
-  1707			emit_priv_frame_ptr(&prog, priv_frame_ptr);
-  1708	
-  1709		ilen = prog - temp;
-  1710		if (rw_image)
-  1711			memcpy(rw_image + proglen, temp, ilen);
-  1712		proglen += ilen;
-  1713		addrs[0] = proglen;
-  1714		prog = temp;
-  1715	
-  1716		for (i = 1; i <= insn_cnt; i++, insn++) {
-  1717			const s32 imm32 = insn->imm;
-  1718			u32 dst_reg = insn->dst_reg;
-  1719			u32 src_reg = insn->src_reg;
-  1720			u8 b2 = 0, b3 = 0;
-  1721			u8 *start_of_ldx;
-  1722			s64 jmp_offset;
-  1723			s16 insn_off;
-  1724			u8 jmp_cond;
-  1725			u8 *func;
-  1726			int nops;
-  1727	
-  1728			if (priv_frame_ptr) {
-  1729				if (src_reg == BPF_REG_FP)
-  1730					src_reg = X86_REG_R9;
-  1731	
-  1732				if (dst_reg == BPF_REG_FP)
-  1733					dst_reg = X86_REG_R9;
-  1734			}
-  1735	
-  1736			if (bpf_insn_is_indirect_target(bpf_prog, i - 1))
-> 1737				EMIT_ENDBR();
-  1738	
-  1739			switch (insn->code) {
-  1740				/* ALU */
-  1741			case BPF_ALU | BPF_ADD | BPF_X:
-  1742			case BPF_ALU | BPF_SUB | BPF_X:
-  1743			case BPF_ALU | BPF_AND | BPF_X:
-  1744			case BPF_ALU | BPF_OR | BPF_X:
-  1745			case BPF_ALU | BPF_XOR | BPF_X:
-  1746			case BPF_ALU64 | BPF_ADD | BPF_X:
-  1747			case BPF_ALU64 | BPF_SUB | BPF_X:
-  1748			case BPF_ALU64 | BPF_AND | BPF_X:
-  1749			case BPF_ALU64 | BPF_OR | BPF_X:
-  1750			case BPF_ALU64 | BPF_XOR | BPF_X:
-  1751				maybe_emit_mod(&prog, dst_reg, src_reg,
-  1752					       BPF_CLASS(insn->code) == BPF_ALU64);
-  1753				b2 = simple_alu_opcodes[BPF_OP(insn->code)];
-  1754				EMIT2(b2, add_2reg(0xC0, dst_reg, src_reg));
-  1755				break;
-  1756	
-  1757			case BPF_ALU64 | BPF_MOV | BPF_X:
-  1758				if (insn_is_cast_user(insn)) {
-  1759					if (dst_reg != src_reg)
-  1760						/* 32-bit mov */
-  1761						emit_mov_reg(&prog, false, dst_reg, src_reg);
-  1762					/* shl dst_reg, 32 */
-  1763					maybe_emit_1mod(&prog, dst_reg, true);
-  1764					EMIT3(0xC1, add_1reg(0xE0, dst_reg), 32);
-  1765	
-  1766					/* or dst_reg, user_vm_start */
-  1767					maybe_emit_1mod(&prog, dst_reg, true);
-  1768					if (is_axreg(dst_reg))
-  1769						EMIT1_off32(0x0D,  user_vm_start >> 32);
-  1770					else
-  1771						EMIT2_off32(0x81, add_1reg(0xC8, dst_reg),  user_vm_start >> 32);
-  1772	
-  1773					/* rol dst_reg, 32 */
-  1774					maybe_emit_1mod(&prog, dst_reg, true);
-  1775					EMIT3(0xC1, add_1reg(0xC0, dst_reg), 32);
-  1776	
-  1777					/* xor r11, r11 */
-  1778					EMIT3(0x4D, 0x31, 0xDB);
-  1779	
-  1780					/* test dst_reg32, dst_reg32; check if lower 32-bit are zero */
-  1781					maybe_emit_mod(&prog, dst_reg, dst_reg, false);
-  1782					EMIT2(0x85, add_2reg(0xC0, dst_reg, dst_reg));
-  1783	
-  1784					/* cmove r11, dst_reg; if so, set dst_reg to zero */
-  1785					/* WARNING: Intel swapped src/dst register encoding in CMOVcc !!! */
-  1786					maybe_emit_mod(&prog, AUX_REG, dst_reg, true);
-  1787					EMIT3(0x0F, 0x44, add_2reg(0xC0, AUX_REG, dst_reg));
-  1788					break;
-  1789				} else if (insn_is_mov_percpu_addr(insn)) {
-  1790					/* mov <dst>, <src> (if necessary) */
-  1791					EMIT_mov(dst_reg, src_reg);
-  1792	#ifdef CONFIG_SMP
-  1793					/* add <dst>, gs:[<off>] */
-  1794					EMIT2(0x65, add_1mod(0x48, dst_reg));
-  1795					EMIT3(0x03, add_2reg(0x04, 0, dst_reg), 0x25);
-  1796					EMIT((u32)(unsigned long)&this_cpu_off, 4);
-  1797	#endif
-  1798					break;
-  1799				}
-  1800				fallthrough;
-  1801			case BPF_ALU | BPF_MOV | BPF_X:
-  1802				if (insn->off == 0)
-  1803					emit_mov_reg(&prog,
-  1804						     BPF_CLASS(insn->code) == BPF_ALU64,
-  1805						     dst_reg, src_reg);
-  1806				else
-  1807					emit_movsx_reg(&prog, insn->off,
-  1808						       BPF_CLASS(insn->code) == BPF_ALU64,
-  1809						       dst_reg, src_reg);
-  1810				break;
-  1811	
-  1812				/* neg dst */
-  1813			case BPF_ALU | BPF_NEG:
-  1814			case BPF_ALU64 | BPF_NEG:
-  1815				maybe_emit_1mod(&prog, dst_reg,
-  1816						BPF_CLASS(insn->code) == BPF_ALU64);
-  1817				EMIT2(0xF7, add_1reg(0xD8, dst_reg));
-  1818				break;
-  1819	
-  1820			case BPF_ALU | BPF_ADD | BPF_K:
-  1821			case BPF_ALU | BPF_SUB | BPF_K:
-  1822			case BPF_ALU | BPF_AND | BPF_K:
-  1823			case BPF_ALU | BPF_OR | BPF_K:
-  1824			case BPF_ALU | BPF_XOR | BPF_K:
-  1825			case BPF_ALU64 | BPF_ADD | BPF_K:
-  1826			case BPF_ALU64 | BPF_SUB | BPF_K:
-  1827			case BPF_ALU64 | BPF_AND | BPF_K:
-  1828			case BPF_ALU64 | BPF_OR | BPF_K:
-  1829			case BPF_ALU64 | BPF_XOR | BPF_K:
-  1830				maybe_emit_1mod(&prog, dst_reg,
-  1831						BPF_CLASS(insn->code) == BPF_ALU64);
-  1832	
-  1833				/*
-  1834				 * b3 holds 'normal' opcode, b2 short form only valid
-  1835				 * in case dst is eax/rax.
-  1836				 */
-  1837				switch (BPF_OP(insn->code)) {
-  1838				case BPF_ADD:
-  1839					b3 = 0xC0;
-  1840					b2 = 0x05;
-  1841					break;
-  1842				case BPF_SUB:
-  1843					b3 = 0xE8;
-  1844					b2 = 0x2D;
-  1845					break;
-  1846				case BPF_AND:
-  1847					b3 = 0xE0;
-  1848					b2 = 0x25;
-  1849					break;
-  1850				case BPF_OR:
-  1851					b3 = 0xC8;
-  1852					b2 = 0x0D;
-  1853					break;
-  1854				case BPF_XOR:
-  1855					b3 = 0xF0;
-  1856					b2 = 0x35;
-  1857					break;
-  1858				}
-  1859	
-  1860				if (is_imm8(imm32))
-  1861					EMIT3(0x83, add_1reg(b3, dst_reg), imm32);
-  1862				else if (is_axreg(dst_reg))
-  1863					EMIT1_off32(b2, imm32);
-  1864				else
-  1865					EMIT2_off32(0x81, add_1reg(b3, dst_reg), imm32);
-  1866				break;
-  1867	
-  1868			case BPF_ALU64 | BPF_MOV | BPF_K:
-  1869			case BPF_ALU | BPF_MOV | BPF_K:
-  1870				emit_mov_imm32(&prog, BPF_CLASS(insn->code) == BPF_ALU64,
-  1871					       dst_reg, imm32);
-  1872				break;
-  1873	
-  1874			case BPF_LD | BPF_IMM | BPF_DW:
-  1875				emit_mov_imm64(&prog, dst_reg, insn[1].imm, insn[0].imm);
-  1876				insn++;
-  1877				i++;
-  1878				break;
-  1879	
-  1880				/* dst %= src, dst /= src, dst %= imm32, dst /= imm32 */
-  1881			case BPF_ALU | BPF_MOD | BPF_X:
-  1882			case BPF_ALU | BPF_DIV | BPF_X:
-  1883			case BPF_ALU | BPF_MOD | BPF_K:
-  1884			case BPF_ALU | BPF_DIV | BPF_K:
-  1885			case BPF_ALU64 | BPF_MOD | BPF_X:
-  1886			case BPF_ALU64 | BPF_DIV | BPF_X:
-  1887			case BPF_ALU64 | BPF_MOD | BPF_K:
-  1888			case BPF_ALU64 | BPF_DIV | BPF_K: {
-  1889				bool is64 = BPF_CLASS(insn->code) == BPF_ALU64;
-  1890	
-  1891				if (dst_reg != BPF_REG_0)
-  1892					EMIT1(0x50); /* push rax */
-  1893				if (dst_reg != BPF_REG_3)
-  1894					EMIT1(0x52); /* push rdx */
-  1895	
-  1896				if (BPF_SRC(insn->code) == BPF_X) {
-  1897					if (src_reg == BPF_REG_0 ||
-  1898					    src_reg == BPF_REG_3) {
-  1899						/* mov r11, src_reg */
-  1900						EMIT_mov(AUX_REG, src_reg);
-  1901						src_reg = AUX_REG;
-  1902					}
-  1903				} else {
-  1904					/* mov r11, imm32 */
-  1905					EMIT3_off32(0x49, 0xC7, 0xC3, imm32);
-  1906					src_reg = AUX_REG;
-  1907				}
-  1908	
-  1909				if (dst_reg != BPF_REG_0)
-  1910					/* mov rax, dst_reg */
-  1911					emit_mov_reg(&prog, is64, BPF_REG_0, dst_reg);
-  1912	
-  1913				if (insn->off == 0) {
-  1914					/*
-  1915					 * xor edx, edx
-  1916					 * equivalent to 'xor rdx, rdx', but one byte less
-  1917					 */
-  1918					EMIT2(0x31, 0xd2);
-  1919	
-  1920					/* div src_reg */
-  1921					maybe_emit_1mod(&prog, src_reg, is64);
-  1922					EMIT2(0xF7, add_1reg(0xF0, src_reg));
-  1923				} else {
-  1924					if (BPF_CLASS(insn->code) == BPF_ALU)
-  1925						EMIT1(0x99); /* cdq */
-  1926					else
-  1927						EMIT2(0x48, 0x99); /* cqo */
-  1928	
-  1929					/* idiv src_reg */
-  1930					maybe_emit_1mod(&prog, src_reg, is64);
-  1931					EMIT2(0xF7, add_1reg(0xF8, src_reg));
-  1932				}
-  1933	
-  1934				if (BPF_OP(insn->code) == BPF_MOD &&
-  1935				    dst_reg != BPF_REG_3)
-  1936					/* mov dst_reg, rdx */
-  1937					emit_mov_reg(&prog, is64, dst_reg, BPF_REG_3);
-  1938				else if (BPF_OP(insn->code) == BPF_DIV &&
-  1939					 dst_reg != BPF_REG_0)
-  1940					/* mov dst_reg, rax */
-  1941					emit_mov_reg(&prog, is64, dst_reg, BPF_REG_0);
-  1942	
-  1943				if (dst_reg != BPF_REG_3)
-  1944					EMIT1(0x5A); /* pop rdx */
-  1945				if (dst_reg != BPF_REG_0)
-  1946					EMIT1(0x58); /* pop rax */
-  1947				break;
-  1948			}
-  1949	
-  1950			case BPF_ALU | BPF_MUL | BPF_K:
-  1951			case BPF_ALU64 | BPF_MUL | BPF_K:
-  1952				maybe_emit_mod(&prog, dst_reg, dst_reg,
-  1953					       BPF_CLASS(insn->code) == BPF_ALU64);
-  1954	
-  1955				if (is_imm8(imm32))
-  1956					/* imul dst_reg, dst_reg, imm8 */
-  1957					EMIT3(0x6B, add_2reg(0xC0, dst_reg, dst_reg),
-  1958					      imm32);
-  1959				else
-  1960					/* imul dst_reg, dst_reg, imm32 */
-  1961					EMIT2_off32(0x69,
-  1962						    add_2reg(0xC0, dst_reg, dst_reg),
-  1963						    imm32);
-  1964				break;
-  1965	
-  1966			case BPF_ALU | BPF_MUL | BPF_X:
-  1967			case BPF_ALU64 | BPF_MUL | BPF_X:
-  1968				maybe_emit_mod(&prog, src_reg, dst_reg,
-  1969					       BPF_CLASS(insn->code) == BPF_ALU64);
-  1970	
-  1971				/* imul dst_reg, src_reg */
-  1972				EMIT3(0x0F, 0xAF, add_2reg(0xC0, src_reg, dst_reg));
-  1973				break;
-  1974	
-  1975				/* Shifts */
-  1976			case BPF_ALU | BPF_LSH | BPF_K:
-  1977			case BPF_ALU | BPF_RSH | BPF_K:
-  1978			case BPF_ALU | BPF_ARSH | BPF_K:
-  1979			case BPF_ALU64 | BPF_LSH | BPF_K:
-  1980			case BPF_ALU64 | BPF_RSH | BPF_K:
-  1981			case BPF_ALU64 | BPF_ARSH | BPF_K:
-  1982				maybe_emit_1mod(&prog, dst_reg,
-  1983						BPF_CLASS(insn->code) == BPF_ALU64);
-  1984	
-  1985				b3 = simple_alu_opcodes[BPF_OP(insn->code)];
-  1986				if (imm32 == 1)
-  1987					EMIT2(0xD1, add_1reg(b3, dst_reg));
-  1988				else
-  1989					EMIT3(0xC1, add_1reg(b3, dst_reg), imm32);
-  1990				break;
-  1991	
-  1992			case BPF_ALU | BPF_LSH | BPF_X:
-  1993			case BPF_ALU | BPF_RSH | BPF_X:
-  1994			case BPF_ALU | BPF_ARSH | BPF_X:
-  1995			case BPF_ALU64 | BPF_LSH | BPF_X:
-  1996			case BPF_ALU64 | BPF_RSH | BPF_X:
-  1997			case BPF_ALU64 | BPF_ARSH | BPF_X:
-  1998				/* BMI2 shifts aren't better when shift count is already in rcx */
-  1999				if (boot_cpu_has(X86_FEATURE_BMI2) && src_reg != BPF_REG_4) {
-  2000					/* shrx/sarx/shlx dst_reg, dst_reg, src_reg */
-  2001					bool w = (BPF_CLASS(insn->code) == BPF_ALU64);
-  2002					u8 op;
-  2003	
-  2004					switch (BPF_OP(insn->code)) {
-  2005					case BPF_LSH:
-  2006						op = 1; /* prefix 0x66 */
-  2007						break;
-  2008					case BPF_RSH:
-  2009						op = 3; /* prefix 0xf2 */
-  2010						break;
-  2011					case BPF_ARSH:
-  2012						op = 2; /* prefix 0xf3 */
-  2013						break;
-  2014					}
-  2015	
-  2016					emit_shiftx(&prog, dst_reg, src_reg, w, op);
-  2017	
-  2018					break;
-  2019				}
-  2020	
-  2021				if (src_reg != BPF_REG_4) { /* common case */
-  2022					/* Check for bad case when dst_reg == rcx */
-  2023					if (dst_reg == BPF_REG_4) {
-  2024						/* mov r11, dst_reg */
-  2025						EMIT_mov(AUX_REG, dst_reg);
-  2026						dst_reg = AUX_REG;
-  2027					} else {
-  2028						EMIT1(0x51); /* push rcx */
-  2029					}
-  2030					/* mov rcx, src_reg */
-  2031					EMIT_mov(BPF_REG_4, src_reg);
-  2032				}
-  2033	
-  2034				/* shl %rax, %cl | shr %rax, %cl | sar %rax, %cl */
-  2035				maybe_emit_1mod(&prog, dst_reg,
-  2036						BPF_CLASS(insn->code) == BPF_ALU64);
-  2037	
-  2038				b3 = simple_alu_opcodes[BPF_OP(insn->code)];
-  2039				EMIT2(0xD3, add_1reg(b3, dst_reg));
-  2040	
-  2041				if (src_reg != BPF_REG_4) {
-  2042					if (insn->dst_reg == BPF_REG_4)
-  2043						/* mov dst_reg, r11 */
-  2044						EMIT_mov(insn->dst_reg, AUX_REG);
-  2045					else
-  2046						EMIT1(0x59); /* pop rcx */
-  2047				}
-  2048	
-  2049				break;
-  2050	
-  2051			case BPF_ALU | BPF_END | BPF_FROM_BE:
-  2052			case BPF_ALU64 | BPF_END | BPF_FROM_LE:
-  2053				switch (imm32) {
-  2054				case 16:
-  2055					/* Emit 'ror %ax, 8' to swap lower 2 bytes */
-  2056					EMIT1(0x66);
-  2057					if (is_ereg(dst_reg))
-  2058						EMIT1(0x41);
-  2059					EMIT3(0xC1, add_1reg(0xC8, dst_reg), 8);
-  2060	
-  2061					/* Emit 'movzwl eax, ax' */
-  2062					if (is_ereg(dst_reg))
-  2063						EMIT3(0x45, 0x0F, 0xB7);
-  2064					else
-  2065						EMIT2(0x0F, 0xB7);
-  2066					EMIT1(add_2reg(0xC0, dst_reg, dst_reg));
-  2067					break;
-  2068				case 32:
-  2069					/* Emit 'bswap eax' to swap lower 4 bytes */
-  2070					if (is_ereg(dst_reg))
-  2071						EMIT2(0x41, 0x0F);
-  2072					else
-  2073						EMIT1(0x0F);
-  2074					EMIT1(add_1reg(0xC8, dst_reg));
-  2075					break;
-  2076				case 64:
-  2077					/* Emit 'bswap rax' to swap 8 bytes */
-  2078					EMIT3(add_1mod(0x48, dst_reg), 0x0F,
-  2079					      add_1reg(0xC8, dst_reg));
-  2080					break;
-  2081				}
-  2082				break;
-  2083	
-  2084			case BPF_ALU | BPF_END | BPF_FROM_LE:
-  2085				switch (imm32) {
-  2086				case 16:
-  2087					/*
-  2088					 * Emit 'movzwl eax, ax' to zero extend 16-bit
-  2089					 * into 64 bit
-  2090					 */
-  2091					if (is_ereg(dst_reg))
-  2092						EMIT3(0x45, 0x0F, 0xB7);
-  2093					else
-  2094						EMIT2(0x0F, 0xB7);
-  2095					EMIT1(add_2reg(0xC0, dst_reg, dst_reg));
-  2096					break;
-  2097				case 32:
-  2098					/* Emit 'mov eax, eax' to clear upper 32-bits */
-  2099					if (is_ereg(dst_reg))
-  2100						EMIT1(0x45);
-  2101					EMIT2(0x89, add_2reg(0xC0, dst_reg, dst_reg));
-  2102					break;
-  2103				case 64:
-  2104					/* nop */
-  2105					break;
-  2106				}
-  2107				break;
-  2108	
-  2109				/* speculation barrier */
-  2110			case BPF_ST | BPF_NOSPEC:
-  2111				EMIT_LFENCE();
-  2112				break;
-  2113	
-  2114				/* ST: *(u8*)(dst_reg + off) = imm */
-  2115			case BPF_ST | BPF_MEM | BPF_B:
-  2116				if (is_ereg(dst_reg))
-  2117					EMIT2(0x41, 0xC6);
-  2118				else
-  2119					EMIT1(0xC6);
-  2120				goto st;
-  2121			case BPF_ST | BPF_MEM | BPF_H:
-  2122				if (is_ereg(dst_reg))
-  2123					EMIT3(0x66, 0x41, 0xC7);
-  2124				else
-  2125					EMIT2(0x66, 0xC7);
-  2126				goto st;
-  2127			case BPF_ST | BPF_MEM | BPF_W:
-  2128				if (is_ereg(dst_reg))
-  2129					EMIT2(0x41, 0xC7);
-  2130				else
-  2131					EMIT1(0xC7);
-  2132				goto st;
-  2133			case BPF_ST | BPF_MEM | BPF_DW:
-  2134				EMIT2(add_1mod(0x48, dst_reg), 0xC7);
-  2135	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Alan
 
