@@ -1,129 +1,167 @@
-Return-Path: <bpf+bounces-78816-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78817-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED322D1C227
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 03:28:50 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC43DD1C239
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 03:32:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 1B9B530039C2
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 02:28:46 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D916F3019B4B
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 02:31:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 919DE2FE577;
-	Wed, 14 Jan 2026 02:28:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 633F92F99A8;
+	Wed, 14 Jan 2026 02:31:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CxhjmmXL"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="g9WqKmyI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D41811850A4
-	for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 02:28:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23B8F2FBDE0
+	for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 02:31:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768357721; cv=none; b=F/0gszpBDwUoSlCPuD2C/eucHsnRmWgZ9hwWxaDKW+dHRempGvUy43uiecnurwrUOLM9qO2XcEkHXlevuA0nlLD/KeSFSeKMLWpMHhbF83dE2Y9V46Pzb67jjqdrE7oD1ln88QWDQJpXTg5bVpdki0BOE7iFIW/3Q3KCQp+0Kc4=
+	t=1768357908; cv=none; b=D9LMYj2T82O8Ng8wEtrI8hr/OBR8trkpskUIZHaBsrXW+RkZTs8p5kZ1vxio5am5xBAvh3Q45DGtqvZAHGgg/hoCyoe5e4SSOZqnyLwV33K9eEFVfR5jS86su3RL7uVulp2TsU0l9Lcmz6O2A8m+j1MHewa8HnPcXFz0XVYvrnc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768357721; c=relaxed/simple;
-	bh=We8ksS5J9F+fwW62K7yMl7MOkJY7HqN+JcpNG1VVuBc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CGguveKyj2HGxrWUPJWc7+SOtzkUAfFWJLK/uOGCzTwLSR9O7JuZ1lViei0oC/py6Q3dyGBOy7UWdCkLjBM6Kyxk31+n7yEEY+v5dL0a+6ZQMXduS+L9zQdpTiExZnn75AK9J0C6P6M4iUOPVVeOPhFTegcxdD6SwCJAbyPOdrw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CxhjmmXL; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-42fbc544b09so6526876f8f.1
-        for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 18:28:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768357718; x=1768962518; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xz2i6YPOO/6xi7igT30rHEGAb7MGWdjsESuKyerDuWk=;
-        b=CxhjmmXL4an+7h2Ej2gAuMYrfb7D/45jDvlvKoNfNzdldwJ2qZONkHWKELJz5M/Yh/
-         pFLKAOb0PZk06LPp5XmwF4rmq2yNYT5+emNJwt9ZxvZKLCcd6XOEkZWSntJ711Tp5Fto
-         q9PM7crJ+ER+anl+Hhif3J8DkNLos3TNvG75RfHw88dZDF1KpMhPzHFAQVvCGORrSlZA
-         W/VGba0YZ2zgbTFGBIE43jxbPgKH63WzAeDAMm9CkqxbY5KfE7ylXg+gvzxBVEBWxgh4
-         l9FeZ36c9yS2JfkTV79zJMqvuWucrTT9F6a7pGCDgL1Zyhsm4nYlrXnWGeWok5apkRtu
-         DZ2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768357718; x=1768962518;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=xz2i6YPOO/6xi7igT30rHEGAb7MGWdjsESuKyerDuWk=;
-        b=tjpzGu8HzFtSnelKQtpaQqRgTN8D9jDJgQQ00OPS2dblhCqZeG2OzCuqWvDDs9Cb5R
-         9tyRMv8BYm31g8aP2N8C8l1uoYnN4Xp3jemsKAcPwuukNb0OEaodNIaUyJXAuiZeIe7W
-         CXsB4CKzg8iVVMGbuRc/r/fknKp1511G54Nhy++ga8Ad0kjZafwGp2g9ZVus49eEh7vG
-         3XNhX0z3atRtY7S4lB+WGG2UhdROSRHigfwR8SQEHoFr9pe9iCyE3/fvmfVmzH1NN/P/
-         p/Ng9bT0cs5hUb5NUVFrIAUj1adz8VIqtYnxEzzSWXh3MA9EDr0RUV3KGlJHe8CPA/jI
-         7osQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVo/vlHA01KyyyDWy6gLRa6r+VFL/jB6GrHusSih701ZbrPfluPZ+Q8mIMTshK/C4rI1OU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxiL1zDOzE3ipQhWyyDllE/9H/z7DEk1XgsXTecmRMi0BmRCsD0
-	yLii3CapPUTEwVn3WbAUqwbqnNus6KVQUpmR4cxtwVOf+Q93PiZ2XOjuSavf2ThxMjTq24v8DP3
-	+Xt/K0BxZwOKww4r/hWePeqJKGDXim+I=
-X-Gm-Gg: AY/fxX45V73qsFV5WiccyKIQ6EKNAZ8f+3Wq4gvXGSnZsmajxVKWdHu10rr+OGcIS3p
-	hkWNUkPV+Abaz+a+L6S2JsteNtUQYWxJ9jbfPMlqV/se55Km/X1hHH2kFAZK2pqd4Hj1p5QGaEe
-	9n2mNuhwrfcBzcwL+6s5llTuyvxJsgFhT2mbPJlCPZZSpaiHLvFp7oD0wSfdlGVwmi8oKtLfiGD
-	9fyf6bq018QLlW11K7fBMzDczuaUAcg7si9/9T3Ovqyng+j5WP5FJMkSMTA2h3rJNhpgcnsGR7O
-	xCPsIAzsaLOzbt3yM2Cag6haFVl3
-X-Received: by 2002:a5d:5f55:0:b0:429:c851:69ab with SMTP id
- ffacd0b85a97d-4342c570c23mr829306f8f.55.1768357718101; Tue, 13 Jan 2026
- 18:28:38 -0800 (PST)
+	s=arc-20240116; t=1768357908; c=relaxed/simple;
+	bh=/RvDX4PI6L79Hw9/iVCqfMK2N/byBZJWAJQJ4w51ptI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=f8h5AGeSefAE/WrpRDuQD/uw1uJzmYy/eSwf4+ixiueJkVRhFZ4657p3dcVzf7+KSE9FgeLQxHmOcnwGW9XfyjTRZJF487+B92G1sLaufarKw0DE9UMlipoe8TlExuF1+kV4GgBPsFXCG+pswASS8AmQtddEwCGKgNkvSWc/HvA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=g9WqKmyI; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1768357895;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yyue6jPEhQF/o9AZ7DaJGY9Nx3eVeeJQ8DKHUFRQtI8=;
+	b=g9WqKmyIQHPV4OXjwgmrcon3hBoOR3JC7ptNPX4PqAXHfrRmRFMBA6Xa5Lf0tIyLn01eNN
+	lOV92xmKF0CQUSrcLKTizZ6m7m7PycQDFRiJ8T9IDO9ntNEz4Y1GV6gyxNGyRGSHcSn9aO
+	MoEXknNn+shrCVtu0dR5QXs4fTJ6Sro=
+From: Menglong Dong <menglong.dong@linux.dev>
+To: Menglong Dong <menglong8.dong@gmail.com>,
+ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+ martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
+ dsahern@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+ jiang.biao@linux.dev, bp@alien8.de, dave.hansen@linux.intel.com,
+ x86@kernel.org, hpa@zytor.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject:
+ Re: [PATCH bpf-next v9 06/11] bpf,x86: introduce emit_store_stack_imm64() for
+ trampoline
+Date: Wed, 14 Jan 2026 10:31:22 +0800
+Message-ID: <8672423.NyiUUSuA9g@7940hx>
+In-Reply-To:
+ <CAEf4BzbKKmNnqQP0g8OVSgwqb2DTidBpKBjyi-QQJBRJ+-6SWg@mail.gmail.com>
+References:
+ <20260110141115.537055-1-dongml2@chinatelecom.cn>
+ <20260110141115.537055-7-dongml2@chinatelecom.cn>
+ <CAEf4BzbKKmNnqQP0g8OVSgwqb2DTidBpKBjyi-QQJBRJ+-6SWg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260110141115.537055-1-dongml2@chinatelecom.cn>
-In-Reply-To: <20260110141115.537055-1-dongml2@chinatelecom.cn>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 13 Jan 2026 18:28:27 -0800
-X-Gm-Features: AZwV_QgcPb0t4gTbhKnWfWd-cjU6WwacBGBgmdh2yTCRVFbx1Uq28J6usLIsSEU
-Message-ID: <CAADnVQJw6HZHqBs6JRWkHESk=tFQpki9X6TnXBLKgeAhb6FK5w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v9 00/11] bpf: fsession support
-To: Menglong Dong <menglong8.dong@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	"David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, jiang.biao@linux.dev, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>, 
-	"H. Peter Anvin" <hpa@zytor.com>, bpf <bpf@vger.kernel.org>, 
-	Network Development <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+X-Migadu-Flow: FLOW_OUT
 
-On Sat, Jan 10, 2026 at 6:11=E2=80=AFAM Menglong Dong <menglong8.dong@gmail=
-.com> wrote:
->
-q>
-> Changes since v8:
-> * remove the definition of bpf_fsession_cookie and bpf_fsession_is_return
->   in the 4th and 5th patch
-> * rename emit_st_r0_imm64() to emit_store_stack_imm64() in the 6th patch
->
-> Changes since v7:
-> * use the last byte of nr_args for bpf_get_func_arg_cnt() in the 2nd patc=
-h
->
-> Changes since v6:
-> * change the prototype of bpf_session_cookie() and bpf_session_is_return(=
-),
->   and reuse them instead of introduce new kfunc for fsession.
->
-> Changes since v5:
-> * No changes in this version, just a rebase to deal with conflicts.
+On 2026/1/14 09:22 Andrii Nakryiko <andrii.nakryiko@gmail.com> write:
+> On Sat, Jan 10, 2026 at 6:12=E2=80=AFAM Menglong Dong <menglong8.dong@gma=
+il.com> wrote:
+> >
+> > Introduce the helper emit_store_stack_imm64(), which is used to store a
+> > imm64 to the stack with the help of r0.
+> >
+> > Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+> > ---
+> > v9:
+> > - rename emit_st_r0_imm64() to emit_store_stack_imm64()
+> > ---
+> >  arch/x86/net/bpf_jit_comp.c | 15 +++++++++++----
+> >  1 file changed, 11 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> > index e3b1c4b1d550..d94f7038c441 100644
+> > --- a/arch/x86/net/bpf_jit_comp.c
+> > +++ b/arch/x86/net/bpf_jit_comp.c
+> > @@ -1300,6 +1300,15 @@ static void emit_st_r12(u8 **pprog, u32 size, u3=
+2 dst_reg, int off, int imm)
+> >         emit_st_index(pprog, size, dst_reg, X86_REG_R12, off, imm);
+> >  }
+> >
+> > +static void emit_store_stack_imm64(u8 **pprog, int stack_off, u64 imm6=
+4)
+> > +{
+> > +       /* mov rax, imm64
+> > +        * mov QWORD PTR [rbp - stack_off], rax
+> > +        */
+> > +       emit_mov_imm64(pprog, BPF_REG_0, imm64 >> 32, (u32) imm64);
+>=20
+> maybe make the caller pass BPF_REG_0 explicitly, it will be more
+> generic but also more explicit that BPF_REG_0 is used as temporary
+> register?
 
-When you respin please add lore links to all previous revisions,
-so it's easy to navigate to previous discussions.
-Like:
+OK! I were worried about that it wasn't explicit that BPF_REG_0 is
+used too.
 
-Changes v3->v4:
-...
-v3: https://...
+>=20
+> > +       emit_stx(pprog, BPF_DW, BPF_REG_FP, BPF_REG_0, -stack_off);
+>=20
+> why are you negating stack offset here and not in the caller?..
+>=20
+> > +}
+> > +
+> >  static int emit_atomic_rmw(u8 **pprog, u32 atomic_op,
+> >                            u32 dst_reg, u32 src_reg, s16 off, u8 bpf_si=
+ze)
+> >  {
+> > @@ -3352,16 +3361,14 @@ static int __arch_prepare_bpf_trampoline(struct=
+ bpf_tramp_image *im, void *rw_im
+> >          *   mov rax, nr_regs
+> >          *   mov QWORD PTR [rbp - nregs_off], rax
+> >          */
+> > -       emit_mov_imm64(&prog, BPF_REG_0, 0, (u32) nr_regs);
+> > -       emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -nregs_off);
+> > +       emit_store_stack_imm64(&prog, nregs_off, nr_regs);
+> >
+> >         if (flags & BPF_TRAMP_F_IP_ARG) {
+> >                 /* Store IP address of the traced function:
+> >                  * movabsq rax, func_addr
+> >                  * mov QWORD PTR [rbp - ip_off], rax
+> >                  */
+> > -               emit_mov_imm64(&prog, BPF_REG_0, (long) func_addr >> 32=
+, (u32) (long) func_addr);
+> > -               emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -ip_off);
+> > +               emit_store_stack_imm64(&prog, ip_off, (long)func_addr);
+>=20
+> see above, I'd pass BPF_REG_0 and -ip_off (and -nregs_off) explicitly,
+> too many small transformations are hidden inside
+> emit_store_stack_imm64(), IMO
 
-Changes v2->v3:
-...
-v2: https://...
+ACK. The negating offset in emit_store_stack_imm64() indeed implicit.
+I'll use this way in the next version.
+
+Thanks!
+Menglong Dong
+
+>=20
+>=20
+> >         }
+> >
+> >         save_args(m, &prog, regs_off, false, flags);
+> > --
+> > 2.52.0
+> >
+>=20
+
+
+
+
 
