@@ -1,90 +1,104 @@
-Return-Path: <bpf+bounces-78925-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78926-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96A8CD1FA28
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 16:11:51 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B539D1F9EF
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 16:08:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 23D3330C5C9C
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 15:06:10 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 9BC8E3031798
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 15:07:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5632D2D661C;
-	Wed, 14 Jan 2026 15:06:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99B61258CCC;
+	Wed, 14 Jan 2026 15:07:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="DpI+2DhX";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="XVZv71+I"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com [209.85.210.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACC8C3043DC
-	for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 15:06:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA2D4314D0E;
+	Wed, 14 Jan 2026 15:07:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768403169; cv=none; b=DJDI3ihPmdRrGRM5cr+SoPFMYGCbxPiqZQkfxXtKA45AWVEZNdURezbEITR5M5ipK8HHWF/yaLbI37PTKSuElXQIvNptEvJ/TkypRqN42x8ezdmCpga5bx4+61KFxNESUj4iyOJCzYEO363CIQAp6zEhDt00jHpd7TG9R4pPxrs=
+	t=1768403273; cv=none; b=f6vAlEsvTO9heixP60tyGSYMXQ5ar1r2OZpyC9cuOzPwemkAKqCYlpUmB/QKw/fNkNx79tkes8pb/T51oWmdcD3BFioe7l3GFhnhBVywFUOwRlaAX6aO8IvwwuxiKwebak5rii4AkZH38ehlbd9O9SX7SKEO42BId3bzr2B1/Jg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768403169; c=relaxed/simple;
-	bh=2sYsLTjY8UlCSBPDwENuCkzbU8UFYUoZD+Fn10iJNUg=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=s9AYCHTr5JsfiN7wCOwekyrxJ1ZO5yG+54qvpZe2Fc/nRguDFJsbwZ6jdC6c3EwY5JwNQC+iv1l1Gjn8VSo3Mf8WtJ3svDO8IwAFsU4Br8xAR99I4Lww9/H/7o5Fl2fYr2+0tuKFZx01irXu4aDoY6nsWA1G/V2MwRRJcrQIfQ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.210.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-7ce5218a735so26863033a34.3
-        for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 07:06:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768403162; x=1769007962;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OMy1y+B9WdDKj6nr6FkI9x1yhWM1Ih1Ofb/HIEBve50=;
-        b=I5SSE+adSycc+vOePEn4jdpkbT+P9mJJl9GYMrlqJwVsb/jXN8K76tIfwtiP+uaNYc
-         4fpgJS2Yol3r/0EYnCuxn/6tCpUKrt1uE6U31rz6L2kuS7YpDVMC1zTR/mEsn26HCVxg
-         WWATvg7J1IsAx1TV0I8V86FFKJU+bVnprpd3zhCAmo8AxfhYu8ZqSy3THMNG6krhxiNt
-         BncLKycc57wcHT2SJkiuQX9+MQ6kXCWksfq5C1Nd5Dvc1Gthkd/SOXDAIbfUAXOncOs9
-         X/ivn0SXvhHNXy5U6WlZpTCQKNA7OJ061hMPCrqDeugNBiGVIyNSwbmJ94ID5tVHKNJr
-         ywHg==
-X-Forwarded-Encrypted: i=1; AJvYcCVXau6tycgeC4NymOsb0aXZtXtL7VyxWrl3DQn8Wq+t8jIz2yiEt8n27g50fmvobXhRGCc=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy/bauBSeixn1WIr5/m81jwBwSo1rOa3ifTmUyX4ZaTXs1POh5/
-	4tC2ua5kbNM9ewvEegQSjA9MpIXb7JFwc8fV/fBjEJj3QwlLQktDLoMRYLkkMfIJ4m4eSqtZpeG
-	IajcP9YvPO0lIyO1B42ol3Xu0+oA7+4sI6N7L30Ptc/VT1xFSat8g6TOCju0=
+	s=arc-20240116; t=1768403273; c=relaxed/simple;
+	bh=ijoxmLcpYK8TmrtRBiqA3q93MmpkarK1JAhh1J+Mtr4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BMb+b3n+BpT7nDJqCzX94x0Dan9DMcxQ6YTkItB5f0ZAYPYSLOa/NrG2Gy8m+B0Fac5njWH7bK92Oh9rQGca1cEswo4Whjmo4cJuLtJhPSFd0sShZNMGMMHAON+42cPxiTkILHVI8ZqDNESasKtORQQKVAXQsqB2Rdgml4EZfvY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=DpI+2DhX; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=XVZv71+I; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Wed, 14 Jan 2026 16:07:47 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1768403269;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4C72mCKj6g75hWi4SDABu63k1LKvcFbsA+RvmMJke0I=;
+	b=DpI+2DhXGNoB3K9LoI1svHbcKbv3kxb2YyFFdspbE5qXTTBPF+9h8s+FkerT3INURZk5p/
+	kBC4L+PoGogVnYmWhgwtvG9+TCDDITAdJYtste182B6otosAomrdWroG5Tbv5B6Yc2uTQ+
+	GJQFj6T9tnxuLbW1XUpoqfqjq0CpAV1W4jvu1ogkvswQPrE/c+QHamLYa+ZiRKeKtc294b
+	psHNbgTT91lHQklnZcMYINuG1AtadMiWoojmUNN/TJd4ET2c0Qy5/mfpwRF+3VCRm8rnCG
+	VZmF0F8rXveRojhDwnXI4kf8N6X2BFd5voVKrZT9HMRi3bv38Q+SGQg7TlZtLg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1768403269;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4C72mCKj6g75hWi4SDABu63k1LKvcFbsA+RvmMJke0I=;
+	b=XVZv71+IElwl1uhi03hZmyhqfq9kC8+MP1iK9rfNstyKTMmeHAzHgb7zHvRiRzgdQqo5vQ
+	AO99yxFvYK6TmyBg==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Harry Yoo <harry.yoo@oracle.com>, Petr Tesarik <ptesarik@suse.com>,
+	Christoph Lameter <cl@gentwo.org>,
+	David Rientjes <rientjes@google.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Hao Li <hao.li@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Alexei Starovoitov <ast@kernel.org>, linux-mm <linux-mm@kvack.org>,
+	LKML <linux-kernel@vger.kernel.org>, linux-rt-devel@lists.linux.dev,
+	bpf <bpf@vger.kernel.org>, kasan-dev <kasan-dev@googlegroups.com>
+Subject: Re: [PATCH RFC v2 06/20] slab: make percpu sheaves compatible with
+ kmalloc_nolock()/kfree_nolock()
+Message-ID: <20260114150747.ziWhVVQM@linutronix.de>
+References: <20260112-sheaves-for-all-v2-0-98225cfb50cf@suse.cz>
+ <20260112-sheaves-for-all-v2-6-98225cfb50cf@suse.cz>
+ <20260113183604.ykHFYvV2@linutronix.de>
+ <CAADnVQK0Y2ha--EndLUfk_7n8na9CfnTpvqPMYbH07+MTJ9UpA@mail.gmail.com>
+ <596a5461-eb50-40e5-88ca-d5dbe1fc6a67@suse.cz>
+ <d8d25eb3-63c4-4449-ae9c-a7e4f207a2bc@suse.cz>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6820:1508:b0:659:9a49:9081 with SMTP id
- 006d021491bc7-6610097d19fmr2203064eaf.76.1768403162431; Wed, 14 Jan 2026
- 07:06:02 -0800 (PST)
-Date: Wed, 14 Jan 2026 07:06:02 -0800
-In-Reply-To: <20260114135643.17484-1-sohammetha01@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6967b0da.050a0220.150504.0003.GAE@google.com>
-Subject: Re: [syzbot] [bpf?] KMSAN: uninit-value in bpf_prog_test_run_skb
-From: syzbot <syzbot+619b9ef527f510a57cfc@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel-mentees@lists.linuxfoundation.org, linux-kernel@vger.kernel.org, 
-	martin.lau@linux.dev, sdf@fomichev.me, shuah@kernel.org, 
-	sohammetha01@gmail.com, song@kernel.org, syzkaller-bugs@googlegroups.com, 
-	yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <d8d25eb3-63c4-4449-ae9c-a7e4f207a2bc@suse.cz>
 
-Hello,
+On 2026-01-14 15:05:34 [+0100], Vlastimil Babka wrote:
+> > Yes IIRC Hao Li pointed that out before. We'll be able to remove that
+> > !preemptible() check that we area about to add by the patch above.
+> > 
+> > But I'm not sure we can remove (or "not put back") the "in_nmi() ||
+> > in_hardirq()" too, because as you said it was added with different reasoning
+> > initially?
+> 
+> Ah right, it was "copied" from alloc_frozen_pages_nolock_noprof() where it's
+> explained more, and AFAICS will be still applicable with sheaves. We should
+> add a comment to kmalloc_nolock() referring to the
+> alloc_frozen_pages_nolock_noprof() comment...
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Right. This looks halfway what I remember. And this was works in atomic
+context on RT because of rmqueue_pcplist()/ pcp_spin_trylock() usage.
 
-Reported-by: syzbot+619b9ef527f510a57cfc@syzkaller.appspotmail.com
-Tested-by: syzbot+619b9ef527f510a57cfc@syzkaller.appspotmail.com
-
-Tested on:
-
-commit:         c537e12d Merge tag 'bpf-fixes' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12188522580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=46b5f80a6e7aaa5c
-dashboard link: https://syzkaller.appspot.com/bug?extid=619b9ef527f510a57cfc
-compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=15f21d9a580000
-
-Note: testing is done by a robot and is best-effort only.
+Sebastian
 
