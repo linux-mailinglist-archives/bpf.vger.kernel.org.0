@@ -1,131 +1,155 @@
-Return-Path: <bpf+bounces-78859-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78860-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B2C6D1DBC0
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 10:54:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AE0AAD1DC08
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 10:58:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9BCD730549AA
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 09:52:27 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5E39C304A102
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 09:56:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71C0B381703;
-	Wed, 14 Jan 2026 09:52:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8660B38736B;
+	Wed, 14 Jan 2026 09:56:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OO7Fgpwv"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="cuzGVv9V"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CB14325709
-	for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 09:52:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A24137F730
+	for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 09:56:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768384346; cv=none; b=XEKPhj6llGKhEvvW3pE1LuCSXcYLglFIJ3VJOwgNeKthem+7tl1CRHlpQSlW44BNt6qsGBuJzDGQ/hTrt0R+nS5N9lVUlG1/Js3hgY0B7sFHg/PIepMwL9AvKgCmLdImbPEbQHNDY7to8OP8yMnWNTiR2P8Dmd75Yvh4W/wd/yk=
+	t=1768384585; cv=none; b=dgfvmmXB99N5/67Snja6JZIS8S7iakmGqJoBNM6KnukyYN9sTZMOw0E5FgR9i7ni4ggMW/SnqKslDSZ99IGF503nVTJVRAVf5AI9cQaE48s5icwZG8COtJTXrqsm++zO1mWL0GAjkX2tmdVfYbr1KouKir2NkgUmtg47XbxwoVo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768384346; c=relaxed/simple;
-	bh=Dzq6SMAbcHfFRJIMzWCCCgKrfkJdaUPxHNRc/88832c=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DXpjoabqo+dUcoqvE7zePE9OAXpobMygSsNwq2an9Wn1WQComU2M6qLwm8k4QpiKLuDHeZMU542iDTr2LMdFFUZYx82n28sgi2zzKiFkHLPHWoatU7qwLIbCkU4APB4V67Dwzw6uQxvq5O8259PApImfzCwY6Lrbqu3FdCZCYI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OO7Fgpwv; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-47ee3da7447so3390735e9.0
-        for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 01:52:24 -0800 (PST)
+	s=arc-20240116; t=1768384585; c=relaxed/simple;
+	bh=2Rh0E6Gp2esSNQLEh23mThKotD32Snz3s+UKt6REioQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IK4HlRO7PJ+wMbKV1JB0rbnkAt1E9Wr7p0hASz4swpupUcsgFAdGUpBDm0gJplvcI0TK14nPeXFddpLaaQXmq9cLJQC7YKaEeWtGC010emsurPJg4IKfpUT69WP7E/xu8qLQynn8Vz0s5RavWd8Prhv0b0StUcIRRDrpU6iGTpc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=cuzGVv9V; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-47ee807a4c5so1072825e9.2
+        for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 01:56:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768384343; x=1768989143; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=73XmT9Nkz/b8xnW5w5fum9Y/ieYcnHFnxskIolQuydA=;
-        b=OO7Fgpwv89ucMu4IpN0KFO6wQCIU3XI775R5MITt3n6BFH/6NPeSzJ4rCyYAqW3xws
-         FJ9UoO9VzAlnBRrxctOkjaVvpn9I52GAeEeTMGoo4/KfJ51xYtztBk6G0Nj+7nfdnZKt
-         kzWiTiTO1zhVAz2hV6CmqnnO02gzzmFP70hex9vv5I4MUBXhfE8aLaEEGHY7CF/L3ofD
-         0RENyVQK9kY/t3mrLuJNcidU6bolkq1wGwVaJCWb+SlT6ScInwfvXTDI/n9GX12oqbOy
-         VhRHSq1kVnqVmcO9ZYqKhVulMgJstLoRVc63yyQHMg9tpTk3+/FFL70kfn8UN4tTA8jS
-         cjFA==
+        d=suse.com; s=google; t=1768384582; x=1768989382; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2Rh0E6Gp2esSNQLEh23mThKotD32Snz3s+UKt6REioQ=;
+        b=cuzGVv9VoRiTO0n5U0AHz1Dj7mEX5/dWlqx6HlATMLFq/8+wrireeavC839JDi1TRm
+         EV4k7WZTBcog+7XpePwcXThq2l+TZeu7RIX/hnp0PR7/5rVSskICDZW/ZTDN/vfkOQPz
+         hnA1KZ6YjSVaXWnxKhP+kewLQizxC6dH5P0yuehBlrLybbiFa44ShyIsp9KUJG7wPl/7
+         RBDyhwuXoOqRbWIiDn9bUa30N2mBJD7sx8e6FUDqeDlYn9dlT6BPHJaj1qh+10e1CYtL
+         oRWGq6XO3dUKo0EzLuBnLlDiYg2eDOISZSoIzAZQm5zqyppr6wanoo8H+dEGtxNkaAF9
+         CKkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768384343; x=1768989143;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=73XmT9Nkz/b8xnW5w5fum9Y/ieYcnHFnxskIolQuydA=;
-        b=CEaLA0as9G5OdnzZZ6Q9eGHAgXr5jdbVnFUK5Rn3Iso/FXscniz0Uxg6mGhS26ds+y
-         o6WtXF5A3W2dMK8FP9A8xBT46YRe5dKewEtmOYaugP2a57/5m5RpnuecbWqAIxrbor4o
-         GofKVgJepptbsjnQzJCYBxwvMP3q7TWNPCn68Xx87KnqOrlx3SkRKHs2mTsVEEZKmJCg
-         fsZzXFDg9ujelczvkX4rHNAkCjq7EFRar/rKq+/YS+5Y7cqpVZfgl8Fryv5jB9vnx22j
-         nJQlOz8buH1UaVfrA+LpUE3ngLGLHSsv6z72N2+FKEblkwP/PBGszPJ4EIrKaszEd33U
-         naRA==
-X-Forwarded-Encrypted: i=1; AJvYcCX5fMjICyM9nOw2qRQv24nufvA4OXgcBzpJ+aJiZ1dqUsS0chNqbgkfi8jGxA41J7Snm2E=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyNU+TvOPp3AL93/e+xrT2tLqeVpdeMeAOPKWjDGWyZT2Pc60tJ
-	jmLaLPQ4LaUBkezSHOfEn5S9TZ7yuQ8cL0TKG+iJYhJVjR83CMYoHaOt
-X-Gm-Gg: AY/fxX6CWErVgZCOjYXL796qmCkXuNMhh3lMTrjqOUtdHqSxEbMs3HxAHoSaJ6Nh/k7
-	yNXxRC1MgdpZToxIgH5EYYuSRkh5r+yGh1UHWJ0YwqlIqFoBidqYcnw8E3kq62O+hVXiXzStl3k
-	0352SZ7tPg1rVXMSMcNMDEbQmLBo+etbL+1PPX2g3Ny46+K3aisbqc/bsqhR2MfEtePQxa5N7e+
-	bZWlS156YPd4ZS+7xCsmzFSYQFM4OVmZ11AyVl8BDhflxOu8d8FCmAFvC3JYS+H2zprbj3U+Yjh
-	Nvmq8AqXxkIgUzwdzzZLAWqECnudUZLJPNo8K+PG8sNRiVYZcGbpwdjOkeYhgbZ2hepA11p3quK
-	ulkjwi2RRtJxuCxs3N4mlNTDKDa4CKPva1erhy6fMnaXrJ9Q07vLi+9libImqMAjNilPzQzyJ/V
-	kZKlMjS04wL5ujfgRZjNdwGTMpBfebkr5X4IsypBE+A4Jk9BuzZCJL
-X-Received: by 2002:a05:600c:34d1:b0:46f:c55a:5a8d with SMTP id 5b1f17b1804b1-47ee47b9e52mr15009465e9.4.1768384342949;
-        Wed, 14 Jan 2026 01:52:22 -0800 (PST)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47ee27ce2b2sm17140995e9.5.2026.01.14.01.52.22
+        d=1e100.net; s=20230601; t=1768384582; x=1768989382;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2Rh0E6Gp2esSNQLEh23mThKotD32Snz3s+UKt6REioQ=;
+        b=O1JnMT1H7n+Kvj66dFVPSPzg8VVfDQGu706CERpVk9r2+8YVp5KMH4qtnWX3qpEZTl
+         i+SM1z8uQVkN0aa2c2VYzah4bbcZ0V2/RP9KOvPTUDXGWZl1fkMwNRM7HSRxqW9HHRW3
+         nMnYaVO0Kpkf4lxLsF1P2gV+R+uQKUjUNpnnCld+Dltz3KOM+9hPhY7Sf/HU0vYBxgP8
+         0TOpfot22YIY1IlNeatuB5XaYwF62SuZQDPorvwGrMBtqhb1n4oYTmPozgTohIOZ7Dum
+         lk0lwCxtkVg+Ly1gL67YkhLkh+YIdYoVyKZMBawhKpbGGVDbdc6oQ1TYBr+jD+VpD6ZC
+         XA6g==
+X-Forwarded-Encrypted: i=1; AJvYcCVJVpTcVl2Reb5c/MxdXLbYyB4NbR5iJYlCoSHqdMnXRhn7dIF1EiOn7HcKCWbIIpED1Q0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxxN/dcuKedkxUOicyiOtPIZTzSJ5iSDEWnej7G7a0ayWXqu2FW
+	AYOc2aeCNNGOoDbTXjOnZPcJzkvrpVgMGKWuxF5+J3aNNScyTRwiKH9nvJR8B/3e5SQ=
+X-Gm-Gg: AY/fxX6au5KsfFJp/BZLT221HltyheWCs+8YKp+lmVW3UqQpHnbz4el/ob+nWmcO5pF
+	cpyJeOb9ySpUVJPpoY1hWXFAl5KcQ6bW1K7fCaNOITwTzbJLWxAUx/KUqFW/g1bRHJ6440bf37P
+	ro/CrkEswcHpcbZ7PqQUQBReiVv8DgONcgT5S+g2Fs8IqEk0d8xreQkll405Z69TPU3qOAQANko
+	zIirFAUMLS4yjREcdG/ZB9ICrAH06lMBEGOPu/QCbwjFFOgTQZkS4F0KAZnHW/kEdEE0eVJHJXt
+	aNhMXxGAL1U5RCjY2g1ZidaJtRhiLhlsjyX11S70aIN8U3VuRfzjLoAGciuVsm3yDUJs8xoNYw8
+	PKEGy1S5aLiNdKXcR/U8PwKmjnos3W0nLvTkwqgpZweCXO9L3b7S1OstgbGXbE6MGtFbgz6FA4F
+	U6hslQIGeJUPLwqdDJylwGrPe1bRRN00s=
+X-Received: by 2002:a05:600c:6992:b0:479:3a86:dc1a with SMTP id 5b1f17b1804b1-47ee33aa21amr21454545e9.36.1768384581898;
+        Wed, 14 Jan 2026 01:56:21 -0800 (PST)
+Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47ee28144aasm16156295e9.11.2026.01.14.01.56.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jan 2026 01:52:22 -0800 (PST)
-Date: Wed, 14 Jan 2026 09:52:21 +0000
-From: David Laight <david.laight.linux@gmail.com>
-To: Menglong Dong <menglong.dong@linux.dev>
-Cc: Menglong Dong <menglong8.dong@gmail.com>, Andrii Nakryiko
- <andrii.nakryiko@gmail.com>, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, martin.lau@linux.dev, eddyz87@gmail.com,
- song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
- kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
- davem@davemloft.net, dsahern@kernel.org, tglx@linutronix.de,
- mingo@redhat.com, jiang.biao@linux.dev, bp@alien8.de,
- dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
- bpf@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v9 02/11] bpf: use last 8-bits for the nr_args
- in trampoline
-Message-ID: <20260114095221.460c059b@pumpkin>
-In-Reply-To: <2336927.iZASKD2KPV@7940hx>
-References: <20260110141115.537055-1-dongml2@chinatelecom.cn>
-	<20260110141115.537055-3-dongml2@chinatelecom.cn>
-	<CAEf4BzZKn8B_8T+ET7+cK90AfE_p918zwOKhi+iQOo5RkV8dNQ@mail.gmail.com>
-	<2336927.iZASKD2KPV@7940hx>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+        Wed, 14 Jan 2026 01:56:21 -0800 (PST)
+Date: Wed, 14 Jan 2026 10:56:19 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: roman.gushchin@linux.dev, inwardvessel@gmail.com, 
+	shakeel.butt@linux.dev, akpm@linux-foundation.org, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, yu.c.chen@intel.com, zhao1.liu@intel.com, bpf@vger.kernel.org, 
+	linux-mm@kvack.org
+Subject: Re: [RFC PATCH bpf-next 2/3] mm: add support for bpf based numa
+ balancing
+Message-ID: <cfyq2n7igavmwwf5jv5uamiyhprgsf4ez7au6ssv3rw54vjh4w@nc43vkqhz5yq>
+References: <20260113121238.11300-1-laoar.shao@gmail.com>
+ <20260113121238.11300-3-laoar.shao@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="hlubd5uybwds24at"
+Content-Disposition: inline
+In-Reply-To: <20260113121238.11300-3-laoar.shao@gmail.com>
+
+
+--hlubd5uybwds24at
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
+Subject: Re: [RFC PATCH bpf-next 2/3] mm: add support for bpf based numa
+ balancing
+MIME-Version: 1.0
 
-On Wed, 14 Jan 2026 10:19:02 +0800
-Menglong Dong <menglong.dong@linux.dev> wrote:
-
-> On 2026/1/14 09:22 Andrii Nakryiko <andrii.nakryiko@gmail.com> write:
-> > On Sat, Jan 10, 2026 at 6:11=E2=80=AFAM Menglong Dong <menglong8.dong@g=
-mail.com> wrote: =20
-> > >
-> > > For now, ctx[-1] is used to store the nr_args in the trampoline. Howe=
-ver,
-> > > 1-byte is enough to store such information. Therefore, we use only the
-> > > last byte of ctx[-1] to store the nr_args, and reserve the rest for o=
-ther =20
-> >=20
-> > Looking at the assembly below I think you are extracting the least
-> > significant byte, right? I'd definitely not call it "last" byte...
-> > Let's be precise and unambiguous here. =20
+On Tue, Jan 13, 2026 at 08:12:37PM +0800, Yafang Shao <laoar.shao@gmail.com=
+> wrote:
+> bpf_numab_ops enables NUMA balancing for tasks within a specific memcg,
+> even when global NUMA balancing is disabled. This allows selective NUMA
+> optimization for workloads that benefit from it, while avoiding potential
+> latency spikes for other workloads.
 >=20
-> Yeah, the "last 8-bits", "last byte" is ambiguous. So let's describe it as
-> "the least significant byte" here instead :)
+> The policy must be attached to a leaf memory cgroup.
 
-Or just s/last/low/
+Why this restriction?
+Do you envision how these extensions would apply hierarchically?
+Regardless of that, being a "leaf memcg" is not a stationary condition
+(mkdirs, writes to `cgroup.subtree_control`) so it should also be
+prepared for that.
 
-	David
+Also, I think (please correct me) that NUMA balancing doesn't need
+memory controller (in contrast with OOM), so the attachment shouldn't be
+through struct mem_cgroup but plain struct cgroup::bpf. If you could
+consider this or add some details about this decision, it'd be great.
 
+
+Thanks,
+Michal
+
+> To reduce lookup
+> overhead, we can cache memcg::bpf_numab in the mm_struct of tasks within
+> the memcg when it becomes a performance bottleneck.
 >=20
-> Thanks!
-> Menglong Dong
+> The cgroup ID is embedded in bpf_numab_ops as a compile-time constant,
+> which restricts each instance to a single cgroup and prevents attachment
+> to multiple cgroups. Roman is working on a solution to remove this
+> limitation, after which we can migrate to the new approach.
+>=20
+> Currently only the normal mode is supported.
+>=20
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+
+--hlubd5uybwds24at
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaWdoORsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AiIeAEAyE9SkoPTsyFkBRkyPBoC
+pzkAGjkincYpSGguv87R/CYA/AjBG2txgb/mG2NlcFAsgUWYMsnoFANpNYkc1sUa
+9lcE
+=vIqs
+-----END PGP SIGNATURE-----
+
+--hlubd5uybwds24at--
 
