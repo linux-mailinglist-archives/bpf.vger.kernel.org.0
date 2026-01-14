@@ -1,128 +1,143 @@
-Return-Path: <bpf+bounces-78821-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78822-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68643D1C287
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 03:44:26 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9AA6D1C29F
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 03:50:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id BEF983014EBD
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 02:44:25 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7695C303EBB3
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 02:49:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 678B43148C7;
-	Wed, 14 Jan 2026 02:44:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0C12320A1A;
+	Wed, 14 Jan 2026 02:49:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YBudthnk"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="e0qLopXe"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB6BAA945;
-	Wed, 14 Jan 2026 02:44:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E961731ED8F
+	for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 02:49:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768358661; cv=none; b=AOzYtxzPHaDF9GAKjIYHAgoT0TnBg0y3bYgg9erLAAKd2z/T7mZhlSbbyRdqXRiLgruDEuyX/PotrlAZRfkxCzJ9IYwI2sKFapsvigEmGgZy61RTFF5oAayq1Ne28nFHdiSszSpKDirFw26/eTUFJ/z85woWRt7kCyj7YVdV9Oc=
+	t=1768358959; cv=none; b=a4LA7+eBTQ4pF724nin1Fpjkxyc0xmsU1NdQmJhhxA6E4ViRgSdW7K89JldMYlutXOfo8JksBYb6YARTutG4S3UajKabDpK4mpbnKLVeJUwDMCULcFN8XVTpNhalZ9z21Ufy/DbRmH3i0bm1KWZZMiaHOGMxbSNDm5p7Tej54J4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768358661; c=relaxed/simple;
-	bh=Wwal9vaDVR63Q0cWKi0y+u1strxx7+v2N6jTiHNDP4I=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=H/u43R3/JYSXklpxbANtvM0fQuG8v6cBnpsqRpYhEDsAnEQee3ETdKaPavMZQGdu3YNpVa4oJy2w6iYesTmybjq37ZcFLdM1r6jLB3YoMwgdc5vCugq9LHNjLrBxfqEIoerMdotawK/O/PEK+7OMuomxqTuIxYJnjVaGtSw1Bsc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YBudthnk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 677E1C116C6;
-	Wed, 14 Jan 2026 02:44:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768358660;
-	bh=Wwal9vaDVR63Q0cWKi0y+u1strxx7+v2N6jTiHNDP4I=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=YBudthnkocEzp/9apWrCNd3oy3e0KJ/xFUQYZlJXyt7e1hm6pUrIXyb8uobdOJ3qt
-	 uNHZSNzFuh7XJZiiSvwJpT+/LhClLNxw6r33jcHCwM24gpwlTNOp8Rf76d9dWiYko6
-	 PIQnpbL6NlnZ8NBzFZByDIzRJkX/8pBbiIs8I7+Fu8GL5C+OdIzYzUvCFGbguZYskI
-	 iXADQWKqc2lwf9k4qbM7QBitH8sJmTy9udMMloYNW+eUoujiUZgjGzMjxKdsYzMyqv
-	 x3FGbhlR76/iBuLmlS4jV49PZCvnohaBOFMjA4LZYYjLQx1qWmcxnDEzBXH+5nPbWM
-	 /3ksiSTIWUJrQ==
-Content-Type: multipart/mixed; boundary="===============2427180407077981129=="
+	s=arc-20240116; t=1768358959; c=relaxed/simple;
+	bh=JMzOpBH/sHGya8kX1TuMF1RxLT5+wegAx6XPovDAt/4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=jDoSlidl5/nHbuYBbXNty+URMj44eL6M+tEALPIygarjYKlqovhDQSpLqaKWcUd5g9RWN204UrXnoo4TMpUxhOxaQHanClgmxb6tewqNpHrUuw8EVnABXFb+XBp4DnyH/ahA7ymF91whvrqYGyVaxkOYG4f6Z4s8Qv4Pz6XNYMg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=e0qLopXe; arc=none smtp.client-ip=91.218.175.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1768358946;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SHtwFTfck7NSYykC7WlGYK5asQZLLBXEjixifGG0u3A=;
+	b=e0qLopXeDHVmqYNRUjTQOjTcTP9WgPvYTx1tu6GN7T8/7KERxTtP4LMGRwrUBnScjpATjF
+	i9HpZoNNkdgKM2/82NxDFUGXtwuxHGXGXzKcnsZX5bdDdmqxuL9IA7ZqgdabtgLAkgm6Lo
+	lzLPTLFs6qrEBi14AmUTescwS+4Vl+I=
+From: Menglong Dong <menglong.dong@linux.dev>
+To: Menglong Dong <menglong8.dong@gmail.com>,
+ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+ martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
+ dsahern@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+ jiang.biao@linux.dev, bp@alien8.de, dave.hansen@linux.intel.com,
+ x86@kernel.org, hpa@zytor.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject:
+ Re: [PATCH bpf-next v9 05/11] bpf: support fsession for bpf_session_cookie
+Date: Wed, 14 Jan 2026 10:48:48 +0800
+Message-ID: <1917811.atdPhlSkOF@7940hx>
+In-Reply-To:
+ <CAEf4BzbrYMSaM-EEwz4UhZr0BG4FDyxtaG16e4z10QhmAY8o=g@mail.gmail.com>
+References:
+ <20260110141115.537055-1-dongml2@chinatelecom.cn>
+ <20260110141115.537055-6-dongml2@chinatelecom.cn>
+ <CAEf4BzbrYMSaM-EEwz4UhZr0BG4FDyxtaG16e4z10QhmAY8o=g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <718d0ad2565e1df204d3d73cc8130f7a37527e056affe7f3637f2898fb886c8f@mail.kernel.org>
-In-Reply-To: <20260114021202.1272096-1-saiaunghlyanhtet2003@gmail.com>
-References: <20260114021202.1272096-1-saiaunghlyanhtet2003@gmail.com>
-Subject: Re: [PATCH] bpf: cpumap: report queue_index to xdp_rxq_info
-From: bot+bpf-ci@kernel.org
-To: saiaunghlyanhtet2003@gmail.com,bpf@vger.kernel.org
-Cc: ast@kernel.org,daniel@iogearbox.net,john.fastabend@gmail.com,netdev@vger.kernel.org,saiaunghlyanhtet2003@gmail.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Wed, 14 Jan 2026 02:44:20 +0000 (UTC)
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+X-Migadu-Flow: FLOW_OUT
 
---===============2427180407077981129==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+On 2026/1/14 09:22 Andrii Nakryiko <andrii.nakryiko@gmail.com> write:
+> On Sat, Jan 10, 2026 at 6:12=E2=80=AFAM Menglong Dong <menglong8.dong@gma=
+il.com> wrote:
+> >
+> > Implement session cookie for fsession. In order to limit the stack usag=
+e,
+> > we make 4 as the maximum of the cookie count.
+>=20
+> This 4 is so random, tbh. Do we need to artificially limit it? Even if
+> all BPF_MAX_TRAMP_LINKS =3D 38 where using session cookies, it would be
+> 304 bytes. Not insignificant, but also not world-ending and IMO so
+> unlikely that I wouldn't add extra limits at all.
 
-> diff --git a/include/net/xdp.h b/include/net/xdp.h
-> index aa742f413c35..feafeed327a2 100644
-> --- a/include/net/xdp.h
-> +++ b/include/net/xdp.h
+I'll remove the limitation in the next version.
 
-[ ... ]
+>=20
+> >
+> > The offset of the current cookie is stored in the
+> > "(ctx[-1] >> BPF_TRAMP_M_COOKIE) & 0xFF". Therefore, we can get the
+> > session cookie with ctx[-offset].
+>=20
+>=20
+> ctx here is assumed u64 *, right? So offset is in 8-byte units? Can
+> you clarify please?
 
-> @@ -421,6 +422,7 @@ int xdp_update_frame_from_buff(const struct xdp_buff *xdp,
->  	xdp_frame->metasize = metasize;
->  	xdp_frame->frame_sz = xdp->frame_sz;
->  	xdp_frame->flags = xdp->flags;
-> +	xdp_frame->queue_index = xdp->rxq->queue_index;
->
->  	return 0;
->  }
+Yes, ctx is u64 * and the offset is 8-byte units. I'll describe it
+here.
 
-The new assignment unconditionally writes queue_index from xdp->rxq to the
-frame. Several callers of xdp_update_frame_from_buff() do not set up
-rxq.queue_index, which means they will write incorrect values.
+>=20
+> >
+> > The stack will look like this:
+> >
+> >   return value  -> 8 bytes
+> >   argN          -> 8 bytes
+> >   ...
+[...]
+> >
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index 2640ec2157e1..a416050e0dd2 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -1231,6 +1231,7 @@ enum {
+> >
+> >  #define BPF_TRAMP_M_NR_ARGS    0
+> >  #define BPF_TRAMP_M_IS_RETURN  8
+> > +#define BPF_TRAMP_M_COOKIE     9
+>=20
+> this is not wrong, but certainly weird. Why not make IS_RETURN to be
+> the upper bit (63) and keep cookie as a proper second byte?
 
-In dev_map_bpf_prog_run() (kernel/bpf/devmap.c):
+OK, I think it make sense, which can make the usage of the
+func_meta more clear. So for the flag bit, we put it at the
+high significant bit. And for the offset filed, we put it at the
+low significant bit.
 
-    struct xdp_rxq_info rxq = { .dev = rx_dev };
-    ...
-    xdp.rxq = &rxq;
-    ...
-    err = xdp_update_frame_from_buff(&xdp, xdpf);
+>=20
+>=20
+> (also I think all these should drop _M and have _SHIFT suffix)
+>=20
 
-The local rxq has queue_index implicitly set to 0, so any frame passing
-through devmap with XDP_PASS will have its queue_index overwritten to 0.
-Should devmap also preserve queue_index similar to cpumap, perhaps like:
+Glad to hear some advice about the name. I'll use it.
 
-    rxq.queue_index = xdpf->queue_index;
-
-In veth_xdp_rcv_one() (drivers/net/veth.c):
-
-    xdp_convert_frame_to_buff(frame, xdp);
-    xdp->rxq = &rq->xdp_rxq;
-    ...
-    if (xdp_update_frame_from_buff(xdp, frame))
-
-Here the frame's queue_index will be overwritten with veth's own queue
-index, not the original source queue. Is this intended behavior?
-
-Additionally, xdp_convert_zc_to_xdp_frame() in net/core/xdp.c creates
-frames for XSK buff pool memory but does not set queue_index:
-
-    xdpf = addr;
-    memset(xdpf, 0, sizeof(*xdpf));
-    ...
-    xdpf->frame_sz = PAGE_SIZE;
-    xdpf->mem_type = MEM_TYPE_PAGE_ORDER0;
-    /* queue_index not set, remains 0 from memset */
-
-Should this also copy xdp->rxq->queue_index to maintain consistency with
-the regular conversion path?
+>=20
+> >
 
 
----
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
 
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/20980088225
 
---===============2427180407077981129==--
+
 
