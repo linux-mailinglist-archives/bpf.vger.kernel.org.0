@@ -1,152 +1,141 @@
-Return-Path: <bpf+bounces-78893-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78894-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD2ADD1ECB1
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 13:34:55 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CCE7D1ECC6
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 13:35:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 94DE23043529
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 12:34:06 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 895443003FE3
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 12:35:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E743A346AC2;
-	Wed, 14 Jan 2026 12:34:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49D48399013;
+	Wed, 14 Jan 2026 12:35:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="U7PbcuUz";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="DSpaNHzN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G/zoVWmd"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8D3C395DBE
-	for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 12:34:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5752399014;
+	Wed, 14 Jan 2026 12:35:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768394045; cv=none; b=u3uocpScp3anon+Xn6DQwLslhowTX6/e5GCOvn1vCWs9UNyZCcHJJcCTogxC7fFsr0sggi346xRZT/frxvpOyjf89CtTwknG2af7HjyZGK/aZVoVD+FiWMGfQfzR3W5n3c1QP//5eVcqazUlbMoftCIo99b1qiuftMrj90h6llE=
+	t=1768394140; cv=none; b=Sw4spEVgsgLZ7lBSpr7cDWpTHUrg8zHllNmi/UJYwdDZZamxKubDAGGFaz2pRS3m48YR3WNhX9iFTaN59kYn1o/1rlNyoG4vvJTJ7xNWaqvnN7nHdYTgZhGTcV9ZO5EOajdpWHMeUBtHqrteqhmE7zZUqxWBVBP/wjwxMf5AvcQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768394045; c=relaxed/simple;
-	bh=bd6vtXKrmS6WjvXJ/4SZe+JXxr4BUxm9h6I4D8SJur8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=eKdPyE3X5sKMQSoWZ5y+1EC07cLw664UFx9ACrZKIAnTNDIg9YmN/EzABVdRvYwJIs7kB+f6mNAEInK0HQ8YKrC5Rw5VS8CJjgYO6CTYIzfVBrM83MSUh/noWh4fHEnf/W9vCAQTOLi8IuuSvShMFB816taPdAAxmckdW+UFbYU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=U7PbcuUz; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=DSpaNHzN; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1768394042;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bd6vtXKrmS6WjvXJ/4SZe+JXxr4BUxm9h6I4D8SJur8=;
-	b=U7PbcuUz3nqoMMVPIeurVdmIzLkl7xTqjNKSXqpYWiM1xHBNXr4tVKor/rfgvssSSE58yz
-	nIIvzJfd/SPwsjoYKmkIXtYWV01zypQpIaf5XUVg1Q4SqsDgVltrDqdttlgMJHhK+iwqAA
-	PoeCp9HjnkPyoFh1mHBYZB6d0F92ZC0=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-647-e6_R-Q0rPo2eAueaTbmQJw-1; Wed, 14 Jan 2026 07:34:01 -0500
-X-MC-Unique: e6_R-Q0rPo2eAueaTbmQJw-1
-X-Mimecast-MFC-AGG-ID: e6_R-Q0rPo2eAueaTbmQJw_1768394040
-Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-64d1a0f7206so8979390a12.0
-        for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 04:34:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1768394040; x=1768998840; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bd6vtXKrmS6WjvXJ/4SZe+JXxr4BUxm9h6I4D8SJur8=;
-        b=DSpaNHzNpQceUo5GheE+FhqYVER3m7XNQqPyIoXD4vGDnaNxqb9fV4eEFK4bJGUujt
-         shBYvBrNR12f+Ekw2bxvaCxyIbvGZxY3TG6yTQyyJs2sIOVkGOZRVPzvwx6QXzxq1eqG
-         gNeIUJzWv3Rtnj6VJhd9fK8wZa2/puMZfWOL0TMMdPaIZe/9xvi01yL/mCYKapOqdSso
-         mX5jnnVM3aSdOF5lWTIMhxsS8BsPk4hoOkvXMhSLlhJU/pkoZqVBrhBzxzLnLY5/69Nr
-         Gme7VKqwxeVNWE/Jb6qV0fd7yQdLehUrg3AAUL0h/YP+57H4uo+0nSPeodXQzkxnMH/x
-         dLmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768394040; x=1768998840;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-gg:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=bd6vtXKrmS6WjvXJ/4SZe+JXxr4BUxm9h6I4D8SJur8=;
-        b=lNKnhQ+QFoqtrN2VZJ/hm5PfAylq2zqPPKc1Z9XaS07P9qC4cuy7L5FGlELBaxWqrF
-         Eq1KUePOgvnWFLO0Y7uRz9quGkp3NygFQVLSd8HciOVCFb7xdprauRNFXus7kdPyCagK
-         JlYUhhLx9WlIlIBAUIYVL5Z6XvKPaHoRzV3OxNN/3sTe/2n9b0bG0CfVXeBOLkg+yR5B
-         YQfCr8AU3M7jWBrdEduO/4HFtsjc3rpaNujPLYEEfA3BBRDI9z61AoBS/goS0O7O/6od
-         uwD0UWXpx0Esooh3iH8pDMoXLf+aQe6T6xqDXVUDHwW+WeMqErk1eYgcIJOkwslVfgt+
-         VHlQ==
-X-Gm-Message-State: AOJu0Ywj3cWq4uGAep6bkFSM9LdpXvlDEA1O1+vq/EvV25UYXVQh33sT
-	vB6XG40MjvqjBClbT3r0ffrqy60L1pKgcxMjwxJzQVmzPNyMkrfAZKeUxTR4DwENR5/aKl0vJc1
-	JJ4DtX8RXD1a7l+g25ZdJjGoXh7UbQOpEnuZgQlry0m0MyNpfdPgKlQ==
-X-Gm-Gg: AY/fxX7LygxB0T4ygZh7usOpPs4RhVTnNxEA8okLjVURZ3Yc89DVCAxO6ZnWxrRPHaS
-	qf70eLAnEi0NQtaOyAEbMr/wfIN12OAa5eanE/RJMmy+AMrUhiWQwJqMnttGHJFjOvrdE+iHFVr
-	j2Wdj9mE0PHWHJbveN+6VpwEnCaRSrME0mp2dTlQe2CQwu5lKKwNCLl8n3GesXK/BVSmhpRI0BV
-	0wGetaRIqWwkJ+hmnfN01NX1/pvyyRCriir7SBAG0IMXUBfCac/M0xKU2ed96EmFOrWEJNCDqhI
-	ngadXzhnyPwO7a9j/rPmdA4RZVUNEPC1ym6xBrel/hX1Hhcxd0aVaW8GUfZzae1TLKfzemi8Es5
-	AzOlQPNQt1KQ/vlnQUWqwui5DyjnDWqNDqg==
-X-Received: by 2002:a05:6402:1d51:b0:653:7bdc:9561 with SMTP id 4fb4d7f45d1cf-653ee1692eemr1683452a12.15.1768394039747;
-        Wed, 14 Jan 2026 04:33:59 -0800 (PST)
-X-Received: by 2002:a05:6402:1d51:b0:653:7bdc:9561 with SMTP id 4fb4d7f45d1cf-653ee1692eemr1683429a12.15.1768394039373;
-        Wed, 14 Jan 2026 04:33:59 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-6507b9d51c5sm22896574a12.14.2026.01.14.04.33.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jan 2026 04:33:58 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 647BA408B93; Wed, 14 Jan 2026 13:33:56 +0100 (CET)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Sai Aung Hlyan Htet <saiaunghlyanhtet2003@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, John Fastabend
- <john.fastabend@gmail.com>, netdev@vger.kernel.org, Jesper Dangaard Brouer
- <hawk@kernel.org>, Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-Subject: Re: [bpf-next,v3] bpf: cpumap: report queue_index to xdp_rxq_info
-In-Reply-To: <CAGF5Uf7FiD_RQoFx9qLeOaCMH8QC0-n=ozg631g_5QVRHLZ27Q@mail.gmail.com>
-References: <20260114060430.1287640-1-saiaunghlyanhtet2003@gmail.com>
- <87h5so1n49.fsf@toke.dk>
- <CAGF5Uf48mRAuUZpTAGCGQtveDoDpF_1SKXFoBECqYzU4+dVwwg@mail.gmail.com>
- <87bjiw1l0v.fsf@toke.dk>
- <CAGF5Uf7FiD_RQoFx9qLeOaCMH8QC0-n=ozg631g_5QVRHLZ27Q@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Wed, 14 Jan 2026 13:33:56 +0100
-Message-ID: <87zf6gz83v.fsf@toke.dk>
+	s=arc-20240116; t=1768394140; c=relaxed/simple;
+	bh=ev6Qij2PVomzOpcTr7azRUZ5e+KCI6UhuAdUkmLUPrc=;
+	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
+	 Subject:From:To:Cc:Date; b=IbrwTggB82RJgMogcYXdxhpNo9Q5a2jBkPhTaFBnwXJ4IRKbsd6e0Ck0hBjVUqFWblzj8njc648vEGpW+aU5gC18bkQgV68gWK68HimnuSpRSilp8cH5NjJOpSvfmQnkBoPJrU0M/g7Bg9zmQkCmxbbbeBCWSCSTnvYgVdG5C+I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G/zoVWmd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C13E1C4CEF7;
+	Wed, 14 Jan 2026 12:35:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768394140;
+	bh=ev6Qij2PVomzOpcTr7azRUZ5e+KCI6UhuAdUkmLUPrc=;
+	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
+	b=G/zoVWmdhXzybUdcadiYCJpXQu4J3VXdcfvU837J9hK5D0iJPmrT3zqqQ6wb0i7/j
+	 yzq9ITcA9CKpWNe5l/hJusxB5/KqJ9TlicSuwdrk0kMIf7B+sIVO9NJs1Y30FEFAnj
+	 Z3w4oAmqc2HM5N98rk76kZUQ2ZcLZItSsBLwuArIMr3HlbaKjsjg8yeP2kXV41zYUl
+	 dy1fpIPdSnvGXD+fF9qiY7Y3sK8mCqY3gSrq34uHkJoyu4ikVlyyn1gFuDQpzknAgl
+	 Gb+vgUgflhJ41Igm2102XYyuzT0FnM7OK99wXylz936o2teDMyAF/FrdzYW7W/jZhF
+	 D4qTB9Lk2Eiow==
+Content-Type: multipart/mixed; boundary="===============7073946550903258648=="
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Message-Id: <96af90062adce57ef61ae1fd070a0e45ad2e0f9f5043603f5f671601b6f442a0@mail.kernel.org>
+In-Reply-To: <20260114114450.30405-7-adubey@linux.ibm.com>
+References: <20260114114450.30405-7-adubey@linux.ibm.com>
+Subject: Re: [PATCH v2 6/6] powerpc64/bpf: Additional NVR handling for bpf_throw
+From: bot+bpf-ci@kernel.org
+To: adubey@linux.ibm.com,bpf@vger.kernel.org,linuxppc-dev@lists.ozlabs.org,linux-kselftest@vger.kernel.org,linux-kernel@vger.kernel.org
+Cc: hbathini@linux.ibm.com,sachinpb@linux.ibm.com,venkat88@linux.ibm.com,andrii@kernel.org,eddyz87@gmail.com,mykolal@fb.com,ast@kernel.org,daniel@iogearbox.net,martin.lau@linux.dev,song@kernel.org,yonghong.song@linux.dev,john.fastabend@gmail.com,kpsingh@kernel.org,sdf@fomichev.me,haoluo@google.com,jolsa@kernel.org,christophe.leroy@csgroup.eu,naveen@kernel.org,maddy@linux.ibm.com,mpe@ellerman.id.au,npiggin@gmail.com,memxor@gmail.com,iii@linux.ibm.com,shuah@kernel.org,adubey@linux.ibm.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
+Date: Wed, 14 Jan 2026 12:35:39 +0000 (UTC)
 
-Sai Aung Hlyan Htet <saiaunghlyanhtet2003@gmail.com> writes:
+--===============7073946550903258648==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 
-> On Wed, Jan 14, 2026 at 8:39=E2=80=AFPM Toke H=C3=B8iland-J=C3=B8rgensen =
-<toke@redhat.com> wrote:
+> diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
+> index a6083dd9786c..941e0818c9ec 100644
+> --- a/arch/powerpc/net/bpf_jit_comp64.c
+> +++ b/arch/powerpc/net/bpf_jit_comp64.c
+
+[ ... ]
+
+> @@ -103,9 +119,12 @@ static inline bool bpf_has_stack_frame(struct codegen_context *ctx)
+>  *		[	  ...       	] 		|
+>  * sp (r1) --->	[    stack pointer	] --------------
+>  *		[    tail_call_info	] 8
+> - *		[   nv gpr save area	] 6*8
+> + *		[   nv gpr save area	] 6*8 + (12*8)
+>  *		[    local_tmp_var	] 24
+>  *		[   unused red zone	] 224
+> + *
+> + * Additional (12*8) in 'nv gpr save area' only in case of
+> + * exception boundary.
+>  */
+>  static int bpf_jit_stack_local(struct codegen_context *ctx)
+>  {
+> @@ -114,7 +133,11 @@ static int bpf_jit_stack_local(struct codegen_context *ctx)
+>  		return STACK_FRAME_MIN_SIZE + ctx->stack_size;
+
+Does this need to account for BPF_PPC_EXC_STACK_SAVE when
+exception_boundary or exception_cb is true?
+
+In the else branch below, the exception case is handled, but the
+bpf_has_stack_frame() case returns the same value regardless of
+exception_boundary. However, bpf_jit_build_prologue() creates a larger
+frame using BPF_PPC_EXC_STACKFRAME when exception_boundary is true.
+
+This inconsistency appears to cause bpf_jit_stack_tailcallinfo_offset()
+to return an incorrect offset when both bpf_has_stack_frame() returns
+true AND exception_boundary is true. The offset would be off by 96 bytes
+(BPF_PPC_EXC_STACK_SAVE).
+
+For example, if a program uses bpf_throw (setting exception_boundary=true)
+and also calls helper functions (setting SEEN_FUNC, making
+bpf_has_stack_frame() return true), and uses tail calls, the tail call
+handling in bpf_jit_emit_tail_call() would access the wrong stack location.
+
+>  	} else {
+>  		/* Stack layout 2 */
+> -		return -(BPF_PPC_TAILCALL + BPF_PPC_STACK_SAVE + BPF_PPC_STACK_LOCALS);
+> +		return -(BPF_PPC_TAILCALL
+> +			+ BPF_PPC_STACK_SAVE
+> +			+ (ctx->exception_boundary || ctx->exception_cb ?
+> +							BPF_PPC_EXC_STACK_SAVE:0)
+> +			+ BPF_PPC_STACK_LOCALS);
+>  	}
+>  }
+
+[ ... ]
+
+> @@ -189,7 +222,20 @@ void bpf_jit_build_prologue(u32 *image, struct codegen_context *ctx)
+>  			EMIT(PPC_RAW_STD(_R0, _R1, PPC_LR_STKOFF));
+>  		}
 >
->> Yeah, this has been discussed as well :)
->>
->> See:
->> https://netdevconf.info/0x19/sessions/talk/traits-rich-packet-metadata.h=
-tml
->>
->> Which has since evolved a bit to these series:
->>
->> https://lore.kernel.org/r/20260105-skb-meta-safeproof-netdevs-rx-only-v2=
--0-a21e679b5afa@cloudflare.com
->>
->> https://lore.kernel.org/r/20260110-skb-meta-fixup-skb_metadata_set-calls=
--v1-0-1047878ed1b0@cloudflare.com
->>
->> (Also, please don't top-post on the mailing lists)
->>
->> -Toke
->>
->
-> Thanks for the pointers. It is really great to see this series. One
-> question: Would adding queue_index to the packet traits KV store be
-> a useful follow-up once the core infrastructure lands?
+> -		EMIT(PPC_RAW_STDU(_R1, _R1, -(BPF_PPC_STACKFRAME + ctx->stack_size)));
+> +		int stack_expand = ctx->exception_boundary || ctx->exception_cb ?
+> +					BPF_PPC_EXC_STACKFRAME : BPF_PPC_STACKFRAME;
+> +		EMIT(PPC_RAW_STDU(_R1, _R1, -(stack_expand + ctx->stack_size)));
 
-Possibly? Depends on where things land, I suppose. I'd advise following
-the discussion on the list until it does :)
+The stack frame expansion here uses BPF_PPC_EXC_STACKFRAME for exception
+cases, but bpf_jit_stack_local() in the bpf_has_stack_frame() branch does
+not account for this larger frame size.
 
--Toke
+[ ... ]
 
+
+---
+AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
+
+CI run summary: https://github.com/kernel-patches/bpf/actions/runs/20993216190
+
+--===============7073946550903258648==--
 
