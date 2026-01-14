@@ -1,274 +1,129 @@
-Return-Path: <bpf+bounces-78815-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78816-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC8CCD1C203
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 03:26:21 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED322D1C227
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 03:28:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 08F82302AFB8
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 02:26:00 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 1B9B530039C2
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 02:28:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DA292FDC55;
-	Wed, 14 Jan 2026 02:25:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 919DE2FE577;
+	Wed, 14 Jan 2026 02:28:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MyGV5KzT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CxhjmmXL"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B349215077
-	for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 02:25:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D41811850A4
+	for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 02:28:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768357559; cv=none; b=dsF9a1FBp0GGZammqzQmaFr4JU0qsRMo1JtBsOOZ7CK2vGrdwEyEol6KhFddQ0H1cOsQa4nJskeap3e/PymtkV+678XVRv5SndNGyikj1SfxCGUFNf69bYgczvJRCL2OIEQoanOcBaRxUydTxNvgAqCekrufVjZlfQZdMIb7Sc4=
+	t=1768357721; cv=none; b=F/0gszpBDwUoSlCPuD2C/eucHsnRmWgZ9hwWxaDKW+dHRempGvUy43uiecnurwrUOLM9qO2XcEkHXlevuA0nlLD/KeSFSeKMLWpMHhbF83dE2Y9V46Pzb67jjqdrE7oD1ln88QWDQJpXTg5bVpdki0BOE7iFIW/3Q3KCQp+0Kc4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768357559; c=relaxed/simple;
-	bh=7QlruefSFU5VivGuOFlSA8UdtDYSuAMsvC7hc6oov/A=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Q2APSLsNDIOHsE+JYKEoCangE7WLQwK0Ynd3j7fqLP+KJiUmV5nc6qUruCIXf5CklXIJqywscgI8LwJm5vOosUYGkBm22nWr8i+3CONwpuOd/wRfdfAGFOEzgfz3nJk7Y5UG9jhIugJP2NNQrbkLlcu8PT6izdaVPyGQ5HekKsA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MyGV5KzT; arc=none smtp.client-ip=91.218.175.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1768357544;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ldPZx7QkOGGsRgh2JZ/aOzAveRu52NfE4WFpc0QdLIw=;
-	b=MyGV5KzTcjT8TyG/sLGpxECcOuUnkb9247vIpHds8u4oE3EV3Vn6Tf+Km0zU7DOBBgTw7v
-	FMCCgWlRVXePVtqoXYOjK6Jr866zIqf7SzVhMLsBqf6js8WFw6CBeYmU0sx4XHrknx8ha7
-	YoyQ55z6p27SsoJic2gTWVSywmkdf98=
-From: Menglong Dong <menglong.dong@linux.dev>
-To: Menglong Dong <menglong8.dong@gmail.com>,
- Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
- dsahern@kernel.org, tglx@linutronix.de, mingo@redhat.com,
- jiang.biao@linux.dev, bp@alien8.de, dave.hansen@linux.intel.com,
- x86@kernel.org, hpa@zytor.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject:
- Re: [PATCH bpf-next v9 04/11] bpf: support fsession for bpf_session_is_return
-Date: Wed, 14 Jan 2026 10:25:31 +0800
-Message-ID: <9562692.CDJkKcVGEf@7940hx>
-In-Reply-To:
- <CAEf4BzZBhGfWN3t0_u-1GrOxtjoJUhMk+NqAaZFnFpgB4QskHQ@mail.gmail.com>
-References:
- <20260110141115.537055-1-dongml2@chinatelecom.cn>
- <20260110141115.537055-5-dongml2@chinatelecom.cn>
- <CAEf4BzZBhGfWN3t0_u-1GrOxtjoJUhMk+NqAaZFnFpgB4QskHQ@mail.gmail.com>
+	s=arc-20240116; t=1768357721; c=relaxed/simple;
+	bh=We8ksS5J9F+fwW62K7yMl7MOkJY7HqN+JcpNG1VVuBc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CGguveKyj2HGxrWUPJWc7+SOtzkUAfFWJLK/uOGCzTwLSR9O7JuZ1lViei0oC/py6Q3dyGBOy7UWdCkLjBM6Kyxk31+n7yEEY+v5dL0a+6ZQMXduS+L9zQdpTiExZnn75AK9J0C6P6M4iUOPVVeOPhFTegcxdD6SwCJAbyPOdrw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CxhjmmXL; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-42fbc544b09so6526876f8f.1
+        for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 18:28:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1768357718; x=1768962518; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xz2i6YPOO/6xi7igT30rHEGAb7MGWdjsESuKyerDuWk=;
+        b=CxhjmmXL4an+7h2Ej2gAuMYrfb7D/45jDvlvKoNfNzdldwJ2qZONkHWKELJz5M/Yh/
+         pFLKAOb0PZk06LPp5XmwF4rmq2yNYT5+emNJwt9ZxvZKLCcd6XOEkZWSntJ711Tp5Fto
+         q9PM7crJ+ER+anl+Hhif3J8DkNLos3TNvG75RfHw88dZDF1KpMhPzHFAQVvCGORrSlZA
+         W/VGba0YZ2zgbTFGBIE43jxbPgKH63WzAeDAMm9CkqxbY5KfE7ylXg+gvzxBVEBWxgh4
+         l9FeZ36c9yS2JfkTV79zJMqvuWucrTT9F6a7pGCDgL1Zyhsm4nYlrXnWGeWok5apkRtu
+         DZ2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768357718; x=1768962518;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=xz2i6YPOO/6xi7igT30rHEGAb7MGWdjsESuKyerDuWk=;
+        b=tjpzGu8HzFtSnelKQtpaQqRgTN8D9jDJgQQ00OPS2dblhCqZeG2OzCuqWvDDs9Cb5R
+         9tyRMv8BYm31g8aP2N8C8l1uoYnN4Xp3jemsKAcPwuukNb0OEaodNIaUyJXAuiZeIe7W
+         CXsB4CKzg8iVVMGbuRc/r/fknKp1511G54Nhy++ga8Ad0kjZafwGp2g9ZVus49eEh7vG
+         3XNhX0z3atRtY7S4lB+WGG2UhdROSRHigfwR8SQEHoFr9pe9iCyE3/fvmfVmzH1NN/P/
+         p/Ng9bT0cs5hUb5NUVFrIAUj1adz8VIqtYnxEzzSWXh3MA9EDr0RUV3KGlJHe8CPA/jI
+         7osQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVo/vlHA01KyyyDWy6gLRa6r+VFL/jB6GrHusSih701ZbrPfluPZ+Q8mIMTshK/C4rI1OU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxiL1zDOzE3ipQhWyyDllE/9H/z7DEk1XgsXTecmRMi0BmRCsD0
+	yLii3CapPUTEwVn3WbAUqwbqnNus6KVQUpmR4cxtwVOf+Q93PiZ2XOjuSavf2ThxMjTq24v8DP3
+	+Xt/K0BxZwOKww4r/hWePeqJKGDXim+I=
+X-Gm-Gg: AY/fxX45V73qsFV5WiccyKIQ6EKNAZ8f+3Wq4gvXGSnZsmajxVKWdHu10rr+OGcIS3p
+	hkWNUkPV+Abaz+a+L6S2JsteNtUQYWxJ9jbfPMlqV/se55Km/X1hHH2kFAZK2pqd4Hj1p5QGaEe
+	9n2mNuhwrfcBzcwL+6s5llTuyvxJsgFhT2mbPJlCPZZSpaiHLvFp7oD0wSfdlGVwmi8oKtLfiGD
+	9fyf6bq018QLlW11K7fBMzDczuaUAcg7si9/9T3Ovqyng+j5WP5FJMkSMTA2h3rJNhpgcnsGR7O
+	xCPsIAzsaLOzbt3yM2Cag6haFVl3
+X-Received: by 2002:a5d:5f55:0:b0:429:c851:69ab with SMTP id
+ ffacd0b85a97d-4342c570c23mr829306f8f.55.1768357718101; Tue, 13 Jan 2026
+ 18:28:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20260110141115.537055-1-dongml2@chinatelecom.cn>
+In-Reply-To: <20260110141115.537055-1-dongml2@chinatelecom.cn>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 13 Jan 2026 18:28:27 -0800
+X-Gm-Features: AZwV_QgcPb0t4gTbhKnWfWd-cjU6WwacBGBgmdh2yTCRVFbx1Uq28J6usLIsSEU
+Message-ID: <CAADnVQJw6HZHqBs6JRWkHESk=tFQpki9X6TnXBLKgeAhb6FK5w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v9 00/11] bpf: fsession support
+To: Menglong Dong <menglong8.dong@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	"David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, jiang.biao@linux.dev, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>, 
+	"H. Peter Anvin" <hpa@zytor.com>, bpf <bpf@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
-X-Migadu-Flow: FLOW_OUT
 
-On 2026/1/14 09:22 Andrii Nakryiko <andrii.nakryiko@gmail.com> write:
-> On Sat, Jan 10, 2026 at 6:12=E2=80=AFAM Menglong Dong <menglong8.dong@gma=
-il.com> wrote:
-> >
-> > If fsession exists, we will use the bit (1 << BPF_TRAMP_M_IS_RETURN) in
-> > ctx[-1] to store the "is_return" flag.
-> >
-> > The logic of bpf_session_is_return() for fsession is implemented in the
-> > verifier by inline following code:
-> >
-> >   bool bpf_session_is_return(void *ctx)
-> >   {
-> >       return !!(((u64 *)ctx)[-1] & (1 << BPF_TRAMP_M_IS_RETURN));
->=20
-> this look unnecessarily scary :) !! part is unnecessary because
-> non-zero integer will be converted to proper true(1)/false(0) by
-> compiler. But I'd just rewrite it in arguably slightly simpler form
-> that lays itself to assembly more directly:
->=20
-> return ((u64 *)ctx[-1] >> BPF_TRAMP_M_IS_RETURN) & 1;
+On Sat, Jan 10, 2026 at 6:11=E2=80=AFAM Menglong Dong <menglong8.dong@gmail=
+.com> wrote:
+>
+q>
+> Changes since v8:
+> * remove the definition of bpf_fsession_cookie and bpf_fsession_is_return
+>   in the 4th and 5th patch
+> * rename emit_st_r0_imm64() to emit_store_stack_imm64() in the 6th patch
+>
+> Changes since v7:
+> * use the last byte of nr_args for bpf_get_func_arg_cnt() in the 2nd patc=
+h
+>
+> Changes since v6:
+> * change the prototype of bpf_session_cookie() and bpf_session_is_return(=
+),
+>   and reuse them instead of introduce new kfunc for fsession.
+>
+> Changes since v5:
+> * No changes in this version, just a rebase to deal with conflicts.
 
-Yeah, the C code in the comment is wrong and not corresponding
-to the inline code. I'll update it in the next version.
+When you respin please add lore links to all previous revisions,
+so it's easy to navigate to previous discussions.
+Like:
 
->=20
-> >   }
-> >
-[......]
-> >  };
-> >
-> > +#define BPF_TRAMP_M_NR_ARGS    0
-> > +#define BPF_TRAMP_M_IS_RETURN  8
->=20
-> nit: What does "M" stand for? Macro? Mask? Menglong? ;) Some new
-> convention, why?
+Changes v3->v4:
+...
+v3: https://...
 
-Ah, I think it stand for Mask. I'm not good at naming, and
-this word come to my mind when I want a prefix for the
-case ;)
-
->=20
-> > +
-> >  struct bpf_tramp_links {
-> >         struct bpf_tramp_link *links[BPF_MAX_TRAMP_LINKS];
-> >         int nr_links;
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index bfff3f84fd91..1b0292a03186 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -12374,6 +12374,7 @@ enum special_kfunc_type {
-> >         KF_bpf_arena_alloc_pages,
-> >         KF_bpf_arena_free_pages,
-> >         KF_bpf_arena_reserve_pages,
-> > +       KF_bpf_session_is_return,
-> >  };
-> >
-> >  BTF_ID_LIST(special_kfunc_list)
-> > @@ -12451,6 +12452,7 @@ BTF_ID(func, bpf_task_work_schedule_resume_impl)
-> >  BTF_ID(func, bpf_arena_alloc_pages)
-> >  BTF_ID(func, bpf_arena_free_pages)
-> >  BTF_ID(func, bpf_arena_reserve_pages)
-> > +BTF_ID(func, bpf_session_is_return)
-> >
-> >  static bool is_task_work_add_kfunc(u32 func_id)
-> >  {
-> > @@ -12505,7 +12507,8 @@ get_kfunc_ptr_arg_type(struct bpf_verifier_env =
-*env,
-> >         struct bpf_reg_state *reg =3D &regs[regno];
-> >         bool arg_mem_size =3D false;
-> >
-> > -       if (meta->func_id =3D=3D special_kfunc_list[KF_bpf_cast_to_kern=
-_ctx])
-> > +       if (meta->func_id =3D=3D special_kfunc_list[KF_bpf_cast_to_kern=
-_ctx] ||
-> > +           meta->func_id =3D=3D special_kfunc_list[KF_bpf_session_is_r=
-eturn])
-> >                 return KF_ARG_PTR_TO_CTX;
-> >
-> >         if (argno + 1 < nargs &&
-> > @@ -22558,6 +22561,16 @@ static int fixup_kfunc_call(struct bpf_verifie=
-r_env *env, struct bpf_insn *insn,
-> >                    desc->func_id =3D=3D special_kfunc_list[KF_bpf_rdonl=
-y_cast]) {
-> >                 insn_buf[0] =3D BPF_MOV64_REG(BPF_REG_0, BPF_REG_1);
-> >                 *cnt =3D 1;
-> > +       } else if (desc->func_id =3D=3D special_kfunc_list[KF_bpf_sessi=
-on_is_return] &&
-> > +                  env->prog->expected_attach_type =3D=3D BPF_TRACE_FSE=
-SSION) {
-> > +               /* implement and inline the bpf_session_is_return() for
->=20
-> nit: comment style
-
-ACK
-
->=20
-> > +                * fsession, and the logic is:
-> > +                *   return !!(((u64 *)ctx)[-1] & (1 << BPF_TRAMP_M_IS_=
-RETURN))
-> > +                */
-> > +               insn_buf[0] =3D BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_=
-1, -8);
-> > +               insn_buf[1] =3D BPF_ALU64_IMM(BPF_RSH, BPF_REG_0, BPF_T=
-RAMP_M_IS_RETURN);
-> > +               insn_buf[2] =3D BPF_ALU64_IMM(BPF_AND, BPF_REG_0, 1);
->=20
-> lol, your assembly is simpler than that C expression above, let's keep
-> C close to what you actually are doing in assembler
-
-ACK
-
->=20
-> > +               *cnt =3D 3;
-> >         }
-> >
-> >         if (env->insn_aux_data[insn_idx].arg_prog) {
-> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> > index 297dcafb2c55..1fe508d451b7 100644
-> > --- a/kernel/trace/bpf_trace.c
-> > +++ b/kernel/trace/bpf_trace.c
-> > @@ -3334,34 +3334,40 @@ __bpf_kfunc __u64 *bpf_session_cookie(void *ctx)
-> >
-> >  __bpf_kfunc_end_defs();
-> >
-> > -BTF_KFUNCS_START(kprobe_multi_kfunc_set_ids)
-> > +BTF_KFUNCS_START(session_kfunc_set_ids)
-> >  BTF_ID_FLAGS(func, bpf_session_is_return)
-> >  BTF_ID_FLAGS(func, bpf_session_cookie)
-> > -BTF_KFUNCS_END(kprobe_multi_kfunc_set_ids)
-> > +BTF_KFUNCS_END(session_kfunc_set_ids)
-> >
-> > -static int bpf_kprobe_multi_filter(const struct bpf_prog *prog, u32 kf=
-unc_id)
-> > +static int bpf_session_filter(const struct bpf_prog *prog, u32 kfunc_i=
-d)
-> >  {
-> > -       if (!btf_id_set8_contains(&kprobe_multi_kfunc_set_ids, kfunc_id=
-))
-> > +       if (!btf_id_set8_contains(&session_kfunc_set_ids, kfunc_id))
-> >                 return 0;
-> >
-> > -       if (!is_kprobe_session(prog) && !is_uprobe_session(prog))
-> > +       if (!is_kprobe_session(prog) && !is_uprobe_session(prog) &&
-> > +           prog->expected_attach_type !=3D BPF_TRACE_FSESSION)
->=20
-> check both expected_attach_type *and* prog_type, please (and I think
-> it would be good to check prog type for kprobe_session and
-> uprobe_session as well, because now it's not guaranteed that program
-> will be of BPF_PROG_TYPE_KPROBE
-
-OK, it make sense. I'll check the prog_type for all of them.
-
-Thanks!
-Menglong Dong
-
->=20
->=20
-> >                 return -EACCES;
-> >
-> >         return 0;
-> >  }
-> >
-> > -static const struct btf_kfunc_id_set bpf_kprobe_multi_kfunc_set =3D {
-> > +static const struct btf_kfunc_id_set bpf_session_kfunc_set =3D {
-> >         .owner =3D THIS_MODULE,
-> > -       .set =3D &kprobe_multi_kfunc_set_ids,
-> > -       .filter =3D bpf_kprobe_multi_filter,
-> > +       .set =3D &session_kfunc_set_ids,
-> > +       .filter =3D bpf_session_filter,
-> >  };
-> >
-> > -static int __init bpf_kprobe_multi_kfuncs_init(void)
-> > +static int __init bpf_trace_kfuncs_init(void)
-> >  {
-> > -       return register_btf_kfunc_id_set(BPF_PROG_TYPE_KPROBE, &bpf_kpr=
-obe_multi_kfunc_set);
-> > +       int err =3D 0;
-> > +
-> > +       err =3D err ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_KPROBE, =
-&bpf_session_kfunc_set);
-> > +       err =3D err ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING,=
- &bpf_session_kfunc_set);
-> > +
-> > +       return err;
-> >  }
-> >
-> > -late_initcall(bpf_kprobe_multi_kfuncs_init);
-> > +late_initcall(bpf_trace_kfuncs_init);
-> >
-> >  typedef int (*copy_fn_t)(void *dst, const void *src, u32 size, struct =
-task_struct *tsk);
-> >
-> > --
-> > 2.52.0
-> >
->=20
-
-
-
-
+Changes v2->v3:
+...
+v2: https://...
 
