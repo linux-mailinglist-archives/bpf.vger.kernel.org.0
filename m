@@ -1,165 +1,287 @@
-Return-Path: <bpf+bounces-78958-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78959-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06A39D20EAE
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 19:55:18 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B225D20F21
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 20:00:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 33F953002975
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 18:55:15 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9CBF4308110E
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 18:56:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6195933B6C8;
-	Wed, 14 Jan 2026 18:55:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0665D33B6F4;
+	Wed, 14 Jan 2026 18:56:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bn7E5lPV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LGoQRUBS"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6A48296BB7
-	for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 18:55:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F5A932D0EE
+	for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 18:56:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768416912; cv=none; b=s9G7i0Hp0PkBS4f+a90yhCRR/8b/XNhuS2PZHTVY8F/uSeiA05Mu0r2Vgl0iWxZTBLTYrL3uKCI2H66/03uCcmK4VwnyrYyWz7PfrCa2GWKQEFGmKRx8cj+ppqOR6PGvHaLpluPlk9sxtjrp6hcWDiXQJ5a8G3LxIqfUOlXJKws=
+	t=1768416993; cv=none; b=YFewf79R1jIKrg3xXGKeQU0C82GXoHOvpWewauNYHRkgm9dB0obpvDA6pg3qbgJFX/1vpC3979+zbqXnpTJaaXOisKwl5wMnYgEh3wqbwmHKXUcHKRoPve9q8oyW71Vld8QUaDnTcBUnjG+0eofVw0X4CzqLKPvuiNlGPeI8Cvo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768416912; c=relaxed/simple;
-	bh=lrMuxEmEOAPml75g9l13B3IlwvfskA2PbwhA9osSBao=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=hnTjNciO6GRQeWKUked/TEa57YDhESjpI3jKAK4zEB8vOrELbCXba/Rc2Qq+dIVeO+bLfKFfbB/qkfsQRwbjqvk/5NYaslOW/oGpxT6hjS/t2m29LPe91IZIGLmMgY+X2lxJj/FfRJkyyg+L6yfmmcpvjuJ2Xu/+YtP8J27sLjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Bn7E5lPV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 588AFC4CEF7;
-	Wed, 14 Jan 2026 18:55:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768416911;
-	bh=lrMuxEmEOAPml75g9l13B3IlwvfskA2PbwhA9osSBao=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=Bn7E5lPVh2OCUolDPrpDsYHu8AvkulkyFvtT9djJ0yDcL0UMnYUEleD7DwTRbg/Ql
-	 4Nuw/WeeNYBoSm9BAewFJAsNivyRF9uiDjfdn4dDZKf+FZIXvM9qKBbEyEfOyC0+/w
-	 7fRplWZFHKWjqsYCEPi8/8nf3D/ue+5ykJtky77wS+Zmos96TvpSX7Ag3oHYQGKFEj
-	 OYnHjNztEIqKw40GjYPPkUD4dBQh844NtdrpVo55Mt6ZGReMT3E6wFvvEd8+U64J14
-	 m57vqrms+bWH/S6O+9bOlsUf49VT7N70dfsvihCrvn2F7NB04hx9pZkHp4V97n++uj
-	 Px/CbDm8xJAHQ==
-Content-Type: multipart/mixed; boundary="===============9038223778138949013=="
+	s=arc-20240116; t=1768416993; c=relaxed/simple;
+	bh=4azGP8VcRIjSALxG8aZAYNFnLhGyrhB2MnSKXZKdT/o=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cmrB8CsS96Ir9ekjTF0+aU6LMfFNyprHpt075+fGrsxWyVITRxzjAdH1BHGxen8Qg5+kHj0SsUcPWL/stVgeD7DX01z0//BTM4kehTxmx87hsHiTpHYGgQkSX/O3BOPk7eUBWc6i2soMnggmG0+G9pJMJc9pIzCznYNAuFcHpnQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LGoQRUBS; arc=none smtp.client-ip=209.85.216.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-34c2f335681so27785a91.1
+        for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 10:56:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1768416991; x=1769021791; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/jyqCRUml6RQX1yM05nYgct3qQ9LHRmYpUM/HjuPv5M=;
+        b=LGoQRUBSupmRP6iB2j4QftDczDMNWE+pyRKa06trxzgV0cLdLa5eIXnCR7nhATE7fa
+         RxYYEKja26tOoLntochQ/st6nADBTEJFL7mJX7aDGM2toRPoemjUvdGQVOqVXl/JKSOz
+         s6S1dDgKMBm0YmeMtgr5VsLHhdjqsbDCsAqFKmwMd9iUWT2mLPRr02VgifGIq62ud+a5
+         ekmG3FO3yMufRuUNfzULh+/SjUgsxn+HjVxfDo+Xz1zXg0+SImcb4xi7cNa4T/awKMOs
+         zkN/PknwSrvDMiRdzMvcntAE0yDPkEYKboHNso8hN8JYOnwlvU+ILXb37I0v3zBUcCxn
+         OUPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768416991; x=1769021791;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=/jyqCRUml6RQX1yM05nYgct3qQ9LHRmYpUM/HjuPv5M=;
+        b=jNO86QiHju+CYgIOLgEUh2C7ZHnJ0Cccbq8aVj4IVYewxkoTDtvaDn5v7gvXGcTasr
+         EL86dL9y0VP028dw27H9s/ycNEMeQeP5CfOpCZmVQgv1z/Ch/HRvMmLoFeT55BzSuvQj
+         bDlAEhsnhzP6+W+6P4wzAthXyhompuhXxk0M3ZtCty3jekGGQBZTgEdo/aXFKgoJYMas
+         PB12I7yVg5tYyLVLpqrkOcMvqQul/TB6Kc21FJ22y7Eh43IzWZ8zkNXAAs5+6rtPnnlM
+         gPDsE4eKaa46XTra0i9NRl5xU6HGQmE4jssLvmcC3mMOKv+uzy4p7VUb0sCFQh78CZxn
+         4XRw==
+X-Forwarded-Encrypted: i=1; AJvYcCVnnlzI3wdked+BrfKNCbcI0q9mLnkcIgg4Or0TBWV3CD9bu8mkxcLcBsqZSDJ66vvgFV0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YznktvjPXRer+703WnEUgH1FwxlkHvSMpQJYSwibfpPmv1spUMZ
+	jNW2It1KhVVAKobDvpybqw/NQxfMAVmmihFIzE9/bAEorh+8UDiG5h1qqB2ip3OXu794eiMZyJ9
+	7D4S3c9NQ/FGTSDjZ3XMMMML0MB8v9YY=
+X-Gm-Gg: AY/fxX7YAsuZMiePtUmjP6gX0uCVk9gdEBAJA66nSM1ivhOaE0ibLDgzj13fcn2cPHQ
+	nRKMGTMJNYUGocqcHeN67pf1ZOgWT622cq0LrFJLWSulGuooZISYlUq3FG7rj0kvyWRrq+3kLrt
+	XWj/UIOITM3j9SfhmBzjEgxAee1R8JBOVLZ+EWyreN1fJjJZwQCmYA9amHQHOXAX/x4CohvG9pQ
+	AqOoypLaQXV4N+BMRUiIxUoZ/bfZ5NQMauLLe6AxRFJO0XB5EpWQ3uVjTESI0bpgFB0ESzXNcds
+	Lm7M/9eQGwgjXlokjBty
+X-Received: by 2002:a17:90b:3d8f:b0:32d:e07f:3236 with SMTP id
+ 98e67ed59e1d1-3510915bb29mr3671344a91.22.1768416991354; Wed, 14 Jan 2026
+ 10:56:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <119c4e576c4a9f7c4302c1f903877ad8e82e1ec7a321fcfb9763c76042ee6f5e@mail.kernel.org>
-In-Reply-To: <20260114-timer_nolock-v4-3-fa6355f51fa7@meta.com>
-References: <20260114-timer_nolock-v4-3-fa6355f51fa7@meta.com>
-Subject: Re: [PATCH RFC v4 3/8] bpf: Enable bpf timer and workqueue use in NMI
-From: bot+bpf-ci@kernel.org
-To: mykyta.yatsenko5@gmail.com,bpf@vger.kernel.org,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,kafai@meta.com,kernel-team@meta.com,memxor@gmail.com,eddyz87@gmail.com
-Cc: yatsenko@meta.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Wed, 14 Jan 2026 18:55:11 +0000 (UTC)
+References: <20260110141115.537055-1-dongml2@chinatelecom.cn>
+ <20260110141115.537055-2-dongml2@chinatelecom.cn> <CAEf4Bzb+p4fXkCL01MVrvCwPvboeMWXgu4uTSMhweO_MYL+tqg@mail.gmail.com>
+ <3026834.e9J7NaK4W3@7940hx>
+In-Reply-To: <3026834.e9J7NaK4W3@7940hx>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 14 Jan 2026 10:56:16 -0800
+X-Gm-Features: AZwV_QhhhMbgeUBMJrChYDEp9_IVNQzntrSbFWIrvtYGIewMkOM9tYD4U31ZKF0
+Message-ID: <CAEf4Bza84H=FL-KxJEFAn6pFpVBQVnvrpif6_gtf_SWHH4pRJQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v9 01/11] bpf: add fsession support
+To: Menglong Dong <menglong.dong@linux.dev>
+Cc: Menglong Dong <menglong8.dong@gmail.com>, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, eddyz87@gmail.com, 
+	song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com, 
+	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, 
+	davem@davemloft.net, dsahern@kernel.org, tglx@linutronix.de, mingo@redhat.com, 
+	jiang.biao@linux.dev, bp@alien8.de, dave.hansen@linux.intel.com, 
+	x86@kernel.org, hpa@zytor.com, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
---===============9038223778138949013==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 19ca6e772165..b5d6938d2382 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-
-[ ... ]
-
-> +static int __bpf_async_set_callback(struct bpf_async_kern *async, void *callback_fn,
-> +				    struct bpf_prog *prog)
->  {
-> -	struct bpf_prog *prev, *prog = aux->prog;
-> +	struct bpf_prog *prev;
->  	struct bpf_async_cb *cb;
-> -	int ret = 0;
+On Tue, Jan 13, 2026 at 6:11=E2=80=AFPM Menglong Dong <menglong.dong@linux.=
+dev> wrote:
 >
-> -	if (in_nmi())
-> -		return -EOPNOTSUPP;
-> -	__bpf_spin_lock_irqsave(&async->lock);
-> -	cb = async->cb;
-> -	if (!cb) {
-> -		ret = -EINVAL;
-> -		goto out;
-> -	}
-> -	if (!atomic64_read(&cb->map->usercnt)) {
-> -		/* maps with timers must be either held by user space
-> -		 * or pinned in bpffs. Otherwise timer might still be
-> -		 * running even when bpf prog is detached and user space
-> -		 * is gone, since map_release_uref won't ever be called.
-> -		 */
-> -		ret = -EPERM;
-> -		goto out;
-> -	}
-> -	prev = cb->prog;
-> -	if (prev != prog) {
-> -		/* Bump prog refcnt once. Every bpf_timer_set_callback()
-> -		 * can pick different callback_fn-s within the same prog.
-> -		 */
-> +	/* Make sure bpf_async_cb_rcu_free() is not called while here */
-> +	guard(rcu)();
-> +
-> +	cb = READ_ONCE(async->cb);
-> +	if (!cb || !prog)
-> +		return -EINVAL;
-> +
-> +	/* Additional prog's refcnt to make sure it is not dropped to 0 in the loop */
-> +	prog = bpf_prog_inc_not_zero(prog);
-> +	if (IS_ERR(prog))
-> +		return PTR_ERR(prog);
-> +
-> +	do {
->  		prog = bpf_prog_inc_not_zero(prog);
-> -		if (IS_ERR(prog)) {
-> -			ret = PTR_ERR(prog);
-> -			goto out;
-> -		}
-> +		prev = xchg(&cb->prog, prog);
-> +		rcu_assign_pointer(cb->callback_fn, callback_fn);
-> +
->  		if (prev)
-> -			/* Drop prev prog refcnt when swapping with new prog */
->  			bpf_prog_put(prev);
-> -		cb->prog = prog;
-> -	}
-> -	rcu_assign_pointer(cb->callback_fn, callback_fn);
-> -out:
-> -	__bpf_spin_unlock_irqrestore(&async->lock);
-> -	return ret;
-> +
-> +	} while (READ_ONCE(cb->prog) != prog || READ_ONCE(cb->callback_fn) != callback_fn);
-> +
-> +	bpf_prog_put(prog);
-> +
-> +	return 0;
->  }
+> On 2026/1/14 09:22 Andrii Nakryiko <andrii.nakryiko@gmail.com> write:
+> > On Sat, Jan 10, 2026 at 6:11=E2=80=AFAM Menglong Dong <menglong8.dong@g=
+mail.com> wrote:
+> > >
+> > > The fsession is something that similar to kprobe session. It allow to
+> > > attach a single BPF program to both the entry and the exit of the tar=
+get
+> > > functions.
+> > >
+> [...]
+> > > --- a/kernel/bpf/btf.c
+> > > +++ b/kernel/bpf/btf.c
+> > > @@ -6107,6 +6107,7 @@ static int btf_validate_prog_ctx_type(struct bp=
+f_verifier_log *log, const struct
+> > >                 case BPF_TRACE_FENTRY:
+> > >                 case BPF_TRACE_FEXIT:
+> > >                 case BPF_MODIFY_RETURN:
+> > > +               case BPF_TRACE_FSESSION:
+> > >                         /* allow u64* as ctx */
+> > >                         if (btf_is_int(t) && t->size =3D=3D 8)
+> > >                                 return 0;
+> > > @@ -6704,6 +6705,7 @@ bool btf_ctx_access(int off, int size, enum bpf=
+_access_type type,
+> > >                         fallthrough;
+> > >                 case BPF_LSM_CGROUP:
+> > >                 case BPF_TRACE_FEXIT:
+> > > +               case BPF_TRACE_FSESSION:
+> >
+> > According to the comment below we make this exception due to LSM.
+> > FSESSION won't be using FSESSION programs, no? So this is not
+> > necessary?
+>
+> The comment describe the LSM case here, but the code
+> here is not only for LSM. It is also for FEXIT, which makes
+> sure that we can get the return value with "ctx[nr_args]".
+> So I think we still need it here, as we need to access the
+> return value with "ctx[nr_args]" too.
 
-Can this loop leak BPF program references? If the loop iterates more
-than once due to concurrent modification, each iteration calls
-bpf_prog_inc_not_zero(prog) which increments the reference count. The
-bpf_prog_put(prev) only releases the old cb->prog reference, not the
-accumulated references on prog.
+please update the comment then as well
 
-For example, if the loop runs twice:
-  - iter 1: bpf_prog_inc_not_zero(prog) increments refcnt
-  - iter 1: xchg stores prog in cb->prog, bpf_prog_put(prev) puts old value
-  - (concurrent modification changes cb->prog)
-  - iter 2: bpf_prog_inc_not_zero(prog) increments refcnt again
-  - iter 2: xchg stores prog, bpf_prog_put(prev) puts concurrently stored value
-  - after loop: bpf_prog_put(prog) releases only one reference
-
-The commit message states "ensuring that get/put are balanced, as each
-iteration has both inc/dec", but the dec (bpf_prog_put) operates on prev,
-not on prog. When prev is a different object than prog, the reference
-taken on prog in that iteration is never released.
-
-
----
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
-
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/21005624319
-
---===============9038223778138949013==--
+>
+> >
+> > >                         /* When LSM programs are attached to void LSM=
+ hooks
+> > >                          * they use FEXIT trampolines and when attach=
+ed to
+> > >                          * int LSM hooks, they use MODIFY_RETURN tram=
+polines.
+> >
+> > [...]
+> >
+> > > @@ -4350,6 +4365,7 @@ attach_type_to_prog_type(enum bpf_attach_type a=
+ttach_type)
+> > >         case BPF_TRACE_RAW_TP:
+> > >         case BPF_TRACE_FENTRY:
+> > >         case BPF_TRACE_FEXIT:
+> > > +       case BPF_TRACE_FSESSION:
+> > >         case BPF_MODIFY_RETURN:
+> > >                 return BPF_PROG_TYPE_TRACING;
+> > >         case BPF_LSM_MAC:
+> > > diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+> > > index 2a125d063e62..11e043049d68 100644
+> > > --- a/kernel/bpf/trampoline.c
+> > > +++ b/kernel/bpf/trampoline.c
+> > > @@ -111,7 +111,7 @@ bool bpf_prog_has_trampoline(const struct bpf_pro=
+g *prog)
+> > >
+> > >         return (ptype =3D=3D BPF_PROG_TYPE_TRACING &&
+> > >                 (eatype =3D=3D BPF_TRACE_FENTRY || eatype =3D=3D BPF_=
+TRACE_FEXIT ||
+> > > -                eatype =3D=3D BPF_MODIFY_RETURN)) ||
+> > > +                eatype =3D=3D BPF_MODIFY_RETURN || eatype =3D=3D BPF=
+_TRACE_FSESSION)) ||
+> > >                 (ptype =3D=3D BPF_PROG_TYPE_LSM && eatype =3D=3D BPF_=
+LSM_MAC);
+> >
+> > this is getting crazy, switch to the switch (lol) maybe?
+>
+> ACK
+>
+> >
+> > >  }
+> > >
+> > > @@ -559,6 +559,8 @@ static enum bpf_tramp_prog_type bpf_attach_type_t=
+o_tramp(struct bpf_prog *prog)
+> > >                 return BPF_TRAMP_MODIFY_RETURN;
+> > >         case BPF_TRACE_FEXIT:
+> > >                 return BPF_TRAMP_FEXIT;
+> > > +       case BPF_TRACE_FSESSION:
+> > > +               return BPF_TRAMP_FSESSION;
+> > >         case BPF_LSM_MAC:
+> > >                 if (!prog->aux->attach_func_proto->type)
+> > >                         /* The function returns void, we cannot modif=
+y its
+> > > @@ -596,6 +598,8 @@ static int __bpf_trampoline_link_prog(struct bpf_=
+tramp_link *link,
+> > >  {
+> > >         enum bpf_tramp_prog_type kind;
+> > >         struct bpf_tramp_link *link_exiting;
+> > > +       struct bpf_fsession_link *fslink;
+> >
+> > initialize to NULL to avoid compiler (falsely, but still) complaining
+> > about potentially using uninitialized value
+>
+> ACK
+>
+> >
+> > > +       struct hlist_head *prog_list;
+> > >         int err =3D 0;
+> > >         int cnt =3D 0, i;
+> > >
+> >
+> > [...]
+> >
+> > > -       hlist_add_head(&link->tramp_hlist, &tr->progs_hlist[kind]);
+> > > -       tr->progs_cnt[kind]++;
+> > > +       hlist_add_head(&link->tramp_hlist, prog_list);
+> > > +       if (kind =3D=3D BPF_TRAMP_FSESSION) {
+> > > +               tr->progs_cnt[BPF_TRAMP_FENTRY]++;
+> > > +               fslink =3D container_of(link, struct bpf_fsession_lin=
+k, link.link);
+> > > +               hlist_add_head(&fslink->fexit.tramp_hlist,
+> > > +                              &tr->progs_hlist[BPF_TRAMP_FEXIT]);
+> >
+> > fits under 100 characters? keep on a single line then
+>
+> ACK
+>
+> >
+> > > +               tr->progs_cnt[BPF_TRAMP_FEXIT]++;
+> > > +       } else {
+> > > +               tr->progs_cnt[kind]++;
+> > > +       }
+> > >         err =3D bpf_trampoline_update(tr, true /* lock_direct_mutex *=
+/);
+> > >         if (err) {
+> > >                 hlist_del_init(&link->tramp_hlist);
+> > > -               tr->progs_cnt[kind]--;
+> > > +               if (kind =3D=3D BPF_TRAMP_FSESSION) {
+> > > +                       tr->progs_cnt[BPF_TRAMP_FENTRY]--;
+> > > +                       hlist_del_init(&fslink->fexit.tramp_hlist);
+> > > +                       tr->progs_cnt[BPF_TRAMP_FEXIT]--;
+> > > +               } else {
+> > > +                       tr->progs_cnt[kind]--;
+> > > +               }
+> > >         }
+> > >         return err;
+> > >  }
+> > > @@ -659,6 +683,7 @@ static int __bpf_trampoline_unlink_prog(struct bp=
+f_tramp_link *link,
+> > >                                         struct bpf_trampoline *tr,
+> > >                                         struct bpf_prog *tgt_prog)
+> > >  {
+> > > +       struct bpf_fsession_link *fslink;
+> >
+> > used in only one branch, move declaration there?
+>
+> ACK
+>
+> Thanks!
+> Menglong Dong
+>
+> >
+> > >         enum bpf_tramp_prog_type kind;
+> > >         int err;
+> > >
+> > > @@ -672,6 +697,11 @@ static int __bpf_trampoline_unlink_prog(struct b=
+pf_tramp_link *link,
+> > >                 guard(mutex)(&tgt_prog->aux->ext_mutex);
+> > >                 tgt_prog->aux->is_extended =3D false;
+> > >                 return err;
+> > > +       } else if (kind =3D=3D BPF_TRAMP_FSESSION) {
+> > > +               fslink =3D container_of(link, struct bpf_fsession_lin=
+k, link.link);
+> > > +               hlist_del_init(&fslink->fexit.tramp_hlist);
+> > > +               tr->progs_cnt[BPF_TRAMP_FEXIT]--;
+> > > +               kind =3D BPF_TRAMP_FENTRY;
+> > >         }
+> > >         hlist_del_init(&link->tramp_hlist);
+> > >         tr->progs_cnt[kind]--;
+> >
+> > [...]
+> >
+>
+>
+>
+>
 
