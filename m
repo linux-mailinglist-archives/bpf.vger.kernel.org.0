@@ -1,59 +1,78 @@
-Return-Path: <bpf+bounces-78923-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78924-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FB6AD1F628
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 15:20:38 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74AC9D1F8BC
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 15:53:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 75167304067E
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 14:20:17 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id ECE953004E2A
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 14:53:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6DD92D5940;
-	Wed, 14 Jan 2026 14:20:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7930D30C37B;
+	Wed, 14 Jan 2026 14:53:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="E3iDHT4q"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ljgEkqdf"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 347952D8764;
-	Wed, 14 Jan 2026 14:20:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA4273093C6
+	for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 14:53:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768400416; cv=none; b=EVevBrO3zshXRisAhsnqaiEwf/GlejXkJDuMJ5dTlBAQJzUEC8sJgoHVBIfXAcIL5OhHMTblXHhvoUoWn6ln4nnrU6nvlt0Kmw44ZZN9ShyHDQFsOiP0aGNJsGHCqI98vVUKQjqHLH2BVsX/fUxoaq7C9+0PoXqGn1zlVyqz+SE=
+	t=1768402409; cv=none; b=h8dl6DYQIVpiD2wQRC2f1f1ITMveEuDEyN+Bv2UBuXRCXfoSKTWQCiEcfHFeMjb7SABFWuIOCMBOorEw9oNXJG7Q7va833pSTYmAoDFIzuTMJ2qDXgfWYQXkYeNJ/wynylXLuwWvPZ53pbAaNLDWXaXklFVGKD/sH5PhYovZJ5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768400416; c=relaxed/simple;
-	bh=Dnkzhm5PNfDm2/SAM4ejeOMeu8dXE864k/EH5Pd4Y4U=;
+	s=arc-20240116; t=1768402409; c=relaxed/simple;
+	bh=bJcDWPvJuO2D9xax7MwED4dKERF394QQyln+yKYI1jU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MmUPTm/Pn/bC1ngWJ6X3QL9qdeKlRUjkw7uY48f0P3mBl6s1L42PMRtrrBOK8nfMFfUZXMDJ09M+6tbQD7G4kAQcjjxzfK+uHA0db/qQYDweYHDjmvw1C6VwSI2StPOlI/ai0fuN6Fm/NXjog9uZQuAftEV6Obvm+9ArkMjEx2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=E3iDHT4q; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=W1ov20gcCYTy5uZFR4YgBsR2G5T9fLx5R8aYW2yQN8Y=; b=E3iDHT4q/PxFHMrerdyjWhBj66
-	CpTysH7EXldnesAst3SAGMWkHvUln2k76GBQ+9d7DAnR0reHqh6f4PI5Hfhk2xw046XjRgG2m0QiY
-	+hY9sMvmENk4rcqVfbFasdepi4tD9fbNL4XRioZrhwYf/CEcbg8LAsjl6fSRnuu6XC1YOwShvp7SG
-	X1S1PLt3nxHDkzlRoTsTyKQHr+f2aPFeEDuHGzJ+F8YcMq6mdjeSwBboezgdC3TcW72JElVH6BFL9
-	jeEi/edeY0tzy9wnP9cGtGabH8beoG1EwbIx+o9yydV+m2k8gSH9hJJzAV1cz3w2hHtdCSC2DMeKS
-	LoN329GQ==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1vg1iq-0002ns-2O;
-	Wed, 14 Jan 2026 15:19:44 +0100
-Received: from localhost ([127.0.0.1])
-	by sslproxy02.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1vg1ip-000D2A-2T;
-	Wed, 14 Jan 2026 15:19:43 +0100
-Message-ID: <56ff9000-34e9-45ae-843e-78baab79e208@iogearbox.net>
-Date: Wed, 14 Jan 2026 15:19:42 +0100
+	 In-Reply-To:Content-Type; b=WihXY4F+2qSnTXZhgFB7b0MD2d6vs9aSZaa4OKIAsvuK5pFJJ3GJLCURxsp9yaXEA9xTzWJ7E2MitEowiVMJvkQU8+GcfNcEsGoRqDYaaRL5EpXcLLhwMDab/OKJ5l+ZBReDbzyM+sT3GXu5ZWNPulpq8ky4yQ0ptiExKVxFzKI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ljgEkqdf; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4779aa4f928so88128575e9.1
+        for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 06:53:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1768402405; x=1769007205; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KP5GmZCmlEOZQgvSMOD6VvXA7lPD27gpDehwo20k2jI=;
+        b=ljgEkqdficGwHuQBq8XO4927Vhw8NZgBd/hqtd2NvUXYhKNY/tarLGO+Bih6jJyDh3
+         WN554GFXZEuVDwAVeZ3iDnePZAuwixsgnC6X4zyrwqILOlj9LtJbk/NIULJyQNlvyT5L
+         fddl854/hgeEOvCyyLArLlu2LYXWaKMP7zh3mgb4uJdEGmI9Kvr3qWKGZc0XF+W2oYA1
+         6JkhrDaBZpoP9zfEHREV9E9hFW4ouOukylz7YaxSvJm7CrwwuvOR0yAPwOgOHTM4WOKY
+         UnTzzgpxjD59TeEGKxIF0yYr2dtKzjhI6fn1u79LkgfoQf6Qdw78yEe334fAAHbhTrd6
+         2S8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768402405; x=1769007205;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KP5GmZCmlEOZQgvSMOD6VvXA7lPD27gpDehwo20k2jI=;
+        b=t2Pknusp6calLmqmw9fUQGqKXnyCZ4K5JXQU+YAQuUu+PspC2KsIhiGJFFvzcuF54V
+         Dtn95W4vOCls5CAJAL5DQ+Qz9RPPBflUeeumQzjyoyr1fI+4F1m3UUq37ajRq5tfGL9J
+         UNIxhxG06ipISQAqv4wAM1+meAxOSe+SQDvDaiF9VsOTR0Z7ZX7DY4mji2sXtkZis09o
+         4XWJcYcRIg97vMBxx8p5XNj5BIMcJRrLGn0lI/R7TDBwLMXwnQN6o5WB7ximw9Z6vbrd
+         uJNgqJ4D13L8OwF8ZPdny7PwoedX5kcyVgFZURTd12fS0qbTwnrqNiJwCJP3s+i09lME
+         HZkA==
+X-Gm-Message-State: AOJu0YwvtMyBQQnH97m1rGEZG6vUCkCr047pphSvg9B/JzN/WNduIm0T
+	+g/jYK9iJd/DV/nXKGvt+5GU64HHDc1wyCJiH0JyBBxwdEMJFXS/Mw6m
+X-Gm-Gg: AY/fxX4NDIsfW/UZNeyttC7CUvaux3kXnobloxpE7gOmRrPuWXThwprTiAWbzKAbuaJ
+	Sma3WkhIXQRm7lXHodFgNTVXvNzpYkHSvfdlu0OkEw6d7gJQmg/tYQBMQQFXALra+BAS2a/92PQ
+	fK53cp4zH1ZhkYkr+9cJB7y9CKBoiNbG0VOFNIg6vr9d5+pjDSBIt8Q9vmLF6WaP8gTlRZM2Ewl
+	Zl1ScZvPIoWVUuvh/WO7QV8Kk2KlOisNMnCrRxDZNSPZFyzQU7f+yDSOc5wueMMu/wDhlC+bIiG
+	JVHnSsC3ZdioEvgowzlU78kelPkeP7CdJZQsr3najcYKdknqMPp99+/1WflrgVPsQeOci1Wo8v8
+	CSpp3HgrCasjtJ8NiO7d6G8JmRJlaAsJ/IYae/Q/vKmt4deYRswG4/dB7ZFip5jL8/ck8zOF8xo
+	L2NuMxbjs8sqlOVvKtEOY8iAs+vmXatMONbvDeYT9QcaKfDzFciWQzffosRI8DOSdJiINd9Oc=
+X-Received: by 2002:a5d:5d83:0:b0:430:f5ed:83f3 with SMTP id ffacd0b85a97d-4342c4f4ca9mr2873491f8f.9.1768402404742;
+        Wed, 14 Jan 2026 06:53:24 -0800 (PST)
+Received: from ?IPV6:2a01:4b00:bd1f:f500:e85d:a828:282d:d5c7? ([2a01:4b00:bd1f:f500:e85d:a828:282d:d5c7])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-432bd5feaf8sm50864812f8f.39.2026.01.14.06.53.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Jan 2026 06:53:24 -0800 (PST)
+Message-ID: <14ef41d3-778c-4fe1-841a-9caffe8e0ec9@gmail.com>
+Date: Wed, 14 Jan 2026 14:53:23 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -61,98 +80,576 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] bpftool: Add 'prepend' option for tcx attach to insert
- at chain start
-To: gyutae.opensource@navercorp.com, Quentin Monnet <qmo@kernel.org>,
- bpf@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Gyutae Bae <gyutae.bae@navercorp.com>,
- Siwan Kim <siwan.kim@navercorp.com>, Daniel Xu <dxu@dxuuu.xyz>,
- Jiayuan Chen <jiayuan.chen@linux.dev>, Tao Chen <chen.dylane@linux.dev>,
- Kumar Kartikeya Dwivedi <memxor@gmail.com>
-References: <43c23468-530b-45f3-af22-f03484e5148c@kernel.org>
- <20260112034516.22723-1-gyutae.opensource@navercorp.com>
+Subject: Re: [PATCH RFC v3 05/10] bpf: Enable bpf timer and workqueue use in
+ NMI
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com,
+ memxor@gmail.com, eddyz87@gmail.com, Mykyta Yatsenko <yatsenko@meta.com>
+References: <20260107-timer_nolock-v3-0-740d3ec3e5f9@meta.com>
+ <20260107-timer_nolock-v3-5-740d3ec3e5f9@meta.com>
+ <CAEf4BzYpZPtBFyceDfELDTg8fHFTOC+cqeTvvtWyzOtMqRc5iQ@mail.gmail.com>
 Content-Language: en-US
-From: Daniel Borkmann <daniel@iogearbox.net>
-Autocrypt: addr=daniel@iogearbox.net; keydata=
- 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
-In-Reply-To: <20260112034516.22723-1-gyutae.opensource@navercorp.com>
+From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+In-Reply-To: <CAEf4BzYpZPtBFyceDfELDTg8fHFTOC+cqeTvvtWyzOtMqRc5iQ@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: Clear (ClamAV 1.4.3/27880/Wed Jan 14 08:26:22 2026)
+Content-Transfer-Encoding: 8bit
 
-On 1/12/26 4:45 AM, gyutae.opensource@navercorp.com wrote:
-> From: Gyutae Bae <gyutae.bae@navercorp.com>
-> 
-> Add support for the 'prepend' option when attaching tcx_ingress and
-> tcx_egress programs. This option allows inserting a BPF program at
-> the beginning of the TCX chain instead of appending it at the end.
-> 
-> The implementation uses BPF_F_BEFORE flag which automatically inserts
-> the program at the beginning of the chain when no relative reference
-> is specified.
-> 
-> This change includes:
-> - Modify do_attach_tcx() to support prepend insertion using BPF_F_BEFORE
-> - Update documentation to describe the new 'prepend' option
-> - Add bash completion support for the 'prepend' option on tcx attach types
-> - Add example usage in the documentation
-> - Add validation to reject 'overwrite' for non-XDP attach types
-> 
-> The 'prepend' option is only valid for tcx_ingress and tcx_egress attach
-> types. For XDP attach types, the existing 'overwrite' option remains
-> available.
-> 
-> Example usage:
->    # bpftool net attach tcx_ingress name tc_prog dev lo prepend
-> 
-> This feature is useful when the order of program execution in the TCX
-> chain matters and users need to ensure certain programs run first.
-Acked-by: Daniel Borkmann <daniel@iogearbox.net>
+On 1/9/26 22:19, Andrii Nakryiko wrote:
+> On Wed, Jan 7, 2026 at 9:49 AM Mykyta Yatsenko
+> <mykyta.yatsenko5@gmail.com> wrote:
+>> From: Mykyta Yatsenko <yatsenko@meta.com>
+>>
+>> Refactor bpf timer and workqueue helpers to allow calling them from NMI
+>> context by making all operations lock-free and deferring NMI-unsafe
+>> work to irq_work.
+>>
+>> Previously, bpf_timer_start(), and bpf_wq_start()
+>> could not be called from NMI context because they acquired
+>> bpf_spin_lock and called hrtimer/schedule_work APIs directly. This
+>> patch removes these limitations.
+>>
+>> Key changes:
+>>   * Remove bpf_spin_lock from struct bpf_async_kern. Replace locked
+>>     operations with atomic cmpxchg() for initialization and xchg() for
+>>     cancel and free.
+>>   * Add per-async irq_work to defer NMI-unsafe operations (hrtimer_start,
+>>     hrtimer_try_to_cancel, schedule_work) from NMI to softirq context.
+>>   * Use the lock-free mpmc_cell (added in the previous commit) to pass
+>>     operation commands (start/cancel/free) along with their parameters
+>>     (nsec, mode) from NMI-safe callers to the irq_work handler.
+>>   * Add reference counting to bpf_async_cb to ensure the object stays
+>>     alive until all scheduled irq_work completes and the timer/work
+>>     callback finishes.
+>>   * Move bpf_prog_put() to RCU callback to handle races between
+>>     set_callback() and cancel_and_free().
+>>
+>> This enables BPF programs attached to NMI-context hooks (perf
+>> events) to use timers and workqueues for deferred processing.
+>>
+>> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+>> ---
+>>   kernel/bpf/helpers.c | 288 ++++++++++++++++++++++++++++++++++-----------------
+>>   1 file changed, 191 insertions(+), 97 deletions(-)
+>>
+>> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+>> index dc8ed948321e6c535d2cc2e8f9fbdd0636cdcabf..b90b005a17e1de9c0c62056a665d124b883c6320 100644
+>> --- a/kernel/bpf/helpers.c
+>> +++ b/kernel/bpf/helpers.c
+>> @@ -29,6 +29,7 @@
+>>   #include <linux/task_work.h>
+>>   #include <linux/irq_work.h>
+>>   #include <linux/buildid.h>
+>> +#include <mpmc_cell.h>
+>>
+>>   #include "../../lib/kstrtox.h"
+>>
+>> @@ -1095,6 +1096,23 @@ static void *map_key_from_value(struct bpf_map *map, void *value, u32 *arr_idx)
+>>          return (void *)value - round_up(map->key_size, 8);
+>>   }
+>>
+>> +enum bpf_async_type {
+>> +       BPF_ASYNC_TYPE_TIMER = 0,
+>> +       BPF_ASYNC_TYPE_WQ,
+>> +};
+>> +
+>> +enum bpf_async_op {
+>> +       BPF_ASYNC_START,
+>> +       BPF_ASYNC_CANCEL,
+>> +       BPF_ASYNC_CANCEL_AND_FREE,
+>> +};
+>> +
+>> +struct bpf_async_cmd {
+>> +       u64 nsec;
+>> +       u32 mode;
+>> +       u32 op;
+>> +};
+>> +
+>>   struct bpf_async_cb {
+>>          struct bpf_map *map;
+>>          struct bpf_prog *prog;
+>> @@ -1105,6 +1123,12 @@ struct bpf_async_cb {
+>>                  struct work_struct delete_work;
+>>          };
+>>          u64 flags;
+>> +       struct irq_work worker;
+>> +       struct bpf_mpmc_cell_ctl ctl;
+> nit: I'd call it more meaningful "cmd_cell"
+>
+>> +       struct bpf_async_cmd cmd[2];
+>> +       atomic_t last_seq;
+>> +       refcount_t refcnt;
+>> +       enum bpf_async_type type;
+>>   };
+>>
+>>   /* BPF map elements can contain 'struct bpf_timer'.
+>> @@ -1142,18 +1166,8 @@ struct bpf_async_kern {
+>>                  struct bpf_hrtimer *timer;
+>>                  struct bpf_work *work;
+>>          };
+>> -       /* bpf_spin_lock is used here instead of spinlock_t to make
+>> -        * sure that it always fits into space reserved by struct bpf_timer
+>> -        * regardless of LOCKDEP and spinlock debug flags.
+>> -        */
+>> -       struct bpf_spin_lock lock;
+> we have to leave dummy placeholder instead of preserve bpf_async_kern
+> size for ABI compatibility
+>
+>>   } __attribute__((aligned(8)));
+>>
+>> -enum bpf_async_type {
+>> -       BPF_ASYNC_TYPE_TIMER = 0,
+>> -       BPF_ASYNC_TYPE_WQ,
+>> -};
+>> -
+>>   static DEFINE_PER_CPU(struct bpf_hrtimer *, hrtimer_running);
+>>
+>>   static enum hrtimer_restart bpf_timer_cb(struct hrtimer *hrtimer)
+>> @@ -1219,6 +1233,13 @@ static void bpf_async_cb_rcu_free(struct rcu_head *rcu)
+>>   {
+>>          struct bpf_async_cb *cb = container_of(rcu, struct bpf_async_cb, rcu);
+>>
+>> +       /*
+>> +        * Drop the last reference to prog only after RCU GP, as set_callback()
+>> +        * may race with cancel_and_free()
+>> +        */
+>> +       if (cb->prog)
+>> +               bpf_prog_put(cb->prog);
+>> +
+>>          kfree_nolock(cb);
+>>   }
+>>
+>> @@ -1246,18 +1267,17 @@ static void bpf_timer_delete_work(struct work_struct *work)
+>>          call_rcu(&t->cb.rcu, bpf_async_cb_rcu_free);
+>>   }
+>>
+>> +static void __bpf_async_cancel_and_free(struct bpf_async_kern *async);
+>> +static void bpf_async_irq_worker(struct irq_work *work);
+>> +
+>>   static int __bpf_async_init(struct bpf_async_kern *async, struct bpf_map *map, u64 flags,
+>>                              enum bpf_async_type type)
+>>   {
+>> -       struct bpf_async_cb *cb;
+>> +       struct bpf_async_cb *cb, *old_cb;
+>>          struct bpf_hrtimer *t;
+>>          struct bpf_work *w;
+>>          clockid_t clockid;
+>>          size_t size;
+>> -       int ret = 0;
+>> -
+>> -       if (in_nmi())
+>> -               return -EOPNOTSUPP;
+>>
+>>          switch (type) {
+>>          case BPF_ASYNC_TYPE_TIMER:
+>> @@ -1270,18 +1290,13 @@ static int __bpf_async_init(struct bpf_async_kern *async, struct bpf_map *map, u
+>>                  return -EINVAL;
+>>          }
+>>
+>> -       __bpf_spin_lock_irqsave(&async->lock);
+>>          t = async->timer;
+> READ_ONCE()?
+>
+>> -       if (t) {
+>> -               ret = -EBUSY;
+>> -               goto out;
+>> -       }
+>> +       if (t)
+>> +               return -EBUSY;
+>>
+>>          cb = bpf_map_kmalloc_nolock(map, size, 0, map->numa_node);
+>> -       if (!cb) {
+>> -               ret = -ENOMEM;
+>> -               goto out;
+>> -       }
+>> +       if (!cb)
+>> +               return -ENOMEM;
+>>
+>>          switch (type) {
+>>          case BPF_ASYNC_TYPE_TIMER:
+>> @@ -1304,9 +1319,19 @@ static int __bpf_async_init(struct bpf_async_kern *async, struct bpf_map *map, u
+>>          cb->map = map;
+>>          cb->prog = NULL;
+>>          cb->flags = flags;
+>> +       cb->worker = IRQ_WORK_INIT(bpf_async_irq_worker);
+>> +       bpf_mpmc_cell_init(&cb->ctl, &cb->cmd[0], &cb->cmd[1]);
+>> +       refcount_set(&cb->refcnt, 1); /* map's reference */
+>> +       atomic_set(&cb->last_seq, 0);
+>> +       cb->type = type;
+>>          rcu_assign_pointer(cb->callback_fn, NULL);
+>>
+>> -       WRITE_ONCE(async->cb, cb);
+>> +       old_cb = cmpxchg(&async->cb, NULL, cb);
+>> +       if (old_cb) {
+>> +               /* Lost the race to initialize this bpf_async_kern, drop the allocated object */
+>> +               kfree_nolock(cb);
+>> +               return -EBUSY;
+>> +       }
+>>          /* Guarantee the order between async->cb and map->usercnt. So
+>>           * when there are concurrent uref release and bpf timer init, either
+>>           * bpf_timer_cancel_and_free() called by uref release reads a no-NULL
+>> @@ -1317,13 +1342,11 @@ static int __bpf_async_init(struct bpf_async_kern *async, struct bpf_map *map, u
+>>                  /* maps with timers must be either held by user space
+>>                   * or pinned in bpffs.
+>>                   */
+>> -               WRITE_ONCE(async->cb, NULL);
+>> -               kfree_nolock(cb);
+>> -               ret = -EPERM;
+>> +               __bpf_async_cancel_and_free(async);
+>> +               return -EPERM;
+>>          }
+>> -out:
+>> -       __bpf_spin_unlock_irqrestore(&async->lock);
+>> -       return ret;
+>> +
+>> +       return 0;
+>>   }
+>>
+>>   BPF_CALL_3(bpf_timer_init, struct bpf_async_kern *, timer, struct bpf_map *, map,
+>> @@ -1354,6 +1377,61 @@ static const struct bpf_func_proto bpf_timer_init_proto = {
+>>          .arg3_type      = ARG_ANYTHING,
+>>   };
+>>
+>> +static int bpf_async_schedule_op(struct bpf_async_cb *cb, u32 op, u64 nsec, u32 timer_mode)
+>> +{
+>> +       struct bpf_mpmc_cell_ctl *ctl = &cb->ctl;
+>> +       struct bpf_async_cmd *cmd;
+>> +
+>> +       cmd = bpf_mpmc_cell_write_begin(ctl);
+>> +       if (!cmd)
+>> +               return -EBUSY;
+>> +
+>> +       cmd->nsec = nsec;
+>> +       cmd->mode = timer_mode;
+>> +       cmd->op = op;
+>> +
+>> +       bpf_mpmc_cell_write_commit(ctl);
+>> +
+>> +       if (!refcount_inc_not_zero(&cb->refcnt))
+>> +               return -EBUSY;
+>> +
+>> +       irq_work_queue(&cb->worker);
+> if not in NMI and not irq-disabled mode, we should be able to call
+> bpf_async_irq_worker() directly here and execute action synchronously
+> without irq_work execution. Add TODO so we don't forget to implement
+> that before patch set lands?
+>
+>> +
+>> +       return 0;
+>> +}
+>> +
+>> +static int bpf_async_read_op(struct bpf_async_cb *cb, enum bpf_async_op *op,
+>> +                            u64 *nsec, u32 *flags)
+>> +{
+>> +       struct bpf_mpmc_cell_ctl *ctl = &cb->ctl;
+>> +       struct bpf_async_cmd *cmd;
+>> +       u32 seq, last_seq;
+>> +
+>> +       do {
+>> +               last_seq = atomic_read_acquire(&cb->last_seq);
+>> +               cmd = bpf_mpmc_cell_read_begin(ctl, &seq);
+>> +
+>> +               /* Return -EBUSY if current seq is consumed by another reader */
+>> +               if (seq == last_seq)
+>> +                       return -EBUSY;
+>> +
+>> +               *nsec = cmd->nsec;
+>> +               *flags = cmd->mode;
+>> +               *op = cmd->op;
+>> +
+>> +       /*
+>> +        * Retry read on one of the two conditions:
+>> +        *  1. Some writer produced new snapshot while we were reading. Our snapshot may have been
+>> +        *     modified, and not consistent.
+>> +        *  2. Another reader consumed some snapshot. We need to validate that this snapshot is not
+>> +        *     consumed. This prevents duplicate op processing.
+>> +        */
+>> +       } while (bpf_mpmc_cell_read_end(ctl, seq) == -EAGAIN ||
+> can read_end return any other error? If yes, how do we handle? If not,
+> why hard-code -EAGAIN here, maybe just `< 0` check?
+>
+>> +                atomic_cmpxchg_release(&cb->last_seq, last_seq, seq) != last_seq);
+> nit: repeat condition is complicated enough (and requires multi-line
+> weirdly indented comment), so I'd do:
+>
+> while (true) {
+>     ....
+>
+>      if (bpf_mpmc_cell_read_end(ctl, seq) < 0)
+>          continue;
+>      if (atomic_cmpxchg() == last_seq) /* success*/
+>          break;
+>
+>
+> (or invert cmpxchg + continue, and then stand-alone break)
+>
+>> +
+>> +       return 0;
+>> +}
+>> +
+>>   static int __bpf_async_set_callback(struct bpf_async_kern *async, void *callback_fn,
+>>                                      struct bpf_prog *prog)
+>>   {
+>> @@ -1395,22 +1473,19 @@ static const struct bpf_func_proto bpf_timer_set_callback_proto = {
+>>          .arg2_type      = ARG_PTR_TO_FUNC,
+>>   };
+>>
+>> -BPF_CALL_3(bpf_timer_start, struct bpf_async_kern *, timer, u64, nsecs, u64, flags)
+>> +BPF_CALL_3(bpf_timer_start, struct bpf_async_kern *, async, u64, nsecs, u64, flags)
+>>   {
+>>          struct bpf_hrtimer *t;
+>> -       int ret = 0;
+>> -       enum hrtimer_mode mode;
+>> +       u32 mode;
+>>
+>> -       if (in_nmi())
+>> -               return -EOPNOTSUPP;
+>>          if (flags & ~(BPF_F_TIMER_ABS | BPF_F_TIMER_CPU_PIN))
+>>                  return -EINVAL;
+>> -       __bpf_spin_lock_irqsave(&timer->lock);
+>> -       t = timer->timer;
+>> -       if (!t || !t->cb.prog) {
+>> -               ret = -EINVAL;
+>> -               goto out;
+>> -       }
+>> +
+>> +       guard(rcu)();
+>> +
+>> +       t = async->timer;
+> READ_ONCE()
+>
+>> +       if (!t || !t->cb.prog)
+>> +               return -EINVAL;
+>>
+>>          if (flags & BPF_F_TIMER_ABS)
+>>                  mode = HRTIMER_MODE_ABS_SOFT;
+>> @@ -1420,10 +1495,7 @@ BPF_CALL_3(bpf_timer_start, struct bpf_async_kern *, timer, u64, nsecs, u64, fla
+>>          if (flags & BPF_F_TIMER_CPU_PIN)
+>>                  mode |= HRTIMER_MODE_PINNED;
+>>
+>> -       hrtimer_start(&t->timer, ns_to_ktime(nsecs), mode);
+>> -out:
+>> -       __bpf_spin_unlock_irqrestore(&timer->lock);
+>> -       return ret;
+>> +       return bpf_async_schedule_op(&t->cb, BPF_ASYNC_START, nsecs, mode);
+>>   }
+>>
+>>   static const struct bpf_func_proto bpf_timer_start_proto = {
+>> @@ -1435,17 +1507,6 @@ static const struct bpf_func_proto bpf_timer_start_proto = {
+>>          .arg3_type      = ARG_ANYTHING,
+>>   };
+>>
+>> -static void drop_prog_refcnt(struct bpf_async_cb *async)
+>> -{
+>> -       struct bpf_prog *prog = async->prog;
+>> -
+>> -       if (prog) {
+>> -               bpf_prog_put(prog);
+>> -               async->prog = NULL;
+>> -               rcu_assign_pointer(async->callback_fn, NULL);
+>> -       }
+>> -}
+>> -
+>>   BPF_CALL_1(bpf_timer_cancel, struct bpf_async_kern *, async)
+>>   {
+>>          struct bpf_hrtimer *t, *cur_t;
+>> @@ -1513,27 +1574,16 @@ static const struct bpf_func_proto bpf_timer_cancel_proto = {
+>>          .arg1_type      = ARG_PTR_TO_TIMER,
+>>   };
+>>
+>> -static struct bpf_async_cb *__bpf_async_cancel_and_free(struct bpf_async_kern *async)
+>> +static void __bpf_async_cancel_and_free(struct bpf_async_kern *async)
+>>   {
+>>          struct bpf_async_cb *cb;
+>>
+>> -       /* Performance optimization: read async->cb without lock first. */
+>> -       if (!READ_ONCE(async->cb))
+>> -               return NULL;
+>> -
+>> -       __bpf_spin_lock_irqsave(&async->lock);
+>> -       /* re-read it under lock */
+>> -       cb = async->cb;
+>> +       cb = xchg(&async->cb, NULL);
+>>          if (!cb)
+>> -               goto out;
+>> -       drop_prog_refcnt(cb);
+>> -       /* The subsequent bpf_timer_start/cancel() helpers won't be able to use
+>> -        * this timer, since it won't be initialized.
+>> -        */
+>> -       WRITE_ONCE(async->cb, NULL);
+>> -out:
+>> -       __bpf_spin_unlock_irqrestore(&async->lock);
+>> -       return cb;
+>> +               return;
+>> +
+>> +       /* Consume map's refcnt */
+>> +       irq_work_queue(&cb->worker);
+> hm... this is subtle (and maybe broken?) irq_work_queue() can be
+> ignored here, if there is already another one scheduled, so I think
+> your clever idea with CANCEL_AND_FREE being done based on this
+> refcount drop is flawed...
+>
+> CANCEL_AND_FREE has to succeed, so it's out-of-bounds signal that
+> shouldn't be going through that command cell, yes. But can't we just
+> have a simple one-way bool that will be set to true here (+ memory
+> barriers, maybe), and then irq_work_queue() scheduled. If there is irq
+> work is scheduled, it will inevitable will see this flag (even if it's
+> not our callback), and if not, then irq_work_queue() will successfully
+> schedule callback which will also clean up.
+Thanks for pointing to this issue.
+I don't think we can solve it with a simple bool, because cleanup
+should only happen once, and only after refcnt is 0, otherwise we need 
+to go
+back to states to indicate cleanup initiation and cleanup entering (to 
+implement
+mutual exclusion of the irq_work callbacks trying to run cleanup).
+We can still solve this with the refcnt: Drop reference, if refcnt is not 0,
+we successfully released map reference and one of the scheduled irq_work 
+callbacks
+will cleanup, otherwise we took the last reference, all we need is to 
+schedule new irq_work
+(which can't fail)
+
+     if (!refcount_dec_and_test(&cb->refcnt))
+         return;
+
+     /* We took the last reference, need to schedule cleanup */
+     refcount_set(&cb->refcnt, 1);
+     irq_work_queue(&cb->worker);
+
+>
+> also, same about TODO for irq_work_queue() avoidance
+>
+>
+>>   }
+>>
+>>   static void bpf_timer_delete(struct bpf_hrtimer *t)
+>> @@ -1588,19 +1638,76 @@ static void bpf_timer_delete(struct bpf_hrtimer *t)
+>>          }
+>>   }
+>>
+>> +static void bpf_async_process_op(struct bpf_async_cb *cb, u32 op,
+>> +                                u64 timer_nsec, u32 timer_mode)
+>> +{
+>> +       switch (cb->type) {
+>> +       case BPF_ASYNC_TYPE_TIMER: {
+>> +               struct bpf_hrtimer *t = container_of(cb, struct bpf_hrtimer, cb);
+>> +
+>> +               switch (op) {
+>> +               case BPF_ASYNC_START:
+>> +                       hrtimer_start(&t->timer, ns_to_ktime(timer_nsec), timer_mode);
+>> +                       break;
+>> +               case BPF_ASYNC_CANCEL:
+>> +                       hrtimer_try_to_cancel(&t->timer);
+>> +                       break;
+>> +               case BPF_ASYNC_CANCEL_AND_FREE:
+>> +                       bpf_timer_delete(t);
+>> +                       break;
+>> +               default:
+>> +                       break;
+>> +               }
+>> +               break;
+>> +       }
+>> +       case BPF_ASYNC_TYPE_WQ: {
+>> +               struct bpf_work *w = container_of(cb, struct bpf_work, cb);
+>> +
+>> +               switch (op) {
+>> +               case BPF_ASYNC_START:
+>> +                       schedule_work(&w->work);
+>> +                       break;
+>> +               case BPF_ASYNC_CANCEL_AND_FREE:
+>> +                       /*
+>> +                        * Trigger cancel of the sleepable work, but *do not* wait for
+>> +                        * it to finish.
+>> +                        * kfree will be called once the work has finished.
+>> +                        */
+>> +                       schedule_work(&w->delete_work);
+>> +                       break;
+>> +               default:
+>> +                       break;
+>> +               }
+>> +               break;
+>> +       }
+>> +       }
+>> +}
+>> +
+>> +static void bpf_async_irq_worker(struct irq_work *work)
+>> +{
+>> +       struct bpf_async_cb *cb = container_of(work, struct bpf_async_cb, worker);
+>> +       u32 op, timer_mode;
+>> +       u64 nsec;
+>> +       int err;
+>> +
+>> +       err = bpf_async_read_op(cb, &op, &nsec, &timer_mode);
+>> +       if (err)
+>> +               goto out;
+>> +
+>> +       bpf_async_process_op(cb, op, nsec, timer_mode);
+>> +
+>> +out:
+>> +       if (refcount_dec_and_test(&cb->refcnt))
+>> +               bpf_async_process_op(cb, BPF_ASYNC_CANCEL_AND_FREE, 0, 0);
+>> +}
+>> +
+>>   /*
+>>    * This function is called by map_delete/update_elem for individual element and
+>>    * by ops->map_release_uref when the user space reference to a map reaches zero.
+>>    */
+>>   void bpf_timer_cancel_and_free(void *val)
+>>   {
+>> -       struct bpf_hrtimer *t;
+>> -
+>> -       t = (struct bpf_hrtimer *)__bpf_async_cancel_and_free(val);
+>> -       if (!t)
+>> -               return;
+>> -
+>> -       bpf_timer_delete(t);
+>> +       __bpf_async_cancel_and_free(val);
+>>   }
+>>
+>>   /* This function is called by map_delete/update_elem for individual element and
+>> @@ -1608,19 +1715,7 @@ void bpf_timer_cancel_and_free(void *val)
+>>    */
+>>   void bpf_wq_cancel_and_free(void *val)
+>>   {
+>> -       struct bpf_work *work;
+>> -
+>> -       BTF_TYPE_EMIT(struct bpf_wq);
+>> -
+>> -       work = (struct bpf_work *)__bpf_async_cancel_and_free(val);
+>> -       if (!work)
+>> -               return;
+>> -       /* Trigger cancel of the sleepable work, but *do not* wait for
+>> -        * it to finish if it was running as we might not be in a
+>> -        * sleepable context.
+>> -        * kfree will be called once the work has finished.
+>> -        */
+>> -       schedule_work(&work->delete_work);
+>> +       __bpf_async_cancel_and_free(val);
+>>   }
+>>
+>>   BPF_CALL_2(bpf_kptr_xchg, void *, dst, void *, ptr)
+>> @@ -3093,15 +3188,14 @@ __bpf_kfunc int bpf_wq_start(struct bpf_wq *wq, unsigned int flags)
+>>          struct bpf_async_kern *async = (struct bpf_async_kern *)wq;
+>>          struct bpf_work *w;
+>>
+>> -       if (in_nmi())
+>> -               return -EOPNOTSUPP;
+>>          if (flags)
+>>                  return -EINVAL;
+>>          w = READ_ONCE(async->work);
+>>          if (!w || !READ_ONCE(w->cb.prog))
+>>                  return -EINVAL;
+>>
+>> -       schedule_work(&w->work);
+>> +       bpf_async_schedule_op(&w->cb, BPF_ASYNC_START, 0, 0);
+>> +
+>>          return 0;
+>>   }
+>>
+>>
+>> --
+>> 2.52.0
+>>
+
 
