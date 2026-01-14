@@ -1,307 +1,417 @@
-Return-Path: <bpf+bounces-78931-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78932-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6489BD20215
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 17:16:42 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AF0FD20249
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 17:18:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id C1F353012943
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 16:13:07 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 200913059E95
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 16:16:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85A623A1CE3;
-	Wed, 14 Jan 2026 16:13:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4BC7244679;
+	Wed, 14 Jan 2026 16:16:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nokia-bell-labs.com header.i=@nokia-bell-labs.com header.b="P3BP0r2J"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="q1n2kqM2"
 X-Original-To: bpf@vger.kernel.org
-Received: from DUZPR83CU001.outbound.protection.outlook.com (mail-northeuropeazon11012016.outbound.protection.outlook.com [52.101.66.16])
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A83A721D585;
-	Wed, 14 Jan 2026 16:13:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.66.16
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768407182; cv=fail; b=G7fZFOKTJHm1MOuEMAzsTfqpu0uqWUW6cqrc11mqcZZGY27pevJi64TMbkqK2lHG51+2lIkUaX4uDmMu+0HG6K4TNHZ6/vwVymNfxedmNPVeyOyRCCF8mJgxAh30pzUxDUhW+W0iSTBAGpRYDQ9Lupax1mDsnj8QG7E2KDCZ8UQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768407182; c=relaxed/simple;
-	bh=gxQus86anp4NP0Z4H2L/VibXOB3V04O+qb6cOQF7rJU=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=K+9H+eIiT2RDOV1lC+413Z68a8Ire9Rh2SMSxk3+XSAnSqoR99Q0uG5vq20UmsgpqWekebb2FgViqHTTdTe5cjCk2L48JjVbVjJ87vm0TcJ9FpgGEP5ZtJnOLmyflTqoggr7DTw9EELA1/k2SvL1wrREVogWdfsdy8U7yLKu47k=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia-bell-labs.com; spf=fail smtp.mailfrom=nokia-bell-labs.com; dkim=pass (2048-bit key) header.d=nokia-bell-labs.com header.i=@nokia-bell-labs.com header.b=P3BP0r2J; arc=fail smtp.client-ip=52.101.66.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia-bell-labs.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nokia-bell-labs.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=THBkMBqGpuVPJC5W4QKC7/HmiVq2K1kQTDYwsf551JUwh0kD/HPpj0HfC/B6qpeQ1xhkTAM7HOrJDzni1cEMAcB9FsNAhXaKGgynerW6ECYGrFUMNf/7ApmtrsrzYbfTw/TAZx/LKzg4vELJIGbEyiIY0fpfPxXHITD7dsVGixEavSCR0TFWCNOrBcPpcsp8P4tmbGQSfL+Kvm2/Ujnx166NMZdM/MRos2+Qp/q1vaurXVMdYl4Hv2+uUm52gyy2ADAH4xw8GcL1kES66/p9MQUwcXJRe/UoyWMN0sZACQm2PRDWmKcj18a3KdHVh7Pbmij2iwoD1I6kQ1nT43m5kw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gxQus86anp4NP0Z4H2L/VibXOB3V04O+qb6cOQF7rJU=;
- b=akH2WxDD2uXmWQSb5l+WpldEe77izmlH8VkxQ5Z93vl672JcMKDCFymL5gLzLp0s8pYhZkQLKc+Cr4RTX0noNmYV8C1pA3CqmHRm1wb+mLUh+QhnQ+NY8RTYSLWz+08LYyGwIBqnGwhDFSP8c1ZRsPHfK3WgLWUe+hxYyNcnq1zqRPYIJ5H7lJS9DcVPOcucAYO+B3ek0ovn7hVnuf/szGMCD+Ufwt5rfwVmC4Q+vE5UPYErB8Wok9ToqCY5vK6iepirLAkI03b1TMDrWZ5MSOzLBXyW7BvKDrgslfm+sjQgk/TlQP1qeTBXEyfcggeVNcOyK6Tc0h8HbEKuG+0USQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nokia-bell-labs.com; dmarc=pass action=none
- header.from=nokia-bell-labs.com; dkim=pass header.d=nokia-bell-labs.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia-bell-labs.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gxQus86anp4NP0Z4H2L/VibXOB3V04O+qb6cOQF7rJU=;
- b=P3BP0r2JPUw4ciXMFiY7ZBRegOyAom94QP4EGt/8znvAvXz8LYdEgmXF3giLI5oDdlf1DWopjTosQYFH+VFjD2Hq+ifQtUVKozmwwWFPFI6zGIoXPU8wbbJEUiZTohKuto/FqXpxFr1KtXYHtNVG9veKUeGtjtktFzrsYd2IFaJLJIwOtjcOso1N9+Tsf2BGnxA89nPBXO3fYtuXB/GGpODFw3lI7KUcrOtyONhRfnFcv3vS8Dh2PCE6ZgeC3yXOD+6MgALY+/IxaV0AbBIpcY1LzyXDo/QnSLui4OvC9kq5O1sckOLJ7/uEYoTpCy43mJXCxs6bKkzcaNnw42HHHQ==
-Received: from PAXPR07MB7984.eurprd07.prod.outlook.com (2603:10a6:102:133::12)
- by AS8PR07MB7479.eurprd07.prod.outlook.com (2603:10a6:20b:2af::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9499.7; Wed, 14 Jan
- 2026 16:12:56 +0000
-Received: from PAXPR07MB7984.eurprd07.prod.outlook.com
- ([fe80::b7f8:dc0a:7e8d:56]) by PAXPR07MB7984.eurprd07.prod.outlook.com
- ([fe80::b7f8:dc0a:7e8d:56%2]) with mapi id 15.20.9520.005; Wed, 14 Jan 2026
- 16:12:56 +0000
-From: "Chia-Yu Chang (Nokia)" <chia-yu.chang@nokia-bell-labs.com>
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Neal Cardwell
-	<ncardwell@google.com>
-CC: "pabeni@redhat.com" <pabeni@redhat.com>, "edumazet@google.com"
-	<edumazet@google.com>, "parav@nvidia.com" <parav@nvidia.com>,
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "corbet@lwn.net"
-	<corbet@lwn.net>, "horms@kernel.org" <horms@kernel.org>, "dsahern@kernel.org"
-	<dsahern@kernel.org>, "kuniyu@google.com" <kuniyu@google.com>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>, "dave.taht@gmail.com" <dave.taht@gmail.com>,
-	"jhs@mojatatu.com" <jhs@mojatatu.com>, "kuba@kernel.org" <kuba@kernel.org>,
-	"stephen@networkplumber.org" <stephen@networkplumber.org>,
-	"xiyou.wangcong@gmail.com" <xiyou.wangcong@gmail.com>, "jiri@resnulli.us"
-	<jiri@resnulli.us>, "davem@davemloft.net" <davem@davemloft.net>,
-	"andrew+netdev@lunn.ch" <andrew+netdev@lunn.ch>, "donald.hunter@gmail.com"
-	<donald.hunter@gmail.com>, "ast@fiberby.net" <ast@fiberby.net>,
-	"liuhangbin@gmail.com" <liuhangbin@gmail.com>, "shuah@kernel.org"
-	<shuah@kernel.org>, "linux-kselftest@vger.kernel.org"
-	<linux-kselftest@vger.kernel.org>, "ij@kernel.org" <ij@kernel.org>, "Koen De
- Schepper (Nokia)" <koen.de_schepper@nokia-bell-labs.com>,
-	"g.white@cablelabs.com" <g.white@cablelabs.com>,
-	"ingemar.s.johansson@ericsson.com" <ingemar.s.johansson@ericsson.com>,
-	"mirja.kuehlewind@ericsson.com" <mirja.kuehlewind@ericsson.com>, cheshire
-	<cheshire@apple.com>, "rs.ietf@gmx.at" <rs.ietf@gmx.at>,
-	"Jason_Livingood@comcast.com" <Jason_Livingood@comcast.com>, Vidhi Goel
-	<vidhi_goel@apple.com>, Willem de Bruijn <willemb@google.com>
-Subject: RE: [PATCH net-next 1/1] selftests/net: Add packetdrill packetdrill
- cases
-Thread-Topic: [PATCH net-next 1/1] selftests/net: Add packetdrill packetdrill
- cases
-Thread-Index: AQHcgLegOXymg0Ec9k+0aqtx9yIf/LVI3+eAgAik+TCAADr7gIAAHCCQ
-Date: Wed, 14 Jan 2026 16:12:56 +0000
-Message-ID:
- <PAXPR07MB7984206EEC94880B5A7CC54AA38FA@PAXPR07MB7984.eurprd07.prod.outlook.com>
-References: <20260108155816.36001-1-chia-yu.chang@nokia-bell-labs.com>
- <20260108155816.36001-2-chia-yu.chang@nokia-bell-labs.com>
- <CADVnQykTJWJf7kjxWrdYMYaeamo20JDbd_SijTejLj1ES37j7Q@mail.gmail.com>
- <PAXPR07MB7984F8BDC1261BD144D20DCFA38FA@PAXPR07MB7984.eurprd07.prod.outlook.com>
- <willemdebruijn.kernel.a2eb52bfa5d5@gmail.com>
-In-Reply-To: <willemdebruijn.kernel.a2eb52bfa5d5@gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nokia-bell-labs.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PAXPR07MB7984:EE_|AS8PR07MB7479:EE_
-x-ms-office365-filtering-correlation-id: d694f11c-57f2-4d8f-f43c-08de5387c7ac
-x-ld-processed: 5d471751-9675-428d-917b-70f44f9630b0,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|376014|7416014|366016|1800799024|13003099007|7053199007|38070700021;
-x-microsoft-antispam-message-info:
- =?utf-8?B?WlpHR2h3MThJL3NlUnErZmZmQnM1R0dGcDg0TUhXc3N6ck54SXFKMTVTUW5n?=
- =?utf-8?B?TWVSVDFJZEIwa2RLRk5rL29wbExJMVprS0NJQXo2QU12R0s5YWtzbDcyK3dG?=
- =?utf-8?B?WkV6MGVVUVhFQ1pvcmhTa0t1aUNrZExHSFdJby9QNzRBVHdxUU9LR3k3anla?=
- =?utf-8?B?NW56SEtQMngvZG5LR2JvR3ZFRWFjS2gwT21JS1VwZ0J0K2hsQ2hQbXZBR0dv?=
- =?utf-8?B?T0pPNldETnBvaUdjamxuMEZDUGJMRnJYbjA4TTJPa09BdkMxY1VCNkpxWEhJ?=
- =?utf-8?B?TjBGbEM3M0Z2eVlKOWtaeEZ3c1ZKNVdpbGo3SUJoeDcxd2p6QUN1cEtubHpo?=
- =?utf-8?B?bk9qMVp0UEYrTVM1N21EcTJIcGYzTStNNEZlaTFQZVFmQzZQUytOVTR3enFl?=
- =?utf-8?B?Nm8vamc2M0Y0cnZER3R3Y2V2UkV5dmFzT3VtRzVveGFBcnNja0h6ZGpKU3Fl?=
- =?utf-8?B?RzJDU2ZGK3VpK2NmMXZUQmNJQ01vS29TVGZQQVh1SEZtVlB3WXNRZEZpelpT?=
- =?utf-8?B?ZUltelZLek5CaWlHNkMzbmtmZldERU9rRXkwWnY0QjBOdjdqOFJOLzJFWkxw?=
- =?utf-8?B?RTRaaHVZTUNtZVNxRVZBTUI3bG1VQXg0aURHcnJtWXJyd21aSlpJZTNlUk1x?=
- =?utf-8?B?N0ZYOGdRZUdrVVdQWG9TRUFNT3d1ZWcwcUZESWpkQmQxejNNK0s1L2wxb1Nr?=
- =?utf-8?B?MXllbHVxbG1SYmZOcG52V1F5MXJLaGxlOEkxaGZldUk1MkFLek5rRVo0R29R?=
- =?utf-8?B?ODhCUTUvYktDMnFOZWRWNWFCL0g3K1JUcTl2RGE3OG8yTWNRYmt3SkY4SFN4?=
- =?utf-8?B?d0pKVTY1QVh2UURjL2dFdEN4ZFh4SUYvQytLZm9UelFGcmVDOGdHSnRNQ2tu?=
- =?utf-8?B?ajZhZ0ZsTjBDbnl0TlBDSVU1ZzNldFo4a1dZbkdhWHhpLytaVytqWm03NVM3?=
- =?utf-8?B?VzBydVJyMzVNeTdSNFpmYmRlTjNGbXNxaVdKVE5EL05aZlpLK2pPV1FMbFQ3?=
- =?utf-8?B?ZlU5N1lYU0dYRlNJUlZXZzBLL0tRQnMzWGl4bkpESlNTVW9MWXE1dDhzOVQy?=
- =?utf-8?B?QmhuM1RIcTdQdXR5ZkQ1VUZ2RVpJRGtTMktTMVd5emRHWWpEZGtDWWY3MFo3?=
- =?utf-8?B?aWxSS1k5UXVNYy9nT0lQb0ExcFdGSEhrY2dwYzV6b3RKVUN5ajFkckRTbUY3?=
- =?utf-8?B?M3hDRXFDbTZwRGw0ZUZ1OVluS1Z6cWJpaFZoTkNETExHWmJwenVSOHlsTC9P?=
- =?utf-8?B?YnIvZzVCVnFLbjNuZ05aYlVVb1RDWWYrNkowNVVkRFFXcUg0c1dSWElTdkJX?=
- =?utf-8?B?N2lXR2FvdGk5TE9JQ3MwaEJBdVNvdU1aVWE3VjhZRWpNaW5nSEFObk5CVTNl?=
- =?utf-8?B?bFdNTVBjUW1DUVhzZFZUWWNveGRBMFYydGU0RStVOUpBTDlWeTlRNm1OaUZp?=
- =?utf-8?B?Nms3YUJ0MFRiY2ptVllVNGwzVU44T1lIcnJzb0FrSlZLZ0p4c3E1dkhnOGJi?=
- =?utf-8?B?R2plM2FkamlDaHRua2ZacXRHdkkwbjU0MkpFT1FKaDErcGhyMVUzOE5BYkxO?=
- =?utf-8?B?OHdxUnpTY2I3dzRUTzdUVW5OOSs5YnZXZzF0WCtJOXBDamtwdTJEbXhCbE11?=
- =?utf-8?B?YkRKSFMvSWlWcTVRS1FNaGMwTmh3Q2lLWHdZaG1vSG9mOFpWSlpNM2tTUnVV?=
- =?utf-8?B?ZFV2SXc0ajAranVKNWYvZ0lpWmNESllvNmsrZzdsZ0tZeXVpZllJbFQ5eDZP?=
- =?utf-8?B?amNkWTlPL0lld2c4YS9vWUJUQ0tyVXJ6Y2NPRnUrOS9EQVZMcGJHYjRTRUNC?=
- =?utf-8?B?MlRGQW5nc08zTnJhWDEzRU0ySnVDbE5QTWFoU1MvVlRxc0NuTU5VWnhiNENy?=
- =?utf-8?B?WGMzSWdzZ2FPVk1NY0lTQ0hhS1hLb2dVbk5NMU4wV1VyRStOQ3FFWXhHVERX?=
- =?utf-8?B?REtyNU5ZQVNleS9hNDB6TDNibytGUVZkczlna1lwVmpDRTd2bU9oeS9TamU3?=
- =?utf-8?B?M21pamRSdVRESm1ONDVTejZ1a2ZoMkRxZHkvclhjSUtLMlpiQTRpSjVnMndp?=
- =?utf-8?B?aGNrSk9DbHk5bmxoWFBWYTR0c3VGb2tsRXFPNG9yQlNxS3ZnY3o3aUZqYWNs?=
- =?utf-8?B?Zi9CbFpNQmMwOS9aaGZwRWhsM2YvVDVIR2lkSDNHZzdIYTNYVk14SkJnTS9q?=
- =?utf-8?Q?K/+OtP60qHaz2BBWL/Y6dXw=3D?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR07MB7984.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024)(13003099007)(7053199007)(38070700021);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?VktMRmdsaGFPUHNCNzF1bTlyNFpjMklGVEk0QVBHVmxYWTFUcFh0ZCtvYmVl?=
- =?utf-8?B?ZjFocEdmNVlVVWdNQlAxNlRrRjJ1YzBFa1BwSkJHOHlDbkpsRGJCcjBYT3Zo?=
- =?utf-8?B?M3JWc0QzaHYrcVg0MVk1bFgrdGx6dVMxYUt2U0VIelNzb0ZkUGNOOG51Qzc0?=
- =?utf-8?B?YmpnRE04V09iaGhJSUo0cVFpR2hmK0RJSXZlNmhFTlRrL0x2ZitmVFFzTkJX?=
- =?utf-8?B?SENlQkN1ekl1OGR5VWNCVWRGWjZWV2JhblU2ZWswK2VXa2g5WVRaS2I4ZGhX?=
- =?utf-8?B?ZmNsT0xkNVVGZWpUQXQ2WGlvMkJIbVk4M1p3dmZsNjVVaU5uZlF3OW1GRmM3?=
- =?utf-8?B?dEFjamdLYVRGSDV4aGtVNkFBS2tnb3RlekVwZS9OLzJJb2hSUVFxeWdmSFNP?=
- =?utf-8?B?SmVGVnBRL3QwZllJc0hiaFhKSDBVV3lZaDIwWnE5THBoa3RqaUpYY21mZ3FN?=
- =?utf-8?B?NUpXbjV0elhVWlQrdGNVZzJIcmxZbXJiMWJQTkZsZlN0TUFwRjZTandvUnh2?=
- =?utf-8?B?aXpiOGtReVV1VDVmalhqL0IxUTQzRUx3NzdZL3JIMEoyTk9NRUhZbm12YXhW?=
- =?utf-8?B?emxwMnpFWWFwdmlJUlBIRGE1aDR3TU1WVUo0U2tRZ0VzMGpjRzg2Z2ZtNWhU?=
- =?utf-8?B?cGZHU0VUNWduaU1ydnkxNkZYRnNSRjZtYzEwZDZqYzFpQXJ1d0FvZ0NiU1FN?=
- =?utf-8?B?L2xNNHRFbTFjTEkrMmgzYWNJSGlYbnFBZFJxTGJpbEhUTzZsZkJXTExlZ0dB?=
- =?utf-8?B?K3RocGJyeGFtOW5jSFdLYjJzUTdJWVhnUE8zRnlBeHZEZUVRVlB2K1lvK0F1?=
- =?utf-8?B?MjVwbmV0cU56Y21Ld3htL2JGalo3d0xJelJ4RnE1M1AyeGN2bnBSbmR3cGN0?=
- =?utf-8?B?QXJOSTIxR3VFeUNRVWcrcXY3Z2Npb2FMNFpBU01yNVVzemRBSnhSRXhZVXRR?=
- =?utf-8?B?N0lUVitlVUNkSTZhMUhMelFpQVlRTEtXY3R0cnZoWGxiWGhSZDE3ZW53R21t?=
- =?utf-8?B?S25GdWdITUlJdXRWSFhGREhmdHN0Wmw2UTJPTGM0ZkJiVWhDSy9BU253clRV?=
- =?utf-8?B?am9SWlV2NitrUXlSRTRENUYyWUhKWHdKWXNnOEJCa1Y2cHdHcFlGZEpTbjZZ?=
- =?utf-8?B?L1F0bHZJdWRRNXQvaDZkSm5hVXRKNEpGaXRzWTgzbEVwVytSY0plcEhJbUFl?=
- =?utf-8?B?VGd1ZXFud2JnMEF1TERnaXVncDBlU0RFTzI2Q09CYlVyZFJrejY4ZDRMSytG?=
- =?utf-8?B?bjZDY0FPcXN6bVZiOUNBUEpGQVVkaFd1aEkyb3o2amNTb3l6QWI1aW4wUksw?=
- =?utf-8?B?dUhhTkt0QmtOZVlhZDVCR1IzcUt4YmVkWGdtVG40Uno1T1NwL3Z2Q3dPRFZF?=
- =?utf-8?B?K3BWTE91TlFka0Q5Q0lGMVdxV3FqZ3dVK0Z4RzhrNEZRR3ZoeUQra1BwK3lp?=
- =?utf-8?B?SktkQ0FSV0FpQ3FObDA0MUtadUppRTZKUHpEZlA1aGxVNStQbVQ1Q2FXL0xp?=
- =?utf-8?B?YXBLaFBzTW9YWTRrbTNicHVRL1liNW5Vc0tpZURmQ3VqS2g2ZW1Ba0FXa3J6?=
- =?utf-8?B?cGQ5RExxRGVkejlDSHhubTVkenc4d3A0Z2JjdmhFRW1qRkRZMGhSRHRibGFx?=
- =?utf-8?B?STJkWGQwQmIvSGJhVWtzUW16RXZlUDlFci9UWW96YXJ3OVdSZzZSWTdaRFlz?=
- =?utf-8?B?a1pUWmVNdFFRdlVxVEFtMEk3WVU3U1lPVEVNNmJUbWlXdHlwL2QrWGJrQUdI?=
- =?utf-8?B?L3VRcGpIcnRiSEZZZUhQTTA2TWRCWHJLUzRkblBCei9sLy9NZE5CTmZXLzdk?=
- =?utf-8?B?WWRQTmVKYVhtZ0F2V0FyanJhSXc0WHljMDZsMVYwQmJuK2hDcENuUEpNR0wy?=
- =?utf-8?B?bnkyQmdCK0tMS2Y4T3BWNzJ0OGsxbVVsR3RIbm9vdFlIamFzVmlzdUVYaU9U?=
- =?utf-8?B?MUJldnRGYktFZUloUjRHRXRXYW1NdGdaa0oyTlZUM2pUU0RRRVBDcmVVdFZ5?=
- =?utf-8?B?RmRNcm5CWVRnVDlIUUk1S0NodUYwaVJjTUtyNWZxUW4wS2NMQzdYbnJaSnFL?=
- =?utf-8?B?b3AyTnkrRVo5VWNBa2poUmdBT2lnR0NIQWxWRGVaTlBQZEt3RzVjNEtpZDFL?=
- =?utf-8?B?OVFUNjNnTmVKTXFtU0dkS3lWY1huVmh6NnVTMmZUVWdUY3NtY0t1aHVhcmNq?=
- =?utf-8?B?WFl3UXNZeHhwdFg0QzdPZ3NHK2grbEw1VUIycUhkdi9WMlZUKzIwSkhocFp2?=
- =?utf-8?B?TFk0eEM0dWxXRE5sOGVhRDlrU0xweWRrMVpIdUxQSU1xbU4vdUNQaEtlR2tT?=
- =?utf-8?B?LzV5RG13S2dhS1dncEUvbHI3SVArcnhnbEVZWFNRYTNJMU1LVXE0L3ZRQkJq?=
- =?utf-8?Q?YQermrKfNz6Ibzb0=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4553736B045
+	for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 16:16:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768407372; cv=none; b=ts0HBmNr6tTSRMeF+IeZyvSsdCqUeOMAvLUEWXKbpeNlPq/ZDCEHJ5SafdZQHuNAgkNQ31/tH1eNlhll03vO79ui86jRhRd2SDNsLKaDOEeGSA0ulgmEIrpQOid4MmEvmGeOlXPwQZnUWFNEFAADg82wn25c1pfXZhr7KrPmDyA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768407372; c=relaxed/simple;
+	bh=qZCJFjr7yyhiGL5QufBQGxYkjQMqlOIrWFGSvnlodyE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tomQphTk9X1FV2Lxnh3tDOwyXwmrLsIQ1z0o2Xf9MY+1PVX9X06OXBW7aQxXo4sySI+un2RObXBfN7slJyfnRC/uGuJDGyXvGzLlh7ThJvrMpMTvJRG3p7PyWI7rzgJ/lskNytT0kaP/9/hoeNK/RwaR41Kr2Gk3EStKZrJ2/DA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=q1n2kqM2; arc=none smtp.client-ip=91.218.175.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <79fac2fa-b5f8-4a7e-aafb-5b80d596db34@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1768407358;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=lfIYQ+xprC85leRHg4rZRK2tgTgg0MknBkPJBLIVybY=;
+	b=q1n2kqM2r/s5cvgHzVwLEt9aueuqRepeJelHQZ0NzrVgULCkq1XlVuGVJ3txpd30nVAywU
+	/ab+Y9MnxjI9lZYwVxJ6xTB8Gfei9PKhJwTG5Fv/kEHma3f+S8WMCKF97kB7Czkb2Lcr+j
+	M38XQCLFS9Y4o669K77bfhGkSQx3vSE=
+Date: Wed, 14 Jan 2026 08:15:34 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nokia-bell-labs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR07MB7984.eurprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d694f11c-57f2-4d8f-f43c-08de5387c7ac
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Jan 2026 16:12:56.8560
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: O+GsiTJWu4pXfZc9cla3m1t2ucZGDhDJYvsGGhH2e6GfUsuQM4A/3HsTtwtPhfZhocpMiMcNFI7k4XKv9Y7kflj+ndMquHlqe71TzP7YKv5fhIBIxmLS4E8IBOYvwUf4
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR07MB7479
+Subject: Re: [PATCH dwarves 3/4] btf_encoder: Add true_signature feature
+ support for "."-suffixed functions
+Content-Language: en-GB
+To: Alan Maguire <alan.maguire@oracle.com>, mattbobrowski@google.com
+Cc: eddyz87@gmail.com, ihor.solodrai@linux.dev, jolsa@kernel.org,
+ andrii@kernel.org, ast@kernel.org, dwarves@vger.kernel.org,
+ bpf@vger.kernel.org
+References: <20260113131352.2395024-1-alan.maguire@oracle.com>
+ <20260113131352.2395024-4-alan.maguire@oracle.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20260113131352.2395024-4-alan.maguire@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBXaWxsZW0gZGUgQnJ1aWpuIDx3
-aWxsZW1kZWJydWlqbi5rZXJuZWxAZ21haWwuY29tPg0KPiBTZW50OiBXZWRuZXNkYXksIEphbnVh
-cnkgMTQsIDIwMjYgMzoxOCBQTQ0KPiBUbzogQ2hpYS1ZdSBDaGFuZyAoTm9raWEpIDxjaGlhLXl1
-LmNoYW5nQG5va2lhLWJlbGwtbGFicy5jb20+OyBOZWFsIENhcmR3ZWxsIDxuY2FyZHdlbGxAZ29v
-Z2xlLmNvbT4NCj4gQ2M6IHBhYmVuaUByZWRoYXQuY29tOyBlZHVtYXpldEBnb29nbGUuY29tOyBw
-YXJhdkBudmlkaWEuY29tOyBsaW51eC1kb2NAdmdlci5rZXJuZWwub3JnOyBjb3JiZXRAbHduLm5l
-dDsgaG9ybXNAa2VybmVsLm9yZzsgZHNhaGVybkBrZXJuZWwub3JnOyBrdW5peXVAZ29vZ2xlLmNv
-bTsgYnBmQHZnZXIua2VybmVsLm9yZzsgbmV0ZGV2QHZnZXIua2VybmVsLm9yZzsgZGF2ZS50YWh0
-QGdtYWlsLmNvbTsgamhzQG1vamF0YXR1LmNvbTsga3ViYUBrZXJuZWwub3JnOyBzdGVwaGVuQG5l
-dHdvcmtwbHVtYmVyLm9yZzsgeGl5b3Uud2FuZ2NvbmdAZ21haWwuY29tOyBqaXJpQHJlc251bGxp
-LnVzOyBkYXZlbUBkYXZlbWxvZnQubmV0OyBhbmRyZXcrbmV0ZGV2QGx1bm4uY2g7IGRvbmFsZC5o
-dW50ZXJAZ21haWwuY29tOyBhc3RAZmliZXJieS5uZXQ7IGxpdWhhbmdiaW5AZ21haWwuY29tOyBz
-aHVhaEBrZXJuZWwub3JnOyBsaW51eC1rc2VsZnRlc3RAdmdlci5rZXJuZWwub3JnOyBpakBrZXJu
-ZWwub3JnOyBLb2VuIERlIFNjaGVwcGVyIChOb2tpYSkgPGtvZW4uZGVfc2NoZXBwZXJAbm9raWEt
-YmVsbC1sYWJzLmNvbT47IGcud2hpdGVAY2FibGVsYWJzLmNvbTsgaW5nZW1hci5zLmpvaGFuc3Nv
-bkBlcmljc3Nvbi5jb207IG1pcmphLmt1ZWhsZXdpbmRAZXJpY3Nzb24uY29tOyBjaGVzaGlyZSA8
-Y2hlc2hpcmVAYXBwbGUuY29tPjsgcnMuaWV0ZkBnbXguYXQ7IEphc29uX0xpdmluZ29vZEBjb21j
-YXN0LmNvbTsgVmlkaGkgR29lbCA8dmlkaGlfZ29lbEBhcHBsZS5jb20+OyBXaWxsZW0gZGUgQnJ1
-aWpuIDx3aWxsZW1iQGdvb2dsZS5jb20+DQo+IFN1YmplY3Q6IFJFOiBbUEFUQ0ggbmV0LW5leHQg
-MS8xXSBzZWxmdGVzdHMvbmV0OiBBZGQgcGFja2V0ZHJpbGwgcGFja2V0ZHJpbGwgY2FzZXMNCj4N
-Cj4gW1lvdSBkb24ndCBvZnRlbiBnZXQgZW1haWwgZnJvbSB3aWxsZW1kZWJydWlqbi5rZXJuZWxA
-Z21haWwuY29tLiBMZWFybiB3aHkgdGhpcyBpcyBpbXBvcnRhbnQgYXQgaHR0cHM6Ly9ha2EubXMv
-TGVhcm5BYm91dFNlbmRlcklkZW50aWZpY2F0aW9uIF0NCj4NCj4gQ0FVVElPTjogVGhpcyBpcyBh
-biBleHRlcm5hbCBlbWFpbC4gUGxlYXNlIGJlIHZlcnkgY2FyZWZ1bCB3aGVuIGNsaWNraW5nIGxp
-bmtzIG9yIG9wZW5pbmcgYXR0YWNobWVudHMuIFNlZSB0aGUgVVJMIG5vay5pdC9leHQgZm9yIGFk
-ZGl0aW9uYWwgaW5mb3JtYXRpb24uDQo+DQo+DQo+DQo+IENoaWEtWXUgQ2hhbmcgKE5va2lhKSB3
-cm90ZToNCj4gPiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4gPiBGcm9tOiBOZWFs
-IENhcmR3ZWxsIDxuY2FyZHdlbGxAZ29vZ2xlLmNvbT4NCj4gPiA+IFNlbnQ6IFRodXJzZGF5LCBK
-YW51YXJ5IDgsIDIwMjYgMTE6NDcgUE0NCj4gPiA+IFRvOiBDaGlhLVl1IENoYW5nIChOb2tpYSkg
-PGNoaWEteXUuY2hhbmdAbm9raWEtYmVsbC1sYWJzLmNvbT4NCj4gPiA+IENjOiBwYWJlbmlAcmVk
-aGF0LmNvbTsgZWR1bWF6ZXRAZ29vZ2xlLmNvbTsgcGFyYXZAbnZpZGlhLmNvbTsNCj4gPiA+IGxp
-bnV4LWRvY0B2Z2VyLmtlcm5lbC5vcmc7IGNvcmJldEBsd24ubmV0OyBob3Jtc0BrZXJuZWwub3Jn
-Ow0KPiA+ID4gZHNhaGVybkBrZXJuZWwub3JnOyBrdW5peXVAZ29vZ2xlLmNvbTsgYnBmQHZnZXIu
-a2VybmVsLm9yZzsNCj4gPiA+IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc7IGRhdmUudGFodEBnbWFp
-bC5jb207IGpoc0Btb2phdGF0dS5jb207DQo+ID4gPiBrdWJhQGtlcm5lbC5vcmc7IHN0ZXBoZW5A
-bmV0d29ya3BsdW1iZXIub3JnOw0KPiA+ID4geGl5b3Uud2FuZ2NvbmdAZ21haWwuY29tOyBqaXJp
-QHJlc251bGxpLnVzOyBkYXZlbUBkYXZlbWxvZnQubmV0Ow0KPiA+ID4gYW5kcmV3K25ldGRldkBs
-dW5uLmNoOyBkb25hbGQuaHVudGVyQGdtYWlsLmNvbTsgYXN0QGZpYmVyYnkubmV0Ow0KPiA+ID4g
-bGl1aGFuZ2JpbkBnbWFpbC5jb207IHNodWFoQGtlcm5lbC5vcmc7DQo+ID4gPiBsaW51eC1rc2Vs
-ZnRlc3RAdmdlci5rZXJuZWwub3JnOyBpakBrZXJuZWwub3JnOyBLb2VuIERlIFNjaGVwcGVyDQo+
-ID4gPiAoTm9raWEpIDxrb2VuLmRlX3NjaGVwcGVyQG5va2lhLWJlbGwtbGFicy5jb20+Ow0KPiA+
-ID4gZy53aGl0ZUBjYWJsZWxhYnMuY29tOyBpbmdlbWFyLnMuam9oYW5zc29uQGVyaWNzc29uLmNv
-bTsNCj4gPiA+IG1pcmphLmt1ZWhsZXdpbmRAZXJpY3Nzb24uY29tOyBjaGVzaGlyZSA8Y2hlc2hp
-cmVAYXBwbGUuY29tPjsNCj4gPiA+IHJzLmlldGZAZ214LmF0OyBKYXNvbl9MaXZpbmdvb2RAY29t
-Y2FzdC5jb207IFZpZGhpIEdvZWwNCj4gPiA+IDx2aWRoaV9nb2VsQGFwcGxlLmNvbT47IFdpbGxl
-bSBkZSBCcnVpam4gPHdpbGxlbWJAZ29vZ2xlLmNvbT4NCj4gPiA+IFN1YmplY3Q6IFJlOiBbUEFU
-Q0ggbmV0LW5leHQgMS8xXSBzZWxmdGVzdHMvbmV0OiBBZGQgcGFja2V0ZHJpbGwNCj4gPiA+IHBh
-Y2tldGRyaWxsIGNhc2VzDQo+ID4gPg0KPiA+ID4NCj4gPiA+IENBVVRJT046IFRoaXMgaXMgYW4g
-ZXh0ZXJuYWwgZW1haWwuIFBsZWFzZSBiZSB2ZXJ5IGNhcmVmdWwgd2hlbiBjbGlja2luZyBsaW5r
-cyBvciBvcGVuaW5nIGF0dGFjaG1lbnRzLiBTZWUgdGhlIFVSTCBub2suaXQvZXh0IGZvciBhZGRp
-dGlvbmFsIGluZm9ybWF0aW9uLg0KPiA+ID4NCj4gPiA+DQo+ID4gPg0KPiA+ID4gT24gVGh1LCBK
-YW4gOCwgMjAyNiBhdCAxMDo1OOKAr0FNIDxjaGlhLXl1LmNoYW5nQG5va2lhLWJlbGwtbGFicy5j
-b20+IHdyb3RlOg0KPiA+ID4gPg0KPiA+ID4gPiBGcm9tOiBDaGlhLVl1IENoYW5nIDxjaGlhLXl1
-LmNoYW5nQG5va2lhLWJlbGwtbGFicy5jb20+DQo+ID4gPiA+DQo+ID4gPiA+IExpbnV4IEFjY3Vy
-YXRlIEVDTiB0ZXN0IHNldHMgdXNpbmcgQUNFIGNvdW50ZXJzIGFuZCBBY2NFQ04gb3B0aW9ucw0K
-PiA+ID4gPiB0byBjb3ZlciBzZXZlcmFsIHNjZW5hcmlvczogQ29ubmVjdGlvbiB0ZWFyZG93biwg
-ZGlmZmVyZW50IEFDSw0KPiA+ID4gPiBjb25kaXRpb25zLCBjb3VudGVyIHdyYXBwaW5nLCBTQUNL
-IHNwYWNlIGdyYWJiaW5nLCBmYWxsYmFjaw0KPiA+ID4gPiBzY2hlbWVzLCBuZWdvdGlhdGlvbiBy
-ZXRyYW5zbWlzc2lvbi9yZW9yZGVyL2xvc3MsIEFjY0VDTiBvcHRpb24NCj4gPiA+ID4gZHJvcC9s
-b3NzLCBkaWZmZXJlbnQgaGFuZHNoYWtlIHJlZmxlY3RvcnMsIGRhdGEgd2l0aCBtYXJraW5nLCBh
-bmQgZGlmZmVyZW50IHN5c2N0bCB2YWx1ZXMuDQo+ID4gPiA+DQo+ID4gPiA+IENvLWRldmVsb3Bl
-ZC1ieTogSWxwbyBKw6RydmluZW4gPGlqQGtlcm5lbC5vcmc+DQo+ID4gPiA+IFNpZ25lZC1vZmYt
-Ynk6IElscG8gSsOkcnZpbmVuIDxpakBrZXJuZWwub3JnPg0KPiA+ID4gPiBDby1kZXZlbG9wZWQt
-Ynk6IE5lYWwgQ2FyZHdlbGwgPG5jYXJkd2VsbEBnb29nbGUuY29tPg0KPiA+ID4gPiBTaWduZWQt
-b2ZmLWJ5OiBOZWFsIENhcmR3ZWxsIDxuY2FyZHdlbGxAZ29vZ2xlLmNvbT4NCj4gPiA+ID4gLS0t
-DQo+ID4gPg0KPiA+ID4gQ2hpYS1ZdSwgdGhhbmsgeW91IGZvciBwb3N0aW5nIHRoZSBwYWNrZXRk
-cmlsbCB0ZXN0cy4NCj4gPiA+DQo+ID4gPiBBIGNvdXBsZSB0aG91Z2h0czoNCj4gPiA+DQo+ID4g
-PiAoMSkgVGhlc2UgdGVzdHMgYXJlIHVzaW5nIHRoZSBleHBlcmltZW50YWwgQWNjRUNOIHBhY2tl
-dGRyaWxsIHN1cHBvcnQgdGhhdCBpcyBub3QgaW4gbWFpbmxpbmUgcGFja2V0ZHJpbGwgeWV0LiBD
-YW4geW91IHBsZWFzZSBzaGFyZSB0aGUgZ2l0aHViIFVSTCBmb3IgdGhlIHZlcnNpb24gb2YgcGFj
-a2V0ZHJpbGwgeW91IHVzZWQ/IEkgd2lsbCB3b3JrIG9uIG1lcmdpbmcgdGhlIGFwcHJvcHJpYXRl
-IGV4cGVyaW1lbnRhbCBBY2NFQ04gcGFja2V0ZHJpbGwgc3VwcG9ydCBpbnRvIHRoZSBHb29nbGUg
-cGFja2V0ZHJpbGwgbWFpbmxpbmUgYnJhbmNoLg0KPiA+ID4NCj4gPiA+ICgyKSBUaGUgbGFzdCBJ
-IGhlYXJkLCB0aGUgdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvbmV0L3BhY2tldGRyaWxsLw0KPiA+
-ID4gaW5mcmFzdHJ1Y3R1cmUgZG9lcyBub3QgcnVuIHRlc3RzIGluIHN1YmRpcmVjdG9yaWVzIG9m
-IHRoYXQgcGFja2V0ZHJpbGwvIGRpcmVjdG9yeSwgYW5kIHRoYXQgaXMgd2h5IGFsbCB0aGUgdGVz
-dHMgaW4gdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvbmV0L3BhY2tldGRyaWxsLyBhcmUgaW4gYSBz
-aW5nbGUgZGlyZWN0b3J5Lg0KPiA+ID4gV2hlbiB5b3UgcnVuIHRoZXNlIHRlc3RzLCBkbyBhbGwg
-dGhlIHRlc3RzIGFjdHVhbGx5IGdldCBydW4/IEp1c3QNCj4gPiA+IHdhbnRlZCB0byBjaGVjayB0
-aGlzLiA6LSkNCj4gPiA+DQo+ID4gPiBUaGFua3MhDQo+ID4gPiBuZWFsDQo+ID4NCj4gPiBIaSBO
-ZWFsLA0KPiA+DQo+ID4gUmVnYXJkcyAoMiksIEkgd2lsbCBwdXQgYWxsIEFDQ0VDTiBjYXNlcyBp
-biB0aGUNCj4gPiB0b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9uZXQvcGFja2V0ZHJpbGwvDQo+ID4g
-QnV0IEkgd291bGQgbGlrZSB0byBpbmNsdWRlIGFub3RoZXIgc2NyaXB0IHRvIGF2b2lkIHJ1bm5p
-bmcgdGhlc2UgQWNjRUNOIHRlc3RzIG9uZS1ieS1vbmUgbWFudWFsbHksIGRvZXMgaXQgbWFrZSBz
-ZW5zZSB0byB5b3U/DQo+ID4gVGhhbmtzLg0KPg0KPiBBbGwgc2NyaXB0cyB1bmRlciB0b29scy90
-ZXN0aW5nL3NlbGZ0ZXN0cy9uZXQvcGFja2V0ZHJpbGwgYXJlIGFscmVhZHkgcGlja2VkIHVwIGZv
-ciBhdXRvbWF0ZWQgdGVzdGluZyBpbiBrc2VsZnRlc3RzOg0KPg0KPiBodHRwczovL2dpdC5rZXJu
-ZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9uZXRkZXYvbmV0LW5leHQuZ2l0L2NvbW1p
-dC8/aWQ9OGE0MDU1NTJmZDNiDQoNCk9LLCBJIHdhcyB1c2luZyBrc2Z0X3J1bm5lci5zaCB0byBy
-dW4gYWxsIDU4IEFjY0VDTiBjYXNlIG9uZS1ieS1vbmUuDQoNCkJ1dCBzaW5jZSBydW5fa3NlbGZ0
-ZXN0LnNoIGNhbiBhY2NlcHQgbXVsdGlwbGUgIi10IiBhcmd1bWVudHMsIHNvIEkgd2lsbCBub3Qg
-Y29tbWl0IGFub3RoZXIgc2NyaXB0IHdpdGggc2ltaWxhciBmdW5jdGlvbmxhaXRpZXMgYnV0IGp1
-c3QgcmVuYW1lIGFsbCBBY2NFQ04gY2FzZSB3aXRoIHRjcF9hY2NlY24gaW4gdGhlIHByZWZpeC4N
-Cg0KVGhhbmtzLg0KDQpDaGlhLVl1DQo=
+
+
+On 1/13/26 5:13 AM, Alan Maguire wrote:
+> Currently we collate function information by name and add functions
+> provided there are no inconsistencies across various representations.
+>
+> For true_signature support - where we wish to add the real signature
+> of a function even if it differs from source level - we need to do
+> a few things:
+>
+> 1. For "."-suffixed functions, we need to match from DWARF->ELF;
+>     we can do this via the address associated with the function.
+>     In doing this, we can then be confident that the debug info
+>     for foo.isra.0 is the right info for the function at that
+>     address.
+>
+> 2. When adding saved functions we need to look for such cases
+>     and provided they do not violate other constraints around BTF
+>     representation - unexpected reg usage for function, uncertain
+>     parameter location or ambiguous address - we add them with
+>     their "."-suffixed name.  The latter can be used as a signal
+>     that the function is transformed from the original.
+>
+> Doing this adds 500 functions to BTF.  These are traceable with
+> their "."-suffix names and because we have excluded ambiguous
+> address cases we know exactly which function address they refer
+> to.
+>
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> ---
+>   btf_encoder.c | 73 ++++++++++++++++++++++++++++++++++++++++++++++-----
+>   dwarves.h     |  1 +
+>   pahole.c      |  1 +
+>   3 files changed, 68 insertions(+), 7 deletions(-)
+>
+> diff --git a/btf_encoder.c b/btf_encoder.c
+> index 5bc61cb..01fd469 100644
+> --- a/btf_encoder.c
+> +++ b/btf_encoder.c
+> @@ -77,9 +77,16 @@ struct btf_encoder_func_annot {
+>   	int16_t component_idx;
+>   };
+>   
+> +struct elf_function_sym {
+> +	const char *name;
+> +	uint64_t addr;
+> +};
+> +
+>   /* state used to do later encoding of saved functions */
+>   struct btf_encoder_func_state {
+>   	struct elf_function *elf;
+> +	struct elf_function_sym *sym;
+> +	uint64_t addr;
+>   	uint32_t type_id_off;
+>   	uint16_t nr_parms;
+>   	uint16_t nr_annots;
+> @@ -94,11 +101,6 @@ struct btf_encoder_func_state {
+>   	struct btf_encoder_func_annot *annots;
+>   };
+>   
+> -struct elf_function_sym {
+> -	const char *name;
+> -	uint64_t addr;
+> -};
+> -
+>   struct elf_function {
+>   	char		*name;
+>   	struct elf_function_sym *syms;
+> @@ -145,7 +147,8 @@ struct btf_encoder {
+>   			  skip_encoding_decl_tag,
+>   			  tag_kfuncs,
+>   			  gen_distilled_base,
+> -			  encode_attributes;
+> +			  encode_attributes,
+> +			  true_signature;
+>   	uint32_t	  array_index_id;
+>   	struct elf_secinfo *secinfo;
+>   	size_t             seccnt;
+> @@ -1271,14 +1274,34 @@ static int32_t btf_encoder__save_func(struct btf_encoder *encoder, struct functi
+>   			goto out;
+>   		}
+>   	}
+> +	if (encoder->true_signature && fn->lexblock.ip.addr) {
+> +		int i;
+> +
+> +		for (i = 0; i < func->sym_cnt; i++) {
+> +			if (fn->lexblock.ip.addr != func->syms[i].addr)
+> +				continue;
+> +			/* Only need to record address for '.'-suffixed
+> +			 * functions, since we only currently need true
+> +			 * signatures for them.
+> +			 */
+> +			if (!strchr(func->syms[i].name, '.'))
+> +				continue;
+> +			state->sym = &func->syms[i];
+> +			break;
+> +		}
+> +	}
+>   	state->inconsistent_proto = ftype->inconsistent_proto;
+>   	state->unexpected_reg = ftype->unexpected_reg;
+>   	state->optimized_parms = ftype->optimized_parms;
+>   	state->uncertain_parm_loc = ftype->uncertain_parm_loc;
+>   	state->reordered_parm = ftype->reordered_parm;
+>   	ftype__for_each_parameter(ftype, param) {
+> -		const char *name = parameter__name(param) ?: "";
+> +		const char *name;
+>   
+> +		/* No location info + reordered means optimized out. */
+> +		if (ftype->reordered_parm && !param->has_loc)
+> +			continue;
+> +		name = parameter__name(param) ?: "";
+>   		str_off = btf__add_str(btf, name);
+>   		if (str_off < 0) {
+>   			err = str_off;
+> @@ -1367,6 +1390,9 @@ static int32_t btf_encoder__add_func(struct btf_encoder *encoder,
+>   
+>   	btf_fnproto_id = btf_encoder__add_func_proto_for_state(encoder, state);
+>   	name = func->name;
+> +	if (encoder->true_signature && state->sym)
+> +		name = state->sym->name;
+> +
+>   	if (btf_fnproto_id >= 0)
+>   		btf_fn_id = btf_encoder__add_ref_type(encoder, BTF_KIND_FUNC, btf_fnproto_id,
+>   						      name, false);
+> @@ -1509,6 +1535,38 @@ static int btf_encoder__add_saved_funcs(struct btf_encoder *encoder, bool skip_e
+>   		while (j < nr_saved_fns && saved_functions_combine(encoder, &saved_fns[i], &saved_fns[j]) == 0)
+>   			j++;
+>   
+> +		/* Add true signatures for case where we have an exact
+> +		 * symbol match by address from DWARF->ELF and have a
+> +		 * "." suffixed name.
+> +		 */
+> +		if (encoder->true_signature) {
+> +			int k;
+> +
+> +			for (k = i; k < nr_saved_fns; k++) {
+> +				struct btf_encoder_func_state *true_state = &saved_fns[k];
+> +
+> +				if (state->elf != true_state->elf)
+> +					break;
+> +				if (!true_state->sym)
+> +					continue;
+> +				/* Unexpected reg, uncertain parm loc and
+> +				 * ambiguous address mean we cannot trust fentry.
+> +				 */
+> +				if (true_state->unexpected_reg ||
+> +				    true_state->uncertain_parm_loc ||
+> +				    true_state->ambiguous_addr)
+> +					continue;
+> +				err = btf_encoder__add_func(encoder, true_state);
+> +				if (err < 0)
+> +					goto out;
+> +				break;
+> +			}
+> +		}
+> +
+> +		/* True symbol that was handled above; skip. */
+> +		if (state->sym)
+> +			continue;
+> +
+>   		/* do not exclude functions with optimized-out parameters; they
+>   		 * may still be _called_ with the right parameter values, they
+>   		 * just do not _use_ them.  Only exclude functions with
+> @@ -2585,6 +2643,7 @@ struct btf_encoder *btf_encoder__new(struct cu *cu, const char *detached_filenam
+>   		encoder->tag_kfuncs	 = conf_load->btf_decl_tag_kfuncs;
+>   		encoder->gen_distilled_base = conf_load->btf_gen_distilled_base;
+>   		encoder->encode_attributes = conf_load->btf_attributes;
+> +		encoder->true_signature = conf_load->true_signature;
+>   		encoder->verbose	 = verbose;
+>   		encoder->has_index_type  = false;
+>   		encoder->need_index_type = false;
+> diff --git a/dwarves.h b/dwarves.h
+> index 78bedf5..d7c6474 100644
+> --- a/dwarves.h
+> +++ b/dwarves.h
+> @@ -101,6 +101,7 @@ struct conf_load {
+>   	bool			btf_decl_tag_kfuncs;
+>   	bool			btf_gen_distilled_base;
+>   	bool			btf_attributes;
+> +	bool			true_signature;
+>   	uint8_t			hashtable_bits;
+>   	uint8_t			max_hashtable_bits;
+>   	uint16_t		kabi_prefix_len;
+> diff --git a/pahole.c b/pahole.c
+> index ef01e58..02a0d19 100644
+> --- a/pahole.c
+> +++ b/pahole.c
+> @@ -1234,6 +1234,7 @@ struct btf_feature {
+>   	BTF_NON_DEFAULT_FEATURE(global_var, encode_btf_global_vars, false),
+>   	BTF_NON_DEFAULT_FEATURE_CHECK(attributes, btf_attributes, false,
+>   				      attributes_check),
+> +	BTF_NON_DEFAULT_FEATURE(true_signature, true_signature, false),
+>   };
+>   
+>   #define BTF_MAX_FEATURE_STR	1024
+
+Currently, in pahole, when checking whether signature has changed during
+optimization or not, we only check parameters.
+
+But compiler optimization may optimize away return value and such
+information is not available in dwarf.
+
+For example,
+
+$ cat test.c
+#include <stdio.h>
+unsigned tar(int a);
+__attribute__((noinline)) static int foo(int a, int b)
+{
+   return tar(a) + tar(a + 1);
+}
+__attribute__((noinline)) int bar(int a)
+{
+   foo(a, 1);
+   return 0;
+}
+
+In this particular case, the return value of foo() is actually not used
+and the compiler will optimize it away with returning void (at least
+for llvm).
+
+$ /opt/rh/gcc-toolset-15/root/usr/bin/gcc -O2 -g -c test.c
+$ llvm-dwarfdump test.o
+...
+0x000000d9:   DW_TAG_subprogram
+                 DW_AT_name      ("foo")
+                 DW_AT_decl_file ("/home/yhs/tests/sig-change/deadret/test.c")
+                 DW_AT_decl_line (3)
+                 DW_AT_decl_column       (38)
+                 DW_AT_prototyped        (true)
+                 DW_AT_type      (0x0000005d "int")
+                 DW_AT_inline    (DW_INL_inlined)
+                 DW_AT_sibling   (0x000000fb)
+                                                                                                                     
+0x000000ea:     DW_TAG_formal_parameter
+                   DW_AT_name    ("a")
+                   DW_AT_decl_file       ("/home/yhs/tests/sig-change/deadret/test.c")
+                   DW_AT_decl_line       (3)
+                   DW_AT_decl_column     (46)
+                   DW_AT_type    (0x0000005d "int")
+                                                                                                                     
+0x000000f2:     DW_TAG_formal_parameter
+                   DW_AT_name    ("b")
+                   DW_AT_decl_file       ("/home/yhs/tests/sig-change/deadret/test.c")
+                   DW_AT_decl_line       (3)
+                   DW_AT_decl_column     (53)
+                   DW_AT_type    (0x0000005d "int")
+
+0x000000fa:     NULL
+
+0x000000fb:   DW_TAG_subprogram
+                 DW_AT_abstract_origin   (0x000000d9 "foo")
+                 DW_AT_low_pc    (0x0000000000000000)
+                 DW_AT_high_pc   (0x0000000000000011)
+                 DW_AT_frame_base        (DW_OP_call_frame_cfa)
+                 DW_AT_call_all_calls    (true)
+
+0x00000112:     DW_TAG_formal_parameter
+                   DW_AT_abstract_origin (0x000000ea "a")
+                   DW_AT_location        (0x00000026:
+                      [0x0000000000000000, 0x0000000000000007): DW_OP_reg5 RDI
+                      [0x0000000000000007, 0x000000000000000c): DW_OP_reg3 RBX
+                      [0x000000000000000c, 0x0000000000000010): DW_OP_breg5 RDI-1, DW_OP_stack_value
+                      [0x0000000000000010, 0x0000000000000011): DW_OP_entry_value(DW_OP_reg5 RDI), DW_OP_stack_value)
+                   DW_AT_GNU_locviews    (0x0000001e)
+
+0x0000011f:     DW_TAG_formal_parameter
+                   DW_AT_abstract_origin (0x000000f2 "b")
+                   DW_AT_const_value     (0x01)
+...
+
+Assembly code:
+0000000000000000 <foo.constprop.0.isra.0>:
+        0: 53                            pushq   %rbx
+        1: 89 fb                         movl    %edi, %ebx
+        3: e8 00 00 00 00                callq   0x8 <foo.constprop.0.isra.0+0x8>
+        8: 8d 7b 01                      leal    0x1(%rbx), %edi
+        b: 5b                            popq    %rbx
+        c: e9 00 00 00 00                jmp     0x11 <foo.constprop.0.isra.0+0x11>
+       11: 66 66 2e 0f 1f 84 00 00 00 00 00      nopw    %cs:(%rax,%rax)
+       1c: 0f 1f 40 00                   nopl    (%rax)
+
+0000000000000020 <bar>:
+       20: 48 83 ec 08                   subq    $0x8, %rsp
+       24: e8 d7 ff ff ff                callq   0x0 <foo.constprop.0.isra.0>
+       29: 31 c0                         xorl    %eax, %eax
+       2b: 48 83 c4 08                   addq    $0x8, %rsp
+       2f: c3                            retq
+
+$ clang -O2 -g -c test.c
+$ llvm-dwarfdump test.o
+...
+0x0000004e:   DW_TAG_subprogram
+                 DW_AT_low_pc    (0x0000000000000010)
+                 DW_AT_high_pc   (0x0000000000000022)
+                 DW_AT_frame_base        (DW_OP_reg7 RSP)
+                 DW_AT_call_all_calls    (true)
+                 DW_AT_name      ("foo")
+                 DW_AT_decl_file ("/home/yhs/tests/sig-change/deadret/test.c")
+                 DW_AT_decl_line (3)
+                 DW_AT_prototyped        (true)
+                 DW_AT_calling_convention        (DW_CC_nocall)
+                 DW_AT_type      (0x00000096 "int")
+
+0x0000005e:     DW_TAG_formal_parameter
+                   DW_AT_location        (indexed (0x1) loclist = 0x00000022:
+                      [0x0000000000000010, 0x0000000000000018): DW_OP_reg5 RDI
+                      [0x0000000000000018, 0x000000000000001a): DW_OP_reg3 RBX
+                      [0x000000000000001a, 0x0000000000000022): DW_OP_entry_value(DW_OP_reg5 RDI), DW_OP_stack_value)
+                   DW_AT_name    ("a")
+                   DW_AT_decl_file       ("/home/yhs/tests/sig-change/deadret/test.c")
+                   DW_AT_decl_line       (3)
+                   DW_AT_type    (0x00000096 "int")
+
+0x00000067:     DW_TAG_formal_parameter
+                   DW_AT_name    ("b")
+                   DW_AT_decl_file       ("/home/yhs/tests/sig-change/deadret/test.c")
+                   DW_AT_decl_line       (3)
+                   DW_AT_type    (0x00000096 "int")
+...
+Assembly code:
+0000000000000000 <bar>:
+        0: 50                            pushq   %rax
+        1: e8 0a 00 00 00                callq   0x10 <foo>
+        6: 31 c0                         xorl    %eax, %eax
+        8: 59                            popq    %rcx
+        9: c3                            retq
+        a: 66 0f 1f 44 00 00             nopw    (%rax,%rax)
+
+0000000000000010 <foo>:
+       10: 53                            pushq   %rbx
+       11: 89 fb                         movl    %edi, %ebx
+       13: e8 00 00 00 00                callq   0x18 <foo+0x8>
+       18: ff c3                         incl    %ebx
+       1a: 89 df                         movl    %ebx, %edi
+       1c: 5b                            popq    %rbx
+       1d: e9 00 00 00 00                jmp     0x22 <foo+0x12>
+
+
+The compiler knows whether the return type has changed or not.
+Unfortunately the information is not available in dwarf. So
+BTF will encode source level return type even if the actual
+return type could be void due to optimization.
+
+This is not perfect but at least it is an improvement
+for true signature. But it would be great if llvm/gcc
+side can coordinate to propose something in compiler/dwarf
+to encode return type change as well. In llvm,
+AFAIK, the only return type change will be
+'original non-void type' -> 'void type'.
+
 
