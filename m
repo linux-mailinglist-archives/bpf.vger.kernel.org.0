@@ -1,138 +1,142 @@
-Return-Path: <bpf+bounces-78967-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78968-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BEA4D2178A
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 22:58:00 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6868BD21A02
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 23:40:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 2878E301F321
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 21:57:05 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id E4D0F3023D22
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 22:39:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32E283A9D8E;
-	Wed, 14 Jan 2026 21:57:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD47C3B52F5;
+	Wed, 14 Jan 2026 22:39:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fQZUoJxO"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="fZha355L"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0268238F954
-	for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 21:56:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A1BD3AEF5D;
+	Wed, 14 Jan 2026 22:39:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768427816; cv=none; b=uuzMhOSoDXq+zBKi8pH9YjrXwSAKMV2poDuiYXfWyLwnHydDdBfHvzQbYgtJ8hlrVRYRjpFLmP/fTnzVSwC13SPZJ/MtZ5hmJiIxt34238XIDAcnS8erH21RlELZOgzZzKX0PQt7iT+1R4r4l97b7OAdFZ9omZDWoRG2SHY+wMY=
+	t=1768430392; cv=none; b=BxYbHafsaFwFFhtZi39IBzmE2Wd95UjljGb2P46ZmUHainR3M/S4+8SvG9IkyR1eC63JnLcmBJJ8H6irUaL9+4hHT/HkKzBViUTCSKqdhAPYLD/8moJZOsLslVksraPuxbXKXZKQCaU/Io76chKG3dy9jdcEPOc2e3d2bX4SJS8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768427816; c=relaxed/simple;
-	bh=GhnFSKeN2Zl7Uze175m/2I1Md7YRb2qMzTVcY7DlFvw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Y/J3p9wnlrZvrW+b1+TY7TfYl7CzOnla/NytlaesjvC9HTgIUuzGmvy9vohV6S+wu8AzJMP56xNclPD4jGGBeCPRSOtAUiHAj2A9ExNHiuE4cJjnM/xwtvPOapVWjzJaEPsND1oBP/rXoPgt7COr0ODFqu1P22jnHe6NRcp9Ue8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fQZUoJxO; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-47a95efd2ceso2517745e9.2
-        for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 13:56:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768427783; x=1769032583; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=V2IFPWB+T8VdoZY6NJv4zwx5iiV744THuNeTgWC4nyo=;
-        b=fQZUoJxOaUJFGdyaLYelKy7sOZpSVZER3GLT5CDfmciBUY9rzu3JeKM2Rra9TKpRI7
-         FAN8zz4cOkp2vNZeFWc3oSeZsOSqH16Gdp9tc3lFCdbB3B1yMjyQHQKcHtwvt3TpvBXX
-         QW+n9K9Zhc7jBMsQLqZzkBDfmrAtp81USjKoQX0QrNEyon1M9Q8wjFNtvB73qDp8nGZi
-         4TRbZtzF+vsEmD5EzdJ/3/Yi8kN5SZOm/QByIXDxCkDu6aey9EaANXP9mYLxjXLt+ng8
-         6i57YprppSZwKIy+mZExmt3dWG9eRGYu8K5ZhLZjJtDlUtjStd/l5Tv2DPfQMKzRUZO0
-         vw8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768427783; x=1769032583;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=V2IFPWB+T8VdoZY6NJv4zwx5iiV744THuNeTgWC4nyo=;
-        b=uETAMiPOgQb+kTDmaMk6Xl9uP5uhLoXvjr/UsljAgaSM3lVjxtUtjAMI2FDicuHHEI
-         9bdH1NXTQ4MN8tErNN/ptLiXaiWwgik6fHdqc5EzgK6CbS8oIRNao9nWzI0fJUFHqRMJ
-         SvGfZMcEgc3O5EARn1fgBdwTGjl15R4PwCI2r+uOL80gckqFMwBp2Y4Xa5+LljFCG5N5
-         m9yu9aKNuUsJdlQxPYpbUzgQLEp4WVL4LFzdM3pktmDFPckN1g25ptvep6GvJLMcW8oH
-         SSWKen+Qc2hreIbYKjOgWcwrbEm/oqghwokxFrbtBjTqfgOwp4BqdIY0m/rvbXUTWvti
-         RhwQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXYfaSh8LzfOVotIX6kNfYrwGdp9+wK5jPgZJHRYHIcqCm+IuqMegrPh3M2reTUMvGg6Ms=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzxroe+h2lID6KXkiUxtpWt35jv7f4HbWK9kzANqHV9hKdWTZw/
-	rvgg2mHRHHKz90lDfKkzXIE/tZGYa/uzSb2zEIzQwsWODqpC2c9KArVaUJ0kKBpENnq59i7a3Lh
-	3PQBsHSN+topDTx/5kjJBoA2h2TTFNqs=
-X-Gm-Gg: AY/fxX4tRG7X5X0TGqpcT/m5MeLkVig7t0RPn0Ri15O6tDDd0zz4RU5j7uz/PLb4jtZ
-	1hFmddEqvvBLDAn0C2pY+akQ1ToUktmxdeFbZ0P3d1TY+v+P0HSeQj8KVzKAvluz521ojwPzzFD
-	NJuBcNwXFfuWlwSn9bm2x6O6LgISrEqG1H+XkY3nkyfmaa3bTawE9nm2vfYsNzxBUGoxElFhTc1
-	mO3+Br3hKGfn/LAh+A4uZ58kX0ylxweaH/yVtBaWmsAJwqvNT1vmCSkER8XdR604bShNpTDcnpP
-	YRcCysdXM9h8AxJd/4jOfP3sepuy
-X-Received: by 2002:a05:600c:4f0b:b0:477:c71:1fc1 with SMTP id
- 5b1f17b1804b1-47ee4819f30mr39840995e9.19.1768427783081; Wed, 14 Jan 2026
- 13:56:23 -0800 (PST)
+	s=arc-20240116; t=1768430392; c=relaxed/simple;
+	bh=FCqqmDc/60uv/7OR/WgIbAXp3Gc8SHSDU7Svqm21hIc=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=QU4kQVItGVUitVu9FPx98ckuuGFLKrLIu3R0zIUF1pAm3zOR+08xmuZhWV4DTl+XH1asoUFxcm8LppNr1BzhUhfZ3vncQyHStcRCfHdOOGJ5UyNX9Wg0ETwj/7fixlSk3ILQ4Zejkqowm68ubWrifIBbMN59+94mrwg5tgbN1n4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=fZha355L; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=hPSWyqsgk8mrJl/djTulMbnqHPfXij0tKt2PRSz2b9o=; b=fZha355LMMe+Nq03lVldZtTFF+
+	nDsKjZ0qyhydOOFMcEDudBFCG3M5CQeopCU67GGdo5mN/ojeC0e4KSgTUQ5pX/rRdwmbD4m/NIHeO
+	jDh6az6rsXC9txpid6lZKaei8S8ARAnZL44NICIhEmGAb3jHUrz4mWGV6JwGE45kxQiNkXJvnW753
+	E0c84Jid1P6+ol/oHP6uEtfPowtnt4083BBh7FwSbBZ4hZqt9e9C7CuTRGo2hIZGVJmQkHVomBAA7
+	Z7pMk7eBJyVe+2id5jYBtKHLKYQUr17jXO0JSdgchVW4g1JibKS5YAtVqq1XjdUmb4wofeXGHosGT
+	3USbDNXQ==;
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1vg9WK-00059B-24;
+	Wed, 14 Jan 2026 23:39:20 +0100
+Received: from localhost ([127.0.0.1])
+	by sslproxy06.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1vg9WJ-00058H-1t;
+	Wed, 14 Jan 2026 23:39:19 +0100
+Message-ID: <cb878929-0a07-40b1-b60d-57bc11b14bf6@iogearbox.net>
+Date: Wed, 14 Jan 2026 23:39:18 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260102150032.53106-1-leon.hwang@linux.dev> <CAADnVQJugf_t37MJbmvhrgPXmC700kJ25Q2NVGkDBc7dZdMTEQ@mail.gmail.com>
- <aWd9z8GVYO12YsaH@krava> <CAADnVQLxo1uPbutGNKrv=f=bSVkzxOfSof0ea8n7VvqsaU+S3w@mail.gmail.com>
- <aWgD3zH7vsiBdIcr@krava>
-In-Reply-To: <aWgD3zH7vsiBdIcr@krava>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 14 Jan 2026 13:56:11 -0800
-X-Gm-Features: AZwV_QjPeGyIa5g7MAD4JaS1tAElwUa_x4uErmV3ep-P21EZz9S74OzD-I8OSSs
-Message-ID: <CAADnVQLHVogD1mjMCsHcJOayuZW4OwadEN0g9wu=6d97uRSWqQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/4] bpf: tailcall: Eliminate max_entries and
- bpf_func access at runtime
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Leon Hwang <leon.hwang@linux.dev>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Puranjay Mohan <puranjay@kernel.org>, Xu Kuohai <xukuohai@huaweicloud.com>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	"David S . Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>, 
-	"H . Peter Anvin" <hpa@zytor.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Network Development <netdev@vger.kernel.org>, kernel-patches-bot@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v6 00/16] netkit: Support for io_uring zero-copy
+ and AF_XDP
+From: Daniel Borkmann <daniel@iogearbox.net>
+To: netdev@vger.kernel.org
+Cc: bpf@vger.kernel.org, kuba@kernel.org, davem@davemloft.net,
+ razor@blackwall.org, pabeni@redhat.com, willemb@google.com, sdf@fomichev.me,
+ john.fastabend@gmail.com, martin.lau@kernel.org, jordan@jrife.io,
+ maciej.fijalkowski@intel.com, magnus.karlsson@intel.com, dw@davidwei.uk,
+ toke@redhat.com, yangzhenze@bytedance.com, wangdongdong.6@bytedance.com
+References: <20260113232257.200036-1-daniel@iogearbox.net>
+Content-Language: en-US
+Autocrypt: addr=daniel@iogearbox.net; keydata=
+ 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
+In-Reply-To: <20260113232257.200036-1-daniel@iogearbox.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: Clear (ClamAV 1.4.3/27880/Wed Jan 14 08:26:22 2026)
 
-On Wed, Jan 14, 2026 at 1:00=E2=80=AFPM Jiri Olsa <olsajiri@gmail.com> wrot=
-e:
->
-> >
-> > > fyi I briefly discussed that with Andrii indicating that it might not
-> > > be worth the effort at this stage.
-> >
-> > depending on complexity of course.
->
-> for my tests I just had to allow BPF_MAP_TYPE_PROG_ARRAY map
-> for sleepable programs
->
-> jirka
->
->
-> ---
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index faa1ecc1fe9d..1f6fc74c7ea1 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -20969,6 +20969,7 @@ static int check_map_prog_compatibility(struct bp=
-f_verifier_env *env,
->                 case BPF_MAP_TYPE_STACK:
->                 case BPF_MAP_TYPE_ARENA:
->                 case BPF_MAP_TYPE_INSN_ARRAY:
-> +               case BPF_MAP_TYPE_PROG_ARRAY:
->                         break;
->                 default:
->                         verbose(env,
+On 1/14/26 12:22 AM, Daniel Borkmann wrote:
+> Containers use virtual netdevs to route traffic from a physical netdev
+> in the host namespace. They do not have access to the physical netdev
+> in the host and thus can't use memory providers or AF_XDP that require
+> reconfiguring/restarting queues in the physical netdev.
+> 
+[...]
+> 
+> v5->v6:
+>   - Fix nest_queue test in netdev_nl_queue_fill_one (Jakub/AI bot)
+>   - Fix netdev notifier locking leak (Jakub/AI bot)
+>   - Drop NETREG_UNREGISTERING WARN_ON_ONCE to avoid confusion (Stan)
+>   - Remove slipped-in .gitignore cruft in net selftest (Stan)
+>   - Fix Pylint warnings in net selftest (Jakub)
+Saw in patchwork that AI found two more issues [0]. We've fixed them
+locally and re-run Claude reviews with no new findings. So will push
+out a v7 with this addressed tomorrow.
 
-Think it through, add selftests, ship it.
-On the surface the easy part is to make
-__bpf_prog_map_compatible() reject sleepable/non-sleepable combo.
-Maybe there are other things.
+  [0] https://netdev-ai.bots.linux.dev/ai-review.html?id=557a6f3e-564b-4170-af37-23e23a16b446
 
