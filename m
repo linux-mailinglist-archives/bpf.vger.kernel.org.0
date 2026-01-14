@@ -1,118 +1,190 @@
-Return-Path: <bpf+bounces-78884-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78885-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 057BFD1E9E6
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 13:01:58 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CBE7D1EB43
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 13:20:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 78C5D3017F9C
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 12:01:57 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5899030770E4
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 12:14:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E84EB397AB1;
-	Wed, 14 Jan 2026 12:01:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D761396D19;
+	Wed, 14 Jan 2026 12:14:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I5Fh3b9/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a6V4hzFY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-dl1-f66.google.com (mail-dl1-f66.google.com [74.125.82.66])
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0D6B396D12
-	for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 12:01:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57027396B70
+	for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 12:14:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768392106; cv=none; b=cfHusav+3LrwQnd/UhYUykBBA1PJeTP0awxIwuPW2LkIjpXDVSKxWrwVpWCt8vv8rma6TKF+iwNgsL1pBBXuTdPWv9bwk9KakD4RKS0ZEIjgSCq+KYoTAbpn7cMWbpKDwkaeu8WYQgzXZ6/jSPoZ03k5b1amJrRq6G4SWW92anI=
+	t=1768392863; cv=none; b=LXOsMVDLP6kS/6Qb1VHRluUQ9mjpx64fdnCUsOyjYftrs5lsGTwuvOJ8+zVVNyGJB6hSjpuIAZjmkLLCC/UXVDHen+aLS3CJwlw6dNvMGoenOc6kf4nqITC/rruxl218L8+k6OF599SnZCI5gneHdbUD1KWhmDbUVWui81arlBA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768392106; c=relaxed/simple;
-	bh=z9jk+o4mdAYdNmtJgSJSqtJIdlOMC0fhl4qH1ZuC0+A=;
+	s=arc-20240116; t=1768392863; c=relaxed/simple;
+	bh=2cli1wpMP8LgnPh7GFLLV4lw4gaYJEa4OZgsRpeZi1c=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QDQV0sXIJsYZwLqBguUlcH2dzbmMpcLJ3XAm9fhTHYlO4HO0gX3sbsB/UEyiTUU79VaxILZ/diZZn7yAG5eb8yfa5/jTi1XnMavORmPjS3uCg69wukb/XpRf4AAlsQ+DGbdMXFUNfwj0+ejkuwj+8p2xFexLQmNyG+IV1lAc6Bk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I5Fh3b9/; arc=none smtp.client-ip=74.125.82.66
+	 To:Cc:Content-Type; b=ZHouDVgbfImX3MB5pHBwAmi/KdaP2JUjwuD6rfmGDmQ0P2LNCIryXCZOhXwR3uwaBMVZH+CzsK95G+vB6mESJ17LQ1GGt6i3Nn7iKjOUsatp8hKyqCPLyL5SU9WORskGEeUYaoY6+X9khsH5xg3a+4pCY/SECPdaYutURjCs2Es=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a6V4hzFY; arc=none smtp.client-ip=209.85.128.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-dl1-f66.google.com with SMTP id a92af1059eb24-1233b953bebso140008c88.1
-        for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 04:01:40 -0800 (PST)
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-78c6a53187dso52566717b3.2
+        for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 04:14:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768392097; x=1768996897; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1768392861; x=1768997661; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=z9jk+o4mdAYdNmtJgSJSqtJIdlOMC0fhl4qH1ZuC0+A=;
-        b=I5Fh3b9/rDe0XZ2bOy7PJ9ZvW8z3ENq4j36uYp3BxD0wyMqr4hBgEIPpEP0AbxF3XH
-         yPqMJJbGNuy7Om6C6aLmU/ilSBxM6p14gkPfG7XrAaUnWTzFTvzB662XJuCignxitaOF
-         rcqMUBwyF8FHf8MkUPEOXj3nfkM/cd/LL8eQLkLGFTegoKx7OQh6Q2fx5jBrNXlgSm81
-         A7fA4sYsllIaNWYiR23AbzPxScETOGI69aAuEL4Fuuw9RZ9I4Fbh9hJ8PAHD0RGP/cqc
-         3D6XFs/nQMkdVsMaR630ayyuHiwDaR2yW0puyJVLpDF+20wwStvS7ldlbasy28Au92zA
-         lvLg==
+        bh=vpgn9moKDBgyCKhNw842q28BORTy5OVetihmiI3/j9Q=;
+        b=a6V4hzFYhpgBKoHTtm+KMAlqEnDPi79ImOcTPCJS0w4McdanDTYtl6OWTe/7Wg4Pfq
+         Lj/pFN8VabStN1pCbLd5ZoIMfmmhAa8b52iQ+Z8UDqSobE8i/sWw2yM+Xu5bWoulDioY
+         3aPUNHkBppIMJ+MnO7l5YHdwrtiLWDuPulDwk088LUkVjtoBx1X/dnrx9cFHx2vtenxy
+         5rCr0CyeIhck3KhpivmoWiCsk0CE/nnuFDMHlYXNGdIkztH/U/P714Q2yaj1gzddLP8R
+         fw6NZ/k8Xq8rWfuvsoAAM3oRfni6QFLIOnDqD1t3KF+WcDhyQ/7AMuiWtLNVxaa9X0He
+         5IDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768392097; x=1768996897;
+        d=1e100.net; s=20230601; t=1768392861; x=1768997661;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=z9jk+o4mdAYdNmtJgSJSqtJIdlOMC0fhl4qH1ZuC0+A=;
-        b=Rhlf6gwgroinP8wGA+De5fBvM93E3h8foblzXJZeQDFZMPT1hsagdF89KwuL5igYmc
-         mm6x9wLwpKGTIeyWBdoGIYnlEU+dBUa8dXkkypYtUjwHgnCxehEyVFtLQMJKO4ElT0Hz
-         Buf8Z7DKvdwyrXNlclja9TkbNXUTAww/YpSL6VL3wp1sjQDJnxfldz0QlkRuwqkrmdCs
-         Q773x3y6fShM9+iAyJWNf8CMyBeKdzB9madKW1AHDWOOqcFT+uxqu0HQ4ogCLMEX1QoJ
-         HfWGE1wACktyODyikwQTiJRbAL3mmRm+PZDPO9ETPfvc6myPtzTJ8deLjERd4He0+DWY
-         jS3w==
-X-Gm-Message-State: AOJu0Yxl+Ld703drz/80ma8J0iMCqEIKUL4SxucVXBuv8Hnc1bOMDS8j
-	BdSSCJ940gCy5soO97Z3hSeuMrw72CapyIDNXLNPKi+DT2yCT6CADjL56parjyO/aTYdRiUzYlN
-	SShFohjJajgwv1+8R5RN2Q9UgiYwoZQ0=
-X-Gm-Gg: AY/fxX5SCIl3TufivfAbVX6GgpTdsBz/8f1JiBuajWAi72j0FKHwGkg/K3/oCtY8sD3
-	AwkDMjlB+Cs0jKEVkUhtRwvI8epOuCxT0f7vecrJRUn+0GClNIX4IrSVTyHw6cTQzkgFPDv7jHJ
-	5ach6zGf94qwBMmh2lLfH/Sc1LFuskuUVAiDxF4WleDoaeZ5FKuiSmfAvuRz2iOlCK9RurDJAiq
-	QYLCLvEklNNllVLaqGnTaK4IMfZ3Rx6MFFvMapdqjES2l+fnLqz5TYg2euAbECOC/gxRUZO8vbS
-	r9tIsfs=
-X-Received: by 2002:a05:701a:c94a:b0:119:e56b:c73e with SMTP id
- a92af1059eb24-12336a15cf9mr1986570c88.3.1768392096540; Wed, 14 Jan 2026
- 04:01:36 -0800 (PST)
+        bh=vpgn9moKDBgyCKhNw842q28BORTy5OVetihmiI3/j9Q=;
+        b=vlSLfc+om4m9YpO1F1zUKFyvfkGVh8HbfwkB3JbK4VZXN9vRgIgsBtLeWjLFZ6CV9m
+         ZYhJ6CXYEdy6U7YfC5Zwp1k3rr2xAUINMLv6J3zXNk2pg9nAlnxedYIX8HFw19Jiv8Pt
+         jYSLse+rVcMikklGrH3Ks8UvoDTPeZFe1gw7BqhpOvPWqKoZFLEh9RJ893FDilpe3mQE
+         sbp0xXGA7DPTGzWB5mnCvU0nMr+xKVVFtfShnIXIRPY7ARo69CII4EEaYRck3J++CmBk
+         MLJ6QmCzcS+lglL6PKf5KVpunUQ8DZ3VDnGG3r8OTG+Atv6msyj6z2B09Lnj45SCmpxd
+         xMZw==
+X-Forwarded-Encrypted: i=1; AJvYcCWiYf13ZmKK7ssn0pzOQmZExl8atqU4u6ODa7nuFyddOLjJ6DyLnYihmmdFL39oDvC4z1o=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyhmL0P9Sc4l8at4mTvdJwM0HkKzvNaOUVsgeAXDpvvLDeC8s9l
+	1lX7UrH0znPU2OoCwceXAftjfrcNPf3euVDfHC+0gDiCUB+odT7AgjlJCEcFJdNFHxTzCXBIEM3
+	beknRd6ShOhG8ogxono9TZmB2Rco38jU=
+X-Gm-Gg: AY/fxX7jdJvN/q49GognoGya2gjy2t/2SW0rw8d5THiP4U0Hbc6G1WPgNep7IZIDw5Z
+	yRy9MPMwiPpcuD6+kvQKwThI4vsan6q4O5sUAZ06LF3ybqOzukvoUDbbZaZbSGVgxPIWKfzovBb
+	4bZQOZitT5Vd+eGMod+adY/X6LbDIHLwCx+sZ7ihDN33Kie8pEaromtgB0qIx+vhJi9PY5akyjB
+	Yya5I+Z+yLymH8XRJyLr668JqoNV0WcQX0//bd2pnSWS4zVzCDV879dLICly0WKnSAaDWJS
+X-Received: by 2002:a05:690e:11ce:b0:646:5019:f3ee with SMTP id
+ 956f58d0204a3-64901aaceaamr1895854d50.5.1768392861312; Wed, 14 Jan 2026
+ 04:14:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260114060430.1287640-1-saiaunghlyanhtet2003@gmail.com>
- <87h5so1n49.fsf@toke.dk> <CAGF5Uf48mRAuUZpTAGCGQtveDoDpF_1SKXFoBECqYzU4+dVwwg@mail.gmail.com>
- <87bjiw1l0v.fsf@toke.dk>
-In-Reply-To: <87bjiw1l0v.fsf@toke.dk>
-From: Sai Aung Hlyan Htet <saiaunghlyanhtet2003@gmail.com>
-Date: Wed, 14 Jan 2026 21:01:25 +0900
-X-Gm-Features: AZwV_Qhu5tei1ty2iQZIrCW0s6ZLZofeQXrrVLB2j11oX0iZ3zsna0P7VxhCkho
-Message-ID: <CAGF5Uf7FiD_RQoFx9qLeOaCMH8QC0-n=ozg631g_5QVRHLZ27Q@mail.gmail.com>
-Subject: Re: [bpf-next,v3] bpf: cpumap: report queue_index to xdp_rxq_info
-To: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+References: <20260113121238.11300-1-laoar.shao@gmail.com> <20260113121238.11300-3-laoar.shao@gmail.com>
+ <cfyq2n7igavmwwf5jv5uamiyhprgsf4ez7au6ssv3rw54vjh4w@nc43vkqhz5yq>
+In-Reply-To: <cfyq2n7igavmwwf5jv5uamiyhprgsf4ez7au6ssv3rw54vjh4w@nc43vkqhz5yq>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Wed, 14 Jan 2026 20:13:44 +0800
+X-Gm-Features: AZwV_QhhO9LftRha77JGtQk2VGHz1UfT0zHqtdmTUKBENe25a-mZ75XFm7_6Qes
+Message-ID: <CALOAHbB3Ruc+veQxPC8NgvxwBDrnX5XkmZN-vz1pu3U05MXnQg@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 2/3] mm: add support for bpf based numa balancing
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: roman.gushchin@linux.dev, inwardvessel@gmail.com, shakeel.butt@linux.dev, 
+	akpm@linux-foundation.org, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, yu.c.chen@intel.com, zhao1.liu@intel.com, 
+	bpf@vger.kernel.org, linux-mm@kvack.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 14, 2026 at 8:39=E2=80=AFPM Toke H=C3=B8iland-J=C3=B8rgensen <t=
-oke@redhat.com> wrote:
+On Wed, Jan 14, 2026 at 5:56=E2=80=AFPM Michal Koutn=C3=BD <mkoutny@suse.co=
+m> wrote:
+>
+> On Tue, Jan 13, 2026 at 08:12:37PM +0800, Yafang Shao <laoar.shao@gmail.c=
+om> wrote:
+> > bpf_numab_ops enables NUMA balancing for tasks within a specific memcg,
+> > even when global NUMA balancing is disabled. This allows selective NUMA
+> > optimization for workloads that benefit from it, while avoiding potenti=
+al
+> > latency spikes for other workloads.
+> >
+> > The policy must be attached to a leaf memory cgroup.
+>
+> Why this restriction?
 
-> Yeah, this has been discussed as well :)
->
-> See:
-> https://netdevconf.info/0x19/sessions/talk/traits-rich-packet-metadata.ht=
-ml
->
-> Which has since evolved a bit to these series:
->
-> https://lore.kernel.org/r/20260105-skb-meta-safeproof-netdevs-rx-only-v2-=
-0-a21e679b5afa@cloudflare.com
->
-> https://lore.kernel.org/r/20260110-skb-meta-fixup-skb_metadata_set-calls-=
-v1-0-1047878ed1b0@cloudflare.com
->
-> (Also, please don't top-post on the mailing lists)
->
-> -Toke
->
+We have several potential design options to consider:
 
-Thanks for the pointers. It is really great to see this series. One
-question: Would adding queue_index to the packet traits KV store be
-a useful follow-up once the core infrastructure lands?
+Option 1.   Stateless cgroup bpf prog
+  Attach the BPF program to a specific cgroup and traverse upward
+through the hierarchy within the hook, as demonstrated in Roman's
+BPF-OOM series:
 
-- Sai
+    https://lore.kernel.org/bpf/877bwcpisd.fsf@linux.dev/
+
+    for (memcg =3D oc->memcg; memcg; memcg =3D parent_mem_cgroup(memcg)) {
+        bpf_oom_ops =3D READ_ONCE(memcg->bpf_oom);
+        if (!bpf_oom_ops)
+            continue;
+
+          ret =3D bpf_ops_handle_oom(bpf_oom_ops, memcg, oc);
+    }
+
+   - Benefit
+     The design is relatively simple and does not require manual
+lifecycle management of the BPF program, hence the "stateless"
+designation.
+   - Drawback
+      It may introduce potential overhead in the performance-critical
+hotpath due to the traversal.
+
+Option 2:  Stateful cgroup bpf prog
+  Attach the BPF program to all descendant cgroups, explicitly
+handling cgroup fork/exit events. This approach is similar to the one
+used in my BPF-THP series:
+
+     https://lwn.net/ml/all/20251026100159.6103-4-laoar.shao@gmail.com/
+
+  This requires the kernel to record every cgroup where the program is
+attached =E2=80=94 for example, by maintaining a per-program list of cgroup=
+s
+(struct bpf_mm_ops with a bpf_thp_list). Because we must track this
+attachment state, I refer to this as a "stateful" approach.
+
+  - Benefit: Avoids the upward traversal overhead of Option 1.
+  - Drawback: Introduces complexity for managing attachment state and
+lifecycle (attach/detach, cgroup creation/destruction).
+
+Option 3:  Restrict Attachment to Leaf Cgroups
+  This is the approach taken in the current patchset. It simplifies
+the kernel implementation by only allowing BPF programs to be attached
+to leaf cgroups (those without children).
+  This design is inspired by our production experience, where it has
+worked well. It encourages users to attach programs directly to the
+cgroup they intend to target, avoiding ambiguity in hierarchy
+propagation.
+
+Which of these options do you prefer? Do you have other suggestions?
+
+> Do you envision how these extensions would apply hierarchically?
+
+This feature can be applied hierarchically, though it adds complexity
+to the kernel. However, I believe that by providing the core
+functionality, we can empower users to manage their specific use cases
+effectively. We do not need to implement every possible variation for
+them.
+
+> Regardless of that, being a "leaf memcg" is not a stationary condition
+> (mkdirs, writes to `cgroup.subtree_control`) so it should also be
+> prepared for that.
+
+In the current implementation, the user has to attach the bpf prog to
+the new cgroup as well ;)
+
+>
+> Also, I think (please correct me) that NUMA balancing doesn't need
+> memory controller (in contrast with OOM),
+
+Correct.
+
+> so the attachment shouldn't be
+> through struct mem_cgroup but plain struct cgroup::bpf. If you could
+> consider this or add some details about this decision, it'd be great.
+
+That's a good suggestion. By removing the dependency on memcg, we can
+simplify the design.
+
+--=20
+Regards
+Yafang
 
