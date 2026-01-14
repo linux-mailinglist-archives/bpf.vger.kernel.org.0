@@ -1,73 +1,75 @@
-Return-Path: <bpf+bounces-78933-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78934-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69FD4D20318
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 17:23:48 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9977BD20255
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 17:18:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 1CDAC30EDFF4
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 16:18:12 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id D5E74300EBB3
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 16:18:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CFFA3A35C9;
-	Wed, 14 Jan 2026 16:18:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A931536B045;
+	Wed, 14 Jan 2026 16:18:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hbbSPpIE"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S1Eh0buT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A6663A35A8
-	for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 16:18:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 972903A35CE
+	for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 16:18:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768407483; cv=none; b=XncOOET8IqEGHbK4AXelRLdj2YFJh6yn0gwCSPZg4+iYVqnIq5KjMURVr9xa3wGI4/ArP2hs69O++gGvYivFXUCiXF+oFwJIkCHkt6gWHVxjpxn5NPVOB/amicyJca0VmIWDFgU3VOC08Y9I75mPix1+44Yj+e1+nEMBzjuJI1I=
+	t=1768407486; cv=none; b=rP3LIGkPH5K1zhexy1KLoG76Wgeuv+BBwB789D34AiuVDTz7sifppOke/65/LzAGa7IKNvo1a+U6xH8kBa7Rc1zEzE4L0KUaRQL9jC9edmKVbsI6K3xTYtqEef3NeDtIN7vDzzBeHQpc8A7L5EvOkCBX9kbX1N130UIRNnTan5E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768407483; c=relaxed/simple;
-	bh=iHj+uGw2OqqWF6pCKT43SSZ/SlLsMq0AvvCK6hWuWIc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=XnGjgceIcZDPUUzKblsZcB9C+vYNplwLEocoKPnNXPkg58sYwWSZJyTelAyc86yt6PAFgU0R37Il6rbFGkdiGQnzGDOj2gx75r40L0x/rEmITyXiCBDI8siN7lj8trsM+NekV29BC/JB5CBURIKn3I3gw6beXz7v9CSkGKNEh2Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hbbSPpIE; arc=none smtp.client-ip=209.85.218.48
+	s=arc-20240116; t=1768407486; c=relaxed/simple;
+	bh=hgXJpH77hvcBVKHH1im1p86iTVxyWxbx+ia9CwbiWZQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=p1xnJl/V2e5c6WhdJ6uSfJQNWjoSXLko0R9XGHzWQTPBMU3MJzz795s1OmS1HXGybHqXNeI5cdyvFV/pNnMD/ZVYlwDZddizKITdD94xmnEoyUJz2AWHeI8FwKZ9Ivw3gI/rH0Fp8Zr1kPyHMdUVlu5WANgd6oXIrk9lGyyk06U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S1Eh0buT; arc=none smtp.client-ip=209.85.218.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-b8718187eb6so541366b.2
-        for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 08:18:02 -0800 (PST)
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-b87693c981fso3510666b.1
+        for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 08:18:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768407480; x=1769012280; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=d08heOFOUzNeQjBF+Gvdp+IUmUWcWmX6OFjAO8r15qU=;
-        b=hbbSPpIEQPTwxz9kJwcPn0UN4Joa5IzEwzR1x/S0yMITHDvWbuNmDpqOAWXOmTROr3
-         FyBAFNBfdyCuypiawoE18akFyWtJEz5l5xg94srPf3s2MHZ9TFk0W8NhWTLUl29HUZus
-         Ce7thN+Cn/pryVUDSFrlef1FK9ucB3W9QrQhI7dod9EsxmUpbMZLROciY5l3PWBShone
-         BHYI1OFZSy0wilGpIuHI4bavhAU/OdjJfKOUoPbUdQwu7qlndw1nLhXErM4KKNgt0K6H
-         +IgnV6d7PqijLiwhoGHIWry3ssQ2sQyNtzr1Rt6nXzG+KUhmfuIUzVzwyW76v/hSAlDt
-         yNuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768407480; x=1769012280;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1768407482; x=1769012282; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=d08heOFOUzNeQjBF+Gvdp+IUmUWcWmX6OFjAO8r15qU=;
-        b=fD9kxmwtNM2xc5hPtACytaRW+128/u2zGPj1uNSkFckrCPpMovRuLtXnUALEegFa2L
-         ZLRkxZKBInJu28JKro2TuP2Dd+UlknFoCAxbpODeZ0cjVf1O/ytXaCAMH+2CY2w3HOaf
-         NOpdQ7iLtG+cvLOuFLnOGARVb0Gn83RoU+vMkvv0dH+60i643KveDMrFal+vb9pAeXke
-         VLphY1X8AzBanW4KOCLKvwIysG1GIDJ6Yhlz648ytFEf1M6ILiQ1/cDt64hzuIypsYRg
-         YK8egRxPcjIT1O9cueY1CV6YqR/8SooQNvgJDP5mHT6+k362fA88a0VuNoYlbbjvG+Pk
-         Ch5w==
-X-Gm-Message-State: AOJu0Yym6p8dpi9Az7sd3sLJGLHXRXJ0oyy3zHk6Hp4asWh47gCmRDbj
-	2jA9jI9hBObbm9XGCzP+/xaghUeGS6Y3VO1fi/ly1KU+D9WTkf0L6EmBqfr0Iw==
-X-Gm-Gg: AY/fxX7WBveusdPKfcthACFPlEh0RxMLefAOLbTcX1KtdMtW8ZK4iC4TX9f5l5/LsbJ
-	L4ksxDEoL7U7QOMqrj+BMTA6rb9DptLCDLbXSv8AFB6KxCGqyfCEc7k/5rmGF1knGy53F3QUjVU
-	dE5xZlmV64QGW+zGWL39OZru0vbNS2ryOB86hpJqpplI4vqjk/2VutB6NhVduKz8dNUXExO37Xs
-	IWvDw3B0n6RKXXQvXpZsx4Nu0hJI5UeZ7HlpfaY0hERc6ho5m8rOfdauvXBHkp4Cpv2EZ5jLJCm
-	VvygLqCi4ASfbHmMhpERZc79BCnudt0iLOaGOpEqMnVQZnpqDxaTy85/QpKb4deORSNdaFylhcB
-	1ooMSphMbUMryJNlDUutvBWXlyccVMoGutGPjg2bl/eAAREqk7xCOErgr5CzC/bgyQnTzFIIEvd
-	X5evBBny9B38j83BAcvZkhel/24FkECA==
-X-Received: by 2002:a17:907:25cb:b0:b87:1a26:3672 with SMTP id a640c23a62f3a-b87613e012amr307458666b.57.1768407480091;
-        Wed, 14 Jan 2026 08:18:00 -0800 (PST)
+        bh=MGbsNX6gJa1WyRpXzSxqLCWBhCF/R+wAe4rBID2DyBE=;
+        b=S1Eh0buTHmvnFDYQrTQPsltVlY2QH2EpA2GRRMoR2El8D15ZeyfUIYNbfknPOrP8k8
+         pW0zegSW5B8tTjP3fdv4JlvcQtTk9/wOcruNtq4so+ya7Bk5Kwhrts1FENbK96t0hUpV
+         WWJ9pcsO6vLkRNFQSxjNMSaOmbQlQ+Um7PUbt3KDtzqMO7ZmMtALNwvXwflbyPGn131U
+         h7wmoGMVO07+Xg14nSUNSK2Wh+YMKuuvyNCMSIgMyECa4EbxiMWMwBgVCVGPKZ8Vr/xj
+         lKi2M10L9XRerRIdp+LcfUZugFu5UJeM3j62my4oV14mTlMgJJQ1D6U2J1Tja5SbeVbR
+         i5jA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768407482; x=1769012282;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=MGbsNX6gJa1WyRpXzSxqLCWBhCF/R+wAe4rBID2DyBE=;
+        b=bJZXIEpud938z9RQhTcokGCPVSIA8lwhU/WToOIvPQXdPelxeVo232yGtpBrpgKr06
+         Sxfv3M2yvqwoa+nqWoAogAM9eWP/Caa1L4DxEZ1QsijoVIxoEmnaKI+1pChIhUI9pkTI
+         52MhVaU3gCXRHobGdudrm8bOlre1Kavg5iRPpAD8K5yO+19bwQytSU1ktItQ6PCtOa/6
+         9J+RJXiyMnwC4PO0k4ACh3WtB0Mr5X04OY2HoUHpmmGMbOGIYtIg4LmkWKYOmG0pVrl6
+         yjVGTBNio9+8Qa7G00hEgmrpw+h2vgyGLIjTks5ZLisfD0PCL3EFWmMyPfNXMrENEfIz
+         XiYA==
+X-Gm-Message-State: AOJu0YxjHTtj5gEvZaa6MVEoWo91r4qUcEcjUa2k+7+rMRnNOtx08LV1
+	/tA9UQXzmfj1SS093hMzqHktMVrcltGJx6SlWQlV/JkSl5Df4rfTd8YAkv24oQ==
+X-Gm-Gg: AY/fxX5WCA6iHlCD8RGQKKXIbC/8gxZzqKbtGHbC7c0nK9LCidfobxwCK0UzCeLWhCY
+	aKQxSFDVZQqBgUqdeSY3YeYZILGBadhoLH8TTpW7kezpjAbDBxNibuKl3La9eAl8Mm7MOlBWaRN
+	H7yJgtBge3sq4R8pZl4zxESAhfjcnCZrVEm7un8BNldMa3HRJI8gtXFSYtHw7SJbcxlyYI/F4Vb
+	q3ZuxvSfh+UbZMcBwufWtOvJW8efZ1eHgD06a9wIu1zxn0qpAbSD7Og1LpZz0R9+bfjtAogLuA7
+	3WBXhlD5dxawUhOHWKHWhgaOvkwCc1XlEL3pDX/2qnHhtAwS5H9cVvDTx2URHb1fKIQgSct3riG
+	Ve3j3cARThpKFxEUk40udckapt8RoSw3XTxazoiVsWqCsPVoj4epQfbbWIuBqPFYZxDnt+2NN2b
+	pzKYXD0lZouv37ZHWwuukW/m69Yclp7w==
+X-Received: by 2002:a17:906:6a0f:b0:b87:fad:442b with SMTP id a640c23a62f3a-b876766e97bmr227011166b.3.1768407482088;
+        Wed, 14 Jan 2026 08:18:02 -0800 (PST)
 Received: from localhost.localdomain ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b8713416418sm1055553866b.49.2026.01.14.08.17.58
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b8713416418sm1055553866b.49.2026.01.14.08.18.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jan 2026 08:17:59 -0800 (PST)
+        Wed, 14 Jan 2026 08:18:00 -0800 (PST)
 From: Anton Protopopov <a.s.protopopov@gmail.com>
 To: bpf@vger.kernel.org,
 	Alexei Starovoitov <ast@kernel.org>,
@@ -76,10 +78,12 @@ To: bpf@vger.kernel.org,
 	Eduard Zingerman <eddyz87@gmail.com>,
 	Yonghong Song <yonghong.song@linux.dev>
 Cc: Anton Protopopov <a.s.protopopov@gmail.com>
-Subject: [PATCH v2 bpf-next 0/2] bpf: Live registers computation with gotox
-Date: Wed, 14 Jan 2026 16:25:42 +0000
-Message-Id: <20260114162544.83253-1-a.s.protopopov@gmail.com>
+Subject: [PATCH v2 bpf-next 1/2] bpf: Properly mark live registers for indirect jumps
+Date: Wed, 14 Jan 2026 16:25:43 +0000
+Message-Id: <20260114162544.83253-2-a.s.protopopov@gmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20260114162544.83253-1-a.s.protopopov@gmail.com>
+References: <20260114162544.83253-1-a.s.protopopov@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -88,24 +92,31 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-While adding a selftest for live registers computation with gotox,
-I've noticed that the code is actually incomplete. Namely, the
-destination register rX in `gotox rX` wasn't actually considered
-as used. Fix this and add a selftest.
+For a `gotox rX` instruction the rX register should be marked as used
+in the compute_insn_live_regs() function. Fix this.
 
-v1 -> v2:
-  * only enable the new selftest on x86 and arm64
+Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
+---
+ kernel/bpf/verifier.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-v1: https://lore.kernel.org/bpf/20260114113314.32649-1-a.s.protopopov@gmail.com/T/#t
-
-Anton Protopopov (2):
-  bpf: Properly mark live registers for indirect jumps
-  selftests/bpf: Extend live regs tests with a test for gotox
-
- kernel/bpf/verifier.c                         |  6 +++
- .../bpf/progs/compute_live_registers.c        | 41 +++++++++++++++++++
- 2 files changed, 47 insertions(+)
-
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index faa1ecc1fe9d..fdd65107a9e2 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -24843,6 +24843,12 @@ static void compute_insn_live_regs(struct bpf_verifier_env *env,
+ 	case BPF_JMP32:
+ 		switch (code) {
+ 		case BPF_JA:
++			def = 0;
++			if (BPF_SRC(insn->code) == BPF_X)
++				use = dst;
++			else
++				use = 0;
++			break;
+ 		case BPF_JCOND:
+ 			def = 0;
+ 			use = 0;
 -- 
 2.34.1
 
