@@ -1,274 +1,202 @@
-Return-Path: <bpf+bounces-78790-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78791-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DFB0D1BDCA
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 01:49:17 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4B2ED1BDF4
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 01:55:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 2C758300462C
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 00:49:10 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id BAFB63027CE3
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 00:55:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46DC4225403;
-	Wed, 14 Jan 2026 00:49:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 804302222A9;
+	Wed, 14 Jan 2026 00:55:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RkIyRCOb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rhc4kwXU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC93D1459FA
-	for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 00:49:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 959EB21B191
+	for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 00:55:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768351744; cv=none; b=pQeXo4vFUE4M26cFICD0PMsqRhIJvWaiRpX+GREZgCg0ZaE8paNCjnZB3c1F4JEdukmUdaXlZmB2s9wlmdaGZh74WHG2MickdOixrXfVJLVQx6v7qWalBUoDsvUmbCsB4HiSFUM9VS9YsbOpQCnrGIrilyELW0CXFR8QiKPx7/U=
+	t=1768352134; cv=none; b=IBjSrt51PQ5+ltGOp2WZRVPNdBZwAjGEPSlPkO3ogWlyUdvcPgfw9fFVf/vHCnBMu2LfpdiADE0otNRU4Wi4dcmf13HCeyuvAIIOJcwKHdilPf0gANJpTcewDHEpoCDFRSDzUnOoRh4YjTeBakgjMEfwzATyNda1O5bzS+tZGcI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768351744; c=relaxed/simple;
-	bh=ViXufsRZqxQh85LrDvRUXF2zt+YlRQ5QfjlXKSKwZ5g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hP/2qeKFpGvrajcu1dzAu5NY/9wSoyUsCPKih57quovbY7de7wXsDj/QRAHeRIpOYxtX4GwkUAqnulJl8IL+IypFXwDYmpaVGquK139MU7cpLtd5gGd6xYCqQ053L0S3BGWO4ABaV6JoMOLbk4MCxRV7l5NhGNC6CSTIFpjycoQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RkIyRCOb; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1768351742; x=1799887742;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ViXufsRZqxQh85LrDvRUXF2zt+YlRQ5QfjlXKSKwZ5g=;
-  b=RkIyRCObhwoMl+gnI3HtZm/38gsQxW2tLpfbi+jUc8rFEYjFIxAbhXpx
-   Km4TscmczPEXGwGy2VkiOSMEy4IeXcqNaLsJ9c7ZFbY1cBCS0bfGJ04fb
-   y5e8dXoFJmbQ3KgRbvyuxe1N8nkXVqj78DfG12NJX/diWi2jhEuNZZh9T
-   lcwSKWjm0Vt5iXo60Sn0q2XSXZ8n8aFpTWWAT63bKFYMFJBPH+kMTozXb
-   OjyfzYzkFjMhxMVg+3lXFI+pzZG66xV6nzn8gy0ZGLdFMxZVOIQ2ijEf9
-   p5/ZwrW/OLV8B0PKge+gttFfyZp7DhQK1CKwIgFejXf6owbTDQCRL4FKG
-   Q==;
-X-CSE-ConnectionGUID: dn6sCuWlTpmHcLnJ47hY5w==
-X-CSE-MsgGUID: fD0EOElETAC8jOM9nh0+mw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11670"; a="68654902"
-X-IronPort-AV: E=Sophos;i="6.21,224,1763452800"; 
-   d="scan'208";a="68654902"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2026 16:49:02 -0800
-X-CSE-ConnectionGUID: CCE04uXlSSKLqEhO+iecfw==
-X-CSE-MsgGUID: pDtjo18ASByQN62QNbfSCQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,224,1763452800"; 
-   d="scan'208";a="209583527"
-Received: from lkp-server01.sh.intel.com (HELO 765f4a05e27f) ([10.239.97.150])
-  by orviesa005.jf.intel.com with ESMTP; 13 Jan 2026 16:48:57 -0800
-Received: from kbuild by 765f4a05e27f with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1vfp4A-00000000FZQ-1RER;
-	Wed, 14 Jan 2026 00:48:54 +0000
-Date: Wed, 14 Jan 2026 08:48:06 +0800
-From: kernel test robot <lkp@intel.com>
-To: Yazhou Tang <tangyazhou@zju.edu.cn>, bpf@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, ast@kernel.org, daniel@iogearbox.net,
-	john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
-	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
-	jolsa@kernel.org, tangyazhou518@outlook.com,
-	shenghaoyuan0928@163.com, ziye@zju.edu.cn,
-	syzbot@syzkaller.appspotmail.com
-Subject: Re: [PATCH bpf-next v3 1/2] bpf: Add range tracking for BPF_DIV and
- BPF_MOD
-Message-ID: <202601140812.rsul8sPI-lkp@intel.com>
-References: <20260113103552.3435695-2-tangyazhou@zju.edu.cn>
+	s=arc-20240116; t=1768352134; c=relaxed/simple;
+	bh=A5lNNa5LclWeOXlyu55YLb3ROboqOx9mWRjgL/e5NAI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QmVm1s1XEeabbIv3W7KZ0EMg1z4W8QRi2S3lbP9L7rh3V6fNoOuuUGWbudOwVFh3Z+Piul8iKl1jZXelinjs1fT8nkdKiyZNkAEZ4vDe0q3/Via71W+79nL79BC7fqU3jmmeXYkCa0dr7iWOoTE8Hv+ylDK+MwT+/P94lVzqtOo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rhc4kwXU; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-42fbc305882so4426255f8f.0
+        for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 16:55:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1768352131; x=1768956931; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3oYQZhp7slQJfitrbSZtcH8c6t2q5WuQfLBVE8cEK/4=;
+        b=Rhc4kwXUs+en/+zJhTRyiEkTY74FPp74QHjywGxQprJ1VY7MzkiahJzW08eRSqVdXx
+         VVXtS5KuVVhHZJcJSzKrJTn14RCIq2rIR4B+oAA3FDipC7/6f4bcPFMF9+tTRMyYt1Eg
+         JceaPUEDZsMo/KZs49NAOXJm/6NrV0Re2qUQyTE1UMHUtSLzcgI/a7zyhRQcwHINFUaC
+         pG4mrKTkwNEktZUwElByufcTBbOU96lAwTDDWWoNurJidMAXY/1Qqcuqa9/qIFZ9+RC2
+         bw8cCI1CY3Ls8mTttI2RfStPcXRVQa7IRS//XBpV2pSqM3+ebC7ENjrO9HgFOxyFkUGF
+         Es/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768352131; x=1768956931;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=3oYQZhp7slQJfitrbSZtcH8c6t2q5WuQfLBVE8cEK/4=;
+        b=gxL56PSXrL6hdBbQ2g3WklzX7XrAGjs684oeUHYu7pYOzdkUR/Gfdxx6yFIGnLkIwX
+         8o1Yk+UVTwT4ZKFnCZvRYpKSv2cqrb+l2dRuqRp8DnSqIvGEm3EKDX1FVT06VPXKkLjK
+         iAfQQq2qX5+qgE+GYI/V+o4uvRf9pdZtkvuEVhM+Shcko3zeDuHYoLh374l5ISrxQMul
+         fxmD1oe9j37VdlGSAuMOUMNKiY5IaX+HJ+Fs9lHNqqOiPgctyqmk+uJ5G/6NlEMLYwKG
+         Xb80K+QUGyEtwHn2ybe0z9yCBR2ZOT/7QZHKaaaRiAESB4Dmk1VoH4/fB/8UqznDGJzR
+         3MqQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVr8dB/GWzpZCwHQG12FHP/r8WRABRnr4puDeOa8IgADzmd+JmIj6cwygWzVfokGm6dqZ4=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy+KUZVqVEMmbHGcEWi3kq6xEGpdVSGl4ObrwSnMrMXv+2xmjcQ
+	fHo1k1bh1G5+Ghvd+z9+wiH8cku2vzuO1p1bchVsbNN6H5VCmzAiRNGXdIW6zcViou2RVUdsixy
+	5TetptcnnXsfMmMYCW7LKK4L/Uo6bdxY=
+X-Gm-Gg: AY/fxX576jc3VKiFGEC3zg3Sxptrr+sepAVMtlxABvlfkAets6fOOkdeXMJID4qkZcZ
+	oKXxAuBO2geZ9ovif+73SOrWH5GMAJAwHGuiMsim7yOI9MuS/BGeFnoZoXxESlJyKpCFrYjoXcs
+	MoKIuQNzsnq3myGYaRi2AszkJXw3+bTZUG2miP3rOtIWz9R87J64n9rXoTpiWU+KO3y3dtqpNFy
+	77cSRcKfvJyfNFxRRi4LEyE19marFD5ziFO7zgj0KDlLGIz3rG5QEbfZ2oup5OxxZ7T7PwnBnmG
+	bMViB2OdLBHUV8s+uQ7oGiKJbZ4lplsaivq2TrQ=
+X-Received: by 2002:a05:6000:2303:b0:431:752:672b with SMTP id
+ ffacd0b85a97d-4342d5b1738mr328303f8f.14.1768352130862; Tue, 13 Jan 2026
+ 16:55:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260113103552.3435695-2-tangyazhou@zju.edu.cn>
+References: <20260109184852.1089786-1-ihor.solodrai@linux.dev>
+ <20260109184852.1089786-4-ihor.solodrai@linux.dev> <952853dd064d5303a7e7ec8e58028e9ee88f2fad.camel@gmail.com>
+ <93ecdc25-aa5e-485b-8ff4-a9db3b585861@linux.dev> <c7e2a776-52f9-46ad-8422-3a9202bbd9f1@linux.dev>
+In-Reply-To: <c7e2a776-52f9-46ad-8422-3a9202bbd9f1@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 13 Jan 2026 16:55:19 -0800
+X-Gm-Features: AZwV_QhCzsIYiFSU9FG_3aoIq8uD6CZR4LYkXkB8jEMHKtnpgVl7w-Izz3rAlpk
+Message-ID: <CAADnVQLizVA16Q-wVMd5-00YSPZtyuu7Exn9B8c_r1rn2cztkg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 03/10] bpf: Verifier support for KF_IMPLICIT_ARGS
+To: Ihor Solodrai <ihor.solodrai@linux.dev>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Mykyta Yatsenko <yatsenko@meta.com>, Tejun Heo <tj@kernel.org>, 
+	Alan Maguire <alan.maguire@oracle.com>, Benjamin Tissoires <bentiss@kernel.org>, 
+	Jiri Kosina <jikos@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	"open list:HID CORE LAYER" <linux-input@vger.kernel.org>, sched-ext@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Yazhou,
+On Tue, Jan 13, 2026 at 3:48=E2=80=AFPM Ihor Solodrai <ihor.solodrai@linux.=
+dev> wrote:
+>
+> On 1/13/26 2:03 PM, Ihor Solodrai wrote:
+> > On 1/13/26 12:39 PM, Eduard Zingerman wrote:
+> >> On Fri, 2026-01-09 at 10:48 -0800, Ihor Solodrai wrote:
+> >>>
+> >>
+> >> [...]
+> >>
+> >>> @@ -14303,6 +14358,17 @@ static int check_kfunc_call(struct bpf_verif=
+ier_env *env, struct bpf_insn *insn,
+> >>>     for (i =3D 0; i < nargs; i++) {
+> >>>             u32 regno =3D i + 1;
+> >>>
+> >>> +           /*
+> >>> +            * Implicit kfunc arguments are set after main verificati=
+on pass.
+> >>> +            * For correct tracking of zero-extensions we have to res=
+et subreg_def for such
+> >>> +            * args. Otherwise mark_btf_func_reg_size() will be inspe=
+cting subreg_def of regs
+> >>> +            * from an earlier (irrelevant) point in the program, whi=
+ch may lead to an error
+> >>> +            * in opt_subreg_zext_lo32_rnd_hi32().
+> >>> +            */
+> >>> +           if (unlikely(KF_IMPLICIT_ARGS & meta.kfunc_flags
+> >>> +                           && is_kfunc_arg_implicit(desc_btf, &args[=
+i])))
+> >>> +                   regs[regno].subreg_def =3D DEF_NOT_SUBREG;
+> >>> +
+> >>
+> >> Did you try doing this in `mark_reg_not_init()`?
+> >> This function is called for R1-R5 some time prior this hunk.
+> >
+> >> Did you try doing this in `mark_reg_not_init()`?
+> >
+> > Just tried, it doesn't work because REG0 is considered a caller saved
+> > register, and so it breaks the zext tracking:
+> >
+> >         #define CALLER_SAVED_REGS 6
+> >         static const int caller_saved[CALLER_SAVED_REGS] =3D {
+> >            BPF_REG_0, BPF_REG_1, BPF_REG_2, BPF_REG_3, BPF_REG_4, BPF_R=
+EG_5
+> >         };
+> >
+> >         [...]
+> >
+> >       for (i =3D 0; i < CALLER_SAVED_REGS; i++)
+> >               mark_reg_not_init(env, regs, caller_saved[i]);
+> >
+> > CI run for the diff below (on top of this series):
+> > https://github.com/kernel-patches/bpf/actions/runs/20972520708
+> >
+> >
+> > [...]
+> >
+> > ---
+> >
+> > Resetting all reg args appears to be working however (see below).
+> > CI: https://github.com/kernel-patches/bpf/actions/runs/20973490221
+> >
+>
+> A follow up after a chat with Eduard.
+>
+> This change in check_kfunc_call() appears to be working:
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 092003cc7841..ff743335111c 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -13958,8 +13958,11 @@ static int check_kfunc_call(struct bpf_verifier_=
+env *env, struct bpf_insn *insn,
+>                 regs =3D branch->frame[branch->curframe]->regs;
+>
+>                 /* Clear r0-r5 registers in forked state */
+> -               for (i =3D 0; i < CALLER_SAVED_REGS; i++)
+> -                       mark_reg_not_init(env, regs, caller_saved[i]);
+> +               for (i =3D 0; i < CALLER_SAVED_REGS; i++) {
+> +                       u32 regno =3D caller_saved[i];
+> +                       mark_reg_not_init(env, regs, regno);
+> +                       regs[regno].subreg_def =3D DEF_NOT_SUBREG;
+> +               }
+>
+>                 mark_reg_unknown(env, regs, BPF_REG_0);
+>                 err =3D __mark_reg_s32_range(env, regs, BPF_REG_0, -MAX_E=
+RRNO, -1);
+>
+> https://github.com/kernel-patches/bpf/actions/runs/20975419422
+>
+> Apparently, doing .subreg_def =3D DEF_NOT_SUBREG in mark_reg_not_init()
+> breaks zero-extension tracking somewhere else.  But this is not
+> directly relevant to the series.
+>
+> Eduard, Alexei, any concerns with this diff? Should I send a separate
+> patch?
 
-kernel test robot noticed the following build errors:
+This is odd. Clear it only for res_spin_lock() processing?!
+Should be around lines 14149 instead?
 
-[auto build test ERROR on bpf-next/master]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Yazhou-Tang/bpf-Add-range-tracking-for-BPF_DIV-and-BPF_MOD/20260113-184035
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20260113103552.3435695-2-tangyazhou%40zju.edu.cn
-patch subject: [PATCH bpf-next v3 1/2] bpf: Add range tracking for BPF_DIV and BPF_MOD
-config: riscv-randconfig-002-20260114 (https://download.01.org/0day-ci/archive/20260114/202601140812.rsul8sPI-lkp@intel.com/config)
-compiler: riscv64-linux-gcc (GCC) 9.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260114/202601140812.rsul8sPI-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202601140812.rsul8sPI-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   kernel/bpf/verifier.c: In function 'adjust_scalar_min_max_vals':
->> kernel/bpf/verifier.c:15865:3: error: a label can only be part of a statement and a declaration is not a statement
-   15865 |   bool changed = true;
-         |   ^~~~
-
-Kconfig warnings: (for reference only)
-   WARNING: unmet direct dependencies detected for CAN_DEV
-   Depends on [n]: NETDEVICES [=n] && CAN [=y]
-   Selected by [y]:
-   - CAN [=y] && NET [=y]
-
-
-vim +15865 kernel/bpf/verifier.c
-
- 15781	
- 15782	/* WARNING: This function does calculations on 64-bit values, but the actual
- 15783	 * execution may occur on 32-bit values. Therefore, things like bitshifts
- 15784	 * need extra checks in the 32-bit case.
- 15785	 */
- 15786	static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
- 15787					      struct bpf_insn *insn,
- 15788					      struct bpf_reg_state *dst_reg,
- 15789					      struct bpf_reg_state src_reg)
- 15790	{
- 15791		u8 opcode = BPF_OP(insn->code);
- 15792		s16 off = insn->off;
- 15793		bool alu32 = (BPF_CLASS(insn->code) != BPF_ALU64);
- 15794		int ret;
- 15795	
- 15796		if (!is_safe_to_compute_dst_reg_range(insn, &src_reg)) {
- 15797			__mark_reg_unknown(env, dst_reg);
- 15798			return 0;
- 15799		}
- 15800	
- 15801		if (sanitize_needed(opcode)) {
- 15802			ret = sanitize_val_alu(env, insn);
- 15803			if (ret < 0)
- 15804				return sanitize_err(env, insn, ret, NULL, NULL);
- 15805		}
- 15806	
- 15807		/* Calculate sign/unsigned bounds and tnum for alu32 and alu64 bit ops.
- 15808		 * There are two classes of instructions: The first class we track both
- 15809		 * alu32 and alu64 sign/unsigned bounds independently this provides the
- 15810		 * greatest amount of precision when alu operations are mixed with jmp32
- 15811		 * operations. These operations are BPF_ADD, BPF_SUB, BPF_MUL, BPF_ADD,
- 15812		 * and BPF_OR. This is possible because these ops have fairly easy to
- 15813		 * understand and calculate behavior in both 32-bit and 64-bit alu ops.
- 15814		 * See alu32 verifier tests for examples. The second class of
- 15815		 * operations, BPF_LSH, BPF_RSH, and BPF_ARSH, however are not so easy
- 15816		 * with regards to tracking sign/unsigned bounds because the bits may
- 15817		 * cross subreg boundaries in the alu64 case. When this happens we mark
- 15818		 * the reg unbounded in the subreg bound space and use the resulting
- 15819		 * tnum to calculate an approximation of the sign/unsigned bounds.
- 15820		 */
- 15821		switch (opcode) {
- 15822		case BPF_ADD:
- 15823			scalar32_min_max_add(dst_reg, &src_reg);
- 15824			scalar_min_max_add(dst_reg, &src_reg);
- 15825			dst_reg->var_off = tnum_add(dst_reg->var_off, src_reg.var_off);
- 15826			break;
- 15827		case BPF_SUB:
- 15828			scalar32_min_max_sub(dst_reg, &src_reg);
- 15829			scalar_min_max_sub(dst_reg, &src_reg);
- 15830			dst_reg->var_off = tnum_sub(dst_reg->var_off, src_reg.var_off);
- 15831			break;
- 15832		case BPF_NEG:
- 15833			env->fake_reg[0] = *dst_reg;
- 15834			__mark_reg_known(dst_reg, 0);
- 15835			scalar32_min_max_sub(dst_reg, &env->fake_reg[0]);
- 15836			scalar_min_max_sub(dst_reg, &env->fake_reg[0]);
- 15837			dst_reg->var_off = tnum_neg(env->fake_reg[0].var_off);
- 15838			break;
- 15839		case BPF_MUL:
- 15840			dst_reg->var_off = tnum_mul(dst_reg->var_off, src_reg.var_off);
- 15841			scalar32_min_max_mul(dst_reg, &src_reg);
- 15842			scalar_min_max_mul(dst_reg, &src_reg);
- 15843			break;
- 15844		case BPF_DIV:
- 15845			if (alu32) {
- 15846				if (off == 1)
- 15847					scalar32_min_max_sdiv(dst_reg, &src_reg);
- 15848				else
- 15849					scalar32_min_max_udiv(dst_reg, &src_reg);
- 15850				__mark_reg64_unbounded(dst_reg);
- 15851			} else {
- 15852				if (off == 1)
- 15853					scalar_min_max_sdiv(dst_reg, &src_reg);
- 15854				else
- 15855					scalar_min_max_udiv(dst_reg, &src_reg);
- 15856				__mark_reg32_unbounded(dst_reg);
- 15857			}
- 15858			/* Since we don't have precise tnum analysis for division yet,
- 15859			 * we must reset var_off to unknown to avoid inconsistency.
- 15860			 * Subsequent reg_bounds_sync() will rebuild it from scalar bounds.
- 15861			 */
- 15862			dst_reg->var_off = tnum_unknown;
- 15863			break;
- 15864		case BPF_MOD:
- 15865			bool changed = true;
- 15866			if (alu32)
- 15867				changed = (off == 1) ? scalar32_min_max_smod(dst_reg, &src_reg)
- 15868							: scalar32_min_max_umod(dst_reg, &src_reg);
- 15869			else
- 15870				changed = (off == 1) ? scalar_min_max_smod(dst_reg, &src_reg)
- 15871							: scalar_min_max_umod(dst_reg, &src_reg);
- 15872			/* Similar to BPF_DIV, we need to reset var_off and 32/64 range
- 15873			 * to unknown (unbounded). But if the result is equal to dividend
- 15874			 * (due to special cases in BPF_MOD analysis), we can also keep
- 15875			 * them unchanged.
- 15876			 */
- 15877			if (changed) {
- 15878				if (alu32)
- 15879					__mark_reg64_unbounded(dst_reg);
- 15880				else
- 15881					__mark_reg32_unbounded(dst_reg);
- 15882				dst_reg->var_off = tnum_unknown;
- 15883			}
- 15884			break;
- 15885		case BPF_AND:
- 15886			dst_reg->var_off = tnum_and(dst_reg->var_off, src_reg.var_off);
- 15887			scalar32_min_max_and(dst_reg, &src_reg);
- 15888			scalar_min_max_and(dst_reg, &src_reg);
- 15889			break;
- 15890		case BPF_OR:
- 15891			dst_reg->var_off = tnum_or(dst_reg->var_off, src_reg.var_off);
- 15892			scalar32_min_max_or(dst_reg, &src_reg);
- 15893			scalar_min_max_or(dst_reg, &src_reg);
- 15894			break;
- 15895		case BPF_XOR:
- 15896			dst_reg->var_off = tnum_xor(dst_reg->var_off, src_reg.var_off);
- 15897			scalar32_min_max_xor(dst_reg, &src_reg);
- 15898			scalar_min_max_xor(dst_reg, &src_reg);
- 15899			break;
- 15900		case BPF_LSH:
- 15901			if (alu32)
- 15902				scalar32_min_max_lsh(dst_reg, &src_reg);
- 15903			else
- 15904				scalar_min_max_lsh(dst_reg, &src_reg);
- 15905			break;
- 15906		case BPF_RSH:
- 15907			if (alu32)
- 15908				scalar32_min_max_rsh(dst_reg, &src_reg);
- 15909			else
- 15910				scalar_min_max_rsh(dst_reg, &src_reg);
- 15911			break;
- 15912		case BPF_ARSH:
- 15913			if (alu32)
- 15914				scalar32_min_max_arsh(dst_reg, &src_reg);
- 15915			else
- 15916				scalar_min_max_arsh(dst_reg, &src_reg);
- 15917			break;
- 15918		default:
- 15919			break;
- 15920		}
- 15921	
- 15922		/* ALU32 ops are zero extended into 64bit register */
- 15923		if (alu32)
- 15924			zext_32_to_64(dst_reg);
- 15925		reg_bounds_sync(dst_reg);
- 15926		return 0;
- 15927	}
- 15928	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+First, need to investigate why clearing it in mark_reg_not_init()
+breaks things.
+That's what clear_caller_saved_regs() is doing already.
+Maybe these two loops in check_kfunc_call() should be doing
+clear_caller_saved_regs() instead...
+Needs proper investigation.
 
