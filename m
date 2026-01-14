@@ -1,162 +1,184 @@
-Return-Path: <bpf+bounces-78792-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78793-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F454D1BE28
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 02:06:26 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id E888BD1BE6B
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 02:20:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0209A3026ADB
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 01:06:09 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 34DCB301A706
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 01:20:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6F452264AB;
-	Wed, 14 Jan 2026 01:06:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFA5D277818;
+	Wed, 14 Jan 2026 01:20:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N81vBgDO"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="R8EzpI0W"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27F801B6527
-	for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 01:06:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6532F2773CC
+	for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 01:20:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768352767; cv=none; b=QoITi8AtNhc66j41CNI8TuNpx6xKar6aL0DXmWjofqWYCsmNpA0bOXsznoIr/lKsSGc98Hr61tUGv9N2bQVCimL237cz9W8f04LsRxWwk+MVj+OekvMlPTA/10qGGiQ92323QCbRtSHLjzDw+KVFDlKzJ9bEIjYzJakQzh2z8D8=
+	t=1768353613; cv=none; b=u+5mR+r0pBoif+qmSkzWjim42txG5J/MdpHtmnerQxOpaRqyMkEiexiMd2RJ+nbF/1GXh6vKsk1lnhtQDGuFr0z/8XyVUatjCzi3h0gtePneCI/ro3ck1rnQYp/zqxWrO3gvmmscwKpNpBEbOIyyOVD6haRSpjVY7x45S8kwY9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768352767; c=relaxed/simple;
-	bh=F0MA++L1zSE6cZA/Gd+u1+s2DraR/NZOJLoDeRsNESw=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=uQw4HPzYD99Cup9DMD2nHdJmuO4aHOKdaVlzgEcuQzINHq5YNqZyjiwRvyVhJNRctzSyx6iA1lfHyTwj2I0NnUGHX0PDJ3dc7noJF8bQIoynXrfD7WHR+XkH7fgPy+zYfiP4nKv3FFv+/wV8MbicGSkuTyjNH4gSuHw4eAUd7wk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N81vBgDO; arc=none smtp.client-ip=209.85.216.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-34c9edf63a7so6462828a91.1
-        for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 17:06:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768352765; x=1768957565; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=c3zz/uR4XC6DTt4ifQZ0dcMHOsCy5LDTuF26jxx7ZX8=;
-        b=N81vBgDOidwbWegdOLTzxZRlkJsuRzkf2m1Ac3RyTnuoid5sGLxIr8Kp/N6U+lX+9L
-         gpYjaJIsFOHcjh3hXfIjkcVoZRaHkz3EHcr60ybtpC6kHCBG+FQeT+nmIagQOF75ZjrV
-         S/0GIxlRNzM0qtuMy76aY9Mw8WgqwvB2gS23FGcuVBtrHxZljQ2tQ+bbW06VrK6u/0yW
-         VoeY5pCZ1w7AKNKK2HHc3LmZVARxb3PGrwpml3BbTxtdTC6TusHyd5H7QvhLzuoDnqyQ
-         Zy8s3+/RqlVjnIKkyKKXb+jOpb2g4gprhwM9yjO9ki96PEamrCw7C9X6Ma+QBShSPf+i
-         D9cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768352765; x=1768957565;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=c3zz/uR4XC6DTt4ifQZ0dcMHOsCy5LDTuF26jxx7ZX8=;
-        b=Xsp8MhF3DwOzGQJw3ODskflxOM+eGKOhYJApZGmHm3teuxUYOy9w8kHBksjaOX8atx
-         ddGj81WUckFl5b9CjSiR2rBkY8LB8eNHqk8RUyZYiEniQSGuKc/ywT0dBjb1g+rDF1VJ
-         B9af0V0hX9pBYTHzqXpQ3Gndgvqk7e987Gu4d/i3DPCbfcCJ8iT4YwoFYAxRS28uKQlw
-         xCKdGPshTSbly5A/fGFtSlIZ84dllyQsN/pUqDjV2CU8watdn9ktPvDC50vZk3Ikbgek
-         FAxacf/vLlyBiK6cfOoqEruyQhQsJwyStoaWq5gx7uKZ9MN0+Azj/bIi65GC49p4OrSh
-         O4wQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVG26bN6towpXWZtz0+BXGbdPYI3EXbEb34sjQxrruUc3vY3Gatf2Rfqenq3PW+yBg7y7U=@vger.kernel.org
-X-Gm-Message-State: AOJu0YweAquVK0P9CTxWwJX4FH23MOfg+O2TZoneY43iUPHVcJdgPrpF
-	w9xpaDYKkW8FdDacYnF+RSkjJcjyPiOpZK2XTtNK+vegTcpNXVGHz7I1
-X-Gm-Gg: AY/fxX7yd8H4rN91sOwr0R3G7a8nimnKxx+2Z59RVrC8kBRLVFkK1mRuB4i+2dv7GD6
-	7rkdbQ891LH6C3VEp7EwB/Y1/cwUZTuO8IlJ+krUyclm79T6jwg7Zw6uEZWeWTLsWonIjfLf+Wg
-	0UDpE6G2QDAMsKr50k+i4OV+rgd27aDGnxLAneM8VPRbhe3banEX3Gsf2PVpvMr0w7WtnFcficl
-	vmEzIxI+Kw4wme+rwp+cwxxnvchE047zf20ABx0JT62JRHEeSe9pCZ6IzmZV0EOF2kdF4cj3pL4
-	GPrwRtxWDef6NOFkD2GfpOm77gyNWmIK8MkT7gD4fCuOLJNnkAs/4L8rDVnlYdnK4LJ8//4B7JD
-	Q4zgotmpunhXfWRaXIf5QWjmNwZBEoUQC/HWiqdsqbpBrDMDG07NXs6umzdbDj9zDpZfCef15yD
-	yEKKUAKbyDL2stXI90jbOp+JnVi1VnVZTt01rPnAcT
-X-Received: by 2002:a17:90b:3890:b0:330:a454:c31a with SMTP id 98e67ed59e1d1-3510913e139mr874413a91.32.1768352765322;
-        Tue, 13 Jan 2026 17:06:05 -0800 (PST)
-Received: from [192.168.0.226] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-351099d0913sm322048a91.0.2026.01.13.17.06.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jan 2026 17:06:04 -0800 (PST)
-Message-ID: <5027595d4eff50d423af8ebc5fecd6a0f7229d60.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v1 03/10] bpf: Verifier support for
- KF_IMPLICIT_ARGS
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Ihor Solodrai <ihor.solodrai@linux.dev>, Alexei Starovoitov
- <ast@kernel.org>,  Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Mykyta Yatsenko <yatsenko@meta.com>, Tejun Heo <tj@kernel.org>, Alan
- Maguire <alan.maguire@oracle.com>, Benjamin Tissoires <bentiss@kernel.org>,
- Jiri Kosina	 <jikos@kernel.org>, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, 	linux-input@vger.kernel.org,
- sched-ext@lists.linux.dev
-Date: Tue, 13 Jan 2026 17:06:02 -0800
-In-Reply-To: <aff8eeed-414c-49b3-b7f0-c8c328ed5199@linux.dev>
-References: <20260109184852.1089786-1-ihor.solodrai@linux.dev>
-	 <20260109184852.1089786-4-ihor.solodrai@linux.dev>
-	 <18d9b15319bf8d71a3cd5b08239529505714dc96.camel@gmail.com>
-	 <aff8eeed-414c-49b3-b7f0-c8c328ed5199@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.58.2 (3.58.2-1.fc43) 
+	s=arc-20240116; t=1768353613; c=relaxed/simple;
+	bh=xvbKq9zqlpBjnEIRtAY20uDnvE5UPV3rPcBBEwe44bI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Mnb3UqxRgafjCdaoWffTIlsmndanas5G2IqvXihH/LYwXwaNqTPXPoJwOhlakuQGAS2S4cLElKRoXxvqhL3qz3jagzOktQrz4HT4HkpHU8p5pWaZBaW7nVPdF2X+yMDWAwxF/g1MlkyjC241lyUQti4/qXGGd5vCTfwQht3hViY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=R8EzpI0W; arc=none smtp.client-ip=91.218.175.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1768353597;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kOB+NzAkfLhov2uWWfojDz0WXKClIy7D8snDIsUOI1o=;
+	b=R8EzpI0W1XgdFiP/VNcTHIt90f2GugzBDaTaD18RxkSTQwdsRxrMiMUPJtQohkiNG5vfEp
+	WlBfpOOSpiezA3oABAotFgQGvk8DRvqzPdSFr96H29XFiz4D1SoGbbbx4R0LPKQVXSo1F7
+	NwNgTvRX5BiCEXJihjU4jYtygO9nk/k=
+From: Menglong Dong <menglong.dong@linux.dev>
+To: Menglong Dong <menglong8.dong@gmail.com>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Eduard <eddyz87@gmail.com>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v4 1/2] bpf,
+ x86: inline bpf_get_current_task() for x86_64
+Date: Wed, 14 Jan 2026 09:19:46 +0800
+Message-ID: <6230600.lOV4Wx5bFT@7940hx>
+In-Reply-To:
+ <CAADnVQLMztSfxCSxak900PVN+CtiN0FF=hkRcB8cHKiHipd4Dg@mail.gmail.com>
+References:
+ <20260112104529.224645-1-dongml2@chinatelecom.cn>
+ <20260112104529.224645-2-dongml2@chinatelecom.cn>
+ <CAADnVQLMztSfxCSxak900PVN+CtiN0FF=hkRcB8cHKiHipd4Dg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, 2026-01-13 at 16:03 -0800, Ihor Solodrai wrote:
-> On 1/13/26 1:59 PM, Eduard Zingerman wrote:
-> > On Fri, 2026-01-09 at 10:48 -0800, Ihor Solodrai wrote:
-> >=20
-> > [...]
-> >=20
-> > > --- a/kernel/bpf/verifier.c
-> > > +++ b/kernel/bpf/verifier.c
-> > > @@ -3271,6 +3271,38 @@ static struct btf *find_kfunc_desc_btf(struct =
-bpf_verifier_env *env, s16 offset)
-> > >  	return btf_vmlinux ?: ERR_PTR(-ENOENT);
-> > >  }
-> > > =20
-> > > +#define KF_IMPL_SUFFIX "_impl"
-> > > +
-> > > +static const struct btf_type *find_kfunc_impl_proto(struct bpf_verif=
-ier_env *env,
-> > > +						    struct btf *btf,
-> > > +						    const char *func_name)
-> > > +{
-> > > +	char impl_name[KSYM_SYMBOL_LEN];
-> >=20
-> > Oh, as we discussed already, this should use env->tmp_str_buf.
+On 2026/1/14 01:50 Alexei Starovoitov <alexei.starovoitov@gmail.com> write:
+> On Mon, Jan 12, 2026 at 2:45=E2=80=AFAM Menglong Dong <menglong8.dong@gma=
+il.com> wrote:
+> >
+> > Inline bpf_get_current_task() and bpf_get_current_task_btf() for x86_64
+> > to obtain better performance.
+> >
+> > In !CONFIG_SMP case, the percpu variable is just a normal variable, and
+> > we can read the current_task directly.
+> >
+> > Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+> > ---
+> > v4:
+> > - handle the !CONFIG_SMP case
+> >
+> > v3:
+> > - implement it in the verifier with BPF_MOV64_PERCPU_REG() instead of in
+> >   x86_64 JIT.
+> > ---
+> >  kernel/bpf/verifier.c | 29 +++++++++++++++++++++++++++++
+> >  1 file changed, 29 insertions(+)
+> >
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 3d44c5d06623..12e99171afd8 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -17688,6 +17688,8 @@ static bool verifier_inlines_helper_call(struct=
+ bpf_verifier_env *env, s32 imm)
+> >         switch (imm) {
+> >  #ifdef CONFIG_X86_64
+> >         case BPF_FUNC_get_smp_processor_id:
+> > +       case BPF_FUNC_get_current_task_btf:
+> > +       case BPF_FUNC_get_current_task:
+> >                 return env->prog->jit_requested && bpf_jit_supports_per=
+cpu_insn();
+> >  #endif
+> >         default:
+> > @@ -23273,6 +23275,33 @@ static int do_misc_fixups(struct bpf_verifier_=
+env *env)
+> >                         insn      =3D new_prog->insnsi + i + delta;
+> >                         goto next_insn;
+> >                 }
+> > +
+> > +               /* Implement bpf_get_current_task() and bpf_get_current=
+_task_btf() inline. */
+> > +               if ((insn->imm =3D=3D BPF_FUNC_get_current_task || insn=
+=2D>imm =3D=3D BPF_FUNC_get_current_task_btf) &&
+> > +                   verifier_inlines_helper_call(env, insn->imm)) {
 >=20
-> The env->tmp_str_buf size is smaller:
+> Though verifier_inlines_helper_call() gates this with CONFIG_X86_64,
+> I think we still need explicit:
+> #if defined(CONFIG_X86_64) && !defined(CONFIG_UML)
 >=20
-> 	#define TMP_STR_BUF_LEN 320
->=20
-> *And* there is already a local char buffer of size KSYM_SYMBOL_LEN
-> already in use in verifier.c:
->=20
-> 	int bpf_check_attach_target(...) {
-> 		bool prog_extension =3D prog->type =3D=3D BPF_PROG_TYPE_EXT;
-> 		bool prog_tracing =3D prog->type =3D=3D BPF_PROG_TYPE_TRACING;
-> 		char trace_symbol[KSYM_SYMBOL_LEN];
-> 	[...]
->=20
-> Since these are function names, the real limit is KSYM_SYMBOL_LEN,
-> right?
->=20
-> Sure >320 chars long kfunc name is unlikely, but technically possible.
+> just like we did for BPF_FUNC_get_smp_processor_id.
+> Please check. I suspect UML will break without it.
 
-320 is good enough, you'll be able to cover this:
+Do you mean that we need to use
+#if defined(CONFIG_X86_64) && !defined(CONFIG_UML)
+here?
 
-kfunc_trace_long_descriptive_kernel_symbol_for_tracing_scheduler_memory_io_=
-and_interrupt_paths_during_runtime_analysis_of_latency_throughput_and_resou=
-rce_contention_on_large_scale_multiprocessor_linux_systems_using_bpf_and_kp=
-robes_without_requiring_kernel_recompilation_or_system_restart_for_producti=
-on_use_cases_v2x
+The whole code is already within it. You can have a look up:
 
-But not this:
+#if defined(CONFIG_X86_64) && !defined(CONFIG_UML)
+		/* Implement bpf_get_smp_processor_id() inline. */
+		if (insn->imm =3D=3D BPF_FUNC_get_smp_processor_id &&
+		    verifier_inlines_helper_call(env, insn->imm)) {
+[......]
+		/* Implement bpf_get_current_task() and bpf_get_current_task_btf() inline=
+=2E */
+		if ((insn->imm =3D=3D BPF_FUNC_get_current_task || insn->imm =3D=3D BPF_F=
+UNC_get_current_task_btf) &&
+		    verifier_inlines_helper_call(env, insn->imm)) {
+[......]
+#endif
 
-kfunc_trace_kernel_scheduler_and_memory_management_path_for_observing_task_=
-lifecycle_events_context_switches_page_fault_handling_and_io_wait_states_wh=
-ile_debugging_performance_regressions_on_large_multiprocessor_systems_runni=
-ng_preemptible_linux_kernels_with_bpf_tracing_and_dynamic_instrumentation_e=
-nabled_for_deep_visibility_into_runtime_behavior_and_latency_sensitive_code=
-_paths_without_recompilation.
+>=20
+> > +#ifdef CONFIG_SMP
+> > +                       insn_buf[0] =3D BPF_MOV64_IMM(BPF_REG_0, (u32)(=
+unsigned long)&current_task);
+> > +                       insn_buf[1] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0,=
+ BPF_REG_0);
+> > +                       insn_buf[2] =3D BPF_LDX_MEM(BPF_DW, BPF_REG_0, =
+BPF_REG_0, 0);
+> > +#else
+> > +                       struct bpf_insn ld_current_addr[2] =3D {
+> > +                               BPF_LD_IMM64(BPF_REG_0, (unsigned long)=
+&current_task)
+> > +                       };
+> > +                       insn_buf[0] =3D ld_current_addr[0];
+> > +                       insn_buf[1] =3D ld_current_addr[1];
+> > +                       insn_buf[2] =3D BPF_LDX_MEM(BPF_DW, BPF_REG_0, =
+BPF_REG_0, 0);
+> > +#endif
+>=20
+> I wouldn't bother with !SMP.
+> If we need to add defined(CONFIG_X86_64) && !defined(CONFIG_UML)
+> I would add && defined(CONFIG_SMP) to it.
 
-Should suffice, I think.
+OK, let's skip the !SMP case to make the code more clear.
+
+Thanks!
+Menglong Dong
+
+>=20
+> pw-bot: cr
+>=20
+
+
+
+
 
