@@ -1,157 +1,140 @@
-Return-Path: <bpf+bounces-78886-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78889-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D2E4D1EAF1
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 13:16:24 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B149D1EBAC
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 13:26:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 6B2E2302AF95
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 12:16:23 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 76A1B300D41E
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 12:26:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78C5239527B;
-	Wed, 14 Jan 2026 12:16:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7A24397AA3;
+	Wed, 14 Jan 2026 12:26:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nKcTQk+w"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b1i75yib"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B2DD396D2D
-	for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 12:16:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA901397ACC
+	for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 12:26:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768392982; cv=none; b=N0xC0x8vzNjFHMp3pC9RTBcjyJD4fWzgSmPpiT4//mvOcCbJxYgbTwb2vGss6z4j28sWbd2xLUPTbfvzNeks4Rg+EDpS28Zv4m8fsvRUeM3Nojw/qFQcFGM+HToPV32MtfdUYsvCfdZmaBMhvTH/m7feZQ0kjIoz+i7GL/KoNU4=
+	t=1768393588; cv=none; b=tE/397NrBwD0aVIe5Vhn3xuHjhivkI3ccVc6jemfJW98SNzu/3g7Bwh5pQwOQujt3x28zp4TtqEdNNas4Lk6voVmgDhUOVdOJhbwzJ2FF1LPefAB9UkiGM6lUqWUAw0VeaDguiBclNizjpY3S8SW4ptntMlu/k1G1Lh4Z8wt9hw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768392982; c=relaxed/simple;
-	bh=h6plHtyEJAPnW/kOTSxq98sPn9FmPl/GZrJ82KaBJYI=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Yc0L3oGnmS2bqB3YotReBkbmmI1jElC1G+P5wQbKugPFE880MpTbSFn4ZK+MAwsJfYv+rHiBi55JgDJTE6iJ7nlE2talEHn6dSF9yNgBYmhYn8n9sT1zq2C0m2CmjQk7fqR+uILnYxviNAKMNL8aFY4jwFnMFVPgURfjmyerj/c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nKcTQk+w; arc=none smtp.client-ip=209.85.208.48
+	s=arc-20240116; t=1768393588; c=relaxed/simple;
+	bh=JEDnlZYXIHilnOnTePLHzYAZD0ZmBByyDO4WzTOYCCk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PXn+Y9VuUe1BvNEPXkPK3lUTAow2IrL3oQqY8rCxXwSSZsLrCxVeaqOcv3FPQVgtIWEWoJ7doewjHrdOrRkr4zOiNUFk57ajCyD61Co1xVO2TWxx1rZ72LzbFPzEKrFT9CLMQPaQjfyhOmo30/R9mh0R1bwRKzaKbKA96h/K+NE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b1i75yib; arc=none smtp.client-ip=209.85.214.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-6505cac9879so14619870a12.1
-        for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 04:16:19 -0800 (PST)
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-29f0f875bc5so67940155ad.3
+        for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 04:26:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768392978; x=1768997778; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YCiPEDKhbT9vYnjTMwPD8QcnwrqfQdSqnwbBZs41EKI=;
-        b=nKcTQk+w1K4EHxWLv/6NB+0PPPTCTknZfHNGbSGP/cIVOFasynWhW8laQwH574rgLs
-         euiWPgUw5RsMjZeunjtqW7Y4l+2igFX3cfQm3vxzDvzwxyLXR1IH4GqalKgGeBY57OMz
-         v/ihjNLLUHHSp4Ff4xLSywKqmucGrvAnQ85+T5Lkrv63U8CXW/CkgK4ybALZBbDCRm9T
-         yDZlDRpyDcj7Exh0iqyyO9jizqWPpTwMKMmWfHh0V3sxZ+ZKB1FgSgy0fjPIMv0NEcHL
-         SThtutZofRd+L99o3NkX782LzGmZbGkJGSXCMxD1LLzA300/02fz3f4JNI2IBWD//6eM
-         hx4A==
+        d=gmail.com; s=20230601; t=1768393584; x=1768998384; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=AbzNlyftwKRg9xsu0MFnIl7dchtZzqwBBSHtb8zwf2M=;
+        b=b1i75yibxVgOr/Wjjc2QVYZnW3+jOTNz6BFEGAG0QuwV6TL7zfwc22aNfLk3bcD56o
+         NYZ9Gop1frF7BfSHJnfDOf4NwWmYpMqbppapjspV4Zc2fYa0lPtlZJrXfE8W964peLnj
+         mTiomx4X7nHZFwNFMwyz6REat4rCwtlnqhTCRKeD3OXumaxEHD0rMZED3xnu9VzYku2m
+         Z3PpUFVzZ4YNYJZfIlsVdCA4+Y/G4fWGxsVj9EUB2H2OskVHbQGyjH1yatTkPWndV2Q+
+         ZwvYKgRZQP1B9CUhhzr3PCz7aV9NsjYdW5dyomLar7sp8Bqkip+p890a0DvNf/s8lI03
+         3jJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768392978; x=1768997778;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=YCiPEDKhbT9vYnjTMwPD8QcnwrqfQdSqnwbBZs41EKI=;
-        b=DjogCo+uOYiD2DfGMInB+lGBMPLIKue3D+plwZ2e8wNpX7elF50Hv51KTXGiL8WXN+
-         yZKh/gsIg2dl+Czs8S/1sbXl3XxJly3lvP/E8qECN2/Uy1vq34B5QCHvjmSeZ3wQdzUa
-         c9j73rKxiBYh6+8sodr/JT6rFw09blxrOMZJq5GH/ynhVQ1jSkJ6kusb5A8mj7vxqWY6
-         ooniwHwyYfj8IudDC/bYYABOpR97+YzEWYeL0Gs62y/1gOupi7YMyOmPU/gpFOyUCauf
-         GqE64rHE5EFdK+qP8oq+YkdzChxllm4BmoLp3C2J5Vwxw1gRfKcthepMasIWh+r9QmcC
-         aDOg==
-X-Gm-Message-State: AOJu0YwjwYRuGlBg7A0dddG4T5aOWV9LSR34kfp+rIjW9VuBn6qLa3YF
-	T5eSyQBnTTH3XcmUOdMc9AK3+wZf0vBmpbzkj89DWm5hFFHBGPdHQO3lPfYKsA==
-X-Gm-Gg: AY/fxX7SsA+LY5BOyAkI8ginY4TMaR4R+FWwjvXTRxrePaJXfOsv8GZAEk0XAvB64le
-	QEyW3NtnXZNkuEinv/HI9S/U1rokr5/1IFVcoygyqK7aeWV2esrkiWle8pg5hvHop1QHFRSlnLW
-	pKb/YwXdnH3kYLKaP3D6sYRMi8D0AMTIjKS9miQq8ycDyff7fxjvxFJ7KR2e9J3+mlF8OE9Wlfp
-	MPyjfELEqb8Zi1gAXfEHXKRo6dmQYTsqy5x9FlohMdqmCAl+6TXvVFqsy2/uuG03a1KHsSfkBqC
-	3PyAQrlABHz57cEl23nI9CUO1ae2UwlDY9vFX5yu2IbPYv8dCNWkVsjbhq9LzV8/UDf6dWPMG6O
-	DDVZgWDtEiA/9sisAHv53zmafxoDNfCGygsdxy0tfZRjwZXlMhdTEUBzcVBRPfdFTXzwAKoDg6P
-	2ne0BX0jc4xfanfDkEdeFGzrj1BDvDaMY=
-X-Received: by 2002:a05:6402:3592:b0:640:cdad:d2c0 with SMTP id 4fb4d7f45d1cf-653ee1b1c24mr1589890a12.25.1768392977605;
-        Wed, 14 Jan 2026 04:16:17 -0800 (PST)
-Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-6507bf6d4acsm23063416a12.30.2026.01.14.04.16.16
+        d=1e100.net; s=20230601; t=1768393584; x=1768998384;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AbzNlyftwKRg9xsu0MFnIl7dchtZzqwBBSHtb8zwf2M=;
+        b=sgbTcgmXwLa43TijbO29DcgxFrGtY+4CHlz7e/9jFBd6zqhzLQL8jfcTyh4mFBCeen
+         WNtS5Hs/AAjG9yTo02gFJtjWdGzQkxOjLmquZ7zugFrK4kL5wL3PLJoX8qC2hz67gP9P
+         6Kd16SPdf20sxh+tI75ipO8HTBNHfwoGccjEko32xNuw539nEenyd8DlHfhbtgakFKa9
+         1jzdv50zDtWpwkG79LqWtLYHyOBj8uffHZm2FSyt+AukT9DwiUhuHoFdSj1sr9GvL8j9
+         5FxYLqc9GlXtr3fZyx3d6vCFVTBU1VkaicQI7GSrBSSkCEeJrxEo5nZPTQ3gxvcNx0GM
+         P/Ew==
+X-Forwarded-Encrypted: i=1; AJvYcCUueKmWuX4tEgR6lmG/uprZ8qnNNGwwFBzXqtFhwSNpWJjijfwmN+K/8v6654BurPn+wZU=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw7Xh234WGMRC/wJCgXM1T6onTv4iZWoZFeSa/B7aKtli/Sjomn
+	faSmTkH/5eJp9sLJQz7TsT0J9+PPLwfD7YsU5bPGmRHwqsRrK1cbBBZ3
+X-Gm-Gg: AY/fxX4kksPCbKGg94k+IlVmV7fa0BoU40CaZJTUJjbF0am4/ee0X1+AsQ9mmZtrUd1
+	ErcFWkgORB8dWLs8gN485rvwlx+7fVaAUn0SXTkGpbX7aQsAosVq32Wm9+3Nbedlc+ydS2NOHAW
+	O0I+wr5LsBLyGxfzHApxOk0CaniZbKspaIXSHStBnLzLvlZhT3ZouRZHQJtJZSt2s9MwhEat2u0
+	8jYs1Cm6gPGj4vjPUq2g0yFrWA98siw8jYVqMU/q9ml8YH8jBqJd3hS0XP/XdrCa7JMe8Zhc0Xo
+	WOLaIoI9vcfJa2nrQe231XIDweFrQGfo+To+dMPRWfGikj/4BX0eptGWeCq750g7F1YZwEmofeZ
+	GLsYEuHE6ajf/VebbI9bpLWncRdKtQbueAmZy8z/JIt2c+6bTWrXafo4r85NXIuq9BPbhdc1h0q
+	AqDzC61nRYoXEuSNrldZy46T8UvQfNJRHU2zej78IopOhLFhnH7MkfIg==
+X-Received: by 2002:a17:903:40d2:b0:2a0:d34f:aff3 with SMTP id d9443c01a7336-2a59bb36674mr24558905ad.18.1768393584056;
+        Wed, 14 Jan 2026 04:26:24 -0800 (PST)
+Received: from d.home.mmyangfl.tk ([2001:19f0:8001:1644:5400:5ff:fe3e:12b1])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a3e3cd4401sm230327115ad.92.2026.01.14.04.25.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jan 2026 04:16:16 -0800 (PST)
-Date: Wed, 14 Jan 2026 12:24:03 +0000
-From: Anton Protopopov <a.s.protopopov@gmail.com>
-To: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
+        Wed, 14 Jan 2026 04:25:57 -0800 (PST)
+From: David Yang <mmyangfl@gmail.com>
+To: netdev@vger.kernel.org
+Cc: David Yang <mmyangfl@gmail.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Yonghong Song <yonghong.song@linux.dev>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Extend live regs tests with
- a test for gotox
-Message-ID: <aWeK41yKzQXAZs81@mail.gmail.com>
-References: <20260114113314.32649-1-a.s.protopopov@gmail.com>
- <20260114113314.32649-3-a.s.protopopov@gmail.com>
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH net-next] veth: fix data race in veth_get_ethtool_stats
+Date: Wed, 14 Jan 2026 20:24:45 +0800
+Message-ID: <20260114122450.227982-1-mmyangfl@gmail.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260114113314.32649-3-a.s.protopopov@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On 26/01/14 11:33AM, Anton Protopopov wrote:
-> Add a test which checks that the destination register of a gotox
-> instruction is marked as used and that the union of jump targets
-> is considered as live.
-> 
-> Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
-> ---
->  .../bpf/progs/compute_live_registers.c        | 37 +++++++++++++++++++
->  1 file changed, 37 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/bpf/progs/compute_live_registers.c b/tools/testing/selftests/bpf/progs/compute_live_registers.c
-> index 6884ab99a421..fad91c599095 100644
-> --- a/tools/testing/selftests/bpf/progs/compute_live_registers.c
-> +++ b/tools/testing/selftests/bpf/progs/compute_live_registers.c
-> @@ -431,6 +431,43 @@ __naked void subprog1(void)
->  		::: __clobber_all);
->  }
->  
-> +SEC("socket")
-> +__log_level(2)
-> +__msg("2: .1........ (07) r1 += 8")
-> +__msg("3: .1........ (79) r2 = *(u64 *)(r1 +0)")
-> +__msg("4: ..2....... (b7) r3 = 1")
-> +__msg("5: ..23...... (b7) r4 = 2")
-> +__msg("6: ..234..... (0d) gotox r2")
-> +__msg("7: ...3...... (bf) r0 = r3")
-> +__msg("8: 0......... (95) exit")
-> +__msg("9: ....4..... (bf) r0 = r4")
-> +__msg("10: 0......... (95) exit")
-> +__naked
-> +void gotox(void)
-> +{
-> +	asm volatile (
-> +	".pushsection .jumptables,\"\",@progbits;"
-> +"jt0_%=: .quad l0_%= - socket;"
-> +	".quad l1_%= - socket;"
-> +	".size jt0_%=, 16;"
-> +	".global jt0_%=;"
-> +	".popsection;"
-> +
-> +	"r1 = jt0_%= ll;"
-> +	"r1 += 8;"
-> +	"r2 = *(u64 *)(r1 + 0);"
-> +	"r3 = 1;"
-> +	"r4 = 2;"
-> +	".8byte %[gotox_r2];"
-> +"l0_%=:  r0 = r3;"
-> +	"exit;"
-> +"l1_%=:  r0 = r4;"
-> +	"exit;"
-> +	:
-> +	: __imm_insn(gotox_r2, BPF_RAW_INSN(BPF_JMP | BPF_JA | BPF_X, BPF_REG_2, BPF_REG_0, 0, 0))
-> +	: __clobber_all);
-> +}
-> +
->  /* to retain debug info for BTF generation */
->  void kfunc_root(void)
->  {
-> -- 
-> 2.34.1
-> 
+In veth_get_ethtool_stats(), some statistics protected by
+u64_stats_sync, are read and accumulated in ignorance of possible
+u64_stats_fetch_retry() events. These statistics, peer_tq_xdp_xmit and
+peer_tq_xdp_xmit_err, are already accumulated by veth_xdp_xmit(). Fix
+this by reading them into a temporary buffer first.
 
-Ah, this fails on s390x. I will send a fix later today.
+Signed-off-by: David Yang <mmyangfl@gmail.com>
+---
+ drivers/net/veth.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+index 14e6f2a2fb77..9982412fd7f2 100644
+--- a/drivers/net/veth.c
++++ b/drivers/net/veth.c
+@@ -228,16 +228,20 @@ static void veth_get_ethtool_stats(struct net_device *dev,
+ 		const struct veth_rq_stats *rq_stats = &rcv_priv->rq[i].stats;
+ 		const void *base = (void *)&rq_stats->vs;
+ 		unsigned int start, tx_idx = idx;
++		u64 buf[VETH_TQ_STATS_LEN];
+ 		size_t offset;
+ 
+-		tx_idx += (i % dev->real_num_tx_queues) * VETH_TQ_STATS_LEN;
+ 		do {
+ 			start = u64_stats_fetch_begin(&rq_stats->syncp);
+ 			for (j = 0; j < VETH_TQ_STATS_LEN; j++) {
+ 				offset = veth_tq_stats_desc[j].offset;
+-				data[tx_idx + j] += *(u64 *)(base + offset);
++				buf[j] = *(u64 *)(base + offset);
+ 			}
+ 		} while (u64_stats_fetch_retry(&rq_stats->syncp, start));
++
++		tx_idx += (i % dev->real_num_tx_queues) * VETH_TQ_STATS_LEN;
++		for (j = 0; j < VETH_TQ_STATS_LEN; j++)
++			data[tx_idx + j] += buf[j];
+ 	}
+ 	pp_idx = idx + dev->real_num_tx_queues * VETH_TQ_STATS_LEN;
+ 
+-- 
+2.51.0
+
 
