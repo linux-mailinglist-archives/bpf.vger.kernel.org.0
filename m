@@ -1,635 +1,124 @@
-Return-Path: <bpf+bounces-78851-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78858-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BA8DD1D670
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 10:11:55 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 269ACD1D794
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 10:21:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4B3DC30A15A2
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 08:59:57 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 70435301A817
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 09:20:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 274E037F8DD;
-	Wed, 14 Jan 2026 08:59:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="dVWWmeht"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6533437F8AF;
+	Wed, 14 Jan 2026 09:19:43 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtpout-03.galae.net (smtpout-03.galae.net [185.246.85.4])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9EA83803CF;
-	Wed, 14 Jan 2026 08:59:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.85.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 743393876C3;
+	Wed, 14 Jan 2026 09:19:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768381185; cv=none; b=IHik1xopHncpTkpubEKAmpfDGTgf7lavhDzyD5SCrwp2ZS8lxZ8lkEyMNLCPRB01cwT8Dcb7Gr+5ab1jp4yDzkMuOy1tj81HR2OAh8Wig9IUPgVCN2YuPgvO4ZeDJHmugDSmwKI1guxVQw7f6mJxKf5AyXNTbUNoBQSz0xblW+o=
+	t=1768382383; cv=none; b=fREobsZvCSEIUrhl1RCjG1TYYee9uBConLxN49Gw0Zd2Z8LcofvDBd2wEUq1+LF573rYMTIFjKs80yNmkwgfaKa0u6BdDYAO/GxQxAG5WziDVsIhZk17TTKMWDU4ih7qrhn4ktMGX3e6mlfLIqUvY+mwfbcJGeXcCKy4Xctequk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768381185; c=relaxed/simple;
-	bh=WcMk7alXumIyFEgbvJ5w7LuChwzuYaHIhqpgBRJqB2A=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=p8xV+q+d6Vg9NXse3++v2ZGyUwruce5zYy7/1xyofkS5AVumACxNFpZ7qHHLDPkAw7ddYs7O3h+JNeWB8fbaFjneRSkIM48x4YAflCWlbFWwwbZeHCVSEn4QGxLa16tWwMvzry1K5lKrPbckekLzyRp3ltWG3rsCrBs61YpRgWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=dVWWmeht; arc=none smtp.client-ip=185.246.85.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id ABAE74E420D1;
-	Wed, 14 Jan 2026 08:59:38 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 8213F6074A;
-	Wed, 14 Jan 2026 08:59:38 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 56DDF103C8951;
-	Wed, 14 Jan 2026 09:59:35 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1768381177; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=tWTcbB27fFrJZCiVPQKclLlVwus6WH184KbRKM2lRug=;
-	b=dVWWmehtCWq1YLrNWFFAKjWuqBRTnkCu9IbRn7yfjedK5GoMQ6nUD487rZCPrehe7Eclir
-	2hpqJXbrV8plkZP+ba5erb35itVP1lqMJ7gEdwTrM2JNNnuPt4qDDbxHyWvAQtTDCYd9CP
-	/fp+NoivhOAffDaRFLfjySt6nNr6pL9/JLhSD9TFZMGiflsV3vMnRmEx+6ac++iMEjVzyK
-	0gRsq8FcMRm8GB3faOipR2gIi2nXx21ePtKq/tyQH+zX47XVAPQhj6X3Jge1b9crMgEQEY
-	9yLv4GWFU0vh3/ZAO5Sv4R/78UbItu2M/uB+edJcyiXK62OJIv7XXNspPF1pUA==
-From: =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-Date: Wed, 14 Jan 2026 09:59:13 +0100
-Subject: [PATCH bpf-next 2/4] bpf/selftests: introduce bptool test runner
- and a first test
+	s=arc-20240116; t=1768382383; c=relaxed/simple;
+	bh=RKUJ4p6PqqvLF+VD2mi4vwvxhV+c5S6VV7DvlfczGhQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Kljxb7HNo1FxDn+xE0hN+QG+4UGckUMAIFvHNxm7mo6DcJQnHkVVDVetfmJmg7UO/DCH1hfAChWnwrl6wDL/5jIKtQkYuns2fRV60t3uyz9tEYiLvdGk4rF80eHsELcGi6U9fya0EcKd499CcgDUQ6cLuG9f7KO0ZDJ8UTIwlGI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.198])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4drgXG1CBwzKHMMK;
+	Wed, 14 Jan 2026 17:18:38 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id EFC4C40573;
+	Wed, 14 Jan 2026 17:19:29 +0800 (CST)
+Received: from k01.k01 (unknown [10.67.174.197])
+	by APP2 (Coremail) with SMTP id Syh0CgCXsYCfX2dpDhLdDg--.16789S2;
+	Wed, 14 Jan 2026 17:19:28 +0800 (CST)
+From: Xu Kuohai <xukuohai@huaweicloud.com>
+To: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Puranjay Mohan <puranjay@kernel.org>,
+	Anton Protopopov <a.s.protopopov@gmail.com>
+Subject: [PATCH bpf-next v4 0/4] emit ENDBR/BTI instructions for indirect jump targets
+Date: Wed, 14 Jan 2026 17:39:10 +0800
+Message-ID: <20260114093914.2403982-1-xukuohai@huaweicloud.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20260114-bpftool-tests-v1-2-cfab1cc9beaf@bootlin.com>
-References: <20260114-bpftool-tests-v1-0-cfab1cc9beaf@bootlin.com>
-In-Reply-To: <20260114-bpftool-tests-v1-0-cfab1cc9beaf@bootlin.com>
-To: Andrii Nakryiko <andrii@kernel.org>, 
- Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>
-Cc: ebpf@linuxfoundation.org, 
- Bastien Curutchet <bastien.curutchet@bootlin.com>, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, 
- =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-X-Mailer: b4 0.14.3
-X-Last-TLS-Session-Version: TLSv1.3
+X-CM-TRANSID:Syh0CgCXsYCfX2dpDhLdDg--.16789S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7uFy3uw18Jr45Cw1ruryDZFb_yoW8AFWrpF
+	W8Gw1Ygr4v9rWfXrZxur47C343tws5J345urs7Aw4fCFyY9ryvgF43Kw43WFZ8JrySkayU
+	XF4a9F1ruryUZw7anT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Sb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0E
+	n4kS14v26r1q6r43MxkF7I0Ew4C26cxK6c8Ij28IcwCF04k20xvY0x0EwIxGrwCFx2IqxV
+	CFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r10
+	6r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxV
+	WUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG
+	6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr
+	1UYxBIdaVFxhVjvjDU0xZFpf9x07jeLvtUUUUU=
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 
-The tools/testing/selftests/bpf directory contains multiple scripts
-(shell, python, c code, etc) that aim to test some specific features
-from bpftool. Those isolated tests are currently not executed by any CI
-automation. Create a dedicated runner for any bpftool-related test that
-can then be added to the list of executed runners in bpf CI automation.
-This new runner (and the corresponding Makefile tooling) is highly
-inspired from test_progs, but kept a bit simpler. This version supports
-the following features:
+From: Xu Kuohai <xukuohai@huawei.com>
 
-- autodetection of bpftool test stored in the in bpftool_tests
-  directory
-- bpftool binary under test is passed as runner argument
-- a few helpers to allow to easily run abpftool commands while possibly
-  collecting the output
-- usage of assert macros shared with test_progs
-- basic sub-tests management
-- logs collection, logs being dumped only for failed tests
-- exit code reflecting whether all tests have passed or not
+On x86 CPUs with CET/IBT and arm64 CPUs with BTI, missing landing pad instructions
+at indirect jump targets triggers kernel panic. So emit ENDBR instructions for
+indirect jump targets on x86 and BTI on arm64. Indirect jump targets are identified
+based on the insn_aux_data created by the verifier.
 
-As this runner needs at least one test to be implemented to properly
-compile, also bring bpftool_metadata, which is the conversion of
-test_bpftool_metadata.sh: this test validates that the output of some
-basic prog/map listings done with bpftool properly returns the metadata
-collected from the .rodata section of eBPF programs.
+Patch 1 fixes an off-by-one error that causes the last ENDBR/BTI instruction to be
+omitted.
 
-This new runner gives an output similar to the one generated by
-test_progs:
+Patch 2 introduces a helper to determine whether an instruction is indirect jump target.
 
-  #2/1	metadata/metadata_unused: OK
-  #2/2	metadata/metadata_used: OK
-  #2	metadata: OK
-  Summary: 1 PASSED, 0 FAILED
+Patches 3 and 4 emit ENDBR and BTI instructions for indirect jump targets on x86 and
+arm64, respectively.
 
-Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
----
- tools/testing/selftests/bpf/.gitignore             |   1 +
- tools/testing/selftests/bpf/Makefile               |  14 ++-
- tools/testing/selftests/bpf/bpftool_helpers.c      | 114 ++++++++++++++++++
- tools/testing/selftests/bpf/bpftool_helpers.h      |  19 +++
- .../testing/selftests/bpf/bpftool_tests/.gitignore |   2 +
- .../selftests/bpf/bpftool_tests/bpftool_metadata.c | 128 +++++++++++++++++++++
- tools/testing/selftests/bpf/test_bpftool.c         | 126 ++++++++++++++++++++
- tools/testing/selftests/bpf/test_bpftool.h         |  36 ++++++
- 8 files changed, 439 insertions(+), 1 deletion(-)
+v4:
+- Switch to the approach proposed by Eduard, using insn_aux_data to indentify indirect
+  jump targets, and emit ENDBR on x86
 
-diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
-index b8bf51b7a0b0..9498cc11de97 100644
---- a/tools/testing/selftests/bpf/.gitignore
-+++ b/tools/testing/selftests/bpf/.gitignore
-@@ -2,6 +2,7 @@
- bpftool
- bpf-helpers*
- bpf-syscall*
-+test_bpftool
- test_verifier
- test_maps
- test_lru_map
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index fd42b7193d4e..a1fe94efa53c 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -76,7 +76,8 @@ endif
- TEST_GEN_PROGS = test_verifier test_tag test_maps test_lru_map test_progs \
- 	test_sockmap \
- 	test_tcpnotify_user \
--	test_progs-no_alu32
-+	test_progs-no_alu32 \
-+	test_bpftool
- TEST_INST_SUBDIRS := no_alu32
- 
- # Also test bpf-gcc, if present
-@@ -791,6 +792,17 @@ TRUNNER_BPF_BUILD_RULE := $$(error no BPF objects should be built)
- TRUNNER_BPF_CFLAGS :=
- $(eval $(call DEFINE_TEST_RUNNER,test_maps))
- 
-+# Define bpftool test runner.
-+TRUNNER_TESTS_DIR := bpftool_tests
-+TRUNNER_BPF_PROGS_DIR := progs
-+TRUNNER_EXTRA_SOURCES := test_bpftool.c \
-+			 bpftool_helpers.c
-+TRUNNER_LIB_SOURCES :=
-+TRUNNER_EXTRA_FILES :=
-+TRUNNER_BPF_BUILD_RULE := CLANG_BPF_BUILD_RULE
-+TRUNNER_BPF_CFLAGS :=
-+$(eval $(call DEFINE_TEST_RUNNER,test_bpftool))
-+
- # Define test_verifier test runner.
- # It is much simpler than test_maps/test_progs and sufficiently different from
- # them (e.g., test.h is using completely pattern), that it's worth just
-diff --git a/tools/testing/selftests/bpf/bpftool_helpers.c b/tools/testing/selftests/bpf/bpftool_helpers.c
-new file mode 100644
-index 000000000000..ff8084d9a121
---- /dev/null
-+++ b/tools/testing/selftests/bpf/bpftool_helpers.c
-@@ -0,0 +1,114 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#include "bpftool_helpers.h"
-+#include "test_bpftool.h"
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include <string.h>
-+#include <stdbool.h>
-+
-+#define BPFTOOL_PATH		"./tools/sbin/bpftool"
-+#define BPFTOOL_CMD_MAX_LEN	256
-+
-+static int run_command(char *command, bool get_output, char *output_buf, size_t output_max_len)
-+{
-+	FILE *f;
-+	int ret;
-+
-+	f = popen(command, "r");
-+	if (!f)
-+		return 1;
-+
-+	if (get_output)
-+		fread(output_buf, 1, output_max_len, f);
-+	ret = pclose(f);
-+
-+	return ret;
-+}
-+
-+int run_bpftool_command(char *args)
-+{
-+	char cmd[BPFTOOL_CMD_MAX_LEN];
-+	int ret;
-+
-+	ret = snprintf(cmd, BPFTOOL_CMD_MAX_LEN, "%s %s > /dev/null 2>&1",
-+		       env.bpftool_path, args);
-+	if (ret !=
-+	    strlen(env.bpftool_path) + 1 + strlen(args) + strlen(" > /dev/null 2>&1")) {
-+		fprintf(stderr, "Failed to generate bpftool command\n");
-+		return 1;
-+	}
-+
-+	return run_command(cmd, false, NULL, 0);
-+}
-+
-+int get_bpftool_command_output(char *args, char *output_buf, size_t output_max_len)
-+{
-+	int ret;
-+	char cmd[BPFTOOL_CMD_MAX_LEN];
-+
-+	ret = snprintf(cmd, BPFTOOL_CMD_MAX_LEN, "%s %s", env.bpftool_path,
-+		       args);
-+	if (ret != strlen(args) + strlen(env.bpftool_path) + 1) {
-+		fprintf(stderr, "Failed to generate bpftool command");
-+		return 1;
-+	}
-+
-+	return run_command(cmd, true, output_buf, output_max_len);
-+}
-+
-+void hijack_stdio(void)
-+{
-+	fflush(stdout);
-+	fflush(stderr);
-+	if (env.current_subtest) {
-+		env.current_test->saved_stdout = stdout;
-+		env.current_test->saved_stderr = stderr;
-+		stdout = open_memstream(&env.current_subtest->log,
-+					&env.current_subtest->log_size);
-+
-+	} else {
-+		env.saved_stdout = stdout;
-+		env.saved_stderr = stderr;
-+		stdout = open_memstream(&env.current_test->log,
-+					&env.current_test->log_size);
-+	}
-+	stderr = stdout;
-+}
-+
-+void restore_stdio(void)
-+{
-+	fclose(stdout);
-+	if (env.current_subtest) {
-+		stdout = env.current_test->saved_stdout;
-+		stderr = env.current_test->saved_stderr;
-+
-+	} else {
-+		stdout = env.saved_stdout;
-+		stderr = env.saved_stderr;
-+	}
-+
-+}
-+
-+void test__start_subtest(const char *subtest_name)
-+{
-+	test__end_subtest();
-+	env.current_test->subtests_count++;
-+	env.subtest_states = realloc(env.subtest_states,
-+				     env.current_test->subtests_count *
-+					     sizeof(struct subtest_state));
-+	env.current_subtest =
-+		&env.subtest_states[env.current_test->subtests_count - 1];
-+	memset(env.current_subtest, 0, sizeof(struct subtest_state));
-+	env.current_subtest->name = strdup(subtest_name);
-+
-+	hijack_stdio();
-+}
-+
-+void test__end_subtest(void)
-+{
-+	if (env.current_subtest) {
-+		restore_stdio();
-+		env.current_subtest = NULL;
-+	}
-+}
-+
-diff --git a/tools/testing/selftests/bpf/bpftool_helpers.h b/tools/testing/selftests/bpf/bpftool_helpers.h
-new file mode 100644
-index 000000000000..1eacec7936ba
---- /dev/null
-+++ b/tools/testing/selftests/bpf/bpftool_helpers.h
-@@ -0,0 +1,19 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+#pragma once
-+
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include <stdbool.h>
-+
-+#define MAX_BPFTOOL_CMD_LEN	(256)
-+
-+#ifndef ARRAY_SIZE
-+#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
-+#endif
-+
-+int run_bpftool_command(char *args);
-+int get_bpftool_command_output(char *args, char *output_buf, size_t output_max_len);
-+void test__start_subtest(const char *subtests_name);
-+void test__end_subtest(void);
-+void hijack_stdio(void);
-+void restore_stdio(void);
-diff --git a/tools/testing/selftests/bpf/bpftool_tests/.gitignore b/tools/testing/selftests/bpf/bpftool_tests/.gitignore
-new file mode 100644
-index 000000000000..89c4a3d37544
---- /dev/null
-+++ b/tools/testing/selftests/bpf/bpftool_tests/.gitignore
-@@ -0,0 +1,2 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+tests.h
-diff --git a/tools/testing/selftests/bpf/bpftool_tests/bpftool_metadata.c b/tools/testing/selftests/bpf/bpftool_tests/bpftool_metadata.c
-new file mode 100644
-index 000000000000..e7146b26f298
---- /dev/null
-+++ b/tools/testing/selftests/bpf/bpftool_tests/bpftool_metadata.c
-@@ -0,0 +1,128 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#include <bpftool_helpers.h>
-+#include <test_bpftool.h>
-+#include <assert_helpers.h>
-+#include <linux/bpf.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include <fcntl.h>
-+#include <sys/stat.h>
-+#include <stdbool.h>
-+
-+#define BPFFS_DIR	"/sys/fs/bpf/test_metadata"
-+#define BPFFS_USED	BPFFS_DIR "/used"
-+#define BPFFS_UNUSED	BPFFS_DIR "/unused"
-+
-+#define BPF_FILE_USED	"metadata_used.bpf.o"
-+#define BPF_FILE_UNUSED "metadata_unused.bpf.o"
-+
-+#define MAX_BPFTOOL_OUTPUT_LEN	(100*1000)
-+
-+#define MAX_TOKENS_TO_CHECK	3
-+static char output[MAX_BPFTOOL_OUTPUT_LEN];
-+
-+struct test_desc {
-+	char *name;
-+	char *bpf_prog;
-+	char *bpffs_path;
-+	char *expected_output[MAX_TOKENS_TO_CHECK];
-+	char *expected_output_json[MAX_TOKENS_TO_CHECK];
-+};
-+
-+static int setup(struct test_desc *test)
-+{
-+	return mkdir(BPFFS_DIR, 0700);
-+}
-+
-+static void cleanup(struct test_desc *test)
-+{
-+	unlink(test->bpffs_path);
-+	rmdir(BPFFS_DIR);
-+}
-+
-+static int check_metadata(char *buf, char * const *tokens, int count)
-+{
-+	int i;
-+
-+	for (i = 0; i < count && tokens[i]; i++)
-+		if (!strstr(buf, tokens[i]))
-+			return 1;
-+
-+	return 0;
-+}
-+
-+static void run_test(struct test_desc *test)
-+{
-+	int ret;
-+	char cmd[MAX_BPFTOOL_CMD_LEN];
-+
-+	snprintf(cmd, MAX_BPFTOOL_CMD_LEN, "prog load %s %s",
-+			test->bpf_prog, test->bpffs_path);
-+	ret = run_bpftool_command(cmd);
-+	if (!ASSERT_OK(ret, "load program"))
-+		return;
-+
-+	/* Check output with default format */
-+	ret = get_bpftool_command_output("prog show name prog", output,
-+			MAX_BPFTOOL_OUTPUT_LEN);
-+	if (ASSERT_OK(ret, "get program info")) {
-+		ret = check_metadata(output, test->expected_output,
-+				ARRAY_SIZE(test->expected_output));
-+		ASSERT_OK(ret, "find metadata");
-+	}
-+
-+	/* Check output with json format */
-+	ret = get_bpftool_command_output("prog -j show name prog", output,
-+					 MAX_BPFTOOL_OUTPUT_LEN);
-+	if (ASSERT_OK(ret, "get program info in json")) {
-+		ret = check_metadata(output, test->expected_output_json,
-+				ARRAY_SIZE(test->expected_output_json));
-+		ASSERT_OK(ret, "find metadata in json");
-+	}
-+
-+}
-+
-+struct test_desc tests[] = {
-+	{
-+		.name = "metadata_unused",
-+		.bpf_prog = BPF_FILE_UNUSED,
-+		.bpffs_path = BPFFS_UNUSED,
-+		.expected_output = {
-+			"a = \"foo\"",
-+			"b = 1"
-+		},
-+		.expected_output_json = {
-+			"\"metadata\":{\"a\":\"foo\",\"b\":1}"
-+		}
-+	},
-+	{
-+		.name = "metadata_used",
-+		.bpf_prog = BPF_FILE_USED,
-+		.bpffs_path = BPFFS_USED,
-+		.expected_output = {
-+			"a = \"bar\"",
-+			"b = 2"
-+		},
-+		.expected_output_json = {
-+			"\"metadata\":{\"a\":\"bar\",\"b\":2}"
-+		}
-+	}
-+};
-+
-+static const int tests_count = ARRAY_SIZE(tests);
-+
-+void test_metadata(void)
-+{
-+	int i, ret;
-+
-+	for (i = 0; i < tests_count; i++) {
-+		test__start_subtest(tests[i].name);
-+		ret = setup(&tests[i]);
-+		if (!ASSERT_OK(ret, "setup bpffs pin dir"))
-+			continue;
-+		run_test(&tests[i]);
-+		cleanup(&tests[i]);
-+	}
-+
-+}
-+
-diff --git a/tools/testing/selftests/bpf/test_bpftool.c b/tools/testing/selftests/bpf/test_bpftool.c
-new file mode 100644
-index 000000000000..b5fb17d5ea2d
---- /dev/null
-+++ b/tools/testing/selftests/bpf/test_bpftool.c
-@@ -0,0 +1,126 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#include <test_bpftool.h>
-+#include <bpftool_helpers.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <stdbool.h>
-+#include <string.h>
-+#include <unistd.h>
-+
-+struct bpftool_runner_env env = {0};
-+
-+#define DEFINE_TEST(name) extern void test_##name(void);
-+#include <bpftool_tests/tests.h>
-+#undef DEFINE_TEST
-+
-+struct prog_test_def {
-+	char *test_name;
-+	void (*run_test)(void);
-+};
-+
-+static struct prog_test_def prog_test_defs[] = {
-+#define DEFINE_TEST(name) {			\
-+	.test_name = #name,			\
-+	.run_test = &test_##name,		\
-+},
-+#include <bpftool_tests/tests.h>
-+#undef DEFINE_TEST
-+};
-+
-+
-+static const int tests_count = ARRAY_SIZE(prog_test_defs);
-+
-+/* Needed method for the assert macros exposed by assert_helpers.h */
-+void test__fail(void)
-+{
-+	if (env.current_subtest)
-+		env.current_subtest->failed = true;
-+	if (!env.current_test->failed)
-+		env.failure_cnt++;
-+	env.current_test->failed = true;
-+}
-+
-+static void test_setup(struct test_state *test, char *name)
-+{
-+	env.current_test = test;
-+	env.current_test->name = strdup(name);
-+}
-+
-+static void dump_results(struct test_state *test, int test_index)
-+{
-+	int j;
-+
-+	if (test->failed)
-+		fprintf(stdout, "%s\n", test->log);
-+	free(test->log);
-+	for (j = 0; j < test->subtests_count; j++) {
-+		if (env.subtest_states[j].failed)
-+			fprintf(stdout, "%s\n", env.subtest_states[j].log);
-+		free(env.subtest_states[j].log);
-+		fprintf(stdout, "#%d/%d\t%s/%s: %s\n", test_index+1, j+1,
-+				env.current_test->name,
-+				env.subtest_states[j].name,
-+				env.subtest_states[j].failed ? "KO" : "OK");
-+		free(env.subtest_states[j].name);
-+	}
-+	if (env.current_test->subtests_count) {
-+		free(env.subtest_states);
-+		env.subtest_states = NULL;
-+	}
-+	fprintf(stdout, "#%d\t%s: %s\n", test_index + 1, test->name,
-+		test->failed ? "KO" : "OK");
-+}
-+
-+static void test_teardown(struct test_state *test, int test_index)
-+{
-+	dump_results(test, test_index);
-+	free(env.current_test->name);
-+	env.current_test = NULL;
-+}
-+
-+static int parse_args(int argc, char *argv[])
-+{
-+	if (argc != 2)
-+		return 1;
-+	if (access(argv[1], R_OK|X_OK))
-+		return 1;
-+	env.bpftool_path = argv[1];
-+
-+	return 0;
-+}
-+
-+static void usage(char *prog)
-+{
-+	fprintf(stdout, "Usage: %s <bpftool_path>\n", prog);
-+	fprintf(stdout, "\t<bpftool_path>: path to the bpftool binary to test\n");
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	struct test_state *ctx = NULL;
-+	int i;
-+
-+	if (parse_args(argc, argv)) {
-+		fprintf(stderr, "Invalid arguments\n");
-+		usage(argv[0]);
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	ctx = calloc(tests_count, sizeof(struct test_state));
-+	if (!ctx)
-+		exit(EXIT_FAILURE);
-+
-+	for (i = 0; i < tests_count; i++) {
-+		test_setup(&ctx[i], prog_test_defs[i].test_name);
-+		hijack_stdio();
-+		prog_test_defs[i].run_test();
-+		test__end_subtest();
-+		restore_stdio();
-+		test_teardown(&ctx[i], i);
-+	}
-+
-+	fprintf(stdout, "Summary: %d PASSED, %d FAILED\n",
-+		tests_count - env.failure_cnt, env.failure_cnt);
-+	free(ctx);
-+	return env.failure_cnt ? EXIT_FAILURE : EXIT_SUCCESS;
-+}
-diff --git a/tools/testing/selftests/bpf/test_bpftool.h b/tools/testing/selftests/bpf/test_bpftool.h
-new file mode 100644
-index 000000000000..a78659eeaf2b
---- /dev/null
-+++ b/tools/testing/selftests/bpf/test_bpftool.h
-@@ -0,0 +1,36 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+#pragma once
-+
-+#include <stdio.h>
-+#include <stdbool.h>
-+
-+extern struct bpftool_runner_env env;
-+
-+void test__fail(void);
-+
-+struct test_state {
-+	char *name;
-+	char *log;
-+	size_t log_size;
-+	bool failed;
-+	int subtests_count;
-+	int subtests_failures;
-+	FILE *saved_stdout;
-+	FILE *saved_stderr;
-+};
-+
-+struct subtest_state {
-+	char *name;
-+	char *log;
-+	size_t log_size;
-+	bool failed;
-+};
-+struct bpftool_runner_env {
-+	char *bpftool_path;
-+	int failure_cnt;
-+	FILE *saved_stdout;
-+	FILE *saved_stderr;
-+	struct test_state *current_test;
-+	struct subtest_state *current_subtest;
-+	struct subtest_state *subtest_states;
-+};
+v3: https://lore.kernel.org/bpf/20251227081033.240336-1-xukuohai@huaweicloud.com/
+- Get rid of unnecessary enum definition (Yonghong Song, Anton Protopopov)
+
+v2: https://lore.kernel.org/bpf/20251223085447.139301-1-xukuohai@huaweicloud.com/
+- Exclude instruction arrays not used for indirect jumps (Anton Protopopov)
+
+v1: https://lore.kernel.org/bpf/20251127140318.3944249-1-xukuohai@huaweicloud.com/
+
+Xu Kuohai (4):
+  bpf: Fix an off-by-one error in check_indirect_jump
+  bpf: Add helper to detect indirect jump targets
+  bpf, x86: Emit ENDBR for indirect jump targets
+  bpf, arm64: Emit BTI for indirect jump target
+
+ arch/arm64/net/bpf_jit_comp.c |  3 ++
+ arch/x86/net/bpf_jit_comp.c   | 15 ++++++----
+ include/linux/bpf.h           |  2 ++
+ include/linux/bpf_verifier.h  | 10 ++++---
+ kernel/bpf/core.c             | 51 ++++++++++++++++++++++++++++++---
+ kernel/bpf/verifier.c         | 53 +++++++++++++++++++++++++++++++++--
+ 6 files changed, 119 insertions(+), 15 deletions(-)
 
 -- 
-2.52.0
+2.47.3
 
 
