@@ -1,107 +1,99 @@
-Return-Path: <bpf+bounces-78829-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78831-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8C97D1C411
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 04:29:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 97AACD1C444
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 04:34:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B5EBA3042FD4
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 03:28:11 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C18D5301396D
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 03:33:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAA8F2FF661;
-	Wed, 14 Jan 2026 03:28:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00EF029C347;
+	Wed, 14 Jan 2026 03:33:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RctGruig"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AIvLJtc1"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A72431355E
-	for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 03:28:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85CCA296BB7
+	for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 03:33:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768361289; cv=none; b=Vb9I/DuSUtgvh0hp14oT0zsw/qd2lQ/gOrIAFtS8+FIhnVC5/jE16xh33uoe0LSZA+Z2jy/ixBa924riZchxqmKaXNJb1CiEuQzlDu35QybDZenIFIgtqm5DljB5tQTETRLX/QHhJsfwXAoZGOPBol80afZIB0yYRsaNKZy+27Y=
+	t=1768361615; cv=none; b=hO8VnnILpepJmj3MSazeNME4Zn3CkNhid5xtDKs7HidvIcHJYxb8DPpfLmWua8LbpLx7fxk5COkIJxE6lFLJQUHOe6bOMVESR/A7fb/8P6jEdQ0ox4vL8elYE7zmOhLJVLlY8pF8gU5iRJvzn0oLYQj3bY+9roT8wKk0ns27lWY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768361289; c=relaxed/simple;
-	bh=O9f4C5zUOMjRSe4jnAbx0T/yF7HgptKMwhUuZnIamCI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=BXmJukimESzg5g7mR20ZcNZHT6dXLvifa39gX4J/9wnUqGz+pCy5nH2TIBSBNT33h7auzd67bjYfUOiqGW4yXyHi1P3KqQvDP1ukfsSyYr6JFFgndX1JW3+MjozofQc5awhqzI1mR4WnxOka8nfXClhl48IKflQMd/YqXm6z+5M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RctGruig; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1768361285;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ycFLTAEQ8/ZiU5uZC5zCeWJAtwNZMqltXXzh3a9aomU=;
-	b=RctGruignyn9XNVgpXcREL1KELzps6fBRYIfEchY1V4VUiYu8WJd2T2TNogr5qaKkC8umI
-	9A77yw2NzhrZMnUsY3NmkCUpTbcDz8faM6dvTL335FYDnTSVs9/mIh8GG+wJRFvf07t/Xa
-	1Q1OdBu8lXO2i+elBursZ9exlPxiGls=
-From: Menglong Dong <menglong.dong@linux.dev>
-To: Menglong Dong <menglong8.dong@gmail.com>,
- Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
- dsahern@kernel.org, tglx@linutronix.de, mingo@redhat.com,
- jiang.biao@linux.dev, bp@alien8.de, dave.hansen@linux.intel.com,
- x86@kernel.org, hpa@zytor.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v9 08/11] libbpf: add fsession support
-Date: Wed, 14 Jan 2026 11:27:47 +0800
-Message-ID: <3359527.AJdgDx1Vlc@7940hx>
-In-Reply-To:
- <CAEf4BzY0s2fe_Xq4MC2PiQaiYZPic=O0mfMaoF5HW-gDnuMQhA@mail.gmail.com>
-References:
- <20260110141115.537055-1-dongml2@chinatelecom.cn>
- <20260110141115.537055-9-dongml2@chinatelecom.cn>
- <CAEf4BzY0s2fe_Xq4MC2PiQaiYZPic=O0mfMaoF5HW-gDnuMQhA@mail.gmail.com>
+	s=arc-20240116; t=1768361615; c=relaxed/simple;
+	bh=T4NBtFIdP/fLg6TaBmyozxSZkwNBM+xXu5POzC9e80k=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=ESnMVWzy6K0X7jNAncFgqxN9OQLmDruk5IF7FbmXrxBJe1CQ29FeFZqkpGlny/Xy8SFJelFwMGDDdWvqH4EBd1MwOxQ3mCleof/rV8mBXRVcyfJ7hBVqpxta+84yB8DUbUHlI5DKL768b0b1jSAwUK221XtPGWKFuZ+vbSpwgqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AIvLJtc1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BF04C4CEF7;
+	Wed, 14 Jan 2026 03:33:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768361615;
+	bh=T4NBtFIdP/fLg6TaBmyozxSZkwNBM+xXu5POzC9e80k=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=AIvLJtc1z/teuLf/kvmEpz627AcgN6vdWwKpCqyv8fDP20LiJwYF8sqQgXOqBWJ9U
+	 rzAhwEAkPd2AxaNIQQtzFQJry/jc5kjauPpfauWVwZtFbIASb9Z2WN7Kz5r9vUUO+G
+	 BBLL9JkeemlGnxPSWLWkyLZc83FWgVacqD4Xfl2T9OybTs4rABJgzgzwSMDmOSdvIL
+	 8fwM7eHyHwwdds8opyZfNN5pCZgvrcnYParUr2o3Lpsrzj1DPOPeZgn5Pkm0dLz8Ck
+	 fjhIF9pcoC3Nj5NUpof9MRlLKB3+1xP5gPpg7Pytx9/tOhJo978FZKfjr9oHk30ERL
+	 AwUUNG7VbCpVw==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 7890D3808200;
+	Wed, 14 Jan 2026 03:30:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next 1/3] bpf: return PTR_TO_BTF_ID | PTR_TRUSTED from
+ BPF
+ kfuncs by default
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <176836140815.2572275.11630296761858309141.git-patchwork-notify@kernel.org>
+Date: Wed, 14 Jan 2026 03:30:08 +0000
+References: <20260113083949.2502978-1-mattbobrowski@google.com>
+In-Reply-To: <20260113083949.2502978-1-mattbobrowski@google.com>
+To: Matt Bobrowski <mattbobrowski@google.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, jolsa@kernel.org, memxor@gmail.com
 
-On 2026/1/14 09:24 Andrii Nakryiko <andrii.nakryiko@gmail.com> write:
-> On Sat, Jan 10, 2026 at 6:12=E2=80=AFAM Menglong Dong <menglong8.dong@gma=
-il.com> wrote:
-> >
-> > Add BPF_TRACE_FSESSION to libbpf and bpftool.
-> >
-> > Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
-> > ---
-> > v5:
-> > - remove the handling of BPF_TRACE_SESSION in legacy fallback path for
-> >   BPF_RAW_TRACEPOINT_OPEN
-> > - use fsession terminology consistently
-> > ---
-> >  tools/bpf/bpftool/common.c | 1 +
->=20
-> I know it's a trivial change, but we don't normally mix libbpf and
-> bpftool changes, can you split it into a separate patch?
+Hello:
 
-ACK.
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-Thanks!
-Menglong Dong
-
->=20
-> >  tools/lib/bpf/bpf.c        | 1 +
-> >  tools/lib/bpf/libbpf.c     | 3 +++
-> >  3 files changed, 5 insertions(+)
->=20
+On Tue, 13 Jan 2026 08:39:47 +0000 you wrote:
+> Teach the BPF verifier to treat pointers to struct types returned from
+> BPF kfuncs as implicitly trusted (PTR_TO_BTF_ID | PTR_TRUSTED) by
+> default. Returning untrusted pointers to struct types from BPF kfuncs
+> should be considered an exception only, and certainly not the norm.
+> 
+> Update existing selftests to reflect the change in register type
+> printing (e.g. `ptr_` becoming `trusted_ptr_` in verifier error
+> messages).
+> 
 > [...]
->=20
 
+Here is the summary with links:
+  - [bpf-next,1/3] bpf: return PTR_TO_BTF_ID | PTR_TRUSTED from BPF kfuncs by default
+    https://git.kernel.org/bpf/bpf-next/c/f8ade2342e22
+  - [bpf-next,2/3] bpf: drop KF_ACQUIRE flag on BPF kfunc bpf_get_root_mem_cgroup()
+    https://git.kernel.org/bpf/bpf-next/c/e463b6de9da1
+  - [bpf-next,3/3] selftests/bpf: assert BPF kfunc default trusted pointer semantics
+    https://git.kernel.org/bpf/bpf-next/c/bbdbed193bcf
 
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
 
