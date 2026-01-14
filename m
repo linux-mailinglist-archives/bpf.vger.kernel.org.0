@@ -1,110 +1,128 @@
-Return-Path: <bpf+bounces-78841-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78842-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12870D1C92B
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 06:22:59 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 069A2D1C9C5
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 06:49:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id C34A930CA885
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 05:18:53 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id CAD8C300BF92
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 05:48:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C56F356A37;
-	Wed, 14 Jan 2026 05:18:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XeDmr5RM"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0548352C2B;
+	Wed, 14 Jan 2026 05:48:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACB4634EEE7;
-	Wed, 14 Jan 2026 05:18:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from zg8tmtyylji0my4xnjeumjiw.icoremail.net (zg8tmtyylji0my4xnjeumjiw.icoremail.net [162.243.161.220])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F7512367B8
+	for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 05:48:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.243.161.220
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768367925; cv=none; b=SgGV7ISHE39pH1bfEoORdLJhnDMIatGKDLQsyxrAuBCs2ZKRwY/nUuVmnJO8P831Jd7nnQ66i2nC2LQ9n+hIciM4CjQEU2e65r4650Y8p/bdIsL6/hujup9q7BZti/MIecfy6i382fi7xgwjK2nos/xjFniwXWyZ34eiUVMo51A=
+	t=1768369730; cv=none; b=MrMy+rILuRa8f11291BPePZ2anKnGhmF5SL8RmBtA7hM1SKT9cIBHsHtr/O0sScp/bm42StLbvClXMPF9g99eTsku253cHY5pKVAFOpFycMV2kVZh2oWt5xiqMDTezgvlvbcsuPv7AzgOWwkGv/HLAYBgEDIQsc01QmNTk1av8w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768367925; c=relaxed/simple;
-	bh=+7Hm/PDz0Jbdey+/Y65d2diKY+FwEKxnGd4vOxZXWQQ=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=OuOyEeiVKZyIfEGpJ7FvpMUi0qx5tH0OxlwFg3GXIxCuLvDAQNAdMbMJE1xSNCaiBxMpuQpM96oJlk7VKNexhNoURaNpD7EesKqyUwMzHbx/XkbFEX7wNqGuL1rTq0NPwmkH1fMulTIiA532ShA34hhGvtFTsdOGXLGhu3eKW9g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XeDmr5RM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A2E0C4CEF7;
-	Wed, 14 Jan 2026 05:18:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768367925;
-	bh=+7Hm/PDz0Jbdey+/Y65d2diKY+FwEKxnGd4vOxZXWQQ=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=XeDmr5RMYXXtKW6yGo87A8q/KWl288Zt42Wbh0MTncbvYDMXJGU28YWSTWQrgLx0H
-	 N6n5mDLLQ2HcZG95WXq8ARvnAteR3EuDapo0zL/wUP4E8ioXQBUQ0jAQXIG+zbmp2Q
-	 MarcJRcMp7ZMWsWk2r+uJOBovHYv9jkQGwGrW6uBhgBe/zuIpMEWrREPTbaRq75IC+
-	 3852ThU8GUiDcOBj+Ghckc0/MxJpok302OFM4WSMaebjnQVmnGEyhmypaHgUj9lnaL
-	 KrYJXd3KFfOVebYUkT4X/fnrj3zI6GcLZeQAoJCc0JvaZR5+ZLxj52vZ5OGc+8FLE6
-	 Iu5wfFe4TcRww==
-Content-Type: multipart/mixed; boundary="===============2804728330588876411=="
+	s=arc-20240116; t=1768369730; c=relaxed/simple;
+	bh=ynrrA+B7xZrB5Q8eiPcvMu9Gs2QDctSmBgygfdHBeTU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=W3B/eIyzYB8hbtyThTCxmJBADDSiqh/oe7IsNvASElPKCDJVY9j4csXuBXqrJfxuuci9l47vqNeQmylw5Z+YDxIqsQGdE4NidZgWIni7gtWhTuIL9uRxyuLUUMkS9pDQdFbg/+Sbi5hNDvkdLh3Iv/OyIi3+MVwkZKGYvlevoIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=162.243.161.220
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from zju.edu.cn (unknown [10.14.28.207])
+	by mtasvr (Coremail) with SMTP id _____wDXKBANLmdp6VbAAQ--.2721S3;
+	Wed, 14 Jan 2026 13:47:58 +0800 (CST)
+Received: from lutetium.tail477849.ts.net (unknown [10.14.28.207])
+	by mail-app3 (Coremail) with SMTP id zS_KCgDX2GsILmdpGCaYBQ--.18593S2;
+	Wed, 14 Jan 2026 13:47:52 +0800 (CST)
+From: Yazhou Tang <tangyazhou@zju.edu.cn>
+To: alexei.starovoitov@gmail.com
+Cc: andrii@kernel.org,
+	ast@kernel.org,
+	bpf@vger.kernel.org,
+	daniel@iogearbox.net,
+	eddyz87@gmail.com,
+	haoluo@google.com,
+	john.fastabend@gmail.com,
+	jolsa@kernel.org,
+	kpsingh@kernel.org,
+	martin.lau@linux.dev,
+	sdf@fomichev.me,
+	shenghaoyuan0928@163.com,
+	song@kernel.org,
+	syzbot@syzkaller.appspotmail.com,
+	tangyazhou518@outlook.com,
+	tangyazhou@zju.edu.cn,
+	yonghong.song@linux.dev,
+	ziye@zju.edu.cn
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: Add range tracking for BPF_DIV and BPF_MOD
+Date: Wed, 14 Jan 2026 13:47:52 +0800
+Message-ID: <20260114054752.3908998-1-tangyazhou@zju.edu.cn>
+X-Mailer: git-send-email 2.52.0
+In-Reply-To: <CAADnVQL3gGe4iK8FZWnT3frRjAHtnNwGp8m5J8OSVcX0BCorUA@mail.gmail.com>
+References: <CAADnVQL3gGe4iK8FZWnT3frRjAHtnNwGp8m5J8OSVcX0BCorUA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <17dcbb5af344c64488806ab2e291d4d7a0de3c51b8d9b0478bb1f0106a584530@mail.kernel.org>
-In-Reply-To: <20260114045509.1281217-1-saiaunghlyanhtet2003@gmail.com>
-References: <20260114045509.1281217-1-saiaunghlyanhtet2003@gmail.com>
-Subject: Re: [bpf-next,v2] bpf: cpumap: report queue_index to xdp_rxq_info
-From: bot+bpf-ci@kernel.org
-To: saiaunghlyanhtet2003@gmail.com,bpf@vger.kernel.org
-Cc: ast@kernel.org,daniel@iogearbox.net,john.fastabend@gmail.com,netdev@vger.kernel.org,saiaunghlyanhtet2003@gmail.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Wed, 14 Jan 2026 05:18:45 +0000 (UTC)
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:zS_KCgDX2GsILmdpGCaYBQ--.18593S2
+X-CM-SenderInfo: qssvjiasrsq6lmxovvfxof0/1tbiAhELCmlmoAUPiwABs9
+X-CM-DELIVERINFO: =?B?M+zb6QXKKxbFmtjJiESix3B1w3vD7IpoGYuur0o+r46DyAi5OfOO+T4vrW4FyUBIyu
+	9q9PYE3aGw2rE94YMgVJ48l7odRxp2Py1N85nb5MG497aFz3EpVzrmJfXEwZbrRGCyJXlu
+	WCLebdUgXrlV/5+WvlGlx14IXtF5jwHia3Ra9hviey2O99tnX5kLFPFmlsir3Q==
+X-Coremail-Antispam: 1Uk129KBj9xXoWrZr43Wr1rJryUCFWftF1kWFX_yoWktrg_ur
+	Wvgr92kw4vvFsrtF45KFsrZFZIqF1kWryrAayUXry7Ga4kXFnxAF97ur9xC348J3yrur98
+	Wr1qqrWayr9F9osvyTuYvTs0mTUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUj1kv1TuYvT
+	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
+	cSsGvfJTRUUUbTAYFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E6xAIw20EY4v20x
+	vaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I
+	8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AK
+	xVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7xvr2IYc2Ij64
+	vIr40E4x8a64kEw24lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I
+	3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxV
+	WUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAF
+	wI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcI
+	k0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j
+	6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU7ku4UUUUU
 
---===============2804728330588876411==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Hi Alexei,
 
-> diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-> index 14e6f2a2fb77..4a409802cdac 100644
-> --- a/drivers/net/veth.c
-> +++ b/drivers/net/veth.c
-> @@ -648,6 +648,8 @@ static struct xdp_frame *veth_xdp_rcv_one(struct veth_rq *rq,
->
->  		xdp_convert_frame_to_buff(frame, xdp);
->  		xdp->rxq = &rq->xdp_rxq;
-> +		/* Preserve original queue_index from frame */
-> +		rq->xdp_rxq.queue_index = frame->queue_index;
-                ^^^^^^^^^^^^^^^^^^^^^^^^
+> The whole thing looks very much AI generated.
+> It can spit out a lot of code, but submitter (YOU) must
+> think it through before submitting.
+> In the above... 4 almost equivalent helpers don't bother you?!
+> 
+> and b==0 check... isn't it obvious that might be
+> easier to read and less verbose to do it once before all that?
+> 
+> You need to step up the quality of this patchset.
+> AI is NOT your friend.
+> 
+> pw-bot: cr
 
-Unlike cpumap.c and devmap.c which use a stack-local rxq variable,
-this writes to the persistent rq->xdp_rxq structure.
+I accept the criticism regarding the code verbosity and the redundant
+helpers.
 
-In veth_poll(), the code reads queue_index before calling veth_xdp_rcv():
+To clarify: I assure you that every line of code in this patch was
+written by hand.
 
-    int queue_idx = rq->xdp_rxq.queue_index;
-    ...
-    peer_txq = peer_dev ? netdev_get_tx_queue(peer_dev, queue_idx) : NULL;
-    ...
-    done = veth_xdp_rcv(rq, budget, &bq, &stats);
+The verbosity and the redundant helpers were not generated by AI,
+but were remnants from my v2 implementation where I handled full
+interval-based divisors. When I simplified the logic for v3 to handle
+constants only, I failed to clean up the structure sufficiently.
+I apologize for this oversight.
 
-After processing a frame from a device with many queues (e.g. queue 32),
-the next poll will read the corrupted queue_index and pass it to
-netdev_get_tx_queue(). If the peer device has fewer TX queues, this
-causes an out-of-bounds access to dev->_tx[].
+I will clean this up in v4 by removing the helpers and hoisting the
+zero-checks as suggested.
 
-For comparison, cpumap.c uses a local variable:
+Before I submit v4, could you please let me know if there are any other
+issues you see in the current logic or structure? I want to ensure the
+next version meets the quality standards.
 
-    struct xdp_rxq_info rxq = {};
-    ...
-    rxq.queue_index = xdpf->queue_index;
+Best regards,
 
-Should veth also use a local rxq variable like cpumap and devmap do,
-rather than modifying the persistent rq->xdp_rxq?
+Yazhou
 
-> [ ... ]
-
-
----
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
-
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/20983017884
-
---===============2804728330588876411==--
 
