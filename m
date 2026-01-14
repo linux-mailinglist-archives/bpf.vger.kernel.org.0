@@ -1,189 +1,138 @@
-Return-Path: <bpf+bounces-78966-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78967-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id D05D2D2144D
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 22:07:25 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BEA4D2178A
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 22:58:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C126C30700CB
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 21:06:22 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 2878E301F321
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 21:57:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04343358D09;
-	Wed, 14 Jan 2026 21:06:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32E283A9D8E;
+	Wed, 14 Jan 2026 21:57:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fogJao0+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fQZUoJxO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE8D1356A38
-	for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 21:06:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0268238F954
+	for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 21:56:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768424781; cv=none; b=EkBUS60vOrZI0g9RHUnLFGvl+vTnt+d413uxOsn8j9NbdwGKySJuh1r2uRfrwQozGzFFDuqqPCf3VItgeOJ56eAqalQenYJ1FxUbYTHhGKDqMQWZ8bTjYJv5dpG8giKj7fxKm8EWc3bPNYX5BeNWmmDbevqJ68kxOAs4zyfaDDs=
+	t=1768427816; cv=none; b=uuzMhOSoDXq+zBKi8pH9YjrXwSAKMV2poDuiYXfWyLwnHydDdBfHvzQbYgtJ8hlrVRYRjpFLmP/fTnzVSwC13SPZJ/MtZ5hmJiIxt34238XIDAcnS8erH21RlELZOgzZzKX0PQt7iT+1R4r4l97b7OAdFZ9omZDWoRG2SHY+wMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768424781; c=relaxed/simple;
-	bh=mun8+NHwdhbsJ4vaOUWC8JQAkyOVT1xXGpUSUxcU7ts=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QeIw2Gaf6yvJPjjBQqnocakIC+a84hYJ9yJ6j/NgqNnd2nY3WWlmMEk0pWR0V8JLUG+LmMiHNpkf8OoGdsDfktRktVcdcnDMuVY9hlzmn7ZdVTx6hB9zuZ2juT57LaacWIBona7KWX+KunuvTiFLkyEA8xHqdgRj3F8b8a+2g9E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fogJao0+; arc=none smtp.client-ip=209.85.128.49
+	s=arc-20240116; t=1768427816; c=relaxed/simple;
+	bh=GhnFSKeN2Zl7Uze175m/2I1Md7YRb2qMzTVcY7DlFvw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Y/J3p9wnlrZvrW+b1+TY7TfYl7CzOnla/NytlaesjvC9HTgIUuzGmvy9vohV6S+wu8AzJMP56xNclPD4jGGBeCPRSOtAUiHAj2A9ExNHiuE4cJjnM/xwtvPOapVWjzJaEPsND1oBP/rXoPgt7COr0ODFqu1P22jnHe6NRcp9Ue8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fQZUoJxO; arc=none smtp.client-ip=209.85.128.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-47a95efd2ceso2212515e9.2
-        for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 13:06:19 -0800 (PST)
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-47a95efd2ceso2517745e9.2
+        for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 13:56:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768424778; x=1769029578; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=d8QWXU2aIMD2J80JcqYSmh7DpjHDbURMvR21XnlyKTA=;
-        b=fogJao0+RYMNotALOZkr2L+H3Nz4qTezYtwJ00dD2vf8tAkNn72xlzHCp6eHB2seDp
-         SY5Uhwj3JlZy5L44dBL+PedVmmxaH5FuAA/08Twzo6vuHZv1vQX+0wObBYf/enM82b2O
-         6XsdiAaumgFXviT2Mt/VEI+xtfovlnp8/2/n8fBdrkj/cgAxOsq8XH0zqQlYUCR+UlaI
-         fLRxm7ScLZQNVZyWDzXJrUdOGounPZg9C2bQ49YKLXWSlVQvmqKcYzn3ZrZGG9xlQxf7
-         ds4UtmnT0uCSBy2iu6qYccyJlWe65Z3d+AkxDZnCtG1ReoU/ch+Wo9afuh7XKCMp16dF
-         0wrA==
+        d=gmail.com; s=20230601; t=1768427783; x=1769032583; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V2IFPWB+T8VdoZY6NJv4zwx5iiV744THuNeTgWC4nyo=;
+        b=fQZUoJxOaUJFGdyaLYelKy7sOZpSVZER3GLT5CDfmciBUY9rzu3JeKM2Rra9TKpRI7
+         FAN8zz4cOkp2vNZeFWc3oSeZsOSqH16Gdp9tc3lFCdbB3B1yMjyQHQKcHtwvt3TpvBXX
+         QW+n9K9Zhc7jBMsQLqZzkBDfmrAtp81USjKoQX0QrNEyon1M9Q8wjFNtvB73qDp8nGZi
+         4TRbZtzF+vsEmD5EzdJ/3/Yi8kN5SZOm/QByIXDxCkDu6aey9EaANXP9mYLxjXLt+ng8
+         6i57YprppSZwKIy+mZExmt3dWG9eRGYu8K5ZhLZjJtDlUtjStd/l5Tv2DPfQMKzRUZO0
+         vw8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768424778; x=1769029578;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=d8QWXU2aIMD2J80JcqYSmh7DpjHDbURMvR21XnlyKTA=;
-        b=cFmRWyEQUhzXgmlTmWrDSpBvjVVNuD0BMnlxGenP5iiJ/lISpqPp7CcJPza522pL/Y
-         3Ur06Lisc4jc9QRs1Qt0ezq3EG9OvG1Ofb9UAzTUKnURsJuaHq/FSmJLhJcieqDflmjb
-         XGvD69ast85SLsX4S6dyIQf2zxcxzs/4zTURjbTpgjqd4tkIculClqVrCAdUXSj4s8BF
-         oD2EJtSp8AProxZ9Yl92ZlaZwA47yT/joE3FyaDckbPAhpqjQguRSzSdxZkmYAvlZCyL
-         pV3W1CFutDVDGJC94upfE5/lKd1tbfJVr13ho050/7NoYlbQGf+r3KjTdkEdbjaHKooX
-         fYCA==
-X-Forwarded-Encrypted: i=1; AJvYcCWHVw2Q+8Cv6q6GQcy0D/f2mE0K0lb6nDJFNMMxumGM4J0iB1F6BhhPZL5zRBhOA4bEMfI=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw4Ab091EsGTDgmlBOEfElSwdzeot9ORgIXIquj3djBp6Pwq9fS
-	tGc3q6e++pTg9gYdxkvuKWOpt4OE9Za0twzh7eEDskVqWSLtAFz5mgFXaAkRdhM4
-X-Gm-Gg: AY/fxX6GHTqHWOQItA6NvgRjJn7ZEAqjy//nx1YucDKEDyo6dtf/h8f4QdJ02OHfWy5
-	44px6baaLgKQD0dmIRKKPtIfeZPIJVv2S2fpAo8Bq4obsT+nzTIHIJtz5KQg3Udn9RrKeyWxFw2
-	ioZ0TD/rIY8f/uLgwBmnQW8CUriR7WHgDpRSAMqlGzzT2GmDls4G6qNnzMkFpt/8MzeOdGbKobX
-	vQ9nsRoECv6325iLLL1xCXwGzaFvcyPhbJhl30QBQGGZ26sBqJmt1Y4aze2T0PKXW7gkvPKWY7v
-	GgodGpZQeaioncLh+YjvrzI35Cj8/tvN/WfMgD5hN0gXGN+sorE/+69/114KMRy3a+YFc/Wvotx
-	mzI26sQKB/aZ/z8FMYExD/Imrf1YzBqSDz3vv1aVGfm95U8ZjyFR56k8RSSdtu8QLrfClbDKoFd
-	22GJEWfqaZKA==
-X-Received: by 2002:a05:600c:8b12:b0:477:7bca:8b2b with SMTP id 5b1f17b1804b1-47ee47d0067mr41297675e9.15.1768424778237;
-        Wed, 14 Jan 2026 13:06:18 -0800 (PST)
-Received: from krava ([176.74.159.170])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47f3b7a5b06sm10295855e9.0.2026.01.14.13.06.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jan 2026 13:06:17 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 14 Jan 2026 22:06:16 +0100
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: Tao Chen <chen.dylane@linux.dev>, Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: The same symbol is printed twice when use tracepoint to get stack
-Message-ID: <aWgFSJIpsP2M6mYA@krava>
-References: <e876fdea-ad0c-49dd-80ec-bd835ebfe0a4@linux.dev>
- <31e5d219-07f4-46c0-bef1-53af20d473f1@oracle.com>
+        d=1e100.net; s=20230601; t=1768427783; x=1769032583;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=V2IFPWB+T8VdoZY6NJv4zwx5iiV744THuNeTgWC4nyo=;
+        b=uETAMiPOgQb+kTDmaMk6Xl9uP5uhLoXvjr/UsljAgaSM3lVjxtUtjAMI2FDicuHHEI
+         9bdH1NXTQ4MN8tErNN/ptLiXaiWwgik6fHdqc5EzgK6CbS8oIRNao9nWzI0fJUFHqRMJ
+         SvGfZMcEgc3O5EARn1fgBdwTGjl15R4PwCI2r+uOL80gckqFMwBp2Y4Xa5+LljFCG5N5
+         m9yu9aKNuUsJdlQxPYpbUzgQLEp4WVL4LFzdM3pktmDFPckN1g25ptvep6GvJLMcW8oH
+         SSWKen+Qc2hreIbYKjOgWcwrbEm/oqghwokxFrbtBjTqfgOwp4BqdIY0m/rvbXUTWvti
+         RhwQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXYfaSh8LzfOVotIX6kNfYrwGdp9+wK5jPgZJHRYHIcqCm+IuqMegrPh3M2reTUMvGg6Ms=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzxroe+h2lID6KXkiUxtpWt35jv7f4HbWK9kzANqHV9hKdWTZw/
+	rvgg2mHRHHKz90lDfKkzXIE/tZGYa/uzSb2zEIzQwsWODqpC2c9KArVaUJ0kKBpENnq59i7a3Lh
+	3PQBsHSN+topDTx/5kjJBoA2h2TTFNqs=
+X-Gm-Gg: AY/fxX4tRG7X5X0TGqpcT/m5MeLkVig7t0RPn0Ri15O6tDDd0zz4RU5j7uz/PLb4jtZ
+	1hFmddEqvvBLDAn0C2pY+akQ1ToUktmxdeFbZ0P3d1TY+v+P0HSeQj8KVzKAvluz521ojwPzzFD
+	NJuBcNwXFfuWlwSn9bm2x6O6LgISrEqG1H+XkY3nkyfmaa3bTawE9nm2vfYsNzxBUGoxElFhTc1
+	mO3+Br3hKGfn/LAh+A4uZ58kX0ylxweaH/yVtBaWmsAJwqvNT1vmCSkER8XdR604bShNpTDcnpP
+	YRcCysdXM9h8AxJd/4jOfP3sepuy
+X-Received: by 2002:a05:600c:4f0b:b0:477:c71:1fc1 with SMTP id
+ 5b1f17b1804b1-47ee4819f30mr39840995e9.19.1768427783081; Wed, 14 Jan 2026
+ 13:56:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <31e5d219-07f4-46c0-bef1-53af20d473f1@oracle.com>
+References: <20260102150032.53106-1-leon.hwang@linux.dev> <CAADnVQJugf_t37MJbmvhrgPXmC700kJ25Q2NVGkDBc7dZdMTEQ@mail.gmail.com>
+ <aWd9z8GVYO12YsaH@krava> <CAADnVQLxo1uPbutGNKrv=f=bSVkzxOfSof0ea8n7VvqsaU+S3w@mail.gmail.com>
+ <aWgD3zH7vsiBdIcr@krava>
+In-Reply-To: <aWgD3zH7vsiBdIcr@krava>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 14 Jan 2026 13:56:11 -0800
+X-Gm-Features: AZwV_QjPeGyIa5g7MAD4JaS1tAElwUa_x4uErmV3ep-P21EZz9S74OzD-I8OSSs
+Message-ID: <CAADnVQLHVogD1mjMCsHcJOayuZW4OwadEN0g9wu=6d97uRSWqQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/4] bpf: tailcall: Eliminate max_entries and
+ bpf_func access at runtime
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Leon Hwang <leon.hwang@linux.dev>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Puranjay Mohan <puranjay@kernel.org>, Xu Kuohai <xukuohai@huaweicloud.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	"David S . Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>, 
+	"H . Peter Anvin" <hpa@zytor.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, kernel-patches-bot@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 14, 2026 at 05:35:45PM +0000, Alan Maguire wrote:
-> On 14/01/2026 15:09, Tao Chen wrote:
-> > Hi guys,
-> > 
-> > When using tracepoints to retrieve stack information, I observed that perf_trace_sched_migrate_task was printed twice. And the issue also occurs with tools using libbpf.
+On Wed, Jan 14, 2026 at 1:00=E2=80=AFPM Jiri Olsa <olsajiri@gmail.com> wrot=
+e:
+>
 > >
-> 
-> You may need the fix Jiri provided for x86_64 [1]. Eugene mentioned that
-> the issue persists for arm64 however [2].
+> > > fyi I briefly discussed that with Andrii indicating that it might not
+> > > be worth the effort at this stage.
+> >
+> > depending on complexity of course.
+>
+> for my tests I just had to allow BPF_MAP_TYPE_PROG_ARRAY map
+> for sleepable programs
+>
+> jirka
+>
+>
+> ---
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index faa1ecc1fe9d..1f6fc74c7ea1 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -20969,6 +20969,7 @@ static int check_map_prog_compatibility(struct bp=
+f_verifier_env *env,
+>                 case BPF_MAP_TYPE_STACK:
+>                 case BPF_MAP_TYPE_ARENA:
+>                 case BPF_MAP_TYPE_INSN_ARRAY:
+> +               case BPF_MAP_TYPE_PROG_ARRAY:
+>                         break;
+>                 default:
+>                         verbose(env,
 
-yep, there's also follow patchset up for kprobe multi [1]
-
-jirka
-
-
-[1] https://lore.kernel.org/bpf/20260112214940.1222115-1-jolsa@kernel.org/
-
-> 
-> Alan
-> 
-> [1] https://lore.kernel.org/bpf/20251104215405.168643-2-jolsa@kernel.org/
-> [2] https://lore.kernel.org/all/a38fed68-67bc-98ce-8e12-743342121ae3@oracle.com/
->  
-> > sudo bpftrace -e '
-> > tracepoint:sched:sched_migrate_task {
-> > printf("Task %s migrated by:\n", args->comm);
-> > print(kstack);
-> > }'
-> > 
-> > Task kcompactd0 migrated by:
-> > 
-> >         perf_trace_sched_migrate_task+9
-> >         perf_trace_sched_migrate_task+9
-> >         set_task_cpu+353
-> >         detach_task+77
-> >         detach_tasks+281
-> >         sched_balance_rq+452
-> >         sched_balance_newidle+504
-> >         pick_next_task_fair+84
-> >         __pick_next_task+66
-> >         pick_next_task+43
-> >         __schedule+332
-> >         schedule+41
-> >         schedule_hrtimeout_range+239
-> >         do_poll.constprop.0+668
-> >         do_sys_poll+499
-> >         __x64_sys_ppoll+220
-> >         x64_sys_call+5722
-> >         do_syscall_64+126
-> >         entry_SYSCALL_64_after_hwframe+118
-> > 
-> > Task jbd2/sda2-8 migrated by:
-> > 
-> >         perf_trace_sched_migrate_task+9
-> >         perf_trace_sched_migrate_task+9
-> >         set_task_cpu+353
-> >         try_to_wake_up+365
-> >         default_wake_function+26
-> >         autoremove_wake_function+18
-> >         __wake_up_common+118
-> >         __wake_up+55
-> >         __jbd2_log_start_commit+195
-> > 
-> > env:
-> > bpftrace v0.21.2
-> > ubuntu24.04，6.14.0-36-generic
-> > 
-> > The issue is as follows:
-> > https://github.com/bpftrace/bpftrace/issues/4949
-> > 
-> > 
-> > It seems that there is no special handling in the kernel.
-> > Does anyone has thoughts on this issue. Thanks.
-> > 
-> > BPF_CALL_4(bpf_get_stack_raw_tp, struct bpf_raw_tracepoint_args *, args,
-> >            void *, buf, u32, size, u64, flags)
-> > {
-> >         struct pt_regs *regs = get_bpf_raw_tp_regs();
-> >         int ret;
-> > 
-> >         if (IS_ERR(regs))
-> >                 return PTR_ERR(regs);
-> > 
-> >         perf_fetch_caller_regs(regs);
-> >         ret = bpf_get_stack((unsigned long) regs, (unsigned long) buf,
-> >                             (unsigned long) size, flags, 0);
-> >         put_bpf_raw_tp_regs();
-> >         return ret;
-> > }
-> > 
-> 
+Think it through, add selftests, ship it.
+On the surface the easy part is to make
+__bpf_prog_map_compatible() reject sleepable/non-sleepable combo.
+Maybe there are other things.
 
