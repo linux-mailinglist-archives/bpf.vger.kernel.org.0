@@ -1,249 +1,200 @@
-Return-Path: <bpf+bounces-78802-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78803-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67193D1BEEC
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 02:29:15 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C2C0D1BF19
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 02:34:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6782F30281B0
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 01:26:10 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 7DFF2303F49D
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 01:33:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6385929DB99;
-	Wed, 14 Jan 2026 01:26:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FCCA29A9FA;
+	Wed, 14 Jan 2026 01:33:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Nlb2G5p6"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rSbB1UWp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96A2B11CBA
-	for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 01:26:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 775C0215077
+	for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 01:33:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768353968; cv=none; b=YweMyE+L3kHLZ++kj16hzt7fLsHLBqcdNNG3W9JQnczGlyyLC/WCWs70PSIyO6Ijj91eN/3aAUTz41VnsqgsK7uoO09mi29jZUMVdowg3yXls+uoqkIBx64bkBPNt+Gfc6t29jJOkaXSw1KIqF8doj6hYELSMcxTRvDljmhTXCI=
+	t=1768354411; cv=none; b=F2gnA7Oo4O0ieMjojx335wRXxvbib9M1WH11cC8yrrv4SNgGX6cePX8sC88ZAsgHwCgBhOC2aaB9mhjCXjQGv19iKkZO7fm/vm5c5eYPQ8nxCbqf7XBGCwIa39B6PMnQlSjX5K29IOdh4tfE1BIpyxGH4Kru/emVJa+1XkJn2ms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768353968; c=relaxed/simple;
-	bh=dxUb8+0bZwP1bzR1lehEpcpYm/HLm7LH2EQBZDHa1+Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=o9VpinwlklqTraxpwYKT6sjsej88+ZQtvKdlu1X0ApcwZva76gRclf6PSTmiqsVDiR9kfIZ5UtUpzyUD9p4OHsrM5iXqpJfcRVSywvYLTx21UJgfGRG3D6hdL9ng2q8igcCep1n+ytZ0mg3IHSbgJceKJvFWWtLGEaUWpHBEdP0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Nlb2G5p6; arc=none smtp.client-ip=209.85.216.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-34c93e0269cso262217a91.1
-        for <bpf@vger.kernel.org>; Tue, 13 Jan 2026 17:26:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768353967; x=1768958767; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0Dw+Re/7i5/mvsY6I7BPcHcvpWgjqO8gIzVCTTYcB80=;
-        b=Nlb2G5p6NnJb5V+A5WjBOTkY34QH0SqpKju8IxEnw1+MdxkK46qEKYH0/VbzEa/Pt7
-         kI7xK+Za/cJxcoySs3dJtAq6xI7//jsLfm7Ac2fFgmy6yJ9mJnb/t97SXnvkkI/z4p+y
-         tL31ZA/hlXZVj/uOIi6Wey6B9wESwDNOK7vNEkg8kwPdVJpIyHX+l8+8Ct3LBWDJlXKn
-         4ugLJuEW4L8qb2vrUSQNa5vYAnmWNrDBiLfk8dwj0LUipSuSmV5g77jL9WAWyy+nF6I4
-         jAQX+Q+0m3vG0ik5miKPrP5nfYuBDl8kTYSqCxbLsq0400U57W+NudFoWpK9dSrNItzK
-         TNBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768353967; x=1768958767;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=0Dw+Re/7i5/mvsY6I7BPcHcvpWgjqO8gIzVCTTYcB80=;
-        b=lLCWbiBTOI/ZOEoOsyDnW9oGM/pBcbrOVPEDBhExqrrCBOR/OukUK1AwjIA4Q4tWQA
-         KcR19xeB3xVr3q5UXXikYFSnRJ5Nh96t9toj0wIMcCC1SwDuxiCesMoegLocAa+mYYKg
-         T+dUdt1wSQ4YOCodwi/Yz8rPFS5D9Hqb36ETZMI88HCjuZAbg6iYk08/hSCX0DPRifLQ
-         mzbj9ikiexr/qGPwtvUCMdY2EzRq1mE2LDeadbEOKTbpPFKGymlUDgaqI/Sugk+HPRv+
-         o0BtqQ3srS9U43W5+MBTOg3e6tQxveKqzHuP2s5Tnx5ALiCKOTJ+1AtlQzo3yw0H5+m5
-         nAXA==
-X-Forwarded-Encrypted: i=1; AJvYcCXxchL/yRxoLVPUjg/MICZwGw5rnOhQzAVJ9MzKgcwG4jSng6ywyBc1E791/LQ3yfqxL4Q=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywjqto+stR5tION4kNUzCzAYX+xhCidwp0wPmVI1bt8UkweLnmu
-	JCNpLUHtb6ABBXAnWJyTwLWfoR+dEBhrfjM1zXjwvIirpTxjB+tFgR8MZcZapF6/QeYy9baK6iy
-	j6dVeqtaeUr+fLZ40eBaaLFHb9tqL5j8=
-X-Gm-Gg: AY/fxX5HnwKY2NSehevyNO+PZ+ZBwW8dPNpNt9GSh7O0jaa0f6xqDMU1f4vCTVYNwSh
-	OHvUWuToL78qruCjkttzLstRhNcN6QA4HHWc9bZ5R/O35GbyyAjMolA3i8HJ5bKuvDlFa9KoRM3
-	BpCE0I+RIvPH4BCxQMeVShBdE5QWJMQ7ZGuopY218SIH5fusA9KZOXLvfQrpaLg6O79nHCVwvbW
-	lMPHrxd/tHYu2f8aA6ziYKN16fmlEaRnKXDzG8pDRrwI6oKUD808Y4ZpoOwYjLpG4JtwIu51HRv
-	FVSoWa8UH2o=
-X-Received: by 2002:a17:90b:5630:b0:34e:6e7d:7e73 with SMTP id
- 98e67ed59e1d1-350fd17069amr4487026a91.11.1768353966899; Tue, 13 Jan 2026
- 17:26:06 -0800 (PST)
+	s=arc-20240116; t=1768354411; c=relaxed/simple;
+	bh=Mzwu0yuGEY3Oih8u2po/SrtMQn7Btjao4l0rTf4RMaI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=K4Qwnx/q4QJGSSMcmpKqR4NGWs0vf8T5Singyzd+3Hzpfma8JpELtFhvDO/yl6oAnaTlJyeLEelIBD4Yq/X+wwkFGVVuE8TklQ60Su+eMdV86Tme0kT7tUITeat5MeHkz1sXy/U+I0GSR66dyijBWmNPP+Wftq+1AYF/qPmfFXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rSbB1UWp; arc=none smtp.client-ip=91.218.175.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1768354397;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=G+4uewd1KPnTBs/goM/IP3JqjI3jybT74C8H4F8K5lM=;
+	b=rSbB1UWpDoFM3UKq2zUATS8vw2iiDx88z41w83qnnkX31x//5VTQ0TI7RuFszxPTywqGaT
+	XFRvZHwj/tMWvnayZyExeeOC00I8O2iUGw5wWVvl0nOck6pULqY7Ie5hdUo/3x0dykujPT
+	KITxKAyExsEVz8n2cmYFXlx6+C2kIxE=
+From: Menglong Dong <menglong.dong@linux.dev>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Menglong Dong <menglong8.dong@gmail.com>,
+ Alexei Starovoitov <ast@kernel.org>, Eduard <eddyz87@gmail.com>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v4 1/2] bpf,
+ x86: inline bpf_get_current_task() for x86_64
+Date: Wed, 14 Jan 2026 09:33:07 +0800
+Message-ID: <2396904.ElGaqSPkdT@7940hx>
+In-Reply-To:
+ <CAADnVQ+Q2m19+rMLXbq98uobL6Zy5yKceDiw-PAmrmCSvvjHaw@mail.gmail.com>
+References:
+ <20260112104529.224645-1-dongml2@chinatelecom.cn> <6230600.lOV4Wx5bFT@7940hx>
+ <CAADnVQ+Q2m19+rMLXbq98uobL6Zy5yKceDiw-PAmrmCSvvjHaw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260110141115.537055-1-dongml2@chinatelecom.cn> <20260110141115.537055-8-dongml2@chinatelecom.cn>
-In-Reply-To: <20260110141115.537055-8-dongml2@chinatelecom.cn>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 13 Jan 2026 17:25:54 -0800
-X-Gm-Features: AZwV_QiLLfmArPearnIROrWGjPzDsOJTkDcVeG08K-41K-lO77Ev2Sev_X2bLCM
-Message-ID: <CAEf4BzYE0ZTrCaruJSr8MXAbZSsKz8H_BqHoZX5kS63yRBa-2g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v9 07/11] bpf,x86: add fsession support for x86_64
-To: Menglong Dong <menglong8.dong@gmail.com>
-Cc: ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, 
-	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, davem@davemloft.net, 
-	dsahern@kernel.org, tglx@linutronix.de, mingo@redhat.com, 
-	jiang.biao@linux.dev, bp@alien8.de, dave.hansen@linux.intel.com, 
-	x86@kernel.org, hpa@zytor.com, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+X-Migadu-Flow: FLOW_OUT
 
-On Sat, Jan 10, 2026 at 6:12=E2=80=AFAM Menglong Dong <menglong8.dong@gmail=
-.com> wrote:
->
-> Add BPF_TRACE_FSESSION supporting to x86_64, including:
->
-> 1. clear the return value in the stack before fentry to make the fentry
->    of the fsession can only get 0 with bpf_get_func_ret().
->
-> 2. clear all the session cookies' value in the stack.
->
-> 2. store the index of the cookie to ctx[-1] before the calling to fsessio=
-n
->
-> 3. store the "is_return" flag to ctx[-1] before the calling to fexit of
->    the fsession.
->
-> Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
-> Co-developed-by: Leon Hwang <leon.hwang@linux.dev>
-> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
-> ---
-> v5:
-> - add the variable "func_meta"
-> - define cookie_off in a new line
->
-> v4:
-> - some adjustment to the 1st patch, such as we get the fsession prog from
->   fentry and fexit hlist
-> - remove the supporting of skipping fexit with fentry return non-zero
->
-> v2:
-> - add session cookie support
-> - add the session stuff after return value, instead of before nr_args
-> ---
->  arch/x86/net/bpf_jit_comp.c | 33 ++++++++++++++++++++++++++++++---
->  1 file changed, 30 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index d94f7038c441..0671a434c00d 100644
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -3094,12 +3094,17 @@ static int emit_cond_near_jump(u8 **pprog, void *=
-func, void *ip, u8 jmp_cond)
->  static int invoke_bpf(const struct btf_func_model *m, u8 **pprog,
->                       struct bpf_tramp_links *tl, int stack_size,
->                       int run_ctx_off, bool save_ret,
-> -                     void *image, void *rw_image)
-> +                     void *image, void *rw_image, u64 func_meta)
->  {
->         int i;
->         u8 *prog =3D *pprog;
->
->         for (i =3D 0; i < tl->nr_links; i++) {
-> +               if (tl->links[i]->link.prog->call_session_cookie) {
-> +                       /* 'stack_size + 8' is the offset of func_md in s=
-tack */
+On 2026/1/14 09:24 Alexei Starovoitov <alexei.starovoitov@gmail.com> write:
+> On Tue, Jan 13, 2026 at 5:19=E2=80=AFPM Menglong Dong <menglong.dong@linu=
+x.dev> wrote:
+> >
+> > On 2026/1/14 01:50 Alexei Starovoitov <alexei.starovoitov@gmail.com> wr=
+ite:
+> > > On Mon, Jan 12, 2026 at 2:45=E2=80=AFAM Menglong Dong <menglong8.dong=
+@gmail.com> wrote:
+> > > >
+> > > > Inline bpf_get_current_task() and bpf_get_current_task_btf() for x8=
+6_64
+> > > > to obtain better performance.
+> > > >
+> > > > In !CONFIG_SMP case, the percpu variable is just a normal variable,=
+ and
+> > > > we can read the current_task directly.
+> > > >
+> > > > Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+> > > > ---
+> > > > v4:
+> > > > - handle the !CONFIG_SMP case
+> > > >
+> > > > v3:
+> > > > - implement it in the verifier with BPF_MOV64_PERCPU_REG() instead =
+of in
+> > > >   x86_64 JIT.
+> > > > ---
+> > > >  kernel/bpf/verifier.c | 29 +++++++++++++++++++++++++++++
+> > > >  1 file changed, 29 insertions(+)
+> > > >
+> > > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > > index 3d44c5d06623..12e99171afd8 100644
+> > > > --- a/kernel/bpf/verifier.c
+> > > > +++ b/kernel/bpf/verifier.c
+> > > > @@ -17688,6 +17688,8 @@ static bool verifier_inlines_helper_call(st=
+ruct bpf_verifier_env *env, s32 imm)
+> > > >         switch (imm) {
+> > > >  #ifdef CONFIG_X86_64
+> > > >         case BPF_FUNC_get_smp_processor_id:
+> > > > +       case BPF_FUNC_get_current_task_btf:
+> > > > +       case BPF_FUNC_get_current_task:
+> > > >                 return env->prog->jit_requested && bpf_jit_supports=
+_percpu_insn();
+> > > >  #endif
+> > > >         default:
+> > > > @@ -23273,6 +23275,33 @@ static int do_misc_fixups(struct bpf_verif=
+ier_env *env)
+> > > >                         insn      =3D new_prog->insnsi + i + delta;
+> > > >                         goto next_insn;
+> > > >                 }
+> > > > +
+> > > > +               /* Implement bpf_get_current_task() and bpf_get_cur=
+rent_task_btf() inline. */
+> > > > +               if ((insn->imm =3D=3D BPF_FUNC_get_current_task || =
+insn->imm =3D=3D BPF_FUNC_get_current_task_btf) &&
+> > > > +                   verifier_inlines_helper_call(env, insn->imm)) {
+> > >
+> > > Though verifier_inlines_helper_call() gates this with CONFIG_X86_64,
+> > > I think we still need explicit:
+> > > #if defined(CONFIG_X86_64) && !defined(CONFIG_UML)
+> > >
+> > > just like we did for BPF_FUNC_get_smp_processor_id.
+> > > Please check. I suspect UML will break without it.
+> >
+> > Do you mean that we need to use
+> > #if defined(CONFIG_X86_64) && !defined(CONFIG_UML)
+> > here?
+> >
+> > The whole code is already within it. You can have a look up:
+> >
+> > #if defined(CONFIG_X86_64) && !defined(CONFIG_UML)
+> >                 /* Implement bpf_get_smp_processor_id() inline. */
+> >                 if (insn->imm =3D=3D BPF_FUNC_get_smp_processor_id &&
+> >                     verifier_inlines_helper_call(env, insn->imm)) {
+> > [......]
+> >                 /* Implement bpf_get_current_task() and bpf_get_current=
+_task_btf() inline. */
+> >                 if ((insn->imm =3D=3D BPF_FUNC_get_current_task || insn=
+=2D>imm =3D=3D BPF_FUNC_get_current_task_btf) &&
+> >                     verifier_inlines_helper_call(env, insn->imm)) {
+> > [......]
+> > #endif
+>=20
+> oh. I see. I misread it as '+#endif' (with a +) and assumed
+> it's part of new code.
+>=20
+> >
+> > >
+> > > > +#ifdef CONFIG_SMP
+> > > > +                       insn_buf[0] =3D BPF_MOV64_IMM(BPF_REG_0, (u=
+32)(unsigned long)&current_task);
+> > > > +                       insn_buf[1] =3D BPF_MOV64_PERCPU_REG(BPF_RE=
+G_0, BPF_REG_0);
+> > > > +                       insn_buf[2] =3D BPF_LDX_MEM(BPF_DW, BPF_REG=
+_0, BPF_REG_0, 0);
+> > > > +#else
+> > > > +                       struct bpf_insn ld_current_addr[2] =3D {
+> > > > +                               BPF_LD_IMM64(BPF_REG_0, (unsigned l=
+ong)&current_task)
+> > > > +                       };
+> > > > +                       insn_buf[0] =3D ld_current_addr[0];
+> > > > +                       insn_buf[1] =3D ld_current_addr[1];
+> > > > +                       insn_buf[2] =3D BPF_LDX_MEM(BPF_DW, BPF_REG=
+_0, BPF_REG_0, 0);
+> > > > +#endif
+> > >
+> > > I wouldn't bother with !SMP.
+> > > If we need to add defined(CONFIG_X86_64) && !defined(CONFIG_UML)
+> > > I would add && defined(CONFIG_SMP) to it.
+> >
+> > OK, let's skip the !SMP case to make the code more clear.
+>=20
+> Similar thoughts about your other patch where you introduce
+> decl_tag to deal with different configs.
+> For bpf CI we don't need to do such things.
+> The kernel has to be configured with selftest/bpf/config.
+> So doing extra work in test_progs to recognize !SMP looks like overkill.
 
-not func_md, don't invent new names, "func_meta" (but it's also so
-backwards that you have stack offsets as positive... and it's not even
-in verifier's stack slots, just bytes... very confusing to me)
+You are right, and that's why I removed that patch in this version
+after I realized this point.
 
-> +                       emit_store_stack_imm64(&prog, stack_size + 8, fun=
-c_meta);
-> +                       func_meta -=3D (1 << BPF_TRAMP_M_COOKIE);
-
-was this supposed to be BPF_TRAMP_M_IS_RETURN?... and why didn't AI catch t=
-his?
-
-> +               }
->                 if (invoke_bpf_prog(m, &prog, tl->links[i], stack_size,
->                                     run_ctx_off, save_ret, image, rw_imag=
-e))
->                         return -EINVAL;
-> @@ -3222,7 +3227,9 @@ static int __arch_prepare_bpf_trampoline(struct bpf=
-_tramp_image *im, void *rw_im
->         struct bpf_tramp_links *fexit =3D &tlinks[BPF_TRAMP_FEXIT];
->         struct bpf_tramp_links *fmod_ret =3D &tlinks[BPF_TRAMP_MODIFY_RET=
-URN];
->         void *orig_call =3D func_addr;
-> +       int cookie_off, cookie_cnt;
->         u8 **branches =3D NULL;
-> +       u64 func_meta;
->         u8 *prog;
->         bool save_ret;
->
-> @@ -3290,6 +3297,11 @@ static int __arch_prepare_bpf_trampoline(struct bp=
-f_tramp_image *im, void *rw_im
->
->         ip_off =3D stack_size;
->
-> +       cookie_cnt =3D bpf_fsession_cookie_cnt(tlinks);
-> +       /* room for session cookies */
-> +       stack_size +=3D cookie_cnt * 8;
-> +       cookie_off =3D stack_size;
-> +
->         stack_size +=3D 8;
->         rbx_off =3D stack_size;
->
-> @@ -3383,9 +3395,19 @@ static int __arch_prepare_bpf_trampoline(struct bp=
-f_tramp_image *im, void *rw_im
->                 }
->         }
->
-> +       if (bpf_fsession_cnt(tlinks)) {
-> +               /* clear all the session cookies' value */
-> +               for (int i =3D 0; i < cookie_cnt; i++)
-> +                       emit_store_stack_imm64(&prog, cookie_off - 8 * i,=
- 0);
-> +               /* clear the return value to make sure fentry always get =
-0 */
-> +               emit_store_stack_imm64(&prog, 8, 0);
-> +       }
-> +       func_meta =3D nr_regs + (((cookie_off - regs_off) / 8) << BPF_TRA=
-MP_M_COOKIE);
-
-func_meta conceptually is a collection of bit fields, so using +/-
-feels weird, use | and &, more in line with working with bits?
-
-(also you defined that BPF_TRAMP_M_NR_ARGS but you are not using it
-consistently...)
+Thanks!
+Menglong Dong
 
 
 
 
-> +
->         if (fentry->nr_links) {
->                 if (invoke_bpf(m, &prog, fentry, regs_off, run_ctx_off,
-> -                              flags & BPF_TRAMP_F_RET_FENTRY_RET, image,=
- rw_image))
-> +                              flags & BPF_TRAMP_F_RET_FENTRY_RET, image,=
- rw_image,
-> +                              func_meta))
->                         return -EINVAL;
->         }
->
-> @@ -3445,9 +3467,14 @@ static int __arch_prepare_bpf_trampoline(struct bp=
-f_tramp_image *im, void *rw_im
->                 }
->         }
->
-> +       /* set the "is_return" flag for fsession */
-> +       func_meta +=3D (1 << BPF_TRAMP_M_IS_RETURN);
-> +       if (bpf_fsession_cnt(tlinks))
-> +               emit_store_stack_imm64(&prog, nregs_off, func_meta);
-> +
->         if (fexit->nr_links) {
->                 if (invoke_bpf(m, &prog, fexit, regs_off, run_ctx_off,
-> -                              false, image, rw_image)) {
-> +                              false, image, rw_image, func_meta)) {
->                         ret =3D -EINVAL;
->                         goto cleanup;
->                 }
-> --
-> 2.52.0
->
 
