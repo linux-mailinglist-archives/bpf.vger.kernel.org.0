@@ -1,104 +1,136 @@
-Return-Path: <bpf+bounces-78926-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78927-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B539D1F9EF
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 16:08:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C9B74D1FA16
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 16:10:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 9BC8E3031798
-	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 15:07:54 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id EDE35301994E
+	for <lists+bpf@lfdr.de>; Wed, 14 Jan 2026 15:09:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99B61258CCC;
-	Wed, 14 Jan 2026 15:07:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54CA1318EE9;
+	Wed, 14 Jan 2026 15:09:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="DpI+2DhX";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="XVZv71+I"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Ecua977+"
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA2D4314D0E;
-	Wed, 14 Jan 2026 15:07:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A10A316918
+	for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 15:09:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768403273; cv=none; b=f6vAlEsvTO9heixP60tyGSYMXQ5ar1r2OZpyC9cuOzPwemkAKqCYlpUmB/QKw/fNkNx79tkes8pb/T51oWmdcD3BFioe7l3GFhnhBVywFUOwRlaAX6aO8IvwwuxiKwebak5rii4AkZH38ehlbd9O9SX7SKEO42BId3bzr2B1/Jg=
+	t=1768403383; cv=none; b=AP1qCyO4HZeR/5kQO7Ug7sKfbJ06ITZE1oyOfGarNDE5SGLpgS+MtI/rjBbr3JZ2uhyapz79H3qW7mrrPUEKEjJtWcmlRl1SMKlxpUu/NZltKdqFw+ExsCU0QFbPZgZr5zEzTdAMp+jziLuQHO2anobnh/MhXSWadQrWZkjR6wA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768403273; c=relaxed/simple;
-	bh=ijoxmLcpYK8TmrtRBiqA3q93MmpkarK1JAhh1J+Mtr4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BMb+b3n+BpT7nDJqCzX94x0Dan9DMcxQ6YTkItB5f0ZAYPYSLOa/NrG2Gy8m+B0Fac5njWH7bK92Oh9rQGca1cEswo4Whjmo4cJuLtJhPSFd0sShZNMGMMHAON+42cPxiTkILHVI8ZqDNESasKtORQQKVAXQsqB2Rdgml4EZfvY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=DpI+2DhX; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=XVZv71+I; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 14 Jan 2026 16:07:47 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1768403269;
+	s=arc-20240116; t=1768403383; c=relaxed/simple;
+	bh=NjQcw3R1HG1lqH+BXR/8hfFLHfGLdskGN3ZJqE7vtCU=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Content-Type; b=tQ+lgzLtxK6Zy3OLDKFgkh6gWCtNRGPHtR4b2O0XyI7i1wQAngfVdAuHrI2nLHAX7WHnJEVPIqG1roqMUGQ1RyHn8oI8hwbQux3bf4vmIYaaBwr9YEvQwbvSd7FYUqED9SbiZkaYy/kmLA32bXgQtCvHTR9N6fDGhthP62KwLG0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Ecua977+; arc=none smtp.client-ip=91.218.175.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <e876fdea-ad0c-49dd-80ec-bd835ebfe0a4@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1768403370;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4C72mCKj6g75hWi4SDABu63k1LKvcFbsA+RvmMJke0I=;
-	b=DpI+2DhXGNoB3K9LoI1svHbcKbv3kxb2YyFFdspbE5qXTTBPF+9h8s+FkerT3INURZk5p/
-	kBC4L+PoGogVnYmWhgwtvG9+TCDDITAdJYtste182B6otosAomrdWroG5Tbv5B6Yc2uTQ+
-	GJQFj6T9tnxuLbW1XUpoqfqjq0CpAV1W4jvu1ogkvswQPrE/c+QHamLYa+ZiRKeKtc294b
-	psHNbgTT91lHQklnZcMYINuG1AtadMiWoojmUNN/TJd4ET2c0Qy5/mfpwRF+3VCRm8rnCG
-	VZmF0F8rXveRojhDwnXI4kf8N6X2BFd5voVKrZT9HMRi3bv38Q+SGQg7TlZtLg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1768403269;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4C72mCKj6g75hWi4SDABu63k1LKvcFbsA+RvmMJke0I=;
-	b=XVZv71+IElwl1uhi03hZmyhqfq9kC8+MP1iK9rfNstyKTMmeHAzHgb7zHvRiRzgdQqo5vQ
-	AO99yxFvYK6TmyBg==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Harry Yoo <harry.yoo@oracle.com>, Petr Tesarik <ptesarik@suse.com>,
-	Christoph Lameter <cl@gentwo.org>,
-	David Rientjes <rientjes@google.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Hao Li <hao.li@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Alexei Starovoitov <ast@kernel.org>, linux-mm <linux-mm@kvack.org>,
-	LKML <linux-kernel@vger.kernel.org>, linux-rt-devel@lists.linux.dev,
-	bpf <bpf@vger.kernel.org>, kasan-dev <kasan-dev@googlegroups.com>
-Subject: Re: [PATCH RFC v2 06/20] slab: make percpu sheaves compatible with
- kmalloc_nolock()/kfree_nolock()
-Message-ID: <20260114150747.ziWhVVQM@linutronix.de>
-References: <20260112-sheaves-for-all-v2-0-98225cfb50cf@suse.cz>
- <20260112-sheaves-for-all-v2-6-98225cfb50cf@suse.cz>
- <20260113183604.ykHFYvV2@linutronix.de>
- <CAADnVQK0Y2ha--EndLUfk_7n8na9CfnTpvqPMYbH07+MTJ9UpA@mail.gmail.com>
- <596a5461-eb50-40e5-88ca-d5dbe1fc6a67@suse.cz>
- <d8d25eb3-63c4-4449-ae9c-a7e4f207a2bc@suse.cz>
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Aj0QrLht9aaTuQ/P2tUQw70XaX1PNaO97a64PoVhs7M=;
+	b=Ecua977+S4zE7pTvHGcXdg6R2bH1vPX6s2W/t55EmuipkpWvJYgBhlwELl2Hi8UD2PMWae
+	LsoRoJStxI7Pkbt2aU0FPWVEYRZV4hW2d0k6tdCKdEb1n9Vo4yWa35wxcQPVMIIjNXFGEp
+	A+NBTAI7B9G2l8/xQBVhYHDTifwPuaU=
+Date: Wed, 14 Jan 2026 23:09:21 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <d8d25eb3-63c4-4449-ae9c-a7e4f207a2bc@suse.cz>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Tao Chen <chen.dylane@linux.dev>
+Subject: The same symbol is printed twice when use tracepoint to get stack
+To: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>, Jiri Olsa <jolsa@kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On 2026-01-14 15:05:34 [+0100], Vlastimil Babka wrote:
-> > Yes IIRC Hao Li pointed that out before. We'll be able to remove that
-> > !preemptible() check that we area about to add by the patch above.
-> > 
-> > But I'm not sure we can remove (or "not put back") the "in_nmi() ||
-> > in_hardirq()" too, because as you said it was added with different reasoning
-> > initially?
-> 
-> Ah right, it was "copied" from alloc_frozen_pages_nolock_noprof() where it's
-> explained more, and AFAICS will be still applicable with sheaves. We should
-> add a comment to kmalloc_nolock() referring to the
-> alloc_frozen_pages_nolock_noprof() comment...
+Hi guys,
 
-Right. This looks halfway what I remember. And this was works in atomic
-context on RT because of rmqueue_pcplist()/ pcp_spin_trylock() usage.
+When using tracepoints to retrieve stack information, I observed that 
+perf_trace_sched_migrate_task was printed twice. And the issue also 
+occurs with tools using libbpf.
 
-Sebastian
+sudo bpftrace -e '
+tracepoint:sched:sched_migrate_task {
+printf("Task %s migrated by:\n", args->comm);
+print(kstack);
+}'
+
+Task kcompactd0 migrated by:
+
+         perf_trace_sched_migrate_task+9
+         perf_trace_sched_migrate_task+9
+         set_task_cpu+353
+         detach_task+77
+         detach_tasks+281
+         sched_balance_rq+452
+         sched_balance_newidle+504
+         pick_next_task_fair+84
+         __pick_next_task+66
+         pick_next_task+43
+         __schedule+332
+         schedule+41
+         schedule_hrtimeout_range+239
+         do_poll.constprop.0+668
+         do_sys_poll+499
+         __x64_sys_ppoll+220
+         x64_sys_call+5722
+         do_syscall_64+126
+         entry_SYSCALL_64_after_hwframe+118
+
+Task jbd2/sda2-8 migrated by:
+
+         perf_trace_sched_migrate_task+9
+         perf_trace_sched_migrate_task+9
+         set_task_cpu+353
+         try_to_wake_up+365
+         default_wake_function+26
+         autoremove_wake_function+18
+         __wake_up_common+118
+         __wake_up+55
+         __jbd2_log_start_commit+195
+
+env:
+bpftrace v0.21.2
+ubuntu24.04，6.14.0-36-generic
+
+The issue is as follows:
+https://github.com/bpftrace/bpftrace/issues/4949
+
+
+It seems that there is no special handling in the kernel.
+Does anyone has thoughts on this issue. Thanks.
+
+BPF_CALL_4(bpf_get_stack_raw_tp, struct bpf_raw_tracepoint_args *, args,
+            void *, buf, u32, size, u64, flags)
+{
+         struct pt_regs *regs = get_bpf_raw_tp_regs();
+         int ret;
+
+         if (IS_ERR(regs))
+                 return PTR_ERR(regs);
+
+         perf_fetch_caller_regs(regs);
+         ret = bpf_get_stack((unsigned long) regs, (unsigned long) buf,
+                             (unsigned long) size, flags, 0);
+         put_bpf_raw_tp_regs();
+         return ret;
+}
+
+-- 
+Best Regards
+Tao Chen
+
 
