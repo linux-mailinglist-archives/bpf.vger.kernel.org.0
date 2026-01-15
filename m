@@ -1,222 +1,259 @@
-Return-Path: <bpf+bounces-79129-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79131-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id F348CD27D35
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 19:55:04 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 818BFD27D02
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 19:54:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id C7ED73019943
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 18:52:29 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id AC517300EBB2
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 18:54:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F4453BC4DF;
-	Thu, 15 Jan 2026 18:52:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7956D3C1FD9;
+	Thu, 15 Jan 2026 18:54:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hiV6XWyj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lbwEz/OD"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88DE33BBA0F
-	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 18:52:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768503148; cv=none; b=d+2wqyGcAOzZCswrUzqmUyQZPwUshjcia+CF7vdvSAlUp2CbcsxeUvI6wXWJYOkXbh/yLVclpNJuqrzyPcZu3aOLpnF33K3jAUP48TDGqL+WOE8Qhd1fLas6aTl0t3lGZUbDgCMWqgkvmfTSDMF0F+8gw/A0Kab7xXIrDwJwZv0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768503148; c=relaxed/simple;
-	bh=TuEFRuqLBOnYedH6bHZA/P5wHxHxsIqISOe/UJTU4FU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Gfe9RnKWKCgBBVJfZRTO3kFua79LM48QAI/r9mtlYy85mQxk8cdG3gLFc4EuGioFR1ISouI0kdJhptNofLy51mt/ldfyvgfHs8GfNioK3QBS/rML2UjF03NZJzBtw3kKNdcrpqQyl2zwp8u7+wiLECdzn+a8hoTtBmtgc2k5rOs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hiV6XWyj; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 636BB3C00B2
+	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 18:54:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.216.52
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768503265; cv=pass; b=S7PAiUHCNN1JNCy85XtmNyAmXCa5Xr9QBVh0DTFHRXo7E38kBVdxfy1yfFWKjreSettVO/sO/rbmxQ+626cG4qXIJZwilgWGfmEtpkIkc8G0V3br8QZEZy9pOfwA99mW7F8VAf4CHG3Bxk1iH26DgzNfsfxRL6YQgNjCVMHPbEc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768503265; c=relaxed/simple;
+	bh=7dV2gC3i6v7x5QNrTKY/jnqxzJHYoS51E3vSMMeqd+c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ObrvE64zrI+zVz/Dk0r1gMcBd6+xoAgkaNKmmtLty3D8tEmT+dJzgulRoEvG7lOi/uApisrWfV96lKTxsbyikbNS9G8zdeuD+GRAuNdpPQ5p5xqB/zbERcDSRk2+gMrSvWkF+reBWIjt7QDDqPIK9MoKjSXs25Ykfn+h8W+5Bs4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lbwEz/OD; arc=pass smtp.client-ip=209.85.216.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-47eddddcdcfso7039535e9.1
-        for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 10:52:26 -0800 (PST)
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-34cf1e31f85so623980a91.1
+        for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 10:54:22 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1768503262; cv=none;
+        d=google.com; s=arc-20240605;
+        b=U5dFU3Uklz8H8PrLmlDpBNcpEhfoW3eKizAbbbo9gc7m2XKFRJK4uBV1wIDWI3UPOb
+         Ct59FwGJY8S9/xJfKGIKHrRq6MXVbry+FZxLx/GiKZ+rcLHYKtNQN8LG1mjWyH3iM07n
+         gdESBsKcU9eOdToGbNjryAQP51RBavfjxlTELqo6wztHqcH66ue75MHQWiXc5veTvYUc
+         TEUDULPS4acyugeFyvZPq/GD1PquGXMOPq3/m42aobCZ1zpGeDqZ2nL9vOoY6u9UUgnf
+         27k7dot93tbgxTXekR35CQ0dYatluykZctVc/z1soPtQcw2Jng27yniD7rskoBB+1JmT
+         WzYg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=EpbTbJbIYQW2HGVw5tfKbZOFlETWSnwKBDBmcbacs/s=;
+        fh=ZxiFtdk1gZijJHgjuGmqEmMvwINyZ9W9I2Yt7MzLP2Q=;
+        b=UJotV4ZkDPZZbsCRwp5Q9tSwIRx3PIUshHl2qXWRxVLl6t2mCldLZZQLyYXcveoiyn
+         1M0iQ+IQo42ztx+Q8Y2ZU0mkzAMWxvFhilYwo6eAqsJTUBmnALOkER8zPoFzG45tni7N
+         R9Ctm44adz43Vp/IK3Md2kUyVf5advfOXfur6oF0A/g7ob0eqqxMCo2x24IETWdUNsOP
+         f2nTLL9dhe4rjhi+1mQ6uubcqF6sv0o/9lMT7fTYBkJmHKyy9KCVhxPes4Xr2eJHCzK7
+         sqEEJ01kSI24I2tOlYYK+NxiiGohySY6psweKn34fdd64HMfATgzvB5Uj/PfyjXAwLDe
+         khaw==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768503145; x=1769107945; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NFeXl8zneto1MokIObjVTz/6UgfEQ0ha9IzMl9847FU=;
-        b=hiV6XWyjsZDEfUa+xjCd6FxYmqj0qJ6lPA3LhQmFhzdu/h8nk+X8NIZr9SrRcQo/Zo
-         eNOtxkTHJCX8VZCUgs7KCBS53Fuw8mG7Q7Hzjq55cfIX8jZHuID0SnjPQuVHUPw+BA7l
-         nygKo9nqGNVQBkT7sTkyckeT2HnJAoa8uRYf+eeZG9mJcdSqSgM0A5HXOStPyC7gSmfM
-         1eRSuuSGRyHOviC0d1d/xbXCuSOQCF0okjhpAAM/Re6DtEQaKRkHz//QDkYwqUPPpBSV
-         R3dDxS2X+mkHw9HI/mfry7w1PRSrLouCHACcLJ3FYPbyBqfG5bf+DYOemeVtHjLGQ29d
-         733A==
+        d=gmail.com; s=20230601; t=1768503262; x=1769108062; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EpbTbJbIYQW2HGVw5tfKbZOFlETWSnwKBDBmcbacs/s=;
+        b=lbwEz/ODkoLfn+u/4BdN9MMY7c5cIpjhgEVetLD2VmTFnIF6pyWSCe91WD9eg8OpQP
+         hHH0fb6rs+I488eIDqiTMGKm6XMi/mxMvAqy56YMXXgAMKNHom6SgWSP+MSdLOZ1Q+x3
+         PMIgNgTmJznBrm2yT3ghk7UUEwHFQs/LjOAlh6nul2u+yjtOtjQp5YN54GCZ1l8px7qu
+         bUjVxzkVbV4Yt9m3bzS87DsH55I6TYNsLTi65pXjb1/9BD5vmJLou7dpym5BaxI1pgse
+         iiMztNoPe0aFSW8kEIzbZn+8ppCuiJGoTov+vC76nOb65Sf4uTjaM67CHlBj4G8+kwRv
+         gV1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768503145; x=1769107945;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NFeXl8zneto1MokIObjVTz/6UgfEQ0ha9IzMl9847FU=;
-        b=xUejYYjalmd3Gzaq6/3slNYc/PrefVJvZxc4fin/GOGnaNUZ7nBd6uv9QlY/TGxxm/
-         nezDX+DujhkrBS3njn43gzqEcCYnqORkC+0W2cEUxw9sx4RuPUm7HlU6QJwEtitWlaZL
-         KiwPMR0gEvYjORn0PrLvRIe3LrSfq/AvRH2zEgGKub9hvEZdrB8XUHp63JFgJKP+0TKX
-         uaYoTvicv0SLKIanhRjQvUV0IT7bfDEP1xOZ4l/ksCHnU4AvNuAYbZzVcWQmZyf/bCQp
-         wpgKOvUeRHau6jGEgdwzCOuWLad9YLRQTcMtdPSJ3PVhwF3N9GhVvsCF27E08lDfzdrA
-         /h+Q==
-X-Gm-Message-State: AOJu0YxuR2Lf7pdnyPPgTXkJdMNLrTTHLAeAZjBcP47UAgb+hH4mSwEy
-	kXPzb2W7cFuyoz4Bl/SMVu67mSrNzfc0kMK2hhZvk+XqweEJM5gTCI+s
-X-Gm-Gg: AY/fxX6qXJ9zwtXoBJ359N5BMaQkmgWKA3htwl9GgqwnhW8GAYjMr6khtAncmyxbfUE
-	X5Lq/gJPE9BgW2U0U7QkJDG2ofqCzKHOVywEZdv8b6HPYaN0retehbN2k6nKsR1nY4nqK0AwnvJ
-	QOuFyN4YLbo1zoctmUm0LslYIoR06MnHsNxfPetz1quTaKRNyRhnT8nGSrq8LWLp/Ckol1zbk2k
-	JMq6vYcOvAr+aAIXxndGJ/s6hVWjwknht+8Vhln0kb9bXTSJ/j0dTDVa9bw60B3MfE8F+0RsGHv
-	FGhHo4oL5lyZioVBrvT9Rc8e44tCvlVC3GXdNl9SqSQ9HtFMbrAFnCRxe0SSl8Lm2iXY2SJiEtU
-	PTtRykdGw/jADb8f62C0Vzz7Y2IHs6trjreAJZ/HpM4zcHaJYORTB5TX8EGHilGll4f7r0Iw9fQ
-	udqTsE6SobRi9qMuklWhLUEGV5gCQn2KQ=
-X-Received: by 2002:a05:600c:1d28:b0:45d:5c71:769a with SMTP id 5b1f17b1804b1-4801eb0d727mr1966235e9.26.1768503144657;
-        Thu, 15 Jan 2026 10:52:24 -0800 (PST)
-Received: from ?IPV6:2620:10d:c0c3:1131::11fd? ([2620:10d:c092:400::5:2520])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47ee85e8807sm33760485e9.16.2026.01.15.10.52.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Jan 2026 10:52:24 -0800 (PST)
-Message-ID: <56169b8c-2bba-4a11-95dc-51789ed2c915@gmail.com>
-Date: Thu, 15 Jan 2026 18:52:23 +0000
+        d=1e100.net; s=20230601; t=1768503262; x=1769108062;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=EpbTbJbIYQW2HGVw5tfKbZOFlETWSnwKBDBmcbacs/s=;
+        b=iXALWcgRX/yE0lL/TJO7QVIGX7GqN3QH9btuFAiDcVhfvHdWmeY1ZqJStzhFQ63MuI
+         2zo13LjEQjDqgmuHI+QIu3D/Za19dQ+7K6xRLDiul5i5ChROBQ84lPYGCjNlAtQAIF6I
+         0jpWRF4wkPnnXSWOQVhr+319YJLvL8RoZ1DfaEvlBWzVxtznvjX3sa1S1GZgHDV8Uz2Z
+         FNwE1+KemcpgEgiV8pJuP70Mbs70by4e9z/887ffHfG198ITj3mulhgBUQ7YFbtQu1gv
+         5ydTMty+aSW+aO+HW0P5ZQsi4wRrqeYZMHSXavrkPd/LDaY2RB2wIhgnje/uS+CAZkCt
+         G8NA==
+X-Forwarded-Encrypted: i=1; AJvYcCVCVoq887BzRwjpc5eRc9MUgXukbLAjvwvjdbUrmtC81T/hFtgB1Q5IyL/lX4NbojhnrUc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwIA4PTgw8Oyru3JV9W35K8EsgIZKzgEUXKODuvSJUYHUDnRk29
+	zt50iivX0wkl0adCL3nWcy6Zox/4RK0Fw8sKFUhb0prGy2R0oHR+GIz3sS+DeS78Fa6mO0Hlx0F
+	Su2Bbg9i7Xh0l0GB/Aa2TlrYcSkM0dto=
+X-Gm-Gg: AY/fxX7DMSECnP8W2uLbAFnWuR0R+ueA8MISP5FxZbiLBH8kBvuMLl6aXKLiXcBsQpT
+	ZbOLmnozkPxy+tSNVYDlJuOC39Y56IXLko+4teHYaq9A/3MPkjob63tyD9AqNveU28ZkQmZkwCQ
+	x5IwIozDXPOguQ5V9Pp4BCrtUXrPtIiZV+nAf5LXyFRaWx7Zdbku3QBQSGYX+kt5cAX1MNuyEhp
+	K/iNH7/px1hhPPXZ/FHHwfxa/w0Z1HDWBDO8Jsex50L25iXS3J3u5GZNh0XJApXzX2daU5IIz88
+	3D5dW2oJ
+X-Received: by 2002:a17:90b:2682:b0:341:88c9:ca62 with SMTP id
+ 98e67ed59e1d1-35272f8c54bmr287868a91.31.1768503261661; Thu, 15 Jan 2026
+ 10:54:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v3 05/10] bpf: Enable bpf timer and workqueue use in
- NMI
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com,
- memxor@gmail.com, eddyz87@gmail.com, Mykyta Yatsenko <yatsenko@meta.com>
-References: <20260107-timer_nolock-v3-0-740d3ec3e5f9@meta.com>
- <20260107-timer_nolock-v3-5-740d3ec3e5f9@meta.com>
- <CAEf4BzYpZPtBFyceDfELDTg8fHFTOC+cqeTvvtWyzOtMqRc5iQ@mail.gmail.com>
- <14ef41d3-778c-4fe1-841a-9caffe8e0ec9@gmail.com>
- <CAEf4BzYDSKHjdr_tLoYgDT6s09S8s2U7vS-v67kP1ZRGDvQhTA@mail.gmail.com>
-Content-Language: en-US
-From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-In-Reply-To: <CAEf4BzYDSKHjdr_tLoYgDT6s09S8s2U7vS-v67kP1ZRGDvQhTA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20251230145010.103439-1-jolsa@kernel.org>
+In-Reply-To: <20251230145010.103439-1-jolsa@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 15 Jan 2026 10:54:09 -0800
+X-Gm-Features: AZwV_QiwkBtwLCiJrqG34-zTIw_OQKLb1v72y1BxE2HMZ_jpyB1tumI3srsjTrw
+Message-ID: <CAEf4BzaRU0DoM9hHtW5Bm7njodfg06JzTOe=ABAqZ6iMjAt4iQ@mail.gmail.com>
+Subject: Re: [PATCHv6 bpf-next 0/9] ftrace,bpf: Use single direct ops for bpf trampolines
+To: Jiri Olsa <jolsa@kernel.org>, Steven Rostedt <rostedt@kernel.org>
+Cc: Florent Revest <revest@google.com>, Mark Rutland <mark.rutland@arm.com>, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Menglong Dong <menglong8.dong@gmail.com>, Song Liu <song@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 1/15/26 18:39, Andrii Nakryiko wrote:
-> On Wed, Jan 14, 2026 at 6:53 AM Mykyta Yatsenko
-> <mykyta.yatsenko5@gmail.com> wrote:
->> On 1/9/26 22:19, Andrii Nakryiko wrote:
->>> On Wed, Jan 7, 2026 at 9:49 AM Mykyta Yatsenko
->>> <mykyta.yatsenko5@gmail.com> wrote:
->>>> From: Mykyta Yatsenko <yatsenko@meta.com>
->>>>
->>>> Refactor bpf timer and workqueue helpers to allow calling them from NMI
->>>> context by making all operations lock-free and deferring NMI-unsafe
->>>> work to irq_work.
->>>>
->>>> Previously, bpf_timer_start(), and bpf_wq_start()
->>>> could not be called from NMI context because they acquired
->>>> bpf_spin_lock and called hrtimer/schedule_work APIs directly. This
->>>> patch removes these limitations.
->>>>
->>>> Key changes:
->>>>    * Remove bpf_spin_lock from struct bpf_async_kern. Replace locked
->>>>      operations with atomic cmpxchg() for initialization and xchg() for
->>>>      cancel and free.
->>>>    * Add per-async irq_work to defer NMI-unsafe operations (hrtimer_start,
->>>>      hrtimer_try_to_cancel, schedule_work) from NMI to softirq context.
->>>>    * Use the lock-free mpmc_cell (added in the previous commit) to pass
->>>>      operation commands (start/cancel/free) along with their parameters
->>>>      (nsec, mode) from NMI-safe callers to the irq_work handler.
->>>>    * Add reference counting to bpf_async_cb to ensure the object stays
->>>>      alive until all scheduled irq_work completes and the timer/work
->>>>      callback finishes.
->>>>    * Move bpf_prog_put() to RCU callback to handle races between
->>>>      set_callback() and cancel_and_free().
->>>>
->>>> This enables BPF programs attached to NMI-context hooks (perf
->>>> events) to use timers and workqueues for deferred processing.
->>>>
->>>> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
->>>> ---
->>>>    kernel/bpf/helpers.c | 288 ++++++++++++++++++++++++++++++++++-----------------
->>>>    1 file changed, 191 insertions(+), 97 deletions(-)
->>>>
-> please trim irrelevant parts to shorten distractions in email
+On Tue, Dec 30, 2025 at 6:50=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> [...]
+> hi,
+> while poking the multi-tracing interface I ended up with just one ftrace_=
+ops
+> object to attach all trampolines.
 >
->>>> -static struct bpf_async_cb *__bpf_async_cancel_and_free(struct bpf_async_kern *async)
->>>> +static void __bpf_async_cancel_and_free(struct bpf_async_kern *async)
->>>>    {
->>>>           struct bpf_async_cb *cb;
->>>>
->>>> -       /* Performance optimization: read async->cb without lock first. */
->>>> -       if (!READ_ONCE(async->cb))
->>>> -               return NULL;
->>>> -
->>>> -       __bpf_spin_lock_irqsave(&async->lock);
->>>> -       /* re-read it under lock */
->>>> -       cb = async->cb;
->>>> +       cb = xchg(&async->cb, NULL);
->>>>           if (!cb)
->>>> -               goto out;
->>>> -       drop_prog_refcnt(cb);
->>>> -       /* The subsequent bpf_timer_start/cancel() helpers won't be able to use
->>>> -        * this timer, since it won't be initialized.
->>>> -        */
->>>> -       WRITE_ONCE(async->cb, NULL);
->>>> -out:
->>>> -       __bpf_spin_unlock_irqrestore(&async->lock);
->>>> -       return cb;
->>>> +               return;
->>>> +
->>>> +       /* Consume map's refcnt */
->>>> +       irq_work_queue(&cb->worker);
->>> hm... this is subtle (and maybe broken?) irq_work_queue() can be
->>> ignored here, if there is already another one scheduled, so I think
->>> your clever idea with CANCEL_AND_FREE being done based on this
->>> refcount drop is flawed...
->>>
->>> CANCEL_AND_FREE has to succeed, so it's out-of-bounds signal that
->>> shouldn't be going through that command cell, yes. But can't we just
->>> have a simple one-way bool that will be set to true here (+ memory
->>> barriers, maybe), and then irq_work_queue() scheduled. If there is irq
->>> work is scheduled, it will inevitable will see this flag (even if it's
->>> not our callback), and if not, then irq_work_queue() will successfully
->>> schedule callback which will also clean up.
->> Thanks for pointing to this issue.
->> I don't think we can solve it with a simple bool, because cleanup
->> should only happen once, and only after refcnt is 0, otherwise we need
->> to go
->> back to states to indicate cleanup initiation and cleanup entering (to
->> implement
->> mutual exclusion of the irq_work callbacks trying to run cleanup).
-> I meant bool as a command indicator of sorts, which is just part of
-> the solution. We do have reader's mutual exclusion with last_seq,
-> don't we? And the idea was that once the winning reader notices that
-> shutdown was requested, they can perform it and make sure that
-> subsequent readers (if there are any scheduled) would do nothing.
-> E.g., by setting last_seq to some special large value to indicate "we
-> are done, no more commands will be accepted".
-Winning reader that runs cleanup can't tell other pending readers to not
-do anything, because after cleanup we can't guarantee that the bpf_async_cb
-is not freed, other readers have to access it, that's why we have refcnt 
-that
-is the mechanism to make sure the last reader does cleanup.
+> This change allows to use less direct API calls during the attachment cha=
+nges
+> in the future code, so in effect speeding up the attachment.
 >
-> But let me go and read the latest version and refresh what's going on
-> there in my mind.
+> In current code we get a speed up from using just a single ftrace_ops obj=
+ect.
 >
->> We can still solve this with the refcnt: Drop reference, if refcnt is not 0,
->> we successfully released map reference and one of the scheduled irq_work
->> callbacks
->> will cleanup, otherwise we took the last reference, all we need is to
->> schedule new irq_work
->> (which can't fail)
->>
->>       if (!refcount_dec_and_test(&cb->refcnt))
->>           return;
->>
->>       /* We took the last reference, need to schedule cleanup */
->>       refcount_set(&cb->refcnt, 1);
->>       irq_work_queue(&cb->worker);
->>
-> [...]
+> - with current code:
+>
+>   Performance counter stats for 'bpftrace -e fentry:vmlinux:ksys_* {} -c =
+true':
+>
+>      6,364,157,902      cycles:k
+>        828,728,902      cycles:u
+>      1,064,803,824      instructions:u                   #    1.28  insn =
+per cycle
+>     23,797,500,067      instructions:k                   #    3.74  insn =
+per cycle
+>
+>        4.416004987 seconds time elapsed
+>
+>        0.164121000 seconds user
+>        1.289550000 seconds sys
+>
+>
+> - with the fix:
+>
+>    Performance counter stats for 'bpftrace -e fentry:vmlinux:ksys_* {} -c=
+ true':
+>
+>      6,535,857,905      cycles:k
+>        810,809,429      cycles:u
+>      1,064,594,027      instructions:u                   #    1.31  insn =
+per cycle
+>     23,962,552,894      instructions:k                   #    3.67  insn =
+per cycle
+>
+>        1.666961239 seconds time elapsed
+>
+>        0.157412000 seconds user
+>        1.283396000 seconds sys
+>
+>
+>
+> The speedup seems to be related to the fact that with single ftrace_ops o=
+bject
+> we don't call ftrace_shutdown anymore (we use ftrace_update_ops instead) =
+and
+> we skip the synchronize rcu calls (each ~100ms) at the end of that functi=
+on.
+>
+> rfc: https://lore.kernel.org/bpf/20250729102813.1531457-1-jolsa@kernel.or=
+g/
+> v1:  https://lore.kernel.org/bpf/20250923215147.1571952-1-jolsa@kernel.or=
+g/
+> v2:  https://lore.kernel.org/bpf/20251113123750.2507435-1-jolsa@kernel.or=
+g/
+> v3:  https://lore.kernel.org/bpf/20251120212402.466524-1-jolsa@kernel.org=
+/
+> v4:  https://lore.kernel.org/bpf/20251203082402.78816-1-jolsa@kernel.org/
+> v5:  https://lore.kernel.org/bpf/20251215211402.353056-10-jolsa@kernel.or=
+g/
+>
+> v6 changes:
+> - rename add_hash_entry_direct to add_ftrace_hash_entry_direct [Steven]
+> - factor hash_add/hash_sub [Steven]
+> - add kerneldoc header for update_ftrace_direct_* functions [Steven]
+> - few assorted smaller fixes [Steven]
+> - added missing direct_ops wrappers for !CONFIG_DYNAMIC_FTRACE_WITH_DIREC=
+T_CALLS
+>   case [Steven]
+>
 
+So this looks good from BPF side, I think. Steven, if you don't mind
+giving this patch set another look and if everything is to your liking
+giving your ack, we can then apply it to bpf-next. Thanks!
+
+> v5 changes:
+> - do not export ftrace_hash object [Steven]
+> - fix update_ftrace_direct_add new_filter_hash leak [ci]
+>
+> v4 changes:
+> - rebased on top of bpf-next/master (with jmp attach changes)
+>   added patch 1 to deal with that
+> - added extra checks for update_ftrace_direct_del/mod to address
+>   the ci bot review
+>
+> v3 changes:
+> - rebased on top of bpf-next/master
+> - fixed update_ftrace_direct_del cleanup path
+> - added missing inline to update_ftrace_direct_* stubs
+>
+> v2 changes:
+> - rebased on top fo bpf-next/master plus Song's livepatch fixes [1]
+> - renamed the API functions [2] [Steven]
+> - do not export the new api [Steven]
+> - kept the original direct interface:
+>
+>   I'm not sure if we want to melt both *_ftrace_direct and the new interf=
+ace
+>   into single one. It's bit different in semantic (hence the name change =
+as
+>   Steven suggested [2]) and I don't think the changes are not that big so
+>   we could easily keep both APIs.
+>
+> v1 changes:
+> - make the change x86 specific, after discussing with Mark options for
+>   arm64 [Mark]
+>
+> thanks,
+> jirka
+>
+>
+> [1] https://lore.kernel.org/bpf/20251027175023.1521602-1-song@kernel.org/
+> [2] https://lore.kernel.org/bpf/20250924050415.4aefcb91@batman.local.home=
+/
+> ---
+> Jiri Olsa (9):
+>       ftrace,bpf: Remove FTRACE_OPS_FL_JMP ftrace_ops flag
+>       ftrace: Make alloc_and_copy_ftrace_hash direct friendly
+>       ftrace: Export some of hash related functions
+>       ftrace: Add update_ftrace_direct_add function
+>       ftrace: Add update_ftrace_direct_del function
+>       ftrace: Add update_ftrace_direct_mod function
+>       bpf: Add trampoline ip hash table
+>       ftrace: Factor ftrace_ops ops_func interface
+>       bpf,x86: Use single ftrace_ops for direct calls
+>
+>  arch/x86/Kconfig        |   1 +
+>  include/linux/bpf.h     |   7 ++-
+>  include/linux/ftrace.h  |  31 +++++++++-
+>  kernel/bpf/trampoline.c | 259 ++++++++++++++++++++++++++++++++++++++++++=
+++++++++++++++++++++++++---------------
+>  kernel/trace/Kconfig    |   3 +
+>  kernel/trace/ftrace.c   | 406 ++++++++++++++++++++++++++++++++++++++++++=
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
+++--------
+>  6 files changed, 632 insertions(+), 75 deletions(-)
+>
 
