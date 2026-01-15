@@ -1,32 +1,32 @@
-Return-Path: <bpf+bounces-78993-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78998-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4AECD23209
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 09:30:13 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 012E7D23199
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 09:27:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7E35030F5BDE
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 08:26:32 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 8398E3018353
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 08:26:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72FAE331A4E;
-	Thu, 15 Jan 2026 08:26:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9CA233469D;
+	Thu, 15 Jan 2026 08:26:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="QBrstOem"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="CQvRYhVo"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 851AC330B29;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F0A533067D;
 	Thu, 15 Jan 2026 08:26:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768465589; cv=none; b=p1zQlsE90H7EsCLH4DsI3gOJ54+DU5Pr/fGZv69U6CQeYOVDdfmOOG2dyM2VVBc+B44fG8mFFZMK4n0BH7pUZN63Veb2CN0MaN+cRZvxd7ea/YAMeCuABKhm/WN1tkUpJ/T+Fv3nIB8MeV3nadHFw/VYZmsOfdFbZtfRTQto4rA=
+	t=1768465590; cv=none; b=Icd9NwH9Igbg7a35qS0aXP5sRnkeb/495okbbVTWJbbKGx8Ohb79HPmzwtH2oo6ZdDSKnc4s1GIwHeRymW+XOaLvXpPROIj+7M+HPxW5Ms/YtEsEBxALhLJa9zrSwWp+nBrMj5paE0xDMS3DJTlueXGwQh+pOih12I/dMxkrFi8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768465589; c=relaxed/simple;
-	bh=MZfEByh+9dl0thDVWSYPQbzKvrntUG3X1FtuXaD+Hac=;
+	s=arc-20240116; t=1768465590; c=relaxed/simple;
+	bh=X+fAQJYCVFN/4wjBtCV86TZygAIvlo9LSPEDfFQqNME=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JiEi77ugdtXUKOmtWZ/81+UcV7xTP9O97M1g1zSnoWN4Z2quxZqMJHSlFBS8VzM+9fMxh7wBLjjmVjWSGsHfWUNZ4PI9CfprmckG2at4z6evSYfDKQbDVgyVyF6b4eE5bcMRUyALFnns+bRqXPkjjd6QcclDCcyAmRazxs7YvpE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=QBrstOem; arc=none smtp.client-ip=213.133.104.62
+	 MIME-Version; b=UDh/DlLLI0t0+qpTjf2/lDm4H2xboKEt7BjYXMJrayDQgBmf3p3UsmannWDZG6PUW3BeISeFVIOKSXQouf+ZB5HWR5iEoHuTmOsC+ai2gIkz2xs7meuZJovNjjZof/sP84a0rLcbHz3fSjCT9U57MjZPireeQMl6SWd62s1TEIk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=CQvRYhVo; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -34,18 +34,18 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=kDPOfxKZxMLXp+34wuu3rEJf6xcjKsdKBrNkbxQ+SfU=; b=QBrstOem6c9SVEzcGdbGhdNm5u
-	E5nHReqPA1TEzjqhiKM/kIzLoK8Kkz7d4wfLk8utv/XtRd/oNyCi8RdLSzttwpVTY3Mu5K5RBEaEU
-	Ov8K5yERzFDCTJS7E2yqWGZgYg9oRGiHZdQ737hB8Rw3H5c5y1Fj8UBpWb0jt3JCyiyE5vXh1ov+w
-	b7lrVH+qfuGJ1fRzF7vq3R5H+smPfPekwd7Hg+hurR4GBm+x0/sPfYUJuUvdaKMYoHy7VyyCb6VOU
-	UHKDdad6+jo4qhiNPCvjnjr//Qkr3EsWdfKhHz84wqyMvglXmnT5biKPpYSIgJN5uJNnK5iY1oHPa
-	U++yRm5g==;
+	bh=kngns6zpPdIxPNPnaH5dVrul36nkFpnoz3iHrioC83Q=; b=CQvRYhVoIQXW9WPcoHHrK/3J1x
+	GEFGOvc6FE2ibQxENAEXY593DvJGHX8AB+DxLwIU+beOWgUeM1IMdY/ht0bvLqhZl7Yivz66ZAZi6
+	+A5vlzvjila8yhD0dQNjZTyFGYFX7SQE24cd2Oibq9bLKRzhSHGWjTWUnvGDDNy2KNIOW9t9dx89P
+	AiMmo8z5hWp+P95kzPvJ6kp2H5eNg+FScpgVjk2gRBFIt0RzZychQDjlbS+o4j76tWbdqMLZIWDLI
+	gAeWMPR00hMuBF05pXMgJg2tF6tzHERDv/wGbTKW6ZhU2RjgYAAD6mpxjyGxrrvAgFtczGaIwYlno
+	WRNfF1ZQ==;
 Received: from localhost ([127.0.0.1])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1vgIgF-000Npu-2u;
-	Thu, 15 Jan 2026 09:26:11 +0100
+	id 1vgIgH-000NqH-0g;
+	Thu, 15 Jan 2026 09:26:13 +0100
 From: Daniel Borkmann <daniel@iogearbox.net>
 To: netdev@vger.kernel.org
 Cc: bpf@vger.kernel.org,
@@ -64,9 +64,9 @@ Cc: bpf@vger.kernel.org,
 	toke@redhat.com,
 	yangzhenze@bytedance.com,
 	wangdongdong.6@bytedance.com
-Subject: [PATCH net-next v7 06/16] net: Proxy netdev_queue_get_dma_dev for leased queues
-Date: Thu, 15 Jan 2026 09:25:53 +0100
-Message-ID: <20260115082603.219152-7-daniel@iogearbox.net>
+Subject: [PATCH net-next v7 07/16] xsk: Extend xsk_rcv_check validation
+Date: Thu, 15 Jan 2026 09:25:54 +0100
+Message-ID: <20260115082603.219152-8-daniel@iogearbox.net>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20260115082603.219152-1-daniel@iogearbox.net>
 References: <20260115082603.219152-1-daniel@iogearbox.net>
@@ -79,56 +79,68 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Virus-Scanned: Clear (ClamAV 1.4.3/27881/Thu Jan 15 08:25:08 2026)
 
-From: David Wei <dw@davidwei.uk>
+xsk_rcv_check tests for inbound packets to see whether they match
+the bound AF_XDP socket. Refactor the test into a small helper
+xsk_dev_queue_valid and move the validation against xs->dev and
+xs->queue_id there.
 
-Extend netdev_queue_get_dma_dev to return the physical device of the
-real rxq for DMA in case the queue was leased. This allows memory
-providers like io_uring zero-copy or devmem to bind to the physically
-leased rxq via virtual devices such as netkit.
+The fast-path case stays in place and allows for quick return in
+xsk_dev_queue_valid. If it fails, the validation is extended to
+check whether the AF_XDP socket is bound against a leased queue,
+and if the case then the test is redone.
 
-Signed-off-by: David Wei <dw@davidwei.uk>
-Co-developed-by: Daniel Borkmann <daniel@iogearbox.net>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Co-developed-by: David Wei <dw@davidwei.uk>
+Signed-off-by: David Wei <dw@davidwei.uk>
 ---
- net/core/netdev_queues.c | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+ net/xdp/xsk.c | 29 ++++++++++++++++++++++++++---
+ 1 file changed, 26 insertions(+), 3 deletions(-)
 
-diff --git a/net/core/netdev_queues.c b/net/core/netdev_queues.c
-index fae92ee090c4..97acf6440829 100644
---- a/net/core/netdev_queues.c
-+++ b/net/core/netdev_queues.c
-@@ -9,16 +9,29 @@
-  * @dev:	net_device
-  * @idx:	queue index
-  *
-- * Get dma device for zero-copy operations to be used for this queue.
-+ * Get dma device for zero-copy operations to be used for this queue. If the
-+ * queue is leased to a physical queue, we retrieve the latter's dma device.
-  * When such device is not available or valid, the function will return NULL.
-  *
-  * Return: Device or NULL on error
-  */
- struct device *netdev_queue_get_dma_dev(struct net_device *dev, int idx)
- {
--	const struct netdev_queue_mgmt_ops *queue_ops = dev->queue_mgmt_ops;
-+	const struct netdev_queue_mgmt_ops *queue_ops;
- 	struct device *dma_dev;
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 410297b4ab48..15e54bb9f372 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -324,14 +324,37 @@ static bool xsk_is_bound(struct xdp_sock *xs)
+ 	return false;
+ }
  
-+	if (idx < dev->real_num_rx_queues) {
-+		struct netdev_rx_queue *rxq = __netif_get_rx_queue(dev, idx);
++static bool xsk_dev_queue_valid(const struct xdp_sock *xs,
++				const struct xdp_rxq_info *info)
++{
++	struct net_device *dev = xs->dev;
++	u32 queue_index = xs->queue_id;
++	struct netdev_rx_queue *rxq;
 +
-+		if (rxq->lease) {
-+			rxq = rxq->lease;
-+			dev = rxq->dev;
-+			idx = get_netdev_rx_queue_index(rxq);
-+		}
++	if (info->dev == dev &&
++	    info->queue_index == queue_index)
++		return true;
++
++	if (queue_index < dev->real_num_rx_queues) {
++		rxq = READ_ONCE(__netif_get_rx_queue(dev, queue_index)->lease);
++		if (!rxq)
++			return false;
++
++		dev = rxq->dev;
++		queue_index = get_netdev_rx_queue_index(rxq);
++
++		return info->dev == dev &&
++		       info->queue_index == queue_index;
 +	}
++	return false;
++}
 +
-+	queue_ops = dev->queue_mgmt_ops;
-+
- 	if (queue_ops && queue_ops->ndo_queue_get_dma_dev)
- 		dma_dev = queue_ops->ndo_queue_get_dma_dev(dev, idx);
- 	else
+ static int xsk_rcv_check(struct xdp_sock *xs, struct xdp_buff *xdp, u32 len)
+ {
+ 	if (!xsk_is_bound(xs))
+ 		return -ENXIO;
+-
+-	if (xs->dev != xdp->rxq->dev || xs->queue_id != xdp->rxq->queue_index)
++	if (!xsk_dev_queue_valid(xs, xdp->rxq))
+ 		return -EINVAL;
+-
+ 	if (len > xsk_pool_get_rx_frame_size(xs->pool) && !xs->sg) {
+ 		xs->rx_dropped++;
+ 		return -ENOSPC;
 -- 
 2.43.0
 
