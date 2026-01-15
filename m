@@ -1,156 +1,218 @@
-Return-Path: <bpf+bounces-78991-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78997-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 628EDD22F4E
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 08:55:27 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2ED31D2323B
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 09:32:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 7C584300AC9A
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 07:55:26 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 905BF3130A80
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 08:26:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0A0032D0DA;
-	Thu, 15 Jan 2026 07:55:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9670E334389;
+	Thu, 15 Jan 2026 08:26:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mxu/0b9E"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="o6Q3gPNK"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f67.google.com (mail-wr1-f67.google.com [209.85.221.67])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0897B32AAC7
-	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 07:55:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E67002D24B7;
+	Thu, 15 Jan 2026 08:26:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768463722; cv=none; b=D7yOqaUPBv3ZtCKkVpcxnskAccwuRouHCkIhb3AtvP03qloRq0BWcNQXaSz+8JVQAAvtFjIdJSfa+PhkVFY/MFBP61sO2cHcAlfxfCYaNExK1POayls3lZJzGKSmvvxII4wBXk2uOvbK82KE62gSrv0Z7+nq5PCWpRcRo3OUjh4=
+	t=1768465590; cv=none; b=ENd7P565w9JFqnjPO+K69mjx3l9k9+tD9bgdxnCNgeBOVYly0PuVzmLLgEhBIry88pPGQaZPH/a9v1r9m63ZfrBqx2IbKiyQBk1CStFb93CiezzMmSutIH/FICmL4XDLCSN4JVVYO4XPhAuGOUe5TdQ1pN33Y/Yaz5vE23S26mo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768463722; c=relaxed/simple;
-	bh=om7HWFSCcurUmG6Mdx+2OBk3oT41KbwfSRYe/GiyAWQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HOANGz7AJE5xg7/nR3gasZOaXDKdHDyhGhVWl3gDbwztgqycWOqPb787jqPTEZNlgWqVRF8l5p/wqmHH8JsHcX+5+WI6T/JymntGZLnpITtZxWMrAIW0Wu3ISDqMueZ9jyBQaa3KNvBOpl9AJHA11zPQL20GdYQSUiGeYkrzStM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mxu/0b9E; arc=none smtp.client-ip=209.85.221.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f67.google.com with SMTP id ffacd0b85a97d-430f2ee2f00so299855f8f.3
-        for <bpf@vger.kernel.org>; Wed, 14 Jan 2026 23:55:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768463719; x=1769068519; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=kKO78bOkK71SeHcqc9Sc94UOqPxLObVPuU/Z//5QLXI=;
-        b=mxu/0b9E/YvVWDRcZm99N37i0EAHJJGHXj66RWHGYUCshUMeYfWAwt9VktVGG82j84
-         z+AE/ihGXeSXBVVBx1PWmf6HteRwoxTxwKPqiWTnKL5E0YlCn26n3M/TxrkhWr4n5C7A
-         6uYlEY1zbOauRvXwed31caAKjZb+Snrw0KYs7YcKxRh8JxDmb6O/tg89Ma+KyfQ2BzkU
-         LjE3uwDuZ8oq86IxDV5YYmuuoUI1LjrVMBWyyNnXoATvv5gQh0m5xvTtwOllwCbb8aNL
-         G6RaDO7eh41C7pgABV0RRjAtrtsP9fpP3yloo/kC1ZF2pcEwcA77OOfNADM9JSr8cwhF
-         /R+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768463719; x=1769068519;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kKO78bOkK71SeHcqc9Sc94UOqPxLObVPuU/Z//5QLXI=;
-        b=QabeTeYL1P78yl8SFBRighze36mMTTukBsg8cvriVMP3Gp6+8nsbMKpVc/uGXs5KFD
-         gGVaI1rLNvBidOarYouIauOXs1sVSSeaoKnHQ9J9G/4+DR2O0TuqTEkOK89gtcHDr8QC
-         X6qqTp7D9vG31vuXySUFgJWkgToGklzC0pDaMZlMlrO662KwC2u/jLKx2cB5pkKWHBcu
-         UE+iqZDwk8IGTaNiczu6e8nmMM1VCVfz/CRxxw6X9Qk5qXyFzDybKFMBQOagEu8ppm64
-         Xt26lQ6xr0D8gQZ+9Osmf7+2IK5aRIwrX9D8+rVfAJXtktVdsYEGqaiVRcV2z7HtI5m4
-         fY9w==
-X-Gm-Message-State: AOJu0YzXdzyV1m/5MUMSZzdhxdTkfXaq6JAKwKtAlJmDmYIaUz2riGfU
-	Y0u7Xuhuy9HkaCsivAKQKDFoHPk7PhXNxUDnj8TlKnObptn1jk9T3Tbm1OKUUJvxCg3Awcjdaml
-	g72XvJoU67sqr24LZ91Bv4rmSzSWQn+W2auku
-X-Gm-Gg: AY/fxX69y8s7XVPO2Bfl6GOJ20WRDm0B1F2rQi05oIEVAjON4fg6q+X1bZUepvLLqEM
-	CJx5e7KUiAQ21hz3cZ9AW/vP5peFU1RCDcSQEt4QbjNJnjxGvAVVHVa96I+rskzkZum4DZgsw9c
-	X9IVGPiPJaq2Qll/JPZaZrc2t0Y5syFK583W/X5Ar1qNXvWRa6UBxU7CjFZqR09DDhuNpfkiaYY
-	QD5M0MfNSRPVsOsugy95bQI0uVy+WvKKzCQGFO6IaOnqYwaSRifGTft0F46usitSmbOq9lvv29l
-	bq2LWKFQ9vwlBXuPaUs/8zKvbJov
-X-Received: by 2002:a05:6000:4301:b0:431:8f8:7f24 with SMTP id
- ffacd0b85a97d-4342c535b7bmr7202529f8f.39.1768463719264; Wed, 14 Jan 2026
- 23:55:19 -0800 (PST)
+	s=arc-20240116; t=1768465590; c=relaxed/simple;
+	bh=hjRK7S2yHOJWgvJDDW/5DKmLFZ1dyZcklQuWpWEJMsQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MQoxSrTzqGXwJ/Ih+YYfAEN8hd3lz9Aj29wr4tQVy2zqx2IheDI36ecyAD+9FLPSyj245CWPY0kvRv22V238upmWcf419YUwq0IoO07u0mAaThJzIJi/sDCUddI8uE6e0J9dw02difCaRi3P7P+0C6IX8bY5Az6qIvPpDijNNss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=o6Q3gPNK; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
+	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References;
+	bh=coeHE8IRePhJggmjMKT9z8lYs1HyViWzWxocUnEa7Gs=; b=o6Q3gPNK0x/+qjgXzrxJM0mNQR
+	HSmYNm3/XZk4GfhKfw0ilv1hauvziUf5/NR6ghGujYkhXrBMxelEz0bxJW9A33gPsGPS8rUl/vmS5
+	PTkwb2ZkthBsyl6OXBvVAGTcYibkL9QLJ+xFUK84xGY1AKAjuQgN2jm/yq9zUJmmEKgu7Rb6Lqs2d
+	lukyhT3ofbvrtJCvoLJgzAuCQcLtl6qEjcqIZSlJM0iudCq51dPuoOpwc7s/QkgVD8rhHIo7lyD9e
+	+kj0PHggzfJ3VMYIrNKvGH7QkvD8iFzoZDQFL6ejoHDDHmxdEc0evmwydKEizFHZgcVsP3lz5Mqbs
+	R3FsiWTw==;
+Received: from localhost ([127.0.0.1])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1vgIg8-000Nov-1N;
+	Thu, 15 Jan 2026 09:26:04 +0100
+From: Daniel Borkmann <daniel@iogearbox.net>
+To: netdev@vger.kernel.org
+Cc: bpf@vger.kernel.org,
+	kuba@kernel.org,
+	davem@davemloft.net,
+	razor@blackwall.org,
+	pabeni@redhat.com,
+	willemb@google.com,
+	sdf@fomichev.me,
+	john.fastabend@gmail.com,
+	martin.lau@kernel.org,
+	jordan@jrife.io,
+	maciej.fijalkowski@intel.com,
+	magnus.karlsson@intel.com,
+	dw@davidwei.uk,
+	toke@redhat.com,
+	yangzhenze@bytedance.com,
+	wangdongdong.6@bytedance.com
+Subject: [PATCH net-next v7 00/16] netkit: Support for io_uring zero-copy and AF_XDP
+Date: Thu, 15 Jan 2026 09:25:47 +0100
+Message-ID: <20260115082603.219152-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260115061319.2895636-1-yonghong.song@linux.dev>
-In-Reply-To: <20260115061319.2895636-1-yonghong.song@linux.dev>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Thu, 15 Jan 2026 08:54:42 +0100
-X-Gm-Features: AZwV_QgTZDgey5kb1xz_G5IHC7YNoRQpYKwJeDQil9DsOT5tQyZ0c2BYnI5guiE
-Message-ID: <CAP01T75HfwbrZkRouGiuhfbFqMS4-LXh-nQ7ho=rJ-DZ44vCDA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix map_kptr test failure
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com, 
-	Martin KaFai Lau <martin.lau@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: Clear (ClamAV 1.4.3/27881/Thu Jan 15 08:25:08 2026)
 
-On Thu, 15 Jan 2026 at 07:16, Yonghong Song <yonghong.song@linux.dev> wrote:
->
-> On my arm64 machine, I get the following failure:
->   ...
->   tester_init:PASS:tester_log_buf 0 nsec
->   process_subtest:PASS:obj_open_mem 0 nsec
->   process_subtest:PASS:specs_alloc 0 nsec
->   serial_test_map_kptr:PASS:rcu_tasks_trace_gp__open_and_load 0 nsec
->   ...
->   test_map_kptr_success:PASS:map_kptr__open_and_load 0 nsec
->   test_map_kptr_success:PASS:test_map_kptr_ref1 refcount 0 nsec
->   test_map_kptr_success:FAIL:test_map_kptr_ref1 retval unexpected error: 2 (errno 2)
->   test_map_kptr_success:PASS:test_map_kptr_ref2 refcount 0 nsec
->   test_map_kptr_success:FAIL:test_map_kptr_ref2 retval unexpected error: 1 (errno 2)
->   ...
->   #201/21  map_kptr/success-map:FAIL
->
-> In serial_test_map_kptr(), before test_map_kptr_success(), one
-> kern_sync_rcu() is used to have some delay for freeing the map.
-> But in my environment, one kern_sync_rcu() seems not enough and
-> caused the test failure.
->
-> In bpf_map_free_in_work() in syscall.c, the queue time for
->   queue_work(system_dfl_wq, &map->work)
-> may be longer than expected. This may cause the test failure
-> since test_map_kptr_success() expects all previous maps having been freed.
->
-> In stead of one kern_sync_rcu() before test_map_kptr_success(),
-> I added two more kern_sync_rcu() to have a longer delay and
-> the test succeeded.
->
-> Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
-> ---
+Containers use virtual netdevs to route traffic from a physical netdev
+in the host namespace. They do not have access to the physical netdev
+in the host and thus can't use memory providers or AF_XDP that require
+reconfiguring/restarting queues in the physical netdev.
 
-This is still not a proper fix, right? Maybe two works in this case,
-but it isn't guaranteed to be enough either.
-RCU gp wait won't have any synchronization with when wq items are executed.
-I forgot why I used kern_sync_rcu() originally, but I feel the right
-way to fix this would be to count when all maps have finished their
-bpf_map_free through an fexit hook. Thoughts?
+This patchset adds the concept of queue leasing to virtual netdevs that
+allow containers to use memory providers and AF_XDP at native speed.
+Leased queues are bound to a real queue in a physical netdev and act
+as a proxy.
 
->  tools/testing/selftests/bpf/prog_tests/map_kptr.c | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/map_kptr.c b/tools/testing/selftests/bpf/prog_tests/map_kptr.c
-> index 8743df599567..f9cfc4d3153c 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/map_kptr.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/map_kptr.c
-> @@ -148,11 +148,15 @@ void serial_test_map_kptr(void)
->
->                 ASSERT_OK(kern_sync_rcu_tasks_trace(skel), "sync rcu_tasks_trace");
->                 ASSERT_OK(kern_sync_rcu(), "sync rcu");
-> +               ASSERT_OK(kern_sync_rcu(), "sync rcu");
-> +               ASSERT_OK(kern_sync_rcu(), "sync rcu");
->                 /* Observe refcount dropping to 1 on bpf_map_free_deferred */
->                 test_map_kptr_success(false);
->
->                 ASSERT_OK(kern_sync_rcu_tasks_trace(skel), "sync rcu_tasks_trace");
->                 ASSERT_OK(kern_sync_rcu(), "sync rcu");
-> +               ASSERT_OK(kern_sync_rcu(), "sync rcu");
-> +               ASSERT_OK(kern_sync_rcu(), "sync rcu");
->                 /* Observe refcount dropping to 1 on synchronous delete elem */
->                 test_map_kptr_success(true);
->         }
-> --
-> 2.47.3
->
->
+Memory providers and AF_XDP operations take an ifindex and queue id,
+so containers would pass in an ifindex for a virtual netdev and a queue
+id of a leased queue, which then gets proxied to the underlying real
+queue.
+
+We have implemented support for this concept in netkit and tested the
+latter against Nvidia ConnectX-6 (mlx5) as well as Broadcom BCM957504
+(bnxt_en) 100G NICs. For more details see the individual patches.
+
+v6->v7:
+ - Add xsk_dev_queue_valid real_num_rx_queues check given bound
+   xs->queue_id could be from a TX queue (AI review bot)
+ - Fix up exception path in queue leasing selftest (AI review bot)
+ - Rebase and retested everything with mlx5 + bnxt_en
+v5->v6:
+ - Fix nest_queue test in netdev_nl_queue_fill_one (Jakub/AI review bot)
+ - Fix netdev notifier locking leak (Jakub/AI review bot)
+ - Drop NETREG_UNREGISTERING WARN_ON_ONCE to avoid confusion (Stan)
+ - Remove slipped-in .gitignore cruft in net selftest (Stan)
+ - Fix Pylint warnings in net selftest (Jakub)
+ - Rebase and retested everything with mlx5 + bnxt_en
+v4->v5:
+ - Rework of the core API into queue-create op (Jakub)
+ - Rename from queue peering to queue leasing (Jakub)
+ - Add net selftests for queue leasing (Stan, Jakub)
+ - Move netkit_queue_get_dma_dev into core (Jakub)
+ - Dropped netkit_get_channels (Jakub)
+ - Moved ndo_queue_create back to return index or error (Jakub)
+ - Inline __netdev_rx_queue_{peer,unpeer} helpers (Jakub)
+ - Adding helpers in patches where they are used (Jakub)
+ - Undo inline for netdev_put_lock (Jakub)
+ - Factoring out checks whether device can lease (Jakub)
+ - Fix up return codes in netdev_nl_bind_queue_doit (Jakub)
+ - Reject when AF_XDP or mp already bound (Jakub)
+ - Switch some error cases to NL_SET_BAD_ATTR() (Jakub)
+ - Rebase and retested everything with mlx5 + bnxt_en
+v3->v4:
+ - ndo_queue_create store dst queue via arg (Nikolay)
+ - Small nits like a spelling issue + rev xmas (Nikolay)
+ - admin-perm flag in bind-queue spec (Jakub)
+ - Fix potential ABBA deadlock situation in bind (Jakub, Paolo, Stan)
+ - Add a peer dev_tracker to not reuse the sysfs one (Jakub)
+ - New patch (12/14) to handle the underlying device going away (Jakub)
+ - Improve commit message on queue-get (Jakub)
+ - Do not expose phys dev info from container on queue-get (Jakub)
+ - Add netif_put_rx_queue_peer_locked to simplify code (Stan)
+ - Rework xsk handling to simplify the code and drop a few patches
+ - Rebase and retested everything with mlx5 + bnxt_en
+v2->v3:
+ - Use netdev_ops_assert_locked instead of netdev_assert_locked (syzbot)
+ - Add missing netdev_lockdep_set_classes in netkit
+v1->v2:
+ - Removed bind sample ynl code (Stan)
+ - Reworked netdev locking to have consistent order (Stan, Kuba)
+ - Return 'not supported' in API patch (Stan)
+ - Improved ynl documentation (Kuba)
+ - Added 'max: s32-max' in ynl spec for ifindex (Kuba)
+ - Added also queue type in ynl to have user specify rx to make
+   it obvious (Kuba)
+ - Use of netdev_hold (Kuba)
+ - Avoid static inlines from another header (Kuba)
+ - Squashed some commits (Kuba, Stan)
+ - Removed ndo_{peer,unpeer}_queues callback and simplified
+   code (Kuba)
+ - Improved commit messages (Toke, Kuba, Stan, zf)
+ - Got rid of locking genl_sk_priv_get (Stan)
+ - Removed af_xdp cleanup churn (Maciej)
+ - Added netdev locking asserts (Stan)
+ - Reject ethtool ioctl path queue resizing (Kuba)
+ - Added kdoc for ndo_queue_create (Stan)
+ - Uninvert logic in netkit single dev mode (Jordan)
+ - Added binding support for multiple queues
+
+Daniel Borkmann (9):
+  net: Add queue-create operation
+  net: Implement netdev_nl_queue_create_doit
+  net: Add lease info to queue-get response
+  net, ethtool: Disallow leased real rxqs to be resized
+  xsk: Extend xsk_rcv_check validation
+  xsk: Proxy pool management for leased queues
+  netkit: Add single device mode for netkit
+  netkit: Add netkit notifier to check for unregistering devices
+  netkit: Add xsk support for af_xdp applications
+
+David Wei (7):
+  net: Proxy net_mp_{open,close}_rxq for leased queues
+  net: Proxy netdev_queue_get_dma_dev for leased queues
+  netkit: Implement rtnl_link_ops->alloc and ndo_queue_create
+  selftests/net: Add bpf skb forwarding program
+  selftests/net: Add env for container based tests
+  selftests/net: Make NetDrvContEnv support queue leasing
+  selftests/net: Add netkit container tests
+
+ Documentation/netlink/specs/netdev.yaml       |  44 +++
+ drivers/net/netkit.c                          | 360 +++++++++++++++---
+ include/linux/netdevice.h                     |   6 +
+ include/net/netdev_queues.h                   |  19 +-
+ include/net/netdev_rx_queue.h                 |  21 +-
+ include/net/page_pool/memory_provider.h       |   4 +-
+ include/net/xdp_sock_drv.h                    |   2 +-
+ include/uapi/linux/if_link.h                  |   6 +
+ include/uapi/linux/netdev.h                   |  11 +
+ net/core/dev.c                                |   7 +
+ net/core/dev.h                                |   2 +
+ net/core/netdev-genl-gen.c                    |  20 +
+ net/core/netdev-genl-gen.h                    |   2 +
+ net/core/netdev-genl.c                        | 185 +++++++++
+ net/core/netdev_queues.c                      |  74 +++-
+ net/core/netdev_rx_queue.c                    | 169 ++++++--
+ net/ethtool/channels.c                        |  12 +-
+ net/ethtool/ioctl.c                           |   9 +-
+ net/xdp/xsk.c                                 |  79 +++-
+ tools/include/uapi/linux/netdev.h             |  11 +
+ .../testing/selftests/drivers/net/README.rst  |   7 +
+ .../testing/selftests/drivers/net/hw/Makefile |   2 +
+ .../drivers/net/hw/lib/py/__init__.py         |   7 +-
+ .../selftests/drivers/net/hw/nk_forward.bpf.c |  49 +++
+ .../selftests/drivers/net/hw/nk_netns.py      |  23 ++
+ .../selftests/drivers/net/hw/nk_qlease.py     |  55 +++
+ .../selftests/drivers/net/lib/py/__init__.py  |   7 +-
+ .../selftests/drivers/net/lib/py/env.py       | 157 ++++++++
+ 28 files changed, 1233 insertions(+), 117 deletions(-)
+ create mode 100644 tools/testing/selftests/drivers/net/hw/nk_forward.bpf.c
+ create mode 100755 tools/testing/selftests/drivers/net/hw/nk_netns.py
+ create mode 100755 tools/testing/selftests/drivers/net/hw/nk_qlease.py
+
+-- 
+2.43.0
+
 
