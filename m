@@ -1,209 +1,222 @@
-Return-Path: <bpf+bounces-79126-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79129-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1356D27C99
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 19:51:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F348CD27D35
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 19:55:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 0CAB7300151B
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 18:48:52 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id C7ED73019943
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 18:52:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96EEA3C1FE7;
-	Thu, 15 Jan 2026 18:48:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F4453BC4DF;
+	Thu, 15 Jan 2026 18:52:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h0AHG3uU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hiV6XWyj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E365D3AA1A0
-	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 18:48:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88DE33BBA0F
+	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 18:52:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768502927; cv=none; b=o2pdBvHXJZBO0Y11RD/hcunooeFLYZdJsl+pn4Jm6V15WBMTH1WIXPFqocXUau3s7AdzAB0hS3bzv8aaORXBDAx5gPVsCwZUF1M+yie48gocQX3vVh5dMtUmShIgoFtsB1NyGl6C/1VdYXSoxAwKsYYG9zzV9g53v8OR2ODROJc=
+	t=1768503148; cv=none; b=d+2wqyGcAOzZCswrUzqmUyQZPwUshjcia+CF7vdvSAlUp2CbcsxeUvI6wXWJYOkXbh/yLVclpNJuqrzyPcZu3aOLpnF33K3jAUP48TDGqL+WOE8Qhd1fLas6aTl0t3lGZUbDgCMWqgkvmfTSDMF0F+8gw/A0Kab7xXIrDwJwZv0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768502927; c=relaxed/simple;
-	bh=UQrMhLzAWtEW2fNPRRa41ReV0ebPBQO/kw9fUUbSz0k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Lh6sKEfLKjdcBxdqLyB2S/WNWKfMWqy9Ia4dQySsEnHvkACPH7sDmGhtm6oMTByVI+xmM3+LUUwpjG/tj+GGoG9kxd4QkUCDVDWAvnK3u9wHFB3jaQVHv85yHFaMTYoI7lzGa1G6oaC5gAdqfPheEN+/1C0m/B2rk5qnCi62EE8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h0AHG3uU; arc=none smtp.client-ip=209.85.215.182
+	s=arc-20240116; t=1768503148; c=relaxed/simple;
+	bh=TuEFRuqLBOnYedH6bHZA/P5wHxHxsIqISOe/UJTU4FU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Gfe9RnKWKCgBBVJfZRTO3kFua79LM48QAI/r9mtlYy85mQxk8cdG3gLFc4EuGioFR1ISouI0kdJhptNofLy51mt/ldfyvgfHs8GfNioK3QBS/rML2UjF03NZJzBtw3kKNdcrpqQyl2zwp8u7+wiLECdzn+a8hoTtBmtgc2k5rOs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hiV6XWyj; arc=none smtp.client-ip=209.85.128.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-bc29d64b39dso428069a12.3
-        for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 10:48:43 -0800 (PST)
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-47eddddcdcfso7039535e9.1
+        for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 10:52:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768502922; x=1769107722; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aHYgSO64FJPmGn4to5xXyL76aKmYw2DEo0/XWOgIEws=;
-        b=h0AHG3uUeEJIndx/HnYM5H/I6laHcDhUX6XxYbe4JY1Ay8V2ZYekhnmjnafbo1C9++
-         V+mB5AoZuubh2Qat2ouR82OTwnZME3mrzfriy4mHgq7ZI7bGERkQ4t6TvhPypPJ/zzci
-         bht0lWFeCral/wwVd3wCiRuTgPN5Pd+RbYyYWP8laaKdCM5xrw1mY5Rpz7knQ6AkHJ8M
-         cNF/4fSi5uoRJSrsfTsSoPZXQya8az17I1Usg69RAchJTuxgM7utGql1i+iDJIrLh41W
-         9TmFLBzu2sozIY5nyBoJxuc5yt31b3JQWN7N8DR6M0fhwbb4SEPZFAt+xV+JOxVsEMBZ
-         X/Pw==
+        d=gmail.com; s=20230601; t=1768503145; x=1769107945; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NFeXl8zneto1MokIObjVTz/6UgfEQ0ha9IzMl9847FU=;
+        b=hiV6XWyjsZDEfUa+xjCd6FxYmqj0qJ6lPA3LhQmFhzdu/h8nk+X8NIZr9SrRcQo/Zo
+         eNOtxkTHJCX8VZCUgs7KCBS53Fuw8mG7Q7Hzjq55cfIX8jZHuID0SnjPQuVHUPw+BA7l
+         nygKo9nqGNVQBkT7sTkyckeT2HnJAoa8uRYf+eeZG9mJcdSqSgM0A5HXOStPyC7gSmfM
+         1eRSuuSGRyHOviC0d1d/xbXCuSOQCF0okjhpAAM/Re6DtEQaKRkHz//QDkYwqUPPpBSV
+         R3dDxS2X+mkHw9HI/mfry7w1PRSrLouCHACcLJ3FYPbyBqfG5bf+DYOemeVtHjLGQ29d
+         733A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768502922; x=1769107722;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=aHYgSO64FJPmGn4to5xXyL76aKmYw2DEo0/XWOgIEws=;
-        b=P0uOYSvMfyVI4dvvOn7WPHvWEx8ShxKepVcOXgM6DhabI7Hl4ogst+asUWgHUb8Ykq
-         UWRaiMM51qei9CWzEbPK7QJ6tz7jukEPME0RwamLrgnASCe9CTuVkCnvpDShjIGC1v51
-         xAqL7v5OhUb2ijLLCWUmN/Xul6B1B3ZYDWXIAYfacxmEyUWbosP9b28cuYJeakp/Oe+8
-         gl5lKwwv9BSHCgQXOcPK58YCLwSR6ox94EEdp6ymV5ZWA7SeVlMVtsLzod7oZaHNTSAH
-         8k4D2K/zpfe66GWkkv69oQWnmhQmIM4cSIQePTOL1gmyD7mqRPEArwX8rj7X44kdfXCY
-         hOgA==
-X-Forwarded-Encrypted: i=1; AJvYcCVAXjxRTJisD+zucZFYStEH+uIxKJVwA+P8gXXwrAA7A8LcSe8jH/89A8r8zthATOZTw/k=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yza01pIDpB8DFwY3IDYGGSvshhOrHG5NzZHkeLFHXPxQw66AXQp
-	CKJSadB5X5GEqOrvGLoY60r/9QXmjwFDtERIzKlj4iuyocPo6ZzLQTzyZtqI9ZSWUwgnF17Maxq
-	tlk1Qjz/VHkn82srd8zOsw1F+1wjtNA4=
-X-Gm-Gg: AY/fxX4qH8Nh48I3//XVIkfp6mQTPfdyToxQdtHFKom/sQp7+z9zMO7/A8n5dJlODe2
-	61w6bXEFwRrIzeQlEDnyGw5ycMmGDYv+Koc/Ixusw3hqzHYgeK8blR4uA/w8U0sYShKyRgimIDh
-	Fmxa0XnPCgJbDluOeJOwMQRnK3FMSbZfIulT3ddFNjfLGsfPntLhQoHE/vtPXDCz/Nq3jWZFCHF
-	2dRdZTQZ3qDG4JHWjF2TKp1H7KuET1Yl6koB8L3x3f/DnBV6qGuq+npb4TWZb8n4QJlT5eW+EGP
-	m3aGNxXJ
-X-Received: by 2002:a17:90b:4a44:b0:340:be44:dd0b with SMTP id
- 98e67ed59e1d1-35273298af9mr230008a91.34.1768502921893; Thu, 15 Jan 2026
- 10:48:41 -0800 (PST)
+        d=1e100.net; s=20230601; t=1768503145; x=1769107945;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NFeXl8zneto1MokIObjVTz/6UgfEQ0ha9IzMl9847FU=;
+        b=xUejYYjalmd3Gzaq6/3slNYc/PrefVJvZxc4fin/GOGnaNUZ7nBd6uv9QlY/TGxxm/
+         nezDX+DujhkrBS3njn43gzqEcCYnqORkC+0W2cEUxw9sx4RuPUm7HlU6QJwEtitWlaZL
+         KiwPMR0gEvYjORn0PrLvRIe3LrSfq/AvRH2zEgGKub9hvEZdrB8XUHp63JFgJKP+0TKX
+         uaYoTvicv0SLKIanhRjQvUV0IT7bfDEP1xOZ4l/ksCHnU4AvNuAYbZzVcWQmZyf/bCQp
+         wpgKOvUeRHau6jGEgdwzCOuWLad9YLRQTcMtdPSJ3PVhwF3N9GhVvsCF27E08lDfzdrA
+         /h+Q==
+X-Gm-Message-State: AOJu0YxuR2Lf7pdnyPPgTXkJdMNLrTTHLAeAZjBcP47UAgb+hH4mSwEy
+	kXPzb2W7cFuyoz4Bl/SMVu67mSrNzfc0kMK2hhZvk+XqweEJM5gTCI+s
+X-Gm-Gg: AY/fxX6qXJ9zwtXoBJ359N5BMaQkmgWKA3htwl9GgqwnhW8GAYjMr6khtAncmyxbfUE
+	X5Lq/gJPE9BgW2U0U7QkJDG2ofqCzKHOVywEZdv8b6HPYaN0retehbN2k6nKsR1nY4nqK0AwnvJ
+	QOuFyN4YLbo1zoctmUm0LslYIoR06MnHsNxfPetz1quTaKRNyRhnT8nGSrq8LWLp/Ckol1zbk2k
+	JMq6vYcOvAr+aAIXxndGJ/s6hVWjwknht+8Vhln0kb9bXTSJ/j0dTDVa9bw60B3MfE8F+0RsGHv
+	FGhHo4oL5lyZioVBrvT9Rc8e44tCvlVC3GXdNl9SqSQ9HtFMbrAFnCRxe0SSl8Lm2iXY2SJiEtU
+	PTtRykdGw/jADb8f62C0Vzz7Y2IHs6trjreAJZ/HpM4zcHaJYORTB5TX8EGHilGll4f7r0Iw9fQ
+	udqTsE6SobRi9qMuklWhLUEGV5gCQn2KQ=
+X-Received: by 2002:a05:600c:1d28:b0:45d:5c71:769a with SMTP id 5b1f17b1804b1-4801eb0d727mr1966235e9.26.1768503144657;
+        Thu, 15 Jan 2026 10:52:24 -0800 (PST)
+Received: from ?IPV6:2620:10d:c0c3:1131::11fd? ([2620:10d:c092:400::5:2520])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47ee85e8807sm33760485e9.16.2026.01.15.10.52.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Jan 2026 10:52:24 -0800 (PST)
+Message-ID: <56169b8c-2bba-4a11-95dc-51789ed2c915@gmail.com>
+Date: Thu, 15 Jan 2026 18:52:23 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260112214940.1222115-1-jolsa@kernel.org> <20260112214940.1222115-5-jolsa@kernel.org>
-In-Reply-To: <20260112214940.1222115-5-jolsa@kernel.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 15 Jan 2026 10:48:29 -0800
-X-Gm-Features: AZwV_QjX7VrTUtsAMUBt5BaayEmgkKUeqnOB-9FMhVngm8sFa5SmN6zLgjvUsfQ
-Message-ID: <CAEf4BzaXhGpkycs-TO_1V81-irq3d8Mjfyk=LMc0OC-NW-FnRg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 4/4] selftests/bpf: Allow to benchmark trigger
- with stacktrace
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Josh Poimboeuf <jpoimboe@kernel.org>, Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, x86@kernel.org, 
-	Yonghong Song <yhs@fb.com>, Song Liu <songliubraving@fb.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Mahe Tardy <mahe.tardy@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC v3 05/10] bpf: Enable bpf timer and workqueue use in
+ NMI
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com,
+ memxor@gmail.com, eddyz87@gmail.com, Mykyta Yatsenko <yatsenko@meta.com>
+References: <20260107-timer_nolock-v3-0-740d3ec3e5f9@meta.com>
+ <20260107-timer_nolock-v3-5-740d3ec3e5f9@meta.com>
+ <CAEf4BzYpZPtBFyceDfELDTg8fHFTOC+cqeTvvtWyzOtMqRc5iQ@mail.gmail.com>
+ <14ef41d3-778c-4fe1-841a-9caffe8e0ec9@gmail.com>
+ <CAEf4BzYDSKHjdr_tLoYgDT6s09S8s2U7vS-v67kP1ZRGDvQhTA@mail.gmail.com>
+Content-Language: en-US
+From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+In-Reply-To: <CAEf4BzYDSKHjdr_tLoYgDT6s09S8s2U7vS-v67kP1ZRGDvQhTA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jan 12, 2026 at 1:50=E2=80=AFPM Jiri Olsa <jolsa@kernel.org> wrote:
+On 1/15/26 18:39, Andrii Nakryiko wrote:
+> On Wed, Jan 14, 2026 at 6:53 AM Mykyta Yatsenko
+> <mykyta.yatsenko5@gmail.com> wrote:
+>> On 1/9/26 22:19, Andrii Nakryiko wrote:
+>>> On Wed, Jan 7, 2026 at 9:49 AM Mykyta Yatsenko
+>>> <mykyta.yatsenko5@gmail.com> wrote:
+>>>> From: Mykyta Yatsenko <yatsenko@meta.com>
+>>>>
+>>>> Refactor bpf timer and workqueue helpers to allow calling them from NMI
+>>>> context by making all operations lock-free and deferring NMI-unsafe
+>>>> work to irq_work.
+>>>>
+>>>> Previously, bpf_timer_start(), and bpf_wq_start()
+>>>> could not be called from NMI context because they acquired
+>>>> bpf_spin_lock and called hrtimer/schedule_work APIs directly. This
+>>>> patch removes these limitations.
+>>>>
+>>>> Key changes:
+>>>>    * Remove bpf_spin_lock from struct bpf_async_kern. Replace locked
+>>>>      operations with atomic cmpxchg() for initialization and xchg() for
+>>>>      cancel and free.
+>>>>    * Add per-async irq_work to defer NMI-unsafe operations (hrtimer_start,
+>>>>      hrtimer_try_to_cancel, schedule_work) from NMI to softirq context.
+>>>>    * Use the lock-free mpmc_cell (added in the previous commit) to pass
+>>>>      operation commands (start/cancel/free) along with their parameters
+>>>>      (nsec, mode) from NMI-safe callers to the irq_work handler.
+>>>>    * Add reference counting to bpf_async_cb to ensure the object stays
+>>>>      alive until all scheduled irq_work completes and the timer/work
+>>>>      callback finishes.
+>>>>    * Move bpf_prog_put() to RCU callback to handle races between
+>>>>      set_callback() and cancel_and_free().
+>>>>
+>>>> This enables BPF programs attached to NMI-context hooks (perf
+>>>> events) to use timers and workqueues for deferred processing.
+>>>>
+>>>> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+>>>> ---
+>>>>    kernel/bpf/helpers.c | 288 ++++++++++++++++++++++++++++++++++-----------------
+>>>>    1 file changed, 191 insertions(+), 97 deletions(-)
+>>>>
+> please trim irrelevant parts to shorten distractions in email
 >
-> Adding support to call bpf_get_stackid helper from trigger programs,
-> so far added for kprobe multi.
+> [...]
 >
-> Adding the --stacktrace/-g option to enable it.
+>>>> -static struct bpf_async_cb *__bpf_async_cancel_and_free(struct bpf_async_kern *async)
+>>>> +static void __bpf_async_cancel_and_free(struct bpf_async_kern *async)
+>>>>    {
+>>>>           struct bpf_async_cb *cb;
+>>>>
+>>>> -       /* Performance optimization: read async->cb without lock first. */
+>>>> -       if (!READ_ONCE(async->cb))
+>>>> -               return NULL;
+>>>> -
+>>>> -       __bpf_spin_lock_irqsave(&async->lock);
+>>>> -       /* re-read it under lock */
+>>>> -       cb = async->cb;
+>>>> +       cb = xchg(&async->cb, NULL);
+>>>>           if (!cb)
+>>>> -               goto out;
+>>>> -       drop_prog_refcnt(cb);
+>>>> -       /* The subsequent bpf_timer_start/cancel() helpers won't be able to use
+>>>> -        * this timer, since it won't be initialized.
+>>>> -        */
+>>>> -       WRITE_ONCE(async->cb, NULL);
+>>>> -out:
+>>>> -       __bpf_spin_unlock_irqrestore(&async->lock);
+>>>> -       return cb;
+>>>> +               return;
+>>>> +
+>>>> +       /* Consume map's refcnt */
+>>>> +       irq_work_queue(&cb->worker);
+>>> hm... this is subtle (and maybe broken?) irq_work_queue() can be
+>>> ignored here, if there is already another one scheduled, so I think
+>>> your clever idea with CANCEL_AND_FREE being done based on this
+>>> refcount drop is flawed...
+>>>
+>>> CANCEL_AND_FREE has to succeed, so it's out-of-bounds signal that
+>>> shouldn't be going through that command cell, yes. But can't we just
+>>> have a simple one-way bool that will be set to true here (+ memory
+>>> barriers, maybe), and then irq_work_queue() scheduled. If there is irq
+>>> work is scheduled, it will inevitable will see this flag (even if it's
+>>> not our callback), and if not, then irq_work_queue() will successfully
+>>> schedule callback which will also clean up.
+>> Thanks for pointing to this issue.
+>> I don't think we can solve it with a simple bool, because cleanup
+>> should only happen once, and only after refcnt is 0, otherwise we need
+>> to go
+>> back to states to indicate cleanup initiation and cleanup entering (to
+>> implement
+>> mutual exclusion of the irq_work callbacks trying to run cleanup).
+> I meant bool as a command indicator of sorts, which is just part of
+> the solution. We do have reader's mutual exclusion with last_seq,
+> don't we? And the idea was that once the winning reader notices that
+> shutdown was requested, they can perform it and make sure that
+> subsequent readers (if there are any scheduled) would do nothing.
+> E.g., by setting last_seq to some special large value to indicate "we
+> are done, no more commands will be accepted".
+Winning reader that runs cleanup can't tell other pending readers to not
+do anything, because after cleanup we can't guarantee that the bpf_async_cb
+is not freed, other readers have to access it, that's why we have refcnt 
+that
+is the mechanism to make sure the last reader does cleanup.
 >
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/testing/selftests/bpf/bench.c            |  4 ++++
->  tools/testing/selftests/bpf/bench.h            |  1 +
->  .../selftests/bpf/benchs/bench_trigger.c       |  1 +
->  .../selftests/bpf/progs/trigger_bench.c        | 18 ++++++++++++++++++
->  4 files changed, 24 insertions(+)
+> But let me go and read the latest version and refresh what's going on
+> there in my mind.
 >
+>> We can still solve this with the refcnt: Drop reference, if refcnt is not 0,
+>> we successfully released map reference and one of the scheduled irq_work
+>> callbacks
+>> will cleanup, otherwise we took the last reference, all we need is to
+>> schedule new irq_work
+>> (which can't fail)
+>>
+>>       if (!refcount_dec_and_test(&cb->refcnt))
+>>           return;
+>>
+>>       /* We took the last reference, need to schedule cleanup */
+>>       refcount_set(&cb->refcnt, 1);
+>>       irq_work_queue(&cb->worker);
+>>
+> [...]
 
-This now actually becomes a stack trace benchmark :) But I don't mind,
-I think it would be good to be able to benchmark this. But I think we
-should then implement it for all different tracing programs (tp,
-raw_tp, fentry/fexit/fmod_ret) for consistency and so we can compare
-and contrast?...
-
-> diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftest=
-s/bpf/bench.c
-> index bd29bb2e6cb5..8dadd9c928ec 100644
-> --- a/tools/testing/selftests/bpf/bench.c
-> +++ b/tools/testing/selftests/bpf/bench.c
-> @@ -265,6 +265,7 @@ static const struct argp_option opts[] =3D {
->         { "verbose", 'v', NULL, 0, "Verbose debug output"},
->         { "affinity", 'a', NULL, 0, "Set consumer/producer thread affinit=
-y"},
->         { "quiet", 'q', NULL, 0, "Be more quiet"},
-> +       { "stacktrace", 'g', NULL, 0, "Get stack trace"},
-
-bikeshedding time: why "g"? why not -S or something like that?
-
->         { "prod-affinity", ARG_PROD_AFFINITY_SET, "CPUSET", 0,
->           "Set of CPUs for producer threads; implies --affinity"},
->         { "cons-affinity", ARG_CONS_AFFINITY_SET, "CPUSET", 0,
-> @@ -350,6 +351,9 @@ static error_t parse_arg(int key, char *arg, struct a=
-rgp_state *state)
->         case 'q':
->                 env.quiet =3D true;
->                 break;
-> +       case 'g':
-> +               env.stacktrace =3D true;
-> +               break;
->         case ARG_PROD_AFFINITY_SET:
->                 env.affinity =3D true;
->                 if (parse_num_list(arg, &env.prod_cpus.cpus,
-> diff --git a/tools/testing/selftests/bpf/bench.h b/tools/testing/selftest=
-s/bpf/bench.h
-> index bea323820ffb..7cf21936e7ed 100644
-> --- a/tools/testing/selftests/bpf/bench.h
-> +++ b/tools/testing/selftests/bpf/bench.h
-> @@ -26,6 +26,7 @@ struct env {
->         bool list;
->         bool affinity;
->         bool quiet;
-> +       bool stacktrace;
->         int consumer_cnt;
->         int producer_cnt;
->         int nr_cpus;
-> diff --git a/tools/testing/selftests/bpf/benchs/bench_trigger.c b/tools/t=
-esting/selftests/bpf/benchs/bench_trigger.c
-> index 34018fc3927f..aeec9edd3851 100644
-> --- a/tools/testing/selftests/bpf/benchs/bench_trigger.c
-> +++ b/tools/testing/selftests/bpf/benchs/bench_trigger.c
-> @@ -146,6 +146,7 @@ static void setup_ctx(void)
->         bpf_program__set_autoload(ctx.skel->progs.trigger_driver, true);
->
->         ctx.skel->rodata->batch_iters =3D args.batch_iters;
-> +       ctx.skel->rodata->stacktrace =3D env.stacktrace;
->  }
->
->  static void load_ctx(void)
-> diff --git a/tools/testing/selftests/bpf/progs/trigger_bench.c b/tools/te=
-sting/selftests/bpf/progs/trigger_bench.c
-> index 2898b3749d07..479400d96fa4 100644
-> --- a/tools/testing/selftests/bpf/progs/trigger_bench.c
-> +++ b/tools/testing/selftests/bpf/progs/trigger_bench.c
-> @@ -25,6 +25,23 @@ static __always_inline void inc_counter(void)
->         __sync_add_and_fetch(&hits[cpu & CPU_MASK].value, 1);
->  }
->
-> +volatile const int stacktrace;
-> +
-> +typedef __u64 stack_trace_t[128];
-> +
-> +struct {
-> +       __uint(type, BPF_MAP_TYPE_STACK_TRACE);
-> +       __uint(max_entries, 16384);
-> +       __type(key, __u32);
-> +       __type(value, stack_trace_t);
-> +} stackmap SEC(".maps");
-> +
-> +static __always_inline void do_stacktrace(void *ctx)
-> +{
-> +       if (stacktrace)
-> +               bpf_get_stackid(ctx, &stackmap, 0);
-> +}
-> +
->  SEC("?uprobe")
->  int bench_trigger_uprobe(void *ctx)
->  {
-> @@ -96,6 +113,7 @@ SEC("?kprobe.multi/bpf_get_numa_node_id")
->  int bench_trigger_kprobe_multi(void *ctx)
->  {
->         inc_counter();
-> +       do_stacktrace(ctx);
->         return 0;
->  }
->
-> --
-> 2.52.0
->
 
