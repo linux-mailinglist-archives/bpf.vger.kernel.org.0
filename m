@@ -1,140 +1,126 @@
-Return-Path: <bpf+bounces-78973-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-78974-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id F11B3D22089
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 02:32:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 06258D2215E
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 03:05:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id E17DD3019375
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 01:32:05 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 53BA130263F7
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 02:05:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA0CA19E968;
-	Thu, 15 Jan 2026 01:32:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBA4424468C;
+	Thu, 15 Jan 2026 02:05:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jZxqloSK"
 X-Original-To: bpf@vger.kernel.org
-Received: from omta34.uswest2.a.cloudfilter.net (omta34.uswest2.a.cloudfilter.net [35.89.44.33])
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D28A8F4A
-	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 01:32:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84E2E35972
+	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 02:05:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768440722; cv=none; b=nKrV2+DsXXxzPMaoX0lgADBi01iXht1yVYjRtFMUncov2bqt18sfWfhbTNSkJQ+kpd5JW0kYPkFXwpFmMuKUVZbhZPA3xwc9FO0my+9osTqb6o50GKO8JMFQxrCKqWQnK9/UCAUR3cFWv7jOk7lCNIlr7z/0x4lkClKem0G78LQ=
+	t=1768442729; cv=none; b=bz7HyMgvqBgxnEYVHA6ZUKTonrhYMCch3FRyIvIodZ+As6It2uagI0W8TdSDrRHqPbedOpJsD0mUziItlAg3ar0/uQVoZ838RZCXePyr7N4rA/+IVBwX6hCCMr5QGoNfRpmkmM0ve+cU48Rr+Ld45iuhz4qZavxR2sbnqBA36Vg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768440722; c=relaxed/simple;
-	bh=AlGkuX55E+iwWNCiSmQbkU502zKTm6EkPkUORp4GlAI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=iaO6rnK4sz0TMWnDZmpNaOPrF97XhMtI8G0SkOFyslu8Tuy4Mr/srnoPdZUnsthd4d7DJ0JNSFCijF6O/174Kx91dg0OJYF0+IMU2ee9pR7XR1YLydQbY8f6pgQlrW7MONuu8pCP8pxMbRb/+8fhtdNAps4qt8qbKLt6IM4JsLQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=sony.com; spf=fail smtp.mailfrom=sony.com; arc=none smtp.client-ip=35.89.44.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=sony.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=sony.com
-Received: from eig-obgw-6002b.ext.cloudfilter.net ([10.0.30.203])
-	by cmsmtp with ESMTPS
-	id g8WWveso7KjfogCDLvc0Yy; Thu, 15 Jan 2026 01:31:55 +0000
-Received: from host2044.hostmonster.com ([67.20.76.238])
-	by cmsmtp with ESMTPS
-	id gCDKvoTtmPL32gCDLvzRZS; Thu, 15 Jan 2026 01:31:55 +0000
-X-Authority-Analysis: v=2.4 cv=MqhS63ae c=1 sm=1 tr=0 ts=6968438b
- a=O1AQXT3IpLm5MaED65xONQ==:117 a=uc9KWs4yn0V/JYYSH7YHpg==:17
- a=vUbySO9Y5rIA:10 a=z6gsHLkEAAAA:8 a=odGvurlAbDJ6Lck-HAUA:9
- a=bcJbkyMg_6Rm9PQ4FUss:22 a=iekntanDnrheIxGr1pkv:22
-Received: from [66.118.46.62] (port=34982 helo=timdesk..)
-	by host2044.hostmonster.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.99.1)
-	(envelope-from <tim.bird@sony.com>)
-	id 1vgCDI-000000033kt-3tTM;
-	Wed, 14 Jan 2026 18:31:53 -0700
-From: Tim Bird <tim.bird@sony.com>
-To: kuba@kernel.org,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	ast@kernel.org
-Cc: linux-spdx@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Tim Bird <tim.bird@sony.com>
-Subject: [PATCH] kernel: bpf: Add SPDX license identifiers to a few files
-Date: Wed, 14 Jan 2026 18:31:29 -0700
-Message-ID: <20260115013129.598705-1-tim.bird@sony.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1768442729; c=relaxed/simple;
+	bh=QqRkRsY6W6cDg2r9/GWdrhfW8vG4bXD+1TOJ5m14h2g=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=r8DNsum1jv3J1we3aSnMC9SOyhhRY0Ysfaytq4uFq3xCjMM06BZBd+znHkVQq+T2iH4HqlmETDMDF9FB2Zj9K9w15J58LYpReOryICrMesnQl2M4O/OiHm9oJu7x8c+k0xFAB/0n2tjyGLGBqjmKG4XJo2czmgRhpmta56VzLEg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=jZxqloSK; arc=none smtp.client-ip=91.218.175.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1768442725;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=w1dVBa1uqlDFXUaBoOe7Sd2+L0eYTFhi+IVix/28bQU=;
+	b=jZxqloSKgyUDzuZg1j1fKmAHPfh1FMRvaNKyyrWZ7ay4YNtXzrQZuttKwi2O7oldR0RGlZ
+	0AXxMKOjnkawyarHbD2YiyDl8Iew528hfRXTZLk9QxG5guU8jkFvYCoKq+eGm8FX8F2/jh
+	5vjhjDZUd5d4OKvihEtCJb1XhyGqpnA=
+From: Menglong Dong <menglong.dong@linux.dev>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Menglong Dong <menglong8.dong@gmail.com>, ast@kernel.org,
+ andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+ eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, davem@davemloft.net, dsahern@kernel.org,
+ tglx@linutronix.de, mingo@redhat.com, jiang.biao@linux.dev, bp@alien8.de,
+ dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+ bpf@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v9 01/11] bpf: add fsession support
+Date: Thu, 15 Jan 2026 10:05:11 +0800
+Message-ID: <2815339.mvXUDI8C0e@7940hx>
+In-Reply-To:
+ <CAEf4Bza84H=FL-KxJEFAn6pFpVBQVnvrpif6_gtf_SWHH4pRJQ@mail.gmail.com>
+References:
+ <20260110141115.537055-1-dongml2@chinatelecom.cn> <3026834.e9J7NaK4W3@7940hx>
+ <CAEf4Bza84H=FL-KxJEFAn6pFpVBQVnvrpif6_gtf_SWHH4pRJQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - host2044.hostmonster.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - sony.com
-X-BWhitelist: no
-X-Source-IP: 66.118.46.62
-X-Source-L: No
-X-Exim-ID: 1vgCDI-000000033kt-3tTM
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: (timdesk..) [66.118.46.62]:34982
-X-Source-Auth: tim@bird.org
-X-Email-Count: 3
-X-Org: HG=bhshared_hm;ORG=bluehost;
-X-Source-Cap: YmlyZG9yZztiaXJkb3JnO2hvc3QyMDQ0Lmhvc3Rtb25zdGVyLmNvbQ==
-X-Local-Domain: no
-X-CMAE-Envelope: MS4xfBN7bYpJShXAq4sT1cX8tjtcUUr0Nwp+0qVbp8hu4UXcqz+HUxyepzB6qlIfoGxoN5sHVNcvP8WQoo9Tv/4NQ0iMKVTBx7cxEx307BLrOz385J0pKQui
- Bj3awii7tG1WOGBoK0E4UbulvOO+rwz2mLGx4BogSXYUSaEJsJ2TA3FLQEM+Wzhu57BReJYUjblkeqh6EXLJYHsp4daEh2XneR8=
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+X-Migadu-Flow: FLOW_OUT
 
-Add GPL-2.0 SPDX-License-Identifier lines to some files,
-and remove a reference to COPYING, and boilerplate warranty
-text, from offload.c.
+On 2026/1/15 02:56 Andrii Nakryiko <andrii.nakryiko@gmail.com> write:
+> On Tue, Jan 13, 2026 at 6:11=E2=80=AFPM Menglong Dong <menglong.dong@linu=
+x.dev> wrote:
+> >
+> > On 2026/1/14 09:22 Andrii Nakryiko <andrii.nakryiko@gmail.com> write:
+> > > On Sat, Jan 10, 2026 at 6:11=E2=80=AFAM Menglong Dong <menglong8.dong=
+@gmail.com> wrote:
+> > > >
+> > > > The fsession is something that similar to kprobe session. It allow =
+to
+> > > > attach a single BPF program to both the entry and the exit of the t=
+arget
+> > > > functions.
+> > > >
+> > [...]
+> > > > --- a/kernel/bpf/btf.c
+> > > > +++ b/kernel/bpf/btf.c
+> > > > @@ -6107,6 +6107,7 @@ static int btf_validate_prog_ctx_type(struct =
+bpf_verifier_log *log, const struct
+> > > >                 case BPF_TRACE_FENTRY:
+> > > >                 case BPF_TRACE_FEXIT:
+> > > >                 case BPF_MODIFY_RETURN:
+> > > > +               case BPF_TRACE_FSESSION:
+> > > >                         /* allow u64* as ctx */
+> > > >                         if (btf_is_int(t) && t->size =3D=3D 8)
+> > > >                                 return 0;
+> > > > @@ -6704,6 +6705,7 @@ bool btf_ctx_access(int off, int size, enum b=
+pf_access_type type,
+> > > >                         fallthrough;
+> > > >                 case BPF_LSM_CGROUP:
+> > > >                 case BPF_TRACE_FEXIT:
+> > > > +               case BPF_TRACE_FSESSION:
+> > >
+> > > According to the comment below we make this exception due to LSM.
+> > > FSESSION won't be using FSESSION programs, no? So this is not
+> > > necessary?
+> >
+> > The comment describe the LSM case here, but the code
+> > here is not only for LSM. It is also for FEXIT, which makes
+> > sure that we can get the return value with "ctx[nr_args]".
+> > So I think we still need it here, as we need to access the
+> > return value with "ctx[nr_args]" too.
+>=20
+> please update the comment then as well
 
-Signed-off-by: Tim Bird <tim.bird@sony.com>
----
- kernel/bpf/offload.c | 12 +-----------
- kernel/bpf/ringbuf.c |  1 +
- kernel/bpf/token.c   |  1 +
- 3 files changed, 3 insertions(+), 11 deletions(-)
+ACK
 
-diff --git a/kernel/bpf/offload.c b/kernel/bpf/offload.c
-index 42ae8d595c2c..227f9b5f388b 100644
---- a/kernel/bpf/offload.c
-+++ b/kernel/bpf/offload.c
-@@ -1,16 +1,6 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * Copyright (C) 2017-2018 Netronome Systems, Inc.
-- *
-- * This software is licensed under the GNU General License Version 2,
-- * June 1991 as shown in the file COPYING in the top-level directory of this
-- * source tree.
-- *
-- * THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM "AS IS"
-- * WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING,
-- * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-- * FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE
-- * OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME
-- * THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
-  */
- 
- #include <linux/bpf.h>
-diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
-index f6a075ffac63..35ae64ade36b 100644
---- a/kernel/bpf/ringbuf.c
-+++ b/kernel/bpf/ringbuf.c
-@@ -1,3 +1,4 @@
-+// SPDX-License-Identifier: GPL-2.0
- #include <linux/bpf.h>
- #include <linux/btf.h>
- #include <linux/err.h>
-diff --git a/kernel/bpf/token.c b/kernel/bpf/token.c
-index feecd8f4dbf9..7e4aa1e44b50 100644
---- a/kernel/bpf/token.c
-+++ b/kernel/bpf/token.c
-@@ -1,3 +1,4 @@
-+// SPDX-License-Identifier: GPL-2.0
- #include <linux/bpf.h>
- #include <linux/vmalloc.h>
- #include <linux/file.h>
--- 
-2.43.0
+>=20
+> >
+> > >
+
+
+
+
 
 
