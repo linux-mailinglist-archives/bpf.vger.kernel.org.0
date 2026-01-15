@@ -1,182 +1,247 @@
-Return-Path: <bpf+bounces-79148-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79149-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDBD7D286FA
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 21:36:16 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4819CD28804
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 21:45:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B04523016CFE
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 20:36:09 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 62FDB30AA006
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 20:45:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F2F5322B9E;
-	Thu, 15 Jan 2026 20:36:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 111C12E090B;
+	Thu, 15 Jan 2026 20:45:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fIWnB0F+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bBuKKmZZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56F4B2D9EEC
-	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 20:36:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768509367; cv=none; b=Itj/CqTr0yAICahRo5zgt+3SOGnCMvxgjqX71lHLCqgH6XS3/WwRg0Bxi9zhU2Ion4MxjtuHs86IM9V6fyN+2Gc7ug+5iiEfEwXqXbYCoqXQT+qFgqHbsDIwfT2wMyUrIDinhYYfypcFU7k2gEaRBxbN4rm5X+bpNSQ82Pd53NI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768509367; c=relaxed/simple;
-	bh=/zHe1NiH+CB6jspvR3U0E3fH4F1iosvN974W6nhFcvo=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ugrvog5tOWMKozL8Ydh7MMfoHaUFSRZdFYcks3iPEJa9x/G2mTLjJ07YLkyMWMK4FBZx06qmWus8bIQP7nWDCqKjBMXHECIq2VUGNBuD8pEzTjTP9GD5ldSUg/zM4dV+NC6p0NOzH0H7NJla+pI8A6W6e4ER1LltMVBeypkslpw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fIWnB0F+; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18E44324B1B
+	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 20:45:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.160.177
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768509911; cv=pass; b=hHtNLSCrr5b7T28aC2pVecaWJfLlByvI579GhRupu7Y8Hwh1pD5WvK9ixHwnNBZAKN+66BSMwotHIBoyITz5WMu/t2ImURGD+p2hyIGYVN9q302+nP8sVYslZPaYiAFEDdexEt5F7mdnpERE6yF/fTVwXNPzU/hF37qPgsrS+tY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768509911; c=relaxed/simple;
+	bh=tcBF4nuTdaJWQaR42nPx3uzp8aSI/YG/w0GCulHFaoE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GyuoMh0xIeUnKZ0DAUB43wjnIQXT6CX/U8jRO6HbGQg62ld89gQVohuR4aPq6IsnIYKPHFDyoGkPkUs/LoOmiEz1P83KoR9SnNHUg+J15AV4+EZgp3HdB2eFVz4oig2eD5Xb9FoDpYfLwoKay8A9whscl3mCwb2F10Wok8Qgeyc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bBuKKmZZ; arc=pass smtp.client-ip=209.85.160.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-81f5381d168so1221701b3a.2
-        for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 12:36:06 -0800 (PST)
+Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-501488a12cbso14294501cf.3
+        for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 12:45:08 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1768509908; cv=none;
+        d=google.com; s=arc-20240605;
+        b=LysuljvrlRAXwFl/6tpNXCBqG4YHO95keXuI0o0e0ktks7FcCf1FyX89lzQcm/zL54
+         e1L/jMwyYD6FWwB0Dnjymh9VifK+pMPmBqdjwvkjOX/pB9fNjPxdYANOU/NLxnJVWVPQ
+         cvGrKLsglNUzCKZeVBuq7h7prlWE62OmfvdKFXDd7tqWxUlqFwwz2FwNYYr/1Ht/wmtQ
+         dusW9a9/FEm4oNOwFEvrEmo7IQsfgDoPprtMrmI1uo6p2Wh2o8u/t2mlzGRyROH8E3U+
+         Y09zTeHKIYaweQhw22TF2Y6oMkGxxWHadT0tCMS5flwlXJQrEpaVFVzKXfojpmAukGAZ
+         aY4w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=x9DEwRAP+sPbYYatTSTzERFwiaou/pYxLbvlBBsfRQc=;
+        fh=LY7oqBy5mWCE9MF2YkNybZz+q0ciHzqtVEXL2CWoGDw=;
+        b=TJOx164XSeENoR7yCDJDoAbT78drJehpWMpocwrkXnUJMt712WsvHAqfis1O6MLLyY
+         x0VVdDWUUfN9y81azmpYnkk9An/i40tuQ/xmDbVTakDXMoZxHOb8RW+RNv+iNIpWr9do
+         1k8ApjaKe/ouiftvBBVyi7TXgRJc9pOMt0G3G2nF8bi+j3w0XwVAlQwLwXXbWVy48Q6U
+         6kEsih6aqqbxNZUfYjsyHyjjBxcMsdFxBASz62zcWcWQ1g4eMIdnePlOx6dMWgSnDxEX
+         akmr9uPzN/mApaLTRXyQGFnQxWsy5ySlEsd6CSUP3ak5a2s2amqUMc2gmzQMoNgzCI+L
+         ccVw==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768509366; x=1769114166; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=aJcRRhOt4b0PRJq+/EF853UWo45Ejl2CeOM5aKFXoE4=;
-        b=fIWnB0F+g3kgJ8JSUyGw1qArAmFafvoomNMM+ypyJcpBEH1Bjy8en1vyjbcfxgG7hI
-         /F1R1n4U+q8WBkvcnQx2sJiwcW8mfVSNPuJ5IpoRDnHBwo1FGRvcBCwHmsF/mFo1wawx
-         a8AST93kZBrWBSKj+NrRoU78515v0Nu6iMSRi38xCGcwcykD6bQCSl6/mKtx7HkDgftT
-         6se4gafehGwP2FDecod7baCc8H/8zsW5tL9xo0bvq+8gb1glQpjX5+kRKjJ6wJ/nDu/y
-         yq2pcODrYrWYFR4trQ9zeVGDdYC50fAHwl4qSgA5Jwv3W92OXAVjK7MF1sik44rxRNIG
-         /XFg==
+        d=gmail.com; s=20230601; t=1768509908; x=1769114708; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=x9DEwRAP+sPbYYatTSTzERFwiaou/pYxLbvlBBsfRQc=;
+        b=bBuKKmZZP772gozflj6kDvwAf1HpecxXghJkvdFTmFb8mJE8c0774HX7gURhcKwKRC
+         IB2r2aMiWocRvJLzdxHVAktajpPmeDd1Tq8LcGXA8GZsUjWdUwKGzCzOZ1hvpIDW1Mdx
+         OpNqr5iIUfU+EjkxBY/AK9MkbrqrYg8GqeeQb8u0yVU7S3uFFyzdBSnw9XjitcRZCR52
+         HTjAdc98Y7BGf97fFhG3s3B5JJYr0GKL168fqfrJ5WL6aCb3gbZZqVYD5GqbXsZwL5kx
+         +7AVjXXhvfFOYtA1CAnOqYIlKGNCfXyuO2S7YecZO8bHUDYHKsmFZKfdI6v+eol1hcG/
+         YUjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768509366; x=1769114166;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aJcRRhOt4b0PRJq+/EF853UWo45Ejl2CeOM5aKFXoE4=;
-        b=OCH1uLDseEQJy3ioXsTlk9XV8Rh1GvltE5aAk1eCM9GEF/0EyYpYezjBjb9t3/5LRc
-         3y9lmH0NzUsbPkCi5T6UMhJ9gb22XjYltPhaI9VE1xT9RZ1v/wnJjNt9sQUYLaEiWprl
-         t011TP8Qfi8PekyVpiiwPqAaECM3okNd50wqzhy7xGWntZQum8ciNQQ4ji5yG5gjAe2l
-         Ok1Sy1l2UtapBDiWr8HKHMoSyvwBpnFEK2S0kLNel4FGrGch+gykcz0b7V+Gn7EGFYbZ
-         zijmRWgbODg9L7Q5GdUiiavJq1Tpz9xq68hcxZivQIZEHSwk6XAHQ02ZTRs+KjLzvme5
-         zU+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCX5aVyEVuowMuEHGIoUl77PnCRsAPPmLZRaNYvDsOu7v6t9TKcUeEgTy872jACYvjk2+sg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwYOUa/dbLHyihyBKxD6rxoc9N4krGi6itRSARpEz+9WZwpdwyX
-	8KoI95Gb2DlmVXyw/u4UZYgE7tFwTcIG0uRsa72WHFcTPP61SYg3kqCf
-X-Gm-Gg: AY/fxX5UCesYtGmgZTRofl0PJJLUEX3BV+fFzv407EoCk9qFcf7QjaypjQvZxZoTajC
-	CDZkC343fP8oNO5AcUk8HwW7hEQ8RXKRGKQG8ZUfOmC0NJzPfjsGzVuWusg5pPMhwABEej672Wl
-	uhtFgr3VELFmGCTN3INzd6CN2C88c3P4eCBvaaJG12jWoS++1iDJ07MlkIMdgPlYvwRqGXo8nmJ
-	AoET7w+SsDytmt58lRor3NUyJRm45rlC+5ITy3TX9dRcWuDfw7S+7+swk5YhWmpKxMSs7Jxxkn7
-	aA77zCqLdEp1T+FntwHPRP3eYqiipHlm+x2TlwenBKd/j5KmUFzHTbxSsqltZTsGTYOaj//735V
-	8tDJz57aW/C42KSV1oujOt4zyDRZiW0ZXd0tt1hAxPCvX/ZGXXcUOhU/364p6rCqql8hthEWPx3
-	R6Fj6BPoYnE75sS17Kw/mGlO+WVH6dl/EUI1YITx3G
-X-Received: by 2002:a05:6a21:6da6:b0:361:1cef:c39b with SMTP id adf61e73a8af0-38dfe76e2ffmr893133637.45.1768509365581;
-        Thu, 15 Jan 2026 12:36:05 -0800 (PST)
-Received: from [192.168.0.226] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c5edf24dd20sm272655a12.14.2026.01.15.12.36.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jan 2026 12:36:05 -0800 (PST)
-Message-ID: <fe21bddcc1c46ecd18a28cf76db4de78c5ef314e.camel@gmail.com>
-Subject: Re: [PATCH] bpf/verifier: optimize ID mapping reset in states_equal
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: wujing <realwujing@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>,  Hao Luo <haoluo@google.com>, Jiri
- Olsa <jolsa@kernel.org>, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Qiliang Yuan <yuanql9@chinatelecom.cn>
-Date: Thu, 15 Jan 2026 12:36:02 -0800
-In-Reply-To: <20260115144946.439069-1-realwujing@gmail.com>
-References: <20260115144946.439069-1-realwujing@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.58.2 (3.58.2-1.fc43) 
+        d=1e100.net; s=20230601; t=1768509908; x=1769114708;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=x9DEwRAP+sPbYYatTSTzERFwiaou/pYxLbvlBBsfRQc=;
+        b=j5/vkgIDz0rMgJj4oTnuymKu6bEBNLLsDT3iEwMYLEvg37KjnVFT/Kjl905FAWDZ/e
+         eynCe/Cr/unDwMKusifLbtMUAFtXoYyTF3zrZZ6O+EBSDLTMKshQmbKaZXdAAZdddRFA
+         MbOryRYReM3uXtGgfNQN3TggPyLpwSoqg+09kuZhShLhSV/nRiomzh6Jb2bJsHopgHyr
+         IaaR3pN/f6mG8VstisbDMZM/qq08Yjb5XGONKnyBe5s98L/6dPBR5zbQj3I6aQg41w4O
+         UoUBqpttzIhkWKzMTYkqhPQw7D+bWISW8Q/0/KajZDhiWSQeM9yK0cYiUBA1f0cLTRvw
+         RdFQ==
+X-Gm-Message-State: AOJu0YyAy8vUXj/zuFFN4AOrhHWu9UNVce/6hbfU9JPCj1y+SPeXgcrr
+	Sw+5stAFDfw5K72aZmaseCVW84tZjgTXqgqMQL2HQqnVFnUkfzM7s+dRmOZcBr5J+aQkPlLg+Tq
+	MUGyMlCvSy2r4+k34usVM1feZn+U/ZLE=
+X-Gm-Gg: AY/fxX7SPbXbCG02mg2BTaI568wbkRetUlkLk2NW8h0+6FLroNnnmiEUk10PlUBzIZK
+	KdxZorjTuD6IrBbKkBFaeNCihJauI+CXO6nLdjqSKXJ5ssOHxoOBjle9DtSs7PNGN18CbOSvp01
+	0gN2y8h2obONdCa1L0CWh4Um+Q0Gb8FXQG7vXYf434fZUDimQMAYBx4lFXbO6u19GmFqrkQ+2gs
+	ulzEK+EsChBJxpX2/uxTjAo5un3w0PKFXEKZFWECP+NzjU469PdQkxHj+kUIIxlBKLEV5E=
+X-Received: by 2002:a05:622a:134a:b0:501:4528:27ca with SMTP id
+ d75a77b69052e-502a1714fbamr12445591cf.51.1768509908001; Thu, 15 Jan 2026
+ 12:45:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <CAK3+h2yu+XkEMWz6FOHiDEEQw-G_iKG2KHP=F=1CiqLr0mCgNA@mail.gmail.com>
+ <d299d7ba-4e9e-5b16-5aa4-898b62330c24@loongson.cn>
+In-Reply-To: <d299d7ba-4e9e-5b16-5aa4-898b62330c24@loongson.cn>
+From: Vincent Li <vincent.mc.li@gmail.com>
+Date: Thu, 15 Jan 2026 12:44:56 -0800
+X-Gm-Features: AZwV_QgjP2j9fiM1bbWupGQo0ZtEscx6nLExKs_juGAOHx-xoENEcocgTyDsmsA
+Message-ID: <CAK3+h2yFJDNVPo=38PcYCMNhmw0cQBouL5h7sX0KmyLu-_5zwQ@mail.gmail.com>
+Subject: Re: [BUG?]: bpf/selftests: ns_bpf_qdisc libbpf: loading object
+ 'tc_bpf' from buffer
+To: Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc: bpf <bpf@vger.kernel.org>, loongarch@lists.linux.dev, ast <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, Hengqi Chen <hengqi.chen@gmail.com>, 
+	Chenghao Duan <duanchenghao@kylinos.cn>, Huacai Chen <chenhuacai@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2026-01-15 at 22:49 +0800, wujing wrote:
-> The verifier uses an ID mapping table (struct bpf_idmap) during state
-> equivalence checks. Currently, reset_idmap_scratch performs a full memset
-> on the entire map in every call.
->=20
-> The table size is exactly 4800 bytes (approx. 4.7KB), calculated as:
-> - MAX_BPF_REG =3D 11
-> - MAX_BPF_STACK =3D 512
-> - BPF_REG_SIZE =3D 8
-> - MAX_CALL_FRAMES =3D 8
-> - BPF_ID_MAP_SIZE =3D (11 + 512 / 8) * 8 =3D 600 entries
-> - Each entry (struct bpf_id_pair) is 8 bytes (two u32 fields)
-> - Total size =3D 600 * 8 =3D 4800 bytes
->=20
-> For complex programs with many pruning points, this constant large memset
-> introduces significant CPU overhead and cache pressure, especially when
-> only a few IDs are actually used.
->=20
-> This patch optimizes the reset logic by:
-> 1. Adding 'map_cnt' to bpf_idmap to track used slots.
-> 2. Updating 'map_cnt' in check_ids to record the high-water mark.
-> 3. Making reset_idmap_scratch perform a partial memset based on 'map_cnt'=
-.
->=20
-> This improves pruning performance and reduces redundant memory writes.
->=20
-> Signed-off-by: wujing <realwujing@gmail.com>
-                 ^^^^^^
-		 Please use your full name.
-> Signed-off-by: Qiliang Yuan <yuanql9@chinatelecom.cn>
-> ---
+On Wed, Jan 14, 2026 at 5:13=E2=80=AFPM Tiezhu Yang <yangtiezhu@loongson.cn=
+> wrote:
+>
+> On 2026/1/2 =E4=B8=8A=E5=8D=882:26, Vincent Li wrote:
+> > Hi,
+> >
+> > I used AI to enhance my message, hope it helps :)
+> >
+> > I am reporting test failures observed while running BPF selftests on a
+> > LoongArch machine. Both the ns_bpf_qdisc and xdp_synproxy tests
+> > exhibit WATCHDOG timeouts and eventual failures. The issue appears
+> > architecture-specific but I am not sure.
+> >
+> > Issue Summary:
+> > When building and running 6.19.0-rc3 BPF selftests on a LoongArch machi=
+ne:
+> >
+> > The "ns_bpf_qdisc/attach to mq" test fails with a WATCHDOG timeout
+> > after 120 seconds, followed by SIGSEGV.
+>
+> ...
+>
+> > Are these two test failures (ns_bpf_qdisc and xdp_synproxy) related,
+> > given they both show similar timeout patterns?
+> >
+> > Environment:
+> >
+> > Kernel: 6.19.0-rc3
+> >
+> > Architecture: LoongArch
+> >
+> > Test Command: ./test_progs -t ns_bpf_qdisc
+>
+> Tested with the latest 6.19-rc5, the testcase passed on LoongArch.
+>
+> 1. Here are the test results:
+>
+> $ sudo ./test_progs -t ns_bpf_qdisc
+> Warning: sch_htb: quantum of class 10001 is small. Consider r2q change.
+> #219/1   ns_bpf_qdisc/fifo:OK
+> #219/2   ns_bpf_qdisc/fq:OK
+> #219/3   ns_bpf_qdisc/attach to mq:OK
+> #219/4   ns_bpf_qdisc/attach to non root:OK
+> #219/5   ns_bpf_qdisc/incompl_ops:OK
+> #219     ns_bpf_qdisc:OK
+> Summary: 1/5 PASSED, 0 SKIPPED, 0 FAILED
+>
+> 2. Here are the toolchains:
+>
+> $ clang --version | head -1
+> clang version 21.1.8 (https://github.com/llvm/llvm-project.git
+> 2078da43e25a4623cab2d0d60decddf709aaea28)
+> $ gcc --version | head -1
+> gcc (GCC) 16.0.0 20260105 (experimental)
+> $ as --version | head -1
+> GNU assembler (GNU Binutils) 2.45.50.20260105
+> $ pahole --version
+> v1.31
+>
+> 3. Here are the test steps:
+>
+> (1) Compile and update kernel
+>
+> cd linux.git
+> make mrproper defconfig -j"$(nproc)"
+>
+> scripts/config -e FTRACE -e FUNCTION_TRACER -e DYNAMIC_FTRACE \
+> -e FTRACE_SYSCALLS -e FPROBE -e BPF_LSM -e DEBUG_ATOMIC_SLEEP \
+> -e KPROBES -e FUNCTION_ERROR_INJECTION -e BPF_KPROBE_OVERRIDE \
+> -e DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT -e DEBUG_INFO_BTF \
+> -m TEST_BPF -d BPF_UNPRIV_DEFAULT_OFF -d ARCH_STRICT_ALIGN \
+> -e NET_SCH_BPF -e NET_SCH_HTB -e DIBS -e DIBS_LO -e SMC \
+> -e SMC_HS_CTRL_BPF --set-val RCU_CPU_STALL_TIMEOUT 60
+>
+> make olddefconfig all -j"$(nproc)"
+> sudo make modules_install -j"$(nproc)"
+> sudo make install -j"$(nproc)"
+> sudo reboot
+>
+> (2) Compile and test bpf
+>
+> cd linux.git
+> cd tools/testing/selftests/bpf && make
+> sudo ./test_progs -t ns_bpf_qdisc
+>
+> Thanks,
+> Tiezhu
+>
 
-I think this is an ok change.
-Could you please collect some stats using 'perf stat' for some big selftest=
-?
+Here is my toolchain version
 
->  include/linux/bpf_verifier.h |  1 +
->  kernel/bpf/verifier.c        | 10 ++++++++--
->  2 files changed, 9 insertions(+), 2 deletions(-)
->=20
-> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-> index 130bcbd66f60..562f7e63be29 100644
-> --- a/include/linux/bpf_verifier.h
-> +++ b/include/linux/bpf_verifier.h
-> @@ -692,6 +692,7 @@ struct bpf_id_pair {
-> =20
->  struct bpf_idmap {
->  	u32 tmp_id_gen;
-> +	u32 map_cnt;
->  	struct bpf_id_pair map[BPF_ID_MAP_SIZE];
->  };
-> =20
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 37ce3990c9ad..6220dde41107 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -18954,6 +18954,7 @@ static bool check_ids(u32 old_id, u32 cur_id, str=
-uct bpf_idmap *idmap)
->  			/* Reached an empty slot; haven't seen this id before */
->  			map[i].old =3D old_id;
->  			map[i].cur =3D cur_id;
-> +			idmap->map_cnt =3D i + 1;
->  			return true;
->  		}
->  		if (map[i].old =3D=3D old_id)
-> @@ -19471,8 +19472,13 @@ static bool func_states_equal(struct bpf_verifie=
-r_env *env, struct bpf_func_stat
-> =20
->  static void reset_idmap_scratch(struct bpf_verifier_env *env)
->  {
-> -	env->idmap_scratch.tmp_id_gen =3D env->id_gen;
-> -	memset(&env->idmap_scratch.map, 0, sizeof(env->idmap_scratch.map));
-> +	struct bpf_idmap *idmap =3D &env->idmap_scratch;
-> +
-> +	idmap->tmp_id_gen =3D env->id_gen;
-> +	if (idmap->map_cnt) {
+[root@fedora gcc]# clang --version
+clang version 21.1.5
+Target: loongarch64-redhat-linux
+Thread model: posix
+InstalledDir: /usr/bin
 
-Nit: this condition is not really necessary.
+[root@fedora gcc]# pahole --version
+v1.31
 
-> +		memset(idmap->map, 0, idmap->map_cnt * sizeof(struct bpf_id_pair));
-> +		idmap->map_cnt =3D 0;
-> +	}
->  }
-> =20
->  static bool states_equal(struct bpf_verifier_env *env,
+[root@fedora gcc]# gcc --version
+gcc (GCC) 14.2.1 20241104 (Red Hat 14.2.1-6)
+
+[root@fedora gcc]# as --version
+GNU assembler version 2.42.50.20240531
+
+I repeated the same steps from above you mentioned with the same
+kernel config and ran into the same issue.
+
+I attempted to update gcc by compiling with ./configure
+--prefix-/usr/local; make; but ran into problem with
+
+checking for loongarch64-unknown-linux-gnu-gcc...
+/usr/src/gcc/host-loongarch64-unknown-linux-gnu/gcc/xgcc
+-B/usr/src/gcc/host-loongarch64-unknown-linux-gnu/gcc/
+-B/usr/local/loongarch64-unknown-linux-gnu/bin/
+-B/usr/local/loongarch64-unknown-linux-gnu/lib/ -isystem
+/usr/local/loongarch64-unknown-linux-gnu/include -isystem
+/usr/local/loongarch64-unknown-linux-gnu/sys-include -fmultiflags
+-fno-checking
+checking whether the C compiler works... no
+configure: error: in `/usr/src/gcc/loongarch64-unknown-linux-gnu/libgomp':
+configure: error: C compiler cannot create executables
+See `config.log' for more details.
+
+Do you have proper instructions to compile gcc?
+
+I am not sure if it is toolchain related. The thing that really
+bothered me is why the hell tc_bpf is loaded by libbpf for
+ns_bpf_qdisc selftests that seems to have nothing to do with the
+tc_bpf object, I can't think of anything special in my build machine
+that would trigger this. Anyway, thanks for the help!
+
+Vincent
 
