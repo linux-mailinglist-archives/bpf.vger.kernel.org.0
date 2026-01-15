@@ -1,88 +1,225 @@
-Return-Path: <bpf+bounces-79054-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79055-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98010D24BED
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 14:33:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id ABA81D24D45
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 14:54:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5A70330B2103
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 13:28:33 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4C1CB3044854
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 13:53:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DA2E39E6DD;
-	Thu, 15 Jan 2026 13:28:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD8443A0E93;
+	Thu, 15 Jan 2026 13:53:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="BGvS6CKB";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0i6hcDdq";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="BGvS6CKB";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0i6hcDdq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mailer.gwdg.de (mailer.gwdg.de [134.76.10.26])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5BA618DB01
-	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 13:28:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.76.10.26
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D751532B9B4
+	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 13:53:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768483712; cv=none; b=DcOLbhBYmiG8QumXdqjcAczXVO0AL0diNnTgGmN+WLw3Hs6ZUIDeSHMfEn0iUUXj+e/PGJGSJNrBPi5DDeWBRJPvCbWRwu/dZot+Fnnm6zs9jO4WjHNx0YAIdtVJ7hi6uHsWsn4ZRnS3OjCxcBDakNhroFavqMHw80vwezMrn0U=
+	t=1768485220; cv=none; b=HYEKJrNHwqkzpLAuuQ6mrsxS+DpM48c9IGo4z/7vegJw0nuVvC8KmH+BnEbk7PRDLdj78lTOp7J/Vu0iDluCPM21k1QM2/7IlJVGyMAv2+xiQgW71JYacnEauNPuRLjntobAZs9NRiW3kPjtH7p5e0YTTq5/EwPpqbWgmn3Ls1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768483712; c=relaxed/simple;
-	bh=HbHo0I8lv/Mti2wo+z53uNWSoWXplnKDPJaQi7jteh8=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=fF5su7uVwEv7lMHDp/EztE595B4S2m5IYc0lBkIRmhzChd/TPpanqzY39GczFG3H/y2Hpnm3YBc01S+VrP7QbklYglGZVKJY1X7RSgyyqZenXYih5CfPokX8iDsO8sBIhTxxExEzHycsYH3skx30zWgZoKG2NmkZJpKbwyqIu0c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cispa.de; spf=pass smtp.mailfrom=cispa.de; arc=none smtp.client-ip=134.76.10.26
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cispa.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cispa.de
-Received: from mbx19-sub-05.um.gwdg.de ([10.108.142.70] helo=email.gwdg.de)
-	by mailer.gwdg.de with esmtps (TLS1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-	(GWDG Mailer)
-	(envelope-from <lukas.gerlach@cispa.de>)
-	id 1vgNAY-000WhK-0w;
-	Thu, 15 Jan 2026 14:13:46 +0100
-Received: from Mac.lan (10.250.9.200) by MBX19-SUB-05.um.gwdg.de
- (10.108.142.70) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.2562.35; Thu, 15 Jan
- 2026 14:13:45 +0100
-From: Lukas Gerlach <lukas.gerlach@cispa.de>
-To: <pjw@kernel.org>
-CC: <ast@kernel.org>, <bjorn@kernel.org>, <bpf@vger.kernel.org>,
-	<daniel.weber@cispa.de>, <daniel@iogearbox.net>, <ganboing@gmail.com>,
-	<jo.vanbulck@kuleuven.be>, <linux-riscv@lists.infradead.org>,
-	<luis.gerhorst@fau.de>, <lukas.gerlach@cispa.de>, <luke.r.nels@gmail.com>,
-	<marton.bognar@kuleuven.be>, <michael.schwarz@cispa.de>,
-	<palmer@dabbelt.com>, <tech-speculation-barriers@lists.riscv.org>,
-	<xi.wang@gmail.com>
-Subject: Re: [PATCH] riscv, bpf: Emit fence.i for BPF_NOSPEC
-Date: Thu, 15 Jan 2026 14:13:39 +0100
-Message-ID: <20260115131339.16372-1-lukas.gerlach@cispa.de>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <65f1b958-e420-c517-9a60-86f9085de702@kernel.org>
-References: <65f1b958-e420-c517-9a60-86f9085de702@kernel.org>
+	s=arc-20240116; t=1768485220; c=relaxed/simple;
+	bh=+hwL7zHKTL4vECX3lF8PK3FvM1g150srLLkK6xuyIuw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Bc0ceMvF9jfBuVqiDPViUHh/1cRlnlNtVWLlYie2GOj/qfpTDW/GoyFHBXjj4Lkg/EK+gSB9ycdkaL76F3NRfyj89iad6Sk0KuGjfyra6YqDsQF66Bo+NkaqLUX6lpYndBwiLyu8WXfgz8xHhIdPTE+o8waxobGpeS4pjVR8sIg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=BGvS6CKB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0i6hcDdq; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=BGvS6CKB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0i6hcDdq; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 2D2535BCDE;
+	Thu, 15 Jan 2026 13:53:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1768485217; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=T6ReUDa8OO9JhozmVpJl2INs7RyRAxlBOkfOTzlca2k=;
+	b=BGvS6CKBxykqWxnxPbblt4fcLzBnTqHy0PO+2o+x8BJ8lHTjvZR4mccehwZZycNZXhZ3+t
+	96Xi4R9LcRH4/mGJ25xYKQr7ppsqiU6kIiBezYKOHMq5c6p2X4WqL0+HVR5qbAcwBPfWFb
+	lznVEwdq4tWXoOrZ2cd/cB7cxZpBxFU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1768485217;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=T6ReUDa8OO9JhozmVpJl2INs7RyRAxlBOkfOTzlca2k=;
+	b=0i6hcDdqMW1dnPXUN04/qK0mRx6YE16ZZv4+SLn4ktdd28hdoSGfcZEWJZAkajcaXl3mJa
+	lNnDtJwaU81se1Dw==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1768485217; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=T6ReUDa8OO9JhozmVpJl2INs7RyRAxlBOkfOTzlca2k=;
+	b=BGvS6CKBxykqWxnxPbblt4fcLzBnTqHy0PO+2o+x8BJ8lHTjvZR4mccehwZZycNZXhZ3+t
+	96Xi4R9LcRH4/mGJ25xYKQr7ppsqiU6kIiBezYKOHMq5c6p2X4WqL0+HVR5qbAcwBPfWFb
+	lznVEwdq4tWXoOrZ2cd/cB7cxZpBxFU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1768485217;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=T6ReUDa8OO9JhozmVpJl2INs7RyRAxlBOkfOTzlca2k=;
+	b=0i6hcDdqMW1dnPXUN04/qK0mRx6YE16ZZv4+SLn4ktdd28hdoSGfcZEWJZAkajcaXl3mJa
+	lNnDtJwaU81se1Dw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0D9363EA63;
+	Thu, 15 Jan 2026 13:53:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id kNb/AmHxaGkrRQAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Thu, 15 Jan 2026 13:53:37 +0000
+Message-ID: <3aa7a303-677d-4ef5-8df1-b3c0fdfcc787@suse.cz>
+Date: Thu, 15 Jan 2026 14:53:36 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: MBX19-FMZ-05.um.gwdg.de (10.108.142.64) To
- MBX19-SUB-05.um.gwdg.de (10.108.142.70)
-X-Spam-Level: -
-X-Virus-Scanned: (clean) by clamav
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC v2 09/20] slab: remove cpu (partial) slabs usage from
+ allocation paths
+Content-Language: en-US
+To: Hao Li <hao.li@linux.dev>
+Cc: Harry Yoo <harry.yoo@oracle.com>, Petr Tesarik <ptesarik@suse.com>,
+ Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Uladzislau Rezki <urezki@gmail.com>,
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+ Suren Baghdasaryan <surenb@google.com>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Alexei Starovoitov <ast@kernel.org>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, linux-rt-devel@lists.linux.dev,
+ bpf@vger.kernel.org, kasan-dev@googlegroups.com
+References: <20260112-sheaves-for-all-v2-0-98225cfb50cf@suse.cz>
+ <20260112-sheaves-for-all-v2-9-98225cfb50cf@suse.cz>
+ <3k4wy7gavxczpqn63jt66423fqa3wvdztigvbmejbvcpbr7ld2@fbylldpeuvgi>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
+ KxRWDHX0R2tgpFDXHnzZcQywawu8eSq0LxzxFNYMvtB7sV1pxYwej2qx9B75qW2plBs+7+YB
+ 87tMFA+u+L4Z5xAzIimfLD5EKC56kJ1CsXlM8S/LHcmdD9Ctkn3trYDNnat0eoAcfPIP2OZ+
+ 9oe9IF/R28zmh0ifLXyJQQz5ofdj4bPf8ecEW0rhcqHfTD8k4yK0xxt3xW+6Exqp9n9bydiy
+ tcSAw/TahjW6yrA+6JhSBv1v2tIm+itQc073zjSX8OFL51qQVzRFr7H2UQG33lw2QrvHRXqD
+ Ot7ViKam7v0Ho9wEWiQOOZlHItOOXFphWb2yq3nzrKe45oWoSgkxKb97MVsQ+q2SYjJRBBH4
+ 8qKhphADYxkIP6yut/eaj9ImvRUZZRi0DTc8xfnvHGTjKbJzC2xpFcY0DQbZzuwsIZ8OPJCc
+ LM4S7mT25NE5kUTG/TKQCk922vRdGVMoLA7dIQrgXnRXtyT61sg8PG4wcfOnuWf8577aXP1x
+ 6mzw3/jh3F+oSBHb/GcLC7mvWreJifUL2gEdssGfXhGWBo6zLS3qhgtwjay0Jl+kza1lo+Cv
+ BB2T79D4WGdDuVa4eOrQ02TxqGN7G0Biz5ZLRSFzQSQwLn8fbwARAQABzSBWbGFzdGltaWwg
+ QmFia2EgPHZiYWJrYUBzdXNlLmN6PsLBlAQTAQoAPgIbAwULCQgHAwUVCgkICwUWAgMBAAIe
+ AQIXgBYhBKlA1DSZLC6OmRA9UCJPp+fMgqZkBQJnyBr8BQka0IFQAAoJECJPp+fMgqZkqmMQ
+ AIbGN95ptUMUvo6aAdhxaOCHXp1DfIBuIOK/zpx8ylY4pOwu3GRe4dQ8u4XS9gaZ96Gj4bC+
+ jwWcSmn+TjtKW3rH1dRKopvC07tSJIGGVyw7ieV/5cbFffA8NL0ILowzVg8w1ipnz1VTkWDr
+ 2zcfslxJsJ6vhXw5/npcY0ldeC1E8f6UUoa4eyoskd70vO0wOAoGd02ZkJoox3F5ODM0kjHu
+ Y97VLOa3GG66lh+ZEelVZEujHfKceCw9G3PMvEzyLFbXvSOigZQMdKzQ8D/OChwqig8wFBmV
+ QCPS4yDdmZP3oeDHRjJ9jvMUKoYODiNKsl2F+xXwyRM2qoKRqFlhCn4usVd1+wmv9iLV8nPs
+ 2Db1ZIa49fJet3Sk3PN4bV1rAPuWvtbuTBN39Q/6MgkLTYHb84HyFKw14Rqe5YorrBLbF3rl
+ M51Dpf6Egu1yTJDHCTEwePWug4XI11FT8lK0LNnHNpbhTCYRjX73iWOnFraJNcURld1jL1nV
+ r/LRD+/e2gNtSTPK0Qkon6HcOBZnxRoqtazTU6YQRmGlT0v+rukj/cn5sToYibWLn+RoV1CE
+ Qj6tApOiHBkpEsCzHGu+iDQ1WT0Idtdynst738f/uCeCMkdRu4WMZjteQaqvARFwCy3P/jpK
+ uvzMtves5HvZw33ZwOtMCgbpce00DaET4y/UzsBNBFsZNTUBCACfQfpSsWJZyi+SHoRdVyX5
+ J6rI7okc4+b571a7RXD5UhS9dlVRVVAtrU9ANSLqPTQKGVxHrqD39XSw8hxK61pw8p90pg4G
+ /N3iuWEvyt+t0SxDDkClnGsDyRhlUyEWYFEoBrrCizbmahOUwqkJbNMfzj5Y7n7OIJOxNRkB
+ IBOjPdF26dMP69BwePQao1M8Acrrex9sAHYjQGyVmReRjVEtv9iG4DoTsnIR3amKVk6si4Ea
+ X/mrapJqSCcBUVYUFH8M7bsm4CSxier5ofy8jTEa/CfvkqpKThTMCQPNZKY7hke5qEq1CBk2
+ wxhX48ZrJEFf1v3NuV3OimgsF2odzieNABEBAAHCwXwEGAEKACYCGwwWIQSpQNQ0mSwujpkQ
+ PVAiT6fnzIKmZAUCZ8gcVAUJFhTonwAKCRAiT6fnzIKmZLY8D/9uo3Ut9yi2YCuASWxr7QQZ
+ lJCViArjymbxYB5NdOeC50/0gnhK4pgdHlE2MdwF6o34x7TPFGpjNFvycZqccSQPJ/gibwNA
+ zx3q9vJT4Vw+YbiyS53iSBLXMweeVV1Jd9IjAoL+EqB0cbxoFXvnjkvP1foiiF5r73jCd4PR
+ rD+GoX5BZ7AZmFYmuJYBm28STM2NA6LhT0X+2su16f/HtummENKcMwom0hNu3MBNPUOrujtW
+ khQrWcJNAAsy4yMoJ2Lw51T/5X5Hc7jQ9da9fyqu+phqlVtn70qpPvgWy4HRhr25fCAEXZDp
+ xG4RNmTm+pqorHOqhBkI7wA7P/nyPo7ZEc3L+ZkQ37u0nlOyrjbNUniPGxPxv1imVq8IyycG
+ AN5FaFxtiELK22gvudghLJaDiRBhn8/AhXc642/Z/yIpizE2xG4KU4AXzb6C+o7LX/WmmsWP
+ Ly6jamSg6tvrdo4/e87lUedEqCtrp2o1xpn5zongf6cQkaLZKQcBQnPmgHO5OG8+50u88D9I
+ rywqgzTUhHFKKF6/9L/lYtrNcHU8Z6Y4Ju/MLUiNYkmtrGIMnkjKCiRqlRrZE/v5YFHbayRD
+ dJKXobXTtCBYpLJM4ZYRpGZXne/FAtWNe4KbNJJqxMvrTOrnIatPj8NhBVI0RSJRsbilh6TE
+ m6M14QORSWTLRg==
+In-Reply-To: <3k4wy7gavxczpqn63jt66423fqa3wvdztigvbmejbvcpbr7ld2@fbylldpeuvgi>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -4.30
+X-Spamd-Result: default: False [-4.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FREEMAIL_CC(0.00)[oracle.com,suse.com,gentwo.org,google.com,linux.dev,linux-foundation.org,gmail.com,linutronix.de,kernel.org,kvack.org,vger.kernel.org,lists.linux.dev,googlegroups.com];
+	RCPT_COUNT_TWELVE(0.00)[17];
+	RCVD_TLS_ALL(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid]
+X-Spam-Level: 
+X-Spam-Flag: NO
 
-Thanks for the discussion.
+On 1/14/26 07:07, Hao Li wrote:
+>> @@ -4836,68 +4558,31 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
+>>  	if (IS_ENABLED(CONFIG_SLUB_TINY) || kmem_cache_debug(s)) {
+>>  		freelist = alloc_single_from_new_slab(s, slab, orig_size, gfpflags);
+>>  
+>> -		if (unlikely(!freelist)) {
+>> -			/* This could cause an endless loop. Fail instead. */
+>> -			if (!allow_spin)
+>> -				return NULL;
+>> -			goto new_objects;
+>> +		if (likely(freelist)) {
+>> +			goto success;
+>>  		}
+>> +	} else {
+>> +		alloc_from_new_slab(s, slab, &freelist, 1, allow_spin);
+> 
+> IIUC, when CONFIG_SLUB_DEBUG is enabled, each successful new_slab() call
+> should have a matching inc_slabs_node(), since __kmem_cache_shutdown()
+> rely on the accounting done by inc_slabs_node(). Here
+> alloc_single_from_new_slab() does call inc_slabs_node(), but
+> alloc_from_new_slab() doesn't. Could this mismatch cause any issues?
 
-I agree with Paul that waiting for the TG to complete is not practical
-given the timeline. There are vulnerable cores in silicon now.
+Great spot, thanks a lot! Yes we should do inc_slabs_node() here.
 
-On fence.i's effectiveness: Stefan and Ved are correct that it only
-architecturally guarantees a retirement barrier. However, we tested
-fence.i on C910/C920 and P550 and found it does prevent Spectre-PHT
-attacks on these cores because they drain the pipeline.
-
-On performance: on the cores we tested, fence.i flushes the instruction
-cache, so the overhead is significant. The barrier should be configurable
-per-microarchitecture. In-order cores like U74 and C906 are not vulnerable
-and don't need it.
-
-More broadly, getting selectable per-microarchitecture mitigations in
-place for RISC-V now seems valuable. Implementations vary significantly
-and will likely need different mitigation strategies going forward.
-
-Lukas
+>>  
+>> -		if (s->flags & SLAB_STORE_USER)
+>> -			set_track(s, freelist, TRACK_ALLOC, addr,
+>> -				  gfpflags & ~(__GFP_DIRECT_RECLAIM));
+>> -
+>> -		return freelist;
+>> -	}
+>> -
+>> -	/*
+>> -	 * No other reference to the slab yet so we can
+>> -	 * muck around with it freely without cmpxchg
+>> -	 */
+>> -	freelist = slab->freelist;
+>> -	slab->freelist = NULL;
+>> -	slab->inuse = slab->objects;
+>> -	slab->frozen = 1;
+>> -
 
