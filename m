@@ -1,170 +1,175 @@
-Return-Path: <bpf+bounces-79104-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79105-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 311D1D273E4
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 19:13:48 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 278B3D27651
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 19:22:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 54D063021948
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 18:02:14 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 151C430A66BD
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 18:07:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25C233D5221;
-	Thu, 15 Jan 2026 17:53:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FD0C3D7D84;
+	Thu, 15 Jan 2026 17:58:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nAvR6Kv+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fXWMH5xT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f68.google.com (mail-wr1-f68.google.com [209.85.221.68])
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 124803C0093
-	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 17:53:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C6083D348C
+	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 17:58:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768499600; cv=none; b=MsxBQSQLrwOyYXe3qhAjUO1uK/CHCO0m3bG3ch+jjagQA4+ZvH5rPdfdIVsDVXS62e4xVGrukcA7wu6SDOWPH2Ftc8LYeFKHSxQxWE4RSM7JhokFK9inJIV951DLMjVEAXw7yzO1voDpL1nRgthj3QFJveOdxuZVjYeg43Hsun8=
+	t=1768499927; cv=none; b=KPKDj4X0xx4fCGXEhZHlC2tSNNjm+/di8bYQ+O0E+9pUIAKYWUpbFz5/vS//FNcqJbafN7/1dcXLMkrpxDxRv00eJMrDb5TlCbNi4KPn8tNQd95CT52r4Gd/Rmcf65GBYIC39vO6/gNtJwM6Fgt+rqylkKm7SXLyvaMucCYnhHI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768499600; c=relaxed/simple;
-	bh=nPG5yXJfz2Agy5znRvAPxsl9vqeLh4ZpWqffckBOuj8=;
+	s=arc-20240116; t=1768499927; c=relaxed/simple;
+	bh=wiWpCBlo8csBanFpP1T8JWd5VmZQnlI4yTdQ7wyvXQo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YJROvnJYl+8nOckfPCYPfl4mJvh1mBh50bm88FGEdXsZiqnelajSSrV1CA5vqu6omSFUTynYPg24EAj/JhSxoLuIn+32xxyAMYsC1LE/IoUmnQ+yaSnSmMxxnm16rfNMDGF4XdfTxI+urbW2hvP69H27/WQQU4FTcZ1dlumNhRo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nAvR6Kv+; arc=none smtp.client-ip=209.85.221.68
+	 To:Cc:Content-Type; b=dQI0NUDQXbyn97XdwhctUecFmyG4GI1GP7WTZiZ2bNqD1RIRpYl9OXQ1kaad5rA0TXWRldXsGQvkfxwIXOEzWQ24t2VX72WdXE1mT2IKkxGHteaT3gTbWrNrsc0pfC/JMWSKF+zKkRIlkgslVhDm39zkjkYepEgh52WT64u8RBA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fXWMH5xT; arc=none smtp.client-ip=209.85.214.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f68.google.com with SMTP id ffacd0b85a97d-4327555464cso678813f8f.1
-        for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 09:53:18 -0800 (PST)
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2a3e76d0f64so11479005ad.1
+        for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 09:58:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768499597; x=1769104397; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=4mMVo9S2RYUGlBhey+x1Qw17Bc3i8C5ddylnQrDDufU=;
-        b=nAvR6Kv++S5V0G5ouzkjOA8WooSfhQ/hFNWeZv4RmZhKHvDbcSEDHwZkIoIuSEj2xu
-         WqDEimA9uBxGYgiceOhqKm+clIampK/7EArekA2blDmkwQy5eEjIdUtwj8zUHQ6Q7PQJ
-         //r3HpfKXUVC+LIOSRgqmDWjM5SRAJGng6sVw/CBLJTdB+Jg3EpbFC0/ruSvJGbUgBcf
-         Om5jOHwopGwQszkIfeRjXGYquwYJ8KadeNos9hHq2QZ8x20kqOkGem51HmoAUbVsh5rY
-         yExy7fGIKQlZEYWyhp1BAJ7TX4uK5DP/34A8zXlnEa4dOx0qeCDOYdqjv8TDiNE/WjB4
-         mxNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768499597; x=1769104397;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1768499924; x=1769104724; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4mMVo9S2RYUGlBhey+x1Qw17Bc3i8C5ddylnQrDDufU=;
-        b=NaShhH5QXDoUeWhp9k1c+1tOVETcT9++TIOVCiie1pbvJFZV/qgCUzxLyRV5NlV01J
-         hvr/5TzXNWhkZFta+fKPZx+kjzYp4tnW++9CmF72XqzUWMMNZ1w7Vu72RVd/KuqYdLAQ
-         RsNyp0WsML64SaOWZLk/o3hsFDtQ0ReMYAHEb36pN86YVmMWNvaYfjRpG/D1eq2kvg/n
-         9ZVK0w04UTxyNKz2KT1JSIc0REru7WV1e8UsQHV9KREMUb87D/RmDnGMsJRrbRQDXEKm
-         u4UPLKCJMpXORBNKM4jLE8G4ez5oy1s2jdEDjX9sJCe3WxXUOLjRWxetH2DpBNXsiRUW
-         PIWA==
-X-Gm-Message-State: AOJu0YyVYy8hA9aeWIUAB5qWaiDhWK1fJ2QqlSsxzguonDTefXSqjfL0
-	cMOC2DiZlbr05kzs/+rtqQluGeRXMCKE6HNBfNC+wzbI6kdCuaMCFvgsKSs/Jk1bn0XuiaAjfi2
-	NuH5T0uMZi2xFrdg8s48fnnJx58NpK5c=
-X-Gm-Gg: AY/fxX5kGeXVbPkKeT6pTT3RqyuQg3bgq8VaPD1jjk+MTHtvgipcMk0GQtpd4ne+rx/
-	j58QL1zgGpvHcJIj/iKHkeSTxQ895lM1/oCXleWk6GvAIxDLIDe4JFJM0tTKafqDuy6Fn7TQL0y
-	vHM+JhKX1HQSr8tlRTQ2n2Xdp/NMCqp6DleSKgQKyMKVLpE5ssZny1/HVr4DfZ7NHQ2NUCXW//D
-	irpCSqwO3ktw6QlWKRCTB8XKNeU9N/E49BFbPjFBVOC/V56pTnunGsz/kg9DeNa/nFuHpkCkNVr
-	Nj6QxQS/uWCWVI6uP3lvzbMqphX2tO/FZu2++DDPVqKT2+xRWNVSIE6IBRqt
-X-Received: by 2002:adf:cf07:0:b0:42f:bbc6:edaf with SMTP id
- ffacd0b85a97d-43569bc02a4mr187188f8f.37.1768499597259; Thu, 15 Jan 2026
- 09:53:17 -0800 (PST)
+        bh=vW07CLD2WVG+glQ8ijfA32Jhr+9FjGh1F8sZT7yFNek=;
+        b=fXWMH5xTkW6TCpv3NRfoI81lnzjMUFPOyn6M7nSvl5Yts/mi8dPxtK7oGACW9XLL9B
+         BlvUEB0lsd//cyehWLlM8jo934rsRg40PSUtYIlCJHgZU/jVdzL4auCrUneu5xUmZJOr
+         KgKticEUOTW3v+5RsJX1YFv5S3o9Bqvjf3YnWLYVKkb8gYo2gLcWSOVlBMl2KN2PGtHz
+         BS66J3yMaMBHrDlzMAzQYnGGUhEK1nUw224qLGd+jFyv2mkqG+az33BQ6b+z1Uf7B5Zu
+         1URy9oWbcPBW1tpL8DFFNRuKM6BdqYw9j4vcRN9DuHvI0oBDztD1+vW1FcPPGxUBgYvQ
+         gRyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768499924; x=1769104724;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=vW07CLD2WVG+glQ8ijfA32Jhr+9FjGh1F8sZT7yFNek=;
+        b=mtLFSQ7/yXohPpPIyD5F0hE1FcO9UPh84Pl6az6GfMjmge3TuU8nlRi5z4Yciz0W4S
+         OVQ0C2LxSUIxO2ohtF2uMMxLgYhcoBzQnwHvgL7WegXQ/giZ79iWujlzK07XmG1bQpHJ
+         0G0uNfoC/XGbyU2+985/441GlamuUSvrRup3TmIBe1087Pyo/V5LXGIv8yAdWwbyhRwa
+         Vn/w6D0EkAddtnUUdSX75SoUL19yHHElFOxDfd35BOsa2z3Q0w/Z9rrFXwgnnKx9uvTA
+         5Y6kXgjugsfTUZwP+CLPnf/DymC/PFr4KM9dnFSc3Iyv6pooM5+Ms4IXCxLcqg82YipW
+         xDqw==
+X-Forwarded-Encrypted: i=1; AJvYcCXyZMN0ekZV9LsJnGlIS0wTkErtsIrSpwZSpf3REsu0U59SLbx2zzpbhOjMzFtVIFE4DeE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzKT9x9dRALU/tlLETT2V765y4uVSNLIkX0ijSHs7tUCoyeRZ0a
+	kdXE9hFMsaPJ5sum2CARzmE2UocMfORXjpX0NjMgTXtcpx2/FcXjHl6ulA/TeLLGlwU3818NT7m
+	47vSXlf1DC2mbJMPNeeBPLvQLUULhYb8=
+X-Gm-Gg: AY/fxX7waz7cvvgVQWmQD0tUJ0OuGWCMZBK8xNW0qcCqEEZYRQvg7VG+mOrxsCcpfDC
+	9ZvZGVMQMMB8Du6XPW3AHMnblEUmWK0FNwW7imfOctyt9IWRPNZ3rVK8uSIjhiaYUwKxjSf+6dH
+	MX5SP0HV9OW3e/fh+zJ3LCPJ/yx+T3KptdFEepkQUYUFGjpzJ4EQy7ubs+uyvnEtdjkJw+XB4eZ
+	w/AVnyVLpkS2EH0rILWG1wztWOcIVGPPmXD8IpH/EIv6j6LKxuHLK7CS7XUBAIbkq7OLYAE6Z3h
+	rvS7BFYu
+X-Received: by 2002:a17:90b:1804:b0:32e:23c9:6f41 with SMTP id
+ 98e67ed59e1d1-35272bf1303mr274667a91.5.1768499924486; Thu, 15 Jan 2026
+ 09:58:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260115061319.2895636-1-yonghong.song@linux.dev>
- <CAP01T75HfwbrZkRouGiuhfbFqMS4-LXh-nQ7ho=rJ-DZ44vCDA@mail.gmail.com> <be872fd4-479e-45e6-8832-9bfe560bced1@linux.dev>
-In-Reply-To: <be872fd4-479e-45e6-8832-9bfe560bced1@linux.dev>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Thu, 15 Jan 2026 18:52:40 +0100
-X-Gm-Features: AZwV_QgDKChsVkdWX4DQ-IMRIOYpEzwBLkRRXk5-bP-UQQLrQ79ENuTX-_kac8U
-Message-ID: <CAP01T76Mamajg7HqF3rrUof-DMFLwgSaW5rTEUSyZ7rp2TsgVA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix map_kptr test failure
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com, 
-	Martin KaFai Lau <martin.lau@kernel.org>
+References: <20260114-bpftool-tests-v1-0-cfab1cc9beaf@bootlin.com>
+In-Reply-To: <20260114-bpftool-tests-v1-0-cfab1cc9beaf@bootlin.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 15 Jan 2026 09:58:31 -0800
+X-Gm-Features: AZwV_QiiJHMacsbeNADMd0KHpqQi4AA0UamPcGJk-PKWuvmj0gNuFUrcyu34jJs
+Message-ID: <CAEf4BzYvZsjSpsDHXAuZ9G3=r4e27+c_LDpSUampw-fTfKA2=g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/4] selftests/bpf: add a new runner for bpftool tests
+To: =?UTF-8?Q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, ebpf@linuxfoundation.org, 
+	Bastien Curutchet <bastien.curutchet@bootlin.com>, 
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 15 Jan 2026 at 18:19, Yonghong Song <yonghong.song@linux.dev> wrote:
+On Wed, Jan 14, 2026 at 12:59=E2=80=AFAM Alexis Lothor=C3=A9 (eBPF Foundati=
+on)
+<alexis.lothore@bootlin.com> wrote:
 >
+> Hello,
+> this series is part of the larger effort aiming to convert all
+> standalone tests to the CI runners so that they are properly executed on
+> patches submission.
 >
->
-> On 1/14/26 11:54 PM, Kumar Kartikeya Dwivedi wrote:
-> > On Thu, 15 Jan 2026 at 07:16, Yonghong Song <yonghong.song@linux.dev> wrote:
-> >> On my arm64 machine, I get the following failure:
-> >>    ...
-> >>    tester_init:PASS:tester_log_buf 0 nsec
-> >>    process_subtest:PASS:obj_open_mem 0 nsec
-> >>    process_subtest:PASS:specs_alloc 0 nsec
-> >>    serial_test_map_kptr:PASS:rcu_tasks_trace_gp__open_and_load 0 nsec
-> >>    ...
-> >>    test_map_kptr_success:PASS:map_kptr__open_and_load 0 nsec
-> >>    test_map_kptr_success:PASS:test_map_kptr_ref1 refcount 0 nsec
-> >>    test_map_kptr_success:FAIL:test_map_kptr_ref1 retval unexpected error: 2 (errno 2)
-> >>    test_map_kptr_success:PASS:test_map_kptr_ref2 refcount 0 nsec
-> >>    test_map_kptr_success:FAIL:test_map_kptr_ref2 retval unexpected error: 1 (errno 2)
-> >>    ...
-> >>    #201/21  map_kptr/success-map:FAIL
-> >>
-> >> In serial_test_map_kptr(), before test_map_kptr_success(), one
-> >> kern_sync_rcu() is used to have some delay for freeing the map.
-> >> But in my environment, one kern_sync_rcu() seems not enough and
-> >> caused the test failure.
-> >>
-> >> In bpf_map_free_in_work() in syscall.c, the queue time for
-> >>    queue_work(system_dfl_wq, &map->work)
-> >> may be longer than expected. This may cause the test failure
-> >> since test_map_kptr_success() expects all previous maps having been freed.
-> >>
-> >> In stead of one kern_sync_rcu() before test_map_kptr_success(),
-> >> I added two more kern_sync_rcu() to have a longer delay and
-> >> the test succeeded.
-> >>
-> >> Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> >> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
-> >> ---
-> > This is still not a proper fix, right? Maybe two works in this case,
-> > but it isn't guaranteed to be enough either.
-> > RCU gp wait won't have any synchronization with when wq items are executed.
-> > I forgot why I used kern_sync_rcu() originally, but I feel the right
-> > way to fix this would be to count when all maps have finished their
-> > bpf_map_free through an fexit hook. Thoughts?
->
-> Agree that this is still not to guarantee it won't break due to queue_work().
-> One possibility is to count the references in a separate bpf program and until
-> all references are gone then we can do subsequent test_map_kptr_success().
-> Let me give a try.
+> Some of those tests are validating bpftool behavior(test_bpftool_map.sh,
+> test_bpftool_metadata.sh, test_bpftool_synctypes.py, test_bpftool.py...)
+> and so they do not integrate well in test_progs. This series proposes to
 
-That seems better actually, and probably less code too.
+Can you elaborate why they do not integrate well? In my mind,
+test_progs should be the only runner into which we invest effort
+(parallel tests, all the different filtering, etc; why would we have
+to reimplement subsets of this). The fact that we have test_maps and
+test_verifier is historical and if we had enough time we'd merge all
+of them into test_progs.
 
+What exactly in test_progs would prevent us from implementing bpftool
+test runner?
+
+> introduce a new runner to support those tests. This new runner is
+> heavily inspired from test_progs, with slightly less features.
 >
-> >
-> >>   tools/testing/selftests/bpf/prog_tests/map_kptr.c | 4 ++++
-> >>   1 file changed, 4 insertions(+)
-> >>
-> >> diff --git a/tools/testing/selftests/bpf/prog_tests/map_kptr.c b/tools/testing/selftests/bpf/prog_tests/map_kptr.c
-> >> index 8743df599567..f9cfc4d3153c 100644
-> >> --- a/tools/testing/selftests/bpf/prog_tests/map_kptr.c
-> >> +++ b/tools/testing/selftests/bpf/prog_tests/map_kptr.c
-> >> @@ -148,11 +148,15 @@ void serial_test_map_kptr(void)
-> >>
-> >>                  ASSERT_OK(kern_sync_rcu_tasks_trace(skel), "sync rcu_tasks_trace");
-> >>                  ASSERT_OK(kern_sync_rcu(), "sync rcu");
-> >> +               ASSERT_OK(kern_sync_rcu(), "sync rcu");
-> >> +               ASSERT_OK(kern_sync_rcu(), "sync rcu");
-> >>                  /* Observe refcount dropping to 1 on bpf_map_free_deferred */
-> >>                  test_map_kptr_success(false);
-> >>
-> >>                  ASSERT_OK(kern_sync_rcu_tasks_trace(skel), "sync rcu_tasks_trace");
-> >>                  ASSERT_OK(kern_sync_rcu(), "sync rcu");
-> >> +               ASSERT_OK(kern_sync_rcu(), "sync rcu");
-> >> +               ASSERT_OK(kern_sync_rcu(), "sync rcu");
-> >>                  /* Observe refcount dropping to 1 on synchronous delete elem */
-> >>                  test_map_kptr_success(true);
-> >>          }
-> >> --
-> >> 2.47.3
-> >>
-> >>
+> - First commit move the assert macros exposed by test_progs into a
+>   shared header so that they can be used by the new runner
+> - Second commit introduces the new runner, as well as a first test
+> - Third commit adds a second test
+> - Fourth commit drops the legacy scripts corresponding to those new
+>   tests
+>
+> The series only adds the runner, but it is not enough to have it running
+> in CI. The github actions need to be updated both in [1] and [2], and I
+> am not sure how it si supposed to be contributed (the part needed in [1]
+> must likely be integrated in the commit that is systematically brought
+> on top of the bpf-next_base branch). Still, an example of test_bpftool
+> run can be found in [3], in which I have forked and updated the needed
+> Github actions ([4])
+>
+> [1] https://github.com/kernel-patches/bpf.git
+> [2] https://github.com/libbpf/ci
+> [3] https://github.com/kernel-patches/bpf/pull/10711
+> [4] https://github.com/Tropicao/libbpf-ci
+>
+> Signed-off-by: Alexis Lothor=C3=A9 (eBPF Foundation) <alexis.lothore@boot=
+lin.com>
+> ---
+> Alexis Lothor=C3=A9 (eBPF Foundation) (4):
+>       bpf/selftests: move assert macros into a dedicated header
+>       bpf/selftests: introduce bptool test runner and a first test
+>       selftests/bpf: add bpftool map manipulations tests
+>       selftests/bpf: remove converted bpftool test scripts
+>
+>  tools/testing/selftests/bpf/.gitignore             |   1 +
+>  tools/testing/selftests/bpf/Makefile               |  16 +-
+>  tools/testing/selftests/bpf/assert_helpers.h       | 231 ++++++++++++
+>  tools/testing/selftests/bpf/bpftool_helpers.c      | 114 ++++++
+>  tools/testing/selftests/bpf/bpftool_helpers.h      |  19 +
+>  .../testing/selftests/bpf/bpftool_tests/.gitignore |   2 +
+>  .../bpf/bpftool_tests/bpftool_maps_access.c        | 370 +++++++++++++++=
+++++
+>  .../selftests/bpf/bpftool_tests/bpftool_metadata.c | 128 +++++++
+>  tools/testing/selftests/bpf/test_bpftool.c         | 126 +++++++
+>  tools/testing/selftests/bpf/test_bpftool.h         |  36 ++
+>  tools/testing/selftests/bpf/test_bpftool_map.sh    | 398 ---------------=
+------
+>  .../testing/selftests/bpf/test_bpftool_metadata.sh |  85 -----
+>  tools/testing/selftests/bpf/test_progs.h           | 226 +-----------
+>  13 files changed, 1041 insertions(+), 711 deletions(-)
+> ---
+> base-commit: 807cd0dc688b0e7314f53dc3a594f247bb3b665b
+> change-id: 20251212-bpftool-tests-bb165c4cceb8
+>
+> Best regards,
+> --
+> Alexis Lothor=C3=A9 (eBPF Foundation) <alexis.lothore@bootlin.com>
 >
 
