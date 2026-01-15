@@ -1,125 +1,140 @@
-Return-Path: <bpf+bounces-79009-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79010-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89B41D23229
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 09:31:37 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB95FD23355
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 09:41:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id AE0FA30533C5
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 08:29:27 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8765E307514E
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 08:34:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8628334683;
-	Thu, 15 Jan 2026 08:29:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF0DA33A9E2;
+	Thu, 15 Jan 2026 08:34:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ayuJIOH0"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KJkXYCV9"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F0D529B217;
-	Thu, 15 Jan 2026 08:29:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DF9133A6F1
+	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 08:34:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768465756; cv=none; b=cP/djRbT0WJLx9SRJryDeBecgB1MgTPmn7Hhz7DU7rBzmgot6Og/4N8pQ+WO8bduFLbCQXp5XPBsekNhgh+n5maCsI2vf+4s1wsKyE2pax3+5YkO+W3MUPZZXJ73OmjMGrlPVyrUluubinoMWyLkhAl0DWMM68GUdM0Hy+lAv+g=
+	t=1768466053; cv=none; b=InHHNFRewg0GGBCh3VrkMzJxmh3R9GpKYRsIH0waJ2jbXu5Uk76gdL+8p/FBHwAjpyMssBssodBttiXmS1J7okqarEb58qoV/eOUjXl1OYBpdwng0+NpaFfQ9XnF32z5/svaLyjc8L0oKFo1BGJ8DDO6R/gkiowBVlckWO+2fBI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768465756; c=relaxed/simple;
-	bh=S7HCfIKFFGeY+CKuWgYtJmjmqfuD6022qSuM1DWTvnc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=A0rwlrTRNybtOQjNFtat7reVqr/hwx6lATjloVJ6qiAfCBEaZC6Qu1XWh6Xy0n0w9Z2Ot7zZ5Pu1Jsb6xFlvHC84pDcKSVTuY1A/UF/WPd2UH9iUnGtoJJv/+qcHNc2aVxbSbLaQfiMazbD93q6uGNpKeCzxdhd7216wP+0a7O0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ayuJIOH0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 113C8C19423;
-	Thu, 15 Jan 2026 08:29:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768465756;
-	bh=S7HCfIKFFGeY+CKuWgYtJmjmqfuD6022qSuM1DWTvnc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ayuJIOH08LJP9jBCA9D+qP6XHanepkz7rJN91tCFuJ39w3rIauqP/TYpFNDB5Fgyh
-	 9dEae1j7KdrQrcE7qUgGouvdd4g5gNiDrEOhG3qmq3Z/DZqveVSNYOc23ejtV0VglA
-	 JGq++rwmFRjjGO8C9u4t4G9phCIBr50fB6ARyhSS3lEN0TSBgjYJvg4d5XBnt5qFUL
-	 Mp38kj1b3bvQ9RKHuLUdSaNBSiT+vMBm4WT+Vd9TTJZzb8lrxVLSgtiKQfo95yHH1Q
-	 GV0Z5ZHP7nMGeU7Wgmb1eA1bE11tczFWkrPdIwyeAZAcAg+St3ltx8J5NIXP7TaiuP
-	 +vG15luoN3kCg==
-Message-ID: <2c0588cd-f71b-40e5-a2cd-269d27e35abc@kernel.org>
-Date: Thu, 15 Jan 2026 09:29:06 +0100
+	s=arc-20240116; t=1768466053; c=relaxed/simple;
+	bh=2EKJYAPuzH7oKPGpx9c+rZgCTn1LKzT+k+fkIG/FR1I=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ONnQWlwCbVQt9kyuLhZoBOccGgzKDvuHBARBRFml3pZOo8XOI82WzGjGR9CAnhqCws9MNDl1lPsZETTZZxu1HpYdqnAw5mD++jWPJpMBtRum6sddsI6qRrTdqR4qEdQMWu/w92KG5aIZuBPmn0rlaiaR6kM7rxTk6b8Cn7gnzus=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KJkXYCV9; arc=none smtp.client-ip=91.218.175.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1768466038;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Bw7DDQX/ZM5AiYqMY7G1eGZ2tEpOcpxd1X3KkINTp4I=;
+	b=KJkXYCV9H069dK/Agq+oqiQrHE888vQDRueMyeNIq9PRKUxqnsXOUvrMqbw5MZCTgcjfPv
+	kLEAXhMG9+veX1lIfiSTDNvys1HnOONq4STvTmhkB3SJrGi6Hq69odDTTKLcavlA/6oDHF
+	SbZqZgFbRCcXspUuANHLVlXNmW6JcWQ=
+From: Menglong Dong <menglong.dong@linux.dev>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Menglong Dong <menglong8.dong@gmail.com>, ast@kernel.org,
+ andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+ eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, davem@davemloft.net, dsahern@kernel.org,
+ tglx@linutronix.de, mingo@redhat.com, jiang.biao@linux.dev, bp@alien8.de,
+ dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+ bpf@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v9 01/11] bpf: add fsession support
+Date: Thu, 15 Jan 2026 16:33:42 +0800
+Message-ID: <13928754.uLZWGnKmhe@7940hx>
+In-Reply-To:
+ <CAEf4Bza84H=FL-KxJEFAn6pFpVBQVnvrpif6_gtf_SWHH4pRJQ@mail.gmail.com>
+References:
+ <20260110141115.537055-1-dongml2@chinatelecom.cn> <3026834.e9J7NaK4W3@7940hx>
+ <CAEf4Bza84H=FL-KxJEFAn6pFpVBQVnvrpif6_gtf_SWHH4pRJQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/6] powerpc64/bpf: Move tail_call_cnt to bottom of
- stack frame
-To: adubey@linux.ibm.com, bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: hbathini@linux.ibm.com, sachinpb@linux.ibm.com, venkat88@linux.ibm.com,
- andrii@kernel.org, eddyz87@gmail.com, mykolal@fb.com, ast@kernel.org,
- daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, naveen@kernel.org,
- maddy@linux.ibm.com, mpe@ellerman.id.au, npiggin@gmail.com,
- memxor@gmail.com, iii@linux.ibm.com, shuah@kernel.org
-References: <20260114114450.30405-1-adubey@linux.ibm.com>
- <20260114114450.30405-2-adubey@linux.ibm.com>
-Content-Language: fr-FR
-From: "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>
-In-Reply-To: <20260114114450.30405-2-adubey@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+X-Migadu-Flow: FLOW_OUT
+
+On 2026/1/15 02:56 Andrii Nakryiko <andrii.nakryiko@gmail.com> write:
+> On Tue, Jan 13, 2026 at 6:11=E2=80=AFPM Menglong Dong <menglong.dong@linu=
+x.dev> wrote:
+> >
+> > On 2026/1/14 09:22 Andrii Nakryiko <andrii.nakryiko@gmail.com> write:
+> > > On Sat, Jan 10, 2026 at 6:11=E2=80=AFAM Menglong Dong <menglong8.dong=
+@gmail.com> wrote:
+> > > >
+> > > > The fsession is something that similar to kprobe session. It allow =
+to
+> > > > attach a single BPF program to both the entry and the exit of the t=
+arget
+> > > > functions.
+> > > >
+> > [...]
+> > > > --- a/kernel/bpf/btf.c
+> > > > +++ b/kernel/bpf/btf.c
+> > > > @@ -6107,6 +6107,7 @@ static int btf_validate_prog_ctx_type(struct =
+bpf_verifier_log *log, const struct
+> > > >                 case BPF_TRACE_FENTRY:
+> > > >                 case BPF_TRACE_FEXIT:
+> > > >                 case BPF_MODIFY_RETURN:
+> > > > +               case BPF_TRACE_FSESSION:
+> > > >                         /* allow u64* as ctx */
+> > > >                         if (btf_is_int(t) && t->size =3D=3D 8)
+> > > >                                 return 0;
+> > > > @@ -6704,6 +6705,7 @@ bool btf_ctx_access(int off, int size, enum b=
+pf_access_type type,
+> > > >                         fallthrough;
+> > > >                 case BPF_LSM_CGROUP:
+> > > >                 case BPF_TRACE_FEXIT:
+> > > > +               case BPF_TRACE_FSESSION:
+> > >
+> > > According to the comment below we make this exception due to LSM.
+> > > FSESSION won't be using FSESSION programs, no? So this is not
+> > > necessary?
+> >
+> > The comment describe the LSM case here, but the code
+> > here is not only for LSM. It is also for FEXIT, which makes
+> > sure that we can get the return value with "ctx[nr_args]".
+> > So I think we still need it here, as we need to access the
+> > return value with "ctx[nr_args]" too.
+>=20
+> please update the comment then as well
+
+Hi, Andrii. After deeper analysis, I think the comment is explaining
+why LSM doesn't need to check the return value type of the target
+kernel function in this code patch, as the target for LSM always
+return void or int. So I think the comment has nothing to do with
+fsession or fexit, right?
+
+Its position may cause some misunderstanding, and if it is placed
+after "cast BPF_LSM_MAC", it maybe more clear. (But it's another thing,
+and let's keep it still now)
+
+Thanks!
+Menglong Dong
+
+>=20
+> >
+[...]
+> >
+> >
+> >
+> >
 
 
 
-Le 14/01/2026 à 12:44, adubey@linux.ibm.com a écrit :
-> From: Abhishek Dubey <adubey@linux.ibm.com>
-> 
-> In the conventional stack frame, the position of tail_call_cnt
-> is after the NVR save area (BPF_PPC_STACK_SAVE). Whereas, the
-> offset of tail_call_cnt in the trampoline frame is after the
-> stack alignment padding. BPF JIT logic could become complex
-> when dealing with frame-sensitive offset calculation of
-> tail_call_cnt. Having the same offset in both frames is the
-> desired objective.
-> 
-> The trampoline frame does not have a BPF_PPC_STACK_SAVE area.
-> Introducing it leads to under-utilization of extra memory meant
-> only for the offset alignment of tail_call_cnt.
-> Another challenge is the variable alignment padding sitting at
-> the bottom of the trampoline frame, which requires additional
-> handling to compute tail_call_cnt offset.
-> 
-> This patch addresses the above issues by moving tail_call_cnt
-> to the bottom of the stack frame at offset 0 for both types
-> of frames. This saves additional bytes required by BPF_PPC_STACK_SAVE
-> in trampoline frame, and a common offset computation for
-> tail_call_cnt serves both frames.
-> 
-> The changes in this patch are required by the third patch in the
-> series, where the 'reference to tail_call_info' of the main frame
-> is copied into the trampoline frame from the previous frame.
-> 
-> Signed-off-by: Abhishek Dubey <adubey@linux.ibm.com>
-> ---
->   arch/powerpc/net/bpf_jit.h        |  4 ++++
->   arch/powerpc/net/bpf_jit_comp64.c | 31 ++++++++++++++++++++-----------
->   2 files changed, 24 insertions(+), 11 deletions(-)
-> 
-> diff --git a/arch/powerpc/net/bpf_jit.h b/arch/powerpc/net/bpf_jit.h
-> index 8334cd667bba..45d419c0ee73 100644
-> --- a/arch/powerpc/net/bpf_jit.h
-> +++ b/arch/powerpc/net/bpf_jit.h
-> @@ -72,6 +72,10 @@
->   	} } while (0)
->   
->   #ifdef CONFIG_PPC64
-> +
-> +/* for tailcall counter */
-> +#define BPF_PPC_TAILCALL        8
 
-This needs to be defined outside of CONFIG_PPC64 ifdef because from 
-patch 3 it is used in bpf_jit_comp.c which is also built on powerpc32.
-
-> +
->   /* If dummy pass (!image), account for maximum possible instructions */
->   #define PPC_LI64(d, i)		do {					      \
->   	if (!image)							      \
 
