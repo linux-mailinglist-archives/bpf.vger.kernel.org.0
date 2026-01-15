@@ -1,225 +1,242 @@
-Return-Path: <bpf+bounces-79013-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79014-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5509D23DB5
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 11:12:49 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF2F7D23EC4
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 11:24:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 821A2309DE35
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 10:11:21 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 43718301E991
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 10:24:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE73335EDA9;
-	Thu, 15 Jan 2026 10:11:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C26FD36215E;
+	Thu, 15 Jan 2026 10:24:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="lWUu2Tbe";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="JtkAr0qa";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="lWUu2Tbe";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="JtkAr0qa"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ZNbktjYW"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-wr1-f66.google.com (mail-wr1-f66.google.com [209.85.221.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CFEB2E2665
-	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 10:11:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B44EF35EDAB
+	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 10:24:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768471880; cv=none; b=PlzfRTq7MobmDKIbLin/vqXCcHAPZtDr2T+7bh1Rww3yMdeSgabnihID8ZD5vn1Ru92knDGmjS5JAwRnTWIDOUQ023bYrXPNOcAoUFh18MvaYSsGdbx9Tuonu4DRFq8/h1LPNG7qoaKNC5YZ5I/dL2z3k/1vvXh8Aig2wnA28UQ=
+	t=1768472688; cv=none; b=Eqnq+qnb8YxXLQjONEzQwy0xOroSUoMZ53Ojp0ckL6TimOGIyKTCTvIFA+fKpvGpNnkURt1RItigxwWRCNdiw3jsWN9bQe1TxKvrOD90+wJDfV2CHUJzJr7iEXQaGBTsIOpyAkcqjty6N2uLpBJ3hUNqw3zUu0wbrNNFQbwGIXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768471880; c=relaxed/simple;
-	bh=g0YOmsvmK07wWgdxBTMzfoRs3dC51AGbWNRcKooHeIo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DdLSXX22F5op1fSo4MEQeSC2lbPqN3chr2wosA/3pMRt9WjKA+CcjQl/hJE2yyrOKUoFjGc2QTAqeiOkGu+OFZzYiQMP1Ed1g7Y5OKK/KfttwWD492pTTmQqu2STIkXLhhj2FSvAx/s82echiu1FowJwwCEBKlBTM06K1nYdCdE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=lWUu2Tbe; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=JtkAr0qa; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=lWUu2Tbe; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=JtkAr0qa; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 80B715BCEB;
-	Thu, 15 Jan 2026 10:11:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1768471876; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=cgS+YfLmxtAaHSdATGA5HBi4gCQegNTgh7ni6TZTR30=;
-	b=lWUu2TbeZY6RbZ01DhcVeFrmvAsySDFDk0yGL7KxxRgj7H0omhhsI5oH21/J5Ky4XfZ/Ul
-	e22VJxJfZ25vUJjcg3TkLNMpoRoao8jCZUKbDJt9/iwes9Hf+Lj9E55A2tv2nUo9/lgMDu
-	SYg8PyiOPyZ0yFy5wSQK46fqzRQVY5c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1768471876;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=cgS+YfLmxtAaHSdATGA5HBi4gCQegNTgh7ni6TZTR30=;
-	b=JtkAr0qaXG5Lhs4NEaVJnny1x36VnIMUXEApK8+cQDbTaGfyiovtrcYUdgOTSj4pWSD/3F
-	rhc3IX4yTzW6XEDw==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=lWUu2Tbe;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=JtkAr0qa
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1768471876; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=cgS+YfLmxtAaHSdATGA5HBi4gCQegNTgh7ni6TZTR30=;
-	b=lWUu2TbeZY6RbZ01DhcVeFrmvAsySDFDk0yGL7KxxRgj7H0omhhsI5oH21/J5Ky4XfZ/Ul
-	e22VJxJfZ25vUJjcg3TkLNMpoRoao8jCZUKbDJt9/iwes9Hf+Lj9E55A2tv2nUo9/lgMDu
-	SYg8PyiOPyZ0yFy5wSQK46fqzRQVY5c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1768471876;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=cgS+YfLmxtAaHSdATGA5HBi4gCQegNTgh7ni6TZTR30=;
-	b=JtkAr0qaXG5Lhs4NEaVJnny1x36VnIMUXEApK8+cQDbTaGfyiovtrcYUdgOTSj4pWSD/3F
-	rhc3IX4yTzW6XEDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6164D3EA63;
-	Thu, 15 Jan 2026 10:11:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Zbt1F0S9aGkJdQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Thu, 15 Jan 2026 10:11:16 +0000
-Message-ID: <66de652b-3c0d-4ad7-a23e-2a46e862edd7@suse.cz>
-Date: Thu, 15 Jan 2026 11:11:16 +0100
+	s=arc-20240116; t=1768472688; c=relaxed/simple;
+	bh=T4myeQZvYSFLUPAuYC70rsVPCePsOn2xO+HTeSzspEY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Pt/ICuAijivgN/9MOziOSQ37rhzKpD9xCdLtnI96YeWR3EPIwcLx5jn8tEY2hc2clDfMrt24t2Y2v4DxHOIcsu1/d9+QCrUfvmnTn6ef69qNq7re1r0spYvXGy09NOn+i7gT8OUQ2qywvU2qc1l13uxv3WmTPHWy02YPDWo0EUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ZNbktjYW; arc=none smtp.client-ip=209.85.221.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f66.google.com with SMTP id ffacd0b85a97d-430fbb6012bso475011f8f.1
+        for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 02:24:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1768472685; x=1769077485; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZP8rRtEvMK5KfbtDsP2vfBcfyghWq57iuvfXZ5BkugU=;
+        b=ZNbktjYW+I6yqSxaFvT7cfm5HIn3bK5HfDQMOL7s+ZWunkIM5Zy3OlCMhYQBa/IvWl
+         RLsne4D6AXHG+/0uoLKr2JiBuf9kdZvhU1lz8n4Sj40rZy2pip+k96rEvrzFOAahRYLW
+         UprYLesOs6IBeilKu3g/60mYj2asFlr4sKT8mICBuL4RDolY/H66ge8Olc3SgKilcHkw
+         ZTuVue8v3Np0aeD3njdryZ0vKrwMT8ixR/UiM67+CiFLRiua7Mh/25nSv99H+alsNazc
+         IAvSVj8ujt1cu/k3Iz+/r2s2dAa4wtTDda86mNsEJoC5euGHIIaEz8eo5DHfuj4IoRlU
+         X8YQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768472685; x=1769077485;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZP8rRtEvMK5KfbtDsP2vfBcfyghWq57iuvfXZ5BkugU=;
+        b=gJuqgoMdMVeZcU8VpYSziR/Yr4HC+l6qaQABs2lNfsUPXxO4MZhgXBp8JopV2PbQfW
+         aI6mP3SFQStBBwu7b2j69iv1EhZcilXyuyNKv4l/iX2bSSUh8A6Lx4NUS1tp5uycGnC/
+         v6DEl93ltvvOvxE28j/LGvvO9XOyiEanEyX4vbNSr89evKJ3zHLdvQOEuOauUnpEk0/z
+         maIxpXCbHH0B1+hhl0VTg3FTmkFh9y6MKrCyujVelKTGpPbEGycb6NW8PGSxwz5zd28n
+         78KCvP5E6ohDxFWOxkbE0SJ/F5I3tSx5c4D99OOx1tNW97rmCHvhgeLIs3ivQSITKGbG
+         809A==
+X-Forwarded-Encrypted: i=1; AJvYcCU4eRDJZlTRPiaCRwZVEbtFcdl7RTwfE//QdfdQTjYeHAiOvqHZ8bS8IX5LHr/Oa8dnPKA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YygxrcPt7r3QBh4RxH5xQqfvpgZ64VogPwaB16yDCG5QVOllYAp
+	Uxv+Yi8nIFYA6xd6qwa1CAYkQ4+pR0umcLFc1NK8ne6iYqYYAfl2u4yy8TNCjYqN+yU=
+X-Gm-Gg: AY/fxX6YS0h16bwgfbBgzztSueixvt9a66UtKcIKxWE3aRA1HiHVq6z9bPzFcjSLDR7
+	CykKon/lTzk/I7JIY9jG7xyt692lLT1+UBGXSkt6y86rlTUFABtCsM0S7eeh55TW/Oir185BdsC
+	FvbgS1UahvRlE/yg/U3psx+zngfM+eiH/gVtO6OasK+vAZ9ao3bWhWA+FEcNOJzvblLPxwMEu9J
+	bGXu0hy543e2+iTnFDsIVozNrSCI87pl8aVGfGoz+TBxX8Je1rHKHYKYQgFfYvZc78pwaApL7kC
+	zJrNTCRGyBDulnZO5Gtw2zecSahoiXzFd8rtGAk3W6FOkckRFnGD96laCus+o+dXhrgwN9d/z2t
+	RlZqNJKLYUxg1rIL1iqkRqEK8d9ZeRSRslgFY1FO5VrL8SKrjG2H7h9bmI3CKrP1i8mQBcVorx3
+	GodzcW45krI4AzX7F8Njs2JUMtOwP2j3U=
+X-Received: by 2002:a05:6000:420a:b0:430:fd0f:28fe with SMTP id ffacd0b85a97d-4342c54ace1mr7667501f8f.31.1768472684978;
+        Thu, 15 Jan 2026 02:24:44 -0800 (PST)
+Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-434af64a778sm5006260f8f.3.2026.01.15.02.24.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jan 2026 02:24:44 -0800 (PST)
+Date: Thu, 15 Jan 2026 11:24:42 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: roman.gushchin@linux.dev, inwardvessel@gmail.com, 
+	shakeel.butt@linux.dev, akpm@linux-foundation.org, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, yu.c.chen@intel.com, zhao1.liu@intel.com, bpf@vger.kernel.org, 
+	linux-mm@kvack.org, tj@kernel.org
+Subject: Re: [RFC PATCH bpf-next 2/3] mm: add support for bpf based numa
+ balancing
+Message-ID: <z5lvdg7fonhyrt4zphak6hnhlazyntyrbvcpxtr32rrksktg3j@wpvmby6yonbr>
+References: <20260113121238.11300-1-laoar.shao@gmail.com>
+ <20260113121238.11300-3-laoar.shao@gmail.com>
+ <cfyq2n7igavmwwf5jv5uamiyhprgsf4ez7au6ssv3rw54vjh4w@nc43vkqhz5yq>
+ <CALOAHbB3Ruc+veQxPC8NgvxwBDrnX5XkmZN-vz1pu3U05MXnQg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v2 05/20] slab: introduce percpu sheaves bootstrap
-Content-Language: en-US
-To: Hao Li <hao.li@linux.dev>
-Cc: Harry Yoo <harry.yoo@oracle.com>, Petr Tesarik <ptesarik@suse.com>,
- Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>,
- Uladzislau Rezki <urezki@gmail.com>,
- "Liam R. Howlett" <Liam.Howlett@oracle.com>,
- Suren Baghdasaryan <surenb@google.com>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Alexei Starovoitov <ast@kernel.org>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, linux-rt-devel@lists.linux.dev,
- bpf@vger.kernel.org, kasan-dev@googlegroups.com
-References: <20260112-sheaves-for-all-v2-0-98225cfb50cf@suse.cz>
- <20260112-sheaves-for-all-v2-5-98225cfb50cf@suse.cz>
- <leaboap7yhlnvuxnxvqtl5kazbseimfq3efwfhaon74glfmmc3@paib6qlfee3i>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- m6M14QORSWTLRg==
-In-Reply-To: <leaboap7yhlnvuxnxvqtl5kazbseimfq3efwfhaon74glfmmc3@paib6qlfee3i>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: -4.51
-X-Spamd-Result: default: False [-4.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	ARC_NA(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	MIME_TRACE(0.00)[0:+];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_SOME(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[oracle.com,suse.com,gentwo.org,google.com,linux.dev,linux-foundation.org,gmail.com,linutronix.de,kernel.org,kvack.org,vger.kernel.org,lists.linux.dev,googlegroups.com];
-	RCVD_COUNT_TWO(0.00)[2];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:mid]
-X-Spam-Level: 
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 80B715BCEB
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-
-On 1/13/26 13:49, Hao Li wrote:
-> On Mon, Jan 12, 2026 at 04:16:59PM +0100, Vlastimil Babka wrote:
->> @@ -8641,12 +8690,10 @@ int do_kmem_cache_create(struct kmem_cache *s, const char *name,
->>  
->>  	set_cpu_partial(s);
->>  
->> -	if (s->sheaf_capacity) {
->> -		s->cpu_sheaves = alloc_percpu(struct slub_percpu_sheaves);
->> -		if (!s->cpu_sheaves) {
->> -			err = -ENOMEM;
->> -			goto out;
->> -		}
->> +	s->cpu_sheaves = alloc_percpu(struct slub_percpu_sheaves);
-> 
-> Since we allocate cpu_sheaves for all SLUB caches, the "if (!s->cpu_sheaves)"
-> condition in has_pcs_used() should be always false in practice (unless I'm
-> misunderstanding something). Would it make sense to change it to "if
-> (!s->sheaf_capacity)" instead?
-
-Right.
-
-> Also, while trying to understand the difference between checking s->cpu_sheaves
-> vs s->sheaf_capacity, I noticed that most occurrences of "if (s->cpu_sheaves)"
-> (except the one in __kmem_cache_release) could be expressed as "if
-> (s->sheaf_capacity)" as well.
-> 
-> And Perhaps we could introduce a small helper around "if (s->sheaf_capacity)" to
-> make the intent a bit more explicit.
-
-Good idea, will do. Thanks!
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="sgrrerx4codwdoe2"
+Content-Disposition: inline
+In-Reply-To: <CALOAHbB3Ruc+veQxPC8NgvxwBDrnX5XkmZN-vz1pu3U05MXnQg@mail.gmail.com>
 
 
+--sgrrerx4codwdoe2
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [RFC PATCH bpf-next 2/3] mm: add support for bpf based numa
+ balancing
+MIME-Version: 1.0
+
+Hi Yafang.
+
+On Wed, Jan 14, 2026 at 08:13:44PM +0800, Yafang Shao <laoar.shao@gmail.com=
+> wrote:
+> On Wed, Jan 14, 2026 at 5:56=E2=80=AFPM Michal Koutn=C3=BD <mkoutny@suse.=
+com> wrote:
+> >
+> > On Tue, Jan 13, 2026 at 08:12:37PM +0800, Yafang Shao <laoar.shao@gmail=
+=2Ecom> wrote:
+> > > bpf_numab_ops enables NUMA balancing for tasks within a specific memc=
+g,
+> > > even when global NUMA balancing is disabled. This allows selective NU=
+MA
+> > > optimization for workloads that benefit from it, while avoiding poten=
+tial
+> > > latency spikes for other workloads.
+> > >
+> > > The policy must be attached to a leaf memory cgroup.
+> >
+> > Why this restriction?
+>=20
+> We have several potential design options to consider:
+>=20
+> Option 1.   Stateless cgroup bpf prog
+>   Attach the BPF program to a specific cgroup and traverse upward
+> through the hierarchy within the hook, as demonstrated in Roman's
+> BPF-OOM series:
+>=20
+>     https://lore.kernel.org/bpf/877bwcpisd.fsf@linux.dev/
+>=20
+>     for (memcg =3D oc->memcg; memcg; memcg =3D parent_mem_cgroup(memcg)) {
+>         bpf_oom_ops =3D READ_ONCE(memcg->bpf_oom);
+>         if (!bpf_oom_ops)
+>             continue;
+>=20
+>           ret =3D bpf_ops_handle_oom(bpf_oom_ops, memcg, oc);
+>     }
+>=20
+>    - Benefit
+>      The design is relatively simple and does not require manual
+> lifecycle management of the BPF program, hence the "stateless"
+> designation.
+>    - Drawback
+>       It may introduce potential overhead in the performance-critical
+> hotpath due to the traversal.
+>=20
+> Option 2:  Stateful cgroup bpf prog
+>   Attach the BPF program to all descendant cgroups, explicitly
+> handling cgroup fork/exit events. This approach is similar to the one
+> used in my BPF-THP series:
+>=20
+>      https://lwn.net/ml/all/20251026100159.6103-4-laoar.shao@gmail.com/
+>=20
+>   This requires the kernel to record every cgroup where the program is
+> attached =E2=80=94 for example, by maintaining a per-program list of cgro=
+ups
+> (struct bpf_mm_ops with a bpf_thp_list). Because we must track this
+> attachment state, I refer to this as a "stateful" approach.
+>=20
+>   - Benefit: Avoids the upward traversal overhead of Option 1.
+>   - Drawback: Introduces complexity for managing attachment state and
+> lifecycle (attach/detach, cgroup creation/destruction).
+>=20
+> Option 3:  Restrict Attachment to Leaf Cgroups
+>   This is the approach taken in the current patchset. It simplifies
+> the kernel implementation by only allowing BPF programs to be attached
+> to leaf cgroups (those without children).
+>   This design is inspired by our production experience, where it has
+> worked well. It encourages users to attach programs directly to the
+> cgroup they intend to target, avoiding ambiguity in hierarchy
+> propagation.
+>=20
+> Which of these options do you prefer? Do you have other suggestions?
+
+I appreciate the breakdown.
+With the options 1 and 2, I'm not sure whether they aren't reinventing a
+wheel. Namely the stuff from kernel/bpf/cgroup.c:
+- compute_effective_progs() where progs are composed/prepared into a
+  sequence (depending on BPF_F_ALLOW_MULTI) and then
+- bpf_prog_run_array_cg() runs them and joins the results into a
+  verdict.
+
+(Those BPF_F_* are flags known to userspace already.)
+
+So I think it'd boil down to the type of result that individual ops
+return in order to be able to apply some "reduce" function on those.
+
+> > Do you envision how these extensions would apply hierarchically?
+>=20
+> This feature can be applied hierarchically, though it adds complexity
+> to the kernel. However, I believe that by providing the core
+> functionality, we can empower users to manage their specific use cases
+> effectively. We do not need to implement every possible variation for
+> them.
+
+I'd also look around how sched_ext resolved (solves?) this. Namely the
+step from one global sched_ext class to per-cg extensions.
+I'll Cc Tejun for more info.
+
+
+> > Regardless of that, being a "leaf memcg" is not a stationary condition
+> > (mkdirs, writes to `cgroup.subtree_control`) so it should also be
+> > prepared for that.
+>=20
+> In the current implementation, the user has to attach the bpf prog to
+> the new cgroup as well ;)
+
+I'd say that's not ideal UX (I imagine there's some high level policy
+set to upper cgroups but the internal cgroup (sub)structure of
+containers may be opaque to the admin, production experience might have
+been lucky not to hit this case).
+In this regard, something like the option 1 sounds better and
+performance can be improved later. Option 1's "reduce" function takes
+the result from the lowest ancestor but hierarchical logic should be
+reversed with higher cgroups overriding the lowers.
+
+(I don't want to claim what's the correct design, I want to make you
+aware of other places in kernel that solve similar challenge.)
+
+Thanks,
+Michal
+
+--sgrrerx4codwdoe2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaWjAaBsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+Aip5wEAmBM3Eh0XmAjz2UXAxlR4
+TIdMfYbIuVZcUPqJBLuuKwEBAP+Tg17ePUYbRyjXabdKqyVmbO6OT7tDGpaUncgR
+wBgO
+=50PV
+-----END PGP SIGNATURE-----
+
+--sgrrerx4codwdoe2--
 
