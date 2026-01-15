@@ -1,159 +1,129 @@
-Return-Path: <bpf+bounces-79106-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79107-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D7B4D27556
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 19:18:59 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 353DBD27882
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 19:29:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id F1DF5305087D
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 18:08:52 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id E31A2306E5A1
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 18:15:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1BBA3D3CE8;
-	Thu, 15 Jan 2026 18:00:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 251823BF31F;
+	Thu, 15 Jan 2026 18:12:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q98W8KbV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KQPEU50m"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF4843BF2F3
-	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 18:00:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FC7B3C009C
+	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 18:12:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768500024; cv=none; b=DMR69BOCKOXQ1yeJU8GM66znohC6VKkJBNQ56wa99lyvgVyxYAdL25hw6hKPbwa4Vfpe2kLo6VopY/eKckAXiXoxfuV+Z317zO+UgDa5AOsZfCpHLoVRp9OkC0qUBO5RkXWkxkdEJD7+9BPdFhvZC4dM68OZfV43QXZi+JtUOgk=
+	t=1768500757; cv=none; b=rLvgWUAdJ/ElyZpX9ykRU6h11n+veAp0UPHPhgDrz9aJfwrMdBnngcEbo/x3mjv7gkbk+NbIXDtig8fl8vGyC0TYp8kCcMCUOcuOuyqWonl9zQoRxnpwiFQV6OKBEUks6w6Hl2i5uxKH79aX8kExvv/4iPGCOyIsLmj+hsEp6ko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768500024; c=relaxed/simple;
-	bh=vLddMxM0W6026RbjbLsRAyK48T0JMu6b1ru+OYq9x+Y=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=laeCONNDb27gyssz6caTaq03hNShmlDy21ifGsr5GT+uXPG+Zzrew+sUDTtV03MBHXUPZZQgkYzjBzjkRBbp3+/G3c8WMsvGMQB1pGS1h401AE5jS90Ke9FqQ3JHYaG4AxoEOziXOorgEU6gWl/RFdp2HM0C0q1KtVaD7LSR9Tc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q98W8KbV; arc=none smtp.client-ip=209.85.221.41
+	s=arc-20240116; t=1768500757; c=relaxed/simple;
+	bh=jmCS3Eb/Caa2A/NEtHVTaZDmAlTTPtXeXUmluff264E=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=tdMKCbnq1ye3gQiyc9yrW6evWu2qRahxdDhHED1MzSw8/d95xsPwCvpUMy1mxMbDpSSkolye9izTbgmvl4eNsrmRzhIHJRiExruSJDq27aBrI2YGQg6C6vMSyUfAgBdf8Qz1tCb/DHe4A9nmR30m2+gj3s4j/p/qdubnjhbVBXQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KQPEU50m; arc=none smtp.client-ip=209.85.210.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-42fb4eeb482so711126f8f.0
-        for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 10:00:22 -0800 (PST)
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-81f42a49437so641019b3a.0
+        for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 10:12:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768500021; x=1769104821; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=8THmu0qXU1sZub569pYlCPkbhQYfiv8r3J7zMWrHXdE=;
-        b=Q98W8KbVD0HNwCgzTK/NzQjs7GwQ8LlzVXscW6qR5zM3u/JEKK49xq2wVfvSrBM5hz
-         wrjQ3Keo1Dkesj1NSgyflDA93bKlJr1/XlBUiPIYOlMBXdnIRDiHqWICuAE0eTOuflM7
-         wakFJkdpJGUu9AtDdJfWUEKSYcSNyOPJd8zPPySwPWfsYRXtEMmm+JxX6By/DYizyERV
-         QGlnQyAI7p8p8yn/NPrfLhnH+5GtykFM+nEGpqjt30Hxo9Xbwh/0IP0u0Q37CiCgg0Gn
-         sbn95rjNZcm2YbXypPimgYoZa6PLazYTKFIbtnBKPf4RM4QbcCNJWAQWAhkdb73r28Ua
-         HGeA==
+        d=gmail.com; s=20230601; t=1768500755; x=1769105555; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zUtEq9E7qiL8dJjHmHDx5LMsOLb73VrWL6F69DedpRQ=;
+        b=KQPEU50mi4uMtaIJV92WmC3+5pfTiVl09B8QO7SBAkEjwvfQtVK2Puuj0ELLImtLz5
+         EBBkSxYdr01zQcPRdaUxoUJnRLsPBfHQu5jAQInt+oWRRIWzJ0sQkL4rQUTNU8bMOtG6
+         /wr7ro3lu5huBYbtOJKQwyrSCNFcSwcZdTzDj1eF8nVhDIYXSXGolhB4XIQRV6zWJJIy
+         W5dmhCiKT1ZALGQmXmnd5ubiH/xcwMCWXMUt2VlXu0M++OEGuIv5gG53oKZaq1o8PPg4
+         /48FJNguAcGciTw0ArKkHZT3r/uVecQYGvbnbZuRjSqTa8afhAidNkgY8XBcqDELSmjh
+         xhiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768500021; x=1769104821;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8THmu0qXU1sZub569pYlCPkbhQYfiv8r3J7zMWrHXdE=;
-        b=dBdycNDm1uz68QzPnDtVp6TfIgSIulR8USgJp2mHTccHk+wBxGOSgmHx9ihBUrPLVl
-         eKgH58jtpMUGwv+TnDQdD4uoUmhv16cdC+Gg8WP7I3Ikc1Edx3k2SKCyol+4LoKmkJwS
-         F4H4B3TTqAdZYU92+4hiJfNgW+4xG0sBPclSMiNlQR0qG60rL01FkZaJlapGdg5E/ZzS
-         CdsjLT2OKOltNRqlET/hUrWB+QB1jyH1OYYJTvHbIpwuDx3ngUrG4hRNjUp3pMYl7dA7
-         p8WYaF+2NsE4YA4gVa3HdnmnL5co+T5p56JvevmPaQZ0AIKAoHjeARwa49JGWwr+bLwy
-         olbQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXKq1rSpMakMyWzDNWIBpavkM9+g8WoZ96h7bLJS3DryljQzERocwOI3M3o+ZFJxPZy2QY=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx8um05Juv3i//WyJRhR35SfYkfT3EtyBZKSg/MBFjQ7bruO5ex
-	UtCI6GXkyFa3PFqJqwQBdXs3R7/JjUrYfOFXIsWDUwmmLcuJw4Q1oEg1
-X-Gm-Gg: AY/fxX78O+QoBcrm7q95z95Jyysu4pDqXcXy6HuU2OajU+HwR9TmxAyl42dAdd7404l
-	XvWckukMCSfBBiK4csZHLJqqhDUP0uuNVIZFxwdgcK8iC+iMd/A2Q+b/oP2Ib3QInmMKvWzEfnT
-	z4zNas9z7bIuws6PKvuGeKFiguRvpaCRCcogLuJNl+aoHmIu+6zN14O1VdGq+/v7AQMSAHnPS46
-	uqcBuuc9l97nofk7mGthw+6im7FPURo6/HXZMAx/FeKv+iOl1/MI9moPOLUC+yyTZU1XdYt+gTd
-	t5EuwulzOqRWNv4xO2PZqHTDvB7iVApG5exknn3Vc9LN9j0MwMocdVVdna4ZD4JKH1cBo2AOxiP
-	wxy+aD+CK0MrqkweRa81KAjHQTFW8+hvw5/qRbQYdNdVwl3QSu+SrhRSe/zSSFUR4SXRW7Ev4ii
-	A=
-X-Received: by 2002:a05:6000:26d1:b0:431:2cb:d335 with SMTP id ffacd0b85a97d-4356a053852mr135704f8f.34.1768500020783;
-        Thu, 15 Jan 2026 10:00:20 -0800 (PST)
-Received: from krava ([176.74.159.170])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4356997e664sm280337f8f.30.2026.01.15.10.00.18
+        d=1e100.net; s=20230601; t=1768500755; x=1769105555;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zUtEq9E7qiL8dJjHmHDx5LMsOLb73VrWL6F69DedpRQ=;
+        b=AVCBE36CQIrLEs/GNr3eBFSIiwEi85QLRBHLqbtqDrXI8VcIIzxly3+SYSWI4o84Ln
+         5HLRux48IaB558NNK3FniQoK3xifO3ghjdjL7+YB9PHNAy7U7WVBtnROf28rA0Du1H+5
+         Dacvxq4+LGHI1cTlxm9PxIEc7l+QtgVP/X++1sqBQSV48rxbQRVJGLNjeYzomSsjacBv
+         lVWM3xq3Jk3OdLkwBUn8ZkpinX60rQAs51chcke0kjyqmh55XX8ko7Ny6Ec8n4krbp14
+         vyF3hOn9uByUknY/p3aQmb/7oTgMW5eiHi68U3h45Wuk3m7oB78B9mTBAWVUceWwLxJ+
+         zMyA==
+X-Forwarded-Encrypted: i=1; AJvYcCW9FaXE9gU2Yg617htEpmakqsKxQE9Etuhxn4Iv7cLdjQjpcwXnluiWIpyKI3cTCyij+Qg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzHObdt6bnsAHAyvlbSH74XtSX2UqkDnytS7kHylW7WNTCN95Dk
+	R3MsvnsGnHFTYIttDaIHtck+DAbMDzQ0x4ZMvWrjFi6yCYZW6DFN5CuOD+hswadL
+X-Gm-Gg: AY/fxX5H4z5WJQQJOb2oVniLGUPoug96FM/ygw5+obITxfVWh9f+9rlWTeEWKghQflL
+	qmMFhrpY9/3bBNdrDi/zwvas98An8mqZfI3G1XY34KPGDhSJvZrYXLqS0lkM24x/20Ef0FveNmf
+	I1PFhhrNXvNfuk/Cj+pGWLksI2wymBLYNar0//Yy9WEZxR1fqhPkesdTONvCCw3bbvhXao1JALg
+	Z2pbBnc8Irc2JEALigWjXeJsUo6W/cWS2NoCJvezNEjfw8s35VFW4VGcanQTaFgIZmd0yXSmz0g
+	LRAR+k9gX68MZheT/OPUYFS5+Q8uHISwAIzTZDuGVvCR2d/D/BIYAviJLYI7hguZs+hfVhNhSHE
+	QrOnmJ2raw2vpcGBxjh9wEOyUegtYMZ7E21H85YGEmicQ6UOmRnGX5iD1KunTZ4BiU+ZQOxB9M+
+	hNi2oUEbiriJQaLSvihao=
+X-Received: by 2002:a05:6a00:f8f:b0:81f:47ad:6a7b with SMTP id d2e1a72fcca58-81fa01eb473mr401131b3a.33.1768500755228;
+        Thu, 15 Jan 2026 10:12:35 -0800 (PST)
+Received: from [172.16.80.107] ([210.228.119.9])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-81fa1094e23sm61988b3a.4.2026.01.15.10.12.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jan 2026 10:00:20 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 15 Jan 2026 19:00:17 +0100
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Leon Hwang <leon.hwang@linux.dev>,
-	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Puranjay Mohan <puranjay@kernel.org>,
-	Xu Kuohai <xukuohai@huaweicloud.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	"David S . Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>,
-	"H . Peter Anvin" <hpa@zytor.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Network Development <netdev@vger.kernel.org>,
-	kernel-patches-bot@fb.com
-Subject: Re: [PATCH bpf-next 0/4] bpf: tailcall: Eliminate max_entries and
- bpf_func access at runtime
-Message-ID: <aWkrMckumhQErMmV@krava>
-References: <20260102150032.53106-1-leon.hwang@linux.dev>
- <CAADnVQJugf_t37MJbmvhrgPXmC700kJ25Q2NVGkDBc7dZdMTEQ@mail.gmail.com>
- <aWd9z8GVYO12YsaH@krava>
- <CAADnVQLxo1uPbutGNKrv=f=bSVkzxOfSof0ea8n7VvqsaU+S3w@mail.gmail.com>
- <aWgD3zH7vsiBdIcr@krava>
- <CAADnVQLHVogD1mjMCsHcJOayuZW4OwadEN0g9wu=6d97uRSWqQ@mail.gmail.com>
+        Thu, 15 Jan 2026 10:12:34 -0800 (PST)
+From: Ryota Sakamoto <sakamo.ryota@gmail.com>
+Date: Fri, 16 Jan 2026 03:12:14 +0900
+Subject: [PATCH] cgroup/rstat: fix missing prototype warning for
+ bpf_rstat_flush()
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQLHVogD1mjMCsHcJOayuZW4OwadEN0g9wu=6d97uRSWqQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20260116-fix-bpf_rstat_flush-v1-1-b068c230fdff@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/x2MQQqAIBAAvxJ7TmiFLPpKRGituRAVbkUQ/j3pO
+ DAzLwhFJoGueCHSzcL7lgHLAqZgt4UUz5lBV9pUiEZ5fpQ7/BjltOfo10uCMmZC29Stdhohl0e
+ krP3XfkjpA38DRv5lAAAA
+X-Change-ID: 20260116-fix-bpf_rstat_flush-66c1a7582b21
+To: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+ =?utf-8?q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ bpf@vger.kernel.org, Ryota Sakamoto <sakamo.ryota@gmail.com>
+X-Mailer: b4 0.14.2
 
-On Wed, Jan 14, 2026 at 01:56:11PM -0800, Alexei Starovoitov wrote:
-> On Wed, Jan 14, 2026 at 1:00 PM Jiri Olsa <olsajiri@gmail.com> wrote:
-> >
-> > >
-> > > > fyi I briefly discussed that with Andrii indicating that it might not
-> > > > be worth the effort at this stage.
-> > >
-> > > depending on complexity of course.
-> >
-> > for my tests I just had to allow BPF_MAP_TYPE_PROG_ARRAY map
-> > for sleepable programs
-> >
-> > jirka
-> >
-> >
-> > ---
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index faa1ecc1fe9d..1f6fc74c7ea1 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -20969,6 +20969,7 @@ static int check_map_prog_compatibility(struct bpf_verifier_env *env,
-> >                 case BPF_MAP_TYPE_STACK:
-> >                 case BPF_MAP_TYPE_ARENA:
-> >                 case BPF_MAP_TYPE_INSN_ARRAY:
-> > +               case BPF_MAP_TYPE_PROG_ARRAY:
-> >                         break;
-> >                 default:
-> >                         verbose(env,
-> 
-> Think it through, add selftests, ship it.
-> On the surface the easy part is to make
-> __bpf_prog_map_compatible() reject sleepable/non-sleepable combo.
-> Maybe there are other things.
+Add the prototype to cgroup-internal.h to resolve the Sparse warning.
 
-ok, thanks
+The function bpf_rstat_flush() is defined as __weak and global in
+kernel/cgroup/rstat.c, but lack of prototype in header file causes warning
+with Sparse (C=1):
 
-jirka
+  kernel/cgroup/rstat.c:342:22: warning: symbol 'bpf_rstat_flush' was not declared. Should it be static?
+
+Signed-off-by: Ryota Sakamoto <sakamo.ryota@gmail.com>
+---
+ kernel/cgroup/cgroup-internal.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/kernel/cgroup/cgroup-internal.h b/kernel/cgroup/cgroup-internal.h
+index 22051b4f1ccbc0812641e4716b7a5b5f7138bbc9..ecb2b3a2f06ffcc3d747adf666a6134cc54059e1 100644
+--- a/kernel/cgroup/cgroup-internal.h
++++ b/kernel/cgroup/cgroup-internal.h
+@@ -277,6 +277,7 @@ int css_rstat_init(struct cgroup_subsys_state *css);
+ void css_rstat_exit(struct cgroup_subsys_state *css);
+ int ss_rstat_init(struct cgroup_subsys *ss);
+ void cgroup_base_stat_cputime_show(struct seq_file *seq);
++void bpf_rstat_flush(struct cgroup *cgrp, struct cgroup *parent, int cpu);
+ 
+ /*
+  * namespace.c
+
+---
+base-commit: 944aacb68baf7624ab8d277d0ebf07f025ca137c
+change-id: 20260116-fix-bpf_rstat_flush-66c1a7582b21
+
+Best regards,
+-- 
+Ryota Sakamoto <sakamo.ryota@gmail.com>
+
 
