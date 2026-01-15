@@ -1,242 +1,406 @@
-Return-Path: <bpf+bounces-79014-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79015-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF2F7D23EC4
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 11:24:53 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id E46C0D24075
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 11:55:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 43718301E991
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 10:24:51 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 26A50304249E
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 10:54:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C26FD36215E;
-	Thu, 15 Jan 2026 10:24:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDAAE36E48D;
+	Thu, 15 Jan 2026 10:54:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ZNbktjYW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C1kpJSEs"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f66.google.com (mail-wr1-f66.google.com [209.85.221.66])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B44EF35EDAB
-	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 10:24:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7024936D512
+	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 10:54:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768472688; cv=none; b=Eqnq+qnb8YxXLQjONEzQwy0xOroSUoMZ53Ojp0ckL6TimOGIyKTCTvIFA+fKpvGpNnkURt1RItigxwWRCNdiw3jsWN9bQe1TxKvrOD90+wJDfV2CHUJzJr7iEXQaGBTsIOpyAkcqjty6N2uLpBJ3hUNqw3zUu0wbrNNFQbwGIXQ=
+	t=1768474479; cv=none; b=GpWuemDbUvN0OM5RYcuAe6mr40T1mFmLPGhjbevC9AXWT8besPeILTMkSQ9WYw4+3afIP3bo0r7ybTq/46kC0YkG8jneHE3EsyCEpz41t8XTvwBqe25OPM8QsdQ4A9/KJZKNRIsJyrm0pgf8wAlI9HFD9gPkZdssWF6Y6VWGH6g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768472688; c=relaxed/simple;
-	bh=T4myeQZvYSFLUPAuYC70rsVPCePsOn2xO+HTeSzspEY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Pt/ICuAijivgN/9MOziOSQ37rhzKpD9xCdLtnI96YeWR3EPIwcLx5jn8tEY2hc2clDfMrt24t2Y2v4DxHOIcsu1/d9+QCrUfvmnTn6ef69qNq7re1r0spYvXGy09NOn+i7gT8OUQ2qywvU2qc1l13uxv3WmTPHWy02YPDWo0EUw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ZNbktjYW; arc=none smtp.client-ip=209.85.221.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f66.google.com with SMTP id ffacd0b85a97d-430fbb6012bso475011f8f.1
-        for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 02:24:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1768472685; x=1769077485; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZP8rRtEvMK5KfbtDsP2vfBcfyghWq57iuvfXZ5BkugU=;
-        b=ZNbktjYW+I6yqSxaFvT7cfm5HIn3bK5HfDQMOL7s+ZWunkIM5Zy3OlCMhYQBa/IvWl
-         RLsne4D6AXHG+/0uoLKr2JiBuf9kdZvhU1lz8n4Sj40rZy2pip+k96rEvrzFOAahRYLW
-         UprYLesOs6IBeilKu3g/60mYj2asFlr4sKT8mICBuL4RDolY/H66ge8Olc3SgKilcHkw
-         ZTuVue8v3Np0aeD3njdryZ0vKrwMT8ixR/UiM67+CiFLRiua7Mh/25nSv99H+alsNazc
-         IAvSVj8ujt1cu/k3Iz+/r2s2dAa4wtTDda86mNsEJoC5euGHIIaEz8eo5DHfuj4IoRlU
-         X8YQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768472685; x=1769077485;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZP8rRtEvMK5KfbtDsP2vfBcfyghWq57iuvfXZ5BkugU=;
-        b=gJuqgoMdMVeZcU8VpYSziR/Yr4HC+l6qaQABs2lNfsUPXxO4MZhgXBp8JopV2PbQfW
-         aI6mP3SFQStBBwu7b2j69iv1EhZcilXyuyNKv4l/iX2bSSUh8A6Lx4NUS1tp5uycGnC/
-         v6DEl93ltvvOvxE28j/LGvvO9XOyiEanEyX4vbNSr89evKJ3zHLdvQOEuOauUnpEk0/z
-         maIxpXCbHH0B1+hhl0VTg3FTmkFh9y6MKrCyujVelKTGpPbEGycb6NW8PGSxwz5zd28n
-         78KCvP5E6ohDxFWOxkbE0SJ/F5I3tSx5c4D99OOx1tNW97rmCHvhgeLIs3ivQSITKGbG
-         809A==
-X-Forwarded-Encrypted: i=1; AJvYcCU4eRDJZlTRPiaCRwZVEbtFcdl7RTwfE//QdfdQTjYeHAiOvqHZ8bS8IX5LHr/Oa8dnPKA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YygxrcPt7r3QBh4RxH5xQqfvpgZ64VogPwaB16yDCG5QVOllYAp
-	Uxv+Yi8nIFYA6xd6qwa1CAYkQ4+pR0umcLFc1NK8ne6iYqYYAfl2u4yy8TNCjYqN+yU=
-X-Gm-Gg: AY/fxX6YS0h16bwgfbBgzztSueixvt9a66UtKcIKxWE3aRA1HiHVq6z9bPzFcjSLDR7
-	CykKon/lTzk/I7JIY9jG7xyt692lLT1+UBGXSkt6y86rlTUFABtCsM0S7eeh55TW/Oir185BdsC
-	FvbgS1UahvRlE/yg/U3psx+zngfM+eiH/gVtO6OasK+vAZ9ao3bWhWA+FEcNOJzvblLPxwMEu9J
-	bGXu0hy543e2+iTnFDsIVozNrSCI87pl8aVGfGoz+TBxX8Je1rHKHYKYQgFfYvZc78pwaApL7kC
-	zJrNTCRGyBDulnZO5Gtw2zecSahoiXzFd8rtGAk3W6FOkckRFnGD96laCus+o+dXhrgwN9d/z2t
-	RlZqNJKLYUxg1rIL1iqkRqEK8d9ZeRSRslgFY1FO5VrL8SKrjG2H7h9bmI3CKrP1i8mQBcVorx3
-	GodzcW45krI4AzX7F8Njs2JUMtOwP2j3U=
-X-Received: by 2002:a05:6000:420a:b0:430:fd0f:28fe with SMTP id ffacd0b85a97d-4342c54ace1mr7667501f8f.31.1768472684978;
-        Thu, 15 Jan 2026 02:24:44 -0800 (PST)
-Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-434af64a778sm5006260f8f.3.2026.01.15.02.24.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jan 2026 02:24:44 -0800 (PST)
-Date: Thu, 15 Jan 2026 11:24:42 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: roman.gushchin@linux.dev, inwardvessel@gmail.com, 
-	shakeel.butt@linux.dev, akpm@linux-foundation.org, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, yu.c.chen@intel.com, zhao1.liu@intel.com, bpf@vger.kernel.org, 
-	linux-mm@kvack.org, tj@kernel.org
-Subject: Re: [RFC PATCH bpf-next 2/3] mm: add support for bpf based numa
- balancing
-Message-ID: <z5lvdg7fonhyrt4zphak6hnhlazyntyrbvcpxtr32rrksktg3j@wpvmby6yonbr>
-References: <20260113121238.11300-1-laoar.shao@gmail.com>
- <20260113121238.11300-3-laoar.shao@gmail.com>
- <cfyq2n7igavmwwf5jv5uamiyhprgsf4ez7au6ssv3rw54vjh4w@nc43vkqhz5yq>
- <CALOAHbB3Ruc+veQxPC8NgvxwBDrnX5XkmZN-vz1pu3U05MXnQg@mail.gmail.com>
+	s=arc-20240116; t=1768474479; c=relaxed/simple;
+	bh=/1KAtvLvvLMpDi9CfvfFJ6x5SY4Jp+t4QyV0IUSlh0I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JbaM27BsE/1tml8MkGCo3Fb98+uKAG7R/GTW7Q1dTv9rofTrTVPudqGVELy5LjAI4kEGkJ321h16KAAeclQuf53FzREYLc40edRogXTuQgNKAowLMU9oKTN13En8HdaULGNSBUdSP+EBBbGwpNbxZCij0j1NepQ6eoGngvnZAx4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C1kpJSEs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A747C2BCB1
+	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 10:54:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768474479;
+	bh=/1KAtvLvvLMpDi9CfvfFJ6x5SY4Jp+t4QyV0IUSlh0I=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=C1kpJSEs7ZY0zrGxNWim7K4CU3ZGx1yWEYt0RZeKKqL1WhtjbDHF7n+G9bCghDbI4
+	 DTQJFsyYjgbt4qJNgy2fy7rh7rF3LPc4cobkjtkH3N2+ZdxrNhccGYhoxM0Bg9tw2g
+	 +t7O99tNysplYsSzPs0tSyWU5rgKDpQUPwI2rjQ4moumcI6jm3YV+R9t78aQSxYlOO
+	 mUuql4j/FwEFCzKGLiifoQoHcjQ4TUXCCc/FNnXQV/WcgLv8TDT0b0gKb8V9GA2OzY
+	 c7dU/d+SPV/smaZY6X4mLH6OV2f/xdAQOPfQrTMSPW2v0MIrf99Fk8X/MaBiWdMlOA
+	 YjvK+JMj5P/lg==
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-64ba9a00b5aso1046683a12.2
+        for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 02:54:39 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXUx3rZot0H6nbbjdDDzC+/0c+GXnRY36o3rantbhQ4VYQMnMHt9ksGfAXROtN2MqOJ9+M=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw5UgyavgirZ9jAu57/Yjuv0nnfaQPLlN5dXKxuTZBZnssuDDUi
+	ge1Qs6voXWsVnJsRYfULTe4drlfYgQ34OdTrF1b4j7mcoeXZmt7fAfx1PCHo0DpL0lQCSBJHGD0
+	oxuE0+cfLR4cCCc4SxvvR0M9T7tX2gC8=
+X-Received: by 2002:a17:907:742:b0:b80:4103:537e with SMTP id
+ a640c23a62f3a-b87614066e3mr530726366b.53.1768474476869; Thu, 15 Jan 2026
+ 02:54:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="sgrrerx4codwdoe2"
-Content-Disposition: inline
-In-Reply-To: <CALOAHbB3Ruc+veQxPC8NgvxwBDrnX5XkmZN-vz1pu3U05MXnQg@mail.gmail.com>
-
-
---sgrrerx4codwdoe2
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
+References: <20260114134510.1835-1-kalyazin@amazon.com> <20260114134510.1835-2-kalyazin@amazon.com>
+In-Reply-To: <20260114134510.1835-2-kalyazin@amazon.com>
+From: Huacai Chen <chenhuacai@kernel.org>
+Date: Thu, 15 Jan 2026 18:54:27 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H6S4bVdpwbER84-iwSE+bQrFu_gF=Ww-bCFxThJ7WiUwQ@mail.gmail.com>
+X-Gm-Features: AZwV_QhNEeWPSp4pau3pJiv_muGT_zHnXI7A5fP4Fz_wHAvUMBfJQxrRqBdZrqI
+Message-ID: <CAAhV-H6S4bVdpwbER84-iwSE+bQrFu_gF=Ww-bCFxThJ7WiUwQ@mail.gmail.com>
+Subject: Re: [PATCH v9 01/13] set_memory: add folio_{zap,restore}_direct_map helpers
+To: "Kalyazin, Nikita" <kalyazin@amazon.co.uk>
+Cc: "kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
+	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, 
+	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>, 
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, 
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>, "kernel@xen0n.name" <kernel@xen0n.name>, 
+	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>, 
+	"linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, 
+	"loongarch@lists.linux.dev" <loongarch@lists.linux.dev>, "pbonzini@redhat.com" <pbonzini@redhat.com>, 
+	"corbet@lwn.net" <corbet@lwn.net>, "maz@kernel.org" <maz@kernel.org>, "oupton@kernel.org" <oupton@kernel.org>, 
+	"joey.gouly@arm.com" <joey.gouly@arm.com>, "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>, 
+	"yuzenghui@huawei.com" <yuzenghui@huawei.com>, "catalin.marinas@arm.com" <catalin.marinas@arm.com>, 
+	"will@kernel.org" <will@kernel.org>, "seanjc@google.com" <seanjc@google.com>, 
+	"tglx@linutronix.de" <tglx@linutronix.de>, "mingo@redhat.com" <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, 
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "x86@kernel.org" <x86@kernel.org>, 
+	"hpa@zytor.com" <hpa@zytor.com>, "luto@kernel.org" <luto@kernel.org>, 
+	"peterz@infradead.org" <peterz@infradead.org>, "willy@infradead.org" <willy@infradead.org>, 
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>, "david@kernel.org" <david@kernel.org>, 
+	"lorenzo.stoakes@oracle.com" <lorenzo.stoakes@oracle.com>, 
+	"Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>, "vbabka@suse.cz" <vbabka@suse.cz>, 
+	"rppt@kernel.org" <rppt@kernel.org>, "surenb@google.com" <surenb@google.com>, "mhocko@suse.com" <mhocko@suse.com>, 
+	"ast@kernel.org" <ast@kernel.org>, "daniel@iogearbox.net" <daniel@iogearbox.net>, 
+	"andrii@kernel.org" <andrii@kernel.org>, "martin.lau@linux.dev" <martin.lau@linux.dev>, 
+	"eddyz87@gmail.com" <eddyz87@gmail.com>, "song@kernel.org" <song@kernel.org>, 
+	"yonghong.song@linux.dev" <yonghong.song@linux.dev>, 
+	"john.fastabend@gmail.com" <john.fastabend@gmail.com>, "kpsingh@kernel.org" <kpsingh@kernel.org>, 
+	"sdf@fomichev.me" <sdf@fomichev.me>, "haoluo@google.com" <haoluo@google.com>, 
+	"jolsa@kernel.org" <jolsa@kernel.org>, "jgg@ziepe.ca" <jgg@ziepe.ca>, 
+	"jhubbard@nvidia.com" <jhubbard@nvidia.com>, "peterx@redhat.com" <peterx@redhat.com>, 
+	"jannh@google.com" <jannh@google.com>, "pfalcato@suse.de" <pfalcato@suse.de>, 
+	"shuah@kernel.org" <shuah@kernel.org>, "riel@surriel.com" <riel@surriel.com>, 
+	"ryan.roberts@arm.com" <ryan.roberts@arm.com>, "jgross@suse.com" <jgross@suse.com>, 
+	"yu-cheng.yu@intel.com" <yu-cheng.yu@intel.com>, "kas@kernel.org" <kas@kernel.org>, 
+	"coxu@redhat.com" <coxu@redhat.com>, "kevin.brodsky@arm.com" <kevin.brodsky@arm.com>, 
+	"ackerleytng@google.com" <ackerleytng@google.com>, "maobibo@loongson.cn" <maobibo@loongson.cn>, 
+	"prsampat@amd.com" <prsampat@amd.com>, "mlevitsk@redhat.com" <mlevitsk@redhat.com>, 
+	"jmattson@google.com" <jmattson@google.com>, "jthoughton@google.com" <jthoughton@google.com>, 
+	"agordeev@linux.ibm.com" <agordeev@linux.ibm.com>, "alex@ghiti.fr" <alex@ghiti.fr>, 
+	"aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>, 
+	"borntraeger@linux.ibm.com" <borntraeger@linux.ibm.com>, "dev.jain@arm.com" <dev.jain@arm.com>, 
+	"gor@linux.ibm.com" <gor@linux.ibm.com>, "hca@linux.ibm.com" <hca@linux.ibm.com>, 
+	"Jonathan.Cameron@huawei.com" <Jonathan.Cameron@huawei.com>, "palmer@dabbelt.com" <palmer@dabbelt.com>, 
+	"pjw@kernel.org" <pjw@kernel.org>, 
+	"shijie@os.amperecomputing.com" <shijie@os.amperecomputing.com>, "svens@linux.ibm.com" <svens@linux.ibm.com>, 
+	"thuth@redhat.com" <thuth@redhat.com>, "wyihan@google.com" <wyihan@google.com>, 
+	"yang@os.amperecomputing.com" <yang@os.amperecomputing.com>, 
+	"vannapurve@google.com" <vannapurve@google.com>, "jackmanb@google.com" <jackmanb@google.com>, 
+	"aneesh.kumar@kernel.org" <aneesh.kumar@kernel.org>, "patrick.roy@linux.dev" <patrick.roy@linux.dev>, 
+	"Thomson, Jack" <jackabt@amazon.co.uk>, "Itazuri, Takahiro" <itazur@amazon.co.uk>, 
+	"Manwaring, Derek" <derekmn@amazon.com>, "Cali, Marco" <xmarcalx@amazon.co.uk>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Subject: Re: [RFC PATCH bpf-next 2/3] mm: add support for bpf based numa
- balancing
-MIME-Version: 1.0
 
-Hi Yafang.
+Hi, Nikita,
 
-On Wed, Jan 14, 2026 at 08:13:44PM +0800, Yafang Shao <laoar.shao@gmail.com=
-> wrote:
-> On Wed, Jan 14, 2026 at 5:56=E2=80=AFPM Michal Koutn=C3=BD <mkoutny@suse.=
-com> wrote:
-> >
-> > On Tue, Jan 13, 2026 at 08:12:37PM +0800, Yafang Shao <laoar.shao@gmail=
-=2Ecom> wrote:
-> > > bpf_numab_ops enables NUMA balancing for tasks within a specific memc=
-g,
-> > > even when global NUMA balancing is disabled. This allows selective NU=
-MA
-> > > optimization for workloads that benefit from it, while avoiding poten=
-tial
-> > > latency spikes for other workloads.
-> > >
-> > > The policy must be attached to a leaf memory cgroup.
-> >
-> > Why this restriction?
->=20
-> We have several potential design options to consider:
->=20
-> Option 1.   Stateless cgroup bpf prog
->   Attach the BPF program to a specific cgroup and traverse upward
-> through the hierarchy within the hook, as demonstrated in Roman's
-> BPF-OOM series:
->=20
->     https://lore.kernel.org/bpf/877bwcpisd.fsf@linux.dev/
->=20
->     for (memcg =3D oc->memcg; memcg; memcg =3D parent_mem_cgroup(memcg)) {
->         bpf_oom_ops =3D READ_ONCE(memcg->bpf_oom);
->         if (!bpf_oom_ops)
->             continue;
->=20
->           ret =3D bpf_ops_handle_oom(bpf_oom_ops, memcg, oc);
->     }
->=20
->    - Benefit
->      The design is relatively simple and does not require manual
-> lifecycle management of the BPF program, hence the "stateless"
-> designation.
->    - Drawback
->       It may introduce potential overhead in the performance-critical
-> hotpath due to the traversal.
->=20
-> Option 2:  Stateful cgroup bpf prog
->   Attach the BPF program to all descendant cgroups, explicitly
-> handling cgroup fork/exit events. This approach is similar to the one
-> used in my BPF-THP series:
->=20
->      https://lwn.net/ml/all/20251026100159.6103-4-laoar.shao@gmail.com/
->=20
->   This requires the kernel to record every cgroup where the program is
-> attached =E2=80=94 for example, by maintaining a per-program list of cgro=
-ups
-> (struct bpf_mm_ops with a bpf_thp_list). Because we must track this
-> attachment state, I refer to this as a "stateful" approach.
->=20
->   - Benefit: Avoids the upward traversal overhead of Option 1.
->   - Drawback: Introduces complexity for managing attachment state and
-> lifecycle (attach/detach, cgroup creation/destruction).
->=20
-> Option 3:  Restrict Attachment to Leaf Cgroups
->   This is the approach taken in the current patchset. It simplifies
-> the kernel implementation by only allowing BPF programs to be attached
-> to leaf cgroups (those without children).
->   This design is inspired by our production experience, where it has
-> worked well. It encourages users to attach programs directly to the
-> cgroup they intend to target, avoiding ambiguity in hierarchy
-> propagation.
->=20
-> Which of these options do you prefer? Do you have other suggestions?
+On Wed, Jan 14, 2026 at 9:45=E2=80=AFPM Kalyazin, Nikita <kalyazin@amazon.c=
+o.uk> wrote:
+>
+> From: Nikita Kalyazin <kalyazin@amazon.com>
+>
+> These allow guest_memfd to remove its memory from the direct map.
+> Only implement them for architectures that have direct map.
+> In folio_zap_direct_map(), flush TLB on architectures where
+> set_direct_map_valid_noflush() does not flush it internally.
+>
+> The new helpers need to be accessible to KVM on architectures that
+> support guest_memfd (x86 and arm64).  Since arm64 does not support
+> building KVM as a module, only export them on x86.
+>
+> Direct map removal gives guest_memfd the same protection that
+> memfd_secret does, such as hardening against Spectre-like attacks
+> through in-kernel gadgets.
+>
+> Signed-off-by: Nikita Kalyazin <kalyazin@amazon.com>
+> ---
+>  arch/arm64/include/asm/set_memory.h     |  2 ++
+>  arch/arm64/mm/pageattr.c                | 12 ++++++++++++
+>  arch/loongarch/include/asm/set_memory.h |  2 ++
+>  arch/loongarch/mm/pageattr.c            | 16 ++++++++++++++++
+>  arch/riscv/include/asm/set_memory.h     |  2 ++
+>  arch/riscv/mm/pageattr.c                | 16 ++++++++++++++++
+>  arch/s390/include/asm/set_memory.h      |  2 ++
+>  arch/s390/mm/pageattr.c                 | 18 ++++++++++++++++++
+>  arch/x86/include/asm/set_memory.h       |  2 ++
+>  arch/x86/mm/pat/set_memory.c            | 20 ++++++++++++++++++++
+>  include/linux/set_memory.h              | 10 ++++++++++
+>  11 files changed, 102 insertions(+)
+>
+> diff --git a/arch/arm64/include/asm/set_memory.h b/arch/arm64/include/asm=
+/set_memory.h
+> index 90f61b17275e..d949f1deb701 100644
+> --- a/arch/arm64/include/asm/set_memory.h
+> +++ b/arch/arm64/include/asm/set_memory.h
+> @@ -14,6 +14,8 @@ int set_memory_valid(unsigned long addr, int numpages, =
+int enable);
+>  int set_direct_map_invalid_noflush(struct page *page);
+>  int set_direct_map_default_noflush(struct page *page);
+>  int set_direct_map_valid_noflush(struct page *page, unsigned nr, bool va=
+lid);
+> +int folio_zap_direct_map(struct folio *folio);
+> +int folio_restore_direct_map(struct folio *folio);
+>  bool kernel_page_present(struct page *page);
+>
+>  int set_memory_encrypted(unsigned long addr, int numpages);
+> diff --git a/arch/arm64/mm/pageattr.c b/arch/arm64/mm/pageattr.c
+> index f0e784b963e6..a94eff324dda 100644
+> --- a/arch/arm64/mm/pageattr.c
+> +++ b/arch/arm64/mm/pageattr.c
+> @@ -357,6 +357,18 @@ int set_direct_map_valid_noflush(struct page *page, =
+unsigned nr, bool valid)
+>         return set_memory_valid(addr, nr, valid);
+>  }
+>
+> +int folio_zap_direct_map(struct folio *folio)
+> +{
+> +       return set_direct_map_valid_noflush(folio_page(folio, 0),
+> +                                           folio_nr_pages(folio), false)=
+;
+> +}
+> +
+> +int folio_restore_direct_map(struct folio *folio)
+> +{
+> +       return set_direct_map_valid_noflush(folio_page(folio, 0),
+> +                                           folio_nr_pages(folio), true);
+> +}
+> +
+>  #ifdef CONFIG_DEBUG_PAGEALLOC
+>  /*
+>   * This is - apart from the return value - doing the same
+> diff --git a/arch/loongarch/include/asm/set_memory.h b/arch/loongarch/inc=
+lude/asm/set_memory.h
+> index 55dfaefd02c8..9bc80ac420a9 100644
+> --- a/arch/loongarch/include/asm/set_memory.h
+> +++ b/arch/loongarch/include/asm/set_memory.h
+> @@ -18,5 +18,7 @@ bool kernel_page_present(struct page *page);
+>  int set_direct_map_default_noflush(struct page *page);
+>  int set_direct_map_invalid_noflush(struct page *page);
+>  int set_direct_map_valid_noflush(struct page *page, unsigned nr, bool va=
+lid);
+> +int folio_zap_direct_map(struct folio *folio);
+> +int folio_restore_direct_map(struct folio *folio);
+>
+>  #endif /* _ASM_LOONGARCH_SET_MEMORY_H */
+> diff --git a/arch/loongarch/mm/pageattr.c b/arch/loongarch/mm/pageattr.c
+> index f5e910b68229..14bd322dd112 100644
+> --- a/arch/loongarch/mm/pageattr.c
+> +++ b/arch/loongarch/mm/pageattr.c
+> @@ -236,3 +236,19 @@ int set_direct_map_valid_noflush(struct page *page, =
+unsigned nr, bool valid)
+>
+>         return __set_memory(addr, 1, set, clear);
+>  }
+> +
+> +int folio_zap_direct_map(struct folio *folio)
+> +{
+> +       int ret;
+> +
+> +       ret =3D set_direct_map_valid_noflush(folio_page(folio, 0),
+> +                                          folio_nr_pages(folio), false);
+> +
+> +       return ret;
+Why not use a single statement which is the same as the ARM64 version?
+The RISCV version has the same problem.
 
-I appreciate the breakdown.
-With the options 1 and 2, I'm not sure whether they aren't reinventing a
-wheel. Namely the stuff from kernel/bpf/cgroup.c:
-- compute_effective_progs() where progs are composed/prepared into a
-  sequence (depending on BPF_F_ALLOW_MULTI) and then
-- bpf_prog_run_array_cg() runs them and joins the results into a
-  verdict.
+Huacai
 
-(Those BPF_F_* are flags known to userspace already.)
-
-So I think it'd boil down to the type of result that individual ops
-return in order to be able to apply some "reduce" function on those.
-
-> > Do you envision how these extensions would apply hierarchically?
->=20
-> This feature can be applied hierarchically, though it adds complexity
-> to the kernel. However, I believe that by providing the core
-> functionality, we can empower users to manage their specific use cases
-> effectively. We do not need to implement every possible variation for
-> them.
-
-I'd also look around how sched_ext resolved (solves?) this. Namely the
-step from one global sched_ext class to per-cg extensions.
-I'll Cc Tejun for more info.
-
-
-> > Regardless of that, being a "leaf memcg" is not a stationary condition
-> > (mkdirs, writes to `cgroup.subtree_control`) so it should also be
-> > prepared for that.
->=20
-> In the current implementation, the user has to attach the bpf prog to
-> the new cgroup as well ;)
-
-I'd say that's not ideal UX (I imagine there's some high level policy
-set to upper cgroups but the internal cgroup (sub)structure of
-containers may be opaque to the admin, production experience might have
-been lucky not to hit this case).
-In this regard, something like the option 1 sounds better and
-performance can be improved later. Option 1's "reduce" function takes
-the result from the lowest ancestor but hierarchical logic should be
-reversed with higher cgroups overriding the lowers.
-
-(I don't want to claim what's the correct design, I want to make you
-aware of other places in kernel that solve similar challenge.)
-
-Thanks,
-Michal
-
---sgrrerx4codwdoe2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaWjAaBsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+Aip5wEAmBM3Eh0XmAjz2UXAxlR4
-TIdMfYbIuVZcUPqJBLuuKwEBAP+Tg17ePUYbRyjXabdKqyVmbO6OT7tDGpaUncgR
-wBgO
-=50PV
------END PGP SIGNATURE-----
-
---sgrrerx4codwdoe2--
+> +}
+> +
+> +int folio_restore_direct_map(struct folio *folio)
+> +{
+> +       return set_direct_map_valid_noflush(folio_page(folio, 0),
+> +                                           folio_nr_pages(folio), true);
+> +}
+> diff --git a/arch/riscv/include/asm/set_memory.h b/arch/riscv/include/asm=
+/set_memory.h
+> index 87389e93325a..16557b70c830 100644
+> --- a/arch/riscv/include/asm/set_memory.h
+> +++ b/arch/riscv/include/asm/set_memory.h
+> @@ -43,6 +43,8 @@ static inline int set_kernel_memory(char *startp, char =
+*endp,
+>  int set_direct_map_invalid_noflush(struct page *page);
+>  int set_direct_map_default_noflush(struct page *page);
+>  int set_direct_map_valid_noflush(struct page *page, unsigned nr, bool va=
+lid);
+> +int folio_zap_direct_map(struct folio *folio);
+> +int folio_restore_direct_map(struct folio *folio);
+>  bool kernel_page_present(struct page *page);
+>
+>  #endif /* __ASSEMBLER__ */
+> diff --git a/arch/riscv/mm/pageattr.c b/arch/riscv/mm/pageattr.c
+> index 3f76db3d2769..2c218868114b 100644
+> --- a/arch/riscv/mm/pageattr.c
+> +++ b/arch/riscv/mm/pageattr.c
+> @@ -401,6 +401,22 @@ int set_direct_map_valid_noflush(struct page *page, =
+unsigned nr, bool valid)
+>         return __set_memory((unsigned long)page_address(page), nr, set, c=
+lear);
+>  }
+>
+> +int folio_zap_direct_map(struct folio *folio)
+> +{
+> +       int ret;
+> +
+> +       ret =3D set_direct_map_valid_noflush(folio_page(folio, 0),
+> +                                          folio_nr_pages(folio), false);
+> +
+> +       return ret;
+> +}
+> +
+> +int folio_restore_direct_map(struct folio *folio)
+> +{
+> +       return set_direct_map_valid_noflush(folio_page(folio, 0),
+> +                                           folio_nr_pages(folio), true);
+> +}
+> +
+>  #ifdef CONFIG_DEBUG_PAGEALLOC
+>  static int debug_pagealloc_set_page(pte_t *pte, unsigned long addr, void=
+ *data)
+>  {
+> diff --git a/arch/s390/include/asm/set_memory.h b/arch/s390/include/asm/s=
+et_memory.h
+> index 94092f4ae764..fc73652e5715 100644
+> --- a/arch/s390/include/asm/set_memory.h
+> +++ b/arch/s390/include/asm/set_memory.h
+> @@ -63,6 +63,8 @@ __SET_MEMORY_FUNC(set_memory_4k, SET_MEMORY_4K)
+>  int set_direct_map_invalid_noflush(struct page *page);
+>  int set_direct_map_default_noflush(struct page *page);
+>  int set_direct_map_valid_noflush(struct page *page, unsigned nr, bool va=
+lid);
+> +int folio_zap_direct_map(struct folio *folio);
+> +int folio_restore_direct_map(struct folio *folio);
+>  bool kernel_page_present(struct page *page);
+>
+>  #endif
+> diff --git a/arch/s390/mm/pageattr.c b/arch/s390/mm/pageattr.c
+> index d3ce04a4b248..df4a487b484d 100644
+> --- a/arch/s390/mm/pageattr.c
+> +++ b/arch/s390/mm/pageattr.c
+> @@ -412,6 +412,24 @@ int set_direct_map_valid_noflush(struct page *page, =
+unsigned nr, bool valid)
+>         return __set_memory((unsigned long)page_to_virt(page), nr, flags)=
+;
+>  }
+>
+> +int folio_zap_direct_map(struct folio *folio)
+> +{
+> +       unsigned long addr =3D (unsigned long)folio_address(folio);
+> +       int ret;
+> +
+> +       ret =3D set_direct_map_valid_noflush(folio_page(folio, 0),
+> +                                          folio_nr_pages(folio), false);
+> +       flush_tlb_kernel_range(addr, addr + folio_size(folio));
+> +
+> +       return ret;
+> +}
+> +
+> +int folio_restore_direct_map(struct folio *folio)
+> +{
+> +       return set_direct_map_valid_noflush(folio_page(folio, 0),
+> +                                           folio_nr_pages(folio), true);
+> +}
+> +
+>  bool kernel_page_present(struct page *page)
+>  {
+>         unsigned long addr;
+> diff --git a/arch/x86/include/asm/set_memory.h b/arch/x86/include/asm/set=
+_memory.h
+> index 61f56cdaccb5..7208af609121 100644
+> --- a/arch/x86/include/asm/set_memory.h
+> +++ b/arch/x86/include/asm/set_memory.h
+> @@ -90,6 +90,8 @@ int set_pages_rw(struct page *page, int numpages);
+>  int set_direct_map_invalid_noflush(struct page *page);
+>  int set_direct_map_default_noflush(struct page *page);
+>  int set_direct_map_valid_noflush(struct page *page, unsigned nr, bool va=
+lid);
+> +int folio_zap_direct_map(struct folio *folio);
+> +int folio_restore_direct_map(struct folio *folio);
+>  bool kernel_page_present(struct page *page);
+>
+>  extern int kernel_set_to_readonly;
+> diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
+> index 6c6eb486f7a6..3f0fc30eb320 100644
+> --- a/arch/x86/mm/pat/set_memory.c
+> +++ b/arch/x86/mm/pat/set_memory.c
+> @@ -2656,6 +2656,26 @@ int set_direct_map_valid_noflush(struct page *page=
+, unsigned nr, bool valid)
+>         return __set_pages_np(page, nr);
+>  }
+>
+> +int folio_zap_direct_map(struct folio *folio)
+> +{
+> +       unsigned long addr =3D (unsigned long)folio_address(folio);
+> +       int ret;
+> +
+> +       ret =3D set_direct_map_valid_noflush(folio_page(folio, 0),
+> +                                          folio_nr_pages(folio), false);
+> +       flush_tlb_kernel_range(addr, addr + folio_size(folio));
+> +
+> +       return ret;
+> +}
+> +EXPORT_SYMBOL_FOR_MODULES(folio_zap_direct_map, "kvm");
+> +
+> +int folio_restore_direct_map(struct folio *folio)
+> +{
+> +       return set_direct_map_valid_noflush(folio_page(folio, 0),
+> +                                           folio_nr_pages(folio), true);
+> +}
+> +EXPORT_SYMBOL_FOR_MODULES(folio_restore_direct_map, "kvm");
+> +
+>  #ifdef CONFIG_DEBUG_PAGEALLOC
+>  void __kernel_map_pages(struct page *page, int numpages, int enable)
+>  {
+> diff --git a/include/linux/set_memory.h b/include/linux/set_memory.h
+> index 3030d9245f5a..8d1c8a7f7d79 100644
+> --- a/include/linux/set_memory.h
+> +++ b/include/linux/set_memory.h
+> @@ -40,6 +40,16 @@ static inline int set_direct_map_valid_noflush(struct =
+page *page,
+>         return 0;
+>  }
+>
+> +static inline int folio_zap_direct_map(struct folio *folio)
+> +{
+> +       return 0;
+> +}
+> +
+> +static inline int folio_restore_direct_map(struct folio *folio)
+> +{
+> +       return 0;
+> +}
+> +
+>  static inline bool kernel_page_present(struct page *page)
+>  {
+>         return true;
+> --
+> 2.50.1
+>
+>
 
