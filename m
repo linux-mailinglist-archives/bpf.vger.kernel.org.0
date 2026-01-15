@@ -1,73 +1,75 @@
-Return-Path: <bpf+bounces-79068-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79080-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04699D25C5C
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 17:35:51 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EA24D26ACD
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 18:44:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 6854A3003199
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 16:35:45 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0A2E431DAF6F
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 17:24:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF2813BC4EE;
-	Thu, 15 Jan 2026 16:35:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6ADB3BFE31;
+	Thu, 15 Jan 2026 17:24:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="gLtND0uP"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ih9RXDl4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A438C3BB9FE
-	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 16:35:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3CC43BFE24
+	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 17:24:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768494939; cv=none; b=W1LK7+3BB13cNDZWu8f0jUzoJPhzN6oW2mmcp+QvrIDApUTMg0AJnxRKJ/xF/LAXNScCFqVyk1IuLQzda94uDSNwh+Qm9xIH3qHrVGoa+fOl5n5nrukswVhpVTU44h4V9ppjekBccZOat2AacjGoIHMogF2VjiLAj0uhV/yG1Bc=
+	t=1768497871; cv=none; b=BlMjo2OrsNGoJik3hyv1z9Zxy91C3Ay8+dvOnPnya2dvzA0NIHL5gp1S89Cu3qlVNsTk+msJQpTT2uQP9BrV0Nvwz4MfTSt/F7hMiKKOc/viV5fiLRP6SgGqY1Jy4Q1SM4F5JRDyrIxZbc3dkMDkoZ8GauPQ4ebMgvEWz9wARhE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768494939; c=relaxed/simple;
-	bh=VuiM20ERhP6WnZdQe8Xxn6PzJLR3svN2yiTp6Sz7xFE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=niB7wZW0jdKUubBYNF+Oy5igtJEvGre8ZFuJFHrQwAA1b5ZLwBPGPpBRNUnAL/NYRXoWMzUmJqk5l97g5co/wWc0mRl+IpBhpqBCvoh1F825fQEhhDiSvOqlqQEcydmGTtCV94271/tEAcKyqsDBLP1O+q9NoJRnyh/hgtGLS3A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=gLtND0uP; arc=none smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 60FEtBk5802772;
-	Thu, 15 Jan 2026 16:35:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:date:from:message-id:mime-version
-	:subject:to; s=corp-2025-04-25; bh=3uWMvpb0vrNnEBuCeZrI3BGMpfMJk
-	EO/lUJz6vUZWVQ=; b=gLtND0uP6a1gv/Gu1JjiO40uDb3wMmDVceKlEfBTXsPj7
-	k5U3X2dJgb2FzMVbIRXeydXwjiIBOMW4HnpvuQSpTq1x+NQG1H9AJ2ICFDEG0XvS
-	XT1hJDcTIYumsrAFFneSvbZbCaVnweh0A1yK3Gr1SMnotesSAth57tqGe1HZTzRL
-	NT/G35D732Iyn9L8qNttknEpYLuVj/aQpvTWTO/AVtBj9D89x2nwXxjbO95li+3e
-	RkDm2zQHR3VlaLaYYCt/Lvv9RmyYp4AI+TqMINEpxkhpc3lDAxw1EittDEqq0vHc
-	lpdSlB+wssqpV9f8vgLnQ8M+f7efUNuZAyvN/gmOg==
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4bkre4077k-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 15 Jan 2026 16:35:02 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 60FG5kto004244;
-	Thu, 15 Jan 2026 16:35:00 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 4bkd7nacf2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 15 Jan 2026 16:35:00 +0000
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 60FGZ03R033048;
-	Thu, 15 Jan 2026 16:35:00 GMT
-Received: from bpf.uk.oracle.com (dhcp-10-154-52-30.vpn.oracle.com [10.154.52.30])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 4bkd7nacdg-1;
-	Thu, 15 Jan 2026 16:35:00 +0000
-From: Alan Maguire <alan.maguire@oracle.com>
-To: ast@kernel.org
-Cc: daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-        eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
-        haoluo@google.com, jolsa@kernel.org, alexis.lothore@bootlin.com,
-        bpf@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH bpf] selftests/bpf: Support when CONFIG_VXLAN=m
-Date: Thu, 15 Jan 2026 16:34:57 +0000
-Message-ID: <20260115163457.146267-1-alan.maguire@oracle.com>
-X-Mailer: git-send-email 2.43.5
+	s=arc-20240116; t=1768497871; c=relaxed/simple;
+	bh=Bz+uG4ihYQgEbIcTlcnwXM6JGhAeN8JAQN4W01UVPoQ=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=LDs1M0WXkYRwgn3fOoqusnLVSrtw8zDq2npjquNDP019Tbz45hDpEK+oTJUZUF1TWVxOnyc5ZGt7U6DcExRqnLIxn63jFOexA3QxXJg9KkpqC9OdVRnFFhV3sbKVq8QppV8xaaZRw4prWPEIcu7VAvUchB2HhaDjVw2XA7CsLEM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ih9RXDl4; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1768497868;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Ky4jWFgRwxpQvr+7HoCz9wwn+msKjIUHbJOJftuI5ig=;
+	b=ih9RXDl4VzjEnPexoMoFsQyOoDGC+jBeA8qHXZNG+4fWhQkCrKC6rhhIn/Z0OXaumRqnRE
+	kxaLhVv38bQAXc+ev1uOckIEZI7EKPy8/En6+Lhw8XrJZD0CatxveKA7gvRbH7P0MNscju
+	M+FqpkxNj0NiCGSh010HuPj+Vvdj1Jc=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-85-TypY81JGNUy5PN7vlKHELw-1; Thu,
+ 15 Jan 2026 12:24:25 -0500
+X-MC-Unique: TypY81JGNUy5PN7vlKHELw-1
+X-Mimecast-MFC-AGG-ID: TypY81JGNUy5PN7vlKHELw_1768497864
+Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id A0E27195608A;
+	Thu, 15 Jan 2026 17:24:23 +0000 (UTC)
+Received: from fedora.redhat.com (unknown [10.22.64.87])
+	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 6D53E1800285;
+	Thu, 15 Jan 2026 17:24:18 +0000 (UTC)
+From: Wander Lairson Costa <wander@redhat.com>
+To: Steven Rostedt <rostedt@goodmis.org>,
+	Tomas Glozar <tglozar@redhat.com>,
+	Wander Lairson Costa <wander@redhat.com>,
+	Crystal Wood <crwood@redhat.com>,
+	Ivan Pravdin <ipravdin.official@gmail.com>,
+	Costa Shulyupin <costa.shul@redhat.com>,
+	John Kacur <jkacur@redhat.com>,
+	Tiezhu Yang <yangtiezhu@loongson.cn>,
+	Daniel Wagner <dwagner@suse.de>,
+	Daniel Bristot de Oliveira <bristot@kernel.org>,
+	linux-trace-kernel@vger.kernel.org (open list:Real-time Linux Analysis (RTLA) tools),
+	linux-kernel@vger.kernel.org (open list:Real-time Linux Analysis (RTLA) tools),
+	bpf@vger.kernel.org (open list:BPF [MISC]:Keyword:(?:\b|_)bpf(?:\b|_))
+Subject: [PATCH v3 00/18] rtla: Robustness and code quality improvements
+Date: Thu, 15 Jan 2026 13:31:43 -0300
+Message-ID: <20260115163650.118910-1-wander@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -75,113 +77,105 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2026-01-15_05,2026-01-15_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- malwarescore=0 spamscore=0 adultscore=0 mlxscore=0 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2512120000 definitions=main-2601150126
-X-Proofpoint-ORIG-GUID: SlZKVP0Dnig-xVAt8SV-jaqwhbclivUO
-X-Authority-Analysis: v=2.4 cv=YKOSCBGx c=1 sm=1 tr=0 ts=69691736 b=1 cx=c_pps
- a=qoll8+KPOyaMroiJ2sR5sw==:117 a=qoll8+KPOyaMroiJ2sR5sw==:17
- a=vUbySO9Y5rIA:10 a=VkNPw1HP01LnGYTKEx00:22 a=yPCof4ZbAAAA:8
- a=9TsxrzUAS9hMPq_yXcUA:9 cc=ntf awl=host:12110
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTE1MDEyNiBTYWx0ZWRfX8BpZhXvAXGZd
- iC2OZ0Qcal2CnutQAJPqqVaymxGJQm0hXo0KslxpD5udcxBcuYbo3jflJgOCls4asXLFzKBOT2b
- FHqft+ZvGWQhnHOwZnMQW1+dHpLrNKAuZTe8adD19dECCXOeU3mwoRzGBUae/6Ki0F4tSEK+VbH
- gvuTGgYcjtjAq1Jv8A6JReIRiO57IefwCt/dCuzP2i2d1bc+WlvybiNfRfGn80Dj6AEyKX7a7zK
- Ywu4JnawWljEzqtTuT4F8GB3kP6Iqs1094LaLRH7Ll0jmydFGfXu2E4pq660hi1u1y+rI4jFYE8
- Do9OUcezI+BKgXzRVg2VAbA372rw2UmyVneoLmmYyq9Ssm96I9soBHSAPvWvK0o3SFGJ78mXCdO
- 7wFX7QKFvGoVtpvCJglVC0B5IhpOOjzfnjTWyuj5PvGCNIZppWRxfaEzSIn72Z4uvaN2lDTioGO
- mjYH052IAqWpuMKoB+HjdPEY9OBjob5fCbsyPUCc=
-X-Proofpoint-GUID: SlZKVP0Dnig-xVAt8SV-jaqwhbclivUO
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
 
-If CONFIG_VXLAN is 'm', struct vxlanhdr will not be in vmlinux.h.
-Add a ___local variant to support cases where vxlan is a module.
+This series addresses multiple issues in the rtla codebase related to
+error handling, string manipulation safety, and code maintainability.
+The changes improve the tool's reliability and bring the code more in
+line with kernel coding practices.
 
-Fixes: 8517b1abe5ea ("selftests/bpf: Integrate test_tc_tunnel.sh tests into test_progs")
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
----
- .../selftests/bpf/progs/test_tc_tunnel.c      | 21 ++++++++++++-------
- 1 file changed, 13 insertions(+), 8 deletions(-)
+The series can be broadly divided into three categories:
 
-diff --git a/tools/testing/selftests/bpf/progs/test_tc_tunnel.c b/tools/testing/selftests/bpf/progs/test_tc_tunnel.c
-index 7330c61b5730..7376df405a6b 100644
---- a/tools/testing/selftests/bpf/progs/test_tc_tunnel.c
-+++ b/tools/testing/selftests/bpf/progs/test_tc_tunnel.c
-@@ -23,7 +23,12 @@ static const int cfg_udp_src = 20000;
- 	(((__u64)len & BPF_ADJ_ROOM_ENCAP_L2_MASK)	\
- 	 << BPF_ADJ_ROOM_ENCAP_L2_SHIFT)
- 
--#define	L2_PAD_SZ	(sizeof(struct vxlanhdr) + ETH_HLEN)
-+struct vxlanhdr___local {
-+	__be32 vx_flags;
-+	__be32 vx_vni;
-+};
-+
-+#define	L2_PAD_SZ	(sizeof(struct vxlanhdr___local) + ETH_HLEN)
- 
- #define	UDP_PORT		5555
- #define	MPLS_OVER_UDP_PORT	6635
-@@ -154,7 +159,7 @@ static __always_inline int __encap_ipv4(struct __sk_buff *skb, __u8 encap_proto,
- 		l2_len = ETH_HLEN;
- 		if (ext_proto & EXTPROTO_VXLAN) {
- 			udp_dst = VXLAN_UDP_PORT;
--			l2_len += sizeof(struct vxlanhdr);
-+			l2_len += sizeof(struct vxlanhdr___local);
- 		} else
- 			udp_dst = ETH_OVER_UDP_PORT;
- 		break;
-@@ -195,12 +200,12 @@ static __always_inline int __encap_ipv4(struct __sk_buff *skb, __u8 encap_proto,
- 		flags |= BPF_F_ADJ_ROOM_ENCAP_L2_ETH;
- 
- 		if (ext_proto & EXTPROTO_VXLAN) {
--			struct vxlanhdr *vxlan_hdr = (struct vxlanhdr *)l2_hdr;
-+			struct vxlanhdr___local *vxlan_hdr = (struct vxlanhdr___local *)l2_hdr;
- 
- 			vxlan_hdr->vx_flags = VXLAN_FLAGS;
- 			vxlan_hdr->vx_vni = VXLAN_VNI;
- 
--			l2_hdr += sizeof(struct vxlanhdr);
-+			l2_hdr += sizeof(struct vxlanhdr___local);
- 		}
- 
- 		if (bpf_skb_load_bytes(skb, 0, l2_hdr, ETH_HLEN))
-@@ -285,7 +290,7 @@ static __always_inline int __encap_ipv6(struct __sk_buff *skb, __u8 encap_proto,
- 		l2_len = ETH_HLEN;
- 		if (ext_proto & EXTPROTO_VXLAN) {
- 			udp_dst = VXLAN_UDP_PORT;
--			l2_len += sizeof(struct vxlanhdr);
-+			l2_len += sizeof(struct vxlanhdr___local);
- 		} else
- 			udp_dst = ETH_OVER_UDP_PORT;
- 		break;
-@@ -325,12 +330,12 @@ static __always_inline int __encap_ipv6(struct __sk_buff *skb, __u8 encap_proto,
- 		flags |= BPF_F_ADJ_ROOM_ENCAP_L2_ETH;
- 
- 		if (ext_proto & EXTPROTO_VXLAN) {
--			struct vxlanhdr *vxlan_hdr = (struct vxlanhdr *)l2_hdr;
-+			struct vxlanhdr___local *vxlan_hdr = (struct vxlanhdr___local *)l2_hdr;
- 
- 			vxlan_hdr->vx_flags = VXLAN_FLAGS;
- 			vxlan_hdr->vx_vni = VXLAN_VNI;
- 
--			l2_hdr += sizeof(struct vxlanhdr);
-+			l2_hdr += sizeof(struct vxlanhdr___local);
- 		}
- 
- 		if (bpf_skb_load_bytes(skb, 0, l2_hdr, ETH_HLEN))
-@@ -639,7 +644,7 @@ static int decap_internal(struct __sk_buff *skb, int off, int len, char proto)
- 			olen += ETH_HLEN;
- 			break;
- 		case VXLAN_UDP_PORT:
--			olen += ETH_HLEN + sizeof(struct vxlanhdr);
-+			olen += ETH_HLEN + sizeof(struct vxlanhdr___local);
- 			break;
- 		}
- 		break;
+Bug fixes address several correctness issues: a resource leak where
+opendir() was not paired with closedir() on success paths, I/O loops
+that failed to handle EINTR and partial writes correctly, a missing
+bounds check when indexing the softirq_name array with kernel-provided
+data, improper handling of pthread_create() failures, and a loop
+condition that checked a pointer instead of the character it points to.
+
+String handling improvements replace unsafe patterns throughout the
+codebase. The strncpy() function is replaced with a new strscpy()
+implementation that guarantees NUL-termination and provides truncation
+detection. A str_has_prefix() helper replaces verbose strncmp/strlen
+patterns for prefix matching. String comparisons are tightened to use
+exact matching where appropriate, preventing silent acceptance of
+malformed input like "100nsx" being parsed as "100ns".
+
+Code quality improvements reduce duplication and improve readability.
+A common_threshold_handler() consolidates repeated threshold action
+logic. The extract_arg() macro simplifies key=value parsing. Magic
+numbers are replaced with named constants (MAX_PATH, ARRAY_SIZE), and
+redundant strlen() calls are cached in local variables.
+
+All changes have been tested with the existing rtla test suite.
+
+Changes:
+
+v3:
+- Address v2 feedback:
+  - Rename common_restart() to common_threshold_handler() to better
+    reflect its purpose (Tomas Glozar).
+  - Implement a proper strscpy() for safer string handling instead of
+    manual buffer sizing (Steven Rostedt).
+  - Remove restart_result enum in favor of simpler, direct return
+    values (Tomas Glozar).
+- Add several new bug fixes, including a softirq vector bounds check,
+  pthread_create() failure handling, robust I/O handling for
+  EINTR/partial writes, and a resource leak fix.
+- Introduce str_has_prefix() helper to replace verbose strncmp/strlen
+  patterns.
+- Tighten string parsing to enforce exact matching and reject invalid
+  suffixes (e.g., "100nsx").
+- Drop patches already merged via RTLA v6.20 pull request.
+
+v2:
+- exit on memory allocation failure
+- remove redundant strlen() calls
+- fix possible race on condition on stop_tracing variable access
+- ensure null termination on read() calls
+- fix checkpatch reports
+- make extract_args() an inline function
+- add the usage of common_restart() in more places
+
+Wander Lairson Costa (18):
+  rtla: Exit on memory allocation failures during initialization
+  rtla: Use strdup() to simplify code
+  rtla: Simplify argument parsing
+  rtla: Introduce common_threshold_handler() helper
+  rtla: Replace magic number with MAX_PATH
+  rtla: Simplify code by caching string lengths
+  rtla: Add strscpy() and replace strncpy() calls
+  rtla/timerlat: Add bounds check for softirq vector
+  rtla: Handle pthread_create() failure properly
+  rtla: Add str_has_prefix() helper function
+  rtla: Use str_has_prefix() for prefix checks
+  rtla: Enforce exact match for time unit suffixes
+  rtla: Use str_has_prefix() for option prefix check
+  rtla/timerlat: Simplify RTLA_NO_BPF environment variable check
+  rtla/trace: Fix write loop in trace_event_save_hist()
+  rtla/trace: Fix I/O handling in save_trace_to_file()
+  rtla/utils: Fix resource leak in set_comm_sched_attr()
+  rtla/utils: Fix loop condition in PID validation
+
+ tools/tracing/rtla/src/actions.c       | 103 ++++++++++++++----------
+ tools/tracing/rtla/src/actions.h       |   8 +-
+ tools/tracing/rtla/src/common.c        |  65 +++++++++++-----
+ tools/tracing/rtla/src/common.h        |  18 +++++
+ tools/tracing/rtla/src/osnoise.c       |  28 +++----
+ tools/tracing/rtla/src/osnoise_hist.c  |  22 ++----
+ tools/tracing/rtla/src/osnoise_top.c   |  22 ++----
+ tools/tracing/rtla/src/timerlat.c      |   5 +-
+ tools/tracing/rtla/src/timerlat_aa.c   |  10 +--
+ tools/tracing/rtla/src/timerlat_hist.c |  41 ++++------
+ tools/tracing/rtla/src/timerlat_top.c  |  54 ++++++-------
+ tools/tracing/rtla/src/timerlat_u.c    |   4 +-
+ tools/tracing/rtla/src/trace.c         | 101 +++++++++++++-----------
+ tools/tracing/rtla/src/trace.h         |   4 +-
+ tools/tracing/rtla/src/utils.c         | 104 ++++++++++++++++++++-----
+ tools/tracing/rtla/src/utils.h         |  31 +++++++-
+ 16 files changed, 374 insertions(+), 246 deletions(-)
+
 -- 
-2.39.3
+2.52.0
 
 
