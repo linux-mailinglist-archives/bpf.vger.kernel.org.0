@@ -1,254 +1,163 @@
-Return-Path: <bpf+bounces-79052-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79053-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE168D24879
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 13:34:20 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDB10D24A81
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 14:05:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 262BF302C603
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 12:33:14 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 2C70130158EE
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 13:05:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70354399A53;
-	Thu, 15 Jan 2026 12:33:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A69439E166;
+	Thu, 15 Jan 2026 13:05:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nokia-bell-labs.com header.i=@nokia-bell-labs.com header.b="BeLgMqHK"
+	dkim=pass (4096-bit key) header.d=mpi-sp.org header.i=@mpi-sp.org header.b="f3mOQ1Q0";
+	dkim=pass (4096-bit key) header.d=mpi-sp.org header.i=@mpi-sp.org header.b="0P4f6tev"
 X-Original-To: bpf@vger.kernel.org
-Received: from DU2PR03CU002.outbound.protection.outlook.com (mail-northeuropeazon11011003.outbound.protection.outlook.com [52.101.65.3])
+Received: from smtp.mpi-sp.org (smtp.mpi-sp.org [141.5.46.40])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5931B36B07F;
-	Thu, 15 Jan 2026 12:33:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.65.3
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768480389; cv=fail; b=HRpwofWyfQtRXSGPnyUn4+Lg+Y4keQIzCmvBxvuJ1g66cyJ/WFZ83uzxQ7gY9heNmHa+xy6iwdFIl3D8e6Rbh/GL3usRU7VXd4YR9+CKcrVPWWBN5yDc7Nge1uwUwZ0sR9lJqxVMEoP5cmvqRWJzwCWWUkeV5xhf3ec0yS2lmcQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768480389; c=relaxed/simple;
-	bh=8NcgwPK858lXROEZAS0o7zMnbFv3T+sxLAYyExoAX9U=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=nv8lvUihYcPcHkh6w61SfGvcxg6M9qmD6Lrj+D9ar/qpog5EeOSygm+0mv4IppZjB8vL25NKIkt1G1t6UMpE0kXjFT14JNojQj/kaAjqflbHPSPsBXmkie+bkD9/IQqxZzFhFtXkvQBykADDs/9rufz7YY2m7mIi/ABznqFreB0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia-bell-labs.com; spf=fail smtp.mailfrom=nokia-bell-labs.com; dkim=pass (2048-bit key) header.d=nokia-bell-labs.com header.i=@nokia-bell-labs.com header.b=BeLgMqHK; arc=fail smtp.client-ip=52.101.65.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia-bell-labs.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nokia-bell-labs.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=LejXdz1T3ssFwZSlzu7ZSj97lfl9Om2soVTioLDQR0z/QcUNJL/u2372f1E6adZI0e5QG7vYNTsFhbsIn0n+4kn4FbuYBFqjryA3m8p8ui2vmfThuC05mWETFzL6IjVV1XUQeokBfP/8v9nwPex8hnCfBWK/7DpGOQj7lyoXDt+XPIM4LumbvjraFoVivrtsaVlgJeiYNUdghPpLmRCojiz6q/T3zASTRabH2yDgeB4ZwG6JvdjvW+1hjBzCLKjPquvglZeKlvEJUgO24+bgqHC1jzLEe4ErbSfE/0e121sVPZyEIkNjVhJcJSqRaDAx/VnyVZKAyG5JawSgGX67nw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8NcgwPK858lXROEZAS0o7zMnbFv3T+sxLAYyExoAX9U=;
- b=Cahm1/+ECSgXcs0OQQ/U925lI0Q5woF+0Xuc1EZx5P78U3V+OZONLcwHFXgRvu7tW/kYyUJR6rlp0lYV3/ZnByDbUgevy4Iw+aAfFZaNulvMwfJraLKgT3iIrK0YnPDT+6iQVOuQaOkzQRKihvKo59OGd8sD/+k1v0DIVvr1rx9lUufivclmhbdoM5xqv5I+hWQLXHO93ZBHA36N9aBsT/xi7mYY4BWZsQs0U36xxdsWQ7V/NLP6e8At2eHrDKgkYqtFd8S8X6v4aIFGQnFoItvBzY67ABELm23aRo+8C1BIPcnwVnYcOIlPPjw9uNC/j3wBuCfQZS/InJIrt/5XNQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nokia-bell-labs.com; dmarc=pass action=none
- header.from=nokia-bell-labs.com; dkim=pass header.d=nokia-bell-labs.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia-bell-labs.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8NcgwPK858lXROEZAS0o7zMnbFv3T+sxLAYyExoAX9U=;
- b=BeLgMqHKEyHopLFy9/A2FH7mLF1NNXoysTjqQSENyau+xEUckTcp79bxxjfKkEVw6Buf2X1KRJ2a7CpWdkk5UMlcJKI7/TY2H2PjsyjVOjdYBICO3m0bK34Wm4sSv+5LUPQXX86FBdMvrGHvhhzrYliP5QL8XBxLdqUM2OfFb4fkSrkkw8IPGN1y2P8YI4s6lmhmwLGvhAPpGwe8m0dO1vYB2n9U3MR3DyW0zDDDfYYXQbKEq1Aako9SH/aA3xaVl4VwclHkjjvxjHui8e3XKUe7KMOkSGyJL6h5iKaCgxbQdoGl+kuNFboDqSWRwkq1Yo/97KbDkk8L9zXmrSaKWw==
-Received: from PAXPR07MB7984.eurprd07.prod.outlook.com (2603:10a6:102:133::12)
- by VI1PR07MB10068.eurprd07.prod.outlook.com (2603:10a6:800:1d0::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9520.5; Thu, 15 Jan
- 2026 12:33:02 +0000
-Received: from PAXPR07MB7984.eurprd07.prod.outlook.com
- ([fe80::b7f8:dc0a:7e8d:56]) by PAXPR07MB7984.eurprd07.prod.outlook.com
- ([fe80::b7f8:dc0a:7e8d:56%2]) with mapi id 15.20.9520.005; Thu, 15 Jan 2026
- 12:33:02 +0000
-From: "Chia-Yu Chang (Nokia)" <chia-yu.chang@nokia-bell-labs.com>
-To: Jakub Kicinski <kuba@kernel.org>
-CC: "pabeni@redhat.com" <pabeni@redhat.com>, "edumazet@google.com"
-	<edumazet@google.com>, "parav@nvidia.com" <parav@nvidia.com>,
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "corbet@lwn.net"
-	<corbet@lwn.net>, "horms@kernel.org" <horms@kernel.org>, "dsahern@kernel.org"
-	<dsahern@kernel.org>, "kuniyu@google.com" <kuniyu@google.com>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>, "dave.taht@gmail.com" <dave.taht@gmail.com>,
-	"jhs@mojatatu.com" <jhs@mojatatu.com>, "stephen@networkplumber.org"
-	<stephen@networkplumber.org>, "xiyou.wangcong@gmail.com"
-	<xiyou.wangcong@gmail.com>, "jiri@resnulli.us" <jiri@resnulli.us>,
-	"davem@davemloft.net" <davem@davemloft.net>, "andrew+netdev@lunn.ch"
-	<andrew+netdev@lunn.ch>, "donald.hunter@gmail.com" <donald.hunter@gmail.com>,
-	"ast@fiberby.net" <ast@fiberby.net>, "liuhangbin@gmail.com"
-	<liuhangbin@gmail.com>, "shuah@kernel.org" <shuah@kernel.org>,
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-	"ij@kernel.org" <ij@kernel.org>, "ncardwell@google.com"
-	<ncardwell@google.com>, "Koen De Schepper (Nokia)"
-	<koen.de_schepper@nokia-bell-labs.com>, "g.white@cablelabs.com"
-	<g.white@cablelabs.com>, "ingemar.s.johansson@ericsson.com"
-	<ingemar.s.johansson@ericsson.com>, "mirja.kuehlewind@ericsson.com"
-	<mirja.kuehlewind@ericsson.com>, cheshire <cheshire@apple.com>,
-	"rs.ietf@gmx.at" <rs.ietf@gmx.at>, "Jason_Livingood@comcast.com"
-	<Jason_Livingood@comcast.com>, Vidhi Goel <vidhi_goel@apple.com>
-Subject: RE: [PATCH v2 net-next 0/1] AccECN packetdrill selftest series
-Thread-Topic: [PATCH v2 net-next 0/1] AccECN packetdrill selftest series
-Thread-Index: AQHchXLvLZ9jpF/GoE2EiLZqr4hX4LVSS/cAgAAA3dCAAFJWgIAAi5+g
-Date: Thu, 15 Jan 2026 12:33:02 +0000
-Message-ID:
- <PAXPR07MB7984DAC49A65444E61206A90A38CA@PAXPR07MB7984.eurprd07.prod.outlook.com>
-References: <20260114162915.94820-1-chia-yu.chang@nokia-bell-labs.com>
-	<20260114151346.734001ac@kernel.org>
-	<PAXPR07MB7984E23DB685074239202CA8A38FA@PAXPR07MB7984.eurprd07.prod.outlook.com>
- <20260114201133.710abe3c@kernel.org>
-In-Reply-To: <20260114201133.710abe3c@kernel.org>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nokia-bell-labs.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PAXPR07MB7984:EE_|VI1PR07MB10068:EE_
-x-ms-office365-filtering-correlation-id: 055ce134-f5d0-4ab1-c15c-08de543239b5
-x-ld-processed: 5d471751-9675-428d-917b-70f44f9630b0,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|366016|1800799024|7416014|376014|38070700021;
-x-microsoft-antispam-message-info:
- =?us-ascii?Q?D1knh5tBnC5DHb4cnljWrPqPhbKep7qpE7szH7aLJt5WSQ4e48py+cXirijs?=
- =?us-ascii?Q?oo7SkOHYXgr2zx8HJIt5ylh/uCJ8gkd/pz9VrGTMzJHGBIloWLNBkgcCOanw?=
- =?us-ascii?Q?E0r+oeqzpPg1YcpEwPOe42U/DuBO2afHksZ6eS13enBP+jH+dQ966eSWf4qA?=
- =?us-ascii?Q?pYNVTtmXUsel6//oo/Avvz23+m1iDmgGZhLVyqcYErWrOOuy9wJcU+0iU7ee?=
- =?us-ascii?Q?IUNiwkxIDGiSywgRjOfH+SwoASwVLCf95I7W6hNWZz5fSaACOASjE13/awnP?=
- =?us-ascii?Q?1l1vzca4ipopSL7eGsQZbfmqTxfZZ4otRRxMjI7XES4sgLCk5eN+eHM6koNn?=
- =?us-ascii?Q?SvDEDHTHQvoAXNMVBbjaGKAwfwtfRfLMoL6veXT+y10R5kvCpOHzAijkNive?=
- =?us-ascii?Q?f/aDZMDxA5a8i5toe1oQAnik+XQPY4TQk59jq1Rg/UkVT0gkgGmgFNFOsV+w?=
- =?us-ascii?Q?oX9X6IrtPF0LCPPFlWxeypA7rFg1NBxMG00HsAzkb55gMW6bP7mwzGGCKcoR?=
- =?us-ascii?Q?jkItBMyQJI88Gm+Mi2hvXUDnmXI+vbuzVloOABNX9Gfhp/PcNY0iVFGFV4ZK?=
- =?us-ascii?Q?hSjgUv0MHs1PShu4EOAYu08K/VkDiRw1R5PT3cV9/iZ0AKDo+UdrMixeG8dy?=
- =?us-ascii?Q?Cd1b23WCk4SwTN9HQPeHm+ali/0ubnHQFyVh4khXzQWBD+KYgnGCae6/bAbe?=
- =?us-ascii?Q?xf4WO57AXUL4IEL+jStmXU50EE2hl+HYkkZfR9+GHgi/AvoT28cLYBvq13jW?=
- =?us-ascii?Q?kiDb/vRwiXENEwQANZ2uljNsEt7HIalj9uJRT0eZjC0JZAEEMNat+6LtriDm?=
- =?us-ascii?Q?q9eW9ZCijBxnuh4jtl2tzM2dIbgriuwPAYh88Biz5nYFbd2AsGZsYLYqpHmX?=
- =?us-ascii?Q?Iaulv8jBzHyyDJzusUDEB2bKwILusxtsBc6zqjaG+JVF1MlVF4FBuKQ5EMbF?=
- =?us-ascii?Q?MfzzP2eAG0Rm4vJ1PUl33e1VWTR+OwvgYLXwVCfT9vRXtJegkqsZNBMpjZab?=
- =?us-ascii?Q?NqMrDLB1gFYftXQdPzsdNPqqhsAImJmR7KGESE2cAsdrlj8hLxOph6BRAhm+?=
- =?us-ascii?Q?AgiLpzZ27QcRuzxAE8hkrMhFRQiRTkAn2XHQVxbCd4yZMTFBuxBTGFsdN4tX?=
- =?us-ascii?Q?qAd+GajaEUKGydWcSgwo8X4FTlIY+ZPm1AYjHymIZyXX22VNyF3y0hEMcsxO?=
- =?us-ascii?Q?+DVl57xXihP9dxN2c9QoPMYFGUKj5W6B3GzuOOOB4CvqPPccvCql/FiL1OMv?=
- =?us-ascii?Q?mp2iIOy4viBaP+k8CYcucLGtDQmyyoob+oAx8z3ltYxT6VN5rZe4QpfthRiu?=
- =?us-ascii?Q?3/qkArlk5imIPI8KMWi4KjdNZPryPqq/IXMmaQQxoiIRbXBCcaks+9UovMAy?=
- =?us-ascii?Q?M0My5N4nlDxtTGxFlparHA+wlrjfwRQebCYwoFrQNGNo0azdGmMRSyt+HIoW?=
- =?us-ascii?Q?N6OEqsogDEmzTF/K+Ezf+ItvKR9hjK+quKagPSVyJ62CnyRybtkqZ4FkrntR?=
- =?us-ascii?Q?bH/PawmyQUEBUayeKlGCS3vmNUtw76uxTzXttlKCgveMpM8OYYqxHEgAMyRe?=
- =?us-ascii?Q?+1i/ctj51B+39IndIHYGaQoPEaFeSkphxtm2ioLkMdMfi/YtTmDmADE7DgIM?=
- =?us-ascii?Q?OGX5U8UrVGme3IW5lQTSxQs=3D?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR07MB7984.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(376014)(38070700021);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?C1A4ztx8wAbT3PpuNdUd4UYkYqdg4EmKjH0oBl8eBLVfRzV0dACoDevSIMrA?=
- =?us-ascii?Q?wFJeRdQzZwb0cnYVt1qr/4Zew8dPV+kjPcse/k5xzjKO2Onpr/fr8C3v0nPX?=
- =?us-ascii?Q?vlfykdH4H4dn2K83fd7orjXCK+j08lPr/9b07eeWIrFNFrrVjLCVKnGt4JaY?=
- =?us-ascii?Q?GPjhL7aHlhfkafZbWt3BIzcWgPhszZ/fNj7zKEgXEyiDJELHvzzdwKGw1AjX?=
- =?us-ascii?Q?uUpNahk1mVPg/SFnqCnD2xhTj+dLwLz4DhfAYv3M7IaOiSr3Ra1RqlFTR6Di?=
- =?us-ascii?Q?LUSA6CO32NKaXQt6L9RDiDEwtLWahsSFMNQzF6TpUzQ9DQ6GeuowL/VMvzpG?=
- =?us-ascii?Q?mnwpf2bQLp+7kggflRktiVNoUTRWVQu06CfChS57/cFJuzueWcTsKAAJL+Qu?=
- =?us-ascii?Q?xx8TGx52RsCvkZ+pCd8T8qR1AkqvG9jJetQJHcOA4yRHzNSCLwYfqhwwvU6J?=
- =?us-ascii?Q?d0/VZM33Ml0qtQS+8+yA4cHlOUDHey3jfjbb+zeQaVEbR1X30WlnpWArEc13?=
- =?us-ascii?Q?3jyyqowQrp5cyH6OimuWMVYKLIlfhFA1KYsKfjx76ePN4c7wEglc4nUO0Hg0?=
- =?us-ascii?Q?L48J5T/sN0/mvq3AWepfKbUuwwyRG/7iYnx0eNVT2hR3H0LFDq1rhrRKvObn?=
- =?us-ascii?Q?CNa8QCq5LmzoXUf4/pDJ0OYuWHWkZw5yNPmEVE0D+MDU4biU1zJf5VKW/gjU?=
- =?us-ascii?Q?96T/hBVgeCFgmF/haIQJDs0QX6b/C8x50XohA8elGvSQAQUK1WVGSeg1ZiNF?=
- =?us-ascii?Q?eAMlb/Qlh4bLjIGGwuem0eu0OKX/QMRR0n8MnSPU32ADxz4aM+v2agJqDJsu?=
- =?us-ascii?Q?QohEXDvNqHZnNn/Kagbf5uv185tULE1wqOOyshW8p14ubGBkQDZxVyn5QL97?=
- =?us-ascii?Q?xkUt+DFKTwqMISgggmRtlr+v8mayT6Ui0CfWs8O44JjVm7xOrYzAQEp0o7yE?=
- =?us-ascii?Q?PsbbrGKNRKt1Cp8BLbH3Z/xG1hYVHLhbtgXshjSl20EdN4gsBIb72sjDqV6f?=
- =?us-ascii?Q?uqbCbX/WqUu0uFaCw7bsnOoqWJrs++mAdYhk0I/jz5Kwk++83eg8vPJouonc?=
- =?us-ascii?Q?sloEVzwqBiXNTgFPDojYy7cz+bs3vQ5l9E5N9D6bM5YfEXceDQzbSNxAHpr3?=
- =?us-ascii?Q?HhZIoJwtlnqk8dB1TvpZ9elawXkZh6cvU5S7vy+vzOiFrWJvxgjCxqQrwTM0?=
- =?us-ascii?Q?sy8KhAYIaDhWJuymVAYxvbrMhzakp7627cLnm/UFgHLe9zjAQEVqa+9gtb6t?=
- =?us-ascii?Q?mizhpvbKgDpYUhyoro9hl3XCotwSGRgwpYaR0d0p6+9YofCX2yas3x8nkWqW?=
- =?us-ascii?Q?bcJEr2cN0XGJlFAMSxgeJOX9yotizmNx2RZ31cv7s1R8kRkIwbqplmWof+Bo?=
- =?us-ascii?Q?E6pvSzwbzn0R5vsUHW0z5H/FJ/6Qcc/VnIustviJOUi4Ft97JECQhwQSh/M9?=
- =?us-ascii?Q?3uyDOcmTyJHkB9H50f8OwBBGtOukKij66EpLpuUltuvdi5UsyszOjCvMJpdy?=
- =?us-ascii?Q?eyDyKC4ST5ryM+NOScsvaUSCXP/nymU/rboLcvbiXTc9MZxgEa5v3WOwryH1?=
- =?us-ascii?Q?MTvxxYIz+/ebpmW3KgMU6PO+WH7a/XTngaVcpp/9GNHnaB/NWFyIj9zz4C+W?=
- =?us-ascii?Q?eEpmtovqDI68TgnMVCp2N/tfqpQU1js4HUMUR+aEiQwfEdOlgcg/QFtSIATV?=
- =?us-ascii?Q?4LzrVl1dedT/BgruOFzDXtxo9m20ZPSSGH5QFHs8hGIbBdic6ayRKIx5pwhp?=
- =?us-ascii?Q?3lEhFlWMfmuJkQzkc8/ee93ErNty4oM=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B81B633A9D1
+	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 13:05:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.5.46.40
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768482310; cv=none; b=UeZ3zHpM4TjwbfPfeCOGOaeNEgMYx7Ds3MFlYWZwVf/lUHNd5QStb7Y5xzsbwAUJPGztlGFUq2rD0GvBu9ideDulKLwY3tatleJUbl3b0dzXRKNUcZWDc+4DZRxZmiTifcp4K1xSLYWvP9qra3M0gIvG7ZUWxQddnlRQr90GlKs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768482310; c=relaxed/simple;
+	bh=syDsAmWtFpOnw0totyvwj9l2H1D3Mm4Syxk6/yuEH7M=;
+	h=MIME-Version:Date:From:To:Cc:Subject:Message-ID:Content-Type; b=luXLhTPXIeLHLp8jQrW0b5KM4Mk/p9F9eNsG29CY/vRtt+AZlm1GBLc9ja91UfcqaM3C0Ww1Q6RD3ZjY0nFqKYxwjZO+FAZ26NwOmv7crZhC5DFxuV9NXEU6BWuBgfuMxNiGUOhcEWWZ/CazdpMTQLMg9RslUa1QG3U8SfTMJsc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mpi-sp.org; spf=pass smtp.mailfrom=mpi-sp.org; dkim=pass (4096-bit key) header.d=mpi-sp.org header.i=@mpi-sp.org header.b=f3mOQ1Q0; dkim=pass (4096-bit key) header.d=mpi-sp.org header.i=@mpi-sp.org header.b=0P4f6tev; arc=none smtp.client-ip=141.5.46.40
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mpi-sp.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mpi-sp.org
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mpi-sp.org; s=202211;
+	t=1768481851; bh=syDsAmWtFpOnw0totyvwj9l2H1D3Mm4Syxk6/yuEH7M=;
+	h=Date:From:To:Cc:Subject:From;
+	b=f3mOQ1Q0HaeAoD/mbWNGTHArBcxbJo4+bWWvTmF/flsVd1MjUuE+lM5hoCXTkcivz
+	 BYYj/Bqr+1vT8OQyULIoehPwtVcxrMSzK6L/0EQY6gjeHzpU4vuByrIZe2pRfdpKD8
+	 HG66I0I5Jq9ARwCCAm8kJVSxWP5VTfegf6JbSaDqwztQJKTxOn9RQvfRRYepJ4rGVN
+	 vuUbn+8ZwIAYYoWnxqoJDUwVxZCWDbDVpUamR82Nx/3fIC+J04WFYYiFJno1HTIlEf
+	 UC9G3HCpBEVo1viDA8loH5YHtPqEzFWj6WymGfYKntw8MTNSji5t8leNxKRnTcdUZt
+	 I8JJSI9quf6VKk7QVWh/kYzlpR+0jeEey4OUov72s5OIvzqHOmgYAt642IZP5EslnE
+	 S04AcW9vIziLs72DAjgpLjv1n5EE3sMVZoQL4BEr3ifRGifiaBkSCa8BTn60HAy978
+	 dAVZvnf33UfpWG8HZU3paKsQJerJwKfCskHZ87VxgoHNSd7DWumq5SEBr80CS0YRq6
+	 mWimhqC3YAfuVfCqif860s/0Xircj0UDVKnGL0G1humkyiHSL3WfXLhsbvfklQrOow
+	 KcXVPyvDJ0+/Z1LC0OeJgfUk3/ckZMHvy6UElOCsef02Po34pxl54aG2/W+qWcMdCC
+	 oaPS2zZ+AQV4JUDNJNnQVuSM=
+Received: from smtp.mpi-sp.org (localhost [127.0.0.1])
+	by smtp.mpi-sp.org (Postfix) with ESMTP id E588F8804A7;
+	Thu, 15 Jan 2026 13:57:30 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mpi-sp.org; s=202211;
+	t=1768481850; bh=syDsAmWtFpOnw0totyvwj9l2H1D3Mm4Syxk6/yuEH7M=;
+	h=Date:From:To:Cc:Subject:From;
+	b=0P4f6teva0rKVeWVAw4n6uU92sMspHuFVxhzDetrYTrUmw5U7Tg35YH09bMsX1uhl
+	 up2bPig7YRDu8OU9Xw48L1aLBdSwd2AufgoVZAkntYR5Hm2klhdBEd6E95Gnt40a7E
+	 T4FxSnLWR87H3W/sAwLNIq7jsjVC95clb0PP/CSIpqwk5LSgHS/pk93omsiGgislhK
+	 gq4ssVnBK/6NK9rsalldVrRCfoF9g85J81s/mM/29hJ/pVTe+xna0l24v8zn0dbtnB
+	 K0RPDPE4xtctoljUsvfLFniVPv0C8CXuTIGCxPoUUtdmCNSthhRCZZ32nm9PQPvQec
+	 ZLwbXQCA6mKKkStyYp2QwDZXOINO6loTt9+MBwwKEKTP/vrz/Su0cftZyJExzY1q0g
+	 le4Fd8CMEdp0Vkm1Yym00wFitYWLBlZ0E+1Wnp6meOM1K15tIZr/Yfa8f5G/TnvlFJ
+	 bGj7BcY+SFPZrUoUXLUO14ecIMg90NpdwmRQ7ogHtKB9Oyhj374F3rxfkF5t1DyB4z
+	 oM54qqyWAYWgtkvxc6Czf1xxw7bCCekG2i8CqQQvTRANtemgi9W120fIVeL4v2rqpX
+	 BbfcD9s8LRNSVQFwu4nh2z9lWM2BOAzjse8YdZgq9uxB5MVuu2+gsajmiN9cs6hJSR
+	 OXPYP9j5grkauuhUuWcC90Bo=
+Received: from imap.mpi-sp.org (imap.mpi-sp.org [10.100.1.36])
+	by smtp.mpi-sp.org (Postfix) with ESMTPSA id 9FFFF880445;
+	Thu, 15 Jan 2026 13:57:30 +0100 (CET)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nokia-bell-labs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR07MB7984.eurprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 055ce134-f5d0-4ab1-c15c-08de543239b5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jan 2026 12:33:02.6257
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: EN2L647R840cdi9onx+q5U7mCX4FyfnrmdPDPRkI7n34bteThx7rRRx0ChyPt8oHm+0BvBYM7dtVQs20Vqd+hlsmK5M1wJy3U1e0B47a7osmKQiKD/43rjGix0WaSAJJ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR07MB10068
+Date: Thu, 15 Jan 2026 13:57:30 +0100
+From: "syeda-mahnur.asif" <syeda-mahnur.asif@mpi-sp.org>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net
+Subject: Verifier misses infinite loop
+Message-ID: <e9e34c47d9668990e0b11fa17a1ab758@mpi-sp.org>
+X-Sender: syeda-mahnur.asif@mpi-sp.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 
-> -----Original Message-----
-> From: Jakub Kicinski <kuba@kernel.org>=20
-> Sent: Thursday, January 15, 2026 5:12 AM
-> To: Chia-Yu Chang (Nokia) <chia-yu.chang@nokia-bell-labs.com>
-> Cc: pabeni@redhat.com; edumazet@google.com; parav@nvidia.com; linux-doc@v=
-ger.kernel.org; corbet@lwn.net; horms@kernel.org; dsahern@kernel.org; kuniy=
-u@google.com; bpf@vger.kernel.org; netdev@vger.kernel.org; dave.taht@gmail.=
-com; jhs@mojatatu.com; stephen@networkplumber.org; xiyou.wangcong@gmail.com=
-; jiri@resnulli.us; davem@davemloft.net; andrew+netdev@lunn.ch; donald.hunt=
-er@gmail.com; ast@fiberby.net; liuhangbin@gmail.com; shuah@kernel.org; linu=
-x-kselftest@vger.kernel.org; ij@kernel.org; ncardwell@google.com; Koen De S=
-chepper (Nokia) <koen.de_schepper@nokia-bell-labs.com>; g.white@cablelabs.c=
-om; ingemar.s.johansson@ericsson.com; mirja.kuehlewind@ericsson.com; cheshi=
-re <cheshire@apple.com>; rs.ietf@gmx.at; Jason_Livingood@comcast.com; Vidhi=
- Goel <vidhi_goel@apple.com>
-> Subject: Re: [PATCH v2 net-next 0/1] AccECN packetdrill selftest series
->=20
->=20
-> CAUTION: This is an external email. Please be very careful when clicking =
-links or opening attachments. See the URL nok.it/ext for additional informa=
-tion.
->=20
->=20
->=20
-> On Wed, 14 Jan 2026 23:25:59 +0000 Chia-Yu Chang (Nokia) wrote:
-> > > Missing your own SoB on the patch, but also -- are these supposed to =
-pass without the kernel patches? Without going back to check Paolo's messag=
-e my understanding was that you'd repost this as patch 15 of the kernel ser=
-ies.
-> > >
-> > > On the packetdrill side -- is PR #61 the code we need merged?
-> > > Doesn't seem like it. Could you please clean that part up and start t=
-he review process?
-> >
-> > Thanks, I will add my own SoB in the next version.
-> > This patch can NOT pass without the last kernel patch; shall I merge=20
-> > this series into that kernel series? If yes, I will submit v8 on that=20
-> > series and add this patch as the last one.
->=20
-> Yes, please.
->=20
-> > On the packetdrill, the used packetdrill is commit=20
-> > 6f2116af6b7e1936a53e80ab31b77f74abda1aaa of the branch:
-> > https://eur03.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fgit=
-h
-> > ub.com%2Fminuscat%2Fpacketdrill_accecn&data=3D05%7C02%7Cchia-yu.chang%4=
-0nokia-bell-labs.com%7C4e8d1d517df64fb0e6b008de53ec2d5e%7C5d4717519675428d9=
-17b70f44f9630b0%7C0%7C0%7C639040470993547718%7CUnknown%7CTWFpbGZsb3d8eyJFbX=
-B0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUI=
-joyfQ%3D%3D%7C0%7C%7C%7C&sdata=3D5%2BP0xyXIjXqfC7B6kuMAaEp%2FYuoPSUkYzKC5Pg=
-RZUA4%3D&reserved=3D0 Shall I create PR? Or above info is ok for merging in=
-to packetdrill.
->=20
-> Please create a PR and let's give Neal a couple of days to look thru it.
-> We don't need the packetdrill side to be fully merged upstream but I'd lo=
-ve some indication that it's not going to take long because we need to manu=
-ally manage the packetdrill build if it's not upstream.
+Hi,
 
-A new PR is now created: PR#96 I google/packetdrill
-And the v8 of this patch is also submitted with the updated commit messages=
-.
+In kernel 6.12.63, the eBPF verifier allows an infinite loop, comprised 
+of timer callbacks.
+This can in return stall the kernel if the bpf program is attached to 
+something like irq_exit_rcu.
 
-Thanks.
-Chia-Yu
+Example program:
+
+-----
+
+
+static int timer_callback(void);
+static int timer_callback2(void);
+
+struct elem {
+     struct bpf_timer t;
+};
+
+struct {
+     __uint(type, BPF_MAP_TYPE_ARRAY);
+     __uint(max_entries, 100);
+     __type(key, int);
+     __type(value, struct elem);
+} what SEC(".maps");
+
+static int timer_callback() {
+
+     u32 key = 1;
+     struct elem *ele = bpf_map_lookup_elem(&what, &key);
+     if (ele==NULL)
+         return 0;
+
+     struct bpf_timer *timer = &ele->t;
+     bpf_timer_set_callback(timer, timer_callback2);
+     bpf_timer_start(timer, 0, 0);
+     return 0;
+
+}
+
+static int timer_callback2() {
+
+     u32 key = 1;
+     struct elem *ele = bpf_map_lookup_elem(&what, &key);
+     if (ele==NULL)
+         return 0;
+
+     struct bpf_timer *timer = &ele->t;
+     bpf_timer_set_callback(timer, timer_callback);
+     bpf_timer_start(timer, 0, 0);
+
+     return 0;
+}
+
+
+SEC("fentry/irq_exit_rcu")
+int bpf_prog(void *ctx){
+
+     u32 key = 1;
+     struct elem *init;
+
+     bpf_map_update_elem(&what, &key, &init, BPF_ANY);
+
+     struct elem *ele = bpf_map_lookup_elem(&what, &key);
+     if (ele==NULL)
+         return 0;
+
+     struct bpf_timer *timer = &ele->t;
+     bpf_timer_init(timer, &what, 0);
+     bpf_timer_set_callback(&ele->t, timer_callback);
+     bpf_timer_start(timer, 0, 0);
+
+     return 0;
+}
+
+char _license[] SEC("license") = "GPL";
+
+
+----
 
