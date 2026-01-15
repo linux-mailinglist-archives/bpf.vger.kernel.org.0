@@ -1,93 +1,93 @@
-Return-Path: <bpf+bounces-79057-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79058-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBD30D24EDE
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 15:26:16 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD9CDD2511B
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 15:52:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 6C11D3008E31
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 14:26:08 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id C9C8330119E3
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 14:48:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90C443A1E77;
-	Thu, 15 Jan 2026 14:26:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5A123559F8;
+	Thu, 15 Jan 2026 14:47:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="SjCXVf/h";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="A2kN+Uxa";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="AtRUrw1V";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4CyY8kO1"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ao7OxHHt";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="If0rrow2";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ao7OxHHt";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="If0rrow2"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CCFB327C05
-	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 14:26:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B7B03101AA
+	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 14:47:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768487164; cv=none; b=KgIhfM/t3AxwbauiUpjMVke9LlB5ciIWbQEpQP25n4JRy5RYlp4mjnVYJiSPwefWuAffiGXopZSuVAl4sYcsWq0RALNFonwNEqOHQcPx/66Gb75BScP2o3uKXO/oSlXTeGGFvq/ZmNgw1n4aavIwv8tAcVGfekqmVQNIMw6z+M8=
+	t=1768488476; cv=none; b=WutKX8ob1gvd/yf0jcG9xIPLHRpr2cXFJ9+97EmropcS5inBUmuLTyghoD3i6TTz7/TQmGB0YxxIXfZHPml0ET2jORweL1gUQQCDccs6tZocbV2CL6HHxwymqKJlxx8CZoBU5Pa1EnJzrcFV5lazZNGBHGnXzrNsUYYj6JHphIY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768487164; c=relaxed/simple;
-	bh=fFeCpR3k8mIi4GqS+t+Nd12LbtlyDxRiez3j2TsgLU8=;
+	s=arc-20240116; t=1768488476; c=relaxed/simple;
+	bh=TRYqIG2seL0sxnkEyfer7BYTmpEj8C2Y/oL/RC3kmt0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ziw+MFOJREUCII0pCb/eHnJtspOtzduvQB0h6g0QfCBLPmSWe5uV0Vlz677aTrc++eNB9wBfJfQ9J2g/dNUJDNdgFUKQAslqGktCCG8+nb1GkXLIkBc3gQIbwbr1/xfiP8EIGfOJBVgz5pwmGGTPjkq3vjNC0FmmLYESU2tyP+I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=SjCXVf/h; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=A2kN+Uxa; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=AtRUrw1V; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4CyY8kO1; arc=none smtp.client-ip=195.135.223.131
+	 In-Reply-To:Content-Type; b=Wn8BbDPe0PQ9fKgnV4xGbEUkbyFvN4uLZlQAj457umfCgQCu8pcFIQ//tXpalY20INaZmmcTd6DCz9WI0WwY3pjLDrY2kWmaWXWNaKZgUBtdTdGpL2XtWNAjC1LDFqq1xY/edMyWe4IzRuNWcSeoa6omCpzw5xsDCSZCitCkRb8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ao7OxHHt; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=If0rrow2; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ao7OxHHt; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=If0rrow2; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id C403C5BCEB;
-	Thu, 15 Jan 2026 14:25:59 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 5EF7D5BCF8;
+	Thu, 15 Jan 2026 14:47:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1768487160; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1768488471; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=CfTxd2GfKuJ3dsjZX+Qbvihtf44lZSO03FfpQ6Ft3Hc=;
-	b=SjCXVf/hkxCWf9OE9sqi6iBYJCrYt4D53VlPrydF+HjNowKjI7aUqzf2cXT/kJUm0CJN36
-	ZPQjpz7muzWpVHcWqzBX7utb8OobPpeL3HR80ri4YYJQCDaDkpygGFCXmPGQiVFYSr8GA0
-	zlh9AYaM4ghYGJOziVIP2WC6zjYe2M4=
+	bh=MU58J6Us5GE6JKgk7JVJzcX719EO56GJyTLxcovO0Lo=;
+	b=ao7OxHHtrYTwA6wMgD4Df0/Iqu+VhvFLu8RFmh5HXD6vNZYqfkndxNXpdNyQe1BGD1wqKW
+	zBkwPkCBt42DgIIrJTRqwUKVIzG7o9Vf3yDmg2GyBzu8HWfyLcYds7GUPWaB4Q98nWoGcb
+	AufWmjM5YPa7IbBKdLpQTFHgkD1ToVM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1768487160;
+	s=susede2_ed25519; t=1768488471;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=CfTxd2GfKuJ3dsjZX+Qbvihtf44lZSO03FfpQ6Ft3Hc=;
-	b=A2kN+UxaKDBrbs09pzxcPR0/bsIRZjRoIS5RY14/NPzsNdzMBhFmBPUm0Gc9gr+lCDvSCs
-	qZXBiRoDAfpEzzAg==
+	bh=MU58J6Us5GE6JKgk7JVJzcX719EO56GJyTLxcovO0Lo=;
+	b=If0rrow2dADYxa0SeDk6R7z8NuZtBrf8UfwNlUPKpYjFRednCKjk9M7reE6mu5upT2VxG/
+	JeOjSnvRxS+VjOAg==
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1768487159; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1768488471; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=CfTxd2GfKuJ3dsjZX+Qbvihtf44lZSO03FfpQ6Ft3Hc=;
-	b=AtRUrw1VV55YNBaizuHVn4Ni6uOAux5IHU8K4x+CQKibmWkTft/ZLLRxPusc3O0NrSj0Ua
-	jQ6qVhPOyKRxM+8PyRM1VLUT4reSJhGj5ncB6ASnvpvnfK8xP/7+24jE1LiZ2XeXF0anWN
-	hOgro2bEOxl6v3lCZHYx8jF36hMTwLY=
+	bh=MU58J6Us5GE6JKgk7JVJzcX719EO56GJyTLxcovO0Lo=;
+	b=ao7OxHHtrYTwA6wMgD4Df0/Iqu+VhvFLu8RFmh5HXD6vNZYqfkndxNXpdNyQe1BGD1wqKW
+	zBkwPkCBt42DgIIrJTRqwUKVIzG7o9Vf3yDmg2GyBzu8HWfyLcYds7GUPWaB4Q98nWoGcb
+	AufWmjM5YPa7IbBKdLpQTFHgkD1ToVM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1768487159;
+	s=susede2_ed25519; t=1768488471;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=CfTxd2GfKuJ3dsjZX+Qbvihtf44lZSO03FfpQ6Ft3Hc=;
-	b=4CyY8kO1qh6VZwm/c8EsIIREjPYNOyQP9E0xjdHgsDxw+Y/oAiYRZpo61I9tPhp5wx+/YI
-	PO4ThoS9qeBCeCDw==
+	bh=MU58J6Us5GE6JKgk7JVJzcX719EO56GJyTLxcovO0Lo=;
+	b=If0rrow2dADYxa0SeDk6R7z8NuZtBrf8UfwNlUPKpYjFRednCKjk9M7reE6mu5upT2VxG/
+	JeOjSnvRxS+VjOAg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A4A793EA63;
-	Thu, 15 Jan 2026 14:25:59 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3D2C83EA63;
+	Thu, 15 Jan 2026 14:47:51 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 79zeJ/f4aGlOZAAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Thu, 15 Jan 2026 14:25:59 +0000
-Message-ID: <38de0039-e0ea-41c4-a293-400798390ea1@suse.cz>
-Date: Thu, 15 Jan 2026 15:25:59 +0100
+	id SIeZDhf+aGmCeQAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Thu, 15 Jan 2026 14:47:51 +0000
+Message-ID: <51761d10-2ad4-4c5c-8bb1-5463d42aa31e@suse.cz>
+Date: Thu, 15 Jan 2026 15:47:50 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -95,13 +95,13 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v2 08/20] slab: add optimized sheaf refill from
- partial list
+Subject: Re: [PATCH RFC v2 12/20] slab: remove defer_deactivate_slab()
 Content-Language: en-US
-To: Harry Yoo <harry.yoo@oracle.com>, Petr Tesarik <ptesarik@suse.com>,
+To: Hao Li <hao.li@linux.dev>
+Cc: Harry Yoo <harry.yoo@oracle.com>, Petr Tesarik <ptesarik@suse.com>,
  Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
- Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Hao Li <hao.li@linux.dev>, Andrew Morton <akpm@linux-foundation.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>,
  Uladzislau Rezki <urezki@gmail.com>,
  "Liam R. Howlett" <Liam.Howlett@oracle.com>,
  Suren Baghdasaryan <surenb@google.com>,
@@ -110,7 +110,8 @@ Cc: Hao Li <hao.li@linux.dev>, Andrew Morton <akpm@linux-foundation.org>,
  linux-kernel@vger.kernel.org, linux-rt-devel@lists.linux.dev,
  bpf@vger.kernel.org, kasan-dev@googlegroups.com
 References: <20260112-sheaves-for-all-v2-0-98225cfb50cf@suse.cz>
- <20260112-sheaves-for-all-v2-8-98225cfb50cf@suse.cz>
+ <20260112-sheaves-for-all-v2-12-98225cfb50cf@suse.cz>
+ <sofeahffu5jj5xbre422lelbisfclwdul2i42j7odth3j4yzil@nyxfavdhwmuz>
 From: Vlastimil Babka <vbabka@suse.cz>
 Autocrypt: addr=vbabka@suse.cz; keydata=
  xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
@@ -151,7 +152,7 @@ Autocrypt: addr=vbabka@suse.cz; keydata=
  rywqgzTUhHFKKF6/9L/lYtrNcHU8Z6Y4Ju/MLUiNYkmtrGIMnkjKCiRqlRrZE/v5YFHbayRD
  dJKXobXTtCBYpLJM4ZYRpGZXne/FAtWNe4KbNJJqxMvrTOrnIatPj8NhBVI0RSJRsbilh6TE
  m6M14QORSWTLRg==
-In-Reply-To: <20260112-sheaves-for-all-v2-8-98225cfb50cf@suse.cz>
+In-Reply-To: <sofeahffu5jj5xbre422lelbisfclwdul2i42j7odth3j4yzil@nyxfavdhwmuz>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Score: -4.30
@@ -160,232 +161,43 @@ X-Spamd-Result: default: False [-4.30 / 50.00];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	ARC_NA(0.00)[];
 	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	RCVD_TLS_ALL(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	MID_RHS_MATCH_FROM(0.00)[];
 	FREEMAIL_ENVRCPT(0.00)[gmail.com];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[linux.dev,linux-foundation.org,gmail.com,oracle.com,google.com,linutronix.de,kernel.org,kvack.org,vger.kernel.org,lists.linux.dev,googlegroups.com];
-	TO_DN_SOME(0.00)[];
+	FREEMAIL_CC(0.00)[oracle.com,suse.com,gentwo.org,google.com,linux.dev,linux-foundation.org,gmail.com,linutronix.de,kernel.org,kvack.org,vger.kernel.org,lists.linux.dev,googlegroups.com];
+	RCPT_COUNT_TWELVE(0.00)[17];
 	FROM_EQ_ENVFROM(0.00)[];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
+	TO_DN_SOME(0.00)[]
 X-Spam-Level: 
 X-Spam-Flag: NO
 
-On 1/12/26 16:17, Vlastimil Babka wrote:
-> At this point we have sheaves enabled for all caches, but their refill
-> is done via __kmem_cache_alloc_bulk() which relies on cpu (partial)
-> slabs - now a redundant caching layer that we are about to remove.
+On 1/15/26 15:09, Hao Li wrote:
+>> --- a/mm/slub.c
+>> +++ b/mm/slub.c
+>> @@ -3248,7 +3248,7 @@ static struct slab *new_slab(struct kmem_cache *s, gfp_t flags, int node)
+>>  		flags & (GFP_RECLAIM_MASK | GFP_CONSTRAINT_MASK), node);
+>>  }
+>>  
+>> -static void __free_slab(struct kmem_cache *s, struct slab *slab)
+>> +static void __free_slab(struct kmem_cache *s, struct slab *slab, bool allow_spin)
+>>  {
+>>  	struct page *page = slab_page(slab);
+>>  	int order = compound_order(page);
+>> @@ -3262,11 +3262,20 @@ static void __free_slab(struct kmem_cache *s, struct slab *slab)
+>>  	free_frozen_pages(page, order);
 > 
-> The refill will thus be done from slabs on the node partial list.
-> Introduce new functions that can do that in an optimized way as it's
-> easier than modifying the __kmem_cache_alloc_bulk() call chain.
-> 
-> Extend struct partial_context so it can return a list of slabs from the
-> partial list with the sum of free objects in them within the requested
-> min and max.
-> 
-> Introduce get_partial_node_bulk() that removes the slabs from freelist
-> and returns them in the list.
-> 
-> Introduce get_freelist_nofreeze() which grabs the freelist without
-> freezing the slab.
-> 
-> Introduce alloc_from_new_slab() which can allocate multiple objects from
-> a newly allocated slab where we don't need to synchronize with freeing.
-> In some aspects it's similar to alloc_single_from_new_slab() but assumes
-> the cache is a non-debug one so it can avoid some actions.
-> 
-> Introduce __refill_objects() that uses the functions above to fill an
-> array of objects. It has to handle the possibility that the slabs will
-> contain more objects that were requested, due to concurrent freeing of
-> objects to those slabs. When no more slabs on partial lists are
-> available, it will allocate new slabs. It is intended to be only used
-> in context where spinning is allowed, so add a WARN_ON_ONCE check there.
-> 
-> Finally, switch refill_sheaf() to use __refill_objects(). Sheaves are
-> only refilled from contexts that allow spinning, or even blocking.
-> 
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> Here we missed using the newly added allow_spin.
+> It should call free_frozen_pages_nolock() when !allow_spin.
 
-...
-
-> +static unsigned int alloc_from_new_slab(struct kmem_cache *s, struct slab *slab,
-> +		void **p, unsigned int count, bool allow_spin)
-> +{
-> +	unsigned int allocated = 0;
-> +	struct kmem_cache_node *n;
-> +	unsigned long flags;
-> +	void *object;
-> +
-> +	if (!allow_spin && (slab->objects - slab->inuse) > count) {
-> +
-> +		n = get_node(s, slab_nid(slab));
-> +
-> +		if (!spin_trylock_irqsave(&n->list_lock, flags)) {
-> +			/* Unlucky, discard newly allocated slab */
-> +			defer_deactivate_slab(slab, NULL);
-
-This actually does dec_slabs_node() only with slab->frozen which we don't set.
-
-> +			return 0;
-> +		}
-> +	}
-> +
-> +	object = slab->freelist;
-> +	while (object && allocated < count) {
-> +		p[allocated] = object;
-> +		object = get_freepointer(s, object);
-> +		maybe_wipe_obj_freeptr(s, p[allocated]);
-> +
-> +		slab->inuse++;
-> +		allocated++;
-> +	}
-> +	slab->freelist = object;
-> +
-> +	if (slab->freelist) {
-> +
-> +		if (allow_spin) {
-> +			n = get_node(s, slab_nid(slab));
-> +			spin_lock_irqsave(&n->list_lock, flags);
-> +		}
-> +		add_partial(n, slab, DEACTIVATE_TO_HEAD);
-> +		spin_unlock_irqrestore(&n->list_lock, flags);
-> +	}
-
-So we should only do inc_slabs_node() here.
-This also addresses the problem in 9/20 that Hao Li pointed out...
-
-> +	return allocated;
-> +}
-> +
-
-...
-
-> +static unsigned int
-> +__refill_objects(struct kmem_cache *s, void **p, gfp_t gfp, unsigned int min,
-> +		 unsigned int max)
-> +{
-> +	struct slab *slab, *slab2;
-> +	struct partial_context pc;
-> +	unsigned int refilled = 0;
-> +	unsigned long flags;
-> +	void *object;
-> +	int node;
-> +
-> +	pc.flags = gfp;
-> +	pc.min_objects = min;
-> +	pc.max_objects = max;
-> +
-> +	node = numa_mem_id();
-> +
-> +	if (WARN_ON_ONCE(!gfpflags_allow_spinning(gfp)))
-> +		return 0;
-> +
-> +	/* TODO: consider also other nodes? */
-> +	if (!get_partial_node_bulk(s, get_node(s, node), &pc))
-> +		goto new_slab;
-> +
-> +	list_for_each_entry_safe(slab, slab2, &pc.slabs, slab_list) {
-> +
-> +		list_del(&slab->slab_list);
-> +
-> +		object = get_freelist_nofreeze(s, slab);
-> +
-> +		while (object && refilled < max) {
-> +			p[refilled] = object;
-> +			object = get_freepointer(s, object);
-> +			maybe_wipe_obj_freeptr(s, p[refilled]);
-> +
-> +			refilled++;
-> +		}
-> +
-> +		/*
-> +		 * Freelist had more objects than we can accomodate, we need to
-> +		 * free them back. We can treat it like a detached freelist, just
-> +		 * need to find the tail object.
-> +		 */
-> +		if (unlikely(object)) {
-> +			void *head = object;
-> +			void *tail;
-> +			int cnt = 0;
-> +
-> +			do {
-> +				tail = object;
-> +				cnt++;
-> +				object = get_freepointer(s, object);
-> +			} while (object);
-> +			do_slab_free(s, slab, head, tail, cnt, _RET_IP_);
-> +		}
-> +
-> +		if (refilled >= max)
-> +			break;
-> +	}
-> +
-> +	if (unlikely(!list_empty(&pc.slabs))) {
-> +		struct kmem_cache_node *n = get_node(s, node);
-> +
-> +		spin_lock_irqsave(&n->list_lock, flags);
-> +
-> +		list_for_each_entry_safe(slab, slab2, &pc.slabs, slab_list) {
-> +
-> +			if (unlikely(!slab->inuse && n->nr_partial >= s->min_partial))
-> +				continue;
-> +
-> +			list_del(&slab->slab_list);
-> +			add_partial(n, slab, DEACTIVATE_TO_HEAD);
-> +		}
-> +
-> +		spin_unlock_irqrestore(&n->list_lock, flags);
-> +
-> +		/* any slabs left are completely free and for discard */
-> +		list_for_each_entry_safe(slab, slab2, &pc.slabs, slab_list) {
-> +
-> +			list_del(&slab->slab_list);
-> +			discard_slab(s, slab);
-> +		}
-> +	}
-> +
-> +
-> +	if (likely(refilled >= min))
-> +		goto out;
-> +
-> +new_slab:
-> +
-> +	slab = new_slab(s, pc.flags, node);
-> +	if (!slab)
-> +		goto out;
-> +
-> +	stat(s, ALLOC_SLAB);
-> +	inc_slabs_node(s, slab_nid(slab), slab->objects);
-
-And remove it from here.
-
-> +
-> +	/*
-> +	 * TODO: possible optimization - if we know we will consume the whole
-> +	 * slab we might skip creating the freelist?
-> +	 */
-> +	refilled += alloc_from_new_slab(s, slab, p + refilled, max - refilled,
-> +					/* allow_spin = */ true);
-> +
-> +	if (refilled < min)
-> +		goto new_slab;
-> +out:
-> +
-> +	return refilled;
-> +}
-> +
->  static inline
->  int __kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
->  			    void **p)
-> 
+Uh damn, the first RFC had it correct. Where did I screw up with git? Sigh.
+Thanks!
 
 
