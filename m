@@ -1,109 +1,88 @@
-Return-Path: <bpf+bounces-79150-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79151-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73432D28A69
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 22:09:57 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B52ED28C78
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 22:40:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id F366E30A5E97
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 21:07:11 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id B6CE73016449
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 21:40:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99C4132573A;
-	Thu, 15 Jan 2026 21:07:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC94C327C0D;
+	Thu, 15 Jan 2026 21:40:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4XJgfLQP"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lf0IKR0g"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com [209.85.217.41])
+Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com [209.85.217.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 396F23246FA
-	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 21:07:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.217.41
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768511230; cv=pass; b=VxeIdIjUuG/kDQC7XqFeeoCRd/A+p37aIxHms1eDN717DBAOdjqFm8IWaiExK9speOEwT3ldADIOw6Fp39UsBeJ5L2XpKtd33j90G8Um6khLMP6P0QtPntun89cYi9kJbswV3TuxaZTIKG2q7V3FmM8Pyra+ukW9tsTI8Vf2KRE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768511230; c=relaxed/simple;
-	bh=Yj5Px6CBHG4dfhDnY0aiL+o/Xd3AGh3M1dNNpc7+Hj0=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3295831B131
+	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 21:40:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.51
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768513234; cv=none; b=pcE2uxfErXfLQo2VMtyvgV2KuAYSuSa6/D9gudxDY5bx0sAcZ93ch/kjiGwCe9R+iyR4ueQJVCIdDeTXGGDeA2zQBBqREWgbw63YCthjJDTVBWWBeYKgbxHKmBuGSb9v9zk611e3Mj1pju7Xoo6uSVxU1itxEjVA6tNFIghV7/8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768513234; c=relaxed/simple;
+	bh=YLVgLT4dUXUIoNeLlkn8NPNLP7+k5vVkNVKFyec+BfQ=;
 	h=From:In-Reply-To:References:MIME-Version:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OIcSzXahC9405z+EfPz+iuZNsR8TyXV+FLmNcjQry1pVppmelTiw1ScFmUolRFynLlX76wfxjElMlHJ+LhZAZAuzUKSCvDVEIXH3vphtH7zx4xnEKc0Q6j6kZVLmpuYgP5jiGdUrVAe0RmNNZxECjJ5z//VoJjRxfDQ4BtzyPqw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4XJgfLQP; arc=pass smtp.client-ip=209.85.217.41
+	 To:Cc:Content-Type; b=RNuwrcWbXXAq8jLKgAQXbkkuX3+gNeaJQF1jVN5MVk+0t2zjr+rsFg/78mWT1X6iqy1u9KgLKOY7x1fRqnHUdIDy4y5o6w/OimjrIkqogaYY/NT/NhwuM6gA5GUvukdWeae7afpGfZ3xZbZ8TNtXt80C8Jp68sDy0mujPHGh02c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lf0IKR0g; arc=none smtp.client-ip=209.85.217.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-vs1-f41.google.com with SMTP id ada2fe7eead31-5ebb6392f58so456505137.0
-        for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 13:07:08 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1768511227; cv=none;
-        d=google.com; s=arc-20240605;
-        b=TKetkCGYDO23nZUA8Sq6CtxuL8KwWfgXhBCgD5GJQ+HN83usc7ucqEA3T511H+N3rT
-         Rfydv++DPMJNeOJ1Xr4ytJX7988i0d0nMTz0hXW5PJ3RDN8PmPzlK1F4QlFOxskQjw5c
-         KsqynnqgO6ljpAzudBwVnjVBBb9attkaEG9hqBlaH/qBOfCFbCR4/LHr+eJa+z4tdH7v
-         HIVqfsKkqOgcqTk8AlX1SEBuSTIa7Xm5D9ypcgicm+x0J4rJMVDGYzuYqC1cH1hTlgJ9
-         YIZ00wrnenH9NuZHP0T25IkKbVuBmFnD1ZEi83SzmkJeH6TE0C2DWOOwsndBUy7UAios
-         wAVg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:dkim-signature;
-        bh=y4BwArZ5FLhyM5BEN34gjuDvwbvdpN2Nxoskvco/5nM=;
-        fh=J8e6y6inhwhLhBjFXPd4PkuCLC0F+uxHLsTd6MHQ5lg=;
-        b=L9usWgB5UDVwobgH1R6yrI6f2GHbzf/814Wvem1hPqTyxhMTbHOHAfc2oNfkL+BkcK
-         2fdbA8QZEs9neYSKeV9ryE87HOw6bB+fGu4LnuSZmjS1Rd+/biIMfjmY+HsRhy7mtRik
-         fmTZSCp14j8d+5Givs29I19V2T8oCuHd7pjB0u7GORaNnssCQbCCiK00oxxovUwtXGDK
-         vW8S2yW/IlDTi7ekv7UFmVyjI7bWxWI0QD7jq5Oo0iQJ3D9wWVkIa1V7mR/4dKY81u0o
-         TQDMj5GZuTBD6oPMAV9tsa+u4QFozYSe4T6gNtBGypI/h/6jbiCJk3cv3Eb6t9DbajKg
-         R7Ig==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+Received: by mail-vs1-f51.google.com with SMTP id ada2fe7eead31-5ecb1d9ac1dso956730137.0
+        for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 13:40:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1768511227; x=1769116027; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1768513230; x=1769118030; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
          :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=y4BwArZ5FLhyM5BEN34gjuDvwbvdpN2Nxoskvco/5nM=;
-        b=4XJgfLQPzxM5FXWJkEQS/kXTzEqlaoNNsykVgVssx9ILv7rH2f0RPJB0Dsm8qrAms2
-         ca1bhsEOHx0BFLwVRFmof0lTpYymrpbdRKK/1/bgNnjBFJ1AA+33K9xdNQSiAbvhG8Vy
-         kL1ZSO+dansx6NIyFH+a86drC/+BMsplkmTtJSR9nFM0y3dL3IKx8KoAfTFU2xpZZJqf
-         kXdl+n+ILpES0C/0nzoY1zoUXovu+P1soJ4YMJl215plLGiz7WqYtLuFdstWhf3zf/0K
-         vN6yKSUSFWHjiVS56FlbC+Rx9vxZCxMtufdgDE6UWoEzY472DLjt5vOicDkHTSjO/ErR
-         NXzA==
+        bh=4NEsY4l4MT9Q6cBqefYtZtOy3s+dR+V7JNDYTBav7MA=;
+        b=lf0IKR0gDEJm+zUkDVWEQnyz02mUC38xJjNWbxZSufD5XA2asUWXVijSwCfiKBPOEo
+         PWN0zwI9sbPy850jxDVGg3EN1phjW/RLkghF6vpgkgT1eMMOq+IVHCAkG8t7iYLBGiOE
+         2OQJ8Kkwp1PkAL21akSXUHTuAQZYWtIjKjOFMCceevZ4tbWRG2lu9qaLd0igq4PRS2Oq
+         5C9Ws5/HnJ/M7rLBCJlfM2cq/whe6jHVp4dGrx++x1Icu8+oXFrSjrCjM8PGG6OH8etg
+         9G/QMJ8xqIdsHm44z702O6VasJ7Wmk3KV1SKqu5ZlOO86RoG83E0DFzJadJAts6MtxKr
+         vxuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768511227; x=1769116027;
+        d=1e100.net; s=20230601; t=1768513230; x=1769118030;
         h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
          :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=y4BwArZ5FLhyM5BEN34gjuDvwbvdpN2Nxoskvco/5nM=;
-        b=dZxhTsTP0scufzW7XHniz8IT6o6PSJbU/49mgAtmSH5wM9fXQ//TBArKCytjlH060f
-         QvI9hhGgc3VpXUPaoyhckzMw/2alcdB+V9bjF5OvaXuUpDv8A6O97iY/dq5yvk3GJxg9
-         8xFzlIAaMEXqH0kIFZMPbkXjJyqfkkE73RP6vOf9VG6rsMOfYOVwhzgBMolMLKm2fzJZ
-         071xD9THVLLBuiaD8PxN3zUrDeLuKeoKqSdIEXpdiASAIMeqJpDvCRDr7aOTklYEYrdL
-         U7gMDCgFtflOG2ee01lprSiTGgyBlxaP2e84pS1oeH7whYozjniIioWMR6OS9Y2cvMC/
-         aOdA==
-X-Forwarded-Encrypted: i=1; AJvYcCXW7ZBUroWjo/dsagNZ43t60lmvEcucJYHMh2yNHyS6hYd+SyMGA3qUaGf8Aj0cDyXBLyA=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy98+mc66msvZi1dxB3CG+o5TSkn3mBACCJeKEFZFOvGUZk6Ky6
-	eGlYR0szvSVllagYVdG+vSwufBhL/ygwV3GZTjs0y7pTqdC65eZ1CoSXnF5AROx2rhB8wWnffW+
-	ZZISMxwFrR0P1XXOfsPsC/Qgp8pF9+1vwgxZshlAE
-X-Gm-Gg: AY/fxX7brdgWUpPsZfXQ/f4SOkP1p6o3PT7vCD80pagXcE5KJ1IlpqQ1lA7vIWKurT0
-	Z9M7+SgJr0TG/CLWGenWB8HKVh39eV9aXKNKY4XJu+5Xega4L5C7xzB4OU9raA84fmht0q8jB/P
-	q2KwqreOzEANfdliiBEYV/etSL41FDPVKAxgV2e+1V4vEPl8uOHbsg667/ueJl+H8ESNBSRPNX3
-	yY6p1/hPKK4C+aGFXRUMpSrJHv/VhWumz0cnjq9IJFYhg15DdE6LgnWvhLKdzc9bjwmjV9cAotY
-	FgtQ60xOxtSkgfeMd0qpkkGkkQ==
-X-Received: by 2002:a05:6102:945:b0:5df:aff3:c41c with SMTP id
- ada2fe7eead31-5f1a719e362mr155618137.30.1768511226367; Thu, 15 Jan 2026
- 13:07:06 -0800 (PST)
+        bh=4NEsY4l4MT9Q6cBqefYtZtOy3s+dR+V7JNDYTBav7MA=;
+        b=QKo/qpZE973tG0cdadAMEavXSSKeYtF/gKVJy3ATbmf21DfH+C45o3NHckXTQJNX3+
+         HvzgzTbec+6VgflA4ZivVTYFtVE783ee/3MVWs0pUfKqANTQ+sUhIqWpIZq/c+5WX9Uz
+         w6mu+IkC9JiZc4FZPl0iSu9S7KZG6tz0pUhNVbUO6zWlzUHuY0DJ5Gwk1CIFAEBg6gyw
+         HptpM57aW6nuakLPsMSXvSDQgEEl8uHxrlrxnRrfOieud5ib5xSRFYI0npwASnl4j4UX
+         xfY7t7mPt4aUNu7A4rTGPI+Bwws6XM8aLshoZ/qbpN+nnRpUzxJa8Xy/vauHMcFHYovM
+         0DCw==
+X-Forwarded-Encrypted: i=1; AJvYcCVSTjnoejpVG0gLXMSzOUxwpL84+gq31lcwaw/fNyOHkcR8j2X0Lo1181irVEYaOFCJHyw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwdlDZiypQo068ymFLGomVV3S4/DvRR6YZ5PKKpjPoobfhi659D
+	BdXjcEa2XVowb5/xpBgV9gGfmcf/3jM/S0j/aCwthR6Hqcm/TQaYc54cvu/vlDZrH3xmNMSyzgf
+	spJeifZPZVtpBHmjxvDrB64qVk3K5JzjREe8jF6IV
+X-Gm-Gg: AY/fxX5vb0yABvulXYxMvDZCejAv9S6bmYqT607pfyENjs0ld7LnJsAHG47cLG3cwQr
+	z/ac300eFJL5LS5MRAdQ4MwIgysfhssee4ysoBuwB1t6Jk18gmd5SehMWNjfsIA/DkWn6s+pkUx
+	TUxXt6c/ne4HaKLZQrzYYS3NWfnEYjMJg87zFyiaf951GZ6yo2w9pFykaRar6Oh0jHwmvpKZAr4
+	dE2ZmMIKlewz7JUYiHdFMwoSHSu9FREE+LIbKD6nWNe/EBU/cQYUqlwT5+mo3iv7IobAxB8v+aG
+	sUvbs6CBYmDuB7PVtd9Ju7n3W5JrtNq6mKe3
+X-Received: by 2002:a05:6102:947:b0:5db:cec7:810b with SMTP id
+ ada2fe7eead31-5f1a556dabcmr465899137.29.1768513229577; Thu, 15 Jan 2026
+ 13:40:29 -0800 (PST)
 Received: from 176938342045 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 15 Jan 2026 13:07:05 -0800
+ HTTPREST; Thu, 15 Jan 2026 13:40:28 -0800
 Received: from 176938342045 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 15 Jan 2026 13:07:05 -0800
+ HTTPREST; Thu, 15 Jan 2026 13:40:28 -0800
 From: Ackerley Tng <ackerleytng@google.com>
-In-Reply-To: <20260114134510.1835-2-kalyazin@amazon.com>
-References: <20260114134510.1835-1-kalyazin@amazon.com> <20260114134510.1835-2-kalyazin@amazon.com>
+In-Reply-To: <20260114134510.1835-3-kalyazin@amazon.com>
+References: <20260114134510.1835-1-kalyazin@amazon.com> <20260114134510.1835-3-kalyazin@amazon.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Thu, 15 Jan 2026 13:07:05 -0800
-X-Gm-Features: AZwV_QitN6L4bb0XJb_ZZH7nFdRT7CH1pyddv4cbgutSArI7UeCs00Q7KzDEw7c
-Message-ID: <CAEvNRgGXeow48BUJYyuAOUp8qK97v1LdF4KdTB=Nbk7pTs9tfw@mail.gmail.com>
-Subject: Re: [PATCH v9 01/13] set_memory: add folio_{zap,restore}_direct_map helpers
+Date: Thu, 15 Jan 2026 13:40:28 -0800
+X-Gm-Features: AZwV_Qj-0gm6vYHJJ3iH96aBpuGEWZXgwnMiQkeNvlZWuDVc-Nc0GygCth2Cvyc
+Message-ID: <CAEvNRgGrpv5h04s+btubhUFHo=d6mBFbr2BVrMt=bWuWOztdJQ@mail.gmail.com>
+Subject: Re: [PATCH v9 02/13] mm/gup: drop secretmem optimization from gup_fast_folio_allowed
 To: "Kalyazin, Nikita" <kalyazin@amazon.co.uk>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
 	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, 
 	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
@@ -161,81 +140,90 @@ Content-Type: text/plain; charset="UTF-8"
 
 "Kalyazin, Nikita" <kalyazin@amazon.co.uk> writes:
 
-> From: Nikita Kalyazin <kalyazin@amazon.com>
+> From: Patrick Roy <patrick.roy@linux.dev>
 >
-> These allow guest_memfd to remove its memory from the direct map.
-> Only implement them for architectures that have direct map.
-> In folio_zap_direct_map(), flush TLB on architectures where
-> set_direct_map_valid_noflush() does not flush it internally.
+> This drops an optimization in gup_fast_folio_allowed() where
+> secretmem_mapping() was only called if CONFIG_SECRETMEM=y. secretmem is
+> enabled by default since commit b758fe6df50d ("mm/secretmem: make it on
+> by default"), so the secretmem check did not actually end up elided in
+> most cases anymore anyway.
 >
-> The new helpers need to be accessible to KVM on architectures that
-> support guest_memfd (x86 and arm64).  Since arm64 does not support
-> building KVM as a module, only export them on x86.
+> This is in preparation of the generalization of handling mappings where
+> direct map entries of folios are set to not present.  Currently,
+> mappings that match this description are secretmem mappings
+> (memfd_secret()).  Later, some guest_memfd configurations will also fall
+> into this category.
 >
-> Direct map removal gives guest_memfd the same protection that
-> memfd_secret does, such as hardening against Spectre-like attacks
-> through in-kernel gadgets.
->
+> Signed-off-by: Patrick Roy <patrick.roy@linux.dev>
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
 > Signed-off-by: Nikita Kalyazin <kalyazin@amazon.com>
 > ---
->  arch/arm64/include/asm/set_memory.h     |  2 ++
->  arch/arm64/mm/pageattr.c                | 12 ++++++++++++
->  arch/loongarch/include/asm/set_memory.h |  2 ++
->  arch/loongarch/mm/pageattr.c            | 16 ++++++++++++++++
->  arch/riscv/include/asm/set_memory.h     |  2 ++
->  arch/riscv/mm/pageattr.c                | 16 ++++++++++++++++
->  arch/s390/include/asm/set_memory.h      |  2 ++
->  arch/s390/mm/pageattr.c                 | 18 ++++++++++++++++++
->  arch/x86/include/asm/set_memory.h       |  2 ++
->  arch/x86/mm/pat/set_memory.c            | 20 ++++++++++++++++++++
->  include/linux/set_memory.h              | 10 ++++++++++
->  11 files changed, 102 insertions(+)
+>  mm/gup.c | 11 +----------
+>  1 file changed, 1 insertion(+), 10 deletions(-)
 >
-> diff --git a/arch/arm64/include/asm/set_memory.h b/arch/arm64/include/asm/set_memory.h
-> index 90f61b17275e..d949f1deb701 100644
-> --- a/arch/arm64/include/asm/set_memory.h
-> +++ b/arch/arm64/include/asm/set_memory.h
-> @@ -14,6 +14,8 @@ int set_memory_valid(unsigned long addr, int numpages, int enable);
->  int set_direct_map_invalid_noflush(struct page *page);
->  int set_direct_map_default_noflush(struct page *page);
->  int set_direct_map_valid_noflush(struct page *page, unsigned nr, bool valid);
-> +int folio_zap_direct_map(struct folio *folio);
-> +int folio_restore_direct_map(struct folio *folio);
->  bool kernel_page_present(struct page *page);
+> diff --git a/mm/gup.c b/mm/gup.c
+> index 95d948c8e86c..9cad53acbc99 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -2739,7 +2739,6 @@ static bool gup_fast_folio_allowed(struct folio *folio, unsigned int flags)
+>  {
+>  	bool reject_file_backed = false;
+>  	struct address_space *mapping;
+> -	bool check_secretmem = false;
+>  	unsigned long mapping_flags;
 >
->  int set_memory_encrypted(unsigned long addr, int numpages);
-> diff --git a/arch/arm64/mm/pageattr.c b/arch/arm64/mm/pageattr.c
-> index f0e784b963e6..a94eff324dda 100644
-> --- a/arch/arm64/mm/pageattr.c
-> +++ b/arch/arm64/mm/pageattr.c
-> @@ -357,6 +357,18 @@ int set_direct_map_valid_noflush(struct page *page, unsigned nr, bool valid)
->  	return set_memory_valid(addr, nr, valid);
->  }
->
-> +int folio_zap_direct_map(struct folio *folio)
-> +{
-> +	return set_direct_map_valid_noflush(folio_page(folio, 0),
-> +					    folio_nr_pages(folio), false);
-> +}
-> +
-> +int folio_restore_direct_map(struct folio *folio)
-> +{
-> +	return set_direct_map_valid_noflush(folio_page(folio, 0),
-> +					    folio_nr_pages(folio), true);
-> +}
-> +
+>  	/*
+> @@ -2751,14 +2750,6 @@ static bool gup_fast_folio_allowed(struct folio *folio, unsigned int flags)
 
-Was going to suggest a _noflush suffix to these functions, but saw
-Aneesh's comment that these functions actually do flush_tlb_kernel [1]
+Copying some lines the diff didn't contain:
 
-[1] https://lore.kernel.org/all/yq5ajz07czvz.fsf@kernel.org/
+	/*
+	 * If we aren't pinning then no problematic write can occur. A long term
+	 * pin is the most egregious case so this is the one we disallow.
+	 */
+	if ((flags & (FOLL_PIN | FOLL_LONGTERM | FOLL_WRITE)) ==
+	    (FOLL_PIN | FOLL_LONGTERM | FOLL_WRITE))
 
-Reviewed-by: Ackerley Tng <ackerleytng@google.com>
+If we're pinning, can we already return true here? IIUC this function
+is passed a folio that is file-backed, and the check if (!mapping) is
+just there to catch the case where the mapping got truncated.
 
->  #ifdef CONFIG_DEBUG_PAGEALLOC
->  /*
->   * This is - apart from the return value - doing the same
+Or should we wait for the check where the mapping got truncated? If so,
+then maybe we can move this "are we pinning" check to after this check
+and remove the reject_file_backed variable?
+
+	/*
+	 * The mapping may have been truncated, in any case we cannot determine
+	 * if this mapping is safe - fall back to slow path to determine how to
+	 * proceed.
+	 */
+	if (!mapping)
+		return false;
+
+
+>  		reject_file_backed = true;
 >
-> [...snip...]
+>  	/* We hold a folio reference, so we can safely access folio fields. */
+> -
+> -	/* secretmem folios are always order-0 folios. */
+> -	if (IS_ENABLED(CONFIG_SECRETMEM) && !folio_test_large(folio))
+> -		check_secretmem = true;
+> -
+> -	if (!reject_file_backed && !check_secretmem)
+> -		return true;
+> -
+>  	if (WARN_ON_ONCE(folio_test_slab(folio)))
+>  		return false;
 >
+> @@ -2800,7 +2791,7 @@ static bool gup_fast_folio_allowed(struct folio *folio, unsigned int flags)
+>  	 * At this point, we know the mapping is non-null and points to an
+>  	 * address_space object.
+>  	 */
+> -	if (check_secretmem && secretmem_mapping(mapping))
+> +	if (secretmem_mapping(mapping))
+>  		return false;
+>  	/* The only remaining allowed file system is shmem. */
+>  	return !reject_file_backed || shmem_mapping(mapping);
+> --
+> 2.50.1
 
