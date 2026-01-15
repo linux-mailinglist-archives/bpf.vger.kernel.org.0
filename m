@@ -1,169 +1,200 @@
-Return-Path: <bpf+bounces-79065-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79066-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D94FD25486
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 16:22:47 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF651D25588
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 16:29:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6D96230A28D9
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 15:21:11 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 058C13003FD0
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 15:26:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 321C13B8BC3;
-	Thu, 15 Jan 2026 15:21:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED0C93B5317;
+	Thu, 15 Jan 2026 15:26:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nTVxOFoP"
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="h3isV5da"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-dy1-f172.google.com (mail-dy1-f172.google.com [74.125.82.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fra-out-001.esa.eu-central-1.outbound.mail-perimeter.amazon.com (fra-out-001.esa.eu-central-1.outbound.mail-perimeter.amazon.com [18.156.205.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 944EE3612F2
-	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 15:20:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF5A83AE718;
+	Thu, 15 Jan 2026 15:25:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.156.205.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768490458; cv=none; b=kcsHkQSzMQPCBz2FgIOLFL4JPchAwbRNOwoZRTZ2hXHsOjvUAd4kqB3MYaFZFDo68TK68QztxTeu7yYD7wRxPuNs0ukN5xTILiLNq5WuBD698TnplhlDM4D2IRT5rlgYC+9kpbO7zF0x28zpSLgNdNp+MVMrZvbDqVNIby++lCo=
+	t=1768490765; cv=none; b=r7KiAQcVTztQsreDkbqDrDCntuNMvXhpCsv+aceSbZ74UQyq2Meg6SNWKRoU/5BVV0jMWurlrqf8Kp5EWTH+vmv6RuWcvj5vcA3a4i7tLcBQ70h71q4zhyL+FBWEQq5MZZoxAnpdo6Q7p6OKENElw0pw6wH+vHAA68EUZY8sWo8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768490458; c=relaxed/simple;
-	bh=/gkJg9IVFWdPTJ/KUF0SD0LhkJXLVBhh48Owqpafbh8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bOvdwvHc8jwA7jgXAQ/2Qy/hVuRpAERXnOmrUAWV2bvAAkT/Mo+MfuAXWpczgc69irYrq0IUIT8eC01RAIIbJY3N1hgqLkdnGULZVeE/YqCKLs6M3kYdBTJIzgYG0oVi1Vm27BDYrHafHTvNYAEVhcnZu56VAj7vmWx00TUTlr4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nTVxOFoP; arc=none smtp.client-ip=74.125.82.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-dy1-f172.google.com with SMTP id 5a478bee46e88-2ae5af476e1so496904eec.1
-        for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 07:20:51 -0800 (PST)
+	s=arc-20240116; t=1768490765; c=relaxed/simple;
+	bh=NsWXJRngFC156YQRHmekUX9Gr1w2AJtYuY37Wjse5YE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=WuN4lcOByXa0dDb4vEGQiyG/rE6QU11NsJ9xJ+TzYsICHhBeoG/+t5MgsQBHVswA6irlNISQwh0L/eE69IkPmDorkAQTQn639bL7NNTQBpiBzLlQ/JQmbBy1YbXtYxHDcVVsPZhah41TFU2xkeWymzZ52TounF9FyhR/8eu7Rh0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.uk; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=h3isV5da; arc=none smtp.client-ip=18.156.205.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.uk
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768490449; x=1769095249; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3WBE7yLTwXJvXQknW3m3j/e1SLsqAi1Kc4r688prtj4=;
-        b=nTVxOFoP86xkwaK+7aZ8P7Wm1/z6k04KGbiNk9xqGDP+OGqmMJIf3ssmgDd5Sh0gyQ
-         2u/ayY7yfP0JPtkzuM9bsVdV0LfERkCVv6Giu9+SFN2sVr6XbaomYQnfHPV+381MMjfc
-         wyYeo39jzAImgWbYQ2NoXa85XcTrmofHuszFREvW/JhmoRlewsokYQcRNPcuMAwkNTxV
-         P3DV9Ipjc0SdiFRMQHA3m9QwxrfYpEtjTEqWgc3w+aR+U2rYFvgCwnWWpGhXLbHhTJl3
-         lbLfMT7bQMxgNkfjEP3AHcigSwRMulpXZWzKVqsbIod9DxrcRxlLTEngGHShS9OkjXz2
-         i4og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768490449; x=1769095249;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3WBE7yLTwXJvXQknW3m3j/e1SLsqAi1Kc4r688prtj4=;
-        b=OJwbY64OACNazrQMfN3yiBmzwLoS4QO5ugmRZO2zE+gJBxvZ/0zi382XZDWAfMxxeu
-         E0pzSgVDwqSULj0c0UgAqEt8iOx5GfKIFoICBgJSmfYg9LNyq9a4s1iKG4DTtwp+PQDJ
-         m4jy12phApyWSWDGav90LuC2TOP7aogI3Ldmg1U3u2hZqL8bEVPKEJBpAq+ETj2C3a2r
-         31J9cadZJYW1uX2PmmASLe8hVFJUwEHSGuI9/ilshpQdEU+jIm+9izkjlYxP8mUIY+4p
-         ku/UuZpkBG19/klDEh75q2JTKurlfaJHovQiAOqU0sjxRvuylb8raZNPwxgJhoHSa2Y2
-         bN6w==
-X-Forwarded-Encrypted: i=1; AJvYcCXHL5vzLPRNJptIOXBXROcJdMlbnt2xEiFevFPbtxv9GX/ZCQCyipvAd1yOxIx3t7YQ5Os=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz621g3tQ+1GTb0LSQkpX1ioKUz0bM0lKpr+zMfeWqvl7/zM59D
-	50M21QtebA2ulc6p/Jo0zPYlAmcem4UFXrIrwU1AuEw/8RfQ6zib+Opw
-X-Gm-Gg: AY/fxX5YT+0Pt/IzLsUQZ9i3eGDmM9KS4kiMyD0QC8a2rhB4MLI/SIxgfXjVgIDFpVC
-	tAZkoRmeEhdljytmVvf9bTMIyK9yT4W4WBR0LYyIxtNWpzYYZ/9XSJZFzFx1j7l9SgguPzLSE2a
-	ZiwOmUE/CzTt1pK0w60upWDewZpPU2bc+LR4bbPPlYRuxdsQBHE//3xATsxJ2BR7S838CL7pvwb
-	XLWNf0aIjbGajawgZyJkNZ2s4Usxv4Ld2epRgUgw+Mx+Ob2XNBMYHAD2RtevanvWRAPrf2351DV
-	fVlK0eBfZ6c+7f+xV4SF6hGraJYr25z4AOlKcKkEv+Aj4+vaXym3OcdFbwTC0v74JFOBdLDuEk2
-	IuM147BnI5bVhv9i0q8G1w2A42qGmabXk6Sa8hd3ru9NHCwquefQtWrNI0CkVCnhARMH3+X5nGd
-	ZbkbJ+lSddIjstMLR11plTbpo=
-X-Received: by 2002:a05:7300:f60b:b0:2ab:f74a:6a63 with SMTP id 5a478bee46e88-2b6642f0eb1mr4561885eec.16.1768490448477;
-        Thu, 15 Jan 2026 07:20:48 -0800 (PST)
-Received: from localhost.localdomain ([74.48.213.230])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2b17078d9b1sm23544610eec.18.2026.01.15.07.20.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jan 2026 07:20:48 -0800 (PST)
-From: wujing <realwujing@gmail.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	wujing <realwujing@gmail.com>,
-	Qiliang Yuan <yuanql9@chinatelecom.cn>
-Subject: [PATCH] bpf/verifier: compress bpf_reg_state by using bitfields
-Date: Thu, 15 Jan 2026 23:20:37 +0800
-Message-Id: <20260115152037.449362-1-realwujing@gmail.com>
-X-Mailer: git-send-email 2.39.5
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1768490760; x=1800026760;
+  h=message-id:date:mime-version:reply-to:subject:to:cc:
+   references:from:in-reply-to:content-transfer-encoding;
+  bh=ErA/nUzcQBK9RfXLPHVY+KZIrd4BxzBjllIcAZaOcaQ=;
+  b=h3isV5da2UVsM17m/4RhSvCgPXzx/UaU+5Xtqn/h8gQwMfVyHrXLSNYG
+   XOjf0xz0gv4QNu917NbeG6o+dvlog0SdUX9jDLwod1dHgX+Snd8bctLzD
+   jSVS3xhLl15bVD080doN2uYq/Opout2n/Z97azTG5S1HoXlRzSrk7PVNC
+   t8HY4ti69+hOaSwFHtvIhUjziJHAwo6IyTvb09+zX6xMG1Fxi74KaKAbF
+   4rktc3IlMAJTIBpcVJeOzalS4bdgg3F6OTVSohwlR3Nv8wKwGLJYpieSE
+   qwG4zAD3nl+12fiHd0RCr757QmBhNX2ptsd0ABrQhobHUzGObdxylzZqX
+   A==;
+X-CSE-ConnectionGUID: JEI06koAS36Pqlka9p/LFg==
+X-CSE-MsgGUID: fziZ5aPzRHWEX3iC92dDgA==
+X-IronPort-AV: E=Sophos;i="6.21,228,1763424000"; 
+   d="scan'208";a="7652838"
+Received: from ip-10-6-11-83.eu-central-1.compute.internal (HELO smtpout.naws.eu-central-1.prod.farcaster.email.amazon.dev) ([10.6.11.83])
+  by internal-fra-out-001.esa.eu-central-1.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2026 15:25:39 +0000
+Received: from EX19MTAEUA001.ant.amazon.com [54.240.197.233:3758]
+ by smtpin.naws.eu-central-1.prod.farcaster.email.amazon.dev [10.0.6.3:2525] with esmtp (Farcaster)
+ id 78f75ae8-5037-4d9b-ae68-7dfcd2a25e3c; Thu, 15 Jan 2026 15:25:39 +0000 (UTC)
+X-Farcaster-Flow-ID: 78f75ae8-5037-4d9b-ae68-7dfcd2a25e3c
+Received: from EX19D005EUB003.ant.amazon.com (10.252.51.31) by
+ EX19MTAEUA001.ant.amazon.com (10.252.50.50) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.35;
+ Thu, 15 Jan 2026 15:25:32 +0000
+Received: from [192.168.15.69] (10.106.82.11) by EX19D005EUB003.ant.amazon.com
+ (10.252.51.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.35; Thu, 15 Jan 2026
+ 15:25:28 +0000
+Message-ID: <094591b6-97eb-4cae-aa08-fececcba4ba1@amazon.com>
+Date: Thu, 15 Jan 2026 15:25:27 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Reply-To: <kalyazin@amazon.com>
+Subject: Re: [PATCH v9 01/13] set_memory: add folio_{zap, restore}_direct_map
+ helpers
+To: Heiko Carstens <hca@linux.ibm.com>, "Kalyazin, Nikita"
+	<kalyazin@amazon.co.uk>
+CC: "kvm@vger.kernel.org" <kvm@vger.kernel.org>, "linux-doc@vger.kernel.org"
+	<linux-doc@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "kvmarm@lists.linux.dev"
+	<kvmarm@lists.linux.dev>, "linux-fsdevel@vger.kernel.org"
+	<linux-fsdevel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+	"kernel@xen0n.name" <kernel@xen0n.name>, "linux-riscv@lists.infradead.org"
+	<linux-riscv@lists.infradead.org>, "linux-s390@vger.kernel.org"
+	<linux-s390@vger.kernel.org>, "loongarch@lists.linux.dev"
+	<loongarch@lists.linux.dev>, "pbonzini@redhat.com" <pbonzini@redhat.com>,
+	"corbet@lwn.net" <corbet@lwn.net>, "maz@kernel.org" <maz@kernel.org>,
+	"oupton@kernel.org" <oupton@kernel.org>, "joey.gouly@arm.com"
+	<joey.gouly@arm.com>, "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
+	"yuzenghui@huawei.com" <yuzenghui@huawei.com>, "catalin.marinas@arm.com"
+	<catalin.marinas@arm.com>, "will@kernel.org" <will@kernel.org>,
+	"seanjc@google.com" <seanjc@google.com>, "tglx@linutronix.de"
+	<tglx@linutronix.de>, "mingo@redhat.com" <mingo@redhat.com>, "bp@alien8.de"
+	<bp@alien8.de>, "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+	"x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+	"luto@kernel.org" <luto@kernel.org>, "peterz@infradead.org"
+	<peterz@infradead.org>, "willy@infradead.org" <willy@infradead.org>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>, "david@kernel.org"
+	<david@kernel.org>, "lorenzo.stoakes@oracle.com"
+	<lorenzo.stoakes@oracle.com>, "Liam.Howlett@oracle.com"
+	<Liam.Howlett@oracle.com>, "vbabka@suse.cz" <vbabka@suse.cz>,
+	"rppt@kernel.org" <rppt@kernel.org>, "surenb@google.com" <surenb@google.com>,
+	"mhocko@suse.com" <mhocko@suse.com>, "ast@kernel.org" <ast@kernel.org>,
+	"daniel@iogearbox.net" <daniel@iogearbox.net>, "andrii@kernel.org"
+	<andrii@kernel.org>, "martin.lau@linux.dev" <martin.lau@linux.dev>,
+	"eddyz87@gmail.com" <eddyz87@gmail.com>, "song@kernel.org" <song@kernel.org>,
+	"yonghong.song@linux.dev" <yonghong.song@linux.dev>,
+	"john.fastabend@gmail.com" <john.fastabend@gmail.com>, "kpsingh@kernel.org"
+	<kpsingh@kernel.org>, "sdf@fomichev.me" <sdf@fomichev.me>,
+	"haoluo@google.com" <haoluo@google.com>, "jolsa@kernel.org"
+	<jolsa@kernel.org>, "jgg@ziepe.ca" <jgg@ziepe.ca>, "jhubbard@nvidia.com"
+	<jhubbard@nvidia.com>, "peterx@redhat.com" <peterx@redhat.com>,
+	"jannh@google.com" <jannh@google.com>, "pfalcato@suse.de" <pfalcato@suse.de>,
+	"shuah@kernel.org" <shuah@kernel.org>, "riel@surriel.com" <riel@surriel.com>,
+	"ryan.roberts@arm.com" <ryan.roberts@arm.com>, "jgross@suse.com"
+	<jgross@suse.com>, "yu-cheng.yu@intel.com" <yu-cheng.yu@intel.com>,
+	"kas@kernel.org" <kas@kernel.org>, "coxu@redhat.com" <coxu@redhat.com>,
+	"kevin.brodsky@arm.com" <kevin.brodsky@arm.com>, "ackerleytng@google.com"
+	<ackerleytng@google.com>, "maobibo@loongson.cn" <maobibo@loongson.cn>,
+	"prsampat@amd.com" <prsampat@amd.com>, "mlevitsk@redhat.com"
+	<mlevitsk@redhat.com>, "jmattson@google.com" <jmattson@google.com>,
+	"jthoughton@google.com" <jthoughton@google.com>, "agordeev@linux.ibm.com"
+	<agordeev@linux.ibm.com>, "alex@ghiti.fr" <alex@ghiti.fr>,
+	"aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>, "borntraeger@linux.ibm.com"
+	<borntraeger@linux.ibm.com>, "chenhuacai@kernel.org" <chenhuacai@kernel.org>,
+	"dev.jain@arm.com" <dev.jain@arm.com>, "gor@linux.ibm.com"
+	<gor@linux.ibm.com>, "Jonathan.Cameron@huawei.com"
+	<Jonathan.Cameron@huawei.com>, "palmer@dabbelt.com" <palmer@dabbelt.com>,
+	"pjw@kernel.org" <pjw@kernel.org>, "shijie@os.amperecomputing.com"
+	<shijie@os.amperecomputing.com>, "svens@linux.ibm.com" <svens@linux.ibm.com>,
+	"thuth@redhat.com" <thuth@redhat.com>, "wyihan@google.com"
+	<wyihan@google.com>, "yang@os.amperecomputing.com"
+	<yang@os.amperecomputing.com>, "vannapurve@google.com"
+	<vannapurve@google.com>, "jackmanb@google.com" <jackmanb@google.com>,
+	"aneesh.kumar@kernel.org" <aneesh.kumar@kernel.org>, "patrick.roy@linux.dev"
+	<patrick.roy@linux.dev>, "Thomson, Jack" <jackabt@amazon.co.uk>, "Itazuri,
+ Takahiro" <itazur@amazon.co.uk>, "Manwaring, Derek" <derekmn@amazon.com>,
+	"Cali, Marco" <xmarcalx@amazon.co.uk>
+References: <20260114134510.1835-1-kalyazin@amazon.com>
+ <20260114134510.1835-2-kalyazin@amazon.com>
+ <20260115121209.7060B42-hca@linux.ibm.com>
+Content-Language: en-US
+From: Nikita Kalyazin <kalyazin@amazon.com>
+Autocrypt: addr=kalyazin@amazon.com; keydata=
+ xjMEY+ZIvRYJKwYBBAHaRw8BAQdA9FwYskD/5BFmiiTgktstviS9svHeszG2JfIkUqjxf+/N
+ JU5pa2l0YSBLYWx5YXppbiA8a2FseWF6aW5AYW1hem9uLmNvbT7CjwQTFggANxYhBGhhGDEy
+ BjLQwD9FsK+SyiCpmmTzBQJnrNfABQkFps9DAhsDBAsJCAcFFQgJCgsFFgIDAQAACgkQr5LK
+ IKmaZPOpfgD/exazh4C2Z8fNEz54YLJ6tuFEgQrVQPX6nQ/PfQi2+dwBAMGTpZcj9Z9NvSe1
+ CmmKYnYjhzGxzjBs8itSUvWIcMsFzjgEY+ZIvRIKKwYBBAGXVQEFAQEHQCqd7/nb2tb36vZt
+ ubg1iBLCSDctMlKHsQTp7wCnEc4RAwEIB8J+BBgWCAAmFiEEaGEYMTIGMtDAP0Wwr5LKIKma
+ ZPMFAmes18AFCQWmz0MCGwwACgkQr5LKIKmaZPNTlQEA+q+rGFn7273rOAg+rxPty0M8lJbT
+ i2kGo8RmPPLu650A/1kWgz1AnenQUYzTAFnZrKSsXAw5WoHaDLBz9kiO5pAK
+In-Reply-To: <20260115121209.7060B42-hca@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: EX19D012EUC004.ant.amazon.com (10.252.51.220) To
+ EX19D005EUB003.ant.amazon.com (10.252.51.31)
 
-The struct bpf_reg_state is 112 bytes long on 64-bit architectures,
-with several fields that have limited ranges. In particular, the bool
-'precise' at the end causes 7 bytes of padding.
 
-This patch packs 'frameno', 'subreg_def', and 'precise' into a single
-u32/s32 bitfield block:
-- frameno: 4 bits (sufficient for MAX_CALL_FRAMES=8)
-- subreg_def: 27 bits (sufficient for 1M insns limit)
-- precise: 1 bit
 
-This reduces the size of struct bpf_reg_state from 112 to 104 bytes,
-saving 8 bytes per register. This also reduces the size of
-struct bpf_stack_state. Overall, it reduces peak memory usage of the
-verifier for complex programs with millions of states.
+On 15/01/2026 12:12, Heiko Carstens wrote:
+> On Wed, Jan 14, 2026 at 01:45:23PM +0000, Kalyazin, Nikita wrote:
+>> From: Nikita Kalyazin <kalyazin@amazon.com>
+>>
+>> These allow guest_memfd to remove its memory from the direct map.
+>> Only implement them for architectures that have direct map.
+>> In folio_zap_direct_map(), flush TLB on architectures where
+>> set_direct_map_valid_noflush() does not flush it internally.
+> 
+> ...
+> 
+>> diff --git a/arch/s390/mm/pageattr.c b/arch/s390/mm/pageattr.c
+>> index d3ce04a4b248..df4a487b484d 100644
+>> --- a/arch/s390/mm/pageattr.c
+>> +++ b/arch/s390/mm/pageattr.c
+>> @@ -412,6 +412,24 @@ int set_direct_map_valid_noflush(struct page *page, unsigned nr, bool valid)
+>>        return __set_memory((unsigned long)page_to_virt(page), nr, flags);
+>>   }
+>>
+>> +int folio_zap_direct_map(struct folio *folio)
+>> +{
+>> +     unsigned long addr = (unsigned long)folio_address(folio);
+>> +     int ret;
+>> +
+>> +     ret = set_direct_map_valid_noflush(folio_page(folio, 0),
+>> +                                        folio_nr_pages(folio), false);
+>> +     flush_tlb_kernel_range(addr, addr + folio_size(folio));
+>> +
+>> +     return ret;
+>> +}
+> 
+> The instructions used in the s390 implementation of
+> set_direct_map_valid_noflush() do flush TLB entries.
+> The extra flush_tlb_kernel_range() is not required.
 
-The patch also updates states_maybe_looping() to use a non-bitfield
-boundary for memcmp(), as offsetof() cannot be used on bitfields.
-
-Signed-off-by: wujing <realwujing@gmail.com>
-Signed-off-by: Qiliang Yuan <yuanql9@chinatelecom.cn>
----
- include/linux/bpf_verifier.h | 6 +++---
- kernel/bpf/verifier.c        | 6 ++++--
- 2 files changed, 7 insertions(+), 5 deletions(-)
-
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index 562f7e63be29..0f83360afb03 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -196,14 +196,14 @@ struct bpf_reg_state {
- 	 * is used which is an index in bpf_verifier_state->frame[] array
- 	 * pointing to bpf_func_state.
- 	 */
--	u32 frameno;
-+	u32 frameno:4;
- 	/* Tracks subreg definition. The stored value is the insn_idx of the
- 	 * writing insn. This is safe because subreg_def is used before any insn
- 	 * patching which only happens after main verification finished.
- 	 */
--	s32 subreg_def;
-+	s32 subreg_def:27;
- 	/* if (!precise && SCALAR_VALUE) min/max/tnum don't affect safety */
--	bool precise;
-+	bool precise:1;
- };
- 
- enum bpf_stack_slot_type {
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 378341e1177f..5e5b831a518c 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -19641,10 +19641,12 @@ static bool states_maybe_looping(struct bpf_verifier_state *old,
- 
- 	fold = old->frame[fr];
- 	fcur = cur->frame[fr];
--	for (i = 0; i < MAX_BPF_REG; i++)
-+	for (i = 0; i < MAX_BPF_REG; i++) {
- 		if (memcmp(&fold->regs[i], &fcur->regs[i],
--			   offsetof(struct bpf_reg_state, frameno)))
-+			   offsetof(struct bpf_reg_state, ref_obj_id) +
-+			   sizeof(fold->regs[i].ref_obj_id)))
- 			return false;
-+	}
- 	return true;
- }
- 
--- 
-2.39.5
+Thanks, Heiko.  Will update in the next version.
 
 
