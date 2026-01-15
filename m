@@ -1,78 +1,77 @@
-Return-Path: <bpf+bounces-79083-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79084-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19F02D26B0C
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 18:45:23 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FC50D267F3
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 18:34:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4F80B3254B97
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 17:26:19 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 0D2E0303313A
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 17:27:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DE293BFE4C;
-	Thu, 15 Jan 2026 17:25:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCAE43C1FC8;
+	Thu, 15 Jan 2026 17:25:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aMOxKHYz"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NNYwtwFi"
 X-Original-To: bpf@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B842B3BF314
-	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 17:25:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 600A5E56A
+	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 17:25:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768497932; cv=none; b=OhBRgceCaf1XSyEO9iDZFBdrjY2BWVD3in8qhBPRr5pgZlIHsj0poUZyugbHGGKXN07bAiKfEnHje15oi7bllo08xPxS8GhKg5fdfUqS4X2O2PiOVTxwYQ0YQx8QRgwkJP0eT7x3JLWlvB1AGL6EaH+DPGC8uc+292OWqRMa7Io=
+	t=1768497952; cv=none; b=IK/vePM4xI/eBpTtNUodUFNRk0LWpjNixJYdjBVmP4UhqzNaB3XoUk+Pqmk8Y60WmklA+3ZmuuAHIEmWhGB3FkaYoNowU8WepPiN8HcF2CTULV6keuSN04+WrgbYNLqXW9O/3Ew4rRaU2KhQxtrm4p69kudlpZl/v1uC6S+IOWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768497932; c=relaxed/simple;
-	bh=u1r49FuSp7idbRrrUtXRDCMaM0faDivhFJHkbmS+TP8=;
+	s=arc-20240116; t=1768497952; c=relaxed/simple;
+	bh=p+NEomgsJB/QdCWy6uY+hD71CazlnStfzf6iCmkP6cw=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=act7KeWt3uxDXX9POO54F1i8GOFvnTlvAPS6pNJqWy/QwgiT/JehWcySbVv58QTo+40WtnKPBrvN4W/TyvXKXRMQoPiXHx7Y0ZCiEKyLnM3FBsNdhkD/zpaTWWAM+JSsTLIopYnXXWJztJVT4D+4qk6g+pbzMKn6JhCEJV2FBSY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aMOxKHYz; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version; b=P9GAMBC7JSuF4OSVQ2sEQGHHXgeKi+5iPFBYHnefII/999h5IXDVlbSsoH6E59AtPgs4qlrn426i9u+SJ959wf8mf5c/N0mFIHDL+OyOH7NBunWEGasZfMnNJ9bXZGw//j2ZEKUVL9BIhu3jRwk/r4alJYwCAuup02xm060L25Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NNYwtwFi; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1768497930;
+	s=mimecast20190719; t=1768497948;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ANB34oPiS2LxVk2Ywz66GKqLjmyf0reRPynvvnfmGMo=;
-	b=aMOxKHYzTWBNIj0HCTUXs3qhtRNqbPPeMR94IbCPndpmrI6str1czBRV+1ZYYPS7OE2l1K
-	a57oOTkHqYECI80xaoDOdgEg5EXqdXBD/5MeXu4l6J1NWAezSn3AfirNJKo3KKQvIF58N8
-	1yhgYvzxQA4Vd0995WndiGfqm7P4U8g=
+	bh=EFAJ+b7YV88HP2PCJWlcs+TXD7SDHzMTMKvxpmYsN4w=;
+	b=NNYwtwFiNvzLNt4TQnUU2VVSP2URysuPL1qDx2PnhoHH3xtY5b9CVkmZx+UQaCmHi5Aw/O
+	h+fbkuj/fJymVWPA2G9E8KfhJB4cBwpDnb0FUHdA/U4gQE2CdZxlPprBIcWTFbYTDpHne2
+	VCS8jwDq8UXWBFIsUfw74pKOtnU3yLw=
 Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-686-SSOTAUToPlKbiVWLIZlquw-1; Thu,
- 15 Jan 2026 12:25:25 -0500
-X-MC-Unique: SSOTAUToPlKbiVWLIZlquw-1
-X-Mimecast-MFC-AGG-ID: SSOTAUToPlKbiVWLIZlquw_1768497924
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-216-uqSFpn_SPjqk6OT6ADvM4Q-1; Thu,
+ 15 Jan 2026 12:25:45 -0500
+X-MC-Unique: uqSFpn_SPjqk6OT6ADvM4Q-1
+X-Mimecast-MFC-AGG-ID: uqSFpn_SPjqk6OT6ADvM4Q_1768497943
 Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 1567A1954B21;
-	Thu, 15 Jan 2026 17:25:24 +0000 (UTC)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 8E7A91954B0C;
+	Thu, 15 Jan 2026 17:25:43 +0000 (UTC)
 Received: from fedora.redhat.com (unknown [10.22.64.87])
-	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id EE4FD1800285;
-	Thu, 15 Jan 2026 17:25:18 +0000 (UTC)
+	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 0DB7418004D8;
+	Thu, 15 Jan 2026 17:25:38 +0000 (UTC)
 From: Wander Lairson Costa <wander@redhat.com>
 To: Steven Rostedt <rostedt@goodmis.org>,
 	Tomas Glozar <tglozar@redhat.com>,
 	Wander Lairson Costa <wander@redhat.com>,
-	Crystal Wood <crwood@redhat.com>,
 	Ivan Pravdin <ipravdin.official@gmail.com>,
+	Crystal Wood <crwood@redhat.com>,
 	Costa Shulyupin <costa.shul@redhat.com>,
 	John Kacur <jkacur@redhat.com>,
-	Haiyong Sun <sunhaiyong@loongson.cn>,
 	Tiezhu Yang <yangtiezhu@loongson.cn>,
 	Daniel Wagner <dwagner@suse.de>,
 	Daniel Bristot de Oliveira <bristot@kernel.org>,
 	linux-trace-kernel@vger.kernel.org (open list:Real-time Linux Analysis (RTLA) tools),
 	linux-kernel@vger.kernel.org (open list:Real-time Linux Analysis (RTLA) tools),
 	bpf@vger.kernel.org (open list:BPF [MISC]:Keyword:(?:\b|_)bpf(?:\b|_))
-Subject: [PATCH v3 03/18] rtla: Simplify argument parsing
-Date: Thu, 15 Jan 2026 13:31:46 -0300
-Message-ID: <20260115163650.118910-4-wander@redhat.com>
+Subject: [PATCH v3 04/18] rtla: Introduce common_threshold_handler() helper
+Date: Thu, 15 Jan 2026 13:31:47 -0300
+Message-ID: <20260115163650.118910-5-wander@redhat.com>
 In-Reply-To: <20260115163650.118910-1-wander@redhat.com>
 References: <20260115163650.118910-1-wander@redhat.com>
 Precedence: bulk
@@ -84,153 +83,273 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
 
-The actions_parse() function uses open-coded logic to extract arguments
-from a string. This includes manual length checks and strncmp() calls,
-which can be verbose and error-prone.
+Several functions duplicate the logic for handling threshold actions.
+When a threshold is reached, these functions stop the trace, perform
+configured actions, and restart the trace if --on-threshold continue
+is set.
 
-To simplify and improve the robustness of argument parsing, introduce a
-new extract_arg() helper macro. This macro extracts the value from a
-"key=value" pair, making the code more concise and readable.
+Create common_threshold_handler() to centralize this shared logic and
+avoid code duplication. The function executes the configured threshold
+actions and restarts the necessary trace instances when appropriate.
 
-Also, introduce STRING_LENGTH() and strncmp_static() macros to
-perform compile-time calculations of string lengths and safer string
-comparisons.
+Also add should_continue_tracing() helper to encapsulate the check
+for whether tracing should continue after a threshold event, improving
+code readability at call sites.
 
-Refactor actions_parse() to use these new helpers, resulting in
-cleaner and more maintainable code.
+In timerlat_top_bpf_main_loop(), use common_params directly instead
+of casting through timerlat_params when only common fields are needed.
 
 Signed-off-by: Wander Lairson Costa <wander@redhat.com>
 ---
- tools/tracing/rtla/src/actions.c | 57 +++++++++++++++++++++++---------
- tools/tracing/rtla/src/utils.h   | 14 ++++++--
- 2 files changed, 54 insertions(+), 17 deletions(-)
+ tools/tracing/rtla/src/common.c        | 61 ++++++++++++++++++--------
+ tools/tracing/rtla/src/common.h        | 18 ++++++++
+ tools/tracing/rtla/src/timerlat_hist.c | 19 ++++----
+ tools/tracing/rtla/src/timerlat_top.c  | 32 +++++++-------
+ 4 files changed, 86 insertions(+), 44 deletions(-)
 
-diff --git a/tools/tracing/rtla/src/actions.c b/tools/tracing/rtla/src/actions.c
-index 0ac42ffd734a3..b0d68b5de08db 100644
---- a/tools/tracing/rtla/src/actions.c
-+++ b/tools/tracing/rtla/src/actions.c
-@@ -111,6 +111,29 @@ actions_add_continue(struct actions *self)
- 	action->type = ACTION_CONTINUE;
+diff --git a/tools/tracing/rtla/src/common.c b/tools/tracing/rtla/src/common.c
+index ceff76a62a30b..cbc207fa58707 100644
+--- a/tools/tracing/rtla/src/common.c
++++ b/tools/tracing/rtla/src/common.c
+@@ -175,6 +175,38 @@ common_apply_config(struct osnoise_tool *tool, struct common_params *params)
  }
  
-+static inline const char *__extract_arg(const char *token, const char *opt, size_t opt_len)
+ 
++/**
++ * common_threshold_handler - handle latency threshold overflow
++ * @tool: pointer to the osnoise_tool instance containing trace contexts
++ *
++ * Executes the configured threshold actions (e.g., saving trace, printing,
++ * sending signals). If the continue flag is set (--on-threshold continue),
++ * restarts the auxiliary trace instances to continue monitoring.
++ *
++ * Return: 0 for success, -1 for error.
++ */
++int
++common_threshold_handler(const struct osnoise_tool *tool)
 +{
-+	const size_t tok_len = strlen(token);
++	actions_perform(&tool->params->threshold_actions);
 +
-+	if (tok_len <= opt_len)
-+		return NULL;
++	if (!should_continue_tracing(tool->params))
++		/* continue flag not set, break */
++		return 0;
 +
-+	if (strncmp(token, opt, opt_len))
-+		return NULL;
++	/* continue action reached, re-enable tracing */
++	if (tool->record && trace_instance_start(&tool->record->trace))
++		goto err;
++	if (tool->aa && trace_instance_start(&tool->aa->trace))
++		goto err;
 +
-+	return token + opt_len;
++	return 0;
++
++err:
++	err_msg("Error restarting trace\n");
++	return -1;
 +}
 +
-+/*
-+ * extract_arg - extract argument value from option token
-+ * @token: option token (e.g., "file=trace.txt")
-+ * @opt: option name to match (e.g., "file")
+ int run_tool(struct tool_ops *ops, int argc, char *argv[])
+ {
+ 	struct common_params *params;
+@@ -352,17 +384,14 @@ int top_main_loop(struct osnoise_tool *tool)
+ 				/* stop tracing requested, do not perform actions */
+ 				return 0;
+ 
+-			actions_perform(&params->threshold_actions);
++			retval = common_threshold_handler(tool);
++			if (retval)
++				return retval;
++
+ 
+-			if (!params->threshold_actions.continue_flag)
+-				/* continue flag not set, break */
++			if (!should_continue_tracing(params))
+ 				return 0;
+ 
+-			/* continue action reached, re-enable tracing */
+-			if (record)
+-				trace_instance_start(&record->trace);
+-			if (tool->aa)
+-				trace_instance_start(&tool->aa->trace);
+ 			trace_instance_start(trace);
+ 		}
+ 
+@@ -403,18 +432,14 @@ int hist_main_loop(struct osnoise_tool *tool)
+ 				/* stop tracing requested, do not perform actions */
+ 				break;
+ 
+-			actions_perform(&params->threshold_actions);
++			retval = common_threshold_handler(tool);
++			if (retval)
++				return retval;
+ 
+-			if (!params->threshold_actions.continue_flag)
+-				/* continue flag not set, break */
+-				break;
++			if (!should_continue_tracing(params))
++				return 0;
+ 
+-			/* continue action reached, re-enable tracing */
+-			if (tool->record)
+-				trace_instance_start(&tool->record->trace);
+-			if (tool->aa)
+-				trace_instance_start(&tool->aa->trace);
+-			trace_instance_start(&tool->trace);
++			trace_instance_start(trace);
+ 		}
+ 
+ 		/* is there still any user-threads ? */
+diff --git a/tools/tracing/rtla/src/common.h b/tools/tracing/rtla/src/common.h
+index 7602c5593ef5d..c548decd3c40f 100644
+--- a/tools/tracing/rtla/src/common.h
++++ b/tools/tracing/rtla/src/common.h
+@@ -143,6 +143,24 @@ struct tool_ops {
+ 	void (*free)(struct osnoise_tool *tool);
+ };
+ 
++/**
++ * should_continue_tracing - check if tracing should continue after threshold
++ * @params: pointer to the common parameters structure
 + *
-+ * Returns pointer to argument value after "=" if token matches "opt=",
-+ * otherwise returns NULL.
++ * Returns true if the continue action was configured (--on-threshold continue),
++ * indicating that tracing should be restarted after handling the threshold event.
++ *
++ * Return: 1 if tracing should continue, 0 otherwise.
 + */
-+#define extract_arg(token, opt) __extract_arg(token, opt "=", STRING_LENGTH(opt "="))
++static inline int
++should_continue_tracing(const struct common_params *params)
++{
++	return params->threshold_actions.continue_flag;
++}
 +
- /*
-  * actions_parse - add an action based on text specification
-  */
-@@ -120,6 +143,7 @@ actions_parse(struct actions *self, const char *trigger, const char *tracefn)
- 	enum action_type type = ACTION_NONE;
- 	const char *token;
- 	char trigger_c[strlen(trigger) + 1];
-+	const char *arg_value;
++int
++common_threshold_handler(const struct osnoise_tool *tool);
++
+ int osnoise_set_cpus(struct osnoise_context *context, char *cpus);
+ void osnoise_restore_cpus(struct osnoise_context *context);
  
- 	/* For ACTION_SIGNAL */
- 	int signal = 0, pid = 0;
-@@ -152,12 +176,10 @@ actions_parse(struct actions *self, const char *trigger, const char *tracefn)
- 		if (token == NULL)
- 			trace_output = tracefn;
- 		else {
--			if (strlen(token) > 5 && strncmp(token, "file=", 5) == 0) {
--				trace_output = token + 5;
--			} else {
-+			trace_output = extract_arg(token, "file");
-+			if (!trace_output)
- 				/* Invalid argument */
- 				return -1;
--			}
+diff --git a/tools/tracing/rtla/src/timerlat_hist.c b/tools/tracing/rtla/src/timerlat_hist.c
+index 6ea397421f1c9..6b8eaef8a3a09 100644
+--- a/tools/tracing/rtla/src/timerlat_hist.c
++++ b/tools/tracing/rtla/src/timerlat_hist.c
+@@ -17,6 +17,7 @@
+ #include "timerlat.h"
+ #include "timerlat_aa.h"
+ #include "timerlat_bpf.h"
++#include "common.h"
  
- 			token = strtok(NULL, ",");
- 			if (token != NULL)
-@@ -169,17 +191,21 @@ actions_parse(struct actions *self, const char *trigger, const char *tracefn)
- 	case ACTION_SIGNAL:
- 		/* Takes two arguments, num (signal) and pid */
- 		while (token != NULL) {
--			if (strlen(token) > 4 && strncmp(token, "num=", 4) == 0) {
--				if (strtoi(token + 4, &signal))
--					return -1;
--			} else if (strlen(token) > 4 && strncmp(token, "pid=", 4) == 0) {
--				if (strncmp(token + 4, "parent", 7) == 0)
--					pid = -1;
--				else if (strtoi(token + 4, &pid))
-+			arg_value = extract_arg(token, "num");
-+			if (arg_value) {
-+				if (strtoi(arg_value, &signal))
- 					return -1;
- 			} else {
--				/* Invalid argument */
--				return -1;
-+				arg_value = extract_arg(token, "pid");
-+				if (arg_value) {
-+					if (strncmp_static(arg_value, "parent") == 0)
-+						pid = -1;
-+					else if (strtoi(arg_value, &pid))
-+						return -1;
-+				} else {
-+					/* Invalid argument */
-+					return -1;
-+				}
+ struct timerlat_hist_cpu {
+ 	int			*irq;
+@@ -1048,7 +1049,6 @@ static struct osnoise_tool
+ 
+ static int timerlat_hist_bpf_main_loop(struct osnoise_tool *tool)
+ {
+-	struct timerlat_params *params = to_timerlat_params(tool->params);
+ 	int retval;
+ 
+ 	while (!stop_tracing) {
+@@ -1056,18 +1056,17 @@ static int timerlat_hist_bpf_main_loop(struct osnoise_tool *tool)
+ 
+ 		if (!stop_tracing) {
+ 			/* Threshold overflow, perform actions on threshold */
+-			actions_perform(&params->common.threshold_actions);
++			retval = common_threshold_handler(tool);
++			if (retval)
++				return retval;
+ 
+-			if (!params->common.threshold_actions.continue_flag)
+-				/* continue flag not set, break */
++			if (!should_continue_tracing(tool->params))
+ 				break;
+ 
+-			/* continue action reached, re-enable tracing */
+-			if (tool->record)
+-				trace_instance_start(&tool->record->trace);
+-			if (tool->aa)
+-				trace_instance_start(&tool->aa->trace);
+-			timerlat_bpf_restart_tracing();
++			if (timerlat_bpf_restart_tracing()) {
++				err_msg("Error restarting BPF trace\n");
++				return -1;
++			}
+ 		}
+ 	}
+ 	timerlat_bpf_detach();
+diff --git a/tools/tracing/rtla/src/timerlat_top.c b/tools/tracing/rtla/src/timerlat_top.c
+index dd727cb48b551..c6f6757c3fb6b 100644
+--- a/tools/tracing/rtla/src/timerlat_top.c
++++ b/tools/tracing/rtla/src/timerlat_top.c
+@@ -17,6 +17,7 @@
+ #include "timerlat.h"
+ #include "timerlat_aa.h"
+ #include "timerlat_bpf.h"
++#include "common.h"
+ 
+ struct timerlat_top_cpu {
+ 	unsigned long long	irq_count;
+@@ -801,10 +802,10 @@ static struct osnoise_tool
+ static int
+ timerlat_top_bpf_main_loop(struct osnoise_tool *tool)
+ {
+-	struct timerlat_params *params = to_timerlat_params(tool->params);
++	const struct common_params *params = tool->params;
+ 	int retval, wait_retval;
+ 
+-	if (params->common.aa_only) {
++	if (params->aa_only) {
+ 		/* Auto-analysis only, just wait for stop tracing */
+ 		timerlat_bpf_wait(-1);
+ 		return 0;
+@@ -812,8 +813,8 @@ timerlat_top_bpf_main_loop(struct osnoise_tool *tool)
+ 
+ 	/* Pull and display data in a loop */
+ 	while (!stop_tracing) {
+-		wait_retval = timerlat_bpf_wait(params->common.quiet ? -1 :
+-						params->common.sleep_time);
++		wait_retval = timerlat_bpf_wait(params->quiet ? -1 :
++						params->sleep_time);
+ 
+ 		retval = timerlat_top_bpf_pull_data(tool);
+ 		if (retval) {
+@@ -821,28 +822,27 @@ timerlat_top_bpf_main_loop(struct osnoise_tool *tool)
+ 			return retval;
+ 		}
+ 
+-		if (!params->common.quiet)
++		if (!params->quiet)
+ 			timerlat_print_stats(tool);
+ 
+ 		if (wait_retval != 0) {
+ 			/* Stopping requested by tracer */
+-			actions_perform(&params->common.threshold_actions);
++			retval = common_threshold_handler(tool);
++			if (retval)
++				return retval;
+ 
+-			if (!params->common.threshold_actions.continue_flag)
+-				/* continue flag not set, break */
++			if (!should_continue_tracing(tool->params))
+ 				break;
+ 
+-			/* continue action reached, re-enable tracing */
+-			if (tool->record)
+-				trace_instance_start(&tool->record->trace);
+-			if (tool->aa)
+-				trace_instance_start(&tool->aa->trace);
+-			timerlat_bpf_restart_tracing();
++			if (timerlat_bpf_restart_tracing()) {
++				err_msg("Error restarting BPF trace\n");
++				return -1;
++			}
+ 		}
+ 
+ 		/* is there still any user-threads ? */
+-		if (params->common.user_workload) {
+-			if (params->common.user.stopped_running) {
++		if (params->user_workload) {
++			if (params->user.stopped_running) {
+ 				debug_msg("timerlat user space threads stopped!\n");
+ 				break;
  			}
- 
- 			token = strtok(NULL, ",");
-@@ -194,9 +220,10 @@ actions_parse(struct actions *self, const char *trigger, const char *tracefn)
- 	case ACTION_SHELL:
- 		if (token == NULL)
- 			return -1;
--		if (strlen(token) > 8 && strncmp(token, "command=", 8))
-+		arg_value = extract_arg(token, "command");
-+		if (!arg_value)
- 			return -1;
--		actions_add_shell(self, token + 8);
-+		actions_add_shell(self, arg_value);
- 		break;
- 	case ACTION_CONTINUE:
- 		/* Takes no argument */
-diff --git a/tools/tracing/rtla/src/utils.h b/tools/tracing/rtla/src/utils.h
-index e29c2eb5d569d..8323c999260c2 100644
---- a/tools/tracing/rtla/src/utils.h
-+++ b/tools/tracing/rtla/src/utils.h
-@@ -14,8 +14,18 @@
- #define MAX_NICE		20
- #define MIN_NICE		-19
- 
--#define container_of(ptr, type, member)({			\
--	const typeof(((type *)0)->member) *__mptr = (ptr);	\
-+#ifndef ARRAY_SIZE
-+#define ARRAY_SIZE(x) (sizeof(x) / sizeof(*(x)))
-+#endif
-+
-+/* Calculate string length at compile time (excluding null terminator) */
-+#define STRING_LENGTH(s) (ARRAY_SIZE(s) - sizeof(*(s)))
-+
-+/* Compare string with static string, length determined at compile time */
-+#define strncmp_static(s1, s2) strncmp(s1, s2, ARRAY_SIZE(s2))
-+
-+#define container_of(ptr, type, member)({				\
-+	const typeof(((type *)0)->member) * __mptr = (ptr);		\
- 	(type *)((char *)__mptr - offsetof(type, member)) ; })
- 
- extern int config_debug;
 -- 
 2.52.0
 
