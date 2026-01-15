@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-79029-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79030-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11E55D242E5
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 12:30:33 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59A86D242EB
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 12:30:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 79725305E43B
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 11:25:04 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 111B43040AAA
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 11:25:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1A17379978;
-	Thu, 15 Jan 2026 11:24:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6C54379989;
+	Thu, 15 Jan 2026 11:24:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J+6Xl1OD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nQqSOEUo"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-pl1-f195.google.com (mail-pl1-f195.google.com [209.85.214.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36FB73793DB
-	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 11:24:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31B50378D97
+	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 11:24:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768476287; cv=none; b=c06WcdkivDF/yIBWrSbrjao/Rx3A8L0U5Lwl02n0PBbPk7sOXzVrluz584lkiYT93yRrvrL5COOvCONAftfR8VmsE/eOGjuIsim3PY/bHdpN5zreUpB+n0dENBV2HKVazr6QVNtIVb+A3XwX3dySNEfklwZc0IrWOE2YlFf3lDA=
+	t=1768476296; cv=none; b=KRguCI3iqw2cujiE2RqulENOz2cECVRnBsO7TffruMutvZwRmMMOtsbu2JVPVN+6+2tURHPPdD7+J38w8tyAjuzPxfyrePJtpY8KQdWx3yCRBvhr2aQon0V4dcSHmMdIftlhOfdIMGLmW5E96mKWI8XMcn65E0SAeCIWdFThgQc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768476287; c=relaxed/simple;
-	bh=NVrwW1R4O2KcdroQjpDDjfgCMa4Z0Adcw10s6u/XdoE=;
+	s=arc-20240116; t=1768476296; c=relaxed/simple;
+	bh=cL25nkDUzKZag4J9iucviG36ODRXZz/OJhTfJnS3kJQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Agz7bKZnrLxb9vlmzUpUKZiBvpkbNMprar7rVDCK+HX7a7AS8jj9RLjdBa9pV0WcaVX/+83dOoK3kOqcAyUbhaLKJoJh9xYeLEqix3ycDmkSrBx97LbWTVUw1feaMeboKK/Bb6bDXprJ/m9YbNX9mbCIuluROCSiygZxJDz1lm0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J+6Xl1OD; arc=none smtp.client-ip=209.85.214.195
+	 MIME-Version; b=N7Swca1qyAMDYqA9uvwnIyZUKMRC1fyDGTUv6j3xTnuqOxFM7Hp/gHXCqc3BEj19B3dZ6ZHaY17ppkniwt13S9B1IN05yuuIVNWG2kiTr4m9aeEbAPN4X4hKjrTzN7I2kz35W3f2LcbPIoU40GVwLExCg1fF2YtWeunjwH3Can4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nQqSOEUo; arc=none smtp.client-ip=209.85.214.195
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f195.google.com with SMTP id d9443c01a7336-2a2ea96930cso5009595ad.2
-        for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 03:24:46 -0800 (PST)
+Received: by mail-pl1-f195.google.com with SMTP id d9443c01a7336-2a0f3f74587so5569715ad.2
+        for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 03:24:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768476285; x=1769081085; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1768476294; x=1769081094; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=meuxC1Q8dcQIhcuiosVy+dIDQYPWfjEU4DNbMnGdavk=;
-        b=J+6Xl1ODcADdLDUQQOXpd4d+/OybE5dOU2KlxLqEpbKwiXu+iwMEMsNB91yu1VowMk
-         x3DeZ5upecmeGzQbrjUbJrb/ZAqNCTlfqZ60suRJ1vif+IxncewQcTeINmGYF9YfllDO
-         G9KLDQAUWAKcNJ+Nl9CGp9ardizZHQlguzmeTM6uVETn8WgcaUT7APnCY+Kt1YNiMcfd
-         zKbmXBOALwbdKullSrBUE+E+z/fk61CUziwAo5Pim5gy/CJHZapIxlXW5clBz5NDsaQf
-         KxOjXZrDkT3vV3NyvsBEyLz/QSGzLHwRck29XA2+5nN5lXYxYjnhQe9mBM+Urnh3Byi+
-         NZVQ==
+        bh=XYfLimlEod4L01lx+XYB7h0VUHpcPwya1tLXiZjahd0=;
+        b=nQqSOEUo0UOxJiaWM/FLncotJa7v4vghPCNnDfKBxm7lEHJ5TSn+lziDLPsQWBuW8k
+         pDY1h2XMHr6k5ozA1ICuc8bMARufuOP00v0jAZnenwlkXkfxpcIMezmvh2RPFH3BGzg2
+         FmfhmxvjJeU9idfz0QIcmz/Gn61sKKBQWq5Xpk/mb1Zd6DN4/l5qFtw7Udi4YMVJBN6R
+         9E92O3G+9+3puzzt1Y/PTh/GK07INuJ5K+BzhIqKK377Hq6WjWAHY6+LU0egOuwu3kfP
+         bIC8L7eMAYxNJUvSIPmv7fi9XEJSt3Jh6SsqBG6BQSeG8Qa/lBkH+7ydWPUsIYNo+jWb
+         mqrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768476285; x=1769081085;
+        d=1e100.net; s=20230601; t=1768476295; x=1769081095;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=meuxC1Q8dcQIhcuiosVy+dIDQYPWfjEU4DNbMnGdavk=;
-        b=GfSa2jaXNcIuH1z/+QPNjerWrTfIw1gW3pBGMjJ2mjnMXmi7hZ+G59FOJXJkJYY/U5
-         A+Dx947pUm2tYjNmI6XB+RIvBGUnxmkwZ90x6f3hT6RGRmd96GfxZlKM3SVkiUuyXCjQ
-         +hTdshyVFmvgQ4Nab411Iq6eg/adpE/x5FiwW0jf5DlVw5/XlzJoR+y3PTOfU7AxDMsk
-         px7CLtIax/of0f4EUhxFsOjl+i4X4pT2SfOtXPq1YD57KxAejbfI0b5uHqxU/4+AdrBf
-         fvdaUwkmCGnrNtC0Igy1rA+Kuxo3PCoqMvCr4ieXCWXYRPiXjmvO8YGq53M9dJWdhkqF
-         gu5w==
-X-Forwarded-Encrypted: i=1; AJvYcCWes+GFx5BcIixY/yas9jvDTaYTgMskLedZHlB2l/CE4uJAwhzvAWy+8a8xiX62v40U1EI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyeKEFfCBnx1Qk4LeNk14t89yINeqdx03GllKsPbUWuS7HvddxO
-	ppdTchMNv/fL0dW+V6VqqNeRHpF+MZDtSl7pz+BYmoQW4Uc78qCJE13R
-X-Gm-Gg: AY/fxX46BTPnmt0YlV9py5YAhU/WK8bcLzVxmhLvQG+gXB46wtOQe/tSLjpU8isHQG0
-	rpBYByRcw93a77+IMQMqGIT8ExlYDx8pJ6Ytv/IQfWmmwXm9UEQ/NT9R6JEbqX5uo265OTBJH8B
-	WkqxcHPwfQtN+uEs+eIK9vw841ZaYOtPBMJWi5o0koahpqoPpzYN/ESyima5CfH8zIOtMqVs1pZ
-	uuim578pCIE5kp26L0fob1c2geO8OctGh3k3FS8JgRu+mrQ8dEcRgpeJnJpWAxfam4JI5l1zlIB
-	3BssrQUsLDSqvp4nUFcm+vCFKbWqNU5lGnkxVnyOklwU4zII6qj1Ju7Y4up853Pf21VXn2EsTId
-	pP7gz5rR97lGPxRO9JOxgAnpQT3jUDEUJrhpMTWWAFsPIds5pyuFZpNLfKJQVOula8qv6J3QdZ/
-	+P0Ad60TeiXjJykN7r8w==
-X-Received: by 2002:a17:902:cf06:b0:298:3aa6:c03d with SMTP id d9443c01a7336-2a59bc61e10mr49463585ad.57.1768476285450;
-        Thu, 15 Jan 2026 03:24:45 -0800 (PST)
+        bh=XYfLimlEod4L01lx+XYB7h0VUHpcPwya1tLXiZjahd0=;
+        b=MFC3+YhA7a/wETJI++dN5pcqlEYiCCGXpvZAoW0gkSB52OIsBXOZtBTWuo442oyypy
+         qLVZfj/y5px1FPYebuA7AbMbUXYvYl1wmBwpXOLyKjYKC6gMZDbqPrmkgggJhd0AxfeA
+         dnYpFsOLHRCE1byht3IhfBdwR3iYf95UVJpmus0R7kYL+KObnMW+Cl0Pa+ra+etw6Gnj
+         aVk/gVu7iI6SUK1bWdTDt+Ug14rO9VWAWN/hQ37PJOSC44SbcFBAO1pBj2LCMAjR6LZY
+         S+BJ3Fa3W5rW6qZaXqytA5bNf5hTKcSnBPxhAgJCl71gHqMqWJSCDofrcEkF8zEER0yV
+         inAw==
+X-Forwarded-Encrypted: i=1; AJvYcCUkToYJTaDHVq5TaBS/dzJU41yIwJby0WDQbwIpYfep/2L3lh1d2Qq0gCQiHXw7I4o8R1s=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxRuD8VPfbizxAeuHhitXOVQ2UTMo7FTyAzFWJhE4J2ZLzwbzZl
+	ug8NS8Qd/mBvyzbBYyFtwPJFlv54KR8j1Eeoznz6Db9KoCYx7uqI3wL0
+X-Gm-Gg: AY/fxX75NK/Xb/ccYvpbehb7W6CZyQMqIodAnBoGPISIHK3AGJ+Wl0RPt0iXAZg5eLB
+	3GzgAT55bi1+htBVA98Z3/Q7PeodV7HWFkS5qHSGPAoGPF5Tr4ljPQm74/sEZ5qhP1YQxcb2ueC
+	ao+TbOFtPssYlJcvn3keB0we99dKL3UBzHI9vAnJ46mJfmBtB6i18iNiAqvItYEWvAifE3oNOxb
+	uDppCnxlYYV4VSY3u/PDPs1szFOtAKV/T9e3ADLx05HMpo9yl93e02tqgLtW08RRtNGDcCnnpL6
+	7gaE+vkSxcd0T/H0FfUnajnr2TYwgc1G5QDa1Avtm6OLfN20MuEnf6le9h23UW4mCCdfymnyIiv
+	mleakyqEvJE4RcNKePj+Flr3FfWBt4HWYPeI/4Odu0JKhVhsPcx97yz+NwZnG4m65u13LNs4Mx6
+	NdBvBQX8E=
+X-Received: by 2002:a17:903:2a90:b0:2a0:9970:13fd with SMTP id d9443c01a7336-2a599e493b5mr54268265ad.43.1768476294546;
+        Thu, 15 Jan 2026 03:24:54 -0800 (PST)
 Received: from 7940hx ([160.187.0.149])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a3e3ba03f9sm248523225ad.0.2026.01.15.03.24.35
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a3e3ba03f9sm248523225ad.0.2026.01.15.03.24.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jan 2026 03:24:45 -0800 (PST)
+        Thu, 15 Jan 2026 03:24:54 -0800 (PST)
 From: Menglong Dong <menglong8.dong@gmail.com>
 X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
 To: ast@kernel.org,
@@ -97,9 +97,9 @@ Cc: daniel@iogearbox.net,
 	bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v10 11/12] selftests/bpf: add testcases for fsession cookie
-Date: Thu, 15 Jan 2026 19:22:45 +0800
-Message-ID: <20260115112246.221082-12-dongml2@chinatelecom.cn>
+Subject: [PATCH bpf-next v10 12/12] selftests/bpf: test fsession mixed with fentry and fexit
+Date: Thu, 15 Jan 2026 19:22:46 +0800
+Message-ID: <20260115112246.221082-13-dongml2@chinatelecom.cn>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260115112246.221082-1-dongml2@chinatelecom.cn>
 References: <20260115112246.221082-1-dongml2@chinatelecom.cn>
@@ -111,78 +111,35 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Test session cookie for fsession. Multiple fsession BPF progs is attached
-to bpf_fentry_test1() and session cookie is read and write in the
-testcase.
+Test the fsession when it is used together with fentry, fexit.
 
 Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
 ---
-v3:
-- restructure the testcase by combine the testcases for session cookie and
-  get_func_ip into one patch
----
- .../selftests/bpf/progs/fsession_test.c       | 53 +++++++++++++++++++
- 1 file changed, 53 insertions(+)
+ .../testing/selftests/bpf/progs/fsession_test.c  | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
 diff --git a/tools/testing/selftests/bpf/progs/fsession_test.c b/tools/testing/selftests/bpf/progs/fsession_test.c
-index f504984d42f2..4e55ca67db46 100644
+index 4e55ca67db46..7f640ddc8905 100644
 --- a/tools/testing/selftests/bpf/progs/fsession_test.c
 +++ b/tools/testing/selftests/bpf/progs/fsession_test.c
-@@ -108,3 +108,56 @@ int BPF_PROG(test6, int a)
- 		test6_entry_result = (const void *) addr == &bpf_fentry_test1;
+@@ -161,3 +161,19 @@ int BPF_PROG(test9, int a, int ret)
+ 	test9_exit_result = a == 1 && ret == 2 && *cookie == 0x123456ULL;
  	return 0;
  }
 +
-+__u64 test7_entry_ok = 0;
-+__u64 test7_exit_ok = 0;
-+SEC("fsession/bpf_fentry_test1")
-+int BPF_PROG(test7, int a)
++__u64 test10_result = 0;
++SEC("fexit/bpf_fentry_test1")
++int BPF_PROG(test10, int a, int ret)
 +{
-+	__u64 *cookie = bpf_session_cookie(ctx);
-+
-+	if (!bpf_session_is_return(ctx)) {
-+		*cookie = 0xAAAABBBBCCCCDDDDull;
-+		test7_entry_ok = *cookie == 0xAAAABBBBCCCCDDDDull;
-+		return 0;
-+	}
-+
-+	test7_exit_ok = *cookie == 0xAAAABBBBCCCCDDDDull;
++	test10_result = a == 1 && ret == 2;
 +	return 0;
 +}
 +
-+__u64 test8_entry_ok = 0;
-+__u64 test8_exit_ok = 0;
-+
-+SEC("fsession/bpf_fentry_test1")
-+int BPF_PROG(test8, int a)
++__u64 test11_result = 0;
++SEC("fentry/bpf_fentry_test1")
++int BPF_PROG(test11, int a)
 +{
-+	__u64 *cookie = bpf_session_cookie(ctx);
-+
-+	if (!bpf_session_is_return(ctx)) {
-+		*cookie = 0x1111222233334444ull;
-+		test8_entry_ok = *cookie == 0x1111222233334444ull;
-+		return 0;
-+	}
-+
-+	test8_exit_ok = *cookie == 0x1111222233334444ull;
-+	return 0;
-+}
-+
-+__u64 test9_entry_result = 0;
-+__u64 test9_exit_result = 0;
-+
-+SEC("fsession/bpf_fentry_test1")
-+int BPF_PROG(test9, int a, int ret)
-+{
-+	__u64 *cookie = bpf_session_cookie(ctx);
-+
-+	if (!bpf_session_is_return(ctx)) {
-+		test9_entry_result = a == 1 && ret == 0;
-+		*cookie = 0x123456ULL;
-+		return 0;
-+	}
-+
-+	test9_exit_result = a == 1 && ret == 2 && *cookie == 0x123456ULL;
++	test11_result = a == 1;
 +	return 0;
 +}
 -- 
