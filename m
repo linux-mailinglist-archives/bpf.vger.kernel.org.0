@@ -1,218 +1,288 @@
-Return-Path: <bpf+bounces-79017-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79018-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CC1AD24169
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 12:11:29 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C9A4D24230
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 12:23:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 83BDA311BC23
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 11:07:08 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 47D53300F9CA
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 11:23:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7319374173;
-	Thu, 15 Jan 2026 11:07:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B20B4376BDC;
+	Thu, 15 Jan 2026 11:23:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="DzIHnt6o";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="PhtbcgpZ";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="DzIHnt6o";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="PhtbcgpZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AIRQuZWD"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-pl1-f195.google.com (mail-pl1-f195.google.com [209.85.214.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8024136E487
-	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 11:07:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D185374162
+	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 11:23:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768475227; cv=none; b=ixLj0rKYG5TRchu4weNUv1JbobYFgJxfL4jKrORjV/f+TAyHBEId/X05Gd1PjTYO5sQMB9Y5084pJUsJST9pQ0ECJAIrpI/bNn2AvDsQzI1M8lj6NlkW7UO9S01m9atARekiNNU70HDHYy9hjERAILl1wU4ihmTFpy/arwIWLsQ=
+	t=1768476185; cv=none; b=g9Oe81cm7xtZoRV7Jwtf3MJZtvoB9UsLeuORp4bSC0D7rH2pHZvji3ciRANbCZqKw4N+z46/6q3D9yjGlxetfED1k3TaAWeu23AyOhe7ah/NrusHemgRFBiRBFf5u757OFQdNLd5CJph4Ff0bXvPI0YywXgNrNbMeK1Du1DC5p8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768475227; c=relaxed/simple;
-	bh=ne6FXxwTz2TjY+5zwYWD8Kq4oVMHNJjLZiAqyiveK5o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=t3tGnw5MKtNmO7dLQ3C+hKLpgRQ1yh9tQMifW2sEx4tUE04uKz7LDwAh7duQVWhkxAh3J9KWc8ZLPUQWxYcZYu0hIkReGBviKxgJyxhKxFXiEOvqIOWG3yOZIpmQlsLeUjYZ7iN3oR26M1ooXKcs+q0ch2Us+ju0dPr7k+g6kuo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=DzIHnt6o; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=PhtbcgpZ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=DzIHnt6o; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=PhtbcgpZ; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 98CF55BCF8;
-	Thu, 15 Jan 2026 11:07:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1768475223; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=CMDfavExPfC/FICQX2UPPaUz4Jt0PBH/HWBal9RBdsk=;
-	b=DzIHnt6orUzRCjYb5JLGvRIpeE2yHI8uAaXqF1/buvFeALUtevEkxBKxl5pX+3iw7H8IS1
-	SMeuEAJLgYFCFOrv9ypOg1zRnLXB2bqmUO+1etfT3Hceu2BHVCm8vs/hirEG7qCOlvSwCp
-	YtTspVNOwogdFPGqgn4QvWJjEH0dcU8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1768475223;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=CMDfavExPfC/FICQX2UPPaUz4Jt0PBH/HWBal9RBdsk=;
-	b=PhtbcgpZ28KPLRtLV9294kHuGiy0/i83FiDqUxx9XESVkVGJz7TRpW09X1o1ZA4GyDKJ3j
-	xQsQVuAuh2fYYrBA==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=DzIHnt6o;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=PhtbcgpZ
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1768475223; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=CMDfavExPfC/FICQX2UPPaUz4Jt0PBH/HWBal9RBdsk=;
-	b=DzIHnt6orUzRCjYb5JLGvRIpeE2yHI8uAaXqF1/buvFeALUtevEkxBKxl5pX+3iw7H8IS1
-	SMeuEAJLgYFCFOrv9ypOg1zRnLXB2bqmUO+1etfT3Hceu2BHVCm8vs/hirEG7qCOlvSwCp
-	YtTspVNOwogdFPGqgn4QvWJjEH0dcU8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1768475223;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=CMDfavExPfC/FICQX2UPPaUz4Jt0PBH/HWBal9RBdsk=;
-	b=PhtbcgpZ28KPLRtLV9294kHuGiy0/i83FiDqUxx9XESVkVGJz7TRpW09X1o1ZA4GyDKJ3j
-	xQsQVuAuh2fYYrBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 784253EA63;
-	Thu, 15 Jan 2026 11:07:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id +OwJHVfKaGlmKgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Thu, 15 Jan 2026 11:07:03 +0000
-Message-ID: <d0f5f72d-77de-4be7-990c-a5e47f326dd9@suse.cz>
-Date: Thu, 15 Jan 2026 12:07:03 +0100
+	s=arc-20240116; t=1768476185; c=relaxed/simple;
+	bh=FIwHESQVYuuZxc5uoVG/+Wr/XmXfglSjp8N8KZh0HG4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=B+CWdbwMs+RPLOF1dco5g03BPQcm2Gbu6uj4+Z0T1XnocGMPXYGdRbSAiYB4JcnI/Eu46H+lPwWVXVsQklvOgbRm9p38MY/fkA3ocfFmp443qfgY1C3s7M9nLQZug8oD1mKeFBbsp2mPHQy1FGBOnqXmLyLPGFA+aBkBePnbdDM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AIRQuZWD; arc=none smtp.client-ip=209.85.214.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f195.google.com with SMTP id d9443c01a7336-2a0c09bb78cso5219785ad.0
+        for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 03:23:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1768476183; x=1769080983; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vt3QKUVCCxglq0avEJJmb3HplxqAgTVpWZ+HnoWeEpI=;
+        b=AIRQuZWDOAr/xMbRd4J5uNHasYRWWCx4+9yRe+fU0zwHiPidvmnfkumAnmvO6+Axn4
+         uLnY1wgLQyZDyRTTiTRzqKbgDEGTl2NE2jFj/ZqDOm9z4lIv3BjJieZFP7aqIKp4mdMj
+         hYPmy64EAU3IM+Ez/yL+iDFvjl2pTc4az4Eaeokd/hMimCC8JT5yrINWEREsbvS3o41l
+         vkcM1abEbjHajxxjahnWbbLUzR/wsqfwvT75qmIHNxE0d7Zx72FLCwLZ7rfHcyFXwihp
+         +0Uuk+q56Gx3hCoNqe0qhND2wyXbM/9Mp9BG/3xIu+E6rQspjq27LnJg9MvBiBRgnOdV
+         3VGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768476183; x=1769080983;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Vt3QKUVCCxglq0avEJJmb3HplxqAgTVpWZ+HnoWeEpI=;
+        b=MmNgq4lY1Af5f1zM1sVB9jNAjvbVUbFSItE7BCLKiGNm3BDy+iHrm+iufi4itk7F/Q
+         K7PeeK2+nk2ym2PHPvquJWwMVniG1Oy+ILBoctds0OxiajAei9geXY4JnsX/2GCq84dO
+         JCGQKOuQqN418HBbfbvXVJ5+ZX4R9zmjEu9x1J2jhUJohTSPPckzjVgK2RyblLLPylb9
+         2SD6EsHJ6HtCOn+piuJ5cG5RXINzu+Wxth6l9YGuUokL2sfhVEqGh7XWvVBohPZ3QUvv
+         iBXPNz0NJuU57d+3SNMMdGPm4gyZ9oHwDI982o9EEGdZm+tPcINKKnhI7kJQGXzjvAEQ
+         IcIQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUYXyWyCfNHMvjjXkA1OIxZwecqF0aR11blwS0uS6bP4atx33ZgwwMgJJ6Yo93HmBv7CNY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw/5GaYkEWJmbi9q+Nr9xuteY+//qPteXGYWl5yJJQGsti/vOWW
+	amKpIlvbu1rC4QYeIHX5TNXD1EmXhcjNQ9OylPCWTnCyXD/CTqqIUPuq
+X-Gm-Gg: AY/fxX6/3Az3B5BOkGKPFqz+TzV9UjR4RmPMzA5vp/nBucf1R6BDdDxvgVrTQNSqfse
+	plQPwHZuxI3LGzLoWc8cQvqO+cJwoDosGKD7UPIivXRTOJ/Nk3KI8fzHg52kxy6nkJ+sseDHQg2
+	XYju9fu0rt5u79QC/j2DPyzU0GC67Mv7nuM0nF5mrTNIzGzHkBy3EBXWnNZK2r9LrIvyyZ5qCp5
+	DFgdQnzdwMKznKxWvBeEuSt+kCJPZ4CDxkCfQFSMrhOp9fovo78hbZF3jMweONcpqJyDSj64l5q
+	7hwarU0uqx5J0OHDaScRGFYRZfImA+xucU46Ud6i566FogGLGhCmqNBCaFST+Q8cYaBmexDzc0A
+	qO5nx0s3faHqRZCgpWjHv0go22EMujxNfHaNlxF7WisHxdOHiTeQh1wLkxUvkOvzU7CbFsUgGn9
+	AnD2bZUgY=
+X-Received: by 2002:a17:902:dac5:b0:2a0:9047:a738 with SMTP id d9443c01a7336-2a700a1c294mr23718005ad.19.1768476182752;
+        Thu, 15 Jan 2026 03:23:02 -0800 (PST)
+Received: from 7940hx ([160.187.0.149])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a3e3ba03f9sm248523225ad.0.2026.01.15.03.22.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jan 2026 03:23:02 -0800 (PST)
+From: Menglong Dong <menglong8.dong@gmail.com>
+X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
+To: ast@kernel.org,
+	andrii@kernel.org
+Cc: daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	davem@davemloft.net,
+	dsahern@kernel.org,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	jiang.biao@linux.dev,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	hpa@zytor.com,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v10 00/12] bpf: fsession support
+Date: Thu, 15 Jan 2026 19:22:34 +0800
+Message-ID: <20260115112246.221082-1-dongml2@chinatelecom.cn>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v2 06/20] slab: make percpu sheaves compatible with
- kmalloc_nolock()/kfree_nolock()
-Content-Language: en-US
-To: Hao Li <hao.li@linux.dev>
-Cc: Harry Yoo <harry.yoo@oracle.com>, Petr Tesarik <ptesarik@suse.com>,
- Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>,
- Uladzislau Rezki <urezki@gmail.com>,
- "Liam R. Howlett" <Liam.Howlett@oracle.com>,
- Suren Baghdasaryan <surenb@google.com>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Alexei Starovoitov <ast@kernel.org>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, linux-rt-devel@lists.linux.dev,
- bpf@vger.kernel.org, kasan-dev@googlegroups.com
-References: <20260112-sheaves-for-all-v2-0-98225cfb50cf@suse.cz>
- <20260112-sheaves-for-all-v2-6-98225cfb50cf@suse.cz>
- <2hsm2byyftzi2d4xxdtkakqnfggtyemr23ofrnqgkzhkh7q7vc@zoqqfr7hba6f>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- m6M14QORSWTLRg==
-In-Reply-To: <2hsm2byyftzi2d4xxdtkakqnfggtyemr23ofrnqgkzhkh7q7vc@zoqqfr7hba6f>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-4.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_ALL(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[oracle.com,suse.com,gentwo.org,google.com,linux.dev,linux-foundation.org,gmail.com,linutronix.de,kernel.org,kvack.org,vger.kernel.org,lists.linux.dev,googlegroups.com];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:mid,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Spam-Flag: NO
-X-Spam-Score: -4.51
-X-Rspamd-Queue-Id: 98CF55BCF8
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spam-Level: 
+Content-Transfer-Encoding: 8bit
 
-On 1/13/26 16:42, Hao Li wrote:
->> @@ -6129,6 +6152,17 @@ __pcs_replace_full_main(struct kmem_cache *s, struct slub_percpu_sheaves *pcs)
->>  		return pcs;
->>  	}
->>  
->> +	if (!allow_spin) {
->> +		/*
->> +		 * sheaf_flush_unused() or alloc_empty_sheaf() don't support
->> +		 * !allow_spin and instead of trying to support them it's
->> +		 * easier to fall back to freeing the object directly without
->> +		 * sheaves
->> +		 */
->> +		local_unlock(&s->cpu_sheaves->lock);
->> +		return NULL;
->> +	}
-> 
-> It looks like when "allow_spin" is false, __pcs_replace_full_main() can
-> still end up calling alloc_empty_sheaf() if pcs->spare is NULL (via the
+Hi, all.
 
-Oops your're right, we can't allow that. Thanks!
+In this version, I followed Andrii's suggestions in v9, and did many
+adjustment.
 
-> "goto alloc_empty" path). Would it make sense to bail out a bit earlier
-> in that case?
+overall
+-------
+Sometimes, we need to hook both the entry and exit of a function with
+TRACING. Therefore, we need define a FENTRY and a FEXIT for the target
+function, which is not convenient.
 
-I've reorganized the code a bit so it shouldn't happen anymore.
+Therefore, we add a tracing session support for TRACING. Generally
+speaking, it's similar to kprobe session, which can hook both the entry
+and exit of a function with a single BPF program.
+
+We allow the usage of bpf_get_func_ret() to get the return value in the
+fentry of the tracing session, as it will always get "0", which is safe
+enough and is OK.
+
+Session cookie is also supported with the kfunc bpf_session_cookie().
+In order to limit the stack usage, we limit the maximum number of cookies
+to 4.
+
+kfunc design
+------------
+In order to keep consistency with existing kfunc, we don't introduce new
+kfunc for fsession. Instead, we reuse the existing kfunc
+bpf_session_cookie() and bpf_session_is_return().
+
+The prototype of bpf_session_cookie() and bpf_session_is_return() don't
+satisfy our needs, so we change their prototype by adding the argument
+"void *ctx" to them.
+
+We inline bpf_session_cookie() and bpf_session_is_return() for fsession
+in the verifier directly. Therefore, we don't need to introduce new
+functions for them.
+
+architecture
+------------
+The fsession stuff is arch related, so the -EOPNOTSUPP will be returned if
+it is not supported yet by the arch. In this series, we only support
+x86_64. And later, other arch will be implemented.
+
+Changes v9 -> v10:
+* 1st patch: some small adjustment, such as use switch in
+  bpf_prog_has_trampoline()
+* 2nd patch: some adjustment to the commit log and comment
+* 3rd patch:
+  - drop the declaration of bpf_session_is_return() and
+    bpf_session_cookie()
+  - use vmlinux.h instead of bpf_kfuncs.h in uprobe_multi_session.c,
+    kprobe_multi_session_cookie.c and uprobe_multi_session_cookie.c
+* 4th patch:
+  - some adjustment to the comment and commit log
+  - rename the prefix from BPF_TRAMP_M_ tp BPF_TRAMP_SHIFT_
+  - remove the definition of BPF_TRAMP_M_NR_ARGS
+  - check the program type in bpf_session_filter()
+* 5th patch: some adjustment to the commit log
+* 6th patch:
+  - add the "reg" to the function arguments of emit_store_stack_imm64()
+  - use the positive offset in emit_store_stack_imm64()
+* 7th patch:
+  - use "|" for func_meta instead of "+"
+  - pass the "func_meta_off" to invoke_bpf() explicitly, instead of
+    computing it with "stack_size + 8"
+  - pass the "cookie_off" to invoke_bpf() instead of computing the current
+    cookie index with "func_meta"
+* 8th patch:
+  - split the modification to bpftool to a separate patch
+* v9: https://lore.kernel.org/bpf/20260110141115.537055-1-dongml2@chinatelecom.cn/
+
+Changes v8 -> v9:
+* remove the definition of bpf_fsession_cookie and bpf_fsession_is_return
+  in the 4th and 5th patch
+* rename emit_st_r0_imm64() to emit_store_stack_imm64() in the 6th patch
+* v8: https://lore.kernel.org/bpf/20260108022450.88086-1-dongml2@chinatelecom.cn/
+
+Changes v7 -> v8:
+* use the last byte of nr_args for bpf_get_func_arg_cnt() in the 2nd patch
+* v7: https://lore.kernel.org/bpf/20260107064352.291069-1-dongml2@chinatelecom.cn/
+
+Changes v6 -> v7:
+* change the prototype of bpf_session_cookie() and bpf_session_is_return(),
+  and reuse them instead of introduce new kfunc for fsession.
+* v6: https://lore.kernel.org/bpf/20260104122814.183732-1-dongml2@chinatelecom.cn/
+
+Changes v5 -> v6:
+* No changes in this version, just a rebase to deal with conflicts.
+* v5: https://lore.kernel.org/bpf/20251224130735.201422-1-dongml2@chinatelecom.cn/
+
+Changes v4 -> v5:
+* use fsession terminology consistently in all patches
+* 1st patch:
+  - use more explicit way in __bpf_trampoline_link_prog()
+* 4th patch:
+  - remove "cookie_cnt" in struct bpf_trampoline
+* 6th patch:
+  - rename nr_regs to func_md
+  - define cookie_off in a new line
+* 7th patch:
+  - remove the handling of BPF_TRACE_SESSION in legacy fallback path for
+    BPF_RAW_TRACEPOINT_OPEN
+* v4: https://lore.kernel.org/bpf/20251217095445.218428-1-dongml2@chinatelecom.cn/
+
+Changes v3 -> v4:
+* instead of adding a new hlist to progs_hlist in trampoline, add the bpf
+  program to both the fentry hlist and the fexit hlist.
+* introduce the 2nd patch to reuse the nr_args field in the stack to
+  store all the information we need(except the session cookies).
+* limit the maximum number of cookies to 4.
+* remove the logic to skip fexit if the fentry return non-zero.
+* v3: https://lore.kernel.org/bpf/20251026030143.23807-1-dongml2@chinatelecom.cn/
+
+Changes v2 -> v3:
+* squeeze some patches:
+  - the 2 patches for the kfunc bpf_tracing_is_exit() and
+    bpf_fsession_cookie() are merged into the second patch.
+  - the testcases for fsession are also squeezed.
+* fix the CI error by move the testcase for bpf_get_func_ip to
+  fsession_test.c
+* v2: https://lore.kernel.org/bpf/20251022080159.553805-1-dongml2@chinatelecom.cn/
+
+Changes v1 -> v2:
+* session cookie support.
+  In this version, session cookie is implemented, and the kfunc
+  bpf_fsession_cookie() is added.
+* restructure the layout of the stack.
+  In this version, the session stuff that stored in the stack is changed,
+  and we locate them after the return value to not break
+  bpf_get_func_ip().
+* testcase enhancement.
+  Some nits in the testcase that suggested by Jiri is fixed. Meanwhile,
+  the testcase for get_func_ip and session cookie is added too.
+* v1: https://lore.kernel.org/bpf/20251018142124.783206-1-dongml2@chinatelecom.cn/
+
+Menglong Dong (12):
+  bpf: add fsession support
+  bpf: use the least significant byte for the nr_args in trampoline
+  bpf: change prototype of bpf_session_{cookie,is_return}
+  bpf: support fsession for bpf_session_is_return
+  bpf: support fsession for bpf_session_cookie
+  bpf,x86: introduce emit_store_stack_imm64() for trampoline
+  bpf,x86: add fsession support for x86_64
+  libbpf: add fsession support
+  bpftool: add fsession support
+  selftests/bpf: add testcases for fsession
+  selftests/bpf: add testcases for fsession cookie
+  selftests/bpf: test fsession mixed with fentry and fexit
+
+ arch/x86/net/bpf_jit_comp.c                   |  71 +++++--
+ include/linux/bpf.h                           |  36 ++++
+ include/uapi/linux/bpf.h                      |   1 +
+ kernel/bpf/btf.c                              |   2 +
+ kernel/bpf/syscall.c                          |  18 +-
+ kernel/bpf/trampoline.c                       |  53 +++++-
+ kernel/bpf/verifier.c                         |  86 +++++++--
+ kernel/trace/bpf_trace.c                      |  49 +++--
+ net/bpf/test_run.c                            |   1 +
+ net/core/bpf_sk_storage.c                     |   1 +
+ tools/bpf/bpftool/common.c                    |   1 +
+ tools/include/uapi/linux/bpf.h                |   1 +
+ tools/lib/bpf/bpf.c                           |   1 +
+ tools/lib/bpf/libbpf.c                        |   3 +
+ tools/testing/selftests/bpf/bpf_kfuncs.h      |   3 -
+ .../selftests/bpf/prog_tests/fsession_test.c  |  90 +++++++++
+ .../bpf/prog_tests/tracing_failure.c          |   2 +-
+ .../selftests/bpf/progs/fsession_test.c       | 179 ++++++++++++++++++
+ .../bpf/progs/kprobe_multi_session_cookie.c   |  15 +-
+ .../bpf/progs/uprobe_multi_session.c          |   7 +-
+ .../bpf/progs/uprobe_multi_session_cookie.c   |  15 +-
+ .../progs/uprobe_multi_session_recursive.c    |  11 +-
+ 22 files changed, 550 insertions(+), 96 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/fsession_test.c
+ create mode 100644 tools/testing/selftests/bpf/progs/fsession_test.c
+
+-- 
+2.52.0
 
 
