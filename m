@@ -1,242 +1,275 @@
-Return-Path: <bpf+bounces-79127-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79128-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06BC1D28081
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 20:22:57 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FCEFD280A7
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 20:24:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id DA98B305AB9B
-	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 18:50:36 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 652A9302E221
+	for <lists+bpf@lfdr.de>; Thu, 15 Jan 2026 18:52:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD5D73C00B3;
-	Thu, 15 Jan 2026 18:50:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 210A73BC4DC;
+	Thu, 15 Jan 2026 18:52:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FPS1+2LO"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KoyRHDKF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 137A03C00B2
-	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 18:50:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.216.44
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768503032; cv=pass; b=itNTy39GwL74+Z1kPhhq4kw5vYSOtzfr8i5rFAuKh7uaW0JAjRrcWYTrxNooTexS4pwvrG/wLuZLPa13D3F6xgxJGDKvDNHqBfoYbet0pLKWFeN8RYt8lU/8cvoj0HQj5kH85TzjIWq/lGvrdTOG7qZQsinlitHAloRjY4GlpjY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768503032; c=relaxed/simple;
-	bh=gQtRYgLCeRAq8QsfKbXbRJ5PemQLVXh1Ew/167lVpVw=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3473C396B75
+	for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 18:52:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768503139; cv=none; b=FYrfqL+9K2sYr6nz5aKR+oUl7Ny7LwGH37ke8/PxBnvKkP2oNJuDUzRPnmxKz2o4fRkGVJP5pqweG0f9yPdf/hUcxLjoVJJWTbFgkQKxNWB9nU+1SoDLPr2DIjWFy6b4UjC6pa515U1hoo1jigC91PcF3SpuzIS0xHcwCFzdpJg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768503139; c=relaxed/simple;
+	bh=2Rd+T2fxxjOULfBFXLH5UIRvtWG8/G7q1lCPuJeByr0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sWew/u0xa2PgcpI5hjM99PDKmVJxdQCrz8l1BTCYW7fiSKFZomJY5INCkZlBSpdhCKniDK1GXJYNTvXN3KqHHCY/IxTYNlhRlB2I0ZdI6NnoK/+0FqsT/RpmuCVe2mBcN2i8xGMrlUu1cqochRyKFkXsj7FE7sJenaU77G8OE88=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FPS1+2LO; arc=pass smtp.client-ip=209.85.216.44
+	 To:Cc:Content-Type; b=XBsns1fMtt4sq46wxSyKqgV4M/ku86hmnxvgPcdDGkIGBSwig8rEaMdCM+ecmre8DF11okkr6cvHRYkZleKDjtrGyZA78VdJYJozOqJSxBzdhkxE4ZGYBapagIvLAaaBA/vhP2xDtSOdbLvuDI6QHaqomTKwpz8CxsmVF5Hkfgw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KoyRHDKF; arc=none smtp.client-ip=209.85.215.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-34c3cb504efso726281a91.2
-        for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 10:50:28 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1768503026; cv=none;
-        d=google.com; s=arc-20240605;
-        b=jloNU58Pki2954WNnJuQ3wZgikaMowsIvBjF9WTPsP/cJdHsDXdCYUezITcRnOJt/5
-         FUqqWLda5kBIhunFNV7YYajHMf2uLvhIFXINlaVFeethLg579LkANzyDcW+MUKdT4xC/
-         Jtw0YO4Blc+jvBO8WKx9MBwPjqpdHYM1udaIOxPEajhaeEZewIVH5QvJ1iUwu0FAGupo
-         5FnkJ7MYHL6Ww3gJJA7rQ2M5d1Pj/rM4E5h/oJU0Qk/pt/a9m3Dqb9IukP1dMKeUv94f
-         NK/gX1VCd7aWbRHk8m6saur+cxRsLrDBQ8FWPGKP5L+SrbirEpb+yrr/QnfiQN462sfC
-         EQyg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=OnpCoYg3n4ioXiv+ldJpW4ktoyK6Gvbrlk/GRDVTf7w=;
-        fh=LDs7DWYhz8gF01DN3E1yAokKB3paKc10G8OFWtvH904=;
-        b=ha/APLWgkzcRGwa6cfZ7M9W+iSqdUo2VPDkOBRLGdCmgm3J/qpyIuJ7z90X5CPwf0p
-         8HZefEtzrJ79/PkDWDx93owfNI1oxwa25o7PoJVci9am9F+wlWoD0qE9IgUyYUld016w
-         EiBtQUt1MEtBvh4es4QXIcxVDRQPsPB5svlYnTSxkyyEPNQ6nLfgaeVfuqnOs/temJ+H
-         kXVRxKB1XalNQKYVZrSSB+JZpBGaHvHo5nMMC0QPH4Uput3pwT7tVlELiyLttO9+pxZo
-         wfMEpHekhQgrSlbMRrLBy3NB21Jj2ZRUog1Af93m5hdxI+k6qSpDunjta5r9Y/KJktBi
-         58MQ==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-bcfd82f55ebso981618a12.1
+        for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 10:52:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768503026; x=1769107826; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1768503137; x=1769107937; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OnpCoYg3n4ioXiv+ldJpW4ktoyK6Gvbrlk/GRDVTf7w=;
-        b=FPS1+2LOHcbVW2YkPKvcwnd+DdJOCShb+u1PNYlJgIvOCObhUQUSKbb2kUMZ6jyBB9
-         voN1gI5DHGPgDv+58qusfPq0Sq9p2hyYmg4Wn9uQ3niVkPCh6tLdKX7b/xcUJx4g7FrV
-         73iANe6VU/oCD+FraOZdggQc4WRd3zg0742TCC8H6ihIz7/ORAdpwG2VCgYrXz2g+Yxj
-         uE+bl2m4pSlk0uiW0GecJ5QYWZOCc0PVR/9YDEzvmaLszpeSeZ5t2mUhXsaBChlimloe
-         RoKJounO70kUK6Tzgno5XWfBuciuk0q9I6B30xYSNH/RimZJUUUYRwXvmm6ytyvZV4PY
-         1TRg==
+        bh=tD0n2wghIe+hwlFHDxEK9qHpYzp/XoQTH/HMSUPUjZc=;
+        b=KoyRHDKFWEaz7VDX0iAPtNbdlfdOOQiudOkt5yX/eWexixakiQVh7iP+9x1hB/8ZZA
+         4UbDI8BeaC4H5Uf2Q8WrIfb+Je6lqmUz+34cSPQlF5x4i/qxejJebo1G33UT5E2feYgH
+         Myi1uZevgZsnfQMuvUbP23XcXIMNQzqxtVZaCdSwVRyzL/WtzH+xY9eIHIQl39HqInln
+         XNno268/AfaRaoZehmgM+8J/HlLBO35aUelaiSRCc7ETRJYHekpxCNFKILHdq2RN5/W7
+         /m2JRNSrzkSa6SiD+zB1yj7z6IMMeX7WtlxqZTgg0/+Ymo9w9mpFz93WaRQ1LmNfvB+1
+         VzuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768503026; x=1769107826;
+        d=1e100.net; s=20230601; t=1768503137; x=1769107937;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=OnpCoYg3n4ioXiv+ldJpW4ktoyK6Gvbrlk/GRDVTf7w=;
-        b=So5sSVgrk6WeIBgmZUMPXPJd7p6jh/IPEWNyypGZRoip/Hc3SXd3C2oAUBGKedFPhB
-         KiBgu54w2mmKC8UexZ8oLMtSAhZqQUkSf9J6VK308CJKo00dGSwwC/zbBIQzK2z0ZWeY
-         hVp+UspIqknS7JxPedpPrY42MSLZk0Kk/bbUlcYmOmtAOD5EMKMOFGICQZrmSJUCqlvw
-         UJj/19wmjNSnQVGlfdMK9/snzqnFJC+Kw8j3favO4KfuAhiu9U7O2HABsPafJZPvMRy9
-         5p0JqUob7KYvuKBFCUQ/tKsuE57vVHrt6YWd0kNlvJYPwCmNdFLQT3Xi4DthRZpy8mZq
-         cISA==
-X-Forwarded-Encrypted: i=1; AJvYcCUFyCleLu5YwuIc5v2TjCkfK3n4wj6Hpbg3avzelbDs32RSffDEVNir8/WwZ4x0hKPgtkg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwTP0fvNcVfYFEHACj0nAmjShDVrWqb2v4oIGGHldBhqg4h1HAX
-	Qu7mNC5Y87d0h+/+ttXkAcHRiFC+IXOZ9pjFHAISA1tDA3X4+hyg0Ja3hzV7GPPAvY7vYJ+xSQ9
-	haAacqEi7sdj40yhCGfcWMvQBbL9ilUY=
-X-Gm-Gg: AY/fxX6JBs1m5zfsM0zItdCmk1QnECgWPq6xTR4TjUCw1Zbj4lHUaTKMpHwBe4rw6Ov
-	G5DmhnzGz8E1XD9B0BzlAz1CFCsGmvEokfJfW1TPrr9xUnmSbAhrcSfkMkJuzEptVR3DlBiuu1w
-	D8NlQFvZ40DYXVDsCJ5kSF0bT+rt/lcc2A08/2INhbXQ4mym7NqW+u5MmS+9iakjX4a79euYn/+
-	ouAIpZCNjJ/G44NLEIQpHyGpTUnRTsAzHux873kw0peLC05aWyVcJBnzTK/H9cBQhMkZq41aDiD
-	E8t/PZef
-X-Received: by 2002:a17:90b:3c85:b0:340:b86b:39c7 with SMTP id
- 98e67ed59e1d1-3527317db23mr287866a91.11.1768503026313; Thu, 15 Jan 2026
- 10:50:26 -0800 (PST)
+        bh=tD0n2wghIe+hwlFHDxEK9qHpYzp/XoQTH/HMSUPUjZc=;
+        b=j2NlJ+69JSBmlGf7ty4fCp6NX5/db+zq87JsjX3RK63xdNzrsDU6o27+sdP0Eh1FC7
+         MXgrvWwV6FOhin3r+P92/8LT54/AsIVNhBEfnwiEYnX/wIu23OnLFSewueGY2HwbfRVZ
+         HyKl53y5hy4+rVhu3/5uZ0yXOTwW8akiWCxgV7G6GW0wEyLBgcaTkANtDiPhGdp4xGEX
+         CsHgHQenl9zyd26Mj2l4Cpwzs4G508mT2ow/VWpfNyQB01WL1NEd7hqwzW2j+tK0fJAB
+         T5wFMoIZVrFIIuHQ/KXUur8XVGcuAV6K2fcnFVmZKdD7SznIUpWj0+1Hd6eVCsNgmkFu
+         ktOA==
+X-Forwarded-Encrypted: i=1; AJvYcCUliDB2igrCEtZ8yZSpW/t6nauZFe0gHxTC0vLO42P+fzRW+koiF+HLfqs/1JOiNZd2BP0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxZiEMTqLtTYVIj7H12CzIhb1l9nju+byKseZ8hznx+HcWRecB9
+	vu96DDh276M1eeZKAbk5FJO/qZuUjtmODP8A61ofsWpROws7Oc52NlJL8zH4BFqR4Xm5C/k+i79
+	sZJkV5T8eXL5/j0oIf4TqliUwKELmlhzUcg==
+X-Gm-Gg: AY/fxX6kmc+70XdBqXMluwKF9Sx5EsFwzxcD+mKge2SCmmOj5qnX02ydhu9URnFAXyy
+	Bmnu9MnYHPdihyJz+VX7sHCVYO2JFBmrMhyZ0tPyCkhal7/WkV6iKHNRxU0qNJEJUKDPezoXKSe
+	PiPGftrXyScuzvYr/E1i7wNrYH0r9xTxSHSKDuBsk7AcfJnW1Z6ZZHP4dI0G8J2awAvaME8LaER
+	8BVuJPa9wpvFsxg2Jt7b0iq5psoblyGD40YgLXAaf/6FUm0AK3ZbNK+P4wiL52erX/cmvJwo06Q
+	SkEpnZyA
+X-Received: by 2002:a17:902:c407:b0:2a0:99f7:67b4 with SMTP id
+ d9443c01a7336-2a71756c272mr4420715ad.8.1768503137511; Thu, 15 Jan 2026
+ 10:52:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260112214940.1222115-1-jolsa@kernel.org> <20260112214940.1222115-5-jolsa@kernel.org>
- <CAEf4BzaXhGpkycs-TO_1V81-irq3d8Mjfyk=LMc0OC-NW-FnRg@mail.gmail.com>
-In-Reply-To: <CAEf4BzaXhGpkycs-TO_1V81-irq3d8Mjfyk=LMc0OC-NW-FnRg@mail.gmail.com>
+References: <20260112214940.1222115-1-jolsa@kernel.org> <20260112214940.1222115-3-jolsa@kernel.org>
+ <20260112170757.4e41c0d8@gandalf.local.home> <aWYv6864cdO2PWbb@krava>
+In-Reply-To: <aWYv6864cdO2PWbb@krava>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 15 Jan 2026 10:50:13 -0800
-X-Gm-Features: AZwV_Qgp2lQN9PVyejnfsDp_b_Uy6fqZH6QztBobLA0UKr6zwNYYWO93As_6mFY
-Message-ID: <CAEf4Bzbn-Sai+pnC1Gu-E-uhJeSA8g-6xB49bswdPFpJd92Rng@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 4/4] selftests/bpf: Allow to benchmark trigger
- with stacktrace
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Josh Poimboeuf <jpoimboe@kernel.org>, Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org, 
+Date: Thu, 15 Jan 2026 10:52:04 -0800
+X-Gm-Features: AZwV_QjXO-yhEtC-_YSLoFVniP-2k2iYTwX1IjXIqEh7rIM5iZ-xHOytlXiEqcY
+Message-ID: <CAEf4BzZ-sPD4UZF-TL2ep-zQOyeOC3K5XC2o3Gsx4Q6XpN-zQw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/4] x86/fgraph,bpf: Switch kprobe_multi program
+ stack unwind to hw_regs path
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Josh Poimboeuf <jpoimboe@kernel.org>, Mahe Tardy <mahe.tardy@gmail.com>, 
+	Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org, 
 	linux-trace-kernel@vger.kernel.org, x86@kernel.org, 
-	Yonghong Song <yhs@fb.com>, Song Liu <songliubraving@fb.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Mahe Tardy <mahe.tardy@gmail.com>
+	Yonghong Song <yhs@fb.com>, Song Liu <songliubraving@fb.com>, Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 15, 2026 at 10:48=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Mon, Jan 12, 2026 at 1:50=E2=80=AFPM Jiri Olsa <jolsa@kernel.org> wrot=
+On Tue, Jan 13, 2026 at 3:43=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
 e:
-> >
-> > Adding support to call bpf_get_stackid helper from trigger programs,
-> > so far added for kprobe multi.
-> >
-> > Adding the --stacktrace/-g option to enable it.
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  tools/testing/selftests/bpf/bench.c            |  4 ++++
-> >  tools/testing/selftests/bpf/bench.h            |  1 +
-> >  .../selftests/bpf/benchs/bench_trigger.c       |  1 +
-> >  .../selftests/bpf/progs/trigger_bench.c        | 18 ++++++++++++++++++
-> >  4 files changed, 24 insertions(+)
-> >
 >
-> This now actually becomes a stack trace benchmark :) But I don't mind,
-> I think it would be good to be able to benchmark this. But I think we
-> should then implement it for all different tracing programs (tp,
-> raw_tp, fentry/fexit/fmod_ret) for consistency and so we can compare
-> and contrast?...
->
-> > diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selfte=
-sts/bpf/bench.c
-> > index bd29bb2e6cb5..8dadd9c928ec 100644
-> > --- a/tools/testing/selftests/bpf/bench.c
-> > +++ b/tools/testing/selftests/bpf/bench.c
-> > @@ -265,6 +265,7 @@ static const struct argp_option opts[] =3D {
-> >         { "verbose", 'v', NULL, 0, "Verbose debug output"},
-> >         { "affinity", 'a', NULL, 0, "Set consumer/producer thread affin=
-ity"},
-> >         { "quiet", 'q', NULL, 0, "Be more quiet"},
-> > +       { "stacktrace", 'g', NULL, 0, "Get stack trace"},
->
-> bikeshedding time: why "g"? why not -S or something like that?
->
-> >         { "prod-affinity", ARG_PROD_AFFINITY_SET, "CPUSET", 0,
-> >           "Set of CPUs for producer threads; implies --affinity"},
-> >         { "cons-affinity", ARG_CONS_AFFINITY_SET, "CPUSET", 0,
-> > @@ -350,6 +351,9 @@ static error_t parse_arg(int key, char *arg, struct=
- argp_state *state)
-> >         case 'q':
-> >                 env.quiet =3D true;
-> >                 break;
-> > +       case 'g':
-> > +               env.stacktrace =3D true;
-> > +               break;
-> >         case ARG_PROD_AFFINITY_SET:
-> >                 env.affinity =3D true;
-> >                 if (parse_num_list(arg, &env.prod_cpus.cpus,
-> > diff --git a/tools/testing/selftests/bpf/bench.h b/tools/testing/selfte=
-sts/bpf/bench.h
-> > index bea323820ffb..7cf21936e7ed 100644
-> > --- a/tools/testing/selftests/bpf/bench.h
-> > +++ b/tools/testing/selftests/bpf/bench.h
-> > @@ -26,6 +26,7 @@ struct env {
-> >         bool list;
-> >         bool affinity;
-> >         bool quiet;
-> > +       bool stacktrace;
-> >         int consumer_cnt;
-> >         int producer_cnt;
-> >         int nr_cpus;
-> > diff --git a/tools/testing/selftests/bpf/benchs/bench_trigger.c b/tools=
-/testing/selftests/bpf/benchs/bench_trigger.c
-> > index 34018fc3927f..aeec9edd3851 100644
-> > --- a/tools/testing/selftests/bpf/benchs/bench_trigger.c
-> > +++ b/tools/testing/selftests/bpf/benchs/bench_trigger.c
-> > @@ -146,6 +146,7 @@ static void setup_ctx(void)
-> >         bpf_program__set_autoload(ctx.skel->progs.trigger_driver, true)=
-;
+> On Mon, Jan 12, 2026 at 05:07:57PM -0500, Steven Rostedt wrote:
+> > On Mon, 12 Jan 2026 22:49:38 +0100
+> > Jiri Olsa <jolsa@kernel.org> wrote:
 > >
-> >         ctx.skel->rodata->batch_iters =3D args.batch_iters;
-> > +       ctx.skel->rodata->stacktrace =3D env.stacktrace;
-> >  }
+> > > To recreate same stack setup for return probe as we have for entry
+> > > probe, we set the instruction pointer to the attached function addres=
+s,
+> > > which gets us the same unwind setup and same stack trace.
+> > >
+> > > With the fix, entry probe:
+> > >
+> > >   # bpftrace -e 'kprobe:__x64_sys_newuname* { print(kstack)}'
+> > >   Attaching 1 probe...
+> > >
+> > >         __x64_sys_newuname+9
+> > >         do_syscall_64+134
+> > >         entry_SYSCALL_64_after_hwframe+118
+> > >
+> > > return probe:
+> > >
+> > >   # bpftrace -e 'kretprobe:__x64_sys_newuname* { print(kstack)}'
+> > >   Attaching 1 probe...
+> > >
+> > >         __x64_sys_newuname+4
+> > >         do_syscall_64+134
+> > >         entry_SYSCALL_64_after_hwframe+118
 > >
-> >  static void load_ctx(void)
-> > diff --git a/tools/testing/selftests/bpf/progs/trigger_bench.c b/tools/=
-testing/selftests/bpf/progs/trigger_bench.c
-> > index 2898b3749d07..479400d96fa4 100644
-> > --- a/tools/testing/selftests/bpf/progs/trigger_bench.c
-> > +++ b/tools/testing/selftests/bpf/progs/trigger_bench.c
-> > @@ -25,6 +25,23 @@ static __always_inline void inc_counter(void)
-> >         __sync_add_and_fetch(&hits[cpu & CPU_MASK].value, 1);
-> >  }
+> > But is this really correct?
 > >
-> > +volatile const int stacktrace;
-> > +
-> > +typedef __u64 stack_trace_t[128];
-> > +
-> > +struct {
-> > +       __uint(type, BPF_MAP_TYPE_STACK_TRACE);
-> > +       __uint(max_entries, 16384);
-> > +       __type(key, __u32);
-> > +       __type(value, stack_trace_t);
-> > +} stackmap SEC(".maps");
+> > The stack trace of the return from __x86_sys_newuname is from offset "+=
+4".
+> >
+> > The stack trace from entry is offset "+9". Isn't it confusing that the
+> > offset is likely not from the return portion of that function?
+>
+> right, makes sense.. so standard kprobe actualy skips attached function
+> (__x86_sys_newuname) on return probe stacktrace.. perhaps we should do
+> the same for kprobe_multi
 
-oh, and why bother with STACK_TRACE map, just call bpf_get_stack() API
-and have maybe per-CPU scratch array for stack trace (per-CPU so that
-in multi-cpu benchmarks they don't just contend on the same cache
-lines)
+but it is quite nice to see what function we were kretprobing,
+actually... How hard would it be to support that for singular kprobe
+as well? And what does fexit's stack trace show for such case?
 
-> > +
-> > +static __always_inline void do_stacktrace(void *ctx)
-> > +{
-> > +       if (stacktrace)
-> > +               bpf_get_stackid(ctx, &stackmap, 0);
-> > +}
-> > +
-> >  SEC("?uprobe")
-> >  int bench_trigger_uprobe(void *ctx)
-> >  {
-> > @@ -96,6 +113,7 @@ SEC("?kprobe.multi/bpf_get_numa_node_id")
-> >  int bench_trigger_kprobe_multi(void *ctx)
-> >  {
-> >         inc_counter();
-> > +       do_stacktrace(ctx);
-> >         return 0;
-> >  }
-> >
-> > --
-> > 2.52.0
-> >
+>
+> I managed to get that with the change below, but it's wrong wrt arch code=
+,
+> note the ftrace_regs_set_stack_pointer(fregs, stack + 8) .. will try to
+> figure out better way when we agree on the solution
+>
+> thanks,
+> jirka
+>
+>
+> ---
+> diff --git a/arch/x86/include/asm/ftrace.h b/arch/x86/include/asm/ftrace.=
+h
+> index c56e1e63b893..b0e8ce4934e7 100644
+> --- a/arch/x86/include/asm/ftrace.h
+> +++ b/arch/x86/include/asm/ftrace.h
+> @@ -71,6 +71,9 @@ arch_ftrace_get_regs(struct ftrace_regs *fregs)
+>  #define ftrace_regs_set_instruction_pointer(fregs, _ip)        \
+>         do { arch_ftrace_regs(fregs)->regs.ip =3D (_ip); } while (0)
+>
+> +#define ftrace_regs_set_stack_pointer(fregs, _sp)      \
+> +       do { arch_ftrace_regs(fregs)->regs.sp =3D (_sp); } while (0)
+> +
+>
+>  static __always_inline unsigned long
+>  ftrace_regs_get_return_address(struct ftrace_regs *fregs)
+> diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
+> index 6279e0a753cf..b1510c412dcb 100644
+> --- a/kernel/trace/fgraph.c
+> +++ b/kernel/trace/fgraph.c
+> @@ -717,7 +717,8 @@ int function_graph_enter_regs(unsigned long ret, unsi=
+gned long func,
+>  /* Retrieve a function return address to the trace stack on thread info.=
+*/
+>  static struct ftrace_ret_stack *
+>  ftrace_pop_return_trace(struct ftrace_graph_ret *trace, unsigned long *r=
+et,
+> -                       unsigned long frame_pointer, int *offset)
+> +                       unsigned long *stack, unsigned long frame_pointer=
+,
+> +                       int *offset)
+>  {
+>         struct ftrace_ret_stack *ret_stack;
+>
+> @@ -762,6 +763,7 @@ ftrace_pop_return_trace(struct ftrace_graph_ret *trac=
+e, unsigned long *ret,
+>
+>         *offset +=3D FGRAPH_FRAME_OFFSET;
+>         *ret =3D ret_stack->ret;
+> +       *stack =3D (unsigned long) ret_stack->retp;
+>         trace->func =3D ret_stack->func;
+>         trace->overrun =3D atomic_read(&current->trace_overrun);
+>         trace->depth =3D current->curr_ret_depth;
+> @@ -810,12 +812,13 @@ __ftrace_return_to_handler(struct ftrace_regs *freg=
+s, unsigned long frame_pointe
+>         struct ftrace_ret_stack *ret_stack;
+>         struct ftrace_graph_ret trace;
+>         unsigned long bitmap;
+> +       unsigned long stack;
+>         unsigned long ret;
+>         int offset;
+>         int bit;
+>         int i;
+>
+> -       ret_stack =3D ftrace_pop_return_trace(&trace, &ret, frame_pointer=
+, &offset);
+> +       ret_stack =3D ftrace_pop_return_trace(&trace, &ret, &stack, frame=
+_pointer, &offset);
+>
+>         if (unlikely(!ret_stack)) {
+>                 ftrace_graph_stop();
+> @@ -824,8 +827,11 @@ __ftrace_return_to_handler(struct ftrace_regs *fregs=
+, unsigned long frame_pointe
+>                 return (unsigned long)panic;
+>         }
+>
+> -       if (fregs)
+> -               ftrace_regs_set_instruction_pointer(fregs, trace.func);
+> +       if (fregs) {
+> +               ftrace_regs_set_instruction_pointer(fregs, ret);
+> +               ftrace_regs_set_stack_pointer(fregs, stack + 8);
+> +       }
+> +
+>
+>         bit =3D ftrace_test_recursion_trylock(trace.func, ret);
+>         /*
+> diff --git a/tools/testing/selftests/bpf/prog_tests/stacktrace_ips.c b/to=
+ols/testing/selftests/bpf/prog_tests/stacktrace_ips.c
+> index e1a9b55e07cb..852830536109 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/stacktrace_ips.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/stacktrace_ips.c
+> @@ -74,12 +74,20 @@ static void test_stacktrace_ips_kprobe_multi(bool ret=
+probe)
+>
+>         load_kallsyms();
+>
+> -       check_stacktrace_ips(bpf_map__fd(skel->maps.stackmap), skel->bss-=
+>stack_key, 5,
+> -                            ksym_get_addr("bpf_testmod_stacktrace_test")=
+,
+> -                            ksym_get_addr("bpf_testmod_stacktrace_test_3=
+"),
+> -                            ksym_get_addr("bpf_testmod_stacktrace_test_2=
+"),
+> -                            ksym_get_addr("bpf_testmod_stacktrace_test_1=
+"),
+> -                            ksym_get_addr("bpf_testmod_test_read"));
+> +       if (retprobe) {
+> +               check_stacktrace_ips(bpf_map__fd(skel->maps.stackmap), sk=
+el->bss->stack_key, 4,
+> +                                    ksym_get_addr("bpf_testmod_stacktrac=
+e_test_3"),
+> +                                    ksym_get_addr("bpf_testmod_stacktrac=
+e_test_2"),
+> +                                    ksym_get_addr("bpf_testmod_stacktrac=
+e_test_1"),
+> +                                    ksym_get_addr("bpf_testmod_test_read=
+"));
+> +       } else {
+> +               check_stacktrace_ips(bpf_map__fd(skel->maps.stackmap), sk=
+el->bss->stack_key, 5,
+> +                                    ksym_get_addr("bpf_testmod_stacktrac=
+e_test"),
+> +                                    ksym_get_addr("bpf_testmod_stacktrac=
+e_test_3"),
+> +                                    ksym_get_addr("bpf_testmod_stacktrac=
+e_test_2"),
+> +                                    ksym_get_addr("bpf_testmod_stacktrac=
+e_test_1"),
+> +                                    ksym_get_addr("bpf_testmod_test_read=
+"));
+> +       }
+>
+>  cleanup:
+>         stacktrace_ips__destroy(skel);
 
