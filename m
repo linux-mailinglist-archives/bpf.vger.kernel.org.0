@@ -1,216 +1,329 @@
-Return-Path: <bpf+bounces-79246-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79247-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62DB0D31A93
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 14:17:34 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0E46D31E31
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 14:33:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id E9A6C301F7C1
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 13:17:23 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id CE30D30C26AC
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 13:30:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C108F23BD06;
-	Fri, 16 Jan 2026 13:17:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BDFF27F4E7;
+	Fri, 16 Jan 2026 13:30:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="cdQ3LQ1c"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KC8sMxug"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-dl1-f50.google.com (mail-dl1-f50.google.com [74.125.82.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F144C7E792;
-	Fri, 16 Jan 2026 13:17:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1FE64C92
+	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 13:30:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768569439; cv=none; b=jtWUTfy4/Y4d7UHC4XD87XT4Iorr8IXdUfqeqNrO8gqP3weQ+e7keNYjSZ6KNZ234DfaXcVf9g5tMMK1hEQhXEcz1Tgn8wvj+aeL1TCmrUEYCRbOvXfRLHY6SRgGDolHt5EZ4ZuLCAU8cpIJdHIyZAN7jIaP1MxlP6dbvbfstfU=
+	t=1768570213; cv=none; b=XbgOYCbobrPgGPS+SNwWrmUplKCm7bzE3hHP0llONwWMpRftCdX6pbJkrfi5K39msGGkERmX5Mf89OeAUDKiDP/a6WVwhDqWY6kAFj/DCu5N0Qgar1TjdrxvsM0sW6iRgb+aDvMcLmwCFHThkjc5LbFEsS+qskwM4mFHyOXIfYA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768569439; c=relaxed/simple;
-	bh=k8JVjZNI6JxzecXd07VKXa7I5vhk8BH3l5ykFuKfjr4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=T7yGNkT2wM1FcI2Y4n4SZjC+7AT4vyJt6XbSOkv0Zj+ZWnnyJNqQ0nJ3D8yS52QnK/KqOdSv9hDsm/pT+rLlwaeKBnwd1mf1rrQxJs7ph34lrwQRYBjZqIxOufH74cPyzuZUhvKg6y+G+mHI9XDj+aJugF4xRyXZ3nV9aLdbJo0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=cdQ3LQ1c; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 60FMsnT6012398;
-	Fri, 16 Jan 2026 13:15:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=wicHw+
-	iiRR0aK5wFjgUVyEVVUvGW66gYPeD2bQ4H7Jg=; b=cdQ3LQ1cRV1jXUzI7Mbd0b
-	58F/j6XYKA8tpvhLBmhMoMaj/MvxMbaO6hCO8aBnjj+Vs3sqQshBtm7ODGVSOuRG
-	zg2HdWZfXNMSYMAGxbejRisLZb77rVlvsBwRO4uqdZyIe68cGazXwluk18e/3c5m
-	SDj0WBkPbHehwyG0eWuT6+7xM+OKGcLKMj+TvM4a3mTqP3hJrzcFxdvIQiL6ub2b
-	hvZt/dUjO7xC2G4M+ACGuAIIqwtHpL9k/KzschbKROBlPnCa1KeGxCqZF9C/WPOV
-	SFo197KZwmzqxrwummgjiTPJNUlIDOE066GCqtPPyek2fPzkhnH+zH7wzYkQNUMQ
-	==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4bq9emtux3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Jan 2026 13:15:25 +0000 (GMT)
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 60GDEbYl024166;
-	Fri, 16 Jan 2026 13:15:25 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4bq9emtuwy-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Jan 2026 13:15:25 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 60GAlBwh014333;
-	Fri, 16 Jan 2026 13:15:24 GMT
-Received: from smtprelay04.dal12v.mail.ibm.com ([172.16.1.6])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4bm1fypf5c-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Jan 2026 13:15:24 +0000
-Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
-	by smtprelay04.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 60GDFNxo25428610
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 16 Jan 2026 13:15:23 GMT
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 654D75804B;
-	Fri, 16 Jan 2026 13:15:23 +0000 (GMT)
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id D012858065;
-	Fri, 16 Jan 2026 13:15:10 +0000 (GMT)
-Received: from [9.87.133.90] (unknown [9.87.133.90])
-	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 16 Jan 2026 13:15:10 +0000 (GMT)
-Message-ID: <cf1ec6d5-21e1-43fc-a694-b9e5a6258df1@linux.ibm.com>
-Date: Fri, 16 Jan 2026 18:45:08 +0530
+	s=arc-20240116; t=1768570213; c=relaxed/simple;
+	bh=vJxakdKrgKs58r6a7QqQuhyqFhhMaSQTK74u0qxkILM=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Ydd/qcIdHIxdToxQl7KKOfRvqHnm830t54WXy9We2lgg3vatTSS35ZSDZugndUYReW2qfFb1xKaTFlUVlH0ZGvAslVLIXt1tbKNYAa7FSGz6DY77c7aCl06Thf9appMdwMGR5Gncie2KZsq/8Yj+3Uj4CMGDxLDiVReY3n6YShU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KC8sMxug; arc=none smtp.client-ip=74.125.82.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-dl1-f50.google.com with SMTP id a92af1059eb24-1220154725fso1427577c88.0
+        for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 05:30:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1768570209; x=1769175009; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qgk08Xkqwd3w1rAVgK99iFxYWtaByA8GRN9AUbv5wfI=;
+        b=KC8sMxugfbv6TcCBBuaohgmFhPmKZ7J0SHlyamQcLGg+J/G48W71k9RrVwL6gxtiOj
+         JL5YoWTKrK2XWVsW8vMjp52ZJkzzvd5TjV4Ppd+S+w5919oFzVRWUIK9+P0stIltsjJ7
+         mrGkQ6z2GpYguQ34bGqyr0UNCwneNpkZ7gRy7i7tjFiixyUYc4y2vK3MoaWUtOUAZsty
+         K/2HXODJwIbnzOLVYsCBnma9qWCM/o9IIIiLHCEIK1hEq2Tigwrfms8BbPwDPNnGfogJ
+         bOZM0preHfHLuWNFyeDU5JekNXtTGZGogHBwNFpUoJFc2+68dgqUq09gueCXjAwe6LN4
+         KwTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768570210; x=1769175010;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=qgk08Xkqwd3w1rAVgK99iFxYWtaByA8GRN9AUbv5wfI=;
+        b=PlP0oyM1Om2SH3PLCFo1dzOpRjmW+plGvRzyoqBE96uQbfHTSGRF17FZAJINNS/Ke/
+         MAXPXT+s+cwhglCB1FLuXNuMfmjwj/RDOASbdQqXVBgcLYh8zTvx6jB3eDtiI9a89McM
+         q65s5GVmMpFS33xaS+ZXD/S7IXz7bg3obKzjOj9TXm5eB8lYwCMGICBldAj2/ykc22jo
+         J06gcOutABNFDOhwFKR7fFfojhvm+AwfNb/k+ZqC+taM6vUGkjRsvITYmiVhbSbbDOqy
+         bstz1lCmXg+m5OF9DMAkr3pGfe8E8r74YksLiCsOEaLvI91nEq9o4hVY26q/cxJrZeF6
+         Of3Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXZLflbqGoJLuuSRpT9y5r2L4zC6PeR1BF6haSBiLd2NVK+XuMowO3ciK4diV8VvY/TK9c=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwKm4YP4gwRy56BKpFWDlyUfrj3l+eDu5B6IZK+L3XlKguklM5U
+	4ZNSZ/4HH5pbTc8TkSdtD3YSx3LrYtUcOojF/UGyzNXC1ipkLKOh2jBY
+X-Gm-Gg: AY/fxX5dbsfbp/K3J6zsicfBmJykB/m9zfLWb69A3iCbhVTvvz+hx4NgTaouUbX3A3p
+	BIR4e7Pk3xLeqtnqB+3ZGRTm/ODgGP2jF1YiqA27mmKQEdpOsA4w5Mye6FIpo9joPyWRfClXTUK
+	MiqMxQ1Y1kVOKGsOt0Y4nzieRwIA+Fiu/KShtgU1rIPviamPYGkxck2ebhvZyUrQok/M595QCOo
+	fdpn7krBqMjiOHe9So3jZcealpE6GTC8u/ydW2vjRVCMBCCw04aBQvTPlga5l/4hiZ0phSk+vpo
+	NZCoF+7kwjcVcqihOFfLOOm1ZXa78kuUYCglS/KKXkN3FFNPt801S4pYzeid0nNyCdS0mcYsc8d
+	ShkRzLqJ+M8jhktOmM4e/b+PK5fY12XakIaWc17iAkTEmDgryA+cRaNauWuyOjmR06qhFrKp3Gf
+	EJtCDNBGPUCjxOuOKTflhYIHI=
+X-Received: by 2002:a05:7022:418e:b0:11d:fcc9:f225 with SMTP id a92af1059eb24-1244ae87b6cmr2854068c88.14.1768570207932;
+        Fri, 16 Jan 2026 05:30:07 -0800 (PST)
+Received: from localhost.localdomain ([74.48.213.230])
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-1244ad7201fsm2308209c88.7.2026.01.16.05.30.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Jan 2026 05:30:07 -0800 (PST)
+From: Qiliang Yuan <realwujing@gmail.com>
+To: memxor@gmail.com
+Cc: andrii@kernel.org,
+	ast@kernel.org,
+	bpf@vger.kernel.org,
+	daniel@iogearbox.net,
+	eddyz87@gmail.com,
+	haoluo@google.com,
+	john.fastabend@gmail.com,
+	jolsa@kernel.org,
+	kpsingh@kernel.org,
+	linux-kernel@vger.kernel.org,
+	martin.lau@linux.dev,
+	realwujing@qq.com,
+	sdf@fomichev.me,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	yuanql9@chinatelecom.cn,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Qiliang Yuan <realwujing@gmail.com>
+Subject: [PATCH v2] bpf/verifier: implement slab cache for verifier state list
+Date: Fri, 16 Jan 2026 21:29:53 +0800
+Message-Id: <20260116132953.40636-1-realwujing@gmail.com>
+X-Mailer: git-send-email 2.39.5
+In-Reply-To: <CAP01T76JECHPV4Fdvm2bds=Eb36UYhQswd7oAJ+fRzW_1ZtnVw@mail.gmail.com>
+References: <CAP01T76JECHPV4Fdvm2bds=Eb36UYhQswd7oAJ+fRzW_1ZtnVw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] kcsan, compiler_types: avoid duplicate type issues in BPF
- Type Format
-To: Alan Maguire <alan.maguire@oracle.com>, kees@kernel.org, nathan@kernel.org,
-        peterz@infradead.org, elver@google.com
-Cc: ojeda@kernel.org, akpm@linux-foundation.org, ubizjak@gmail.com,
-        Jason@zx2c4.com, Marc.Herbert@linux.intel.com, hca@linux.ibm.com,
-        hpa@zytor.com, namjain@linux.microsoft.com, paulmck@kernel.org,
-        linux-kernel@vger.kernel.org, andrii.nakryiko@gmail.com,
-        yonghong.song@linux.dev, ast@kernel.org, jolsa@kernel.org,
-        daniel@iogearbox.net, martin.lau@linux.dev, eddyz87@gmail.com,
-        song@kernel.org, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@fomichev.me, haoluo@google.com, bvanassche@acm.org,
-        bpf@vger.kernel.org
-References: <20260116091730.324322-1-alan.maguire@oracle.com>
-Content-Language: en-US
-From: Nilay Shroff <nilay@linux.ibm.com>
-In-Reply-To: <20260116091730.324322-1-alan.maguire@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Authority-Analysis: v=2.4 cv=KvJAGGWN c=1 sm=1 tr=0 ts=696a39ed cx=c_pps
- a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
- a=IkcTkHD0fZMA:10 a=vUbySO9Y5rIA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=VnNF1IyMAAAA:8 a=1XWaLZrsAAAA:8 a=yPCof4ZbAAAA:8 a=qybCgKJUSUg-LXLXGl4A:9
- a=QEXdDO2ut3YA:10
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTE2MDA4NiBTYWx0ZWRfX7zLNzgpEPT/6
- S98fx3ua9NOY5E/EAtUzCPfH39szhgejwZOn4PQ4wX/e7nab0Pb/CFb1wGS3u4+q+4C9femlOZK
- I3sfF87LyK6K2GfuxnC5VyJU4oV7dUuBRfKKOGWT3b5qPuH8iQYVsKaHRSu9MollJ2ggyl9B4iz
- qlI+CWTpDVziPxiPSHNBMZlNybcAGd/F+4IIkaGaUroi5qBivZZFRyPSd4eSEVQayW2TB+2FUpL
- zSlUeWjcLBVbOSvKCYcr1IWBGVNPjM76XE20NpNTse3T2l92CgwESS3DOxCHzXyT88G/z7gsVQK
- nAOfHlp2VOaC1XQNVZDd/dX5QQJdSRHqRox5qNTQe8/BN7KrqIU01JL6/CbdYhYK98OpCkuUykf
- whN+arH2YvEHrQ2WZABPrq8ljY1UUfZ2VoHmv++TAzBReOO9comy7AVRsLYW0qHXmNpQEhXIb/l
- K6Q0sZuqLIgpxZCFuPg==
-X-Proofpoint-GUID: 13ZeElVtQNMtrQ2C35TMLZsmFnE4M2mx
-X-Proofpoint-ORIG-GUID: PbprL9UwgJWbOtA5FCxegWfI2b6HkEgW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2026-01-16_04,2026-01-15_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- lowpriorityscore=0 malwarescore=0 suspectscore=0 impostorscore=0 phishscore=0
- adultscore=0 clxscore=1011 spamscore=0 bulkscore=0 priorityscore=1501
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2512120000 definitions=main-2601160086
+Content-Transfer-Encoding: 8bit
 
+The BPF verifier's state exploration logic in is_state_visited() frequently
+allocates and deallocates 'struct bpf_verifier_state_list' nodes. Currently,
+these allocations use generic kzalloc(), which leads to significant memory
+management overhead and page faults during high-complexity verification,
+especially in multi-core parallel scenarios.
 
+This patch introduces a dedicated 'bpf_verifier_state_list' slab cache to
+optimize these allocations, providing better speed, reduced fragmentation,
+and improved cache locality. All allocation and deallocation paths are
+migrated to use kmem_cache_zalloc() and kmem_cache_free().
 
-On 1/16/26 2:47 PM, Alan Maguire wrote:
-> Enabling KCSAN is causing a large number of duplicate types
-> in BTF for core kernel structs like task_struct [1].
-> This is due to the definition in include/linux/compiler_types.h
-> 
-> `#ifdef __SANITIZE_THREAD__
-> ...
-> `#define __data_racy volatile
-> ..
-> `#else
-> ...
-> `#define __data_racy
-> ...
-> `#endif
-> 
-> Because some objects in the kernel are compiled without
-> KCSAN flags (KCSAN_SANITIZE) we sometimes get the empty
-> __data_racy annotation for objects; as a result we get multiple
-> conflicting representations of the associated structs in DWARF,
-> and these lead to multiple instances of core kernel types in
-> BTF since they cannot be deduplicated due to the additional
-> modifier in some instances.
-> 
-> Moving the __data_racy definition under CONFIG_KCSAN
-> avoids this problem, since the volatile modifier will
-> be present for both KCSAN and KCSAN_SANITIZE objects
-> in a CONFIG_KCSAN=y kernel.
-> 
-> Fixes: 31f605a308e6 ("kcsan, compiler_types: Introduce __data_racy type qualifier")
-> Reported-by: Nilay Shroff <nilay@linux.ibm.com>
-> Suggested-by: Marco Elver <elver@google.com>
-> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> ---
->  include/linux/compiler_types.h | 23 ++++++++++++++++-------
->  1 file changed, 16 insertions(+), 7 deletions(-)
-> 
-> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-> index d3318a3c2577..86111a189a87 100644
-> --- a/include/linux/compiler_types.h
-> +++ b/include/linux/compiler_types.h
-> @@ -303,6 +303,22 @@ struct ftrace_likely_data {
->  # define __no_kasan_or_inline __always_inline
->  #endif
->  
-> +#ifdef CONFIG_KCSAN
-> +/*
-> + * Type qualifier to mark variables where all data-racy accesses should be
-> + * ignored by KCSAN. Note, the implementation simply marks these variables as
-> + * volatile, since KCSAN will treat such accesses as "marked".
-> + *
-> + * Defined here because defining __data_racy as volatile for KCSAN objects only
-> + * causes problems in BPF Type Format (BTF) generation since struct members
-> + * of core kernel data structs will be volatile in some objects and not in
-> + * others.  Instead define it globally for KCSAN kernels.
-> + */
-> +# define __data_racy volatile
-> +#else
-> +# define __data_racy
-> +#endif
-> +
->  #ifdef __SANITIZE_THREAD__
->  /*
->   * Clang still emits instrumentation for __tsan_func_{entry,exit}() and builtin
-> @@ -314,16 +330,9 @@ struct ftrace_likely_data {
->   * disable all instrumentation. See Kconfig.kcsan where this is mandatory.
->   */
->  # define __no_kcsan __no_sanitize_thread __disable_sanitizer_instrumentation
-> -/*
-> - * Type qualifier to mark variables where all data-racy accesses should be
-> - * ignored by KCSAN. Note, the implementation simply marks these variables as
-> - * volatile, since KCSAN will treat such accesses as "marked".
-> - */
-> -# define __data_racy volatile
->  # define __no_sanitize_or_inline __no_kcsan notrace __maybe_unused
->  #else
->  # define __no_kcsan
-> -# define __data_racy
->  #endif
->  
->  #ifdef __SANITIZE_MEMORY__
+Performance evaluation using a stress test (1000 conditional branches)
+executed in parallel on 32 CPU cores for 60 seconds shows significant
+improvements:
 
-Thanks Alan for working on this! I tested this change on my system and it works well.
-So with that,
+Metric              | Baseline      | Patched       | Delta (%)
+--------------------|---------------|---------------|----------
+Page Faults         | 12,377,064    | 8,534,044     | -31.05%
+IPC                 | 1.17          | 1.22          | +4.27%
+CPU Cycles          | 1,795.37B     | 1,700.33B     | -5.29%
+Instructions        | 2,102.99B     | 2,074.27B     | -1.37%
 
-Tested-by: Nilay Shroff <nilay@linux.ibm.com>
+Detailed Benchmark Report:
+==========================
+1. Test Case Compilation (verifier_state_stress.c):
+clang -O2 -target bpf -D__TARGET_ARCH_x86 -I. -I./tools/include \
+      -I./tools/lib/bpf -I./tools/testing/selftests/bpf -c \
+      verifier_state_stress.c -o verifier_state_stress.bpf.o
+
+2. Test Command (Executed on 32-core system):
+sudo ./tools/perf/perf stat -a timeout 60s sh -c \
+    "seq 1 \$(nproc) | xargs -I{} -P \$(nproc) sh -c \
+    'while true; do ./veristat verifier_state_stress.bpf.o &> /dev/null; done' "
+
+3. Test Case Source Code (verifier_state_stress.c):
+----------------------------------------------------
+#include "vmlinux.h"
+#include <bpf/bpf_helpers.h>
+
+SEC("socket")
+int verifier_state_stress(struct __sk_buff *skb)
+{
+	__u32 x = skb->len;
+
+#define COND1(n) if (x == n) x++;
+#define COND10(n) COND1(n) COND1(n+1) COND1(n+2) COND1(n+3) COND1(n+4) \
+                  COND1(n+5) COND1(n+6) COND1(n+7) COND1(n+8) COND1(n+9)
+#define COND100(n) COND10(n) COND10(n+10) COND10(n+20) COND10(n+30) COND10(n+40) \
+                   COND10(n+50) COND10(n+60) COND10(n+70) COND10(n+80) COND10(n+90)
+
+	/* Expand 1000 conditional branches to trigger state explosion */
+	COND100(0)
+	COND100(100)
+	COND100(200)
+	COND100(300)
+	COND100(400)
+	COND100(500)
+	COND100(600)
+	COND100(700)
+	COND100(800)
+	COND100(900)
+
+	return x;
+}
+
+char _license[] SEC("license") = "GPL";
+----------------------------------------------------
+
+4. Baseline RAW Output (Before Patch):
+----------------------------------------------------
+ Performance counter stats for 'system wide':
+
+         4,621,744      context-switches                 #   2405.0 cs/sec  cs_per_second
+      1,921,701.70 msec cpu-clock                        #     32.0 CPUs  CPUs_utilized
+            55,883      cpu-migrations                   #     29.1 migrations/sec  migrations_per_second
+        12,377,064      page-faults                      #   6440.7 faults/sec  page_faults_per_second
+    20,806,257,247      branch-misses                    #      3.9 %  branch_miss_rate         (50.14%)
+   392,192,407,254      branches                         #    204.1 M/sec  branch_frequency     (66.86%)
+ 1,795,371,797,109      cpu-cycles                       #      0.9 GHz  cycles_frequency       (66.94%)
+ 2,102,993,375,512      instructions                     #      1.2 instructions  insn_per_cycle  (66.86%)
+   480,077,915,695      stalled-cycles-frontend          #     0.27 frontend_cycles_idle        (66.37%)
+
+      60.048491456 seconds time elapsed
+
+5. Patched RAW Output (After Patch):
+----------------------------------------------------
+ Performance counter stats for 'system wide':
+
+         5,376,406      context-switches                 #   2798.3 cs/sec  cs_per_second
+      1,921,336.31 msec cpu-clock                        #     32.0 CPUs  CPUs_utilized
+            58,078      cpu-migrations                   #     30.2 migrations/sec  migrations_per_second
+         8,534,044      page-faults                      #   4441.7 faults/sec  page_faults_per_second
+    20,331,931,950      branch-misses                    #      3.9 %  branch_miss_rate         (50.15%)
+   387,641,734,869      branches                         #    201.8 M/sec  branch_frequency     (66.86%)
+ 1,700,331,527,586      cpu-cycles                       #      0.9 GHz  cycles_frequency       (66.95%)
+ 2,074,268,752,024      instructions                     #      1.2 instructions  insn_per_cycle  (66.86%)
+   452,713,645,928      stalled-cycles-frontend          #     0.27 frontend_cycles_idle        (66.36%)
+
+      60.036630614 seconds time elapsed
+
+Suggested-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
+Signed-off-by: Qiliang Yuan <realwujing@gmail.com>
+---
+On Mon, 2026-01-12 at 19:15 +0100, Kumar Kartikeya Dwivedi wrote:
+> Did you run any numbers on whether this improves verification performance?
+> Without any compelling evidence, I would leave things as-is.
+
+This version addresses the feedback by providing detailed 'perf stat' 
+benchmarks and reproducible stress test code to demonstrate the 
+compelling performance gains.
+
+Link: https://lore.kernel.org/all/CAP01T76JECHPV4Fdvm2bds=Eb36UYhQswd7oAJ+fRzW_1ZtnVw@mail.gmail.com/
+
+On Wed, 2026-01-14 at 07:59 -0800, Alexei Starovoitov wrote:
+> This is not your analysis. This is AI generated garbage that you didn't
+> even bother to filter.
+
+This v2 removes the previous interpretation and provides the raw 
+performance metrics and the stress test source code, as requested.
+
+Link: https://lore.kernel.org/all/CAADnVQJqnvr6Rs=0=gaQHWuXF1YE38afM3V6j04Jcetfv1+sEw@mail.gmail.com/
+
+On Thu, 2026-01-15 at 22:51 -0800, Eduard Zingerman wrote:
+> In general, you posted 4 patches claiming performance improvements,
+> but non of them are supported by any measurements.
+...
+> To get more or less reasonable impact measurements, please use 'perf' 
+> tool and use programs where verifier needs to process tens or hundreds 
+> of thousands instructions.
+
+Measurements on a high-complexity BPF program (1000 conditional branches) 
+using 'perf stat' are now included to validate the impact.
+
+Link: https://lore.kernel.org/all/75807149f7de7a106db0ccda88e5d4439b94a1e7.camel@gmail.com/
+
+ kernel/bpf/verifier.c | 22 ++++++++++++++++------
+ 1 file changed, 16 insertions(+), 6 deletions(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 3135643d5695..37ce3990c9ad 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -52,6 +52,7 @@ enum bpf_features {
+ 
+ struct bpf_mem_alloc bpf_global_percpu_ma;
+ static bool bpf_global_percpu_ma_set;
++static struct kmem_cache *bpf_verifier_state_list_cachep;
+ 
+ /* bpf_check() is a static code analyzer that walks eBPF program
+  * instruction by instruction and updates register/stack state.
+@@ -1718,7 +1719,7 @@ static void maybe_free_verifier_state(struct bpf_verifier_env *env,
+ 		return;
+ 	list_del(&sl->node);
+ 	free_verifier_state(&sl->state, false);
+-	kfree(sl);
++	kmem_cache_free(bpf_verifier_state_list_cachep, sl);
+ 	env->free_list_size--;
+ }
+ 
+@@ -20028,7 +20029,7 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
+ 	 * When looping the sl->state.branches will be > 0 and this state
+ 	 * will not be considered for equivalence until branches == 0.
+ 	 */
+-	new_sl = kzalloc(sizeof(struct bpf_verifier_state_list), GFP_KERNEL_ACCOUNT);
++	new_sl = kmem_cache_zalloc(bpf_verifier_state_list_cachep, GFP_KERNEL_ACCOUNT);
+ 	if (!new_sl)
+ 		return -ENOMEM;
+ 	env->total_states++;
+@@ -20046,7 +20047,7 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
+ 	err = copy_verifier_state(new, cur);
+ 	if (err) {
+ 		free_verifier_state(new, false);
+-		kfree(new_sl);
++		kmem_cache_free(bpf_verifier_state_list_cachep, new_sl);
+ 		return err;
+ 	}
+ 	new->insn_idx = insn_idx;
+@@ -20056,7 +20057,7 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
+ 	err = maybe_enter_scc(env, new);
+ 	if (err) {
+ 		free_verifier_state(new, false);
+-		kfree(new_sl);
++		kmem_cache_free(bpf_verifier_state_list_cachep, new_sl);
+ 		return err;
+ 	}
+ 
+@@ -23716,7 +23717,7 @@ static void free_states(struct bpf_verifier_env *env)
+ 	list_for_each_safe(pos, tmp, &env->free_list) {
+ 		sl = container_of(pos, struct bpf_verifier_state_list, node);
+ 		free_verifier_state(&sl->state, false);
+-		kfree(sl);
++		kmem_cache_free(bpf_verifier_state_list_cachep, sl);
+ 	}
+ 	INIT_LIST_HEAD(&env->free_list);
+ 
+@@ -23739,7 +23740,7 @@ static void free_states(struct bpf_verifier_env *env)
+ 		list_for_each_safe(pos, tmp, head) {
+ 			sl = container_of(pos, struct bpf_verifier_state_list, node);
+ 			free_verifier_state(&sl->state, false);
+-			kfree(sl);
++			kmem_cache_free(bpf_verifier_state_list_cachep, sl);
+ 		}
+ 		INIT_LIST_HEAD(&env->explored_states[i]);
+ 	}
+@@ -25401,3 +25402,12 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
+ 	kvfree(env);
+ 	return ret;
+ }
++
++static int __init bpf_verifier_init(void)
++{
++	bpf_verifier_state_list_cachep = kmem_cache_create("bpf_verifier_state_list",
++							   sizeof(struct bpf_verifier_state_list),
++							   0, SLAB_PANIC, NULL);
++	return 0;
++}
++late_initcall(bpf_verifier_init);
+-- 
+2.39.5
+
 
