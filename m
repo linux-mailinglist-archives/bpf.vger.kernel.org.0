@@ -1,91 +1,71 @@
-Return-Path: <bpf+bounces-79244-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79245-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85848D3178B
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 14:03:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BFAFBD317E2
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 14:04:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6B9DA309482E
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 12:59:56 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id CA72A30CD051
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 13:01:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F256E22D7B6;
-	Fri, 16 Jan 2026 12:59:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DCD123A98E;
+	Fri, 16 Jan 2026 13:01:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N8tYHRXM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aHgwBM8/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 041971F1932
-	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 12:59:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.218.42
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768568395; cv=pass; b=eg01kkb1R7LdFNQME5OcDHne/OLCNO6TM9BKdyj9556ynJoq5TN97hTiE6ADkXHgY6/ALA4Ar2XOnN4fEQeG95Nv66ttMghviGDfe71idufvGfmHZQLruEWGLNk7VEKkA3FXtInF3PoMKZXw143HBOJ2MxwBBpgLsw2X7Vnr48o=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768568395; c=relaxed/simple;
-	bh=5XrZEu7IM2qF9d+CyS0+9uAYhKYc+7JWy68FH5vx7/k=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC3C623ABA7
+	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 13:01:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768568492; cv=none; b=aJBGvjpVTKwAHsn2TsTUKRO1vFkxFt6NCrFt+YcXsi2eu6WnnJfc2XDCyLVw90SXplxp2x+sDy6tfNElnxLA60AmV6kWuGaceJrKfwRO8fJFirzr34bJM1xi7jkuGHzFUp2sTH4RGcRxESx/99l1DwMK/hqGEXErjhRyLhS88BU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768568492; c=relaxed/simple;
+	bh=XRjTUxYNDK1QUYfn1nXeV/KrPUZvcNIOBx8vo0NwT5o=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UETN46cs5ihQDy5u0bNxo16fgISiSMVfQDPLbM7wQhzn34pOMXGozKKDhuD0gaLzBECakv1cu5sgXCWwbXIJcyIViD+gan8v/yttcghEcGWg9v1scG6JuRNXETjUa73InPMB1QkiYgHpx8lXONUsHCZhqHNbnJS3IUzd8BHm00c=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N8tYHRXM; arc=pass smtp.client-ip=209.85.218.42
+	 To:Cc:Content-Type; b=jY6cO9IP5iWZFYanpun5tx5lWwmFoV1lcn0cR1MvZfc9RzukXCpRJ+kng/V13hGkvfyEJ4KHB2a3Zjiod6J/KkwlVmWOiJC4Hf94HEkyBwmn2evQ8BaFQVZ2HLcWzCg2cisv3fiXB8epl1WTO49/PrpqfPac8Crg2He0naScqBs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aHgwBM8/; arc=none smtp.client-ip=209.85.208.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-b876798b97eso333911666b.1
-        for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 04:59:53 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1768568392; cv=none;
-        d=google.com; s=arc-20240605;
-        b=SspwiaIY8HqeZoLRF1ttzd/t0DSxnOKwnNfMixdDxze32mYfdZnywsrK5PHOI41RJN
-         PCy1xQJGyGTqDkml/bhD7F9k9oz+FLUVe9tEMcw7d2Ze6NL7Y4vAKhmvkkdA+lWYTJQJ
-         6GGMLKJ1RgfgeF+6gcXA++Zi+m1eyv/Sr5F73bfEGTSKQ4L62q6QamKjo30Z17xj+XSu
-         Qq7PQLXjHpGUkM1laDG0Gc63u9igRUA1HN1FWfhDw5qTgFn7hBMll8ttoo6m+0aDogob
-         q50k1LQFYZoqGUdepdr7mHgm/EiKmnDYD9gHsRxiVdeiQ5aaNOERkJW4GY82KS6HuMR5
-         pBsQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=KaFtW2Z8I9yicCNtr1Z0UdrlsofWrWtI4cSYysTIiSU=;
-        fh=s/U2tX1QyS+6Cr3UC+tsC37VXjN1NmMqAyctztF2ai4=;
-        b=Wt+ZWIBn1c7T7j4r/syVGpq3BuBXtJrtiKLab/x3N7B8LCU6SWsQVBxOpEUw8/G0hw
-         fGjex4Bsgkfw6kmVkr2UcKKAV1KzgmHkpitzx2XLKemY9Krm7eC/y/lYS/85v1hrqZN6
-         2WZpaOCTWodpYYkUBPwEWdEx2xcmxi9pwmTOstUU/oNea7MDHsSj0VXy+w8aYk8MH7AV
-         kkUTRqXeyyWOQjUFzpKO5c9L6Makp5fO0WCK+7FOhg3l2NcTiYx4Mi3QEBP67X+V6l1R
-         wJ1AEhXVUgJKF0/xphSUdPwtQnn263e73cpVVUoJLEW5In4Nh/Us8AR3EJq7e/j2i/ek
-         tbWA==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-64b92abe63aso4050331a12.0
+        for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 05:01:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768568392; x=1769173192; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1768568489; x=1769173289; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KaFtW2Z8I9yicCNtr1Z0UdrlsofWrWtI4cSYysTIiSU=;
-        b=N8tYHRXMdLyirKM9f0fvzdrbkhZpeIQ2kaVmwwFJH87TbFxKccgnHswN1oxMPw55mP
-         RggkE81x5J6ANYGye6tKvnw9ADzzkn8BUxLc/GQFUuMT0vqreH86ar6Hz3yRV4n/Fpjk
-         RHGkCCJvOaTIM9HO2Dgdxo9PjucP25r2PmjwzqJ7CZfTLgpf239/Zj39vP2BGksGqHvq
-         WFJBXwsuwrfdmxSdLemL+nHuAR5+Aeq9F7sjGznDRK9+dgEU0xkBgMMW7ONR/byjg184
-         9vSwItJD+h83K2hfdew1diJUQnIX2rp/Z10Rgd2LsMCXUSpRm8lUpDJ1W9KdDHDqJi5P
-         VnlA==
+        bh=7xVOtXrAQ8qdzGSmcNavafMKsEpUAoDPiro8kRUhgdw=;
+        b=aHgwBM8/ZPZAqG7IDOsk7ppYFYJkK/5IPl3xTu5HOqcBLU/Jdh3BhmBq+gLbsYeikf
+         4JQonkjcPsFBPtfRkycRxqw/jNDEnJ/ftSrtt9J7FYzCCRZmD/SJk7YRFyQ8Z4jQNiaz
+         ch0CUNHkQ64d36lciF9DpXjaOAUOIUlXvP68fnSpaQG/pjpUTScCcYYqnKcxcS95IEds
+         a5j+SVXDlvGi+VgakYtjVzDvqks5fk+XRSBR0p8f8ke+rOvwT+LQtVqLTniKXXspYAvB
+         1swTGwu2UKP5aKkZhqDkaqoa+qyWvNt0n/UBMZ0T3hr7pv+Xi9PAWq8UFfbTHE0Uj+I9
+         uXZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768568392; x=1769173192;
+        d=1e100.net; s=20230601; t=1768568489; x=1769173289;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=KaFtW2Z8I9yicCNtr1Z0UdrlsofWrWtI4cSYysTIiSU=;
-        b=eGFdPkGSl86jhtDOJXWH3Juf2WHDrxx2fxSFYQH7z4Ce1ys7Kt39c2ARd/YOWyD7uH
-         2hPH5MHJpLerAB7duheRaOqKtm3+JdScEub4ghpVEMQ08Z53YMNO66kgci/NW1l4OUeN
-         M8t1HrqvvJfpHADg6YDzgCW4YIX0FyQcgO4CY/yCu5TpTMriiFhicOmmPxU4gMZw0jX2
-         0Ylqi91hVM11KgV3FgOrLZovXXT7MlNAj0dleG3xqSC9XptQI+EpXjEetqTdvU8nVEpA
-         V+/Btj/ouPwYh5jT+RYgf+9jSN4cnlzhDXTePJEx8ksQ2HlHOb+Jx62oW5p/DDgl9cDU
-         tLng==
-X-Gm-Message-State: AOJu0YwG4NeqqzY8Vj7ozRtx8DSbxFBwIgR5TfmxJRq9ja0SW9kQWcr7
-	tVoYzkqnnVXwtJuQbe9bkkj4GjQ/msr1LYJk9HmMQ+KQTzoZyQ8p+zAZZOigx13K+6qC8912D/9
-	wKuFoS9qpkR2wM/k3x52O7iYlr9laWoE=
-X-Gm-Gg: AY/fxX7qRkOoLrYXN84ZFbso5mpBIv9+TKjtON2QNNp1poB0/MC9ILEQDSMXZWHdfx6
-	OrXKiXAOPf+2+6qFBAFPcspVBPQ2I0MxRIaXcf2ZHHiCerCn2KHmgtxQYj7nySsVhK3mvRb7Vlx
-	PNCgHXNs/Bm2czOvzJQR0xCZG6/gUINWkugfqPGfGsqSuRffb7UI6SxVx84hz9qQCbCf/EnJ2mM
-	pUVGfSmBv51qFGzMxYPjlqpvchwUII6h4MZyD1DEM/BDYBjG7oQ2lfFdavzPt7GcZqcSt4=
-X-Received: by 2002:a17:907:848:b0:b87:2780:1b34 with SMTP id
- a640c23a62f3a-b879324d779mr259027066b.61.1768568392170; Fri, 16 Jan 2026
- 04:59:52 -0800 (PST)
+        bh=7xVOtXrAQ8qdzGSmcNavafMKsEpUAoDPiro8kRUhgdw=;
+        b=kE2uD4s1u0FEi7cWrUUUELfYt2o7/nVOWMCaHYzje92iqQkvjP5rAd4l+tCYQzjpzm
+         AU551/DrgO3p9oqZLD2IJSV3UZtVf0eJV2v7kflQFiBrWW5jSZ9x/ES+Wjbm+JDNShAx
+         1Iff/kHiITlirjLpExXPAVHCpZJITLERAWk8xYWcWBuIIS7Lk8sjGiZB1nOE7g3aI+xA
+         AuWj0cUts4mjWqzalxi07wcIcf5kFfkFole5y6zTDFa/6S3gdyGzCDywKyOpUqf6rhGM
+         JgyIU4JVgFwl2FMEKcAuct11mApoHA7KyqrrdnCHq8BPoucUF/jkn+GEujCc5N0i3/WR
+         jY6g==
+X-Forwarded-Encrypted: i=1; AJvYcCXtb3MvL2tUJmnjCRXvsNdMWQnPDICfUoEKzSRcy0wOcfJxQYtHzB7fkzHbLOzMBTKNgHM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyzeZk4AlMoRy0n26LI9lWOJ+SubjV0cwByZKLsWujzVtxGrGaU
+	/9ZveEnDlbxAgMhr74QKlwxdFmbrgXo4oSq/Na/Cj+vFOgXzmedSBKRMD0Avc3LlAh9mK97TfP1
+	/o9FLDiFQc36mrzfFuyDTEsGJjoeajZo=
+X-Gm-Gg: AY/fxX69HouH7XEIKuf849WmkWqUygJYALRQB8GGOKiUDUi3yjMz1vIH/4EQ7YfHNIg
+	nrxQygQz9Mh78fB2DaENyLjcnqsH+n3YSb1teCwTeF3NMAz55g1j41Sq++JC2Sx+0laEgNfMxxq
+	twT39UzWApF2lSRqQuTybr8aLsMjVqW+SjpeU+fISACnRzD1AcIGSx90kEGjzXCSgNHY2HNYZPS
+	vJKFurGN/d0U0vx0uOgJEQ54IWxR0xjyoHpb/0i2xO89fDPeAN+RZ0phZN2kl83fmnrlK4=
+X-Received: by 2002:a17:907:7201:b0:b72:70ad:b8f0 with SMTP id
+ a640c23a62f3a-b8793244100mr266080766b.36.1768568485527; Fri, 16 Jan 2026
+ 05:01:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -93,23 +73,24 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20260115151143.1344724-1-puranjay@kernel.org> <20260115151143.1344724-2-puranjay@kernel.org>
- <CAEf4BzbXo0FCxJwjrk_O0YBCPkDW0a5-gFW8VEbQDqu4P-XP+Q@mail.gmail.com>
-In-Reply-To: <CAEf4BzbXo0FCxJwjrk_O0YBCPkDW0a5-gFW8VEbQDqu4P-XP+Q@mail.gmail.com>
+ <CAADnVQJLQ4hQTEKVPntpRe6=qsXQffno65OJjAG-H+Vw0i1Tzw@mail.gmail.com>
+In-Reply-To: <CAADnVQJLQ4hQTEKVPntpRe6=qsXQffno65OJjAG-H+Vw0i1Tzw@mail.gmail.com>
 From: Puranjay Mohan <puranjay12@gmail.com>
-Date: Fri, 16 Jan 2026 13:59:40 +0100
-X-Gm-Features: AZwV_Qjv5JmkUIH3YMI7doKlz10bV_lCFrAqPbJG-eWCc7frFESVw2Ucl3F67ZA
-Message-ID: <CANk7y0gMC6VYwgzebi8SvV4EFGvEhNiGo8JXus2XnXxEVJ+zRQ@mail.gmail.com>
+Date: Fri, 16 Jan 2026 14:01:14 +0100
+X-Gm-Features: AZwV_QjWiW0OHJzA4CaqL71sNNi9WUBBljZ_B0PuZY8xOIgq22691s6KZ6r6sWc
+Message-ID: <CANk7y0gSAyEhfkwKo7o5GoTUdxAHsi=RfsJdYpukOxaqikmtPA@mail.gmail.com>
 Subject: Re: [PATCH bpf-next 1/2] bpf: Preserve id of register in sync_linked_regs()
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, kernel-team@meta.com
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Ihor Solodrai <ihor.solodrai@linux.dev>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
+	Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, Kernel Team <kernel-team@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 15, 2026 at 11:43=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Fri, Jan 16, 2026 at 4:09=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
 > On Thu, Jan 15, 2026 at 7:11=E2=80=AFAM Puranjay Mohan <puranjay@kernel.o=
 rg> wrote:
@@ -181,13 +162,75 @@ e
 > >
 > > Fix this by preserving id in sync_linked_regs() like off and subreg_def=
 .
+> >
+> > Fixes: 98d7ca374ba4 ("bpf: Track delta between "linked" registers.")
+> > Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+> > ---
+> >  kernel/bpf/verifier.c | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 7a375f608263..9de0ec0c3ed9 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -16871,6 +16871,7 @@ static void sync_linked_regs(struct bpf_verifie=
+r_state *vstate, struct bpf_reg_s
+> >                 } else {
+> >                         s32 saved_subreg_def =3D reg->subreg_def;
+> >                         s32 saved_off =3D reg->off;
+> > +                       u32 saved_id =3D reg->id;
+> >
+> >                         fake_reg.type =3D SCALAR_VALUE;
+> >                         __mark_reg_known(&fake_reg, (s32)reg->off - (s3=
+2)known_reg->off);
+> > @@ -16878,10 +16879,11 @@ static void sync_linked_regs(struct bpf_verif=
+ier_state *vstate, struct bpf_reg_s
+> >                         /* reg =3D known_reg; reg +=3D delta */
+> >                         copy_register_state(reg, known_reg);
+> >                         /*
+> > -                        * Must preserve off, id and add_const flag,
+> > +                        * Must preserve off, id and subreg_def flag,
+> >                          * otherwise another sync_linked_regs() will be=
+ incorrect.
+> >                          */
+> >                         reg->off =3D saved_off;
+> > +                       reg->id =3D saved_id;
 >
-> We should mark_reg_scratched() all the registers that got new IDs or
-> new ranges or offsets. Basically, if anything about register state was
-> changed, even if verified instruction doesn't work with that register
-> directly, all affected registers (we can think about this as side
-> effects) should be "scratched" and emitted in the verifier log.
+> What is the veristat difference for meta/scx ?
 >
+> I don't trust CI at the moment:
+>
+> 026-01-16T01:26:34.7163235Z Failed to open 'c-scheds_lib_sdt_task.bpf.o':=
+ -2
+> 2026-01-16T01:26:34.7240161Z Failed to open
+> 'c-scheds_scheds_c_scx_sdt.bpf.o': -2
+> 2026-01-16T01:26:34.7298286Z Failed to open
+> 'rust-scheds_scx_arena-9355999175dda454_out_arena.bpf.o': -2
+> 2026-01-16T01:26:34.7353438Z Failed to open
+> 'rust-scheds_scx_arena-9355999175dda454_out_atq.bpf.o': -2
+> 2026-01-16T01:26:34.7414081Z Failed to open
+> 'rust-scheds_scx_arena-9355999175dda454_out_bitmap.bpf.o': -2
+> ...
+>
+> 2026-01-16T01:27:52.3087135Z # No changes in verification performance
+>
+> something fishy.
 
-I agree, will send a separate patch for this.
+
+I don't see any change in veristat output:
+
+../../../veristat/src/veristat -C -e file,prog,states,insns -f
+"insns_pct>0" fb_before.csv fb_after.csv
+File  Program  States (A)  States (B)  States (DIFF)  Insns (A)  Insns
+(B)  Insns (DIFF)
+----  -------  ----------  ----------  -------------  ---------
+---------  ------------
+
+
+../../../veristat/src/veristat -C -e file,prog,states,insns -f
+"insns_pct>0" scx_before.csv scx_after.csv
+File  Program  States (A)  States (B)  States (DIFF)  Insns (A)  Insns
+(B)  Insns (DIFF)
+----  -------  ----------  ----------  -------------  ---------
+---------  ------------
 
