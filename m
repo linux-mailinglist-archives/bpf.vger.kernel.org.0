@@ -1,224 +1,135 @@
-Return-Path: <bpf+bounces-79193-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79194-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93021D2CC0A
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 07:52:06 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5FE7D2CC71
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 07:54:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 924633065AA0
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 06:51:26 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9C37E3037512
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 06:54:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B785A34EF01;
-	Fri, 16 Jan 2026 06:51:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0549234EF06;
+	Fri, 16 Jan 2026 06:54:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fcfRsLID"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SVVwXrbJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9FE1346ACF
-	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 06:51:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C775A34E764
+	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 06:54:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768546285; cv=none; b=FmAGFT8XkIjAYhc3knL0Qno8UXKwK2QUWBR7mzfUnhPLUOLExCwKxAQBSk+kSUtqNT0fNxVe6npAfmoa4w9VdLvMD3TYfaVGIHlsTkEAkNOyZmUY/tD9gRaZsRP7lXdrKI3CrHK+JLW1OqF+ZJFCZS2gEFCnJWN8VzS7bt80UFE=
+	t=1768546449; cv=none; b=P6MLLZYIeF+p65+lyp7w8scGy3gBJoybktvHaAMXGWXif88DWts+6NpjxVLmJ6Q/++L+BYyye/sVxmBBObCp+TP+UQVlEhayZts05evwroOO+PZqA8JBGDVpHCN2LYL26ra3Z+fBlIFqMgPH1f8blJx7LJXGDouC1TSkw6ZvaRo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768546285; c=relaxed/simple;
-	bh=V+N9nQ78Ws8zuM+Nr2Hg49PmJYuv2i2LP11ETMyfxt4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=YRq4bYzrBNg1RGfvJCwaxf/K4l516VkotstZUzdSUNPH3WqgxRQKdMWhT2/2BzYCAUfzyzf35GbfOsXB1UnjaD6KI9Bdzs0/Xk8f4iYXBhMGDiygG+YEtrbpAuypN3ouffofymsOg0Cotv0/6gIibte/0eJHLeziFKCYRTWzLb8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fcfRsLID; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-2a09a3bd9c5so12392935ad.3
-        for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 22:51:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768546283; x=1769151083; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=8kSkqWutcRMBUnUXtvt0aSg1ad6YfbQPtUSAzw3ITPM=;
-        b=fcfRsLIDlX3z/PKv3mzH5ugfijjuQRS7rKZIKZCCd0eevZ/UzYaqbbBDbO07ao+x4i
-         apV70vRkaQEWGXoQWgZyvHraFCJ8Wwb5t4fKmxPIKujheHs7/dD+HXmYUJ3esTxU8Osr
-         rboqvCQii4Q1WfmOjjaebNCLyHGBcCuetARgxEAiFYssmnqrHC68Tyy8qZyg6+ifINS1
-         bLyR+KNYCKz0jW9c/Hui5qJlm2FVBKb/fLIEE+uqsr5E8TmXpenoIwLYsTPUs2+qJ/pv
-         epYMMJAnirhTPX47yNFv9mcafHAkiwwDRwEcop68larXoYSgc6sCH+F67XU01QqKDgEn
-         CwfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768546283; x=1769151083;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8kSkqWutcRMBUnUXtvt0aSg1ad6YfbQPtUSAzw3ITPM=;
-        b=cC+Asm/0Hr9UbaudK5AYz9ovg8Wp4hwAkod6zkUg6CnEIsHFFkW9/1CJpUQy/FOI+h
-         xM7OvCsX9DvQ8cWCjIjXEWpsqpFVX9PWSLGkRT6SAhmnZMjD7K4SyseLdSeNsNYsAKsy
-         QIv+2qjloONrOKjKfhMEjn/YC42kFTV423btU0JANNVLL/JuxQuSolIDr0+lErRa2hMk
-         7bWMbBDT8SOU87YnM8yTQ2KjkoyUymnd2Ku5fbj0qHEuc3o9+wfkobEH4OnUNqxn01gH
-         vxHEpOtIudir6OhQMVTDEB2NbHuKWIcbihOrJ9oQJm/3glUe70MGle+jPJGV6RW367+c
-         ZU/Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWbSGfXyPO5UaJOXDJ5qIzShCaLlRtWOMl5SNKgnG+SE7KzkBCVLqagAfs7zb0v03u07Zk=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywb5GsDL0wmhn0r4oWlIiXhsamep+zwBA0LRge699w998JVIzJQ
-	K+xEGIvvJLpjS7OdZA28+zX/pPsjnr7T+22SZLUVPaJOi8vuoJ6+z6P+IgzypA==
-X-Gm-Gg: AY/fxX68Qb/qXQpPlFFIAC5f5hb9c3+mCOV44Wji3mKanA7b4iiv5790QvDT6LzlrNw
-	lSadFe1gNus+e/gJX+Xu8jD5sNfyVTxACgl/3BjFxe2nK6f9w4/qafmoJU91c5PSLcB3D2H2FP/
-	n2Nf6XzCvQVlSTE6iy5qgXTySP54F28W2p5szH1lKnRiGwuu6vAgKZZWLfVYdtg0ZZRGbiVgf8/
-	MtSm21+E192Jeo58XBi38rYf+5uZrMqVwfYiPoDJz3Q4WCCSNuvkdZIfIGbtn+w3v5CQvJ+5YTH
-	jV+LNFye5EDHYWD3hvvXWhMGtlakeumC4OEss18npG7cweeamouXXeeIHxIjRdxoPF6dS4hTyUO
-	eUivoz4T+NLb8P7eYMAHNXdhlKBWxTYA4lwjaODAg5nqrKxZOfFZP0GU1E8MmwP9XAxHix/1Z+D
-	9rpxUKQ1vPLcWphc7UCcQEKqR3TIHLmCJ3rsqgga8=
-X-Received: by 2002:a17:903:2ecd:b0:2a5:99e9:569d with SMTP id d9443c01a7336-2a71887c84emr21725865ad.18.1768546283160;
-        Thu, 15 Jan 2026 22:51:23 -0800 (PST)
-Received: from [192.168.0.56] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a7193dcd00sm11627485ad.65.2026.01.15.22.51.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jan 2026 22:51:22 -0800 (PST)
-Message-ID: <75807149f7de7a106db0ccda88e5d4439b94a1e7.camel@gmail.com>
-Subject: Re: [PATCH] bpf/verifier: compress bpf_reg_state by using bitfields
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Qiliang Yuan <realwujing@gmail.com>
-Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
- daniel@iogearbox.net, 	haoluo@google.com, jolsa@kernel.org,
- kpsingh@kernel.org, 	linux-kernel@vger.kernel.org, martin.lau@linux.dev,
- sdf@fomichev.me, 	song@kernel.org, yonghong.song@linux.dev,
- yuanql9@chinatelecom.cn
-Date: Thu, 15 Jan 2026 22:51:19 -0800
-In-Reply-To: <20260116060735.35686-1-realwujing@gmail.com>
-References: <7ffce4afdb0e859df7f0f87d170eda31b66a5b2b.camel@gmail.com>
-	 <20260116060735.35686-1-realwujing@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.58.1 (3.58.1-1.fc43) 
+	s=arc-20240116; t=1768546449; c=relaxed/simple;
+	bh=iNXSVtXVGwVcIzlCczPYO67hJ+0mDEcHtiHXdsTpaWM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=QbaIF1yJf8O+HFWtMIHPSAg+rdBxsBy7mpHkkU6jvu50Aml1gtzKAL1QQs+8x3DebVXgW+5HLsePA3Sv+5jX1ewSbcWCXDDZJberZkAW0boptkBTC83rrejxmu2pl9WrbtgVnFqU5i16us/p3pvkv2CkFtGKpsX4+p3isHnIy1w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SVVwXrbJ; arc=none smtp.client-ip=95.215.58.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1768546445;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cVZbVkStdM/Vi4xRUe/yLCSuJE5YhqrOOiVWak7xjA4=;
+	b=SVVwXrbJIagWmkqrWVjUgnjGvKh2SWbDHv1EwVEeMJz8dNyokR0szeJtRzoVPgeWUbiOj5
+	aJqQ/6rdOhKtbSUEY3MDnEl502zYNhaWCrnScBA1EwXR+VSkpb6QdmWncvcl8Vgg/YFL1G
+	TBZ7fGIyTN5bry+YkgqXH9/cYj30uyw=
+From: Menglong Dong <menglong.dong@linux.dev>
+To: menglong8.dong@gmail.com, ast@kernel.org, bot+bpf-ci@kernel.org
+Cc: daniel@iogearbox.net, john.fastabend@gmail.com, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, mattbobrowski@google.com,
+ rostedt@goodmis.org, mhiramat@kernel.org, mathieu.desnoyers@efficios.com,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, martin.lau@kernel.org, eddyz87@gmail.com,
+ yonghong.song@linux.dev, clm@meta.com, ihor.solodrai@linux.dev
+Subject:
+ Re: [PATCH bpf-next 2/2] selftests/bpf: test bpf_get_func_arg() for tp_btf
+Date: Fri, 16 Jan 2026 14:53:47 +0800
+Message-ID: <5957081.DvuYhMxLoT@7940hx>
+In-Reply-To:
+ <379dc407b6e024b766ad40bfb899f8f6ce92e869d23c748275d0c054d62a569a@mail.kernel.org>
+References:
+ <20260116035024.98214-3-dongml2@chinatelecom.cn>
+ <379dc407b6e024b766ad40bfb899f8f6ce92e869d23c748275d0c054d62a569a@mail.kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, 2026-01-16 at 14:07 +0800, Qiliang Yuan wrote:
-> Hi Eduard,
->=20
-> On Thu, Jan 15, 2026, Eduard Zingerman wrote:
-> > varistat collects verifier memory usage statistics.
-> > Does this change has an impact on programs generated for
-> > e.g. selftests and sched_ext?
-> >=20
-> > In general, you posted 4 patches claiming performance improvements,
-> > but non of them are supported by any measurements.
-> >=20
-> > P.S.
-> > Is this LLM-generated?
->=20
-> Thank you for the feedback. I would like to clarify that these optimizati=
-ons
-> are the result of a deliberate engineering effort to address specific
-> performance bottlenecks in the BPF verifier. These improvements were iden=
-tified
-> through my personal code analysis over the past two months, though I have=
- only
-> recently started submitting them to the community.
->=20
-> Regarding the impact on selftests and sched_ext: I have verified these ch=
-anges
-> using 'veristat' against the BPF selftests. Since these optimizations tar=
-get
-> the core verifier engine and structural layout, they benefit any complex =
-BPF
-> program, including those in sched_ext. The results show a clear reduction=
- in
-> verification duration (up to 56%) and peak memory usage (due to the reduc=
-tion of
-> struct bpf_reg_state from 112 to 104 bytes), with zero changes in the tot=
-al
-> instruction or state counts. This confirms that the verification logic re=
-mains
-> identical while resource efficiency is significantly improved.
->=20
-> The specific order and context of the four patches are as follows:
->=20
-> 1. bpf/verifier: implement slab cache for verifier state list
-> =C2=A0=C2=A0 (https://lore.kernel.org/all/tencent_0074C23A28B59EA264C502F=
-A3C9EF6622A0A@qq.com/)
-> =C2=A0=C2=A0 Focuses on reducing allocation overhead. Detailed benchmark =
-results added in:
-> =C2=A0=C2=A0 (https://lore.kernel.org/all/tencent_9C541313B9B3C381AB950BC=
-531F6C627ED05@qq.com/)
+On 2026/1/16 12:09 bot+bpf-ci@kernel.org write:
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/get_func_args_test.c b/tools/testing/selftests/bpf/prog_tests/get_func_args_test.c
+> > index 64a9c95d4acf..848fab952719 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/get_func_args_test.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/get_func_args_test.c
+> > @@ -33,6 +33,7 @@ void test_get_func_args_test(void)
+> >
+> >  	ASSERT_EQ(topts.retval >> 16, 1, "test_run");
+> >  	ASSERT_EQ(topts.retval & 0xffff, 1234 + 29, "test_run");
+> > +	ASSERT_OK(trigger_module_test_read(1), "trigger_read");
+> >
+> >  	ASSERT_EQ(skel->bss->test1_result, 1, "test1_result");
+> >  	ASSERT_EQ(skel->bss->test2_result, 1, "test2_result");
+> >  	ASSERT_EQ(skel->bss->test3_result, 1, "test3_result");
+> >  	ASSERT_EQ(skel->bss->test4_result, 1, "test4_result");
+> 
+> The trigger_module_test_read() call fires the new tracepoints which run the
+> tp_test1 and tp_test2 BPF programs. These programs set test5_result and
+> test6_result respectively. However, there are no assertions here to verify
+> that test5_result and test6_result equal 1.
+> 
+> Should there be:
+> 
+>     ASSERT_EQ(skel->bss->test5_result, 1, "test5_result");
+>     ASSERT_EQ(skel->bss->test6_result, 1, "test6_result");
+> 
+> Without these assertions, the test will pass even if the tp_btf
+> bpf_get_func_arg() functionality is broken.
 
-From that report:
+You are totally right, my bad :/
 
->  arena_strsearch                 121 us               64 us              =
- -47.11%
->  bpf_loop:stack_check            747 us               469 us             =
- -37.22%
->  bpf_loop:test_prog              519 us               386 us             =
- -25.63%
->  bpf_loop:prog_null_ctx          202 us               162 us             =
- -19.80%
+> 
+> > diff --git a/tools/testing/selftests/bpf/progs/get_func_args_test.c b/tools/testing/selftests/bpf/progs/get_func_args_test.c
+> 
+> [ ... ]
+> 
+> > +__u64 test5_result = 0;
+> > +SEC("tp_btf/bpf_testmod_fentry_test1_tp")
+> > +int BPF_PROG(tp_test1)
+> > +{
+> 
+> [ ... ]
+> 
+> > +__u64 test6_result = 0;
+> > +SEC("tp_btf/bpf_testmod_fentry_test2_tp")
+> > +int BPF_PROG(tp_test2)
+> > +{
+> 
+> These result variables are set by the BPF programs but never checked in the
+> test driver, as noted above.
+> 
+> 
+> ---
+> AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+> See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
+> 
+> CI run summary: https://github.com/kernel-patches/bpf/actions/runs/21055137351
+> 
 
-Instructions processed from verifier from the report:
-- arena_strsearch:        20
-- bpf_loop:stack_check:   64
-- bpf_loop:test_prog:     325
-- bpf_loop:prog_null_ctx: 22
 
-With such sa mall number of instructions processed the results are
-nothing more than a random fluke. To get more or less reasonable
-impact measurements, please use 'perf' tool and use programs where
-verifier needs to process tens or hundreds of thousands instructions.
 
-> 2. bpf/verifier: compress bpf_reg_state by using bitfields
-> =C2=A0=C2=A0 (https://lore.kernel.org/all/20260115144946.439069-1-realwuj=
-ing@gmail.com/)
-> =C2=A0=C2=A0 This is a structural memory optimization. By packing 'framen=
-o', 'subreg_def',
-> =C2=A0=C2=A0 and 'precise' into bitfields, we eliminated 7 bytes of paddi=
-ng, reducing
-> =C2=A0=C2=A0 the struct size from 112 to 104 bytes. This is a determinist=
-ic memory
-> =C2=A0=C2=A0 saving based on object layout, which is particularly effecti=
-ve for
-> =C2=A0=C2=A0 large-scale verification states.
 
-For this optimization veristat is a reasonable tool to use, it can
-track a 'mem_peak' value.
-
-> 3. bpf/verifier: optimize ID mapping reset in states_equal
-> =C2=A0=C2=A0 (https://lore.kernel.org/all/20260115150405.443581-1-realwuj=
-ing@gmail.com/)
-> =C2=A0=C2=A0 This is an algorithmic optimization similar to memoization. =
-By tracking the
-> =C2=A0=C2=A0 high-water mark of used IDs, it avoids a full 4.7KB memset i=
-n every
-> =C2=A0=C2=A0 states_equal() call. This reduces the complexity of resettin=
-g the ID map
-> =C2=A0=C2=A0 from O(MAX_SIZE) to O(ACTUAL_USED), which significantly spee=
-ds up state
-> =C2=A0=C2=A0 pruning during complex verification.
-
-As I said before, this is a useful change.
-
-> 4. bpf/verifier: optimize precision backtracking by skipping precise bits
-> =C2=A0=C2=A0 (https://lore.kernel.org/all/20260115152037.449362-1-realwuj=
-ing@gmail.com/)
-> =C2=A0=C2=A0 Following your suggestion to refactor the logic into the cor=
-e engine for
-> =C2=A0=C2=A0 better coverage and clarity, I have provided a v2 version of=
- this patch here:
-> =C2=A0=C2=A0 (https://lore.kernel.org/all/20260116045839.23743-1-realwuji=
-ng@gmail.com/)
-> =C2=A0=C2=A0 This v2 version specifically addresses your feedback by cent=
-ralizing the
-> =C2=A0=C2=A0 logic and includes a comprehensive performance comparison (v=
-eristat results)
-> =C2=A0=C2=A0 in the commit log. It reduces the complexity of redundant ba=
-cktracking
-> =C2=A0=C2=A0 requests from O(D) (where D is history depth) to O(1) by uti=
-lizing the
-> =C2=A0=C2=A0 'precise' flag to skip already-processed states.
-
-Same as with #1: using veristat duration metric, especially for such
-small programs, is not a reasonable performance analysis.
-
-> Best regards,
->=20
-> Qiliang Yuan
 
