@@ -1,244 +1,224 @@
-Return-Path: <bpf+bounces-79192-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79193-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78300D2CB88
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 07:48:33 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93021D2CC0A
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 07:52:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 235CC3007612
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 06:48:26 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 924633065AA0
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 06:51:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48EB634E764;
-	Fri, 16 Jan 2026 06:48:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B785A34EF01;
+	Fri, 16 Jan 2026 06:51:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="U4k8atSb";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="M5q2GG8S"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fcfRsLID"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59BDA225397;
-	Fri, 16 Jan 2026 06:48:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768546104; cv=fail; b=V9a8muE7JxeWCzgjqoIHfoh4AHqZz5iW6RPPdzHGPemfgfUvOmdV9ykLvRv8txBDGRiZScLQbywLpvwNPfnXkgLXuT4+kqaDJpibeIgHMH2cplcn+gStDZUnU6OS8cPFvkNPITZUsmZg6z1uvoSVa9Kx5C4pVJtRR+eQmvhGuVI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768546104; c=relaxed/simple;
-	bh=WIWA6Ue8h7P9OdZtoU1aJwSh9BU9US+i+Z+hd1VuyUM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=KTbXHqRXsQnQV2QO54WjhVHyUutW3wfXa3rNc82mZJjDJgLiwejyHRJGv434I7d1AWSLg80vGK5rgOZM2uGXkZDw3lHZl4/o8MsBWuwHCFURPLNXeAaFm/mu/+uhofPKfT0R9T8bITcfiiWWeBgXSAjv8uqL3EOTHQpXf4V27Po=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=U4k8atSb; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=M5q2GG8S; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 60FNNRd01430382;
-	Fri, 16 Jan 2026 06:46:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=corp-2025-04-25; bh=GPnEgGmtlTiHHR0NAt
-	UdgVKL6jQBK92oDBKyb/fUf3U=; b=U4k8atSbLAZznfZzEU1o9m3glZM26Hls4m
-	XPpNpUWZjkDo7pRZBYE6OrnlpeurAyFd11yu/DdVT/E82BFYRNFpq7F9slWJw5KX
-	ztossVYqK73Xwg3ZiES/MlRb9O28YyqQjJS+ft7CrRGETwSiKf2jJ2pvxwSXKz/8
-	oq3SxHKVZtAEe5adzRxelSLH6SefeVKjhr23faQ6uEd78fkv3lrWmHjGuTR+FCXG
-	Oq/hYRFlDwSb6nbNz2i2gsg9BH1b86cVEUxpPCKk8Do0lECvP8BcbjqM9ypv1UyB
-	HhsH//Hj9L99XR+lE3ridPNUHAUIXrAe4SoETMbApFNu52HHt+FQ==
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4bkre41h2y-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 16 Jan 2026 06:46:45 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 60G6LXRt004464;
-	Fri, 16 Jan 2026 06:46:44 GMT
-Received: from sn4pr0501cu005.outbound.protection.outlook.com (mail-southcentralusazon11011057.outbound.protection.outlook.com [40.93.194.57])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 4bkd7p8nyf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 16 Jan 2026 06:46:44 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Iygy8I3e7abQbKzwgKBmPNTA5Z3vM1NF/kvrglmiYsoQgJrZtaJo8M2RYp9EwjXnVUw5QmH8i6ZMJ0HQ58vDudkCwOV0HETLVZMtW2V7vgPF6QDxjHksSnsYh9pi1+BbDHjR/AowMxj6xOftrBUlxcnHzA//9lzRKQpH4gUCz7Is2OSJQuZaBdOAH0d4rbZ2dnpzxa5w6q0OxV8mljekpXBzEBoi4lcm7m/DWOZmYRwhJQ95KXftvgumc1Lw1TJiQJwZttE7LsZICm/qK3woL+4KTPZYjWK8miWDbQZ9JqUqxIy+A77XRNuLfLcUzUgRyVyERGedAUmN/LOIaMGPsg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GPnEgGmtlTiHHR0NAtUdgVKL6jQBK92oDBKyb/fUf3U=;
- b=OvJve+Lhfr3YG/3YCXk2gxANjvIjsP8o2BamKvKq0U8nVvua/Yl2b3qMmrgbmcdav0p6ZlLhrmnVDA2RTn8h6p1yAXtMQ/Iwsszilc1g7zUXx2eHSWyKbnqAjiFVvW3ww+WYwHBnUTwNO8+mHSA/4NJS7AH64ToeorJPEtg/p5rFBsetzsg0WGVInmxGct/XJPFIZnk5n04lcuXXWx06XbJQMfEWY+osbw7KuJ36rPAfw1zi4dqd2hUoPiB+v4g7+UPnwuKaBM3y+2BO25aznxtJzMam8A3Z06NZR0smCSljAOz7IyTGxTL5ixw5ZjTdPsAmHHt8PkCoCXfA8JWh7g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9FE1346ACF
+	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 06:51:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768546285; cv=none; b=FmAGFT8XkIjAYhc3knL0Qno8UXKwK2QUWBR7mzfUnhPLUOLExCwKxAQBSk+kSUtqNT0fNxVe6npAfmoa4w9VdLvMD3TYfaVGIHlsTkEAkNOyZmUY/tD9gRaZsRP7lXdrKI3CrHK+JLW1OqF+ZJFCZS2gEFCnJWN8VzS7bt80UFE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768546285; c=relaxed/simple;
+	bh=V+N9nQ78Ws8zuM+Nr2Hg49PmJYuv2i2LP11ETMyfxt4=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=YRq4bYzrBNg1RGfvJCwaxf/K4l516VkotstZUzdSUNPH3WqgxRQKdMWhT2/2BzYCAUfzyzf35GbfOsXB1UnjaD6KI9Bdzs0/Xk8f4iYXBhMGDiygG+YEtrbpAuypN3ouffofymsOg0Cotv0/6gIibte/0eJHLeziFKCYRTWzLb8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fcfRsLID; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-2a09a3bd9c5so12392935ad.3
+        for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 22:51:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GPnEgGmtlTiHHR0NAtUdgVKL6jQBK92oDBKyb/fUf3U=;
- b=M5q2GG8SDd+r8WDSnJAdvqYXmsWFjrOW35oQXVpLZ2ZaA60JL+nSDqRm9RWJZp0OQEiIMSGFd3GKTz1kGIE/jNLTz68JlSRcNt3BH2rI0jviLrnLmVWcAB9gYpqkFI/eU8toD7lBlRrxv5JT8zx1bWq/Tsq6G9FK3P/EtUEniVk=
-Received: from CH3PR10MB7329.namprd10.prod.outlook.com (2603:10b6:610:12c::16)
- by DS4PPF80FDA9397.namprd10.prod.outlook.com (2603:10b6:f:fc00::d2f) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9520.5; Fri, 16 Jan
- 2026 06:46:41 +0000
-Received: from CH3PR10MB7329.namprd10.prod.outlook.com
- ([fe80::c2a4:fdda:f0c2:6f71]) by CH3PR10MB7329.namprd10.prod.outlook.com
- ([fe80::c2a4:fdda:f0c2:6f71%7]) with mapi id 15.20.9520.005; Fri, 16 Jan 2026
- 06:46:41 +0000
-Date: Fri, 16 Jan 2026 15:46:27 +0900
-From: Harry Yoo <harry.yoo@oracle.com>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Petr Tesarik <ptesarik@suse.com>, Christoph Lameter <cl@gentwo.org>,
-        David Rientjes <rientjes@google.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>, Hao Li <hao.li@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Alexei Starovoitov <ast@kernel.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-rt-devel@lists.linux.dev,
-        bpf@vger.kernel.org, kasan-dev@googlegroups.com
-Subject: Re: [PATCH RFC v2 04/20] slab: add sheaves to most caches
-Message-ID: <aWnewyp0L0WRUPud@hyeyoo>
-References: <20260112-sheaves-for-all-v2-0-98225cfb50cf@suse.cz>
- <20260112-sheaves-for-all-v2-4-98225cfb50cf@suse.cz>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260112-sheaves-for-all-v2-4-98225cfb50cf@suse.cz>
-X-ClientProxiedBy: SEWP216CA0057.KORP216.PROD.OUTLOOK.COM
- (2603:1096:101:2ba::18) To CH3PR10MB7329.namprd10.prod.outlook.com
- (2603:10b6:610:12c::16)
+        d=gmail.com; s=20230601; t=1768546283; x=1769151083; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=8kSkqWutcRMBUnUXtvt0aSg1ad6YfbQPtUSAzw3ITPM=;
+        b=fcfRsLIDlX3z/PKv3mzH5ugfijjuQRS7rKZIKZCCd0eevZ/UzYaqbbBDbO07ao+x4i
+         apV70vRkaQEWGXoQWgZyvHraFCJ8Wwb5t4fKmxPIKujheHs7/dD+HXmYUJ3esTxU8Osr
+         rboqvCQii4Q1WfmOjjaebNCLyHGBcCuetARgxEAiFYssmnqrHC68Tyy8qZyg6+ifINS1
+         bLyR+KNYCKz0jW9c/Hui5qJlm2FVBKb/fLIEE+uqsr5E8TmXpenoIwLYsTPUs2+qJ/pv
+         epYMMJAnirhTPX47yNFv9mcafHAkiwwDRwEcop68larXoYSgc6sCH+F67XU01QqKDgEn
+         CwfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768546283; x=1769151083;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8kSkqWutcRMBUnUXtvt0aSg1ad6YfbQPtUSAzw3ITPM=;
+        b=cC+Asm/0Hr9UbaudK5AYz9ovg8Wp4hwAkod6zkUg6CnEIsHFFkW9/1CJpUQy/FOI+h
+         xM7OvCsX9DvQ8cWCjIjXEWpsqpFVX9PWSLGkRT6SAhmnZMjD7K4SyseLdSeNsNYsAKsy
+         QIv+2qjloONrOKjKfhMEjn/YC42kFTV423btU0JANNVLL/JuxQuSolIDr0+lErRa2hMk
+         7bWMbBDT8SOU87YnM8yTQ2KjkoyUymnd2Ku5fbj0qHEuc3o9+wfkobEH4OnUNqxn01gH
+         vxHEpOtIudir6OhQMVTDEB2NbHuKWIcbihOrJ9oQJm/3glUe70MGle+jPJGV6RW367+c
+         ZU/Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWbSGfXyPO5UaJOXDJ5qIzShCaLlRtWOMl5SNKgnG+SE7KzkBCVLqagAfs7zb0v03u07Zk=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywb5GsDL0wmhn0r4oWlIiXhsamep+zwBA0LRge699w998JVIzJQ
+	K+xEGIvvJLpjS7OdZA28+zX/pPsjnr7T+22SZLUVPaJOi8vuoJ6+z6P+IgzypA==
+X-Gm-Gg: AY/fxX68Qb/qXQpPlFFIAC5f5hb9c3+mCOV44Wji3mKanA7b4iiv5790QvDT6LzlrNw
+	lSadFe1gNus+e/gJX+Xu8jD5sNfyVTxACgl/3BjFxe2nK6f9w4/qafmoJU91c5PSLcB3D2H2FP/
+	n2Nf6XzCvQVlSTE6iy5qgXTySP54F28W2p5szH1lKnRiGwuu6vAgKZZWLfVYdtg0ZZRGbiVgf8/
+	MtSm21+E192Jeo58XBi38rYf+5uZrMqVwfYiPoDJz3Q4WCCSNuvkdZIfIGbtn+w3v5CQvJ+5YTH
+	jV+LNFye5EDHYWD3hvvXWhMGtlakeumC4OEss18npG7cweeamouXXeeIHxIjRdxoPF6dS4hTyUO
+	eUivoz4T+NLb8P7eYMAHNXdhlKBWxTYA4lwjaODAg5nqrKxZOfFZP0GU1E8MmwP9XAxHix/1Z+D
+	9rpxUKQ1vPLcWphc7UCcQEKqR3TIHLmCJ3rsqgga8=
+X-Received: by 2002:a17:903:2ecd:b0:2a5:99e9:569d with SMTP id d9443c01a7336-2a71887c84emr21725865ad.18.1768546283160;
+        Thu, 15 Jan 2026 22:51:23 -0800 (PST)
+Received: from [192.168.0.56] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a7193dcd00sm11627485ad.65.2026.01.15.22.51.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jan 2026 22:51:22 -0800 (PST)
+Message-ID: <75807149f7de7a106db0ccda88e5d4439b94a1e7.camel@gmail.com>
+Subject: Re: [PATCH] bpf/verifier: compress bpf_reg_state by using bitfields
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Qiliang Yuan <realwujing@gmail.com>
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net, 	haoluo@google.com, jolsa@kernel.org,
+ kpsingh@kernel.org, 	linux-kernel@vger.kernel.org, martin.lau@linux.dev,
+ sdf@fomichev.me, 	song@kernel.org, yonghong.song@linux.dev,
+ yuanql9@chinatelecom.cn
+Date: Thu, 15 Jan 2026 22:51:19 -0800
+In-Reply-To: <20260116060735.35686-1-realwujing@gmail.com>
+References: <7ffce4afdb0e859df7f0f87d170eda31b66a5b2b.camel@gmail.com>
+	 <20260116060735.35686-1-realwujing@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.58.1 (3.58.1-1.fc43) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR10MB7329:EE_|DS4PPF80FDA9397:EE_
-X-MS-Office365-Filtering-Correlation-Id: c2edf117-9bfb-4162-749d-08de54cb017b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|376014|7416014|366016|7053199007;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?yiSFLAko8dJxUnBBLkrOs7JHesJw0+IFZKXQQu1QX0hVe4ODP8QAgRNkF/In?=
- =?us-ascii?Q?rpEmFQqlXzcIMCA7anFXhKuEg0YQ9snYeqKUh6q7kUKFxopL//URS3yCz90K?=
- =?us-ascii?Q?GY+zUxhPdB+If3Ko5RXaIjvH4wkaAFrZZpz/5x/NnvN1A2bBcF5k5ZctTqUK?=
- =?us-ascii?Q?oC1kHWpZ34UZFwgsmcqOCFXETci4vioUq6D1/+KX4eaRvu7LaOAxIBiUZxAJ?=
- =?us-ascii?Q?soK0URookA4cZatKnx5hFmNzjdNg4NCW/VgCSJbq/f7warlPdAuTJE6Bdm6g?=
- =?us-ascii?Q?OstaqmK4PPREjadtBCryP+NK8JF1BZl8V96yqqE3+C8njRoux93KhuRdoQg/?=
- =?us-ascii?Q?nNFUMWT6ftQZyLucgen3Mb9DvZFdutoHy29EBRPCe52jZNhizv9CwYJUZRtT?=
- =?us-ascii?Q?go5W6FS/SKGUHElRWtkl52syipcDPAVYcYAcCPWFlCVDwdT8CiE0ZHzATsul?=
- =?us-ascii?Q?6meGnSUaFj/0Ve2wQy0M9PVx4yDVfZzmr1WKfTmStHLXniXGou8SZ88EHsDz?=
- =?us-ascii?Q?t8pDTUIHnDod15kERUG0MG96qt0kIyZVLLQOjSkp3bY2DYQGfIRCZst09ix1?=
- =?us-ascii?Q?r6i9TRto9cmdOTm5X3mhI9va7kYuaSQkXl+5ZqmFywNxUd0H8wacVlTipylE?=
- =?us-ascii?Q?FqSZqDbVunoaA/vTkYMU2Z6EgOfPaXCPnbr21H00Kd0Y1CfYnnq4HSjz2pAc?=
- =?us-ascii?Q?Fcydq9D3HVyPkPEsR2HxI8G7YS9w17YRZ0C/uoPFPB4RnmrCOlILB40R3eeZ?=
- =?us-ascii?Q?2YRVUN8P2+fdXqkYh2CkumTXI7Oh09DIxIMbs0Z0jp29ehQ9m0KAZ+IFjFap?=
- =?us-ascii?Q?73fwgkjNSqcnyJrwDksygFcvBvmgws/kzSsH3aEjaqE3u7fT7HNPN8pNXoO4?=
- =?us-ascii?Q?OgArOvXm0Cx/fbTDRXAY+p+wCXXVEZDoaYcl/9kyg4bdnwQ4nVvjlCnMikX3?=
- =?us-ascii?Q?E80HWdWUj4pCzdhuda3ccnBJSRXkQq/DvovHA2nO3mYIa/btNVaTktyFw/hN?=
- =?us-ascii?Q?5U6MO8QvNmzZ8AX1NFrfoFQeSNNtwXt60xXlB+k0nacAGMlpKYz6zTYCDgSn?=
- =?us-ascii?Q?RDVFJhPyvkKxiEEZvu1bggFWWbbs0E6a42euQgIxepzD2qXYDi9AxzbZy11S?=
- =?us-ascii?Q?3vCu4IlKakYmABW0TkgkfagM6D5upGFh44B9B1uWy0ZTA8DYYeg9wrSxmklN?=
- =?us-ascii?Q?349aZVDQ/rxr5ka1129rkKcBKk1kblKgk1s7UKWLaWhHeFeWJqLdpGh5I+VF?=
- =?us-ascii?Q?nD/dsAwxP2h7XlbXn1jBfv2TuutO8SP8yCzJmpxnrHo37UnEvqnQKcva2V2Z?=
- =?us-ascii?Q?R6OYnBJdwgxu/h9/oY646jeueeb1LctZcbOEp60LBwEPKtIiHLm5gz66zPcf?=
- =?us-ascii?Q?p79aoyNoyn90OG+89/aOa/EXhY9V5TrFHoNUddEfxw3dFLgQlZplUhBZgqAO?=
- =?us-ascii?Q?q0Uh33C1drOKIigYqGbnQ4iBIovg6EmesbKNCIAVq2uQ6x9R7cpojVHKj1gN?=
- =?us-ascii?Q?qOfcteGuwwPZwx13Bn1DeHHU8kIvDPUIuWap26g3C1WUkegDorbflvWW/NXS?=
- =?us-ascii?Q?mIGLMCw+mnobxikX48k=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR10MB7329.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(366016)(7053199007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?KS+R/TU6ymvi+x4VPArYqNHq69yB/6D/sqpYj4FlI1cBzPS5rlBVeFwZinSy?=
- =?us-ascii?Q?N65FT7ZQgWjlz5qzxc7pOS23wZLDAERLdA7Smg6QHNGIQrLv7755MRUH2LbQ?=
- =?us-ascii?Q?g5M1WmCYLZYxvm71izIa3oEml2U59lzu1VmExaJyXRORIC7n0JdBl3+S0TWx?=
- =?us-ascii?Q?zlp3uKRUdyRXUPLFc0t5zHFQ8PGwsiB8ZwLkLHbqVcfMtmOMWCoL6OCIrio5?=
- =?us-ascii?Q?kYd4WERcJEsGPUbJRyMvJIXcNsC0eyjF4u3LuL8Or6LvQYSvC4nmot5Pi7f4?=
- =?us-ascii?Q?hIwYSVk2q/HewNKiNUjONA8NwZGrIov45HltHWPOFmmBF2H2zRDR5ixqY6wh?=
- =?us-ascii?Q?G3001RpqH+doZIeDrIJ+lZbN+5kacVi7DNh/FpdNsK6L6ZcY+5KYnrqiGMCY?=
- =?us-ascii?Q?cpFzynOkfFWG2Ynd0sUHhtBduIG9GPBVMQULngDlLesPu+j4wy3W3XSXl+e2?=
- =?us-ascii?Q?IKHCtw+Z+Mwm4a8NSKHm9vcSimmNy/f1CuIvEJvhMrVi+QfGHW9qZvlrpR/S?=
- =?us-ascii?Q?Y16VozWxPkqFpTgPY7SraTkRV6NmAs3YElmUfVuElmNEkOnV9V8HhNJUnREi?=
- =?us-ascii?Q?Wd7ZpjqamFMNBZc2V2IKG9DN2sdfAzjgHfe1gtW0SOMNkdhPjY/yza0ilnPB?=
- =?us-ascii?Q?CXPL7I6yTUSreV8LONMLpG77LPcztBDjzl4uqXjZ7V0m8OkgnMDW0DjpF8xa?=
- =?us-ascii?Q?N2ERxyN5pqZyVFe99A5zFIGdk9jzjKITf0c+JCuOwudoUBNY4HQ9EkCju2NB?=
- =?us-ascii?Q?YijJ9KIJd2kvto4K8osA8YYUFjYbRgIqu4ymkKWODtEbdQQzN+/mj44ZIyyS?=
- =?us-ascii?Q?TAV2Hmo39+5mLWq8Pq9HNTUKqtBew6p44Z1SM1NVERC50zn+TgCWse7Zfowu?=
- =?us-ascii?Q?UyPug6Bwfp4Nlhr7+E2YF3/T1IOL7HVSIi9IfEOcendtN7KUXs3dsr60oYpJ?=
- =?us-ascii?Q?RvNlkgi3OFkY0VcKaaZUze1Id67/abYhJy6L6lRtDt9YAF3U6Xu7FL0+5uCJ?=
- =?us-ascii?Q?+2+hQXSz4flIx4/z9Izd1aLvXkcb0YbxqgpRJyBhQDKbW4rR6nSUOawOa+cH?=
- =?us-ascii?Q?hIf1dqg19n1R8WinHGUfKsyXoDVgCgB/JomxMeLwwpf1aiuPn6YMzL+CPiCa?=
- =?us-ascii?Q?NttUxEDrDFnCTnOHa3WfZArZbL5UlP/x/CAv3UUXhiCJcMVgsTuVept3KiQ2?=
- =?us-ascii?Q?xGE09MkYV2qx0RxviVi6f1qoAK0/5s2c+ZT5ZYQfk5vleBcZUa7b89I6CFXc?=
- =?us-ascii?Q?QoiheS3epD0jEyvPUH6fD8xpo30Kv7WgpLGvo6eQd2Pq/mj3BF/lTEW2wucx?=
- =?us-ascii?Q?TVocw3W5oKCvuW/LIGpCFumKkNrRyKBgzvmu5L9yXkHuDp+u3NYT3//MDHKW?=
- =?us-ascii?Q?hBRcJSzOYeqydefeub7XsOnKmBwmJ3Ai6r/5g2oCCjcx6FFeErvG1XZgxF4S?=
- =?us-ascii?Q?o5DOIHh2CsqeFdQVH/s0sS6SZS27rqg+e0aUthe2uvtN5+d579y+EDRHW4jo?=
- =?us-ascii?Q?xbi9JpBmpUxoqzZfeGB2yfEBGUePkpK4UDjxNwQRsBGI6ZgkdIpxm34AGb8j?=
- =?us-ascii?Q?Llt02xlMb50jxERaWS4ZDnQCVyb28oP7whsb5myZg7NSKZLZzhiIkOTshfPw?=
- =?us-ascii?Q?Cvnxu4GHCAUCIh1PMKAkaKh8TYYoIAcj2zGR6HW0r/1Cx3Hl7TxTcPt5HB/W?=
- =?us-ascii?Q?u1xn70io3CPVew/ByA/6M6QfV1KgL0A8LxNSt+o2vsNOJo37u5zO9sV7X2JH?=
- =?us-ascii?Q?IwMe5g+XxA=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	TQiuuD3GTVtgMnUMrI0565B5smaLvxgutqmpXzV2EABKeqoInpMc6CBm/KJqgV7llD84ybZfGTokjqqpFD67lkDVD01ERsqUAS+6Q5YUbKTAL8Dn6sfPs+xsagnBcYnSQYpl5lW6GW9Zx+rZk/rNwrHpt3WlmS6LSF7xDHMFHu6J4u2+q5K3LzDZrBpMabaDE/qq1Wc7OIJdaexyhBTjHVIo+1QrwrWwd3ZuymBvlqxz8CxPNCFzD/ybs0vWxIm9gzdu12QJbhVbijacTxa/Hx+UsJU3s3W2xZdinKAX8h8G3UUsEBoPhWjwPZVrjV7tIwZtNZZk34seHJMuyLajPcu84jFXLjSf2T0UYqaa7DC9GJt9n/SI+fS5D+DhvhtWtvld+N0EQMuzw/RrfKpq8mfRVoqVklD5N9vQCyDoDT1Si8UkWIG+Pr82QWdpjCfbsHWk/2wtRz5V94KVTTQ0RSUIGQ6XjDKFppuaWxyfFiySr43EWNHTYsBQPp1G6/aZnkciM5a54Sw1VS1gaI7sXKIJ+eriDDVhWUDCc2us0b9RhyoBQH8f+BcZhtHxDZTxtzcs3wvFw4vvjdJusMDXpnxhJBZbsf/Z4lO56J6xWmI=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c2edf117-9bfb-4162-749d-08de54cb017b
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR10MB7329.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jan 2026 06:46:41.5109
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: NfGGSwSvsOHw69Td3gDfn9U+q1j8hY1YQ76ZHMQvD8M+E5hBNa9Fkxxa1VfQmuDjf1UEV1EeKyNcMIKzSeHkHA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS4PPF80FDA9397
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2026-01-16_02,2026-01-15_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- malwarescore=0 spamscore=0 adultscore=0 mlxscore=0 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2512120000 definitions=main-2601160052
-X-Proofpoint-ORIG-GUID: yG2FvNIvlbgfUps6m5ttWVrBd_R2zRXR
-X-Authority-Analysis: v=2.4 cv=YKOSCBGx c=1 sm=1 tr=0 ts=6969ded5 b=1 cx=c_pps
- a=qoll8+KPOyaMroiJ2sR5sw==:117 a=qoll8+KPOyaMroiJ2sR5sw==:17
- a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
- a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=xqWC_Br6kY4A:10 a=kj9zAlcOel0A:10
- a=vUbySO9Y5rIA:10 a=GoEa3M9JfhUA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=yPCof4ZbAAAA:8 a=QznUpgGXYvFiLFJPiAMA:9 a=CjuIK1q_8ugA:10 cc=ntf
- awl=host:12110
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTE2MDA1MiBTYWx0ZWRfX5OhS04nPA08A
- OW1szInXMc+lLMuwCgF1k0uGSKE4aIIjc2SslIWi1A7k+TsOUQlk27vpDvUBYQ+izdbxL7MLNsD
- 5VDJ3MziVCwoFM+qC31hCxlfXPHBZ/QEM4Ye9AwlvFeLb/k5HtrLCe1n8WvD8JPhhyn5J1CxEp7
- fBVqCBzEv5bYPY4o6qfq52rVNeT3UGX5VgY+BJeTtVlCjBXIc5s+bWHLWMOhxyph52aNGG4rdkO
- UQG5aQxamTnaPO/s04GWQXuw6oNBuJfZVRTVYZZ/NVjk+5YF9UcS83cKCVaVOjA7U7QYfiyCxkG
- 0qA541KoXeBiSBsPjHqrUz3valC5ClXuLs/6AqUwjBGERPz84tCgq4rOZi19Qg7JxkipqzNQWFv
- YSqWCcMfEzUzc5okgzbsgZmvKiCMRpa3gBolmVLuGoaYMdjaBK9ScM31ZTmze9I4NXBVjFT7a7e
- cExyrBHkqnChwZBCBdBqwR+yIwiornsdNmX+diEE=
-X-Proofpoint-GUID: yG2FvNIvlbgfUps6m5ttWVrBd_R2zRXR
 
-On Mon, Jan 12, 2026 at 04:16:58PM +0100, Vlastimil Babka wrote:
-> In the first step to replace cpu (partial) slabs with sheaves, enable
-> sheaves for almost all caches. Treat args->sheaf_capacity as a minimum,
-> and calculate sheaf capacity with a formula that roughly follows the
-> formula for number of objects in cpu partial slabs in set_cpu_partial().
-> 
-> This should achieve roughly similar contention on the barn spin lock as
-> there's currently for node list_lock without sheaves, to make
-> benchmarking results comparable. It can be further tuned later.
-> 
-> Don't enable sheaves for bootstrap caches as that wouldn't work. In
-> order to recognize them by SLAB_NO_OBJ_EXT, make sure the flag exists
-> even for !CONFIG_SLAB_OBJ_EXT.
-> 
-> This limitation will be lifted for kmalloc caches after the necessary
-> bootstrapping changes.
-> 
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> ---
+On Fri, 2026-01-16 at 14:07 +0800, Qiliang Yuan wrote:
+> Hi Eduard,
+>=20
+> On Thu, Jan 15, 2026, Eduard Zingerman wrote:
+> > varistat collects verifier memory usage statistics.
+> > Does this change has an impact on programs generated for
+> > e.g. selftests and sched_ext?
+> >=20
+> > In general, you posted 4 patches claiming performance improvements,
+> > but non of them are supported by any measurements.
+> >=20
+> > P.S.
+> > Is this LLM-generated?
+>=20
+> Thank you for the feedback. I would like to clarify that these optimizati=
+ons
+> are the result of a deliberate engineering effort to address specific
+> performance bottlenecks in the BPF verifier. These improvements were iden=
+tified
+> through my personal code analysis over the past two months, though I have=
+ only
+> recently started submitting them to the community.
+>=20
+> Regarding the impact on selftests and sched_ext: I have verified these ch=
+anges
+> using 'veristat' against the BPF selftests. Since these optimizations tar=
+get
+> the core verifier engine and structural layout, they benefit any complex =
+BPF
+> program, including those in sched_ext. The results show a clear reduction=
+ in
+> verification duration (up to 56%) and peak memory usage (due to the reduc=
+tion of
+> struct bpf_reg_state from 112 to 104 bytes), with zero changes in the tot=
+al
+> instruction or state counts. This confirms that the verification logic re=
+mains
+> identical while resource efficiency is significantly improved.
+>=20
+> The specific order and context of the four patches are as follows:
+>=20
+> 1. bpf/verifier: implement slab cache for verifier state list
+> =C2=A0=C2=A0 (https://lore.kernel.org/all/tencent_0074C23A28B59EA264C502F=
+A3C9EF6622A0A@qq.com/)
+> =C2=A0=C2=A0 Focuses on reducing allocation overhead. Detailed benchmark =
+results added in:
+> =C2=A0=C2=A0 (https://lore.kernel.org/all/tencent_9C541313B9B3C381AB950BC=
+531F6C627ED05@qq.com/)
 
-Looks good to me,
-Reviewed-by: Harry Yoo <harry.yoo@oracle.com>
+From that report:
 
--- 
-Cheers,
-Harry / Hyeonggon
+>  arena_strsearch                 121 us               64 us              =
+ -47.11%
+>  bpf_loop:stack_check            747 us               469 us             =
+ -37.22%
+>  bpf_loop:test_prog              519 us               386 us             =
+ -25.63%
+>  bpf_loop:prog_null_ctx          202 us               162 us             =
+ -19.80%
+
+Instructions processed from verifier from the report:
+- arena_strsearch:        20
+- bpf_loop:stack_check:   64
+- bpf_loop:test_prog:     325
+- bpf_loop:prog_null_ctx: 22
+
+With such sa mall number of instructions processed the results are
+nothing more than a random fluke. To get more or less reasonable
+impact measurements, please use 'perf' tool and use programs where
+verifier needs to process tens or hundreds of thousands instructions.
+
+> 2. bpf/verifier: compress bpf_reg_state by using bitfields
+> =C2=A0=C2=A0 (https://lore.kernel.org/all/20260115144946.439069-1-realwuj=
+ing@gmail.com/)
+> =C2=A0=C2=A0 This is a structural memory optimization. By packing 'framen=
+o', 'subreg_def',
+> =C2=A0=C2=A0 and 'precise' into bitfields, we eliminated 7 bytes of paddi=
+ng, reducing
+> =C2=A0=C2=A0 the struct size from 112 to 104 bytes. This is a determinist=
+ic memory
+> =C2=A0=C2=A0 saving based on object layout, which is particularly effecti=
+ve for
+> =C2=A0=C2=A0 large-scale verification states.
+
+For this optimization veristat is a reasonable tool to use, it can
+track a 'mem_peak' value.
+
+> 3. bpf/verifier: optimize ID mapping reset in states_equal
+> =C2=A0=C2=A0 (https://lore.kernel.org/all/20260115150405.443581-1-realwuj=
+ing@gmail.com/)
+> =C2=A0=C2=A0 This is an algorithmic optimization similar to memoization. =
+By tracking the
+> =C2=A0=C2=A0 high-water mark of used IDs, it avoids a full 4.7KB memset i=
+n every
+> =C2=A0=C2=A0 states_equal() call. This reduces the complexity of resettin=
+g the ID map
+> =C2=A0=C2=A0 from O(MAX_SIZE) to O(ACTUAL_USED), which significantly spee=
+ds up state
+> =C2=A0=C2=A0 pruning during complex verification.
+
+As I said before, this is a useful change.
+
+> 4. bpf/verifier: optimize precision backtracking by skipping precise bits
+> =C2=A0=C2=A0 (https://lore.kernel.org/all/20260115152037.449362-1-realwuj=
+ing@gmail.com/)
+> =C2=A0=C2=A0 Following your suggestion to refactor the logic into the cor=
+e engine for
+> =C2=A0=C2=A0 better coverage and clarity, I have provided a v2 version of=
+ this patch here:
+> =C2=A0=C2=A0 (https://lore.kernel.org/all/20260116045839.23743-1-realwuji=
+ng@gmail.com/)
+> =C2=A0=C2=A0 This v2 version specifically addresses your feedback by cent=
+ralizing the
+> =C2=A0=C2=A0 logic and includes a comprehensive performance comparison (v=
+eristat results)
+> =C2=A0=C2=A0 in the commit log. It reduces the complexity of redundant ba=
+cktracking
+> =C2=A0=C2=A0 requests from O(D) (where D is history depth) to O(1) by uti=
+lizing the
+> =C2=A0=C2=A0 'precise' flag to skip already-processed states.
+
+Same as with #1: using veristat duration metric, especially for such
+small programs, is not a reasonable performance analysis.
+
+> Best regards,
+>=20
+> Qiliang Yuan
 
