@@ -1,375 +1,240 @@
-Return-Path: <bpf+bounces-79341-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79342-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7BB5D3883A
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 22:16:49 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4BABD3883C
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 22:18:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 25CE9305383E
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 21:16:46 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id E1CDA303490D
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 21:18:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B66B2EBB81;
-	Fri, 16 Jan 2026 21:16:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33ECD2FB09A;
+	Fri, 16 Jan 2026 21:18:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MqY8K49m"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="I9rQHYWH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37C091F9F70
-	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 21:16:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5121C286D5D
+	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 21:18:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768598204; cv=none; b=CWxVNwwyTCY2c4tH/sYV2cklggQ8m2729WNXeKsSPFla9fINyeHdVMh24GsT2/srNoJIedJS0kcVq2nx6RpOKK7ybBc0gdbI9UaNJtgaALXGvRltm6FJ+5uszi35IRYvnVJCFE/EeNzVE2qMcZB72XeuqIycXdjaA/K8Xv9p/0I=
+	t=1768598292; cv=none; b=o5qY0V9X/ZRH9u0n6j/T05SVTp7KBPD93X9bJet0vqaNszXKaREUwcUHx5m1onNXw1nLBiW3zw3EQmbeXamcEzWpQeI70iTtd18rRTcsPnjZjPU+2rv2U+8UyPEFG9iUDQQdhoxAKM6SBWuKXP/5NQR5NDDtBsv0Ds/TSmWIYoc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768598204; c=relaxed/simple;
-	bh=MrWUwHktw5H0MIxB1vFgSEiT1Tbr50Qrhx08/GcktXc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Rcb59WyUhCDyk3jmfFrGl4yCZzhzET1uyYL8TuOVNRr4cZMSyOYzZDEIr7wU4m9KtxN0TwFOlfT2SAotDpa03meCeDiLw4PXd8NCeaZds0r8U698Izt7PPSTtNuPC4Pv6UlkhG3gsCC3SqNzj5O4776jIVJf6lIagruXgpEcbLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MqY8K49m; arc=none smtp.client-ip=209.85.216.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-34c708702dfso1298599a91.1
-        for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 13:16:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768598202; x=1769203002; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gNnkiv2IChNQsmuidWAckWPFRLbtBGzJAZWCVCJF3J0=;
-        b=MqY8K49mHSNiowOkuHoMLoBfloj/6e0GkpBsOonkwXCPjoOyr961q/w1bSDH4pHK1T
-         r+brYvGx81PDbJu7bHOVzxXCVJ6w9ZkDm8+xE6SnPb09a1WTeVgoECqkSEr5rHXO6DK5
-         xjp/g61E9ToXaCCpUCgXqyRhzz6rJlF9x/lFEUGU4/XP3siNZmE822hqacOAu3V647v4
-         qHpsDbuwl3R5HkyiIMxGkshTHmpKlAJ891rjSosL9yxGqjbT5uOepWOBitusntOYUJmE
-         Kgwehafz1UjNgxJm+XAYa8ryG/cLmW087qHGpfrzS6RVWmL/5O5+eL1QSGohoQKcD7ui
-         qdmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768598202; x=1769203002;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=gNnkiv2IChNQsmuidWAckWPFRLbtBGzJAZWCVCJF3J0=;
-        b=icLBa0ELR+jMWfNKydx8C9sqCdkgrKjX0DWwFvJ5xo40mlT4w26BSdMTSII+Y9wfU8
-         7GWrQhU5TCnhE68xy4TI/QRv+fedpo4KolDAFP0AqyE5bwz1ZRldtJvS6kUvhNnEE861
-         xlhWx8Zw4Pti+QcIc/sg0CqH+qA6FTqA8Syw+gUEWFjSQZ0FQ/WsnQ/sG/9jO+t8RJ/9
-         XnqdiJ9epGGyXLumf++w4m0/kMixYm8+riuSerkaw/rZonwpP0W1pQ3FGYPHM2FFoebR
-         jz3DR1k0OG+BuiJpQ22MJzIRF9fOBJDaUN9ctN/Y3VMOf+U+8qSaWFTV8Lk+ySp7Z+/A
-         yvyQ==
-X-Gm-Message-State: AOJu0Yz7So+4O9gbaSDm22jd5WliMjFG8ebWw/rEf//mLWBjUWF13Tya
-	whU+Q82UPu26XIKp0VaA6zEAxQMtwMnV7+KJ2V84MXvhs2Dt6vPoERPvB2VAZ91sGExmhra2p9s
-	03U6NnO/QrLZLdBduOLDHxoHFpfGGQTQ=
-X-Gm-Gg: AY/fxX4MEwKiAkw7mFSzUWJSQ3OD9b6yRRZaqgI/mM1P3M8lvears+FVXoK7B/urVbp
-	TPSCdAWHBnwu9XD3+3JCimlQJTwc3jZmnaRNr83xrFio2tU+IVcacpFvQv1BcORIV1MFCT2Sw0D
-	PfYRhzrNTR7Jw/SEmSoDEQZRCPE5V5na/UsCr1ISQ3OsFHSuDylPuVwlDXfbbkWz0F5uBuIfu+K
-	T0OULk1DuZZjIy7VHpGdtnBgnlt4LmGcubPvCnqDexjul/8phm+Oy3okT9zdyHhlqYf6dbqVXSX
-	aXfpuBfhtjA=
-X-Received: by 2002:a17:90b:5603:b0:340:2a16:94be with SMTP id
- 98e67ed59e1d1-35272ef6716mr3302605a91.4.1768598202432; Fri, 16 Jan 2026
- 13:16:42 -0800 (PST)
+	s=arc-20240116; t=1768598292; c=relaxed/simple;
+	bh=HAHiIl2jNrhC5hc5QL6D3q9jjBG3PTH2NaOK/wX8RuI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=QpF+IRsPcSpZxoUKLtmTCR0uO/5u4U0Iii2/c+n7qMadW043kUJxmkE+xNPA1BC7luZOZAEIVA3pZM3Mm21zHQIo+PxhU60eKDeZWVO8YZFl7taUDtiTh3RsVYYpSzXO2b4M8HsRQ0ja/VxqujDqJ1UPLfkaQhcM+mmVhHZuUEM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=I9rQHYWH; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1768598289;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6fIDHZTLCHe/bajC18/peDAHRSXDESLQ9QSFkCkrL/k=;
+	b=I9rQHYWHcTJDT9aUag93ADbbTeSiXNbylUMI/REH6Y6OxQ2Qn3rrqdWqannqUf2nph5Zlt
+	hxCAKnfUVbuIMSGxpbgzw1qcsZWLWy48qCsaqgBbpHrRlPif/39oBXGPocABdX3CTus1Fn
+	n4r1dSV3L5zgu32WZKgrtAUgqTKGKgM=
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Matt Bobrowski <mattbobrowski@google.com>,  Alexei Starovoitov
+ <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>,  Andrii
+ Nakryiko <andrii@kernel.org>,  Martin KaFai Lau <martin.lau@linux.dev>,
+  Eduard Zingerman <eddyz87@gmail.com>,  Song Liu <song@kernel.org>,
+  Yonghong Song <yonghong.song@linux.dev>,  ohn Fastabend
+ <john.fastabend@gmail.com>,  KP Singh <kpsingh@kernel.org>,  Stanislav
+ Fomichev <sdf@fomichev.me>,  Jiri Olsa <jolsa@kernel.org>,  Kumar
+ Kartikeya Dwivedi <memxor@gmail.com>,  bpf <bpf@vger.kernel.org>
+Subject: Re: Subject: [PATCH bpf-next 2/3] bpf: drop KF_ACQUIRE flag on BPF
+ kfunc bpf_get_root_mem_cgroup()
+In-Reply-To: <CAADnVQ+45MorO=pODKOEVXhpY1skVy1tPkkABPAxDJGx4vOijg@mail.gmail.com>
+	(Alexei Starovoitov's message of "Fri, 16 Jan 2026 08:12:19 -0800")
+References: <20260113083949.2502978-2-mattbobrowski@google.com>
+	<87y0lyxilp.fsf@linux.dev> <aWnu-b0dlm0xZFDS@google.com>
+	<CAADnVQKd-yu=bZjx+3=QKLq+26wcGJtJSrZoQh8b8ByKSPEXcQ@mail.gmail.com>
+	<CAADnVQ+45MorO=pODKOEVXhpY1skVy1tPkkABPAxDJGx4vOijg@mail.gmail.com>
+Date: Fri, 16 Jan 2026 13:18:02 -0800
+Message-ID: <878qdx6yut.fsf@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260115-timer_nolock-v5-0-15e3aef2703d@meta.com>
- <20260115-timer_nolock-v5-5-15e3aef2703d@meta.com> <CAEf4BzbFdmKzxe_qaNW5iWFXL9b1dKHEw3EbR+g_hHNqd5fhSQ@mail.gmail.com>
- <2fd041f2-fa8d-48c9-8b11-ec99293a7f98@gmail.com>
-In-Reply-To: <2fd041f2-fa8d-48c9-8b11-ec99293a7f98@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 16 Jan 2026 13:16:29 -0800
-X-Gm-Features: AZwV_QhF9L1VE5PCvA_bQRCG-ufqufNJKD6Jic_rx45lTLIt4hqP6uAh2FikAJQ
-Message-ID: <CAEf4BzaGKP3ZbfY2pC5H5Ro1S0t45sp6-p4rFzg0xCuqkndqmA@mail.gmail.com>
-Subject: Re: [PATCH RFC v5 05/10] bpf: Enable bpf timer and workqueue use in NMI
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, memxor@gmail.com, 
-	eddyz87@gmail.com, Mykyta Yatsenko <yatsenko@meta.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Jan 16, 2026 at 3:33=E2=80=AFAM Mykyta Yatsenko
-<mykyta.yatsenko5@gmail.com> wrote:
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+
+> On Fri, Jan 16, 2026 at 7:22=E2=80=AFAM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+>>
+>> On Thu, Jan 15, 2026 at 11:55=E2=80=AFPM Matt Bobrowski
+>> <mattbobrowski@google.com> wrote:
+>> >
+>> > On Thu, Jan 15, 2026 at 08:54:42PM -0800, Roman Gushchin wrote:
+>> > >
+>> > > > With the BPF verifier now treating pointers to struct types return=
+ed
+>> > > > from BPF kfuncs as implicitly trusted by default, there is no need=
+ for
+>> > > > bpf_get_root_mem_cgroup() to be annotated with the KF_ACQUIRE flag.
+>> > >
+>> > > > bpf_get_root_mem_cgroup() does not acquire any references, but rat=
+her
+>> > > > simply returns a NULL pointer or a pointer to a struct mem_cgroup
+>> > > > object that is valid for the entire lifetime of the kernel.
+>> > >
+>> > > > This simplifies BPF programs using this kfunc by removing the
+>> > > > requirement to pair the call with bpf_put_mem_cgroup().
+>> > >
+>> > > It's actually the opposite: having the get semantics (which is also
+>> > > suggested by the name) allows to treat the root memory cgroup exactly
+>> > > as any other. And it makes the code much simpler, otherwise you
+>> > > need to have these ugly checks across the codebase:
+>> > >       if (memcg !=3D root_mem_cgroup)
+>> > >               css_put(&memcg->css);
+>> >
+>> > I mean, you're certainly not forced to do this. But, I do also see
+>> > what you mean.
+>> >
+>> > > This is why __all__ memcg && cgroup code follows this principle and =
+the
+>> > > hides the special handling of the root memory cgroup within
+>> > > css_get()/css_put().
+>> > >
+>> > > I wasn't cc'ed on this series, otherwise I'd nack this patch.
+>> > > If the overhead of an extra kfunc call is a concern here (which I
+>> > > doubt), we can introduce a non-acquire bpf_root_mem_cgroup()
+>> > > version.
+>> > >
+>> > > And I strongly suggest to revert this change.
+>> >
+>> > Apologies, I honestly thought I did CC you on this series. Don't know
+>> > what happened with that. Anyway, I'm totally OK with reverting this
+>> > patch and keeping bpf_get_root_mem_cgroup() with KF_ACQUIRE
+>> > semantics. bpf_get_root_mem_cgroup() was selected as it was the very
+>> > first BPF kfunc that came to mind where implicit trusted pointer
+>> > semantics should be applied by the BPF verifier.
+>> >
+>> > Notably, the follow up selftest patch [0] will also need to be
+>> > reverted if so as it relies on bpf_get_root_mem_cgroup() without
+>> > KF_ACQUIRE. We can probably
+>> >
+>> > [0] https://lore.kernel.org/bpf/20260113083949.2502978-2-mattbobrowski=
+@google.com/T/#mfa14fb83b3350c25f961fd43dc4df9b25d00c5f5
+>>
+>> Instead of revert of two patches, let's revert one and replace
+>> with test kfunc that 2nd patch can use.
+>>
+>> tbh I don't think it's a big deal in practice.
+>> Kernel code working with cgroups might be different than bpf.
+>> I'm not sure what was the use case for bpf_get_root_mem_cgroup().
+>>
+>> Roman,
+>> please share your protype bpf code for oom, so it's easier to see
+>> why non-acquire semantics for bpf_get_root_mem_cgroup() are problematic.
 >
-> On 1/16/26 00:01, Andrii Nakryiko wrote:
-> > On Thu, Jan 15, 2026 at 10:29=E2=80=AFAM Mykyta Yatsenko
-> > <mykyta.yatsenko5@gmail.com> wrote:
-> >> From: Mykyta Yatsenko <yatsenko@meta.com>
-> >>
-> >> Refactor bpf timer and workqueue helpers to allow calling them from NM=
-I
-> >> context by making all operations lock-free and deferring NMI-unsafe
-> >> work to irq_work.
-> >>
-> >> Previously, bpf_timer_start(), and bpf_wq_start()
-> >> could not be called from NMI context because they acquired
-> >> bpf_spin_lock and called hrtimer/schedule_work APIs directly. This
-> >> patch removes these limitations.
-> >>
-> >> Key changes:
-> >>   * Remove bpf_spin_lock from struct bpf_async_kern. Replace locked
-> >>     operations with atomic cmpxchg() for initialization and xchg() for
-> >>     cancel and free.
-> >>   * Add per-async irq_work to defer NMI-unsafe operations (hrtimer_sta=
-rt,
-> >>     hrtimer_try_to_cancel, schedule_work) from NMI to softirq context.
-> >>   * Use the lock-free seqcount_latch_t to pass operation
-> >>     commands (start/cancel/free) along with their parameters
-> >>     (nsec, mode) from NMI-safe callers to the irq_work handler.
-> >>   * Add reference counting to bpf_async_cb to ensure the object stays
-> >>     alive until all scheduled irq_work completes and the timer/work
-> >>     callback finishes.
-> >>   * Move bpf_prog_put() to RCU callback to handle races between
-> >>     set_callback() and cancel_and_free().
-> >>   * Refactor __bpf_async_set_callback() getting rid of locks.
-> >>     Each iteration acquires a new reference and stores it
-> >>     in cb->prog via xchg. The previous value is retrieved and released=
-.
-> >>     The loop condition checks if both cb->prog and cb->callback_fn mat=
-ch
-> >>     what we just wrote. If either differs, a concurrent writer overwro=
-te
-> >>     our value, and we must retry.
-> >>     When we retry, our previously-stored prog was already put() by the
-> >>     concurrent writer or we put() it after xchg().
-> > you already described that in earlier patch, no need to repeat that her=
-e, IMO
-> >
-> >> This enables BPF programs attached to NMI-context hooks (perf
-> >> events) to use timers and workqueues for deferred processing.
-> >>
-> >> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
-> >> ---
-> >>   kernel/bpf/helpers.c | 335 ++++++++++++++++++++++++++++++++++-------=
-----------
-> >>   1 file changed, 225 insertions(+), 110 deletions(-)
-> >>
+> Actually, thinking more about it, bpf_get_root_mem_cgroup() should NOT ha=
+ve
+> an acquire semantics, otherwise you cannot even implement:
+>
+> static inline bool mem_cgroup_is_root(struct mem_cgroup *memcg)
+> {
+>         return (memcg =3D=3D root_mem_cgroup);
+> }
 
-[...]
-
-> >>
-> >> +/* Decrements bpf_async_cb refcnt, if it becomes 0 schedule cleanup i=
-rq_work */
-> >> +static void bpf_async_refcnt_dec_cleanup(struct bpf_async_cb *cb)
-> >> +{
-> >> +       if (!refcount_dec_and_test(&cb->refcnt))
-> >> +               return;
-> >> +
-> >> +       /*
-> >> +        * At this point we took the last reference
-> >> +        * Try to schedule cleanup, either:
-> >> +        *  - Set ref to 1 and succeed irq_work_queue
-> >> +        *  - See non-zero refcnt after decrement - other irq_work is =
-going to cleanup
-> >> +        */
-> >> +       do {
-> >> +               refcount_set(&cb->refcnt, 1);
-> >> +               if (irq_work_queue(&cb->worker))
-> >> +                       break;
-> >> +       } while (refcount_dec_and_test(&cb->refcnt));
-> > I still don't understand why you think this hack is better than just
-> > marking cb as "destined for destruction" through one-way flagging that
-> > cannot be reset.
-> >
-> > What you have here is some unconventional partial resurrection scheme.
-> > Where cb's refcount dropped to zero, but then we try to temporarily
-> > revive it for that CANCEL_AND_FREE cleanup with *our* scheduled
-> > irq_work callback (which *maybe* will happen), but meanwhile any BPF
-> > program that still has reference to bpf_async_cb (there might be many
-> > on different CPUs) can now suddenly succeed with inc_not_zero(cb)
-> > again...
-> >
-> > Why so complicated?.. Refcount is supposed to make things simpler, but
-> > you are managing to abuse it here.
-> >
-> > Let's do this:
-> >
-> > - make last_seq into u64 (so we can have special value designating
-> > "this async is DONE, no more operations"), that value should not
-> > overlap with valid latch counter values, use U32MAX + 1, for example.
-> >
-> > - in __bpf_async_cancel_and_free:
-> >    1. cb =3D xchg(async->cb, BPF_PTR_POISON) (see my notes about poison=
-ing below)
-> >    2. if (cb && cb !=3D BPF_PTR_POISON) xchg(cb->last_seq,
-> > WE_ARE_DONE_GAME_OVER =3D U32_MAX + 1)
-> >    3. irq_work_queue() (doesn't matter if succeeds, someone will pick
-> > up on WE_ARE_DONE_GAME_OVER)
-> >
-> > - in bpf_async_read_op:
-> >      - read cb->last_seq with acquire semantics
-> >      - if (seq =3D=3D WE_ARE_DONE_GAME_OVER)
-> >          - cmpxchg(seq, WE_ARE_DONE_GAME_OVER, WE_ARE_DONE_GAME_OVER + =
-1)
-> >              - if we lost, bail, someone else already handled this
-> >              - if we won, we are the only ones that will do clean up
-> >          - bpf_async_process_op(cb, BPF_ASYNC_CANCEL_AND_FREE, 0, 0);
-> > (but see below, I think currently we do too much here)
-> >          - done, no more command processing
-> >      - if (seq =3D=3D last_seq) -> out, someone got here first (just li=
-ke
-> > you have right now)
-> >      - proceed as before, eventually dec_and_test(cb->refcnt), and if
-> > it dropped to zero -> schedule freeing after
-> > call_rcu_tasks_trace+call_rcu
-> >
-> > Let's leave refcount to just preserve the lifetime of cb while being
-> > scheduled and processed by irq_work callbacks. And nothing more. And
-> > then see comments later on about async->cb poisoning.
-> >
-> > But we still need to keep in mind that there might be active BPF
-> > programs that still have access to this memory. But they won't be able
-> > to schedule anything because a) async->cb is poisoned, b) if they
-> > happen to already have cb, refcount is at zero, so inc_not_zero fails,
-> > c) even if they got refcount, we are at GAME_OVER stage (or beyond
-> > it), so whatever command we write will be ignored.
-> >
-> > And I think we can and should honor usercnt=3D=3D0 handling, just like
-> > with task_work.
-> >
-> > Do I miss something in the above?
-> Poisoning thing won't work, because for array maps we can do multiple
-> cancel_and_free()/init() cycles for the same value, so right after
-> cancel_and_free()
-> we should be able to take over the cb pointer with init().
-
-Yeah, and it's not just array maps, hashmaps can reuse same memory for
-a different key/value while some BPF program still keeps the pointer
-assuming that elevent is it's key's value. So yeah, you are right, we
-can't poison, it's just inherent in how element deletion and memory
-reuse is done in BPF.
+You can check memcg->css.parent =3D=3D NULL instead.
 
 >
-> I think there is a small confusion, let me clarify few things:
+> without ugliness:
 >
->   - bpf_async_cancel_and_free() is called by the map synchronously, in ca=
-se of array map
-> we have to make map value available for the reuse immediately
-> (that's why detach (xchg(NULL)) and schedule free for the detached cb).
->   - bpf_async_process_op(cb, BPF_ASYNC_CANCEL_AND_FREE, 0, 0) cancels tim=
-er and schedules cb freeing,
-> after calling it we can't access cb.
-
-Just for others that follow. We chatted w/ Mykyta offline about all
-this. One point of confusion was that bpf_async_cancel_and_free() has
-to schedule memory freeing (though call_rcu). That's how it works
-right now, but that's not how it should work with refcnt and this
-whole irq_work workflow. Mykyta will rework this logic such that
-bpf_async_cancel_and_free() only schedules cancellation and dropping
-of that initial refcnt ("map's refcnt"). And orthogonally to that,
-when cb's refcnt drops to zero (no matter who does that last and in
-what context), that will trigger *only* RCU-delayed memory freeing. By
-that time all the timer cancellation should have happened one way or
-another.
-
+> static inline bool bpf_mem_cgroup_is_root(struct mem_cgroup *memcg)
+> {
+>         struct mem_cgroup *root_memcg =3D bpf_get_root_mem_cgroup();
+>         bool ret =3D memcg =3D=3D root_memcg;
 >
-> So in the above approach, the action you do on winning
-> "cmpxchg(seq, WE_ARE_DONE_GAME_OVER, WE_ARE_DONE_GAME_OVER + 1)"
-> and
-> "dec_and_test(cb->refcnt) dropped to zero"
-> is the same -  cancel and free the cb.
->
+>         bpf_put_mem_cgroup(root_memcg);
+>         return ret;
+> }
 
-[...]
+Maybe we need both, but if root_mem_cgroup is handled different, you
+can't do a very natural thing like:
 
-> >> +       /* Make sure bpf_async_cb_rcu_free() is not called while here =
-*/
-> >> +       guard(rcu)();
-> >> +
-> >> +       cb =3D READ_ONCE(async->cb);
-> >> +       if (!cb)
-> >> +               return -EINVAL;
-> >> +
-> >> +       return bpf_async_update_prog_callback(cb, callback_fn, prog);
-> > shouldn't we do map->usercnt check after successful
-> > bpf_async_update_prog_callback(), and if usercnt dropped to zero, we
-> > just basically request cancle_and_free. We do something like that for
-> > task_work, no?
-> I don't think map->usercnt check is needed here.
+some_func (struct *mem_cgroup subtree_root) {
+          struct mem_cgroup *memcg =3D subtree_root ?  subtree_root : bpf_g=
+et_root_mem_cgroup();
 
-We chatted about this as well. Indeed, this is set_callback's usercnt
-check, which actually seems redundant either with current
-implementation or with the new nmi-compatible one. One way or another
-cancel_and_free will put whatever program reference we might still
-have set. usercnt check is only necessary in bpf_timer_init(), because
-we should not be able to successfully initialize timer after
-map->usercnt drops to zero, and with no timer initialized, we can't
-set_callback.
+          // iterate over subtree
 
 
-> The risks here are:
->   * bpf_prog refcnt leak
->   * UAF for cb
-> Both are mitigated by the rcu lock:
->   * bpf_prog refcnt: last refcnt is put() in the rcu callback.
->   * cb is freed in rcu callback.
-> So even if cancel_and_free() is called  concurrently and this function
-> operate on
-> the detached cb, it should be safe, as far as I understand.
-> >
-> >>   }
-> >>
+or you can't pass a pointer (with a reference) to a function or a work
+with the assumption that it should drop the reference at the end.
 
-[...]
+Basically you can't easily mix the root_mem_cgroup pointer with normal
+memcg pointers.
 
-> >> -static struct bpf_async_cb *__bpf_async_cancel_and_free(struct bpf_as=
-ync_kern *async)
-> >> +static void __bpf_async_cancel_and_free(struct bpf_async_kern *async)
-> >>   {
-> >>          struct bpf_async_cb *cb;
-> >>
-> >> -       /* Performance optimization: read async->cb without lock first=
-. */
-> >> -       if (!READ_ONCE(async->cb))
-> >> -               return NULL;
-> >> -
-> >> -       __bpf_spin_lock_irqsave(&async->lock);
-> >> -       /* re-read it under lock */
-> >> -       cb =3D async->cb;
-> >> +       cb =3D xchg(&async->cb, NULL);
-> > What prevents bpf_timer_init() from recreating async->cb? Should we
-> > "poison" this pointer here (i.e., xchg() to BPF_PTR_POISON and handle
-> > that in timer_init properly)?
-> This is by design, on update element, array map does cancel_and_free()
-> and the value should be ready for reuse immediately.
+E.g. in my bpfoom case:
 
-yep, you are right, we shouldn't poison
+SEC("struct_ops.s/handle_out_of_memory")
+int BPF_PROG(test_out_of_memory, struct oom_control *oc, struct bpf_struct_=
+ops_link *link)
+{
+	struct task_struct *task;
+	struct mem_cgroup *root_memcg =3D oc->memcg;
+	struct mem_cgroup *memcg, *victim =3D NULL;
+	struct cgroup_subsys_state *css_pos, *css;
+	unsigned long usage, max_usage =3D 0;
+	unsigned long pagecache =3D 0;
+	int ret =3D 0;
 
-[...]
+	if (root_memcg)
+		root_memcg =3D bpf_get_mem_cgroup(&root_memcg->css);
+	else
+		root_memcg =3D bpf_get_root_mem_cgroup();
 
-> >> +               case BPF_ASYNC_CANCEL_AND_FREE:
-> >> +                       bpf_timer_delete(t);
-> > make sure bpf_timer_delete() doesn't do anything stupid and
-> > unnecessary. It shouldn't free any memory, just cancel timer. Let's
-> > analyze whether we need all that queue_work stuff we have there right
-> > now. We will be calling this from a well-defined irq_work context, so
-> > maybe it's good enough to just perform hrtimer_cancel() directly? In
-> > any case we should not do call_rcu(&w->cb.rcu,
-> > bpf_async_cb_rcu_free);, that will be done when cb->refcnt drops to
-> > zero afterwards.
->
-> bpf_timer_delete() does freeing, that's the point of it,
-> pure cancel is done on the BPF_ASYNC_CANCEL above.
+	if (!root_memcg)
+		return 0;
 
-that was the biggest confusion we clarified, bpf_timer_delete() will
-basically be replaced by BPF_ASYNC_CANCEL and that GAME_OVER one-way
-transition, plus dropping cb's "map's refcnt", as described above. We
-think that entire bpf_timer_delete() complication with work queues can
-be just removed because we now have irq_work doing all the work, so
-there shouldn't be any waiting (and thus deadlocking) involved.
+	css =3D &root_memcg->css;
+	if (css && css->cgroup =3D=3D link->cgroup)
+		goto exit;
 
->
-> >
-> > Similar points for wq's CANCEL_AND_FREE, it should only ensure
-> > workqueue is canceled. There is no point in doing cancel_work_sync(),
-> > no one is waiting for irq_work to be done, so just cancel_work()?
-> >
-> >> +                       break;
-> >> +               default:
-> >> +                       break;
-> >> +               }
-> >> +               break;
-> >> +       }
-> > [...]
->
+	bpf_rcu_read_lock();
+	bpf_for_each(css, css_pos, &root_memcg->css, BPF_CGROUP_ITER_DESCENDANTS_P=
+OST) {
+		if (css_pos->cgroup->nr_descendants + css_pos->cgroup->nr_dying_descendan=
+ts)
+			continue;
+
+		memcg =3D bpf_get_mem_cgroup(css_pos);
+		if (!memcg)
+			continue;
+
+                < ... >
+
+		bpf_put_mem_cgroup(memcg);
+	}
+	bpf_rcu_read_unlock();
+
+        < ... >
+
+	bpf_put_mem_cgroup(victim);
+exit:
+	bpf_put_mem_cgroup(root_memcg);
+
+	return ret;
+}
+
+--
+
+How to write it without get semantics?
+
+Thanks!
 
