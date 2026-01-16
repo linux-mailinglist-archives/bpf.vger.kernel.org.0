@@ -1,178 +1,211 @@
-Return-Path: <bpf+bounces-79262-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79263-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2FF7D32904
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 15:25:29 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38FCFD3293C
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 15:27:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id C77873017870
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 14:25:18 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id F2F49303AADC
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 14:27:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF1533375C3;
-	Fri, 16 Jan 2026 14:25:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6FB6337107;
+	Fri, 16 Jan 2026 14:27:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b="iSuTtSm5"
 X-Original-To: bpf@vger.kernel.org
-Received: from esa1.cc.uec.ac.jp (mx.uec.ac.jp [130.153.8.52])
+Received: from DUZPR83CU001.outbound.protection.outlook.com (mail-northeuropeazon11012067.outbound.protection.outlook.com [52.101.66.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD7F43370E3
-	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 14:25:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.153.8.52
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768573515; cv=none; b=SiPTYErNFMvLouEbGDbsdJXCbeNz2uY+JrOCDVnfbJtTfg8pniIEl2njukCE08LsZ3gOw7Ol5OxQN0Zs5gxG/VRRbJij8AxjMnTwBhv75oYFZpO8EQ+XHYFSHGW0OYvqKOrTcC6SqPEt4do4DlRxM7yTefHZ3J2ZRP8+P2R9Og4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768573515; c=relaxed/simple;
-	bh=o55zc6O0LjI6q1LOk8AyqGSEGN7A5aF1DRA5NVUHw9g=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AL3BOJTGxhnxFTYN3Hyaee/9i20JT+QIGIftJ65OfQVZa5zr1dUxO8aTEQoNCOA+AIPEJJxPzV/NFq8H8ErrN93I0YNlOBEFhrbaE3fp5fdjO3fL8GzAKG3iVjE1uud8/mJ4XDnLZLZ2MMjc2ET/V4zi8Behbx9TrLTnwDDJLAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpc.is.uec.ac.jp; spf=pass smtp.mailfrom=hpc.is.uec.ac.jp; arc=none smtp.client-ip=130.153.8.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpc.is.uec.ac.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hpc.is.uec.ac.jp
-X-CSE-ConnectionGUID: J8BxDhkoRHy/CjUxm79mLg==
-X-CSE-MsgGUID: gyo9fzxTSGSG/hzVYNeB5g==
-X-IPAS-Result: =?us-ascii?q?A2HzAgC2SWpp/zYImYJaglmCV4JbtmgGCQEBAQEBAQEBA?=
- =?us-ascii?q?VoEAQGFBwKMeCc3Bg4BAgQBAQEBAwIDAQEBAQEBAQEBAQELAQEBBQEBAQEBA?=
- =?us-ascii?q?QYDAQECAoEdhglThmMGMgFGEFFWGYMCgnS0EoEB3XotVIEmAQsUAYE4jVJxh?=
- =?us-ascii?q?HhCgg2BFYNogQ+JeASDMJQkSIEeA1ksARNCEw0KCwcFamECGQM1EioVbggRG?=
- =?us-ascii?q?R2BGQo+F4EKGwcFgVAGghWGaQ+JMoFcAwsYDUgRLDcUG0JuB48sR4IugQ+RO?=
- =?us-ascii?q?weHd48PoRGEJoRRH5xoTaprLphYo2lwhmaCAE04gyJSGQ+OLRbFLGk8AgcLA?=
- =?us-ascii?q?QEDCZNpAQE?=
-IronPort-Data: A9a23:483qeaqKfe5cT9MHHLLlqLxSXIteBmK0ZBIvgKrLsJaIsI4StFCzt
- garIBmAbP+KZTHzKN8la4Tn8UhSuJKEy9BjQApu/3s3FS8QpJacVYWSI27OZB+ff5bJJK5FA
- 2TySTViwOQcFCK0SsKFa+C5xZVE/fjWAOK6U6icZnwZqTZMEE8JkQhkl/MynrlmiN24BxLlk
- d7pqqUzAnf8s9JPGjxSsfvrRC9H5qyo5mtB5wJmP5ingXeH/5UrJMNHTU2OByagKmVkNrbSb
- /rOyri/4lTY838FYvu5kqz2e1E9WbXbOw6DkBJ+A8BOVTAb+0Teeo5iXBYtQR8/Zwehxrid+
- /0U3XCEcjrFC4WX8Agrv7m0JAklVUFO0OevzXFSKqV/xWWeG5fn66wG4E3boeT0Uwu4aI1D3
- aVwFdwDUvyMr8Dm6qKXSuprvOQya+LpAZMa5SBl6T6MWJ7KQbibK0nLzdpImTs9gsFQEOzPI
- dcUYnxmZ1LCe3WjOH9OU8p4xbrzwCm5LmEwRFG9/MLb50DS1wxwwbHoOfLVYtfMRN4Tg0uT4
- GvNuWbhav0fHIXHl2Xcqyz82ocjmwv0SYVDGq+oysVFu3LUxn4tOTsbfwa09KzRZkmWAYsFd
- BNNq0LCt5Ma9VerT8j0WhSQoGaP+B8HHcddGKsz40eP0sLpDx2xA3hBQjNFacIrrt5vAyEn3
- RmAlJXrHVSDrYF5V1q/pp2EgTOxPhI1PCgpZxIUSFRU5v3s9dRbYg30cjp1LEKipv/NcQwcL
- hiPvG0yirESk8MRxvz94F3MxTun4JrRJuLU2uk1dj/4hu+aTNf7D2BN1bQ9xawfRGp+ZgDQ1
- EXoY+DEsIgz4WilzURggIwlRdlFHcppzwEwcXY1RsN+qG38k5JSVZxQ7XljIkZ3P9wfeCP4K
- Ejd8Q5V6ZRPJnzvZqhyZp+3Cs8j0annE8+Na805r7NmPPBMSeNw1Ho/OhHBhT28yhZEfGNWE
- c7zTPtAxE0yUcxPpAdajc9GuVP37kjSHV/ueK0=
-IronPort-HdrOrdr: A9a23:mZbg6Kp+MhHzwXh8Vy8+OSEaV5oSeYIsimQD101hICG9E/bo8P
- xG88506faZslcssRIb6LS90cu7MBDhHPdOiOF7AV7FZmnbUQCTQL2Kg7GO/xTQXwX46+5j1b
- x9acFFYuEYdWIK7/oStzPIdurJFrG8n5yVuQ==
-X-Talos-CUID: 9a23:tNwNFGD60mn3QTX6Ews33l44GsMiSF3Mi1zSHl+9VjdsbLLAHA==
-X-Talos-MUID: 9a23:Z8cGjgnjMzm3cBqzSaGldnptJcA57ba+NHsiqrpBu9u6BAp9EWqS2WE=
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-AV: E=Sophos;i="6.21,231,1763391600"; 
-   d="scan'208";a="106711685"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-X-IronPort-Outbreak-Status: No, level 0, Unknown - Unknown
-Received: from mx-delivery1.uec.ac.jp (HELO mx-delivery.uec.ac.jp) ([130.153.8.54])
-  by esa1.cc.uec.ac.jp with ESMTP; 16 Jan 2026 23:25:08 +0900
-Received: from labpc (unknown [172.21.208.155])
-	by mx-delivery.uec.ac.jp (Postfix) with ESMTPSA id 86814183E388;
-	Fri, 16 Jan 2026 23:25:08 +0900 (JST)
-From: Yuzuki Ishiyama <ishiyama@hpc.is.uec.ac.jp>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	mykyta.yatsenko5@gmail.com,
-	Yuzuki Ishiyama <ishiyama@hpc.is.uec.ac.jp>
-Subject: [PATCH bpf-next v2 2/2] selftests/bpf: Test kfunc bpf_strncasecmp
-Date: Fri, 16 Jan 2026 23:24:55 +0900
-Message-ID: <20260116142455.3526150-3-ishiyama@hpc.is.uec.ac.jp>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20260116142455.3526150-1-ishiyama@hpc.is.uec.ac.jp>
-References: <20260116142455.3526150-1-ishiyama@hpc.is.uec.ac.jp>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13B6A22FE11;
+	Fri, 16 Jan 2026 14:27:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.66.67
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768573622; cv=fail; b=cA3ClkYVyBQUSz3hFWcOwRnXS+R/x6o8g0dGioWJjnHr+kdBKBGZcILa2pSEZXk3f/sDbWNDy5VqxqZLwiB5wQW2+IA/1iWPMIxgR1QtENRwSww4q3COm1zrrBfEAbbLBcbVFWBunuOzdvBXocWXdG3H15WGBfR4z3AkBhYzWMY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768573622; c=relaxed/simple;
+	bh=AzHSIJDEsdkqPWhYxwz/Lpu/OQ6gWZayhMmkVAXlV2Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=r/K73RZm/9QGXAIFuNvPXVs1ydoyztcdp6Owdm1/ft4gLDlqnheyuTBCNe1z7NSnnCmX4lOfo6G+/Axb4drJgQO7MKwWNIiSb2v2km6gm/xdOtqYtLZUve8apjojckOWZhWH7aDO8cdG4WYkBPNm41Eywsmtt3MFC/6guXnk+bc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b=iSuTtSm5; arc=fail smtp.client-ip=52.101.66.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=pBBBwxCbbLqB4k5eQC4cw24Mh+nD7mOJJ5+p79rasDCPxXlW7TTeyvuNvbL+Bu7A/BkhBf61r2DAGh6CM7D9Q1kk0LBJnBKgdKXaodlRd29OOyKIaJnOnxElOiVrJgvQzf3BXH0iYqCi0UyxfUxeW6MNI5tNdMPfxMhzsekL59Ge58X40Rtul9T1Poa5KDKnEO208K8o5mSxczqFEezvbz5KuryyX9lCnlLKGEmekzxutjpmyqFzTgJK5oZevvQe28oYY4bhwgLLybTxthLNJzNOPiKg/Sj3SGS5/mMmQg59lSvF8Paj0HQ9BNZa6pHMevbOa5Z4A+Xl6rCeJnq51g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=57jxXIF3IXR5xSMWiRuSjHG83EK210n3TiOW/HOr9X8=;
+ b=biNq7HQLVlUuQ5C8M45pXtnSsxUDcOZDV60Z7qKirfIScD/cjkoobsDsezSOyMkVd+WdA7uzR1AtnsVpWV+OKOTagKA9yqbqqvdWHQE/yGIr5EgspkgJSDNkQpNAhuiJ/nqaKRj5BM6OIZi6mvOuUaNC1QnvhLw3BQT8QkvsJVBsUY5L2qYOV5L0rVN3kI8UMUjyuX5JR7lqlmDZNo4Sne7ffpCJqGU1/M5dvYG1/To6eJ9SYQoQheTBbboG1Lolf5UVUu3BSkCY2JdQ1Betqpm9ZUptvVS61iX5OLfxvYyf9I0vOwXTA+1feUYApLbTBqvE0iJlC9JeP9o7G4VPMg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=57jxXIF3IXR5xSMWiRuSjHG83EK210n3TiOW/HOr9X8=;
+ b=iSuTtSm5DwlDUQ5izT5lQzKRy8vrIPaUyEVgvj4yV5D6XBMKr0zBAIKtEwUq5fAPBpNoS19KXOrsx4sgGPHzGwBG8vRBz1HopNkgl09PSmndceOOysJJedqZSvKXvHCtMFbJTCAaISnkQib12pjJuY7prE7RXFqSqN3OICnrL3pJzJAXUw4cqMpu6I4n6pmVSFIdI4CHpRiSBwWxh/Xm44QT8E6/vo0oQFbuOyI2/lUvwX9/iZ0fcjt6NaWegC4patXQ2BQRHgxhGv3pg7UzQh8YA9mRTPm5c9tFhmVBQ3CvQw3ya9CwdH+SQvAm9iyFxRQ/BA2Df45RVCXyi9FMhA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from DU2PR04MB8951.eurprd04.prod.outlook.com (2603:10a6:10:2e2::22)
+ by GV2PR04MB11882.eurprd04.prod.outlook.com (2603:10a6:150:2f2::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9520.5; Fri, 16 Jan
+ 2026 14:26:57 +0000
+Received: from DU2PR04MB8951.eurprd04.prod.outlook.com
+ ([fe80::753c:468d:266:196]) by DU2PR04MB8951.eurprd04.prod.outlook.com
+ ([fe80::753c:468d:266:196%4]) with mapi id 15.20.9478.004; Fri, 16 Jan 2026
+ 14:26:57 +0000
+Date: Fri, 16 Jan 2026 09:26:49 -0500
+From: Frank Li <Frank.li@nxp.com>
+To: Wei Fang <wei.fang@nxp.com>
+Cc: shenwei.wang@nxp.com, xiaoning.wang@nxp.com, andrew+netdev@lunn.ch,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+	hawk@kernel.org, john.fastabend@gmail.com, sdf@fomichev.me,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	imx@lists.linux.dev, bpf@vger.kernel.org
+Subject: Re: [PATCH v2 net-next 10/14] net: fec: remove the size parameter
+ from fec_enet_create_page_pool()
+Message-ID: <aWpKqT/bJE8i9gDY@lizhi-Precision-Tower-5810>
+References: <20260116074027.1603841-1-wei.fang@nxp.com>
+ <20260116074027.1603841-11-wei.fang@nxp.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260116074027.1603841-11-wei.fang@nxp.com>
+X-ClientProxiedBy: PH8PR15CA0013.namprd15.prod.outlook.com
+ (2603:10b6:510:2d2::16) To DU2PR04MB8951.eurprd04.prod.outlook.com
+ (2603:10a6:10:2e2::22)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DU2PR04MB8951:EE_|GV2PR04MB11882:EE_
+X-MS-Office365-Filtering-Correlation-Id: e83de272-489c-4e4d-3c7e-08de550b4e19
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|376014|7416014|52116014|366016|19092799006|1800799024|38350700014;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?EI74B+xvaS7hFE79+enbAxXK5CmkcitVpZ3iosGcxUKCg6RkfoK/+ohHga0o?=
+ =?us-ascii?Q?AtL01qVR395NvGAP9c2RqNsR9v1yEwumM3YBxI3YVJyipZ0s3fbao4b0C8/a?=
+ =?us-ascii?Q?LYV4msNZ+NHssbXf6azVVWAOklAcjTjrH6LZ3eIkinkbICeEHXjGqssyrX7d?=
+ =?us-ascii?Q?rkLi1rmxYjRG5yFcXDyH+Hr/20C1EYE/WJdyKFwEVFMbLyv0/oUAHlQmdfoJ?=
+ =?us-ascii?Q?6fYHPJ0IwDvhSmLwzePcM384UZrZWPN2CH3os9rqBiZrZp0N7GeTBy+b7c7V?=
+ =?us-ascii?Q?x7cOIZiK16qRoCWyJf9K0g592QCtapLysUmA6sX7zW6PbkJrogTtNVHG1Vk4?=
+ =?us-ascii?Q?IauFwTkCeJJNHQJssTy5JzEva3G6iIsLplsO+hbX3S/KHb/dm0VgT83eaTiz?=
+ =?us-ascii?Q?D5pbhmo+bQjs5+UEbLJ5/wz+/o5FTqDuAz2oFyvwcISGbbo51T+1PlPAXOkE?=
+ =?us-ascii?Q?qMv51rzBk1zjlcApQ7myHk56PCCFDAzh1C5lDKXdA02wUJwFy+y6Q+l73XIc?=
+ =?us-ascii?Q?l9SR2+KAYUct6rmGiy5F6+SgT2DvqAl34/TS6Nz9TGc9NFGeps/A8MvmAJ2M?=
+ =?us-ascii?Q?zpZ1noIDmXkTQwySiXlUEh+QrTazilA+HB1/vqXXIKHGE/johiSqafvSHct2?=
+ =?us-ascii?Q?KHxOrALeEWPdz6WQh5mbg+rSBE4Lt2jCkgoR7Ae0YxCZXSxzQG6rUUcg3+Yf?=
+ =?us-ascii?Q?Rbt4H5mdnRF6T62Alq/Qegw/o9q40u+OGUCQtveZbRJ7inqfNyrmvNX6J7Ih?=
+ =?us-ascii?Q?uWe7fYG0tAWxBe6CwS7mMTFoNMH3L7pjk7Dq9dnQzEVcWLJLxuPxHg8snRfd?=
+ =?us-ascii?Q?1kaPLH12A5imz7fwcJDOk+ozh/SYAzu+B9XtTYcDMVJyLSsGkBaHU/pdhDiG?=
+ =?us-ascii?Q?uwntsqjh4kyqBa62QGKljc7ECyyLaRDkRfmUk1pxKbhXfOmr7/edDdyNmSgU?=
+ =?us-ascii?Q?X3Vr3s09RsSM968yCKjJlD8r6ql/rGz6c1pJmxxlDuQKWp950QyD56q4oFCf?=
+ =?us-ascii?Q?QezukxF8OqCekqBCwKu3+P2j6P/7YKFkldyXmdeEtbS1wKfOxu8d+15UoV75?=
+ =?us-ascii?Q?AgVOLg4eNvld8aAcxasZddD0XpDQV5tNMJop9jAkpldPjipAjkZ6FIBnE94Z?=
+ =?us-ascii?Q?KHu5yJeET2T/tQk4T08VNxW4HWpTMI1aI7I3lnJL1zlQSQUH8o31QL/34Wfb?=
+ =?us-ascii?Q?3tk99bnohWhePBJ4Q3sX0nPLK0MzSii00jmpaiJc++dAMkAXJ3rHqHciA1Mu?=
+ =?us-ascii?Q?wjZQ2VtxEJnQI5lwiIkwaKoGOtog/QUZsUeKEJl1ggddxf3/wnuagpeAIBR7?=
+ =?us-ascii?Q?z8lwIyaQIzHCLnuXkQU058URtWpvtCrduH4UFXXSKuUI7AmdjrlFcs5IwzeF?=
+ =?us-ascii?Q?/BPJZFnUzz+vQSK4Z3M6paJx3KXMq+QEduwudaH4OLPZGxUoH2pkaP80By48?=
+ =?us-ascii?Q?+aiGfVPYyTaJ3ik2pOycQGh+k8lJeRNggm3Jo9tnFvaafnM3RN1pINdaJnuD?=
+ =?us-ascii?Q?GY4G29I2Te6bqWU5G5anflLYQHY3SmQAWSSFG58hn+CORKNQRa2j/4gx4lMU?=
+ =?us-ascii?Q?NsqWLiLoHZVS5OagRdwjvh3hep4zUvbiBBteBGQTp8kgYmKHqqySf2ODqqJA?=
+ =?us-ascii?Q?ySMPoWPKe8fSLgDdZYGABOs=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB8951.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(52116014)(366016)(19092799006)(1800799024)(38350700014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?XfzyfX1fEdYponQAgcd0g2JbPJfJLA6+MRNlpg0cPv3mC6K/ZLQpm1D8c4Ku?=
+ =?us-ascii?Q?bJAXJZ9G9YWP8Rrf2knB0vqO9xSSIU4u3TQywHLf6RITijPFXe2XGPuLcI7j?=
+ =?us-ascii?Q?7Z0omq4HXFPEJqTDToxwZD+k+XAeA900/lE9b6k0BGI0njHn4ZM+TNZKq0wo?=
+ =?us-ascii?Q?D0EpeDPk4Gqxad8XaI16h12SaThf4NKeE0LWiMDCPFk0oxL07j6oFDzXw1R0?=
+ =?us-ascii?Q?hNuBWWUgVurdi/RA3V35LdYcGYC6CnbYNMqnrkjMhshFFSeJ1lvICZHhtP5X?=
+ =?us-ascii?Q?oKVeXYAEka4PojC0S/vb9QSGVDCNrfpXM1R0FghDeuIJOZhY5kOKFZPD4xV+?=
+ =?us-ascii?Q?OFo29nYR3c60yzw99PnbcBGs96veFfX6M8lP54exg9jR0N2r1t+292xxxhij?=
+ =?us-ascii?Q?/1UjnrAakTNFfs7ibRhykBGshXVVjvLCngQC4isewCuiwqMMQvKC81rvreXT?=
+ =?us-ascii?Q?v7kDxzjOO4Xeyk0l8QaBooCvopCS/sMxw1WXd23WLpW6evm7juTuxY01MYXw?=
+ =?us-ascii?Q?Vg0tV3czWm+klkejKM/g1puXX7sRdVeqAxekTtzuvuR/3t4ZmDd1baQy3o3D?=
+ =?us-ascii?Q?kjNGQ4LIhLPZqEBaphmmcGvMysP7cw3EGGXBs83DpNQtOgDMjisGykYggfx3?=
+ =?us-ascii?Q?UInTGP/yLCtP4b17dLjBIJp6Hl23OOIq9/JrUx6JqyCtg9CGgVw/Rf0k0JNd?=
+ =?us-ascii?Q?dyj0qCZbTLeql8hn1PQFrBAjYXlPCA58opOPX8TYeB8H3gXD9bzdjBhPGBA8?=
+ =?us-ascii?Q?x0HQ0KQnl8S5t8XYhtadcxvVcXFiTSjgTWxbsSWnUNcOiqCFXUSEb1ixN6m8?=
+ =?us-ascii?Q?VS+72s5wDEDH92BOHaZSeZoDxHy/Y3mTtZXTLkREjgFCCBT4RMHW9o7StT0U?=
+ =?us-ascii?Q?jSgMzG3bkTbrWHse27EULPQZOq6W176Jy+RrPW2ZWmTKzIyDZW7B+rW2ET+4?=
+ =?us-ascii?Q?GZaCunEMcLT0SYPUh0//ACnLBrchyEwyRaHC36OGblWzt3IZ3QO5VsA1K+PP?=
+ =?us-ascii?Q?DtV1jS06KA7SxAGCy3yyXEWuMOwVFsFiLjVWCDNV3NBj4lGK201LzxizYMq3?=
+ =?us-ascii?Q?BU4PfImxKTZeIwhj5YmTuuti7t6q7jf7kZsAbnVlyf0yVH44FZGnfutuLaRm?=
+ =?us-ascii?Q?ZQD+dLAru6Z8ZxKSxdjt/RyF3EmD6oLHTPl6gyzvQjUjzKaDjmSQ5UKNFFI4?=
+ =?us-ascii?Q?eebzk/MvWkkiW+RpWQVBbL1FMDpqbbOVDmjfplV2JpQZY7437fHRkOge8mVk?=
+ =?us-ascii?Q?YIzIoKLcWoJ5Cl6wRTfRLrmpuAZLpB1UbnZZ0kNqNUlymB/s+Ol5x6+Y3cnW?=
+ =?us-ascii?Q?8Ae044WfiPK/5lwyOkDGe2NBxxAKLw1572VJYMGOT5pElwy3vXirTijiWKfd?=
+ =?us-ascii?Q?+7/Gbv1Xbg6I27S1cBsuFwhENbPehMCJsD74TreSUeEcid2w8R6sUex13abn?=
+ =?us-ascii?Q?PgIrfHvFGJvu5C/ft9Mh+tzbJTwfDo/I+W0BFOjI+F0hEnSazMrGSv0i+EgQ?=
+ =?us-ascii?Q?jgSx88bdH3VcJwzEtpXVFg5t4DMVWemreo8yFNR2bFqXrz3AfSyi74bb7zIk?=
+ =?us-ascii?Q?CyoxjTLx5qwd5gz0tCYcT6AFDfhqB7llBreXH5PRkmB38zRh5ZkByo8eoyYk?=
+ =?us-ascii?Q?nYAOkupammz7yemn9pkHFTbLhcB3StBQ8b/898hzkihkyFWZxzAwCcZrBA0U?=
+ =?us-ascii?Q?kJZcVinqteJ2vNj0CvtLyEMX4XhhCEGHIUPdjr+IjiTLWbAO?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e83de272-489c-4e4d-3c7e-08de550b4e19
+X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8951.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jan 2026 14:26:57.7546
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2d4r+baZ2JykeIYUhg2yM/OKuQX0BDsLN7EnQhMPTQmdsQHdEtrJQB/JZrmS7cqEyKFN4uaWhC/QBqrphFysHA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV2PR04MB11882
 
-Add testsuites for kfunc bpf_strncasecmp.
+On Fri, Jan 16, 2026 at 03:40:23PM +0800, Wei Fang wrote:
+> Since the rxq is one of the parameters of fec_enet_create_page_pool(),
+> so we can get the ring size from rxq->bd.ring_size, so it is safe to
+> remove the size parameter from fec_enet_create_page_pool().
 
-Signed-off-by: Yuzuki Ishiyama <ishiyama@hpc.is.uec.ac.jp>
----
- tools/testing/selftests/bpf/prog_tests/string_kfuncs.c     | 1 +
- tools/testing/selftests/bpf/progs/string_kfuncs_failure1.c | 6 ++++++
- tools/testing/selftests/bpf/progs/string_kfuncs_failure2.c | 1 +
- tools/testing/selftests/bpf/progs/string_kfuncs_success.c  | 7 +++++++
- 4 files changed, 15 insertions(+)
+Remove the size parameter from fec_enet_create_page_pool(), since
+rxq->bd.ring_size already contains this information.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/string_kfuncs.c b/tools/testing/selftests/bpf/prog_tests/string_kfuncs.c
-index 0f3bf594e7a5..300032a19445 100644
---- a/tools/testing/selftests/bpf/prog_tests/string_kfuncs.c
-+++ b/tools/testing/selftests/bpf/prog_tests/string_kfuncs.c
-@@ -9,6 +9,7 @@
- static const char * const test_cases[] = {
- 	"strcmp",
- 	"strcasecmp",
-+	"strncasecmp",
- 	"strchr",
- 	"strchrnul",
- 	"strnchr",
-diff --git a/tools/testing/selftests/bpf/progs/string_kfuncs_failure1.c b/tools/testing/selftests/bpf/progs/string_kfuncs_failure1.c
-index 826e6b6aff7e..bddc4e8579d2 100644
---- a/tools/testing/selftests/bpf/progs/string_kfuncs_failure1.c
-+++ b/tools/testing/selftests/bpf/progs/string_kfuncs_failure1.c
-@@ -33,6 +33,8 @@ SEC("syscall") __retval(USER_PTR_ERR) int test_strcmp_null1(void *ctx) { return
- SEC("syscall")  __retval(USER_PTR_ERR)int test_strcmp_null2(void *ctx) { return bpf_strcmp("hello", NULL); }
- SEC("syscall") __retval(USER_PTR_ERR) int test_strcasecmp_null1(void *ctx) { return bpf_strcasecmp(NULL, "HELLO"); }
- SEC("syscall")  __retval(USER_PTR_ERR)int test_strcasecmp_null2(void *ctx) { return bpf_strcasecmp("HELLO", NULL); }
-+SEC("syscall") __retval(USER_PTR_ERR)int test_strncasecmp_null1(void *ctx) { return bpf_strncasecmp(NULL, "HELLO", 5); }
-+SEC("syscall")  __retval(USER_PTR_ERR)int test_strncasecmp_null2(void *ctx) { return bpf_strncasecmp("HELLO", NULL, 5);	 }
- SEC("syscall")  __retval(USER_PTR_ERR)int test_strchr_null(void *ctx) { return bpf_strchr(NULL, 'a'); }
- SEC("syscall")  __retval(USER_PTR_ERR)int test_strchrnul_null(void *ctx) { return bpf_strchrnul(NULL, 'a'); }
- SEC("syscall")  __retval(USER_PTR_ERR)int test_strnchr_null(void *ctx) { return bpf_strnchr(NULL, 1, 'a'); }
-@@ -57,6 +59,8 @@ SEC("syscall") __retval(USER_PTR_ERR) int test_strcmp_user_ptr1(void *ctx) { ret
- SEC("syscall") __retval(USER_PTR_ERR) int test_strcmp_user_ptr2(void *ctx) { return bpf_strcmp("hello", user_ptr); }
- SEC("syscall") __retval(USER_PTR_ERR) int test_strcasecmp_user_ptr1(void *ctx) { return bpf_strcasecmp(user_ptr, "HELLO"); }
- SEC("syscall") __retval(USER_PTR_ERR) int test_strcasecmp_user_ptr2(void *ctx) { return bpf_strcasecmp("HELLO", user_ptr); }
-+SEC("syscall") __retval(USER_PTR_ERR) int test_strncasecmp_user_ptr1(void *ctx) { return bpf_strncasecmp(user_ptr, "HELLO", 5); }
-+SEC("syscall") __retval(USER_PTR_ERR) int test_strncasecmp_user_ptr2(void *ctx) { return bpf_strncasecmp("HELLO", user_ptr, 5);	 }
- SEC("syscall") __retval(USER_PTR_ERR) int test_strchr_user_ptr(void *ctx) { return bpf_strchr(user_ptr, 'a'); }
- SEC("syscall") __retval(USER_PTR_ERR) int test_strchrnul_user_ptr(void *ctx) { return bpf_strchrnul(user_ptr, 'a'); }
- SEC("syscall") __retval(USER_PTR_ERR) int test_strnchr_user_ptr(void *ctx) { return bpf_strnchr(user_ptr, 1, 'a'); }
-@@ -83,6 +87,8 @@ SEC("syscall") __retval(-EFAULT) int test_strcmp_pagefault1(void *ctx) { return
- SEC("syscall") __retval(-EFAULT) int test_strcmp_pagefault2(void *ctx) { return bpf_strcmp("hello", invalid_kern_ptr); }
- SEC("syscall") __retval(-EFAULT) int test_strcasecmp_pagefault1(void *ctx) { return bpf_strcasecmp(invalid_kern_ptr, "HELLO"); }
- SEC("syscall") __retval(-EFAULT) int test_strcasecmp_pagefault2(void *ctx) { return bpf_strcasecmp("HELLO", invalid_kern_ptr); }
-+SEC("syscall") __retval(-EFAULT) int test_strncasecmp_pagefault1(void *ctx) { return bpf_strncasecmp(invalid_kern_ptr, "HELLO", 5); }
-+SEC("syscall") __retval(-EFAULT) int test_strncasecmp_pagefault2(void *ctx) { return bpf_strncasecmp("HELLO", invalid_kern_ptr, 5);	 }
- SEC("syscall") __retval(-EFAULT) int test_strchr_pagefault(void *ctx) { return bpf_strchr(invalid_kern_ptr, 'a'); }
- SEC("syscall") __retval(-EFAULT) int test_strchrnul_pagefault(void *ctx) { return bpf_strchrnul(invalid_kern_ptr, 'a'); }
- SEC("syscall") __retval(-EFAULT) int test_strnchr_pagefault(void *ctx) { return bpf_strnchr(invalid_kern_ptr, 1, 'a'); }
-diff --git a/tools/testing/selftests/bpf/progs/string_kfuncs_failure2.c b/tools/testing/selftests/bpf/progs/string_kfuncs_failure2.c
-index 05e1da1f250f..412c53b87b18 100644
---- a/tools/testing/selftests/bpf/progs/string_kfuncs_failure2.c
-+++ b/tools/testing/selftests/bpf/progs/string_kfuncs_failure2.c
-@@ -8,6 +8,7 @@ char long_str[XATTR_SIZE_MAX + 1];
- 
- SEC("syscall") int test_strcmp_too_long(void *ctx) { return bpf_strcmp(long_str, long_str); }
- SEC("syscall") int test_strcasecmp_too_long(void *ctx) { return bpf_strcasecmp(long_str, long_str); }
-+SEC("syscall") int test_strncasecmp_too_long(void *ctx) { return bpf_strncasecmp(long_str, long_str, sizeof(long_str)); }
- SEC("syscall") int test_strchr_too_long(void *ctx) { return bpf_strchr(long_str, 'b'); }
- SEC("syscall") int test_strchrnul_too_long(void *ctx) { return bpf_strchrnul(long_str, 'b'); }
- SEC("syscall") int test_strnchr_too_long(void *ctx) { return bpf_strnchr(long_str, sizeof(long_str), 'b'); }
-diff --git a/tools/testing/selftests/bpf/progs/string_kfuncs_success.c b/tools/testing/selftests/bpf/progs/string_kfuncs_success.c
-index a8513964516b..3ccfae4d27d3 100644
---- a/tools/testing/selftests/bpf/progs/string_kfuncs_success.c
-+++ b/tools/testing/selftests/bpf/progs/string_kfuncs_success.c
-@@ -17,6 +17,13 @@ __test(0) int test_strcasecmp_eq2(void *ctx) { return bpf_strcasecmp(str, "HELLO
- __test(0) int test_strcasecmp_eq3(void *ctx) { return bpf_strcasecmp(str, "HELLO world"); }
- __test(1) int test_strcasecmp_neq1(void *ctx) { return bpf_strcasecmp(str, "hello"); }
- __test(1) int test_strcasecmp_neq2(void *ctx) { return bpf_strcasecmp(str, "HELLO"); }
-+__test(0) int test_strncasecmp_eq1(void *ctx) { return bpf_strncasecmp(str, "hello world", 11); }
-+__test(0) int test_strncasecmp_eq2(void *ctx) { return bpf_strncasecmp(str, "HELLO WORLD", 11); }
-+__test(0) int test_strncasecmp_eq3(void *ctx) { return bpf_strncasecmp(str, "HELLO world", 11); }
-+__test(0) int test_strncasecmp_eq4(void *ctx) { return bpf_strncasecmp(str, "hello", 5); }
-+__test(0) int test_strncasecmp_eq6(void *ctx) { return bpf_strncasecmp(str, "hello world!", 11); }
-+__test(-1) int test_strncasecmp_neq1(void *ctx) { return bpf_strncasecmp(str, "hello!", 6); }
-+__test(1) int test_strncasecmp_neq2(void *ctx) { return bpf_strncasecmp(str, "abc", 3); }
- __test(1) int test_strchr_found(void *ctx) { return bpf_strchr(str, 'e'); }
- __test(11) int test_strchr_null(void *ctx) { return bpf_strchr(str, '\0'); }
- __test(-ENOENT) int test_strchr_notfound(void *ctx) { return bpf_strchr(str, 'x'); }
--- 
-2.52.0
-
+Reviewed-by: Frank Li <Frank.Li@nxp.com>
+>
+> Signed-off-by: Wei Fang <wei.fang@nxp.com>
+> ---
+>  drivers/net/ethernet/freescale/fec_main.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
+> index 2f79ef195a9e..c1786ccf0443 100644
+> --- a/drivers/net/ethernet/freescale/fec_main.c
+> +++ b/drivers/net/ethernet/freescale/fec_main.c
+> @@ -467,13 +467,13 @@ fec_enet_clear_csum(struct sk_buff *skb, struct net_device *ndev)
+>
+>  static int
+>  fec_enet_create_page_pool(struct fec_enet_private *fep,
+> -			  struct fec_enet_priv_rx_q *rxq, int size)
+> +			  struct fec_enet_priv_rx_q *rxq)
+>  {
+>  	struct bpf_prog *xdp_prog = READ_ONCE(fep->xdp_prog);
+>  	struct page_pool_params pp_params = {
+>  		.order = fep->pagepool_order,
+>  		.flags = PP_FLAG_DMA_MAP | PP_FLAG_DMA_SYNC_DEV,
+> -		.pool_size = size,
+> +		.pool_size = rxq->bd.ring_size,
+>  		.nid = dev_to_node(&fep->pdev->dev),
+>  		.dev = &fep->pdev->dev,
+>  		.dma_dir = xdp_prog ? DMA_BIDIRECTIONAL : DMA_FROM_DEVICE,
+> @@ -3552,7 +3552,7 @@ fec_enet_alloc_rxq_buffers(struct net_device *ndev, unsigned int queue)
+>  	rxq = fep->rx_queue[queue];
+>  	bdp = rxq->bd.base;
+>
+> -	err = fec_enet_create_page_pool(fep, rxq, rxq->bd.ring_size);
+> +	err = fec_enet_create_page_pool(fep, rxq);
+>  	if (err < 0) {
+>  		netdev_err(ndev, "%s failed queue %d (%d)\n", __func__, queue, err);
+>  		return err;
+> --
+> 2.34.1
+>
 
