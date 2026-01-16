@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-79276-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79278-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 763EFD32D7D
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 15:48:07 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBF72D32D89
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 15:48:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 67E7C3186497
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 14:42:02 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id E282930DE3CC
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 14:42:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B19C6396D0E;
-	Fri, 16 Jan 2026 14:41:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B6D339A805;
+	Fri, 16 Jan 2026 14:41:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="k6hRjn02";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="3NeDCWdf";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="k6hRjn02";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="3NeDCWdf"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="PE4BP1iG";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="fXJtY/n4";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="PE4BP1iG";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="fXJtY/n4"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 903C93939BD
-	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 14:41:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63A763933FD
+	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 14:41:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768574484; cv=none; b=Nk24b1kLCNd/VjZscWPssATOAZduUkxwvh7slpSriOCweCquTLKDwqyHnyIHPTQazSIfUt7HaAUwnxzUSdekJNf8ttXiFN1kTmREiKYJWXxm/9/Bf7HdZGBlUexFh1Bi8duOxJSKXZSF6PT9hY9lsSKOeUU9we7//0BgWTjITvM=
+	t=1768574490; cv=none; b=K9ZHp8VNsaLgPySdzIk3C/ZUkuBlYkoQLwtcC1hASH3ckq6UcycZ2vgJuRlVPA2oJ91ujGSv77JWs8+WRTfolYXRHTLQb3EIAYzMiITPPx9T6vSjYcg8UacyHMpBPV1jc1KjFNN5BSvXpo91i67QcjQBIQD7cyfvsVFT190JGW8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768574484; c=relaxed/simple;
-	bh=h6h2MSm04t8w93VqRrG3/kiLekV41p56STsPuFCUGyg=;
+	s=arc-20240116; t=1768574490; c=relaxed/simple;
+	bh=5+DlzutsfaWWvRg+w14q0ALU7H+ghdEbHT3dRwDSdu8=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=t2+duU1dLCwdKzeGPJr4+hOpZYftwIw96Z2sm/6EfWsZHkMVU6aAh8YbkJK5giyYdsI293b38l741nykjdx+f+PoV5kLu0Gh5BJ+3uiVbSkmZCIYFwPWd8RnUDUip1nLrsnq++P0fKGQ98/h688Muc/VMRVilyzdyJuS9cWHaNw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=k6hRjn02; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=3NeDCWdf; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=k6hRjn02; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=3NeDCWdf; arc=none smtp.client-ip=195.135.223.130
+	 In-Reply-To:To:Cc; b=fkLozdtr/iKAf1UVRweY4tg7T63R9siJaRpaIbsws7WK3ApxR5cyBZSjDjx0umGLRp+0Vy+DlwiI3x2Dh3OZ5Kd/6qcwMc1owRCtD5X5RfLS5Bd0eacwDzPVPqEe3FkxMI8auyJ3DZLJJoi0zaG3+prkVbnG4G8f/jkTR+ZFn8U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=PE4BP1iG; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=fXJtY/n4; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=PE4BP1iG; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=fXJtY/n4; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 7CFEA337F4;
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 9A869337BB;
 	Fri, 16 Jan 2026 14:40:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
 	t=1768574437; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=en/PV8L5vRbZ1mp+m0UL7Z3JJuIYQSFGAs1yxFq9ZMM=;
-	b=k6hRjn02kgL6wXHoy4EJb+sOs8vawSDtCZXKYpubQOgmFJW4ifecLsuxeRYDdihbZBdrHA
-	jDQ8RQBfZAOkNIUD+gpO1Dc+GoasvzTBd2t1DE4vAA60xeFKiRtGrxJjx/eYqzRul+/+3i
-	oysVC477tk84xgu0UhFHEcn+RUWNKqA=
+	bh=q+c2vtfBgSpXigJtY75bYtfi3Y2UxCcBVZpVZiGZCPE=;
+	b=PE4BP1iG3RtG1R1Yn+VXwvPc0sF7C0fkWf7fLKDKhsmP3ZInuaDEgrTnqB9yXCmZahTXSL
+	B7g6uqNvgfNuAXeAmkwOFUYSVMhDBvvL36Jz6ERnQ5dvOH5ufxzen+mOQNf2h/exBjluTL
+	8/XwYVLfVHT1OM0P+BQqm/e6V7e29E0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
 	s=susede2_ed25519; t=1768574437;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=en/PV8L5vRbZ1mp+m0UL7Z3JJuIYQSFGAs1yxFq9ZMM=;
-	b=3NeDCWdfbS4Ut4e0yvLQm+Wq3XKjTQqscJKUneY6XLrZSK4XqBUQFduaHFfkwMlZ8fKz4t
-	WyT9KpEjEmNERDCg==
+	bh=q+c2vtfBgSpXigJtY75bYtfi3Y2UxCcBVZpVZiGZCPE=;
+	b=fXJtY/n4XXuZQI5+Bhueck4B43HJXJMHMh5gH0HcD1jmdwp72I6hn0X+zGMsQ1OpKgbQwt
+	UIplDVO4W8QY3qCw==
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
@@ -63,32 +63,33 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=en/PV8L5vRbZ1mp+m0UL7Z3JJuIYQSFGAs1yxFq9ZMM=;
-	b=k6hRjn02kgL6wXHoy4EJb+sOs8vawSDtCZXKYpubQOgmFJW4ifecLsuxeRYDdihbZBdrHA
-	jDQ8RQBfZAOkNIUD+gpO1Dc+GoasvzTBd2t1DE4vAA60xeFKiRtGrxJjx/eYqzRul+/+3i
-	oysVC477tk84xgu0UhFHEcn+RUWNKqA=
+	bh=q+c2vtfBgSpXigJtY75bYtfi3Y2UxCcBVZpVZiGZCPE=;
+	b=PE4BP1iG3RtG1R1Yn+VXwvPc0sF7C0fkWf7fLKDKhsmP3ZInuaDEgrTnqB9yXCmZahTXSL
+	B7g6uqNvgfNuAXeAmkwOFUYSVMhDBvvL36Jz6ERnQ5dvOH5ufxzen+mOQNf2h/exBjluTL
+	8/XwYVLfVHT1OM0P+BQqm/e6V7e29E0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
 	s=susede2_ed25519; t=1768574437;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=en/PV8L5vRbZ1mp+m0UL7Z3JJuIYQSFGAs1yxFq9ZMM=;
-	b=3NeDCWdfbS4Ut4e0yvLQm+Wq3XKjTQqscJKUneY6XLrZSK4XqBUQFduaHFfkwMlZ8fKz4t
-	WyT9KpEjEmNERDCg==
+	bh=q+c2vtfBgSpXigJtY75bYtfi3Y2UxCcBVZpVZiGZCPE=;
+	b=fXJtY/n4XXuZQI5+Bhueck4B43HJXJMHMh5gH0HcD1jmdwp72I6hn0X+zGMsQ1OpKgbQwt
+	UIplDVO4W8QY3qCw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5F6B03EA65;
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7B0003EA66;
 	Fri, 16 Jan 2026 14:40:37 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id iCQFF+VNamnydgAAD6G6ig
+	id yG6/HeVNamnydgAAD6G6ig
 	(envelope-from <vbabka@suse.cz>); Fri, 16 Jan 2026 14:40:37 +0000
 From: Vlastimil Babka <vbabka@suse.cz>
-Date: Fri, 16 Jan 2026 15:40:28 +0100
-Subject: [PATCH v3 08/21] slab: handle kmalloc sheaves bootstrap
+Date: Fri, 16 Jan 2026 15:40:29 +0100
+Subject: [PATCH v3 09/21] slab: add optimized sheaf refill from partial
+ list
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -97,7 +98,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260116-sheaves-for-all-v3-8-5595cb000772@suse.cz>
+Message-Id: <20260116-sheaves-for-all-v3-9-5595cb000772@suse.cz>
 References: <20260116-sheaves-for-all-v3-0-5595cb000772@suse.cz>
 In-Reply-To: <20260116-sheaves-for-all-v3-0-5595cb000772@suse.cz>
 To: Harry Yoo <harry.yoo@oracle.com>, Petr Tesarik <ptesarik@suse.com>, 
@@ -113,6 +114,7 @@ Cc: Hao Li <hao.li@linux.dev>, Andrew Morton <akpm@linux-foundation.org>,
  bpf@vger.kernel.org, kasan-dev@googlegroups.com, 
  Vlastimil Babka <vbabka@suse.cz>
 X-Mailer: b4 0.14.3
+X-Spam-Score: -4.30
 X-Spamd-Result: default: False [-4.30 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
@@ -134,165 +136,398 @@ X-Spamd-Result: default: False [-4.30 / 50.00];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	RCVD_COUNT_TWO(0.00)[2];
 	R_RATELIMIT(0.00)[to_ip_from(RLwn5r54y1cp81no5tmbbew5oc)]
-X-Spam-Flag: NO
-X-Spam-Score: -4.30
 X-Spam-Level: 
+X-Spam-Flag: NO
 
-Enable sheaves for kmalloc caches. For other types than KMALLOC_NORMAL,
-we can simply allow them in calculate_sizes() as they are created later
-than KMALLOC_NORMAL caches and can allocate sheaves and barns from
-those.
+At this point we have sheaves enabled for all caches, but their refill
+is done via __kmem_cache_alloc_bulk() which relies on cpu (partial)
+slabs - now a redundant caching layer that we are about to remove.
 
-For KMALLOC_NORMAL caches we perform additional step after first
-creating them without sheaves. Then bootstrap_cache_sheaves() simply
-allocates and initializes barns and sheaves and finally sets
-s->sheaf_capacity to make them actually used.
+The refill will thus be done from slabs on the node partial list.
+Introduce new functions that can do that in an optimized way as it's
+easier than modifying the __kmem_cache_alloc_bulk() call chain.
 
-Afterwards the only caches left without sheaves (unless SLUB_TINY or
-debugging is enabled) are kmem_cache and kmem_cache_node. These are only
-used when creating or destroying other kmem_caches. Thus they are not
-performance critical and we can simply leave it that way.
+Extend struct partial_context so it can return a list of slabs from the
+partial list with the sum of free objects in them within the requested
+min and max.
 
-Reviewed-by: Suren Baghdasaryan <surenb@google.com>
+Introduce get_partial_node_bulk() that removes the slabs from freelist
+and returns them in the list.
+
+Introduce get_freelist_nofreeze() which grabs the freelist without
+freezing the slab.
+
+Introduce alloc_from_new_slab() which can allocate multiple objects from
+a newly allocated slab where we don't need to synchronize with freeing.
+In some aspects it's similar to alloc_single_from_new_slab() but assumes
+the cache is a non-debug one so it can avoid some actions.
+
+Introduce __refill_objects() that uses the functions above to fill an
+array of objects. It has to handle the possibility that the slabs will
+contain more objects that were requested, due to concurrent freeing of
+objects to those slabs. When no more slabs on partial lists are
+available, it will allocate new slabs. It is intended to be only used
+in context where spinning is allowed, so add a WARN_ON_ONCE check there.
+
+Finally, switch refill_sheaf() to use __refill_objects(). Sheaves are
+only refilled from contexts that allow spinning, or even blocking.
+
 Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- mm/slub.c | 88 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 84 insertions(+), 4 deletions(-)
+ mm/slub.c | 284 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 264 insertions(+), 20 deletions(-)
 
 diff --git a/mm/slub.c b/mm/slub.c
-index b385247c219f..9bea8a65e510 100644
+index 9bea8a65e510..dce80463f92c 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -2605,7 +2605,8 @@ static void *setup_object(struct kmem_cache *s, void *object)
- 	return object;
+@@ -246,6 +246,9 @@ struct partial_context {
+ 	gfp_t flags;
+ 	unsigned int orig_size;
+ 	void *object;
++	unsigned int min_objects;
++	unsigned int max_objects;
++	struct list_head slabs;
+ };
+ 
+ static inline bool kmem_cache_debug(struct kmem_cache *s)
+@@ -2650,9 +2653,9 @@ static void free_empty_sheaf(struct kmem_cache *s, struct slab_sheaf *sheaf)
+ 	stat(s, SHEAF_FREE);
  }
  
--static struct slab_sheaf *alloc_empty_sheaf(struct kmem_cache *s, gfp_t gfp)
-+static struct slab_sheaf *__alloc_empty_sheaf(struct kmem_cache *s, gfp_t gfp,
-+					      unsigned int capacity)
- {
- 	struct slab_sheaf *sheaf;
- 	size_t sheaf_size;
-@@ -2623,7 +2624,7 @@ static struct slab_sheaf *alloc_empty_sheaf(struct kmem_cache *s, gfp_t gfp)
- 	if (s->flags & SLAB_KMALLOC)
- 		gfp |= __GFP_NO_OBJ_EXT;
+-static int __kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags,
+-				   size_t size, void **p);
+-
++static unsigned int
++__refill_objects(struct kmem_cache *s, void **p, gfp_t gfp, unsigned int min,
++		 unsigned int max);
  
--	sheaf_size = struct_size(sheaf, objects, s->sheaf_capacity);
-+	sheaf_size = struct_size(sheaf, objects, capacity);
- 	sheaf = kzalloc(sheaf_size, gfp);
+ static int refill_sheaf(struct kmem_cache *s, struct slab_sheaf *sheaf,
+ 			 gfp_t gfp)
+@@ -2663,8 +2666,8 @@ static int refill_sheaf(struct kmem_cache *s, struct slab_sheaf *sheaf,
+ 	if (!to_fill)
+ 		return 0;
  
- 	if (unlikely(!sheaf))
-@@ -2636,6 +2637,12 @@ static struct slab_sheaf *alloc_empty_sheaf(struct kmem_cache *s, gfp_t gfp)
- 	return sheaf;
- }
+-	filled = __kmem_cache_alloc_bulk(s, gfp, to_fill,
+-					 &sheaf->objects[sheaf->size]);
++	filled = __refill_objects(s, &sheaf->objects[sheaf->size], gfp,
++			to_fill, to_fill);
  
-+static inline struct slab_sheaf *alloc_empty_sheaf(struct kmem_cache *s,
-+						   gfp_t gfp)
+ 	sheaf->size += filled;
+ 
+@@ -3522,6 +3525,63 @@ static inline void put_cpu_partial(struct kmem_cache *s, struct slab *slab,
+ #endif
+ static inline bool pfmemalloc_match(struct slab *slab, gfp_t gfpflags);
+ 
++static bool get_partial_node_bulk(struct kmem_cache *s,
++				  struct kmem_cache_node *n,
++				  struct partial_context *pc)
 +{
-+	return __alloc_empty_sheaf(s, gfp, s->sheaf_capacity);
++	struct slab *slab, *slab2;
++	unsigned int total_free = 0;
++	unsigned long flags;
++
++	/* Racy check to avoid taking the lock unnecessarily. */
++	if (!n || data_race(!n->nr_partial))
++		return false;
++
++	INIT_LIST_HEAD(&pc->slabs);
++
++	spin_lock_irqsave(&n->list_lock, flags);
++
++	list_for_each_entry_safe(slab, slab2, &n->partial, slab_list) {
++		struct freelist_counters flc;
++		unsigned int slab_free;
++
++		if (!pfmemalloc_match(slab, pc->flags))
++			continue;
++
++		/*
++		 * determine the number of free objects in the slab racily
++		 *
++		 * due to atomic updates done by a racing free we should not
++		 * read an inconsistent value here, but do a sanity check anyway
++		 *
++		 * slab_free is a lower bound due to subsequent concurrent
++		 * freeing, the caller might get more objects than requested and
++		 * must deal with it
++		 */
++		flc.counters = data_race(READ_ONCE(slab->counters));
++		slab_free = flc.objects - flc.inuse;
++
++		if (unlikely(slab_free > oo_objects(s->oo)))
++			continue;
++
++		/* we have already min and this would get us over the max */
++		if (total_free >= pc->min_objects
++		    && total_free + slab_free > pc->max_objects)
++			break;
++
++		remove_partial(n, slab);
++
++		list_add(&slab->slab_list, &pc->slabs);
++
++		total_free += slab_free;
++		if (total_free >= pc->max_objects)
++			break;
++	}
++
++	spin_unlock_irqrestore(&n->list_lock, flags);
++	return total_free > 0;
 +}
 +
- static void free_empty_sheaf(struct kmem_cache *s, struct slab_sheaf *sheaf)
- {
- 	kfree(sheaf);
-@@ -8119,8 +8126,11 @@ static int calculate_sizes(struct kmem_cache_args *args, struct kmem_cache *s)
- 	if (s->flags & SLAB_RECLAIM_ACCOUNT)
- 		s->allocflags |= __GFP_RECLAIMABLE;
- 
--	/* kmalloc caches need extra care to support sheaves */
--	if (!is_kmalloc_cache(s))
-+	/*
-+	 * For KMALLOC_NORMAL caches we enable sheaves later by
-+	 * bootstrap_kmalloc_sheaves() to avoid recursion
-+	 */
-+	if (!is_kmalloc_normal(s))
- 		s->sheaf_capacity = calculate_sheaf_capacity(s, args);
- 
- 	/*
-@@ -8615,6 +8625,74 @@ static struct kmem_cache * __init bootstrap(struct kmem_cache *static_cache)
- 	return s;
+ /*
+  * Try to allocate a partial slab from a specific node.
+  */
+@@ -4448,6 +4508,33 @@ static inline void *get_freelist(struct kmem_cache *s, struct slab *slab)
+ 	return old.freelist;
  }
  
 +/*
-+ * Finish the sheaves initialization done normally by init_percpu_sheaves() and
-+ * init_kmem_cache_nodes(). For normal kmalloc caches we have to bootstrap it
-+ * since sheaves and barns are allocated by kmalloc.
++ * Get the slab's freelist and do not freeze it.
++ *
++ * Assumes the slab is isolated from node partial list and not frozen.
++ *
++ * Assumes this is performed only for caches without debugging so we
++ * don't need to worry about adding the slab to the full list
 + */
-+static void __init bootstrap_cache_sheaves(struct kmem_cache *s)
++static inline void *get_freelist_nofreeze(struct kmem_cache *s, struct slab *slab)
 +{
-+	struct kmem_cache_args empty_args = {};
-+	unsigned int capacity;
-+	bool failed = false;
-+	int node, cpu;
++	struct freelist_counters old, new;
 +
-+	capacity = calculate_sheaf_capacity(s, &empty_args);
++	do {
++		old.freelist = slab->freelist;
++		old.counters = slab->counters;
 +
-+	/* capacity can be 0 due to debugging or SLUB_TINY */
-+	if (!capacity)
-+		return;
++		new.freelist = NULL;
++		new.counters = old.counters;
++		VM_WARN_ON_ONCE(new.frozen);
 +
-+	for_each_node_mask(node, slab_nodes) {
-+		struct node_barn *barn;
++		new.inuse = old.objects;
 +
-+		barn = kmalloc_node(sizeof(*barn), GFP_KERNEL, node);
++	} while (!slab_update_freelist(s, slab, &old, &new, "get_freelist_nofreeze"));
 +
-+		if (!barn) {
-+			failed = true;
-+			goto out;
-+		}
-+
-+		barn_init(barn);
-+		get_node(s, node)->barn = barn;
-+	}
-+
-+	for_each_possible_cpu(cpu) {
-+		struct slub_percpu_sheaves *pcs;
-+
-+		pcs = per_cpu_ptr(s->cpu_sheaves, cpu);
-+
-+		pcs->main = __alloc_empty_sheaf(s, GFP_KERNEL, capacity);
-+
-+		if (!pcs->main) {
-+			failed = true;
-+			break;
-+		}
-+	}
-+
-+out:
-+	/*
-+	 * It's still early in boot so treat this like same as a failure to
-+	 * create the kmalloc cache in the first place
-+	 */
-+	if (failed)
-+		panic("Out of memory when creating kmem_cache %s\n", s->name);
-+
-+	s->sheaf_capacity = capacity;
++	return old.freelist;
 +}
 +
-+static void __init bootstrap_kmalloc_sheaves(void)
+ /*
+  * Freeze the partial slab and return the pointer to the freelist.
+  */
+@@ -4471,6 +4558,65 @@ static inline void *freeze_slab(struct kmem_cache *s, struct slab *slab)
+ 	return old.freelist;
+ }
+ 
++/*
++ * If the object has been wiped upon free, make sure it's fully initialized by
++ * zeroing out freelist pointer.
++ *
++ * Note that we also wipe custom freelist pointers.
++ */
++static __always_inline void maybe_wipe_obj_freeptr(struct kmem_cache *s,
++						   void *obj)
 +{
-+	enum kmalloc_cache_type type;
-+
-+	for (type = KMALLOC_NORMAL; type <= KMALLOC_RANDOM_END; type++) {
-+		for (int idx = 0; idx < KMALLOC_SHIFT_HIGH + 1; idx++) {
-+			if (kmalloc_caches[type][idx])
-+				bootstrap_cache_sheaves(kmalloc_caches[type][idx]);
-+		}
-+	}
++	if (unlikely(slab_want_init_on_free(s)) && obj &&
++	    !freeptr_outside_object(s))
++		memset((void *)((char *)kasan_reset_tag(obj) + s->offset),
++			0, sizeof(void *));
 +}
 +
- void __init kmem_cache_init(void)
++static unsigned int alloc_from_new_slab(struct kmem_cache *s, struct slab *slab,
++		void **p, unsigned int count, bool allow_spin)
++{
++	unsigned int allocated = 0;
++	struct kmem_cache_node *n;
++	unsigned long flags;
++	void *object;
++
++	if (!allow_spin && (slab->objects - slab->inuse) > count) {
++
++		n = get_node(s, slab_nid(slab));
++
++		if (!spin_trylock_irqsave(&n->list_lock, flags)) {
++			/* Unlucky, discard newly allocated slab */
++			defer_deactivate_slab(slab, NULL);
++			return 0;
++		}
++	}
++
++	object = slab->freelist;
++	while (object && allocated < count) {
++		p[allocated] = object;
++		object = get_freepointer(s, object);
++		maybe_wipe_obj_freeptr(s, p[allocated]);
++
++		slab->inuse++;
++		allocated++;
++	}
++	slab->freelist = object;
++
++	if (slab->freelist) {
++
++		if (allow_spin) {
++			n = get_node(s, slab_nid(slab));
++			spin_lock_irqsave(&n->list_lock, flags);
++		}
++		add_partial(n, slab, DEACTIVATE_TO_HEAD);
++		spin_unlock_irqrestore(&n->list_lock, flags);
++	}
++
++	inc_slabs_node(s, slab_nid(slab), slab->objects);
++	return allocated;
++}
++
+ /*
+  * Slow path. The lockless freelist is empty or we need to perform
+  * debugging duties.
+@@ -4913,21 +5059,6 @@ static __always_inline void *__slab_alloc_node(struct kmem_cache *s,
+ 	return object;
+ }
+ 
+-/*
+- * If the object has been wiped upon free, make sure it's fully initialized by
+- * zeroing out freelist pointer.
+- *
+- * Note that we also wipe custom freelist pointers.
+- */
+-static __always_inline void maybe_wipe_obj_freeptr(struct kmem_cache *s,
+-						   void *obj)
+-{
+-	if (unlikely(slab_want_init_on_free(s)) && obj &&
+-	    !freeptr_outside_object(s))
+-		memset((void *)((char *)kasan_reset_tag(obj) + s->offset),
+-			0, sizeof(void *));
+-}
+-
+ static __fastpath_inline
+ struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s, gfp_t flags)
  {
- 	static __initdata struct kmem_cache boot_kmem_cache,
-@@ -8658,6 +8736,8 @@ void __init kmem_cache_init(void)
- 	setup_kmalloc_cache_index_table();
- 	create_kmalloc_caches();
+@@ -5388,6 +5519,9 @@ static int __prefill_sheaf_pfmemalloc(struct kmem_cache *s,
+ 	return ret;
+ }
  
-+	bootstrap_kmalloc_sheaves();
++static int __kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags,
++				   size_t size, void **p);
 +
- 	/* Setup random freelists for each cache */
- 	init_freelist_randomization();
+ /*
+  * returns a sheaf that has at least the requested size
+  * when prefilling is needed, do so with given gfp flags
+@@ -7463,6 +7597,116 @@ void kmem_cache_free_bulk(struct kmem_cache *s, size_t size, void **p)
+ }
+ EXPORT_SYMBOL(kmem_cache_free_bulk);
  
++static unsigned int
++__refill_objects(struct kmem_cache *s, void **p, gfp_t gfp, unsigned int min,
++		 unsigned int max)
++{
++	struct slab *slab, *slab2;
++	struct partial_context pc;
++	unsigned int refilled = 0;
++	unsigned long flags;
++	void *object;
++	int node;
++
++	pc.flags = gfp;
++	pc.min_objects = min;
++	pc.max_objects = max;
++
++	node = numa_mem_id();
++
++	if (WARN_ON_ONCE(!gfpflags_allow_spinning(gfp)))
++		return 0;
++
++	/* TODO: consider also other nodes? */
++	if (!get_partial_node_bulk(s, get_node(s, node), &pc))
++		goto new_slab;
++
++	list_for_each_entry_safe(slab, slab2, &pc.slabs, slab_list) {
++
++		list_del(&slab->slab_list);
++
++		object = get_freelist_nofreeze(s, slab);
++
++		while (object && refilled < max) {
++			p[refilled] = object;
++			object = get_freepointer(s, object);
++			maybe_wipe_obj_freeptr(s, p[refilled]);
++
++			refilled++;
++		}
++
++		/*
++		 * Freelist had more objects than we can accommodate, we need to
++		 * free them back. We can treat it like a detached freelist, just
++		 * need to find the tail object.
++		 */
++		if (unlikely(object)) {
++			void *head = object;
++			void *tail;
++			int cnt = 0;
++
++			do {
++				tail = object;
++				cnt++;
++				object = get_freepointer(s, object);
++			} while (object);
++			do_slab_free(s, slab, head, tail, cnt, _RET_IP_);
++		}
++
++		if (refilled >= max)
++			break;
++	}
++
++	if (unlikely(!list_empty(&pc.slabs))) {
++		struct kmem_cache_node *n = get_node(s, node);
++
++		spin_lock_irqsave(&n->list_lock, flags);
++
++		list_for_each_entry_safe(slab, slab2, &pc.slabs, slab_list) {
++
++			if (unlikely(!slab->inuse && n->nr_partial >= s->min_partial))
++				continue;
++
++			list_del(&slab->slab_list);
++			add_partial(n, slab, DEACTIVATE_TO_HEAD);
++		}
++
++		spin_unlock_irqrestore(&n->list_lock, flags);
++
++		/* any slabs left are completely free and for discard */
++		list_for_each_entry_safe(slab, slab2, &pc.slabs, slab_list) {
++
++			list_del(&slab->slab_list);
++			discard_slab(s, slab);
++		}
++	}
++
++
++	if (likely(refilled >= min))
++		goto out;
++
++new_slab:
++
++	slab = new_slab(s, pc.flags, node);
++	if (!slab)
++		goto out;
++
++	stat(s, ALLOC_SLAB);
++
++	/*
++	 * TODO: possible optimization - if we know we will consume the whole
++	 * slab we might skip creating the freelist?
++	 */
++	refilled += alloc_from_new_slab(s, slab, p + refilled, max - refilled,
++					/* allow_spin = */ true);
++
++	if (refilled < min)
++		goto new_slab;
++out:
++
++	return refilled;
++}
++
+ static inline
+ int __kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
+ 			    void **p)
 
 -- 
 2.52.0
