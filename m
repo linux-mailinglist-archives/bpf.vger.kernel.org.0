@@ -1,157 +1,112 @@
-Return-Path: <bpf+bounces-79310-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79311-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2C6AD379F0
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 18:23:38 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 207D1D379FF
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 18:27:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 9F8023035072
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 17:22:56 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id F3C96303D8AC
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 17:27:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1C043939BE;
-	Fri, 16 Jan 2026 17:22:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD62034165E;
+	Fri, 16 Jan 2026 17:27:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vgBOHjzx"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tqeEKivl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B78730EF7A
-	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 17:22:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.160.181
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768584173; cv=pass; b=lfF2lzNafqmZ+2rldOl3IRnDxWsGjYuMdDgWHEMKGTSU8yU0KbUAzhsp8PspiTf4Rv0dx8wfztQn38mVi8raW6tQQjKGbqenNyhEpH4oKAZuw3415nGE7i+bzxw4aJgAOkt3VL83B/9xHoO39tEXCbdfWTqbCwKqew2jYp+iM/8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768584173; c=relaxed/simple;
-	bh=hlDDNKYMaWOnKMiZZysallNw/K6iyHZJPklDuaoHxoc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aAHoDn/d9oTdzNFUuKF4LH1RqPHMYKPS+Z4ufpCSk7pmmRufx5LKsNNsveUhmCAgyrkjXruocQlvEBclsovJ25R8R2P5sgfSKTwl/39OqP72AQUIP09UlK1BYuI7x3VZJAZVL+vOLa29nRS5O+Msbej01BstYUUcn1XkuUw1AIA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=vgBOHjzx; arc=pass smtp.client-ip=209.85.160.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-50299648ae9so532081cf.1
-        for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 09:22:48 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1768584167; cv=none;
-        d=google.com; s=arc-20240605;
-        b=Hcexm6XMh5FBfGmVDtjWTLmJLQIoK3nSxdpTmhjVVX01j1kUGMS7DovOdPWT3IzGVU
-         6jq0uG7vTp/edOuhtugVo/n2BLVjtVB12mkC9ixxgMqpjdyFmpB1yu17KOW5ykLyoZtz
-         mT+N0uNxfynbXGF/WjLwSmaS/2rtI0t+vRbg/+sXx5HJd00SAFXr4ZpgZTF91FlBmWqd
-         BBQp5vCo0n2AhNIQ0p6a89EZPVvVKitDk3nv/GlBXd7DdDKW4IFZaN+l4MyKKUl4wLET
-         7hfGUzQ1oBSGT+29KP6AuzO/5NyO9MLJ+m8xtM76HU7op41Fd8AhpnUz+lP1tbwcpGwR
-         kSMQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=o8bloAHXlRqX7bbyuExKq5up0OoLL7i4hXe/j4ALHlo=;
-        fh=G1qpSCpt+ru0E4tVKD97dWsqc4/B1KqE5VgkzZz+iZw=;
-        b=ECM3mf5AHgiOGbKO2HhP/bLkNXTRVXtoJz1KOIIAOVA+kcMhgsYYzGrUBehx4oDI3G
-         /pGJur72n3ketYGzkLIK9ze6Ra4Lncl7qYitO+d/tut/hqwY0DZsrJo4ShaghEXfRjRj
-         rb/riq7miXJs2ZlZfwCkpkMc9fFKuS8z1W9yRNGW2gug5c4LkPJiabUDJIEYdJLjeUo7
-         PMRycdq+c1HsxIE2o/CRrQyzV8iQDcRjEcTe56CEpwPaburxmRLiHW2oqx0nikWIJPiJ
-         Bg2Q0eKvAs6Il8G32+BLaBrqh0tWkqysgqGiJ7ZcIlPBqOk37xFYgmDEOkPEFBfE6OCx
-         apTA==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1768584167; x=1769188967; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=o8bloAHXlRqX7bbyuExKq5up0OoLL7i4hXe/j4ALHlo=;
-        b=vgBOHjzx1yxeDP4t9CWYh65aX2qbYKllA0hRB4RFTsmJuxFTaxLoS2T3EpXS1TTQ2u
-         O+/fPh1HDgUpY/qcZJLRR9fTqSjCULDxaSYa1gjxsVbLRGXm14mrAbqzgex7DrysPMbk
-         rXJQoltgjhmfVKHM5JvNi68lzIujfOOYTd59yY/7RTg1ZDz9x4IAo/eF779wcgftVQhj
-         ST62RwdwYNosvR+mQqrKkDhiMCO+b5N3IqyEIcoCvVu3cJC4jUE8kNNIQNBc3eSvhZr2
-         kLScPq+ZgFhZQgeJtVFYfChSuDFlM1hFtKOhysRiDgDeBb4L2s0Vstxq+C7tOxBcer+s
-         GQtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768584167; x=1769188967;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=o8bloAHXlRqX7bbyuExKq5up0OoLL7i4hXe/j4ALHlo=;
-        b=us0fZmha9E858Ab+20kQWSCcUBkPxDLcXL/bn46c7DkO3U2H05e1Nxul2YABYjvw3k
-         pNCpR+U9Cgw85YL5nwZor/6bYBzsPbjLZjaBvDOZwEko43jpVOd1W4ZFAEOZ6d8UMJiL
-         ni6Nte7LcfP9sIKKESLWo6hv75L0bA1dZIxwQiujcjex7Dt059tUyprA4H875g7S9iPD
-         yO8vziyIpoXp6sCy/aOpIJrQMA+My4MqgfUcgy82a5G1expuE8nHZNqbZ2ksg+53xpUt
-         GXOyTWeWmOXrGbV1Ym5LcH30Bo7alJm6cU+WriB1TYT1PwPk0q6QqvHHcjUI94NuFYm6
-         Cu3g==
-X-Forwarded-Encrypted: i=1; AJvYcCVE9kqhFI9uUEmRWqQI/rnpZ4qt7KW1lRISdSRrCLmUHAa8zlCZj3fxkQxqIkrMk3v41wg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxgFylhBRThZ7SEzPK7Lk2D0IgFJ4fc39y6B9x+0jMixcKe541K
-	bby7CdMB4jr9y7Kf7kMn4wyhtt7nfvY/qcFbQIHGtmIDqU+TpCYSUyLe19w16Jwf3FD+Kjt5OaI
-	MZysyEwJs++6Ob/6XvKZYCiSlEAHtbaYj9UuCjbOp
-X-Gm-Gg: AY/fxX7dA5PRQLvBJg14urshjJa1iUvR8uQ1/yn/CPgDxv+x4kg+ce4ONpNHJtPG4fV
-	t8D7c5Hp4cBr3gD+h2rGgvbmtA1Qbk4U7NJHgBPdPrjkCw9WNopU+Ka+9dbF3y8rwTb8vQ4A42D
-	Eh+tRGIcm1qybwRmyKYpxkPkgulzQK6mU8EB8owg9Ihnfh5ySRnCjesi2okSpUsc2SDBBucimE5
-	bSDXcJ6Of8niO/xR5tqHtPk0avq+Ns6FdmMqJWJ2Wefz6ABXOa5ExIIsBwMZg1kwbw3ww==
-X-Received: by 2002:a05:622a:1446:b0:4ed:a65c:88d0 with SMTP id
- d75a77b69052e-502a22d2091mr4481531cf.6.1768584166336; Fri, 16 Jan 2026
- 09:22:46 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A87533ADA9
+	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 17:27:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768584437; cv=none; b=tPOFe/94OnCw7k4E4JpP28XmPo+aukcNMli2NF1k/9IduzcD4x7ZD6uqyVLGvS9oE7Z7PZoS0qBtHvWNvZnHCSOFTCx2rtIafw+LasK/HnFsWbxFhiDtWAr5YckmnJDsR8NK+r7iUNWCHagKcNhki+c6uHk4HBNbKcKH/P5OQG4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768584437; c=relaxed/simple;
+	bh=zMJWrBE0tYCY8+z3t3KMeR4M0ruLw7+B8YnWtlYtfz0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rlrAE16TXWoMCfmU5jHjMv6kFlI4JqsSsECdhgTPx9W6PkeGjmf9ayIhk2wkF0QzxZimC0k7nIueKelJ2Ky0uy5cs+36eGNFzuitQya+2X1lOgBIlLqEPteng1cDk1Mu67yPst1SScZ94EUo87+/i+rY8uF1ea2PTHkUhu+i9f8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tqeEKivl; arc=none smtp.client-ip=95.215.58.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <8131f46b-7115-44db-b182-9471afa67e61@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1768584424;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zMJWrBE0tYCY8+z3t3KMeR4M0ruLw7+B8YnWtlYtfz0=;
+	b=tqeEKivlbF4yUz+8PCt0PXV0c4dI/2oC71B+sG/PfWkpFTMSSzZJZuXlYxZEbRjdlROl9j
+	fwrd2o9AAr0B4hwo8FjolvbZKVqC9yl9/VWAQPMdos0EEZJSIyBW5OkL+erJBjQsMHIIou
+	aUo929t1xsEZSwDaA8O/qYyywIsFQLM=
+Date: Fri, 16 Jan 2026 09:26:49 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260116-sheaves-for-all-v3-0-5595cb000772@suse.cz> <20260116-sheaves-for-all-v3-2-5595cb000772@suse.cz>
-In-Reply-To: <20260116-sheaves-for-all-v3-2-5595cb000772@suse.cz>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Fri, 16 Jan 2026 09:22:34 -0800
-X-Gm-Features: AZwV_Qi0GmjrM2TkwQbQz0K1_wtQP23K0QN4VNJnjVMrHBscdtK49aOG8chDQLg
-Message-ID: <CAJuCfpG0SCGf-TOTRi0d8e0Zoh4r5-xXByhnmJRSiyUt9=LO4w@mail.gmail.com>
-Subject: Re: [PATCH v3 02/21] slab: add SLAB_CONSISTENCY_CHECKS to SLAB_NEVER_MERGE
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Harry Yoo <harry.yoo@oracle.com>, Petr Tesarik <ptesarik@suse.com>, 
-	Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Hao Li <hao.li@linux.dev>, 
-	Andrew Morton <akpm@linux-foundation.org>, Uladzislau Rezki <urezki@gmail.com>, 
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
-	Alexei Starovoitov <ast@kernel.org>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	linux-rt-devel@lists.linux.dev, bpf@vger.kernel.org, 
-	kasan-dev@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH] kcsan, compiler_types: avoid duplicate type issues in BPF
+ Type Format
+Content-Language: en-GB
+To: Alan Maguire <alan.maguire@oracle.com>, kees@kernel.org,
+ nathan@kernel.org, peterz@infradead.org, elver@google.com
+Cc: ojeda@kernel.org, akpm@linux-foundation.org, ubizjak@gmail.com,
+ Jason@zx2c4.com, Marc.Herbert@linux.intel.com, hca@linux.ibm.com,
+ hpa@zytor.com, namjain@linux.microsoft.com, paulmck@kernel.org,
+ linux-kernel@vger.kernel.org, andrii.nakryiko@gmail.com, ast@kernel.org,
+ jolsa@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+ eddyz87@gmail.com, song@kernel.org, john.fastabend@gmail.com,
+ kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, bvanassche@acm.org,
+ nilay@linux.ibm.com, bpf@vger.kernel.org
+References: <20260116091730.324322-1-alan.maguire@oracle.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20260116091730.324322-1-alan.maguire@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Jan 16, 2026 at 6:40=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
-ote:
->
-> All the debug flags prevent merging, except SLAB_CONSISTENCY_CHECKS. This
-> is suboptimal because this flag (like any debug flags) prevents the
-> usage of any fastpaths, and thus affect performance of any aliased
-> cache. Also the objects from an aliased cache than the one specified for
-> debugging could also interfere with the debugging efforts.
->
-> Fix this by adding the whole SLAB_DEBUG_FLAGS collection to
-> SLAB_NEVER_MERGE instead of individual debug flags, so it now also
-> includes SLAB_CONSISTENCY_CHECKS.
->
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 
-Reviewed-by: Suren Baghdasaryan <surenb@google.com>
 
-> ---
->  mm/slab_common.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+On 1/16/26 1:17 AM, Alan Maguire wrote:
+> Enabling KCSAN is causing a large number of duplicate types
+> in BTF for core kernel structs like task_struct [1].
+> This is due to the definition in include/linux/compiler_types.h
 >
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index ee994ec7f251..e691ede0e6a8 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -45,9 +45,8 @@ struct kmem_cache *kmem_cache;
->  /*
->   * Set of flags that will prevent slab merging
->   */
-> -#define SLAB_NEVER_MERGE (SLAB_RED_ZONE | SLAB_POISON | SLAB_STORE_USER =
-| \
-> -               SLAB_TRACE | SLAB_TYPESAFE_BY_RCU | SLAB_NOLEAKTRACE | \
-> -               SLAB_FAILSLAB | SLAB_NO_MERGE)
-> +#define SLAB_NEVER_MERGE (SLAB_DEBUG_FLAGS | SLAB_TYPESAFE_BY_RCU | \
-> +               SLAB_NOLEAKTRACE | SLAB_FAILSLAB | SLAB_NO_MERGE)
+> `#ifdef __SANITIZE_THREAD__
+> ...
+> `#define __data_racy volatile
+> ..
+> `#else
+> ...
+> `#define __data_racy
+> ...
+> `#endif
 >
->  #define SLAB_MERGE_SAME (SLAB_RECLAIM_ACCOUNT | SLAB_CACHE_DMA | \
->                          SLAB_CACHE_DMA32 | SLAB_ACCOUNT)
+> Because some objects in the kernel are compiled without
+> KCSAN flags (KCSAN_SANITIZE) we sometimes get the empty
+> __data_racy annotation for objects; as a result we get multiple
+> conflicting representations of the associated structs in DWARF,
+> and these lead to multiple instances of core kernel types in
+> BTF since they cannot be deduplicated due to the additional
+> modifier in some instances.
 >
-> --
-> 2.52.0
+> Moving the __data_racy definition under CONFIG_KCSAN
+> avoids this problem, since the volatile modifier will
+> be present for both KCSAN and KCSAN_SANITIZE objects
+> in a CONFIG_KCSAN=y kernel.
 >
+> Fixes: 31f605a308e6 ("kcsan, compiler_types: Introduce __data_racy type qualifier")
+> Reported-by: Nilay Shroff <nilay@linux.ibm.com>
+> Suggested-by: Marco Elver <elver@google.com>
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+
+Tested on gcc15 and llvm22 and all works okay. Also
+the patch itself makes sense, so
+
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
+
+
 
