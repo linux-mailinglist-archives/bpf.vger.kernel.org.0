@@ -1,292 +1,290 @@
-Return-Path: <bpf+bounces-79190-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79191-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84138D2C883
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 07:27:55 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAF9DD2C8AD
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 07:28:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 070FB300ACBD
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 06:27:55 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 260423036CAC
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 06:28:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AF7F34D926;
-	Fri, 16 Jan 2026 06:27:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ED5134DB4F;
+	Fri, 16 Jan 2026 06:28:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="YTxvBXK0"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="NL1+7KcU"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D56523385BF
-	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 06:27:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C6E73385BF;
+	Fri, 16 Jan 2026 06:28:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768544873; cv=none; b=HL7sH3cEY5UTbhpgE5atAvm20J2xA/7Qk6q+it43ZE+MPKTPdAQWpn1zkaK1Yx4f8TaZZRhZmcnxIm2XYihkdz9iX5S1VkIht9zbuXljzdib1DxjyEfEPeK3kmYl9zGlGlIhhXF+E7uFW5va835tMp7s9VC3aqeiJELCU/DnUAU=
+	t=1768544919; cv=none; b=TzWqVcQFT0LISTGLqmDIFCwUuTYnwl0eosMU4GMImnDJKoCIPTw+LJPu2N4eJ8uOwXlmFe25OAC71v+fWIey+GUjAQaDY1Q6DuI1APsdGbJSTpIZJ6NqO16131jC1Q3ttd774XtsT7WfX71/PUGTpZK2OfO+lRVRoRpcf2vqpuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768544873; c=relaxed/simple;
-	bh=j2PO0YsyUoxtquDQPkeDI3JHhZ1hOFAZIbrvV52+arw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cFkMcYCJGYI05a3fXZGpllF9sHZJuQDGT8eSY21TJbrvXwjZE9nSpi5zaBMoX+uzYXsh3b9RH0gi17sZSAtcRIAoi41SORwbzvH1wqRDGNMR2Fm0YrY55ZFhq6YomfrA7AQ4LcY8L66l1ccbCk+hQfS711eHdislVSvqVIhIGv0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=YTxvBXK0; arc=none smtp.client-ip=91.218.175.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 16 Jan 2026 14:27:28 +0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1768544859;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZtRqq1YheiNBBvVmImDMizfzqDOKIgcriEPR9727W+A=;
-	b=YTxvBXK0JBNk0RbWd3h8MJih88revancn1zLe8lx27VZO9joNgTadN2VzM/l6k1bIL5pap
-	czE0RgU8pSmFOxCnYRduit8IdxaQhwO+0ObsWermDa+LI1bEr82fMrAXrzsmmlZa4XhfDI
-	xw1CXap5a2b4p/rnYcg01tNYL6P88+U=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Hao Li <hao.li@linux.dev>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Harry Yoo <harry.yoo@oracle.com>, Petr Tesarik <ptesarik@suse.com>, 
-	Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
-	Uladzislau Rezki <urezki@gmail.com>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
-	Suren Baghdasaryan <surenb@google.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
-	Alexei Starovoitov <ast@kernel.org>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	linux-rt-devel@lists.linux.dev, bpf@vger.kernel.org, kasan-dev@googlegroups.com
-Subject: Re: [PATCH RFC v2 08/20] slab: add optimized sheaf refill from
- partial list
-Message-ID: <kp7fvhxxjyyzk47n67m4xwzgm7gxoqmgglqdvzpkcxqb26sjc4@bu4lil75nc3c>
-References: <20260112-sheaves-for-all-v2-0-98225cfb50cf@suse.cz>
- <20260112-sheaves-for-all-v2-8-98225cfb50cf@suse.cz>
- <38de0039-e0ea-41c4-a293-400798390ea1@suse.cz>
+	s=arc-20240116; t=1768544919; c=relaxed/simple;
+	bh=ToHuvaLB9T12FT5x8TETe8zPfmVsAmFaUdyJ/HJVxHU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=o711XjdH/fAPzcU2WG+DX78MR72ClgU5PyG+x1914WOhpScvNq46zSsetONOXSMR++VmVUUCN3izCsoRxOEf0W+eZqy+jvMZbpNuObLhqN2Ipbhqrscom/tadm5eeWgdV6kZq/QCF0tDKRk46TDQUPliAx4qyT4ECRI2WhvYd4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=NL1+7KcU; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 60FMlwlO023552;
+	Fri, 16 Jan 2026 06:27:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=FcLPAH
+	m1b5V0LiIvXBQvn5Ixpkw/sS7eXVDxcRETIko=; b=NL1+7KcU7OgoGwHnaFRstr
+	EPIUqesjn2x+cAkWEsV57xN87Evxv+p6SRdFxxeAuhi/LoUy70nLIHJMtCjkE8py
+	I28b0Nox4BVeP5EHEEbUwz5pwe3Mt5z3NjY40ln93t8HJM/drdTxCaCsGAeOunze
+	VNsv6wen4BRK8RQ6KqbYrrTkSRqaADxAYjEO6qeD3ZtAV+qVNTh7DAFHeLjYzD44
+	EcmwBSoM9MxFXjUrKBVNTJyDSir6bv7VdFVuf1jXJH9Ku1DE4fWE9omHZVnlRY59
+	G93QwvNIt9xuE2g+fbIb8VTKHbKeECrobbkRFnNQrDvkktoLreGQrUQ+ha6fThog
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4bq9bnh7t4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 16 Jan 2026 06:27:58 +0000 (GMT)
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 60G6Rvr4014401;
+	Fri, 16 Jan 2026 06:27:58 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4bq9bnh7t2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 16 Jan 2026 06:27:57 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 60G50UwK030131;
+	Fri, 16 Jan 2026 06:27:56 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4bm3ak49q8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 16 Jan 2026 06:27:56 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 60G6Rrbi51249426
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 16 Jan 2026 06:27:53 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 0A66C20049;
+	Fri, 16 Jan 2026 06:27:53 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 4D2BC20040;
+	Fri, 16 Jan 2026 06:27:47 +0000 (GMT)
+Received: from [9.43.87.191] (unknown [9.43.87.191])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 16 Jan 2026 06:27:47 +0000 (GMT)
+Message-ID: <70242dc7-0f3e-4b8d-ad11-e24d9e4dfbb3@linux.ibm.com>
+Date: Fri, 16 Jan 2026 11:57:46 +0530
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <38de0039-e0ea-41c4-a293-400798390ea1@suse.cz>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 5/6] powerpc64/bpf: Support exceptions
+To: adubey@linux.ibm.com, bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: sachinpb@linux.ibm.com, venkat88@linux.ibm.com, andrii@kernel.org,
+        eddyz87@gmail.com, mykolal@fb.com, ast@kernel.org,
+        daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
+        yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
+        christophe.leroy@csgroup.eu, naveen@kernel.org, maddy@linux.ibm.com,
+        mpe@ellerman.id.au, npiggin@gmail.com, memxor@gmail.com,
+        iii@linux.ibm.com, shuah@kernel.org
+References: <20260114114450.30405-1-adubey@linux.ibm.com>
+ <20260114114450.30405-6-adubey@linux.ibm.com>
+Content-Language: en-US
+From: Hari Bathini <hbathini@linux.ibm.com>
+In-Reply-To: <20260114114450.30405-6-adubey@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTE2MDA0OSBTYWx0ZWRfX1h59OFx1Sia0
+ 0HT+S+rmgFUMFJS5bNKAoHAbumXea8ljuCN9uHqh1uNb0qfpk2iqguDFhDL1uLRLq6YmKrLxYTo
+ Bhodi6kuUZcVVLg8ll3h0dvbXTpuaa0xlxmnbjM/uow9+Fx+ETTcYHvtqlMYzeGslVmhBVxZV00
+ QWZ47cC46Qhl9Gi0yIzVB0Jdc8x8AEYTZKL/VvU3dQeGX1etcgI0DqIWb8J+QFsGGLN4GN9SEXW
+ tu59teSY6TkIGg8xSaRwufIwiyO8yq2Q0ZzJwIcUzzx9Ky0PoZP+G7VdjYS8jIi8fnTqtNjA1DA
+ yEtlYgoqYjn1OeXPDrvhreM+/irrnmN5iOpPj6sTSaAmpbh3T75HmQGAFC7CHcp8x6YRpRAaDWC
+ 4TzZz9xOnr3+aNYmphIKCfF3ukISDepD8YgjUNvGXuotxg/i7TxXNpmvxFLUYxDIYMXZNK89umQ
+ T8v45uOA7HMqOK0eR3Q==
+X-Proofpoint-GUID: trPHaRqcVJh1xboM6gSDfEJThQeKPkQG
+X-Authority-Analysis: v=2.4 cv=VNPQXtPX c=1 sm=1 tr=0 ts=6969da6e cx=c_pps
+ a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
+ a=IkcTkHD0fZMA:10 a=vUbySO9Y5rIA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=DU0EyFXtAAAA:8 a=VnNF1IyMAAAA:8 a=T6DxGVK8PeSMhVRyarwA:9 a=QEXdDO2ut3YA:10
+ a=UCR5be5CC-YrbG9FbbB0:22
+X-Proofpoint-ORIG-GUID: p_PaoMwaTeEjKigKn9IZftk6rGiuIY-x
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2026-01-16_02,2026-01-15_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ adultscore=0 lowpriorityscore=0 malwarescore=0 bulkscore=0 suspectscore=0
+ priorityscore=1501 phishscore=0 clxscore=1015 spamscore=0 impostorscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2512120000 definitions=main-2601160049
 
-On Thu, Jan 15, 2026 at 03:25:59PM +0100, Vlastimil Babka wrote:
-> On 1/12/26 16:17, Vlastimil Babka wrote:
-> > At this point we have sheaves enabled for all caches, but their refill
-> > is done via __kmem_cache_alloc_bulk() which relies on cpu (partial)
-> > slabs - now a redundant caching layer that we are about to remove.
-> > 
-> > The refill will thus be done from slabs on the node partial list.
-> > Introduce new functions that can do that in an optimized way as it's
-> > easier than modifying the __kmem_cache_alloc_bulk() call chain.
-> > 
-> > Extend struct partial_context so it can return a list of slabs from the
-> > partial list with the sum of free objects in them within the requested
-> > min and max.
-> > 
-> > Introduce get_partial_node_bulk() that removes the slabs from freelist
-> > and returns them in the list.
-> > 
-> > Introduce get_freelist_nofreeze() which grabs the freelist without
-> > freezing the slab.
-> > 
-> > Introduce alloc_from_new_slab() which can allocate multiple objects from
-> > a newly allocated slab where we don't need to synchronize with freeing.
-> > In some aspects it's similar to alloc_single_from_new_slab() but assumes
-> > the cache is a non-debug one so it can avoid some actions.
-> > 
-> > Introduce __refill_objects() that uses the functions above to fill an
-> > array of objects. It has to handle the possibility that the slabs will
-> > contain more objects that were requested, due to concurrent freeing of
-> > objects to those slabs. When no more slabs on partial lists are
-> > available, it will allocate new slabs. It is intended to be only used
-> > in context where spinning is allowed, so add a WARN_ON_ONCE check there.
-> > 
-> > Finally, switch refill_sheaf() to use __refill_objects(). Sheaves are
-> > only refilled from contexts that allow spinning, or even blocking.
-> > 
-> > Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> 
-> ...
-> 
-> > +static unsigned int alloc_from_new_slab(struct kmem_cache *s, struct slab *slab,
-> > +		void **p, unsigned int count, bool allow_spin)
-> > +{
-> > +	unsigned int allocated = 0;
-> > +	struct kmem_cache_node *n;
-> > +	unsigned long flags;
-> > +	void *object;
-> > +
-> > +	if (!allow_spin && (slab->objects - slab->inuse) > count) {
-> > +
-> > +		n = get_node(s, slab_nid(slab));
-> > +
-> > +		if (!spin_trylock_irqsave(&n->list_lock, flags)) {
-> > +			/* Unlucky, discard newly allocated slab */
-> > +			defer_deactivate_slab(slab, NULL);
-> 
-> This actually does dec_slabs_node() only with slab->frozen which we don't set.
 
-Hi, I think I follow the intent, but I got a little tripped up here: patch 08
-(current patch) seems to assume "slab->frozen = 1" is already gone. That's true
-after the whole series, but the removal only happens in patch 09.
 
-Would it make sense to avoid relying on that assumption when looking at patch 08
-in isolation?
+On 14/01/26 5:14 pm, adubey@linux.ibm.com wrote:
+> From: Abhishek Dubey <adubey@linux.ibm.com>
+> 
+> The modified prologue/epilogue generation code now
+> enables exception-callback to use the stack frame of
+> the program marked as exception boundary, where callee
+> saved registers are stored.
+> 
+> As per ppc64 ABIv2 documentation[1], r14-r31 are callee
+> saved registers. BPF programs on ppc64 already saves
+> r26-r31 registers. Saving the remaining set of callee
+> saved registers(r14-r25) is handled in the next patch.
+> 
+> [1] https://ftp.rtems.org/pub/rtems/people/sebh/ABI64BitOpenPOWERv1.1_16July2015_pub.pdf
+> 
+> Signed-off-by: Abhishek Dubey <adubey@linux.ibm.com>
+> ---
+>   arch/powerpc/net/bpf_jit.h        |  2 ++
+>   arch/powerpc/net/bpf_jit_comp.c   |  7 ++++
+>   arch/powerpc/net/bpf_jit_comp64.c | 53 +++++++++++++++++++++----------
+>   3 files changed, 45 insertions(+), 17 deletions(-)
+> 
+> diff --git a/arch/powerpc/net/bpf_jit.h b/arch/powerpc/net/bpf_jit.h
+> index 5d735bc5e6bd..fb548ae5d143 100644
+> --- a/arch/powerpc/net/bpf_jit.h
+> +++ b/arch/powerpc/net/bpf_jit.h
+> @@ -179,6 +179,8 @@ struct codegen_context {
+>   	u64 arena_vm_start;
+>   	u64 user_vm_start;
+>   	bool is_subprog;
+> +	bool exception_boundary;
+> +	bool exception_cb;
+>   };
+>   
+>   #define bpf_to_ppc(r)	(ctx->b2p[r])
+> diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_comp.c
+> index e3088cf089d1..26991940d36e 100644
+> --- a/arch/powerpc/net/bpf_jit_comp.c
+> +++ b/arch/powerpc/net/bpf_jit_comp.c
+> @@ -207,6 +207,8 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+>   	cgctx.arena_vm_start = bpf_arena_get_kern_vm_start(fp->aux->arena);
+>   	cgctx.user_vm_start = bpf_arena_get_user_vm_start(fp->aux->arena);
+>   	cgctx.is_subprog = bpf_is_subprog(fp);
+> +	cgctx.exception_boundary = fp->aux->exception_boundary;
+> +	cgctx.exception_cb = fp->aux->exception_cb;
+>   
+>   	/* Scouting faux-generate pass 0 */
+>   	if (bpf_jit_build_body(fp, NULL, NULL, &cgctx, addrs, 0, false)) {
+> @@ -436,6 +438,11 @@ void bpf_jit_free(struct bpf_prog *fp)
+>   	bpf_prog_unlock_free(fp);
+>   }
+>   
+> +bool bpf_jit_supports_exceptions(void)
+> +{
+> +	return IS_ENABLED(CONFIG_PPC64);
+> +}
+> +
+>   bool bpf_jit_supports_subprog_tailcalls(void)
+>   {
+>   	return IS_ENABLED(CONFIG_PPC64);
+> diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
+> index ec58395f74f7..a6083dd9786c 100644
+> --- a/arch/powerpc/net/bpf_jit_comp64.c
+> +++ b/arch/powerpc/net/bpf_jit_comp64.c
+> @@ -89,7 +89,9 @@ static inline bool bpf_has_stack_frame(struct codegen_context *ctx)
+>   	 * - the bpf program uses its stack area
+>   	 * The latter condition is deduced from the usage of BPF_REG_FP
+>   	 */
+> -	return ctx->seen & SEEN_FUNC || bpf_is_seen_register(ctx, bpf_to_ppc(BPF_REG_FP));
+> +	return ctx->seen & SEEN_FUNC ||
+> +	       bpf_is_seen_register(ctx, bpf_to_ppc(BPF_REG_FP)) ||
+> +	       ctx->exception_cb;
+>   }
+>   
+>   /*
+> @@ -190,23 +192,32 @@ void bpf_jit_build_prologue(u32 *image, struct codegen_context *ctx)
+>   		EMIT(PPC_RAW_STDU(_R1, _R1, -(BPF_PPC_STACKFRAME + ctx->stack_size)));
+>   	}
+>   
+> -	/*
+> -	 * Back up non-volatile regs -- BPF registers 6-10
+> -	 * If we haven't created our own stack frame, we save these
+> -	 * in the protected zone below the previous stack frame
+> -	 */
+> -	for (i = BPF_REG_6; i <= BPF_REG_10; i++)
+> -		if (bpf_is_seen_register(ctx, bpf_to_ppc(i)))
+> -			EMIT(PPC_RAW_STD(bpf_to_ppc(i), _R1, bpf_jit_stack_offsetof(ctx, bpf_to_ppc(i))));
+> +	if (!ctx->exception_cb) {
+> +		/*
+> +		 * Back up non-volatile regs -- BPF registers 6-10
+> +		 * If we haven't created our own stack frame, we save these
+> +		 * in the protected zone below the previous stack frame
+> +		 */
+> +		for (i = BPF_REG_6; i <= BPF_REG_10; i++)
+> +			if (ctx->exception_boundary || bpf_is_seen_register(ctx, bpf_to_ppc(i)))
+> +				EMIT(PPC_RAW_STD(bpf_to_ppc(i), _R1,
+> +					bpf_jit_stack_offsetof(ctx, bpf_to_ppc(i))));
+>   
+> -	if (ctx->arena_vm_start)
+> -		EMIT(PPC_RAW_STD(bpf_to_ppc(ARENA_VM_START), _R1,
+> +		if (ctx->exception_boundary || ctx->arena_vm_start)
+> +			EMIT(PPC_RAW_STD(bpf_to_ppc(ARENA_VM_START), _R1,
+>   				 bpf_jit_stack_offsetof(ctx, bpf_to_ppc(ARENA_VM_START))));
+>   
+> -	/* Setup frame pointer to point to the bpf stack area */
+> -	if (bpf_is_seen_register(ctx, bpf_to_ppc(BPF_REG_FP)))
+> -		EMIT(PPC_RAW_ADDI(bpf_to_ppc(BPF_REG_FP), _R1,
+> +		/* Setup frame pointer to point to the bpf stack area */
+> +		if (bpf_is_seen_register(ctx, bpf_to_ppc(BPF_REG_FP)))
+> +			EMIT(PPC_RAW_ADDI(bpf_to_ppc(BPF_REG_FP), _R1,
+>   				STACK_FRAME_MIN_SIZE + ctx->stack_size));
+> +	} else {
+> +		/*
+> +		 * Exception callback receives Frame Pointer of main
+> +		 * program as third arg
+> +		 */
+> +		EMIT(PPC_RAW_MR(_R1, _R5));
+> +	}
+>   
+>   	if (ctx->arena_vm_start)
+>   		PPC_LI64(bpf_to_ppc(ARENA_VM_START), ctx->arena_vm_start);
+> @@ -218,17 +229,25 @@ static void bpf_jit_emit_common_epilogue(u32 *image, struct codegen_context *ctx
+>   
+>   	/* Restore NVRs */
+>   	for (i = BPF_REG_6; i <= BPF_REG_10; i++)
+> -		if (bpf_is_seen_register(ctx, bpf_to_ppc(i)))
+> +		if (ctx->exception_cb || bpf_is_seen_register(ctx, bpf_to_ppc(i)))
+>   			EMIT(PPC_RAW_LD(bpf_to_ppc(i), _R1, bpf_jit_stack_offsetof(ctx, bpf_to_ppc(i))));
+>   
+> -	if (ctx->arena_vm_start)
+> +	if (ctx->exception_cb || ctx->arena_vm_start)
+>   		EMIT(PPC_RAW_LD(bpf_to_ppc(ARENA_VM_START), _R1,
+>   				bpf_jit_stack_offsetof(ctx, bpf_to_ppc(ARENA_VM_START))));
+>   
 
-> 
-> > +			return 0;
-> > +		}
-> > +	}
-> > +
-> > +	object = slab->freelist;
-> > +	while (object && allocated < count) {
-> > +		p[allocated] = object;
-> > +		object = get_freepointer(s, object);
-> > +		maybe_wipe_obj_freeptr(s, p[allocated]);
-> > +
-> > +		slab->inuse++;
-> > +		allocated++;
-> > +	}
-> > +	slab->freelist = object;
-> > +
-> > +	if (slab->freelist) {
-> > +
-> > +		if (allow_spin) {
-> > +			n = get_node(s, slab_nid(slab));
-> > +			spin_lock_irqsave(&n->list_lock, flags);
-> > +		}
-> > +		add_partial(n, slab, DEACTIVATE_TO_HEAD);
-> > +		spin_unlock_irqrestore(&n->list_lock, flags);
-> > +	}
-> 
-> So we should only do inc_slabs_node() here.
-> This also addresses the problem in 9/20 that Hao Li pointed out...
+> +	if (ctx->exception_cb) {
+> +		/*
+> +		 * LR value from boundary-frame is received as second parameter
+> +		 * in exception callback.
+> +		 */
+> +		EMIT(PPC_RAW_MTLR(_R4));
+> +	}
+> +
 
-Yes, thanks,
-Looking at the patchset as a whole, I think this part - together with the later
-removal of inc_slabs_node() - does address the issue.
+No. Both second and third parameter of exception_cb() are stack pointer
+(or frame pointer, if you prefer that) and not LR.
+The above hunk is wrong. It still worked because of mtlr
+instruction below that restored LR from PPC_LR_STKOFF offset
+on the stack. Please drop the above hunk.
 
-> 
-> > +	return allocated;
-> > +}
-> > +
-> 
-> ...
-> 
-> > +static unsigned int
-> > +__refill_objects(struct kmem_cache *s, void **p, gfp_t gfp, unsigned int min,
-> > +		 unsigned int max)
-> > +{
-> > +	struct slab *slab, *slab2;
-> > +	struct partial_context pc;
-> > +	unsigned int refilled = 0;
-> > +	unsigned long flags;
-> > +	void *object;
-> > +	int node;
-> > +
-> > +	pc.flags = gfp;
-> > +	pc.min_objects = min;
-> > +	pc.max_objects = max;
-> > +
-> > +	node = numa_mem_id();
-> > +
-> > +	if (WARN_ON_ONCE(!gfpflags_allow_spinning(gfp)))
-> > +		return 0;
-> > +
-> > +	/* TODO: consider also other nodes? */
-> > +	if (!get_partial_node_bulk(s, get_node(s, node), &pc))
-> > +		goto new_slab;
-> > +
-> > +	list_for_each_entry_safe(slab, slab2, &pc.slabs, slab_list) {
-> > +
-> > +		list_del(&slab->slab_list);
-> > +
-> > +		object = get_freelist_nofreeze(s, slab);
-> > +
-> > +		while (object && refilled < max) {
-> > +			p[refilled] = object;
-> > +			object = get_freepointer(s, object);
-> > +			maybe_wipe_obj_freeptr(s, p[refilled]);
-> > +
-> > +			refilled++;
-> > +		}
-> > +
-> > +		/*
-> > +		 * Freelist had more objects than we can accomodate, we need to
-> > +		 * free them back. We can treat it like a detached freelist, just
-> > +		 * need to find the tail object.
-> > +		 */
-> > +		if (unlikely(object)) {
-> > +			void *head = object;
-> > +			void *tail;
-> > +			int cnt = 0;
-> > +
-> > +			do {
-> > +				tail = object;
-> > +				cnt++;
-> > +				object = get_freepointer(s, object);
-> > +			} while (object);
-> > +			do_slab_free(s, slab, head, tail, cnt, _RET_IP_);
-> > +		}
-> > +
-> > +		if (refilled >= max)
-> > +			break;
-> > +	}
-> > +
-> > +	if (unlikely(!list_empty(&pc.slabs))) {
-> > +		struct kmem_cache_node *n = get_node(s, node);
-> > +
-> > +		spin_lock_irqsave(&n->list_lock, flags);
-> > +
-> > +		list_for_each_entry_safe(slab, slab2, &pc.slabs, slab_list) {
-> > +
-> > +			if (unlikely(!slab->inuse && n->nr_partial >= s->min_partial))
-> > +				continue;
-> > +
-> > +			list_del(&slab->slab_list);
-> > +			add_partial(n, slab, DEACTIVATE_TO_HEAD);
-> > +		}
-> > +
-> > +		spin_unlock_irqrestore(&n->list_lock, flags);
-> > +
-> > +		/* any slabs left are completely free and for discard */
-> > +		list_for_each_entry_safe(slab, slab2, &pc.slabs, slab_list) {
-> > +
-> > +			list_del(&slab->slab_list);
-> > +			discard_slab(s, slab);
-> > +		}
-> > +	}
-> > +
-> > +
-> > +	if (likely(refilled >= min))
-> > +		goto out;
-> > +
-> > +new_slab:
-> > +
-> > +	slab = new_slab(s, pc.flags, node);
-> > +	if (!slab)
-> > +		goto out;
-> > +
-> > +	stat(s, ALLOC_SLAB);
-> > +	inc_slabs_node(s, slab_nid(slab), slab->objects);
-> 
-> And remove it from here.
-> 
-> > +
-> > +	/*
-> > +	 * TODO: possible optimization - if we know we will consume the whole
-> > +	 * slab we might skip creating the freelist?
-> > +	 */
-> > +	refilled += alloc_from_new_slab(s, slab, p + refilled, max - refilled,
-> > +					/* allow_spin = */ true);
-> > +
-> > +	if (refilled < min)
-> > +		goto new_slab;
-> > +out:
-> > +
-> > +	return refilled;
-> > +}
-> > +
-> >  static inline
-> >  int __kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
-> >  			    void **p)
-> > 
-> 
+>   	/* Tear down our stack frame */
+>   	if (bpf_has_stack_frame(ctx)) {
+>   		EMIT(PPC_RAW_ADDI(_R1, _R1, BPF_PPC_STACKFRAME + ctx->stack_size));
+> -		if (ctx->seen & SEEN_FUNC) {
+> +		if (ctx->seen & SEEN_FUNC || ctx->exception_cb) {
+>   			EMIT(PPC_RAW_LD(_R0, _R1, PPC_LR_STKOFF));
+>   			EMIT(PPC_RAW_MTLR(_R0));
+>   		}
+
+- Hari
 
