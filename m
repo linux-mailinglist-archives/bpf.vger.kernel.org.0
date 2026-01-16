@@ -1,208 +1,139 @@
-Return-Path: <bpf+bounces-79230-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79231-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB138D2F60D
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 11:15:23 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C8B1D2F9B4
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 11:33:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id D90BC30797A9
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 10:14:14 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 82DC6301830B
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 10:33:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71CE127E074;
-	Fri, 16 Jan 2026 10:14:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="JbM8eJ0/"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A0A331E0FB;
+	Fri, 16 Jan 2026 10:33:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-dl1-f43.google.com (mail-dl1-f43.google.com [74.125.82.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 918D935FF7D
-	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 10:14:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.82.43
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768558451; cv=pass; b=mHhOm/3h1kQ8+dqf0Y/pJcQr8GNZAdm1N7bQeVSbVT7ENGtQDJmhr4P0lxG/G1JvORz4jR278IAwRTMXWYrjyz/pQYDc3aqT8cgOdoG1SAIzu4wC1fb7sKQ6EFkRdfVkwyq7oLb6yFJyRc+87WcE1r7gwAoAHtVdRY4J/1kAn40=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768558451; c=relaxed/simple;
-	bh=bk5/3lbjEMmyky8pBWHhH8r8X4gEVrOrHe0JTU5LCGU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ju7459msA/Xl8P9Nf1ef9/b1iOhhE2v6C6/vzxkQmr4M4oySePoJ+RU3+peA3Awc1RYWJ9Z99X3RBWUCCK+GDtSn5Z5L7DTw9FZ1u87lRUdt0i1qZ1KsohBveAg1pRFCgeg7YivhTfrx92pM7ycEqVzEkE24VjI3YP6pPmagJoQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=JbM8eJ0/; arc=pass smtp.client-ip=74.125.82.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-dl1-f43.google.com with SMTP id a92af1059eb24-121a0bcd376so4793028c88.0
-        for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 02:14:09 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1768558449; cv=none;
-        d=google.com; s=arc-20240605;
-        b=guIhvuZSwdRENWamfLs/YoNWjV5LgF36HYSOs1bLRLrDDmS3zWZBXC6P8coKsqhSNk
-         pvDYKetk0LC796oyCY24wM74Mu3JLFbI7BizEniSU1zZms61EMdGRBmSEAWF/dLstl5i
-         M7DGH/W3t0SpjSD3j+QIlqfCI8yKf6PfaS44Dh0qMnKq2S6Ia/bG7boYoKViu6gK5WAC
-         PzkIZ7PrZrTMPkdT5kZlY/nz3Nz68jEeltoslDihh7pgHiNN1pr1rAOk84+ZFRxjLvMk
-         ykDNyYitSIgRcE3CknX5bL+XXdKLeATHPEGCZGWxu3Fpp946hs2yaIzRWNjeo/S7LsOO
-         8Waw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature;
-        bh=R6JRLFxsvawK2lrd6X6b6x3zam0z5lOzXeW0w0nzBUs=;
-        fh=cEE4CF8nf3mAf4cX61CFhrpAWWO4HTKDnfDc3YeFbCA=;
-        b=XDFz+xWAbnlaN4YZwRM58Qh+mZ9RZarEW/lwykxJSkNis88BFVxd5OfVZ9xVSWSLUP
-         25peiLWF7JRi/hQ8XmIUWwlj4AcksxdSt71BGHBZPqY11L2XiDuZRx94/wc29aU3SrEL
-         loz0Ih8zb+cxsDKwaFw3BBy/HIogVh11361wUH5JsDjKjw9e4zRbSWesWw3Le7upYMAj
-         9wuPRUal+Spqng252KUIb4MLSYytDv7UQWp6mvktMz2lWnfQWYH3ZtxIuMwke8SyWfB5
-         MuzlK8uzShjHlndRoOJeViwS8zCvk9WXVQDKrTmq+wqpy9kIbo44GaqU9EWZl2Jyu0QW
-         cerw==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1768558449; x=1769163249; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=R6JRLFxsvawK2lrd6X6b6x3zam0z5lOzXeW0w0nzBUs=;
-        b=JbM8eJ0/roUCtCQe2GIWfTJGfJ5Xh8RU51dY0CTp3r49fuyX4+Mz3FAr19Rr6HN1sL
-         6z9J8GfujODezY9qjd9wwxTtvHXWWnx7+X2NujN6haz7YhtLVsOGvxsHyffJADb/1ntq
-         7n1i7kefpz1iZxADCnu35XVnnicIZWCJQbPAhgt4toAfFL6QT0bC/uBIxev0vQuE9ozk
-         +s0LeXRej8hS/E1S6KiKHF02VM2Mnz5rY7SmGX5VXWQAYgXOy3EPN4w7e6LUCYPuZ6/z
-         ysznDZLqDVzNNwFKE8qhutAzfqSa2g6CyDzJktWcHycEAeBUH0p1OxwoIsdM9SDRGfmA
-         9JxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768558449; x=1769163249;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=R6JRLFxsvawK2lrd6X6b6x3zam0z5lOzXeW0w0nzBUs=;
-        b=S4bmu9ETmYpSWdaG0arrg22dmOriB783MgzpX4KewbKGftYRjWpYXZRzgZ8Ka/9hG/
-         zk//LHThDU18mW2Slsjk1V7Gvrg9vSVZXi4pMBfTYO0iSsv2aj62TNMkGZbODZKS/MRr
-         GNWRJqhxHk9YCEvVwQYFt8KjtGZmv+gO8r0MFK9TSUQTRlV71lPWeeFxAF+pNpE12uuJ
-         0HD2/VKJ61GxkCt2ZFJTOo2aVRuU9A2Wu4C2O5teHV+LBxjhEXZMosjGeqogZ8NCgdbd
-         NSBfXMvEzAOB9PQwvZTmXorfT7kgdvfuHjxiSqUqtLqUItRGsxnA9g2Tat1ADHyC652f
-         LNUA==
-X-Forwarded-Encrypted: i=1; AJvYcCVAJHH5nQ5b9Knlr6QMJoE0gEfxAsjqUXMUwK1xdK+ClMC/RrGD1ZunkZHRAp5FHHoDJis=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxYxIGNfkgk8C0cTfeHVoclFRvvKhhRkTYtLI+ulIpuU0VkksbW
-	yQLPeYKhzvJxXjuESxKziomzoq3YH6qgnoKyp0zhA7QiGky9IgmEYLJI3cEyCxr+lMHBwqeEjLB
-	BFhIXRLoPQI1eW7pxoLPA0+27DTx/RZx7FEIUuitD
-X-Gm-Gg: AY/fxX6Sodnyftnr4uFEqbjzJIbb91d4hB2xcCSBlgo+lLdeXEv1hinQB+zdV66d8Ye
-	JACA+vSdT5bCocrPxcv70w5w8JeJGBTDbcbrpo+eqA8jVaB/kMdSvvxz5ISaEZ2dPEA9wbjNkEn
-	zbbqMEvDgE9ZFvYEHtSiOOOYLNUpL1pSJv4Eb2JRzjEP3/p5rtkuXaF/tWS+cX6n244JuhGhkTM
-	a43yWpaPGgMBt43Zwso3b0Xj2fJjFCElpNAs54dP/T1zpdfFUFw3D2PlSS4tvsTt/duR/4+jyLx
-	//2FgzXGzeSTbL02Y39EJYVhTTM=
-X-Received: by 2002:a05:7022:2490:b0:11b:9386:7ed0 with SMTP id
- a92af1059eb24-1244a75ccb0mr1972499c88.45.1768558448271; Fri, 16 Jan 2026
- 02:14:08 -0800 (PST)
+Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [13.75.44.102])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C00C931B832
+	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 10:33:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.75.44.102
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768559617; cv=none; b=QaOfcGkHVtx2DXss4C1/aY142we5X2YAM6njjcN8nlmizH3yat2fQxn8EXrevAf3zYxGwftY0ivY8R9K0LveCd8rJQ6E62seZXi0fBufqohVWRxG/vgb2I+6WK2c0lLrBYEzRWgJqDUoeyhNLcEdFOCZP8KRVJY38W8b935eNmM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768559617; c=relaxed/simple;
+	bh=Dq9xXsFDjpR+trNnnyJ2PtTgaLe9xB55vpB+EZa79T8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZdIYwMASdndPYP2KMAkVXnka+lIskEfPlBAFB3rpJdYVZT1PISa2ssWJg87tjOsr/iAtxaeWCOhXkXOCIJBLKZcOQETt91BT5VwmJtjCkNNwLJ4gAHvkXrW1nTU6AbPD5vfAkSdpw1x4o7inbj3doF0W3RxycBhojXJivnVQXuM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=13.75.44.102
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from zju.edu.cn (unknown [10.162.146.110])
+	by mtasvr (Coremail) with SMTP id _____wC3H4TZE2ppKOoFAA--.14983S3;
+	Fri, 16 Jan 2026 18:32:58 +0800 (CST)
+Received: from lutetium.tail477849.ts.net (unknown [10.162.146.110])
+	by mail-app4 (Coremail) with SMTP id zi_KCgCniH_YE2ppYUqrBA--.28949S2;
+	Fri, 16 Jan 2026 18:32:56 +0800 (CST)
+From: Yazhou Tang <tangyazhou@zju.edu.cn>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	tangyazhou518@outlook.com,
+	shenghaoyuan0928@163.com,
+	ziye@zju.edu.cn
+Subject: [PATCH bpf-next v4 0/2] bpf: Add range tracking for BPF_DIV and BPF_MOD
+Date: Fri, 16 Jan 2026 18:32:44 +0800
+Message-ID: <20260116103246.2477635-1-tangyazhou@zju.edu.cn>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260116091730.324322-1-alan.maguire@oracle.com>
-In-Reply-To: <20260116091730.324322-1-alan.maguire@oracle.com>
-From: Marco Elver <elver@google.com>
-Date: Fri, 16 Jan 2026 11:13:32 +0100
-X-Gm-Features: AZwV_QgPQtH397zV3jG8ReUSm2lFJl74Uk7P3X1iMiHb7yMVzpdh6cWgNE1o75c
-Message-ID: <CANpmjNM=w46BDuLsvAW6oM7JbPvrhN1ddaEUNSvsfZVU-514cQ@mail.gmail.com>
-Subject: Re: [PATCH] kcsan, compiler_types: avoid duplicate type issues in BPF
- Type Format
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: kees@kernel.org, nathan@kernel.org, peterz@infradead.org, ojeda@kernel.org, 
-	akpm@linux-foundation.org, ubizjak@gmail.com, Jason@zx2c4.com, 
-	Marc.Herbert@linux.intel.com, hca@linux.ibm.com, hpa@zytor.com, 
-	namjain@linux.microsoft.com, paulmck@kernel.org, linux-kernel@vger.kernel.org, 
-	andrii.nakryiko@gmail.com, yonghong.song@linux.dev, ast@kernel.org, 
-	jolsa@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
-	eddyz87@gmail.com, song@kernel.org, john.fastabend@gmail.com, 
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, bvanassche@acm.org, 
-	nilay@linux.ibm.com, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:zi_KCgCniH_YE2ppYUqrBA--.28949S2
+X-CM-SenderInfo: qssvjiasrsq6lmxovvfxof0/1tbiAgoNCmlpQwUcxgAAsT
+X-CM-DELIVERINFO: =?B?e9SYoAXKKxbFmtjJiESix3B1w3vD7IpoGYuur0o+r46DyAi5OfOO+T4vrW4FyUBIyu
+	9q9Bb/Zo+NVno/tGVqx+Qy9MF8gN+01+p1aHar+kg1EXqQeOiXe6MDykN7sazhvWHsIw3i
+	611z5RBcUYwEku3mye0rwVwxpxwWYgTXH3xKroOPaSTpb+4GoWJY1kGDbQmvkQ==
+X-Coremail-Antispam: 1Uk129KBj93XoW7tFWxCw4rGF17XFWrCF15GFX_yoW8tw4Dpr
+	s7GFn8Gr1vyayIyry7A3y7ZrW5Jan0yw4xZrn3A34ava15Ary8WFWxKry5Cr9IyrZ3W3WF
+	vF12qwnFva4qyFXCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUU9Eb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AK
+	xVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI0UMc
+	02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAF
+	wI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0Y48IcxkI7V
+	AKI48G6xCjnVAKz4kxM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI7VAKI48JMxC2
+	0s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI
+	0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE
+	14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20x
+	vaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8
+	JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU801v3UUUUU==
 
-On Fri, 16 Jan 2026 at 10:17, Alan Maguire <alan.maguire@oracle.com> wrote:
->
-> Enabling KCSAN is causing a large number of duplicate types
-> in BTF for core kernel structs like task_struct [1].
-> This is due to the definition in include/linux/compiler_types.h
->
-> `#ifdef __SANITIZE_THREAD__
-> ...
-> `#define __data_racy volatile
-> ..
-> `#else
-> ...
-> `#define __data_racy
-> ...
-> `#endif
->
-> Because some objects in the kernel are compiled without
-> KCSAN flags (KCSAN_SANITIZE) we sometimes get the empty
-> __data_racy annotation for objects; as a result we get multiple
-> conflicting representations of the associated structs in DWARF,
-> and these lead to multiple instances of core kernel types in
-> BTF since they cannot be deduplicated due to the additional
-> modifier in some instances.
->
-> Moving the __data_racy definition under CONFIG_KCSAN
-> avoids this problem, since the volatile modifier will
-> be present for both KCSAN and KCSAN_SANITIZE objects
-> in a CONFIG_KCSAN=y kernel.
+From: Yazhou Tang <tangyazhou518@outlook.com>
 
-"KCSAN and KCSAN_SANITIZE objects" doesn't make sense.
-"KCSAN_SANITIZE.. := n" objects?
-Or just "instrumented and uninstrumented source files".
-Anyway, I know what you mean, but others might not. :-)
+Add range tracking (interval analysis) for BPF_DIV and BPF_MOD when
+divisor is constant. Please see commit log of 1/2 for more details.
 
-> Fixes: 31f605a308e6 ("kcsan, compiler_types: Introduce __data_racy type qualifier")
-> Reported-by: Nilay Shroff <nilay@linux.ibm.com>
-> Suggested-by: Marco Elver <elver@google.com>
-> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+---
 
-Reviewed-by: Marco Elver <elver@google.com>
+Changes v3 => v4:
+1. Remove verbose helper functions for "division by zero" handling. (Alexei)
+2. Put all "reset" logic in one place for clarity, and add 2 helper
+   function `__reset_reg64_and_tnum` and `__reset_reg32_and_tnum` to
+   reduce code duplication. (Alexei)
+3. Update all multi-line comments to follow the standard kernel style. (Alexei)
+4. Add new test cases to cover strictly positive and strictly negative
+   divisor scenarios in SDIV and SMOD analysis. (Alexei)
+5. Fixup a typo in SDIV analysis functions.
 
-> ---
->  include/linux/compiler_types.h | 23 ++++++++++++++++-------
->  1 file changed, 16 insertions(+), 7 deletions(-)
->
-> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-> index d3318a3c2577..86111a189a87 100644
-> --- a/include/linux/compiler_types.h
-> +++ b/include/linux/compiler_types.h
-> @@ -303,6 +303,22 @@ struct ftrace_likely_data {
->  # define __no_kasan_or_inline __always_inline
->  #endif
->
-> +#ifdef CONFIG_KCSAN
-> +/*
-> + * Type qualifier to mark variables where all data-racy accesses should be
-> + * ignored by KCSAN. Note, the implementation simply marks these variables as
-> + * volatile, since KCSAN will treat such accesses as "marked".
-> + *
-> + * Defined here because defining __data_racy as volatile for KCSAN objects only
-> + * causes problems in BPF Type Format (BTF) generation since struct members
-> + * of core kernel data structs will be volatile in some objects and not in
-> + * others.  Instead define it globally for KCSAN kernels.
-> + */
-> +# define __data_racy volatile
-> +#else
-> +# define __data_racy
-> +#endif
-> +
->  #ifdef __SANITIZE_THREAD__
->  /*
->   * Clang still emits instrumentation for __tsan_func_{entry,exit}() and builtin
-> @@ -314,16 +330,9 @@ struct ftrace_likely_data {
->   * disable all instrumentation. See Kconfig.kcsan where this is mandatory.
->   */
->  # define __no_kcsan __no_sanitize_thread __disable_sanitizer_instrumentation
-> -/*
-> - * Type qualifier to mark variables where all data-racy accesses should be
-> - * ignored by KCSAN. Note, the implementation simply marks these variables as
-> - * volatile, since KCSAN will treat such accesses as "marked".
-> - */
-> -# define __data_racy volatile
->  # define __no_sanitize_or_inline __no_kcsan notrace __maybe_unused
->  #else
->  # define __no_kcsan
-> -# define __data_racy
->  #endif
->
->  #ifdef __SANITIZE_MEMORY__
-> --
-> 2.39.3
->
+v3: https://lore.kernel.org/bpf/20260113103552.3435695-1-tangyazhou@zju.edu.cn/
+
+Changes v2 => v3:
+1. Fixup a bug in `adjust_scalar_min_max_vals` function that lead to
+   incorrect range results. (Syzbot)
+2. Remove tnum analysis logic. (Alexei)
+3. Only handle "constant divisor" case. (Alexei)
+4. Add BPF_MOD range analysis logic.
+5. Update selftests accordingly.
+6. Add detailed code comments and improve commit messages. (Yonghong)
+
+v2: https://lore.kernel.org/bpf/20251223091120.2413435-1-tangyazhou@zju.edu.cn/
+
+Changes v1 => v2:
+1. Fixed 2 bugs in sdiv32 analysis logic and corrected the associated
+   selftest cases. (AI reviewer)
+2. Renamed `tnum_bottom` to `tnum_empty` for better clarity, and updated
+   commit message to explain its role in signed BPF_DIV analysis.
+
+v1:
+https://lore.kernel.org/bpf/tencent_717092CD734D050CCD93401CA624BB3C8307@qq.com/
+https://lore.kernel.org/bpf/tencent_7C98FAECA40C98489ACF4515CE346F031509@qq.com/
+
+Yazhou Tang (2):
+  bpf: Add range tracking for BPF_DIV and BPF_MOD
+  selftests/bpf: Add tests for BPF_DIV and BPF_MOD range tracking
+
+ kernel/bpf/verifier.c                         |  299 +++++
+ .../selftests/bpf/prog_tests/verifier.c       |    2 +
+ .../bpf/progs/verifier_div_mod_bounds.c       | 1149 +++++++++++++++++
+ .../bpf/progs/verifier_value_illegal_alu.c    |    7 +-
+ .../testing/selftests/bpf/verifier/precise.c  |    4 +-
+ 5 files changed, 1456 insertions(+), 5 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_div_mod_bounds.c
+
+-- 
+2.52.0
+
 
