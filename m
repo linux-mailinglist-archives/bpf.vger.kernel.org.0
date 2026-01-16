@@ -1,144 +1,262 @@
-Return-Path: <bpf+bounces-79291-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79292-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 501EED33060
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 16:04:26 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE298D3300C
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 16:02:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id E426831475D9
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 14:51:46 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 44A173028322
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 14:56:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A325F39524A;
-	Fri, 16 Jan 2026 14:51:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC65B394472;
+	Fri, 16 Jan 2026 14:56:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qO6oHptE"
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="F0NxxFs7"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+Received: from fra-out-001.esa.eu-central-1.outbound.mail-perimeter.amazon.com (fra-out-001.esa.eu-central-1.outbound.mail-perimeter.amazon.com [18.156.205.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C77B823EA85
-	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 14:51:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 530D623D2B2;
+	Fri, 16 Jan 2026 14:56:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.156.205.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768575068; cv=none; b=o1jvhB/jw+ytCQhqsGjLw+nDbWGvbfjMd+cIWR2VT6G/fPKB9P2Bi16F3iONfYHu655w/djctommkxNThG7kE9rb2AXQnX1cMP2GpiO+NpZN/3Z8DiEUzcoqLrWM3ThryL/zvCb2L98Jm6tCYjI2vPfNN5IWg1rFUGirfZFrQyU=
+	t=1768575383; cv=none; b=DAAEL/ythQC9dcNK4inEoLJdHBLeXIDYhp8B/zWP9QzKE9IvYa7r4za6VGrKDLtjbSnbrrKaAg6fmYVJwqsigEU4TOSFsU/qs2NVk/atVu1NdRRuSNdT5qFz/e+8h6TEWup4KibdcunnSVwzyCIw+2qymXLJMQWytk68tx1iDpo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768575068; c=relaxed/simple;
-	bh=6dGk2zEhRea6Q2TDm8mONjbI3QoDktGVNx9FN1lZpvo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TiQtXlho2cjZTe+GiND4QgnU+l2ryEWAHVMdJ9/GbTcEVNenR6E5ChMrnf7e/3hRNbPqFhcY93MZEEmBporOLoCNY6B/SVZhI/kAlOUN2H48D35DA13H4ndVYub6C8OSlRUDx8LT8YZ3sbKR9XwDDcBGWbXnI7wxS9XC6Nc+nlI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qO6oHptE; arc=none smtp.client-ip=91.218.175.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1768575064;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Xdn3VvN72T4vso2/2jDjWl7b9n9YQr49DkJId78Yofk=;
-	b=qO6oHptEuJ3QcsSSYw/Fxd7Q3ln6QtNEo0+PkOw1Mc4XA/6N5XZvQ/bk8S7ZBeDE0DcCFV
-	FDqSq4Tm+uO4Ch7fx+9dit5GvXygN1RrJf5Yksx66RLybQM0M8QbPjYYcBvMx4d0bacm6l
-	+9WGx+TuXSHoqbuN1VCG6u/SJzPPGHU=
-From: Menglong Dong <menglong.dong@linux.dev>
-To: Qiliang Yuan <realwujing@gmail.com>
-Cc: memxor@gmail.com, andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
- daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com,
- john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
- linux-kernel@vger.kernel.org, martin.lau@linux.dev, realwujing@qq.com,
- sdf@fomichev.me, song@kernel.org, yonghong.song@linux.dev,
- yuanql9@chinatelecom.cn, Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Qiliang Yuan <realwujing@gmail.com>
-Subject:
- Re: [PATCH v2] bpf/verifier: implement slab cache for verifier state list
-Date: Fri, 16 Jan 2026 22:50:36 +0800
-Message-ID: <14011562.uLZWGnKmhe@7950hx>
-In-Reply-To: <20260116132953.40636-1-realwujing@gmail.com>
-References:
- <CAP01T76JECHPV4Fdvm2bds=Eb36UYhQswd7oAJ+fRzW_1ZtnVw@mail.gmail.com>
- <20260116132953.40636-1-realwujing@gmail.com>
+	s=arc-20240116; t=1768575383; c=relaxed/simple;
+	bh=BxZnyiI6YgvskaCwpGEH+hfPdJiGYdOF3yczju02EHM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=b/JAdQvUEdGVM+Wf43S6WyAWz2pkI/+ltYRfr9jVv8atARLfFnvYYu6uZZ+ioq/OzyIRaVX5G8+98jiprqI+JZmvarV7Gm1ZE0n6SzfarpNFy+wXaglFbdaXlH2t+OeQec0rz2gGBxMV4uWt/GS0FVjUyJ4kUVyXCZMzwfsVGXo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.uk; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=F0NxxFs7; arc=none smtp.client-ip=18.156.205.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.uk
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1768575381; x=1800111381;
+  h=message-id:date:mime-version:reply-to:subject:to:cc:
+   references:from:in-reply-to:content-transfer-encoding;
+  bh=IEO4wkDrWsP8gb8dVRwVt7tfKvgBUuiF6zz/e0uDn6E=;
+  b=F0NxxFs7rBOpuPtGdmPKFR/XqYq1t+f3Brm9bFysGyZrP3gPftBLJw/i
+   Wh5P7IUKOKdVho9MP82TqY40LlX9qP84QSwMeu8tPY5QUX8wuwUybHvAH
+   ovqE+OvhOcMUrNusqjSXCf90nYcXKoL1nmKlKiRksCwwYPAcn568K2rpj
+   Zq6R4GcTOUEWuLLs1x6zuDKdmkaZFhFTLRDGI0/wt7b+qSK4UMyO/lLoP
+   u5Xx3nzWkD2eqZJq7uXPn/avRekRG18I3qBE/1WcohS0AA/SxrY5pkt18
+   Dbf/Jtx36fSUWubpBI96UeCyLTkQmvYDq2aPsxNi5NBwhpvT1cyB9L7tV
+   A==;
+X-CSE-ConnectionGUID: t80jrskTRzKiYCPAndralA==
+X-CSE-MsgGUID: hn4FZT+mTRGLqNyYAxxD5Q==
+X-IronPort-AV: E=Sophos;i="6.21,231,1763424000"; 
+   d="scan'208";a="7704673"
+Received: from ip-10-6-6-97.eu-central-1.compute.internal (HELO smtpout.naws.eu-central-1.prod.farcaster.email.amazon.dev) ([10.6.6.97])
+  by internal-fra-out-001.esa.eu-central-1.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2026 14:56:02 +0000
+Received: from EX19MTAEUA002.ant.amazon.com [54.240.197.232:3849]
+ by smtpin.naws.eu-central-1.prod.farcaster.email.amazon.dev [10.0.41.192:2525] with esmtp (Farcaster)
+ id 260b6298-10cb-4eed-9151-e85b598fcfcc; Fri, 16 Jan 2026 14:56:02 +0000 (UTC)
+X-Farcaster-Flow-ID: 260b6298-10cb-4eed-9151-e85b598fcfcc
+Received: from EX19D005EUB003.ant.amazon.com (10.252.51.31) by
+ EX19MTAEUA002.ant.amazon.com (10.252.50.124) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.35;
+ Fri, 16 Jan 2026 14:56:01 +0000
+Received: from [192.168.12.13] (10.106.82.9) by EX19D005EUB003.ant.amazon.com
+ (10.252.51.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.35; Fri, 16 Jan 2026
+ 14:55:57 +0000
+Message-ID: <6b50a83e-acd7-4db3-ae9b-015ffad4f615@amazon.com>
+Date: Fri, 16 Jan 2026 14:55:56 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Reply-To: <kalyazin@amazon.com>
+Subject: Re: [PATCH v9 02/13] mm/gup: drop secretmem optimization from
+ gup_fast_folio_allowed
+To: Ackerley Tng <ackerleytng@google.com>, "Kalyazin, Nikita"
+	<kalyazin@amazon.co.uk>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "kvmarm@lists.linux.dev"
+	<kvmarm@lists.linux.dev>, "linux-fsdevel@vger.kernel.org"
+	<linux-fsdevel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+	"kernel@xen0n.name" <kernel@xen0n.name>, "linux-riscv@lists.infradead.org"
+	<linux-riscv@lists.infradead.org>, "linux-s390@vger.kernel.org"
+	<linux-s390@vger.kernel.org>, "loongarch@lists.linux.dev"
+	<loongarch@lists.linux.dev>
+CC: "pbonzini@redhat.com" <pbonzini@redhat.com>, "corbet@lwn.net"
+	<corbet@lwn.net>, "maz@kernel.org" <maz@kernel.org>, "oupton@kernel.org"
+	<oupton@kernel.org>, "joey.gouly@arm.com" <joey.gouly@arm.com>,
+	"suzuki.poulose@arm.com" <suzuki.poulose@arm.com>, "yuzenghui@huawei.com"
+	<yuzenghui@huawei.com>, "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+	"will@kernel.org" <will@kernel.org>, "seanjc@google.com" <seanjc@google.com>,
+	"tglx@linutronix.de" <tglx@linutronix.de>, "mingo@redhat.com"
+	<mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>,
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "x86@kernel.org"
+	<x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>, "luto@kernel.org"
+	<luto@kernel.org>, "peterz@infradead.org" <peterz@infradead.org>,
+	"willy@infradead.org" <willy@infradead.org>, "akpm@linux-foundation.org"
+	<akpm@linux-foundation.org>, "david@kernel.org" <david@kernel.org>,
+	"lorenzo.stoakes@oracle.com" <lorenzo.stoakes@oracle.com>,
+	"Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>, "vbabka@suse.cz"
+	<vbabka@suse.cz>, "rppt@kernel.org" <rppt@kernel.org>, "surenb@google.com"
+	<surenb@google.com>, "mhocko@suse.com" <mhocko@suse.com>, "ast@kernel.org"
+	<ast@kernel.org>, "daniel@iogearbox.net" <daniel@iogearbox.net>,
+	"andrii@kernel.org" <andrii@kernel.org>, "martin.lau@linux.dev"
+	<martin.lau@linux.dev>, "eddyz87@gmail.com" <eddyz87@gmail.com>,
+	"song@kernel.org" <song@kernel.org>, "yonghong.song@linux.dev"
+	<yonghong.song@linux.dev>, "john.fastabend@gmail.com"
+	<john.fastabend@gmail.com>, "kpsingh@kernel.org" <kpsingh@kernel.org>,
+	"sdf@fomichev.me" <sdf@fomichev.me>, "haoluo@google.com" <haoluo@google.com>,
+	"jolsa@kernel.org" <jolsa@kernel.org>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
+	"jhubbard@nvidia.com" <jhubbard@nvidia.com>, "peterx@redhat.com"
+	<peterx@redhat.com>, "jannh@google.com" <jannh@google.com>,
+	"pfalcato@suse.de" <pfalcato@suse.de>, "shuah@kernel.org" <shuah@kernel.org>,
+	"riel@surriel.com" <riel@surriel.com>, "ryan.roberts@arm.com"
+	<ryan.roberts@arm.com>, "jgross@suse.com" <jgross@suse.com>,
+	"yu-cheng.yu@intel.com" <yu-cheng.yu@intel.com>, "kas@kernel.org"
+	<kas@kernel.org>, "coxu@redhat.com" <coxu@redhat.com>,
+	"kevin.brodsky@arm.com" <kevin.brodsky@arm.com>, "maobibo@loongson.cn"
+	<maobibo@loongson.cn>, "prsampat@amd.com" <prsampat@amd.com>,
+	"mlevitsk@redhat.com" <mlevitsk@redhat.com>, "jmattson@google.com"
+	<jmattson@google.com>, "jthoughton@google.com" <jthoughton@google.com>,
+	"agordeev@linux.ibm.com" <agordeev@linux.ibm.com>, "alex@ghiti.fr"
+	<alex@ghiti.fr>, "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+	"borntraeger@linux.ibm.com" <borntraeger@linux.ibm.com>,
+	"chenhuacai@kernel.org" <chenhuacai@kernel.org>, "dev.jain@arm.com"
+	<dev.jain@arm.com>, "gor@linux.ibm.com" <gor@linux.ibm.com>,
+	"hca@linux.ibm.com" <hca@linux.ibm.com>, "Jonathan.Cameron@huawei.com"
+	<Jonathan.Cameron@huawei.com>, "palmer@dabbelt.com" <palmer@dabbelt.com>,
+	"pjw@kernel.org" <pjw@kernel.org>, "shijie@os.amperecomputing.com"
+	<shijie@os.amperecomputing.com>, "svens@linux.ibm.com" <svens@linux.ibm.com>,
+	"thuth@redhat.com" <thuth@redhat.com>, "wyihan@google.com"
+	<wyihan@google.com>, "yang@os.amperecomputing.com"
+	<yang@os.amperecomputing.com>, "vannapurve@google.com"
+	<vannapurve@google.com>, "jackmanb@google.com" <jackmanb@google.com>,
+	"aneesh.kumar@kernel.org" <aneesh.kumar@kernel.org>, "patrick.roy@linux.dev"
+	<patrick.roy@linux.dev>, "Thomson, Jack" <jackabt@amazon.co.uk>, "Itazuri,
+ Takahiro" <itazur@amazon.co.uk>, "Manwaring, Derek" <derekmn@amazon.com>,
+	"Cali, Marco" <xmarcalx@amazon.co.uk>
+References: <20260114134510.1835-1-kalyazin@amazon.com>
+ <20260114134510.1835-3-kalyazin@amazon.com>
+ <CAEvNRgGrpv5h04s+btubhUFHo=d6mBFbr2BVrMt=bWuWOztdJQ@mail.gmail.com>
+Content-Language: en-US
+From: Nikita Kalyazin <kalyazin@amazon.com>
+Autocrypt: addr=kalyazin@amazon.com; keydata=
+ xjMEY+ZIvRYJKwYBBAHaRw8BAQdA9FwYskD/5BFmiiTgktstviS9svHeszG2JfIkUqjxf+/N
+ JU5pa2l0YSBLYWx5YXppbiA8a2FseWF6aW5AYW1hem9uLmNvbT7CjwQTFggANxYhBGhhGDEy
+ BjLQwD9FsK+SyiCpmmTzBQJnrNfABQkFps9DAhsDBAsJCAcFFQgJCgsFFgIDAQAACgkQr5LK
+ IKmaZPOpfgD/exazh4C2Z8fNEz54YLJ6tuFEgQrVQPX6nQ/PfQi2+dwBAMGTpZcj9Z9NvSe1
+ CmmKYnYjhzGxzjBs8itSUvWIcMsFzjgEY+ZIvRIKKwYBBAGXVQEFAQEHQCqd7/nb2tb36vZt
+ ubg1iBLCSDctMlKHsQTp7wCnEc4RAwEIB8J+BBgWCAAmFiEEaGEYMTIGMtDAP0Wwr5LKIKma
+ ZPMFAmes18AFCQWmz0MCGwwACgkQr5LKIKmaZPNTlQEA+q+rGFn7273rOAg+rxPty0M8lJbT
+ i2kGo8RmPPLu650A/1kWgz1AnenQUYzTAFnZrKSsXAw5WoHaDLBz9kiO5pAK
+In-Reply-To: <CAEvNRgGrpv5h04s+btubhUFHo=d6mBFbr2BVrMt=bWuWOztdJQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: EX19D012EUA003.ant.amazon.com (10.252.50.98) To
+ EX19D005EUB003.ant.amazon.com (10.252.51.31)
 
-On 2026/1/16 21:29, Qiliang Yuan wrote:
-> The BPF verifier's state exploration logic in is_state_visited() frequently
-> allocates and deallocates 'struct bpf_verifier_state_list' nodes. Currently,
-> these allocations use generic kzalloc(), which leads to significant memory
-> management overhead and page faults during high-complexity verification,
-> especially in multi-core parallel scenarios.
+
+
+On 15/01/2026 21:40, Ackerley Tng wrote:
+> "Kalyazin, Nikita" <kalyazin@amazon.co.uk> writes:
 > 
-> This patch introduces a dedicated 'bpf_verifier_state_list' slab cache to
-> optimize these allocations, providing better speed, reduced fragmentation,
-> and improved cache locality. All allocation and deallocation paths are
-> migrated to use kmem_cache_zalloc() and kmem_cache_free().
+>> From: Patrick Roy <patrick.roy@linux.dev>
+>>
+>> This drops an optimization in gup_fast_folio_allowed() where
+>> secretmem_mapping() was only called if CONFIG_SECRETMEM=y. secretmem is
+>> enabled by default since commit b758fe6df50d ("mm/secretmem: make it on
+>> by default"), so the secretmem check did not actually end up elided in
+>> most cases anymore anyway.
+>>
+>> This is in preparation of the generalization of handling mappings where
+>> direct map entries of folios are set to not present.  Currently,
+>> mappings that match this description are secretmem mappings
+>> (memfd_secret()).  Later, some guest_memfd configurations will also fall
+>> into this category.
+>>
+>> Signed-off-by: Patrick Roy <patrick.roy@linux.dev>
+>> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+>> Signed-off-by: Nikita Kalyazin <kalyazin@amazon.com>
+>> ---
+>>   mm/gup.c | 11 +----------
+>>   1 file changed, 1 insertion(+), 10 deletions(-)
+>>
+>> diff --git a/mm/gup.c b/mm/gup.c
+>> index 95d948c8e86c..9cad53acbc99 100644
+>> --- a/mm/gup.c
+>> +++ b/mm/gup.c
+>> @@ -2739,7 +2739,6 @@ static bool gup_fast_folio_allowed(struct folio *folio, unsigned int flags)
+>>   {
+>>        bool reject_file_backed = false;
+>>        struct address_space *mapping;
+>> -     bool check_secretmem = false;
+>>        unsigned long mapping_flags;
+>>
+>>        /*
+>> @@ -2751,14 +2750,6 @@ static bool gup_fast_folio_allowed(struct folio *folio, unsigned int flags)
 > 
-> Performance evaluation using a stress test (1000 conditional branches)
-> executed in parallel on 32 CPU cores for 60 seconds shows significant
-> improvements:
-
-This patch is a little mess. First, don't send a new version by replying to
-your previous version.
-
+> Copying some lines the diff didn't contain:
 > 
-> Metric              | Baseline      | Patched       | Delta (%)
-> --------------------|---------------|---------------|----------
-> Page Faults         | 12,377,064    | 8,534,044     | -31.05%
-> IPC                 | 1.17          | 1.22          | +4.27%
-> CPU Cycles          | 1,795.37B     | 1,700.33B     | -5.29%
-> Instructions        | 2,102.99B     | 2,074.27B     | -1.37%
-
-And the test case is odd too. What performance improvement do we
-get from this testing result? You run the veristat infinitely and record the
-performance with perf for 60s, so what can we get? Shouldn't you
-run the veristat for certain times and see the performance, such as
-the duration or the CPU cycles?
-
-You optimize the verifier to reduce the verifying duration in your case,
-which seems to be a complex BPF program and consume much time
-in verifier. So what performance increasing do you get in your case?
-
+>          /*
+>           * If we aren't pinning then no problematic write can occur. A long term
+>           * pin is the most egregious case so this is the one we disallow.
+>           */
+>          if ((flags & (FOLL_PIN | FOLL_LONGTERM | FOLL_WRITE)) ==
+>              (FOLL_PIN | FOLL_LONGTERM | FOLL_WRITE))
 > 
-> Detailed Benchmark Report:
-> ==========================
-> 1. Test Case Compilation (verifier_state_stress.c):
-> clang -O2 -target bpf -D__TARGET_ARCH_x86 -I. -I./tools/include \
->       -I./tools/lib/bpf -I./tools/testing/selftests/bpf -c \
->       verifier_state_stress.c -o verifier_state_stress.bpf.o
-> 
-[...]
-> 
->       60.036630614 seconds time elapsed
-> 
-> Suggested-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
+> If we're pinning, can we already return true here? IIUC this function
+> is passed a folio that is file-backed, and the check if (!mapping) is
+> just there to catch the case where the mapping got truncated.
 
-You don't need to add all the reviewers here, unless big changes is
-made.
-
-> Signed-off-by: Qiliang Yuan <realwujing@gmail.com>
-> ---
-> On Mon, 2026-01-12 at 19:15 +0100, Kumar Kartikeya Dwivedi wrote:
-> > Did you run any numbers on whether this improves verification performance?
-> > Without any compelling evidence, I would leave things as-is.
-
-This is not how we write change logs, please see how other people
-do.
+I have to admit that I am not comfortable with removing this check, 
+unless someone says it's certainly alright.
 
 > 
-> This version addresses the feedback by providing detailed 'perf stat' 
-> benchmarks and reproducible stress test code to demonstrate the 
-> compelling performance gains.
+> Or should we wait for the check where the mapping got truncated? If so,
+> then maybe we can move this "are we pinning" check to after this check
+> and remove the reject_file_backed variable?
+
+I can indeed move the pinning check to the end to remove the variable. 
+I'd do it in a separate patch.
+
 > 
-
-
-
-
+>          /*
+>           * The mapping may have been truncated, in any case we cannot determine
+>           * if this mapping is safe - fall back to slow path to determine how to
+>           * proceed.
+>           */
+>          if (!mapping)
+>                  return false;
+> 
+> 
+>>                reject_file_backed = true;
+>>
+>>        /* We hold a folio reference, so we can safely access folio fields. */
+>> -
+>> -     /* secretmem folios are always order-0 folios. */
+>> -     if (IS_ENABLED(CONFIG_SECRETMEM) && !folio_test_large(folio))
+>> -             check_secretmem = true;
+>> -
+>> -     if (!reject_file_backed && !check_secretmem)
+>> -             return true;
+>> -
+>>        if (WARN_ON_ONCE(folio_test_slab(folio)))
+>>                return false;
+>>
+>> @@ -2800,7 +2791,7 @@ static bool gup_fast_folio_allowed(struct folio *folio, unsigned int flags)
+>>         * At this point, we know the mapping is non-null and points to an
+>>         * address_space object.
+>>         */
+>> -     if (check_secretmem && secretmem_mapping(mapping))
+>> +     if (secretmem_mapping(mapping))
+>>                return false;
+>>        /* The only remaining allowed file system is shmem. */
+>>        return !reject_file_backed || shmem_mapping(mapping);
+>> --
+>> 2.50.1
 
 
