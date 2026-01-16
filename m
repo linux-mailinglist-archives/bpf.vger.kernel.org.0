@@ -1,271 +1,319 @@
-Return-Path: <bpf+bounces-79251-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79252-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F8D6D32426
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 15:01:08 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC7F4D3244F
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 15:01:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id E76703025DB8
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 14:00:49 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 7295B301E161
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 14:01:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48700299922;
-	Fri, 16 Jan 2026 14:00:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D7EF29B217;
+	Fri, 16 Jan 2026 14:01:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="E4JNMoGH"
+	dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b="d4KocsLI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from GVXPR05CU001.outbound.protection.outlook.com (mail-swedencentralazon11013063.outbound.protection.outlook.com [52.101.83.63])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 551592882DB;
-	Fri, 16 Jan 2026 14:00:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768572047; cv=none; b=h+1u4LtRWHmRjCThT9UR7vz5eW8BAzIntntYya9CdOCZ1R7YQfU5OiveJj5a95IFnxM57hDcmvcjgC83Ppy+TehDlpBEOK8cweULVzeWdU/Sj+XdST0bVwjSHleQ6obGygYAnMAwOikZTjGLRQjZMD/Dk7vY0klGF+VCc2OC2nU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768572047; c=relaxed/simple;
-	bh=Fwa4ncslrjiPica4CGUZuPDWw7Tx3y7S91lHl5KUNE0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=L5rtgS/4OB/BM7n5ApFtvwSvlFMrU0vucDLnJWintpkyYde4PqendnHviOxjjVjuVaO4+UkZ8euThR4bTdbffSMkQercxZd6EJr24tES9J3Ih4JppnQIqHWOyK9XEYdH8uTciAeeztoPvjUIsgZox2qdcBY2BLp6v2TEHPnWSOo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=E4JNMoGH; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 60GCRw4i031369;
-	Fri, 16 Jan 2026 13:59:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=myVOCt
-	ChlyLQtK/gurvuHhrtUul1Cjy4qpiGZDFtLmI=; b=E4JNMoGH7I9epFA/V3UdGb
-	9h54mFOicaoOHmiB7BYKzNYuJLgJz6+FOJQkQ8q6IdcdqUjvuCS8ecJG8vIlvAi8
-	JuyyxwAKqQEQAdXgGhZ6C+nprlk1MpuLSTS2MPkgCYbWw9fzitMXQgWZ8aMWKEAh
-	k5hho8DCOOTNRlSvu6tVLAy/7SzFOFtLuLAVQHgtY+x+8FETVTQuHARpsPsNxMEl
-	Z8Wih2HZTR8ToNGgkCazJUu6Vob9xT80TNPzkLEfQxy8iBo+v/cj6AHWJoKa4vm9
-	MvWtgheKzewkogMTYjlmTrXEd05PNUqHsTwtHAZ2oks9yB6nN05tkCEah14BDVQQ
-	==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4bq9bmk4b6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Jan 2026 13:59:16 +0000 (GMT)
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 60GDwqla025224;
-	Fri, 16 Jan 2026 13:59:15 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4bq9bmk4b2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Jan 2026 13:59:15 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 60GDjiBb014333;
-	Fri, 16 Jan 2026 13:59:14 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4bm1fypn5h-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Jan 2026 13:59:14 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 60GDxAwx50921824
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 16 Jan 2026 13:59:10 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0621C20043;
-	Fri, 16 Jan 2026 13:59:10 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E2CE620040;
-	Fri, 16 Jan 2026 13:59:03 +0000 (GMT)
-Received: from [9.43.86.214] (unknown [9.43.86.214])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 16 Jan 2026 13:59:03 +0000 (GMT)
-Message-ID: <051521cf-5dd2-4831-ab4c-b0db32436ba9@linux.ibm.com>
-Date: Fri, 16 Jan 2026 19:29:02 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFE312882DB;
+	Fri, 16 Jan 2026 14:01:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.83.63
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768572080; cv=fail; b=d8tzju38DrqKay0PjW24bRuYFKVIESRqJ40J67+1BYjJJP7kA0q+Ra+CJfCh3yd+7ETXyULa1cNaMELHGiJaGW8tg+SFhKDW4Vv/gTdbgRkUTAETg//A1tG8X4KrweaXLmjWEam9HgqvN7aLbGpDamQm9vzgwfLn/hHY8w59+OU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768572080; c=relaxed/simple;
+	bh=XN7kBdwTPML6GWo/n/P2oFTImo3JXx5oHd5myyV1jYg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=pM9IvqBfwXr9WrnGX/GyGp82aaOX8saLdSckYX/zr2m+/tdd/qxRzUUaKFVq5txii7tSTz7cCuQLmYuMqZ3uqYk2WrdCd8x+flwSl7hOTMFxpBwlVu5BQs5DxkctdGsDhfNj75Wi49QE4mthaHZNz3qffDRBThora82ToWrr/7c=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b=d4KocsLI; arc=fail smtp.client-ip=52.101.83.63
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=PIpny6qC2yTZ03+hx66DGHmrDdVjztaW9KZKiL+AzCAnVdjJGtRWXzh2oBbuAfysvv2M3OOtB5dWt953SA1g584IrsBPZoz9V0SiEDfk8S4m64nOfzcPLI58dwejHZjrZPioJ00oJfzyFHln250bc9VvZuY4rgG2h7JBUFAvvVhGgpfGWV/u4QM8dGNKRWs8eMQEXqKWU0RuFVqSEFV3ffg3DRW4jfMCvi8aiRlr92BCeHnY2zPjNqSkxWq2Ls9FzSbou9ulaQAIl6B3WCVPY8KT1yTV1vWDKOA5T+0qurDFNtNKKYhu3LhxIpn8TX3zCE81vt3u4OZ68LwyYZ1FLg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Cdvwi67a+ioOse+D5E5NcfG1HVFThBFwcntDBPyqMrg=;
+ b=riI2SzVRJHS4yRwpgpi2DpyU76RW2sRmX082xsJ3tMtW13etx7i7viwTR9e6gP2sDnosSBJy+1ACevzScssK+lEGm4LkJkdT8QrFM7Tb8KQBDWVM1hu8cepf49XRHiWPwRFnTolB76zWIuJYpTnmRMtfBykI4CRxQsBkcwE9AIbG3W2Ubic0WHjM2l5H/Xi+p2+tpQ7nsMju8tXJbKb9SxX2vs8O6JdjauELwnR5RPiGPFkrWJE/LtwLbOIsqcZQtTsYIEfK2Z3DgzH85LJ2QLR8IT9niQDyUDpv/4A1y93aicVzzGllyVlEFfe173TqG7nJV8s5U7g+lxKq13zulg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Cdvwi67a+ioOse+D5E5NcfG1HVFThBFwcntDBPyqMrg=;
+ b=d4KocsLIXcnCCHgqjv1ABkH23zYeEMujpXjkCJqZ57dOTqdvbBXQXOPwZK9izptovg00QB5tPTGgCUIY1rmIvKwg71pqnRVvMLJ1WfgFMdS+VHpl3Bs8tqN+bJiXHsHKlPUL2AFKQwktyTuYhmNdhhWbvPQFXaxTKUAycJ2hwXhkOdi9lqkzCbVUBa/CUckyHFaR9sdjyLbf0jCVkIzOGZ0qyKMK1b9sDURe+tM+kKr7E2GHQ3RGUE60f0egnUG3TfNsXT5zivV/9EiO9H3Rtf1v7Kx2oCWXi5fAo3dQRAkSjdhq34RF//6mWpVAJLwQ5v+Z1pfCm0TPGT6+rS+isQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from DU2PR04MB8951.eurprd04.prod.outlook.com (2603:10a6:10:2e2::22)
+ by VI1PR04MB6960.eurprd04.prod.outlook.com (2603:10a6:803:12d::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9520.5; Fri, 16 Jan
+ 2026 14:01:14 +0000
+Received: from DU2PR04MB8951.eurprd04.prod.outlook.com
+ ([fe80::753c:468d:266:196]) by DU2PR04MB8951.eurprd04.prod.outlook.com
+ ([fe80::753c:468d:266:196%4]) with mapi id 15.20.9478.004; Fri, 16 Jan 2026
+ 14:01:14 +0000
+Date: Fri, 16 Jan 2026 09:01:03 -0500
+From: Frank Li <Frank.li@nxp.com>
+To: Wei Fang <wei.fang@nxp.com>
+Cc: shenwei.wang@nxp.com, xiaoning.wang@nxp.com, andrew+netdev@lunn.ch,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+	hawk@kernel.org, john.fastabend@gmail.com, sdf@fomichev.me,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	imx@lists.linux.dev, bpf@vger.kernel.org
+Subject: Re: [PATCH v2 net-next 04/14] net: fec: add fec_build_skb() to build
+ a skb
+Message-ID: <aWpEn4taq4DNOZLi@lizhi-Precision-Tower-5810>
+References: <20260116074027.1603841-1-wei.fang@nxp.com>
+ <20260116074027.1603841-5-wei.fang@nxp.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260116074027.1603841-5-wei.fang@nxp.com>
+X-ClientProxiedBy: PH7PR03CA0004.namprd03.prod.outlook.com
+ (2603:10b6:510:339::30) To DU2PR04MB8951.eurprd04.prod.outlook.com
+ (2603:10a6:10:2e2::22)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/6] powerpc64/bpf: Support tailcalls with subprogs
-To: "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
-        adubey <adubey@imap.linux.ibm.com>
-Cc: adubey@linux.ibm.com, bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sachinpb@linux.ibm.com, venkat88@linux.ibm.com, andrii@kernel.org,
-        eddyz87@gmail.com, mykolal@fb.com, ast@kernel.org,
-        daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
-        yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
-        naveen@kernel.org, maddy@linux.ibm.com, mpe@ellerman.id.au,
-        npiggin@gmail.com, memxor@gmail.com, iii@linux.ibm.com,
-        shuah@kernel.org
-References: <20260114114450.30405-1-adubey@linux.ibm.com>
- <20260114114450.30405-3-adubey@linux.ibm.com>
- <42d41a0d-9d26-4eeb-af46-200083261c09@kernel.org>
- <2d242f4476b61373da236d24272b0ec3@imap.linux.ibm.com>
- <78536979-e924-4be3-b847-332802ad82e2@linux.ibm.com>
- <ea66ddc5-984f-4873-993d-9de1140d7e6e@kernel.org>
-Content-Language: en-US
-From: Hari Bathini <hbathini@linux.ibm.com>
-In-Reply-To: <ea66ddc5-984f-4873-993d-9de1140d7e6e@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: VuNl7drb6mZuvd-iVxqcmKJ66PXc6Fdf
-X-Proofpoint-ORIG-GUID: jy3gV0NpS5tDjoM9jCk7woG2U7zqPjNr
-X-Authority-Analysis: v=2.4 cv=TrvrRTXh c=1 sm=1 tr=0 ts=696a4434 cx=c_pps
- a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
- a=IkcTkHD0fZMA:10 a=vUbySO9Y5rIA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=VnNF1IyMAAAA:8 a=Gp1ZgnKn9qXeJorAczUA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTE2MDA5NyBTYWx0ZWRfX9y61cOoBodfm
- V56e2FeZp4Ez7hzI/Q0J8IhFR2ker99R3rNCmZ8HZo5fU1Yk4vEmTWckVGEn3YO6c/8ziFDd5aH
- fZv7KrpPyB2Q7fuOaomaDe+i57xzsmhilxAZ980y/LOXKkXKNOKnd7IaBewj9blCHsu2TN7Qm++
- E5pkUYsWiilR0xMkrK34Ohmz2btmkR71BNZB+9BkLmQgIIv5+Knuct/k+0SCSEu+Zunqh4O0xWT
- 3EAXaQ5xxQ2P2x2uuO4vkPxCjGoLtLzjLhbkQED0o6gd5j6r8CiKK0UbEEKjysDZGcDUA1HU3Nh
- 2+jTb6k8K/CMS6Y2UuA/llTfcHe0ApyB0xZf/oWRMb7Kn7Vlh+t3v3v8yCx/T5kGLugVdPazYZz
- HePs4xqLkgaFX4qirP0xLKbUseFtTrTJiDsRP47ffZEl3GifURd8wtsJWQLIsR/zvpwjHIvPYw0
- LdTiKv2xhWpCfWo4tVw==
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2026-01-16_05,2026-01-15_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- spamscore=0 priorityscore=1501 lowpriorityscore=0 phishscore=0 clxscore=1015
- bulkscore=0 impostorscore=0 malwarescore=0 suspectscore=0 adultscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2512120000 definitions=main-2601160097
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DU2PR04MB8951:EE_|VI1PR04MB6960:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2332eb0b-b94e-4a8a-13a3-08de5507b664
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|19092799006|366016|1800799024|376014|7416014|52116014|38350700014;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?F28xamJIdwndDblXYxzv7AUlYEuK4M2Pw93cjcoiMfYHjggQPVHMK2G6fv+z?=
+ =?us-ascii?Q?9gcW+g/aTUmVkkixUTsmwFvwYcunTvtGfV0OweIpODUxO3WpYD71zwUYUcwP?=
+ =?us-ascii?Q?g+xzAqQWPOShSrjC9ahsziyQqXtWbnedKB7jCHXBYW+MI/LTH/PZBVkolvPd?=
+ =?us-ascii?Q?E6Kbem93SdU2Zkc7twV9IXEJozV+vNG3169Y+Us4tO7YDplF4V1BVYqMlYcV?=
+ =?us-ascii?Q?2PqNaOaPbk0L9nrYTrV83Ok9H5JlKaGRvrR8OTqWI4QhlWUsQoCk+fgVXZui?=
+ =?us-ascii?Q?556tN45Upg7bSC+RH0xwhptLHHvjXA9dKqYWNXr8AYNja2z0eUWRGZlzzkxl?=
+ =?us-ascii?Q?eNOlyUOy4dt9gcecUwoKvpMAFtEf8ccGJZXOEezGllNsRbpJvoJZgIifobqE?=
+ =?us-ascii?Q?5C7qPfNGmz6cULc2dSmT2rWvH7noz4Z2gD/ETO0XNAIGpffAarwhjMLg1HV9?=
+ =?us-ascii?Q?7YDnfCC5Wd0cmMb5czWiPye2wpfl4+3uxqpSvSM+6uYOOqcdkFuoo9HCQ3uk?=
+ =?us-ascii?Q?Mv54Zu/6QJpSYEf00tp6KBqqyPWNQG9KZCBTfb2EC2lO7MHNpfAzz554P2wY?=
+ =?us-ascii?Q?wo6PiSatCaWYB0iPIrmnRrcL31Cv1Pn/NBBSTw8KvOtNCnq1scuXojjowVp/?=
+ =?us-ascii?Q?9q1dpcPukRCt1rTdin1obXpk4OSj3VHXocB9I0jzSnaHkSTcNo13pyHQb0Hm?=
+ =?us-ascii?Q?RsvN384JroDK5bs46cSUK084vgFKlRUYVLiEjHIx8+no1Lctzwy1RlOUiPtx?=
+ =?us-ascii?Q?vu3l/KMEyB6JHpVoqWcwvKkrSR4vmgFV2aY8+eq745RJ63iqAQF00273sYVI?=
+ =?us-ascii?Q?NK+cSEiy9eDSAcDlz8io4hCtRIU9pXvMJ3AJ/jdfPTfueKg83MBlLQN+MuyF?=
+ =?us-ascii?Q?lWL172+bvFGy6+eB3b3fR8a6Ov6A+GdF3Cj85c+QwvL4MB5lq9Is1yHw77G3?=
+ =?us-ascii?Q?lKY86Ro7WvEiD0YHdUt9A55n46RdRtwF08xZHsE4s0H05AMC3CUWU9klpR5j?=
+ =?us-ascii?Q?ekcMUL1+d8VNwmzi6pxTuxNt/y9XRwJBRqvbb4ETjfvGvZ17ZzDyzx7kbns3?=
+ =?us-ascii?Q?KKWuyTi0PR54fhEKdSE5iat74VKaAg4hDIdIRxu5R6fLrVyI14K0JWgTdiIe?=
+ =?us-ascii?Q?djoevkBwuaaVYprq+hSXHJAjHkqcLlbkQ+QLfZoKVRVgTZWQGwVS/xVSiU7Q?=
+ =?us-ascii?Q?/Y0tV5Iol6BCajzxUtq93c0XiOnB1dMX7oe5w6gYhLdls1w0rn/1yEePAV/n?=
+ =?us-ascii?Q?XMDDpASgoA3WISjOlQi6Cpp0pKNYs3ysFYT9UVGJ2k4iBjk6EqLjdVaPCSkR?=
+ =?us-ascii?Q?VaX1gnmGnMWN+5LucRKNKJvxTdAvlYRb4sTcSrVUMDw+VtwYUa72EwmcZdm7?=
+ =?us-ascii?Q?T3zSOZ66gRb2Nyg2KddEDxpooTH4yvZo/aLkVZT7UfH2b0dvQeBGM3SlHuj5?=
+ =?us-ascii?Q?66PAh2XibjRNUG7Zubu8WDrelu61cbPdj/D3gZKjpgdwRN44+qrTq8BvltRO?=
+ =?us-ascii?Q?9mZ930skExanQW8UdgFID6SI81JU7Lidhe6dxvH97aZKq58nMtoPMjbzE1I6?=
+ =?us-ascii?Q?UvDFb5Uvl5qf7zwhi7ACW0rQCKSXn3xLYmAMR4mNiNlohex9lYTKuTzRCDqG?=
+ =?us-ascii?Q?Ww=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB8951.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(19092799006)(366016)(1800799024)(376014)(7416014)(52116014)(38350700014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?W651Zg0JqZmLbrQJnL4EFPyhjzAYzjRXzujhoBirkWOtM3ZPHHwdELfVGVNx?=
+ =?us-ascii?Q?q3OSvI1AZMMhUpKn/tHybmnvAGMwyX7NAcDsIjuNqJkRfGatCsfe/bju/UOZ?=
+ =?us-ascii?Q?GMb8Ymj+OSqUUxrn6rOe2lgTGfkK+SIOs6noQMPNolSTmC/EC8yYsra5Ms5e?=
+ =?us-ascii?Q?eOk1cOiWLQlYRWiSgsdDiHdOQOCloObMxjH4k74JtjNLLfXKq+Wdv7WVs+h3?=
+ =?us-ascii?Q?Z7lfU9M7LTXPaVfwkyS+nN1+iUTY7jT/E7oNOTR/fXoHjaLLvjDGvtiGAHsh?=
+ =?us-ascii?Q?OyzYztFnaJYCiiaLh9odHTJzd+YpvIwyFHXUXsLMdGXkRdL4qOAIgG0OVUmP?=
+ =?us-ascii?Q?99Z1+shNCFiCASrQDbTpTwOVk5/De0/5NvAl7+PThRKakfITsgn2IMleKTXe?=
+ =?us-ascii?Q?PcYwfthpxxri0XRNevcYJmeIVm/Dkp6+4sxd4tHo6xUIRTFHyPXnoTTd4/e8?=
+ =?us-ascii?Q?UngTAmz3cOkifUd0KL2OtJqfBhg/0fk5VPcpUzSj62v4Rq9Djhhq1qwhIaDz?=
+ =?us-ascii?Q?rn0aXaSUeUkerg/r0VntaVTO1VXvW/XUpy4AHiRjIW1FJ0jb0YW0MbC7PN1q?=
+ =?us-ascii?Q?7fh4ro5EozQ3AWHGTwbESAvPgFonCUIWrvKHy1qCjDfkSdjzH2RIc71nnGFO?=
+ =?us-ascii?Q?AjsteT/Syntk06SgcSUFXmP6wjjJv8IUsC9GDmlbhFtw3ndqzdSt3uEsOdwC?=
+ =?us-ascii?Q?4klmKdl0BKxMatOEqIxbSZLHLZLzkKQmq8Uqaej07tN4PWAJJk+7RZj13x2J?=
+ =?us-ascii?Q?XDrpB/4tqJn6kFg910ulQJNwrgb9s/qEjFbzyGHnOmN4yxHZI3koSSH0l3oN?=
+ =?us-ascii?Q?OaWi/ho2wE+UtEJhXNffH3Qncm/TyNpAjaP47AV3Y0ahz7dp0Fss2xOIu0w4?=
+ =?us-ascii?Q?42T+r7/jPkuuyoY8N7XZ9jTO0yzXvV7+i/8U4+7qjp3zBRwIBVv1744MasqP?=
+ =?us-ascii?Q?egjZxR8KZMjx4BQZeXunxcxTkRPdx/w5Bv956SIvJMqc6aUa7zhe+BpZC+cY?=
+ =?us-ascii?Q?H92Iq0ro8orOz3nYo2Jqova0bS3haIqH60bf/oxBYWU/kgJUOaDzzkG5+qYE?=
+ =?us-ascii?Q?MjvU9SSU+i+jx2zwvNXJw4P9pTDZE+5kzdKmUszAerusLRkKRJtU14GGZY2o?=
+ =?us-ascii?Q?bgSf9tEWLsLymbI31phkOUJiU4LqgWHH8nSguDsqGkGl6elRuuAphJ7ZHOp7?=
+ =?us-ascii?Q?eyJOrUNTRKJB3CdYEEAp0F9L6aoxiTOorvSTnA8LqOk8WL9EQn0k7mQwALL1?=
+ =?us-ascii?Q?tRnpyAdVgq7SjPCnkWA61X/Lzcwhw0eynjdAxPWx4P5I5ekRKE4IKZPAWpkM?=
+ =?us-ascii?Q?ZLjmkG2FjwMSCAMbM417Yi3v6hgG7deW+Y+HC/KlwpN0k5gVm66alQKE3e6W?=
+ =?us-ascii?Q?1ji4h3cvqL76AtqI8SzgBVOcPPnKZv+Yvq0RO2XpnXbbQK/TU2PKlRhHZNVj?=
+ =?us-ascii?Q?2SOL3K3UXeJ09poxq2Dj4eC09sCo917+J2Y1fpZ3bcMajzkd+J0SAMNkVgmV?=
+ =?us-ascii?Q?yR8AKICoxMwpv2b9bxTbcR3PiNiXwi6jIHn9Bwr9G7N3H4ahn1WzyFanAP44?=
+ =?us-ascii?Q?GB56+pdkxMGFO3xrc7Kg+KIZ6sBovaSEDWEbgSk6YD0FZgOYAjiXatocog2l?=
+ =?us-ascii?Q?/6HSo+IQEYybOyJ/f3UWt2olIXTcu0tUy1BME94+tDRyaOPi/e+9P4LoADk1?=
+ =?us-ascii?Q?YtxVA4hrcBDXY79d/U3SkjznryAJavE6z1DY6fDVgRPPbBD664mkbhOBJvux?=
+ =?us-ascii?Q?h4qPoSRgjA=3D=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2332eb0b-b94e-4a8a-13a3-08de5507b664
+X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8951.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jan 2026 14:01:14.7790
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mJ2Z8hLPfLSlv+HOsAfIAfRrigwHDRaVrJ+XT7qGAtOBuN+x43EUQG9ovCxyxxtr08ZMx0to8oNGQVOB2h7FIg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6960
 
+On Fri, Jan 16, 2026 at 03:40:17PM +0800, Wei Fang wrote:
+> Extract the helper fec_build_skb() from fec_enet_rx_queue(), so that the
+> code for building a skb is centralized in fec_build_skb(), which makes
+> the code of fec_enet_rx_queue() more concise and readable.
+>
+> Signed-off-by: Wei Fang <wei.fang@nxp.com>
+> ---
+Reviewed-by: Frank Li <Frank.Li@nxp.com>
 
-
-On 16/01/26 1:19 pm, Christophe Leroy (CS GROUP) wrote:
-> 
-> 
-> Le 16/01/2026 à 05:50, Hari Bathini a écrit :
-> 
-> Not received this mail that Hari is reponding to.
-
-That is weird.
-
->>
->>
->> On 14/01/26 6:33 pm, adubey wrote:
->>> On 2026-01-14 17:57, Christophe Leroy (CS GROUP) wrote:
->>>> Le 14/01/2026 à 12:44, adubey@linux.ibm.com a écrit :
->>>>> From: Abhishek Dubey <adubey@linux.ibm.com>
->>>>>
->>>>> Enabling tailcalls with subprog combinations by referencing
->>>>> method. The actual tailcall count is always maintained in the
->>>>> tail_call_info variable present in the frame of main function
->>>>> (also called entry function). The tail_call_info variables in
->>>>> the frames of all other subprog contains reference to the
->>>>> tail_call_info present in frame of main function.
->>>>>
->>>>> Dynamic resolution interprets the tail_call_info either as
->>>>> value or reference depending on the context of active frame
->>>>> while tailcall is invoked.
->>>>>
->>>>> Signed-off-by: Abhishek Dubey <adubey@linux.ibm.com>
->>>>> ---
->>>>>   arch/powerpc/net/bpf_jit.h        | 12 +++++-
->>>>>   arch/powerpc/net/bpf_jit_comp.c   | 10 ++++-
->>>>>   arch/powerpc/net/bpf_jit_comp64.c | 68 ++++++++++++++++++++++ 
->>>>> +--------
->>>>>   3 files changed, 70 insertions(+), 20 deletions(-)
->>>>>
->>>>> diff --git a/arch/powerpc/net/bpf_jit.h b/arch/powerpc/net/bpf_jit.h
->>>>> index 45d419c0ee73..5d735bc5e6bd 100644
->>>>> --- a/arch/powerpc/net/bpf_jit.h
->>>>> +++ b/arch/powerpc/net/bpf_jit.h
->>>>> @@ -51,6 +51,12 @@
->>>>>           EMIT(PPC_INST_BRANCH_COND | (((cond) & 0x3ff) << 16) | 
->>>>> (offset & 0xfffc));                    \
->>>>>       } while (0)
->>>>>   +/* Same as PPC_BCC_SHORT, except valid dest is known prior to 
->>>>> call. */
->>>>> +#define PPC_COND_BRANCH(cond, dest)         \
->>>>> +    do {                                      \
->>>>> +        long offset = (long)(dest) - CTX_NIA(ctx);              \
->>>>> +        EMIT(PPC_INST_BRANCH_COND | (((cond) & 0x3ff) << 16) | 
->>>>> (offset & 0xfffc));    \
->>>>> +    } while (0)
->>>>
->>>> I don't like the idea of duplicating PPC_BCC_SHORT() to just kick the
->>>> verification out. Now we will have two macros doing the exact same
->>>> thing with one handling failure case and one ignoring failure case.
->>>> There is a big risk that one day or another someone will use the wrong
->>>> macro.
->>>>
->>>> Could you change bpf_jit_build_prologue() to return an int add use
->>>> PPC_BCC_SHORT() instead of that new PPC_COND_BRANCH() ?
->>> I implemented exactly same change in bpf_jit_build_prologue(). But, 
->>> during internal review, @HariBathini suggested
->>> to have separate macro with a caution note.
->>>
->>> @Hari please suggest here!
->>
->> Not just about the change of return type but the check seems like an
->> overkill for cases where the offset is known and within branch range.
->> How about using BUILD_BUG_ON() to avoid unecessary checks and
->> return type change for places where the branch offset is known
->> and is a constant?
-> 
-> When offset is a constant known at build time, checks are eliminated by 
-> gcc at build, see exemple below from disasembly of bpf_jit_comp32.o, 
-> there are no checks.
-> 
->                                  PPC_BCC_SHORT(COND_GT, (ctx->idx + 4) * 
-> 4);
->      36d8:       3c 80 41 81     lis     r4,16769
->                                  EMIT(PPC_RAW_CMPLW(src_reg, _R0));
->      36dc:       81 3f 00 04     lwz     r9,4(r31)
->                                  PPC_BCC_SHORT(COND_GT, (ctx->idx + 4) * 
-> 4);
->      36e0:       60 84 00 10     ori     r4,r4,16
->                                  EMIT(PPC_RAW_CMPLW(src_reg, _R0));
->      36e4:       39 29 00 01     addi    r9,r9,1
->                                  PPC_BCC_SHORT(COND_GT, (ctx->idx + 4) * 
-> 4);
->      36e8:       55 23 10 3a     slwi    r3,r9,2
->                                  EMIT(PPC_RAW_CMPLW(src_reg, _R0));
->      36ec:       91 3f 00 04     stw     r9,4(r31)
->                                  PPC_BCC_SHORT(COND_GT, (ctx->idx + 4) * 
-> 4);
->      36f0:       7c 97 19 2e     stwx    r4,r23,r3
->                                  EMIT(PPC_RAW_LI(dst_reg, 0));
->      36f4:       55 49 a9 94     rlwinm  r9,r10,21,6,10
->                                  PPC_BCC_SHORT(COND_GT, (ctx->idx + 4) * 
-> 4);
->      36f8:       80 9f 00 04     lwz     r4,4(r31)
->                                  EMIT(PPC_RAW_LI(dst_reg, 0));
->      36fc:       65 29 38 00     oris    r9,r9,14336
->                                  PPC_BCC_SHORT(COND_GT, (ctx->idx + 4) * 
-> 4);
->      3700:       38 84 00 01     addi    r4,r4,1
->                                  EMIT(PPC_RAW_LI(dst_reg, 0));
->      3704:       54 83 10 3a     slwi    r3,r4,2
->                                  PPC_BCC_SHORT(COND_GT, (ctx->idx + 4) * 
-> 4);
->      3708:       90 9f 00 04     stw     r4,4(r31)
->                                  EMIT(PPC_RAW_LI(dst_reg, 0));
->      370c:       7d 37 19 2e     stwx    r9,r23,r3
-> 
-
-Interesting. I do see is_offset_in_cond_branch_range() in action with
-constant offsets too, on ppc64 compile at least. fwiw, I had this
-optimized version in mind for constant offset:
-
-   #define PPC_BCC_CONST_SHORT(cond, offset) 
-                     \
-         do { 
-                     \
-                 BUILD_BUG_ON(offset < -0x8000 || offset > 0x7fff || 
-(offset & 0x3));        \
-                 EMIT(PPC_INST_BRANCH_COND | (((cond) & 0x3ff) << 16) | 
-(offset & 0xfffc));  \
-         } while (0)
-
-With that, something like:
-
-     PPC_BCC_SHORT(COND_NE, (ctx->idx + 3) * 4);
-
-becomes
-
-     PPC_BCC_CONST_SHORT(COND_NE, 12);
-
-- Hari
+>  drivers/net/ethernet/freescale/fec_main.c | 106 ++++++++++++----------
+>  1 file changed, 60 insertions(+), 46 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
+> index 68410cb3ef0a..7e8ac9d2a5ff 100644
+> --- a/drivers/net/ethernet/freescale/fec_main.c
+> +++ b/drivers/net/ethernet/freescale/fec_main.c
+> @@ -1781,6 +1781,59 @@ static int fec_rx_error_check(struct net_device *ndev, u16 status)
+>  	return 0;
+>  }
+>
+> +static struct sk_buff *fec_build_skb(struct fec_enet_private *fep,
+> +				     struct fec_enet_priv_rx_q *rxq,
+> +				     struct bufdesc *bdp,
+> +				     struct page *page, u32 len)
+> +{
+> +	struct net_device *ndev = fep->netdev;
+> +	struct bufdesc_ex *ebdp;
+> +	struct sk_buff *skb;
+> +
+> +	skb = build_skb(page_address(page),
+> +			PAGE_SIZE << fep->pagepool_order);
+> +	if (unlikely(!skb)) {
+> +		page_pool_recycle_direct(rxq->page_pool, page);
+> +		ndev->stats.rx_dropped++;
+> +		if (net_ratelimit())
+> +			netdev_err(ndev, "build_skb failed\n");
+> +
+> +		return NULL;
+> +	}
+> +
+> +	skb_reserve(skb, FEC_ENET_XDP_HEADROOM + fep->rx_shift);
+> +	skb_put(skb, len);
+> +	skb_mark_for_recycle(skb);
+> +
+> +	/* Get offloads from the enhanced buffer descriptor */
+> +	if (fep->bufdesc_ex) {
+> +		ebdp = (struct bufdesc_ex *)bdp;
+> +
+> +		/* If this is a VLAN packet remove the VLAN Tag */
+> +		if (ebdp->cbd_esc & cpu_to_fec32(BD_ENET_RX_VLAN))
+> +			fec_enet_rx_vlan(ndev, skb);
+> +
+> +		/* Get receive timestamp from the skb */
+> +		if (fep->hwts_rx_en)
+> +			fec_enet_hwtstamp(fep, fec32_to_cpu(ebdp->ts),
+> +					  skb_hwtstamps(skb));
+> +
+> +		if (fep->csum_flags & FLAG_RX_CSUM_ENABLED) {
+> +			if (!(ebdp->cbd_esc &
+> +			      cpu_to_fec32(FLAG_RX_CSUM_ERROR)))
+> +				/* don't check it */
+> +				skb->ip_summed = CHECKSUM_UNNECESSARY;
+> +			else
+> +				skb_checksum_none_assert(skb);
+> +		}
+> +	}
+> +
+> +	skb->protocol = eth_type_trans(skb, ndev);
+> +	skb_record_rx_queue(skb, rxq->bd.qid);
+> +
+> +	return skb;
+> +}
+> +
+>  /* During a receive, the bd_rx.cur points to the current incoming buffer.
+>   * When we update through the ring, if the next incoming buffer has
+>   * not been given to the system, we just set the empty indicator,
+> @@ -1796,7 +1849,6 @@ fec_enet_rx_queue(struct net_device *ndev, u16 queue_id, int budget)
+>  	struct  sk_buff *skb;
+>  	ushort	pkt_len;
+>  	int	pkt_received = 0;
+> -	struct	bufdesc_ex *ebdp = NULL;
+>  	int	index = 0;
+>  	bool	need_swap = fep->quirks & FEC_QUIRK_SWAP_FRAME;
+>  	u32 data_start = FEC_ENET_XDP_HEADROOM + fep->rx_shift;
+> @@ -1866,24 +1918,6 @@ fec_enet_rx_queue(struct net_device *ndev, u16 queue_id, int budget)
+>  				goto rx_processing_done;
+>  		}
+>
+> -		/* The packet length includes FCS, but we don't want to
+> -		 * include that when passing upstream as it messes up
+> -		 * bridging applications.
+> -		 */
+> -		skb = build_skb(page_address(page),
+> -				PAGE_SIZE << fep->pagepool_order);
+> -		if (unlikely(!skb)) {
+> -			page_pool_recycle_direct(rxq->page_pool, page);
+> -			ndev->stats.rx_dropped++;
+> -
+> -			netdev_err_once(ndev, "build_skb failed!\n");
+> -			goto rx_processing_done;
+> -		}
+> -
+> -		skb_reserve(skb, data_start);
+> -		skb_put(skb, pkt_len - sub_len);
+> -		skb_mark_for_recycle(skb);
+> -
+>  		if (unlikely(need_swap)) {
+>  			u8 *data;
+>
+> @@ -1891,34 +1925,14 @@ fec_enet_rx_queue(struct net_device *ndev, u16 queue_id, int budget)
+>  			swap_buffer(data, pkt_len);
+>  		}
+>
+> -		/* Extract the enhanced buffer descriptor */
+> -		ebdp = NULL;
+> -		if (fep->bufdesc_ex)
+> -			ebdp = (struct bufdesc_ex *)bdp;
+> -
+> -		/* If this is a VLAN packet remove the VLAN Tag */
+> -		if (fep->bufdesc_ex &&
+> -		    (ebdp->cbd_esc & cpu_to_fec32(BD_ENET_RX_VLAN)))
+> -			fec_enet_rx_vlan(ndev, skb);
+> -
+> -		skb->protocol = eth_type_trans(skb, ndev);
+> -
+> -		/* Get receive timestamp from the skb */
+> -		if (fep->hwts_rx_en && fep->bufdesc_ex)
+> -			fec_enet_hwtstamp(fep, fec32_to_cpu(ebdp->ts),
+> -					  skb_hwtstamps(skb));
+> -
+> -		if (fep->bufdesc_ex &&
+> -		    (fep->csum_flags & FLAG_RX_CSUM_ENABLED)) {
+> -			if (!(ebdp->cbd_esc & cpu_to_fec32(FLAG_RX_CSUM_ERROR))) {
+> -				/* don't check it */
+> -				skb->ip_summed = CHECKSUM_UNNECESSARY;
+> -			} else {
+> -				skb_checksum_none_assert(skb);
+> -			}
+> -		}
+> +		/* The packet length includes FCS, but we don't want to
+> +		 * include that when passing upstream as it messes up
+> +		 * bridging applications.
+> +		 */
+> +		skb = fec_build_skb(fep, rxq, bdp, page, pkt_len - sub_len);
+> +		if (!skb)
+> +			goto rx_processing_done;
+>
+> -		skb_record_rx_queue(skb, queue_id);
+>  		napi_gro_receive(&fep->napi, skb);
+>
+>  rx_processing_done:
+> --
+> 2.34.1
+>
 
