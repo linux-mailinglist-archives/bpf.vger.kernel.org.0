@@ -1,115 +1,184 @@
-Return-Path: <bpf+bounces-79324-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79327-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 063F7D38492
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 19:45:26 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18E4DD38732
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 21:20:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id EE09230203AE
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 18:45:24 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 6492B303980D
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 20:17:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6C723939BD;
-	Fri, 16 Jan 2026 18:45:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BEBC3A4F3C;
+	Fri, 16 Jan 2026 20:17:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="V1QiORz9"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aPYk3HE/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F39E34E750
-	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 18:45:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 958FA3A4AAD;
+	Fri, 16 Jan 2026 20:17:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768589123; cv=none; b=ccnJvDu81yDpzb/cXvhaZU2vmD1qQ1XVZjBlFgivxPvhrCSjDOzdd4qQ4Usu/v722MNBxk7f+ANhAai0C3HvwwuHfu5mPJP5zlvVVkCTP5gfdOJV8XmiFUZxhNLgsPgMuwNI8pYbiDURleNNnlp2ZF+AVBd7nkEggY4VNBR+yiw=
+	t=1768594653; cv=none; b=CSGJoQ3Njji05S/piZgXmgx+LRZSgb3zse3yyw8OcmQplfru9GnsflPnqH4dsv4l6IupiYvar3U24rVuPCSAIWgs+avVR82ooCyEp2pZehWMVLEOUhtEn3eSNy0peqrb+rmqPrwzjO2may9LCn8BRwyufpqtThINdKk9gAFwQhI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768589123; c=relaxed/simple;
-	bh=KC8vnLFPq9rYf4xjqaRd6OEQOVIX1ylZPY6CeZ3s9Dg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZSJLDRvpvFE/njr1l5tGH+NXz0lCEHAe0ZPdag1c18C+Xh+sidkUl3Bkzl2R9ABNMcprdkcrzKgPFLQpUu0UDlEgY1YIpNWkNF346bymwqOfLXF1+V5g9dbj4DiDWvvoBgf7n5BpUJgG6ujyG7Je4YblPqhDoFh8/dWy0IKo6Yo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=V1QiORz9; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1768589122; x=1800125122;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=KC8vnLFPq9rYf4xjqaRd6OEQOVIX1ylZPY6CeZ3s9Dg=;
-  b=V1QiORz9qYlL6lWgrc1ZOhz0IAJDvGVN2iIYmB8q8zQ+Vjc0GKZlYMJ8
-   A4ycevYycjqjq6QmyKXHATGYU7ZvlE0rPofMGqhIKktIpPeiN1IBNbdhX
-   GfkUAfwBb7ECdv+EPDoPCyYGsSFCxaprdNq/7s9SV8uQp79iMaLmTRwp2
-   czDnm5n1iPAsr26KyVVnIZwdYjky9SCy2fgjwvuY2Kxzt/D/x2JcpzOSf
-   XEVALO55CdWt0w7/2vBdEQJC2ReXlzAUZxlnEDGhLs2L5ftXtFqkanD2h
-   2g23LMghnHbi+vpoA8xD9TMu0WZs+923bP9Pjs34wSOTT8cKRIZmd96Z0
-   g==;
-X-CSE-ConnectionGUID: vDPE621QQ1G09ej+yLynwA==
-X-CSE-MsgGUID: nSql2f6OR8eYJe35O3YeQw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11673"; a="80547159"
-X-IronPort-AV: E=Sophos;i="6.21,231,1763452800"; 
-   d="scan'208";a="80547159"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2026 10:45:21 -0800
-X-CSE-ConnectionGUID: jn66q7h/Te6r+4mh2tPsgw==
-X-CSE-MsgGUID: RuEYMBl6Qxi+PdBW127cNg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,231,1763452800"; 
-   d="scan'208";a="209810342"
-Received: from lkp-server01.sh.intel.com (HELO 765f4a05e27f) ([10.239.97.150])
-  by orviesa004.jf.intel.com with ESMTP; 16 Jan 2026 10:45:16 -0800
-Received: from kbuild by 765f4a05e27f with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1vgooq-00000000L8m-3U1x;
-	Fri, 16 Jan 2026 18:45:12 +0000
-Date: Sat, 17 Jan 2026 02:44:35 +0800
-From: kernel test robot <lkp@intel.com>
-To: Yazhou Tang <tangyazhou@zju.edu.cn>, bpf@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, ast@kernel.org, daniel@iogearbox.net,
-	john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
-	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
-	jolsa@kernel.org, tangyazhou518@outlook.com,
-	shenghaoyuan0928@163.com, ziye@zju.edu.cn,
-	syzbot@syzkaller.appspotmail.com
-Subject: Re: [PATCH bpf-next v4 1/2] bpf: Add range tracking for BPF_DIV and
- BPF_MOD
-Message-ID: <202601170243.MdnGCnsY-lkp@intel.com>
-References: <20260116103246.2477635-2-tangyazhou@zju.edu.cn>
+	s=arc-20240116; t=1768594653; c=relaxed/simple;
+	bh=7Zb0ywyqdkGqJlCEzwwZJipVLnwF8Nf0+xdJC05Cwlg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TM6kOjlmxI7U4Y+Zamph/MlvUh6fATxdbkPD4uwubjhtxuMNf2bDsntggykNJ91Vm74mrEpUdEZgB112EKE7Lp8DvVCYy8y9jtSFvu6qrskDlLztYk8zrbXUvpWTwIoPDaZxTnedVoeGaF2DApuZbxqy/gUVJtU8jZxKFIq+wd0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aPYk3HE/; arc=none smtp.client-ip=95.215.58.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1768594638;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=qh3soA85ykLGQnjp7pmcKzzjNJku8ckJD/dsruePygY=;
+	b=aPYk3HE/PeR3v1SedZSNbv9CGYR06w1kV0qD4BJAC8SIjYdaHnBbC71EAlq7MlR+7QcIsD
+	nPgL03M4QhYpU6IUJTdRVup/7uQSc6sQIBnWzvJtlB12kzUd3sGh+GEMCyxcioXq7wcobw
+	0+aFptkbHvM+L9FT0pzaLeXaudoIvHs=
+From: Ihor Solodrai <ihor.solodrai@linux.dev>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>
+Cc: Mykyta Yatsenko <yatsenko@meta.com>,
+	Tejun Heo <tj@kernel.org>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	Benjamin Tissoires <bentiss@kernel.org>,
+	Jiri Kosina <jikos@kernel.org>,
+	Amery Hung <ameryhung@gmail.com>,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-input@vger.kernel.org,
+	sched-ext@lists.linux.dev
+Subject: [PATCH bpf-next v2 00/13] bpf: Kernel functions with KF_IMPLICIT_ARGS
+Date: Fri, 16 Jan 2026 12:16:47 -0800
+Message-ID: <20260116201700.864797-1-ihor.solodrai@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260116103246.2477635-2-tangyazhou@zju.edu.cn>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Hi Yazhou,
+This series implements a generic "implicit arguments" feature for BPF
+kernel functions. For context see prior work [1][2].
 
-kernel test robot noticed the following build errors:
+A mechanism is created for kfuncs to have arguments that are not
+visible to the BPF programs, and are provided to the kernel function
+implementation by the verifier.
 
-[auto build test ERROR on bpf-next/master]
+This mechanism is then used in the kfuncs that have a parameter with
+__prog annotation [3], which is the current way of passing struct
+bpf_prog_aux pointer to kfuncs.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Yazhou-Tang/bpf-Add-range-tracking-for-BPF_DIV-and-BPF_MOD/20260116-183743
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20260116103246.2477635-2-tangyazhou%40zju.edu.cn
-patch subject: [PATCH bpf-next v4 1/2] bpf: Add range tracking for BPF_DIV and BPF_MOD
-config: sh-randconfig-001-20260116 (https://download.01.org/0day-ci/archive/20260117/202601170243.MdnGCnsY-lkp@intel.com/config)
-compiler: sh4-linux-gcc (GCC) 15.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260117/202601170243.MdnGCnsY-lkp@intel.com/reproduce)
+The function with implicit arguments is defined by KF_IMPLICIT_ARGS
+flag in BTF_IDS_FLAGS set. In this series, only a pointer to struct
+bpf_prog_aux can be implicit, although it is simple to extend this to
+more types.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202601170243.MdnGCnsY-lkp@intel.com/
+The verifier handles a kfunc with KF_IMPLICIT_ARGS by resolving it to
+a different (actual) BTF prototype early in verification (patch #3).
 
-All errors (new ones prefixed by >>):
+A <kfunc>_impl function generated in BTF for a kfunc with implicit
+args does not have a "bpf_kfunc" decl tag, and a kernel address. The
+verifier will reject a program trying to call such an _impl kfunc.
 
-   sh4-linux-ld: kernel/bpf/verifier.o: in function `adjust_scalar_min_max_vals':
-   verifier.c:(.text+0x1f5d4): undefined reference to `__udivdi3'
->> sh4-linux-ld: verifier.c:(.text+0x1f918): undefined reference to `__divdi3'
+The usage of <kfunc>_impl functions in BPF is only allowed for kfuncs
+with an explicit kernel (or kmodule) declaration, that is in "legacy"
+cases. As of this series, there are no legacy kernel functions, as all
+__prog users are migrated to KF_IMPLICIT_ARGS. However the
+implementation allows for legacy cases support in principle.
+
+The series consists of the following patches:
+  - patches #1 and #2 are non-functional refactoring in kernel/bpf
+  - patch #3 defines KF_IMPLICIT_ARGS flag and teaches the verifier
+    about it
+  - patches #4-#5 implement btf2btf transformation in resolve_btfids
+  - patch #6 adds selftests specific to KF_IMPLICIT_ARGS feature
+  - patches #7-#11 migrate the current users of __prog argument to
+    KF_IMPLICIT_ARGS
+  - patch #12 removes __prog arg suffix support from the kernel
+  - patch #13 updates the docs
+
+[1] https://lore.kernel.org/bpf/20251029190113.3323406-1-ihor.solodrai@linux.dev/
+[2] https://lore.kernel.org/bpf/20250924211716.1287715-1-ihor.solodrai@linux.dev/
+[3] https://docs.kernel.org/bpf/kfuncs.html#prog-annotation
+
+---
+
+v1->v2:
+  - Replace the following kernel functions with KF_IMPLICIT_ARGS version:
+    - bpf_stream_vprintk_impl -> bpf_stream_vprintk
+    - bpf_task_work_schedule_resume_impl -> bpf_task_work_schedule_resume
+    - bpf_task_work_schedule_signal_impl -> bpf_task_work_schedule_signal
+    - bpf_wq_set_callback_impl -> bpf_wq_set_callback_impl
+  - Remove __prog arg suffix support from the verifier
+  - Rework btf2btf implementation in resolve_btfids
+    - Do distill base and sort before BTF_ids patching
+    - Collect kfuncs based on BTF decl tags, before BTF_ids are patched
+  - resolve_btfids: use dynamic memory for intermediate data (Andrii)
+  - verifier: reset .subreg_def for caller saved registers on kfunc
+    call (Eduard)
+  - selftests/hid: remove Makefile changes (Benjamin)
+  - selftests/bpf: Add a patch (#11) migrating struct_ops_assoc test
+    to KF_IMPLICIT_ARGS
+  - Various nits across the series (Alexei, Andrii, Eduard)
+
+v1: https://lore.kernel.org/bpf/20260109184852.1089786-1-ihor.solodrai@linux.dev/
+
+---
+
+Ihor Solodrai (13):
+  bpf: Refactor btf_kfunc_id_set_contains
+  bpf: Introduce struct bpf_kfunc_meta
+  bpf: Verifier support for KF_IMPLICIT_ARGS
+  resolve_btfids: Introduce finalize_btf() step
+  resolve_btfids: Support for KF_IMPLICIT_ARGS
+  selftests/bpf: Add tests for KF_IMPLICIT_ARGS
+  bpf: Migrate bpf_wq_set_callback_impl() to KF_IMPLICIT_ARGS
+  HID: Use bpf_wq_set_callback kernel function
+  bpf: Migrate bpf_task_work_schedule_* kfuncs to KF_IMPLICIT_ARGS
+  bpf: Migrate bpf_stream_vprintk() to KF_IMPLICIT_ARGS
+  selftests/bpf: Migrate struct_ops_assoc test to KF_IMPLICIT_ARGS
+  bpf: Remove __prog kfunc arg annotation
+  bpf,docs: Document KF_IMPLICIT_ARGS flag
+
+ Documentation/bpf/kfuncs.rst                  |  49 +-
+ drivers/hid/bpf/progs/hid_bpf_helpers.h       |   8 +-
+ include/linux/btf.h                           |   5 +-
+ kernel/bpf/btf.c                              |  70 ++-
+ kernel/bpf/helpers.c                          |  43 +-
+ kernel/bpf/stream.c                           |   5 +-
+ kernel/bpf/verifier.c                         | 245 ++++++----
+ tools/bpf/resolve_btfids/main.c               | 452 +++++++++++++++++-
+ tools/lib/bpf/bpf_helpers.h                   |   6 +-
+ .../testing/selftests/bpf/bpf_experimental.h  |   5 -
+ .../bpf/prog_tests/kfunc_implicit_args.c      |  10 +
+ .../testing/selftests/bpf/progs/file_reader.c |   4 +-
+ .../selftests/bpf/progs/kfunc_implicit_args.c |  41 ++
+ .../testing/selftests/bpf/progs/stream_fail.c |   6 +-
+ .../selftests/bpf/progs/struct_ops_assoc.c    |   8 +-
+ .../bpf/progs/struct_ops_assoc_in_timer.c     |   4 +-
+ .../bpf/progs/struct_ops_assoc_reuse.c        |   6 +-
+ tools/testing/selftests/bpf/progs/task_work.c |  11 +-
+ .../selftests/bpf/progs/task_work_fail.c      |  16 +-
+ .../selftests/bpf/progs/task_work_stress.c    |   5 +-
+ .../bpf/progs/verifier_async_cb_context.c     |  10 +-
+ .../testing/selftests/bpf/progs/wq_failures.c |   4 +-
+ .../selftests/bpf/test_kmods/bpf_testmod.c    |  35 +-
+ .../bpf/test_kmods/bpf_testmod_kfunc.h        |   6 +-
+ .../selftests/hid/progs/hid_bpf_helpers.h     |   8 +-
+ 25 files changed, 838 insertions(+), 224 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/kfunc_implicit_args.c
+ create mode 100644 tools/testing/selftests/bpf/progs/kfunc_implicit_args.c
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.52.0
+
 
