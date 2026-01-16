@@ -1,176 +1,154 @@
-Return-Path: <bpf+bounces-79255-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79256-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6CD4D326AD
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 15:14:02 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D09DD326D9
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 15:15:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D76F43030D96
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 14:10:47 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 88D843042243
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 14:15:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 523B222370A;
-	Fri, 16 Jan 2026 14:10:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F39132FE58C;
+	Fri, 16 Jan 2026 14:15:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="w8mhEmgH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i9Hf92ga"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70970287263;
-	Fri, 16 Jan 2026 14:10:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20CCF2E9759
+	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 14:14:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768572646; cv=none; b=ZOexds6/RoiN3KtYlDDM2nsXPEcCvxnpGzJgyWtzQLvcJM2/t28ukZBUX6o4rhzozaAyw3E/MzJz+2Nr+6YgiJO5Nghrw38cU5Oe0BucrkQEHRgS4ag1uq+ZYAH0GW3pLcUHmFkLKP3sizKRWWSlc/nkE+MNdk3C22Wt51ZiBg4=
+	t=1768572894; cv=none; b=OBa+7HycZkt6+hnk9VtHmsaWQyYkrwq/WGkcmQwL06M0nFc7XgIhK+P0OFRexJ9H64Wc0ZCIvfaFaLQwIlKd2R5bBbv+XrY3LZkU7R3fFlK9AUl3XiLUzIVPs9BeBy+bTpkCwn7mZ+f7mJ21vC60/Cjy7tW/NSBcMoBbo5h2kn8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768572646; c=relaxed/simple;
-	bh=+jgDwfGEgZ/gfdC0Vw6xWmOfG9Ku+O5C3mi5MoII2Yw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YZMj28On5QplQTByCOBhqhuYMzh7R+Rv1C5dEIJLTgWechfGqQn0lDszvZsSFDAThPf0lRBh5UifJPibtSoSBceMZC1cW41EFzTYrU2y+q/XmAwzhNtjfg7v9SaroAlh7ClO8NWnzMASUy03aPkRlcoK3ORTjRhGFPqdUZZSDxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=w8mhEmgH; arc=none smtp.client-ip=95.215.58.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <36cf80a8-a224-4191-b235-50c2b3dd73f6@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1768572632;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LltPikOjfn91v4eQf5wN9GiDkEuZIGDG/ABublmrXDA=;
-	b=w8mhEmgHxpePEGZgYwqycR5BSjb33zglHkzQuRAsu+5zMXMstSGTHQduak5A1ZSIqRYQXY
-	o9x8dMApX3LtTYR7BWK/oeGQkMMJXJlPGMVkv8KG5CKuCfZBxEONIBfv/JLQGdz++mNDlO
-	bpWCLY7R0NEnSryu+da6E+wrKAi1XZk=
-Date: Fri, 16 Jan 2026 22:10:12 +0800
+	s=arc-20240116; t=1768572894; c=relaxed/simple;
+	bh=su9nfqjzN1/lTmpnRSuhwOkfhP8+tDk/VYv64gBLUGw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=b4ZCowJ1clyr4rIs2NXRQbOXolMMbzYu2IbBTNYMdi8wKjTkjSwMUePl0fSNvZFhXet6QoT5kLLQ/AX3mHAZVgqtxQZBt8tD9Qdj5L5EgCeL8atOMIJjYxW+viC0BgXGE6MwXVMd7+aTtEmm/wFSAK/CfDcpbq6rKhzxwcQjoAM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i9Hf92ga; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67F3AC116C6;
+	Fri, 16 Jan 2026 14:14:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768572892;
+	bh=su9nfqjzN1/lTmpnRSuhwOkfhP8+tDk/VYv64gBLUGw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=i9Hf92gaPCu3NgzQHXV3FAlvFJEb9jImfdVughJwbNGlNdWsxtP6uXur17xCKAXm6
+	 317PaAZypJofPFxs9qbUlyXqFjhMIOFgLFyGs6pf5hKs+Yt5zRfrwynw2SYxATaJ47
+	 8aDDabnLhGJhfYQxBwi1OyLVId2aqtaRlXOrU32eAe3yfFEu9ahnIu9l/f61UsZjIa
+	 a373EtKLliJ3t71GRfgY5JbSanoAk67y6eSTaBTbHk5CPBdL1tNYdS2xi05p8TutRA
+	 x10Wn/6NSt0OVDAywjDe5vm9xYSsAonznlCOvqI0T21rMSOv+fuLCwFNPl9xmhrVBM
+	 R+jWhwPoHQPEw==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: bpf@vger.kernel.org
+Cc: Puranjay Mohan <puranjay@kernel.org>,
+	Puranjay Mohan <puranjay12@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>,
+	kernel-team@meta.com,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: [PATCH bpf-next] bpf: verifier: Make sync_linked_regs() scratch registers
+Date: Fri, 16 Jan 2026 06:14:35 -0800
+Message-ID: <20260116141436.3715322-1-puranjay@kernel.org>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v5 4/9] bpf: Add syscall common attributes
- support for prog_load
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Shuah Khan <shuah@kernel.org>, Christian Brauner <brauner@kernel.org>,
- Seth Forshee <sforshee@kernel.org>, Yuichiro Tsuji <yuichtsu@amazon.com>,
- Andrey Albershteyn <aalbersh@redhat.com>,
- Willem de Bruijn <willemb@google.com>, Jason Xing
- <kerneljasonxing@gmail.com>, Tao Chen <chen.dylane@linux.dev>,
- Mykyta Yatsenko <yatsenko@meta.com>,
- Kumar Kartikeya Dwivedi <memxor@gmail.com>,
- Anton Protopopov <a.s.protopopov@gmail.com>, Amery Hung
- <ameryhung@gmail.com>, Rong Tao <rongtao@cestc.cn>,
- linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
- linux-kselftest@vger.kernel.org, kernel-patches-bot@fb.com
-References: <20260112145616.44195-1-leon.hwang@linux.dev>
- <20260112145616.44195-5-leon.hwang@linux.dev>
- <CAEf4BzZbcA2T8+OR1_68sxq9Chukmh8beyz+018O22U=SsafrA@mail.gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Leon Hwang <leon.hwang@linux.dev>
-In-Reply-To: <CAEf4BzZbcA2T8+OR1_68sxq9Chukmh8beyz+018O22U=SsafrA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
+sync_linked_regs() is called after a conditional jump to propagate new
+bounds of a register to all its liked registers. But the verifier log
+only prints the state of the register that is part of the conditional
+jump.
 
+Make sync_linked_regs() scratch the registers whose bounds have been
+updated by propagation from a known register.
 
-On 2026/1/16 08:54, Andrii Nakryiko wrote:
-> On Mon, Jan 12, 2026 at 6:59 AM Leon Hwang <leon.hwang@linux.dev> wrote:
->>
->> The log buffer of common attributes would be confusing with the one in
->> 'union bpf_attr' for BPF_PROG_LOAD.
->>
->> In order to clarify the usage of these two log buffers, they both can be
->> used for logging if:
->>
->> * They are same, including 'log_buf', 'log_level' and 'log_size'.
->> * One of them is missing, then another one will be used for logging.
->>
->> If they both have 'log_buf' but they are not same totally, return -EUSERS.
-> 
-> why use this special error code that we don't seem to use in BPF
-> subsystem at all? What's wrong with -EINVAL. This shouldn't be an easy
-> mistake to do, tbh.
-> 
+Before:
 
--EUSERS was suggested by Alexei.
+0: (85) call bpf_get_prandom_u32#7    ; R0=scalar()
+1: (57) r0 &= 255                     ; R0=scalar(smin=smin32=0,smax=umax=smax32=umax32=255,var_off=(0x0; 0xff))
+2: (bf) r1 = r0                       ; R0=scalar(id=1,smin=smin32=0,smax=umax=smax32=umax32=255,var_off=(0x0; 0xff)) R1=scalar(id=1,smin=smin32=0,smax=umax=smax32=umax32=255,var_off=(0x0; 0xff))
+3: (07) r1 += 4                       ; R1=scalar(id=1+4,smin=umin=smin32=umin32=4,smax=umax=smax32=umax32=259,var_off=(0x0; 0x1ff))
+4: (a5) if r1 < 0xa goto pc+2         ; R1=scalar(id=1+4,smin=umin=smin32=umin32=10,smax=umax=smax32=umax32=259,var_off=(0x0; 0x1ff))
+5: (35) if r0 >= 0x6 goto pc+1
 
-However, I agree with you that it is better to use -EINVAL here.
+After:
 
->>
->> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
->> ---
->>  include/linux/bpf_verifier.h |  4 +++-
->>  kernel/bpf/log.c             | 29 ++++++++++++++++++++++++++---
->>  kernel/bpf/syscall.c         |  9 ++++++---
->>  3 files changed, 35 insertions(+), 7 deletions(-)
->>
->> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
->> index 4c9632c40059..da2d37ca60e7 100644
->> --- a/include/linux/bpf_verifier.h
->> +++ b/include/linux/bpf_verifier.h
->> @@ -637,9 +637,11 @@ struct bpf_log_attr {
->>         u32 log_level;
->>         struct bpf_attrs *attrs;
->>         u32 offsetof_log_true_size;
->> +       struct bpf_attrs *attrs_common;
->>  };
->>
->> -int bpf_prog_load_log_attr_init(struct bpf_log_attr *log_attr, struct bpf_attrs *attrs);
->> +int bpf_prog_load_log_attr_init(struct bpf_log_attr *log_attr, struct bpf_attrs *attrs,
->> +                               struct bpf_attrs *attrs_common);
->>  int bpf_log_attr_finalize(struct bpf_log_attr *log_attr, struct bpf_verifier_log *log);
->>
->>  #define BPF_MAX_SUBPROGS 256
->> diff --git a/kernel/bpf/log.c b/kernel/bpf/log.c
->> index 457b724c4176..eba60a13e244 100644
->> --- a/kernel/bpf/log.c
->> +++ b/kernel/bpf/log.c
->> @@ -865,23 +865,41 @@ void print_insn_state(struct bpf_verifier_env *env, const struct bpf_verifier_st
->>  }
->>
->>  static int bpf_log_attr_init(struct bpf_log_attr *log_attr, struct bpf_attrs *attrs, u64 log_buf,
->> -                            u32 log_size, u32 log_level, int offsetof_log_true_size)
->> +                            u32 log_size, u32 log_level, int offsetof_log_true_size,
->> +                            struct bpf_attrs *attrs_common)
->>  {
->> +       const struct bpf_common_attr *common_attr = attrs_common ? attrs_common->attr : NULL;
->> +
-> 
-> There is something to be said about naming choices here :) it's easy
-> to get lost in attrs_common being actually bpf_attrs, which contains
-> attr field, which is actually of bpf_common_attr type... It's a bit
-> disorienting. :)
-> 
+0: (85) call bpf_get_prandom_u32#7    ; R0=scalar()
+1: (57) r0 &= 255                     ; R0=scalar(smin=smin32=0,smax=umax=smax32=umax32=255,var_off=(0x0; 0xff))
+2: (bf) r1 = r0                       ; R0=scalar(id=1,smin=smin32=0,smax=umax=smax32=umax32=255,var_off=(0x0; 0xff)) R1=scalar(id=1,smin=smin32=0,smax=umax=smax32=umax32=255,var_off=(0x0; 0xff))
+3: (07) r1 += 4                       ; R1=scalar(id=1+4,smin=umin=smin32=umin32=4,smax=umax=smax32=umax32=259,var_off=(0x0; 0x1ff))
+4: (a5) if r1 < 0xa goto pc+2         ; R0=scalar(id=1+0,smin=umin=smin32=umin32=6,smax=umax=smax32=umax32=255) R1=scalar(id=1+4,smin=umin=smin32=umin32=10,smax=umax=smax32=umax32=259,var_off=(0x0; 0x1ff))
+5: (35) if r0 >= 0x6 goto pc+1
 
-I see your point about the naming being confusing.
+The conditional jump in 4 updates the bound of R1 and the new bounds are
+propogated to R0 as it is linked with the same id, before this change,
+verifier only printed the state for R1 but after it prints for both R0
+and R1.
 
-The original intent of 'struct bpf_attrs' was to provide a shared
-wrapper for both 'union bpf_attr' and 'struct bpf_common_attr'. However,
-I agree that using 'attrs_common' here makes the layering harder to follow.
+Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+---
+ kernel/bpf/verifier.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
-If that approach is undesirable, how about introducing a dedicated
-structure instead, e.g.:
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 7a375f608263..111d27d68d97 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -16846,8 +16846,8 @@ static void collect_linked_regs(struct bpf_verifier_state *vstate, u32 id,
+ /* For all R in linked_regs, copy known_reg range into R
+  * if R->id == known_reg->id.
+  */
+-static void sync_linked_regs(struct bpf_verifier_state *vstate, struct bpf_reg_state *known_reg,
+-			     struct linked_regs *linked_regs)
++static void sync_linked_regs(struct bpf_verifier_env *env, struct bpf_verifier_state *vstate,
++			     struct bpf_reg_state *known_reg, struct linked_regs *linked_regs)
+ {
+ 	struct bpf_reg_state fake_reg;
+ 	struct bpf_reg_state *reg;
+@@ -16888,6 +16888,10 @@ static void sync_linked_regs(struct bpf_verifier_state *vstate, struct bpf_reg_s
+ 			scalar_min_max_add(reg, &fake_reg);
+ 			reg->var_off = tnum_add(reg->var_off, fake_reg.var_off);
+ 		}
++		if (e->is_reg)
++			mark_reg_scratched(env, e->regno);
++		else
++			mark_stack_slot_scratched(env, e->spi);
+ 	}
+ }
+ 
+@@ -17074,13 +17078,15 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
+ 	if (BPF_SRC(insn->code) == BPF_X &&
+ 	    src_reg->type == SCALAR_VALUE && src_reg->id &&
+ 	    !WARN_ON_ONCE(src_reg->id != other_branch_regs[insn->src_reg].id)) {
+-		sync_linked_regs(this_branch, src_reg, &linked_regs);
+-		sync_linked_regs(other_branch, &other_branch_regs[insn->src_reg], &linked_regs);
++		sync_linked_regs(env, this_branch, src_reg, &linked_regs);
++		sync_linked_regs(env, other_branch, &other_branch_regs[insn->src_reg],
++				 &linked_regs);
+ 	}
+ 	if (dst_reg->type == SCALAR_VALUE && dst_reg->id &&
+ 	    !WARN_ON_ONCE(dst_reg->id != other_branch_regs[insn->dst_reg].id)) {
+-		sync_linked_regs(this_branch, dst_reg, &linked_regs);
+-		sync_linked_regs(other_branch, &other_branch_regs[insn->dst_reg], &linked_regs);
++		sync_linked_regs(env, this_branch, dst_reg, &linked_regs);
++		sync_linked_regs(env, other_branch, &other_branch_regs[insn->dst_reg],
++				 &linked_regs);
+ 	}
+ 
+ 	/* if one pointer register is compared to another pointer
 
-struct bpf_common_attrs {
-	const struct bpf_common_attr *attr;
-	bpfptr_t uattr;
-	u32 size;
-};
-
-This should make the ownership and intent clearer.
-
-Thanks,
-Leon
-
-[...]
+base-commit: 934d9746ed0206e93506a68c838fe82ef748576a
+-- 
+2.47.3
 
 
