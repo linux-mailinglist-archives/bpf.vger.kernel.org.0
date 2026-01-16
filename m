@@ -1,324 +1,279 @@
-Return-Path: <bpf+bounces-79265-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79267-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E4F4D32CD5
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 15:44:15 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 096D7D32CB7
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 15:43:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2C06E3143F71
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 14:39:00 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 7FA233072EFD
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 14:40:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECE87376BEB;
-	Fri, 16 Jan 2026 14:38:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F2C1393DFB;
+	Fri, 16 Jan 2026 14:40:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b="SmPTt8X6"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="W2cXZQcE";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="mQqovt8b";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="W2cXZQcE";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="mQqovt8b"
 X-Original-To: bpf@vger.kernel.org
-Received: from AM0PR83CU005.outbound.protection.outlook.com (mail-westeuropeazon11010018.outbound.protection.outlook.com [52.101.69.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7787821ABD7;
-	Fri, 16 Jan 2026 14:38:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.69.18
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768574337; cv=fail; b=c7QImqLqfgtmfYHzTNoiqkUFA9V6Gw5k6WgJaIFf7LtEY1KgVmuNpn/yc86xAMgiPBZqfX7bNQQS28q2+2omZ8QlqoxwXvmrvRXRJf426jyn5ahn49oSM4gqIxjrzaRVCdamz42JZJYwPyCOR3j8RHcBkafXqz3Plz6T1NKkEYY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768574337; c=relaxed/simple;
-	bh=Hi2tZN1XHyawR6iVJdGEQI+f2LUTsdVCqv16wwExSCI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=EPkRGFJTUY4FSvAfeVrjxG/N123wnKN0/9512jOEfhQE5SA8R3CVIZ0+Y5h5FaJWPKnqOC8z/kCCBKRxwrvtEwhYrnBpmIec4xqayPnBUlTAJ/M5FpGJMIqKInaTmGvE/ZQ0YD2bqvxgVYZ3MlQ8K2p1wwp//rE0/wzSF/DW8+M=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b=SmPTt8X6; arc=fail smtp.client-ip=52.101.69.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=avQK+UTCW4pR1CJ2+OTK03pnX6yqWT/sQS2b9pcg9tywXWUnFU8HVDP0jYh2HLvMdI8EWJIh2sEX8aZ13pgThDunsYM2nwV98zRr01RiE1jOBA5D51AYCE6I1SDF5aUltmAGJC+xuAUnfjeby8iN0OZ08u82a9VUIfYl4CPqthzI6LxFUoIFU60pH/Gc/JMD/fPgbBIIUcKXa27qyLj3HD8cXNOXH3R1Uv9/tcta65ft8TDxRztZyK8yrcONKdms6l5MjCNeM0baZI8kQsG72TSOEKhOUq9Dni9NHmwHXt/WLGO/5p9cWAGNpoPdtXk7I7rwjpmy+P84G5onRSlY3g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=u0Mlp13jXdKcnqN20BOFj/RwJAOEfQ7WSvS477OY24I=;
- b=Ccc0SEA/cC0hvR7SWXLx/jWt5Kz16PW+S7M6x5wea86mhb6Ac+L+WNnZjUTsxF+6hyruGE9LU1nr254euFE/1E/LM0+yNnGBtRzFqZ318gDTCuUKVCFYclmDooYKsPeRrQ0f7iiT4+DLEbdhDzwMeUhoR+qv2uqA3Rh/SIwz9sgqh4WbUPJVa3Mf8HBQQp7p4aCF1bmb7ZtvjUs0Wif4UBtyhRyNYKneCa6V07enFZ88pOQUNPsnfxbNxwdSRILRRLO2kZGfV7Hx5kYNX+RcrU8gjMK2vn1ufXPPfXsbKzGBEua68LJGVToZb4Bs860fq4G9jP9nk/jBweGJYfhF6g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=u0Mlp13jXdKcnqN20BOFj/RwJAOEfQ7WSvS477OY24I=;
- b=SmPTt8X63/T4nhiXOll8mrNyRS0JLsq2gsj6CWoPhDL74xGh3xnPCtZ/Y+faIrlFodUcjq+VXS/t0J+6U8ab91/DA2XQNvcO9fbDnXeCY2mcwxrFzpg+c0HHqd1Sz8LAaxNaYzcva7g4ZmlTZ9WJIMpCSzAnp1fTd7uA8gdqKSJDBfrTnCt0klnusB2W9ry2/kOMl8OkCPJyfreXsezW/l5ZadvYew0yySg1zltH0HuktOFiSit/I+vuEHZz3mOV7tNm7CX51vO8puA+gPSTod25KSKom8rx8qucrvc9e+k15aSYq+aU+YxXNsILz3og61ZSfEUOwVn16C9H17ODyA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from DU2PR04MB8951.eurprd04.prod.outlook.com (2603:10a6:10:2e2::22)
- by PA2PR04MB10506.eurprd04.prod.outlook.com (2603:10a6:102:41e::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9520.6; Fri, 16 Jan
- 2026 14:38:49 +0000
-Received: from DU2PR04MB8951.eurprd04.prod.outlook.com
- ([fe80::753c:468d:266:196]) by DU2PR04MB8951.eurprd04.prod.outlook.com
- ([fe80::753c:468d:266:196%4]) with mapi id 15.20.9478.004; Fri, 16 Jan 2026
- 14:38:49 +0000
-Date: Fri, 16 Jan 2026 09:38:42 -0500
-From: Frank Li <Frank.li@nxp.com>
-To: Wei Fang <wei.fang@nxp.com>
-Cc: shenwei.wang@nxp.com, xiaoning.wang@nxp.com, andrew+netdev@lunn.ch,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
-	hawk@kernel.org, john.fastabend@gmail.com, sdf@fomichev.me,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	imx@lists.linux.dev, bpf@vger.kernel.org
-Subject: Re: [PATCH v2 net-next 12/14] net: fec: add
- fec_alloc_rxq_buffers_pp() to allocate buffers from page pool
-Message-ID: <aWpNcsoiQX7WESis@lizhi-Precision-Tower-5810>
-References: <20260116074027.1603841-1-wei.fang@nxp.com>
- <20260116074027.1603841-13-wei.fang@nxp.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260116074027.1603841-13-wei.fang@nxp.com>
-X-ClientProxiedBy: PH7P220CA0119.NAMP220.PROD.OUTLOOK.COM
- (2603:10b6:510:32d::6) To DU2PR04MB8951.eurprd04.prod.outlook.com
- (2603:10a6:10:2e2::22)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F3863933E3
+	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 14:40:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768574443; cv=none; b=BtXhzzOxfkjnOVBeA/I2HLDXpDVEubacay3H9bfbwcBimQPU1wrOZjadsK2757NLi6BL9BZBdj//kMMMDNVJa1SujY75ohi0ZN3R6jjyoXqYMW9maioayQE7HtdjFgk7lVqa7nkNrl3vKHHuKt/iBicKVvNKiGhMYydwEeE0qLY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768574443; c=relaxed/simple;
+	bh=JZcEFwJ6RAjn5Bni337pJYN+ViD4/3sb2QCcQVYuJWM=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=uBG7Uy8hMJD2GslWIWiwtJXnkDnOVMjqLOZjUw8pQ2sgRw9F/5dNvE5Q2D9ChWnFptwvGiCWp0WqjC9POhpFjzV4+IAJ/bz791CpYW727JrRiFQ89E0pHeOKW4SaHa5sam+o0UmnKISrGku45D1NyM0NXey5vfm8RqBlAt7ROtI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=W2cXZQcE; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=mQqovt8b; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=W2cXZQcE; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=mQqovt8b; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 8C65233789;
+	Fri, 16 Jan 2026 14:40:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1768574436; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=D8kSMH2gta+Yma3QMnDCuvguK/0toKW9byQx/lVBXFU=;
+	b=W2cXZQcEu58tSojqQz9KrhUQuTTHIf2SZB58nYl5bifW0498hXY2R8FUkgVcUCV3D4aHSc
+	7Vp96ID2AwEdP+Oq8p6TTHOsU6eNo2KQ9+IKdfqboaDiIF+T37UWYQvfa+Fw7ZGNPduSSj
+	wppsJ6GqSXVZEsXbtfGkwnbrK81hX34=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1768574436;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=D8kSMH2gta+Yma3QMnDCuvguK/0toKW9byQx/lVBXFU=;
+	b=mQqovt8blj77FthhSHtvbjI5Mo4ea5I324sOFniBk/DkDhDDHK0u7NoVURt7NmD9/e1Ur1
+	KiJ38IwZcc3cRBDA==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=W2cXZQcE;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=mQqovt8b
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1768574436; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=D8kSMH2gta+Yma3QMnDCuvguK/0toKW9byQx/lVBXFU=;
+	b=W2cXZQcEu58tSojqQz9KrhUQuTTHIf2SZB58nYl5bifW0498hXY2R8FUkgVcUCV3D4aHSc
+	7Vp96ID2AwEdP+Oq8p6TTHOsU6eNo2KQ9+IKdfqboaDiIF+T37UWYQvfa+Fw7ZGNPduSSj
+	wppsJ6GqSXVZEsXbtfGkwnbrK81hX34=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1768574436;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=D8kSMH2gta+Yma3QMnDCuvguK/0toKW9byQx/lVBXFU=;
+	b=mQqovt8blj77FthhSHtvbjI5Mo4ea5I324sOFniBk/DkDhDDHK0u7NoVURt7NmD9/e1Ur1
+	KiJ38IwZcc3cRBDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 46A2D3EA63;
+	Fri, 16 Jan 2026 14:40:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id sj7VEORNamnydgAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Fri, 16 Jan 2026 14:40:36 +0000
+From: Vlastimil Babka <vbabka@suse.cz>
+Subject: [PATCH v3 00/21] slab: replace cpu (partial) slabs with sheaves
+Date: Fri, 16 Jan 2026 15:40:20 +0100
+Message-Id: <20260116-sheaves-for-all-v3-0-5595cb000772@suse.cz>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU2PR04MB8951:EE_|PA2PR04MB10506:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5839df28-342e-4fdd-d758-08de550cf67e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|52116014|7416014|376014|366016|19092799006|1800799024|38350700014;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?k7BnqBieEwsWEqB3U5eryl1OUIc+k5y8+Zfh//2z72Gv/5brr355/kjL+n8n?=
- =?us-ascii?Q?/6XdnQs/R1UxCqZJa0McJxwU0IoOyjBpgGVwKzevDDMUUKuy+bJlKIYy1sRS?=
- =?us-ascii?Q?nqsD7mk+lxpLyL3JXjsiEKLIrYSar8+tdpAymgGTUhSNL+qyv4j3LoVlIJwE?=
- =?us-ascii?Q?vzZ0AmTZS34TQ+IoGnyFKM+1SAq7zS65jhuvpXEfzUOop5o/fSA/VbnrbwJH?=
- =?us-ascii?Q?FC/jGoCAbfphpec8UgJeD1Kgbu0IwXVW8FRlh+UoovA5Q9gWkCy7T+XQ5PKk?=
- =?us-ascii?Q?lQZfSMgVmsvFmOht/sQYwb5I/3g00x0otiPuQHVkkQRLtNQ7tyCC7v+o09HD?=
- =?us-ascii?Q?e4uMAApARRK1vfQ2UhHablPOxpxbkNGoIyLy2h/howQUtltzsrh7vnEpBelC?=
- =?us-ascii?Q?viMkPNyl7DJ+xq35Pmw+/kE8hIJAGyEzKM53C4YM5f/sMQhpPkcniE+oY0SQ?=
- =?us-ascii?Q?K/QQBQVH9O26LwIB3rjh8Q+OsdtH81pweRsbm4ExwM4Sj29hpIwadt7AMdgm?=
- =?us-ascii?Q?WC7+p0shofs5TzgXMn9EgjXG7irsAFhpBL0uJkE0jdSecvdCVvCW2/58wWgt?=
- =?us-ascii?Q?2M3IFDWWNQLmCIECnkXzgseTyTXLWRfZA4WU4q5gJZRfxf662AZ5izJ2ChQW?=
- =?us-ascii?Q?NSklrGalttE8xS1OfGdpvO+0eA0bCaW2HEzRYhHKoFlYr3DC8ukPugMZB/y6?=
- =?us-ascii?Q?DdBYTkYRaSvj1Sw1n4G7BEW8kRpXy/V6T/a1tmTwXRomholuOK9FdR7v5N0A?=
- =?us-ascii?Q?PAbCdHE9sj/X0vAS4VwEpWp0CkfXlnk/C8wdHA2XrKvXcoaK2XZMoYDAILbj?=
- =?us-ascii?Q?UXHK43YgyUEiSRtw+3wqtQqMPt6ds2OOl+kfAHsNP7IO2GPV80JbZdsAe6TG?=
- =?us-ascii?Q?QBw0dtdh5gBC2c+10hp5z4thaqp5ksfs2TChuX4bL7kSLKNEd7zkerE0BFRd?=
- =?us-ascii?Q?Snrt7tJm2xKeqNZ+dODWLW9JcSthwaJxBMQr0X1CaVVgkh4WArL8veMg+LJz?=
- =?us-ascii?Q?V6/6fLrr5SKDsfZsnZLWH8pwMSMa7WzM5ZufYGvP7mEDDDx2gaQNTTp1OEDq?=
- =?us-ascii?Q?ndGkt/KalqwS0iUVRgcyXpYelap2ixngFfIJMmKo0HTWnAVVPYzaqZjMkwaQ?=
- =?us-ascii?Q?rH5isNVUdKKZCKUUYD+6nm2gxugIE+eScXtec6S/mQDF6KoOpc3gCWTah8mU?=
- =?us-ascii?Q?w6ZFRQP2e/2I0tNLwQwA2lgDyNl7SmZdcciZCZRZwHRxUzXIfF7Kp+Kqw+7r?=
- =?us-ascii?Q?wTD1XqyD6JGRp5kmQg1GC1qp8ip9pDyBTPEAyAai23du84fDde3lADP/wEJr?=
- =?us-ascii?Q?3St7LIycokGdf73UqNy4DOC+aTFkV7n7ziriZS3m73oBIXVB0lhryrJ2mQg2?=
- =?us-ascii?Q?D1EoG/ECCQGAMQHkAXNPpHk60wBQwuA0B0ZiXMtSRmlK6935KrPoH7HvFZWq?=
- =?us-ascii?Q?qX2sFAprhsPlMqx6plP/XQKFICqRhVgNXVE9UYG37k0Qe5mwB75TZZgPbrwJ?=
- =?us-ascii?Q?tNA4qXW66gh8dT5Pd1WYG+KoXJqe14bfw76KdbbxbIAEsbcCe9fZgYDpFZFl?=
- =?us-ascii?Q?DkplnbyD3V54r5lhkaBrvZ/b21CNvbBOZR93l61MiSXKJ7sa6kXAXWEBSEXb?=
- =?us-ascii?Q?GSePzWodMUIl6l/kMktFRIE=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB8951.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(52116014)(7416014)(376014)(366016)(19092799006)(1800799024)(38350700014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?kXJnVFFZq9UiQyVCUV9TFv1kPkwwQ1+gjHmDqcSxMU4ja+cplvra6Yz8tONj?=
- =?us-ascii?Q?us/m4rjlTnnABCgMobOoaIvBz3bvCMNAPeBEsyFvIP6YsH6oZWw/vtZtp5ms?=
- =?us-ascii?Q?qWHaiHaI4qu04s0vhcV46vAsm99sT7Jv42Y687LjhvkXwu1UNex5hr/lWucZ?=
- =?us-ascii?Q?EFtX66XCm6TV71buk46ERaoxE1MCEoz32liIQwvt+gMf0cu3tW9NAOeeyq+7?=
- =?us-ascii?Q?wPiRzSxAcV7ZHWDz/Incz3NRNdq6p/6I240Vd0Id1IzHz2jZTiln9fHck0No?=
- =?us-ascii?Q?VoRTVq2uzBEkkKDm01RbOBNC5u+ElXz9WhacjWdOrD2vx7KFf0WzF3TDbhAu?=
- =?us-ascii?Q?WLigB72lMPwWP2/gK4fhH9EN6xAqF6Q08LyxZlW5R1A+164xQl9i3Bf0jJvu?=
- =?us-ascii?Q?GH4Tu/YXJphzlZpHdKK5bcZXD0mwkY7tu54WPdz6lc5mEsMkeewUNqN7Kskx?=
- =?us-ascii?Q?AfxEE9sjlQeC+QkQJ+joD+Aftz2CM9Xkrp9JuqvKmV93kV4pH+POESpBVyi1?=
- =?us-ascii?Q?LozmvBIr2knVWXymgxxeuUjzD9Fv2piqfoLjVJTe7RKrTCIgRGYjxzOJSsvo?=
- =?us-ascii?Q?Kbn6wI2yRQxZkpwylz115tNbceSshYBkNHNFqzAF3AvABewacjkB4XiAqiKw?=
- =?us-ascii?Q?6p1AflIZ4eDRDfb+cieJp+2D3b6iv3m2Z2wrxo6Nx0WQNcCCM+HpYv7xjXRx?=
- =?us-ascii?Q?LYFTfeHIEZsQVoq2aid6JpAuSfVJlyh9p31ECnUmW4Yb0W/X3wTfNaHdOuTi?=
- =?us-ascii?Q?Qth1RLuF9sbb3R6w6yfm76brRa/gnWyc168YF9DgZuv1z6Q4VvF+jBBub0oQ?=
- =?us-ascii?Q?EC3OrBp/GViit7buiaw9q5uu41vvjUqywsHvZxj4y4KWZaNsTmuWFzJcPyqW?=
- =?us-ascii?Q?CaTPNgRlgqgals0tfCfXXKkxzRoie5577x6VHeLY6CryMJI+5W8I+My5Lbtu?=
- =?us-ascii?Q?tTXAbTUCFV0EOJUXbEyaWWPOvSe6FTjEkxiPRcsZ9MRxGkIOIMsHhFtHdV8d?=
- =?us-ascii?Q?e2scJSBVs0TNiQM/G3EFsyrgQK767cI1goIG8mSYHPjDTkPq+xVyM56UzOZR?=
- =?us-ascii?Q?VVncEwNYL0B9/t7pJxKkO2ZxJOTx6Cueyqogd7+nilRO+XjenvXYXqAzycbU?=
- =?us-ascii?Q?q4y9nraHk9JWnKonHTMqnUxQ+G/4NpX0Zn3PNgpp7WM06MKQZcj1MYJyKwCH?=
- =?us-ascii?Q?7pqcr0EZudbgXE+oBo8T4F6/DYPr3OJG6MWhzj0+FTQ5+1Vum6n4B3Yb0Uud?=
- =?us-ascii?Q?X2UFplma6avDB3y8DmDMhVk9jCL8nhSCY7F1GfJi2FdDv1C51JjbiVoq7qjz?=
- =?us-ascii?Q?OaOmIakl8hiaKp3KDjNdlRwuMiKSMbc8ZvwEAeVWa+Dvrk2QuRZKZJV+QRkV?=
- =?us-ascii?Q?b56UXX3rgGtCYntC10uoq08gsAo9HHw6sZtARb/bYvypzNBEvrcPXC+CcFo2?=
- =?us-ascii?Q?VipCiWGrJ9SJ5nIIHsYKxzsOHG2kFzaeQnEIdVRvtKo6ex3x1bxkKdYpY7g5?=
- =?us-ascii?Q?zjRC9LCt8sHIPUor6ZKnKOWHzwLSqtcs7M/jsZ9S9n0Ix0UEzZkVnm5iqxSq?=
- =?us-ascii?Q?CtBik+bRT4ZwYOsnSzM6+iMYzbkEX1IVBfZ18UffDnZmM0+4MHx6zIKNpGG/?=
- =?us-ascii?Q?2Km3YTcjvwrTjOFwgHs3eAPECvSzy7Gma8wsgIzh5cR9NnrOjuixEbTRq321?=
- =?us-ascii?Q?0kN377OwwJQCHTplIP6F/Zq171sRoIE0uvqSN7slNyht+S+PeWxPh/828QF0?=
- =?us-ascii?Q?Jcfiul+okA=3D=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5839df28-342e-4fdd-d758-08de550cf67e
-X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8951.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jan 2026 14:38:49.8484
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LRPpYpbdRjlwOBBt30pkG7fIumnXQ+APBoqJIGA4WPYG6D202R1zdCM1jj1KfYDF60RVXYE9L9HAT/mXlIEexA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA2PR04MB10506
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIANVNamkC/2WOQQ6CMBBFr0K6tqYdKIIr72Fc1GEqTQiQjjYq4
+ e4WonHB8k3y3p9JMAVPLI7ZJAJFz37oE+S7TGBr+xtJ3yQWoMBopUBySzYSSzcEabtOVqVFnTd
+ YHKwRyRoDOf9ci+dL4tbzfQivdSDq5fptQb5pRS2VLJ2zgHVdaFQnfjDt8S2WUoSfXSqtt59ES
+ HZdARh0V6PQ/e15nj//IYhq6gAAAA==
+X-Change-ID: 20251002-sheaves-for-all-86ac13dc47a5
+To: Harry Yoo <harry.yoo@oracle.com>, Petr Tesarik <ptesarik@suse.com>, 
+ Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>, 
+ Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Hao Li <hao.li@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+ Uladzislau Rezki <urezki@gmail.com>, 
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
+ Suren Baghdasaryan <surenb@google.com>, 
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
+ Alexei Starovoitov <ast@kernel.org>, linux-mm@kvack.org, 
+ linux-kernel@vger.kernel.org, linux-rt-devel@lists.linux.dev, 
+ bpf@vger.kernel.org, kasan-dev@googlegroups.com, 
+ Vlastimil Babka <vbabka@suse.cz>, kernel test robot <oliver.sang@intel.com>, 
+ stable@vger.kernel.org
+X-Mailer: b4 0.14.3
+X-Spam-Score: -4.51
+X-Spamd-Result: default: False [-4.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	FREEMAIL_CC(0.00)[linux.dev,linux-foundation.org,gmail.com,oracle.com,google.com,linutronix.de,kernel.org,kvack.org,vger.kernel.org,lists.linux.dev,googlegroups.com,suse.cz,intel.com];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	RCPT_COUNT_TWELVE(0.00)[20];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	MID_RHS_MATCH_FROM(0.00)[];
+	R_RATELIMIT(0.00)[to_ip_from(RLfsjnp7neds983g95ihcnuzgq)];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[]
+X-Spam-Level: 
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 8C65233789
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
 
-On Fri, Jan 16, 2026 at 03:40:25PM +0800, Wei Fang wrote:
-> Currently, the buffers of RX queue are allocated from the page pool. In
-> the subsequent patches to support XDP zero copy, the RX buffers will be
-> allocated from the UMEM. Therefore, extract fec_alloc_rxq_buffers_pp()
-> from fec_enet_alloc_rxq_buffers() and we will add another helper to
-> allocate RX buffers from UMEM for the XDP zero copy mode.
->
-> Signed-off-by: Wei Fang <wei.fang@nxp.com>
-> ---
->  drivers/net/ethernet/freescale/fec_main.c | 78 ++++++++++++++++-------
->  1 file changed, 54 insertions(+), 24 deletions(-)
->
-> diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
-> index a418f0153d43..68aa94dd9487 100644
-> --- a/drivers/net/ethernet/freescale/fec_main.c
-> +++ b/drivers/net/ethernet/freescale/fec_main.c
-> @@ -3435,6 +3435,24 @@ static void fec_xdp_rxq_info_unreg(struct fec_enet_priv_rx_q *rxq)
->  	}
->  }
->
-> +static void fec_free_rxq_buffers(struct fec_enet_priv_rx_q *rxq)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < rxq->bd.ring_size; i++) {
-> +		struct page *page = rxq->rx_buf[i];
-> +
-> +		if (!page)
-> +			continue;
-> +
-> +		page_pool_put_full_page(rxq->page_pool, page, false);
-> +		rxq->rx_buf[i] = NULL;
-> +	}
-> +
-> +	page_pool_destroy(rxq->page_pool);
-> +	rxq->page_pool = NULL;
-> +}
-> +
->  static void fec_enet_free_buffers(struct net_device *ndev)
->  {
->  	struct fec_enet_private *fep = netdev_priv(ndev);
-> @@ -3448,16 +3466,10 @@ static void fec_enet_free_buffers(struct net_device *ndev)
->  		rxq = fep->rx_queue[q];
->
->  		fec_xdp_rxq_info_unreg(rxq);
-> -
-> -		for (i = 0; i < rxq->bd.ring_size; i++)
-> -			page_pool_put_full_page(rxq->page_pool, rxq->rx_buf[i],
-> -						false);
-> +		fec_free_rxq_buffers(rxq);
->
->  		for (i = 0; i < XDP_STATS_TOTAL; i++)
->  			rxq->stats[i] = 0;
-> -
-> -		page_pool_destroy(rxq->page_pool);
-> -		rxq->page_pool = NULL;
->  	}
->
->  	for (q = 0; q < fep->num_tx_queues; q++) {
-> @@ -3556,22 +3568,18 @@ static int fec_enet_alloc_queue(struct net_device *ndev)
->  	return ret;
->  }
->
-> -static int
-> -fec_enet_alloc_rxq_buffers(struct net_device *ndev, unsigned int queue)
-> +static int fec_alloc_rxq_buffers_pp(struct fec_enet_private *fep,
-> +				    struct fec_enet_priv_rx_q *rxq)
->  {
-> -	struct fec_enet_private *fep = netdev_priv(ndev);
-> -	struct fec_enet_priv_rx_q *rxq;
-> +	struct bufdesc *bdp = rxq->bd.base;
->  	dma_addr_t phys_addr;
-> -	struct bufdesc	*bdp;
->  	struct page *page;
->  	int i, err;
->
-> -	rxq = fep->rx_queue[queue];
-> -	bdp = rxq->bd.base;
-> -
->  	err = fec_enet_create_page_pool(fep, rxq);
->  	if (err < 0) {
-> -		netdev_err(ndev, "%s failed queue %d (%d)\n", __func__, queue, err);
-> +		netdev_err(fep->netdev, "%s failed queue %d (%d)\n",
-> +			   __func__, rxq->bd.qid, err);
->  		return err;
->  	}
->
-> @@ -3590,8 +3598,10 @@ fec_enet_alloc_rxq_buffers(struct net_device *ndev, unsigned int queue)
->
->  	for (i = 0; i < rxq->bd.ring_size; i++) {
->  		page = page_pool_dev_alloc_pages(rxq->page_pool);
-> -		if (!page)
-> -			goto err_alloc;
-> +		if (!page) {
-> +			err = -ENOMEM;
-> +			goto free_rx_buffers;
+Percpu sheaves caching was introduced as opt-in but the goal was to
+eventually move all caches to them. This is the next step, enabling
+sheaves for all caches (except the two bootstrap ones) and then removing
+the per cpu (partial) slabs and lots of associated code.
 
-look like this part is bug fix, miss set err to -ENOMEM
+Besides (hopefully) improved performance, this removes the rather
+complicated code related to the lockless fastpaths (using
+this_cpu_try_cmpxchg128/64) and its complications with PREEMPT_RT or
+kmalloc_nolock().
 
-> +		}
->
->  		phys_addr = page_pool_get_dma_addr(page) + FEC_ENET_XDP_HEADROOM;
->  		bdp->cbd_bufaddr = cpu_to_fec32(phys_addr);
-> @@ -3601,6 +3611,7 @@ fec_enet_alloc_rxq_buffers(struct net_device *ndev, unsigned int queue)
->
->  		if (fep->bufdesc_ex) {
->  			struct bufdesc_ex *ebdp = (struct bufdesc_ex *)bdp;
-> +
+The lockless slab freelist+counters update operation using
+try_cmpxchg128/64 remains and is crucial for freeing remote NUMA objects
+without repeating the "alien" array flushing of SLUB, and to allow
+flushing objects from sheaves to slabs mostly without the node
+list_lock.
 
-uneccesary change
+This v3 is the first non-RFC (for real). I plan to expose the series to
+linux-next at this point. Because of the ongoing troubles with
+kmalloc_nolock() that are solved with sheaves, I think it's worth aiming
+for 7.0 if it passes linux-next testing.
 
-Frank
->  			ebdp->cbd_esc = cpu_to_fec32(BD_ENET_RX_INT);
->  		}
->
-> @@ -3611,15 +3622,34 @@ fec_enet_alloc_rxq_buffers(struct net_device *ndev, unsigned int queue)
->  	bdp = fec_enet_get_prevdesc(bdp, &rxq->bd);
->  	bdp->cbd_sc |= cpu_to_fec16(BD_ENET_RX_WRAP);
->
-> -	err = fec_xdp_rxq_info_reg(fep, rxq);
-> +	return 0;
-> +
-> +free_rx_buffers:
-> +	fec_free_rxq_buffers(rxq);
-> +
-> +	return err;
-> +}
-> +
-> +static int
-> +fec_enet_alloc_rxq_buffers(struct net_device *ndev, unsigned int queue)
-> +{
-> +	struct fec_enet_private *fep = netdev_priv(ndev);
-> +	struct fec_enet_priv_rx_q *rxq;
-> +	int err;
-> +
-> +	rxq = fep->rx_queue[queue];
-> +	err = fec_alloc_rxq_buffers_pp(fep, rxq);
->  	if (err)
-> -		goto err_alloc;
-> +		return err;
->
-> -	return 0;
-> +	err = fec_xdp_rxq_info_reg(fep, rxq);
-> +	if (err) {
-> +		fec_free_rxq_buffers(rxq);
->
-> - err_alloc:
-> -	fec_enet_free_buffers(ndev);
-> -	return -ENOMEM;
-> +		return err;
-> +	}
-> +
-> +	return 0;
->  }
->
->  static int
-> --
-> 2.34.1
->
+Git branch for the v3
+  https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/linux.git/log/?h=sheaves-for-all-v3
+
+Which is a snapshot of:
+  https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/linux.git/log/?h=b4/sheaves-for-all
+
+Based on:
+  https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/slab.git/log/?h=slab/for-7.0/sheaves
+  - includes a sheaves optimization that seemed minor but there was lkp
+    test robot result with significant improvements:
+    https://lore.kernel.org/all/202512291555.56ce2e53-lkp@intel.com/
+    (could be an uncommon corner case workload though)
+  - includes the kmalloc_nolock() fix commit a4ae75d1b6a2 that is undone
+    as part of this series
+
+Significant (but not critical) remaining TODOs:
+- Integration of rcu sheaves handling with kfree_rcu batching.
+  - Currently the kfree_rcu batching is almost completely bypassed. I'm
+    thinking it could be adjusted to handle rcu sheaves in addition to
+    individual objects, to get the best of both.
+- Performance evaluation. Petr Tesarik has been doing that on the RFC
+  with some promising results (thanks!) and also found a memory leak.
+
+Note that as many things, this caching scheme change is a tradeoff, as
+summarized by Christoph:
+
+  https://lore.kernel.org/all/f7c33974-e520-387e-9e2f-1e523bfe1545@gentwo.org/
+
+- Objects allocated from sheaves should have better temporal locality
+  (likely recently freed, thus cache hot) but worse spatial locality
+  (likely from many different slabs, increasing memory usage and
+  possibly TLB pressure on kernel's direct map).
+
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+---
+Changes in v3:
+- Rebase to current slab/for-7.0/sheaves which itself is rebased to
+  slab/for-next-fixes to include commit a4ae75d1b6a2 ("slab: fix
+  kmalloc_nolock() context check for PREEMPT_RT")
+- Revert a4ae75d1b6a2 as part of "slab: simplify kmalloc_nolock()" as
+  it's no longer necessary.
+- Add cache_has_sheaves() helper to test for s->sheaf_capacity, use it
+  in more places instead of s->cpu_sheaves tests that were missed
+  (Hao Li)
+- Fix a bug where kmalloc_nolock() could end up trying to allocate empty
+  sheaf (not compatible with !allow_spin) in __pcs_replace_full_main()
+  (Hao Li)
+- Fix missing inc_slabs_node() in ___slab_alloc() ->
+  alloc_from_new_slab() path. (Hao Li)
+  - Also a bug where refill_objects() -> alloc_from_new_slab ->
+    free_new_slab_nolock() (previously defer_deactivate_slab()) would
+    do inc_slabs_node() without matching dec_slabs_node()
+- Make __free_slab call free_frozen_pages_nolock() when !allow_spin.
+  This was correct in the first RFC. (Hao Li)
+- Add patch to make SLAB_CONSISTENCY_CHECKS prevent merging.
+- Add tags from sveral people (thanks!)
+- Fix checkpatch warnings.
+- Link to v2: https://patch.msgid.link/20260112-sheaves-for-all-v2-0-98225cfb50cf@suse.cz
+
+Changes in v2:
+- Rebased to v6.19-rc1+slab.git slab/for-7.0/sheaves
+  - Some of the preliminary patches from the RFC went in there.
+- Incorporate feedback/reports from many people (thanks!), including:
+  - Make caches with sheaves mergeable.
+  - Fix a major memory leak.
+- Cleanup of stat items.
+- Link to v1: https://patch.msgid.link/20251023-sheaves-for-all-v1-0-6ffa2c9941c0@suse.cz
+
+---
+Vlastimil Babka (21):
+      mm/slab: add rcu_barrier() to kvfree_rcu_barrier_on_cache()
+      slab: add SLAB_CONSISTENCY_CHECKS to SLAB_NEVER_MERGE
+      mm/slab: move and refactor __kmem_cache_alias()
+      mm/slab: make caches with sheaves mergeable
+      slab: add sheaves to most caches
+      slab: introduce percpu sheaves bootstrap
+      slab: make percpu sheaves compatible with kmalloc_nolock()/kfree_nolock()
+      slab: handle kmalloc sheaves bootstrap
+      slab: add optimized sheaf refill from partial list
+      slab: remove cpu (partial) slabs usage from allocation paths
+      slab: remove SLUB_CPU_PARTIAL
+      slab: remove the do_slab_free() fastpath
+      slab: remove defer_deactivate_slab()
+      slab: simplify kmalloc_nolock()
+      slab: remove struct kmem_cache_cpu
+      slab: remove unused PREEMPT_RT specific macros
+      slab: refill sheaves from all nodes
+      slab: update overview comments
+      slab: remove frozen slab checks from __slab_free()
+      mm/slub: remove DEACTIVATE_TO_* stat items
+      mm/slub: cleanup and repurpose some stat items
+
+ include/linux/slab.h |    6 -
+ mm/Kconfig           |   11 -
+ mm/internal.h        |    1 +
+ mm/page_alloc.c      |    5 +
+ mm/slab.h            |   53 +-
+ mm/slab_common.c     |   61 +-
+ mm/slub.c            | 2631 +++++++++++++++++---------------------------------
+ 7 files changed, 972 insertions(+), 1796 deletions(-)
+---
+base-commit: aa2ab7f1e8dc9d27b9130054e48b0c6accddfcba
+change-id: 20251002-sheaves-for-all-86ac13dc47a5
+
+Best regards,
+-- 
+Vlastimil Babka <vbabka@suse.cz>
+
 
