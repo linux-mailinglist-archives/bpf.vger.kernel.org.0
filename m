@@ -1,45 +1,45 @@
-Return-Path: <bpf+bounces-79325-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79326-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B96DD386F3
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 21:17:30 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1699D3872B
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 21:20:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id E07B73012EB9
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 20:17:29 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id A1F66302976C
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 20:17:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C5B83A4AAB;
-	Fri, 16 Jan 2026 20:17:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBA3A3A4AD8;
+	Fri, 16 Jan 2026 20:17:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PoYGGZqI"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Ue4rNPf7"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75C4B2F3624
-	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 20:17:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10EE23A4AB9
+	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 20:17:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768594647; cv=none; b=X5n6BEnaWW0mH/JYKY5wivAd1bJ61+C/0Kx9KUAsvHkDxpvpxLpEiNFwzJ854jC2dEjK0RR4np6EmD/YXO6clEoEZSTe6uVC2clw20fvpP5soHH3nagU2YJ+UgXbL2hCMijbTpcjazfUE07kDIp7Wy0OnI6Z7AZFJpVDveGk8OA=
+	t=1768594652; cv=none; b=Tkui4oU5KR42kGF0mWvQsKNlnvAhQtY90hQRk1UHTkt4Re8p3sLSXd2vA/SyZTa6NB4vGYxpMcKm3+86GeBu6QprAH0Tg4pl8PJziWJ/jTsLx3raJKB1dAoz9n6K+rKTwzMt2DJOdA5+nd5astImWF5zbsEJmchBnmSV+SMbR2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768594647; c=relaxed/simple;
-	bh=EGDaZxphteys4MDa8MzuZ1bd1Xd4XXDAHrpujbR+TGM=;
+	s=arc-20240116; t=1768594652; c=relaxed/simple;
+	bh=emyYp4+35bsuoCdFMdx2DPo72meXvWwLUyI1bdzpTUQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TVeNNIXPOOriJq2C/nw3zJSZ5NPs5caxxdxvXCsrYAP3BMH1j8JSJAN0zb31crin8SK/hEdEdKuwG6URk2SY0nSmp1LmJqyH0z6XKu6oQCqk2NfWPKDrc90hFZp36OMUUxA6dwKFpvjFWHDDjUQFHPngEPgg9SSxjqyugg1nLtM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PoYGGZqI; arc=none smtp.client-ip=95.215.58.173
+	 MIME-Version; b=ViaIfGA4GjH2jpl/2RFk7sYJ9jLVmQYJLMKEwHy6fUpETzyzb2wKjaO3ov5kN6VP1fMpw85F0pAnYkRYq+1rqlBrbOndhEDyPV7ENuFLsswIZ0ESBKCLImY7wWhSxiLJ4SUoD5WdJaevZOZ0kkeDRXYT6lIi+JcDKcJkXApUYIA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Ue4rNPf7; arc=none smtp.client-ip=95.215.58.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1768594643;
+	t=1768594648;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Z6eFTBE8G/ALAVO9QF3Nim9O//OBqjjYmjnaMs7N+SE=;
-	b=PoYGGZqIKUmpfhnbZeK4cRNhVsYv/wowjrgfD3xhIpSzJwWKDOtfxITm8Kb8Bk9vYMtT7D
-	wcokQspuZU1nMEpGwqvHzv6MLvDBISooEv54Mkk0xNnHUAeATm4cFKT6PShzZ7rWrL3mK2
-	QTrFE8Q7RcWdD/fe/RGz8HmURYfNyHE=
+	bh=myUW1MrFiLRYEOyJBeU7vjIfO2eNCGtg2Tc9bMXBAIA=;
+	b=Ue4rNPf7kaFoQ1zodou6PbFZTR9Bs6AU470rJ9mxGFVLQGJ9ikTTJDKH0m9595krVaZNCi
+	CQiL0JI8aIyhth6RPJVLN7TaaRAPr2ca0UDBIl0B3Gw5neFVFuWZFiQuc1iE9+cn2OOrTj
+	8l124F6H2nz7961hRdWSX41P7k47HWc=
 From: Ihor Solodrai <ihor.solodrai@linux.dev>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -56,9 +56,9 @@ Cc: Mykyta Yatsenko <yatsenko@meta.com>,
 	linux-kernel@vger.kernel.org,
 	linux-input@vger.kernel.org,
 	sched-ext@lists.linux.dev
-Subject: [PATCH bpf-next v2 01/13] bpf: Refactor btf_kfunc_id_set_contains
-Date: Fri, 16 Jan 2026 12:16:48 -0800
-Message-ID: <20260116201700.864797-2-ihor.solodrai@linux.dev>
+Subject: [PATCH bpf-next v2 02/13] bpf: Introduce struct bpf_kfunc_meta
+Date: Fri, 16 Jan 2026 12:16:49 -0800
+Message-ID: <20260116201700.864797-3-ihor.solodrai@linux.dev>
 In-Reply-To: <20260116201700.864797-1-ihor.solodrai@linux.dev>
 References: <20260116201700.864797-1-ihor.solodrai@linux.dev>
 Precedence: bulk
@@ -70,211 +70,267 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-btf_kfunc_id_set_contains() is called by fetch_kfunc_meta() in the BPF
-verifier to get the kfunc flags stored in the .BTF_ids ELF section.
-If it returns NULL instead of a valid pointer, it's interpreted as an
-illegal kfunc usage failing the verification.
+There is code duplication between add_kfunc_call() and
+fetch_kfunc_meta() collecting information about a kfunc from BTF.
 
-There are two potential reasons for btf_kfunc_id_set_contains() to
-return NULL:
+Introduce struct bpf_kfunc_meta to hold common kfunc BTF data and
+implement fetch_kfunc_meta() to fill it in, instead of struct
+bpf_kfunc_call_arg_meta directly.
 
-  1. Provided kfunc BTF id is not present in relevant kfunc id sets.
-  2. The kfunc is not allowed, as determined by the program type
-     specific filter [1].
+Then use these in add_kfunc_call() and (new) fetch_kfunc_arg_meta()
+functions, and fixup previous usages of fetch_kfunc_meta() to
+fetch_kfunc_arg_meta().
 
-The filter functions accept a pointer to `struct bpf_prog`, so they
-might implicitly depend on earlier stages of verification, when
-bpf_prog members are set.
-
-For example, bpf_qdisc_kfunc_filter() in linux/net/sched/bpf_qdisc.c
-inspects prog->aux->st_ops [2], which is initialized in:
-
-    check_attach_btf_id() -> check_struct_ops_btf_id()
-
-So far this hasn't been an issue, because fetch_kfunc_meta() is the
-only caller of btf_kfunc_id_set_contains().
-
-However in subsequent patches of this series it is necessary to
-inspect kfunc flags earlier in BPF verifier, in the add_kfunc_call().
-
-To resolve this, refactor btf_kfunc_id_set_contains() into two
-interface functions:
-  * btf_kfunc_flags() that simply returns pointer to kfunc_flags
-    without applying the filters
-  * btf_kfunc_is_allowed() that both checks for kfunc_flags existence
-    (which is a requirement for a kfunc to be allowed) and applies the
-    prog filters
-
-See [3] for the previous version of this patch.
-
-[1] https://lore.kernel.org/all/20230519225157.760788-7-aditi.ghag@isovalent.com/
-[2] https://lore.kernel.org/all/20250409214606.2000194-4-ameryhung@gmail.com/
-[3] https://lore.kernel.org/bpf/20251029190113.3323406-3-ihor.solodrai@linux.dev/
+Besides the code dedup, this change enables add_kfunc_call() to access
+kfunc->flags.
 
 Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
-Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- include/linux/btf.h   |  4 +--
- kernel/bpf/btf.c      | 70 ++++++++++++++++++++++++++++++++-----------
- kernel/bpf/verifier.c |  6 ++--
- 3 files changed, 58 insertions(+), 22 deletions(-)
+ kernel/bpf/verifier.c | 156 ++++++++++++++++++++++++------------------
+ 1 file changed, 91 insertions(+), 65 deletions(-)
 
-diff --git a/include/linux/btf.h b/include/linux/btf.h
-index 78dc79810c7d..a2f4f383f5b6 100644
---- a/include/linux/btf.h
-+++ b/include/linux/btf.h
-@@ -575,8 +575,8 @@ const char *btf_name_by_offset(const struct btf *btf, u32 offset);
- const char *btf_str_by_offset(const struct btf *btf, u32 offset);
- struct btf *btf_parse_vmlinux(void);
- struct btf *bpf_prog_get_target_btf(const struct bpf_prog *prog);
--u32 *btf_kfunc_id_set_contains(const struct btf *btf, u32 kfunc_btf_id,
--			       const struct bpf_prog *prog);
-+u32 *btf_kfunc_flags(const struct btf *btf, u32 kfunc_btf_id, const struct bpf_prog *prog);
-+bool btf_kfunc_is_allowed(const struct btf *btf, u32 kfunc_btf_id, const struct bpf_prog *prog);
- u32 *btf_kfunc_is_modify_return(const struct btf *btf, u32 kfunc_btf_id,
- 				const struct bpf_prog *prog);
- int register_btf_kfunc_id_set(enum bpf_prog_type prog_type,
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 364dd84bfc5a..d10b3404260f 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -8757,24 +8757,17 @@ static int btf_populate_kfunc_set(struct btf *btf, enum btf_kfunc_hook hook,
- 	return ret;
- }
- 
--static u32 *__btf_kfunc_id_set_contains(const struct btf *btf,
--					enum btf_kfunc_hook hook,
--					u32 kfunc_btf_id,
--					const struct bpf_prog *prog)
-+static u32 *btf_kfunc_id_set_contains(const struct btf *btf,
-+				      enum btf_kfunc_hook hook,
-+				      u32 kfunc_btf_id)
- {
--	struct btf_kfunc_hook_filter *hook_filter;
- 	struct btf_id_set8 *set;
--	u32 *id, i;
-+	u32 *id;
- 
- 	if (hook >= BTF_KFUNC_HOOK_MAX)
- 		return NULL;
- 	if (!btf->kfunc_set_tab)
- 		return NULL;
--	hook_filter = &btf->kfunc_set_tab->hook_filters[hook];
--	for (i = 0; i < hook_filter->nr_filters; i++) {
--		if (hook_filter->filters[i](prog, kfunc_btf_id))
--			return NULL;
--	}
- 	set = btf->kfunc_set_tab->sets[hook];
- 	if (!set)
- 		return NULL;
-@@ -8785,6 +8778,28 @@ static u32 *__btf_kfunc_id_set_contains(const struct btf *btf,
- 	return id + 1;
- }
- 
-+static bool __btf_kfunc_is_allowed(const struct btf *btf,
-+				   enum btf_kfunc_hook hook,
-+				   u32 kfunc_btf_id,
-+				   const struct bpf_prog *prog)
-+{
-+	struct btf_kfunc_hook_filter *hook_filter;
-+	int i;
-+
-+	if (hook >= BTF_KFUNC_HOOK_MAX)
-+		return false;
-+	if (!btf->kfunc_set_tab)
-+		return false;
-+
-+	hook_filter = &btf->kfunc_set_tab->hook_filters[hook];
-+	for (i = 0; i < hook_filter->nr_filters; i++) {
-+		if (hook_filter->filters[i](prog, kfunc_btf_id))
-+			return false;
-+	}
-+
-+	return true;
-+}
-+
- static int bpf_prog_type_to_kfunc_hook(enum bpf_prog_type prog_type)
- {
- 	switch (prog_type) {
-@@ -8832,6 +8847,26 @@ static int bpf_prog_type_to_kfunc_hook(enum bpf_prog_type prog_type)
- 	}
- }
- 
-+bool btf_kfunc_is_allowed(const struct btf *btf,
-+			  u32 kfunc_btf_id,
-+			  const struct bpf_prog *prog)
-+{
-+	enum bpf_prog_type prog_type = resolve_prog_type(prog);
-+	enum btf_kfunc_hook hook;
-+	u32 *kfunc_flags;
-+
-+	kfunc_flags = btf_kfunc_id_set_contains(btf, BTF_KFUNC_HOOK_COMMON, kfunc_btf_id);
-+	if (kfunc_flags && __btf_kfunc_is_allowed(btf, BTF_KFUNC_HOOK_COMMON, kfunc_btf_id, prog))
-+		return true;
-+
-+	hook = bpf_prog_type_to_kfunc_hook(prog_type);
-+	kfunc_flags = btf_kfunc_id_set_contains(btf, hook, kfunc_btf_id);
-+	if (kfunc_flags && __btf_kfunc_is_allowed(btf, hook, kfunc_btf_id, prog))
-+		return true;
-+
-+	return false;
-+}
-+
- /* Caution:
-  * Reference to the module (obtained using btf_try_get_module) corresponding to
-  * the struct btf *MUST* be held when calling this function from verifier
-@@ -8839,26 +8874,27 @@ static int bpf_prog_type_to_kfunc_hook(enum bpf_prog_type prog_type)
-  * keeping the reference for the duration of the call provides the necessary
-  * protection for looking up a well-formed btf->kfunc_set_tab.
-  */
--u32 *btf_kfunc_id_set_contains(const struct btf *btf,
--			       u32 kfunc_btf_id,
--			       const struct bpf_prog *prog)
-+u32 *btf_kfunc_flags(const struct btf *btf, u32 kfunc_btf_id, const struct bpf_prog *prog)
- {
- 	enum bpf_prog_type prog_type = resolve_prog_type(prog);
- 	enum btf_kfunc_hook hook;
- 	u32 *kfunc_flags;
- 
--	kfunc_flags = __btf_kfunc_id_set_contains(btf, BTF_KFUNC_HOOK_COMMON, kfunc_btf_id, prog);
-+	kfunc_flags = btf_kfunc_id_set_contains(btf, BTF_KFUNC_HOOK_COMMON, kfunc_btf_id);
- 	if (kfunc_flags)
- 		return kfunc_flags;
- 
- 	hook = bpf_prog_type_to_kfunc_hook(prog_type);
--	return __btf_kfunc_id_set_contains(btf, hook, kfunc_btf_id, prog);
-+	return btf_kfunc_id_set_contains(btf, hook, kfunc_btf_id);
- }
- 
- u32 *btf_kfunc_is_modify_return(const struct btf *btf, u32 kfunc_btf_id,
- 				const struct bpf_prog *prog)
- {
--	return __btf_kfunc_id_set_contains(btf, BTF_KFUNC_HOOK_FMODRET, kfunc_btf_id, prog);
-+	if (!__btf_kfunc_is_allowed(btf, BTF_KFUNC_HOOK_FMODRET, kfunc_btf_id, prog))
-+		return NULL;
-+
-+	return btf_kfunc_id_set_contains(btf, BTF_KFUNC_HOOK_FMODRET, kfunc_btf_id);
- }
- 
- static int __register_btf_kfunc_id_set(enum btf_kfunc_hook hook,
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 9de0ec0c3ed9..bd9bd797f5a0 100644
+index bd9bd797f5a0..5c76fd97bf7c 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -13723,10 +13723,10 @@ static int fetch_kfunc_meta(struct bpf_verifier_env *env,
- 		*kfunc_name = func_name;
- 	func_proto = btf_type_by_id(desc_btf, func->type);
+@@ -294,6 +294,14 @@ struct bpf_call_arg_meta {
+ 	s64 const_map_key;
+ };
  
--	kfunc_flags = btf_kfunc_id_set_contains(desc_btf, func_id, env->prog);
--	if (!kfunc_flags) {
-+	if (!btf_kfunc_is_allowed(desc_btf, func_id, env->prog))
- 		return -EACCES;
--	}
++struct bpf_kfunc_meta {
++	struct btf *btf;
++	const struct btf_type *proto;
++	const char *name;
++	const u32 *flags;
++	s32 id;
++};
 +
-+	kfunc_flags = btf_kfunc_flags(desc_btf, func_id, env->prog);
+ struct bpf_kfunc_call_arg_meta {
+ 	/* In parameters */
+ 	struct btf *btf;
+@@ -3263,16 +3271,68 @@ static struct btf *find_kfunc_desc_btf(struct bpf_verifier_env *env, s16 offset)
+ 	return btf_vmlinux ?: ERR_PTR(-ENOENT);
+ }
  
- 	memset(meta, 0, sizeof(*meta));
- 	meta->btf = desc_btf;
+-static int add_kfunc_call(struct bpf_verifier_env *env, u32 func_id, s16 offset)
++static int fetch_kfunc_meta(struct bpf_verifier_env *env,
++			    s32 func_id,
++			    s16 offset,
++			    struct bpf_kfunc_meta *kfunc)
+ {
+ 	const struct btf_type *func, *func_proto;
++	const char *func_name;
++	u32 *kfunc_flags;
++	struct btf *btf;
++
++	if (func_id <= 0) {
++		verbose(env, "invalid kernel function btf_id %d\n", func_id);
++		return -EINVAL;
++	}
++
++	btf = find_kfunc_desc_btf(env, offset);
++	if (IS_ERR(btf)) {
++		verbose(env, "failed to find BTF for kernel function\n");
++		return PTR_ERR(btf);
++	}
++
++	/*
++	 * Note that kfunc_flags may be NULL at this point, which
++	 * means that we couldn't find func_id in any relevant
++	 * kfunc_id_set. This most likely indicates an invalid kfunc
++	 * call.  However we don't fail with an error here,
++	 * and let the caller decide what to do with NULL kfunc->flags.
++	 */
++	kfunc_flags = btf_kfunc_flags(btf, func_id, env->prog);
++
++	func = btf_type_by_id(btf, func_id);
++	if (!func || !btf_type_is_func(func)) {
++		verbose(env, "kernel btf_id %d is not a function\n", func_id);
++		return -EINVAL;
++	}
++
++	func_name = btf_name_by_offset(btf, func->name_off);
++	func_proto = btf_type_by_id(btf, func->type);
++	if (!func_proto || !btf_type_is_func_proto(func_proto)) {
++		verbose(env, "kernel function btf_id %d does not have a valid func_proto\n",
++			func_id);
++		return -EINVAL;
++	}
++
++	memset(kfunc, 0, sizeof(*kfunc));
++	kfunc->btf = btf;
++	kfunc->id = func_id;
++	kfunc->name = func_name;
++	kfunc->proto = func_proto;
++	kfunc->flags = kfunc_flags;
++
++	return 0;
++}
++
++static int add_kfunc_call(struct bpf_verifier_env *env, u32 func_id, s16 offset)
++{
+ 	struct bpf_kfunc_btf_tab *btf_tab;
+ 	struct btf_func_model func_model;
+ 	struct bpf_kfunc_desc_tab *tab;
+ 	struct bpf_prog_aux *prog_aux;
++	struct bpf_kfunc_meta kfunc;
+ 	struct bpf_kfunc_desc *desc;
+-	const char *func_name;
+-	struct btf *desc_btf;
+ 	unsigned long addr;
+ 	int err;
+ 
+@@ -3322,12 +3382,6 @@ static int add_kfunc_call(struct bpf_verifier_env *env, u32 func_id, s16 offset)
+ 		prog_aux->kfunc_btf_tab = btf_tab;
+ 	}
+ 
+-	desc_btf = find_kfunc_desc_btf(env, offset);
+-	if (IS_ERR(desc_btf)) {
+-		verbose(env, "failed to find BTF for kernel function\n");
+-		return PTR_ERR(desc_btf);
+-	}
+-
+ 	if (find_kfunc_desc(env->prog, func_id, offset))
+ 		return 0;
+ 
+@@ -3336,24 +3390,13 @@ static int add_kfunc_call(struct bpf_verifier_env *env, u32 func_id, s16 offset)
+ 		return -E2BIG;
+ 	}
+ 
+-	func = btf_type_by_id(desc_btf, func_id);
+-	if (!func || !btf_type_is_func(func)) {
+-		verbose(env, "kernel btf_id %u is not a function\n",
+-			func_id);
+-		return -EINVAL;
+-	}
+-	func_proto = btf_type_by_id(desc_btf, func->type);
+-	if (!func_proto || !btf_type_is_func_proto(func_proto)) {
+-		verbose(env, "kernel function btf_id %u does not have a valid func_proto\n",
+-			func_id);
+-		return -EINVAL;
+-	}
++	err = fetch_kfunc_meta(env, func_id, offset, &kfunc);
++	if (err)
++		return err;
+ 
+-	func_name = btf_name_by_offset(desc_btf, func->name_off);
+-	addr = kallsyms_lookup_name(func_name);
++	addr = kallsyms_lookup_name(kfunc.name);
+ 	if (!addr) {
+-		verbose(env, "cannot find address for kernel function %s\n",
+-			func_name);
++		verbose(env, "cannot find address for kernel function %s\n", kfunc.name);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -3363,9 +3406,7 @@ static int add_kfunc_call(struct bpf_verifier_env *env, u32 func_id, s16 offset)
+ 			return err;
+ 	}
+ 
+-	err = btf_distill_func_proto(&env->log, desc_btf,
+-				     func_proto, func_name,
+-				     &func_model);
++	err = btf_distill_func_proto(&env->log, kfunc.btf, kfunc.proto, kfunc.name, &func_model);
+ 	if (err)
+ 		return err;
+ 
+@@ -13696,44 +13737,28 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
+ 	return 0;
+ }
+ 
+-static int fetch_kfunc_meta(struct bpf_verifier_env *env,
+-			    struct bpf_insn *insn,
+-			    struct bpf_kfunc_call_arg_meta *meta,
+-			    const char **kfunc_name)
++static int fetch_kfunc_arg_meta(struct bpf_verifier_env *env,
++				s32 func_id,
++				s16 offset,
++				struct bpf_kfunc_call_arg_meta *meta)
+ {
+-	const struct btf_type *func, *func_proto;
+-	u32 func_id, *kfunc_flags;
+-	const char *func_name;
+-	struct btf *desc_btf;
+-
+-	if (kfunc_name)
+-		*kfunc_name = NULL;
+-
+-	if (!insn->imm)
+-		return -EINVAL;
++	struct bpf_kfunc_meta kfunc;
++	int err;
+ 
+-	desc_btf = find_kfunc_desc_btf(env, insn->off);
+-	if (IS_ERR(desc_btf))
+-		return PTR_ERR(desc_btf);
++	err = fetch_kfunc_meta(env, func_id, offset, &kfunc);
++	if (err)
++		return err;
+ 
+-	func_id = insn->imm;
+-	func = btf_type_by_id(desc_btf, func_id);
+-	func_name = btf_name_by_offset(desc_btf, func->name_off);
+-	if (kfunc_name)
+-		*kfunc_name = func_name;
+-	func_proto = btf_type_by_id(desc_btf, func->type);
++	memset(meta, 0, sizeof(*meta));
++	meta->btf = kfunc.btf;
++	meta->func_id = kfunc.id;
++	meta->func_proto = kfunc.proto;
++	meta->func_name = kfunc.name;
+ 
+-	if (!btf_kfunc_is_allowed(desc_btf, func_id, env->prog))
++	if (!kfunc.flags || !btf_kfunc_is_allowed(kfunc.btf, kfunc.id, env->prog))
+ 		return -EACCES;
+ 
+-	kfunc_flags = btf_kfunc_flags(desc_btf, func_id, env->prog);
+-
+-	memset(meta, 0, sizeof(*meta));
+-	meta->btf = desc_btf;
+-	meta->func_id = func_id;
+-	meta->kfunc_flags = *kfunc_flags;
+-	meta->func_proto = func_proto;
+-	meta->func_name = func_name;
++	meta->kfunc_flags = *kfunc.flags;
+ 
+ 	return 0;
+ }
+@@ -13938,12 +13963,13 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+ 	if (!insn->imm)
+ 		return 0;
+ 
+-	err = fetch_kfunc_meta(env, insn, &meta, &func_name);
+-	if (err == -EACCES && func_name)
+-		verbose(env, "calling kernel function %s is not allowed\n", func_name);
++	err = fetch_kfunc_arg_meta(env, insn->imm, insn->off, &meta);
++	if (err == -EACCES && meta.func_name)
++		verbose(env, "calling kernel function %s is not allowed\n", meta.func_name);
+ 	if (err)
+ 		return err;
+ 	desc_btf = meta.btf;
++	func_name = meta.func_name;
+ 	insn_aux = &env->insn_aux_data[insn_idx];
+ 
+ 	insn_aux->is_iter_next = is_iter_next_kfunc(&meta);
+@@ -17783,7 +17809,7 @@ static bool get_call_summary(struct bpf_verifier_env *env, struct bpf_insn *call
+ 	if (bpf_pseudo_kfunc_call(call)) {
+ 		int err;
+ 
+-		err = fetch_kfunc_meta(env, call, &meta, NULL);
++		err = fetch_kfunc_arg_meta(env, call->imm, call->off, &meta);
+ 		if (err < 0)
+ 			/* error would be reported later */
+ 			return false;
+@@ -18291,7 +18317,7 @@ static int visit_insn(int t, struct bpf_verifier_env *env)
+ 		} else if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL) {
+ 			struct bpf_kfunc_call_arg_meta meta;
+ 
+-			ret = fetch_kfunc_meta(env, insn, &meta, NULL);
++			ret = fetch_kfunc_arg_meta(env, insn->imm, insn->off, &meta);
+ 			if (ret == 0 && is_iter_next_kfunc(&meta)) {
+ 				mark_prune_point(env, t);
+ 				/* Checking and saving state checkpoints at iter_next() call
 -- 
 2.52.0
 
