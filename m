@@ -1,111 +1,125 @@
-Return-Path: <bpf+bounces-79180-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79181-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47F9BD2B2E4
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 05:09:30 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 665BCD2B48A
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 05:20:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 47C623020347
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 04:09:06 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id BDB8D3016DEB
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 04:20:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CC19342C8F;
-	Fri, 16 Jan 2026 04:09:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41793342CA7;
+	Fri, 16 Jan 2026 04:20:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G0+4tvrV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q1m/Oz/H"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD524322B67;
-	Fri, 16 Jan 2026 04:09:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4CE11EA65;
+	Fri, 16 Jan 2026 04:20:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768536544; cv=none; b=RysS/NcccUDqvMNMX8v//t2VQm0tOHtnvGujGx0R1c9fUJa+r6uhIFeKUTWnfC5+3q+UA4rii5/gmBXKTFRazA80wDCEBQZ+xuGVjCYh5spgzcnXrgWQ2RG1+7HDNHUJjsKihgovJIUXHMHvoqSkfeq0fqzemphM/b1qECW3azA=
+	t=1768537220; cv=none; b=nvHo1350NEZfuFWx0ofDNLZIS30b5L+V7CVZFVNhCT/cwFTC9ekMnGyx0bZkU/j0tU2+zjTV9KPsm7bor9G/DNn2lnhUjqDNeBgiXpRBN9HPbfsQKzJhX55X2yUWOwJobIfYVneBlE9ZMIttJN3opTpGdiqVU7BM+1w4rMenfSw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768536544; c=relaxed/simple;
-	bh=hdg6G9+VrL081+UpxMLzF3yK8Gu6xQuXHy2KRKzzfQg=;
+	s=arc-20240116; t=1768537220; c=relaxed/simple;
+	bh=GrzRKedk/PtC+lBV9iy9CF6AJ0GM3vGl7nMOo0Bx134=;
 	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=ftlhh0FuQ/eazXm0bxEvQGavv++isgODwUc4wYh3kQ70iYrAHqSQDoE8/+D5TKj6viQ6ebJW3MCfUiSCsFHWSN+LmWuspoViZyyJU2u/R8Wem+3yh5UmhFHsQ5Cu9g8404MF+PHhBWM2cXNC2R/p8GCAD/q3xASghREEn/I2vOY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G0+4tvrV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4AA60C116C6;
-	Fri, 16 Jan 2026 04:09:04 +0000 (UTC)
+	 Subject:From:To:Cc:Date; b=q8Q/THve31DskxjPs52/d1HUuCpftqNnEaqohjVaxf0aIGlbRgCpm1xyDipUcxFxc/AapYkjNIy+se6QD1RhW1zVN/QYiG3g5V5nDOHDDfrDj6KewL3u55OeAXgPy0FMxDmkuFwnWoezHJ686hNMfhmfh+iFEE/uQl4PKJzuxZo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q1m/Oz/H; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9C4FC116C6;
+	Fri, 16 Jan 2026 04:20:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768536544;
-	bh=hdg6G9+VrL081+UpxMLzF3yK8Gu6xQuXHy2KRKzzfQg=;
+	s=k20201202; t=1768537220;
+	bh=GrzRKedk/PtC+lBV9iy9CF6AJ0GM3vGl7nMOo0Bx134=;
 	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=G0+4tvrVssphgsDtszPHMEgvzirVin7CKknWaTpMoxThSDxAMUBQM9nnVJTKEIDb7
-	 AbEQsbeZSpIUQtAZBg6xVM84i3GwqDmG/DhiAeHv2S6/uAdu1IvvqRYATqlAH+quL7
-	 m7RKbvqappQfkpAZqwc9ST/uLhY4WndQHh3GBOsHa0O3BqdirfrZHH/rMPJV1iWx0f
-	 BrxYI2ofPoPK7Ye4t0ZNBNOdp5LoJVxvg3BfZtBTDXznTGhYtCRFgTPcOCkUWUWoql
-	 yY9z0VdBRe3z6qCqFfW2SE2ANWACQpyOJHiwuVGw+J7Z/EQPsQfPbWkv5jJNXjmy8t
-	 RSRqm7lTilrLQ==
-Content-Type: multipart/mixed; boundary="===============6839654066856506556=="
+	b=q1m/Oz/HQ/wtRor3RtOoGofa39Z2EJ9fX87K7G99Xg78My/ZG7ZorF9M7h4NCh+2g
+	 XobV8ITV7f1QPE+x/7kE3A2jZjeOdTsZZClyqd1Wr381NV9lFrIe43ZwRHJNo0vaCy
+	 iZn2fWRtKBKbxmSlwtK3DPekPznluhsAw/4Cddrbg0ntO8ZnRas2oHqVKZsXuUHWYe
+	 6pA3g5pYjjCKVbBmbe6RujK8f7hvDei43c//CoxUGvFXmw+grajM6S6ihvQp5yRfNR
+	 XEtAke4ZEcm6ektLRW/d9c5G/A3YCgjtKT1u4nNpI8kTV4neKrZa7Kvkv6Y2ZT13f7
+	 bJwJW/QY02AaQ==
+Content-Type: multipart/mixed; boundary="===============2352824339848731724=="
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <379dc407b6e024b766ad40bfb899f8f6ce92e869d23c748275d0c054d62a569a@mail.kernel.org>
-In-Reply-To: <20260116035024.98214-3-dongml2@chinatelecom.cn>
-References: <20260116035024.98214-3-dongml2@chinatelecom.cn>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: test bpf_get_func_arg() for tp_btf
+Message-Id: <bf8e99a4398ad6c1383a82fd33fa1e0cfdfc6b935c8d4d8f5216a64cafccb660@mail.kernel.org>
+In-Reply-To: <20260116035024.98214-2-dongml2@chinatelecom.cn>
+References: <20260116035024.98214-2-dongml2@chinatelecom.cn>
+Subject: Re: [PATCH bpf-next 1/2] bpf: support bpf_get_func_arg() for BPF_TRACE_RAW_TP
 From: bot+bpf-ci@kernel.org
 To: menglong8.dong@gmail.com,ast@kernel.org
 Cc: daniel@iogearbox.net,john.fastabend@gmail.com,andrii@kernel.org,martin.lau@linux.dev,eddyz87@gmail.com,song@kernel.org,yonghong.song@linux.dev,kpsingh@kernel.org,sdf@fomichev.me,haoluo@google.com,jolsa@kernel.org,mattbobrowski@google.com,rostedt@goodmis.org,mhiramat@kernel.org,mathieu.desnoyers@efficios.com,bpf@vger.kernel.org,linux-kernel@vger.kernel.org,linux-trace-kernel@vger.kernel.org,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Fri, 16 Jan 2026 04:09:04 +0000 (UTC)
+Date: Fri, 16 Jan 2026 04:20:19 +0000 (UTC)
 
---===============6839654066856506556==
+--===============2352824339848731724==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/get_func_args_test.c b/tools/testing/selftests/bpf/prog_tests/get_func_args_test.c
-> index 64a9c95d4acf..848fab952719 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/get_func_args_test.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/get_func_args_test.c
-> @@ -33,6 +33,7 @@ void test_get_func_args_test(void)
->
->  	ASSERT_EQ(topts.retval >> 16, 1, "test_run");
->  	ASSERT_EQ(topts.retval & 0xffff, 1234 + 29, "test_run");
-> +	ASSERT_OK(trigger_module_test_read(1), "trigger_read");
->
->  	ASSERT_EQ(skel->bss->test1_result, 1, "test1_result");
->  	ASSERT_EQ(skel->bss->test2_result, 1, "test2_result");
->  	ASSERT_EQ(skel->bss->test3_result, 1, "test3_result");
->  	ASSERT_EQ(skel->bss->test4_result, 1, "test4_result");
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 7a375f608263..223e5b483bbd 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -23321,8 +23321,18 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+>  		/* Implement bpf_get_func_arg inline. */
+>  		if (prog_type == BPF_PROG_TYPE_TRACING &&
+>  		    insn->imm == BPF_FUNC_get_func_arg) {
+> +			if (eatype == BPF_TRACE_RAW_TP) {
+> +				int nr_args;
+> +
+> +				if (!prog->aux->attach_func_proto)
+> +					return -EINVAL;
+> +				nr_args = btf_type_vlen(prog->aux->attach_func_proto);
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The trigger_module_test_read() call fires the new tracepoints which run the
-tp_test1 and tp_test2 BPF programs. These programs set test5_result and
-test6_result respectively. However, there are no assertions here to verify
-that test5_result and test6_result equal 1.
+The attach_func_proto for raw tracepoints points to the BTF func_proto of
+__bpf_trace_* or btf_trace_* which has an extra "void *__data" as the
+first parameter. For example, a tracepoint declared with TP_PROTO(int a)
+results in a btf_trace_* typedef of "void (*)(void *__data, int a)" which
+has 2 parameters.
 
-Should there be:
+Does btf_type_vlen() return the count including the hidden __data param?
+If so, a tracepoint with 1 actual argument would report nr_args=2, but
+the BPF context only contains 1 argument. Calling bpf_get_func_arg(ctx, 1)
+would pass the bounds check (1 < 2) but read out of bounds from ctx.
 
-    ASSERT_EQ(skel->bss->test5_result, 1, "test5_result");
-    ASSERT_EQ(skel->bss->test6_result, 1, "test6_result");
+The bpf_trace_run* functions populate args[] with only the actual
+tracepoint arguments (see __bpf_trace_run() in kernel/trace/bpf_trace.c),
+not including __data. Should nr_args be adjusted by subtracting 1 to
+account for the hidden first parameter?
 
-Without these assertions, the test will pass even if the tp_btf
-bpf_get_func_arg() functionality is broken.
-
-> diff --git a/tools/testing/selftests/bpf/progs/get_func_args_test.c b/tools/testing/selftests/bpf/progs/get_func_args_test.c
+> +				/* Save nr_args to reg0 */
+> +				insn_buf[0] = BPF_MOV64_IMM(BPF_REG_0, nr_args);
+> +			} else {
+> +				/* Load nr_args from ctx - 8 */
+> +				insn_buf[0] = BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -8);
+> +			}
 
 [ ... ]
 
-> +__u64 test5_result = 0;
-> +SEC("tp_btf/bpf_testmod_fentry_test1_tp")
-> +int BPF_PROG(tp_test1)
-> +{
+> @@ -23374,8 +23384,18 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+>  		/* Implement get_func_arg_cnt inline. */
+>  		if (prog_type == BPF_PROG_TYPE_TRACING &&
+>  		    insn->imm == BPF_FUNC_get_func_arg_cnt) {
+> +			if (eatype == BPF_TRACE_RAW_TP) {
+> +				int nr_args;
+> +
+> +				if (!prog->aux->attach_func_proto)
+> +					return -EINVAL;
+> +				nr_args = btf_type_vlen(prog->aux->attach_func_proto);
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Same question here for bpf_get_func_arg_cnt() - should this subtract 1 to
+exclude the __data parameter from the count returned to BPF programs?
+
+> +				/* Save nr_args to reg0 */
+> +				insn_buf[0] = BPF_MOV64_IMM(BPF_REG_0, nr_args);
 
 [ ... ]
-
-> +__u64 test6_result = 0;
-> +SEC("tp_btf/bpf_testmod_fentry_test2_tp")
-> +int BPF_PROG(tp_test2)
-> +{
-
-These result variables are set by the BPF programs but never checked in the
-test driver, as noted above.
 
 
 ---
@@ -114,5 +128,5 @@ See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
 
 CI run summary: https://github.com/kernel-patches/bpf/actions/runs/21055137351
 
---===============6839654066856506556==--
+--===============2352824339848731724==--
 
