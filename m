@@ -1,45 +1,45 @@
-Return-Path: <bpf+bounces-79194-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79195-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5FE7D2CC71
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 07:54:34 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF12BD2CCCB
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 07:56:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9C37E3037512
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 06:54:10 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 35A9D303FCC2
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 06:56:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0549234EF06;
-	Fri, 16 Jan 2026 06:54:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BCA634E764;
+	Fri, 16 Jan 2026 06:56:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SVVwXrbJ"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="sbRyK+Li"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C775A34E764
-	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 06:54:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AE0034DCE6
+	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 06:56:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768546449; cv=none; b=P6MLLZYIeF+p65+lyp7w8scGy3gBJoybktvHaAMXGWXif88DWts+6NpjxVLmJ6Q/++L+BYyye/sVxmBBObCp+TP+UQVlEhayZts05evwroOO+PZqA8JBGDVpHCN2LYL26ra3Z+fBlIFqMgPH1f8blJx7LJXGDouC1TSkw6ZvaRo=
+	t=1768546591; cv=none; b=dCPtfKp6NXuC6JXtORK96SpnOSTlitRRBClTzXX7tdbRunt7MuWmmLQa5kyEj46u5s0oFfJ1CP2ITvT/0j3ajQxm8aHnZS70f2x7vdKR37VzGEIdkEYJuu9aWpP6niXcKDYrBLq8kvNC7b/vXHEQkldNb7mOdWqeSAxKtF55M1o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768546449; c=relaxed/simple;
-	bh=iNXSVtXVGwVcIzlCczPYO67hJ+0mDEcHtiHXdsTpaWM=;
+	s=arc-20240116; t=1768546591; c=relaxed/simple;
+	bh=IouruH1wyjICtY+CKH8bTvwmHZwP+tPZuUV8U6LOyeM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=QbaIF1yJf8O+HFWtMIHPSAg+rdBxsBy7mpHkkU6jvu50Aml1gtzKAL1QQs+8x3DebVXgW+5HLsePA3Sv+5jX1ewSbcWCXDDZJberZkAW0boptkBTC83rrejxmu2pl9WrbtgVnFqU5i16us/p3pvkv2CkFtGKpsX4+p3isHnIy1w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SVVwXrbJ; arc=none smtp.client-ip=95.215.58.182
+	 MIME-Version:Content-Type; b=gpc6xfUMRgebVSIP2ATW4kV/PkSlFU3DWMPgFUwtrWmcSYQM5j/MLVIodQ7zK9SAp3llIvb88a9O4bBNj97RknjVBd9FFv7nv7YP/0H6mwxa2VQVyuy/Xxcsiqw80O//nyfzt3J1MK+gplXKUdc1NvutgdVzNAWumKfGAMSpe0g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=sbRyK+Li; arc=none smtp.client-ip=91.218.175.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1768546445;
+	t=1768546578;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=cVZbVkStdM/Vi4xRUe/yLCSuJE5YhqrOOiVWak7xjA4=;
-	b=SVVwXrbJIagWmkqrWVjUgnjGvKh2SWbDHv1EwVEeMJz8dNyokR0szeJtRzoVPgeWUbiOj5
-	aJqQ/6rdOhKtbSUEY3MDnEl502zYNhaWCrnScBA1EwXR+VSkpb6QdmWncvcl8Vgg/YFL1G
-	TBZ7fGIyTN5bry+YkgqXH9/cYj30uyw=
+	bh=qk0mL3VptZFxLDuzRgThSiMzfUC3hfj/FBMELIOnOsI=;
+	b=sbRyK+LiZ/K4YOSn0SlAoNPGORCHMQl3yhjcsmYGA3P4yETqZznQ1BJrJlJftyL1R0uth8
+	0RAODAIjWNhV89VKspNn+3UrgmLOrsxJnNyYkyEZE5bL135BWjspNlLFdRMeqX8B+mSE3f
+	WyTfCkLSJ+M7n+z2tSO5PeCS3oSBRJI=
 From: Menglong Dong <menglong.dong@linux.dev>
 To: menglong8.dong@gmail.com, ast@kernel.org, bot+bpf-ci@kernel.org
 Cc: daniel@iogearbox.net, john.fastabend@gmail.com, andrii@kernel.org,
@@ -52,14 +52,14 @@ Cc: daniel@iogearbox.net, john.fastabend@gmail.com, andrii@kernel.org,
  daniel@iogearbox.net, martin.lau@kernel.org, eddyz87@gmail.com,
  yonghong.song@linux.dev, clm@meta.com, ihor.solodrai@linux.dev
 Subject:
- Re: [PATCH bpf-next 2/2] selftests/bpf: test bpf_get_func_arg() for tp_btf
-Date: Fri, 16 Jan 2026 14:53:47 +0800
-Message-ID: <5957081.DvuYhMxLoT@7940hx>
+ Re: [PATCH bpf-next 1/2] bpf: support bpf_get_func_arg() for BPF_TRACE_RAW_TP
+Date: Fri, 16 Jan 2026 14:56:01 +0800
+Message-ID: <5069848.31r3eYUQgx@7940hx>
 In-Reply-To:
- <379dc407b6e024b766ad40bfb899f8f6ce92e869d23c748275d0c054d62a569a@mail.kernel.org>
+ <bf8e99a4398ad6c1383a82fd33fa1e0cfdfc6b935c8d4d8f5216a64cafccb660@mail.kernel.org>
 References:
- <20260116035024.98214-3-dongml2@chinatelecom.cn>
- <379dc407b6e024b766ad40bfb899f8f6ce92e869d23c748275d0c054d62a569a@mail.kernel.org>
+ <20260116035024.98214-2-dongml2@chinatelecom.cn>
+ <bf8e99a4398ad6c1383a82fd33fa1e0cfdfc6b935c8d4d8f5216a64cafccb660@mail.kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -70,56 +70,74 @@ Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="utf-8"
 X-Migadu-Flow: FLOW_OUT
 
-On 2026/1/16 12:09 bot+bpf-ci@kernel.org write:
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/get_func_args_test.c b/tools/testing/selftests/bpf/prog_tests/get_func_args_test.c
-> > index 64a9c95d4acf..848fab952719 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/get_func_args_test.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/get_func_args_test.c
-> > @@ -33,6 +33,7 @@ void test_get_func_args_test(void)
-> >
-> >  	ASSERT_EQ(topts.retval >> 16, 1, "test_run");
-> >  	ASSERT_EQ(topts.retval & 0xffff, 1234 + 29, "test_run");
-> > +	ASSERT_OK(trigger_module_test_read(1), "trigger_read");
-> >
-> >  	ASSERT_EQ(skel->bss->test1_result, 1, "test1_result");
-> >  	ASSERT_EQ(skel->bss->test2_result, 1, "test2_result");
-> >  	ASSERT_EQ(skel->bss->test3_result, 1, "test3_result");
-> >  	ASSERT_EQ(skel->bss->test4_result, 1, "test4_result");
+On 2026/1/16 12:20 bot+bpf-ci@kernel.org write:
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 7a375f608263..223e5b483bbd 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -23321,8 +23321,18 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+> >  		/* Implement bpf_get_func_arg inline. */
+> >  		if (prog_type == BPF_PROG_TYPE_TRACING &&
+> >  		    insn->imm == BPF_FUNC_get_func_arg) {
+> > +			if (eatype == BPF_TRACE_RAW_TP) {
+> > +				int nr_args;
+> > +
+> > +				if (!prog->aux->attach_func_proto)
+> > +					return -EINVAL;
+> > +				nr_args = btf_type_vlen(prog->aux->attach_func_proto);
+>                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 > 
-> The trigger_module_test_read() call fires the new tracepoints which run the
-> tp_test1 and tp_test2 BPF programs. These programs set test5_result and
-> test6_result respectively. However, there are no assertions here to verify
-> that test5_result and test6_result equal 1.
+> The attach_func_proto for raw tracepoints points to the BTF func_proto of
+> __bpf_trace_* or btf_trace_* which has an extra "void *__data" as the
+> first parameter. For example, a tracepoint declared with TP_PROTO(int a)
+> results in a btf_trace_* typedef of "void (*)(void *__data, int a)" which
+> has 2 parameters.
 > 
-> Should there be:
+> Does btf_type_vlen() return the count including the hidden __data param?
+> If so, a tracepoint with 1 actual argument would report nr_args=2, but
+> the BPF context only contains 1 argument. Calling bpf_get_func_arg(ctx, 1)
+> would pass the bounds check (1 < 2) but read out of bounds from ctx.
 > 
->     ASSERT_EQ(skel->bss->test5_result, 1, "test5_result");
->     ASSERT_EQ(skel->bss->test6_result, 1, "test6_result");
-> 
-> Without these assertions, the test will pass even if the tp_btf
-> bpf_get_func_arg() functionality is broken.
+> The bpf_trace_run* functions populate args[] with only the actual
+> tracepoint arguments (see __bpf_trace_run() in kernel/trace/bpf_trace.c),
+> not including __data. Should nr_args be adjusted by subtracting 1 to
+> account for the hidden first parameter?
 
-You are totally right, my bad :/
+You are right about this point too. The wrong selftests made me
+ignore this point :/
+
+Thanks!
+Menglong Dong
 
 > 
-> > diff --git a/tools/testing/selftests/bpf/progs/get_func_args_test.c b/tools/testing/selftests/bpf/progs/get_func_args_test.c
+> > +				/* Save nr_args to reg0 */
+> > +				insn_buf[0] = BPF_MOV64_IMM(BPF_REG_0, nr_args);
+> > +			} else {
+> > +				/* Load nr_args from ctx - 8 */
+> > +				insn_buf[0] = BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -8);
+> > +			}
 > 
 > [ ... ]
 > 
-> > +__u64 test5_result = 0;
-> > +SEC("tp_btf/bpf_testmod_fentry_test1_tp")
-> > +int BPF_PROG(tp_test1)
-> > +{
+> > @@ -23374,8 +23384,18 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+> >  		/* Implement get_func_arg_cnt inline. */
+> >  		if (prog_type == BPF_PROG_TYPE_TRACING &&
+> >  		    insn->imm == BPF_FUNC_get_func_arg_cnt) {
+> > +			if (eatype == BPF_TRACE_RAW_TP) {
+> > +				int nr_args;
+> > +
+> > +				if (!prog->aux->attach_func_proto)
+> > +					return -EINVAL;
+> > +				nr_args = btf_type_vlen(prog->aux->attach_func_proto);
+>                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+> Same question here for bpf_get_func_arg_cnt() - should this subtract 1 to
+> exclude the __data parameter from the count returned to BPF programs?
+> 
+> > +				/* Save nr_args to reg0 */
+> > +				insn_buf[0] = BPF_MOV64_IMM(BPF_REG_0, nr_args);
 > 
 > [ ... ]
-> 
-> > +__u64 test6_result = 0;
-> > +SEC("tp_btf/bpf_testmod_fentry_test2_tp")
-> > +int BPF_PROG(tp_test2)
-> > +{
-> 
-> These result variables are set by the BPF programs but never checked in the
-> test driver, as noted above.
 > 
 > 
 > ---
