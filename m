@@ -1,35 +1,36 @@
-Return-Path: <bpf+bounces-79231-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79233-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C8B1D2F9B4
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 11:33:42 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C170D2F9C5
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 11:33:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 82DC6301830B
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 10:33:40 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id F3DB9301B66E
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 10:33:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A0A331E0FB;
-	Fri, 16 Jan 2026 10:33:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19B8735FF7D;
+	Fri, 16 Jan 2026 10:33:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [13.75.44.102])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C00C931B832
-	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 10:33:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.75.44.102
+Received: from sgoci-sdnproxy-4.icoremail.net (sgoci-sdnproxy-4.icoremail.net [129.150.39.64])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12F8335EDC6
+	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 10:33:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.150.39.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768559617; cv=none; b=QaOfcGkHVtx2DXss4C1/aY142we5X2YAM6njjcN8nlmizH3yat2fQxn8EXrevAf3zYxGwftY0ivY8R9K0LveCd8rJQ6E62seZXi0fBufqohVWRxG/vgb2I+6WK2c0lLrBYEzRWgJqDUoeyhNLcEdFOCZP8KRVJY38W8b935eNmM=
+	t=1768559620; cv=none; b=qYEMJcBMe39qT6Tv/3tILTSk2UZysm+WB3v+uzg1rn4UZC3bKnCtkZEbRqZpFoWyr04estYmod0AQyYagdDWxsGEkKzyTxfpaRvMkqVDkPT6dY0JB5y70jQeLP77/itUxs8lpl0RaPy35/RkTaq72F/FkY+gyDwUje5ZBdA8a6Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768559617; c=relaxed/simple;
-	bh=Dq9xXsFDjpR+trNnnyJ2PtTgaLe9xB55vpB+EZa79T8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZdIYwMASdndPYP2KMAkVXnka+lIskEfPlBAFB3rpJdYVZT1PISa2ssWJg87tjOsr/iAtxaeWCOhXkXOCIJBLKZcOQETt91BT5VwmJtjCkNNwLJ4gAHvkXrW1nTU6AbPD5vfAkSdpw1x4o7inbj3doF0W3RxycBhojXJivnVQXuM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=13.75.44.102
+	s=arc-20240116; t=1768559620; c=relaxed/simple;
+	bh=WCMaIx3yk1kwAZtywGWF4udY/S5tDB0x065mSEWJtI4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=GSkMgoDN3eVuUt8AA6zRuerMNB5DdLJMrT0mdXosbc08jF6+Hv46jy7xX4AZOZAuVIWz7URmdMpABWbk+imWP71nHIIn+eGVbCngppJFLWerJ2MAZjkgc2Gdv2+q/ZBUDTt+BaPo2wwVXSPLWrZx5dff9gBj5JRNbnpf1p2U8bY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=129.150.39.64
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
 Received: from zju.edu.cn (unknown [10.162.146.110])
-	by mtasvr (Coremail) with SMTP id _____wC3H4TZE2ppKOoFAA--.14983S3;
-	Fri, 16 Jan 2026 18:32:58 +0800 (CST)
+	by mtasvr (Coremail) with SMTP id _____wCnY4bdE2ppP+oFAA--.12555S3;
+	Fri, 16 Jan 2026 18:33:01 +0800 (CST)
 Received: from lutetium.tail477849.ts.net (unknown [10.162.146.110])
-	by mail-app4 (Coremail) with SMTP id zi_KCgCniH_YE2ppYUqrBA--.28949S2;
-	Fri, 16 Jan 2026 18:32:56 +0800 (CST)
+	by mail-app4 (Coremail) with SMTP id zi_KCgBH_4XaE2ppZUqrBA--.56985S2;
+	Fri, 16 Jan 2026 18:32:58 +0800 (CST)
 From: Yazhou Tang <tangyazhou@zju.edu.cn>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org,
@@ -46,11 +47,14 @@ Cc: ast@kernel.org,
 	jolsa@kernel.org,
 	tangyazhou518@outlook.com,
 	shenghaoyuan0928@163.com,
-	ziye@zju.edu.cn
-Subject: [PATCH bpf-next v4 0/2] bpf: Add range tracking for BPF_DIV and BPF_MOD
-Date: Fri, 16 Jan 2026 18:32:44 +0800
-Message-ID: <20260116103246.2477635-1-tangyazhou@zju.edu.cn>
+	ziye@zju.edu.cn,
+	syzbot@syzkaller.appspotmail.com
+Subject: [PATCH bpf-next v4 1/2] bpf: Add range tracking for BPF_DIV and BPF_MOD
+Date: Fri, 16 Jan 2026 18:32:45 +0800
+Message-ID: <20260116103246.2477635-2-tangyazhou@zju.edu.cn>
 X-Mailer: git-send-email 2.52.0
+In-Reply-To: <20260116103246.2477635-1-tangyazhou@zju.edu.cn>
+References: <20260116103246.2477635-1-tangyazhou@zju.edu.cn>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -58,81 +62,514 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:zi_KCgCniH_YE2ppYUqrBA--.28949S2
-X-CM-SenderInfo: qssvjiasrsq6lmxovvfxof0/1tbiAgoNCmlpQwUcxgAAsT
-X-CM-DELIVERINFO: =?B?e9SYoAXKKxbFmtjJiESix3B1w3vD7IpoGYuur0o+r46DyAi5OfOO+T4vrW4FyUBIyu
-	9q9Bb/Zo+NVno/tGVqx+Qy9MF8gN+01+p1aHar+kg1EXqQeOiXe6MDykN7sazhvWHsIw3i
-	611z5RBcUYwEku3mye0rwVwxpxwWYgTXH3xKroOPaSTpb+4GoWJY1kGDbQmvkQ==
-X-Coremail-Antispam: 1Uk129KBj93XoW7tFWxCw4rGF17XFWrCF15GFX_yoW8tw4Dpr
-	s7GFn8Gr1vyayIyry7A3y7ZrW5Jan0yw4xZrn3A34ava15Ary8WFWxKry5Cr9IyrZ3W3WF
-	vF12qwnFva4qyFXCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUU9Eb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AK
-	xVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI0UMc
-	02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAF
-	wI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0Y48IcxkI7V
-	AKI48G6xCjnVAKz4kxM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI7VAKI48JMxC2
-	0s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI
-	0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE
-	14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20x
-	vaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8
-	JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU801v3UUUUU==
+X-CM-TRANSID:zi_KCgBH_4XaE2ppZUqrBA--.56985S2
+X-CM-SenderInfo: qssvjiasrsq6lmxovvfxof0/1tbiAgoNCmlpQwUcxgABsS
+X-CM-DELIVERINFO: =?B?DFM63AXKKxbFmtjJiESix3B1w3vD7IpoGYuur0o+r46DyAi5OfOO+T4vrW4FyUBIyu
+	9q9Bb/Zo+NVno/tGVqx+Qy9MFgMF+LydHhmYiAIp1TxmI16tsyDSdurPvKbp+950RgeY+u
+	nC7MJNTxOaX/svzxPzierp94W5mO9/yyFIiNDPo4Fp/+6JDhs/72wtnK+HftTA==
+X-Coremail-Antispam: 1Uk129KBj9fXoWfGw1DCryfurWfXw1kKr1UCFX_yoW8WF47Co
+	WrXF1IyryxKFn2gFyIkFnYy3WYg34xWr18GFW5K3Z8Cr1UZr13X348A3y7XF4Svw18KrW8
+	Z3ZrJa9xAFn7Jan3l-sFpf9Il3svdjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8wcxFpf
+	9Il3svdxBIdaVrn0xqx4xG64xvF2IEw4CE5I8CrVC2j2Jv73VFW2AGmfu7bjvjm3AaLaJ3
+	UjIYCTnIWjp_UUUYp7kC6x804xWl14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI
+	8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xG
+	Y2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14
+	v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAF
+	wI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
+	Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE
+	14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjcxG0xvY0x
+	0EwIxGrVCF72vEw4AK0wACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY0x0EwIxGrwCF
+	x2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14
+	v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY
+	67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2
+	IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_
+	Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UNtxhUUUUU=
 
 From: Yazhou Tang <tangyazhou518@outlook.com>
 
-Add range tracking (interval analysis) for BPF_DIV and BPF_MOD when
-divisor is constant. Please see commit log of 1/2 for more details.
+This patch implements range tracking (interval analysis) for BPF_DIV and
+BPF_MOD operations when the divisor is a constant, covering both signed
+and unsigned variants.
 
+While LLVM typically optimizes integer division and modulo by constants
+into multiplication and shift sequences, this optimization is less
+effective for the BPF target when dealing with 64-bit arithmetic.
+
+Currently, the verifier does not track bounds for scalar division or
+modulo, treating the result as "unbounded". This leads to false positive
+rejections for safe code patterns.
+
+For example, the following code (compiled with -O2):
+
+```c
+int test(struct pt_regs *ctx) {
+    char buffer[6] = {1};
+    __u64 x = bpf_ktime_get_ns();
+    __u64 res = x % sizeof(buffer);
+    char value = buffer[res];
+    bpf_printk("res = %llu, val = %d", res, value);
+    return 0;
+}
+```
+
+Generates a raw `BPF_MOD64` instruction:
+
+```asm
+;     __u64 res = x % sizeof(buffer);
+       1:	97 00 00 00 06 00 00 00	r0 %= 0x6
+;     char value = buffer[res];
+       2:	18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00	r1 = 0x0 ll
+       4:	0f 01 00 00 00 00 00 00	r1 += r0
+       5:	91 14 00 00 00 00 00 00	r4 = *(s8 *)(r1 + 0x0)
+```
+
+Without this patch, the verifier fails with "math between map_value
+pointer and register with unbounded min value is not allowed" because
+it cannot deduce that `r0` is within [0, 5].
+
+According to the BPF instruction set[1], the instruction's offset field
+(`insn->off`) is used to distinguish between signed (`off == 1`) and
+unsigned division (`off == 0`). Moreover, we also follow the BPF division
+and modulo runtime behavior (semantics) to handle special cases, such as
+division by zero and signed division overflow.
+
+- UDIV: dst = (src != 0) ? (dst / src) : 0
+- SDIV: dst = (src == 0) ? 0 : ((src == -1 && dst == LLONG_MIN) ? LLONG_MIN : (dst / src))
+- UMOD: dst = (src != 0) ? (dst % src) : dst
+- SMOD: dst = (src == 0) ? dst : ((src == -1 && dst == LLONG_MIN) ? 0: (dst s% src))
+
+Here is the overview of the changes made in this patch (See the code comments
+for more details and examples):
+
+1. For BPF_DIV: Firstly check whether the divisor is zero. If so, set the
+   destination register to zero (matching runtime behavior).
+
+   For non-zero constant divisors: goto `scalar(32)?_min_max_(u|s)div` functions.
+   - General cases: compute the new range by dividing max_dividend and
+     min_dividend by the constant divisor.
+   - Overflow case (SIGNED_MIN / -1) in signed division: mark the result
+     as unbounded if the dividend is not a single number.
+
+2. For BPF_MOD: Firstly check whether the divisor is zero. If so, leave the
+   destination register unchanged (matching runtime behavior).
+
+   For non-zero constant divisors: goto `scalar(32)?_min_max_(u|s)mod` functions.
+   - General case: For signed modulo, the result's sign matches the
+     dividend's sign. And the result's absolute value is strictly bounded
+     by `min(abs(dividend), abs(divisor) - 1)`.
+     - Special care is taken when the divisor is SIGNED_MIN. By casting
+       to unsigned before negation and subtracting 1, we avoid signed
+       overflow and correctly calculate the maximum possible magnitude
+       (`res_max_abs` in the code).
+   - "Small dividend" case: If the dividend is already within the possible
+     result range (e.g., [-2, 5] % 10), the operation is an identity
+     function, and the destination register remains unchanged.
+
+3. In `scalar(32)?_min_max_(u|s)(div|mod)` functions: After updating current
+   range, reset other ranges and tnum to unbounded/unknown.
+
+   e.g., in `scalar_min_max_sdiv`, signed 64-bit range is updated. Then reset
+   unsigned 64-bit range and 32-bit range to unbounded, and tnum to unknown.
+
+   Exception: in BPF_MOD's "small dividend" case, since the result remains
+   unchanged, we do not reset other ranges/tnum.
+
+4. Also updated existing selftests based on the expected BPF_DIV and
+   BPF_MOD behavior.
+
+[1] https://www.kernel.org/doc/Documentation/bpf/standardization/instruction-set.rst
+
+Co-developed-by: Shenghao Yuan <shenghaoyuan0928@163.com>
+Signed-off-by: Shenghao Yuan <shenghaoyuan0928@163.com>
+Co-developed-by: Tianci Cao <ziye@zju.edu.cn>
+Signed-off-by: Tianci Cao <ziye@zju.edu.cn>
+Signed-off-by: Yazhou Tang <tangyazhou518@outlook.com>
+Tested-by: syzbot@syzkaller.appspotmail.com
 ---
+ kernel/bpf/verifier.c                         | 299 ++++++++++++++++++
+ .../bpf/progs/verifier_value_illegal_alu.c    |   7 +-
+ .../testing/selftests/bpf/verifier/precise.c  |   4 +-
+ 3 files changed, 305 insertions(+), 5 deletions(-)
 
-Changes v3 => v4:
-1. Remove verbose helper functions for "division by zero" handling. (Alexei)
-2. Put all "reset" logic in one place for clarity, and add 2 helper
-   function `__reset_reg64_and_tnum` and `__reset_reg32_and_tnum` to
-   reduce code duplication. (Alexei)
-3. Update all multi-line comments to follow the standard kernel style. (Alexei)
-4. Add new test cases to cover strictly positive and strictly negative
-   divisor scenarios in SDIV and SMOD analysis. (Alexei)
-5. Fixup a typo in SDIV analysis functions.
-
-v3: https://lore.kernel.org/bpf/20260113103552.3435695-1-tangyazhou@zju.edu.cn/
-
-Changes v2 => v3:
-1. Fixup a bug in `adjust_scalar_min_max_vals` function that lead to
-   incorrect range results. (Syzbot)
-2. Remove tnum analysis logic. (Alexei)
-3. Only handle "constant divisor" case. (Alexei)
-4. Add BPF_MOD range analysis logic.
-5. Update selftests accordingly.
-6. Add detailed code comments and improve commit messages. (Yonghong)
-
-v2: https://lore.kernel.org/bpf/20251223091120.2413435-1-tangyazhou@zju.edu.cn/
-
-Changes v1 => v2:
-1. Fixed 2 bugs in sdiv32 analysis logic and corrected the associated
-   selftest cases. (AI reviewer)
-2. Renamed `tnum_bottom` to `tnum_empty` for better clarity, and updated
-   commit message to explain its role in signed BPF_DIV analysis.
-
-v1:
-https://lore.kernel.org/bpf/tencent_717092CD734D050CCD93401CA624BB3C8307@qq.com/
-https://lore.kernel.org/bpf/tencent_7C98FAECA40C98489ACF4515CE346F031509@qq.com/
-
-Yazhou Tang (2):
-  bpf: Add range tracking for BPF_DIV and BPF_MOD
-  selftests/bpf: Add tests for BPF_DIV and BPF_MOD range tracking
-
- kernel/bpf/verifier.c                         |  299 +++++
- .../selftests/bpf/prog_tests/verifier.c       |    2 +
- .../bpf/progs/verifier_div_mod_bounds.c       | 1149 +++++++++++++++++
- .../bpf/progs/verifier_value_illegal_alu.c    |    7 +-
- .../testing/selftests/bpf/verifier/precise.c  |    4 +-
- 5 files changed, 1456 insertions(+), 5 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_div_mod_bounds.c
-
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 7a375f608263..bb21ab600746 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -2341,6 +2341,18 @@ static void __mark_reg32_unbounded(struct bpf_reg_state *reg)
+ 	reg->u32_max_value = U32_MAX;
+ }
+ 
++static void __reset_reg64_and_tnum(struct bpf_reg_state *reg)
++{
++	__mark_reg64_unbounded(reg);
++	reg->var_off = tnum_unknown;
++}
++
++static void __reset_reg32_and_tnum(struct bpf_reg_state *reg)
++{
++	__mark_reg32_unbounded(reg);
++	reg->var_off = tnum_unknown;
++}
++
+ static void __update_reg32_bounds(struct bpf_reg_state *reg)
+ {
+ 	struct tnum var32_off = tnum_subreg(reg->var_off);
+@@ -15090,6 +15102,252 @@ static void scalar_min_max_mul(struct bpf_reg_state *dst_reg,
+ 	}
+ }
+ 
++static void scalar32_min_max_udiv(struct bpf_reg_state *dst_reg,
++				  struct bpf_reg_state *src_reg)
++{
++	u32 *dst_umin = &dst_reg->u32_min_value;
++	u32 *dst_umax = &dst_reg->u32_max_value;
++	u32 src_val = src_reg->u32_min_value; /* non-zero, const divisor */
++
++	*dst_umin = *dst_umin / src_val;
++	*dst_umax = *dst_umax / src_val;
++
++	/* Reset other ranges/tnum to unbounded/unknown. */
++	dst_reg->s32_min_value = S32_MIN;
++	dst_reg->s32_max_value = S32_MAX;
++	__reset_reg64_and_tnum(dst_reg);
++}
++
++static void scalar_min_max_udiv(struct bpf_reg_state *dst_reg,
++				struct bpf_reg_state *src_reg)
++{
++	u64 *dst_umin = &dst_reg->umin_value;
++	u64 *dst_umax = &dst_reg->umax_value;
++	u64 src_val = src_reg->umin_value; /* non-zero, const divisor */
++
++	*dst_umin = *dst_umin / src_val;
++	*dst_umax = *dst_umax / src_val;
++
++	/* Reset other ranges/tnum to unbounded/unknown. */
++	dst_reg->smin_value = S64_MIN;
++	dst_reg->smax_value = S64_MAX;
++	__reset_reg32_and_tnum(dst_reg);
++}
++
++static void scalar32_min_max_sdiv(struct bpf_reg_state *dst_reg,
++				  struct bpf_reg_state *src_reg)
++{
++	s32 *dst_smin = &dst_reg->s32_min_value;
++	s32 *dst_smax = &dst_reg->s32_max_value;
++	s32 src_val = src_reg->s32_min_value; /* non-zero, const divisor */
++	s32 res1, res2;
++
++	/* BPF div specification: S32_MIN / -1 = S32_MIN */
++	if (*dst_smin == S32_MIN && src_val == -1) {
++		/*
++		 * If the dividend range contains more than just S32_MIN,
++		 * we cannot precisely track the result, so it becomes unbounded.
++		 * e.g., [S32_MIN, S32_MIN+10]/(-1),
++		 *     = {S32_MIN} U [-(S32_MIN+10), -(S32_MIN+1)]
++		 *     = {S32_MIN} U [S32_MAX-9, S32_MAX] = [S32_MIN, S32_MAX]
++		 * Otherwise (if dividend is exactly S32_MIN), result remains S32_MIN.
++		 */
++		if (*dst_smax != S32_MIN) {
++			*dst_smin = S32_MIN;
++			*dst_smax = S32_MAX;
++		}
++		goto reset;
++	}
++
++	res1 = *dst_smin / src_val;
++	res2 = *dst_smax / src_val;
++	*dst_smin = min(res1, res2);
++	*dst_smax = max(res1, res2);
++
++reset:
++	/* Reset other ranges/tnum to unbounded/unknown. */
++	dst_reg->u32_min_value = 0;
++	dst_reg->u32_max_value = U32_MAX;
++	__reset_reg64_and_tnum(dst_reg);
++}
++
++static void scalar_min_max_sdiv(struct bpf_reg_state *dst_reg,
++				struct bpf_reg_state *src_reg)
++{
++	s64 *dst_smin = &dst_reg->smin_value;
++	s64 *dst_smax = &dst_reg->smax_value;
++	s64 src_val = src_reg->smin_value; /* non-zero, const divisor */
++	s64 res1, res2;
++
++	/* BPF div specification: S64_MIN / -1 = S64_MIN */
++	if (*dst_smin == S64_MIN && src_val == -1) {
++		/*
++		 * If the dividend range contains more than just S64_MIN,
++		 * we cannot precisely track the result, so it becomes unbounded.
++		 * e.g., [S64_MIN, S64_MIN+10]/(-1),
++		 *     = {S64_MIN} U [-(S64_MIN+10), -(S64_MIN+1)]
++		 *     = {S64_MIN} U [S64_MAX-9, S64_MAX] = [S64_MIN, S64_MAX]
++		 * Otherwise (if dividend is exactly S64_MIN), result remains S64_MIN.
++		 */
++		if (*dst_smax != S64_MIN) {
++			*dst_smin = S64_MIN;
++			*dst_smax = S64_MAX;
++		}
++		goto reset;
++	}
++
++	res1 = *dst_smin / src_val;
++	res2 = *dst_smax / src_val;
++	*dst_smin = min(res1, res2);
++	*dst_smax = max(res1, res2);
++
++reset:
++	/* Reset other ranges/tnum to unbounded/unknown. */
++	dst_reg->umin_value = 0;
++	dst_reg->umax_value = U64_MAX;
++	__reset_reg32_and_tnum(dst_reg);
++}
++
++static void scalar32_min_max_umod(struct bpf_reg_state *dst_reg,
++				  struct bpf_reg_state *src_reg)
++{
++	u32 *dst_umin = &dst_reg->u32_min_value;
++	u32 *dst_umax = &dst_reg->u32_max_value;
++	u32 src_val = src_reg->u32_min_value; /* non-zero, const divisor */
++	u32 res_max = src_val - 1;
++
++	/*
++	 * If dst_umax <= res_max, the result remains unchanged.
++	 * e.g., [2, 5] % 10 = [2, 5].
++	 */
++	if (*dst_umax <= res_max)
++		return;
++
++	*dst_umin = 0;
++	*dst_umax = min(*dst_umax, res_max);
++
++	/* Reset other ranges/tnum to unbounded/unknown. */
++	dst_reg->s32_min_value = S32_MIN;
++	dst_reg->s32_max_value = S32_MAX;
++	__reset_reg64_and_tnum(dst_reg);
++}
++
++static void scalar_min_max_umod(struct bpf_reg_state *dst_reg,
++				struct bpf_reg_state *src_reg)
++{
++	u64 *dst_umin = &dst_reg->umin_value;
++	u64 *dst_umax = &dst_reg->umax_value;
++	u64 src_val = src_reg->umin_value; /* non-zero, const divisor */
++	u64 res_max = src_val - 1;
++
++	/*
++	 * If dst_umax <= res_max, the result remains unchanged.
++	 * e.g., [2, 5] % 10 = [2, 5].
++	 */
++	if (*dst_umax <= res_max)
++		return;
++
++	*dst_umin = 0;
++	*dst_umax = min(*dst_umax, res_max);
++
++	/* Reset other ranges/tnum to unbounded/unknown. */
++	dst_reg->smin_value = S64_MIN;
++	dst_reg->smax_value = S64_MAX;
++	__reset_reg32_and_tnum(dst_reg);
++}
++
++static void scalar32_min_max_smod(struct bpf_reg_state *dst_reg,
++				  struct bpf_reg_state *src_reg)
++{
++	s32 *dst_smin = &dst_reg->s32_min_value;
++	s32 *dst_smax = &dst_reg->s32_max_value;
++	s32 src_val = src_reg->s32_min_value; /* non-zero, const divisor */
++
++	/*
++	 * Safe absolute value calculation:
++	 * If src_val == S32_MIN (-2147483648), src_abs becomes 2147483648.
++	 * Here use unsigned integer to avoid overflow.
++	 */
++	u32 src_abs = (src_val > 0) ? (u32)src_val : -(u32)src_val;
++
++	/*
++	 * Calculate the maximum possible absolute value of the result.
++	 * Even if src_abs is 2147483648 (S32_MIN), subtracting 1 gives
++	 * 2147483647 (S32_MAX), which fits perfectly in s32.
++	 */
++	s32 res_max_abs = src_abs - 1;
++
++	/*
++	 * If the dividend is already within the result range,
++	 * the result remains unchanged. e.g., [-2, 5] % 10 = [-2, 5].
++	 */
++	if (*dst_smin >= -res_max_abs && *dst_smax <= res_max_abs)
++		return;
++
++	/* General case: result has the same sign as the dividend. */
++	if (*dst_smin >= 0) {
++		*dst_smin = 0;
++		*dst_smax = min(*dst_smax, res_max_abs);
++	} else if (*dst_smax <= 0) {
++		*dst_smax = 0;
++		*dst_smin = max(*dst_smin, -res_max_abs);
++	} else {
++		*dst_smin = -res_max_abs;
++		*dst_smax = res_max_abs;
++	}
++
++	/* Reset other ranges/tnum to unbounded/unknown. */
++	dst_reg->u32_min_value = 0;
++	dst_reg->u32_max_value = U32_MAX;
++	__reset_reg64_and_tnum(dst_reg);
++}
++
++static void scalar_min_max_smod(struct bpf_reg_state *dst_reg,
++				struct bpf_reg_state *src_reg)
++{
++	s64 *dst_smin = &dst_reg->smin_value;
++	s64 *dst_smax = &dst_reg->smax_value;
++	s64 src_val = src_reg->smin_value; /* non-zero, const divisor */
++
++	/*
++	 * Safe absolute value calculation:
++	 * If src_val == S64_MIN (-2^63), src_abs becomes 2^63.
++	 * Here use unsigned integer to avoid overflow.
++	 */
++	u64 src_abs = (src_val > 0) ? (u64)src_val : -(u64)src_val;
++
++	/*
++	 * Calculate the maximum possible absolute value of the result.
++	 * Even if src_abs is 2^63 (S64_MIN), subtracting 1 gives
++	 * 2^63 - 1 (S64_MAX), which fits perfectly in s64.
++	 */
++	s64 res_max_abs = src_abs - 1;
++
++	/*
++	 * If the dividend is already within the result range,
++	 * the result remains unchanged. e.g., [-2, 5] % 10 = [-2, 5].
++	 */
++	if (*dst_smin >= -res_max_abs && *dst_smax <= res_max_abs)
++		return;
++
++	/* General case: result has the same sign as the dividend. */
++	if (*dst_smin >= 0) {
++		*dst_smin = 0;
++		*dst_smax = min(*dst_smax, res_max_abs);
++	} else if (*dst_smax <= 0) {
++		*dst_smax = 0;
++		*dst_smin = max(*dst_smin, -res_max_abs);
++	} else {
++		*dst_smin = -res_max_abs;
++		*dst_smax = res_max_abs;
++	}
++
++	/* Reset other ranges/tnum to unbounded/unknown. */
++	dst_reg->umin_value = 0;
++	dst_reg->umax_value = U64_MAX;
++	__reset_reg32_and_tnum(dst_reg);
++}
++
+ static void scalar32_min_max_and(struct bpf_reg_state *dst_reg,
+ 				 struct bpf_reg_state *src_reg)
+ {
+@@ -15495,6 +15753,14 @@ static bool is_safe_to_compute_dst_reg_range(struct bpf_insn *insn,
+ 	case BPF_MUL:
+ 		return true;
+ 
++	/*
++	 * Division and modulo operators range is only safe to compute when the
++	 * divisor is a constant.
++	 */
++	case BPF_DIV:
++	case BPF_MOD:
++		return src_is_const;
++
+ 	/* Shift operators range is only computable if shift dimension operand
+ 	 * is a constant. Shifts greater than 31 or 63 are undefined. This
+ 	 * includes shifts by a negative number.
+@@ -15547,6 +15813,7 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
+ 				      struct bpf_reg_state src_reg)
+ {
+ 	u8 opcode = BPF_OP(insn->code);
++	s16 off = insn->off;
+ 	bool alu32 = (BPF_CLASS(insn->code) != BPF_ALU64);
+ 	int ret;
+ 
+@@ -15598,6 +15865,38 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
+ 		scalar32_min_max_mul(dst_reg, &src_reg);
+ 		scalar_min_max_mul(dst_reg, &src_reg);
+ 		break;
++	case BPF_DIV:
++		/* BPF div specification: x / 0 = 0 */
++		if ((alu32 && src_reg.u32_min_value == 0) || (!alu32 && src_reg.umin_value == 0)) {
++			___mark_reg_known(dst_reg, 0);
++			break;
++		}
++		if (alu32)
++			if (off == 1)
++				scalar32_min_max_sdiv(dst_reg, &src_reg);
++			else
++				scalar32_min_max_udiv(dst_reg, &src_reg);
++		else
++			if (off == 1)
++				scalar_min_max_sdiv(dst_reg, &src_reg);
++			else
++				scalar_min_max_udiv(dst_reg, &src_reg);
++		break;
++	case BPF_MOD:
++		/* BPF mod specification: x % 0 = x */
++		if ((alu32 && src_reg.u32_min_value == 0) || (!alu32 && src_reg.umin_value == 0))
++			break;
++		if (alu32)
++			if (off == 1)
++				scalar32_min_max_smod(dst_reg, &src_reg);
++			else
++				scalar32_min_max_umod(dst_reg, &src_reg);
++		else
++			if (off == 1)
++				scalar_min_max_smod(dst_reg, &src_reg);
++			else
++				scalar_min_max_umod(dst_reg, &src_reg);
++		break;
+ 	case BPF_AND:
+ 		if (tnum_is_const(src_reg.var_off)) {
+ 			ret = maybe_fork_scalars(env, insn, dst_reg);
+diff --git a/tools/testing/selftests/bpf/progs/verifier_value_illegal_alu.c b/tools/testing/selftests/bpf/progs/verifier_value_illegal_alu.c
+index 2129e4353fd9..4d8273c258d5 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_value_illegal_alu.c
++++ b/tools/testing/selftests/bpf/progs/verifier_value_illegal_alu.c
+@@ -173,14 +173,15 @@ __naked void flow_keys_illegal_variable_offset_alu(void)
+ 	asm volatile("					\
+ 	r6 = r1;					\
+ 	r7 = *(u64*)(r6 + %[flow_keys_off]);		\
+-	r8 = 8;						\
+-	r8 /= 1;					\
++	call %[bpf_get_prandom_u32];			\
++	r8 = r0;					\
+ 	r8 &= 8;					\
+ 	r7 += r8;					\
+ 	r0 = *(u64*)(r7 + 0);				\
+ 	exit;						\
+ "	:
+-	: __imm_const(flow_keys_off, offsetof(struct __sk_buff, flow_keys))
++	: __imm_const(flow_keys_off, offsetof(struct __sk_buff, flow_keys)),
++	  __imm(bpf_get_prandom_u32)
+ 	: __clobber_all);
+ }
+ 
+diff --git a/tools/testing/selftests/bpf/verifier/precise.c b/tools/testing/selftests/bpf/verifier/precise.c
+index 59a020c35647..061d98f6e9bb 100644
+--- a/tools/testing/selftests/bpf/verifier/precise.c
++++ b/tools/testing/selftests/bpf/verifier/precise.c
+@@ -229,11 +229,11 @@
+ {
+ 	"precise: program doesn't prematurely prune branches",
+ 	.insns = {
+-		BPF_ALU64_IMM(BPF_MOV, BPF_REG_6, 0x400),
++		BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_get_prandom_u32),
++		BPF_ALU64_REG(BPF_MOV, BPF_REG_6, BPF_REG_0),
+ 		BPF_ALU64_IMM(BPF_MOV, BPF_REG_7, 0),
+ 		BPF_ALU64_IMM(BPF_MOV, BPF_REG_8, 0),
+ 		BPF_ALU64_IMM(BPF_MOV, BPF_REG_9, 0x80000000),
+-		BPF_ALU64_IMM(BPF_MOD, BPF_REG_6, 0x401),
+ 		BPF_JMP_IMM(BPF_JA, 0, 0, 0),
+ 		BPF_JMP_REG(BPF_JLE, BPF_REG_6, BPF_REG_9, 2),
+ 		BPF_ALU64_IMM(BPF_MOD, BPF_REG_6, 1),
 -- 
 2.52.0
 
