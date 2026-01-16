@@ -1,179 +1,182 @@
-Return-Path: <bpf+bounces-79343-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79345-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCF4CD38927
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 23:20:56 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92FC8D3892D
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 23:25:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id AC2C2304BB77
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 22:20:52 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 318023014D53
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 22:25:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A69B31195A;
-	Fri, 16 Jan 2026 22:20:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61EAE3115A1;
+	Fri, 16 Jan 2026 22:25:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jl6fwD5X"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BYjAObTc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5236D2D8DA6
-	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 22:20:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.214.174
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768602048; cv=pass; b=OfhcQa6EFUecCxzaW1tQJd3qyZcF55zyNuMGKaOSQslQLReyMRRmFohrYXY68jsrz9kOkQZfzKF5pJ5OIhrQZIyqc0yPh3H85V5Xfi/ZzJYlUdR07IxCara8eDh8wxOFhnhpxcUpKbxs1MHYntZG9ikIi3tOFr95+Yt5MW4OO7I=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768602048; c=relaxed/simple;
-	bh=o5En9a8wP5By67GXNTiNQjIPnUWaBuLHMV9zVL0xjhM=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADF6C310627
+	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 22:25:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768602307; cv=none; b=p20HZoJQKnXQHmcEMCfXl6J4xPYCuVZfFsE50CuHzF7ZXdpzWwH/GNGnReyf5E/jzo//xRu+YblLgs5pnfLsfd1Uf9WS9c5IOlXxfIwXZPfhfP6UIyyzAWTbrbxRFqSPxJSRHGMbNMv8VMj4mFDc+1AaJL32duupGvpkjGuDETw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768602307; c=relaxed/simple;
+	bh=qptEp8sEbtVPxJxGO0g+sItbsWbLaXt42kMa9TNE7OA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=chEwJbHmkT1okyAj6shs50yBLUAEpCWXmp8kZsUnZ3IXrUG4xKdMG85deVkWsuiZ8RfI5wUiw4TYIUHSTIw1GqJMQ3mWoQbjXWOHncPbjRJgFqJvzd+iYelSTmbB1SfV9IOuDPen1sDyQnhM8j5ctE0sCmpl78kDZm4v+30D+Bg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jl6fwD5X; arc=pass smtp.client-ip=209.85.214.174
+	 To:Cc:Content-Type; b=kpJx88aBDVOSneFFiHTho9+BC2+Tml3D0vcSfxn5FTJUYmxLqBnFZfGgIOCRoKQAvyOzXrYgiZX20tRpAGCoCbexeTXo8lMW6Qzq9hQ9GmVS0MVco4gnE8gN9Or9kqjFRS+HpNAPL5R53BmdxGqhAiPDazn2eB6gsjG4ZmHG/lw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BYjAObTc; arc=none smtp.client-ip=209.85.215.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-2a07fac8aa1so17923785ad.1
-        for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 14:20:47 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1768602047; cv=none;
-        d=google.com; s=arc-20240605;
-        b=MHofemP0DqBarFUZqaRD60kT/LuNtxKi6dKxo9PrfcVqA2AePWp4H8qPt3Q2BBptsm
-         icX5tE1e/S7Gq9etJy7RLOT3M7807EQS0AoJvikyo9JLg2YhgeHV7LFJBqpnmaY7mfy4
-         737S5ln4uqGZNCeW+nO9H8ErdUVDWZ1LqAjNmT8VZt1vsMH2Z1r+nuo4A4SXWsW9V3PO
-         S9pEUvHuUNgGyWl1Y+hae7lb+RfafPEsWFUasFfFidJe5uvDe1nq/sHAiz2kTeSrR7fF
-         WGBk/n51vNtnInpqPd8/0wxqVh3fLnOTjijWSfxXH5HuUwhcQueRxspTbH5LJ0fj+/ui
-         9rbA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=o5En9a8wP5By67GXNTiNQjIPnUWaBuLHMV9zVL0xjhM=;
-        fh=4abOVxnohxhQ0fQveMdkk/H4wbC+/wKs01OxgiJQ1BA=;
-        b=P9/1GLOP4oia9SAf2Ymqj1JSirgQ2oiac1oktWzGyIBFTXUGW3BYU/a1W72TzOZ83V
-         JTtTeL8hxHfXYtAx7R4dosPLx6jXEkeDdLPOjumycIprM4e3lv4+byZBNU7exSR2s/C/
-         BK4bytGb/TBN/5OROTYrxExbKsW7k5ji2Jo9U6Qs82JgeNKJcLOrm65laBbF5G+rKasl
-         59LUEuqSeE2R9Gc3WDI2h5ctiWCtWA8n0tupHZH5vsz5D8K/wweDkWi6zL6vPvwJOiu9
-         wAnEqhKy9tM241QG6wPSkAbDcGwApfJ6tfE8TvXUFCowJm/pE/AKLgvDqkAQ9GnZX1Xp
-         ei3Q==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-c56188aef06so1079948a12.2
+        for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 14:25:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768602047; x=1769206847; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1768602305; x=1769207105; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=o5En9a8wP5By67GXNTiNQjIPnUWaBuLHMV9zVL0xjhM=;
-        b=jl6fwD5XuK8nNz0w8naADUnEY83g5YEz8a/AJMTNwsu+p/9darZgynRx3h0TTCIPkU
-         fQx5WKc/uQ9iHsZ2qE0eLzF4K6sHagBAuuYCAaJ4bPvgacdNyLKMwj7FuUh+UvvebEsB
-         ujlvGefiQ16jpeIIsompuWkHE7czowuBkO+1XE8cmmFURBz1Jmhw+8ifaVXBzAMXjIEt
-         svjgdadT9xkGnr25ipuogSTgwFcAdgyPf0ucI3nyrMQmpbNDj/BqDdZMj6YZDAXsxRWU
-         9lgtgKxFEtEY9PBkgyhT3AHgvXFp3hrVdvONvtAw4w9uPXrpQQrNyYu6CTevJhN9i459
-         5UBw==
+        bh=JKu+95CPgLvp/C5TpNMES7nTK5oZeBFLzp4GfKdaUjQ=;
+        b=BYjAObTcCgGFplePKZv6cz5XoZKBjmWL48jUdlDZp+DBFqebZubj0QRA4bvqAKBJj2
+         nOYU2n4OFBgGt6K1rprnpPxbDV0F1Be1QAp0zgnqRP3RVFWuYHbfqccJm9uklvH9XPWp
+         wjrUaGi0BLzqck69ZMRm5bFiz3e3xbFnNR5K1ubysC6TqXMzZ2K7SFtF+W0Zdct3D8I8
+         RO/bq3JMjG+HJc0fQ+RQfnyv0fMrd2Q4HYoltQwAr3yNetP0aAyR5qcaJ9CHYXjAxT1s
+         vo1WYdIveve1yhrffb7jD0b7KKXbvDlNpPWcJaIlMuBuHqziJbXUe/dfXcoN5LDISe/h
+         GE8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768602047; x=1769206847;
+        d=1e100.net; s=20230601; t=1768602305; x=1769207105;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=o5En9a8wP5By67GXNTiNQjIPnUWaBuLHMV9zVL0xjhM=;
-        b=h65SEI5N5XH1RO+26/akgZqN1dwRN4EVh/MCUc0l1A9fD3m7k7Z2eh3IjBaGFZISjG
-         oZPABPylgEwYdLTrKlbBFP0WUW4aAOS/cJ6ZE3+7cE/KBEFlaxqWlCNOp/um9zn59pkx
-         zvpc+u4AMsq/N21aaO9kBEarU6CGATwBp94plwdBI7Dws1/FPK2DQCJByhjK35OXzHyt
-         wAaAJXUcbmqVBCgww1DhbgnuWceXwzEZuLJH8946RjT94WVOQn0HlLirforPISRYI8tP
-         s0+CerInSA8gisxcK63qYY6A85ouc5+envMA43oVwGiJIEpxCZTOBPL5b8AHafSSDz7l
-         Gxcw==
-X-Forwarded-Encrypted: i=1; AJvYcCXL5NueGBUR+6xoR49v/W6/rMvrFTlEjeeYwhyeKKC0++FmZPGCphC6cP54eEgmTDjlXeM=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx3fB3/67faoFlNY6pROeGcQ795nshlAkwRwSiqy8+30pE19Up8
-	cnqjtJkjP3w8t88OeWV8gnQTtBY7L/pB0xGDCx+UNrFsQ/qloU4m7yNaD8EXwl+Ze1W0T2vFVBx
-	zrI0bn8BZvnAK290Cdqgn+G5wOwJC35g=
-X-Gm-Gg: AY/fxX7fFb+t3dmhZt1hTCVLE0oirfIhnY2ws+TZGWpbGuloGuHxR80FlR148D7O5eJ
-	Xs9zZFyi7HE1237S5z5t8Aptc9SGRszEXtPvrp7R0OIfmtr5CygtV953wADZnr2E/PyoTJOxyOi
-	LXOx0QBFlVBlTYTcTkQz97Y703f2YW0O19zUe50QyvIxjfknchwUetRUWQylQImuGDKl/hFslr4
-	SzPQ4w2+cWA9hQwTo+P1T6LATHv/kzohqKrOB03zZ4UhYUtIcE18DqqO2w3B8gI/BHux07/e6nG
-	r4u7bX5uYXDwlPpE8hg1Rg==
-X-Received: by 2002:a17:903:3888:b0:295:c2e7:7199 with SMTP id
- d9443c01a7336-2a7175a63fdmr36859055ad.29.1768602046673; Fri, 16 Jan 2026
- 14:20:46 -0800 (PST)
+        bh=JKu+95CPgLvp/C5TpNMES7nTK5oZeBFLzp4GfKdaUjQ=;
+        b=FfyhyrMVPjFKDtlaCD8qfKKoqXS4vfb2pEn1RiFoDc+Gs0EmEVUkFvOHrnWifOhY5d
+         UOR7TD6kA+j+8pCX6Uwq291Ww8eipVy01VepmOxu5MqLHSZdzWQX5XhbPDhHKl2hjvVX
+         83lXdA0oB8Wfi3pBYr6BDIxhQgitm7B1NWT4ly+zGfAcIvuXffZFha3uGP0uNH/QUOYq
+         0gG/cperJ4vDh54ctk1zGYMsHTJaP0/N71io80sOXyO25m93PV4Jqfhyy05McqvW4uGq
+         zfEX/iPbVTNmyMl5GHgiuROOH4o2BVwjfvz1IF6y6yeBoGG52Pv/+UNbiF4jzzhXZaEh
+         LE8g==
+X-Forwarded-Encrypted: i=1; AJvYcCV7mp2sCXXFNOy1bm43Cb0slIVzB0Nk3ziz2udtx/VNj6XTyYF+D941gzF8qr4p0F+5/rw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzZrTRYqlQ7Afb7cf6w/3mYSqamEMNYYpzeYgkg6nJcYkZXH14q
+	vjrhakIzukxJbgjNbnUoqG4NJp2aizzEeRCE8086fB/1HjDs0EsQgFFqECBJSmMFizrc3n5jsyj
+	Zs4c45iGomrklHdZ3jpACRx07tvIWpZo=
+X-Gm-Gg: AY/fxX5+NKDsMFW2Dl42fpukE8Y852kgcqrAKcgRBeIlMaHWhAv97As1lj4kqzPyoPp
+	PLebYNTRLbLjHzfJOEjAdqIHUVjI+K1eR0ZoP75BFPR0VIuzKIWwhp2LYOjoRAiPt1fUE4PIzpY
+	MyZH72J6CivMGoGFB2Uh4FqPi2Ry4o35tVWqtsCAycpitbi9iV/yKfGX4DxeXlPJFX8o/9C2wGE
+	SvmOw+qZ4/GVaWs8+MSTL90CUOgkCu6DD1lSInAkZxHwuQ228k8pPvSc5Ub4BXmo8pAouszKi/H
+	ts+xP1TgPmw=
+X-Received: by 2002:a17:90b:3501:b0:340:d1a1:af8e with SMTP id
+ 98e67ed59e1d1-35272fe6ee0mr4031169a91.37.1768602305010; Fri, 16 Jan 2026
+ 14:25:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260114-bpftool-tests-v1-0-cfab1cc9beaf@bootlin.com>
- <CAEf4BzYvZsjSpsDHXAuZ9G3=r4e27+c_LDpSUampw-fTfKA2=g@mail.gmail.com> <DFPUQZ5PNXKA.12KADC78HCRQ5@bootlin.com>
-In-Reply-To: <DFPUQZ5PNXKA.12KADC78HCRQ5@bootlin.com>
+References: <20260112214940.1222115-1-jolsa@kernel.org> <20260112214940.1222115-3-jolsa@kernel.org>
+ <20260112170757.4e41c0d8@gandalf.local.home> <aWYv6864cdO2PWbb@krava>
+ <CAEf4BzZ-sPD4UZF-TL2ep-zQOyeOC3K5XC2o3Gsx4Q6XpN-zQw@mail.gmail.com> <aWpme7kBw9xyzRFP@krava>
+In-Reply-To: <aWpme7kBw9xyzRFP@krava>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 16 Jan 2026 14:20:33 -0800
-X-Gm-Features: AZwV_Qj7HA8GkrLxttMYt-BAKc2j92CUeTQrxpfNtW9oL8TZwLQvAQc9j6gMlZ8
-Message-ID: <CAEf4BzbT-7iRezzNRQPvQpRDA3BmkesCSijT4mPXuWb2ua=9ag@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/4] selftests/bpf: add a new runner for bpftool tests
-To: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, ebpf@linuxfoundation.org, 
-	Bastien Curutchet <bastien.curutchet@bootlin.com>, 
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+Date: Fri, 16 Jan 2026 14:24:51 -0800
+X-Gm-Features: AZwV_QjlKAd57l3v7WOINdaUEuCO64fxYBxvdL4QvGUxnlSeVPU6ggFqHIo30QA
+Message-ID: <CAEf4BzZyF2MsF5CkLEsrd0dumeCJ3-zzP+azCZ4TRoDkzjGLdg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/4] x86/fgraph,bpf: Switch kprobe_multi program
+ stack unwind to hw_regs path
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Josh Poimboeuf <jpoimboe@kernel.org>, Mahe Tardy <mahe.tardy@gmail.com>, 
+	Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, x86@kernel.org, 
+	Yonghong Song <yhs@fb.com>, Song Liu <songliubraving@fb.com>, Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 15, 2026 at 11:57=E2=80=AFPM Alexis Lothor=C3=A9
-<alexis.lothore@bootlin.com> wrote:
+On Fri, Jan 16, 2026 at 8:25=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
+e:
 >
-> Hi Andrii,
->
-> On Thu Jan 15, 2026 at 6:58 PM CET, Andrii Nakryiko wrote:
-> > On Wed, Jan 14, 2026 at 12:59=E2=80=AFAM Alexis Lothor=C3=A9 (eBPF Foun=
-dation)
-> > <alexis.lothore@bootlin.com> wrote:
-> >>
-> >> Hello,
-> >> this series is part of the larger effort aiming to convert all
-> >> standalone tests to the CI runners so that they are properly executed =
+> On Thu, Jan 15, 2026 at 10:52:04AM -0800, Andrii Nakryiko wrote:
+> > On Tue, Jan 13, 2026 at 3:43=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> =
+wrote:
+> > >
+> > > On Mon, Jan 12, 2026 at 05:07:57PM -0500, Steven Rostedt wrote:
+> > > > On Mon, 12 Jan 2026 22:49:38 +0100
+> > > > Jiri Olsa <jolsa@kernel.org> wrote:
+> > > >
+> > > > > To recreate same stack setup for return probe as we have for entr=
+y
+> > > > > probe, we set the instruction pointer to the attached function ad=
+dress,
+> > > > > which gets us the same unwind setup and same stack trace.
+> > > > >
+> > > > > With the fix, entry probe:
+> > > > >
+> > > > >   # bpftrace -e 'kprobe:__x64_sys_newuname* { print(kstack)}'
+> > > > >   Attaching 1 probe...
+> > > > >
+> > > > >         __x64_sys_newuname+9
+> > > > >         do_syscall_64+134
+> > > > >         entry_SYSCALL_64_after_hwframe+118
+> > > > >
+> > > > > return probe:
+> > > > >
+> > > > >   # bpftrace -e 'kretprobe:__x64_sys_newuname* { print(kstack)}'
+> > > > >   Attaching 1 probe...
+> > > > >
+> > > > >         __x64_sys_newuname+4
+> > > > >         do_syscall_64+134
+> > > > >         entry_SYSCALL_64_after_hwframe+118
+> > > >
+> > > > But is this really correct?
+> > > >
+> > > > The stack trace of the return from __x86_sys_newuname is from offse=
+t "+4".
+> > > >
+> > > > The stack trace from entry is offset "+9". Isn't it confusing that =
+the
+> > > > offset is likely not from the return portion of that function?
+> > >
+> > > right, makes sense.. so standard kprobe actualy skips attached functi=
 on
-> >> patches submission.
-> >>
-> >> Some of those tests are validating bpftool behavior(test_bpftool_map.s=
-h,
-> >> test_bpftool_metadata.sh, test_bpftool_synctypes.py, test_bpftool.py..=
-.)
-> >> and so they do not integrate well in test_progs. This series proposes =
-to
+> > > (__x86_sys_newuname) on return probe stacktrace.. perhaps we should d=
+o
+> > > the same for kprobe_multi
 > >
-> > Can you elaborate why they do not integrate well? In my mind,
-> > test_progs should be the only runner into which we invest effort
-> > (parallel tests, all the different filtering, etc; why would we have
-> > to reimplement subsets of this). The fact that we have test_maps and
-> > test_verifier is historical and if we had enough time we'd merge all
-> > of them into test_progs.
-> >
-> > What exactly in test_progs would prevent us from implementing bpftool
-> > test runner?
+> > but it is quite nice to see what function we were kretprobing,
+> > actually...
 >
-> I don't think there is any strong technical blocker preventing from
-> integrating those tests directly into test_progs. That's rather about
-> the fact that test_progs tests depends (almost) exclusively on
-> libbpf/skeletons. Those bpftool tests rather need to directly execute
+> IIUC Steven doesn't like the wrong +offset that comes from entry probe,
+> maybe we could have func+(ADDRESS_OF_RET+1) ..but not sure how hard that
+> would be
+>
+> still.. you always have the attached function ip when you get the stacktr=
+ace,
+> so I'm not sure how usefull it's to have it in stacktrace as well.. you c=
+an
+> always add it yourself
 
-There are actually plenty of test in test_progs that do networking
-setups, calling system() to launch various binaries, etc. So it never
-was purely for libbpf/skeletons/whatnot.
+You can, but that's a custom thing that every single tool has to
+implement. Having traced function right there in the stack would be so
+nice and convenient.
 
-So yeah, I think bpftool testing should still be implemented as one
-(or many) test_progs tests (and maybe subtests), utilizing
-test_progs's generic multi-process testing setup, filtering,
-reporting, etc infrastructure. No need to add extra runners.
+I don't insist, but I'm just saying that practically speaking this
+would make sense. Even conceptually, kretprobe is (logically) called
+from traced function right before exit. In reality it's not exactly
+like that and we don't know where ret happened, but having traced
+function in kretprobe's stack trace is more useful than confusing,
+IMO.
 
-> bpftool and parse its stdout output, so I thought that it made sense to
-> have a dedicated runner for this. If I'm wrong and so if those tests
-> should rather be moved in the test_progs runner (eg to avoid duplicating
-> the runner features), I'm fine with it. Any additional opinion on this
-> is welcome.
+But again, I just found it interesting that we could have it, if we wanted =
+to.
+
 >
-> Thanks,
 >
-> Alexis
-> --
-> Alexis Lothor=C3=A9, Bootlin
-> Embedded Linux and Kernel engineering
-> https://bootlin.com
+> > How hard would it be to support that for singular kprobe
+> > as well? And what does fexit's stack trace show for such case?
 >
+> I think we will get the bpf_program address, so we see the attached
+> function in stacktrace, will check
+>
+> thanks,
+> jirka
 
