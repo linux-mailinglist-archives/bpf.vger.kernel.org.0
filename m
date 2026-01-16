@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-79350-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79351-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4E6FD3897E
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 23:54:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E0B5AD38994
+	for <lists+bpf@lfdr.de>; Sat, 17 Jan 2026 00:03:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8384830A6AE6
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 22:53:40 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 46FAE305058E
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 23:03:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97CA3315760;
-	Fri, 16 Jan 2026 22:53:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B62CB30EF69;
+	Fri, 16 Jan 2026 23:03:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NGkLRokL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OD6VcarL"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22136314D03;
-	Fri, 16 Jan 2026 22:53:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42EA03019B2
+	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 23:03:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768604018; cv=none; b=kt9gpg8n3kqyyfBq6i1eRL7XgQ3YYRIDLzwDnhl38sVVqFvFp3nhUphvWzeK0d6AOuMNgQYry/xzWlAV8g7OaDkqDlmxzTL9XM5klzzQvzMNe9ZKzSZ33mNS1QbinbUwxejApQ0VVvd2Tt08Vha4kIEVy8mYt49TxtRbBHSkjq4=
+	t=1768604617; cv=none; b=Dz6XJOicMcAdPGvV+HmPWPy9U+lCXQBDWbHY0HJtws69/L/bSv9HLQV9bZCxJUQxILbsuZ+HCsjZLAsm740MVtT4yD+ONvU8F5K3qUkpWH2oDqdTU/bhfQHT5sbWGqjGqg8MtB0TlfyDbUWEjggB7aq/lEIaGAPhaPZxhPzwQ3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768604018; c=relaxed/simple;
-	bh=GS7mxjxjkXJMbohs2toFBDo7wSZMU0YxLbLwwl4Nqdo=;
+	s=arc-20240116; t=1768604617; c=relaxed/simple;
+	bh=s1zEGshFUt6G1bOii5o4Tw/CeTMGiLEnMdw0PkutbN8=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=uEnT3KLFh0yuFhDjxNjWvfgt/7EfTaQD9OVg8zyyD4lKcl0B/PLUn0nMBxhLWZA1M0X7VSZTy0fuu8XWA8LX3AL11ZysnOnbp/B0h+YD7bsc8NN4FlNb44hqYWQn2FYrPLKR2tcr8/MAYkJioNbrlBXZ5a2SC7L6wgVM0/9yN20=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NGkLRokL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D33ADC116C6;
-	Fri, 16 Jan 2026 22:53:37 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=MC6Nuxhs2KMSFp+J6PC70PRveyskmwI+JqrxzKAJMS8ztTLtlkZ76C8oQ4VlXdyscwcdw9dBPyZfgSlVBj9BP43t4yu47gl1i+lLezC8rC+xYje17/hgRTHh1wSXdvhl4zNcO0mMQky8N3+JQ5C4XUNyHtwFXREkYJRmLq4FlYE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OD6VcarL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0C2FC116C6;
+	Fri, 16 Jan 2026 23:03:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768604017;
-	bh=GS7mxjxjkXJMbohs2toFBDo7wSZMU0YxLbLwwl4Nqdo=;
+	s=k20201202; t=1768604616;
+	bh=s1zEGshFUt6G1bOii5o4Tw/CeTMGiLEnMdw0PkutbN8=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=NGkLRokL/94tZEUWbYl/0KgzstyFnbx58ViTwm4XvmJyB6YHPoUb7GPAs8VLtMnRb
-	 cKglNRLnBkIruNchFhH4Y3Tylt8AqPzD2IBP2wfDLcnuhSphTNxSAUBuC52OrBaC8D
-	 tHH0H3X33urW87k3HHHGjkxwBuJRJ4IXwQkfoCxC5X5nNbJVJFUQGeraUGhp1L+sdF
-	 9FoB31KEr9JGdl6SvKP1dbl9gxyqgnQYE3/FnRcLbqcL4MNJkb+UehGJqFs9C5qK4T
-	 3074AAPwXmHwtJ9HTcpqTDxj01ucUbZRDC1BcByL5Uogrc3vDLR6aA3qRl2OiZsTvT
-	 DuRGAzg4FHqcQ==
+	b=OD6VcarLz+81lm0l7e4+Puf+/u1JVbdc1NYtG0ibjjxEsKX1HL8ddt93O/xkuLlVA
+	 obPBb1p+AEReKZRw9q04yoybuK2YFJKYat1tu/TkRx4YEcl0bxA+6ooLX/6XdgdgGD
+	 xPnnzdmrFz9cQOmPKDN0PO4nq1eIfqrmsLdHRjIvcVkGJOtr3HFQ1EK06W5g8VzESY
+	 VguvCprfiVG87lq3JkHs6EPSB5Yl5C2EpDXM07p+oOJo1nRiDMPW2XVC9mBPUG5ZSg
+	 vGjjejTFxO4yopYXIXT0/hbKJZ0fptwjqSnm6Q10IjxiIVU7YS60sQJf1yRVDa1cjG
+	 c3w1ef00VOLPA==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 789D2380CECB;
-	Fri, 16 Jan 2026 22:50:10 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 78975380CECB;
+	Fri, 16 Jan 2026 23:00:09 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -50,38 +50,44 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] kernel: bpf: Add SPDX license identifiers to a few files
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: Fix map_kptr test failure
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <176860380903.826620.14876814103190343010.git-patchwork-notify@kernel.org>
-Date: Fri, 16 Jan 2026 22:50:09 +0000
-References: <20260115013129.598705-1-tim.bird@sony.com>
-In-Reply-To: <20260115013129.598705-1-tim.bird@sony.com>
-To: Bird@codeaurora.org, Tim <Tim.Bird@sony.com>
-Cc: kuba@kernel.org, andrii@kernel.org, daniel@iogearbox.net, ast@kernel.org,
- linux-spdx@vger.kernel.org, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, tim.bird@sony.com
+ <176860440829.828763.15143009427668744208.git-patchwork-notify@kernel.org>
+Date: Fri, 16 Jan 2026 23:00:08 +0000
+References: <20260116052245.3692405-1-yonghong.song@linux.dev>
+In-Reply-To: <20260116052245.3692405-1-yonghong.song@linux.dev>
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, kernel-team@fb.com, martin.lau@kernel.org,
+ memxor@gmail.com
 
 Hello:
 
 This patch was applied to bpf/bpf-next.git (master)
 by Andrii Nakryiko <andrii@kernel.org>:
 
-On Wed, 14 Jan 2026 18:31:29 -0700 you wrote:
-> Add GPL-2.0 SPDX-License-Identifier lines to some files,
-> and remove a reference to COPYING, and boilerplate warranty
-> text, from offload.c.
+On Thu, 15 Jan 2026 21:22:45 -0800 you wrote:
+> On my arm64 machine, I get the following failure:
+>   ...
+>   tester_init:PASS:tester_log_buf 0 nsec
+>   process_subtest:PASS:obj_open_mem 0 nsec
+>   process_subtest:PASS:specs_alloc 0 nsec
+>   serial_test_map_kptr:PASS:rcu_tasks_trace_gp__open_and_load 0 nsec
+>   ...
+>   test_map_kptr_success:PASS:map_kptr__open_and_load 0 nsec
+>   test_map_kptr_success:PASS:test_map_kptr_ref1 refcount 0 nsec
+>   test_map_kptr_success:FAIL:test_map_kptr_ref1 retval unexpected error: 2 (errno 2)
+>   test_map_kptr_success:PASS:test_map_kptr_ref2 refcount 0 nsec
+>   test_map_kptr_success:FAIL:test_map_kptr_ref2 retval unexpected error: 1 (errno 2)
+>   ...
+>   #201/21  map_kptr/success-map:FAIL
 > 
-> Signed-off-by: Tim Bird <tim.bird@sony.com>
-> ---
->  kernel/bpf/offload.c | 12 +-----------
->  kernel/bpf/ringbuf.c |  1 +
->  kernel/bpf/token.c   |  1 +
->  3 files changed, 3 insertions(+), 11 deletions(-)
+> [...]
 
 Here is the summary with links:
-  - kernel: bpf: Add SPDX license identifiers to a few files
-    https://git.kernel.org/bpf/bpf-next/c/4787eaf7c171
+  - [bpf-next,v2] selftests/bpf: Fix map_kptr test failure
+    https://git.kernel.org/bpf/bpf-next/c/efad162f5a84
 
 You are awesome, thank you!
 -- 
