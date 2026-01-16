@@ -1,45 +1,45 @@
-Return-Path: <bpf+bounces-79337-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79338-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32225D3876F
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 21:25:50 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18AE1D38752
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 21:22:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6A9C5329A6F1
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 20:19:41 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id E550D3047C95
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 20:19:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C982F3A4F4B;
-	Fri, 16 Jan 2026 20:18:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B6003A7843;
+	Fri, 16 Jan 2026 20:18:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="TFDtfVTU"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hH/xdhYA"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F6533A4F41
-	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 20:18:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06E853A4AC1
+	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 20:18:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768594707; cv=none; b=X3ANSEw+i3vMo0aV/iwe+Q135LVfFjyPM7Kw5gk7fKCML+74iILZk/pmxoGA0KgbplsgqBnAydI+hXWngVUKTDby8e7/Cka8eFxOVMpkwDJ8u3OCFHBPcLiZZg8Tou+Ucs6jFju5INzVEpYpbS+TsDtduXmxyVODs04ESboRmng=
+	t=1768594715; cv=none; b=m4coa9MCSECoYRcorSvvbwJJxD5ZIY7w9/hjI8KrmqE9RX3itFGLukvCVeom1Kyj+HtjRgyuYNKU+zsQsm97Bm8uYNGjHV8sFmKhRJaXruI1AEXlLtMrpzz1Ci/wjNiKRkfjOQ6jFmGFso2V+ZTzjTy4790Q0KPCY2jaxfRhOgs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768594707; c=relaxed/simple;
-	bh=qenoQogq89G2cTNXDnLixTWZqS10Czig+sw2NHrxL8Y=;
+	s=arc-20240116; t=1768594715; c=relaxed/simple;
+	bh=6g4MFCyn0InZsYBBiZi2fxd9iAJrrdGPEUCAbG9AYTY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=B3oSJ3yQGKrHGdyFPFn3H8895LeSEWaBsDT0Qq/GG91WPUy0+OlzJ6vVMtosnW/gvb5no0C/viPnY/t5mTeo6dEJy3C1UO13Kziyo6MYpLtUakkUBAwv7Uh1brmB4l0k3LLFVfSHVUzz96S3JIxIpkJdwGTWKc76z1VwVw0LTfA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=TFDtfVTU; arc=none smtp.client-ip=95.215.58.189
+	 MIME-Version; b=nwR7SggxPCkFxtUd3Yh2TPyTx6eBkuUjeEMGe8cChWhVN2fXLD9wdpCuqY0VhzojWvcj/xBDQgkuMqvDbqAJP6vr3YauY0l9Jrjt5LmMvzXX148mh/2x8Y/ekA85ajSxBcQnvUztAv8oYtMATVLgVM7pjxdujKbUBfI3i56XGgQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hH/xdhYA; arc=none smtp.client-ip=95.215.58.187
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1768594701;
+	t=1768594707;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=gxpuRAc9cdYDyka/2Lt8vnO2Bn4+YQY3rKrMJRNLA8U=;
-	b=TFDtfVTUf5WiGQIBQvoVHEUqYI1fVIeW/nxX20XwH5TtGNFnn1JnFD4tUT1ay8vdSAheFo
-	76uzBI7fBw8hSafL7V9LRx59mX+fBsqwsrU33FTHHNL4KshhbJhrE9zU3+Qk3mEcifjt5T
-	kEWvUczDP2xZ29/6/rcLitzX017Ss3k=
+	bh=Zwz6Xowq2w+xpgQwCp0JYB93ToE2U9fbiwcFD+udSuM=;
+	b=hH/xdhYAlAe3eUh9/LRjYJ67vilIG9fgfC6Xjut5axGW9ptlwjxIKY6IVrXQ2o2LiKbXMM
+	qJxlEQo0v47lk8qmMwHkN2cbCHZP7udScVXXK3KLcfphw2VnEjnULMsBTYJ3oG641xSh6A
+	cdWSOgmk7dmutydLwL3Yr8RULIg0B3I=
 From: Ihor Solodrai <ihor.solodrai@linux.dev>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -56,9 +56,9 @@ Cc: Mykyta Yatsenko <yatsenko@meta.com>,
 	linux-kernel@vger.kernel.org,
 	linux-input@vger.kernel.org,
 	sched-ext@lists.linux.dev
-Subject: [PATCH bpf-next v2 12/13] bpf: Remove __prog kfunc arg annotation
-Date: Fri, 16 Jan 2026 12:16:59 -0800
-Message-ID: <20260116201700.864797-13-ihor.solodrai@linux.dev>
+Subject: [PATCH bpf-next v2 13/13] bpf,docs: Document KF_IMPLICIT_ARGS flag
+Date: Fri, 16 Jan 2026 12:17:00 -0800
+Message-ID: <20260116201700.864797-14-ihor.solodrai@linux.dev>
 In-Reply-To: <20260116201700.864797-1-ihor.solodrai@linux.dev>
 References: <20260116201700.864797-1-ihor.solodrai@linux.dev>
 Precedence: bulk
@@ -70,47 +70,81 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Now that all the __prog suffix users in the kernel tree migrated to
-KF_IMPLICIT_ARGS, remove it from the verifier.
-
-See prior discussion for context [1].
-
-[1] https://lore.kernel.org/bpf/CAEf4BzbgPfRm9BX=TsZm-TsHFAHcwhPY4vTt=9OT-uhWqf8tqw@mail.gmail.com/
+Add a section explaining KF_IMPLICIT_ARGS kfunc flag. Remove __prog
+arg annotation, as it is no longer supported.
 
 Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
 ---
- kernel/bpf/verifier.c | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
+ Documentation/bpf/kfuncs.rst | 49 +++++++++++++++++++++++-------------
+ 1 file changed, 32 insertions(+), 17 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index c2abf30e9460..5f2849ea845c 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -12211,13 +12211,6 @@ static bool is_kfunc_arg_irq_flag(const struct btf *btf, const struct btf_param
- 	return btf_param_match_suffix(btf, arg, "__irq_flag");
- }
+diff --git a/Documentation/bpf/kfuncs.rst b/Documentation/bpf/kfuncs.rst
+index 3eb59a8f9f34..75e6c078e0e7 100644
+--- a/Documentation/bpf/kfuncs.rst
++++ b/Documentation/bpf/kfuncs.rst
+@@ -232,23 +232,6 @@ Or::
+                 ...
+         }
  
--static bool is_kfunc_arg_prog_aux(const struct btf *btf, const struct btf_param *arg);
+-2.3.6 __prog Annotation
+----------------------------
+-This annotation is used to indicate that the argument needs to be fixed up to
+-the bpf_prog_aux of the caller BPF program. Any value passed into this argument
+-is ignored, and rewritten by the verifier.
 -
--static bool is_kfunc_arg_prog(const struct btf *btf, const struct btf_param *arg)
--{
--	return btf_param_match_suffix(btf, arg, "__prog") || is_kfunc_arg_prog_aux(btf, arg);
--}
+-An example is given below::
 -
- static bool is_kfunc_arg_scalar_with_name(const struct btf *btf,
- 					  const struct btf_param *arg,
- 					  const char *name)
-@@ -13280,8 +13273,8 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
- 		if (is_kfunc_arg_ignore(btf, &args[i]))
- 			continue;
+-        __bpf_kfunc int bpf_wq_set_callback_impl(struct bpf_wq *wq,
+-                                                 int (callback_fn)(void *map, int *key, void *value),
+-                                                 unsigned int flags,
+-                                                 void *aux__prog)
+-         {
+-                struct bpf_prog_aux *aux = aux__prog;
+-                ...
+-         }
+-
+ .. _BPF_kfunc_nodef:
  
--		if (is_kfunc_arg_prog(btf, &args[i])) {
--			/* Used to reject repeated use of __prog. */
-+		if (is_kfunc_arg_prog_aux(btf, &args[i])) {
-+			/* Reject repeated use bpf_prog_aux */
- 			if (meta->arg_prog) {
- 				verifier_bug(env, "Only 1 prog->aux argument supported per-kfunc");
- 				return -EFAULT;
+ 2.4 Using an existing kernel function
+@@ -381,6 +364,38 @@ encouraged to make their use-cases known as early as possible, and participate
+ in upstream discussions regarding whether to keep, change, deprecate, or remove
+ those kfuncs if and when such discussions occur.
+ 
++2.5.9 KF_IMPLICIT_ARGS flag
++------------------------------------
++
++The KF_IMPLICIT_ARGS flag is used to indicate that the BPF signature
++of the kfunc is different from it's kernel signature, and the values
++for implicit arguments are provided at load time by the verifier.
++
++Only arguments of specific types are implicit.
++Currently only ``struct bpf_prog_aux *`` type is supported.
++
++A kfunc with KF_IMPLICIT_ARGS flag therefore has two types in BTF: one
++function matching the kernel declaration (with _impl suffix in the
++name by convention), and another matching the intended BPF API.
++
++Verifier only allows calls to the non-_impl version of a kfunc, that
++uses a signature without the implicit arguments.
++
++Example declaration:
++
++.. code-block:: c
++
++	__bpf_kfunc int bpf_task_work_schedule_signal(struct task_struct *task, struct bpf_task_work *tw,
++						      void *map__map, bpf_task_work_callback_t callback,
++						      struct bpf_prog_aux *aux) { ... }
++
++Example usage in BPF program:
++
++.. code-block:: c
++
++	/* note that the last argument is omitted */
++        bpf_task_work_schedule_signal(task, &work->tw, &arrmap, task_work_callback);
++
+ 2.6 Registering the kfuncs
+ --------------------------
+ 
 -- 
 2.52.0
 
