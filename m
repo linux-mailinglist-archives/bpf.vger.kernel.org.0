@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-79205-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79206-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8C4DD2D682
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 08:44:57 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61C77D2D6A6
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 08:45:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7143B30DA633
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 07:41:30 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 3137E30E9D87
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 07:41:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59F4833469D;
-	Fri, 16 Jan 2026 07:41:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A602F3451AF;
+	Fri, 16 Jan 2026 07:41:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b="XVnZdi4I"
+	dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b="dHymF/oT"
 X-Original-To: bpf@vger.kernel.org
 Received: from AM0PR02CU008.outbound.protection.outlook.com (mail-westeuropeazon11013005.outbound.protection.outlook.com [52.101.72.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EBC931AABC;
-	Fri, 16 Jan 2026 07:41:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 314DA32D7F8;
+	Fri, 16 Jan 2026 07:41:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.72.5
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768549288; cv=fail; b=Ucj8n/XqqsrM0e/x1Xdniz3dijFZWeXnrdArzWg1md+dPLIQB9lHU/ZYQTeKykb9aebE2VRtw3gqbKz8KT+ca0C3Xbw4MVZf17dnaCPr5XyBGdkAuc8qL8mbhZdGw5/mWxX0dM/WSIeoWrkPshx2oR/3PePkHKMhVJ9NRHNaiM8=
+	t=1768549293; cv=fail; b=B6IgXiRstXzCYo7VBL4sUd9z/Yk+hPaLih1uNRX5j9LC3++/jKqsSbVFeoyFDFw/uggD7m6bBXwOvZlRlbsv/vLC2TRzh75rnyBVWu6psKoofYhPxEktz/+1sOOezulplTEmXsmQdt+EAQmDICd3YzZNSQ/IpnKNd3MAF4C+hwU=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768549288; c=relaxed/simple;
-	bh=++5BwbXI6gsLka6qAUzrvbfIDIWhlLfuMOnODDgcGVc=;
+	s=arc-20240116; t=1768549293; c=relaxed/simple;
+	bh=hrOXuo72j3c6ITj6huu2FimsWjiiEBCzUo+9DyENXR0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=IvsGGLXeMEjdxXSsbB2d8nN7eYNTSLf29kPft6phqm/Ki+5MEaqdch+XMPC0MxNMLGbRozwaEs9YMRxT0rEUqt59GPJpZJPSN3ARRIFZw4XfMThWRhDddzbFppQK2Yog2vwNT4r6hi1oL6uhzsmA+qOkrILRY7UsHRTei/gZ1EU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b=XVnZdi4I; arc=fail smtp.client-ip=52.101.72.5
+	 Content-Type:MIME-Version; b=n6/QP0JXPEUUW+FFn3sF2dm1J43hZYVcxAMVsAbmwpSjdoEnrzpW4htyn+SQKrkQrVOf2ssYg7tp37/78xUnLXNjC7t3soQ7Mn95qC2u0zxr5LfN8uIWX9tLC2SnE618Da0y5yXi2ZpMqCTdELHRYekDgyjQ/vuTco4BbrIjKfg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b=dHymF/oT; arc=fail smtp.client-ip=52.101.72.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=lL9yIxkPFAe/cQ8U1sR+9ln7M7bO0DkYqBiCfennYEk9ZAJfmSnWTM0EMRXT3yRONolK5Costu/KoYaVOg1rDOgsiYdSAMbjYN5oowCEtXUTHvWa4io0gstlBnL5bubP+0B1VGQqKokqEWeT1Lpsm3d6/nGufxwhqV7eq4c2XzltJbs1IfJ5Eq3UPWOsS7GZtj59xFrGu3SUbRKeksyb6cw8C0FSysscTG2jKmYyuYdiILoDyvp7tPiX303ArsaZfR0GicA+GXqkzNggO8df+hcIMRzoTcJjYudC4TpAHA3Tu738PMQlrzBFmQ9xD9//TSHdtozvdSmTPwFhe5WCwQ==
+ b=GGUQXZoF+qKVw8bKmciZxeKEJFu1nuH5oG6uG8TwaDFthpT8hgogu/LjCbr7PXeoCT2V2dU0eG4yI7yIsrZ3SYbMGTAtM7MPscgBPAfTVQ77xkiAsOrYGoR+kFCc+rQl6h7wwiJogOUtFf/zI71HHff8KcxjGgGu2bo+QxvTHqn7Dp9puS/eybAiufAFVasjNka9bV5S/NPiQJxmWGBlaYpWnYH8tpAKUYoSKfSibCpgVuO/tvpkd/yN+OeH7zL+36ZmfZ5027O6cr0neHNAyuLy2E2WkB5vnpj6zJCXUMVuJ+8RWUPfXiQXRwJB1CjUQufgw3vuNPldyiJpMjZ+6w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9BkCGt8PQsr6pzPjEl54Zc8fTuQCm8RmbczY/wHYp68=;
- b=b+GahxhmVUOr4NxxHW3Mf3kQiOuZQf2u/nQLcXhnx36tXUdGfGkn1qB2Sij8K1JQaJdaqNI6lAI4X/3O4MPV1ozNc3cnrrnl4OuP/VUC34fQAC3yWXzbqE2NPSCEYzaS4ND5BWqBrf+bIPHe+DWDQplnVabiqaFBWkykc1mrAL7zUNXwajYbPAH6bnGVNelBV+4KWy06B0K+z6CVp8TH1XUmNsyTegJ+GqHel7h2WLZKfnz7t1aAbSuntDQYPCOjITWFroV+MdMkDkLH0qlk0mU+cN3OqhseRin8JoN6/8ThrMoVL82ssIeCqvsp/lvIAKsuYx7od+qqYlGPfiytQA==
+ bh=CUuI9yxuh89Kp3lTnrvIy34OFS5EOA5JgUX8IqWLaVA=;
+ b=kJRHCnTfAfiHu1ILyuPIvsvmgpNbrqp9S6fYY9Lx3+Qg3V3zukUqP5xa7r5/qwrLvtsoBdM/363u7LoXgSFYSqqKVOl9VTVz2oSyzuyknq9tGlg01jFikKfoU7P8txRFRxAo3Gho4y8v1MKIQvyMQg7xmuyhoiZDSBozB9TlVBwtp4NpHgAeaqcfiQiysYHP6KOWmx7bdajQyAGPDc4edCYrt+LaGfc2IaDMXjxrWjwIgVJdB2gy7bvdHd7lne4fNUvLa2VtVtQDzsx2DZExD7R4NxFYJkswwycnoDNqZO9/KXT5qL8p1u0Y4hbQvnAuAjc3hj1AhLsuv8/mpBQz4A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9BkCGt8PQsr6pzPjEl54Zc8fTuQCm8RmbczY/wHYp68=;
- b=XVnZdi4IxfO0/NaFac+5qdkL/19g/j6L47qtjvXG0HVkW2BJBjUl6NnH4d4IuEh5P8VpoMM2g5Dva8ulYqvW+2SYGhz9fIo+K25IA5P3pwA9Lo6nuJx8vAZ7gHYCqaGOcTG3qVIiJt7p0KSjpKtZE+VgifTCkXr+miDODJsi/RX2Jrig2qbfuRqbC8aF5VrNnddg5By0pQelyZcW/KY7YxTlAy4Ioc6zYiLe2eq2VsyV+/qKmkOIvdYXAVOzgoeDa1bSEJc7LJ8PH+Esavwy3+BFDW3rSbpcFLyWCwrQEoHsmOZnrXlYGh7TkHUWzNmlpQyRmeRwxQQt3Jhu5SB8oQ==
+ bh=CUuI9yxuh89Kp3lTnrvIy34OFS5EOA5JgUX8IqWLaVA=;
+ b=dHymF/oT/H6d5XyanSagt4/nqPgg1TVEWZ/6vRopqBFb1AU4SPb9HY80UiigjYcpyUYtzGVTcoQaG0QU/VHhyZay9LWADamxQ2egqPQ+wtzRfO78mH/sri3/wSjGfMUEAxYcmkVPWQMYhMQIfwDmLUL4vlRDGW4ODAyDSfhxgIxdbtDs9vbIWsEfAhOOOuA9DDW7paLllnDkWbxJS5exZutRlLh+YesF8VEQcgLYetKK1ByquxRDXHrM8L3qpcpzbzqowhEia+xvXfTFTVLxsIkCsSDrSCa5sLvtPMgkoElJZp40gJMOUU+FeTjT3mA+8K2Bb+0X8P+ZCPrNOan7Dg==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nxp.com;
 Received: from PAXPR04MB8510.eurprd04.prod.outlook.com (2603:10a6:102:211::7)
  by VE1PR04MB7390.eurprd04.prod.outlook.com (2603:10a6:800:1aa::8) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9520.5; Fri, 16 Jan
- 2026 07:41:17 +0000
+ 2026 07:41:23 +0000
 Received: from PAXPR04MB8510.eurprd04.prod.outlook.com
  ([fe80::a7c2:e2fa:8e04:40db]) by PAXPR04MB8510.eurprd04.prod.outlook.com
  ([fe80::a7c2:e2fa:8e04:40db%4]) with mapi id 15.20.9499.001; Fri, 16 Jan 2026
- 07:41:17 +0000
+ 07:41:22 +0000
 From: Wei Fang <wei.fang@nxp.com>
 To: shenwei.wang@nxp.com,
 	xiaoning.wang@nxp.com,
@@ -72,9 +72,9 @@ Cc: netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	imx@lists.linux.dev,
 	bpf@vger.kernel.org
-Subject: [PATCH v2 net-next 02/14] net: fec: add fec_rx_error_check() to check RX errors
-Date: Fri, 16 Jan 2026 15:40:15 +0800
-Message-Id: <20260116074027.1603841-3-wei.fang@nxp.com>
+Subject: [PATCH v2 net-next 03/14] net: fec: add rx_shift to indicate the extra bytes padded in front of RX frame
+Date: Fri, 16 Jan 2026 15:40:16 +0800
+Message-Id: <20260116074027.1603841-4-wei.fang@nxp.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20260116074027.1603841-1-wei.fang@nxp.com>
 References: <20260116074027.1603841-1-wei.fang@nxp.com>
@@ -91,173 +91,169 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: PAXPR04MB8510:EE_|VE1PR04MB7390:EE_
-X-MS-Office365-Filtering-Correlation-Id: 69d7e345-baf1-4b9c-d419-08de54d2a25a
+X-MS-Office365-Filtering-Correlation-Id: 51aab6fe-d55e-436e-2d1b-08de54d2a53a
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
 	BCL:0;ARA:13230040|7416014|52116014|19092799006|1800799024|376014|366016|38350700014|921020;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?b46f4PZ0Mkc9yNk0PFZkT3L3sa4B6VxT5nN5zlKyaLZc4+Smnqg0U4bZvUvH?=
- =?us-ascii?Q?nMKM2mrZ5ufMzCetMM9+dv6gBZUovaVLKp+3YGzNAS0uxy5Lnm5HVjLOI4mN?=
- =?us-ascii?Q?aAK9QKx99+dm8VOR8cu6y6QbwM+Zd4O6wnT3rTlAadhx20qd0yXCYjy4LRJS?=
- =?us-ascii?Q?b52He7h4yGE+8/F7i7xpCNTyhlI6cycKtgwuv75hD8EvMfxMupgfysltI+mJ?=
- =?us-ascii?Q?M7xy/SEtUMJe3LYdY7cdQ73UfH7WZc26cFjKeH4LHOK0iXoRYU2TYDYeKyDc?=
- =?us-ascii?Q?k0awT/QUxvMbNEIpd7rJRGOuGVnaMM/72ghcl11XsI+oJXp2NGou54YXwvhn?=
- =?us-ascii?Q?RtbmbobQ2RvHBfoa4E/gI4+nu9aveMopcrnq9tamScdPoosTebBtSxTQ1tBb?=
- =?us-ascii?Q?DytB68jjXUXZqom9HVTz7TEWCtbh7PwYACE4k0RrPla/E5s8yZd4hbUfyFCi?=
- =?us-ascii?Q?ia4zPWPJW2E+n/RKyXjTnIz/GBlIwRQqS5MG50VDknMZAloMEnc18TwlJUst?=
- =?us-ascii?Q?6qBhZL7nyZLWSzh2vbDwyjtiiYXXB2Ff+8nD5RfqyQcQJj3nMQNvPSsTt8/j?=
- =?us-ascii?Q?9sSSoJpHuF8RP4mqYcGgZ/ysyb4rDgDYbYEI9bwuw/0+Yjpch8LBJD/08XnG?=
- =?us-ascii?Q?em/fTUZe+w1LBNle7MdBt87Ccr/lqtF/j79ZLlvS99YjzeJX3VhGEvfIKN6b?=
- =?us-ascii?Q?Y1X9yloyintPWcYLc+Fc5WHetWSHGgdvWTgFt2seMlbhf6ukZ385hO7fStWS?=
- =?us-ascii?Q?1UCIUBmRI9dMEtrV7UYzbUYGJZB5GkTiRvGQw5FYBemjRCIu2hapbzIbSWKt?=
- =?us-ascii?Q?6CaAIVrVNe9NLI9Vr0rtmzuQNvhOspjEwFx88SDi2uPpzddZ1ERO8FijHfMJ?=
- =?us-ascii?Q?owOhvsrI60iKTFjLMZQHtNDC10KgHlKFBGeT7W41dse2C1DKYUUNPxvdH86X?=
- =?us-ascii?Q?qdyrdVBVYeej5jTRbo2MFXrbdjUtr2jfnTCz03hQ9V3pW3+PkWCn4MLZ+/QI?=
- =?us-ascii?Q?I/gocYJw6gDWca84Tu31syXicL9aWbdjWXE211SKxtMMtqNfgxR58GVgPKeu?=
- =?us-ascii?Q?5NuSMs9HJ9qtJ5DNlcRrQywk7qenyAlXLzojRxt6haOLsN+KlnpUz0V3PEmc?=
- =?us-ascii?Q?YhjMKC71y0V+v1xRO9urchq/IKphCIXB3zTNOUrod+CbfzKdNlPA/ty+MQam?=
- =?us-ascii?Q?yQULgW7W9MtsSxHYiMiqSRVehghFFEURYoMn6c2hqIL4h1rX8hFh9vO1+bfr?=
- =?us-ascii?Q?E8bRq1cAJq/9AO1DBZJ1B2ddnA0gRvdCw1URfnHvHCaqw/m2NP96+VJ35+cv?=
- =?us-ascii?Q?pwgdRhouXJsRyxkskniOSKRGlAqFnkjbmDOyvPBDFJcawbNTkaB0+AKN0LFh?=
- =?us-ascii?Q?AxbW5+pFB4ILWCiCnLsXaCJNTHSrZ12Bn6TP1lMIqdHR/mdpLLsckZxb8QQN?=
- =?us-ascii?Q?iHa2rpN/irYKgSZ8QRF0yGE2Iddnk7LKjPO6IddIAF45llHePdWFYW9ZL1QM?=
- =?us-ascii?Q?5MQN8f5igEO8jpdDnYSZraqSp1I+7msrsHrjyqVsaTjUTYAS5NIEAEgYnz7i?=
- =?us-ascii?Q?3FZRpjoN1AFFy956qYvgCbZ2ABc2SEmX+SGBJttYKAOAjJ7YBJKbhyqd3xE1?=
- =?us-ascii?Q?U3RymmK9kZU4vxYf+3h7LYNfSKmm47RCGZ4CSfkZBgFc?=
+	=?us-ascii?Q?uAZ8HkQtJyFuOpz6karOQPubr+7TZTRnT4gD4WtohMAEbbBwEg6vgQ9RgRHl?=
+ =?us-ascii?Q?HXvt6psWlANJhvT1BTXmCltx4Sf3szVu0eRpyjVJjlysw5N+x1Tz3kshHERc?=
+ =?us-ascii?Q?KTL6j8kgzivV2/cqOCPsHW/FX/IlX2MyEvBpt+zrUq23BuEzeh/pOR1U1Itt?=
+ =?us-ascii?Q?xNLVda04SU+w8sVJ823uz2QqctONHYrwNJ05IztFEL8IDQtqtrdyR+wQ/1CV?=
+ =?us-ascii?Q?1LzOzJdXM/p5WH8OcOp8t0COwL6+729iUfvXy5sNslzo6a+7+FfT3qu9Lhq0?=
+ =?us-ascii?Q?sOqCw7Dp/IqKJIVVpAoGwzsD5/YMpTaGazeqnOY3on4935YOVKsy0Jhd1dIx?=
+ =?us-ascii?Q?uzbT9Skrb9j0IP0zi44sQ+nIO7ZYCf0jXeZnJRqpP4YBekkIA18pHcYCIvlu?=
+ =?us-ascii?Q?pPgFy3H/Cnke2dinkGSWISgeJVIvcHUDLhyWUuuwSw0fgooNgTpujRhnwzns?=
+ =?us-ascii?Q?dny34NMgTq2ZSFSJcDP5NEkdHSEfCeUeTKwWObCA0Q/5I87sqbz+Cfoc8h3t?=
+ =?us-ascii?Q?2W5NCNoi6kxmejKhesn9YaqzpWDY4swIXWbrsG8Yvxc7QoMz1ZbDNoji5Yfd?=
+ =?us-ascii?Q?vxFnFj9USHgVZOuLodvefAYzrzbo0wxuPL3b6HQqeZTJjYoaaDYErYKhk0O5?=
+ =?us-ascii?Q?bqTrASAgidfyzsQ+URhWbcS3Ax/RKjbowOs95YQbfnKZIEkKXN2QuJBlFQS+?=
+ =?us-ascii?Q?63BehZdEfJuKti4X6550+fmFWDtl1z0gyU1OR5s4CXqAO1gCWcijEWS6gzyg?=
+ =?us-ascii?Q?9AovcCJWPj0xp2Jmd66C/0f03swQLGOpiiqb2uFu9l7CxNsmgMimoovFL95O?=
+ =?us-ascii?Q?LoJdORbPXfJhoGJoWHzMCK3BOQBRl4VKeYAzQC/p3VWXoPW/IvGhMzTcHLWS?=
+ =?us-ascii?Q?gEn/SxLnIM8coHKAjGtRIpTwK0bdsf9Zbxel9FoGcA1vhCD2thEVe6uP91o8?=
+ =?us-ascii?Q?kg6osh22Umc5QWtkoZCmtGrLFhjzCpykXuCjVoeX6bJyDHRgTqi6DKlH9IsE?=
+ =?us-ascii?Q?PGmvj4iZjlqFcr/cSE+Arf7H+ycMDZ3EQoLMwNFn6BQgHlq8igy2VSFoyovr?=
+ =?us-ascii?Q?vEABDqBskk+aQWhobZxxSrfyhT9SqfDwWjSnOdggRCJzPnfpMQn7i3M3IAjT?=
+ =?us-ascii?Q?eRvDVUlr9JuCB3a0KsA9Qa3+IKUK9Ns1wfmGH97FrX+YJudYITC+JWNJNcFr?=
+ =?us-ascii?Q?Vhkj6OLh/RANB6C1gXbzmypInMa9K9FVpvhZV82KA/LCyKsZj6y0QZo+ZU8b?=
+ =?us-ascii?Q?/yBQCnGwLwV5r/C3ieGILpCcVhYOOLhdTn/Utafv/a16dgjbiqHKguc6b7js?=
+ =?us-ascii?Q?xQwV9UKfFGfg/w0MlP0pG1UKs4DRSlEiGw/OGCZK1JOaEq4f2BPlTbv03q0h?=
+ =?us-ascii?Q?C0ieCpam7LsC0Kf/xojZA+wz/HfK3uzXpAhTTHc1Spc16GjGxODbR1Lpsfho?=
+ =?us-ascii?Q?Xtg0zwv/MHV+7jfFnypUhFJsw9OwjB3fR+GPcAnqvvIwAm76MxIbZmo+0e1F?=
+ =?us-ascii?Q?cAKZFuZ/M4Qnqfwe2cGpy80P0tbzyCWyDBzrXWNx9iPBmAKg7FtM0YUA9ouN?=
+ =?us-ascii?Q?yplBAL8JTD8bhvB6/bmn+iMkhje4bAwOpxYN1RJ3355s6KQSqbAi/lBBhi9w?=
+ =?us-ascii?Q?PhEO6nAXHkPqVCvwINnm3K5mWCOez7SQT1tGsWaybcR+?=
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB8510.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(52116014)(19092799006)(1800799024)(376014)(366016)(38350700014)(921020);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?WovbWsj96tEt48ssTWkRc2X3/7H2ex6I0bw4FFoqN/8NidI6sF8IZagvuqgg?=
- =?us-ascii?Q?j6WQQNxQL4GuhIvm9IxDG0jXTw/fA73NeM9Kptz8VC46MZV214qDDXXhkml9?=
- =?us-ascii?Q?29GCnnvH1ZdNR3NnuvcPyZ7iPyxEAMzst1bGgqzygoao5jkFmMt3CLVmEfrd?=
- =?us-ascii?Q?R7usyviMGpIIDS4TGhSAprmaWsET32vLikVdLJlvguoOPe1KFruzCIWdQnPM?=
- =?us-ascii?Q?epJLrGVGhnWlikOoKJFE8ihVBnlcD7g/L7mTNWdj6U8mr9kiIKDDDIrZ5Bi5?=
- =?us-ascii?Q?/q7wIbwKH+zxJulqmXnExPMymKVQxvWhBC4jXKQBK6zJY6hzKIWUBgso7gme?=
- =?us-ascii?Q?4McrRoW6uGGdB2VWwQF1+3lo3kt7pL1gqffoDsbQzPxBAgJqvCv+GgeOpY4Q?=
- =?us-ascii?Q?kkHYlyDoXrH45qICrARStyMqYXhWf74C/ADgp+6nqAYFgdTceZXywXCgxsvL?=
- =?us-ascii?Q?rhLJd9TvkV72JJKqfsQgtLl1FDFcyKmxiwH2JDlZXH80w8x6FAJ7dXoOQzel?=
- =?us-ascii?Q?sXqE6jVojfhDXbfdBEzHOzloM1OxSwaUEsg7GG8sPjwNtVMZcYbKPU0ac8aW?=
- =?us-ascii?Q?ai4i1JqM4aJLz5XMxD+z6BONZgCI8Z3qBQkwiTyYJtlF9obtrQXFMRA+4rKk?=
- =?us-ascii?Q?UEbFHH+nTSYdJZfeVybA+73XDyiyjAChpy09IKKCz2odckENOgSXcytmb7Xz?=
- =?us-ascii?Q?RsYV0kRAmdcrZLdhAjS0dDTcYv14Dut6Qxzh4PvMD96FCZmXMjNDoNMlC1lD?=
- =?us-ascii?Q?08n83cG/KuMv9yGEnYXtZKA2qzqCvwvCoEHTM+PjhcDf/f1q7sLtVfIIBwL1?=
- =?us-ascii?Q?EuljdELDLGAoTC/9Ieo0Q9h6cw428n9J3OWaEl2WjvAlLtzetkB00O+oq8Ul?=
- =?us-ascii?Q?N52LKPYL/CG4YdEK7tZaxCfmPVzTfIE8SArZYH1AbuQfpxIDD/P+NEACHFdY?=
- =?us-ascii?Q?i2X8dmbRFhiVkI+AtDW+XOnjg9sodt1BenHxl1kUKJLiKE02iMcFXYc5Wuan?=
- =?us-ascii?Q?VmpBGxGHfhWoJklqewJItTf+rRqOf2s1x29J2eSQrRCf5MpKZ63bvoNHl6yB?=
- =?us-ascii?Q?egGm9SiGJNXh0lobG2T5eXMbwYRmkwz9gQGIUBOGd1Z2sctru1v2cdSpjzHH?=
- =?us-ascii?Q?WZL73Sgu1IRFotNGs9sX+8FyREYRc83zu5slZ1lVDJPiW7TZjIYJ0JtoH1ey?=
- =?us-ascii?Q?JFsTCYWb0O/DCMmiw1sf8uwuA/79diFZGriAshoVztL84tbAnYSMebkRbwi4?=
- =?us-ascii?Q?/be8GdxPwHWgkc9hSAjzRuSz/dB5QMfG/eMzfQaQzlIflWgWgEgvnHUd1e4S?=
- =?us-ascii?Q?e8iZRFyp2XTm+GIiI9PvSzOjfWTrYSWjaqd5aAarPNC7K5TEPH2haEuT2+ZW?=
- =?us-ascii?Q?rki/JrVa1utZaawHt/y7aUjkohonPCanONiEnUOx74a//G95kMlc6aqfOfaN?=
- =?us-ascii?Q?kJ5iEsODbvfiZ9HagQLgE8Q3A37B+BM1AVp0zwEgGoLr64eVwvSwuFIqZl+E?=
- =?us-ascii?Q?Swh91bfybWPA5HgLJ3cLVapAQZsvYnSyGgmItLg020srQ/TnIUlBlyOvquRi?=
- =?us-ascii?Q?QMkypVHtz5CP9TpUDKV9EHwS3CW2arhkC5pnHfL+xeJMtPHvESSd29nh7N/h?=
- =?us-ascii?Q?kizDNf6fEvY7ch8r+7bUJ6AzgLglWDzINS+UsiSLXJfFfMGfpBvW8gnb8s8C?=
- =?us-ascii?Q?RZS/AhtoIDo1NN9YDyMCVU3DquPCuSVVHd4LqATUMf62GUE5jxrpkU9JWuwj?=
- =?us-ascii?Q?tFqNPWXx5w=3D=3D?=
+	=?us-ascii?Q?44CATnb602DzRtiq7s4DFubGAkHa4jmX2GzbjUeJYD+ECAcAYyXkmy9Bm8xW?=
+ =?us-ascii?Q?cAzJKdB87UOn43/v/5oW9Z4CNxc/sYByzya2gunY9CSL1q1owe1GIxQ2lWwH?=
+ =?us-ascii?Q?gqGKBJNo8VUHXKBF2P3/XbTFEa5US5A5fAWjwxNAggHD2Xv9sCw2ppTVQ0Xl?=
+ =?us-ascii?Q?ADwzMRx2pKAJe8sQ46AGQIClNdxEQJ6d1Rk6vLnq+LiNKvVvHpDr9+dLyxOO?=
+ =?us-ascii?Q?vOsZ8hPqc6pOhpH6q79HCgl7yO4Y5+HT8Z4NwQxliT0dIeEeIN0nPVpcLgFn?=
+ =?us-ascii?Q?km25Cf4Igo7CjhWj2lbHEITe3eFh2Y0gbFooiNg8Z/jRMNumWxJabzDxGn5I?=
+ =?us-ascii?Q?BsDg17JP9JzHudXUlC9uTqSCgjOA1+rW4oZf/iznepJ/znAi9NgR919kaNZ2?=
+ =?us-ascii?Q?QngoIrqLgUi7uDjgNSUbX/zusRj3FGZV0O5PuYE94Etez1lnLVUMaQ/1Wmq/?=
+ =?us-ascii?Q?cY6I0bps26bSZOjWlWOGiNtNtTWhT04XIXJAVQNp5saClyalkBO4yuPO6Uq8?=
+ =?us-ascii?Q?cwDLowmnSYT9IeMozVImj+E023iEd96a/0Ptu6X1uO58kW2zj8/033ARwv9c?=
+ =?us-ascii?Q?D8Bec7hKIB23poRAO6WEFo1pkv/eFr2C0tKVJGtS6ejXRx+Di79TlEfZt0q+?=
+ =?us-ascii?Q?govBRiGlaZpYk9kXO+lqYTJzchQHj9eqhwKKXEM5YNJ36KGicuUP28QPKsic?=
+ =?us-ascii?Q?RJQPSNZnzdro52Gb2ju80eQ8l2O0caQDr4vwjUV1/cB343LTS37YEYCUpxxy?=
+ =?us-ascii?Q?PkXsGNAQ6r3fYLrTHnRwym7EMLSzwlfeW3kl0AxoGhOVAuRheiPZOMd3eHfk?=
+ =?us-ascii?Q?EiRFrmsCValNswAKmO/KkIGxDmUmCkY3OIIW7TcDGO8iLQ8XfRDMLoAJu520?=
+ =?us-ascii?Q?45c2Nz6kk8L8DHmPz9AYbiz4TFdW/ot5zNYtt8ZO3f/sUihck3EOt4zbFlud?=
+ =?us-ascii?Q?N76z6VkUNP6j4l0t5pVaenXw23bggZ3Dbop8robpqsqcqFlFKRRdNs4wHk6r?=
+ =?us-ascii?Q?Ewmwg0K0FuGS/I4fNXPpB4qoPHNp/4dVpc0nyN62VGaEjqpDzb8sml2Qec25?=
+ =?us-ascii?Q?ND2oU00dvaHtli1dZzbk+G3C2je4rdfGd7uC6ybE63aN1bOvxdTX3h+Fir/v?=
+ =?us-ascii?Q?CZTFc03euygfmREslfjcrRJYNYU9O4AC2NkxWN/ITeMEc3j9uA7mJu0b2br5?=
+ =?us-ascii?Q?x3veMP7Vym5yPlvfAdRMncLjKnDBXP8C4SL6kuzV0Rkpc36zkGNvg//KqAhs?=
+ =?us-ascii?Q?fSsmiH5w4gSzxJu5h/RMA54us+QIUWljGLlu29pi+q0qfzLjMwPIciZziqDy?=
+ =?us-ascii?Q?vTYi+ZvUpz69qtg3lCGtzEnZomWh+be/zKW8OEZ0CaN/ZqTIakS32t5kMjdE?=
+ =?us-ascii?Q?Icg9K1hu8kPGDA1G72BnmNk92NZ58u70cSg6/oVhOOFuhil4bAx5xf5l0Vuy?=
+ =?us-ascii?Q?wk+V/32jIj4R5YOYYNXOsx6ibaqEiXZaGopmRxdYVivpywEjObjAxjk9dQKV?=
+ =?us-ascii?Q?mAz/NvGybX0lsIAvJmzyWIQyEZS1WJETdygs1J9vGA2vSRpDp8haM3VsB1es?=
+ =?us-ascii?Q?Eb1lAHmu5jjUQfggLDUjJ0ut3YofXMpVqk7XIMgjsytgRwukGcbgoiRv13yZ?=
+ =?us-ascii?Q?TdK283EzSM2WXDVlADsqhSgBIw58HnnZ91XblGHODN6RU9LXnbdopTFAcmFo?=
+ =?us-ascii?Q?ITsfwPtF8n08K0XtpOrWOhi1iEcM4xwXalwwK+spf/ktioT0CXTc3q9LwJPX?=
+ =?us-ascii?Q?ZvD3/zBC4A=3D=3D?=
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 69d7e345-baf1-4b9c-d419-08de54d2a25a
+X-MS-Exchange-CrossTenant-Network-Message-Id: 51aab6fe-d55e-436e-2d1b-08de54d2a53a
 X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB8510.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jan 2026 07:41:17.8381
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jan 2026 07:41:22.6074
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WyLh/mIhBkBG7SRAq4AhZ2/VhP9Ajwp0bwoIGBpXU+VVyV3kUCpxPJNFHszg+Npt5KHKT47JhlhA4nT6XMOIww==
+X-MS-Exchange-CrossTenant-UserPrincipalName: qk/pi6frLyh6hnsJBKS/HC/ZyFvTCtG3HNGXNLD+6zcyXsWj0Ayg8yTxZA06gOOJPGwfLjCQcB7VVJNnVRPu/A==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7390
 
-Extract fec_rx_error_check() from fec_enet_rx_queue(), this helper is
-used to check RX errors. And it will be used in XDP and XDP zero copy
-paths in subsequent patches.
+The FEC of some platforms supports RX FIFO shift-16, it means the actual
+frame data starts at bit 16 of the first word read from RX FIFO aligning
+the Ethernet payload on a 32-bit boundary. The MAC writes two additional
+bytes in front of each frame received into the RX FIFO. Currently, the
+fec_enet_rx_queue() updates the data_start, sub_len and the rx_bytes
+statistics by checking whether FEC_QUIRK_HAS_RACC is set. This makes the
+code less concise, so rx_shift is added to represent the number of extra
+bytes padded in front of the RX frame. Furthermore, when adding separate
+RX handling functions for XDP copy mode and zero copy mode in the future,
+it will no longer be necessary to check FEC_QUIRK_HAS_RACC to update the
+corresponding variables.
 
 Signed-off-by: Wei Fang <wei.fang@nxp.com>
 Reviewed-by: Frank Li <Frank.Li@nxp.com>
 ---
- drivers/net/ethernet/freescale/fec_main.c | 58 ++++++++++++++---------
- 1 file changed, 36 insertions(+), 22 deletions(-)
+ drivers/net/ethernet/freescale/fec.h      |  1 +
+ drivers/net/ethernet/freescale/fec_main.c | 21 ++++++++-------------
+ 2 files changed, 9 insertions(+), 13 deletions(-)
 
+diff --git a/drivers/net/ethernet/freescale/fec.h b/drivers/net/ethernet/freescale/fec.h
+index fd9a93d02f8e..ad7aba1a8536 100644
+--- a/drivers/net/ethernet/freescale/fec.h
++++ b/drivers/net/ethernet/freescale/fec.h
+@@ -643,6 +643,7 @@ struct fec_enet_private {
+ 	struct pm_qos_request pm_qos_req;
+ 
+ 	unsigned int tx_align;
++	unsigned int rx_shift;
+ 
+ 	/* hw interrupt coalesce */
+ 	unsigned int rx_pkts_itr;
 diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
-index 85bcca932fd2..0fa78ca9bc04 100644
+index 0fa78ca9bc04..68410cb3ef0a 100644
 --- a/drivers/net/ethernet/freescale/fec_main.c
 +++ b/drivers/net/ethernet/freescale/fec_main.c
-@@ -1746,6 +1746,41 @@ static void fec_enet_rx_vlan(const struct net_device *ndev, struct sk_buff *skb)
- 	}
- }
+@@ -1799,22 +1799,14 @@ fec_enet_rx_queue(struct net_device *ndev, u16 queue_id, int budget)
+ 	struct	bufdesc_ex *ebdp = NULL;
+ 	int	index = 0;
+ 	bool	need_swap = fep->quirks & FEC_QUIRK_SWAP_FRAME;
++	u32 data_start = FEC_ENET_XDP_HEADROOM + fep->rx_shift;
+ 	struct bpf_prog *xdp_prog = READ_ONCE(fep->xdp_prog);
+ 	u32 ret, xdp_result = FEC_ENET_XDP_PASS;
+-	u32 data_start = FEC_ENET_XDP_HEADROOM;
++	u32 sub_len = 4 + fep->rx_shift;
+ 	int cpu = smp_processor_id();
+ 	struct xdp_buff xdp;
+ 	struct page *page;
+ 	__fec32 cbd_bufaddr;
+-	u32 sub_len = 4;
+-
+-	/*If it has the FEC_QUIRK_HAS_RACC quirk property, the bit of
+-	 * FEC_RACC_SHIFT16 is set by default in the probe function.
+-	 */
+-	if (fep->quirks & FEC_QUIRK_HAS_RACC) {
+-		data_start += 2;
+-		sub_len += 2;
+-	}
  
-+static int fec_rx_error_check(struct net_device *ndev, u16 status)
-+{
-+	if (status & (BD_ENET_RX_LG | BD_ENET_RX_SH | BD_ENET_RX_NO |
-+		      BD_ENET_RX_CR | BD_ENET_RX_OV | BD_ENET_RX_LAST |
-+		      BD_ENET_RX_CL)) {
-+		ndev->stats.rx_errors++;
-+
-+		if (status & BD_ENET_RX_OV) {
-+			/* FIFO overrun */
-+			ndev->stats.rx_fifo_errors++;
-+			return -EIO;
-+		}
-+
-+		if (status & (BD_ENET_RX_LG | BD_ENET_RX_SH |
-+			      BD_ENET_RX_LAST)) {
-+			/* Frame too long or too short. */
-+			ndev->stats.rx_length_errors++;
-+			if ((status & BD_ENET_RX_LAST) && net_ratelimit())
-+				netdev_err(ndev, "rcv is not +last\n");
-+		}
-+
-+		/* CRC Error */
-+		if (status & BD_ENET_RX_CR)
-+			ndev->stats.rx_crc_errors++;
-+
-+		/* Report late collisions as a frame error. */
-+		if (status & (BD_ENET_RX_NO | BD_ENET_RX_CL))
-+			ndev->stats.rx_frame_errors++;
-+
-+		return -EIO;
-+	}
-+
-+	return 0;
-+}
-+
- /* During a receive, the bd_rx.cur points to the current incoming buffer.
-  * When we update through the ring, if the next incoming buffer has
-  * not been given to the system, we just set the empty indicator,
-@@ -1806,29 +1841,8 @@ fec_enet_rx_queue(struct net_device *ndev, u16 queue_id, int budget)
- 
- 		/* Check for errors. */
- 		status ^= BD_ENET_RX_LAST;
--		if (status & (BD_ENET_RX_LG | BD_ENET_RX_SH | BD_ENET_RX_NO |
--			   BD_ENET_RX_CR | BD_ENET_RX_OV | BD_ENET_RX_LAST |
--			   BD_ENET_RX_CL)) {
--			ndev->stats.rx_errors++;
--			if (status & BD_ENET_RX_OV) {
--				/* FIFO overrun */
--				ndev->stats.rx_fifo_errors++;
--				goto rx_processing_done;
--			}
--			if (status & (BD_ENET_RX_LG | BD_ENET_RX_SH
--						| BD_ENET_RX_LAST)) {
--				/* Frame too long or too short. */
--				ndev->stats.rx_length_errors++;
--				if (status & BD_ENET_RX_LAST)
--					netdev_err(ndev, "rcv is not +last\n");
--			}
--			if (status & BD_ENET_RX_CR)	/* CRC Error */
--				ndev->stats.rx_crc_errors++;
--			/* Report late collisions as a frame error. */
--			if (status & (BD_ENET_RX_NO | BD_ENET_RX_CL))
--				ndev->stats.rx_frame_errors++;
-+		if (unlikely(fec_rx_error_check(ndev, status)))
- 			goto rx_processing_done;
--		}
- 
+ #if defined(CONFIG_COLDFIRE) && !defined(CONFIG_COLDFIRE_COHERENT_DMA)
+ 	/*
+@@ -1847,9 +1839,7 @@ fec_enet_rx_queue(struct net_device *ndev, u16 queue_id, int budget)
  		/* Process the incoming frame. */
  		ndev->stats.rx_packets++;
+ 		pkt_len = fec16_to_cpu(bdp->cbd_datlen);
+-		ndev->stats.rx_bytes += pkt_len;
+-		if (fep->quirks & FEC_QUIRK_HAS_RACC)
+-			ndev->stats.rx_bytes -= 2;
++		ndev->stats.rx_bytes += pkt_len - fep->rx_shift;
+ 
+ 		index = fec_enet_get_bd_index(bdp, &rxq->bd);
+ 		page = rxq->rx_buf[index];
+@@ -4602,6 +4592,11 @@ fec_probe(struct platform_device *pdev)
+ 
+ 	ndev->max_mtu = fep->max_buf_size - ETH_HLEN - ETH_FCS_LEN;
+ 
++	if (fep->quirks & FEC_QUIRK_HAS_RACC)
++		fep->rx_shift = 2;
++	else
++		fep->rx_shift = 0;
++
+ 	ret = register_netdev(ndev);
+ 	if (ret)
+ 		goto failed_register;
 -- 
 2.34.1
 
