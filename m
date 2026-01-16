@@ -1,268 +1,418 @@
-Return-Path: <bpf+bounces-79182-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79183-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB088D2B746
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 05:35:39 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3E48D2B9F1
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 05:52:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 58B29303C237
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 04:35:35 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id E96663033DCF
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 04:52:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06F9E345CCE;
-	Fri, 16 Jan 2026 04:35:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56098346E41;
+	Fri, 16 Jan 2026 04:52:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="F7nDuSyR"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Yfu6VLrh"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7766A308F28
-	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 04:35:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72B81283FDC;
+	Fri, 16 Jan 2026 04:51:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768538133; cv=none; b=q6oqm/tHR9SMkCUxC/ItgX1iIS778fT9q72M29kDq17q8n8QwUk9XdoM1ZRCsUzB2OZx1yq2z2xwV/CTaZYJ4008A29oQiJ9jrzaIz7nYem/GHByMRVICTA/S1th0iujXkfNlOYByBqw9k2xnoGwKKN5geiiJztUxNLZx269320=
+	t=1768539127; cv=none; b=fwBVy+/UBM1QdZiICZnvQs8F5hZe0tchQPF46AjdOvyQIxLlB5xsd8aPFm6mfeaCP2D2fZQEwLnAxS04MS3M6BNSsHeNO6JsccMepXWC0IAOrFMrWPCycjYJJTX2HOVuav8YPpB8ocF6Q6pxIIv05q6PrEk819p5JD3+zuE+57I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768538133; c=relaxed/simple;
-	bh=J/Rpx69WQVWJmBctzDnKoQEU5I697W1VYyNDjIvQ2CI=;
+	s=arc-20240116; t=1768539127; c=relaxed/simple;
+	bh=3ieGGZI5lvCeHVgdVm3wK3pVgPAzpr/26RBrVuSn2j8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mdp2Z09T5qIX59x3AhkzhCdTQNhKkm3YODUZIdUit5WeOwBxEQKCExAv/JgR5BHVGYtIH+BadBRB1WSyYvAJoFoVudBRojozX31Fw4nV430EjS7F7ZwbzRua1Kd1ETWlJ7QZ38qgrM/HTqDCku9TJ+Es1wKs5XTlTqNi2vqZIYk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=F7nDuSyR; arc=none smtp.client-ip=95.215.58.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <6dbaff1f-09d3-421a-9813-c9c1cda8e7d8@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1768538129;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tI5hey17l5h284K+S50zyAtjfyhLgi4YnoQ9GpEBMZ8=;
-	b=F7nDuSyROyEAdZI5M7UCLKzwk7eCpV63OZbD7paufIC1iRZA0hQ7EH6nVAeLFAyt3tJXlg
-	G3iM/jz4E82gTjq3RWF4KpNpr7kBQzbkKYY0hHHikV8spjSeTzgvWFRdu67VD3WXnU2Dw3
-	jQOzH8uci/ATBh2EyNaWeQPuByYyXxY=
-Date: Fri, 16 Jan 2026 12:35:14 +0800
+	 In-Reply-To:Content-Type; b=Q5wDquzmQ7F1MrWCla9FQ/qlFZAn4OjGI3XO1UnjfUQ6z8o1i7ZPGam/smsiGWfoyBIRE+2BnCUhmFHqQRhcFrq3CMjO1fXMTnxdgAs+ghMENs9DqwjwBZXjGgMJhZTrZzLkgHI09o9s2BBI/Zkydgw4YO4xl63QppHn4x0Gjak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Yfu6VLrh; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 60FMsdK0012338;
+	Fri, 16 Jan 2026 04:50:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=0uK4L3
+	bV6NbtcBfGaSQys6UAirTXMSjVohFC5GErS84=; b=Yfu6VLrhfHMwF0crq8e2Pi
+	19D3X3bWRrr5qgSp6b7tqVtRwZIX2r/ntPIiEsQ5VWAhXX/HUQK30uzKCXCzGCpp
+	gSitqRWhD1yHUd1xzdsWVJOGUK8B8JKZpdNsQgzfmrTVLH3si/itCyIdqMRVAe4w
+	FY7sV6UHWwSN+bW1ggpO46JooJO1D8GDbo7nrNqPNhN1bYVIUQoSRqG/OgP0Dxer
+	ftx64ruHxG4T6+TVsEJlZ6aya7JVj6EGEcwffICu19lKd9LacN5se9kfomFXSQ5B
+	kDTk2KCdCKDv+xdcXEyOL9RGuz/wRouHuHP5nf8//XIVJ/GanXCc8lfRn77lxRww
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4bq9emrwbw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 16 Jan 2026 04:50:15 +0000 (GMT)
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 60G4oFoA004242;
+	Fri, 16 Jan 2026 04:50:15 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4bq9emrwbu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 16 Jan 2026 04:50:15 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 60G4mcAj025848;
+	Fri, 16 Jan 2026 04:50:14 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4bm2kkv5s6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 16 Jan 2026 04:50:14 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 60G4o90615335774
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 16 Jan 2026 04:50:09 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id CA7C020049;
+	Fri, 16 Jan 2026 04:50:09 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 1756E2004B;
+	Fri, 16 Jan 2026 04:50:04 +0000 (GMT)
+Received: from [9.43.87.191] (unknown [9.43.87.191])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 16 Jan 2026 04:50:03 +0000 (GMT)
+Message-ID: <78536979-e924-4be3-b847-332802ad82e2@linux.ibm.com>
+Date: Fri, 16 Jan 2026 10:20:03 +0530
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v7 2/2] bpf: Hold the perf callchain entry until
- used completely
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, peterz@infradead.org
-Cc: mingo@redhat.com, acme@kernel.org, namhyung@kernel.org,
- mark.rutland@arm.com, alexander.shishkin@linux.intel.com, jolsa@kernel.org,
- irogers@google.com, adrian.hunter@intel.com, kan.liang@linux.intel.com,
- song@kernel.org, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, eddyz87@gmail.com, yonghong.song@linux.dev,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, linux-perf-users@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-References: <20251217093326.1745307-1-chen.dylane@linux.dev>
- <20251217093326.1745307-3-chen.dylane@linux.dev>
- <db97ccea-8cb4-40ea-b040-79f0f63a398e@linux.dev>
- <0e954e9a-12af-4f4f-95e2-7afedbd8f63f@linux.dev>
- <CAEf4BzZLCVMXFyfD9R0SUq_3Sinc_uFzJWnDcwZtdhJWpB3+uA@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Tao Chen <chen.dylane@linux.dev>
-In-Reply-To: <CAEf4BzZLCVMXFyfD9R0SUq_3Sinc_uFzJWnDcwZtdhJWpB3+uA@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/6] powerpc64/bpf: Support tailcalls with subprogs
+To: adubey <adubey@imap.linux.ibm.com>,
+        "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>
+Cc: adubey@linux.ibm.com, bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sachinpb@linux.ibm.com, venkat88@linux.ibm.com, andrii@kernel.org,
+        eddyz87@gmail.com, mykolal@fb.com, ast@kernel.org,
+        daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
+        yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
+        naveen@kernel.org, maddy@linux.ibm.com, mpe@ellerman.id.au,
+        npiggin@gmail.com, memxor@gmail.com, iii@linux.ibm.com,
+        shuah@kernel.org
+References: <20260114114450.30405-1-adubey@linux.ibm.com>
+ <20260114114450.30405-3-adubey@linux.ibm.com>
+ <42d41a0d-9d26-4eeb-af46-200083261c09@kernel.org>
+ <2d242f4476b61373da236d24272b0ec3@imap.linux.ibm.com>
+Content-Language: en-US
+From: Hari Bathini <hbathini@linux.ibm.com>
+In-Reply-To: <2d242f4476b61373da236d24272b0ec3@imap.linux.ibm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-TM-AS-GCONF: 00
+X-Authority-Analysis: v=2.4 cv=KvJAGGWN c=1 sm=1 tr=0 ts=6969c387 cx=c_pps
+ a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
+ a=IkcTkHD0fZMA:10 a=vUbySO9Y5rIA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=VnNF1IyMAAAA:8 a=eFhwI4I6t5nqxJZgoi0A:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTE2MDAzNiBTYWx0ZWRfXyNdY8OH3qwUa
+ Wmk7O8yMAMG8zqZGrEAud86lfcmCIdlTWHPORgz1UlWreq1+B8ky/C6AtG2ilL5jsb512ceChDu
+ oNPllOX8c5Io11WvNlBhe6wJ3ltMKlFDCXw8BIoapfnThaX4RNlgaao+y9I/tKDmfPAUcd3zSPY
+ qsYyw40OcDk4ElXF/jZNlDqtm4ISWJIXCfKtNljSCIh0k+9zMCq6XuzkSh2aj/90jIjAgwkaWx8
+ 52gtXrJ0JczAouJRR+aYyjZeNIV3DKlTfMxbKBqRMjGb8POPv2s2JY4oGJEh2+Rl9v55MbD3IXb
+ k5KiQ+8uM0pPuceWQ66TEpZ/+vlZXOUWF+kOWS4pdrGmVH5RbnpSc61VAmntQ42P59lk5JFgPIO
+ URI25/COZB38Y0bOf3rSCsl/7cgAIoCv4jEQVjUUyThNR6IeDtleIDAHLuADcDNjq4BanT2wFHW
+ /UbwKOc6tm19zJDQe8Q==
+X-Proofpoint-GUID: AQXGaDG4Cy44T-ozuMiMUs-pFjS042QU
+X-Proofpoint-ORIG-GUID: MBurlCyVuJKrV5vthp7Xdb_Z1jqQF_L8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2026-01-16_01,2026-01-15_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ lowpriorityscore=0 malwarescore=0 suspectscore=0 impostorscore=0 phishscore=0
+ adultscore=0 clxscore=1011 spamscore=0 bulkscore=0 priorityscore=1501
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2512120000 definitions=main-2601160036
 
-在 2026/1/10 07:47, Andrii Nakryiko 写道:
-> On Tue, Jan 6, 2026 at 8:00 AM Tao Chen <chen.dylane@linux.dev> wrote:
+
+
+On 14/01/26 6:33 pm, adubey wrote:
+> On 2026-01-14 17:57, Christophe Leroy (CS GROUP) wrote:
+>> Le 14/01/2026 à 12:44, adubey@linux.ibm.com a écrit :
+>>> From: Abhishek Dubey <adubey@linux.ibm.com>
+>>>
+>>> Enabling tailcalls with subprog combinations by referencing
+>>> method. The actual tailcall count is always maintained in the
+>>> tail_call_info variable present in the frame of main function
+>>> (also called entry function). The tail_call_info variables in
+>>> the frames of all other subprog contains reference to the
+>>> tail_call_info present in frame of main function.
+>>>
+>>> Dynamic resolution interprets the tail_call_info either as
+>>> value or reference depending on the context of active frame
+>>> while tailcall is invoked.
+>>>
+>>> Signed-off-by: Abhishek Dubey <adubey@linux.ibm.com>
+>>> ---
+>>>   arch/powerpc/net/bpf_jit.h        | 12 +++++-
+>>>   arch/powerpc/net/bpf_jit_comp.c   | 10 ++++-
+>>>   arch/powerpc/net/bpf_jit_comp64.c | 68 +++++++++++++++++++++++--------
+>>>   3 files changed, 70 insertions(+), 20 deletions(-)
+>>>
+>>> diff --git a/arch/powerpc/net/bpf_jit.h b/arch/powerpc/net/bpf_jit.h
+>>> index 45d419c0ee73..5d735bc5e6bd 100644
+>>> --- a/arch/powerpc/net/bpf_jit.h
+>>> +++ b/arch/powerpc/net/bpf_jit.h
+>>> @@ -51,6 +51,12 @@
+>>>           EMIT(PPC_INST_BRANCH_COND | (((cond) & 0x3ff) << 16) | 
+>>> (offset & 0xfffc));                    \
+>>>       } while (0)
+>>>   +/* Same as PPC_BCC_SHORT, except valid dest is known prior to 
+>>> call. */
+>>> +#define PPC_COND_BRANCH(cond, dest)         \
+>>> +    do {                                      \
+>>> +        long offset = (long)(dest) - CTX_NIA(ctx);              \
+>>> +        EMIT(PPC_INST_BRANCH_COND | (((cond) & 0x3ff) << 16) | 
+>>> (offset & 0xfffc));    \
+>>> +    } while (0)
 >>
->> 在 2025/12/23 14:29, Tao Chen 写道:
->>> 在 2025/12/17 17:33, Tao Chen 写道:
->>>> As Alexei noted, get_perf_callchain() return values may be reused
->>>> if a task is preempted after the BPF program enters migrate disable
->>>> mode. The perf_callchain_entres has a small stack of entries, and
->>>> we can reuse it as follows:
->>>>
->>>> 1. get the perf callchain entry
->>>> 2. BPF use...
->>>> 3. put the perf callchain entry
->>>>
->>>> And Peter suggested that get_recursion_context used with preemption
->>>> disabled, so we should disable preemption at BPF side.
->>>>
->>>> Acked-by: Yonghong Song <yonghong.song@linux.dev>
->>>> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
->>>> ---
->>>>    kernel/bpf/stackmap.c | 68 +++++++++++++++++++++++++++++++++++--------
->>>>    1 file changed, 56 insertions(+), 12 deletions(-)
->>>>
->>>> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
->>>> index da3d328f5c1..3bdd99a630d 100644
->>>> --- a/kernel/bpf/stackmap.c
->>>> +++ b/kernel/bpf/stackmap.c
->>>> @@ -210,13 +210,14 @@ static void stack_map_get_build_id_offset(struct
->>>> bpf_stack_build_id *id_offs,
->>>>    }
->>>>    static struct perf_callchain_entry *
->>>> -get_callchain_entry_for_task(struct task_struct *task, u32 max_depth)
->>>> +get_callchain_entry_for_task(int *rctx, struct task_struct *task, u32
->>>> max_depth)
->>>>    {
->>>>    #ifdef CONFIG_STACKTRACE
->>>>        struct perf_callchain_entry *entry;
->>>> -    int rctx;
->>>> -    entry = get_callchain_entry(&rctx);
->>>> +    preempt_disable();
->>>> +    entry = get_callchain_entry(rctx);
->>>> +    preempt_enable();
->>>>        if (!entry)
->>>>            return NULL;
->>>> @@ -238,8 +239,6 @@ get_callchain_entry_for_task(struct task_struct
->>>> *task, u32 max_depth)
->>>>                to[i] = (u64)(from[i]);
->>>>        }
->>>> -    put_callchain_entry(rctx);
->>>> -
->>>>        return entry;
->>>>    #else /* CONFIG_STACKTRACE */
->>>>        return NULL;
->>>> @@ -320,6 +319,34 @@ static long __bpf_get_stackid(struct bpf_map *map,
->>>>        return id;
->>>>    }
->>>> +static struct perf_callchain_entry *
->>>> +bpf_get_perf_callchain(int *rctx, struct pt_regs *regs, bool kernel,
->>>> bool user,
->>>> +               int max_stack, bool crosstask)
->>>> +{
->>>> +    struct perf_callchain_entry_ctx ctx;
->>>> +    struct perf_callchain_entry *entry;
->>>> +
->>>> +    preempt_disable();
->>>> +    entry = get_callchain_entry(rctx);
->>>> +    preempt_enable();
->>>> +
->>>> +    if (unlikely(!entry))
->>>> +        return NULL;
->>>> +
->>>> +    __init_perf_callchain_ctx(&ctx, entry, max_stack, false);
->>>> +    if (kernel)
->>>> +        __get_perf_callchain_kernel(&ctx, regs);
->>>> +    if (user && !crosstask)
->>>> +        __get_perf_callchain_user(&ctx, regs, 0);
->>>> +
->>>> +    return entry;
->>>> +}
->>>> +
->>>> +static void bpf_put_perf_callchain(int rctx)
->>>> +{
->>>> +    put_callchain_entry(rctx);
->>>> +}
->>>> +
->>>>    BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map
->>>> *, map,
->>>>           u64, flags)
->>>>    {
->>>> @@ -328,20 +355,25 @@ BPF_CALL_3(bpf_get_stackid, struct pt_regs *,
->>>> regs, struct bpf_map *, map,
->>>>        struct perf_callchain_entry *trace;
->>>>        bool kernel = !user;
->>>>        u32 max_depth;
->>>> +    int rctx, ret;
->>>>        if (unlikely(flags & ~(BPF_F_SKIP_FIELD_MASK | BPF_F_USER_STACK |
->>>>                       BPF_F_FAST_STACK_CMP | BPF_F_REUSE_STACKID)))
->>>>            return -EINVAL;
->>>>        max_depth = stack_map_calculate_max_depth(map->value_size,
->>>> elem_size, flags);
->>>> -    trace = get_perf_callchain(regs, kernel, user, max_depth,
->>>> -                   false, false, 0);
->>>> +
->>>> +    trace = bpf_get_perf_callchain(&rctx, regs, kernel, user, max_depth,
->>>> +                       false);
->>>>        if (unlikely(!trace))
->>>>            /* couldn't fetch the stack trace */
->>>>            return -EFAULT;
->>>> -    return __bpf_get_stackid(map, trace, flags);
->>>> +    ret = __bpf_get_stackid(map, trace, flags);
->>>> +    bpf_put_perf_callchain(rctx);
->>>> +
->>>> +    return ret;
->>>>    }
->>>>    const struct bpf_func_proto bpf_get_stackid_proto = {
->>>> @@ -435,6 +467,7 @@ static long __bpf_get_stack(struct pt_regs *regs,
->>>> struct task_struct *task,
->>>>        bool kernel = !user;
->>>>        int err = -EINVAL;
->>>>        u64 *ips;
->>>> +    int rctx;
->>>>        if (unlikely(flags & ~(BPF_F_SKIP_FIELD_MASK | BPF_F_USER_STACK |
->>>>                       BPF_F_USER_BUILD_ID)))
->>>> @@ -467,18 +500,26 @@ static long __bpf_get_stack(struct pt_regs
->>>> *regs, struct task_struct *task,
->>>>            trace = trace_in;
->>>>            trace->nr = min_t(u32, trace->nr, max_depth);
->>>>        } else if (kernel && task) {
->>>> -        trace = get_callchain_entry_for_task(task, max_depth);
->>>> +        trace = get_callchain_entry_for_task(&rctx, task, max_depth);
->>>>        } else {
->>>> -        trace = get_perf_callchain(regs, kernel, user, max_depth,
->>>> -                       crosstask, false, 0);
->>>> +        trace = bpf_get_perf_callchain(&rctx, regs, kernel, user,
->>>> max_depth,
->>>> +                           crosstask);
->>>>        }
->>>> -    if (unlikely(!trace) || trace->nr < skip) {
->>>> +    if (unlikely(!trace)) {
->>>>            if (may_fault)
->>>>                rcu_read_unlock();
->>>>            goto err_fault;
->>>>        }
->>>> +    if (trace->nr < skip) {
->>>> +        if (may_fault)
->>>> +            rcu_read_unlock();
->>>> +        if (!trace_in)
->>>> +            bpf_put_perf_callchain(rctx);
->>>> +        goto err_fault;
->>>> +    }
->>>> +
->>>>        trace_nr = trace->nr - skip;
->>>>        copy_len = trace_nr * elem_size;
->>>> @@ -497,6 +538,9 @@ static long __bpf_get_stack(struct pt_regs *regs,
->>>> struct task_struct *task,
->>>>        if (may_fault)
->>>>            rcu_read_unlock();
->>>> +    if (!trace_in)
->>>> +        bpf_put_perf_callchain(rctx);
->>>> +
->>>>        if (user_build_id)
->>>>            stack_map_get_build_id_offset(buf, trace_nr, user, may_fault);
->>>
->>> Hi Peter,
->>>
->>> As Alexei said, the patch needs your ack, please review again, thanks.
->>>
+>> I don't like the idea of duplicating PPC_BCC_SHORT() to just kick the
+>> verification out. Now we will have two macros doing the exact same
+>> thing with one handling failure case and one ignoring failure case.
+>> There is a big risk that one day or another someone will use the wrong
+>> macro.
 >>
->> ping...
+>> Could you change bpf_jit_build_prologue() to return an int add use
+>> PPC_BCC_SHORT() instead of that new PPC_COND_BRANCH() ?
+> I implemented exactly same change in bpf_jit_build_prologue(). But, 
+> during internal review, @HariBathini suggested
+> to have separate macro with a caution note.
 > 
-> Peter, if I understand correctly, this will go through bpf-next tree,
-> but it would be great if you could take a look and confirm this
-> overall is not broken. Thanks!
-> 
+> @Hari please suggest here!
+
+Not just about the change of return type but the check seems like an
+overkill for cases where the offset is known and within branch range.
+How about using BUILD_BUG_ON() to avoid unecessary checks and
+return type change for places where the branch offset is known
+and is a constant?
+
 >>
->> --
->> Best Regards
->> Tao Chen
+>>>   /*
+>>>    * Sign-extended 32-bit immediate load
+>>>    *
+>>> @@ -75,6 +81,8 @@
+>>>     /* for tailcall counter */
+>>>   #define BPF_PPC_TAILCALL        8
+>>> +/* for gpr non volatile registers BPG_REG_6 to 10 */
+>>> +#define BPF_PPC_STACK_SAVE      (6*8)
+>>
+>> Add spaces before and after the *
+>>
+>>>     /* If dummy pass (!image), account for maximum possible 
+>>> instructions */
+>>>   #define PPC_LI64(d, i)        do {                          \
+>>> @@ -170,6 +178,7 @@ struct codegen_context {
+>>>       unsigned int alt_exit_addr;
+>>>       u64 arena_vm_start;
+>>>       u64 user_vm_start;
+>>> +    bool is_subprog;
+>>>   };
+>>>     #define bpf_to_ppc(r)    (ctx->b2p[r])
+>>> @@ -204,11 +213,10 @@ void bpf_jit_build_epilogue(u32 *image, struct 
+>>> codegen_context *ctx);
+>>>   void bpf_jit_build_fentry_stubs(u32 *image, struct codegen_context 
+>>> *ctx);
+>>>   void bpf_jit_realloc_regs(struct codegen_context *ctx);
+>>>   int bpf_jit_emit_exit_insn(u32 *image, struct codegen_context *ctx, 
+>>> int tmp_reg, long exit_addr);
+>>> -
+>>>   int bpf_add_extable_entry(struct bpf_prog *fp, u32 *image, u32 
+>>> *fimage, int pass,
+>>>                 struct codegen_context *ctx, int insn_idx,
+>>>                 int jmp_off, int dst_reg, u32 code);
+>>> -
+>>
+>> Not sure why this patch needs to remove those blank lines here and above.
+>>
+>>> +int bpf_jit_stack_tailcallinfo_offset(struct codegen_context *ctx);
+>>>   #endif
+>>>     #endif
+>>> diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/ 
+>>> bpf_jit_comp.c
+>>> index 5e976730b2f5..069a8822c30d 100644
+>>> --- a/arch/powerpc/net/bpf_jit_comp.c
+>>> +++ b/arch/powerpc/net/bpf_jit_comp.c
+>>> @@ -206,6 +206,7 @@ struct bpf_prog *bpf_int_jit_compile(struct 
+>>> bpf_prog *fp)
+>>>       cgctx.stack_size = round_up(fp->aux->stack_depth, 16);
+>>>       cgctx.arena_vm_start = bpf_arena_get_kern_vm_start(fp->aux- 
+>>> >arena);
+>>>       cgctx.user_vm_start = bpf_arena_get_user_vm_start(fp->aux->arena);
+>>> +    cgctx.is_subprog = bpf_is_subprog(fp);
+>>>         /* Scouting faux-generate pass 0 */
+>>>       if (bpf_jit_build_body(fp, NULL, NULL, &cgctx, addrs, 0, false)) {
+>>> @@ -435,6 +436,11 @@ void bpf_jit_free(struct bpf_prog *fp)
+>>>       bpf_prog_unlock_free(fp);
+>>>   }
+>>>   +bool bpf_jit_supports_subprog_tailcalls(void)
+>>> +{
+>>> +    return IS_ENABLED(CONFIG_PPC64);
+>>> +}
+>>> +
+>>>   bool bpf_jit_supports_kfunc_call(void)
+>>>   {
+>>>       return true;
+>>> @@ -604,7 +610,7 @@ static void 
+>>> bpf_trampoline_setup_tail_call_cnt(u32 *image, struct codegen_contex
+>>>                              int func_frame_offset, int r4_off)
+>>>   {
+>>>       if (IS_ENABLED(CONFIG_PPC64)) {
+>>> -        /* See bpf_jit_stack_tailcallcnt() */
+>>> +        /* See bpf_jit_stack_tailcallinfo_offset() */
+>>>           int tailcallcnt_offset = 7 * 8;
+>>>             EMIT(PPC_RAW_LL(_R3, _R1, func_frame_offset - 
+>>> tailcallcnt_offset));
+>>> @@ -619,7 +625,7 @@ static void 
+>>> bpf_trampoline_restore_tail_call_cnt(u32 *image, struct codegen_cont
+>>>                            int func_frame_offset, int r4_off)
+>>>   {
+>>>       if (IS_ENABLED(CONFIG_PPC64)) {
+>>> -        /* See bpf_jit_stack_tailcallcnt() */
+>>> +        /* See bpf_jit_stack_tailcallinfo_offset() */
+>>>           int tailcallcnt_offset = 7 * 8;
+>>>             EMIT(PPC_RAW_LL(_R3, _R1, -tailcallcnt_offset));
+>>> diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/ 
+>>> bpf_jit_comp64.c
+>>> index 39061cd742c1..cebf81fbd59f 100644
+>>> --- a/arch/powerpc/net/bpf_jit_comp64.c
+>>> +++ b/arch/powerpc/net/bpf_jit_comp64.c
+>>> @@ -26,8 +26,12 @@
+>>>    * Ensure the top half (upto local_tmp_var) stays consistent
+>>>    * with our redzone usage.
+>>>    *
+>>> + * tail_call_info - stores tailcall count value in main program's
+>>> + *                  frame, stores reference to tail_call_info of
+>>> + *                  main's frame in sub-prog's frame.
+>>> + *
+>>>    *        [    prev sp        ] <-------------
+>>> - *        [    tail_call_cnt    ] 8        |
+>>> + *        [    tail_call_info    ] 8        |
+>>>    *        [   nv gpr save area    ] 6*8        |
+>>>    *        [    local_tmp_var    ] 24        |
+>>>    * fp (r31) -->    [   ebpf stack space    ] upto 512    |
+>>> @@ -35,8 +39,6 @@
+>>>    * sp (r1) --->    [    stack pointer    ] --------------
+>>>    */
+>>>   -/* for gpr non volatile registers BPG_REG_6 to 10 */
+>>> -#define BPF_PPC_STACK_SAVE    (6*8)
+>>>   /* for bpf JIT code internal usage */
+>>>   #define BPF_PPC_STACK_LOCALS    24
+>>>   /* stack frame excluding BPF stack, ensure this is quadword aligned */
+>>> @@ -98,7 +100,7 @@ static inline bool bpf_has_stack_frame(struct 
+>>> codegen_context *ctx)
+>>>    *        [    prev sp        ] <-------------
+>>>    *        [      ...           ]         |
+>>>    * sp (r1) --->    [    stack pointer    ] --------------
+>>> - *        [    tail_call_cnt    ] 8
+>>> + *        [    tail_call_info    ] 8
+>>>    *        [   nv gpr save area    ] 6*8
+>>>    *        [    local_tmp_var    ] 24
+>>>    *        [   unused red zone    ] 224
+>>> @@ -114,7 +116,7 @@ static int bpf_jit_stack_local(struct 
+>>> codegen_context *ctx)
+>>>       }
+>>>   }
+>>>   -static int bpf_jit_stack_tailcallcnt(struct codegen_context *ctx)
+>>> +int bpf_jit_stack_tailcallinfo_offset(struct codegen_context *ctx)
+>>>   {
+>>>       return bpf_jit_stack_local(ctx) + BPF_PPC_STACK_LOCALS + 
+>>> BPF_PPC_STACK_SAVE;
+>>>   }
+>>> @@ -147,17 +149,32 @@ void bpf_jit_build_prologue(u32 *image, struct 
+>>> codegen_context *ctx)
+>>>   #endif
+>>>         /*
+>>> -     * Initialize tail_call_cnt if we do tail calls.
+>>> -     * Otherwise, put in NOPs so that it can be skipped when we are
+>>> -     * invoked through a tail call.
+>>> +     * Tail call count(tcc) is saved & updated only in main
+>>> +     * program's frame and the address of tcc in main program's
+>>> +     * frame (tcc_ptr) is saved in subprogs frame.
+>>> +     *
+>>> +     * Offset of tail_call_info on any frame will be interpreted
+>>> +     * as either tcc_ptr or tcc value depending on whether it is
+>>> +     * greater than MAX_TAIL_CALL_CNT or not.
+>>>        */
+>>> -    if (ctx->seen & SEEN_TAILCALL) {
+>>> +    if (!ctx->is_subprog) {
+>>>           EMIT(PPC_RAW_LI(bpf_to_ppc(TMP_REG_1), 0));
+>>>           /* this goes in the redzone */
+>>>           EMIT(PPC_RAW_STD(bpf_to_ppc(TMP_REG_1), _R1, - 
+>>> (BPF_PPC_TAILCALL)));
+>>>       } else {
+>>> -        EMIT(PPC_RAW_NOP());
+>>> -        EMIT(PPC_RAW_NOP());
+>>> +        /*
+>>> +         * if tail_call_info < MAX_TAIL_CALL_CNT
+>>> +         *     main prog calling first subprog -> copy reference
+>>> +         * else
+>>> +         *     subsequent subprog calling another subprog -> 
+>>> directly copy content
+>>> +         */
+>>> +        EMIT(PPC_RAW_LD(bpf_to_ppc(TMP_REG_2), _R1, 0));
+>>> +        EMIT(PPC_RAW_LD(bpf_to_ppc(TMP_REG_1), 
+>>> bpf_to_ppc(TMP_REG_2), -(BPF_PPC_TAILCALL)));
+>>> +        EMIT(PPC_RAW_CMPLWI(bpf_to_ppc(TMP_REG_1), MAX_TAIL_CALL_CNT));
+>>> +        PPC_COND_BRANCH(COND_GT, CTX_NIA(ctx) + 8);
+>>> +        EMIT(PPC_RAW_ADDI(bpf_to_ppc(TMP_REG_1), bpf_to_ppc(TMP_REG_2),
+>>> +                            -(BPF_PPC_TAILCALL)));
+>>> +        EMIT(PPC_RAW_STD(bpf_to_ppc(TMP_REG_1), _R1, - 
+>>> (BPF_PPC_TAILCALL)));
+>>>       }
+>>>         if (bpf_has_stack_frame(ctx)) {
+>>> @@ -352,19 +369,38 @@ static int bpf_jit_emit_tail_call(u32 *image, 
+>>> struct codegen_context *ctx, u32 o
+>>>       EMIT(PPC_RAW_CMPLW(b2p_index, bpf_to_ppc(TMP_REG_1)));
+>>>       PPC_BCC_SHORT(COND_GE, out);
+>>>   +    EMIT(PPC_RAW_LD(bpf_to_ppc(TMP_REG_1), _R1, 
+>>> bpf_jit_stack_tailcallinfo_offset(ctx)));
+>>> +    EMIT(PPC_RAW_CMPLWI(bpf_to_ppc(TMP_REG_1), MAX_TAIL_CALL_CNT));
+>>> +    PPC_COND_BRANCH(COND_LE, CTX_NIA(ctx) + 8);
+>>> +
+>>> +    /* dereference TMP_REG_1 */
+>>> +    EMIT(PPC_RAW_LD(bpf_to_ppc(TMP_REG_1), bpf_to_ppc(TMP_REG_1), 0));
+>>> +
+>>>       /*
+>>> -     * if (tail_call_cnt >= MAX_TAIL_CALL_CNT)
+>>> +     * if (tail_call_info == MAX_TAIL_CALL_CNT)
+>>>        *   goto out;
+>>>        */
+>>> -    EMIT(PPC_RAW_LD(bpf_to_ppc(TMP_REG_1), _R1, 
+>>> bpf_jit_stack_tailcallcnt(ctx)));
+>>>       EMIT(PPC_RAW_CMPLWI(bpf_to_ppc(TMP_REG_1), MAX_TAIL_CALL_CNT));
+>>> -    PPC_BCC_SHORT(COND_GE, out);
+>>> +    PPC_COND_BRANCH(COND_EQ, out);
+>>>         /*
+>>> -     * tail_call_cnt++;
+>>> +     * tail_call_info++; <- Actual value of tcc here
+>>>        */
+>>>       EMIT(PPC_RAW_ADDI(bpf_to_ppc(TMP_REG_1), bpf_to_ppc(TMP_REG_1), 
+>>> 1));
+>>> -    EMIT(PPC_RAW_STD(bpf_to_ppc(TMP_REG_1), _R1, 
+>>> bpf_jit_stack_tailcallcnt(ctx)));
+>>> +
+>>> +    /*
+>>> +     * Before writing updated tail_call_info, distinguish if current 
+>>> frame
+>>> +     * is storing a reference to tail_call_info or actual tcc value in
+>>> +     * tail_call_info.
+>>> +     */
+>>> +    EMIT(PPC_RAW_LD(bpf_to_ppc(TMP_REG_2), _R1, 
+>>> bpf_jit_stack_tailcallinfo_offset(ctx)));
+>>> +    EMIT(PPC_RAW_CMPLWI(bpf_to_ppc(TMP_REG_2), MAX_TAIL_CALL_CNT));
+>>> +    PPC_COND_BRANCH(COND_GT, CTX_NIA(ctx) + 8);
+>>> +
+>>> +    /* First get address of tail_call_info */
+>>> +    EMIT(PPC_RAW_ADDI(bpf_to_ppc(TMP_REG_2), _R1, 
+>>> bpf_jit_stack_tailcallinfo_offset(ctx)));
+>>> +    /* Writeback updated value to tail_call_info */
+>>> +    EMIT(PPC_RAW_STD(bpf_to_ppc(TMP_REG_1), bpf_to_ppc(TMP_REG_2), 0));
+>>>         /* prog = array->ptrs[index]; */
+>>>       EMIT(PPC_RAW_MULI(bpf_to_ppc(TMP_REG_1), b2p_index, 8));
+> -Abhishek
 
-Hi Andrii, Peter
-
-It appears that the code does not require a rebase, and the latest CI 
-build is valid. Looking forward to your response. Thanks.
-
-CI has tested the following submission:
-Status:     SUCCESS
-Name:       [RESEND,bpf-next,v7,0/2] Pass external callchain entry to 
-get_perf_callchain
-Patchwork: 
-https://patchwork.kernel.org/project/netdevbpf/list/?series=1034091&state=*
-Matrix:     https://github.com/kernel-patches/bpf/actions/runs/21051611369
-
--- 
-Best Regards
-Tao Chen
 
