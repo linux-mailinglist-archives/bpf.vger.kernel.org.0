@@ -1,94 +1,62 @@
-Return-Path: <bpf+bounces-79220-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79221-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77ABED2D8C5
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 08:55:53 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4496D2D9D3
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 09:00:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 1928C30146C2
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 07:55:50 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 071D6309B926
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 07:57:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D9732BEC2B;
-	Fri, 16 Jan 2026 07:55:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2459D2D73A6;
+	Fri, 16 Jan 2026 07:57:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="p1zCjLn+"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="TymSe3fT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A2603FFD
-	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 07:55:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FFAB21FF47;
+	Fri, 16 Jan 2026 07:57:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768550145; cv=none; b=X6HgF71SDPGwOudS/MQxm7d80nXu4xe1JCEjMRbiwUwaadhyRQj/HM3uObhnWOKrlJXSpNQgZW/A88YdLFqoh4iJq7DF6K6sCwlTu21/YxsjnKA/zbl2qg6tevOSBvjKEKlXSigWC5/gwgwtKoqhN7jFop+xy0IdXeI1SUc2/cM=
+	t=1768550244; cv=none; b=orzw6eVPJLr6jPBHdXj7KsVXbFdClikKowa2308Hq0Q5Y6smWUdQBSQfUBND0NngCI2mXRgdQ2QMKwddRxzKNVYIBvA7AvZ6b4E/9USrQ4qo/z/FHGyCGVI4X5IzuLxZWgBzb7aaiJQAT/p/P6HcUTcK2jaD4Lo24HgzmMSE2fk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768550145; c=relaxed/simple;
-	bh=Z7lvwij4kffqoaf7wQpfk+BJzjM3u4r57YPt17vIXm0=;
+	s=arc-20240116; t=1768550244; c=relaxed/simple;
+	bh=olSbzdwlvSE+g+cVEIs4ZCNHMf6TOB2lwdfPUtA7LTg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mR7sHlg1QVOwA0HFmO0O5Jl7QSZeYfnEdUs86KabkelqI4jCTKvGk9kEzXDFcSD7qjyUUvOiU1OBmYLKOJweO548gAYV7R0TB+14OnFjXWqnSPZ0AezND0YLm0AafPWSBViSLjC1wV6qR2yBU37NIfrOidjwr5WDnxhxBuswQto=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=p1zCjLn+; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-b879d5c1526so60584866b.1
-        for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 23:55:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1768550142; x=1769154942; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=uT0bm6+T+6f9KXJYVAEtgn8BOpGRzAbHo48opPMYrTo=;
-        b=p1zCjLn+hH2PfrTeif6lej37baO2T55Ovlxv78Dzm9j84jPBtF0QjZH+g5/a0PTiyj
-         tGGKgGIcWuMasYslQ+kXRDJxEfvQBPjiYUoCoQf3/1kQJYLqkxnun6p48+W7L+UnDQPs
-         6+BHJuPn8PXcYsasqp3po9vmXYFRTSOt7GNaGneYKAFXL6+tqzpTk9KYSd4tmm2/tScb
-         tPqvV4KLCqiXv4fzt2BSHMQERQRsQg+rhO9RhmIywBHUUpu3gXZXx8YmhRZIlcb2g6uS
-         NOkOMhNX0xXaJJMKF9rTcdRNj8f60kHX01oN2G7aDdTm6wBO+fVxRvQSHR/1htEfW0PL
-         2clg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768550142; x=1769154942;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uT0bm6+T+6f9KXJYVAEtgn8BOpGRzAbHo48opPMYrTo=;
-        b=isokqWu8/rt6ltduETPjFZbk4vp++ENEePssINonHf0miJdjwL1XQWVxQavOhuTwBF
-         6Ly3lbUiwnq1ajiVFvOp1pwZvuT3alP+2nM5kpuRxjH+uRz3goM2duExfUmv2XZy9OFN
-         Qh9x2AiLQXmqtL2w6LJq35HA1kyc921eQCeCMtYccRpy+OQ64191V6wjySyFr5ky1CDk
-         T/9wxDNZaUTFrGE/Sf4/XZIej7o50LNejSAP+MBT/SQGKe9gN9ThrdaCtCWlvYn0cXsU
-         DFhChU5UnOX53myJuFkY1d6+F6lvOaDVSLmeypwlT7ZyOplDktvojKH9/1BKTbXtQKbY
-         m2xg==
-X-Forwarded-Encrypted: i=1; AJvYcCWVr5n7mD8DmWQ0hYX+7tRBn59Tv/hFZFh+tOF6LpJZJYf/MfL0fgCacn7iIyk0XitNpdU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyWQTPMWkwMf4xCCBE+3HToRMmEapnDpdIfzUlcijiElo7sK/Ag
-	Ryb7XcKhQW/85hk9UWjx4WhzSPTk2GMyl/ui0S/UgEsuM1ZvQpxSzy1YI/7yMrPoKg==
-X-Gm-Gg: AY/fxX4QDBS8nlseDYxk3yJwac+tEpypwHWIN3zF1Ud8Vc/4pm3ePPISj7k/oFQUCEs
-	hTpz6IheTl7+mCEvZMb6Y1RBxMF2qLW26afnP2dc+hwJ8h3hHdtl/nWfDDZB+nhZ4pIXLvTz1aw
-	scx+M184FqAqbO8tDSXoOGrfJPgm34es8uwm4ViAOAvLFUV4tuTl0N7/XTqlllr9+DjaIb2SgvC
-	wHTMfQGIX+ZH+ZEUKUmTasJ5LOx+ja2j6/IU+ynzevPoXWqjA2RBsj1J2iGMMRegv0wUfjhWPQS
-	bfJ47RC4/eIypZ7G3IcytyBQ3c0lyF/oe9UBPXRbQLFoJ3fIfy1LKOHmnWx2SGB72jhYibhng6l
-	1Y4P6x1h6HzrHaKzROCaciC8xnoyAvSpcrRz2A3S82CjdI9QMx69VP5DMO5nqrXW7rlQ7o3XmXV
-	d6T4xOl+MXSegYB52aQKmTsiFSea2F9jQVa9D+3QyNURxy0v67cly9JjkC3U+bdO6w
-X-Received: by 2002:a17:907:d17:b0:b86:f926:fbc4 with SMTP id a640c23a62f3a-b8796bb1d74mr150703466b.58.1768550142052;
-        Thu, 15 Jan 2026 23:55:42 -0800 (PST)
-Received: from google.com (14.59.147.34.bc.googleusercontent.com. [34.147.59.14])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b87952919d4sm156077466b.30.2026.01.15.23.55.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jan 2026 23:55:41 -0800 (PST)
-Date: Fri, 16 Jan 2026 07:55:37 +0000
-From: Matt Bobrowski <mattbobrowski@google.com>
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	ohn Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	bpf <bpf@vger.kernel.org>
-Subject: Re: Subject: [PATCH bpf-next 2/3] bpf: drop KF_ACQUIRE flag on BPF
- kfunc bpf_get_root_mem_cgroup()
-Message-ID: <aWnu-b0dlm0xZFDS@google.com>
-References: <20260113083949.2502978-2-mattbobrowski@google.com>
- <87y0lyxilp.fsf@linux.dev>
+	 Content-Type:Content-Disposition:In-Reply-To; b=UlvC02md5cFiVkQp040qFMC86UF5E+dmK3T2EHzYmlaL59D/J2Te+UfS0Qe3+nPxem7J9csG/313/8B7em/iu2XCg9sd7mEdMSwvyIomg69ePXiv0dumDVk95ITaJESTdRYm5/G9lcGrKX6NVv6YJ01tNudSZSpXvuy9D17L9CU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=TymSe3fT; arc=none smtp.client-ip=91.218.175.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Fri, 16 Jan 2026 15:56:58 +0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1768550230;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8PsGNXpmMoDJe1yHU7yqWS6tBazZC3oE9e62iQ9nE4c=;
+	b=TymSe3fTdIyFVQMQQP7IHFHCaMh/PCzDQo+dEFkAYYQYNwDT1s9H4/71uzSbo6jpL/6qBh
+	WoBMsOrlmofja3Wo5HkAZZK2f1iuTObqGZw6KxlSjG8J3zh59PfoUFX8lf2d4E9vNaHC1I
+	m7Rq7f8WVgy9E1jUSKv1tQeH3+njf2w=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Hao Li <hao.li@linux.dev>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Harry Yoo <harry.yoo@oracle.com>, Petr Tesarik <ptesarik@suse.com>, 
+	Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	Uladzislau Rezki <urezki@gmail.com>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
+	Suren Baghdasaryan <surenb@google.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
+	Alexei Starovoitov <ast@kernel.org>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	linux-rt-devel@lists.linux.dev, bpf@vger.kernel.org, kasan-dev@googlegroups.com
+Subject: Re: [PATCH RFC v2 08/20] slab: add optimized sheaf refill from
+ partial list
+Message-ID: <5lmryxzoe2d5ywqfjwxqd63xsfq246ytb6lpkebkc3zxvu65xb@sdtiyxfez43v>
+References: <20260112-sheaves-for-all-v2-0-98225cfb50cf@suse.cz>
+ <20260112-sheaves-for-all-v2-8-98225cfb50cf@suse.cz>
+ <38de0039-e0ea-41c4-a293-400798390ea1@suse.cz>
+ <kp7fvhxxjyyzk47n67m4xwzgm7gxoqmgglqdvzpkcxqb26sjc4@bu4lil75nc3c>
+ <bb58c778-be6b-445e-a331-ddaf04f97f0e@suse.cz>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -97,52 +65,101 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87y0lyxilp.fsf@linux.dev>
+In-Reply-To: <bb58c778-be6b-445e-a331-ddaf04f97f0e@suse.cz>
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Jan 15, 2026 at 08:54:42PM -0800, Roman Gushchin wrote:
+On Fri, Jan 16, 2026 at 08:32:00AM +0100, Vlastimil Babka wrote:
+> On 1/16/26 07:27, Hao Li wrote:
+> > On Thu, Jan 15, 2026 at 03:25:59PM +0100, Vlastimil Babka wrote:
+> >> On 1/12/26 16:17, Vlastimil Babka wrote:
+> >> > At this point we have sheaves enabled for all caches, but their refill
+> >> > is done via __kmem_cache_alloc_bulk() which relies on cpu (partial)
+> >> > slabs - now a redundant caching layer that we are about to remove.
+> >> > 
+> >> > The refill will thus be done from slabs on the node partial list.
+> >> > Introduce new functions that can do that in an optimized way as it's
+> >> > easier than modifying the __kmem_cache_alloc_bulk() call chain.
+> >> > 
+> >> > Extend struct partial_context so it can return a list of slabs from the
+> >> > partial list with the sum of free objects in them within the requested
+> >> > min and max.
+> >> > 
+> >> > Introduce get_partial_node_bulk() that removes the slabs from freelist
+> >> > and returns them in the list.
+> >> > 
+> >> > Introduce get_freelist_nofreeze() which grabs the freelist without
+> >> > freezing the slab.
+> >> > 
+> >> > Introduce alloc_from_new_slab() which can allocate multiple objects from
+> >> > a newly allocated slab where we don't need to synchronize with freeing.
+> >> > In some aspects it's similar to alloc_single_from_new_slab() but assumes
+> >> > the cache is a non-debug one so it can avoid some actions.
+> >> > 
+> >> > Introduce __refill_objects() that uses the functions above to fill an
+> >> > array of objects. It has to handle the possibility that the slabs will
+> >> > contain more objects that were requested, due to concurrent freeing of
+> >> > objects to those slabs. When no more slabs on partial lists are
+> >> > available, it will allocate new slabs. It is intended to be only used
+> >> > in context where spinning is allowed, so add a WARN_ON_ONCE check there.
+> >> > 
+> >> > Finally, switch refill_sheaf() to use __refill_objects(). Sheaves are
+> >> > only refilled from contexts that allow spinning, or even blocking.
+> >> > 
+> >> > Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> >> 
+> >> ...
+> >> 
+> >> > +static unsigned int alloc_from_new_slab(struct kmem_cache *s, struct slab *slab,
+> >> > +		void **p, unsigned int count, bool allow_spin)
+> >> > +{
+> >> > +	unsigned int allocated = 0;
+> >> > +	struct kmem_cache_node *n;
+> >> > +	unsigned long flags;
+> >> > +	void *object;
+> >> > +
+> >> > +	if (!allow_spin && (slab->objects - slab->inuse) > count) {
+> >> > +
+> >> > +		n = get_node(s, slab_nid(slab));
+> >> > +
+> >> > +		if (!spin_trylock_irqsave(&n->list_lock, flags)) {
+> >> > +			/* Unlucky, discard newly allocated slab */
+> >> > +			defer_deactivate_slab(slab, NULL);
+> >> 
+> >> This actually does dec_slabs_node() only with slab->frozen which we don't set.
+> > 
+> > Hi, I think I follow the intent, but I got a little tripped up here: patch 08
+> > (current patch) seems to assume "slab->frozen = 1" is already gone. That's true
+> > after the whole series, but the removal only happens in patch 09.
+> > 
+> > Would it make sense to avoid relying on that assumption when looking at patch 08
+> > in isolation?
 > 
-> > With the BPF verifier now treating pointers to struct types returned
-> > from BPF kfuncs as implicitly trusted by default, there is no need for
-> > bpf_get_root_mem_cgroup() to be annotated with the KF_ACQUIRE flag.
+> Hm I did think it's fine. alloc_from_new_slab() introduced here is only used
+> from __refill_objects() and that one doesn't set slab->frozen = 1 on the new
+> slab?
+
+Yes, exactly!
+
 > 
-> > bpf_get_root_mem_cgroup() does not acquire any references, but rather
-> > simply returns a NULL pointer or a pointer to a struct mem_cgroup
-> > object that is valid for the entire lifetime of the kernel.
+> Then patch 09 switches ___slab_alloc() to alloc_from_new_slab() and at the
+> same time also stops setting slab->frozen = 1 so it should be also fine.
+
+Yes. This make sense to me.
+
 > 
-> > This simplifies BPF programs using this kfunc by removing the
-> > requirement to pair the call with bpf_put_mem_cgroup().
+> And then 12/20 slab: remove defer_deactivate_slab() removes the frozen = 1
+> treatment as nobody uses it anymore.
 > 
-> It's actually the opposite: having the get semantics (which is also
-> suggested by the name) allows to treat the root memory cgroup exactly
-> as any other. And it makes the code much simpler, otherwise you
-> need to have these ugly checks across the codebase:
-> 	if (memcg != root_mem_cgroup)
-> 		css_put(&memcg->css);
+> If there's some mistake in the above, please tell!
 
-I mean, you're certainly not forced to do this. But, I do also see
-what you mean.
+Everything makes sense to me. The analysis looks reasonable. Thanks!
 
-> This is why __all__ memcg && cgroup code follows this principle and the
-> hides the special handling of the root memory cgroup within
-> css_get()/css_put().
->
-> I wasn't cc'ed on this series, otherwise I'd nack this patch.
-> If the overhead of an extra kfunc call is a concern here (which I
-> doubt), we can introduce a non-acquire bpf_root_mem_cgroup()
-> version.
+Just a quick note - I noticed that the code in your repo for b4/sheaves-for-all
+has been updated. I also saw that Harry posted the latest link and did an inline
+review in his reply to [05/20].
+
+Do you happen to plan a v3 version of this patchset? Thanks!
+
 > 
-> And I strongly suggest to revert this change.
-
-Apologies, I honestly thought I did CC you on this series. Don't know
-what happened with that. Anyway, I'm totally OK with reverting this
-patch and keeping bpf_get_root_mem_cgroup() with KF_ACQUIRE
-semantics. bpf_get_root_mem_cgroup() was selected as it was the very
-first BPF kfunc that came to mind where implicit trusted pointer
-semantics should be applied by the BPF verifier.
-
-Notably, the follow up selftest patch [0] will also need to be
-reverted if so as it relies on bpf_get_root_mem_cgroup() without
-KF_ACQUIRE. We can probably 
-
-[0] https://lore.kernel.org/bpf/20260113083949.2502978-2-mattbobrowski@google.com/T/#mfa14fb83b3350c25f961fd43dc4df9b25d00c5f5
+> Thanks.
 
