@@ -1,188 +1,94 @@
-Return-Path: <bpf+bounces-79321-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79322-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65216D38417
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 19:17:31 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDB47D3846B
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 19:33:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8A7D230BBDD1
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 18:17:18 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id C595C3004284
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 18:33:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D5CE3A0B27;
-	Fri, 16 Jan 2026 18:17:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E41663491CD;
+	Fri, 16 Jan 2026 18:33:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="I0MBfWtw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rz8F+syH"
 X-Original-To: bpf@vger.kernel.org
-Received: from fra-out-008.esa.eu-central-1.outbound.mail-perimeter.amazon.com (fra-out-008.esa.eu-central-1.outbound.mail-perimeter.amazon.com [35.158.23.94])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B18D30214B;
-	Fri, 16 Jan 2026 18:17:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.158.23.94
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7527D283FEA
+	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 18:33:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768587436; cv=none; b=g7y1nceU7TCs46I990qjgsj8T7LqL8wTHkMPAk1NjH/ND0MzYoGZotcb229AFgM8NCc/QWI3nt8z1Az+xqWa538bpnTVHK0wnLg9zcpzFCbPKTNbB/cADLKuQbt4vS2SqyD1dlwxHuFLiY7v/DcegcMuqHLMZ+CqOz0wQ2iT4e0=
+	t=1768588419; cv=none; b=ZdRHXCg+2JTW1B3ezLlg7QlqHNiLIah/p5Y26ft2edx8clG5YNRYnvGLvgW5cCfEtH3A9CRGRJOHb1IhT1rOTB65y6hTahkp9GG6QQKGR6UI4FMcCoRtiG1WUPwSug7zIp7ndvhxCa6zXen58BClJUM40p0HfgB57rRWEVRz8eg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768587436; c=relaxed/simple;
-	bh=zrf911BvhStWuhjVEELF/Ajfn8rz9WHah1btkRBe1lA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=QNqTzRLgx8GAzPMfddKIiAkm/MnHppr0VAyGUZ5h3kjYdO9RFN7+GcNQTv2U2r/uZHkPg032bHmH6HbZJhPZaXmZ38BJL/VlFzo1j/hx1jrmW7wb0PzpiATiJV/pq9Sc7K4GkGESvxagyqPDF5NeDlnJGDJahWSgum62S5/wvcM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.uk; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=I0MBfWtw; arc=none smtp.client-ip=35.158.23.94
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.uk
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1768587435; x=1800123435;
-  h=message-id:date:mime-version:reply-to:subject:to:cc:
-   references:from:in-reply-to:content-transfer-encoding;
-  bh=YapVUMmpOwobMagVZxDJCeWDb1gq+ZQf1FJDAqu8vU0=;
-  b=I0MBfWtwMj/4d9o8Qo09Bvi97Fdkgii+OIU/xcBtB6vDCdVz930MJlp4
-   7iA8wYC6yCRY4gYp8XT91C0q02KlwiFbbAz4hynTpaojFoPxPDqCAHIcV
-   yiwg53gCDcQzKo3y611nu0iDN3GzJwHax8XfeZJOM3frY/3jWykM3K4gP
-   h0rmyZOFnbEMmUtT/v7F7nWVPh8CUTxjphtA4UROiH2ePTjM1PRr7un5P
-   ra7C+XJd+hQAHcjkJ3UUB3L3muRa6t5/doBjDzBHFYUmLFm9Yndpi09xb
-   8p6tGrUC/fOisV3rULKXGStpRWS1ge2LyzakX2p5x4jX6GmDeHjHxeAo4
-   Q==;
-X-CSE-ConnectionGUID: NWjda1oCRYKn9baULLv/sw==
-X-CSE-MsgGUID: IK3nVvd5RcyK2jXvKFHlAw==
-X-IronPort-AV: E=Sophos;i="6.21,231,1763424000"; 
-   d="scan'208";a="8025027"
-Received: from ip-10-6-11-83.eu-central-1.compute.internal (HELO smtpout.naws.eu-central-1.prod.farcaster.email.amazon.dev) ([10.6.11.83])
-  by internal-fra-out-008.esa.eu-central-1.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2026 18:16:56 +0000
-Received: from EX19MTAEUA001.ant.amazon.com [54.240.197.233:23681]
- by smtpin.naws.eu-central-1.prod.farcaster.email.amazon.dev [10.0.8.163:2525] with esmtp (Farcaster)
- id 6045a328-4a68-479c-a4ff-a5f3e38bc599; Fri, 16 Jan 2026 18:16:56 +0000 (UTC)
-X-Farcaster-Flow-ID: 6045a328-4a68-479c-a4ff-a5f3e38bc599
-Received: from EX19D005EUB003.ant.amazon.com (10.252.51.31) by
- EX19MTAEUA001.ant.amazon.com (10.252.50.50) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.35;
- Fri, 16 Jan 2026 18:16:53 +0000
-Received: from [192.168.12.13] (10.106.82.9) by EX19D005EUB003.ant.amazon.com
- (10.252.51.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.35; Fri, 16 Jan 2026
- 18:16:48 +0000
-Message-ID: <e4cc7e98-9c1f-4ced-a22f-5d0fe29a6893@amazon.com>
-Date: Fri, 16 Jan 2026 18:16:47 +0000
+	s=arc-20240116; t=1768588419; c=relaxed/simple;
+	bh=YyA/O9vUnR+K+4GMxQBkahiz+OQYRDgwPT6QCaX4i98=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=svtGd64GKB6QlKDbgJTcba5CeWQM6WzivhlnCEpL9tsK631/rU902piH02VceJlia8ZMEP+TOkzSk73JiAOzoIwaAbpST/S0X2YQ+S/a6iq+Us6sWcBqMbdCm+dLD8wtNLLGnPcuLNAknr+ix/rEuZv5kS1rOn8B1/GcElweO9Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rz8F+syH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01316C116C6;
+	Fri, 16 Jan 2026 18:33:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768588419;
+	bh=YyA/O9vUnR+K+4GMxQBkahiz+OQYRDgwPT6QCaX4i98=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=rz8F+syHSd1q1f0PNJ8811hslqdal4+kGoFjuPEG6TtXB8MIoduEWW2pgyNfF9xvM
+	 K40wvewTSQ2LUROS24NKZTAztjel1fa7UaSI6+rynpPoDpI2ZRZbMaFtf4krFPHm8n
+	 aevw7m74//aPhVCsV5sOsFB2W2oyAECCi1LodCxPxVg+VmnwSFe/f+kirlR5fifUfB
+	 yA/NEp4ELnsFs1YnxUY49yZ0f/O+VnV/nhbse7LEMA9kyoG2N5CySET4jeh06GdK/Q
+	 MhDSAmMKxwWx1iA8zLmKS/1HkpoN5u8aq4MsEh08pf8MKp0kFsqJgdLVcanTXnGzJl
+	 i1bg4dkCK5aTw==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id B5ABF380CECB;
+	Fri, 16 Jan 2026 18:30:11 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: <kalyazin@amazon.com>
-Subject: Re: [PATCH v9 07/13] KVM: guest_memfd: Add flag to remove from direct
- map
-To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>, "kalyazin@amazon.co.uk"
-	<kalyazin@amazon.co.uk>, "linux-riscv@lists.infradead.org"
-	<linux-riscv@lists.infradead.org>, "linux-s390@vger.kernel.org"
-	<linux-s390@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-	"kernel@xen0n.name" <kernel@xen0n.name>, "kvmarm@lists.linux.dev"
-	<kvmarm@lists.linux.dev>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, "loongarch@lists.linux.dev"
-	<loongarch@lists.linux.dev>, "linux-doc@vger.kernel.org"
-	<linux-doc@vger.kernel.org>
-CC: "david@kernel.org" <david@kernel.org>, "svens@linux.ibm.com"
-	<svens@linux.ibm.com>, "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-	"palmer@dabbelt.com" <palmer@dabbelt.com>, "jgross@suse.com"
-	<jgross@suse.com>, "surenb@google.com" <surenb@google.com>, "vbabka@suse.cz"
-	<vbabka@suse.cz>, "riel@surriel.com" <riel@surriel.com>, "pfalcato@suse.de"
-	<pfalcato@suse.de>, "x86@kernel.org" <x86@kernel.org>, "rppt@kernel.org"
-	<rppt@kernel.org>, "thuth@redhat.com" <thuth@redhat.com>,
-	"borntraeger@linux.ibm.com" <borntraeger@linux.ibm.com>, "maz@kernel.org"
-	<maz@kernel.org>, "peterx@redhat.com" <peterx@redhat.com>, "ast@kernel.org"
-	<ast@kernel.org>, "Annapurve, Vishal" <vannapurve@google.com>,
-	"pjw@kernel.org" <pjw@kernel.org>, "alex@ghiti.fr" <alex@ghiti.fr>,
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-	"tglx@linutronix.de" <tglx@linutronix.de>, "hca@linux.ibm.com"
-	<hca@linux.ibm.com>, "willy@infradead.org" <willy@infradead.org>,
-	"wyihan@google.com" <wyihan@google.com>, "ryan.roberts@arm.com"
-	<ryan.roberts@arm.com>, "yang@os.amperecomputing.com"
-	<yang@os.amperecomputing.com>, "jolsa@kernel.org" <jolsa@kernel.org>,
-	"jmattson@google.com" <jmattson@google.com>, "luto@kernel.org"
-	<luto@kernel.org>, "aneesh.kumar@kernel.org" <aneesh.kumar@kernel.org>,
-	"haoluo@google.com" <haoluo@google.com>, "patrick.roy@linux.dev"
-	<patrick.roy@linux.dev>, "akpm@linux-foundation.org"
-	<akpm@linux-foundation.org>, "coxu@redhat.com" <coxu@redhat.com>,
-	"mhocko@suse.com" <mhocko@suse.com>, "mlevitsk@redhat.com"
-	<mlevitsk@redhat.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>, "hpa@zytor.com"
-	<hpa@zytor.com>, "song@kernel.org" <song@kernel.org>,
-	"Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>, "maobibo@loongson.cn"
-	<maobibo@loongson.cn>, "peterz@infradead.org" <peterz@infradead.org>,
-	"oupton@kernel.org" <oupton@kernel.org>, "lorenzo.stoakes@oracle.com"
-	<lorenzo.stoakes@oracle.com>, "jhubbard@nvidia.com" <jhubbard@nvidia.com>,
-	"martin.lau@linux.dev" <martin.lau@linux.dev>, "jthoughton@google.com"
-	<jthoughton@google.com>, "Jonathan.Cameron@huawei.com"
-	<Jonathan.Cameron@huawei.com>, "Yu, Yu-cheng" <yu-cheng.yu@intel.com>,
-	"eddyz87@gmail.com" <eddyz87@gmail.com>, "yonghong.song@linux.dev"
-	<yonghong.song@linux.dev>, "chenhuacai@kernel.org" <chenhuacai@kernel.org>,
-	"shuah@kernel.org" <shuah@kernel.org>, "prsampat@amd.com" <prsampat@amd.com>,
-	"kevin.brodsky@arm.com" <kevin.brodsky@arm.com>,
-	"shijie@os.amperecomputing.com" <shijie@os.amperecomputing.com>,
-	"itazur@amazon.co.uk" <itazur@amazon.co.uk>, "suzuki.poulose@arm.com"
-	<suzuki.poulose@arm.com>, "pbonzini@redhat.com" <pbonzini@redhat.com>,
-	"dev.jain@arm.com" <dev.jain@arm.com>, "yuzenghui@huawei.com"
-	<yuzenghui@huawei.com>, "gor@linux.ibm.com" <gor@linux.ibm.com>,
-	"jackabt@amazon.co.uk" <jackabt@amazon.co.uk>, "daniel@iogearbox.net"
-	<daniel@iogearbox.net>, "agordeev@linux.ibm.com" <agordeev@linux.ibm.com>,
-	"andrii@kernel.org" <andrii@kernel.org>, "mingo@redhat.com"
-	<mingo@redhat.com>, "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-	"joey.gouly@arm.com" <joey.gouly@arm.com>, "derekmn@amazon.com"
-	<derekmn@amazon.com>, "xmarcalx@amazon.co.uk" <xmarcalx@amazon.co.uk>,
-	"kpsingh@kernel.org" <kpsingh@kernel.org>, "sdf@fomichev.me"
-	<sdf@fomichev.me>, "jackmanb@google.com" <jackmanb@google.com>,
-	"bp@alien8.de" <bp@alien8.de>, "corbet@lwn.net" <corbet@lwn.net>,
-	"ackerleytng@google.com" <ackerleytng@google.com>, "jannh@google.com"
-	<jannh@google.com>, "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-	"kas@kernel.org" <kas@kernel.org>, "will@kernel.org" <will@kernel.org>,
-	"seanjc@google.com" <seanjc@google.com>
-References: <20260114134510.1835-1-kalyazin@amazon.com>
- <20260114134510.1835-8-kalyazin@amazon.com>
- <e619ded526a2f9a4cec4f74383cef31519624935.camel@intel.com>
- <294bca75-2f3e-46db-bb24-7c471a779cc1@amazon.com>
- <bb58a21f91113ca39f8888d718d4450a5fd72808.camel@intel.com>
- <318407ba-ecb6-4691-8911-645fb8c20250@amazon.com>
- <c42cc00f3902673b1a964c3d098b8c3f236cf9a1.camel@intel.com>
- <98b8ea1e-3bdd-4987-8acc-58112076d451@amazon.com>
- <a84835708eb92d99ba524149bde819c4ba944cb9.camel@intel.com>
-Content-Language: en-US
-From: Nikita Kalyazin <kalyazin@amazon.com>
-Autocrypt: addr=kalyazin@amazon.com; keydata=
- xjMEY+ZIvRYJKwYBBAHaRw8BAQdA9FwYskD/5BFmiiTgktstviS9svHeszG2JfIkUqjxf+/N
- JU5pa2l0YSBLYWx5YXppbiA8a2FseWF6aW5AYW1hem9uLmNvbT7CjwQTFggANxYhBGhhGDEy
- BjLQwD9FsK+SyiCpmmTzBQJnrNfABQkFps9DAhsDBAsJCAcFFQgJCgsFFgIDAQAACgkQr5LK
- IKmaZPOpfgD/exazh4C2Z8fNEz54YLJ6tuFEgQrVQPX6nQ/PfQi2+dwBAMGTpZcj9Z9NvSe1
- CmmKYnYjhzGxzjBs8itSUvWIcMsFzjgEY+ZIvRIKKwYBBAGXVQEFAQEHQCqd7/nb2tb36vZt
- ubg1iBLCSDctMlKHsQTp7wCnEc4RAwEIB8J+BBgWCAAmFiEEaGEYMTIGMtDAP0Wwr5LKIKma
- ZPMFAmes18AFCQWmz0MCGwwACgkQr5LKIKmaZPNTlQEA+q+rGFn7273rOAg+rxPty0M8lJbT
- i2kGo8RmPPLu650A/1kWgz1AnenQUYzTAFnZrKSsXAw5WoHaDLBz9kiO5pAK
-In-Reply-To: <a84835708eb92d99ba524149bde819c4ba944cb9.camel@intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: EX19D006EUA002.ant.amazon.com (10.252.50.65) To
- EX19D005EUB003.ant.amazon.com (10.252.51.31)
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next 0/2] bpf: Fix linked register tracking
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <176858821054.756555.9976873306632220062.git-patchwork-notify@kernel.org>
+Date: Fri, 16 Jan 2026 18:30:10 +0000
+References: <20260115151143.1344724-1-puranjay@kernel.org>
+In-Reply-To: <20260115151143.1344724-1-puranjay@kernel.org>
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: bpf@vger.kernel.org, puranjay12@gmail.com, ast@kernel.org,
+ andrii@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org,
+ eddyz87@gmail.com, memxor@gmail.com, mykyta.yatsenko5@gmail.com,
+ kernel-team@meta.com
 
+Hello:
 
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-On 16/01/2026 18:10, Edgecombe, Rick P wrote:
-> On Fri, 2026-01-16 at 17:51 +0000, Nikita Kalyazin wrote:
->> Yes, this is a problem that we'd like to address.  We have been
->> discussing it in [1].  The effect of flushing on memory population
->> that we see on x86 is 5-7x elongation.  We are thinking of making use
->> of the no-direct-map memory allocator that Brendan is working on [2].
+On Thu, 15 Jan 2026 07:11:39 -0800 you wrote:
+> This patch fixes the linked register tracking when multiple links from
+> the same register are created with a sync between the creation of these
+> links. The sync corrupts the id of the register and therefore the second
+> link is not created properly. See the patch description to understand
+> more.
 > 
-> Ah, makes sense.
+> The fix is to preserve the id while doing the sync similar to the off.
 > 
-> Do you plan to merge this before the performance problems are
-> addressed? I guess this series focuses on safety and functionality
-> first.
+> [...]
 
-Yes, we'd like to merge the functional part first and then optimise it 
-in the further series.
+Here is the summary with links:
+  - [bpf-next,1/2] bpf: Preserve id of register in sync_linked_regs()
+    https://git.kernel.org/bpf/bpf-next/c/af9e89d8dd39
+  - [bpf-next,2/2] selftests: bpf: Add test for multiple syncs from linked register
+    https://git.kernel.org/bpf/bpf-next/c/086c99fbe450
 
-> 
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
