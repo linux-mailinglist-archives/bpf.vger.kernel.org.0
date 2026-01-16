@@ -1,287 +1,458 @@
-Return-Path: <bpf+bounces-79266-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79273-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B32CD32D20
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 15:46:38 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87E02D32D02
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 15:46:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8156F313DB36
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 14:40:48 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 61A4F30A4322
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 14:41:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6716394478;
-	Fri, 16 Jan 2026 14:40:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3449397AA2;
+	Fri, 16 Jan 2026 14:41:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b="c/Ed9A+8"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="eZQyPLN9";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="JS727WAF";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="eZQyPLN9";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="JS727WAF"
 X-Original-To: bpf@vger.kernel.org
-Received: from MRWPR03CU001.outbound.protection.outlook.com (mail-francesouthazon11011006.outbound.protection.outlook.com [40.107.130.6])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1214E3933E8;
-	Fri, 16 Jan 2026 14:40:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.130.6
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768574442; cv=fail; b=LBXBJnA241IHmNvz9OIxqtKIP0pa+6CGZ/YhapmFL+9wIoiMnZ1dbxuaiFiFFW0E4rqcQlZXLScS+tsPN3B4HzFyFf7sioq6Kkv2nsPqQ7iz9e4J8oU/pfEsdHXlyCYHaqMH10Jd9JbUMn+UKp+XaIIGPLBuh1hG/qLA8ncFBzU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768574442; c=relaxed/simple;
-	bh=dPWtZYyZyCiVyAsgmPutA1KmpveD/qeRuDbx33aBj9g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=RGaK1+6TdHaJ3AwwMN54mlWGg627l7mtAKCw8YDObdNgfBIOMV0myjibCstjRh7kF6O6nqIDG+GCWfYV/re14mOwQXsGPLfYc2zk6K9dvYXOFiZI0786N7OV7o1R9T89lUsG8gO1ux5XGFW6qMuroxrzqG7e69XmBdeNpGviqJo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b=c/Ed9A+8; arc=fail smtp.client-ip=40.107.130.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=yigUCHXPcW9E6jOYz89y5hQQ/fT1uNy/I0EH+BVnlUsaUCKR53jeYDlI7Nlw7R/K9ndN7MO70sknT7ckpA3htEC1uao2njgHIjHy6qmwynXj5U/NwZl8OytP17udwGw5o8zl5oNj0nc12GuRQv8ITTm5Zj7Hc/pWFygXqbs+8zLCUKhruAr9ES2ZOKRyikHcphvmDiBbnqfj0q8wS+n3vtFKC2LbrZ5HfKmdcfCb3UwC36B31jsTzxDkgwcT0Ko2PHBocF7XEtW/WTghmbhxZAiliYEvLxiIkwjYeehDvbg9jevYVrqbsMB/VQybTUULxYFZ8zbQKPQELlySUNH8Ow==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HKBfvBlaz4/vDwa0aqifscrs45ovyk0JW6GpImJjWno=;
- b=Zue5Kyo5125OvfdZQo+lLzpBrEkWERgfUzM+OnhutxbYy/1P3icaVUWUYf/4N5UOQIlVguKaprcgOZXBDErnTPXsSQMZNprN9smed2U2BzMFGNiJ8OjPZU2mrpVAo2zS+ZIe62eff6huMaPhc/9K28TbIfWFVT3lL2oLxA5i+4eCfJupb92Jb6K2/zstIG851Te/6zof1J58/Vqn4gIbPv6rQcvLiwyUF0NWBaA7QK4kthbCT1kSPlOesflcjgdBhdrstcycCObAnYSSMoyOK/LNf9CeGHxdaiHH/05A8qxVGf+jwKedZaWW6ie2E6iTsBCwoAvJF6HrbpnHHDBQqg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HKBfvBlaz4/vDwa0aqifscrs45ovyk0JW6GpImJjWno=;
- b=c/Ed9A+8b5z41PFVHGQLFzSfHMVWBtUdKMDBPVMoG7+RZOHAuB45Kw/pvVBDf98joYqmpr5eQyljDUq/Oct6nHtqzJHVaDHKwTBd+8Uhuc9YznsInaQoRSwfmapcqFJyTASg6RqzFQ/qgY7xYVCugsPo9PKBMgdeCZ+Xo+B4O/cQn/IXTFLfh8VfG039Cj/OKdODPDKUzCGvmrtmGhUychSqeUW/yVNR52GW9HXe+znVLWUPPZGv2gHn5iqQjZIIHFK/iDWXA00/Pys8Fx0dkiAEDONKeKjackv4ITDXG+tDx4jVSNVRGwYZ7IKZkcBFMw6eipcpZOGiQCnxebVMEg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from DU2PR04MB8951.eurprd04.prod.outlook.com (2603:10a6:10:2e2::22)
- by PA2PR04MB10506.eurprd04.prod.outlook.com (2603:10a6:102:41e::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9520.6; Fri, 16 Jan
- 2026 14:40:36 +0000
-Received: from DU2PR04MB8951.eurprd04.prod.outlook.com
- ([fe80::753c:468d:266:196]) by DU2PR04MB8951.eurprd04.prod.outlook.com
- ([fe80::753c:468d:266:196%4]) with mapi id 15.20.9478.004; Fri, 16 Jan 2026
- 14:40:35 +0000
-Date: Fri, 16 Jan 2026 09:40:26 -0500
-From: Frank Li <Frank.li@nxp.com>
-To: Wei Fang <wei.fang@nxp.com>
-Cc: shenwei.wang@nxp.com, xiaoning.wang@nxp.com, andrew+netdev@lunn.ch,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
-	hawk@kernel.org, john.fastabend@gmail.com, sdf@fomichev.me,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	imx@lists.linux.dev, bpf@vger.kernel.org
-Subject: Re: [PATCH v2 net-next 13/14] net: fec: improve fec_enet_tx_queue()
-Message-ID: <aWpN2uglFxlJgoVV@lizhi-Precision-Tower-5810>
-References: <20260116074027.1603841-1-wei.fang@nxp.com>
- <20260116074027.1603841-14-wei.fang@nxp.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260116074027.1603841-14-wei.fang@nxp.com>
-X-ClientProxiedBy: BY3PR10CA0017.namprd10.prod.outlook.com
- (2603:10b6:a03:255::22) To DU2PR04MB8951.eurprd04.prod.outlook.com
- (2603:10a6:10:2e2::22)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 754543939D3
+	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 14:41:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768574467; cv=none; b=XyF40V0hnGlN756tCrzGzqSFjjdFFMDAI3MoWnfrF4heIDSGQpajmdV8/lr/k/BISzBGWCdUHQXNUf8p8PPdlft1OseKFFAQ0XEGiolJEa7inANmUUPaeS/JbmbA/ituSGxnZZ1Z/cvDtv9Imq++zj8Rq5n01u68+3kybx1BFkk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768574467; c=relaxed/simple;
+	bh=qG9Aqmhvr3DyVSjSazwM5pz/4y6SlAQOfjzm7YSFeP0=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=vDOgzT5cv70OqjmmGGMBRFMB4oXkTkGo2rIUF4x17UgeR1eaWM3xo5Bv7walP2tmlpYc7bN+kpWUEjaWm3y0PTXD6hdtpWTlm8Tf4F5hChdk72lse0GeYISd+fVtCOqtye1uyfgUf8ieBLsFaeQXVUzM7DXq4OgUyvAUD4VqoDg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=eZQyPLN9; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=JS727WAF; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=eZQyPLN9; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=JS727WAF; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 460AA5BE85;
+	Fri, 16 Jan 2026 14:40:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1768574437; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/upRfJ3PHSpDAJJ/Lor3pwgQGBiD4JB0EJmftl/mO6A=;
+	b=eZQyPLN9DJMcCaE2uxOwagAotWKBSVJboVVCUKS+aR2tp2qaGnF2WMG8/r0qjet7ZkZyHu
+	rRKltn6v/KzG9DoYnXOOg8MPNciFeEEtseWtH+97WkVmIIOB+v0ViasUWqZyG2GEZRCiDe
+	dD+JxE02TSMHvJIOBWQSQHoHMOIBqUo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1768574437;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/upRfJ3PHSpDAJJ/Lor3pwgQGBiD4JB0EJmftl/mO6A=;
+	b=JS727WAFeDyGguz7UNeWsDT9YbFz4mhTxOowAOC5XhsXk3Lm/9DWnjramaz1fYa8uIjKc4
+	cNVSE1CiWnsvTwDA==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=eZQyPLN9;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=JS727WAF
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1768574437; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/upRfJ3PHSpDAJJ/Lor3pwgQGBiD4JB0EJmftl/mO6A=;
+	b=eZQyPLN9DJMcCaE2uxOwagAotWKBSVJboVVCUKS+aR2tp2qaGnF2WMG8/r0qjet7ZkZyHu
+	rRKltn6v/KzG9DoYnXOOg8MPNciFeEEtseWtH+97WkVmIIOB+v0ViasUWqZyG2GEZRCiDe
+	dD+JxE02TSMHvJIOBWQSQHoHMOIBqUo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1768574437;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/upRfJ3PHSpDAJJ/Lor3pwgQGBiD4JB0EJmftl/mO6A=;
+	b=JS727WAFeDyGguz7UNeWsDT9YbFz4mhTxOowAOC5XhsXk3Lm/9DWnjramaz1fYa8uIjKc4
+	cNVSE1CiWnsvTwDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 27AF03EA66;
+	Fri, 16 Jan 2026 14:40:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id cDlrCeVNamnydgAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Fri, 16 Jan 2026 14:40:37 +0000
+From: Vlastimil Babka <vbabka@suse.cz>
+Date: Fri, 16 Jan 2026 15:40:26 +0100
+Subject: [PATCH v3 06/21] slab: introduce percpu sheaves bootstrap
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU2PR04MB8951:EE_|PA2PR04MB10506:EE_
-X-MS-Office365-Filtering-Correlation-Id: bd87eac1-66d3-4e0e-abfe-08de550d35c2
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|52116014|7416014|376014|366016|19092799006|1800799024|38350700014;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?4YtPw5q2JS2PrNbXfWlq6Rvjelk4RXaYA/KbuUq2WAHVyHbAiByE9zQKsvNp?=
- =?us-ascii?Q?jyt7wEvGEa11IonpPRuVNjpaXQLf3pOf0gaj6jy0x7YDDc9GfZAIzs6B+GOG?=
- =?us-ascii?Q?7vSbZiSeE1uj6vQmvBiWnoeDKZJw1UdmCK0flC5aU/68luUmFOWStNuDDEvi?=
- =?us-ascii?Q?yKkTTqJwDYBetq5y40wRqxH7mu/8lpf40qZgFEocMDXIYWFrgN3cc90UzHSe?=
- =?us-ascii?Q?hPq30Q7mQHPiSAwS5ZGVjyOIQg6maQqG9Eiv4ALeqe5mmiX0KiR1NqNZ+GuV?=
- =?us-ascii?Q?FoD5M8pL5jsVfbEj0VobBcCoFwMafzl7+vCmq73bXInzSAiC7/WiIR6Pj47C?=
- =?us-ascii?Q?tPsxYNAZ6TXKkfXXorX2hxh79fKn/r3N+QjcAIzJ/OTz6wr1FgU4qjpgFuoW?=
- =?us-ascii?Q?IUDcMafdFFZv2Mq2+eA+TBSE+pgsmO2QWoAU0wfjrnaWmUpLyiRsoRczo90T?=
- =?us-ascii?Q?Aiy0+58ZwM2w3qXdKYvLn56Bnvtw6raezQGs2DP32wit3pDbY8Q+b/iDti1T?=
- =?us-ascii?Q?EoIJnpysv1jhi3GoZNqpdgMR4XjcZhL+vAe1Vymw86kt83keonRc65nDtgbq?=
- =?us-ascii?Q?ilS5vYK8sJB/GM+K1ffWDalGhlnRvFriyQVr1L8MMaL9D1hzbb8DTAPp1aJH?=
- =?us-ascii?Q?xI2lpf6fWJpi8BtuPqB8tO0NZ7Y3B3xaD3BafmQJTkxU2ve93ivlnb/RH2uD?=
- =?us-ascii?Q?hU9/42qUjvIB5VlwHK4IA+MPHjdLjsPpQYyGved4+k2znwsNI7MZmmehoLCq?=
- =?us-ascii?Q?UpTb6+X+k8gcg+QVTdtU070n4KjowmDtyCXm//ZUk/MUcfu9WUXjN1slkr9S?=
- =?us-ascii?Q?JPCYW85cXTPGynIji7LM3HuSiE0OJ4kgS9R5TPUFu9TsNWkKILNFv/iMrUcS?=
- =?us-ascii?Q?NGfvdB4NHj7oBwW/R7srfcURBlZpwKUxlYlFp+07z0EfEwkmiVj7/4O5O1Ze?=
- =?us-ascii?Q?V++Ws5+Ex8AVr6rMVu9Vp6lN2/JgbxP7mVyGZyKa7Vgjs3A/XAWO/GIrWBYY?=
- =?us-ascii?Q?WAJX3K97hsj67yzI4Ux+vZdHgoUoXRyZss9+2cbKq+r4kJwi0tCyR0X/BLAH?=
- =?us-ascii?Q?jIg+V5BzIsImHUel+5HetDNunPcuYNvF3pFfTbw1yimPvekioQuJv/4wZZNm?=
- =?us-ascii?Q?x1Fa82Tn5QL0xVO9qhMoxfClOj063oi3kAWHAMmSABR8NanjaDWQhzqQFLA3?=
- =?us-ascii?Q?CoDrRUkxTP3NQ+63BT+Wrf/Vs1fHmgJ6RuvI9eBG8MfgC4m6M0VayKSRQbHj?=
- =?us-ascii?Q?selNt3hyOUgI1BeAspgaHwi9KBCyvNrvbjo5SH735XCLZLMKqOS5SKajKSzB?=
- =?us-ascii?Q?LN/Op9hep+XwmlULo2vO2+5pYN18Fks6fs8FV56s43Tw7qU0My4kRaN+PSFT?=
- =?us-ascii?Q?QpLNnFLqAHTFpeFwMBrn0hUY47txTk2XZT41bt1YuPR0uaFz5kbcZ/nvldhE?=
- =?us-ascii?Q?WxFwqyzcWIVlbpyX/nBbZqBCxrczbZ54aWbgIkTZbCEEUJ3nUDMHTHfXxfVg?=
- =?us-ascii?Q?k4DYmO1BMEaQIUVzVtBz6voI0DgAz+W8qPDEZxgJvvO3FZpTPN9B/ec57wT9?=
- =?us-ascii?Q?2BDWY/ys5poBv7WtHKZF2Oa+/IksHEG8wxm1IGPKvVE27rEbtylHxjBYQF/w?=
- =?us-ascii?Q?KjU/XeNPB1Rrnb/b1cdAWnM=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB8951.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(52116014)(7416014)(376014)(366016)(19092799006)(1800799024)(38350700014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?jkr9/jQ5ehoY5yBx38zkqFJK/OHzBsMKHhcyCufEOksecMJx6YY6AvegAvFQ?=
- =?us-ascii?Q?FNVui9P6tF6jntnyJbyDFFtoTwLwf4HuY5iyCEXcCCAIkQVMdE9sE70f1xQi?=
- =?us-ascii?Q?9WIPtBWsqX7eK+x4RCDle7w+XVJLfE+tPmUHud0ef/sZwQlVsnMT59TpcL4l?=
- =?us-ascii?Q?7GD4On8vLCvvPFEf0kuU7ZngAdt/sg0YscTLLnNWt2sRdZJafZ91jRY8P945?=
- =?us-ascii?Q?hdjtCrLVJP5dndBmn5d7dBT0Tb63HR0jZVEAULjYwlh+QY+37spXWKgR1XW3?=
- =?us-ascii?Q?73ir6pzlkxQFQh0TVKD0rnVYkp0doME2Lf554SRlQfNBQqG8sQR2vYiKJgMB?=
- =?us-ascii?Q?sw5oXWHP/Jr3pXgkJMy2rXIrBP7Q5AI6heeqoVhvAC7qHpdH3LovEOUuBhi/?=
- =?us-ascii?Q?z4l2Ws14NDF3jlaKpHJyLeBD4NBjPlgAjsw3BsNg5bt6aJ11v9hNZIj6nw0C?=
- =?us-ascii?Q?ly947T59x0z02YwDTqYpngdU7p6GEDP131C4RC10AqROTvd+tqYJWFl3b7uw?=
- =?us-ascii?Q?XJafLI6TObPjtifLux/Vgqixe+R5rB8RtBZWtPCYW+wq8JibQyc9iUzz4pTx?=
- =?us-ascii?Q?hqVa7DXAoc5Qk6eigwAjygTD31SxkKVj3LNDX+nx1rDL+n2jEBm+RjO9VLyW?=
- =?us-ascii?Q?tfm4KrWD9OQqIFEJsCphOOlMKTsd0cUGWZl5ojmj74rJED2eXGI75ml+pUlV?=
- =?us-ascii?Q?Onou/hhmN2lNlrAT3DYHdHivBxhybitnV/a5CQ2mPp96tkjbtu3hgRcNnhyX?=
- =?us-ascii?Q?mOcdfrJGFzuaojCzl0hevD0lYw1o0wwyBusK14xIfsJBjYh/cuttjmjJANml?=
- =?us-ascii?Q?a414DumnLrEB1LXZnnQwh2VNEehqgfm/XUsMVAcpDPsmUhU4L6P28vrbOpey?=
- =?us-ascii?Q?813nBHt3qL/4kuiniYCLNLzHHIRksUBbJ5Vj66/eftVyxfycTpitYP9VVfZr?=
- =?us-ascii?Q?XRLs954tGSWJnkYuF0Xr64/7M4WkAswf0+KoAauRHYCnwYqMFLeSlco1JYpO?=
- =?us-ascii?Q?QnA8EBBvq0zG10WVb5f5LTRo9wo+VhkDNj1ON8K3SsWGlOntpdohjei/sKu+?=
- =?us-ascii?Q?YOwFnEABLqND7aF1N2YAbkYgmKKpl2A7o7Fa8BM4bpGWTNs8EzuElfSh8CzO?=
- =?us-ascii?Q?tCwgF8siBeS7NuS6VAFxk4ydLD9eszmhzyf7lQAsE891JUkh0kpgF5z957mi?=
- =?us-ascii?Q?PIVqttebyDl9lU4PAbpgFOZPe87GQHHSc3BaT4vvyqjbSCUiaK3waFrE5bLy?=
- =?us-ascii?Q?2ySKjr7yDqR+DN2bhcituX80KiwE/QBQ6IX5mU/DEu2kVntGCZE6GVkiblQe?=
- =?us-ascii?Q?N+PJM3i2v1s6XCgmm/80/9yAnLjj6pFOKeRzAwHzTseUDj82lj2hXc6UjiwD?=
- =?us-ascii?Q?tbFfr5VmLk7KK6ewPgJcuq90Ele6spFDiBFZkUANczt5XRBDibcWK1Ec6v+D?=
- =?us-ascii?Q?d+EjzfdDs0kKPG00sV9reF3XuU5gCMxUNIjyEFpjxRZQ6m0+yNVaxYfbbzvT?=
- =?us-ascii?Q?oMOljgAUpDoc2w/Kk2FmJuJcyLcXe9w2B8gwGZSo9oQG/kNvqbmTr0U+YHAx?=
- =?us-ascii?Q?I9iNAuSCBjj6zgcp5NVgSlMoxZjiomRYhxbvT/PGHMizIwwliPBjOP96l+jo?=
- =?us-ascii?Q?7fgeXZtgxv38yl23aWv9VVJ6ffRrnmHnE0NM//dG/iHNaV5TNgLTrXXV6xgu?=
- =?us-ascii?Q?ZTkIrMiRNJJ2R+Q3dP+UZJr/MWUacoIDLhOZWmeKTvSbmfPD?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bd87eac1-66d3-4e0e-abfe-08de550d35c2
-X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8951.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jan 2026 14:40:35.9310
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: cwZfsMhfd4M0GaOQiKxzvXk+/VMLdHMeusHsavZechbAD33dt5nVjrKcy7oLokMLQp2wbmF9k21RLgiK2RtXjg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA2PR04MB10506
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20260116-sheaves-for-all-v3-6-5595cb000772@suse.cz>
+References: <20260116-sheaves-for-all-v3-0-5595cb000772@suse.cz>
+In-Reply-To: <20260116-sheaves-for-all-v3-0-5595cb000772@suse.cz>
+To: Harry Yoo <harry.yoo@oracle.com>, Petr Tesarik <ptesarik@suse.com>, 
+ Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>, 
+ Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Hao Li <hao.li@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+ Uladzislau Rezki <urezki@gmail.com>, 
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
+ Suren Baghdasaryan <surenb@google.com>, 
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
+ Alexei Starovoitov <ast@kernel.org>, linux-mm@kvack.org, 
+ linux-kernel@vger.kernel.org, linux-rt-devel@lists.linux.dev, 
+ bpf@vger.kernel.org, kasan-dev@googlegroups.com, 
+ Vlastimil Babka <vbabka@suse.cz>
+X-Mailer: b4 0.14.3
+X-Spamd-Result: default: False [-4.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	FREEMAIL_CC(0.00)[linux.dev,linux-foundation.org,gmail.com,oracle.com,google.com,linutronix.de,kernel.org,kvack.org,vger.kernel.org,lists.linux.dev,googlegroups.com,suse.cz];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	MID_RHS_MATCH_FROM(0.00)[];
+	R_RATELIMIT(0.00)[to_ip_from(RLfsjnp7neds983g95ihcnuzgq)];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Score: -4.51
+X-Rspamd-Queue-Id: 460AA5BE85
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spam-Level: 
 
-On Fri, Jan 16, 2026 at 03:40:26PM +0800, Wei Fang wrote:
-> To support AF_XDP zero-copy mode in the subsequent patch, the following
-> adjustments have been made to fec_tx_queue().
->
-> 1. Change the parameters of fec_tx_queue().
-> 2. Some variables are initialized at the time of declaration, and the
-> order of local variables is updated to follow the reverse xmas tree
-> style.
-> 3. Remove the variable xdpf and add the variable tx_buf.
->
-> Signed-off-by: Wei Fang <wei.fang@nxp.com>
-> ---
-Reviewed-by: Frank Li <Frank.Li@nxp.com>
->  drivers/net/ethernet/freescale/fec_main.c | 43 +++++++++--------------
->  1 file changed, 17 insertions(+), 26 deletions(-)
->
-> diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
-> index 68aa94dd9487..7b5fe7da7210 100644
-> --- a/drivers/net/ethernet/freescale/fec_main.c
-> +++ b/drivers/net/ethernet/freescale/fec_main.c
-> @@ -1467,27 +1467,18 @@ fec_enet_hwtstamp(struct fec_enet_private *fep, unsigned ts,
->  	hwtstamps->hwtstamp = ns_to_ktime(ns);
->  }
->
-> -static void
-> -fec_enet_tx_queue(struct net_device *ndev, u16 queue_id, int budget)
-> +static void fec_enet_tx_queue(struct fec_enet_private *fep,
-> +			      u16 queue, int budget)
->  {
-> -	struct	fec_enet_private *fep;
-> -	struct xdp_frame *xdpf;
-> -	struct bufdesc *bdp;
-> +	struct netdev_queue *nq = netdev_get_tx_queue(fep->netdev, queue);
-> +	struct fec_enet_priv_tx_q *txq = fep->tx_queue[queue];
-> +	struct net_device *ndev = fep->netdev;
-> +	struct bufdesc *bdp = txq->dirty_tx;
-> +	int index, frame_len, entries_free;
-> +	struct fec_tx_buffer *tx_buf;
->  	unsigned short status;
-> -	struct	sk_buff	*skb;
-> -	struct fec_enet_priv_tx_q *txq;
-> -	struct netdev_queue *nq;
-> -	int	index = 0;
-> -	int	entries_free;
-> +	struct sk_buff *skb;
->  	struct page *page;
-> -	int frame_len;
-> -
-> -	fep = netdev_priv(ndev);
-> -
-> -	txq = fep->tx_queue[queue_id];
-> -	/* get next bdp of dirty_tx */
-> -	nq = netdev_get_tx_queue(ndev, queue_id);
-> -	bdp = txq->dirty_tx;
->
->  	/* get next bdp of dirty_tx */
->  	bdp = fec_enet_get_nextdesc(bdp, &txq->bd);
-> @@ -1500,9 +1491,10 @@ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id, int budget)
->  			break;
->
->  		index = fec_enet_get_bd_index(bdp, &txq->bd);
-> +		tx_buf = &txq->tx_buf[index];
->  		frame_len = fec16_to_cpu(bdp->cbd_datlen);
->
-> -		switch (txq->tx_buf[index].type) {
-> +		switch (tx_buf->type) {
->  		case FEC_TXBUF_T_SKB:
->  			if (bdp->cbd_bufaddr &&
->  			    !IS_TSO_HEADER(txq, fec32_to_cpu(bdp->cbd_bufaddr)))
-> @@ -1511,7 +1503,7 @@ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id, int budget)
->  						 frame_len, DMA_TO_DEVICE);
->
->  			bdp->cbd_bufaddr = cpu_to_fec32(0);
-> -			skb = txq->tx_buf[index].buf_p;
-> +			skb = tx_buf->buf_p;
->  			if (!skb)
->  				goto tx_buf_done;
->
-> @@ -1542,19 +1534,18 @@ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id, int budget)
->  			if (unlikely(!budget))
->  				goto out;
->
-> -			xdpf = txq->tx_buf[index].buf_p;
->  			dma_unmap_single(&fep->pdev->dev,
->  					 fec32_to_cpu(bdp->cbd_bufaddr),
->  					 frame_len,  DMA_TO_DEVICE);
->  			bdp->cbd_bufaddr = cpu_to_fec32(0);
-> -			xdp_return_frame_rx_napi(xdpf);
-> +			xdp_return_frame_rx_napi(tx_buf->buf_p);
->  			break;
->  		case FEC_TXBUF_T_XDP_TX:
->  			if (unlikely(!budget))
->  				goto out;
->
->  			bdp->cbd_bufaddr = cpu_to_fec32(0);
-> -			page = txq->tx_buf[index].buf_p;
-> +			page = tx_buf->buf_p;
->  			/* The dma_sync_size = 0 as XDP_TX has already synced
->  			 * DMA for_device
->  			 */
-> @@ -1591,9 +1582,9 @@ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id, int budget)
->  		if (status & BD_ENET_TX_DEF)
->  			ndev->stats.collisions++;
->
-> -		txq->tx_buf[index].buf_p = NULL;
-> +		tx_buf->buf_p = NULL;
->  		/* restore default tx buffer type: FEC_TXBUF_T_SKB */
-> -		txq->tx_buf[index].type = FEC_TXBUF_T_SKB;
-> +		tx_buf->type = FEC_TXBUF_T_SKB;
->
->  tx_buf_done:
->  		/* Make sure the update to bdp and tx_buf are performed
-> @@ -1629,7 +1620,7 @@ static void fec_enet_tx(struct net_device *ndev, int budget)
->
->  	/* Make sure that AVB queues are processed first. */
->  	for (i = fep->num_tx_queues - 1; i >= 0; i--)
-> -		fec_enet_tx_queue(ndev, i, budget);
-> +		fec_enet_tx_queue(fep, i, budget);
->  }
->
->  static int fec_enet_update_cbd(struct fec_enet_priv_rx_q *rxq,
-> --
-> 2.34.1
->
+Until now, kmem_cache->cpu_sheaves was !NULL only for caches with
+sheaves enabled. Since we want to enable them for almost all caches,
+it's suboptimal to test the pointer in the fast paths, so instead
+allocate it for all caches in do_kmem_cache_create(). Instead of testing
+the cpu_sheaves pointer to recognize caches (yet) without sheaves, test
+kmem_cache->sheaf_capacity for being 0, where needed, using a new
+cache_has_sheaves() helper.
+
+However, for the fast paths sake we also assume that the main sheaf
+always exists (pcs->main is !NULL), and during bootstrap we cannot
+allocate sheaves yet.
+
+Solve this by introducing a single static bootstrap_sheaf that's
+assigned as pcs->main during bootstrap. It has a size of 0, so during
+allocations, the fast path will find it's empty. Since the size of 0
+matches sheaf_capacity of 0, the freeing fast paths will find it's
+"full". In the slow path handlers, we use cache_has_sheaves() to
+recognize that the cache doesn't (yet) have real sheaves, and fall back.
+Thus sharing the single bootstrap sheaf like this for multiple caches
+and cpus is safe.
+
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+---
+ mm/slub.c | 119 ++++++++++++++++++++++++++++++++++++++++++--------------------
+ 1 file changed, 81 insertions(+), 38 deletions(-)
+
+diff --git a/mm/slub.c b/mm/slub.c
+index edf341c87e20..706cb6398f05 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -501,6 +501,18 @@ struct kmem_cache_node {
+ 	struct node_barn *barn;
+ };
+ 
++/*
++ * Every cache has !NULL s->cpu_sheaves but they may point to the
++ * bootstrap_sheaf temporarily during init, or permanently for the boot caches
++ * and caches with debugging enabled, or all caches with CONFIG_SLUB_TINY. This
++ * helper distinguishes whether cache has real non-bootstrap sheaves.
++ */
++static inline bool cache_has_sheaves(struct kmem_cache *s)
++{
++	/* Test CONFIG_SLUB_TINY for code elimination purposes */
++	return !IS_ENABLED(CONFIG_SLUB_TINY) && s->sheaf_capacity;
++}
++
+ static inline struct kmem_cache_node *get_node(struct kmem_cache *s, int node)
+ {
+ 	return s->node[node];
+@@ -2855,6 +2867,10 @@ static void pcs_destroy(struct kmem_cache *s)
+ 		if (!pcs->main)
+ 			continue;
+ 
++		/* bootstrap or debug caches, it's the bootstrap_sheaf */
++		if (!pcs->main->cache)
++			continue;
++
+ 		/*
+ 		 * We have already passed __kmem_cache_shutdown() so everything
+ 		 * was flushed and there should be no objects allocated from
+@@ -4030,7 +4046,7 @@ static bool has_pcs_used(int cpu, struct kmem_cache *s)
+ {
+ 	struct slub_percpu_sheaves *pcs;
+ 
+-	if (!s->cpu_sheaves)
++	if (!cache_has_sheaves(s))
+ 		return false;
+ 
+ 	pcs = per_cpu_ptr(s->cpu_sheaves, cpu);
+@@ -4052,7 +4068,7 @@ static void flush_cpu_slab(struct work_struct *w)
+ 
+ 	s = sfw->s;
+ 
+-	if (s->cpu_sheaves)
++	if (cache_has_sheaves(s))
+ 		pcs_flush_all(s);
+ 
+ 	flush_this_cpu_slab(s);
+@@ -4157,7 +4173,7 @@ void flush_all_rcu_sheaves(void)
+ 	mutex_lock(&slab_mutex);
+ 
+ 	list_for_each_entry(s, &slab_caches, list) {
+-		if (!s->cpu_sheaves)
++		if (!cache_has_sheaves(s))
+ 			continue;
+ 		flush_rcu_sheaves_on_cache(s);
+ 	}
+@@ -4179,7 +4195,7 @@ static int slub_cpu_dead(unsigned int cpu)
+ 	mutex_lock(&slab_mutex);
+ 	list_for_each_entry(s, &slab_caches, list) {
+ 		__flush_cpu_slab(s, cpu);
+-		if (s->cpu_sheaves)
++		if (cache_has_sheaves(s))
+ 			__pcs_flush_all_cpu(s, cpu);
+ 	}
+ 	mutex_unlock(&slab_mutex);
+@@ -4979,6 +4995,12 @@ __pcs_replace_empty_main(struct kmem_cache *s, struct slub_percpu_sheaves *pcs,
+ 
+ 	lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock));
+ 
++	/* Bootstrap or debug cache, back off */
++	if (unlikely(!cache_has_sheaves(s))) {
++		local_unlock(&s->cpu_sheaves->lock);
++		return NULL;
++	}
++
+ 	if (pcs->spare && pcs->spare->size > 0) {
+ 		swap(pcs->main, pcs->spare);
+ 		return pcs;
+@@ -5165,6 +5187,11 @@ unsigned int alloc_from_pcs_bulk(struct kmem_cache *s, size_t size, void **p)
+ 		struct slab_sheaf *full;
+ 		struct node_barn *barn;
+ 
++		if (unlikely(!cache_has_sheaves(s))) {
++			local_unlock(&s->cpu_sheaves->lock);
++			return allocated;
++		}
++
+ 		if (pcs->spare && pcs->spare->size > 0) {
+ 			swap(pcs->main, pcs->spare);
+ 			goto do_alloc;
+@@ -5244,8 +5271,7 @@ static __fastpath_inline void *slab_alloc_node(struct kmem_cache *s, struct list
+ 	if (unlikely(object))
+ 		goto out;
+ 
+-	if (s->cpu_sheaves)
+-		object = alloc_from_pcs(s, gfpflags, node);
++	object = alloc_from_pcs(s, gfpflags, node);
+ 
+ 	if (!object)
+ 		object = __slab_alloc_node(s, gfpflags, node, addr, orig_size);
+@@ -5355,17 +5381,6 @@ kmem_cache_prefill_sheaf(struct kmem_cache *s, gfp_t gfp, unsigned int size)
+ 
+ 	if (unlikely(size > s->sheaf_capacity)) {
+ 
+-		/*
+-		 * slab_debug disables cpu sheaves intentionally so all
+-		 * prefilled sheaves become "oversize" and we give up on
+-		 * performance for the debugging. Same with SLUB_TINY.
+-		 * Creating a cache without sheaves and then requesting a
+-		 * prefilled sheaf is however not expected, so warn.
+-		 */
+-		WARN_ON_ONCE(s->sheaf_capacity == 0 &&
+-			     !IS_ENABLED(CONFIG_SLUB_TINY) &&
+-			     !(s->flags & SLAB_DEBUG_FLAGS));
+-
+ 		sheaf = kzalloc(struct_size(sheaf, objects, size), gfp);
+ 		if (!sheaf)
+ 			return NULL;
+@@ -6082,6 +6097,12 @@ __pcs_replace_full_main(struct kmem_cache *s, struct slub_percpu_sheaves *pcs)
+ restart:
+ 	lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock));
+ 
++	/* Bootstrap or debug cache, back off */
++	if (unlikely(!cache_has_sheaves(s))) {
++		local_unlock(&s->cpu_sheaves->lock);
++		return NULL;
++	}
++
+ 	barn = get_barn(s);
+ 	if (!barn) {
+ 		local_unlock(&s->cpu_sheaves->lock);
+@@ -6280,6 +6301,12 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj)
+ 		struct slab_sheaf *empty;
+ 		struct node_barn *barn;
+ 
++		/* Bootstrap or debug cache, fall back */
++		if (unlikely(!cache_has_sheaves(s))) {
++			local_unlock(&s->cpu_sheaves->lock);
++			goto fail;
++		}
++
+ 		if (pcs->spare && pcs->spare->size == 0) {
+ 			pcs->rcu_free = pcs->spare;
+ 			pcs->spare = NULL;
+@@ -6674,9 +6701,8 @@ void slab_free(struct kmem_cache *s, struct slab *slab, void *object,
+ 	if (unlikely(!slab_free_hook(s, object, slab_want_init_on_free(s), false)))
+ 		return;
+ 
+-	if (s->cpu_sheaves && likely(!IS_ENABLED(CONFIG_NUMA) ||
+-				     slab_nid(slab) == numa_mem_id())
+-			   && likely(!slab_test_pfmemalloc(slab))) {
++	if (likely(!IS_ENABLED(CONFIG_NUMA) || slab_nid(slab) == numa_mem_id())
++	    && likely(!slab_test_pfmemalloc(slab))) {
+ 		if (likely(free_to_pcs(s, object)))
+ 			return;
+ 	}
+@@ -7379,7 +7405,7 @@ void kmem_cache_free_bulk(struct kmem_cache *s, size_t size, void **p)
+ 	 * freeing to sheaves is so incompatible with the detached freelist so
+ 	 * once we go that way, we have to do everything differently
+ 	 */
+-	if (s && s->cpu_sheaves) {
++	if (s && cache_has_sheaves(s)) {
+ 		free_to_pcs_bulk(s, size, p);
+ 		return;
+ 	}
+@@ -7490,8 +7516,7 @@ int kmem_cache_alloc_bulk_noprof(struct kmem_cache *s, gfp_t flags, size_t size,
+ 		size--;
+ 	}
+ 
+-	if (s->cpu_sheaves)
+-		i = alloc_from_pcs_bulk(s, size, p);
++	i = alloc_from_pcs_bulk(s, size, p);
+ 
+ 	if (i < size) {
+ 		/*
+@@ -7702,6 +7727,7 @@ static inline int alloc_kmem_cache_cpus(struct kmem_cache *s)
+ 
+ static int init_percpu_sheaves(struct kmem_cache *s)
+ {
++	static struct slab_sheaf bootstrap_sheaf = {};
+ 	int cpu;
+ 
+ 	for_each_possible_cpu(cpu) {
+@@ -7711,7 +7737,28 @@ static int init_percpu_sheaves(struct kmem_cache *s)
+ 
+ 		local_trylock_init(&pcs->lock);
+ 
+-		pcs->main = alloc_empty_sheaf(s, GFP_KERNEL);
++		/*
++		 * Bootstrap sheaf has zero size so fast-path allocation fails.
++		 * It has also size == s->sheaf_capacity, so fast-path free
++		 * fails. In the slow paths we recognize the situation by
++		 * checking s->sheaf_capacity. This allows fast paths to assume
++		 * s->cpu_sheaves and pcs->main always exists and is valid.
++		 * It's also safe to share the single static bootstrap_sheaf
++		 * with zero-sized objects array as it's never modified.
++		 *
++		 * bootstrap_sheaf also has NULL pointer to kmem_cache so we
++		 * recognize it and not attempt to free it when destroying the
++		 * cache
++		 *
++		 * We keep bootstrap_sheaf for kmem_cache and kmem_cache_node,
++		 * caches with debug enabled, and all caches with SLUB_TINY.
++		 * For kmalloc caches it's used temporarily during the initial
++		 * bootstrap.
++		 */
++		if (!s->sheaf_capacity)
++			pcs->main = &bootstrap_sheaf;
++		else
++			pcs->main = alloc_empty_sheaf(s, GFP_KERNEL);
+ 
+ 		if (!pcs->main)
+ 			return -ENOMEM;
+@@ -7809,7 +7856,7 @@ static int init_kmem_cache_nodes(struct kmem_cache *s)
+ 			continue;
+ 		}
+ 
+-		if (s->cpu_sheaves) {
++		if (cache_has_sheaves(s)) {
+ 			barn = kmalloc_node(sizeof(*barn), GFP_KERNEL, node);
+ 
+ 			if (!barn)
+@@ -8127,7 +8174,7 @@ int __kmem_cache_shutdown(struct kmem_cache *s)
+ 	flush_all_cpus_locked(s);
+ 
+ 	/* we might have rcu sheaves in flight */
+-	if (s->cpu_sheaves)
++	if (cache_has_sheaves(s))
+ 		rcu_barrier();
+ 
+ 	/* Attempt to free all objects */
+@@ -8439,7 +8486,7 @@ static int slab_mem_going_online_callback(int nid)
+ 		if (get_node(s, nid))
+ 			continue;
+ 
+-		if (s->cpu_sheaves) {
++		if (cache_has_sheaves(s)) {
+ 			barn = kmalloc_node(sizeof(*barn), GFP_KERNEL, nid);
+ 
+ 			if (!barn) {
+@@ -8647,12 +8694,10 @@ int do_kmem_cache_create(struct kmem_cache *s, const char *name,
+ 
+ 	set_cpu_partial(s);
+ 
+-	if (s->sheaf_capacity) {
+-		s->cpu_sheaves = alloc_percpu(struct slub_percpu_sheaves);
+-		if (!s->cpu_sheaves) {
+-			err = -ENOMEM;
+-			goto out;
+-		}
++	s->cpu_sheaves = alloc_percpu(struct slub_percpu_sheaves);
++	if (!s->cpu_sheaves) {
++		err = -ENOMEM;
++		goto out;
+ 	}
+ 
+ #ifdef CONFIG_NUMA
+@@ -8671,11 +8716,9 @@ int do_kmem_cache_create(struct kmem_cache *s, const char *name,
+ 	if (!alloc_kmem_cache_cpus(s))
+ 		goto out;
+ 
+-	if (s->cpu_sheaves) {
+-		err = init_percpu_sheaves(s);
+-		if (err)
+-			goto out;
+-	}
++	err = init_percpu_sheaves(s);
++	if (err)
++		goto out;
+ 
+ 	err = 0;
+ 
+
+-- 
+2.52.0
+
 
