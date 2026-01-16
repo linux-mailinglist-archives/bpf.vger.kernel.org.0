@@ -1,263 +1,230 @@
-Return-Path: <bpf+bounces-79201-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79202-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5CF0D2D42A
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 08:33:25 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 599BBD2D46A
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 08:34:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2B747303B7E1
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 07:32:07 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 3A2493037899
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 07:34:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BB412DE6F8;
-	Fri, 16 Jan 2026 07:32:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCA2232D7F8;
+	Fri, 16 Jan 2026 07:34:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="hL/jJS0K";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="VbiDfBAZ";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="pWRLH+sp";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="yYaTRxrR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ebxacMPQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-oo1-f67.google.com (mail-oo1-f67.google.com [209.85.161.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1BF7239594
-	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 07:32:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768548725; cv=none; b=fI+T0kPjbXPXZBj+NLGhSturNYvgcKwCHBPq1GyrqZj4yFsOLfIagZdW+fpxHrPePem9Sf/z5xd/+FTKmAOXBD1ePiQI/y6Uxt0g9n4l0Ge5vNRSrRvsk5RhKGS3z+s4xlqjkUlOUnU+RXOt3JHtlCbACIpb1zw+0LdcmwSECIY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768548725; c=relaxed/simple;
-	bh=ZtQxJ8ueBoqXAK3o1iU2HX2eU/98FbTJWjS5Tjp61Jc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uqgPtMvt5FdFdV1u++q3A2lz0FUMhqr9z4RY5+47QMjmj4sFI+8YwZDNyVNNtLR+OXQ1kFWySZfcdM9z6wTdaFziab9dIz4xCci5HD31NknEaiabsyF7ckrtDUsBz6UeTaMAmB/I1J9MDbO3GE5rN3wRTc52byp5pc2U9wiyYIU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=hL/jJS0K; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=VbiDfBAZ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=pWRLH+sp; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=yYaTRxrR; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 9F9D23368D;
-	Fri, 16 Jan 2026 07:32:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1768548722; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=J2wMFYYHoLIThQowW1m8IBwEmgJ9j6LTflF8fZXK/As=;
-	b=hL/jJS0KTC2jbJHdoBF//DpqTjKeB8QXjauyPkmUBdYycD18rietaH1qXesIeuj0pOGXpU
-	3gKFjCDN7+209wweEh2lwBfZXosK/72g3eqaEP1GJqgoazLFlcEBia4sy6I0NL5u41ivbT
-	BiLlFGi6KE8iLmswGYdSNA3244LghV0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1768548722;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=J2wMFYYHoLIThQowW1m8IBwEmgJ9j6LTflF8fZXK/As=;
-	b=VbiDfBAZit/VibmjpApls2s/VKBpsq4qZV66Pe5cjvQpfFea9IK2vi9Gu2HOey/KyHHWIE
-	pNfzjyCdzdgyL/Ag==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1768548720; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=J2wMFYYHoLIThQowW1m8IBwEmgJ9j6LTflF8fZXK/As=;
-	b=pWRLH+spXqtExwaW6Va5t+kWsGQFZancyDdB1ooHaZyGXsTmq1f4ToFA6/rHxyehQnfpKd
-	oHQV71Pwj/mfetNBS5krPZqeC1pjwWFTkpO8qJGnXxhmcToDJQ929heAup+YslyoLQ6/eS
-	hKKmeAZgzxaSZ/yMIefQ7/+kCW9Iz+Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1768548720;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=J2wMFYYHoLIThQowW1m8IBwEmgJ9j6LTflF8fZXK/As=;
-	b=yYaTRxrR3IzxX6QikSaiombwVAayWwW/4zyaAQLMXXw0jSwZPZXKWx7Tk36yzCJ98pl+gF
-	7h1SE9+poq0AfCAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 788233EA63;
-	Fri, 16 Jan 2026 07:32:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id jQHIG3DpaWlfTAAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Fri, 16 Jan 2026 07:32:00 +0000
-Message-ID: <bb58c778-be6b-445e-a331-ddaf04f97f0e@suse.cz>
-Date: Fri, 16 Jan 2026 08:32:00 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CA2B61FFE
+	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 07:34:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.161.67
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768548893; cv=pass; b=DjR8wRIpTP1fY7vIkSWhYFkEq30vsALQPGUuTTFnfXmUf8lUwyYWlSaOpcGhme4XJROugj/fEFNu2jXIbnTWGKbinKR1eatwdQjA/HXkCwMV6zgiLZWA0Bk94XvV87ZlQUTl8GcpsGmSnHyOYZEW7QErs5IRq9gIiZfq3Xz4IqY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768548893; c=relaxed/simple;
+	bh=SyMhS5QbwcKkKj77rhNIBpICR2pVeJ+bAsm2RnwaIWI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cwpLrH19wL8G7krYiLWEhtYIAxmNg2W0C0yk3opDKiibxKzgIIyMTBEPc+aWZnADFNpi+4bym5iEZZr1DdHiZn3DRiBNXg2v0fXtMKVUntApEYPdTZCcDM6eQf6rXALoxOSygGXDXi8/SNauxkGSCGpYbuVE3QNRhsSlwldubE4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ebxacMPQ; arc=pass smtp.client-ip=209.85.161.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f67.google.com with SMTP id 006d021491bc7-66106a2f8d0so1151104eaf.2
+        for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 23:34:49 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1768548889; cv=none;
+        d=google.com; s=arc-20240605;
+        b=VuZefKRaoSJQo/4wsx7lUVWCxsUZpniZBXjCd9ECS9OkvFtDiSrMMDfhKlQch4k5t0
+         z/CLfegkBGGBpWXsj6HcQsk10RmSwLSAz+O76WJvltRYBnsSNCvoD7f2CAj0GKCLbRON
+         tT+Hr8ejZjjclOWeqDNgYetUeCwo742hOTUlFqGTO4dIwhQpqjqtCDSP9+vkG0K602DV
+         zqgxafKI+MEgIFszZXRccQ2yZeQHZXrX4j2HRblZ+5XS4vVFUa9DGFde71NBRaVW5og5
+         uNB21rjMo9vkltdor9pD355YbrUhKV0ucPbRV+FN4+cbtyyafq0RWjaCb7u4YDvwBgZ6
+         Eh6w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=BhAxLviBcLQS3g2rBMwRxBWgs7dTFQtXoUkJppLhRfE=;
+        fh=tO80IZDqCrhwPFeZWIA5evn6CX76GCzQzbZA5XHZqjk=;
+        b=fPqXr8kFNjAcqMJ4Rv8Riuzc2mgFRCdJQ/vWZyRK3t5ZiUzE2H++hFfzcdJ3Eg8WwE
+         ar3x59+c9FVn63sXrSKSxuS1V/yOa91Cbk2CiggQVaSoNeS3hwR0xYd9q5yoDr1mvelc
+         xBMEvaSp6luw6oXwxANnaKb7zYRh3PpElIXcjxflr16t/ay6n1WFuJyVUYAlKMiKii80
+         JMSZjGRgMQr2oI8xUA+iKUXAuRu5Hgl7u+rSF8jnyL3G5ocM7q/LeGMdyywEVDulyDVn
+         3t+cgBf1d7Ju4yKzSK9XfRGvtd69H8KsiKIVnmhdAkgYk6OzNZLNvj6/wZ9ZqNHJHiE5
+         XR0Q==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1768548889; x=1769153689; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=BhAxLviBcLQS3g2rBMwRxBWgs7dTFQtXoUkJppLhRfE=;
+        b=ebxacMPQ7so/gAQ5DLf2qy3VnAbjkgeU1ituTCKlljsuDcfa3KPcl7cgFBv7qodN5X
+         9P3yc/4JkZGG/4baItWasNAi5jwSMjjYdxLEdJhEmJV34vmL7EmXVusRR1qx/xaGRH5a
+         afx6Y8GHWzlL1nExSBjHyud+d7wOgR2HWqGAd97XOW7cv6qVZ37HnZsiFvCvCk4GSuf/
+         MQWbuND8E5GE+ph2+nUfQxSx4+b621yWu3FoMTxjsdslRjPMh71oP4KzuuT2iGRUr+K2
+         egnrLeOJgCAQ1OB6LX9yIMCjFL1xNYHiQQUy9NOqXou+NUH7ByaC37YvxL0QVbpYmZB5
+         TDBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768548889; x=1769153689;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BhAxLviBcLQS3g2rBMwRxBWgs7dTFQtXoUkJppLhRfE=;
+        b=VEz6OM1ij5iBvhimNdcAh+xF+L4bndGLy0Porn1DKpHUnQd91NZA0VEAru3vjs5lJz
+         voxag+v4GZp/Bk42kHV/v60vYaqe3+AXE3xZv+Gliim1PLPcrRLg565SbTApPvsG3O9a
+         ydDLbOIh25zVegyXSV+6guJKuYf5we1IOwXniOoVPBtsp1pC+pxdmxDglMjiKBE0OPCo
+         2w+tWsvoPEixIec3lzZjiLhQVHNweQT4500BTQ0TOLNXAVamVwPq9neEfbX5lDhxcPsO
+         6YBTJFlxEvN4T8ilsmAfgOeeztFRHgjcGdpQOt17NLZx2ftwmjqBDRl4AuWPz1VM+WAa
+         Xm4g==
+X-Gm-Message-State: AOJu0Yyxab8cNN8Du1C2uvNsCCZrqQCUPPp7NLJfWnu9IhOSjc4eCmiA
+	g+SYKMad4Aq8FNo3NhVG/raMGO2Z6sYV3X20D9dCfXzE9nG/5Bx3h/h63vBS1L4nv0eHxvLFw97
+	XoxGWglCd6IHumwFSv4g6iTmXdPXbbUhOeAkZvdg=
+X-Gm-Gg: AY/fxX6Ynk/IAxcvlS7Z9nNoEoqvO6gbosblnPiKpkyKqrndhmcBvIECIfYoeE5c1OL
+	TIqs88szdI8YGomqUHcz+C3ZaiwJZQp3E34pVG3+bX96XCys8gab53YTSzOnN1zPk6BNtu4LpqX
+	bgSUaAh41Re7wcsH0PpvvYfi1lNhLA+UZJiIwe2CbJwFueZWrWxwXZEW5vsOS5s8a59FODdYlYi
+	QT0eriItuWtLvUTCSLlUnML1Ww/rMNxhVaBNpBk4v6kxw7McWau/VAR501Em9nKxXAP1HsPyj71
+	NP6gu8CWeBrgAKotbNPbjnDHy3wEtPfw4R7TM+2GVxaKSZOzfqRItVnNa77jUg==
+X-Received: by 2002:a05:6820:4510:b0:65d:4d4:e7ad with SMTP id
+ 006d021491bc7-66117959669mr836591eaf.13.1768548889006; Thu, 15 Jan 2026
+ 23:34:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v2 08/20] slab: add optimized sheaf refill from
- partial list
-Content-Language: en-US
-To: Hao Li <hao.li@linux.dev>
-Cc: Harry Yoo <harry.yoo@oracle.com>, Petr Tesarik <ptesarik@suse.com>,
- Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>,
- Uladzislau Rezki <urezki@gmail.com>,
- "Liam R. Howlett" <Liam.Howlett@oracle.com>,
- Suren Baghdasaryan <surenb@google.com>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Alexei Starovoitov <ast@kernel.org>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, linux-rt-devel@lists.linux.dev,
- bpf@vger.kernel.org, kasan-dev@googlegroups.com
-References: <20260112-sheaves-for-all-v2-0-98225cfb50cf@suse.cz>
- <20260112-sheaves-for-all-v2-8-98225cfb50cf@suse.cz>
- <38de0039-e0ea-41c4-a293-400798390ea1@suse.cz>
- <kp7fvhxxjyyzk47n67m4xwzgm7gxoqmgglqdvzpkcxqb26sjc4@bu4lil75nc3c>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- m6M14QORSWTLRg==
-In-Reply-To: <kp7fvhxxjyyzk47n67m4xwzgm7gxoqmgglqdvzpkcxqb26sjc4@bu4lil75nc3c>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-4.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[oracle.com,suse.com,gentwo.org,google.com,linux.dev,linux-foundation.org,gmail.com,linutronix.de,kernel.org,kvack.org,vger.kernel.org,lists.linux.dev,googlegroups.com];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:helo]
-X-Spam-Flag: NO
-X-Spam-Score: -4.30
-X-Spam-Level: 
+References: <20260116052245.3692405-1-yonghong.song@linux.dev>
+In-Reply-To: <20260116052245.3692405-1-yonghong.song@linux.dev>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Fri, 16 Jan 2026 08:34:11 +0100
+X-Gm-Features: AZwV_QjIxBbj5AYH3UwJq3vlMRl-SGYEI-vXh-rIXWJX0-CNzLZzmkISXSeWpA0
+Message-ID: <CAP01T77Vbe45h9uyqBHJKGnqxKM_PTi2yS1j8=fchMLgTSwL=g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: Fix map_kptr test failure
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com, 
+	Martin KaFai Lau <martin.lau@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On 1/16/26 07:27, Hao Li wrote:
-> On Thu, Jan 15, 2026 at 03:25:59PM +0100, Vlastimil Babka wrote:
->> On 1/12/26 16:17, Vlastimil Babka wrote:
->> > At this point we have sheaves enabled for all caches, but their refill
->> > is done via __kmem_cache_alloc_bulk() which relies on cpu (partial)
->> > slabs - now a redundant caching layer that we are about to remove.
->> > 
->> > The refill will thus be done from slabs on the node partial list.
->> > Introduce new functions that can do that in an optimized way as it's
->> > easier than modifying the __kmem_cache_alloc_bulk() call chain.
->> > 
->> > Extend struct partial_context so it can return a list of slabs from the
->> > partial list with the sum of free objects in them within the requested
->> > min and max.
->> > 
->> > Introduce get_partial_node_bulk() that removes the slabs from freelist
->> > and returns them in the list.
->> > 
->> > Introduce get_freelist_nofreeze() which grabs the freelist without
->> > freezing the slab.
->> > 
->> > Introduce alloc_from_new_slab() which can allocate multiple objects from
->> > a newly allocated slab where we don't need to synchronize with freeing.
->> > In some aspects it's similar to alloc_single_from_new_slab() but assumes
->> > the cache is a non-debug one so it can avoid some actions.
->> > 
->> > Introduce __refill_objects() that uses the functions above to fill an
->> > array of objects. It has to handle the possibility that the slabs will
->> > contain more objects that were requested, due to concurrent freeing of
->> > objects to those slabs. When no more slabs on partial lists are
->> > available, it will allocate new slabs. It is intended to be only used
->> > in context where spinning is allowed, so add a WARN_ON_ONCE check there.
->> > 
->> > Finally, switch refill_sheaf() to use __refill_objects(). Sheaves are
->> > only refilled from contexts that allow spinning, or even blocking.
->> > 
->> > Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
->> 
->> ...
->> 
->> > +static unsigned int alloc_from_new_slab(struct kmem_cache *s, struct slab *slab,
->> > +		void **p, unsigned int count, bool allow_spin)
->> > +{
->> > +	unsigned int allocated = 0;
->> > +	struct kmem_cache_node *n;
->> > +	unsigned long flags;
->> > +	void *object;
->> > +
->> > +	if (!allow_spin && (slab->objects - slab->inuse) > count) {
->> > +
->> > +		n = get_node(s, slab_nid(slab));
->> > +
->> > +		if (!spin_trylock_irqsave(&n->list_lock, flags)) {
->> > +			/* Unlucky, discard newly allocated slab */
->> > +			defer_deactivate_slab(slab, NULL);
->> 
->> This actually does dec_slabs_node() only with slab->frozen which we don't set.
-> 
-> Hi, I think I follow the intent, but I got a little tripped up here: patch 08
-> (current patch) seems to assume "slab->frozen = 1" is already gone. That's true
-> after the whole series, but the removal only happens in patch 09.
-> 
-> Would it make sense to avoid relying on that assumption when looking at patch 08
-> in isolation?
+On Fri, 16 Jan 2026 at 06:23, Yonghong Song <yonghong.song@linux.dev> wrote:
+>
+> On my arm64 machine, I get the following failure:
+>   ...
+>   tester_init:PASS:tester_log_buf 0 nsec
+>   process_subtest:PASS:obj_open_mem 0 nsec
+>   process_subtest:PASS:specs_alloc 0 nsec
+>   serial_test_map_kptr:PASS:rcu_tasks_trace_gp__open_and_load 0 nsec
+>   ...
+>   test_map_kptr_success:PASS:map_kptr__open_and_load 0 nsec
+>   test_map_kptr_success:PASS:test_map_kptr_ref1 refcount 0 nsec
+>   test_map_kptr_success:FAIL:test_map_kptr_ref1 retval unexpected error: 2 (errno 2)
+>   test_map_kptr_success:PASS:test_map_kptr_ref2 refcount 0 nsec
+>   test_map_kptr_success:FAIL:test_map_kptr_ref2 retval unexpected error: 1 (errno 2)
+>   ...
+>   #201/21  map_kptr/success-map:FAIL
+>
+> In serial_test_map_kptr(), before test_map_kptr_success(), one
+> kern_sync_rcu() is used to have some delay for freeing the map.
+> But in my environment, one kern_sync_rcu() seems not enough and
+> caused the test failure.
+>
+> In bpf_map_free_in_work() in syscall.c, the queue time for
+>   queue_work(system_dfl_wq, &map->work)
+> may be longer than expected. This may cause the test failure
+> since test_map_kptr_success() expects all previous maps having been freed.
+>
+> Since it is not clear how long queue_work() time takes, a bpf prog
+> is added to count the reference after bpf_kfunc_call_test_acquire().
+> If the number of references is 2 (for initial ref and the one just
+> acquired), all previous maps should have been released. This will
+> resolve the above 'retval unexpected error' issue.
+>
+> Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+> ---
 
-Hm I did think it's fine. alloc_from_new_slab() introduced here is only used
-from __refill_objects() and that one doesn't set slab->frozen = 1 on the new
-slab?
+Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 
-Then patch 09 switches ___slab_alloc() to alloc_from_new_slab() and at the
-same time also stops setting slab->frozen = 1 so it should be also fine.
-
-And then 12/20 slab: remove defer_deactivate_slab() removes the frozen = 1
-treatment as nobody uses it anymore.
-
-If there's some mistake in the above, please tell!
-
-Thanks.
+>  .../selftests/bpf/prog_tests/map_kptr.c       | 23 +++++++++++++++++++
+>  tools/testing/selftests/bpf/progs/map_kptr.c  | 18 +++++++++++++++
+>  2 files changed, 41 insertions(+)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/map_kptr.c b/tools/testing/selftests/bpf/prog_tests/map_kptr.c
+> index 8743df599567..f372162c0280 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/map_kptr.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/map_kptr.c
+> @@ -131,6 +131,25 @@ static int kern_sync_rcu_tasks_trace(struct rcu_tasks_trace_gp *rcu)
+>         return 0;
+>  }
+>
+> +static void wait_for_map_release(void)
+> +{
+> +       LIBBPF_OPTS(bpf_test_run_opts, lopts);
+> +       struct map_kptr *skel;
+> +       int ret;
+> +
+> +       skel = map_kptr__open_and_load();
+> +       if (!ASSERT_OK_PTR(skel, "map_kptr__open_and_load"))
+> +               return;
+> +
+> +       do {
+> +               ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.count_ref), &lopts);
+> +               ASSERT_OK(ret, "count_ref ret");
+> +               ASSERT_OK(lopts.retval, "count_ref retval");
+> +       } while (skel->bss->num_of_refs != 2);
+> +
+> +       map_kptr__destroy(skel);
+> +}
+> +
+>  void serial_test_map_kptr(void)
+>  {
+>         struct rcu_tasks_trace_gp *skel;
+> @@ -148,11 +167,15 @@ void serial_test_map_kptr(void)
+>
+>                 ASSERT_OK(kern_sync_rcu_tasks_trace(skel), "sync rcu_tasks_trace");
+>                 ASSERT_OK(kern_sync_rcu(), "sync rcu");
+> +               wait_for_map_release();
+> +
+>                 /* Observe refcount dropping to 1 on bpf_map_free_deferred */
+>                 test_map_kptr_success(false);
+>
+>                 ASSERT_OK(kern_sync_rcu_tasks_trace(skel), "sync rcu_tasks_trace");
+>                 ASSERT_OK(kern_sync_rcu(), "sync rcu");
+> +               wait_for_map_release();
+> +
+>                 /* Observe refcount dropping to 1 on synchronous delete elem */
+>                 test_map_kptr_success(true);
+>         }
+> diff --git a/tools/testing/selftests/bpf/progs/map_kptr.c b/tools/testing/selftests/bpf/progs/map_kptr.c
+> index edaba481db9d..e708ffbe1f61 100644
+> --- a/tools/testing/selftests/bpf/progs/map_kptr.c
+> +++ b/tools/testing/selftests/bpf/progs/map_kptr.c
+> @@ -487,6 +487,24 @@ int test_map_kptr_ref3(struct __sk_buff *ctx)
+>         return 0;
+>  }
+>
+> +int num_of_refs;
+> +
+> +SEC("syscall")
+> +int count_ref(void *ctx)
+> +{
+> +       struct prog_test_ref_kfunc *p;
+> +       unsigned long arg = 0;
+> +
+> +       p = bpf_kfunc_call_test_acquire(&arg);
+> +       if (!p)
+> +               return 1;
+> +
+> +       num_of_refs = p->cnt.refs.counter;
+> +
+> +       bpf_kfunc_call_test_release(p);
+> +       return 0;
+> +}
+> +
+>  SEC("syscall")
+>  int test_ls_map_kptr_ref1(void *ctx)
+>  {
+> --
+> 2.47.3
+>
+>
 
