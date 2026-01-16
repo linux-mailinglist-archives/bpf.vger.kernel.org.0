@@ -1,236 +1,248 @@
-Return-Path: <bpf+bounces-79198-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79199-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 488EED2D106
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 08:19:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C5C3D2D235
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 08:25:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 543AF3094F9F
-	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 07:18:10 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E88F6303AEB8
+	for <lists+bpf@lfdr.de>; Fri, 16 Jan 2026 07:24:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C33E131A046;
-	Fri, 16 Jan 2026 07:18:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BA0D34216C;
+	Fri, 16 Jan 2026 07:24:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nj/uzXTq"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="OLUJb7Uk";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="CP8d3YEF";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="YhgNMuFF";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7p5T4iVz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f196.google.com (mail-pl1-f196.google.com [209.85.214.196])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2ADB2FD7B1
-	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 07:18:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46755329E52
+	for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 07:24:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768547889; cv=none; b=YrvTx1RtL8zieq7op2+slw7we8hJ1J+gtLSHdm4fefvHhLTOkkTO7vJ7XMukB61W8csxB8902CBIC8eFX4DsD79oGL8oFBbZynYsct4v6pksbmsOTju/szSgNKFbBrRPRfJc5kFUzKjrfsnWVsACHm5Or+TT2tgKvL61Hhxf8Gg=
+	t=1768548247; cv=none; b=BGVXpel6uzPbgbwP/+IHAzmZ3D3KMPc7e7bCWFLGcYxAbdAmLx7grAuwHpDG+gK9aMdw811bT5YeXTJ8Dukii37rgahwjqtAJTImF8NY189VnVrmr5YibzIz0iQl7HF9RY0Khe8HQZ8yFO41S8ol/ylraU6d6LtWfAh8kTHfuHE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768547889; c=relaxed/simple;
-	bh=EaAxHhBihNbgSpMWs6VwmPwyGN3Y9pEdX7OYsgkOQdg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SdXXsqm7q9C1c4DIjwRh86/5yISQGO9vQnqNhZru4N5izZ0YN4bzajf8BSoFzWp+O7QLBLukMoDsXKb28g+d0RwddKdZ6fUcyXBSgaWaYCOI251n+pqNZPNmmW3YOelgIjZHW4ThkKDzSO8pbnJbsFh11EUpspW1fnwrOMxJOYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nj/uzXTq; arc=none smtp.client-ip=209.85.214.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f196.google.com with SMTP id d9443c01a7336-2a081c163b0so10017085ad.0
-        for <bpf@vger.kernel.org>; Thu, 15 Jan 2026 23:18:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768547886; x=1769152686; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8W6hsT0Cah8oIHuXixUZEynPv/ALwNuU4vKUiOQ3rA0=;
-        b=nj/uzXTq4YLSFoRTfHyQM/TJhdgZeAjN96mraSn09sBGJWKGtN4GyvlautqfKlaXBQ
-         +w6bXhVYa1E7/rewQ14DP1W1CcUR/w9FO96FDFyyC8tAuF1yc41z96wAwdrMIZlVSFaW
-         9VWe1qLC7ticEVdPxC1PRMcWv/FeWOMZf1nK5OFJfkUHmUgZsis0kPsxgjGyWrvB3O9x
-         50vbTbVsnM++rdQhOqa8MtIxyMbG4EhgdkRrhXgg5PwxFJciQkEPBX22wI21e32ekxBp
-         se9lXDqcVpRzdUOifuSEGFfv4/Atv6Ufw+XJvd6JBQdO6eZnrqvsupjFA90wWuyCII45
-         kdnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768547886; x=1769152686;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=8W6hsT0Cah8oIHuXixUZEynPv/ALwNuU4vKUiOQ3rA0=;
-        b=hQAOj/Ncak+QsOl0vlLGiGrIjDP7S1rAu09hD5stie6DjpO8Ci5KZ1hB0sBzC3/cQN
-         Zb4qtRWffqxGeWuby7ae8xkbpkr4wTMK1eF0z5h3EZKtsgTTsJ/67VqBLmrk3OVXKt+k
-         MP6tMj9TXBAIE+tfjI6srqldvuM8Rid57B1xQZvg5dJ6Eu524fG7hq+PhMXvM7xMAG1v
-         mnKOt0aXDurwjJde4udZ331JdVWr3mJfocphWKOcV2xhMqRO5by9vS5+E0En20DuSS/z
-         I0vj40U+kSAlAZCqnDhvdJvNbPep/NQiiH2oauKc6bEM9t28jCKt/BZBZ+zviGMbosCw
-         jscw==
-X-Forwarded-Encrypted: i=1; AJvYcCXx0ysiHK8rZw5nwYb0dsYUOmI+hHCq3PvT2JUiN1fO5oZ2APR0KBfVjLVBJp1lAdHAXD0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzXwQ3+VKwK0PdyofIAvuWJqYt3dgqCClbITVJcYxZm/UnJTmMH
-	s1GDPO0dX24pHMIZw6rcRKBWddrEBYKVPY1aGbsKCKk2e4duC14U1fYl
-X-Gm-Gg: AY/fxX4vtPvRz0GAHAacKLe5P6fC4VdrTVrVgomg7aODIJlS+2ibZDyFk/B/zM3VUOq
-	olyoB5hAGOyp9eDWlONbOnCTGt/hVjr+M73ZBgeyiQ5FR8HBW6hQ8hTlLC29bS+21pID4PjeglB
-	G77NnF9iTje0+NQi7dkugwYJoIj0o7f4QH2pxM9ETckJ9DwhNyuW8rYutiBVWO3Bae9tcxluOXe
-	Oje+v4MAzjGOfZCpyYqLDGa9Rf+N1++g9XYter7pqlID2h0h2Rz0IbiC3Z4H/++SkfmkKnXOxz9
-	7wAd1q0JRkoeNPHY5jVVrz/YmFbnDOGp3ssvoQTI/rZEudUBTFUuR69OT/sg5/jNRisB4uOTxjD
-	/hLypnnv1jTpWuwZC4PcABG2ft0+L+ImA3JLl3cFSVsPMheTLPg3XkW2ewGxK7ouRZ42Q3SPbxE
-	JMpUdHAUs=
-X-Received: by 2002:a17:903:41c7:b0:297:f8d9:aad7 with SMTP id d9443c01a7336-2a7177dfcb2mr18715785ad.50.1768547886068;
-        Thu, 15 Jan 2026 23:18:06 -0800 (PST)
-Received: from 7940hx ([160.187.0.149])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a7190ce2ebsm12508275ad.32.2026.01.15.23.17.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jan 2026 23:18:05 -0800 (PST)
-From: Menglong Dong <menglong8.dong@gmail.com>
-X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
-To: ast@kernel.org
-Cc: daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	mattbobrowski@google.com,
-	rostedt@goodmis.org,
-	mhiramat@kernel.org,
-	mathieu.desnoyers@efficios.com,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v2 2/2] selftests/bpf: test bpf_get_func_arg() for tp_btf
-Date: Fri, 16 Jan 2026 15:17:39 +0800
-Message-ID: <20260116071739.121182-3-dongml2@chinatelecom.cn>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20260116071739.121182-1-dongml2@chinatelecom.cn>
-References: <20260116071739.121182-1-dongml2@chinatelecom.cn>
+	s=arc-20240116; t=1768548247; c=relaxed/simple;
+	bh=oooc2Hb3TsqBl87zmwseChqIHvG8BKgM4QX3wMBLdEI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=imeLsHxTyAb0aFxBuQb1sqsNkfpwK49WdkcVPWFnFp3XgLyAvjhrKtrn8GIbuxFvsmB6pED2vK7EeLqHD8+fhdIMsThSo38EU8E66g4vdWUrFfY1h/luhsVN2imp3yDmoGNzjkRlQEKVVnbuf8mlGsGGizZurlXKuS1o/dVlKpQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=OLUJb7Uk; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=CP8d3YEF; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=YhgNMuFF; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=7p5T4iVz; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4A5623368D;
+	Fri, 16 Jan 2026 07:24:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1768548244; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=GPiikwMqJqiuLvHyDiQ9rmcag8VASTg2rI5qe5VsjEQ=;
+	b=OLUJb7UkkEMlqEq4/aKm5RIEHyLXzViOa+m5BU3WcroqN9ykpEzjk42ytSyeSyX8OF2/Cv
+	lg+StfTSII6LcxnEYndKrwKgHOyoKwf+QKT4zg1FHGbwujIRUASoo+sDyZXJUaNc2RMfKe
+	9dqwzk4BYtW4/nFNSndldCNxcDT7QBs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1768548244;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=GPiikwMqJqiuLvHyDiQ9rmcag8VASTg2rI5qe5VsjEQ=;
+	b=CP8d3YEF6wXu5c1Oa/4hixPUJ7DzPYpm6tAw0iqfw7KzDazHnV3CRia56j1O4QTb9Lao/K
+	fuGNPGuQ3aoS/mAg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1768548243; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=GPiikwMqJqiuLvHyDiQ9rmcag8VASTg2rI5qe5VsjEQ=;
+	b=YhgNMuFFnIOZlewqU17I/agERHDLAD7DUrBK1TNcSvDMXnnA8U68BjgljksypyYxEJGe3F
+	ZJMcdtHZhh08p8H/sxnNYF+696DJ2hAIMdULq9VonM/F9Bjgns1bhsk03GqrxgjU4WXCbR
+	nDl09sG0Bz52F5+A66ZYDpI8jYKt6s0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1768548243;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=GPiikwMqJqiuLvHyDiQ9rmcag8VASTg2rI5qe5VsjEQ=;
+	b=7p5T4iVzc5NhW/uml1ddBQc6+7+6DkABM943X5gaPEAqWPIXcGdTuyhfEjOnH+4XnkRJsW
+	4EiG29bmka1ibgBQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 260CD3EA63;
+	Fri, 16 Jan 2026 07:24:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id iiuTCJPnaWkFRQAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Fri, 16 Jan 2026 07:24:03 +0000
+Message-ID: <4e73da60-b58d-40bd-86ed-a0243967017b@suse.cz>
+Date: Fri, 16 Jan 2026 08:24:02 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC v2 03/20] mm/slab: make caches with sheaves mergeable
+Content-Language: en-US
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: Harry Yoo <harry.yoo@oracle.com>, Petr Tesarik <ptesarik@suse.com>,
+ Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>, Hao Li <hao.li@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Uladzislau Rezki <urezki@gmail.com>,
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Alexei Starovoitov <ast@kernel.org>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, linux-rt-devel@lists.linux.dev,
+ bpf@vger.kernel.org, kasan-dev@googlegroups.com
+References: <20260112-sheaves-for-all-v2-0-98225cfb50cf@suse.cz>
+ <20260112-sheaves-for-all-v2-3-98225cfb50cf@suse.cz>
+ <CAJuCfpHowLbqn7ex1COBTZBchhWFy=C3sgD0Uo=J-nKX+NYBvA@mail.gmail.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ m6M14QORSWTLRg==
+In-Reply-To: <CAJuCfpHowLbqn7ex1COBTZBchhWFy=C3sgD0Uo=J-nKX+NYBvA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Spam-Score: -4.30
+X-Spamd-Result: default: False [-4.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	ARC_NA(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[17];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[oracle.com,suse.com,gentwo.org,google.com,linux.dev,linux-foundation.org,gmail.com,linutronix.de,kernel.org,kvack.org,vger.kernel.org,lists.linux.dev,googlegroups.com];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:helo]
+X-Spam-Level: 
+X-Spam-Flag: NO
 
-Test bpf_get_func_arg() and bpf_get_func_arg_cnt() for tp_btf. The code
-is most copied from test1 and test2.
+On 1/16/26 01:22, Suren Baghdasaryan wrote:
+> On Mon, Jan 12, 2026 at 3:17 PM Vlastimil Babka <vbabka@suse.cz> wrote:
+>>
+>> Before enabling sheaves for all caches (with automatically determined
+>> capacity), their enablement should no longer prevent merging of caches.
+>> Limit this merge prevention only to caches that were created with a
+>> specific sheaf capacity, by adding the SLAB_NO_MERGE flag to them.
+>>
+>> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+>> ---
+>>  mm/slab_common.c | 13 +++++++------
+>>  1 file changed, 7 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/mm/slab_common.c b/mm/slab_common.c
+>> index 52591d9c04f3..54c17dc6d5ec 100644
+>> --- a/mm/slab_common.c
+>> +++ b/mm/slab_common.c
+>> @@ -163,9 +163,6 @@ int slab_unmergeable(struct kmem_cache *s)
+>>                 return 1;
+>>  #endif
+>>
+>> -       if (s->cpu_sheaves)
+>> -               return 1;
+>> -
+>>         /*
+>>          * We may have set a slab to be unmergeable during bootstrap.
+>>          */
+>> @@ -190,9 +187,6 @@ static struct kmem_cache *find_mergeable(unsigned int size, slab_flags_t flags,
+>>         if (IS_ENABLED(CONFIG_HARDENED_USERCOPY) && args->usersize)
+>>                 return NULL;
+>>
+>> -       if (args->sheaf_capacity)
+>> -               return NULL;
+>> -
+>>         flags = kmem_cache_flags(flags, name);
+>>
+>>         if (flags & SLAB_NEVER_MERGE)
+>> @@ -337,6 +331,13 @@ struct kmem_cache *__kmem_cache_create_args(const char *name,
+>>         flags &= ~SLAB_DEBUG_FLAGS;
+>>  #endif
+>>
+>> +       /*
+>> +        * Caches with specific capacity are special enough. It's simpler to
+>> +        * make them unmergeable.
+>> +        */
+>> +       if (args->sheaf_capacity)
+>> +               flags |= SLAB_NO_MERGE;
+> 
+> So, this is very subtle and maybe not that important but the comment
+> for kmem_cache_args.sheaf_capacity claims "When slub_debug is enabled
+> for the cache, the sheaf_capacity argument is ignored.". With this
+> change this argument is not completely ignored anymore... It sets
+> SLAB_NO_MERGE even if slub_debug is enabled, doesn't it?
 
-Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
----
- .../bpf/prog_tests/get_func_args_test.c       |  3 ++
- .../selftests/bpf/progs/get_func_args_test.c  | 45 +++++++++++++++++++
- .../bpf/test_kmods/bpf_testmod-events.h       | 10 +++++
- .../selftests/bpf/test_kmods/bpf_testmod.c    |  4 ++
- 4 files changed, 62 insertions(+)
+True, but the various debug flags set by slub_debug also prevent merging so
+it doesn't change the outcome.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/get_func_args_test.c b/tools/testing/selftests/bpf/prog_tests/get_func_args_test.c
-index 64a9c95d4acf..fadee95d3ae8 100644
---- a/tools/testing/selftests/bpf/prog_tests/get_func_args_test.c
-+++ b/tools/testing/selftests/bpf/prog_tests/get_func_args_test.c
-@@ -33,11 +33,14 @@ void test_get_func_args_test(void)
- 
- 	ASSERT_EQ(topts.retval >> 16, 1, "test_run");
- 	ASSERT_EQ(topts.retval & 0xffff, 1234 + 29, "test_run");
-+	ASSERT_OK(trigger_module_test_read(1), "trigger_read");
- 
- 	ASSERT_EQ(skel->bss->test1_result, 1, "test1_result");
- 	ASSERT_EQ(skel->bss->test2_result, 1, "test2_result");
- 	ASSERT_EQ(skel->bss->test3_result, 1, "test3_result");
- 	ASSERT_EQ(skel->bss->test4_result, 1, "test4_result");
-+	ASSERT_EQ(skel->bss->test5_result, 1, "test5_result");
-+	ASSERT_EQ(skel->bss->test6_result, 1, "test6_result");
- 
- cleanup:
- 	get_func_args_test__destroy(skel);
-diff --git a/tools/testing/selftests/bpf/progs/get_func_args_test.c b/tools/testing/selftests/bpf/progs/get_func_args_test.c
-index e0f34a55e697..4b0dc233d498 100644
---- a/tools/testing/selftests/bpf/progs/get_func_args_test.c
-+++ b/tools/testing/selftests/bpf/progs/get_func_args_test.c
-@@ -121,3 +121,48 @@ int BPF_PROG(fexit_test, int _a, int *_b, int _ret)
- 	test4_result &= err == 0 && ret == 1234;
- 	return 0;
- }
-+
-+__u64 test5_result = 0;
-+SEC("tp_btf/bpf_testmod_fentry_test1_tp")
-+int BPF_PROG(tp_test1)
-+{
-+	__u64 cnt = bpf_get_func_arg_cnt(ctx);
-+	__u64 a = 0, z = 0;
-+	__s64 err;
-+
-+	test5_result = cnt == 1;
-+
-+	err = bpf_get_func_arg(ctx, 0, &a);
-+	test5_result &= err == 0 && ((int) a == 1);
-+	bpf_printk("cnt=%d a=%d\n", cnt, (int)a);
-+
-+	/* not valid argument */
-+	err = bpf_get_func_arg(ctx, 1, &z);
-+	test5_result &= err == -EINVAL;
-+
-+	return 0;
-+}
-+
-+__u64 test6_result = 0;
-+SEC("tp_btf/bpf_testmod_fentry_test2_tp")
-+int BPF_PROG(tp_test2)
-+{
-+	__u64 cnt = bpf_get_func_arg_cnt(ctx);
-+	__u64 a = 0, b = 0, z = 0;
-+	__s64 err;
-+
-+	test6_result = cnt == 2;
-+
-+	/* valid arguments */
-+	err = bpf_get_func_arg(ctx, 0, &a);
-+	test6_result &= err == 0 && (int) a == 2;
-+
-+	err = bpf_get_func_arg(ctx, 1, &b);
-+	test6_result &= err == 0 && b == 3;
-+
-+	/* not valid argument */
-+	err = bpf_get_func_arg(ctx, 2, &z);
-+	test6_result &= err == -EINVAL;
-+
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/test_kmods/bpf_testmod-events.h b/tools/testing/selftests/bpf/test_kmods/bpf_testmod-events.h
-index aeef86b3da74..45a5e41f3a92 100644
---- a/tools/testing/selftests/bpf/test_kmods/bpf_testmod-events.h
-+++ b/tools/testing/selftests/bpf/test_kmods/bpf_testmod-events.h
-@@ -63,6 +63,16 @@ BPF_TESTMOD_DECLARE_TRACE(bpf_testmod_test_writable_bare,
- 	sizeof(struct bpf_testmod_test_writable_ctx)
- );
- 
-+DECLARE_TRACE(bpf_testmod_fentry_test1,
-+	TP_PROTO(int a),
-+	TP_ARGS(a)
-+);
-+
-+DECLARE_TRACE(bpf_testmod_fentry_test2,
-+	TP_PROTO(int a, u64 b),
-+	TP_ARGS(a, b)
-+);
-+
- #endif /* _BPF_TESTMOD_EVENTS_H */
- 
- #undef TRACE_INCLUDE_PATH
-diff --git a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-index bc07ce9d5477..f3698746f033 100644
---- a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-@@ -396,11 +396,15 @@ __weak noinline struct file *bpf_testmod_return_ptr(int arg)
- 
- noinline int bpf_testmod_fentry_test1(int a)
- {
-+	trace_bpf_testmod_fentry_test1_tp(a);
-+
- 	return a + 1;
- }
- 
- noinline int bpf_testmod_fentry_test2(int a, u64 b)
- {
-+	trace_bpf_testmod_fentry_test2_tp(a, b);
-+
- 	return a + b;
- }
- 
--- 
-2.52.0
+>> +
+>>         mutex_lock(&slab_mutex);
+>>
+>>         err = kmem_cache_sanity_check(name, object_size);
+>>
+>> --
+>> 2.52.0
+>>
 
 
