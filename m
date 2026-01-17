@@ -1,322 +1,228 @@
-Return-Path: <bpf+bounces-79361-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79362-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29A34D38CF3
-	for <lists+bpf@lfdr.de>; Sat, 17 Jan 2026 07:37:11 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 013BED38D4C
+	for <lists+bpf@lfdr.de>; Sat, 17 Jan 2026 10:07:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id BBFB9302D89A
-	for <lists+bpf@lfdr.de>; Sat, 17 Jan 2026 06:37:09 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id BFE2B301B4A7
+	for <lists+bpf@lfdr.de>; Sat, 17 Jan 2026 09:07:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6239632E6AC;
-	Sat, 17 Jan 2026 06:37:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ahAmEyaJ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0446301717;
+	Sat, 17 Jan 2026 09:07:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+Received: from esa1.cc.uec.ac.jp (mx.uec.ac.jp [130.153.8.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1F3532D45B
-	for <bpf@vger.kernel.org>; Sat, 17 Jan 2026 06:37:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71A1410FD
+	for <bpf@vger.kernel.org>; Sat, 17 Jan 2026 09:07:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.153.8.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768631828; cv=none; b=iaIsXjFMhyi33nZVIUV1/gxT4EkhN3/PjiDLcuWuvjvtDtmw1ngDyu5KJb4MJTFVXqSw3AmTFvHl/6bAawOc1U9kNfH0NexapTP43MgOTPCOfVdTEo5rh2ZDs9EGCjcBdQnnr5cPz/puww+viGeRLqc1cHZPaOtjVVc7dmAqsMM=
+	t=1768640829; cv=none; b=UHIp8PblAWPFDq1H1VmZ3Qo79Y47pU5OhhrJA6lW+lwW2kTbInD+n5dxgg/3SFVv2GWNQd+8EhlkLgyCeGc7cm++nGwX+fcW7xVuF8/c3+/YlPjHujK6jgxR92n3GJPKIrTBzGw+ozr6teDe0UaVlzeOqBG9Jx3p5tXJoiN85Oc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768631828; c=relaxed/simple;
-	bh=iqWB92MSc5umvicJ2v8WHKy1Jpu4uhUM/7FH0tZx32Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pLycxkth56nHGttkYgod/soh8S9ySo4F+x14cbk6sLeC/BPqK7ZxSBvULuBuPbmSdD1SGLtgFTTonq9UMiIcA3IgdvJK7wKw4CN/KNkeA9RzL8Y/TnTQ5doEdUsKEvpdezeA5Lecmanw8X8eWcvK5z0OnK0UHloxh+VDt+ypE7w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ahAmEyaJ; arc=none smtp.client-ip=91.218.175.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <aff3f58f-aa81-44a3-ae5f-078befeceb39@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1768631812;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wNFWgFXwIkUuZEfcmkFcjXMNpWUdKsl5LRIGc+0kRuA=;
-	b=ahAmEyaJNUZIbHTIMMPDmI4jfzO2b4APDjDycjCvPP8TEVfQ9fa86nXk0MGeX3DrcNB6Gu
-	JUGIykzBLs+xxr6G0BBhXmeBj+R1y5lmSwYs2BHEXX3e/ANU+PVNfnJWMiVwdK8tYn23+z
-	0Rl0MEd7bOYsbtS9A0auRG8K3Xkt2K0=
-Date: Fri, 16 Jan 2026 22:36:45 -0800
+	s=arc-20240116; t=1768640829; c=relaxed/simple;
+	bh=yvMVnQM+GChfG9IU5BHRvEuwHtyFzoyFuNHWGCfHLxY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lXh/eZ/tR0C//MObB6ub40dzLLdrDl3pLd/etAkIUBfdaogPtt3DsIR+M7qufktjKo++3Od45t8zmDLwYlfNAqdPdnaL6uFHBr0IoF4Q60f5eEoRyKBA7pnFT3Dlizr9WtmyG9tmal1z898lViIuruldAYCKJMoNvpCTnSEwivQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpc.is.uec.ac.jp; spf=pass smtp.mailfrom=hpc.is.uec.ac.jp; arc=none smtp.client-ip=130.153.8.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpc.is.uec.ac.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hpc.is.uec.ac.jp
+X-CSE-ConnectionGUID: ULgnA9ATSwGPUpMVyyGYxQ==
+X-CSE-MsgGUID: vh08R/aIT7y62I+VyS0Skw==
+X-IPAS-Result: =?us-ascii?q?A2HyBAB7UGtp/zYImYJagQmHAoRYkXQDoBkGCQEBAQEBA?=
+ =?us-ascii?q?QEBAVoEAQGFBwKMeic4EwECBAEBAQEDAgMBAQEBAQEBAQEBAQsBAQEFAQEBA?=
+ =?us-ascii?q?QEBBgMBAQICgR2GCVOGYwEFI1YQCQILAwoCAiYCAiESAQUBHAYThXaVfpxHg?=
+ =?us-ascii?q?TKBAd16LVSBMhQBgQouiFMBgW+EAIR4QoINgUqCdT6EGimDW4JpBIINFYEOg?=
+ =?us-ascii?q?zeIW4dvJgkdAwcHDg0eRg8FHANZLAETQhMXCwcFajkoAhkBAgGBBSNLBQMRG?=
+ =?us-ascii?q?R2BGQohHRcTH1gbBwUTI4EaBhsGHBICAwECAjpTDCSBUgICBIEtY3uCAQ+HD?=
+ =?us-ascii?q?QGBAAUubxoOIgJBUgMLYgs9NxQbSpAWR4E8awdhAit7NpALB4d3jw+hEYQmh?=
+ =?us-ascii?q?FEfnQIzhASUFZJSLphYqTA1EoFJgX9NOGwGgjBSGQ+OLRbHVmk8AgcBCgEBA?=
+ =?us-ascii?q?wmRaoF/AQE?=
+IronPort-Data: A9a23:koYODagZGSFzOzKTow+XfxhhX161xhEKZh0ujC45NGQN5FlHY01je
+ htvCzrUa/yJNzP3Kd50OYW0o04BupWGytNhHAVurXg1HnwW8JqUDtmwEBzMMnLJJKUvbq7GA
+ +byyDXkBJppJpMJjk71atANlVEli+fQAOG6ULKYUsxIbVcMYD87jh5+kPIOjIdtgNyoayuAo
+ tqaT/f3YTdJ4BYqdDhNg06/gEk35qqq4WpH5gVWic1j5TcyqVFEVPrzGonsdxMUcqEMdsamS
+ uDKyq2O/2+x138FFtO/n7/nRVYBS7jUMBLmoiI+t3+K20UqSoQai87XBdJEAatlo2zhc+NZk
+ b2hgaeNpTIBZcUgrgi9vy5wSEmSNYUekFPOzOPWXca7lyUqeFO1qxli4d1f0ST1NY+bDEkXn
+ cH0JgzhYTi+o+2w6eOSdtJzqfweNOzVLZIwi2FZmGSx4fYOGfgvQo3P9ZpU0TMxmM1UDLDDa
+ sFfYDEpbgyojx9nYwxPTstjx6H4wCSjG9FbgAv9Sa4f4nPTzR141bHFMMLePN2RA9hYlQCRr
+ STE5wwVBzlDbILAkmTZriPEaunngyOjCLhVHZyEqe802nzQ+H0oUCYVSg7uyRW+ohTnAY0Ac
+ h18FjAVhaIq+mS1QdTnGR61uniJulgbQdU4LgEhwASdj6bZ5weHC3IVF3hcZddgvcRwRyRCO
+ kK1c83BOBhgtpTEYE6m6ZiskCuXBzkEAl4SXHpRJeca2OUPtr3fmTrtdr5e/EOdi82wFTz0w
+ i6HtjlnwagehogC3OO55TgrYg5ARLCUE2bZBS2OAQpJCz+Vgqb+OOREDnCBtZ59wH6xFAXpg
+ ZT9s5H2ASBnJcjleNaxrBox8EGBva/fb2KF0DaD7rE99znl5niiY41K+zBiNQ9uPI4JfTLif
+ FXU/AhW4ZpOOnqhZLN2ZISqY/kXIGmJPYqNa804mfIXP8MhLlLdrHkyDaNStki0+HURfWgEE
+ c/zWa6R4bwyUMyLEBLeqz8h7IIW
+IronPort-HdrOrdr: A9a23:NJoPT6sG3ZwqDw4Q3879yg3N7skDgtV00zEX/kB9WHVpmwKj5r
+ iTdZMgpGXJYVcqKQodcL+7Scu9qB/nhP1ICMwqXYtKPzOJhILLFvAE0WKK+VSJcEfDH6xmtJ
+ uIGJIObuEYY2IK9PrS0U2WFc0/yMKL/K3tqeDV1Gd1UA1mApsM0y5JTiieVmJ7TBRbHpYifa
+ DsgvavZADNRV0nKuq+DnkBG87Zp9PKk5riJToLHQQu5gXLrR7A0s+eL/FQ5Hgjbw8=
+X-Talos-CUID: 9a23:Fy2bDWCKglxXAAr6ExRD+0g9S+kZSWLy9ErIBnGpGElYWITAHA==
+X-Talos-MUID: 9a23:8R/bDQZNq7hokeBTqT+01AslPeZUvLXwUmFOr4Q94/KHKnkl
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="6.21,233,1763391600"; 
+   d="scan'208";a="106736449"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+X-IronPort-Outbreak-Status: No, level 0, Unknown - Unknown
+Received: from mx-delivery1.uec.ac.jp (HELO mx-delivery.uec.ac.jp) ([130.153.8.54])
+  by esa1.cc.uec.ac.jp with ESMTP; 17 Jan 2026 18:07:05 +0900
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
+	by mx-delivery.uec.ac.jp (Postfix) with ESMTPSA id 44268183E388
+	for <bpf@vger.kernel.org>; Sat, 17 Jan 2026 18:07:04 +0900 (JST)
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-7927541abfaso26745587b3.3
+        for <bpf@vger.kernel.org>; Sat, 17 Jan 2026 01:07:04 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXvmQdMn9mNqr+DuRKBeJkHZhy5w4YmS3czY8omh0NlBnnFYWBTM0chafpIUtUkntF+Kzg=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy+OvllHLexNJZuM59d38tV/8qdZ98iOyJosCjp+5YGbecyILJF
+	DNmtnzrPIj4SY5ntm+5u+JUPjEgrGv+czt3uTkvIhZo+tYewhkujK0XsBVdOUgLOCet7AWqgYSS
+	Sb+oqJb6Q960BpH7jsjnAU+5TDjDqCtdcfPOq5lO6qA==
+X-Received: by 2002:a05:690c:399:b0:786:4ed4:24f0 with SMTP id
+ 00721157ae682-793c52f60b0mr45925757b3.5.1768640822742; Sat, 17 Jan 2026
+ 01:07:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 05/13] resolve_btfids: Support for
- KF_IMPLICIT_ARGS
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Mykyta Yatsenko <yatsenko@meta.com>,
- Tejun Heo <tj@kernel.org>, Alan Maguire <alan.maguire@oracle.com>,
- Benjamin Tissoires <bentiss@kernel.org>, Jiri Kosina <jikos@kernel.org>,
- Amery Hung <ameryhung@gmail.com>, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
- sched-ext@lists.linux.dev
-References: <20260116201700.864797-1-ihor.solodrai@linux.dev>
- <20260116201700.864797-6-ihor.solodrai@linux.dev>
- <CAEf4BzbG=GMh0-1tT_2gdMtc-ZuV3X7hgoJZpt1RLCYgPMM3oQ@mail.gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Ihor Solodrai <ihor.solodrai@linux.dev>
-In-Reply-To: <CAEf4BzbG=GMh0-1tT_2gdMtc-ZuV3X7hgoJZpt1RLCYgPMM3oQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20260115173717.2060746-1-ishiyama@hpc.is.uec.ac.jp>
+ <20260115173717.2060746-2-ishiyama@hpc.is.uec.ac.jp> <46799ba9-d292-494e-b9b1-658448993538@gmail.com>
+ <bcce0d61-e7ae-4268-a6ec-a82f1329cc6d@redhat.com>
+In-Reply-To: <bcce0d61-e7ae-4268-a6ec-a82f1329cc6d@redhat.com>
+From: Yuzuki Ishiyama <ishiyama@hpc.is.uec.ac.jp>
+Date: Sat, 17 Jan 2026 18:06:51 +0900
+X-Gmail-Original-Message-ID: <CAJjCV5Hr_WqmMrA8SKJNVKtUOVjhWAcMS1iu7sFDgLr+bm=Nvw@mail.gmail.com>
+X-Gm-Features: AZwV_QibMlzy60R_ZvEu45Gc2mpl5TdR8Ypnld4CcoM0E9BcIRKDeTDSyASRyIg
+Message-ID: <CAJjCV5Hr_WqmMrA8SKJNVKtUOVjhWAcMS1iu7sFDgLr+bm=Nvw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: add bpf_strncasecmp kfunc
+To: Viktor Malik <vmalik@redhat.com>
+Cc: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+I think it would be clearer to document the other string functions as
+well. What do you think, Mykyta? If you'd like, I can take care of it
+after I'm done with this patch.
 
+Yuzuki
 
-On 1/16/26 4:06 PM, Andrii Nakryiko wrote:
-> On Fri, Jan 16, 2026 at 12:17 PM Ihor Solodrai <ihor.solodrai@linux.dev> wrote:
->>
->> Implement BTF modifications in resolve_btfids to support BPF kernel
->> functions with implicit arguments.
->>
->> For a kfunc marked with KF_IMPLICIT_ARGS flag, a new function
->> prototype is added to BTF that does not have implicit arguments. The
->> kfunc's prototype is then updated to a new one in BTF. This prototype
->> is the intended interface for the BPF programs.
->>
->> A <func_name>_impl function is added to BTF to make the original kfunc
->> prototype searchable for the BPF verifier. If a <func_name>_impl
->> function already exists in BTF, its interpreted as a legacy case, and
->> this step is skipped.
->>
->> Whether an argument is implicit is determined by its type:
->> currently only `struct bpf_prog_aux *` is supported.
->>
->> As a result, the BTF associated with kfunc is changed from
->>
->>     __bpf_kfunc bpf_foo(int arg1, struct bpf_prog_aux *aux);
->>
->> into
->>
->>     bpf_foo_impl(int arg1, struct bpf_prog_aux *aux);
->>     __bpf_kfunc bpf_foo(int arg1);
->>
->> For more context see previous discussions and patches [1][2].
->>
->> [1] https://lore.kernel.org/dwarves/ba1650aa-fafd-49a8-bea4-bdddee7c38c9@linux.dev/
->> [2] https://lore.kernel.org/bpf/20251029190113.3323406-1-ihor.solodrai@linux.dev/
->>
->> Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
->> ---
->>  tools/bpf/resolve_btfids/main.c | 383 ++++++++++++++++++++++++++++++++
->>  1 file changed, 383 insertions(+)
->>
-> 
-> [...]
-> 
->> +static int collect_decl_tags(struct btf2btf_context *ctx)
->> +{
->> +       const u32 type_cnt = btf__type_cnt(ctx->btf);
->> +       struct btf *btf = ctx->btf;
->> +       const struct btf_type *t;
->> +       u32 *tags, *tmp;
->> +       u32 nr_tags = 0;
->> +
->> +       tags = malloc(type_cnt * sizeof(u32));
-> 
-> waste of memory, really, see below
-> 
->> +       if (!tags)
->> +               return -ENOMEM;
->> +
->> +       for (u32 id = 1; id < type_cnt; id++) {
->> +               t = btf__type_by_id(btf, id);
->> +               if (!btf_is_decl_tag(t))
->> +                       continue;
->> +               tags[nr_tags++] = id;
->> +       }
->> +
->> +       if (nr_tags == 0) {
->> +               ctx->decl_tags = NULL;
->> +               free(tags);
->> +               return 0;
->> +       }
->> +
->> +       tmp = realloc(tags, nr_tags * sizeof(u32));
->> +       if (!tmp) {
->> +               free(tags);
->> +               return -ENOMEM;
->> +       }
-> 
-> This is an interesting realloc() usage pattern, it's quite
-> unconventional to preallocate too much memory, and then shrink (in C
-> world)
-> 
-> check libbpf's libbpf_add_mem(), that's a generic "primitive" inside
-> the libbpf. Do not reuse it as is, but it should give you an idea of a
-> common pattern: you start with NULL (empty data), when you need to add
-> a new element, you calculate a new array size which normally would be
-> some minimal value (to avoid going through 1 -> 2 -> 4 -> 8, many
-> small and wasteful steps; normally we just jump straight to 16 or so)
-> or some factor of previous size (doesn't have to be 2x,
-> libbpf_add_mem() expands by 25%, for instance).
-> 
-> This is a super common approach in C. Please utilize it here as well.
-
-Hi Andrii, thanks for taking a quick look.
-
-I am aware of the typical size doubling (or whatever the multiplier
-is) pattern for growing arrays. Amortized cost and all that.
-
-I don't know if this pre-alloc + shrink is common, but I did use it in
-pahole before [1], for example.
-
-The chain of thought that makes me like it is:
-  * if we knew the array size beforehand, we'd simply pre-allocate it
-  * here we don't, but we do know an upper limit (and it's not crazy)
-  * if we pre-allocate to upper limit, we can use the array without
-    worrying about the bounds checks and growing on every use
-  * if we care (we might not), we can shrink to the actual size
-
-The dynamic array approach is certainly more generic, and helpers can
-be written to make it easy. But in cases like this - collect something
-once and then use - over-pre-allocating makes more sense to me.
-
-Re waste we are talking <1Mb (~100k types * 4), so it's whatever.
-
-In any case it's not super important, so I don't mind changing this if
-you insist. Being conventional has it's benefits too.
-
-[1] https://git.kernel.org/pub/scm/devel/pahole/pahole.git/tree/btf_encoder.c?h=v1.31#n2182
-
-> 
->> +
->> +       ctx->decl_tags = tmp;
->> +       ctx->nr_decl_tags = nr_tags;
->> +
->> +       return 0;
->> +}
->> +
->> +/*
->> + * To find the kfunc flags having its struct btf_id (with ELF addresses)
->> + * we need to find the address that is in range of a set8.
->> + * If a set8 is found, then the flags are located at addr + 4 bytes.
->> + * Return 0 (no flags!) if not found.
->> + */
->> +static u32 find_kfunc_flags(struct object *obj, struct btf_id *kfunc_id)
->> +{
->> +       const u32 *elf_data_ptr = obj->efile.idlist->d_buf;
->> +       u64 set_lower_addr, set_upper_addr, addr;
->> +       struct btf_id *set_id;
->> +       struct rb_node *next;
->> +       u32 flags;
->> +       u64 idx;
->> +
->> +       next = rb_first(&obj->sets);
->> +       while (next) {
-> 
-> for(next = rb_first(...); next; next = rb_next(next)) seems like a
-> good fit here, no?
-
-Looks like it. We could do 'continue' then.
-
-> 
->> +               set_id = rb_entry(next, struct btf_id, rb_node);
->> +               if (set_id->kind != BTF_ID_KIND_SET8 || set_id->addr_cnt != 1)
->> +                       goto skip;
->> +
->> +               set_lower_addr = set_id->addr[0];
->> +               set_upper_addr = set_lower_addr + set_id->cnt * sizeof(u64);
->> +
->> +               for (u32 i = 0; i < kfunc_id->addr_cnt; i++) {
->> +                       addr = kfunc_id->addr[i];
->> +                       /*
->> +                        * Lower bound is exclusive to skip the 8-byte header of the set.
->> +                        * Upper bound is inclusive to capture the last entry at offset 8*cnt.
->> +                        */
->> +                       if (set_lower_addr < addr && addr <= set_upper_addr) {
->> +                               pr_debug("found kfunc %s in BTF_ID_FLAGS %s\n",
->> +                                        kfunc_id->name, set_id->name);
->> +                               goto found;
-> 
-> why goto, just do what needs to be done and return?
-
-Indeed.
-
-> 
->> +                       }
->> +               }
->> +skip:
->> +               next = rb_next(next);
->> +       }
->> +
->> +       return 0;
->> +
->> +found:
->> +       idx = addr - obj->efile.idlist_addr;
->> +       idx = idx / sizeof(u32) + 1;
->> +       flags = elf_data_ptr[idx];
->> +
->> +       return flags;
->> +}
->> +
->> +static s64 collect_kfuncs(struct object *obj, struct btf2btf_context *ctx)
->> +{
->> +       struct kfunc *kfunc, *kfuncs, *tmp;
->> +       const char *tag_name, *func_name;
->> +       struct btf *btf = ctx->btf;
->> +       const struct btf_type *t;
->> +       u32 flags, func_id;
->> +       struct btf_id *id;
->> +       s64 nr_kfuncs = 0;
->> +
->> +       if (ctx->nr_decl_tags == 0)
->> +               return 0;
->> +
->> +       kfuncs = malloc(ctx->nr_decl_tags * sizeof(*kfuncs));
-> 
-> ditto about realloc() usage pattern
-> 
->> +       if (!kfuncs)
->> +               return -ENOMEM;
->> +
-> 
-> [...]
-> 
->> +/*
->> + * For a kfunc with KF_IMPLICIT_ARGS we do the following:
->> + *   1. Add a new function with _impl suffix in the name, with the prototype
->> + *      of the original kfunc.
->> + *   2. Add all decl tags except "bpf_kfunc" for the _impl func.
->> + *   3. Add a new function prototype with modified list of arguments:
->> + *      omitting implicit args.
->> + *   4. Change the prototype of the original kfunc to the new one.
->> + *
->> + * This way we transform the BTF associated with the kfunc from
->> + *     __bpf_kfunc bpf_foo(int arg1, void *implicit_arg);
->> + * into
->> + *     bpf_foo_impl(int arg1, void *implicit_arg);
->> + *     __bpf_kfunc bpf_foo(int arg1);
->> + *
->> + * If a kfunc with KF_IMPLICIT_ARGS already has an _impl counterpart
->> + * in BTF, then it's a legacy case: an _impl function is declared in the
->> + * source code. In this case, we can skip adding an _impl function, but we
->> + * still have to add a func prototype that omits implicit args.
->> + */
->> +static int process_kfunc_with_implicit_args(struct btf2btf_context *ctx, struct kfunc *kfunc)
->> +{
-> 
-> this logic looks good
-> 
->> +       s32 idx, new_proto_id, new_func_id, proto_id;
->> +       const char *param_name, *tag_name;
->> +       const struct btf_param *params;
->> +       enum btf_func_linkage linkage;
->> +       char tmp_name[KSYM_NAME_LEN];
->> +       struct btf *btf = ctx->btf;
->> +       int err, len, nr_params;
->> +       struct btf_type *t;
->> +
-> 
-> [...]
-
+2026=E5=B9=B41=E6=9C=8817=E6=97=A5(=E5=9C=9F) 1:03 Viktor Malik <vmalik@red=
+hat.com>:
+>
+> On 1/16/26 13:28, Mykyta Yatsenko wrote:
+> > On 1/15/26 17:37, Yuzuki Ishiyama wrote:
+> >> bpf_strncasecmp() function performs same like bpf_strcasecmp() except
+> >> limiting the comparison to a specific length.
+> >>
+> >> Signed-off-by: Yuzuki Ishiyama <ishiyama@hpc.is.uec.ac.jp>
+> >> ---
+> >>   kernel/bpf/helpers.c | 31 ++++++++++++++++++++++++++++---
+> >>   1 file changed, 28 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> >> index 9eaa4185e0a7..2b275eaa3cac 100644
+> >> --- a/kernel/bpf/helpers.c
+> >> +++ b/kernel/bpf/helpers.c
+> >> @@ -3406,7 +3406,7 @@ __bpf_kfunc void __bpf_trap(void)
+> >>    * __get_kernel_nofault instead of plain dereference to make them sa=
+fe.
+> >>    */
+> >>
+> >> -static int __bpf_strcasecmp(const char *s1, const char *s2, bool igno=
+re_case)
+> >> +static int __bpf_strncasecmp(const char *s1, const char *s2, bool ign=
+ore_case, size_t len)
+> >>   {
+> >>      char c1, c2;
+> >>      int i;
+> >> @@ -3416,6 +3416,9 @@ static int __bpf_strcasecmp(const char *s1, cons=
+t char *s2, bool ignore_case)
+> >>              return -ERANGE;
+> >>      }
+> >>
+> >> +    if (len =3D=3D 0)
+> >> +            return 0;
+> >> +
+> >>      guard(pagefault)();
+> >>      for (i =3D 0; i < XATTR_SIZE_MAX; i++) {
+> >>              __get_kernel_nofault(&c1, s1, char, err_out);
+> >> @@ -3428,6 +3431,8 @@ static int __bpf_strcasecmp(const char *s1, cons=
+t char *s2, bool ignore_case)
+> >>                      return c1 < c2 ? -1 : 1;
+> >>              if (c1 =3D=3D '\0')
+> >>                      return 0;
+> >> +            if (len < XATTR_SIZE_MAX && i =3D=3D len - 1)
+> >> +                    return 0;
+> > Maybe rewrite this loop next way: u32 max_sz =3D min_t(u32,
+> > XATTR_SIZE_MAX, len); for (i=3D0; i < max_sz; i++) { ... } if (len <
+> > XATTR_SIZE_MAX) return 0; return -E2BIG; This way we eliminate that
+> > entire if statement from the loop body, which should be positive for
+> > performance.
+> >>              s1++;
+> >>              s2++;
+> >>      }
+> >> @@ -3451,7 +3456,7 @@ static int __bpf_strcasecmp(const char *s1, cons=
+t char *s2, bool ignore_case)
+> >>    */
+> >>   __bpf_kfunc int bpf_strcmp(const char *s1__ign, const char *s2__ign)
+> >>   {
+> >> -    return __bpf_strcasecmp(s1__ign, s2__ign, false);
+> >> +    return __bpf_strncasecmp(s1__ign, s2__ign, false, XATTR_SIZE_MAX)=
+;
+> >>   }
+> >>
+> >>   /**
+> >> @@ -3469,7 +3474,26 @@ __bpf_kfunc int bpf_strcmp(const char *s1__ign,=
+ const char *s2__ign)
+> >>    */
+> >>   __bpf_kfunc int bpf_strcasecmp(const char *s1__ign, const char *s2__=
+ign)
+> >>   {
+> >> -    return __bpf_strcasecmp(s1__ign, s2__ign, true);
+> >> +    return __bpf_strncasecmp(s1__ign, s2__ign, true, XATTR_SIZE_MAX);
+> >> +}
+> >> +
+> >> +/*
+> >> + * bpf_strncasecmp - Compare two length-limited strings, ignoring cas=
+e
+> >> + * @s1__ign: One string
+> >> + * @s2__ign: Another string
+> >> + * @len: The maximum number of characters to compare
+> > Let's also add that len is limited by XATTR_SIZE_MAX
+>
+> This applies for other string kfuncs, too, but we never mention it in
+> the docs comments. Does it make sense to have it just for one? Or should
+> we add it to the rest as well?
+>
+> Viktor
+>
+> >> +
+> >> + * Return:
+> >> + * * %0       - Strings are equal
+> >> + * * %-1      - @s1__ign is smaller
+> >> + * * %1       - @s2__ign is smaller
+> >> + * * %-EFAULT - Cannot read one of the strings
+> >> + * * %-E2BIG  - One of strings is too large
+> >> + * * %-ERANGE - One of strings is outside of kernel address space
+> >> + */
+> >> +__bpf_kfunc int bpf_strncasecmp(const char *s1__ign, const char *s2__=
+ign, size_t len)
+> >> +{
+> >> +    return __bpf_strncasecmp(s1__ign, s2__ign, true, len);
+> >>   }
+> >>
+> >>   /**
+> >> @@ -4521,6 +4545,7 @@ BTF_ID_FLAGS(func, bpf_iter_dmabuf_destroy, KF_I=
+TER_DESTROY | KF_SLEEPABLE)
+> >>   BTF_ID_FLAGS(func, __bpf_trap)
+> >>   BTF_ID_FLAGS(func, bpf_strcmp);
+> >>   BTF_ID_FLAGS(func, bpf_strcasecmp);
+> >> +BTF_ID_FLAGS(func, bpf_strncasecmp);
+> >>   BTF_ID_FLAGS(func, bpf_strchr);
+> >>   BTF_ID_FLAGS(func, bpf_strchrnul);
+> >>   BTF_ID_FLAGS(func, bpf_strnchr);
+> >
+> >
+>
 
