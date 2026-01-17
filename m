@@ -1,228 +1,318 @@
-Return-Path: <bpf+bounces-79362-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79363-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 013BED38D4C
-	for <lists+bpf@lfdr.de>; Sat, 17 Jan 2026 10:07:15 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7BB7D38D95
+	for <lists+bpf@lfdr.de>; Sat, 17 Jan 2026 11:10:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id BFE2B301B4A7
-	for <lists+bpf@lfdr.de>; Sat, 17 Jan 2026 09:07:10 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id F0CEF300A7B8
+	for <lists+bpf@lfdr.de>; Sat, 17 Jan 2026 10:09:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0446301717;
-	Sat, 17 Jan 2026 09:07:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58C81332918;
+	Sat, 17 Jan 2026 10:09:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U9WWDkZ5"
 X-Original-To: bpf@vger.kernel.org
-Received: from esa1.cc.uec.ac.jp (mx.uec.ac.jp [130.153.8.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71A1410FD
-	for <bpf@vger.kernel.org>; Sat, 17 Jan 2026 09:07:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.153.8.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7452F2C0284
+	for <bpf@vger.kernel.org>; Sat, 17 Jan 2026 10:09:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768640829; cv=none; b=UHIp8PblAWPFDq1H1VmZ3Qo79Y47pU5OhhrJA6lW+lwW2kTbInD+n5dxgg/3SFVv2GWNQd+8EhlkLgyCeGc7cm++nGwX+fcW7xVuF8/c3+/YlPjHujK6jgxR92n3GJPKIrTBzGw+ozr6teDe0UaVlzeOqBG9Jx3p5tXJoiN85Oc=
+	t=1768644593; cv=none; b=tlvUclWr2EtcsHtOummgQfb98sAUj7EG4letX3+9rIop1u+E7UAxHlNbcB+VtVKLXoljZVaAbhcGWLtDuefOBrqcoYYQRvBQarnhRvrgWVqPMqcU88fOUDo5r6ROZmHY24Ckys5yenOhPl4T2puO3asiSSJWAYdwPVuv32oTz7A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768640829; c=relaxed/simple;
-	bh=yvMVnQM+GChfG9IU5BHRvEuwHtyFzoyFuNHWGCfHLxY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lXh/eZ/tR0C//MObB6ub40dzLLdrDl3pLd/etAkIUBfdaogPtt3DsIR+M7qufktjKo++3Od45t8zmDLwYlfNAqdPdnaL6uFHBr0IoF4Q60f5eEoRyKBA7pnFT3Dlizr9WtmyG9tmal1z898lViIuruldAYCKJMoNvpCTnSEwivQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpc.is.uec.ac.jp; spf=pass smtp.mailfrom=hpc.is.uec.ac.jp; arc=none smtp.client-ip=130.153.8.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpc.is.uec.ac.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hpc.is.uec.ac.jp
-X-CSE-ConnectionGUID: ULgnA9ATSwGPUpMVyyGYxQ==
-X-CSE-MsgGUID: vh08R/aIT7y62I+VyS0Skw==
-X-IPAS-Result: =?us-ascii?q?A2HyBAB7UGtp/zYImYJagQmHAoRYkXQDoBkGCQEBAQEBA?=
- =?us-ascii?q?QEBAVoEAQGFBwKMeic4EwECBAEBAQEDAgMBAQEBAQEBAQEBAQsBAQEFAQEBA?=
- =?us-ascii?q?QEBBgMBAQICgR2GCVOGYwEFI1YQCQILAwoCAiYCAiESAQUBHAYThXaVfpxHg?=
- =?us-ascii?q?TKBAd16LVSBMhQBgQouiFMBgW+EAIR4QoINgUqCdT6EGimDW4JpBIINFYEOg?=
- =?us-ascii?q?zeIW4dvJgkdAwcHDg0eRg8FHANZLAETQhMXCwcFajkoAhkBAgGBBSNLBQMRG?=
- =?us-ascii?q?R2BGQohHRcTH1gbBwUTI4EaBhsGHBICAwECAjpTDCSBUgICBIEtY3uCAQ+HD?=
- =?us-ascii?q?QGBAAUubxoOIgJBUgMLYgs9NxQbSpAWR4E8awdhAit7NpALB4d3jw+hEYQmh?=
- =?us-ascii?q?FEfnQIzhASUFZJSLphYqTA1EoFJgX9NOGwGgjBSGQ+OLRbHVmk8AgcBCgEBA?=
- =?us-ascii?q?wmRaoF/AQE?=
-IronPort-Data: A9a23:koYODagZGSFzOzKTow+XfxhhX161xhEKZh0ujC45NGQN5FlHY01je
- htvCzrUa/yJNzP3Kd50OYW0o04BupWGytNhHAVurXg1HnwW8JqUDtmwEBzMMnLJJKUvbq7GA
- +byyDXkBJppJpMJjk71atANlVEli+fQAOG6ULKYUsxIbVcMYD87jh5+kPIOjIdtgNyoayuAo
- tqaT/f3YTdJ4BYqdDhNg06/gEk35qqq4WpH5gVWic1j5TcyqVFEVPrzGonsdxMUcqEMdsamS
- uDKyq2O/2+x138FFtO/n7/nRVYBS7jUMBLmoiI+t3+K20UqSoQai87XBdJEAatlo2zhc+NZk
- b2hgaeNpTIBZcUgrgi9vy5wSEmSNYUekFPOzOPWXca7lyUqeFO1qxli4d1f0ST1NY+bDEkXn
- cH0JgzhYTi+o+2w6eOSdtJzqfweNOzVLZIwi2FZmGSx4fYOGfgvQo3P9ZpU0TMxmM1UDLDDa
- sFfYDEpbgyojx9nYwxPTstjx6H4wCSjG9FbgAv9Sa4f4nPTzR141bHFMMLePN2RA9hYlQCRr
- STE5wwVBzlDbILAkmTZriPEaunngyOjCLhVHZyEqe802nzQ+H0oUCYVSg7uyRW+ohTnAY0Ac
- h18FjAVhaIq+mS1QdTnGR61uniJulgbQdU4LgEhwASdj6bZ5weHC3IVF3hcZddgvcRwRyRCO
- kK1c83BOBhgtpTEYE6m6ZiskCuXBzkEAl4SXHpRJeca2OUPtr3fmTrtdr5e/EOdi82wFTz0w
- i6HtjlnwagehogC3OO55TgrYg5ARLCUE2bZBS2OAQpJCz+Vgqb+OOREDnCBtZ59wH6xFAXpg
- ZT9s5H2ASBnJcjleNaxrBox8EGBva/fb2KF0DaD7rE99znl5niiY41K+zBiNQ9uPI4JfTLif
- FXU/AhW4ZpOOnqhZLN2ZISqY/kXIGmJPYqNa804mfIXP8MhLlLdrHkyDaNStki0+HURfWgEE
- c/zWa6R4bwyUMyLEBLeqz8h7IIW
-IronPort-HdrOrdr: A9a23:NJoPT6sG3ZwqDw4Q3879yg3N7skDgtV00zEX/kB9WHVpmwKj5r
- iTdZMgpGXJYVcqKQodcL+7Scu9qB/nhP1ICMwqXYtKPzOJhILLFvAE0WKK+VSJcEfDH6xmtJ
- uIGJIObuEYY2IK9PrS0U2WFc0/yMKL/K3tqeDV1Gd1UA1mApsM0y5JTiieVmJ7TBRbHpYifa
- DsgvavZADNRV0nKuq+DnkBG87Zp9PKk5riJToLHQQu5gXLrR7A0s+eL/FQ5Hgjbw8=
-X-Talos-CUID: 9a23:Fy2bDWCKglxXAAr6ExRD+0g9S+kZSWLy9ErIBnGpGElYWITAHA==
-X-Talos-MUID: 9a23:8R/bDQZNq7hokeBTqT+01AslPeZUvLXwUmFOr4Q94/KHKnkl
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-AV: E=Sophos;i="6.21,233,1763391600"; 
-   d="scan'208";a="106736449"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-X-IronPort-Outbreak-Status: No, level 0, Unknown - Unknown
-Received: from mx-delivery1.uec.ac.jp (HELO mx-delivery.uec.ac.jp) ([130.153.8.54])
-  by esa1.cc.uec.ac.jp with ESMTP; 17 Jan 2026 18:07:05 +0900
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
-	by mx-delivery.uec.ac.jp (Postfix) with ESMTPSA id 44268183E388
-	for <bpf@vger.kernel.org>; Sat, 17 Jan 2026 18:07:04 +0900 (JST)
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-7927541abfaso26745587b3.3
-        for <bpf@vger.kernel.org>; Sat, 17 Jan 2026 01:07:04 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXvmQdMn9mNqr+DuRKBeJkHZhy5w4YmS3czY8omh0NlBnnFYWBTM0chafpIUtUkntF+Kzg=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy+OvllHLexNJZuM59d38tV/8qdZ98iOyJosCjp+5YGbecyILJF
-	DNmtnzrPIj4SY5ntm+5u+JUPjEgrGv+czt3uTkvIhZo+tYewhkujK0XsBVdOUgLOCet7AWqgYSS
-	Sb+oqJb6Q960BpH7jsjnAU+5TDjDqCtdcfPOq5lO6qA==
-X-Received: by 2002:a05:690c:399:b0:786:4ed4:24f0 with SMTP id
- 00721157ae682-793c52f60b0mr45925757b3.5.1768640822742; Sat, 17 Jan 2026
- 01:07:02 -0800 (PST)
+	s=arc-20240116; t=1768644593; c=relaxed/simple;
+	bh=ILGfYOXnBd2SedZINJ1vZqXThkv4zHeV+jRFjhqO+ew=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Gp737Nv4kJ9joYUKrAQJmu159NDy0pPrYxsj4qSghCrcsCQLn9I4+RS1PX5A5k0JHAMLaNociMrTWD8tKDzX0nSYAcGyQjAms5kIGeHWVNZMgButKpE+0T+t+ODsdHbFetDVtIIywufj08R0CXk2sFNZsaTdQH6h80hUmkogBUY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U9WWDkZ5; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-2a0a33d0585so17758015ad.1
+        for <bpf@vger.kernel.org>; Sat, 17 Jan 2026 02:09:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1768644592; x=1769249392; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TpLRIydUf332u62HkHeb5lB6bp3zwgBaw2oGbRiHoKI=;
+        b=U9WWDkZ5S8w74Qrs1RiJlnI0PpGl0uDxDfma4zAlLNDJk4UtKga9qOVVPLdqUXXJeW
+         KnNmr7C8xeSAquejUfXBK+8uvY68xuJNrJoLTNXnqFUWYsqg33kdFkswEh+0Be6ndOT7
+         1xvHwIQ67o9fnZBvpaJWRWMAzatPbGwYcoHHY8Yl6NMvzXsE6lfgtWgnv2Xv9XTwjvk/
+         a2H2x80wSUZvAlmjBNjrLk77RobvuUmdAVueN0PSE/o8OSH3QVEEq1t5HlU/0tNA8849
+         wQmMzNkvpN6bIrNFJ8tkQAG2z/GL7lErRDifEPde237I/r1jFwBz3rVN0CUOrSSQACKo
+         1hUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768644592; x=1769249392;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=TpLRIydUf332u62HkHeb5lB6bp3zwgBaw2oGbRiHoKI=;
+        b=bX0ml/QsZLZXmZ6pEoibGqYDG4P9iLyS0/aLkDumtz5YILQEaz+vlFAkhuFZcEoTSL
+         vTpsue/rchcmR9+6D/wGQCzSsnNoV3f54AYCWmf61ohy0t2FKA367GAO8YX7n4s6lg5T
+         i90cbvzx1FqQOdr0B4Y6yMlQ8DV6jTGJKxQbEP4GMgRNj0V+lmnw/9uhatHRa1Steh3M
+         1ktixs1aVJfGC4y5dEwvMuQfXnTEFBsYqO8ycJSnRI0Q51tn2CFbCf6pyUYfUEtJaWIc
+         Je7koEOCFMyY9lUB76ln/ab0FZrgYa+IX4bxXSRqjETfX0UtO2o4r4vrroJbtYtyuaXI
+         aI2w==
+X-Forwarded-Encrypted: i=1; AJvYcCW6niuR4eDdhEvE0dYphFoTt4UyY3zZWFvoKJ4CFzaRUNtE+5UtjvwSQxFr7nIDYKqkUQE=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy/lJV5GAo4uZLBu+g0xrPjBVeV4qAHTy2gti4R2/rK7Kn1COQP
+	2P2z20qzLFYtSo7lFCxJo2eoF3E1aLlJp+BVDyTt0EzHk8S9Qa5OUqIL
+X-Gm-Gg: AY/fxX5OMEWfSAxyn2fAdHFaGRhBElrI7Tt3BXjsr9HNvowE+LBY5KSUNCVPpNtzntl
+	ftUzUY9UeaMAAhch6bSUMi6kh68WDDBcZzkQxckSwj2aeimLMZCyQ9TWToQgnzfFuZmUIX2iC46
+	BKd74bNV7C5NoKGVgE14HpPNYpD1x5Pp2Eg7t2GI7bvp3PxXklpsYZQzAsfUmctGd10KvMtwFjj
+	nzmWwnhSmd1Cw4vFqSy/e4jiC/WvJJIfdNjo4Gs1c7boh8oEQIeK+PVEntFIgMUuiwE994Rz4mR
+	4q+4VlG6p7s7slH3u1Jflqe+avi0bQ0ID9YgLhWWPqZctnJjtYLMvfeeN9/XJsPWbDB9u2rAjnM
+	a2wtYd7NOupFveKcyxmcl9fpS9YlkRas3p6okSk9jONU652K2ON8YA3hPpQPSwAKx8COlOcYRRk
+	n67Rt5vZ/fg7lVimnYnFjWkeg=
+X-Received: by 2002:a17:902:d4d2:b0:2a0:acca:f3f0 with SMTP id d9443c01a7336-2a71893cddcmr50870455ad.49.1768644591710;
+        Sat, 17 Jan 2026 02:09:51 -0800 (PST)
+Received: from localhost.localdomain ([138.199.21.245])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a7193fab79sm43676805ad.67.2026.01.17.02.09.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 17 Jan 2026 02:09:51 -0800 (PST)
+From: Qiliang Yuan <realwujing@gmail.com>
+To: eddyz87@gmail.com
+Cc: andrii@kernel.org,
+	ast@kernel.org,
+	bpf@vger.kernel.org,
+	daniel@iogearbox.net,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	kpsingh@kernel.org,
+	linux-kernel@vger.kernel.org,
+	martin.lau@linux.dev,
+	realwujing@gmail.com,
+	sdf@fomichev.me,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	yuanql9@chinatelecom.cn
+Subject: [PATCH v3] bpf/verifier: optimize precision backtracking by skipping precise bits
+Date: Sat, 17 Jan 2026 18:09:22 +0800
+Message-Id: <20260117100922.38459-1-realwujing@gmail.com>
+X-Mailer: git-send-email 2.39.5
+In-Reply-To: <aa4cc54a3a0796b16d2d5e13142d104fa5a483e1.camel@gmail.com>
+References: <aa4cc54a3a0796b16d2d5e13142d104fa5a483e1.camel@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260115173717.2060746-1-ishiyama@hpc.is.uec.ac.jp>
- <20260115173717.2060746-2-ishiyama@hpc.is.uec.ac.jp> <46799ba9-d292-494e-b9b1-658448993538@gmail.com>
- <bcce0d61-e7ae-4268-a6ec-a82f1329cc6d@redhat.com>
-In-Reply-To: <bcce0d61-e7ae-4268-a6ec-a82f1329cc6d@redhat.com>
-From: Yuzuki Ishiyama <ishiyama@hpc.is.uec.ac.jp>
-Date: Sat, 17 Jan 2026 18:06:51 +0900
-X-Gmail-Original-Message-ID: <CAJjCV5Hr_WqmMrA8SKJNVKtUOVjhWAcMS1iu7sFDgLr+bm=Nvw@mail.gmail.com>
-X-Gm-Features: AZwV_QibMlzy60R_ZvEu45Gc2mpl5TdR8Ypnld4CcoM0E9BcIRKDeTDSyASRyIg
-Message-ID: <CAJjCV5Hr_WqmMrA8SKJNVKtUOVjhWAcMS1iu7sFDgLr+bm=Nvw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: add bpf_strncasecmp kfunc
-To: Viktor Malik <vmalik@redhat.com>
-Cc: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-I think it would be clearer to document the other string functions as
-well. What do you think, Mykyta? If you'd like, I can take care of it
-after I'm done with this patch.
+Optimize __mark_chain_precision() by skipping registers or stack slots
+that are already marked as precise. This prevents redundant history
+walks when multiple verification paths converge on the same state.
 
-Yuzuki
+Centralizing this check in __mark_chain_precision() improves efficiency
+for all entry points (mark_chain_precision, propagate_precision) and
+simplifies call-site logic.
 
-2026=E5=B9=B41=E6=9C=8817=E6=97=A5(=E5=9C=9F) 1:03 Viktor Malik <vmalik@red=
-hat.com>:
->
-> On 1/16/26 13:28, Mykyta Yatsenko wrote:
-> > On 1/15/26 17:37, Yuzuki Ishiyama wrote:
-> >> bpf_strncasecmp() function performs same like bpf_strcasecmp() except
-> >> limiting the comparison to a specific length.
-> >>
-> >> Signed-off-by: Yuzuki Ishiyama <ishiyama@hpc.is.uec.ac.jp>
-> >> ---
-> >>   kernel/bpf/helpers.c | 31 ++++++++++++++++++++++++++++---
-> >>   1 file changed, 28 insertions(+), 3 deletions(-)
-> >>
-> >> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> >> index 9eaa4185e0a7..2b275eaa3cac 100644
-> >> --- a/kernel/bpf/helpers.c
-> >> +++ b/kernel/bpf/helpers.c
-> >> @@ -3406,7 +3406,7 @@ __bpf_kfunc void __bpf_trap(void)
-> >>    * __get_kernel_nofault instead of plain dereference to make them sa=
-fe.
-> >>    */
-> >>
-> >> -static int __bpf_strcasecmp(const char *s1, const char *s2, bool igno=
-re_case)
-> >> +static int __bpf_strncasecmp(const char *s1, const char *s2, bool ign=
-ore_case, size_t len)
-> >>   {
-> >>      char c1, c2;
-> >>      int i;
-> >> @@ -3416,6 +3416,9 @@ static int __bpf_strcasecmp(const char *s1, cons=
-t char *s2, bool ignore_case)
-> >>              return -ERANGE;
-> >>      }
-> >>
-> >> +    if (len =3D=3D 0)
-> >> +            return 0;
-> >> +
-> >>      guard(pagefault)();
-> >>      for (i =3D 0; i < XATTR_SIZE_MAX; i++) {
-> >>              __get_kernel_nofault(&c1, s1, char, err_out);
-> >> @@ -3428,6 +3431,8 @@ static int __bpf_strcasecmp(const char *s1, cons=
-t char *s2, bool ignore_case)
-> >>                      return c1 < c2 ? -1 : 1;
-> >>              if (c1 =3D=3D '\0')
-> >>                      return 0;
-> >> +            if (len < XATTR_SIZE_MAX && i =3D=3D len - 1)
-> >> +                    return 0;
-> > Maybe rewrite this loop next way: u32 max_sz =3D min_t(u32,
-> > XATTR_SIZE_MAX, len); for (i=3D0; i < max_sz; i++) { ... } if (len <
-> > XATTR_SIZE_MAX) return 0; return -E2BIG; This way we eliminate that
-> > entire if statement from the loop body, which should be positive for
-> > performance.
-> >>              s1++;
-> >>              s2++;
-> >>      }
-> >> @@ -3451,7 +3456,7 @@ static int __bpf_strcasecmp(const char *s1, cons=
-t char *s2, bool ignore_case)
-> >>    */
-> >>   __bpf_kfunc int bpf_strcmp(const char *s1__ign, const char *s2__ign)
-> >>   {
-> >> -    return __bpf_strcasecmp(s1__ign, s2__ign, false);
-> >> +    return __bpf_strncasecmp(s1__ign, s2__ign, false, XATTR_SIZE_MAX)=
-;
-> >>   }
-> >>
-> >>   /**
-> >> @@ -3469,7 +3474,26 @@ __bpf_kfunc int bpf_strcmp(const char *s1__ign,=
- const char *s2__ign)
-> >>    */
-> >>   __bpf_kfunc int bpf_strcasecmp(const char *s1__ign, const char *s2__=
-ign)
-> >>   {
-> >> -    return __bpf_strcasecmp(s1__ign, s2__ign, true);
-> >> +    return __bpf_strncasecmp(s1__ign, s2__ign, true, XATTR_SIZE_MAX);
-> >> +}
-> >> +
-> >> +/*
-> >> + * bpf_strncasecmp - Compare two length-limited strings, ignoring cas=
-e
-> >> + * @s1__ign: One string
-> >> + * @s2__ign: Another string
-> >> + * @len: The maximum number of characters to compare
-> > Let's also add that len is limited by XATTR_SIZE_MAX
->
-> This applies for other string kfuncs, too, but we never mention it in
-> the docs comments. Does it make sense to have it just for one? Or should
-> we add it to the rest as well?
->
-> Viktor
->
-> >> +
-> >> + * Return:
-> >> + * * %0       - Strings are equal
-> >> + * * %-1      - @s1__ign is smaller
-> >> + * * %1       - @s2__ign is smaller
-> >> + * * %-EFAULT - Cannot read one of the strings
-> >> + * * %-E2BIG  - One of strings is too large
-> >> + * * %-ERANGE - One of strings is outside of kernel address space
-> >> + */
-> >> +__bpf_kfunc int bpf_strncasecmp(const char *s1__ign, const char *s2__=
-ign, size_t len)
-> >> +{
-> >> +    return __bpf_strncasecmp(s1__ign, s2__ign, true, len);
-> >>   }
-> >>
-> >>   /**
-> >> @@ -4521,6 +4545,7 @@ BTF_ID_FLAGS(func, bpf_iter_dmabuf_destroy, KF_I=
-TER_DESTROY | KF_SLEEPABLE)
-> >>   BTF_ID_FLAGS(func, __bpf_trap)
-> >>   BTF_ID_FLAGS(func, bpf_strcmp);
-> >>   BTF_ID_FLAGS(func, bpf_strcasecmp);
-> >> +BTF_ID_FLAGS(func, bpf_strncasecmp);
-> >>   BTF_ID_FLAGS(func, bpf_strchr);
-> >>   BTF_ID_FLAGS(func, bpf_strchrnul);
-> >>   BTF_ID_FLAGS(func, bpf_strnchr);
-> >
-> >
->
+Performance Results (Extreme Stress Test on 32-core system):
+Under system-wide saturation (32 parallel veristat instances) using a
+high-stress backtracking payload (~290k insns, 34k states), this
+optimization demonstrated significant micro-architectural gains:
+
+- Total Retired Instructions:  -82.2 Billion (-1.94%)
+- Total CPU Cycles:            -161.3 Billion (-3.11%)
+- Avg. Insns per Verify:       -17.2 Million (-2.84%)
+- Page Faults:                 -39.90% (Significant reduction in memory pressure)
+
+The massive reduction in page faults suggests that avoiding redundant
+backtracking significantly lowers memory subsystem churn during deep
+state history walks.
+
+Verified that total instruction and state counts (per veristat) remain
+identical across all tests, confirming logic equivalence.
+
+Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
+Signed-off-by: Qiliang Yuan <realwujing@gmail.com>
+---
+On Fri, Jan 16, 2026 at 11:27 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
+> As I said before, this is a useful change.
+> 
+> > 4. bpf/verifier: optimize precision backtracking by skipping precise bits
+> >    (https://lore.kernel.org/all/20260115152037.449362-1-realwujing@gmail.com/)
+> >    Following your suggestion to refactor the logic into the core engine for
+> >    better coverage and clarity, I have provided a v2 version of this patch here:
+> >    (https://lore.kernel.org/all/20260116045839.23743-1-realwujing@gmail.com/)
+> >    This v2 version specifically addresses your feedback by centralizing the
+> >    logic and includes a comprehensive performance comparison (veristat results)
+> >    in the commit log. It reduces the complexity of redundant backtracking
+> >    requests from O(D) (where D is history depth) to O(1) by utilizing the
+> >    'precise' flag to skip already-processed states.
+> 
+> Same as with #1: using veristat duration metric, especially for such
+> small programs, is not a reasonable performance analysis.
+
+Link: https://lore.kernel.org/all/75807149f7de7a106db0ccda88e5d4439b94a1e7.camel@gmail.com/
+
+Hi Eduard,
+
+Acknowledged. To provide a more robust performance analysis, I have moved away
+from veristat duration and instead used hardware performance counters (perf stat)
+under system-wide saturation with a custom backtracking stress test. This 
+demonstrates the optimization's hardware-level efficiency (retired instructions 
+and page faults) more reliably.
+
+Best regards,
+Qiliang
+
+Test case (backtrack_stress.c):
+#include "vmlinux.h"
+#include <bpf/bpf_helpers.h>
+
+struct {
+    __uint(type, BPF_MAP_TYPE_ARRAY);
+    __uint(max_entries, 1);
+    __type(key, __u32);
+    __type(value, __u64);
+} dummy_map SEC(".maps");
+
+SEC("tc")
+int backtrack_stress(struct __sk_buff *skb)
+{
+    __u32 key = 0;
+    __u64 *val = bpf_map_lookup_elem(&dummy_map, &key);
+    if (!val) return 0;
+    __u64 x = *val;
+    
+    /* 1. Create a deep dependency chain to fill history for 'x' */
+    x += 1; x *= 2; x -= 1; x ^= 0x55;
+    x += 1; x *= 2; x -= 1; x ^= 0xAA;
+    x += 1; x *= 2; x -= 1; x ^= 0x55;
+    x += 1; x *= 2; x -= 1; x ^= 0xAA;
+
+    /* 2. Create many states via conditional branches */
+#define CHECK_X(n) if (x == n) { x += 1; } if (x == n + 1) { x -= 1; }
+#define CHECK_X10(n)  CHECK_X(n) CHECK_X(n+2) CHECK_X(n+4) CHECK_X(n+6) CHECK_X(n+8) \
+                      CHECK_X(n+10) CHECK_X(n+12) CHECK_X(n+14) CHECK_X(n+16) CHECK_X(n+18)
+#define CHECK_X100(n) CHECK_X10(n) CHECK_X10(n+20) CHECK_X10(n+40) CHECK_X10(n+60) CHECK_X10(n+80) \
+                      CHECK_X10(n+100) CHECK_X10(n+120) CHECK_X10(n+140) CHECK_X10(n+160) CHECK_X10(n+180)
+
+    CHECK_X100(0)
+    CHECK_X100(200)
+    CHECK_X100(400)
+    CHECK_X100(600)
+    CHECK_X100(800)
+    CHECK_X100(1000)
+
+    /* 3. Trigger mark_chain_precision() multiple times on 'x' */
+    #pragma clang loop unroll(full)
+    for (int i = 0; i < 500; i++) {
+        if (x == (2000 + i)) { 
+            x += 1;
+        }
+    }
+
+    return x;
+}
+
+char _license[] SEC("license") = "GPL";
+
+How to Test:
+-----------
+1. Compile the BPF program (from kernel root):
+   clang -O2 -target bpf \
+         -I./tools/testing/selftests/bpf/ \
+         -I./tools/lib/ \
+         -I./tools/include/uapi/ \
+         -I./tools/testing/selftests/bpf/include \
+         -c backtrack_stress.c -o backtrack_stress.bpf.o
+
+2. System-wide saturation profiling (32 cores):
+   # Start perf in background
+   sudo perf stat -a -- sleep 60 &
+   # Start 32 parallel loops of veristat
+   for i in {1..32}; do (while true; do ./veristat backtrack_stress.bpf.o > /dev/null; done &); done
+
+Raw Performance Data:
+---------------------
+Baseline (6.19.0-rc5-baseline, git commit 944aacb68baf):
+File                    Program           Verdict  Duration (us)   Insns  States  Program size  Jited size
+----------------------  ----------------  -------  -------------  ------  ------  ------------  ----------
+backtrack_stress.bpf.o  backtrack_stress  success         197924  289939   34331          5437       28809
+----------------------  ----------------  -------  -------------  ------  ------  ------------  ----------
+
+         1,388,149      context-switches                 #    722.5 cs/sec  cs_per_second     
+      1,921,399.69 msec cpu-clock                        #     32.0 CPUs  CPUs_utilized       
+            25,113      cpu-migrations                   #     13.1 migrations/sec  migrations_per_second
+         8,108,516      page-faults                      #   4220.1 faults/sec  page_faults_per_second
+    97,445,724,421      branch-misses                    #      8.1 %  branch_miss_rate         (50.07%)
+   903,852,287,721      branches                         #    470.4 M/sec  branch_frequency     (66.76%)
+ 5,190,519,089,751      cpu-cycles                       #      2.7 GHz  cycles_frequency       (66.81%)
+ 4,230,500,391,043      instructions                     #      0.8 instructions  insn_per_cycle  (66.76%)
+ 1,853,856,616,836      stalled-cycles-frontend          #     0.36 frontend_cycles_idle        (66.52%)
+
+      60.031936126 seconds time elapsed
+
+Patched (6.19.0-rc5-optimized):
+File                    Program           Verdict  Duration (us)   Insns  States  Program size  Jited size
+----------------------  ----------------  -------  -------------  ------  ------  ------------  ----------
+backtrack_stress.bpf.o  backtrack_stress  success         214600  289939   34331          5437       28809
+----------------------  ----------------  -------  -------------  ------  ------  ------------  ----------
+
+         1,433,270      context-switches                 #    745.9 cs/sec  cs_per_second     
+      1,921,604.54 msec cpu-clock                        #     32.0 CPUs  CPUs_utilized       
+            22,795      cpu-migrations                   #     11.9 migrations/sec  migrations_per_second
+         4,873,895      page-faults                      #   2536.4 faults/sec  page_faults_per_second
+    97,038,959,375      branch-misses                    #      8.1 %  branch_miss_rate         (50.07%)
+   890,170,312,491      branches                         #    463.2 M/sec  branch_frequency     (66.76%)
+ 5,029,192,994,167      cpu-cycles                       #      2.6 GHz  cycles_frequency       (66.81%)
+ 4,148,237,426,723      instructions                     #      0.8 instructions  insn_per_cycle  (66.77%)
+ 1,818,457,318,301      stalled-cycles-frontend          #     0.36 frontend_cycles_idle        (66.51%)
+
+      60.032523872 seconds time elapsed
+
+ kernel/bpf/verifier.c | 27 +++++++++++++++++++++++++--
+ 1 file changed, 25 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 3135643d5695..250f1dc0298e 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -4765,14 +4765,37 @@ static int __mark_chain_precision(struct bpf_verifier_env *env,
+ 	 * slot, but don't set precise flag in current state, as precision
+ 	 * tracking in the current state is unnecessary.
+ 	 */
+-	func = st->frame[bt->frame];
+ 	if (regno >= 0) {
+-		reg = &func->regs[regno];
++		reg = &st->frame[bt->frame]->regs[regno];
+ 		if (reg->type != SCALAR_VALUE) {
+ 			verifier_bug(env, "backtracking misuse");
+ 			return -EFAULT;
+ 		}
++		if (reg->precise)
++			return 0;
+ 		bt_set_reg(bt, regno);
++	} else {
++		for (fr = bt->frame; fr >= 0; fr--) {
++			u32 reg_mask = bt_frame_reg_mask(bt, fr);
++			u64 stack_mask = bt_frame_stack_mask(bt, fr);
++			DECLARE_BITMAP(mask, 64);
++
++			func = st->frame[fr];
++			if (reg_mask) {
++				bitmap_from_u64(mask, reg_mask);
++				for_each_set_bit(i, mask, 32) {
++					if (func->regs[i].precise)
++						bt_clear_frame_reg(bt, fr, i);
++				}
++			}
++			if (stack_mask) {
++				bitmap_from_u64(mask, stack_mask);
++				for_each_set_bit(i, mask, 64) {
++					if (func->stack[i].spilled_ptr.precise)
++						bt_clear_frame_slot(bt, fr, i);
++				}
++			}
++		}
+ 	}
+ 
+ 	if (bt_empty(bt))
+-- 
+2.39.5
+
 
