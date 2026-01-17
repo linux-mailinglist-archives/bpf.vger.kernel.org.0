@@ -1,504 +1,287 @@
-Return-Path: <bpf+bounces-79355-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79356-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91B89D38B7C
-	for <lists+bpf@lfdr.de>; Sat, 17 Jan 2026 03:11:35 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5910D38B85
+	for <lists+bpf@lfdr.de>; Sat, 17 Jan 2026 03:16:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 9BFD5300E8DD
-	for <lists+bpf@lfdr.de>; Sat, 17 Jan 2026 02:11:19 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id D09F13038CE9
+	for <lists+bpf@lfdr.de>; Sat, 17 Jan 2026 02:16:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCDB230FC16;
-	Sat, 17 Jan 2026 02:11:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 992EC311C15;
+	Sat, 17 Jan 2026 02:16:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ckaBFZ0K"
+	dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b="Mswtfyik"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from AS8PR04CU009.outbound.protection.outlook.com (mail-westeuropeazon11011005.outbound.protection.outlook.com [52.101.70.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BF5024501B
-	for <bpf@vger.kernel.org>; Sat, 17 Jan 2026 02:11:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.160.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B8A074BE1;
+	Sat, 17 Jan 2026 02:16:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.70.5
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768615876; cv=pass; b=L82C5rLO+7hkH00N6BOC3iU+hwiw8suZgY7Il0nOFPeFvsszL+g6igF/nTodeJ7tFsSYJP609GrIWyMU/u5pLpsqqwUIaaSnkOT878DJJiMeRVo89GKb0JwE4smimXJB1eQeGbkmKoCwzJhQk75jplaufvSc3L6nsvTbdDyfBp8=
+	t=1768616185; cv=fail; b=vCPWAVg+ZMdmf1UdeXn3CvINAs5uoeygCqoLheeZI/0yjgK/Twws8MXgbQtVijzlI+OnAxmV6H3cbeQCJs9KjPZbq93vAwd4O5GSjAZotCIJsCvEq0Iz7lHy8n2qEXNtXk3Stxd5srBN5sxyo6EOAjzRhGvW3aQ3oiIS5qYmpRs=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768615876; c=relaxed/simple;
-	bh=oidOtNJnku2S6cVt6JlSLpEyGp2/mdpd0iSErBFe6Gc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=o8y0E2XMEkodDv45ExESFEXfRUYTBPhMGv0RrR441WIiIIFju8rA9Ffa8s5YEsapD4OVmSANaPf/YU4uUrBBZ5wbPQqzQny9JEgu+gb2XOyNk1eDtKD+5HNRd1C7S0B+3uktxKwiqdj4WKw8UwIQDs00MUzW+x0Dy4aoPuE9DUM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ckaBFZ0K; arc=pass smtp.client-ip=209.85.160.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-50299648ae9so112361cf.1
-        for <bpf@vger.kernel.org>; Fri, 16 Jan 2026 18:11:14 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1768615873; cv=none;
-        d=google.com; s=arc-20240605;
-        b=RsAKSj7CMNsgAhbxat+JMK4h8TWfpOuBddDXHMvnBPv999DkFmVHnXEugG5RMpclJn
-         cdF7fbdSG9sYLr0Y1JQqzdo7PgCd/N7eXzcPg91qIwqABOnF8HPZUHscfdwX/4AcqkEN
-         S3V7CI+dLofSkp7VvwM0gqc0s3K95MMO947TpXOC3sWbV4fbE7mQfrnL0y7ANk6Q0rwM
-         qDxSmsh/VOsanXnXtWhjawXPzf7Wa2Es26pwNdAT4TkFT+cUzHkbLm6/BVI5WAGSuFou
-         QXgQ/tpRHQK8waRtCEPepyckZ7sH6sUwcRd13bDrS/skBs+v5+IGqhLI1QhYATpVrEJ4
-         dM8Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=Z8XfzdTcYbKXbttOZYCkhexZVaSChWM1LNoqV+hh1gE=;
-        fh=rSBVU5mBVyT5g8nYdFuLb56SMKe1cx+Mz/Lvo/hZZAI=;
-        b=Vbg41pmU+UoVFLTN1tB1VfJ4Loi29WGYhSXauZODX8PhTLREYHgjQ01Mf3xPCZE70V
-         ZoSNKEeRnQt7QmLKpjlv9nY921GrF7Q/oKOvVY4whQatrntRz1/FRhlZH0chJVBAqe2z
-         Jw1z4RpJEJcu2LNaotUdGhppyvnTBfsJj/oil6JWbs7xsxPsnlD8qNSxq8oCwZNs/K2J
-         bw9KXFaI4j5pB8RdcHbTnlYCvlkTuA0uAoR9WK3j+f0/BVf/cHK9nQtVub6b97xepkQv
-         1qxLrFMDLYRVFgtDnEF476cdb+Kv0j6vbhNB/YlTVYb296AYXu7wh/KdhueVSbONsTMx
-         ZpOQ==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1768615873; x=1769220673; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Z8XfzdTcYbKXbttOZYCkhexZVaSChWM1LNoqV+hh1gE=;
-        b=ckaBFZ0K9nkK/pEAPBZwxOtdLCIugUbKtuCt+nxMrEvmUrNXDycSXJaOB8AcGLX7tL
-         KTR6gBk2ZRFod9OVfIlbilN83HYCFp6P54rjn7O+1gS1DEEN+8hC0p/LVYywNJvqMKFt
-         nGQN46pI/hkvBc1j06xmLpC2UFjZFBspzNMuGy8ckCA9div3Oy7E+lrKKH/HmnQag9Bt
-         ONL9fgalW3/UHW+1ha96SWCcm8scfpS6RZOhkEElcp5YgRXS9W97gSh4C79Hf/LKVe6T
-         a0x8psXxXcLjeTV47Ha8K9NTpRTfNDr/5/+wGyVadf6WYMVYuKRzSf9uhjthNLFsdcih
-         tWYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768615873; x=1769220673;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=Z8XfzdTcYbKXbttOZYCkhexZVaSChWM1LNoqV+hh1gE=;
-        b=ZdFOkzRTADt3xVQfSORuPTrg9V3EEUczi5nlSbry5nV3UQ6hlcPSioetMFEEo20C1E
-         M/UapJD3gJyew7TzlIRIi333uAYJLkJKL/TN5oSLL2vKeefXYRVn0oqoVKPLxbBtYZBh
-         AH+7aC252yLnq8BUX6O+quu9DKplFihcc4frrLk/p2aLCJkPRrWG7ObbOqOthQYfctCO
-         RMcMm9k89774vQP9c8gkSrP2FB7BivJceJLwnlc8N3I1Jy6XlLFMz7ZlnkOPAWSW2Xvi
-         ECbmzOVE8Dbq0oyPKlkmwm4yq/wZEXXBvbG/ufOS+XkH1wP55j9sz1kURPoRZ0axyqLU
-         olxg==
-X-Forwarded-Encrypted: i=1; AJvYcCVhLknDGHGhAZ8xLX8xk8teFXn7hJ7s2sRW02BdN2eexPe/WrgW4+qToQBbPl6PCYDZsKU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwDOyUQvVmRt5it80XDzQgg/lyfzf3mpFzKOXIy7iOaE6uuYcPG
-	ny3MP+xwFbZadTpRJaB31BWV18sQGtUu3UhL9snGn5B0Q5BLJfDsxsxxRuoBoFUepQrBa67AYld
-	KAb4ZLA/rLoSELL2gTEMBV/2B5fZyMMM7QWcqs6nS
-X-Gm-Gg: AY/fxX7ifybbn9q7lS6F86GMS1sqgxnYGsRuAl//sbKZqChjM3nXbnWEFbSf1vF+J+j
-	ueQ44fHzdZlPZmiPfCAWSA544N35BmlsHRMLYMw8AoAnCAidc1UhNBCHMsRkcHpY1SNil04wts9
-	7K9fXlkO9nw+rbvg+laViC5QKfsCVN+6bsEl4kU3aBukfy4DvpHJ13qhdP2TH0XlJXUwVvBa2ck
-	KRIhE4ykqkDwvJ2TDdGgYkba+dCBEFoj453vKJaWIKy4XTP3jb637LzDpMlesK25PeNTmS+duQm
-	tIZ91A7Ct1MkoipMWdH9wiZJ4xcPdNocpQ==
-X-Received: by 2002:a05:622a:607:b0:4ff:cb25:998b with SMTP id
- d75a77b69052e-502afa038cbmr4649721cf.12.1768615873084; Fri, 16 Jan 2026
- 18:11:13 -0800 (PST)
+	s=arc-20240116; t=1768616185; c=relaxed/simple;
+	bh=HX27BWShgMwX+dQH3vD/HsI9i5wsGirvq9Nqm2wjb/U=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=NiK3ISrgx8PijqQy0LfEipz2ZoLWmrQhXOcRG/FkysSs/CW52LYLc2VKqcBSDlg/88D09+AX5rYrek2qMVyoUy/n8KK3L2qJYADDRykURHsFG4MDEZR5JOxVhQuyFoFBA65gdC8E/koPD4xSDemwJ20viQjgbBj0WfaFQWuzuuE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b=Mswtfyik; arc=fail smtp.client-ip=52.101.70.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=QZtl/ckYThGnXYHx6nsqeOZDtBifR675ZPlcCjmnwpU3GwZnvcLXh0QemvSmaIPDMzjlSIjuDIL6wIETebk8Z9R37h/3dm7oytEDPkiT58I/ZR9Jp7MhyZPhTdHWiVMSwRgH7pbZ/tUeW5+Gk9nY3TSB+MBf8ElIONNCbmuhxNlgakeSjuGkXtF4QC+YrppifrfV5SLX1aUjq/Czs5aOtMrIVq0xI7KpZiaofoY0SnoAruBChRxtZMd/AjlWaXRkdxV2PIW2wM406MehtPc8qxhUvWfWoZLGFxMHj4zVyWY4UPb1BYqUiDlCPxZvJzDdEkj530g/5mfvAtEKajaXuA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=4EjVPaJGIeux5qV+sXPxKOnfJFqjPouS9PiiFwuf+kY=;
+ b=tYYW1AEAkKpH54yrqWN8J5OeHdq4v2kLjhkThuR0Tqwohof2F+dCbl4jdpa0UUpu1s7jMjATZpuGLIoNOdXeyJYI7wfO4YqBKdQ0nE/l9fQUf8fC5c9bXCSkFGKo7kasbOq32PqCGyiw1Aw6kZwjwxezK9sIbLXboWOF5NuqdGkuk6c9PzHH0e0BfAz3yLGVnj7WmVlLOmQ325dWVT1A5vUnjl+nq2jkU/pXnb/98f550ZdXhasITFNcWXz6KCliOSdaA3TUB7fyscByiTsY2VLLKpRn4wnxXK6+2H2RmVSpjuEcIKppMG656w26e79LxJrPIZtxN1oOUXgT5slq+Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4EjVPaJGIeux5qV+sXPxKOnfJFqjPouS9PiiFwuf+kY=;
+ b=MswtfyikAysKH/yrlkBT6+yZClaa5/PA5t74jeduhcOEQANqBwm3JYT5KUmbIrVHCb/IyQGlkt0+JUAYGvj0YT0yaYykaKyfyoa8YDPnzx/pirGBsiePSphRefBq6MpCBV0hpPO4NDQsmocrOcl3bFFfRzitYAc5CoiGMvgwDgCX/kmGcc7kANUvUABQYh6OJ/iIvco4treQiaNjOUa+SUzwrQI+4rdIrh8bho4RgsxQiNja59iYVxY92M56R4NXoHII9dJGkNzCnB4orATnCvERqLLOvdf5ZtAXTlNBWC9vMHLDwWi1CPmxmA8vsnkBGSN5i8GvYxLBnx3xnpXMGA==
+Received: from PAXPR04MB8510.eurprd04.prod.outlook.com (2603:10a6:102:211::7)
+ by PA2PR04MB10508.eurprd04.prod.outlook.com (2603:10a6:102:41c::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9520.5; Sat, 17 Jan
+ 2026 02:16:18 +0000
+Received: from PAXPR04MB8510.eurprd04.prod.outlook.com
+ ([fe80::a7c2:e2fa:8e04:40db]) by PAXPR04MB8510.eurprd04.prod.outlook.com
+ ([fe80::a7c2:e2fa:8e04:40db%4]) with mapi id 15.20.9499.001; Sat, 17 Jan 2026
+ 02:16:18 +0000
+From: Wei Fang <wei.fang@nxp.com>
+To: Frank Li <frank.li@nxp.com>
+CC: Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>,
+	"andrew+netdev@lunn.ch" <andrew+netdev@lunn.ch>, "davem@davemloft.net"
+	<davem@davemloft.net>, "edumazet@google.com" <edumazet@google.com>,
+	"kuba@kernel.org" <kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>,
+	"ast@kernel.org" <ast@kernel.org>, "daniel@iogearbox.net"
+	<daniel@iogearbox.net>, "hawk@kernel.org" <hawk@kernel.org>,
+	"john.fastabend@gmail.com" <john.fastabend@gmail.com>, "sdf@fomichev.me"
+	<sdf@fomichev.me>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"imx@lists.linux.dev" <imx@lists.linux.dev>, "bpf@vger.kernel.org"
+	<bpf@vger.kernel.org>
+Subject: RE: [PATCH v2 net-next 12/14] net: fec: add
+ fec_alloc_rxq_buffers_pp() to allocate buffers from page pool
+Thread-Topic: [PATCH v2 net-next 12/14] net: fec: add
+ fec_alloc_rxq_buffers_pp() to allocate buffers from page pool
+Thread-Index: AQHchrucPRBnp7Vpd0ShBHdoinT+BbVU3icAgADBkTA=
+Date: Sat, 17 Jan 2026 02:16:18 +0000
+Message-ID:
+ <PAXPR04MB8510A564C6DE0459BC7E2A46888AA@PAXPR04MB8510.eurprd04.prod.outlook.com>
+References: <20260116074027.1603841-1-wei.fang@nxp.com>
+ <20260116074027.1603841-13-wei.fang@nxp.com>
+ <aWpNcsoiQX7WESis@lizhi-Precision-Tower-5810>
+In-Reply-To: <aWpNcsoiQX7WESis@lizhi-Precision-Tower-5810>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PAXPR04MB8510:EE_|PA2PR04MB10508:EE_
+x-ms-office365-filtering-correlation-id: 73c73a71-951f-493b-e9c0-08de556e662b
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|19092799006|366016|1800799024|376014|7416014|38070700021;
+x-microsoft-antispam-message-info:
+ =?us-ascii?Q?PwgfXKwKHv7bE/jV8J4bxpWIPupYQNkE6S3F+bJV8go2u0cQFgn8kzut+6Kd?=
+ =?us-ascii?Q?QOXju3C7pyqHZR84724dGsqqztG8JB1+NFa3nUFhZ8JIVom1NlZ2gFvoMzLV?=
+ =?us-ascii?Q?m+aKtxgytcE6iMeT/IzgwgFxj+PfebDUY+vac3q81SdRj8cXKVlXcOYxwwmz?=
+ =?us-ascii?Q?u2ZlidB9Sy2etB2QsC9hIDkZY3zAP7E58vP4vqU5ILNxhUl1EKd+PWVlfdBk?=
+ =?us-ascii?Q?tHlv+G4rh91d4488pm1ID7sRpASI81SzXl/OspgwRqRryYwVVGvVq8ThB6SU?=
+ =?us-ascii?Q?LVTT7j7+zxkrx0Qo0ZR6dLnMqagpx0EOB9bhXqBYRQufIHWIZQYK20OQTc5S?=
+ =?us-ascii?Q?9kbuLOqjHuA7A3OL30ykFD1LrrOC0ZibmBsjrTk0+1bhyAMKRXUZ/W2L+6Ju?=
+ =?us-ascii?Q?MGp0aCZ7aKv8y+X4FGl4rFinBshRZdVZw9zVfcrd1EwlKo9z2gfu2Lj949ik?=
+ =?us-ascii?Q?IYjXrwkJKRmAgFiPbO4O0ElclAt5Q11LMDM8Ql8GOzHBWX9w5BPaOGtShtXm?=
+ =?us-ascii?Q?F6KTbAJL6A1UPybZBJ125GNVZ0cSmVaaKdq2KDXr9D+bBgkNJI80r6GJwb73?=
+ =?us-ascii?Q?HbS3ECEhVrSajV8fbpmqDxh0OJ9nDzlIb+QDWGSwE5darESeK9cSbnpwUYbs?=
+ =?us-ascii?Q?CVA9HMJOn94afLKSNpLt4xcjP/t+01uFE0nE6b3A9y9XiqEM6GoMMcOAMZ4W?=
+ =?us-ascii?Q?aLh6zibxLOC5U60BTrVuCkqgCVXMnbwJVsfRPZuz2CZTC/P6GlFQrIvOkLFj?=
+ =?us-ascii?Q?rB8RgYsDMz5NTdQ3O0NSwN3FTkTKTRDJ8VSZl9ojdjeYJUrRFIPHrKB2dE38?=
+ =?us-ascii?Q?WG4DaYiEAywpc1pIvWx9DAUNueBJTx+sTfORs27LMQKHQcMrg4OQAvLTo6tZ?=
+ =?us-ascii?Q?iOhao3JkD8/Xy3qr0dpuovYDdYduQMBbYdz/pvZy26A89CdLKjTMR4UeTfTY?=
+ =?us-ascii?Q?+R+FFPue0ydKLRDxpXOP+aHhukYQCGFIDeIkAc1nk75S7n7nYlQYxUx7XmsC?=
+ =?us-ascii?Q?V9zZ/LyVatU4wCZ7LJw2HMb/yeAzYumn9g/wqtwlUI/UnMMuojbPeEoEPSA3?=
+ =?us-ascii?Q?WVgkfFPGsZjSX5QlnxfeGltiwfKRzaNaQFcewWpqpK6NC4/QqWHqegotZALl?=
+ =?us-ascii?Q?DOKuCPEcqQH9e/5NyqJS3kmdn3P/Xr/DwmQjZCX5kjG3sIxBDNdsRC+onLOo?=
+ =?us-ascii?Q?aDz6Ib9poCDBe7R3pFcCC+zc8SDpGvdpl9suotHmunHv0XKV81Dg3ex0but3?=
+ =?us-ascii?Q?Mi+uweh18z4utkmMKiT4hYfNTNUq/Z1dVId2oTfJikf81eDjM3W4wz+ydAte?=
+ =?us-ascii?Q?aCxz1z07twC/b2Fky7uxyfar+ON5aSqk3FRgVIWaMG4vSOAunLbHWEhdPJGG?=
+ =?us-ascii?Q?01PlXmgo3zkQbPdLf1b197b1STj0mg8tCNno6++oCvGv+YZGtQKetBJFIExv?=
+ =?us-ascii?Q?EYvUHbzbZa9oBskrhzrBc0FPUHpSjqd8EbAy3cRpVrfb2jAg2tSJ9Kg4GZg0?=
+ =?us-ascii?Q?CsvVV8eOZN84ejc7VxPPMnWwiElOgw8Axp9Ke5yZoubyybxRl9/5aqGp0qLd?=
+ =?us-ascii?Q?T3Z+25MFWrGK0VerWBPRLLmtDEkw0uSw7g5vVKHH54puBFN2r7yPZaaUkghW?=
+ =?us-ascii?Q?owgmj/FEirR7aCVZXYJ+R28=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB8510.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(19092799006)(366016)(1800799024)(376014)(7416014)(38070700021);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?TX1dTGCCYffBNP9OWNEUfplxjD2c3zDcT1WjPVzu2rveW+5TK1scEPQs9XWt?=
+ =?us-ascii?Q?aHMbcjET18+y0/a3jFq35BSmhXW2JnlSnBKrAwOwrMocmJi4HtHWA19RQdhf?=
+ =?us-ascii?Q?loXKVtAe2LbAQyEiwsMdt0s7CBPlUK++IhxgRz9qeeTr8OrA7gg5n0OOVjp8?=
+ =?us-ascii?Q?EVAIdjoYuTqi5SQ9RpOWF4mb18/rOcbozWJu5REFKJGDc2fhRwnR4T5kG+6S?=
+ =?us-ascii?Q?J3QIGCNt5hpPfiE00ob1yxdvZ5smUEgrsrbdlMlK8g9zrN1gJzr+M8pFKgk4?=
+ =?us-ascii?Q?G7zUyYGFI/UDzWqAa6wmTO144ZbL0EVokjTSEXAjnKdq9Pd9V7nFkazHHBvt?=
+ =?us-ascii?Q?x9N9EHgQ45+D9tJeW5aJRYexfaqN9Rz2vTqMRejz/iWJF3N1Tk6WzRnkYK3S?=
+ =?us-ascii?Q?q3H7QPwmF+h65d4i1qHAOmqjr+TnY7UTGYFMXvB2Wtzl1vWzz7P7bn0r/6Et?=
+ =?us-ascii?Q?kmlH6xkCeKq2hiKtK+4XuUNd9WzKU+vHeLjRu+ovvQMd20Jd2W/1+k3T45Nd?=
+ =?us-ascii?Q?rZsFBhSMGt/5lArl7uirSvMTG3CpwXZ1eb0PaHyJZnlwrvpNHw3GKi5FDD2Q?=
+ =?us-ascii?Q?gAcDeqFTNtNPW9Y1WaGmEcTDgkVWmiQJNOH4uPGcnBZbjC0kp2SZfcp4MUMa?=
+ =?us-ascii?Q?vEE9mFmqJ7qeduuqNCYrWsbE9Rl0w9+mugAbLOY/CkBP6IfLc7M3kiK8usXU?=
+ =?us-ascii?Q?sTcxPhspEVzg0b1uowJ8eMQBDu4Z0wYvinmq4ACdEWQBDSriAI79gCEkFEYt?=
+ =?us-ascii?Q?x0ChIqRt+9kxH+AzrJCDHvmxQdifIUTRyYJa2NAFWsSXPJouUkMk4M7l90ks?=
+ =?us-ascii?Q?/cX/DsxPhfPXm8RPFKUo0Q2DmtZstKBISqfEVdMvc8mNjtq4lx4p5xd+HatQ?=
+ =?us-ascii?Q?nMo+K88FkLXU9BGaZxRDN7yRK9tZZIMlrdDXRJmx+TagqLnls3yF5xapLPqT?=
+ =?us-ascii?Q?PiyO4DOc0Em6qz0YkUs44kIo8Yn5Tjhox4uxj5OnAvACkyvgpmOdlielHSBX?=
+ =?us-ascii?Q?pY00B/KgFIjdwb1ucl74Lw8qyX2sYc5gL7Xo4yT/vLQOG+n/z0Izt5cj7ZCw?=
+ =?us-ascii?Q?m5gLPmsuDNXL+LBy+hRThQBcqQXoN0BQdFphE5VyathCWm9NXDWZECLtnOro?=
+ =?us-ascii?Q?T8JuVbF1sqhATtJvxW51+ER6N7jEA6XofC1gxQo4jZ3Dabx89vQF+GBbibWT?=
+ =?us-ascii?Q?PbWzoaz+Ppt7VEyr0TBQc0KD+MNfMLXiXZtS3DWznAlUDMqrHerR3c6xsS+I?=
+ =?us-ascii?Q?ZzTl2XEIqpAafD0lwlJM1efzz6/mp2jNpGadyQBaHA0IPM4yyl9O5ZdTxb+w?=
+ =?us-ascii?Q?cFpHGgSyapovuAihIgyfWLESFYvxQaPmXmNVIkPnFVXiUFCQecMpyGEtl0hd?=
+ =?us-ascii?Q?TQgwlTZZdxCEzU5GofvlM2PL780uUqV56WFmBHiTyWCJotAzX9e7eNG4y/tc?=
+ =?us-ascii?Q?4j7Q5mIMHB+x3kshq7oBVIGKNntjelJjqMv+tKM3LtsBNAdJgcN3HOu9TpoE?=
+ =?us-ascii?Q?2edYvObIS12PN+ZMlQ9oT+kpydPopExeVMvSsdLilLYEDc2eF5zGBZo8qJGe?=
+ =?us-ascii?Q?oyUCwNN+s6rrIF4U2eXKcwFYnjVv31v3PbIJg8BRRqhlpLKw505zVTN6JceK?=
+ =?us-ascii?Q?TWhgxgyyB0f28GiDXjRMSweSXRu1cw1zZOsn027I/wWQ2cWhYhLC8DJ/E8K+?=
+ =?us-ascii?Q?4362BZ2cdIDKBMApjN31fhbasolR9bqHcT6VftSr42pRYJCY?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260116-sheaves-for-all-v3-0-5595cb000772@suse.cz> <20260116-sheaves-for-all-v3-6-5595cb000772@suse.cz>
-In-Reply-To: <20260116-sheaves-for-all-v3-6-5595cb000772@suse.cz>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Sat, 17 Jan 2026 02:11:02 +0000
-X-Gm-Features: AZwV_QgrFpJPgQWV97FWxIc0ZsJ8CltGCxNFZv_PPGY8cU_AH1jVOdq1pMTHKpM
-Message-ID: <CAJuCfpERcCzBysPVh63g7d0FpUBNQeq9nCL+ycem1iR08gDmaQ@mail.gmail.com>
-Subject: Re: [PATCH v3 06/21] slab: introduce percpu sheaves bootstrap
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Harry Yoo <harry.yoo@oracle.com>, Petr Tesarik <ptesarik@suse.com>, 
-	Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Hao Li <hao.li@linux.dev>, 
-	Andrew Morton <akpm@linux-foundation.org>, Uladzislau Rezki <urezki@gmail.com>, 
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
-	Alexei Starovoitov <ast@kernel.org>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	linux-rt-devel@lists.linux.dev, bpf@vger.kernel.org, 
-	kasan-dev@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB8510.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 73c73a71-951f-493b-e9c0-08de556e662b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Jan 2026 02:16:18.2029
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: zi5oUZhr49IVO3Uc5AIW2D4UH6LmueV91Idu3uxif+0RgvEPNnI3fbA21ZIuVHf8qkDsUFPlvEj2mlx1yZ+wSQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA2PR04MB10508
 
-On Fri, Jan 16, 2026 at 2:40=E2=80=AFPM Vlastimil Babka <vbabka@suse.cz> wr=
-ote:
->
-> Until now, kmem_cache->cpu_sheaves was !NULL only for caches with
-> sheaves enabled. Since we want to enable them for almost all caches,
-> it's suboptimal to test the pointer in the fast paths, so instead
-> allocate it for all caches in do_kmem_cache_create(). Instead of testing
-> the cpu_sheaves pointer to recognize caches (yet) without sheaves, test
-> kmem_cache->sheaf_capacity for being 0, where needed, using a new
-> cache_has_sheaves() helper.
->
-> However, for the fast paths sake we also assume that the main sheaf
-> always exists (pcs->main is !NULL), and during bootstrap we cannot
-> allocate sheaves yet.
->
-> Solve this by introducing a single static bootstrap_sheaf that's
-> assigned as pcs->main during bootstrap. It has a size of 0, so during
-> allocations, the fast path will find it's empty. Since the size of 0
-> matches sheaf_capacity of 0, the freeing fast paths will find it's
-> "full". In the slow path handlers, we use cache_has_sheaves() to
-> recognize that the cache doesn't (yet) have real sheaves, and fall back.
+> On Fri, Jan 16, 2026 at 03:40:25PM +0800, Wei Fang wrote:
+> > Currently, the buffers of RX queue are allocated from the page pool.
+> > In the subsequent patches to support XDP zero copy, the RX buffers
+> > will be allocated from the UMEM. Therefore, extract
+> > fec_alloc_rxq_buffers_pp() from fec_enet_alloc_rxq_buffers() and we
+> > will add another helper to allocate RX buffers from UMEM for the XDP ze=
+ro
+> copy mode.
+> >
+> > Signed-off-by: Wei Fang <wei.fang@nxp.com>
+> > ---
+> >  drivers/net/ethernet/freescale/fec_main.c | 78
+> > ++++++++++++++++-------
+> >  1 file changed, 54 insertions(+), 24 deletions(-)
+> >
+> > diff --git a/drivers/net/ethernet/freescale/fec_main.c
+> > b/drivers/net/ethernet/freescale/fec_main.c
+> > index a418f0153d43..68aa94dd9487 100644
+> > --- a/drivers/net/ethernet/freescale/fec_main.c
+> > +++ b/drivers/net/ethernet/freescale/fec_main.c
+> > @@ -3435,6 +3435,24 @@ static void fec_xdp_rxq_info_unreg(struct
+> fec_enet_priv_rx_q *rxq)
+> >  	}
+> >  }
+> >
+> > +static void fec_free_rxq_buffers(struct fec_enet_priv_rx_q *rxq) {
+> > +	int i;
+> > +
+> > +	for (i =3D 0; i < rxq->bd.ring_size; i++) {
+> > +		struct page *page =3D rxq->rx_buf[i];
+> > +
+> > +		if (!page)
+> > +			continue;
+> > +
+> > +		page_pool_put_full_page(rxq->page_pool, page, false);
+> > +		rxq->rx_buf[i] =3D NULL;
+> > +	}
+> > +
+> > +	page_pool_destroy(rxq->page_pool);
+> > +	rxq->page_pool =3D NULL;
+> > +}
+> > +
+> >  static void fec_enet_free_buffers(struct net_device *ndev)  {
+> >  	struct fec_enet_private *fep =3D netdev_priv(ndev); @@ -3448,16
+> > +3466,10 @@ static void fec_enet_free_buffers(struct net_device *ndev)
+> >  		rxq =3D fep->rx_queue[q];
+> >
+> >  		fec_xdp_rxq_info_unreg(rxq);
+> > -
+> > -		for (i =3D 0; i < rxq->bd.ring_size; i++)
+> > -			page_pool_put_full_page(rxq->page_pool, rxq->rx_buf[i],
+> > -						false);
+> > +		fec_free_rxq_buffers(rxq);
+> >
+> >  		for (i =3D 0; i < XDP_STATS_TOTAL; i++)
+> >  			rxq->stats[i] =3D 0;
+> > -
+> > -		page_pool_destroy(rxq->page_pool);
+> > -		rxq->page_pool =3D NULL;
+> >  	}
+> >
+> >  	for (q =3D 0; q < fep->num_tx_queues; q++) { @@ -3556,22 +3568,18 @@
+> > static int fec_enet_alloc_queue(struct net_device *ndev)
+> >  	return ret;
+> >  }
+> >
+> > -static int
+> > -fec_enet_alloc_rxq_buffers(struct net_device *ndev, unsigned int
+> > queue)
+> > +static int fec_alloc_rxq_buffers_pp(struct fec_enet_private *fep,
+> > +				    struct fec_enet_priv_rx_q *rxq)
+> >  {
+> > -	struct fec_enet_private *fep =3D netdev_priv(ndev);
+> > -	struct fec_enet_priv_rx_q *rxq;
+> > +	struct bufdesc *bdp =3D rxq->bd.base;
+> >  	dma_addr_t phys_addr;
+> > -	struct bufdesc	*bdp;
+> >  	struct page *page;
+> >  	int i, err;
+> >
+> > -	rxq =3D fep->rx_queue[queue];
+> > -	bdp =3D rxq->bd.base;
+> > -
+> >  	err =3D fec_enet_create_page_pool(fep, rxq);
+> >  	if (err < 0) {
+> > -		netdev_err(ndev, "%s failed queue %d (%d)\n", __func__, queue, err);
+> > +		netdev_err(fep->netdev, "%s failed queue %d (%d)\n",
+> > +			   __func__, rxq->bd.qid, err);
+> >  		return err;
+> >  	}
+> >
+> > @@ -3590,8 +3598,10 @@ fec_enet_alloc_rxq_buffers(struct net_device
+> > *ndev, unsigned int queue)
+> >
+> >  	for (i =3D 0; i < rxq->bd.ring_size; i++) {
+> >  		page =3D page_pool_dev_alloc_pages(rxq->page_pool);
+> > -		if (!page)
+> > -			goto err_alloc;
+> > +		if (!page) {
+> > +			err =3D -ENOMEM;
+> > +			goto free_rx_buffers;
+>=20
+> look like this part is bug fix, miss set err to -ENOMEM
+>=20
 
-I don't think kmem_cache_prefill_sheaf() handles this case, does it?
-Or do you rely on the caller to never try prefilling a bootstrapped
-sheaf?
-kmem_cache_refill_sheaf() and kmem_cache_return_sheaf() operate on a
-sheaf obtained by calling kmem_cache_prefill_sheaf(), so if
-kmem_cache_prefill_sheaf() never returns a bootstrapped sheaf we don't
-need special handling there.
+This is not a bug fix, the previous logic returned "-ENOMEM" directly
+at the err_alloc label, see below.
 
-> Thus sharing the single bootstrap sheaf like this for multiple caches
-> and cpus is safe.
->
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> ---
->  mm/slub.c | 119 ++++++++++++++++++++++++++++++++++++++++++--------------=
-------
->  1 file changed, 81 insertions(+), 38 deletions(-)
->
-> diff --git a/mm/slub.c b/mm/slub.c
-> index edf341c87e20..706cb6398f05 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -501,6 +501,18 @@ struct kmem_cache_node {
->         struct node_barn *barn;
->  };
->
-> +/*
-> + * Every cache has !NULL s->cpu_sheaves but they may point to the
-> + * bootstrap_sheaf temporarily during init, or permanently for the boot =
-caches
-> + * and caches with debugging enabled, or all caches with CONFIG_SLUB_TIN=
-Y. This
-> + * helper distinguishes whether cache has real non-bootstrap sheaves.
-> + */
-> +static inline bool cache_has_sheaves(struct kmem_cache *s)
-> +{
-> +       /* Test CONFIG_SLUB_TINY for code elimination purposes */
-> +       return !IS_ENABLED(CONFIG_SLUB_TINY) && s->sheaf_capacity;
-> +}
-> +
->  static inline struct kmem_cache_node *get_node(struct kmem_cache *s, int=
- node)
->  {
->         return s->node[node];
-> @@ -2855,6 +2867,10 @@ static void pcs_destroy(struct kmem_cache *s)
->                 if (!pcs->main)
->                         continue;
->
-> +               /* bootstrap or debug caches, it's the bootstrap_sheaf */
-> +               if (!pcs->main->cache)
-> +                       continue;
+err_alloc:
+	fec_enet_free_buffers(ndev);
+	return -ENOMEM;
 
-I wonder why we can't simply check cache_has_sheaves(s) at the
-beginning and skip the loop altogether.
-I realize that __kmem_cache_release()->pcs_destroy() is called in the
-failure path of do_kmem_cache_create() and s->cpu_sheaves might be
-partially initialized if alloc_empty_sheaf() fails somewhere in the
-middle of the loop inside init_percpu_sheaves(). But for that,
-s->sheaf_capacity should still be non-zero, so checking
-cache_has_sheaves() at the beginning of pcs_destroy() should still
-work, no?
-
-BTW, I see one last check for s->cpu_sheaves that you didn't replace
-with cache_has_sheaves() inside __kmem_cache_release(). I think that's
-because it's also in the failure path of do_kmem_cache_create() and
-it's possible that s->sheaf_capacity > 0 while s->cpu_sheaves =3D=3D NULL
-(if alloc_percpu(struct slub_percpu_sheaves) fails). It might be
-helpful to add a comment inside __kmem_cache_release() to explain why
-cache_has_sheaves() can't be used there.
-
-> +
->                 /*
->                  * We have already passed __kmem_cache_shutdown() so ever=
-ything
->                  * was flushed and there should be no objects allocated f=
-rom
-> @@ -4030,7 +4046,7 @@ static bool has_pcs_used(int cpu, struct kmem_cache=
- *s)
->  {
->         struct slub_percpu_sheaves *pcs;
->
-> -       if (!s->cpu_sheaves)
-> +       if (!cache_has_sheaves(s))
->                 return false;
->
->         pcs =3D per_cpu_ptr(s->cpu_sheaves, cpu);
-> @@ -4052,7 +4068,7 @@ static void flush_cpu_slab(struct work_struct *w)
->
->         s =3D sfw->s;
->
-> -       if (s->cpu_sheaves)
-> +       if (cache_has_sheaves(s))
->                 pcs_flush_all(s);
->
->         flush_this_cpu_slab(s);
-> @@ -4157,7 +4173,7 @@ void flush_all_rcu_sheaves(void)
->         mutex_lock(&slab_mutex);
->
->         list_for_each_entry(s, &slab_caches, list) {
-> -               if (!s->cpu_sheaves)
-> +               if (!cache_has_sheaves(s))
->                         continue;
->                 flush_rcu_sheaves_on_cache(s);
->         }
-> @@ -4179,7 +4195,7 @@ static int slub_cpu_dead(unsigned int cpu)
->         mutex_lock(&slab_mutex);
->         list_for_each_entry(s, &slab_caches, list) {
->                 __flush_cpu_slab(s, cpu);
-> -               if (s->cpu_sheaves)
-> +               if (cache_has_sheaves(s))
->                         __pcs_flush_all_cpu(s, cpu);
->         }
->         mutex_unlock(&slab_mutex);
-> @@ -4979,6 +4995,12 @@ __pcs_replace_empty_main(struct kmem_cache *s, str=
-uct slub_percpu_sheaves *pcs,
->
->         lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock));
->
-> +       /* Bootstrap or debug cache, back off */
-> +       if (unlikely(!cache_has_sheaves(s))) {
-> +               local_unlock(&s->cpu_sheaves->lock);
-> +               return NULL;
-> +       }
-> +
->         if (pcs->spare && pcs->spare->size > 0) {
->                 swap(pcs->main, pcs->spare);
->                 return pcs;
-> @@ -5165,6 +5187,11 @@ unsigned int alloc_from_pcs_bulk(struct kmem_cache=
- *s, size_t size, void **p)
->                 struct slab_sheaf *full;
->                 struct node_barn *barn;
->
-> +               if (unlikely(!cache_has_sheaves(s))) {
-> +                       local_unlock(&s->cpu_sheaves->lock);
-> +                       return allocated;
-> +               }
-> +
->                 if (pcs->spare && pcs->spare->size > 0) {
->                         swap(pcs->main, pcs->spare);
->                         goto do_alloc;
-> @@ -5244,8 +5271,7 @@ static __fastpath_inline void *slab_alloc_node(stru=
-ct kmem_cache *s, struct list
->         if (unlikely(object))
->                 goto out;
->
-> -       if (s->cpu_sheaves)
-> -               object =3D alloc_from_pcs(s, gfpflags, node);
-> +       object =3D alloc_from_pcs(s, gfpflags, node);
->
->         if (!object)
->                 object =3D __slab_alloc_node(s, gfpflags, node, addr, ori=
-g_size);
-> @@ -5355,17 +5381,6 @@ kmem_cache_prefill_sheaf(struct kmem_cache *s, gfp=
-_t gfp, unsigned int size)
->
->         if (unlikely(size > s->sheaf_capacity)) {
->
-> -               /*
-> -                * slab_debug disables cpu sheaves intentionally so all
-> -                * prefilled sheaves become "oversize" and we give up on
-> -                * performance for the debugging. Same with SLUB_TINY.
-> -                * Creating a cache without sheaves and then requesting a
-> -                * prefilled sheaf is however not expected, so warn.
-> -                */
-> -               WARN_ON_ONCE(s->sheaf_capacity =3D=3D 0 &&
-> -                            !IS_ENABLED(CONFIG_SLUB_TINY) &&
-> -                            !(s->flags & SLAB_DEBUG_FLAGS));
-> -
->                 sheaf =3D kzalloc(struct_size(sheaf, objects, size), gfp)=
-;
->                 if (!sheaf)
->                         return NULL;
-> @@ -6082,6 +6097,12 @@ __pcs_replace_full_main(struct kmem_cache *s, stru=
-ct slub_percpu_sheaves *pcs)
->  restart:
->         lockdep_assert_held(this_cpu_ptr(&s->cpu_sheaves->lock));
->
-> +       /* Bootstrap or debug cache, back off */
-> +       if (unlikely(!cache_has_sheaves(s))) {
-> +               local_unlock(&s->cpu_sheaves->lock);
-> +               return NULL;
-> +       }
-> +
->         barn =3D get_barn(s);
->         if (!barn) {
->                 local_unlock(&s->cpu_sheaves->lock);
-> @@ -6280,6 +6301,12 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, void =
-*obj)
->                 struct slab_sheaf *empty;
->                 struct node_barn *barn;
->
-> +               /* Bootstrap or debug cache, fall back */
-> +               if (unlikely(!cache_has_sheaves(s))) {
-> +                       local_unlock(&s->cpu_sheaves->lock);
-> +                       goto fail;
-> +               }
-> +
->                 if (pcs->spare && pcs->spare->size =3D=3D 0) {
->                         pcs->rcu_free =3D pcs->spare;
->                         pcs->spare =3D NULL;
-> @@ -6674,9 +6701,8 @@ void slab_free(struct kmem_cache *s, struct slab *s=
-lab, void *object,
->         if (unlikely(!slab_free_hook(s, object, slab_want_init_on_free(s)=
-, false)))
->                 return;
->
-> -       if (s->cpu_sheaves && likely(!IS_ENABLED(CONFIG_NUMA) ||
-> -                                    slab_nid(slab) =3D=3D numa_mem_id())
-> -                          && likely(!slab_test_pfmemalloc(slab))) {
-> +       if (likely(!IS_ENABLED(CONFIG_NUMA) || slab_nid(slab) =3D=3D numa=
-_mem_id())
-> +           && likely(!slab_test_pfmemalloc(slab))) {
->                 if (likely(free_to_pcs(s, object)))
->                         return;
->         }
-> @@ -7379,7 +7405,7 @@ void kmem_cache_free_bulk(struct kmem_cache *s, siz=
-e_t size, void **p)
->          * freeing to sheaves is so incompatible with the detached freeli=
-st so
->          * once we go that way, we have to do everything differently
->          */
-> -       if (s && s->cpu_sheaves) {
-> +       if (s && cache_has_sheaves(s)) {
->                 free_to_pcs_bulk(s, size, p);
->                 return;
->         }
-> @@ -7490,8 +7516,7 @@ int kmem_cache_alloc_bulk_noprof(struct kmem_cache =
-*s, gfp_t flags, size_t size,
->                 size--;
->         }
->
-> -       if (s->cpu_sheaves)
-> -               i =3D alloc_from_pcs_bulk(s, size, p);
-> +       i =3D alloc_from_pcs_bulk(s, size, p);
-
-Doesn't the above change make this fastpath a bit longer? IIUC,
-instead of bailing out right here we call alloc_from_pcs_bulk() and
-bail out from there because pcs->main->size is 0.
-
->
->         if (i < size) {
->                 /*
-> @@ -7702,6 +7727,7 @@ static inline int alloc_kmem_cache_cpus(struct kmem=
-_cache *s)
->
->  static int init_percpu_sheaves(struct kmem_cache *s)
->  {
-> +       static struct slab_sheaf bootstrap_sheaf =3D {};
->         int cpu;
->
->         for_each_possible_cpu(cpu) {
-> @@ -7711,7 +7737,28 @@ static int init_percpu_sheaves(struct kmem_cache *=
-s)
->
->                 local_trylock_init(&pcs->lock);
->
-> -               pcs->main =3D alloc_empty_sheaf(s, GFP_KERNEL);
-> +               /*
-> +                * Bootstrap sheaf has zero size so fast-path allocation =
-fails.
-> +                * It has also size =3D=3D s->sheaf_capacity, so fast-pat=
-h free
-> +                * fails. In the slow paths we recognize the situation by
-> +                * checking s->sheaf_capacity. This allows fast paths to =
-assume
-> +                * s->cpu_sheaves and pcs->main always exists and is vali=
-d.
-
-s/is/are
-
-> +                * It's also safe to share the single static bootstrap_sh=
-eaf
-> +                * with zero-sized objects array as it's never modified.
-> +                *
-> +                * bootstrap_sheaf also has NULL pointer to kmem_cache so=
- we
-> +                * recognize it and not attempt to free it when destroyin=
-g the
-> +                * cache
-
-missing a period at the end of the above sentence.
-
-> +                *
-> +                * We keep bootstrap_sheaf for kmem_cache and kmem_cache_=
-node,
-> +                * caches with debug enabled, and all caches with SLUB_TI=
-NY.
-> +                * For kmalloc caches it's used temporarily during the in=
-itial
-> +                * bootstrap.
-> +                */
-> +               if (!s->sheaf_capacity)
-> +                       pcs->main =3D &bootstrap_sheaf;
-> +               else
-> +                       pcs->main =3D alloc_empty_sheaf(s, GFP_KERNEL);
->
->                 if (!pcs->main)
->                         return -ENOMEM;
-> @@ -7809,7 +7856,7 @@ static int init_kmem_cache_nodes(struct kmem_cache =
-*s)
->                         continue;
->                 }
->
-> -               if (s->cpu_sheaves) {
-> +               if (cache_has_sheaves(s)) {
->                         barn =3D kmalloc_node(sizeof(*barn), GFP_KERNEL, =
-node);
->
->                         if (!barn)
-> @@ -8127,7 +8174,7 @@ int __kmem_cache_shutdown(struct kmem_cache *s)
->         flush_all_cpus_locked(s);
->
->         /* we might have rcu sheaves in flight */
-> -       if (s->cpu_sheaves)
-> +       if (cache_has_sheaves(s))
->                 rcu_barrier();
->
->         /* Attempt to free all objects */
-> @@ -8439,7 +8486,7 @@ static int slab_mem_going_online_callback(int nid)
->                 if (get_node(s, nid))
->                         continue;
->
-> -               if (s->cpu_sheaves) {
-> +               if (cache_has_sheaves(s)) {
->                         barn =3D kmalloc_node(sizeof(*barn), GFP_KERNEL, =
-nid);
->
->                         if (!barn) {
-> @@ -8647,12 +8694,10 @@ int do_kmem_cache_create(struct kmem_cache *s, co=
-nst char *name,
->
->         set_cpu_partial(s);
->
-> -       if (s->sheaf_capacity) {
-> -               s->cpu_sheaves =3D alloc_percpu(struct slub_percpu_sheave=
-s);
-> -               if (!s->cpu_sheaves) {
-> -                       err =3D -ENOMEM;
-> -                       goto out;
-> -               }
-> +       s->cpu_sheaves =3D alloc_percpu(struct slub_percpu_sheaves);
-> +       if (!s->cpu_sheaves) {
-> +               err =3D -ENOMEM;
-> +               goto out;
->         }
->
->  #ifdef CONFIG_NUMA
-> @@ -8671,11 +8716,9 @@ int do_kmem_cache_create(struct kmem_cache *s, con=
-st char *name,
->         if (!alloc_kmem_cache_cpus(s))
->                 goto out;
->
-> -       if (s->cpu_sheaves) {
-> -               err =3D init_percpu_sheaves(s);
-> -               if (err)
-> -                       goto out;
-> -       }
-> +       err =3D init_percpu_sheaves(s);
-> +       if (err)
-> +               goto out;
->
->         err =3D 0;
->
->
-> --
-> 2.52.0
->
 
