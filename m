@@ -1,213 +1,155 @@
-Return-Path: <bpf+bounces-79470-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79471-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96C38D3AE23
-	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 16:03:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F122AD3B06B
+	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 17:22:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B10F830217A6
-	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 15:02:50 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 0DE733021694
+	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 16:19:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D224E364E86;
-	Mon, 19 Jan 2026 15:02:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC9E72DEA67;
+	Mon, 19 Jan 2026 16:19:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="buYHleqI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YyXfCNQL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B28291A3172
-	for <bpf@vger.kernel.org>; Mon, 19 Jan 2026 15:02:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2B4A14EC73
+	for <bpf@vger.kernel.org>; Mon, 19 Jan 2026 16:19:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768834969; cv=none; b=i8mjn/f9tdD8ShKpFeEZHsGcKKkH38019djV2+wnpCazipge/I9HFlx2IGp1m1FSCCJKPzslbOwdUVlE1SXP+DJ8RNxeSdP6CgSk7Kr5W7jyFEOFr/hIu/eXRN0tPAnxXDP6w32sfT9rsNiEi8cUZaaI/41bOl7aeGXQs14uGB0=
+	t=1768839592; cv=none; b=YTNw/0AAeQ2YUYlScqtitA8XumpGK5UwUucFzft9aCDeRYfy4gUjn/xm6cUNFb77CadmosJ1Z971b91IdeHO5QIRkSS7ftMQZPk7KAabYlPrPWEKVij+fLB6x99cQF3rz3zSYcpwyL0Yrt1qlKDDGRWacaS1RLoiM15i2HKE90U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768834969; c=relaxed/simple;
-	bh=aK56Ym/xMX76kiQnFMPVuZM80MLYaaWuy4cfVIyd7n0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=r8REHq68pIvXNsfCfOxkQ1nGNxe1eD7tMdO171C2UcOjNSZpCpzpQ9Xgp9LggVlpTO+qE9cYmUunVwQkaja+YI0rwJzbxfFTM/9/ZuvGE7+fzfkT+P02a3g99zKhRxiqcTw9wPyjKoEw4saLKjn7mYZekpEspN6VbgilodT1xh0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=buYHleqI; arc=none smtp.client-ip=209.85.221.49
+	s=arc-20240116; t=1768839592; c=relaxed/simple;
+	bh=8d4KBvGi4mqgDhSXVw/x8t8Ybs5Ts2G8TRiYTltr33E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RievHuqzmzY9cEgO4RtV3EHDv1i/yFSohfbDl/aHH1uXYpC6OSA+wdxyZ/aJLXManSbfJCzpmrSTY1r8ghozwPh83gZefXeEVFbmMB3hCdgKKKWGDNTHo+lyhA7dRnvjPqo+vyTVQZQu2Pn75AIpU/sa+BVbnB8nMj43JcGV1GI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YyXfCNQL; arc=none smtp.client-ip=209.85.160.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-42fb0fc5aa9so2456590f8f.1
-        for <bpf@vger.kernel.org>; Mon, 19 Jan 2026 07:02:47 -0800 (PST)
+Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-4ffbea7fdf1so37181301cf.1
+        for <bpf@vger.kernel.org>; Mon, 19 Jan 2026 08:19:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768834966; x=1769439766; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zKqp9XcHqiL4e8mZMtTJPPQ64a+gniw5AvK+LfnE4go=;
-        b=buYHleqIXuZuw9PUtoSaES4TCOBv9B4dSpPFXI2iPpbZyVhBvYnsjqBjaY9Wl/Xybx
-         MwSAP3QO+q5ZLA7t4IDt62usk93iPEiPK/GR56qJPq+6M0spURO7nrI+lUJl6EOK7mJX
-         3pyqbMfU2B/jKvYaDD12+DR5y6nPIBzApmlGyH0qy/qTfBXIbsiX6uDCjupxdn5Qy40Y
-         H/vSB2bGlpqIpC6YISO0Pm8YxXo0L++hSldbFzdsuVye2qgW3rL+U7SZibo4tUWjmD4p
-         z4i/OHEudi4Pe8BIkqMOvr/Npug8tICgX989nEIxYB7PB/hc4EWn7+ewhzr+G1594tBq
-         Vp9g==
+        d=gmail.com; s=20230601; t=1768839588; x=1769444388; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pHGYVuiqm5BGfNZEy0rG+8KeNo5nPSeV0Hqn9spxebA=;
+        b=YyXfCNQLURoYU0VStxVXIjN+AD0LSsgnJPblripflcQBOT23PYTgEAr4v5jGHqaS/j
+         tznpbH/UvImK3epy4F3VPAeo0wXvyggcVDG2GgPE6mJXPzxNFYH9NSxEgXHXsyjXx8sw
+         +FC+bUEaTygeSOWoXo6ST4qRw5HnRK+3ZNU/U+HkD2dyFv/au6Z44suQw0oc5wkfLJC6
+         UQdZprwPX42DchiyulMJvb8AJFdVhdYqzJplsgBi9nOlhknSZbfDqLhN97X5dS85KlHb
+         My6J3KcDvqsmi2/nZhazSkADbwuJEwCFwyRq6oJM4RfSb6E8bc76fW2DgSUMg21f7CPp
+         zAGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768834966; x=1769439766;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zKqp9XcHqiL4e8mZMtTJPPQ64a+gniw5AvK+LfnE4go=;
-        b=uAeY++XTtwlIxqT9EgVvTu2B1DK0c/F1/PkWgOieVIf0WyC/6v9B/IIWYOzHhUYcPG
-         TwVr2a2+8zZouWKjwRnU1F6kTJyhH2WqqeWkjhl25ovmLxjN1xtR9aXfvslgCjGOBwBY
-         eE/RRNSsKc0pUKv9CL5XfaHWtGAkwLiMee+S/snBe3Gw/g+xYA5boI9tL2q8Gj2tYDLe
-         x5swH1xxrmptqrx1Qy2EG7SHJJuSuT0rcf+CORwZE9dLGf9loHAcE2QWsMYV7QPWnrcn
-         GAY1iF9jIfrb8IdrEcOZChCyRfr6oocoy73GE0fbjqrUqw8oAzgl/TPhjEd1X2dBn9dY
-         Gfaw==
-X-Gm-Message-State: AOJu0YxjZ6POsIrpHXrLy61twY+7VmOBJwfBrHbg0DNf2EyEasKqehFI
-	/AOcFHJclqyXZqbtL08/vnxDY5d5s5zKT3EvlRZFKBNWsKv7ZAMja+jX
-X-Gm-Gg: AZuq6aIX0Epun4OTLb7P5Ln64TyH3k+JV8u+vhJb15E3aGv4JATLeyehyWu8y7wUM6B
-	897QP8rJyqN6Ol0br/kDu6gj6Q0zdt3maanD1Z1beIvOQzl2YydKE7wNSyvBHKxA3YA9FwFd8oR
-	fhu2WHi9gXUMrIdJlAhaBGCybdkwOdU9Lh4iZnia9O5dQZEudGmk83aDly0xX6szwUsIvXmgJTr
-	KeOnpA88vRjNRgYcNGjdU51wFwl2A4L8zhpwUsunuJBC28kHPwzF0AnphMn7gvBjNBCkv98b7UG
-	zvPtu9v6+FhHLiak5tw5QAapiWOteqO/GhXtjon6sraHbvQb9s8snEWfURXjaBVaqv8Rp3TMN1a
-	j+EU1QMO9PJ2bMelW7idM/9KUL7vNYk2mlpOkdXVU2j7vjbQmBJzKVufecLh877Dm/9idjssqIN
-	vf+QBGqyJxuaY7+lv9aom39OoEDnh0+w3R/k4=
-X-Received: by 2002:a05:6000:4205:b0:431:808:2d50 with SMTP id ffacd0b85a97d-4356a024d4cmr15486621f8f.13.1768834965671;
-        Mon, 19 Jan 2026 07:02:45 -0800 (PST)
-Received: from ?IPV6:2620:10d:c0c3:1130::11ed? ([2620:10d:c092:400::5:9e2d])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4356997eb1fsm23686358f8f.35.2026.01.19.07.02.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Jan 2026 07:02:45 -0800 (PST)
-Message-ID: <1cfe2f61-811f-4ae1-924a-07b1e4ff53d1@gmail.com>
-Date: Mon, 19 Jan 2026 15:02:44 +0000
+        d=1e100.net; s=20230601; t=1768839588; x=1769444388;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=pHGYVuiqm5BGfNZEy0rG+8KeNo5nPSeV0Hqn9spxebA=;
+        b=dN1MaIqybfIaGMiZb5gyuQaZdce1z73AadJ27AeY9hhSDxO0ir1kar5L1hje3XHz/q
+         eDxLW5qUstt5rmWRHghmk0HmKtMyN8h4DylS/0FNCDz7ngsvJn0G7d68xdGusgArhFsP
+         EV6Nxn3sJ01gpK+fLj36u6i3+Ag7zwm1XzBn1EuSosV8GYklNAW73M/CTstw7YGadNe7
+         6v44trG/+8G7+CYPmqFJyKAy+IU+gxkDnNApWsbRLuNDwEIbMyYja/M88Ab23nPyK7C7
+         xi/MXAoj392aXCCQdpKk8BkctqVrrDEITKceWOzUXhNYPqeS7VNVaH9wxsvy6MPhA082
+         T5tw==
+X-Gm-Message-State: AOJu0YyA1Rt6t7ZGcMwp138Z1E7HY1jHPuMispdkp0GsyFwxUFkoTvtz
+	GGRpW5pHZugad0wVwvwZXPmMPtovRvjk5U32bVCmM4Z9dKobYm+9baO0gzem5JoRfMXSDyQE88v
+	GvnrBBrzODs8PmMWgpEJkGKVNMXHPu9w=
+X-Gm-Gg: AY/fxX6RFV9trfuFxaLdVvTfZPRXaNUanHiBsEFr8UjWmLW72h3q1Ed00r2lc7JImFI
+	qKcpCwD/6arEMtALC5pFaynyayVkU2Br++S1YP6MKg3mnYvpXMV8JCK441BBz9kpMdPyGXFMFn5
+	5wnE7OtkKLt4Zs8glwDLgYIWeLy7JKsNsZumEzhhCkeHW0E+GiDTG8eJjqj8xQJnsKtek2Vswss
+	huxMSDlKKWBLs600tkyaPl39GKQIaNaUQjgd5VOZlGXCKXvX0tBFTlwFqHLiLVL25teows=
+X-Received: by 2002:a05:622a:1191:b0:501:17e3:30bb with SMTP id
+ d75a77b69052e-502a1e29576mr153743741cf.25.1768839588516; Mon, 19 Jan 2026
+ 08:19:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 1/2] bpf: add bpf_strncasecmp kfunc
-To: Yuzuki Ishiyama <ishiyama@hpc.is.uec.ac.jp>,
- Viktor Malik <vmalik@redhat.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, martin.lau@linux.dev
-References: <20260115173717.2060746-1-ishiyama@hpc.is.uec.ac.jp>
- <20260115173717.2060746-2-ishiyama@hpc.is.uec.ac.jp>
- <46799ba9-d292-494e-b9b1-658448993538@gmail.com>
- <bcce0d61-e7ae-4268-a6ec-a82f1329cc6d@redhat.com>
- <CAJjCV5Hr_WqmMrA8SKJNVKtUOVjhWAcMS1iu7sFDgLr+bm=Nvw@mail.gmail.com>
-Content-Language: en-US
-From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-In-Reply-To: <CAJjCV5Hr_WqmMrA8SKJNVKtUOVjhWAcMS1iu7sFDgLr+bm=Nvw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <CAK3+h2yu+XkEMWz6FOHiDEEQw-G_iKG2KHP=F=1CiqLr0mCgNA@mail.gmail.com>
+ <d299d7ba-4e9e-5b16-5aa4-898b62330c24@loongson.cn> <CAK3+h2yFJDNVPo=38PcYCMNhmw0cQBouL5h7sX0KmyLu-_5zwQ@mail.gmail.com>
+ <c15fd22f-9c36-bf8d-5bd4-02993147d113@loongson.cn>
+In-Reply-To: <c15fd22f-9c36-bf8d-5bd4-02993147d113@loongson.cn>
+From: Vincent Li <vincent.mc.li@gmail.com>
+Date: Mon, 19 Jan 2026 08:19:37 -0800
+X-Gm-Features: AZwV_Qi56HUO8Vswoqi5cUeeLkQ-FnXejoq6bZuiUoBuJvqsVqq5OYqF9Jdtkoo
+Message-ID: <CAK3+h2xDBB023RQwFj9FmYVveR8qdg7RSDqU3xExsnNMY6A3pg@mail.gmail.com>
+Subject: Re: [BUG?]: bpf/selftests: ns_bpf_qdisc libbpf: loading object
+ 'tc_bpf' from buffer
+To: Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc: bpf <bpf@vger.kernel.org>, loongarch@lists.linux.dev, ast <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, Hengqi Chen <hengqi.chen@gmail.com>, 
+	Chenghao Duan <duanchenghao@kylinos.cn>, Huacai Chen <chenhuacai@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 1/17/26 09:06, Yuzuki Ishiyama wrote:
-> I think it would be clearer to document the other string functions as
-> well. What do you think, Mykyta? If you'd like, I can take care of it
-> after I'm done with this patch.
+On Mon, Jan 19, 2026 at 5:01=E2=80=AFAM Tiezhu Yang <yangtiezhu@loongson.cn=
+> wrote:
 >
-> Yuzuki
-Viktor is right, probably
-
--E2BIG - One of strings is too large
-
-is clear enough.
+> On 2026/1/16 =E4=B8=8A=E5=8D=884:44, Vincent Li wrote:
+> > On Wed, Jan 14, 2026 at 5:13=E2=80=AFPM Tiezhu Yang <yangtiezhu@loongso=
+n.cn> wrote:
 >
-> 2026年1月17日(土) 1:03 Viktor Malik <vmalik@redhat.com>:
->> On 1/16/26 13:28, Mykyta Yatsenko wrote:
->>> On 1/15/26 17:37, Yuzuki Ishiyama wrote:
->>>> bpf_strncasecmp() function performs same like bpf_strcasecmp() except
->>>> limiting the comparison to a specific length.
->>>>
->>>> Signed-off-by: Yuzuki Ishiyama <ishiyama@hpc.is.uec.ac.jp>
->>>> ---
->>>>    kernel/bpf/helpers.c | 31 ++++++++++++++++++++++++++++---
->>>>    1 file changed, 28 insertions(+), 3 deletions(-)
->>>>
->>>> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
->>>> index 9eaa4185e0a7..2b275eaa3cac 100644
->>>> --- a/kernel/bpf/helpers.c
->>>> +++ b/kernel/bpf/helpers.c
->>>> @@ -3406,7 +3406,7 @@ __bpf_kfunc void __bpf_trap(void)
->>>>     * __get_kernel_nofault instead of plain dereference to make them safe.
->>>>     */
->>>>
->>>> -static int __bpf_strcasecmp(const char *s1, const char *s2, bool ignore_case)
->>>> +static int __bpf_strncasecmp(const char *s1, const char *s2, bool ignore_case, size_t len)
->>>>    {
->>>>       char c1, c2;
->>>>       int i;
->>>> @@ -3416,6 +3416,9 @@ static int __bpf_strcasecmp(const char *s1, const char *s2, bool ignore_case)
->>>>               return -ERANGE;
->>>>       }
->>>>
->>>> +    if (len == 0)
->>>> +            return 0;
->>>> +
->>>>       guard(pagefault)();
->>>>       for (i = 0; i < XATTR_SIZE_MAX; i++) {
->>>>               __get_kernel_nofault(&c1, s1, char, err_out);
->>>> @@ -3428,6 +3431,8 @@ static int __bpf_strcasecmp(const char *s1, const char *s2, bool ignore_case)
->>>>                       return c1 < c2 ? -1 : 1;
->>>>               if (c1 == '\0')
->>>>                       return 0;
->>>> +            if (len < XATTR_SIZE_MAX && i == len - 1)
->>>> +                    return 0;
->>> Maybe rewrite this loop next way: u32 max_sz = min_t(u32,
->>> XATTR_SIZE_MAX, len); for (i=0; i < max_sz; i++) { ... } if (len <
->>> XATTR_SIZE_MAX) return 0; return -E2BIG; This way we eliminate that
->>> entire if statement from the loop body, which should be positive for
->>> performance.
->>>>               s1++;
->>>>               s2++;
->>>>       }
->>>> @@ -3451,7 +3456,7 @@ static int __bpf_strcasecmp(const char *s1, const char *s2, bool ignore_case)
->>>>     */
->>>>    __bpf_kfunc int bpf_strcmp(const char *s1__ign, const char *s2__ign)
->>>>    {
->>>> -    return __bpf_strcasecmp(s1__ign, s2__ign, false);
->>>> +    return __bpf_strncasecmp(s1__ign, s2__ign, false, XATTR_SIZE_MAX);
->>>>    }
->>>>
->>>>    /**
->>>> @@ -3469,7 +3474,26 @@ __bpf_kfunc int bpf_strcmp(const char *s1__ign, const char *s2__ign)
->>>>     */
->>>>    __bpf_kfunc int bpf_strcasecmp(const char *s1__ign, const char *s2__ign)
->>>>    {
->>>> -    return __bpf_strcasecmp(s1__ign, s2__ign, true);
->>>> +    return __bpf_strncasecmp(s1__ign, s2__ign, true, XATTR_SIZE_MAX);
->>>> +}
->>>> +
->>>> +/*
->>>> + * bpf_strncasecmp - Compare two length-limited strings, ignoring case
->>>> + * @s1__ign: One string
->>>> + * @s2__ign: Another string
->>>> + * @len: The maximum number of characters to compare
->>> Let's also add that len is limited by XATTR_SIZE_MAX
->> This applies for other string kfuncs, too, but we never mention it in
->> the docs comments. Does it make sense to have it just for one? Or should
->> we add it to the rest as well?
->>
->> Viktor
->>
->>>> +
->>>> + * Return:
->>>> + * * %0       - Strings are equal
->>>> + * * %-1      - @s1__ign is smaller
->>>> + * * %1       - @s2__ign is smaller
->>>> + * * %-EFAULT - Cannot read one of the strings
->>>> + * * %-E2BIG  - One of strings is too large
->>>> + * * %-ERANGE - One of strings is outside of kernel address space
->>>> + */
->>>> +__bpf_kfunc int bpf_strncasecmp(const char *s1__ign, const char *s2__ign, size_t len)
->>>> +{
->>>> +    return __bpf_strncasecmp(s1__ign, s2__ign, true, len);
->>>>    }
->>>>
->>>>    /**
->>>> @@ -4521,6 +4545,7 @@ BTF_ID_FLAGS(func, bpf_iter_dmabuf_destroy, KF_ITER_DESTROY | KF_SLEEPABLE)
->>>>    BTF_ID_FLAGS(func, __bpf_trap)
->>>>    BTF_ID_FLAGS(func, bpf_strcmp);
->>>>    BTF_ID_FLAGS(func, bpf_strcasecmp);
->>>> +BTF_ID_FLAGS(func, bpf_strncasecmp);
->>>>    BTF_ID_FLAGS(func, bpf_strchr);
->>>>    BTF_ID_FLAGS(func, bpf_strchrnul);
->>>>    BTF_ID_FLAGS(func, bpf_strnchr);
->>>
+> ...
+>
+> > Do you have proper instructions to compile gcc?
+>
+> git clone git://gcc.gnu.org/git/gcc.git gcc
+> cd gcc && ./contrib/download_prerequisites --no-verify
+> cp config.guess gettext/build-aux/config.guess && cp config.sub
+> gettext/build-aux/config.sub
+> cp config.guess gmp/config.guess && cp config.sub gmp/config.sub
+> cp config.guess mpfr/config.guess && cp config.sub mpfr/config.sub
+> cp config.guess mpc/build-aux/config.guess && cp config.sub
+> mpc/build-aux/config.sub
+> cp config.guess isl/config.guess && cp config.sub isl/config.sub
+> rm -rf build && mkdir -p build && cd build
+> ../configure --prefix=3D/usr/local/gcc --enable-checking=3Drelease
+> --enable-languages=3Dc,c++ --disable-multilib
+> make -j"$(nproc)"
+> sudo rm -rf /usr/local/gcc && sudo make install
+> export PATH=3D/usr/local/gcc/bin:$PATH
+> export LD_LIBRARY_PATH=3D/usr/local/gcc/lib:$LD_LIBRARY_PATH
+>
+Thanks for the instruction.
+> > I am not sure if it is toolchain related. The thing that really
+> > bothered me is why the hell tc_bpf is loaded by libbpf for
+> > ns_bpf_qdisc selftests that seems to have nothing to do with the
+> > tc_bpf object, I can't think of anything special in my build machine
+> > that would trigger this. Anyway, thanks for the help!
+>
+> I tested it again with lower version tool chains, the test still passed
+> on my environment.
+>
+I suspect it is more of bpf selftests issue or tc related selftests
+issue, I noticed for tests that invokes tc command to setup the
+environment, I would hit the issue. I guess I am the only one to hit
+this jackpot :). I do not know enough about the tc or selftests/libbpf
+(loading object from buffer thing), someone with intimate knowledge
+about that may have some clue. Thanks for the  gcc instruction again,
+I may need it sometime in the future when I need to compile gcc.
 
+> fedora@linux:~$ clang --version | head -1
+> clang version 19.1.6 (Fedora 19.1.6-3.fc42)
+> fedora@linux:~$ gcc --version | head -1
+> gcc (GCC) 14.2.1 20241104 (Red Hat 14.2.1-6)
+> fedora@linux:~$ as --version | head -1
+> GNU assembler version 2.43.50.20241126
+> fedora@linux:~$ pahole --version
+> v1.31
+> fedora@linux:~$ uname -r
+> 6.19.0-rc6
+> fedora@linux:~$ uname -m
+> loongarch64
+>
+> Thanks,
+> Tiezhu
+>
 
