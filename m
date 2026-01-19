@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-79386-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79387-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B680D39C04
-	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 02:44:07 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69DEBD39C06
+	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 02:44:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 0DA9430080F8
-	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 01:44:05 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C73DD3009A8F
+	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 01:44:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C4061F09A5;
-	Mon, 19 Jan 2026 01:44:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10111205E26;
+	Mon, 19 Jan 2026 01:44:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TzRZXCMK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nRDBGIjg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-dl1-f51.google.com (mail-dl1-f51.google.com [74.125.82.51])
+Received: from mail-dl1-f49.google.com (mail-dl1-f49.google.com [74.125.82.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 923302C86D
-	for <bpf@vger.kernel.org>; Mon, 19 Jan 2026 01:44:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F2531DF736
+	for <bpf@vger.kernel.org>; Mon, 19 Jan 2026 01:44:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768787042; cv=none; b=etEsxmXzF7kS8zqKFEFLbo9teUS34iBZhB+ALM8ZTrobFhHIg48t8cKfHnaGswZMix3EgZtavizyeIIErVw52uaMzsuQVkYZhHoqsfa1WGV+AqZWETBtjwsC0wQji51euPIX+j1RndANCJ8OUh9cBBuQN2O9waDoHAgVXJsY2Vk=
+	t=1768787056; cv=none; b=aELzBWdbkcWS+foJ6bnhzY/Ff2uG7UA5m8xyPMBJuG+y2+mIX3AYiUJDP+YBXZuSjIBgBQSG5MlXabyRFsS3dbiJq4znpBto3/JLdLTUfkIOnqEdzIfldgAqS3eK0kRhhJuaRdBtd7WVgMRlidyU3vrbH4WU8oOPOgjai6mqxQc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768787042; c=relaxed/simple;
-	bh=Mix0Ftnx+BxVDygDOXrtQuC7sxcn6TtpX8USBjwJolU=;
+	s=arc-20240116; t=1768787056; c=relaxed/simple;
+	bh=7q+R2/RHzVQW5cjTjhhJh8W9Bo5v5oSb7JGW/NI6s5s=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=of8x/ijq5Cu3fb06tDwdrPA00ZwHg1pgxjstGQh5PVnxnj63xDt+X6xPBxWW+0Kn25xO1uCp7/TLuu8Oksmtr9hdwOvhjZPG2TQX4YiYbuiOZHupb+WBPxKRgy+h8n3ao7Lg+VMLS7TVEEsfXn2OMwYW7ZfLjt/+DK6vx0VexV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TzRZXCMK; arc=none smtp.client-ip=74.125.82.51
+	 Content-Type:Content-Disposition:In-Reply-To; b=eyBaYv26c7kD6rSGWNewd+37edHDfuc75OHncOuwBFrddSr3KgDrwOt5uUExAyIX1xXBF3LIpfvVqGPdHfd+KSrxiRqBHENJWgQEvsYXEjs2BRhfU4AH/i4YTH3Xb1LIP2ZctXFNHHP9XPowtygH0HBZkL5/g/pBBUXCXlQ2h80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nRDBGIjg; arc=none smtp.client-ip=74.125.82.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-dl1-f51.google.com with SMTP id a92af1059eb24-1233bc1117fso2408882c88.0
-        for <bpf@vger.kernel.org>; Sun, 18 Jan 2026 17:44:01 -0800 (PST)
+Received: by mail-dl1-f49.google.com with SMTP id a92af1059eb24-1233bc1117fso2408931c88.0
+        for <bpf@vger.kernel.org>; Sun, 18 Jan 2026 17:44:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768787041; x=1769391841; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1768787054; x=1769391854; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Uc0UZ+YA//A4FjfGDE4kvF/Ys5up+mdRLfJ0LnYTjqU=;
-        b=TzRZXCMKE4JlLS1isNOv/Qb5qqgdaWc/HkxaS/rqhjtCW5+MDOssBNg7mz3cavg81k
-         KibgoLarm/NMLYFd4xboIHfU+kisAWuzOpcJxAZH4jkh269NULz1KsgrQAEl0uBwhPp6
-         hoh0iH4M5C7gimADw0DxwVDCSq8tUyxmUzDWbaL1gtdMDA8QEM71R5ecT9bYwo7CHnyE
-         Hqp1nNKzCC2gemB2XdfKph6eKXHSKIE/6OBsvMRlp3uCa8lKg4DIyHrtrpUIlNLhRjBI
-         SaG5jbqaq7fwltl95cbVJiWybLW25XRynvVz8ouy79FbWKvBebdcoP77RrUW0ozWFPbW
-         BrTw==
+        bh=xNXKzv0XBaJNo8dt2IzChTr0sf06VY1ICo1CXdPMe5M=;
+        b=nRDBGIjghN28alxm0XHzyA758qyhFhrd/ByzhPn7e7/EPuhNCi5UopjWOsZI8WtqtU
+         23dmXIAMJSlZ6q97JLkvY04sc9jVNQoNq8ytJ66L4fAJDBEoFPWdF2KAvXqbDR1CyEfi
+         mmINX7UjGW97BHHSaG1k9NaCdPnpFWu9VCKNTC8ObOlcxVBqiYIJGyWOhGv1HY4XH0LV
+         EP+bhCMKznL8oRWMYa4BAdbAXyYqowWDk8RYBOrsVT1tNs94b2cTTTr3aI18Nq/WeLWc
+         9u1sSZ99IHEravffjWcn6+cd5IOR/Doww4LL5NbnqUZajNijawtfJXtN6EmJvq2S0O4e
+         F0nA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768787041; x=1769391841;
+        d=1e100.net; s=20230601; t=1768787054; x=1769391854;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Uc0UZ+YA//A4FjfGDE4kvF/Ys5up+mdRLfJ0LnYTjqU=;
-        b=VhFQkwXNY1culeCQfSfVU6KnTS7jfvN0B6GE9pTOdEz6N0eD/buuN/InTp9FrLYy9R
-         y/1/uxBJRgJ9KE575w/HPpY+gPJgf7vxM+U0Xt26Ldga5W+qqrz1iIzVgb6OHev4eSBa
-         zLxeNJLszhOErRFA7ssxIa46KC24EWh/64rsBBHtIkZhImr00v/1ry+JPe5mGmmn/Oy8
-         8l6s/VTiX8sNhinVf8foDHLMFeftnRE+sOZ0WWXhHP9E+jYefPmopGeMN64WjHvByEE+
-         1t5L6klCIc2PjNOy6f6e1NLnzw5LhV9hcZ0GMdqVHmc2ikudPZKlBFKEBSp+bqNakP4F
-         r7EQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVTZ92ZP0X/LxKYmhv3LpDYVzf+anXZJhYZoonXmLai9WFbxq+yfE4bfpjp5NM0tzV64e0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxK+KRpxwEJ2StGlaqCVcjJIy+5qznEmOhsrJscP2VE70ej6nWw
-	Guqr580XGcYFN2z8S8Kdd6f/6Te5DN6L1VP4n80ZUj5f687Ohuf3kdk=
-X-Gm-Gg: AY/fxX5/SVTtBfDR651Up2e6hsNdvO8ZlX+f9Sxcc9n2bC89tg6QgXzIdeSopYe+WN9
-	KnjDxOthB1zpwRlZ6DBZGo/SVEzBEJ8rrx8Y2diCA/voeLrN5i0DU0n32H4wnoGyQL1Gyz2vpAC
-	arB7YFWDI7si401e+X7yc2xhYsh6m+tB/vQSwA2eJiCe+uq0jB9YHFcO8KDFrUbjKt3t0ZaPgSP
-	PZOTZhsLoHy3LMcTIRGdN+0dtQMO1IQ+BJKTLS1zAqDoSl71TRsmXzNRBxfpa34yPVX+/Zx8X7T
-	oSXyqrctO+NGlUzeBREdlxn/UspQg3tk+vJcEjRm0DoyRL2K7oBKEiAKGH4I91iwK+3VNotzdq4
-	MC5dXzl9JDhsxBa6CY6VGhygsTnOCWxq2CHAuMjmEd4m+aF0kvVkE/rM8rmv+Fwo8pkBc4t2MI9
-	sWRzvdar9P95C/+/39hso5qjAhHdB5k9xppNr8x1lRtZOjcPLoLw5K6swob93eJopGySZhyTidE
-	m+lpA==
-X-Received: by 2002:a05:7300:30c8:b0:2b4:5618:be67 with SMTP id 5a478bee46e88-2b6b3498c2dmr9318945eec.5.1768787040352;
-        Sun, 18 Jan 2026 17:44:00 -0800 (PST)
+        bh=xNXKzv0XBaJNo8dt2IzChTr0sf06VY1ICo1CXdPMe5M=;
+        b=Kt4JyHw8Lk1W1z1CUA//FzEaRsoKb+jNzlqLB+5OEsPodl3cTlGvUM/WZTCQM3fBSQ
+         8x4m6HdACEc3BVeGvbedG6994WdMsfhj9nlACnuKIN4FHHa8kb7Wyhm6UeG5RnicZVee
+         E7J318GEu5hC4xXhqgTIqhjmOtyHL/UBk3DvL2Kpss9+vk55dCA2/u2AtqsZ+BtcscyM
+         BzZiQ0ONTcj4hDtvBMI3NnpkKzIWgxxHVPjWZ3lG2DGbZvC0EcMVEkkNLSANOQR2rdnl
+         dmkKOMwexC5PXYnRoSXGSurz5ReaxhpCc/eD468NVRwouyMpjX1x03mqTCPNu+NG+zsE
+         26dw==
+X-Forwarded-Encrypted: i=1; AJvYcCXc5JoFWaiHKoMNqdM0ddLGdtdYmFWflE9Nfx00muvCKVkFxUHnq5LlrKBkge2JIqet/zU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyOprNIbG/bmq7RMRDlTQn9/JZa1i7FzjKZVM4pf62gEjsShNuy
+	kN6KJxh8vnYa4UcyY5u0a0LN3vKoDXnIfZmGhsfCMhLJ6NM/Ge8vmFQ=
+X-Gm-Gg: AY/fxX5p8qKQ1/ETB4xSuV/FGT3RPkmS9wucd0uLynVypTSGt8QFk6ncu/XmKr5rL1c
+	JhHMASvLsK25yolcUtKY4+D5A+Q3XG44WRbsonKJCKqHKs6z9tM2T7b66MeWl0/7wL0B/GiYzfo
+	1IPkuht9LhUFxF2ZpIhZNMqJ1QxfzcYVcVyik+NxUDpGHXyF9YqmrWWlqT2c4DIHTqvqM1MDymA
+	ueQPeVvaMDIBLHyYIY9NVL9jwuuQ729aBcAR/L8W9/mg4cRr4deFRAsgu2EyD/mYsMKdEZcAxV5
+	bYXtv1PV6TVcuPigBnqdcT1+lkOh0+wK+fh4Vp7vwoSj8T4FbMOyp7+qctuiiTCgIyG+Onqh3dj
+	/4n7xZqhgzMiYy/Q+2TDrgfE2tPMPNQnNRI29fpQIf24ESZ0BL2qQW7vAc7R3S9S7ZEM3XgdWvT
+	5A5eTXLxXJXM3CV8uJf5ieaF5oCdT1ZTi+5mpbJDvveK7aOqr1RMSY+SM0XGFt5JhHGN7DV1A2+
+	cAP8A==
+X-Received: by 2002:a05:7022:3b89:b0:11b:9b9f:427c with SMTP id a92af1059eb24-1233d0add9fmr10454242c88.13.1768787054432;
+        Sun, 18 Jan 2026 17:44:14 -0800 (PST)
 Received: from localhost (c-76-102-12-149.hsd1.ca.comcast.net. [76.102.12.149])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2b6b351e38bsm10958149eec.14.2026.01.18.17.43.59
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-1244ac585a9sm12174458c88.2.2026.01.18.17.44.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Jan 2026 17:43:59 -0800 (PST)
-Date: Sun, 18 Jan 2026 17:43:58 -0800
+        Sun, 18 Jan 2026 17:44:14 -0800 (PST)
+Date: Sun, 18 Jan 2026 17:44:13 -0800
 From: Stanislav Fomichev <stfomichev@gmail.com>
 To: Daniel Borkmann <daniel@iogearbox.net>
 Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, kuba@kernel.org,
@@ -81,10 +81,11 @@ Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, kuba@kernel.org,
 	maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
 	dw@davidwei.uk, toke@redhat.com, yangzhenze@bytedance.com,
 	wangdongdong.6@bytedance.com
-Subject: Re: [PATCH net-next v7 01/16] net: Add queue-create operation
-Message-ID: <aW2MXiopZOUZLgSE@mini-arch>
+Subject: Re: [PATCH net-next v7 02/16] net: Implement
+ netdev_nl_queue_create_doit
+Message-ID: <aW2MbURmxRBKVvEC@mini-arch>
 References: <20260115082603.219152-1-daniel@iogearbox.net>
- <20260115082603.219152-2-daniel@iogearbox.net>
+ <20260115082603.219152-3-daniel@iogearbox.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -93,62 +94,26 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20260115082603.219152-2-daniel@iogearbox.net>
+In-Reply-To: <20260115082603.219152-3-daniel@iogearbox.net>
 
 On 01/15, Daniel Borkmann wrote:
-> Add a ynl netdev family operation called queue-create that creates a
-> new queue on a netdevice:
+> Implement netdev_nl_queue_create_doit which creates a new rx queue in a
+> virtual netdev and then leases it to a rx queue in a physical netdev.
 > 
->       name: queue-create
->       attribute-set: queue
->       flags: [admin-perm]
->       do:
->         request:
->           attributes:
->             - ifindex
->             - type
->             - lease
->         reply: &queue-create-op
->           attributes:
->             - id
+> Example with ynl client:
 > 
-> This is a generic operation such that it can be extended for various
-> use cases in future. Right now it is mandatory to specify ifindex,
-> the queue type which is enforced to rx and a lease. The newly created
-> queue id is returned to the caller.
+>   # ./pyynl/cli.py \
+>       --spec ~/netlink/specs/netdev.yaml \
+>       --do queue-create \
+>       --json '{"ifindex": 8, "type": "rx", "lease": {"ifindex": 4, "queue": {"type": "rx", "id": 15}}}'
+>   {'id': 1}
 > 
-> A queue from a virtual device can have a lease which refers to another
-> queue from a physical device. This is useful for memory providers
-> and AF_XDP operations which take an ifindex and queue id to allow
-> applications to bind against virtual devices in containers. The lease
-> couples both queues together and allows to proxy the operations from
-> a virtual device in a container to the physical device.
-> 
-> In future, the nested lease attribute can be lifted and made optional
-> for other use-cases such as dynamic queue creation for physical
-> netdevs. The lack of lease and the specification of the physical
-> device as an ifindex will imply that we need a real queue to be
-> allocated. Similarly, the queue type enforcement to rx can then be
-> lifted as well to support tx.
-> 
-> An early implementation had only driver-specific integration [0], but
-> in order for other virtual devices to reuse, it makes sense to have
-> this as a generic API in core net.
-> 
-> For leasing queues, the virtual netdev must have real_num_rx_queue
-> less than num_rx_queues at the time of calling queue-create. The
-> queue-type must be rx as only rx queues are supported for leasing
-> for now. We also enforce that the queue-create ifindex must point
-> to a virtual device, and that the nested lease attribute's ifindex
-> must point to a physical device. The nested lease attribute set
-> contains a netns-id attribute which is currently only intended for
-> dumping as part of the queue-get operation. Also, it is modeled as
-> an s32 type similarly as done elsewhere in the stack.
+> Note that the netdevice locking order is always from the virtual to
+> the physical device.
 > 
 > Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 > Co-developed-by: David Wei <dw@davidwei.uk>
 > Signed-off-by: David Wei <dw@davidwei.uk>
-> Link: https://bpfconf.ebpf.io/bpfconf2025/bpfconf2025_material/lsfmmbpf_2025_netkit_borkmann.pdf [0]
 
 Acked-by: Stanislav Fomichev <sdf@fomichev.me>
 
