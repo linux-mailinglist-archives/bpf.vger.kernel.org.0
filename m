@@ -1,126 +1,185 @@
-Return-Path: <bpf+bounces-79483-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79485-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABDE5D3B61E
-	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 19:48:09 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE4ACD3B622
+	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 19:48:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9E7CC30D2B2F
-	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 18:45:45 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5130C30E0F0E
+	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 18:45:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5947B32ED2E;
-	Mon, 19 Jan 2026 18:45:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA6EA38F24D;
+	Mon, 19 Jan 2026 18:45:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CQCXYOQP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ih+ATkmj"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D27D01DF759;
-	Mon, 19 Jan 2026 18:45:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46E5A2EBBB8;
+	Mon, 19 Jan 2026 18:45:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768848344; cv=none; b=uZ6Zgnsht3V9PfzV+irk439RoAE6NzD1kufhn4LaXXIAa50SfZk9sQ0/t2Vrb24QDwFkOn6pSsNFDKDZpvdySVcxdLwI3p0yOKX9hDpy03He1eIE2spMLpkuiKlYURVz2FaWjvNUJKfRXeA12Mn1O3cl2VepNYjKZX3BL6ag1q0=
+	t=1768848346; cv=none; b=dgoLBMn/54oBAgoWVCiAirIaWM6pKUZ6IWqXD4qD/gN5adv0YguoKhadMGt67OIIz4Cg3CWZU1T467DxtpEl1mo9OYAli5RSyTxmq6nzi6kDw/GC4WukMueoi/Hu5lR68gKjrCUbeCuTnZT7QFpqvOMN1f/rvjiIUb8F9OR61zE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768848344; c=relaxed/simple;
-	bh=Ikfg5KIMUlTIopIK07Reje08ixZv+AmRD+SrzZ7gCdk=;
+	s=arc-20240116; t=1768848346; c=relaxed/simple;
+	bh=ZTIje7WATkqMH4x3QflgRA4cjG+o9UVX2c4ymxmpl3U=;
 	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=S9t8N0iRDEzi+jROiv7b3Zra9Pa8Jt2IxcCSiVVAqWvFO4wR/4mmrhiRZI15aa8ORpjuwf0hL6wDtRoqpnDcGY2HkeKshsSCurGVSmzL3RrQVQ2TMVLyRrpdAk8u5kxBJQfrPtsz+IuT9aKHmH1sslrGMYGbJc98AGI7RX6/TaI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CQCXYOQP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19D19C116C6;
-	Mon, 19 Jan 2026 18:45:40 +0000 (UTC)
+	 Subject:From:To:Cc:Date; b=XGDXA7IBxcDbSh7DBZJyfSlTXqWY8J7GSZl8Mr2mXbr3pdv2d0N+Rx3a1LAUXMlx8iZjRXu46PoMxpyAN+xVzya5ebGMKZupVwZRR8t8re78YiZAVu0kYJlaOue4usVNmqJaH2LDt0OxeXzmxd7ikLxqyp5rBgIIuyGk1tSHNmI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ih+ATkmj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACDA0C19422;
+	Mon, 19 Jan 2026 18:45:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768848340;
-	bh=Ikfg5KIMUlTIopIK07Reje08ixZv+AmRD+SrzZ7gCdk=;
+	s=k20201202; t=1768848342;
+	bh=ZTIje7WATkqMH4x3QflgRA4cjG+o9UVX2c4ymxmpl3U=;
 	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=CQCXYOQP/u2K0fH7yCGd+dJFJcgI6wYCxxAHMylFusY3Rovv9qnmMv4V3BVoslePE
-	 7B2uK6HqUcLhYMtvy+AZZ2zXsgEW5UT+sKH0H9mdpXDN17lEqDxVynqjGMJb7jSHU8
-	 WR9OVAOgyBgGIZLvOxXpng1ZB66evVmKfhBufNspeAVRMWQZJAfy33/xaGIMLAP75c
-	 O13v00SnSF0Wa5JEBCKaNUGHfKkLHLMsuRdlFonOR+SYVfkXYe+wdS1cg0OA4hY3yZ
-	 hEG+tN9Azf9W9kMdbgnuypOCVa9AaFAJgC0mQhJ73h3woocL5SAoXEqSuyF6n71cLM
-	 kDb+UMFtfr+Mw==
-Content-Type: multipart/mixed; boundary="===============8972815748039503686=="
+	b=Ih+ATkmj3i3VhCFeNiT4Y2CJPVXo70WyKD6Vin9NZlO8KqGVvlHTWAycM7p8YysDR
+	 656miIoTVZ3EMb2QYzDhcvWF5381V6SYBjoSLG3dRzfv0Hq+0zOIbbGdyEBlKUwhSO
+	 lngsH3Yg7FAnghAWusJXGuEKuX0+mkMy/AE7ifP+SyYkjIbjb6chaXUdAWMHVjRhSp
+	 j3LXgX6EYJ6KnKfD5LiRNwgQHK04xFbkXsvNtJ4uugZtDXHwDSPBa7Hg0BlfmhaO3W
+	 3VWhLfWqqjNKW0naKnOB0XUuR8Lr1rptN/XADkcaqJNEN2nMbXXYovJ/54M1OkpWbJ
+	 j/YOvAav+3vVg==
+Content-Type: multipart/mixed; boundary="===============2133534859589085953=="
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <f7a838c389c0356a7a52dc2fa09b5db8f24a6eed1d7dbc346250e4f3db233855@mail.kernel.org>
-In-Reply-To: <20260119032424.10781-13-piliu@redhat.com>
-References: <20260119032424.10781-13-piliu@redhat.com>
-Subject: Re: [PATCHv6 12/13] tools/kexec: Introduce a bpf-prog to parse zboot image format
+Message-Id: <7509e4d1cd0a1a8a0f2b1a33c8a1f503e7275c826f9fc138e8cb2f12c4add8ec@mail.kernel.org>
+In-Reply-To: <20260119032424.10781-5-piliu@redhat.com>
+References: <20260119032424.10781-5-piliu@redhat.com>
+Subject: Re: [PATCHv6 04/13] kexec_file: Use bpf-prog to decompose image
 From: bot+bpf-ci@kernel.org
 To: piliu@redhat.com,kexec@lists.infradead.org
 Cc: piliu@redhat.com,davem@davemloft.net,ast@kernel.org,daniel@iogearbox.net,john.fastabend@gmail.com,andrii@kernel.org,martin.lau@linux.dev,eddyz87@gmail.com,song@kernel.org,yonghong.song@linux.dev,jeremy.linton@arm.com,catalin.marinas@arm.com,will@kernel.org,ardb@kernel.org,horms@kernel.org,kraxel@redhat.com,vkuznets@redhat.com,prudo@redhat.com,vmalik@redhat.com,kernel@jfarr.cc,bhe@redhat.com,dyoung@redhat.com,akpm@linux-foundation.org,bpf@vger.kernel.org,systemd-devel@lists.freedesktop.org,linux-kernel@vger.kernel.org,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Mon, 19 Jan 2026 18:45:40 +0000 (UTC)
+Date: Mon, 19 Jan 2026 18:45:41 +0000 (UTC)
 
---===============8972815748039503686==
+--===============2133534859589085953==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
-> diff --git a/tools/kexec/zboot_parser_bpf.c b/tools/kexec/zboot_parser_bpf.c
+> diff --git a/kernel/kexec_bpf_loader.c b/kernel/kexec_bpf_loader.c
 > new file mode 100644
-> index 000000000000..54c4b762b332
+> index 000000000000..dc59e1389da9
 > --- /dev/null
-> +++ b/tools/kexec/zboot_parser_bpf.c
+> +++ b/kernel/kexec_bpf_loader.c
 
 [ ... ]
 
-> +/* see drivers/firmware/efi/libstub/zboot-header.S */
-> +struct linux_pe_zboot_header {
-> +	unsigned int mz_magic;
-> +	char image_type[4];
-> +	unsigned int payload_offset;
-> +	unsigned int payload_size;
-> +	unsigned int reserved[2];
-> +	char comp_type[4];
-> +	unsigned int linux_pe_magic;
-> +	unsigned int pe_header_offset;
-> +} __attribute__((packed));
+> +struct kexec_context {
+> +	bool kdump;
+> +	char *kernel;
+> +	int kernel_sz;
+> +	char *initrd;
+> +	int initrd_sz;
+> +	char *cmdline;
+> +	int cmdline_sz;
+> +};
+
+The *_sz fields here are int, but image->kernel_buf_len and related fields
+are unsigned long. Could this cause truncation issues for buffers larger
+than INT_MAX?
 
 [ ... ]
 
-> +	unsigned int payload_offset = zboot_header->payload_offset;
-> +	unsigned int payload_size = zboot_header->payload_size;
-> +	bpf_printk("zboot image payload offset=0x%x, size=0x%x\n", payload_offset, payload_size);
-> +	/* sane check */
-> +	if (payload_size > image_sz) {
-> +		bpf_ringbuf_discard(buf, BPF_RB_NO_WAKEUP);
-> +		bpf_printk("Invalid zboot image payload offset and size\n");
-> +		return 0;
+> +int decompose_kexec_image(struct kimage *image, int extended_fd)
+> +{
+> +	struct kexec_context context = { 0 };
+> +	struct bpf_parser_context *bpf;
+> +	unsigned long kernel_sz, bpf_sz;
+> +	char *kernel_start, *bpf_start;
+> +	int ret = 0;
+> +
+> +	if (image->type != KEXEC_TYPE_CRASH)
+> +	        context.kdump = false;
+> +	else
+> +	        context.kdump = true;
+> +
+> +	kernel_start = image->kernel_buf;
+> +	kernel_sz = image->kernel_buf_len;
+> +
+> +	while (file_has_bpf_section(kernel_start, kernel_sz)) {
+
+With the placeholder arm_bpf_prog/disarm_bpf_prog functions that do nothing,
+if an image has a .bpf section, won't this loop iterate forever? The BPF
+program is supposed to modify context.kernel to point to the inner content,
+but without a real implementation, context.kernel stays unchanged after
+kexec_image_parser_anchor() returns.
+
+Note: commit 59dbdff4e55b ("kexec_file: Integrate bpf light skeleton to load
+image with bpf-prog") later in the series fills in these placeholders.
+
+> +		bpf = alloc_bpf_parser_context(kexec_buff_parser, &context);
+> +		if (!bpf)
+> +			return -ENOMEM;
+
+[ ... ]
+
+> +		kernel_start = context.kernel;
+> +		kernel_sz = context.kernel_sz;
+> +
+> +		/*
+> +		 * detach the current bpf-prog from their attachment points.
+> +		 */
+> +		disarm_bpf_prog();
+> +		put_bpf_parser_context(bpf);
 > +	}
+> +
+> +	/*
+> +	 * image's kernel_buf, initrd_buf, cmdline_buf are set. Now they should
+> +	 * be updated to the new content.
+> +	 */
+> +	image->kernel_buf = context.kernel;
+> +	image->kernel_buf_len = context.kernel_sz;
+> +	image->initrd_buf = context.initrd;
+> +	image->initrd_buf_len = context.initrd_sz;
+> +	image->cmdline_buf = context.cmdline;
+> +	image->cmdline_buf_len = context.cmdline_sz;
 
-Should this bounds check also verify that payload_offset + payload_size
-does not exceed image_sz? The current check only validates that payload_size
-fits, but if payload_offset is large (e.g., near image_sz), the read below
-could extend past the end of the kernel buffer.
+When the kernel image has no .bpf section, the while loop never executes.
+In that case, context.kernel remains NULL (from the zero initializer), and
+these lines set image->kernel_buf = NULL, image->kernel_buf_len = 0.
 
-For example, with payload_offset = image_sz - 10 and payload_size = 100,
-the check "payload_size > image_sz" passes, but the bpf_probe_read below
-would read 90 bytes past the valid buffer boundary.
+This appears to leak the original image->kernel_buf that was allocated by
+kernel_read_file_from_fd() in kimage_file_prepare_segments(). The subsequent
+arch_kexec_kernel_image_probe() call then receives NULL instead of the valid
+kernel buffer.
 
-> +	unsigned int max_payload = MAX_RECORD_SIZE - sizeof(struct cmd_hdr);
-> +	if (payload_size >= max_payload) {
-> +		bpf_ringbuf_discard(buf, BPF_RB_NO_WAKEUP);
-> +		bpf_printk("Err: payload_size > MAX_RECORD_SIZE\n");
-> +		return 0;
-> +	}
-> +	void *dst = (void *)buf + sizeof(struct cmd_hdr);
-> +	/* Overwrite buf */
-> +	struct cmd_hdr *cmd = (struct cmd_hdr *)buf;
-> +	cmd->cmd = KEXEC_BPF_CMD_DECOMPRESS;
-> +	cmd->subcmd = KEXEC_BPF_SUBCMD_KERNEL;
-> +	/* 4 bytes original size is appended after vmlinuz.bin */
-> +	cmd->payload_len = payload_size - 4;
-> +	bpf_probe_read(dst, payload_size, context->kernel + payload_offset);
-                                                           ^^^^^^^^^^^^^^^
+Should there be a check to preserve the original buffers when no
+decomposition occurred?
 
-This is where the out-of-bounds read could occur if payload_offset +
-payload_size > image_sz. While bpf_probe_read is safe and will not crash
-(it uses copy_from_kernel_nofault internally), it could read from adjacent
-kernel memory if the zboot header contains invalid offset/size values.
+> +
+> +	return 0;
+
+[ ... ]
+
+> diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
+> index 0222d17072d4..f9674bb5bd8d 100644
+> --- a/kernel/kexec_file.c
+> +++ b/kernel/kexec_file.c
+> @@ -238,7 +238,14 @@ kimage_file_prepare_segments(struct kimage *image, int kernel_fd, int initrd_fd,
+>  		goto out;
+>  #endif
+>
+> +	if (IS_ENABLED(CONFIG_KEXEC_BPF))
+> +		decompose_kexec_image(image, initrd_fd);
+
+The return value of decompose_kexec_image() is ignored here. If it returns
+an error (e.g., -ENOMEM from alloc_bpf_parser_context()), the function
+continues with potentially corrupted state instead of propagating the error.
+
+Should this check the return value and goto out on failure?
+
+> +
+> +	/*
+> +	 * From this point, the kexec subsystem handle the kernel boot protocol.
+> +	 *
+> +	 * Call arch image probe handlers
+> +	 */
+>  	ret = arch_kexec_kernel_image_probe(image, image->kernel_buf,
+>  					    image->kernel_buf_len);
 
 
 ---
@@ -129,5 +188,5 @@ See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
 
 CI run summary: https://github.com/kernel-patches/bpf/actions/runs/21147860407
 
---===============8972815748039503686==--
+--===============2133534859589085953==--
 
