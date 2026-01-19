@@ -1,153 +1,126 @@
-Return-Path: <bpf+bounces-79449-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79450-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6775D3A824
-	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 13:12:06 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE469D3A9B4
+	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 14:00:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 3E44B301056B
-	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 12:07:08 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 3390F3002B8E
+	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 13:00:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB6343590DB;
-	Mon, 19 Jan 2026 12:07:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6866135CBD5;
+	Mon, 19 Jan 2026 13:00:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ujesgdvy"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="roJXIYqj"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
+Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92F11314D2A
-	for <bpf@vger.kernel.org>; Mon, 19 Jan 2026 12:06:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DF07234964
+	for <bpf@vger.kernel.org>; Mon, 19 Jan 2026 13:00:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.84.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768824421; cv=none; b=lwyhkjm2aBwWQ1ONcwnvYizDf5r2gG6WvPz+FIYiFpcWeacvGx4mTqzwJIgTjcUlRWTbSu7RWjsDUDc2g3K+t8oWMwkcKozczuKVTdKAm2dAuYZsPJMbiEHhvRQG0EeiPVqD7aPouhMH1luM/YqDMzH91ruRGsh0ra0CTcwxzes=
+	t=1768827644; cv=none; b=Hkfe2liH1UDRYjvBjJzxizivTP9nZ8TrwzWL1R9tVkp1XrlSg2R5IxFDPnRfvlHqXHW1gwJeykeWbsZlL8mpyP4h5Vli9Yc5uJ+hEAlCaKqwnvo0VdboWLf/uoQJ3YHsinT+ftZ2yrHH/nDJt46+6dCf56cu7noSn06wIujtjnw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768824421; c=relaxed/simple;
-	bh=pYS6b2o5I8/LsW64YrWNylrncmSozhUOW9F9cMbip/o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Gie4he9QWutLb/fO9Cge4ywcN58M5FKrvid6d2q51PW7jUbk1CprWgJ8w84xjdzO2gJO731y2meH1aw+dCzjwT8RPr/hFAV+GBBJ6eumhTgitYIBfurd+bJ+5xL5IKUgfMGIwf1FlgCraUTuPJ+9PGUrIhIXvDbl8roUhck08b4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ujesgdvy; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Mon, 19 Jan 2026 20:06:35 +0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1768824407;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lpMiDKyrIJgj/yq5I6LOa2WeBqzXUsHVn4Q35ITZoyg=;
-	b=ujesgdvyRBm28X880BAWZx79BMQ8RohqEjA7JqLuDJpP/DmSQXgQ+8bYT7NuR+jJvmzVhR
-	ljG7a5fFdVjNZaMsXyB0IzFcHjxszBq1zB2xjT5RXzCvPaoGf+cnw3Vk3/ji1INMlA3uik
-	Aum7CZXs5jKjjyUuw5WRcMWNV65zXr4=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Hao Li <hao.li@linux.dev>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Harry Yoo <harry.yoo@oracle.com>, Petr Tesarik <ptesarik@suse.com>, 
-	Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
-	Uladzislau Rezki <urezki@gmail.com>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
-	Suren Baghdasaryan <surenb@google.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
-	Alexei Starovoitov <ast@kernel.org>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	linux-rt-devel@lists.linux.dev, bpf@vger.kernel.org, kasan-dev@googlegroups.com
-Subject: Re: [PATCH v3 07/21] slab: make percpu sheaves compatible with
- kmalloc_nolock()/kfree_nolock()
-Message-ID: <gv3ixsxai47hjv2pzpnptcjeqw7ikt5nnds22hkxlbtk7wgnfd@rzzcijtth6f6>
-References: <20260116-sheaves-for-all-v3-0-5595cb000772@suse.cz>
- <20260116-sheaves-for-all-v3-7-5595cb000772@suse.cz>
- <aW2zmf4dXL5C_Iu2@hyeyoo>
- <e4831aab-40e6-48ec-a4b9-1967bd0d6a4c@suse.cz>
- <008029ff-3fd8-49cf-8aa7-71b98dc15be9@suse.cz>
+	s=arc-20240116; t=1768827644; c=relaxed/simple;
+	bh=PXUujVm6ApgjcxVKO1Klzm4Mkx9p3MJapHrETbhtdzI=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:From:To:
+	 References:In-Reply-To; b=BjEUwS0iVnc6GPClmQWK8js6Wda8yL0jGf7FX6+OvkXsiIc/FlacnxwtUVIIzNEzHFLAtR1uH6TPBKFtlrM4FXK1Pel/y8cGFn2yAvXPkEDsh3iXK2O5i2BjYeXDc34dnh1MrZj5xakylRszD1j9Fto60yppCxEh8WTPC314TTw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=roJXIYqj; arc=none smtp.client-ip=185.246.84.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-02.galae.net (Postfix) with ESMTPS id E6C891A2953;
+	Mon, 19 Jan 2026 13:00:39 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id B154260731;
+	Mon, 19 Jan 2026 13:00:39 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 5E3B710B6AFB8;
+	Mon, 19 Jan 2026 14:00:35 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1768827639; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=PXUujVm6ApgjcxVKO1Klzm4Mkx9p3MJapHrETbhtdzI=;
+	b=roJXIYqjd+b+rNE/CDpmEhK2jw0yzuK9/7UCCLggWw8W9IhhkPpYBl1eot4Pg7ewVfR9kt
+	5nyNt54hYgcJCmJsGH6GSB53U4C2QIyeOxjTW3eTO0+rPXSflDHnPi7RsukKJKfke0df9d
+	0xJWjaw8JBrjkVtrWHZcYc16m4uQnpNcGvZZ70neaTws/eUTze+iUEGBFcDt0CNxCtO7s5
+	1bnR3NUpRTZivsPsdK0vfsXXQY43i77TJDKpk7CkQW9Ss8G7Jvm3FeuXaknDh1+N268w4r
+	CBBfCZkef2wuAsohh5+fQJw2SZQWWmY2+vDUzTgbMbN4+IsKRZqUDnNCYAY8eg==
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <008029ff-3fd8-49cf-8aa7-71b98dc15be9@suse.cz>
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 19 Jan 2026 14:00:34 +0100
+Message-Id: <DFSL2DHCSLNU.1640Y190S8S1Q@bootlin.com>
+Subject: Re: [PATCH bpf] selftests/bpf: Support when CONFIG_VXLAN=m
+Cc: <daniel@iogearbox.net>, <andrii@kernel.org>, <martin.lau@linux.dev>,
+ <eddyz87@gmail.com>, <song@kernel.org>, <yonghong.song@linux.dev>,
+ <john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@fomichev.me>,
+ <haoluo@google.com>, <jolsa@kernel.org>, <bpf@vger.kernel.org>
+From: =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+To: "Alan Maguire" <alan.maguire@oracle.com>,
+ =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>,
+ <ast@kernel.org>
+X-Mailer: aerc 0.21.0-0-g5549850facc2
+References: <20260115163457.146267-1-alan.maguire@oracle.com>
+ <DFPVFON6H9AQ.3BE95ZHQ3ATOL@bootlin.com>
+ <87900b12-c836-4692-ad7d-b1997df806d8@oracle.com>
+In-Reply-To: <87900b12-c836-4692-ad7d-b1997df806d8@oracle.com>
+X-Last-TLS-Session-Version: TLSv1.3
 
-On Mon, Jan 19, 2026 at 11:23:04AM +0100, Vlastimil Babka wrote:
-> On 1/19/26 11:09, Vlastimil Babka wrote:
-> > On 1/19/26 05:31, Harry Yoo wrote:
-> >> On Fri, Jan 16, 2026 at 03:40:27PM +0100, Vlastimil Babka wrote:
-> >>> Before we enable percpu sheaves for kmalloc caches, we need to make sure
-> >>> kmalloc_nolock() and kfree_nolock() will continue working properly and
-> >>> not spin when not allowed to.
-> >>> 
-> >>> Percpu sheaves themselves use local_trylock() so they are already
-> >>> compatible. We just need to be careful with the barn->lock spin_lock.
-> >>> Pass a new allow_spin parameter where necessary to use
-> >>> spin_trylock_irqsave().
-> >>> 
-> >>> In kmalloc_nolock_noprof() we can now attempt alloc_from_pcs() safely,
-> >>> for now it will always fail until we enable sheaves for kmalloc caches
-> >>> next. Similarly in kfree_nolock() we can attempt free_to_pcs().
-> >>> 
-> >>> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> >>> ---
-> >> 
-> >> Looks good to me,
-> >> Reviewed-by: Harry Yoo <harry.yoo@oracle.com>
-> > 
-> > Thanks.
-> > 
-> >> 
-> >> with a nit below.
-> >> 
-> >>>  mm/slub.c | 79 ++++++++++++++++++++++++++++++++++++++++++++-------------------
-> >>>  1 file changed, 56 insertions(+), 23 deletions(-)
-> >>> 
-> >>> diff --git a/mm/slub.c b/mm/slub.c
-> >>> index 706cb6398f05..b385247c219f 100644
-> >>> --- a/mm/slub.c
-> >>> +++ b/mm/slub.c
-> >>> @@ -6703,7 +6735,7 @@ void slab_free(struct kmem_cache *s, struct slab *slab, void *object,
-> >>>  
-> >>>  	if (likely(!IS_ENABLED(CONFIG_NUMA) || slab_nid(slab) == numa_mem_id())
-> >>>  	    && likely(!slab_test_pfmemalloc(slab))) {
-> >>> -		if (likely(free_to_pcs(s, object)))
-> >>> +		if (likely(free_to_pcs(s, object, true)))
-> >>>  			return;
-> >>>  	}
-> >>>  
-> >>> @@ -6964,7 +6996,8 @@ void kfree_nolock(const void *object)
-> >>>  	 * since kasan quarantine takes locks and not supported from NMI.
-> >>>  	 */
-> >>>  	kasan_slab_free(s, x, false, false, /* skip quarantine */true);
-> >>> -	do_slab_free(s, slab, x, x, 0, _RET_IP_);
-> >>> +	if (!free_to_pcs(s, x, false))
-> >>> +		do_slab_free(s, slab, x, x, 0, _RET_IP_);
-> >>>  }
-> >> 
-> >> nit: Maybe it's not that common but should we bypass sheaves if
-> >> it's from remote NUMA node just like slab_free()?
-> > 
-> > Right, will do.
-> 
-> However that means sheaves will help less with the defer_free() avoidance
-> here. It becomes more obvious after "slab: remove the do_slab_free()
-> fastpath". All remote object frees will be deferred. Guess we can revisit
-> later if we see there are too many and have no better solution...
+Hi Alan,
 
-This makes sense to me, and the commit looks good as well. Thanks!
+On Fri Jan 16, 2026 at 10:32 AM CET, Alan Maguire wrote:
+> On 16/01/2026 08:30, Alexis Lothor=C3=A9 wrote:
+>> Hello,
+>>=20
+>> On Thu Jan 15, 2026 at 5:34 PM CET, Alan Maguire wrote:
+>>> If CONFIG_VXLAN is 'm', struct vxlanhdr will not be in vmlinux.h.
+>>> Add a ___local variant to support cases where vxlan is a module.
+>>=20
+>> Just a naive question: for ebpf selftests, aren't we assuming a
+>> dependency on a "fixed" kernel configuration (ie
+>> tools/testing/selftests/bpf/{config,config.vm,config.<arch}), which
+>> enables most of the features as built-in ?=20
+>>=20
+>
+> It's a good question - my take here is that we also need to remember=20
+> that most folks interactions with BPF happen via distro kernels. Most dis=
+tros=20
+> tend to modularize their configs more extensively, and they also want to =
+use=20
+> the BPF selftests to qualify the particular config combination they have
+> so that they can be sure that users have a good BPF experience.
+> Often issues arise from this, and distro folks either report or post
+> fixes. This is all good, so if the only cost is a bit more flexibility
+> in the test environment, I'd say it's well worth supporting that. In
+> particular blockers to selftests compilation cause problems for this
+> process.
+>
+> There are of course cases where having a very old toolchain or a highly
+> incompatible configuration that aren't supportable, but in general where =
+there
+> is low-hanging fruit in making tests a bit more flexible, it's worth doin=
+g I=20
+> think.
 
-Reviewed-by: Hao Li <hao.li@linux.dev>
+With a bit of delay: ok, thanks for your input. To clarify, my point was
+not really about challenging your change but rather that I was not sure
+about the policy here; supporting only the CI selftests configuration,
+VS supporting other kernel configurations like distro configs (at the
+cost of duplicating a bit kernel data strutures definitions).
 
-> 
-> >>>  EXPORT_SYMBOL_GPL(kfree_nolock);
-> >>>  
-> >>> @@ -7516,7 +7549,7 @@ int kmem_cache_alloc_bulk_noprof(struct kmem_cache *s, gfp_t flags, size_t size,
-> >>>  		size--;
-> >>>  	}
-> >>>  
-> >>> -	i = alloc_from_pcs_bulk(s, size, p);
-> >>> +	i = alloc_from_pcs_bulk(s, flags, size, p);
-> >>>  
-> >>>  	if (i < size) { >  		/*
-> >>> 
-> >> 
-> > 
-> 
+Thanks,
+
+Alexis
+
+--=20
+Alexis Lothor=C3=A9, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+
 
