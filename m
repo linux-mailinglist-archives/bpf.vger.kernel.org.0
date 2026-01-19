@@ -1,615 +1,169 @@
-Return-Path: <bpf+bounces-79476-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79477-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A22DD3B5F5
-	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 19:39:37 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFC95D3B603
+	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 19:43:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 1CCBD300924C
-	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 18:39:37 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D18BB305F814
+	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 18:43:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFCA938E121;
-	Mon, 19 Jan 2026 18:39:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5F0D38E135;
+	Mon, 19 Jan 2026 18:43:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SX9zKjJC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KFudIzvv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+Received: from mail-dy1-f176.google.com (mail-dy1-f176.google.com [74.125.82.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D55B38BF83
-	for <bpf@vger.kernel.org>; Mon, 19 Jan 2026 18:39:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.160.170
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768847975; cv=pass; b=obOSEEKBlPGXX4MN0haWf7L8V9pb0mQ+8Vj5HdUyCOw2rFWiUjENIyay01gq77+n/IQn3HnBAZm4JuyGoksT/P2TWfNKNB+nkRHw/tJejOkwFIpiF5EqM3yFGaqXajDAq5X9i7vy5KqMHEFCsyF5T1L16Ku+UVdpHKbzH0RsXn0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768847975; c=relaxed/simple;
-	bh=V+N8d1kIeA9rWRrLTQneE3+OWDqZdZI0AdGdoISqd7k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fNOYABy8WZqdCA4mDIq4YaAXNvEk/Xfukcfi51SglJ/ZZ9HAWnTvwkHR12hfkNJ6qwpvpFna5gSxr1DcG6xBEp1K8V/t/rVlu0SLOAxTNOku3H1RCGlFpJc4dX7edimNiqVHXaMEFl+3iZtCEZEmVfnV5V1AY/7pVC3GkybHWeg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SX9zKjJC; arc=pass smtp.client-ip=209.85.160.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-501511aa012so83501cf.0
-        for <bpf@vger.kernel.org>; Mon, 19 Jan 2026 10:39:33 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1768847972; cv=none;
-        d=google.com; s=arc-20240605;
-        b=ZlpeUn59uHq8kl4lYvwcjyifukZanSMDECE6bwcwIs1nEYMnfI3z49nncIjwh1soo/
-         b5b244UJaaps4cb7rfjyBsY8MLekXK8Qn4NpRC1Yn/644FqjUE3SKL6BL0rtWuuAQApp
-         JbaxKH3PQrcNarUj7xvfaUuS8Ps8BuK/uM+YC1EZR/8NbomNx7OCaonQVu08TYs1ZB25
-         Fiq369iSGmD0u2srgCIzGYhxYMlbcIX7eHVP812Rn8B9Bos0cVNTl6zy80DfoBD8sjHT
-         hJnTrncMm3GzoJ24Ur2MCVEsEtRiGt/v+xEEjVE4bU1zNGWWv69fs6cJG/CA1wjHPEfF
-         KChw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=yliqXEmgwAyejYWqMYzVHnGIOpCtscuO1lvo+BwJm3A=;
-        fh=pMd6U8aXSAaLRlHKLsUSLjvDCM8oFqw5Sk7F4+da4Ow=;
-        b=EvoJMWOF97M1OWKy8ojj1X0eIvJqP9I5z1uQHS4LIVPvKirGD47lTDylKZ6FJJNmIL
-         zPHx9nVOXL9ZinzYu9JyEw6V0PWQc9ldE+0fiprtH0k/v7ZRaTkUKiKezK0sE95i4k5G
-         6mil3jirhs0HWX648wllA9PxTBXIe79TlBIuzJZEbCZf54gLQp8bNg+iaRzAEeDQbfyN
-         BX7BMf13B8HK6ZC17z0fDFxpvX/+ibo6cD4Fy+ii4gONteAVzNPW6sYGddbmfC9R5yUQ
-         ZODP4/gxKF6QXw+XB7UYGrU+Y190CMl7YChTcw8WVdxi5QfLCVtQqqI0tate5Cml6QMi
-         yP/A==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17BA938BDB3
+	for <bpf@vger.kernel.org>; Mon, 19 Jan 2026 18:43:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.176
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768848222; cv=none; b=G2yVUOBaOSYIFt4tIx5HN1AawznWFnyDULCHAvNN2WAKFBA5ZoIPWieCisYuZJwAVJmN7sK/T9LNSEYyRuP4wwqyxUp9pnsDZ/n/ITuAjdMe8924rwYuiUaYAhp1celi2/eGoT/I3eFwzlwjBkEirueGfwS0+22zlFtXkRLDjM4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768848222; c=relaxed/simple;
+	bh=rrMvrWdYKAI+m6MARZvV3c0GragGaZJHWz5pqVajfjs=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=CJa/MWIvgkzk8I7+V6UTizwcgRr2/VLmvMfABqPdW6xZCQvBrQyXy30q5ydjVKqqaTwxTMy/06RAROmD6CMkROGemMFYG67+tzfsQjJDvjkJO/jftvIsRSF3X7Lxr6amBlRJuxkEu5XczEbUk3zC2Ibelihpch/TGAuGX/HYMKk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KFudIzvv; arc=none smtp.client-ip=74.125.82.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-dy1-f176.google.com with SMTP id 5a478bee46e88-2b0ea1edf11so8064279eec.0
+        for <bpf@vger.kernel.org>; Mon, 19 Jan 2026 10:43:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1768847972; x=1769452772; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yliqXEmgwAyejYWqMYzVHnGIOpCtscuO1lvo+BwJm3A=;
-        b=SX9zKjJC5r8Z42VimGGzQHhlYo2tgN8whQBP9w9OSymEdHq3+5SCa7UyWi88Kvl3pm
-         MvyZT+TJpHk56Vu9tI7reXam4fFuGW6rHZnsHPtuI3F1GbyIOYJTBGdZ/Y8I9PgL0sbg
-         1aGRm+VEJVX1NYxgrklCPnhVqpaFwNBY/HhR1joMO9PkTUL+8uP+6wy6FN490Rzgzawh
-         GuFYUJSm5gLfrkbFV+YV41wGVq6aczWIm3QfEa/R+E1hjXzN6b9xEH4ztUXegZdg3WzR
-         ZOFdgYyKq17Tl9ZEV2IfLrqxdTOqd7KoHJbJQfIHIy92d1PxZ8JnfCRjNAanQsPiE25E
-         j02Q==
+        d=gmail.com; s=20230601; t=1768848220; x=1769453020; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=3OHeSX7usNST+oUmdkhhpslnqDWteRbjvdPSeCpUyOc=;
+        b=KFudIzvvl/m+g0iGfwyhAd+cZq82E/FeaTiG+uKYOe7QJ1RsRLIU39b1tT085F24ey
+         tpSxSTzNaMk/Xa0CIo++niVk4LrOzB/M9ViIY6cFfoNTXTwrdAIG85GtpfShGkwwjuTj
+         iyVRD086j2p2q41O81J4PcRReIxMXYWHIWZfNnvbgk184NnNRM8OIcSISLU7bG/ctVWJ
+         pKxwCOHWCwcqQgftolSeSaTR+7BQa96WgoRZYYztvtMwmZJh6Kd1WYIOlJtGqK+BmuvY
+         USfJMXHWbWoAvdeLWKeDbBaKjLV+YmRj/hNQ52Ny29DGW8Q23PfxCiaz9b571Q8E8EQV
+         lL7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768847972; x=1769452772;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=yliqXEmgwAyejYWqMYzVHnGIOpCtscuO1lvo+BwJm3A=;
-        b=DY6fQr10cTEqLZ60ayQm0f3UDIUeFzNTnp6bK5Lvas90NtrJJDtLmbbZC3KTG6GxKT
-         QZfOolQM7gBzGJ4GNbjIQQyWfEkTv0ZLBmKaJTZttqEx9iEx9dYLj9nHDO4Cg+Qb8Vud
-         fQ05txTewhX/LX8+Jfd4OBzO5yY644Zmuctga2lvjj2b0iH5IDs9CaSg9T3dFx/2hpP9
-         kfgSh2cbVgAMGmHFyJ05c4dunj6B9T2T+yjIs0nem5wleYPATxqugXAFYUU3PMTrafDy
-         EcmN15eVVP8h7xFoi2xWqIHMg/BjUbP/XNEJ7Hw6VTsvdi98tnw7Mx3pxDTob+pXRTer
-         IQzg==
-X-Forwarded-Encrypted: i=1; AJvYcCV7+oq9LRsrO/N/Oqw0llbfJkHJrtSehEyTopioPYgiSglFdxzUNf3LzWYL/uKOLdfeOX8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyzqNRCT3DeQ8P0M09LabWAL7gEeMroLd4aZvP4El8kIX7iXR75
-	MZEODaETaw0To6Zj8uqdqzDKv79ACsoIYSeyxH+TJRUBsNjL8rwrJAyMlo6H+DGshX4xq7ZeD5k
-	34SmE42cbxKyz6we3uOR8IaG8qBI8s0sxbW/HgSJC
-X-Gm-Gg: AY/fxX7gjlJbZ81Pyrum3P1oZL5BWbO+veTIoqFGUouf+UmfwyIRvK9zjLY1jcijd6C
-	9t8P3NPtb9IU+3ySKzl+d9YBWJT8cdeBYl3pt39gF292LSTjnhcr07H1FuKhegJQfLLE/Lnwcsv
-	itN7jqImIzVXQqYYBZ/IvoCGWzUaW+R4aic0w9Ojx1MkKw00ALOemEHfTHZnn6THz+Uhy37bSfg
-	0rPcDx3uFYOdR+ZrAIL7oDlQse77gD+MeC9lwL9yovMn66k/U5xv9oxcliewQ5crGGvxNI/gbQE
-	1qu1b9A7k9GFPA5f2LjRgkCggzQbKkJuhn8CX9Thchz8S34wacMA8XLtFmZv
-X-Received: by 2002:a05:622a:50e:b0:4ed:ff79:e679 with SMTP id
- d75a77b69052e-502b073da00mr21734401cf.19.1768847971730; Mon, 19 Jan 2026
- 10:39:31 -0800 (PST)
+        d=1e100.net; s=20230601; t=1768848220; x=1769453020;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3OHeSX7usNST+oUmdkhhpslnqDWteRbjvdPSeCpUyOc=;
+        b=CKuibIayGgmJ+mjDNmja9pmnUK/2ozHHbERZeTqlwhH0Mum7TbhyhNuOHSLXLIArm3
+         dMyl8ooSkzoE9wdgnbeVHCfregifWz7Hl+mjsU7yz83GN4Q4j2saih7YC+zs4Qa5aGHh
+         G6exWmrC8P7OO9nQzEg34NtPC+18pFszFvcTcrT5MLb0vVFsVKr61DN1cjkWnZImXahL
+         zfmoxULtuBOcbSKEiPiQkMCuHp8HkSa2OriVZBVflkS/egippyPQddbbzqh2ea0KBk8d
+         HEF1DqrES+DlnmrhSjcsawRaL5ZLR/owreXOW95LZQAKN9+7OaNo+mzOY7SupRnwk9p3
+         1Djw==
+X-Forwarded-Encrypted: i=1; AJvYcCXDs7UAZ4BA9pg9w1XLIYJsshCqIWiTk/RL+2xAtkKnM4D9+BTQMcTtt0199kwrpVUJBN0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzpknlrQ1jnyfP6OxP9QCernFT8CIUwVEOt8kufURWXNkKWTL8r
+	l6gI9tqbzt1hjKnTEnL9tfeXO11ouJSKwiuvQ2bsxLpjShUHALvMnFzk
+X-Gm-Gg: AZuq6aLw96afmIoDHNromNSrAJXtdCPhlBIsLNEUJNzEaQYEgz/tAgFO1xOW7QPesE0
+	66VBP3HvCVb3iHM9PMyI6nJZV6GiRjGQpi22jhyyG7l9/STZy8oORtFsa/LtihkzlA2z5kBneSh
+	LnjusZ9MKPB7USurypDStN3TZ0eCO6vqF1Q5IXsOlgd1h3HGnCSVJvteLn9WWUdDnVU5UvijGuS
+	mmN0j+LNt4KnTNLkcA1VK3pb8NpcNIMO6jDAylEtzHKx/jfQnQ69rUJctk+5DH0nldatHy5WRXV
+	1ogiD7/02Y2joigFy8Edsrdd6jc6o1gr2LeWxbpwVBj65HcUcmeaS/VW50Od6PmSvWjvnYiFCqO
+	9T3xP6pepLMQi1tAqwEUkEWHclXIloQ8JgxPLSnyIQ/DtDt7CRZcfAt3yCrExeQ+bpWkAV8sAVm
+	6ybHpR4wvPZ7bqQfMq/IDL5B4h/pdDDmvcnd8dYVaFc0Jma0ttvvgd0KPrQ6D3gbL5yg==
+X-Received: by 2002:a05:7301:6508:b0:2b6:aeb8:3d8c with SMTP id 5a478bee46e88-2b6b503bcb5mr9877469eec.32.1768848220046;
+        Mon, 19 Jan 2026 10:43:40 -0800 (PST)
+Received: from ?IPv6:2a03:83e0:115c:1:4cd6:17bf:3333:255f? ([2620:10d:c090:500::aa81])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2b6b3502c65sm13727628eec.8.2026.01.19.10.43.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jan 2026 10:43:39 -0800 (PST)
+Message-ID: <a714ee96d0ad96bbc9d51037616e5c4e2790a8ec.camel@gmail.com>
+Subject: Re: [PATCH v3] bpf/verifier: optimize precision backtracking by
+ skipping precise bits
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Qiliang Yuan <realwujing@gmail.com>
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net, 	haoluo@google.com, jolsa@kernel.org,
+ kpsingh@kernel.org, 	linux-kernel@vger.kernel.org, martin.lau@linux.dev,
+ sdf@fomichev.me, 	song@kernel.org, yonghong.song@linux.dev,
+ yuanql9@chinatelecom.cn
+Date: Mon, 19 Jan 2026 10:43:37 -0800
+In-Reply-To: <20260117100922.38459-1-realwujing@gmail.com>
+References: <aa4cc54a3a0796b16d2d5e13142d104fa5a483e1.camel@gmail.com>
+	 <20260117100922.38459-1-realwujing@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.58.2 (3.58.2-1.fc43) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260108155816.36001-1-chia-yu.chang@nokia-bell-labs.com>
- <20260108155816.36001-2-chia-yu.chang@nokia-bell-labs.com>
- <CADVnQykTJWJf7kjxWrdYMYaeamo20JDbd_SijTejLj1ES37j7Q@mail.gmail.com>
- <CADVnQynBnqkND3nTS==f6MGy_9yUPBFb3RgBPnEuJ446Hkb-7g@mail.gmail.com>
- <PAXPR07MB79840B8A0D8FDC3778D79539A38BA@PAXPR07MB7984.eurprd07.prod.outlook.com>
- <CADVnQyn7dqO8m4UjjQvujH4z8HFYOm0_mb5xNpNhgTdpG8L_PA@mail.gmail.com> <PAXPR07MB7984F8BDD933827A117EF6E2A388A@PAXPR07MB7984.eurprd07.prod.outlook.com>
-In-Reply-To: <PAXPR07MB7984F8BDD933827A117EF6E2A388A@PAXPR07MB7984.eurprd07.prod.outlook.com>
-From: Neal Cardwell <ncardwell@google.com>
-Date: Mon, 19 Jan 2026 13:39:13 -0500
-X-Gm-Features: AZwV_QiSDFT3ZWaGQrFi11G5xz6c5fIfoidxzqFLWjR18imAARDYmBRTg0drjq4
-Message-ID: <CADVnQynkpx4jkcTu2nbvcxL-FrZtSo3wKwhEhaEV27rZ5VC07Q@mail.gmail.com>
-Subject: Re: [PATCH net-next 1/1] selftests/net: Add packetdrill packetdrill cases
-To: "Chia-Yu Chang (Nokia)" <chia-yu.chang@nokia-bell-labs.com>
-Cc: "pabeni@redhat.com" <pabeni@redhat.com>, "edumazet@google.com" <edumazet@google.com>, 
-	"parav@nvidia.com" <parav@nvidia.com>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, 
-	"corbet@lwn.net" <corbet@lwn.net>, "horms@kernel.org" <horms@kernel.org>, 
-	"dsahern@kernel.org" <dsahern@kernel.org>, "kuniyu@google.com" <kuniyu@google.com>, 
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
-	"dave.taht@gmail.com" <dave.taht@gmail.com>, "jhs@mojatatu.com" <jhs@mojatatu.com>, 
-	"kuba@kernel.org" <kuba@kernel.org>, "stephen@networkplumber.org" <stephen@networkplumber.org>, 
-	"xiyou.wangcong@gmail.com" <xiyou.wangcong@gmail.com>, "jiri@resnulli.us" <jiri@resnulli.us>, 
-	"davem@davemloft.net" <davem@davemloft.net>, "andrew+netdev@lunn.ch" <andrew+netdev@lunn.ch>, 
-	"donald.hunter@gmail.com" <donald.hunter@gmail.com>, "ast@fiberby.net" <ast@fiberby.net>, 
-	"liuhangbin@gmail.com" <liuhangbin@gmail.com>, "shuah@kernel.org" <shuah@kernel.org>, 
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>, "ij@kernel.org" <ij@kernel.org>, 
-	"Koen De Schepper (Nokia)" <koen.de_schepper@nokia-bell-labs.com>, 
-	"g.white@cablelabs.com" <g.white@cablelabs.com>, 
-	"ingemar.s.johansson@ericsson.com" <ingemar.s.johansson@ericsson.com>, 
-	"mirja.kuehlewind@ericsson.com" <mirja.kuehlewind@ericsson.com>, cheshire <cheshire@apple.com>, 
-	"rs.ietf@gmx.at" <rs.ietf@gmx.at>, 
-	"Jason_Livingood@comcast.com" <Jason_Livingood@comcast.com>, Vidhi Goel <vidhi_goel@apple.com>, 
-	Willem de Bruijn <willemb@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 19, 2026 at 1:34=E2=80=AFPM Chia-Yu Chang (Nokia)
-<chia-yu.chang@nokia-bell-labs.com> wrote:
->
-> > -----Original Message-----
-> > From: Neal Cardwell <ncardwell@google.com>
-> > Sent: Monday, January 19, 2026 1:06 AM
-> > To: Chia-Yu Chang (Nokia) <chia-yu.chang@nokia-bell-labs.com>
-> > Cc: pabeni@redhat.com; edumazet@google.com; parav@nvidia.com; linux-doc=
-@vger.kernel.org; corbet@lwn.net; horms@kernel.org; dsahern@kernel.org; kun=
-iyu@google.com; bpf@vger.kernel.org; netdev@vger.kernel.org; dave.taht@gmai=
-l.com; jhs@mojatatu.com; kuba@kernel.org; stephen@networkplumber.org; xiyou=
-.wangcong@gmail.com; jiri@resnulli.us; davem@davemloft.net; andrew+netdev@l=
-unn.ch; donald.hunter@gmail.com; ast@fiberby.net; liuhangbin@gmail.com; shu=
-ah@kernel.org; linux-kselftest@vger.kernel.org; ij@kernel.org; Koen De Sche=
-pper (Nokia) <koen.de_schepper@nokia-bell-labs.com>; g.white@cablelabs.com;=
- ingemar.s.johansson@ericsson.com; mirja.kuehlewind@ericsson.com; cheshire =
-<cheshire@apple.com>; rs.ietf@gmx.at; Jason_Livingood@comcast.com; Vidhi Go=
-el <vidhi_goel@apple.com>; Willem de Bruijn <willemb@google.com>
-> > Subject: Re: [PATCH net-next 1/1] selftests/net: Add packetdrill packet=
-drill cases
-> >
-> >
-> > CAUTION: This is an external email. Please be very careful when clickin=
-g links or opening attachments. See the URL nok.it/ext for additional infor=
-mation.
-> >
-> >
-> >
-> > On Sun, Jan 18, 2026 at 5:56=E2=80=AFPM Chia-Yu Chang (Nokia) <chia-yu.=
-chang@nokia-bell-labs.com> wrote:
-> > >
-> > >
-> > > > -----Original Message-----
-> > > > From: Neal Cardwell <ncardwell@google.com>
-> > > > Sent: Sunday, January 18, 2026 5:11 PM
-> > > > To: Chia-Yu Chang (Nokia) <chia-yu.chang@nokia-bell-labs.com>
-> > > > Cc: pabeni@redhat.com; edumazet@google.com; parav@nvidia.com;
-> > > > linux-doc@vger.kernel.org; corbet@lwn.net; horms@kernel.org;
-> > > > dsahern@kernel.org; kuniyu@google.com; bpf@vger.kernel.org;
-> > > > netdev@vger.kernel.org; dave.taht@gmail.com; jhs@mojatatu.com;
-> > > > kuba@kernel.org; stephen@networkplumber.org;
-> > > > xiyou.wangcong@gmail.com; jiri@resnulli.us; davem@davemloft.net;
-> > > > andrew+netdev@lunn.ch; donald.hunter@gmail.com; ast@fiberby.net;
-> > > > liuhangbin@gmail.com; shuah@kernel.org;
-> > > > linux-kselftest@vger.kernel.org; ij@kernel.org; Koen De Schepper
-> > > > (Nokia) <koen.de_schepper@nokia-bell-labs.com>;
-> > > > g.white@cablelabs.com; ingemar.s.johansson@ericsson.com;
-> > > > mirja.kuehlewind@ericsson.com; cheshire <cheshire@apple.com>;
-> > > > rs.ietf@gmx.at; Jason_Livingood@comcast.com; Vidhi Goel
-> > > > <vidhi_goel@apple.com>; Willem de Bruijn <willemb@google.com>
-> > > > Subject: Re: [PATCH net-next 1/1] selftests/net: Add packetdrill
-> > > > packetdrill cases
-> > > >
-> > > >
-> > > > CAUTION: This is an external email. Please be very careful when cli=
-cking links or opening attachments. See the URL nok.it/ext for additional i=
-nformation.
-> > > >
-> > > >
-> > > >
-> > > > On Thu, Jan 8, 2026 at 5:46=E2=80=AFPM Neal Cardwell <ncardwell@goo=
-gle.com> wrote:
-> > > > >
-> > > > > On Thu, Jan 8, 2026 at 10:58=E2=80=AFAM <chia-yu.chang@nokia-bell=
--labs.com> wrote:
-> > > > > >
-> > > > > > From: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
-> > > > > >
-> > > > > > Linux Accurate ECN test sets using ACE counters and AccECN
-> > > > > > options to cover several scenarios: Connection teardown,
-> > > > > > different ACK conditions, counter wrapping, SACK space grabbing=
-,
-> > > > > > fallback schemes, negotiation retransmission/reorder/loss,
-> > > > > > AccECN option drop/loss, different handshake reflectors, data w=
-ith marking, and different sysctl values.
-> > > > > >
-> > > > > > Co-developed-by: Ilpo J=C3=A4rvinen <ij@kernel.org>
-> > > > > > Signed-off-by: Ilpo J=C3=A4rvinen <ij@kernel.org>
-> > > > > > Co-developed-by: Neal Cardwell <ncardwell@google.com>
-> > > > > > Signed-off-by: Neal Cardwell <ncardwell@google.com>
-> > > > > > ---
-> > > > >
-> > > > > Chia-Yu, thank you for posting the packetdrill tests.
-> > > > >
-> > > > > A couple thoughts:
-> > > > >
-> > > > > (1) These tests are using the experimental AccECN packetdrill
-> > > > > support that is not in mainline packetdrill yet. Can you please
-> > > > > share the github URL for the version of packetdrill you used? I
-> > > > > will work on merging the appropriate experimental AccECN
-> > > > > packetdrill support into the Google packetdrill mainline branch.
-> > > >
-> > > > An update on the 3 patches at:
-> > > >
-> > > > https://eur03.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2=
-Fgi
-> > > > thub.com%2Fgoogle%2Fpacketdrill%2Fpull%2F96&data=3D05%7C02%7Cchia-y=
-u.c
-> > > > hang%40nokia-bell-labs.com%7C227b6e8cfe084ca9279708de56ee858b%7C5d4=
-7
-> > > > 17519675428d917b70f44f9630b0%7C0%7C0%7C639043779630263465%7CUnknown=
-%
-> > > > 7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXa=
-W
-> > > > 4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=3Dl6PAGPT=
-ELL
-> > > > T3KwEWsuLQnLaxQ0BUixhbrFp3n6dA950%3D&reserved=3D0
-> > > >
-> > > > (1) I have merged the following patch into the google packetdrill r=
-epo to facilitate testing of the AccECN patch series:
-> > > >
-> > > > "net-test: packetdrill: add Accurate ECN (AccECN) option support"
-> > > > https://eur03.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2=
-Fgi
-> > > > thub.com%2Fgoogle%2Fpacketdrill%2Fpull%2F96%2Fchanges%2Ff6861f888bc=
-7
-> > > > f1e08026de4825519a95504d1047&data=3D05%7C02%7Cchia-yu.chang%40nokia=
--be
-> > > > ll-labs.com%7C227b6e8cfe084ca9279708de56ee858b%7C5d4717519675428d91=
-7
-> > > > b70f44f9630b0%7C0%7C0%7C639043779630288017%7CUnknown%7CTWFpbGZsb3d8=
-e
-> > > > yJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoi=
-T
-> > > > WFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=3Dwct5GueZNjBZHCaxpbokNB=
-LXh
-> > > > pGpDFjKKUiIbCMiKco%3D&reserved=3D0
-> > > >
-> > > > (2) The following patch I did not yet merge, because it proposes to=
- add an odd number of u32 fields to tcp_info, so AFAICT leaves a 4-byte pad=
-ding hole at the end of tcp_info:
-> > > >
-> > > >   net-test: packetdrill: Support AccECN counters through tcpi
-> > > >
-> > > > https://eur03.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2=
-Fgi
-> > > > thub.com%2Fgoogle%2Fpacketdrill%2Fpull%2F96%2Fchanges%2Ff43649c87a2=
-a
-> > > > a79a33a78111d3d7e5f027d13a7f&data=3D05%7C02%7Cchia-yu.chang%40nokia=
--be
-> > > > ll-labs.com%7C227b6e8cfe084ca9279708de56ee858b%7C5d4717519675428d91=
-7
-> > > > b70f44f9630b0%7C0%7C0%7C639043779630306235%7CUnknown%7CTWFpbGZsb3d8=
-e
-> > > > yJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoi=
-T
-> > > > WFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=3DHpI3cgq0qf1%2FrTCJACRA=
-QZY
-> > > > ZRs473MS3p%2BUB0VWATKE%3D&reserved=3D0
-> > > >
-> > > > I think we'll need to tweak the AccECN kernel patch series so that =
-it does not leave a 4-byte padding hole at the end of tcp_info, then update=
- this packetdrill patch to match the kernel patch.
-> > > >
-> > > > Let's come up with another useful u32 field we can add to the tcp_i=
-nfo struct, so that the kernel patch doesn't add a padding hole at the end =
-of tcp_info.
-> > > >
-> > > > One idea would be to add another field to represent newer options a=
-nd connection features that are enabled. AFAICT all 8 bits of the tcpi_opti=
-ons field have been used, so we can't use more bits in that field. I'd sugg=
-est we add a u32 tcpi_more_options field before the tcpi_received_ce field,=
- so we can encode other useful info, like:
-> > > >
-> > > > + 1 bit to indicate whether AccECN was negotiated (this can go in a
-> > > > separate patch)
-> > > >
-> > > > + 1 bit to indicate whether TCP_NODELAY was set (since forgetting t=
-o
-> > > > use TCP_NODELAY is a classic cause of performance problems; again
-> > > > this can go in a separate patch)
-> > > >
-> > > > (And there will be future bits of info we want to add...)
-> > > >
-> > > > Also, regarding the comment in this line:
-> > > >   __u32   tcpi_received_ce;    /* # of CE marks received */
-> > > >
-> > > > That comment is ambiguous, since it doesn't indicate whether it's c=
-ounting (potentially LRO/GRO) skbs or TCP segments. I would suggest clarify=
-ing that this is counting segments:
-> > > >
-> > > > __u32   tcpi_received_ce;    /* # of CE marked segments received */
-> > > >
-> > >
-> > > Hi Neal,
-> > >
-> > > Related to these 32-bit hole, two extra entries are added into b40671=
-b5ee588c8a61b2d0eacbad32ffc57e9a8f of net-next, and one straightforward way=
- is to apply these changes also in tcp.h of packetdrill (This is my miss).
-> > >
-> > > +       __u16   tcpi_accecn_fail_mode;
-> > > +       __u16   tcpi_accecn_opt_seen;
-> > >
-> > > But I would prefer to update this, because tcpi_accecn_fail_mode and =
-tcpi_accecn_opt_seen overall just needs 8 bits (i.e., 4 bits for tcpi_accec=
-n_fail_mode and 2 bits for tcpi_accecn_opt_seen).
-> > >
-> > > So, maybe we could add u16 tcpi_more_options before tcpi_received_ce =
-and change tcpi_accecn_fail_mode and tcpi_accecn_opt_seen both into u8.
-> > > Within tcpi_more_options, add one bit related to TCP_NODELAY as you s=
-aid.
-> > > And within tcpi_accecn_opt_seen, add one bit related to whether AccEC=
-N was negotiated as you said, then we can leave more unused bits in tcpi_mo=
-re_options.
-> > >
-> > > Another thought is to use a single u32 before tcpi_received_ce, in wh=
-ich 4 bits for tcpi_accecn_fail_mode, 2 bits for tcpi_accecn_opt_seen, 26 b=
-its for tcpi_more_options.
-> > >
-> > > What do you think?
-> >
-> > I would suggest something like your last suggestion, where there is a
-> > u32 before tcpi_received_ce, with bit fields for tcpi_accecn_fail_mode
-> > (4 bits) and tcpi_accecn_opt_seen (2 bits), and a tcpi_options2 for the=
- remaining unused bits in the u32.
-> >
-> > I am leaning toward tcpi_options2 rather than tcpi_more_options, becaus=
-e I guess in the future we might want yet another options bit field, in whi=
-ch case it would be better to have {tcpi_options, tcpi_options2, and tcpi_o=
-ptions3}, rather than having {tcpi_options, tcpi_more_options, and tcpi_yet=
-_more_options}. :-)
-> >
-> > And rather than a single bit indicating whether AccECN was negotiated, =
-it occurs to me that it would probably be better to have a 2-bit enum with =
-4 values, corresponding to the modes in tcp_ecn.h:
-> > tcp_ecn_disabled(), tcp_ecn_mode_rfc3168(), tcp_ecn_mode_accecn(), and =
-tcp_ecn_mode_pending().
-> >
-> > We also need to keep in mind that since the tcpi_accecn_fail_mode (4
-> > bits) and tcpi_accecn_opt_seen (2 bits) enums are exported to user-spac=
-e, they will become part of the kernel API to userspace, so should be moved=
- out of tcp_ecn.h and instead be declared in include/uapi/linux/tcp.h. We d=
-eclare constant values exported to user space in that file: (a) to make it =
-easier for maintainers to remember not to change the values for these, so k=
-ernel changes don't break user-space apps; (b) to make it easier for applic=
-ation developers to find the #define values they need to decode the values =
-exported in struct  tcp_info. :-)
-> >
-> > So how about something like:
-> >
-> > --- in include/uapi/linux/tcp.h:
-> >
-> > /* Values for tcpi_ecn_mode */
-> > #define TCPI_ECN_DISABLED 0x0
-> > #define TCPI_ECN_RFC3168 0x1
-> > #define  TCPI_ECN_ACCECN 0x2
-> > #define TCPI_ECN_PENDING 0x3
-> >
-> > /* Values for tcpi_accecn_opt_seen */
-> > #define TCP_ACCECN_OPT_NOT_SEEN         0x0
-> > #define TCP_ACCECN_OPT_EMPTY_SEEN       0x1
-> > #define TCP_ACCECN_OPT_COUNTER_SEEN     0x2
-> > #define TCP_ACCECN_OPT_FAIL_SEEN        0x3
-> >
-> > /* Values for tcpi_accecn_fail_mode */
-> > #define TCP_ACCECN_ACE_FAIL_SEND        BIT(0)
-> > #define TCP_ACCECN_ACE_FAIL_RECV        BIT(1)
-> > #define TCP_ACCECN_OPT_FAIL_SEND        BIT(2)
-> > #define TCP_ACCECN_OPT_FAIL_RECV        BIT(3)
-> >
-> > ...
-> > __u32 tcpi_ecn_mode:2,
-> >     tcpi_accecn_opt_seen: 2,
-> >     tcpi_accecn_fail_mode: 4,
-> >     tcpi_options2:24;
-> > __u32   tcpi_received_ce;    /* # of CE marked segments received */
-> > ...
-> >
-> > --- in tcp_get_info() in net/ipv4/tcp.c:
-> >
-> > if (tcp_ecn_disabled(tp))
-> >   info-> tcpi_ecn_mode =3D TCPI_ECN_DISABLED; else if (tcp_ecn_mode_rfc=
-3168(tp))
-> >   info-> tcpi_ecn_mode =3D TCPI_ECN_RFC3168; else if (tcp_ecn_mode_acce=
-cn(tp))
-> >   info-> tcpi_ecn_mode =3D TCPI_ECN_ACCECN; else if (tcp_ecn_mode_pendi=
-ng(tp))
-> >   info-> tcpi_ecn_mode =3D TCPI_ECN_PENDING;
-> >
-> > WDYT?
-> >
-> > > And I will update the comment of tcpi_received_ce, thanks for the com=
-ments.
-> >
-> > Great. Thanks!
-> >
-> > neal
-> >
-> > > Chia-Yu
-> > >
-> > > > (3) The following patch I did not merge, because I'd like to migrat=
-e
-> > > > to having all packetdrill tests for the Linux kernel reside in one
-> > > > place, in the Linux kernel source tree (not the Google packetdrill
-> > > > repo):
-> > > >
-> > > >   net-test: add TCP Accurate ECN cases
-> > > >
-> > > > https://eur03.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2=
-Fgi
-> > > > thub.com%2Fgoogle%2Fpacketdrill%2Fpull%2F96%2Fchanges%2Ffe4c7293ea6=
-4
-> > > > 0a4c81178b6c88744d7a5d209fd6&data=3D05%7C02%7Cchia-yu.chang%40nokia=
--be
-> > > > ll-labs.com%7C227b6e8cfe084ca9279708de56ee858b%7C5d4717519675428d91=
-7
-> > > > b70f44f9630b0%7C0%7C0%7C639043779630323311%7CUnknown%7CTWFpbGZsb3d8=
-e
-> > > > yJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoi=
-T
-> > > > WFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=3DkIDQalqUreGDjFAmUljiao=
-dEq
-> > > > kcxrypAa5YQBXsOvOE%3D&reserved=3D0
-> > > >
-> > > > Thanks!
-> > > > neal
-> > > Chia-Yu
-> > >
-> > > -----Original Message-----
-> > > From: Neal Cardwell <ncardwell@google.com>
-> > > Sent: Sunday, January 18, 2026 5:11 PM
-> > > To: Chia-Yu Chang (Nokia) <chia-yu.chang@nokia-bell-labs.com>
-> > > Cc: pabeni@redhat.com; edumazet@google.com; parav@nvidia.com;
-> > > linux-doc@vger.kernel.org; corbet@lwn.net; horms@kernel.org;
-> > > dsahern@kernel.org; kuniyu@google.com; bpf@vger.kernel.org;
-> > > netdev@vger.kernel.org; dave.taht@gmail.com; jhs@mojatatu.com;
-> > > kuba@kernel.org; stephen@networkplumber.org; xiyou.wangcong@gmail.com=
-;
-> > > jiri@resnulli.us; davem@davemloft.net; andrew+netdev@lunn.ch;
-> > > donald.hunter@gmail.com; ast@fiberby.net; liuhangbin@gmail.com;
-> > > shuah@kernel.org; linux-kselftest@vger.kernel.org; ij@kernel.org; Koe=
-n
-> > > De Schepper (Nokia) <koen.de_schepper@nokia-bell-labs.com>;
-> > > g.white@cablelabs.com; ingemar.s.johansson@ericsson.com;
-> > > mirja.kuehlewind@ericsson.com; cheshire <cheshire@apple.com>;
-> > > rs.ietf@gmx.at; Jason_Livingood@comcast.com; Vidhi Goel
-> > > <vidhi_goel@apple.com>; Willem de Bruijn <willemb@google.com>
-> > > Subject: Re: [PATCH net-next 1/1] selftests/net: Add packetdrill
-> > > packetdrill cases
-> > >
-> > >
-> > > CAUTION: This is an external email. Please be very careful when click=
-ing links or opening attachments. See the URL nok.it/ext for additional inf=
-ormation.
-> > >
-> > >
-> > >
-> > > On Thu, Jan 8, 2026 at 5:46=E2=80=AFPM Neal Cardwell <ncardwell@googl=
-e.com> wrote:
-> > > >
-> > > > On Thu, Jan 8, 2026 at 10:58=E2=80=AFAM <chia-yu.chang@nokia-bell-l=
-abs.com> wrote:
-> > > > >
-> > > > > From: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
-> > > > >
-> > > > > Linux Accurate ECN test sets using ACE counters and AccECN option=
-s
-> > > > > to cover several scenarios: Connection teardown, different ACK
-> > > > > conditions, counter wrapping, SACK space grabbing, fallback
-> > > > > schemes, negotiation retransmission/reorder/loss, AccECN option
-> > > > > drop/loss, different handshake reflectors, data with marking, and=
- different sysctl values.
-> > > > >
-> > > > > Co-developed-by: Ilpo J=C3=A4rvinen <ij@kernel.org>
-> > > > > Signed-off-by: Ilpo J=C3=A4rvinen <ij@kernel.org>
-> > > > > Co-developed-by: Neal Cardwell <ncardwell@google.com>
-> > > > > Signed-off-by: Neal Cardwell <ncardwell@google.com>
-> > > > > ---
-> > > >
-> > > > Chia-Yu, thank you for posting the packetdrill tests.
-> > > >
-> > > > A couple thoughts:
-> > > >
-> > > > (1) These tests are using the experimental AccECN packetdrill
-> > > > support that is not in mainline packetdrill yet. Can you please
-> > > > share the github URL for the version of packetdrill you used? I wil=
-l
-> > > > work on merging the appropriate experimental AccECN packetdrill
-> > > > support into the Google packetdrill mainline branch.
-> > >
-> > > An update on the 3 patches at:
-> > >
-> > > https://eur03.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fg=
-ith
-> > > ub.com%2Fgoogle%2Fpacketdrill%2Fpull%2F96&data=3D05%7C02%7Cchia-yu.ch=
-ang
-> > > %40nokia-bell-labs.com%7C227b6e8cfe084ca9279708de56ee858b%7C5d4717519=
-6
-> > > 75428d917b70f44f9630b0%7C0%7C0%7C639043779630340275%7CUnknown%7CTWFpb=
-G
-> > > Zsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkF=
-O
-> > > IjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=3D9cEIWqpEDSW4fyo2Ccl=
-Kk1
-> > > eNZ5c5C0lOADuSrE7lWFA%3D&reserved=3D0
-> > >
-> > > (1) I have merged the following patch into the google packetdrill rep=
-o to facilitate testing of the AccECN patch series:
-> > >
-> > > "net-test: packetdrill: add Accurate ECN (AccECN) option support"
-> > > https://eur03.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fg=
-ith
-> > > ub.com%2Fgoogle%2Fpacketdrill%2Fpull%2F96%2Fchanges%2Ff6861f888bc7f1e=
-0
-> > > 8026de4825519a95504d1047&data=3D05%7C02%7Cchia-yu.chang%40nokia-bell-=
-lab
-> > > s.com%7C227b6e8cfe084ca9279708de56ee858b%7C5d4717519675428d917b70f44f=
-9
-> > > 630b0%7C0%7C0%7C639043779630357016%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU=
-1
-> > > hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldU=
-I
-> > > joyfQ%3D%3D%7C0%7C%7C%7C&sdata=3DV9Pt4nNHTV%2BcoQrb%2BMNQKOW%2FJARzk3=
-DfY
-> > > LvhuVZ3ii4%3D&reserved=3D0
-> > >
-> > > (2) The following patch I did not yet merge, because it proposes to a=
-dd an odd number of u32 fields to tcp_info, so AFAICT leaves a 4-byte paddi=
-ng hole at the end of tcp_info:
-> > >
-> > >   net-test: packetdrill: Support AccECN counters through tcpi
-> > >
-> > > https://eur03.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fg=
-ith
-> > > ub.com%2Fgoogle%2Fpacketdrill%2Fpull%2F96%2Fchanges%2Ff43649c87a2aa79=
-a
-> > > 33a78111d3d7e5f027d13a7f&data=3D05%7C02%7Cchia-yu.chang%40nokia-bell-=
-lab
-> > > s.com%7C227b6e8cfe084ca9279708de56ee858b%7C5d4717519675428d917b70f44f=
-9
-> > > 630b0%7C0%7C0%7C639043779630374376%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU=
-1
-> > > hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldU=
-I
-> > > joyfQ%3D%3D%7C0%7C%7C%7C&sdata=3Dvy8TGIgoQum%2FFSN%2FnuaGT3rcZsTVjKHV=
-x5G
-> > > dIDWTR7A%3D&reserved=3D0
-> > >
-> > > I think we'll need to tweak the AccECN kernel patch series so that it=
- does not leave a 4-byte padding hole at the end of tcp_info, then update t=
-his packetdrill patch to match the kernel patch.
-> > >
-> > > Let's come up with another useful u32 field we can add to the tcp_inf=
-o struct, so that the kernel patch doesn't add a padding hole at the end of=
- tcp_info.
-> > >
-> > > One idea would be to add another field to represent newer options and=
- connection features that are enabled. AFAICT all 8 bits of the tcpi_option=
-s field have been used, so we can't use more bits in that field. I'd sugges=
-t we add a u32 tcpi_more_options field before the tcpi_received_ce field, s=
-o we can encode other useful info, like:
-> > >
-> > > + 1 bit to indicate whether AccECN was negotiated (this can go in a
-> > > separate patch)
-> > >
-> > > + 1 bit to indicate whether TCP_NODELAY was set (since forgetting to
-> > > use TCP_NODELAY is a classic cause of performance problems; again thi=
-s
-> > > can go in a separate patch)
-> > >
-> > > (And there will be future bits of info we want to add...)
-> > >
-> > > Also, regarding the comment in this line:
-> > >   __u32   tcpi_received_ce;    /* # of CE marks received */
-> > >
-> > > That comment is ambiguous, since it doesn't indicate whether it's cou=
-nting (potentially LRO/GRO) skbs or TCP segments. I would suggest clarifyin=
-g that this is counting segments:
-> > >
-> > > __u32   tcpi_received_ce;    /* # of CE marked segments received */
-> Hi Neal,
->
-> I've done doing the patch on both net-next and packetdrill, and all AccEC=
-N cases can still pass.
->
-> Would it be possible for me to send patches via email rather than creatin=
-g PR (due to our internal rules)?
+On Sat, 2026-01-17 at 18:09 +0800, Qiliang Yuan wrote:
 
-Yes, that's fine if you want to email the packetdrill patches to the
-packetdrill@googlegroups.com mailing list.
+Hi Qiliang,
 
-thanks,
-neal
+> 2. System-wide saturation profiling (32 cores):
+>    # Start perf in background
+>    sudo perf stat -a -- sleep 60 &
+>    # Start 32 parallel loops of veristat
+>    for i in {1..32}; do (while true; do ./veristat backtrack_stress.bpf.o=
+ > /dev/null; done &); done
+
+I'm not sure system-wide testing is helpful in this context.
+I'd suggest collecting stats for a single process, e.g. as follows:
+
+  perf stat -B --all-kernel -r10 -- ./veristat -q pyperf180.bpf.o
+
+(Note: pyperf180 is a reasonably complex test for many purposes).
+And then collecting profiling data:
+
+  perf record -o <somewhere-where-mmap-is-possible> \
+              --all-kernel --call-graph=3Ddwarf --vmlinux=3D<path-to-vmlinu=
+x> \
+	      -- ./veristat -q pyperf180.bpf.o
+
+And then inspecting the profiling data using `perf report`.
+What I see in stats corroborates with Yonghong's findings:
+
+  W/o the patch:
+            ...
+          22293282      branch-misses                    #      2.8 %  bran=
+ch_miss_rate         ( +-  1.25% )  (50.10%)
+         594485451      branches                         #   1012.5 M/sec  =
+branch_frequency     ( +-  1.68% )  (66.67%)
+        1544503960      cpu-cycles                       #      2.6 GHz  cy=
+cles_frequency       ( +-  0.18% )  (67.02%)
+        3305212994      instructions                     #      2.1 instruc=
+tions  insn_per_cycle  ( +-  2.04% )  (67.11%)
+         587496908      stalled-cycles-frontend          #     0.38 fronten=
+d_cycles_idle        ( +-  1.21% )  (66.39%)
+
+           0.60033 +- 0.00173 seconds time elapsed  ( +-  0.29% )
+
+  With the patch
+            ...
+          22397789      branch-misses                    #      2.8 %  bran=
+ch_miss_rate         ( +-  1.27% )  (50.37%)
+         596289399      branches                         #   1004.8 M/sec  =
+branch_frequency     ( +-  1.59% )  (66.95%)
+        1546060617      cpu-cycles                       #      2.6 GHz  cy=
+cles_frequency       ( +-  0.16% )  (66.67%)
+        3325745352      instructions                     #      2.2 instruc=
+tions  insn_per_cycle  ( +-  1.76% )  (66.61%)
+         588040713      stalled-cycles-frontend          #     0.38 fronten=
+d_cycles_idle        ( +-  1.23% )  (66.48%)
+
+           0.60697 +- 0.00201 seconds time elapsed  ( +-  0.33% )
+
+So, I'd suggest shelving this change for now.
+
+If you take a look at the profiling data, you'd notice that low
+hanging fruit is actually improving bpf_patch_insn_data(),
+It takes ~40% of time, at-least for this program.
+This was actually discussed a very long time ago [1].
+If you are interested in speeding up verifier,
+maybe consider taking a look?
+
+Best regards,
+Eduard Zingerman.
+
+[1] https://lore.kernel.org/bpf/CAEf4BzY_E8MSL4mD0UPuuiDcbJhh9e2xQo2=3D5w+p=
+pRWWiYSGvQ@mail.gmail.com/
 
