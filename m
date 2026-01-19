@@ -1,354 +1,207 @@
-Return-Path: <bpf+bounces-79512-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79513-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E732D3B7BD
-	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 20:55:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 083DAD3B830
+	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 21:24:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 896FD303C127
-	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 19:54:16 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 1A678302178D
+	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 20:24:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DA592E8E09;
-	Mon, 19 Jan 2026 19:54:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0593D2EFD89;
+	Mon, 19 Jan 2026 20:24:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="PXWm+5GW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J9VJpI0I"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+Received: from mail-dy1-f179.google.com (mail-dy1-f179.google.com [74.125.82.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D12CB2DB791
-	for <bpf@vger.kernel.org>; Mon, 19 Jan 2026 19:54:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBDA92ECE91
+	for <bpf@vger.kernel.org>; Mon, 19 Jan 2026 20:24:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768852444; cv=none; b=vCPYQvlUwu7BKZHIa3IA09Us/OXzNjKR9oEoRxZ+6p2dKQT69baC1gy9qo7IqkEBppKIBDYZWJ6uVcgMtPyJIBEpAfkOIx3RR7uOLVcpv6FUAx9MNPEeOa0QOKwkA6mO7G81yAZYvb068vvNoI4/DPJ3FYnQNFfg4b2PRuPF0hc=
+	t=1768854258; cv=none; b=F/DGMZLZg6bkeA2meWgf4fqg3fT7K46UKJ5xMLJ0BUxfhWf6zyh3Zz6JAGwenyLbrfB5vKgVzCTQJLROwAqyXuiAVH7j+GdavuMbrDNLagkKGIEDmTjjn3WpPtvarasfxbJqZxcz6p1ksqzOtz2D0PXR106H+BiNtf6oXWZ/x3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768852444; c=relaxed/simple;
-	bh=enheyffyzeRQuTMmVfRf9X1OoExDglgi7I1CfaKQ4F4=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=DCoGJwRhCxOVan20AH/FspZv9IVp30RQuWTnFTYQfSuWU1mvp6DBWWp6jarvFnz951v1nPOovqxTx86OBwmJKqRpjuT/tvK+mjHtM+HB/yBfSeESK4YL3paliEg9lhzZBwgmoUcGZlX6ZtXLWWK2vtnCYsqzMRl9oJY1/c5xqso=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=PXWm+5GW; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-b87cc82fd85so252799366b.2
-        for <bpf@vger.kernel.org>; Mon, 19 Jan 2026 11:54:02 -0800 (PST)
+	s=arc-20240116; t=1768854258; c=relaxed/simple;
+	bh=H2bq/OAD2o59J4yItaZmIuW7yJ0igTT8/wThWqgVO0I=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Sc3m6FVa3IqEx2wDjZDWc36EhDgcY4v9fgFyD+Rxou9YH5ykcO8G4QwjNDsBF2X+ICUSkf4R8n5ktLgnKNjZvjcikNfIpgoG5uLGEkAhBJsR3TOpOSHJlNpLwI60uJLo9tGcIcnXZ3psEQIGnQ/K2s/jmkrrjL8fpligqq1H6kY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J9VJpI0I; arc=none smtp.client-ip=74.125.82.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-dy1-f179.google.com with SMTP id 5a478bee46e88-2b6bb644e8eso6986097eec.1
+        for <bpf@vger.kernel.org>; Mon, 19 Jan 2026 12:24:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1768852441; x=1769457241; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HLqhUFO5VO0ft/TfIoPNJ2fKHKmLQpH/DMD1yoEvhbQ=;
-        b=PXWm+5GWqfIEFpo1g4nlwj2ekIs/lVpkC2z64BLJuuirgdSox4Mmuir8NmhwetUlTx
-         tOill6LYqrbNkTrWMt+Vw4QSbjnoHf8hMWrSczjmGxwTVTvMAhRu5co9Cdn93zCMQZL/
-         2hi4RDpJOwLbEOnmV23A84igNbM0RXSZilIRPADkZyVNdEV6CupbFiaPwAGZuVuxUx8V
-         UHMLOEiYEkWjW59L60AheRFxuR5PdCoQqXpwOMd1HqjslMrDDSrGU1XRzpophQEPBYAN
-         POcOJ8ijQKCsOAm9SOhHjyOmKrDCnM5uJwfOhDmpbWmj1n+LYEO45jHB6d6PX8JOn9Y7
-         DY9Q==
+        d=gmail.com; s=20230601; t=1768854256; x=1769459056; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=AbY+jX2Rjs0OZqwqKdZgEOaZOTOcp8GauBAWp66xGL0=;
+        b=J9VJpI0IU0f5V9OfudFRrZrd+7j91wUI/bCCg4jCP1R/Ll0yoErbe/ApMYASUj06v+
+         zxLdFHqtr3UK3v0muw73wNpd+6oQPeCTIDfQ7daKC261uIigg+TQ6WYMalmF4lwykaVz
+         sO8K+/ISXhWQJvV0m3Q844TIpp53CxH+HL46sUUjS37OAiHXFZF34U2PVMBzk80gaM2d
+         Ip3qkQsDi8I6x8PnsznxNEsFtidF5ikaOBAoI5sfhcbnRULWRgj0d6Gz8AGJLyJDW/Gv
+         WCaNv5IVug7ZLoDFj0zDz5NvrItsV/jtmBPGyoys9mBSbX/DSWKHmF1oxfih7OkeoyKd
+         1SzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768852441; x=1769457241;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=HLqhUFO5VO0ft/TfIoPNJ2fKHKmLQpH/DMD1yoEvhbQ=;
-        b=sMch7b92JQnrbe5IYdY26of49IPZRLVjquAPJjBtiPZvBjferkdAXkJndV8XpgvUzy
-         s+3ny63BRiC6oY8EHcFgPP0LmCdmdW/KVh7DrzynwdS+vkLip88mXCo1sydws6HC3OOq
-         37ukS7F6OuffKRrzSj/3qw9FHS31JZ3aW84K62M/WeYoa/5okp9DfgH60JRYhwopDbWt
-         YHGHH4XPRFWjxnikMGWpO+CYcTYuHzLkRJrXuhpBPwGLwqj8/sAJZnKKTaONYLc1hmwY
-         9cRSRvh6X2z7FYY8FQ/dZlg94ZUFft9RzmmlI42oS9WAoy9pH3seKnsRnbYQfzCe7nkw
-         tdGg==
-X-Gm-Message-State: AOJu0Yyya9FV22aiJqv9WlkzHF9HBRFqN3xY8ArPDiQ9wKex8ecNxC9J
-	XSamtb4vIxUdskbbY1vAbFPpXBoKUwcngJkn8cxE2j/maur48ZBezoLkEzq5h+fp9cg=
-X-Gm-Gg: AY/fxX5pLIEiAG9pGhbbxxwnCfAjriXSrJDcaBFmmhHQnc2A660rbK+bAQwyJBfXWH4
-	qqwQzpDzMDaiahMVe9YQfErxtTtyu4FqT1O+LaF+AjJMRQr3d9bP0aJyzH14Ni64yxJzS4cah4U
-	BkrEcSLBLv7ZqAanDzCHnePz7IT+xez7PxWX2gAeExmWCPrUbzt6xfs8AxvmTRmfsAsdF90OZ3z
-	wu1j0TxlpBPqGDSgSvnXpNg4Mybink5owd6Xp6NUck6dAs8yCqD1we6i6Uc6/B4+Uy10Wlpruwx
-	NKK9IIZ6RnXHRgqo8zIllTL9Dz+WwMsNMsCFKxhsG/FsOASGWx6gSsjGkDsOzLmkqJZ5MZFLSEM
-	u9qmoU5LD5NcO0no5jW+YvCg1ijQy5hwsXDJWZlvtSXi7kaXtceLJngTk+84P07SRblMfKtnAgs
-	NGiE8sU1NEAjPaflE6E5gwiKClyxMiivcPZF/F+jqbf5XHXQt301RGNpEtWcg=
-X-Received: by 2002:a17:906:f592:b0:b86:fca7:3dc2 with SMTP id a640c23a62f3a-b87968d4b0bmr992663166b.10.1768852440951;
-        Mon, 19 Jan 2026 11:54:00 -0800 (PST)
-Received: from cloudflare.com (79.184.207.118.ipv4.supernova.orange.pl. [79.184.207.118])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-65452bce213sm11290957a12.2.2026.01.19.11.54.00
+        d=1e100.net; s=20230601; t=1768854256; x=1769459056;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AbY+jX2Rjs0OZqwqKdZgEOaZOTOcp8GauBAWp66xGL0=;
+        b=HLFPReKpc7MyEHZGboNDVDbDAXGc48BEK2DY0mYhMB19NVGGBNyfDX5qIeo3LGCsMD
+         h4eCvnHW9vnydLiMt2NkQxhC/q+yNgS6OLmIbFjq/kAN6zfFzzeHRRKXcZO9RtQox+uE
+         OBQrR3KDShXjheAe0ha0DMBD/fzSQF1CiXkoYXaW0mwFAX3QRnZg1TyuNVhItWYdzHSy
+         Ozh/YCDE0c8zvwetsj51GbCjvkehyQVrV30jMWNH2HP9C1lsXWXwj9sZDJwmwh+sTS7c
+         dChVa86qrFyIU/FmrIgpC7d0q/zqHuRhs6rFbddadYp66S1jNgIFuH4fzgFUsFByr3Xf
+         +pPw==
+X-Gm-Message-State: AOJu0Yyah7WJFLu5aIOmg4tshCDkT0lzhHZdR1Kq8/i2lXIWqN7NZwDF
+	Txv9xF6A/NYKyTH9rtajS9YN4OxotCikQpAC0mAmQIPp4gCiilLLmX7v
+X-Gm-Gg: AZuq6aIuW5dHAWPt/cpBi/4UUtDkVlQDOw5slR4RPXCJ6vLvgNp30ytAVKraPMZHYNP
+	O7a/Vejv/EeyzwhYbcYqnWAOd5nmVTRIsil/zjNTr5QHn/SQNttZ5EdzC+rYfd/mQoA3Aj3W5gY
+	WSmqFWfdCsSinEHUWV/27Y9dHTAXEQHUCR2St7JJEmlbGpU+hJPTsS0KJT7bIF7S4jT9DcMIOtG
+	1dVVuAlHIAPVHmJmyBNFowCQIrM4PwG/lmVEzsDj9gPcO9Mee8TWX5CVYzgy5oulHA3G/m95GfR
+	BkhI+HCmy7fJwr1IVrVURgPqaxxSFUKJBtA/iZMR6UZc9qZknZVHaw82NCnlEZvgraBY//+Ldh9
+	cwgQXGRByOsSE3TvjqDcB3xLkndB3lIjn8Nu4siuIwKHaki+KFo2Xt/AGvDf7d4mPOZpAR1/I17
+	fOD3Q81w4HBV25331oZMR5AwvoPAPkboLeasPLSfI+LMpTLXYXAjSggYAiAvZ+E/QcBA==
+X-Received: by 2002:a05:7300:3214:b0:2b4:6b84:b7d7 with SMTP id 5a478bee46e88-2b6b3f14121mr7909753eec.8.1768854255620;
+        Mon, 19 Jan 2026 12:24:15 -0800 (PST)
+Received: from ?IPv6:2a03:83e0:115c:1:4cd6:17bf:3333:255f? ([2620:10d:c090:500::aa81])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2b6c56a23ecsm12145563eec.11.2026.01.19.12.24.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jan 2026 11:54:00 -0800 (PST)
-From: Jakub Sitnicki <jakub@cloudflare.com>
-Date: Mon, 19 Jan 2026 20:53:54 +0100
-Subject: [PATCH bpf-next 4/4] selftests/bpf: Remove tests for
- prologue/epilogue with kfuncs
+        Mon, 19 Jan 2026 12:24:15 -0800 (PST)
+Message-ID: <55f01664fc714615206cc8d100cabf4f310f2302.camel@gmail.com>
+Subject: Re: [PATCH bpf RESEND v2 1/2] bpf: Fix memory access flags in
+ helper prototypes
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Zesen Liu <ftyghome@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
+ <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,  Song Liu
+ <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend	
+ <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev	 <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>,  Matt Bobrowski <mattbobrowski@google.com>, Steven
+ Rostedt <rostedt@goodmis.org>, Masami Hiramatsu	 <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,  "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+ <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman
+ <horms@kernel.org>, Daniel Xu <dxu@dxuuu.xyz>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, netdev@vger.kernel.org, Shuran Liu
+	 <electronlsr@gmail.com>, Peili Gao <gplhust955@gmail.com>, Haoran Ni
+	 <haoran.ni.cs@gmail.com>
+Date: Mon, 19 Jan 2026 12:24:11 -0800
+In-Reply-To: <20260118-helper_proto-v2-1-ab3a1337e755@gmail.com>
+References: <20260118-helper_proto-v2-0-ab3a1337e755@gmail.com>
+	 <20260118-helper_proto-v2-1-ab3a1337e755@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.58.2 (3.58.2-1.fc43) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260119-skb-meta-bpf-emit-call-from-prologue-v1-4-e8b88d6430d8@cloudflare.com>
-References: <20260119-skb-meta-bpf-emit-call-from-prologue-v1-0-e8b88d6430d8@cloudflare.com>
-In-Reply-To: <20260119-skb-meta-bpf-emit-call-from-prologue-v1-0-e8b88d6430d8@cloudflare.com>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- John Fastabend <john.fastabend@gmail.com>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Amery Hung <ameryhung@gmail.com>, 
- netdev@vger.kernel.org, kernel-team@cloudflare.com
-X-Mailer: b4 0.15-dev-07fe9
 
-Remove pro_epilogue_with_kfunc test program and its supporting code in
-bpf_testmod. This test exercised calling kfuncs from prologue and epilogue,
-which is no longer supported after the switch to direct helper calls.
+On Sun, 2026-01-18 at 16:16 +0800, Zesen Liu wrote:
+> After commit 37cce22dbd51 ("bpf: verifier: Refactor helper access type tr=
+acking"),
+> the verifier started relying on the access type flags in helper
+> function prototypes to perform memory access optimizations.
+>
+> Currently, several helper functions utilizing ARG_PTR_TO_MEM lack the
+> corresponding MEM_RDONLY or MEM_WRITE flags. This omission causes the
+> verifier to incorrectly assume that the buffer contents are unchanged
+> across the helper call. Consequently, the verifier may optimize away
+> subsequent reads based on this wrong assumption, leading to correctness
+> issues.
+>
+> For bpf_get_stack_proto_raw_tp, the original MEM_RDONLY was incorrect
+> since the helper writes to the buffer. Change it to ARG_PTR_TO_UNINIT_MEM
+> which correctly indicates write access to potentially uninitialized memor=
+y.
+>
+> Similar issues were recently addressed for specific helpers in commit
+> ac44dcc788b9 ("bpf: Fix verifier assumptions of bpf_d_path's output buffe=
+r")
+> and commit 2eb7648558a7 ("bpf: Specify access type of bpf_sysctl_get_name=
+ args").
+>
+> Fix these prototypes by adding the correct memory access flags.
+>
+> Fixes: 37cce22dbd51 ("bpf: verifier: Refactor helper access type tracking=
+")
+> Co-developed-by: Shuran Liu <electronlsr@gmail.com>
+> Signed-off-by: Shuran Liu <electronlsr@gmail.com>
+> Co-developed-by: Peili Gao <gplhust955@gmail.com>
+> Signed-off-by: Peili Gao <gplhust955@gmail.com>
+> Co-developed-by: Haoran Ni <haoran.ni.cs@gmail.com>
+> Signed-off-by: Haoran Ni <haoran.ni.cs@gmail.com>
+> Signed-off-by: Zesen Liu <ftyghome@gmail.com>
+> ---
 
-Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
----
- .../selftests/bpf/prog_tests/pro_epilogue.c        |  2 -
- .../selftests/bpf/progs/pro_epilogue_with_kfunc.c  | 88 ---------------------
- .../testing/selftests/bpf/test_kmods/bpf_testmod.c | 92 ----------------------
- 3 files changed, 182 deletions(-)
+I looked trough the helpers annotated with MEM_WRITE in this patch,
+indeed the write annotation is missing from these helpers.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/pro_epilogue.c b/tools/testing/selftests/bpf/prog_tests/pro_epilogue.c
-index 5d3c00a08a88..509883e6823a 100644
---- a/tools/testing/selftests/bpf/prog_tests/pro_epilogue.c
-+++ b/tools/testing/selftests/bpf/prog_tests/pro_epilogue.c
-@@ -6,7 +6,6 @@
- #include "epilogue_tailcall.skel.h"
- #include "pro_epilogue_goto_start.skel.h"
- #include "epilogue_exit.skel.h"
--#include "pro_epilogue_with_kfunc.skel.h"
- 
- struct st_ops_args {
- 	__u64 a;
-@@ -56,7 +55,6 @@ void test_pro_epilogue(void)
- 	RUN_TESTS(pro_epilogue);
- 	RUN_TESTS(pro_epilogue_goto_start);
- 	RUN_TESTS(epilogue_exit);
--	RUN_TESTS(pro_epilogue_with_kfunc);
- 	if (test__start_subtest("tailcall"))
- 		test_tailcall();
- }
-diff --git a/tools/testing/selftests/bpf/progs/pro_epilogue_with_kfunc.c b/tools/testing/selftests/bpf/progs/pro_epilogue_with_kfunc.c
-deleted file mode 100644
-index a5a8f08ac8fb..000000000000
---- a/tools/testing/selftests/bpf/progs/pro_epilogue_with_kfunc.c
-+++ /dev/null
-@@ -1,88 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
--
--#include <vmlinux.h>
--#include <bpf/bpf_tracing.h>
--#include "bpf_misc.h"
--#include "../test_kmods/bpf_testmod.h"
--#include "../test_kmods/bpf_testmod_kfunc.h"
--
--char _license[] SEC("license") = "GPL";
--
--void __kfunc_btf_root(void)
--{
--	bpf_kfunc_st_ops_inc10(NULL);
--}
--
--static __noinline __used int subprog(struct st_ops_args *args)
--{
--	args->a += 1;
--	return args->a;
--}
--
--__success
--/* prologue */
--__xlated("0: r8 = r1")
--__xlated("1: r1 = 0")
--__xlated("2: call kernel-function")
--__xlated("3: if r0 != 0x0 goto pc+5")
--__xlated("4: r6 = *(u64 *)(r8 +0)")
--__xlated("5: r7 = *(u64 *)(r6 +0)")
--__xlated("6: r7 += 1000")
--__xlated("7: *(u64 *)(r6 +0) = r7")
--__xlated("8: goto pc+2")
--__xlated("9: r1 = r0")
--__xlated("10: call kernel-function")
--__xlated("11: r1 = r8")
--/* save __u64 *ctx to stack */
--__xlated("12: *(u64 *)(r10 -8) = r1")
--/* main prog */
--__xlated("13: r1 = *(u64 *)(r1 +0)")
--__xlated("14: r6 = r1")
--__xlated("15: call kernel-function")
--__xlated("16: r1 = r6")
--__xlated("17: call pc+")
--/* epilogue */
--__xlated("18: r1 = 0")
--__xlated("19: r6 = 0")
--__xlated("20: call kernel-function")
--__xlated("21: if r0 != 0x0 goto pc+6")
--__xlated("22: r1 = *(u64 *)(r10 -8)")
--__xlated("23: r1 = *(u64 *)(r1 +0)")
--__xlated("24: r6 = *(u64 *)(r1 +0)")
--__xlated("25: r6 += 10000")
--__xlated("26: *(u64 *)(r1 +0) = r6")
--__xlated("27: goto pc+2")
--__xlated("28: r1 = r0")
--__xlated("29: call kernel-function")
--__xlated("30: r0 = r6")
--__xlated("31: r0 *= 2")
--__xlated("32: exit")
--SEC("struct_ops/test_pro_epilogue")
--__naked int test_kfunc_pro_epilogue(void)
--{
--	asm volatile (
--	"r1 = *(u64 *)(r1 +0);"
--	"r6 = r1;"
--	"call %[bpf_kfunc_st_ops_inc10];"
--	"r1 = r6;"
--	"call subprog;"
--	"exit;"
--	:
--	: __imm(bpf_kfunc_st_ops_inc10)
--	: __clobber_all);
--}
--
--SEC("syscall")
--__retval(22022) /* (PROLOGUE_A [1000] + KFUNC_INC10 + SUBPROG_A [1] + EPILOGUE_A [10000]) * 2 */
--int syscall_pro_epilogue(void *ctx)
--{
--	struct st_ops_args args = {};
--
--	return bpf_kfunc_st_ops_test_pro_epilogue(&args);
--}
--
--SEC(".struct_ops.link")
--struct bpf_testmod_st_ops pro_epilogue_with_kfunc = {
--	.test_pro_epilogue = (void *)test_kfunc_pro_epilogue,
--};
-diff --git a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-index bc07ce9d5477..1a5c163455de 100644
---- a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-@@ -1400,85 +1400,6 @@ static int bpf_test_mod_st_ops__test_pro_epilogue(struct st_ops_args *args)
- 	return 0;
- }
- 
--static int bpf_cgroup_from_id_id;
--static int bpf_cgroup_release_id;
--
--static int st_ops_gen_prologue_with_kfunc(struct bpf_insn *insn_buf, bool direct_write,
--					  const struct bpf_prog *prog)
--{
--	struct bpf_insn *insn = insn_buf;
--
--	/* r8 = r1; // r8 will be "u64 *ctx".
--	 * r1 = 0;
--	 * r0 = bpf_cgroup_from_id(r1);
--	 * if r0 != 0 goto pc+5;
--	 * r6 = r8[0]; // r6 will be "struct st_ops *args".
--	 * r7 = r6->a;
--	 * r7 += 1000;
--	 * r6->a = r7;
--	 * goto pc+2;
--	 * r1 = r0;
--	 * bpf_cgroup_release(r1);
--	 * r1 = r8;
--	 */
--	*insn++ = BPF_MOV64_REG(BPF_REG_8, BPF_REG_1);
--	*insn++ = BPF_MOV64_IMM(BPF_REG_1, 0);
--	*insn++ = BPF_CALL_KFUNC(0, bpf_cgroup_from_id_id);
--	*insn++ = BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 5);
--	*insn++ = BPF_LDX_MEM(BPF_DW, BPF_REG_6, BPF_REG_8, 0);
--	*insn++ = BPF_LDX_MEM(BPF_DW, BPF_REG_7, BPF_REG_6, offsetof(struct st_ops_args, a));
--	*insn++ = BPF_ALU64_IMM(BPF_ADD, BPF_REG_7, 1000);
--	*insn++ = BPF_STX_MEM(BPF_DW, BPF_REG_6, BPF_REG_7, offsetof(struct st_ops_args, a));
--	*insn++ = BPF_JMP_IMM(BPF_JA, 0, 0, 2);
--	*insn++ = BPF_MOV64_REG(BPF_REG_1, BPF_REG_0);
--	*insn++ = BPF_CALL_KFUNC(0, bpf_cgroup_release_id);
--	*insn++ = BPF_MOV64_REG(BPF_REG_1, BPF_REG_8);
--	*insn++ = prog->insnsi[0];
--
--	return insn - insn_buf;
--}
--
--static int st_ops_gen_epilogue_with_kfunc(struct bpf_insn *insn_buf, const struct bpf_prog *prog,
--					  s16 ctx_stack_off)
--{
--	struct bpf_insn *insn = insn_buf;
--
--	/* r1 = 0;
--	 * r6 = 0;
--	 * r0 = bpf_cgroup_from_id(r1);
--	 * if r0 != 0 goto pc+6;
--	 * r1 = stack[ctx_stack_off]; // r1 will be "u64 *ctx"
--	 * r1 = r1[0]; // r1 will be "struct st_ops *args"
--	 * r6 = r1->a;
--	 * r6 += 10000;
--	 * r1->a = r6;
--	 * goto pc+2
--	 * r1 = r0;
--	 * bpf_cgroup_release(r1);
--	 * r0 = r6;
--	 * r0 *= 2;
--	 * BPF_EXIT;
--	 */
--	*insn++ = BPF_MOV64_IMM(BPF_REG_1, 0);
--	*insn++ = BPF_MOV64_IMM(BPF_REG_6, 0);
--	*insn++ = BPF_CALL_KFUNC(0, bpf_cgroup_from_id_id);
--	*insn++ = BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 6);
--	*insn++ = BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_FP, ctx_stack_off);
--	*insn++ = BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, 0);
--	*insn++ = BPF_LDX_MEM(BPF_DW, BPF_REG_6, BPF_REG_1, offsetof(struct st_ops_args, a));
--	*insn++ = BPF_ALU64_IMM(BPF_ADD, BPF_REG_6, 10000);
--	*insn++ = BPF_STX_MEM(BPF_DW, BPF_REG_1, BPF_REG_6, offsetof(struct st_ops_args, a));
--	*insn++ = BPF_JMP_IMM(BPF_JA, 0, 0, 2);
--	*insn++ = BPF_MOV64_REG(BPF_REG_1, BPF_REG_0);
--	*insn++ = BPF_CALL_KFUNC(0, bpf_cgroup_release_id);
--	*insn++ = BPF_MOV64_REG(BPF_REG_0, BPF_REG_6);
--	*insn++ = BPF_ALU64_IMM(BPF_MUL, BPF_REG_0, 2);
--	*insn++ = BPF_EXIT_INSN();
--
--	return insn - insn_buf;
--}
--
--#define KFUNC_PRO_EPI_PREFIX "test_kfunc_"
- static int st_ops_gen_prologue(struct bpf_insn *insn_buf, bool direct_write,
- 			       const struct bpf_prog *prog)
- {
-@@ -1488,9 +1409,6 @@ static int st_ops_gen_prologue(struct bpf_insn *insn_buf, bool direct_write,
- 	    strcmp(prog->aux->attach_func_name, "test_pro_epilogue"))
- 		return 0;
- 
--	if (!strncmp(prog->aux->name, KFUNC_PRO_EPI_PREFIX, strlen(KFUNC_PRO_EPI_PREFIX)))
--		return st_ops_gen_prologue_with_kfunc(insn_buf, direct_write, prog);
--
- 	/* r6 = r1[0]; // r6 will be "struct st_ops *args". r1 is "u64 *ctx".
- 	 * r7 = r6->a;
- 	 * r7 += 1000;
-@@ -1514,9 +1432,6 @@ static int st_ops_gen_epilogue(struct bpf_insn *insn_buf, const struct bpf_prog
- 	    strcmp(prog->aux->attach_func_name, "test_pro_epilogue"))
- 		return 0;
- 
--	if (!strncmp(prog->aux->name, KFUNC_PRO_EPI_PREFIX, strlen(KFUNC_PRO_EPI_PREFIX)))
--		return st_ops_gen_epilogue_with_kfunc(insn_buf, prog, ctx_stack_off);
--
- 	/* r1 = stack[ctx_stack_off]; // r1 will be "u64 *ctx"
- 	 * r1 = r1[0]; // r1 will be "struct st_ops *args"
- 	 * r6 = r1->a;
-@@ -1587,13 +1502,6 @@ static void st_ops_unreg(void *kdata, struct bpf_link *link)
- 
- static int st_ops_init(struct btf *btf)
- {
--	struct btf *kfunc_btf;
--
--	bpf_cgroup_from_id_id = bpf_find_btf_id("bpf_cgroup_from_id", BTF_KIND_FUNC, &kfunc_btf);
--	bpf_cgroup_release_id = bpf_find_btf_id("bpf_cgroup_release", BTF_KIND_FUNC, &kfunc_btf);
--	if (bpf_cgroup_from_id_id < 0 || bpf_cgroup_release_id < 0)
--		return -EINVAL;
--
- 	return 0;
- }
- 
+In conjunction with the following logic in verifier.c:check_func_arg:
 
--- 
-2.43.0
+        case ARG_PTR_TO_MEM:
+                /* The access to this pointer is only checked when we hit t=
+he
+                 * next is_mem_size argument below.
+                 */
+                meta->raw_mode =3D arg_type & MEM_UNINIT;
+                if (arg_type & MEM_FIXED_SIZE) {
+                        err =3D check_helper_mem_access(env, regno, fn->arg=
+_size[arg],
+                                                      arg_type & MEM_WRITE =
+? BPF_WRITE : BPF_READ,
+						      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+						      // arguments considered read-only by default
+                                                      false, meta);
+                        if (err)
+                                return err;
+                        if (arg_type & MEM_ALIGNED)
+                                err =3D check_ptr_alignment(env, reg, 0, fn=
+->arg_size[arg], true);
+                }
+                break;
 
+This patch fixes a real problem.
+
+[...]
+
+> index fe28d86f7c35..59c2394981c7 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+
+[...]
+
+> @@ -1526,7 +1526,7 @@ static const struct bpf_func_proto bpf_read_branch_=
+records_proto =3D {
+>  	.gpl_only       =3D true,
+>  	.ret_type       =3D RET_INTEGER,
+>  	.arg1_type      =3D ARG_PTR_TO_CTX,
+> -	.arg2_type      =3D ARG_PTR_TO_MEM_OR_NULL,
+> +	.arg2_type      =3D ARG_PTR_TO_MEM_OR_NULL | MEM_WRITE,
+>  	.arg3_type      =3D ARG_CONST_SIZE_OR_ZERO,
+>  	.arg4_type      =3D ARG_ANYTHING,
+>  };
+> @@ -1661,7 +1661,7 @@ static const struct bpf_func_proto bpf_get_stack_pr=
+oto_raw_tp =3D {
+>  	.gpl_only	=3D true,
+>  	.ret_type	=3D RET_INTEGER,
+>  	.arg1_type	=3D ARG_PTR_TO_CTX,
+> -	.arg2_type	=3D ARG_PTR_TO_MEM | MEM_RDONLY,
+> +	.arg2_type	=3D ARG_PTR_TO_UNINIT_MEM,
+
+Q: why ARG_PTR_TO_UNINIT_MEM here, but not for a previous function and
+   not for snprintf variants?
+
+>  	.arg3_type	=3D ARG_CONST_SIZE_OR_ZERO,
+>  	.arg4_type	=3D ARG_ANYTHING,
+>  };
+
+[...]
 
