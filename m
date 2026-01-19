@@ -1,132 +1,167 @@
-Return-Path: <bpf+bounces-79451-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79452-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8408D3A9D8
-	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 14:03:36 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A1CED3AA7C
+	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 14:38:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 8765D303D341
-	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 13:01:57 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5F7C63068DCB
+	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 13:36:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C070D36405A;
-	Mon, 19 Jan 2026 13:01:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE93336A020;
+	Mon, 19 Jan 2026 13:36:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NB/qkgIJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D1D6363C7F
-	for <bpf@vger.kernel.org>; Mon, 19 Jan 2026 13:01:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF3A11ACED5
+	for <bpf@vger.kernel.org>; Mon, 19 Jan 2026 13:36:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768827705; cv=none; b=KyRgUmzxPzYYvtAKAl8VAiCmNTbRMW/KzWLxDNRQnGbp5rCN1xQQdXxoz7r47vakPV6dO8v7LV35RNdVPq0WZwkzueP2N77jU4K+kgAqZndHPvwmpjrw2VmM3O3tCrkLAyIrEHCKJyH3QcgwwPwwZPD01S2K5Uec7uMzVqGDzTk=
+	t=1768829785; cv=none; b=rq76gFSscItCwejzscJNzMK/JdPLXg/lvm86cfcqTx/rv5pZQeTxsx1xJvVBPU3VI8EOV13wFFOrmWKtF9QMUiKRp5VrdQhdh6/44w9iY/pL1v+zvSFpzGxADgq54aoOfg7Pal2o87nq/6dobxCtFvRzzBNANGBr9LZvtUz7D6M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768827705; c=relaxed/simple;
-	bh=0bIqaq8qvfyPVtqblw/rWkEa3RnV3OOcHHkwRqyrr7M=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=ShwncdN4YM9NQrIbmz6ZnB4ApjPsjoLxeVAYtZIaYTTN1p2EZ981MbNBMezsDb3kgFpi+QPoJIiiTXypEaPqXI6SSD9gwyuU7gqDaQm0141s5mQBGHX/iAKWCt4/ZJYONtwrQ5Ricx40N3Wzm9CDUUALekiFdwptdVmn9kKmTng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [113.200.148.30])
-	by gateway (Coremail) with SMTP id _____8DxecIxK25pbFMKAA--.33369S3;
-	Mon, 19 Jan 2026 21:01:37 +0800 (CST)
-Received: from [10.130.40.83] (unknown [113.200.148.30])
-	by front1 (Coremail) with SMTP id qMiowJAxHMIrK25p4HUlAA--.8265S3;
-	Mon, 19 Jan 2026 21:01:32 +0800 (CST)
-Subject: Re: [BUG?]: bpf/selftests: ns_bpf_qdisc libbpf: loading object
- 'tc_bpf' from buffer
-To: Vincent Li <vincent.mc.li@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, loongarch@lists.linux.dev, ast
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- Hengqi Chen <hengqi.chen@gmail.com>, Chenghao Duan
- <duanchenghao@kylinos.cn>, Huacai Chen <chenhuacai@kernel.org>
-References: <CAK3+h2yu+XkEMWz6FOHiDEEQw-G_iKG2KHP=F=1CiqLr0mCgNA@mail.gmail.com>
- <d299d7ba-4e9e-5b16-5aa4-898b62330c24@loongson.cn>
- <CAK3+h2yFJDNVPo=38PcYCMNhmw0cQBouL5h7sX0KmyLu-_5zwQ@mail.gmail.com>
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <c15fd22f-9c36-bf8d-5bd4-02993147d113@loongson.cn>
-Date: Mon, 19 Jan 2026 21:01:06 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+	s=arc-20240116; t=1768829785; c=relaxed/simple;
+	bh=14Vd7Eb+vbfdhXwTURvxrRMSxlumxUeohOFOyp/oUBA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hHCiif20nifo7XKEXCCFa0YYX2Lp/cwS7HWdOh74Bjv66qWkgnIL5egVN4jpoUTeOjjxhMS2n5ANApDMl5kWoGS39Asreag+wU1BqZ4Z0td+4USHUJH71OFE7Un/uquCTb2tekt8TkyfaOLPLfd1F8aAGjgitZEIPO9uJ6EaLd0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NB/qkgIJ; arc=none smtp.client-ip=95.215.58.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1768829771;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=XpANsYYHLT0HCyr9qsBCOggQneOZulxMASqjwlqQmbA=;
+	b=NB/qkgIJhf7S2uwiiMbpx3aFojvsWGBoHUVw+qxhLp13fyY4lAtB9fKAyWYcVphrkg8ofF
+	kRdr33RWcPAvycPggbj8ck8KELeCErx+bue8N8t9KkI/aho6wns6Q1dVr3XfzN4Kotjrpj
+	78pX8BK2OCUyBYoFBJ+wlYJht5V6asA=
+From: Leon Hwang <leon.hwang@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Leon Hwang <leon.hwang@linux.dev>,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	kernel-patches-bot@fb.com
+Subject: [PATCH bpf-next] selftests/bpf: Harden cpu flags test for lru_percpu_hash map
+Date: Mon, 19 Jan 2026 21:34:17 +0800
+Message-ID: <20260119133417.19739-1-leon.hwang@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAK3+h2yFJDNVPo=38PcYCMNhmw0cQBouL5h7sX0KmyLu-_5zwQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:qMiowJAxHMIrK25p4HUlAA--.8265S3
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoW7Zr45Ar4UJr1rZw17Gw1kXrc_yoW8CrWrpa
-	yrtF18KryvqF1rurWkGrW8KrW3G3ZrA3yrKrW7Kw4rGasxuryakr95J3W2qrnFqa4vkw42
-	9rZ5GF4Skw47AabCm3ZEXasCq-sJn29KB7ZKAUJUUUUx529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUPab4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-	xVW8Jr0_Cr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-	AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-	AVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
-	8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vI
-	r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67
-	AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIY
-	rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14
-	v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWx
-	JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUcApnDU
-	UUU
+X-Migadu-Flow: FLOW_OUT
 
-On 2026/1/16 上午4:44, Vincent Li wrote:
-> On Wed, Jan 14, 2026 at 5:13 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
+CI occasionally reports failures in the
+percpu_alloc/cpu_flag_lru_percpu_hash selftest, for example:
 
-...
+ First test_progs failure (test_progs_no_alu32-x86_64-llvm-21):
+ #264/15 percpu_alloc/cpu_flag_lru_percpu_hash
+ ...
+ test_percpu_map_op_cpu_flag:FAIL:bpf_map_lookup_batch value on specified cpu unexpected bpf_map_lookup_batch value on specified cpu: actual 0 != expected 3735929054
 
-> Do you have proper instructions to compile gcc?
+The unexpected value indicates that an element was removed from the map.
+However, the test never calls delete_elem(), so the only possible cause
+is LRU eviction.
 
-git clone git://gcc.gnu.org/git/gcc.git gcc
-cd gcc && ./contrib/download_prerequisites --no-verify
-cp config.guess gettext/build-aux/config.guess && cp config.sub 
-gettext/build-aux/config.sub
-cp config.guess gmp/config.guess && cp config.sub gmp/config.sub
-cp config.guess mpfr/config.guess && cp config.sub mpfr/config.sub
-cp config.guess mpc/build-aux/config.guess && cp config.sub 
-mpc/build-aux/config.sub
-cp config.guess isl/config.guess && cp config.sub isl/config.sub
-rm -rf build && mkdir -p build && cd build
-../configure --prefix=/usr/local/gcc --enable-checking=release 
---enable-languages=c,c++ --disable-multilib
-make -j"$(nproc)"
-sudo rm -rf /usr/local/gcc && sudo make install
-export PATH=/usr/local/gcc/bin:$PATH
-export LD_LIBRARY_PATH=/usr/local/gcc/lib:$LD_LIBRARY_PATH
+This can happen when the current task migrates to another CPU: an
+update_elem() triggers eviction because there is no available LRU node
+on local freelist and global freelist.
 
-> I am not sure if it is toolchain related. The thing that really
-> bothered me is why the hell tc_bpf is loaded by libbpf for
-> ns_bpf_qdisc selftests that seems to have nothing to do with the
-> tc_bpf object, I can't think of anything special in my build machine
-> that would trigger this. Anyway, thanks for the help!
+Harden the test against this behavior by provisioning sufficient spare
+elements. Set max_entries to 'nr_cpus * 2' and restrict the test to using
+the first nr_cpus entries, ensuring that updates do not spuriously trigger
+LRU eviction.
 
-I tested it again with lower version tool chains, the test still passed
-on my environment.
+Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
+---
+ .../testing/selftests/bpf/prog_tests/percpu_alloc.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-fedora@linux:~$ clang --version | head -1
-clang version 19.1.6 (Fedora 19.1.6-3.fc42)
-fedora@linux:~$ gcc --version | head -1
-gcc (GCC) 14.2.1 20241104 (Red Hat 14.2.1-6)
-fedora@linux:~$ as --version | head -1
-GNU assembler version 2.43.50.20241126
-fedora@linux:~$ pahole --version
-v1.31
-fedora@linux:~$ uname -r
-6.19.0-rc6
-fedora@linux:~$ uname -m
-loongarch64
-
-Thanks,
-Tiezhu
+diff --git a/tools/testing/selftests/bpf/prog_tests/percpu_alloc.c b/tools/testing/selftests/bpf/prog_tests/percpu_alloc.c
+index c1d0949f093f..a72ae0b29f6e 100644
+--- a/tools/testing/selftests/bpf/prog_tests/percpu_alloc.c
++++ b/tools/testing/selftests/bpf/prog_tests/percpu_alloc.c
+@@ -236,6 +236,8 @@ static void test_percpu_map_op_cpu_flag(struct bpf_map *map, void *keys, size_t
+ 		err = bpf_map_update_batch(map_fd, keys, values, &count, &batch_opts);
+ 		if (!ASSERT_OK(err, "bpf_map_update_batch all_cpus"))
+ 			goto out;
++		if (!ASSERT_EQ(count, entries, "bpf_map_update_batch count"))
++			goto out;
+ 
+ 		/* update values on specified CPU */
+ 		for (i = 0; i < entries; i++)
+@@ -246,6 +248,8 @@ static void test_percpu_map_op_cpu_flag(struct bpf_map *map, void *keys, size_t
+ 		err = bpf_map_update_batch(map_fd, keys, values, &count, &batch_opts);
+ 		if (!ASSERT_OK(err, "bpf_map_update_batch specified cpu"))
+ 			goto out;
++		if (!ASSERT_EQ(count, entries, "bpf_map_update_batch count"))
++			goto out;
+ 
+ 		/* lookup values on specified CPU */
+ 		batch = 0;
+@@ -254,6 +258,8 @@ static void test_percpu_map_op_cpu_flag(struct bpf_map *map, void *keys, size_t
+ 		err = bpf_map_lookup_batch(map_fd, NULL, &batch, keys, values, &count, &batch_opts);
+ 		if (!ASSERT_TRUE(!err || err == -ENOENT, "bpf_map_lookup_batch specified cpu"))
+ 			goto out;
++		if (!ASSERT_EQ(count, entries, "bpf_map_lookup_batch count"))
++			goto out;
+ 
+ 		for (i = 0; i < entries; i++)
+ 			if (!ASSERT_EQ(values[i], value,
+@@ -269,6 +275,8 @@ static void test_percpu_map_op_cpu_flag(struct bpf_map *map, void *keys, size_t
+ 					   &batch_opts);
+ 		if (!ASSERT_TRUE(!err || err == -ENOENT, "bpf_map_lookup_batch all_cpus"))
+ 			goto out;
++		if (!ASSERT_EQ(count, entries, "bpf_map_lookup_batch count"))
++			goto out;
+ 
+ 		for (i = 0; i < entries; i++) {
+ 			values_row = (void *) values_percpu +
+@@ -287,7 +295,6 @@ static void test_percpu_map_op_cpu_flag(struct bpf_map *map, void *keys, size_t
+ 	free(values);
+ }
+ 
+-
+ static void test_percpu_map_cpu_flag(enum bpf_map_type map_type)
+ {
+ 	struct percpu_alloc_array *skel;
+@@ -300,7 +307,7 @@ static void test_percpu_map_cpu_flag(enum bpf_map_type map_type)
+ 	if (!ASSERT_GT(nr_cpus, 0, "libbpf_num_possible_cpus"))
+ 		return;
+ 
+-	max_entries = nr_cpus + 1;
++	max_entries = nr_cpus * 2;
+ 	keys = calloc(max_entries, key_sz);
+ 	if (!ASSERT_OK_PTR(keys, "calloc keys"))
+ 		return;
+@@ -322,7 +329,7 @@ static void test_percpu_map_cpu_flag(enum bpf_map_type map_type)
+ 	if (!ASSERT_OK(err, "test_percpu_alloc__load"))
+ 		goto out;
+ 
+-	test_percpu_map_op_cpu_flag(map, keys, key_sz, max_entries - 1, nr_cpus, true);
++	test_percpu_map_op_cpu_flag(map, keys, key_sz, nr_cpus, nr_cpus, true);
+ out:
+ 	percpu_alloc_array__destroy(skel);
+ 	free(keys);
+-- 
+2.52.0
 
 
