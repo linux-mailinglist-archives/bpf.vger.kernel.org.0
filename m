@@ -1,1323 +1,222 @@
-Return-Path: <bpf+bounces-79431-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79433-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B433D3A236
-	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 09:56:42 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83A22D3A294
+	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 10:14:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 70180300E4C5
-	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 08:56:12 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id F19A1300924E
+	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 09:13:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07108352924;
-	Mon, 19 Jan 2026 08:56:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70385354ADB;
+	Mon, 19 Jan 2026 09:13:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="quUkNXI8";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jYX9y27W";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="quUkNXI8";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jYX9y27W"
 X-Original-To: bpf@vger.kernel.org
-Received: from zg8tmja5ljk3lje4mi4ymjia.icoremail.net (zg8tmja5ljk3lje4mi4ymjia.icoremail.net [209.97.182.222])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4C86350A1B
-	for <bpf@vger.kernel.org>; Mon, 19 Jan 2026 08:56:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.97.182.222
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 564C8352F98
+	for <bpf@vger.kernel.org>; Mon, 19 Jan 2026 09:13:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768812964; cv=none; b=aytKDo4cEnCNB2vyi1OsBQ8BfN1HINtMK2y5EdbqbcRWp1YMAJp7HejcBKxeQdS7Ruig1Ll+AWiqcD0whks5HltKZApquCqtHRHOfbqYXZrwa228gxnl6ddVMjxpo3vlqWk3RnVgy4lS60b6oO8Ud7GuiTZSSb+kT87CyAi38T0=
+	t=1768814035; cv=none; b=fyAI6wxp96a9PSCWFRGZya3VIC8fgBsD0jJEQ2Xev3ea8aBx5hlA8QFkCNLn1YB7lW8IP1Fm0YqNHDkT+YSYmUEeBOk6F8+/KMJSRpJvcB3pT1pabk3Fal8uMyhUXuzQNIN1RQyZeR186US8cJz13ngCQzLekYDwQJKYfsp5Bkg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768812964; c=relaxed/simple;
-	bh=8Y5gw8lvBHJMsKlqclhNkcPtMmtIM6TbbdOifNgfsxQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TrHJuoGBsT0//rPJd67fhrmXuVEROSx8oKbJEnWcpccAWVofRQ4yPuWpUTF8tCr8vZRmLaURj2qg/HlRymSqEnuB+Xy9rWhSOcPtd5XLnSp1b4R18hPNl4GhJ+gDlS01A6ONYAX+L5eZStYBJl/6E9ttKfG969l5TpGMqyiYo5g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=209.97.182.222
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from zju.edu.cn (unknown [10.162.146.110])
-	by mtasvr (Coremail) with SMTP id _____wDHGFyB8W1p5_wUAA--.2263S3;
-	Mon, 19 Jan 2026 16:55:29 +0800 (CST)
-Received: from lutetium.tail477849.ts.net (unknown [10.162.146.110])
-	by mail-app4 (Coremail) with SMTP id zi_KCgCHaH998W1pMWzDBA--.58179S2;
-	Mon, 19 Jan 2026 16:55:25 +0800 (CST)
-From: Yazhou Tang <tangyazhou@zju.edu.cn>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	tangyazhou518@outlook.com,
-	shenghaoyuan0928@163.com,
-	ziye@zju.edu.cn
-Subject: [PATCH bpf-next v5 2/2] selftests/bpf: Add tests for BPF_DIV and BPF_MOD range tracking
-Date: Mon, 19 Jan 2026 16:54:58 +0800
-Message-ID: <20260119085458.182221-3-tangyazhou@zju.edu.cn>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20260119085458.182221-1-tangyazhou@zju.edu.cn>
-References: <20260119085458.182221-1-tangyazhou@zju.edu.cn>
+	s=arc-20240116; t=1768814035; c=relaxed/simple;
+	bh=lkumwIOgBxjuj0xIKdM1IdZOe6eRG4qJybdfBdHhCUk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Hga9CuGNqXBIy60TZcNOxEShuE6p3J1NRVVjk+YjdIOXvlLWG8ABS7LK2qAz3TwdApsnnsfulAawgKQw+5uldrB7NBV0gQ2pEzDCWtw0HmRQ7/7Ncd+e6/TgfXqqwZCL9uRtO0noSdY2qXD8vn2s04CGQt32FOXKb6bGcgcjieU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=quUkNXI8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jYX9y27W; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=quUkNXI8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jYX9y27W; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 8B814336FE;
+	Mon, 19 Jan 2026 09:13:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1768814031; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=XhooBqjIFB2Zss7F6dtPfbhQAxjPz0yCTX0IY1G6TwY=;
+	b=quUkNXI8whjFLXWQEgtlqwb32btvqRwOBu9Kvhxud89O3mPo6629RCETHf8qy+6O3xc/zw
+	Z6i3iMI86eABtBJ5GYZmsq1t+0LD2ZieYJAIBnZMeTKfyURACAGYgLFtF5hJ8Qd8nSHPFO
+	pul/4lqAegwdIbXIPOZtNNqUjjpnMRE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1768814031;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=XhooBqjIFB2Zss7F6dtPfbhQAxjPz0yCTX0IY1G6TwY=;
+	b=jYX9y27Wks0FdQuI6wroIgn1vU/1z8p4cyNoHI6b/nvSjBKPpbe51MwiUuUqpsd921RmyX
+	piwd/dX+3zLKQcCQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1768814031; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=XhooBqjIFB2Zss7F6dtPfbhQAxjPz0yCTX0IY1G6TwY=;
+	b=quUkNXI8whjFLXWQEgtlqwb32btvqRwOBu9Kvhxud89O3mPo6629RCETHf8qy+6O3xc/zw
+	Z6i3iMI86eABtBJ5GYZmsq1t+0LD2ZieYJAIBnZMeTKfyURACAGYgLFtF5hJ8Qd8nSHPFO
+	pul/4lqAegwdIbXIPOZtNNqUjjpnMRE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1768814031;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=XhooBqjIFB2Zss7F6dtPfbhQAxjPz0yCTX0IY1G6TwY=;
+	b=jYX9y27Wks0FdQuI6wroIgn1vU/1z8p4cyNoHI6b/nvSjBKPpbe51MwiUuUqpsd921RmyX
+	piwd/dX+3zLKQcCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5D7AD3EA65;
+	Mon, 19 Jan 2026 09:13:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id OFZ/Fs/1bWnsQwAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Mon, 19 Jan 2026 09:13:51 +0000
+Message-ID: <41048e09-5dd9-42a6-b5d8-dadee3ecfd9c@suse.cz>
+Date: Mon, 19 Jan 2026 10:13:51 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 06/21] slab: introduce percpu sheaves bootstrap
+Content-Language: en-US
+To: Harry Yoo <harry.yoo@oracle.com>, Suren Baghdasaryan <surenb@google.com>
+Cc: Petr Tesarik <ptesarik@suse.com>, Christoph Lameter <cl@gentwo.org>,
+ David Rientjes <rientjes@google.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>, Hao Li <hao.li@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Uladzislau Rezki <urezki@gmail.com>,
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Alexei Starovoitov <ast@kernel.org>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, linux-rt-devel@lists.linux.dev,
+ bpf@vger.kernel.org, kasan-dev@googlegroups.com
+References: <20260116-sheaves-for-all-v3-0-5595cb000772@suse.cz>
+ <20260116-sheaves-for-all-v3-6-5595cb000772@suse.cz>
+ <CAJuCfpERcCzBysPVh63g7d0FpUBNQeq9nCL+ycem1iR08gDmaQ@mail.gmail.com>
+ <aW2nlIlXFXGk4yx1@hyeyoo>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ m6M14QORSWTLRg==
+In-Reply-To: <aW2nlIlXFXGk4yx1@hyeyoo>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:zi_KCgCHaH998W1pMWzDBA--.58179S2
-X-CM-SenderInfo: qssvjiasrsq6lmxovvfxof0/1tbiAgsQCmltN4Ud8AABsJ
-X-CM-DELIVERINFO: =?B?LS/zuwXKKxbFmtjJiESix3B1w3vD7IpoGYuur0o+r46DyAi5OfOO+T4vrW4FyUBIyu
-	9q9LSQH5k6yERQEnmROljT+VcdUZon8HfEN+F7O9peqs7aL3VM8EMqF/57R/SdRtSKLK7G
-	4kGgHvgWoZqj/M95vC0VCZCQJCiSv4mTk/AKttlqw4s/naP1niUQXy1fD1OuTw==
-X-Coremail-Antispam: 1Uk129KBj9fXoWfZr47Jr1DJryDJFyfZr1xCrX_yoW5Zry5Zo
-	W5u39rX3yrKr1FgFWq9FWSgr17X3W3K34kJ343Kr15Ga1xJ3ykA348Can8ur1F9r17ZFZ5
-	Zay5Gr1Svw45Janrl-sFpf9Il3svdjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8wcxFpf
-	9Il3svdxBIdaVrn0xqx4xG64xvF2IEw4CE5I8CrVC2j2Jv73VFW2AGmfu7bjvjm3AaLaJ3
-	UjIYCTnIWjp_UUUYp7kC6x804xWl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI
-	8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xG
-	Y2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14
-	v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAF
-	wI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
-	Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE
-	14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjcxG0xvY0x
-	0EwIxGrVCF72vEw4AK0wACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY0x0EwIxGrwCF
-	x2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14
-	v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY
-	67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2
-	IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_
-	Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07URlksUUUUU=
+X-Spam-Score: -4.30
+X-Spamd-Result: default: False [-4.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[suse.com,gentwo.org,google.com,linux.dev,linux-foundation.org,gmail.com,oracle.com,linutronix.de,kernel.org,kvack.org,vger.kernel.org,lists.linux.dev,googlegroups.com];
+	RCPT_COUNT_TWELVE(0.00)[17];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_DN_SOME(0.00)[]
+X-Spam-Level: 
+X-Spam-Flag: NO
 
-From: Yazhou Tang <tangyazhou518@outlook.com>
+On 1/19/26 04:40, Harry Yoo wrote:
+> On Sat, Jan 17, 2026 at 02:11:02AM +0000, Suren Baghdasaryan wrote:
+>> On Fri, Jan 16, 2026 at 2:40 PM Vlastimil Babka <vbabka@suse.cz> wrote:
+>> >
+>> > Until now, kmem_cache->cpu_sheaves was !NULL only for caches with
+>> > sheaves enabled. Since we want to enable them for almost all caches,
+>> > it's suboptimal to test the pointer in the fast paths, so instead
+>> > allocate it for all caches in do_kmem_cache_create(). Instead of testing
+>> > the cpu_sheaves pointer to recognize caches (yet) without sheaves, test
+>> > kmem_cache->sheaf_capacity for being 0, where needed, using a new
+>> > cache_has_sheaves() helper.
+>> >
+>> > However, for the fast paths sake we also assume that the main sheaf
+>> > always exists (pcs->main is !NULL), and during bootstrap we cannot
+>> > allocate sheaves yet.
+>> >
+>> > Solve this by introducing a single static bootstrap_sheaf that's
+>> > assigned as pcs->main during bootstrap. It has a size of 0, so during
+>> > allocations, the fast path will find it's empty. Since the size of 0
+>> > matches sheaf_capacity of 0, the freeing fast paths will find it's
+>> > "full". In the slow path handlers, we use cache_has_sheaves() to
+>> > recognize that the cache doesn't (yet) have real sheaves, and fall back.
+>> 
+>> I don't think kmem_cache_prefill_sheaf() handles this case, does it?
+>> Or do you rely on the caller to never try prefilling a bootstrapped
+>> sheaf?
+> 
+> If a cache doesn't have sheaves, s->sheaf_capacity should be 0,
+> so the sheaf returned by kmem_cache_prefill_sheaf() should be
+> "oversized" one... unless the user tries to prefill a sheaf with
+> size == 0?
 
-Now BPF_DIV has range tracking support via interval analysis. This patch
-adds selftests to cover various cases of BPF_DIV and BPF_MOD operations
-when the divisor is a constant, also covering both signed and unsigned variants.
+I'll add a
 
-This patch includes several types of tests in 32-bit and 64-bit variants:
+        if (unlikely(!size))
+                return NULL;
 
-1. For UDIV
-   - positive divisor
-   - zero divisor
-
-2. For SDIV
-   - positive divisor, positive dividend
-   - positive divisor, negative dividend
-   - positive divisor, mixed sign dividend
-   - negative divisor, positive dividend
-   - negative divisor, negative dividend
-   - negative divisor, mixed sign dividend
-   - zero divisor
-   - overflow (SIGNED_MIN/-1), normal dividend
-   - overflow (SIGNED_MIN/-1), constant dividend
-
-3. For UMOD
-   - positive divisor
-   - positive divisor, small dividend
-   - zero divisor
-
-4. For SMOD
-   - positive divisor, positive dividend
-   - positive divisor, negative dividend
-   - positive divisor, mixed sign dividend
-   - positive divisor, mixed sign dividend, small dividend
-   - negative divisor, positive dividend
-   - negative divisor, negative dividend
-   - negative divisor, mixed sign dividend
-   - negative divisor, mixed sign dividend, small dividend
-   - zero divisor
-   - overflow (SIGNED_MIN/-1), normal dividend
-   - overflow (SIGNED_MIN/-1), constant dividend
-
-Specifically, these selftests are based on dead code elimination:
-If the BPF verifier can precisely analyze the result of BPF_DIV/BPF_MOD
-instruction, it can prune the path that leads to an error (here we use
-invalid memory access as the error case), allowing the program to pass
-verification.
-
-Co-developed-by: Shenghao Yuan <shenghaoyuan0928@163.com>
-Signed-off-by: Shenghao Yuan <shenghaoyuan0928@163.com>
-Co-developed-by: Tianci Cao <ziye@zju.edu.cn>
-Signed-off-by: Tianci Cao <ziye@zju.edu.cn>
-Signed-off-by: Yazhou Tang <tangyazhou518@outlook.com>
----
- .../selftests/bpf/prog_tests/verifier.c       |    2 +
- .../bpf/progs/verifier_div_mod_bounds.c       | 1149 +++++++++++++++++
- 2 files changed, 1151 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_div_mod_bounds.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
-index 38c5ba70100c..fa9e506cc36f 100644
---- a/tools/testing/selftests/bpf/prog_tests/verifier.c
-+++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-@@ -33,6 +33,7 @@
- #include "verifier_direct_packet_access.skel.h"
- #include "verifier_direct_stack_access_wraparound.skel.h"
- #include "verifier_div0.skel.h"
-+#include "verifier_div_mod_bounds.skel.h"
- #include "verifier_div_overflow.skel.h"
- #include "verifier_global_subprogs.skel.h"
- #include "verifier_global_ptr_args.skel.h"
-@@ -175,6 +176,7 @@ void test_verifier_d_path(void)               { RUN(verifier_d_path); }
- void test_verifier_direct_packet_access(void) { RUN(verifier_direct_packet_access); }
- void test_verifier_direct_stack_access_wraparound(void) { RUN(verifier_direct_stack_access_wraparound); }
- void test_verifier_div0(void)                 { RUN(verifier_div0); }
-+void test_verifier_div_mod_bounds(void)       { RUN(verifier_div_mod_bounds); }
- void test_verifier_div_overflow(void)         { RUN(verifier_div_overflow); }
- void test_verifier_global_subprogs(void)      { RUN(verifier_global_subprogs); }
- void test_verifier_global_ptr_args(void)      { RUN(verifier_global_ptr_args); }
-diff --git a/tools/testing/selftests/bpf/progs/verifier_div_mod_bounds.c b/tools/testing/selftests/bpf/progs/verifier_div_mod_bounds.c
-new file mode 100644
-index 000000000000..4672af0b3268
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/verifier_div_mod_bounds.c
-@@ -0,0 +1,1149 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <limits.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+
-+/* This file contains unit tests for signed/unsigned division and modulo
-+ * operations (with divisor as a constant), focusing on verifying whether
-+ * BPF verifier's range tracking module soundly and precisely computes
-+ * the results.
-+ */
-+
-+SEC("socket")
-+__description("UDIV32, positive divisor")
-+__success __retval(0) __log_level(2)
-+__msg("w1 /= 3 {{.*}}; R1=scalar(smin=smin32=0,smax=umax=smax32=umax32=3,var_off=(0x0; 0x3))")
-+__naked void udiv32_pos_divisor(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	w1 = w0;					\
-+	w1 &= 8;					\
-+	w1 |= 1;					\
-+	w1 /= 3;					\
-+	if w1 > 3 goto l0_%=;				\
-+	r0 = 0;						\
-+	exit;						\
-+l0_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("UDIV32, zero divisor")
-+__success __retval(0) __log_level(2)
-+__msg("w1 /= w2 {{.*}}; R1=0 R2=0")
-+__naked void udiv32_zero_divisor(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	w1 = w0;					\
-+	w1 &= 8;					\
-+	w1 |= 1;					\
-+	w2 = 0;						\
-+	w1 /= w2;					\
-+	if w1 != 0 goto l0_%=;				\
-+	r0 = 0;						\
-+	exit;						\
-+l0_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("UDIV64, positive divisor")
-+__success __retval(0) __log_level(2)
-+__msg("r1 /= 3 {{.*}}; R1=scalar(smin=smin32=0,smax=umax=smax32=umax32=3,var_off=(0x0; 0x3))")
-+__naked void udiv64_pos_divisor(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r1 = r0;					\
-+	r1 &= 8;					\
-+	r1 |= 1;					\
-+	r1 /= 3;					\
-+	if r1 > 3 goto l0_%=;				\
-+	r0 = 0;						\
-+	exit;						\
-+l0_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("UDIV64, zero divisor")
-+__success __retval(0) __log_level(2)
-+__msg("r1 /= r2 {{.*}}; R1=0 R2=0")
-+__naked void udiv64_zero_divisor(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r1 = r0;					\
-+	r1 &= 8;					\
-+	r1 |= 1;					\
-+	r2 = 0;						\
-+	r1 /= r2;					\
-+	if r1 != 0 goto l0_%=;				\
-+	r0 = 0;						\
-+	exit;						\
-+l0_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV32, positive divisor, positive dividend")
-+__success __retval(0) __log_level(2)
-+__msg("w1 s/= 3 {{.*}}; R1=scalar(smin=umin=smin32=umin32=2,smax=umax=smax32=umax32=3,var_off=(0x2; 0x1))")
-+__naked void sdiv32_pos_divisor_1(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	w1 = w0;					\
-+	if w1 s< 8 goto l0_%=;				\
-+	if w1 s> 10 goto l0_%=;				\
-+	w1 s/= 3;					\
-+	if w1 s< 2 goto l1_%=;				\
-+	if w1 s> 3 goto l1_%=;				\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+l1_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV32, positive divisor, negative dividend")
-+__success __retval(0) __log_level(2)
-+__msg("w1 s/= 3 {{.*}}; R1=scalar(smin=umin=umin32=0xfffffffd,smax=umax=umax32=0xfffffffe,smin32=-3,smax32=-2,var_off=(0xfffffffc; 0x3))")
-+__naked void sdiv32_pos_divisor_2(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	w1 = w0;					\
-+	if w1 s> -8 goto l0_%=;				\
-+	if w1 s< -10 goto l0_%=;			\
-+	w1 s/= 3;					\
-+	if w1 s< -3 goto l1_%=;				\
-+	if w1 s> -2 goto l1_%=;				\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+l1_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV32, positive divisor, mixed sign dividend")
-+__success __retval(0) __log_level(2)
-+__msg("w1 s/= 3 {{.*}}; R1=scalar(smin=0,smax=umax=0xffffffff,smin32=-2,smax32=3,var_off=(0x0; 0xffffffff))")
-+__naked void sdiv32_pos_divisor_3(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	w1 = w0;					\
-+	if w1 s< -8 goto l0_%=;				\
-+	if w1 s> 10 goto l0_%=;				\
-+	w1 s/= 3;					\
-+	if w1 s< -2 goto l1_%=;				\
-+	if w1 s> 3 goto l1_%=;				\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+l1_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV32, negative divisor, positive dividend")
-+__success __retval(0) __log_level(2)
-+__msg("w1 s/= -3 {{.*}}; R1=scalar(smin=umin=umin32=0xfffffffd,smax=umax=umax32=0xfffffffe,smin32=-3,smax32=-2,var_off=(0xfffffffc; 0x3))")
-+__naked void sdiv32_neg_divisor_1(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	w1 = w0;					\
-+	if w1 s< 8 goto l0_%=;				\
-+	if w1 s> 10 goto l0_%=;				\
-+	w1 s/= -3;					\
-+	if w1 s< -3 goto l1_%=;				\
-+	if w1 s> -2 goto l1_%=;				\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+l1_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV32, negative divisor, positive dividend")
-+__success __retval(0) __log_level(2)
-+__msg("w1 s/= -3 {{.*}}; R1=scalar(smin=umin=smin32=umin32=2,smax=umax=smax32=umax32=3,var_off=(0x2; 0x1))")
-+__naked void sdiv32_neg_divisor_2(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	w1 = w0;					\
-+	if w1 s> -8 goto l0_%=;				\
-+	if w1 s< -10 goto l0_%=;			\
-+	w1 s/= -3;					\
-+	if w1 s< 2 goto l1_%=;				\
-+	if w1 s> 3 goto l1_%=;				\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+l1_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV32, negative divisor, mixed sign dividend")
-+__success __retval(0) __log_level(2)
-+__msg("w1 s/= -3 {{.*}}; R1=scalar(smin=0,smax=umax=0xffffffff,smin32=-3,smax32=2,var_off=(0x0; 0xffffffff))")
-+__naked void sdiv32_neg_divisor_3(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	w1 = w0;					\
-+	if w1 s< -8 goto l0_%=;				\
-+	if w1 s> 10 goto l0_%=;				\
-+	w1 s/= -3;					\
-+	if w1 s< -3 goto l1_%=;				\
-+	if w1 s> 2 goto l1_%=;				\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+l1_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV32, zero divisor")
-+__success __retval(0) __log_level(2)
-+__msg("w1 s/= w2 {{.*}}; R1=0 R2=0")
-+__naked void sdiv32_zero_divisor(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	w1 = w0;					\
-+	w1 &= 8;					\
-+	w1 |= 1;					\
-+	w2 = 0;						\
-+	w1 s/= w2;					\
-+	if w1 != 0 goto l0_%=;				\
-+	r0 = 0;						\
-+	exit;						\
-+l0_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV32, overflow (S32_MIN/-1)")
-+__success __retval(0) __log_level(2)
-+__msg("w1 s/= -1 {{.*}}; R1=scalar(smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff))")
-+__naked void sdiv32_overflow_1(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	w1 = w0;					\
-+	w2 = %[int_min];				\
-+	w2 += 10;					\
-+	if w1 s> w2 goto l0_%=;				\
-+	w1 s/= -1;					\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm_const(int_min, INT_MIN),
-+	  __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV32, overflow (S32_MIN/-1), constant dividend")
-+__success __retval(0) __log_level(2)
-+__msg("w1 s/= -1 {{.*}}; R1=0x80000000")
-+__naked void sdiv32_overflow_2(void)
-+{
-+	asm volatile ("					\
-+	w1 = %[int_min];				\
-+	w1 s/= -1;					\
-+	if w1 != %[int_min] goto l0_%=;			\
-+	r0 = 0;						\
-+	exit;						\
-+l0_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm_const(int_min, INT_MIN)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV64, positive divisor, positive dividend")
-+__success __retval(0) __log_level(2)
-+__msg("r1 s/= 3 {{.*}}; R1=scalar(smin=umin=smin32=umin32=2,smax=umax=smax32=umax32=3,var_off=(0x2; 0x1))")
-+__naked void sdiv64_pos_divisor_1(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r1 = r0;					\
-+	if r1 s< 8 goto l0_%=;				\
-+	if r1 s> 10 goto l0_%=;				\
-+	r1 s/= 3;					\
-+	if r1 s< 2 goto l1_%=;				\
-+	if r1 s> 3 goto l1_%=;				\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+l1_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV64, positive divisor, negative dividend")
-+__success __retval(0) __log_level(2)
-+__msg("r1 s/= 3 {{.*}}; R1=scalar(smin=smin32=-3,smax=smax32=-2,umin=0xfffffffffffffffd,umax=0xfffffffffffffffe,umin32=0xfffffffd,umax32=0xfffffffe,var_off=(0xfffffffffffffffc; 0x3))")
-+__naked void sdiv64_pos_divisor_2(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r1 = r0;					\
-+	if r1 s> -8 goto l0_%=;				\
-+	if r1 s< -10 goto l0_%=;			\
-+	r1 s/= 3;					\
-+	if r1 s< -3 goto l1_%=;				\
-+	if r1 s> -2 goto l1_%=;				\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+l1_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV64, positive divisor, mixed sign dividend")
-+__success __retval(0) __log_level(2)
-+__msg("r1 s/= 3 {{.*}}; R1=scalar(smin=smin32=-2,smax=smax32=3)")
-+__naked void sdiv64_pos_divisor_3(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r1 = r0;					\
-+	if r1 s< -8 goto l0_%=;				\
-+	if r1 s> 10 goto l0_%=;				\
-+	r1 s/= 3;					\
-+	if r1 s< -2 goto l1_%=;				\
-+	if r1 s> 3 goto l1_%=;				\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+l1_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV64, negative divisor, positive dividend")
-+__success __retval(0) __log_level(2)
-+__msg("r1 s/= -3 {{.*}}; R1=scalar(smin=smin32=-3,smax=smax32=-2,umin=0xfffffffffffffffd,umax=0xfffffffffffffffe,umin32=0xfffffffd,umax32=0xfffffffe,var_off=(0xfffffffffffffffc; 0x3))")
-+__naked void sdiv64_neg_divisor_1(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r1 = r0;					\
-+	if r1 s< 8 goto l0_%=;				\
-+	if r1 s> 10 goto l0_%=;				\
-+	r1 s/= -3;					\
-+	if r1 s< -3 goto l1_%=;				\
-+	if r1 s> -2 goto l1_%=;				\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+l1_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV64, negative divisor, positive dividend")
-+__success __retval(0) __log_level(2)
-+__msg("r1 s/= -3 {{.*}}; R1=scalar(smin=umin=smin32=umin32=2,smax=umax=smax32=umax32=3,var_off=(0x2; 0x1))")
-+__naked void sdiv64_neg_divisor_2(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r1 = r0;					\
-+	if r1 s> -8 goto l0_%=;				\
-+	if r1 s< -10 goto l0_%=;			\
-+	r1 s/= -3;					\
-+	if r1 s< 2 goto l1_%=;				\
-+	if r1 s> 3 goto l1_%=;				\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+l1_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV64, negative divisor, mixed sign dividend")
-+__success __retval(0) __log_level(2)
-+__msg("r1 s/= -3 {{.*}}; R1=scalar(smin=smin32=-3,smax=smax32=2)")
-+__naked void sdiv64_neg_divisor_3(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r1 = r0;					\
-+	if r1 s< -8 goto l0_%=;				\
-+	if r1 s> 10 goto l0_%=;				\
-+	r1 s/= -3;					\
-+	if r1 s< -3 goto l1_%=;				\
-+	if r1 s> 2 goto l1_%=;				\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+l1_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV64, zero divisor")
-+__success __retval(0) __log_level(2)
-+__msg("r1 s/= r2 {{.*}}; R1=0 R2=0")
-+__naked void sdiv64_zero_divisor(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r1 = r0;					\
-+	r1 &= 8;					\
-+	r1 |= 1;					\
-+	r2 = 0;						\
-+	r1 s/= r2;					\
-+	if r1 != 0 goto l0_%=;				\
-+	r0 = 0;						\
-+	exit;						\
-+l0_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV64, overflow (S64_MIN/-1)")
-+__success __retval(0) __log_level(2)
-+__msg("r1 s/= -1 {{.*}}; R1=scalar()")
-+__naked void sdiv64_overflow_1(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_ktime_get_ns];			\
-+	r1 = r0;					\
-+	r2 = %[llong_min] ll;				\
-+	r2 += 10;					\
-+	if r1 s> r2 goto l0_%=;				\
-+	r1 s/= -1;					\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm_const(llong_min, LLONG_MIN),
-+	  __imm(bpf_ktime_get_ns)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SDIV64, overflow (S64_MIN/-1), constant dividend")
-+__success __retval(0) __log_level(2)
-+__msg("r1 s/= -1 {{.*}}; R1=0x8000000000000000")
-+__naked void sdiv64_overflow_2(void)
-+{
-+	asm volatile ("					\
-+	r1 = %[llong_min] ll;				\
-+	r1 s/= -1;					\
-+	r2 = %[llong_min] ll;				\
-+	if r1 != r2 goto l0_%=;				\
-+	r0 = 0;						\
-+	exit;						\
-+l0_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm_const(llong_min, LLONG_MIN)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("UMOD32, positive divisor")
-+__success __retval(0) __log_level(2)
-+__msg("w1 %= 3 {{.*}}; R1=scalar(smin=smin32=0,smax=umax=smax32=umax32=2,var_off=(0x0; 0x3))")
-+__naked void umod32_pos_divisor(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	w1 = w0;					\
-+	w1 &= 8;					\
-+	w1 |= 1;					\
-+	w1 %%= 3;					\
-+	if w1 > 3 goto l0_%=;				\
-+	r0 = 0;						\
-+	exit;						\
-+l0_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("UMOD32, positive divisor, small dividend")
-+__success __retval(0) __log_level(2)
-+__msg("w1 %= 10 {{.*}}; R1=scalar(smin=umin=smin32=umin32=1,smax=umax=smax32=umax32=9,var_off=(0x1; 0x8))")
-+__naked void umod32_pos_divisor_unchanged(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	w1 = w0;					\
-+	w1 &= 8;					\
-+	w1 |= 1;					\
-+	w1 %%= 10;					\
-+	if w1 < 1 goto l0_%=;				\
-+	if w1 > 9 goto l0_%=;				\
-+	if w1 & 1 != 1 goto l0_%=;			\
-+	r0 = 0;						\
-+	exit;						\
-+l0_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("UMOD32, zero divisor")
-+__success __retval(0) __log_level(2)
-+__msg("w1 %= w2 {{.*}}; R1=scalar(smin=umin=smin32=umin32=1,smax=umax=smax32=umax32=9,var_off=(0x1; 0x8)) R2=0")
-+__naked void umod32_zero_divisor(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	w1 = w0;					\
-+	w1 &= 8;					\
-+	w1 |= 1;					\
-+	w2 = 0;						\
-+	w1 %%= w2;					\
-+	if w1 < 1 goto l0_%=;				\
-+	if w1 > 9 goto l0_%=;				\
-+	if w1 & 1 != 1 goto l0_%=;			\
-+	r0 = 0;						\
-+	exit;						\
-+l0_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("UMOD64, positive divisor")
-+__success __retval(0) __log_level(2)
-+__msg("r1 %= 3 {{.*}}; R1=scalar(smin=smin32=0,smax=umax=smax32=umax32=2,var_off=(0x0; 0x3))")
-+__naked void umod64_pos_divisor(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r1 = r0;					\
-+	r1 &= 8;					\
-+	r1 |= 1;					\
-+	r1 %%= 3;					\
-+	if r1 > 3 goto l0_%=;				\
-+	r0 = 0;						\
-+	exit;						\
-+l0_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("UMOD64, positive divisor, small dividend")
-+__success __retval(0) __log_level(2)
-+__msg("r1 %= 10 {{.*}}; R1=scalar(smin=umin=smin32=umin32=1,smax=umax=smax32=umax32=9,var_off=(0x1; 0x8))")
-+__naked void umod64_pos_divisor_unchanged(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r1 = r0;					\
-+	r1 &= 8;					\
-+	r1 |= 1;					\
-+	r1 %%= 10;					\
-+	if r1 < 1 goto l0_%=;				\
-+	if r1 > 9 goto l0_%=;				\
-+	if r1 & 1 != 1 goto l0_%=;			\
-+	r0 = 0;						\
-+	exit;						\
-+l0_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("UMOD64, zero divisor")
-+__success __retval(0) __log_level(2)
-+__msg("r1 %= r2 {{.*}}; R1=scalar(smin=umin=smin32=umin32=1,smax=umax=smax32=umax32=9,var_off=(0x1; 0x8)) R2=0")
-+__naked void umod64_zero_divisor(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r1 = r0;					\
-+	r1 &= 8;					\
-+	r1 |= 1;					\
-+	r2 = 0;						\
-+	r1 %%= r2;					\
-+	if r1 < 1 goto l0_%=;				\
-+	if r1 > 9 goto l0_%=;				\
-+	if r1 & 1 != 1 goto l0_%=;			\
-+	r0 = 0;						\
-+	exit;						\
-+l0_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SMOD32, positive divisor, positive dividend")
-+__success __retval(0) __log_level(2)
-+__msg("w1 s%= 3 {{.*}}; R1=scalar(smin=smin32=0,smax=umax=smax32=umax32=2,var_off=(0x0; 0x3))")
-+__naked void smod32_pos_divisor_1(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	w1 = w0;					\
-+	if w1 s< 8 goto l0_%=;				\
-+	if w1 s> 10 goto l0_%=;				\
-+	w1 s%%= 3;					\
-+	if w1 s< 0 goto l1_%=;				\
-+	if w1 s> 2 goto l1_%=;				\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+l1_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SMOD32, positive divisor, negative dividend")
-+__success __retval(0) __log_level(2)
-+__msg("w1 s%= 3 {{.*}}; R1=scalar(smin=0,smax=umax=0xffffffff,smin32=-2,smax32=0,var_off=(0x0; 0xffffffff))")
-+__naked void smod32_pos_divisor_2(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	w1 = w0;					\
-+	if w1 s> -8 goto l0_%=;				\
-+	if w1 s< -10 goto l0_%=;			\
-+	w1 s%%= 3;					\
-+	if w1 s< -2 goto l1_%=;				\
-+	if w1 s> 0 goto l1_%=;				\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+l1_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SMOD32, positive divisor, mixed sign dividend")
-+__success __retval(0) __log_level(2)
-+__msg("w1 s%= 3 {{.*}}; R1=scalar(smin=0,smax=umax=0xffffffff,smin32=-2,smax32=2,var_off=(0x0; 0xffffffff))")
-+__naked void smod32_pos_divisor_3(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	w1 = w0;					\
-+	if w1 s< -8 goto l0_%=;				\
-+	if w1 s> 10 goto l0_%=;				\
-+	w1 s%%= 3;					\
-+	if w1 s< -2 goto l1_%=;				\
-+	if w1 s> 2 goto l1_%=;				\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+l1_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SMOD32, positive divisor, small dividend")
-+__success __retval(0) __log_level(2)
-+__msg("w1 s%= 11 {{.*}}; R1=scalar(smin=0,smax=umax=0xffffffff,smin32=-8,smax32=10,var_off=(0x0; 0xffffffff))")
-+__naked void smod32_pos_divisor_unchanged(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	w1 = w0;					\
-+	if w1 s< -8 goto l0_%=;				\
-+	if w1 s> 10 goto l0_%=;				\
-+	w1 s%%= 11;					\
-+	if w1 s< -8 goto l1_%=;				\
-+	if w1 s> 10 goto l1_%=;				\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+l1_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SMOD32, negative divisor, positive dividend")
-+__success __retval(0) __log_level(2)
-+__msg("w1 s%= -3 {{.*}}; R1=scalar(smin=smin32=0,smax=umax=smax32=umax32=2,var_off=(0x0; 0x3))")
-+__naked void smod32_neg_divisor_1(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	w1 = w0;					\
-+	if w1 s< 8 goto l0_%=;				\
-+	if w1 s> 10 goto l0_%=;				\
-+	w1 s%%= -3;					\
-+	if w1 s< 0 goto l1_%=;				\
-+	if w1 s> 2 goto l1_%=;				\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+l1_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SMOD32, negative divisor, negative dividend")
-+__success __retval(0) __log_level(2)
-+__msg("w1 s%= -3 {{.*}}; R1=scalar(smin=0,smax=umax=0xffffffff,smin32=-2,smax32=0,var_off=(0x0; 0xffffffff))")
-+__naked void smod32_neg_divisor_2(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	w1 = w0;					\
-+	if w1 s> -8 goto l0_%=;				\
-+	if w1 s< -10 goto l0_%=;			\
-+	w1 s%%= -3;					\
-+	if w1 s< -2 goto l1_%=;				\
-+	if w1 s> 0 goto l1_%=;				\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+l1_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SMOD32, negative divisor, mixed sign dividend")
-+__success __retval(0) __log_level(2)
-+__msg("w1 s%= -3 {{.*}}; R1=scalar(smin=0,smax=umax=0xffffffff,smin32=-2,smax32=2,var_off=(0x0; 0xffffffff))")
-+__naked void smod32_neg_divisor_3(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	w1 = w0;					\
-+	if w1 s< -8 goto l0_%=;				\
-+	if w1 s> 10 goto l0_%=;				\
-+	w1 s%%= -3;					\
-+	if w1 s< -2 goto l1_%=;				\
-+	if w1 s> 2 goto l1_%=;				\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+l1_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SMOD32, negative divisor, small dividend")
-+__success __retval(0) __log_level(2)
-+__msg("w1 s%= -11 {{.*}}; R1=scalar(smin=0,smax=umax=0xffffffff,smin32=-8,smax32=10,var_off=(0x0; 0xffffffff))")
-+__naked void smod32_neg_divisor_unchanged(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	w1 = w0;					\
-+	if w1 s< -8 goto l0_%=;				\
-+	if w1 s> 10 goto l0_%=;				\
-+	w1 s%%= -11;					\
-+	if w1 s< -8 goto l1_%=;				\
-+	if w1 s> 10 goto l1_%=;				\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+l1_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SMOD32, zero divisor")
-+__success __retval(0) __log_level(2)
-+__msg("w1 s%= w2 {{.*}}; R1=scalar(smin=0,smax=umax=0xffffffff,smin32=-8,smax32=10,var_off=(0x0; 0xffffffff)) R2=0")
-+__naked void smod32_zero_divisor(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	w1 = w0;					\
-+	if w1 s< -8 goto l0_%=;				\
-+	if w1 s> 10 goto l0_%=;				\
-+	w2 = 0;						\
-+	w1 s%%= w2;					\
-+	if w1 s< -8 goto l1_%=;				\
-+	if w1 s> 10 goto l1_%=;				\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+l1_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SMOD32, overflow (S32_MIN%-1)")
-+__success __retval(0) __log_level(2)
-+__msg("w1 s%= -1 {{.*}}; R1=0")
-+__naked void smod32_overflow_1(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	w1 = w0;					\
-+	w2 = %[int_min];				\
-+	w2 += 10;					\
-+	if w1 s> w2 goto l0_%=;				\
-+	w1 s%%= -1;					\
-+	if w1 != 0 goto l1_%=;				\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+l1_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm_const(int_min, INT_MIN),
-+	  __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SMOD32, overflow (S32_MIN%-1), constant dividend")
-+__success __retval(0) __log_level(2)
-+__msg("w1 s%= -1 {{.*}}; R1=0")
-+__naked void smod32_overflow_2(void)
-+{
-+	asm volatile ("					\
-+	w1 = %[int_min];				\
-+	w1 s%%= -1;					\
-+	if w1 != 0 goto l0_%=;				\
-+	r0 = 0;						\
-+	exit;						\
-+l0_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm_const(int_min, INT_MIN)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SMOD64, positive divisor, positive dividend")
-+__success __retval(0) __log_level(2)
-+__msg("r1 s%= 3 {{.*}}; R1=scalar(smin=smin32=0,smax=umax=smax32=umax32=2,var_off=(0x0; 0x3))")
-+__naked void smod64_pos_divisor_1(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r1 = r0;					\
-+	if r1 s< 8 goto l0_%=;				\
-+	if r1 s> 10 goto l0_%=;				\
-+	r1 s%%= 3;					\
-+	if r1 s< 0 goto l1_%=;				\
-+	if r1 s> 2 goto l1_%=;				\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+l1_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SMOD64, positive divisor, negative dividend")
-+__success __retval(0) __log_level(2)
-+__msg("r1 s%= 3 {{.*}}; R1=scalar(smin=smin32=-2,smax=smax32=0)")
-+__naked void smod64_pos_divisor_2(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r1 = r0;					\
-+	if r1 s> -8 goto l0_%=;				\
-+	if r1 s< -10 goto l0_%=;			\
-+	r1 s%%= 3;					\
-+	if r1 s< -2 goto l1_%=;				\
-+	if r1 s> 0 goto l1_%=;				\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+l1_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SMOD64, positive divisor, mixed sign dividend")
-+__success __retval(0) __log_level(2)
-+__msg("r1 s%= 3 {{.*}}; R1=scalar(smin=smin32=-2,smax=smax32=2)")
-+__naked void smod64_pos_divisor_3(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r1 = r0;					\
-+	if r1 s< -8 goto l0_%=;				\
-+	if r1 s> 10 goto l0_%=;				\
-+	r1 s%%= 3;					\
-+	if r1 s< -2 goto l1_%=;				\
-+	if r1 s> 2 goto l1_%=;				\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+l1_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SMOD64, positive divisor, small dividend")
-+__success __retval(0) __log_level(2)
-+__msg("r1 s%= 11 {{.*}}; R1=scalar(smin=smin32=-8,smax=smax32=10)")
-+__naked void smod64_pos_divisor_unchanged(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r1 = r0;					\
-+	if r1 s< -8 goto l0_%=;				\
-+	if r1 s> 10 goto l0_%=;				\
-+	r1 s%%= 11;					\
-+	if r1 s< -8 goto l1_%=;				\
-+	if r1 s> 10 goto l1_%=;				\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+l1_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SMOD64, negative divisor, positive dividend")
-+__success __retval(0) __log_level(2)
-+__msg("r1 s%= -3 {{.*}}; R1=scalar(smin=smin32=0,smax=umax=smax32=umax32=2,var_off=(0x0; 0x3))")
-+__naked void smod64_neg_divisor_1(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r1 = r0;					\
-+	if r1 s< 8 goto l0_%=;				\
-+	if r1 s> 10 goto l0_%=;				\
-+	r1 s%%= -3;					\
-+	if r1 s< 0 goto l1_%=;				\
-+	if r1 s> 2 goto l1_%=;				\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+l1_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SMOD64, negative divisor, negative dividend")
-+__success __retval(0) __log_level(2)
-+__msg("r1 s%= -3 {{.*}}; R1=scalar(smin=smin32=-2,smax=smax32=0)")
-+__naked void smod64_neg_divisor_2(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r1 = r0;					\
-+	if r1 s> -8 goto l0_%=;				\
-+	if r1 s< -10 goto l0_%=;			\
-+	r1 s%%= -3;					\
-+	if r1 s< -2 goto l1_%=;				\
-+	if r1 s> 0 goto l1_%=;				\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+l1_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SMOD64, negative divisor, mixed sign dividend")
-+__success __retval(0) __log_level(2)
-+__msg("r1 s%= -3 {{.*}}; R1=scalar(smin=smin32=-2,smax=smax32=2)")
-+__naked void smod64_neg_divisor_3(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r1 = r0;					\
-+	if r1 s< -8 goto l0_%=;				\
-+	if r1 s> 10 goto l0_%=;				\
-+	r1 s%%= -3;					\
-+	if r1 s< -2 goto l1_%=;				\
-+	if r1 s> 2 goto l1_%=;				\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+l1_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SMOD64, negative divisor, small dividend")
-+__success __retval(0) __log_level(2)
-+__msg("r1 s%= -11 {{.*}}; R1=scalar(smin=smin32=-8,smax=smax32=10)")
-+__naked void smod64_neg_divisor_unchanged(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r1 = r0;					\
-+	if r1 s< -8 goto l0_%=;				\
-+	if r1 s> 10 goto l0_%=;				\
-+	r1 s%%= -11;					\
-+	if r1 s< -8 goto l1_%=;				\
-+	if r1 s> 10 goto l1_%=;				\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+l1_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SMOD64, zero divisor")
-+__success __retval(0) __log_level(2)
-+__msg("r1 s%= r2 {{.*}}; R1=scalar(smin=smin32=-8,smax=smax32=10) R2=0")
-+__naked void smod64_zero_divisor(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_get_prandom_u32];			\
-+	r1 = r0;					\
-+	if r1 s< -8 goto l0_%=;				\
-+	if r1 s> 10 goto l0_%=;				\
-+	r2 = 0;						\
-+	r1 s%%= r2;					\
-+	if r1 s< -8 goto l1_%=;				\
-+	if r1 s> 10 goto l1_%=;				\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+l1_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SMOD64, overflow (S64_MIN%-1)")
-+__success __retval(0) __log_level(2)
-+__msg("r1 s%= -1 {{.*}}; R1=0")
-+__naked void smod64_overflow_1(void)
-+{
-+	asm volatile ("					\
-+	call %[bpf_ktime_get_ns];			\
-+	r1 = r0;					\
-+	r2 = %[llong_min] ll;				\
-+	r2 += 10;					\
-+	if r1 s> r2 goto l0_%=;				\
-+	r1 s%%= -1;					\
-+	if r1 != 0 goto l1_%=;				\
-+l0_%=:	r0 = 0;						\
-+	exit;						\
-+l1_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm_const(llong_min, LLONG_MIN),
-+	  __imm(bpf_ktime_get_ns)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("SMOD64, overflow (S64_MIN%-1), constant dividend")
-+__success __retval(0) __log_level(2)
-+__msg("r1 s%= -1 {{.*}}; R1=0")
-+__naked void smod64_overflow_2(void)
-+{
-+	asm volatile ("					\
-+	r1 = %[llong_min] ll;				\
-+	r1 s%%= -1;					\
-+	if r1 != 0 goto l0_%=;				\
-+	r0 = 0;						\
-+	exit;						\
-+l0_%=:	r0 = *(u64 *)(r1 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm_const(llong_min, LLONG_MIN)
-+	: __clobber_all);
-+}
--- 
-2.52.0
+to kmem_cache_prefill_sheaf() so we don't have to deal with oversized
+sheaves of size 0 just for this theoretical case...
 
 
