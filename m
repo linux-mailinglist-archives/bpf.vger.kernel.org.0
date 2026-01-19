@@ -1,60 +1,60 @@
-Return-Path: <bpf+bounces-79414-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79415-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 226FBD39CD6
-	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 04:27:49 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 288E9D39CDA
+	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 04:28:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 9545C3001828
-	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 03:27:48 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 55292300A9D3
+	for <lists+bpf@lfdr.de>; Mon, 19 Jan 2026 03:27:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D97126E6F9;
-	Mon, 19 Jan 2026 03:27:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA615274B5C;
+	Mon, 19 Jan 2026 03:27:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Zbg3D1MW"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GIzyGpl2"
 X-Original-To: bpf@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5337621FF30
-	for <bpf@vger.kernel.org>; Mon, 19 Jan 2026 03:27:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47E62256C70
+	for <bpf@vger.kernel.org>; Mon, 19 Jan 2026 03:27:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768793265; cv=none; b=dIgJOlzTX/LuS8aNLCpe5uUjahQqh6ry+UVhP8WOJlkeMSbRQnvo4r4DHJ9gg0lV8C5c9saRdwmmVOIpW8afLKoQ9cwdoUOTw8zWtEofQum7RFHS1HtYJre3H2pg7v4uI3RRZisW9PAhYYc17svwpPAF4p2k97sixmDC09NVueo=
+	t=1768793277; cv=none; b=bJVOk6ZNBayl4PBewE7WtU5pN89i3o/CYW7PRByCy/P16qMGs6JqQE4Nl+r/3aaKBcJske1jI1qtcBj0r+uo/GU1+blgoNdShYQn9hcVRWrct2pMJA5fc4CDrA1iqUJj6sRLZlqdMiVdY2wXZ48ubljFTCREYZb28V6gleQapUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768793265; c=relaxed/simple;
-	bh=aCbZkW8kghpGHxk1L3WWQksjBwASoq8bfVrudB8THwg=;
+	s=arc-20240116; t=1768793277; c=relaxed/simple;
+	bh=14SMqByPsIQVfl8pKGP++G+4sUAPPLEJi/eyu0x1564=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=k5yNI3eGuXEjpZiyXdleuG8oo1bxT6V+nvK0rY8aSLa/eJYAibazFV7Fp1/4SkMRD1L44q0rtKOQx78Wv8oqa/esh+oCv/QyYRZZc/Hk9X4MP8AGKbgUUV7Hlf/QFkPLqfu8uQOy+xP+ShoKZtT2hZGkluwLHazfhnHxsKGRSOM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Zbg3D1MW; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version; b=pjdjDaAD7Ogme9xtHqpD9M6F9jHF7WWmnZjVmPZ8P9RCLSyZHlazcrsH9tToFtWPLljXlo/XBcVLl5Nn33G+uZOnghjrm94LwoWaKyAyc54KeoPX9Tb+E9VquscpIOMA9sNoV06pwBb65g6vb/a+vGM58mO5T938+Unsw2AAOyI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GIzyGpl2; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1768793262;
+	s=mimecast20190719; t=1768793273;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=7e1a7E+uvRoZBCO9NzWoxFmszs+807PaqpN5o4A8o3o=;
-	b=Zbg3D1MWbpx5dIHg5m3baTdF8azdeeAPxgqIY74vVJH8rR18R1OFRizrbDIS1BeZWS8L3R
-	CXjxAySRJqyzsn8xLIdvF2ymVsNBdFFZVMZQqth2N/+v7btp8hrhLF3IuJaq2TYSeMdeHP
-	azgLQApstukodavW++VEcajZawlu84U=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+	bh=e54Q/Wn1M/aW4uiAmyk1v5WG6DDrOBedFc1qY/t+0Og=;
+	b=GIzyGpl2O8iCtNF0r2VV/JEQeQ1Sheymb64z9xoNxsYlClZlJiWbVDfnmIr+T3cHI+Xoh8
+	YzpEGGbFS/7sIpr9Z/r2P2vfShrX5taFdEkUEGgK3Rmjvahv6iZM8Gpp0KoRs6Yq7KlvW5
+	LRgmPmb97pmdWMhqzRtOeiKIIr4OeUE=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-676-clfPM9rKOCWoZFDTAR5pXA-1; Sun,
- 18 Jan 2026 22:27:38 -0500
-X-MC-Unique: clfPM9rKOCWoZFDTAR5pXA-1
-X-Mimecast-MFC-AGG-ID: clfPM9rKOCWoZFDTAR5pXA_1768793256
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-198-MZQWu_1TPlKFgy6xGA2pFw-1; Sun,
+ 18 Jan 2026 22:27:50 -0500
+X-MC-Unique: MZQWu_1TPlKFgy6xGA2pFw-1
+X-Mimecast-MFC-AGG-ID: MZQWu_1TPlKFgy6xGA2pFw_1768793267
 Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 8063119560B2;
-	Mon, 19 Jan 2026 03:27:36 +0000 (UTC)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 9CC69180044D;
+	Mon, 19 Jan 2026 03:27:47 +0000 (UTC)
 Received: from fedora.redhat.com (unknown [10.72.112.74])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 8AB861955F22;
-	Mon, 19 Jan 2026 03:27:25 +0000 (UTC)
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 25AFF1955F22;
+	Mon, 19 Jan 2026 03:27:36 +0000 (UTC)
 From: Pingfan Liu <piliu@redhat.com>
 To: kexec@lists.infradead.org
 Cc: Pingfan Liu <piliu@redhat.com>,
@@ -83,9 +83,9 @@ Cc: Pingfan Liu <piliu@redhat.com>,
 	bpf@vger.kernel.org,
 	systemd-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCHv6 12/13] tools/kexec: Introduce a bpf-prog to parse zboot image format
-Date: Mon, 19 Jan 2026 11:24:23 +0800
-Message-ID: <20260119032424.10781-13-piliu@redhat.com>
+Subject: [PATCHv6 13/13] tools/kexec: Add a zboot image building tool
+Date: Mon, 19 Jan 2026 11:24:24 +0800
+Message-ID: <20260119032424.10781-14-piliu@redhat.com>
 In-Reply-To: <20260119032424.10781-1-piliu@redhat.com>
 References: <20260119032424.10781-1-piliu@redhat.com>
 Precedence: bulk
@@ -97,30 +97,19 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-This BPF program aligns with the convention defined in the kernel file
-kexec_pe_parser_bpf.lskel.h. This can be easily achieved by include
-"template.c", which includes:
-    four maps:
-                    struct bpf_map_desc ringbuf_1;
-                    struct bpf_map_desc ringbuf_2;
-                    struct bpf_map_desc ringbuf_3;
-                    struct bpf_map_desc ringbuf_4;
-    four sections:
-                    struct bpf_map_desc rodata;
-                    struct bpf_map_desc data;
-                    struct bpf_map_desc bss;
-                    struct bpf_map_desc rodata_str1_1;
+The objcopy binary can append a section to a PE file, but it disregards
+the DOS header. However, the zboot format carries important information
+in the DOS header: payload offset and size.
 
-The only left thing is to implement a prog
-SEC("fentry.s/kexec_image_parser_anchor")
-int BPF_PROG(parse_pe, struct kexec_context *context, unsigned long parser_id)
+To track this information and append a new PE section, here a dedicated
+binary tool is introduced to build zboot images. The payload's relative
+offset within the .data section remains unchanged.  Therefore, the .data
+section offset in the new PE file, plus the payload offset within that
+section, yields the payload offset within the new PE file.
 
-This BPF program only uses ringbuf_1, so it minimizes the size of the
-other three ringbufs to one byte. The size of ringbuf_1 is derived from
-the size of the uncompressed file 'vmlinux.bin', which is usually less
-than 64MB. With the help of the BPF kfunc bpf_buffer_parser(), the BPF
-program passes instructions to the kexec BPF component to perform the
-appropriate actions.
+Finally, the new PE file 'zboot.efi', with a .bpf section, can be got by
+the command:
+  make -C tools/kexec zboot
 
 Signed-off-by: Pingfan Liu <piliu@redhat.com>
 Cc: Alexei Starovoitov <ast@kernel.org>
@@ -131,296 +120,507 @@ Cc: Philipp Rudo <prudo@redhat.com>
 Cc: bpf@vger.kernel.org
 To: kexec@lists.infradead.org
 ---
- tools/kexec/Makefile           |  83 ++++++++++++++++++++++++
- tools/kexec/template.c         |  68 ++++++++++++++++++++
- tools/kexec/zboot_parser_bpf.c | 114 +++++++++++++++++++++++++++++++++
- 3 files changed, 265 insertions(+)
- create mode 100644 tools/kexec/Makefile
- create mode 100644 tools/kexec/template.c
- create mode 100644 tools/kexec/zboot_parser_bpf.c
+ tools/kexec/Makefile              |  10 +-
+ tools/kexec/pe.h                  | 177 +++++++++++++++++++
+ tools/kexec/zboot_image_builder.c | 278 ++++++++++++++++++++++++++++++
+ 3 files changed, 464 insertions(+), 1 deletion(-)
+ create mode 100644 tools/kexec/pe.h
+ create mode 100644 tools/kexec/zboot_image_builder.c
 
 diff --git a/tools/kexec/Makefile b/tools/kexec/Makefile
-new file mode 100644
-index 0000000000000..88db6d11bde61
---- /dev/null
+index 88db6d11bde61..acb045367adfa 100644
+--- a/tools/kexec/Makefile
 +++ b/tools/kexec/Makefile
-@@ -0,0 +1,83 @@
-+# SPDX-License-Identifier: GPL-2.0
+@@ -27,7 +27,7 @@ BPFTOOL = bpftool
+ 
+ # List of generated target files
+ HEADERS = vmlinux.h bpf_helper_defs.h image_size.h
+-ZBOOT_TARGETS = zboot_parser_bpf.o zboot_parser_bpf.lskel.h bytecode.c bytecode.o
++ZBOOT_TARGETS = zboot_parser_bpf.o zboot_parser_bpf.lskel.h bytecode.c bytecode.o zboot_image_builder zboot.efi
+ 
+ 
+ # Targets
+@@ -76,6 +76,14 @@ bytecode.c: zboot_parser_bpf.lskel.h
+ bytecode.o: bytecode.c
+ 	@$(CC) -c $< -o $@
+ 
++# Rule to build zboot_image_builder executable
++zboot_image_builder: zboot_image_builder.c
++	@$(CC) $(CFLAGS) $< -o $@
 +
-+# Ensure Kbuild variables are available
-+include ../scripts/Makefile.include
++zboot.efi: zboot_image_builder bytecode.o
++	@chmod +x zboot_image_builder
++	@./zboot_image_builder $(EFI_IMAGE) bytecode.o $@
 +
-+srctree := $(patsubst %/tools/kexec,%,$(CURDIR))
-+VMLINUX = $(srctree)/vmlinux
-+TOOLSDIR := $(srctree)/tools
-+LIBDIR := $(TOOLSDIR)/lib
-+BPFDIR := $(LIBDIR)/bpf
-+ARCH ?= $(shell uname -m | sed -e s/i.86/x86/ -e s/x86_64/x86/ -e s/aarch64.*/arm64/ -e s/riscv64/riscv/ -e s/loongarch.*/loongarch/)
-+# At present, zboot image format is used by arm64, riscv, loongarch
-+# And arch/$(ARCH)/boot/vmlinux.bin is the uncompressed file instead of arch/$(ARCH)/boot/Image
-+ifeq ($(ARCH),$(filter $(ARCH),arm64 riscv loongarch))
-+	EFI_IMAGE := $(srctree)/arch/$(ARCH)/boot/vmlinuz.efi
-+	KERNEL_IMAGE := $(srctree)/arch/$(ARCH)/boot/vmlinux.bin
-+else
-+	@echo "Unsupported architecture: $(ARCH)"
-+	@exit 1
-+endif
-+
-+
-+CC = clang
-+CFLAGS = -O2
-+BPF_PROG_CFLAGS = -g -O2 -target bpf -Wall -I $(BPFDIR) -I .
-+BPFTOOL = bpftool
-+
-+# List of generated target files
-+HEADERS = vmlinux.h bpf_helper_defs.h image_size.h
-+ZBOOT_TARGETS = zboot_parser_bpf.o zboot_parser_bpf.lskel.h bytecode.c bytecode.o
-+
-+
-+# Targets
-+zboot: $(HEADERS) $(ZBOOT_TARGETS)
-+
-+# Rule to generate vmlinux.h from vmlinux
-+vmlinux.h: $(VMLINUX)
-+	@command -v $(BPFTOOL) >/dev/null 2>&1 || { echo >&2 "$(BPFTOOL) is required but not found. Please install it."; exit 1; }
-+	@$(BPFTOOL) btf dump file $(VMLINUX) format c > vmlinux.h
-+
-+bpf_helper_defs.h: $(srctree)/tools/include/uapi/linux/bpf.h
-+	@$(QUIET_GEN)$(srctree)/scripts/bpf_doc.py --header \
-+		--file $(srctree)/tools/include/uapi/linux/bpf.h > bpf_helper_defs.h
-+
-+image_size.h: $(KERNEL_IMAGE)
-+	@{ \
-+		if [ ! -f "$(KERNEL_IMAGE)" ]; then \
-+			echo "Error: File '$(KERNEL_IMAGE)' does not exist"; \
-+			exit 1; \
-+		fi; \
-+		FILE_SIZE=$$(stat -c '%s' "$(KERNEL_IMAGE)" 2>/dev/null); \
-+		POWER=4096; \
-+		while [ $$POWER -le $$FILE_SIZE ]; do \
-+			POWER=$$((POWER * 2)); \
-+		done; \
-+		RINGBUF_SIZE=$$POWER; \
-+		echo "#define IMAGE_SIZE_POWER2_ALIGN $$RINGBUF_SIZE" > $@; \
-+		echo "#define IMAGE_SIZE $$FILE_SIZE" >> $@; \
-+	}
-+
-+
-+# Rule to generate zboot_parser_bpf.o, depends on vmlinux.h
-+zboot_parser_bpf.o: zboot_parser_bpf.c vmlinux.h bpf_helper_defs.h
-+	@$(CC) $(BPF_PROG_CFLAGS) -c zboot_parser_bpf.c -o zboot_parser_bpf.o
-+
-+# Generate zboot_parser_bpf.lskel.h using bpftool
-+zboot_parser_bpf.lskel.h: zboot_parser_bpf.o
-+	@$(BPFTOOL) gen skeleton -L zboot_parser_bpf.o > zboot_parser_bpf.lskel.h
-+
-+# Then, extract the opts_data[] and opts_insn[] arrays and remove 'static'
-+# keywords to avoid being optimized away.
-+bytecode.c: zboot_parser_bpf.lskel.h
-+	@sed -n '/static const char opts_data\[\]/,/;/p' zboot_parser_bpf.lskel.h | sed 's/static const/const/' > $@
-+	@sed -n '/static const char opts_insn\[\]/,/;/p' zboot_parser_bpf.lskel.h | sed 's/static const/const/' >> $@
-+
-+bytecode.o: bytecode.c
-+	@$(CC) -c $< -o $@
-+
-+# Clean up generated files
-+clean:
-+	@rm -f $(HEADERS) $(ZBOOT_TARGETS)
-+
-+.PHONY: all clean
-diff --git a/tools/kexec/template.c b/tools/kexec/template.c
+ # Clean up generated files
+ clean:
+ 	@rm -f $(HEADERS) $(ZBOOT_TARGETS)
+diff --git a/tools/kexec/pe.h b/tools/kexec/pe.h
 new file mode 100644
-index 0000000000000..9f17a4952ecd4
+index 0000000000000..c2273d3fc3bb3
 --- /dev/null
-+++ b/tools/kexec/template.c
-@@ -0,0 +1,68 @@
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// Copyright (C) 2026 Red Hat, Inc
-+//
-+// Original file: kernel/kexec_bpf/template.c
-+//
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_core_read.h>
-+#include <bpf/bpf_endian.h>
-+#include <bpf/bpf_tracing.h>
++++ b/tools/kexec/pe.h
+@@ -0,0 +1,177 @@
++/*
++ * Extract from linux kernel include/linux/pe.h
++ */
 +
-+/* Command to kernel kexec bpf loader, which is defined on the stream */
-+#define KEXEC_BPF_CMD_DECOMPRESS	0x1
-+#define KEXEC_BPF_CMD_COPY		0x2
++#ifndef __PE_H__
++#define __PE_H__
 +
-+#define KEXEC_BPF_SUBCMD_KERNEL		0x1
-+#define KEXEC_BPF_SUBCMD_INITRD		0x2
-+#define KEXEC_BPF_SUBCMD_CMDLINE	0x3
++#define IMAGE_DOS_SIGNATURE	0x5a4d	/* "MZ" */
++#define IMAGE_NT_SIGNATURE	0x00004550	/* "PE\0\0" */
++
++struct mz_hdr {
++	uint16_t magic;		/* MZ_MAGIC */
++	uint16_t lbsize;	/* size of last used block */
++	uint16_t blocks;	/* pages in file, 0x3 */
++	uint16_t relocs;	/* relocations */
++	uint16_t hdrsize;	/* header size in "paragraphs" */
++	uint16_t min_extra_pps;	/* .bss */
++	uint16_t max_extra_pps;	/* runtime limit for the arena size */
++	uint16_t ss;		/* relative stack segment */
++	uint16_t sp;		/* initial %sp register */
++	uint16_t checksum;	/* word checksum */
++	uint16_t ip;		/* initial %ip register */
++	uint16_t cs;		/* initial %cs relative to load segment */
++	uint16_t reloc_table_offset;	/* offset of the first relocation */
++	uint16_t overlay_num;	/* overlay number.  set to 0. */
++	uint16_t reserved0[4];	/* reserved */
++	uint16_t oem_id;	/* oem identifier */
++	uint16_t oem_info;	/* oem specific */
++	uint16_t reserved1[10];	/* reserved */
++	uint32_t peaddr;	/* address of pe header */
++	char     message[];	/* message to print */
++};
++
++struct pe_hdr {
++	uint32_t magic;		/* PE magic */
++	uint16_t machine;	/* machine type */
++	uint16_t sections;	/* number of sections */
++	uint32_t timestamp;	/* time_t */
++	uint32_t symbol_table;	/* symbol table offset */
++	uint32_t symbols;	/* number of symbols */
++	uint16_t opt_hdr_size;	/* size of optional header */
++	uint16_t flags;		/* flags */
++};
++
++/* the fact that pe32 isn't padded where pe32+ is 64-bit means union won't
++ * work right.  vomit. */
++struct pe32_opt_hdr {
++	/* "standard" header */
++	uint16_t magic;		/* file type */
++	uint8_t  ld_major;	/* linker major version */
++	uint8_t  ld_minor;	/* linker minor version */
++	uint32_t text_size;	/* size of text section(s) */
++	uint32_t data_size;	/* size of data section(s) */
++	uint32_t bss_size;	/* size of bss section(s) */
++	uint32_t entry_point;	/* file offset of entry point */
++	uint32_t code_base;	/* relative code addr in ram */
++	uint32_t data_base;	/* relative data addr in ram */
++	/* "windows" header */
++	uint32_t image_base;	/* preferred load address */
++	uint32_t section_align;	/* alignment in bytes */
++	uint32_t file_align;	/* file alignment in bytes */
++	uint16_t os_major;	/* major OS version */
++	uint16_t os_minor;	/* minor OS version */
++	uint16_t image_major;	/* major image version */
++	uint16_t image_minor;	/* minor image version */
++	uint16_t subsys_major;	/* major subsystem version */
++	uint16_t subsys_minor;	/* minor subsystem version */
++	uint32_t win32_version;	/* reserved, must be 0 */
++	uint32_t image_size;	/* image size */
++	uint32_t header_size;	/* header size rounded up to
++				   file_align */
++	uint32_t csum;		/* checksum */
++	uint16_t subsys;	/* subsystem */
++	uint16_t dll_flags;	/* more flags! */
++	uint32_t stack_size_req;/* amt of stack requested */
++	uint32_t stack_size;	/* amt of stack required */
++	uint32_t heap_size_req;	/* amt of heap requested */
++	uint32_t heap_size;	/* amt of heap required */
++	uint32_t loader_flags;	/* reserved, must be 0 */
++	uint32_t data_dirs;	/* number of data dir entries */
++};
++
++struct pe32plus_opt_hdr {
++	uint16_t magic;		/* file type */
++	uint8_t  ld_major;	/* linker major version */
++	uint8_t  ld_minor;	/* linker minor version */
++	uint32_t text_size;	/* size of text section(s) */
++	uint32_t data_size;	/* size of data section(s) */
++	uint32_t bss_size;	/* size of bss section(s) */
++	uint32_t entry_point;	/* file offset of entry point */
++	uint32_t code_base;	/* relative code addr in ram */
++	/* "windows" header */
++	uint64_t image_base;	/* preferred load address */
++	uint32_t section_align;	/* alignment in bytes */
++	uint32_t file_align;	/* file alignment in bytes */
++	uint16_t os_major;	/* major OS version */
++	uint16_t os_minor;	/* minor OS version */
++	uint16_t image_major;	/* major image version */
++	uint16_t image_minor;	/* minor image version */
++	uint16_t subsys_major;	/* major subsystem version */
++	uint16_t subsys_minor;	/* minor subsystem version */
++	uint32_t win32_version;	/* reserved, must be 0 */
++	uint32_t image_size;	/* image size */
++	uint32_t header_size;	/* header size rounded up to
++				   file_align */
++	uint32_t csum;		/* checksum */
++	uint16_t subsys;	/* subsystem */
++	uint16_t dll_flags;	/* more flags! */
++	uint64_t stack_size_req;/* amt of stack requested */
++	uint64_t stack_size;	/* amt of stack required */
++	uint64_t heap_size_req;	/* amt of heap requested */
++	uint64_t heap_size;	/* amt of heap required */
++	uint32_t loader_flags;	/* reserved, must be 0 */
++	uint32_t data_dirs;	/* number of data dir entries */
++};
++
++struct data_dirent {
++	uint32_t virtual_address;	/* relative to load address */
++	uint32_t size;
++};
++
++struct data_directory {
++	struct data_dirent exports;		/* .edata */
++	struct data_dirent imports;		/* .idata */
++	struct data_dirent resources;		/* .rsrc */
++	struct data_dirent exceptions;		/* .pdata */
++	struct data_dirent certs;		/* certs */
++	struct data_dirent base_relocations;	/* .reloc */
++	struct data_dirent debug;		/* .debug */
++	struct data_dirent arch;		/* reservered */
++	struct data_dirent global_ptr;		/* global pointer reg. Size=0 */
++	struct data_dirent tls;			/* .tls */
++	struct data_dirent load_config;		/* load configuration structure */
++	struct data_dirent bound_imports;	/* no idea */
++	struct data_dirent import_addrs;	/* import address table */
++	struct data_dirent delay_imports;	/* delay-load import table */
++	struct data_dirent clr_runtime_hdr;	/* .cor (object only) */
++	struct data_dirent reserved;
++};
++
++struct section_header {
++	char name[8];			/* name or "/12\0" string tbl offset */
++	uint32_t virtual_size;		/* size of loaded section in ram */
++	uint32_t virtual_address;	/* relative virtual address */
++	uint32_t raw_data_size;		/* size of the section */
++	uint32_t data_addr;		/* file pointer to first page of sec */
++	uint32_t relocs;		/* file pointer to relocation entries */
++	uint32_t line_numbers;		/* line numbers! */
++	uint16_t num_relocs;		/* number of relocations */
++	uint16_t num_lin_numbers;	/* srsly. */
++	uint32_t flags;
++};
++
++struct win_certificate {
++	uint32_t length;
++	uint16_t revision;
++	uint16_t cert_type;
++};
 +
 +/*
-+ * The ringbufs can have different capacity. But only four ringbuf are provided.
++ * Return -1 if not PE, else offset of the PE header
 + */
-+#ifndef RINGBUF1_SIZE
-+#define RINGBUF1_SIZE	4
-+#endif
-+#ifndef RINGBUF2_SIZE
-+#define RINGBUF2_SIZE	4
-+#endif
-+#ifndef RINGBUF3_SIZE
-+#define RINGBUF3_SIZE	4
-+#endif
-+#ifndef RINGBUF4_SIZE
-+#define RINGBUF4_SIZE	4
-+#endif
-+
-+/* ringbuf is safe since the user space has no write access to them */
-+struct {
-+	__uint(type, BPF_MAP_TYPE_RINGBUF);
-+	__uint(max_entries, RINGBUF1_SIZE);
-+} ringbuf_1 SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_RINGBUF);
-+	__uint(max_entries, RINGBUF2_SIZE);
-+} ringbuf_2 SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_RINGBUF);
-+	__uint(max_entries, RINGBUF3_SIZE);
-+} ringbuf_3 SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_RINGBUF);
-+	__uint(max_entries, RINGBUF4_SIZE);
-+} ringbuf_4 SEC(".maps");
-+
-+char LICENSE[] SEC("license") = "GPL";
-+
-+/*
-+ * This function ensures that the sections .rodata, .data, .rodata.str1.1 and .bss
-+ * are created for a bpf prog.
-+ */
-+static const char dummy_rodata[16] __attribute__((used)) = "rodata";
-+static char dummy_data[16] __attribute__((used)) = "data";
-+static char *dummy_mergeable_str  __attribute__((used)) = ".rodata.str1.1";
-+static char dummy_bss[16] __attribute__((used));
-+
-diff --git a/tools/kexec/zboot_parser_bpf.c b/tools/kexec/zboot_parser_bpf.c
-new file mode 100644
-index 0000000000000..54c4b762b3324
---- /dev/null
-+++ b/tools/kexec/zboot_parser_bpf.c
-@@ -0,0 +1,114 @@
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// Copyright (C) 2025, 2026 Red Hat, Inc
-+//
-+#include "vmlinux.h"
-+#include <bpf_helpers.h>
-+#include <bpf_tracing.h>
-+#include "image_size.h"
-+
-+/* ringbuf 2,3,4 are useless */
-+#define MIN_BUF_SIZE 1
-+#define MAX_RECORD_SIZE (IMAGE_SIZE + 40960)
-+#define RINGBUF1_SIZE IMAGE_SIZE_POWER2_ALIGN
-+#define RINGBUF2_SIZE MIN_BUF_SIZE
-+#define RINGBUF3_SIZE MIN_BUF_SIZE
-+#define RINGBUF4_SIZE MIN_BUF_SIZE
-+
-+
-+#include "template.c"
-+
-+/* see drivers/firmware/efi/libstub/zboot-header.S */
-+struct linux_pe_zboot_header {
-+	unsigned int mz_magic;
-+	char image_type[4];
-+	unsigned int payload_offset;
-+	unsigned int payload_size;
-+	unsigned int reserved[2];
-+	char comp_type[4];
-+	unsigned int linux_pe_magic;
-+	unsigned int pe_header_offset;
-+} __attribute__((packed));
-+
-+
-+SEC("fentry.s/kexec_image_parser_anchor")
-+int BPF_PROG(parse_pe, struct kexec_context *context, unsigned long parser_id)
++static int get_pehdr_offset(const char *buf)
 +{
-+	struct linux_pe_zboot_header *zboot_header;
-+	unsigned int image_sz;
-+	char *buf;
-+	int ret = 0;
++	int pe_hdr_offset;
 +
-+	image_sz = context->kernel_sz;
-+	bpf_printk("begin parse PE\n");
-+	/* BPF verifier should know each variable initial state */
-+	if (!context->kernel || (image_sz > MAX_RECORD_SIZE)) {
-+		bpf_printk("Err: image size is greater than 0x%lx\n", MAX_RECORD_SIZE);
-+		return 0;
++	pe_hdr_offset = *((int *)(buf + 0x3c));
++	buf += pe_hdr_offset;
++	if (!!memcmp(buf, "PE\0\0", 4)) {
++		printf("Not a PE file\n");
++		return -1;
 +	}
 +
-+	/* In order to access bytes not aligned on 2 order, copy into ringbuf.
-+	 * And allocate the memory all at once, later overwriting.
-+	 *
-+	 * R2 is ARG_CONST_ALLOC_SIZE_OR_ZERO, should be decided at compling time
++	return pe_hdr_offset;
++}
++
++#endif
+diff --git a/tools/kexec/zboot_image_builder.c b/tools/kexec/zboot_image_builder.c
+new file mode 100644
+index 0000000000000..c0a785074970e
+--- /dev/null
++++ b/tools/kexec/zboot_image_builder.c
+@@ -0,0 +1,278 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (C) 2025 Red Hat, Inc.
++ * The zboot format carries the compressed kernel image offset and size
++ * information in the DOS header. The program appends a bpf section to PE file,
++ * meanwhile maintains the offset and size information, which is lost when using
++ * objcopy to handle zboot image.
++ */
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <stdint.h>
++#include <unistd.h>
++#include <sys/mman.h>
++#include <sys/stat.h>
++#include <fcntl.h>
++#include "pe.h"
++
++#ifdef DEBUG_DETAIL
++	#define dprintf(...) printf(__VA_ARGS__)
++#else
++	#define dprintf(...) ((void)0)
++#endif
++
++typedef struct {
++	union {
++		struct {
++			unsigned int mz_magic;
++			char image_type[4];
++			/* offset to the whole file start */
++			unsigned int payload_offset;
++			unsigned int payload_size;
++			unsigned int reserved[2];
++			char comp_type[4];
++		};
++		char raw_bytes[56];
++	};
++	unsigned int linux_pe_magic;
++	/* offset at: 0x3c or 60 */
++	unsigned int pe_header_offset;
++} __attribute__((packed)) pe_zboot_header;
++
++typedef unsigned long	uintptr_t;
++#define ALIGN_UP(p, size) (__typeof__(p))(((uintptr_t)(p) + ((size) - 1)) & ~((size) - 1))
++
++int main(int argc, char **argv)
++{
++	uint32_t payload_new_offset, payload_sect_off;
++	uint32_t payload_size;
++	uint32_t payload_sect_idx;
++	pe_zboot_header *zheader;
++	struct pe_hdr *pe_hdr;
++	struct pe32plus_opt_hdr *opt_hdr;
++	int base_fd, out_fd;
++	char *base_start_addr, *base_cur;
++	char *out_start_addr, *out_cur;
++	uint32_t out_sz, max_va_end = 0;
++	struct stat sb;
++	int i = 0, ret = 0;
++
++	if (argc != 4) {
++	    fprintf(stderr, "Usage: %s <original_pe> <binary_file> <new_pe>\n", argv[0]);
++	    return -1;
++	}
++
++	const char *original_pe = argv[1];
++	const char *binary_file = argv[2];
++	const char *new_pe = argv[3];
++	FILE *bin_fp = fopen(binary_file, "rb");
++	if (!bin_fp) {
++	    perror("Failed to open binary file");
++	    return -1;
++	}
++	fseek(bin_fp, 0, SEEK_END);
++	size_t bin_size = ftell(bin_fp);
++	fseek(bin_fp, 0, SEEK_SET);
++	base_fd = open(original_pe, O_RDWR);
++	out_fd = open(new_pe, O_RDWR | O_CREAT, 0644);
++	if (base_fd == -1 || out_fd == -1) {
++	    perror("Error opening file");
++	    exit(1);
++	}
++
++	if (fstat(base_fd, &sb) == -1) {
++	    perror("Error getting file size");
++	    exit(1);
++	}
++	base_start_addr = mmap(NULL, sb.st_size, PROT_READ, MAP_SHARED, base_fd, 0);
++	if (base_start_addr == MAP_FAILED) {
++	    perror("Error mmapping the file");
++	    exit(1);
++	}
++	/* 64KB for section table extending */
++	out_sz = sb.st_size + bin_size + (1 << 16);
++	out_start_addr = mmap(NULL, out_sz, PROT_WRITE, MAP_SHARED, out_fd, 0);
++	if (ftruncate(out_fd, out_sz) == -1) {
++		perror("Failed to resize output file");
++		ret = -1;
++		goto err;
++	}
++	if (out_start_addr == MAP_FAILED) {
++	    perror("Error mmapping the file");
++	    exit(1);
++	}
++
++	zheader = (pe_zboot_header *)base_start_addr;
++	if (zheader->mz_magic != 0x5A4D) {  // 'MZ'
++	    fprintf(stderr, "Invalid DOS signature\n");
++	    return -1;
++	}
++	uint32_t pe_hdr_offset = get_pehdr_offset((const char *)base_start_addr);
++	base_cur = base_start_addr + pe_hdr_offset;
++	pe_hdr = (struct pe_hdr *)base_cur;
++	if (pe_hdr->magic!= 0x00004550) {  // 'PE\0\0'
++	    fprintf(stderr, "Invalid PE signature\n");
++	    return -1;
++	}
++	base_cur += sizeof(struct pe_hdr);
++	opt_hdr = (struct pe32plus_opt_hdr *)base_cur;
++	uint32_t file_align = opt_hdr->file_align;
++	uint32_t section_alignment = opt_hdr->section_align;
++
++	uint16_t num_sections = pe_hdr->sections;
++	struct section_header *base_sections, *sect;
++	uint32_t section_table_offset = pe_hdr_offset + sizeof(struct pe_hdr) + pe_hdr->opt_hdr_size;
++	base_sections = (struct section_header *)(base_start_addr + section_table_offset);
++
++	/* Decide the section idx and the payload offset within the section */
++	for (i = 0; i < num_sections; i++) {
++	    sect = &base_sections[i];
++	    if (zheader->payload_offset >= sect->data_addr &&
++		zheader->payload_offset < (sect->data_addr + sect->raw_data_size)) {
++		    payload_sect_idx = i;
++		    payload_sect_off = zheader->payload_offset - sect->data_addr;
++	    }
++	}
++
++	/* Calculate the end of the last section in virtual memory */
++	for (i = 0; i < num_sections; i++) {
++	    uint32_t section_end = base_sections[i].virtual_address + base_sections[i].virtual_size;
++	    if (section_end > max_va_end) {
++	        max_va_end = section_end;
++	    }
++	}
++
++	/* Calculate virtual address for the new .bpf section */
++	uint32_t bpf_virtual_address = ALIGN_UP(max_va_end, section_alignment);
++
++	pe_zboot_header *new_zhdr = malloc(sizeof(pe_zboot_header));
++	memcpy(new_zhdr, zheader, sizeof(pe_zboot_header));
++	struct pe_hdr *new_hdr = malloc(sizeof(struct pe_hdr));
++	memcpy(new_hdr, pe_hdr, sizeof(struct pe_hdr));
++	new_hdr->sections += 1;
++	struct pe32plus_opt_hdr *new_opt_hdr = malloc(pe_hdr->opt_hdr_size);
++	memcpy(new_opt_hdr, opt_hdr, pe_hdr->opt_hdr_size);
++	/* Create new section headers array (original + new section) */
++	struct section_header *new_sections = calloc(1, new_hdr->sections * sizeof(struct section_header));
++	if (!new_sections) {
++	    perror("Failed to allocate memory for new section headers");
++	    return -1;
++	}
++	memcpy(new_sections, base_sections, pe_hdr->sections * sizeof(struct section_header));
++
++	/* Configure the new .bpf section */
++	struct section_header *bpf_section = &new_sections[new_hdr->sections - 1];
++	memset(bpf_section, 0, sizeof(struct section_header));
++	strncpy((char *)bpf_section->name, ".bpf", 8);
++	bpf_section->virtual_size = bin_size;
++	bpf_section->virtual_address = bpf_virtual_address;
++	bpf_section->raw_data_size = bin_size;
++	bpf_section->flags = 0x40000000; //Readable
++
++	/* Update headers */
++	uint32_t new_size_of_image = bpf_section->virtual_address + bpf_section->virtual_size;
++	new_size_of_image = ALIGN_UP(new_size_of_image, section_alignment);
++	new_opt_hdr->image_size = new_size_of_image;
++
++	size_t section_table_size = new_hdr->sections * (sizeof(struct section_header));
++	size_t headers_size = section_table_offset + section_table_size;
++	size_t aligned_headers_size = ALIGN_UP(headers_size, file_align);
++	new_opt_hdr->header_size = aligned_headers_size;
++
++
++	uint32_t current_offset = aligned_headers_size;
++	/*
++	 * If the original PE data_addr is covered by enlarged header_size
++	 * re-assign new data_addr for all sections
 +	 */
-+	buf = (char *)bpf_ringbuf_reserve(&ringbuf_1, MAX_RECORD_SIZE, 0);
-+	if (!buf) {
-+	    	bpf_printk("Err: fail to reserve ringbuf to parse zboot header\n");
-+		return 0;
-+	}
-+	bpf_probe_read((void *)buf, sizeof(struct linux_pe_zboot_header), context->kernel);
-+	zboot_header = (struct linux_pe_zboot_header *)buf;
-+	if (!!__builtin_memcmp(&zboot_header->image_type, "zimg",
-+			sizeof(zboot_header->image_type))) {
-+		bpf_ringbuf_discard(buf, BPF_RB_NO_WAKEUP);
-+		bpf_printk("Err: image is not zboot image\n");
-+		return 0;
++	if (base_sections[0].data_addr < aligned_headers_size) {
++		for (i = 0; i < new_hdr->sections; i++) {
++		    new_sections[i].data_addr = current_offset;
++		    current_offset += ALIGN_UP(new_sections[i].raw_data_size, file_align);
++		}
++	/* Keep unchanged, just allocating file pointer for bpf section */
++	} else {
++		uint32_t t;
++		i = new_hdr->sections - 2;
++		t = new_sections[i].data_addr + new_sections[i].raw_data_size;
++		i++;
++		new_sections[i].data_addr = ALIGN_UP(t, file_align);
 +	}
 +
-+	unsigned int payload_offset = zboot_header->payload_offset;
-+	unsigned int payload_size = zboot_header->payload_size;
-+	bpf_printk("zboot image payload offset=0x%x, size=0x%x\n", payload_offset, payload_size);
-+	/* sane check */
-+	if (payload_size > image_sz) {
-+		bpf_ringbuf_discard(buf, BPF_RB_NO_WAKEUP);
-+		bpf_printk("Invalid zboot image payload offset and size\n");
-+		return 0;
-+	}
-+	unsigned int max_payload = MAX_RECORD_SIZE - sizeof(struct cmd_hdr);
-+	if (payload_size >= max_payload) {
-+		bpf_ringbuf_discard(buf, BPF_RB_NO_WAKEUP);
-+		bpf_printk("Err: payload_size > MAX_RECORD_SIZE\n");
-+		return 0;
-+	}
-+	void *dst = (void *)buf + sizeof(struct cmd_hdr);
-+	/* Overwrite buf */
-+	struct cmd_hdr *cmd = (struct cmd_hdr *)buf;
-+	cmd->cmd = KEXEC_BPF_CMD_DECOMPRESS;
-+	cmd->subcmd = KEXEC_BPF_SUBCMD_KERNEL;
-+	/* 4 bytes original size is appended after vmlinuz.bin */
-+	cmd->payload_len = payload_size - 4;
-+	bpf_probe_read(dst, payload_size, context->kernel + payload_offset);
-+	if (payload_size < 4) {
-+		bpf_ringbuf_discard(buf, BPF_RB_NO_WAKEUP);
-+		return 0;
-+	}
-+	bpf_printk("Calling bpf_kexec_decompress()\n");
-+	struct bpf_parser_context *bpf = bpf_get_parser_context(parser_id);
-+	if (!bpf) {
-+		bpf_ringbuf_discard(buf, BPF_RB_NO_WAKEUP);
-+		bpf_printk("No parser in kernel\n");
-+		return 0;
-+	}
-+	ret = bpf_buffer_parser(buf, sizeof(struct cmd_hdr) + payload_size - 4, bpf);
-+	if (ret < 0) {
-+		bpf_ringbuf_discard(buf, BPF_RB_NO_WAKEUP);
-+		bpf_put_parser_context(bpf);
-+		bpf_printk("Decompression fails\n");
-+		return 0;
-+	}
-+	bpf_ringbuf_discard(buf, BPF_RB_NO_WAKEUP);
-+	bpf_put_parser_context(bpf);
++	payload_new_offset = new_sections[payload_sect_idx].data_addr + payload_sect_off;
++	/* Update */
++	new_zhdr->payload_offset = payload_new_offset;
++	new_zhdr->payload_size = zheader->payload_size;
++	dprintf("zboot payload_offset updated from 0x%x to 0x%x, size:0x%x\n",
++		zheader->payload_offset, payload_new_offset, new_zhdr->payload_size);
 +
-+	return 0;
++
++	/* compose the new PE file */
++
++	/* Write Dos header */
++	memcpy(out_start_addr, new_zhdr, sizeof(pe_zboot_header));
++	out_cur = out_start_addr + pe_hdr_offset;
++
++	/* Write PE header */
++	memcpy(out_cur, new_hdr, sizeof(struct pe_hdr));
++	out_cur += sizeof(struct pe_hdr);
++
++	/* Write PE optional header */
++	memcpy(out_cur, new_opt_hdr, new_hdr->opt_hdr_size);
++	out_cur += new_hdr->opt_hdr_size;
++
++	/* Write all section headers */
++	memcpy(out_cur, new_sections, new_hdr->sections * sizeof(struct section_header));
++
++	/* Skip padding and copy the section data */
++	for (i = 0; i < pe_hdr->sections; i++) {
++		base_cur = base_start_addr + base_sections[i].data_addr;
++		out_cur = out_start_addr + new_sections[i].data_addr;
++		memcpy(out_cur, base_cur, base_sections[i].raw_data_size);
++	}
++	msync(out_start_addr, new_sections[i].data_addr + new_sections[i].raw_data_size, MS_ASYNC);
++	/* For the bpf section */
++	out_cur = out_start_addr + new_sections[i].data_addr;
++
++	/* Write .bpf section data */
++	char *bin_data = calloc(1, bin_size);
++	if (!bin_data) {
++		perror("Failed to allocate memory for binary data");
++		free(new_sections);
++		ret = -1;
++		goto err;
++	}
++	if (fread(bin_data, bin_size, 1, bin_fp) != 1) {
++		perror("Failed to read binary data");
++		free(bin_data);
++		free(new_sections);
++		ret = -1;
++		goto err;
++	}
++
++	if (out_cur + bin_size > out_start_addr + out_sz) {
++	    perror("out of out_fd mmap\n");
++	    ret = -1;
++	    goto err;
++	}
++	memcpy(out_cur, bin_data, bin_size);
++	/* calculate the real size */
++	out_sz = out_cur + bin_size - out_start_addr;
++	msync(out_start_addr, out_sz, MS_ASYNC);
++	/* truncate to the real size */
++	if (ftruncate(out_fd, out_sz) == -1) {
++		perror("Failed to resize output file");
++		ret = -1;
++		goto err;
++	}
++	printf("Create a new PE file with bpf section: %s\n", new_pe);
++err:
++	munmap(out_start_addr, out_sz);
++	munmap(base_start_addr, sb.st_size);
++	close(base_fd);
++	close(out_fd);
++	fclose(bin_fp);
++
++	return ret;
 +}
 -- 
 2.49.0
