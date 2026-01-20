@@ -1,79 +1,79 @@
-Return-Path: <bpf+bounces-79537-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79538-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33C66D3BD57
-	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 02:58:54 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F58ED3BD56
+	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 02:58:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 13A0F30262A1
-	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 01:57:20 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 940D23009285
+	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 01:58:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 853C325C80D;
-	Tue, 20 Jan 2026 01:57:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56C5A257821;
+	Tue, 20 Jan 2026 01:58:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e5AX7YLi"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g65HKPzY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-dl1-f53.google.com (mail-dl1-f53.google.com [74.125.82.53])
+Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D61CF23EA8E
-	for <bpf@vger.kernel.org>; Tue, 20 Jan 2026 01:57:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A15421607A4
+	for <bpf@vger.kernel.org>; Tue, 20 Jan 2026 01:58:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768874239; cv=none; b=jyeA9INuC8IgfsRTyv/dbj6K9a4923R9bMqxz/sK87QgE/rhoc+iCnJMg3TKXueAPijFGZcOBFHwukkQMXVIBcWrMFhrc5tkmK/W0YqZThF9zqm5Af6r2AWhckWFv8D6sRADGM43FbX+B2F/35Yfy7ACvKvbc6Pt0XMB5wHOoug=
+	t=1768874325; cv=none; b=AFoMLzrYgWyqX/cKzVIRcj+0dxbgTfXFVrC3K5NYhH33r+WQ+ucB89LBZLn4fvxW0BymvKyQxNGN1q9RkYbKoU3hj61UvaSp49h9mx7CdCQ7JNqqkQygrPLYNnFS+Gz5qDuelCKhlkSbAjF4su3aEi7WrMD7XOVJt42gCVweU68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768874239; c=relaxed/simple;
-	bh=DFMDqIBxWMeUoPAyaqN8hr45MYvMg+GV75NoJCt74uw=;
+	s=arc-20240116; t=1768874325; c=relaxed/simple;
+	bh=h1bzrV3t+W8hh2TRR/gZqlbk4hfM8u7QilZdJ5qMIjs=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=CUgFdGoHefQ3FYUAwIkBFPHjcfBfAWlgBg0voMKdlY8PcZjEXUCPwaLX2MiLOQQC+/7aBGGciitxdkfq8VShV8gdbs22z0hEdbQG0uIHF4XFqLA1Yqe4HB/EFmsUD+iLeKlnoAI9Sc5y6h3r9f//TG/ADJlTroWA4KnZaXA3O/Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e5AX7YLi; arc=none smtp.client-ip=74.125.82.53
+	 Content-Type:MIME-Version; b=feUhntY+f5JbNUs4T+IYvvUpsitvyyVNFEuOVSD5PN5afN8QxvD2CItF+pTKFjIlW6qlf8SSRuAwBg4bv0CRuk33mhQArlW8CJ2r6irSmqEGEUfZUnhByURMeMQYAiLEDv7Flt8hf0PJYyNZc58Px2bFajOfiDC8jxJorY2i66k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g65HKPzY; arc=none smtp.client-ip=209.85.160.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-dl1-f53.google.com with SMTP id a92af1059eb24-12331482b8fso8481318c88.1
-        for <bpf@vger.kernel.org>; Mon, 19 Jan 2026 17:57:17 -0800 (PST)
+Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-502acd495feso35783881cf.2
+        for <bpf@vger.kernel.org>; Mon, 19 Jan 2026 17:58:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768874237; x=1769479037; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1768874323; x=1769479123; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=Bs/xgeR13/qdRJT1LBeIlLMVbrV4KZcmi7z58cgPbxU=;
-        b=e5AX7YLilMmc9Zmad8607DPpxKLuDKoY/0IJm0cqAQjYRowPpazAIQEgKP+vAUEYNU
-         gp5mDrhGBQAdG7qgm1ti+aal4rWxlttc8MzxtpFogVcZXNQWPvoAAmkpXbL9cDiUT361
-         MN9mvYtJhNuXcbED4LBXC+J7EZslh4oCFWcW8UiHiFb98MADyWrU+h9vHyzOAnLo2oHH
-         mP3Dv8nXWBNwqYf2ICev5DyKjqhDZfc7P/1Gtl8L1+XPVHHqxtrdmxKcK4FrS7BzEw0N
-         ZFEovZY4zt7mtCcmAWmnsgbjQNiGt8f0EBBlN+Ueo/7kPNd6h9EEWDDILhsoTWQlaKgW
-         wNBw==
+        bh=C5BHzdBy9bZIqFc6VCkjIoouQALwj1cU2ODrGGe4Wds=;
+        b=g65HKPzYoU51m3fuxzKdYG8ztEvI0WH07NnXxT0yXluaEnzxegwCC3Qr7ARPC0ePgT
+         4diHMT0A5U11fEGBVxjLTC164j2LA1GOAHw4W7ueOVCrfBPTzFq4eXQChTCQD7BYg3/0
+         glS/VL0ioKyy9WznebplCQYe0A1kKXH0LneIzzx/dPhtJCH/S8DxkYIIpNkwTRl5v9wb
+         OvhPy+jK0jTaZYFK9CaXy/BMPq183XzQqxVyxsqrvw5toF4cmVMNjkpmCVnxnluLQkow
+         kfMQ2Qy/UbeVtSTtnULrTXRqh+QvCvC/qfcY/V+DR9O0IYm0mBOfvgEgKDH2p5bhjt1G
+         9t+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768874237; x=1769479037;
+        d=1e100.net; s=20230601; t=1768874323; x=1769479123;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Bs/xgeR13/qdRJT1LBeIlLMVbrV4KZcmi7z58cgPbxU=;
-        b=G1uUw7rEtEM/Bl4qH1lxEfQZ9dfy/YIx8mP0/qJ3z1IIM7e9+0aY+WNimRjfNxiiOu
-         FzO3SuUux9yScFkNvOyGCh1hAqUvFqGLeeYGk7mSzmWRL6nCYtuVBdZfyW/Yd8XByvOj
-         +P5SZBHQwIN6kxJvYdjCX0KKmJ+RtNmq+FgEb1IF24sL1QXNvUsMsCzIqILoCO6tfgt2
-         S88l6+K5iRzcoZAEOW0M9hEF7cl3WqF/SFxcd8xHDboHUXbStnzHiISySz+ZtoQDLQx3
-         gyxsvPdmpsPuQ06cKUA8+LUGp+kOBq9qK4FFP4j8+7LKvTHMeRu9q6q9O6LW0TsTlSJl
-         uHqQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVzV1ABW/SFIUUAPNuEUcEGtvKgM/P6FEP4IppdchxtZ7rMpz322xlRIFigkgDnZi/8Z/g=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz7YKZL6KKE974LItoo0UpU4GkGPonEvOyffOzua8erKEkcHXCm
-	PxkwMjcfhsy2WEmA6EBTKAH4uS4OFqhtoGAnqVYGmJDOQQRA7gqG6/xz
-X-Gm-Gg: AY/fxX45iy4Mvkmy9Dbuy0gqXx63qyZ9TU+A38lOO4HC8E8sbTY1QFJ3CjugF8JAOpa
-	qPAbDsbibuHEpuJ+lDK3LNuH+VnPXo5ygiqEoLT3HrSH/YKUpdhCAh9yavhXvdTiSQ+fhz3/Bl0
-	pC8cljgnN3wFVthOIyfUEUTCC3zeZ2vsuUxEPTKMWIFMJl956+dy3dA7AyneHhNISTAMmNwUb/j
-	ot+HsOMw5SGm2Ng27irsBdeEcutQS/W6R6m+tsftvSGi18fsHixQLRZliUtzdLtVLKS7rk0u5u2
-	knYn8el9LAE+D/wKxX/g0yA42dNYGQI9IB1cu3Z7Rf3XHsULlLotmiEy9t6ezY5MXq/x7cDawvW
-	qxFsJ9ey3qMC9aqvXpTK4qLlWlCCU0W7fpXFvrPyRAQGizDT6VxYYDRd9M81wtKsOl4Ei8zpwh+
-	Ah+N1PWphQ+rlwxqHH/lHud+fBnnEqZU5XZGP7ECUtimdKOLCVci81xV8FcLF7nSRLPg==
-X-Received: by 2002:a05:7300:dc85:b0:2ac:2480:f0ac with SMTP id 5a478bee46e88-2b6b40d991cmr8107963eec.23.1768867408672;
-        Mon, 19 Jan 2026 16:03:28 -0800 (PST)
+        bh=C5BHzdBy9bZIqFc6VCkjIoouQALwj1cU2ODrGGe4Wds=;
+        b=Y1qsBYUGjfclY4ho1tpdWYg+JHS7xItcU1JgRnJbra6LYEQA5QF5jlPkSYbn4OZNZj
+         ZVSLfAo25PQdGpb73ww1M6YKtc1ukRQHkDWx7iLhrDkb1HoeDTCOWo7+LUvxREASEcuR
+         zwPItAaugOlg3ZDUgz4nds2Ney8sRDpTbojbtjzfoxxwCWH50CTumEuhbHBGd12Vwc8m
+         UNE4j60GHp8JswRFWT+cFACZdiS3th5KQ0AE9tkhx0SAi/7HOVchEhtUgWOQxso4J/YM
+         Rx3Lem7D+oEQAQHqhsyxg/q8hDPtTGluo+ibORRgvYsNJuw/LWXhCx3sEm4EK38tX2Ex
+         QmlA==
+X-Forwarded-Encrypted: i=1; AJvYcCXR4qY8VnZ9tw4aqfsxZ/iuEYX6ShYhWj6BVxvxv/0W3UZivN9BxfEdS+HTqU7PxT4LaPY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yybm8gkP5C6hJq3SrQO3vwCkzBQLiaEeoYscUzQVYZxU1OIDHnc
+	CrOCO/XCAFOCo+IceMmyokiQSDf4UAxRa+CpnPSi9a5Ojr6iUOdYUq7D
+X-Gm-Gg: AY/fxX75AVnfM6B2L5OMwKHj5QdhRa0+omQ8bldHVVK5HP+eySMLvLsMIfcXXJLPPlF
+	wzUFYU+9yQctZURaw5rFpyaIZFuJlHRbR9KM8n+E8Nky0Kgv1AkZQ0uNvKQ/H5LgM+sjXp72Upv
+	Z9pAjQ8F6ysATwk9c8aSJxRIvl8ZadchH3BDs6bTrg3CFLKm3FXbOubNyM50IhlozPpuES7+35k
+	3fnvKGB1yhVnV3lTBKzmnC0uKIfJwo9FNFl8E5aSruyL3D9Z2ujFchQhKTpYBQyi+sAHNCL1ATf
+	xHB6WtCut38b/ZVQuLJmw4oOb2kJPgzIl0u+xfo//LeQKYfkxcnUBIHy0NEiw8yjZxT62Zu6qa8
+	iPjQt5VtszPhWEBF/t8fpt9wYDFVRs6zaytSQ6BaL/0+uYO42iaqPIqaxHvpw4WQ8bSmw1fSk+X
+	A5Ee/xWPQ+gnNH0Iu5TizFnWVLy2YiPD5D/X/fQMSS/TsjdHleFUc2cJINzsWjjmW1YQ==
+X-Received: by 2002:a05:7300:6c89:b0:2ae:4f61:892e with SMTP id 5a478bee46e88-2b6b4eaddf6mr9036820eec.36.1768868006151;
+        Mon, 19 Jan 2026 16:13:26 -0800 (PST)
 Received: from ?IPv6:2a03:83e0:115c:1:4cd6:17bf:3333:255f? ([2620:10d:c090:500::aa81])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2b6b3679980sm15230498eec.31.2026.01.19.16.03.26
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2b6b3502c91sm14832564eec.9.2026.01.19.16.13.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jan 2026 16:03:28 -0800 (PST)
-Message-ID: <e2d174e79c4550fb7251f29351f1fe5afb812328.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v2 03/13] bpf: Verifier support for
- KF_IMPLICIT_ARGS
+        Mon, 19 Jan 2026 16:13:25 -0800 (PST)
+Message-ID: <c404446ab6d344338592dfa44f5a7e1b95492564.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v2 04/13] resolve_btfids: Introduce
+ finalize_btf() step
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: Ihor Solodrai <ihor.solodrai@linux.dev>, Alexei Starovoitov
  <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
@@ -83,10 +83,10 @@ Cc: Mykyta Yatsenko <yatsenko@meta.com>, Tejun Heo <tj@kernel.org>, Alan
  Jiri Kosina	 <jikos@kernel.org>, Amery Hung <ameryhung@gmail.com>,
  bpf@vger.kernel.org, 	linux-kernel@vger.kernel.org,
  linux-input@vger.kernel.org, 	sched-ext@lists.linux.dev
-Date: Mon, 19 Jan 2026 16:03:25 -0800
-In-Reply-To: <20260116201700.864797-4-ihor.solodrai@linux.dev>
+Date: Mon, 19 Jan 2026 16:13:23 -0800
+In-Reply-To: <20260116201700.864797-5-ihor.solodrai@linux.dev>
 References: <20260116201700.864797-1-ihor.solodrai@linux.dev>
-	 <20260116201700.864797-4-ihor.solodrai@linux.dev>
+	 <20260116201700.864797-5-ihor.solodrai@linux.dev>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.58.2 (3.58.2-1.fc43) 
@@ -98,79 +98,74 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
 On Fri, 2026-01-16 at 12:16 -0800, Ihor Solodrai wrote:
-> A kernel function bpf_foo marked with KF_IMPLICIT_ARGS flag is
-> expected to have two associated types in BTF:
->   * `bpf_foo` with a function prototype that omits implicit arguments
->   * `bpf_foo_impl` with a function prototype that matches the kernel
->      declaration of `bpf_foo`, but doesn't have a ksym associated with
->      its name
+> Since recently [1][2] resolve_btfids executes final adjustments to the
+> kernel/module BTF before it's embedded into the target binary.
 >=20
-> In order to support kfuncs with implicit arguments, the verifier has
-> to know how to resolve a call of `bpf_foo` to the correct BTF function
-> prototype and address.
+> To keep the implementation simple, a clear and stable "pipeline" of
+> how BTF data flows through resolve_btfids would be helpful. Some BTF
+> modifications may change the ids of the types, so it is important to
+> maintain correct order of operations with respect to .BTF_ids
+> resolution too.
 >=20
-> To implement this, in add_kfunc_call() kfunc flags are checked for
-> KF_IMPLICIT_ARGS. For such kfuncs a BTF func prototype is adjusted to
-> the one found for `bpf_foo_impl` (func_name + "_impl" suffix, by
-> convention) function in BTF.
+> This patch refactors the BTF handling to establish the following
+> sequence:
+>   - load target ELF sections
+>   - load .BTF_ids symbols
+>     - this will be a dependency of btf2btf transformations in
+>       subsequent patches
+>   - load BTF and its base as is
+>   - (*) btf2btf transformations will happen here
+>   - finalize_btf(), introduced in this patch
+>     - does distill base and sort BTF
+>   - resolve and patch .BTF_ids
 >=20
-> This effectively changes the signature of the `bpf_foo` kfunc in the
-> context of verification: from one without implicit args to the one
-> with full argument list.
+> This approach helps to avoid fixups in .BTF_ids data in case the ids
+> change at any point of BTF processing, because symbol resolution
+> happens on the finalized, ready to dump, BTF data.
 >=20
-> The values of implicit arguments by design are provided by the
-> verifier, and so they can only be of particular types. In this patch
-> the only allowed implicit arg type is a pointer to struct
-> bpf_prog_aux.
+> This also gives flexibility in BTF transformations, because they will
+> happen on BTF that is not distilled and/or sorted yet, allowing to
+> freely add, remove and modify BTF types.
 >=20
-> In order for the verifier to correctly set an implicit bpf_prog_aux
-> arg value at runtime, is_kfunc_arg_prog() is extended to check for the
-> arg type. At a point when prog arg is determined in check_kfunc_args()
-> the kfunc with implicit args already has a prototype with full
-> argument list, so the existing value patch mechanism just works.
->=20
-> If a new kfunc with KF_IMPLICIT_ARG is declared for an existing kfunc
-> that uses a __prog argument (a legacy case), the prototype
-> substitution works in exactly the same way, assuming the kfunc follows
-> the _impl naming convention. The difference is only in how _impl
-> prototype is added to the BTF, which is not the verifier's
-> concern. See a subsequent resolve_btfids patch for details.
->=20
-> __prog suffix is still supported at this point, but will be removed in
-> a subsequent patch, after current users are moved to KF_IMPLICIT_ARGS.
->=20
-> Introduction of KF_IMPLICIT_ARGS revealed an issue with zero-extension
-> tracking, because an explicit rX =3D 0 in place of the verifier-supplied
-> argument is now absent if the arg is implicit (the BPF prog doesn't
-> pass a dummy NULL anymore). To mitigate this, reset the subreg_def of
-> all caller saved registers in check_kfunc_call() [1].
->=20
-> [1] https://lore.kernel.org/bpf/b4a760ef828d40dac7ea6074d39452bb0dc82caa.=
-camel@gmail.com/
+> [1] https://lore.kernel.org/bpf/20251219181321.1283664-1-ihor.solodrai@li=
+nux.dev/
+> [2] https://lore.kernel.org/bpf/20260109130003.3313716-1-dolinux.peng@gma=
+il.com/
 >=20
 > Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
 > ---
 
 Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
-[...]
-
-> @@ -14177,8 +14223,12 @@ static int check_kfunc_call(struct bpf_verifier_=
-env *env, struct bpf_insn *insn,
->  		}
+> @@ -1099,12 +1116,22 @@ int main(int argc, const char **argv)
+>  	if (obj.efile.idlist_shndx =3D=3D -1 ||
+>  	    obj.efile.symbols_shndx =3D=3D -1) {
+>  		pr_debug("Cannot find .BTF_ids or symbols sections, skip symbols resol=
+ution\n");
+> -		goto dump_btf;
+> +		resolve_btfids =3D false;
 >  	}
 > =20
-> -	for (i =3D 0; i < CALLER_SAVED_REGS; i++)
-> -		mark_reg_not_init(env, regs, caller_saved[i]);
-> +	for (i =3D 0; i < CALLER_SAVED_REGS; i++) {
-> +		u32 regno =3D caller_saved[i];
+> -	if (symbols_collect(&obj))
+> +	if (resolve_btfids)
+> +		if (symbols_collect(&obj))
+> +			goto out;
+
+Nit: check obj.efile.idlist_shndx and obj.efile.symbols_shndx inside symbol=
+s_collect()?
+     To avoid resolve_btfids flag and the `goto dump_btf;` below.
+
 > +
-> +		mark_reg_not_init(env, regs, regno);
-> +		regs[regno].subreg_def =3D DEF_NOT_SUBREG;
-> +	}
-
-But we still need to understand why .subreg_def assignment can't be
-moved inside mark_reg_not_init().
-
-[...]
+> +	if (load_btf(&obj))
+>  		goto out;
+> =20
+> +	if (finalize_btf(&obj))
+> +		goto out;
+> +
+> +	if (!resolve_btfids)
+> +		goto dump_btf;
+> +
+>  	if (symbols_resolve(&obj))
+>  		goto out;
+> =20
 
