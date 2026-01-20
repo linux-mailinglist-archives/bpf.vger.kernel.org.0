@@ -1,99 +1,99 @@
-Return-Path: <bpf+bounces-79580-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79581-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED664D3C419
-	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 10:50:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 63D70D3C41E
+	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 10:51:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id F2184544367
-	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 09:36:18 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id F28CA544FA4
+	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 09:37:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83BF33DA7F9;
-	Tue, 20 Jan 2026 09:29:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 667383D2FF9;
+	Tue, 20 Jan 2026 09:30:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IvdYur0w";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="n70Iagmj"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Nb8xuAM7";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="Hf7cWmdW"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 771963D3308
-	for <bpf@vger.kernel.org>; Tue, 20 Jan 2026 09:29:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA5B13D1CB2
+	for <bpf@vger.kernel.org>; Tue, 20 Jan 2026 09:30:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768901369; cv=none; b=lZoxFY9uuky83W1aqfgJWJ1X8ZTO67ggRtGTNetNSCgJEvzQJIgjeI8oGhxV97w3fwmZE35LyQs4fUbFy1XeKAd5RJyeI1uDzE/9eoaElzWvPyH1DFoEBjS354msjnACrimnmTisWejx+EU9SSqB3iM87XHbE+TjPtxWTBFlKMM=
+	t=1768901456; cv=none; b=BAHFPljD/EVInV2XIESHflcZM0ENzPdmFrFMyRbZVFECE+Q8J0UAJAXmlKJlLbw18eT/GXXndEPDEyYEkS6IE3WCwSbcZ4dftvSye+nklo9y8k0d3KquUqbd9M3ldnHYItEa2iw1MRaCXEEgTX1TxysQu2lwxUj7gdqRfui6zJM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768901369; c=relaxed/simple;
-	bh=u0t9utE1VdYIkNusZOPhLh6iE752x+q8qfWRm/zBNvI=;
+	s=arc-20240116; t=1768901456; c=relaxed/simple;
+	bh=7zXCQbXCqo1rKwIeWOHUQuU/2IS0w1HcF7sW1fwZDuc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PpO9DwBeOzvsUGONrO1BazJeryjTzmIrDb3caj8/p0cBn651nln79zj90tCIMWLDuwUUZrYSNRwqqeyiRQ4rScEVqhjE0MPhreZ8haD3xBk8N1Mosb/NxhUIOvJp4ALdOOBXF78Ab3sauCFSNwjSwR3laYR+Caqlvy1LtL4Oc0c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IvdYur0w; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=n70Iagmj; arc=none smtp.client-ip=170.10.133.124
+	 In-Reply-To:Content-Type; b=lKrZ2qjYMbog5I8UWjmzWiBYtqsseRFjbtzdQD77dryHDj9rwCQEUQwWycBm7skxSKnxPwcMkcZynQe/ojYdf/IEMQ0zohcpAkc1lK28zaqCvxeA4zlw0uyYTo6sX3vycoSbZreP42oQD06X1C5wEz0vXlumMUjyCVCmCeglE8Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Nb8xuAM7; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=Hf7cWmdW; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1768901366;
+	s=mimecast20190719; t=1768901453;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ytdce+lmnQxHdCLoiOHjM1xD0pxCoz9ZC4Ra5w4KFBs=;
-	b=IvdYur0wizkOMaaPZ2R5sMuWhnv4RCvxzz71CbKTorot9bsVEX9Cc7qUsq8cYkGav0bFDv
-	HSbsmg6ZGHZ+IqQT6hE+lrb+HsPQltrIFJRMaaHonKk0nV7XYMG2vk0vPJi/+wZQbVGl2P
-	d83mL23opt3Xw7OYl4TcHtGNvs6+Cto=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=mjsmqMs+6ZBVzHda5xQ25EQLd8+19N5Soiv3QyRip88=;
+	b=Nb8xuAM71sPt7Eh9rHLse2rhWBlZEfgiR4guA1CDGtjYpMR77y7nIdyZNMgcNQXXg3j13Z
+	gF2MAF97gPIi05WT2KduBMq5l8+cb4u/7M0bKkmC3mvBihP/bU3u92MAfN0oN+1siElYsJ
+	MMguzrTV6Bc/vkcX0jcsIjnkzYBpxtE=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-438-otEcSX6KO0avTIBSCecKwA-1; Tue, 20 Jan 2026 04:29:24 -0500
-X-MC-Unique: otEcSX6KO0avTIBSCecKwA-1
-X-Mimecast-MFC-AGG-ID: otEcSX6KO0avTIBSCecKwA_1768901363
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-47d3ba3a49cso53473635e9.2
-        for <bpf@vger.kernel.org>; Tue, 20 Jan 2026 01:29:24 -0800 (PST)
+ us-mta-221-dhbg9PNgP_SI8t-zk75hYQ-1; Tue, 20 Jan 2026 04:30:51 -0500
+X-MC-Unique: dhbg9PNgP_SI8t-zk75hYQ-1
+X-Mimecast-MFC-AGG-ID: dhbg9PNgP_SI8t-zk75hYQ_1768901451
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-43591aacca2so278356f8f.1
+        for <bpf@vger.kernel.org>; Tue, 20 Jan 2026 01:30:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1768901363; x=1769506163; darn=vger.kernel.org;
+        d=redhat.com; s=google; t=1768901450; x=1769506250; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:content-language:from
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=ytdce+lmnQxHdCLoiOHjM1xD0pxCoz9ZC4Ra5w4KFBs=;
-        b=n70IagmjGcrXfd3BRevxjEWErsqUvLl7S5vVuMrYKTZxc0vZjVCpTiUE9dTKocCCxC
-         1UY3V32INQUrgPZ4s63j0lq5H8Z398ZQcl0Ani5b9xWwFURVw4btmiKvKbSDLrPOzAat
-         BEgXw7WCc7Wlqp9trBhw+GhJzrxsBUIiEXFPUVUJnOgPMWYs7iO3BFvOantXkZJhJM7G
-         6Ql1FcH2IZUVyCc34kzSpzzn5SE/YTnu8cEl3Gze4ROz/FKrhveljH8zi8ntzmdRdSnT
-         x4HwelucSYlENJd15gswkXoJEG5uWlaMs+0xfgTJzOswl/DqYFy7yfGaKCOJPFurWf/u
-         AsFg==
+        bh=mjsmqMs+6ZBVzHda5xQ25EQLd8+19N5Soiv3QyRip88=;
+        b=Hf7cWmdWijqWvePVXAi3+u5PftRSylAi2WYVDEbVyHm3w/QTn2gVPrpXFhYVTHlwSg
+         BBkGHNB0yxjdtJlZBgthwQMgqSVr28aau4VVY2IsOLrq0qs0JnK27S6WTORs4mAbyL0t
+         qOyDqB4EIBMcNRUejRTSHyf3z1GE+mC0VRwIZ7AayRa9cI2fYslkTBdXxyvOlhqExI/o
+         4u7aWJwW4CIRQocVMSjgRf3aCNhFPvbQ2ltxzABA/RYVYJAZ5RAHfT9wUgFtuXai3c4C
+         9Bb7rBqsXBeawwBOn3bCeKNZ7uc9DPy9yOqPjeUxDGLvrlUsZL78f4FxHjFl8IQ17ZPT
+         K31g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768901363; x=1769506163;
+        d=1e100.net; s=20230601; t=1768901450; x=1769506250;
         h=content-transfer-encoding:in-reply-to:content-language:from
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ytdce+lmnQxHdCLoiOHjM1xD0pxCoz9ZC4Ra5w4KFBs=;
-        b=wDXEegYk5mzWWm79XQB+ayaDeYlMLZnV7AYaEfh+ZA9sOC+LzQ4g58PAvgIEKEXIeY
-         6V9DFxIqQVxDtGt8jDfXbdQHtcyWHz1ECwqSR+JwS4dVUD9DkaZ5PlCfPF6OrlGZR8wT
-         7a3CLa+OpJ9Lnf3Cl7lvbE164rdAvYuky1uwcZZsvSL7P1nmGA2Yk+Foi4YKW4qXIopw
-         wD7MyVkOIJ/rRVcrpgf0EoX+vvk/XORfaKyLTThExrWnF6qn0k9LwaGUKAFvHvjjR3Ts
-         xDBpMJKYQwytZzfOJuE+g3yAhYw27E4zlMGpXmKlFy/P3+HNWSYhSTDafNh0Yc1tL7vv
-         vU/Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWF9E/2Qdju0gXVZirG06HmVD1I6UPHC0QFRGyqNnoti074ZETooRRmF6g0lo0+IH5a1eY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxMeBgkvYKQsrWkWu/wKwpIISm/fRW8Peus5ZQA7ENvgkFmIZQ6
-	E8Wx7BX/nrUiwcWU0kos+Xcqg74QFRPjBq/dX7k2JdQ8JWMl+VDjoKgtsZd0BB9ttNrRD/3YGMj
-	tVyVu4q2oHztac9NgHN9cpHTRD+BDBgcC2Ram8WTUN2gR59yKXnHb
-X-Gm-Gg: AY/fxX7PhMT0DRTxRJ/YNvkWgOM1hQnyemEbnKxxHHM1yjQtUlqQgkeeQv1U9dHl0Co
-	chW52J5+Sc/Gd/zNUE/sfIY2p/iV9mxkEmS1mGPhggvoA0U6JEi/JCmCA7BT9Az9c5a8peuyZJb
-	eWCapXQi0G0jLSem2pqXPq8l6Nx6W9GbOTQkDY9sKeYYHP9QqkOowOeKoGZmqTZvzxhYZlaZHvz
-	TyZn7EupWD6ihDN3j1kXM5Nt40qAjMOtO+mmmzE5iEPEoM3SDM0ATWiF3gFEQBntPxr7x7LUxdi
-	8oBWjV5rZIVuAfYpsY00mC63yYHPYhWH4CA0vE8tQUSh/ONjnrcnAN0uTWksTjwQIrY2bGrH
-X-Received: by 2002:a05:600c:4e0f:b0:47e:e779:36e with SMTP id 5b1f17b1804b1-4801eb0375amr166993675e9.19.1768901363234;
-        Tue, 20 Jan 2026 01:29:23 -0800 (PST)
-X-Received: by 2002:a05:600c:4e0f:b0:47e:e779:36e with SMTP id 5b1f17b1804b1-4801eb0375amr166993365e9.19.1768901362773;
-        Tue, 20 Jan 2026 01:29:22 -0800 (PST)
+        bh=mjsmqMs+6ZBVzHda5xQ25EQLd8+19N5Soiv3QyRip88=;
+        b=pB7s34U0hvtqakBapJz0aIExd8UFUOjyJdxXwXLwSz7Mb48E4R1TpGymitwzfXckMq
+         EstkYU8Vq2VMJfGyieIDu7zr8nsunx0Cpud100VHZio18n7VCnRfdg+QPi+4yRDGpqoU
+         45HWA8WwA5VjPFDj+B9Jibr7jgtUX6x6/Jk5SYqA/C35DdHxJ4bRuQId/DT6sXuIv5PT
+         Xr8vDhP9zi9O987sc/NNN79/FDEGkbvfKIXjhp9yZpz+NoAG/5/MkhiIW5mitPm7yqhq
+         44XCNoRDjdRG2uE/0yDQbOLEdX53rp74maN48Ht8sucaoAZs+V7WQPc7ZIxbh2kuWdLt
+         t0QA==
+X-Forwarded-Encrypted: i=1; AJvYcCXuTuOnZO1VkxtzEYtWDgTBvSXeoNHes7kwLeT+OC2cJzby62hOyjZnmNQW3mcE4SSO3/k=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzAr+F4Y1pc6dh2m1C98e+DWn0M4jVueUCw9xzwSngOkbJHISl0
+	4V6Nh7yF40ShBy2DME2PlQ0KfPWKwi0KxGVInbn/4xrm1LHQGIEL4h89OySJqDe/ez+sP8X9Qpl
+	4SKeHyh+0QBRV8IJE6qzw/RklFScFH/pceROaXal6iO/DbAEM+9bq9i4EGVnN
+X-Gm-Gg: AZuq6aJ4EX8tkjQbHu/ic8uuLrMBEOQz0EDkr03WKZDyOy1fl9iZ6e+H5dpfb0XIFns
+	V9DjQhXwOkDZy/UHczuLJQEaWppOf35xNnWrETl8dTpTlKJlMSt7fHj8fpH5VtKFWyC4Re4rKWk
+	t5jsE81M/nuWG4D6zURLk3Qx3FI18xJKHVMbssDKBgBZK8l0JrlZQC79JgDSpmE6xDQ36npIQDP
+	ePl2wLeZzvRE/doRqtvI+D1w9FVX+bO7INmIxNX/ggl14NOEADF2tnZRm8uS5lORHulhwrzl/Ea
+	OtIPZLUZ14m9jfhpRwLpR/usY6x3tQey56e+dmKfXz3fBVIA1hfgTZ+gT/JevCUfHo0Z8LBE
+X-Received: by 2002:a05:6000:178c:b0:42f:ba58:6599 with SMTP id ffacd0b85a97d-4358ff56df1mr1791702f8f.35.1768901450378;
+        Tue, 20 Jan 2026 01:30:50 -0800 (PST)
+X-Received: by 2002:a05:6000:178c:b0:42f:ba58:6599 with SMTP id ffacd0b85a97d-4358ff56df1mr1791642f8f.35.1768901449818;
+        Tue, 20 Jan 2026 01:30:49 -0800 (PST)
 Received: from [10.43.17.17] ([213.175.37.14])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4356996cecasm26411832f8f.26.2026.01.20.01.29.21
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4356992201csm29135888f8f.2.2026.01.20.01.30.48
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Jan 2026 01:29:22 -0800 (PST)
-Message-ID: <3d9e2ce9-3e47-4b10-aad2-93b37b235239@redhat.com>
-Date: Tue, 20 Jan 2026 10:29:21 +0100
+        Tue, 20 Jan 2026 01:30:49 -0800 (PST)
+Message-ID: <794ca04e-5562-4874-ac54-7ab4cc239378@redhat.com>
+Date: Tue, 20 Jan 2026 10:30:48 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -101,89 +101,106 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v3 1/2] bpf: add bpf_strncasecmp kfunc
-To: bot+bpf-ci@kernel.org, ishiyama@hpc.is.uec.ac.jp, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v3 2/2] selftests/bpf: Test kfunc bpf_strncasecmp
+To: Yuzuki Ishiyama <ishiyama@hpc.is.uec.ac.jp>, bpf@vger.kernel.org
 Cc: mykyta.yatsenko5@gmail.com, andrii@kernel.org, ast@kernel.org,
- daniel@iogearbox.net, martin.lau@linux.dev, martin.lau@kernel.org,
- eddyz87@gmail.com, yonghong.song@linux.dev, clm@meta.com,
- ihor.solodrai@linux.dev
-References: <20260120070336.188850-2-ishiyama@hpc.is.uec.ac.jp>
- <cd994531bcbe33858623d135448bd0540c36bb739b894af5a99d009b617e08fb@mail.kernel.org>
+ daniel@iogearbox.net, martin.lau@linux.dev
+References: <20260120070336.188850-1-ishiyama@hpc.is.uec.ac.jp>
+ <20260120070336.188850-3-ishiyama@hpc.is.uec.ac.jp>
 From: Viktor Malik <vmalik@redhat.com>
 Content-Language: en-US
-In-Reply-To: <cd994531bcbe33858623d135448bd0540c36bb739b894af5a99d009b617e08fb@mail.kernel.org>
+In-Reply-To: <20260120070336.188850-3-ishiyama@hpc.is.uec.ac.jp>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 1/20/26 08:21, bot+bpf-ci@kernel.org wrote:
->> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
->> index 9eaa4185e0a7..753753f039ff 100644
->> --- a/kernel/bpf/helpers.c
->> +++ b/kernel/bpf/helpers.c
+On 1/20/26 08:03, Yuzuki Ishiyama wrote:
+> Add testsuites for kfunc bpf_strncasecmp.
 > 
-> [ ... ]
-> 
->> -static int __bpf_strcasecmp(const char *s1, const char *s2, bool ignore_case)
->> +static int __bpf_strncasecmp(const char *s1, const char *s2, bool ignore_case, size_t len)
->>  {
->>  	char c1, c2;
->> -	int i;
->> +	int i, max_sz;
->>
->>  	if (!copy_from_kernel_nofault_allowed(s1, 1) ||
->>  	    !copy_from_kernel_nofault_allowed(s2, 1)) {
->>  		return -ERANGE;
->>  	}
->>
->> +	max_sz = min_t(int, len, XATTR_SIZE_MAX);
->                    ^^^
-> 
-> Can this truncation cause incorrect results when len > INT_MAX? The len
-> parameter is size_t, but min_t(int, ...) casts it to signed int before the
-> comparison. When len is larger than INT_MAX, the cast produces a negative
-> value, and min_t returns that negative value instead of XATTR_SIZE_MAX.
-> 
-> For example, if a BPF program calls bpf_strncasecmp(s1, s2, SIZE_MAX):
-> - min_t(int, SIZE_MAX, 65536) evaluates to min_t(int, -1, 65536) = -1
-> - max_sz becomes -1
-> - The loop condition (i < max_sz) is (0 < -1), which is false
-> - The loop never executes, and the function returns 0 without comparing
-> 
-> This would make bpf_strncasecmp("foo", "bar", SIZE_MAX) return 0 (equal)
-> when the strings are clearly different.
+> Signed-off-by: Yuzuki Ishiyama <ishiyama@hpc.is.uec.ac.jp>
 
-This is a good point and we should IMO address it.
+Please include my ack from v2 (unless you change the patch significantly):
 
-> 
-> Would using min_t(size_t, len, XATTR_SIZE_MAX) avoid this issue?
+Acked-by: Viktor Malik <vmalik@redhat.com>
 
-Other string kfuncs use `i < len && i < XATTR_SIZE_MAX` in the loop
-condition, I'd stick to that for consistency.
-
-Viktor
-
-> 
->> +
->>  	guard(pagefault)();
->> -	for (i = 0; i < XATTR_SIZE_MAX; i++) {
->> +	for (i = 0; i < max_sz; i++) {
-> 
-> [ ... ]
-> 
->> +__bpf_kfunc int bpf_strncasecmp(const char *s1__ign, const char *s2__ign, size_t len)
->> +{
->> +	return __bpf_strncasecmp(s1__ign, s2__ign, true, len);
->>  }
-> 
-> The BPF verifier does not validate ranges for scalar kfunc parameters, so
-> BPF programs can pass arbitrary size_t values to len, triggering the
-> truncation issue described above.
-> 
-> 
 > ---
-> AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-> See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
+>  tools/testing/selftests/bpf/prog_tests/string_kfuncs.c     | 1 +
+>  tools/testing/selftests/bpf/progs/string_kfuncs_failure1.c | 6 ++++++
+>  tools/testing/selftests/bpf/progs/string_kfuncs_failure2.c | 1 +
+>  tools/testing/selftests/bpf/progs/string_kfuncs_success.c  | 7 +++++++
+>  4 files changed, 15 insertions(+)
 > 
-> CI run summary: https://github.com/kernel-patches/bpf/actions/runs/21162711653
+> diff --git a/tools/testing/selftests/bpf/prog_tests/string_kfuncs.c b/tools/testing/selftests/bpf/prog_tests/string_kfuncs.c
+> index 0f3bf594e7a5..300032a19445 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/string_kfuncs.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/string_kfuncs.c
+> @@ -9,6 +9,7 @@
+>  static const char * const test_cases[] = {
+>  	"strcmp",
+>  	"strcasecmp",
+> +	"strncasecmp",
+>  	"strchr",
+>  	"strchrnul",
+>  	"strnchr",
+> diff --git a/tools/testing/selftests/bpf/progs/string_kfuncs_failure1.c b/tools/testing/selftests/bpf/progs/string_kfuncs_failure1.c
+> index 826e6b6aff7e..bddc4e8579d2 100644
+> --- a/tools/testing/selftests/bpf/progs/string_kfuncs_failure1.c
+> +++ b/tools/testing/selftests/bpf/progs/string_kfuncs_failure1.c
+> @@ -33,6 +33,8 @@ SEC("syscall") __retval(USER_PTR_ERR) int test_strcmp_null1(void *ctx) { return
+>  SEC("syscall")  __retval(USER_PTR_ERR)int test_strcmp_null2(void *ctx) { return bpf_strcmp("hello", NULL); }
+>  SEC("syscall") __retval(USER_PTR_ERR) int test_strcasecmp_null1(void *ctx) { return bpf_strcasecmp(NULL, "HELLO"); }
+>  SEC("syscall")  __retval(USER_PTR_ERR)int test_strcasecmp_null2(void *ctx) { return bpf_strcasecmp("HELLO", NULL); }
+> +SEC("syscall") __retval(USER_PTR_ERR)int test_strncasecmp_null1(void *ctx) { return bpf_strncasecmp(NULL, "HELLO", 5); }
+> +SEC("syscall")  __retval(USER_PTR_ERR)int test_strncasecmp_null2(void *ctx) { return bpf_strncasecmp("HELLO", NULL, 5);	 }
+>  SEC("syscall")  __retval(USER_PTR_ERR)int test_strchr_null(void *ctx) { return bpf_strchr(NULL, 'a'); }
+>  SEC("syscall")  __retval(USER_PTR_ERR)int test_strchrnul_null(void *ctx) { return bpf_strchrnul(NULL, 'a'); }
+>  SEC("syscall")  __retval(USER_PTR_ERR)int test_strnchr_null(void *ctx) { return bpf_strnchr(NULL, 1, 'a'); }
+> @@ -57,6 +59,8 @@ SEC("syscall") __retval(USER_PTR_ERR) int test_strcmp_user_ptr1(void *ctx) { ret
+>  SEC("syscall") __retval(USER_PTR_ERR) int test_strcmp_user_ptr2(void *ctx) { return bpf_strcmp("hello", user_ptr); }
+>  SEC("syscall") __retval(USER_PTR_ERR) int test_strcasecmp_user_ptr1(void *ctx) { return bpf_strcasecmp(user_ptr, "HELLO"); }
+>  SEC("syscall") __retval(USER_PTR_ERR) int test_strcasecmp_user_ptr2(void *ctx) { return bpf_strcasecmp("HELLO", user_ptr); }
+> +SEC("syscall") __retval(USER_PTR_ERR) int test_strncasecmp_user_ptr1(void *ctx) { return bpf_strncasecmp(user_ptr, "HELLO", 5); }
+> +SEC("syscall") __retval(USER_PTR_ERR) int test_strncasecmp_user_ptr2(void *ctx) { return bpf_strncasecmp("HELLO", user_ptr, 5);	 }
+>  SEC("syscall") __retval(USER_PTR_ERR) int test_strchr_user_ptr(void *ctx) { return bpf_strchr(user_ptr, 'a'); }
+>  SEC("syscall") __retval(USER_PTR_ERR) int test_strchrnul_user_ptr(void *ctx) { return bpf_strchrnul(user_ptr, 'a'); }
+>  SEC("syscall") __retval(USER_PTR_ERR) int test_strnchr_user_ptr(void *ctx) { return bpf_strnchr(user_ptr, 1, 'a'); }
+> @@ -83,6 +87,8 @@ SEC("syscall") __retval(-EFAULT) int test_strcmp_pagefault1(void *ctx) { return
+>  SEC("syscall") __retval(-EFAULT) int test_strcmp_pagefault2(void *ctx) { return bpf_strcmp("hello", invalid_kern_ptr); }
+>  SEC("syscall") __retval(-EFAULT) int test_strcasecmp_pagefault1(void *ctx) { return bpf_strcasecmp(invalid_kern_ptr, "HELLO"); }
+>  SEC("syscall") __retval(-EFAULT) int test_strcasecmp_pagefault2(void *ctx) { return bpf_strcasecmp("HELLO", invalid_kern_ptr); }
+> +SEC("syscall") __retval(-EFAULT) int test_strncasecmp_pagefault1(void *ctx) { return bpf_strncasecmp(invalid_kern_ptr, "HELLO", 5); }
+> +SEC("syscall") __retval(-EFAULT) int test_strncasecmp_pagefault2(void *ctx) { return bpf_strncasecmp("HELLO", invalid_kern_ptr, 5);	 }
+>  SEC("syscall") __retval(-EFAULT) int test_strchr_pagefault(void *ctx) { return bpf_strchr(invalid_kern_ptr, 'a'); }
+>  SEC("syscall") __retval(-EFAULT) int test_strchrnul_pagefault(void *ctx) { return bpf_strchrnul(invalid_kern_ptr, 'a'); }
+>  SEC("syscall") __retval(-EFAULT) int test_strnchr_pagefault(void *ctx) { return bpf_strnchr(invalid_kern_ptr, 1, 'a'); }
+> diff --git a/tools/testing/selftests/bpf/progs/string_kfuncs_failure2.c b/tools/testing/selftests/bpf/progs/string_kfuncs_failure2.c
+> index 05e1da1f250f..412c53b87b18 100644
+> --- a/tools/testing/selftests/bpf/progs/string_kfuncs_failure2.c
+> +++ b/tools/testing/selftests/bpf/progs/string_kfuncs_failure2.c
+> @@ -8,6 +8,7 @@ char long_str[XATTR_SIZE_MAX + 1];
+>  
+>  SEC("syscall") int test_strcmp_too_long(void *ctx) { return bpf_strcmp(long_str, long_str); }
+>  SEC("syscall") int test_strcasecmp_too_long(void *ctx) { return bpf_strcasecmp(long_str, long_str); }
+> +SEC("syscall") int test_strncasecmp_too_long(void *ctx) { return bpf_strncasecmp(long_str, long_str, sizeof(long_str)); }
+>  SEC("syscall") int test_strchr_too_long(void *ctx) { return bpf_strchr(long_str, 'b'); }
+>  SEC("syscall") int test_strchrnul_too_long(void *ctx) { return bpf_strchrnul(long_str, 'b'); }
+>  SEC("syscall") int test_strnchr_too_long(void *ctx) { return bpf_strnchr(long_str, sizeof(long_str), 'b'); }
+> diff --git a/tools/testing/selftests/bpf/progs/string_kfuncs_success.c b/tools/testing/selftests/bpf/progs/string_kfuncs_success.c
+> index a8513964516b..3ccfae4d27d3 100644
+> --- a/tools/testing/selftests/bpf/progs/string_kfuncs_success.c
+> +++ b/tools/testing/selftests/bpf/progs/string_kfuncs_success.c
+> @@ -17,6 +17,13 @@ __test(0) int test_strcasecmp_eq2(void *ctx) { return bpf_strcasecmp(str, "HELLO
+>  __test(0) int test_strcasecmp_eq3(void *ctx) { return bpf_strcasecmp(str, "HELLO world"); }
+>  __test(1) int test_strcasecmp_neq1(void *ctx) { return bpf_strcasecmp(str, "hello"); }
+>  __test(1) int test_strcasecmp_neq2(void *ctx) { return bpf_strcasecmp(str, "HELLO"); }
+> +__test(0) int test_strncasecmp_eq1(void *ctx) { return bpf_strncasecmp(str, "hello world", 11); }
+> +__test(0) int test_strncasecmp_eq2(void *ctx) { return bpf_strncasecmp(str, "HELLO WORLD", 11); }
+> +__test(0) int test_strncasecmp_eq3(void *ctx) { return bpf_strncasecmp(str, "HELLO world", 11); }
+> +__test(0) int test_strncasecmp_eq4(void *ctx) { return bpf_strncasecmp(str, "hello", 5); }
+> +__test(0) int test_strncasecmp_eq6(void *ctx) { return bpf_strncasecmp(str, "hello world!", 11); }
+> +__test(-1) int test_strncasecmp_neq1(void *ctx) { return bpf_strncasecmp(str, "hello!", 6); }
+> +__test(1) int test_strncasecmp_neq2(void *ctx) { return bpf_strncasecmp(str, "abc", 3); }
+>  __test(1) int test_strchr_found(void *ctx) { return bpf_strchr(str, 'e'); }
+>  __test(11) int test_strchr_null(void *ctx) { return bpf_strchr(str, '\0'); }
+>  __test(-ENOENT) int test_strchr_notfound(void *ctx) { return bpf_strchr(str, 'x'); }
 
 
