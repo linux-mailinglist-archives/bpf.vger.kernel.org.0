@@ -1,52 +1,53 @@
-Return-Path: <bpf+bounces-79683-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79684-lists+bpf=lfdr.de@vger.kernel.org>
 Delivered-To: lists+bpf@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wJLUMnDQb2mgMQAAu9opvQ
-	(envelope-from <bpf+bounces-79683-lists+bpf=lfdr.de@vger.kernel.org>)
-	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 19:58:56 +0100
+	id 6BW0IM3Ub2mgMQAAu9opvQ
+	(envelope-from <bpf+bounces-79684-lists+bpf=lfdr.de@vger.kernel.org>)
+	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 20:17:33 +0100
 X-Original-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EFE449EA0
-	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 19:58:56 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B6C44A290
+	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 20:17:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 2940FA8ADBD
-	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 18:50:26 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 66E2A58D700
+	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 18:51:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0208E47799E;
-	Tue, 20 Jan 2026 18:48:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E2743C1986;
+	Tue, 20 Jan 2026 18:50:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b="dkE4KXEG";
-	dkim=permerror (0-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b="Pjyzp+YC"
+	dkim=pass (2048-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b="VKOIzjgq";
+	dkim=permerror (0-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b="mQD520Nb"
 X-Original-To: bpf@vger.kernel.org
 Received: from devnull.danielhodges.dev (vps-2f6e086e.vps.ovh.us [135.148.138.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52328472795;
-	Tue, 20 Jan 2026 18:48:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0B194279E1;
+	Tue, 20 Jan 2026 18:50:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=135.148.138.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768934892; cv=none; b=HOfoBodB1rL+JObM+KX2EXe9wUWcMYXLVHEpFsptdQCEYAM5Q4Ql1WyChbHUDqrxKO3zXAwWt6R+oTNevJoJACzZMEdI2ADYeUct0muyomJ/LKtnzmnobdFCsLUqYjqGBYwtZ0RwCSmfUdDjL/Igeg1VycUBVMdEK3yZpV02b2I=
+	t=1768935016; cv=none; b=PiFbijRu/uhzjKR6nnMCZzFCQ2S/ZXqRR5rh2dDWXI+ORS6Q9vjcsLXZ22D7gLTg1IRY7bzYDIeHZ9h1+NLaQ0Ec100Mj8J159gROK+4XeefWp1jiUTjmD7X4pAzpTGJsYtxjiWGIhYFgqpSOLwa2w6+T1ETc9F3lJKe1+MAepc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768934892; c=relaxed/simple;
-	bh=aPfUT2IBk4L0FNgR3TLob4IKtM/Pswie+93u9HHgK1g=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TZCdz7oT3vpCb51k8L97ugOyGpylG51LFxkPPKHjDXjr3YDGyidVYPv9vst36UV6+PdlFPcgbkf81lOj2HfTY4rfIW2qG8PUTFhOjYXuqCinh6nda/FSUyVOhWqVbMU+MpUIc4svHA4oTj0ECddb6JF/sWtTWUKuOloYO9dzu5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=danielhodges.dev; spf=pass smtp.mailfrom=danielhodges.dev; dkim=pass (2048-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b=dkE4KXEG; dkim=permerror (0-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b=Pjyzp+YC; arc=none smtp.client-ip=135.148.138.8
+	s=arc-20240116; t=1768935016; c=relaxed/simple;
+	bh=sQBJHKrap30cro4X2Ai4jsqMgrOVRDKh5aZHCOpqwLM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=SxDiu5+46h8dwvPb0Tb+Pocv8nAeRaprPnpc3+DIBfrdPwQ1XUZDzbYP/jWidN4Hn63EavHU8vsUeLpmYSfz/tsipTWzfgXpVbGqZYK+T2y4R7q5m+M67yegfOxWWY59X6lav5u6ZWEDJw2GzZL0oCnh4ulmBNOj9TLCLMZHPgE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=danielhodges.dev; spf=pass smtp.mailfrom=danielhodges.dev; dkim=pass (2048-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b=VKOIzjgq; dkim=permerror (0-bit key) header.d=danielhodges.dev header.i=@danielhodges.dev header.b=mQD520Nb; arc=none smtp.client-ip=135.148.138.8
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=danielhodges.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=danielhodges.dev
 DKIM-Signature: v=1; a=rsa-sha256; s=202510r; d=danielhodges.dev; c=relaxed/relaxed;
-	h=Message-ID:Date:Subject:To:From; t=1768934821; bh=/3+H7ZrSXrEdksyTiq7nd6Z
-	BJcOF97RS0v3A01tmu5w=; b=dkE4KXEGPpKchR00C2TKlEVjiQb9KMpfwxU23ejoHlh7iNRaZY
-	sGkjcmoXZP2IeuZ/O8ORmMftWVsEs9BYi6v8OeMfe/f1lpIPqLh7L+ocdGTGF1VSSmTRdyu/R+o
-	BRfOgiH/mllbEW2xclnosYsnS8KgTYhgfR9CxHs6HKzJAuBBkkYUFyOb1dd1ka9J6dzak6u2Wwf
-	oJyZUJhdoX5FMDLv9BYC1CZ2ThzfBaljw4Yb4n9V0KJgL1BuKZXUakrcG/gugOExy/rWkKHN3qE
-	DOQC8ssnud7anGgQQ4IeFzQZq4QyvGBMX9luxDwU5AevZOcoqcHgmFOzhFDnQRdrbRQ==;
+	h=Message-ID:Date:Subject:To:From; t=1768934823; bh=yz3V5Cr9bLGhpWSl7MHOeZq
+	Im+CTBlyn06rztwC9qmY=; b=VKOIzjgqhd8uvaGFtWDnsdVuZ6X/U/lOCU78VeaUkUJaeNITqI
+	w06Gmqlc1FdWnJJVV+w9WNXsJ4570xsPOJ96tNU33UaY8hslQv/kZjkLP8ZLUcUszhkKV1rCCzx
+	z0L8xVBJ6Mpl9KE+s5bms9rEZggUviZN7eJc5yUSDxMRkYkoF/KE7zqfJkIoBAFmad/DMYA+dnp
+	OVidmuw6jNcTYW2+P1DF29rQXyPW7myQUO9zTHNmn5KfZb1Tx0p3CG2UDZ+pic/iawzwjVBlbll
+	fw5jRkPOF9WQY9MaRxWArvoFqM5mljnmPKTh5IWHa08eZX8CmBIgpQ870iiniMAy2TA==;
 DKIM-Signature: v=1; a=ed25519-sha256; s=202510e; d=danielhodges.dev; c=relaxed/relaxed;
-	h=Message-ID:Date:Subject:To:From; t=1768934821; bh=/3+H7ZrSXrEdksyTiq7nd6Z
-	BJcOF97RS0v3A01tmu5w=; b=Pjyzp+YCfjPu+sLFxDd0jp8b15PJc8vKdduvJ9wq/uNrTvYGgU
-	o5FbnO0BapW2pLs946YXzXGvikvjJYi6XOBQ==;
+	h=Message-ID:Date:Subject:To:From; t=1768934823; bh=yz3V5Cr9bLGhpWSl7MHOeZq
+	Im+CTBlyn06rztwC9qmY=; b=mQD520NbkIjDeZNlxmO9lSKW5u3kzu3zI3aA8jGYnpzA6+A7TG
+	QSgpWpztGc8UMeE+xoZ1VVtTPZgP3BI3VaAw==;
 From: Daniel Hodges <git@danielhodges.dev>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -69,10 +70,12 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	linux-kernel@vger.kernel.org,
 	linux-kselftest@vger.kernel.org,
 	Daniel Hodges <git@danielhodges.dev>
-Subject: [PATCH bpf-next v5 0/7] Add cryptographic hash and signature verification kfuncs to BPF
-Date: Tue, 20 Jan 2026 13:46:54 -0500
-Message-ID: <20260120184701.23082-1-git@danielhodges.dev>
+Subject: [PATCH bpf-next v5 6/7] bpf: Add signature verification kfuncs
+Date: Tue, 20 Jan 2026 13:47:00 -0500
+Message-ID: <20260120184701.23082-7-git@danielhodges.dev>
 X-Mailer: git-send-email 2.52.0
+In-Reply-To: <20260120184701.23082-1-git@danielhodges.dev>
+References: <20260120184701.23082-1-git@danielhodges.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -93,7 +96,7 @@ X-Spamd-Result: default: False [1.04 / 15.00];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[21];
 	FREEMAIL_CC(0.00)[kernel.org,iogearbox.net,linux.dev,meta.com,gmail.com,google.com,fomichev.me,gondor.apana.org.au,davemloft.net,vger.kernel.org,danielhodges.dev];
-	TAGGED_FROM(0.00)[bounces-79683-lists,bpf=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-79684-lists,bpf=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[3];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
@@ -104,104 +107,237 @@ X-Spamd-Result: default: False [1.04 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	DMARC_POLICY_ALLOW(0.00)[danielhodges.dev,reject];
 	R_SPF_SOFTFAIL(0.00)[~all:c];
-	ASN(0.00)[asn:7979, ipnet:2605:f480::/32, country:US];
+	ASN(0.00)[asn:7979, ipnet:213.196.21.0/24, country:US];
 	TAGGED_RCPT(0.00)[bpf];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo]
-X-Rspamd-Queue-Id: 6EFE449EA0
+	DBL_BLOCKED_OPENRESOLVER(0.00)[danielhodges.dev:email,danielhodges.dev:dkim,danielhodges.dev:mid,ams.mirrors.kernel.org:rdns,ams.mirrors.kernel.org:helo]
+X-Rspamd-Queue-Id: 2B6C44A290
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-This patch series enhances BPF's cryptographic functionality by introducing
-kernel functions for SHA hashing and ECDSA signature verification. The changes
-enable BPF programs to verify data integrity and authenticity across
-networking, security, and observability use cases.
+Introduce bpf_sig_verify, bpf_sig_keysize, bpf_sig_digestsize,
+and bpf_sig_maxsize kfuncs enabling BPF programs to verify digital
+signatures using the kernel's crypto infrastructure.
 
-The series addresses two gaps in BPF's cryptographic toolkit:
+This adds enum bpf_crypto_type_id for runtime type checking to ensure
+operations are performed on the correct crypto context type. The enum
+values are assigned to all crypto type modules (skcipher, hash, sig).
 
-1. Cryptographic hashing - supports content verification and message digest
-   preparation
-2. Asymmetric signature verification - allows validation of signed data
-   without requiring private keys in the datapath
+The verify kfunc takes a crypto context (initialized with the "sig"
+type and appropriate algorithm like "ecdsa-nist-p256"), a message
+digest, and a signature. It uses dynptr for memory access.
 
-Use cases include:
-- Verifying signed network packets or application data in XDP/TC programs
-- Integrity checks within tracing and security monitoring
-- Zero-trust security models with BPF-based credential verification
-- Content-addressed storage in BPF-based filesystems
+These kfuncs support any signature algorithm registered with the
+crypto subsystem (e.g., ECDSA, RSA).
 
-The implementation leverages existing BPF patterns: it uses bpf_dynptr for
-memory safety, reuses kernel crypto libraries (lib/crypto/sha256.c and
-crypto/ecdsa.c) rather than reimplementing algorithms, and provides
-context-based APIs supporting multiple program types.
+Signed-off-by: Daniel Hodges <git@danielhodges.dev>
+---
+ crypto/bpf_crypto_sig.c      |  22 +++++++
+ crypto/bpf_crypto_skcipher.c |   1 +
+ include/linux/bpf_crypto.h   |   2 +
+ kernel/bpf/crypto.c          | 117 +++++++++++++++++++++++++++++++++++
+ 4 files changed, 142 insertions(+)
 
-v1: https://lore.kernel.org/bpf/20251117211413.1394-1-git@danielhodges.dev/
-
-v2: https://lore.kernel.org/bpf/20251205173923.31740-1-git@danielhodges.dev/
-- Fixed redundant __bpf_dynptr_is_rdonly() checks (Vadim)
-- Added BPF hash algorithm type registration module in crypto/ subsystem
-- Added CONFIG_CRYPTO_HASH2 guards around bpf_crypto_hash() kfunc and its
-  BTF registration, matching the pattern used for CONFIG_CRYPTO_ECDSA
-- Added mandatory digestsize validation for hash operations
-
-v3: https://lore.kernel.org/bpf/20251208030117.18892-1-git@danielhodges.dev/
-- Fixed patch ordering - header changes now in separate first commit before
-  crypto module to ensure bisectability (bot+bpf-ci)
-- Fixed type mismatch - changed u32 to u64 for dynptr sizes in
-  bpf_crypto_hash() to match __bpf_dynptr_size() return type (Mykyta)
-- Added CONFIG_CRYPTO_ECDSA to selftest config (Song)
-- Refactored test code duplication with setup_skel() helper (Song)
-- Added copyright notices to all new files
-
-v4: https://lore.kernel.org/bpf/20260105173755.22515-1-git@danielhodges.dev/
-- Reused common bpf_crypto_ctx structure for hash and signature operations
-  instead of separate context types (Song)
-- Fixed integer truncation in bpf_crypto_hash when data_len > UINT_MAX
-- Corrected KF_RCU flags for ECDSA kfuncs (only bpf_ecdsa_verify needs KF_RCU)
-- Updated MAINTAINERS file in test patches
-- Refactored selftests to use crypto_common.h for kfunc declarations
-
-v5:
-- Fixed bisectability: moved bpf_crypto_type_id enum and type_id field
-  introduction to the hash module commit, before it's used by hash kfunc
-- Renamed kfuncs from bpf_ecdsa_* to bpf_sig_* since signature verification
-  is not ECDSA-specific (Vadim)
-- Added NULL checks in bpf_crypto_sig wrapper functions for optional
-  digest_size and max_size callbacks to prevent NULL pointer dereference
-- Added extra validation in bpf_sig_digestsize/bpf_sig_maxsize kfuncs to
-  return -EOPNOTSUPP when underlying algorithm returns 0
-- Renamed test files from ecdsa_verify to sig_verify for consistency
-
-Daniel Hodges (7):
-  bpf: Extend bpf_crypto_type with hash operations
-  crypto: Add BPF hash algorithm type registration module
-  crypto: Add BPF signature algorithm type registration module
-  bpf: Add hash kfunc for cryptographic hashing
-  selftests/bpf: Add tests for bpf_crypto_hash kfunc
-  bpf: Add signature verification kfuncs
-  selftests/bpf: Add tests for signature verification kfuncs
-
- MAINTAINERS                                   |   6 +
- crypto/Makefile                               |   6 +
- crypto/bpf_crypto_shash.c                     |  96 ++++++
- crypto/bpf_crypto_sig.c                       |  89 ++++++
- crypto/bpf_crypto_skcipher.c                  |   1 +
- include/linux/bpf_crypto.h                    |  13 +
- kernel/bpf/crypto.c                           | 204 ++++++++++++-
- tools/testing/selftests/bpf/config            |   2 +
- .../selftests/bpf/prog_tests/crypto_hash.c    | 210 +++++++++++++
- .../selftests/bpf/prog_tests/sig_verify.c     | 163 ++++++++++
- .../selftests/bpf/progs/crypto_common.h       |   8 +
- .../testing/selftests/bpf/progs/crypto_hash.c | 235 ++++++++++++++
- .../testing/selftests/bpf/progs/sig_verify.c  | 286 ++++++++++++++++++
- 13 files changed, 1310 insertions(+), 9 deletions(-)
- create mode 100644 crypto/bpf_crypto_shash.c
- create mode 100644 crypto/bpf_crypto_sig.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/crypto_hash.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/sig_verify.c
- create mode 100644 tools/testing/selftests/bpf/progs/crypto_hash.c
- create mode 100644 tools/testing/selftests/bpf/progs/sig_verify.c
-
+diff --git a/crypto/bpf_crypto_sig.c b/crypto/bpf_crypto_sig.c
+index 1d6521a066be..2dc82c5f9abb 100644
+--- a/crypto/bpf_crypto_sig.c
++++ b/crypto/bpf_crypto_sig.c
+@@ -37,6 +37,25 @@ static int bpf_crypto_sig_verify(void *tfm, const u8 *sig, unsigned int sig_len,
+ 	return crypto_sig_verify(tfm, sig, sig_len, msg, msg_len);
+ }
+ 
++static unsigned int bpf_crypto_sig_keysize(void *tfm)
++{
++	return crypto_sig_keysize(tfm);
++}
++
++static unsigned int bpf_crypto_sig_digestsize(void *tfm)
++{
++	struct sig_alg *alg = crypto_sig_alg(tfm);
++
++	return alg->digest_size ? alg->digest_size(tfm) : 0;
++}
++
++static unsigned int bpf_crypto_sig_maxsize(void *tfm)
++{
++	struct sig_alg *alg = crypto_sig_alg(tfm);
++
++	return alg->max_size ? alg->max_size(tfm) : 0;
++}
++
+ static const struct bpf_crypto_type bpf_crypto_sig_type = {
+ 	.alloc_tfm	= bpf_crypto_sig_alloc_tfm,
+ 	.free_tfm	= bpf_crypto_sig_free_tfm,
+@@ -44,6 +63,9 @@ static const struct bpf_crypto_type bpf_crypto_sig_type = {
+ 	.get_flags	= bpf_crypto_sig_get_flags,
+ 	.setkey		= bpf_crypto_sig_setkey,
+ 	.verify		= bpf_crypto_sig_verify,
++	.keysize	= bpf_crypto_sig_keysize,
++	.digestsize	= bpf_crypto_sig_digestsize,
++	.maxsize	= bpf_crypto_sig_maxsize,
+ 	.owner		= THIS_MODULE,
+ 	.type_id	= BPF_CRYPTO_TYPE_SIG,
+ 	.name		= "sig",
+diff --git a/crypto/bpf_crypto_skcipher.c b/crypto/bpf_crypto_skcipher.c
+index a88798d3e8c8..79d310fbcc48 100644
+--- a/crypto/bpf_crypto_skcipher.c
++++ b/crypto/bpf_crypto_skcipher.c
+@@ -63,6 +63,7 @@ static const struct bpf_crypto_type bpf_crypto_lskcipher_type = {
+ 	.statesize	= bpf_crypto_lskcipher_statesize,
+ 	.get_flags	= bpf_crypto_lskcipher_get_flags,
+ 	.owner		= THIS_MODULE,
++	.type_id	= BPF_CRYPTO_TYPE_SKCIPHER,
+ 	.name		= "skcipher",
+ };
+ 
+diff --git a/include/linux/bpf_crypto.h b/include/linux/bpf_crypto.h
+index 363ed72561f4..e0f946926f69 100644
+--- a/include/linux/bpf_crypto.h
++++ b/include/linux/bpf_crypto.h
+@@ -23,6 +23,8 @@ struct bpf_crypto_type {
+ 	unsigned int (*ivsize)(void *tfm);
+ 	unsigned int (*statesize)(void *tfm);
+ 	unsigned int (*digestsize)(void *tfm);
++	unsigned int (*keysize)(void *tfm);
++	unsigned int (*maxsize)(void *tfm);
+ 	u32 (*get_flags)(void *tfm);
+ 	struct module *owner;
+ 	enum bpf_crypto_type_id type_id;
+diff --git a/kernel/bpf/crypto.c b/kernel/bpf/crypto.c
+index c8f354b1a2cb..6bc534cd4076 100644
+--- a/kernel/bpf/crypto.c
++++ b/kernel/bpf/crypto.c
+@@ -413,6 +413,117 @@ __bpf_kfunc int bpf_crypto_hash(struct bpf_crypto_ctx *ctx,
+ }
+ #endif /* CONFIG_CRYPTO_HASH2 */
+ 
++#if IS_ENABLED(CONFIG_CRYPTO_SIG2)
++/**
++ * bpf_sig_verify() - Verify digital signature using configured context
++ * @ctx:	The crypto context being used. The ctx must be a trusted pointer.
++ * @message:	bpf_dynptr to the message hash to verify. Must be a trusted pointer.
++ * @signature:	bpf_dynptr to the signature. Must be a trusted pointer.
++ *
++ * Verifies a digital signature over a message hash using the public key
++ * configured in the crypto context. Supports any signature algorithm
++ * registered with the crypto subsystem (e.g., ECDSA, RSA).
++ *
++ * Return: 0 on success (valid signature), negative error code on failure.
++ */
++__bpf_kfunc int bpf_sig_verify(struct bpf_crypto_ctx *ctx,
++				 const struct bpf_dynptr *message,
++				 const struct bpf_dynptr *signature)
++{
++	const struct bpf_dynptr_kern *msg_kern = (struct bpf_dynptr_kern *)message;
++	const struct bpf_dynptr_kern *sig_kern = (struct bpf_dynptr_kern *)signature;
++	u64 msg_len, sig_len;
++	const u8 *msg_ptr, *sig_ptr;
++
++	if (ctx->type->type_id != BPF_CRYPTO_TYPE_SIG)
++		return -EINVAL;
++
++	if (!ctx->type->verify)
++		return -EOPNOTSUPP;
++
++	msg_len = __bpf_dynptr_size(msg_kern);
++	sig_len = __bpf_dynptr_size(sig_kern);
++
++	if (msg_len == 0 || msg_len > UINT_MAX)
++		return -EINVAL;
++	if (sig_len == 0 || sig_len > UINT_MAX)
++		return -EINVAL;
++
++	msg_ptr = __bpf_dynptr_data(msg_kern, msg_len);
++	if (!msg_ptr)
++		return -EINVAL;
++
++	sig_ptr = __bpf_dynptr_data(sig_kern, sig_len);
++	if (!sig_ptr)
++		return -EINVAL;
++
++	return ctx->type->verify(ctx->tfm, sig_ptr, sig_len, msg_ptr, msg_len);
++}
++
++/**
++ * bpf_sig_keysize() - Get the key size for signature context
++ * @ctx:	The crypto context being used. The ctx must be a trusted pointer.
++ *
++ * Return: The key size in bytes, or negative error code on failure.
++ */
++__bpf_kfunc int bpf_sig_keysize(struct bpf_crypto_ctx *ctx)
++{
++	if (ctx->type->type_id != BPF_CRYPTO_TYPE_SIG)
++		return -EINVAL;
++
++	if (!ctx->type->keysize)
++		return -EOPNOTSUPP;
++
++	return ctx->type->keysize(ctx->tfm);
++}
++
++/**
++ * bpf_sig_digestsize() - Get the digest size for signature context
++ * @ctx:	The crypto context being used. The ctx must be a trusted pointer.
++ *
++ * Return: The digest size in bytes, or negative error code on failure.
++ */
++__bpf_kfunc int bpf_sig_digestsize(struct bpf_crypto_ctx *ctx)
++{
++	unsigned int size;
++
++	if (ctx->type->type_id != BPF_CRYPTO_TYPE_SIG)
++		return -EINVAL;
++
++	if (!ctx->type->digestsize)
++		return -EOPNOTSUPP;
++
++	size = ctx->type->digestsize(ctx->tfm);
++	if (!size)
++		return -EOPNOTSUPP;
++
++	return size;
++}
++
++/**
++ * bpf_sig_maxsize() - Get the maximum signature size for signature context
++ * @ctx:	The crypto context being used. The ctx must be a trusted pointer.
++ *
++ * Return: The maximum signature size in bytes, or negative error code on failure.
++ */
++__bpf_kfunc int bpf_sig_maxsize(struct bpf_crypto_ctx *ctx)
++{
++	unsigned int size;
++
++	if (ctx->type->type_id != BPF_CRYPTO_TYPE_SIG)
++		return -EINVAL;
++
++	if (!ctx->type->maxsize)
++		return -EOPNOTSUPP;
++
++	size = ctx->type->maxsize(ctx->tfm);
++	if (!size)
++		return -EOPNOTSUPP;
++
++	return size;
++}
++#endif /* CONFIG_CRYPTO_SIG2 */
++
+ __bpf_kfunc_end_defs();
+ 
+ BTF_KFUNCS_START(crypt_init_kfunc_btf_ids)
+@@ -432,6 +543,12 @@ BTF_ID_FLAGS(func, bpf_crypto_encrypt, KF_RCU)
+ #if IS_ENABLED(CONFIG_CRYPTO_HASH2)
+ BTF_ID_FLAGS(func, bpf_crypto_hash, KF_RCU)
+ #endif
++#if IS_ENABLED(CONFIG_CRYPTO_SIG2)
++BTF_ID_FLAGS(func, bpf_sig_verify, KF_RCU)
++BTF_ID_FLAGS(func, bpf_sig_keysize)
++BTF_ID_FLAGS(func, bpf_sig_digestsize)
++BTF_ID_FLAGS(func, bpf_sig_maxsize)
++#endif
+ BTF_KFUNCS_END(crypt_kfunc_btf_ids)
+ 
+ static const struct btf_kfunc_id_set crypt_kfunc_set = {
 -- 
 2.52.0
 
