@@ -1,180 +1,122 @@
-Return-Path: <bpf+bounces-79557-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79558-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 659AAD3BFF2
-	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 08:04:30 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88FF0D3C035
+	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 08:20:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 82955502362
-	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 06:55:35 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 6FFF03A3FF3
+	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 07:04:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C140838B7CB;
-	Tue, 20 Jan 2026 06:52:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rxYrX9BF"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 791BF3B7A8;
+	Tue, 20 Jan 2026 07:04:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from esa1.cc.uec.ac.jp (mx.uec.ac.jp [130.153.8.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 054BB37FF45
-	for <bpf@vger.kernel.org>; Tue, 20 Jan 2026 06:52:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3F722E62B4
+	for <bpf@vger.kernel.org>; Tue, 20 Jan 2026 07:04:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.153.8.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768891949; cv=none; b=doQSgVUbSqPwRSsnyzH6azbL1lVxowO6VwI5UYZyrHNC8k2EKcxyaCxrnx5l3S6gfQoguUT99WCVL5lEXXIqJIr6fjAPGZ4EY4xpBOXXWT6cfTU4zdFK1fOijzpxKVTCJLjxGHx8fHsJJOwdswroONhoG52J7AkOyYviO1UKznw=
+	t=1768892671; cv=none; b=NkUEDvSHPKh1WIST0BCr5XOtFCdiOcu16gpZ1lYo6mAwp2CaU4oppurSrXCSWAiCtVgKO03C6l6BOXNhPYGS8xktd6XHLgt/AXEq1/9taN5boC4aKciX1uYWibeAs4+hR/pUgGNnazc6i8uUOHFaknC4WzIWwGoI6JDckfoKS4U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768891949; c=relaxed/simple;
-	bh=TKcR+Zd+Rmm3oAadOVqdC9xUa7HxHVOcgG6zpR31Tjc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=q+QzGS0dieWDu08J3F/kxg3yEuTj4KSFiAGVFNKMg9fatWpK9FSW9oyaksh7y6FAzrwX3HOh5r5S7VpfIyGEl48KPHx36AO5TPb/S8PeyA+8GrE4eSd1kS4buhnCxKACWA0BytO/yYjTUlWvJI6ft951/H8c6Xqpg95eRO8+YqU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rxYrX9BF; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-b87003e998bso1026939766b.1
-        for <bpf@vger.kernel.org>; Mon, 19 Jan 2026 22:52:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1768891940; x=1769496740; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=3nM1AuyOuJh/1BCnQvI4vopqVPvAItlSlPzg4qdraDk=;
-        b=rxYrX9BFnq8amy79Sb4rE7VdJlf8NKvr8tTNxgeo/OgjXBpzOf654Thje5fcVC2khN
-         vinYfhS4v+DzqLYsdB9p80NjIBk0cjn6C9NEU/nGKUR4VZ+sJzJXCcJmDh6eiQMQ/14s
-         aA/pdu98jntmjiPnjU8LZTb0XoSmQ8Fg/rhJKYM/gdwPu8g1NwzuHMTGhfJ4b/puWiGE
-         f0Olup/UX91G0dcu5hwzms+xZQy+opz4FyknD/OhDAmF0REsA+QvmjCkBKLnMhm3CAis
-         iNYLl6na2ZI387sxQaGO5iHmK3dLheeIl2YcGn4sBufkyR5WD3ufhlPa+oA4JbwwgFLR
-         F3AA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768891940; x=1769496740;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3nM1AuyOuJh/1BCnQvI4vopqVPvAItlSlPzg4qdraDk=;
-        b=RE2CBkgDV94cIwWKR5xIjKxgpF3fcBQGL8rjtkiVdg+Wj/mBYppZsbCQL1Le4Jwgfl
-         4zMIgTWS5PGCrdL3SUtX2I4LnFzsLnD1TDypyawfsWUTxUOa3tL6/jVkVtBZ4M4MJc2/
-         /QwSgS2/xblJRGNfYJWAX9AfNbe21Oc9m8KBOVlLF/9dRnWxTttCqacxerh7dti5Gy4r
-         eHUeMcyRxXhKmkwiiPG9Qi+lP5K8zjWugF9+63nK0o6rG3O9b2lYf3sz5ahzA20pbh4H
-         guVgG+3UgxpTncelHBIXavy1mFdB8tBPX/2G5DvUhOahWhVjk1Pe2DlHuT9DW13ZJRLx
-         3itQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVg/qCLV2VdbGhZSPgTdqtQim45bbh5VLlW/K0OYUhqz7/Zm4fv4rjlcTvr0dXDkpKWnlc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwLEz+HUbUtAUAY4wKrbmP2N4iy6oAi4oMrI/NHLhzqbt5baTDC
-	m03VQf7MomDXKfCNEK2c83FXiN91cquBTUJjTnXpHDpj5afogoGiLG/ISPOcyhJWyA==
-X-Gm-Gg: AZuq6aJLeQXduNx30e7A/TicuaRmALzf/HS8PS/YC28cRjsKeAnOQfF2vT9UGGdBvNk
-	nQ2UgCXj+pKewDlWAvybZG6ek/hc1e4H6pD2U46EMKNccrOFfe9htPS7HHl3h/55vZGKBfRJ6Ek
-	8U/y52OMUf1NqfX1TckyWs+146NVdhmy1tpd7JL8uGAyWSV8ZUs6WFvfZXn9KAeZ24IlGDFUpoA
-	lz8ei9h8lfKA37NDYGMqImA+oY8qM1UOGYJrIvzJ8mODj5jqV/BOba/JH1wHrx6of7RbKaPLBvl
-	xsR+Z3pOp7+wmOAZYcMgEwxzBSZHugbcQo4v24ExygGI3cGV3erZbXgyIVXbRHzu3exnWKdfaV+
-	emxnVTnq9ec3DtZ7EFhpYRe33/6M0rAMQakkFhuqnWHK2Uk9u8PhTHJIZkXF6UeNY4NPwsN6LnM
-	BLZ4nCZzElCGM1XSjgymKeut9MATXo3BwcRQAvnh4e44kmJgi3p1s8+Q==
-X-Received: by 2002:a17:907:7b89:b0:b84:3fab:4251 with SMTP id a640c23a62f3a-b87939d9b4emr1604850766b.15.1768891939960;
-        Mon, 19 Jan 2026 22:52:19 -0800 (PST)
-Received: from google.com (14.59.147.34.bc.googleusercontent.com. [34.147.59.14])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b87f6f69eedsm197156766b.46.2026.01.19.22.52.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jan 2026 22:52:19 -0800 (PST)
-Date: Tue, 20 Jan 2026 06:52:15 +0000
-From: Matt Bobrowski <mattbobrowski@google.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Roman Gushchin <roman.gushchin@linux.dev>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	ohn Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	bpf <bpf@vger.kernel.org>
-Subject: Re: Subject: [PATCH bpf-next 2/3] bpf: drop KF_ACQUIRE flag on BPF
- kfunc bpf_get_root_mem_cgroup()
-Message-ID: <aW8mH-hnVupxQAZo@google.com>
-References: <20260113083949.2502978-2-mattbobrowski@google.com>
- <87y0lyxilp.fsf@linux.dev>
- <aWnu-b0dlm0xZFDS@google.com>
- <CAADnVQKd-yu=bZjx+3=QKLq+26wcGJtJSrZoQh8b8ByKSPEXcQ@mail.gmail.com>
- <CAADnVQ+45MorO=pODKOEVXhpY1skVy1tPkkABPAxDJGx4vOijg@mail.gmail.com>
- <878qdx6yut.fsf@linux.dev>
- <CAADnVQ+iKDvHxg_bEd6Knp3dNb9cr+FiemFSCR=NBnyt1UdYig@mail.gmail.com>
+	s=arc-20240116; t=1768892671; c=relaxed/simple;
+	bh=kSgZ9nDF/jLEUDCwlX6Z+6MHmOPmi1voAUQJpLbzaJA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eguXs9UZOrXav3NP03sM9W0gg5lgI4hYHGIe+5kUWe3XYhjAVAD6dfYFm08p2+fRxYn5P2mfvgqzrx1ZVV2HDdqK/dNPDruT9V63sNCu74VJNaKP6/vMscoQEHDufCrzhQfXq55JveqFWU4C8382xHTEIT32NrQzb9IIbtQ6N40=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpc.is.uec.ac.jp; spf=pass smtp.mailfrom=hpc.is.uec.ac.jp; arc=none smtp.client-ip=130.153.8.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpc.is.uec.ac.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hpc.is.uec.ac.jp
+X-CSE-ConnectionGUID: jPfl2u84RZ2e7Gs8G/dX5A==
+X-CSE-MsgGUID: eu6pVxl1Qc+zvjIogwAWbw==
+X-IPAS-Result: =?us-ascii?q?A2EtBQDJJ29p/zcImYJaglkCm3yeHYF/BgkBAQEBAQEBA?=
+ =?us-ascii?q?QFaBAEBhQeMfCc1CA4BAgQBAQEBAwIDAQEBAQEBAQEBAQELAQEBBQEBAQEBA?=
+ =?us-ascii?q?QYDAQECAoEdhglTSQEQAYZAAUaEUoJ0sSyBAd16LVSBMhWBOI1ScYU6gg2Ef?=
+ =?us-ascii?q?YQadoV3BIINFXoUlA5IgR4DWSwBE0ITDQoLBwVqYQIZAzUSKhVuCBEZHYEZC?=
+ =?us-ascii?q?j4XgQobBwWBIgaCFYZpD4kygV8DCxgNSBEsNxQbQm4HkX8HAWIsKlAOgSCPE?=
+ =?us-ascii?q?weHd48PoRGEJoRRH5xoTaprLphYpFmGUQGCFE04gyNRGQ/aRIElAgcLAQEDC?=
+ =?us-ascii?q?YZ+imyBfwEB?=
+IronPort-Data: A9a23:/dA0lqqrprqzq6o0FhqBteW1s/JeBmK+ZBIvgKrLsJaIsI4StFCzt
+ garIBnVaf2DZ2ahKIpzPNmy8UtQsZKAydU1TFc6+CpkRH4SoJacVYWSI27OZB+ff5bJJK5FA
+ 2TySTViwOQcFCK0SsKFa+C5xZVE/fjWAOK6U6icZnwZqTZMEE8JkQhkl/MynrlmiN24BxLlk
+ d7pqqUzAnf8s9JPGjxSsfvrRC9H5qyo5mtB5ARmPJingXeH/5UrJMNHTU2OByagKmVkNrbSb
+ /rOyri/4lTY838FYvu5kqz2e1E9WbXbOw6DkBJ+A8BOVTAb+0Teeo5iXBYtQR8/Zwehxrid+
+ /0U3XCEcjrFC4WX8Agrv7m0JAklVUFO0OevzXFSKqV/xWWeG5fn66wG4E3boeT0Uwu4aI1D3
+ aVwFdwDUvyMr+COzrbhV7kwvPZ5IZbEJ9Mw/X1QkBiMWJ7KQbibK0nLzdpImTs9gsFQEOzPI
+ dcUYnxmZ1LCe3WjOH9OU8p4xbrzwCm5LmAwRFG9/MLb50DS1wxwwbHoOfLVYtfMRN4Tg0uT4
+ GvNuWbhav0fHIXHl2vdqSzz3ocjmwv2RdwKKq28r8dhw0+NxE0UBwI/alGk9KzRZkmWAYsFd
+ BNNq0LCt5Ma9VerT8j0WhSQoGaP+B8HHcddGKsz40eP0sLpDx2xA3hBQjNFacIrrt5sAyEn3
+ RmAlJXrHVSDrYF5V1qfzrmQ9y7iZRInd2JdSjRUYkwJ04TK9dRbYg30cjp1LEKipv/NcQwcL
+ hiPvG0yirESk8MRxv/94F3MxTun4JrRJuLU2uk1dj/6hu+aTNf6D2BN1bQ8xawYRLt1tnHb4
+ BA5dzG2tYjjzfilzURhutnh441FF97faWeD3gc+d3XQ3yit9ja+e4FO7StlJVt4esEKMTLtb
+ UTPowQU75hWOWasbKR+f4O2Dd9C8JUN1L3NCJjpUza5SsEtL1XdrX4/Ox/4MqKEuBFErJzT8
+ KyzKa6EZUv2w4w+pNZqb4/xCYMW+x0=
+IronPort-HdrOrdr: A9a23:+5BsoauTX7sPk4T6WzmhbA5h7skDUNV00zEX/kB9WHVpm6uj5q
+ STdZUgpHrJYVMqM03I9uruBEDtexnhHP1OkOss1MmZPDUO0VHARL2KhrGP/9SPIUDD398Y+L
+ t6c6B4TP38ZGIK7vrS0U2UD80hyN7C1KipgMjEyXMFd29XQpAlwhtjCg6dVnZ9XRR6A/MCda
+ ah2g==
+X-Talos-CUID: =?us-ascii?q?9a23=3Ap79xhmjX4Z00d1c8zoT84F4BwjJucEXTyC3NcxO?=
+ =?us-ascii?q?COzxkF5KOGXDX9JM5up87?=
+X-Talos-MUID: 9a23:HKdkngnaduruMSDkfr+LdnpvKZlw3bSqUXkG0ocYueiDOjNZBD2C2WE=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="6.21,240,1763391600"; 
+   d="scan'208";a="106903671"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+X-IronPort-Outbreak-Status: No, level 0, Unknown - Unknown
+Received: from mx-delivery2.uec.ac.jp (HELO mx-delivery.uec.ac.jp) ([130.153.8.55])
+  by esa1.cc.uec.ac.jp with ESMTP; 20 Jan 2026 16:04:24 +0900
+Received: from labpc (unknown [172.21.208.155])
+	by mx-delivery.uec.ac.jp (Postfix) with ESMTPSA id 0C6211839FB9;
+	Tue, 20 Jan 2026 16:04:24 +0900 (JST)
+From: Yuzuki Ishiyama <ishiyama@hpc.is.uec.ac.jp>
+To: bpf@vger.kernel.org
+Cc: mykyta.yatsenko5@gmail.com,
+	vmalik@redhat.com,
+	andrii@kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	Yuzuki Ishiyama <ishiyama@hpc.is.uec.ac.jp>
+Subject: [PATCH bpf-next v3 0/2] bpf: Add kfunc bpf_strncasecmp()
+Date: Tue, 20 Jan 2026 16:03:34 +0900
+Message-ID: <20260120070336.188850-1-ishiyama@hpc.is.uec.ac.jp>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQ+iKDvHxg_bEd6Knp3dNb9cr+FiemFSCR=NBnyt1UdYig@mail.gmail.com>
 
-On Mon, Jan 19, 2026 at 05:29:52PM -0800, Alexei Starovoitov wrote:
-> On Fri, Jan 16, 2026 at 1:18 PM Roman Gushchin <roman.gushchin@linux.dev> wrote:
-> >
-> >
-> > E.g. in my bpfoom case:
-> >
-> > SEC("struct_ops.s/handle_out_of_memory")
-> > int BPF_PROG(test_out_of_memory, struct oom_control *oc, struct bpf_struct_ops_link *link)
-> > {
-> >         struct task_struct *task;
-> >         struct mem_cgroup *root_memcg = oc->memcg;
-> 
-> And you'll annotate oom_control->memcg with BTF_TYPE_SAFE_TRUSTED_OR_NULL ?
-> 
-> >         struct mem_cgroup *memcg, *victim = NULL;
-> >         struct cgroup_subsys_state *css_pos, *css;
-> >         unsigned long usage, max_usage = 0;
-> >         unsigned long pagecache = 0;
-> >         int ret = 0;
-> >
-> >         if (root_memcg)
-> >                 root_memcg = bpf_get_mem_cgroup(&root_memcg->css);
-> 
-> similar for mem_cgroup and css types ?
-> or as BTF_TYPE_SAFE_RCU_OR_NULL ?
-> 
-> >         else
-> >                 root_memcg = bpf_get_root_mem_cgroup();
-> >
-> >         if (!root_memcg)
-> >                 return 0;
-> >
-> >         css = &root_memcg->css;
-> >         if (css && css->cgroup == link->cgroup)
-> >                 goto exit;
-> >
-> >         bpf_rcu_read_lock();
-> 
-> then this is a bug ? and rcu_read_lock needs to move up?
-> 
-> >         bpf_for_each(css, css_pos, &root_memcg->css, BPF_CGROUP_ITER_DESCENDANTS_POST) {
-> >                 if (css_pos->cgroup->nr_descendants + css_pos->cgroup->nr_dying_descendants)
-> >                         continue;
-> >
-> >                 memcg = bpf_get_mem_cgroup(css_pos);
-> >                 if (!memcg)
-> >                         continue;
-> >
-> >                 < ... >
-> >
-> >                 bpf_put_mem_cgroup(memcg);
-> >         }
-> >         bpf_rcu_read_unlock();
-> >
-> >         < ... >
-> >
-> >         bpf_put_mem_cgroup(victim);
-> > exit:
-> >         bpf_put_mem_cgroup(root_memcg);
-> 
-> Fair enough.
-> Looks like quite a few pieces are still missing for this to work end-to-end,
-> but, sure, let's revert back to acquire semantics.
-> 
-> Matt,
-> please come with a way to fix a selftest. Introduce test kfunc or something.
+This patchset introduces bpf_strncasecmp to allow case-insensitive and
+limited-length string comparison. This is useful for parsing protocol
+headers like HTTP.
 
-Already on it.
+---
+
+Changes in v3:
+- Use ternary operator to maintain style consistency
+- Reverted unnecessary doc comment about XATTR_SIZE_MAX
+
+Changes in v2:
+- Compute max_sz upfront and remove len check from the loop body
+- Document that @len is limited by XATTR_SIZE_MAX
+
+Yuzuki Ishiyama (2):
+  bpf: add bpf_strncasecmp kfunc
+  selftests/bpf: Test kfunc bpf_strncasecmp
+
+ kernel/bpf/helpers.c                          | 34 +++++++++++++++----
+ .../selftests/bpf/prog_tests/string_kfuncs.c  |  1 +
+ .../bpf/progs/string_kfuncs_failure1.c        |  6 ++++
+ .../bpf/progs/string_kfuncs_failure2.c        |  1 +
+ .../bpf/progs/string_kfuncs_success.c         |  7 ++++
+ 5 files changed, 43 insertions(+), 6 deletions(-)
+
+-- 
+2.52.0
+
 
