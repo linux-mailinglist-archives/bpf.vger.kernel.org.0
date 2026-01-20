@@ -1,86 +1,86 @@
-Return-Path: <bpf+bounces-79653-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79654-lists+bpf=lfdr.de@vger.kernel.org>
 Delivered-To: lists+bpf@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cCC+KdTPb2mgMQAAu9opvQ
-	(envelope-from <bpf+bounces-79653-lists+bpf=lfdr.de@vger.kernel.org>)
-	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 19:56:20 +0100
+	id OA+hDfCyb2nHMAAAu9opvQ
+	(envelope-from <bpf+bounces-79654-lists+bpf=lfdr.de@vger.kernel.org>)
+	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 17:53:04 +0100
 X-Original-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E91B49E08
-	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 19:56:20 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A6CF48007
+	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 17:53:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 3C7C06C7816
-	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 16:16:35 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id BCDEE8CC829
+	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 16:16:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22F94322B90;
-	Tue, 20 Jan 2026 15:59:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ADDD322C60;
+	Tue, 20 Jan 2026 15:59:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xdzi0Kpk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NvHxSO1a"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8E96320A05
-	for <bpf@vger.kernel.org>; Tue, 20 Jan 2026 15:59:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2023F322B6D
+	for <bpf@vger.kernel.org>; Tue, 20 Jan 2026 15:59:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768924778; cv=none; b=s1MUansNW0HnGP3exVqBNgnVu2KUVNc6si3rqgzFlnZKetC48eicTmweAGlDY87beL6hEdS957YxKFpEJVcXyfKJxuEdTak3m9+C/JZ0ve3OCQLEJfi3LslgsXi0448SdPIrSkZgOZCdnYMmHDq6ZNEsQQ2HwmmoLuvnxzTeebU=
+	t=1768924779; cv=none; b=mGMnkjOX8QCOUc8FnvH9FzmwRa+PSvDT7zH8WinCbpSx4vC40gT+CRNXJjoSj6O2+braEpGppeT6M1oWRit11C1TeRfWrA/wPYoOUQdQ0px/lFSwGsNHyeQsYQ44zu3jcK5+jcdgm+I9aDS8oIvjoaXw3UwYeZDcKwAlEWu5bHk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768924778; c=relaxed/simple;
-	bh=GhLUF0L0IpH45tda1zr/y9KpIGofV4tcu+8hyTPCFfk=;
+	s=arc-20240116; t=1768924779; c=relaxed/simple;
+	bh=lRes9l+x3wDpNSO2Sa5JkIhFzgz9xGBZD8cX6/ZNbvQ=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=AiLBrpcxC56SaaU8+D/WD5sLrP57GX/iJ1Llo9LOSv2EEiSdVYvUz3rV8x96u05i+/XBdR64nTWgmIO8UA9eNBFIU3n/rSQvTMUBqOhA4nLUW4f3LBZX4XwyNr5NMf0W5HKa04VtDG9MX9zccK8T5Yqc8i4VFFSUwTRdAtZ5K2M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Xdzi0Kpk; arc=none smtp.client-ip=209.85.221.42
+	 In-Reply-To:To:Cc; b=BnugB6/oGb/Ty5aFfbgWrKdCYGwDDl0v0G54He/1AUPACnW1zmysNhppG6pXLIgN5vx91zyMZw4LKHAGtPCe6CadgtiGs0msrfV7nwbnU4PXVym6MhiDCqP84j1SFS1CFcgjoRauqXF0DwXLZeOnvYfgSmXBSYaesq057koMSkk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NvHxSO1a; arc=none smtp.client-ip=209.85.128.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-432755545fcso3196022f8f.1
-        for <bpf@vger.kernel.org>; Tue, 20 Jan 2026 07:59:36 -0800 (PST)
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-47ee301a06aso52322165e9.0
+        for <bpf@vger.kernel.org>; Tue, 20 Jan 2026 07:59:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768924775; x=1769529575; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1768924776; x=1769529576; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=0xLMYYolyJjqq6i9TpWAlkvvOL0WcqfDjXNv5Xko3nI=;
-        b=Xdzi0Kpk6EA00ZyYdnnJCHP0eJmswuz3QPGaZMowPo9YYvWDYE8ScjdkNTgNUlUkD9
-         Q7fnyv9CSyEQ9kCp9J/LsQnOs24HD6v0OJIEHiF/QSYRx0O13buSQMhRYztCEQMOpMzB
-         yZJZUwCKww1AecuGDFelg46qwDpNke9HoUTJox6p7kqJLDCPFdD9bQ8JO6TcAuYXc0Nr
-         oy/CPSt/TKiZ1Zx64R3C9+YDp3XzEX8wRJYml4e/sIpeyEVbh5hpUqz27AEAp+g/G06p
-         ORRaJMzMTl7Omums2r1j2OsgPqVD8KltN+WIOp11jl8SBvBlK2eY5z/Nzi1IgYATj+mh
-         hj+Q==
+        bh=4FzDrJXSiFpMM2oO5xJw4oZibyZTAtzJi/b5pFlTTC8=;
+        b=NvHxSO1apwOXAtABu42GT2jJqte+uasXMN96tqNxESpynXcD0+Ij2jOw31wU34oUP5
+         lH0mwkxGSvOTAPS7tDKtbfs5gPF9j2lu0wKTESXKNXAXNDb+wGFQ/Y4S0lv5g/4piWSi
+         1aA4KC/j13tIxkW9TSwsg1ZXBgZPllIMe6gPZ/ODZw2RmWOkTEETZSD0LgIPPziiOt+A
+         S+b7DLEFvdlpSiOFrMxt0MStjmVsgGJzIAM/zMn3GtP4S1gVbdrOvvYZ+/Vcu9CuMJ8z
+         zdTZVd6CEHkosDT4pSUG5htKMH3Fc0P+DIVNez+DqCTK40TnJhWRLkVVRO8dfMxpFKkx
+         oMBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768924775; x=1769529575;
+        d=1e100.net; s=20230601; t=1768924776; x=1769529576;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=0xLMYYolyJjqq6i9TpWAlkvvOL0WcqfDjXNv5Xko3nI=;
-        b=XlwTeFQx3hNt4PmzlFT+jQ9ZSseXLRQTfTODvqhNlTbjCWtAHcqPUk525fc7TxUu3m
-         o5c0s9xgyZ7wRsVUdST8hsOCkfuhorbuX1h3ffyodFxyW1Q+fyaaohamQ9470my0Zsj1
-         RL9jgCGIRjR8HYEMluLuBw/+TuwzlEBGpW/EL0kO8+x63Z5ILaFUi0qkgEtvXsKSC7Zz
-         FfBlP1BdUFeNg8FOtFE1TewHElHp5OrqpVE6NQNAjKrQ0DJ2i+b2JVS2+0hc3O1P/0aU
-         XIwQ1+eB6eyXqg0FNIvluhV7HyEHWAuutit5FT1p+eILiVfKwVc1uaBI9rpdlUdeSI/R
-         5NHw==
-X-Gm-Message-State: AOJu0YyGCWGkWf+dY3kpIZmmitaG4JTxh18NloKt8okvrGJwChI2qZGb
-	5fuFjyjsCX1G0A9T3pbYasbCWk+0cQA/zIynxQgGZETUISCQ2Fm4jiuY
-X-Gm-Gg: AZuq6aKHfiAtLjv9v0xSlPonDHBfFmhlkyfkoVUUf6Ob9pMovq+x+Wm+n/umeHzkyzc
-	0t4scISJIF29TD2xky/Mg9f0VE6bf06VZDa8kB1wi7EAF5DXZ8YDNWASW8A3VCcBO1TPdNDC5SI
-	lziydH5f1riC54FMeGCfDOJqUoXn1h1DfE6VXNEWGnMQrxWteby24hqpjQn78Ztkj9c0dNI9NnB
-	s39+WSDbM6V+oQnYceEXv77KcITa7XwSIExfaj7G5MKCdZXqlp44VSZBr4YxDELX1aJI2Vz1w2P
-	WqYwz5nHzp4aSn+DBwtgu4EeCzK5jOR3Mm+mrM9cJutxsTHYBOZISBJlXjKNPY7k9a0bLqyjq7j
-	mJZknsk8O8NhqfQl2M8PRPyz4+zAgYSpRVOORz/S5uBxRWUsmBstnKKQPh/fodXdTv531KgWDpI
-	cyuLhvtjm7tBaCPQ==
-X-Received: by 2002:a05:6000:230f:b0:430:f7dc:7e8e with SMTP id ffacd0b85a97d-43569bbec67mr18288331f8f.34.1768924774943;
-        Tue, 20 Jan 2026 07:59:34 -0800 (PST)
+        bh=4FzDrJXSiFpMM2oO5xJw4oZibyZTAtzJi/b5pFlTTC8=;
+        b=uwunibH/0ouqRz1Zl0NIUUmxP73E8KVuvHyfAv66Sg2TN4TyycKRM9BGEq+3S7Zzt0
+         SswUdKuxGnyPMQucYyh9Ix6R7T3s80oK0Ug4DxQL9vfgmxgoE+d9jp0Q+SVcuSqE4zpJ
+         hnHrqdojmeJDtKHsL9Y2BxKbMrvlfbhjhMo8us9Axo2IzAwxa/DUzl8pvgII0B/B8O4Z
+         6P8VuR12oviNUgIB34i98NhS5HFeUQBGZma4ERwdZhsF27w2Kha0DkiEaAKk+PJgN+6B
+         /FEGbpU9fxiFTtu6IcyNrav+eSvVJIBhdbaaHhF+T1B3AZd6mG7rn6Rj1grsu4U0+4QS
+         ZCQg==
+X-Gm-Message-State: AOJu0YyoiX2qSuU8DObUEqT/CZNWobxyOC0RmkM8G5rlhy9nzCXaCNFw
+	KuZXUqYif0IvO/XJkiFMB2ipz9EqpNBH0nE7B6Yj9mQuOKHub/zwm3Mx
+X-Gm-Gg: AY/fxX4URUfvdjt3tAkbkkanxB4D4swM8VMd+lOBKXZd4PjcipbZHIl69kuiyQG021K
+	OMpnvm5euloagwhwdumD2DmQ63A8tcSgda/hVD0mC1Aw/fqCqXxbf9fxCPJ7Bi4t/QeOMA8ftBk
+	SC3SeFx01uqivT5q0ay0X0Y/BUUMdvlHg3IcHrT3PgNvJ0+Y91UaCMyvQNbuplDDr3YJiUvC9nS
+	4twfJZZmBt3ub8U/SOuYbjvFdNJGTYMZ0xb76zvbx7Ca0sGp3wi5tIVYLphe6ixFvqxWiU9E+fK
+	K3P8Vs26SHvriLnu/kX/W6WSbXjq7NE3ncnqf4kCLyUhYQNVEN4bvWDJd1M6Y8sbepzzIlRiQOn
+	Q99EQhE8eXGicSqZHdK+ci+kQN7Rky0M/YkOpYRfGkcU8o6C8Z5lQezLvMjnjRapXIU7eGHuhOr
+	SrkIjpNYvDDtHMXg==
+X-Received: by 2002:a05:600c:c171:b0:47a:9560:5944 with SMTP id 5b1f17b1804b1-4803d8481bbmr36155435e9.34.1768924776142;
+        Tue, 20 Jan 2026 07:59:36 -0800 (PST)
 Received: from localhost ([2a01:4b00:bd1f:f500:e85d:a828:282d:d5c7])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4356996dadbsm29992913f8f.21.2026.01.20.07.59.34
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-43569921facsm28818718f8f.5.2026.01.20.07.59.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jan 2026 07:59:34 -0800 (PST)
+        Tue, 20 Jan 2026 07:59:35 -0800 (PST)
 From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-Date: Tue, 20 Jan 2026 15:59:18 +0000
-Subject: [PATCH bpf-next v6 09/10] selftests/bpf: Add stress test for timer
- async cancel
+Date: Tue, 20 Jan 2026 15:59:19 +0000
+Subject: [PATCH bpf-next v6 10/10] selftests/bpf: Verify
+ bpf_timer_cancel_async works
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -89,7 +89,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260120-timer_nolock-v6-9-670ffdd787b4@meta.com>
+Message-Id: <20260120-timer_nolock-v6-10-670ffdd787b4@meta.com>
 References: <20260120-timer_nolock-v6-0-670ffdd787b4@meta.com>
 In-Reply-To: <20260120-timer_nolock-v6-0-670ffdd787b4@meta.com>
 To: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
@@ -97,11 +97,11 @@ To: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
  memxor@gmail.com, eddyz87@gmail.com
 Cc: Mykyta Yatsenko <yatsenko@meta.com>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1768924765; l=3034;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1768924765; l=2785;
  i=yatsenko@meta.com; s=20251031; h=from:subject:message-id;
- bh=8om38gAdspUYGhhX2UZoUsJGe+8wJ7bi5do3dC7FV58=;
- b=aRH6f0bQrVvxT++YLCVuHUD46CQkAjxzHVpq7Q54XbyqA21tjvHmaDALdPqpN8ejTOPFIOUJi
- EBTDitzZ1jJBrodTgNviRv1m6l0YWtcQQ1P+AjBglCPfaMlQ+1ZrtiE
+ bh=rxvPvabdjJ7jjXmOwc3ttq22Faa0bJrvplOFprPR9ZE=;
+ b=u9Ycm2Fz/+PT26PFCoLxrVo9ygg0PKXDjCBWesttCyJSP2tgaOH1r2em6cmUi5znkVuZnN/qR
+ BFQIiTVKQf0CFMmnbcje533xi0ja6/uu2wImZ/J+W/iQT75PTCi/FJh
 X-Developer-Key: i=yatsenko@meta.com; a=ed25519;
  pk=TFoLStOoH/++W4HJHRgNr8zj8vPFB1W+/QECPcQygzo=
 X-Spamd-Result: default: False [-1.96 / 15.00];
@@ -111,7 +111,7 @@ X-Spamd-Result: default: False [-1.96 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-79653-lists,bpf=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-79654-lists,bpf=lfdr.de];
 	FREEMAIL_TO(0.00)[vger.kernel.org,kernel.org,iogearbox.net,meta.com,gmail.com];
 	TO_DN_SOME(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
@@ -129,116 +129,101 @@ X-Spamd-Result: default: False [-1.96 / 15.00];
 	RCVD_COUNT_FIVE(0.00)[5];
 	TAGGED_RCPT(0.00)[bpf];
 	RCPT_COUNT_SEVEN(0.00)[9];
-	ASN(0.00)[asn:7979, ipnet:2a01:60a::/32, country:US];
+	ASN(0.00)[asn:7979, ipnet:142.0.200.0/24, country:US];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ams.mirrors.kernel.org:rdns,ams.mirrors.kernel.org:helo,meta.com:email,meta.com:mid]
-X-Rspamd-Queue-Id: 4E91B49E08
+	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo,meta.com:email,meta.com:mid]
+X-Rspamd-Queue-Id: 9A6CF48007
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 From: Mykyta Yatsenko <yatsenko@meta.com>
 
-Extend BPF timer selftest to run stress test for async cancel.
+Add test that verifies that bpf_timer_cancel_async works: can cancel
+callback successfully.
 
 Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
 ---
- tools/testing/selftests/bpf/prog_tests/timer.c | 18 +++++++++++++++++-
- tools/testing/selftests/bpf/progs/timer.c      | 14 +++++++++++---
- 2 files changed, 28 insertions(+), 4 deletions(-)
+ tools/testing/selftests/bpf/prog_tests/timer.c | 25 +++++++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/timer.c      | 23 +++++++++++++++++++++++
+ 2 files changed, 48 insertions(+)
 
 diff --git a/tools/testing/selftests/bpf/prog_tests/timer.c b/tools/testing/selftests/bpf/prog_tests/timer.c
-index 4d853d1bd2a71b3d0f1ba0daa7a699945b4457fe..a157a2a699e638c9f21712b1e7194fc4b6382e71 100644
+index a157a2a699e638c9f21712b1e7194fc4b6382e71..2b932d4dfd436fd322bd07169f492e20e4ec7624 100644
 --- a/tools/testing/selftests/bpf/prog_tests/timer.c
 +++ b/tools/testing/selftests/bpf/prog_tests/timer.c
-@@ -23,13 +23,14 @@ static void *spin_lock_thread(void *arg)
+@@ -99,6 +99,26 @@ static int timer(struct timer *timer_skel)
+ 	return 0;
  }
  
- 
--static int timer_stress(struct timer *timer_skel)
-+static int timer_stress_runner(struct timer *timer_skel, bool async_cancel)
- {
- 	int i, err = 1, prog_fd;
- 	LIBBPF_OPTS(bpf_test_run_opts, topts);
- 	pthread_t thread_id[NUM_THR];
- 	void *ret;
- 
-+	timer_skel->bss->async_cancel = async_cancel;
- 	prog_fd = bpf_program__fd(timer_skel->progs.race);
- 	for (i = 0; i < NUM_THR; i++) {
- 		err = pthread_create(&thread_id[i], NULL,
-@@ -46,6 +47,16 @@ static int timer_stress(struct timer *timer_skel)
- 	return err;
- }
- 
-+static int timer_stress(struct timer *timer_skel)
++static int timer_cancel_async(struct timer *timer_skel)
 +{
-+	return timer_stress_runner(timer_skel, false);
++	int err, prog_fd;
++	LIBBPF_OPTS(bpf_test_run_opts, topts);
++
++	prog_fd = bpf_program__fd(timer_skel->progs.test_async_cancel_succeed);
++	err = bpf_prog_test_run_opts(prog_fd, &topts);
++	ASSERT_OK(err, "test_run");
++	ASSERT_EQ(topts.retval, 0, "test_run");
++
++	usleep(500);
++	/* check that there were no errors in timer execution */
++	ASSERT_EQ(timer_skel->bss->err, 0, "err");
++
++	/* check that code paths completed */
++	ASSERT_EQ(timer_skel->bss->ok, 1 | 2 | 4, "ok");
++
++	return 0;
 +}
 +
-+static int timer_stress_async_cancel(struct timer *timer_skel)
-+{
-+	return timer_stress_runner(timer_skel, true);
-+}
-+
- static int timer(struct timer *timer_skel)
+ static void test_timer(int (*timer_test_fn)(struct timer *timer_skel))
  {
- 	int err, prog_fd;
-@@ -118,6 +129,11 @@ void serial_test_timer_stress(void)
- 	test_timer(timer_stress);
+ 	struct timer *timer_skel = NULL;
+@@ -134,6 +154,11 @@ void serial_test_timer_stress_async_cancel(void)
+ 	test_timer(timer_stress_async_cancel);
  }
  
-+void serial_test_timer_stress_async_cancel(void)
++void serial_test_timer_async_cancel(void)
 +{
-+	test_timer(timer_stress_async_cancel);
++	test_timer(timer_cancel_async);
 +}
 +
  void test_timer_interrupt(void)
  {
  	struct timer_interrupt *skel = NULL;
 diff --git a/tools/testing/selftests/bpf/progs/timer.c b/tools/testing/selftests/bpf/progs/timer.c
-index 4c677c001258a4c05cd570ec52363d49d8eea169..a81413514e4b07ef745f27eade71454234e731e8 100644
+index a81413514e4b07ef745f27eade71454234e731e8..4b4ca781e7cdcf78015359cbd8f8d8ff591d6036 100644
 --- a/tools/testing/selftests/bpf/progs/timer.c
 +++ b/tools/testing/selftests/bpf/progs/timer.c
-@@ -1,13 +1,17 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2021 Facebook */
--#include <linux/bpf.h>
--#include <time.h>
-+
-+#include <vmlinux.h>
- #include <stdbool.h>
- #include <errno.h>
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_tracing.h>
- 
-+#define CLOCK_MONOTONIC 1
-+#define CLOCK_BOOTTIME 7
-+
- char _license[] SEC("license") = "GPL";
-+
- struct hmap_elem {
- 	int counter;
- 	struct bpf_timer timer;
-@@ -63,6 +67,7 @@ __u64 callback_check = 52;
- __u64 callback2_check = 52;
- __u64 pinned_callback_check;
- __s32 pinned_cpu;
-+bool async_cancel = 0;
- 
- #define ARRAY 1
- #define HTAB 2
-@@ -419,7 +424,10 @@ int race(void *ctx)
- 
- 	bpf_timer_set_callback(timer, race_timer_callback);
- 	bpf_timer_start(timer, 0, 0);
--	bpf_timer_cancel(timer);
-+	if (async_cancel)
-+		bpf_timer_cancel_async(timer);
-+	else
-+		bpf_timer_cancel(timer);
- 
+@@ -169,6 +169,29 @@ int BPF_PROG2(test1, int, a)
  	return 0;
  }
+ 
++static int timer_error(void *map, int *key, struct bpf_timer *timer)
++{
++	err = 42;
++	return 0;
++}
++
++SEC("syscall")
++int test_async_cancel_succeed(void *ctx)
++{
++	struct bpf_timer *arr_timer;
++	int array_key = ARRAY;
++
++	arr_timer = bpf_map_lookup_elem(&array, &array_key);
++	if (!arr_timer)
++		return 0;
++	bpf_timer_init(arr_timer, &array, CLOCK_MONOTONIC);
++	bpf_timer_set_callback(arr_timer, timer_error);
++	bpf_timer_start(arr_timer, 100000 /* 100us */, 0);
++	bpf_timer_cancel_async(arr_timer);
++	ok = 7;
++	return 0;
++}
++
+ /* callback for prealloc and non-prealloca hashtab timers */
+ static int timer_cb2(void *map, int *key, struct hmap_elem *val)
+ {
 
 -- 
 2.52.0
