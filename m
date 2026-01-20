@@ -1,204 +1,226 @@
-Return-Path: <bpf+bounces-79541-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79542-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 666DAD3BD67
-	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 03:02:13 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBD16D3BD6C
+	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 03:10:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 255EE3025A48
-	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 02:02:08 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 51A77303D6A4
+	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 02:09:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ECEB2641CA;
-	Tue, 20 Jan 2026 02:02:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FCDA258CD0;
+	Tue, 20 Jan 2026 02:09:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kb6Pke1G"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DNIyPl4R"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B7AE244665
-	for <bpf@vger.kernel.org>; Tue, 20 Jan 2026 02:02:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01109244665
+	for <bpf@vger.kernel.org>; Tue, 20 Jan 2026 02:09:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.128.46
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768874526; cv=pass; b=fcV0AMREXBVfbg0bw14iBpR0DoHmnXBEacLuphcuGk95tg+Ustu8leggivtCl7rnAsnOa+rLLTQ+zbhM6CiC4HR5t0G5GfT/zUIWF4eKMTrpzcKKUio75g/dlQs2m9XD1BPxT2Evipw/uyiguzTLtWEyb8BuHmnbslBUe5lwsZE=
+	t=1768874992; cv=pass; b=aWPWWiXulEJ1M3MLqndRCwUInfHoxVMbkkBXnhUCjLhknsn9mf+CAsxVw0lFasJg1Aizy1YLzRWDm9JDt7qmEg7AtB16sh8AoZJyqA3URRoR3RWRoehF/L/NQ3i0/4QzZKWi+GY9AKnL1jMPzN4bka+9TZnJ+Cd8Y6LIAT9tjdQ=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768874526; c=relaxed/simple;
-	bh=SqHrVPjT9vlZKR1UpPWYn/8KLOzcXgsoZh+2ANBrF50=;
+	s=arc-20240116; t=1768874992; c=relaxed/simple;
+	bh=Sx+TNnDKejFoNyVz/tHZhvmoIlr6m6g7EeKy3PMViwE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SMrvAZlIm+GzTSsAOu8MWPuft+tjjr8i7osivzMPx4AFUaf6UL/GlUuqqxpWscZ4r2Ln3gFI4n2vTOYd88SWxuf5jy4aAAaVHeylzEfdrgoGpUgN9qyEVAtet8u5GRQXkYT7y1RuPpB04DjL5kVDli5yuxLBQ7du9oaI0QD/OFE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kb6Pke1G; arc=pass smtp.client-ip=209.85.221.47
+	 To:Cc:Content-Type; b=BnLTLHCfs4YN533e3wQS+q9tMNHiudUejdxDYHpfGLjqfLRD9wdt4vR/gDj0iKMv6fmZldJFeDrMZxUj/2wyiyDa5l0gTEJHiL073sa7czBJANMO/FNy2xDGJWb8XMJ5LJ8g1xCVqxQ323tnxG0WggDCu2w9UNzm1/cWJlSdknE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DNIyPl4R; arc=pass smtp.client-ip=209.85.128.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-42fb0fc5aa9so2742508f8f.1
-        for <bpf@vger.kernel.org>; Mon, 19 Jan 2026 18:02:05 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1768874524; cv=none;
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-47ee3a63300so45507335e9.2
+        for <bpf@vger.kernel.org>; Mon, 19 Jan 2026 18:09:50 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1768874989; cv=none;
         d=google.com; s=arc-20240605;
-        b=dJkhFNR/sCJKgxdmx5K0fUfqqOrK/9STn5RWEbJgj9rS5Ty+FqKrzd23SGaX14jlO1
-         U1AY8hv9km3rpi623HPtmxBLwrCAkpNBtpnQysiGPfBG1czJAoCFpkkPTKZJmtu2R7bX
-         bp9aEscdNl79ncWrHi8y220FWXE4l00gaiXzR0YHQqxMvaj1fHlqzHQuk5q5lyTTu7To
-         vu0xPmAqAVR4iHtMxb4MDRAQNu39uHmdsUEQcGnw8h+MDb79HZUHXLXPrxuJ2bj4EA7h
-         k7rCorsAQ7CSPW6aAKTbPfkS6UFKmRK3ywtbmnQ09DUUI3SZOP896uFBrq6sKr7izyGG
-         NPUg==
+        b=GHJKImfIEy3I0Ie4HIVRzBKFqC2bCBb2JLALR1d0aLYGehfKVkwh5C3J8UPaqBu1hV
+         hWkyOp7wqFZvzYL+vtP1Vhq4MsxpMNSTiooq+Iq826esalBYWSgq1saSJQIGjIlMPQDv
+         Ji3chV8GfUlL1pUjEyT8+EMFpAbjmJq9VCOVieu9sPTuHJWjqdpzIgnkC4pE7aj48KKv
+         8Vy6fhZ9xO13CJk8kM7+vfeCfAKMqslOVy2FqtVPD3DFVzmWYY68xv3fhve7m+H+h6kl
+         XUXIS44OTkjIsePLwAcLk/jbvzUSznWPKnA31s+0KE1PEKNkS10nfDyWwvOPSZpV1Xde
+         GwfA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:dkim-signature;
-        bh=zF2yWK7zvI1C0O5oWVR36FsjQwZ4yq9cJQ9urhGlw/M=;
-        fh=EQnjyTFv0ji7OBV40YULA30xpycdhHI99OliHCvF7SQ=;
-        b=heR9FwXaptJgW2ULGg+yZ26QnGi8xCtORwFG69COgnxfwshb1bJepyGSrgrq2c/LQp
-         NWtwkloAhsWgmDegN3gytNPg1dKsAkXt2t/yJEDf8vLeTE+VShlgRA/QgelI7fUYptZ9
-         xMKBsPVWBaG00R2Ksyi9ceAKvAjRW1XCHme/MD4kf1Y3NRV2MKu/mKpsXDMNrQVQwmod
-         jSble64JzOnbeiKAT9/XZ9Vdcl+vqiA6AaKOi6aY7uTU2iJOos9XJNReVqGyAUmcvkWg
-         /ZU1uM3ObjOVH407e0KH2SBN2UEj/yKr+Q0BSCLatKFCfOiy4+cLYpCcW/Y6O0tGJ7G6
-         oJew==;
+        bh=AgDdtQ/zCcydIiPDBaQVxX6r4MYupVBp9oagp8PAfZ0=;
+        fh=NRzxctIsfcnIn7lRXmK/EiaawZyo9lt/dz5Vvh41KkA=;
+        b=bSC39R6zBNijOKiMefnLgggAqH/xgNuLrQz0SA+Orb5DrQ+4XIdsQO2n6KGHmkA8Fc
+         r/X9Me1qTjxPYqMSLd/UIY6YwmtrEO5h+cHT2XjIMPpGONc/sJDD7Fu7QjXX5RHzyj4U
+         VxMvDU0DNIjfARnbgTL47HnNMXus1Brd/RvQmFBmDtRAeBV818wEk8Y3MoO8dbBIEFFb
+         2TD3ZM+UqbdbCGCIHsETwv9kAPdfLL+2JuDY1ue4/I2bZW9G1YHPHO63IB4ySvGO8KAQ
+         0UrbLqlmp1z2HUNckQiYUw7zHvupy05PuAoCeqeisM8Q9Q7Lrxs5b8fgAx+3tuvYuNcF
+         3i5Q==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768874524; x=1769479324; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1768874989; x=1769479789; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zF2yWK7zvI1C0O5oWVR36FsjQwZ4yq9cJQ9urhGlw/M=;
-        b=kb6Pke1GlOXAXgGwSiZ7pXuohgl5d0EYlZYrDyTpmJNyo5pPb1SlkyvT0iqfZ7KplY
-         KDPXaqK6g6z90c4/anvf0IK2MaZpBsPET1BOhh/zCcwY4LOdVP5QBOborsbwOZNTV7VF
-         7t8GrngxP1AzEHM/oLSm2HS8nSCIN+G2/XWV4oEgN863VVKJMVoFoQxjSCIPZtpLPU47
-         RDQII2i8uIlvGTXyhDpxBGMJWwaMhyjEFUc0Y6rfYrQygcUh2vk/JxC6CcNTEbuYNubw
-         COiJgXZZckQmTvoksTtgkF821uFmquGNsC1f0MY/kVr+aV+dplNJWSfnSkhyZHGCPXU2
-         l6IA==
+        bh=AgDdtQ/zCcydIiPDBaQVxX6r4MYupVBp9oagp8PAfZ0=;
+        b=DNIyPl4RW+97Mx3IWaLENCQG+KcG9YEgQ5OSN2CGwJoBrZJ0vwq4+7CqdK3zu/rDEi
+         iaWRBqLR3kHZMGM0pwVuBR9l9A4Ia5StaCwBAWGHbzqI4qCvlgAISPeVS41kM4l+RZ1e
+         Zv3NxNWQm8Q7reNITv/7NanSIsfxht8uUU0vHNMBcwQ55DCHkDy3rsmeQDWPuCrWdolF
+         fc/AII93rBNcAbH7OIAzs2kv8a83/mkzZQovQdHvKE5TVgAHxGXdtTahRVGTvYy4K2Vy
+         FpN0DVudQ/JggeSs4xKhCxdf3+sjppduwakyYKemP83X5u7nW/0eXfLdOd0fPMyWAP+E
+         8EQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768874524; x=1769479324;
+        d=1e100.net; s=20230601; t=1768874989; x=1769479789;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=zF2yWK7zvI1C0O5oWVR36FsjQwZ4yq9cJQ9urhGlw/M=;
-        b=Clq4XO4YQj0wBhCSrkUZpKfh2PmW8y69rd1aVFrwFcTPcO6Gscr0R+eBBnJteyn6U8
-         XPbDCnm/YfNTsdpAWSNKX7WFluMR5Dp1X0x9OBNJDj8vEYTz/4DOaRQlS7io63h5g77J
-         iqsJKBMNG7qMsXLaS37HMppxTcB3YSKarKumP22YMRcfxVYSAjHpDZXvOc7+GA92ys15
-         pD5NeVmmMlE2mLli3L9qGqlXMoMk1mnfrUPAplJxsWEMisTtAhVuLkBun4B0QKyTzbvu
-         6swbNuWEyCWPRXefoL/O0zMdGYNoBFDHfcFb02lghSSDz4cHD6Fer9mJN8J7OcumqDNE
-         dmww==
-X-Forwarded-Encrypted: i=1; AJvYcCUFLuNX+ISSrsEaokdKI63chGLie/mbJJTECMUux2ekQpvV+/x/QVonmjsoS+VArR80g0s=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyz1umd/pXswLoAwyR+KDaS7GycX3iC3jFJN07GFyFB0oTsQ1Pq
-	l8lhrvCX5ZA8kREty/2ErY04h2H954v5SC0Q1XYwpYmdB2tlIrmsbXnAzt+Ct1gkrPCz65wMXFT
-	OSMrGtVdquhJjwNx5zbBQxzznII+U8J0=
-X-Gm-Gg: AZuq6aKw5G9DtVuOwDxpFvdmKNlqLI132NYRnWgAJJkdmLuIiyHeAX5S4W4MypXZJfW
-	d4VhJNUSVBBOzg5Pk8ZbzbKsLMP6V96C0zeLljlGJyL3MYoAqpgLHBqSI9evn/vq3JO33AChHXJ
-	4tge9zdKO2ErF1RRjMZI3C/LqbDOZr8ZkbyMw6QWT1OnFP5u+IXbzXAMtWcOw/wgo2WLTqXreoo
-	lRjpI3fiWOYTh0iKboadKZ0rrxfYAQ92cQPrGmD5NCUBmEp1+Foo5pBMOJbXBzeVK2AG1mlOJpM
-	0fPrJNn2CqYdzHQaxwqN/MiWp6MnCJMYQIz5Fo1zJmjK9JgSZ+KIjo55ws9UwZfKB82f8fkS4cU
-	dS/Y/fG5Yfi9brA==
-X-Received: by 2002:a05:6000:310d:b0:430:f58d:40e5 with SMTP id
- ffacd0b85a97d-4356a051bbamr14568717f8f.30.1768874523500; Mon, 19 Jan 2026
- 18:02:03 -0800 (PST)
+        bh=AgDdtQ/zCcydIiPDBaQVxX6r4MYupVBp9oagp8PAfZ0=;
+        b=ein0d0ylL/Vk5nt3h01y3VcfW6MJ6qv6yos8Ca9fm9UyCs56HST9j8arkzQxGgv4M8
+         gFYxRNMfQmoK6pXap6P3yFKnbdDLjgPuG7qiqNdfOgcT4H976g+WRKa21uFvuehXvAjt
+         tg82Qlpz9DNFrWIYHYyQz7KxSdXphyFPkTA592RFxY5r9OOXFQDRI17RCyfC/ShCMmvd
+         GufRYT39fTD9j6yPARCoEjxWwoDSEo3Qdyor7WJXvvVdxNYqxKyaHB3L3pE6q+c0waxY
+         X9slxb68sZ2vjSc86pQf/WYME8dlyjoix6bEeDqqtsdikDHFGiHjM+OH/pPD7AUTf467
+         yahg==
+X-Forwarded-Encrypted: i=1; AJvYcCWcUV2t0q3e74XrlgRV+GjFZpRoEoXNihViHJVDX1FWriNCAjHKqdP8LBVI5rsqQ1LEVrg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwYYQFs6UdkF3wyYqZg4ac04fYzAdbrNjn0G9qc8ZrhcueYvSSv
+	fx29aHU+azj7kPFAHANZUU1heX5xozPxe/p171gJqtzeKPkOz+cNiOgGP1wRWshJkuqv9d7xtTa
+	1QVq/1fpm5BrmqVvc8CE1S/CH2xGTsOA=
+X-Gm-Gg: AY/fxX6OgQ6UKsXjjKamO3Zwiy+PMtAhJp5M4PI89sA+9+H4F24VVUkQO+SNLXj4pXj
+	YKQJ414QwqH6zpykJXFhlZAHWScpYJOjfPd7OVxAliwCG/qFArF93dQ+CuuIjJm+WOt7+IhThGQ
+	r7ohceoTsl8jwjty7w4bNBeQARpwHN1N/qTcDVVdnhixjHw85YtJVRM8faxSag1vFI6w7gNSuaW
+	sSRMWkZHMc7vGJJIpHZeXP3LzfTMeRqMtqZTzdwvNtnDNg+SreAqiBLocdpOwzbjuGHffgxfCeK
+	wTjDliPOKJchniPOlMU44AX+2LciM9Aj8wJ5SVUbPOrb7J6E13G4qfvUtH8Ih6xfL0zOGoI5FIl
+	FmqqMTUibYV2AeQ==
+X-Received: by 2002:a05:600c:4e15:b0:480:19ed:7efa with SMTP id
+ 5b1f17b1804b1-4803e8020fdmr2556245e9.36.1768874989264; Mon, 19 Jan 2026
+ 18:09:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260119142120.28170-3-leon.hwang@linux.dev> <a4904d743818169a9a8c1e30dd51ee7a8672bf2b883e973dcca489ff28a3e708@mail.kernel.org>
- <8ed48af7-8a85-4012-8b86-79e83f0689b6@linux.dev>
-In-Reply-To: <8ed48af7-8a85-4012-8b86-79e83f0689b6@linux.dev>
+References: <f43e25d4f86cf567e06141f0408b0c4c169bd7ed.camel@gmail.com> <20260120015616.69224-1-realwujing@gmail.com>
+In-Reply-To: <20260120015616.69224-1-realwujing@gmail.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 19 Jan 2026 18:01:52 -0800
-X-Gm-Features: AZwV_QhpYBM9PhwiJJzku6_RURNwOkTgXHw-IKAun2oUPnbV12Zz2R3tusUhVBY
-Message-ID: <CAADnVQKMOK8jMcYugtrjsqh3O-C_hUsKVL6jKfcGVD5g_1pVxQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/3] bpf: Avoid deadlock using trylock when
- popping LRU free nodes
-To: Leon Hwang <leon.hwang@linux.dev>
-Cc: bot+bpf-ci@kernel.org, bpf <bpf@vger.kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Eduard <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Shuah Khan <shuah@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, kernel-patches-bot@fb.com, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Chris Mason <clm@meta.com>, 
-	Ihor Solodrai <ihor.solodrai@linux.dev>
+Date: Mon, 19 Jan 2026 18:09:37 -0800
+X-Gm-Features: AZwV_Qjl3FiwPlByr5vRijLEICLGgKkMMNxOVRLj-ZyITJ1CbWt8eYZqQdK4BVQ
+Message-ID: <CAADnVQKkDCNB5xk-gnUWXJ44LqG0gRaHfE5WjbAwZL-vnV+6oA@mail.gmail.com>
+Subject: Re: [PATCH v3] bpf/verifier: optimize ID mapping reset in states_equal
+To: Qiliang Yuan <realwujing@gmail.com>
+Cc: Eduard <eddyz87@gmail.com>, Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	KP Singh <kpsingh@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Stanislav Fomichev <sdf@fomichev.me>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, yuanql9@chinatelecom.cn
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 19, 2026 at 5:57=E2=80=AFPM Leon Hwang <leon.hwang@linux.dev> w=
-rote:
+On Mon, Jan 19, 2026 at 5:56=E2=80=AFPM Qiliang Yuan <realwujing@gmail.com>=
+ wrote:
 >
+> The verifier uses an ID mapping table (struct bpf_idmap) during state
+> equivalence checks. Currently, reset_idmap_scratch performs a full memset
+> on the entire map (~4.7KB) in every call to states_equal.
 >
+> This ensures that reset overhead is minimal and the search loop is
+> bounded by the number of IDs actually encountered in the current
+> equivalence check.
 >
-> On 20/1/26 02:46, bot+bpf-ci@kernel.org wrote:
-> >> diff --git a/kernel/bpf/bpf_lru_list.c b/kernel/bpf/bpf_lru_list.c
-> >> index c091f3232cc5..03d37f72731a 100644
-> >> --- a/kernel/bpf/bpf_lru_list.c
-> >> +++ b/kernel/bpf/bpf_lru_list.c
-> >
-> > [ ... ]
-> >
-> >> @@ -451,13 +455,12 @@ static struct bpf_lru_node *bpf_common_lru_pop_f=
-ree(struct bpf_lru *lru,
-> >>
-> >>      loc_l =3D per_cpu_ptr(clru->local_list, cpu);
-> >>
-> >> -    raw_spin_lock_irqsave(&loc_l->lock, flags);
-> >> +    if (!raw_spin_trylock_irqsave(&loc_l->lock, flags))
-> >> +            return NULL;
-> >>
-> >>      node =3D __local_list_pop_free(loc_l);
-> >> -    if (!node) {
-> >> -            bpf_lru_list_pop_free_to_local(lru, loc_l);
-> >> +    if (!node && bpf_lru_list_pop_free_to_local(lru, loc_l))
-> >>              node =3D __local_list_pop_free(loc_l);
-> >> -    }
-> >>
-> >>      if (node)
-> >>              __local_list_add_pending(lru, loc_l, cpu, node, hash);
-> >
-> > The trylock conversion here looks correct, but what about the steal pat=
-h
-> > that follows later in bpf_common_lru_pop_free()? Looking at the existin=
-g
-> > code (not shown in this diff), the steal loop still uses unconditional
-> > raw_spin_lock_irqsave():
-> >
-> >     do {
-> >         steal_loc_l =3D per_cpu_ptr(clru->local_list, steal);
-> >
-> >         raw_spin_lock_irqsave(&steal_loc_l->lock, flags);
-> >         ...
-> >     } while (...);
-> >
-> > If the goal is to avoid NMI-context deadlocks when acquiring LRU locks,
-> > can the same deadlock scenario occur when NMI interrupts during the ste=
-al
-> > loop and the NMI handler tries to acquire the same steal_loc_l->lock?
-> >
-> > Similarly, after a successful steal, there is another unconditional loc=
-k:
-> >
-> >     if (node) {
-> >         raw_spin_lock_irqsave(&loc_l->lock, flags);
-> >         __local_list_add_pending(lru, loc_l, cpu, node, hash);
-> >         raw_spin_unlock_irqrestore(&loc_l->lock, flags);
-> >     }
-> >
-> > Should these also use trylock to maintain consistency with the stated g=
-oal
-> > of avoiding NMI-context deadlocks?
-> >
+> Benchmark results (system-wide 'perf stat' during high-concurrency 'veris=
+tat'
+> stress test, 60s):
 >
-> This patch is not intended to eliminate all possible deadlock scenarios.
-> Its goal is to avoid deadlocks caused by long-lived critical sections
-> in the free-node pop paths, where lock contention can persist and lead
-> to re-entrant lock acquisition from NMI context.
->
-> The steal path and the post-steal update are both short-lived critical
-> sections. They do not exhibit the same contention characteristics and
-> have not been observed to trigger the reported deadlock scenarios.
-> Converting these paths to trylock would add complexity without clear
-> benefit, and is therefore unnecessary for the stated goal of this change.
+> The following results, captured using perf while running veristat in para=
+llel
+> across all CPU cores, show a significant reduction in instruction overhea=
+d
+> (~9.3%) and branch executions (~11%), confirming that the O(1) reset logi=
+c
+> significantly reduces the verifier's workload during state equivalence
+> checks.
 
-AI is correct. Either everything needs to be converted or none.
-Adding trylock in a few places because syzbot found them is not fixing anyt=
-hing.
-Just silencing one (or a few?) syzbot reports.
-As I said in the other email, trylock is not an option.
-rqspinlock is the only true way of addressing potential deadlocks.
-If it's too hard, then leave it as-is. Do not hack things half way.
+You were already told by multiple people to stop doing this pointless
+stress runs across all cpus.
+
+> Metric          | Baseline      | Patched       | Delta
+> ----------------|---------------|---------------|----------
+> Iterations      | 5710          | 5731          | +0.37%
+> Instructions    | 1.714 T       | 1.555 T       | -9.28%
+> Inst/Iter       | 300.2 M       | 271.3 M       | -9.63%
+> Cycles          | 1.436 T       | 1.335 T       | -7.03%
+> Branches        | 350.4 B       | 311.9 B       | -10.99%
+> Migrations      | 25,977        | 23,524        | -9.44%
+>
+> Test Command:
+>   seq 1 2000000 | sudo perf stat -a -- \
+>     timeout 60s xargs -P $(nproc) -I {} ./veristat access_map_in_map.bpf.=
+o
+
+and you were told to stop using tiny programs that don't exercise the
+path you're changing in the patch.
+
+> Detailed Performance Stats:
+>
+> Baseline:
+>  Performance counter stats for 'system wide':
+>
+>          6,735,538      context-switches                 #   3505.5 cs/se=
+c  cs_per_second
+>       1,921,431.27 msec cpu-clock                        #     32.0 CPUs =
+ CPUs_utilized
+>             25,977      cpu-migrations                   #     13.5 migra=
+tions/sec  migrations_per_second
+>          7,268,841      page-faults                      #   3783.0 fault=
+s/sec  page_fault_per_second
+>     18,662,357,052      branch-misses                    #      3.9 %  br=
+anch_miss_rate         (50.14%)
+>    350,411,558,023      branches                         #    182.4 M/sec=
+  branch_frequency     (66.85%)
+>  1,435,774,261,319      cpu-cycles                       #      0.7 GHz  =
+cycles_frequency       (66.95%)
+>  1,714,154,229,503      instructions                     #      1.2 instr=
+uctions  insn_per_cycle  (66.86%)
+>    429,445,480,497      stalled-cycles-frontend          #     0.30 front=
+end_cycles_idle        (66.36%)
+>
+>       60.035899231 seconds time elapsed
+>
+> Patched:
+>  Performance counter stats for 'system wide':
+>
+>          6,662,371      context-switches                 #   3467.3 cs/se=
+c  cs_per_second
+>       1,921,497.78 msec cpu-clock                        #     32.0 CPUs =
+ CPUs_utilized
+>             23,524      cpu-migrations                   #     12.2 migra=
+tions/sec  migrations_per_second
+>          7,783,064      page-faults                      #   4050.5 fault=
+s/sec  page_faults_per_second
+>     18,181,655,163      branch-misses                    #      4.3 %  br=
+anch_miss_rate         (50.15%)
+>    311,865,239,743      branches                         #    162.3 M/sec=
+  branch_frequency     (66.86%)
+>  1,334,859,779,821      cpu-cycles                       #      0.7 GHz  =
+cycles_frequency       (66.96%)
+>  1,555,086,465,845      instructions                     #      1.2 instr=
+uctions  insn_per_cycle  (66.87%)
+>    407,666,712,045      stalled-cycles-frontend          #     0.31 front=
+end_cycles_idle        (66.35%)
+>
+>       60.034702643 seconds time elapsed
+>
+> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+> Signed-off-by: Qiliang Yuan <realwujing@gmail.com>
+> ---
+> v3:
+>  - Remove Suggested-by tags per Eduard's feedback.
+>  - Add Eduard's Acked-by.
+>  - Credit Andrii Nakryiko for the further optimization suggestion.
+>  - Mention the limitation of system-wide profiling in commit message.
+
+Do not add "educational" information to the commit log.
+The commit should describe why and what is being done and the result.
+If you cannot observe the difference before/after, then don't say anything.
+
+"significantly reduces the verifier's workload" is not true.
+You were not able to measure it. Don't invent gains.
+
+pw-bot: cr
 
