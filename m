@@ -1,260 +1,317 @@
-Return-Path: <bpf+bounces-79555-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79556-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FA2BD3BF59
-	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 07:37:57 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F495D3BF62
+	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 07:41:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id C646A387ED4
-	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 06:34:34 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id E3DDA383392
+	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 06:40:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 381A736CDE5;
-	Tue, 20 Jan 2026 06:33:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10FA631D367;
+	Tue, 20 Jan 2026 06:40:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="HgCjMk+E";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="/RqIpGWo";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ScNhbrR+";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="CwkFapkR"
+	dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b="QOdI1KIk"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from DU2PR03CU002.outbound.protection.outlook.com (mail-northeuropeazon11011029.outbound.protection.outlook.com [52.101.65.29])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D24CF25E469
-	for <bpf@vger.kernel.org>; Tue, 20 Jan 2026 06:33:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768890831; cv=none; b=Kurki3cYY9x25vPqWcEmibuSlUXH9x2P6A4m45jkZF7AJZN3e+3QEVCb7eMs+KbBQHFndbOwJqmePMdvJVRo9P+/7r6dOm/enYJJXulrK1hY8JmAqm3lC/353Ax7IoB0LhZ3KExkVjoB4RnlVkak5p3B5B82Dpl+qT8zSCS4UpM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768890831; c=relaxed/simple;
-	bh=KXeRJUZVaD7odE8+ZrzEevkPbI7J9h1CXhPnrEp+Dug=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=E2gVdb9Ls0yzkwpHcv26ZbVy/qBjlen3hWlHTsSf3Uhb8iKX19OIgJUvRyT7nGZiYAA5Jhktfby/d3xru47iSxzZub1ytBw0S5T6LH2v0fJ6YYX4kMo/TJYkUBdA1K/mlYOr4w7p0Yls66jsRPIR/rnJ/oPNxq9OHl7+13JGtPk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=HgCjMk+E; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=/RqIpGWo; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ScNhbrR+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=CwkFapkR; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id DDF775BCC9;
-	Tue, 20 Jan 2026 06:33:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1768890828; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=VK5LAWZJGesYmfMe3akrFE9Qr+u5i9eRqUPU6M9O84A=;
-	b=HgCjMk+Eeeek0ViYMGJZHfXPrpt91EQyv/WZhxIssU7+VTqcZMCHLR9PaARjSrRv+9y81C
-	Ca4VPpdPw9/s9SAMX8K74Bow/H7G4J1T66yl6jr018FUgpRii1fIc4hf/o+xR/mhO9Y7yx
-	TqTse/uDn4KB4O3xziG1Dy8tjTdNjMA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1768890828;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=VK5LAWZJGesYmfMe3akrFE9Qr+u5i9eRqUPU6M9O84A=;
-	b=/RqIpGWoYhLlSBZI1+coiVcbhpn4cXVVNMgcAF05LnsnR+0A8Cb3jXGIV577L/BBhgS35b
-	yInvfJ1pkLwYXGAw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1768890827; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=VK5LAWZJGesYmfMe3akrFE9Qr+u5i9eRqUPU6M9O84A=;
-	b=ScNhbrR+3/oaBrjT9QPc7vNyJBqtT/kLM6kXRBYM6ATBcu66I99UJZwUcVJP4hGjGwtNzm
-	CFrLQ7Cr6zNqv7hOSVpSPfR2rq6cczVcyLcsAg5tLP/WScyx7vlsqVcI12gWSY4vTHEi6U
-	toEujIvHQrKUOT8TeyqvXJLX7KqZcHA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1768890827;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=VK5LAWZJGesYmfMe3akrFE9Qr+u5i9eRqUPU6M9O84A=;
-	b=CwkFapkRy8eNu4Yhm45k1te576OuxQByC7CIkaBzdUH+y1blptJ2vChjRTZae9SXOw6Mdo
-	H9pm0J2cedcycyCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AC09A3EA63;
-	Tue, 20 Jan 2026 06:33:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id c0s8KMshb2lLAgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Tue, 20 Jan 2026 06:33:47 +0000
-Message-ID: <2232564a-b3f7-4591-abe2-8f1711590e6e@suse.cz>
-Date: Tue, 20 Jan 2026 07:33:47 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26D4036C5B6;
+	Tue, 20 Jan 2026 06:40:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.65.29
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768891205; cv=fail; b=dwFK2UgXVdqPFnDynaGF0KmJlCzUvRwwoeFG+Ja3SaK0dgG42lnyn+IqHjLbsoYZQwGuWuwAM8xOdIY7iS1VNNrR9dFafQS3cjtBbiCUYQAR5ugz/AiSZ1Js67otzXkR+0OpxIiras3JiR3LgVZSU9juRY6iMCcJrMNPSqJmpxI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768891205; c=relaxed/simple;
+	bh=ilC+ovBnaMo0G3mmyY6R6FPViyJYbMUa0TYmdUzPlPc=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=GfLKznuGjRB9n+RnOTSLR6NUaP+Bq5WKpjBdpdMOE9ckwgL7euD/3uEUvx+6mbSazmK3LG/tXJyKwwAovJ8lJbXRccxnikn41WATZN/mVTsrNhPxiEf4qK+gxO/F7y3Y7yaxXyuwKkO6RQ/IcABRRdXGaTU99CTPZ9cpZxLhMRA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b=QOdI1KIk; arc=fail smtp.client-ip=52.101.65.29
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=mvCreLr3iQJTXzpg4R2g0nU45PzD1+bVGMvGPPsjod31mWnBLqjL1xIqySjo8k2Z/8uhsCeopcT4r6YcITY7vv8JnIvIXBiidWVkdKy5ACt/siERZLeX6Sht1vdu8pdg515MJBisOle1WlH/kmMWdbYqr8e3UoN4ksiUlLqdNZE5DzX0wRYUPtn68/aFR5c7AxKy5oPq3K67fNxylP8JANYpOuJqmnRakKIG2GPe/N5SShwYs/923kpwoUE6xhX1umy4U/ZbMqhUJkJgcZWNeOJk3k2NqCu6wPYnXjsVEx6nKvgDjzgsxZs5sD/SPIMqiRZjbfANOdMzeJZ8pGoKug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=IyDlZlq3PAGN4znyX40PQIlRDtSmg9bK9fqQmqqtEyc=;
+ b=XyEcTUImu2gC81baI/hT5W3qR/TtU2VHUnwYHeA4ZSlQy4DXrxS6RFuIZ7E/4+b7xwVTrKEbSGH6BwNffLPzQo8WS49gpnTnS2rmrdl4g9IuLUpRZhF+NMYCUA1PUjZCk43D8sl8bGGb9RXQaqNA/yN24uKGlf6teDBolZ8SxQUA3rHJ1l+ocC4nXYLAnsJ5zx3/EAAkk8fQ39Wo3j9F2dylu4/X2wm/ENTqBX7PHh97hfsLB0sIgwzUCSCySaZy9fydPdq4qZDGNS2B9tkdHfWjheh6VGo51wB2nDP9u6xhhHN2pFUNvDjpj29Kv7fsae3cScUoHnEacxPVRyi01w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IyDlZlq3PAGN4znyX40PQIlRDtSmg9bK9fqQmqqtEyc=;
+ b=QOdI1KIkfsixB7vGFNbDzAwQgWc4Htcmhn5SlwUajo9Mtadp4zGyMTOmxMoDy0avrIO9XT3GPi2dUTN2ykIxrgyZsS2f4ZAAeAE6dF6LTxRa+TcaS1w7B1byGCEDx8wUmWDQ6aE99llXFhxOcdYC/sTgd/F38KwcgEPGln5pqvPSyW7xr0JOiOvRMSznKZ+z41AojU05M97z6ubqoh0FjcGL3V+a03cAaYWJvwimJmBr4Ke+cvHOpvHOCZ1CGr+NRE8ensxfdwkFVj8JBLWJJTxahuvorB4Jm0yTaEv0homaSWKo5AgNUqeXCUrT0p7zzdkxBLNM0NSdB1r6VSw62w==
+Received: from PAXPR04MB8510.eurprd04.prod.outlook.com (2603:10a6:102:211::7)
+ by DU4PR04MB10719.eurprd04.prod.outlook.com (2603:10a6:10:580::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9542.9; Tue, 20 Jan
+ 2026 06:39:56 +0000
+Received: from PAXPR04MB8510.eurprd04.prod.outlook.com
+ ([fe80::a7c2:e2fa:8e04:40db]) by PAXPR04MB8510.eurprd04.prod.outlook.com
+ ([fe80::a7c2:e2fa:8e04:40db%4]) with mapi id 15.20.9499.001; Tue, 20 Jan 2026
+ 06:39:56 +0000
+From: Wei Fang <wei.fang@nxp.com>
+To: Frank Li <frank.li@nxp.com>
+CC: Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>,
+	"andrew+netdev@lunn.ch" <andrew+netdev@lunn.ch>, "davem@davemloft.net"
+	<davem@davemloft.net>, "edumazet@google.com" <edumazet@google.com>,
+	"kuba@kernel.org" <kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>,
+	"ast@kernel.org" <ast@kernel.org>, "daniel@iogearbox.net"
+	<daniel@iogearbox.net>, "hawk@kernel.org" <hawk@kernel.org>,
+	"john.fastabend@gmail.com" <john.fastabend@gmail.com>, "sdf@fomichev.me"
+	<sdf@fomichev.me>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"imx@lists.linux.dev" <imx@lists.linux.dev>, "bpf@vger.kernel.org"
+	<bpf@vger.kernel.org>
+Subject: RE: [PATCH v2 net-next 11/14] net: fec: move xdp_rxq_info* APIs out
+ of fec_enet_create_page_pool()
+Thread-Topic: [PATCH v2 net-next 11/14] net: fec: move xdp_rxq_info* APIs out
+ of fec_enet_create_page_pool()
+Thread-Index: AQHchruZHig4uKtl7kWIN9k9boa+HbVU3NuAgAXCtoA=
+Date: Tue, 20 Jan 2026 06:39:56 +0000
+Message-ID:
+ <PAXPR04MB8510D091184E33C4CD91A2D48889A@PAXPR04MB8510.eurprd04.prod.outlook.com>
+References: <20260116074027.1603841-1-wei.fang@nxp.com>
+ <20260116074027.1603841-12-wei.fang@nxp.com>
+ <aWpMW+jgIJpqH8NE@lizhi-Precision-Tower-5810>
+In-Reply-To: <aWpMW+jgIJpqH8NE@lizhi-Precision-Tower-5810>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PAXPR04MB8510:EE_|DU4PR04MB10719:EE_
+x-ms-office365-filtering-correlation-id: 21ef00a1-0d59-4cde-0d1d-08de57eeb9da
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|1800799024|366016|7416014|376014|19092799006|38070700021;
+x-microsoft-antispam-message-info:
+ =?us-ascii?Q?CvtFf36Xba9rIrnGAzi/AYCg4lhRZ91VVSEJvIMBgYix28NtkI0rYe1+glto?=
+ =?us-ascii?Q?NHr3x9xKRz2Frxecjmb1VRQpnXz3ckMiv8uL38H3z+CSkwIxggtqr/0Ts3zc?=
+ =?us-ascii?Q?wK5fA3DmtyArKjFmmh1JYGhq+G8W2YHwIzYEDIYJZ4wMnxDUDidFaeSBqUFG?=
+ =?us-ascii?Q?2K/CSbAtFgqBOU/54ESAyxjQfUVU4yYrHmtwC9ru4TgoKigJds5L2X9wpvzV?=
+ =?us-ascii?Q?u8UJ9ZJFp4GhDwWGqG/ymUlmiOVQstxmAlNjmhOEv565u8WO6zlrnpJuzKve?=
+ =?us-ascii?Q?PkpIPxR2WCiaehHIyYyhZV1kWTskc0KuIDIwQm+Fh+OxNf9HJTINzMTMKcDS?=
+ =?us-ascii?Q?MmnxDT/hTr86SlyRW63MaLztl1W4E9sXLsweRSNxlpTT/rNBzdEPJkeBRHtm?=
+ =?us-ascii?Q?aPiVkdUxgVjdM0CqNnxQo5pP7tq9OryexpRm9MDJbWoWFVbrVS4pluiWqOzb?=
+ =?us-ascii?Q?cMCyx1xDpQoDK3KC72Jns0aYCkzv5Zpc7OjrPXGTws6/Mm7dJhZvF987cMk7?=
+ =?us-ascii?Q?9/63gaOqlMyUWJjFsPR5OF+TH4LV9DV9iMpCAz+DzDVGqYxe0cCma0mGTBOB?=
+ =?us-ascii?Q?2qWHkbJvHy9HMo7V0XWnHp5InYnyVG1zw/yuGPQ58iReRkpghtFIi32QxpzT?=
+ =?us-ascii?Q?WtooU8hDv+9nhXq5MolqETArRUgFe0ewnInmOEco8uExyjdz+vgpDWae9452?=
+ =?us-ascii?Q?QUNCpMp/hS6CfbPXf88a4oKVzAUAg5fkA4GWqp6DmBcIaANBP1SKbs0z/p55?=
+ =?us-ascii?Q?GUsguHmUdn80Gt+wDkvcv7DDhdzO/fEFIlnhpEBz8GUuOfb5MXalgNjNVG1h?=
+ =?us-ascii?Q?ewo30e55IbwC7VFgKDwoxr+8dB8K4nWPltME9N2XD5u8PB5bhF1cBEocyK32?=
+ =?us-ascii?Q?yXNiecEB9i8Qwvm7/RgfxgCIVuSvObFeHpPEe2U+4dnru5h4ic9X5Q+oDJDT?=
+ =?us-ascii?Q?blX+8nhTsUGTNqiqOlUzi8xUqiQNWM8HFy+pQsqqY4kvWYYAtY7OUPfu07J1?=
+ =?us-ascii?Q?kqepVNqPQy//jVGBD1AstEVuorR+nPNC8zsZf8zgsxRJ26dlgpnG8ssGKZWx?=
+ =?us-ascii?Q?njwRpnq5TDA31iyfKb87tOOBf3i3PEyDYfpwKM1m2Vt1YM8LFOqah+3APBZp?=
+ =?us-ascii?Q?Wa/hZTok4ehhYSzzDkkBFtBUQyP9Kftc0NKbPXW75dU/u6p58x1BWrcXVr9Q?=
+ =?us-ascii?Q?5zMc/fmEHOZx8Imp74KZiQ10RAVBhosE7/PLRsB12n2vWELSighM46q/nt+3?=
+ =?us-ascii?Q?S4n9koNARWZKFsD7aQv9ScFochwifQzoLTQ0T4Yn4s1U9LfoyFT4yPd1SynB?=
+ =?us-ascii?Q?zYc6G38ihhc8dQag3gZam5D1XKx19h5TlRv5+KeqHd5Em4UMld0HJBtylz9G?=
+ =?us-ascii?Q?hmYRvYsldQa0LmCPAzgeri1YGeR1UBbpCK2NEO+uRn7ICMx8Wvshhus+eulr?=
+ =?us-ascii?Q?55bvuxC6llGRE18rmBafaub7cd7PCUj7wqZbn3gR/FsJWQURVB5lgr/jRSZL?=
+ =?us-ascii?Q?1LoP3G+kinRTRwpicKlmif092CjhgwCSzcOnk9WVS/V+9bCUH7k21srh6jQb?=
+ =?us-ascii?Q?SzzIG0FRGY5VZ4zPQ1tjFq6d9M/YIK5lGSORva7vf2MtaprUdWdLqNF7FC8U?=
+ =?us-ascii?Q?a0es2hTCgIv29MPXVP5fcLY=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB8510.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014)(19092799006)(38070700021);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?gYPP+n5myPEHHZADiNhmCKuE7SNEipBKa776THpzIhGbXeykDnK6ZraXae7G?=
+ =?us-ascii?Q?OxQ1wADjEKnm73CQaolvX9S/bHQDHqGh4LO9iROZaLrM3W5KTMQRe+7T0ZiM?=
+ =?us-ascii?Q?kgr66bWC2mAJbcskuTdATQjX/aA6kIAlu1RdGCO8LqiJlOZ7d8d1PsPXkF9Q?=
+ =?us-ascii?Q?XCZ7HzvSZ/XIr/6uPGIonE9Xlc1V0aeJAmrmbi7jLIFJgML5qGaOGd4cVL6/?=
+ =?us-ascii?Q?kQC0r5P+ARtWGyaX63qu7bIphTYXuFWe2Qff6CrIsTznz8M9UOs/Zh1AJ50l?=
+ =?us-ascii?Q?i0T8K0tleVSto5YP4M5lA6YhHtbLjgoGqI31+6UfBspDKc42UumOZD0OQaAX?=
+ =?us-ascii?Q?VuueCcoXTz+RmQUB3v1MZfBVvoyZhzPVSr112CjTkgaL3cUfvTe+OIMFitPG?=
+ =?us-ascii?Q?zTLDbyw8Hvaz8iV5hFtRWYr9ovozNjjhuOU/7NutnjUr3bIiK6MwPjDzO+eb?=
+ =?us-ascii?Q?gyLdWqvzMUVxjeqUDI3UEzNoQCFXM2M/b6bVD4eLHpD8xeWN/JKdIdjOVthf?=
+ =?us-ascii?Q?sMnMQaHNdowapzIXPlG5ELeCxaj8+2IXAsR8ycVLxORFjkpAaaecOEFlWa66?=
+ =?us-ascii?Q?yKNNMklGqC3eIGGdFNhpA6thadWIMwcFOeDNXdI+7vze+/PewLyzWSxQ4nZO?=
+ =?us-ascii?Q?Wv61N6ZFOcxS+77L90U+BS8i2/oLSyPkTlL0yS2rkbVNDeNo90PbiCLd7etI?=
+ =?us-ascii?Q?Kz9TLnJHBbm3Uu4rhtFw6xLFDd9rzY95NG2I2VfK8ksywwwU2GqtzqRHonUZ?=
+ =?us-ascii?Q?qxswLBckV+lLKUzQ0nFWJTpLNscdc80TA3gdfMrw9KmIUcIS6/zWrg/yU7iF?=
+ =?us-ascii?Q?QTMQKn8z+Rbjt6Yc/GL16k1e2ceDmTJh5Ore3RALvAje21RM2Bagi5vD/CAI?=
+ =?us-ascii?Q?9IAd5sfP4CbTvTSJtIAZ18HQqE8Sn+Oaw4HoHoPjWNjSiNOoLZc4VredWusB?=
+ =?us-ascii?Q?qSeip2MnqGMCkDJfaB4WUAbuZTD1pD7b3px2QdYTK6NQx2BLYV2D0AcB51+q?=
+ =?us-ascii?Q?hGXfeln8T8HWN/oVxe7hpLhgJVSR7idsLrb3lLkY4r25tAoK98oC3aNbPs5g?=
+ =?us-ascii?Q?hiy7fkfQ0tcpImJMRpRBFrjpDNks7NggAwQD9j3jXqYoF48pFaaeUdiSxNX6?=
+ =?us-ascii?Q?U8i2EXxcRdEYgPLLH74p/c3skxSatx7zN8S8yPV34NT4AhhBSxhLoyKPhPiY?=
+ =?us-ascii?Q?dIRq5tqB3tOmoU871/UatR14T/1TQpcQDe6KS673BkxyYmLsJOMTXx/CEU7m?=
+ =?us-ascii?Q?BIZIqilHxpzAlyQMakOu2uhpAlQ5mS4XCK0IhP63c9LO88UnPSy0WAya3y2D?=
+ =?us-ascii?Q?NxMWgSLbMEtUlrIOiIfz86kx725f6iIG40sCnyuajv1eFEZrVUK1fx3O+YLv?=
+ =?us-ascii?Q?TGOoODi5LOAhMYg1vbcBF+aNcWRiyXN/Ww9G1s4g8tpyDqOponKtZ+87lwrj?=
+ =?us-ascii?Q?1jQTpSp7YUuPv/5kAs4nQLQ7F/S8/NH048ASLKa88ziRMm/3obJC3Y3D5Afd?=
+ =?us-ascii?Q?xvu0GnjJGnIYT/3Scd2se872baNbVAz5F1huqmsfLb44VwaBBVSDXPOrEzz2?=
+ =?us-ascii?Q?U08tENPa+0B+tXe1WaUlxszdv5t4321GPFS0nDtfG+uvA/6rIZ89O1HzD9+P?=
+ =?us-ascii?Q?abnI9rCWsS7LFlNU0gr7QdUJR+QKPbsDqvxwaR97loIHfIHlnilkpoeVcmeJ?=
+ =?us-ascii?Q?FR2hFPPTfTpXNOwjOLZii2sTq+9qBo6RLvWGpB+WdpDc6fBP?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 09/21] slab: add optimized sheaf refill from partial
- list
-Content-Language: en-US
-To: Harry Yoo <harry.yoo@oracle.com>
-Cc: Petr Tesarik <ptesarik@suse.com>, Christoph Lameter <cl@gentwo.org>,
- David Rientjes <rientjes@google.com>,
- Roman Gushchin <roman.gushchin@linux.dev>, Hao Li <hao.li@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>,
- Uladzislau Rezki <urezki@gmail.com>,
- "Liam R. Howlett" <Liam.Howlett@oracle.com>,
- Suren Baghdasaryan <surenb@google.com>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Alexei Starovoitov <ast@kernel.org>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, linux-rt-devel@lists.linux.dev,
- bpf@vger.kernel.org, kasan-dev@googlegroups.com
-References: <20260116-sheaves-for-all-v3-0-5595cb000772@suse.cz>
- <20260116-sheaves-for-all-v3-9-5595cb000772@suse.cz>
- <aW7pSzVPvLLbQGxn@hyeyoo>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- m6M14QORSWTLRg==
-In-Reply-To: <aW7pSzVPvLLbQGxn@hyeyoo>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-4.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[suse.com,gentwo.org,google.com,linux.dev,linux-foundation.org,gmail.com,oracle.com,linutronix.de,kernel.org,kvack.org,vger.kernel.org,lists.linux.dev,googlegroups.com];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_DN_SOME(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Score: -4.30
-X-Spam-Level: 
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB8510.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 21ef00a1-0d59-4cde-0d1d-08de57eeb9da
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Jan 2026 06:39:56.4856
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 2RFqHl6+nGJCPqCfs6VU9M5pLUNC7kU1Vx/h2stEwYY+mHU0C1nYSr6YEjTa+kYFXC0T1e4dMJQiNsGa3w47BQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU4PR04MB10719
 
-On 1/20/26 03:32, Harry Yoo wrote:
-> On Fri, Jan 16, 2026 at 03:40:29PM +0100, Vlastimil Babka wrote:
->> At this point we have sheaves enabled for all caches, but their refill
->> is done via __kmem_cache_alloc_bulk() which relies on cpu (partial)
->> slabs - now a redundant caching layer that we are about to remove.
->> 
->> The refill will thus be done from slabs on the node partial list.
->> Introduce new functions that can do that in an optimized way as it's
->> easier than modifying the __kmem_cache_alloc_bulk() call chain.
->> 
->> Extend struct partial_context so it can return a list of slabs from the
->> partial list with the sum of free objects in them within the requested
->> min and max.
->> 
->> Introduce get_partial_node_bulk() that removes the slabs from freelist
->> and returns them in the list.
->> 
->> Introduce get_freelist_nofreeze() which grabs the freelist without
->> freezing the slab.
->> 
->> Introduce alloc_from_new_slab() which can allocate multiple objects from
->> a newly allocated slab where we don't need to synchronize with freeing.
->> In some aspects it's similar to alloc_single_from_new_slab() but assumes
->> the cache is a non-debug one so it can avoid some actions.
->> 
->> Introduce __refill_objects() that uses the functions above to fill an
->> array of objects. It has to handle the possibility that the slabs will
->> contain more objects that were requested, due to concurrent freeing of
->> objects to those slabs. When no more slabs on partial lists are
->> available, it will allocate new slabs. It is intended to be only used
->> in context where spinning is allowed, so add a WARN_ON_ONCE check there.
->> 
->> Finally, switch refill_sheaf() to use __refill_objects(). Sheaves are
->> only refilled from contexts that allow spinning, or even blocking.
->> 
->> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
->> ---
->>  mm/slub.c | 284 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----
->>  1 file changed, 264 insertions(+), 20 deletions(-)
->> 
->> diff --git a/mm/slub.c b/mm/slub.c
->> index 9bea8a65e510..dce80463f92c 100644
->> --- a/mm/slub.c
->> +++ b/mm/slub.c
->> @@ -246,6 +246,9 @@ struct partial_context {
->>  	gfp_t flags;
->>  	unsigned int orig_size;
->>  	void *object;
->> +	unsigned int min_objects;
->> +	unsigned int max_objects;
->> +	struct list_head slabs;
->>  };
->>  
->>  static inline bool kmem_cache_debug(struct kmem_cache *s)
->> @@ -2663,8 +2666,8 @@ static int refill_sheaf(struct kmem_cache *s, struct slab_sheaf *sheaf,
->>  	if (!to_fill)
->>  		return 0;
->>  
->> -	filled = __kmem_cache_alloc_bulk(s, gfp, to_fill,
->> -					 &sheaf->objects[sheaf->size]);
->> +	filled = __refill_objects(s, &sheaf->objects[sheaf->size], gfp,
->> +			to_fill, to_fill);
-> 
-> nit: perhaps handling min and max separately is unnecessary
-> if it's always min == max? we could have simply one 'count' or 'size'?
+> On Fri, Jan 16, 2026 at 03:40:24PM +0800, Wei Fang wrote:
+> > Extract fec_xdp_rxq_info_reg() from fec_enet_create_page_pool() and mov=
+e
+> > it out of fec_enet_create_page_pool(), so that it can be reused in the
+> > subsequent patches to support XDP zero copy mode.
+> >
+> > Signed-off-by: Wei Fang <wei.fang@nxp.com>
+> > ---
+> >  drivers/net/ethernet/freescale/fec_main.c | 58 ++++++++++++++++-------
+> >  1 file changed, 40 insertions(+), 18 deletions(-)
+> >
+> > diff --git a/drivers/net/ethernet/freescale/fec_main.c
+> b/drivers/net/ethernet/freescale/fec_main.c
+> > index c1786ccf0443..a418f0153d43 100644
+> > --- a/drivers/net/ethernet/freescale/fec_main.c
+> > +++ b/drivers/net/ethernet/freescale/fec_main.c
+> > @@ -489,23 +489,7 @@ fec_enet_create_page_pool(struct
+> fec_enet_private *fep,
+> >  		return err;
+> >  	}
+> >
+> > -	err =3D xdp_rxq_info_reg(&rxq->xdp_rxq, fep->netdev, rxq->id, 0);
+> > -	if (err < 0)
+> > -		goto err_free_pp;
+> > -
+> > -	err =3D xdp_rxq_info_reg_mem_model(&rxq->xdp_rxq,
+> MEM_TYPE_PAGE_POOL,
+> > -					 rxq->page_pool);
+> > -	if (err)
+> > -		goto err_unregister_rxq;
+> > -
+> >  	return 0;
+> > -
+> > -err_unregister_rxq:
+> > -	xdp_rxq_info_unreg(&rxq->xdp_rxq);
+> > -err_free_pp:
+> > -	page_pool_destroy(rxq->page_pool);
+> > -	rxq->page_pool =3D NULL;
+> > -	return err;
+>=20
+> Noramlly this patch should put helper fec_xdp_rxq_info_reg() before
+> fec_enet_create_page_pool(). then call fec_xdp_rxq_info_reg() here.
 
-Right, so the plan was to set min to some fraction of max when refilling
-sheaves, with the goal of maximizing the chance that once we grab a slab
-from the partial list, we almost certainly fully use it and don't have to
-return it back. But I didn't get to there yet. It seems worthwile to try
-though so we can leave the implementation prepared for it?
+The main purpose of this patch is to move the xdp-related logic out of
+fec_enet_create_page_pool(), so there is no need to use two patches
+to solve such a trivial matter.
 
-> Otherwise LGTM!
-> 
+>=20
+> >  }
+> >
+> >  static void fec_txq_trigger_xmit(struct fec_enet_private *fep,
+> > @@ -3419,6 +3403,38 @@ static const struct ethtool_ops
+> fec_enet_ethtool_ops =3D {
+> >  	.self_test		=3D net_selftest,
+> >  };
+> >
+> > +static int fec_xdp_rxq_info_reg(struct fec_enet_private *fep,
+> > +				struct fec_enet_priv_rx_q *rxq)
+> > +{
+> > +	struct net_device *ndev =3D fep->netdev;
+> > +	int err;
+> > +
+> > +	err =3D xdp_rxq_info_reg(&rxq->xdp_rxq, ndev, rxq->id, 0);
+> > +	if (err) {
+> > +		netdev_err(ndev, "Failed to register xdp rxq info\n");
+> > +		return err;
+> > +	}
+> > +
+> > +	err =3D xdp_rxq_info_reg_mem_model(&rxq->xdp_rxq,
+> MEM_TYPE_PAGE_POOL,
+> > +					 rxq->page_pool);
+> > +	if (err) {
+> > +		netdev_err(ndev, "Failed to register XDP mem model\n");
+> > +		xdp_rxq_info_unreg(&rxq->xdp_rxq);
+> > +
+> > +		return err;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static void fec_xdp_rxq_info_unreg(struct fec_enet_priv_rx_q *rxq)
+> > +{
+> > +	if (xdp_rxq_info_is_reg(&rxq->xdp_rxq)) {
+> > +		xdp_rxq_info_unreg_mem_model(&rxq->xdp_rxq);
+> > +		xdp_rxq_info_unreg(&rxq->xdp_rxq);
+> > +	}
+> > +}
+> > +
+> >  static void fec_enet_free_buffers(struct net_device *ndev)
+> >  {
+> >  	struct fec_enet_private *fep =3D netdev_priv(ndev);
+> > @@ -3430,6 +3446,9 @@ static void fec_enet_free_buffers(struct net_devi=
+ce
+> *ndev)
+> >
+> >  	for (q =3D 0; q < fep->num_rx_queues; q++) {
+> >  		rxq =3D fep->rx_queue[q];
+> > +
+> > +		fec_xdp_rxq_info_unreg(rxq);
+> > +
+> >  		for (i =3D 0; i < rxq->bd.ring_size; i++)
+> >  			page_pool_put_full_page(rxq->page_pool, rxq->rx_buf[i],
+> >  						false);
+> > @@ -3437,8 +3456,6 @@ static void fec_enet_free_buffers(struct net_devi=
+ce
+> *ndev)
+> >  		for (i =3D 0; i < XDP_STATS_TOTAL; i++)
+> >  			rxq->stats[i] =3D 0;
+> >
+> > -		if (xdp_rxq_info_is_reg(&rxq->xdp_rxq))
+> > -			xdp_rxq_info_unreg(&rxq->xdp_rxq);
+>=20
+> why put fec_xdp_rxq_info_unreg() here to do exactly replacement.
+>=20
 
+It's fine to put it in the original position, the only reason is that I wan=
+t
+the order to be reversed from that in fec_enet_alloc_rxq_buffers().
+
+> Frank
+> >  		page_pool_destroy(rxq->page_pool);
+> >  		rxq->page_pool =3D NULL;
+> >  	}
+> > @@ -3593,6 +3610,11 @@ fec_enet_alloc_rxq_buffers(struct net_device
+> *ndev, unsigned int queue)
+> >  	/* Set the last buffer to wrap. */
+> >  	bdp =3D fec_enet_get_prevdesc(bdp, &rxq->bd);
+> >  	bdp->cbd_sc |=3D cpu_to_fec16(BD_ENET_RX_WRAP);
+> > +
+> > +	err =3D fec_xdp_rxq_info_reg(fep, rxq);
+> > +	if (err)
+> > +		goto err_alloc;
+> > +
+> >  	return 0;
+> >
+> >   err_alloc:
+> > --
+> > 2.34.1
+> >
 
