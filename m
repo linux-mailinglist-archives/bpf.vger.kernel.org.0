@@ -1,173 +1,163 @@
-Return-Path: <bpf+bounces-79547-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79548-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id AED47D3BDBA
-	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 03:56:22 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id E91D8D3BDF7
+	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 04:37:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id B8A89343456
-	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 02:56:17 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 2CB014E582D
+	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 03:37:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3B8B2D9ECD;
-	Tue, 20 Jan 2026 02:56:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9765F3314A4;
+	Tue, 20 Jan 2026 03:37:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ul671Yoi"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cKUK6QBn"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAC5813635E
-	for <bpf@vger.kernel.org>; Tue, 20 Jan 2026 02:56:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EF18331222
+	for <bpf@vger.kernel.org>; Tue, 20 Jan 2026 03:37:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768877767; cv=none; b=g5w03Mt3EhhMLZm5cWUU9wG+9qCBbE9WbWsyq6Q8D5K0uUBhkVVEvTWcHJh2kZ0kIPgyGhdWjbK58zZzORFRiF35mQMalSQfouzhCxjrlADeLO5rg6Q+4yITkUEzOQHjrciWLEwiMynKYvCJcYUjJC5Loab5/W7VdHIgOyew4+Q=
+	t=1768880266; cv=none; b=CWFYpFUUq+Q+zbs2ycBg9sJmIoo+gMARfgzv6f1LobdoxmEwATL3tSNVHWJK9JFyQdDy22k5QUmho4WtzgZZ5+IckELrp44hKQ/5xCgEVFGPl8nhyQ6I8CbAQq5dFH0REAcGBXPt7dQRtlljk+f2BzfMfmyFrNpBdnbDbLnIwis=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768877767; c=relaxed/simple;
-	bh=dyJICKWZHMuFQatjcr3wL0W7By/gqQxBp78IDAqWmn0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MmW7ZnuD9pJwX9pmap4xihqG20tfocXkcF8VTixzqa3aqvMDURzuFJahRNvKRo6Yw/E1GG3zVNLOXZ16RICSMub2yEQlZYU07FIOGwFCbXOmKs+47gpAgsrBO4sSpb6OynQ8Ut64FWnRD/Jlskas8vZQXIUuykgRGFrkfsg3sSA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ul671Yoi; arc=none smtp.client-ip=95.215.58.174
+	s=arc-20240116; t=1768880266; c=relaxed/simple;
+	bh=oVfpMv215nFVlCyqVOAEsiwuEnayAo6kct65sZY0bVM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=hnin2zBDA9xaya5fYBIGxCn4jn59NdSGMub+8wWoNhBLNpdaVVVfJtnqMx6YkU5ktixNEX9jtkAEIL8eeWolzSra2wLZtRA8Wwz0aAk82tKynLLfk30bek2eKOBiTh2aDkXLx0WJcb0QNa3OOLueBudFRmbi5ACakA0OG7FoFxw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=cKUK6QBn; arc=none smtp.client-ip=91.218.175.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 20 Jan 2026 10:55:25 +0800
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1768877753;
+	t=1768880261;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=inDvl4GaipWhYSp0U8tScgUdBjqvSGDRhS8Caxa209Y=;
-	b=ul671YoiONtDqTS7xjqdHK4X3D3Owh+owPHC7p9o2xf3i7N+8ciy56TQYlYyc7/Q5ZKJW4
-	D6NudN0qKhjeL7HzUnSyWXP7TZe0hth0jPtLqD6KzCT4QFHSWJLwjBcMJsxYdhnrAHFGQZ
-	wLKPDyWep2KgRvrn5a0joUvFP4eMhmM=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Hao Li <hao.li@linux.dev>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Harry Yoo <harry.yoo@oracle.com>, Petr Tesarik <ptesarik@suse.com>, 
-	Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
-	Uladzislau Rezki <urezki@gmail.com>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
-	Suren Baghdasaryan <surenb@google.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
-	Alexei Starovoitov <ast@kernel.org>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	linux-rt-devel@lists.linux.dev, bpf@vger.kernel.org, kasan-dev@googlegroups.com
-Subject: Re: [PATCH v3 09/21] slab: add optimized sheaf refill from partial
- list
-Message-ID: <mxrcthlqj6rbecg5z33lc7oqnbicr5fn5lmvni2tjo2dc3oe76@u5vettfyypl4>
-References: <20260116-sheaves-for-all-v3-0-5595cb000772@suse.cz>
- <20260116-sheaves-for-all-v3-9-5595cb000772@suse.cz>
+	bh=i1K2ecHWtAyNI8GOayMKvK7FUh2cGuRh0U/BL+EvV5E=;
+	b=cKUK6QBnY2uz9T6owUj2WMbFjKHb7dh0glg/MA+2n6JjrmkRYBEghIx9tjIw642HA9X3SU
+	AdxcYncU+hyE7B8jOfwy4sXzs3MIKo/IGRaH1Jn3K8mPAGrCGUVNwFtWPEUgAmPE/aWzKg
+	IEtoDXl2ojX/8B6Klx+YK8iqJ+5b/mw=
+From: Menglong Dong <menglong.dong@linux.dev>
+To: menglong8.dong@gmail.com, andrii@kernel.org, ast@kernel.org,
+ bot+bpf-ci@kernel.org
+Cc: daniel@iogearbox.net, john.fastabend@gmail.com, martin.lau@linux.dev,
+ eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+ kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
+ mattbobrowski@google.com, rostedt@goodmis.org, mhiramat@kernel.org,
+ mathieu.desnoyers@efficios.com, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+ martin.lau@kernel.org, eddyz87@gmail.com, yonghong.song@linux.dev,
+ clm@meta.com, ihor.solodrai@linux.dev
+Subject:
+ Re: [PATCH bpf-next v3 1/2] bpf: support bpf_get_func_arg() for
+ BPF_TRACE_RAW_TP
+Date: Tue, 20 Jan 2026 11:37:25 +0800
+Message-ID: <2814392.mvXUDI8C0e@7950hx>
+In-Reply-To:
+ <c83188087c6d6409524b80b2078285813ccfea8e42ea82e88542e6e8d5e5f73d@mail.kernel.org>
+References:
+ <20260119023732.130642-2-dongml2@chinatelecom.cn>
+ <c83188087c6d6409524b80b2078285813ccfea8e42ea82e88542e6e8d5e5f73d@mail.kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260116-sheaves-for-all-v3-9-5595cb000772@suse.cz>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"
 X-Migadu-Flow: FLOW_OUT
 
-On Fri, Jan 16, 2026 at 03:40:29PM +0100, Vlastimil Babka wrote:
-> At this point we have sheaves enabled for all caches, but their refill
-> is done via __kmem_cache_alloc_bulk() which relies on cpu (partial)
-> slabs - now a redundant caching layer that we are about to remove.
+On 2026/1/20 02:44, bot+bpf-ci@kernel.org wrote:
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index f73e08c223b5..64976009ba3c 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -1734,11 +1734,11 @@ tracing_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+> >  	case BPF_FUNC_d_path:
+> >  		return &bpf_d_path_proto;
+> >  	case BPF_FUNC_get_func_arg:
+> > -		return bpf_prog_has_trampoline(prog) ? &bpf_get_func_arg_proto : NULL;
+> > +		return &bpf_get_func_arg_proto;
 > 
-> The refill will thus be done from slabs on the node partial list.
-> Introduce new functions that can do that in an optimized way as it's
-> easier than modifying the __kmem_cache_alloc_bulk() call chain.
+> Removing the bpf_prog_has_trampoline() check here allows all TRACING
+> program types to use bpf_get_func_arg(), not just RAW_TP and trampoline-
+> based types. In particular, BPF_TRACE_ITER programs can now use this
+> helper.
 > 
-> Extend struct partial_context so it can return a list of slabs from the
-> partial list with the sum of free objects in them within the requested
-> min and max.
+> However, looking at do_misc_fixups() in verifier.c, the inline code
+> generation only handles BPF_TRACE_RAW_TP specially. For other non-
+> trampoline types like BPF_TRACE_ITER, the else branch generates:
 > 
-> Introduce get_partial_node_bulk() that removes the slabs from freelist
-> and returns them in the list.
+>     BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -8)
 > 
-> Introduce get_freelist_nofreeze() which grabs the freelist without
-> freezing the slab.
+> This loads nr_args from ctx-8, but ITER programs use a different context
+> layout (e.g. struct bpf_iter__bpf_map_elem with meta, map, key, value
+> pointers). There is no nr_args at ctx-8 for ITER programs.
 > 
-> Introduce alloc_from_new_slab() which can allocate multiple objects from
-> a newly allocated slab where we don't need to synchronize with freeing.
-> In some aspects it's similar to alloc_single_from_new_slab() but assumes
-> the cache is a non-debug one so it can avoid some actions.
+> Would this cause ITER programs using bpf_get_func_arg() to read arbitrary
+> memory at ctx-8, potentially leaking kernel data or causing incorrect
+> bounds checks for subsequent argument access?
+
+You are right. As Yonghong said, I missed the bpf_iter case, and it should
+be skipped.
+
+I'll fix it in the next version.
+
 > 
-> Introduce __refill_objects() that uses the functions above to fill an
-> array of objects. It has to handle the possibility that the slabs will
-> contain more objects that were requested, due to concurrent freeing of
-> objects to those slabs. When no more slabs on partial lists are
-> available, it will allocate new slabs. It is intended to be only used
-> in context where spinning is allowed, so add a WARN_ON_ONCE check there.
+> >  	case BPF_FUNC_get_func_ret:
+> >  		return bpf_prog_has_trampoline(prog) ? &bpf_get_func_ret_proto : NULL;
+> >  	case BPF_FUNC_get_func_arg_cnt:
+> > -		return bpf_prog_has_trampoline(prog) ? &bpf_get_func_arg_cnt_proto : NULL;
+> > +		return &bpf_get_func_arg_cnt_proto;
 > 
-> Finally, switch refill_sheaf() to use __refill_objects(). Sheaves are
-> only refilled from contexts that allow spinning, or even blocking.
+> Same question applies here for bpf_get_func_arg_cnt() with ITER programs.
 > 
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 9de0ec0c3ed9..0b281b7c41eb 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -23323,8 +23323,20 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+> >  		/* Implement bpf_get_func_arg inline. */
+> >  		if (prog_type == BPF_PROG_TYPE_TRACING &&
+> >  		    insn->imm == BPF_FUNC_get_func_arg) {
+> > +			if (eatype == BPF_TRACE_RAW_TP) {
+> > +				int nr_args = btf_type_vlen(prog->aux->attach_func_proto);
+> > +
+> > +				/*
+> > +				 * skip first 'void *__data' argument in btf_trace_##name
+> > +				 * typedef
+> > +				 */
+> > +				nr_args--;
+> > +				/* Save nr_args to reg0 */
+> > +				insn_buf[0] = BPF_MOV64_IMM(BPF_REG_0, nr_args);
+> > +			} else {
+> > +				/* Load nr_args from ctx - 8 */
+> > +				insn_buf[0] = BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -8);
+> > +			}
+> 
+> This else branch now applies to BPF_TRACE_ITER as well, since the
+> trampoline check was removed in tracing_prog_func_proto(). Should the
+> condition be extended to also handle ITER, or should ITER be explicitly
+> blocked from using these helpers?
+> 
+> [ ... ]
+> 
+> 
 > ---
->  mm/slub.c | 284 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----
->  1 file changed, 264 insertions(+), 20 deletions(-)
+> AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+> See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
 > 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 9bea8a65e510..dce80463f92c 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -246,6 +246,9 @@ struct partial_context {
->  	gfp_t flags;
->  	unsigned int orig_size;
->  	void *object;
-> +	unsigned int min_objects;
-> +	unsigned int max_objects;
-> +	struct list_head slabs;
->  };
->  
-...
-> +static unsigned int alloc_from_new_slab(struct kmem_cache *s, struct slab *slab,
-> +		void **p, unsigned int count, bool allow_spin)
-> +{
-> +	unsigned int allocated = 0;
-> +	struct kmem_cache_node *n;
-> +	unsigned long flags;
-> +	void *object;
-> +
-> +	if (!allow_spin && (slab->objects - slab->inuse) > count) {
+> CI run summary: https://github.com/kernel-patches/bpf/actions/runs/21147849826
+> 
 
-I was wondering - given that slab->inuse is 0 for a newly allocated slab, is
-there a reason to use "slab->objects - slab->inuse" instead of simply
-slab->objects.
 
-> +
-> +		n = get_node(s, slab_nid(slab));
-> +
-> +		if (!spin_trylock_irqsave(&n->list_lock, flags)) {
-> +			/* Unlucky, discard newly allocated slab */
-> +			defer_deactivate_slab(slab, NULL);
-> +			return 0;
-> +		}
-> +	}
-> +
-> +	object = slab->freelist;
-> +	while (object && allocated < count) {
-> +		p[allocated] = object;
-> +		object = get_freepointer(s, object);
-> +		maybe_wipe_obj_freeptr(s, p[allocated]);
-> +
-> +		slab->inuse++;
-> +		allocated++;
-> +	}
-> +	slab->freelist = object;
-> +
-> +	if (slab->freelist) {
-> +
-> +		if (allow_spin) {
-> +			n = get_node(s, slab_nid(slab));
-> +			spin_lock_irqsave(&n->list_lock, flags);
-> +		}
-> +		add_partial(n, slab, DEACTIVATE_TO_HEAD);
-> +		spin_unlock_irqrestore(&n->list_lock, flags);
-> +	}
-> +
-> +	inc_slabs_node(s, slab_nid(slab), slab->objects);
-> +	return allocated;
-> +}
-> +
-...
+
+
 
