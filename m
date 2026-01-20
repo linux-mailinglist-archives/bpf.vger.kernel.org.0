@@ -1,244 +1,260 @@
-Return-Path: <bpf+bounces-79554-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79555-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6B4BD3BF50
-	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 07:36:34 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FA2BD3BF59
+	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 07:37:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id C8E2B3A075D
-	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 06:33:44 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id C646A387ED4
+	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 06:34:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64D7A35CB84;
-	Tue, 20 Jan 2026 06:30:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 381A736CDE5;
+	Tue, 20 Jan 2026 06:33:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="HgCjMk+E";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="/RqIpGWo";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ScNhbrR+";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="CwkFapkR"
 X-Original-To: bpf@vger.kernel.org
-Received: from esa1.cc.uec.ac.jp (mx.uec.ac.jp [130.153.8.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D140B2BE043
-	for <bpf@vger.kernel.org>; Tue, 20 Jan 2026 06:30:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.153.8.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D24CF25E469
+	for <bpf@vger.kernel.org>; Tue, 20 Jan 2026 06:33:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768890644; cv=none; b=T6bUjkIJKVtmdAYQ7BE6jS9sPxdc0pfZtEw44HJJZ0VWe5Qm66G+XWsGDLrEMdnNYjU+aZau8yFnFTo6NMCFFl8zW7tILimZddVgcfD2uY1t2Uwwgvx6y7IimlQ4i8Z688f8b2TTZpbuBkIxqIl15lFu8j2K78NOnp+SRnQQLuc=
+	t=1768890831; cv=none; b=Kurki3cYY9x25vPqWcEmibuSlUXH9x2P6A4m45jkZF7AJZN3e+3QEVCb7eMs+KbBQHFndbOwJqmePMdvJVRo9P+/7r6dOm/enYJJXulrK1hY8JmAqm3lC/353Ax7IoB0LhZ3KExkVjoB4RnlVkak5p3B5B82Dpl+qT8zSCS4UpM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768890644; c=relaxed/simple;
-	bh=Ya4dwBntPHV5+1wHgKN8dBUIXmvS2tFV73g+tofQOEg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GoUCndDeJXMWV+KI1uGuI/rD1WsXyBAtaivZyJaj+NC3465M5DVDraoCy6ZXkgegKdcL5LqWoSDWpCVzZ5sN199B481TgyznzbSlyk6/rwSfnjQJJEP1/xGwja0KZLpthKpasH6BuwKg+PACWPoXimFlDKhkDCGAHYurp16GQJw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpc.is.uec.ac.jp; spf=pass smtp.mailfrom=hpc.is.uec.ac.jp; arc=none smtp.client-ip=130.153.8.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpc.is.uec.ac.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hpc.is.uec.ac.jp
-X-CSE-ConnectionGUID: rZcDgvaRS62ukofSEAKfbg==
-X-CSE-MsgGUID: GUTYSISGSTGJZIYR4SAJBA==
-X-IPAS-Result: =?us-ascii?q?A2HyBACjIG9p/zYImYJagQmHAoRYkXQDi2SUNQYJAQEBA?=
- =?us-ascii?q?QEBAQEBWgQBAYUHAox6JzgTAQIEAQEBAQMCAwEBAQEBAQEBAQEBCwEBAQUBA?=
- =?us-ascii?q?QEBAQEGAwEBAgKBHYYJU4ZjAQUjVhAJAgsNAgImAgIgARIBBQEcBhOFPQM2k?=
- =?us-ascii?q?0ecR4EygQHdQg0rLVSBMhQBgQouiDQfAYFvhACEeEKCDYFKgnU+gh+BeymDW?=
- =?us-ascii?q?4JpBIINFYEOgmIEOYEZhy4Uh24mCR0DBwcODR5GDwUcA1ksARNCExcLBwVqO?=
- =?us-ascii?q?SgCGQECAYEFI0sFAxEZHYEZCiEdFxMfWBsHBRMjbAYbBhwSAgMBAgI6Uwwkg?=
- =?us-ascii?q?VICAgSBLWN7ggEPhw0BgQAFLm8aDiICQVIDC2ILPTcUG0qPe0eBPGIJB2ECK?=
- =?us-ascii?q?3s2kAsHlwagIHGEJoRRH5ZshhYzhASUFZJSLphYgliPOpceNRKBSYF/TThsB?=
- =?us-ascii?q?oIwUhkPji0Wy3lpPAIHAQoBAQMJkWqBfwEB?=
-IronPort-Data: A9a23:b8o40qz88kYkIel51O16t+esxyrEfRIJ4+MujC+fZmUNrF6WrkUDn
- WMfWmyCOvneZzD2KdF2aoy08UJXuZ/Rn9QySlM4pC00HyNBpOP7XuiUfxz6V8+wwmwvb67FA
- +E2MISowBUcFyeEzvuVGuG/6yE6jufQGuaU5NfsYkhZXRVjRDoqlSVtkus4hp8AqdWiCmthg
- /uryyHkEAHjgWcc3l48sfrZ9ks25qyq4Vv0g3RnDRx1lA6G/5UqJM9HTU2BByOQapVZGOe8W
- 9HCwNmRlkvF/w0gA8+Sib3ydEsHWNb6ZWBiXVIPBsBOKjAbzsAD+v5T2Mg0MC+7uB3Q9zxF8
- +ihgLTrIesf0g0gr8xGO/VQO3kW0aSrY9YrK1Dn2SCY5xSun3cBX5yCpaz5VGEV0r8fPI1Ay
- RAXACo/ZTyMmeuM++zhV+priP8OBerlNoxK7xmMzRmBZRonaZXTBqnH4d5G0S0hwN1DFrDXb
- IwbcVKDbjyZOEUJYwpMTsJ4wbvAanrXKlW0rHqUvqo28mHWxSRxyLOrMcGTZ9GBA8xe2ESAz
- o7D1z2hXEBCbIHAmFJp9FqDu9P+pgLAd7kuO5+K189Q3Ga65EY6XUh+uVyT+6Dj1RHnCrqzM
- Xc88DIghbY9+VbtTdTnWRC85nmesXYht8F4Fv1/5AyJy7TZ+RfAQHUJRXhIY5okrKfaWADGy
- HeTrdjFCiJmiobLE2+e8bmvgBqRNyIaeDpqiTA/cecT3zX0iKML5i8jo/5mAOu5g9n0Bzzq0
- mnMsSU1wbwYy8wTv0lawbwlq2/yznQqZldqjukyYo5CxlklDLNJn6TytTDmAQ9ode50jjCp5
- RDoYfRyE9zi/bnXzXbSH7xcdF1Yz+qFPXXBh19xEoM69ii8s3mtNY1U7TpiPkAsOcEBfCLvY
- UTapQJW4oQ7AUZHrMZfPeqMNijd5fG8To6/B6+FMIsmj1oYXFbvwRyCrHW4hwjF+HXAW4liY
- /93re7E4a4mNJla
-IronPort-HdrOrdr: A9a23:5kXK4auDNVxMhNz414SZJQ1P7skDgtV00zEX/kB9WHVpmwKj5r
- iTdZMgpGXJYVcqKQodcL+7Scu9qB/nhP1ICMwqXYtKPzOJhILLFvAE0WKK+VSJcEfDH6xmtJ
- uIGJIObuEYY2IK9PrS0U2WFc0/yMKL/K3tqeDV1Gd1UA1mApsM0y5JTiieVmJ7TBRbHpYifa
- DsgvavZADNRV0nKuq+DnkBG87Zp9PKk5riJToLHQQu5gXLrR7A0s+eL/FQ5Hgjbw8=
-X-Talos-CUID: 9a23:KpUx3GFBPKhdzdIAqmJ9xkU4Fd4sSEaDlmrTJEGDJE9KRreaHAo=
-X-Talos-MUID: =?us-ascii?q?9a23=3ARYCnzA0X2yogFW8UWxxo8wQdqzUjzJmSOXssqro?=
- =?us-ascii?q?9h+amBw1BAWumpRada9py?=
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-AV: E=Sophos;i="6.21,240,1763391600"; 
-   d="scan'208";a="106900579"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-X-IronPort-Outbreak-Status: No, level 0, Unknown - Unknown
-Received: from mx-delivery1.uec.ac.jp (HELO mx-delivery.uec.ac.jp) ([130.153.8.54])
-  by esa1.cc.uec.ac.jp with ESMTP; 20 Jan 2026 15:30:20 +0900
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
-	by mx-delivery.uec.ac.jp (Postfix) with ESMTPSA id 9FC19183E3B2
-	for <bpf@vger.kernel.org>; Tue, 20 Jan 2026 15:30:20 +0900 (JST)
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-7926d5dbdf7so38505707b3.2
-        for <bpf@vger.kernel.org>; Mon, 19 Jan 2026 22:30:20 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXpEG5PiIUwAj5+/iOgW4wsxbQeq6vuf2FuCYCi1NuIigFVfPttzMM0DhQMFvRAfV4vJzk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxPuHzBOue9IjKig8pnl0hemTcGtUS0Wd8Awf7sg9lVRKAXKRpf
-	62fqplT5aovBoikuRGvIrhvjAo3Uw26lBQqbq3i3hMjUhlcg6tT5AEd0Cedp/zI6Uu1vHvXCMJF
-	jqqb1yzbFCsVGgTpNSGFAHQlhDmXYS01WYI1ECieMnw==
-X-Received: by 2002:a05:690c:d0f:b0:78f:bede:57e5 with SMTP id
- 00721157ae682-793c5393b7bmr120216327b3.44.1768890619069; Mon, 19 Jan 2026
- 22:30:19 -0800 (PST)
+	s=arc-20240116; t=1768890831; c=relaxed/simple;
+	bh=KXeRJUZVaD7odE8+ZrzEevkPbI7J9h1CXhPnrEp+Dug=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=E2gVdb9Ls0yzkwpHcv26ZbVy/qBjlen3hWlHTsSf3Uhb8iKX19OIgJUvRyT7nGZiYAA5Jhktfby/d3xru47iSxzZub1ytBw0S5T6LH2v0fJ6YYX4kMo/TJYkUBdA1K/mlYOr4w7p0Yls66jsRPIR/rnJ/oPNxq9OHl7+13JGtPk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=HgCjMk+E; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=/RqIpGWo; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ScNhbrR+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=CwkFapkR; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id DDF775BCC9;
+	Tue, 20 Jan 2026 06:33:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1768890828; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=VK5LAWZJGesYmfMe3akrFE9Qr+u5i9eRqUPU6M9O84A=;
+	b=HgCjMk+Eeeek0ViYMGJZHfXPrpt91EQyv/WZhxIssU7+VTqcZMCHLR9PaARjSrRv+9y81C
+	Ca4VPpdPw9/s9SAMX8K74Bow/H7G4J1T66yl6jr018FUgpRii1fIc4hf/o+xR/mhO9Y7yx
+	TqTse/uDn4KB4O3xziG1Dy8tjTdNjMA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1768890828;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=VK5LAWZJGesYmfMe3akrFE9Qr+u5i9eRqUPU6M9O84A=;
+	b=/RqIpGWoYhLlSBZI1+coiVcbhpn4cXVVNMgcAF05LnsnR+0A8Cb3jXGIV577L/BBhgS35b
+	yInvfJ1pkLwYXGAw==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1768890827; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=VK5LAWZJGesYmfMe3akrFE9Qr+u5i9eRqUPU6M9O84A=;
+	b=ScNhbrR+3/oaBrjT9QPc7vNyJBqtT/kLM6kXRBYM6ATBcu66I99UJZwUcVJP4hGjGwtNzm
+	CFrLQ7Cr6zNqv7hOSVpSPfR2rq6cczVcyLcsAg5tLP/WScyx7vlsqVcI12gWSY4vTHEi6U
+	toEujIvHQrKUOT8TeyqvXJLX7KqZcHA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1768890827;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=VK5LAWZJGesYmfMe3akrFE9Qr+u5i9eRqUPU6M9O84A=;
+	b=CwkFapkRy8eNu4Yhm45k1te576OuxQByC7CIkaBzdUH+y1blptJ2vChjRTZae9SXOw6Mdo
+	H9pm0J2cedcycyCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AC09A3EA63;
+	Tue, 20 Jan 2026 06:33:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id c0s8KMshb2lLAgAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Tue, 20 Jan 2026 06:33:47 +0000
+Message-ID: <2232564a-b3f7-4591-abe2-8f1711590e6e@suse.cz>
+Date: Tue, 20 Jan 2026 07:33:47 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260115173717.2060746-1-ishiyama@hpc.is.uec.ac.jp>
- <20260115173717.2060746-2-ishiyama@hpc.is.uec.ac.jp> <46799ba9-d292-494e-b9b1-658448993538@gmail.com>
- <bcce0d61-e7ae-4268-a6ec-a82f1329cc6d@redhat.com> <CAJjCV5Hr_WqmMrA8SKJNVKtUOVjhWAcMS1iu7sFDgLr+bm=Nvw@mail.gmail.com>
- <1cfe2f61-811f-4ae1-924a-07b1e4ff53d1@gmail.com>
-In-Reply-To: <1cfe2f61-811f-4ae1-924a-07b1e4ff53d1@gmail.com>
-From: Yuzuki Ishiyama <ishiyama@hpc.is.uec.ac.jp>
-Date: Tue, 20 Jan 2026 15:30:07 +0900
-X-Gmail-Original-Message-ID: <CAJjCV5EMUBjLwLiwt9qZ=az3s5HUjwx8c=kPWULjBgmbjnM7Pw@mail.gmail.com>
-X-Gm-Features: AZwV_QhwXpqa-6-kgZ0ttfUT-rbTxDqXRmwID4sXG0D5-ISGf57J88XyK2jPEY0
-Message-ID: <CAJjCV5EMUBjLwLiwt9qZ=az3s5HUjwx8c=kPWULjBgmbjnM7Pw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: add bpf_strncasecmp kfunc
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-Cc: Viktor Malik <vmalik@redhat.com>, bpf@vger.kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 09/21] slab: add optimized sheaf refill from partial
+ list
+Content-Language: en-US
+To: Harry Yoo <harry.yoo@oracle.com>
+Cc: Petr Tesarik <ptesarik@suse.com>, Christoph Lameter <cl@gentwo.org>,
+ David Rientjes <rientjes@google.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>, Hao Li <hao.li@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Uladzislau Rezki <urezki@gmail.com>,
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+ Suren Baghdasaryan <surenb@google.com>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Alexei Starovoitov <ast@kernel.org>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, linux-rt-devel@lists.linux.dev,
+ bpf@vger.kernel.org, kasan-dev@googlegroups.com
+References: <20260116-sheaves-for-all-v3-0-5595cb000772@suse.cz>
+ <20260116-sheaves-for-all-v3-9-5595cb000772@suse.cz>
+ <aW7pSzVPvLLbQGxn@hyeyoo>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ m6M14QORSWTLRg==
+In-Reply-To: <aW7pSzVPvLLbQGxn@hyeyoo>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spamd-Result: default: False [-4.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[suse.com,gentwo.org,google.com,linux.dev,linux-foundation.org,gmail.com,oracle.com,linutronix.de,kernel.org,kvack.org,vger.kernel.org,lists.linux.dev,googlegroups.com];
+	RCPT_COUNT_TWELVE(0.00)[17];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_DN_SOME(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Score: -4.30
+X-Spam-Level: 
 
-Understood. I will cancel the document update.
+On 1/20/26 03:32, Harry Yoo wrote:
+> On Fri, Jan 16, 2026 at 03:40:29PM +0100, Vlastimil Babka wrote:
+>> At this point we have sheaves enabled for all caches, but their refill
+>> is done via __kmem_cache_alloc_bulk() which relies on cpu (partial)
+>> slabs - now a redundant caching layer that we are about to remove.
+>> 
+>> The refill will thus be done from slabs on the node partial list.
+>> Introduce new functions that can do that in an optimized way as it's
+>> easier than modifying the __kmem_cache_alloc_bulk() call chain.
+>> 
+>> Extend struct partial_context so it can return a list of slabs from the
+>> partial list with the sum of free objects in them within the requested
+>> min and max.
+>> 
+>> Introduce get_partial_node_bulk() that removes the slabs from freelist
+>> and returns them in the list.
+>> 
+>> Introduce get_freelist_nofreeze() which grabs the freelist without
+>> freezing the slab.
+>> 
+>> Introduce alloc_from_new_slab() which can allocate multiple objects from
+>> a newly allocated slab where we don't need to synchronize with freeing.
+>> In some aspects it's similar to alloc_single_from_new_slab() but assumes
+>> the cache is a non-debug one so it can avoid some actions.
+>> 
+>> Introduce __refill_objects() that uses the functions above to fill an
+>> array of objects. It has to handle the possibility that the slabs will
+>> contain more objects that were requested, due to concurrent freeing of
+>> objects to those slabs. When no more slabs on partial lists are
+>> available, it will allocate new slabs. It is intended to be only used
+>> in context where spinning is allowed, so add a WARN_ON_ONCE check there.
+>> 
+>> Finally, switch refill_sheaf() to use __refill_objects(). Sheaves are
+>> only refilled from contexts that allow spinning, or even blocking.
+>> 
+>> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+>> ---
+>>  mm/slub.c | 284 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----
+>>  1 file changed, 264 insertions(+), 20 deletions(-)
+>> 
+>> diff --git a/mm/slub.c b/mm/slub.c
+>> index 9bea8a65e510..dce80463f92c 100644
+>> --- a/mm/slub.c
+>> +++ b/mm/slub.c
+>> @@ -246,6 +246,9 @@ struct partial_context {
+>>  	gfp_t flags;
+>>  	unsigned int orig_size;
+>>  	void *object;
+>> +	unsigned int min_objects;
+>> +	unsigned int max_objects;
+>> +	struct list_head slabs;
+>>  };
+>>  
+>>  static inline bool kmem_cache_debug(struct kmem_cache *s)
+>> @@ -2663,8 +2666,8 @@ static int refill_sheaf(struct kmem_cache *s, struct slab_sheaf *sheaf,
+>>  	if (!to_fill)
+>>  		return 0;
+>>  
+>> -	filled = __kmem_cache_alloc_bulk(s, gfp, to_fill,
+>> -					 &sheaf->objects[sheaf->size]);
+>> +	filled = __refill_objects(s, &sheaf->objects[sheaf->size], gfp,
+>> +			to_fill, to_fill);
+> 
+> nit: perhaps handling min and max separately is unnecessary
+> if it's always min == max? we could have simply one 'count' or 'size'?
 
-2026=E5=B9=B41=E6=9C=8820=E6=97=A5(=E7=81=AB) 0:02 Mykyta Yatsenko <mykyta.=
-yatsenko5@gmail.com>:
->
-> On 1/17/26 09:06, Yuzuki Ishiyama wrote:
-> > I think it would be clearer to document the other string functions as
-> > well. What do you think, Mykyta? If you'd like, I can take care of it
-> > after I'm done with this patch.
-> >
-> > Yuzuki
-> Viktor is right, probably
->
-> -E2BIG - One of strings is too large
->
-> is clear enough.
-> >
-> > 2026=E5=B9=B41=E6=9C=8817=E6=97=A5(=E5=9C=9F) 1:03 Viktor Malik <vmalik=
-@redhat.com>:
-> >> On 1/16/26 13:28, Mykyta Yatsenko wrote:
-> >>> On 1/15/26 17:37, Yuzuki Ishiyama wrote:
-> >>>> bpf_strncasecmp() function performs same like bpf_strcasecmp() excep=
-t
-> >>>> limiting the comparison to a specific length.
-> >>>>
-> >>>> Signed-off-by: Yuzuki Ishiyama <ishiyama@hpc.is.uec.ac.jp>
-> >>>> ---
-> >>>>    kernel/bpf/helpers.c | 31 ++++++++++++++++++++++++++++---
-> >>>>    1 file changed, 28 insertions(+), 3 deletions(-)
-> >>>>
-> >>>> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> >>>> index 9eaa4185e0a7..2b275eaa3cac 100644
-> >>>> --- a/kernel/bpf/helpers.c
-> >>>> +++ b/kernel/bpf/helpers.c
-> >>>> @@ -3406,7 +3406,7 @@ __bpf_kfunc void __bpf_trap(void)
-> >>>>     * __get_kernel_nofault instead of plain dereference to make them=
- safe.
-> >>>>     */
-> >>>>
-> >>>> -static int __bpf_strcasecmp(const char *s1, const char *s2, bool ig=
-nore_case)
-> >>>> +static int __bpf_strncasecmp(const char *s1, const char *s2, bool i=
-gnore_case, size_t len)
-> >>>>    {
-> >>>>       char c1, c2;
-> >>>>       int i;
-> >>>> @@ -3416,6 +3416,9 @@ static int __bpf_strcasecmp(const char *s1, co=
-nst char *s2, bool ignore_case)
-> >>>>               return -ERANGE;
-> >>>>       }
-> >>>>
-> >>>> +    if (len =3D=3D 0)
-> >>>> +            return 0;
-> >>>> +
-> >>>>       guard(pagefault)();
-> >>>>       for (i =3D 0; i < XATTR_SIZE_MAX; i++) {
-> >>>>               __get_kernel_nofault(&c1, s1, char, err_out);
-> >>>> @@ -3428,6 +3431,8 @@ static int __bpf_strcasecmp(const char *s1, co=
-nst char *s2, bool ignore_case)
-> >>>>                       return c1 < c2 ? -1 : 1;
-> >>>>               if (c1 =3D=3D '\0')
-> >>>>                       return 0;
-> >>>> +            if (len < XATTR_SIZE_MAX && i =3D=3D len - 1)
-> >>>> +                    return 0;
-> >>> Maybe rewrite this loop next way: u32 max_sz =3D min_t(u32,
-> >>> XATTR_SIZE_MAX, len); for (i=3D0; i < max_sz; i++) { ... } if (len <
-> >>> XATTR_SIZE_MAX) return 0; return -E2BIG; This way we eliminate that
-> >>> entire if statement from the loop body, which should be positive for
-> >>> performance.
-> >>>>               s1++;
-> >>>>               s2++;
-> >>>>       }
-> >>>> @@ -3451,7 +3456,7 @@ static int __bpf_strcasecmp(const char *s1, co=
-nst char *s2, bool ignore_case)
-> >>>>     */
-> >>>>    __bpf_kfunc int bpf_strcmp(const char *s1__ign, const char *s2__i=
-gn)
-> >>>>    {
-> >>>> -    return __bpf_strcasecmp(s1__ign, s2__ign, false);
-> >>>> +    return __bpf_strncasecmp(s1__ign, s2__ign, false, XATTR_SIZE_MA=
-X);
-> >>>>    }
-> >>>>
-> >>>>    /**
-> >>>> @@ -3469,7 +3474,26 @@ __bpf_kfunc int bpf_strcmp(const char *s1__ig=
-n, const char *s2__ign)
-> >>>>     */
-> >>>>    __bpf_kfunc int bpf_strcasecmp(const char *s1__ign, const char *s=
-2__ign)
-> >>>>    {
-> >>>> -    return __bpf_strcasecmp(s1__ign, s2__ign, true);
-> >>>> +    return __bpf_strncasecmp(s1__ign, s2__ign, true, XATTR_SIZE_MAX=
-);
-> >>>> +}
-> >>>> +
-> >>>> +/*
-> >>>> + * bpf_strncasecmp - Compare two length-limited strings, ignoring c=
-ase
-> >>>> + * @s1__ign: One string
-> >>>> + * @s2__ign: Another string
-> >>>> + * @len: The maximum number of characters to compare
-> >>> Let's also add that len is limited by XATTR_SIZE_MAX
-> >> This applies for other string kfuncs, too, but we never mention it in
-> >> the docs comments. Does it make sense to have it just for one? Or shou=
-ld
-> >> we add it to the rest as well?
-> >>
-> >> Viktor
-> >>
-> >>>> +
-> >>>> + * Return:
-> >>>> + * * %0       - Strings are equal
-> >>>> + * * %-1      - @s1__ign is smaller
-> >>>> + * * %1       - @s2__ign is smaller
-> >>>> + * * %-EFAULT - Cannot read one of the strings
-> >>>> + * * %-E2BIG  - One of strings is too large
-> >>>> + * * %-ERANGE - One of strings is outside of kernel address space
-> >>>> + */
-> >>>> +__bpf_kfunc int bpf_strncasecmp(const char *s1__ign, const char *s2=
-__ign, size_t len)
-> >>>> +{
-> >>>> +    return __bpf_strncasecmp(s1__ign, s2__ign, true, len);
-> >>>>    }
-> >>>>
-> >>>>    /**
-> >>>> @@ -4521,6 +4545,7 @@ BTF_ID_FLAGS(func, bpf_iter_dmabuf_destroy, KF=
-_ITER_DESTROY | KF_SLEEPABLE)
-> >>>>    BTF_ID_FLAGS(func, __bpf_trap)
-> >>>>    BTF_ID_FLAGS(func, bpf_strcmp);
-> >>>>    BTF_ID_FLAGS(func, bpf_strcasecmp);
-> >>>> +BTF_ID_FLAGS(func, bpf_strncasecmp);
-> >>>>    BTF_ID_FLAGS(func, bpf_strchr);
-> >>>>    BTF_ID_FLAGS(func, bpf_strchrnul);
-> >>>>    BTF_ID_FLAGS(func, bpf_strnchr);
-> >>>
->
+Right, so the plan was to set min to some fraction of max when refilling
+sheaves, with the goal of maximizing the chance that once we grab a slab
+from the partial list, we almost certainly fully use it and don't have to
+return it back. But I didn't get to there yet. It seems worthwile to try
+though so we can leave the implementation prepared for it?
+
+> Otherwise LGTM!
+> 
+
 
