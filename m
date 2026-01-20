@@ -1,76 +1,78 @@
-Return-Path: <bpf+bounces-79561-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79562-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7E7DD3C03C
-	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 08:23:00 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14B34D3C06E
+	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 08:30:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id BB44B3E48C9
-	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 07:06:28 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3355354053D
+	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 07:06:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 011023803FE;
-	Tue, 20 Jan 2026 07:06:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6150D36999B;
+	Tue, 20 Jan 2026 07:06:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LlcVGwHN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BIpbwsK8"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-pl1-f195.google.com (mail-pl1-f195.google.com [209.85.214.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A05437A4A1
-	for <bpf@vger.kernel.org>; Tue, 20 Jan 2026 07:06:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB8253803F2
+	for <bpf@vger.kernel.org>; Tue, 20 Jan 2026 07:06:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768892778; cv=none; b=oS1Y7Tdtn5JaZkxiHiJ7mh5sKg9ScOsClSxnsTfZe9L33bRMf1D+jxWV/N36cO3Mk8TcLmUZ1bjYXPgsANwyX3n1O6ZWDtlU+vpxdZkl4GPJ3AJIJ/9FaGmrQwwDBF7R+A9pQRhj7mDsCqOsXb02qjHNPcS4vXnrN0E2+DTAmOM=
+	t=1768892789; cv=none; b=Z22Rm54fm3ts1BQJ8XLG05PLh1UDUp13stsRx35wlgPlPVgilsddS0xn6o+NwxfjW99GjWNAPBJ4QhxeqHAgFJBOgQRKHe/iQQ3cZgTYPoVofPuBXdKSHVaetysWyX3eRAn5qo4XCSFtVkhp6Xd4SjUX40WitFZqWiU300PQUdM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768892778; c=relaxed/simple;
-	bh=1TZK5fhyrxC/WB5sP/wiLMfRj4jIbse4KsMa+ws3+jU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SSNSfc+YxQZ0zmY72bFEtOTIOGsRGrsiKhSSYwBhyR31FJSwMbn2YSUDClE59HNGX/W1q+Z3fo9sigNFsGVR7tZgTA82l8VP5DEcH9G9Q8D7h36SwYce9iZBsa0ik0CY06q0wcBXG90VmrLaaP4H3tRmFIs/n8ty8Inpnr3CJhY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LlcVGwHN; arc=none smtp.client-ip=209.85.214.195
+	s=arc-20240116; t=1768892789; c=relaxed/simple;
+	bh=bkEnpN35ROgLb1TaATahFCU+nYmJUOdqiUA5VNDzRiY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=q5qIdUcWJ4HHghd7TP4GzFCgte6+m/lsRN0kEAw43aj6IYiTi1mujIW+s+kpMiCnHezsPPm5mpLVjIoRiYKOMxOv1qg6nhTuAPQzJhOC4ZBr0bWVMyAV1W8vvuSEPi6P2G5Z2suAvlzfOyMBjpRW8z9bmw5+h3O8BVYgAyFlTm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BIpbwsK8; arc=none smtp.client-ip=209.85.214.195
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f195.google.com with SMTP id d9443c01a7336-2a09a3bd9c5so37289145ad.3
-        for <bpf@vger.kernel.org>; Mon, 19 Jan 2026 23:06:11 -0800 (PST)
+Received: by mail-pl1-f195.google.com with SMTP id d9443c01a7336-2a1388cdac3so34601375ad.0
+        for <bpf@vger.kernel.org>; Mon, 19 Jan 2026 23:06:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768892769; x=1769497569; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=6k2o46vNuTzPIheaA8GctSKLua8DVfbF5bh98uIEOBs=;
-        b=LlcVGwHNAccCKm5daWRmSKFd/90GJ8vdq79Xalve6JxGkUwZ/P4bqRzUe2Shbunc/6
-         NOS5ZtKgpK5HA/4+urzzf5Yv7fSA82/ZPS4/akj+/IPCmPqDgQs0MAHEnECseFL/zror
-         /L4s8QPx5FcvfSaA2EHnwRW0GaSJZyUyFh5KT50DLnJn28xXhJfG0hME/WKnwjupAvGb
-         VKov0RBEGAT9A9VEojAgO6PdygkcPz2pOnacR+b38+vq9hVUfGyb+exbBYUoB7nZVg0C
-         aopMM5qR0zMGPNjmSRyDU2GmkcypGj7s0hhpuH+j2kD12te983jiLFHlLx5Q37/wr79b
-         OYwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768892769; x=1769497569;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1768892778; x=1769497578; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6k2o46vNuTzPIheaA8GctSKLua8DVfbF5bh98uIEOBs=;
-        b=XxskvoDX0gQZr0GIWItOQ/JE940n6uqzi3K2q2nz1FVNuDkoqxQqRu4tviNnQERGUc
-         rEaBjkrtCyLQ/5c2vpnT7QSVtNOvJ3frOvXU4zZVqMLZ5Yce02lfQV6MEn7CEEffSPJD
-         +wpJY+NhA15Xwq8ZJOdWU0pAKEvpWoVzzuSSH8MBnqd55YRnuPbqB8t1F+1RZuR1xk/y
-         3NoxCLWVvG3oRIDnr6kyyfv00vtHp4G6a8T5xZb4yLBiOHa4VFK85FCo3naru6jTkxRa
-         fxSHkS6mueMXJxdAuuPkvkTUv9JA+aGHB5Me6XH1b+XpOTQDJ2ATrWLsatnwNSWU8/k/
-         5FGA==
-X-Forwarded-Encrypted: i=1; AJvYcCVFGDt5bz740opgekgf8PlY7Evx5Mbd/RDWGOIX4XU6KuatfFD7JXD/KX6jiFYNi2XgcTU=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz0zw2Vz1O4qn1AFHSt4wS4w6DWoN3Smwrawv8xjPjwiy2DB1Pl
-	5XvGGvTnTXaso7XcXEwmhVaunnq7NlvMEK/LZuxYtsmxlqZ5iDEksrAw
-X-Gm-Gg: AZuq6aLC7gzhe2phve98h5ThHYzumQ8rDjlluWAWvG2RAgKyRsghBWuJf89vu2MeMZG
-	mT4E2v0cZU5ltUd3MEuZXJ0p9Ax+3TyBBxpStMYsGaXZoBKjGGDYhjV+YANH6LoWEfbIjoln3f4
-	jnEscWiSUNnHsiX5F3MD9kXyN9MeGoVwGBEx5lODJeFPYwztQpKWJxQlpEUQSlZjsHLTPprY9Ia
-	hht3jI0WB4K+MB5kIAwW66ZTTk7aZo2TOXjljcHs43LW8Jyq6LADDYS8Yuhq9I6GzgckFSGeR1C
-	5EVe5UR6TQ6vNYWqPp//nvVHvyJYgjvNsCYrhI6/AYbXR9LRZLpTTKZM2JDZjBxD8z6buYWcApv
-	Uzi5+oh7UrphHItMSqU9emKhTaI4UTdjljFTe70zxXa/8m405unCQoROsnhA+Ss14OIIadUx6X9
-	UJWpQ2QeI6
-X-Received: by 2002:a17:903:17c3:b0:2a0:ed13:398e with SMTP id d9443c01a7336-2a71892193cmr102832235ad.49.1768892769464;
-        Mon, 19 Jan 2026 23:06:09 -0800 (PST)
+        bh=AoyD4uV9eCRwWiRSuwU/fXn0oAa1lUGxNCw5PqJhjBU=;
+        b=BIpbwsK8IFYvCZ5UM6BF2qr/i7osYi3MA2+M0lEvSqHQZMB7VpEkGSrGTrqxQPMsVt
+         xffOdLinNu8OWRhyJ02aZ2eDeS/nugwYSGWlw4KLjNsfPG8vynnNzWi66SIHDvK5V/GD
+         /2qipx/jpeol5mIg1oe05eSfOmtJ45bAC/z/VQ8Gp0HSo6uDxpTIxoatzullIsxzb+0y
+         tNRiF1E/KG/FwyJcNl2ZYpkv0fWN5hiYmV70w5qznyUqmZebvIb0OVjvsCVzPJkWLWeU
+         7BWhuIjM7tT//vqyvXofo4qckw0DTktmhTr//XRKFRttrFkIDvbAEOFRL//2jm1/HV3e
+         q23g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768892778; x=1769497578;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=AoyD4uV9eCRwWiRSuwU/fXn0oAa1lUGxNCw5PqJhjBU=;
+        b=ZygZ7FoSj9MD2UmryNHZsMp1wifWqa+Zz8f8xn5VyQCSRZh3j/qZ9pcOsGPO/O/Ced
+         yBXQWvY9u7UB+MeCia7MwpzpQ38Xp/NLIjQgcfMFW7L7qglitbBxaGs8sMi7D1lVIfM4
+         iTB5ZnwBPDgS+HaZjF5vJo3V2vsmsS0CEvpLD5rKRqOxM116MBLDS6kYT1FD3fXyKpkg
+         M/MsMljzlfiBaYvMxRIansvUnsIcVSk2q6JzCRaIWA5h618jfeKOSbJECszeEeEEnCEC
+         H98hzsR3LryI9W1i+2r+LVjFtaDzfBp5wD5cOmEgjezPJKkSzF7yqkyiwO42jJNPbYeZ
+         /CGQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVUR5xt83XQO3mG+J1ccEljObTACU38AmVbi8g7PNVcG2UYzNcftWABfT0+QUoEAN+Pkzo=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy4fz6+B/nMMt/i41Y6sr4VoVBGZiRfITFxwU+mKRUwlXjm08/S
+	Yh4EA0WskS4lQYCperm4DVW0g9RvZhQeIhQJY+VZmYb/gKC+grgOb9/3
+X-Gm-Gg: AZuq6aJ3k9NzfrZT9DesaklRbwOJDADkRZj/nP+0PUlT6yCGZWt1v1rKYmUXSROnbm0
+	NHWEBOxxkSLPnytS9h9YRYdDzFoJx8OlBfuTGCa++MtRj0VpEwZmM2G7pzPStIoUna9xZd3SxzE
+	uSUHmb9trA3TN/xxbqdNpP6JHsUZHrKOYEvoEI72ERPf70Tw/MVRPmXtvawfp8OSdixGK4ySnng
+	CfcWhpKNDVqdEZ5v9uDu352hZtdNXSzT/dwegyYQKW0HrWiVpqTnj8RXswqhaQBNRwA1ux6Fc07
+	Dxt2QBCd48EVF8wvQdTXOtNNMnUVKf1os55TBQcZoCvWNZWIIW0Oc1oUtFLN/ynSOxweb75KkN5
+	yKnnJufXKr7HfUicSJlAB7GUeDw9CCkInrQ0zAoDVbBwIiV09xDwRxuufrOGqCN8PZGwydhPVZm
+	713pnalisx
+X-Received: by 2002:a17:903:1a2e:b0:298:6a79:397b with SMTP id d9443c01a7336-2a7176cc35bmr123268025ad.56.1768892778110;
+        Mon, 19 Jan 2026 23:06:18 -0800 (PST)
 Received: from 7950hx ([103.173.155.241])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a7190ce534sm111695665ad.27.2026.01.19.23.06.01
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a7190ce534sm111695665ad.27.2026.01.19.23.06.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jan 2026 23:06:09 -0800 (PST)
+        Mon, 19 Jan 2026 23:06:17 -0800 (PST)
 From: Menglong Dong <menglong8.dong@gmail.com>
 X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
 To: ast@kernel.org,
@@ -96,10 +98,12 @@ Cc: davem@davemloft.net,
 	netdev@vger.kernel.org,
 	bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v6 0/2] bpf, x86: inline bpf_get_current_task() for x86_64
-Date: Tue, 20 Jan 2026 15:05:53 +0800
-Message-ID: <20260120070555.233486-1-dongml2@chinatelecom.cn>
+Subject: [PATCH bpf-next v6 1/2] bpf, x86: inline bpf_get_current_task() for x86_64
+Date: Tue, 20 Jan 2026 15:05:54 +0800
+Message-ID: <20260120070555.233486-2-dongml2@chinatelecom.cn>
 X-Mailer: git-send-email 2.52.0
+In-Reply-To: <20260120070555.233486-1-dongml2@chinatelecom.cn>
+References: <20260120070555.233486-1-dongml2@chinatelecom.cn>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -109,39 +113,64 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 Inline bpf_get_current_task() and bpf_get_current_task_btf() for x86_64
-to obtain better performance, and add the testcase for it.
+to obtain better performance.
 
-Changes since v5:
-* remove unnecessary 'ifdef' and __description in the selftests
-* v5: https://lore.kernel.org/bpf/20260119070246.249499-1-dongml2@chinatelecom.cn/
+Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+---
+v5:
+- don't support the !CONFIG_SMP case
 
-Changes since v4:
-* don't support the !CONFIG_SMP case
-* v4: https://lore.kernel.org/bpf/20260112104529.224645-1-dongml2@chinatelecom.cn/
+v4:
+- handle the !CONFIG_SMP case
 
-Changes since v3:
-* handle the !CONFIG_SMP case
-* ignore the !CONFIG_SMP case in the testcase, as we enable CONFIG_SMP
-  for x86_64 in the selftests
+v3:
+- implement it in the verifier with BPF_MOV64_PERCPU_REG() instead of in
+  x86_64 JIT.
+---
+ kernel/bpf/verifier.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-Changes since v2:
-* implement it in the verifier with BPF_MOV64_PERCPU_REG() instead of in
-  x86_64 JIT (Alexei).
-
-Changes since v1:
-* add the testcase
-* remove the usage of const_current_task
-
-Menglong Dong (2):
-  bpf, x86: inline bpf_get_current_task() for x86_64
-  selftests/bpf: test the jited inline of bpf_get_current_task
-
- kernel/bpf/verifier.c                         | 22 +++++++++++++++++++
- .../selftests/bpf/prog_tests/verifier.c       |  2 ++
- .../selftests/bpf/progs/verifier_jit_inline.c | 20 +++++++++++++++++
- 3 files changed, 44 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_jit_inline.c
-
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 9de0ec0c3ed9..c4e2ffadfb1f 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -17739,6 +17739,10 @@ static bool verifier_inlines_helper_call(struct bpf_verifier_env *env, s32 imm)
+ 	switch (imm) {
+ #ifdef CONFIG_X86_64
+ 	case BPF_FUNC_get_smp_processor_id:
++#ifdef CONFIG_SMP
++	case BPF_FUNC_get_current_task_btf:
++	case BPF_FUNC_get_current_task:
++#endif
+ 		return env->prog->jit_requested && bpf_jit_supports_percpu_insn();
+ #endif
+ 	default:
+@@ -23319,6 +23323,24 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+ 			insn      = new_prog->insnsi + i + delta;
+ 			goto next_insn;
+ 		}
++
++		/* Implement bpf_get_current_task() and bpf_get_current_task_btf() inline. */
++		if ((insn->imm == BPF_FUNC_get_current_task || insn->imm == BPF_FUNC_get_current_task_btf) &&
++		    verifier_inlines_helper_call(env, insn->imm)) {
++			insn_buf[0] = BPF_MOV64_IMM(BPF_REG_0, (u32)(unsigned long)&current_task);
++			insn_buf[1] = BPF_MOV64_PERCPU_REG(BPF_REG_0, BPF_REG_0);
++			insn_buf[2] = BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_0, 0);
++			cnt = 3;
++
++			new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
++			if (!new_prog)
++				return -ENOMEM;
++
++			delta    += cnt - 1;
++			env->prog = prog = new_prog;
++			insn      = new_prog->insnsi + i + delta;
++			goto next_insn;
++		}
+ #endif
+ 		/* Implement bpf_get_func_arg inline. */
+ 		if (prog_type == BPF_PROG_TYPE_TRACING &&
 -- 
 2.52.0
 
