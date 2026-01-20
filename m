@@ -1,117 +1,156 @@
-Return-Path: <bpf+bounces-79529-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79530-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9483ED3BD3C
-	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 02:53:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 691F2D3BD42
+	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 02:55:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7B42730BED9C
-	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 01:49:24 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8284F304B3FF
+	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 01:50:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E8E127B35B;
-	Tue, 20 Jan 2026 01:49:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D87771E487;
+	Tue, 20 Jan 2026 01:50:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VZc0aiur"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WdgV4ooa"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-dy1-f178.google.com (mail-dy1-f178.google.com [74.125.82.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F14E8285CB6
-	for <bpf@vger.kernel.org>; Tue, 20 Jan 2026 01:49:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB0A221CC62
+	for <bpf@vger.kernel.org>; Tue, 20 Jan 2026 01:50:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768873750; cv=none; b=pNOSem/KgBvSlPDMtqmgVTfvARabUmnymIZsRHjkCLJzscb7lQC984bAEQ2tTbr4L74snle35SOwlHswrrC8RBZMIvOdrSkLCmuSB9Kn6uCYLpr7biHp7WG00a+f6JwSpym9Mvy5Se/HbnPiezZsG7pemNske6rEPLpzfHKDTKg=
+	t=1768873810; cv=none; b=XN48uTpa6rUMNzIUHhUFbMyW1xr0enSwwj8NqTLHwjtNHRSbK1JKR8b/kr9p0cigJha6dddnRB8mifPjwNKJXxNrrdHxHyNlKcUn7zEbn74IyhRyFrK8rEzde4tMfhufmy4rJJFpTOpDZODrVMP/E42tgY+V4fXWNv6vSLJeOcY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768873750; c=relaxed/simple;
-	bh=P4vH0k+7XsEwT791gaUby6dSyltbIn6BS1tA5QY+bp0=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Tkf6ituXlYgPIM8sdxbi/IN/mQl9pk2mCO1R0HL2C2aDEfR5umFFrUcEWandwPwgcC3ZFRsQEOXAwtLULoNIZbm4InxTOWfrAf0r+5a6KEtyP7l9LxzeRUb8XW036oU6MvmJ/RBSQVDkjJuBe2ujKTh8qQ8v/wLtCkoUTQHJwvc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VZc0aiur; arc=none smtp.client-ip=74.125.82.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-dy1-f178.google.com with SMTP id 5a478bee46e88-2b6f5a9cecaso824501eec.0
-        for <bpf@vger.kernel.org>; Mon, 19 Jan 2026 17:49:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768873748; x=1769478548; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=xjg5AkPxw0MOdaWLN3zWHsbO0Z52mOb9jRmich2qKiA=;
-        b=VZc0aiurXJglCX5Bvo4EyS6XjGi4RyyKqHFXtaSUI8XkqZfQB2ZqB9OZBcd4lE9lS3
-         g28yi5HCMbs60z6dv/kaCrfUgF/FBP7wnAHdLMxte+OAQw0NofmHrdo6Tg0vmVW+PMcz
-         z/Gz0XjHPAjIYSuXvDvGdZCCqv9+NHMzlD8pVn+BDQ/HZGblTGOY/MdzSWWDmsLlplBS
-         bYrDfFOVRB1SDol0/BtVEUFzDxwvXDaFTT+72yYGxHbL77ncYL196Mv5sXhE7v1IR/ki
-         OQrhrBQGIKRZssh9TqKRvLDRS52ufFjXHqInH9RC+bFV+8h1S3MVuj5KWtShvYXD53xb
-         xWMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768873748; x=1769478548;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xjg5AkPxw0MOdaWLN3zWHsbO0Z52mOb9jRmich2qKiA=;
-        b=TeVosHnVKsMVepUfhirHFe+b40wk79MhK2tUcLH/qBBmPno4tHoXEz2taHH+wbeFOR
-         n0w2M65RqXS2O3aHsjf6+uClnzGvfmMqWdNRi+t8mgrw8NgbmNONPK7lm79KqyxexPvI
-         Wbhqm2lrIg3nWZBWmK4jbKboJZ1IgXJY4ncByjxoi1HKQPQUVNznjBPpWtSFay2xXhec
-         HQR1llV0hbK0fBdiqp54Ju4UXJ1FzBRTEh4M/cBecBohD1Sv18nll/kWA9hxa7C8VQoU
-         ic4cvkxGxdkJQ1rHC2j16ulNnqsRHSNvSfGaPtMxI17EnbdhYtNzCpcOW3UvOqyGcabE
-         TeDw==
-X-Forwarded-Encrypted: i=1; AJvYcCXx8Qy6jLfDhbtAUYMbftrpBv+tpdtDC4tmAN86HaTxv28Vpcb9Sb7EnhaxYHzSrr/jod0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxEHX5KK3pMnCQYyzmFYlVsHYSVh27gNw+zkMY3fykum3awNR1N
-	88+LnYnqHkxyNXNBxRxBr1/3j+qUisvbV2KgLwIcA97Oa92eUHQNaRAE
-X-Gm-Gg: AZuq6aId9Bh3RZBkj3ct+EWC3rYUMhsfwvWZkZouAzo+B1GbLdj4syHvaRL6erY+zvJ
-	9QFpPB7gFiiewDyHIPPocFxlEMCICyHn5cCxBxXCUPmpUIHj5uvZgE/jTUS2hSZz7UrPidMbZOF
-	CPvVAyLEaEzMHjYxPqT+EAL1D1hi40Z2ao4ronkZ1ko0d4NL+AEKpofi9LNgkEL756jmWn9h83n
-	WB0icduMWlkF+JcdsJYW/JnXGtCbqCM5uYZ7nKTrdKqKJMoOffDPi1SjkwPQZel93hAtV3OYMfl
-	CVlx+bZrXcUNFRIJY850PBvkh55xY/bT4N7GFnwDenRm3Y+UuBa2JPy9reCTPnuuA+4gEqJEanK
-	+7c3kRjj/5jrUNDDVhL9Elp7RkSQfGI8JWYYJhgha4k/eSPTnjtqrDiVejdTEm/5GlOuKd9OGDu
-	2mpcYfCuM0v4NqYw8M/wb7zjGoKbuL4Q3ykowqLI8MlV3d5IoepoRtHriO2yGh3j6A7g==
-X-Received: by 2002:a05:7300:c608:b0:2ab:c279:9dce with SMTP id 5a478bee46e88-2b6fd623ef7mr293270eec.7.1768873747978;
-        Mon, 19 Jan 2026 17:49:07 -0800 (PST)
-Received: from ?IPv6:2a03:83e0:115c:1:4cd6:17bf:3333:255f? ([2620:10d:c090:500::aa81])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2b6b3502d22sm15327177eec.10.2026.01.19.17.49.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jan 2026 17:49:07 -0800 (PST)
-Message-ID: <088b071d1a43b403123d772f56ce033e91cb4252.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v2 00/13] bpf: Kernel functions with
- KF_IMPLICIT_ARGS
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Ihor Solodrai <ihor.solodrai@linux.dev>, Alexei Starovoitov
- <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
- <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Mykyta Yatsenko <yatsenko@meta.com>, Tejun Heo <tj@kernel.org>, Alan
- Maguire <alan.maguire@oracle.com>, Benjamin Tissoires <bentiss@kernel.org>,
- Jiri Kosina	 <jikos@kernel.org>, Amery Hung <ameryhung@gmail.com>,
- bpf@vger.kernel.org, 	linux-kernel@vger.kernel.org,
- linux-input@vger.kernel.org, 	sched-ext@lists.linux.dev
-Date: Mon, 19 Jan 2026 17:49:05 -0800
-In-Reply-To: <20260116201700.864797-1-ihor.solodrai@linux.dev>
-References: <20260116201700.864797-1-ihor.solodrai@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.58.2 (3.58.2-1.fc43) 
+	s=arc-20240116; t=1768873810; c=relaxed/simple;
+	bh=8fA+p/DEXJdaqbnOjZ3SqbgCV79ygUWjN600gP4WjAA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PeUIyTOfyKPF+QWnoWEC1bvfDJZdU9CHP2LaAqQ80g0lffp+FGw8Iw13+REF9aAiLCrPtTrF6CwFo0yMQxPBmc82v7LXAM6DkQ5lVejDzeEfO7fFINsRxK+EkpXtTZgOihjhKq2f4t8xx3J4iKnHyVuMxH/EPQTcPqxW5M9mRqI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=WdgV4ooa; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <123a63a2-5679-4bd0-9e16-dc5c7dbe3325@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1768873805;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kBN9dYNpcV59lPN9f96cLskaAgq0uhPL5VTZQxR1SyE=;
+	b=WdgV4ooaqq4OMNi62m02mgCFSdC3pqkc6NzjlD3vaX90F/03zANPBLs90tNrDGUFL5TPHY
+	EdbcsckMgG0zlwekEgXTqd4PzSlzuAwHbH14GzYQwdGWK+nj1RN9yxPyguN04EUdwCSPzN
+	sXMKM3aZzhgTHh4R4Ktmm1xTyIfddEc=
+Date: Tue, 20 Jan 2026 09:49:54 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next 2/3] bpf: Avoid deadlock using trylock when
+ popping LRU free nodes
+Content-Language: en-US
+To: Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ kernel-patches-bot@fb.com, Kumar Kartikeya Dwivedi <memxor@gmail.com>
+References: <20260119142120.28170-1-leon.hwang@linux.dev>
+ <20260119142120.28170-3-leon.hwang@linux.dev>
+ <d4b8843b-c5dc-4468-996a-bacc2db63f11@iogearbox.net>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Leon Hwang <leon.hwang@linux.dev>
+In-Reply-To: <d4b8843b-c5dc-4468-996a-bacc2db63f11@iogearbox.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, 2026-01-16 at 12:16 -0800, Ihor Solodrai wrote:
 
-[...]
 
-> v1->v2:
->   - Replace the following kernel functions with KF_IMPLICIT_ARGS version:
->     - bpf_stream_vprintk_impl -> bpf_stream_vprintk
->     - bpf_task_work_schedule_resume_impl -> bpf_task_work_schedule_resume
->     - bpf_task_work_schedule_signal_impl -> bpf_task_work_schedule_signal
->     - bpf_wq_set_callback_impl -> bpf_wq_set_callback_impl
+On 20/1/26 03:47, Daniel Borkmann wrote:
+> On 1/19/26 3:21 PM, Leon Hwang wrote:
+>> Switch the free-node pop paths to raw_spin_trylock*() to avoid blocking
+>> on contended LRU locks.
+>>
+>> If the global or per-CPU LRU lock is unavailable, refuse to refill the
+>> local free list and return NULL instead. This allows callers to back
+>> off safely rather than blocking or re-entering the same lock context.
+>>
+>> This change avoids lockdep warnings and potential deadlocks caused by
+>> re-entrant LRU lock acquisition from NMI context, as shown below:
+>>
+>> [  418.260323] bpf_testmod: oh no, recursing into test_1,
+>> recursion_misses 1
+>> [  424.982207] ================================
+>> [  424.982216] WARNING: inconsistent lock state
+>> [  424.982223] inconsistent {INITIAL USE} -> {IN-NMI} usage.
+>> [  424.982314]  *** DEADLOCK ***
+>> [...]
+>>
+>> Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
+>> ---
+>>   kernel/bpf/bpf_lru_list.c | 17 ++++++++++-------
+>>   1 file changed, 10 insertions(+), 7 deletions(-)
+> 
+> Documentation/bpf/map_lru_hash_update.dot needs update?
+> 
 
-Just to clarify my understanding, this is a breaking change, right?
-E.g. bpf_stream_vprintk_impl is no longer in vmlinux.h and on a load
-attempt an error is reported:
+Yes, it needs update.
 
-  kfunc 'bpf_stream_vprintk_impl' is referenced but wasn't resolved
+>> diff --git a/kernel/bpf/bpf_lru_list.c b/kernel/bpf/bpf_lru_list.c
+>> index c091f3232cc5..03d37f72731a 100644
+>> --- a/kernel/bpf/bpf_lru_list.c
+>> +++ b/kernel/bpf/bpf_lru_list.c
+>> @@ -312,14 +312,15 @@ static void bpf_lru_list_push_free(struct
+>> bpf_lru_list *l,
+>>       raw_spin_unlock_irqrestore(&l->lock, flags);
+>>   }
+>>   -static void bpf_lru_list_pop_free_to_local(struct bpf_lru *lru,
+>> +static bool bpf_lru_list_pop_free_to_local(struct bpf_lru *lru,
+>>                          struct bpf_lru_locallist *loc_l)
+>>   {
+>>       struct bpf_lru_list *l = &lru->common_lru.lru_list;
+>>       struct bpf_lru_node *node, *tmp_node;
+>>       unsigned int nfree = 0;
+>>   -    raw_spin_lock(&l->lock);
+>> +    if (!raw_spin_trylock(&l->lock))
+>> +        return false;
+>>   
+> 
+> Could you provide some more analysis, and the effect this has on real-world
+> programs? Presumably they'll unexpectedly encounter a lot more frequent
+> -ENOMEM as an error on bpf_map_update_elem even though memory might be
+> available just that locks are contended?
+> 
+> Also, have you considered rqspinlock as a potential candidate to discover
+> deadlocks?
 
-Maybe call it out explicitly in the cover letter?
+Thanks for the questions.
+
+While I haven’t encountered this issue in production systems myself, the
+deadlock has been observed repeatedly in practice, including the cases
+shown in the cover letter. It can also be reproduced reliably when
+running the LRU tests locally, so this is a real and recurring problem.
+
+I agree that returning -ENOMEM when locks are contended is not ideal.
+Using -EBUSY would better reflect the situation where memory is
+available but forward progress is temporarily blocked by lock
+contention. I can update the patch accordingly.
+
+Regarding rqspinlock: as mentioned in the cover letter, Menglong
+previously explored using rqspinlock to address these deadlocks but was
+unable to arrive at a complete solution. After further off-list
+discussion, we agreed that using trylock is a more practical approach
+here. In most observed cases, the lock contention leading to deadlock
+occurs in bpf_common_lru_pop_free(), and trylock allows callers to back
+off safely rather than risking re-entrancy and deadlock.
+
+Thanks,
+Leon
+
 
