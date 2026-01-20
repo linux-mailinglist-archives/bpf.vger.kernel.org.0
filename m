@@ -1,231 +1,185 @@
-Return-Path: <bpf+bounces-79654-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79655-lists+bpf=lfdr.de@vger.kernel.org>
 Delivered-To: lists+bpf@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OA+hDfCyb2nHMAAAu9opvQ
-	(envelope-from <bpf+bounces-79654-lists+bpf=lfdr.de@vger.kernel.org>)
-	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 17:53:04 +0100
+	id AIHNOO26b2kOMQAAu9opvQ
+	(envelope-from <bpf+bounces-79655-lists+bpf=lfdr.de@vger.kernel.org>)
+	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 18:27:09 +0100
 X-Original-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A6CF48007
-	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 17:53:03 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99EE9488CC
+	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 18:27:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id BCDEE8CC829
-	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 16:16:38 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 05F438230D6
+	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 16:21:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ADDD322C60;
-	Tue, 20 Jan 2026 15:59:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25BE528C860;
+	Tue, 20 Jan 2026 16:08:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NvHxSO1a"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GyYyXxcK"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2023F322B6D
-	for <bpf@vger.kernel.org>; Tue, 20 Jan 2026 15:59:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DBA9441056
+	for <bpf@vger.kernel.org>; Tue, 20 Jan 2026 16:08:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768924779; cv=none; b=mGMnkjOX8QCOUc8FnvH9FzmwRa+PSvDT7zH8WinCbpSx4vC40gT+CRNXJjoSj6O2+braEpGppeT6M1oWRit11C1TeRfWrA/wPYoOUQdQ0px/lFSwGsNHyeQsYQ44zu3jcK5+jcdgm+I9aDS8oIvjoaXw3UwYeZDcKwAlEWu5bHk=
+	t=1768925292; cv=none; b=LZGg5NnKZwwOvkWPtc9kLA7zGLHoNn2hgxTaIMP/C88kbhkvicHcIirsuPv16NKCR/+UGlvfdHcriwuaXkEmK0Zb/oPoqKG9G4EPHJfjOYn1YzYqwAt3BECh/P3G9OcViSVUcoBRD4v0bmjPxcwatsP+rHi0tUa3yqWuIJLl3VY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768924779; c=relaxed/simple;
-	bh=lRes9l+x3wDpNSO2Sa5JkIhFzgz9xGBZD8cX6/ZNbvQ=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=BnugB6/oGb/Ty5aFfbgWrKdCYGwDDl0v0G54He/1AUPACnW1zmysNhppG6pXLIgN5vx91zyMZw4LKHAGtPCe6CadgtiGs0msrfV7nwbnU4PXVym6MhiDCqP84j1SFS1CFcgjoRauqXF0DwXLZeOnvYfgSmXBSYaesq057koMSkk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NvHxSO1a; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-47ee301a06aso52322165e9.0
-        for <bpf@vger.kernel.org>; Tue, 20 Jan 2026 07:59:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768924776; x=1769529576; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4FzDrJXSiFpMM2oO5xJw4oZibyZTAtzJi/b5pFlTTC8=;
-        b=NvHxSO1apwOXAtABu42GT2jJqte+uasXMN96tqNxESpynXcD0+Ij2jOw31wU34oUP5
-         lH0mwkxGSvOTAPS7tDKtbfs5gPF9j2lu0wKTESXKNXAXNDb+wGFQ/Y4S0lv5g/4piWSi
-         1aA4KC/j13tIxkW9TSwsg1ZXBgZPllIMe6gPZ/ODZw2RmWOkTEETZSD0LgIPPziiOt+A
-         S+b7DLEFvdlpSiOFrMxt0MStjmVsgGJzIAM/zMn3GtP4S1gVbdrOvvYZ+/Vcu9CuMJ8z
-         zdTZVd6CEHkosDT4pSUG5htKMH3Fc0P+DIVNez+DqCTK40TnJhWRLkVVRO8dfMxpFKkx
-         oMBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768924776; x=1769529576;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=4FzDrJXSiFpMM2oO5xJw4oZibyZTAtzJi/b5pFlTTC8=;
-        b=uwunibH/0ouqRz1Zl0NIUUmxP73E8KVuvHyfAv66Sg2TN4TyycKRM9BGEq+3S7Zzt0
-         SswUdKuxGnyPMQucYyh9Ix6R7T3s80oK0Ug4DxQL9vfgmxgoE+d9jp0Q+SVcuSqE4zpJ
-         hnHrqdojmeJDtKHsL9Y2BxKbMrvlfbhjhMo8us9Axo2IzAwxa/DUzl8pvgII0B/B8O4Z
-         6P8VuR12oviNUgIB34i98NhS5HFeUQBGZma4ERwdZhsF27w2Kha0DkiEaAKk+PJgN+6B
-         /FEGbpU9fxiFTtu6IcyNrav+eSvVJIBhdbaaHhF+T1B3AZd6mG7rn6Rj1grsu4U0+4QS
-         ZCQg==
-X-Gm-Message-State: AOJu0YyoiX2qSuU8DObUEqT/CZNWobxyOC0RmkM8G5rlhy9nzCXaCNFw
-	KuZXUqYif0IvO/XJkiFMB2ipz9EqpNBH0nE7B6Yj9mQuOKHub/zwm3Mx
-X-Gm-Gg: AY/fxX4URUfvdjt3tAkbkkanxB4D4swM8VMd+lOBKXZd4PjcipbZHIl69kuiyQG021K
-	OMpnvm5euloagwhwdumD2DmQ63A8tcSgda/hVD0mC1Aw/fqCqXxbf9fxCPJ7Bi4t/QeOMA8ftBk
-	SC3SeFx01uqivT5q0ay0X0Y/BUUMdvlHg3IcHrT3PgNvJ0+Y91UaCMyvQNbuplDDr3YJiUvC9nS
-	4twfJZZmBt3ub8U/SOuYbjvFdNJGTYMZ0xb76zvbx7Ca0sGp3wi5tIVYLphe6ixFvqxWiU9E+fK
-	K3P8Vs26SHvriLnu/kX/W6WSbXjq7NE3ncnqf4kCLyUhYQNVEN4bvWDJd1M6Y8sbepzzIlRiQOn
-	Q99EQhE8eXGicSqZHdK+ci+kQN7Rky0M/YkOpYRfGkcU8o6C8Z5lQezLvMjnjRapXIU7eGHuhOr
-	SrkIjpNYvDDtHMXg==
-X-Received: by 2002:a05:600c:c171:b0:47a:9560:5944 with SMTP id 5b1f17b1804b1-4803d8481bbmr36155435e9.34.1768924776142;
-        Tue, 20 Jan 2026 07:59:36 -0800 (PST)
-Received: from localhost ([2a01:4b00:bd1f:f500:e85d:a828:282d:d5c7])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-43569921facsm28818718f8f.5.2026.01.20.07.59.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jan 2026 07:59:35 -0800 (PST)
-From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-Date: Tue, 20 Jan 2026 15:59:19 +0000
-Subject: [PATCH bpf-next v6 10/10] selftests/bpf: Verify
- bpf_timer_cancel_async works
+	s=arc-20240116; t=1768925292; c=relaxed/simple;
+	bh=f/QC7FzwN9onimK80+gXZLxFwx7O7hVSRYIEouRG59c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZfU7uEbyOxuPCM0yUKiuhxuYduX9dDE7fBYHwOSefDeJrreap0QDdmKoyuvS52Ed2JjI1u+2B+9hjRJZSUTz7ebX/Igi3IMI529zfs4vjXtKFjLt60wpTYhabPkysL10PempZz6uSntfmz/bnrNaH++El15QhLbz9hJ36WzqKCk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GyYyXxcK; arc=none smtp.client-ip=91.218.175.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <b0a09b42-4858-4c28-b7a6-6ac1e856d7bc@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1768925283;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6beUxqGFv/OlKjWUXcRthqjnv/MJaefBTXeSFu/wzgY=;
+	b=GyYyXxcKjkNm3k0Vr+hZorNx+PxVfgjfv+Np7okYlTi9045XrFBA/x4UmtWoNY471F4W7J
+	dom8FrfmsowtaDqqB83pewlq6OEQckcYKKppAW4FjYKGmspqdkQq2WKmPjJkSrqEB7BqA8
+	7Sh2Vogv0xN7qBhqbNALvWZYmoOZHbs=
+Date: Tue, 20 Jan 2026 08:07:57 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Subject: Re: [PATCH dwarves 1/4] dwarf_loader/btf_encoder: Detect reordered
+ parameters
+Content-Language: en-GB
+To: Alan Maguire <alan.maguire@oracle.com>, mattbobrowski@google.com
+Cc: eddyz87@gmail.com, ihor.solodrai@linux.dev, jolsa@kernel.org,
+ andrii@kernel.org, ast@kernel.org, dwarves@vger.kernel.org,
+ bpf@vger.kernel.org
+References: <20260113131352.2395024-1-alan.maguire@oracle.com>
+ <20260113131352.2395024-2-alan.maguire@oracle.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20260113131352.2395024-2-alan.maguire@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260120-timer_nolock-v6-10-670ffdd787b4@meta.com>
-References: <20260120-timer_nolock-v6-0-670ffdd787b4@meta.com>
-In-Reply-To: <20260120-timer_nolock-v6-0-670ffdd787b4@meta.com>
-To: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
- daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, 
- memxor@gmail.com, eddyz87@gmail.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1768924765; l=2785;
- i=yatsenko@meta.com; s=20251031; h=from:subject:message-id;
- bh=rxvPvabdjJ7jjXmOwc3ttq22Faa0bJrvplOFprPR9ZE=;
- b=u9Ycm2Fz/+PT26PFCoLxrVo9ygg0PKXDjCBWesttCyJSP2tgaOH1r2em6cmUi5znkVuZnN/qR
- BFQIiTVKQf0CFMmnbcje533xi0ja6/uu2wImZ/J+W/iQT75PTCi/FJh
-X-Developer-Key: i=yatsenko@meta.com; a=ed25519;
- pk=TFoLStOoH/++W4HJHRgNr8zj8vPFB1W+/QECPcQygzo=
+X-Migadu-Flow: FLOW_OUT
 X-Spamd-Result: default: False [-1.96 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-79654-lists,bpf=lfdr.de];
-	FREEMAIL_TO(0.00)[vger.kernel.org,kernel.org,iogearbox.net,meta.com,gmail.com];
-	TO_DN_SOME(0.00)[];
+	DMARC_POLICY_ALLOW(0.00)[linux.dev,none];
+	FREEMAIL_CC(0.00)[gmail.com,linux.dev,kernel.org,vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-79655-lists,bpf=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
 	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DMARC_POLICY_ALLOW(0.00)[gmail.com,none];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
 	R_SPF_SOFTFAIL(0.00)[~all:c];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mykytayatsenko5@gmail.com,bpf@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[yonghong.song@linux.dev,bpf@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
+	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[bpf];
 	RCPT_COUNT_SEVEN(0.00)[9];
-	ASN(0.00)[asn:7979, ipnet:142.0.200.0/24, country:US];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo,meta.com:email,meta.com:mid]
-X-Rspamd-Queue-Id: 9A6CF48007
+	ASN(0.00)[asn:7979, ipnet:213.196.21.0/24, country:US];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[ams.mirrors.kernel.org:rdns,ams.mirrors.kernel.org:helo,oracle.com:email,linux.dev:email,linux.dev:dkim,linux.dev:mid]
+X-Rspamd-Queue-Id: 99EE9488CC
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: Mykyta Yatsenko <yatsenko@meta.com>
 
-Add test that verifies that bpf_timer_cancel_async works: can cancel
-callback successfully.
 
-Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
----
- tools/testing/selftests/bpf/prog_tests/timer.c | 25 +++++++++++++++++++++++++
- tools/testing/selftests/bpf/progs/timer.c      | 23 +++++++++++++++++++++++
- 2 files changed, 48 insertions(+)
+On 1/13/26 5:13 AM, Alan Maguire wrote:
+> When encoding concrete instances of optimized functions it is possible
+> parameters get reordered, often due to a parameter being optimized out;
+> in such cases the order of abstract origin references to the abstract
+> function is different, and the parameters that are optimized out
+> usually appear after all the non-optimized parameters with no
+> DW_AT_location information [1].
+>
+> As an example consider
+>
+> static void __blkcg_rstat_flush(struct blkcg *blkcg, int cpu);
+>
+> It has - as expected - an abstract representation as follows:
+>
+>   <1><6392a2d>: Abbrev Number: 47 (DW_TAG_subprogram)
+>      <6392a2e>   DW_AT_name        : (indirect string, offset: 0x261e25): __blkcg_rstat_flush
+>      <6392a32>   DW_AT_decl_file   : 1
+>      <6392a33>   DW_AT_decl_line   : 1043
+>      <6392a35>   DW_AT_decl_column : 13
+>      <6392a36>   DW_AT_prototyped  : 1
+>      <6392a36>   DW_AT_inline      : 1   (inlined)
+>      <6392a37>   DW_AT_sibling     : <0x6392bac>
+>   <2><6392a3b>: Abbrev Number: 38 (DW_TAG_formal_parameter)
+>      <6392a3c>   DW_AT_name        : (indirect string, offset: 0xa7a9f): blkcg
+>      <6392a40>   DW_AT_decl_file   : 1
+>      <6392a41>   DW_AT_decl_line   : 1043
+>      <6392a43>   DW_AT_decl_column : 47
+>      <6392a44>   DW_AT_type        : <0x638b611>
+>   <2><6392a48>: Abbrev Number: 20 (DW_TAG_formal_parameter)
+>      <6392a49>   DW_AT_name        : cpu
+>      <6392a4d>   DW_AT_decl_file   : 1
+>      <6392a4e>   DW_AT_decl_line   : 1043
+>      <6392a50>   DW_AT_decl_column : 58
+>      <6392a51>   DW_AT_type        : <0x6377f8f>
+>
+> However the concrete representation after optimization becomes:
+>
+> ffffffff8186d180 t __blkcg_rstat_flush.isra.0
+>
+> and has a concrete representation with parameter order switched:
+>
+> <1><6399661>: Abbrev Number: 110 (DW_TAG_subprogram)
+>      <6399662>   DW_AT_abstract_origin: <0x6392a2d>
+>      <6399666>   DW_AT_low_pc      : 0xffffffff8186d180
+>      <639966e>   DW_AT_high_pc     : 0x169
+>      <6399676>   DW_AT_frame_base  : 1 byte block: 9c    (DW_OP_call_frame_cfa)
+>      <6399678>   DW_AT_GNU_all_call_sites: 1
+>      <6399678>   DW_AT_sibling     : <0x6399a8a>
+>   <2><639967c>: Abbrev Number: 4 (DW_TAG_formal_parameter)
+>      <639967d>   DW_AT_abstract_origin: <0x6392a48>
+>      <6399681>   DW_AT_location    : 0x1fe21fb (location list)
+>      <6399685>   DW_AT_GNU_locviews: 0x1fe21f5
+>   <2><63996e4>: Abbrev Number: 4 (DW_TAG_formal_parameter)
+>      <63996e5>   DW_AT_abstract_origin: <0x6392a3b>
+>      <63996e9>   DW_AT_location    : 0x1fe2387 (location list)
+>      <63996ed>   DW_AT_GNU_locviews: 0x1fe2385
+>
+> In other words we end up with
+>
+> static void __blkcg_rstat_flush.isra(int cpu, struct blkcg *blkcg);
+>
+> We are not detecting cases like this in pahole, so we need to
+> catch it to exclude such cases since they could lead to incorrect
+> fentry attachment.
+>
+> Future work around true function signatures will allow such functions
+> with their "." suffixes, but even for such cases it is good to
+> detect the reordering.
+>
+> In practice we just end up excluding a few more .isra/.constprop
+> functions which we cannot fentry-attach by name anyway; see [2] for an
+> example list from CI.
+>
+> [1] https://lore.kernel.org/bpf/101b74c9-949a-4bf4-a766-a5343b70bdd2@oracle.com/
+> [2] https://github.com/alan-maguire/dwarves/actions/runs/20031993822
+>
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/timer.c b/tools/testing/selftests/bpf/prog_tests/timer.c
-index a157a2a699e638c9f21712b1e7194fc4b6382e71..2b932d4dfd436fd322bd07169f492e20e4ec7624 100644
---- a/tools/testing/selftests/bpf/prog_tests/timer.c
-+++ b/tools/testing/selftests/bpf/prog_tests/timer.c
-@@ -99,6 +99,26 @@ static int timer(struct timer *timer_skel)
- 	return 0;
- }
- 
-+static int timer_cancel_async(struct timer *timer_skel)
-+{
-+	int err, prog_fd;
-+	LIBBPF_OPTS(bpf_test_run_opts, topts);
-+
-+	prog_fd = bpf_program__fd(timer_skel->progs.test_async_cancel_succeed);
-+	err = bpf_prog_test_run_opts(prog_fd, &topts);
-+	ASSERT_OK(err, "test_run");
-+	ASSERT_EQ(topts.retval, 0, "test_run");
-+
-+	usleep(500);
-+	/* check that there were no errors in timer execution */
-+	ASSERT_EQ(timer_skel->bss->err, 0, "err");
-+
-+	/* check that code paths completed */
-+	ASSERT_EQ(timer_skel->bss->ok, 1 | 2 | 4, "ok");
-+
-+	return 0;
-+}
-+
- static void test_timer(int (*timer_test_fn)(struct timer *timer_skel))
- {
- 	struct timer *timer_skel = NULL;
-@@ -134,6 +154,11 @@ void serial_test_timer_stress_async_cancel(void)
- 	test_timer(timer_stress_async_cancel);
- }
- 
-+void serial_test_timer_async_cancel(void)
-+{
-+	test_timer(timer_cancel_async);
-+}
-+
- void test_timer_interrupt(void)
- {
- 	struct timer_interrupt *skel = NULL;
-diff --git a/tools/testing/selftests/bpf/progs/timer.c b/tools/testing/selftests/bpf/progs/timer.c
-index a81413514e4b07ef745f27eade71454234e731e8..4b4ca781e7cdcf78015359cbd8f8d8ff591d6036 100644
---- a/tools/testing/selftests/bpf/progs/timer.c
-+++ b/tools/testing/selftests/bpf/progs/timer.c
-@@ -169,6 +169,29 @@ int BPF_PROG2(test1, int, a)
- 	return 0;
- }
- 
-+static int timer_error(void *map, int *key, struct bpf_timer *timer)
-+{
-+	err = 42;
-+	return 0;
-+}
-+
-+SEC("syscall")
-+int test_async_cancel_succeed(void *ctx)
-+{
-+	struct bpf_timer *arr_timer;
-+	int array_key = ARRAY;
-+
-+	arr_timer = bpf_map_lookup_elem(&array, &array_key);
-+	if (!arr_timer)
-+		return 0;
-+	bpf_timer_init(arr_timer, &array, CLOCK_MONOTONIC);
-+	bpf_timer_set_callback(arr_timer, timer_error);
-+	bpf_timer_start(arr_timer, 100000 /* 100us */, 0);
-+	bpf_timer_cancel_async(arr_timer);
-+	ok = 7;
-+	return 0;
-+}
-+
- /* callback for prealloc and non-prealloca hashtab timers */
- static int timer_cb2(void *map, int *key, struct hmap_elem *val)
- {
-
--- 
-2.52.0
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
 
 
