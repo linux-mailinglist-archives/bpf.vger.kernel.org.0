@@ -1,86 +1,86 @@
-Return-Path: <bpf+bounces-79646-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79647-lists+bpf=lfdr.de@vger.kernel.org>
 Delivered-To: lists+bpf@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QBU3BXCyb2nHMAAAu9opvQ
-	(envelope-from <bpf+bounces-79646-lists+bpf=lfdr.de@vger.kernel.org>)
-	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 17:50:56 +0100
+	id cIWyAg3Jb2mgMQAAu9opvQ
+	(envelope-from <bpf+bounces-79647-lists+bpf=lfdr.de@vger.kernel.org>)
+	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 19:27:25 +0100
 X-Original-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CE2047F6B
-	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 17:50:55 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56CAC496F6
+	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 19:27:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id DF3E896858B
-	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 16:16:00 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id C135D44C8A9
+	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 16:16:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6464D31CA46;
-	Tue, 20 Jan 2026 15:59:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42EAA31D380;
+	Tue, 20 Jan 2026 15:59:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UiIk7Pfr"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ndoM4c7I"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35A322C3256
-	for <bpf@vger.kernel.org>; Tue, 20 Jan 2026 15:59:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D8342441B8
+	for <bpf@vger.kernel.org>; Tue, 20 Jan 2026 15:59:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768924771; cv=none; b=c6aSOnQ3W7nyuhGcVpEdqaaQYr++l4Ho86TkAbt7CLZkk7huHWF8xBh6U2a9/D1EzOV5o/AmcW0EJXdKp0Q0tLjvEubfFb7c8j4DXCY0xdosX+UCvymWnpoP/VNqi3gvTxwPOfxASWoVC4tv2WLSLF7SNVcSNpNSiKXYKIyGiQg=
+	t=1768924772; cv=none; b=oWI6AX32RFrbvOACN8P9z9dD86euqWRgdKUJKkE/xLQMLurlqVCV0xQnWE8O/nuPizcYEVZMzVu7zfUje8fJY8MfapDnlglhcTt53MISexugklXIZqzFPZGTEk1eIy3N1uhpOk0lXU5JqF54uRsQrQLvGYzoGqTmUCMaZuUaDh4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768924771; c=relaxed/simple;
-	bh=WFyfCdFZSc39/k5H49myNCriXwVVsZ3R/PPu+Rg7vaI=;
+	s=arc-20240116; t=1768924772; c=relaxed/simple;
+	bh=ZooslowKi6x4mZv06xfDVngFiqxOvETF07kCop9/J8M=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Nkz6spNB+gqZ04IKVBVdjA6P+5EXMnGIFCnt62rlZbd9MSfBeYojHi2F+AicRdK9HcmR64BLuVk3ZjPfIC2Kb+IkrBXtAilDuI/7kKCzlthOtbk3fGpcYWoqd+BAvnyJP2Qw9bia+Vq1Qey5IfR5/joQYFlJaQQPfw4FRsiD65k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UiIk7Pfr; arc=none smtp.client-ip=209.85.128.53
+	 In-Reply-To:To:Cc; b=eryIKUJ4rJ+rb8Gv722yoEoiOXrqAmGCtpX3eXBAOCA3Wyu4qaMxAYCZ3sEXf6QvumiQ8dZ/wuYUv8ItdqaEyl8w9hFMERTBb293qtdFTfYM0LqBLT/M7YMgmR5OAwV9JWYUZXG/xZYCraRLTcAPKnRxdVWpLNjGt/3ZmBMSnZo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ndoM4c7I; arc=none smtp.client-ip=209.85.128.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4801bc328easo47344745e9.3
-        for <bpf@vger.kernel.org>; Tue, 20 Jan 2026 07:59:29 -0800 (PST)
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4801d98cf39so25580745e9.1
+        for <bpf@vger.kernel.org>; Tue, 20 Jan 2026 07:59:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768924768; x=1769529568; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1768924769; x=1769529569; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=4JbmK/RJvEWmpHkRk+ZhC+1Oyd2c57i0SiusSqSY7AQ=;
-        b=UiIk7PfrswgzWYfxcknJWDVf6+/cnUTUonYBu8kEcuXOkWtrVE1pdtNMKLjffcAwTB
-         I8ortoSCOjuyj49NWJhzdQmhKjNWm1EJjhfCc7ty+Mv2f8w8zpVnmd4gVm49xXFZkYw/
-         xs255okrB4U9UhkMrbuUbtjihgqVV4Tl5spkS8d7A2naUcXHwF+JniE6u4dHyPs7DRw6
-         9k79t+s9QelsaxfESyFpU06oENlBpbGB30TchWcFFjCUzuh8ifc2dZqqzlzsWDlv3vYD
-         2sg8RXGJN9yWdjPC6bRugrK60EQRAqZen7CXOJIO7RCypGY8rJq97cMn4ufk72PjBhsN
-         GHog==
+        bh=uqWnkOoO44IKpCaUvr7ON3fCpeIkWc3CtYtbJroXHg8=;
+        b=ndoM4c7InpMHEFMlkDgmxn+q3+JOeP4bCHnD4HfMIz6p9Af4YytJGJIEoQfV9KZc1/
+         b4vWqxGmEBvsaFzsBZu3N6pfjsSikAtHb0UvXZU3mzqE/fmqnkKCjWJxAxFIyuPxXwlo
+         w0AZAPQ7iIowK1ww6MmaFS8kz7hfOVSzIO0e+jJldjvXQi0S10hb8jasuCrCBi5r5Uyl
+         CUaq5UKu6xqXJCaZzh7X0jgdDyl8gX/Xnz52ZBBnyZiA4g0f9M2T40c1zhKhQGlRCnyk
+         NhhHLIOyEr1zTonGo5f8CsSlp88pr2kOO1SHcUIRaKHeyAhIFmckFs1Hm4/462jfxHxo
+         laEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768924768; x=1769529568;
+        d=1e100.net; s=20230601; t=1768924769; x=1769529569;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=4JbmK/RJvEWmpHkRk+ZhC+1Oyd2c57i0SiusSqSY7AQ=;
-        b=WX2S+lxzQh1QgQW3xYPAxUxvmSzPy0QnHhTfLcpbZKeZ60sUUPPcyxAgnhIzjilMD5
-         i/jl0/9TAUF53B+nKcKp1Ks6SDaRyANuax+11pTLM+SM6V1WRAX+atpih5XZpewuqP40
-         zhSR9dXnnZ/QJTnAAhcgqGQkwtCl0DlB7HfclmTTyMa7ZZJ0YyyZ5rlj+cgGhefiBnU9
-         kGkvQUh3zWA3fpiLnFRlGl+dsXopzdIMnAVU3xjCHGrQDCW75Vp0z9NFydvkSXIdVyDJ
-         2sdMS2QmBZWtjrfYbsr1pHQdFXRIstvYE/cdP4ABdumR+av5wD8f7R6L1rgI2X1UPg77
-         gTEA==
-X-Gm-Message-State: AOJu0Yx57tPxC+b6BCEMNL9/f7iVflhKBandUFGemkqARJ7PRqIgAqwN
-	OSXMpey3EKkINbbZ0g8EIX+8nDOz811WuE9wI6rPMI9RyiWppDSnjBjV
-X-Gm-Gg: AY/fxX5jGILeE/mJJFWH6wcalFspqKNtD3Tw73otyMHtcvDk3PC+AwUP+fq/f8I0i+2
-	DlpgCP3gGjtVpF0HEfZ9aRv3XRrWuI/n4JGkq1WWAfiFfIt8Rv973hJNdj56HPVxQkDJQEW69lK
-	PSXM7bgemzl0nsPqu4u8mJyB1C41yq+hcnvOVAodpUppHihqQdJdkUXz/gXYJ9uJg2QUtNKVLaf
-	Fep0w8KnrzAfIzEhcR3QrSjZBZuC6BioOHovNH6S+BkGDjGxayz8bAU+s9G9Bzg0hPuLf2YBBTS
-	xI1bl+pWITQLj9mOL9NnDGAKanMrDIVwocBWKKHmBqfis4iNUq8sB024EwElrQpor56RzohHqXA
-	/lPBFhsej4xpv4j3C8Vp6fQk3lCPnWvw9s8XZhTRtkyZRCvXcNnTnqqYcRyg0KJBjnoM0p7E+/Q
-	oDmw1CtdgNioqrbB45QAxVhePE
-X-Received: by 2002:a05:600c:3581:b0:47d:3ffa:5f03 with SMTP id 5b1f17b1804b1-4801eb03348mr220157725e9.21.1768924768341;
-        Tue, 20 Jan 2026 07:59:28 -0800 (PST)
+        bh=uqWnkOoO44IKpCaUvr7ON3fCpeIkWc3CtYtbJroXHg8=;
+        b=BkAuP1bwwLWRafvhGvR/d3T7Mam7ICSmh7mt2YW9YJTiLdGSxRFwsSrIWE8pnjBBPP
+         n105haI5ImJqwI1QtrGPgDnWGz1fQ1j/lWYaVn/GypYPmu0XXvuFwQrJyNV7Agt6Onxy
+         XTkhysOpfQg8MklTfKb9/eYFp2nq4efPJLr8AeNrWsu48PWK39scx1xHZ1DQ8ODamOhH
+         z/9OCOtSRocePX0Xa737NbJ1ByNFMiBYMGVKFIz2sglgqZdm4An6eJu+U0VmbfJzHgGC
+         1ZhNPYs5Z8LGIZ25zQt1keYgURkERsoHgUHw4Qh5AivXGUGYHvd6tbThN1tdEFEWMARH
+         ZQhQ==
+X-Gm-Message-State: AOJu0YwOIbWZCQsnpBZr0zrHTGP1BoGt5Bs135HdxEV99ztUoVrQrOxv
+	Ak+09Lb6MDH2jCh96aEd/zdlQ+xwYFBTSNvGfGQQ8IVj5UIxMT8JSxC3
+X-Gm-Gg: AY/fxX5nrK30212Xg5I7vl+sLHx8Yu2yliEKXi/gp/TU2ScaB+ZHHxA/LRJyzD3WzwB
+	RYNIfdfBP8fJIXRQxQPOS0tPmJJY3R/CWrXKkdxV0JrZ0mjsEViBhFkZJbuoR50Zzs0V8tQkFTJ
+	wirfq3URST/jXYIQwKSxPfqNt+47gDDiOB2G35UrAtpjdzRtGs6A5hHgCFrTl2JIdw0K3dIrmpI
+	PUt4N3tui9f/3P4C3+cKIRtw/F3RDQrlFZFSYqAj6C4iWLXFAjHOUDV+Qzy/yxw4z92GUahBUQl
+	WuDLTcyVtK9tqXBKxdubhTDUlWipMe16/By5IXeotCnM80kSJybELOR2v7eDtE4a9GJjP0XxPrR
+	sFtxFrYWI5F+KmAiq3kMwlmD+8WrRjPjQxtbGL4Non4TA/h64o8Lba+sWS+CSgtwqLPmJeKTqZk
+	5TAwTxs+TFoK1/bVKUJyWesIGv
+X-Received: by 2002:a05:600c:a03:b0:45d:dc85:c009 with SMTP id 5b1f17b1804b1-4803d88aa32mr40824965e9.10.1768924769270;
+        Tue, 20 Jan 2026 07:59:29 -0800 (PST)
 Received: from localhost ([2a01:4b00:bd1f:f500:e85d:a828:282d:d5c7])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4356997df75sm30285728f8f.29.2026.01.20.07.59.27
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4801fdefed9sm112555125e9.3.2026.01.20.07.59.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jan 2026 07:59:27 -0800 (PST)
+        Tue, 20 Jan 2026 07:59:28 -0800 (PST)
 From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-Date: Tue, 20 Jan 2026 15:59:11 +0000
-Subject: [PATCH bpf-next v6 02/10] bpf: Remove unnecessary arguments from
- bpf_async_set_callback()
+Date: Tue, 20 Jan 2026 15:59:12 +0000
+Subject: [PATCH bpf-next v6 03/10] bpf: Introduce lock-free
+ bpf_async_update_prog_callback()
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -89,7 +89,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260120-timer_nolock-v6-2-670ffdd787b4@meta.com>
+Message-Id: <20260120-timer_nolock-v6-3-670ffdd787b4@meta.com>
 References: <20260120-timer_nolock-v6-0-670ffdd787b4@meta.com>
 In-Reply-To: <20260120-timer_nolock-v6-0-670ffdd787b4@meta.com>
 To: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
@@ -97,11 +97,11 @@ To: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
  memxor@gmail.com, eddyz87@gmail.com
 Cc: Mykyta Yatsenko <yatsenko@meta.com>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1768924764; l=1646;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1768924764; l=4511;
  i=yatsenko@meta.com; s=20251031; h=from:subject:message-id;
- bh=r2UITbW0avcD8EPt5OHr+nR3+S9ZgpWwFjHyPTa5Mq4=;
- b=pMvfgI2PZlbITb68i55U11yoefoQwmSEGTbiSBdnvRC0k8ZzoDR1zgBdgLkw7sLnjwLa+yAxQ
- c9UAcvDWcEwCRhGK6cEPVehz78z2ojf5B29cfqcRANXLh3aD9wm7Dgm
+ bh=tI7n3QcFiwHXXuifwwcBy5vBESZa6o7uQHNNXQReUZc=;
+ b=q4Aaq9KUDEG8z8/8WamevWrZ/u14KzIzZ6Zl+riX0Ab1GXwnzbiZE6a6wRoyWL0LNgizuABXV
+ 8Dcb5ubkEzkAFCRnzhP90aQc6kDLtRNHDzJ+2wZ83n4UJNDmTcmbHRJ
 X-Developer-Key: i=yatsenko@meta.com; a=ed25519;
  pk=TFoLStOoH/++W4HJHRgNr8zj8vPFB1W+/QECPcQygzo=
 X-Spamd-Result: default: False [-1.96 / 15.00];
@@ -111,7 +111,7 @@ X-Spamd-Result: default: False [-1.96 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-79646-lists,bpf=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-79647-lists,bpf=lfdr.de];
 	FREEMAIL_TO(0.00)[vger.kernel.org,kernel.org,iogearbox.net,meta.com,gmail.com];
 	TO_DN_SOME(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
@@ -129,57 +129,150 @@ X-Spamd-Result: default: False [-1.96 / 15.00];
 	RCVD_COUNT_FIVE(0.00)[5];
 	TAGGED_RCPT(0.00)[bpf];
 	RCPT_COUNT_SEVEN(0.00)[9];
-	ASN(0.00)[asn:7979, ipnet:142.0.200.0/24, country:US];
+	ASN(0.00)[asn:7979, ipnet:213.196.21.0/24, country:US];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo,meta.com:email,meta.com:mid]
-X-Rspamd-Queue-Id: 7CE2047F6B
+	DBL_BLOCKED_OPENRESOLVER(0.00)[meta.com:email,meta.com:mid]
+X-Rspamd-Queue-Id: 56CAC496F6
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 From: Mykyta Yatsenko <yatsenko@meta.com>
 
-Remove unused arguments from __bpf_async_set_callback().
+Introduce bpf_async_update_prog_callback(): lock-free update of cb->prog
+and cb->callback_fn. This function allows updating prog and callback_fn
+fields of the struct bpf_async_cb without holding lock.
+For now use it under the lock from __bpf_async_set_callback(), in the
+next patches that lock will be removed.
 
+Lock-free algorithm:
+ * Acquire a guard reference on prog to prevent it from being freed
+   during the retry loop.
+ * Retry loop:
+    1. Each iteration acquires a new prog reference and stores it
+       in cb->prog via xchg. The previous prog is released.
+    2. The loop condition checks if both cb->prog and cb->callback_fn
+       match what we just wrote. If either differs, a concurrent writer
+       overwrote our value, and we must retry.
+    3. When we retry, our previously-stored prog was already released by
+       the concurrent writer or will be released by us after
+       overwriting.
+ * Release guard reference.
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
 ---
- kernel/bpf/helpers.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ kernel/bpf/helpers.c | 67 +++++++++++++++++++++++++++++-----------------------
+ 1 file changed, 37 insertions(+), 30 deletions(-)
 
 diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index cbacddc7101a82b2f72278034bba4188829fecd6..962b7f1b81b05d663b79218d9d7eaa73679ce94f 100644
+index 962b7f1b81b05d663b79218d9d7eaa73679ce94f..66424bc5b86137599990957ad2300110b4977df9 100644
 --- a/kernel/bpf/helpers.c
 +++ b/kernel/bpf/helpers.c
-@@ -1355,10 +1355,9 @@ static const struct bpf_func_proto bpf_timer_init_proto = {
+@@ -1354,10 +1354,43 @@ static const struct bpf_func_proto bpf_timer_init_proto = {
+ 	.arg3_type	= ARG_ANYTHING,
  };
  
- static int __bpf_async_set_callback(struct bpf_async_kern *async, void *callback_fn,
--				    struct bpf_prog_aux *aux, unsigned int flags,
--				    enum bpf_async_type type)
-+				    struct bpf_prog *prog)
- {
--	struct bpf_prog *prev, *prog = aux->prog;
++static int bpf_async_update_prog_callback(struct bpf_async_cb *cb, void *callback_fn,
++					  struct bpf_prog *prog)
++{
 +	struct bpf_prog *prev;
++
++	/* Acquire a guard reference on prog to prevent it from being freed during the loop */
++	if (prog) {
++		prog = bpf_prog_inc_not_zero(prog);
++		if (IS_ERR(prog))
++			return PTR_ERR(prog);
++	}
++
++	do {
++		if (prog)
++			prog = bpf_prog_inc_not_zero(prog);
++		prev = xchg(&cb->prog, prog);
++		rcu_assign_pointer(cb->callback_fn, callback_fn);
++
++		/*
++		 * Release previous prog, make sure that if other CPU is contending,
++		 * to set bpf_prog, references are not leaked as each iteration acquires and
++		 * releases one reference.
++		 */
++		if (prev)
++			bpf_prog_put(prev);
++
++	} while (READ_ONCE(cb->prog) != prog || READ_ONCE(cb->callback_fn) != callback_fn);
++
++	if (prog)
++		bpf_prog_put(prog);
++
++	return 0;
++}
++
+ static int __bpf_async_set_callback(struct bpf_async_kern *async, void *callback_fn,
+ 				    struct bpf_prog *prog)
+ {
+-	struct bpf_prog *prev;
  	struct bpf_async_cb *cb;
  	int ret = 0;
  
-@@ -1403,7 +1402,7 @@ static int __bpf_async_set_callback(struct bpf_async_kern *async, void *callback
- BPF_CALL_3(bpf_timer_set_callback, struct bpf_async_kern *, timer, void *, callback_fn,
- 	   struct bpf_prog_aux *, aux)
+@@ -1378,22 +1411,7 @@ static int __bpf_async_set_callback(struct bpf_async_kern *async, void *callback
+ 		ret = -EPERM;
+ 		goto out;
+ 	}
+-	prev = cb->prog;
+-	if (prev != prog) {
+-		/* Bump prog refcnt once. Every bpf_timer_set_callback()
+-		 * can pick different callback_fn-s within the same prog.
+-		 */
+-		prog = bpf_prog_inc_not_zero(prog);
+-		if (IS_ERR(prog)) {
+-			ret = PTR_ERR(prog);
+-			goto out;
+-		}
+-		if (prev)
+-			/* Drop prev prog refcnt when swapping with new prog */
+-			bpf_prog_put(prev);
+-		cb->prog = prog;
+-	}
+-	rcu_assign_pointer(cb->callback_fn, callback_fn);
++	ret = bpf_async_update_prog_callback(cb, callback_fn, prog);
+ out:
+ 	__bpf_spin_unlock_irqrestore(&async->lock);
+ 	return ret;
+@@ -1453,17 +1471,6 @@ static const struct bpf_func_proto bpf_timer_start_proto = {
+ 	.arg3_type	= ARG_ANYTHING,
+ };
+ 
+-static void drop_prog_refcnt(struct bpf_async_cb *async)
+-{
+-	struct bpf_prog *prog = async->prog;
+-
+-	if (prog) {
+-		bpf_prog_put(prog);
+-		async->prog = NULL;
+-		rcu_assign_pointer(async->callback_fn, NULL);
+-	}
+-}
+-
+ BPF_CALL_1(bpf_timer_cancel, struct bpf_async_kern *, timer)
  {
--	return __bpf_async_set_callback(timer, callback_fn, aux, 0, BPF_ASYNC_TYPE_TIMER);
-+	return __bpf_async_set_callback(timer, callback_fn, aux->prog);
- }
- 
- static const struct bpf_func_proto bpf_timer_set_callback_proto = {
-@@ -3138,7 +3137,7 @@ __bpf_kfunc int bpf_wq_set_callback_impl(struct bpf_wq *wq,
- 	if (flags)
- 		return -EINVAL;
- 
--	return __bpf_async_set_callback(async, callback_fn, aux, flags, BPF_ASYNC_TYPE_WQ);
-+	return __bpf_async_set_callback(async, callback_fn, aux->prog);
- }
- 
- __bpf_kfunc void bpf_preempt_disable(void)
+ 	struct bpf_hrtimer *t, *cur_t;
+@@ -1514,7 +1521,7 @@ BPF_CALL_1(bpf_timer_cancel, struct bpf_async_kern *, timer)
+ 		goto out;
+ 	}
+ drop:
+-	drop_prog_refcnt(&t->cb);
++	bpf_async_update_prog_callback(&t->cb, NULL, NULL);
+ out:
+ 	__bpf_spin_unlock_irqrestore(&timer->lock);
+ 	/* Cancel the timer and wait for associated callback to finish
+@@ -1547,7 +1554,7 @@ static struct bpf_async_cb *__bpf_async_cancel_and_free(struct bpf_async_kern *a
+ 	cb = async->cb;
+ 	if (!cb)
+ 		goto out;
+-	drop_prog_refcnt(cb);
++	bpf_async_update_prog_callback(cb, NULL, NULL);
+ 	/* The subsequent bpf_timer_start/cancel() helpers won't be able to use
+ 	 * this timer, since it won't be initialized.
+ 	 */
 
 -- 
 2.52.0
