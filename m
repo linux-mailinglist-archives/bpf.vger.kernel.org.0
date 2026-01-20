@@ -1,85 +1,86 @@
-Return-Path: <bpf+bounces-79645-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-79646-lists+bpf=lfdr.de@vger.kernel.org>
 Delivered-To: lists+bpf@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gFszD9TOb2mgMQAAu9opvQ
-	(envelope-from <bpf+bounces-79645-lists+bpf=lfdr.de@vger.kernel.org>)
-	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 19:52:04 +0100
+	id QBU3BXCyb2nHMAAAu9opvQ
+	(envelope-from <bpf+bounces-79646-lists+bpf=lfdr.de@vger.kernel.org>)
+	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 17:50:56 +0100
 X-Original-To: lists+bpf@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A76949D05
-	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 19:52:03 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CE2047F6B
+	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 17:50:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C8B4C968464
-	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 16:15:56 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id DF3E896858B
+	for <lists+bpf@lfdr.de>; Tue, 20 Jan 2026 16:16:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CFE82D5A13;
-	Tue, 20 Jan 2026 15:59:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6464D31CA46;
+	Tue, 20 Jan 2026 15:59:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B9QsLRe1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UiIk7Pfr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4810C2D592C
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35A322C3256
 	for <bpf@vger.kernel.org>; Tue, 20 Jan 2026 15:59:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768924771; cv=none; b=fjh/XnrF+7dX/LavS0BUNRQu5zAVnfMlJUTiPrEgrRrK4zzSPyVW/7Il2eJUUQaPGd4Z/XtNK0s4KktZAnFCr0iPDYlcym1PMlaY7RbteLrdJMUrzhfELDVZn2w9T67hz4GB3b7cgBrFquGyTqvQS8uonKCy72K8/yrsgImRZk8=
+	t=1768924771; cv=none; b=c6aSOnQ3W7nyuhGcVpEdqaaQYr++l4Ho86TkAbt7CLZkk7huHWF8xBh6U2a9/D1EzOV5o/AmcW0EJXdKp0Q0tLjvEubfFb7c8j4DXCY0xdosX+UCvymWnpoP/VNqi3gvTxwPOfxASWoVC4tv2WLSLF7SNVcSNpNSiKXYKIyGiQg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1768924771; c=relaxed/simple;
-	bh=Xrh866lO9Q9Gw9NVx6h31GetXA7JuZchQIhHdCPjI6U=;
+	bh=WFyfCdFZSc39/k5H49myNCriXwVVsZ3R/PPu+Rg7vaI=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=k4Y38v0Kpar6mIN2AFJVG3OJg50TqVLLH5BsoAxgfxlkCQC5Ldb8zOYkuKr4GsXFwzhw2Zbir7lXJ0wXebAndrsAZnpTvmdHc0zcyG8SnXErKuF603l7bUz3bbKug4XgGqLGuwb/MBj508mj1/BYp1YKbIYjWgnKAccsRBnGKpg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B9QsLRe1; arc=none smtp.client-ip=209.85.128.49
+	 In-Reply-To:To:Cc; b=Nkz6spNB+gqZ04IKVBVdjA6P+5EXMnGIFCnt62rlZbd9MSfBeYojHi2F+AicRdK9HcmR64BLuVk3ZjPfIC2Kb+IkrBXtAilDuI/7kKCzlthOtbk3fGpcYWoqd+BAvnyJP2Qw9bia+Vq1Qey5IfR5/joQYFlJaQQPfw4FRsiD65k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UiIk7Pfr; arc=none smtp.client-ip=209.85.128.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-47ee0291921so37810785e9.3
-        for <bpf@vger.kernel.org>; Tue, 20 Jan 2026 07:59:28 -0800 (PST)
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4801bc328easo47344745e9.3
+        for <bpf@vger.kernel.org>; Tue, 20 Jan 2026 07:59:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768924767; x=1769529567; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1768924768; x=1769529568; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=5y2YciIDqINvptvqpnDVSnqCpvHT9rE0wPor3lGb6Uo=;
-        b=B9QsLRe1KHzq/tKsHBlsBqsdgQLOVXHMIYIs97JziW4DP2LHWatSPUtoCInex29XaW
-         ZivJg3/ycoawa7S7F1tt9yO/xs3Tka/YtnuCM/+n3+u5veDbzpJarEhuhDIEeLyPaorC
-         FlrP3kup+CVHWa4pnBnY7hdmt6ut2ttsAMxK+La1/n+bFmKp393xrmGPsoYGrH+wGsg8
-         L5k/WF6CGDNwMCbBKM3lXiHinfw8dp9NUPetAscDmBPd2k1Y9JWws1evUtjmfZQihjgI
-         sZyQIyKdFSfR5kz3as8IrSRKmwb8DN0yae+4SV+7KgfH5pQt1UCf46xpFfA996T0L6B+
-         KVEA==
+        bh=4JbmK/RJvEWmpHkRk+ZhC+1Oyd2c57i0SiusSqSY7AQ=;
+        b=UiIk7PfrswgzWYfxcknJWDVf6+/cnUTUonYBu8kEcuXOkWtrVE1pdtNMKLjffcAwTB
+         I8ortoSCOjuyj49NWJhzdQmhKjNWm1EJjhfCc7ty+Mv2f8w8zpVnmd4gVm49xXFZkYw/
+         xs255okrB4U9UhkMrbuUbtjihgqVV4Tl5spkS8d7A2naUcXHwF+JniE6u4dHyPs7DRw6
+         9k79t+s9QelsaxfESyFpU06oENlBpbGB30TchWcFFjCUzuh8ifc2dZqqzlzsWDlv3vYD
+         2sg8RXGJN9yWdjPC6bRugrK60EQRAqZen7CXOJIO7RCypGY8rJq97cMn4ufk72PjBhsN
+         GHog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768924767; x=1769529567;
+        d=1e100.net; s=20230601; t=1768924768; x=1769529568;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=5y2YciIDqINvptvqpnDVSnqCpvHT9rE0wPor3lGb6Uo=;
-        b=NjF5mGV7vq7d5a7MfgwwMg+skDM4xD7eVWxRXdmVAh/5tU72wF7Ko8h8dNBGNjavGb
-         fbD+RMQdSLNc05X9tOiD0pFN+zMhzoBoQpjmUE9Rk+dBQ4wdsVLSNa5MXTR11WtMoX0h
-         5rHLh7jRIsJrCNc7m5zta2HHFZFkMwyskya8+XujBazmAYkuNKRGijEoHKpNAC7NenK7
-         uQZ3bAPnMRkVvBXMOgxBCOYSbS+8cBikvvKyBA4OmzPPAYyzaRMcg0iRD4Xi6+XwV7Yl
-         CjZh0I5pLbr+g8DHhIv6OWS5h/y5yAv7SWQGQECt91b9LEwzNy4rcQAwvoYOkIRlCho/
-         DgAw==
-X-Gm-Message-State: AOJu0Yxrn2EgAOHKfl87ZOrOX0BcIOqM1c2xzMwf7KkLVVpnid28X7Nx
-	9eKlMHyTErwfguM4iNTie0CejWDZm0NzoHT784l4kANKrpTqhLKjfEGV
-X-Gm-Gg: AY/fxX7W5hflzecfInYQGL/2k9bP5C8cKFh4ihpW6/DFdGPvaWb7WNSoRVJUd1v1RhX
-	M9vPMyXj6+fOrxOPyRPQZYJekfwbYjXHLSNKDZS1mZ9w3Z5f5788mzcUCtOUnXYTZ3k8/EOdXCF
-	+lHjnP0GVr9AepR2tEJWp9zHor4n0sAbI3118ec2c33b9IYpaxfFKI2hKVk4dZfXmgtOEZ+k1XG
-	fWX5oAUTKLcHFGZvR5w2n6sC2UMsQl7TcmHMUxqzJ061JBZQqR88GeHP5hi/pCGdFGrXC4c43Ed
-	CUDzNL4uyLvAyFGivEaUjvrhh8D0oxE9HSyna/1vueb2+jBN6FcSgTB9jDUgzcs91dPt/JgtJNR
-	uhEvsgZ1jOQidZVf2ZmKVLzf9GRUXGVvhdWWrR6ytnb92Y/2vaXpZ7A6aDgVKpUMZyK18erasu0
-	nhwFniHaGkaWXRHFl5JADrdg8E
-X-Received: by 2002:a05:600c:c16b:b0:47e:e78a:c831 with SMTP id 5b1f17b1804b1-4801eb14ff0mr179783175e9.36.1768924767242;
-        Tue, 20 Jan 2026 07:59:27 -0800 (PST)
+        bh=4JbmK/RJvEWmpHkRk+ZhC+1Oyd2c57i0SiusSqSY7AQ=;
+        b=WX2S+lxzQh1QgQW3xYPAxUxvmSzPy0QnHhTfLcpbZKeZ60sUUPPcyxAgnhIzjilMD5
+         i/jl0/9TAUF53B+nKcKp1Ks6SDaRyANuax+11pTLM+SM6V1WRAX+atpih5XZpewuqP40
+         zhSR9dXnnZ/QJTnAAhcgqGQkwtCl0DlB7HfclmTTyMa7ZZJ0YyyZ5rlj+cgGhefiBnU9
+         kGkvQUh3zWA3fpiLnFRlGl+dsXopzdIMnAVU3xjCHGrQDCW75Vp0z9NFydvkSXIdVyDJ
+         2sdMS2QmBZWtjrfYbsr1pHQdFXRIstvYE/cdP4ABdumR+av5wD8f7R6L1rgI2X1UPg77
+         gTEA==
+X-Gm-Message-State: AOJu0Yx57tPxC+b6BCEMNL9/f7iVflhKBandUFGemkqARJ7PRqIgAqwN
+	OSXMpey3EKkINbbZ0g8EIX+8nDOz811WuE9wI6rPMI9RyiWppDSnjBjV
+X-Gm-Gg: AY/fxX5jGILeE/mJJFWH6wcalFspqKNtD3Tw73otyMHtcvDk3PC+AwUP+fq/f8I0i+2
+	DlpgCP3gGjtVpF0HEfZ9aRv3XRrWuI/n4JGkq1WWAfiFfIt8Rv973hJNdj56HPVxQkDJQEW69lK
+	PSXM7bgemzl0nsPqu4u8mJyB1C41yq+hcnvOVAodpUppHihqQdJdkUXz/gXYJ9uJg2QUtNKVLaf
+	Fep0w8KnrzAfIzEhcR3QrSjZBZuC6BioOHovNH6S+BkGDjGxayz8bAU+s9G9Bzg0hPuLf2YBBTS
+	xI1bl+pWITQLj9mOL9NnDGAKanMrDIVwocBWKKHmBqfis4iNUq8sB024EwElrQpor56RzohHqXA
+	/lPBFhsej4xpv4j3C8Vp6fQk3lCPnWvw9s8XZhTRtkyZRCvXcNnTnqqYcRyg0KJBjnoM0p7E+/Q
+	oDmw1CtdgNioqrbB45QAxVhePE
+X-Received: by 2002:a05:600c:3581:b0:47d:3ffa:5f03 with SMTP id 5b1f17b1804b1-4801eb03348mr220157725e9.21.1768924768341;
+        Tue, 20 Jan 2026 07:59:28 -0800 (PST)
 Received: from localhost ([2a01:4b00:bd1f:f500:e85d:a828:282d:d5c7])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47f3b7a5f94sm329500145e9.0.2026.01.20.07.59.26
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4356997df75sm30285728f8f.29.2026.01.20.07.59.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jan 2026 07:59:26 -0800 (PST)
+        Tue, 20 Jan 2026 07:59:27 -0800 (PST)
 From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-Date: Tue, 20 Jan 2026 15:59:10 +0000
-Subject: [PATCH bpf-next v6 01/10] bpf: Factor out timer deletion helper
+Date: Tue, 20 Jan 2026 15:59:11 +0000
+Subject: [PATCH bpf-next v6 02/10] bpf: Remove unnecessary arguments from
+ bpf_async_set_callback()
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -88,7 +89,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260120-timer_nolock-v6-1-670ffdd787b4@meta.com>
+Message-Id: <20260120-timer_nolock-v6-2-670ffdd787b4@meta.com>
 References: <20260120-timer_nolock-v6-0-670ffdd787b4@meta.com>
 In-Reply-To: <20260120-timer_nolock-v6-0-670ffdd787b4@meta.com>
 To: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
@@ -96,11 +97,11 @@ To: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
  memxor@gmail.com, eddyz87@gmail.com
 Cc: Mykyta Yatsenko <yatsenko@meta.com>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1768924764; l=2124;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1768924764; l=1646;
  i=yatsenko@meta.com; s=20251031; h=from:subject:message-id;
- bh=2LgyEZStd7a1UjwT4akf05ZIGBI70+FuPFC71y6FwOI=;
- b=NlXl+nc2j2A7+ZD8GbAi0HvPxL8bpESib6mIYGRxGBDwEo+rXRoWRUPhMAx0FZaFankYoZb3T
- HatwvjHrgEgDbvwvbLWleyN02kG3ZGvBSYN1z4F2bBRdUVP2w2oFV1g
+ bh=r2UITbW0avcD8EPt5OHr+nR3+S9ZgpWwFjHyPTa5Mq4=;
+ b=pMvfgI2PZlbITb68i55U11yoefoQwmSEGTbiSBdnvRC0k8ZzoDR1zgBdgLkw7sLnjwLa+yAxQ
+ c9UAcvDWcEwCRhGK6cEPVehz78z2ojf5B29cfqcRANXLh3aD9wm7Dgm
 X-Developer-Key: i=yatsenko@meta.com; a=ed25519;
  pk=TFoLStOoH/++W4HJHRgNr8zj8vPFB1W+/QECPcQygzo=
 X-Spamd-Result: default: False [-1.96 / 15.00];
@@ -110,7 +111,7 @@ X-Spamd-Result: default: False [-1.96 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-79645-lists,bpf=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-79646-lists,bpf=lfdr.de];
 	FREEMAIL_TO(0.00)[vger.kernel.org,kernel.org,iogearbox.net,meta.com,gmail.com];
 	TO_DN_SOME(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
@@ -128,73 +129,57 @@ X-Spamd-Result: default: False [-1.96 / 15.00];
 	RCVD_COUNT_FIVE(0.00)[5];
 	TAGGED_RCPT(0.00)[bpf];
 	RCPT_COUNT_SEVEN(0.00)[9];
-	ASN(0.00)[asn:7979, ipnet:2605:f480::/32, country:US];
+	ASN(0.00)[asn:7979, ipnet:142.0.200.0/24, country:US];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[meta.com:email,meta.com:mid,dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo]
-X-Rspamd-Queue-Id: 9A76949D05
+	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo,meta.com:email,meta.com:mid]
+X-Rspamd-Queue-Id: 7CE2047F6B
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 From: Mykyta Yatsenko <yatsenko@meta.com>
 
-Move the timer deletion logic into a dedicated bpf_timer_delete()
-helper so it can be reused by later patches.
+Remove unused arguments from __bpf_async_set_callback().
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
 ---
- kernel/bpf/helpers.c | 29 ++++++++++++++++++-----------
- 1 file changed, 18 insertions(+), 11 deletions(-)
+ kernel/bpf/helpers.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
 diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 9eaa4185e0a79b903c6fc2ccb310f521a4b14a1d..cbacddc7101a82b2f72278034bba4188829fecd6 100644
+index cbacddc7101a82b2f72278034bba4188829fecd6..962b7f1b81b05d663b79218d9d7eaa73679ce94f 100644
 --- a/kernel/bpf/helpers.c
 +++ b/kernel/bpf/helpers.c
-@@ -1558,18 +1558,10 @@ static struct bpf_async_cb *__bpf_async_cancel_and_free(struct bpf_async_kern *a
- 	return cb;
- }
+@@ -1355,10 +1355,9 @@ static const struct bpf_func_proto bpf_timer_init_proto = {
+ };
  
--/* This function is called by map_delete/update_elem for individual element and
-- * by ops->map_release_uref when the user space reference to a map reaches zero.
-- */
--void bpf_timer_cancel_and_free(void *val)
-+static void bpf_timer_delete(struct bpf_hrtimer *t)
+ static int __bpf_async_set_callback(struct bpf_async_kern *async, void *callback_fn,
+-				    struct bpf_prog_aux *aux, unsigned int flags,
+-				    enum bpf_async_type type)
++				    struct bpf_prog *prog)
  {
--	struct bpf_hrtimer *t;
--
--	t = (struct bpf_hrtimer *)__bpf_async_cancel_and_free(val);
--
--	if (!t)
--		return;
--	/* We check that bpf_map_delete/update_elem() was called from timer
-+	/*
-+	 * We check that bpf_map_delete/update_elem() was called from timer
- 	 * callback_fn. In such case we don't call hrtimer_cancel() (since it
- 	 * will deadlock) and don't call hrtimer_try_to_cancel() (since it will
- 	 * just return -1). Though callback_fn is still running on this cpu it's
-@@ -1618,6 +1610,21 @@ void bpf_timer_cancel_and_free(void *val)
- 	}
+-	struct bpf_prog *prev, *prog = aux->prog;
++	struct bpf_prog *prev;
+ 	struct bpf_async_cb *cb;
+ 	int ret = 0;
+ 
+@@ -1403,7 +1402,7 @@ static int __bpf_async_set_callback(struct bpf_async_kern *async, void *callback
+ BPF_CALL_3(bpf_timer_set_callback, struct bpf_async_kern *, timer, void *, callback_fn,
+ 	   struct bpf_prog_aux *, aux)
+ {
+-	return __bpf_async_set_callback(timer, callback_fn, aux, 0, BPF_ASYNC_TYPE_TIMER);
++	return __bpf_async_set_callback(timer, callback_fn, aux->prog);
  }
  
-+/*
-+ * This function is called by map_delete/update_elem for individual element and
-+ * by ops->map_release_uref when the user space reference to a map reaches zero.
-+ */
-+void bpf_timer_cancel_and_free(void *val)
-+{
-+	struct bpf_hrtimer *t;
-+
-+	t = (struct bpf_hrtimer *)__bpf_async_cancel_and_free(val);
-+	if (!t)
-+		return;
-+
-+	bpf_timer_delete(t);
-+}
-+
- /* This function is called by map_delete/update_elem for individual element and
-  * by ops->map_release_uref when the user space reference to a map reaches zero.
-  */
+ static const struct bpf_func_proto bpf_timer_set_callback_proto = {
+@@ -3138,7 +3137,7 @@ __bpf_kfunc int bpf_wq_set_callback_impl(struct bpf_wq *wq,
+ 	if (flags)
+ 		return -EINVAL;
+ 
+-	return __bpf_async_set_callback(async, callback_fn, aux, flags, BPF_ASYNC_TYPE_WQ);
++	return __bpf_async_set_callback(async, callback_fn, aux->prog);
+ }
+ 
+ __bpf_kfunc void bpf_preempt_disable(void)
 
 -- 
 2.52.0
